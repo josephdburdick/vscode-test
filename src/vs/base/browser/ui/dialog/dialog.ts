@@ -1,271 +1,271 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./dialog';
-import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { $, hide, show, EventHelper, clearNode, isAncestor, addDisposableListener, EventType } from 'vs/base/browser/dom';
-import { domEvent } from 'vs/base/browser/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { Color } from 'vs/base/common/color';
-import { ButtonGroup, IButtonStyles } from 'vs/base/browser/ui/button/button';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { Action } from 'vs/base/common/actions';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
-import { isMacintosh, isLinux } from 'vs/base/common/platform';
-import { SimpleCheckbox, ISimpleCheckboxStyles } from 'vs/base/browser/ui/checkbox/checkbox';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
+import 'vs/css!./diAlog';
+import * As nls from 'vs/nls';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { $, hide, show, EventHelper, cleArNode, isAncestor, AddDisposAbleListener, EventType } from 'vs/bAse/browser/dom';
+import { domEvent } from 'vs/bAse/browser/event';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { Color } from 'vs/bAse/common/color';
+import { ButtonGroup, IButtonStyles } from 'vs/bAse/browser/ui/button/button';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { Action } from 'vs/bAse/common/Actions';
+import { mnemonicButtonLAbel } from 'vs/bAse/common/lAbels';
+import { isMAcintosh, isLinux } from 'vs/bAse/common/plAtform';
+import { SimpleCheckbox, ISimpleCheckboxStyles } from 'vs/bAse/browser/ui/checkbox/checkbox';
+import { Codicon, registerIcon } from 'vs/bAse/common/codicons';
 
-export interface IDialogOptions {
-	cancelId?: number;
-	detail?: string;
-	checkboxLabel?: string;
-	checkboxChecked?: boolean;
-	type?: 'none' | 'info' | 'error' | 'question' | 'warning' | 'pending';
-	keyEventProcessor?: (event: StandardKeyboardEvent) => void;
+export interfAce IDiAlogOptions {
+	cAncelId?: number;
+	detAil?: string;
+	checkboxLAbel?: string;
+	checkboxChecked?: booleAn;
+	type?: 'none' | 'info' | 'error' | 'question' | 'wArning' | 'pending';
+	keyEventProcessor?: (event: StAndArdKeyboArdEvent) => void;
 }
 
-export interface IDialogResult {
+export interfAce IDiAlogResult {
 	button: number;
-	checkboxChecked?: boolean;
+	checkboxChecked?: booleAn;
 }
 
-export interface IDialogStyles extends IButtonStyles, ISimpleCheckboxStyles {
-	dialogForeground?: Color;
-	dialogBackground?: Color;
-	dialogShadow?: Color;
-	dialogBorder?: Color;
+export interfAce IDiAlogStyles extends IButtonStyles, ISimpleCheckboxStyles {
+	diAlogForeground?: Color;
+	diAlogBAckground?: Color;
+	diAlogShAdow?: Color;
+	diAlogBorder?: Color;
 	errorIconForeground?: Color;
-	warningIconForeground?: Color;
+	wArningIconForeground?: Color;
 	infoIconForeground?: Color;
 }
 
-interface ButtonMapEntry {
-	label: string;
+interfAce ButtonMApEntry {
+	lAbel: string;
 	index: number;
 }
 
-const dialogErrorIcon = registerIcon('dialog-error', Codicon.error);
-const dialogWarningIcon = registerIcon('dialog-warning', Codicon.warning);
-const dialogInfoIcon = registerIcon('dialog-info', Codicon.info);
-const dialogCloseIcon = registerIcon('dialog-close', Codicon.close);
+const diAlogErrorIcon = registerIcon('diAlog-error', Codicon.error);
+const diAlogWArningIcon = registerIcon('diAlog-wArning', Codicon.wArning);
+const diAlogInfoIcon = registerIcon('diAlog-info', Codicon.info);
+const diAlogCloseIcon = registerIcon('diAlog-close', Codicon.close);
 
-export class Dialog extends Disposable {
-	private element: HTMLElement | undefined;
-	private shadowElement: HTMLElement | undefined;
-	private modal: HTMLElement | undefined;
-	private buttonsContainer: HTMLElement | undefined;
-	private messageDetailElement: HTMLElement | undefined;
-	private iconElement: HTMLElement | undefined;
-	private checkbox: SimpleCheckbox | undefined;
-	private toolbarContainer: HTMLElement | undefined;
-	private buttonGroup: ButtonGroup | undefined;
-	private styles: IDialogStyles | undefined;
-	private focusToReturn: HTMLElement | undefined;
-	private checkboxHasFocus: boolean = false;
-	private buttons: string[];
+export clAss DiAlog extends DisposAble {
+	privAte element: HTMLElement | undefined;
+	privAte shAdowElement: HTMLElement | undefined;
+	privAte modAl: HTMLElement | undefined;
+	privAte buttonsContAiner: HTMLElement | undefined;
+	privAte messAgeDetAilElement: HTMLElement | undefined;
+	privAte iconElement: HTMLElement | undefined;
+	privAte checkbox: SimpleCheckbox | undefined;
+	privAte toolbArContAiner: HTMLElement | undefined;
+	privAte buttonGroup: ButtonGroup | undefined;
+	privAte styles: IDiAlogStyles | undefined;
+	privAte focusToReturn: HTMLElement | undefined;
+	privAte checkboxHAsFocus: booleAn = fAlse;
+	privAte buttons: string[];
 
-	constructor(private container: HTMLElement, private message: string, buttons: string[], private options: IDialogOptions) {
+	constructor(privAte contAiner: HTMLElement, privAte messAge: string, buttons: string[], privAte options: IDiAlogOptions) {
 		super();
-		this.modal = this.container.appendChild($(`.monaco-dialog-modal-block${options.type === 'pending' ? '.dimmed' : ''}`));
-		this.shadowElement = this.modal.appendChild($('.dialog-shadow'));
-		this.element = this.shadowElement.appendChild($('.monaco-dialog-box'));
-		this.element.setAttribute('role', 'dialog');
+		this.modAl = this.contAiner.AppendChild($(`.monAco-diAlog-modAl-block${options.type === 'pending' ? '.dimmed' : ''}`));
+		this.shAdowElement = this.modAl.AppendChild($('.diAlog-shAdow'));
+		this.element = this.shAdowElement.AppendChild($('.monAco-diAlog-box'));
+		this.element.setAttribute('role', 'diAlog');
 		hide(this.element);
 
-		// If no button is provided, default to OK
-		this.buttons = buttons.length ? buttons : [nls.localize('ok', "OK")];
-		const buttonsRowElement = this.element.appendChild($('.dialog-buttons-row'));
-		this.buttonsContainer = buttonsRowElement.appendChild($('.dialog-buttons'));
+		// If no button is provided, defAult to OK
+		this.buttons = buttons.length ? buttons : [nls.locAlize('ok', "OK")];
+		const buttonsRowElement = this.element.AppendChild($('.diAlog-buttons-row'));
+		this.buttonsContAiner = buttonsRowElement.AppendChild($('.diAlog-buttons'));
 
-		const messageRowElement = this.element.appendChild($('.dialog-message-row'));
-		this.iconElement = messageRowElement.appendChild($('.dialog-icon'));
-		const messageContainer = messageRowElement.appendChild($('.dialog-message-container'));
+		const messAgeRowElement = this.element.AppendChild($('.diAlog-messAge-row'));
+		this.iconElement = messAgeRowElement.AppendChild($('.diAlog-icon'));
+		const messAgeContAiner = messAgeRowElement.AppendChild($('.diAlog-messAge-contAiner'));
 
-		if (this.options.detail) {
-			const messageElement = messageContainer.appendChild($('.dialog-message'));
-			const messageTextElement = messageElement.appendChild($('.dialog-message-text'));
-			messageTextElement.innerText = this.message;
+		if (this.options.detAil) {
+			const messAgeElement = messAgeContAiner.AppendChild($('.diAlog-messAge'));
+			const messAgeTextElement = messAgeElement.AppendChild($('.diAlog-messAge-text'));
+			messAgeTextElement.innerText = this.messAge;
 		}
 
-		this.messageDetailElement = messageContainer.appendChild($('.dialog-message-detail'));
-		this.messageDetailElement.innerText = this.options.detail ? this.options.detail : message;
+		this.messAgeDetAilElement = messAgeContAiner.AppendChild($('.diAlog-messAge-detAil'));
+		this.messAgeDetAilElement.innerText = this.options.detAil ? this.options.detAil : messAge;
 
-		if (this.options.checkboxLabel) {
-			const checkboxRowElement = messageContainer.appendChild($('.dialog-checkbox-row'));
+		if (this.options.checkboxLAbel) {
+			const checkboxRowElement = messAgeContAiner.AppendChild($('.diAlog-checkbox-row'));
 
-			const checkbox = this.checkbox = this._register(new SimpleCheckbox(this.options.checkboxLabel, !!this.options.checkboxChecked));
+			const checkbox = this.checkbox = this._register(new SimpleCheckbox(this.options.checkboxLAbel, !!this.options.checkboxChecked));
 
-			checkboxRowElement.appendChild(checkbox.domNode);
+			checkboxRowElement.AppendChild(checkbox.domNode);
 
-			const checkboxMessageElement = checkboxRowElement.appendChild($('.dialog-checkbox-message'));
-			checkboxMessageElement.innerText = this.options.checkboxLabel;
-			this._register(addDisposableListener(checkboxMessageElement, EventType.CLICK, () => checkbox.checked = !checkbox.checked));
+			const checkboxMessAgeElement = checkboxRowElement.AppendChild($('.diAlog-checkbox-messAge'));
+			checkboxMessAgeElement.innerText = this.options.checkboxLAbel;
+			this._register(AddDisposAbleListener(checkboxMessAgeElement, EventType.CLICK, () => checkbox.checked = !checkbox.checked));
 		}
 
-		const toolbarRowElement = this.element.appendChild($('.dialog-toolbar-row'));
-		this.toolbarContainer = toolbarRowElement.appendChild($('.dialog-toolbar'));
+		const toolbArRowElement = this.element.AppendChild($('.diAlog-toolbAr-row'));
+		this.toolbArContAiner = toolbArRowElement.AppendChild($('.diAlog-toolbAr'));
 	}
 
-	private getAriaLabel(): string {
-		let typeLabel = nls.localize('dialogInfoMessage', 'Info');
+	privAte getAriALAbel(): string {
+		let typeLAbel = nls.locAlize('diAlogInfoMessAge', 'Info');
 		switch (this.options.type) {
-			case 'error':
-				nls.localize('dialogErrorMessage', 'Error');
-				break;
-			case 'warning':
-				nls.localize('dialogWarningMessage', 'Warning');
-				break;
-			case 'pending':
-				nls.localize('dialogPendingMessage', 'In Progress');
-				break;
-			case 'none':
-			case 'info':
-			case 'question':
-			default:
-				break;
+			cAse 'error':
+				nls.locAlize('diAlogErrorMessAge', 'Error');
+				breAk;
+			cAse 'wArning':
+				nls.locAlize('diAlogWArningMessAge', 'WArning');
+				breAk;
+			cAse 'pending':
+				nls.locAlize('diAlogPendingMessAge', 'In Progress');
+				breAk;
+			cAse 'none':
+			cAse 'info':
+			cAse 'question':
+			defAult:
+				breAk;
 		}
 
-		return `${typeLabel}: ${this.message} ${this.options.detail || ''}`;
+		return `${typeLAbel}: ${this.messAge} ${this.options.detAil || ''}`;
 	}
 
-	updateMessage(message: string): void {
-		if (this.messageDetailElement) {
-			this.messageDetailElement.innerText = message;
+	updAteMessAge(messAge: string): void {
+		if (this.messAgeDetAilElement) {
+			this.messAgeDetAilElement.innerText = messAge;
 		}
 	}
 
-	async show(): Promise<IDialogResult> {
-		this.focusToReturn = document.activeElement as HTMLElement;
+	Async show(): Promise<IDiAlogResult> {
+		this.focusToReturn = document.ActiveElement As HTMLElement;
 
-		return new Promise<IDialogResult>((resolve) => {
-			if (!this.element || !this.buttonsContainer || !this.iconElement || !this.toolbarContainer) {
+		return new Promise<IDiAlogResult>((resolve) => {
+			if (!this.element || !this.buttonsContAiner || !this.iconElement || !this.toolbArContAiner) {
 				resolve({ button: 0 });
 				return;
 			}
 
-			clearNode(this.buttonsContainer);
+			cleArNode(this.buttonsContAiner);
 
 			let focusedButton = 0;
-			const buttonGroup = this.buttonGroup = new ButtonGroup(this.buttonsContainer, this.buttons.length, { title: true });
-			const buttonMap = this.rearrangeButtons(this.buttons, this.options.cancelId);
+			const buttonGroup = this.buttonGroup = new ButtonGroup(this.buttonsContAiner, this.buttons.length, { title: true });
+			const buttonMAp = this.reArrAngeButtons(this.buttons, this.options.cAncelId);
 
 			// Set focused button to UI index
-			buttonMap.forEach((value, index) => {
-				if (value.index === 0) {
+			buttonMAp.forEAch((vAlue, index) => {
+				if (vAlue.index === 0) {
 					focusedButton = index;
 				}
 			});
 
-			buttonGroup.buttons.forEach((button, index) => {
-				button.label = mnemonicButtonLabel(buttonMap[index].label, true);
+			buttonGroup.buttons.forEAch((button, index) => {
+				button.lAbel = mnemonicButtonLAbel(buttonMAp[index].lAbel, true);
 
 				this._register(button.onDidClick(e => {
 					EventHelper.stop(e);
-					resolve({ button: buttonMap[index].index, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
+					resolve({ button: buttonMAp[index].index, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
 				}));
 			});
 
-			this._register(domEvent(window, 'keydown', true)((e: KeyboardEvent) => {
-				const evt = new StandardKeyboardEvent(e);
-				if (evt.equals(KeyCode.Enter) || evt.equals(KeyCode.Space)) {
+			this._register(domEvent(window, 'keydown', true)((e: KeyboArdEvent) => {
+				const evt = new StAndArdKeyboArdEvent(e);
+				if (evt.equAls(KeyCode.Enter) || evt.equAls(KeyCode.SpAce)) {
 					return;
 				}
 
-				let eventHandled = false;
-				if (evt.equals(KeyMod.Shift | KeyCode.Tab) || evt.equals(KeyCode.LeftArrow)) {
-					if (!this.checkboxHasFocus && focusedButton === 0) {
+				let eventHAndled = fAlse;
+				if (evt.equAls(KeyMod.Shift | KeyCode.TAb) || evt.equAls(KeyCode.LeftArrow)) {
+					if (!this.checkboxHAsFocus && focusedButton === 0) {
 						if (this.checkbox) {
 							this.checkbox.domNode.focus();
 						}
-						this.checkboxHasFocus = true;
+						this.checkboxHAsFocus = true;
 					} else {
-						focusedButton = (this.checkboxHasFocus ? 0 : focusedButton) + buttonGroup.buttons.length - 1;
+						focusedButton = (this.checkboxHAsFocus ? 0 : focusedButton) + buttonGroup.buttons.length - 1;
 						focusedButton = focusedButton % buttonGroup.buttons.length;
 						buttonGroup.buttons[focusedButton].focus();
-						this.checkboxHasFocus = false;
+						this.checkboxHAsFocus = fAlse;
 					}
 
-					eventHandled = true;
-				} else if (evt.equals(KeyCode.Tab) || evt.equals(KeyCode.RightArrow)) {
-					if (!this.checkboxHasFocus && focusedButton === buttonGroup.buttons.length - 1) {
+					eventHAndled = true;
+				} else if (evt.equAls(KeyCode.TAb) || evt.equAls(KeyCode.RightArrow)) {
+					if (!this.checkboxHAsFocus && focusedButton === buttonGroup.buttons.length - 1) {
 						if (this.checkbox) {
 							this.checkbox.domNode.focus();
 						}
-						this.checkboxHasFocus = true;
+						this.checkboxHAsFocus = true;
 					} else {
-						focusedButton = this.checkboxHasFocus ? 0 : focusedButton + 1;
+						focusedButton = this.checkboxHAsFocus ? 0 : focusedButton + 1;
 						focusedButton = focusedButton % buttonGroup.buttons.length;
 						buttonGroup.buttons[focusedButton].focus();
-						this.checkboxHasFocus = false;
+						this.checkboxHAsFocus = fAlse;
 					}
-					eventHandled = true;
+					eventHAndled = true;
 				}
 
-				if (eventHandled) {
+				if (eventHAndled) {
 					EventHelper.stop(e, true);
 				} else if (this.options.keyEventProcessor) {
 					this.options.keyEventProcessor(evt);
 				}
 			}));
 
-			this._register(domEvent(window, 'keyup', true)((e: KeyboardEvent) => {
+			this._register(domEvent(window, 'keyup', true)((e: KeyboArdEvent) => {
 				EventHelper.stop(e, true);
-				const evt = new StandardKeyboardEvent(e);
+				const evt = new StAndArdKeyboArdEvent(e);
 
-				if (evt.equals(KeyCode.Escape)) {
-					resolve({ button: this.options.cancelId || 0, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
+				if (evt.equAls(KeyCode.EscApe)) {
+					resolve({ button: this.options.cAncelId || 0, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
 				}
 			}));
 
-			this._register(domEvent(this.element, 'focusout', false)((e: FocusEvent) => {
-				if (!!e.relatedTarget && !!this.element) {
-					if (!isAncestor(e.relatedTarget as HTMLElement, this.element)) {
-						this.focusToReturn = e.relatedTarget as HTMLElement;
+			this._register(domEvent(this.element, 'focusout', fAlse)((e: FocusEvent) => {
+				if (!!e.relAtedTArget && !!this.element) {
+					if (!isAncestor(e.relAtedTArget As HTMLElement, this.element)) {
+						this.focusToReturn = e.relAtedTArget As HTMLElement;
 
-						if (e.target) {
-							(e.target as HTMLElement).focus();
+						if (e.tArget) {
+							(e.tArget As HTMLElement).focus();
 							EventHelper.stop(e, true);
 						}
 					}
 				}
 			}));
 
-			this.iconElement.classList.remove(...dialogErrorIcon.classNamesArray, ...dialogWarningIcon.classNamesArray, ...dialogInfoIcon.classNamesArray, ...Codicon.loading.classNamesArray);
+			this.iconElement.clAssList.remove(...diAlogErrorIcon.clAssNAmesArrAy, ...diAlogWArningIcon.clAssNAmesArrAy, ...diAlogInfoIcon.clAssNAmesArrAy, ...Codicon.loAding.clAssNAmesArrAy);
 
 			switch (this.options.type) {
-				case 'error':
-					this.iconElement.classList.add(...dialogErrorIcon.classNamesArray);
-					break;
-				case 'warning':
-					this.iconElement.classList.add(...dialogWarningIcon.classNamesArray);
-					break;
-				case 'pending':
-					this.iconElement.classList.add(...Codicon.loading.classNamesArray, 'codicon-animation-spin');
-					break;
-				case 'none':
-				case 'info':
-				case 'question':
-				default:
-					this.iconElement.classList.add(...dialogInfoIcon.classNamesArray);
-					break;
+				cAse 'error':
+					this.iconElement.clAssList.Add(...diAlogErrorIcon.clAssNAmesArrAy);
+					breAk;
+				cAse 'wArning':
+					this.iconElement.clAssList.Add(...diAlogWArningIcon.clAssNAmesArrAy);
+					breAk;
+				cAse 'pending':
+					this.iconElement.clAssList.Add(...Codicon.loAding.clAssNAmesArrAy, 'codicon-AnimAtion-spin');
+					breAk;
+				cAse 'none':
+				cAse 'info':
+				cAse 'question':
+				defAult:
+					this.iconElement.clAssList.Add(...diAlogInfoIcon.clAssNAmesArrAy);
+					breAk;
 			}
 
-			const actionBar = new ActionBar(this.toolbarContainer, {});
+			const ActionBAr = new ActionBAr(this.toolbArContAiner, {});
 
-			const action = new Action('dialog.close', nls.localize('dialogClose', "Close Dialog"), dialogCloseIcon.classNames, true, () => {
-				resolve({ button: this.options.cancelId || 0, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
+			const Action = new Action('diAlog.close', nls.locAlize('diAlogClose', "Close DiAlog"), diAlogCloseIcon.clAssNAmes, true, () => {
+				resolve({ button: this.options.cAncelId || 0, checkboxChecked: this.checkbox ? this.checkbox.checked : undefined });
 				return Promise.resolve();
 			});
 
-			actionBar.push(action, { icon: true, label: false, });
+			ActionBAr.push(Action, { icon: true, lAbel: fAlse, });
 
-			this.applyStyles();
+			this.ApplyStyles();
 
-			this.element.setAttribute('aria-label', this.getAriaLabel());
+			this.element.setAttribute('AriA-lAbel', this.getAriALAbel());
 			show(this.element);
 
 			// Focus first element
@@ -273,49 +273,49 @@ export class Dialog extends Disposable {
 		});
 	}
 
-	private applyStyles() {
+	privAte ApplyStyles() {
 		if (this.styles) {
 			const style = this.styles;
 
-			const fgColor = style.dialogForeground;
-			const bgColor = style.dialogBackground;
-			const shadowColor = style.dialogShadow ? `0 0px 8px ${style.dialogShadow}` : '';
-			const border = style.dialogBorder ? `1px solid ${style.dialogBorder}` : '';
+			const fgColor = style.diAlogForeground;
+			const bgColor = style.diAlogBAckground;
+			const shAdowColor = style.diAlogShAdow ? `0 0px 8px ${style.diAlogShAdow}` : '';
+			const border = style.diAlogBorder ? `1px solid ${style.diAlogBorder}` : '';
 
-			if (this.shadowElement) {
-				this.shadowElement.style.boxShadow = shadowColor;
+			if (this.shAdowElement) {
+				this.shAdowElement.style.boxShAdow = shAdowColor;
 			}
 
 			if (this.element) {
 				this.element.style.color = fgColor?.toString() ?? '';
-				this.element.style.backgroundColor = bgColor?.toString() ?? '';
+				this.element.style.bAckgroundColor = bgColor?.toString() ?? '';
 				this.element.style.border = border;
 
 				if (this.buttonGroup) {
-					this.buttonGroup.buttons.forEach(button => button.style(style));
+					this.buttonGroup.buttons.forEAch(button => button.style(style));
 				}
 
 				if (this.checkbox) {
 					this.checkbox.style(style);
 				}
 
-				if (this.messageDetailElement && fgColor && bgColor) {
-					const messageDetailColor = fgColor.transparent(.9);
-					this.messageDetailElement.style.color = messageDetailColor.makeOpaque(bgColor).toString();
+				if (this.messAgeDetAilElement && fgColor && bgColor) {
+					const messAgeDetAilColor = fgColor.trAnspArent(.9);
+					this.messAgeDetAilElement.style.color = messAgeDetAilColor.mAkeOpAque(bgColor).toString();
 				}
 
 				if (this.iconElement) {
 					let color;
 					switch (this.options.type) {
-						case 'error':
+						cAse 'error':
 							color = style.errorIconForeground;
-							break;
-						case 'warning':
-							color = style.warningIconForeground;
-							break;
-						default:
+							breAk;
+						cAse 'wArning':
+							color = style.wArningIconForeground;
+							breAk;
+						defAult:
 							color = style.infoIconForeground;
-							break;
+							breAk;
 					}
 					if (color) {
 						this.iconElement.style.color = color.toString();
@@ -326,16 +326,16 @@ export class Dialog extends Disposable {
 		}
 	}
 
-	style(style: IDialogStyles): void {
+	style(style: IDiAlogStyles): void {
 		this.styles = style;
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
 	dispose(): void {
 		super.dispose();
-		if (this.modal) {
-			this.modal.remove();
-			this.modal = undefined;
+		if (this.modAl) {
+			this.modAl.remove();
+			this.modAl = undefined;
 		}
 
 		if (this.focusToReturn && isAncestor(this.focusToReturn, document.body)) {
@@ -344,22 +344,22 @@ export class Dialog extends Disposable {
 		}
 	}
 
-	private rearrangeButtons(buttons: Array<string>, cancelId: number | undefined): ButtonMapEntry[] {
-		const buttonMap: ButtonMapEntry[] = [];
-		// Maps each button to its current label and old index so that when we move them around it's not a problem
-		buttons.forEach((button, index) => {
-			buttonMap.push({ label: button, index: index });
+	privAte reArrAngeButtons(buttons: ArrAy<string>, cAncelId: number | undefined): ButtonMApEntry[] {
+		const buttonMAp: ButtonMApEntry[] = [];
+		// MAps eAch button to its current lAbel And old index so thAt when we move them Around it's not A problem
+		buttons.forEAch((button, index) => {
+			buttonMAp.push({ lAbel: button, index: index });
 		});
 
-		// macOS/linux: reverse button order
-		if (isMacintosh || isLinux) {
-			if (cancelId !== undefined) {
-				const cancelButton = buttonMap.splice(cancelId, 1)[0];
-				buttonMap.reverse();
-				buttonMap.splice(buttonMap.length - 1, 0, cancelButton);
+		// mAcOS/linux: reverse button order
+		if (isMAcintosh || isLinux) {
+			if (cAncelId !== undefined) {
+				const cAncelButton = buttonMAp.splice(cAncelId, 1)[0];
+				buttonMAp.reverse();
+				buttonMAp.splice(buttonMAp.length - 1, 0, cAncelButton);
 			}
 		}
 
-		return buttonMap;
+		return buttonMAp;
 	}
 }

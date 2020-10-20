@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-declare const enum LoaderEventType {
-	LoaderAvailable = 1,
+declAre const enum LoAderEventType {
+	LoAderAvAilAble = 1,
 
-	BeginLoadingScript = 10,
-	EndLoadingScriptOK = 11,
-	EndLoadingScriptError = 12,
+	BeginLoAdingScript = 10,
+	EndLoAdingScriptOK = 11,
+	EndLoAdingScriptError = 12,
 
-	BeginInvokeFactory = 21,
-	EndInvokeFactory = 22,
+	BeginInvokeFActory = 21,
+	EndInvokeFActory = 22,
 
-	NodeBeginEvaluatingScript = 31,
-	NodeEndEvaluatingScript = 32,
+	NodeBeginEvAluAtingScript = 31,
+	NodeEndEvAluAtingScript = 32,
 
-	NodeBeginNativeRequire = 33,
-	NodeEndNativeRequire = 34,
+	NodeBeginNAtiveRequire = 33,
+	NodeEndNAtiveRequire = 34,
 
-	CachedDataFound = 60,
-	CachedDataMissed = 61,
-	CachedDataRejected = 62,
-	CachedDataCreated = 63,
+	CAchedDAtAFound = 60,
+	CAchedDAtAMissed = 61,
+	CAchedDAtARejected = 62,
+	CAchedDAtACreAted = 63,
 }
 
-declare class LoaderEvent {
-	readonly type: LoaderEventType;
-	readonly timestamp: number;
-	readonly detail: string;
+declAre clAss LoAderEvent {
+	reAdonly type: LoAderEventType;
+	reAdonly timestAmp: number;
+	reAdonly detAil: string;
 }
 
-declare const define: {
-	(moduleName: string, dependencies: string[], callback: (...args: any[]) => any): any;
-	(moduleName: string, dependencies: string[], definition: any): any;
-	(moduleName: string, callback: (...args: any[]) => any): any;
-	(moduleName: string, definition: any): any;
-	(dependencies: string[], callback: (...args: any[]) => any): any;
-	(dependencies: string[], definition: any): any;
+declAre const define: {
+	(moduleNAme: string, dependencies: string[], cAllbAck: (...Args: Any[]) => Any): Any;
+	(moduleNAme: string, dependencies: string[], definition: Any): Any;
+	(moduleNAme: string, cAllbAck: (...Args: Any[]) => Any): Any;
+	(moduleNAme: string, definition: Any): Any;
+	(dependencies: string[], cAllbAck: (...Args: Any[]) => Any): Any;
+	(dependencies: string[], definition: Any): Any;
 };
 
-interface NodeRequire {
+interfAce NodeRequire {
 	/**
-	 * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for browser contexts.
+	 * @deprecAted use `FileAccess.AsFileUri()` for node.js contexts or `FileAccess.AsBrowserUri` for browser contexts.
 	 */
-	toUrl(path: string): string;
-	(dependencies: string[], callback: (...args: any[]) => any, errorback?: (err: any) => void): any;
-	config(data: any): any;
+	toUrl(pAth: string): string;
+	(dependencies: string[], cAllbAck: (...Args: Any[]) => Any, errorbAck?: (err: Any) => void): Any;
+	config(dAtA: Any): Any;
 	onError: Function;
-	__$__nodeRequire<T>(moduleName: string): T;
-	getStats(): ReadonlyArray<LoaderEvent>;
-	define(amdModuleId: string, dependencies: string[], callback: (...args: any[]) => any): any;
+	__$__nodeRequire<T>(moduleNAme: string): T;
+	getStAts(): ReAdonlyArrAy<LoAderEvent>;
+	define(AmdModuleId: string, dependencies: string[], cAllbAck: (...Args: Any[]) => Any): Any;
 }
 
-declare var require: NodeRequire;
+declAre vAr require: NodeRequire;

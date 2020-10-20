@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchConfiguration, IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
-import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { IWorkbenchConfigurAtion, IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { INAtiveWindowConfigurAtion } from 'vs/plAtform/windows/common/windows';
+import { INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const INativeWorkbenchEnvironmentService = createDecorator<INativeWorkbenchEnvironmentService>('nativeEnvironmentService');
+export const INAtiveWorkbenchEnvironmentService = creAteDecorAtor<INAtiveWorkbenchEnvironmentService>('nAtiveEnvironmentService');
 
-export interface INativeWorkbenchConfiguration extends IWorkbenchConfiguration, INativeWindowConfiguration { }
+export interfAce INAtiveWorkbenchConfigurAtion extends IWorkbenchConfigurAtion, INAtiveWindowConfigurAtion { }
 
 /**
- * A subclass of the `IWorkbenchEnvironmentService` to be used only in native
- * environments (Windows, Linux, macOS) but not e.g. web.
+ * A subclAss of the `IWorkbenchEnvironmentService` to be used only in nAtive
+ * environments (Windows, Linux, mAcOS) but not e.g. web.
  */
-export interface INativeWorkbenchEnvironmentService extends IWorkbenchEnvironmentService, INativeEnvironmentService {
+export interfAce INAtiveWorkbenchEnvironmentService extends IWorkbenchEnvironmentService, INAtiveEnvironmentService {
 
-	readonly machineId: string;
+	reAdonly mAchineId: string;
 
-	readonly crashReporterDirectory?: string;
-	readonly crashReporterId?: string;
+	reAdonly crAshReporterDirectory?: string;
+	reAdonly crAshReporterId?: string;
 
-	readonly execPath: string;
+	reAdonly execPAth: string;
 
-	readonly log?: string;
+	reAdonly log?: string;
 
-	// TODO@ben this is a bit ugly
-	updateBackupPath(newPath: string | undefined): void;
+	// TODO@ben this is A bit ugly
+	updAteBAckupPAth(newPAth: string | undefined): void;
 
 	/**
-	 * @deprecated this property will go away eventually as it
-	 * duplicates many properties of the environment service
+	 * @deprecAted this property will go AwAy eventuAlly As it
+	 * duplicAtes mAny properties of the environment service
 	 *
-	 * Please consider using the environment service directly
-	 * if you can.
+	 * PleAse consider using the environment service directly
+	 * if you cAn.
 	 */
-	readonly configuration: INativeWorkbenchConfiguration;
+	reAdonly configurAtion: INAtiveWorkbenchConfigurAtion;
 }

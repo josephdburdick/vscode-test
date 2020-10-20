@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as randomBytes from 'randombytes';
-import * as querystring from 'querystring';
+import * As rAndomBytes from 'rAndombytes';
+import * As querystring from 'querystring';
 import { Buffer } from 'buffer';
-import * as vscode from 'vscode';
-import { createServer, startServer } from './authServer';
+import * As vscode from 'vscode';
+import { creAteServer, stArtServer } from './AuthServer';
 
-import { v4 as uuid } from 'uuid';
-import { keychain } from './keychain';
+import { v4 As uuid } from 'uuid';
+import { keychAin } from './keychAin';
 import Logger from './logger';
-import { toBase64UrlEncoding } from './utils';
+import { toBAse64UrlEncoding } from './utils';
 import fetch, { Response } from 'node-fetch';
-import { sha256 } from './env/node/sha256';
-import * as nls from 'vscode-nls';
+import { shA256 } from './env/node/shA256';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-const redirectUrl = 'https://vscode-redirect.azurewebsites.net/';
+const redirectUrl = 'https://vscode-redirect.Azurewebsites.net/';
 const loginEndpointUrl = 'https://login.microsoftonline.com/';
-const clientId = 'aebc6443-996d-45c2-90f0-388ff96faa56';
-const tenant = 'organizations';
+const clientId = 'Aebc6443-996d-45c2-90f0-388ff96fAA56';
+const tenAnt = 'orgAnizAtions';
 
-interface IToken {
-	accessToken?: string; // When unable to refresh due to network problems, the access token becomes undefined
+interfAce IToken {
+	AccessToken?: string; // When unAble to refresh due to network problems, the Access token becomes undefined
 
-	expiresIn?: number; // How long access token is valid, in seconds
-	expiresAt?: number; // UNIX epoch time at which token will expire
+	expiresIn?: number; // How long Access token is vAlid, in seconds
+	expiresAt?: number; // UNIX epoch time At which token will expire
 	refreshToken: string;
 
-	account: {
-		label: string;
+	Account: {
+		lAbel: string;
 		id: string;
 	};
 	scope: string;
-	sessionId: string; // The account id + the scope
+	sessionId: string; // The Account id + the scope
 }
 
-interface ITokenClaims {
+interfAce ITokenClAims {
 	tid: string;
-	email?: string;
-	unique_name?: string;
-	preferred_username?: string;
+	emAil?: string;
+	unique_nAme?: string;
+	preferred_usernAme?: string;
 	oid?: string;
-	altsecid?: string;
+	Altsecid?: string;
 	ipd?: string;
 	scp: string;
 }
 
-interface IStoredSession {
+interfAce IStoredSession {
 	id: string;
 	refreshToken: string;
-	scope: string; // Scopes are alphabetized and joined with a space
-	account: {
-		label?: string;
-		displayName?: string,
+	scope: string; // Scopes Are AlphAbetized And joined with A spAce
+	Account: {
+		lAbel?: string;
+		displAyNAme?: string,
 		id: string
 	}
 }
 
-export interface ITokenResponse {
-	access_token: string;
+export interfAce ITokenResponse {
+	Access_token: string;
 	expires_in: number;
 	ext_expires_in: number;
 	refresh_token: string;
@@ -71,57 +71,57 @@ export interface ITokenResponse {
 	id_token?: string;
 }
 
-function parseQuery(uri: vscode.Uri) {
-	return uri.query.split('&').reduce((prev: any, current) => {
+function pArseQuery(uri: vscode.Uri) {
+	return uri.query.split('&').reduce((prev: Any, current) => {
 		const queryString = current.split('=');
 		prev[queryString[0]] = queryString[1];
 		return prev;
 	}, {});
 }
 
-export const onDidChangeSessions = new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
+export const onDidChAngeSessions = new vscode.EventEmitter<vscode.AuthenticAtionProviderAuthenticAtionSessionsChAngeEvent>();
 
-export const REFRESH_NETWORK_FAILURE = 'Network failure';
+export const REFRESH_NETWORK_FAILURE = 'Network fAilure';
 
-class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
-	public handleUri(uri: vscode.Uri) {
+clAss UriEventHAndler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHAndler {
+	public hAndleUri(uri: vscode.Uri) {
 		this.fire(uri);
 	}
 }
 
-export class AzureActiveDirectoryService {
-	private _tokens: IToken[] = [];
-	private _refreshTimeouts: Map<string, NodeJS.Timeout> = new Map<string, NodeJS.Timeout>();
-	private _uriHandler: UriEventHandler;
-	private _disposables: vscode.Disposable[] = [];
+export clAss AzureActiveDirectoryService {
+	privAte _tokens: IToken[] = [];
+	privAte _refreshTimeouts: MAp<string, NodeJS.Timeout> = new MAp<string, NodeJS.Timeout>();
+	privAte _uriHAndler: UriEventHAndler;
+	privAte _disposAbles: vscode.DisposAble[] = [];
 
 	constructor() {
-		this._uriHandler = new UriEventHandler();
-		this._disposables.push(vscode.window.registerUriHandler(this._uriHandler));
+		this._uriHAndler = new UriEventHAndler();
+		this._disposAbles.push(vscode.window.registerUriHAndler(this._uriHAndler));
 	}
 
-	public async initialize(): Promise<void> {
-		const storedData = await keychain.getToken() || await keychain.tryMigrate();
-		if (storedData) {
+	public Async initiAlize(): Promise<void> {
+		const storedDAtA = AwAit keychAin.getToken() || AwAit keychAin.tryMigrAte();
+		if (storedDAtA) {
 			try {
-				const sessions = this.parseStoredData(storedData);
-				const refreshes = sessions.map(async session => {
+				const sessions = this.pArseStoredDAtA(storedDAtA);
+				const refreshes = sessions.mAp(Async session => {
 					if (!session.refreshToken) {
 						return Promise.resolve();
 					}
 
 					try {
-						await this.refreshToken(session.refreshToken, session.scope, session.id);
-					} catch (e) {
-						if (e.message === REFRESH_NETWORK_FAILURE) {
-							const didSucceedOnRetry = await this.handleRefreshNetworkError(session.id, session.refreshToken, session.scope);
+						AwAit this.refreshToken(session.refreshToken, session.scope, session.id);
+					} cAtch (e) {
+						if (e.messAge === REFRESH_NETWORK_FAILURE) {
+							const didSucceedOnRetry = AwAit this.hAndleRefreshNetworkError(session.id, session.refreshToken, session.scope);
 							if (!didSucceedOnRetry) {
 								this._tokens.push({
-									accessToken: undefined,
+									AccessToken: undefined,
 									refreshToken: session.refreshToken,
-									account: {
-										label: session.account.label ?? session.account.displayName!,
-										id: session.account.id
+									Account: {
+										lAbel: session.Account.lAbel ?? session.Account.displAyNAme!,
+										id: session.Account.id
 									},
 									scope: session.scope,
 									sessionId: session.id
@@ -129,211 +129,211 @@ export class AzureActiveDirectoryService {
 								this.pollForReconnect(session.id, session.refreshToken, session.scope);
 							}
 						} else {
-							await this.logout(session.id);
+							AwAit this.logout(session.id);
 						}
 					}
 				});
 
-				await Promise.all(refreshes);
-			} catch (e) {
-				Logger.info('Failed to initialize stored data');
-				await this.clearSessions();
+				AwAit Promise.All(refreshes);
+			} cAtch (e) {
+				Logger.info('FAiled to initiAlize stored dAtA');
+				AwAit this.cleArSessions();
 			}
 		}
 
-		this._disposables.push(vscode.authentication.onDidChangePassword(() => this.checkForUpdates));
+		this._disposAbles.push(vscode.AuthenticAtion.onDidChAngePAssword(() => this.checkForUpdAtes));
 	}
 
-	private parseStoredData(data: string): IStoredSession[] {
-		return JSON.parse(data);
+	privAte pArseStoredDAtA(dAtA: string): IStoredSession[] {
+		return JSON.pArse(dAtA);
 	}
 
-	private async storeTokenData(): Promise<void> {
-		const serializedData: IStoredSession[] = this._tokens.map(token => {
+	privAte Async storeTokenDAtA(): Promise<void> {
+		const seriAlizedDAtA: IStoredSession[] = this._tokens.mAp(token => {
 			return {
 				id: token.sessionId,
 				refreshToken: token.refreshToken,
 				scope: token.scope,
-				account: token.account
+				Account: token.Account
 			};
 		});
 
-		await keychain.setToken(JSON.stringify(serializedData));
+		AwAit keychAin.setToken(JSON.stringify(seriAlizedDAtA));
 	}
 
-	private async checkForUpdates(): Promise<void> {
-		const addedIds: string[] = [];
+	privAte Async checkForUpdAtes(): Promise<void> {
+		const AddedIds: string[] = [];
 		let removedIds: string[] = [];
-		const storedData = await keychain.getToken();
-		if (storedData) {
+		const storedDAtA = AwAit keychAin.getToken();
+		if (storedDAtA) {
 			try {
-				const sessions = this.parseStoredData(storedData);
-				let promises = sessions.map(async session => {
-					const matchesExisting = this._tokens.some(token => token.scope === session.scope && token.sessionId === session.id);
-					if (!matchesExisting && session.refreshToken) {
+				const sessions = this.pArseStoredDAtA(storedDAtA);
+				let promises = sessions.mAp(Async session => {
+					const mAtchesExisting = this._tokens.some(token => token.scope === session.scope && token.sessionId === session.id);
+					if (!mAtchesExisting && session.refreshToken) {
 						try {
-							await this.refreshToken(session.refreshToken, session.scope, session.id);
-							addedIds.push(session.id);
-						} catch (e) {
-							if (e.message === REFRESH_NETWORK_FAILURE) {
-								// Ignore, will automatically retry on next poll.
+							AwAit this.refreshToken(session.refreshToken, session.scope, session.id);
+							AddedIds.push(session.id);
+						} cAtch (e) {
+							if (e.messAge === REFRESH_NETWORK_FAILURE) {
+								// Ignore, will AutomAticAlly retry on next poll.
 							} else {
-								await this.logout(session.id);
+								AwAit this.logout(session.id);
 							}
 						}
 					}
 				});
 
-				promises = promises.concat(this._tokens.map(async token => {
-					const matchesExisting = sessions.some(session => token.scope === session.scope && token.sessionId === session.id);
-					if (!matchesExisting) {
-						await this.logout(token.sessionId);
+				promises = promises.concAt(this._tokens.mAp(Async token => {
+					const mAtchesExisting = sessions.some(session => token.scope === session.scope && token.sessionId === session.id);
+					if (!mAtchesExisting) {
+						AwAit this.logout(token.sessionId);
 						removedIds.push(token.sessionId);
 					}
 				}));
 
-				await Promise.all(promises);
-			} catch (e) {
-				Logger.error(e.message);
-				// if data is improperly formatted, remove all of it and send change event
-				removedIds = this._tokens.map(token => token.sessionId);
-				this.clearSessions();
+				AwAit Promise.All(promises);
+			} cAtch (e) {
+				Logger.error(e.messAge);
+				// if dAtA is improperly formAtted, remove All of it And send chAnge event
+				removedIds = this._tokens.mAp(token => token.sessionId);
+				this.cleArSessions();
 			}
 		} else {
 			if (this._tokens.length) {
-				// Log out all, remove all local data
-				removedIds = this._tokens.map(token => token.sessionId);
-				Logger.info('No stored keychain data, clearing local data');
+				// Log out All, remove All locAl dAtA
+				removedIds = this._tokens.mAp(token => token.sessionId);
+				Logger.info('No stored keychAin dAtA, cleAring locAl dAtA');
 
 				this._tokens = [];
 
-				this._refreshTimeouts.forEach(timeout => {
-					clearTimeout(timeout);
+				this._refreshTimeouts.forEAch(timeout => {
+					cleArTimeout(timeout);
 				});
 
-				this._refreshTimeouts.clear();
+				this._refreshTimeouts.cleAr();
 			}
 		}
 
-		if (addedIds.length || removedIds.length) {
-			onDidChangeSessions.fire({ added: addedIds, removed: removedIds, changed: [] });
+		if (AddedIds.length || removedIds.length) {
+			onDidChAngeSessions.fire({ Added: AddedIds, removed: removedIds, chAnged: [] });
 		}
 	}
 
-	private async convertToSession(token: IToken): Promise<vscode.AuthenticationSession> {
-		const resolvedToken = await this.resolveAccessToken(token);
+	privAte Async convertToSession(token: IToken): Promise<vscode.AuthenticAtionSession> {
+		const resolvedToken = AwAit this.resolveAccessToken(token);
 		return {
 			id: token.sessionId,
-			accessToken: resolvedToken,
-			account: token.account,
+			AccessToken: resolvedToken,
+			Account: token.Account,
 			scopes: token.scope.split(' ')
 		};
 	}
 
-	private async resolveAccessToken(token: IToken): Promise<string> {
-		if (token.accessToken && (!token.expiresAt || token.expiresAt > Date.now())) {
+	privAte Async resolveAccessToken(token: IToken): Promise<string> {
+		if (token.AccessToken && (!token.expiresAt || token.expiresAt > DAte.now())) {
 			token.expiresAt
-				? Logger.info(`Token available from cache, expires in ${token.expiresAt - Date.now()} milliseconds`)
-				: Logger.info('Token available from cache');
-			return Promise.resolve(token.accessToken);
+				? Logger.info(`Token AvAilAble from cAche, expires in ${token.expiresAt - DAte.now()} milliseconds`)
+				: Logger.info('Token AvAilAble from cAche');
+			return Promise.resolve(token.AccessToken);
 		}
 
 		try {
-			Logger.info('Token expired or unavailable, trying refresh');
-			const refreshedToken = await this.refreshToken(token.refreshToken, token.scope, token.sessionId);
-			if (refreshedToken.accessToken) {
-				return refreshedToken.accessToken;
+			Logger.info('Token expired or unAvAilAble, trying refresh');
+			const refreshedToken = AwAit this.refreshToken(token.refreshToken, token.scope, token.sessionId);
+			if (refreshedToken.AccessToken) {
+				return refreshedToken.AccessToken;
 			} else {
 				throw new Error();
 			}
-		} catch (e) {
-			throw new Error('Unavailable due to network problems');
+		} cAtch (e) {
+			throw new Error('UnAvAilAble due to network problems');
 		}
 	}
 
-	private getTokenClaims(accessToken: string): ITokenClaims {
+	privAte getTokenClAims(AccessToken: string): ITokenClAims {
 		try {
-			return JSON.parse(Buffer.from(accessToken.split('.')[1], 'base64').toString());
-		} catch (e) {
-			Logger.error(e.message);
-			throw new Error('Unable to read token claims');
+			return JSON.pArse(Buffer.from(AccessToken.split('.')[1], 'bAse64').toString());
+		} cAtch (e) {
+			Logger.error(e.messAge);
+			throw new Error('UnAble to reAd token clAims');
 		}
 	}
 
-	get sessions(): Promise<vscode.AuthenticationSession[]> {
-		return Promise.all(this._tokens.map(token => this.convertToSession(token)));
+	get sessions(): Promise<vscode.AuthenticAtionSession[]> {
+		return Promise.All(this._tokens.mAp(token => this.convertToSession(token)));
 	}
 
-	public async login(scope: string): Promise<vscode.AuthenticationSession> {
+	public Async login(scope: string): Promise<vscode.AuthenticAtionSession> {
 		Logger.info('Logging in...');
-		if (!scope.includes('offline_access')) {
-			Logger.info('Warning: The \'offline_access\' scope was not included, so the generated token will not be able to be refreshed.');
+		if (!scope.includes('offline_Access')) {
+			Logger.info('WArning: The \'offline_Access\' scope wAs not included, so the generAted token will not be Able to be refreshed.');
 		}
 
-		return new Promise(async (resolve, reject) => {
+		return new Promise(Async (resolve, reject) => {
 			if (vscode.env.uiKind === vscode.UIKind.Web) {
-				resolve(this.loginWithoutLocalServer(scope));
+				resolve(this.loginWithoutLocAlServer(scope));
 				return;
 			}
 
-			const nonce = randomBytes(16).toString('base64');
-			const { server, redirectPromise, codePromise } = createServer(nonce);
+			const nonce = rAndomBytes(16).toString('bAse64');
+			const { server, redirectPromise, codePromise } = creAteServer(nonce);
 
 			let token: IToken | undefined;
 			try {
-				const port = await startServer(server);
-				vscode.env.openExternal(vscode.Uri.parse(`http://localhost:${port}/signin?nonce=${encodeURIComponent(nonce)}`));
+				const port = AwAit stArtServer(server);
+				vscode.env.openExternAl(vscode.Uri.pArse(`http://locAlhost:${port}/signin?nonce=${encodeURIComponent(nonce)}`));
 
-				const redirectReq = await redirectPromise;
+				const redirectReq = AwAit redirectPromise;
 				if ('err' in redirectReq) {
 					const { err, res } = redirectReq;
-					res.writeHead(302, { Location: `/?error=${encodeURIComponent(err && err.message || 'Unknown error')}` });
+					res.writeHeAd(302, { LocAtion: `/?error=${encodeURIComponent(err && err.messAge || 'Unknown error')}` });
 					res.end();
 					throw err;
 				}
 
-				const host = redirectReq.req.headers.host || '';
-				const updatedPortStr = (/^[^:]+:(\d+)$/.exec(Array.isArray(host) ? host[0] : host) || [])[1];
-				const updatedPort = updatedPortStr ? parseInt(updatedPortStr, 10) : port;
+				const host = redirectReq.req.heAders.host || '';
+				const updAtedPortStr = (/^[^:]+:(\d+)$/.exec(ArrAy.isArrAy(host) ? host[0] : host) || [])[1];
+				const updAtedPort = updAtedPortStr ? pArseInt(updAtedPortStr, 10) : port;
 
-				const state = `${updatedPort},${encodeURIComponent(nonce)}`;
+				const stAte = `${updAtedPort},${encodeURIComponent(nonce)}`;
 
-				const codeVerifier = toBase64UrlEncoding(randomBytes(32).toString('base64'));
-				const codeChallenge = toBase64UrlEncoding(await sha256(codeVerifier));
-				const loginUrl = `${loginEndpointUrl}${tenant}/oauth2/v2.0/authorize?response_type=code&response_mode=query&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUrl)}&state=${state}&scope=${encodeURIComponent(scope)}&prompt=select_account&code_challenge_method=S256&code_challenge=${codeChallenge}`;
+				const codeVerifier = toBAse64UrlEncoding(rAndomBytes(32).toString('bAse64'));
+				const codeChAllenge = toBAse64UrlEncoding(AwAit shA256(codeVerifier));
+				const loginUrl = `${loginEndpointUrl}${tenAnt}/oAuth2/v2.0/Authorize?response_type=code&response_mode=query&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUrl)}&stAte=${stAte}&scope=${encodeURIComponent(scope)}&prompt=select_Account&code_chAllenge_method=S256&code_chAllenge=${codeChAllenge}`;
 
-				await redirectReq.res.writeHead(302, { Location: loginUrl });
+				AwAit redirectReq.res.writeHeAd(302, { LocAtion: loginUrl });
 				redirectReq.res.end();
 
-				const codeRes = await codePromise;
+				const codeRes = AwAit codePromise;
 				const res = codeRes.res;
 
 				try {
 					if ('err' in codeRes) {
 						throw codeRes.err;
 					}
-					token = await this.exchangeCodeForToken(codeRes.code, codeVerifier, scope);
+					token = AwAit this.exchAngeCodeForToken(codeRes.code, codeVerifier, scope);
 					this.setToken(token, scope);
 					Logger.info('Login successful');
-					res.writeHead(302, { Location: '/' });
-					const session = await this.convertToSession(token);
+					res.writeHeAd(302, { LocAtion: '/' });
+					const session = AwAit this.convertToSession(token);
 					resolve(session);
 					res.end();
-				} catch (err) {
-					res.writeHead(302, { Location: `/?error=${encodeURIComponent(err && err.message || 'Unknown error')}` });
+				} cAtch (err) {
+					res.writeHeAd(302, { LocAtion: `/?error=${encodeURIComponent(err && err.messAge || 'Unknown error')}` });
 					res.end();
-					reject(err.message);
+					reject(err.messAge);
 				}
-			} catch (e) {
-				Logger.error(e.message);
+			} cAtch (e) {
+				Logger.error(e.messAge);
 
-				// If the error was about starting the server, try directly hitting the login endpoint instead
-				if (e.message === 'Error listening to server' || e.message === 'Closed' || e.message === 'Timeout waiting for port') {
-					await this.loginWithoutLocalServer(scope);
+				// If the error wAs About stArting the server, try directly hitting the login endpoint insteAd
+				if (e.messAge === 'Error listening to server' || e.messAge === 'Closed' || e.messAge === 'Timeout wAiting for port') {
+					AwAit this.loginWithoutLocAlServer(scope);
 				}
 
-				reject(e.message);
-			} finally {
+				reject(e.messAge);
+			} finAlly {
 				setTimeout(() => {
 					server.close();
 				}, 5000);
@@ -342,84 +342,84 @@ export class AzureActiveDirectoryService {
 	}
 
 	public dispose(): void {
-		this._disposables.forEach(disposable => disposable.dispose());
-		this._disposables = [];
+		this._disposAbles.forEAch(disposAble => disposAble.dispose());
+		this._disposAbles = [];
 	}
 
-	private getCallbackEnvironment(callbackUri: vscode.Uri): string {
-		if (callbackUri.authority.endsWith('.workspaces.github.com') || callbackUri.authority.endsWith('.github.dev')) {
-			return `${callbackUri.authority},`;
+	privAte getCAllbAckEnvironment(cAllbAckUri: vscode.Uri): string {
+		if (cAllbAckUri.Authority.endsWith('.workspAces.github.com') || cAllbAckUri.Authority.endsWith('.github.dev')) {
+			return `${cAllbAckUri.Authority},`;
 		}
 
-		switch (callbackUri.authority) {
-			case 'online.visualstudio.com':
+		switch (cAllbAckUri.Authority) {
+			cAse 'online.visuAlstudio.com':
 				return 'vso,';
-			case 'online-ppe.core.vsengsaas.visualstudio.com':
+			cAse 'online-ppe.core.vsengsAAs.visuAlstudio.com':
 				return 'vsoppe,';
-			case 'online.dev.core.vsengsaas.visualstudio.com':
+			cAse 'online.dev.core.vsengsAAs.visuAlstudio.com':
 				return 'vsodev,';
-			default:
-				return `${callbackUri.scheme},`;
+			defAult:
+				return `${cAllbAckUri.scheme},`;
 		}
 	}
 
-	private async loginWithoutLocalServer(scope: string): Promise<vscode.AuthenticationSession> {
-		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.microsoft-authentication`));
-		const nonce = randomBytes(16).toString('base64');
-		const port = (callbackUri.authority.match(/:([0-9]*)$/) || [])[1] || (callbackUri.scheme === 'https' ? 443 : 80);
-		const callbackEnvironment = this.getCallbackEnvironment(callbackUri);
-		const state = `${callbackEnvironment}${port},${encodeURIComponent(nonce)},${encodeURIComponent(callbackUri.query)}`;
-		const signInUrl = `${loginEndpointUrl}${tenant}/oauth2/v2.0/authorize`;
-		let uri = vscode.Uri.parse(signInUrl);
-		const codeVerifier = toBase64UrlEncoding(randomBytes(32).toString('base64'));
-		const codeChallenge = toBase64UrlEncoding(await sha256(codeVerifier));
+	privAte Async loginWithoutLocAlServer(scope: string): Promise<vscode.AuthenticAtionSession> {
+		const cAllbAckUri = AwAit vscode.env.AsExternAlUri(vscode.Uri.pArse(`${vscode.env.uriScheme}://vscode.microsoft-AuthenticAtion`));
+		const nonce = rAndomBytes(16).toString('bAse64');
+		const port = (cAllbAckUri.Authority.mAtch(/:([0-9]*)$/) || [])[1] || (cAllbAckUri.scheme === 'https' ? 443 : 80);
+		const cAllbAckEnvironment = this.getCAllbAckEnvironment(cAllbAckUri);
+		const stAte = `${cAllbAckEnvironment}${port},${encodeURIComponent(nonce)},${encodeURIComponent(cAllbAckUri.query)}`;
+		const signInUrl = `${loginEndpointUrl}${tenAnt}/oAuth2/v2.0/Authorize`;
+		let uri = vscode.Uri.pArse(signInUrl);
+		const codeVerifier = toBAse64UrlEncoding(rAndomBytes(32).toString('bAse64'));
+		const codeChAllenge = toBAse64UrlEncoding(AwAit shA256(codeVerifier));
 		uri = uri.with({
-			query: `response_type=code&client_id=${encodeURIComponent(clientId)}&response_mode=query&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}&prompt=select_account&code_challenge_method=S256&code_challenge=${codeChallenge}`
+			query: `response_type=code&client_id=${encodeURIComponent(clientId)}&response_mode=query&redirect_uri=${redirectUrl}&stAte=${stAte}&scope=${scope}&prompt=select_Account&code_chAllenge_method=S256&code_chAllenge=${codeChAllenge}`
 		});
-		vscode.env.openExternal(uri);
+		vscode.env.openExternAl(uri);
 
-		const timeoutPromise = new Promise((_: (value: vscode.AuthenticationSession) => void, reject) => {
-			const wait = setTimeout(() => {
-				clearTimeout(wait);
+		const timeoutPromise = new Promise((_: (vAlue: vscode.AuthenticAtionSession) => void, reject) => {
+			const wAit = setTimeout(() => {
+				cleArTimeout(wAit);
 				reject('Login timed out.');
 			}, 1000 * 60 * 5);
 		});
 
-		return Promise.race([this.handleCodeResponse(state, codeVerifier, scope), timeoutPromise]);
+		return Promise.rAce([this.hAndleCodeResponse(stAte, codeVerifier, scope), timeoutPromise]);
 	}
 
-	private async handleCodeResponse(state: string, codeVerifier: string, scope: string): Promise<vscode.AuthenticationSession> {
-		let uriEventListener: vscode.Disposable;
-		return new Promise((resolve: (value: vscode.AuthenticationSession) => void, reject) => {
-			uriEventListener = this._uriHandler.event(async (uri: vscode.Uri) => {
+	privAte Async hAndleCodeResponse(stAte: string, codeVerifier: string, scope: string): Promise<vscode.AuthenticAtionSession> {
+		let uriEventListener: vscode.DisposAble;
+		return new Promise((resolve: (vAlue: vscode.AuthenticAtionSession) => void, reject) => {
+			uriEventListener = this._uriHAndler.event(Async (uri: vscode.Uri) => {
 				try {
-					const query = parseQuery(uri);
+					const query = pArseQuery(uri);
 					const code = query.code;
 
-					// Workaround double encoding issues of state in web
-					if (query.state !== state && decodeURIComponent(query.state) !== state) {
-						throw new Error('State does not match.');
+					// WorkAround double encoding issues of stAte in web
+					if (query.stAte !== stAte && decodeURIComponent(query.stAte) !== stAte) {
+						throw new Error('StAte does not mAtch.');
 					}
 
-					const token = await this.exchangeCodeForToken(code, codeVerifier, scope);
+					const token = AwAit this.exchAngeCodeForToken(code, codeVerifier, scope);
 					this.setToken(token, scope);
 
-					const session = await this.convertToSession(token);
+					const session = AwAit this.convertToSession(token);
 					resolve(session);
-				} catch (err) {
+				} cAtch (err) {
 					reject(err);
 				}
 			});
 		}).then(result => {
 			uriEventListener.dispose();
 			return result;
-		}).catch(err => {
+		}).cAtch(err => {
 			uriEventListener.dispose();
 			throw err;
 		});
 	}
 
-	private async setToken(token: IToken, scope: string): Promise<void> {
+	privAte Async setToken(token: IToken, scope: string): Promise<void> {
 		const existingTokenIndex = this._tokens.findIndex(t => t.sessionId === token.sessionId);
 		if (existingTokenIndex > -1) {
 			this._tokens.splice(existingTokenIndex, 1, token);
@@ -427,39 +427,39 @@ export class AzureActiveDirectoryService {
 			this._tokens.push(token);
 		}
 
-		this.clearSessionTimeout(token.sessionId);
+		this.cleArSessionTimeout(token.sessionId);
 
 		if (token.expiresIn) {
-			this._refreshTimeouts.set(token.sessionId, setTimeout(async () => {
+			this._refreshTimeouts.set(token.sessionId, setTimeout(Async () => {
 				try {
-					await this.refreshToken(token.refreshToken, scope, token.sessionId);
-					onDidChangeSessions.fire({ added: [], removed: [], changed: [token.sessionId] });
-				} catch (e) {
-					if (e.message === REFRESH_NETWORK_FAILURE) {
-						const didSucceedOnRetry = await this.handleRefreshNetworkError(token.sessionId, token.refreshToken, scope);
+					AwAit this.refreshToken(token.refreshToken, scope, token.sessionId);
+					onDidChAngeSessions.fire({ Added: [], removed: [], chAnged: [token.sessionId] });
+				} cAtch (e) {
+					if (e.messAge === REFRESH_NETWORK_FAILURE) {
+						const didSucceedOnRetry = AwAit this.hAndleRefreshNetworkError(token.sessionId, token.refreshToken, scope);
 						if (!didSucceedOnRetry) {
 							this.pollForReconnect(token.sessionId, token.refreshToken, token.scope);
 						}
 					} else {
-						await this.logout(token.sessionId);
-						onDidChangeSessions.fire({ added: [], removed: [token.sessionId], changed: [] });
+						AwAit this.logout(token.sessionId);
+						onDidChAngeSessions.fire({ Added: [], removed: [token.sessionId], chAnged: [] });
 					}
 				}
 			}, 1000 * (token.expiresIn - 30)));
 		}
 
-		this.storeTokenData();
+		this.storeTokenDAtA();
 	}
 
-	private getTokenFromResponse(json: ITokenResponse, scope: string, existingId?: string): IToken {
-		let claims = undefined;
+	privAte getTokenFromResponse(json: ITokenResponse, scope: string, existingId?: string): IToken {
+		let clAims = undefined;
 
 		try {
-			claims = this.getTokenClaims(json.access_token);
-		} catch (e) {
+			clAims = this.getTokenClAims(json.Access_token);
+		} cAtch (e) {
 			if (json.id_token) {
-				Logger.info('Failed to fetch token claims from access_token. Attempting to parse id_token instead');
-				claims = this.getTokenClaims(json.id_token);
+				Logger.info('FAiled to fetch token clAims from Access_token. Attempting to pArse id_token insteAd');
+				clAims = this.getTokenClAims(json.id_token);
 			} else {
 				throw e;
 			}
@@ -467,23 +467,23 @@ export class AzureActiveDirectoryService {
 
 		return {
 			expiresIn: json.expires_in,
-			expiresAt: json.expires_in ? Date.now() + json.expires_in * 1000 : undefined,
-			accessToken: json.access_token,
+			expiresAt: json.expires_in ? DAte.now() + json.expires_in * 1000 : undefined,
+			AccessToken: json.Access_token,
 			refreshToken: json.refresh_token,
 			scope,
-			sessionId: existingId || `${claims.tid}/${(claims.oid || (claims.altsecid || '' + claims.ipd || ''))}/${uuid()}`,
-			account: {
-				label: claims.email || claims.unique_name || claims.preferred_username || 'user@example.com',
-				id: `${claims.tid}/${(claims.oid || (claims.altsecid || '' + claims.ipd || ''))}`
+			sessionId: existingId || `${clAims.tid}/${(clAims.oid || (clAims.Altsecid || '' + clAims.ipd || ''))}/${uuid()}`,
+			Account: {
+				lAbel: clAims.emAil || clAims.unique_nAme || clAims.preferred_usernAme || 'user@exAmple.com',
+				id: `${clAims.tid}/${(clAims.oid || (clAims.Altsecid || '' + clAims.ipd || ''))}`
 			}
 		};
 	}
 
-	private async exchangeCodeForToken(code: string, codeVerifier: string, scope: string): Promise<IToken> {
-		Logger.info('Exchanging login code for token');
+	privAte Async exchAngeCodeForToken(code: string, codeVerifier: string, scope: string): Promise<IToken> {
+		Logger.info('ExchAnging login code for token');
 		try {
-			const postData = querystring.stringify({
-				grant_type: 'authorization_code',
+			const postDAtA = querystring.stringify({
+				grAnt_type: 'AuthorizAtion_code',
 				code: code,
 				client_id: clientId,
 				scope: scope,
@@ -491,152 +491,152 @@ export class AzureActiveDirectoryService {
 				redirect_uri: redirectUrl
 			});
 
-			const proxyEndpoints: { [providerId: string]: string } | undefined = await vscode.commands.executeCommand('workbench.getCodeExchangeProxyEndpoints');
-			const endpoint = proxyEndpoints && proxyEndpoints['microsoft'] || `${loginEndpointUrl}${tenant}/oauth2/v2.0/token`;
+			const proxyEndpoints: { [providerId: string]: string } | undefined = AwAit vscode.commAnds.executeCommAnd('workbench.getCodeExchAngeProxyEndpoints');
+			const endpoint = proxyEndpoints && proxyEndpoints['microsoft'] || `${loginEndpointUrl}${tenAnt}/oAuth2/v2.0/token`;
 
-			const result = await fetch(endpoint, {
+			const result = AwAit fetch(endpoint, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'Content-Length': postData.length.toString()
+				heAders: {
+					'Content-Type': 'ApplicAtion/x-www-form-urlencoded',
+					'Content-Length': postDAtA.length.toString()
 				},
-				body: postData
+				body: postDAtA
 			});
 
 			if (result.ok) {
-				Logger.info('Exchanging login code for token success');
-				const json = await result.json();
+				Logger.info('ExchAnging login code for token success');
+				const json = AwAit result.json();
 				return this.getTokenFromResponse(json, scope);
 			} else {
-				Logger.error('Exchanging login code for token failed');
-				throw new Error('Unable to login.');
+				Logger.error('ExchAnging login code for token fAiled');
+				throw new Error('UnAble to login.');
 			}
-		} catch (e) {
-			Logger.error(e.message);
+		} cAtch (e) {
+			Logger.error(e.messAge);
 			throw e;
 		}
 	}
 
-	private async refreshToken(refreshToken: string, scope: string, sessionId: string): Promise<IToken> {
+	privAte Async refreshToken(refreshToken: string, scope: string, sessionId: string): Promise<IToken> {
 		Logger.info('Refreshing token...');
-		const postData = querystring.stringify({
+		const postDAtA = querystring.stringify({
 			refresh_token: refreshToken,
 			client_id: clientId,
-			grant_type: 'refresh_token',
+			grAnt_type: 'refresh_token',
 			scope: scope
 		});
 
 		let result: Response;
 		try {
-			result = await fetch(`https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`, {
+			result = AwAit fetch(`https://login.microsoftonline.com/${tenAnt}/oAuth2/v2.0/token`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'Content-Length': postData.length.toString()
+				heAders: {
+					'Content-Type': 'ApplicAtion/x-www-form-urlencoded',
+					'Content-Length': postDAtA.length.toString()
 				},
-				body: postData
+				body: postDAtA
 			});
-		} catch (e) {
-			Logger.error('Refreshing token failed');
+		} cAtch (e) {
+			Logger.error('Refreshing token fAiled');
 			throw new Error(REFRESH_NETWORK_FAILURE);
 		}
 
 		try {
 			if (result.ok) {
-				const json = await result.json();
+				const json = AwAit result.json();
 				const token = this.getTokenFromResponse(json, scope, sessionId);
 				this.setToken(token, scope);
 				Logger.info('Token refresh success');
 				return token;
 			} else {
-				throw new Error('Bad request.');
+				throw new Error('BAd request.');
 			}
-		} catch (e) {
-			vscode.window.showErrorMessage(localize('signOut', "You have been signed out because reading stored authentication information failed."));
-			Logger.error(`Refreshing token failed: ${result.statusText}`);
-			throw new Error('Refreshing token failed');
+		} cAtch (e) {
+			vscode.window.showErrorMessAge(locAlize('signOut', "You hAve been signed out becAuse reAding stored AuthenticAtion informAtion fAiled."));
+			Logger.error(`Refreshing token fAiled: ${result.stAtusText}`);
+			throw new Error('Refreshing token fAiled');
 		}
 	}
 
-	private clearSessionTimeout(sessionId: string): void {
+	privAte cleArSessionTimeout(sessionId: string): void {
 		const timeout = this._refreshTimeouts.get(sessionId);
 		if (timeout) {
-			clearTimeout(timeout);
+			cleArTimeout(timeout);
 			this._refreshTimeouts.delete(sessionId);
 		}
 	}
 
-	private removeInMemorySessionData(sessionId: string) {
+	privAte removeInMemorySessionDAtA(sessionId: string) {
 		const tokenIndex = this._tokens.findIndex(token => token.sessionId === sessionId);
 		if (tokenIndex > -1) {
 			this._tokens.splice(tokenIndex, 1);
 		}
 
-		this.clearSessionTimeout(sessionId);
+		this.cleArSessionTimeout(sessionId);
 	}
 
-	private pollForReconnect(sessionId: string, refreshToken: string, scope: string): void {
-		this.clearSessionTimeout(sessionId);
+	privAte pollForReconnect(sessionId: string, refreshToken: string, scope: string): void {
+		this.cleArSessionTimeout(sessionId);
 
-		this._refreshTimeouts.set(sessionId, setTimeout(async () => {
+		this._refreshTimeouts.set(sessionId, setTimeout(Async () => {
 			try {
-				await this.refreshToken(refreshToken, scope, sessionId);
-			} catch (e) {
+				AwAit this.refreshToken(refreshToken, scope, sessionId);
+			} cAtch (e) {
 				this.pollForReconnect(sessionId, refreshToken, scope);
 			}
 		}, 1000 * 60 * 30));
 	}
 
-	private handleRefreshNetworkError(sessionId: string, refreshToken: string, scope: string, attempts: number = 1): Promise<boolean> {
+	privAte hAndleRefreshNetworkError(sessionId: string, refreshToken: string, scope: string, Attempts: number = 1): Promise<booleAn> {
 		return new Promise((resolve, _) => {
-			if (attempts === 3) {
-				Logger.error('Token refresh failed after 3 attempts');
-				return resolve(false);
+			if (Attempts === 3) {
+				Logger.error('Token refresh fAiled After 3 Attempts');
+				return resolve(fAlse);
 			}
 
-			if (attempts === 1) {
+			if (Attempts === 1) {
 				const token = this._tokens.find(token => token.sessionId === sessionId);
 				if (token) {
-					token.accessToken = undefined;
-					onDidChangeSessions.fire({ added: [], removed: [], changed: [token.sessionId] });
+					token.AccessToken = undefined;
+					onDidChAngeSessions.fire({ Added: [], removed: [], chAnged: [token.sessionId] });
 				}
 			}
 
-			const delayBeforeRetry = 5 * attempts * attempts;
+			const delAyBeforeRetry = 5 * Attempts * Attempts;
 
-			this.clearSessionTimeout(sessionId);
+			this.cleArSessionTimeout(sessionId);
 
-			this._refreshTimeouts.set(sessionId, setTimeout(async () => {
+			this._refreshTimeouts.set(sessionId, setTimeout(Async () => {
 				try {
-					await this.refreshToken(refreshToken, scope, sessionId);
+					AwAit this.refreshToken(refreshToken, scope, sessionId);
 					return resolve(true);
-				} catch (e) {
-					return resolve(await this.handleRefreshNetworkError(sessionId, refreshToken, scope, attempts + 1));
+				} cAtch (e) {
+					return resolve(AwAit this.hAndleRefreshNetworkError(sessionId, refreshToken, scope, Attempts + 1));
 				}
-			}, 1000 * delayBeforeRetry));
+			}, 1000 * delAyBeforeRetry));
 		});
 	}
 
-	public async logout(sessionId: string) {
+	public Async logout(sessionId: string) {
 		Logger.info(`Logging out of session '${sessionId}'`);
-		this.removeInMemorySessionData(sessionId);
+		this.removeInMemorySessionDAtA(sessionId);
 
 		if (this._tokens.length === 0) {
-			await keychain.deleteToken();
+			AwAit keychAin.deleteToken();
 		} else {
-			this.storeTokenData();
+			this.storeTokenDAtA();
 		}
 	}
 
-	public async clearSessions() {
-		Logger.info('Logging out of all sessions');
+	public Async cleArSessions() {
+		Logger.info('Logging out of All sessions');
 		this._tokens = [];
-		await keychain.deleteToken();
+		AwAit keychAin.deleteToken();
 
-		this._refreshTimeouts.forEach(timeout => {
-			clearTimeout(timeout);
+		this._refreshTimeouts.forEAch(timeout => {
+			cleArTimeout(timeout);
 		});
 
-		this._refreshTimeouts.clear();
+		this._refreshTimeouts.cleAr();
 	}
 }

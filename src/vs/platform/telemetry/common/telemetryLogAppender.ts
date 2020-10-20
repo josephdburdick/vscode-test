@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ILogger, ILoggerService } from 'vs/platform/log/common/log';
-import { ITelemetryAppender, validateTelemetryData } from 'vs/platform/telemetry/common/telemetryUtils';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { ILogger, ILoggerService } from 'vs/plAtform/log/common/log';
+import { ITelemetryAppender, vAlidAteTelemetryDAtA } from 'vs/plAtform/telemetry/common/telemetryUtils';
 
-export class TelemetryLogAppender extends Disposable implements ITelemetryAppender {
+export clAss TelemetryLogAppender extends DisposAble implements ITelemetryAppender {
 
-	private commonPropertiesRegex = /^sessionID$|^version$|^timestamp$|^commitHash$|^common\./;
-	private readonly logger: ILogger;
+	privAte commonPropertiesRegex = /^sessionID$|^version$|^timestAmp$|^commitHAsh$|^common\./;
+	privAte reAdonly logger: ILogger;
 
 	constructor(
 		@ILoggerService loggerService: ILoggerService,
@@ -19,23 +19,23 @@ export class TelemetryLogAppender extends Disposable implements ITelemetryAppend
 	) {
 		super();
 		this.logger = this._register(loggerService.getLogger(environmentService.telemetryLogResource));
-		this.logger.info('The below are logs for every telemetry event sent from VS Code once the log level is set to trace.');
+		this.logger.info('The below Are logs for every telemetry event sent from VS Code once the log level is set to trAce.');
 		this.logger.info('===========================================================');
 	}
 
-	flush(): Promise<any> {
+	flush(): Promise<Any> {
 		return Promise.resolve(undefined);
 	}
 
-	log(eventName: string, data: any): void {
-		let strippedData: { [key: string]: any } = {};
-		Object.keys(data).forEach(key => {
+	log(eventNAme: string, dAtA: Any): void {
+		let strippedDAtA: { [key: string]: Any } = {};
+		Object.keys(dAtA).forEAch(key => {
 			if (!this.commonPropertiesRegex.test(key)) {
-				strippedData[key] = data[key];
+				strippedDAtA[key] = dAtA[key];
 			}
 		});
-		strippedData = validateTelemetryData(strippedData);
-		this.logger.trace(`telemetry/${eventName}`, strippedData);
+		strippedDAtA = vAlidAteTelemetryDAtA(strippedDAtA);
+		this.logger.trAce(`telemetry/${eventNAme}`, strippedDAtA);
 	}
 }
 

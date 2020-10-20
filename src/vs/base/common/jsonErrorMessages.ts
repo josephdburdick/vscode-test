@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Extracted from json.ts to keep json nls free.
+ * ExtrActed from json.ts to keep json nls free.
  */
-import { localize } from 'vs/nls';
-import { ParseErrorCode } from './json';
+import { locAlize } from 'vs/nls';
+import { PArseErrorCode } from './json';
 
-export function getParseErrorMessage(errorCode: ParseErrorCode): string {
+export function getPArseErrorMessAge(errorCode: PArseErrorCode): string {
 	switch (errorCode) {
-		case ParseErrorCode.InvalidSymbol: return localize('error.invalidSymbol', 'Invalid symbol');
-		case ParseErrorCode.InvalidNumberFormat: return localize('error.invalidNumberFormat', 'Invalid number format');
-		case ParseErrorCode.PropertyNameExpected: return localize('error.propertyNameExpected', 'Property name expected');
-		case ParseErrorCode.ValueExpected: return localize('error.valueExpected', 'Value expected');
-		case ParseErrorCode.ColonExpected: return localize('error.colonExpected', 'Colon expected');
-		case ParseErrorCode.CommaExpected: return localize('error.commaExpected', 'Comma expected');
-		case ParseErrorCode.CloseBraceExpected: return localize('error.closeBraceExpected', 'Closing brace expected');
-		case ParseErrorCode.CloseBracketExpected: return localize('error.closeBracketExpected', 'Closing bracket expected');
-		case ParseErrorCode.EndOfFileExpected: return localize('error.endOfFileExpected', 'End of file expected');
-		default:
+		cAse PArseErrorCode.InvAlidSymbol: return locAlize('error.invAlidSymbol', 'InvAlid symbol');
+		cAse PArseErrorCode.InvAlidNumberFormAt: return locAlize('error.invAlidNumberFormAt', 'InvAlid number formAt');
+		cAse PArseErrorCode.PropertyNAmeExpected: return locAlize('error.propertyNAmeExpected', 'Property nAme expected');
+		cAse PArseErrorCode.VAlueExpected: return locAlize('error.vAlueExpected', 'VAlue expected');
+		cAse PArseErrorCode.ColonExpected: return locAlize('error.colonExpected', 'Colon expected');
+		cAse PArseErrorCode.CommAExpected: return locAlize('error.commAExpected', 'CommA expected');
+		cAse PArseErrorCode.CloseBrAceExpected: return locAlize('error.closeBrAceExpected', 'Closing brAce expected');
+		cAse PArseErrorCode.CloseBrAcketExpected: return locAlize('error.closeBrAcketExpected', 'Closing brAcket expected');
+		cAse PArseErrorCode.EndOfFileExpected: return locAlize('error.endOfFileExpected', 'End of file expected');
+		defAult:
 			return '';
 	}
 }

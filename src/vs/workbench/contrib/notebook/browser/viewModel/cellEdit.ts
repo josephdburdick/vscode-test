@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { CellKind, IProcessedOutput, NotebookCellMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { IResourceUndoRedoElement, UndoRedoElementType } from 'vs/platform/undoRedo/common/undoRedo';
-import { URI } from 'vs/base/common/uri';
-import { BaseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/baseCellViewModel';
+import { CellKind, IProcessedOutput, NotebookCellMetAdAtA } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { IResourceUndoRedoElement, UndoRedoElementType } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { URI } from 'vs/bAse/common/uri';
+import { BAseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/bAseCellViewModel';
 import { CellFocusMode } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { ITextCellEditingDelegate } from 'vs/workbench/contrib/notebook/common/model/cellEdit';
+import { ITextCellEditingDelegAte } from 'vs/workbench/contrib/notebook/common/model/cellEdit';
 
 
-export interface IViewCellEditingDelegate extends ITextCellEditingDelegate {
-	createCellViewModel?(cell: NotebookCellTextModel): BaseCellViewModel;
-	createCell?(index: number, source: string, language: string, type: CellKind, metadata: NotebookCellMetadata | undefined, outputs: IProcessedOutput[]): BaseCellViewModel;
+export interfAce IViewCellEditingDelegAte extends ITextCellEditingDelegAte {
+	creAteCellViewModel?(cell: NotebookCellTextModel): BAseCellViewModel;
+	creAteCell?(index: number, source: string, lAnguAge: string, type: CellKind, metAdAtA: NotebookCellMetAdAtA | undefined, outputs: IProcessedOutput[]): BAseCellViewModel;
 }
 
-export class JoinCellEdit implements IResourceUndoRedoElement {
+export clAss JoinCellEdit implements IResourceUndoRedoElement {
 	type: UndoRedoElementType.Resource = UndoRedoElementType.Resource;
-	label: string = 'Join Cell';
-	private _deletedRawCell: NotebookCellTextModel;
+	lAbel: string = 'Join Cell';
+	privAte _deletedRAwCell: NotebookCellTextModel;
 	constructor(
 		public resource: URI,
-		private index: number,
-		private direction: 'above' | 'below',
-		private cell: BaseCellViewModel,
-		private selections: Selection[],
-		private inverseRange: Range,
-		private insertContent: string,
-		private removedCell: BaseCellViewModel,
-		private editingDelegate: IViewCellEditingDelegate,
+		privAte index: number,
+		privAte direction: 'Above' | 'below',
+		privAte cell: BAseCellViewModel,
+		privAte selections: Selection[],
+		privAte inverseRAnge: RAnge,
+		privAte insertContent: string,
+		privAte removedCell: BAseCellViewModel,
+		privAte editingDelegAte: IViewCellEditingDelegAte,
 	) {
-		this._deletedRawCell = this.removedCell.model;
+		this._deletedRAwCell = this.removedCell.model;
 	}
 
-	async undo(): Promise<void> {
-		if (!this.editingDelegate.insertCell || !this.editingDelegate.createCellViewModel) {
+	Async undo(): Promise<void> {
+		if (!this.editingDelegAte.insertCell || !this.editingDelegAte.creAteCellViewModel) {
 			throw new Error('Notebook Insert Cell not implemented for Undo/Redo');
 		}
 
-		await this.cell.resolveTextModel();
+		AwAit this.cell.resolveTextModel();
 
-		this.cell.textModel?.applyEdits([
-			{ range: this.inverseRange, text: '' }
+		this.cell.textModel?.ApplyEdits([
+			{ rAnge: this.inverseRAnge, text: '' }
 		]);
 
 		this.cell.setSelections(this.selections);
 
-		const cell = this.editingDelegate.createCellViewModel(this._deletedRawCell);
-		if (this.direction === 'above') {
-			this.editingDelegate.insertCell(this.index, this._deletedRawCell, [cell.handle]);
+		const cell = this.editingDelegAte.creAteCellViewModel(this._deletedRAwCell);
+		if (this.direction === 'Above') {
+			this.editingDelegAte.insertCell(this.index, this._deletedRAwCell, [cell.hAndle]);
 			cell.focusMode = CellFocusMode.Editor;
 		} else {
-			this.editingDelegate.insertCell(this.index, cell.model, [this.cell.handle]);
+			this.editingDelegAte.insertCell(this.index, cell.model, [this.cell.hAndle]);
 			this.cell.focusMode = CellFocusMode.Editor;
 		}
 	}
 
-	async redo(): Promise<void> {
-		if (!this.editingDelegate.deleteCell) {
+	Async redo(): Promise<void> {
+		if (!this.editingDelegAte.deleteCell) {
 			throw new Error('Notebook Delete Cell not implemented for Undo/Redo');
 		}
 
-		await this.cell.resolveTextModel();
-		this.cell.textModel?.applyEdits([
-			{ range: this.inverseRange, text: this.insertContent }
+		AwAit this.cell.resolveTextModel();
+		this.cell.textModel?.ApplyEdits([
+			{ rAnge: this.inverseRAnge, text: this.insertContent }
 		]);
 
-		this.editingDelegate.deleteCell(this.index, [this.cell.handle]);
+		this.editingDelegAte.deleteCell(this.index, [this.cell.hAndle]);
 		this.cell.focusMode = CellFocusMode.Editor;
 	}
 }

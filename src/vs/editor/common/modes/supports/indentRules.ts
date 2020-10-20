@@ -1,9 +1,9 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IndentationRule } from 'vs/editor/common/modes/languageConfiguration';
+import { IndentAtionRule } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 
 export const enum IndentConsts {
 	INCREASE_MASK = 0b00000001,
@@ -12,56 +12,56 @@ export const enum IndentConsts {
 	UNINDENT_MASK = 0b00001000,
 }
 
-export class IndentRulesSupport {
+export clAss IndentRulesSupport {
 
-	private readonly _indentationRules: IndentationRule;
+	privAte reAdonly _indentAtionRules: IndentAtionRule;
 
-	constructor(indentationRules: IndentationRule) {
-		this._indentationRules = indentationRules;
+	constructor(indentAtionRules: IndentAtionRule) {
+		this._indentAtionRules = indentAtionRules;
 	}
 
-	public shouldIncrease(text: string): boolean {
-		if (this._indentationRules) {
-			if (this._indentationRules.increaseIndentPattern && this._indentationRules.increaseIndentPattern.test(text)) {
+	public shouldIncreAse(text: string): booleAn {
+		if (this._indentAtionRules) {
+			if (this._indentAtionRules.increAseIndentPAttern && this._indentAtionRules.increAseIndentPAttern.test(text)) {
 				return true;
 			}
-			// if (this._indentationRules.indentNextLinePattern && this._indentationRules.indentNextLinePattern.test(text)) {
+			// if (this._indentAtionRules.indentNextLinePAttern && this._indentAtionRules.indentNextLinePAttern.test(text)) {
 			// 	return true;
 			// }
 		}
-		return false;
+		return fAlse;
 	}
 
-	public shouldDecrease(text: string): boolean {
-		if (this._indentationRules && this._indentationRules.decreaseIndentPattern && this._indentationRules.decreaseIndentPattern.test(text)) {
+	public shouldDecreAse(text: string): booleAn {
+		if (this._indentAtionRules && this._indentAtionRules.decreAseIndentPAttern && this._indentAtionRules.decreAseIndentPAttern.test(text)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	public shouldIndentNextLine(text: string): boolean {
-		if (this._indentationRules && this._indentationRules.indentNextLinePattern && this._indentationRules.indentNextLinePattern.test(text)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public shouldIgnore(text: string): boolean {
-		// the text matches `unIndentedLinePattern`
-		if (this._indentationRules && this._indentationRules.unIndentedLinePattern && this._indentationRules.unIndentedLinePattern.test(text)) {
+	public shouldIndentNextLine(text: string): booleAn {
+		if (this._indentAtionRules && this._indentAtionRules.indentNextLinePAttern && this._indentAtionRules.indentNextLinePAttern.test(text)) {
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	public getIndentMetadata(text: string): number {
+	public shouldIgnore(text: string): booleAn {
+		// the text mAtches `unIndentedLinePAttern`
+		if (this._indentAtionRules && this._indentAtionRules.unIndentedLinePAttern && this._indentAtionRules.unIndentedLinePAttern.test(text)) {
+			return true;
+		}
+
+		return fAlse;
+	}
+
+	public getIndentMetAdAtA(text: string): number {
 		let ret = 0;
-		if (this.shouldIncrease(text)) {
+		if (this.shouldIncreAse(text)) {
 			ret += IndentConsts.INCREASE_MASK;
 		}
-		if (this.shouldDecrease(text)) {
+		if (this.shouldDecreAse(text)) {
 			ret += IndentConsts.DECREASE_MASK;
 		}
 		if (this.shouldIndentNextLine(text)) {

@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isUndefinedOrNull } from 'vs/base/common/types';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { isUndefinedOrNull } from 'vs/bAse/common/types';
+import { ProgressBAr } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IProgressRunner, IProgressIndicator, emptyProgressRunner } from 'vs/platform/progress/common/progress';
-import { IEditorGroupView } from 'vs/workbench/browser/parts/editor/editor';
+import { IPAnelService } from 'vs/workbench/services/pAnel/common/pAnelService';
+import { IProgressRunner, IProgressIndicAtor, emptyProgressRunner } from 'vs/plAtform/progress/common/progress';
+import { IEditorGroupView } from 'vs/workbench/browser/pArts/editor/editor';
 import { IViewsService } from 'vs/workbench/common/views';
 
-export class ProgressBarIndicator extends Disposable implements IProgressIndicator {
+export clAss ProgressBArIndicAtor extends DisposAble implements IProgressIndicAtor {
 
-	constructor(protected progressbar: ProgressBar) {
+	constructor(protected progressbAr: ProgressBAr) {
 		super();
 	}
 
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
-	show(infiniteOrTotal: true | number, delay?: number): IProgressRunner {
-		if (typeof infiniteOrTotal === 'boolean') {
-			this.progressbar.infinite().show(delay);
+	show(infinite: true, delAy?: number): IProgressRunner;
+	show(totAl: number, delAy?: number): IProgressRunner;
+	show(infiniteOrTotAl: true | number, delAy?: number): IProgressRunner {
+		if (typeof infiniteOrTotAl === 'booleAn') {
+			this.progressbAr.infinite().show(delAy);
 		} else {
-			this.progressbar.total(infiniteOrTotal).show(delay);
+			this.progressbAr.totAl(infiniteOrTotAl).show(delAy);
 		}
 
 		return {
-			total: (total: number) => {
-				this.progressbar.total(total);
+			totAl: (totAl: number) => {
+				this.progressbAr.totAl(totAl);
 			},
 
 			worked: (worked: number) => {
-				if (this.progressbar.hasTotal()) {
-					this.progressbar.worked(worked);
+				if (this.progressbAr.hAsTotAl()) {
+					this.progressbAr.worked(worked);
 				} else {
-					this.progressbar.infinite().show();
+					this.progressbAr.infinite().show();
 				}
 			},
 
 			done: () => {
-				this.progressbar.stop().hide();
+				this.progressbAr.stop().hide();
 			}
 		};
 	}
 
-	async showWhile(promise: Promise<unknown>, delay?: number): Promise<void> {
+	Async showWhile(promise: Promise<unknown>, delAy?: number): Promise<void> {
 		try {
-			this.progressbar.infinite().show(delay);
+			this.progressbAr.infinite().show(delAy);
 
-			await promise;
-		} catch (error) {
+			AwAit promise;
+		} cAtch (error) {
 			// ignore
-		} finally {
-			this.progressbar.stop().hide();
+		} finAlly {
+			this.progressbAr.stop().hide();
 		}
 	}
 }
 
-export class EditorProgressIndicator extends ProgressBarIndicator {
+export clAss EditorProgressIndicAtor extends ProgressBArIndicAtor {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(progressBar: ProgressBar, private readonly group: IEditorGroupView) {
-		super(progressBar);
+	constructor(progressBAr: ProgressBAr, privAte reAdonly group: IEditorGroupView) {
+		super(progressBAr);
 
 		this.registerListeners();
 	}
 
-	private registerListeners() {
+	privAte registerListeners() {
 		this._register(this.group.onDidCloseEditor(e => {
 			if (this.group.isEmpty) {
-				this.progressbar.stop().hide();
+				this.progressbAr.stop().hide();
 			}
 		}));
 	}
 
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
-	show(infiniteOrTotal: true | number, delay?: number): IProgressRunner {
+	show(infinite: true, delAy?: number): IProgressRunner;
+	show(totAl: number, delAy?: number): IProgressRunner;
+	show(infiniteOrTotAl: true | number, delAy?: number): IProgressRunner {
 
-		// No editor open: ignore any progress reporting
+		// No editor open: ignore Any progress reporting
 		if (this.group.isEmpty) {
 			return emptyProgressRunner;
 		}
 
-		if (infiniteOrTotal === true) {
-			return super.show(true, delay);
+		if (infiniteOrTotAl === true) {
+			return super.show(true, delAy);
 		}
 
-		return super.show(infiniteOrTotal, delay);
+		return super.show(infiniteOrTotAl, delAy);
 	}
 
-	async showWhile(promise: Promise<unknown>, delay?: number): Promise<void> {
+	Async showWhile(promise: Promise<unknown>, delAy?: number): Promise<void> {
 
-		// No editor open: ignore any progress reporting
+		// No editor open: ignore Any progress reporting
 		if (this.group.isEmpty) {
 			try {
-				await promise;
-			} catch (error) {
+				AwAit promise;
+			} cAtch (error) {
 				// ignore
 			}
 		}
 
-		return super.showWhile(promise, delay);
+		return super.showWhile(promise, delAy);
 	}
 }
 
-namespace ProgressIndicatorState {
+nAmespAce ProgressIndicAtorStAte {
 
 	export const enum Type {
 		None,
@@ -118,30 +118,30 @@ namespace ProgressIndicatorState {
 		Work
 	}
 
-	export const None = { type: Type.None } as const;
-	export const Done = { type: Type.Done } as const;
-	export const Infinite = { type: Type.Infinite } as const;
+	export const None = { type: Type.None } As const;
+	export const Done = { type: Type.Done } As const;
+	export const Infinite = { type: Type.Infinite } As const;
 
-	export class While {
-		readonly type = Type.While;
+	export clAss While {
+		reAdonly type = Type.While;
 
 		constructor(
-			readonly whilePromise: Promise<unknown>,
-			readonly whileStart: number,
-			readonly whileDelay: number,
+			reAdonly whilePromise: Promise<unknown>,
+			reAdonly whileStArt: number,
+			reAdonly whileDelAy: number,
 		) { }
 	}
 
-	export class Work {
-		readonly type = Type.Work;
+	export clAss Work {
+		reAdonly type = Type.Work;
 
 		constructor(
-			readonly total: number | undefined,
-			readonly worked: number | undefined
+			reAdonly totAl: number | undefined,
+			reAdonly worked: number | undefined
 		) { }
 	}
 
-	export type State =
+	export type StAte =
 		typeof None
 		| typeof Done
 		| typeof Infinite
@@ -149,13 +149,13 @@ namespace ProgressIndicatorState {
 		| Work;
 }
 
-export abstract class CompositeScope extends Disposable {
+export AbstrAct clAss CompositeScope extends DisposAble {
 
 	constructor(
-		private viewletService: IViewletService,
-		private panelService: IPanelService,
-		private viewsService: IViewsService,
-		private scopeId: string
+		privAte viewletService: IViewletService,
+		privAte pAnelService: IPAnelService,
+		privAte viewsService: IViewsService,
+		privAte scopeId: string
 	) {
 		super();
 
@@ -163,197 +163,197 @@ export abstract class CompositeScope extends Disposable {
 	}
 
 	registerListeners(): void {
-		this._register(this.viewsService.onDidChangeViewVisibility(e => e.visible ? this.onScopeOpened(e.id) : this.onScopeClosed(e.id)));
+		this._register(this.viewsService.onDidChAngeViewVisibility(e => e.visible ? this.onScopeOpened(e.id) : this.onScopeClosed(e.id)));
 
 		this._register(this.viewletService.onDidViewletOpen(viewlet => this.onScopeOpened(viewlet.getId())));
-		this._register(this.panelService.onDidPanelOpen(({ panel }) => this.onScopeOpened(panel.getId())));
+		this._register(this.pAnelService.onDidPAnelOpen(({ pAnel }) => this.onScopeOpened(pAnel.getId())));
 
 		this._register(this.viewletService.onDidViewletClose(viewlet => this.onScopeClosed(viewlet.getId())));
-		this._register(this.panelService.onDidPanelClose(panel => this.onScopeClosed(panel.getId())));
+		this._register(this.pAnelService.onDidPAnelClose(pAnel => this.onScopeClosed(pAnel.getId())));
 	}
 
-	private onScopeClosed(scopeId: string) {
+	privAte onScopeClosed(scopeId: string) {
 		if (scopeId === this.scopeId) {
-			this.onScopeDeactivated();
+			this.onScopeDeActivAted();
 		}
 	}
 
-	private onScopeOpened(scopeId: string) {
+	privAte onScopeOpened(scopeId: string) {
 		if (scopeId === this.scopeId) {
-			this.onScopeActivated();
+			this.onScopeActivAted();
 		}
 	}
 
-	abstract onScopeActivated(): void;
+	AbstrAct onScopeActivAted(): void;
 
-	abstract onScopeDeactivated(): void;
+	AbstrAct onScopeDeActivAted(): void;
 }
 
-export class CompositeProgressIndicator extends CompositeScope implements IProgressIndicator {
-	private isActive: boolean;
-	private progressbar: ProgressBar;
-	private progressState: ProgressIndicatorState.State = ProgressIndicatorState.None;
+export clAss CompositeProgressIndicAtor extends CompositeScope implements IProgressIndicAtor {
+	privAte isActive: booleAn;
+	privAte progressbAr: ProgressBAr;
+	privAte progressStAte: ProgressIndicAtorStAte.StAte = ProgressIndicAtorStAte.None;
 
 	constructor(
-		progressbar: ProgressBar,
+		progressbAr: ProgressBAr,
 		scopeId: string,
-		isActive: boolean,
+		isActive: booleAn,
 		@IViewletService viewletService: IViewletService,
-		@IPanelService panelService: IPanelService,
+		@IPAnelService pAnelService: IPAnelService,
 		@IViewsService viewsService: IViewsService
 	) {
-		super(viewletService, panelService, viewsService, scopeId);
+		super(viewletService, pAnelService, viewsService, scopeId);
 
-		this.progressbar = progressbar;
-		this.isActive = isActive || isUndefinedOrNull(scopeId); // If service is unscoped, enable by default
+		this.progressbAr = progressbAr;
+		this.isActive = isActive || isUndefinedOrNull(scopeId); // If service is unscoped, enAble by defAult
 	}
 
-	onScopeDeactivated(): void {
-		this.isActive = false;
+	onScopeDeActivAted(): void {
+		this.isActive = fAlse;
 
-		this.progressbar.stop().hide();
+		this.progressbAr.stop().hide();
 	}
 
-	onScopeActivated(): void {
+	onScopeActivAted(): void {
 		this.isActive = true;
 
-		// Return early if progress state indicates that progress is done
-		if (this.progressState.type === ProgressIndicatorState.Done.type) {
+		// Return eArly if progress stAte indicAtes thAt progress is done
+		if (this.progressStAte.type === ProgressIndicAtorStAte.Done.type) {
 			return;
 		}
 
-		// Replay Infinite Progress from Promise
-		if (this.progressState.type === ProgressIndicatorState.Type.While) {
-			let delay: number | undefined;
-			if (this.progressState.whileDelay > 0) {
-				const remainingDelay = this.progressState.whileDelay - (Date.now() - this.progressState.whileStart);
-				if (remainingDelay > 0) {
-					delay = remainingDelay;
+		// ReplAy Infinite Progress from Promise
+		if (this.progressStAte.type === ProgressIndicAtorStAte.Type.While) {
+			let delAy: number | undefined;
+			if (this.progressStAte.whileDelAy > 0) {
+				const remAiningDelAy = this.progressStAte.whileDelAy - (DAte.now() - this.progressStAte.whileStArt);
+				if (remAiningDelAy > 0) {
+					delAy = remAiningDelAy;
 				}
 			}
 
-			this.doShowWhile(delay);
+			this.doShowWhile(delAy);
 		}
 
-		// Replay Infinite Progress
-		else if (this.progressState.type === ProgressIndicatorState.Type.Infinite) {
-			this.progressbar.infinite().show();
+		// ReplAy Infinite Progress
+		else if (this.progressStAte.type === ProgressIndicAtorStAte.Type.Infinite) {
+			this.progressbAr.infinite().show();
 		}
 
-		// Replay Finite Progress (Total & Worked)
-		else if (this.progressState.type === ProgressIndicatorState.Type.Work) {
-			if (this.progressState.total) {
-				this.progressbar.total(this.progressState.total).show();
+		// ReplAy Finite Progress (TotAl & Worked)
+		else if (this.progressStAte.type === ProgressIndicAtorStAte.Type.Work) {
+			if (this.progressStAte.totAl) {
+				this.progressbAr.totAl(this.progressStAte.totAl).show();
 			}
 
-			if (this.progressState.worked) {
-				this.progressbar.worked(this.progressState.worked).show();
+			if (this.progressStAte.worked) {
+				this.progressbAr.worked(this.progressStAte.worked).show();
 			}
 		}
 	}
 
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
-	show(infiniteOrTotal: true | number, delay?: number): IProgressRunner {
+	show(infinite: true, delAy?: number): IProgressRunner;
+	show(totAl: number, delAy?: number): IProgressRunner;
+	show(infiniteOrTotAl: true | number, delAy?: number): IProgressRunner {
 
 		// Sort out Arguments
-		if (typeof infiniteOrTotal === 'boolean') {
-			this.progressState = ProgressIndicatorState.Infinite;
+		if (typeof infiniteOrTotAl === 'booleAn') {
+			this.progressStAte = ProgressIndicAtorStAte.Infinite;
 		} else {
-			this.progressState = new ProgressIndicatorState.Work(infiniteOrTotal, undefined);
+			this.progressStAte = new ProgressIndicAtorStAte.Work(infiniteOrTotAl, undefined);
 		}
 
 		// Active: Show Progress
 		if (this.isActive) {
 
-			// Infinite: Start Progressbar and Show after Delay
-			if (this.progressState.type === ProgressIndicatorState.Type.Infinite) {
-				this.progressbar.infinite().show(delay);
+			// Infinite: StArt ProgressbAr And Show After DelAy
+			if (this.progressStAte.type === ProgressIndicAtorStAte.Type.Infinite) {
+				this.progressbAr.infinite().show(delAy);
 			}
 
-			// Finite: Start Progressbar and Show after Delay
-			else if (this.progressState.type === ProgressIndicatorState.Type.Work && typeof this.progressState.total === 'number') {
-				this.progressbar.total(this.progressState.total).show(delay);
+			// Finite: StArt ProgressbAr And Show After DelAy
+			else if (this.progressStAte.type === ProgressIndicAtorStAte.Type.Work && typeof this.progressStAte.totAl === 'number') {
+				this.progressbAr.totAl(this.progressStAte.totAl).show(delAy);
 			}
 		}
 
 		return {
-			total: (total: number) => {
-				this.progressState = new ProgressIndicatorState.Work(
-					total,
-					this.progressState.type === ProgressIndicatorState.Type.Work ? this.progressState.worked : undefined);
+			totAl: (totAl: number) => {
+				this.progressStAte = new ProgressIndicAtorStAte.Work(
+					totAl,
+					this.progressStAte.type === ProgressIndicAtorStAte.Type.Work ? this.progressStAte.worked : undefined);
 
 				if (this.isActive) {
-					this.progressbar.total(total);
+					this.progressbAr.totAl(totAl);
 				}
 			},
 
 			worked: (worked: number) => {
 
-				// Verify first that we are either not active or the progressbar has a total set
-				if (!this.isActive || this.progressbar.hasTotal()) {
-					this.progressState = new ProgressIndicatorState.Work(
-						this.progressState.type === ProgressIndicatorState.Type.Work ? this.progressState.total : undefined,
-						this.progressState.type === ProgressIndicatorState.Type.Work && typeof this.progressState.worked === 'number' ? this.progressState.worked + worked : worked);
+				// Verify first thAt we Are either not Active or the progressbAr hAs A totAl set
+				if (!this.isActive || this.progressbAr.hAsTotAl()) {
+					this.progressStAte = new ProgressIndicAtorStAte.Work(
+						this.progressStAte.type === ProgressIndicAtorStAte.Type.Work ? this.progressStAte.totAl : undefined,
+						this.progressStAte.type === ProgressIndicAtorStAte.Type.Work && typeof this.progressStAte.worked === 'number' ? this.progressStAte.worked + worked : worked);
 
 					if (this.isActive) {
-						this.progressbar.worked(worked);
+						this.progressbAr.worked(worked);
 					}
 				}
 
-				// Otherwise the progress bar does not support worked(), we fallback to infinite() progress
+				// Otherwise the progress bAr does not support worked(), we fAllbAck to infinite() progress
 				else {
-					this.progressState = ProgressIndicatorState.Infinite;
-					this.progressbar.infinite().show();
+					this.progressStAte = ProgressIndicAtorStAte.Infinite;
+					this.progressbAr.infinite().show();
 				}
 			},
 
 			done: () => {
-				this.progressState = ProgressIndicatorState.Done;
+				this.progressStAte = ProgressIndicAtorStAte.Done;
 
 				if (this.isActive) {
-					this.progressbar.stop().hide();
+					this.progressbAr.stop().hide();
 				}
 			}
 		};
 	}
 
-	async showWhile(promise: Promise<unknown>, delay?: number): Promise<void> {
+	Async showWhile(promise: Promise<unknown>, delAy?: number): Promise<void> {
 
-		// Join with existing running promise to ensure progress is accurate
-		if (this.progressState.type === ProgressIndicatorState.Type.While) {
-			promise = Promise.all([promise, this.progressState.whilePromise]);
+		// Join with existing running promise to ensure progress is AccurAte
+		if (this.progressStAte.type === ProgressIndicAtorStAte.Type.While) {
+			promise = Promise.All([promise, this.progressStAte.whilePromise]);
 		}
 
-		// Keep Promise in State
-		this.progressState = new ProgressIndicatorState.While(promise, delay || 0, Date.now());
+		// Keep Promise in StAte
+		this.progressStAte = new ProgressIndicAtorStAte.While(promise, delAy || 0, DAte.now());
 
 		try {
-			this.doShowWhile(delay);
+			this.doShowWhile(delAy);
 
-			await promise;
-		} catch (error) {
+			AwAit promise;
+		} cAtch (error) {
 			// ignore
-		} finally {
+		} finAlly {
 
-			// If this is not the last promise in the list of joined promises, skip this
-			if (this.progressState.type !== ProgressIndicatorState.Type.While || this.progressState.whilePromise === promise) {
+			// If this is not the lAst promise in the list of joined promises, skip this
+			if (this.progressStAte.type !== ProgressIndicAtorStAte.Type.While || this.progressStAte.whilePromise === promise) {
 
-				// The while promise is either null or equal the promise we last hooked on
-				this.progressState = ProgressIndicatorState.None;
+				// The while promise is either null or equAl the promise we lAst hooked on
+				this.progressStAte = ProgressIndicAtorStAte.None;
 
 				if (this.isActive) {
-					this.progressbar.stop().hide();
+					this.progressbAr.stop().hide();
 				}
 			}
 		}
 	}
 
-	private doShowWhile(delay?: number): void {
+	privAte doShowWhile(delAy?: number): void {
 
-		// Show Progress when active
+		// Show Progress when Active
 		if (this.isActive) {
-			this.progressbar.infinite().show(delay);
+			this.progressbAr.infinite().show(delAy);
 		}
 	}
 }

@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { AzureActiveDirectoryService, onDidChangeSessions } from './AADHelper';
+import * As vscode from 'vscode';
+import { AzureActiveDirectoryService, onDidChAngeSessions } from './AADHelper';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
-export const DEFAULT_SCOPES = 'https://management.core.windows.net/.default offline_access';
+export const DEFAULT_SCOPES = 'https://mAnAgement.core.windows.net/.defAult offline_Access';
 
-export async function activate(context: vscode.ExtensionContext) {
-	const { name, version, aiKey } = require('../package.json') as { name: string, version: string, aiKey: string };
-	const telemetryReporter = new TelemetryReporter(name, version, aiKey);
+export Async function ActivAte(context: vscode.ExtensionContext) {
+	const { nAme, version, AiKey } = require('../pAckAge.json') As { nAme: string, version: string, AiKey: string };
+	const telemetryReporter = new TelemetryReporter(nAme, version, AiKey);
 
 	const loginService = new AzureActiveDirectoryService();
 	context.subscriptions.push(loginService);
 
-	await loginService.initialize();
+	AwAit loginService.initiAlize();
 
-	context.subscriptions.push(vscode.authentication.registerAuthenticationProvider({
+	context.subscriptions.push(vscode.AuthenticAtion.registerAuthenticAtionProvider({
 		id: 'microsoft',
-		label: 'Microsoft',
+		lAbel: 'Microsoft',
 		supportsMultipleAccounts: true,
-		onDidChangeSessions: onDidChangeSessions.event,
+		onDidChAngeSessions: onDidChAngeSessions.event,
 		getSessions: () => Promise.resolve(loginService.sessions),
-		login: async (scopes: string[]) => {
+		login: Async (scopes: string[]) => {
 			try {
 				/* __GDPR__
 					"login" : { }
 				*/
 				telemetryReporter.sendTelemetryEvent('login');
 
-				const session = await loginService.login(scopes.sort().join(' '));
-				onDidChangeSessions.fire({ added: [session.id], removed: [], changed: [] });
+				const session = AwAit loginService.login(scopes.sort().join(' '));
+				onDidChAngeSessions.fire({ Added: [session.id], removed: [], chAnged: [] });
 				return session;
-			} catch (e) {
+			} cAtch (e) {
 				/* __GDPR__
-					"loginFailed" : { }
+					"loginFAiled" : { }
 				*/
-				telemetryReporter.sendTelemetryEvent('loginFailed');
+				telemetryReporter.sendTelemetryEvent('loginFAiled');
 
 				throw e;
 			}
 		},
-		logout: async (id: string) => {
+		logout: Async (id: string) => {
 			try {
 				/* __GDPR__
 					"logout" : { }
 				*/
 				telemetryReporter.sendTelemetryEvent('logout');
 
-				await loginService.logout(id);
-				onDidChangeSessions.fire({ added: [], removed: [id], changed: [] });
-			} catch (e) {
+				AwAit loginService.logout(id);
+				onDidChAngeSessions.fire({ Added: [], removed: [id], chAnged: [] });
+			} cAtch (e) {
 				/* __GDPR__
-					"logoutFailed" : { }
+					"logoutFAiled" : { }
 				*/
-				telemetryReporter.sendTelemetryEvent('logoutFailed');
+				telemetryReporter.sendTelemetryEvent('logoutFAiled');
 			}
 		}
 	}));
@@ -64,5 +64,5 @@ export async function activate(context: vscode.ExtensionContext) {
 	return;
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() { }
+// this method is cAlled when your extension is deActivAted
+export function deActivAte() { }

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorDescriptor, Extensions as EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Extensions as EditorInputExtensions, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { CustomEditorInputFactory } from 'vs/workbench/contrib/customEditor/browser/customEditorInputFactory';
+import { SchemAs } from 'vs/bAse/common/network';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { EditorDescriptor, Extensions As EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { Extensions As EditorInputExtensions, IEditorInputFActoryRegistry } from 'vs/workbench/common/editor';
+import { CustomEditorInputFActory } from 'vs/workbench/contrib/customEditor/browser/customEditorInputFActory';
 import { ICustomEditorService } from 'vs/workbench/contrib/customEditor/common/customEditor';
-import { WebviewEditor } from 'vs/workbench/contrib/webviewPanel/browser/webviewEditor';
+import { WebviewEditor } from 'vs/workbench/contrib/webviewPAnel/browser/webviewEditor';
 import { CustomEditorInput } from './customEditorInput';
 import { CustomEditorContribution, CustomEditorService } from './customEditors';
 
 registerSingleton(ICustomEditorService, CustomEditorService);
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(CustomEditorContribution, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(CustomEditorContribution, LifecyclePhAse.StArting);
 
-Registry.as<IEditorRegistry>(EditorExtensions.Editors)
+Registry.As<IEditorRegistry>(EditorExtensions.Editors)
 	.registerEditor(
-		EditorDescriptor.create(
+		EditorDescriptor.creAte(
 			WebviewEditor,
 			WebviewEditor.ID,
 			'Webview Editor',
@@ -32,10 +32,10 @@ Registry.as<IEditorRegistry>(EditorExtensions.Editors)
 		new SyncDescriptor(CustomEditorInput)
 	]);
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories)
-	.registerEditorInputFactory(
-		CustomEditorInputFactory.ID,
-		CustomEditorInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories)
+	.registerEditorInputFActory(
+		CustomEditorInputFActory.ID,
+		CustomEditorInputFActory);
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories)
-	.registerCustomEditorInputFactory(Schemas.vscodeCustomEditor, CustomEditorInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories)
+	.registerCustomEditorInputFActory(SchemAs.vscodeCustomEditor, CustomEditorInputFActory);

@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Command } from '../commandManager';
-import { MarkdownEngine } from '../markdownEngine';
-import { SkinnyTextDocument } from '../tableOfContentsProvider';
+import { CommAnd } from '../commAndMAnAger';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { SkinnyTextDocument } from '../tAbleOfContentsProvider';
 
-export class RenderDocument implements Command {
-	public readonly id = 'markdown.api.render';
+export clAss RenderDocument implements CommAnd {
+	public reAdonly id = 'mArkdown.Api.render';
 
 	public constructor(
-		private readonly engine: MarkdownEngine
+		privAte reAdonly engine: MArkdownEngine
 	) { }
 
-	public async execute(document: SkinnyTextDocument | string): Promise<string> {
+	public Async execute(document: SkinnyTextDocument | string): Promise<string> {
 		return this.engine.render(document);
 	}
 }

@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import { canceled } from 'vs/base/common/errors';
-import { isWindows } from 'vs/base/common/platform';
+import { join } from 'vs/bAse/common/pAth';
+import { URI } from 'vs/bAse/common/uri';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { isWindows } from 'vs/bAse/common/plAtform';
 
-export type ValueCallback<T = any> = (value: T | Promise<T>) => void;
+export type VAlueCAllbAck<T = Any> = (vAlue: T | Promise<T>) => void;
 
-export class DeferredPromise<T> {
+export clAss DeferredPromise<T> {
 
-	private completeCallback!: ValueCallback<T>;
-	private errorCallback!: (err: any) => void;
+	privAte completeCAllbAck!: VAlueCAllbAck<T>;
+	privAte errorCAllbAck!: (err: Any) => void;
 
-	public p: Promise<any>;
+	public p: Promise<Any>;
 
 	constructor() {
-		this.p = new Promise<any>((c, e) => {
-			this.completeCallback = c;
-			this.errorCallback = e;
+		this.p = new Promise<Any>((c, e) => {
+			this.completeCAllbAck = c;
+			this.errorCAllbAck = e;
 		});
 	}
 
-	public complete(value: T) {
+	public complete(vAlue: T) {
 		return new Promise<void>(resolve => {
-			this.completeCallback(value);
+			this.completeCAllbAck(vAlue);
 			resolve();
 		});
 	}
 
-	public error(err: any) {
+	public error(err: Any) {
 		return new Promise<void>(resolve => {
-			this.errorCallback(err);
+			this.errorCAllbAck(err);
 			resolve();
 		});
 	}
 
-	public cancel() {
+	public cAncel() {
 		new Promise<void>(resolve => {
-			this.errorCallback(canceled());
+			this.errorCAllbAck(cAnceled());
 			resolve();
 		});
 	}
 }
 
-export function toResource(this: any, path: string) {
+export function toResource(this: Any, pAth: string) {
 	if (isWindows) {
-		return URI.file(join('C:\\', btoa(this.test.fullTitle()), path));
+		return URI.file(join('C:\\', btoA(this.test.fullTitle()), pAth));
 	}
 
-	return URI.file(join('/', btoa(this.test.fullTitle()), path));
+	return URI.file(join('/', btoA(this.test.fullTitle()), pAth));
 }
 
-export function suiteRepeat(n: number, description: string, callback: (this: any) => void): void {
+export function suiteRepeAt(n: number, description: string, cAllbAck: (this: Any) => void): void {
 	for (let i = 0; i < n; i++) {
-		suite(`${description} (iteration ${i})`, callback);
+		suite(`${description} (iterAtion ${i})`, cAllbAck);
 	}
 }
 
-export function testRepeat(n: number, description: string, callback: (this: any, done: MochaDone) => any): void {
+export function testRepeAt(n: number, description: string, cAllbAck: (this: Any, done: MochADone) => Any): void {
 	for (let i = 0; i < n; i++) {
-		test(`${description} (iteration ${i})`, callback);
+		test(`${description} (iterAtion ${i})`, cAllbAck);
 	}
 }

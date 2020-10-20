@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { ExtHostFileSystemEventService } from 'vs/workbench/api/common/extHostFileSystemEventService';
-import { IMainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { NullLogService } from 'vs/platform/log/common/log';
+import * As Assert from 'Assert';
+import { ExtHostFileSystemEventService } from 'vs/workbench/Api/common/extHostFileSystemEventService';
+import { IMAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
 suite('ExtHostFileSystemEventService', () => {
 
 
-	test('FileSystemWatcher ignore events properties are reversed #26851', function () {
+	test('FileSystemWAtcher ignore events properties Are reversed #26851', function () {
 
-		const protocol: IMainContext = {
+		const protocol: IMAinContext = {
 			getProxy: () => { return undefined!; },
 			set: undefined!,
-			assertRegistered: undefined!,
-			drain: undefined!
+			AssertRegistered: undefined!,
+			drAin: undefined!
 		};
 
-		const watcher1 = new ExtHostFileSystemEventService(protocol, new NullLogService(), undefined!).createFileSystemWatcher('**/somethingInteresting', false, false, false);
-		assert.equal(watcher1.ignoreChangeEvents, false);
-		assert.equal(watcher1.ignoreCreateEvents, false);
-		assert.equal(watcher1.ignoreDeleteEvents, false);
+		const wAtcher1 = new ExtHostFileSystemEventService(protocol, new NullLogService(), undefined!).creAteFileSystemWAtcher('**/somethingInteresting', fAlse, fAlse, fAlse);
+		Assert.equAl(wAtcher1.ignoreChAngeEvents, fAlse);
+		Assert.equAl(wAtcher1.ignoreCreAteEvents, fAlse);
+		Assert.equAl(wAtcher1.ignoreDeleteEvents, fAlse);
 
-		const watcher2 = new ExtHostFileSystemEventService(protocol, new NullLogService(), undefined!).createFileSystemWatcher('**/somethingBoring', true, true, true);
-		assert.equal(watcher2.ignoreChangeEvents, true);
-		assert.equal(watcher2.ignoreCreateEvents, true);
-		assert.equal(watcher2.ignoreDeleteEvents, true);
+		const wAtcher2 = new ExtHostFileSystemEventService(protocol, new NullLogService(), undefined!).creAteFileSystemWAtcher('**/somethingBoring', true, true, true);
+		Assert.equAl(wAtcher2.ignoreChAngeEvents, true);
+		Assert.equAl(wAtcher2.ignoreCreAteEvents, true);
+		Assert.equAl(wAtcher2.ignoreDeleteEvents, true);
 	});
 
 });

@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { commands, Uri } from 'vscode';
-import { join, basename, normalize, dirname } from 'path';
-import * as fs from 'fs';
+import 'mochA';
+import * As Assert from 'Assert';
+import { commAnds, Uri } from 'vscode';
+import { join, bAsenAme, normAlize, dirnAme } from 'pAth';
+import * As fs from 'fs';
 
-function assertUnchangedTokens(testFixurePath: string, done: any) {
-	let fileName = basename(testFixurePath);
+function AssertUnchAngedTokens(testFixurePAth: string, done: Any) {
+	let fileNAme = bAsenAme(testFixurePAth);
 
-	return commands.executeCommand('_workbench.captureSyntaxTokens', Uri.file(testFixurePath)).then(data => {
+	return commAnds.executeCommAnd('_workbench.cAptureSyntAxTokens', Uri.file(testFixurePAth)).then(dAtA => {
 		try {
-			let resultsFolderPath = join(dirname(dirname(testFixurePath)), 'colorize-results');
-			if (!fs.existsSync(resultsFolderPath)) {
-				fs.mkdirSync(resultsFolderPath);
+			let resultsFolderPAth = join(dirnAme(dirnAme(testFixurePAth)), 'colorize-results');
+			if (!fs.existsSync(resultsFolderPAth)) {
+				fs.mkdirSync(resultsFolderPAth);
 			}
-			let resultPath = join(resultsFolderPath, fileName.replace('.', '_') + '.json');
-			if (fs.existsSync(resultPath)) {
-				let previousData = JSON.parse(fs.readFileSync(resultPath).toString());
+			let resultPAth = join(resultsFolderPAth, fileNAme.replAce('.', '_') + '.json');
+			if (fs.existsSync(resultPAth)) {
+				let previousDAtA = JSON.pArse(fs.reAdFileSync(resultPAth).toString());
 				try {
-					assert.deepEqual(data, previousData);
-				} catch (e) {
-					fs.writeFileSync(resultPath, JSON.stringify(data, null, '\t'), { flag: 'w' });
-					if (Array.isArray(data) && Array.isArray(previousData) && data.length === previousData.length) {
-						for (let i= 0; i < data.length; i++) {
-							let d = data[i];
-							let p = previousData[i];
-							if (d.c !== p.c || hasThemeChange(d.r, p.r)) {
+					Assert.deepEquAl(dAtA, previousDAtA);
+				} cAtch (e) {
+					fs.writeFileSync(resultPAth, JSON.stringify(dAtA, null, '\t'), { flAg: 'w' });
+					if (ArrAy.isArrAy(dAtA) && ArrAy.isArrAy(previousDAtA) && dAtA.length === previousDAtA.length) {
+						for (let i= 0; i < dAtA.length; i++) {
+							let d = dAtA[i];
+							let p = previousDAtA[i];
+							if (d.c !== p.c || hAsThemeChAnge(d.r, p.r)) {
 								throw e;
 							}
 						}
-						// different but no tokenization ot color change: no failure
+						// different but no tokenizAtion ot color chAnge: no fAilure
 					} else {
 						throw e;
 					}
 				}
 			} else {
-				fs.writeFileSync(resultPath, JSON.stringify(data, null, '\t'));
+				fs.writeFileSync(resultPAth, JSON.stringify(dAtA, null, '\t'));
 			}
 			done();
-		} catch (e) {
+		} cAtch (e) {
 			done(e);
 		}
 	}, done);
 }
 
-function hasThemeChange(d: any, p: any) : boolean {
+function hAsThemeChAnge(d: Any, p: Any) : booleAn {
 	let keys = Object.keys(d);
 	for (let key of keys) {
 		if (d[key] !== p[key]) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-suite('colorization', () => {
-	let extensionsFolder = normalize(join(__dirname, '../../'));
-	let extensions = fs.readdirSync(extensionsFolder);
-	extensions.forEach(extension => {
-		let extensionColorizeFixturePath = join(extensionsFolder, extension, 'test', 'colorize-fixtures');
-		if (fs.existsSync(extensionColorizeFixturePath)) {
-			let fixturesFiles = fs.readdirSync(extensionColorizeFixturePath);
-			fixturesFiles.forEach(fixturesFile => {
-				// define a test for each fixture
+suite('colorizAtion', () => {
+	let extensionsFolder = normAlize(join(__dirnAme, '../../'));
+	let extensions = fs.reAddirSync(extensionsFolder);
+	extensions.forEAch(extension => {
+		let extensionColorizeFixturePAth = join(extensionsFolder, extension, 'test', 'colorize-fixtures');
+		if (fs.existsSync(extensionColorizeFixturePAth)) {
+			let fixturesFiles = fs.reAddirSync(extensionColorizeFixturePAth);
+			fixturesFiles.forEAch(fixturesFile => {
+				// define A test for eAch fixture
 				test(extension + '-' + fixturesFile, function (done) {
-					assertUnchangedTokens(join(extensionColorizeFixturePath, fixturesFile), done);
+					AssertUnchAngedTokens(join(extensionColorizeFixturePAth, fixturesFile), done);
 				});
 			});
 		}

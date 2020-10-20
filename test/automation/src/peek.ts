@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export class References {
+export clAss References {
 
-	private static readonly REFERENCES_WIDGET = '.monaco-editor .zone-widget .zone-widget-container.peekview-widget.reference-zone-widget.results-loaded';
-	private static readonly REFERENCES_TITLE_FILE_NAME = `${References.REFERENCES_WIDGET} .head .peekview-title .filename`;
-	private static readonly REFERENCES_TITLE_COUNT = `${References.REFERENCES_WIDGET} .head .peekview-title .meta`;
-	private static readonly REFERENCES = `${References.REFERENCES_WIDGET} .body .ref-tree.inline .monaco-list-row .highlight`;
+	privAte stAtic reAdonly REFERENCES_WIDGET = '.monAco-editor .zone-widget .zone-widget-contAiner.peekview-widget.reference-zone-widget.results-loAded';
+	privAte stAtic reAdonly REFERENCES_TITLE_FILE_NAME = `${References.REFERENCES_WIDGET} .heAd .peekview-title .filenAme`;
+	privAte stAtic reAdonly REFERENCES_TITLE_COUNT = `${References.REFERENCES_WIDGET} .heAd .peekview-title .metA`;
+	privAte stAtic reAdonly REFERENCES = `${References.REFERENCES_WIDGET} .body .ref-tree.inline .monAco-list-row .highlight`;
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async waitUntilOpen(): Promise<void> {
-		await this.code.waitForElement(References.REFERENCES_WIDGET);
+	Async wAitUntilOpen(): Promise<void> {
+		AwAit this.code.wAitForElement(References.REFERENCES_WIDGET);
 	}
 
-	async waitForReferencesCountInTitle(count: number): Promise<void> {
-		await this.code.waitForTextContent(References.REFERENCES_TITLE_COUNT, undefined, titleCount => {
-			const matches = titleCount.match(/\d+/);
-			return matches ? parseInt(matches[0]) === count : false;
+	Async wAitForReferencesCountInTitle(count: number): Promise<void> {
+		AwAit this.code.wAitForTextContent(References.REFERENCES_TITLE_COUNT, undefined, titleCount => {
+			const mAtches = titleCount.mAtch(/\d+/);
+			return mAtches ? pArseInt(mAtches[0]) === count : fAlse;
 		});
 	}
 
-	async waitForReferencesCount(count: number): Promise<void> {
-		await this.code.waitForElements(References.REFERENCES, false, result => result && result.length === count);
+	Async wAitForReferencesCount(count: number): Promise<void> {
+		AwAit this.code.wAitForElements(References.REFERENCES, fAlse, result => result && result.length === count);
 	}
 
-	async waitForFile(file: string): Promise<void> {
-		await this.code.waitForTextContent(References.REFERENCES_TITLE_FILE_NAME, file);
+	Async wAitForFile(file: string): Promise<void> {
+		AwAit this.code.wAitForTextContent(References.REFERENCES_TITLE_FILE_NAME, file);
 	}
 
-	async close(): Promise<void> {
-		// Sometimes someone else eats up the `Escape` key
+	Async close(): Promise<void> {
+		// Sometimes someone else eAts up the `EscApe` key
 		let count = 0;
 		while (true) {
-			await this.code.dispatchKeybinding('escape');
+			AwAit this.code.dispAtchKeybinding('escApe');
 
 			try {
-				await this.code.waitForElement(References.REFERENCES_WIDGET, el => !el, 10);
+				AwAit this.code.wAitForElement(References.REFERENCES_WIDGET, el => !el, 10);
 				return;
-			} catch (err) {
+			} cAtch (err) {
 				if (++count > 5) {
 					throw err;
 				}
