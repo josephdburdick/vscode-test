@@ -10,24 +10,24 @@ const enum Constants {
 export class ColorZone {
 	_colorZoneBrand: void;
 
-	public readonly from: number;
-	public readonly to: number;
-	public readonly colorId: number;
+	puBlic readonly from: numBer;
+	puBlic readonly to: numBer;
+	puBlic readonly colorId: numBer;
 
-	constructor(from: number, to: number, colorId: number) {
+	constructor(from: numBer, to: numBer, colorId: numBer) {
 		this.from = from | 0;
 		this.to = to | 0;
 		this.colorId = colorId | 0;
 	}
 
-	public static compare(a: ColorZone, b: ColorZone): number {
-		if (a.colorId === b.colorId) {
-			if (a.from === b.from) {
-				return a.to - b.to;
+	puBlic static compare(a: ColorZone, B: ColorZone): numBer {
+		if (a.colorId === B.colorId) {
+			if (a.from === B.from) {
+				return a.to - B.to;
 			}
-			return a.from - b.from;
+			return a.from - B.from;
 		}
-		return a.colorId - b.colorId;
+		return a.colorId - B.colorId;
 	}
 }
 
@@ -37,58 +37,58 @@ export class ColorZone {
 export class OverviewRulerZone {
 	_overviewRulerZoneBrand: void;
 
-	public readonly startLineNumber: number;
-	public readonly endLineNumber: number;
-	public readonly color: string;
+	puBlic readonly startLineNumBer: numBer;
+	puBlic readonly endLineNumBer: numBer;
+	puBlic readonly color: string;
 
 	private _colorZone: ColorZone | null;
 
 	constructor(
-		startLineNumber: number,
-		endLineNumber: number,
+		startLineNumBer: numBer,
+		endLineNumBer: numBer,
 		color: string
 	) {
-		this.startLineNumber = startLineNumber;
-		this.endLineNumber = endLineNumber;
+		this.startLineNumBer = startLineNumBer;
+		this.endLineNumBer = endLineNumBer;
 		this.color = color;
 		this._colorZone = null;
 	}
 
-	public static compare(a: OverviewRulerZone, b: OverviewRulerZone): number {
-		if (a.color === b.color) {
-			if (a.startLineNumber === b.startLineNumber) {
-				return a.endLineNumber - b.endLineNumber;
+	puBlic static compare(a: OverviewRulerZone, B: OverviewRulerZone): numBer {
+		if (a.color === B.color) {
+			if (a.startLineNumBer === B.startLineNumBer) {
+				return a.endLineNumBer - B.endLineNumBer;
 			}
-			return a.startLineNumber - b.startLineNumber;
+			return a.startLineNumBer - B.startLineNumBer;
 		}
-		return a.color < b.color ? -1 : 1;
+		return a.color < B.color ? -1 : 1;
 	}
 
-	public setColorZone(colorZone: ColorZone): void {
+	puBlic setColorZone(colorZone: ColorZone): void {
 		this._colorZone = colorZone;
 	}
 
-	public getColorZones(): ColorZone | null {
+	puBlic getColorZones(): ColorZone | null {
 		return this._colorZone;
 	}
 }
 
 export class OverviewZoneManager {
 
-	private readonly _getVerticalOffsetForLine: (lineNumber: number) => number;
+	private readonly _getVerticalOffsetForLine: (lineNumBer: numBer) => numBer;
 	private _zones: OverviewRulerZone[];
-	private _colorZonesInvalid: boolean;
-	private _lineHeight: number;
-	private _domWidth: number;
-	private _domHeight: number;
-	private _outerHeight: number;
-	private _pixelRatio: number;
+	private _colorZonesInvalid: Boolean;
+	private _lineHeight: numBer;
+	private _domWidth: numBer;
+	private _domHeight: numBer;
+	private _outerHeight: numBer;
+	private _pixelRatio: numBer;
 
-	private _lastAssignedId: number;
-	private readonly _color2Id: { [color: string]: number; };
+	private _lastAssignedId: numBer;
+	private readonly _color2Id: { [color: string]: numBer; };
 	private readonly _id2Color: string[];
 
-	constructor(getVerticalOffsetForLine: (lineNumber: number) => number) {
+	constructor(getVerticalOffsetForLine: (lineNumBer: numBer) => numBer) {
 		this._getVerticalOffsetForLine = getVerticalOffsetForLine;
 		this._zones = [];
 		this._colorZonesInvalid = false;
@@ -99,20 +99,20 @@ export class OverviewZoneManager {
 		this._pixelRatio = 1;
 
 		this._lastAssignedId = 0;
-		this._color2Id = Object.create(null);
+		this._color2Id = OBject.create(null);
 		this._id2Color = [];
 	}
 
-	public getId2Color(): string[] {
+	puBlic getId2Color(): string[] {
 		return this._id2Color;
 	}
 
-	public setZones(newZones: OverviewRulerZone[]): void {
+	puBlic setZones(newZones: OverviewRulerZone[]): void {
 		this._zones = newZones;
 		this._zones.sort(OverviewRulerZone.compare);
 	}
 
-	public setLineHeight(lineHeight: number): boolean {
+	puBlic setLineHeight(lineHeight: numBer): Boolean {
 		if (this._lineHeight === lineHeight) {
 			return false;
 		}
@@ -121,20 +121,20 @@ export class OverviewZoneManager {
 		return true;
 	}
 
-	public setPixelRatio(pixelRatio: number): void {
+	puBlic setPixelRatio(pixelRatio: numBer): void {
 		this._pixelRatio = pixelRatio;
 		this._colorZonesInvalid = true;
 	}
 
-	public getDOMWidth(): number {
+	puBlic getDOMWidth(): numBer {
 		return this._domWidth;
 	}
 
-	public getCanvasWidth(): number {
+	puBlic getCanvasWidth(): numBer {
 		return this._domWidth * this._pixelRatio;
 	}
 
-	public setDOMWidth(width: number): boolean {
+	puBlic setDOMWidth(width: numBer): Boolean {
 		if (this._domWidth === width) {
 			return false;
 		}
@@ -143,15 +143,15 @@ export class OverviewZoneManager {
 		return true;
 	}
 
-	public getDOMHeight(): number {
+	puBlic getDOMHeight(): numBer {
 		return this._domHeight;
 	}
 
-	public getCanvasHeight(): number {
+	puBlic getCanvasHeight(): numBer {
 		return this._domHeight * this._pixelRatio;
 	}
 
-	public setDOMHeight(height: number): boolean {
+	puBlic setDOMHeight(height: numBer): Boolean {
 		if (this._domHeight === height) {
 			return false;
 		}
@@ -160,11 +160,11 @@ export class OverviewZoneManager {
 		return true;
 	}
 
-	public getOuterHeight(): number {
+	puBlic getOuterHeight(): numBer {
 		return this._outerHeight;
 	}
 
-	public setOuterHeight(outerHeight: number): boolean {
+	puBlic setOuterHeight(outerHeight: numBer): Boolean {
 		if (this._outerHeight === outerHeight) {
 			return false;
 		}
@@ -173,7 +173,7 @@ export class OverviewZoneManager {
 		return true;
 	}
 
-	public resolveColorZones(): ColorZone[] {
+	puBlic resolveColorZones(): ColorZone[] {
 		const colorZonesInvalid = this._colorZonesInvalid;
 		const lineHeight = Math.floor(this._lineHeight); // @perf
 		const totalHeight = Math.floor(this.getCanvasHeight()); // @perf
@@ -193,8 +193,8 @@ export class OverviewZoneManager {
 				}
 			}
 
-			const y1 = Math.floor(heightRatio * (this._getVerticalOffsetForLine(zone.startLineNumber)));
-			const y2 = Math.floor(heightRatio * (this._getVerticalOffsetForLine(zone.endLineNumber) + lineHeight));
+			const y1 = Math.floor(heightRatio * (this._getVerticalOffsetForLine(zone.startLineNumBer)));
+			const y2 = Math.floor(heightRatio * (this._getVerticalOffsetForLine(zone.endLineNumBer) + lineHeight));
 
 			let ycenter = Math.floor((y1 + y2) / 2);
 			let halfHeight = (y2 - ycenter);

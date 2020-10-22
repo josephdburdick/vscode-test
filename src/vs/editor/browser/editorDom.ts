@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { GlobalMouseMoveMonitor } from 'vs/base/browser/globalMouseMoveMonitor';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import * as dom from 'vs/Base/Browser/dom';
+import { GloBalMouseMoveMonitor } from 'vs/Base/Browser/gloBalMouseMoveMonitor';
+import { StandardMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
 
 /**
  * Coordinates relative to the whole document (e.g. mouse event's pageX and pageY)
@@ -15,11 +15,11 @@ export class PageCoordinates {
 	_pageCoordinatesBrand: void;
 
 	constructor(
-		public readonly x: number,
-		public readonly y: number
+		puBlic readonly x: numBer,
+		puBlic readonly y: numBer
 	) { }
 
-	public toClientCoordinates(): ClientCoordinates {
+	puBlic toClientCoordinates(): ClientCoordinates {
 		return new ClientCoordinates(this.x - dom.StandardWindow.scrollX, this.y - dom.StandardWindow.scrollY);
 	}
 }
@@ -35,11 +35,11 @@ export class ClientCoordinates {
 	_clientCoordinatesBrand: void;
 
 	constructor(
-		public readonly clientX: number,
-		public readonly clientY: number
+		puBlic readonly clientX: numBer,
+		puBlic readonly clientY: numBer
 	) { }
 
-	public toPageCoordinates(): PageCoordinates {
+	puBlic toPageCoordinates(): PageCoordinates {
 		return new PageCoordinates(this.clientX + dom.StandardWindow.scrollX, this.clientY + dom.StandardWindow.scrollY);
 	}
 }
@@ -51,10 +51,10 @@ export class EditorPagePosition {
 	_editorPagePositionBrand: void;
 
 	constructor(
-		public readonly x: number,
-		public readonly y: number,
-		public readonly width: number,
-		public readonly height: number
+		puBlic readonly x: numBer,
+		puBlic readonly y: numBer,
+		puBlic readonly width: numBer,
+		puBlic readonly height: numBer
 	) { }
 }
 
@@ -69,12 +69,12 @@ export class EditorMouseEvent extends StandardMouseEvent {
 	/**
 	 * Coordinates relative to the whole document.
 	 */
-	public readonly pos: PageCoordinates;
+	puBlic readonly pos: PageCoordinates;
 
 	/**
 	 * Editor's coordinates relative to the whole document.
 	 */
-	public readonly editorPos: EditorPagePosition;
+	puBlic readonly editorPos: EditorPagePosition;
 
 	constructor(e: MouseEvent, editorViewDomNode: HTMLElement) {
 		super(e);
@@ -99,35 +99,35 @@ export class EditorMouseEventFactory {
 		return new EditorMouseEvent(e, this._editorViewDomNode);
 	}
 
-	public onContextMenu(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'contextmenu', (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onContextMenu(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleListener(target, 'contextmenu', (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onMouseUp(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'mouseup', (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onMouseUp(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleListener(target, 'mouseup', (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onMouseDown(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'mousedown', (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onMouseDown(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleListener(target, 'mousedown', (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onMouseLeave(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableNonBubblingMouseOutListener(target, (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onMouseLeave(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleNonBuBBlingMouseOutListener(target, (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onMouseMoveThrottled(target: HTMLElement, callback: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposable {
+	puBlic onMouseMoveThrottled(target: HTMLElement, callBack: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: numBer): IDisposaBle {
 		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
 			return merger(lastEvent, this._create(currentEvent));
 		};
-		return dom.addDisposableThrottledListener<EditorMouseEvent, MouseEvent>(target, 'mousemove', callback, myMerger, minimumTimeMs);
+		return dom.addDisposaBleThrottledListener<EditorMouseEvent, MouseEvent>(target, 'mousemove', callBack, myMerger, minimumTimeMs);
 	}
 }
 
@@ -143,71 +143,71 @@ export class EditorPointerEventFactory {
 		return new EditorMouseEvent(e, this._editorViewDomNode);
 	}
 
-	public onPointerUp(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'pointerup', (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onPointerUp(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleListener(target, 'pointerup', (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onPointerDown(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'pointerdown', (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onPointerDown(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleListener(target, 'pointerdown', (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onPointerLeave(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableNonBubblingPointerOutListener(target, (e: MouseEvent) => {
-			callback(this._create(e));
+	puBlic onPointerLeave(target: HTMLElement, callBack: (e: EditorMouseEvent) => void): IDisposaBle {
+		return dom.addDisposaBleNonBuBBlingPointerOutListener(target, (e: MouseEvent) => {
+			callBack(this._create(e));
 		});
 	}
 
-	public onPointerMoveThrottled(target: HTMLElement, callback: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposable {
+	puBlic onPointerMoveThrottled(target: HTMLElement, callBack: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: numBer): IDisposaBle {
 		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
 			return merger(lastEvent, this._create(currentEvent));
 		};
-		return dom.addDisposableThrottledListener<EditorMouseEvent, MouseEvent>(target, 'pointermove', callback, myMerger, minimumTimeMs);
+		return dom.addDisposaBleThrottledListener<EditorMouseEvent, MouseEvent>(target, 'pointermove', callBack, myMerger, minimumTimeMs);
 	}
 }
 
-export class GlobalEditorMouseMoveMonitor extends Disposable {
+export class GloBalEditorMouseMoveMonitor extends DisposaBle {
 
 	private readonly _editorViewDomNode: HTMLElement;
-	private readonly _globalMouseMoveMonitor: GlobalMouseMoveMonitor<EditorMouseEvent>;
-	private _keydownListener: IDisposable | null;
+	private readonly _gloBalMouseMoveMonitor: GloBalMouseMoveMonitor<EditorMouseEvent>;
+	private _keydownListener: IDisposaBle | null;
 
 	constructor(editorViewDomNode: HTMLElement) {
 		super();
 		this._editorViewDomNode = editorViewDomNode;
-		this._globalMouseMoveMonitor = this._register(new GlobalMouseMoveMonitor<EditorMouseEvent>());
+		this._gloBalMouseMoveMonitor = this._register(new GloBalMouseMoveMonitor<EditorMouseEvent>());
 		this._keydownListener = null;
 	}
 
-	public startMonitoring(
+	puBlic startMonitoring(
 		initialElement: HTMLElement,
-		initialButtons: number,
+		initialButtons: numBer,
 		merger: EditorMouseEventMerger,
-		mouseMoveCallback: (e: EditorMouseEvent) => void,
-		onStopCallback: () => void
+		mouseMoveCallBack: (e: EditorMouseEvent) => void,
+		onStopCallBack: () => void
 	): void {
 
 		// Add a <<capture>> keydown event listener that will cancel the monitoring
 		// if something other than a modifier key is pressed
-		this._keydownListener = dom.addStandardDisposableListener(<any>document, 'keydown', (e) => {
-			const kb = e.toKeybinding();
-			if (kb.isModifierKey()) {
+		this._keydownListener = dom.addStandardDisposaBleListener(<any>document, 'keydown', (e) => {
+			const kB = e.toKeyBinding();
+			if (kB.isModifierKey()) {
 				// Allow modifier keys
 				return;
 			}
-			this._globalMouseMoveMonitor.stopMonitoring(true);
+			this._gloBalMouseMoveMonitor.stopMonitoring(true);
 		}, true);
 
 		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
 			return merger(lastEvent, new EditorMouseEvent(currentEvent, this._editorViewDomNode));
 		};
 
-		this._globalMouseMoveMonitor.startMonitoring(initialElement, initialButtons, myMerger, mouseMoveCallback, () => {
+		this._gloBalMouseMoveMonitor.startMonitoring(initialElement, initialButtons, myMerger, mouseMoveCallBack, () => {
 			this._keydownListener!.dispose();
-			onStopCallback();
+			onStopCallBack();
 		});
 	}
 }

@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IPager } from 'vs/base/common/paging';
+import { Event } from 'vs/Base/common/event';
+import { IPager } from 'vs/Base/common/paging';
 import { IQueryOptions, ILocalExtension, IGalleryExtension, IExtensionIdentifier } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { EnablementState, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { EnaBlementState, IExtensionManagementServer } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { IExtensionManifest, ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
-import { IViewPaneContainer } from 'vs/workbench/common/views';
+import { URI } from 'vs/Base/common/uri';
+import { IViewPaneContainer } from 'vs/workBench/common/views';
 
-export const VIEWLET_ID = 'workbench.view.extensions';
+export const VIEWLET_ID = 'workBench.view.extensions';
 
 export interface IExtensionsViewPaneContainer extends IViewPaneContainer {
-	search(text: string, refresh?: boolean): void;
+	search(text: string, refresh?: Boolean): void;
 }
 
 export const enum ExtensionState {
@@ -30,46 +30,46 @@ export const enum ExtensionState {
 
 export interface IExtension {
 	readonly type: ExtensionType;
-	readonly isBuiltin: boolean;
+	readonly isBuiltin: Boolean;
 	readonly state: ExtensionState;
 	readonly name: string;
 	readonly displayName: string;
 	readonly identifier: IExtensionIdentifier;
-	readonly publisher: string;
-	readonly publisherDisplayName: string;
+	readonly puBlisher: string;
+	readonly puBlisherDisplayName: string;
 	readonly version: string;
 	readonly latestVersion: string;
 	readonly description: string;
 	readonly url?: string;
 	readonly repository?: string;
 	readonly iconUrl: string;
-	readonly iconUrlFallback: string;
+	readonly iconUrlFallBack: string;
 	readonly licenseUrl?: string;
-	readonly installCount?: number;
-	readonly rating?: number;
-	readonly ratingCount?: number;
-	readonly outdated: boolean;
-	readonly enablementState: EnablementState;
+	readonly installCount?: numBer;
+	readonly rating?: numBer;
+	readonly ratingCount?: numBer;
+	readonly outdated: Boolean;
+	readonly enaBlementState: EnaBlementState;
 	readonly dependencies: string[];
 	readonly extensionPack: string[];
 	readonly telemetryData: any;
-	readonly preview: boolean;
+	readonly preview: Boolean;
 	getManifest(token: CancellationToken): Promise<IExtensionManifest | null>;
 	getReadme(token: CancellationToken): Promise<string>;
-	hasReadme(): boolean;
+	hasReadme(): Boolean;
 	getChangelog(token: CancellationToken): Promise<string>;
-	hasChangelog(): boolean;
+	hasChangelog(): Boolean;
 	readonly server?: IExtensionManagementServer;
 	readonly local?: ILocalExtension;
 	gallery?: IGalleryExtension;
-	readonly isMalicious: boolean;
+	readonly isMalicious: Boolean;
 }
 
-export const SERVICE_ID = 'extensionsWorkbenchService';
+export const SERVICE_ID = 'extensionsWorkBenchService';
 
-export const IExtensionsWorkbenchService = createDecorator<IExtensionsWorkbenchService>(SERVICE_ID);
+export const IExtensionsWorkBenchService = createDecorator<IExtensionsWorkBenchService>(SERVICE_ID);
 
-export interface IExtensionsWorkbenchService {
+export interface IExtensionsWorkBenchService {
 	readonly _serviceBrand: undefined;
 	onChange: Event<IExtension | undefined>;
 	local: IExtension[];
@@ -78,18 +78,18 @@ export interface IExtensionsWorkbenchService {
 	queryLocal(server?: IExtensionManagementServer): Promise<IExtension[]>;
 	queryGallery(token: CancellationToken): Promise<IPager<IExtension>>;
 	queryGallery(options: IQueryOptions, token: CancellationToken): Promise<IPager<IExtension>>;
-	canInstall(extension: IExtension): boolean;
+	canInstall(extension: IExtension): Boolean;
 	install(vsix: URI): Promise<IExtension>;
-	install(extension: IExtension, promptToInstallDependencies?: boolean): Promise<IExtension>;
+	install(extension: IExtension, promptToInstallDependencies?: Boolean): Promise<IExtension>;
 	uninstall(extension: IExtension): Promise<void>;
 	installVersion(extension: IExtension, version: string): Promise<IExtension>;
 	reinstall(extension: IExtension): Promise<IExtension>;
-	setEnablement(extensions: IExtension | IExtension[], enablementState: EnablementState): Promise<void>;
-	open(extension: IExtension, options?: { sideByside?: boolean, preserveFocus?: boolean, pinned?: boolean }): Promise<any>;
+	setEnaBlement(extensions: IExtension | IExtension[], enaBlementState: EnaBlementState): Promise<void>;
+	open(extension: IExtension, options?: { sideByside?: Boolean, preserveFocus?: Boolean, pinned?: Boolean }): Promise<any>;
 	checkForUpdates(): Promise<void>;
 
 	// Sync APIs
-	isExtensionIgnoredToSync(extension: IExtension): boolean;
+	isExtensionIgnoredToSync(extension: IExtension): Boolean;
 	toggleExtensionIgnoredToSync(extension: IExtension): Promise<void>;
 }
 
@@ -100,27 +100,27 @@ export const ShowRecommendationsOnlyOnDemandKey = 'extensions.showRecommendation
 export const CloseExtensionDetailsOnViewChangeKey = 'extensions.closeExtensionDetailsOnViewChange';
 
 export interface IExtensionsConfiguration {
-	autoUpdate: boolean;
-	autoCheckUpdates: boolean;
-	ignoreRecommendations: boolean;
-	showRecommendationsOnlyOnDemand: boolean;
-	closeExtensionDetailsOnViewChange: boolean;
+	autoUpdate: Boolean;
+	autoCheckUpdates: Boolean;
+	ignoreRecommendations: Boolean;
+	showRecommendationsOnlyOnDemand: Boolean;
+	closeExtensionDetailsOnViewChange: Boolean;
 }
 
 export interface IExtensionContainer {
 	extension: IExtension | null;
-	updateWhenCounterExtensionChanges?: boolean;
+	updateWhenCounterExtensionChanges?: Boolean;
 	update(): void;
 }
 
-export class ExtensionContainers extends Disposable {
+export class ExtensionContainers extends DisposaBle {
 
 	constructor(
 		private readonly containers: IExtensionContainer[],
-		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
+		@IExtensionsWorkBenchService extensionsWorkBenchService: IExtensionsWorkBenchService
 	) {
 		super();
-		this._register(extensionsWorkbenchService.onChange(this.update, this));
+		this._register(extensionsWorkBenchService.onChange(this.update, this));
 	}
 
 	set extension(extension: IExtension) {
@@ -144,5 +144,5 @@ export class ExtensionContainers extends Disposable {
 	}
 }
 
-export const TOGGLE_IGNORE_EXTENSION_ACTION_ID = 'workbench.extensions.action.toggleIgnoreExtension';
-export const INSTALL_EXTENSION_FROM_VSIX_COMMAND_ID = 'workbench.extensions.command.installFromVSIX';
+export const TOGGLE_IGNORE_EXTENSION_ACTION_ID = 'workBench.extensions.action.toggleIgnoreExtension';
+export const INSTALL_EXTENSION_FROM_VSIX_COMMAND_ID = 'workBench.extensions.command.installFromVSIX';

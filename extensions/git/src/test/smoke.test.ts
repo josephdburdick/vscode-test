@@ -64,7 +64,7 @@ suite('git smoke test', function () {
 	});
 
 	test('reflects working tree changes', async function () {
-		await commands.executeCommand('workbench.view.scm');
+		await commands.executeCommand('workBench.view.scm');
 
 		const appjs = await open('app.js');
 		await type(appjs, ' world');

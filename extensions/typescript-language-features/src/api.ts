@@ -7,8 +7,8 @@ import * as vscode from 'vscode';
 import { PluginManager } from './utils/plugins';
 
 class ApiV0 {
-	public constructor(
-		public readonly onCompletionAccepted: vscode.Event<vscode.CompletionItem & { metadata?: any }>,
+	puBlic constructor(
+		puBlic readonly onCompletionAccepted: vscode.Event<vscode.CompletionItem & { metadata?: any }>,
 		private readonly _pluginManager: PluginManager,
 	) { }
 

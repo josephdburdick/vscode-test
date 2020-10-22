@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { FoldingModel } from 'vs/editor/contrib/folding/foldingModel';
+import { FoldingModel } from 'vs/editor/contriB/folding/foldingModel';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
+import { computeRanges } from 'vs/editor/contriB/folding/indentRangeProvider';
 import { TestDecorationProvider } from './foldingModel.test';
-import { HiddenRangeModel } from 'vs/editor/contrib/folding/hiddenRangeModel';
+import { HiddenRangeModel } from 'vs/editor/contriB/folding/hiddenRangeModel';
 import { IRange } from 'vs/editor/common/core/range';
 
 
 interface ExpectedRange {
-	startLineNumber: number;
-	endLineNumber: number;
+	startLineNumBer: numBer;
+	endLineNumBer: numBer;
 }
 
 suite('Hidden Range Model', () => {
-	function r(startLineNumber: number, endLineNumber: number): ExpectedRange {
-		return { startLineNumber, endLineNumber };
+	function r(startLineNumBer: numBer, endLineNumBer: numBer): ExpectedRange {
+		return { startLineNumBer, endLineNumBer };
 	}
 
 	function assertRanges(actual: IRange[], expectedRegions: ExpectedRange[], message?: string) {
-		assert.deepEqual(actual.map(r => ({ startLineNumber: r.startLineNumber, endLineNumber: r.endLineNumber })), expectedRegions, message);
+		assert.deepEqual(actual.map(r => ({ startLineNumBer: r.startLineNumBer, endLineNumBer: r.endLineNumBer })), expectedRegions, message);
 	}
 
 	test('hasRanges', () => {

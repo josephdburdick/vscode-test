@@ -5,34 +5,34 @@
 
 import 'vs/css!./contextMenuHandler';
 
-import { ActionRunner, IRunEvent, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
-import { combinedDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Menu } from 'vs/base/browser/ui/menu/menu';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { ActionRunner, IRunEvent, WorkBenchActionExecutedEvent, WorkBenchActionExecutedClassification } from 'vs/Base/common/actions';
+import { comBinedDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Menu } from 'vs/Base/Browser/ui/menu/menu';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IContextMenuDelegate } from 'vs/base/browser/contextmenu';
-import { EventType, $, isHTMLElement } from 'vs/base/browser/dom';
+import { IContextMenuDelegate } from 'vs/Base/Browser/contextmenu';
+import { EventType, $, isHTMLElement } from 'vs/Base/Browser/dom';
 import { attachMenuStyler } from 'vs/platform/theme/common/styler';
-import { domEvent } from 'vs/base/browser/event';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
+import { domEvent } from 'vs/Base/Browser/event';
+import { StandardMouseEvent } from 'vs/Base/Browser/mouseEvent';
 
 export interface IContextMenuHandlerOptions {
-	blockMouse: boolean;
+	BlockMouse: Boolean;
 }
 
 export class ContextMenuHandler {
 	private focusToReturn: HTMLElement | null = null;
-	private block: HTMLElement | null = null;
-	private options: IContextMenuHandlerOptions = { blockMouse: true };
+	private Block: HTMLElement | null = null;
+	private options: IContextMenuHandlerOptions = { BlockMouse: true };
 
 	constructor(
 		private contextViewService: IContextViewService,
 		private telemetryService: ITelemetryService,
 		private notificationService: INotificationService,
-		private keybindingService: IKeybindingService,
+		private keyBindingService: IKeyBindingService,
 		private themeService: IThemeService
 	) { }
 
@@ -63,36 +63,36 @@ export class ContextMenuHandler {
 					container.className += ' ' + className;
 				}
 
-				// Render invisible div to block mouse interaction in the rest of the UI
-				if (this.options.blockMouse) {
-					this.block = container.appendChild($('.context-view-block'));
-					this.block.style.position = 'fixed';
-					this.block.style.cursor = 'initial';
-					this.block.style.left = '0';
-					this.block.style.top = '0';
-					this.block.style.width = '100%';
-					this.block.style.height = '100%';
-					this.block.style.zIndex = '-1';
-					domEvent(this.block, EventType.MOUSE_DOWN)((e: MouseEvent) => e.stopPropagation());
+				// Render invisiBle div to Block mouse interaction in the rest of the UI
+				if (this.options.BlockMouse) {
+					this.Block = container.appendChild($('.context-view-Block'));
+					this.Block.style.position = 'fixed';
+					this.Block.style.cursor = 'initial';
+					this.Block.style.left = '0';
+					this.Block.style.top = '0';
+					this.Block.style.width = '100%';
+					this.Block.style.height = '100%';
+					this.Block.style.zIndex = '-1';
+					domEvent(this.Block, EventType.MOUSE_DOWN)((e: MouseEvent) => e.stopPropagation());
 				}
 
-				const menuDisposables = new DisposableStore();
+				const menuDisposaBles = new DisposaBleStore();
 
 				const actionRunner = delegate.actionRunner || new ActionRunner();
-				actionRunner.onDidBeforeRun(this.onActionRun, this, menuDisposables);
-				actionRunner.onDidRun(this.onDidActionRun, this, menuDisposables);
+				actionRunner.onDidBeforeRun(this.onActionRun, this, menuDisposaBles);
+				actionRunner.onDidRun(this.onDidActionRun, this, menuDisposaBles);
 				menu = new Menu(container, actions, {
 					actionViewItemProvider: delegate.getActionViewItem,
 					context: delegate.getActionsContext ? delegate.getActionsContext() : null,
 					actionRunner,
-					getKeyBinding: delegate.getKeyBinding ? delegate.getKeyBinding : action => this.keybindingService.lookupKeybinding(action.id)
+					getKeyBinding: delegate.getKeyBinding ? delegate.getKeyBinding : action => this.keyBindingService.lookupKeyBinding(action.id)
 				});
 
-				menuDisposables.add(attachMenuStyler(menu, this.themeService));
+				menuDisposaBles.add(attachMenuStyler(menu, this.themeService));
 
-				menu.onDidCancel(() => this.contextViewService.hideContextView(true), null, menuDisposables);
-				menu.onDidBlur(() => this.contextViewService.hideContextView(true), null, menuDisposables);
-				domEvent(window, EventType.BLUR)(() => { this.contextViewService.hideContextView(true); }, null, menuDisposables);
+				menu.onDidCancel(() => this.contextViewService.hideContextView(true), null, menuDisposaBles);
+				menu.onDidBlur(() => this.contextViewService.hideContextView(true), null, menuDisposaBles);
+				domEvent(window, EventType.BLUR)(() => { this.contextViewService.hideContextView(true); }, null, menuDisposaBles);
 				domEvent(window, EventType.MOUSE_DOWN)((e: MouseEvent) => {
 					if (e.defaultPrevented) {
 						return;
@@ -115,9 +115,9 @@ export class ContextMenuHandler {
 					}
 
 					this.contextViewService.hideContextView(true);
-				}, null, menuDisposables);
+				}, null, menuDisposaBles);
 
-				return combinedDisposable(menuDisposables, menu);
+				return comBinedDisposaBle(menuDisposaBles, menu);
 			},
 
 			focus: () => {
@@ -126,14 +126,14 @@ export class ContextMenuHandler {
 				}
 			},
 
-			onHide: (didCancel?: boolean) => {
+			onHide: (didCancel?: Boolean) => {
 				if (delegate.onHide) {
 					delegate.onHide(!!didCancel);
 				}
 
-				if (this.block) {
-					this.block.remove();
-					this.block = null;
+				if (this.Block) {
+					this.Block.remove();
+					this.Block = null;
 				}
 
 				if (this.focusToReturn) {
@@ -145,7 +145,7 @@ export class ContextMenuHandler {
 
 	private onActionRun(e: IRunEvent): void {
 		if (this.telemetryService) {
-			this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: e.action.id, from: 'contextMenu' });
+			this.telemetryService.puBlicLog2<WorkBenchActionExecutedEvent, WorkBenchActionExecutedClassification>('workBenchActionExecuted', { id: e.action.id, from: 'contextMenu' });
 		}
 
 		this.contextViewService.hideContextView(false);

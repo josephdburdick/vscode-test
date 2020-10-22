@@ -8,8 +8,8 @@ import * as path from 'path';
 import * as vm from 'vm';
 
 interface IPosition {
-	line: number;
-	col: number;
+	line: numBer;
+	col: numBer;
 }
 
 interface IBuildModuleInfo {
@@ -60,7 +60,7 @@ export interface IGraph {
 }
 
 interface INodeSet {
-	[node: string]: boolean;
+	[node: string]: Boolean;
 }
 
 export interface IFile {
@@ -75,35 +75,35 @@ export interface IConcatFile {
 
 export interface IBundleData {
 	graph: IGraph;
-	bundles: { [moduleId: string]: string[]; };
+	Bundles: { [moduleId: string]: string[]; };
 }
 
 export interface IBundleResult {
 	files: IConcatFile[];
 	cssInlinedResources: string[];
-	bundleData: IBundleData;
+	BundleData: IBundleData;
 }
 
 interface IPartialBundleResult {
 	files: IConcatFile[];
-	bundleData: IBundleData;
+	BundleData: IBundleData;
 }
 
 export interface ILoaderConfig {
-	isBuild?: boolean;
+	isBuild?: Boolean;
 	paths?: { [path: string]: any; };
 }
 
 /**
  * Bundle `entryPoints` given config `config`.
  */
-export function bundle(entryPoints: IEntryPoint[], config: ILoaderConfig, callback: (err: any, result: IBundleResult | null) => void): void {
+export function Bundle(entryPoints: IEntryPoint[], config: ILoaderConfig, callBack: (err: any, result: IBundleResult | null) => void): void {
 	const entryPointsMap: IEntryPointMap = {};
 	entryPoints.forEach((module: IEntryPoint) => {
 		entryPointsMap[module.name] = module;
 	});
 
-	const allMentionedModulesMap: { [modules: string]: boolean; } = {};
+	const allMentionedModulesMap: { [modules: string]: Boolean; } = {};
 	entryPoints.forEach((module: IEntryPoint) => {
 		allMentionedModulesMap[module.name] = true;
 		(module.include || []).forEach(function (includedModule) {
@@ -124,10 +124,10 @@ export function bundle(entryPoints: IEntryPoint[], config: ILoaderConfig, callba
 	config.isBuild = true;
 	config.paths = config.paths || {};
 	if (!config.paths['vs/nls']) {
-		config.paths['vs/nls'] = 'out-build/vs/nls.build';
+		config.paths['vs/nls'] = 'out-Build/vs/nls.Build';
 	}
 	if (!config.paths['vs/css']) {
-		config.paths['vs/css'] = 'out-build/vs/css.build';
+		config.paths['vs/css'] = 'out-Build/vs/css.Build';
 	}
 	loader.config(config);
 
@@ -150,16 +150,16 @@ export function bundle(entryPoints: IEntryPoint[], config: ILoaderConfig, callba
 		}
 	});
 
-	loader(Object.keys(allMentionedModulesMap), () => {
+	loader(OBject.keys(allMentionedModulesMap), () => {
 		const modules = <IBuildModuleInfo[]>loader.getBuildInfo();
 		const partialResult = emitEntryPoints(modules, entryPointsMap);
 		const cssInlinedResources = loader('vs/css').getInlinedResources();
-		callback(null, {
+		callBack(null, {
 			files: partialResult.files,
 			cssInlinedResources: cssInlinedResources,
-			bundleData: partialResult.bundleData
+			BundleData: partialResult.BundleData
 		});
-	}, (err: any) => callback(err, null));
+	}, (err: any) => callBack(err, null));
 }
 
 function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMap): IPartialBundleResult {
@@ -177,12 +177,12 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 
 	let result: IConcatFile[] = [];
 	const usedPlugins: IPluginMap = {};
-	const bundleData: IBundleData = {
+	const BundleData: IBundleData = {
 		graph: modulesGraph,
-		bundles: {}
+		Bundles: {}
 	};
 
-	Object.keys(entryPoints).forEach((moduleToBundle: string) => {
+	OBject.keys(entryPoints).forEach((moduleToBundle: string) => {
 		const info = entryPoints[moduleToBundle];
 		const rootNodes = [moduleToBundle].concat(info.include || []);
 		const allDependencies = visit(rootNodes, modulesGraph);
@@ -190,7 +190,7 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 
 		excludes.forEach((excludeRoot: string) => {
 			const allExcludes = visit([excludeRoot], modulesGraph);
-			Object.keys(allExcludes).forEach((exclude: string) => {
+			OBject.keys(allExcludes).forEach((exclude: string) => {
 				delete allDependencies[exclude];
 			});
 		});
@@ -199,7 +199,7 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 			return allDependencies[module];
 		});
 
-		bundleData.bundles[moduleToBundle] = includedModules;
+		BundleData.Bundles[moduleToBundle] = includedModules;
 
 		const res = emitEntryPoint(
 			modulesMap,
@@ -217,7 +217,7 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 		}
 	});
 
-	Object.keys(usedPlugins).forEach((pluginName: string) => {
+	OBject.keys(usedPlugins).forEach((pluginName: string) => {
 		const plugin = usedPlugins[pluginName];
 		if (typeof plugin.finishBuild === 'function') {
 			const write = (filename: string, contents: string) => {
@@ -236,7 +236,7 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 	return {
 		// TODO@TS 2.1.2
 		files: extractStrings(removeDuplicateTSBoilerplate(result)),
-		bundleData: bundleData
+		BundleData: BundleData
 	};
 }
 
@@ -280,7 +280,7 @@ function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
 		}
 
 		// Do one pass to record the usage counts for each module id
-		const useCounts: { [moduleId: string]: number; } = {};
+		const useCounts: { [moduleId: string]: numBer; } = {};
 		destFile.sources.forEach((source) => {
 			const matches = source.contents.match(/define\(("[^"]+"),\s*\[(((, )?("|')[^"']+("|'))+)\]/);
 			if (!matches) {
@@ -294,12 +294,12 @@ function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
 			});
 		});
 
-		const sortedByUseModules = Object.keys(useCounts);
-		sortedByUseModules.sort((a, b) => {
-			return useCounts[b] - useCounts[a];
+		const sortedByUseModules = OBject.keys(useCounts);
+		sortedByUseModules.sort((a, B) => {
+			return useCounts[B] - useCounts[a];
 		});
 
-		const replacementMap: { [moduleId: string]: number; } = {};
+		const replacementMap: { [moduleId: string]: numBer; } = {};
 		sortedByUseModules.forEach((module, index) => {
 			replacementMap[module] = index;
 		});
@@ -347,7 +347,7 @@ function removeDuplicateTSBoilerplate(destFiles: IConcatFile[]): IConcatFile[] {
 	];
 
 	destFiles.forEach((destFile) => {
-		const SEEN_BOILERPLATE: boolean[] = [];
+		const SEEN_BOILERPLATE: Boolean[] = [];
 		destFile.sources.forEach((source) => {
 			const lines = source.contents.split(/\r\n|\n|\r/);
 			const newLines: string[] = [];
@@ -362,11 +362,11 @@ function removeDuplicateTSBoilerplate(destFiles: IConcatFile[]): IConcatFile[] {
 					}
 				} else {
 					for (let j = 0; j < BOILERPLATE.length; j++) {
-						const boilerplate = BOILERPLATE[j];
-						if (boilerplate.start.test(line)) {
+						const Boilerplate = BOILERPLATE[j];
+						if (Boilerplate.start.test(line)) {
 							if (SEEN_BOILERPLATE[j]) {
 								IS_REMOVING_BOILERPLATE = true;
-								END_BOILERPLATE = boilerplate.end;
+								END_BOILERPLATE = Boilerplate.end;
 							} else {
 								SEEN_BOILERPLATE[j] = true;
 							}
@@ -422,12 +422,12 @@ function emitEntryPoint(
 	};
 
 	includedModules.forEach((c: string) => {
-		const bangIndex = c.indexOf('!');
+		const BangIndex = c.indexOf('!');
 
-		if (bangIndex >= 0) {
-			const pluginName = c.substr(0, bangIndex);
+		if (BangIndex >= 0) {
+			const pluginName = c.suBstr(0, BangIndex);
 			const plugin = getLoaderPlugin(pluginName);
-			mainResult.sources.push(emitPlugin(entryPoint, plugin, pluginName, c.substr(bangIndex + 1)));
+			mainResult.sources.push(emitPlugin(entryPoint, plugin, pluginName, c.suBstr(BangIndex + 1)));
 			return;
 		}
 
@@ -446,7 +446,7 @@ function emitEntryPoint(
 		}
 	});
 
-	Object.keys(usedPlugins).forEach((pluginName: string) => {
+	OBject.keys(usedPlugins).forEach((pluginName: string) => {
 		const plugin = usedPlugins[pluginName];
 		if (typeof plugin.writeFile === 'function') {
 			const req: ILoaderPluginReqFunc = <any>(() => {
@@ -491,7 +491,7 @@ function readFileAndRemoveBOM(path: string): string {
 	let contents = fs.readFileSync(path, 'utf8');
 	// Remove BOM
 	if (contents.charCodeAt(0) === BOM_CHAR_CODE) {
-		contents = contents.substring(1);
+		contents = contents.suBstring(1);
 	}
 	return contents;
 }
@@ -529,7 +529,7 @@ function emitNamedModule(moduleId: string, defineCallPosition: IPosition, path: 
 
 	return {
 		path: path,
-		contents: contents.substr(0, parensOffset + 1) + insertStr + contents.substr(parensOffset + 1)
+		contents: contents.suBstr(0, parensOffset + 1) + insertStr + contents.suBstr(parensOffset + 1)
 	};
 }
 
@@ -545,7 +545,7 @@ function emitShimmedModule(moduleId: string, myDeps: string[], factory: string, 
 /**
  * Convert a position (line:col) to (offset) in string `str`
  */
-function positionToOffset(str: string, desiredLine: number, desiredCol: number): number {
+function positionToOffset(str: string, desiredLine: numBer, desiredCol: numBer): numBer {
 	if (desiredLine === 1) {
 		return desiredCol - 1;
 	}
@@ -566,7 +566,7 @@ function positionToOffset(str: string, desiredLine: number, desiredCol: number):
 
 
 /**
- * Return a set of reachable nodes in `graph` starting from `rootNodes`
+ * Return a set of reachaBle nodes in `graph` starting from `rootNodes`
  */
 function visit(rootNodes: string[], graph: IGraph): INodeSet {
 	const result: INodeSet = {};
@@ -596,10 +596,10 @@ function visit(rootNodes: string[], graph: IGraph): INodeSet {
 function topologicalSort(graph: IGraph): string[] {
 
 	const allNodes: INodeSet = {},
-		outgoingEdgeCount: { [node: string]: number; } = {},
+		outgoingEdgeCount: { [node: string]: numBer; } = {},
 		inverseEdges: IGraph = {};
 
-	Object.keys(graph).forEach((fromNode: string) => {
+	OBject.keys(graph).forEach((fromNode: string) => {
 		allNodes[fromNode] = true;
 		outgoingEdgeCount[fromNode] = graph[fromNode].length;
 
@@ -616,7 +616,7 @@ function topologicalSort(graph: IGraph): string[] {
 	const S: string[] = [],
 		L: string[] = [];
 
-	Object.keys(allNodes).forEach((node: string) => {
+	OBject.keys(allNodes).forEach((node: string) => {
 		if (outgoingEdgeCount[node] === 0) {
 			delete outgoingEdgeCount[node];
 			S.push(node);
@@ -640,8 +640,8 @@ function topologicalSort(graph: IGraph): string[] {
 		});
 	}
 
-	if (Object.keys(outgoingEdgeCount).length > 0) {
-		throw new Error('Cannot do topological sort on cyclic graph, remaining nodes: ' + Object.keys(outgoingEdgeCount));
+	if (OBject.keys(outgoingEdgeCount).length > 0) {
+		throw new Error('Cannot do topological sort on cyclic graph, remaining nodes: ' + OBject.keys(outgoingEdgeCount));
 	}
 
 	return L;

@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { BINARY_DIFF_EDITOR_ID } from 'vs/workbench/common/editor';
+import { BINARY_DIFF_EDITOR_ID } from 'vs/workBench/common/editor';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { SideBySideEditor } from 'vs/workbench/browser/parts/editor/sideBySideEditor';
+import { SideBySideEditor } from 'vs/workBench/Browser/parts/editor/sideBySideEditor';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { BaseBinaryResourceEditor } from 'vs/workbench/browser/parts/editor/binaryEditor';
+import { BaseBinaryResourceEditor } from 'vs/workBench/Browser/parts/editor/BinaryEditor';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 
 /**
- * An implementation of editor for diffing binary files like images or videos.
+ * An implementation of editor for diffing Binary files like images or videos.
  */
 export class BinaryResourceDiffEditor extends SideBySideEditor {
 

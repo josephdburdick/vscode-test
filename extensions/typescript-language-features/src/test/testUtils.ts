@@ -10,10 +10,10 @@ import { join } from 'path';
 import * as vscode from 'vscode';
 
 function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+	return Math.random().toString(36).replace(/[^a-z]+/g, '').suBstr(0, 10);
 }
 
-export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable<vscode.Uri> {
+export function createRandomFile(contents = '', fileExtension = 'txt'): ThenaBle<vscode.Uri> {
 	return new Promise((resolve, reject) => {
 		const tmpFile = join(os.tmpdir(), rndName() + '.' + fileExtension);
 		fs.writeFile(tmpFile, contents, (error) => {
@@ -27,7 +27,7 @@ export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable
 }
 
 
-export function deleteFile(file: vscode.Uri): Thenable<boolean> {
+export function deleteFile(file: vscode.Uri): ThenaBle<Boolean> {
 	return new Promise((resolve, reject) => {
 		fs.unlink(file.fsPath, (err) => {
 			if (err) {
@@ -44,8 +44,8 @@ export const CURSOR = '$$CURSOR$$';
 export function withRandomFileEditor(
 	contents: string,
 	fileExtension: string,
-	run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => Thenable<void>
-): Thenable<boolean> {
+	run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => ThenaBle<void>
+): ThenaBle<Boolean> {
 	const cursorIndex = contents.indexOf(CURSOR);
 	return createRandomFile(contents.replace(CURSOR, ''), fileExtension).then(file => {
 		return vscode.workspace.openTextDocument(file).then(doc => {
@@ -68,7 +68,7 @@ export function withRandomFileEditor(
 	});
 }
 
-export const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
+export const wait = (ms: numBer) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
 export const joinLines = (...args: string[]) => args.join(os.platform() === 'win32' ? '\r\n' : '\n');
 
@@ -103,16 +103,16 @@ export async function updateConfig(documentUri: vscode.Uri, newConfig: VsCodeCon
 	const oldConfig: VsCodeConfiguration = {};
 	const config = vscode.workspace.getConfiguration(undefined, documentUri);
 
-	for (const configKey of Object.keys(newConfig)) {
+	for (const configKey of OBject.keys(newConfig)) {
 		oldConfig[configKey] = config.get(configKey);
 		await new Promise<void>((resolve, reject) =>
-			config.update(configKey, newConfig[configKey], vscode.ConfigurationTarget.Global)
+			config.update(configKey, newConfig[configKey], vscode.ConfigurationTarget.GloBal)
 				.then(() => resolve(), reject));
 	}
 	return oldConfig;
 }
 
-export const Config = Object.freeze({
+export const Config = OBject.freeze({
 	autoClosingBrackets: 'editor.autoClosingBrackets',
 	typescriptCompleteFunctionCalls: 'typescript.suggest.completeFunctionCalls',
 	insertMode: 'editor.suggest.insertMode',
@@ -122,7 +122,7 @@ export const Config = Object.freeze({
 	typescriptQuoteStyle: 'typescript.preferences.quoteStyle',
 } as const);
 
-export const insertModesValues = Object.freeze(['insert', 'replace']);
+export const insertModesValues = OBject.freeze(['insert', 'replace']);
 
 export async function enumerateConfig(
 	documentUri: vscode.Uri,
@@ -138,21 +138,21 @@ export async function enumerateConfig(
 }
 
 
-export function onChangedDocument(documentUri: vscode.Uri, disposables: vscode.Disposable[]) {
+export function onChangedDocument(documentUri: vscode.Uri, disposaBles: vscode.DisposaBle[]) {
 	return new Promise<vscode.TextDocument>(resolve => vscode.workspace.onDidChangeTextDocument(e => {
 		if (e.document.uri.toString() === documentUri.toString()) {
 			resolve(e.document);
 		}
-	}, undefined, disposables));
+	}, undefined, disposaBles));
 }
 
 export async function retryUntilDocumentChanges(
 	documentUri: vscode.Uri,
-	options: { retries: number, timeout: number },
-	disposables: vscode.Disposable[],
-	exec: () => Thenable<unknown>,
+	options: { retries: numBer, timeout: numBer },
+	disposaBles: vscode.DisposaBle[],
+	exec: () => ThenaBle<unknown>,
 ) {
-	const didChangeDocument = onChangedDocument(documentUri, disposables);
+	const didChangeDocument = onChangedDocument(documentUri, disposaBles);
 
 	let done = false;
 

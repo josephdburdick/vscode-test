@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
+import { Emitter } from 'vs/Base/common/event';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
 import { ILogService } from 'vs/platform/log/common/log';
-import { MainContext, MainThreadTimelineShape, IExtHostContext, ExtHostTimelineShape, ExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { TimelineChangeEvent, TimelineOptions, TimelineProviderDescriptor, ITimelineService, InternalTimelineOptions } from 'vs/workbench/contrib/timeline/common/timeline';
+import { MainContext, MainThreadTimelineShape, IExtHostContext, ExtHostTimelineShape, ExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { TimelineChangeEvent, TimelineOptions, TimelineProviderDescriptor, ITimelineService, InternalTimelineOptions } from 'vs/workBench/contriB/timeline/common/timeline';
 
 @extHostNamedCustomer(MainContext.MainThreadTimeline)
 export class MainThreadTimeline implements MainThreadTimelineShape {

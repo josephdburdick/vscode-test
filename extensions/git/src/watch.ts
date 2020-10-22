@@ -6,9 +6,9 @@
 import { Event, EventEmitter, Uri } from 'vscode';
 import { join } from 'path';
 import * as fs from 'fs';
-import { IDisposable } from './util';
+import { IDisposaBle } from './util';
 
-export interface IFileWatcher extends IDisposable {
+export interface IFileWatcher extends IDisposaBle {
 	readonly event: Event<Uri>;
 }
 

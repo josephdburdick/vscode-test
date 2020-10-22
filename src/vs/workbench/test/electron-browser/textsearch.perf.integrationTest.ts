@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/contrib/search/browser/search.contribution'; // load contributions
+import 'vs/workBench/contriB/search/Browser/search.contriBution'; // load contriButions
 import * as assert from 'assert';
 import * as fs from 'fs';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { createSyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { ISearchService } from 'vs/workbench/services/search/common/search';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { ISearchService } from 'vs/workBench/services/search/common/search';
 import { ITelemetryService, ITelemetryInfo } from 'vs/platform/telemetry/common/telemetry';
-import { IUntitledTextEditorService, UntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IUntitledTextEditorService, UntitledTextEditorService } from 'vs/workBench/services/untitled/common/untitledTextEditorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import * as minimist from 'minimist';
-import * as path from 'vs/base/common/path';
-import { LocalSearchService } from 'vs/workbench/services/search/electron-browser/searchService';
+import * as path from 'vs/Base/common/path';
+import { LocalSearchService } from 'vs/workBench/services/search/electron-Browser/searchService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { TestEditorService, TestEditorGroupsService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestEnvironmentService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { TestEditorService, TestEditorGroupsService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { TestEnvironmentService } from 'vs/workBench/test/electron-Browser/workBenchTestServices';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
 
-import { SearchModel } from 'vs/workbench/contrib/search/common/searchModel';
-import { QueryBuilder, ITextQueryBuilderOptions } from 'vs/workbench/contrib/search/common/queryBuilder';
+import { SearchModel } from 'vs/workBench/contriB/search/common/searchModel';
+import { QueryBuilder, ITextQueryBuilderOptions } from 'vs/workBench/contriB/search/common/queryBuilder';
 
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { testWorkspace } from 'vs/platform/workspace/test/common/testWorkspace';
 import { NullLogService, ILogService } from 'vs/platform/log/common/log';
 import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
@@ -42,19 +42,19 @@ import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { TestTextResourcePropertiesService, TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
+import { TestTextResourcePropertiesService, TestContextService } from 'vs/workBench/test/common/workBenchTestServices';
 
 // declare var __dirname: string;
 
 // Checkout sources to run against:
-// git clone --separate-git-dir=testGit --no-checkout --single-branch https://chromium.googlesource.com/chromium/src testWorkspace
+// git clone --separate-git-dir=testGit --no-checkout --single-Branch https://chromium.googlesource.com/chromium/src testWorkspace
 // cd testWorkspace; git checkout 39a7f93d67f7
-// Run from repository root folder with (test.bat on Windows): ./scripts/test-int-mocha.sh --grep TextSearch.performance --timeout 500000 --testWorkspace <path>
+// Run from repository root folder with (test.Bat on Windows): ./scripts/test-int-mocha.sh --grep TextSearch.performance --timeout 500000 --testWorkspace <path>
 suite.skip('TextSearch performance (integration)', () => {
 
 	test('Measure', () => {
 		if (process.env['VSCODE_PID']) {
-			return undefined; // TODO@Rob find out why test fails when run from within VS Code
+			return undefined; // TODO@RoB find out why test fails when run from within VS Code
 		}
 
 		const n = 3;
@@ -96,7 +96,7 @@ suite.skip('TextSearch performance (integration)', () => {
 		const searchModel: SearchModel = instantiationService.createInstance(SearchModel);
 		function runSearch(): Promise<any> {
 			const queryBuilder: QueryBuilder = instantiationService.createInstance(QueryBuilder);
-			const query = queryBuilder.text({ pattern: 'static_library(' }, [URI.file(testWorkspacePath)], queryOptions);
+			const query = queryBuilder.text({ pattern: 'static_liBrary(' }, [URI.file(testWorkspacePath)], queryOptions);
 
 			// Wait for the 'searchResultsFinished' event, which is fired after the search() promise is resolved
 			const onSearchResultsFinished = Event.filter(telemetryService.eventLogged, e => e.name === 'searchResultsFinished');
@@ -127,7 +127,7 @@ suite.skip('TextSearch performance (integration)', () => {
 				resolve = _resolve;
 				error = _error;
 
-				// Don't wait on this promise, we're waiting on the event fired above
+				// Don't wait on this promise, we're waiting on the event fired aBove
 				searchModel.search(query).then(
 					null,
 					_error);
@@ -137,7 +137,7 @@ suite.skip('TextSearch performance (integration)', () => {
 		const finishedEvents: any[] = [];
 		return runSearch() // Warm-up first
 			.then(() => {
-				if (testWorkspaceArg) { // Don't measure by default
+				if (testWorkspaceArg) { // Don't measure By default
 					let i = n;
 					return (function iterate(): Promise<undefined> | undefined {
 						if (!i--) {
@@ -161,44 +161,44 @@ suite.skip('TextSearch performance (integration)', () => {
 });
 
 class TestTelemetryService implements ITelemetryService {
-	public _serviceBrand: undefined;
-	public isOptedIn = true;
-	public sendErrorTelemetry = true;
+	puBlic _serviceBrand: undefined;
+	puBlic isOptedIn = true;
+	puBlic sendErrorTelemetry = true;
 
-	public events: any[] = [];
+	puBlic events: any[] = [];
 
 	private readonly emitter = new Emitter<any>();
 
-	public get eventLogged(): Event<any> {
+	puBlic get eventLogged(): Event<any> {
 		return this.emitter.event;
 	}
 
-	public setEnabled(value: boolean): void {
+	puBlic setEnaBled(value: Boolean): void {
 	}
 
-	public setExperimentProperty(name: string, value: string): void {
+	puBlic setExperimentProperty(name: string, value: string): void {
 	}
 
-	public publicLog(eventName: string, data?: any): Promise<void> {
+	puBlic puBlicLog(eventName: string, data?: any): Promise<void> {
 		const event = { name: eventName, data: data };
 		this.events.push(event);
 		this.emitter.fire(event);
 		return Promise.resolve();
 	}
 
-	public publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLog(eventName, data as any);
+	puBlic puBlicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+		return this.puBlicLog(eventName, data as any);
 	}
 
-	public publicLogError(eventName: string, data?: any): Promise<void> {
-		return this.publicLog(eventName, data);
+	puBlic puBlicLogError(eventName: string, data?: any): Promise<void> {
+		return this.puBlicLog(eventName, data);
 	}
 
-	public publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLogError(eventName, data as any);
+	puBlic puBlicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+		return this.puBlicLogError(eventName, data as any);
 	}
 
-	public getTelemetryInfo(): Promise<ITelemetryInfo> {
+	puBlic getTelemetryInfo(): Promise<ITelemetryInfo> {
 		return Promise.resolve({
 			instanceId: 'someValue.instanceId',
 			sessionId: 'someValue.sessionId',

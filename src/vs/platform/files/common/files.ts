@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { sep } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import * as glob from 'vs/base/common/glob';
+import { sep } from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
+import * as gloB from 'vs/Base/common/gloB';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { startsWithIgnoreCase } from 'vs/base/common/strings';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { isNumber, isUndefinedOrNull } from 'vs/base/common/types';
-import { VSBuffer, VSBufferReadable, VSBufferReadableStream } from 'vs/base/common/buffer';
-import { ReadableStreamEvents } from 'vs/base/common/stream';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { TernarySearchTree } from 'vs/base/common/map';
+import { Event } from 'vs/Base/common/event';
+import { startsWithIgnoreCase } from 'vs/Base/common/strings';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { isNumBer, isUndefinedOrNull } from 'vs/Base/common/types';
+import { VSBuffer, VSBufferReadaBle, VSBufferReadaBleStream } from 'vs/Base/common/Buffer';
+import { ReadaBleStreamEvents } from 'vs/Base/common/stream';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { TernarySearchTree } from 'vs/Base/common/map';
 
 export const IFileService = createDecorator<IFileService>('fileService');
 
@@ -29,12 +29,12 @@ export interface IFileService {
 	readonly onDidChangeFileSystemProviderRegistrations: Event<IFileSystemProviderRegistrationEvent>;
 
 	/**
-	 * An event that is fired when a registered file system provider changes it's capabilities.
+	 * An event that is fired when a registered file system provider changes it's capaBilities.
 	 */
-	readonly onDidChangeFileSystemProviderCapabilities: Event<IFileSystemProviderCapabilitiesChangeEvent>;
+	readonly onDidChangeFileSystemProviderCapaBilities: Event<IFileSystemProviderCapaBilitiesChangeEvent>;
 
 	/**
-	 * An event that is fired when a file system provider is about to be activated. Listeners
+	 * An event that is fired when a file system provider is aBout to Be activated. Listeners
 	 * can join this event with a long running promise to help in the activation process.
 	 */
 	readonly onWillActivateFileSystemProvider: Event<IFileSystemProviderActivationEvent>;
@@ -42,7 +42,7 @@ export interface IFileService {
 	/**
 	 * Registers a file system provider for a certain scheme.
 	 */
-	registerProvider(scheme: string, provider: IFileSystemProvider): IDisposable;
+	registerProvider(scheme: string, provider: IFileSystemProvider): IDisposaBle;
 
 	/**
 	 * Tries to activate a provider with the given scheme.
@@ -52,21 +52,21 @@ export interface IFileService {
 	/**
 	 * Checks if this file service can handle the given resource.
 	 */
-	canHandleResource(resource: URI): boolean;
+	canHandleResource(resource: URI): Boolean;
 
 	/**
-	 * Checks if the provider for the provided resource has the provided file system capability.
+	 * Checks if the provider for the provided resource has the provided file system capaBility.
 	 */
-	hasCapability(resource: URI, capability: FileSystemProviderCapabilities): boolean;
+	hasCapaBility(resource: URI, capaBility: FileSystemProviderCapaBilities): Boolean;
 
 	/**
-	 * List the schemes and capabilies for registered file system providers
+	 * List the schemes and capaBilies for registered file system providers
 	 */
-	listCapabilities(): Iterable<{ scheme: string, capabilities: FileSystemProviderCapabilities }>
+	listCapaBilities(): IteraBle<{ scheme: string, capaBilities: FileSystemProviderCapaBilities }>
 
 	/**
 	 * Allows to listen for file changes. The event will fire for every file within the opened workspace
-	 * (if any) as well as all files that have been watched explicitly using the #watch() API.
+	 * (if any) as well as all files that have Been watched explicitly using the #watch() API.
 	 */
 	readonly onDidFilesChange: Event<FileChangesEvent>;
 
@@ -76,10 +76,10 @@ export interface IFileService {
 	readonly onDidRunOperation: Event<FileOperationEvent>;
 
 	/**
-	 * Resolve the properties of a file/folder identified by the resource.
+	 * Resolve the properties of a file/folder identified By the resource.
 	 *
 	 * If the optional parameter "resolveTo" is specified in options, the stat service is asked
-	 * to provide a stat object that should contain the full graph of folders up to all of the
+	 * to provide a stat oBject that should contain the full graph of folders up to all of the
 	 * target resources.
 	 *
 	 * If the optional parameter "resolveSingleChildDescendants" is specified in options,
@@ -93,75 +93,75 @@ export interface IFileService {
 	resolve(resource: URI, options?: IResolveFileOptions): Promise<IFileStat>;
 
 	/**
-	 * Same as resolve() but supports resolving multiple resources in parallel.
+	 * Same as resolve() But supports resolving multiple resources in parallel.
 	 * If one of the resolve targets fails to resolve returns a fake IFileStat instead of making the whole call fail.
 	 */
 	resolveAll(toResolve: { resource: URI, options: IResolveMetadataFileOptions }[]): Promise<IResolveFileResult[]>;
 	resolveAll(toResolve: { resource: URI, options?: IResolveFileOptions }[]): Promise<IResolveFileResult[]>;
 
 	/**
-	 * Finds out if a file/folder identified by the resource exists.
+	 * Finds out if a file/folder identified By the resource exists.
 	 */
-	exists(resource: URI): Promise<boolean>;
+	exists(resource: URI): Promise<Boolean>;
 
 	/**
-	 * Read the contents of the provided resource unbuffered.
+	 * Read the contents of the provided resource unBuffered.
 	 */
 	readFile(resource: URI, options?: IReadFileOptions): Promise<IFileContent>;
 
 	/**
-	 * Read the contents of the provided resource buffered as stream.
+	 * Read the contents of the provided resource Buffered as stream.
 	 */
 	readFileStream(resource: URI, options?: IReadFileOptions): Promise<IFileStreamContent>;
 
 	/**
 	 * Updates the content replacing its previous value.
 	 */
-	writeFile(resource: URI, bufferOrReadableOrStream: VSBuffer | VSBufferReadable | VSBufferReadableStream, options?: IWriteFileOptions): Promise<IFileStatWithMetadata>;
+	writeFile(resource: URI, BufferOrReadaBleOrStream: VSBuffer | VSBufferReadaBle | VSBufferReadaBleStream, options?: IWriteFileOptions): Promise<IFileStatWithMetadata>;
 
 	/**
-	 * Moves the file/folder to a new path identified by the resource.
+	 * Moves the file/folder to a new path identified By the resource.
 	 *
-	 * The optional parameter overwrite can be set to replace an existing file at the location.
+	 * The optional parameter overwrite can Be set to replace an existing file at the location.
 	 */
-	move(source: URI, target: URI, overwrite?: boolean): Promise<IFileStatWithMetadata>;
+	move(source: URI, target: URI, overwrite?: Boolean): Promise<IFileStatWithMetadata>;
 
 	/**
-	 * Find out if a move operation is possible given the arguments. No changes on disk will
-	 * be performed. Returns an Error if the operation cannot be done.
+	 * Find out if a move operation is possiBle given the arguments. No changes on disk will
+	 * Be performed. Returns an Error if the operation cannot Be done.
 	 */
-	canMove(source: URI, target: URI, overwrite?: boolean): Promise<Error | true>;
+	canMove(source: URI, target: URI, overwrite?: Boolean): Promise<Error | true>;
 
 	/**
-	 * Copies the file/folder to a path identified by the resource.
+	 * Copies the file/folder to a path identified By the resource.
 	 *
-	 * The optional parameter overwrite can be set to replace an existing file at the location.
+	 * The optional parameter overwrite can Be set to replace an existing file at the location.
 	 */
-	copy(source: URI, target: URI, overwrite?: boolean): Promise<IFileStatWithMetadata>;
+	copy(source: URI, target: URI, overwrite?: Boolean): Promise<IFileStatWithMetadata>;
 
 	/**
-	 * Find out if a copy operation is possible given the arguments. No changes on disk will
-	 * be performed. Returns an Error if the operation cannot be done.
+	 * Find out if a copy operation is possiBle given the arguments. No changes on disk will
+	 * Be performed. Returns an Error if the operation cannot Be done.
 	 */
-	canCopy(source: URI, target: URI, overwrite?: boolean): Promise<Error | true>;
+	canCopy(source: URI, target: URI, overwrite?: Boolean): Promise<Error | true>;
 
 	/**
-	 * Find out if a file create operation is possible given the arguments. No changes on disk will
-	 * be performed. Returns an Error if the operation cannot be done.
+	 * Find out if a file create operation is possiBle given the arguments. No changes on disk will
+	 * Be performed. Returns an Error if the operation cannot Be done.
 	 */
 	canCreateFile(resource: URI, options?: ICreateFileOptions): Promise<Error | true>;
 
 	/**
 	 * Creates a new file with the given path and optional contents. The returned promise
-	 * will have the stat model object as a result.
+	 * will have the stat model oBject as a result.
 	 *
-	 * The optional parameter content can be used as value to fill into the new file.
+	 * The optional parameter content can Be used as value to fill into the new file.
 	 */
-	createFile(resource: URI, bufferOrReadableOrStream?: VSBuffer | VSBufferReadable | VSBufferReadableStream, options?: ICreateFileOptions): Promise<IFileStatWithMetadata>;
+	createFile(resource: URI, BufferOrReadaBleOrStream?: VSBuffer | VSBufferReadaBle | VSBufferReadaBleStream, options?: ICreateFileOptions): Promise<IFileStatWithMetadata>;
 
 	/**
 	 * Creates a new folder with the given path. The returned promise
-	 * will have the stat model object as a result.
+	 * will have the stat model oBject as a result.
 	 */
 	createFolder(resource: URI): Promise<IFileStatWithMetadata>;
 
@@ -170,73 +170,73 @@ export interface IFileService {
 	 * move the file to trash. The optional recursive parameter allows to delete
 	 * non-empty folders recursively.
 	 */
-	del(resource: URI, options?: { useTrash?: boolean, recursive?: boolean }): Promise<void>;
+	del(resource: URI, options?: { useTrash?: Boolean, recursive?: Boolean }): Promise<void>;
 
 	/**
-	 * Find out if a delete operation is possible given the arguments. No changes on disk will
-	 * be performed. Returns an Error if the operation cannot be done.
+	 * Find out if a delete operation is possiBle given the arguments. No changes on disk will
+	 * Be performed. Returns an Error if the operation cannot Be done.
 	 */
-	canDelete(resource: URI, options?: { useTrash?: boolean, recursive?: boolean }): Promise<Error | true>;
+	canDelete(resource: URI, options?: { useTrash?: Boolean, recursive?: Boolean }): Promise<Error | true>;
 
 	/**
 	 * Allows to start a watcher that reports file/folder change events on the provided resource.
 	 *
 	 * Note: watching a folder does not report events recursively for child folders yet.
 	 */
-	watch(resource: URI): IDisposable;
+	watch(resource: URI): IDisposaBle;
 
 	/**
-	 * Frees up any resources occupied by this service.
+	 * Frees up any resources occupied By this service.
 	 */
 	dispose(): void;
 }
 
 export interface FileOverwriteOptions {
-	overwrite: boolean;
+	overwrite: Boolean;
 }
 
 export interface FileReadStreamOptions {
 
 	/**
-	 * Is an integer specifying where to begin reading from in the file. If position is undefined,
-	 * data will be read from the current file position.
+	 * Is an integer specifying where to Begin reading from in the file. If position is undefined,
+	 * data will Be read from the current file position.
 	 */
-	readonly position?: number;
+	readonly position?: numBer;
 
 	/**
-	 * Is an integer specifying how many bytes to read from the file. By default, all bytes
-	 * will be read.
+	 * Is an integer specifying how many Bytes to read from the file. By default, all Bytes
+	 * will Be read.
 	 */
-	readonly length?: number;
+	readonly length?: numBer;
 
 	/**
-	 * If provided, the size of the file will be checked against the limits.
+	 * If provided, the size of the file will Be checked against the limits.
 	 */
 	limits?: {
-		readonly size?: number;
-		readonly memory?: number;
+		readonly size?: numBer;
+		readonly memory?: numBer;
 	};
 }
 
 export interface FileWriteOptions {
-	overwrite: boolean;
-	create: boolean;
+	overwrite: Boolean;
+	create: Boolean;
 }
 
 export interface FileOpenOptions {
-	create: boolean;
+	create: Boolean;
 }
 
 export interface FileDeleteOptions {
-	recursive: boolean;
-	useTrash: boolean;
+	recursive: Boolean;
+	useTrash: Boolean;
 }
 
 export enum FileType {
 	Unknown = 0,
 	File = 1,
 	Directory = 2,
-	SymbolicLink = 64
+	SymBolicLink = 64
 }
 
 export interface IStat {
@@ -245,22 +245,22 @@ export interface IStat {
 	/**
 	 * The last modification date represented as millis from unix epoch.
 	 */
-	mtime: number;
+	mtime: numBer;
 
 	/**
 	 * The creation date represented as millis from unix epoch.
 	 */
-	ctime: number;
+	ctime: numBer;
 
-	size: number;
+	size: numBer;
 }
 
 export interface IWatchOptions {
-	recursive: boolean;
+	recursive: Boolean;
 	excludes: string[];
 }
 
-export const enum FileSystemProviderCapabilities {
+export const enum FileSystemProviderCapaBilities {
 	FileReadWrite = 1 << 1,
 	FileOpenReadWriteClose = 1 << 2,
 	FileReadStream = 1 << 4,
@@ -275,13 +275,13 @@ export const enum FileSystemProviderCapabilities {
 
 export interface IFileSystemProvider {
 
-	readonly capabilities: FileSystemProviderCapabilities;
-	readonly onDidChangeCapabilities: Event<void>;
+	readonly capaBilities: FileSystemProviderCapaBilities;
+	readonly onDidChangeCapaBilities: Event<void>;
 
-	readonly onDidErrorOccur?: Event<string>; // TODO@ben remove once file watchers are solid
+	readonly onDidErrorOccur?: Event<string>; // TODO@Ben remove once file watchers are solid
 
 	readonly onDidChangeFile: Event<readonly IFileChange[]>;
-	watch(resource: URI, opts: IWatchOptions): IDisposable;
+	watch(resource: URI, opts: IWatchOptions): IDisposaBle;
 
 	stat(resource: URI): Promise<IStat>;
 	mkdir(resource: URI): Promise<void>;
@@ -294,48 +294,48 @@ export interface IFileSystemProvider {
 	readFile?(resource: URI): Promise<Uint8Array>;
 	writeFile?(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void>;
 
-	readFileStream?(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadableStreamEvents<Uint8Array>;
+	readFileStream?(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadaBleStreamEvents<Uint8Array>;
 
-	open?(resource: URI, opts: FileOpenOptions): Promise<number>;
-	close?(fd: number): Promise<void>;
-	read?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number>;
-	write?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number>;
+	open?(resource: URI, opts: FileOpenOptions): Promise<numBer>;
+	close?(fd: numBer): Promise<void>;
+	read?(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer>;
+	write?(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer>;
 }
 
-export interface IFileSystemProviderWithFileReadWriteCapability extends IFileSystemProvider {
+export interface IFileSystemProviderWithFileReadWriteCapaBility extends IFileSystemProvider {
 	readFile(resource: URI): Promise<Uint8Array>;
 	writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void>;
 }
 
-export function hasReadWriteCapability(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileReadWriteCapability {
-	return !!(provider.capabilities & FileSystemProviderCapabilities.FileReadWrite);
+export function hasReadWriteCapaBility(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileReadWriteCapaBility {
+	return !!(provider.capaBilities & FileSystemProviderCapaBilities.FileReadWrite);
 }
 
-export interface IFileSystemProviderWithFileFolderCopyCapability extends IFileSystemProvider {
+export interface IFileSystemProviderWithFileFolderCopyCapaBility extends IFileSystemProvider {
 	copy(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void>;
 }
 
-export function hasFileFolderCopyCapability(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileFolderCopyCapability {
-	return !!(provider.capabilities & FileSystemProviderCapabilities.FileFolderCopy);
+export function hasFileFolderCopyCapaBility(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileFolderCopyCapaBility {
+	return !!(provider.capaBilities & FileSystemProviderCapaBilities.FileFolderCopy);
 }
 
-export interface IFileSystemProviderWithOpenReadWriteCloseCapability extends IFileSystemProvider {
-	open(resource: URI, opts: FileOpenOptions): Promise<number>;
-	close(fd: number): Promise<void>;
-	read(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number>;
-	write(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number>;
+export interface IFileSystemProviderWithOpenReadWriteCloseCapaBility extends IFileSystemProvider {
+	open(resource: URI, opts: FileOpenOptions): Promise<numBer>;
+	close(fd: numBer): Promise<void>;
+	read(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer>;
+	write(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer>;
 }
 
-export function hasOpenReadWriteCloseCapability(provider: IFileSystemProvider): provider is IFileSystemProviderWithOpenReadWriteCloseCapability {
-	return !!(provider.capabilities & FileSystemProviderCapabilities.FileOpenReadWriteClose);
+export function hasOpenReadWriteCloseCapaBility(provider: IFileSystemProvider): provider is IFileSystemProviderWithOpenReadWriteCloseCapaBility {
+	return !!(provider.capaBilities & FileSystemProviderCapaBilities.FileOpenReadWriteClose);
 }
 
-export interface IFileSystemProviderWithFileReadStreamCapability extends IFileSystemProvider {
-	readFileStream(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadableStreamEvents<Uint8Array>;
+export interface IFileSystemProviderWithFileReadStreamCapaBility extends IFileSystemProvider {
+	readFileStream(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadaBleStreamEvents<Uint8Array>;
 }
 
-export function hasFileReadStreamCapability(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileReadStreamCapability {
-	return !!(provider.capabilities & FileSystemProviderCapabilities.FileReadStream);
+export function hasFileReadStreamCapaBility(provider: IFileSystemProvider): provider is IFileSystemProviderWithFileReadStreamCapaBility {
+	return !!(provider.capaBilities & FileSystemProviderCapaBilities.FileReadStream);
 }
 
 export enum FileSystemProviderErrorCode {
@@ -346,13 +346,13 @@ export enum FileSystemProviderErrorCode {
 	FileExceedsMemoryLimit = 'EntryExceedsMemoryLimit',
 	FileTooLarge = 'EntryTooLarge',
 	NoPermissions = 'NoPermissions',
-	Unavailable = 'Unavailable',
+	UnavailaBle = 'UnavailaBle',
 	Unknown = 'Unknown'
 }
 
 export class FileSystemProviderError extends Error {
 
-	constructor(message: string, public readonly code: FileSystemProviderErrorCode) {
+	constructor(message: string, puBlic readonly code: FileSystemProviderErrorCode) {
 		super(message);
 	}
 }
@@ -366,7 +366,7 @@ export function createFileSystemProviderError(error: Error | string, code: FileS
 
 export function ensureFileSystemProviderError(error?: Error): Error {
 	if (!error) {
-		return createFileSystemProviderError(localize('unknownError', "Unknown Error"), FileSystemProviderErrorCode.Unknown); // https://github.com/microsoft/vscode/issues/72798
+		return createFileSystemProviderError(localize('unknownError', "Unknown Error"), FileSystemProviderErrorCode.Unknown); // https://githuB.com/microsoft/vscode/issues/72798
 	}
 
 	return error;
@@ -380,7 +380,7 @@ export function markAsFileSystemProviderError(error: Error, code: FileSystemProv
 
 export function toFileSystemProviderErrorCode(error: Error | undefined | null): FileSystemProviderErrorCode {
 
-	// Guard against abuse
+	// Guard against aBuse
 	if (!error) {
 		return FileSystemProviderErrorCode.Unknown;
 	}
@@ -390,7 +390,7 @@ export function toFileSystemProviderErrorCode(error: Error | undefined | null): 
 		return error.code;
 	}
 
-	// Any other error, check for name match by assuming that the error
+	// Any other error, check for name match By assuming that the error
 	// went through the markAsFileSystemProviderError() method
 	const match = /^(.+) \(FileSystemError\)$/.exec(error.name);
 	if (!match) {
@@ -405,7 +405,7 @@ export function toFileSystemProviderErrorCode(error: Error | undefined | null): 
 		case FileSystemProviderErrorCode.FileExceedsMemoryLimit: return FileSystemProviderErrorCode.FileExceedsMemoryLimit;
 		case FileSystemProviderErrorCode.FileTooLarge: return FileSystemProviderErrorCode.FileTooLarge;
 		case FileSystemProviderErrorCode.NoPermissions: return FileSystemProviderErrorCode.NoPermissions;
-		case FileSystemProviderErrorCode.Unavailable: return FileSystemProviderErrorCode.Unavailable;
+		case FileSystemProviderErrorCode.UnavailaBle: return FileSystemProviderErrorCode.UnavailaBle;
 	}
 
 	return FileSystemProviderErrorCode.Unknown;
@@ -440,12 +440,12 @@ export function toFileOperationResult(error: Error): FileOperationResult {
 }
 
 export interface IFileSystemProviderRegistrationEvent {
-	added: boolean;
+	added: Boolean;
 	scheme: string;
 	provider?: IFileSystemProvider;
 }
 
-export interface IFileSystemProviderCapabilitiesChangeEvent {
+export interface IFileSystemProviderCapaBilitiesChangeEvent {
 	provider: IFileSystemProvider;
 	scheme: string;
 }
@@ -466,17 +466,17 @@ export class FileOperationEvent {
 
 	constructor(resource: URI, operation: FileOperation.DELETE);
 	constructor(resource: URI, operation: FileOperation.CREATE | FileOperation.MOVE | FileOperation.COPY, target: IFileStatWithMetadata);
-	constructor(public readonly resource: URI, public readonly operation: FileOperation, public readonly target?: IFileStatWithMetadata) { }
+	constructor(puBlic readonly resource: URI, puBlic readonly operation: FileOperation, puBlic readonly target?: IFileStatWithMetadata) { }
 
-	isOperation(operation: FileOperation.DELETE): boolean;
+	isOperation(operation: FileOperation.DELETE): Boolean;
 	isOperation(operation: FileOperation.MOVE | FileOperation.COPY | FileOperation.CREATE): this is { readonly target: IFileStatWithMetadata };
-	isOperation(operation: FileOperation): boolean {
+	isOperation(operation: FileOperation): Boolean {
 		return this.operation === operation;
 	}
 }
 
 /**
- * Possible changes that can occur to a file.
+ * PossiBle changes that can occur to a file.
  */
 export const enum FileChangeType {
 	UPDATED = 0,
@@ -505,7 +505,7 @@ export class FileChangesEvent {
 	/**
 	 * @deprecated use the `contains()` or `affects` method to efficiently find
 	 * out if the event relates to a given resource. these methods ensure:
-	 * - that there is no expensive lookup needed (by using a `TernarySearchTree`)
+	 * - that there is no expensive lookup needed (By using a `TernarySearchTree`)
 	 * - correctly handles `FileChangeType.DELETED` events
 	 */
 	readonly changes: readonly IFileChange[];
@@ -514,7 +514,7 @@ export class FileChangesEvent {
 	private readonly updated: TernarySearchTree<URI, IFileChange> | undefined = undefined;
 	private readonly deleted: TernarySearchTree<URI, IFileChange> | undefined = undefined;
 
-	constructor(changes: readonly IFileChange[], private readonly ignorePathCasing: boolean) {
+	constructor(changes: readonly IFileChange[], private readonly ignorePathCasing: Boolean) {
 		this.changes = changes;
 
 		for (const change of changes) {
@@ -524,19 +524,19 @@ export class FileChangesEvent {
 						this.added = TernarySearchTree.forUris<IFileChange>(this.ignorePathCasing);
 					}
 					this.added.set(change.resource, change);
-					break;
+					Break;
 				case FileChangeType.UPDATED:
 					if (!this.updated) {
 						this.updated = TernarySearchTree.forUris<IFileChange>(this.ignorePathCasing);
 					}
 					this.updated.set(change.resource, change);
-					break;
+					Break;
 				case FileChangeType.DELETED:
 					if (!this.deleted) {
 						this.deleted = TernarySearchTree.forUris<IFileChange>(this.ignorePathCasing);
 					}
 					this.deleted.set(change.resource, change);
-					break;
+					Break;
 			}
 		}
 	}
@@ -547,7 +547,7 @@ export class FileChangesEvent {
 	 * Note: when passing `FileChangeType.DELETED`, we consider a match
 	 * also when the parent of the resource got deleted.
 	 */
-	contains(resource: URI, ...types: FileChangeType[]): boolean {
+	contains(resource: URI, ...types: FileChangeType[]): Boolean {
 		return this.doContains(resource, { includeChildren: false }, ...types);
 	}
 
@@ -555,11 +555,11 @@ export class FileChangesEvent {
 	 * Find out if the file change events either match the provided
 	 * resource, or contain a child of this resource.
 	 */
-	affects(resource: URI, ...types: FileChangeType[]): boolean {
+	affects(resource: URI, ...types: FileChangeType[]): Boolean {
 		return this.doContains(resource, { includeChildren: true }, ...types);
 	}
 
-	private doContains(resource: URI, options: { includeChildren: boolean }, ...types: FileChangeType[]): boolean {
+	private doContains(resource: URI, options: { includeChildren: Boolean }, ...types: FileChangeType[]): Boolean {
 		if (!resource) {
 			return false;
 		}
@@ -590,7 +590,7 @@ export class FileChangesEvent {
 
 		// Deleted
 		if (!hasTypesFilter || types.includes(FileChangeType.DELETED)) {
-			if (this.deleted?.findSubstr(resource) /* deleted also considers parent folders */) {
+			if (this.deleted?.findSuBstr(resource) /* deleted also considers parent folders */) {
 				return true;
 			}
 
@@ -605,7 +605,7 @@ export class FileChangesEvent {
 	/**
 	 * @deprecated use the `contains()` method to efficiently find out if the event
 	 * relates to a given resource. this method ensures:
-	 * - that there is no expensive lookup needed by using a `TernarySearchTree`
+	 * - that there is no expensive lookup needed By using a `TernarySearchTree`
 	 * - correctly handles `FileChangeType.DELETED` events
 	 */
 	getAdded(): IFileChange[] {
@@ -615,14 +615,14 @@ export class FileChangesEvent {
 	/**
 	 * Returns if this event contains added files.
 	 */
-	gotAdded(): boolean {
+	gotAdded(): Boolean {
 		return !!this.added;
 	}
 
 	/**
 	 * @deprecated use the `contains()` method to efficiently find out if the event
 	 * relates to a given resource. this method ensures:
-	 * - that there is no expensive lookup needed by using a `TernarySearchTree`
+	 * - that there is no expensive lookup needed By using a `TernarySearchTree`
 	 * - correctly handles `FileChangeType.DELETED` events
 	 */
 	getDeleted(): IFileChange[] {
@@ -632,14 +632,14 @@ export class FileChangesEvent {
 	/**
 	 * Returns if this event contains deleted files.
 	 */
-	gotDeleted(): boolean {
+	gotDeleted(): Boolean {
 		return !!this.deleted;
 	}
 
 	/**
 	 * @deprecated use the `contains()` method to efficiently find out if the event
 	 * relates to a given resource. this method ensures:
-	 * - that there is no expensive lookup needed by using a `TernarySearchTree`
+	 * - that there is no expensive lookup needed By using a `TernarySearchTree`
 	 * - correctly handles `FileChangeType.DELETED` events
 	 */
 	getUpdated(): IFileChange[] {
@@ -649,7 +649,7 @@ export class FileChangesEvent {
 	/**
 	 * Returns if this event contains updated files.
 	 */
-	gotUpdated(): boolean {
+	gotUpdated(): Boolean {
 		return !!this.updated;
 	}
 
@@ -669,15 +669,15 @@ export class FileChangesEvent {
 	/**
 	 * @deprecated use the `contains()` method to efficiently find out if the event
 	 * relates to a given resource. this method ensures:
-	 * - that there is no expensive lookup needed by using a `TernarySearchTree`
+	 * - that there is no expensive lookup needed By using a `TernarySearchTree`
 	 * - correctly handles `FileChangeType.DELETED` events
 	 */
-	filter(filterFn: (change: IFileChange) => boolean): FileChangesEvent {
+	filter(filterFn: (change: IFileChange) => Boolean): FileChangesEvent {
 		return new FileChangesEvent(this.changes.filter(change => filterFn(change)), this.ignorePathCasing);
 	}
 }
 
-export function isParent(path: string, candidate: string, ignoreCase?: boolean): boolean {
+export function isParent(path: string, candidate: string, ignoreCase?: Boolean): Boolean {
 	if (!path || !candidate || path === candidate) {
 		return false;
 	}
@@ -713,42 +713,42 @@ interface IBaseStat {
 	/**
 	 * The size of the file.
 	 *
-	 * The value may or may not be resolved as
+	 * The value may or may not Be resolved as
 	 * it is optional.
 	 */
-	size?: number;
+	size?: numBer;
 
 	/**
 	 * The last modification date represented as millis from unix epoch.
 	 *
-	 * The value may or may not be resolved as
+	 * The value may or may not Be resolved as
 	 * it is optional.
 	 */
-	mtime?: number;
+	mtime?: numBer;
 
 	/**
 	 * The creation date represented as millis from unix epoch.
 	 *
-	 * The value may or may not be resolved as
+	 * The value may or may not Be resolved as
 	 * it is optional.
 	 */
-	ctime?: number;
+	ctime?: numBer;
 
 	/**
 	 * A unique identifier thet represents the
 	 * current state of the file or directory.
 	 *
-	 * The value may or may not be resolved as
+	 * The value may or may not Be resolved as
 	 * it is optional.
 	 */
 	etag?: string;
 }
 
 export interface IBaseStatWithMetadata extends IBaseStat {
-	mtime: number;
-	ctime: number;
+	mtime: numBer;
+	ctime: numBer;
 	etag: string;
-	size: number;
+	size: numBer;
 }
 
 /**
@@ -759,17 +759,17 @@ export interface IFileStat extends IBaseStat {
 	/**
 	 * The resource is a file.
 	 */
-	isFile: boolean;
+	isFile: Boolean;
 
 	/**
 	 * The resource is a directory.
 	 */
-	isDirectory: boolean;
+	isDirectory: Boolean;
 
 	/**
-	 * The resource is a symbolic link.
+	 * The resource is a symBolic link.
 	 */
-	isSymbolicLink: boolean;
+	isSymBolicLink: Boolean;
 
 	/**
 	 * The children of the file stat or undefined if none.
@@ -778,16 +778,16 @@ export interface IFileStat extends IBaseStat {
 }
 
 export interface IFileStatWithMetadata extends IFileStat, IBaseStatWithMetadata {
-	mtime: number;
-	ctime: number;
+	mtime: numBer;
+	ctime: numBer;
 	etag: string;
-	size: number;
+	size: numBer;
 	children?: IFileStatWithMetadata[];
 }
 
 export interface IResolveFileResult {
 	stat?: IFileStat;
-	success: boolean;
+	success: Boolean;
 }
 
 export interface IResolveFileResultWithMetadata extends IResolveFileResult {
@@ -797,7 +797,7 @@ export interface IResolveFileResultWithMetadata extends IResolveFileResult {
 export interface IFileContent extends IBaseStatWithMetadata {
 
 	/**
-	 * The content of a file as buffer.
+	 * The content of a file as Buffer.
 	 */
 	value: VSBuffer;
 }
@@ -807,7 +807,7 @@ export interface IFileStreamContent extends IBaseStatWithMetadata {
 	/**
 	 * The content of a file as stream.
 	 */
-	value: VSBufferReadableStream;
+	value: VSBufferReadaBleStream;
 }
 
 export interface IReadFileOptions extends FileReadStreamOptions {
@@ -815,7 +815,7 @@ export interface IReadFileOptions extends FileReadStreamOptions {
 	/**
 	 * The optional etag parameter allows to return early from resolving the resource if
 	 * the contents on disk match the etag. This prevents accumulated reading of resources
-	 * that have been read already with the same etag.
+	 * that have Been read already with the same etag.
 	 * It is the task of the caller to makes sure to handle this error case from the promise.
 	 */
 	readonly etag?: string;
@@ -824,12 +824,12 @@ export interface IReadFileOptions extends FileReadStreamOptions {
 export interface IWriteFileOptions {
 
 	/**
-	 * The last known modification time of the file. This can be used to prevent dirty writes.
+	 * The last known modification time of the file. This can Be used to prevent dirty writes.
 	 */
-	readonly mtime?: number;
+	readonly mtime?: numBer;
 
 	/**
-	 * The etag of the file. This can be used to prevent dirty writes.
+	 * The etag of the file. This can Be used to prevent dirty writes.
 	 */
 	readonly etag?: string;
 }
@@ -843,15 +843,15 @@ export interface IResolveFileOptions {
 	readonly resolveTo?: readonly URI[];
 
 	/**
-	 * Automatically continue resolving children of a directory if the number of children is 1.
+	 * Automatically continue resolving children of a directory if the numBer of children is 1.
 	 */
-	readonly resolveSingleChildDescendants?: boolean;
+	readonly resolveSingleChildDescendants?: Boolean;
 
 	/**
-	 * Will resolve mtime, ctime, size and etag of files if enabled. This can have a negative impact
-	 * on performance and thus should only be used when these values are required.
+	 * Will resolve mtime, ctime, size and etag of files if enaBled. This can have a negative impact
+	 * on performance and thus should only Be used when these values are required.
 	 */
-	readonly resolveMetadata?: boolean;
+	readonly resolveMetadata?: Boolean;
 }
 
 export interface IResolveMetadataFileOptions extends IResolveFileOptions {
@@ -862,18 +862,18 @@ export interface ICreateFileOptions {
 
 	/**
 	 * Overwrite the file to create if it already exists on disk. Otherwise
-	 * an error will be thrown (FILE_MODIFIED_SINCE).
+	 * an error will Be thrown (FILE_MODIFIED_SINCE).
 	 */
-	readonly overwrite?: boolean;
+	readonly overwrite?: Boolean;
 }
 
 export class FileOperationError extends Error {
-	constructor(message: string, public fileOperationResult: FileOperationResult, public options?: IReadFileOptions & IWriteFileOptions & ICreateFileOptions) {
+	constructor(message: string, puBlic fileOperationResult: FileOperationResult, puBlic options?: IReadFileOptions & IWriteFileOptions & ICreateFileOptions) {
 		super(message);
 	}
 
-	static isFileOperationError(obj: unknown): obj is FileOperationError {
-		return obj instanceof Error && !isUndefinedOrNull((obj as FileOperationError).fileOperationResult);
+	static isFileOperationError(oBj: unknown): oBj is FileOperationError {
+		return oBj instanceof Error && !isUndefinedOrNull((oBj as FileOperationError).fileOperationResult);
 	}
 }
 
@@ -911,16 +911,16 @@ export const FILES_EXCLUDE_CONFIG = 'files.exclude';
 export interface IFilesConfiguration {
 	files: {
 		associations: { [filepattern: string]: string };
-		exclude: glob.IExpression;
-		watcherExclude: { [filepattern: string]: boolean };
+		exclude: gloB.IExpression;
+		watcherExclude: { [filepattern: string]: Boolean };
 		encoding: string;
-		autoGuessEncoding: boolean;
+		autoGuessEncoding: Boolean;
 		defaultLanguage: string;
-		trimTrailingWhitespace: boolean;
+		trimTrailingWhitespace: Boolean;
 		autoSave: string;
-		autoSaveDelay: number;
+		autoSaveDelay: numBer;
 		eol: string;
-		enableTrash: boolean;
+		enaBleTrash: Boolean;
 		hotExit: string;
 		saveConflictResolution: 'askUser' | 'overwriteFileOnDisk';
 	};
@@ -933,14 +933,14 @@ export enum FileKind {
 }
 
 /**
- * A hint to disable etag checking for reading/writing.
+ * A hint to disaBle etag checking for reading/writing.
  */
 export const ETAG_DISABLED = '';
 
-export function etag(stat: { mtime: number, size: number }): string;
-export function etag(stat: { mtime: number | undefined, size: number | undefined }): string | undefined;
-export function etag(stat: { mtime: number | undefined, size: number | undefined }): string | undefined {
-	if (typeof stat.size !== 'number' || typeof stat.mtime !== 'number') {
+export function etag(stat: { mtime: numBer, size: numBer }): string;
+export function etag(stat: { mtime: numBer | undefined, size: numBer | undefined }): string | undefined;
+export function etag(stat: { mtime: numBer | undefined, size: numBer | undefined }): string | undefined {
+	if (typeof stat.size !== 'numBer' || typeof stat.mtime !== 'numBer') {
 		return undefined;
 	}
 
@@ -953,9 +953,9 @@ export function whenProviderRegistered(file: URI, fileService: IFileService): Pr
 	}
 
 	return new Promise(resolve => {
-		const disposable = fileService.onDidChangeFileSystemProviderRegistrations(e => {
+		const disposaBle = fileService.onDidChangeFileSystemProviderRegistrations(e => {
 			if (e.scheme === file.scheme && e.added) {
-				disposable.dispose();
+				disposaBle.dispose();
 				resolve();
 			}
 		});
@@ -969,7 +969,7 @@ export const MIN_MAX_MEMORY_SIZE_MB = 2048;
 export const FALLBACK_MAX_MEMORY_SIZE_MB = 4096;
 
 /**
- * Helper to format a raw byte size into a human readable label.
+ * Helper to format a raw Byte size into a human readaBle laBel.
  */
 export class BinarySize {
 	static readonly KB = 1024;
@@ -977,8 +977,8 @@ export class BinarySize {
 	static readonly GB = BinarySize.MB * BinarySize.KB;
 	static readonly TB = BinarySize.GB * BinarySize.KB;
 
-	static formatSize(size: number): string {
-		if (!isNumber(size)) {
+	static formatSize(size: numBer): string {
+		if (!isNumBer(size)) {
 			size = 0;
 		}
 

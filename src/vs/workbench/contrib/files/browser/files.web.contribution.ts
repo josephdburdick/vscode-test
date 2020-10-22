@@ -5,11 +5,11 @@
 
 import * as nls from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorInput } from 'vs/workbench/common/editor';
-import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
+import { EditorInput } from 'vs/workBench/common/editor';
+import { FileEditorInput } from 'vs/workBench/contriB/files/common/editors/fileEditorInput';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
+import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workBench/Browser/editor';
+import { TextFileEditor } from 'vs/workBench/contriB/files/Browser/editors/textFileEditor';
 
 // Register file editor
 Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(

@@ -3,119 +3,119 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/arrays';
-import { CancelablePromise, createCancelablePromise } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { memoize } from 'vs/base/common/decorators';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { Iterable } from 'vs/base/common/iterator';
-import { Lazy } from 'vs/base/common/lazy';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { isEqual } from 'vs/base/common/resources';
+import { equals } from 'vs/Base/common/arrays';
+import { CancelaBlePromise, createCancelaBlePromise } from 'vs/Base/common/async';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { memoize } from 'vs/Base/common/decorators';
+import { isPromiseCanceledError } from 'vs/Base/common/errors';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { Lazy } from 'vs/Base/common/lazy';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { isEqual } from 'vs/Base/common/resources';
 import { EditorActivation } from 'vs/platform/editor/common/editor';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { GroupIdentifier } from 'vs/workbench/common/editor';
-import { IWebviewService, WebviewContentOptions, WebviewExtensionDescription, WebviewIcons, WebviewOptions, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { IEditorGroup, IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { ACTIVE_GROUP_TYPE, IEditorService, SIDE_GROUP_TYPE } from 'vs/workbench/services/editor/common/editorService';
-import { WebviewInput } from './webviewEditorInput';
+import { GroupIdentifier } from 'vs/workBench/common/editor';
+import { IWeBviewService, WeBviewContentOptions, WeBviewExtensionDescription, WeBviewIcons, WeBviewOptions, WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { IEditorGroup, IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { ACTIVE_GROUP_TYPE, IEditorService, SIDE_GROUP_TYPE } from 'vs/workBench/services/editor/common/editorService';
+import { WeBviewInput } from './weBviewEditorInput';
 
-export const IWebviewWorkbenchService = createDecorator<IWebviewWorkbenchService>('webviewEditorService');
+export const IWeBviewWorkBenchService = createDecorator<IWeBviewWorkBenchService>('weBviewEditorService');
 
-export interface ICreateWebViewShowOptions {
+export interface ICreateWeBViewShowOptions {
 	group: IEditorGroup | GroupIdentifier | ACTIVE_GROUP_TYPE | SIDE_GROUP_TYPE;
-	preserveFocus: boolean;
+	preserveFocus: Boolean;
 }
 
-export interface WebviewInputOptions extends WebviewOptions, WebviewContentOptions {
-	readonly tryRestoreScrollPosition?: boolean;
-	readonly retainContextWhenHidden?: boolean;
-	readonly enableCommandUris?: boolean;
+export interface WeBviewInputOptions extends WeBviewOptions, WeBviewContentOptions {
+	readonly tryRestoreScrollPosition?: Boolean;
+	readonly retainContextWhenHidden?: Boolean;
+	readonly enaBleCommandUris?: Boolean;
 }
 
-export function areWebviewInputOptionsEqual(a: WebviewInputOptions, b: WebviewInputOptions): boolean {
-	return a.enableCommandUris === b.enableCommandUris
-		&& a.enableFindWidget === b.enableFindWidget
-		&& a.allowScripts === b.allowScripts
-		&& a.allowMultipleAPIAcquire === b.allowMultipleAPIAcquire
-		&& a.retainContextWhenHidden === b.retainContextWhenHidden
-		&& a.tryRestoreScrollPosition === b.tryRestoreScrollPosition
-		&& equals(a.localResourceRoots, b.localResourceRoots, isEqual)
-		&& equals(a.portMapping, b.portMapping, (a, b) => a.extensionHostPort === b.extensionHostPort && a.webviewPort === b.webviewPort);
+export function areWeBviewInputOptionsEqual(a: WeBviewInputOptions, B: WeBviewInputOptions): Boolean {
+	return a.enaBleCommandUris === B.enaBleCommandUris
+		&& a.enaBleFindWidget === B.enaBleFindWidget
+		&& a.allowScripts === B.allowScripts
+		&& a.allowMultipleAPIAcquire === B.allowMultipleAPIAcquire
+		&& a.retainContextWhenHidden === B.retainContextWhenHidden
+		&& a.tryRestoreScrollPosition === B.tryRestoreScrollPosition
+		&& equals(a.localResourceRoots, B.localResourceRoots, isEqual)
+		&& equals(a.portMapping, B.portMapping, (a, B) => a.extensionHostPort === B.extensionHostPort && a.weBviewPort === B.weBviewPort);
 }
 
-export interface IWebviewWorkbenchService {
+export interface IWeBviewWorkBenchService {
 	readonly _serviceBrand: undefined;
 
-	createWebview(
+	createWeBview(
 		id: string,
 		viewType: string,
 		title: string,
-		showOptions: ICreateWebViewShowOptions,
-		options: WebviewInputOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewInput;
+		showOptions: ICreateWeBViewShowOptions,
+		options: WeBviewInputOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewInput;
 
-	reviveWebview(
+	reviveWeBview(
 		id: string,
 		viewType: string,
 		title: string,
-		iconPath: WebviewIcons | undefined,
+		iconPath: WeBviewIcons | undefined,
 		state: any,
-		options: WebviewInputOptions,
-		extension: WebviewExtensionDescription | undefined,
-		group: number | undefined
-	): WebviewInput;
+		options: WeBviewInputOptions,
+		extension: WeBviewExtensionDescription | undefined,
+		group: numBer | undefined
+	): WeBviewInput;
 
-	revealWebview(
-		webview: WebviewInput,
+	revealWeBview(
+		weBview: WeBviewInput,
 		group: IEditorGroup,
-		preserveFocus: boolean
+		preserveFocus: Boolean
 	): void;
 
 	registerResolver(
-		resolver: WebviewResolver
-	): IDisposable;
+		resolver: WeBviewResolver
+	): IDisposaBle;
 
 	shouldPersist(
-		input: WebviewInput
-	): boolean;
+		input: WeBviewInput
+	): Boolean;
 
-	resolveWebview(
-		webview: WebviewInput,
-	): CancelablePromise<void>;
+	resolveWeBview(
+		weBview: WeBviewInput,
+	): CancelaBlePromise<void>;
 }
 
-export interface WebviewResolver {
+export interface WeBviewResolver {
 	canResolve(
-		webview: WebviewInput,
-	): boolean;
+		weBview: WeBviewInput,
+	): Boolean;
 
-	resolveWebview(
-		webview: WebviewInput,
+	resolveWeBview(
+		weBview: WeBviewInput,
 		cancellation: CancellationToken,
 	): Promise<void>;
 }
 
-function canRevive(reviver: WebviewResolver, webview: WebviewInput): boolean {
-	return reviver.canResolve(webview);
+function canRevive(reviver: WeBviewResolver, weBview: WeBviewInput): Boolean {
+	return reviver.canResolve(weBview);
 }
 
 
-export class LazilyResolvedWebviewEditorInput extends WebviewInput {
+export class LazilyResolvedWeBviewEditorInput extends WeBviewInput {
 	constructor(
 		id: string,
 		viewType: string,
 		name: string,
-		webview: Lazy<WebviewOverlay>,
-		@IWebviewService webviewService: IWebviewService,
-		@IWebviewWorkbenchService private readonly _webviewWorkbenchService: IWebviewWorkbenchService,
+		weBview: Lazy<WeBviewOverlay>,
+		@IWeBviewService weBviewService: IWeBviewService,
+		@IWeBviewWorkBenchService private readonly _weBviewWorkBenchService: IWeBviewWorkBenchService,
 	) {
-		super(id, viewType, name, webview, webviewService);
+		super(id, viewType, name, weBview, weBviewService);
 	}
 
 	#resolved = false;
-	#resolvePromise?: CancelablePromise<void>;
+	#resolvePromise?: CancelaBlePromise<void>;
 
 	dispose() {
 		super.dispose();
@@ -124,10 +124,10 @@ export class LazilyResolvedWebviewEditorInput extends WebviewInput {
 	}
 
 	@memoize
-	public async resolve() {
+	puBlic async resolve() {
 		if (!this.#resolved) {
 			this.#resolved = true;
-			this.#resolvePromise = this._webviewWorkbenchService.resolveWebview(this);
+			this.#resolvePromise = this._weBviewWorkBenchService.resolveWeBview(this);
 			try {
 				await this.#resolvePromise;
 			} catch (e) {
@@ -139,7 +139,7 @@ export class LazilyResolvedWebviewEditorInput extends WebviewInput {
 		return super.resolve();
 	}
 
-	protected transfer(other: LazilyResolvedWebviewEditorInput): WebviewInput | undefined {
+	protected transfer(other: LazilyResolvedWeBviewEditorInput): WeBviewInput | undefined {
 		if (!super.transfer(other)) {
 			return;
 		}
@@ -151,162 +151,162 @@ export class LazilyResolvedWebviewEditorInput extends WebviewInput {
 
 
 class RevivalPool {
-	private _awaitingRevival: Array<{ input: WebviewInput, resolve: () => void }> = [];
+	private _awaitingRevival: Array<{ input: WeBviewInput, resolve: () => void }> = [];
 
-	public add(input: WebviewInput, resolve: () => void) {
+	puBlic add(input: WeBviewInput, resolve: () => void) {
 		this._awaitingRevival.push({ input, resolve });
 	}
 
-	public reviveFor(reviver: WebviewResolver, cancellation: CancellationToken) {
+	puBlic reviveFor(reviver: WeBviewResolver, cancellation: CancellationToken) {
 		const toRevive = this._awaitingRevival.filter(({ input }) => canRevive(reviver, input));
 		this._awaitingRevival = this._awaitingRevival.filter(({ input }) => !canRevive(reviver, input));
 
 		for (const { input, resolve } of toRevive) {
-			reviver.resolveWebview(input, cancellation).then(resolve);
+			reviver.resolveWeBview(input, cancellation).then(resolve);
 		}
 	}
 }
 
 
-export class WebviewEditorService implements IWebviewWorkbenchService {
+export class WeBviewEditorService implements IWeBviewWorkBenchService {
 	declare readonly _serviceBrand: undefined;
 
-	private readonly _revivers = new Set<WebviewResolver>();
+	private readonly _revivers = new Set<WeBviewResolver>();
 	private readonly _revivalPool = new RevivalPool();
 
 	constructor(
 		@IEditorGroupsService private readonly _editorGroupService: IEditorGroupsService,
 		@IEditorService private readonly _editorService: IEditorService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IWebviewService private readonly _webviewService: IWebviewService,
+		@IWeBviewService private readonly _weBviewService: IWeBviewService,
 	) { }
 
-	public createWebview(
+	puBlic createWeBview(
 		id: string,
 		viewType: string,
 		title: string,
-		showOptions: ICreateWebViewShowOptions,
-		options: WebviewInputOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewInput {
-		const webview = new Lazy(() => this.createWebviewElement(id, extension, options));
-		const webviewInput = this._instantiationService.createInstance(WebviewInput, id, viewType, title, webview);
-		this._editorService.openEditor(webviewInput, {
+		showOptions: ICreateWeBViewShowOptions,
+		options: WeBviewInputOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewInput {
+		const weBview = new Lazy(() => this.createWeBviewElement(id, extension, options));
+		const weBviewInput = this._instantiationService.createInstance(WeBviewInput, id, viewType, title, weBview);
+		this._editorService.openEditor(weBviewInput, {
 			pinned: true,
 			preserveFocus: showOptions.preserveFocus,
-			// preserve pre 1.38 behaviour to not make group active when preserveFocus: true
-			// but make sure to restore the editor to fix https://github.com/microsoft/vscode/issues/79633
+			// preserve pre 1.38 Behaviour to not make group active when preserveFocus: true
+			// But make sure to restore the editor to fix https://githuB.com/microsoft/vscode/issues/79633
 			activation: showOptions.preserveFocus ? EditorActivation.RESTORE : undefined
 		}, showOptions.group);
-		return webviewInput;
+		return weBviewInput;
 	}
 
-	public revealWebview(
-		webview: WebviewInput,
+	puBlic revealWeBview(
+		weBview: WeBviewInput,
 		group: IEditorGroup,
-		preserveFocus: boolean
+		preserveFocus: Boolean
 	): void {
-		if (webview.group === group.id) {
-			this._editorService.openEditor(webview, {
+		if (weBview.group === group.id) {
+			this._editorService.openEditor(weBview, {
 				preserveFocus,
-				// preserve pre 1.38 behaviour to not make group active when preserveFocus: true
-				// but make sure to restore the editor to fix https://github.com/microsoft/vscode/issues/79633
+				// preserve pre 1.38 Behaviour to not make group active when preserveFocus: true
+				// But make sure to restore the editor to fix https://githuB.com/microsoft/vscode/issues/79633
 				activation: preserveFocus ? EditorActivation.RESTORE : undefined
-			}, webview.group);
+			}, weBview.group);
 		} else {
-			const groupView = this._editorGroupService.getGroup(webview.group!);
+			const groupView = this._editorGroupService.getGroup(weBview.group!);
 			if (groupView) {
-				groupView.moveEditor(webview, group, { preserveFocus });
+				groupView.moveEditor(weBview, group, { preserveFocus });
 			}
 		}
 	}
 
-	public reviveWebview(
+	puBlic reviveWeBview(
 		id: string,
 		viewType: string,
 		title: string,
-		iconPath: WebviewIcons | undefined,
+		iconPath: WeBviewIcons | undefined,
 		state: any,
-		options: WebviewInputOptions,
-		extension: WebviewExtensionDescription | undefined,
-		group: number | undefined,
-	): WebviewInput {
-		const webview = new Lazy(() => {
-			const webview = this.createWebviewElement(id, extension, options);
-			webview.state = state;
-			return webview;
+		options: WeBviewInputOptions,
+		extension: WeBviewExtensionDescription | undefined,
+		group: numBer | undefined,
+	): WeBviewInput {
+		const weBview = new Lazy(() => {
+			const weBview = this.createWeBviewElement(id, extension, options);
+			weBview.state = state;
+			return weBview;
 		});
 
-		const webviewInput = this._instantiationService.createInstance(LazilyResolvedWebviewEditorInput, id, viewType, title, webview);
-		webviewInput.iconPath = iconPath;
+		const weBviewInput = this._instantiationService.createInstance(LazilyResolvedWeBviewEditorInput, id, viewType, title, weBview);
+		weBviewInput.iconPath = iconPath;
 
-		if (typeof group === 'number') {
-			webviewInput.updateGroup(group);
+		if (typeof group === 'numBer') {
+			weBviewInput.updateGroup(group);
 		}
-		return webviewInput;
+		return weBviewInput;
 	}
 
-	public registerResolver(
-		reviver: WebviewResolver
-	): IDisposable {
+	puBlic registerResolver(
+		reviver: WeBviewResolver
+	): IDisposaBle {
 		this._revivers.add(reviver);
 
 		const cts = new CancellationTokenSource();
 		this._revivalPool.reviveFor(reviver, cts.token);
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this._revivers.delete(reviver);
 			cts.dispose(true);
 		});
 	}
 
-	public shouldPersist(
-		webview: WebviewInput
-	): boolean {
-		// Revived webviews may not have an actively registered reviver but we still want to presist them
+	puBlic shouldPersist(
+		weBview: WeBviewInput
+	): Boolean {
+		// Revived weBviews may not have an actively registered reviver But we still want to presist them
 		// since a reviver should exist when it is actually needed.
-		if (webview instanceof LazilyResolvedWebviewEditorInput) {
+		if (weBview instanceof LazilyResolvedWeBviewEditorInput) {
 			return true;
 		}
 
-		return Iterable.some(this._revivers.values(), reviver => canRevive(reviver, webview));
+		return IteraBle.some(this._revivers.values(), reviver => canRevive(reviver, weBview));
 	}
 
 	private async tryRevive(
-		webview: WebviewInput,
+		weBview: WeBviewInput,
 		cancellation: CancellationToken,
-	): Promise<boolean> {
+	): Promise<Boolean> {
 		for (const reviver of this._revivers.values()) {
-			if (canRevive(reviver, webview)) {
-				await reviver.resolveWebview(webview, cancellation);
+			if (canRevive(reviver, weBview)) {
+				await reviver.resolveWeBview(weBview, cancellation);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public resolveWebview(
-		webview: WebviewInput,
-	): CancelablePromise<void> {
-		return createCancelablePromise(async (cancellation) => {
-			const didRevive = await this.tryRevive(webview, cancellation);
+	puBlic resolveWeBview(
+		weBview: WeBviewInput,
+	): CancelaBlePromise<void> {
+		return createCancelaBlePromise(async (cancellation) => {
+			const didRevive = await this.tryRevive(weBview, cancellation);
 			if (!didRevive) {
-				// A reviver may not be registered yet. Put into pool and resolve promise when we can revive
+				// A reviver may not Be registered yet. Put into pool and resolve promise when we can revive
 				let resolve: () => void;
 				const promise = new Promise<void>(r => { resolve = r; });
-				this._revivalPool.add(webview, resolve!);
+				this._revivalPool.add(weBview, resolve!);
 				return promise;
 			}
 		});
 	}
 
-	private createWebviewElement(
+	private createWeBviewElement(
 		id: string,
-		extension: WebviewExtensionDescription | undefined,
-		options: WebviewInputOptions,
+		extension: WeBviewExtensionDescription | undefined,
+		options: WeBviewInputOptions,
 	) {
-		return this._webviewService.createWebviewOverlay(id, {
-			enableFindWidget: options.enableFindWidget,
+		return this._weBviewService.createWeBviewOverlay(id, {
+			enaBleFindWidget: options.enaBleFindWidget,
 			retainContextWhenHidden: options.retainContextWhenHidden
 		}, options, extension);
 	}

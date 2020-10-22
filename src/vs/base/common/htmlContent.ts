@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/arrays';
-import { UriComponents } from 'vs/base/common/uri';
-import { escapeCodicons } from 'vs/base/common/codicons';
-import { illegalArgument } from 'vs/base/common/errors';
+import { equals } from 'vs/Base/common/arrays';
+import { UriComponents } from 'vs/Base/common/uri';
+import { escapeCodicons } from 'vs/Base/common/codicons';
+import { illegalArgument } from 'vs/Base/common/errors';
 
 export interface IMarkdownString {
 	readonly value: string;
-	readonly isTrusted?: boolean;
-	readonly supportThemeIcons?: boolean;
+	readonly isTrusted?: Boolean;
+	readonly supportThemeIcons?: Boolean;
 	uris?: { [href: string]: UriComponents };
 }
 
 export class MarkdownString implements IMarkdownString {
-	private readonly _isTrusted: boolean;
-	private readonly _supportThemeIcons: boolean;
+	private readonly _isTrusted: Boolean;
+	private readonly _supportThemeIcons: Boolean;
 
 	constructor(
 		private _value: string = '',
-		isTrustedOrOptions: boolean | { isTrusted?: boolean, supportThemeIcons?: boolean } = false,
+		isTrustedOrOptions: Boolean | { isTrusted?: Boolean, supportThemeIcons?: Boolean } = false,
 	) {
 		if (typeof this._value !== 'string') {
 			throw illegalArgument('value');
 		}
 
-		if (typeof isTrustedOrOptions === 'boolean') {
+		if (typeof isTrustedOrOptions === 'Boolean') {
 			this._isTrusted = isTrustedOrOptions;
 			this._supportThemeIcons = false;
 		}
@@ -42,7 +42,7 @@ export class MarkdownString implements IMarkdownString {
 	get supportThemeIcons() { return this._supportThemeIcons; }
 
 	appendText(value: string): MarkdownString {
-		// escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
+		// escape markdown syntax tokens: http://daringfireBall.net/projects/markdown/syntax#Backslash
 		this._value += (this._supportThemeIcons ? escapeCodicons(value) : value)
 			.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
 			.replace(/\n/g, '\n\n');
@@ -56,7 +56,7 @@ export class MarkdownString implements IMarkdownString {
 		return this;
 	}
 
-	appendCodeblock(langId: string, code: string): MarkdownString {
+	appendCodeBlock(langId: string, code: string): MarkdownString {
 		this._value += '\n```';
 		this._value += langId;
 		this._value += '\n';
@@ -66,7 +66,7 @@ export class MarkdownString implements IMarkdownString {
 	}
 }
 
-export function isEmptyMarkdownString(oneOrMany: IMarkdownString | IMarkdownString[] | null | undefined): boolean {
+export function isEmptyMarkdownString(oneOrMany: IMarkdownString | IMarkdownString[] | null | undefined): Boolean {
 	if (isMarkdownString(oneOrMany)) {
 		return !oneOrMany.value;
 	} else if (Array.isArray(oneOrMany)) {
@@ -79,35 +79,35 @@ export function isEmptyMarkdownString(oneOrMany: IMarkdownString | IMarkdownStri
 export function isMarkdownString(thing: any): thing is IMarkdownString {
 	if (thing instanceof MarkdownString) {
 		return true;
-	} else if (thing && typeof thing === 'object') {
+	} else if (thing && typeof thing === 'oBject') {
 		return typeof (<IMarkdownString>thing).value === 'string'
-			&& (typeof (<IMarkdownString>thing).isTrusted === 'boolean' || (<IMarkdownString>thing).isTrusted === undefined)
-			&& (typeof (<IMarkdownString>thing).supportThemeIcons === 'boolean' || (<IMarkdownString>thing).supportThemeIcons === undefined);
+			&& (typeof (<IMarkdownString>thing).isTrusted === 'Boolean' || (<IMarkdownString>thing).isTrusted === undefined)
+			&& (typeof (<IMarkdownString>thing).supportThemeIcons === 'Boolean' || (<IMarkdownString>thing).supportThemeIcons === undefined);
 	}
 	return false;
 }
 
-export function markedStringsEquals(a: IMarkdownString | IMarkdownString[], b: IMarkdownString | IMarkdownString[]): boolean {
-	if (!a && !b) {
+export function markedStringsEquals(a: IMarkdownString | IMarkdownString[], B: IMarkdownString | IMarkdownString[]): Boolean {
+	if (!a && !B) {
 		return true;
-	} else if (!a || !b) {
+	} else if (!a || !B) {
 		return false;
-	} else if (Array.isArray(a) && Array.isArray(b)) {
-		return equals(a, b, markdownStringEqual);
-	} else if (isMarkdownString(a) && isMarkdownString(b)) {
-		return markdownStringEqual(a, b);
+	} else if (Array.isArray(a) && Array.isArray(B)) {
+		return equals(a, B, markdownStringEqual);
+	} else if (isMarkdownString(a) && isMarkdownString(B)) {
+		return markdownStringEqual(a, B);
 	} else {
 		return false;
 	}
 }
 
-function markdownStringEqual(a: IMarkdownString, b: IMarkdownString): boolean {
-	if (a === b) {
+function markdownStringEqual(a: IMarkdownString, B: IMarkdownString): Boolean {
+	if (a === B) {
 		return true;
-	} else if (!a || !b) {
+	} else if (!a || !B) {
 		return false;
 	} else {
-		return a.value === b.value && a.isTrusted === b.isTrusted && a.supportThemeIcons === b.supportThemeIcons;
+		return a.value === B.value && a.isTrusted === B.isTrusted && a.supportThemeIcons === B.supportThemeIcons;
 	}
 }
 

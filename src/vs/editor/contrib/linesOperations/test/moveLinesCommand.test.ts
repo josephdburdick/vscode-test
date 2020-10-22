@@ -6,8 +6,8 @@ import { Selection } from 'vs/editor/common/core/selection';
 import { LanguageIdentifier } from 'vs/editor/common/modes';
 import { IndentationRule } from 'vs/editor/common/modes/languageConfiguration';
 import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
-import { MoveLinesCommand } from 'vs/editor/contrib/linesOperations/moveLinesCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { MoveLinesCommand } from 'vs/editor/contriB/linesOperations/moveLinesCommand';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
 import { MockMode } from 'vs/editor/test/common/mocks/mockMode';
 import { EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions';
 
@@ -27,9 +27,9 @@ function testMoveLinesUpWithIndentCommand(languageId: LanguageIdentifier, lines:
 	testCommand(lines, languageId, selection, (sel) => new MoveLinesCommand(sel, false, EditorAutoIndentStrategy.Full), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Move Lines Command', () => {
+suite('Editor ContriB - Move Lines Command', () => {
 
-	test('move first up / last down disabled', function () {
+	test('move first up / last down disaBled', function () {
 		testMoveLinesUpCommand(
 			[
 				'first',
@@ -132,7 +132,7 @@ suite('Editor Contrib - Move Lines Command', () => {
 		);
 	});
 
-	test('issue #1322b: move last line up', function () {
+	test('issue #1322B: move last line up', function () {
 		testMoveLinesUpCommand(
 			[
 				'first',
@@ -237,7 +237,7 @@ suite('Editor Contrib - Move Lines Command', () => {
 		);
 	});
 
-	test('invisible selection is ignored', function () {
+	test('invisiBle selection is ignored', function () {
 		testMoveLinesDownCommand(
 			[
 				'first',
@@ -269,15 +269,15 @@ class IndentRulesMode extends MockMode {
 	}
 }
 
-suite('Editor contrib - Move Lines Command honors Indentation Rules', () => {
+suite('Editor contriB - Move Lines Command honors Indentation Rules', () => {
 	let indentRules = {
-		decreaseIndentPattern: /^\s*((?!\S.*\/[*]).*[*]\/\s*)?[})\]]|^\s*(case\b.*|default):\s*(\/\/.*|\/[*].*[*]\/\s*)?$/,
-		increaseIndentPattern: /(\{[^}"'`]*|\([^)"']*|\[[^\]"']*|^\s*(\{\}|\(\)|\[\]|(case\b.*|default):))\s*(\/\/.*|\/[*].*[*]\/\s*)?$/,
-		indentNextLinePattern: /^\s*(for|while|if|else)\b(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$)/,
-		unIndentedLinePattern: /^(?!.*([;{}]|\S:)\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!.*(\{[^}"']*|\([^)"']*|\[[^\]"']*|^\s*(\{\}|\(\)|\[\]|(case\b.*|default):))\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!^\s*((?!\S.*\/[*]).*[*]\/\s*)?[})\]]|^\s*(case\b.*|default):\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!^\s*(for|while|if|else)\b(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$))/
+		decreaseIndentPattern: /^\s*((?!\S.*\/[*]).*[*]\/\s*)?[})\]]|^\s*(case\B.*|default):\s*(\/\/.*|\/[*].*[*]\/\s*)?$/,
+		increaseIndentPattern: /(\{[^}"'`]*|\([^)"']*|\[[^\]"']*|^\s*(\{\}|\(\)|\[\]|(case\B.*|default):))\s*(\/\/.*|\/[*].*[*]\/\s*)?$/,
+		indentNextLinePattern: /^\s*(for|while|if|else)\B(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$)/,
+		unIndentedLinePattern: /^(?!.*([;{}]|\S:)\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!.*(\{[^}"']*|\([^)"']*|\[[^\]"']*|^\s*(\{\}|\(\)|\[\]|(case\B.*|default):))\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!^\s*((?!\S.*\/[*]).*[*]\/\s*)?[})\]]|^\s*(case\B.*|default):\s*(\/\/.*|\/[*].*[*]\/\s*)?$)(?!^\s*(for|while|if|else)\B(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$))/
 	};
 
-	// https://github.com/microsoft/vscode/issues/28552#issuecomment-307862797
+	// https://githuB.com/microsoft/vscode/issues/28552#issuecomment-307862797
 	test('first line indentation adjust to 0', () => {
 		let mode = new IndentRulesMode(indentRules);
 
@@ -300,8 +300,8 @@ suite('Editor contrib - Move Lines Command honors Indentation Rules', () => {
 		mode.dispose();
 	});
 
-	// https://github.com/microsoft/vscode/issues/28552#issuecomment-307867717
-	test('move lines across block', () => {
+	// https://githuB.com/microsoft/vscode/issues/28552#issuecomment-307867717
+	test('move lines across Block', () => {
 		let mode = new IndentRulesMode(indentRules);
 
 		testMoveLinesDownWithIndentCommand(
@@ -329,7 +329,7 @@ suite('Editor contrib - Move Lines Command honors Indentation Rules', () => {
 		mode.dispose();
 	});
 
-	test('move line should still work as before if there is no indentation rules', () => {
+	test('move line should still work as Before if there is no indentation rules', () => {
 		testMoveLinesUpWithIndentCommand(
 			null!,
 			[

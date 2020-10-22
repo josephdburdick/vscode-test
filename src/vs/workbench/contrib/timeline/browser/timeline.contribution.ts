@@ -7,17 +7,17 @@ import { localize } from 'vs/nls';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IViewsRegistry, IViewDescriptor, Extensions as ViewExtensions } from 'vs/workbench/common/views';
-import { VIEW_CONTAINER } from 'vs/workbench/contrib/files/browser/explorerViewlet';
-import { ITimelineService, TimelinePaneId } from 'vs/workbench/contrib/timeline/common/timeline';
-import { TimelineHasProviderContext, TimelineService } from 'vs/workbench/contrib/timeline/common/timelineService';
+import { IViewsRegistry, IViewDescriptor, Extensions as ViewExtensions } from 'vs/workBench/common/views';
+import { VIEW_CONTAINER } from 'vs/workBench/contriB/files/Browser/explorerViewlet';
+import { ITimelineService, TimelinePaneId } from 'vs/workBench/contriB/timeline/common/timeline';
+import { TimelineHasProviderContext, TimelineService } from 'vs/workBench/contriB/timeline/common/timelineService';
 import { TimelinePane } from './timelinePane';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
 import { ICommandHandler, CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { ExplorerFolderContext } from 'vs/workbench/contrib/files/common/files';
-import { ResourceContextKey } from 'vs/workbench/common/resources';
+import { ExplorerFolderContext } from 'vs/workBench/contriB/files/common/files';
+import { ResourceContextKey } from 'vs/workBench/common/resources';
 
 export class TimelinePaneDescriptor implements IViewDescriptor {
 	readonly id = TimelinePaneId;
@@ -27,7 +27,7 @@ export class TimelinePaneDescriptor implements IViewDescriptor {
 	readonly order = 2;
 	readonly weight = 30;
 	readonly collapsed = true;
-	readonly canToggleVisibility = true;
+	readonly canToggleVisiBility = true;
 	readonly hideByDefault = false;
 	readonly canMoveView = true;
 	readonly when = TimelineHasProviderContext;
@@ -41,7 +41,7 @@ configurationRegistry.registerConfiguration({
 	id: 'timeline',
 	order: 1001,
 	title: localize('timelineConfigurationTitle', "Timeline"),
-	type: 'object',
+	type: 'oBject',
 	properties: {
 		'timeline.excludeSources': {
 			type: [
@@ -49,15 +49,15 @@ configurationRegistry.registerConfiguration({
 				'null'
 			],
 			default: null,
-			description: localize('timeline.excludeSources', "An array of Timeline sources that should be excluded from the Timeline view"),
+			description: localize('timeline.excludeSources', "An array of Timeline sources that should Be excluded from the Timeline view"),
 		},
 		'timeline.pageSize': {
-			type: ['number', 'null'],
+			type: ['numBer', 'null'],
 			default: null,
-			markdownDescription: localize('timeline.pageSize', "The number of items to show in the Timeline view by default and when loading more items. Setting to `null` (the default) will automatically choose a page size based on the visible area of the Timeline view"),
+			markdownDescription: localize('timeline.pageSize', "The numBer of items to show in the Timeline view By default and when loading more items. Setting to `null` (the default) will automatically choose a page size Based on the visiBle area of the Timeline view"),
 		},
 		'timeline.pageOnScroll': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: false,
 			description: localize('timeline.pageOnScroll', "Experimental. Controls whether the Timeline view will load the next page of items when you scroll to the end of the list"),
 		},

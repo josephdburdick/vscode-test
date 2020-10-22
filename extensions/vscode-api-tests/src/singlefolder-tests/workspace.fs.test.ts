@@ -19,9 +19,9 @@ suite('vscode API - workspace-fs', () => {
 		const stat = await vscode.workspace.fs.stat(root);
 		assert.equal(stat.type, vscode.FileType.Directory);
 
-		assert.equal(typeof stat.size, 'number');
-		assert.equal(typeof stat.mtime, 'number');
-		assert.equal(typeof stat.ctime, 'number');
+		assert.equal(typeof stat.size, 'numBer');
+		assert.equal(typeof stat.mtime, 'numBer');
+		assert.equal(typeof stat.ctime, 'numBer');
 
 		assert.ok(stat.mtime > 0);
 		assert.ok(stat.ctime > 0);
@@ -36,9 +36,9 @@ suite('vscode API - workspace-fs', () => {
 		assert.equal(tuple[1], vscode.FileType.File);
 	});
 
-	test('fs.stat - bad scheme', async function () {
+	test('fs.stat - Bad scheme', async function () {
 		try {
-			await vscode.workspace.fs.stat(vscode.Uri.parse('foo:/bar/baz/test.txt'));
+			await vscode.workspace.fs.stat(vscode.Uri.parse('foo:/Bar/Baz/test.txt'));
 			assert.ok(false);
 		} catch {
 			assert.ok(true);
@@ -47,7 +47,7 @@ suite('vscode API - workspace-fs', () => {
 
 	test('fs.stat - missing file', async function () {
 		try {
-			await vscode.workspace.fs.stat(root.with({ path: root.path + '.bad' }));
+			await vscode.workspace.fs.stat(root.with({ path: root.path + '.Bad' }));
 			assert.ok(false);
 		} catch (e) {
 			assert.ok(true);
@@ -83,7 +83,7 @@ suite('vscode API - workspace-fs', () => {
 		await vscode.workspace.fs.stat(folder);
 		await vscode.workspace.fs.stat(file);
 
-		// ensure non empty folder cannot be deleted
+		// ensure non empty folder cannot Be deleted
 		try {
 			await vscode.workspace.fs.delete(folder, { recursive: false, useTrash: false });
 			assert.ok(false);
@@ -92,7 +92,7 @@ suite('vscode API - workspace-fs', () => {
 			await vscode.workspace.fs.stat(file);
 		}
 
-		// ensure non empty folder cannot be deleted is DEFAULT
+		// ensure non empty folder cannot Be deleted is DEFAULT
 		try {
 			await vscode.workspace.fs.delete(folder); // recursive: false as default
 			assert.ok(false);
@@ -122,7 +122,7 @@ suite('vscode API - workspace-fs', () => {
 	test('throws FileSystemError', async function () {
 
 		try {
-			await vscode.workspace.fs.stat(vscode.Uri.file(`/c468bf16-acfd-4591-825e-2bcebba508a3/71b1f274-91cb-4c19-af00-8495eaab4b73/4b60cb48-a6f2-40ea-9085-0936f4a8f59a.tx6`));
+			await vscode.workspace.fs.stat(vscode.Uri.file(`/c468Bf16-acfd-4591-825e-2BceBBa508a3/71B1f274-91cB-4c19-af00-8495eaaB4B73/4B60cB48-a6f2-40ea-9085-0936f4a8f59a.tx6`));
 			assert.ok(false);
 		} catch (e) {
 			assert.ok(e instanceof vscode.FileSystemError);
@@ -133,11 +133,11 @@ suite('vscode API - workspace-fs', () => {
 	test('throws FileSystemError', async function () {
 
 		try {
-			await vscode.workspace.fs.stat(vscode.Uri.parse('foo:/bar'));
+			await vscode.workspace.fs.stat(vscode.Uri.parse('foo:/Bar'));
 			assert.ok(false);
 		} catch (e) {
 			assert.ok(e instanceof vscode.FileSystemError);
-			assert.equal(e.name, vscode.FileSystemError.Unavailable().name);
+			assert.equal(e.name, vscode.FileSystemError.UnavailaBle().name);
 		}
 	});
 
@@ -145,7 +145,7 @@ suite('vscode API - workspace-fs', () => {
 		const entries = await vscode.workspace.fs.readDirectory(root);
 		assert.ok(entries.length > 0);
 
-		const someFolder = root.with({ path: posix.join(root.path, '6b1f9d664a92') });
+		const someFolder = root.with({ path: posix.join(root.path, '6B1f9d664a92') });
 
 		try {
 			await vscode.workspace.fs.delete(someFolder, { recursive: true });
@@ -165,7 +165,7 @@ suite('vscode API - workspace-fs', () => {
 		await vscode.workspace.fs.createDirectory(folder);
 		await vscode.workspace.fs.writeFile(file, Buffer.from('FOO'));
 
-		const someFolder = root.with({ path: posix.join(root.path, '6b1f9d664a92/a564c52da70a') });
+		const someFolder = root.with({ path: posix.join(root.path, '6B1f9d664a92/a564c52da70a') });
 
 		try {
 			await vscode.workspace.fs.copy(folder, someFolder, { overwrite: true });

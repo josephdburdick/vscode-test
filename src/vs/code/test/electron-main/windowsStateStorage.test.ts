@@ -5,12 +5,12 @@
 
 import * as assert from 'assert';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 
 import { restoreWindowsState, getWindowsStateStoreData } from 'vs/platform/windows/electron-main/windowsStateStorage';
 import { IWindowState as IWindowUIState, WindowMode } from 'vs/platform/windows/electron-main/windows';
 import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IWindowsState, IWindowState } from 'vs/platform/windows/electron-main/windowsMainService';
 
 function getUIState(): IWindowUIState {
@@ -47,7 +47,7 @@ function assertEqualWindowState(expected: IWindowState | undefined, actual: IWin
 		assert.deepEqual(expected, actual, message);
 		return;
 	}
-	assert.equal(expected.backupPath, actual.backupPath, message);
+	assert.equal(expected.BackupPath, actual.BackupPath, message);
 	assertEqualURI(expected.folderUri, actual.folderUri, message);
 	assert.equal(expected.remoteAuthority, actual.remoteAuthority, message);
 	assertEqualWorkspace(expected.workspace, actual.workspace, message);
@@ -69,13 +69,13 @@ function assertRestoring(state: IWindowsState, message?: string) {
 	assertEqualWindowsState(state, restored, message);
 }
 
-const testBackupPath1 = path.join(os.tmpdir(), 'windowStateTest', 'backupFolder1');
-const testBackupPath2 = path.join(os.tmpdir(), 'windowStateTest', 'backupFolder2');
+const testBackupPath1 = path.join(os.tmpdir(), 'windowStateTest', 'BackupFolder1');
+const testBackupPath2 = path.join(os.tmpdir(), 'windowStateTest', 'BackupFolder2');
 
 const testWSPath = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'test.code-workspace'));
 const testFolderURI = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'testFolder'));
 
-const testRemoteFolderURI = URI.parse('foo://bar/c/d');
+const testRemoteFolderURI = URI.parse('foo://Bar/c/d');
 
 suite('Windows State Storing', () => {
 	test('storing and restoring', () => {
@@ -85,33 +85,33 @@ suite('Windows State Storing', () => {
 		};
 		assertRestoring(windowState, 'no windows');
 		windowState = {
-			openedWindows: [{ backupPath: testBackupPath1, uiState: getUIState() }]
+			openedWindows: [{ BackupPath: testBackupPath1, uiState: getUIState() }]
 		};
 		assertRestoring(windowState, 'empty workspace');
 
 		windowState = {
-			openedWindows: [{ backupPath: testBackupPath1, uiState: getUIState(), workspace: toWorkspace(testWSPath) }]
+			openedWindows: [{ BackupPath: testBackupPath1, uiState: getUIState(), workspace: toWorkspace(testWSPath) }]
 		};
 		assertRestoring(windowState, 'workspace');
 
 		windowState = {
-			openedWindows: [{ backupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI }]
+			openedWindows: [{ BackupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI }]
 		};
 		assertRestoring(windowState, 'folder');
 
 		windowState = {
-			openedWindows: [{ backupPath: testBackupPath1, uiState: getUIState(), folderUri: testFolderURI }, { backupPath: testBackupPath1, uiState: getUIState(), folderUri: testRemoteFolderURI, remoteAuthority: 'bar' }]
+			openedWindows: [{ BackupPath: testBackupPath1, uiState: getUIState(), folderUri: testFolderURI }, { BackupPath: testBackupPath1, uiState: getUIState(), folderUri: testRemoteFolderURI, remoteAuthority: 'Bar' }]
 		};
 		assertRestoring(windowState, 'multiple windows');
 
 		windowState = {
-			lastActiveWindow: { backupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI },
+			lastActiveWindow: { BackupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI },
 			openedWindows: []
 		};
 		assertRestoring(windowState, 'lastActiveWindow');
 
 		windowState = {
-			lastPluginDevelopmentHostWindow: { backupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI },
+			lastPluginDevelopmentHostWindow: { BackupPath: testBackupPath2, uiState: getUIState(), folderUri: testFolderURI },
 			openedWindows: []
 		};
 		assertRestoring(windowState, 'lastPluginDevelopmentHostWindow');
@@ -122,10 +122,10 @@ suite('Windows State Storing', () => {
 			"openedWindows": [],
 			"lastActiveWindow": {
 				"workspace": {
-					"id": "a41787288b5e9cc1a61ba2dd84cd0d80",
+					"id": "a41787288B5e9cc1a61Ba2dd84cd0d80",
 					"configPath": "/home/user/workspaces/code-and-docs.code-workspace"
 				},
-				"backupPath": "/home/user/.config/Code - Insiders/Backups/a41787288b5e9cc1a61ba2dd84cd0d80",
+				"BackupPath": "/home/user/.config/Code - Insiders/Backups/a41787288B5e9cc1a61Ba2dd84cd0d80",
 				"uiState": {
 					"mode": 0,
 					"x": 0,
@@ -140,9 +140,9 @@ suite('Windows State Storing', () => {
 		let expected: IWindowsState = {
 			openedWindows: [],
 			lastActiveWindow: {
-				backupPath: '/home/user/.config/Code - Insiders/Backups/a41787288b5e9cc1a61ba2dd84cd0d80',
+				BackupPath: '/home/user/.config/Code - Insiders/Backups/a41787288B5e9cc1a61Ba2dd84cd0d80',
 				uiState: { mode: WindowMode.Maximized, x: 0, y: 27, width: 2560, height: 1364 },
-				workspace: { id: 'a41787288b5e9cc1a61ba2dd84cd0d80', configPath: URI.file('/home/user/workspaces/code-and-docs.code-workspace') }
+				workspace: { id: 'a41787288B5e9cc1a61Ba2dd84cd0d80', configPath: URI.file('/home/user/workspaces/code-and-docs.code-workspace') }
 			}
 		};
 
@@ -182,7 +182,7 @@ suite('Windows State Storing', () => {
 			"openedWindows": [
 			],
 			"lastActiveWindow": {
-				"backupPath": "C:\\\\Users\\\\Mike\\\\AppData\\\\Roaming\\\\Code\\\\Backups\\\\1549538599815",
+				"BackupPath": "C:\\\\Users\\\\Mike\\\\AppData\\\\Roaming\\\\Code\\\\Backups\\\\1549538599815",
 				"uiState": {
 					"mode": 0,
 					"x": -8,
@@ -197,7 +197,7 @@ suite('Windows State Storing', () => {
 		expected = {
 			openedWindows: [],
 			lastActiveWindow: {
-				backupPath: 'C:\\Users\\Mike\\AppData\\Roaming\\Code\\Backups\\1549538599815',
+				BackupPath: 'C:\\Users\\Mike\\AppData\\Roaming\\Code\\Backups\\1549538599815',
 				uiState: { mode: WindowMode.Maximized, x: -8, y: -8, width: 2576, height: 1344 }
 			}
 		};
@@ -210,10 +210,10 @@ suite('Windows State Storing', () => {
 			"openedWindows": [],
 			"lastActiveWindow": {
 				"workspaceIdentifier": {
-					"id": "53b714b46ef1a2d4346568b4f591028c",
+					"id": "53B714B46ef1a2d4346568B4f591028c",
 					"configURIPath": "file:///home/user/workspaces/testing/custom.code-workspace"
 				},
-				"backupPath": "/home/user/.config/code-oss-dev/Backups/53b714b46ef1a2d4346568b4f591028c",
+				"BackupPath": "/home/user/.config/code-oss-dev/Backups/53B714B46ef1a2d4346568B4f591028c",
 				"uiState": {
 					"mode": 0,
 					"x": 0,
@@ -228,9 +228,9 @@ suite('Windows State Storing', () => {
 		let expected: IWindowsState = {
 			openedWindows: [],
 			lastActiveWindow: {
-				backupPath: '/home/user/.config/code-oss-dev/Backups/53b714b46ef1a2d4346568b4f591028c',
+				BackupPath: '/home/user/.config/code-oss-dev/Backups/53B714B46ef1a2d4346568B4f591028c',
 				uiState: { mode: WindowMode.Maximized, x: 0, y: 27, width: 2560, height: 1364 },
-				workspace: { id: '53b714b46ef1a2d4346568b4f591028c', configPath: URI.parse('file:///home/user/workspaces/testing/custom.code-workspace') }
+				workspace: { id: '53B714B46ef1a2d4346568B4f591028c', configPath: URI.parse('file:///home/user/workspaces/testing/custom.code-workspace') }
 			}
 		};
 
@@ -240,7 +240,7 @@ suite('Windows State Storing', () => {
 			"openedWindows": [],
 			"lastActiveWindow": {
 				"folder": "file:///home/user/workspaces/testing/folding",
-				"backupPath": "/home/user/.config/code-oss-dev/Backups/1daac1621c6c06f9e916ac8062e5a1b5",
+				"BackupPath": "/home/user/.config/code-oss-dev/Backups/1daac1621c6c06f9e916ac8062e5a1B5",
 				"uiState": {
 					"mode": 1,
 					"x": 625,
@@ -255,7 +255,7 @@ suite('Windows State Storing', () => {
 		expected = {
 			openedWindows: [],
 			lastActiveWindow: {
-				backupPath: '/home/user/.config/code-oss-dev/Backups/1daac1621c6c06f9e916ac8062e5a1b5',
+				BackupPath: '/home/user/.config/code-oss-dev/Backups/1daac1621c6c06f9e916ac8062e5a1B5',
 				uiState: { mode: WindowMode.Normal, x: 625, y: 263, width: 1718, height: 953 },
 				folderUri: URI.parse('file:///home/user/workspaces/testing/folding')
 			}
@@ -266,7 +266,7 @@ suite('Windows State Storing', () => {
 			"openedWindows": [
 			],
 			"lastActiveWindow": {
-				"backupPath": "/home/user/.config/code-oss-dev/Backups/1549539668998",
+				"BackupPath": "/home/user/.config/code-oss-dev/Backups/1549539668998",
 				"uiState": {
 					"mode": 1,
 					"x": 768,
@@ -281,7 +281,7 @@ suite('Windows State Storing', () => {
 		expected = {
 			openedWindows: [],
 			lastActiveWindow: {
-				backupPath: '/home/user/.config/code-oss-dev/Backups/1549539668998',
+				BackupPath: '/home/user/.config/code-oss-dev/Backups/1549539668998',
 				uiState: { mode: WindowMode.Normal, x: 768, y: 336, width: 1024, height: 768 }
 			}
 		};

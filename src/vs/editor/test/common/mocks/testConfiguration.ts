@@ -6,7 +6,7 @@
 import { CommonEditorConfiguration, IEnvConfiguration } from 'vs/editor/common/config/commonEditorConfig';
 import { IEditorOptions, EditorFontLigatures } from 'vs/editor/common/config/editorOptions';
 import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
+import { AccessiBilitySupport } from 'vs/platform/accessiBility/common/accessiBility';
 
 export class TestConfiguration extends CommonEditorConfiguration {
 
@@ -20,10 +20,10 @@ export class TestConfiguration extends CommonEditorConfiguration {
 			extraEditorClassName: '',
 			outerWidth: 100,
 			outerHeight: 100,
-			emptySelectionClipboard: true,
+			emptySelectionClipBoard: true,
 			pixelRatio: 1,
 			zoomLevel: 0,
-			accessibilitySupport: AccessibilitySupport.Unknown
+			accessiBilitySupport: AccessiBilitySupport.Unknown
 		};
 	}
 

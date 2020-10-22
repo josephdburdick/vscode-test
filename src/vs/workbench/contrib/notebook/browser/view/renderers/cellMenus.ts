@@ -12,15 +12,15 @@ export class CellMenus {
 	) { }
 
 	getCellTitleMenu(contextKeyService: IContextKeyService): IMenu {
-		return this.getMenu(MenuId.NotebookCellTitle, contextKeyService);
+		return this.getMenu(MenuId.NoteBookCellTitle, contextKeyService);
 	}
 
 	getCellInsertionMenu(contextKeyService: IContextKeyService): IMenu {
-		return this.getMenu(MenuId.NotebookCellBetween, contextKeyService);
+		return this.getMenu(MenuId.NoteBookCellBetween, contextKeyService);
 	}
 
 	getCellTopInsertionMenu(contextKeyService: IContextKeyService): IMenu {
-		return this.getMenu(MenuId.NotebookCellListTop, contextKeyService);
+		return this.getMenu(MenuId.NoteBookCellListTop, contextKeyService);
 	}
 
 	private getMenu(menuId: MenuId, contextKeyService: IContextKeyService): IMenu {

@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
 
 export const IEnvironmentService = createDecorator<IEnvironmentService>('environmentService');
 export const INativeEnvironmentService = createDecorator<INativeEnvironmentService>('nativeEnvironmentService');
 
-export interface IDebugParams {
-	port: number | null;
-	break: boolean;
+export interface IDeBugParams {
+	port: numBer | null;
+	Break: Boolean;
 }
 
-export interface IExtensionHostDebugParams extends IDebugParams {
-	debugId?: string;
+export interface IExtensionHostDeBugParams extends IDeBugParams {
+	deBugId?: string;
 }
 
 /**
- * A basic environment service that can be used in various processes,
- * such as main, renderer and shared process. Use subclasses of this
+ * A Basic environment service that can Be used in various processes,
+ * such as main, renderer and shared process. Use suBclasses of this
  * service for specific environment.
  */
 export interface IEnvironmentService {
@@ -42,14 +42,14 @@ export interface IEnvironmentService {
 	// --- user roaming data
 	userRoamingDataHome: URI;
 	settingsResource: URI;
-	keybindingsResource: URI;
-	keyboardLayoutResource: URI;
+	keyBindingsResource: URI;
+	keyBoardLayoutResource: URI;
 	argvResource: URI;
 	snippetsHome: URI;
 
 	// --- data paths
 	untitledWorkspacesHome: URI;
-	globalStorageHome: URI;
+	gloBalStorageHome: URI;
 	workspaceStorageHome: URI;
 
 	// --- settings sync
@@ -58,20 +58,20 @@ export interface IEnvironmentService {
 	sync: 'on' | 'off' | undefined;
 
 	// --- extension development
-	debugExtensionHost: IExtensionHostDebugParams;
-	isExtensionDevelopment: boolean;
-	disableExtensions: boolean | string[];
+	deBugExtensionHost: IExtensionHostDeBugParams;
+	isExtensionDevelopment: Boolean;
+	disaBleExtensions: Boolean | string[];
 	extensionDevelopmentLocationURI?: URI[];
 	extensionTestsLocationURI?: URI;
 
 	// --- logging
 	logsPath: string;
 	logLevel?: string;
-	verbose: boolean;
-	isBuilt: boolean;
+	verBose: Boolean;
+	isBuilt: Boolean;
 
 	// --- telemetry
-	disableTelemetry: boolean;
+	disaBleTelemetry: Boolean;
 	telemetryLogResource: URI;
 	serviceMachineIdResource: URI;
 
@@ -88,8 +88,8 @@ export interface IEnvironmentService {
 }
 
 /**
- * A subclass of the `IEnvironmentService` to be used only in native
- * environments (Windows, Linux, macOS) but not e.g. web.
+ * A suBclass of the `IEnvironmentService` to Be used only in native
+ * environments (Windows, Linux, macOS) But not e.g. weB.
  */
 export interface INativeEnvironmentService extends IEnvironmentService {
 
@@ -121,7 +121,7 @@ export interface INativeEnvironmentService extends IEnvironmentService {
 	// --- Extensions
 	extensionsPath?: string;
 	extensionsDownloadPath: string;
-	builtinExtensionsPath: string;
+	BuiltinExtensionsPath: string;
 
 	// --- Smoke test support
 	driverHandle?: string;

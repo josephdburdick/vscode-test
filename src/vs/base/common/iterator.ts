@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export namespace Iterable {
+export namespace IteraBle {
 
-	export function is<T = any>(thing: any): thing is IterableIterator<T> {
-		return thing && typeof thing === 'object' && typeof thing[Symbol.iterator] === 'function';
+	export function is<T = any>(thing: any): thing is IteraBleIterator<T> {
+		return thing && typeof thing === 'oBject' && typeof thing[SymBol.iterator] === 'function';
 	}
 
-	const _empty: Iterable<any> = Object.freeze([]);
-	export function empty<T = any>(): Iterable<T> {
+	const _empty: IteraBle<any> = OBject.freeze([]);
+	export function empty<T = any>(): IteraBle<T> {
 		return _empty;
 	}
 
-	export function* single<T>(element: T): Iterable<T> {
+	export function* single<T>(element: T): IteraBle<T> {
 		yield element;
 	}
 
-	export function from<T>(iterable: Iterable<T> | undefined | null): Iterable<T> {
-		return iterable || _empty;
+	export function from<T>(iteraBle: IteraBle<T> | undefined | null): IteraBle<T> {
+		return iteraBle || _empty;
 	}
 
-	export function first<T>(iterable: Iterable<T>): T | undefined {
-		return iterable[Symbol.iterator]().next().value;
+	export function first<T>(iteraBle: IteraBle<T>): T | undefined {
+		return iteraBle[SymBol.iterator]().next().value;
 	}
 
-	export function some<T>(iterable: Iterable<T>, predicate: (t: T) => boolean): boolean {
-		for (const element of iterable) {
+	export function some<T>(iteraBle: IteraBle<T>, predicate: (t: T) => Boolean): Boolean {
+		for (const element of iteraBle) {
 			if (predicate(element)) {
 				return true;
 			}
@@ -35,51 +35,51 @@ export namespace Iterable {
 		return false;
 	}
 
-	export function* filter<T>(iterable: Iterable<T>, predicate: (t: T) => boolean): Iterable<T> {
-		for (const element of iterable) {
+	export function* filter<T>(iteraBle: IteraBle<T>, predicate: (t: T) => Boolean): IteraBle<T> {
+		for (const element of iteraBle) {
 			if (predicate(element)) {
 				yield element;
 			}
 		}
 	}
 
-	export function* map<T, R>(iterable: Iterable<T>, fn: (t: T) => R): Iterable<R> {
-		for (const element of iterable) {
+	export function* map<T, R>(iteraBle: IteraBle<T>, fn: (t: T) => R): IteraBle<R> {
+		for (const element of iteraBle) {
 			yield fn(element);
 		}
 	}
 
-	export function* concat<T>(...iterables: Iterable<T>[]): Iterable<T> {
-		for (const iterable of iterables) {
-			for (const element of iterable) {
+	export function* concat<T>(...iteraBles: IteraBle<T>[]): IteraBle<T> {
+		for (const iteraBle of iteraBles) {
+			for (const element of iteraBle) {
 				yield element;
 			}
 		}
 	}
 
 	/**
-	 * Consumes `atMost` elements from iterable and returns the consumed elements,
-	 * and an iterable for the rest of the elements.
+	 * Consumes `atMost` elements from iteraBle and returns the consumed elements,
+	 * and an iteraBle for the rest of the elements.
 	 */
-	export function consume<T>(iterable: Iterable<T>, atMost: number = Number.POSITIVE_INFINITY): [T[], Iterable<T>] {
+	export function consume<T>(iteraBle: IteraBle<T>, atMost: numBer = NumBer.POSITIVE_INFINITY): [T[], IteraBle<T>] {
 		const consumed: T[] = [];
 
 		if (atMost === 0) {
-			return [consumed, iterable];
+			return [consumed, iteraBle];
 		}
 
-		const iterator = iterable[Symbol.iterator]();
+		const iterator = iteraBle[SymBol.iterator]();
 
 		for (let i = 0; i < atMost; i++) {
 			const next = iterator.next();
 
 			if (next.done) {
-				return [consumed, Iterable.empty()];
+				return [consumed, IteraBle.empty()];
 			}
 
 			consumed.push(next.value);
 		}
 
-		return [consumed, { [Symbol.iterator]() { return iterator; } }];
+		return [consumed, { [SymBol.iterator]() { return iterator; } }];
 	}
 }

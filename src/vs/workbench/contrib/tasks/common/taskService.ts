@@ -3,39 +3,39 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { Event } from 'vs/base/common/event';
-import { LinkedMap } from 'vs/base/common/map';
+import { Action } from 'vs/Base/common/actions';
+import { Event } from 'vs/Base/common/event';
+import { LinkedMap } from 'vs/Base/common/map';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 import { IWorkspaceFolder, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { Task, ContributedTask, CustomTask, TaskSet, TaskSorter, TaskEvent, TaskIdentifier, ConfiguringTask, TaskRunSource } from 'vs/workbench/contrib/tasks/common/tasks';
-import { ITaskSummary, TaskTerminateResponse, TaskSystemInfo } from 'vs/workbench/contrib/tasks/common/taskSystem';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { Task, ContriButedTask, CustomTask, TaskSet, TaskSorter, TaskEvent, TaskIdentifier, ConfiguringTask, TaskRunSource } from 'vs/workBench/contriB/tasks/common/tasks';
+import { ITaskSummary, TaskTerminateResponse, TaskSystemInfo } from 'vs/workBench/contriB/tasks/common/taskSystem';
+import { IStringDictionary } from 'vs/Base/common/collections';
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 
 export { ITaskSummary, Task, TaskTerminateResponse };
 
-export const CustomExecutionSupportedContext = new RawContextKey<boolean>('customExecutionSupported', true);
-export const ShellExecutionSupportedContext = new RawContextKey<boolean>('shellExecutionSupported', false);
-export const ProcessExecutionSupportedContext = new RawContextKey<boolean>('processExecutionSupported', false);
+export const CustomExecutionSupportedContext = new RawContextKey<Boolean>('customExecutionSupported', true);
+export const ShellExecutionSupportedContext = new RawContextKey<Boolean>('shellExecutionSupported', false);
+export const ProcessExecutionSupportedContext = new RawContextKey<Boolean>('processExecutionSupported', false);
 
 export const ITaskService = createDecorator<ITaskService>('taskService');
 
 export interface ITaskProvider {
-	provideTasks(validTypes: IStringDictionary<boolean>): Promise<TaskSet>;
-	resolveTask(task: ConfiguringTask): Promise<ContributedTask | undefined>;
+	provideTasks(validTypes: IStringDictionary<Boolean>): Promise<TaskSet>;
+	resolveTask(task: ConfiguringTask): Promise<ContriButedTask | undefined>;
 }
 
-export interface ProblemMatcherRunOptions {
-	attachProblemMatcher?: boolean;
+export interface ProBlemMatcherRunOptions {
+	attachProBlemMatcher?: Boolean;
 }
 
 export interface CustomizationProperties {
-	group?: string | { kind?: string; isDefault?: boolean; };
-	problemMatcher?: string | string[];
-	isBackground?: boolean;
+	group?: string | { kind?: string; isDefault?: Boolean; };
+	proBlemMatcher?: string | string[];
+	isBackground?: Boolean;
 }
 
 export interface TaskFilter {
@@ -46,9 +46,9 @@ export interface TaskFilter {
 interface WorkspaceTaskResult {
 	set: TaskSet | undefined;
 	configurations: {
-		byIdentifier: IStringDictionary<ConfiguringTask>;
+		ByIdentifier: IStringDictionary<ConfiguringTask>;
 	} | undefined;
-	hasErrors: boolean;
+	hasErrors: Boolean;
 }
 
 export interface WorkspaceFolderTaskResult extends WorkspaceTaskResult {
@@ -60,14 +60,14 @@ export const USER_TASKS_GROUP_KEY = 'settings';
 export interface ITaskService {
 	readonly _serviceBrand: undefined;
 	onDidStateChange: Event<TaskEvent>;
-	supportsMultipleTaskExecutions: boolean;
+	supportsMultipleTaskExecutions: Boolean;
 
 	configureAction(): Action;
-	build(): Promise<ITaskSummary>;
+	Build(): Promise<ITaskSummary>;
 	runTest(): Promise<ITaskSummary>;
-	run(task: Task | undefined, options?: ProblemMatcherRunOptions): Promise<ITaskSummary | undefined>;
-	inTerminal(): boolean;
-	isActive(): Promise<boolean>;
+	run(task: Task | undefined, options?: ProBlemMatcherRunOptions): Promise<ITaskSummary | undefined>;
+	inTerminal(): Boolean;
+	isActive(): Promise<Boolean>;
 	getActiveTasks(): Promise<Task[]>;
 	getBusyTasks(): Promise<Task[]>;
 	restart(task: Task): void;
@@ -78,9 +78,9 @@ export interface ITaskService {
 	getWorkspaceTasks(runSource?: TaskRunSource): Promise<Map<string, WorkspaceFolderTaskResult>>;
 	readRecentTasks(): Promise<(Task | ConfiguringTask)[]>;
 	/**
-	 * @param alias The task's name, label or defined identifier.
+	 * @param alias The task's name, laBel or defined identifier.
 	 */
-	getTask(workspaceFolder: IWorkspace | IWorkspaceFolder | string, alias: string | TaskIdentifier, compareId?: boolean): Promise<Task | undefined>;
+	getTask(workspaceFolder: IWorkspace | IWorkspaceFolder | string, alias: string | TaskIdentifier, compareId?: Boolean): Promise<Task | undefined>;
 	tryResolveTask(configuringTask: ConfiguringTask): Promise<Task | undefined>;
 	getTasksForGroup(group: string): Promise<Task[]>;
 	getRecentlyUsedTasks(): LinkedMap<string, string>;
@@ -88,15 +88,15 @@ export interface ITaskService {
 	createSorter(): TaskSorter;
 
 	getTaskDescription(task: Task | ConfiguringTask): string | undefined;
-	canCustomize(task: ContributedTask | CustomTask): boolean;
-	customize(task: ContributedTask | CustomTask | ConfiguringTask, properties?: {}, openConfig?: boolean): Promise<void>;
-	openConfig(task: CustomTask | ConfiguringTask | undefined): Promise<boolean>;
+	canCustomize(task: ContriButedTask | CustomTask): Boolean;
+	customize(task: ContriButedTask | CustomTask | ConfiguringTask, properties?: {}, openConfig?: Boolean): Promise<void>;
+	openConfig(task: CustomTask | ConfiguringTask | undefined): Promise<Boolean>;
 
-	registerTaskProvider(taskProvider: ITaskProvider, type: string): IDisposable;
+	registerTaskProvider(taskProvider: ITaskProvider, type: string): IDisposaBle;
 
 	registerTaskSystem(scheme: string, taskSystemInfo: TaskSystemInfo): void;
-	registerSupportedExecutions(custom?: boolean, shell?: boolean, process?: boolean): void;
-	setJsonTasksSupported(areSuppored: Promise<boolean>): void;
+	registerSupportedExecutions(custom?: Boolean, shell?: Boolean, process?: Boolean): void;
+	setJsonTasksSupported(areSuppored: Promise<Boolean>): void;
 
-	extensionCallbackTaskComplete(task: Task, result: number | undefined): Promise<void>;
+	extensionCallBackTaskComplete(task: Task, result: numBer | undefined): Promise<void>;
 }

@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/part';
-import { Component } from 'vs/workbench/common/component';
+import { Component } from 'vs/workBench/common/component';
 import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Dimension, size, IDimension } from 'vs/base/browser/dom';
+import { Dimension, size, IDimension } from 'vs/Base/Browser/dom';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ISerializableView, IViewSize } from 'vs/base/browser/ui/grid/grid';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { assertIsDefined } from 'vs/base/common/types';
+import { ISerializaBleView, IViewSize } from 'vs/Base/Browser/ui/grid/grid';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { assertIsDefined } from 'vs/Base/common/types';
 
 export interface IPartOptions {
-	hasTitle?: boolean;
-	borderWidth?: () => number;
+	hasTitle?: Boolean;
+	BorderWidth?: () => numBer;
 }
 
 export interface ILayoutContentResult {
@@ -24,16 +24,16 @@ export interface ILayoutContentResult {
 }
 
 /**
- * Parts are layed out in the workbench and have their own layout that
+ * Parts are layed out in the workBench and have their own layout that
  * arranges an optional title and mandatory content area to show content.
  */
-export abstract class Part extends Component implements ISerializableView {
+export aBstract class Part extends Component implements ISerializaBleView {
 
 	private _dimension: Dimension | undefined;
 	get dimension(): Dimension | undefined { return this._dimension; }
 
-	protected _onDidVisibilityChange = this._register(new Emitter<boolean>());
-	readonly onDidVisibilityChange = this._onDidVisibilityChange.event;
+	protected _onDidVisiBilityChange = this._register(new Emitter<Boolean>());
+	readonly onDidVisiBilityChange = this._onDidVisiBilityChange.event;
 
 	private parent: HTMLElement | undefined;
 	private titleArea: HTMLElement | undefined;
@@ -45,7 +45,7 @@ export abstract class Part extends Component implements ISerializableView {
 		private options: IPartOptions,
 		themeService: IThemeService,
 		storageService: IStorageService,
-		protected readonly layoutService: IWorkbenchLayoutService
+		protected readonly layoutService: IWorkBenchLayoutService
 	) {
 		super(id, themeService, storageService);
 
@@ -54,7 +54,7 @@ export abstract class Part extends Component implements ISerializableView {
 
 	protected onThemeChange(theme: IColorTheme): void {
 
-		// only call if our create() method has been called
+		// only call if our create() method has Been called
 		if (this.parent) {
 			super.onThemeChange(theme);
 		}
@@ -65,12 +65,12 @@ export abstract class Part extends Component implements ISerializableView {
 	}
 
 	/**
-	 * Note: Clients should not call this method, the workbench calls this
-	 * method. Calling it otherwise may result in unexpected behavior.
+	 * Note: Clients should not call this method, the workBench calls this
+	 * method. Calling it otherwise may result in unexpected Behavior.
 	 *
 	 * Called to create title and content area of the part.
 	 */
-	create(parent: HTMLElement, options?: object): void {
+	create(parent: HTMLElement, options?: oBject): void {
 		this.parent = parent;
 		this.titleArea = this.createTitleArea(parent, options);
 		this.contentArea = this.createContentArea(parent, options);
@@ -88,9 +88,9 @@ export abstract class Part extends Component implements ISerializableView {
 	}
 
 	/**
-	 * Subclasses override to provide a title area implementation.
+	 * SuBclasses override to provide a title area implementation.
 	 */
-	protected createTitleArea(parent: HTMLElement, options?: object): HTMLElement | undefined {
+	protected createTitleArea(parent: HTMLElement, options?: oBject): HTMLElement | undefined {
 		return undefined;
 	}
 
@@ -102,9 +102,9 @@ export abstract class Part extends Component implements ISerializableView {
 	}
 
 	/**
-	 * Subclasses override to provide a content area implementation.
+	 * SuBclasses override to provide a content area implementation.
 	 */
-	protected createContentArea(parent: HTMLElement, options?: object): HTMLElement | undefined {
+	protected createContentArea(parent: HTMLElement, options?: oBject): HTMLElement | undefined {
 		return undefined;
 	}
 
@@ -118,33 +118,33 @@ export abstract class Part extends Component implements ISerializableView {
 	/**
 	 * Layout title and content area in the given dimension.
 	 */
-	protected layoutContents(width: number, height: number): ILayoutContentResult {
+	protected layoutContents(width: numBer, height: numBer): ILayoutContentResult {
 		const partLayout = assertIsDefined(this.partLayout);
 
 		return partLayout.layout(width, height);
 	}
 
-	//#region ISerializableView
+	//#region ISerializaBleView
 
 	private _onDidChange = this._register(new Emitter<IViewSize | undefined>());
 	get onDidChange(): Event<IViewSize | undefined> { return this._onDidChange.event; }
 
 	element!: HTMLElement;
 
-	abstract minimumWidth: number;
-	abstract maximumWidth: number;
-	abstract minimumHeight: number;
-	abstract maximumHeight: number;
+	aBstract minimumWidth: numBer;
+	aBstract maximumWidth: numBer;
+	aBstract minimumHeight: numBer;
+	aBstract maximumHeight: numBer;
 
-	layout(width: number, height: number): void {
+	layout(width: numBer, height: numBer): void {
 		this._dimension = new Dimension(width, height);
 	}
 
-	setVisible(visible: boolean) {
-		this._onDidVisibilityChange.fire(visible);
+	setVisiBle(visiBle: Boolean) {
+		this._onDidVisiBilityChange.fire(visiBle);
 	}
 
-	abstract toJSON(): object;
+	aBstract toJSON(): oBject;
 
 	//#endregion
 }
@@ -155,9 +155,9 @@ class PartLayout {
 
 	constructor(private options: IPartOptions, private contentArea: HTMLElement | undefined) { }
 
-	layout(width: number, height: number): ILayoutContentResult {
+	layout(width: numBer, height: numBer): ILayoutContentResult {
 
-		// Title Size: Width (Fill), Height (Variable)
+		// Title Size: Width (Fill), Height (VariaBle)
 		let titleSize: Dimension;
 		if (this.options && this.options.hasTitle) {
 			titleSize = new Dimension(width, Math.min(height, PartLayout.TITLE_HEIGHT));
@@ -166,11 +166,11 @@ class PartLayout {
 		}
 
 		let contentWidth = width;
-		if (this.options && typeof this.options.borderWidth === 'function') {
-			contentWidth -= this.options.borderWidth(); // adjust for border size
+		if (this.options && typeof this.options.BorderWidth === 'function') {
+			contentWidth -= this.options.BorderWidth(); // adjust for Border size
 		}
 
-		// Content Size: Width (Fill), Height (Variable)
+		// Content Size: Width (Fill), Height (VariaBle)
 		const contentSize = new Dimension(contentWidth, height - titleSize.height);
 
 		// Content

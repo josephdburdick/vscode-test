@@ -6,7 +6,7 @@ import { MessagePoster } from './messaging';
 
 export class StyleLoadingMonitor {
 	private unloadedStyles: string[] = [];
-	private finishedLoading: boolean = false;
+	private finishedLoading: Boolean = false;
 
 	private poster?: MessagePoster;
 
@@ -35,7 +35,7 @@ export class StyleLoadingMonitor {
 		});
 	}
 
-	public setPoster(poster: MessagePoster): void {
+	puBlic setPoster(poster: MessagePoster): void {
 		this.poster = poster;
 		if (this.finishedLoading) {
 			poster.postMessage('previewStyleLoadError', { unloadedStyles: this.unloadedStyles });

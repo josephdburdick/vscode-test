@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 
 /**
- * keyboardEvent.code
+ * keyBoardEvent.code
  */
 export const enum ScanCode {
 	None,
@@ -17,7 +17,7 @@ export const enum ScanCode {
 	FnLock,
 	Suspend,
 	Resume,
-	Turbo,
+	TurBo,
 	Sleep,
 	WakeUp,
 	KeyA,
@@ -59,7 +59,7 @@ export const enum ScanCode {
 	Enter,
 	Escape,
 	Backspace,
-	Tab,
+	TaB,
 	Space,
 	Minus,
 	Equal,
@@ -102,7 +102,7 @@ export const enum ScanCode {
 	NumLock,
 	NumpadDivide,
 	NumpadMultiply,
-	NumpadSubtract,
+	NumpadSuBtract,
 	NumpadAdd,
 	NumpadEnter,
 	Numpad1,
@@ -155,7 +155,7 @@ export const enum ScanCode {
 	Lang3,
 	Lang4,
 	Lang5,
-	Abort,
+	ABort,
 	Props,
 	NumpadParenLeft,
 	NumpadParenRight,
@@ -164,7 +164,7 @@ export const enum ScanCode {
 	NumpadMemoryRecall,
 	NumpadMemoryClear,
 	NumpadMemoryAdd,
-	NumpadMemorySubtract,
+	NumpadMemorySuBtract,
 	NumpadClear,
 	NumpadClearEntry,
 	ControlLeft,
@@ -208,8 +208,8 @@ export const enum ScanCode {
 }
 
 const scanCodeIntToStr: string[] = [];
-const scanCodeStrToInt: { [code: string]: number; } = Object.create(null);
-const scanCodeLowerCaseStrToInt: { [code: string]: number; } = Object.create(null);
+const scanCodeStrToInt: { [code: string]: numBer; } = OBject.create(null);
+const scanCodeLowerCaseStrToInt: { [code: string]: numBer; } = OBject.create(null);
 
 export const ScanCodeUtils = {
 	lowerCaseToEnum: (scanCode: string) => scanCodeLowerCaseStrToInt[scanCode] || ScanCode.None,
@@ -218,23 +218,23 @@ export const ScanCodeUtils = {
 };
 
 /**
- * -1 if a ScanCode => KeyCode mapping depends on kb layout.
+ * -1 if a ScanCode => KeyCode mapping depends on kB layout.
  */
 export const IMMUTABLE_CODE_TO_KEY_CODE: KeyCode[] = [];
 
 /**
- * -1 if a KeyCode => ScanCode mapping depends on kb layout.
+ * -1 if a KeyCode => ScanCode mapping depends on kB layout.
  */
 export const IMMUTABLE_KEY_CODE_TO_CODE: ScanCode[] = [];
 
 export class ScanCodeBinding {
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly metaKey: boolean;
-	public readonly scanCode: ScanCode;
+	puBlic readonly ctrlKey: Boolean;
+	puBlic readonly shiftKey: Boolean;
+	puBlic readonly altKey: Boolean;
+	puBlic readonly metaKey: Boolean;
+	puBlic readonly scanCode: ScanCode;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, metaKey: boolean, scanCode: ScanCode) {
+	constructor(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, metaKey: Boolean, scanCode: ScanCode) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
 		this.altKey = altKey;
@@ -242,7 +242,7 @@ export class ScanCodeBinding {
 		this.scanCode = scanCode;
 	}
 
-	public equals(other: ScanCodeBinding): boolean {
+	puBlic equals(other: ScanCodeBinding): Boolean {
 		return (
 			this.ctrlKey === other.ctrlKey
 			&& this.shiftKey === other.shiftKey
@@ -253,9 +253,9 @@ export class ScanCodeBinding {
 	}
 
 	/**
-	 * Does this keybinding refer to the key code of a modifier and it also has the modifier flag?
+	 * Does this keyBinding refer to the key code of a modifier and it also has the modifier flag?
 	 */
-	public isDuplicateModifierCase(): boolean {
+	puBlic isDuplicateModifierCase(): Boolean {
 		return (
 			(this.ctrlKey && (this.scanCode === ScanCode.ControlLeft || this.scanCode === ScanCode.ControlRight))
 			|| (this.shiftKey && (this.scanCode === ScanCode.ShiftLeft || this.scanCode === ScanCode.ShiftRight))
@@ -278,7 +278,7 @@ export class ScanCodeBinding {
 	d(ScanCode.FnLock, 'FnLock');
 	d(ScanCode.Suspend, 'Suspend');
 	d(ScanCode.Resume, 'Resume');
-	d(ScanCode.Turbo, 'Turbo');
+	d(ScanCode.TurBo, 'TurBo');
 	d(ScanCode.Sleep, 'Sleep');
 	d(ScanCode.WakeUp, 'WakeUp');
 	d(ScanCode.KeyA, 'KeyA');
@@ -320,7 +320,7 @@ export class ScanCodeBinding {
 	d(ScanCode.Enter, 'Enter');
 	d(ScanCode.Escape, 'Escape');
 	d(ScanCode.Backspace, 'Backspace');
-	d(ScanCode.Tab, 'Tab');
+	d(ScanCode.TaB, 'TaB');
 	d(ScanCode.Space, 'Space');
 	d(ScanCode.Minus, 'Minus');
 	d(ScanCode.Equal, 'Equal');
@@ -363,7 +363,7 @@ export class ScanCodeBinding {
 	d(ScanCode.NumLock, 'NumLock');
 	d(ScanCode.NumpadDivide, 'NumpadDivide');
 	d(ScanCode.NumpadMultiply, 'NumpadMultiply');
-	d(ScanCode.NumpadSubtract, 'NumpadSubtract');
+	d(ScanCode.NumpadSuBtract, 'NumpadSuBtract');
 	d(ScanCode.NumpadAdd, 'NumpadAdd');
 	d(ScanCode.NumpadEnter, 'NumpadEnter');
 	d(ScanCode.Numpad1, 'Numpad1');
@@ -416,7 +416,7 @@ export class ScanCodeBinding {
 	d(ScanCode.Lang3, 'Lang3');
 	d(ScanCode.Lang4, 'Lang4');
 	d(ScanCode.Lang5, 'Lang5');
-	d(ScanCode.Abort, 'Abort');
+	d(ScanCode.ABort, 'ABort');
 	d(ScanCode.Props, 'Props');
 	d(ScanCode.NumpadParenLeft, 'NumpadParenLeft');
 	d(ScanCode.NumpadParenRight, 'NumpadParenRight');
@@ -425,7 +425,7 @@ export class ScanCodeBinding {
 	d(ScanCode.NumpadMemoryRecall, 'NumpadMemoryRecall');
 	d(ScanCode.NumpadMemoryClear, 'NumpadMemoryClear');
 	d(ScanCode.NumpadMemoryAdd, 'NumpadMemoryAdd');
-	d(ScanCode.NumpadMemorySubtract, 'NumpadMemorySubtract');
+	d(ScanCode.NumpadMemorySuBtract, 'NumpadMemorySuBtract');
 	d(ScanCode.NumpadClear, 'NumpadClear');
 	d(ScanCode.NumpadClearEntry, 'NumpadClearEntry');
 	d(ScanCode.ControlLeft, 'ControlLeft');
@@ -490,7 +490,7 @@ export class ScanCodeBinding {
 		}
 	}
 
-	// Manually added due to the exclusion above (due to duplication with NumpadEnter)
+	// Manually added due to the exclusion aBove (due to duplication with NumpadEnter)
 	IMMUTABLE_KEY_CODE_TO_CODE[KeyCode.Enter] = ScanCode.Enter;
 
 	define(ScanCode.None, KeyCode.Unknown);
@@ -500,7 +500,7 @@ export class ScanCodeBinding {
 	define(ScanCode.FnLock, KeyCode.Unknown);
 	define(ScanCode.Suspend, KeyCode.Unknown);
 	define(ScanCode.Resume, KeyCode.Unknown);
-	define(ScanCode.Turbo, KeyCode.Unknown);
+	define(ScanCode.TurBo, KeyCode.Unknown);
 	define(ScanCode.Sleep, KeyCode.Unknown);
 	define(ScanCode.WakeUp, KeyCode.Unknown);
 	// define(ScanCode.KeyA, KeyCode.Unknown);
@@ -542,7 +542,7 @@ export class ScanCodeBinding {
 	define(ScanCode.Enter, KeyCode.Enter);
 	define(ScanCode.Escape, KeyCode.Escape);
 	define(ScanCode.Backspace, KeyCode.Backspace);
-	define(ScanCode.Tab, KeyCode.Tab);
+	define(ScanCode.TaB, KeyCode.TaB);
 	define(ScanCode.Space, KeyCode.Space);
 	// define(ScanCode.Minus, KeyCode.Unknown);
 	// define(ScanCode.Equal, KeyCode.Unknown);
@@ -585,7 +585,7 @@ export class ScanCodeBinding {
 	define(ScanCode.NumLock, KeyCode.NumLock);
 	define(ScanCode.NumpadDivide, KeyCode.NUMPAD_DIVIDE);
 	define(ScanCode.NumpadMultiply, KeyCode.NUMPAD_MULTIPLY);
-	define(ScanCode.NumpadSubtract, KeyCode.NUMPAD_SUBTRACT);
+	define(ScanCode.NumpadSuBtract, KeyCode.NUMPAD_SUBTRACT);
 	define(ScanCode.NumpadAdd, KeyCode.NUMPAD_ADD);
 	define(ScanCode.NumpadEnter, KeyCode.Enter); // Duplicate
 	define(ScanCode.Numpad1, KeyCode.NUMPAD_1);
@@ -638,7 +638,7 @@ export class ScanCodeBinding {
 	define(ScanCode.Lang3, KeyCode.Unknown);
 	define(ScanCode.Lang4, KeyCode.Unknown);
 	define(ScanCode.Lang5, KeyCode.Unknown);
-	define(ScanCode.Abort, KeyCode.Unknown);
+	define(ScanCode.ABort, KeyCode.Unknown);
 	define(ScanCode.Props, KeyCode.Unknown);
 	define(ScanCode.NumpadParenLeft, KeyCode.Unknown);
 	define(ScanCode.NumpadParenRight, KeyCode.Unknown);
@@ -647,7 +647,7 @@ export class ScanCodeBinding {
 	define(ScanCode.NumpadMemoryRecall, KeyCode.Unknown);
 	define(ScanCode.NumpadMemoryClear, KeyCode.Unknown);
 	define(ScanCode.NumpadMemoryAdd, KeyCode.Unknown);
-	define(ScanCode.NumpadMemorySubtract, KeyCode.Unknown);
+	define(ScanCode.NumpadMemorySuBtract, KeyCode.Unknown);
 	define(ScanCode.NumpadClear, KeyCode.Unknown);
 	define(ScanCode.NumpadClearEntry, KeyCode.Unknown);
 	define(ScanCode.ControlLeft, KeyCode.Ctrl); // Duplicate

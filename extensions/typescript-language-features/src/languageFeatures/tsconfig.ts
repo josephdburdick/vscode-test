@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as jsonc from 'jsonc-parser';
-import { basename, dirname, join } from 'path';
+import { Basename, dirname, join } from 'path';
 import * as vscode from 'vscode';
 import { coalesce, flatten } from '../utils/arrays';
 
@@ -16,7 +16,7 @@ function mapChildren<R>(node: jsonc.Node | undefined, f: (x: jsonc.Node) => R): 
 
 class TsconfigLinkProvider implements vscode.DocumentLinkProvider {
 
-	public provideDocumentLinks(
+	puBlic provideDocumentLinks(
 		document: vscode.TextDocument,
 		_token: vscode.CancellationToken
 	): vscode.ProviderResult<vscode.DocumentLink[]> {
@@ -68,7 +68,7 @@ class TsconfigLinkProvider implements vscode.DocumentLinkProvider {
 				}
 
 				return new vscode.DocumentLink(this.getRange(document, pathNode),
-					basename(pathNode.value).endsWith('.json')
+					Basename(pathNode.value).endsWith('.json')
 						? this.getFileTarget(document, pathNode)
 						: this.getFolderTarget(document, pathNode));
 			});
@@ -87,7 +87,7 @@ class TsconfigLinkProvider implements vscode.DocumentLinkProvider {
 		return extendsNode
 			&& extendsNode.type === 'string'
 			&& extendsNode.value
-			&& !(extendsNode.value as string).includes('*'); // don't treat globs as links.
+			&& !(extendsNode.value as string).includes('*'); // don't treat gloBs as links.
 	}
 
 	private getFileTarget(document: vscode.TextDocument, node: jsonc.Node): vscode.Uri {
@@ -107,7 +107,7 @@ class TsconfigLinkProvider implements vscode.DocumentLinkProvider {
 }
 
 export function register() {
-	const patterns: vscode.GlobPattern[] = [
+	const patterns: vscode.GloBPattern[] = [
 		'**/[jt]sconfig.json',
 		'**/[jt]sconfig.*.json',
 	];

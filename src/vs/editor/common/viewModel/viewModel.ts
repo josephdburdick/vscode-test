@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IScrollPosition, Scrollable } from 'vs/base/common/scrollable';
-import * as strings from 'vs/base/common/strings';
+import { IScrollPosition, ScrollaBle } from 'vs/Base/common/scrollaBle';
+import * as strings from 'vs/Base/common/strings';
 import { IViewLineTokens } from 'vs/editor/common/core/lineTokens';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
@@ -20,20 +20,20 @@ import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 
 export interface IViewWhitespaceViewportData {
 	readonly id: string;
-	readonly afterLineNumber: number;
-	readonly verticalOffset: number;
-	readonly height: number;
+	readonly afterLineNumBer: numBer;
+	readonly verticalOffset: numBer;
+	readonly height: numBer;
 }
 
 export class Viewport {
 	readonly _viewportBrand: void;
 
-	readonly top: number;
-	readonly left: number;
-	readonly width: number;
-	readonly height: number;
+	readonly top: numBer;
+	readonly left: numBer;
+	readonly width: numBer;
+	readonly height: numBer;
 
-	constructor(top: number, left: number, width: number, height: number) {
+	constructor(top: numBer, left: numBer, width: numBer, height: numBer) {
 		this.top = top | 0;
 		this.left = left | 0;
 		this.width = width | 0;
@@ -43,13 +43,13 @@ export class Viewport {
 
 export interface IViewLayout {
 
-	getScrollable(): Scrollable;
+	getScrollaBle(): ScrollaBle;
 
-	getScrollWidth(): number;
-	getScrollHeight(): number;
+	getScrollWidth(): numBer;
+	getScrollHeight(): numBer;
 
-	getCurrentScrollLeft(): number;
-	getCurrentScrollTop(): number;
+	getCurrentScrollLeft(): numBer;
+	getCurrentScrollTop(): numBer;
 	getCurrentViewport(): Viewport;
 
 	getFutureViewport(): Viewport;
@@ -57,13 +57,13 @@ export interface IViewLayout {
 	validateScrollPosition(scrollPosition: INewScrollPosition): IScrollPosition;
 
 	getLinesViewportData(): IPartialViewLinesViewportData;
-	getLinesViewportDataAtScrollTop(scrollTop: number): IPartialViewLinesViewportData;
+	getLinesViewportDataAtScrollTop(scrollTop: numBer): IPartialViewLinesViewportData;
 	getWhitespaces(): IEditorWhitespace[];
 
-	isAfterLines(verticalOffset: number): boolean;
-	getLineNumberAtVerticalOffset(verticalOffset: number): number;
-	getVerticalOffsetForLineNumber(lineNumber: number): number;
-	getWhitespaceAtVerticalOffset(verticalOffset: number): IViewWhitespaceViewportData | null;
+	isAfterLines(verticalOffset: numBer): Boolean;
+	getLineNumBerAtVerticalOffset(verticalOffset: numBer): numBer;
+	getVerticalOffsetForLineNumBer(lineNumBer: numBer): numBer;
+	getWhitespaceAtVerticalOffset(verticalOffset: numBer): IViewWhitespaceViewportData | null;
 
 	/**
 	 * Get the layout information for whitespaces currently in the viewport
@@ -81,7 +81,7 @@ export interface ICoordinatesConverter {
 	// Model -> View conversion and related methods
 	convertModelPositionToViewPosition(modelPosition: Position): Position;
 	convertModelRangeToViewRange(modelRange: Range): Range;
-	modelPositionIsVisible(modelPosition: Position): boolean;
+	modelPositionIsVisiBle(modelPosition: Position): Boolean;
 }
 
 export interface IViewModel extends ICursorSimpleModel {
@@ -98,43 +98,43 @@ export interface IViewModel extends ICursorSimpleModel {
 	removeViewEventHandler(eventHandler: ViewEventHandler): void;
 
 	/**
-	 * Gives a hint that a lot of requests are about to come in for these line numbers.
+	 * Gives a hint that a lot of requests are aBout to come in for these line numBers.
 	 */
-	setViewport(startLineNumber: number, endLineNumber: number, centeredLineNumber: number): void;
+	setViewport(startLineNumBer: numBer, endLineNumBer: numBer, centeredLineNumBer: numBer): void;
 	tokenizeViewport(): void;
-	setHasFocus(hasFocus: boolean): void;
+	setHasFocus(hasFocus: Boolean): void;
 	onDidColorThemeChange(): void;
 
-	getDecorationsInViewport(visibleRange: Range): ViewModelDecoration[];
-	getViewLineRenderingData(visibleRange: Range, lineNumber: number): ViewLineRenderingData;
-	getViewLineData(lineNumber: number): ViewLineData;
-	getMinimapLinesRenderingData(startLineNumber: number, endLineNumber: number, needed: boolean[]): MinimapLinesRenderingData;
-	getCompletelyVisibleViewRange(): Range;
-	getCompletelyVisibleViewRangeAtScrollTop(scrollTop: number): Range;
+	getDecorationsInViewport(visiBleRange: Range): ViewModelDecoration[];
+	getViewLineRenderingData(visiBleRange: Range, lineNumBer: numBer): ViewLineRenderingData;
+	getViewLineData(lineNumBer: numBer): ViewLineData;
+	getMinimapLinesRenderingData(startLineNumBer: numBer, endLineNumBer: numBer, needed: Boolean[]): MinimapLinesRenderingData;
+	getCompletelyVisiBleViewRange(): Range;
+	getCompletelyVisiBleViewRangeAtScrollTop(scrollTop: numBer): Range;
 
 	getTextModelOptions(): TextModelResolvedOptions;
-	getLineCount(): number;
-	getLineContent(lineNumber: number): string;
-	getLineLength(lineNumber: number): number;
-	getActiveIndentGuide(lineNumber: number, minLineNumber: number, maxLineNumber: number): IActiveIndentGuideInfo;
-	getLinesIndentGuides(startLineNumber: number, endLineNumber: number): number[];
-	getLineMinColumn(lineNumber: number): number;
-	getLineMaxColumn(lineNumber: number): number;
-	getLineFirstNonWhitespaceColumn(lineNumber: number): number;
-	getLineLastNonWhitespaceColumn(lineNumber: number): number;
+	getLineCount(): numBer;
+	getLineContent(lineNumBer: numBer): string;
+	getLineLength(lineNumBer: numBer): numBer;
+	getActiveIndentGuide(lineNumBer: numBer, minLineNumBer: numBer, maxLineNumBer: numBer): IActiveIndentGuideInfo;
+	getLinesIndentGuides(startLineNumBer: numBer, endLineNumBer: numBer): numBer[];
+	getLineMinColumn(lineNumBer: numBer): numBer;
+	getLineMaxColumn(lineNumBer: numBer): numBer;
+	getLineFirstNonWhitespaceColumn(lineNumBer: numBer): numBer;
+	getLineLastNonWhitespaceColumn(lineNumBer: numBer): numBer;
 	getAllOverviewRulerDecorations(theme: EditorTheme): IOverviewRulerDecorations;
 	invalidateOverviewRulerColorCache(): void;
 	invalidateMinimapColorCache(): void;
 	getValueInRange(range: Range, eol: EndOfLinePreference): string;
 
-	getModelLineMaxColumn(modelLineNumber: number): number;
+	getModelLineMaxColumn(modelLineNumBer: numBer): numBer;
 	validateModelPosition(modelPosition: IPosition): Position;
 	validateModelRange(range: IRange): Range;
 
-	deduceModelPositionRelativeToViewPosition(viewAnchorPosition: Position, deltaOffset: number, lineFeedCnt: number): Position;
+	deduceModelPositionRelativeToViewPosition(viewAnchorPosition: Position, deltaOffset: numBer, lineFeedCnt: numBer): Position;
 	getEOL(): string;
-	getPlainTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean, forceCRLF: boolean): string | string[];
-	getRichTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean): { html: string, mode: string } | null;
+	getPlainTextToCopy(modelRanges: Range[], emptySelectionClipBoard: Boolean, forceCRLF: Boolean): string | string[];
+	getRichTextToCopy(modelRanges: Range[], emptySelectionClipBoard: Boolean): { html: string, mode: string } | null;
 
 	//#region model
 
@@ -145,39 +145,39 @@ export interface IViewModel extends ICursorSimpleModel {
 
 	//#region cursor
 	getPrimaryCursorState(): CursorState;
-	getLastAddedCursorIndex(): number;
+	getLastAddedCursorIndex(): numBer;
 	getCursorStates(): CursorState[];
 	setCursorStates(source: string | null | undefined, reason: CursorChangeReason, states: PartialCursorState[] | null): void;
 	getCursorColumnSelectData(): IColumnSelectData;
 	setCursorColumnSelectData(columnSelectData: IColumnSelectData): void;
 	getPrevEditOperationType(): EditOperationType;
 	setPrevEditOperationType(type: EditOperationType): void;
-	revealPrimaryCursor(source: string | null | undefined, revealHorizontal: boolean): void;
+	revealPrimaryCursor(source: string | null | undefined, revealHorizontal: Boolean): void;
 	revealTopMostCursor(source: string | null | undefined): void;
 	revealBottomMostCursor(source: string | null | undefined): void;
-	revealRange(source: string | null | undefined, revealHorizontal: boolean, viewRange: Range, verticalType: VerticalRevealType, scrollType: ScrollType): void;
+	revealRange(source: string | null | undefined, revealHorizontal: Boolean, viewRange: Range, verticalType: VerticalRevealType, scrollType: ScrollType): void;
 	//#endregion
 
 	//#region viewLayout
-	getVerticalOffsetForLineNumber(viewLineNumber: number): number;
-	getScrollTop(): number;
-	setScrollTop(newScrollTop: number, scrollType: ScrollType): void;
+	getVerticalOffsetForLineNumBer(viewLineNumBer: numBer): numBer;
+	getScrollTop(): numBer;
+	setScrollTop(newScrollTop: numBer, scrollType: ScrollType): void;
 	setScrollPosition(position: INewScrollPosition, type: ScrollType): void;
-	deltaScrollNow(deltaScrollLeft: number, deltaScrollTop: number): void;
-	changeWhitespace(callback: (accessor: IWhitespaceChangeAccessor) => void): void;
-	setMaxLineWidth(maxLineWidth: number): void;
+	deltaScrollNow(deltaScrollLeft: numBer, deltaScrollTop: numBer): void;
+	changeWhitespace(callBack: (accessor: IWhitespaceChangeAccessor) => void): void;
+	setMaxLineWidth(maxLineWidth: numBer): void;
 	//#endregion
 }
 
 export class MinimapLinesRenderingData {
-	public readonly tabSize: number;
-	public readonly data: Array<ViewLineData | null>;
+	puBlic readonly taBSize: numBer;
+	puBlic readonly data: Array<ViewLineData | null>;
 
 	constructor(
-		tabSize: number,
+		taBSize: numBer,
 		data: Array<ViewLineData | null>
 	) {
-		this.tabSize = tabSize;
+		this.taBSize = taBSize;
 		this.data = data;
 	}
 }
@@ -188,41 +188,41 @@ export class ViewLineData {
 	/**
 	 * The content at this view line.
 	 */
-	public readonly content: string;
+	puBlic readonly content: string;
 	/**
 	 * Does this line continue with a wrapped line?
 	 */
-	public readonly continuesWithWrappedLine: boolean;
+	puBlic readonly continuesWithWrappedLine: Boolean;
 	/**
 	 * The minimum allowed column at this view line.
 	 */
-	public readonly minColumn: number;
+	puBlic readonly minColumn: numBer;
 	/**
 	 * The maximum allowed column at this view line.
 	 */
-	public readonly maxColumn: number;
+	puBlic readonly maxColumn: numBer;
 	/**
-	 * The visible column at the start of the line (after the fauxIndent).
+	 * The visiBle column at the start of the line (after the fauxIndent).
 	 */
-	public readonly startVisibleColumn: number;
+	puBlic readonly startVisiBleColumn: numBer;
 	/**
 	 * The tokens at this view line.
 	 */
-	public readonly tokens: IViewLineTokens;
+	puBlic readonly tokens: IViewLineTokens;
 
 	constructor(
 		content: string,
-		continuesWithWrappedLine: boolean,
-		minColumn: number,
-		maxColumn: number,
-		startVisibleColumn: number,
+		continuesWithWrappedLine: Boolean,
+		minColumn: numBer,
+		maxColumn: numBer,
+		startVisiBleColumn: numBer,
 		tokens: IViewLineTokens
 	) {
 		this.content = content;
 		this.continuesWithWrappedLine = continuesWithWrappedLine;
 		this.minColumn = minColumn;
 		this.maxColumn = maxColumn;
-		this.startVisibleColumn = startVisibleColumn;
+		this.startVisiBleColumn = startVisiBleColumn;
 		this.tokens = tokens;
 	}
 }
@@ -231,55 +231,55 @@ export class ViewLineRenderingData {
 	/**
 	 * The minimum allowed column at this view line.
 	 */
-	public readonly minColumn: number;
+	puBlic readonly minColumn: numBer;
 	/**
 	 * The maximum allowed column at this view line.
 	 */
-	public readonly maxColumn: number;
+	puBlic readonly maxColumn: numBer;
 	/**
 	 * The content at this view line.
 	 */
-	public readonly content: string;
+	puBlic readonly content: string;
 	/**
 	 * Does this line continue with a wrapped line?
 	 */
-	public readonly continuesWithWrappedLine: boolean;
+	puBlic readonly continuesWithWrappedLine: Boolean;
 	/**
-	 * Describes if `content` contains RTL characters.
+	 * DescriBes if `content` contains RTL characters.
 	 */
-	public readonly containsRTL: boolean;
+	puBlic readonly containsRTL: Boolean;
 	/**
-	 * Describes if `content` contains non basic ASCII chars.
+	 * DescriBes if `content` contains non Basic ASCII chars.
 	 */
-	public readonly isBasicASCII: boolean;
+	puBlic readonly isBasicASCII: Boolean;
 	/**
 	 * The tokens at this view line.
 	 */
-	public readonly tokens: IViewLineTokens;
+	puBlic readonly tokens: IViewLineTokens;
 	/**
 	 * Inline decorations at this view line.
 	 */
-	public readonly inlineDecorations: InlineDecoration[];
+	puBlic readonly inlineDecorations: InlineDecoration[];
 	/**
-	 * The tab size for this view model.
+	 * The taB size for this view model.
 	 */
-	public readonly tabSize: number;
+	puBlic readonly taBSize: numBer;
 	/**
-	 * The visible column at the start of the line (after the fauxIndent)
+	 * The visiBle column at the start of the line (after the fauxIndent)
 	 */
-	public readonly startVisibleColumn: number;
+	puBlic readonly startVisiBleColumn: numBer;
 
 	constructor(
-		minColumn: number,
-		maxColumn: number,
+		minColumn: numBer,
+		maxColumn: numBer,
 		content: string,
-		continuesWithWrappedLine: boolean,
-		mightContainRTL: boolean,
-		mightContainNonBasicASCII: boolean,
+		continuesWithWrappedLine: Boolean,
+		mightContainRTL: Boolean,
+		mightContainNonBasicASCII: Boolean,
 		tokens: IViewLineTokens,
 		inlineDecorations: InlineDecoration[],
-		tabSize: number,
-		startVisibleColumn: number
+		taBSize: numBer,
+		startVisiBleColumn: numBer
 	) {
 		this.minColumn = minColumn;
 		this.maxColumn = maxColumn;
@@ -291,18 +291,18 @@ export class ViewLineRenderingData {
 
 		this.tokens = tokens;
 		this.inlineDecorations = inlineDecorations;
-		this.tabSize = tabSize;
-		this.startVisibleColumn = startVisibleColumn;
+		this.taBSize = taBSize;
+		this.startVisiBleColumn = startVisiBleColumn;
 	}
 
-	public static isBasicASCII(lineContent: string, mightContainNonBasicASCII: boolean): boolean {
+	puBlic static isBasicASCII(lineContent: string, mightContainNonBasicASCII: Boolean): Boolean {
 		if (mightContainNonBasicASCII) {
 			return strings.isBasicASCII(lineContent);
 		}
 		return true;
 	}
 
-	public static containsRTL(lineContent: string, isBasicASCII: boolean, mightContainRTL: boolean): boolean {
+	puBlic static containsRTL(lineContent: string, isBasicASCII: Boolean, mightContainRTL: Boolean): Boolean {
 		if (!isBasicASCII && mightContainRTL) {
 			return strings.containsRTL(lineContent);
 		}
@@ -319,9 +319,9 @@ export const enum InlineDecorationType {
 
 export class InlineDecoration {
 	constructor(
-		public readonly range: Range,
-		public readonly inlineClassName: string,
-		public readonly type: InlineDecorationType
+		puBlic readonly range: Range,
+		puBlic readonly inlineClassName: string,
+		puBlic readonly type: InlineDecorationType
 	) {
 	}
 }
@@ -329,8 +329,8 @@ export class InlineDecoration {
 export class ViewModelDecoration {
 	_viewModelDecorationBrand: void;
 
-	public readonly range: Range;
-	public readonly options: IModelDecorationOptions;
+	puBlic readonly range: Range;
+	puBlic readonly options: IModelDecorationOptions;
 
 	constructor(range: Range, options: IModelDecorationOptions) {
 		this.range = range;
@@ -339,11 +339,11 @@ export class ViewModelDecoration {
 }
 
 /**
- * Decorations are encoded in a number array using the following scheme:
+ * Decorations are encoded in a numBer array using the following scheme:
  *  - 3*i = lane
- *  - 3*i+1 = startLineNumber
- *  - 3*i+2 = endLineNumber
+ *  - 3*i+1 = startLineNumBer
+ *  - 3*i+2 = endLineNumBer
  */
 export interface IOverviewRulerDecorations {
-	[color: string]: number[];
+	[color: string]: numBer[];
 }

@@ -5,28 +5,28 @@
 
 export class FastDomNode<T extends HTMLElement> {
 
-	public readonly domNode: T;
-	private _maxWidth: number;
-	private _width: number;
-	private _height: number;
-	private _top: number;
-	private _left: number;
-	private _bottom: number;
-	private _right: number;
+	puBlic readonly domNode: T;
+	private _maxWidth: numBer;
+	private _width: numBer;
+	private _height: numBer;
+	private _top: numBer;
+	private _left: numBer;
+	private _Bottom: numBer;
+	private _right: numBer;
 	private _fontFamily: string;
 	private _fontWeight: string;
-	private _fontSize: number;
+	private _fontSize: numBer;
 	private _fontFeatureSettings: string;
-	private _lineHeight: number;
-	private _letterSpacing: number;
+	private _lineHeight: numBer;
+	private _letterSpacing: numBer;
 	private _className: string;
 	private _display: string;
 	private _position: string;
-	private _visibility: string;
-	private _backgroundColor: string;
-	private _layerHint: boolean;
+	private _visiBility: string;
+	private _BackgroundColor: string;
+	private _layerHint: Boolean;
 	private _contain: 'none' | 'strict' | 'content' | 'size' | 'layout' | 'style' | 'paint';
-	private _boxShadow: string;
+	private _BoxShadow: string;
 
 	constructor(domNode: T) {
 		this.domNode = domNode;
@@ -35,7 +35,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this._height = -1;
 		this._top = -1;
 		this._left = -1;
-		this._bottom = -1;
+		this._Bottom = -1;
 		this._right = -1;
 		this._fontFamily = '';
 		this._fontWeight = '';
@@ -46,14 +46,14 @@ export class FastDomNode<T extends HTMLElement> {
 		this._className = '';
 		this._display = '';
 		this._position = '';
-		this._visibility = '';
-		this._backgroundColor = '';
+		this._visiBility = '';
+		this._BackgroundColor = '';
 		this._layerHint = false;
 		this._contain = 'none';
-		this._boxShadow = '';
+		this._BoxShadow = '';
 	}
 
-	public setMaxWidth(maxWidth: number): void {
+	puBlic setMaxWidth(maxWidth: numBer): void {
 		if (this._maxWidth === maxWidth) {
 			return;
 		}
@@ -61,7 +61,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.maxWidth = this._maxWidth + 'px';
 	}
 
-	public setWidth(width: number): void {
+	puBlic setWidth(width: numBer): void {
 		if (this._width === width) {
 			return;
 		}
@@ -69,7 +69,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.width = this._width + 'px';
 	}
 
-	public setHeight(height: number): void {
+	puBlic setHeight(height: numBer): void {
 		if (this._height === height) {
 			return;
 		}
@@ -77,7 +77,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.height = this._height + 'px';
 	}
 
-	public setTop(top: number): void {
+	puBlic setTop(top: numBer): void {
 		if (this._top === top) {
 			return;
 		}
@@ -85,7 +85,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.top = this._top + 'px';
 	}
 
-	public unsetTop(): void {
+	puBlic unsetTop(): void {
 		if (this._top === -1) {
 			return;
 		}
@@ -93,7 +93,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.top = '';
 	}
 
-	public setLeft(left: number): void {
+	puBlic setLeft(left: numBer): void {
 		if (this._left === left) {
 			return;
 		}
@@ -101,15 +101,15 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.left = this._left + 'px';
 	}
 
-	public setBottom(bottom: number): void {
-		if (this._bottom === bottom) {
+	puBlic setBottom(Bottom: numBer): void {
+		if (this._Bottom === Bottom) {
 			return;
 		}
-		this._bottom = bottom;
-		this.domNode.style.bottom = this._bottom + 'px';
+		this._Bottom = Bottom;
+		this.domNode.style.Bottom = this._Bottom + 'px';
 	}
 
-	public setRight(right: number): void {
+	puBlic setRight(right: numBer): void {
 		if (this._right === right) {
 			return;
 		}
@@ -117,7 +117,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.right = this._right + 'px';
 	}
 
-	public setFontFamily(fontFamily: string): void {
+	puBlic setFontFamily(fontFamily: string): void {
 		if (this._fontFamily === fontFamily) {
 			return;
 		}
@@ -125,7 +125,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.fontFamily = this._fontFamily;
 	}
 
-	public setFontWeight(fontWeight: string): void {
+	puBlic setFontWeight(fontWeight: string): void {
 		if (this._fontWeight === fontWeight) {
 			return;
 		}
@@ -133,7 +133,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.fontWeight = this._fontWeight;
 	}
 
-	public setFontSize(fontSize: number): void {
+	puBlic setFontSize(fontSize: numBer): void {
 		if (this._fontSize === fontSize) {
 			return;
 		}
@@ -141,7 +141,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.fontSize = this._fontSize + 'px';
 	}
 
-	public setFontFeatureSettings(fontFeatureSettings: string): void {
+	puBlic setFontFeatureSettings(fontFeatureSettings: string): void {
 		if (this._fontFeatureSettings === fontFeatureSettings) {
 			return;
 		}
@@ -149,7 +149,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.fontFeatureSettings = this._fontFeatureSettings;
 	}
 
-	public setLineHeight(lineHeight: number): void {
+	puBlic setLineHeight(lineHeight: numBer): void {
 		if (this._lineHeight === lineHeight) {
 			return;
 		}
@@ -157,7 +157,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.lineHeight = this._lineHeight + 'px';
 	}
 
-	public setLetterSpacing(letterSpacing: number): void {
+	puBlic setLetterSpacing(letterSpacing: numBer): void {
 		if (this._letterSpacing === letterSpacing) {
 			return;
 		}
@@ -165,7 +165,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.letterSpacing = this._letterSpacing + 'px';
 	}
 
-	public setClassName(className: string): void {
+	puBlic setClassName(className: string): void {
 		if (this._className === className) {
 			return;
 		}
@@ -173,12 +173,12 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.className = this._className;
 	}
 
-	public toggleClassName(className: string, shouldHaveIt?: boolean): void {
+	puBlic toggleClassName(className: string, shouldHaveIt?: Boolean): void {
 		this.domNode.classList.toggle(className, shouldHaveIt);
 		this._className = this.domNode.className;
 	}
 
-	public setDisplay(display: string): void {
+	puBlic setDisplay(display: string): void {
 		if (this._display === display) {
 			return;
 		}
@@ -186,7 +186,7 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.display = this._display;
 	}
 
-	public setPosition(position: string): void {
+	puBlic setPosition(position: string): void {
 		if (this._position === position) {
 			return;
 		}
@@ -194,23 +194,23 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.position = this._position;
 	}
 
-	public setVisibility(visibility: string): void {
-		if (this._visibility === visibility) {
+	puBlic setVisiBility(visiBility: string): void {
+		if (this._visiBility === visiBility) {
 			return;
 		}
-		this._visibility = visibility;
-		this.domNode.style.visibility = this._visibility;
+		this._visiBility = visiBility;
+		this.domNode.style.visiBility = this._visiBility;
 	}
 
-	public setBackgroundColor(backgroundColor: string): void {
-		if (this._backgroundColor === backgroundColor) {
+	puBlic setBackgroundColor(BackgroundColor: string): void {
+		if (this._BackgroundColor === BackgroundColor) {
 			return;
 		}
-		this._backgroundColor = backgroundColor;
-		this.domNode.style.backgroundColor = this._backgroundColor;
+		this._BackgroundColor = BackgroundColor;
+		this.domNode.style.BackgroundColor = this._BackgroundColor;
 	}
 
-	public setLayerHinting(layerHint: boolean): void {
+	puBlic setLayerHinting(layerHint: Boolean): void {
 		if (this._layerHint === layerHint) {
 			return;
 		}
@@ -218,15 +218,15 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.transform = this._layerHint ? 'translate3d(0px, 0px, 0px)' : '';
 	}
 
-	public setBoxShadow(boxShadow: string): void {
-		if (this._boxShadow === boxShadow) {
+	puBlic setBoxShadow(BoxShadow: string): void {
+		if (this._BoxShadow === BoxShadow) {
 			return;
 		}
-		this._boxShadow = boxShadow;
-		this.domNode.style.boxShadow = boxShadow;
+		this._BoxShadow = BoxShadow;
+		this.domNode.style.BoxShadow = BoxShadow;
 	}
 
-	public setContain(contain: 'none' | 'strict' | 'content' | 'size' | 'layout' | 'style' | 'paint'): void {
+	puBlic setContain(contain: 'none' | 'strict' | 'content' | 'size' | 'layout' | 'style' | 'paint'): void {
 		if (this._contain === contain) {
 			return;
 		}
@@ -234,19 +234,19 @@ export class FastDomNode<T extends HTMLElement> {
 		(<any>this.domNode.style).contain = this._contain;
 	}
 
-	public setAttribute(name: string, value: string): void {
-		this.domNode.setAttribute(name, value);
+	puBlic setAttriBute(name: string, value: string): void {
+		this.domNode.setAttriBute(name, value);
 	}
 
-	public removeAttribute(name: string): void {
-		this.domNode.removeAttribute(name);
+	puBlic removeAttriBute(name: string): void {
+		this.domNode.removeAttriBute(name);
 	}
 
-	public appendChild(child: FastDomNode<T>): void {
+	puBlic appendChild(child: FastDomNode<T>): void {
 		this.domNode.appendChild(child.domNode);
 	}
 
-	public removeChild(child: FastDomNode<T>): void {
+	puBlic removeChild(child: FastDomNode<T>): void {
 		this.domNode.removeChild(child.domNode);
 	}
 }

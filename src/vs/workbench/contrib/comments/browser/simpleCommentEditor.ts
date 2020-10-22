@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { EditorAction, EditorExtensionsRegistry, IEditorContributionDescription } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { CodeEditorWidget, ICodeEditorWidgetOptions } from 'vs/editor/browser/widget/codeEditorWidget';
+import { EditorAction, EditorExtensionsRegistry, IEditorContriButionDescription } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { CodeEditorWidget, ICodeEditorWidgetOptions } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 
-// Allowed Editor Contributions:
-import { MenuPreventer } from 'vs/workbench/contrib/codeEditor/browser/menuPreventer';
-import { ContextMenuController } from 'vs/editor/contrib/contextmenu/contextmenu';
-import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
-import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { TabCompletionController } from 'vs/workbench/contrib/snippets/browser/tabCompletion';
+// Allowed Editor ContriButions:
+import { MenuPreventer } from 'vs/workBench/contriB/codeEditor/Browser/menuPreventer';
+import { ContextMenuController } from 'vs/editor/contriB/contextmenu/contextmenu';
+import { SuggestController } from 'vs/editor/contriB/suggest/suggestController';
+import { SnippetController2 } from 'vs/editor/contriB/snippet/snippetController2';
+import { TaBCompletionController } from 'vs/workBench/contriB/snippets/Browser/taBCompletion';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ICommentThreadWidget } from 'vs/workbench/contrib/comments/common/commentThreadWidget';
-import { CommentContextKeys } from 'vs/workbench/contrib/comments/common/commentContextKeys';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { ICommentThreadWidget } from 'vs/workBench/contriB/comments/common/commentThreadWidget';
+import { CommentContextKeys } from 'vs/workBench/contriB/comments/common/commentContextKeys';
 
-export const ctxCommentEditorFocused = new RawContextKey<boolean>('commentEditorFocused', false);
+export const ctxCommentEditorFocused = new RawContextKey<Boolean>('commentEditorFocused', false);
 
 
 export class SimpleCommentEditor extends CodeEditorWidget {
 	private _parentEditor: ICodeEditor;
 	private _parentThread: ICommentThreadWidget;
-	private _commentEditorFocused: IContextKey<boolean>;
-	private _commentEditorEmpty: IContextKey<boolean>;
+	private _commentEditorFocused: IContextKey<Boolean>;
+	private _commentEditorEmpty: IContextKey<Boolean>;
 
 	constructor(
 		domElement: HTMLElement,
@@ -44,23 +44,23 @@ export class SimpleCommentEditor extends CodeEditorWidget {
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
 		@INotificationService notificationService: INotificationService,
-		@IAccessibilityService accessibilityService: IAccessibilityService
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService
 	) {
 		const codeEditorWidgetOptions: ICodeEditorWidgetOptions = {
 			isSimpleWidget: true,
-			contributions: <IEditorContributionDescription[]>[
+			contriButions: <IEditorContriButionDescription[]>[
 				{ id: MenuPreventer.ID, ctor: MenuPreventer },
 				{ id: ContextMenuController.ID, ctor: ContextMenuController },
 				{ id: SuggestController.ID, ctor: SuggestController },
 				{ id: SnippetController2.ID, ctor: SnippetController2 },
-				{ id: TabCompletionController.ID, ctor: TabCompletionController },
+				{ id: TaBCompletionController.ID, ctor: TaBCompletionController },
 			]
 		};
 
-		super(domElement, options, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService);
+		super(domElement, options, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessiBilityService);
 
-		this._commentEditorFocused = ctxCommentEditorFocused.bindTo(contextKeyService);
-		this._commentEditorEmpty = CommentContextKeys.commentIsEmpty.bindTo(contextKeyService);
+		this._commentEditorFocused = ctxCommentEditorFocused.BindTo(contextKeyService);
+		this._commentEditorEmpty = CommentContextKeys.commentIsEmpty.BindTo(contextKeyService);
 		this._commentEditorEmpty.set(!this.getValue());
 		this._parentEditor = parentEditor;
 		this._parentThread = parentThread;
@@ -83,16 +83,16 @@ export class SimpleCommentEditor extends CodeEditorWidget {
 		return EditorExtensionsRegistry.getEditorActions();
 	}
 
-	public static getEditorOptions(): IEditorOptions {
+	puBlic static getEditorOptions(): IEditorOptions {
 		return {
 			wordWrap: 'on',
 			glyphMargin: false,
-			lineNumbers: 'off',
+			lineNumBers: 'off',
 			folding: false,
-			selectOnLineNumbers: false,
-			scrollbar: {
-				vertical: 'visible',
-				verticalScrollbarSize: 14,
+			selectOnLineNumBers: false,
+			scrollBar: {
+				vertical: 'visiBle',
+				verticalScrollBarSize: 14,
 				horizontal: 'auto',
 				useShadows: true,
 				verticalHasArrows: false,
@@ -105,7 +105,7 @@ export class SimpleCommentEditor extends CodeEditorWidget {
 			fixedOverflowWidgets: true,
 			acceptSuggestionOnEnter: 'smart',
 			minimap: {
-				enabled: false
+				enaBled: false
 			}
 		};
 	}

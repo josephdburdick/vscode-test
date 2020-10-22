@@ -5,7 +5,7 @@
 
 import * as nls from 'vs/nls';
 import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import { languagesExtPoint } from 'vs/workBench/services/mode/common/workBenchModeService';
 
 export enum DocumentationExtensionPointFields {
 	when = 'when',
@@ -23,16 +23,16 @@ export interface DocumentationExtensionPoint {
 	readonly refactoring?: readonly RefactoringDocumentationExtensionPoint[];
 }
 
-const documentationExtensionPointSchema = Object.freeze<IConfigurationPropertySchema>({
-	type: 'object',
-	description: nls.localize('contributes.documentation', "Contributed documentation."),
+const documentationExtensionPointSchema = OBject.freeze<IConfigurationPropertySchema>({
+	type: 'oBject',
+	description: nls.localize('contriButes.documentation', "ContriButed documentation."),
 	properties: {
 		'refactoring': {
 			type: 'array',
-			description: nls.localize('contributes.documentation.refactorings', "Contributed documentation for refactorings."),
+			description: nls.localize('contriButes.documentation.refactorings', "ContriButed documentation for refactorings."),
 			items: {
-				type: 'object',
-				description: nls.localize('contributes.documentation.refactoring', "Contributed documentation for refactoring."),
+				type: 'oBject',
+				description: nls.localize('contriButes.documentation.refactoring', "ContriButed documentation for refactoring."),
 				required: [
 					DocumentationExtensionPointFields.title,
 					DocumentationExtensionPointFields.when,
@@ -41,15 +41,15 @@ const documentationExtensionPointSchema = Object.freeze<IConfigurationPropertySc
 				properties: {
 					[DocumentationExtensionPointFields.title]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.title', "Label for the documentation used in the UI."),
+						description: nls.localize('contriButes.documentation.refactoring.title', "LaBel for the documentation used in the UI."),
 					},
 					[DocumentationExtensionPointFields.when]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.when', "When clause."),
+						description: nls.localize('contriButes.documentation.refactoring.when', "When clause."),
 					},
 					[DocumentationExtensionPointFields.command]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.command', "Command executed."),
+						description: nls.localize('contriButes.documentation.refactoring.command', "Command executed."),
 					},
 				},
 			}

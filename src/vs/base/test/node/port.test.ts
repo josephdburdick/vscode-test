@@ -5,7 +5,7 @@
 
 import * as assert from 'assert';
 import * as net from 'net';
-import * as ports from 'vs/base/node/ports';
+import * as ports from 'vs/Base/node/ports';
 
 suite('Ports', () => {
 	test('Finds a free port (no timeout)', function (done) {
@@ -19,7 +19,7 @@ suite('Ports', () => {
 		ports.findFreePort(7000, 100, 300000).then(initialPort => {
 			assert.ok(initialPort >= 7000);
 
-			// create a server to block this port
+			// create a server to Block this port
 			const server = net.createServer();
 			server.listen(initialPort, undefined, undefined, () => {
 

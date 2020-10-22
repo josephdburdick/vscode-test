@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en.win'; // 40%
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es-latin.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-in.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-uk.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/fr.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pt-br.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-intl.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/ru.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pl.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/it.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/sv.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/tr.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pt.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/dk.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/no.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/thai.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/hu.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de-swiss.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-belgian.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/cz.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en.win'; // 40%
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/es-latin.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-in.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/de.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-uk.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/fr.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/pt-Br.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/es.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-intl.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/ru.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/pl.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/it.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/sv.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/tr.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/pt.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/dk.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/no.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/thai.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/hu.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/de-swiss.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-Belgian.win';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/cz.win';
 
-export { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+export { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';

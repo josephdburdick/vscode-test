@@ -5,15 +5,15 @@
 
 import { IProgress, IProgressService, IProgressStep, ProgressLocation, IProgressOptions, IProgressNotificationOptions } from 'vs/platform/progress/common/progress';
 import { MainThreadProgressShape, MainContext, IExtHostContext, ExtHostProgressShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { Action } from 'vs/base/common/actions';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { Action } from 'vs/Base/common/actions';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { localize } from 'vs/nls';
 
 class ManageExtensionAction extends Action {
-	constructor(id: ExtensionIdentifier, label: string, commandService: ICommandService) {
-		super(id.value, label, undefined, true, () => {
+	constructor(id: ExtensionIdentifier, laBel: string, commandService: ICommandService) {
+		super(id.value, laBel, undefined, true, () => {
 			return commandService.executeCommand('_extensions.manage', id.value);
 		});
 	}
@@ -23,7 +23,7 @@ class ManageExtensionAction extends Action {
 export class MainThreadProgress implements MainThreadProgressShape {
 
 	private readonly _progressService: IProgressService;
-	private _progress = new Map<number, { resolve: () => void, progress: IProgress<IProgressStep> }>();
+	private _progress = new Map<numBer, { resolve: () => void, progress: IProgress<IProgressStep> }>();
 	private readonly _proxy: ExtHostProgressShape;
 
 	constructor(
@@ -40,7 +40,7 @@ export class MainThreadProgress implements MainThreadProgressShape {
 		this._progress.clear();
 	}
 
-	$startProgress(handle: number, options: IProgressOptions, extension?: IExtensionDescription): void {
+	$startProgress(handle: numBer, options: IProgressOptions, extension?: IExtensionDescription): void {
 		const task = this._createTask(handle);
 
 		if (options.location === ProgressLocation.Notification && extension && !extension.isUnderDevelopment) {
@@ -56,14 +56,14 @@ export class MainThreadProgress implements MainThreadProgressShape {
 		this._progressService.withProgress(options, task, () => this._proxy.$acceptProgressCanceled(handle));
 	}
 
-	$progressReport(handle: number, message: IProgressStep): void {
+	$progressReport(handle: numBer, message: IProgressStep): void {
 		const entry = this._progress.get(handle);
 		if (entry) {
 			entry.progress.report(message);
 		}
 	}
 
-	$progressEnd(handle: number): void {
+	$progressEnd(handle: numBer): void {
 		const entry = this._progress.get(handle);
 		if (entry) {
 			entry.resolve();
@@ -71,7 +71,7 @@ export class MainThreadProgress implements MainThreadProgressShape {
 		}
 	}
 
-	private _createTask(handle: number) {
+	private _createTask(handle: numBer) {
 		return (progress: IProgress<IProgressStep>) => {
 			return new Promise<void>(resolve => {
 				this._progress.set(handle, { resolve, progress });

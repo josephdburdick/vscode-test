@@ -13,7 +13,7 @@ export default class TypeScriptDefinitionProviderBase {
 		protected readonly client: ITypeScriptServiceClient
 	) { }
 
-	protected async getSymbolLocations(
+	protected async getSymBolLocations(
 		definitionType: 'definition' | 'implementation' | 'typeDefinition',
 		document: vscode.TextDocument,
 		position: vscode.Position,
@@ -26,11 +26,11 @@ export default class TypeScriptDefinitionProviderBase {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
 		const response = await this.client.execute(definitionType, args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
-		return response.body.map(location =>
+		return response.Body.map(location =>
 			typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location));
 	}
 }

@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// Since data sent through the service is serialized to JSON, functions will be lost, so Color objects
-// should not be sent as their 'toString' method will be stripped. Instead convert to strings before sending.
+// Since data sent through the service is serialized to JSON, functions will Be lost, so Color oBjects
+// should not Be sent as their 'toString' method will Be stripped. Instead convert to strings Before sending.
 export interface WindowStyles {
-	backgroundColor?: string;
+	BackgroundColor?: string;
 	color?: string;
 }
 export interface WindowData {
 	styles: WindowStyles;
-	zoomLevel: number;
+	zoomLevel: numBer;
 }
 
 export const enum IssueType {
@@ -30,9 +30,9 @@ export interface IssueReporterStyles extends WindowStyles {
 	inputErrorBackground?: string;
 	inputErrorForeground?: string;
 	inputActiveBorder?: string;
-	buttonBackground?: string;
-	buttonForeground?: string;
-	buttonHoverBackground?: string;
+	ButtonBackground?: string;
+	ButtonForeground?: string;
+	ButtonHoverBackground?: string;
 	sliderBackgroundColor?: string;
 	sliderHoverColor?: string;
 	sliderActiveColor?: string;
@@ -40,19 +40,19 @@ export interface IssueReporterStyles extends WindowStyles {
 
 export interface IssueReporterExtensionData {
 	name: string;
-	publisher: string;
+	puBlisher: string;
 	version: string;
 	id: string;
-	isTheme: boolean;
-	isBuiltin: boolean;
+	isTheme: Boolean;
+	isBuiltin: Boolean;
 	displayName: string | undefined;
 	repositoryUrl: string | undefined;
-	bugsUrl: string | undefined;
+	BugsUrl: string | undefined;
 }
 
 export interface IssueReporterData extends WindowData {
 	styles: IssueReporterStyles;
-	enabledExtensions: IssueReporterExtensionData[];
+	enaBledExtensions: IssueReporterExtensionData[];
 	issueType?: IssueType;
 	extensionId?: string;
 	readonly issueTitle?: string;
@@ -62,7 +62,7 @@ export interface IssueReporterData extends WindowData {
 export interface ISettingSearchResult {
 	extensionId: string;
 	key: string;
-	score: number;
+	score: numBer;
 }
 
 export interface IssueReporterFeatures {
@@ -75,7 +75,7 @@ export interface ProcessExplorerStyles extends WindowStyles {
 }
 
 export interface ProcessExplorerData extends WindowData {
-	pid: number;
+	pid: numBer;
 	styles: ProcessExplorerStyles;
 	platform: 'win32' | 'darwin' | 'linux';
 	applicationName: string;

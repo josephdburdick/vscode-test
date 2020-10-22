@@ -6,11 +6,11 @@
 import * as pLimit from 'p-limit';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { Disposable } from './dispose';
+import { DisposaBle } from './dispose';
 
 export namespace Testing {
-	export const abcEditorContentChangeCommand = '_abcEditor.contentChange';
-	export const abcEditorTypeCommand = '_abcEditor.type';
+	export const aBcEditorContentChangeCommand = '_aBcEditor.contentChange';
+	export const aBcEditorTypeCommand = '_aBcEditor.type';
 
 	export interface CustomEditorContentChangeEvent {
 		readonly content: string;
@@ -18,63 +18,63 @@ export namespace Testing {
 	}
 }
 
-export class AbcTextEditorProvider implements vscode.CustomTextEditorProvider {
+export class ABcTextEditorProvider implements vscode.CustomTextEditorProvider {
 
-	public static readonly viewType = 'testWebviewEditor.abc';
+	puBlic static readonly viewType = 'testWeBviewEditor.aBc';
 
-	private activeEditor?: AbcEditor;
+	private activeEditor?: ABcEditor;
 
-	public constructor(
+	puBlic constructor(
 		private readonly context: vscode.ExtensionContext,
 	) { }
 
-	public register(): vscode.Disposable {
-		const provider = vscode.window.registerCustomEditorProvider(AbcTextEditorProvider.viewType, this);
+	puBlic register(): vscode.DisposaBle {
+		const provider = vscode.window.registerCustomEditorProvider(ABcTextEditorProvider.viewType, this);
 
-		const commands: vscode.Disposable[] = [];
-		commands.push(vscode.commands.registerCommand(Testing.abcEditorTypeCommand, (content: string) => {
+		const commands: vscode.DisposaBle[] = [];
+		commands.push(vscode.commands.registerCommand(Testing.aBcEditorTypeCommand, (content: string) => {
 			this.activeEditor?.testing_fakeInput(content);
 		}));
 
-		return vscode.Disposable.from(provider, ...commands);
+		return vscode.DisposaBle.from(provider, ...commands);
 	}
 
-	public async resolveCustomTextEditor(document: vscode.TextDocument, panel: vscode.WebviewPanel) {
-		const editor = new AbcEditor(document, this.context.extensionPath, panel);
+	puBlic async resolveCustomTextEditor(document: vscode.TextDocument, panel: vscode.WeBviewPanel) {
+		const editor = new ABcEditor(document, this.context.extensionPath, panel);
 
 		this.activeEditor = editor;
 
-		panel.onDidChangeViewState(({ webviewPanel }) => {
-			if (this.activeEditor === editor && !webviewPanel.active) {
+		panel.onDidChangeViewState(({ weBviewPanel }) => {
+			if (this.activeEditor === editor && !weBviewPanel.active) {
 				this.activeEditor = undefined;
 			}
-			if (webviewPanel.active) {
+			if (weBviewPanel.active) {
 				this.activeEditor = editor;
 			}
 		});
 	}
 }
 
-class AbcEditor extends Disposable {
+class ABcEditor extends DisposaBle {
 
-	public readonly _onDispose = this._register(new vscode.EventEmitter<void>());
-	public readonly onDispose = this._onDispose.event;
+	puBlic readonly _onDispose = this._register(new vscode.EventEmitter<void>());
+	puBlic readonly onDispose = this._onDispose.event;
 
 	private readonly limit = pLimit(1);
-	private syncedVersion: number = -1;
-	private currentWorkspaceEdit?: Thenable<void>;
+	private syncedVersion: numBer = -1;
+	private currentWorkspaceEdit?: ThenaBle<void>;
 
 	constructor(
 		private readonly document: vscode.TextDocument,
 		private readonly _extensionPath: string,
-		private readonly panel: vscode.WebviewPanel,
+		private readonly panel: vscode.WeBviewPanel,
 	) {
 		super();
 
-		panel.webview.options = {
-			enableScripts: true,
+		panel.weBview.options = {
+			enaBleScripts: true,
 		};
-		panel.webview.html = this.html;
+		panel.weBview.html = this.html;
 
 		this._register(vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document === this.document) {
@@ -82,18 +82,18 @@ class AbcEditor extends Disposable {
 			}
 		}));
 
-		this._register(panel.webview.onDidReceiveMessage(message => {
+		this._register(panel.weBview.onDidReceiveMessage(message => {
 			switch (message.type) {
 				case 'edit':
 					this.doEdit(message.value);
-					break;
+					Break;
 
 				case 'didChangeContent':
-					vscode.commands.executeCommand(Testing.abcEditorContentChangeCommand, {
+					vscode.commands.executeCommand(Testing.aBcEditorContentChangeCommand, {
 						content: message.value,
 						source: document.uri,
 					} as Testing.CustomEditorContentChangeEvent);
-					break;
+					Break;
 			}
 		}));
 
@@ -102,8 +102,8 @@ class AbcEditor extends Disposable {
 		this.update();
 	}
 
-	public testing_fakeInput(value: string) {
-		this.panel.webview.postMessage({
+	puBlic testing_fakeInput(value: string) {
+		this.panel.weBview.postMessage({
 			type: 'fakeInput',
 			value: value,
 		});
@@ -121,7 +121,7 @@ class AbcEditor extends Disposable {
 		});
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		if (this.isDisposed) {
 			return;
 		}
@@ -142,21 +142,21 @@ class AbcEditor extends Disposable {
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline';">
 				<title>Document</title>
 			</head>
-			<body>
+			<Body>
 				<textarea style="width: 300px; height: 300px;"></textarea>
-				<script nonce=${nonce} src="${this.panel.webview.asWebviewUri(scriptUri)}"></script>
-			</body>
+				<script nonce=${nonce} src="${this.panel.weBview.asWeBviewUri(scriptUri)}"></script>
+			</Body>
 			</html>`;
 	}
 
-	public async update() {
+	puBlic async update() {
 		await this.currentWorkspaceEdit;
 
 		if (this.isDisposed || this.syncedVersion >= this.document.version) {
 			return;
 		}
 
-		this.panel.webview.postMessage({
+		this.panel.weBview.postMessage({
 			type: 'setValue',
 			value: this.document.getText(),
 		});

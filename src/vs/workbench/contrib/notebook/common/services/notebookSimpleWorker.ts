@@ -2,16 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { ISequence, LcsDiff } from 'vs/base/common/diff/diff';
-import { hash } from 'vs/base/common/hash';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IRequestHandler } from 'vs/base/common/worker/simpleWorker';
+import { ISequence, LcsDiff } from 'vs/Base/common/diff/diff';
+import { hash } from 'vs/Base/common/hash';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { IRequestHandler } from 'vs/Base/common/worker/simpleWorker';
 import * as model from 'vs/editor/common/model';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
-import { CellKind, ICellDto2, IMainCellDto, INotebookDiffResult, IProcessedOutput, NotebookCellMetadata, NotebookCellsChangedEventDto, NotebookCellsChangeType, NotebookCellsSplice2, NotebookDataDto, NotebookDocumentMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { CellKind, ICellDto2, IMainCellDto, INoteBookDiffResult, IProcessedOutput, NoteBookCellMetadata, NoteBookCellsChangedEventDto, NoteBookCellsChangeType, NoteBookCellsSplice2, NoteBookDataDto, NoteBookDocumentMetadata } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 import { Range } from 'vs/editor/common/core/range';
-import { EditorWorkerHost } from 'vs/workbench/contrib/notebook/common/services/notebookWorkerServiceImpl';
+import { EditorWorkerHost } from 'vs/workBench/contriB/noteBook/common/services/noteBookWorkerServiceImpl';
 
 class MirrorCell {
 	private _textBuffer!: model.IReadonlyTextBuffer;
@@ -21,16 +21,16 @@ class MirrorCell {
 			return this._textBuffer;
 		}
 
-		const builder = new PieceTreeTextBufferBuilder();
-		builder.acceptChunk(Array.isArray(this._source) ? this._source.join('\n') : this._source);
-		const bufferFactory = builder.finish(true);
-		this._textBuffer = bufferFactory.create(model.DefaultEndOfLine.LF);
+		const Builder = new PieceTreeTextBufferBuilder();
+		Builder.acceptChunk(Array.isArray(this._source) ? this._source.join('\n') : this._source);
+		const BufferFactory = Builder.finish(true);
+		this._textBuffer = BufferFactory.create(model.DefaultEndOfLine.LF);
 
 		return this._textBuffer;
 	}
 
-	private _primaryKey?: number | null = null;
-	primaryKey(): number | null {
+	private _primaryKey?: numBer | null = null;
+	primaryKey(): numBer | null {
 		if (this._primaryKey === undefined) {
 			this._primaryKey = hash(this.getValue());
 		}
@@ -38,15 +38,15 @@ class MirrorCell {
 		return this._primaryKey;
 	}
 
-	private _hash: number | null = null;
+	private _hash: numBer | null = null;
 
 	constructor(
-		readonly handle: number,
+		readonly handle: numBer,
 		private _source: string | string[],
-		public language: string,
-		public cellKind: CellKind,
-		public outputs: IProcessedOutput[],
-		public metadata?: NotebookCellMetadata
+		puBlic language: string,
+		puBlic cellKind: CellKind,
+		puBlic outputs: IProcessedOutput[],
+		puBlic metadata?: NoteBookCellMetadata
 
 	) { }
 
@@ -65,7 +65,7 @@ class MirrorCell {
 		}
 	}
 
-	getComparisonValue(): number {
+	getComparisonValue(): numBer {
 		if (this._primaryKey !== null) {
 			return this._primaryKey!;
 		}
@@ -84,39 +84,39 @@ class MirrorCell {
 	}
 }
 
-class MirrorNotebookDocument {
+class MirrorNoteBookDocument {
 	constructor(
 		readonly uri: URI,
-		public cells: MirrorCell[],
-		public languages: string[],
-		public metadata: NotebookDocumentMetadata,
+		puBlic cells: MirrorCell[],
+		puBlic languages: string[],
+		puBlic metadata: NoteBookDocumentMetadata,
 	) {
 	}
 
-	acceptModelChanged(event: NotebookCellsChangedEventDto) {
+	acceptModelChanged(event: NoteBookCellsChangedEventDto) {
 		// note that the cell content change is not applied to the MirrorCell
-		// but it's fine as if a cell content is modified after the first diff, its position will not change any more
-		// TODO@rebornix, but it might lead to interesting bugs in the future.
+		// But it's fine as if a cell content is modified after the first diff, its position will not change any more
+		// TODO@reBornix, But it might lead to interesting Bugs in the future.
 		event.rawEvents.forEach(e => {
-			if (e.kind === NotebookCellsChangeType.ModelChange) {
-				this._spliceNotebookCells(e.changes);
-			} else if (e.kind === NotebookCellsChangeType.Move) {
+			if (e.kind === NoteBookCellsChangeType.ModelChange) {
+				this._spliceNoteBookCells(e.changes);
+			} else if (e.kind === NoteBookCellsChangeType.Move) {
 				const cells = this.cells.splice(e.index, 1);
 				this.cells.splice(e.newIdx, 0, ...cells);
-			} else if (e.kind === NotebookCellsChangeType.Output) {
+			} else if (e.kind === NoteBookCellsChangeType.Output) {
 				const cell = this.cells[e.index];
 				cell.outputs = e.outputs;
-			} else if (e.kind === NotebookCellsChangeType.ChangeLanguage) {
+			} else if (e.kind === NoteBookCellsChangeType.ChangeLanguage) {
 				const cell = this.cells[e.index];
 				cell.language = e.language;
-			} else if (e.kind === NotebookCellsChangeType.ChangeCellMetadata) {
+			} else if (e.kind === NoteBookCellsChangeType.ChangeCellMetadata) {
 				const cell = this.cells[e.index];
 				cell.metadata = e.metadata;
 			}
 		});
 	}
 
-	_spliceNotebookCells(splices: NotebookCellsSplice2[]) {
+	_spliceNoteBookCells(splices: NoteBookCellsSplice2[]) {
 		splices.reverse().forEach(splice => {
 			const cellDtos = splice[2];
 			const newCells = cellDtos.map(cell => {
@@ -137,10 +137,10 @@ class MirrorNotebookDocument {
 
 export class CellSequence implements ISequence {
 
-	constructor(readonly textModel: MirrorNotebookDocument) {
+	constructor(readonly textModel: MirrorNoteBookDocument) {
 	}
 
-	getElements(): string[] | number[] | Int32Array {
+	getElements(): string[] | numBer[] | Int32Array {
 		const hashValue = new Int32Array(this.textModel.cells.length);
 		for (let i = 0; i < this.textModel.cells.length; i++) {
 			hashValue[i] = this.textModel.cells[i].getComparisonValue();
@@ -156,19 +156,19 @@ export class CellSequence implements ISequence {
 	}
 }
 
-export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable {
+export class NoteBookEditorSimpleWorker implements IRequestHandler, IDisposaBle {
 	_requestHandlerBrand: any;
 
-	private _models: { [uri: string]: MirrorNotebookDocument; };
+	private _models: { [uri: string]: MirrorNoteBookDocument; };
 
 	constructor() {
-		this._models = Object.create(null);
+		this._models = OBject.create(null);
 	}
 	dispose(): void {
 	}
 
-	public acceptNewModel(uri: string, data: NotebookDataDto): void {
-		this._models[uri] = new MirrorNotebookDocument(URI.parse(uri), data.cells.map(dto => new MirrorCell(
+	puBlic acceptNewModel(uri: string, data: NoteBookDataDto): void {
+		this._models[uri] = new MirrorNoteBookDocument(URI.parse(uri), data.cells.map(dto => new MirrorCell(
 			(dto as unknown as IMainCellDto).handle,
 			dto.source,
 			dto.language,
@@ -178,28 +178,28 @@ export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable 
 		)), data.languages, data.metadata);
 	}
 
-	public acceptModelChanged(strURL: string, event: NotebookCellsChangedEventDto) {
+	puBlic acceptModelChanged(strURL: string, event: NoteBookCellsChangedEventDto) {
 		const model = this._models[strURL];
 		if (model) {
 			model.acceptModelChanged(event);
 		}
 	}
 
-	public acceptRemovedModel(strURL: string): void {
+	puBlic acceptRemovedModel(strURL: string): void {
 		if (!this._models[strURL]) {
 			return;
 		}
 		delete this._models[strURL];
 	}
 
-	computeDiff(originalUrl: string, modifiedUrl: string): INotebookDiffResult {
+	computeDiff(originalUrl: string, modifiedUrl: string): INoteBookDiffResult {
 		const original = this._getModel(originalUrl);
 		const modified = this._getModel(modifiedUrl);
 
 		const diff = new LcsDiff(new CellSequence(original), new CellSequence(modified));
 		const diffResult = diff.ComputeDiff(false);
 
-		/* let cellLineChanges: { originalCellhandle: number, modifiedCellhandle: number, lineChanges: editorCommon.ILineChange[] }[] = [];
+		/* let cellLineChanges: { originalCellhandle: numBer, modifiedCellhandle: numBer, lineChanges: editorCommon.ILineChange[] }[] = [];
 
 		diffResult.changes.forEach(change => {
 			if (change.modifiedLength === 0) {
@@ -254,7 +254,7 @@ export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable 
 		};
 	}
 
-	protected _getModel(uri: string): MirrorNotebookDocument {
+	protected _getModel(uri: string): MirrorNoteBookDocument {
 		return this._models[uri];
 	}
 }
@@ -264,6 +264,6 @@ export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable 
  * @internal
  */
 export function create(host: EditorWorkerHost): IRequestHandler {
-	return new NotebookEditorSimpleWorker();
+	return new NoteBookEditorSimpleWorker();
 }
 

@@ -3,42 +3,42 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICommonMenubarService, IMenubarData } from 'vs/platform/menubar/common/menubar';
-import { Menubar } from 'vs/platform/menubar/electron-main/menubar';
+import { ICommonMenuBarService, IMenuBarData } from 'vs/platform/menuBar/common/menuBar';
+import { MenuBar } from 'vs/platform/menuBar/electron-main/menuBar';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IInstantiationService, createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { ILifecycleMainService, LifecycleMainPhase } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 
-export const IMenubarMainService = createDecorator<IMenubarMainService>('menubarMainService');
+export const IMenuBarMainService = createDecorator<IMenuBarMainService>('menuBarMainService');
 
-export interface IMenubarMainService extends ICommonMenubarService {
+export interface IMenuBarMainService extends ICommonMenuBarService {
 	readonly _serviceBrand: undefined;
 }
 
-export class MenubarMainService implements IMenubarMainService {
+export class MenuBarMainService implements IMenuBarMainService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private menubar: Promise<Menubar>;
+	private menuBar: Promise<MenuBar>;
 
 	constructor(
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
 		@ILogService private readonly logService: ILogService
 	) {
-		this.menubar = this.installMenuBarAfterWindowOpen();
+		this.menuBar = this.installMenuBarAfterWindowOpen();
 	}
 
-	private async installMenuBarAfterWindowOpen(): Promise<Menubar> {
+	private async installMenuBarAfterWindowOpen(): Promise<MenuBar> {
 		await this.lifecycleMainService.when(LifecycleMainPhase.AfterWindowOpen);
 
-		return this.instantiationService.createInstance(Menubar);
+		return this.instantiationService.createInstance(MenuBar);
 	}
 
-	async updateMenubar(windowId: number, menus: IMenubarData): Promise<void> {
-		this.logService.trace('menubarService#updateMenubar', windowId);
+	async updateMenuBar(windowId: numBer, menus: IMenuBarData): Promise<void> {
+		this.logService.trace('menuBarService#updateMenuBar', windowId);
 
-		const menubar = await this.menubar;
-		menubar.updateMenu(menus, windowId);
+		const menuBar = await this.menuBar;
+		menuBar.updateMenu(menus, windowId);
 	}
 }

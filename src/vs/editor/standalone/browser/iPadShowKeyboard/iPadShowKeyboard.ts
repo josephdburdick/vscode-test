@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./iPadShowKeyboard';
-import * as browser from 'vs/base/browser/browser';
-import * as dom from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import 'vs/css!./iPadShowKeyBoard';
+import * as Browser from 'vs/Base/Browser/Browser';
+import * as dom from 'vs/Base/Browser/dom';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class IPadShowKeyboard extends Disposable implements IEditorContribution {
+export class IPadShowKeyBoard extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.iPadShowKeyboard';
+	puBlic static readonly ID = 'editor.contriB.iPadShowKeyBoard';
 
 	private readonly editor: ICodeEditor;
-	private widget: ShowKeyboardWidget | null;
+	private widget: ShowKeyBoardWidget | null;
 
 	constructor(editor: ICodeEditor) {
 		super();
 		this.editor = editor;
 		this.widget = null;
-		if (browser.isIPad) {
+		if (Browser.isIPad) {
 			this._register(editor.onDidChangeConfiguration(() => this.update()));
 			this.update();
 		}
@@ -34,7 +34,7 @@ export class IPadShowKeyboard extends Disposable implements IEditorContribution 
 
 		if (!this.widget && shouldHaveWidget) {
 
-			this.widget = new ShowKeyboardWidget(this.editor);
+			this.widget = new ShowKeyBoardWidget(this.editor);
 
 		} else if (this.widget && !shouldHaveWidget) {
 
@@ -44,7 +44,7 @@ export class IPadShowKeyboard extends Disposable implements IEditorContribution 
 		}
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 		if (this.widget) {
 			this.widget.dispose();
@@ -53,9 +53,9 @@ export class IPadShowKeyboard extends Disposable implements IEditorContribution 
 	}
 }
 
-class ShowKeyboardWidget extends Disposable implements IOverlayWidget {
+class ShowKeyBoardWidget extends DisposaBle implements IOverlayWidget {
 
-	private static readonly ID = 'editor.contrib.ShowKeyboardWidget';
+	private static readonly ID = 'editor.contriB.ShowKeyBoardWidget';
 
 	private readonly editor: ICodeEditor;
 
@@ -65,38 +65,38 @@ class ShowKeyboardWidget extends Disposable implements IOverlayWidget {
 		super();
 		this.editor = editor;
 		this._domNode = document.createElement('textarea');
-		this._domNode.className = 'iPadShowKeyboard';
+		this._domNode.className = 'iPadShowKeyBoard';
 
-		this._register(dom.addDisposableListener(this._domNode, 'touchstart', (e) => {
+		this._register(dom.addDisposaBleListener(this._domNode, 'touchstart', (e) => {
 			this.editor.focus();
 		}));
-		this._register(dom.addDisposableListener(this._domNode, 'focus', (e) => {
+		this._register(dom.addDisposaBleListener(this._domNode, 'focus', (e) => {
 			this.editor.focus();
 		}));
 
 		this.editor.addOverlayWidget(this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.editor.removeOverlayWidget(this);
 		super.dispose();
 	}
 
 	// ----- IOverlayWidget API
 
-	public getId(): string {
-		return ShowKeyboardWidget.ID;
+	puBlic getId(): string {
+		return ShowKeyBoardWidget.ID;
 	}
 
-	public getDomNode(): HTMLElement {
+	puBlic getDomNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	public getPosition(): IOverlayWidgetPosition {
+	puBlic getPosition(): IOverlayWidgetPosition {
 		return {
 			preference: OverlayWidgetPositionPreference.BOTTOM_RIGHT_CORNER
 		};
 	}
 }
 
-registerEditorContribution(IPadShowKeyboard.ID, IPadShowKeyboard);
+registerEditorContriBution(IPadShowKeyBoard.ID, IPadShowKeyBoard);

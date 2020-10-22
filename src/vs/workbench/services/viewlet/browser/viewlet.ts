@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IViewlet } from 'vs/workbench/common/viewlet';
+import { IViewlet } from 'vs/workBench/common/viewlet';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { ViewletDescriptor } from 'vs/workbench/browser/viewlet';
+import { Event } from 'vs/Base/common/event';
+import { ViewletDescriptor } from 'vs/workBench/Browser/viewlet';
 import { IProgressIndicator } from 'vs/platform/progress/common/progress';
 
 export const IViewletService = createDecorator<IViewletService>('viewletService');
@@ -21,9 +21,9 @@ export interface IViewletService {
 	readonly onDidViewletClose: Event<IViewlet>;
 
 	/**
-	 * Opens a viewlet with the given identifier and pass keyboard focus to it if specified.
+	 * Opens a viewlet with the given identifier and pass keyBoard focus to it if specified.
 	 */
-	openViewlet(id: string | undefined, focus?: boolean): Promise<IViewlet | undefined>;
+	openViewlet(id: string | undefined, focus?: Boolean): Promise<IViewlet | undefined>;
 
 	/**
 	 * Returns the current active viewlet if any.
@@ -31,17 +31,17 @@ export interface IViewletService {
 	getActiveViewlet(): IViewlet | undefined;
 
 	/**
-	 * Returns the viewlet by id.
+	 * Returns the viewlet By id.
 	 */
 	getViewlet(id: string): ViewletDescriptor | undefined;
 
 	/**
-	 * Returns all enabled viewlets
+	 * Returns all enaBled viewlets
 	 */
 	getViewlets(): ViewletDescriptor[];
 
 	/**
-	 * Returns the progress indicator for the side bar.
+	 * Returns the progress indicator for the side Bar.
 	 */
 	getProgressIndicator(id: string): IProgressIndicator | undefined;
 

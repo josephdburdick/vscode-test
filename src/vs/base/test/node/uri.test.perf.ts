@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { readFileSync } from 'fs';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
 
 suite('URI - perf', function () {
 
@@ -20,10 +20,10 @@ suite('URI - perf', function () {
 		}
 	});
 
-	function perfTest(name: string, callback: Function) {
+	function perfTest(name: string, callBack: Function) {
 		test(name, _done => {
 			let t1 = Date.now();
-			callback();
+			callBack();
 			let d = Date.now() - t1;
 			console.log(`${name} took ${d}ms (${(d / manyFileUris.length).toPrecision(3)} ms/uri)`);
 			_done();

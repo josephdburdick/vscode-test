@@ -8,9 +8,9 @@ import { IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey
 
 export class InternalEditorAction implements IEditorAction {
 
-	public readonly id: string;
-	public readonly label: string;
-	public readonly alias: string;
+	puBlic readonly id: string;
+	puBlic readonly laBel: string;
+	puBlic readonly alias: string;
 
 	private readonly _precondition: ContextKeyExpression | undefined;
 	private readonly _run: () => Promise<void>;
@@ -18,25 +18,25 @@ export class InternalEditorAction implements IEditorAction {
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		alias: string,
 		precondition: ContextKeyExpression | undefined,
 		run: () => Promise<void>,
 		contextKeyService: IContextKeyService
 	) {
 		this.id = id;
-		this.label = label;
+		this.laBel = laBel;
 		this.alias = alias;
 		this._precondition = precondition;
 		this._run = run;
 		this._contextKeyService = contextKeyService;
 	}
 
-	public isSupported(): boolean {
+	puBlic isSupported(): Boolean {
 		return this._contextKeyService.contextMatchesRules(this._precondition);
 	}
 
-	public run(): Promise<void> {
+	puBlic run(): Promise<void> {
 		if (!this.isSupported()) {
 			return Promise.resolve(undefined);
 		}

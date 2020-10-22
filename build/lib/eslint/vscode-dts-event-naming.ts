@@ -12,21 +12,21 @@ export = new class ApiEventNaming implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#event-naming'
+			url: 'https://githuB.com/microsoft/vscode/wiki/Extension-API-guidelines#event-naming'
 		},
 		messages: {
-			naming: 'Event names must follow this patten: `on[Did|Will]<Verb><Subject>`',
-			verb: 'Unknown verb \'{{verb}}\' - is this really a verb? Iff so, then add this verb to the configuration',
-			subject: 'Unknown subject \'{{subject}}\' - This subject has not been used before but it should refer to something in the API',
+			naming: 'Event names must follow this patten: `on[Did|Will]<VerB><SuBject>`',
+			verB: 'Unknown verB \'{{verB}}\' - is this really a verB? Iff so, then add this verB to the configuration',
+			suBject: 'Unknown suBject \'{{suBject}}\' - This suBject has not Been used Before But it should refer to something in the API',
 			unknown: 'UNKNOWN event declaration, lint-rule needs tweaking'
 		}
 	};
 
 	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
-		const config = <{ allowed: string[], verbs: string[] }>context.options[0];
+		const config = <{ allowed: string[], verBs: string[] }>context.options[0];
 		const allowed = new Set(config.allowed);
-		const verbs = new Set(config.verbs);
+		const verBs = new Set(config.verBs);
 
 		return {
 			['TSTypeAnnotation TSTypeReference Identifier[name="Event"]']: (node: any) => {
@@ -56,24 +56,24 @@ export = new class ApiEventNaming implements eslint.Rule.RuleModule {
 					return;
 				}
 
-				// check that <verb> is spelled out (configured) as verb
-				if (!verbs.has(match[2].toLowerCase())) {
+				// check that <verB> is spelled out (configured) as verB
+				if (!verBs.has(match[2].toLowerCase())) {
 					context.report({
 						node: ident,
-						messageId: 'verb',
-						data: { verb: match[2] }
+						messageId: 'verB',
+						data: { verB: match[2] }
 					});
 				}
 
-				// check that a subject (if present) has occurred
+				// check that a suBject (if present) has occurred
 				if (match[3]) {
 					const regex = new RegExp(match[3], 'ig');
 					const parts = context.getSourceCode().getText().split(regex);
 					if (parts.length < 3) {
 						context.report({
 							node: ident,
-							messageId: 'subject',
-							data: { subject: match[3] }
+							messageId: 'suBject',
+							data: { suBject: match[3] }
 						});
 					}
 				}

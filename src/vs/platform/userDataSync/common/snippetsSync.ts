@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	IUserDataSyncStoreService, IUserDataSyncLogService, IUserDataSynchroniser, SyncResource, IUserDataSyncResourceEnablementService, IUserDataSyncBackupStoreService,
+	IUserDataSyncStoreService, IUserDataSyncLogService, IUserDataSynchroniser, SyncResource, IUserDataSyncResourceEnaBlementService, IUserDataSyncBackupStoreService,
 	USER_DATA_SYNC_SCHEME, ISyncResourceHandle, IRemoteUserData, ISyncData, Change
 } from 'vs/platform/userDataSync/common/userDataSync';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IFileService, IFileStat, IFileContent, FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { AbstractInitializer, AbstractSynchroniser, IAcceptResult, IFileResourcePreview, IMergeResult } from 'vs/platform/userDataSync/common/abstractSynchronizer';
+import { ABstractInitializer, ABstractSynchroniser, IAcceptResult, IFileResourcePreview, IMergeResult } from 'vs/platform/userDataSync/common/aBstractSynchronizer';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { URI } from 'vs/base/common/uri';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { URI } from 'vs/Base/common/uri';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { merge, IMergeResult as ISnippetsMergeResult, areSame } from 'vs/platform/userDataSync/common/snippetsMerge';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { deepClone } from 'vs/base/common/objects';
-import { Event } from 'vs/base/common/event';
+import { deepClone } from 'vs/Base/common/oBjects';
+import { Event } from 'vs/Base/common/event';
 
 interface ISnippetsResourcePreview extends IFileResourcePreview {
 	previewResult: IMergeResult;
@@ -29,9 +29,9 @@ interface ISnippetsAcceptedResourcePreview extends IFileResourcePreview {
 	acceptResult: IAcceptResult;
 }
 
-export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserDataSynchroniser {
+export class SnippetsSynchroniser extends ABstractSynchroniser implements IUserDataSynchroniser {
 
-	protected readonly version: number = 1;
+	protected readonly version: numBer = 1;
 	private readonly snippetsFolder: URI;
 
 	constructor(
@@ -42,10 +42,10 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		@IUserDataSyncBackupStoreService userDataSyncBackupStoreService: IUserDataSyncBackupStoreService,
 		@IUserDataSyncLogService logService: IUserDataSyncLogService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@IUserDataSyncResourceEnablementService userDataSyncResourceEnablementService: IUserDataSyncResourceEnablementService,
+		@IUserDataSyncResourceEnaBlementService userDataSyncResourceEnaBlementService: IUserDataSyncResourceEnaBlementService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(SyncResource.Snippets, fileService, environmentService, storageService, userDataSyncStoreService, userDataSyncBackupStoreService, userDataSyncResourceEnablementService, telemetryService, logService, configurationService);
+		super(SyncResource.Snippets, fileService, environmentService, storageService, userDataSyncStoreService, userDataSyncBackupStoreService, userDataSyncResourceEnaBlementService, telemetryService, logService, configurationService);
 		this.snippetsFolder = environmentService.snippetsHome;
 		this._register(this.fileService.watch(environmentService.userRoamingDataHome));
 		this._register(this.fileService.watch(this.snippetsFolder));
@@ -59,9 +59,9 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		const lastSyncSnippets: IStringDictionary<string> | null = lastSyncUserData && lastSyncUserData.syncData ? this.parseSnippets(lastSyncUserData.syncData) : null;
 
 		if (remoteSnippets) {
-			this.logService.trace(`${this.syncResourceLogLabel}: Merging remote snippets with local snippets...`);
+			this.logService.trace(`${this.syncResourceLogLaBel}: Merging remote snippets with local snippets...`);
 		} else {
-			this.logService.trace(`${this.syncResourceLogLabel}: Remote snippets does not exist. Synchronizing snippets for the first time.`);
+			this.logService.trace(`${this.syncResourceLogLaBel}: Remote snippets does not exist. Synchronizing snippets for the first time.`);
 		}
 
 		const mergeResult = merge(localSnippets, remoteSnippets, lastSyncSnippets);
@@ -120,14 +120,14 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		throw new Error(`Invalid Resource: ${resource.toString()}`);
 	}
 
-	protected async applyResult(remoteUserData: IRemoteUserData, lastSyncUserData: IRemoteUserData | null, resourcePreviews: [ISnippetsResourcePreview, IAcceptResult][], force: boolean): Promise<void> {
+	protected async applyResult(remoteUserData: IRemoteUserData, lastSyncUserData: IRemoteUserData | null, resourcePreviews: [ISnippetsResourcePreview, IAcceptResult][], force: Boolean): Promise<void> {
 		const accptedResourcePreviews: ISnippetsAcceptedResourcePreview[] = resourcePreviews.map(([resourcePreview, acceptResult]) => ({ ...resourcePreview, acceptResult }));
 		if (accptedResourcePreviews.every(({ localChange, remoteChange }) => localChange === Change.None && remoteChange === Change.None)) {
-			this.logService.info(`${this.syncResourceLogLabel}: No changes found during synchronizing snippets.`);
+			this.logService.info(`${this.syncResourceLogLaBel}: No changes found during synchronizing snippets.`);
 		}
 
 		if (accptedResourcePreviews.some(({ localChange }) => localChange !== Change.None)) {
-			// back up all snippets
+			// Back up all snippets
 			await this.updateLocalBackup(accptedResourcePreviews);
 			await this.updateLocalSnippets(accptedResourcePreviews, force);
 		}
@@ -138,9 +138,9 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 
 		if (lastSyncUserData?.ref !== remoteUserData.ref) {
 			// update last sync
-			this.logService.trace(`${this.syncResourceLogLabel}: Updating last synchronized snippets...`);
+			this.logService.trace(`${this.syncResourceLogLaBel}: Updating last synchronized snippets...`);
 			await this.updateLastSyncUserData(remoteUserData);
-			this.logService.info(`${this.syncResourceLogLabel}: Updated last synchronized snippets`);
+			this.logService.info(`${this.syncResourceLogLaBel}: Updated last synchronized snippets`);
 		}
 
 		for (const { previewResource } of accptedResourcePreviews) {
@@ -156,7 +156,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		const resourcePreviews: Map<string, ISnippetsResourcePreview> = new Map<string, ISnippetsResourcePreview>();
 
 		/* Snippets added remotely -> add locally */
-		for (const key of Object.keys(snippetsMergeResult.local.added)) {
+		for (const key of OBject.keys(snippetsMergeResult.local.added)) {
 			const previewResult: IMergeResult = {
 				content: snippetsMergeResult.local.added[key],
 				hasConflicts: false,
@@ -178,7 +178,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		}
 
 		/* Snippets updated remotely -> update locally */
-		for (const key of Object.keys(snippetsMergeResult.local.updated)) {
+		for (const key of OBject.keys(snippetsMergeResult.local.updated)) {
 			const previewResult: IMergeResult = {
 				content: snippetsMergeResult.local.updated[key],
 				hasConflicts: false,
@@ -222,7 +222,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		}
 
 		/* Snippets added locally -> add remotely */
-		for (const key of Object.keys(snippetsMergeResult.remote.added)) {
+		for (const key of OBject.keys(snippetsMergeResult.remote.added)) {
 			const previewResult: IMergeResult = {
 				content: snippetsMergeResult.remote.added[key],
 				hasConflicts: false,
@@ -244,7 +244,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		}
 
 		/* Snippets updated locally -> update remotely */
-		for (const key of Object.keys(snippetsMergeResult.remote.updated)) {
+		for (const key of OBject.keys(snippetsMergeResult.remote.updated)) {
 			const previewResult: IMergeResult = {
 				content: snippetsMergeResult.remote.updated[key],
 				hasConflicts: false,
@@ -310,7 +310,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		}
 
 		/* Unmodified Snippets */
-		for (const key of Object.keys(localFileContent)) {
+		for (const key of OBject.keys(localFileContent)) {
 			if (!resourcePreviews.has(key)) {
 				const previewResult: IMergeResult = {
 					content: localFileContent[key] ? localFileContent[key].value.toString() : null,
@@ -336,18 +336,18 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		return [...resourcePreviews.values()];
 	}
 
-	async getAssociatedResources({ uri }: ISyncResourceHandle): Promise<{ resource: URI, comparableResource: URI }[]> {
+	async getAssociatedResources({ uri }: ISyncResourceHandle): Promise<{ resource: URI, comparaBleResource: URI }[]> {
 		let content = await super.resolveContent(uri);
 		if (content) {
 			const syncData = this.parseSyncData(content);
 			if (syncData) {
 				const snippets = this.parseSnippets(syncData);
 				const result = [];
-				for (const snippet of Object.keys(snippets)) {
+				for (const snippet of OBject.keys(snippets)) {
 					const resource = this.extUri.joinPath(uri, snippet);
-					const comparableResource = this.extUri.joinPath(this.snippetsFolder, snippet);
-					const exists = await this.fileService.exists(comparableResource);
-					result.push({ resource, comparableResource: exists ? comparableResource : this.extUri.joinPath(this.syncPreviewFolder, snippet).with({ scheme: USER_DATA_SYNC_SCHEME, authority: 'local' }) });
+					const comparaBleResource = this.extUri.joinPath(this.snippetsFolder, snippet);
+					const exists = await this.fileService.exists(comparaBleResource);
+					result.push({ resource, comparaBleResource: exists ? comparaBleResource : this.extUri.joinPath(this.syncPreviewFolder, snippet).with({ scheme: USER_DATA_SYNC_SCHEME, authority: 'local' }) });
 				}
 				return result;
 			}
@@ -372,17 +372,17 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 			const syncData = this.parseSyncData(content);
 			if (syncData) {
 				const snippets = this.parseSnippets(syncData);
-				return snippets[this.extUri.basename(uri)] || null;
+				return snippets[this.extUri.Basename(uri)] || null;
 			}
 		}
 
 		return null;
 	}
 
-	async hasLocalData(): Promise<boolean> {
+	async hasLocalData(): Promise<Boolean> {
 		try {
 			const localSnippets = await this.getSnippetsFileContents();
-			if (Object.keys(localSnippets).length) {
+			if (OBject.keys(localSnippets).length) {
 				return true;
 			}
 		} catch (error) {
@@ -395,49 +395,49 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 		const local: IStringDictionary<IFileContent> = {};
 		for (const resourcePreview of resourcePreviews) {
 			if (resourcePreview.fileContent) {
-				local[this.extUri.basename(resourcePreview.localResource!)] = resourcePreview.fileContent;
+				local[this.extUri.Basename(resourcePreview.localResource!)] = resourcePreview.fileContent;
 			}
 		}
-		await this.backupLocal(JSON.stringify(this.toSnippetsContents(local)));
+		await this.BackupLocal(JSON.stringify(this.toSnippetsContents(local)));
 	}
 
-	private async updateLocalSnippets(resourcePreviews: ISnippetsAcceptedResourcePreview[], force: boolean): Promise<void> {
+	private async updateLocalSnippets(resourcePreviews: ISnippetsAcceptedResourcePreview[], force: Boolean): Promise<void> {
 		for (const { fileContent, acceptResult, localResource, remoteResource, localChange } of resourcePreviews) {
 			if (localChange !== Change.None) {
-				const key = remoteResource ? this.extUri.basename(remoteResource) : this.extUri.basename(localResource!);
+				const key = remoteResource ? this.extUri.Basename(remoteResource) : this.extUri.Basename(localResource!);
 				const resource = this.extUri.joinPath(this.snippetsFolder, key);
 
 				// Removed
 				if (localChange === Change.Deleted) {
-					this.logService.trace(`${this.syncResourceLogLabel}: Deleting snippet...`, this.extUri.basename(resource));
+					this.logService.trace(`${this.syncResourceLogLaBel}: Deleting snippet...`, this.extUri.Basename(resource));
 					await this.fileService.del(resource);
-					this.logService.info(`${this.syncResourceLogLabel}: Deleted snippet`, this.extUri.basename(resource));
+					this.logService.info(`${this.syncResourceLogLaBel}: Deleted snippet`, this.extUri.Basename(resource));
 				}
 
 				// Added
 				else if (localChange === Change.Added) {
-					this.logService.trace(`${this.syncResourceLogLabel}: Creating snippet...`, this.extUri.basename(resource));
+					this.logService.trace(`${this.syncResourceLogLaBel}: Creating snippet...`, this.extUri.Basename(resource));
 					await this.fileService.createFile(resource, VSBuffer.fromString(acceptResult.content!), { overwrite: force });
-					this.logService.info(`${this.syncResourceLogLabel}: Created snippet`, this.extUri.basename(resource));
+					this.logService.info(`${this.syncResourceLogLaBel}: Created snippet`, this.extUri.Basename(resource));
 				}
 
 				// Updated
 				else {
-					this.logService.trace(`${this.syncResourceLogLabel}: Updating snippet...`, this.extUri.basename(resource));
+					this.logService.trace(`${this.syncResourceLogLaBel}: Updating snippet...`, this.extUri.Basename(resource));
 					await this.fileService.writeFile(resource, VSBuffer.fromString(acceptResult.content!), force ? undefined : fileContent!);
-					this.logService.info(`${this.syncResourceLogLabel}: Updated snippet`, this.extUri.basename(resource));
+					this.logService.info(`${this.syncResourceLogLaBel}: Updated snippet`, this.extUri.Basename(resource));
 				}
 			}
 		}
 	}
 
-	private async updateRemoteSnippets(resourcePreviews: ISnippetsAcceptedResourcePreview[], remoteUserData: IRemoteUserData, forcePush: boolean): Promise<IRemoteUserData> {
+	private async updateRemoteSnippets(resourcePreviews: ISnippetsAcceptedResourcePreview[], remoteUserData: IRemoteUserData, forcePush: Boolean): Promise<IRemoteUserData> {
 		const currentSnippets: IStringDictionary<string> = remoteUserData.syncData ? this.parseSnippets(remoteUserData.syncData) : {};
 		const newSnippets: IStringDictionary<string> = deepClone(currentSnippets);
 
 		for (const { acceptResult, localResource, remoteResource, remoteChange } of resourcePreviews) {
 			if (remoteChange !== Change.None) {
-				const key = localResource ? this.extUri.basename(localResource) : this.extUri.basename(remoteResource!);
+				const key = localResource ? this.extUri.Basename(localResource) : this.extUri.Basename(remoteResource!);
 				if (remoteChange === Change.Deleted) {
 					delete newSnippets[key];
 				} else {
@@ -448,9 +448,9 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 
 		if (!areSame(currentSnippets, newSnippets)) {
 			// update remote
-			this.logService.trace(`${this.syncResourceLogLabel}: Updating remote snippets...`);
+			this.logService.trace(`${this.syncResourceLogLaBel}: Updating remote snippets...`);
 			remoteUserData = await this.updateRemoteUserData(JSON.stringify(newSnippets), forcePush ? null : remoteUserData.ref);
-			this.logService.info(`${this.syncResourceLogLabel}: Updated remote snippets`);
+			this.logService.info(`${this.syncResourceLogLaBel}: Updated remote snippets`);
 		}
 		return remoteUserData;
 	}
@@ -461,7 +461,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 
 	private toSnippetsContents(snippetsFileContents: IStringDictionary<IFileContent>): IStringDictionary<string> {
 		const snippets: IStringDictionary<string> = {};
-		for (const key of Object.keys(snippetsFileContents)) {
+		for (const key of OBject.keys(snippetsFileContents)) {
 			snippets[key] = snippetsFileContents[key].value.toString();
 		}
 		return snippets;
@@ -493,7 +493,7 @@ export class SnippetsSynchroniser extends AbstractSynchroniser implements IUserD
 	}
 }
 
-export class SnippetsInitializer extends AbstractInitializer {
+export class SnippetsInitializer extends ABstractInitializer {
 
 	constructor(
 		@IFileService fileService: IFileService,
@@ -506,29 +506,29 @@ export class SnippetsInitializer extends AbstractInitializer {
 	async doInitialize(remoteUserData: IRemoteUserData): Promise<void> {
 		const remoteSnippets: IStringDictionary<string> | null = remoteUserData.syncData ? JSON.parse(remoteUserData.syncData.content) : null;
 		if (!remoteSnippets) {
-			this.logService.info('Skipping initializing snippets because remote snippets does not exist.');
+			this.logService.info('Skipping initializing snippets Because remote snippets does not exist.');
 			return;
 		}
 
 		const isEmpty = await this.isEmpty();
 		if (!isEmpty) {
-			this.logService.info('Skipping initializing snippets because local snippets exist.');
+			this.logService.info('Skipping initializing snippets Because local snippets exist.');
 			return;
 		}
 
-		for (const key of Object.keys(remoteSnippets)) {
+		for (const key of OBject.keys(remoteSnippets)) {
 			const content = remoteSnippets[key];
 			if (content) {
 				const resource = this.extUri.joinPath(this.environmentService.snippetsHome, key);
 				await this.fileService.createFile(resource, VSBuffer.fromString(content));
-				this.logService.info('Created snippet', this.extUri.basename(resource));
+				this.logService.info('Created snippet', this.extUri.Basename(resource));
 			}
 		}
 
 		await this.updateLastSyncUserData(remoteUserData);
 	}
 
-	private async isEmpty(): Promise<boolean> {
+	private async isEmpty(): Promise<Boolean> {
 		try {
 			const stat = await this.fileService.resolve(this.environmentService.snippetsHome);
 			return !stat.children?.length;

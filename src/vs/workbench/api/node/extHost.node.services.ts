@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ExtHostOutputService2 } from 'vs/workbench/api/node/extHostOutputService';
-import { ExtHostTerminalService } from 'vs/workbench/api/node/extHostTerminalService';
-import { ExtHostTask } from 'vs/workbench/api/node/extHostTask';
-import { ExtHostDebugService } from 'vs/workbench/api/node/extHostDebugService';
-import { NativeExtHostSearch } from 'vs/workbench/api/node/extHostSearch';
-import { ExtHostExtensionService } from 'vs/workbench/api/node/extHostExtensionService';
-import { ExtHostLogService } from 'vs/workbench/api/node/extHostLogService';
-import { ExtHostTunnelService } from 'vs/workbench/api/node/extHostTunnelService';
-import { IExtHostDebugService } from 'vs/workbench/api/common/extHostDebugService';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { IExtHostOutputService } from 'vs/workbench/api/common/extHostOutput';
-import { IExtHostSearch } from 'vs/workbench/api/common/extHostSearch';
-import { IExtHostTask } from 'vs/workbench/api/common/extHostTask';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostTunnelService } from 'vs/workbench/api/common/extHostTunnelService';
+import { ExtHostOutputService2 } from 'vs/workBench/api/node/extHostOutputService';
+import { ExtHostTerminalService } from 'vs/workBench/api/node/extHostTerminalService';
+import { ExtHostTask } from 'vs/workBench/api/node/extHostTask';
+import { ExtHostDeBugService } from 'vs/workBench/api/node/extHostDeBugService';
+import { NativeExtHostSearch } from 'vs/workBench/api/node/extHostSearch';
+import { ExtHostExtensionService } from 'vs/workBench/api/node/extHostExtensionService';
+import { ExtHostLogService } from 'vs/workBench/api/node/extHostLogService';
+import { ExtHostTunnelService } from 'vs/workBench/api/node/extHostTunnelService';
+import { IExtHostDeBugService } from 'vs/workBench/api/common/extHostDeBugService';
+import { IExtHostExtensionService } from 'vs/workBench/api/common/extHostExtensionService';
+import { IExtHostOutputService } from 'vs/workBench/api/common/extHostOutput';
+import { IExtHostSearch } from 'vs/workBench/api/common/extHostSearch';
+import { IExtHostTask } from 'vs/workBench/api/common/extHostTask';
+import { IExtHostTerminalService } from 'vs/workBench/api/common/extHostTerminalService';
+import { IExtHostTunnelService } from 'vs/workBench/api/common/extHostTunnelService';
 import { ILogService } from 'vs/platform/log/common/log';
 
 // #########################################################################
@@ -30,7 +30,7 @@ import { ILogService } from 'vs/platform/log/common/log';
 registerSingleton(IExtHostExtensionService, ExtHostExtensionService);
 registerSingleton(ILogService, ExtHostLogService);
 
-registerSingleton(IExtHostDebugService, ExtHostDebugService);
+registerSingleton(IExtHostDeBugService, ExtHostDeBugService);
 registerSingleton(IExtHostOutputService, ExtHostOutputService2);
 registerSingleton(IExtHostSearch, NativeExtHostSearch);
 registerSingleton(IExtHostTask, ExtHostTask);

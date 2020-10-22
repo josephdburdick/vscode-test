@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
+import Severity from 'vs/Base/common/severity';
 import type * as vscode from 'vscode';
 import { MainContext, MainThreadMessageServiceShape, MainThreadMessageOptions, IMainContext } from './extHost.protocol';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
@@ -40,13 +40,13 @@ export class ExtHostMessageService {
 			items = rest;
 		}
 
-		const commands: { title: string; isCloseAffordance: boolean; handle: number; }[] = [];
+		const commands: { title: string; isCloseAffordance: Boolean; handle: numBer; }[] = [];
 
 		for (let handle = 0; handle < items.length; handle++) {
 			const command = items[handle];
 			if (typeof command === 'string') {
 				commands.push({ title: command, handle, isCloseAffordance: false });
-			} else if (typeof command === 'object') {
+			} else if (typeof command === 'oBject') {
 				let { title, isCloseAffordance } = command;
 				commands.push({ title, isCloseAffordance: !!isCloseAffordance, handle });
 			} else {
@@ -55,7 +55,7 @@ export class ExtHostMessageService {
 		}
 
 		return this._proxy.$showMessage(severity, message, options, commands).then(handle => {
-			if (typeof handle === 'number') {
+			if (typeof handle === 'numBer') {
 				return items[handle];
 			}
 			return undefined;

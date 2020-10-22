@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { alert } from 'vs/base/browser/ui/aria/aria';
-import { asArray, isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { illegalArgument, onUnexpectedExternalError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { CodeEditorStateFlag, EditorStateCancellationTokenSource, TextModelCancellationTokenSource } from 'vs/editor/browser/core/editorState';
-import { IActiveCodeEditor, isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ServicesAccessor } from 'vs/editor/browser/editorExtensions';
+import { alert } from 'vs/Base/Browser/ui/aria/aria';
+import { asArray, isNonEmptyArray } from 'vs/Base/common/arrays';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { illegalArgument, onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import { CodeEditorStateFlag, EditorStateCancellationTokenSource, TextModelCancellationTokenSource } from 'vs/editor/Browser/core/editorState';
+import { IActiveCodeEditor, isCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { ServicesAccessor } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -19,16 +19,16 @@ import { ISingleEditOperation, ITextModel } from 'vs/editor/common/model';
 import { DocumentFormattingEditProvider, DocumentFormattingEditProviderRegistry, DocumentRangeFormattingEditProvider, DocumentRangeFormattingEditProviderRegistry, FormattingOptions, OnTypeFormattingEditProviderRegistry, TextEdit } from 'vs/editor/common/modes';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { FormattingEdit } from 'vs/editor/contrib/format/formattingEdit';
+import { FormattingEdit } from 'vs/editor/contriB/format/formattingEdit';
 import * as nls from 'vs/nls';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { LinkedList } from 'vs/base/common/linkedList';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { LinkedList } from 'vs/Base/common/linkedList';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { assertType } from 'vs/base/common/types';
+import { assertType } from 'vs/Base/common/types';
 import { IProgress } from 'vs/platform/progress/common/progress';
-import { Iterable } from 'vs/base/common/iterator';
+import { IteraBle } from 'vs/Base/common/iterator';
 
 export function alertFormattingEdits(edits: ISingleEditOperation[]): void {
 
@@ -41,18 +41,18 @@ export function alertFormattingEdits(edits: ISingleEditOperation[]): void {
 	for (let i = 1; i < edits.length; i++) {
 		range = Range.plusRange(range, edits[i].range);
 	}
-	const { startLineNumber, endLineNumber } = range;
-	if (startLineNumber === endLineNumber) {
+	const { startLineNumBer, endLineNumBer } = range;
+	if (startLineNumBer === endLineNumBer) {
 		if (edits.length === 1) {
-			alert(nls.localize('hint11', "Made 1 formatting edit on line {0}", startLineNumber));
+			alert(nls.localize('hint11', "Made 1 formatting edit on line {0}", startLineNumBer));
 		} else {
-			alert(nls.localize('hintn1', "Made {0} formatting edits on line {1}", edits.length, startLineNumber));
+			alert(nls.localize('hintn1', "Made {0} formatting edits on line {1}", edits.length, startLineNumBer));
 		}
 	} else {
 		if (edits.length === 1) {
-			alert(nls.localize('hint1n', "Made 1 formatting edit between lines {0} and {1}", startLineNumber, endLineNumber));
+			alert(nls.localize('hint1n', "Made 1 formatting edit Between lines {0} and {1}", startLineNumBer, endLineNumBer));
 		} else {
-			alert(nls.localize('hintnn', "Made {0} formatting edits between lines {1} and {2}", edits.length, startLineNumber, endLineNumber));
+			alert(nls.localize('hintnn', "Made {0} formatting edits Between lines {1} and {2}", edits.length, startLineNumBer, endLineNumBer));
 		}
 	}
 }
@@ -99,11 +99,11 @@ export interface IFormattingEditProviderSelector {
 	<T extends (DocumentFormattingEditProvider | DocumentRangeFormattingEditProvider)>(formatter: T[], document: ITextModel, mode: FormattingMode): Promise<T | undefined>;
 }
 
-export abstract class FormattingConflicts {
+export aBstract class FormattingConflicts {
 
 	private static readonly _selectors = new LinkedList<IFormattingEditProviderSelector>();
 
-	static setFormatterSelector(selector: IFormattingEditProviderSelector): IDisposable {
+	static setFormatterSelector(selector: IFormattingEditProviderSelector): IDisposaBle {
 		const remove = FormattingConflicts._selectors.unshift(selector);
 		return { dispose: remove };
 	}
@@ -112,7 +112,7 @@ export abstract class FormattingConflicts {
 		if (formatter.length === 0) {
 			return undefined;
 		}
-		const selector = Iterable.first(FormattingConflicts._selectors);
+		const selector = IteraBle.first(FormattingConflicts._selectors);
 		if (selector) {
 			return await selector(formatter, document, mode);
 		}
@@ -145,7 +145,7 @@ export async function formatDocumentRangesWithProvider(
 	editorOrModel: ITextModel | IActiveCodeEditor,
 	rangeOrRanges: Range | Range[],
 	token: CancellationToken
-): Promise<boolean> {
+): Promise<Boolean> {
 	const workerService = accessor.get(IEditorWorkerService);
 
 	let model: ITextModel;
@@ -203,7 +203,7 @@ export async function formatDocumentRangesWithProvider(
 	} else {
 		// use model to apply edits
 		const [{ range }] = allEdits;
-		const initialSelection = new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+		const initialSelection = new Selection(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn);
 		model.pushEditOperations([initialSelection], allEdits.map(edit => {
 			return {
 				text: edit.text,
@@ -213,7 +213,7 @@ export async function formatDocumentRangesWithProvider(
 		}), undoEdits => {
 			for (const { range } of undoEdits) {
 				if (Range.areIntersectingOrTouching(range, initialSelection)) {
-					return [new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn)];
+					return [new Selection(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn)];
 				}
 			}
 			return null;
@@ -247,7 +247,7 @@ export async function formatDocumentWithProvider(
 	editorOrModel: ITextModel | IActiveCodeEditor,
 	mode: FormattingMode,
 	token: CancellationToken
-): Promise<boolean> {
+): Promise<Boolean> {
 	const workerService = accessor.get(IEditorWorkerService);
 
 	let model: ITextModel;
@@ -294,7 +294,7 @@ export async function formatDocumentWithProvider(
 	} else {
 		// use model to apply edits
 		const [{ range }] = edits;
-		const initialSelection = new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+		const initialSelection = new Selection(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn);
 		model.pushEditOperations([initialSelection], edits.map(edit => {
 			return {
 				text: edit.text,
@@ -304,7 +304,7 @@ export async function formatDocumentWithProvider(
 		}), undoEdits => {
 			for (const { range } of undoEdits) {
 				if (Range.areIntersectingOrTouching(range, initialSelection)) {
-					return [new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn)];
+					return [new Selection(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn)];
 				}
 			}
 			return null;

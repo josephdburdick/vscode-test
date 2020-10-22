@@ -4,50 +4,50 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { setUnexpectedErrorHandler, errorHandler } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import * as types from 'vs/workbench/api/common/extHostTypes';
+import { setUnexpectedErrorHandler, errorHandler } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import * as types from 'vs/workBench/api/common/extHostTypes';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 import { TestRPCProtocol } from './testRPCProtocol';
 import { MarkerService } from 'vs/platform/markers/common/markerService';
 import { IMarkerService } from 'vs/platform/markers/common/markers';
 import { ICommandService, CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ExtHostLanguageFeatures } from 'vs/workbench/api/common/extHostLanguageFeatures';
-import { MainThreadLanguageFeatures } from 'vs/workbench/api/browser/mainThreadLanguageFeatures';
-import { ExtHostApiCommands } from 'vs/workbench/api/common/extHostApiCommands';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { MainThreadCommands } from 'vs/workbench/api/browser/mainThreadCommands';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { MainContext, ExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDiagnostics } from 'vs/workbench/api/common/extHostDiagnostics';
+import { ExtHostLanguageFeatures } from 'vs/workBench/api/common/extHostLanguageFeatures';
+import { MainThreadLanguageFeatures } from 'vs/workBench/api/Browser/mainThreadLanguageFeatures';
+import { ExtHostApiCommands } from 'vs/workBench/api/common/extHostApiCommands';
+import { ExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { MainThreadCommands } from 'vs/workBench/api/Browser/mainThreadCommands';
+import { ExtHostDocuments } from 'vs/workBench/api/common/extHostDocuments';
+import { ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
+import { MainContext, ExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtHostDiagnostics } from 'vs/workBench/api/common/extHostDiagnostics';
 import type * as vscode from 'vscode';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import 'vs/workbench/contrib/search/browser/search.contribution';
+import 'vs/workBench/contriB/search/Browser/search.contriBution';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { ITextModel } from 'vs/editor/common/model';
-import { nullExtensionDescription, IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { dispose } from 'vs/base/common/lifecycle';
+import { nullExtensionDescription, IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { dispose } from 'vs/Base/common/lifecycle';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { mock } from 'vs/base/test/common/mock';
-import { NullApiDeprecationService } from 'vs/workbench/api/common/extHostApiDeprecationService';
+import { mock } from 'vs/Base/test/common/mock';
+import { NullApiDeprecationService } from 'vs/workBench/api/common/extHostApiDeprecationService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 
-import 'vs/editor/contrib/codeAction/codeAction';
-import 'vs/editor/contrib/codelens/codelens';
-import 'vs/editor/contrib/colorPicker/color';
-import 'vs/editor/contrib/format/format';
-import 'vs/editor/contrib/gotoSymbol/goToCommands';
-import 'vs/editor/contrib/gotoSymbol/documentSymbols';
-import 'vs/editor/contrib/hover/getHover';
-import 'vs/editor/contrib/links/getLinks';
-import 'vs/editor/contrib/parameterHints/provideSignatureHelp';
-import 'vs/editor/contrib/smartSelect/smartSelect';
-import 'vs/editor/contrib/suggest/suggest';
-import 'vs/editor/contrib/rename/rename';
+import 'vs/editor/contriB/codeAction/codeAction';
+import 'vs/editor/contriB/codelens/codelens';
+import 'vs/editor/contriB/colorPicker/color';
+import 'vs/editor/contriB/format/format';
+import 'vs/editor/contriB/gotoSymBol/goToCommands';
+import 'vs/editor/contriB/gotoSymBol/documentSymBols';
+import 'vs/editor/contriB/hover/getHover';
+import 'vs/editor/contriB/links/getLinks';
+import 'vs/editor/contriB/parameterHints/provideSignatureHelp';
+import 'vs/editor/contriB/smartSelect/smartSelect';
+import 'vs/editor/contriB/suggest/suggest';
+import 'vs/editor/contriB/rename/rename';
 
 const defaultSelector = { scheme: 'far' };
 const model: ITextModel = createTextModel(
@@ -58,13 +58,13 @@ const model: ITextModel = createTextModel(
 	].join('\n'),
 	undefined,
 	undefined,
-	URI.parse('far://testing/file.b'));
+	URI.parse('far://testing/file.B'));
 
 let rpcProtocol: TestRPCProtocol;
 let extHost: ExtHostLanguageFeatures;
 let mainThread: MainThreadLanguageFeatures;
 let commands: ExtHostCommands;
-let disposables: vscode.Disposable[] = [];
+let disposaBles: vscode.DisposaBle[] = [];
 let originalErrorHandler: (e: any) => any;
 
 function assertRejects(fn: () => Promise<any>, message: string = 'Expected rejection') {
@@ -153,89 +153,89 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	teardown(() => {
-		disposables = dispose(disposables);
+		disposaBles = dispose(disposaBles);
 		return rpcProtocol.sync();
 	});
 
-	// --- workspace symbols
+	// --- workspace symBols
 
-	test('WorkspaceSymbols, invalid arguments', function () {
+	test('WorkspaceSymBols, invalid arguments', function () {
 		let promises = [
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider')),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', null)),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', undefined)),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', true))
+			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymBolProvider')),
+			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymBolProvider', null)),
+			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymBolProvider', undefined)),
+			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymBolProvider', true))
 		];
 		return Promise.all(promises);
 	});
 
-	test('WorkspaceSymbols, back and forth', function () {
+	test('WorkspaceSymBols, Back and forth', function () {
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, <vscode.WorkspaceSymbolProvider>{
-			provideWorkspaceSymbols(query): any {
+		disposaBles.push(extHost.registerWorkspaceSymBolProvider(nullExtensionDescription, <vscode.WorkspaceSymBolProvider>{
+			provideWorkspaceSymBols(query): any {
 				return [
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first')),
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/second'))
+					new types.SymBolInformation(query, types.SymBolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first')),
+					new types.SymBolInformation(query, types.SymBolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/second'))
 				];
 			}
 		}));
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, <vscode.WorkspaceSymbolProvider>{
-			provideWorkspaceSymbols(query): any {
+		disposaBles.push(extHost.registerWorkspaceSymBolProvider(nullExtensionDescription, <vscode.WorkspaceSymBolProvider>{
+			provideWorkspaceSymBols(query): any {
 				return [
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first'))
+					new types.SymBolInformation(query, types.SymBolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first'))
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', 'testing').then(value => {
+			return commands.executeCommand<vscode.SymBolInformation[]>('vscode.executeWorkspaceSymBolProvider', 'testing').then(value => {
 
 				for (let info of value) {
-					assert.ok(info instanceof types.SymbolInformation);
+					assert.ok(info instanceof types.SymBolInformation);
 					assert.equal(info.name, 'testing');
-					assert.equal(info.kind, types.SymbolKind.Array);
+					assert.equal(info.kind, types.SymBolKind.Array);
 				}
 				assert.equal(value.length, 3);
 			});
 		});
 	});
 
-	test('executeWorkspaceSymbolProvider should accept empty string, #39522', async function () {
+	test('executeWorkspaceSymBolProvider should accept empty string, #39522', async function () {
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, {
-			provideWorkspaceSymbols(): vscode.SymbolInformation[] {
-				return [new types.SymbolInformation('hello', types.SymbolKind.Array, new types.Range(0, 0, 0, 0), URI.parse('foo:bar')) as vscode.SymbolInformation];
+		disposaBles.push(extHost.registerWorkspaceSymBolProvider(nullExtensionDescription, {
+			provideWorkspaceSymBols(): vscode.SymBolInformation[] {
+				return [new types.SymBolInformation('hello', types.SymBolKind.Array, new types.Range(0, 0, 0, 0), URI.parse('foo:Bar')) as vscode.SymBolInformation];
 			}
 		}));
 
 		await rpcProtocol.sync();
-		let symbols = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', '');
-		assert.equal(symbols.length, 1);
+		let symBols = await commands.executeCommand<vscode.SymBolInformation[]>('vscode.executeWorkspaceSymBolProvider', '');
+		assert.equal(symBols.length, 1);
 
 		await rpcProtocol.sync();
-		symbols = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', '*');
-		assert.equal(symbols.length, 1);
+		symBols = await commands.executeCommand<vscode.SymBolInformation[]>('vscode.executeWorkspaceSymBolProvider', '*');
+		assert.equal(symBols.length, 1);
 	});
 
 	// --- formatting
-	test('executeFormatDocumentProvider, back and forth', async function () {
+	test('executeFormatDocumentProvider, Back and forth', async function () {
 
-		disposables.push(extHost.registerDocumentFormattingEditProvider(nullExtensionDescription, defaultSelector, new class implements vscode.DocumentFormattingEditProvider {
+		disposaBles.push(extHost.registerDocumentFormattingEditProvider(nullExtensionDescription, defaultSelector, new class implements vscode.DocumentFormattingEditProvider {
 			provideDocumentFormattingEdits() {
 				return [types.TextEdit.insert(new types.Position(0, 0), '42')];
 			}
 		}));
 
 		await rpcProtocol.sync();
-		let edits = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeFormatDocumentProvider', model.uri);
+		let edits = await commands.executeCommand<vscode.SymBolInformation[]>('vscode.executeFormatDocumentProvider', model.uri);
 		assert.equal(edits.length, 1);
 	});
 
 
 	// --- rename
 	test('vscode.executeDocumentRenameProvider', async function () {
-		disposables.push(extHost.registerRenameProvider(nullExtensionDescription, defaultSelector, new class implements vscode.RenameProvider {
+		disposaBles.push(extHost.registerRenameProvider(nullExtensionDescription, defaultSelector, new class implements vscode.RenameProvider {
 			provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string) {
 				const edit = new types.WorkspaceEdit();
 				edit.insert(document.uri, <types.Position>position, newName);
@@ -267,14 +267,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		return Promise.all(promises);
 	});
 
-	test('Definition, back and forth', function () {
+	test('Definition, Back and forth', function () {
 
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
+		disposaBles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
 			provideDefinition(doc: any): any {
 				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
+		disposaBles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
 			provideDefinition(doc: any): any {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -296,7 +296,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('Definition Link', () => {
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
+		disposaBles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
 			provideDefinition(doc: any): (vscode.Location | vscode.LocationLink)[] {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -325,14 +325,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- declaration
 
-	test('Declaration, back and forth', function () {
+	test('Declaration, Back and forth', function () {
 
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
+		disposaBles.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
 			provideDeclaration(doc: any): any {
 				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
+		disposaBles.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
 			provideDeclaration(doc: any): any {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -354,7 +354,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('Declaration Link', () => {
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
+		disposaBles.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
 			provideDeclaration(doc: any): (vscode.Location | vscode.LocationLink)[] {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -394,14 +394,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		return Promise.all(promises);
 	});
 
-	test('Type Definition, back and forth', function () {
+	test('Type Definition, Back and forth', function () {
 
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
+		disposaBles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
 			provideTypeDefinition(doc: any): any {
 				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
+		disposaBles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
 			provideTypeDefinition(doc: any): any {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -423,7 +423,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('Type Definition Link', () => {
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
+		disposaBles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
 			provideTypeDefinition(doc: any): (vscode.Location | vscode.LocationLink)[] {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -463,14 +463,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		return Promise.all(promises);
 	});
 
-	test('Implementation, back and forth', function () {
+	test('Implementation, Back and forth', function () {
 
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
+		disposaBles.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
 			provideImplementation(doc: any): any {
 				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
+		disposaBles.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
 			provideImplementation(doc: any): any {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -492,7 +492,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('Implementation Definition Link', () => {
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
+		disposaBles.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
 			provideImplementation(doc: any): (vscode.Location | vscode.LocationLink)[] {
 				return [
 					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
@@ -521,9 +521,9 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- references
 
-	test('reference search, back and forth', function () {
+	test('reference search, Back and forth', function () {
 
-		disposables.push(extHost.registerReferenceProvider(nullExtensionDescription, defaultSelector, <vscode.ReferenceProvider>{
+		disposaBles.push(extHost.registerReferenceProvider(nullExtensionDescription, defaultSelector, <vscode.ReferenceProvider>{
 			provideReferences() {
 				return [
 					new types.Location(URI.parse('some:uri/path'), new types.Range(0, 1, 0, 5))
@@ -544,74 +544,74 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- outline
 
-	test('Outline, back and forth', function () {
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
+	test('Outline, Back and forth', function () {
+		disposaBles.push(extHost.registerDocumentSymBolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymBolProvider>{
+			provideDocumentSymBols(): any {
 				return [
-					new types.SymbolInformation('testing1', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0)),
-					new types.SymbolInformation('testing2', types.SymbolKind.Enum, new types.Range(0, 1, 0, 3)),
+					new types.SymBolInformation('testing1', types.SymBolKind.Enum, new types.Range(1, 0, 1, 0)),
+					new types.SymBolInformation('testing2', types.SymBolKind.Enum, new types.Range(0, 1, 0, 3)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeDocumentSymbolProvider', model.uri).then(values => {
+			return commands.executeCommand<vscode.SymBolInformation[]>('vscode.executeDocumentSymBolProvider', model.uri).then(values => {
 				assert.equal(values.length, 2);
 				let [first, second] = values;
-				assert.ok(first instanceof types.SymbolInformation);
-				assert.ok(second instanceof types.SymbolInformation);
+				assert.ok(first instanceof types.SymBolInformation);
+				assert.ok(second instanceof types.SymBolInformation);
 				assert.equal(first.name, 'testing2');
 				assert.equal(second.name, 'testing1');
 			});
 		});
 	});
 
-	test('vscode.executeDocumentSymbolProvider command only returns SymbolInformation[] rather than DocumentSymbol[] #57984', function () {
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
+	test('vscode.executeDocumentSymBolProvider command only returns SymBolInformation[] rather than DocumentSymBol[] #57984', function () {
+		disposaBles.push(extHost.registerDocumentSymBolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymBolProvider>{
+			provideDocumentSymBols(): any {
 				return [
-					new types.SymbolInformation('SymbolInformation', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0))
+					new types.SymBolInformation('SymBolInformation', types.SymBolKind.Enum, new types.Range(1, 0, 1, 0))
 				];
 			}
 		}));
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
-				let root = new types.DocumentSymbol('DocumentSymbol', 'DocumentSymbol#detail', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0));
-				root.children = [new types.DocumentSymbol('DocumentSymbol#child', 'DocumentSymbol#detail#child', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0))];
+		disposaBles.push(extHost.registerDocumentSymBolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymBolProvider>{
+			provideDocumentSymBols(): any {
+				let root = new types.DocumentSymBol('DocumentSymBol', 'DocumentSymBol#detail', types.SymBolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0));
+				root.children = [new types.DocumentSymBol('DocumentSymBol#child', 'DocumentSymBol#detail#child', types.SymBolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0))];
 				return [root];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.SymbolInformation & vscode.DocumentSymbol)[]>('vscode.executeDocumentSymbolProvider', model.uri).then(values => {
+			return commands.executeCommand<(vscode.SymBolInformation & vscode.DocumentSymBol)[]>('vscode.executeDocumentSymBolProvider', model.uri).then(values => {
 				assert.equal(values.length, 2);
 				let [first, second] = values;
-				assert.ok(first instanceof types.SymbolInformation);
-				assert.ok(!(first instanceof types.DocumentSymbol));
-				assert.ok(second instanceof types.SymbolInformation);
-				assert.equal(first.name, 'DocumentSymbol');
+				assert.ok(first instanceof types.SymBolInformation);
+				assert.ok(!(first instanceof types.DocumentSymBol));
+				assert.ok(second instanceof types.SymBolInformation);
+				assert.equal(first.name, 'DocumentSymBol');
 				assert.equal(first.children.length, 1);
-				assert.equal(second.name, 'SymbolInformation');
+				assert.equal(second.name, 'SymBolInformation');
 			});
 		});
 	});
 
 	// --- suggest
 
-	test('Suggest, back and forth', function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+	test('Suggest, Back and forth', function () {
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				let a = new types.CompletionItem('item1');
-				let b = new types.CompletionItem('item2');
-				b.textEdit = types.TextEdit.replace(new types.Range(0, 4, 0, 8), 'foo'); // overwite after
+				let B = new types.CompletionItem('item2');
+				B.textEdit = types.TextEdit.replace(new types.Range(0, 4, 0, 8), 'foo'); // overwite after
 				let c = new types.CompletionItem('item3');
-				c.textEdit = types.TextEdit.replace(new types.Range(0, 1, 0, 6), 'foobar'); // overwite before & after
+				c.textEdit = types.TextEdit.replace(new types.Range(0, 1, 0, 6), 'fooBar'); // overwite Before & after
 
 				// snippet string!
 				let d = new types.CompletionItem('item4');
-				d.range = new types.Range(0, 1, 0, 4);// overwite before
-				d.insertText = new types.SnippetString('foo$0bar');
-				return [a, b, c, d];
+				d.range = new types.Range(0, 1, 0, 4);// overwite Before
+				d.insertText = new types.SnippetString('foo$0Bar');
+				return [a, B, c, d];
 			}
 		}, []));
 
@@ -623,25 +623,25 @@ suite('ExtHostLanguageFeatureCommands', function () {
 				assert.ok(Array.isArray(values));
 				assert.equal(values.length, 4);
 				let [first, second, third, fourth] = values;
-				assert.equal(first.label, 'item1');
+				assert.equal(first.laBel, 'item1');
 				assert.equal(first.textEdit, undefined);// no text edit, default ranges
 				assert.ok(!types.Range.isRange(first.range));
 
-				assert.equal(second.label, 'item2');
+				assert.equal(second.laBel, 'item2');
 				assert.equal(second.textEdit!.newText, 'foo');
 				assert.equal(second.textEdit!.range.start.line, 0);
 				assert.equal(second.textEdit!.range.start.character, 4);
 				assert.equal(second.textEdit!.range.end.line, 0);
 				assert.equal(second.textEdit!.range.end.character, 8);
 
-				assert.equal(third.label, 'item3');
-				assert.equal(third.textEdit!.newText, 'foobar');
+				assert.equal(third.laBel, 'item3');
+				assert.equal(third.textEdit!.newText, 'fooBar');
 				assert.equal(third.textEdit!.range.start.line, 0);
 				assert.equal(third.textEdit!.range.start.character, 1);
 				assert.equal(third.textEdit!.range.end.line, 0);
 				assert.equal(third.textEdit!.range.end.character, 6);
 
-				assert.equal(fourth.label, 'item4');
+				assert.equal(fourth.laBel, 'item4');
 				assert.equal(fourth.textEdit, undefined);
 
 				const range: any = fourth.range!;
@@ -651,17 +651,17 @@ suite('ExtHostLanguageFeatureCommands', function () {
 				assert.equal(range.end.line, 0);
 				assert.equal(range.end.character, 4);
 				assert.ok(fourth.insertText instanceof types.SnippetString);
-				assert.equal((<types.SnippetString>fourth.insertText).value, 'foo$0bar');
+				assert.equal((<types.SnippetString>fourth.insertText).value, 'foo$0Bar');
 			});
 		});
 	});
 
 	test('Suggest, return CompletionList !array', function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				let a = new types.CompletionItem('item1');
-				let b = new types.CompletionItem('item2');
-				return new types.CompletionList(<any>[a, b], true);
+				let B = new types.CompletionItem('item2');
+				return new types.CompletionList(<any>[a, B], true);
 			}
 		}, []));
 
@@ -677,13 +677,13 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 		let resolveCount = 0;
 
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				let a = new types.CompletionItem('item1');
-				let b = new types.CompletionItem('item2');
+				let B = new types.CompletionItem('item2');
 				let c = new types.CompletionItem('item3');
 				let d = new types.CompletionItem('item4');
-				return new types.CompletionList([a, b, c, d], false);
+				return new types.CompletionList([a, B, c, d], false);
 			},
 			resolveCompletionItem(item) {
 				resolveCount += 1;
@@ -707,15 +707,15 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('"vscode.executeCompletionItemProvider" doesnot return a preselect field #53749', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				let a = new types.CompletionItem('item1');
 				a.preselect = true;
-				let b = new types.CompletionItem('item2');
+				let B = new types.CompletionItem('item2');
 				let c = new types.CompletionItem('item3');
 				c.preselect = true;
 				let d = new types.CompletionItem('item4');
-				return new types.CompletionList([a, b, c, d], false);
+				return new types.CompletionList([a, B, c, d], false);
 			}
 		}, []));
 
@@ -731,20 +731,20 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		assert.ok(list instanceof types.CompletionList);
 		assert.equal(list.items.length, 4);
 
-		let [a, b, c, d] = list.items;
+		let [a, B, c, d] = list.items;
 		assert.equal(a.preselect, true);
-		assert.equal(b.preselect, undefined);
+		assert.equal(B.preselect, undefined);
 		assert.equal(c.preselect, true);
 		assert.equal(d.preselect, undefined);
 	});
 
 	test('executeCompletionItemProvider doesn\'t capture commitCharacters #58228', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				let a = new types.CompletionItem('item1');
-				a.commitCharacters = ['a', 'b'];
-				let b = new types.CompletionItem('item2');
-				return new types.CompletionList([a, b], false);
+				a.commitCharacters = ['a', 'B'];
+				let B = new types.CompletionItem('item2');
+				return new types.CompletionList([a, B], false);
 			}
 		}, []));
 
@@ -760,13 +760,13 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		assert.ok(list instanceof types.CompletionList);
 		assert.equal(list.items.length, 2);
 
-		let [a, b] = list.items;
-		assert.deepEqual(a.commitCharacters, ['a', 'b']);
-		assert.equal(b.commitCharacters, undefined);
+		let [a, B] = list.items;
+		assert.deepEqual(a.commitCharacters, ['a', 'B']);
+		assert.equal(B.commitCharacters, undefined);
 	});
 
 	test('vscode.executeCompletionItemProvider returns the wrong CompletionItemKinds in insiders #95715', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
+		disposaBles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
 			provideCompletionItems(): any {
 				return [
 					new types.CompletionItem('My Method', types.CompletionItemKind.Method),
@@ -787,22 +787,22 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		assert.ok(list instanceof types.CompletionList);
 		assert.equal(list.items.length, 2);
 
-		const [a, b] = list.items;
+		const [a, B] = list.items;
 		assert.equal(a.kind, types.CompletionItemKind.Method);
-		assert.equal(b.kind, types.CompletionItemKind.Property);
+		assert.equal(B.kind, types.CompletionItemKind.Property);
 	});
 
 	// --- signatureHelp
 
-	test('Parameter Hints, back and forth', async () => {
-		disposables.push(extHost.registerSignatureHelpProvider(nullExtensionDescription, defaultSelector, new class implements vscode.SignatureHelpProvider {
+	test('Parameter Hints, Back and forth', async () => {
+		disposaBles.push(extHost.registerSignatureHelpProvider(nullExtensionDescription, defaultSelector, new class implements vscode.SignatureHelpProvider {
 			provideSignatureHelp(_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CancellationToken, context: vscode.SignatureHelpContext): vscode.SignatureHelp {
 				return {
 					activeSignature: 0,
 					activeParameter: 1,
 					signatures: [
 						{
-							label: 'abc',
+							laBel: 'aBc',
 							documentation: `${context.triggerKind === 1 /* vscode.SignatureHelpTriggerKind.Invoke */ ? 'invoked' : 'unknown'} ${context.triggerCharacter}`,
 							parameters: []
 						}
@@ -817,14 +817,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		assert.strictEqual(firstValue.activeSignature, 0);
 		assert.strictEqual(firstValue.activeParameter, 1);
 		assert.strictEqual(firstValue.signatures.length, 1);
-		assert.strictEqual(firstValue.signatures[0].label, 'abc');
+		assert.strictEqual(firstValue.signatures[0].laBel, 'aBc');
 		assert.strictEqual(firstValue.signatures[0].documentation, 'invoked ,');
 	});
 
 	// --- quickfix
 
-	test('QuickFix, back and forth', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
+	test('QuickFix, Back and forth', function () {
+		disposaBles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
 			provideCodeActions(): vscode.Command[] {
 				return [{ command: 'testing', title: 'Title', arguments: [1, 2, true] }];
 			}
@@ -841,8 +841,8 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		});
 	});
 
-	test('vscode.executeCodeActionProvider results seem to be missing their `command` property #45124', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
+	test('vscode.executeCodeActionProvider results seem to Be missing their `command` property #45124', function () {
+		disposaBles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
 			provideCodeActions(document, range): vscode.CodeAction[] {
 				return [{
 					command: {
@@ -871,7 +871,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 	});
 
 	test('vscode.executeCodeActionProvider passes Range to provider although Selection is passed in #77997', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
+		disposaBles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
 			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
 				return [{
 					command: {
@@ -898,8 +898,8 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		});
 	});
 
-	test('vscode.executeCodeActionProvider results seem to be missing their `isPreferred` property #78098', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
+	test('vscode.executeCodeActionProvider results seem to Be missing their `isPreferred` property #78098', function () {
+		disposaBles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
 			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
 				return [{
 					command: {
@@ -930,7 +930,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		let didCallResolve = 0;
 		class MyAction extends types.CodeAction { }
 
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
+		disposaBles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
 			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
 				return [new MyAction('title', types.CodeActionKind.Empty.append('foo'))];
 			},
@@ -959,15 +959,15 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- code lens
 
-	test('CodeLens, back and forth', function () {
+	test('CodeLens, Back and forth', function () {
 
 		const complexArg = {
 			foo() { },
-			bar() { },
-			big: extHost
+			Bar() { },
+			Big: extHost
 		};
 
-		disposables.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
+		disposaBles.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
 			provideCodeLenses(): any {
 				return [new types.CodeLens(new types.Range(0, 0, 1, 1), { title: 'Title', command: 'cmd', arguments: [1, true, complexArg] })];
 			}
@@ -991,7 +991,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 		let resolveCount = 0;
 
-		disposables.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
+		disposaBles.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
 			provideCodeLenses(): any {
 				return [
 					new types.CodeLens(new types.Range(0, 0, 1, 1)),
@@ -1011,7 +1011,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 		let value = await commands.executeCommand<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri, 2);
 
-		assert.equal(value.length, 3); // the resolve argument defines the number of results being returned
+		assert.equal(value.length, 3); // the resolve argument defines the numBer of results Being returned
 		assert.equal(resolveCount, 2);
 
 		resolveCount = 0;
@@ -1021,11 +1021,11 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		assert.equal(resolveCount, 0);
 	});
 
-	test('Links, back and forth', function () {
+	test('Links, Back and forth', function () {
 
-		disposables.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
+		disposaBles.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
 			provideDocumentLinks(): any {
-				return [new types.DocumentLink(new types.Range(0, 0, 0, 20), URI.parse('foo:bar'))];
+				return [new types.DocumentLink(new types.Range(0, 0, 0, 20), URI.parse('foo:Bar'))];
 			}
 		}));
 
@@ -1034,7 +1034,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 				assert.equal(value.length, 1);
 				let [first] = value;
 
-				assert.equal(first.target + '', 'foo:bar');
+				assert.equal(first.target + '', 'foo:Bar');
 				assert.equal(first.range.start.line, 0);
 				assert.equal(first.range.start.character, 0);
 				assert.equal(first.range.end.line, 0);
@@ -1043,13 +1043,13 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		});
 	});
 
-	test('What\'s the condition for DocumentLink target to be undefined? #106308', async function () {
-		disposables.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
+	test('What\'s the condition for DocumentLink target to Be undefined? #106308', async function () {
+		disposaBles.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
 			provideDocumentLinks(): any {
 				return [new types.DocumentLink(new types.Range(0, 0, 0, 20), undefined)];
 			},
 			resolveDocumentLink(link) {
-				link.target = URI.parse('foo:bar');
+				link.target = URI.parse('foo:Bar');
 				return link;
 			}
 		}));
@@ -1062,14 +1062,14 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 		const links2 = await commands.executeCommand<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri, 1000);
 		assert.equal(links2.length, 1);
-		assert.equal(links2[0].target!.toString(), URI.parse('foo:bar').toString());
+		assert.equal(links2[0].target!.toString(), URI.parse('foo:Bar').toString());
 
 	});
 
 
 	test('Color provider', function () {
 
-		disposables.push(extHost.registerColorProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentColorProvider>{
+		disposaBles.push(extHost.registerColorProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentColorProvider>{
 			provideDocumentColors(): vscode.ColorInformation[] {
 				return [new types.ColorInformation(new types.Range(0, 0, 0, 20), new types.Color(0.1, 0.2, 0.3, 0.4))];
 			},
@@ -1088,7 +1088,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 				assert.equal(first.color.red, 0.1);
 				assert.equal(first.color.green, 0.2);
-				assert.equal(first.color.blue, 0.3);
+				assert.equal(first.color.Blue, 0.3);
 				assert.equal(first.color.alpha, 0.4);
 				assert.equal(first.range.start.line, 0);
 				assert.equal(first.range.start.character, 0);
@@ -1102,7 +1102,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 				assert.equal(value.length, 1);
 				let [first] = value;
 
-				assert.equal(first.label, '#ABC');
+				assert.equal(first.laBel, '#ABC');
 				assert.equal(first.textEdit!.newText, '#ABC');
 				assert.equal(first.textEdit!.range.start.line, 1);
 				assert.equal(first.textEdit!.range.start.character, 0);
@@ -1119,7 +1119,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	test('"TypeError: e.onCancellationRequested is not a function" calling hover provider in Insiders #54174', function () {
 
-		disposables.push(extHost.registerHoverProvider(nullExtensionDescription, defaultSelector, <vscode.HoverProvider>{
+		disposaBles.push(extHost.registerHoverProvider(nullExtensionDescription, defaultSelector, <vscode.HoverProvider>{
 			provideHover(): any {
 				return new types.Hover('fofofofo');
 			}
@@ -1135,9 +1135,9 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- selection ranges
 
-	test('Selection Range, back and forth', async function () {
+	test('Selection Range, Back and forth', async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
+		disposaBles.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
 			provideSelectionRanges() {
 				return [
 					new types.SelectionRange(new types.Range(0, 10, 0, 18), new types.SelectionRange(new types.Range(0, 2, 0, 20))),
@@ -1153,25 +1153,25 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- call hierarcht
 
-	test('CallHierarchy, back and forth', async function () {
+	test('CallHierarchy, Back and forth', async function () {
 
-		disposables.push(extHost.registerCallHierarchyProvider(nullExtensionDescription, defaultSelector, new class implements vscode.CallHierarchyProvider {
+		disposaBles.push(extHost.registerCallHierarchyProvider(nullExtensionDescription, defaultSelector, new class implements vscode.CallHierarchyProvider {
 
 			prepareCallHierarchy(document: vscode.TextDocument, position: vscode.Position,): vscode.ProviderResult<vscode.CallHierarchyItem> {
-				return new types.CallHierarchyItem(types.SymbolKind.Constant, 'ROOT', 'ROOT', document.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0));
+				return new types.CallHierarchyItem(types.SymBolKind.Constant, 'ROOT', 'ROOT', document.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0));
 			}
 
 			provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyIncomingCall[]> {
 
 				return [new types.CallHierarchyIncomingCall(
-					new types.CallHierarchyItem(types.SymbolKind.Constant, 'INCOMING', 'INCOMING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
+					new types.CallHierarchyItem(types.SymBolKind.Constant, 'INCOMING', 'INCOMING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
 					[new types.Range(0, 0, 0, 0)]
 				)];
 			}
 
 			provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyOutgoingCall[]> {
 				return [new types.CallHierarchyOutgoingCall(
-					new types.CallHierarchyItem(types.SymbolKind.Constant, 'OUTGOING', 'OUTGOING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
+					new types.CallHierarchyItem(types.SymBolKind.Constant, 'OUTGOING', 'OUTGOING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
 					[new types.Range(0, 0, 0, 0)]
 				)];
 			}
@@ -1196,7 +1196,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	test('selectionRangeProvider on inner array always returns outer array #91852', async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
+		disposaBles.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
 			provideSelectionRanges(_doc, positions) {
 				const [first] = positions;
 				return [
@@ -1216,7 +1216,7 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	test('selectionRangeProvider on inner array always returns outer array #91852', async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
+		disposaBles.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
 			provideSelectionRanges(_doc, positions) {
 				const [first, second] = positions;
 				return [

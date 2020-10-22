@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { parse, stringify } from 'vs/base/common/marshalling';
+import { URI } from 'vs/Base/common/uri';
+import { parse, stringify } from 'vs/Base/common/marshalling';
 
 suite('Marshalling', () => {
 
@@ -14,7 +14,7 @@ suite('Marshalling', () => {
 		let clone = <RegExp>parse(raw);
 
 		assert.equal(value.source, clone.source);
-		assert.equal(value.global, clone.global);
+		assert.equal(value.gloBal, clone.gloBal);
 		assert.equal(value.ignoreCase, clone.ignoreCase);
 		assert.equal(value.multiline, clone.multiline);
 	});

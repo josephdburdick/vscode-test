@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import * as types from 'vs/workbench/api/common/extHostTypes';
-import { isWindows } from 'vs/base/common/platform';
-import { assertType } from 'vs/base/common/types';
+import { URI } from 'vs/Base/common/uri';
+import * as types from 'vs/workBench/api/common/extHostTypes';
+import { isWindows } from 'vs/Base/common/platform';
+import { assertType } from 'vs/Base/common/types';
 
 function assertToJSON(a: any, expected: any) {
 	const raw = JSON.stringify(a);
@@ -46,10 +46,10 @@ suite('ExtHostTypes', function () {
 		});
 	});
 
-	test('Disposable', () => {
+	test('DisposaBle', () => {
 
 		let count = 0;
-		let d = new types.Disposable(() => {
+		let d = new types.DisposaBle(() => {
 			count += 1;
 			return 12;
 		});
@@ -59,17 +59,17 @@ suite('ExtHostTypes', function () {
 		d.dispose();
 		assert.equal(count, 1);
 
-		types.Disposable.from(undefined!, { dispose() { count += 1; } }).dispose();
+		types.DisposaBle.from(undefined!, { dispose() { count += 1; } }).dispose();
 		assert.equal(count, 2);
 
 
 		assert.throws(() => {
-			new types.Disposable(() => {
+			new types.DisposaBle(() => {
 				throw new Error();
 			}).dispose();
 		});
 
-		new types.Disposable(undefined!).dispose();
+		new types.DisposaBle(undefined!).dispose();
 
 	});
 
@@ -349,7 +349,7 @@ suite('ExtHostTypes', function () {
 	test('WorkspaceEdit', () => {
 
 		let a = URI.file('a.ts');
-		let b = URI.file('b.ts');
+		let B = URI.file('B.ts');
 
 		let edit = new types.WorkspaceEdit();
 		assert.ok(!edit.has(a));
@@ -359,30 +359,30 @@ suite('ExtHostTypes', function () {
 		assert.equal(edit.size, 1);
 		assertToJSON(edit, [[a.toJSON(), [{ range: [{ line: 0, character: 0 }, { line: 0, character: 0 }], newText: 'fff' }]]]);
 
-		edit.insert(b, new types.Position(1, 1), 'fff');
-		edit.delete(b, new types.Range(0, 0, 0, 0));
-		assert.ok(edit.has(b));
+		edit.insert(B, new types.Position(1, 1), 'fff');
+		edit.delete(B, new types.Range(0, 0, 0, 0));
+		assert.ok(edit.has(B));
 		assert.equal(edit.size, 2);
 		assertToJSON(edit, [
 			[a.toJSON(), [{ range: [{ line: 0, character: 0 }, { line: 0, character: 0 }], newText: 'fff' }]],
-			[b.toJSON(), [{ range: [{ line: 1, character: 1 }, { line: 1, character: 1 }], newText: 'fff' }, { range: [{ line: 0, character: 0 }, { line: 0, character: 0 }], newText: '' }]]
+			[B.toJSON(), [{ range: [{ line: 1, character: 1 }, { line: 1, character: 1 }], newText: 'fff' }, { range: [{ line: 0, character: 0 }, { line: 0, character: 0 }], newText: '' }]]
 		]);
 
-		edit.set(b, undefined!);
-		assert.ok(!edit.has(b));
+		edit.set(B, undefined!);
+		assert.ok(!edit.has(B));
 		assert.equal(edit.size, 1);
 
-		edit.set(b, [types.TextEdit.insert(new types.Position(0, 0), 'ffff')]);
-		assert.equal(edit.get(b).length, 1);
+		edit.set(B, [types.TextEdit.insert(new types.Position(0, 0), 'ffff')]);
+		assert.equal(edit.get(B).length, 1);
 	});
 
 	test('WorkspaceEdit - keep order of text and file changes', function () {
 
 		const edit = new types.WorkspaceEdit();
 		edit.replace(URI.parse('foo:a'), new types.Range(1, 1, 1, 1), 'foo');
-		edit.renameFile(URI.parse('foo:a'), URI.parse('foo:b'));
-		edit.replace(URI.parse('foo:a'), new types.Range(2, 1, 2, 1), 'bar');
-		edit.replace(URI.parse('foo:b'), new types.Range(3, 1, 3, 1), 'bazz');
+		edit.renameFile(URI.parse('foo:a'), URI.parse('foo:B'));
+		edit.replace(URI.parse('foo:a'), new types.Range(2, 1, 2, 1), 'Bar');
+		edit.replace(URI.parse('foo:B'), new types.Range(3, 1, 3, 1), 'Bazz');
 
 		const all = edit._allEntries();
 		assert.equal(all.length, 4);
@@ -393,18 +393,18 @@ suite('ExtHostTypes', function () {
 
 		assertType(second._type === types.FileEditType.File);
 		assert.equal(second.from!.toString(), 'foo:a');
-		assert.equal(second.to!.toString(), 'foo:b');
+		assert.equal(second.to!.toString(), 'foo:B');
 
 		assertType(third._type === types.FileEditType.Text);
 		assert.equal(third.uri.toString(), 'foo:a');
 
 		assertType(fourth._type === types.FileEditType.Text);
-		assert.equal(fourth.uri.toString(), 'foo:b');
+		assert.equal(fourth.uri.toString(), 'foo:B');
 	});
 
 	test('WorkspaceEdit - two edits for one resource', function () {
 		let edit = new types.WorkspaceEdit();
-		let uri = URI.parse('foo:bar');
+		let uri = URI.parse('foo:Bar');
 		edit.insert(uri, new types.Position(0, 0), 'Hello');
 		edit.insert(uri, new types.Position(0, 0), 'Foo');
 
@@ -437,7 +437,7 @@ suite('ExtHostTypes', function () {
 		assertToJSON(new types.DocumentHighlight(new types.Range(2, 3, 4, 5)), { range: [{ line: 2, character: 3 }, { line: 4, character: 5 }], kind: 'Text' });
 		assertToJSON(new types.DocumentHighlight(new types.Range(2, 3, 4, 5), types.DocumentHighlightKind.Read), { range: [{ line: 2, character: 3 }, { line: 4, character: 5 }], kind: 'Read' });
 
-		assertToJSON(new types.SymbolInformation('test', types.SymbolKind.Boolean, new types.Range(0, 1, 2, 3)), {
+		assertToJSON(new types.SymBolInformation('test', types.SymBolKind.Boolean, new types.Range(0, 1, 2, 3)), {
 			name: 'test',
 			kind: 'Boolean',
 			location: {
@@ -451,22 +451,22 @@ suite('ExtHostTypes', function () {
 			command: { command: 'id', title: 'title' }
 		});
 
-		assertToJSON(new types.CompletionItem('complete'), { label: 'complete' });
+		assertToJSON(new types.CompletionItem('complete'), { laBel: 'complete' });
 
 		let item = new types.CompletionItem('complete');
 		item.kind = types.CompletionItemKind.Interface;
-		assertToJSON(item, { label: 'complete', kind: 'Interface' });
+		assertToJSON(item, { laBel: 'complete', kind: 'Interface' });
 
 	});
 
-	test('SymbolInformation, old ctor', function () {
+	test('SymBolInformation, old ctor', function () {
 
-		let info = new types.SymbolInformation('foo', types.SymbolKind.Array, new types.Range(1, 1, 2, 3));
+		let info = new types.SymBolInformation('foo', types.SymBolKind.Array, new types.Range(1, 1, 2, 3));
 		assert.ok(info.location instanceof types.Location);
 		assert.equal(info.location.uri, undefined);
 	});
 
-	test('SnippetString, builder-methods', function () {
+	test('SnippetString, Builder-methods', function () {
 
 		let string: types.SnippetString;
 
@@ -481,72 +481,72 @@ suite('ExtHostTypes', function () {
 		assert.equal(string.value, '${1:fo\\$o\\}}');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendTabstop(0).appendText('bar');
-		assert.equal(string.value, 'foo$0bar');
+		string.appendText('foo').appendTaBstop(0).appendText('Bar');
+		assert.equal(string.value, 'foo$0Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendTabstop().appendText('bar');
-		assert.equal(string.value, 'foo$1bar');
+		string.appendText('foo').appendTaBstop().appendText('Bar');
+		assert.equal(string.value, 'foo$1Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendTabstop(42).appendText('bar');
-		assert.equal(string.value, 'foo$42bar');
+		string.appendText('foo').appendTaBstop(42).appendText('Bar');
+		assert.equal(string.value, 'foo$42Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendPlaceholder('farboo').appendText('bar');
-		assert.equal(string.value, 'foo${1:farboo}bar');
+		string.appendText('foo').appendPlaceholder('farBoo').appendText('Bar');
+		assert.equal(string.value, 'foo${1:farBoo}Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendPlaceholder('far$boo').appendText('bar');
-		assert.equal(string.value, 'foo${1:far\\$boo}bar');
+		string.appendText('foo').appendPlaceholder('far$Boo').appendText('Bar');
+		assert.equal(string.value, 'foo${1:far\\$Boo}Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendPlaceholder(b => b.appendText('abc').appendPlaceholder('nested')).appendText('bar');
-		assert.equal(string.value, 'foo${1:abc${2:nested}}bar');
+		string.appendText('foo').appendPlaceholder(B => B.appendText('aBc').appendPlaceholder('nested')).appendText('Bar');
+		assert.equal(string.value, 'foo${1:aBc${2:nested}}Bar');
 
 		string = new types.SnippetString();
-		string.appendVariable('foo');
+		string.appendVariaBle('foo');
 		assert.equal(string.value, '${foo}');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendVariable('TM_SELECTED_TEXT').appendText('bar');
-		assert.equal(string.value, 'foo${TM_SELECTED_TEXT}bar');
+		string.appendText('foo').appendVariaBle('TM_SELECTED_TEXT').appendText('Bar');
+		assert.equal(string.value, 'foo${TM_SELECTED_TEXT}Bar');
 
 		string = new types.SnippetString();
-		string.appendVariable('BAR', b => b.appendPlaceholder('ops'));
+		string.appendVariaBle('BAR', B => B.appendPlaceholder('ops'));
 		assert.equal(string.value, '${BAR:${1:ops}}');
 
 		string = new types.SnippetString();
-		string.appendVariable('BAR', b => { });
+		string.appendVariaBle('BAR', B => { });
 		assert.equal(string.value, '${BAR}');
 
 		string = new types.SnippetString();
-		string.appendChoice(['b', 'a', 'r']);
-		assert.equal(string.value, '${1|b,a,r|}');
+		string.appendChoice(['B', 'a', 'r']);
+		assert.equal(string.value, '${1|B,a,r|}');
 
 		string = new types.SnippetString();
-		string.appendChoice(['b,1', 'a,2', 'r,3']);
-		assert.equal(string.value, '${1|b\\,1,a\\,2,r\\,3|}');
+		string.appendChoice(['B,1', 'a,2', 'r,3']);
+		assert.equal(string.value, '${1|B\\,1,a\\,2,r\\,3|}');
 
 		string = new types.SnippetString();
-		string.appendChoice(['b', 'a', 'r'], 0);
-		assert.equal(string.value, '${0|b,a,r|}');
+		string.appendChoice(['B', 'a', 'r'], 0);
+		assert.equal(string.value, '${0|B,a,r|}');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendChoice(['far', 'boo']).appendText('bar');
-		assert.equal(string.value, 'foo${1|far,boo|}bar');
+		string.appendText('foo').appendChoice(['far', 'Boo']).appendText('Bar');
+		assert.equal(string.value, 'foo${1|far,Boo|}Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendChoice(['far', '$boo']).appendText('bar');
-		assert.equal(string.value, 'foo${1|far,\\$boo|}bar');
+		string.appendText('foo').appendChoice(['far', '$Boo']).appendText('Bar');
+		assert.equal(string.value, 'foo${1|far,\\$Boo|}Bar');
 
 		string = new types.SnippetString();
-		string.appendText('foo').appendPlaceholder('farboo').appendChoice(['far', 'boo']).appendText('bar');
-		assert.equal(string.value, 'foo${1:farboo}${2|far,boo|}bar');
+		string.appendText('foo').appendPlaceholder('farBoo').appendChoice(['far', 'Boo']).appendText('Bar');
+		assert.equal(string.value, 'foo${1:farBoo}${2|far,Boo|}Bar');
 	});
 
 	test('instanceof doesn\'t work for FileSystemError #49386', function () {
-		const error = types.FileSystemError.Unavailable('foo');
+		const error = types.FileSystemError.UnavailaBle('foo');
 		assert.ok(error instanceof Error);
 		assert.ok(error instanceof types.FileSystemError);
 	});
@@ -571,7 +571,7 @@ suite('ExtHostTypes', function () {
 		assert.ok(!types.CodeActionKind.RefactorExtract.intersects(types.CodeActionKind.Empty.append('refactory')));
 	});
 
-	function toArr(uint32Arr: Uint32Array): number[] {
+	function toArr(uint32Arr: Uint32Array): numBer[] {
 		const r = [];
 		for (let i = 0, len = uint32Arr.length; i < len; i++) {
 			r[i] = uint32Arr[i];
@@ -580,11 +580,11 @@ suite('ExtHostTypes', function () {
 	}
 
 	test('SemanticTokensBuilder simple', () => {
-		const builder = new types.SemanticTokensBuilder();
-		builder.push(1, 0, 5, 1, 1);
-		builder.push(1, 10, 4, 2, 2);
-		builder.push(2, 2, 3, 2, 2);
-		assert.deepEqual(toArr(builder.build().data), [
+		const Builder = new types.SemanticTokensBuilder();
+		Builder.push(1, 0, 5, 1, 1);
+		Builder.push(1, 10, 4, 2, 2);
+		Builder.push(2, 2, 3, 2, 2);
+		assert.deepEqual(toArr(Builder.Build().data), [
 			1, 0, 5, 1, 1,
 			0, 10, 4, 2, 2,
 			1, 2, 3, 2, 2
@@ -592,11 +592,11 @@ suite('ExtHostTypes', function () {
 	});
 
 	test('SemanticTokensBuilder no modifier', () => {
-		const builder = new types.SemanticTokensBuilder();
-		builder.push(1, 0, 5, 1);
-		builder.push(1, 10, 4, 2);
-		builder.push(2, 2, 3, 2);
-		assert.deepEqual(toArr(builder.build().data), [
+		const Builder = new types.SemanticTokensBuilder();
+		Builder.push(1, 0, 5, 1);
+		Builder.push(1, 10, 4, 2);
+		Builder.push(2, 2, 3, 2);
+		assert.deepEqual(toArr(Builder.Build().data), [
 			1, 0, 5, 1, 0,
 			0, 10, 4, 2, 0,
 			1, 2, 3, 2, 0
@@ -604,12 +604,12 @@ suite('ExtHostTypes', function () {
 	});
 
 	test('SemanticTokensBuilder out of order 1', () => {
-		const builder = new types.SemanticTokensBuilder();
-		builder.push(2, 0, 5, 1, 1);
-		builder.push(2, 10, 1, 2, 2);
-		builder.push(2, 15, 2, 3, 3);
-		builder.push(1, 0, 4, 4, 4);
-		assert.deepEqual(toArr(builder.build().data), [
+		const Builder = new types.SemanticTokensBuilder();
+		Builder.push(2, 0, 5, 1, 1);
+		Builder.push(2, 10, 1, 2, 2);
+		Builder.push(2, 15, 2, 3, 3);
+		Builder.push(1, 0, 4, 4, 4);
+		assert.deepEqual(toArr(Builder.Build().data), [
 			1, 0, 4, 4, 4,
 			1, 0, 5, 1, 1,
 			0, 10, 1, 2, 2,
@@ -618,10 +618,10 @@ suite('ExtHostTypes', function () {
 	});
 
 	test('SemanticTokensBuilder out of order 2', () => {
-		const builder = new types.SemanticTokensBuilder();
-		builder.push(2, 10, 5, 1, 1);
-		builder.push(2, 2, 4, 2, 2);
-		assert.deepEqual(toArr(builder.build().data), [
+		const Builder = new types.SemanticTokensBuilder();
+		Builder.push(2, 10, 5, 1, 1);
+		Builder.push(2, 2, 4, 2, 2);
+		assert.deepEqual(toArr(Builder.Build().data), [
 			2, 2, 4, 2, 2,
 			0, 8, 5, 1, 1
 		]);
@@ -629,14 +629,14 @@ suite('ExtHostTypes', function () {
 
 	test('SemanticTokensBuilder with legend', () => {
 		const legend = new types.SemanticTokensLegend(
-			['aType', 'bType', 'cType', 'dType'],
+			['aType', 'BType', 'cType', 'dType'],
 			['mod0', 'mod1', 'mod2', 'mod3', 'mod4', 'mod5']
 		);
-		const builder = new types.SemanticTokensBuilder(legend);
-		builder.push(new types.Range(1, 0, 1, 5), 'bType');
-		builder.push(new types.Range(2, 0, 2, 4), 'cType', ['mod0', 'mod5']);
-		builder.push(new types.Range(3, 0, 3, 3), 'dType', ['mod2', 'mod4']);
-		assert.deepEqual(toArr(builder.build().data), [
+		const Builder = new types.SemanticTokensBuilder(legend);
+		Builder.push(new types.Range(1, 0, 1, 5), 'BType');
+		Builder.push(new types.Range(2, 0, 2, 4), 'cType', ['mod0', 'mod5']);
+		Builder.push(new types.Range(3, 0, 3, 3), 'dType', ['mod2', 'mod4']);
+		assert.deepEqual(toArr(Builder.Build().data), [
 			1, 0, 5, 1, 0,
 			1, 0, 4, 2, 1 | (1 << 5),
 			1, 0, 3, 3, (1 << 2) | (1 << 4)

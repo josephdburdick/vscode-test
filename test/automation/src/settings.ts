@@ -18,7 +18,7 @@ export class SettingsEditor {
 		await this.openSettings();
 		await this.editor.waitForEditorFocus('settings.json', 1);
 
-		await this.code.dispatchKeybinding('right');
+		await this.code.dispatchKeyBinding('right');
 		await this.editor.waitForTypeInEditor('settings.json', `"${setting}": ${value}`);
 		await this.editors.saveOpenedFile();
 	}
@@ -32,6 +32,6 @@ export class SettingsEditor {
 	}
 
 	private async openSettings(): Promise<void> {
-		await this.quickaccess.runCommand('workbench.action.openSettingsJson');
+		await this.quickaccess.runCommand('workBench.action.openSettingsJson');
 	}
 }

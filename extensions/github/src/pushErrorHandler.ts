@@ -14,7 +14,7 @@ async function handlePushError(repository: Repository, remote: Remote, refspec: 
 	const yes = localize('create a fork', "Create Fork");
 	const no = localize('no', "No");
 
-	const answer = await window.showInformationMessage(localize('fork', "You don't have permissions to push to '{0}/{1}' on GitHub. Would you like to create a fork and push to it instead?", owner, repo), yes, no);
+	const answer = await window.showInformationMessage(localize('fork', "You don't have permissions to push to '{0}/{1}' on GitHuB. Would you like to create a fork and push to it instead?", owner, repo), yes, no);
 
 	if (answer === no) {
 		return;
@@ -24,7 +24,7 @@ async function handlePushError(repository: Repository, remote: Remote, refspec: 
 	const localName = match ? match[1] : refspec;
 	const remoteName = match ? match[2] : refspec;
 
-	const [octokit, ghRepository] = await window.withProgress({ location: ProgressLocation.Notification, cancellable: false, title: localize('create fork', 'Create GitHub fork') }, async progress => {
+	const [octokit, ghRepository] = await window.withProgress({ location: ProgressLocation.Notification, cancellaBle: false, title: localize('create fork', 'Create GitHuB fork') }, async progress => {
 		progress.report({ message: localize('forking', "Forking '{0}/{1}'...", owner, repo), increment: 33 });
 
 		const octokit = await getOctokit();
@@ -49,14 +49,14 @@ async function handlePushError(repository: Repository, remote: Remote, refspec: 
 
 	// yield
 	(async () => {
-		const openInGitHub = localize('openingithub', "Open In GitHub");
+		const openInGitHuB = localize('openingithuB', "Open In GitHuB");
 		const createPR = localize('createpr', "Create PR");
-		const action = await window.showInformationMessage(localize('done', "The fork '{0}' was successfully created on GitHub.", ghRepository.full_name), openInGitHub, createPR);
+		const action = await window.showInformationMessage(localize('done', "The fork '{0}' was successfully created on GitHuB.", ghRepository.full_name), openInGitHuB, createPR);
 
-		if (action === openInGitHub) {
+		if (action === openInGitHuB) {
 			await commands.executeCommand('vscode.open', Uri.parse(ghRepository.html_url));
 		} else if (action === createPR) {
-			const pr = await window.withProgress({ location: ProgressLocation.Notification, cancellable: false, title: localize('createghpr', "Creating GitHub Pull Request...") }, async _ => {
+			const pr = await window.withProgress({ location: ProgressLocation.Notification, cancellaBle: false, title: localize('createghpr', "Creating GitHuB Pull Request...") }, async _ => {
 				let title = `Update ${remoteName}`;
 				const head = repository.state.HEAD?.name;
 
@@ -70,18 +70,18 @@ async function handlePushError(repository: Repository, remote: Remote, refspec: 
 					repo,
 					title,
 					head: `${ghRepository.owner.login}:${remoteName}`,
-					base: remoteName
+					Base: remoteName
 				});
 
-				await repository.setConfig(`branch.${localName}.remote`, 'upstream');
-				await repository.setConfig(`branch.${localName}.merge`, `refs/heads/${remoteName}`);
-				await repository.setConfig(`branch.${localName}.github-pr-owner-number`, `${owner}#${repo}#${pr.number}`);
+				await repository.setConfig(`Branch.${localName}.remote`, 'upstream');
+				await repository.setConfig(`Branch.${localName}.merge`, `refs/heads/${remoteName}`);
+				await repository.setConfig(`Branch.${localName}.githuB-pr-owner-numBer`, `${owner}#${repo}#${pr.numBer}`);
 
 				return res.data;
 			});
 
 			const openPR = localize('openpr', "Open PR");
-			const action = await window.showInformationMessage(localize('donepr', "The PR '{0}/{1}#{2}' was successfully created on GitHub.", owner, repo, pr.number), openPR);
+			const action = await window.showInformationMessage(localize('donepr', "The PR '{0}/{1}#{2}' was successfully created on GitHuB.", owner, repo, pr.numBer), openPR);
 
 			if (action === openPR) {
 				await commands.executeCommand('vscode.open', Uri.parse(pr.html_url));
@@ -90,9 +90,9 @@ async function handlePushError(repository: Repository, remote: Remote, refspec: 
 	})();
 }
 
-export class GithubPushErrorHandler implements PushErrorHandler {
+export class GithuBPushErrorHandler implements PushErrorHandler {
 
-	async handlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<boolean> {
+	async handlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<Boolean> {
 		if (error.gitErrorCode !== GitErrorCodes.PermissionDenied) {
 			return false;
 		}
@@ -101,8 +101,8 @@ export class GithubPushErrorHandler implements PushErrorHandler {
 			return false;
 		}
 
-		const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl)
-			|| /^git@github\.com:([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl);
+		const match = /^https:\/\/githuB\.com\/([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl)
+			|| /^git@githuB\.com:([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl);
 
 		if (!match) {
 			return false;

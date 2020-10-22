@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IExtensionTipsService, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
+import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workBench/contriB/extensions/Browser/extensionRecommendations';
 import { localize } from 'vs/nls';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { ExtensionRecommendationReason } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
 import { IWorkspaceContextService, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { Emitter } from 'vs/base/common/event';
+import { Emitter } from 'vs/Base/common/event';
 
 export class ConfigBasedRecommendations extends ExtensionRecommendations {
 
@@ -62,7 +62,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 		if (event.added.length) {
 			const oldImportantRecommended = this.importantTips;
 			await this.fetch();
-			// Suggest only if at least one of the newly added recommendations was not suggested before
+			// Suggest only if at least one of the newly added recommendations was not suggested Before
 			if (this.importantTips.some(current => oldImportantRecommended.every(old => current.extensionId !== old.extensionId))) {
 				this._onDidChangeRecommendations.fire();
 			}
@@ -74,7 +74,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 			extensionId: tip.extensionId,
 			reason: {
 				reasonId: ExtensionRecommendationReason.WorkspaceConfig,
-				reasonText: localize('exeBasedRecommendation', "This extension is recommended because of the current workspace configuration")
+				reasonText: localize('exeBasedRecommendation', "This extension is recommended Because of the current workspace configuration")
 			}
 		};
 	}

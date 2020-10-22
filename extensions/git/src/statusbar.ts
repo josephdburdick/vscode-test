@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, Command, EventEmitter, Event, workspace, Uri } from 'vscode';
+import { DisposaBle, Command, EventEmitter, Event, workspace, Uri } from 'vscode';
 import { Repository, Operation } from './repository';
 import { anyEvent, dispose, filterEvent } from './util';
 import * as nls from 'vscode-nls';
@@ -16,33 +16,33 @@ class CheckoutStatusBar {
 
 	private _onDidChange = new EventEmitter<void>();
 	get onDidChange(): Event<void> { return this._onDidChange.event; }
-	private disposables: Disposable[] = [];
+	private disposaBles: DisposaBle[] = [];
 
 	constructor(private repository: Repository) {
-		repository.onDidRunGitStatus(this._onDidChange.fire, this._onDidChange, this.disposables);
+		repository.onDidRunGitStatus(this._onDidChange.fire, this._onDidChange, this.disposaBles);
 	}
 
 	get command(): Command | undefined {
-		const rebasing = !!this.repository.rebaseCommit;
-		const title = `$(git-branch) ${this.repository.headLabel}${rebasing ? ` (${localize('rebasing', 'Rebasing')})` : ''}`;
+		const reBasing = !!this.repository.reBaseCommit;
+		const title = `$(git-Branch) ${this.repository.headLaBel}${reBasing ? ` (${localize('reBasing', 'ReBasing')})` : ''}`;
 
 		return {
 			command: 'git.checkout',
-			tooltip: `${this.repository.headLabel}`,
+			tooltip: `${this.repository.headLaBel}`,
 			title,
 			arguments: [this.repository.sourceControl]
 		};
 	}
 
 	dispose(): void {
-		this.disposables.forEach(d => d.dispose());
+		this.disposaBles.forEach(d => d.dispose());
 	}
 }
 
 interface SyncStatusBarState {
-	readonly enabled: boolean;
-	readonly isSyncRunning: boolean;
-	readonly hasRemotes: boolean;
+	readonly enaBled: Boolean;
+	readonly isSyncRunning: Boolean;
+	readonly hasRemotes: Boolean;
 	readonly HEAD: Branch | undefined;
 	readonly remoteSourceProviders: RemoteSourceProvider[];
 }
@@ -51,7 +51,7 @@ class SyncStatusBar {
 
 	private _onDidChange = new EventEmitter<void>();
 	get onDidChange(): Event<void> { return this._onDidChange.event; }
-	private disposables: Disposable[] = [];
+	private disposaBles: DisposaBle[] = [];
 
 	private _state: SyncStatusBarState;
 	private get state() { return this._state; }
@@ -62,30 +62,30 @@ class SyncStatusBar {
 
 	constructor(private repository: Repository, private remoteSourceProviderRegistry: IRemoteSourceProviderRegistry) {
 		this._state = {
-			enabled: true,
+			enaBled: true,
 			isSyncRunning: false,
 			hasRemotes: false,
 			HEAD: undefined,
 			remoteSourceProviders: this.remoteSourceProviderRegistry.getRemoteProviders()
-				.filter(p => !!p.publishRepository)
+				.filter(p => !!p.puBlishRepository)
 		};
 
-		repository.onDidRunGitStatus(this.onDidRunGitStatus, this, this.disposables);
-		repository.onDidChangeOperations(this.onDidChangeOperations, this, this.disposables);
+		repository.onDidRunGitStatus(this.onDidRunGitStatus, this, this.disposaBles);
+		repository.onDidChangeOperations(this.onDidChangeOperations, this, this.disposaBles);
 
 		anyEvent(remoteSourceProviderRegistry.onDidAddRemoteSourceProvider, remoteSourceProviderRegistry.onDidRemoveRemoteSourceProvider)
-			(this.onDidChangeRemoteSourceProviders, this, this.disposables);
+			(this.onDidChangeRemoteSourceProviders, this, this.disposaBles);
 
-		const onEnablementChange = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.enableStatusBarSync'));
-		onEnablementChange(this.updateEnablement, this, this.disposables);
-		this.updateEnablement();
+		const onEnaBlementChange = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.enaBleStatusBarSync'));
+		onEnaBlementChange(this.updateEnaBlement, this, this.disposaBles);
+		this.updateEnaBlement();
 	}
 
-	private updateEnablement(): void {
+	private updateEnaBlement(): void {
 		const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
-		const enabled = config.get<boolean>('enableStatusBarSync', true);
+		const enaBled = config.get<Boolean>('enaBleStatusBarSync', true);
 
-		this.state = { ... this.state, enabled };
+		this.state = { ... this.state, enaBled };
 	}
 
 	private onDidChangeOperations(): void {
@@ -108,12 +108,12 @@ class SyncStatusBar {
 		this.state = {
 			...this.state,
 			remoteSourceProviders: this.remoteSourceProviderRegistry.getRemoteProviders()
-				.filter(p => !!p.publishRepository)
+				.filter(p => !!p.puBlishRepository)
 		};
 	}
 
 	get command(): Command | undefined {
-		if (!this.state.enabled) {
+		if (!this.state.enaBled) {
 			return;
 		}
 
@@ -123,11 +123,11 @@ class SyncStatusBar {
 			}
 
 			const tooltip = this.state.remoteSourceProviders.length === 1
-				? localize('publish to', "Publish to {0}", this.state.remoteSourceProviders[0].name)
-				: localize('publish to...', "Publish to...");
+				? localize('puBlish to', "PuBlish to {0}", this.state.remoteSourceProviders[0].name)
+				: localize('puBlish to...', "PuBlish to...");
 
 			return {
-				command: 'git.publish',
+				command: 'git.puBlish',
 				title: `$(cloud-upload)`,
 				tooltip,
 				arguments: [this.repository.sourceControl]
@@ -142,19 +142,19 @@ class SyncStatusBar {
 
 		if (HEAD && HEAD.name && HEAD.commit) {
 			if (HEAD.upstream) {
-				if (HEAD.ahead || HEAD.behind) {
-					text += this.repository.syncLabel;
+				if (HEAD.ahead || HEAD.Behind) {
+					text += this.repository.syncLaBel;
 				}
 
 				const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
-				const rebaseWhenSync = config.get<string>('rebaseWhenSync');
+				const reBaseWhenSync = config.get<string>('reBaseWhenSync');
 
-				command = rebaseWhenSync ? 'git.syncRebase' : 'git.sync';
+				command = reBaseWhenSync ? 'git.syncReBase' : 'git.sync';
 				tooltip = localize('sync changes', "Synchronize Changes");
 			} else {
 				icon = '$(cloud-upload)';
-				command = 'git.publish';
-				tooltip = localize('publish changes', "Publish Changes");
+				command = 'git.puBlish';
+				tooltip = localize('puBlish changes', "PuBlish Changes");
 			}
 		} else {
 			command = '';
@@ -176,7 +176,7 @@ class SyncStatusBar {
 	}
 
 	dispose(): void {
-		this.disposables.forEach(d => d.dispose());
+		this.disposaBles.forEach(d => d.dispose());
 	}
 }
 
@@ -186,7 +186,7 @@ export class StatusBarCommands {
 
 	private syncStatusBar: SyncStatusBar;
 	private checkoutStatusBar: CheckoutStatusBar;
-	private disposables: Disposable[] = [];
+	private disposaBles: DisposaBle[] = [];
 
 	constructor(repository: Repository, remoteSourceProviderRegistry: IRemoteSourceProviderRegistry) {
 		this.syncStatusBar = new SyncStatusBar(repository, remoteSourceProviderRegistry);
@@ -202,6 +202,6 @@ export class StatusBarCommands {
 	dispose(): void {
 		this.syncStatusBar.dispose();
 		this.checkoutStatusBar.dispose();
-		this.disposables = dispose(this.disposables);
+		this.disposaBles = dispose(this.disposaBles);
 	}
 }

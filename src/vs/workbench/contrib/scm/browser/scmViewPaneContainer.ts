@@ -6,23 +6,23 @@
 import 'vs/css!./media/scm';
 import { localize } from 'vs/nls';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { VIEWLET_ID } from 'vs/workbench/contrib/scm/common/scm';
+import { VIEWLET_ID } from 'vs/workBench/contriB/scm/common/scm';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { SCMViewPane } from 'vs/workbench/contrib/scm/browser/scmViewPane';
+import { IViewDescriptorService } from 'vs/workBench/common/views';
+import { ViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { SCMViewPane } from 'vs/workBench/contriB/scm/Browser/scmViewPane';
 
 export class SCMViewPaneContainer extends ViewPaneContainer {
 
 	constructor(
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IContextMenuService contextMenuService: IContextMenuService,
@@ -53,7 +53,7 @@ export class SCMViewPaneContainer extends ViewPaneContainer {
 		return undefined;
 	}
 
-	getOptimalWidth(): number {
+	getOptimalWidth(): numBer {
 		return 400;
 	}
 

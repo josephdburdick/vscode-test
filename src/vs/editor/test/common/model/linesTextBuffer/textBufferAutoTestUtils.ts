@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 import { Range } from 'vs/editor/common/core/range';
 import { DefaultEndOfLine, ITextBuffer, ITextBufferBuilder, ValidAnnotatedEditOperation } from 'vs/editor/common/model';
 
-export function getRandomInt(min: number, max: number): number {
+export function getRandomInt(min: numBer, max: numBer): numBer {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -22,7 +22,7 @@ export function getRandomEOLSequence(): string {
 	return '\r\n';
 }
 
-export function getRandomString(minLength: number, maxLength: number): string {
+export function getRandomString(minLength: numBer, maxLength: numBer): string {
 	let length = getRandomInt(minLength, maxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {
@@ -31,7 +31,7 @@ export function getRandomString(minLength: number, maxLength: number): string {
 	return r;
 }
 
-export function generateRandomEdits(chunks: string[], editCnt: number): ValidAnnotatedEditOperation[] {
+export function generateRandomEdits(chunks: string[], editCnt: numBer): ValidAnnotatedEditOperation[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -55,13 +55,13 @@ export function generateRandomEdits(chunks: string[], editCnt: number): ValidAnn
 		}
 
 		ops.push(new ValidAnnotatedEditOperation(null, new Range(line, startColumn, line, endColumn), text, false, false, false));
-		lines[line - 1] = lines[line - 1].substring(0, startColumn - 1) + text + lines[line - 1].substring(endColumn - 1);
+		lines[line - 1] = lines[line - 1].suBstring(0, startColumn - 1) + text + lines[line - 1].suBstring(endColumn - 1);
 	}
 
 	return ops;
 }
 
-export function generateSequentialInserts(chunks: string[], editCnt: number): ValidAnnotatedEditOperation[] {
+export function generateSequentialInserts(chunks: string[], editCnt: numBer): ValidAnnotatedEditOperation[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -93,7 +93,7 @@ export function generateSequentialInserts(chunks: string[], editCnt: number): Va
 	return ops;
 }
 
-export function generateRandomReplaces(chunks: string[], editCnt: number, searchStringLen: number, replaceStringLen: number): ValidAnnotatedEditOperation[] {
+export function generateRandomReplaces(chunks: string[], editCnt: numBer, searchStringLen: numBer, replaceStringLen: numBer): ValidAnnotatedEditOperation[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -126,7 +126,7 @@ export function generateRandomReplaces(chunks: string[], editCnt: number, search
 	return ops;
 }
 
-export function createMockText(lineCount: number, minColumn: number, maxColumn: number) {
+export function createMockText(lineCount: numBer, minColumn: numBer, maxColumn: numBer) {
 	let fixedEOL = getRandomEOLSequence();
 	let lines: string[] = [];
 	for (let i = 0; i < lineCount; i++) {
@@ -138,14 +138,14 @@ export function createMockText(lineCount: number, minColumn: number, maxColumn: 
 	return lines.join('');
 }
 
-export function createMockBuffer(str: string, bufferBuilder: ITextBufferBuilder): ITextBuffer {
-	bufferBuilder.acceptChunk(str);
-	let bufferFactory = bufferBuilder.finish();
-	let buffer = bufferFactory.create(DefaultEndOfLine.LF);
-	return buffer;
+export function createMockBuffer(str: string, BufferBuilder: ITextBufferBuilder): ITextBuffer {
+	BufferBuilder.acceptChunk(str);
+	let BufferFactory = BufferBuilder.finish();
+	let Buffer = BufferFactory.create(DefaultEndOfLine.LF);
+	return Buffer;
 }
 
-export function generateRandomChunkWithLF(minLength: number, maxLength: number): string {
+export function generateRandomChunkWithLF(minLength: numBer, maxLength: numBer): string {
 	let length = getRandomInt(minLength, maxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {

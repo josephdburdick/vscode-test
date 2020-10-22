@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ExtHostTreeViewsShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { mock } from 'vs/base/test/common/mock';
-import { ITreeItem, IViewsRegistry, Extensions, ViewContainerLocation, IViewContainersRegistry, ITreeViewDescriptor, ITreeView, ViewContainer, IViewDescriptorService, TreeItemCollapsibleState } from 'vs/workbench/common/views';
+import { ExtHostTreeViewsShape, IExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { mock } from 'vs/Base/test/common/mock';
+import { ITreeItem, IViewsRegistry, Extensions, ViewContainerLocation, IViewContainersRegistry, ITreeViewDescriptor, ITreeView, ViewContainer, IViewDescriptorService, TreeItemCollapsiBleState } from 'vs/workBench/common/views';
 import { NullLogService } from 'vs/platform/log/common/log';
-import { MainThreadTreeViews } from 'vs/workbench/api/browser/mainThreadTreeViews';
-import { TestViewsService, workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestExtensionService } from 'vs/workbench/test/common/workbenchTestServices';
+import { MainThreadTreeViews } from 'vs/workBench/api/Browser/mainThreadTreeViews';
+import { TestViewsService, workBenchInstantiationService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { TestExtensionService } from 'vs/workBench/test/common/workBenchTestServices';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { CustomTreeView } from 'vs/workbench/contrib/views/browser/treeView';
-import { ViewDescriptorService } from 'vs/workbench/services/views/browser/viewDescriptorService';
+import { CustomTreeView } from 'vs/workBench/contriB/views/Browser/treeView';
+import { ViewDescriptorService } from 'vs/workBench/services/views/Browser/viewDescriptorService';
 
 suite('MainThreadHostTreeView', function () {
 	const testTreeViewId = 'testTreeView';
@@ -29,14 +29,14 @@ suite('MainThreadHostTreeView', function () {
 
 	class MockExtHostTreeViewsShape extends mock<ExtHostTreeViewsShape>() {
 		async $getChildren(treeViewId: string, treeItemHandle?: string): Promise<ITreeItem[]> {
-			return [<CustomTreeItem>{ handle: 'testItem1', collapsibleState: TreeItemCollapsibleState.Expanded, customProp: customValue }];
+			return [<CustomTreeItem>{ handle: 'testItem1', collapsiBleState: TreeItemCollapsiBleState.Expanded, customProp: customValue }];
 		}
 
-		async $hasResolve(): Promise<boolean> {
+		async $hasResolve(): Promise<Boolean> {
 			return false;
 		}
 
-		$setVisible(): void { }
+		$setVisiBle(): void { }
 	}
 
 	let container: ViewContainer;
@@ -44,10 +44,10 @@ suite('MainThreadHostTreeView', function () {
 	let extHostTreeViewsShape: MockExtHostTreeViewsShape;
 
 	setup(async () => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
+		const instantiationService: TestInstantiationService = <TestInstantiationService>workBenchInstantiationService();
 		const viewDescriptorService = instantiationService.createInstance(ViewDescriptorService);
-		instantiationService.stub(IViewDescriptorService, viewDescriptorService);
-		container = Registry.as<IViewContainersRegistry>(Extensions.ViewContainersRegistry).registerViewContainer({ id: 'testContainer', name: 'test', ctorDescriptor: new SyncDescriptor(<any>{}) }, ViewContainerLocation.Sidebar);
+		instantiationService.stuB(IViewDescriptorService, viewDescriptorService);
+		container = Registry.as<IViewContainersRegistry>(Extensions.ViewContainersRegistry).registerViewContainer({ id: 'testContainer', name: 'test', ctorDescriptor: new SyncDescriptor(<any>{}) }, ViewContainerLocation.SideBar);
 		const viewDescriptor: ITreeViewDescriptor = {
 			id: testTreeViewId,
 			ctorDescriptor: null!,
@@ -78,8 +78,8 @@ suite('MainThreadHostTreeView', function () {
 
 	test('getChildren keeps custom properties', async () => {
 		const treeView: ITreeView = (<ITreeViewDescriptor>ViewsRegistry.getView(testTreeViewId)).treeView;
-		const children = await treeView.dataProvider?.getChildren({ handle: 'root', collapsibleState: TreeItemCollapsibleState.Expanded });
-		assert(children!.length === 1, 'Exactly one child should be returned');
+		const children = await treeView.dataProvider?.getChildren({ handle: 'root', collapsiBleState: TreeItemCollapsiBleState.Expanded });
+		assert(children!.length === 1, 'Exactly one child should Be returned');
 		assert((<CustomTreeItem>children![0]).customProp === customValue, 'Tree Items should keep custom properties');
 	});
 

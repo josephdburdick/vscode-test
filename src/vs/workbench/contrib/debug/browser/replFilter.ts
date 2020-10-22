@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { splitGlobAware } from 'vs/base/common/glob';
-import { ITreeFilter, TreeVisibility, TreeFilterResult } from 'vs/base/browser/ui/tree/tree';
-import { IReplElement } from 'vs/workbench/contrib/debug/common/debug';
-import * as DOM from 'vs/base/browser/dom';
-import { BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { Delayer } from 'vs/base/common/async';
-import { IAction } from 'vs/base/common/actions';
-import { HistoryInputBox } from 'vs/base/browser/ui/inputbox/inputBox';
+import { matchesFuzzy } from 'vs/Base/common/filters';
+import { splitGloBAware } from 'vs/Base/common/gloB';
+import { ITreeFilter, TreeVisiBility, TreeFilterResult } from 'vs/Base/Browser/ui/tree/tree';
+import { IReplElement } from 'vs/workBench/contriB/deBug/common/deBug';
+import * as DOM from 'vs/Base/Browser/dom';
+import { BaseActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
+import { Delayer } from 'vs/Base/common/async';
+import { IAction } from 'vs/Base/common/actions';
+import { HistoryInputBox } from 'vs/Base/Browser/ui/inputBox/inputBox';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { ContextScopedHistoryInputBox } from 'vs/platform/browser/contextScopedHistoryWidget';
-import { attachInputBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { ContextScopedHistoryInputBox } from 'vs/platform/Browser/contextScopedHistoryWidget';
+import { attachInputBoxStyler, attachStylerCallBack } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { badgeBackground, badgeForeground, contrastBorder } from 'vs/platform/theme/common/colorRegistry';
-import { ReplEvaluationResult, ReplEvaluationInput } from 'vs/workbench/contrib/debug/common/replModel';
+import { BadgeBackground, BadgeForeground, contrastBorder } from 'vs/platform/theme/common/colorRegistry';
+import { ReplEvaluationResult, ReplEvaluationInput } from 'vs/workBench/contriB/deBug/common/replModel';
 import { localize } from 'vs/nls';
 
 
@@ -41,7 +41,7 @@ export class ReplFilter implements ITreeFilter<IReplElement> {
 		query = query.trim();
 
 		if (query && query !== '') {
-			const filters = splitGlobAware(query, ',').map(s => s.trim()).filter(s => !!s.length);
+			const filters = splitGloBAware(query, ',').map(s => s.trim()).filter(s => !!s.length);
 			for (const f of filters) {
 				if (f.startsWith('!')) {
 					this._parsedQueries.push({ type: 'exclude', query: f.slice(1) });
@@ -52,10 +52,10 @@ export class ReplFilter implements ITreeFilter<IReplElement> {
 		}
 	}
 
-	filter(element: IReplElement, parentVisibility: TreeVisibility): TreeFilterResult<void> {
+	filter(element: IReplElement, parentVisiBility: TreeVisiBility): TreeFilterResult<void> {
 		if (element instanceof ReplEvaluationInput || element instanceof ReplEvaluationResult) {
-			// Only filter the output events, everything else is visible https://github.com/microsoft/vscode/issues/105863
-			return TreeVisibility.Visible;
+			// Only filter the output events, everything else is visiBle https://githuB.com/microsoft/vscode/issues/105863
+			return TreeVisiBility.VisiBle;
 		}
 
 		let includeQueryPresent = false;
@@ -75,12 +75,12 @@ export class ReplFilter implements ITreeFilter<IReplElement> {
 			}
 		}
 
-		return includeQueryPresent ? includeQueryMatched : (typeof parentVisibility !== 'undefined' ? parentVisibility : TreeVisibility.Visible);
+		return includeQueryPresent ? includeQueryMatched : (typeof parentVisiBility !== 'undefined' ? parentVisiBility : TreeVisiBility.VisiBle);
 	}
 }
 
 export interface IFilterStatsProvider {
-	getFilterStats(): { total: number, filtered: number };
+	getFilterStats(): { total: numBer, filtered: numBer };
 }
 
 export class ReplFilterState {
@@ -104,7 +104,7 @@ export class ReplFilterState {
 		return this._filterText;
 	}
 
-	get filterStats(): { total: number, filtered: number } {
+	get filterStats(): { total: numBer, filtered: numBer } {
 		return this._stats;
 	}
 
@@ -141,7 +141,7 @@ export class ReplFilterActionViewItem extends BaseActionViewItem {
 		@IContextViewService private readonly contextViewService: IContextViewService) {
 		super(null, action);
 		this.delayedFilterUpdate = new Delayer<void>(400);
-		this._register(toDisposable(() => this.delayedFilterUpdate.cancel()));
+		this._register(toDisposaBle(() => this.delayedFilterUpdate.cancel()));
 	}
 
 	render(container: HTMLElement): void {
@@ -175,22 +175,22 @@ export class ReplFilterActionViewItem extends BaseActionViewItem {
 		this._register(this.filters.onDidChange(() => {
 			this.filterInputBox.value = this.filters.filterText;
 		}));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: any) => this.onInputKeyDown(e)));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_DOWN, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_UP, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
+		this._register(DOM.addStandardDisposaBleListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: any) => this.onInputKeyDown(e)));
+		this._register(DOM.addStandardDisposaBleListener(container, DOM.EventType.KEY_DOWN, this.handleKeyBoardEvent));
+		this._register(DOM.addStandardDisposaBleListener(container, DOM.EventType.KEY_UP, this.handleKeyBoardEvent));
+		this._register(DOM.addStandardDisposaBleListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
 			e.stopPropagation();
 			e.preventDefault();
 		}));
 	}
 
-	private onDidInputChange(inputbox: HistoryInputBox) {
-		inputbox.addToHistory();
-		this.filters.filterText = inputbox.value;
+	private onDidInputChange(inputBox: HistoryInputBox) {
+		inputBox.addToHistory();
+		this.filters.filterText = inputBox.value;
 	}
 
-	// Action toolbar is swallowing some keys for action items which should not be for an input box
-	private handleKeyboardEvent(event: StandardKeyboardEvent) {
+	// Action toolBar is swallowing some keys for action items which should not Be for an input Box
+	private handleKeyBoardEvent(event: StandardKeyBoardEvent) {
 		if (event.equals(KeyCode.Space)
 			|| event.equals(KeyCode.LeftArrow)
 			|| event.equals(KeyCode.RightArrow)
@@ -200,7 +200,7 @@ export class ReplFilterActionViewItem extends BaseActionViewItem {
 		}
 	}
 
-	private onInputKeyDown(event: StandardKeyboardEvent) {
+	private onInputKeyDown(event: StandardKeyBoardEvent) {
 		if (event.equals(KeyCode.Escape)) {
 			this.clearFilterText();
 			event.stopPropagation();
@@ -210,17 +210,17 @@ export class ReplFilterActionViewItem extends BaseActionViewItem {
 
 	private createBadge(container: HTMLElement): void {
 		const controlsContainer = DOM.append(container, DOM.$('.repl-panel-filter-controls'));
-		const filterBadge = this.filterBadge = DOM.append(controlsContainer, DOM.$('.repl-panel-filter-badge'));
-		this._register(attachStylerCallback(this.themeService, { badgeBackground, badgeForeground, contrastBorder }, colors => {
-			const background = colors.badgeBackground ? colors.badgeBackground.toString() : '';
-			const foreground = colors.badgeForeground ? colors.badgeForeground.toString() : '';
-			const border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
+		const filterBadge = this.filterBadge = DOM.append(controlsContainer, DOM.$('.repl-panel-filter-Badge'));
+		this._register(attachStylerCallBack(this.themeService, { BadgeBackground, BadgeForeground, contrastBorder }, colors => {
+			const Background = colors.BadgeBackground ? colors.BadgeBackground.toString() : '';
+			const foreground = colors.BadgeForeground ? colors.BadgeForeground.toString() : '';
+			const Border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
 
-			filterBadge.style.backgroundColor = background;
+			filterBadge.style.BackgroundColor = Background;
 
-			filterBadge.style.borderWidth = border ? '1px' : '';
-			filterBadge.style.borderStyle = border ? 'solid' : '';
-			filterBadge.style.borderColor = border;
+			filterBadge.style.BorderWidth = Border ? '1px' : '';
+			filterBadge.style.BorderStyle = Border ? 'solid' : '';
+			filterBadge.style.BorderColor = Border;
 			filterBadge.style.color = foreground;
 		}));
 		this.updateBadge();

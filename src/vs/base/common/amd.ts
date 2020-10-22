@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 /**
  * @deprecated use `FileAccess.asFileUri(relativePath, requireFn).fsPath`
@@ -13,7 +13,7 @@ export function getPathFromAmdModule(requirefn: typeof require, relativePath: st
 }
 
 /**
- * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for browser contexts.
+ * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for Browser contexts.
  */
 export function getUriFromAmdModule(requirefn: typeof require, relativePath: string): URI {
 	return URI.parse(requirefn.toUrl(relativePath));

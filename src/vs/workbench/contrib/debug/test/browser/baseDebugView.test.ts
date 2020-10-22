@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { renderExpressionValue, renderVariable, renderViewTree } from 'vs/workbench/contrib/debug/browser/baseDebugView';
-import * as dom from 'vs/base/browser/dom';
-import { Expression, Variable, Scope, StackFrame, Thread } from 'vs/workbench/contrib/debug/common/debugModel';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
-import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
+import { renderExpressionValue, renderVariaBle, renderViewTree } from 'vs/workBench/contriB/deBug/Browser/BaseDeBugView';
+import * as dom from 'vs/Base/Browser/dom';
+import { Expression, VariaBle, Scope, StackFrame, Thread } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { HighlightedLaBel } from 'vs/Base/Browser/ui/highlightedlaBel/highlightedLaBel';
+import { LinkDetector } from 'vs/workBench/contriB/deBug/Browser/linkDetector';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { createMockSession } from 'vs/workbench/contrib/debug/test/browser/callStack.test';
-import { isStatusbarInDebugMode } from 'vs/workbench/contrib/debug/browser/statusbarColorProvider';
-import { State } from 'vs/workbench/contrib/debug/common/debug';
-import { isWindows } from 'vs/base/common/platform';
-import { MockSession, createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { workBenchInstantiationService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { createMockSession } from 'vs/workBench/contriB/deBug/test/Browser/callStack.test';
+import { isStatusBarInDeBugMode } from 'vs/workBench/contriB/deBug/Browser/statusBarColorProvider';
+import { State } from 'vs/workBench/contriB/deBug/common/deBug';
+import { isWindows } from 'vs/Base/common/platform';
+import { MockSession, createMockDeBugModel } from 'vs/workBench/contriB/deBug/test/Browser/mockDeBug';
 const $ = dom.$;
 
-suite('Debug - Base Debug View', () => {
+suite('DeBug - Base DeBug View', () => {
 	let linkDetector: LinkDetector;
 
 	/**
-	 * Instantiate services for use by the functions being tested.
+	 * Instantiate services for use By the functions Being tested.
 	 */
 	setup(() => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
+		const instantiationService: TestInstantiationService = <TestInstantiationService>workBenchInstantiationService();
 		linkDetector = instantiationService.createInstance(LinkDetector);
 	});
 
@@ -33,7 +33,7 @@ suite('Debug - Base Debug View', () => {
 		const container = $('.container');
 		const treeContainer = renderViewTree(container);
 
-		assert.equal(treeContainer.className, 'debug-view-content');
+		assert.equal(treeContainer.className, 'deBug-view-content');
 		assert.equal(container.childElementCount, 1);
 		assert.equal(container.firstChild, treeContainer);
 		assert.equal(treeContainer instanceof HTMLDivElement, true);
@@ -47,22 +47,22 @@ suite('Debug - Base Debug View', () => {
 		assert.equal(container.textContent, 'render \n me');
 
 		const expression = new Expression('console');
-		expression.value = 'Object';
+		expression.value = 'OBject';
 		container = $('.container');
 		renderExpressionValue(expression, container, { colorize: true });
-		assert.equal(container.className, 'value unavailable error');
+		assert.equal(container.className, 'value unavailaBle error');
 
-		expression.available = true;
+		expression.availaBle = true;
 		expression.value = '"string value"';
 		container = $('.container');
 		renderExpressionValue(expression, container, { colorize: true, linkDetector });
 		assert.equal(container.className, 'value string');
 		assert.equal(container.textContent, '"string value"');
 
-		expression.type = 'boolean';
+		expression.type = 'Boolean';
 		container = $('.container');
 		renderExpressionValue(expression, container, { colorize: true });
-		assert.equal(container.className, 'value boolean');
+		assert.equal(container.className, 'value Boolean');
 		assert.equal(container.textContent, expression.value);
 
 		expression.value = 'this is a long string';
@@ -77,59 +77,59 @@ suite('Debug - Base Debug View', () => {
 		assert.equal(container.querySelector('a')!.textContent, expression.value);
 	});
 
-	test('render variable', () => {
+	test('render variaBle', () => {
 		const session = new MockSession();
 		const thread = new Thread(session, 'mockthread', 1);
-		const stackFrame = new StackFrame(thread, 1, null!, 'app.js', 'normal', { startLineNumber: 1, startColumn: 1, endLineNumber: undefined!, endColumn: undefined! }, 0);
+		const stackFrame = new StackFrame(thread, 1, null!, 'app.js', 'normal', { startLineNumBer: 1, startColumn: 1, endLineNumBer: undefined!, endColumn: undefined! }, 0);
 		const scope = new Scope(stackFrame, 1, 'local', 1, false, 10, 10);
 
-		let variable = new Variable(session, 1, scope, 2, 'foo', 'bar.foo', undefined!, 0, 0, {}, 'string');
+		let variaBle = new VariaBle(session, 1, scope, 2, 'foo', 'Bar.foo', undefined!, 0, 0, {}, 'string');
 		let expression = $('.');
 		let name = $('.');
 		let value = $('.');
-		let label = new HighlightedLabel(name, false);
-		renderVariable(variable, { expression, name, value, label }, false, []);
+		let laBel = new HighlightedLaBel(name, false);
+		renderVariaBle(variaBle, { expression, name, value, laBel }, false, []);
 
-		assert.equal(label.element.textContent, 'foo');
+		assert.equal(laBel.element.textContent, 'foo');
 		assert.equal(value.textContent, '');
 		assert.equal(value.title, '');
 
-		variable.value = 'hey';
+		variaBle.value = 'hey';
 		expression = $('.');
 		name = $('.');
 		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
+		renderVariaBle(variaBle, { expression, name, value, laBel }, false, [], linkDetector);
 		assert.equal(value.textContent, 'hey');
-		assert.equal(label.element.textContent, 'foo:');
-		assert.equal(label.element.title, 'string');
+		assert.equal(laBel.element.textContent, 'foo:');
+		assert.equal(laBel.element.title, 'string');
 
-		variable.value = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
+		variaBle.value = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
 		expression = $('.');
 		name = $('.');
 		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
+		renderVariaBle(variaBle, { expression, name, value, laBel }, false, [], linkDetector);
 		assert.ok(value.querySelector('a'));
-		assert.equal(value.querySelector('a')!.textContent, variable.value);
+		assert.equal(value.querySelector('a')!.textContent, variaBle.value);
 
-		variable = new Variable(session, 1, scope, 2, 'console', 'console', '5', 0, 0, { kind: 'virtual' });
+		variaBle = new VariaBle(session, 1, scope, 2, 'console', 'console', '5', 0, 0, { kind: 'virtual' });
 		expression = $('.');
 		name = $('.');
 		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
+		renderVariaBle(variaBle, { expression, name, value, laBel }, false, [], linkDetector);
 		assert.equal(name.className, 'virtual');
-		assert.equal(label.element.textContent, 'console:');
-		assert.equal(label.element.title, 'console');
-		assert.equal(value.className, 'value number');
+		assert.equal(laBel.element.textContent, 'console:');
+		assert.equal(laBel.element.title, 'console');
+		assert.equal(value.className, 'value numBer');
 	});
 
-	test('statusbar in debug mode', () => {
-		const model = createMockDebugModel();
+	test('statusBar in deBug mode', () => {
+		const model = createMockDeBugModel();
 		const session = createMockSession(model);
-		assert.equal(isStatusbarInDebugMode(State.Inactive, undefined), false);
-		assert.equal(isStatusbarInDebugMode(State.Initializing, session), false);
-		assert.equal(isStatusbarInDebugMode(State.Running, session), true);
-		assert.equal(isStatusbarInDebugMode(State.Stopped, session), true);
-		session.configuration.noDebug = true;
-		assert.equal(isStatusbarInDebugMode(State.Running, session), false);
+		assert.equal(isStatusBarInDeBugMode(State.Inactive, undefined), false);
+		assert.equal(isStatusBarInDeBugMode(State.Initializing, session), false);
+		assert.equal(isStatusBarInDeBugMode(State.Running, session), true);
+		assert.equal(isStatusBarInDeBugMode(State.Stopped, session), true);
+		session.configuration.noDeBug = true;
+		assert.equal(isStatusBarInDeBugMode(State.Running, session), false);
 	});
 });

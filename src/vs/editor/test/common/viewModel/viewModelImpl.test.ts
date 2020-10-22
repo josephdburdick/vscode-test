@@ -15,7 +15,7 @@ suite('ViewModel', () => {
 	test('issue #21073: SplitLinesCollection: attempt to access a \'newer\' model', () => {
 		const text = [''];
 		const opts = {
-			lineNumbersMinChars: 1
+			lineNumBersMinChars: 1
 		};
 		testViewModel(text, opts, (viewModel, model) => {
 			assert.equal(viewModel.getLineCount(), 1);
@@ -62,7 +62,7 @@ suite('ViewModel', () => {
 				text: '\ninsert3'
 			}], () => ([]));
 
-			let viewLineCount: number[] = [];
+			let viewLineCount: numBer[] = [];
 
 			viewLineCount.push(viewModel.getLineCount());
 			viewModel.addViewEventHandler(new class extends ViewEventHandler {
@@ -78,7 +78,7 @@ suite('ViewModel', () => {
 		});
 	});
 
-	test('issue #44805: No visible lines via API call', () => {
+	test('issue #44805: No visiBle lines via API call', () => {
 		const text = [
 			'line1',
 			'line2',
@@ -87,11 +87,11 @@ suite('ViewModel', () => {
 		testViewModel(text, {}, (viewModel, model) => {
 			assert.equal(viewModel.getLineCount(), 3);
 			viewModel.setHiddenAreas([new Range(1, 1, 3, 1)]);
-			assert.ok(viewModel.getVisibleRanges() !== null);
+			assert.ok(viewModel.getVisiBleRanges() !== null);
 		});
 	});
 
-	test('issue #44805: No visible lines via undoing', () => {
+	test('issue #44805: No visiBle lines via undoing', () => {
 		const text = [
 			''
 		];
@@ -107,13 +107,13 @@ suite('ViewModel', () => {
 			assert.equal(viewModel.getLineCount(), 2);
 
 			model.undo();
-			assert.ok(viewModel.getVisibleRanges() !== null);
+			assert.ok(viewModel.getVisiBleRanges() !== null);
 		});
 	});
 
-	function assertGetPlainTextToCopy(text: string[], ranges: Range[], emptySelectionClipboard: boolean, expected: string | string[]): void {
+	function assertGetPlainTextToCopy(text: string[], ranges: Range[], emptySelectionClipBoard: Boolean, expected: string | string[]): void {
 		testViewModel(text, {}, (viewModel, model) => {
-			let actual = viewModel.getPlainTextToCopy(ranges, emptySelectionClipboard, false);
+			let actual = viewModel.getPlainTextToCopy(ranges, emptySelectionClipBoard, false);
 			assert.deepEqual(actual, expected);
 		});
 	}
@@ -137,7 +137,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('getPlainTextToCopy 0/1 - emptySelectionClipboard', () => {
+	test('getPlainTextToCopy 0/1 - emptySelectionClipBoard', () => {
 		assertGetPlainTextToCopy(
 			USUAL_TEXT,
 			[
@@ -159,7 +159,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('getPlainTextToCopy 1/1 - emptySelectionClipboard', () => {
+	test('getPlainTextToCopy 1/1 - emptySelectionClipBoard', () => {
 		assertGetPlainTextToCopy(
 			USUAL_TEXT,
 			[
@@ -182,7 +182,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('getPlainTextToCopy 0/2 - emptySelectionClipboard', () => {
+	test('getPlainTextToCopy 0/2 - emptySelectionClipBoard', () => {
 		assertGetPlainTextToCopy(
 			USUAL_TEXT,
 			[
@@ -206,7 +206,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('getPlainTextToCopy 1/2 - emptySelectionClipboard', () => {
+	test('getPlainTextToCopy 1/2 - emptySelectionClipBoard', () => {
 		assertGetPlainTextToCopy(
 			USUAL_TEXT,
 			[
@@ -242,7 +242,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('getPlainTextToCopy 0/3 - emptySelectionClipboard', () => {
+	test('getPlainTextToCopy 0/3 - emptySelectionClipBoard', () => {
 		assertGetPlainTextToCopy(
 			USUAL_TEXT,
 			[
@@ -255,7 +255,7 @@ suite('ViewModel', () => {
 		);
 	});
 
-	test('issue #22688 - always use CRLF for clipboard on Windows', () => {
+	test('issue #22688 - always use CRLF for clipBoard on Windows', () => {
 		testViewModel(USUAL_TEXT, {}, (viewModel, model) => {
 			model.setEOL(EndOfLineSequence.LF);
 			let actual = viewModel.getPlainTextToCopy([new Range(2, 1, 5, 1)], true, true);

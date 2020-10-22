@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { normalize, isAbsolute } from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
-import { DEBUG_SCHEME } from 'vs/workbench/contrib/debug/common/debug';
+import { URI } from 'vs/Base/common/uri';
+import { normalize, isABsolute } from 'vs/Base/common/path';
+import * as resources from 'vs/Base/common/resources';
+import { DEBUG_SCHEME } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IRange } from 'vs/editor/common/core/range';
-import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { Schemas } from 'vs/base/common/network';
-import { isUri } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { ITextEditorPane } from 'vs/workbench/common/editor';
+import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workBench/services/editor/common/editorService';
+import { Schemas } from 'vs/Base/common/network';
+import { isUri } from 'vs/workBench/contriB/deBug/common/deBugUtils';
+import { ITextEditorPane } from 'vs/workBench/common/editor';
 import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
 export const UNKNOWN_SOURCE_LABEL = nls.localize('unknownSource', "Unknown Source");
 
 /**
- * Debug URI format
+ * DeBug URI format
  *
- * a debug URI represents a Source object and the debug session where the Source comes from.
+ * a deBug URI represents a Source oBject and the deBug session where the Source comes from.
  *
- *       debug:arbitrary_path?session=123e4567-e89b-12d3-a456-426655440000&ref=1016
+ *       deBug:arBitrary_path?session=123e4567-e89B-12d3-a456-426655440000&ref=1016
  *       \___/ \____________/ \__________________________________________/ \______/
  *         |          |                             |                          |
  *      scheme   source.path                    session id            source.reference
@@ -34,18 +34,18 @@ export const UNKNOWN_SOURCE_LABEL = nls.localize('unknownSource', "Unknown Sourc
 export class Source {
 
 	readonly uri: URI;
-	available: boolean;
-	raw: DebugProtocol.Source;
+	availaBle: Boolean;
+	raw: DeBugProtocol.Source;
 
-	constructor(raw_: DebugProtocol.Source | undefined, sessionId: string, uriIdentityService: IUriIdentityService) {
+	constructor(raw_: DeBugProtocol.Source | undefined, sessionId: string, uriIdentityService: IUriIdentityService) {
 		let path: string;
 		if (raw_) {
 			this.raw = raw_;
 			path = this.raw.path || this.raw.name || '';
-			this.available = true;
+			this.availaBle = true;
 		} else {
 			this.raw = { name: UNKNOWN_SOURCE_LABEL };
-			this.available = false;
+			this.availaBle = false;
 			path = `${DEBUG_SCHEME}:${UNKNOWN_SOURCE_LABEL}`;
 		}
 
@@ -53,7 +53,7 @@ export class Source {
 	}
 
 	get name() {
-		return this.raw.name || resources.basenameOrAuthority(this.uri);
+		return this.raw.name || resources.BasenameOrAuthority(this.uri);
 	}
 
 	get origin() {
@@ -72,8 +72,8 @@ export class Source {
 		return this.uri.scheme === DEBUG_SCHEME;
 	}
 
-	openInEditor(editorService: IEditorService, selection: IRange, preserveFocus?: boolean, sideBySide?: boolean, pinned?: boolean): Promise<ITextEditorPane | undefined> {
-		return !this.available ? Promise.resolve(undefined) : editorService.openEditor({
+	openInEditor(editorService: IEditorService, selection: IRange, preserveFocus?: Boolean, sideBySide?: Boolean, pinned?: Boolean): Promise<ITextEditorPane | undefined> {
+		return !this.availaBle ? Promise.resolve(undefined) : editorService.openEditor({
 			resource: this.uri,
 			description: this.origin,
 			options: {
@@ -86,15 +86,15 @@ export class Source {
 		}, sideBySide ? SIDE_GROUP : ACTIVE_GROUP);
 	}
 
-	static getEncodedDebugData(modelUri: URI): { name: string, path: string, sessionId?: string, sourceReference?: number } {
+	static getEncodedDeBugData(modelUri: URI): { name: string, path: string, sessionId?: string, sourceReference?: numBer } {
 		let path: string;
-		let sourceReference: number | undefined;
+		let sourceReference: numBer | undefined;
 		let sessionId: string | undefined;
 
 		switch (modelUri.scheme) {
 			case Schemas.file:
 				path = normalize(modelUri.fsPath);
-				break;
+				Break;
 			case DEBUG_SCHEME:
 				path = modelUri.path;
 				if (modelUri.query) {
@@ -105,22 +105,22 @@ export class Source {
 							switch (pair[0]) {
 								case 'session':
 									sessionId = pair[1];
-									break;
+									Break;
 								case 'ref':
 									sourceReference = parseInt(pair[1]);
-									break;
+									Break;
 							}
 						}
 					}
 				}
-				break;
+				Break;
 			default:
 				path = modelUri.toString();
-				break;
+				Break;
 		}
 
 		return {
-			name: resources.basenameOrAuthority(modelUri),
+			name: resources.BasenameOrAuthority(modelUri),
 			path,
 			sourceReference,
 			sessionId
@@ -128,8 +128,8 @@ export class Source {
 	}
 }
 
-export function getUriFromSource(raw: DebugProtocol.Source, path: string | undefined, sessionId: string, uriIdentityService: IUriIdentityService): URI {
-	if (typeof raw.sourceReference === 'number' && raw.sourceReference > 0) {
+export function getUriFromSource(raw: DeBugProtocol.Source, path: string | undefined, sessionId: string, uriIdentityService: IUriIdentityService): URI {
+	if (typeof raw.sourceReference === 'numBer' && raw.sourceReference > 0) {
 		return URI.from({
 			scheme: DEBUG_SCHEME,
 			path,
@@ -141,11 +141,11 @@ export function getUriFromSource(raw: DebugProtocol.Source, path: string | undef
 		return uriIdentityService.asCanonicalUri(URI.parse(path));
 	}
 	// assume a filesystem path
-	if (path && isAbsolute(path)) {
+	if (path && isABsolute(path)) {
 		return uriIdentityService.asCanonicalUri(URI.file(path));
 	}
-	// path is relative: since VS Code cannot deal with this by itself
-	// create a debug url that will result in a DAP 'source' request when the url is resolved.
+	// path is relative: since VS Code cannot deal with this By itself
+	// create a deBug url that will result in a DAP 'source' request when the url is resolved.
 	return uriIdentityService.asCanonicalUri(URI.from({
 		scheme: DEBUG_SCHEME,
 		path,

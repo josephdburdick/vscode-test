@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { CallHierarchyProviderRegistry, CallHierarchyDirection, CallHierarchyModel } from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { CallHierarchyProviderRegistry, CallHierarchyDirection, CallHierarchyModel } from 'vs/workBench/contriB/callHierarchy/common/callHierarchy';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CallHierarchyTreePeekWidget } from 'vs/workbench/contrib/callHierarchy/browser/callHierarchyPeek';
-import { Event } from 'vs/base/common/event';
-import { registerEditorContribution, EditorAction2 } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { CallHierarchyTreePeekWidget } from 'vs/workBench/contriB/callHierarchy/Browser/callHierarchyPeek';
+import { Event } from 'vs/Base/common/event';
+import { registerEditorContriBution, EditorAction2 } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IContextKeyService, RawContextKey, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { PeekContext } from 'vs/editor/contrib/peekView/peekView';
+import { PeekContext } from 'vs/editor/contriB/peekView/peekView';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { Range } from 'vs/editor/common/core/range';
 import { IPosition } from 'vs/editor/common/core/position';
 import { MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { registerIcon, Codicon } from 'vs/base/common/codicons';
+import { registerIcon, Codicon } from 'vs/Base/common/codicons';
 
-const _ctxHasCallHierarchyProvider = new RawContextKey<boolean>('editorHasCallHierarchyProvider', false);
-const _ctxCallHierarchyVisible = new RawContextKey<boolean>('callHierarchyVisible', false);
+const _ctxHasCallHierarchyProvider = new RawContextKey<Boolean>('editorHasCallHierarchyProvider', false);
+const _ctxCallHierarchyVisiBle = new RawContextKey<Boolean>('callHierarchyVisiBle', false);
 const _ctxCallHierarchyDirection = new RawContextKey<string>('callHierarchyDirection', undefined);
 
 function sanitizedDirection(candidate: string): CallHierarchyDirection {
@@ -35,21 +35,21 @@ function sanitizedDirection(candidate: string): CallHierarchyDirection {
 		: CallHierarchyDirection.CallsTo;
 }
 
-class CallHierarchyController implements IEditorContribution {
+class CallHierarchyController implements IEditorContriBution {
 
 	static readonly Id = 'callHierarchy';
 
 	static get(editor: ICodeEditor): CallHierarchyController {
-		return editor.getContribution<CallHierarchyController>(CallHierarchyController.Id);
+		return editor.getContriBution<CallHierarchyController>(CallHierarchyController.Id);
 	}
 
 	private static readonly _StorageDirection = 'callHierarchy/defaultDirection';
 
-	private readonly _ctxHasProvider: IContextKey<boolean>;
-	private readonly _ctxIsVisible: IContextKey<boolean>;
+	private readonly _ctxHasProvider: IContextKey<Boolean>;
+	private readonly _ctxIsVisiBle: IContextKey<Boolean>;
 	private readonly _ctxDirection: IContextKey<string>;
-	private readonly _dispoables = new DisposableStore();
-	private readonly _sessionDisposables = new DisposableStore();
+	private readonly _dispoaBles = new DisposaBleStore();
+	private readonly _sessionDisposaBles = new DisposaBleStore();
 
 	private _widget?: CallHierarchyTreePeekWidget;
 
@@ -60,23 +60,23 @@ class CallHierarchyController implements IEditorContribution {
 		@ICodeEditorService private readonly _editorService: ICodeEditorService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 	) {
-		this._ctxIsVisible = _ctxCallHierarchyVisible.bindTo(this._contextKeyService);
-		this._ctxHasProvider = _ctxHasCallHierarchyProvider.bindTo(this._contextKeyService);
-		this._ctxDirection = _ctxCallHierarchyDirection.bindTo(this._contextKeyService);
-		this._dispoables.add(Event.any<any>(_editor.onDidChangeModel, _editor.onDidChangeModelLanguage, CallHierarchyProviderRegistry.onDidChange)(() => {
+		this._ctxIsVisiBle = _ctxCallHierarchyVisiBle.BindTo(this._contextKeyService);
+		this._ctxHasProvider = _ctxHasCallHierarchyProvider.BindTo(this._contextKeyService);
+		this._ctxDirection = _ctxCallHierarchyDirection.BindTo(this._contextKeyService);
+		this._dispoaBles.add(Event.any<any>(_editor.onDidChangeModel, _editor.onDidChangeModelLanguage, CallHierarchyProviderRegistry.onDidChange)(() => {
 			this._ctxHasProvider.set(_editor.hasModel() && CallHierarchyProviderRegistry.has(_editor.getModel()));
 		}));
-		this._dispoables.add(this._sessionDisposables);
+		this._dispoaBles.add(this._sessionDisposaBles);
 	}
 
 	dispose(): void {
 		this._ctxHasProvider.reset();
-		this._ctxIsVisible.reset();
-		this._dispoables.dispose();
+		this._ctxIsVisiBle.reset();
+		this._dispoaBles.dispose();
 	}
 
 	async startCallHierarchyFromEditor(): Promise<void> {
-		this._sessionDisposables.clear();
+		this._sessionDisposaBles.clear();
 
 		if (!this._editor.hasModel()) {
 			return;
@@ -109,7 +109,7 @@ class CallHierarchyController implements IEditorContribution {
 			return;
 		}
 		const newModel = model.fork(call.item);
-		this._sessionDisposables.clear();
+		this._sessionDisposaBles.clear();
 
 		CallHierarchyController.get(newEditor)._showCallHierarchyWidget(
 			Range.lift(newModel.root.selectionRange).getStartPosition(),
@@ -121,24 +121,24 @@ class CallHierarchyController implements IEditorContribution {
 
 	private _showCallHierarchyWidget(position: IPosition, direction: CallHierarchyDirection, model: Promise<CallHierarchyModel | undefined>, cts: CancellationTokenSource) {
 
-		this._ctxIsVisible.set(true);
+		this._ctxIsVisiBle.set(true);
 		this._ctxDirection.set(direction);
-		Event.any<any>(this._editor.onDidChangeModel, this._editor.onDidChangeModelLanguage)(this.endCallHierarchy, this, this._sessionDisposables);
+		Event.any<any>(this._editor.onDidChangeModel, this._editor.onDidChangeModelLanguage)(this.endCallHierarchy, this, this._sessionDisposaBles);
 		this._widget = this._instantiationService.createInstance(CallHierarchyTreePeekWidget, this._editor, position, direction);
 		this._widget.showLoading();
-		this._sessionDisposables.add(this._widget.onDidClose(() => {
+		this._sessionDisposaBles.add(this._widget.onDidClose(() => {
 			this.endCallHierarchy();
 			this._storageService.store(CallHierarchyController._StorageDirection, this._widget!.direction, StorageScope.GLOBAL);
 		}));
-		this._sessionDisposables.add({ dispose() { cts.dispose(true); } });
-		this._sessionDisposables.add(this._widget);
+		this._sessionDisposaBles.add({ dispose() { cts.dispose(true); } });
+		this._sessionDisposaBles.add(this._widget);
 
 		model.then(model => {
 			if (cts.token.isCancellationRequested) {
 				return; // nothing
 			}
 			if (model) {
-				this._sessionDisposables.add(model);
+				this._sessionDisposaBles.add(model);
 				this._widget!.showModel(model);
 			}
 			else {
@@ -161,13 +161,13 @@ class CallHierarchyController implements IEditorContribution {
 	}
 
 	endCallHierarchy(): void {
-		this._sessionDisposables.clear();
-		this._ctxIsVisible.set(false);
+		this._sessionDisposaBles.clear();
+		this._ctxIsVisiBle.set(false);
 		this._editor.focus();
 	}
 }
 
-registerEditorContribution(CallHierarchyController.Id, CallHierarchyController);
+registerEditorContriBution(CallHierarchyController.Id, CallHierarchyController);
 
 registerAction2(class extends EditorAction2 {
 
@@ -184,9 +184,9 @@ registerAction2(class extends EditorAction2 {
 					PeekContext.notInPeekEditor
 				),
 			},
-			keybinding: {
+			keyBinding: {
 				when: EditorContextKeys.editorTextFocus,
-				weight: KeybindingWeight.WorkbenchContrib,
+				weight: KeyBindingWeight.WorkBenchContriB,
 				primary: KeyMod.Shift + KeyMod.Alt + KeyCode.KEY_H
 			},
 			precondition: ContextKeyExpr.and(
@@ -208,9 +208,9 @@ registerAction2(class extends EditorAction2 {
 			id: 'editor.showIncomingCalls',
 			title: { value: localize('title.incoming', "Show Incoming Calls"), original: 'Show Incoming Calls' },
 			icon: registerIcon('callhierarchy-incoming', Codicon.callIncoming),
-			precondition: ContextKeyExpr.and(_ctxCallHierarchyVisible, _ctxCallHierarchyDirection.isEqualTo(CallHierarchyDirection.CallsFrom)),
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			precondition: ContextKeyExpr.and(_ctxCallHierarchyVisiBle, _ctxCallHierarchyDirection.isEqualTo(CallHierarchyDirection.CallsFrom)),
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				primary: KeyMod.Shift + KeyMod.Alt + KeyCode.KEY_H,
 			},
 			menu: {
@@ -233,9 +233,9 @@ registerAction2(class extends EditorAction2 {
 			id: 'editor.showOutgoingCalls',
 			title: { value: localize('title.outgoing', "Show Outgoing Calls"), original: 'Show Outgoing Calls' },
 			icon: registerIcon('callhierarchy-outgoing', Codicon.callOutgoing),
-			precondition: ContextKeyExpr.and(_ctxCallHierarchyVisible, _ctxCallHierarchyDirection.isEqualTo(CallHierarchyDirection.CallsTo)),
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			precondition: ContextKeyExpr.and(_ctxCallHierarchyVisiBle, _ctxCallHierarchyDirection.isEqualTo(CallHierarchyDirection.CallsTo)),
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				primary: KeyMod.Shift + KeyMod.Alt + KeyCode.KEY_H,
 			},
 			menu: {
@@ -258,9 +258,9 @@ registerAction2(class extends EditorAction2 {
 		super({
 			id: 'editor.refocusCallHierarchy',
 			title: { value: localize('title.refocus', "Refocus Call Hierarchy"), original: 'Refocus Call Hierarchy' },
-			precondition: _ctxCallHierarchyVisible,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			precondition: _ctxCallHierarchyVisiBle,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				primary: KeyMod.Shift + KeyCode.Enter
 			}
 		});
@@ -280,11 +280,11 @@ registerAction2(class extends EditorAction2 {
 			title: localize('close', 'Close'),
 			icon: Codicon.close,
 			precondition: ContextKeyExpr.and(
-				_ctxCallHierarchyVisible,
-				ContextKeyExpr.not('config.editor.stablePeek')
+				_ctxCallHierarchyVisiBle,
+				ContextKeyExpr.not('config.editor.staBlePeek')
 			),
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib + 10,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB + 10,
 				primary: KeyCode.Escape
 			},
 			menu: {

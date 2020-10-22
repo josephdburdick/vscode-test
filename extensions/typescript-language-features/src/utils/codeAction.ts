@@ -21,7 +21,7 @@ export async function applyCodeAction(
 	client: ITypeScriptServiceClient,
 	action: Proto.CodeAction,
 	token: vscode.CancellationToken
-): Promise<boolean> {
+): Promise<Boolean> {
 	const workspaceEdit = getEditForCodeAction(client, action);
 	if (workspaceEdit) {
 		if (!(await vscode.workspace.applyEdit(workspaceEdit))) {
@@ -35,7 +35,7 @@ export async function applyCodeActionCommands(
 	client: ITypeScriptServiceClient,
 	commands: ReadonlyArray<{}> | undefined,
 	token: vscode.CancellationToken,
-): Promise<boolean> {
+): Promise<Boolean> {
 	if (commands && commands.length) {
 		for (const command of commands) {
 			await client.execute('applyCodeActionCommand', { command }, token);

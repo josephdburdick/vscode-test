@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWindowOpenable, IOpenWindowOptions, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
+import { IWindowOpenaBle, IOpenWindowOptions, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
 
 export const IHostService = createDecorator<IHostService>('hostService');
 
 /**
- * A set of methods supported in both web and native environments.
+ * A set of methods supported in Both weB and native environments.
  *
  * @see `INativeHostService` for methods that are specific to native
  * environments.
@@ -25,28 +25,28 @@ export interface IHostService {
 	/**
 	 * Emitted when the window focus changes.
 	 */
-	readonly onDidChangeFocus: Event<boolean>;
+	readonly onDidChangeFocus: Event<Boolean>;
 
 	/**
 	 * Find out if the window has focus or not.
 	 */
-	readonly hasFocus: boolean;
+	readonly hasFocus: Boolean;
 
 	/**
 	 * Find out if the window had the last focus.
 	 */
-	hadLastFocus(): Promise<boolean>;
+	hadLastFocus(): Promise<Boolean>;
 
 	/**
-	 * Attempt to bring the window to the foreground and focus it.
+	 * Attempt to Bring the window to the foreground and focus it.
 	 *
 	 * @param options Pass `force: true` if you want to make the window take
 	 * focus even if the application does not have focus currently. This option
-	 * should only be used if it is necessary to steal focus from the current
-	 * focused application which may not be VSCode. It may not be supported
+	 * should only Be used if it is necessary to steal focus from the current
+	 * focused application which may not Be VSCode. It may not Be supported
 	 * in all environments.
 	 */
-	focus(options?: { force: boolean }): Promise<void>;
+	focus(options?: { force: Boolean }): Promise<void>;
 
 	//#endregion
 
@@ -60,12 +60,12 @@ export interface IHostService {
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
 
 	/**
-	 * Opens the provided array of openables in a window with the provided options.
+	 * Opens the provided array of openaBles in a window with the provided options.
 	 */
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(toOpen: IWindowOpenaBle[], options?: IOpenWindowOptions): Promise<void>;
 
 	/**
-	 * Switch between fullscreen and normal window.
+	 * Switch Between fullscreen and normal window.
 	 */
 	toggleFullScreen(): Promise<void>;
 

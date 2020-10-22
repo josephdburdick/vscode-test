@@ -5,11 +5,11 @@
 
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ExtensionsInitializer } from 'vs/platform/userDataSync/common/extensionsSync';
-import { GlobalStateInitializer } from 'vs/platform/userDataSync/common/globalStateSync';
-import { KeybindingsInitializer } from 'vs/platform/userDataSync/common/keybindingsSync';
+import { GloBalStateInitializer } from 'vs/platform/userDataSync/common/gloBalStateSync';
+import { KeyBindingsInitializer } from 'vs/platform/userDataSync/common/keyBindingsSync';
 import { SettingsInitializer } from 'vs/platform/userDataSync/common/settingsSync';
 import { SnippetsInitializer } from 'vs/platform/userDataSync/common/snippetsSync';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ILogService } from 'vs/platform/log/common/log';
@@ -17,18 +17,18 @@ import { UserDataSyncStoreClient } from 'vs/platform/userDataSync/common/userDat
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IRequestService } from 'vs/platform/request/common/request';
 import { IUserDataInitializer, IUserDataSyncStoreClient, IUserDataSyncStoreManagementService, SyncResource } from 'vs/platform/userDataSync/common/userDataSync';
-import { getCurrentAuthenticationSessionInfo } from 'vs/workbench/services/authentication/browser/authenticationService';
-import { getSyncAreaLabel } from 'vs/workbench/services/userDataSync/common/userDataSync';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions } from 'vs/workbench/common/contributions';
+import { getCurrentAuthenticationSessionInfo } from 'vs/workBench/services/authentication/Browser/authenticationService';
+import { getSyncAreaLaBel } from 'vs/workBench/services/userDataSync/common/userDataSync';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { isWeb } from 'vs/base/common/platform';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { isWeB } from 'vs/Base/common/platform';
 
 export const IUserDataInitializationService = createDecorator<IUserDataInitializationService>('IUserDataInitializationService');
 export interface IUserDataInitializationService {
 	_serviceBrand: any;
 
-	requiresInitialization(): Promise<boolean>;
+	requiresInitialization(): Promise<Boolean>;
 	initializeRequiredResources(): Promise<void>;
 	initializeOtherResources(instantiationService: IInstantiationService): Promise<void>;
 }
@@ -40,7 +40,7 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 	private readonly initialized: SyncResource[] = [];
 
 	constructor(
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IUserDataSyncStoreManagementService private readonly userDataSyncStoreManagementService: IUserDataSyncStoreManagementService,
 		@IFileService private readonly fileService: IFileService,
 		@IStorageService private readonly storageService: IStorageService,
@@ -53,23 +53,23 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 	private createUserDataSyncStoreClient(): Promise<IUserDataSyncStoreClient | undefined> {
 		if (!this._userDataSyncStoreClientPromise) {
 			this._userDataSyncStoreClientPromise = (async (): Promise<IUserDataSyncStoreClient | undefined> => {
-				if (!isWeb) {
+				if (!isWeB) {
 					this.logService.trace(`Skipping initializing user data in desktop`);
 					return;
 				}
 
-				if (!this.environmentService.options?.enableSyncByDefault && !this.environmentService.options?.settingsSyncOptions?.enabled) {
-					this.logService.trace(`Skipping initializing user data as settings sync is not enabled`);
+				if (!this.environmentService.options?.enaBleSyncByDefault && !this.environmentService.options?.settingsSyncOptions?.enaBled) {
+					this.logService.trace(`Skipping initializing user data as settings sync is not enaBled`);
 					return;
 				}
 
 				if (!this.storageService.isNew(StorageScope.GLOBAL)) {
-					this.logService.trace(`Skipping initializing user data as application was opened before`);
+					this.logService.trace(`Skipping initializing user data as application was opened Before`);
 					return;
 				}
 
 				if (!this.storageService.isNew(StorageScope.WORKSPACE)) {
-					this.logService.trace(`Skipping initializing user data as workspace was opened before`);
+					this.logService.trace(`Skipping initializing user data as workspace was opened Before`);
 					return;
 				}
 
@@ -104,7 +104,7 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 		return this._userDataSyncStoreClientPromise;
 	}
 
-	async requiresInitialization(): Promise<boolean> {
+	async requiresInitialization(): Promise<Boolean> {
 		this.logService.trace(`UserDataInitializationService#requiresInitialization`);
 		const userDataSyncStoreClient = await this.createUserDataSyncStoreClient();
 		return !!userDataSyncStoreClient;
@@ -112,12 +112,12 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 
 	async initializeRequiredResources(): Promise<void> {
 		this.logService.trace(`UserDataInitializationService#initializeRequiredResources`);
-		return this.initialize([SyncResource.Settings, SyncResource.GlobalState]);
+		return this.initialize([SyncResource.Settings, SyncResource.GloBalState]);
 	}
 
 	async initializeOtherResources(instantiationService: IInstantiationService): Promise<void> {
 		this.logService.trace(`UserDataInitializationService#initializeOtherResources`);
-		return this.initialize([SyncResource.Extensions, SyncResource.Keybindings, SyncResource.Snippets], instantiationService);
+		return this.initialize([SyncResource.Extensions, SyncResource.KeyBindings, SyncResource.Snippets], instantiationService);
 	}
 
 	private async initialize(syncResources: SyncResource[], instantiationService?: IInstantiationService): Promise<void> {
@@ -129,17 +129,17 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 		await Promise.all(syncResources.map(async syncResource => {
 			try {
 				if (this.initialized.includes(syncResource)) {
-					this.logService.info(`${getSyncAreaLabel(syncResource)} initialized already.`);
+					this.logService.info(`${getSyncAreaLaBel(syncResource)} initialized already.`);
 					return;
 				}
 				this.initialized.push(syncResource);
-				this.logService.trace(`Initializing ${getSyncAreaLabel(syncResource)}`);
+				this.logService.trace(`Initializing ${getSyncAreaLaBel(syncResource)}`);
 				const initializer = this.createSyncResourceInitializer(syncResource, instantiationService);
 				const userData = await userDataSyncStoreClient.read(syncResource, null);
 				await initializer.initialize(userData);
-				this.logService.info(`Initialized ${getSyncAreaLabel(syncResource)}`);
+				this.logService.info(`Initialized ${getSyncAreaLaBel(syncResource)}`);
 			} catch (error) {
-				this.logService.info(`Error while initializing ${getSyncAreaLabel(syncResource)}`);
+				this.logService.info(`Error while initializing ${getSyncAreaLaBel(syncResource)}`);
 				this.logService.error(error);
 			}
 		}));
@@ -148,9 +148,9 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 	private createSyncResourceInitializer(syncResource: SyncResource, instantiationService?: IInstantiationService): IUserDataInitializer {
 		switch (syncResource) {
 			case SyncResource.Settings: return new SettingsInitializer(this.fileService, this.environmentService, this.logService);
-			case SyncResource.Keybindings: return new KeybindingsInitializer(this.fileService, this.environmentService, this.logService);
+			case SyncResource.KeyBindings: return new KeyBindingsInitializer(this.fileService, this.environmentService, this.logService);
 			case SyncResource.Snippets: return new SnippetsInitializer(this.fileService, this.environmentService, this.logService);
-			case SyncResource.GlobalState: return new GlobalStateInitializer(this.storageService, this.fileService, this.environmentService, this.logService);
+			case SyncResource.GloBalState: return new GloBalStateInitializer(this.storageService, this.fileService, this.environmentService, this.logService);
 			case SyncResource.Extensions:
 				if (!instantiationService) {
 					throw new Error('Instantiation Service is required to initialize extension');
@@ -161,7 +161,7 @@ export class UserDataInitializationService implements IUserDataInitializationSer
 
 }
 
-class InitializeOtherResourcesContribution implements IWorkbenchContribution {
+class InitializeOtherResourcesContriBution implements IWorkBenchContriBution {
 	constructor(
 		@IUserDataInitializationService userDataInitializeService: IUserDataInitializationService,
 		@IInstantiationService instantiationService: IInstantiationService
@@ -170,7 +170,7 @@ class InitializeOtherResourcesContribution implements IWorkbenchContribution {
 	}
 }
 
-if (isWeb) {
-	const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench);
-	workbenchRegistry.registerWorkbenchContribution(InitializeOtherResourcesContribution, LifecyclePhase.Restored);
+if (isWeB) {
+	const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(Extensions.WorkBench);
+	workBenchRegistry.registerWorkBenchContriBution(InitializeOtherResourcesContriBution, LifecyclePhase.Restored);
 }

@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CharCode } from 'vs/base/common/charCode';
-import * as platform from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { CharCode } from 'vs/Base/common/charCode';
+import * as platform from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -43,9 +43,9 @@ suite('ModelService', () => {
 	});
 
 	test('EOL setting respected depending on root', () => {
-		const model1 = modelService.createModel('farboo', null);
-		const model2 = modelService.createModel('farboo', null, URI.file(platform.isWindows ? 'c:\\myroot\\myfile.txt' : '/myroot/myfile.txt'));
-		const model3 = modelService.createModel('farboo', null, URI.file(platform.isWindows ? 'c:\\other\\myfile.txt' : '/other/myfile.txt'));
+		const model1 = modelService.createModel('farBoo', null);
+		const model2 = modelService.createModel('farBoo', null, URI.file(platform.isWindows ? 'c:\\myroot\\myfile.txt' : '/myroot/myfile.txt'));
+		const model3 = modelService.createModel('farBoo', null, URI.file(platform.isWindows ? 'c:\\other\\myfile.txt' : '/other/myfile.txt'));
 
 		assert.equal(model1.getOptions().defaultEOL, DefaultEndOfLine.LF);
 		assert.equal(model2.getOptions().defaultEOL, DefaultEndOfLine.CRLF);
@@ -57,8 +57,8 @@ suite('ModelService', () => {
 		const model = createTextModel(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n')
 		);
@@ -66,8 +66,8 @@ suite('ModelService', () => {
 		const textBuffer = createTextBuffer(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n'),
 			DefaultEndOfLine.LF
@@ -83,8 +83,8 @@ suite('ModelService', () => {
 		const model = createTextModel(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n')
 		);
@@ -92,8 +92,8 @@ suite('ModelService', () => {
 		const textBuffer = createTextBuffer(
 			[
 				'This is line One', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n'),
 			DefaultEndOfLine.LF
@@ -111,8 +111,8 @@ suite('ModelService', () => {
 		const model = createTextModel(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n')
 		);
@@ -120,8 +120,8 @@ suite('ModelService', () => {
 		const textBuffer = createTextBuffer(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\r\n'),
 			DefaultEndOfLine.LF
@@ -137,8 +137,8 @@ suite('ModelService', () => {
 		const model = createTextModel(
 			[
 				'This is line one', //16
-				'and this is line number two', //27
-				'it is followed by #3', //20
+				'and this is line numBer two', //27
+				'it is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\n')
 		);
@@ -146,8 +146,8 @@ suite('ModelService', () => {
 		const textBuffer = createTextBuffer(
 			[
 				'This is line One', //16
-				'and this is line number two', //27
-				'It is followed by #3', //20
+				'and this is line numBer two', //27
+				'It is followed By #3', //20
 				'and finished with the fourth.', //29
 			].join('\r\n'),
 			DefaultEndOfLine.LF
@@ -160,8 +160,8 @@ suite('ModelService', () => {
 				new Range(1, 1, 4, 1),
 				[
 					'This is line One',
-					'and this is line number two',
-					'It is followed by #3',
+					'and this is line numBer two',
+					'It is followed By #3',
 					''
 				].join('\r\n')
 			)
@@ -196,25 +196,25 @@ suite('ModelService', () => {
 	});
 
 	test('generated1', () => {
-		const file1 = ['pram', 'okctibad', 'pjuwtemued', 'knnnm', 'u', ''];
+		const file1 = ['pram', 'okctiBad', 'pjuwtemued', 'knnnm', 'u', ''];
 		const file2 = ['tcnr', 'rxwlicro', 'vnzy', '', '', 'pjzcogzur', 'ptmxyp', 'dfyshia', 'pee', 'ygg'];
 		assertComputeEdits(file1, file2);
 	});
 
 	test('generated2', () => {
 		const file1 = ['', 'itls', 'hrilyhesv', ''];
-		const file2 = ['vdl', '', 'tchgz', 'bhx', 'nyl'];
+		const file2 = ['vdl', '', 'tchgz', 'Bhx', 'nyl'];
 		assertComputeEdits(file1, file2);
 	});
 
 	test('generated3', () => {
-		const file1 = ['ubrbrcv', 'wv', 'xodspybszt', 's', 'wednjxm', 'fklajt', 'fyfc', 'lvejgge', 'rtpjlodmmk', 'arivtgmjdm'];
+		const file1 = ['uBrBrcv', 'wv', 'xodspyBszt', 's', 'wednjxm', 'fklajt', 'fyfc', 'lvejgge', 'rtpjlodmmk', 'arivtgmjdm'];
 		const file2 = ['s', 'qj', 'tu', 'ur', 'qerhjjhyvx', 't'];
 		assertComputeEdits(file1, file2);
 	});
 
 	test('generated4', () => {
-		const file1 = ['ig', 'kh', 'hxegci', 'smvker', 'pkdmjjdqnv', 'vgkkqqx', '', 'jrzeb'];
+		const file1 = ['ig', 'kh', 'hxegci', 'smvker', 'pkdmjjdqnv', 'vgkkqqx', '', 'jrzeB'];
 		const file2 = ['yk', ''];
 		assertComputeEdits(file1, file2);
 	});
@@ -249,7 +249,7 @@ suite('ModelService', () => {
 		assertComputeEdits(file1, file2);
 	});
 
-	test('does insertions at the beginning of the document', () => {
+	test('does insertions at the Beginning of the document', () => {
 		const file1 = [
 			'line 1',
 			'line 2',
@@ -393,20 +393,20 @@ function assertComputeEdits(lines1: string[], lines2: string[]): void {
 	assert.equal(model.getValue(), lines2.join('\n'));
 }
 
-function getRandomInt(min: number, max: number): number {
+function getRandomInt(min: numBer, max: numBer): numBer {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getRandomString(minLength: number, maxLength: number): string {
+function getRandomString(minLength: numBer, maxLength: numBer): string {
 	let length = getRandomInt(minLength, maxLength);
 	let t = createStringBuilder(length);
 	for (let i = 0; i < length; i++) {
 		t.appendASCII(getRandomInt(CharCode.a, CharCode.z));
 	}
-	return t.build();
+	return t.Build();
 }
 
-function generateFile(small: boolean): string[] {
+function generateFile(small: Boolean): string[] {
 	let lineCount = getRandomInt(1, small ? 3 : 10000);
 	let lines: string[] = [];
 	for (let i = 0; i < lineCount; i++) {
@@ -416,10 +416,10 @@ function generateFile(small: boolean): string[] {
 }
 
 if (GENERATE_TESTS) {
-	let number = 1;
+	let numBer = 1;
 	while (true) {
 
-		console.log('------TEST: ' + number++);
+		console.log('------TEST: ' + numBer++);
 
 		const file1 = generateFile(true);
 		const file2 = generateFile(true);
@@ -435,7 +435,7 @@ const file1 = ${JSON.stringify(file1).replace(/"/g, '\'')};
 const file2 = ${JSON.stringify(file2).replace(/"/g, '\'')};
 assertComputeEdits(file1, file2);
 `);
-			break;
+			Break;
 		}
 	}
 }

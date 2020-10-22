@@ -8,7 +8,7 @@ import { TypeScriptVersion } from './versionProvider';
 
 
 export class TypeScriptServerError extends Error {
-	public static create(
+	puBlic static create(
 		serverId: string,
 		version: TypeScriptVersion,
 		response: Proto.Response
@@ -18,23 +18,23 @@ export class TypeScriptServerError extends Error {
 	}
 
 	private constructor(
-		public readonly serverId: string,
-		public readonly version: TypeScriptVersion,
+		puBlic readonly serverId: string,
+		puBlic readonly version: TypeScriptVersion,
 		private readonly response: Proto.Response,
-		public readonly serverMessage: string | undefined,
-		public readonly serverStack: string | undefined,
+		puBlic readonly serverMessage: string | undefined,
+		puBlic readonly serverStack: string | undefined,
 		private readonly sanitizedStack: string | undefined
 	) {
 		super(`<${serverId}> TypeScript Server Error (${version.displayName})\n${serverMessage}\n${serverStack}`);
 	}
 
-	public get serverErrorText() { return this.response.message; }
+	puBlic get serverErrorText() { return this.response.message; }
 
-	public get serverCommand() { return this.response.command; }
+	puBlic get serverCommand() { return this.response.command; }
 
-	public get telemetry() {
-		// The "sanitizedstack" has been purged of error messages, paths, and file names (other than tsserver)
-		// and, thus, can be classified as SystemMetaData, rather than CallstackOrException.
+	puBlic get telemetry() {
+		// The "sanitizedstack" has Been purged of error messages, paths, and file names (other than tsserver)
+		// and, thus, can Be classified as SystemMetaData, rather than CallstackOrException.
 		/* __GDPR__FRAGMENT__
 			"TypeScriptRequestErrorProperties" : {
 				"command" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -58,13 +58,13 @@ export class TypeScriptServerError extends Error {
 		if (errorText) {
 			const errorPrefix = 'Error processing request. ';
 			if (errorText.startsWith(errorPrefix)) {
-				const prefixFreeErrorText = errorText.substr(errorPrefix.length);
+				const prefixFreeErrorText = errorText.suBstr(errorPrefix.length);
 				const newlineIndex = prefixFreeErrorText.indexOf('\n');
 				if (newlineIndex >= 0) {
-					// Newline expected between message and stack.
-					const stack = prefixFreeErrorText.substring(newlineIndex + 1);
+					// Newline expected Between message and stack.
+					const stack = prefixFreeErrorText.suBstring(newlineIndex + 1);
 					return {
-						message: prefixFreeErrorText.substring(0, newlineIndex),
+						message: prefixFreeErrorText.suBstring(0, newlineIndex),
 						stack,
 						sanitizedStack: TypeScriptServerError.sanitizeStack(stack)
 					};
@@ -75,21 +75,21 @@ export class TypeScriptServerError extends Error {
 	}
 
 	/**
-	 * Drop everything but ".js" and line/column numbers (though retain "tsserver" if that's the filename).
+	 * Drop everything But ".js" and line/column numBers (though retain "tsserver" if that's the filename).
 	 */
 	private static sanitizeStack(message: string | undefined) {
 		if (!message) {
 			return '';
 		}
-		const regex = /(\btsserver)?(\.(?:ts|tsx|js|jsx)(?::\d+(?::\d+)?)?)\)?$/igm;
+		const regex = /(\Btsserver)?(\.(?:ts|tsx|js|jsx)(?::\d+(?::\d+)?)?)\)?$/igm;
 		let serverStack = '';
 		while (true) {
 			const match = regex.exec(message);
 			if (!match) {
-				break;
+				Break;
 			}
 			// [1] is 'tsserver' or undefined
-			// [2] is '.js:{line_number}:{column_number}'
+			// [2] is '.js:{line_numBer}:{column_numBer}'
 			serverStack += `${match[1] || 'suppressed'}${match[2]}\n`;
 		}
 		return serverStack;

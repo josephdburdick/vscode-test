@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IExtensionService, IResponsiveStateChangeEvent, IExtensionHostProfile, ProfileSession } from 'vs/workbench/services/extensions/common/extensions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IExtensionService, IResponsiveStateChangeEvent, IExtensionHostProfile, ProfileSession } from 'vs/workBench/services/extensions/common/extensions';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { joinPath } from 'vs/base/common/resources';
-import { writeFile } from 'vs/base/node/pfs';
-import { IExtensionHostProfileService } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { joinPath } from 'vs/Base/common/resources';
+import { writeFile } from 'vs/Base/node/pfs';
+import { IExtensionHostProfileService } from 'vs/workBench/contriB/extensions/electron-Browser/runtimeExtensionsEditor';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
 import { localize } from 'vs/nls';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { RuntimeExtensionsInput } from 'vs/workBench/contriB/extensions/electron-Browser/runtimeExtensionsInput';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { createSlowExtensionAction } from 'vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions';
-import { ExtensionHostProfiler } from 'vs/workbench/services/extensions/electron-browser/extensionHostProfiler';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { createSlowExtensionAction } from 'vs/workBench/contriB/extensions/electron-sandBox/extensionsSlowActions';
+import { ExtensionHostProfiler } from 'vs/workBench/services/extensions/electron-Browser/extensionHostProfiler';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 
-export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchContribution {
+export class ExtensionsAutoProfiler extends DisposaBle implements IWorkBenchContriBution {
 
-	private readonly _blame = new Set<string>();
+	private readonly _Blame = new Set<string>();
 	private _session: CancellationTokenSource | undefined;
 
 	constructor(
@@ -36,7 +36,7 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 		@INotificationService private readonly _notificationService: INotificationService,
 		@IEditorService private readonly _editorService: IEditorService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentServie: INativeWorkbenchEnvironmentService
+		@INativeWorkBenchEnvironmentService private readonly _environmentServie: INativeWorkBenchEnvironmentService
 	) {
 		super();
 		this._register(_extensionService.onDidChangeResponsiveChange(this._onDidChangeResponsiveChange, this));
@@ -67,7 +67,7 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 			} catch (err) {
 				this._session = undefined;
 				// fail silent as this is often
-				// caused by another party being
+				// caused By another party Being
 				// connected already
 				return;
 			}
@@ -93,8 +93,8 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 
 		interface NamedSlice {
 			id: string;
-			total: number;
-			percentage: number;
+			total: numBer;
+			percentage: numBer;
 		}
 
 		let data: NamedSlice[] = [];
@@ -104,9 +104,9 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 			data.push({ id, total, percentage: 0 });
 		}
 
-		// merge data by identifier
+		// merge data By identifier
 		let anchor = 0;
-		data.sort((a, b) => a.id.localeCompare(b.id));
+		data.sort((a, B) => a.id.localeCompare(B.id));
 		for (let i = 1; i < data.length; i++) {
 			if (data[anchor].id === data[i].id) {
 				data[anchor].total += data[i].total;
@@ -151,7 +151,7 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 				"data": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 			}
 		*/
-		this._telemetryService.publicLog('exthostunresponsive', {
+		this._telemetryService.puBlicLog('exthostunresponsive', {
 			duration,
 			data,
 		});
@@ -171,13 +171,13 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 			return;
 		}
 
-		// only blame once per extension, don't blame too often
-		if (this._blame.has(ExtensionIdentifier.toKey(extension.identifier)) || this._blame.size >= 3) {
+		// only Blame once per extension, don't Blame too often
+		if (this._Blame.has(ExtensionIdentifier.toKey(extension.identifier)) || this._Blame.size >= 3) {
 			return;
 		}
-		this._blame.add(ExtensionIdentifier.toKey(extension.identifier));
+		this._Blame.add(ExtensionIdentifier.toKey(extension.identifier));
 
-		// user-facing message when very bad...
+		// user-facing message when very Bad...
 		this._notificationService.prompt(
 			Severity.Warning,
 			localize(
@@ -186,7 +186,7 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 				extension.displayName || extension.name
 			),
 			[{
-				label: localize('show', 'Show Extensions'),
+				laBel: localize('show', 'Show Extensions'),
 				run: () => this._editorService.openEditor(RuntimeExtensionsInput.instance)
 			},
 				action

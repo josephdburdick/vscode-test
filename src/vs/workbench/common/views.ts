@@ -4,37 +4,37 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Command } from 'vs/editor/common/modes';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
+import { UriComponents, URI } from 'vs/Base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { RawContextKey, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
 import { localize } from 'vs/nls';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle, DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { getOrSet } from 'vs/base/common/map';
+import { getOrSet } from 'vs/Base/common/map';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IKeybindings } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
+import { IKeyBindings } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { IAction, IActionViewItem } from 'vs/Base/common/actions';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { flatten, mergeSort } from 'vs/base/common/arrays';
+import { flatten, mergeSort } from 'vs/Base/common/arrays';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { SetMap } from 'vs/base/common/collections';
+import { SetMap } from 'vs/Base/common/collections';
 import { IProgressIndicator } from 'vs/platform/progress/common/progress';
-import Severity from 'vs/base/common/severity';
-import { IPaneComposite } from 'vs/workbench/common/panecomposite';
-import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
-import { IMarkdownString } from 'vs/base/common/htmlContent';
-import { mixin } from 'vs/base/common/objects';
+import Severity from 'vs/Base/common/severity';
+import { IPaneComposite } from 'vs/workBench/common/panecomposite';
+import { IAccessiBilityInformation } from 'vs/platform/accessiBility/common/accessiBility';
+import { IMarkdownString } from 'vs/Base/common/htmlContent';
+import { mixin } from 'vs/Base/common/oBjects';
 
-export const TEST_VIEW_CONTAINER_ID = 'workbench.view.extension.test';
+export const TEST_VIEW_CONTAINER_ID = 'workBench.view.extension.test';
 
 export namespace Extensions {
-	export const ViewContainersRegistry = 'workbench.registry.view.containers';
-	export const ViewsRegistry = 'workbench.registry.view';
+	export const ViewContainersRegistry = 'workBench.registry.view.containers';
+	export const ViewsRegistry = 'workBench.registry.view';
 }
 
 export enum ViewContainerLocation {
-	Sidebar,
+	SideBar,
 	Panel
 }
 
@@ -50,21 +50,21 @@ export interface IViewContainerDescriptor {
 
 	readonly icon?: string | URI;
 
-	readonly alwaysUseContainerInfo?: boolean;
+	readonly alwaysUseContainerInfo?: Boolean;
 
-	readonly focusCommand?: { id: string, keybindings?: IKeybindings };
+	readonly focusCommand?: { id: string, keyBindings?: IKeyBindings };
 
 	readonly viewOrderDelegate?: ViewOrderDelegate;
 
-	readonly hideIfEmpty?: boolean;
+	readonly hideIfEmpty?: Boolean;
 
 	readonly extensionId?: ExtensionIdentifier;
 
-	readonly rejectAddedViews?: boolean;
+	readonly rejectAddedViews?: Boolean;
 
-	readonly order?: number;
+	readonly order?: numBer;
 
-	requestedIndex?: number;
+	requestedIndex?: numBer;
 }
 
 export interface IViewContainersRegistry {
@@ -92,7 +92,7 @@ export interface IViewContainersRegistry {
 	 *
 	 * @returns the registered ViewContainer.
 	 */
-	registerViewContainer(viewContainerDescriptor: IViewContainerDescriptor, location: ViewContainerLocation, isDefault?: boolean): ViewContainer;
+	registerViewContainer(viewContainerDescriptor: IViewContainerDescriptor, location: ViewContainerLocation, isDefault?: Boolean): ViewContainer;
 
 	/**
 	 * Deregisters the given view container
@@ -124,12 +124,12 @@ export interface IViewContainersRegistry {
 }
 
 interface ViewOrderDelegate {
-	getOrder(group?: string): number | undefined;
+	getOrder(group?: string): numBer | undefined;
 }
 
 export interface ViewContainer extends IViewContainerDescriptor { }
 
-class ViewContainersRegistryImpl extends Disposable implements IViewContainersRegistry {
+class ViewContainersRegistryImpl extends DisposaBle implements IViewContainersRegistry {
 
 	private readonly _onDidRegister = this._register(new Emitter<{ viewContainer: ViewContainer, viewContainerLocation: ViewContainerLocation }>());
 	readonly onDidRegister: Event<{ viewContainer: ViewContainer, viewContainerLocation: ViewContainerLocation }> = this._onDidRegister.event;
@@ -144,7 +144,7 @@ class ViewContainersRegistryImpl extends Disposable implements IViewContainersRe
 		return flatten([...this.viewContainers.values()]);
 	}
 
-	registerViewContainer(viewContainerDescriptor: IViewContainerDescriptor, viewContainerLocation: ViewContainerLocation, isDefault?: boolean): ViewContainer {
+	registerViewContainer(viewContainerDescriptor: IViewContainerDescriptor, viewContainerLocation: ViewContainerLocation, isDefault?: Boolean): ViewContainer {
 		const existing = this.get(viewContainerDescriptor.id);
 		if (existing) {
 			return existing;
@@ -206,28 +206,28 @@ export interface IViewDescriptor {
 
 	readonly when?: ContextKeyExpression;
 
-	readonly order?: number;
+	readonly order?: numBer;
 
-	readonly weight?: number;
+	readonly weight?: numBer;
 
-	readonly collapsed?: boolean;
+	readonly collapsed?: Boolean;
 
-	readonly canToggleVisibility?: boolean;
+	readonly canToggleVisiBility?: Boolean;
 
-	readonly canMoveView?: boolean;
+	readonly canMoveView?: Boolean;
 
 	readonly containerIcon?: string | URI;
 
 	readonly containerTitle?: string;
 
 	// Applies only to newly created views
-	readonly hideByDefault?: boolean;
+	readonly hideByDefault?: Boolean;
 
-	readonly workspace?: boolean;
+	readonly workspace?: Boolean;
 
-	readonly focusCommand?: { id: string, keybindings?: IKeybindings };
+	readonly focusCommand?: { id: string, keyBindings?: IKeyBindings };
 
-	// For contributed remote explorer views
+	// For contriButed remote explorer views
 	readonly group?: string;
 
 	readonly remoteAuthority?: string | string[];
@@ -235,25 +235,25 @@ export interface IViewDescriptor {
 
 export interface IViewDescriptorRef {
 	viewDescriptor: IViewDescriptor;
-	index: number;
+	index: numBer;
 }
 
 export interface IAddedViewDescriptorRef extends IViewDescriptorRef {
-	collapsed: boolean;
-	size?: number;
+	collapsed: Boolean;
+	size?: numBer;
 }
 
 export interface IAddedViewDescriptorState {
 	viewDescriptor: IViewDescriptor,
-	collapsed?: boolean;
-	visible?: boolean;
+	collapsed?: Boolean;
+	visiBle?: Boolean;
 }
 
 export interface IViewContainerModel {
 
 	readonly title: string;
 	readonly icon: string | URI | undefined;
-	readonly onDidChangeContainerInfo: Event<{ title?: boolean, icon?: boolean }>;
+	readonly onDidChangeContainerInfo: Event<{ title?: Boolean, icon?: Boolean }>;
 
 	readonly allViewDescriptors: ReadonlyArray<IViewDescriptor>;
 	readonly onDidChangeAllViewDescriptors: Event<{ added: ReadonlyArray<IViewDescriptor>, removed: ReadonlyArray<IViewDescriptor> }>;
@@ -261,26 +261,26 @@ export interface IViewContainerModel {
 	readonly activeViewDescriptors: ReadonlyArray<IViewDescriptor>;
 	readonly onDidChangeActiveViewDescriptors: Event<{ added: ReadonlyArray<IViewDescriptor>, removed: ReadonlyArray<IViewDescriptor> }>;
 
-	readonly visibleViewDescriptors: ReadonlyArray<IViewDescriptor>;
-	readonly onDidAddVisibleViewDescriptors: Event<IAddedViewDescriptorRef[]>;
-	readonly onDidRemoveVisibleViewDescriptors: Event<IViewDescriptorRef[]>
-	readonly onDidMoveVisibleViewDescriptors: Event<{ from: IViewDescriptorRef; to: IViewDescriptorRef; }>
+	readonly visiBleViewDescriptors: ReadonlyArray<IViewDescriptor>;
+	readonly onDidAddVisiBleViewDescriptors: Event<IAddedViewDescriptorRef[]>;
+	readonly onDidRemoveVisiBleViewDescriptors: Event<IViewDescriptorRef[]>
+	readonly onDidMoveVisiBleViewDescriptors: Event<{ from: IViewDescriptorRef; to: IViewDescriptorRef; }>
 
-	isVisible(id: string): boolean;
-	setVisible(id: string, visible: boolean, size?: number): void;
+	isVisiBle(id: string): Boolean;
+	setVisiBle(id: string, visiBle: Boolean, size?: numBer): void;
 
-	isCollapsed(id: string): boolean;
-	setCollapsed(id: string, collapsed: boolean): void;
+	isCollapsed(id: string): Boolean;
+	setCollapsed(id: string, collapsed: Boolean): void;
 
-	getSize(id: string): number | undefined;
-	setSize(id: string, size: number): void
+	getSize(id: string): numBer | undefined;
+	setSize(id: string, size: numBer): void
 
 	move(from: string, to: string): void;
 }
 
 export enum ViewContentGroups {
 	Open = '2_open',
-	Debug = '4_debug',
+	DeBug = '4_deBug',
 	SCM = '5_scm',
 	More = '9_more'
 }
@@ -289,10 +289,10 @@ export interface IViewContentDescriptor {
 	readonly content: string;
 	readonly when?: ContextKeyExpression | 'default';
 	readonly group?: string;
-	readonly order?: number;
+	readonly order?: numBer;
 
 	/**
-	 * ordered preconditions for each button in the content
+	 * ordered preconditions for each Button in the content
 	 */
 	readonly preconditions?: (ContextKeyExpression | undefined)[];
 }
@@ -320,20 +320,20 @@ export interface IViewsRegistry {
 	getViewContainer(id: string): ViewContainer | null;
 
 	readonly onDidChangeViewWelcomeContent: Event<string>;
-	registerViewWelcomeContent(id: string, viewContent: IViewContentDescriptor): IDisposable;
+	registerViewWelcomeContent(id: string, viewContent: IViewContentDescriptor): IDisposaBle;
 	getViewWelcomeContent(id: string): IViewContentDescriptor[];
 }
 
-function compareViewContentDescriptors(a: IViewContentDescriptor, b: IViewContentDescriptor): number {
+function compareViewContentDescriptors(a: IViewContentDescriptor, B: IViewContentDescriptor): numBer {
 	const aGroup = a.group ?? ViewContentGroups.More;
-	const bGroup = b.group ?? ViewContentGroups.More;
-	if (aGroup !== bGroup) {
-		return aGroup.localeCompare(bGroup);
+	const BGroup = B.group ?? ViewContentGroups.More;
+	if (aGroup !== BGroup) {
+		return aGroup.localeCompare(BGroup);
 	}
-	return (a.order ?? 5) - (b.order ?? 5);
+	return (a.order ?? 5) - (B.order ?? 5);
 }
 
-class ViewsRegistry extends Disposable implements IViewsRegistry {
+class ViewsRegistry extends DisposaBle implements IViewsRegistry {
 
 	private readonly _onViewsRegistered = this._register(new Emitter<{ views: IViewDescriptor[], viewContainer: ViewContainer }[]>());
 	readonly onViewsRegistered = this._onViewsRegistered.event;
@@ -403,11 +403,11 @@ class ViewsRegistry extends Disposable implements IViewsRegistry {
 		return null;
 	}
 
-	registerViewWelcomeContent(id: string, viewContent: IViewContentDescriptor): IDisposable {
+	registerViewWelcomeContent(id: string, viewContent: IViewContentDescriptor): IDisposaBle {
 		this._viewWelcomeContents.add(id, viewContent);
 		this._onDidChangeViewWelcomeContent.fire(id);
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this._viewWelcomeContents.delete(id, viewContent);
 			this._onDidChangeViewWelcomeContent.fire(id);
 		});
@@ -469,11 +469,11 @@ export interface IView {
 
 	focus(): void;
 
-	isVisible(): boolean;
+	isVisiBle(): Boolean;
 
-	isBodyVisible(): boolean;
+	isBodyVisiBle(): Boolean;
 
-	setExpanded(expanded: boolean): boolean;
+	setExpanded(expanded: Boolean): Boolean;
 
 	getProgressIndicator(): IProgressIndicator | undefined;
 }
@@ -484,17 +484,17 @@ export interface IViewsService {
 	readonly _serviceBrand: undefined;
 
 	// View Container APIs
-	readonly onDidChangeViewContainerVisibility: Event<{ id: string, visible: boolean, location: ViewContainerLocation }>;
-	isViewContainerVisible(id: string): boolean;
-	openViewContainer(id: string, focus?: boolean): Promise<IPaneComposite | null>;
+	readonly onDidChangeViewContainerVisiBility: Event<{ id: string, visiBle: Boolean, location: ViewContainerLocation }>;
+	isViewContainerVisiBle(id: string): Boolean;
+	openViewContainer(id: string, focus?: Boolean): Promise<IPaneComposite | null>;
 	closeViewContainer(id: string): void;
-	getVisibleViewContainer(location: ViewContainerLocation): ViewContainer | null;
+	getVisiBleViewContainer(location: ViewContainerLocation): ViewContainer | null;
 	getActiveViewPaneContainerWithId(viewContainerId: string): IViewPaneContainer | null;
 
 	// View APIs
-	readonly onDidChangeViewVisibility: Event<{ id: string, visible: boolean }>;
-	isViewVisible(id: string): boolean;
-	openView<T extends IView>(id: string, focus?: boolean): Promise<T | null>;
+	readonly onDidChangeViewVisiBility: Event<{ id: string, visiBle: Boolean }>;
+	isViewVisiBle(id: string): Boolean;
+	openView<T extends IView>(id: string, focus?: Boolean): Promise<T | null>;
 	closeView(id: string): void;
 	getActiveViewWithId<T extends IView>(id: string): T | null;
 	getViewProgressIndicator(id: string): IProgressIndicator | undefined;
@@ -504,11 +504,11 @@ export interface IViewsService {
  * View Contexts
  */
 export const FocusedViewContext = new RawContextKey<string>('focusedView', '');
-export function getVisbileViewContextKey(viewId: string): string { return `${viewId}.visible`; }
+export function getVisBileViewContextKey(viewId: string): string { return `${viewId}.visiBle`; }
 
 export const IViewDescriptorService = createDecorator<IViewDescriptorService>('viewDescriptorService');
 
-export enum ViewVisibilityState {
+export enum ViewVisiBilityState {
 	Default = 0,
 	Expand = 1
 }
@@ -523,14 +523,14 @@ export interface IViewDescriptorService {
 
 	getDefaultViewContainer(location: ViewContainerLocation): ViewContainer | undefined;
 	getViewContainerById(id: string): ViewContainer | null;
-	isViewContainerRemovedPermanently(id: string): boolean;
+	isViewContainerRemovedPermanently(id: string): Boolean;
 	getDefaultViewContainerLocation(viewContainer: ViewContainer): ViewContainerLocation | null;
 	getViewContainerLocation(viewContainer: ViewContainer): ViewContainerLocation | null;
 	getViewContainersByLocation(location: ViewContainerLocation): ViewContainer[];
 	getViewContainerModel(viewContainer: ViewContainer): IViewContainerModel;
 
 	readonly onDidChangeContainerLocation: Event<{ viewContainer: ViewContainer, from: ViewContainerLocation, to: ViewContainerLocation }>;
-	moveViewContainerToLocation(viewContainer: ViewContainer, location: ViewContainerLocation, requestedIndex?: number): void;
+	moveViewContainerToLocation(viewContainer: ViewContainer, location: ViewContainerLocation, requestedIndex?: numBer): void;
 
 	// Views
 	getViewDescriptorById(id: string): IViewDescriptor | null;
@@ -539,7 +539,7 @@ export interface IViewDescriptorService {
 	getViewLocationById(id: string): ViewContainerLocation | null;
 
 	readonly onDidChangeContainer: Event<{ views: IViewDescriptor[], from: ViewContainer, to: ViewContainer }>;
-	moveViewsToContainer(views: IViewDescriptor[], viewContainer: ViewContainer, visibilityState?: ViewVisibilityState): void;
+	moveViewsToContainer(views: IViewDescriptor[], viewContainer: ViewContainer, visiBilityState?: ViewVisiBilityState): void;
 
 	readonly onDidChangeLocation: Event<{ views: IViewDescriptor[], from: ViewContainerLocation, to: ViewContainerLocation }>;
 	moveViewToLocation(view: IViewDescriptor, location: ViewContainerLocation): void;
@@ -549,13 +549,13 @@ export interface IViewDescriptorService {
 
 // Custom views
 
-export interface ITreeView extends IDisposable {
+export interface ITreeView extends IDisposaBle {
 
 	dataProvider: ITreeViewDataProvider | undefined;
 
-	showCollapseAllAction: boolean;
+	showCollapseAllAction: Boolean;
 
-	canSelectMany: boolean;
+	canSelectMany: Boolean;
 
 	message?: string;
 
@@ -563,7 +563,7 @@ export interface ITreeView extends IDisposable {
 
 	description: string | undefined;
 
-	readonly visible: boolean;
+	readonly visiBle: Boolean;
 
 	readonly onDidExpandItem: Event<ITreeItem>;
 
@@ -571,7 +571,7 @@ export interface ITreeView extends IDisposable {
 
 	readonly onDidChangeSelection: Event<ITreeItem[]>;
 
-	readonly onDidChangeVisibility: Event<boolean>;
+	readonly onDidChangeVisiBility: Event<Boolean>;
 
 	readonly onDidChangeActions: Event<void>;
 
@@ -583,13 +583,13 @@ export interface ITreeView extends IDisposable {
 
 	refresh(treeItems?: ITreeItem[]): Promise<void>;
 
-	setVisibility(visible: boolean): void;
+	setVisiBility(visiBle: Boolean): void;
 
 	focus(): void;
 
-	layout(height: number, width: number): void;
+	layout(height: numBer, width: numBer): void;
 
-	getOptimalWidth(): number;
+	getOptimalWidth(): numBer;
 
 	reveal(item: ITreeItem): Promise<void>;
 
@@ -604,11 +604,11 @@ export interface ITreeView extends IDisposable {
 
 export interface IRevealOptions {
 
-	select?: boolean;
+	select?: Boolean;
 
-	focus?: boolean;
+	focus?: Boolean;
 
-	expand?: boolean | number;
+	expand?: Boolean | numBer;
 
 }
 
@@ -621,19 +621,19 @@ export type TreeViewItemHandleArg = {
 	$treeItemHandle: string
 };
 
-export enum TreeItemCollapsibleState {
+export enum TreeItemCollapsiBleState {
 	None = 0,
 	Collapsed = 1,
 	Expanded = 2
 }
 
-export interface ITreeItemLabel {
+export interface ITreeItemLaBel {
 
-	label: string;
+	laBel: string;
 
-	highlights?: [number, number][];
+	highlights?: [numBer, numBer][];
 
-	strikethrough?: boolean;
+	strikethrough?: Boolean;
 
 }
 
@@ -643,11 +643,11 @@ export interface ITreeItem {
 
 	parentHandle?: string;
 
-	collapsibleState: TreeItemCollapsibleState;
+	collapsiBleState: TreeItemCollapsiBleState;
 
-	label?: ITreeItemLabel;
+	laBel?: ITreeItemLaBel;
 
-	description?: string | boolean;
+	description?: string | Boolean;
 
 	icon?: UriComponents;
 
@@ -665,15 +665,15 @@ export interface ITreeItem {
 
 	children?: ITreeItem[];
 
-	accessibilityInformation?: IAccessibilityInformation;
+	accessiBilityInformation?: IAccessiBilityInformation;
 }
 
-export class ResolvableTreeItem implements ITreeItem {
+export class ResolvaBleTreeItem implements ITreeItem {
 	handle!: string;
 	parentHandle?: string;
-	collapsibleState!: TreeItemCollapsibleState;
-	label?: ITreeItemLabel;
-	description?: string | boolean;
+	collapsiBleState!: TreeItemCollapsiBleState;
+	laBel?: ITreeItemLaBel;
+	description?: string | Boolean;
 	icon?: UriComponents;
 	iconDark?: UriComponents;
 	themeIcon?: ThemeIcon;
@@ -682,10 +682,10 @@ export class ResolvableTreeItem implements ITreeItem {
 	contextValue?: string;
 	command?: Command;
 	children?: ITreeItem[];
-	accessibilityInformation?: IAccessibilityInformation;
+	accessiBilityInformation?: IAccessiBilityInformation;
 	resolve: () => Promise<void>;
-	private resolved: boolean = false;
-	private _hasResolve: boolean = false;
+	private resolved: Boolean = false;
+	private _hasResolve: Boolean = false;
 	constructor(treeItem: ITreeItem, resolve?: (() => Promise<ITreeItem | undefined>)) {
 		mixin(this, treeItem);
 		this._hasResolve = !!resolve;
@@ -693,41 +693,41 @@ export class ResolvableTreeItem implements ITreeItem {
 			if (resolve && !this.resolved) {
 				const resolvedItem = await resolve();
 				if (resolvedItem) {
-					// Resolvable elements. Currently only tooltip.
+					// ResolvaBle elements. Currently only tooltip.
 					this.tooltip = resolvedItem.tooltip;
 				}
 			}
 			this.resolved = true;
 		};
 	}
-	get hasResolve(): boolean {
+	get hasResolve(): Boolean {
 		return this._hasResolve;
 	}
 }
 
 export interface ITreeViewDataProvider {
-	readonly isTreeEmpty?: boolean;
+	readonly isTreeEmpty?: Boolean;
 	onDidChangeEmpty?: Event<void>;
 	getChildren(element?: ITreeItem): Promise<ITreeItem[]>;
 
 }
 
-export interface IEditableData {
+export interface IEditaBleData {
 	validationMessage: (value: string) => { content: string, severity: Severity } | null;
 	placeholder?: string | null;
 	startingValue?: string | null;
-	onFinish: (value: string, success: boolean) => Promise<void>;
+	onFinish: (value: string, success: Boolean) => Promise<void>;
 }
 
 export interface IViewPaneContainer {
 	onDidAddViews: Event<IView[]>;
 	onDidRemoveViews: Event<IView[]>;
-	onDidChangeViewVisibility: Event<IView>;
+	onDidChangeViewVisiBility: Event<IView>;
 
 	readonly views: IView[];
 
-	setVisible(visible: boolean): void;
-	isVisible(): boolean;
+	setVisiBle(visiBle: Boolean): void;
+	isVisiBle(): Boolean;
 	focus(): void;
 	getActions(): IAction[];
 	getSecondaryActions(): IAction[];

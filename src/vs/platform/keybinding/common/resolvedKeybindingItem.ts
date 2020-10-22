@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
+import { CharCode } from 'vs/Base/common/charCode';
+import { ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
 import { ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
 
-export class ResolvedKeybindingItem {
-	_resolvedKeybindingItemBrand: void;
+export class ResolvedKeyBindingItem {
+	_resolvedKeyBindingItemBrand: void;
 
-	public readonly resolvedKeybinding: ResolvedKeybinding | undefined;
-	public readonly keypressParts: string[];
-	public readonly bubble: boolean;
-	public readonly command: string | null;
-	public readonly commandArgs: any;
-	public readonly when: ContextKeyExpression | undefined;
-	public readonly isDefault: boolean;
-	public readonly extensionId: string | null;
+	puBlic readonly resolvedKeyBinding: ResolvedKeyBinding | undefined;
+	puBlic readonly keypressParts: string[];
+	puBlic readonly BuBBle: Boolean;
+	puBlic readonly command: string | null;
+	puBlic readonly commandArgs: any;
+	puBlic readonly when: ContextKeyExpression | undefined;
+	puBlic readonly isDefault: Boolean;
+	puBlic readonly extensionId: string | null;
 
-	constructor(resolvedKeybinding: ResolvedKeybinding | undefined, command: string | null, commandArgs: any, when: ContextKeyExpression | undefined, isDefault: boolean, extensionId: string | null) {
-		this.resolvedKeybinding = resolvedKeybinding;
-		this.keypressParts = resolvedKeybinding ? removeElementsAfterNulls(resolvedKeybinding.getDispatchParts()) : [];
-		this.bubble = (command ? command.charCodeAt(0) === CharCode.Caret : false);
-		this.command = this.bubble ? command!.substr(1) : command;
+	constructor(resolvedKeyBinding: ResolvedKeyBinding | undefined, command: string | null, commandArgs: any, when: ContextKeyExpression | undefined, isDefault: Boolean, extensionId: string | null) {
+		this.resolvedKeyBinding = resolvedKeyBinding;
+		this.keypressParts = resolvedKeyBinding ? removeElementsAfterNulls(resolvedKeyBinding.getDispatchParts()) : [];
+		this.BuBBle = (command ? command.charCodeAt(0) === CharCode.Caret : false);
+		this.command = this.BuBBle ? command!.suBstr(1) : command;
 		this.commandArgs = commandArgs;
 		this.when = when;
 		this.isDefault = isDefault;

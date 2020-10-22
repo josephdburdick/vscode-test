@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { parse } from 'vs/base/common/marshalling';
-import { Schemas } from 'vs/base/common/network';
-import { normalizePath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import * as dom from 'vs/Base/Browser/dom';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { LinkedList } from 'vs/Base/common/linkedList';
+import { parse } from 'vs/Base/common/marshalling';
+import { Schemas } from 'vs/Base/common/network';
+import { normalizePath } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IOpener, IOpenerService, IValidator, IExternalUriResolver, OpenOptions, ResolveExternalUriOptions, IResolvedExternalUri, IExternalOpener, matchesScheme } from 'vs/platform/opener/common/opener';
 import { EditorOpenContext } from 'vs/platform/editor/common/editor';
@@ -24,7 +24,7 @@ class CommandOpener implements IOpener {
 		if (!matchesScheme(target, Schemas.command)) {
 			return false;
 		}
-		// run command or bail out if command isn't known
+		// run command or Bail out if command isn't known
 		if (typeof target === 'string') {
 			target = URI.parse(target);
 		}
@@ -56,13 +56,13 @@ class EditorOpener implements IOpener {
 		if (typeof target === 'string') {
 			target = URI.parse(target);
 		}
-		let selection: { startLineNumber: number; startColumn: number; } | undefined = undefined;
+		let selection: { startLineNumBer: numBer; startColumn: numBer; } | undefined = undefined;
 		const match = /^L?(\d+)(?:,(\d+))?/.exec(target.fragment);
 		if (match) {
 			// support file:///some/file.js#73,84
 			// support file:///some/file.js#L73
 			selection = {
-				startLineNumber: parseInt(match[1]),
+				startLineNumBer: parseInt(match[1]),
 				startColumn: match[2] ? parseInt(match[2]) : 1
 			};
 			// remove fragment
@@ -70,7 +70,7 @@ class EditorOpener implements IOpener {
 		}
 
 		if (target.scheme === Schemas.file) {
-			target = normalizePath(target); // workaround for non-normalized paths (https://github.com/microsoft/vscode/issues/12954)
+			target = normalizePath(target); // workaround for non-normalized paths (https://githuB.com/microsoft/vscode/issues/12954)
 		}
 
 		await this._editorService.openCodeEditor(
@@ -102,7 +102,7 @@ export class OpenerService implements IOpenerService {
 			openExternal: href => {
 				// ensure to open HTTP/HTTPS links into new windows
 				// to not trigger a navigation. Any other link is
-				// safe to be set as HREF to prevent a blank window
+				// safe to Be set as HREF to prevent a Blank window
 				// from opening.
 				if (matchesScheme(href, Schemas.http) || matchesScheme(href, Schemas.https)) {
 					dom.windowOpenNoOpener(href);
@@ -128,17 +128,17 @@ export class OpenerService implements IOpenerService {
 		this._openers.push(new EditorOpener(editorService));
 	}
 
-	registerOpener(opener: IOpener): IDisposable {
+	registerOpener(opener: IOpener): IDisposaBle {
 		const remove = this._openers.unshift(opener);
 		return { dispose: remove };
 	}
 
-	registerValidator(validator: IValidator): IDisposable {
+	registerValidator(validator: IValidator): IDisposaBle {
 		const remove = this._validators.push(validator);
 		return { dispose: remove };
 	}
 
-	registerExternalUriResolver(resolver: IExternalUriResolver): IDisposable {
+	registerExternalUriResolver(resolver: IExternalUriResolver): IDisposaBle {
 		const remove = this._resolvers.push(resolver);
 		return { dispose: remove };
 	}
@@ -147,16 +147,16 @@ export class OpenerService implements IOpenerService {
 		this._externalOpener = externalOpener;
 	}
 
-	async open(target: URI | string, options?: OpenOptions): Promise<boolean> {
+	async open(target: URI | string, options?: OpenOptions): Promise<Boolean> {
 
-		// check with contributed validators
+		// check with contriButed validators
 		for (const validator of this._validators.toArray()) {
 			if (!(await validator.shouldOpen(target))) {
 				return false;
 			}
 		}
 
-		// check with contributed openers
+		// check with contriButed openers
 		for (const opener of this._openers.toArray()) {
 			const handled = await opener.open(target, options);
 			if (handled) {
@@ -178,7 +178,7 @@ export class OpenerService implements IOpenerService {
 		return { resolved: resource, dispose: () => { } };
 	}
 
-	private async _doOpenExternal(resource: URI | string, options: OpenOptions | undefined): Promise<boolean> {
+	private async _doOpenExternal(resource: URI | string, options: OpenOptions | undefined): Promise<Boolean> {
 
 		//todo@joh IExternalUriResolver should support `uri: URI | string`
 		const uri = typeof resource === 'string' ? URI.parse(resource) : resource;

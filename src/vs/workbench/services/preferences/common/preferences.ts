@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary } from 'vs/base/common/collections';
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { IRange } from 'vs/editor/common/core/range';
-import { IJSONSchemaMap, IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchemaMap, IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { ITextModel } from 'vs/editor/common/model';
 import { localize } from 'vs/nls';
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
@@ -15,23 +15,23 @@ import { ConfigurationScope, IConfigurationExtensionInfo } from 'vs/platform/con
 import { IEditorOptions } from 'vs/platform/editor/common/editor';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { EditorOptions, IEditorPane } from 'vs/workbench/common/editor';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { Settings2EditorModel } from 'vs/workbench/services/preferences/common/preferencesModels';
+import { EditorOptions, IEditorPane } from 'vs/workBench/common/editor';
+import { IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { Settings2EditorModel } from 'vs/workBench/services/preferences/common/preferencesModels';
 
 export enum SettingValueType {
 	Null = 'null',
 	Enum = 'enum',
 	String = 'string',
 	Integer = 'integer',
-	Number = 'number',
-	Boolean = 'boolean',
+	NumBer = 'numBer',
+	Boolean = 'Boolean',
 	ArrayOfString = 'array-of-string',
 	Exclude = 'exclude',
 	Complex = 'complex',
-	NullableInteger = 'nullable-integer',
-	NullableNumber = 'nullable-number',
-	Object = 'object'
+	NullaBleInteger = 'nullaBle-integer',
+	NullaBleNumBer = 'nullaBle-numBer',
+	OBject = 'oBject'
 }
 
 export interface ISettingsGroup {
@@ -56,44 +56,44 @@ export interface ISetting {
 	value: any;
 	valueRange: IRange;
 	description: string[];
-	descriptionIsMarkdown?: boolean;
+	descriptionIsMarkdown?: Boolean;
 	descriptionRanges: IRange[];
 	overrides?: ISetting[];
 	overrideOf?: ISetting;
 	deprecationMessage?: string;
-	deprecationMessageIsMarkdown?: boolean;
+	deprecationMessageIsMarkdown?: Boolean;
 
 	scope?: ConfigurationScope;
 	type?: string | string[];
 	arrayItemType?: string;
-	objectProperties?: IJSONSchemaMap,
-	objectPatternProperties?: IJSONSchemaMap,
-	objectAdditionalProperties?: boolean | IJSONSchema,
+	oBjectProperties?: IJSONSchemaMap,
+	oBjectPatternProperties?: IJSONSchemaMap,
+	oBjectAdditionalProperties?: Boolean | IJSONSchema,
 	enum?: string[];
 	enumDescriptions?: string[];
-	enumDescriptionsAreMarkdown?: boolean;
+	enumDescriptionsAreMarkdown?: Boolean;
 	tags?: string[];
-	disallowSyncIgnore?: boolean;
+	disallowSyncIgnore?: Boolean;
 	extensionInfo?: IConfigurationExtensionInfo;
 	validator?: (value: any) => string | null;
 }
 
 export interface IExtensionSetting extends ISetting {
 	extensionName?: string;
-	extensionPublisher?: string;
+	extensionPuBlisher?: string;
 }
 
 export interface ISearchResult {
 	filterMatches: ISettingMatch[];
-	exactMatch?: boolean;
+	exactMatch?: Boolean;
 	metadata?: IFilterMetadata;
 }
 
 export interface ISearchResultGroup {
 	id: string;
-	label: string;
+	laBel: string;
 	result: ISearchResult;
-	order: number;
+	order: numBer;
 }
 
 export interface IFilterResult {
@@ -102,13 +102,13 @@ export interface IFilterResult {
 	allGroups: ISettingsGroup[];
 	matches: IRange[];
 	metadata?: IStringDictionary<IFilterMetadata>;
-	exactMatch?: boolean;
+	exactMatch?: Boolean;
 }
 
 export interface ISettingMatch {
 	setting: ISetting;
 	matches: IRange[] | null;
-	score: number;
+	score: numBer;
 }
 
 export interface IScoredResults {
@@ -116,25 +116,25 @@ export interface IScoredResults {
 }
 
 export interface IRemoteSetting {
-	score: number;
+	score: numBer;
 	key: string;
 	id: string;
 	defaultValue: string;
 	description: string;
 	packageId: string;
 	extensionName?: string;
-	extensionPublisher?: string;
+	extensionPuBlisher?: string;
 }
 
 export interface IFilterMetadata {
 	requestUrl: string;
 	requestBody: string;
-	timestamp: number;
-	duration: number;
+	timestamp: numBer;
+	duration: numBer;
 	scoredResults: IScoredResults;
 
-	/** The number of requests made, since requests are split by number of filters */
-	requestCount?: number;
+	/** The numBer of requests made, since requests are split By numBer of filters */
+	requestCount?: numBer;
 
 	/** The name of the server that actually served the request */
 	context: string;
@@ -146,8 +146,8 @@ export interface IPreferencesEditorModel<T> {
 	dispose(): void;
 }
 
-export type IGroupFilter = (group: ISettingsGroup) => boolean | null;
-export type ISettingMatcher = (setting: ISetting, group: ISettingsGroup) => { matches: IRange[], score: number } | null;
+export type IGroupFilter = (group: ISettingsGroup) => Boolean | null;
+export type ISettingMatcher = (setting: ISetting, group: ISettingsGroup) => { matches: IRange[], score: numBer } | null;
 
 export interface ISettingsEditorModel extends IPreferencesEditorModel<ISetting> {
 	readonly onDidChangeGroups: Event<void>;
@@ -187,7 +187,7 @@ export class SettingsEditorOptions extends EditorOptions implements ISettingsEdi
 	}
 }
 
-export interface IKeybindingsEditorModel<T> extends IPreferencesEditorModel<T> {
+export interface IKeyBindingsEditorModel<T> extends IPreferencesEditorModel<T> {
 }
 
 export const IPreferencesService = createDecorator<IPreferencesService>('preferencesService');
@@ -204,15 +204,15 @@ export interface IPreferencesService {
 	createSettings2EditorModel(): Settings2EditorModel; // TODO
 
 	openRawDefaultSettings(): Promise<IEditorPane | undefined>;
-	openSettings(jsonEditor: boolean | undefined, query: string | undefined): Promise<IEditorPane | undefined>;
-	openGlobalSettings(jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
+	openSettings(jsonEditor: Boolean | undefined, query: string | undefined): Promise<IEditorPane | undefined>;
+	openGloBalSettings(jsonEditor?: Boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
 	openRemoteSettings(): Promise<IEditorPane | undefined>;
-	openWorkspaceSettings(jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
-	openFolderSettings(folder: URI, jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
-	switchSettings(target: ConfigurationTarget, resource: URI, jsonEditor?: boolean): Promise<void>;
-	openGlobalKeybindingSettings(textual: boolean): Promise<void>;
-	openDefaultKeybindingsFile(): Promise<IEditorPane | undefined>;
-	getEditableSettingsURI(configurationTarget: ConfigurationTarget, resource?: URI): Promise<URI | null>;
+	openWorkspaceSettings(jsonEditor?: Boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
+	openFolderSettings(folder: URI, jsonEditor?: Boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
+	switchSettings(target: ConfigurationTarget, resource: URI, jsonEditor?: Boolean): Promise<void>;
+	openGloBalKeyBindingSettings(textual: Boolean): Promise<void>;
+	openDefaultKeyBindingsFile(): Promise<IEditorPane | undefined>;
+	getEditaBleSettingsURI(configurationTarget: ConfigurationTarget, resource?: URI): Promise<URI | null>;
 }
 
 export function getSettingsTargetName(target: ConfigurationTarget, resource: URI, workspaceContextService: IWorkspaceContextService): string {
@@ -230,5 +230,5 @@ export function getSettingsTargetName(target: ConfigurationTarget, resource: URI
 }
 
 export const FOLDER_SETTINGS_PATH = '.vscode/settings.json';
-export const DEFAULT_SETTINGS_EDITOR_SETTING = 'workbench.settings.openDefaultSettings';
-export const USE_SPLIT_JSON_SETTING = 'workbench.settings.useSplitJSON';
+export const DEFAULT_SETTINGS_EDITOR_SETTING = 'workBench.settings.openDefaultSettings';
+export const USE_SPLIT_JSON_SETTING = 'workBench.settings.useSplitJSON';

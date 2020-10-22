@@ -4,27 +4,27 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as electron from 'electron';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { memoize } from 'vs/base/common/decorators';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { memoize } from 'vs/Base/common/decorators';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 import { State, IUpdate, StateType, UpdateType } from 'vs/platform/update/common/update';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
 import { ILogService } from 'vs/platform/log/common/log';
-import { AbstractUpdateService, createUpdateURL, UpdateNotAvailableClassification } from 'vs/platform/update/electron-main/abstractUpdateService';
+import { ABstractUpdateService, createUpdateURL, UpdateNotAvailaBleClassification } from 'vs/platform/update/electron-main/aBstractUpdateService';
 import { IRequestService } from 'vs/platform/request/common/request';
 
-export class DarwinUpdateService extends AbstractUpdateService {
+export class DarwinUpdateService extends ABstractUpdateService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly disposables = new DisposableStore();
+	private readonly disposaBles = new DisposaBleStore();
 
 	@memoize private get onRawError(): Event<string> { return Event.fromNodeEventEmitter(electron.autoUpdater, 'error', (_, message) => message); }
-	@memoize private get onRawUpdateNotAvailable(): Event<void> { return Event.fromNodeEventEmitter<void>(electron.autoUpdater, 'update-not-available'); }
-	@memoize private get onRawUpdateAvailable(): Event<IUpdate> { return Event.fromNodeEventEmitter(electron.autoUpdater, 'update-available', (_, url, version) => ({ url, version, productVersion: version })); }
+	@memoize private get onRawUpdateNotAvailaBle(): Event<void> { return Event.fromNodeEventEmitter<void>(electron.autoUpdater, 'update-not-availaBle'); }
+	@memoize private get onRawUpdateAvailaBle(): Event<IUpdate> { return Event.fromNodeEventEmitter(electron.autoUpdater, 'update-availaBle', (_, url, version) => ({ url, version, productVersion: version })); }
 	@memoize private get onRawUpdateDownloaded(): Event<IUpdate> { return Event.fromNodeEventEmitter(electron.autoUpdater, 'update-downloaded', (_, releaseNotes, version, date) => ({ releaseNotes, version, productVersion: version, date })); }
 
 	constructor(
@@ -40,10 +40,10 @@ export class DarwinUpdateService extends AbstractUpdateService {
 
 	initialize(): void {
 		super.initialize();
-		this.onRawError(this.onError, this, this.disposables);
-		this.onRawUpdateAvailable(this.onUpdateAvailable, this, this.disposables);
-		this.onRawUpdateDownloaded(this.onUpdateDownloaded, this, this.disposables);
-		this.onRawUpdateNotAvailable(this.onUpdateNotAvailable, this, this.disposables);
+		this.onRawError(this.onError, this, this.disposaBles);
+		this.onRawUpdateAvailaBle(this.onUpdateAvailaBle, this, this.disposaBles);
+		this.onRawUpdateDownloaded(this.onUpdateDownloaded, this, this.disposaBles);
+		this.onRawUpdateNotAvailaBle(this.onUpdateNotAvailaBle, this, this.disposaBles);
 	}
 
 	private onError(err: string): void {
@@ -55,7 +55,7 @@ export class DarwinUpdateService extends AbstractUpdateService {
 		this.setState(State.Idle(UpdateType.Archive, message));
 	}
 
-	protected buildUpdateFeedUrl(quality: string): string | undefined {
+	protected BuildUpdateFeedUrl(quality: string): string | undefined {
 		const url = createUpdateURL('darwin', quality);
 		try {
 			electron.autoUpdater.setFeedURL({ url });
@@ -72,7 +72,7 @@ export class DarwinUpdateService extends AbstractUpdateService {
 		electron.autoUpdater.checkForUpdates();
 	}
 
-	private onUpdateAvailable(update: IUpdate): void {
+	private onUpdateAvailaBle(update: IUpdate): void {
 		if (this.state.type !== StateType.CheckingForUpdates) {
 			return;
 		}
@@ -88,16 +88,16 @@ export class DarwinUpdateService extends AbstractUpdateService {
 		type UpdateDownloadedClassification = {
 			version: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 		};
-		this.telemetryService.publicLog2<{ version: String }, UpdateDownloadedClassification>('update:downloaded', { version: update.version });
+		this.telemetryService.puBlicLog2<{ version: String }, UpdateDownloadedClassification>('update:downloaded', { version: update.version });
 
 		this.setState(State.Ready(update));
 	}
 
-	private onUpdateNotAvailable(): void {
+	private onUpdateNotAvailaBle(): void {
 		if (this.state.type !== StateType.CheckingForUpdates) {
 			return;
 		}
-		this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!this.state.context });
+		this.telemetryService.puBlicLog2<{ explicit: Boolean }, UpdateNotAvailaBleClassification>('update:notAvailaBle', { explicit: !!this.state.context });
 
 		this.setState(State.Idle(UpdateType.Archive));
 	}
@@ -108,6 +108,6 @@ export class DarwinUpdateService extends AbstractUpdateService {
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposaBles.dispose();
 	}
 }

@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import { parse } from 'vs/base/common/json';
-import { IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { equals } from 'vs/base/common/arrays';
+import * as oBjects from 'vs/Base/common/oBjects';
+import { parse } from 'vs/Base/common/json';
+import { IUserFriendlyKeyBinding } from 'vs/platform/keyBinding/common/keyBinding';
+import { equals } from 'vs/Base/common/arrays';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import * as contentUtil from 'vs/platform/userDataSync/common/content';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { FormattingOptions } from 'vs/Base/common/jsonFormatter';
 import { IUserDataSyncUtilService } from 'vs/platform/userDataSync/common/userDataSync';
 
 interface ICompareResult {
@@ -20,50 +20,50 @@ interface ICompareResult {
 }
 
 interface IMergeResult {
-	hasLocalForwarded: boolean;
-	hasRemoteForwarded: boolean;
+	hasLocalForwarded: Boolean;
+	hasRemoteForwarded: Boolean;
 	added: Set<string>;
 	removed: Set<string>;
 	updated: Set<string>;
 	conflicts: Set<string>;
 }
 
-export function parseKeybindings(content: string): IUserFriendlyKeybinding[] {
+export function parseKeyBindings(content: string): IUserFriendlyKeyBinding[] {
 	return parse(content) || [];
 }
 
-export async function merge(localContent: string, remoteContent: string, baseContent: string | null, formattingOptions: FormattingOptions, userDataSyncUtilService: IUserDataSyncUtilService): Promise<{ mergeContent: string, hasChanges: boolean, hasConflicts: boolean }> {
-	const local = parseKeybindings(localContent);
-	const remote = parseKeybindings(remoteContent);
-	const base = baseContent ? parseKeybindings(baseContent) : null;
+export async function merge(localContent: string, remoteContent: string, BaseContent: string | null, formattingOptions: FormattingOptions, userDataSyncUtilService: IUserDataSyncUtilService): Promise<{ mergeContent: string, hasChanges: Boolean, hasConflicts: Boolean }> {
+	const local = parseKeyBindings(localContent);
+	const remote = parseKeyBindings(remoteContent);
+	const Base = BaseContent ? parseKeyBindings(BaseContent) : null;
 
-	const userbindings: string[] = [...local, ...remote, ...(base || [])].map(keybinding => keybinding.key);
-	const normalizedKeys = await userDataSyncUtilService.resolveUserBindings(userbindings);
-	let keybindingsMergeResult = computeMergeResultByKeybinding(local, remote, base, normalizedKeys);
+	const userBindings: string[] = [...local, ...remote, ...(Base || [])].map(keyBinding => keyBinding.key);
+	const normalizedKeys = await userDataSyncUtilService.resolveUserBindings(userBindings);
+	let keyBindingsMergeResult = computeMergeResultByKeyBinding(local, remote, Base, normalizedKeys);
 
-	if (!keybindingsMergeResult.hasLocalForwarded && !keybindingsMergeResult.hasRemoteForwarded) {
-		// No changes found between local and remote.
+	if (!keyBindingsMergeResult.hasLocalForwarded && !keyBindingsMergeResult.hasRemoteForwarded) {
+		// No changes found Between local and remote.
 		return { mergeContent: localContent, hasChanges: false, hasConflicts: false };
 	}
 
-	if (!keybindingsMergeResult.hasLocalForwarded && keybindingsMergeResult.hasRemoteForwarded) {
+	if (!keyBindingsMergeResult.hasLocalForwarded && keyBindingsMergeResult.hasRemoteForwarded) {
 		return { mergeContent: remoteContent, hasChanges: true, hasConflicts: false };
 	}
 
-	if (keybindingsMergeResult.hasLocalForwarded && !keybindingsMergeResult.hasRemoteForwarded) {
+	if (keyBindingsMergeResult.hasLocalForwarded && !keyBindingsMergeResult.hasRemoteForwarded) {
 		// Local has moved forward and remote has not. Return local.
 		return { mergeContent: localContent, hasChanges: true, hasConflicts: false };
 	}
 
 	// Both local and remote has moved forward.
-	const localByCommand = byCommand(local);
-	const remoteByCommand = byCommand(remote);
-	const baseByCommand = base ? byCommand(base) : null;
+	const localByCommand = ByCommand(local);
+	const remoteByCommand = ByCommand(remote);
+	const BaseByCommand = Base ? ByCommand(Base) : null;
 	const localToRemoteByCommand = compareByCommand(localByCommand, remoteByCommand, normalizedKeys);
-	const baseToLocalByCommand = baseByCommand ? compareByCommand(baseByCommand, localByCommand, normalizedKeys) : { added: [...localByCommand.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
-	const baseToRemoteByCommand = baseByCommand ? compareByCommand(baseByCommand, remoteByCommand, normalizedKeys) : { added: [...remoteByCommand.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
+	const BaseToLocalByCommand = BaseByCommand ? compareByCommand(BaseByCommand, localByCommand, normalizedKeys) : { added: [...localByCommand.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
+	const BaseToRemoteByCommand = BaseByCommand ? compareByCommand(BaseByCommand, remoteByCommand, normalizedKeys) : { added: [...remoteByCommand.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
 
-	const commandsMergeResult = computeMergeResult(localToRemoteByCommand, baseToLocalByCommand, baseToRemoteByCommand);
+	const commandsMergeResult = computeMergeResult(localToRemoteByCommand, BaseToLocalByCommand, BaseToRemoteByCommand);
 	let mergeContent = localContent;
 
 	// Removed commands in Remote
@@ -71,7 +71,7 @@ export async function merge(localContent: string, remoteContent: string, baseCon
 		if (commandsMergeResult.conflicts.has(command)) {
 			continue;
 		}
-		mergeContent = removeKeybindings(mergeContent, command, formattingOptions);
+		mergeContent = removeKeyBindings(mergeContent, command, formattingOptions);
 	}
 
 	// Added commands in remote
@@ -79,13 +79,13 @@ export async function merge(localContent: string, remoteContent: string, baseCon
 		if (commandsMergeResult.conflicts.has(command)) {
 			continue;
 		}
-		const keybindings = remoteByCommand.get(command)!;
+		const keyBindings = remoteByCommand.get(command)!;
 		// Ignore negated commands
-		if (keybindings.some(keybinding => keybinding.command !== `-${command}` && keybindingsMergeResult.conflicts.has(normalizedKeys[keybinding.key]))) {
+		if (keyBindings.some(keyBinding => keyBinding.command !== `-${command}` && keyBindingsMergeResult.conflicts.has(normalizedKeys[keyBinding.key]))) {
 			commandsMergeResult.conflicts.add(command);
 			continue;
 		}
-		mergeContent = addKeybindings(mergeContent, keybindings, formattingOptions);
+		mergeContent = addKeyBindings(mergeContent, keyBindings, formattingOptions);
 	}
 
 	// Updated commands in Remote
@@ -93,39 +93,39 @@ export async function merge(localContent: string, remoteContent: string, baseCon
 		if (commandsMergeResult.conflicts.has(command)) {
 			continue;
 		}
-		const keybindings = remoteByCommand.get(command)!;
+		const keyBindings = remoteByCommand.get(command)!;
 		// Ignore negated commands
-		if (keybindings.some(keybinding => keybinding.command !== `-${command}` && keybindingsMergeResult.conflicts.has(normalizedKeys[keybinding.key]))) {
+		if (keyBindings.some(keyBinding => keyBinding.command !== `-${command}` && keyBindingsMergeResult.conflicts.has(normalizedKeys[keyBinding.key]))) {
 			commandsMergeResult.conflicts.add(command);
 			continue;
 		}
-		mergeContent = updateKeybindings(mergeContent, command, keybindings, formattingOptions);
+		mergeContent = updateKeyBindings(mergeContent, command, keyBindings, formattingOptions);
 	}
 
 	return { mergeContent, hasChanges: true, hasConflicts: commandsMergeResult.conflicts.size > 0 };
 }
 
-function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompareResult, baseToRemote: ICompareResult): { added: Set<string>, removed: Set<string>, updated: Set<string>, conflicts: Set<string> } {
+function computeMergeResult(localToRemote: ICompareResult, BaseToLocal: ICompareResult, BaseToRemote: ICompareResult): { added: Set<string>, removed: Set<string>, updated: Set<string>, conflicts: Set<string> } {
 	const added: Set<string> = new Set<string>();
 	const removed: Set<string> = new Set<string>();
 	const updated: Set<string> = new Set<string>();
 	const conflicts: Set<string> = new Set<string>();
 
 	// Removed keys in Local
-	for (const key of baseToLocal.removed.values()) {
+	for (const key of BaseToLocal.removed.values()) {
 		// Got updated in remote
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			conflicts.add(key);
 		}
 	}
 
 	// Removed keys in Remote
-	for (const key of baseToRemote.removed.values()) {
+	for (const key of BaseToRemote.removed.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			conflicts.add(key);
 		} else {
 			// remove the key
@@ -134,12 +134,12 @@ function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompare
 	}
 
 	// Added keys in Local
-	for (const key of baseToLocal.added.values()) {
+	for (const key of BaseToLocal.added.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got added in remote
-		if (baseToRemote.added.has(key)) {
+		if (BaseToRemote.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -148,12 +148,12 @@ function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompare
 	}
 
 	// Added keys in remote
-	for (const key of baseToRemote.added.values()) {
+	for (const key of BaseToRemote.added.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got added in local
-		if (baseToLocal.added.has(key)) {
+		if (BaseToLocal.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -164,12 +164,12 @@ function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompare
 	}
 
 	// Updated keys in Local
-	for (const key of baseToLocal.updated.values()) {
+	for (const key of BaseToLocal.updated.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got updated in remote
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -178,12 +178,12 @@ function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompare
 	}
 
 	// Updated keys in Remote
-	for (const key of baseToRemote.updated.values()) {
+	for (const key of BaseToRemote.updated.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -196,63 +196,63 @@ function computeMergeResult(localToRemote: ICompareResult, baseToLocal: ICompare
 	return { added, removed, updated, conflicts };
 }
 
-function computeMergeResultByKeybinding(local: IUserFriendlyKeybinding[], remote: IUserFriendlyKeybinding[], base: IUserFriendlyKeybinding[] | null, normalizedKeys: IStringDictionary<string>): IMergeResult {
+function computeMergeResultByKeyBinding(local: IUserFriendlyKeyBinding[], remote: IUserFriendlyKeyBinding[], Base: IUserFriendlyKeyBinding[] | null, normalizedKeys: IStringDictionary<string>): IMergeResult {
 	const empty = new Set<string>();
-	const localByKeybinding = byKeybinding(local, normalizedKeys);
-	const remoteByKeybinding = byKeybinding(remote, normalizedKeys);
-	const baseByKeybinding = base ? byKeybinding(base, normalizedKeys) : null;
+	const localByKeyBinding = ByKeyBinding(local, normalizedKeys);
+	const remoteByKeyBinding = ByKeyBinding(remote, normalizedKeys);
+	const BaseByKeyBinding = Base ? ByKeyBinding(Base, normalizedKeys) : null;
 
-	const localToRemoteByKeybinding = compareByKeybinding(localByKeybinding, remoteByKeybinding);
-	if (localToRemoteByKeybinding.added.size === 0 && localToRemoteByKeybinding.removed.size === 0 && localToRemoteByKeybinding.updated.size === 0) {
+	const localToRemoteByKeyBinding = compareByKeyBinding(localByKeyBinding, remoteByKeyBinding);
+	if (localToRemoteByKeyBinding.added.size === 0 && localToRemoteByKeyBinding.removed.size === 0 && localToRemoteByKeyBinding.updated.size === 0) {
 		return { hasLocalForwarded: false, hasRemoteForwarded: false, added: empty, removed: empty, updated: empty, conflicts: empty };
 	}
 
-	const baseToLocalByKeybinding = baseByKeybinding ? compareByKeybinding(baseByKeybinding, localByKeybinding) : { added: [...localByKeybinding.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
-	if (baseToLocalByKeybinding.added.size === 0 && baseToLocalByKeybinding.removed.size === 0 && baseToLocalByKeybinding.updated.size === 0) {
+	const BaseToLocalByKeyBinding = BaseByKeyBinding ? compareByKeyBinding(BaseByKeyBinding, localByKeyBinding) : { added: [...localByKeyBinding.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
+	if (BaseToLocalByKeyBinding.added.size === 0 && BaseToLocalByKeyBinding.removed.size === 0 && BaseToLocalByKeyBinding.updated.size === 0) {
 		// Remote has moved forward and local has not.
 		return { hasLocalForwarded: false, hasRemoteForwarded: true, added: empty, removed: empty, updated: empty, conflicts: empty };
 	}
 
-	const baseToRemoteByKeybinding = baseByKeybinding ? compareByKeybinding(baseByKeybinding, remoteByKeybinding) : { added: [...remoteByKeybinding.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
-	if (baseToRemoteByKeybinding.added.size === 0 && baseToRemoteByKeybinding.removed.size === 0 && baseToRemoteByKeybinding.updated.size === 0) {
+	const BaseToRemoteByKeyBinding = BaseByKeyBinding ? compareByKeyBinding(BaseByKeyBinding, remoteByKeyBinding) : { added: [...remoteByKeyBinding.keys()].reduce((r, k) => { r.add(k); return r; }, new Set<string>()), removed: new Set<string>(), updated: new Set<string>() };
+	if (BaseToRemoteByKeyBinding.added.size === 0 && BaseToRemoteByKeyBinding.removed.size === 0 && BaseToRemoteByKeyBinding.updated.size === 0) {
 		return { hasLocalForwarded: true, hasRemoteForwarded: false, added: empty, removed: empty, updated: empty, conflicts: empty };
 	}
 
-	const { added, removed, updated, conflicts } = computeMergeResult(localToRemoteByKeybinding, baseToLocalByKeybinding, baseToRemoteByKeybinding);
+	const { added, removed, updated, conflicts } = computeMergeResult(localToRemoteByKeyBinding, BaseToLocalByKeyBinding, BaseToRemoteByKeyBinding);
 	return { hasLocalForwarded: true, hasRemoteForwarded: true, added, removed, updated, conflicts };
 }
 
-function byKeybinding(keybindings: IUserFriendlyKeybinding[], keys: IStringDictionary<string>) {
-	const map: Map<string, IUserFriendlyKeybinding[]> = new Map<string, IUserFriendlyKeybinding[]>();
-	for (const keybinding of keybindings) {
-		const key = keys[keybinding.key];
+function ByKeyBinding(keyBindings: IUserFriendlyKeyBinding[], keys: IStringDictionary<string>) {
+	const map: Map<string, IUserFriendlyKeyBinding[]> = new Map<string, IUserFriendlyKeyBinding[]>();
+	for (const keyBinding of keyBindings) {
+		const key = keys[keyBinding.key];
 		let value = map.get(key);
 		if (!value) {
 			value = [];
 			map.set(key, value);
 		}
-		value.push(keybinding);
+		value.push(keyBinding);
 
 	}
 	return map;
 }
 
-function byCommand(keybindings: IUserFriendlyKeybinding[]): Map<string, IUserFriendlyKeybinding[]> {
-	const map: Map<string, IUserFriendlyKeybinding[]> = new Map<string, IUserFriendlyKeybinding[]>();
-	for (const keybinding of keybindings) {
-		const command = keybinding.command[0] === '-' ? keybinding.command.substring(1) : keybinding.command;
+function ByCommand(keyBindings: IUserFriendlyKeyBinding[]): Map<string, IUserFriendlyKeyBinding[]> {
+	const map: Map<string, IUserFriendlyKeyBinding[]> = new Map<string, IUserFriendlyKeyBinding[]>();
+	for (const keyBinding of keyBindings) {
+		const command = keyBinding.command[0] === '-' ? keyBinding.command.suBstring(1) : keyBinding.command;
 		let value = map.get(command);
 		if (!value) {
 			value = [];
 			map.set(command, value);
 		}
-		value.push(keybinding);
+		value.push(keyBinding);
 	}
 	return map;
 }
 
 
-function compareByKeybinding(from: Map<string, IUserFriendlyKeybinding[]>, to: Map<string, IUserFriendlyKeybinding[]>): ICompareResult {
+function compareByKeyBinding(from: Map<string, IUserFriendlyKeyBinding[]>, to: Map<string, IUserFriendlyKeyBinding[]>): ICompareResult {
 	const fromKeys = [...from.keys()];
 	const toKeys = [...to.keys()];
 	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
@@ -263,9 +263,9 @@ function compareByKeybinding(from: Map<string, IUserFriendlyKeybinding[]>, to: M
 		if (removed.has(key)) {
 			continue;
 		}
-		const value1: IUserFriendlyKeybinding[] = from.get(key)!.map(keybinding => ({ ...keybinding, ...{ key } }));
-		const value2: IUserFriendlyKeybinding[] = to.get(key)!.map(keybinding => ({ ...keybinding, ...{ key } }));
-		if (!equals(value1, value2, (a, b) => isSameKeybinding(a, b))) {
+		const value1: IUserFriendlyKeyBinding[] = from.get(key)!.map(keyBinding => ({ ...keyBinding, ...{ key } }));
+		const value2: IUserFriendlyKeyBinding[] = to.get(key)!.map(keyBinding => ({ ...keyBinding, ...{ key } }));
+		if (!equals(value1, value2, (a, B) => isSameKeyBinding(a, B))) {
 			updated.add(key);
 		}
 	}
@@ -273,7 +273,7 @@ function compareByKeybinding(from: Map<string, IUserFriendlyKeybinding[]>, to: M
 	return { added, removed, updated };
 }
 
-function compareByCommand(from: Map<string, IUserFriendlyKeybinding[]>, to: Map<string, IUserFriendlyKeybinding[]>, normalizedKeys: IStringDictionary<string>): ICompareResult {
+function compareByCommand(from: Map<string, IUserFriendlyKeyBinding[]>, to: Map<string, IUserFriendlyKeyBinding[]>, normalizedKeys: IStringDictionary<string>): ICompareResult {
 	const fromKeys = [...from.keys()];
 	const toKeys = [...to.keys()];
 	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
@@ -284,9 +284,9 @@ function compareByCommand(from: Map<string, IUserFriendlyKeybinding[]>, to: Map<
 		if (removed.has(key)) {
 			continue;
 		}
-		const value1: IUserFriendlyKeybinding[] = from.get(key)!.map(keybinding => ({ ...keybinding, ...{ key: normalizedKeys[keybinding.key] } }));
-		const value2: IUserFriendlyKeybinding[] = to.get(key)!.map(keybinding => ({ ...keybinding, ...{ key: normalizedKeys[keybinding.key] } }));
-		if (!areSameKeybindingsWithSameCommand(value1, value2)) {
+		const value1: IUserFriendlyKeyBinding[] = from.get(key)!.map(keyBinding => ({ ...keyBinding, ...{ key: normalizedKeys[keyBinding.key] } }));
+		const value2: IUserFriendlyKeyBinding[] = to.get(key)!.map(keyBinding => ({ ...keyBinding, ...{ key: normalizedKeys[keyBinding.key] } }));
+		if (!areSameKeyBindingsWithSameCommand(value1, value2)) {
 			updated.add(key);
 		}
 	}
@@ -294,68 +294,68 @@ function compareByCommand(from: Map<string, IUserFriendlyKeybinding[]>, to: Map<
 	return { added, removed, updated };
 }
 
-function areSameKeybindingsWithSameCommand(value1: IUserFriendlyKeybinding[], value2: IUserFriendlyKeybinding[]): boolean {
-	// Compare entries adding keybindings
-	if (!equals(value1.filter(({ command }) => command[0] !== '-'), value2.filter(({ command }) => command[0] !== '-'), (a, b) => isSameKeybinding(a, b))) {
+function areSameKeyBindingsWithSameCommand(value1: IUserFriendlyKeyBinding[], value2: IUserFriendlyKeyBinding[]): Boolean {
+	// Compare entries adding keyBindings
+	if (!equals(value1.filter(({ command }) => command[0] !== '-'), value2.filter(({ command }) => command[0] !== '-'), (a, B) => isSameKeyBinding(a, B))) {
 		return false;
 	}
-	// Compare entries removing keybindings
-	if (!equals(value1.filter(({ command }) => command[0] === '-'), value2.filter(({ command }) => command[0] === '-'), (a, b) => isSameKeybinding(a, b))) {
+	// Compare entries removing keyBindings
+	if (!equals(value1.filter(({ command }) => command[0] === '-'), value2.filter(({ command }) => command[0] === '-'), (a, B) => isSameKeyBinding(a, B))) {
 		return false;
 	}
 	return true;
 }
 
-function isSameKeybinding(a: IUserFriendlyKeybinding, b: IUserFriendlyKeybinding): boolean {
-	if (a.command !== b.command) {
+function isSameKeyBinding(a: IUserFriendlyKeyBinding, B: IUserFriendlyKeyBinding): Boolean {
+	if (a.command !== B.command) {
 		return false;
 	}
-	if (a.key !== b.key) {
+	if (a.key !== B.key) {
 		return false;
 	}
 	const whenA = ContextKeyExpr.deserialize(a.when);
-	const whenB = ContextKeyExpr.deserialize(b.when);
+	const whenB = ContextKeyExpr.deserialize(B.when);
 	if ((whenA && !whenB) || (!whenA && whenB)) {
 		return false;
 	}
 	if (whenA && whenB && !whenA.equals(whenB)) {
 		return false;
 	}
-	if (!objects.equals(a.args, b.args)) {
+	if (!oBjects.equals(a.args, B.args)) {
 		return false;
 	}
 	return true;
 }
 
-function addKeybindings(content: string, keybindings: IUserFriendlyKeybinding[], formattingOptions: FormattingOptions): string {
-	for (const keybinding of keybindings) {
-		content = contentUtil.edit(content, [-1], keybinding, formattingOptions);
+function addKeyBindings(content: string, keyBindings: IUserFriendlyKeyBinding[], formattingOptions: FormattingOptions): string {
+	for (const keyBinding of keyBindings) {
+		content = contentUtil.edit(content, [-1], keyBinding, formattingOptions);
 	}
 	return content;
 }
 
-function removeKeybindings(content: string, command: string, formattingOptions: FormattingOptions): string {
-	const keybindings = parseKeybindings(content);
-	for (let index = keybindings.length - 1; index >= 0; index--) {
-		if (keybindings[index].command === command || keybindings[index].command === `-${command}`) {
+function removeKeyBindings(content: string, command: string, formattingOptions: FormattingOptions): string {
+	const keyBindings = parseKeyBindings(content);
+	for (let index = keyBindings.length - 1; index >= 0; index--) {
+		if (keyBindings[index].command === command || keyBindings[index].command === `-${command}`) {
 			content = contentUtil.edit(content, [index], undefined, formattingOptions);
 		}
 	}
 	return content;
 }
 
-function updateKeybindings(content: string, command: string, keybindings: IUserFriendlyKeybinding[], formattingOptions: FormattingOptions): string {
-	const allKeybindings = parseKeybindings(content);
-	const location = allKeybindings.findIndex(keybinding => keybinding.command === command || keybinding.command === `-${command}`);
+function updateKeyBindings(content: string, command: string, keyBindings: IUserFriendlyKeyBinding[], formattingOptions: FormattingOptions): string {
+	const allKeyBindings = parseKeyBindings(content);
+	const location = allKeyBindings.findIndex(keyBinding => keyBinding.command === command || keyBinding.command === `-${command}`);
 	// Remove all entries with this command
-	for (let index = allKeybindings.length - 1; index >= 0; index--) {
-		if (allKeybindings[index].command === command || allKeybindings[index].command === `-${command}`) {
+	for (let index = allKeyBindings.length - 1; index >= 0; index--) {
+		if (allKeyBindings[index].command === command || allKeyBindings[index].command === `-${command}`) {
 			content = contentUtil.edit(content, [index], undefined, formattingOptions);
 		}
 	}
 	// add all entries at the same location where the entry with this command was located.
-	for (let index = keybindings.length - 1; index >= 0; index--) {
-		content = contentUtil.edit(content, [location], keybindings[index], formattingOptions);
+	for (let index = keyBindings.length - 1; index >= 0; index--) {
+		content = contentUtil.edit(content, [location], keyBindings[index], formattingOptions);
 	}
 	return content;
 }

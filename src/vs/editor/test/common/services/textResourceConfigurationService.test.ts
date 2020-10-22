@@ -10,7 +10,7 @@ import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IConfigurationValue, IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { TextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationServiceImpl';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 
 suite('TextResourceConfigurationService - Update', () => {
@@ -27,26 +27,26 @@ suite('TextResourceConfigurationService - Update', () => {
 		}
 	}();
 	let language: string | null = null;
-	let testObject: TextResourceConfigurationService;
+	let testOBject: TextResourceConfigurationService;
 
 	setup(() => {
 		const instantiationService = new TestInstantiationService();
-		instantiationService.stub(IModelService, <Partial<IModelService>>{ getModel() { return null; } });
-		instantiationService.stub(IModeService, <Partial<IModeService>>{ getModeIdByFilepathOrFirstLine() { return language; } });
-		instantiationService.stub(IConfigurationService, configurationService);
-		testObject = instantiationService.createInstance(TextResourceConfigurationService);
+		instantiationService.stuB(IModelService, <Partial<IModelService>>{ getModel() { return null; } });
+		instantiationService.stuB(IModeService, <Partial<IModeService>>{ getModeIdByFilepathOrFirstLine() { return language; } });
+		instantiationService.stuB(IConfigurationService, configurationService);
+		testOBject = instantiationService.createInstance(TextResourceConfigurationService);
 	});
 
 	test('updateValue writes without target and overrides when no language is defined', async () => {
 		const resource = URI.file('someFile');
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER_LOCAL]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER_LOCAL]);
 	});
 
 	test('updateValue writes with target and without overrides when no language is defined', async () => {
 		const resource = URI.file('someFile');
-		await testObject.updateValue(resource, 'a', 'b', ConfigurationTarget.USER_LOCAL);
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER_LOCAL]);
+		await testOBject.updateValue(resource, 'a', 'B', ConfigurationTarget.USER_LOCAL);
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER_LOCAL]);
 	});
 
 	test('updateValue writes into given memory target without overrides', async () => {
@@ -58,8 +58,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b', ConfigurationTarget.MEMORY);
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.MEMORY]);
+		await testOBject.updateValue(resource, 'a', 'B', ConfigurationTarget.MEMORY);
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.MEMORY]);
 	});
 
 	test('updateValue writes into given workspace target without overrides', async () => {
@@ -71,8 +71,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b', ConfigurationTarget.WORKSPACE);
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.WORKSPACE]);
+		await testOBject.updateValue(resource, 'a', 'B', ConfigurationTarget.WORKSPACE);
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.WORKSPACE]);
 	});
 
 	test('updateValue writes into given user target without overrides', async () => {
@@ -84,8 +84,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b', ConfigurationTarget.USER);
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER]);
+		await testOBject.updateValue(resource, 'a', 'B', ConfigurationTarget.USER);
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER]);
 	});
 
 	test('updateValue writes into given workspace folder target with overrides', async () => {
@@ -97,8 +97,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b', ConfigurationTarget.WORKSPACE_FOLDER);
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE_FOLDER]);
+		await testOBject.updateValue(resource, 'a', 'B', ConfigurationTarget.WORKSPACE_FOLDER);
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE_FOLDER]);
 	});
 
 	test('updateValue writes into derived workspace folder target without overrides', async () => {
@@ -110,8 +110,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.WORKSPACE_FOLDER]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.WORKSPACE_FOLDER]);
 	});
 
 	test('updateValue writes into derived workspace folder target with overrides', async () => {
@@ -124,8 +124,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE_FOLDER]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE_FOLDER]);
 	});
 
 	test('updateValue writes into derived workspace target without overrides', async () => {
@@ -137,8 +137,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.WORKSPACE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.WORKSPACE]);
 	});
 
 	test('updateValue writes into derived workspace target with overrides', async () => {
@@ -150,8 +150,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE]);
 	});
 
 	test('updateValue writes into derived workspace target with overrides and value defined in folder', async () => {
@@ -164,8 +164,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.WORKSPACE]);
 	});
 
 	test('updateValue writes into derived user remote target without overrides', async () => {
@@ -177,8 +177,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER_REMOTE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER_REMOTE]);
 	});
 
 	test('updateValue writes into derived user remote target with overrides', async () => {
@@ -190,8 +190,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
 	});
 
 	test('updateValue writes into derived user remote target with overrides and value defined in workspace', async () => {
@@ -204,8 +204,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
 	});
 
 	test('updateValue writes into derived user remote target with overrides and value defined in workspace folder', async () => {
@@ -219,8 +219,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_REMOTE]);
 	});
 
 	test('updateValue writes into derived user target without overrides', async () => {
@@ -231,8 +231,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER_LOCAL]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER_LOCAL]);
 	});
 
 	test('updateValue writes into derived user target with overrides', async () => {
@@ -243,7 +243,7 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', '2');
+		await testOBject.updateValue(resource, 'a', '2');
 		assert.deepEqual(updateArgs, ['a', '2', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_LOCAL]);
 	});
 
@@ -256,7 +256,7 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', '2');
+		await testOBject.updateValue(resource, 'a', '2');
 		assert.deepEqual(updateArgs, ['a', '2', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_LOCAL]);
 	});
 
@@ -269,7 +269,7 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', '2');
+		await testOBject.updateValue(resource, 'a', '2');
 		assert.deepEqual(updateArgs, ['a', '2', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_LOCAL]);
 	});
 
@@ -283,7 +283,7 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', '2');
+		await testOBject.updateValue(resource, 'a', '2');
 		assert.deepEqual(updateArgs, ['a', '2', { resource, overrideIdentifier: language }, ConfigurationTarget.USER_LOCAL]);
 	});
 
@@ -294,8 +294,8 @@ suite('TextResourceConfigurationService - Update', () => {
 		};
 		const resource = URI.file('someFile');
 
-		await testObject.updateValue(resource, 'a', 'b');
-		assert.deepEqual(updateArgs, ['a', 'b', { resource }, ConfigurationTarget.USER_LOCAL]);
+		await testOBject.updateValue(resource, 'a', 'B');
+		assert.deepEqual(updateArgs, ['a', 'B', { resource }, ConfigurationTarget.USER_LOCAL]);
 	});
 
 });

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { addDisposableListener } from 'vs/base/browser/dom';
-import { streamToBuffer } from 'vs/base/common/buffer';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
+import { addDisposaBleListener } from 'vs/Base/Browser/dom';
+import { streamToBuffer } from 'vs/Base/common/Buffer';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ILogService } from 'vs/platform/log/common/log';
 import { INotificationService } from 'vs/platform/notification/common/notification';
@@ -15,85 +15,85 @@ import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remot
 import { ITunnelService } from 'vs/platform/remote/common/tunnel';
 import { IRequestService } from 'vs/platform/request/common/request';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { loadLocalResource, WebviewResourceResponse } from 'vs/platform/webview/common/resourceLoader';
-import { WebviewPortMappingManager } from 'vs/platform/webview/common/webviewPortMapping';
-import { BaseWebview, WebviewMessageChannels } from 'vs/workbench/contrib/webview/browser/baseWebviewElement';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
-import { Webview, WebviewContentOptions, WebviewExtensionDescription, WebviewOptions } from 'vs/workbench/contrib/webview/browser/webview';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { loadLocalResource, WeBviewResourceResponse } from 'vs/platform/weBview/common/resourceLoader';
+import { WeBviewPortMappingManager } from 'vs/platform/weBview/common/weBviewPortMapping';
+import { BaseWeBview, WeBviewMessageChannels } from 'vs/workBench/contriB/weBview/Browser/BaseWeBviewElement';
+import { WeBviewThemeDataProvider } from 'vs/workBench/contriB/weBview/Browser/themeing';
+import { WeBview, WeBviewContentOptions, WeBviewExtensionDescription, WeBviewOptions } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
-export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Webview {
-	private readonly _portMappingManager: WebviewPortMappingManager;
+export class IFrameWeBview extends BaseWeBview<HTMLIFrameElement> implements WeBview {
+	private readonly _portMappingManager: WeBviewPortMappingManager;
 
 	constructor(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-		webviewThemeDataProvider: WebviewThemeDataProvider,
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+		weBviewThemeDataProvider: WeBviewThemeDataProvider,
 		@INotificationService notificationService: INotificationService,
 		@ITunnelService tunnelService: ITunnelService,
 		@IFileService private readonly fileService: IFileService,
 		@IRequestService private readonly requestService: IRequestService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IRemoteAuthorityResolverService private readonly _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ILogService logService: ILogService,
 	) {
-		super(id, options, contentOptions, extension, webviewThemeDataProvider, notificationService, logService, telemetryService, environmentService);
+		super(id, options, contentOptions, extension, weBviewThemeDataProvider, notificationService, logService, telemetryService, environmentService);
 
-		this._portMappingManager = this._register(new WebviewPortMappingManager(
+		this._portMappingManager = this._register(new WeBviewPortMappingManager(
 			() => this.extension?.location,
 			() => this.content.options.portMapping || [],
 			tunnelService
 		));
 
-		this._register(this.on(WebviewMessageChannels.loadResource, (entry: any) => {
+		this._register(this.on(WeBviewMessageChannels.loadResource, (entry: any) => {
 			const rawPath = entry.path;
 			const normalizedPath = decodeURIComponent(rawPath);
 			const uri = URI.parse(normalizedPath.replace(/^\/([\w\-]+)\/(.+)$/, (_, scheme, path) => scheme + ':/' + path));
 			this.loadResource(rawPath, uri);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.loadLocalhost, (entry: any) => {
+		this._register(this.on(WeBviewMessageChannels.loadLocalhost, (entry: any) => {
 			this.localLocalhost(entry.origin);
 		}));
 
 		this.initElement(extension, options);
 	}
 
-	protected createElement(options: WebviewOptions, _contentOptions: WebviewContentOptions) {
-		// Do not start loading the webview yet.
-		// Wait the end of the ctor when all listeners have been hooked up.
+	protected createElement(options: WeBviewOptions, _contentOptions: WeBviewContentOptions) {
+		// Do not start loading the weBview yet.
+		// Wait the end of the ctor when all listeners have Been hooked up.
 		const element = document.createElement('iframe');
-		element.className = `webview ${options.customClasses || ''}`;
-		element.sandbox.add('allow-scripts', 'allow-same-origin', 'allow-forms', 'allow-pointer-lock', 'allow-downloads');
-		element.style.border = 'none';
+		element.className = `weBview ${options.customClasses || ''}`;
+		element.sandBox.add('allow-scripts', 'allow-same-origin', 'allow-forms', 'allow-pointer-lock', 'allow-downloads');
+		element.style.Border = 'none';
 		element.style.width = '100%';
 		element.style.height = '100%';
 		return element;
 	}
 
-	protected initElement(extension: WebviewExtensionDescription | undefined, options: WebviewOptions) {
-		// The extensionId and purpose in the URL are used for filtering in js-debug:
-		this.element!.setAttribute('src', `${this.externalEndpoint}/index.html?id=${this.id}&extensionId=${extension?.id.value ?? ''}&purpose=${options.purpose}`);
+	protected initElement(extension: WeBviewExtensionDescription | undefined, options: WeBviewOptions) {
+		// The extensionId and purpose in the URL are used for filtering in js-deBug:
+		this.element!.setAttriBute('src', `${this.externalEndpoint}/index.html?id=${this.id}&extensionId=${extension?.id.value ?? ''}&purpose=${options.purpose}`);
 	}
 
 	private get externalEndpoint(): string {
-		const endpoint = this.environmentService.webviewExternalEndpoint!.replace('{{uuid}}', this.id);
+		const endpoint = this.environmentService.weBviewExternalEndpoint!.replace('{{uuid}}', this.id);
 		if (endpoint[endpoint.length - 1] === '/') {
 			return endpoint.slice(0, endpoint.length - 1);
 		}
 		return endpoint;
 	}
 
-	public mountTo(parent: HTMLElement) {
+	puBlic mountTo(parent: HTMLElement) {
 		if (this.element) {
 			parent.appendChild(this.element);
 		}
 	}
 
-	public set html(value: string) {
+	puBlic set html(value: string) {
 		super.html = this.preprocessHtml(value);
 	}
 
@@ -105,7 +105,7 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 				}
 				return `${startQuote}${this.externalEndpoint}/vscode-resource/file${path}${endQuote}`;
 			})
-			.replace(/(["'])(?:vscode-webview-resource):(\/\/[^\s\/'"]+\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (match, startQuote, _1, scheme, path, endQuote) => {
+			.replace(/(["'])(?:vscode-weBview-resource):(\/\/[^\s\/'"]+\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (match, startQuote, _1, scheme, path, endQuote) => {
 				if (scheme) {
 					return `${startQuote}${this.externalEndpoint}/vscode-resource/${scheme}${path}${endQuote}`;
 				}
@@ -133,7 +133,7 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 		throw new Error('Method not implemented.');
 	}
 
-	runFindAction(previous: boolean): void {
+	runFindAction(previous: Boolean): void {
 		throw new Error('Method not implemented.');
 	}
 
@@ -170,13 +170,13 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 				readFileStream: (resource) => this.fileService.readFileStream(resource).then(x => x.value),
 			}, this.requestService);
 
-			if (result.type === WebviewResourceResponse.Type.Success) {
-				const { buffer } = await streamToBuffer(result.stream);
+			if (result.type === WeBviewResourceResponse.Type.Success) {
+				const { Buffer } = await streamToBuffer(result.stream);
 				return this._send('did-load-resource', {
 					status: 200,
 					path: requestPath,
 					mime: result.mimeType,
-					data: buffer,
+					data: Buffer,
 				});
 			}
 		} catch {
@@ -205,8 +205,8 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 		}
 	}
 
-	protected on<T = unknown>(channel: WebviewMessageChannels, handler: (data: T) => void): IDisposable {
-		return addDisposableListener(window, 'message', e => {
+	protected on<T = unknown>(channel: WeBviewMessageChannels, handler: (data: T) => void): IDisposaBle {
+		return addDisposaBleListener(window, 'message', e => {
 			if (!e || !e.data || e.data.target !== this.id) {
 				return;
 			}

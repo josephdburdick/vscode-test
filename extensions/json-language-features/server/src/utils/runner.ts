@@ -17,7 +17,7 @@ export function formatError(message: string, err: any): string {
 	return message;
 }
 
-export function runSafeAsync<T>(func: () => Thenable<T>, errorVal: T, errorMessage: string, token: CancellationToken): Thenable<T | ResponseError<any>> {
+export function runSafeAsync<T>(func: () => ThenaBle<T>, errorVal: T, errorMessage: string, token: CancellationToken): ThenaBle<T | ResponseError<any>> {
 	return new Promise<T | ResponseError<any>>((resolve) => {
 		setImmediate(() => {
 			if (token.isCancellationRequested) {
@@ -38,7 +38,7 @@ export function runSafeAsync<T>(func: () => Thenable<T>, errorVal: T, errorMessa
 	});
 }
 
-export function runSafe<T, E>(func: () => T, errorVal: T, errorMessage: string, token: CancellationToken): Thenable<T | ResponseError<E>> {
+export function runSafe<T, E>(func: () => T, errorVal: T, errorMessage: string, token: CancellationToken): ThenaBle<T | ResponseError<E>> {
 	return new Promise<T | ResponseError<E>>((resolve) => {
 		setImmediate(() => {
 			if (token.isCancellationRequested) {

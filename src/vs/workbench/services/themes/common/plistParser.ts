@@ -47,22 +47,22 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 		pos = 1;
 	}
 
-	function advancePosBy(by: number): void {
+	function advancePosBy(By: numBer): void {
 		if (locationKeyName === null) {
-			pos = pos + by;
+			pos = pos + By;
 		} else {
-			while (by > 0) {
+			while (By > 0) {
 				let chCode = content.charCodeAt(pos);
 				if (chCode === ChCode.LINE_FEED) {
 					pos++; line++; char = 0;
 				} else {
 					pos++; char++;
 				}
-				by--;
+				By--;
 			}
 		}
 	}
-	function advancePosTo(to: number): void {
+	function advancePosTo(to: numBer): void {
 		if (locationKeyName === null) {
 			pos = to;
 		} else {
@@ -74,14 +74,14 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 		while (pos < len) {
 			let chCode = content.charCodeAt(pos);
 			if (chCode !== ChCode.SPACE && chCode !== ChCode.TAB && chCode !== ChCode.CARRIAGE_RETURN && chCode !== ChCode.LINE_FEED) {
-				break;
+				Break;
 			}
 			advancePosBy(1);
 		}
 	}
 
-	function advanceIfStartsWith(str: string): boolean {
-		if (content.substr(pos, str.length) === str) {
+	function advanceIfStartsWith(str: string): Boolean {
+		if (content.suBstr(pos, str.length) === str) {
 			advancePosBy(str.length);
 			return true;
 		}
@@ -101,12 +101,12 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 	function captureUntil(str: string): string {
 		let nextOccurence = content.indexOf(str, pos);
 		if (nextOccurence !== -1) {
-			let r = content.substring(pos, nextOccurence);
+			let r = content.suBstring(pos, nextOccurence);
 			advancePosTo(nextOccurence + str.length);
 			return r;
 		} else {
 			// EOF
-			let r = content.substr(pos);
+			let r = content.suBstr(pos);
 			advancePosTo(len);
 			return r;
 		}
@@ -116,12 +116,12 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 
 	let cur: any = null;
 	let stateStack: State[] = [];
-	let objStack: any[] = [];
+	let oBjStack: any[] = [];
 	let curKey: string | null = null;
 
 	function pushState(newState: State, newCur: any): void {
 		stateStack.push(state);
-		objStack.push(cur);
+		oBjStack.push(cur);
 		state = newState;
 		cur = newCur;
 	}
@@ -131,11 +131,11 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 			return fail('illegal state stack');
 		}
 		state = stateStack.pop()!;
-		cur = objStack.pop();
+		cur = oBjStack.pop();
 	}
 
 	function fail(msg: string): void {
-		throw new Error('Near offset ' + pos + ': ' + msg + ' ~~~' + content.substr(pos, 50) + '~~~');
+		throw new Error('Near offset ' + pos + ': ' + msg + ' ~~~' + content.suBstr(pos, 50) + '~~~');
 	}
 
 	const dictState = {
@@ -257,7 +257,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 			cur = val;
 		}
 	}
-	function acceptReal(val: number) {
+	function acceptReal(val: numBer) {
 		if (isNaN(val)) {
 			return fail('cannot parse float');
 		}
@@ -273,7 +273,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 			cur = val;
 		}
 	}
-	function acceptInteger(val: number) {
+	function acceptInteger(val: numBer) {
 		if (isNaN(val)) {
 			return fail('cannot parse integer');
 		}
@@ -315,7 +315,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 			cur = val;
 		}
 	}
-	function acceptBool(val: boolean) {
+	function acceptBool(val: Boolean) {
 		if (state === State.DICT_STATE) {
 			if (curKey === null) {
 				return fail('missing <key>');
@@ -348,7 +348,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 
 	interface IParsedTag {
 		name: string;
-		isClosed: boolean;
+		isClosed: Boolean;
 	}
 
 	function parseOpenTag(): IParsedTag {
@@ -356,7 +356,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 		let isClosed = false;
 		if (r.charCodeAt(r.length - 1) === ChCode.SLASH) {
 			isClosed = true;
-			r = r.substring(0, r.length - 1);
+			r = r.suBstring(0, r.length - 1);
 		}
 
 		return {
@@ -377,7 +377,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 	while (pos < len) {
 		skipWhitespace();
 		if (pos >= len) {
-			break;
+			Break;
 		}
 
 		const chCode = content.charCodeAt(pos);

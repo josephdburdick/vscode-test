@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type * as vscode from 'vscode';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ExtHostStorage } from 'vs/workbench/api/common/extHostStorage';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ExtHostStorage } from 'vs/workBench/api/common/extHostStorage';
 
 export class ExtensionMemento implements vscode.Memento {
 
 	private readonly _id: string;
-	private readonly _shared: boolean;
+	private readonly _shared: Boolean;
 	private readonly _storage: ExtHostStorage;
 
 	private readonly _init: Promise<ExtensionMemento>;
 	private _value?: { [n: string]: any; };
-	private readonly _storageListener: IDisposable;
+	private readonly _storageListener: IDisposaBle;
 
-	constructor(id: string, global: boolean, storage: ExtHostStorage) {
+	constructor(id: string, gloBal: Boolean, storage: ExtHostStorage) {
 		this._id = id;
-		this._shared = global;
+		this._shared = gloBal;
 		this._storage = storage;
 
-		this._init = this._storage.getValue(this._shared, this._id, Object.create(null)).then(value => {
+		this._init = this._storage.getValue(this._shared, this._id, OBject.create(null)).then(value => {
 			this._value = value;
 			return this;
 		});

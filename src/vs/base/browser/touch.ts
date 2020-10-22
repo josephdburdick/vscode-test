@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as DomUtils from 'vs/base/browser/dom';
-import { memoize } from 'vs/base/common/decorators';
+import * as arrays from 'vs/Base/common/arrays';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import * as DomUtils from 'vs/Base/Browser/dom';
+import { memoize } from 'vs/Base/common/decorators';
 
 export namespace EventType {
 	export const Tap = '-monaco-gesturetap';
@@ -17,45 +17,45 @@ export namespace EventType {
 }
 
 interface TouchData {
-	id: number;
+	id: numBer;
 	initialTarget: EventTarget;
-	initialTimeStamp: number;
-	initialPageX: number;
-	initialPageY: number;
-	rollingTimestamps: number[];
-	rollingPageX: number[];
-	rollingPageY: number[];
+	initialTimeStamp: numBer;
+	initialPageX: numBer;
+	initialPageY: numBer;
+	rollingTimestamps: numBer[];
+	rollingPageX: numBer[];
+	rollingPageY: numBer[];
 }
 
 export interface GestureEvent extends MouseEvent {
 	initialTarget: EventTarget | undefined;
-	translationX: number;
-	translationY: number;
-	pageX: number;
-	pageY: number;
-	tapCount: number;
+	translationX: numBer;
+	translationY: numBer;
+	pageX: numBer;
+	pageY: numBer;
+	tapCount: numBer;
 }
 
 interface Touch {
-	identifier: number;
-	screenX: number;
-	screenY: number;
-	clientX: number;
-	clientY: number;
-	pageX: number;
-	pageY: number;
-	radiusX: number;
-	radiusY: number;
-	rotationAngle: number;
-	force: number;
+	identifier: numBer;
+	screenX: numBer;
+	screenY: numBer;
+	clientX: numBer;
+	clientY: numBer;
+	pageX: numBer;
+	pageY: numBer;
+	radiusX: numBer;
+	radiusY: numBer;
+	rotationAngle: numBer;
+	force: numBer;
 	target: Element;
 }
 
 interface TouchList {
-	[i: number]: Touch;
-	length: number;
-	item(index: number): Touch;
-	identifiedTouch(id: number): Touch;
+	[i: numBer]: Touch;
+	length: numBer;
+	item(index: numBer): Touch;
+	identifiedTouch(id: numBer): Touch;
 }
 
 interface TouchEvent extends Event {
@@ -64,7 +64,7 @@ interface TouchEvent extends Event {
 	changedTouches: TouchList;
 }
 
-export class Gesture extends Disposable {
+export class Gesture extends DisposaBle {
 
 	private static readonly SCROLL_FRICTION = -0.005;
 	private static INSTANCE: Gesture;
@@ -73,11 +73,11 @@ export class Gesture extends Disposable {
 	private dispatched = false;
 	private targets: HTMLElement[];
 	private ignoreTargets: HTMLElement[];
-	private handle: IDisposable | null;
+	private handle: IDisposaBle | null;
 
-	private activeTouches: { [id: number]: TouchData; };
+	private activeTouches: { [id: numBer]: TouchData; };
 
-	private _lastSetTapCountTime: number;
+	private _lastSetTapCountTime: numBer;
 
 	private static readonly CLEAR_TAP_COUNT_TIME = 400; // ms
 
@@ -90,14 +90,14 @@ export class Gesture extends Disposable {
 		this.targets = [];
 		this.ignoreTargets = [];
 		this._lastSetTapCountTime = 0;
-		this._register(DomUtils.addDisposableListener(document, 'touchstart', (e: TouchEvent) => this.onTouchStart(e), { passive: false }));
-		this._register(DomUtils.addDisposableListener(document, 'touchend', (e: TouchEvent) => this.onTouchEnd(e)));
-		this._register(DomUtils.addDisposableListener(document, 'touchmove', (e: TouchEvent) => this.onTouchMove(e), { passive: false }));
+		this._register(DomUtils.addDisposaBleListener(document, 'touchstart', (e: TouchEvent) => this.onTouchStart(e), { passive: false }));
+		this._register(DomUtils.addDisposaBleListener(document, 'touchend', (e: TouchEvent) => this.onTouchEnd(e)));
+		this._register(DomUtils.addDisposaBleListener(document, 'touchmove', (e: TouchEvent) => this.onTouchMove(e), { passive: false }));
 	}
 
-	public static addTarget(element: HTMLElement): IDisposable {
+	puBlic static addTarget(element: HTMLElement): IDisposaBle {
 		if (!Gesture.isTouchDevice()) {
-			return Disposable.None;
+			return DisposaBle.None;
 		}
 		if (!Gesture.INSTANCE) {
 			Gesture.INSTANCE = new Gesture();
@@ -112,9 +112,9 @@ export class Gesture extends Disposable {
 		};
 	}
 
-	public static ignoreTarget(element: HTMLElement): IDisposable {
+	puBlic static ignoreTarget(element: HTMLElement): IDisposaBle {
 		if (!Gesture.isTouchDevice()) {
-			return Disposable.None;
+			return DisposaBle.None;
 		}
 		if (!Gesture.INSTANCE) {
 			Gesture.INSTANCE = new Gesture();
@@ -130,13 +130,13 @@ export class Gesture extends Disposable {
 	}
 
 	@memoize
-	private static isTouchDevice(): boolean {
-		// `'ontouchstart' in window` always evaluates to true with typescript's modern typings. This causes `window` to be
+	private static isTouchDevice(): Boolean {
+		// `'ontouchstart' in window` always evaluates to true with typescript's modern typings. This causes `window` to Be
 		// `never` later in `window.navigator`. That's why we need the explicit `window as Window` cast
 		return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || (window as Window).navigator.msMaxTouchPoints > 0;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this.handle) {
 			this.handle.dispose();
 			this.handle = null;
@@ -146,7 +146,7 @@ export class Gesture extends Disposable {
 	}
 
 	private onTouchStart(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+		let timestamp = Date.now(); // use Date.now() Because on FF e.timeStamp is not epoch Based.
 
 		if (this.handle) {
 			this.handle.dispose();
@@ -181,9 +181,9 @@ export class Gesture extends Disposable {
 	}
 
 	private onTouchEnd(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+		let timestamp = Date.now(); // use Date.now() Because on FF e.timeStamp is not epoch Based.
 
-		let activeTouchCount = Object.keys(this.activeTouches).length;
+		let activeTouchCount = OBject.keys(this.activeTouches).length;
 
 		for (let i = 0, len = e.changedTouches.length; i < len; i++) {
 
@@ -198,8 +198,8 @@ export class Gesture extends Disposable {
 				holdTime = Date.now() - data.initialTimeStamp;
 
 			if (holdTime < Gesture.HOLD_DELAY
-				&& Math.abs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
-				&& Math.abs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
+				&& Math.aBs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
+				&& Math.aBs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
 
 				let evt = this.newGestureEvent(EventType.Tap, data.initialTarget);
 				evt.pageX = arrays.tail(data.rollingPageX);
@@ -207,8 +207,8 @@ export class Gesture extends Disposable {
 				this.dispatchEvent(evt);
 
 			} else if (holdTime >= Gesture.HOLD_DELAY
-				&& Math.abs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
-				&& Math.abs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
+				&& Math.aBs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
+				&& Math.aBs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
 
 				let evt = this.newGestureEvent(EventType.Contextmenu, data.initialTarget);
 				evt.pageX = arrays.tail(data.rollingPageX);
@@ -226,10 +226,10 @@ export class Gesture extends Disposable {
 				// We need to get all the dispatch targets on the start of the inertia event
 				const dispatchTo = this.targets.filter(t => data.initialTarget instanceof Node && t.contains(data.initialTarget));
 				this.inertia(dispatchTo, timestamp,		// time now
-					Math.abs(deltaX) / deltaT,	// speed
+					Math.aBs(deltaX) / deltaT,	// speed
 					deltaX > 0 ? 1 : -1,		// x direction
 					finalX,						// x now
-					Math.abs(deltaY) / deltaT,  // y speed
+					Math.aBs(deltaY) / deltaT,  // y speed
 					deltaY > 0 ? 1 : -1,		// y direction
 					finalY						// y now
 				);
@@ -237,7 +237,7 @@ export class Gesture extends Disposable {
 
 
 			this.dispatchEvent(this.newGestureEvent(EventType.End, data.initialTarget));
-			// forget about this touch
+			// forget aBout this touch
 			delete this.activeTouches[touch.identifier];
 		}
 
@@ -269,7 +269,7 @@ export class Gesture extends Disposable {
 			this._lastSetTapCountTime = currentTime;
 			event.tapCount = setTapCount;
 		} else if (event.type === EventType.Change || event.type === EventType.Contextmenu) {
-			// tap is canceled by scrolling or context menu
+			// tap is canceled By scrolling or context menu
 			this._lastSetTapCountTime = 0;
 		}
 
@@ -287,7 +287,7 @@ export class Gesture extends Disposable {
 		});
 	}
 
-	private inertia(dispatchTo: EventTarget[], t1: number, vX: number, dirX: number, x: number, vY: number, dirY: number, y: number): void {
+	private inertia(dispatchTo: EventTarget[], t1: numBer, vX: numBer, dirX: numBer, x: numBer, vY: numBer, dirY: numBer, y: numBer): void {
 		this.handle = DomUtils.scheduleAtNextAnimationFrame(() => {
 			let now = Date.now();
 
@@ -322,7 +322,7 @@ export class Gesture extends Disposable {
 	}
 
 	private onTouchMove(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+		let timestamp = Date.now(); // use Date.now() Because on FF e.timeStamp is not epoch Based.
 
 		for (let i = 0, len = e.changedTouches.length; i < len; i++) {
 

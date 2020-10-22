@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as pfs from 'vs/base/node/pfs';
-import { join } from 'vs/base/common/path';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IConfigurationCache, ConfigurationKey } from 'vs/workbench/services/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import * as pfs from 'vs/Base/node/pfs';
+import { join } from 'vs/Base/common/path';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { IConfigurationCache, ConfigurationKey } from 'vs/workBench/services/configuration/common/configuration';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
 
 export class ConfigurationCache implements IConfigurationCache {
 
 	private readonly cachedConfigurations: Map<string, CachedConfiguration> = new Map<string, CachedConfiguration>();
 
-	constructor(private readonly environmentService: INativeWorkbenchEnvironmentService) {
+	constructor(private readonly environmentService: INativeWorkBenchEnvironmentService) {
 	}
 
-	needsCaching(resource: URI): boolean {
+	needsCaching(resource: URI): Boolean {
 		// Cache all non native resources
 		return ![Schemas.file, Schemas.userData].includes(resource.scheme);
 	}
@@ -54,7 +54,7 @@ class CachedConfiguration {
 
 	constructor(
 		{ type, key }: ConfigurationKey,
-		environmentService: INativeWorkbenchEnvironmentService
+		environmentService: INativeWorkBenchEnvironmentService
 	) {
 		this.cachedConfigurationFolderPath = join(environmentService.userDataPath, 'CachedConfigurations', type, key);
 		this.cachedConfigurationFilePath = join(this.cachedConfigurationFolderPath, type === 'workspaces' ? 'workspace.json' : 'configuration.json');
@@ -80,7 +80,7 @@ class CachedConfiguration {
 		return pfs.rimraf(this.cachedConfigurationFolderPath);
 	}
 
-	private createCachedFolder(): Promise<boolean> {
+	private createCachedFolder(): Promise<Boolean> {
 		return Promise.resolve(pfs.exists(this.cachedConfigurationFolderPath))
 			.then(undefined, () => false)
 			.then(exists => exists ? exists : pfs.mkdirp(this.cachedConfigurationFolderPath).then(() => true, () => false));

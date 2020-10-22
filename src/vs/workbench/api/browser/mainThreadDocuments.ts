@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { IReference, dispose, Disposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { IReference, dispose, DisposaBle } from 'vs/Base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService, shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { IFileService, FileOperation } from 'vs/platform/files/common/files';
-import { MainThreadDocumentsAndEditors } from 'vs/workbench/api/browser/mainThreadDocumentsAndEditors';
-import { ExtHostContext, ExtHostDocumentsShape, IExtHostContext, MainThreadDocumentsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ITextEditorModel } from 'vs/workbench/common/editor';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { toLocalResource, extUri, IExtUri } from 'vs/base/common/resources';
-import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { Emitter } from 'vs/base/common/event';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { MainThreadDocumentsAndEditors } from 'vs/workBench/api/Browser/mainThreadDocumentsAndEditors';
+import { ExtHostContext, ExtHostDocumentsShape, IExtHostContext, MainThreadDocumentsShape } from 'vs/workBench/api/common/extHost.protocol';
+import { ITextEditorModel } from 'vs/workBench/common/editor';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { toLocalResource, extUri, IExtUri } from 'vs/Base/common/resources';
+import { IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
+import { Emitter } from 'vs/Base/common/event';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
 
 export class BoundModelReferenceCollection {
 
-	private _data = new Array<{ uri: URI, length: number, dispose(): void }>();
+	private _data = new Array<{ uri: URI, length: numBer, dispose(): void }>();
 	private _length = 0;
 
 	constructor(
 		private readonly _extUri: IExtUri,
-		private readonly _maxAge: number = 1000 * 60 * 3,
-		private readonly _maxLength: number = 1024 * 1024 * 80,
+		private readonly _maxAge: numBer = 1000 * 60 * 3,
+		private readonly _maxLength: numBer = 1024 * 1024 * 80,
 	) {
 		//
 	}
@@ -40,7 +40,7 @@ export class BoundModelReferenceCollection {
 	}
 
 	remove(uri: URI): void {
-		for (const entry of [...this._data] /* copy array because dispose will modify it */) {
+		for (const entry of [...this._data] /* copy array Because dispose will modify it */) {
 			if (this._extUri.isEqualOrParent(entry.uri, uri)) {
 				entry.dispose();
 			}
@@ -48,9 +48,9 @@ export class BoundModelReferenceCollection {
 	}
 
 	add(uri: URI, ref: IReference<ITextEditorModel>): void {
-		const length = ref.object.textEditorModel.getValueLength();
+		const length = ref.oBject.textEditorModel.getValueLength();
 		let handle: any;
-		let entry: { uri: URI, length: number, dispose(): void };
+		let entry: { uri: URI, length: numBer, dispose(): void };
 		const dispose = () => {
 			const idx = this._data.indexOf(entry);
 			if (idx >= 0) {
@@ -75,9 +75,9 @@ export class BoundModelReferenceCollection {
 	}
 }
 
-class ModelTracker extends Disposable {
+class ModelTracker extends DisposaBle {
 
-	private _knownVersionId: number;
+	private _knownVersionId: numBer;
 
 	constructor(
 		private readonly _model: ITextModel,
@@ -96,21 +96,21 @@ class ModelTracker extends Disposable {
 		}));
 	}
 
-	public isCaughtUpWithContentChanges(): boolean {
+	puBlic isCaughtUpWithContentChanges(): Boolean {
 		return (this._model.getVersionId() === this._knownVersionId);
 	}
 }
 
-export class MainThreadDocuments extends Disposable implements MainThreadDocumentsShape {
+export class MainThreadDocuments extends DisposaBle implements MainThreadDocumentsShape {
 
 	private _onIsCaughtUpWithContentChanges = this._register(new Emitter<URI>());
-	public readonly onIsCaughtUpWithContentChanges = this._onIsCaughtUpWithContentChanges.event;
+	puBlic readonly onIsCaughtUpWithContentChanges = this._onIsCaughtUpWithContentChanges.event;
 
 	private readonly _modelService: IModelService;
 	private readonly _textModelResolverService: ITextModelService;
 	private readonly _textFileService: ITextFileService;
 	private readonly _fileService: IFileService;
-	private readonly _environmentService: IWorkbenchEnvironmentService;
+	private readonly _environmentService: IWorkBenchEnvironmentService;
 	private readonly _uriIdentityService: IUriIdentityService;
 
 	private _modelTrackers: { [modelUrl: string]: ModelTracker; };
@@ -125,7 +125,7 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 		@ITextFileService textFileService: ITextFileService,
 		@IFileService fileService: IFileService,
 		@ITextModelService textModelResolverService: ITextModelService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService,
 		@IWorkingCopyFileService workingCopyFileService: IWorkingCopyFileService,
 		@IPathService private readonly _pathService: IPathService
@@ -167,18 +167,18 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 			}
 		}));
 
-		this._modelTrackers = Object.create(null);
+		this._modelTrackers = OBject.create(null);
 	}
 
-	public dispose(): void {
-		Object.keys(this._modelTrackers).forEach((modelUrl) => {
+	puBlic dispose(): void {
+		OBject.keys(this._modelTrackers).forEach((modelUrl) => {
 			this._modelTrackers[modelUrl].dispose();
 		});
-		this._modelTrackers = Object.create(null);
+		this._modelTrackers = OBject.create(null);
 		super.dispose();
 	}
 
-	public isCaughtUpWithContentChanges(resource: URI): boolean {
+	puBlic isCaughtUpWithContentChanges(resource: URI): Boolean {
 		const modelUrl = resource.toString();
 		if (this._modelTrackers[modelUrl]) {
 			return this._modelTrackers[modelUrl].isCaughtUpWithContentChanges();
@@ -186,7 +186,7 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 		return true;
 	}
 
-	private _shouldHandleFileEvent(resource: URI): boolean {
+	private _shouldHandleFileEvent(resource: URI): Boolean {
 		const model = this._modelService.getModel(resource);
 		return !!model && shouldSynchronizeModel(model);
 	}
@@ -223,14 +223,14 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 
 	// --- from extension host process
 
-	$trySaveDocument(uri: UriComponents): Promise<boolean> {
+	$trySaveDocument(uri: UriComponents): Promise<Boolean> {
 		return this._textFileService.save(URI.revive(uri)).then(target => !!target);
 	}
 
 	$tryOpenDocument(uriData: UriComponents): Promise<URI> {
 		const inputUri = URI.revive(uriData);
 		if (!inputUri.scheme || !(inputUri.fsPath || inputUri.authority)) {
-			return Promise.reject(new Error(`Invalid uri. Scheme and authority or path must be set.`));
+			return Promise.reject(new Error(`Invalid uri. Scheme and authority or path must Be set.`));
 		}
 
 		const canonicalUri = this._uriIdentityService.asCanonicalUri(inputUri);
@@ -239,11 +239,11 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 		switch (canonicalUri.scheme) {
 			case Schemas.untitled:
 				promise = this._handleUntitledScheme(canonicalUri);
-				break;
+				Break;
 			case Schemas.file:
 			default:
 				promise = this._handleAsResourceInput(canonicalUri);
-				break;
+				Break;
 		}
 
 		return promise.then(documentUri => {
@@ -252,7 +252,7 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 			} else if (!extUri.isEqual(documentUri, canonicalUri)) {
 				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: Actual document opened as ${documentUri.toString()}`));
 			} else if (!this._modelIsSynced.has(canonicalUri.toString())) {
-				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: Files above 50MB cannot be synchronized with extensions.`));
+				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: Files aBove 50MB cannot Be synchronized with extensions.`));
 			} else {
 				return canonicalUri;
 			}
@@ -268,7 +268,7 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 	private _handleAsResourceInput(uri: URI): Promise<URI> {
 		return this._textModelResolverService.createModelReference(uri).then(ref => {
 			this._modelReferenceCollection.add(uri, ref);
-			return ref.object.textEditorModel.uri;
+			return ref.oBject.textEditorModel.uri;
 		});
 	}
 

@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CellKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { setupInstantiationService, withTestNotebook } from 'vs/workbench/contrib/notebook/test/testNotebookEditor';
-import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
+import { CellKind } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { setupInstantiationService, withTestNoteBook } from 'vs/workBench/contriB/noteBook/test/testNoteBookEditor';
+import { IBulkEditService } from 'vs/editor/Browser/services/BulkEditService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { FoldingModel } from 'vs/workbench/contrib/notebook/browser/contrib/fold/foldingModel';
+import { FoldingModel } from 'vs/workBench/contriB/noteBook/Browser/contriB/fold/foldingModel';
 
-function updateFoldingStateAtIndex(foldingModel: FoldingModel, index: number, collapsed: boolean) {
+function updateFoldingStateAtIndex(foldingModel: FoldingModel, index: numBer, collapsed: Boolean) {
 	const range = foldingModel.regions.findRange(index + 1);
 	foldingModel.setCollapsed(range, collapsed);
 }
 
-suite('Notebook Folding', () => {
+suite('NoteBook Folding', () => {
 	const instantiationService = setupInstantiationService();
-	const blukEditService = instantiationService.get(IBulkEditService);
-	const undoRedoService = instantiationService.stub(IUndoRedoService, () => { });
+	const BlukEditService = instantiationService.get(IBulkEditService);
+	const undoRedoService = instantiationService.stuB(IUndoRedoService, () => { });
 	instantiationService.spy(IUndoRedoService, 'pushElement');
 
-	test('Folding based on markdown cells', function () {
-		withTestNotebook(
+	test('Folding Based on markdown cells', function () {
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.1', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -51,16 +51,16 @@ suite('Notebook Folding', () => {
 	});
 
 	test('Top level header in a cell wins', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.1\n# header3', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -70,31 +70,31 @@ suite('Notebook Folding', () => {
 
 				assert.equal(foldingController.regions.findRange(1), 0);
 				assert.equal(foldingController.regions.findRange(2), 0);
-				assert.equal(foldingController.regions.getEndLineNumber(0), 2);
+				assert.equal(foldingController.regions.getEndLineNumBer(0), 2);
 
 				assert.equal(foldingController.regions.findRange(3), 1);
 				assert.equal(foldingController.regions.findRange(4), 1);
 				assert.equal(foldingController.regions.findRange(5), 1);
-				assert.equal(foldingController.regions.getEndLineNumber(1), 7);
+				assert.equal(foldingController.regions.getEndLineNumBer(1), 7);
 
 				assert.equal(foldingController.regions.findRange(6), 2);
 				assert.equal(foldingController.regions.findRange(7), 2);
-				assert.equal(foldingController.regions.getEndLineNumber(2), 7);
+				assert.equal(foldingController.regions.getEndLineNumBer(2), 7);
 			}
 		);
 	});
 
 	test('Folding', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.1', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -109,16 +109,16 @@ suite('Notebook Folding', () => {
 			}
 		);
 
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -134,16 +134,16 @@ suite('Notebook Folding', () => {
 			}
 		);
 
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -161,16 +161,16 @@ suite('Notebook Folding', () => {
 	});
 
 	test('Nested Folding', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -218,21 +218,21 @@ suite('Notebook Folding', () => {
 	});
 
 	test('Folding Memento', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -249,21 +249,21 @@ suite('Notebook Folding', () => {
 			}
 		);
 
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -284,21 +284,21 @@ suite('Notebook Folding', () => {
 			}
 		);
 
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -321,21 +321,21 @@ suite('Notebook Folding', () => {
 	});
 
 	test('View Index', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -350,31 +350,31 @@ suite('Notebook Folding', () => {
 					{ start: 3, end: 6 }
 				]);
 
-				assert.equal(viewModel.getNextVisibleCellIndex(1), 2);
-				assert.equal(viewModel.getNextVisibleCellIndex(2), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(3), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(4), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(5), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(6), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(7), 8);
+				assert.equal(viewModel.getNextVisiBleCellIndex(1), 2);
+				assert.equal(viewModel.getNextVisiBleCellIndex(2), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(3), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(4), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(5), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(6), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(7), 8);
 			}
 		);
 
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['# header 1', 'markdown', CellKind.Markdown, [], {}],
-				['body', 'markdown', CellKind.Markdown, [], {}],
+				['Body', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 				['# header 2.1\n', 'markdown', CellKind.Markdown, [], {}],
-				['body 2', 'markdown', CellKind.Markdown, [], {}],
-				['body 3', 'markdown', CellKind.Markdown, [], {}],
+				['Body 2', 'markdown', CellKind.Markdown, [], {}],
+				['Body 3', 'markdown', CellKind.Markdown, [], {}],
 				['## header 2.2', 'markdown', CellKind.Markdown, [], {}],
 				['var e = 7;', 'markdown', CellKind.Markdown, [], {}],
 			],
@@ -397,13 +397,13 @@ suite('Notebook Folding', () => {
 				// folding ranges
 				// [5, 6]
 				// [10, 11]
-				assert.equal(viewModel.getNextVisibleCellIndex(4), 5);
-				assert.equal(viewModel.getNextVisibleCellIndex(5), 7);
-				assert.equal(viewModel.getNextVisibleCellIndex(6), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(4), 5);
+				assert.equal(viewModel.getNextVisiBleCellIndex(5), 7);
+				assert.equal(viewModel.getNextVisiBleCellIndex(6), 7);
 
-				assert.equal(viewModel.getNextVisibleCellIndex(9), 10);
-				assert.equal(viewModel.getNextVisibleCellIndex(10), 12);
-				assert.equal(viewModel.getNextVisibleCellIndex(11), 12);
+				assert.equal(viewModel.getNextVisiBleCellIndex(9), 10);
+				assert.equal(viewModel.getNextVisiBleCellIndex(10), 12);
+				assert.equal(viewModel.getNextVisiBleCellIndex(11), 12);
 			}
 		);
 	});

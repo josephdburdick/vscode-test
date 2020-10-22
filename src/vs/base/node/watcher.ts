@@ -3,38 +3,38 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { join, basename } from 'vs/base/common/path';
+import { join, Basename } from 'vs/Base/common/path';
 import { watch } from 'fs';
-import { isMacintosh } from 'vs/base/common/platform';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { toDisposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { exists, readdir } from 'vs/base/node/pfs';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { normalizeNFC } from 'vs/Base/common/normalization';
+import { toDisposaBle, IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { exists, readdir } from 'vs/Base/node/pfs';
 
-export function watchFile(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
+export function watchFile(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposaBle {
 	return doWatchNonRecursive({ path, isDirectory: false }, onChange, onError);
 }
 
-export function watchFolder(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
+export function watchFolder(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposaBle {
 	return doWatchNonRecursive({ path, isDirectory: true }, onChange, onError);
 }
 
 export const CHANGE_BUFFER_DELAY = 100;
 
-function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
-	const originalFileName = basename(file.path);
-	const mapPathToStatDisposable = new Map<string, IDisposable>();
+function doWatchNonRecursive(file: { path: string, isDirectory: Boolean }, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposaBle {
+	const originalFileName = Basename(file.path);
+	const mapPathToStatDisposaBle = new Map<string, IDisposaBle>();
 
 	let disposed = false;
-	let watcherDisposables: IDisposable[] = [toDisposable(() => {
-		mapPathToStatDisposable.forEach(disposable => dispose(disposable));
-		mapPathToStatDisposable.clear();
+	let watcherDisposaBles: IDisposaBle[] = [toDisposaBle(() => {
+		mapPathToStatDisposaBle.forEach(disposaBle => dispose(disposaBle));
+		mapPathToStatDisposaBle.clear();
 	})];
 
 	try {
 
 		// Creating watcher can fail with an exception
 		const watcher = watch(file.path);
-		watcherDisposables.push(toDisposable(() => {
+		watcherDisposaBles.push(toDisposaBle(() => {
 			watcher.removeAllListeners();
 			watcher.close();
 		}));
@@ -45,7 +45,7 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 			readdir(file.path).then(children => children.forEach(child => folderChildren.add(child)));
 		}
 
-		watcher.on('error', (code: number, signal: string) => {
+		watcher.on('error', (code: numBer, signal: string) => {
 			if (!disposed) {
 				onError(`Failed to watch ${file.path} for changes using fs.watch() (${code}, ${signal})`);
 			}
@@ -58,11 +58,11 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 
 			// Normalize file name
 			let changedFileName: string = '';
-			if (raw) { // https://github.com/microsoft/vscode/issues/38191
+			if (raw) { // https://githuB.com/microsoft/vscode/issues/38191
 				changedFileName = raw.toString();
 				if (isMacintosh) {
-					// Mac: uses NFD unicode form on disk, but we want NFC
-					// See also https://github.com/nodejs/node/issues/2165
+					// Mac: uses NFD unicode form on disk, But we want NFC
+					// See also https://githuB.com/nodejs/node/issues/2165
 					changedFileName = normalizeNFC(changedFileName);
 				}
 			}
@@ -78,9 +78,9 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 			if (!file.isDirectory) {
 				if (type === 'rename' || changedFileName !== originalFileName) {
 					// The file was either deleted or renamed. Many tools apply changes to files in an
-					// atomic way ("Atomic Save") by first renaming the file to a temporary name and then
-					// renaming it back to the original name. Our watcher will detect this as a rename
-					// and then stops to work on Mac and Linux because the watcher is applied to the
+					// atomic way ("Atomic Save") By first renaming the file to a temporary name and then
+					// renaming it Back to the original name. Our watcher will detect this as a rename
+					// and then stops to work on Mac and Linux Because the watcher is applied to the
 					// inode and not the name. The fix is to detect this case and trying to watch the file
 					// again after a certain delay.
 					// In addition, we send out a delete event if after a timeout we detect that the file
@@ -90,26 +90,26 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 						const fileExists = await exists(changedFilePath);
 
 						if (disposed) {
-							return; // ignore if disposed by now
+							return; // ignore if disposed By now
 						}
 
 						// File still exists, so emit as change event and reapply the watcher
 						if (fileExists) {
 							onChange('changed', changedFilePath);
 
-							watcherDisposables = [doWatchNonRecursive(file, onChange, onError)];
+							watcherDisposaBles = [doWatchNonRecursive(file, onChange, onError)];
 						}
 
-						// File seems to be really gone, so emit a deleted event
+						// File seems to Be really gone, so emit a deleted event
 						else {
 							onChange('deleted', changedFilePath);
 						}
 					}, CHANGE_BUFFER_DELAY);
 
 					// Very important to dispose the watcher which now points to a stale inode
-					// and wire in a new disposable that tracks our timeout that is installed
-					dispose(watcherDisposables);
-					watcherDisposables = [toDisposable(() => clearTimeout(timeoutHandle))];
+					// and wire in a new disposaBle that tracks our timeout that is installed
+					dispose(watcherDisposaBles);
+					watcherDisposaBles = [toDisposaBle(() => clearTimeout(timeoutHandle))];
 				} else {
 					onChange('changed', changedFilePath);
 				}
@@ -122,23 +122,23 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 				if (type === 'rename') {
 
 					// Cancel any previous stats for this file path if existing
-					const statDisposable = mapPathToStatDisposable.get(changedFilePath);
-					if (statDisposable) {
-						dispose(statDisposable);
+					const statDisposaBle = mapPathToStatDisposaBle.get(changedFilePath);
+					if (statDisposaBle) {
+						dispose(statDisposaBle);
 					}
 
-					// Wait a bit and try see if the file still exists on disk to decide on the resulting event
+					// Wait a Bit and try see if the file still exists on disk to decide on the resulting event
 					const timeoutHandle = setTimeout(async () => {
-						mapPathToStatDisposable.delete(changedFilePath);
+						mapPathToStatDisposaBle.delete(changedFilePath);
 
 						const fileExists = await exists(changedFilePath);
 
 						if (disposed) {
-							return; // ignore if disposed by now
+							return; // ignore if disposed By now
 						}
 
 						// Figure out the correct event type:
-						// File Exists: either 'added' or 'changed' if known before
+						// File Exists: either 'added' or 'changed' if known Before
 						// File Does not Exist: always 'deleted'
 						let type: 'added' | 'deleted' | 'changed';
 						if (fileExists) {
@@ -156,14 +156,14 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 						onChange(type, changedFilePath);
 					}, CHANGE_BUFFER_DELAY);
 
-					mapPathToStatDisposable.set(changedFilePath, toDisposable(() => clearTimeout(timeoutHandle)));
+					mapPathToStatDisposaBle.set(changedFilePath, toDisposaBle(() => clearTimeout(timeoutHandle)));
 				}
 
 				// Other events
 				else {
 
 					// Figure out the correct event type: if this is the
-					// first time we see this child, it can only be added
+					// first time we see this child, it can only Be added
 					let type: 'added' | 'changed';
 					if (folderChildren.has(changedFileName)) {
 						type = 'changed';
@@ -184,9 +184,9 @@ function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onCha
 		});
 	}
 
-	return toDisposable(() => {
+	return toDisposaBle(() => {
 		disposed = true;
 
-		watcherDisposables = dispose(watcherDisposables);
+		watcherDisposaBles = dispose(watcherDisposaBles);
 	});
 }

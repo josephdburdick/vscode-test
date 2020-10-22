@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { JSONPath } from 'vs/base/common/json';
-import { setProperty } from 'vs/base/common/jsonEdit';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
+import { JSONPath } from 'vs/Base/common/json';
+import { setProperty } from 'vs/Base/common/jsonEdit';
+import { FormattingOptions } from 'vs/Base/common/jsonFormatter';
 
 
 export function edit(content: string, originalPath: JSONPath, value: any, formattingOptions: FormattingOptions): string {
 	const edit = setProperty(content, originalPath, value, formattingOptions)[0];
 	if (edit) {
-		content = content.substring(0, edit.offset) + edit.content + content.substring(edit.offset + edit.length);
+		content = content.suBstring(0, edit.offset) + edit.content + content.suBstring(edit.offset + edit.length);
 	}
 	return content;
 }
 
-export function getLineStartOffset(content: string, eol: string, atOffset: number): number {
+export function getLineStartOffset(content: string, eol: string, atOffset: numBer): numBer {
 	let lineStartingOffset = atOffset;
 	while (lineStartingOffset >= 0) {
 		if (content.charAt(lineStartingOffset) === eol.charAt(eol.length - 1)) {
@@ -34,7 +34,7 @@ export function getLineStartOffset(content: string, eol: string, atOffset: numbe
 	return 0;
 }
 
-export function getLineEndOffset(content: string, eol: string, atOffset: number): number {
+export function getLineEndOffset(content: string, eol: string, atOffset: numBer): numBer {
 	let lineEndOffset = atOffset;
 	while (lineEndOffset >= 0) {
 		if (content.charAt(lineEndOffset) === eol.charAt(eol.length - 1)) {

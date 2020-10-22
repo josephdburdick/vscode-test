@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as extpath from 'vs/base/common/extpath';
-import * as platform from 'vs/base/common/platform';
-import { CharCode } from 'vs/base/common/charCode';
+import * as extpath from 'vs/Base/common/extpath';
+import * as platform from 'vs/Base/common/platform';
+import { CharCode } from 'vs/Base/common/charCode';
 
 suite('Paths', () => {
 
 	test('toForwardSlashes', () => {
 		assert.equal(extpath.toSlashes('\\\\server\\share\\some\\path'), '//server/share/some/path');
 		assert.equal(extpath.toSlashes('c:\\test'), 'c:/test');
-		assert.equal(extpath.toSlashes('foo\\bar'), 'foo/bar');
+		assert.equal(extpath.toSlashes('foo\\Bar'), 'foo/Bar');
 		assert.equal(extpath.toSlashes('/user/far'), '/user/far');
 	});
 
@@ -38,8 +38,8 @@ suite('Paths', () => {
 			assert.ok(!extpath.isUNC('/foo'));
 			assert.ok(!extpath.isUNC('\\foo'));
 			assert.ok(!extpath.isUNC('\\\\foo'));
-			assert.ok(extpath.isUNC('\\\\a\\b'));
-			assert.ok(!extpath.isUNC('//a/b'));
+			assert.ok(extpath.isUNC('\\\\a\\B'));
+			assert.ok(!extpath.isUNC('//a/B'));
 			assert.ok(extpath.isUNC('\\\\server\\share'));
 			assert.ok(extpath.isUNC('\\\\server\\share\\'));
 			assert.ok(extpath.isUNC('\\\\server\\share\\path'));
@@ -58,7 +58,7 @@ suite('Paths', () => {
 			assert.ok(!extpath.isValidBasename('Aux'));
 			assert.ok(!extpath.isValidBasename('LPT0'));
 			assert.ok(!extpath.isValidBasename('aux.txt'));
-			assert.ok(!extpath.isValidBasename('com0.abc'));
+			assert.ok(!extpath.isValidBasename('com0.aBc'));
 			assert.ok(extpath.isValidBasename('LPT00'));
 			assert.ok(extpath.isValidBasename('aux1'));
 			assert.ok(extpath.isValidBasename('aux1.txt'));
@@ -131,7 +131,7 @@ suite('Paths', () => {
 	});
 
 	test('indexOfPath', () => {
-		assert.equal(extpath.indexOfPath('/foo', '/bar', true), -1);
+		assert.equal(extpath.indexOfPath('/foo', '/Bar', true), -1);
 		assert.equal(extpath.indexOfPath('/foo', '/FOO', false), -1);
 		assert.equal(extpath.indexOfPath('/foo', '/FOO', true), 0);
 		assert.equal(extpath.indexOfPath('/some/long/path', '/some/long', false), 0);
@@ -139,38 +139,38 @@ suite('Paths', () => {
 	});
 
 	test('parseLineAndColumnAware', () => {
-		let res = extpath.parseLineAndColumnAware('/foo/bar');
-		assert.equal(res.path, '/foo/bar');
+		let res = extpath.parseLineAndColumnAware('/foo/Bar');
+		assert.equal(res.path, '/foo/Bar');
 		assert.equal(res.line, undefined);
 		assert.equal(res.column, undefined);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:33');
-		assert.equal(res.path, '/foo/bar');
+		res = extpath.parseLineAndColumnAware('/foo/Bar:33');
+		assert.equal(res.path, '/foo/Bar');
 		assert.equal(res.line, 33);
 		assert.equal(res.column, 1);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:33:34');
-		assert.equal(res.path, '/foo/bar');
+		res = extpath.parseLineAndColumnAware('/foo/Bar:33:34');
+		assert.equal(res.path, '/foo/Bar');
 		assert.equal(res.line, 33);
 		assert.equal(res.column, 34);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar');
-		assert.equal(res.path, 'C:\\foo\\bar');
+		res = extpath.parseLineAndColumnAware('C:\\foo\\Bar');
+		assert.equal(res.path, 'C:\\foo\\Bar');
 		assert.equal(res.line, undefined);
 		assert.equal(res.column, undefined);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar:33');
-		assert.equal(res.path, 'C:\\foo\\bar');
+		res = extpath.parseLineAndColumnAware('C:\\foo\\Bar:33');
+		assert.equal(res.path, 'C:\\foo\\Bar');
 		assert.equal(res.line, 33);
 		assert.equal(res.column, 1);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar:33:34');
-		assert.equal(res.path, 'C:\\foo\\bar');
+		res = extpath.parseLineAndColumnAware('C:\\foo\\Bar:33:34');
+		assert.equal(res.path, 'C:\\foo\\Bar');
 		assert.equal(res.line, 33);
 		assert.equal(res.column, 34);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:abb');
-		assert.equal(res.path, '/foo/bar:abb');
+		res = extpath.parseLineAndColumnAware('/foo/Bar:aBB');
+		assert.equal(res.path, '/foo/Bar:aBB');
 		assert.equal(res.line, undefined);
 		assert.equal(res.column, undefined);
 	});

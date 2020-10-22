@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { nodeSocketFactory } from 'vs/platform/remote/node/nodeSocketFactory';
-import { AbstractRemoteAgentService } from 'vs/workbench/services/remote/common/abstractRemoteAgentService';
+import { ABstractRemoteAgentService } from 'vs/workBench/services/remote/common/aBstractRemoteAgentService';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
-export class RemoteAgentService extends AbstractRemoteAgentService implements IRemoteAgentService {
+export class RemoteAgentService extends ABstractRemoteAgentService implements IRemoteAgentService {
 	constructor(
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IProductService productService: IProductService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ISignService signService: ISignService,

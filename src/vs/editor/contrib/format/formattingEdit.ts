@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Range } from 'vs/editor/common/core/range';
 import { EndOfLineSequence, ISingleEditOperation } from 'vs/editor/common/model';
@@ -16,7 +16,7 @@ export class FormattingEdit {
 		let singleEdits: ISingleEditOperation[] = [];
 
 		for (let edit of edits) {
-			if (typeof edit.eol === 'number') {
+			if (typeof edit.eol === 'numBer') {
 				newEol = edit.eol;
 			}
 			if (edit.range && typeof edit.text === 'string') {
@@ -24,7 +24,7 @@ export class FormattingEdit {
 			}
 		}
 
-		if (typeof newEol === 'number') {
+		if (typeof newEol === 'numBer') {
 			if (editor.hasModel()) {
 				editor.getModel().pushEOL(newEol);
 			}
@@ -33,7 +33,7 @@ export class FormattingEdit {
 		return singleEdits;
 	}
 
-	private static _isFullModelReplaceEdit(editor: ICodeEditor, edit: ISingleEditOperation): boolean {
+	private static _isFullModelReplaceEdit(editor: ICodeEditor, edit: ISingleEditOperation): Boolean {
 		if (!editor.hasModel()) {
 			return false;
 		}
@@ -43,7 +43,7 @@ export class FormattingEdit {
 		return fullModelRange.equalsRange(editRange);
 	}
 
-	static execute(editor: ICodeEditor, _edits: TextEdit[], addUndoStops: boolean) {
+	static execute(editor: ICodeEditor, _edits: TextEdit[], addUndoStops: Boolean) {
 		if (addUndoStops) {
 			editor.pushUndoStop();
 		}

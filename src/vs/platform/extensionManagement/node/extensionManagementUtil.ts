@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { buffer } from 'vs/base/node/zip';
+import { Buffer } from 'vs/Base/node/zip';
 import { localize } from 'vs/nls';
 import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
 
 export function getManifest(vsix: string): Promise<IExtensionManifest> {
-	return buffer(vsix, 'extension/package.json')
-		.then(buffer => {
+	return Buffer(vsix, 'extension/package.json')
+		.then(Buffer => {
 			try {
-				return JSON.parse(buffer.toString('utf8'));
+				return JSON.parse(Buffer.toString('utf8'));
 			} catch (err) {
 				throw new Error(localize('invalidManifest', "VSIX invalid: package.json is not a JSON file."));
 			}

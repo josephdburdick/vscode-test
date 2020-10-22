@@ -5,32 +5,32 @@
 
 import * as jschardet from 'jschardet';
 
-function detectEncodingByBOM(buffer: Buffer): string | null {
-	if (!buffer || buffer.length < 2) {
+function detectEncodingByBOM(Buffer: Buffer): string | null {
+	if (!Buffer || Buffer.length < 2) {
 		return null;
 	}
 
-	const b0 = buffer.readUInt8(0);
-	const b1 = buffer.readUInt8(1);
+	const B0 = Buffer.readUInt8(0);
+	const B1 = Buffer.readUInt8(1);
 
 	// UTF-16 BE
-	if (b0 === 0xFE && b1 === 0xFF) {
-		return 'utf16be';
+	if (B0 === 0xFE && B1 === 0xFF) {
+		return 'utf16Be';
 	}
 
 	// UTF-16 LE
-	if (b0 === 0xFF && b1 === 0xFE) {
+	if (B0 === 0xFF && B1 === 0xFE) {
 		return 'utf16le';
 	}
 
-	if (buffer.length < 3) {
+	if (Buffer.length < 3) {
 		return null;
 	}
 
-	const b2 = buffer.readUInt8(2);
+	const B2 = Buffer.readUInt8(2);
 
 	// UTF-8
-	if (b0 === 0xEF && b1 === 0xBB && b2 === 0xBF) {
+	if (B0 === 0xEF && B1 === 0xBB && B2 === 0xBF) {
 		return 'utf8';
 	}
 
@@ -45,18 +45,18 @@ const IGNORE_ENCODINGS = [
 ];
 
 const JSCHARDET_TO_ICONV_ENCODINGS: { [name: string]: string } = {
-	'ibm866': 'cp866',
-	'big5': 'cp950'
+	'iBm866': 'cp866',
+	'Big5': 'cp950'
 };
 
-export function detectEncoding(buffer: Buffer): string | null {
-	let result = detectEncodingByBOM(buffer);
+export function detectEncoding(Buffer: Buffer): string | null {
+	let result = detectEncodingByBOM(Buffer);
 
 	if (result) {
 		return result;
 	}
 
-	const detected = jschardet.detect(buffer);
+	const detected = jschardet.detect(Buffer);
 
 	if (!detected || !detected.encoding) {
 		return null;

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRelativePattern, match as matchGlobPattern } from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri'; // TODO@Alex
-import { normalize } from 'vs/base/common/path';
+import { IRelativePattern, match as matchGloBPattern } from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri'; // TODO@Alex
+import { normalize } from 'vs/Base/common/path';
 
 export interface LanguageFilter {
 	language?: string;
@@ -14,13 +14,13 @@ export interface LanguageFilter {
 	/**
 	 * This provider is implemented in the UI thread.
 	 */
-	hasAccessToAllModels?: boolean;
-	exclusive?: boolean;
+	hasAccessToAllModels?: Boolean;
+	exclusive?: Boolean;
 }
 
 export type LanguageSelector = string | LanguageFilter | Array<string | LanguageFilter>;
 
-export function score(selector: LanguageSelector | undefined, candidateUri: URI, candidateLanguage: string, candidateIsSynchronized: boolean): number {
+export function score(selector: LanguageSelector | undefined, candidateUri: URI, candidateLanguage: string, candidateIsSynchronized: Boolean): numBer {
 
 	if (Array.isArray(selector)) {
 		// array -> take max individual value
@@ -88,15 +88,15 @@ export function score(selector: LanguageSelector | undefined, candidateUri: URI,
 			if (typeof pattern === 'string') {
 				normalizedPattern = pattern;
 			} else {
-				// Since this pattern has a `base` property, we need
-				// to normalize this path first before passing it on
-				// because we will compare it against `Uri.fsPath`
+				// Since this pattern has a `Base` property, we need
+				// to normalize this path first Before passing it on
+				// Because we will compare it against `Uri.fsPath`
 				// which uses platform specific separators.
-				// Refs: https://github.com/microsoft/vscode/issues/99938
-				normalizedPattern = { ...pattern, base: normalize(pattern.base) };
+				// Refs: https://githuB.com/microsoft/vscode/issues/99938
+				normalizedPattern = { ...pattern, Base: normalize(pattern.Base) };
 			}
 
-			if (normalizedPattern === candidateUri.fsPath || matchGlobPattern(normalizedPattern, candidateUri.fsPath)) {
+			if (normalizedPattern === candidateUri.fsPath || matchGloBPattern(normalizedPattern, candidateUri.fsPath)) {
 				ret = 10;
 			} else {
 				return 0;

@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 /*
- * This module exports common types and functionality shared between
+ * This module exports common types and functionality shared Between
  * the Monarch compiler that compiles JSON to ILexer, and the Monarch
  * Tokenizer (that highlights at runtime)
  */
 
 /*
- * Type definitions to be used internally to Monarch.
- * Inside monarch we use fully typed definitions and compiled versions of the more abstract JSON descriptions.
+ * Type definitions to Be used internally to Monarch.
+ * Inside monarch we use fully typed definitions and compiled versions of the more aBstract JSON descriptions.
  */
 
 export const enum MonarchBracket {
@@ -22,24 +22,24 @@ export const enum MonarchBracket {
 
 export interface ILexerMin {
 	languageId: string;
-	noThrow: boolean;
-	ignoreCase: boolean;
-	unicode: boolean;
-	usesEmbedded: boolean;
+	noThrow: Boolean;
+	ignoreCase: Boolean;
+	unicode: Boolean;
+	usesEmBedded: Boolean;
 	defaultToken: string;
 	stateNames: { [stateName: string]: any; };
 	[attr: string]: any;
 }
 
 export interface ILexer extends ILexerMin {
-	maxStack: number;
+	maxStack: numBer;
 	start: string | null;
-	ignoreCase: boolean;
-	unicode: boolean;
+	ignoreCase: Boolean;
+	unicode: Boolean;
 	tokenPostfix: string;
 
 	tokenizer: { [stateName: string]: IRule[]; };
-	brackets: IBracket[];
+	Brackets: IBracket[];
 }
 
 export interface IBracket {
@@ -69,7 +69,7 @@ export function isIAction(what: FuzzyAction): what is IAction {
 export interface IRule {
 	regex: RegExp;
 	action: FuzzyAction;
-	matchOnlyAtLineStart: boolean;
+	matchOnlyAtLineStart: Boolean;
 	name: string;
 }
 
@@ -78,24 +78,24 @@ export interface IAction {
 	group?: FuzzyAction[];
 
 	// or a function that returns a fresh action
-	test?: (id: string, matches: string[], state: string, eos: boolean) => FuzzyAction;
+	test?: (id: string, matches: string[], state: string, eos: Boolean) => FuzzyAction;
 
-	// or it is a declarative action with a token value and various other attributes
+	// or it is a declarative action with a token value and various other attriButes
 	token?: string;
-	tokenSubst?: boolean;
+	tokenSuBst?: Boolean;
 	next?: string;
-	nextEmbedded?: string;
-	bracket?: MonarchBracket;
+	nextEmBedded?: string;
+	Bracket?: MonarchBracket;
 	log?: string;
 	switchTo?: string;
-	goBack?: number;
+	goBack?: numBer;
 	transform?: (states: string[]) => string[];
 }
 
 export interface IBranch {
 	name: string;
 	value: FuzzyAction;
-	test?: (id: string, matches: string[], state: string, eos: boolean) => boolean;
+	test?: (id: string, matches: string[], state: string, eos: Boolean) => Boolean;
 }
 
 // Small helper functions
@@ -103,7 +103,7 @@ export interface IBranch {
 /**
  * Is a string null, undefined, or empty?
  */
-export function empty(s: string): boolean {
+export function empty(s: string): Boolean {
 	return (s ? false : true);
 }
 
@@ -115,7 +115,7 @@ export function fixCase(lexer: ILexerMin, str: string): string {
 }
 
 /**
- * Ensures there are no bad characters in a CSS token class.
+ * Ensures there are no Bad characters in a CSS token class.
  */
 export function sanitize(s: string) {
 	return s.replace(/[&<>'"_]/g, '-'); // used on all output token CSS classes
@@ -136,10 +136,10 @@ export function createError(lexer: ILexerMin, msg: string): Error {
 	return new Error(`${lexer.languageId}: ${msg}`);
 }
 
-// Helper functions for rule finding and substitution
+// Helper functions for rule finding and suBstitution
 
 /**
- * substituteMatches is used on lexer strings and can substitutes predefined patterns:
+ * suBstituteMatches is used on lexer strings and can suBstitutes predefined patterns:
  * 		$$  => $
  * 		$#  => id
  * 		$n  => matched entry n
@@ -147,10 +147,10 @@ export function createError(lexer: ILexerMin, msg: string): Error {
  *
  * See documentation for more info
  */
-export function substituteMatches(lexer: ILexerMin, str: string, id: string, matches: string[], state: string): string {
+export function suBstituteMatches(lexer: ILexerMin, str: string, id: string, matches: string[], state: string): string {
 	const re = /\$((\$)|(#)|(\d\d?)|[sS](\d\d?)|@(\w+))/g;
 	let stateMatches: string[] | null = null;
-	return str.replace(re, function (full, sub?, dollar?, hash?, n?, s?, attr?, ofs?, total?) {
+	return str.replace(re, function (full, suB?, dollar?, hash?, n?, s?, attr?, ofs?, total?) {
 		if (!empty(dollar)) {
 			return '$'; // $$
 		}
@@ -161,7 +161,7 @@ export function substituteMatches(lexer: ILexerMin, str: string, id: string, mat
 			return fixCase(lexer, matches[n]); // $n
 		}
 		if (!empty(attr) && lexer && typeof (lexer[attr]) === 'string') {
-			return lexer[attr]; //@attribute
+			return lexer[attr]; //@attriBute
 		}
 		if (stateMatches === null) { // split state on demand
 			stateMatches = state.split('.');
@@ -189,7 +189,7 @@ export function findRules(lexer: ILexer, inState: string): IRule[] | null {
 		if (idx < 0) {
 			state = null; // no further parent
 		} else {
-			state = state.substr(0, idx);
+			state = state.suBstr(0, idx);
 		}
 	}
 	return null;
@@ -198,9 +198,9 @@ export function findRules(lexer: ILexer, inState: string): IRule[] | null {
 /**
  * Is a certain state defined? In contrast to 'findRules' this works on a ILexerMin.
  * This is used during compilation where we may know the defined states
- * but not yet whether the corresponding rules are correct.
+ * But not yet whether the corresponding rules are correct.
  */
-export function stateExists(lexer: ILexerMin, inState: string): boolean {
+export function stateExists(lexer: ILexerMin, inState: string): Boolean {
 	let state: string | null = inState;
 	while (state && state.length > 0) {
 		const exist = lexer.stateNames[state];
@@ -212,7 +212,7 @@ export function stateExists(lexer: ILexerMin, inState: string): boolean {
 		if (idx < 0) {
 			state = null; // no further parent
 		} else {
-			state = state.substr(0, idx);
+			state = state.suBstr(0, idx);
 		}
 	}
 	return false;

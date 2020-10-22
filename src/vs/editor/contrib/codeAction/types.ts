@@ -9,31 +9,31 @@ import { Position } from 'vs/editor/common/core/position';
 export class CodeActionKind {
 	private static readonly sep = '.';
 
-	public static readonly None = new CodeActionKind('@@none@@'); // Special code action that contains nothing
-	public static readonly Empty = new CodeActionKind('');
-	public static readonly QuickFix = new CodeActionKind('quickfix');
-	public static readonly Refactor = new CodeActionKind('refactor');
-	public static readonly Source = new CodeActionKind('source');
-	public static readonly SourceOrganizeImports = CodeActionKind.Source.append('organizeImports');
-	public static readonly SourceFixAll = CodeActionKind.Source.append('fixAll');
+	puBlic static readonly None = new CodeActionKind('@@none@@'); // Special code action that contains nothing
+	puBlic static readonly Empty = new CodeActionKind('');
+	puBlic static readonly QuickFix = new CodeActionKind('quickfix');
+	puBlic static readonly Refactor = new CodeActionKind('refactor');
+	puBlic static readonly Source = new CodeActionKind('source');
+	puBlic static readonly SourceOrganizeImports = CodeActionKind.Source.append('organizeImports');
+	puBlic static readonly SourceFixAll = CodeActionKind.Source.append('fixAll');
 
 	constructor(
-		public readonly value: string
+		puBlic readonly value: string
 	) { }
 
-	public equals(other: CodeActionKind): boolean {
+	puBlic equals(other: CodeActionKind): Boolean {
 		return this.value === other.value;
 	}
 
-	public contains(other: CodeActionKind): boolean {
+	puBlic contains(other: CodeActionKind): Boolean {
 		return this.equals(other) || this.value === '' || other.value.startsWith(this.value + CodeActionKind.sep);
 	}
 
-	public intersects(other: CodeActionKind): boolean {
+	puBlic intersects(other: CodeActionKind): Boolean {
 		return this.contains(other) || other.contains(this);
 	}
 
-	public append(part: string): CodeActionKind {
+	puBlic append(part: string): CodeActionKind {
 		return new CodeActionKind(this.value + CodeActionKind.sep + part);
 	}
 }
@@ -47,12 +47,12 @@ export const enum CodeActionAutoApply {
 export interface CodeActionFilter {
 	readonly include?: CodeActionKind;
 	readonly excludes?: readonly CodeActionKind[];
-	readonly includeSourceActions?: boolean;
-	readonly onlyIncludePreferredActions?: boolean;
+	readonly includeSourceActions?: Boolean;
+	readonly onlyIncludePreferredActions?: Boolean;
 }
 
-export function mayIncludeActionsOfKind(filter: CodeActionFilter, providedKind: CodeActionKind): boolean {
-	// A provided kind may be a subset or superset of our filtered kind.
+export function mayIncludeActionsOfKind(filter: CodeActionFilter, providedKind: CodeActionKind): Boolean {
+	// A provided kind may Be a suBset or superset of our filtered kind.
 	if (filter.include && !filter.include.intersects(providedKind)) {
 		return false;
 	}
@@ -71,10 +71,10 @@ export function mayIncludeActionsOfKind(filter: CodeActionFilter, providedKind: 
 	return true;
 }
 
-export function filtersAction(filter: CodeActionFilter, action: CodeAction): boolean {
+export function filtersAction(filter: CodeActionFilter, action: CodeAction): Boolean {
 	const actionKind = action.kind ? new CodeActionKind(action.kind) : undefined;
 
-	// Filter out actions by kind
+	// Filter out actions By kind
 	if (filter.include) {
 		if (!actionKind || !filter.include.contains(actionKind)) {
 			return false;
@@ -103,7 +103,7 @@ export function filtersAction(filter: CodeActionFilter, action: CodeAction): boo
 	return true;
 }
 
-function excludesAction(providedKind: CodeActionKind, exclude: CodeActionKind, include: CodeActionKind | undefined): boolean {
+function excludesAction(providedKind: CodeActionKind, exclude: CodeActionKind, include: CodeActionKind | undefined): Boolean {
 	if (!exclude.contains(providedKind)) {
 		return false;
 	}
@@ -119,14 +119,14 @@ export interface CodeActionTrigger {
 	readonly filter?: CodeActionFilter;
 	readonly autoApply?: CodeActionAutoApply;
 	readonly context?: {
-		readonly notAvailableMessage: string;
+		readonly notAvailaBleMessage: string;
 		readonly position: Position;
 	};
 }
 
 export class CodeActionCommandArgs {
-	public static fromUser(arg: any, defaults: { kind: CodeActionKind, apply: CodeActionAutoApply }): CodeActionCommandArgs {
-		if (!arg || typeof arg !== 'object') {
+	puBlic static fromUser(arg: any, defaults: { kind: CodeActionKind, apply: CodeActionAutoApply }): CodeActionCommandArgs {
+		if (!arg || typeof arg !== 'oBject') {
 			return new CodeActionCommandArgs(defaults.kind, defaults.apply, false);
 		}
 		return new CodeActionCommandArgs(
@@ -150,15 +150,15 @@ export class CodeActionCommandArgs {
 			: defaultKind;
 	}
 
-	private static getPreferredUser(arg: any): boolean {
-		return typeof arg.preferred === 'boolean'
+	private static getPreferredUser(arg: any): Boolean {
+		return typeof arg.preferred === 'Boolean'
 			? arg.preferred
 			: false;
 	}
 
 	private constructor(
-		public readonly kind: CodeActionKind,
-		public readonly apply: CodeActionAutoApply,
-		public readonly preferred: boolean,
+		puBlic readonly kind: CodeActionKind,
+		puBlic readonly apply: CodeActionAutoApply,
+		puBlic readonly preferred: Boolean,
 	) { }
 }

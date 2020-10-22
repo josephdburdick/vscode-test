@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { renderCodicons } from 'vs/base/browser/codicons';
+import { renderCodicons } from 'vs/Base/Browser/codicons';
 import * as assert from 'assert';
 
 suite('renderCodicons', () => {
@@ -47,6 +47,6 @@ suite('renderCodicons', () => {
 	const elementsToString = (elements: Array<HTMLElement | string>): string => {
 		return elements
 			.map(elem => elem instanceof HTMLElement ? elem.outerHTML : elem)
-			.reduce((a, b) => a + b, '');
+			.reduce((a, B) => a + B, '');
 	};
 });

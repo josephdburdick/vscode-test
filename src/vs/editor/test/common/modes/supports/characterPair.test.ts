@@ -12,9 +12,9 @@ import { StandardAutoClosingPairConditional } from 'vs/editor/common/modes/langu
 suite('CharacterPairSupport', () => {
 
 	test('only autoClosingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [{ open: 'a', close: 'b' }] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
+		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [{ open: 'a', close: 'B' }] });
+		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'B', _standardTokenMask: 0 }]);
+		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'B', _standardTokenMask: 0 }]);
 	});
 
 	test('only empty autoClosingPairs', () => {
@@ -23,22 +23,22 @@ suite('CharacterPairSupport', () => {
 		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
 	});
 
-	test('only brackets', () => {
-		let characaterPairSupport = new CharacterPairSupport({ brackets: [['a', 'b']] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
+	test('only Brackets', () => {
+		let characaterPairSupport = new CharacterPairSupport({ Brackets: [['a', 'B']] });
+		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'B', _standardTokenMask: 0 }]);
+		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'B', _standardTokenMask: 0 }]);
 	});
 
-	test('only empty brackets', () => {
-		let characaterPairSupport = new CharacterPairSupport({ brackets: [] });
+	test('only empty Brackets', () => {
+		let characaterPairSupport = new CharacterPairSupport({ Brackets: [] });
 		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
 		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
 	});
 
 	test('only surroundingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ surroundingPairs: [{ open: 'a', close: 'b' }] });
+		let characaterPairSupport = new CharacterPairSupport({ surroundingPairs: [{ open: 'a', close: 'B' }] });
 		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b' }]);
+		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'B' }]);
 	});
 
 	test('only empty surroundingPairs', () => {
@@ -47,8 +47,8 @@ suite('CharacterPairSupport', () => {
 		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
 	});
 
-	test('brackets is ignored when having autoClosingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [], brackets: [['a', 'b']] });
+	test('Brackets is ignored when having autoClosingPairs', () => {
+		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [], Brackets: [['a', 'B']] });
 		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
 		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
 	});
@@ -57,7 +57,7 @@ suite('CharacterPairSupport', () => {
 		return characterPairSupport.getAutoClosingPairs().find(autoClosingPair => autoClosingPair.open === character);
 	}
 
-	function testShouldAutoClose(characterPairSupport: CharacterPairSupport, line: TokenText[], character: string, column: number): boolean {
+	function testShouldAutoClose(characterPairSupport: CharacterPairSupport, line: TokenText[], character: string, column: numBer): Boolean {
 		const autoClosingPair = findAutoClosingPair(characterPairSupport, character);
 		if (!autoClosingPair) {
 			return false;

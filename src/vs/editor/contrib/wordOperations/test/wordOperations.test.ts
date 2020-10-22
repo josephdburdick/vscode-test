@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorCommand } from 'vs/editor/browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
-import { deserializePipePositions, serializePipePositions, testRepeatedActionAndExtractPositions } from 'vs/editor/contrib/wordOperations/test/wordTestUtils';
-import { CursorWordEndLeft, CursorWordEndLeftSelect, CursorWordEndRight, CursorWordEndRightSelect, CursorWordLeft, CursorWordLeftSelect, CursorWordRight, CursorWordRightSelect, CursorWordStartLeft, CursorWordStartLeftSelect, CursorWordStartRight, CursorWordStartRightSelect, DeleteWordEndLeft, DeleteWordEndRight, DeleteWordLeft, DeleteWordRight, DeleteWordStartLeft, DeleteWordStartRight, CursorWordAccessibilityLeft, CursorWordAccessibilityLeftSelect, CursorWordAccessibilityRight, CursorWordAccessibilityRightSelect } from 'vs/editor/contrib/wordOperations/wordOperations';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { CoreEditingCommands } from 'vs/editor/browser/controller/coreCommands';
+import { deserializePipePositions, serializePipePositions, testRepeatedActionAndExtractPositions } from 'vs/editor/contriB/wordOperations/test/wordTestUtils';
+import { CursorWordEndLeft, CursorWordEndLeftSelect, CursorWordEndRight, CursorWordEndRightSelect, CursorWordLeft, CursorWordLeftSelect, CursorWordRight, CursorWordRightSelect, CursorWordStartLeft, CursorWordStartLeftSelect, CursorWordStartRight, CursorWordStartRightSelect, DeleteWordEndLeft, DeleteWordEndRight, DeleteWordLeft, DeleteWordRight, DeleteWordStartLeft, DeleteWordStartRight, CursorWordAccessiBilityLeft, CursorWordAccessiBilityLeftSelect, CursorWordAccessiBilityRight, CursorWordAccessiBilityRightSelect } from 'vs/editor/contriB/wordOperations/wordOperations';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
+import { CoreEditingCommands } from 'vs/editor/Browser/controller/coreCommands';
 import { ViewModel } from 'vs/editor/common/viewModel/viewModelImpl';
 import { LanguageIdentifier } from 'vs/editor/common/modes';
 import { MockMode } from 'vs/editor/test/common/mocks/mockMode';
@@ -32,10 +32,10 @@ suite('WordOperations', () => {
 	const _cursorWordStartRightSelect = new CursorWordStartRightSelect();
 	const _cursorWordEndRightSelect = new CursorWordEndRightSelect();
 	const _cursorWordRightSelect = new CursorWordRightSelect();
-	const _cursorWordAccessibilityLeft = new CursorWordAccessibilityLeft();
-	const _cursorWordAccessibilityLeftSelect = new CursorWordAccessibilityLeftSelect();
-	const _cursorWordAccessibilityRight = new CursorWordAccessibilityRight();
-	const _cursorWordAccessibilityRightSelect = new CursorWordAccessibilityRightSelect();
+	const _cursorWordAccessiBilityLeft = new CursorWordAccessiBilityLeft();
+	const _cursorWordAccessiBilityLeftSelect = new CursorWordAccessiBilityLeftSelect();
+	const _cursorWordAccessiBilityRight = new CursorWordAccessiBilityRight();
+	const _cursorWordAccessiBilityRightSelect = new CursorWordAccessiBilityRightSelect();
 	const _deleteWordLeft = new DeleteWordLeft();
 	const _deleteWordStartLeft = new DeleteWordStartLeft();
 	const _deleteWordEndLeft = new DeleteWordEndLeft();
@@ -46,28 +46,28 @@ suite('WordOperations', () => {
 	function runEditorCommand(editor: ICodeEditor, command: EditorCommand): void {
 		command.runEditorCommand(null, editor, null);
 	}
-	function cursorWordLeft(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function cursorWordLeft(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordLeftSelect : _cursorWordLeft);
 	}
-	function cursorWordAccessibilityLeft(editor: ICodeEditor, inSelectionMode: boolean = false): void {
-		runEditorCommand(editor, inSelectionMode ? _cursorWordAccessibilityLeft : _cursorWordAccessibilityLeftSelect);
+	function cursorWordAccessiBilityLeft(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
+		runEditorCommand(editor, inSelectionMode ? _cursorWordAccessiBilityLeft : _cursorWordAccessiBilityLeftSelect);
 	}
-	function cursorWordAccessibilityRight(editor: ICodeEditor, inSelectionMode: boolean = false): void {
-		runEditorCommand(editor, inSelectionMode ? _cursorWordAccessibilityRightSelect : _cursorWordAccessibilityRight);
+	function cursorWordAccessiBilityRight(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
+		runEditorCommand(editor, inSelectionMode ? _cursorWordAccessiBilityRightSelect : _cursorWordAccessiBilityRight);
 	}
-	function cursorWordStartLeft(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function cursorWordStartLeft(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordStartLeftSelect : _cursorWordStartLeft);
 	}
-	function cursorWordEndLeft(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function cursorWordEndLeft(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordEndLeftSelect : _cursorWordEndLeft);
 	}
-	function cursorWordRight(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function cursorWordRight(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordRightSelect : _cursorWordRight);
 	}
-	function moveWordEndRight(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function moveWordEndRight(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordEndRightSelect : _cursorWordEndRight);
 	}
-	function moveWordStartRight(editor: ICodeEditor, inSelectionMode: boolean = false): void {
+	function moveWordStartRight(editor: ICodeEditor, inSelectionMode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionMode ? _cursorWordStartRightSelect : _cursorWordStartRight);
 	}
 	function deleteWordLeft(editor: ICodeEditor): void {
@@ -139,7 +139,7 @@ suite('WordOperations', () => {
 
 	test('cursorWordLeft - issue #48046: Word selection doesn\'t work as usual', () => {
 		const EXPECTED = [
-			'|deep.|object.|property',
+			'|deep.|oBject.|property',
 		].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -153,7 +153,7 @@ suite('WordOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('cursorWordLeftSelect - issue #74369: cursorWordLeft and cursorWordLeftSelect do not behave consistently', () => {
+	test('cursorWordLeftSelect - issue #74369: cursorWordLeft and cursorWordLeftSelect do not Behave consistently', () => {
 		const EXPECTED = [
 			'|this.|is.|a.|test',
 		].join('\n');
@@ -170,7 +170,7 @@ suite('WordOperations', () => {
 	});
 
 	test('cursorWordStartLeft', () => {
-		// This is the behaviour observed in Visual Studio, please do not touch test
+		// This is the Behaviour oBserved in Visual Studio, please do not touch test
 		const EXPECTED = ['|   |/* |Just |some   |more   |text |a|+= |3 |+|5|-|3 |+ |7 |*/  '].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -184,8 +184,8 @@ suite('WordOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('cursorWordStartLeft - issue #51119: regression makes VS compatibility impossible', () => {
-		// This is the behaviour observed in Visual Studio, please do not touch test
+	test('cursorWordStartLeft - issue #51119: regression makes VS compatiBility impossiBle', () => {
+		// This is the Behaviour oBserved in Visual Studio, please do not touch test
 		const EXPECTED = ['|this|.|is|.|a|.|test'].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -202,22 +202,22 @@ suite('WordOperations', () => {
 	test('issue #51275 - cursorWordStartLeft does not push undo/redo stack element', () => {
 		function type(viewModel: ViewModel, text: string) {
 			for (let i = 0; i < text.length; i++) {
-				viewModel.type(text.charAt(i), 'keyboard');
+				viewModel.type(text.charAt(i), 'keyBoard');
 			}
 		}
 
 		withTestCodeEditor('', {}, (editor, viewModel) => {
-			type(viewModel, 'foo bar baz');
-			assert.equal(editor.getValue(), 'foo bar baz');
+			type(viewModel, 'foo Bar Baz');
+			assert.equal(editor.getValue(), 'foo Bar Baz');
 
 			cursorWordStartLeft(editor);
 			cursorWordStartLeft(editor);
 			type(viewModel, 'q');
 
-			assert.equal(editor.getValue(), 'foo qbar baz');
+			assert.equal(editor.getValue(), 'foo qBar Baz');
 
 			CoreEditingCommands.Undo.runEditorCommand(null, editor, null);
-			assert.equal(editor.getValue(), 'foo bar baz');
+			assert.equal(editor.getValue(), 'foo Bar Baz');
 		});
 	});
 
@@ -318,7 +318,7 @@ suite('WordOperations', () => {
 	});
 
 	test('moveWordStartRight', () => {
-		// This is the behaviour observed in Visual Studio, please do not touch test
+		// This is the Behaviour oBserved in Visual Studio, please do not touch test
 		const EXPECTED = [
 			'   |/* |Just |some   |more   |text |a|+= |3 |+|5|-|3 |+ |7 |*/  |',
 		].join('\n');
@@ -334,8 +334,8 @@ suite('WordOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('issue #51119: cursorWordStartRight regression makes VS compatibility impossible', () => {
-		// This is the behaviour observed in Visual Studio, please do not touch test
+	test('issue #51119: cursorWordStartRight regression makes VS compatiBility impossiBle', () => {
+		// This is the Behaviour oBserved in Visual Studio, please do not touch test
 		const EXPECTED = ['this|.|is|.|a|.|test|'].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -350,7 +350,7 @@ suite('WordOperations', () => {
 	});
 
 	test('issue #64810: cursorWordStartRight skips first word after newline', () => {
-		// This is the behaviour observed in Visual Studio, please do not touch test
+		// This is the Behaviour oBserved in Visual Studio, please do not touch test
 		const EXPECTED = ['Hello |World|', '|Hei |mailman|'].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -364,13 +364,13 @@ suite('WordOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('cursorWordAccessibilityLeft', () => {
+	test('cursorWordAccessiBilityLeft', () => {
 		const EXPECTED = ['|   /* |Just |some   |more   |text |a+= |3 +|5-|3 + |7 */  '].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
 			text,
 			new Position(1000, 1000),
-			ed => cursorWordAccessibilityLeft(ed),
+			ed => cursorWordAccessiBilityLeft(ed),
 			ed => ed.getPosition()!,
 			ed => ed.getPosition()!.equals(new Position(1, 1))
 		);
@@ -378,13 +378,13 @@ suite('WordOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('cursorWordAccessibilityRight', () => {
+	test('cursorWordAccessiBilityRight', () => {
 		const EXPECTED = ['   /* |Just |some   |more   |text |a+= |3 +|5-|3 + |7 */  |'].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
 			text,
 			new Position(1, 1),
-			ed => cursorWordAccessibilityRight(ed),
+			ed => cursorWordAccessiBilityRight(ed),
 			ed => ed.getPosition()!,
 			ed => ed.getPosition()!.equals(new Position(1, 50))
 		);
@@ -408,7 +408,7 @@ suite('WordOperations', () => {
 		});
 	});
 
-	test('deleteWordLeft for cursor at beginning of document', () => {
+	test('deleteWordLeft for cursor at Beginning of document', () => {
 		withTestCodeEditor([
 			'    \tMy First Line\t ',
 			'\tMy Second Line',
@@ -440,7 +440,7 @@ suite('WordOperations', () => {
 		});
 	});
 
-	test('deleteWordLeft for cursor just behind a word', () => {
+	test('deleteWordLeft for cursor just Behind a word', () => {
 		withTestCodeEditor([
 			'    \tMy First Line\t ',
 			'\tMy Second Line',
@@ -504,7 +504,7 @@ suite('WordOperations', () => {
 		});
 	});
 
-	test('deleteWordRight for cursor at beggining of whitespace', () => {
+	test('deleteWordRight for cursor at Beggining of whitespace', () => {
 		withTestCodeEditor([
 			'    \tMy First Line\t ',
 			'\tMy Second Line',
@@ -520,7 +520,7 @@ suite('WordOperations', () => {
 		});
 	});
 
-	test('deleteWordRight for cursor just before a word', () => {
+	test('deleteWordRight for cursor just Before a word', () => {
 		withTestCodeEditor([
 			'    \tMy First Line\t ',
 			'\tMy Second Line',
@@ -645,34 +645,34 @@ suite('WordOperations', () => {
 
 	test('deleteWordRight - issue #3882', () => {
 		withTestCodeEditor([
-			'public void Add( int x,',
+			'puBlic void Add( int x,',
 			'                 int y )'
 		], {}, (editor, _) => {
 			const model = editor.getModel()!;
 			editor.setPosition(new Position(1, 24));
-			deleteWordRight(editor); assert.equal(model.getLineContent(1), 'public void Add( int x,int y )', '001');
+			deleteWordRight(editor); assert.equal(model.getLineContent(1), 'puBlic void Add( int x,int y )', '001');
 		});
 	});
 
 	test('deleteWordStartRight - issue #3882', () => {
 		withTestCodeEditor([
-			'public void Add( int x,',
+			'puBlic void Add( int x,',
 			'                 int y )'
 		], {}, (editor, _) => {
 			const model = editor.getModel()!;
 			editor.setPosition(new Position(1, 24));
-			deleteWordStartRight(editor); assert.equal(model.getLineContent(1), 'public void Add( int x,int y )', '001');
+			deleteWordStartRight(editor); assert.equal(model.getLineContent(1), 'puBlic void Add( int x,int y )', '001');
 		});
 	});
 
 	test('deleteWordEndRight - issue #3882', () => {
 		withTestCodeEditor([
-			'public void Add( int x,',
+			'puBlic void Add( int x,',
 			'                 int y )'
 		], {}, (editor, _) => {
 			const model = editor.getModel()!;
 			editor.setPosition(new Position(1, 24));
-			deleteWordEndRight(editor); assert.equal(model.getLineContent(1), 'public void Add( int x,int y )', '001');
+			deleteWordEndRight(editor); assert.equal(model.getLineContent(1), 'puBlic void Add( int x,int y )', '001');
 		});
 	});
 
@@ -726,7 +726,7 @@ suite('WordOperations', () => {
 		});
 	});
 
-	test('deleteWordLeft - issue #91855: Matching (quote, bracket, paren) doesn\'t get deleted when hitting Ctrl+Backspace', () => {
+	test('deleteWordLeft - issue #91855: Matching (quote, Bracket, paren) doesn\'t get deleted when hitting Ctrl+Backspace', () => {
 		const languageId = new LanguageIdentifier('myTestMode', 5);
 		class TestMode extends MockMode {
 			constructor() {

@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { workspace, extensions, Uri, EventEmitter, Disposable } from 'vscode';
+import { workspace, extensions, Uri, EventEmitter, DisposaBle } from 'vscode';
 import { resolvePath, joinPath } from './requests';
 
-export function getCustomDataSource(toDispose: Disposable[]) {
+export function getCustomDataSource(toDispose: DisposaBle[]) {
 	let pathsInWorkspace = getCustomDataPathsInAllWorkspaces();
 	let pathsInExtensions = getCustomDataPathsFromAllExtensions();
 
@@ -66,7 +66,7 @@ function getCustomDataPathsInAllWorkspaces(): string[] {
 				if (workspace.workspaceFile) {
 					collect(customDataInspect.workspaceValue, workspace.workspaceFile);
 				}
-				collect(customDataInspect.globalValue, folderUri);
+				collect(customDataInspect.gloBalValue, folderUri);
 			}
 		}
 
@@ -77,7 +77,7 @@ function getCustomDataPathsInAllWorkspaces(): string[] {
 function getCustomDataPathsFromAllExtensions(): string[] {
 	const dataPaths: string[] = [];
 	for (const extension of extensions.all) {
-		const customData = extension.packageJSON?.contributes?.css?.customData;
+		const customData = extension.packageJSON?.contriButes?.css?.customData;
 		if (Array.isArray(customData)) {
 			for (const rp of customData) {
 				dataPaths.push(joinPath(extension.extensionUri, rp).toString());

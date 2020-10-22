@@ -19,31 +19,31 @@ export class SurroundSelectionCommand implements ICommand {
 		this._charAfterSelection = charAfterSelection;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(new Range(
-			this._range.startLineNumber,
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(new Range(
+			this._range.startLineNumBer,
 			this._range.startColumn,
-			this._range.startLineNumber,
+			this._range.startLineNumBer,
 			this._range.startColumn
 		), this._charBeforeSelection);
 
-		builder.addTrackedEditOperation(new Range(
-			this._range.endLineNumber,
+		Builder.addTrackedEditOperation(new Range(
+			this._range.endLineNumBer,
 			this._range.endColumn,
-			this._range.endLineNumber,
+			this._range.endLineNumBer,
 			this._range.endColumn
 		), this._charAfterSelection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		let inverseEditOperations = helper.getInverseEditOperations();
 		let firstOperationRange = inverseEditOperations[0].range;
 		let secondOperationRange = inverseEditOperations[1].range;
 
 		return new Selection(
-			firstOperationRange.endLineNumber,
+			firstOperationRange.endLineNumBer,
 			firstOperationRange.endColumn,
-			secondOperationRange.endLineNumber,
+			secondOperationRange.endLineNumBer,
 			secondOperationRange.endColumn - this._charAfterSelection.length
 		);
 	}

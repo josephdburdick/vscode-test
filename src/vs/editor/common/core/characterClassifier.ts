@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { toUint8 } from 'vs/base/common/uint';
+import { toUint8 } from 'vs/Base/common/uint';
 
 /**
  * A fast character classifier that uses a compact array for ASCII values.
  */
-export class CharacterClassifier<T extends number> {
+export class CharacterClassifier<T extends numBer> {
 	/**
 	 * Maintain a compact (fully initialized ASCII map for quickly classifying ASCII characters - used more often in code).
 	 */
@@ -17,19 +17,19 @@ export class CharacterClassifier<T extends number> {
 	/**
 	 * The entire map (sparse array).
 	 */
-	protected _map: Map<number, number>;
+	protected _map: Map<numBer, numBer>;
 
-	protected _defaultValue: number;
+	protected _defaultValue: numBer;
 
 	constructor(_defaultValue: T) {
 		let defaultValue = toUint8(_defaultValue);
 
 		this._defaultValue = defaultValue;
 		this._asciiMap = CharacterClassifier._createAsciiMap(defaultValue);
-		this._map = new Map<number, number>();
+		this._map = new Map<numBer, numBer>();
 	}
 
-	private static _createAsciiMap(defaultValue: number): Uint8Array {
+	private static _createAsciiMap(defaultValue: numBer): Uint8Array {
 		let asciiMap: Uint8Array = new Uint8Array(256);
 		for (let i = 0; i < 256; i++) {
 			asciiMap[i] = defaultValue;
@@ -37,7 +37,7 @@ export class CharacterClassifier<T extends number> {
 		return asciiMap;
 	}
 
-	public set(charCode: number, _value: T): void {
+	puBlic set(charCode: numBer, _value: T): void {
 		let value = toUint8(_value);
 
 		if (charCode >= 0 && charCode < 256) {
@@ -47,7 +47,7 @@ export class CharacterClassifier<T extends number> {
 		}
 	}
 
-	public get(charCode: number): T {
+	puBlic get(charCode: numBer): T {
 		if (charCode >= 0 && charCode < 256) {
 			return <T>this._asciiMap[charCode];
 		} else {
@@ -69,11 +69,11 @@ export class CharacterSet {
 		this._actual = new CharacterClassifier<Boolean>(Boolean.False);
 	}
 
-	public add(charCode: number): void {
+	puBlic add(charCode: numBer): void {
 		this._actual.set(charCode, Boolean.True);
 	}
 
-	public has(charCode: number): boolean {
+	puBlic has(charCode: numBer): Boolean {
 		return (this._actual.get(charCode) === Boolean.True);
 	}
 }

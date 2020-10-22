@@ -10,16 +10,16 @@ import { EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions'
 
 suite('OnEnter', () => {
 
-	test('uses brackets', () => {
-		let brackets: CharacterPair[] = [
+	test('uses Brackets', () => {
+		let Brackets: CharacterPair[] = [
 			['(', ')'],
-			['begin', 'end']
+			['Begin', 'end']
 		];
 		let support = new OnEnterSupport({
-			brackets: brackets
+			Brackets: Brackets
 		});
-		let testIndentAction = (beforeText: string, afterText: string, expected: IndentAction) => {
-			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, '', beforeText, afterText);
+		let testIndentAction = (BeforeText: string, afterText: string, expected: IndentAction) => {
+			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, '', BeforeText, afterText);
 			if (expected === IndentAction.None) {
 				assert.equal(actual, null);
 			} else {
@@ -28,41 +28,41 @@ suite('OnEnter', () => {
 		};
 
 		testIndentAction('a', '', IndentAction.None);
-		testIndentAction('', 'b', IndentAction.None);
-		testIndentAction('(', 'b', IndentAction.Indent);
+		testIndentAction('', 'B', IndentAction.None);
+		testIndentAction('(', 'B', IndentAction.Indent);
 		testIndentAction('a', ')', IndentAction.None);
-		testIndentAction('begin', 'ending', IndentAction.Indent);
-		testIndentAction('abegin', 'end', IndentAction.None);
-		testIndentAction('begin', ')', IndentAction.Indent);
-		testIndentAction('begin', 'end', IndentAction.IndentOutdent);
-		testIndentAction('begin ', ' end', IndentAction.IndentOutdent);
-		testIndentAction(' begin', 'end//as', IndentAction.IndentOutdent);
+		testIndentAction('Begin', 'ending', IndentAction.Indent);
+		testIndentAction('aBegin', 'end', IndentAction.None);
+		testIndentAction('Begin', ')', IndentAction.Indent);
+		testIndentAction('Begin', 'end', IndentAction.IndentOutdent);
+		testIndentAction('Begin ', ' end', IndentAction.IndentOutdent);
+		testIndentAction(' Begin', 'end//as', IndentAction.IndentOutdent);
 		testIndentAction('(', ')', IndentAction.IndentOutdent);
 		testIndentAction('( ', ')', IndentAction.IndentOutdent);
-		testIndentAction('a(', ')b', IndentAction.IndentOutdent);
+		testIndentAction('a(', ')B', IndentAction.IndentOutdent);
 
 		testIndentAction('(', '', IndentAction.Indent);
 		testIndentAction('(', 'foo', IndentAction.Indent);
-		testIndentAction('begin', 'foo', IndentAction.Indent);
-		testIndentAction('begin', '', IndentAction.Indent);
+		testIndentAction('Begin', 'foo', IndentAction.Indent);
+		testIndentAction('Begin', '', IndentAction.Indent);
 	});
 
 	test('uses regExpRules', () => {
 		let support = new OnEnterSupport({
 			onEnterRules: javascriptOnEnterRules
 		});
-		let testIndentAction = (oneLineAboveText: string, beforeText: string, afterText: string, expectedIndentAction: IndentAction | null, expectedAppendText: string | null, removeText: number = 0) => {
-			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, oneLineAboveText, beforeText, afterText);
+		let testIndentAction = (oneLineABoveText: string, BeforeText: string, afterText: string, expectedIndentAction: IndentAction | null, expectedAppendText: string | null, removeText: numBer = 0) => {
+			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, oneLineABoveText, BeforeText, afterText);
 			if (expectedIndentAction === null) {
-				assert.equal(actual, null, 'isNull:' + beforeText);
+				assert.equal(actual, null, 'isNull:' + BeforeText);
 			} else {
-				assert.equal(actual !== null, true, 'isNotNull:' + beforeText);
-				assert.equal(actual!.indentAction, expectedIndentAction, 'indentAction:' + beforeText);
+				assert.equal(actual !== null, true, 'isNotNull:' + BeforeText);
+				assert.equal(actual!.indentAction, expectedIndentAction, 'indentAction:' + BeforeText);
 				if (expectedAppendText !== null) {
-					assert.equal(actual!.appendText, expectedAppendText, 'appendText:' + beforeText);
+					assert.equal(actual!.appendText, expectedAppendText, 'appendText:' + BeforeText);
 				}
 				if (removeText !== 0) {
-					assert.equal(actual!.removeText, removeText, 'removeText:' + beforeText);
+					assert.equal(actual!.removeText, removeText, 'removeText:' + BeforeText);
 				}
 			}
 		};

@@ -4,33 +4,33 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IFileSystemProviderWithOpenReadWriteCloseCapability, FileReadStreamOptions, createFileSystemProviderError, FileSystemProviderErrorCode, ensureFileSystemProviderError } from 'vs/platform/files/common/files';
-import { canceled } from 'vs/base/common/errors';
-import { IErrorTransformer, IDataTransformer, WriteableStream } from 'vs/base/common/stream';
+import { URI } from 'vs/Base/common/uri';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IFileSystemProviderWithOpenReadWriteCloseCapaBility, FileReadStreamOptions, createFileSystemProviderError, FileSystemProviderErrorCode, ensureFileSystemProviderError } from 'vs/platform/files/common/files';
+import { canceled } from 'vs/Base/common/errors';
+import { IErrorTransformer, IDataTransformer, WriteaBleStream } from 'vs/Base/common/stream';
 
 export interface ICreateReadStreamOptions extends FileReadStreamOptions {
 
 	/**
-	 * The size of the buffer to use before sending to the stream.
+	 * The size of the Buffer to use Before sending to the stream.
 	 */
-	bufferSize: number;
+	BufferSize: numBer;
 
 	/**
-	 * Allows to massage any possibly error that happens during reading.
+	 * Allows to massage any possiBly error that happens during reading.
 	 */
 	errorTransformer?: IErrorTransformer;
 }
 
 /**
- * A helper to read a file from a provider with open/read/close capability into a stream.
+ * A helper to read a file from a provider with open/read/close capaBility into a stream.
  */
 export async function readFileIntoStream<T>(
-	provider: IFileSystemProviderWithOpenReadWriteCloseCapability,
+	provider: IFileSystemProviderWithOpenReadWriteCloseCapaBility,
 	resource: URI,
-	target: WriteableStream<T>,
+	target: WriteaBleStream<T>,
 	transformer: IDataTransformer<VSBuffer, T>,
 	options: ICreateReadStreamOptions,
 	token: CancellationToken
@@ -50,7 +50,7 @@ export async function readFileIntoStream<T>(
 	}
 }
 
-async function doReadFileIntoStream<T>(provider: IFileSystemProviderWithOpenReadWriteCloseCapability, resource: URI, target: WriteableStream<T>, transformer: IDataTransformer<VSBuffer, T>, options: ICreateReadStreamOptions, token: CancellationToken): Promise<void> {
+async function doReadFileIntoStream<T>(provider: IFileSystemProviderWithOpenReadWriteCloseCapaBility, resource: URI, target: WriteaBleStream<T>, transformer: IDataTransformer<VSBuffer, T>, options: ICreateReadStreamOptions, token: CancellationToken): Promise<void> {
 
 	// Check for cancellation
 	throwIfCancelled(token);
@@ -63,44 +63,44 @@ async function doReadFileIntoStream<T>(provider: IFileSystemProviderWithOpenRead
 
 	try {
 		let totalBytesRead = 0;
-		let bytesRead = 0;
-		let allowedRemainingBytes = (options && typeof options.length === 'number') ? options.length : undefined;
+		let BytesRead = 0;
+		let allowedRemainingBytes = (options && typeof options.length === 'numBer') ? options.length : undefined;
 
-		let buffer = VSBuffer.alloc(Math.min(options.bufferSize, typeof allowedRemainingBytes === 'number' ? allowedRemainingBytes : options.bufferSize));
+		let Buffer = VSBuffer.alloc(Math.min(options.BufferSize, typeof allowedRemainingBytes === 'numBer' ? allowedRemainingBytes : options.BufferSize));
 
-		let posInFile = options && typeof options.position === 'number' ? options.position : 0;
+		let posInFile = options && typeof options.position === 'numBer' ? options.position : 0;
 		let posInBuffer = 0;
 		do {
-			// read from source (handle) at current position (pos) into buffer (buffer) at
-			// buffer position (posInBuffer) up to the size of the buffer (buffer.byteLength).
-			bytesRead = await provider.read(handle, posInFile, buffer.buffer, posInBuffer, buffer.byteLength - posInBuffer);
+			// read from source (handle) at current position (pos) into Buffer (Buffer) at
+			// Buffer position (posInBuffer) up to the size of the Buffer (Buffer.ByteLength).
+			BytesRead = await provider.read(handle, posInFile, Buffer.Buffer, posInBuffer, Buffer.ByteLength - posInBuffer);
 
-			posInFile += bytesRead;
-			posInBuffer += bytesRead;
-			totalBytesRead += bytesRead;
+			posInFile += BytesRead;
+			posInBuffer += BytesRead;
+			totalBytesRead += BytesRead;
 
-			if (typeof allowedRemainingBytes === 'number') {
-				allowedRemainingBytes -= bytesRead;
+			if (typeof allowedRemainingBytes === 'numBer') {
+				allowedRemainingBytes -= BytesRead;
 			}
 
-			// when buffer full, create a new one and emit it through stream
-			if (posInBuffer === buffer.byteLength) {
-				await target.write(transformer(buffer));
+			// when Buffer full, create a new one and emit it through stream
+			if (posInBuffer === Buffer.ByteLength) {
+				await target.write(transformer(Buffer));
 
-				buffer = VSBuffer.alloc(Math.min(options.bufferSize, typeof allowedRemainingBytes === 'number' ? allowedRemainingBytes : options.bufferSize));
+				Buffer = VSBuffer.alloc(Math.min(options.BufferSize, typeof allowedRemainingBytes === 'numBer' ? allowedRemainingBytes : options.BufferSize));
 
 				posInBuffer = 0;
 			}
-		} while (bytesRead > 0 && (typeof allowedRemainingBytes !== 'number' || allowedRemainingBytes > 0) && throwIfCancelled(token) && throwIfTooLarge(totalBytesRead, options));
+		} while (BytesRead > 0 && (typeof allowedRemainingBytes !== 'numBer' || allowedRemainingBytes > 0) && throwIfCancelled(token) && throwIfTooLarge(totalBytesRead, options));
 
-		// wrap up with last buffer (also respect maxBytes if provided)
+		// wrap up with last Buffer (also respect maxBytes if provided)
 		if (posInBuffer > 0) {
 			let lastChunkLength = posInBuffer;
-			if (typeof allowedRemainingBytes === 'number') {
+			if (typeof allowedRemainingBytes === 'numBer') {
 				lastChunkLength = Math.min(posInBuffer, allowedRemainingBytes);
 			}
 
-			target.write(transformer(buffer.slice(0, lastChunkLength)));
+			target.write(transformer(Buffer.slice(0, lastChunkLength)));
 		}
 	} catch (error) {
 		throw ensureFileSystemProviderError(error);
@@ -109,7 +109,7 @@ async function doReadFileIntoStream<T>(provider: IFileSystemProviderWithOpenRead
 	}
 }
 
-function throwIfCancelled(token: CancellationToken): boolean {
+function throwIfCancelled(token: CancellationToken): Boolean {
 	if (token.isCancellationRequested) {
 		throw canceled();
 	}
@@ -117,15 +117,15 @@ function throwIfCancelled(token: CancellationToken): boolean {
 	return true;
 }
 
-function throwIfTooLarge(totalBytesRead: number, options: ICreateReadStreamOptions): boolean {
+function throwIfTooLarge(totalBytesRead: numBer, options: ICreateReadStreamOptions): Boolean {
 
 	// Return early if file is too large to load and we have configured limits
 	if (options?.limits) {
-		if (typeof options.limits.memory === 'number' && totalBytesRead > options.limits.memory) {
+		if (typeof options.limits.memory === 'numBer' && totalBytesRead > options.limits.memory) {
 			throw createFileSystemProviderError(localize('fileTooLargeForHeapError', "To open a file of this size, you need to restart and allow it to use more memory"), FileSystemProviderErrorCode.FileExceedsMemoryLimit);
 		}
 
-		if (typeof options.limits.size === 'number' && totalBytesRead > options.limits.size) {
+		if (typeof options.limits.size === 'numBer' && totalBytesRead > options.limits.size) {
 			throw createFileSystemProviderError(localize('fileTooLargeError', "File is too large to open"), FileSystemProviderErrorCode.FileTooLarge);
 		}
 	}

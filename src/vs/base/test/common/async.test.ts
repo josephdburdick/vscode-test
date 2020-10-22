@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as async from 'vs/base/common/async';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import * as async from 'vs/Base/common/async';
+import { isPromiseCanceledError } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 
 suite('Async', () => {
 
-	test('cancelablePromise - set token, don\'t wait for inner promise', function () {
+	test('cancelaBlePromise - set token, don\'t wait for inner promise', function () {
 		let canceled = 0;
-		let promise = async.createCancelablePromise(token => {
+		let promise = async.createCancelaBlePromise(token => {
 			token.onCancellationRequested(_ => { canceled += 1; });
 			return new Promise(resolve => { /*never*/ });
 		});
@@ -26,9 +26,9 @@ suite('Async', () => {
 		return result;
 	});
 
-	test('cancelablePromise - cancel despite inner promise being resolved', function () {
+	test('cancelaBlePromise - cancel despite inner promise Being resolved', function () {
 		let canceled = 0;
-		let promise = async.createCancelablePromise(token => {
+		let promise = async.createCancelaBlePromise(token => {
 			token.onCancellationRequested(_ => { canceled += 1; });
 			return Promise.resolve(1234);
 		});
@@ -40,53 +40,53 @@ suite('Async', () => {
 		return result;
 	});
 
-	// Cancelling a sync cancelable promise will fire the cancelled token.
-	// Also, every `then` callback runs in another execution frame.
-	test('CancelablePromise execution order (sync)', function () {
+	// Cancelling a sync cancelaBle promise will fire the cancelled token.
+	// Also, every `then` callBack runs in another execution frame.
+	test('CancelaBlePromise execution order (sync)', function () {
 		const order: string[] = [];
 
-		const cancellablePromise = async.createCancelablePromise(token => {
-			order.push('in callback');
+		const cancellaBlePromise = async.createCancelaBlePromise(token => {
+			order.push('in callBack');
 			token.onCancellationRequested(_ => order.push('cancelled'));
 			return Promise.resolve(1234);
 		});
 
 		order.push('afterCreate');
 
-		const promise = cancellablePromise
+		const promise = cancellaBlePromise
 			.then(undefined, err => null)
 			.then(() => order.push('finally'));
 
-		cancellablePromise.cancel();
+		cancellaBlePromise.cancel();
 		order.push('afterCancel');
 
-		return promise.then(() => assert.deepEqual(order, ['in callback', 'afterCreate', 'cancelled', 'afterCancel', 'finally']));
+		return promise.then(() => assert.deepEqual(order, ['in callBack', 'afterCreate', 'cancelled', 'afterCancel', 'finally']));
 	});
 
-	// Cancelling an async cancelable promise is just the same as a sync cancellable promise.
-	test('CancelablePromise execution order (async)', function () {
+	// Cancelling an async cancelaBle promise is just the same as a sync cancellaBle promise.
+	test('CancelaBlePromise execution order (async)', function () {
 		const order: string[] = [];
 
-		const cancellablePromise = async.createCancelablePromise(token => {
-			order.push('in callback');
+		const cancellaBlePromise = async.createCancelaBlePromise(token => {
+			order.push('in callBack');
 			token.onCancellationRequested(_ => order.push('cancelled'));
-			return new Promise(c => setTimeout(c.bind(1234), 0));
+			return new Promise(c => setTimeout(c.Bind(1234), 0));
 		});
 
 		order.push('afterCreate');
 
-		const promise = cancellablePromise
+		const promise = cancellaBlePromise
 			.then(undefined, err => null)
 			.then(() => order.push('finally'));
 
-		cancellablePromise.cancel();
+		cancellaBlePromise.cancel();
 		order.push('afterCancel');
 
-		return promise.then(() => assert.deepEqual(order, ['in callback', 'afterCreate', 'cancelled', 'afterCancel', 'finally']));
+		return promise.then(() => assert.deepEqual(order, ['in callBack', 'afterCreate', 'cancelled', 'afterCancel', 'finally']));
 	});
 
-	test('cancelablePromise - get inner result', async function () {
-		let promise = async.createCancelablePromise(token => {
+	test('cancelaBlePromise - get inner result', async function () {
+		let promise = async.createCancelaBlePromise(token => {
 			return async.timeout(12).then(_ => 1234);
 		});
 
@@ -134,8 +134,8 @@ suite('Async', () => {
 		});
 	});
 
-	test('Throttler - last factory should be the one getting called', function () {
-		let factoryFactory = (n: number) => () => {
+	test('Throttler - last factory should Be the one getting called', function () {
+		let factoryFactory = (n: numBer) => () => {
 			return async.timeout(0).then(() => n);
 		};
 
@@ -276,8 +276,8 @@ suite('Async', () => {
 		return p;
 	});
 
-	test('Delayer - last task should be the one getting called', function () {
-		let factoryFactory = (n: number) => () => {
+	test('Delayer - last task should Be the one getting called', function () {
+		let factoryFactory = (n: numBer) => () => {
 			return Promise.resolve(n);
 		};
 
@@ -300,7 +300,7 @@ suite('Async', () => {
 	});
 
 	test('Sequence', () => {
-		let factoryFactory = (n: number) => () => {
+		let factoryFactory = (n: numBer) => () => {
 			return Promise.resolve(n);
 		};
 
@@ -321,7 +321,7 @@ suite('Async', () => {
 	});
 
 	test('Limiter - sync', function () {
-		let factoryFactory = (n: number) => () => {
+		let factoryFactory = (n: numBer) => () => {
 			return Promise.resolve(n);
 		};
 
@@ -345,7 +345,7 @@ suite('Async', () => {
 	});
 
 	test('Limiter - async', function () {
-		let factoryFactory = (n: number) => () => async.timeout(0).then(() => n);
+		let factoryFactory = (n: numBer) => () => async.timeout(0).then(() => n);
 
 		let limiter = new async.Limiter(1);
 		let promises: Promise<any>[] = [];
@@ -367,7 +367,7 @@ suite('Async', () => {
 
 	test('Limiter - assert degree of paralellism', function () {
 		let activePromises = 0;
-		let factoryFactory = (n: number) => () => {
+		let factoryFactory = (n: numBer) => () => {
 			activePromises++;
 			assert(activePromises < 6);
 			return async.timeout(0).then(() => { activePromises--; return n; });
@@ -410,7 +410,7 @@ suite('Async', () => {
 	test('Queue - order is kept', function () {
 		let queue = new async.Queue();
 
-		let res: number[] = [];
+		let res: numBer[] = [];
 
 		let f1 = () => Promise.resolve(true).then(() => res.push(1));
 		let f2 = () => async.timeout(10).then(() => res.push(2));
@@ -431,10 +431,10 @@ suite('Async', () => {
 		});
 	});
 
-	test('Queue - errors bubble individually but not cause stop', function () {
+	test('Queue - errors BuBBle individually But not cause stop', function () {
 		let queue = new async.Queue();
 
-		let res: number[] = [];
+		let res: numBer[] = [];
 		let error = false;
 
 		let f1 = () => Promise.resolve(true).then(() => res.push(1));
@@ -459,7 +459,7 @@ suite('Async', () => {
 	test('Queue - order is kept (chained)', function () {
 		let queue = new async.Queue();
 
-		let res: number[] = [];
+		let res: numBer[] = [];
 
 		let f1 = () => Promise.resolve(true).then(() => res.push(1));
 		let f2 = () => async.timeout(10).then(() => res.push(2));
@@ -492,7 +492,7 @@ suite('Async', () => {
 			done();
 		});
 
-		let res: number[] = [];
+		let res: numBer[] = [];
 
 		let f1 = () => async.timeout(10).then(() => res.push(2));
 		let f2 = () => async.timeout(20).then(() => res.push(4));
@@ -559,7 +559,7 @@ suite('Async', () => {
 		}
 	});
 
-	test('TaskSequentializer - pending basics', async function () {
+	test('TaskSequentializer - pending Basics', async function () {
 		const sequentializer = new async.TaskSequentializer();
 
 		assert.ok(!sequentializer.hasPending());
@@ -696,7 +696,7 @@ suite('Async', () => {
 		assert.equal(r1, 'hello');
 
 		await s.queue('key2', () => Promise.reject(new Error('failed'))).then(() => {
-			throw new Error('should not be resolved');
+			throw new Error('should not Be resolved');
 		}, err => {
 			// Expected error
 			assert.equal(err.message, 'failed');

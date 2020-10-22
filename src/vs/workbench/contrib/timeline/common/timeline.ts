@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { Command } from 'vs/editor/common/modes';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
+import { IAccessiBilityInformation } from 'vs/platform/accessiBility/common/accessiBility';
 
 export function toKey(extension: ExtensionIdentifier | string, source: string) {
 	return `${typeof extension === 'string' ? extension : ExtensionIdentifier.toKey(extension)}|${source}`;
@@ -23,9 +23,9 @@ export interface TimelineItem {
 	source: string;
 
 	id?: string;
-	timestamp: number;
-	label: string;
-	accessibilityInformation?: IAccessibilityInformation;
+	timestamp: numBer;
+	laBel: string;
+	accessiBilityInformation?: IAccessiBilityInformation;
 	icon?: URI,
 	iconDark?: URI,
 	themeIcon?: { id: string },
@@ -35,23 +35,23 @@ export interface TimelineItem {
 	contextValue?: string;
 
 	relativeTime?: string;
-	hideRelativeTime?: boolean;
+	hideRelativeTime?: Boolean;
 }
 
 export interface TimelineChangeEvent {
 	id: string;
 	uri: URI | undefined;
-	reset: boolean
+	reset: Boolean
 }
 
 export interface TimelineOptions {
 	cursor?: string;
-	limit?: number | { timestamp: number; id?: string };
+	limit?: numBer | { timestamp: numBer; id?: string };
 }
 
 export interface InternalTimelineOptions {
-	cacheResults: boolean;
-	resetCache: boolean;
+	cacheResults: Boolean;
+	resetCache: Boolean;
 }
 
 export interface Timeline {
@@ -63,7 +63,7 @@ export interface Timeline {
 	}
 }
 
-export interface TimelineProvider extends TimelineProviderDescriptor, IDisposable {
+export interface TimelineProvider extends TimelineProviderDescriptor, IDisposaBle {
 	onDidChange?: Event<TimelineChangeEvent>;
 
 	provideTimeline(uri: URI, options: TimelineOptions, token: CancellationToken, internalOptions?: InternalTimelineOptions): Promise<Timeline | undefined>;
@@ -71,12 +71,12 @@ export interface TimelineProvider extends TimelineProviderDescriptor, IDisposabl
 
 export interface TimelineSource {
 	id: string;
-	label: string;
+	laBel: string;
 }
 
 export interface TimelineProviderDescriptor {
 	id: string;
-	label: string;
+	laBel: string;
 	scheme: string | string[];
 }
 
@@ -100,7 +100,7 @@ export interface ITimelineService {
 	onDidChangeTimeline: Event<TimelineChangeEvent>;
 	onDidChangeUri: Event<URI>;
 
-	registerTimelineProvider(provider: TimelineProvider): IDisposable;
+	registerTimelineProvider(provider: TimelineProvider): IDisposaBle;
 	unregisterTimelineProvider(id: string): void;
 
 	getSources(): TimelineSource[];

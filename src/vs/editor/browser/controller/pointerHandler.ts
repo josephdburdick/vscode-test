@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import * as platform from 'vs/base/common/platform';
-import { EventType, Gesture, GestureEvent } from 'vs/base/browser/touch';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { IPointerHandlerHelper, MouseHandler, createMouseMoveEventMerger } from 'vs/editor/browser/controller/mouseHandler';
-import { IMouseTarget } from 'vs/editor/browser/editorBrowser';
-import { EditorMouseEvent, EditorPointerEventFactory } from 'vs/editor/browser/editorDom';
-import { ViewController } from 'vs/editor/browser/view/viewController';
+import * as dom from 'vs/Base/Browser/dom';
+import * as platform from 'vs/Base/common/platform';
+import { EventType, Gesture, GestureEvent } from 'vs/Base/Browser/touch';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { IPointerHandlerHelper, MouseHandler, createMouseMoveEventMerger } from 'vs/editor/Browser/controller/mouseHandler';
+import { IMouseTarget } from 'vs/editor/Browser/editorBrowser';
+import { EditorMouseEvent, EditorPointerEventFactory } from 'vs/editor/Browser/editorDom';
+import { ViewController } from 'vs/editor/Browser/view/viewController';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import { BrowserFeatures } from 'vs/base/browser/canIUse';
+import { BrowserFeatures } from 'vs/Base/Browser/canIUse';
 
 interface IThrottledGestureEvent {
-	translationX: number;
-	translationY: number;
+	translationX: numBer;
+	translationY: numBer;
 }
 
 function gestureChangeEventMerger(lastEvent: IThrottledGestureEvent | null, currentEvent: MSGestureEvent): IThrottledGestureEvent {
@@ -32,24 +32,24 @@ function gestureChangeEventMerger(lastEvent: IThrottledGestureEvent | null, curr
 }
 
 /**
- * Basically Edge but should be modified to handle any pointerEnabled, even without support of MSGesture
+ * Basically Edge But should Be modified to handle any pointerEnaBled, even without support of MSGesture
  */
-class StandardPointerHandler extends MouseHandler implements IDisposable {
+class StandardPointerHandler extends MouseHandler implements IDisposaBle {
 
 	private _lastPointerType: string;
-	private _installGestureHandlerTimeout: number;
+	private _installGestureHandlerTimeout: numBer;
 
 	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
 		super(context, viewController, viewHelper);
 
 		this.viewHelper.linesContentDomNode.style.touchAction = 'none';
 
-		// TODO@Alex -> this expects that the view is added in 100 ms, might not be the case
-		// This handler should be added when the dom node is in the dom tree
+		// TODO@Alex -> this expects that the view is added in 100 ms, might not Be the case
+		// This handler should Be added when the dom node is in the dom tree
 		this._installGestureHandlerTimeout = window.setTimeout(() => {
 			this._installGestureHandlerTimeout = -1;
 
-			// TODO@Alex: replace the usage of MSGesture here with something that works across all browsers
+			// TODO@Alex: replace the usage of MSGesture here with something that works across all Browsers
 			if (window.MSGesture) {
 				const touchGesture = new MSGesture();
 				const penGesture = new MSGesture();
@@ -68,14 +68,14 @@ class StandardPointerHandler extends MouseHandler implements IDisposable {
 						penGesture.addPointer(e.pointerId);
 					}
 				});
-				this._register(dom.addDisposableThrottledListener<IThrottledGestureEvent, MSGestureEvent>(this.viewHelper.linesContentDomNode, 'MSGestureChange', (e) => this._onGestureChange(e), gestureChangeEventMerger));
-				this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, 'MSGestureTap', (e) => this._onCaptureGestureTap(e), true));
+				this._register(dom.addDisposaBleThrottledListener<IThrottledGestureEvent, MSGestureEvent>(this.viewHelper.linesContentDomNode, 'MSGestureChange', (e) => this._onGestureChange(e), gestureChangeEventMerger));
+				this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, 'MSGestureTap', (e) => this._onCaptureGestureTap(e), true));
 			}
 		}, 100);
 		this._lastPointerType = 'mouse';
 	}
 
-	public _onMouseDown(e: EditorMouseEvent): void {
+	puBlic _onMouseDown(e: EditorMouseEvent): void {
 		if (this._lastPointerType === 'mouse') {
 			super._onMouseDown(e);
 		}
@@ -87,8 +87,8 @@ class StandardPointerHandler extends MouseHandler implements IDisposable {
 		if (t.position) {
 			this.viewController.moveTo(t.position);
 		}
-		// IE does not want to focus when coming in from the browser's address bar
-		if ((<any>e.browserEvent).fromElement) {
+		// IE does not want to focus when coming in from the Browser's address Bar
+		if ((<any>e.BrowserEvent).fromElement) {
 			e.preventDefault();
 			this.viewHelper.focusTextArea();
 		} else {
@@ -103,7 +103,7 @@ class StandardPointerHandler extends MouseHandler implements IDisposable {
 		this._context.model.deltaScrollNow(-e.translationX, -e.translationY);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		window.clearTimeout(this._installGestureHandlerTimeout);
 		super.dispose();
 	}
@@ -118,13 +118,13 @@ export class PointerEventHandler extends MouseHandler {
 		super(context, viewController, viewHelper);
 
 		this._register(Gesture.addTarget(this.viewHelper.linesContentDomNode));
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Change, (e) => this.onChange(e)));
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Contextmenu, (e: MouseEvent) => this._onContextMenu(new EditorMouseEvent(e, this.viewHelper.viewDomNode), false)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Change, (e) => this.onChange(e)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Contextmenu, (e: MouseEvent) => this._onContextMenu(new EditorMouseEvent(e, this.viewHelper.viewDomNode), false)));
 
 		this._lastPointerType = 'mouse';
 
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, 'pointerdown', (e: any) => {
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, 'pointerdown', (e: any) => {
 			const pointerType = <any>e.pointerType;
 			if (pointerType === 'mouse') {
 				this._lastPointerType = 'mouse';
@@ -161,7 +161,7 @@ export class PointerEventHandler extends MouseHandler {
 			this.viewController.dispatchMouse({
 				position: target.position,
 				mouseColumn: target.position.column,
-				startedOnLineNumbers: false,
+				startedOnLineNumBers: false,
 				mouseDownCount: event.tapCount,
 				inSelectionMode: false,
 				altKey: false,
@@ -181,7 +181,7 @@ export class PointerEventHandler extends MouseHandler {
 		}
 	}
 
-	public _onMouseDown(e: EditorMouseEvent): void {
+	puBlic _onMouseDown(e: EditorMouseEvent): void {
 		if (e.target && this.viewHelper.linesContentDomNode.contains(e.target) && this._lastPointerType === 'touch') {
 			return;
 		}
@@ -197,9 +197,9 @@ class TouchHandler extends MouseHandler {
 
 		this._register(Gesture.addTarget(this.viewHelper.linesContentDomNode));
 
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Change, (e) => this.onChange(e)));
-		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Contextmenu, (e: MouseEvent) => this._onContextMenu(new EditorMouseEvent(e, this.viewHelper.viewDomNode), false)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Change, (e) => this.onChange(e)));
+		this._register(dom.addDisposaBleListener(this.viewHelper.linesContentDomNode, EventType.Contextmenu, (e: MouseEvent) => this._onContextMenu(new EditorMouseEvent(e, this.viewHelper.viewDomNode), false)));
 	}
 
 	private onTap(event: GestureEvent): void {
@@ -219,7 +219,7 @@ class TouchHandler extends MouseHandler {
 	}
 }
 
-export class PointerHandler extends Disposable {
+export class PointerHandler extends DisposaBle {
 	private readonly handler: MouseHandler;
 
 	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
@@ -228,14 +228,14 @@ export class PointerHandler extends Disposable {
 			this.handler = this._register(new PointerEventHandler(context, viewController, viewHelper));
 		} else if (window.TouchEvent) {
 			this.handler = this._register(new TouchHandler(context, viewController, viewHelper));
-		} else if (window.navigator.pointerEnabled || window.PointerEvent) {
+		} else if (window.navigator.pointerEnaBled || window.PointerEvent) {
 			this.handler = this._register(new StandardPointerHandler(context, viewController, viewHelper));
 		} else {
 			this.handler = this._register(new MouseHandler(context, viewController, viewHelper));
 		}
 	}
 
-	public getTargetAtClientPoint(clientX: number, clientY: number): IMouseTarget | null {
+	puBlic getTargetAtClientPoint(clientX: numBer, clientY: numBer): IMouseTarget | null {
 		return this.handler.getTargetAtClientPoint(clientX, clientY);
 	}
 }

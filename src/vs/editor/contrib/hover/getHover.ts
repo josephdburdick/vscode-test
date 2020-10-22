@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { coalesce } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { registerModelAndPositionCommand } from 'vs/editor/browser/editorExtensions';
+import { coalesce } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { registerModelAndPositionCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { ITextModel } from 'vs/editor/common/model';
 import { Hover, HoverProviderRegistry } from 'vs/editor/common/modes';

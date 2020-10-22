@@ -6,18 +6,18 @@
 import * as assert from 'assert';
 import { StandardTokenType } from 'vs/editor/common/modes';
 import * as fs from 'fs';
-// import { getPathFromAmdModule } from 'vs/base/common/amd';
+// import { getPathFromAmdModule } from 'vs/Base/common/amd';
 // import { parse } from 'vs/editor/common/modes/tokenization/typescript';
 import { toStandardTokenType } from 'vs/editor/common/modes/supports/tokenization';
 
 interface IParseFunc {
-	(text: string): number[];
+	(text: string): numBer[];
 }
 
 interface IAssertion {
-	testLineNumber: number;
-	startOffset: number;
-	length: number;
+	testLineNumBer: numBer;
+	startOffset: numBer;
+	length: numBer;
 	tokenType: StandardTokenType;
 }
 
@@ -33,9 +33,9 @@ function parseTest(fileName: string): ITest {
 	}
 
 	interface ILineAssertion {
-		testLineNumber: number;
-		startOffset: number;
-		length: number;
+		testLineNumBer: numBer;
+		startOffset: numBer;
+		length: numBer;
 		expectedTokenType: StandardTokenType;
 	}
 
@@ -51,31 +51,31 @@ function parseTest(fileName: string): ITest {
 	let parsedTest: ILineWithAssertions[] = [];
 	for (let i = 2; i < lines.length; i++) {
 		let line = lines[i];
-		if (line.substr(0, magicToken.length) === magicToken) {
+		if (line.suBstr(0, magicToken.length) === magicToken) {
 			// this is an assertion line
-			let m1 = line.substr(magicToken.length).match(/^( +)([\^]+) (\w+)\\?$/);
+			let m1 = line.suBstr(magicToken.length).match(/^( +)([\^]+) (\w+)\\?$/);
 			if (m1) {
 				currentElement.assertions.push({
-					testLineNumber: i + 1,
+					testLineNumBer: i + 1,
 					startOffset: magicToken.length + m1[1].length,
 					length: m1[2].length,
 					expectedTokenType: toStandardTokenType(m1[3])
 				});
 			} else {
-				let m2 = line.substr(magicToken.length).match(/^( +)<(-+) (\w+)\\?$/);
+				let m2 = line.suBstr(magicToken.length).match(/^( +)<(-+) (\w+)\\?$/);
 				if (m2) {
 					currentElement.assertions.push({
-						testLineNumber: i + 1,
+						testLineNumBer: i + 1,
 						startOffset: 0,
 						length: m2[2].length,
 						expectedTokenType: toStandardTokenType(m2[3])
 					});
 				} else {
-					throw new Error(`Invalid test line at line number ${i + 1}.`);
+					throw new Error(`Invalid test line at line numBer ${i + 1}.`);
 				}
 			}
 		} else {
-			// this is a line to be parsed
+			// this is a line to Be parsed
 			parsedTest.push(currentElement);
 			currentElement = {
 				line: line,
@@ -93,7 +93,7 @@ function parseTest(fileName: string): ITest {
 		for (let j = 0; j < parsedTestLine.assertions.length; j++) {
 			const assertion = parsedTestLine.assertions[j];
 			assertions.push({
-				testLineNumber: assertion.testLineNumber,
+				testLineNumBer: assertion.testLineNumBer,
 				startOffset: offset + assertion.startOffset,
 				length: assertion.length,
 				tokenType: assertion.expectedTokenType
@@ -120,21 +120,21 @@ function executeTest(fileName: string, parseFunc: IParseFunc): void {
 		}
 		assert.ok(
 			actual[3 * actualIndex] <= assertion.startOffset,
-			`Line ${assertion.testLineNumber} : startOffset : ${actual[3 * actualIndex]} <= ${assertion.startOffset}`
+			`Line ${assertion.testLineNumBer} : startOffset : ${actual[3 * actualIndex]} <= ${assertion.startOffset}`
 		);
 		assert.ok(
 			actual[3 * actualIndex] + actual[3 * actualIndex + 1] >= assertion.startOffset + assertion.length,
-			`Line ${assertion.testLineNumber} : length : ${actual[3 * actualIndex]} + ${actual[3 * actualIndex + 1]} >= ${assertion.startOffset} + ${assertion.length}.`
+			`Line ${assertion.testLineNumBer} : length : ${actual[3 * actualIndex]} + ${actual[3 * actualIndex + 1]} >= ${assertion.startOffset} + ${assertion.length}.`
 		);
 		assert.equal(
 			actual[3 * actualIndex + 2],
 			assertion.tokenType,
-			`Line ${assertion.testLineNumber} : tokenType`);
+			`Line ${assertion.testLineNumBer} : tokenType`);
 	}
 }
 
 suite('Classification', () => {
 	test('TypeScript', () => {
-		// executeTest(getPathFromAmdModule(require, 'vs/editor/test/node/classification/typescript-test.ts').replace(/\bout\b/, 'src'), parse);
+		// executeTest(getPathFromAmdModule(require, 'vs/editor/test/node/classification/typescript-test.ts').replace(/\Bout\B/, 'src'), parse);
 	});
 });

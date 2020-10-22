@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ChordKeybinding, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { ScanCodeBinding, ScanCodeUtils } from 'vs/base/common/scanCode';
+import { ChordKeyBinding, KeyCodeUtils, KeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { ScanCodeBinding, ScanCodeUtils } from 'vs/Base/common/scanCode';
 
-export class KeybindingParser {
+export class KeyBindingParser {
 
 	private static _readModifiers(input: string) {
 		input = input.toLowerCase().trim();
@@ -17,38 +17,38 @@ export class KeybindingParser {
 		let alt = false;
 		let meta = false;
 
-		let matchedModifier: boolean;
+		let matchedModifier: Boolean;
 
 		do {
 			matchedModifier = false;
 			if (/^ctrl(\+|\-)/.test(input)) {
 				ctrl = true;
-				input = input.substr('ctrl-'.length);
+				input = input.suBstr('ctrl-'.length);
 				matchedModifier = true;
 			}
 			if (/^shift(\+|\-)/.test(input)) {
 				shift = true;
-				input = input.substr('shift-'.length);
+				input = input.suBstr('shift-'.length);
 				matchedModifier = true;
 			}
 			if (/^alt(\+|\-)/.test(input)) {
 				alt = true;
-				input = input.substr('alt-'.length);
+				input = input.suBstr('alt-'.length);
 				matchedModifier = true;
 			}
 			if (/^meta(\+|\-)/.test(input)) {
 				meta = true;
-				input = input.substr('meta-'.length);
+				input = input.suBstr('meta-'.length);
 				matchedModifier = true;
 			}
 			if (/^win(\+|\-)/.test(input)) {
 				meta = true;
-				input = input.substr('win-'.length);
+				input = input.suBstr('win-'.length);
 				matchedModifier = true;
 			}
 			if (/^cmd(\+|\-)/.test(input)) {
 				meta = true;
-				input = input.substr('cmd-'.length);
+				input = input.suBstr('cmd-'.length);
 				matchedModifier = true;
 			}
 		} while (matchedModifier);
@@ -57,8 +57,8 @@ export class KeybindingParser {
 
 		const firstSpaceIdx = input.indexOf(' ');
 		if (firstSpaceIdx > 0) {
-			key = input.substring(0, firstSpaceIdx);
-			input = input.substring(firstSpaceIdx);
+			key = input.suBstring(0, firstSpaceIdx);
+			input = input.suBstring(firstSpaceIdx);
 		} else {
 			key = input;
 			input = '';
@@ -74,28 +74,28 @@ export class KeybindingParser {
 		};
 	}
 
-	private static parseSimpleKeybinding(input: string): [SimpleKeybinding, string] {
+	private static parseSimpleKeyBinding(input: string): [SimpleKeyBinding, string] {
 		const mods = this._readModifiers(input);
 		const keyCode = KeyCodeUtils.fromUserSettings(mods.key);
-		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
+		return [new SimpleKeyBinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
 	}
 
-	public static parseKeybinding(input: string, OS: OperatingSystem): Keybinding | null {
+	puBlic static parseKeyBinding(input: string, OS: OperatingSystem): KeyBinding | null {
 		if (!input) {
 			return null;
 		}
 
-		const parts: SimpleKeybinding[] = [];
-		let part: SimpleKeybinding;
+		const parts: SimpleKeyBinding[] = [];
+		let part: SimpleKeyBinding;
 
 		do {
-			[part, input] = this.parseSimpleKeybinding(input);
+			[part, input] = this.parseSimpleKeyBinding(input);
 			parts.push(part);
 		} while (input.length > 0);
-		return new ChordKeybinding(parts);
+		return new ChordKeyBinding(parts);
 	}
 
-	private static parseSimpleUserBinding(input: string): [SimpleKeybinding | ScanCodeBinding, string] {
+	private static parseSimpleUserBinding(input: string): [SimpleKeyBinding | ScanCodeBinding, string] {
 		const mods = this._readModifiers(input);
 		const scanCodeMatch = mods.key.match(/^\[([^\]]+)\]$/);
 		if (scanCodeMatch) {
@@ -104,16 +104,16 @@ export class KeybindingParser {
 			return [new ScanCodeBinding(mods.ctrl, mods.shift, mods.alt, mods.meta, scanCode), mods.remains];
 		}
 		const keyCode = KeyCodeUtils.fromUserSettings(mods.key);
-		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
+		return [new SimpleKeyBinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
 	}
 
-	static parseUserBinding(input: string): (SimpleKeybinding | ScanCodeBinding)[] {
+	static parseUserBinding(input: string): (SimpleKeyBinding | ScanCodeBinding)[] {
 		if (!input) {
 			return [];
 		}
 
-		const parts: (SimpleKeybinding | ScanCodeBinding)[] = [];
-		let part: SimpleKeybinding | ScanCodeBinding;
+		const parts: (SimpleKeyBinding | ScanCodeBinding)[] = [];
+		let part: SimpleKeyBinding | ScanCodeBinding;
 
 		while (input.length > 0) {
 			[part, input] = this.parseSimpleUserBinding(input);

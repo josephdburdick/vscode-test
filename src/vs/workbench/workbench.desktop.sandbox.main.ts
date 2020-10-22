@@ -11,33 +11,33 @@
 // #######################################################################
 
 
-//#region --- workbench common & sandbox
+//#region --- workBench common & sandBox
 
-import 'vs/workbench/workbench.sandbox.main';
-
-//#endregion
-
-
-//#region --- workbench actions
-
+import 'vs/workBench/workBench.sandBox.main';
 
 //#endregion
 
 
-//#region --- workbench (desktop main)
-
-import 'vs/workbench/electron-sandbox/desktop.main';
-
-//#endregion
-
-
-//#region --- workbench services
+//#region --- workBench actions
 
 
 //#endregion
 
 
-//#region --- workbench contributions
+//#region --- workBench (desktop main)
+
+import 'vs/workBench/electron-sandBox/desktop.main';
+
+//#endregion
+
+
+//#region --- workBench services
+
+
+//#endregion
+
+
+//#region --- workBench contriButions
 
 
 //#endregion

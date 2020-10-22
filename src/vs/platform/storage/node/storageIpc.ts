@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IStorageChangeEvent, IStorageMainService } from 'vs/platform/storage/node/storageMainService';
-import { IUpdateRequest, IStorageDatabase, IStorageItemsChangeEvent } from 'vs/base/parts/storage/common/storage';
-import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { IUpdateRequest, IStorageDataBase, IStorageItemsChangeEvent } from 'vs/Base/parts/storage/common/storage';
+import { DisposaBle, IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
-import { generateUuid } from 'vs/base/common/uuid';
+import { generateUuid } from 'vs/Base/common/uuid';
 import { instanceStorageKey, firstSessionDateStorageKey, lastSessionDateStorageKey, currentSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
 
 type Key = string;
 type Value = string;
 type Item = [Key, Value];
 
-interface ISerializableUpdateRequest {
+interface ISerializaBleUpdateRequest {
 	insert?: Item[];
 	delete?: Key[];
 }
 
-interface ISerializableItemsChangeEvent {
+interface ISerializaBleItemsChangeEvent {
 	readonly changed?: Item[];
 	readonly deleted?: Key[];
 }
 
-export class GlobalStorageDatabaseChannel extends Disposable implements IServerChannel {
+export class GloBalStorageDataBaseChannel extends DisposaBle implements IServerChannel {
 
 	private static readonly STORAGE_CHANGE_DEBOUNCE_TIME = 100;
 
-	private readonly _onDidChangeItems = this._register(new Emitter<ISerializableItemsChangeEvent>());
+	private readonly _onDidChangeItems = this._register(new Emitter<ISerializaBleItemsChangeEvent>());
 	readonly onDidChangeItems = this._onDidChangeItems.event;
 
 	private readonly whenReady = this.init();
@@ -46,11 +46,11 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 		try {
 			await this.storageMainService.initialize();
 		} catch (error) {
-			this.logService.error(`[storage] init(): Unable to init global storage due to ${error}`);
+			this.logService.error(`[storage] init(): UnaBle to init gloBal storage due to ${error}`);
 		}
 
-		// Apply global telemetry values as part of the initialization
-		// These are global across all windows and thereby should be
+		// Apply gloBal telemetry values as part of the initialization
+		// These are gloBal across all windows and thereBy should Be
 		// written from the main process once.
 		this.initTelemetry();
 
@@ -77,9 +77,9 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 
 	private registerListeners(): void {
 
-		// Listen for changes in global storage to send to listeners
-		// that are listening. Use a debouncer to reduce IPC traffic.
-		this._register(Event.debounce(this.storageMainService.onDidChangeStorage, (prev: IStorageChangeEvent[] | undefined, cur: IStorageChangeEvent) => {
+		// Listen for changes in gloBal storage to send to listeners
+		// that are listening. Use a deBouncer to reduce IPC traffic.
+		this._register(Event.deBounce(this.storageMainService.onDidChangeStorage, (prev: IStorageChangeEvent[] | undefined, cur: IStorageChangeEvent) => {
 			if (!prev) {
 				prev = [cur];
 			} else {
@@ -87,14 +87,14 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 			}
 
 			return prev;
-		}, GlobalStorageDatabaseChannel.STORAGE_CHANGE_DEBOUNCE_TIME)(events => {
+		}, GloBalStorageDataBaseChannel.STORAGE_CHANGE_DEBOUNCE_TIME)(events => {
 			if (events.length) {
 				this._onDidChangeItems.fire(this.serializeEvents(events));
 			}
 		}));
 	}
 
-	private serializeEvents(events: IStorageChangeEvent[]): ISerializableItemsChangeEvent {
+	private serializeEvents(events: IStorageChangeEvent[]): ISerializaBleItemsChangeEvent {
 		const changed = new Map<Key, Value>();
 		const deleted = new Set<Key>();
 		events.forEach(event => {
@@ -132,7 +132,7 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 			}
 
 			case 'updateItems': {
-				const items: ISerializableUpdateRequest = arg;
+				const items: ISerializaBleUpdateRequest = arg;
 				if (items.insert) {
 					for (const [key, value] of items.insert) {
 						this.storageMainService.store(key, value);
@@ -143,7 +143,7 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 					items.delete.forEach(key => this.storageMainService.remove(key));
 				}
 
-				break;
+				Break;
 			}
 
 			default:
@@ -152,14 +152,14 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 	}
 }
 
-export class GlobalStorageDatabaseChannelClient extends Disposable implements IStorageDatabase {
+export class GloBalStorageDataBaseChannelClient extends DisposaBle implements IStorageDataBase {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeItemsExternal = this._register(new Emitter<IStorageItemsChangeEvent>());
 	readonly onDidChangeItemsExternal = this._onDidChangeItemsExternal.event;
 
-	private onDidChangeItemsOnMainListener: IDisposable | undefined;
+	private onDidChangeItemsOnMainListener: IDisposaBle | undefined;
 
 	constructor(private channel: IChannel) {
 		super();
@@ -168,10 +168,10 @@ export class GlobalStorageDatabaseChannelClient extends Disposable implements IS
 	}
 
 	private registerListeners(): void {
-		this.onDidChangeItemsOnMainListener = this.channel.listen<ISerializableItemsChangeEvent>('onDidChangeItems')((e: ISerializableItemsChangeEvent) => this.onDidChangeItemsOnMain(e));
+		this.onDidChangeItemsOnMainListener = this.channel.listen<ISerializaBleItemsChangeEvent>('onDidChangeItems')((e: ISerializaBleItemsChangeEvent) => this.onDidChangeItemsOnMain(e));
 	}
 
-	private onDidChangeItemsOnMain(e: ISerializableItemsChangeEvent): void {
+	private onDidChangeItemsOnMain(e: ISerializaBleItemsChangeEvent): void {
 		if (Array.isArray(e.changed) || Array.isArray(e.deleted)) {
 			this._onDidChangeItemsExternal.fire({
 				changed: e.changed ? new Map(e.changed) : undefined,
@@ -187,25 +187,25 @@ export class GlobalStorageDatabaseChannelClient extends Disposable implements IS
 	}
 
 	updateItems(request: IUpdateRequest): Promise<void> {
-		const serializableRequest: ISerializableUpdateRequest = Object.create(null);
+		const serializaBleRequest: ISerializaBleUpdateRequest = OBject.create(null);
 
 		if (request.insert) {
-			serializableRequest.insert = Array.from(request.insert.entries());
+			serializaBleRequest.insert = Array.from(request.insert.entries());
 		}
 
 		if (request.delete) {
-			serializableRequest.delete = Array.from(request.delete.values());
+			serializaBleRequest.delete = Array.from(request.delete.values());
 		}
 
-		return this.channel.call('updateItems', serializableRequest);
+		return this.channel.call('updateItems', serializaBleRequest);
 	}
 
 	close(): Promise<void> {
 
-		// when we are about to close, we start to ignore main-side changes since we close anyway
+		// when we are aBout to close, we start to ignore main-side changes since we close anyway
 		dispose(this.onDidChangeItemsOnMainListener);
 
-		return Promise.resolve(); // global storage is closed on the main side
+		return Promise.resolve(); // gloBal storage is closed on the main side
 	}
 
 	dispose(): void {

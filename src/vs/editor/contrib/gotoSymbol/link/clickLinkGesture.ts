@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { ICodeEditor, IEditorMouseEvent, IMouseTarget } from 'vs/editor/browser/editorBrowser';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { ICodeEditor, IEditorMouseEvent, IMouseTarget } from 'vs/editor/Browser/editorBrowser';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ICursorSelectionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as platform from 'vs/base/common/platform';
+import { Event, Emitter } from 'vs/Base/common/event';
+import * as platform from 'vs/Base/common/platform';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-function hasModifier(e: { ctrlKey: boolean; shiftKey: boolean; altKey: boolean; metaKey: boolean }, modifier: 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey'): boolean {
+function hasModifier(e: { ctrlKey: Boolean; shiftKey: Boolean; altKey: Boolean; metaKey: Boolean }, modifier: 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey'): Boolean {
 	return !!e[modifier];
 }
 
@@ -21,10 +21,10 @@ function hasModifier(e: { ctrlKey: boolean; shiftKey: boolean; altKey: boolean; 
  */
 export class ClickLinkMouseEvent {
 
-	public readonly target: IMouseTarget;
-	public readonly hasTriggerModifier: boolean;
-	public readonly hasSideBySideModifier: boolean;
-	public readonly isNoneOrSingleMouseDown: boolean;
+	puBlic readonly target: IMouseTarget;
+	puBlic readonly hasTriggerModifier: Boolean;
+	puBlic readonly hasSideBySideModifier: Boolean;
+	puBlic readonly isNoneOrSingleMouseDown: Boolean;
 
 	constructor(source: IEditorMouseEvent, opts: ClickLinkOptions) {
 		this.target = source.target;
@@ -37,13 +37,13 @@ export class ClickLinkMouseEvent {
 /**
  * An event that encapsulates the various trigger modifiers logic needed for go to definition.
  */
-export class ClickLinkKeyboardEvent {
+export class ClickLinkKeyBoardEvent {
 
-	public readonly keyCodeIsTriggerKey: boolean;
-	public readonly keyCodeIsSideBySideKey: boolean;
-	public readonly hasTriggerModifier: boolean;
+	puBlic readonly keyCodeIsTriggerKey: Boolean;
+	puBlic readonly keyCodeIsSideBySideKey: Boolean;
+	puBlic readonly hasTriggerModifier: Boolean;
 
-	constructor(source: IKeyboardEvent, opts: ClickLinkOptions) {
+	constructor(source: IKeyBoardEvent, opts: ClickLinkOptions) {
 		this.keyCodeIsTriggerKey = (source.keyCode === opts.triggerKey);
 		this.keyCodeIsSideBySideKey = (source.keyCode === opts.triggerSideBySideKey);
 		this.hasTriggerModifier = hasModifier(source, opts.triggerModifier);
@@ -53,10 +53,10 @@ export type TriggerModifier = 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey';
 
 export class ClickLinkOptions {
 
-	public readonly triggerKey: KeyCode;
-	public readonly triggerModifier: TriggerModifier;
-	public readonly triggerSideBySideKey: KeyCode;
-	public readonly triggerSideBySideModifier: TriggerModifier;
+	puBlic readonly triggerKey: KeyCode;
+	puBlic readonly triggerModifier: TriggerModifier;
+	puBlic readonly triggerSideBySideKey: KeyCode;
+	puBlic readonly triggerSideBySideModifier: TriggerModifier;
 
 	constructor(
 		triggerKey: KeyCode,
@@ -70,7 +70,7 @@ export class ClickLinkOptions {
 		this.triggerSideBySideModifier = triggerSideBySideModifier;
 	}
 
-	public equals(other: ClickLinkOptions): boolean {
+	puBlic equals(other: ClickLinkOptions): Boolean {
 		return (
 			this.triggerKey === other.triggerKey
 			&& this.triggerModifier === other.triggerModifier
@@ -94,23 +94,23 @@ function createOptions(multiCursorModifier: 'altKey' | 'ctrlKey' | 'metaKey'): C
 	return new ClickLinkOptions(KeyCode.Alt, 'altKey', KeyCode.Ctrl, 'ctrlKey');
 }
 
-export class ClickLinkGesture extends Disposable {
+export class ClickLinkGesture extends DisposaBle {
 
-	private readonly _onMouseMoveOrRelevantKeyDown: Emitter<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]> = this._register(new Emitter<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]>());
-	public readonly onMouseMoveOrRelevantKeyDown: Event<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]> = this._onMouseMoveOrRelevantKeyDown.event;
+	private readonly _onMouseMoveOrRelevantKeyDown: Emitter<[ClickLinkMouseEvent, ClickLinkKeyBoardEvent | null]> = this._register(new Emitter<[ClickLinkMouseEvent, ClickLinkKeyBoardEvent | null]>());
+	puBlic readonly onMouseMoveOrRelevantKeyDown: Event<[ClickLinkMouseEvent, ClickLinkKeyBoardEvent | null]> = this._onMouseMoveOrRelevantKeyDown.event;
 
 	private readonly _onExecute: Emitter<ClickLinkMouseEvent> = this._register(new Emitter<ClickLinkMouseEvent>());
-	public readonly onExecute: Event<ClickLinkMouseEvent> = this._onExecute.event;
+	puBlic readonly onExecute: Event<ClickLinkMouseEvent> = this._onExecute.event;
 
 	private readonly _onCancel: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onCancel: Event<void> = this._onCancel.event;
+	puBlic readonly onCancel: Event<void> = this._onCancel.event;
 
 	private readonly _editor: ICodeEditor;
 	private _opts: ClickLinkOptions;
 
 	private _lastMouseMoveEvent: ClickLinkMouseEvent | null;
-	private _hasTriggerKeyOnMouseDown: boolean;
-	private _lineNumberOnMouseDown: number;
+	private _hasTriggerKeyOnMouseDown: Boolean;
+	private _lineNumBerOnMouseDown: numBer;
 
 	constructor(editor: ICodeEditor) {
 		super();
@@ -120,7 +120,7 @@ export class ClickLinkGesture extends Disposable {
 
 		this._lastMouseMoveEvent = null;
 		this._hasTriggerKeyOnMouseDown = false;
-		this._lineNumberOnMouseDown = 0;
+		this._lineNumBerOnMouseDown = 0;
 
 		this._register(this._editor.onDidChangeConfiguration((e) => {
 			if (e.hasChanged(EditorOption.multiCursorModifier)) {
@@ -131,15 +131,15 @@ export class ClickLinkGesture extends Disposable {
 				this._opts = newOpts;
 				this._lastMouseMoveEvent = null;
 				this._hasTriggerKeyOnMouseDown = false;
-				this._lineNumberOnMouseDown = 0;
+				this._lineNumBerOnMouseDown = 0;
 				this._onCancel.fire();
 			}
 		}));
 		this._register(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(new ClickLinkMouseEvent(e, this._opts))));
 		this._register(this._editor.onMouseDown((e: IEditorMouseEvent) => this._onEditorMouseDown(new ClickLinkMouseEvent(e, this._opts))));
 		this._register(this._editor.onMouseUp((e: IEditorMouseEvent) => this._onEditorMouseUp(new ClickLinkMouseEvent(e, this._opts))));
-		this._register(this._editor.onKeyDown((e: IKeyboardEvent) => this._onEditorKeyDown(new ClickLinkKeyboardEvent(e, this._opts))));
-		this._register(this._editor.onKeyUp((e: IKeyboardEvent) => this._onEditorKeyUp(new ClickLinkKeyboardEvent(e, this._opts))));
+		this._register(this._editor.onKeyDown((e: IKeyBoardEvent) => this._onEditorKeyDown(new ClickLinkKeyBoardEvent(e, this._opts))));
+		this._register(this._editor.onKeyUp((e: IKeyBoardEvent) => this._onEditorKeyUp(new ClickLinkKeyBoardEvent(e, this._opts))));
 		this._register(this._editor.onMouseDrag(() => this._resetHandler()));
 
 		this._register(this._editor.onDidChangeCursorSelection((e) => this._onDidChangeCursorSelection(e)));
@@ -154,7 +154,7 @@ export class ClickLinkGesture extends Disposable {
 
 	private _onDidChangeCursorSelection(e: ICursorSelectionChangedEvent): void {
 		if (e.selection && e.selection.startColumn !== e.selection.endColumn) {
-			this._resetHandler(); // immediately stop this feature if the user starts to select (https://github.com/microsoft/vscode/issues/7827)
+			this._resetHandler(); // immediately stop this feature if the user starts to select (https://githuB.com/microsoft/vscode/issues/7827)
 		}
 	}
 
@@ -165,22 +165,22 @@ export class ClickLinkGesture extends Disposable {
 	}
 
 	private _onEditorMouseDown(mouseEvent: ClickLinkMouseEvent): void {
-		// We need to record if we had the trigger key on mouse down because someone might select something in the editor
+		// We need to record if we had the trigger key on mouse down Because someone might select something in the editor
 		// holding the mouse down and then while mouse is down start to press Ctrl/Cmd to start a copy operation and then
-		// release the mouse button without wanting to do the navigation.
-		// With this flag we prevent goto definition if the mouse was down before the trigger key was pressed.
+		// release the mouse Button without wanting to do the navigation.
+		// With this flag we prevent goto definition if the mouse was down Before the trigger key was pressed.
 		this._hasTriggerKeyOnMouseDown = mouseEvent.hasTriggerModifier;
-		this._lineNumberOnMouseDown = mouseEvent.target.position ? mouseEvent.target.position.lineNumber : 0;
+		this._lineNumBerOnMouseDown = mouseEvent.target.position ? mouseEvent.target.position.lineNumBer : 0;
 	}
 
 	private _onEditorMouseUp(mouseEvent: ClickLinkMouseEvent): void {
-		const currentLineNumber = mouseEvent.target.position ? mouseEvent.target.position.lineNumber : 0;
-		if (this._hasTriggerKeyOnMouseDown && this._lineNumberOnMouseDown && this._lineNumberOnMouseDown === currentLineNumber) {
+		const currentLineNumBer = mouseEvent.target.position ? mouseEvent.target.position.lineNumBer : 0;
+		if (this._hasTriggerKeyOnMouseDown && this._lineNumBerOnMouseDown && this._lineNumBerOnMouseDown === currentLineNumBer) {
 			this._onExecute.fire(mouseEvent);
 		}
 	}
 
-	private _onEditorKeyDown(e: ClickLinkKeyboardEvent): void {
+	private _onEditorKeyDown(e: ClickLinkKeyBoardEvent): void {
 		if (
 			this._lastMouseMoveEvent
 			&& (
@@ -194,7 +194,7 @@ export class ClickLinkGesture extends Disposable {
 		}
 	}
 
-	private _onEditorKeyUp(e: ClickLinkKeyboardEvent): void {
+	private _onEditorKeyUp(e: ClickLinkKeyBoardEvent): void {
 		if (e.keyCodeIsTriggerKey) {
 			this._onCancel.fire();
 		}

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IUpdateService, State, UpdateType } from 'vs/platform/update/common/update';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
 export interface IUpdate {
 	version: string;
@@ -17,14 +17,14 @@ export interface IUpdate {
 export interface IUpdateProvider {
 
 	/**
-	 * Should return with the `IUpdate` object if an update is
-	 * available or `null` otherwise to signal that there are
+	 * Should return with the `IUpdate` oBject if an update is
+	 * availaBle or `null` otherwise to signal that there are
 	 * no updates.
 	 */
 	checkForUpdate(): Promise<IUpdate | null>;
 }
 
-export class BrowserUpdateService extends Disposable implements IUpdateService {
+export class BrowserUpdateService extends DisposaBle implements IUpdateService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -39,7 +39,7 @@ export class BrowserUpdateService extends Disposable implements IUpdateService {
 	}
 
 	constructor(
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IHostService private readonly hostService: IHostService
 	) {
 		super();
@@ -47,7 +47,7 @@ export class BrowserUpdateService extends Disposable implements IUpdateService {
 		this.checkForUpdates();
 	}
 
-	async isLatestVersion(): Promise<boolean> {
+	async isLatestVersion(): Promise<Boolean> {
 		const update = await this.doCheckForUpdates();
 
 		return !!update;

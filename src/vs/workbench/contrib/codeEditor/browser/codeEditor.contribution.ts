@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import './menuPreventer';
-import './accessibility/accessibility';
+import './accessiBility/accessiBility';
 import './diffEditorHelper';
-import './inspectKeybindings';
+import './inspectKeyBindings';
 import './largeFileOptimizations';
 import './inspectEditorTokens/inspectEditorTokens';
 import './quickaccess/gotoLineQuickAccess';
-import './quickaccess/gotoSymbolQuickAccess';
+import './quickaccess/gotoSymBolQuickAccess';
 import './saveParticipants';
 import './toggleColumnSelection';
 import './toggleMinimap';
@@ -18,4 +18,4 @@ import './toggleMultiCursorModifier';
 import './toggleRenderControlCharacter';
 import './toggleRenderWhitespace';
 import './toggleWordWrap';
-import './workbenchReferenceSearch';
+import './workBenchReferenceSearch';

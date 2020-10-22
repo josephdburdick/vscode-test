@@ -3,62 +3,62 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { mark } from 'vs/base/common/performance';
-import { domContentLoaded, addDisposableListener, EventType, EventHelper, detectFullscreen, addDisposableThrottledListener } from 'vs/base/browser/dom';
+import { mark } from 'vs/Base/common/performance';
+import { domContentLoaded, addDisposaBleListener, EventType, EventHelper, detectFullscreen, addDisposaBleThrottledListener } from 'vs/Base/Browser/dom';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { ILogService, ConsoleLogService, MultiplexLogService, getLogLevel } from 'vs/platform/log/common/log';
-import { ConsoleLogInAutomationService } from 'vs/platform/log/browser/log';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { BrowserWorkbenchEnvironmentService } from 'vs/workbench/services/environment/browser/environmentService';
-import { Workbench } from 'vs/workbench/browser/workbench';
-import { RemoteFileSystemProvider } from 'vs/workbench/services/remote/common/remoteAgentFileSystemChannel';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { ConsoleLogInAutomationService } from 'vs/platform/log/Browser/log';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { BrowserWorkBenchEnvironmentService } from 'vs/workBench/services/environment/Browser/environmentService';
+import { WorkBench } from 'vs/workBench/Browser/workBench';
+import { RemoteFileSystemProvider } from 'vs/workBench/services/remote/common/remoteAgentFileSystemChannel';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { IProductService } from 'vs/platform/product/common/productService';
 import product from 'vs/platform/product/common/product';
-import { RemoteAgentService } from 'vs/workbench/services/remote/browser/remoteAgentServiceImpl';
-import { RemoteAuthorityResolverService } from 'vs/platform/remote/browser/remoteAuthorityResolverService';
+import { RemoteAgentService } from 'vs/workBench/services/remote/Browser/remoteAgentServiceImpl';
+import { RemoteAuthorityResolverService } from 'vs/platform/remote/Browser/remoteAuthorityResolverService';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { IFileService, IFileSystemProvider } from 'vs/platform/files/common/files';
 import { FileService } from 'vs/platform/files/common/fileService';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { setFullscreen } from 'vs/base/browser/browser';
-import { isIOS, isMacintosh } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { setFullscreen } from 'vs/Base/Browser/Browser';
+import { isIOS, isMacintosh } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
 import { IWorkspaceInitializationPayload } from 'vs/platform/workspaces/common/workspaces';
-import { WorkspaceService } from 'vs/workbench/services/configuration/browser/configurationService';
-import { ConfigurationCache } from 'vs/workbench/services/configuration/browser/configurationCache';
+import { WorkspaceService } from 'vs/workBench/services/configuration/Browser/configurationService';
+import { ConfigurationCache } from 'vs/workBench/services/configuration/Browser/configurationCache';
 import { ISignService } from 'vs/platform/sign/common/sign';
-import { SignService } from 'vs/platform/sign/browser/signService';
-import type { IWorkbenchConstructionOptions, IWorkspace, IWorkbench } from 'vs/workbench/workbench.web.api';
-import { BrowserStorageService } from 'vs/platform/storage/browser/storageService';
+import { SignService } from 'vs/platform/sign/Browser/signService';
+import type { IWorkBenchConstructionOptions, IWorkspace, IWorkBench } from 'vs/workBench/workBench.weB.api';
+import { BrowserStorageService } from 'vs/platform/storage/Browser/storageService';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { registerWindowDriver } from 'vs/platform/driver/browser/driver';
-import { BufferLogService } from 'vs/platform/log/common/bufferLog';
+import { registerWindowDriver } from 'vs/platform/driver/Browser/driver';
+import { BufferLogService } from 'vs/platform/log/common/BufferLog';
 import { FileLogService } from 'vs/platform/log/common/fileLogService';
-import { toLocalISOString } from 'vs/base/common/date';
+import { toLocalISOString } from 'vs/Base/common/date';
 import { isWorkspaceToOpen, isFolderToOpen } from 'vs/platform/windows/common/windows';
-import { getWorkspaceIdentifier } from 'vs/workbench/services/workspaces/browser/workspaces';
-import { coalesce } from 'vs/base/common/arrays';
+import { getWorkspaceIdentifier } from 'vs/workBench/services/workspaces/Browser/workspaces';
+import { coalesce } from 'vs/Base/common/arrays';
 import { InMemoryFileSystemProvider } from 'vs/platform/files/common/inMemoryFilesystemProvider';
-import { WebResourceIdentityService, IResourceIdentityService } from 'vs/workbench/services/resourceIdentity/common/resourceIdentityService';
+import { WeBResourceIdentityService, IResourceIdentityService } from 'vs/workBench/services/resourceIdentity/common/resourceIdentityService';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IndexedDB, INDEXEDDB_LOGS_OBJECT_STORE, INDEXEDDB_USERDATA_OBJECT_STORE } from 'vs/platform/files/browser/indexedDBFileSystemProvider';
-import { BrowserRequestService } from 'vs/workbench/services/request/browser/requestService';
+import { IndexedDB, INDEXEDDB_LOGS_OBJECT_STORE, INDEXEDDB_USERDATA_OBJECT_STORE } from 'vs/platform/files/Browser/indexedDBFileSystemProvider';
+import { BrowserRequestService } from 'vs/workBench/services/request/Browser/requestService';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { IUserDataInitializationService, UserDataInitializationService } from 'vs/workbench/services/userData/browser/userDataInit';
+import { IUserDataInitializationService, UserDataInitializationService } from 'vs/workBench/services/userData/Browser/userDataInit';
 import { UserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSyncStoreService';
 import { IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
-class BrowserMain extends Disposable {
+class BrowserMain extends DisposaBle {
 
 	constructor(
 		private readonly domElement: HTMLElement,
-		private readonly configuration: IWorkbenchConstructionOptions
+		private readonly configuration: IWorkBenchConstructionOptions
 	) {
 		super();
 
@@ -71,21 +71,21 @@ class BrowserMain extends Disposable {
 		setFullscreen(!!detectFullscreen());
 	}
 
-	async open(): Promise<IWorkbench> {
+	async open(): Promise<IWorkBench> {
 		const services = await this.initServices();
 
 		await domContentLoaded();
-		mark('willStartWorkbench');
+		mark('willStartWorkBench');
 
-		// Create Workbench
-		const workbench = new Workbench(
+		// Create WorkBench
+		const workBench = new WorkBench(
 			this.domElement,
 			services.serviceCollection,
 			services.logService
 		);
 
 		// Listeners
-		this.registerListeners(workbench, services.configurationService, services.storageService, services.logService);
+		this.registerListeners(workBench, services.configurationService, services.storageService, services.logService);
 
 		// Driver
 		if (this.configuration.driver) {
@@ -93,7 +93,7 @@ class BrowserMain extends Disposable {
 		}
 
 		// Startup
-		const instantiationService = workbench.startup();
+		const instantiationService = workBench.startup();
 
 		// Return API Facade
 		return instantiationService.invokeFunction(accessor => {
@@ -109,45 +109,45 @@ class BrowserMain extends Disposable {
 		});
 	}
 
-	private registerListeners(workbench: Workbench, configurationService: IConfigurationService, storageService: BrowserStorageService, logService: ILogService): void {
+	private registerListeners(workBench: WorkBench, configurationService: IConfigurationService, storageService: BrowserStorageService, logService: ILogService): void {
 
 		// Layout
 		const viewport = isIOS && window.visualViewport ? window.visualViewport /** Visual viewport */ : window /** Layout viewport */;
-		this._register(addDisposableListener(viewport, EventType.RESIZE, () => {
-			logService.trace(`web.main#${isIOS && window.visualViewport ? 'visualViewport' : 'window'}Resize`);
-			workbench.layout();
+		this._register(addDisposaBleListener(viewport, EventType.RESIZE, () => {
+			logService.trace(`weB.main#${isIOS && window.visualViewport ? 'visualViewport' : 'window'}Resize`);
+			workBench.layout();
 		}));
 
-		// Prevent the back/forward gestures in macOS
-		this._register(addDisposableListener(this.domElement, EventType.WHEEL, e => e.preventDefault(), { passive: false }));
+		// Prevent the Back/forward gestures in macOS
+		this._register(addDisposaBleListener(this.domElement, EventType.WHEEL, e => e.preventDefault(), { passive: false }));
 
-		// Prevent native context menus in web
-		this._register(addDisposableListener(this.domElement, EventType.CONTEXT_MENU, e => EventHelper.stop(e, true)));
+		// Prevent native context menus in weB
+		this._register(addDisposaBleListener(this.domElement, EventType.CONTEXT_MENU, e => EventHelper.stop(e, true)));
 
 		// Prevent default navigation on drop
-		this._register(addDisposableListener(this.domElement, EventType.DROP, e => EventHelper.stop(e, true)));
+		this._register(addDisposaBleListener(this.domElement, EventType.DROP, e => EventHelper.stop(e, true)));
 
-		// Workbench Lifecycle
-		this._register(workbench.onBeforeShutdown(event => {
+		// WorkBench Lifecycle
+		this._register(workBench.onBeforeShutdown(event => {
 			if (storageService.hasPendingUpdate) {
 				console.warn('Unload veto: pending storage update');
 				event.veto(true); // prevent data loss from pending storage update
 			}
 		}));
-		this._register(workbench.onWillShutdown(() => {
+		this._register(workBench.onWillShutdown(() => {
 			storageService.close();
 		}));
-		this._register(workbench.onShutdown(() => this.dispose()));
+		this._register(workBench.onShutdown(() => this.dispose()));
 
 		// Fullscreen (Browser)
 		[EventType.FULLSCREEN_CHANGE, EventType.WK_FULLSCREEN_CHANGE].forEach(event => {
-			this._register(addDisposableListener(document, event, () => setFullscreen(!!detectFullscreen())));
+			this._register(addDisposaBleListener(document, event, () => setFullscreen(!!detectFullscreen())));
 		});
 
 		// Fullscreen (Native)
-		this._register(addDisposableThrottledListener(viewport, EventType.RESIZE, () => {
+		this._register(addDisposaBleThrottledListener(viewport, EventType.RESIZE, () => {
 			setFullscreen(!!detectFullscreen());
-		}, undefined, isMacintosh ? 2000 /* adjust for macOS animation */ : 800 /* can be throttled */));
+		}, undefined, isMacintosh ? 2000 /* adjust for macOS animation */ : 800 /* can Be throttled */));
 	}
 
 	private async initServices(): Promise<{ serviceCollection: ServiceCollection, configurationService: IConfigurationService, logService: ILogService, storageService: BrowserStorageService }> {
@@ -159,7 +159,7 @@ class BrowserMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		// Resource Identity
-		const resourceIdentityService = this._register(new WebResourceIdentityService());
+		const resourceIdentityService = this._register(new WeBResourceIdentityService());
 		serviceCollection.set(IResourceIdentityService, resourceIdentityService);
 
 		const payload = await this.resolveWorkspaceInitializationPayload(resourceIdentityService);
@@ -170,8 +170,8 @@ class BrowserMain extends Disposable {
 
 		// Environment
 		const logsPath = URI.file(toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '')).with({ scheme: 'vscode-log' });
-		const environmentService = new BrowserWorkbenchEnvironmentService({ workspaceId: payload.id, logsPath, ...this.configuration }, productService);
-		serviceCollection.set(IWorkbenchEnvironmentService, environmentService);
+		const environmentService = new BrowserWorkBenchEnvironmentService({ workspaceId: payload.id, logsPath, ...this.configuration }, productService);
+		serviceCollection.set(IWorkBenchEnvironmentService, environmentService);
 
 		// Log
 		const logService = new BufferLogService(getLogLevel(environmentService));
@@ -186,7 +186,7 @@ class BrowserMain extends Disposable {
 		serviceCollection.set(ISignService, signService);
 
 		// Remote Agent
-		const remoteAgentService = this._register(new RemoteAgentService(this.configuration.webSocketFactory, environmentService, productService, remoteAuthorityResolverService, signService, logService));
+		const remoteAgentService = this._register(new RemoteAgentService(this.configuration.weBSocketFactory, environmentService, productService, remoteAuthorityResolverService, signService, logService));
 		serviceCollection.set(IRemoteAgentService, remoteAgentService);
 
 		// Files
@@ -230,11 +230,11 @@ class BrowserMain extends Disposable {
 
 		if (await userDataInitializationService.requiresInitialization()) {
 			mark('willInitRequiredUserData');
-			// Initialize required resources - settings & global state
+			// Initialize required resources - settings & gloBal state
 			await userDataInitializationService.initializeRequiredResources();
 
 			// Important: Reload only local user configuration after initializing
-			// Reloading complete configuraiton blocks workbench until remote configuration is loaded.
+			// Reloading complete configuraiton Blocks workBench until remote configuration is loaded.
 			await configurationService.reloadLocalUserConfiguration();
 			mark('didInitRequiredUserData');
 		}
@@ -242,7 +242,7 @@ class BrowserMain extends Disposable {
 		return { serviceCollection, configurationService, logService, storageService };
 	}
 
-	private async registerFileSystemProviders(environmentService: IWorkbenchEnvironmentService, fileService: IFileService, remoteAgentService: IRemoteAgentService, logService: BufferLogService, logsPath: URI): Promise<void> {
+	private async registerFileSystemProviders(environmentService: IWorkBenchEnvironmentService, fileService: IFileService, remoteAgentService: IRemoteAgentService, logService: BufferLogService, logsPath: URI): Promise<void> {
 		const indexedDB = new IndexedDB();
 
 		// Logger
@@ -285,7 +285,7 @@ class BrowserMain extends Disposable {
 		fileService.registerProvider(Schemas.userData, indexedDBUserDataProvider || new InMemoryFileSystemProvider());
 	}
 
-	private async createStorageService(payload: IWorkspaceInitializationPayload, environmentService: IWorkbenchEnvironmentService, fileService: IFileService, logService: ILogService): Promise<BrowserStorageService> {
+	private async createStorageService(payload: IWorkspaceInitializationPayload, environmentService: IWorkBenchEnvironmentService, fileService: IFileService, logService: ILogService): Promise<BrowserStorageService> {
 		const storageService = new BrowserStorageService(environmentService, fileService);
 
 		try {
@@ -300,7 +300,7 @@ class BrowserMain extends Disposable {
 		}
 	}
 
-	private async createWorkspaceService(payload: IWorkspaceInitializationPayload, environmentService: IWorkbenchEnvironmentService, fileService: FileService, remoteAgentService: IRemoteAgentService, logService: ILogService): Promise<WorkspaceService> {
+	private async createWorkspaceService(payload: IWorkspaceInitializationPayload, environmentService: IWorkBenchEnvironmentService, fileService: FileService, remoteAgentService: IRemoteAgentService, logService: ILogService): Promise<WorkspaceService> {
 		const workspaceService = new WorkspaceService({ remoteAuthority: this.configuration.remoteAuthority, configurationCache: new ConfigurationCache() }, environmentService, fileService, remoteAgentService, logService);
 
 		try {
@@ -342,8 +342,8 @@ class BrowserMain extends Disposable {
 	}
 }
 
-export function main(domElement: HTMLElement, options: IWorkbenchConstructionOptions): Promise<IWorkbench> {
-	const workbench = new BrowserMain(domElement, options);
+export function main(domElement: HTMLElement, options: IWorkBenchConstructionOptions): Promise<IWorkBench> {
+	const workBench = new BrowserMain(domElement, options);
 
-	return workbench.open();
+	return workBench.open();
 }

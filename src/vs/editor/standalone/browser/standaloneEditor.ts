@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./standalone-tokens';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { OpenerService } from 'vs/editor/browser/services/openerService';
-import { DiffNavigator, IDiffNavigator } from 'vs/editor/browser/widget/diffNavigator';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { OpenerService } from 'vs/editor/Browser/services/openerService';
+import { DiffNavigator, IDiffNavigator } from 'vs/editor/Browser/widget/diffNavigator';
 import { EditorOptions, ConfigurationChangedEvent } from 'vs/editor/common/config/editorOptions';
 import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
 import { Token } from 'vs/editor/common/core/token';
@@ -20,31 +20,31 @@ import { NULL_STATE, nullTokenize } from 'vs/editor/common/modes/nullMode';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { ILanguageSelection } from 'vs/editor/common/services/modeService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { IWebWorkerOptions, MonacoWebWorker, createWebWorker as actualCreateWebWorker } from 'vs/editor/common/services/webWorker';
+import { IWeBWorkerOptions, MonacoWeBWorker, createWeBWorker as actualCreateWeBWorker } from 'vs/editor/common/services/weBWorker';
 import * as standaloneEnums from 'vs/editor/common/standalone/standaloneEnums';
-import { Colorizer, IColorizerElementOptions, IColorizerOptions } from 'vs/editor/standalone/browser/colorizer';
-import { SimpleEditorModelResolverService } from 'vs/editor/standalone/browser/simpleServices';
-import { IDiffEditorConstructionOptions, IStandaloneEditorConstructionOptions, IStandaloneCodeEditor, IStandaloneDiffEditor, StandaloneDiffEditor, StandaloneEditor } from 'vs/editor/standalone/browser/standaloneCodeEditor';
-import { DynamicStandaloneServices, IEditorOverrideServices, StaticServices } from 'vs/editor/standalone/browser/standaloneServices';
+import { Colorizer, IColorizerElementOptions, IColorizerOptions } from 'vs/editor/standalone/Browser/colorizer';
+import { SimpleEditorModelResolverService } from 'vs/editor/standalone/Browser/simpleServices';
+import { IDiffEditorConstructionOptions, IStandaloneEditorConstructionOptions, IStandaloneCodeEditor, IStandaloneDiffEditor, StandaloneDiffEditor, StandaloneEditor } from 'vs/editor/standalone/Browser/standaloneCodeEditor';
+import { DynamicStandaloneServices, IEditorOverrideServices, StaticServices } from 'vs/editor/standalone/Browser/standaloneServices';
 import { IStandaloneThemeData, IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextViewService, IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { IContextViewService, IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IMarker, IMarkerData } from 'vs/platform/markers/common/markers';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { clearAllFontInfos } from 'vs/editor/browser/config/configuration';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { clearAllFontInfos } from 'vs/editor/Browser/config/configuration';
 import { IEditorProgressService } from 'vs/platform/progress/common/progress';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/browser/standaloneThemeServiceImpl';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/Browser/standaloneThemeServiceImpl';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, override: IEditorOverrideServices, callback: (services: DynamicStandaloneServices) => T): T {
+function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, override: IEditorOverrideServices, callBack: (services: DynamicStandaloneServices) => T): T {
 	let services = new DynamicStandaloneServices(domElement, override);
 
 	let simpleEditorModelResolverService: SimpleEditorModelResolverService | null = null;
@@ -57,7 +57,7 @@ function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, o
 		services.set(IOpenerService, new OpenerService(services.get(ICodeEditorService), services.get(ICommandService)));
 	}
 
-	let result = callback(services);
+	let result = callBack(services);
 
 	if (simpleEditorModelResolverService) {
 		simpleEditorModelResolverService.setEditor(result);
@@ -68,7 +68,7 @@ function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, o
 
 /**
  * Create a new editor under `domElement`.
- * `domElement` should be empty (not contain other dom nodes).
+ * `domElement` should Be empty (not contain other dom nodes).
  * The editor will read the size of `domElement`.
  */
 export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor {
@@ -81,22 +81,22 @@ export function create(domElement: HTMLElement, options?: IStandaloneEditorConst
 			services.get(ICodeEditorService),
 			services.get(ICommandService),
 			services.get(IContextKeyService),
-			services.get(IKeybindingService),
+			services.get(IKeyBindingService),
 			services.get(IContextViewService),
 			services.get(IStandaloneThemeService),
 			services.get(INotificationService),
 			services.get(IConfigurationService),
-			services.get(IAccessibilityService)
+			services.get(IAccessiBilityService)
 		);
 	});
 }
 
 /**
  * Emitted when an editor is created.
- * Creating a diff editor might cause this listener to be invoked with the two editors.
+ * Creating a diff editor might cause this listener to Be invoked with the two editors.
  * @event
  */
-export function onDidCreateEditor(listener: (codeEditor: ICodeEditor) => void): IDisposable {
+export function onDidCreateEditor(listener: (codeEditor: ICodeEditor) => void): IDisposaBle {
 	return StaticServices.codeEditorService.get().onCodeEditorAdd((editor) => {
 		listener(<ICodeEditor>editor);
 	});
@@ -104,7 +104,7 @@ export function onDidCreateEditor(listener: (codeEditor: ICodeEditor) => void): 
 
 /**
  * Create a new diff editor under `domElement`.
- * `domElement` should be empty (not contain other dom nodes).
+ * `domElement` should Be empty (not contain other dom nodes).
  * The editor will read the size of `domElement`.
  */
 export function createDiffEditor(domElement: HTMLElement, options?: IDiffEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneDiffEditor {
@@ -115,7 +115,7 @@ export function createDiffEditor(domElement: HTMLElement, options?: IDiffEditorC
 			services,
 			services.get(IInstantiationService),
 			services.get(IContextKeyService),
-			services.get(IKeybindingService),
+			services.get(IKeyBindingService),
 			services.get(IContextViewService),
 			services.get(IEditorWorkerService),
 			services.get(ICodeEditorService),
@@ -124,15 +124,15 @@ export function createDiffEditor(domElement: HTMLElement, options?: IDiffEditorC
 			services.get(IConfigurationService),
 			services.get(IContextMenuService),
 			services.get(IEditorProgressService),
-			services.get(IClipboardService)
+			services.get(IClipBoardService)
 		);
 	});
 }
 
 export interface IDiffNavigatorOptions {
-	readonly followsCaret?: boolean;
-	readonly ignoreCharChanges?: boolean;
-	readonly alwaysRevealFirst?: boolean;
+	readonly followsCaret?: Boolean;
+	readonly ignoreCharChanges?: Boolean;
+	readonly alwaysRevealFirst?: Boolean;
 }
 
 export function createDiffNavigator(diffEditor: IStandaloneDiffEditor, opts?: IDiffNavigatorOptions): IDiffNavigator {
@@ -145,7 +145,7 @@ function doCreateModel(value: string, languageSelection: ILanguageSelection, uri
 
 /**
  * Create a new editor model.
- * You can specify the language that should be set for this model or let the language be inferred from the `uri`.
+ * You can specify the language that should Be set for this model or let the language Be inferred from the `uri`.
  */
 export function createModel(value: string, language?: string, uri?: URI): ITextModel {
 	value = value || '';
@@ -154,7 +154,7 @@ export function createModel(value: string, language?: string, uri?: URI): ITextM
 		let firstLF = value.indexOf('\n');
 		let firstLine = value;
 		if (firstLF !== -1) {
-			firstLine = value.substring(0, firstLF);
+			firstLine = value.suBstring(0, firstLF);
 		}
 
 		return doCreateModel(value, StaticServices.modeService.get().createByFilepathOrFirstLine(uri || null, firstLine), uri);
@@ -183,7 +183,7 @@ export function setModelMarkers(model: ITextModel, owner: string, markers: IMark
  *
  * @returns list of markers
  */
-export function getModelMarkers(filter: { owner?: string, resource?: URI, take?: number }): IMarker[] {
+export function getModelMarkers(filter: { owner?: string, resource?: URI, take?: numBer }): IMarker[] {
 	return StaticServices.markerService.get().read(filter);
 }
 
@@ -205,15 +205,15 @@ export function getModels(): ITextModel[] {
  * Emitted when a model is created.
  * @event
  */
-export function onDidCreateModel(listener: (model: ITextModel) => void): IDisposable {
+export function onDidCreateModel(listener: (model: ITextModel) => void): IDisposaBle {
 	return StaticServices.modelService.get().onModelAdded(listener);
 }
 
 /**
- * Emitted right before a model is disposed.
+ * Emitted right Before a model is disposed.
  * @event
  */
-export function onWillDisposeModel(listener: (model: ITextModel) => void): IDisposable {
+export function onWillDisposeModel(listener: (model: ITextModel) => void): IDisposaBle {
 	return StaticServices.modelService.get().onModelRemoved(listener);
 }
 
@@ -221,7 +221,7 @@ export function onWillDisposeModel(listener: (model: ITextModel) => void): IDisp
  * Emitted when a different language is set to a model.
  * @event
  */
-export function onDidChangeModelLanguage(listener: (e: { readonly model: ITextModel; readonly oldLanguage: string; }) => void): IDisposable {
+export function onDidChangeModelLanguage(listener: (e: { readonly model: ITextModel; readonly oldLanguage: string; }) => void): IDisposaBle {
 	return StaticServices.modelService.get().onModelModeChanged((e) => {
 		listener({
 			model: e.model,
@@ -231,15 +231,15 @@ export function onDidChangeModelLanguage(listener: (e: { readonly model: ITextMo
 }
 
 /**
- * Create a new web worker that has model syncing capabilities built in.
- * Specify an AMD module to load that will `create` an object that will be proxied.
+ * Create a new weB worker that has model syncing capaBilities Built in.
+ * Specify an AMD module to load that will `create` an oBject that will Be proxied.
  */
-export function createWebWorker<T>(opts: IWebWorkerOptions): MonacoWebWorker<T> {
-	return actualCreateWebWorker<T>(StaticServices.modelService.get(), opts);
+export function createWeBWorker<T>(opts: IWeBWorkerOptions): MonacoWeBWorker<T> {
+	return actualCreateWeBWorker<T>(StaticServices.modelService.get(), opts);
 }
 
 /**
- * Colorize the contents of `domNode` using attribute `data-lang`.
+ * Colorize the contents of `domNode` using attriBute `data-lang`.
  */
 export function colorizeElement(domNode: HTMLElement, options: IColorizerElementOptions): Promise<void> {
 	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
@@ -252,17 +252,17 @@ export function colorizeElement(domNode: HTMLElement, options: IColorizerElement
  */
 export function colorize(text: string, languageId: string, options: IColorizerOptions): Promise<string> {
 	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
-	themeService.registerEditorContainer(document.body);
+	themeService.registerEditorContainer(document.Body);
 	return Colorizer.colorize(StaticServices.modeService.get(), text, languageId, options);
 }
 
 /**
  * Colorize a line in a model.
  */
-export function colorizeModelLine(model: ITextModel, lineNumber: number, tabSize: number = 4): string {
+export function colorizeModelLine(model: ITextModel, lineNumBer: numBer, taBSize: numBer = 4): string {
 	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
-	themeService.registerEditorContainer(document.body);
-	return Colorizer.colorizeModelLine(model, lineNumber, tabSize);
+	themeService.registerEditorContainer(document.Body);
+	return Colorizer.colorizeModelLine(model, lineNumBer, taBSize);
 }
 
 /**
@@ -275,7 +275,7 @@ function getSafeTokenizationSupport(language: string): Omit<modes.ITokenizationS
 	}
 	return {
 		getInitialState: () => NULL_STATE,
-		tokenize: (line: string, state: modes.IState, deltaOffset: number) => nullTokenize(language, line, state, deltaOffset)
+		tokenize: (line: string, state: modes.IState, deltaOffset: numBer) => nullTokenize(language, line, state, deltaOffset)
 	};
 }
 
@@ -284,7 +284,7 @@ function getSafeTokenizationSupport(language: string): Omit<modes.ITokenizationS
  */
 export function tokenize(text: string, languageId: string): Token[][] {
 	let modeService = StaticServices.modeService.get();
-	// Needed in order to get the mode registered for subsequent look-ups
+	// Needed in order to get the mode registered for suBsequent look-ups
 	modeService.triggerMode(languageId);
 
 	let tokenizationSupport = getSafeTokenizationSupport(languageId);
@@ -344,7 +344,7 @@ export function createMonacoEditorAPI(): typeof monaco.editor {
 		onDidChangeModelLanguage: <any>onDidChangeModelLanguage,
 
 
-		createWebWorker: <any>createWebWorker,
+		createWeBWorker: <any>createWeBWorker,
 		colorizeElement: <any>colorizeElement,
 		colorize: <any>colorize,
 		colorizeModelLine: <any>colorizeModelLine,
@@ -354,7 +354,7 @@ export function createMonacoEditorAPI(): typeof monaco.editor {
 		remeasureFonts: remeasureFonts,
 
 		// enums
-		AccessibilitySupport: standaloneEnums.AccessibilitySupport,
+		AccessiBilitySupport: standaloneEnums.AccessiBilitySupport,
 		ContentWidgetPositionPreference: standaloneEnums.ContentWidgetPositionPreference,
 		CursorChangeReason: standaloneEnums.CursorChangeReason,
 		DefaultEndOfLine: standaloneEnums.DefaultEndOfLine,
@@ -366,9 +366,9 @@ export function createMonacoEditorAPI(): typeof monaco.editor {
 		MouseTargetType: standaloneEnums.MouseTargetType,
 		OverlayWidgetPositionPreference: standaloneEnums.OverlayWidgetPositionPreference,
 		OverviewRulerLane: standaloneEnums.OverviewRulerLane,
-		RenderLineNumbersType: standaloneEnums.RenderLineNumbersType,
+		RenderLineNumBersType: standaloneEnums.RenderLineNumBersType,
 		RenderMinimap: standaloneEnums.RenderMinimap,
-		ScrollbarVisibility: standaloneEnums.ScrollbarVisibility,
+		ScrollBarVisiBility: standaloneEnums.ScrollBarVisiBility,
 		ScrollType: standaloneEnums.ScrollType,
 		TextEditorCursorBlinkingStyle: standaloneEnums.TextEditorCursorBlinkingStyle,
 		TextEditorCursorStyle: standaloneEnums.TextEditorCursorStyle,

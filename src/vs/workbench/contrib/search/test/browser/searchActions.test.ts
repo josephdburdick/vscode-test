@@ -4,70 +4,70 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Keybinding } from 'vs/base/common/keyCodes';
-import { OS } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { KeyBinding } from 'vs/Base/common/keyCodes';
+import { OS } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { IFileMatch } from 'vs/workbench/services/search/common/search';
-import { ReplaceAction } from 'vs/workbench/contrib/search/browser/searchActions';
-import { FileMatch, FileMatchOrMatch, Match } from 'vs/workbench/contrib/search/common/searchModel';
-import { MockObjectTree } from 'vs/workbench/contrib/search/test/browser/mockSearchTree';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { IFileMatch } from 'vs/workBench/services/search/common/search';
+import { ReplaceAction } from 'vs/workBench/contriB/search/Browser/searchActions';
+import { FileMatch, FileMatchOrMatch, Match } from 'vs/workBench/contriB/search/common/searchModel';
+import { MockOBjectTree } from 'vs/workBench/contriB/search/test/Browser/mockSearchTree';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 
 suite('Search Actions', () => {
 
 	let instantiationService: TestInstantiationService;
-	let counter: number;
+	let counter: numBer;
 
 	setup(() => {
 		instantiationService = new TestInstantiationService();
-		instantiationService.stub(IModelService, stubModelService(instantiationService));
-		instantiationService.stub(IKeybindingService, {});
-		instantiationService.stub(IKeybindingService, 'resolveKeybinding', (keybinding: Keybinding) => [new USLayoutResolvedKeybinding(keybinding, OS)]);
-		instantiationService.stub(IKeybindingService, 'lookupKeybinding', (id: string) => null);
+		instantiationService.stuB(IModelService, stuBModelService(instantiationService));
+		instantiationService.stuB(IKeyBindingService, {});
+		instantiationService.stuB(IKeyBindingService, 'resolveKeyBinding', (keyBinding: KeyBinding) => [new USLayoutResolvedKeyBinding(keyBinding, OS)]);
+		instantiationService.stuB(IKeyBindingService, 'lookupKeyBinding', (id: string) => null);
 		counter = 0;
 	});
 
-	test('get next element to focus after removing a match when it has next sibling file', function () {
+	test('get next element to focus after removing a match when it has next siBling file', function () {
 		const fileMatch1 = aFileMatch();
 		const fileMatch2 = aFileMatch();
 		const data = [fileMatch1, aMatch(fileMatch1), aMatch(fileMatch1), fileMatch2, aMatch(fileMatch2), aMatch(fileMatch2)];
 		const tree = aTree(data);
 		const target = data[2];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(data[4], actual);
 	});
 
-	test('get next element to focus after removing a match when it does not have next sibling match', function () {
+	test('get next element to focus after removing a match when it does not have next siBling match', function () {
 		const fileMatch1 = aFileMatch();
 		const fileMatch2 = aFileMatch();
 		const data = [fileMatch1, aMatch(fileMatch1), aMatch(fileMatch1), fileMatch2, aMatch(fileMatch2), aMatch(fileMatch2)];
 		const tree = aTree(data);
 		const target = data[5];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(data[4], actual);
 	});
 
-	test('get next element to focus after removing a match when it does not have next sibling match and previous match is file match', function () {
+	test('get next element to focus after removing a match when it does not have next siBling match and previous match is file match', function () {
 		const fileMatch1 = aFileMatch();
 		const fileMatch2 = aFileMatch();
 		const data = [fileMatch1, aMatch(fileMatch1), aMatch(fileMatch1), fileMatch2, aMatch(fileMatch2)];
 		const tree = aTree(data);
 		const target = data[4];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(data[2], actual);
 	});
 
@@ -76,35 +76,35 @@ suite('Search Actions', () => {
 		const data = [fileMatch1, aMatch(fileMatch1)];
 		const tree = aTree(data);
 		const target = data[1];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(undefined, actual);
 	});
 
-	test('get next element to focus after removing a file match when it has next sibling', function () {
+	test('get next element to focus after removing a file match when it has next siBling', function () {
 		const fileMatch1 = aFileMatch();
 		const fileMatch2 = aFileMatch();
 		const fileMatch3 = aFileMatch();
 		const data = [fileMatch1, aMatch(fileMatch1), fileMatch2, aMatch(fileMatch2), fileMatch3, aMatch(fileMatch3)];
 		const tree = aTree(data);
 		const target = data[2];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(data[4], actual);
 	});
 
-	test('get next element to focus after removing a file match when it has no next sibling', function () {
+	test('get next element to focus after removing a file match when it has no next siBling', function () {
 		const fileMatch1 = aFileMatch();
 		const fileMatch2 = aFileMatch();
 		const fileMatch3 = aFileMatch();
 		const data = [fileMatch1, aMatch(fileMatch1), fileMatch2, aMatch(fileMatch2), fileMatch3, aMatch(fileMatch3)];
 		const tree = aTree(data);
 		const target = data[4];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(data[3], actual);
 	});
 
@@ -113,9 +113,9 @@ suite('Search Actions', () => {
 		const data = [fileMatch1, aMatch(fileMatch1)];
 		const tree = aTree(data);
 		const target = data[0];
-		const testObject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
+		const testOBject: ReplaceAction = instantiationService.createInstance(ReplaceAction, tree, target, null);
 
-		const actual = testObject.getElementToFocusAfterRemoved(tree, target);
+		const actual = testOBject.getElementToFocusAfterRemoved(tree, target);
 		assert.equal(undefined, actual);
 	});
 
@@ -133,15 +133,15 @@ suite('Search Actions', () => {
 			fileMatch,
 			['some match'],
 			{
-				startLineNumber: 0,
+				startLineNumBer: 0,
 				startColumn: 0,
-				endLineNumber: 0,
+				endLineNumBer: 0,
 				endColumn: 2
 			},
 			{
-				startLineNumber: line,
+				startLineNumBer: line,
 				startColumn: 0,
-				endLineNumber: line,
+				endLineNumBer: line,
 				endColumn: 2
 			}
 		);
@@ -150,12 +150,12 @@ suite('Search Actions', () => {
 	}
 
 	function aTree(elements: FileMatchOrMatch[]): any {
-		return new MockObjectTree(elements);
+		return new MockOBjectTree(elements);
 	}
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(IThemeService, new TestThemeService());
+	function stuBModelService(instantiationService: TestInstantiationService): IModelService {
+		instantiationService.stuB(IConfigurationService, new TestConfigurationService());
+		instantiationService.stuB(IThemeService, new TestThemeService());
 		return instantiationService.createInstance(ModelServiceImpl);
 	}
 });

@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { asPromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter } from 'vs/base/common/event';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { IExtHostWorkspaceProvider } from 'vs/workbench/api/common/extHostWorkspace';
+import { asPromise } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Emitter } from 'vs/Base/common/event';
+import { dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { IExtHostWorkspaceProvider } from 'vs/workBench/api/common/extHostWorkspace';
 import { InputBox, InputBoxOptions, QuickInput, QuickInputButton, QuickPick, QuickPickItem, QuickPickOptions, WorkspaceFolder, WorkspaceFolderPickOptions } from 'vscode';
 import { ExtHostQuickOpenShape, IMainContext, MainContext, MainThreadQuickOpenShape, TransferQuickPickItems, TransferQuickInput, TransferQuickInputButton } from './extHost.protocol';
-import { URI } from 'vs/base/common/uri';
-import { ThemeIcon, QuickInputButtons } from 'vs/workbench/api/common/extHostTypes';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import { ThemeIcon, QuickInputButtons } from 'vs/workBench/api/common/extHostTypes';
+import { isPromiseCanceledError } from 'vs/Base/common/errors';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { coalesce } from 'vs/base/common/arrays';
+import { coalesce } from 'vs/Base/common/arrays';
 
 export type Item = string | QuickPickItem;
 
@@ -25,10 +25,10 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 	private _workspace: IExtHostWorkspaceProvider;
 	private _commands: ExtHostCommands;
 
-	private _onDidSelectItem?: (handle: number) => void;
-	private _validateInput?: (input: string) => string | undefined | null | Thenable<string | undefined | null>;
+	private _onDidSelectItem?: (handle: numBer) => void;
+	private _validateInput?: (input: string) => string | undefined | null | ThenaBle<string | undefined | null>;
 
-	private _sessions = new Map<number, ExtHostQuickInput>();
+	private _sessions = new Map<numBer, ExtHostQuickInput>();
 
 	private _instances = 0;
 
@@ -38,10 +38,10 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 		this._commands = commands;
 	}
 
-	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enableProposedApi: boolean, options: QuickPickOptions & { canPickMany: true; }, token?: CancellationToken): Promise<QuickPickItem[] | undefined>;
-	showQuickPick(itemsOrItemsPromise: string[] | Promise<string[]>, enableProposedApi: boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<string | undefined>;
-	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enableProposedApi: boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<QuickPickItem | undefined>;
-	showQuickPick(itemsOrItemsPromise: Item[] | Promise<Item[]>, enableProposedApi: boolean, options?: QuickPickOptions, token: CancellationToken = CancellationToken.None): Promise<Item | Item[] | undefined> {
+	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enaBleProposedApi: Boolean, options: QuickPickOptions & { canPickMany: true; }, token?: CancellationToken): Promise<QuickPickItem[] | undefined>;
+	showQuickPick(itemsOrItemsPromise: string[] | Promise<string[]>, enaBleProposedApi: Boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<string | undefined>;
+	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enaBleProposedApi: Boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<QuickPickItem | undefined>;
+	showQuickPick(itemsOrItemsPromise: Item[] | Promise<Item[]>, enaBleProposedApi: Boolean, options?: QuickPickOptions, token: CancellationToken = CancellationToken.None): Promise<Item | Item[] | undefined> {
 
 		// clear state from last invocation
 		this._onDidSelectItem = undefined;
@@ -72,23 +72,23 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 				for (let handle = 0; handle < items.length; handle++) {
 
 					const item = items[handle];
-					let label: string;
+					let laBel: string;
 					let description: string | undefined;
 					let detail: string | undefined;
-					let picked: boolean | undefined;
-					let alwaysShow: boolean | undefined;
+					let picked: Boolean | undefined;
+					let alwaysShow: Boolean | undefined;
 
 					if (typeof item === 'string') {
-						label = item;
+						laBel = item;
 					} else {
-						label = item.label;
+						laBel = item.laBel;
 						description = item.description;
 						detail = item.detail;
 						picked = item.picked;
 						alwaysShow = item.alwaysShow;
 					}
 					pickItems.push({
-						label,
+						laBel,
 						description,
 						handle,
 						detail,
@@ -108,7 +108,7 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 				this._proxy.$setItems(instance, pickItems);
 
 				return quickPickWidget.then(handle => {
-					if (typeof handle === 'number') {
+					if (typeof handle === 'numBer') {
 						return items[handle];
 					} else if (Array.isArray(handle)) {
 						return handle.map(h => items[h]);
@@ -127,7 +127,7 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 		});
 	}
 
-	$onItemSelected(handle: number): void {
+	$onItemSelected(handle: numBer): void {
 		if (this._onDidSelectItem) {
 			this._onDidSelectItem(handle);
 		}
@@ -137,7 +137,7 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 
 	showInput(options?: InputBoxOptions, token: CancellationToken = CancellationToken.None): Promise<string | undefined> {
 
-		// global validate fn used in callback below
+		// gloBal validate fn used in callBack Below
 		this._validateInput = options ? options.validateInput : undefined;
 
 		return this._proxy.$input(options, typeof this._validateInput === 'function', token)
@@ -160,7 +160,7 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 	// ---- workspace folder picker
 
 	async showWorkspaceFolderPick(options?: WorkspaceFolderPickOptions, token = CancellationToken.None): Promise<WorkspaceFolder | undefined> {
-		const selectedFolder = await this._commands.executeCommand<WorkspaceFolder>('_workbench.pickWorkspaceFolder', [options]);
+		const selectedFolder = await this._commands.executeCommand<WorkspaceFolder>('_workBench.pickWorkspaceFolder', [options]);
 		if (!selectedFolder) {
 			return undefined;
 		}
@@ -173,8 +173,8 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 
 	// ---- QuickInput
 
-	createQuickPick<T extends QuickPickItem>(extensionId: ExtensionIdentifier, enableProposedApi: boolean): QuickPick<T> {
-		const session: ExtHostQuickPick<T> = new ExtHostQuickPick(this._proxy, extensionId, enableProposedApi, () => this._sessions.delete(session._id));
+	createQuickPick<T extends QuickPickItem>(extensionId: ExtensionIdentifier, enaBleProposedApi: Boolean): QuickPick<T> {
+		const session: ExtHostQuickPick<T> = new ExtHostQuickPick(this._proxy, extensionId, enaBleProposedApi, () => this._sessions.delete(session._id));
 		this._sessions.set(session._id, session);
 		return session;
 	}
@@ -185,42 +185,42 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 		return session;
 	}
 
-	$onDidChangeValue(sessionId: number, value: string): void {
+	$onDidChangeValue(sessionId: numBer, value: string): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
 			session._fireDidChangeValue(value);
 		}
 	}
 
-	$onDidAccept(sessionId: number): void {
+	$onDidAccept(sessionId: numBer): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
 			session._fireDidAccept();
 		}
 	}
 
-	$onDidChangeActive(sessionId: number, handles: number[]): void {
+	$onDidChangeActive(sessionId: numBer, handles: numBer[]): void {
 		const session = this._sessions.get(sessionId);
 		if (session instanceof ExtHostQuickPick) {
 			session._fireDidChangeActive(handles);
 		}
 	}
 
-	$onDidChangeSelection(sessionId: number, handles: number[]): void {
+	$onDidChangeSelection(sessionId: numBer, handles: numBer[]): void {
 		const session = this._sessions.get(sessionId);
 		if (session instanceof ExtHostQuickPick) {
 			session._fireDidChangeSelection(handles);
 		}
 	}
 
-	$onDidTriggerButton(sessionId: number, handle: number): void {
+	$onDidTriggerButton(sessionId: numBer, handle: numBer): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
 			session._fireDidTriggerButton(handle);
 		}
 	}
 
-	$onDidHide(sessionId: number): void {
+	$onDidHide(sessionId: numBer): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
 			session._fireDidHide();
@@ -234,17 +234,17 @@ class ExtHostQuickInput implements QuickInput {
 	_id = ExtHostQuickPick._nextId++;
 
 	private _title: string | undefined;
-	private _steps: number | undefined;
-	private _totalSteps: number | undefined;
-	private _visible = false;
+	private _steps: numBer | undefined;
+	private _totalSteps: numBer | undefined;
+	private _visiBle = false;
 	private _expectingHide = false;
-	private _enabled = true;
-	private _busy = false;
+	private _enaBled = true;
+	private _Busy = false;
 	private _ignoreFocusOut = true;
 	private _value = '';
 	private _placeholder: string | undefined;
-	private _buttons: QuickInputButton[] = [];
-	private _handlesToButtons = new Map<number, QuickInputButton>();
+	private _Buttons: QuickInputButton[] = [];
+	private _handlesToButtons = new Map<numBer, QuickInputButton>();
 	private readonly _onDidAcceptEmitter = new Emitter<void>();
 	private readonly _onDidChangeValueEmitter = new Emitter<string>();
 	private readonly _onDidTriggerButtonEmitter = new Emitter<QuickInputButton>();
@@ -253,7 +253,7 @@ class ExtHostQuickInput implements QuickInput {
 	private _pendingUpdate: TransferQuickInput = { id: this._id };
 
 	private _disposed = false;
-	protected _disposables: IDisposable[] = [
+	protected _disposaBles: IDisposaBle[] = [
 		this._onDidTriggerButtonEmitter,
 		this._onDidHideEmitter,
 		this._onDidAcceptEmitter,
@@ -276,7 +276,7 @@ class ExtHostQuickInput implements QuickInput {
 		return this._steps;
 	}
 
-	set step(step: number | undefined) {
+	set step(step: numBer | undefined) {
 		this._steps = step;
 		this.update({ step });
 	}
@@ -285,34 +285,34 @@ class ExtHostQuickInput implements QuickInput {
 		return this._totalSteps;
 	}
 
-	set totalSteps(totalSteps: number | undefined) {
+	set totalSteps(totalSteps: numBer | undefined) {
 		this._totalSteps = totalSteps;
 		this.update({ totalSteps });
 	}
 
-	get enabled() {
-		return this._enabled;
+	get enaBled() {
+		return this._enaBled;
 	}
 
-	set enabled(enabled: boolean) {
-		this._enabled = enabled;
-		this.update({ enabled });
+	set enaBled(enaBled: Boolean) {
+		this._enaBled = enaBled;
+		this.update({ enaBled });
 	}
 
-	get busy() {
-		return this._busy;
+	get Busy() {
+		return this._Busy;
 	}
 
-	set busy(busy: boolean) {
-		this._busy = busy;
-		this.update({ busy });
+	set Busy(Busy: Boolean) {
+		this._Busy = Busy;
+		this.update({ Busy });
 	}
 
 	get ignoreFocusOut() {
 		return this._ignoreFocusOut;
 	}
 
-	set ignoreFocusOut(ignoreFocusOut: boolean) {
+	set ignoreFocusOut(ignoreFocusOut: Boolean) {
 		this._ignoreFocusOut = ignoreFocusOut;
 		this.update({ ignoreFocusOut });
 	}
@@ -339,22 +339,22 @@ class ExtHostQuickInput implements QuickInput {
 
 	onDidAccept = this._onDidAcceptEmitter.event;
 
-	get buttons() {
-		return this._buttons;
+	get Buttons() {
+		return this._Buttons;
 	}
 
-	set buttons(buttons: QuickInputButton[]) {
-		this._buttons = buttons.slice();
+	set Buttons(Buttons: QuickInputButton[]) {
+		this._Buttons = Buttons.slice();
 		this._handlesToButtons.clear();
-		buttons.forEach((button, i) => {
-			const handle = button === QuickInputButtons.Back ? -1 : i;
-			this._handlesToButtons.set(handle, button);
+		Buttons.forEach((Button, i) => {
+			const handle = Button === QuickInputButtons.Back ? -1 : i;
+			this._handlesToButtons.set(handle, Button);
 		});
 		this.update({
-			buttons: buttons.map<TransferQuickInputButton>((button, i) => ({
-				iconPath: getIconUris(button.iconPath),
-				tooltip: button.tooltip,
-				handle: button === QuickInputButtons.Back ? -1 : i,
+			Buttons: Buttons.map<TransferQuickInputButton>((Button, i) => ({
+				iconPath: getIconUris(Button.iconPath),
+				tooltip: Button.tooltip,
+				handle: Button === QuickInputButtons.Back ? -1 : i,
 			}))
 		});
 	}
@@ -362,14 +362,14 @@ class ExtHostQuickInput implements QuickInput {
 	onDidTriggerButton = this._onDidTriggerButtonEmitter.event;
 
 	show(): void {
-		this._visible = true;
+		this._visiBle = true;
 		this._expectingHide = true;
-		this.update({ visible: true });
+		this.update({ visiBle: true });
 	}
 
 	hide(): void {
-		this._visible = false;
-		this.update({ visible: false });
+		this._visiBle = false;
+		this.update({ visiBle: false });
 	}
 
 	onDidHide = this._onDidHideEmitter.event;
@@ -383,10 +383,10 @@ class ExtHostQuickInput implements QuickInput {
 		this._onDidChangeValueEmitter.fire(value);
 	}
 
-	_fireDidTriggerButton(handle: number) {
-		const button = this._handlesToButtons.get(handle);
-		if (button) {
-			this._onDidTriggerButtonEmitter.fire(button);
+	_fireDidTriggerButton(handle: numBer) {
+		const Button = this._handlesToButtons.get(handle);
+		if (Button) {
+			this._onDidTriggerButtonEmitter.fire(Button);
 		}
 	}
 
@@ -403,7 +403,7 @@ class ExtHostQuickInput implements QuickInput {
 		}
 		this._disposed = true;
 		this._fireDidHide();
-		this._disposables = dispose(this._disposables);
+		this._disposaBles = dispose(this._disposaBles);
 		if (this._updateTimeout) {
 			clearTimeout(this._updateTimeout);
 			this._updateTimeout = undefined;
@@ -416,18 +416,18 @@ class ExtHostQuickInput implements QuickInput {
 		if (this._disposed) {
 			return;
 		}
-		for (const key of Object.keys(properties)) {
+		for (const key of OBject.keys(properties)) {
 			const value = properties[key];
 			this._pendingUpdate[key] = value === undefined ? null : value;
 		}
 
-		if ('visible' in this._pendingUpdate) {
+		if ('visiBle' in this._pendingUpdate) {
 			if (this._updateTimeout) {
 				clearTimeout(this._updateTimeout);
 				this._updateTimeout = undefined;
 			}
 			this.dispatchUpdate();
-		} else if (this._visible && !this._updateTimeout) {
+		} else if (this._visiBle && !this._updateTimeout) {
 			// Defer the update so that multiple changes to setters dont cause a redraw each
 			this._updateTimeout = setTimeout(() => {
 				this._updateTimeout = undefined;
@@ -452,11 +452,11 @@ function getIconUris(iconPath: QuickInputButton['iconPath']): { dark: URI, light
 }
 
 function getLightIconUri(iconPath: string | URI | { light: URI; dark: URI; }) {
-	return getIconUri(typeof iconPath === 'object' && 'light' in iconPath ? iconPath.light : iconPath);
+	return getIconUri(typeof iconPath === 'oBject' && 'light' in iconPath ? iconPath.light : iconPath);
 }
 
 function getDarkIconUri(iconPath: string | URI | { light: URI; dark: URI; }) {
-	return getIconUri(typeof iconPath === 'object' && 'dark' in iconPath ? iconPath.dark : iconPath);
+	return getIconUri(typeof iconPath === 'oBject' && 'dark' in iconPath ? iconPath.dark : iconPath);
 }
 
 function getIconUri(iconPath: string | URI) {
@@ -469,20 +469,20 @@ function getIconUri(iconPath: string | URI) {
 class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implements QuickPick<T> {
 
 	private _items: T[] = [];
-	private _handlesToItems = new Map<number, T>();
-	private _itemsToHandles = new Map<T, number>();
+	private _handlesToItems = new Map<numBer, T>();
+	private _itemsToHandles = new Map<T, numBer>();
 	private _canSelectMany = false;
 	private _matchOnDescription = true;
 	private _matchOnDetail = true;
-	private _sortByLabel = true;
+	private _sortByLaBel = true;
 	private _activeItems: T[] = [];
 	private readonly _onDidChangeActiveEmitter = new Emitter<T[]>();
 	private _selectedItems: T[] = [];
 	private readonly _onDidChangeSelectionEmitter = new Emitter<T[]>();
 
-	constructor(proxy: MainThreadQuickOpenShape, extensionId: ExtensionIdentifier, enableProposedApi: boolean, onDispose: () => void) {
+	constructor(proxy: MainThreadQuickOpenShape, extensionId: ExtensionIdentifier, enaBleProposedApi: Boolean, onDispose: () => void) {
 		super(proxy, extensionId, onDispose);
-		this._disposables.push(
+		this._disposaBles.push(
 			this._onDidChangeActiveEmitter,
 			this._onDidChangeSelectionEmitter,
 		);
@@ -503,7 +503,7 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 		});
 		this.update({
 			items: items.map((item, i) => ({
-				label: item.label,
+				laBel: item.laBel,
 				description: item.description,
 				handle: i,
 				detail: item.detail,
@@ -517,7 +517,7 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 		return this._canSelectMany;
 	}
 
-	set canSelectMany(canSelectMany: boolean) {
+	set canSelectMany(canSelectMany: Boolean) {
 		this._canSelectMany = canSelectMany;
 		this.update({ canSelectMany });
 	}
@@ -526,7 +526,7 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 		return this._matchOnDescription;
 	}
 
-	set matchOnDescription(matchOnDescription: boolean) {
+	set matchOnDescription(matchOnDescription: Boolean) {
 		this._matchOnDescription = matchOnDescription;
 		this.update({ matchOnDescription });
 	}
@@ -535,18 +535,18 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 		return this._matchOnDetail;
 	}
 
-	set matchOnDetail(matchOnDetail: boolean) {
+	set matchOnDetail(matchOnDetail: Boolean) {
 		this._matchOnDetail = matchOnDetail;
 		this.update({ matchOnDetail });
 	}
 
-	get sortByLabel() {
-		return this._sortByLabel;
+	get sortByLaBel() {
+		return this._sortByLaBel;
 	}
 
-	set sortByLabel(sortByLabel: boolean) {
-		this._sortByLabel = sortByLabel;
-		this.update({ sortByLabel });
+	set sortByLaBel(sortByLaBel: Boolean) {
+		this._sortByLaBel = sortByLaBel;
+		this.update({ sortByLaBel });
 	}
 
 	get activeItems() {
@@ -571,13 +571,13 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 
 	onDidChangeSelection = this._onDidChangeSelectionEmitter.event;
 
-	_fireDidChangeActive(handles: number[]) {
+	_fireDidChangeActive(handles: numBer[]) {
 		const items = coalesce(handles.map(handle => this._handlesToItems.get(handle)));
 		this._activeItems = items;
 		this._onDidChangeActiveEmitter.fire(items);
 	}
 
-	_fireDidChangeSelection(handles: number[]) {
+	_fireDidChangeSelection(handles: numBer[]) {
 		const items = coalesce(handles.map(handle => this._handlesToItems.get(handle)));
 		this._selectedItems = items;
 		this._onDidChangeSelectionEmitter.fire(items);
@@ -599,7 +599,7 @@ class ExtHostInputBox extends ExtHostQuickInput implements InputBox {
 		return this._password;
 	}
 
-	set password(password: boolean) {
+	set password(password: Boolean) {
 		this._password = password;
 		this.update({ password });
 	}

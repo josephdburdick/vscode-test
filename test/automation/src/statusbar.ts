@@ -19,11 +19,11 @@ export const enum StatusBarElement {
 
 export class StatusBar {
 
-	private readonly mainSelector = 'footer[id="workbench.parts.statusbar"]';
+	private readonly mainSelector = 'footer[id="workBench.parts.statusBar"]';
 
 	constructor(private code: Code) { }
 
-	async waitForStatusbarElement(element: StatusBarElement): Promise<void> {
+	async waitForStatusBarElement(element: StatusBarElement): Promise<void> {
 		await this.code.waitForElement(this.getSelector(element));
 	}
 
@@ -35,30 +35,30 @@ export class StatusBar {
 		return this.code.waitForTextContent(this.getSelector(StatusBarElement.EOL_STATUS), eol);
 	}
 
-	async waitForStatusbarText(title: string, text: string): Promise<void> {
-		await this.code.waitForTextContent(`${this.mainSelector} .statusbar-item[title="${title}"]`, text);
+	async waitForStatusBarText(title: string, text: string): Promise<void> {
+		await this.code.waitForTextContent(`${this.mainSelector} .statusBar-item[title="${title}"]`, text);
 	}
 
 	private getSelector(element: StatusBarElement): string {
 		switch (element) {
 			case StatusBarElement.BRANCH_STATUS:
-				return `.statusbar-item[id="status.scm"] .codicon.codicon-git-branch`;
+				return `.statusBar-item[id="status.scm"] .codicon.codicon-git-Branch`;
 			case StatusBarElement.SYNC_STATUS:
-				return `.statusbar-item[id="status.scm"] .codicon.codicon-sync`;
+				return `.statusBar-item[id="status.scm"] .codicon.codicon-sync`;
 			case StatusBarElement.PROBLEMS_STATUS:
-				return `.statusbar-item[id="status.problems"]`;
+				return `.statusBar-item[id="status.proBlems"]`;
 			case StatusBarElement.SELECTION_STATUS:
-				return `.statusbar-item[id="status.editor.selection"]`;
+				return `.statusBar-item[id="status.editor.selection"]`;
 			case StatusBarElement.INDENTATION_STATUS:
-				return `.statusbar-item[id="status.editor.indentation"]`;
+				return `.statusBar-item[id="status.editor.indentation"]`;
 			case StatusBarElement.ENCODING_STATUS:
-				return `.statusbar-item[id="status.editor.encoding"]`;
+				return `.statusBar-item[id="status.editor.encoding"]`;
 			case StatusBarElement.EOL_STATUS:
-				return `.statusbar-item[id="status.editor.eol"]`;
+				return `.statusBar-item[id="status.editor.eol"]`;
 			case StatusBarElement.LANGUAGE_STATUS:
-				return `.statusbar-item[id="status.editor.mode"]`;
+				return `.statusBar-item[id="status.editor.mode"]`;
 			case StatusBarElement.FEEDBACK_ICON:
-				return `.statusbar-item[id="status.feedback"]`;
+				return `.statusBar-item[id="status.feedBack"]`;
 			default:
 				throw new Error(element);
 		}

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import * as nls from 'vs/nls';
-import { CustomEditorPriority, CustomEditorSelector } from 'vs/workbench/contrib/customEditor/common/customEditor';
-import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import { CustomEditorPriority, CustomEditorSelector } from 'vs/workBench/contriB/customEditor/common/customEditor';
+import { ExtensionsRegistry } from 'vs/workBench/services/extensions/common/extensionsRegistry';
+import { languagesExtPoint } from 'vs/workBench/services/mode/common/workBenchModeService';
 
 namespace Fields {
 	export const viewType = 'viewType';
@@ -23,11 +23,11 @@ export interface ICustomEditorsExtensionPoint {
 	readonly [Fields.priority]?: string;
 }
 
-const CustomEditorsContribution: IJSONSchema = {
-	description: nls.localize('contributes.customEditors', 'Contributed custom editors.'),
+const CustomEditorsContriBution: IJSONSchema = {
+	description: nls.localize('contriButes.customEditors', 'ContriButed custom editors.'),
 	type: 'array',
 	defaultSnippets: [{
-		body: [{
+		Body: [{
 			[Fields.viewType]: '$1',
 			[Fields.displayName]: '$2',
 			[Fields.selector]: [{
@@ -36,7 +36,7 @@ const CustomEditorsContribution: IJSONSchema = {
 		}]
 	}],
 	items: {
-		type: 'object',
+		type: 'oBject',
 		required: [
 			Fields.viewType,
 			Fields.displayName,
@@ -45,40 +45,40 @@ const CustomEditorsContribution: IJSONSchema = {
 		properties: {
 			[Fields.viewType]: {
 				type: 'string',
-				markdownDescription: nls.localize('contributes.viewType', 'Identifier for the custom editor. This must be unique across all custom editors, so we recommend including your extension id as part of `viewType`. The `viewType` is used when registering custom editors with `vscode.registerCustomEditorProvider` and in the `onCustomEditor:${id}` [activation event](https://code.visualstudio.com/api/references/activation-events).'),
+				markdownDescription: nls.localize('contriButes.viewType', 'Identifier for the custom editor. This must Be unique across all custom editors, so we recommend including your extension id as part of `viewType`. The `viewType` is used when registering custom editors with `vscode.registerCustomEditorProvider` and in the `onCustomEditor:${id}` [activation event](https://code.visualstudio.com/api/references/activation-events).'),
 			},
 			[Fields.displayName]: {
 				type: 'string',
-				description: nls.localize('contributes.displayName', 'Human readable name of the custom editor. This is displayed to users when selecting which editor to use.'),
+				description: nls.localize('contriButes.displayName', 'Human readaBle name of the custom editor. This is displayed to users when selecting which editor to use.'),
 			},
 			[Fields.selector]: {
 				type: 'array',
-				description: nls.localize('contributes.selector', 'Set of globs that the custom editor is enabled for.'),
+				description: nls.localize('contriButes.selector', 'Set of gloBs that the custom editor is enaBled for.'),
 				items: {
-					type: 'object',
+					type: 'oBject',
 					defaultSnippets: [{
-						body: {
+						Body: {
 							filenamePattern: '$1',
 						}
 					}],
 					properties: {
 						filenamePattern: {
 							type: 'string',
-							description: nls.localize('contributes.selector.filenamePattern', 'Glob that the custom editor is enabled for.'),
+							description: nls.localize('contriButes.selector.filenamePattern', 'GloB that the custom editor is enaBled for.'),
 						},
 					}
 				}
 			},
 			[Fields.priority]: {
 				type: 'string',
-				markdownDeprecationMessage: nls.localize('contributes.priority', 'Controls if the custom editor is enabled automatically when the user opens a file. This may be overridden by users using the `workbench.editorAssociations` setting.'),
+				markdownDeprecationMessage: nls.localize('contriButes.priority', 'Controls if the custom editor is enaBled automatically when the user opens a file. This may Be overridden By users using the `workBench.editorAssociations` setting.'),
 				enum: [
 					CustomEditorPriority.default,
 					CustomEditorPriority.option,
 				],
 				markdownEnumDescriptions: [
-					nls.localize('contributes.priority.default', 'The editor is automatically used when the user opens a resource, provided that no other default custom editors are registered for that resource.'),
-					nls.localize('contributes.priority.option', 'The editor is not automatically used when the user opens a resource, but a user can switch to the editor using the `Reopen With` command.'),
+					nls.localize('contriButes.priority.default', 'The editor is automatically used when the user opens a resource, provided that no other default custom editors are registered for that resource.'),
+					nls.localize('contriButes.priority.option', 'The editor is not automatically used when the user opens a resource, But a user can switch to the editor using the `Reopen With` command.'),
 				],
 				default: 'default'
 			}
@@ -89,5 +89,5 @@ const CustomEditorsContribution: IJSONSchema = {
 export const customEditorsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<ICustomEditorsExtensionPoint[]>({
 	extensionPoint: 'customEditors',
 	deps: [languagesExtPoint],
-	jsonSchema: CustomEditorsContribution
+	jsonSchema: CustomEditorsContriBution
 });

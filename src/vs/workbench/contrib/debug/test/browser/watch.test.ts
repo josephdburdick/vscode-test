@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Expression, DebugModel } from 'vs/workbench/contrib/debug/common/debugModel';
-import { createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { Expression, DeBugModel } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { createMockDeBugModel } from 'vs/workBench/contriB/deBug/test/Browser/mockDeBug';
 
 // Expressions
 
 function assertWatchExpressions(watchExpressions: Expression[], expectedName: string) {
 	assert.equal(watchExpressions.length, 2);
 	watchExpressions.forEach(we => {
-		assert.equal(we.available, false);
+		assert.equal(we.availaBle, false);
 		assert.equal(we.reference, 0);
 		assert.equal(we.name, expectedName);
 	});
 }
 
-suite('Debug - Watch', () => {
+suite('DeBug - Watch', () => {
 
-	let model: DebugModel;
+	let model: DeBugModel;
 
 	setup(() => {
-		model = createMockDebugModel();
+		model = createMockDeBugModel();
 	});
 
 	test('watch expressions', () => {

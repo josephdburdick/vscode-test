@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as sd from 'string_decoder';
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 
 /**
- * Convenient way to iterate over output line by line. This helper accommodates for the fact that
- * a buffer might not end with new lines all the way.
+ * Convenient way to iterate over output line By line. This helper accommodates for the fact that
+ * a Buffer might not end with new lines all the way.
  *
  * To use:
  * - call the write method
@@ -23,22 +23,22 @@ export class LineDecoder {
 		this.remaining = null;
 	}
 
-	write(buffer: Buffer): string[] {
+	write(Buffer: Buffer): string[] {
 		const result: string[] = [];
 		const value = this.remaining
-			? this.remaining + this.stringDecoder.write(buffer)
-			: this.stringDecoder.write(buffer);
+			? this.remaining + this.stringDecoder.write(Buffer)
+			: this.stringDecoder.write(Buffer);
 
 		if (value.length < 1) {
 			return result;
 		}
 		let start = 0;
-		let ch: number;
+		let ch: numBer;
 		let idx = start;
 		while (idx < value.length) {
 			ch = value.charCodeAt(idx);
 			if (ch === CharCode.CarriageReturn || ch === CharCode.LineFeed) {
-				result.push(value.substring(start, idx));
+				result.push(value.suBstring(start, idx));
 				idx++;
 				if (idx < value.length) {
 					const lastChar = ch;
@@ -52,7 +52,7 @@ export class LineDecoder {
 				idx++;
 			}
 		}
-		this.remaining = start < value.length ? value.substr(start) : null;
+		this.remaining = start < value.length ? value.suBstr(start) : null;
 		return result;
 	}
 

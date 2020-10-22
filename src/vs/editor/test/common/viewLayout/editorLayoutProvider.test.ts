@@ -4,37 +4,37 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorLayoutInfo, EditorLayoutInfoComputer, RenderMinimap, EditorOption, EditorMinimapOptions, InternalEditorScrollbarOptions, EditorOptions, RenderLineNumbersType, InternalEditorRenderLineNumbersOptions } from 'vs/editor/common/config/editorOptions';
+import { EditorLayoutInfo, EditorLayoutInfoComputer, RenderMinimap, EditorOption, EditorMinimapOptions, InternalEditorScrollBarOptions, EditorOptions, RenderLineNumBersType, InternalEditorRenderLineNumBersOptions } from 'vs/editor/common/config/editorOptions';
 import { ComputedEditorOptions } from 'vs/editor/common/config/commonEditorConfig';
 
 interface IEditorLayoutProviderOpts {
-	readonly outerWidth: number;
-	readonly outerHeight: number;
+	readonly outerWidth: numBer;
+	readonly outerHeight: numBer;
 
-	readonly showGlyphMargin: boolean;
-	readonly lineHeight: number;
+	readonly showGlyphMargin: Boolean;
+	readonly lineHeight: numBer;
 
-	readonly showLineNumbers: boolean;
-	readonly lineNumbersMinChars: number;
-	readonly lineNumbersDigitCount: number;
-	maxLineNumber?: number;
+	readonly showLineNumBers: Boolean;
+	readonly lineNumBersMinChars: numBer;
+	readonly lineNumBersDigitCount: numBer;
+	maxLineNumBer?: numBer;
 
-	readonly lineDecorationsWidth: number;
+	readonly lineDecorationsWidth: numBer;
 
-	readonly typicalHalfwidthCharacterWidth: number;
-	readonly maxDigitWidth: number;
+	readonly typicalHalfwidthCharacterWidth: numBer;
+	readonly maxDigitWidth: numBer;
 
-	readonly verticalScrollbarWidth: number;
-	readonly verticalScrollbarHasArrows: boolean;
-	readonly scrollbarArrowSize: number;
-	readonly horizontalScrollbarHeight: number;
+	readonly verticalScrollBarWidth: numBer;
+	readonly verticalScrollBarHasArrows: Boolean;
+	readonly scrollBarArrowSize: numBer;
+	readonly horizontalScrollBarHeight: numBer;
 
-	readonly minimap: boolean;
+	readonly minimap: Boolean;
 	readonly minimapSide: 'left' | 'right';
-	readonly minimapRenderCharacters: boolean;
-	readonly minimapMaxColumn: number;
+	readonly minimapRenderCharacters: Boolean;
+	readonly minimapMaxColumn: numBer;
 	minimapSize?: 'proportional' | 'fill' | 'fit';
-	readonly pixelRatio: number;
+	readonly pixelRatio: numBer;
 }
 
 suite('Editor ViewLayout - EditorLayoutProvider', () => {
@@ -42,11 +42,11 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 	function doTest(input: IEditorLayoutProviderOpts, expected: EditorLayoutInfo): void {
 		const options = new ComputedEditorOptions();
 		options._write(EditorOption.glyphMargin, input.showGlyphMargin);
-		options._write(EditorOption.lineNumbersMinChars, input.lineNumbersMinChars);
+		options._write(EditorOption.lineNumBersMinChars, input.lineNumBersMinChars);
 		options._write(EditorOption.lineDecorationsWidth, input.lineDecorationsWidth);
 		options._write(EditorOption.folding, false);
 		const minimapOptions: EditorMinimapOptions = {
-			enabled: input.minimap,
+			enaBled: input.minimap,
 			size: input.minimapSize || 'proportional',
 			side: input.minimapSide,
 			renderCharacters: input.minimapRenderCharacters,
@@ -55,31 +55,31 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			scale: 1,
 		};
 		options._write(EditorOption.minimap, minimapOptions);
-		const scrollbarOptions: InternalEditorScrollbarOptions = {
-			arrowSize: input.scrollbarArrowSize,
-			vertical: EditorOptions.scrollbar.defaultValue.vertical,
-			horizontal: EditorOptions.scrollbar.defaultValue.horizontal,
-			useShadows: EditorOptions.scrollbar.defaultValue.useShadows,
-			verticalHasArrows: input.verticalScrollbarHasArrows,
+		const scrollBarOptions: InternalEditorScrollBarOptions = {
+			arrowSize: input.scrollBarArrowSize,
+			vertical: EditorOptions.scrollBar.defaultValue.vertical,
+			horizontal: EditorOptions.scrollBar.defaultValue.horizontal,
+			useShadows: EditorOptions.scrollBar.defaultValue.useShadows,
+			verticalHasArrows: input.verticalScrollBarHasArrows,
 			horizontalHasArrows: false,
-			handleMouseWheel: EditorOptions.scrollbar.defaultValue.handleMouseWheel,
+			handleMouseWheel: EditorOptions.scrollBar.defaultValue.handleMouseWheel,
 			alwaysConsumeMouseWheel: true,
-			horizontalScrollbarSize: input.horizontalScrollbarHeight,
-			horizontalSliderSize: EditorOptions.scrollbar.defaultValue.horizontalSliderSize,
-			verticalScrollbarSize: input.verticalScrollbarWidth,
-			verticalSliderSize: EditorOptions.scrollbar.defaultValue.verticalSliderSize,
+			horizontalScrollBarSize: input.horizontalScrollBarHeight,
+			horizontalSliderSize: EditorOptions.scrollBar.defaultValue.horizontalSliderSize,
+			verticalScrollBarSize: input.verticalScrollBarWidth,
+			verticalSliderSize: EditorOptions.scrollBar.defaultValue.verticalSliderSize,
 		};
-		options._write(EditorOption.scrollbar, scrollbarOptions);
-		const lineNumbersOptions: InternalEditorRenderLineNumbersOptions = {
-			renderType: input.showLineNumbers ? RenderLineNumbersType.On : RenderLineNumbersType.Off,
+		options._write(EditorOption.scrollBar, scrollBarOptions);
+		const lineNumBersOptions: InternalEditorRenderLineNumBersOptions = {
+			renderType: input.showLineNumBers ? RenderLineNumBersType.On : RenderLineNumBersType.Off,
 			renderFn: null
 		};
-		options._write(EditorOption.lineNumbers, lineNumbersOptions);
+		options._write(EditorOption.lineNumBers, lineNumBersOptions);
 
 		options._write(EditorOption.wordWrap, 'off');
 		options._write(EditorOption.wordWrapColumn, 80);
 		options._write(EditorOption.wordWrapMinified, true);
-		options._write(EditorOption.accessibilitySupport, 'auto');
+		options._write(EditorOption.accessiBilitySupport, 'auto');
 
 		const actual = EditorLayoutInfoComputer.computeLayout(options, {
 			memory: null,
@@ -87,8 +87,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: input.outerHeight,
 			isDominatedByLongLines: false,
 			lineHeight: input.lineHeight,
-			viewLineCount: input.maxLineNumber || Math.pow(10, input.lineNumbersDigitCount) - 1,
-			lineNumbersDigitCount: input.lineNumbersDigitCount,
+			viewLineCount: input.maxLineNumBer || Math.pow(10, input.lineNumBersDigitCount) - 1,
+			lineNumBersDigitCount: input.lineNumBersDigitCount,
 			typicalHalfwidthCharacterWidth: input.typicalHalfwidthCharacterWidth,
 			maxDigitWidth: input.maxDigitWidth,
 			pixelRatio: input.pixelRatio,
@@ -102,16 +102,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -124,8 +124,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -152,8 +152,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -170,16 +170,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 11,
-			horizontalScrollbarHeight: 12,
-			scrollbarArrowSize: 13,
-			verticalScrollbarHasArrows: true,
+			verticalScrollBarWidth: 11,
+			horizontalScrollBarHeight: 12,
+			scrollBarArrowSize: 13,
+			verticalScrollBarHasArrows: true,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -192,8 +192,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -220,8 +220,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 11,
-			horizontalScrollbarHeight: 12,
+			verticalScrollBarWidth: 11,
+			horizontalScrollBarHeight: 12,
 
 			overviewRuler: {
 				top: 13,
@@ -238,16 +238,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -260,8 +260,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -288,8 +288,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -306,16 +306,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -328,8 +328,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -356,8 +356,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -374,16 +374,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -396,8 +396,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -424,8 +424,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -442,16 +442,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: true,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: true,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -464,8 +464,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 50,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 50,
 
 			decorationsLeft: 50,
 			decorationsWidth: 10,
@@ -492,8 +492,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -510,16 +510,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: true,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 5,
+			showLineNumBers: true,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 5,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -532,8 +532,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 50,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 50,
 
 			decorationsLeft: 50,
 			decorationsWidth: 10,
@@ -560,8 +560,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -578,16 +578,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: true,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 6,
+			showLineNumBers: true,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 6,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -600,8 +600,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 60,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 60,
 
 			decorationsLeft: 60,
 			decorationsWidth: 10,
@@ -628,8 +628,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -646,16 +646,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: true,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 6,
+			showLineNumBers: true,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 6,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 5,
 			maxDigitWidth: 5,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -668,8 +668,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 30,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 30,
 
 			decorationsLeft: 30,
 			decorationsWidth: 10,
@@ -696,8 +696,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -714,16 +714,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 900,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: true,
-			lineNumbersMinChars: 5,
-			lineNumbersDigitCount: 6,
+			showLineNumBers: true,
+			lineNumBersMinChars: 5,
+			lineNumBersDigitCount: 6,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 5.05,
 			maxDigitWidth: 5.05,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: false,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -736,8 +736,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 30,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 30,
 
 			decorationsLeft: 30,
 			decorationsWidth: 10,
@@ -764,8 +764,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -782,16 +782,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -804,8 +804,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -832,8 +832,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -850,16 +850,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -872,8 +872,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -900,8 +900,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -918,16 +918,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -940,8 +940,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -968,8 +968,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -986,16 +986,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'left',
 			minimapRenderCharacters: true,
@@ -1008,8 +1008,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 55,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 55,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 55,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 55,
 			decorationsWidth: 10,
@@ -1036,8 +1036,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -1054,17 +1054,17 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 3,
-			maxLineNumber: 120,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 3,
+			maxLineNumBer: 120,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -1078,8 +1078,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -1106,8 +1106,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -1124,17 +1124,17 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 4,
-			maxLineNumber: 2500,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 4,
+			maxLineNumBer: 2500,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -1148,8 +1148,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -1176,8 +1176,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -1194,17 +1194,17 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 3,
-			maxLineNumber: 120,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 3,
+			maxLineNumBer: 120,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -1218,8 +1218,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -1246,8 +1246,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -1264,17 +1264,17 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 800,
 			showGlyphMargin: false,
 			lineHeight: 16,
-			showLineNumbers: false,
-			lineNumbersMinChars: 0,
-			lineNumbersDigitCount: 4,
-			maxLineNumber: 2500,
+			showLineNumBers: false,
+			lineNumBersMinChars: 0,
+			lineNumBersDigitCount: 4,
+			maxLineNumBer: 2500,
 			lineDecorationsWidth: 10,
 			typicalHalfwidthCharacterWidth: 10,
 			maxDigitWidth: 10,
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
-			scrollbarArrowSize: 0,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
+			scrollBarArrowSize: 0,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -1288,8 +1288,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 0,
 
-			lineNumbersLeft: 0,
-			lineNumbersWidth: 0,
+			lineNumBersLeft: 0,
+			lineNumBersWidth: 0,
 
 			decorationsLeft: 0,
 			decorationsWidth: 10,
@@ -1316,8 +1316,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 0,
-			horizontalScrollbarHeight: 0,
+			verticalScrollBarWidth: 0,
+			horizontalScrollBarHeight: 0,
 
 			overviewRuler: {
 				top: 0,
@@ -1334,16 +1334,16 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			outerHeight: 422,
 			showGlyphMargin: true,
 			lineHeight: 30,
-			showLineNumbers: true,
-			lineNumbersMinChars: 3,
-			lineNumbersDigitCount: 1,
+			showLineNumBers: true,
+			lineNumBersMinChars: 3,
+			lineNumBersDigitCount: 1,
 			lineDecorationsWidth: 26,
 			typicalHalfwidthCharacterWidth: 12.04296875,
 			maxDigitWidth: 12.04296875,
-			verticalScrollbarWidth: 14,
-			horizontalScrollbarHeight: 10,
-			scrollbarArrowSize: 11,
-			verticalScrollbarHasArrows: false,
+			verticalScrollBarWidth: 14,
+			horizontalScrollBarHeight: 10,
+			scrollBarArrowSize: 11,
+			verticalScrollBarHasArrows: false,
 			minimap: true,
 			minimapSide: 'right',
 			minimapRenderCharacters: true,
@@ -1356,8 +1356,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			glyphMarginLeft: 0,
 			glyphMarginWidth: 30,
 
-			lineNumbersLeft: 30,
-			lineNumbersWidth: 36,
+			lineNumBersLeft: 30,
+			lineNumBersWidth: 36,
 
 			decorationsLeft: 66,
 			decorationsWidth: 26,
@@ -1384,8 +1384,8 @@ suite('Editor ViewLayout - EditorLayoutProvider', () => {
 			isViewportWrapping: false,
 			wrappingColumn: -1,
 
-			verticalScrollbarWidth: 14,
-			horizontalScrollbarHeight: 10,
+			verticalScrollBarWidth: 14,
+			horizontalScrollBarHeight: 10,
 
 			overviewRuler: {
 				top: 0,

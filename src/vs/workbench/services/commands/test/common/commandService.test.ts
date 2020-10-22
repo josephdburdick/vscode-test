@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { CommandService } from 'vs/workbench/services/commands/common/commandService';
-import { NullExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { CommandService } from 'vs/workBench/services/commands/common/commandService';
+import { NullExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 import { NullLogService } from 'vs/platform/log/common/log';
 
 suite('CommandService', function () {
 
-	let commandRegistration: IDisposable;
+	let commandRegistration: IDisposaBle;
 
 	setup(function () {
 		commandRegistration = CommandsRegistry.registerCommand('foo', function () { });
@@ -47,7 +47,7 @@ suite('CommandService', function () {
 
 		const extensionService = new class extends NullExtensionService {
 			activateByEvent(activationEvent: string): Promise<void> {
-				return Promise.reject(new Error('bad_activate'));
+				return Promise.reject(new Error('Bad_activate'));
 			}
 		};
 
@@ -56,22 +56,22 @@ suite('CommandService', function () {
 		await extensionService.whenInstalledExtensionsRegistered();
 
 		return service.executeCommand('foo').then(() => assert.ok(false), err => {
-			assert.equal(err.message, 'bad_activate');
+			assert.equal(err.message, 'Bad_activate');
 		});
 	});
 
-	test('!onReady, but executeCommand', function () {
+	test('!onReady, But executeCommand', function () {
 
 		let callCounter = 0;
-		let reg = CommandsRegistry.registerCommand('bar', () => callCounter += 1);
+		let reg = CommandsRegistry.registerCommand('Bar', () => callCounter += 1);
 
 		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
 			whenInstalledExtensionsRegistered() {
-				return new Promise<boolean>(_resolve => { /*ignore*/ });
+				return new Promise<Boolean>(_resolve => { /*ignore*/ });
 			}
 		}, new NullLogService());
 
-		service.executeCommand('bar');
+		service.executeCommand('Bar');
 		assert.equal(callCounter, 1);
 		reg.dispose();
 	});
@@ -80,7 +80,7 @@ suite('CommandService', function () {
 
 		let callCounter = 0;
 		let resolveFunc: Function;
-		const whenInstalledExtensionsRegistered = new Promise<boolean>(_resolve => { resolveFunc = _resolve; });
+		const whenInstalledExtensionsRegistered = new Promise<Boolean>(_resolve => { resolveFunc = _resolve; });
 
 		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
 			whenInstalledExtensionsRegistered() {
@@ -88,10 +88,10 @@ suite('CommandService', function () {
 			}
 		}, new NullLogService());
 
-		let r = service.executeCommand('bar');
+		let r = service.executeCommand('Bar');
 		assert.equal(callCounter, 0);
 
-		let reg = CommandsRegistry.registerCommand('bar', () => callCounter += 1);
+		let reg = CommandsRegistry.registerCommand('Bar', () => callCounter += 1);
 		resolveFunc!(true);
 
 		return r.then(() => {
@@ -103,7 +103,7 @@ suite('CommandService', function () {
 	test('Stop waiting for * extensions to activate when trigger is satisfied #62457', function () {
 
 		let callCounter = 0;
-		const disposable = new DisposableStore();
+		const disposaBle = new DisposaBleStore();
 		let events: string[] = [];
 		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
 
@@ -115,10 +115,10 @@ suite('CommandService', function () {
 				if (event.indexOf('onCommand:') === 0) {
 					return new Promise(resolve => {
 						setTimeout(() => {
-							let reg = CommandsRegistry.registerCommand(event.substr('onCommand:'.length), () => {
+							let reg = CommandsRegistry.registerCommand(event.suBstr('onCommand:'.length), () => {
 								callCounter += 1;
 							});
-							disposable.add(reg);
+							disposaBle.add(reg);
 							resolve();
 						}, 0);
 					});
@@ -128,18 +128,18 @@ suite('CommandService', function () {
 
 		}, new NullLogService());
 
-		return service.executeCommand('farboo').then(() => {
+		return service.executeCommand('farBoo').then(() => {
 			assert.equal(callCounter, 1);
-			assert.deepEqual(events.sort(), ['*', 'onCommand:farboo'].sort());
+			assert.deepEqual(events.sort(), ['*', 'onCommand:farBoo'].sort());
 		}).finally(() => {
-			disposable.dispose();
+			disposaBle.dispose();
 		});
 	});
 
 	test('issue #71471: wait for onCommand activation even if a command is registered', () => {
 		let expectedOrder: string[] = ['registering command', 'resolving activation event', 'executing command'];
 		let actualOrder: string[] = [];
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
 
 			activateByEvent(event: string): Promise<void> {
@@ -151,10 +151,10 @@ suite('CommandService', function () {
 						setTimeout(() => {
 							// Register the command after some time
 							actualOrder.push('registering command');
-							let reg = CommandsRegistry.registerCommand(event.substr('onCommand:'.length), () => {
+							let reg = CommandsRegistry.registerCommand(event.suBstr('onCommand:'.length), () => {
 								actualOrder.push('executing command');
 							});
-							disposables.add(reg);
+							disposaBles.add(reg);
 
 							setTimeout(() => {
 								// Resolve the activation event after some more time
@@ -169,10 +169,10 @@ suite('CommandService', function () {
 
 		}, new NullLogService());
 
-		return service.executeCommand('farboo2').then(() => {
+		return service.executeCommand('farBoo2').then(() => {
 			assert.deepEqual(actualOrder, expectedOrder);
 		}).finally(() => {
-			disposables.dispose();
+			disposaBles.dispose();
 		});
 	});
 });

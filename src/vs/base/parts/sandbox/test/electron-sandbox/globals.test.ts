@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ipcRenderer, crashReporter, webFrame } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { ipcRenderer, crashReporter, weBFrame } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 
-suite('Sandbox', () => {
-	test('globals', () => {
+suite('SandBox', () => {
+	test('gloBals', () => {
 		assert.ok(ipcRenderer);
 		assert.ok(crashReporter);
-		assert.ok(webFrame);
+		assert.ok(weBFrame);
 	});
 });

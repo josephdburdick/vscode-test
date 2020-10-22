@@ -3,32 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { workbenchInstantiationService, TestInMemoryFileSystemProvider, TestBrowserTextFileServiceWithEncodingOverrides } from 'vs/workbench/test/browser/workbenchTestServices';
+import { workBenchInstantiationService, TestInMemoryFileSystemProvider, TestBrowserTextFileServiceWithEncodingOverrides } from 'vs/workBench/test/Browser/workBenchTestServices';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { FileService } from 'vs/platform/files/common/fileService';
-import { Schemas } from 'vs/base/common/network';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IFileService, IStat } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
-import { join } from 'vs/base/common/path';
-import { UTF16le, detectEncodingByBOMFromBuffer, UTF8_with_bom, UTF16be, toCanonicalName } from 'vs/workbench/services/textfile/common/encoding';
-import { VSBuffer } from 'vs/base/common/buffer';
-import files from 'vs/workbench/services/textfile/test/browser/fixtures/files';
-import createSuite from 'vs/workbench/services/textfile/test/common/textFileService.io.test';
-import { isWeb } from 'vs/base/common/platform';
-import { IWorkingCopyFileService, WorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { TestWorkingCopyService } from 'vs/workbench/test/common/workbenchTestServices';
-import { UriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentityService';
+import { URI } from 'vs/Base/common/uri';
+import { join } from 'vs/Base/common/path';
+import { UTF16le, detectEncodingByBOMFromBuffer, UTF8_with_Bom, UTF16Be, toCanonicalName } from 'vs/workBench/services/textfile/common/encoding';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import files from 'vs/workBench/services/textfile/test/Browser/fixtures/files';
+import createSuite from 'vs/workBench/services/textfile/test/common/textFileService.io.test';
+import { isWeB } from 'vs/Base/common/platform';
+import { IWorkingCopyFileService, WorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
+import { TestWorkingCopyService } from 'vs/workBench/test/common/workBenchTestServices';
+import { UriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentityService';
 
 // optimization: we don't need to run this suite in native environment,
-// because we have nativeTextFileService.io.test.ts for it,
+// Because we have nativeTextFileService.io.test.ts for it,
 // so our tests run faster
-if (isWeb) {
+if (isWeB) {
 	suite('Files - BrowserTextFileService i/o', function () {
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 
 		let service: ITextFileService;
 		let fileProvider: TestInMemoryFileSystemProvider;
@@ -36,14 +36,14 @@ if (isWeb) {
 
 		createSuite({
 			setup: async () => {
-				const instantiationService = workbenchInstantiationService();
+				const instantiationService = workBenchInstantiationService();
 
 				const logService = new NullLogService();
 				const fileService = new FileService(logService);
 
 				fileProvider = new TestInMemoryFileSystemProvider();
-				disposables.add(fileService.registerProvider(Schemas.file, fileProvider));
-				disposables.add(fileProvider);
+				disposaBles.add(fileService.registerProvider(Schemas.file, fileProvider));
+				disposaBles.add(fileProvider);
 
 				const collection = new ServiceCollection();
 				collection.set(IFileService, fileService);
@@ -67,7 +67,7 @@ if (isWeb) {
 			teardown: async () => {
 				(<TextFileEditorModelManager>service.files).dispose();
 
-				disposables.clear();
+				disposaBles.clear();
 			},
 
 			exists,
@@ -76,7 +76,7 @@ if (isWeb) {
 			detectEncodingByBOM
 		});
 
-		async function exists(fsPath: string): Promise<boolean> {
+		async function exists(fsPath: string): Promise<Boolean> {
 			try {
 				await fileProvider.readFile(URI.file(fsPath));
 				return true;
@@ -102,11 +102,11 @@ if (isWeb) {
 			return fileProvider.stat(URI.file(fsPath));
 		}
 
-		async function detectEncodingByBOM(fsPath: string): Promise<typeof UTF16be | typeof UTF16le | typeof UTF8_with_bom | null> {
+		async function detectEncodingByBOM(fsPath: string): Promise<typeof UTF16Be | typeof UTF16le | typeof UTF8_with_Bom | null> {
 			try {
-				const buffer = await readFile(fsPath);
+				const Buffer = await readFile(fsPath);
 
-				return detectEncodingByBOMFromBuffer(buffer.slice(0, 3), 3);
+				return detectEncodingByBOMFromBuffer(Buffer.slice(0, 3), 3);
 			} catch (error) {
 				return null; // ignore errors (like file not found)
 			}

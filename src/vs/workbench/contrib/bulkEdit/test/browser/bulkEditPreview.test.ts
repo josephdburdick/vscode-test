@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { IFileService } from 'vs/platform/files/common/files';
-import { mock } from 'vs/workbench/test/common/workbenchTestServices';
+import { mock } from 'vs/workBench/test/common/workBenchTestServices';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { URI } from 'vs/base/common/uri';
-import { BulkFileOperations } from 'vs/workbench/contrib/bulkEdit/browser/preview/bulkEditPreview';
+import { URI } from 'vs/Base/common/uri';
+import { BulkFileOperations } from 'vs/workBench/contriB/BulkEdit/Browser/preview/BulkEditPreview';
 import { Range } from 'vs/editor/common/core/range';
-import { ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import { ResourceFileEdit, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 
 suite('BulkEditPreview', function () {
 
@@ -48,8 +48,8 @@ suite('BulkEditPreview', function () {
 	test('one needsConfirmation unchecks all of file', async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'cat1', needsConfirmation: true }),
-			new ResourceFileEdit(URI.parse('some:///uri1'), URI.parse('some:///uri2'), undefined, { label: 'cat2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { laBel: 'cat1', needsConfirmation: true }),
+			new ResourceFileEdit(URI.parse('some:///uri1'), URI.parse('some:///uri2'), undefined, { laBel: 'cat2', needsConfirmation: false }),
 		];
 
 		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
@@ -60,35 +60,35 @@ suite('BulkEditPreview', function () {
 	test('has categories', async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'uri1', needsConfirmation: true }),
-			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { label: 'uri2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { laBel: 'uri1', needsConfirmation: true }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { laBel: 'uri2', needsConfirmation: false }),
 		];
 
 
 		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
 		assert.equal(ops.categories.length, 2);
-		assert.equal(ops.categories[0].metadata.label, 'uri1'); // unconfirmed!
-		assert.equal(ops.categories[1].metadata.label, 'uri2');
+		assert.equal(ops.categories[0].metadata.laBel, 'uri1'); // unconfirmed!
+		assert.equal(ops.categories[1].metadata.laBel, 'uri2');
 	});
 
 	test('has not categories', async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'uri1', needsConfirmation: true }),
-			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { label: 'uri1', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { laBel: 'uri1', needsConfirmation: true }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { laBel: 'uri1', needsConfirmation: false }),
 		];
 
 		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
 		assert.equal(ops.categories.length, 1);
-		assert.equal(ops.categories[0].metadata.label, 'uri1'); // unconfirmed!
-		assert.equal(ops.categories[0].metadata.label, 'uri1');
+		assert.equal(ops.categories[0].metadata.laBel, 'uri1'); // unconfirmed!
+		assert.equal(ops.categories[0].metadata.laBel, 'uri1');
 	});
 
 	test('category selection', async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'C1', needsConfirmation: false }),
-			new ResourceTextEdit(URI.parse('some:///uri2'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { label: 'C2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { laBel: 'C1', needsConfirmation: false }),
+			new ResourceTextEdit(URI.parse('some:///uri2'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { laBel: 'C2', needsConfirmation: false }),
 		];
 
 
@@ -99,7 +99,7 @@ suite('BulkEditPreview', function () {
 
 		assert.ok(edits === ops.getWorkspaceEdit());
 
-		// NOT taking to create, but the invalid text edit will
+		// NOT taking to create, But the invalid text edit will
 		// go through
 		ops.checked.updateChecked(edits[0], false);
 		const newEdits = ops.getWorkspaceEdit();
@@ -109,13 +109,13 @@ suite('BulkEditPreview', function () {
 		assert.equal(newEdits.length, 1);
 	});
 
-	test('fix bad metadata', async function () {
+	test('fix Bad metadata', async function () {
 
-		// bogous edit that wants creation to be confirmed, but not it's textedit-child...
+		// Bogous edit that wants creation to Be confirmed, But not it's textedit-child...
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'C1', needsConfirmation: true }),
-			new ResourceTextEdit(URI.parse('some:///uri1'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { label: 'C2', needsConfirmation: false })
+			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { laBel: 'C1', needsConfirmation: true }),
+			new ResourceTextEdit(URI.parse('some:///uri1'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { laBel: 'C2', needsConfirmation: false })
 		];
 
 		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);

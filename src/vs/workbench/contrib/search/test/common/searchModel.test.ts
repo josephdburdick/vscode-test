@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
 import * as sinon from 'sinon';
-import { timeout } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
-import { DeferredPromise } from 'vs/base/test/common/utils';
+import { timeout } from 'vs/Base/common/async';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { DeferredPromise } from 'vs/Base/test/common/utils';
 import { Range } from 'vs/editor/common/core/range';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IFileMatch, IFileSearchStats, IFolderQuery, ISearchComplete, ISearchProgressItem, ISearchQuery, ISearchService, ITextSearchMatch, OneLineRange, TextSearchMatch } from 'vs/workbench/services/search/common/search';
+import { IFileMatch, IFileSearchStats, IFolderQuery, ISearchComplete, ISearchProgressItem, ISearchQuery, ISearchService, ITextSearchMatch, OneLineRange, TextSearchMatch } from 'vs/workBench/services/search/common/search';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { SearchModel } from 'vs/workbench/contrib/search/common/searchModel';
-import * as process from 'vs/base/common/process';
+import { SearchModel } from 'vs/workBench/contriB/search/common/searchModel';
+import * as process from 'vs/Base/common/process';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 
 const nullEvent = new class {
-	id: number = -1;
+	id: numBer = -1;
 	topic!: string;
 	name!: string;
 	description!: string;
@@ -36,7 +36,7 @@ const nullEvent = new class {
 		return;
 	}
 
-	timeTaken(): number {
+	timeTaken(): numBer {
 		return -1;
 	}
 };
@@ -46,7 +46,7 @@ const lineOneRange = new OneLineRange(1, 0, 1);
 suite('SearchModel', () => {
 
 	let instantiationService: TestInstantiationService;
-	let restoreStubs: sinon.SinonStub[];
+	let restoreStuBs: sinon.SinonStuB[];
 
 	const testSearchStats: IFileSearchStats = {
 		fromCache: false,
@@ -66,20 +66,20 @@ suite('SearchModel', () => {
 	];
 
 	setup(() => {
-		restoreStubs = [];
+		restoreStuBs = [];
 		instantiationService = new TestInstantiationService();
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
-		instantiationService.stub(IModelService, stubModelService(instantiationService));
-		instantiationService.stub(ISearchService, {});
-		instantiationService.stub(ISearchService, 'textSearch', Promise.resolve({ results: [] }));
+		instantiationService.stuB(ITelemetryService, NullTelemetryService);
+		instantiationService.stuB(IModelService, stuBModelService(instantiationService));
+		instantiationService.stuB(ISearchService, {});
+		instantiationService.stuB(ISearchService, 'textSearch', Promise.resolve({ results: [] }));
 
 		const config = new TestConfigurationService();
 		config.setUserConfiguration('search', { searchOnType: true });
-		instantiationService.stub(IConfigurationService, config);
+		instantiationService.stuB(IConfigurationService, config);
 	});
 
 	teardown(() => {
-		restoreStubs.forEach(element => {
+		restoreStuBs.forEach(element => {
 			element.restore();
 		});
 	});
@@ -107,7 +107,7 @@ suite('SearchModel', () => {
 		};
 	}
 
-	function canceleableSearchService(tokenSource: CancellationTokenSource): ISearchService {
+	function canceleaBleSearchService(tokenSource: CancellationTokenSource): ISearchService {
 		return <ISearchService>{
 			textSearch(query: ISearchQuery, token?: CancellationToken, onProgress?: (result: ISearchProgressItem) => void): Promise<ISearchComplete> {
 				if (token) {
@@ -129,12 +129,12 @@ suite('SearchModel', () => {
 				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
 				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
 			aRawMatch('file://c:/2', new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+		instantiationService.stuB(ISearchService, searchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject: SearchModel = instantiationService.createInstance(SearchModel);
+		await testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
-		const actual = testObject.searchResult.matches();
+		const actual = testOBject.searchResult.matches();
 
 		assert.equal(2, actual.length);
 		assert.equal('file://c:/1', actual[0].resource.toString());
@@ -153,17 +153,17 @@ suite('SearchModel', () => {
 	});
 
 	test('Search Model: Search reports telemetry on search completed', async () => {
-		const target = instantiationService.spy(ITelemetryService, 'publicLog');
+		const target = instantiationService.spy(ITelemetryService, 'puBlicLog');
 		const results = [
 			aRawMatch('file://c:/1',
 				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
 				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
 			aRawMatch('file://c:/2',
 				new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+		instantiationService.stuB(ISearchService, searchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject: SearchModel = instantiationService.createInstance(SearchModel);
+		await testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		assert.ok(target.calledThrice);
 		const data = target.args[0];
@@ -173,14 +173,14 @@ suite('SearchModel', () => {
 
 	test('Search Model: Search reports timed telemetry on search when progress is not called', () => {
 		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+		stuB(nullEvent, 'stop', target2);
+		const target1 = sinon.stuB().returns(nullEvent);
+		instantiationService.stuB(ITelemetryService, 'puBlicLog', target1);
 
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
+		instantiationService.stuB(ISearchService, searchServiceWithResults([]));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject = instantiationService.createInstance(SearchModel);
+		const result = testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => {
 			return timeout(1).then(() => {
@@ -192,20 +192,20 @@ suite('SearchModel', () => {
 
 	test('Search Model: Search reports timed telemetry on search when progress is called', () => {
 		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+		stuB(nullEvent, 'stop', target2);
+		const target1 = sinon.stuB().returns(nullEvent);
+		instantiationService.stuB(ITelemetryService, 'puBlicLog', target1);
 
-		instantiationService.stub(ISearchService, searchServiceWithResults(
+		instantiationService.stuB(ISearchService, searchServiceWithResults(
 			[aRawMatch('file://c:/1', new TextSearchMatch('some preview', lineOneRange))],
 			{ results: [], stats: testSearchStats }));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject = instantiationService.createInstance(SearchModel);
+		const result = testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => {
 			return timeout(1).then(() => {
-				// timeout because promise handlers may run in a different order. We only care that these
+				// timeout Because promise handlers may run in a different order. We only care that these
 				// are fired at some point.
 				assert.ok(target1.calledWith('searchResultsFirstRender'));
 				assert.ok(target1.calledWith('searchResultsFinished'));
@@ -216,14 +216,14 @@ suite('SearchModel', () => {
 
 	test('Search Model: Search reports timed telemetry on search when error is called', () => {
 		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+		stuB(nullEvent, 'stop', target2);
+		const target1 = sinon.stuB().returns(nullEvent);
+		instantiationService.stuB(ITelemetryService, 'puBlicLog', target1);
 
-		instantiationService.stub(ISearchService, searchServiceWithError(new Error('error')));
+		instantiationService.stuB(ISearchService, searchServiceWithError(new Error('error')));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject = instantiationService.createInstance(SearchModel);
+		const result = testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => { }, () => {
 			return timeout(1).then(() => {
@@ -236,15 +236,15 @@ suite('SearchModel', () => {
 
 	test('Search Model: Search reports timed telemetry on search when error is cancelled error', () => {
 		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+		stuB(nullEvent, 'stop', target2);
+		const target1 = sinon.stuB().returns(nullEvent);
+		instantiationService.stuB(ITelemetryService, 'puBlicLog', target1);
 
 		const deferredPromise = new DeferredPromise<ISearchComplete>();
-		instantiationService.stub(ISearchService, 'textSearch', deferredPromise.p);
+		instantiationService.stuB(ISearchService, 'textSearch', deferredPromise.p);
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testOBject = instantiationService.createInstance(SearchModel);
+		const result = testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		deferredPromise.cancel();
 
@@ -264,25 +264,25 @@ suite('SearchModel', () => {
 				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
 			aRawMatch('file://c:/2',
 				new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		assert.ok(!testObject.searchResult.isEmpty());
+		instantiationService.stuB(ISearchService, searchServiceWithResults(results));
+		const testOBject: SearchModel = instantiationService.createInstance(SearchModel);
+		await testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		assert.ok(!testOBject.searchResult.isEmpty());
 
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
+		instantiationService.stuB(ISearchService, searchServiceWithResults([]));
 
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		assert.ok(testObject.searchResult.isEmpty());
+		testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		assert.ok(testOBject.searchResult.isEmpty());
 	});
 
 	test('Search Model: Previous search is cancelled when new search is called', async () => {
 		const tokenSource = new CancellationTokenSource();
-		instantiationService.stub(ISearchService, canceleableSearchService(tokenSource));
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
+		instantiationService.stuB(ISearchService, canceleaBleSearchService(tokenSource));
+		const testOBject: SearchModel = instantiationService.createInstance(SearchModel);
 
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		instantiationService.stuB(ISearchService, searchServiceWithResults([]));
+		testOBject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
 
 		assert.ok(tokenSource.token.isCancellationRequested);
 	});
@@ -292,29 +292,29 @@ suite('SearchModel', () => {
 			aRawMatch('file://c:/1',
 				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
 				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11)))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+		instantiationService.stuB(ISearchService, searchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 're' }, type: 1, folderQueries });
-		testObject.replaceString = 'hello';
-		let match = testObject.searchResult.matches()[0].matches()[0];
+		const testOBject: SearchModel = instantiationService.createInstance(SearchModel);
+		await testOBject.search({ contentPattern: { pattern: 're' }, type: 1, folderQueries });
+		testOBject.replaceString = 'hello';
+		let match = testOBject.searchResult.matches()[0].matches()[0];
 		assert.equal('hello', match.replaceString);
 
-		await testObject.search({ contentPattern: { pattern: 're', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
+		await testOBject.search({ contentPattern: { pattern: 're', isRegExp: true }, type: 1, folderQueries });
+		match = testOBject.searchResult.matches()[0].matches()[0];
 		assert.equal('hello', match.replaceString);
 
-		await testObject.search({ contentPattern: { pattern: 're(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
+		await testOBject.search({ contentPattern: { pattern: 're(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		match = testOBject.searchResult.matches()[0].matches()[0];
 		assert.equal('hello', match.replaceString);
 
-		await testObject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
+		await testOBject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		match = testOBject.searchResult.matches()[0].matches()[0];
 		assert.equal('hello', match.replaceString);
 
-		await testObject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		testObject.replaceString = 'hello$1';
-		match = testObject.searchResult.matches()[0].matches()[0];
+		await testOBject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		testOBject.replaceString = 'hello$1';
+		match = testOBject.searchResult.matches()[0].matches()[0];
 		assert.equal('helloe', match.replaceString);
 	});
 
@@ -322,15 +322,15 @@ suite('SearchModel', () => {
 		return { resource: URI.parse(resource), results };
 	}
 
-	function stub(arg1: any, arg2: any, arg3: any): sinon.SinonStub {
-		const stub = sinon.stub(arg1, arg2, arg3);
-		restoreStubs.push(stub);
-		return stub;
+	function stuB(arg1: any, arg2: any, arg3: any): sinon.SinonStuB {
+		const stuB = sinon.stuB(arg1, arg2, arg3);
+		restoreStuBs.push(stuB);
+		return stuB;
 	}
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(IThemeService, new TestThemeService());
+	function stuBModelService(instantiationService: TestInstantiationService): IModelService {
+		instantiationService.stuB(IConfigurationService, new TestConfigurationService());
+		instantiationService.stuB(IThemeService, new TestThemeService());
 		return instantiationService.createInstance(ModelServiceImpl);
 	}
 

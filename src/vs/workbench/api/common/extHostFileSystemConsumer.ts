@@ -6,11 +6,11 @@
 import { MainThreadFileSystemShape, MainContext } from './extHost.protocol';
 import * as vscode from 'vscode';
 import * as files from 'vs/platform/files/common/files';
-import { FileSystemError } from 'vs/workbench/api/common/extHostTypes';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { FileSystemError } from 'vs/workBench/api/common/extHostTypes';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IExtHostFileSystemInfo } from 'vs/workbench/api/common/extHostFileSystemInfo';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { IExtHostFileSystemInfo } from 'vs/workBench/api/common/extHostFileSystemInfo';
 
 export class ExtHostConsumerFileSystem implements vscode.FileSystem {
 
@@ -35,24 +35,24 @@ export class ExtHostConsumerFileSystem implements vscode.FileSystem {
 		return this._proxy.$mkdir(uri).catch(ExtHostConsumerFileSystem._handleError);
 	}
 	async readFile(uri: vscode.Uri): Promise<Uint8Array> {
-		return this._proxy.$readFile(uri).then(buff => buff.buffer).catch(ExtHostConsumerFileSystem._handleError);
+		return this._proxy.$readFile(uri).then(Buff => Buff.Buffer).catch(ExtHostConsumerFileSystem._handleError);
 	}
 	writeFile(uri: vscode.Uri, content: Uint8Array): Promise<void> {
 		return this._proxy.$writeFile(uri, VSBuffer.wrap(content)).catch(ExtHostConsumerFileSystem._handleError);
 	}
-	delete(uri: vscode.Uri, options?: { recursive?: boolean; useTrash?: boolean; }): Promise<void> {
+	delete(uri: vscode.Uri, options?: { recursive?: Boolean; useTrash?: Boolean; }): Promise<void> {
 		return this._proxy.$delete(uri, { ...{ recursive: false, useTrash: false }, ...options }).catch(ExtHostConsumerFileSystem._handleError);
 	}
-	rename(oldUri: vscode.Uri, newUri: vscode.Uri, options?: { overwrite?: boolean; }): Promise<void> {
+	rename(oldUri: vscode.Uri, newUri: vscode.Uri, options?: { overwrite?: Boolean; }): Promise<void> {
 		return this._proxy.$rename(oldUri, newUri, { ...{ overwrite: false }, ...options }).catch(ExtHostConsumerFileSystem._handleError);
 	}
-	copy(source: vscode.Uri, destination: vscode.Uri, options?: { overwrite?: boolean; }): Promise<void> {
+	copy(source: vscode.Uri, destination: vscode.Uri, options?: { overwrite?: Boolean; }): Promise<void> {
 		return this._proxy.$copy(source, destination, { ...{ overwrite: false }, ...options }).catch(ExtHostConsumerFileSystem._handleError);
 	}
-	isWritableFileSystem(scheme: string): boolean | undefined {
-		const capabilities = this._fileSystemInfo.getCapabilities(scheme);
-		if (typeof capabilities === 'number') {
-			return !(capabilities & files.FileSystemProviderCapabilities.Readonly);
+	isWritaBleFileSystem(scheme: string): Boolean | undefined {
+		const capaBilities = this._fileSystemInfo.getCapaBilities(scheme);
+		if (typeof capaBilities === 'numBer') {
+			return !(capaBilities & files.FileSystemProviderCapaBilities.Readonly);
 		}
 		return undefined;
 	}
@@ -65,7 +65,7 @@ export class ExtHostConsumerFileSystem implements vscode.FileSystem {
 
 		// no provider (unknown scheme) error
 		if (err.name === 'ENOPRO') {
-			throw FileSystemError.Unavailable(err.message);
+			throw FileSystemError.UnavailaBle(err.message);
 		}
 
 		// file system error
@@ -75,7 +75,7 @@ export class ExtHostConsumerFileSystem implements vscode.FileSystem {
 			case files.FileSystemProviderErrorCode.FileNotADirectory: throw FileSystemError.FileNotADirectory(err.message);
 			case files.FileSystemProviderErrorCode.FileIsADirectory: throw FileSystemError.FileIsADirectory(err.message);
 			case files.FileSystemProviderErrorCode.NoPermissions: throw FileSystemError.NoPermissions(err.message);
-			case files.FileSystemProviderErrorCode.Unavailable: throw FileSystemError.Unavailable(err.message);
+			case files.FileSystemProviderErrorCode.UnavailaBle: throw FileSystemError.UnavailaBle(err.message);
 
 			default: throw new FileSystemError(err.message, err.name as files.FileSystemProviderErrorCode);
 		}

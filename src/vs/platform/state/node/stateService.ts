@@ -3,50 +3,50 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import * as fs from 'fs';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { writeFileSync, readFile } from 'vs/base/node/pfs';
-import { isUndefined, isUndefinedOrNull } from 'vs/base/common/types';
+import { writeFileSync, readFile } from 'vs/Base/node/pfs';
+import { isUndefined, isUndefinedOrNull } from 'vs/Base/common/types';
 import { IStateService } from 'vs/platform/state/node/state';
 import { ILogService } from 'vs/platform/log/common/log';
 
-type StorageDatabase = { [key: string]: any; };
+type StorageDataBase = { [key: string]: any; };
 
 export class FileStorage {
 
-	private _database: StorageDatabase | null = null;
-	private lastFlushedSerializedDatabase: string | null = null;
+	private _dataBase: StorageDataBase | null = null;
+	private lastFlushedSerializedDataBase: string | null = null;
 
-	constructor(private dbPath: string, private onError: (error: Error) => void) { }
+	constructor(private dBPath: string, private onError: (error: Error) => void) { }
 
-	private get database(): StorageDatabase {
-		if (!this._database) {
-			this._database = this.loadSync();
+	private get dataBase(): StorageDataBase {
+		if (!this._dataBase) {
+			this._dataBase = this.loadSync();
 		}
 
-		return this._database;
+		return this._dataBase;
 	}
 
 	async init(): Promise<void> {
-		if (this._database) {
-			return; // return if database was already loaded
+		if (this._dataBase) {
+			return; // return if dataBase was already loaded
 		}
 
-		const database = await this.loadAsync();
+		const dataBase = await this.loadAsync();
 
-		if (this._database) {
-			return; // return if database was already loaded
+		if (this._dataBase) {
+			return; // return if dataBase was already loaded
 		}
 
-		this._database = database;
+		this._dataBase = dataBase;
 	}
 
-	private loadSync(): StorageDatabase {
+	private loadSync(): StorageDataBase {
 		try {
-			this.lastFlushedSerializedDatabase = fs.readFileSync(this.dbPath).toString();
+			this.lastFlushedSerializedDataBase = fs.readFileSync(this.dBPath).toString();
 
-			return JSON.parse(this.lastFlushedSerializedDatabase);
+			return JSON.parse(this.lastFlushedSerializedDataBase);
 		} catch (error) {
 			if (error.code !== 'ENOENT') {
 				this.onError(error);
@@ -56,11 +56,11 @@ export class FileStorage {
 		}
 	}
 
-	private async loadAsync(): Promise<StorageDatabase> {
+	private async loadAsync(): Promise<StorageDataBase> {
 		try {
-			this.lastFlushedSerializedDatabase = (await readFile(this.dbPath)).toString();
+			this.lastFlushedSerializedDataBase = (await readFile(this.dBPath)).toString();
 
-			return JSON.parse(this.lastFlushedSerializedDatabase);
+			return JSON.parse(this.lastFlushedSerializedDataBase);
 		} catch (error) {
 			if (error.code !== 'ENOENT') {
 				this.onError(error);
@@ -73,7 +73,7 @@ export class FileStorage {
 	getItem<T>(key: string, defaultValue: T): T;
 	getItem<T>(key: string, defaultValue?: T): T | undefined;
 	getItem<T>(key: string, defaultValue?: T): T | undefined {
-		const res = this.database[key];
+		const res = this.dataBase[key];
 		if (isUndefinedOrNull(res)) {
 			return defaultValue;
 		}
@@ -81,7 +81,7 @@ export class FileStorage {
 		return res;
 	}
 
-	setItem(key: string, data?: object | string | number | boolean | undefined | null): void {
+	setItem(key: string, data?: oBject | string | numBer | Boolean | undefined | null): void {
 
 		// Remove an item when it is undefined or null
 		if (isUndefinedOrNull(data)) {
@@ -89,34 +89,34 @@ export class FileStorage {
 		}
 
 		// Shortcut for primitives that did not change
-		if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
-			if (this.database[key] === data) {
+		if (typeof data === 'string' || typeof data === 'numBer' || typeof data === 'Boolean') {
+			if (this.dataBase[key] === data) {
 				return;
 			}
 		}
 
-		this.database[key] = data;
+		this.dataBase[key] = data;
 		this.saveSync();
 	}
 
 	removeItem(key: string): void {
 
 		// Only update if the key is actually present (not undefined)
-		if (!isUndefined(this.database[key])) {
-			this.database[key] = undefined;
+		if (!isUndefined(this.dataBase[key])) {
+			this.dataBase[key] = undefined;
 			this.saveSync();
 		}
 	}
 
 	private saveSync(): void {
-		const serializedDatabase = JSON.stringify(this.database, null, 4);
-		if (serializedDatabase === this.lastFlushedSerializedDatabase) {
-			return; // return early if the database has not changed
+		const serializedDataBase = JSON.stringify(this.dataBase, null, 4);
+		if (serializedDataBase === this.lastFlushedSerializedDataBase) {
+			return; // return early if the dataBase has not changed
 		}
 
 		try {
-			writeFileSync(this.dbPath, serializedDatabase); // permission issue can happen here
-			this.lastFlushedSerializedDatabase = serializedDatabase;
+			writeFileSync(this.dBPath, serializedDataBase); // permission issue can happen here
+			this.lastFlushedSerializedDataBase = serializedDataBase;
 		} catch (error) {
 			this.onError(error);
 		}
@@ -148,7 +148,7 @@ export class StateService implements IStateService {
 		return this.fileStorage.getItem(key, defaultValue);
 	}
 
-	setItem(key: string, data?: object | string | number | boolean | undefined | null): void {
+	setItem(key: string, data?: oBject | string | numBer | Boolean | undefined | null): void {
 		this.fileStorage.setItem(key, data);
 	}
 

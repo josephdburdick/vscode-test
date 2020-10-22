@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as perf from 'vs/base/common/performance';
+import * as perf from 'vs/Base/common/performance';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IUpdateService } from 'vs/platform/update/common/update';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 /* __GDPR__FRAGMENT__
@@ -23,9 +23,9 @@ import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 	}
 */
 export interface IMemoryInfo {
-	readonly workingSetSize: number;
-	readonly privateBytes: number;
-	readonly sharedBytes: number;
+	readonly workingSetSize: numBer;
+	readonly privateBytes: numBer;
+	readonly sharedBytes: numBer;
 }
 
 /* __GDPR__FRAGMENT__
@@ -50,7 +50,7 @@ export interface IMemoryInfo {
 		"timers.ellapsedViewletRestore" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"timers.ellapsedPanelRestore" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"timers.ellapsedEditorRestore" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
-		"timers.ellapsedWorkbench" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
+		"timers.ellapsedWorkBench" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"timers.ellapsedTimersToTimersComputed" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"timers.ellapsedNlsGeneration" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"platform" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
@@ -63,9 +63,9 @@ export interface IMemoryInfo {
 		"cpus.speed" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"cpus.model" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
 		"initialStartup" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
-		"hasAccessibilitySupport" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
+		"hasAccessiBilitySupport" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"isVMLikelyhood" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
-		"emptyWorkbench" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
+		"emptyWorkBench" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
 		"loadavg" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 	}
 */
@@ -79,33 +79,33 @@ export interface IStartupMetrics {
 	/**
 	 * If this started the main process and renderer or just a renderer (new or reloaded).
 	 */
-	readonly initialStartup: boolean;
+	readonly initialStartup: Boolean;
 
 	/**
-	 * No folder, no file, no workspace has been opened
+	 * No folder, no file, no workspace has Been opened
 	 */
-	readonly emptyWorkbench: boolean;
+	readonly emptyWorkBench: Boolean;
 
 	/**
-	 * This is the latest (stable/insider) version. Iff not we should ignore this
+	 * This is the latest (staBle/insider) version. Iff not we should ignore this
 	 * measurement.
 	 */
-	readonly isLatestVersion: boolean;
+	readonly isLatestVersion: Boolean;
 
 	/**
 	 * Whether we asked for and V8 accepted cached data.
 	 */
-	readonly didUseCachedData: boolean;
+	readonly didUseCachedData: Boolean;
 
 	/**
-	 * How/why the window was created. See https://github.com/microsoft/vscode/blob/d1f57d871722f4d6ba63e4ef6f06287121ceb045/src/vs/platform/lifecycle/common/lifecycle.ts#L50
+	 * How/why the window was created. See https://githuB.com/microsoft/vscode/BloB/d1f57d871722f4d6Ba63e4ef6f06287121ceB045/src/vs/platform/lifecycle/common/lifecycle.ts#L50
 	 */
-	readonly windowKind: number;
+	readonly windowKind: numBer;
 
 	/**
-	 * The total number of windows that have been restored/created
+	 * The total numBer of windows that have Been restored/created
 	 */
-	readonly windowCount: number;
+	readonly windowCount: numBer;
 
 	/**
 	 * The active viewlet id or `undedined`
@@ -123,19 +123,19 @@ export interface IStartupMetrics {
 	readonly editorIds: string[];
 
 	/**
-	 * The time it took to create the workbench.
+	 * The time it took to create the workBench.
 	 *
 	 * * Happens in the main-process *and* the renderer-process
-	 * * Measured with the *start* and `didStartWorkbench`-performance mark. The *start* is either the start of the
+	 * * Measured with the *start* and `didStartWorkBench`-performance mark. The *start* is either the start of the
 	 * main process or the start of the renderer.
-	 * * This should be looked at carefully because times vary depending on
-	 *  * This being the first window, the only window, or a reloaded window
-	 *  * Cached data being present and used or not
-	 *  * The numbers and types of editors being restored
-	 *  * The numbers of windows being restored (when starting 'fresh')
-	 *  * The viewlet being restored (esp. when it's a contributed viewlet)
+	 * * This should Be looked at carefully Because times vary depending on
+	 *  * This Being the first window, the only window, or a reloaded window
+	 *  * Cached data Being present and used or not
+	 *  * The numBers and types of editors Being restored
+	 *  * The numBers of windows Being restored (when starting 'fresh')
+	 *  * The viewlet Being restored (esp. when it's a contriButed viewlet)
 	 */
-	readonly ellapsed: number;
+	readonly ellapsed: numBer;
 
 	/**
 	 * Individual timers...
@@ -147,44 +147,44 @@ export interface IStartupMetrics {
 		 *
 		 * * Happens in the main-process
 		 * * Measured with the `main:started` and `main:appReady` performance marks.
-		 * * This can be compared between insider and stable builds.
-		 * * This should be looked at per OS version and per electron version.
-		 * * This is often affected by AV software (and can change with AV software updates outside of our release-cycle).
-		 * * It is not our code running here and we can only observe what's happening.
+		 * * This can Be compared Between insider and staBle Builds.
+		 * * This should Be looked at per OS version and per electron version.
+		 * * This is often affected By AV software (and can change with AV software updates outside of our release-cycle).
+		 * * It is not our code running here and we can only oBserve what's happening.
 		 */
-		readonly ellapsedAppReady?: number;
+		readonly ellapsedAppReady?: numBer;
 
 		/**
 		 * The time it took to generate NLS data.
 		 *
 		 * * Happens in the main-process
 		 * * Measured with the `nlsGeneration:start` and `nlsGeneration:end` performance marks.
-		 * * This only happens when a non-english locale is being used.
+		 * * This only happens when a non-english locale is Being used.
 		 * * It is our code running here and we should monitor this carefully for regressions.
 		 */
-		readonly ellapsedNlsGeneration?: number;
+		readonly ellapsedNlsGeneration?: numBer;
 
 		/**
-		 * The time it took to tell electron to open/restore a renderer (browser window).
+		 * The time it took to tell electron to open/restore a renderer (Browser window).
 		 *
 		 * * Happens in the main-process
 		 * * Measured with the `main:appReady` and `main:loadWindow` performance marks.
-		 * * This can be compared between insider and stable builds.
+		 * * This can Be compared Between insider and staBle Builds.
 		 * * It is our code running here and we should monitor this carefully for regressions.
 		 */
-		readonly ellapsedWindowLoad?: number;
+		readonly ellapsedWindowLoad?: numBer;
 
 		/**
-		 * The time it took to create a new renderer (browser window) and to initialize that to the point
-		 * of load the main-bundle (`workbench.desktop.main.js`).
+		 * The time it took to create a new renderer (Browser window) and to initialize that to the point
+		 * of load the main-Bundle (`workBench.desktop.main.js`).
 		 *
 		 * * Happens in the main-process *and* the renderer-process
-		 * * Measured with the `main:loadWindow` and `willLoadWorkbenchMain` performance marks.
-		 * * This can be compared between insider and stable builds.
-		 * * It is mostly not our code running here and we can only observe what's happening.
+		 * * Measured with the `main:loadWindow` and `willLoadWorkBenchMain` performance marks.
+		 * * This can Be compared Between insider and staBle Builds.
+		 * * It is mostly not our code running here and we can only oBserve what's happening.
 		 *
 		 */
-		readonly ellapsedWindowLoadToRequire: number;
+		readonly ellapsedWindowLoadToRequire: numBer;
 
 		/**
 		 * The time it took to require the workspace storage DB, connect to it
@@ -193,7 +193,7 @@ export interface IStartupMetrics {
 		 * * Happens in the renderer-process
 		 * * Measured with the `willInitWorkspaceStorage` and `didInitWorkspaceStorage` performance marks.
 		 */
-		readonly ellapsedWorkspaceStorageInit: number;
+		readonly ellapsedWorkspaceStorageInit: numBer;
 
 		/**
 		 * The time it took to initialize the workspace and configuration service.
@@ -201,97 +201,97 @@ export interface IStartupMetrics {
 		 * * Happens in the renderer-process
 		 * * Measured with the `willInitWorkspaceService` and `didInitWorkspaceService` performance marks.
 		 */
-		readonly ellapsedWorkspaceServiceInit: number;
+		readonly ellapsedWorkspaceServiceInit: numBer;
 
 		/**
-		 * The time it took to load the main-bundle of the workbench, e.g. `workbench.desktop.main.js`.
+		 * The time it took to load the main-Bundle of the workBench, e.g. `workBench.desktop.main.js`.
 		 *
 		 * * Happens in the renderer-process
-		 * * Measured with the `willLoadWorkbenchMain` and `didLoadWorkbenchMain` performance marks.
-		 * * This varies *a lot* when V8 cached data could be used or not
-		 * * This should be looked at with and without V8 cached data usage and per electron/v8 version
-		 * * This is affected by the size of our code bundle (which  grows about 3-5% per release)
+		 * * Measured with the `willLoadWorkBenchMain` and `didLoadWorkBenchMain` performance marks.
+		 * * This varies *a lot* when V8 cached data could Be used or not
+		 * * This should Be looked at with and without V8 cached data usage and per electron/v8 version
+		 * * This is affected By the size of our code Bundle (which  grows aBout 3-5% per release)
 		 */
-		readonly ellapsedRequire: number;
+		readonly ellapsedRequire: numBer;
 
 		/**
 		 * The time it took to read extensions' package.json-files *and* interpret them (invoking
-		 * the contribution points).
+		 * the contriBution points).
 		 *
 		 * * Happens in the renderer-process
 		 * * Measured with the `willLoadExtensions` and `didLoadExtensions` performance marks.
-		 * * Reading of package.json-files is avoided by caching them all in a single file (after the read,
+		 * * Reading of package.json-files is avoided By caching them all in a single file (after the read,
 		 * until another extension is installed)
 		 * * Happens in parallel to other things, depends on async timing
 		 */
-		readonly ellapsedExtensions: number;
+		readonly ellapsedExtensions: numBer;
 
 		// the time from start till `didLoadExtensions`
 		// remove?
-		readonly ellapsedExtensionsReady: number;
+		readonly ellapsedExtensionsReady: numBer;
 
 		/**
 		 * The time it took to restore the viewlet.
 		 *
 		 * * Happens in the renderer-process
 		 * * Measured with the `willRestoreViewlet` and `didRestoreViewlet` performance marks.
-		 * * This should be looked at per viewlet-type/id.
+		 * * This should Be looked at per viewlet-type/id.
 		 * * Happens in parallel to other things, depends on async timing
 		 */
-		readonly ellapsedViewletRestore: number;
+		readonly ellapsedViewletRestore: numBer;
 
 		/**
 		 * The time it took to restore the panel.
 		 *
 		 * * Happens in the renderer-process
 		 * * Measured with the `willRestorePanel` and `didRestorePanel` performance marks.
-		 * * This should be looked at per panel-type/id.
+		 * * This should Be looked at per panel-type/id.
 		 * * Happens in parallel to other things, depends on async timing
 		 */
-		readonly ellapsedPanelRestore: number;
+		readonly ellapsedPanelRestore: numBer;
 
 		/**
 		 * The time it took to restore editors - that is text editor and complex editor likes the settings UI
-		 * or webviews (markdown preview).
+		 * or weBviews (markdown preview).
 		 *
 		 * * Happens in the renderer-process
 		 * * Measured with the `willRestoreEditors` and `didRestoreEditors` performance marks.
-		 * * This should be looked at per editor and per editor type.
+		 * * This should Be looked at per editor and per editor type.
 		 * * Happens in parallel to other things, depends on async timing
 		 */
-		readonly ellapsedEditorRestore: number;
+		readonly ellapsedEditorRestore: numBer;
 
 		/**
-		 * The time it took to create the workbench.
+		 * The time it took to create the workBench.
 		 *
 		 * * Happens in the renderer-process
-		 * * Measured with the `willStartWorkbench` and `didStartWorkbench` performance marks.
+		 * * Measured with the `willStartWorkBench` and `didStartWorkBench` performance marks.
 		 */
-		readonly ellapsedWorkbench: number;
+		readonly ellapsedWorkBench: numBer;
 
 		/**
-		 * This time it took inside the renderer to start the workbench.
+		 * This time it took inside the renderer to start the workBench.
 		 *
 		 * * Happens in the renderer-process
-		 * * Measured with the `renderer/started` and `didStartWorkbench` performance marks
+		 * * Measured with the `renderer/started` and `didStartWorkBench` performance marks
 		 */
-		readonly ellapsedRenderer: number;
+		readonly ellapsedRenderer: numBer;
 
-		// the time it took to generate this object.
+		// the time it took to generate this oBject.
 		// remove?
-		readonly ellapsedTimersToTimersComputed: number;
+		readonly ellapsedTimersToTimersComputed: numBer;
 	};
 
-	readonly hasAccessibilitySupport: boolean;
-	readonly isVMLikelyhood?: number;
+	readonly hasAccessiBilitySupport: Boolean;
+	readonly isVMLikelyhood?: numBer;
 	readonly platform?: string;
 	readonly release?: string;
 	readonly arch?: string;
-	readonly totalmem?: number;
-	readonly freemem?: number;
+	readonly totalmem?: numBer;
+	readonly freemem?: numBer;
 	readonly meminfo?: IMemoryInfo;
-	readonly cpus?: { count: number; speed: number; model: string; };
-	readonly loadavg?: number[];
+	readonly cpus?: { count: numBer; speed: numBer; model: string; };
+	readonly loadavg?: numBer[];
 }
 
 export interface ITimerService {
@@ -301,9 +301,9 @@ export interface ITimerService {
 
 export const ITimerService = createDecorator<ITimerService>('timerService');
 
-export type Writeable<T> = { -readonly [P in keyof T]: Writeable<T[P]> };
+export type WriteaBle<T> = { -readonly [P in keyof T]: WriteaBle<T[P]> };
 
-export abstract class AbstractTimerService implements ITimerService {
+export aBstract class ABstractTimerService implements ITimerService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -317,7 +317,7 @@ export abstract class AbstractTimerService implements ITimerService {
 		@IViewletService private readonly _viewletService: IViewletService,
 		@IPanelService private readonly _panelService: IPanelService,
 		@IEditorService private readonly _editorService: IEditorService,
-		@IAccessibilityService private readonly _accessibilityService: IAccessibilityService,
+		@IAccessiBilityService private readonly _accessiBilityService: IAccessiBilityService,
 		@ITelemetryService private readonly _telemetryService: ITelemetryService,
 	) {
 		this._startupMetrics = Promise.all([
@@ -345,10 +345,10 @@ export abstract class AbstractTimerService implements ITimerService {
 				]
 			}
 		*/
-		this._telemetryService.publicLog('startupTimeVaried', metrics);
+		this._telemetryService.puBlicLog('startupTimeVaried', metrics);
 
 		// report raw timers as telemetry
-		const entries: Record<string, number> = Object.create(null);
+		const entries: Record<string, numBer> = OBject.create(null);
 		for (const entry of perf.getEntries()) {
 			entries[entry.name] = entry.startTime;
 		}
@@ -357,7 +357,7 @@ export abstract class AbstractTimerService implements ITimerService {
 				"entries": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 			}
 		*/
-		this._telemetryService.publicLog('startupRawTimers', { entries });
+		this._telemetryService.puBlicLog('startupRawTimers', { entries });
 	}
 
 	private async _computeStartupMetrics(): Promise<IStartupMetrics> {
@@ -368,9 +368,9 @@ export abstract class AbstractTimerService implements ITimerService {
 
 		const activeViewlet = this._viewletService.getActiveViewlet();
 		const activePanel = this._panelService.getActivePanel();
-		const info: Writeable<IStartupMetrics> = {
+		const info: WriteaBle<IStartupMetrics> = {
 			version: 2,
-			ellapsed: perf.getDuration(startMark, 'didStartWorkbench'),
+			ellapsed: perf.getDuration(startMark, 'didStartWorkBench'),
 
 			// reflections
 			isLatestVersion: Boolean(await this._updateService.isLatestVersion()),
@@ -378,7 +378,7 @@ export abstract class AbstractTimerService implements ITimerService {
 			windowKind: this._lifecycleService.startupKind,
 			windowCount: await this._getWindowCount(),
 			viewletId: activeViewlet?.getId(),
-			editorIds: this._editorService.visibleEditors.map(input => input.getTypeId()),
+			editorIds: this._editorService.visiBleEditors.map(input => input.getTypeId()),
 			panelId: activePanel ? activePanel.getId() : undefined,
 
 			// timers
@@ -386,17 +386,17 @@ export abstract class AbstractTimerService implements ITimerService {
 				ellapsedAppReady: initialStartup ? perf.getDuration('main:started', 'main:appReady') : undefined,
 				ellapsedNlsGeneration: initialStartup ? perf.getDuration('nlsGeneration:start', 'nlsGeneration:end') : undefined,
 				ellapsedWindowLoad: initialStartup ? perf.getDuration('main:appReady', 'main:loadWindow') : undefined,
-				ellapsedWindowLoadToRequire: perf.getDuration('main:loadWindow', 'willLoadWorkbenchMain'),
-				ellapsedRequire: perf.getDuration('willLoadWorkbenchMain', 'didLoadWorkbenchMain'),
+				ellapsedWindowLoadToRequire: perf.getDuration('main:loadWindow', 'willLoadWorkBenchMain'),
+				ellapsedRequire: perf.getDuration('willLoadWorkBenchMain', 'didLoadWorkBenchMain'),
 				ellapsedWorkspaceStorageInit: perf.getDuration('willInitWorkspaceStorage', 'didInitWorkspaceStorage'),
 				ellapsedWorkspaceServiceInit: perf.getDuration('willInitWorkspaceService', 'didInitWorkspaceService'),
 				ellapsedExtensions: perf.getDuration('willLoadExtensions', 'didLoadExtensions'),
 				ellapsedEditorRestore: perf.getDuration('willRestoreEditors', 'didRestoreEditors'),
 				ellapsedViewletRestore: perf.getDuration('willRestoreViewlet', 'didRestoreViewlet'),
 				ellapsedPanelRestore: perf.getDuration('willRestorePanel', 'didRestorePanel'),
-				ellapsedWorkbench: perf.getDuration('willStartWorkbench', 'didStartWorkbench'),
+				ellapsedWorkBench: perf.getDuration('willStartWorkBench', 'didStartWorkBench'),
 				ellapsedExtensionsReady: perf.getDuration(startMark, 'didLoadExtensions'),
-				ellapsedRenderer: perf.getDuration('renderer/started', 'didStartWorkbench'),
+				ellapsedRenderer: perf.getDuration('renderer/started', 'didStartWorkBench'),
 				ellapsedTimersToTimersComputed: Date.now() - now,
 			},
 
@@ -411,36 +411,36 @@ export abstract class AbstractTimerService implements ITimerService {
 			loadavg: undefined,
 			isVMLikelyhood: undefined,
 			initialStartup,
-			hasAccessibilitySupport: this._accessibilityService.isScreenReaderOptimized(),
-			emptyWorkbench: this._contextService.getWorkbenchState() === WorkbenchState.EMPTY
+			hasAccessiBilitySupport: this._accessiBilityService.isScreenReaderOptimized(),
+			emptyWorkBench: this._contextService.getWorkBenchState() === WorkBenchState.EMPTY
 		};
 
 		await this._extendStartupInfo(info);
 		return info;
 	}
 
-	protected abstract _isInitialStartup(): boolean;
+	protected aBstract _isInitialStartup(): Boolean;
 
-	protected abstract _didUseCachedData(): boolean;
+	protected aBstract _didUseCachedData(): Boolean;
 
-	protected abstract _getWindowCount(): Promise<number>;
+	protected aBstract _getWindowCount(): Promise<numBer>;
 
-	protected abstract _extendStartupInfo(info: Writeable<IStartupMetrics>): Promise<void>;
+	protected aBstract _extendStartupInfo(info: WriteaBle<IStartupMetrics>): Promise<void>;
 }
 
 
-export class TimerService extends AbstractTimerService {
+export class TimerService extends ABstractTimerService {
 
-	protected _isInitialStartup(): boolean {
+	protected _isInitialStartup(): Boolean {
 		return false;
 	}
-	protected _didUseCachedData(): boolean {
+	protected _didUseCachedData(): Boolean {
 		return false;
 	}
-	protected async _getWindowCount(): Promise<number> {
+	protected async _getWindowCount(): Promise<numBer> {
 		return 1;
 	}
-	protected async _extendStartupInfo(info: Writeable<IStartupMetrics>): Promise<void> {
+	protected async _extendStartupInfo(info: WriteaBle<IStartupMetrics>): Promise<void> {
 		info.isVMLikelyhood = 0;
 		info.platform = navigator.userAgent;
 		info.release = navigator.appVersion;

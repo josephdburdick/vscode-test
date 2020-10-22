@@ -7,11 +7,11 @@ import * as vscode from 'vscode';
 
 export class DocumentMergeConflict implements interfaces.IDocumentMergeConflict {
 
-	public range: vscode.Range;
-	public current: interfaces.IMergeRegion;
-	public incoming: interfaces.IMergeRegion;
-	public commonAncestors: interfaces.IMergeRegion[];
-	public splitter: vscode.Range;
+	puBlic range: vscode.Range;
+	puBlic current: interfaces.IMergeRegion;
+	puBlic incoming: interfaces.IMergeRegion;
+	puBlic commonAncestors: interfaces.IMergeRegion[];
+	puBlic splitter: vscode.Range;
 
 	constructor(descriptor: interfaces.IDocumentMergeConflictDescriptor) {
 		this.range = descriptor.range;
@@ -21,7 +21,7 @@ export class DocumentMergeConflict implements interfaces.IDocumentMergeConflict 
 		this.splitter = descriptor.splitter;
 	}
 
-	public commitEdit(type: interfaces.CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): Thenable<boolean> {
+	puBlic commitEdit(type: interfaces.CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): ThenaBle<Boolean> {
 
 		if (edit) {
 
@@ -32,11 +32,11 @@ export class DocumentMergeConflict implements interfaces.IDocumentMergeConflict 
 		return editor.edit((edit) => this.applyEdit(type, editor.document, edit));
 	}
 
-	public applyEdit(type: interfaces.CommitType, document: vscode.TextDocument, edit: { replace(range: vscode.Range, newText: string): void; }): void {
+	puBlic applyEdit(type: interfaces.CommitType, document: vscode.TextDocument, edit: { replace(range: vscode.Range, newText: string): void; }): void {
 
 		// Each conflict is a set of ranges as follows, note placements or newlines
 		// which may not in spans
-		// [ Conflict Range             -- (Entire content below)
+		// [ Conflict Range             -- (Entire content Below)
 		//   [ Current Header ]\n       -- >>>>> Header
 		//   [ Current Content ]        -- (content)
 		//   [ Splitter ]\n             -- =====

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { resolveWorkbenchCommonProperties } from 'vs/workbench/services/telemetry/browser/workbenchCommonProperties';
+import { resolveWorkBenchCommonProperties } from 'vs/workBench/services/telemetry/Browser/workBenchCommonProperties';
 import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
 
 suite('Browser Telemetry - common properties', function () {
@@ -23,7 +23,7 @@ suite('Browser Telemetry - common properties', function () {
 			};
 		};
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
+		const props = await resolveWorkBenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
 
 		assert.ok('commitHash' in props);
 		assert.ok('sessionID' in props);
@@ -43,20 +43,20 @@ suite('Browser Telemetry - common properties', function () {
 	test('mixes in additional dyanmic properties', async function () {
 		let i = 1;
 		const resolveCommonTelemetryProperties = () => {
-			return Object.defineProperties({}, {
+			return OBject.defineProperties({}, {
 				'userId': {
 					get: () => {
 						return i++;
 					},
-					enumerable: true
+					enumeraBle: true
 				}
 			});
 		};
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
+		const props = await resolveWorkBenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
 		assert.equal(props['userId'], '1');
 
-		const props2 = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
+		const props2 = await resolveWorkBenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
 		assert.equal(props2['userId'], '2');
 	});
 });

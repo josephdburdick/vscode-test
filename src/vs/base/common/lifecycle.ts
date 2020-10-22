@@ -3,42 +3,42 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { once } from 'vs/base/common/functional';
-import { Iterable } from 'vs/base/common/iterator';
+import { once } from 'vs/Base/common/functional';
+import { IteraBle } from 'vs/Base/common/iterator';
 
 /**
- * Enables logging of potentially leaked disposables.
+ * EnaBles logging of potentially leaked disposaBles.
  *
- * A disposable is considered leaked if it is not disposed or not registered as the child of
- * another disposable. This tracking is very simple an only works for classes that either
- * extend Disposable or use a DisposableStore. This means there are a lot of false positives.
+ * A disposaBle is considered leaked if it is not disposed or not registered as the child of
+ * another disposaBle. This tracking is very simple an only works for classes that either
+ * extend DisposaBle or use a DisposaBleStore. This means there are a lot of false positives.
  */
 const TRACK_DISPOSABLES = false;
 
-const __is_disposable_tracked__ = '__is_disposable_tracked__';
+const __is_disposaBle_tracked__ = '__is_disposaBle_tracked__';
 
-function markTracked<T extends IDisposable>(x: T): void {
+function markTracked<T extends IDisposaBle>(x: T): void {
 	if (!TRACK_DISPOSABLES) {
 		return;
 	}
 
-	if (x && x !== Disposable.None) {
+	if (x && x !== DisposaBle.None) {
 		try {
-			(x as any)[__is_disposable_tracked__] = true;
+			(x as any)[__is_disposaBle_tracked__] = true;
 		} catch {
 			// noop
 		}
 	}
 }
 
-function trackDisposable<T extends IDisposable>(x: T): T {
+function trackDisposaBle<T extends IDisposaBle>(x: T): T {
 	if (!TRACK_DISPOSABLES) {
 		return x;
 	}
 
-	const stack = new Error('Potentially leaked disposable').stack!;
+	const stack = new Error('Potentially leaked disposaBle').stack!;
 	setTimeout(() => {
-		if (!(x as any)[__is_disposable_tracked__]) {
+		if (!(x as any)[__is_disposaBle_tracked__]) {
 			console.log(stack);
 		}
 	}, 3000);
@@ -47,27 +47,27 @@ function trackDisposable<T extends IDisposable>(x: T): T {
 
 export class MultiDisposeError extends Error {
 	constructor(
-		public readonly errors: any[]
+		puBlic readonly errors: any[]
 	) {
 		super(`Encounter errors while disposing of store. Errors: [${errors.join(', ')}]`);
 	}
 }
 
-export interface IDisposable {
+export interface IDisposaBle {
 	dispose(): void;
 }
 
-export function isDisposable<E extends object>(thing: E): thing is E & IDisposable {
-	return typeof (<IDisposable>thing).dispose === 'function' && (<IDisposable>thing).dispose.length === 0;
+export function isDisposaBle<E extends oBject>(thing: E): thing is E & IDisposaBle {
+	return typeof (<IDisposaBle>thing).dispose === 'function' && (<IDisposaBle>thing).dispose.length === 0;
 }
 
-export function dispose<T extends IDisposable>(disposable: T): T;
-export function dispose<T extends IDisposable>(disposable: T | undefined): T | undefined;
-export function dispose<T extends IDisposable, A extends IterableIterator<T> = IterableIterator<T>>(disposables: IterableIterator<T>): A;
-export function dispose<T extends IDisposable>(disposables: Array<T>): Array<T>;
-export function dispose<T extends IDisposable>(disposables: ReadonlyArray<T>): ReadonlyArray<T>;
-export function dispose<T extends IDisposable>(arg: T | IterableIterator<T> | undefined): any {
-	if (Iterable.is(arg)) {
+export function dispose<T extends IDisposaBle>(disposaBle: T): T;
+export function dispose<T extends IDisposaBle>(disposaBle: T | undefined): T | undefined;
+export function dispose<T extends IDisposaBle, A extends IteraBleIterator<T> = IteraBleIterator<T>>(disposaBles: IteraBleIterator<T>): A;
+export function dispose<T extends IDisposaBle>(disposaBles: Array<T>): Array<T>;
+export function dispose<T extends IDisposaBle>(disposaBles: ReadonlyArray<T>): ReadonlyArray<T>;
+export function dispose<T extends IDisposaBle>(arg: T | IteraBleIterator<T> | undefined): any {
+	if (IteraBle.is(arg)) {
 		let errors: any[] = [];
 
 		for (const d of arg) {
@@ -96,13 +96,13 @@ export function dispose<T extends IDisposable>(arg: T | IterableIterator<T> | un
 }
 
 
-export function combinedDisposable(...disposables: IDisposable[]): IDisposable {
-	disposables.forEach(markTracked);
-	return trackDisposable({ dispose: () => dispose(disposables) });
+export function comBinedDisposaBle(...disposaBles: IDisposaBle[]): IDisposaBle {
+	disposaBles.forEach(markTracked);
+	return trackDisposaBle({ dispose: () => dispose(disposaBles) });
 }
 
-export function toDisposable(fn: () => void): IDisposable {
-	const self = trackDisposable({
+export function toDisposaBle(fn: () => void): IDisposaBle {
+	const self = trackDisposaBle({
 		dispose: () => {
 			markTracked(self);
 			fn();
@@ -111,19 +111,19 @@ export function toDisposable(fn: () => void): IDisposable {
 	return self;
 }
 
-export class DisposableStore implements IDisposable {
+export class DisposaBleStore implements IDisposaBle {
 
 	static DISABLE_DISPOSED_WARNING = false;
 
-	private _toDispose = new Set<IDisposable>();
+	private _toDispose = new Set<IDisposaBle>();
 	private _isDisposed = false;
 
 	/**
-	 * Dispose of all registered disposables and mark this object as disposed.
+	 * Dispose of all registered disposaBles and mark this oBject as disposed.
 	 *
-	 * Any future disposables added to this object will be disposed of on `add`.
+	 * Any future disposaBles added to this oBject will Be disposed of on `add`.
 	 */
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this._isDisposed) {
 			return;
 		}
@@ -134,9 +134,9 @@ export class DisposableStore implements IDisposable {
 	}
 
 	/**
-	 * Dispose of all registered disposables but do not mark this object as disposed.
+	 * Dispose of all registered disposaBles But do not mark this oBject as disposed.
 	 */
-	public clear(): void {
+	puBlic clear(): void {
 		try {
 			dispose(this._toDispose.values());
 		} finally {
@@ -144,18 +144,18 @@ export class DisposableStore implements IDisposable {
 		}
 	}
 
-	public add<T extends IDisposable>(t: T): T {
+	puBlic add<T extends IDisposaBle>(t: T): T {
 		if (!t) {
 			return t;
 		}
-		if ((t as unknown as DisposableStore) === this) {
-			throw new Error('Cannot register a disposable on itself!');
+		if ((t as unknown as DisposaBleStore) === this) {
+			throw new Error('Cannot register a disposaBle on itself!');
 		}
 
 		markTracked(t);
 		if (this._isDisposed) {
-			if (!DisposableStore.DISABLE_DISPOSED_WARNING) {
-				console.warn(new Error('Trying to add a disposable to a DisposableStore that has already been disposed of. The added object will be leaked!').stack);
+			if (!DisposaBleStore.DISABLE_DISPOSED_WARNING) {
+				console.warn(new Error('Trying to add a disposaBle to a DisposaBleStore that has already Been disposed of. The added oBject will Be leaked!').stack);
 			}
 		} else {
 			this._toDispose.add(t);
@@ -165,42 +165,42 @@ export class DisposableStore implements IDisposable {
 	}
 }
 
-export abstract class Disposable implements IDisposable {
+export aBstract class DisposaBle implements IDisposaBle {
 
-	static readonly None = Object.freeze<IDisposable>({ dispose() { } });
+	static readonly None = OBject.freeze<IDisposaBle>({ dispose() { } });
 
-	private readonly _store = new DisposableStore();
+	private readonly _store = new DisposaBleStore();
 
 	constructor() {
-		trackDisposable(this);
+		trackDisposaBle(this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		markTracked(this);
 
 		this._store.dispose();
 	}
 
-	protected _register<T extends IDisposable>(t: T): T {
-		if ((t as unknown as Disposable) === this) {
-			throw new Error('Cannot register a disposable on itself!');
+	protected _register<T extends IDisposaBle>(t: T): T {
+		if ((t as unknown as DisposaBle) === this) {
+			throw new Error('Cannot register a disposaBle on itself!');
 		}
 		return this._store.add(t);
 	}
 }
 
 /**
- * Manages the lifecycle of a disposable value that may be changed.
+ * Manages the lifecycle of a disposaBle value that may Be changed.
  *
- * This ensures that when the disposable value is changed, the previously held disposable is disposed of. You can
- * also register a `MutableDisposable` on a `Disposable` to ensure it is automatically cleaned up.
+ * This ensures that when the disposaBle value is changed, the previously held disposaBle is disposed of. You can
+ * also register a `MutaBleDisposaBle` on a `DisposaBle` to ensure it is automatically cleaned up.
  */
-export class MutableDisposable<T extends IDisposable> implements IDisposable {
+export class MutaBleDisposaBle<T extends IDisposaBle> implements IDisposaBle {
 	private _value?: T;
 	private _isDisposed = false;
 
 	constructor() {
-		trackDisposable(this);
+		trackDisposaBle(this);
 	}
 
 	get value(): T | undefined {
@@ -235,40 +235,40 @@ export class MutableDisposable<T extends IDisposable> implements IDisposable {
 	}
 }
 
-export interface IReference<T> extends IDisposable {
-	readonly object: T;
+export interface IReference<T> extends IDisposaBle {
+	readonly oBject: T;
 }
 
-export abstract class ReferenceCollection<T> {
+export aBstract class ReferenceCollection<T> {
 
-	private readonly references: Map<string, { readonly object: T; counter: number; }> = new Map();
+	private readonly references: Map<string, { readonly oBject: T; counter: numBer; }> = new Map();
 
 	acquire(key: string, ...args: any[]): IReference<T> {
 		let reference = this.references.get(key);
 
 		if (!reference) {
-			reference = { counter: 0, object: this.createReferencedObject(key, ...args) };
+			reference = { counter: 0, oBject: this.createReferencedOBject(key, ...args) };
 			this.references.set(key, reference);
 		}
 
-		const { object } = reference;
+		const { oBject } = reference;
 		const dispose = once(() => {
 			if (--reference!.counter === 0) {
-				this.destroyReferencedObject(key, reference!.object);
+				this.destroyReferencedOBject(key, reference!.oBject);
 				this.references.delete(key);
 			}
 		});
 
 		reference.counter++;
 
-		return { object, dispose };
+		return { oBject, dispose };
 	}
 
-	protected abstract createReferencedObject(key: string, ...args: any[]): T;
-	protected abstract destroyReferencedObject(key: string, object: T): void;
+	protected aBstract createReferencedOBject(key: string, ...args: any[]): T;
+	protected aBstract destroyReferencedOBject(key: string, oBject: T): void;
 }
 
 export class ImmortalReference<T> implements IReference<T> {
-	constructor(public object: T) { }
+	constructor(puBlic oBject: T) { }
 	dispose(): void { /* noop */ }
 }

@@ -12,16 +12,16 @@ import { TokenText, createFakeScopedLineTokens } from 'vs/editor/test/common/mod
 const fakeLanguageIdentifier = new LanguageIdentifier('test', 3);
 
 suite('Editor Modes - Auto Indentation', () => {
-	function _testOnElectricCharacter(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number): IElectricAction | null {
+	function _testOnElectricCharacter(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: numBer): IElectricAction | null {
 		return electricCharacterSupport.onElectricCharacter(character, createFakeScopedLineTokens(line), offset);
 	}
 
-	function testDoesNothing(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number): void {
+	function testDoesNothing(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: numBer): void {
 		let actual = _testOnElectricCharacter(electricCharacterSupport, line, character, offset);
 		assert.deepEqual(actual, null);
 	}
 
-	function testMatchBracket(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number, matchOpenBracket: string): void {
+	function testMatchBracket(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: numBer, matchOpenBracket: string): void {
 		let actual = _testOnElectricCharacter(electricCharacterSupport, line, character, offset);
 		assert.deepEqual(actual, { matchOpenBracket: matchOpenBracket });
 	}

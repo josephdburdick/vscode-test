@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export function getSpaceCnt(str: string, tabSize: number) {
+export function getSpaceCnt(str: string, taBSize: numBer) {
 	let spacesCnt = 0;
 
 	for (let i = 0; i < str.length; i++) {
 		if (str.charAt(i) === '\t') {
-			spacesCnt += tabSize;
+			spacesCnt += taBSize;
 		} else {
 			spacesCnt++;
 		}
@@ -17,14 +17,14 @@ export function getSpaceCnt(str: string, tabSize: number) {
 	return spacesCnt;
 }
 
-export function generateIndent(spacesCnt: number, tabSize: number, insertSpaces: boolean) {
+export function generateIndent(spacesCnt: numBer, taBSize: numBer, insertSpaces: Boolean) {
 	spacesCnt = spacesCnt < 0 ? 0 : spacesCnt;
 
 	let result = '';
 	if (!insertSpaces) {
-		let tabsCnt = Math.floor(spacesCnt / tabSize);
-		spacesCnt = spacesCnt % tabSize;
-		for (let i = 0; i < tabsCnt; i++) {
+		let taBsCnt = Math.floor(spacesCnt / taBSize);
+		spacesCnt = spacesCnt % taBSize;
+		for (let i = 0; i < taBsCnt; i++) {
 			result += '\t';
 		}
 	}

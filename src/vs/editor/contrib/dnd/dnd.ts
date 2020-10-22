@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./dnd';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isMacintosh } from 'vs/base/common/platform';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { ICodeEditor, IEditorMouseEvent, IMouseTarget, MouseTargetType, IPartialEditorMouseEvent } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution, ScrollType } from 'vs/editor/common/editorCommon';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { ICodeEditor, IEditorMouseEvent, IMouseTarget, MouseTargetType, IPartialEditorMouseEvent } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution, ScrollType } from 'vs/editor/common/editorCommon';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
-import { DragAndDropCommand } from 'vs/editor/contrib/dnd/dragAndDropCommand';
+import { DragAndDropCommand } from 'vs/editor/contriB/dnd/dragAndDropCommand';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import { IModelDeltaDecoration } from 'vs/editor/common/model';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-function hasTriggerModifier(e: IKeyboardEvent | IMouseEvent): boolean {
+function hasTriggerModifier(e: IKeyBoardEvent | IMouseEvent): Boolean {
 	if (isMacintosh) {
 		return e.altKey;
 	} else {
@@ -29,19 +29,19 @@ function hasTriggerModifier(e: IKeyboardEvent | IMouseEvent): boolean {
 	}
 }
 
-export class DragAndDropController extends Disposable implements IEditorContribution {
+export class DragAndDropController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.dragAndDrop';
+	puBlic static readonly ID = 'editor.contriB.dragAndDrop';
 
 	private readonly _editor: ICodeEditor;
 	private _dragSelection: Selection | null;
 	private _dndDecorationIds: string[];
-	private _mouseDown: boolean;
-	private _modifierPressed: boolean;
+	private _mouseDown: Boolean;
+	private _modifierPressed: Boolean;
 	static readonly TRIGGER_KEY_VALUE = isMacintosh ? KeyCode.Alt : KeyCode.Ctrl;
 
 	static get(editor: ICodeEditor): DragAndDropController {
-		return editor.getContribution<DragAndDropController>(DragAndDropController.ID);
+		return editor.getContriBution<DragAndDropController>(DragAndDropController.ID);
 	}
 
 	constructor(editor: ICodeEditor) {
@@ -51,8 +51,8 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 		this._register(this._editor.onMouseUp((e: IEditorMouseEvent) => this._onEditorMouseUp(e)));
 		this._register(this._editor.onMouseDrag((e: IEditorMouseEvent) => this._onEditorMouseDrag(e)));
 		this._register(this._editor.onMouseDrop((e: IPartialEditorMouseEvent) => this._onEditorMouseDrop(e)));
-		this._register(this._editor.onKeyDown((e: IKeyboardEvent) => this.onEditorKeyDown(e)));
-		this._register(this._editor.onKeyUp((e: IKeyboardEvent) => this.onEditorKeyUp(e)));
+		this._register(this._editor.onKeyDown((e: IKeyBoardEvent) => this.onEditorKeyDown(e)));
+		this._register(this._editor.onKeyUp((e: IKeyBoardEvent) => this.onEditorKeyUp(e)));
 		this._register(this._editor.onDidBlurEditorWidget(() => this.onEditorBlur()));
 		this._register(this._editor.onDidBlurEditorText(() => this.onEditorBlur()));
 		this._dndDecorationIds = [];
@@ -68,7 +68,7 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 		this._modifierPressed = false;
 	}
 
-	private onEditorKeyDown(e: IKeyboardEvent): void {
+	private onEditorKeyDown(e: IKeyBoardEvent): void {
 		if (!this._editor.getOption(EditorOption.dragAndDrop) || this._editor.getOption(EditorOption.columnSelection)) {
 			return;
 		}
@@ -84,7 +84,7 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 		}
 	}
 
-	private onEditorKeyUp(e: IKeyboardEvent): void {
+	private onEditorKeyUp(e: IKeyBoardEvent): void {
 		if (!this._editor.getOption(EditorOption.dragAndDrop) || this._editor.getOption(EditorOption.columnSelection)) {
 			return;
 		}
@@ -117,9 +117,9 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 
 		if (this._dragSelection === null) {
 			const selections = this._editor.getSelections() || [];
-			let possibleSelections = selections.filter(selection => target.position && selection.containsPosition(target.position));
-			if (possibleSelections.length === 1) {
-				this._dragSelection = possibleSelections[0];
+			let possiBleSelections = selections.filter(selection => target.position && selection.containsPosition(target.position));
+			if (possiBleSelections.length === 1) {
+				this._dragSelection = possiBleSelections[0];
 			} else {
 				return;
 			}
@@ -146,20 +146,20 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 
 	private _onEditorMouseDrop(mouseEvent: IPartialEditorMouseEvent): void {
 		if (mouseEvent.target && (this._hitContent(mouseEvent.target) || this._hitMargin(mouseEvent.target)) && mouseEvent.target.position) {
-			let newCursorPosition = new Position(mouseEvent.target.position.lineNumber, mouseEvent.target.position.column);
+			let newCursorPosition = new Position(mouseEvent.target.position.lineNumBer, mouseEvent.target.position.column);
 
 			if (this._dragSelection === null) {
 				let newSelections: Selection[] | null = null;
 				if (mouseEvent.event.shiftKey) {
 					let primarySelection = this._editor.getSelection();
 					if (primarySelection) {
-						const { selectionStartLineNumber, selectionStartColumn } = primarySelection;
-						newSelections = [new Selection(selectionStartLineNumber, selectionStartColumn, newCursorPosition.lineNumber, newCursorPosition.column)];
+						const { selectionStartLineNumBer, selectionStartColumn } = primarySelection;
+						newSelections = [new Selection(selectionStartLineNumBer, selectionStartColumn, newCursorPosition.lineNumBer, newCursorPosition.column)];
 					}
 				} else {
 					newSelections = (this._editor.getSelections() || []).map(selection => {
 						if (selection.containsPosition(newCursorPosition)) {
-							return new Selection(newCursorPosition.lineNumber, newCursorPosition.column, newCursorPosition.lineNumber, newCursorPosition.column);
+							return new Selection(newCursorPosition.lineNumBer, newCursorPosition.column, newCursorPosition.lineNumBer, newCursorPosition.column);
 						} else {
 							return selection;
 						}
@@ -174,7 +174,7 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 						this._modifierPressed
 					) && (
 						this._dragSelection.getEndPosition().equals(newCursorPosition) || this._dragSelection.getStartPosition().equals(newCursorPosition)
-					) // we allow users to paste content beside the selection
+					) // we allow users to paste content Beside the selection
 				)) {
 				this._editor.pushUndoStop();
 				this._editor.executeCommand(DragAndDropController.ID, new DragAndDropCommand(this._dragSelection, newCursorPosition, hasTriggerModifier(mouseEvent.event) || this._modifierPressed));
@@ -195,9 +195,9 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 		className: 'dnd-target'
 	});
 
-	public showAt(position: Position): void {
+	puBlic showAt(position: Position): void {
 		let newDecorations: IModelDeltaDecoration[] = [{
-			range: new Range(position.lineNumber, position.column, position.lineNumber, position.column),
+			range: new Range(position.lineNumBer, position.column, position.lineNumBer, position.column),
 			options: DragAndDropController._DECORATION_OPTIONS
 		}];
 
@@ -209,18 +209,18 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 		this._dndDecorationIds = this._editor.deltaDecorations(this._dndDecorationIds, []);
 	}
 
-	private _hitContent(target: IMouseTarget): boolean {
+	private _hitContent(target: IMouseTarget): Boolean {
 		return target.type === MouseTargetType.CONTENT_TEXT ||
 			target.type === MouseTargetType.CONTENT_EMPTY;
 	}
 
-	private _hitMargin(target: IMouseTarget): boolean {
+	private _hitMargin(target: IMouseTarget): Boolean {
 		return target.type === MouseTargetType.GUTTER_GLYPH_MARGIN ||
 			target.type === MouseTargetType.GUTTER_LINE_NUMBERS ||
 			target.type === MouseTargetType.GUTTER_LINE_DECORATIONS;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._removeDecoration();
 		this._dragSelection = null;
 		this._mouseDown = false;
@@ -229,4 +229,4 @@ export class DragAndDropController extends Disposable implements IEditorContribu
 	}
 }
 
-registerEditorContribution(DragAndDropController.ID, DragAndDropController);
+registerEditorContriBution(DragAndDropController.ID, DragAndDropController);

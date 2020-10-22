@@ -54,8 +54,8 @@ function inferredProjectConfigSnippet(
 	projectType: ProjectType,
 	config: TypeScriptServiceConfiguration
 ) {
-	const baseConfig = inferredProjectCompilerOptions(projectType, config);
-	const compilerOptions = Object.keys(baseConfig).map(key => `"${key}": ${JSON.stringify(baseConfig[key])}`);
+	const BaseConfig = inferredProjectCompilerOptions(projectType, config);
+	const compilerOptions = OBject.keys(BaseConfig).map(key => `"${key}": ${JSON.stringify(BaseConfig[key])}`);
 	return new vscode.SnippetString(`{
 	"compilerOptions": {
 		${compilerOptions.join(',\n\t\t')}$0
@@ -150,10 +150,10 @@ export async function openProjectConfigForFile(
 		// noop
 	}
 
-	if (res?.type !== 'response' || !res.body) {
+	if (res?.type !== 'response' || !res.Body) {
 		vscode.window.showWarningMessage(localize('typescript.projectConfigCouldNotGetInfo', 'Could not determine TypeScript or JavaScript project'));
 		return;
 	}
-	return openProjectConfigOrPromptToCreate(projectType, client, rootPath, res.body.configFileName);
+	return openProjectConfigOrPromptToCreate(projectType, client, rootPath, res.Body.configFileName);
 }
 

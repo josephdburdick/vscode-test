@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, IActionOptions, registerEditorAction, registerEditorContribution, ServicesAccessor, registerModelCommand } from 'vs/editor/browser/editorExtensions';
+import * as arrays from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, IActionOptions, registerEditorAction, registerEditorContriBution, ServicesAccessor, registerModelCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ITextModel } from 'vs/editor/common/model';
 import * as modes from 'vs/editor/common/modes';
 import * as nls from 'vs/nls';
 import { MenuId } from 'vs/platform/actions/common/actions';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { WordSelectionRangeProvider } from 'vs/editor/contrib/smartSelect/wordSelections';
-import { BracketSelectionRangeProvider } from 'vs/editor/contrib/smartSelect/bracketSelections';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { WordSelectionRangeProvider } from 'vs/editor/contriB/smartSelect/wordSelections';
+import { BracketSelectionRangeProvider } from 'vs/editor/contriB/smartSelect/BracketSelections';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
 
 class SelectionRanges {
 
 	constructor(
-		readonly index: number,
+		readonly index: numBer,
 		readonly ranges: Range[]
 	) { }
 
-	mov(fwd: boolean): SelectionRanges {
+	mov(fwd: Boolean): SelectionRanges {
 		let index = this.index + (fwd ? 1 : -1);
 		if (index < 0 || index >= this.ranges.length) {
 			return this;
@@ -45,19 +45,19 @@ class SelectionRanges {
 	}
 }
 
-class SmartSelectController implements IEditorContribution {
+class SmartSelectController implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.smartSelectController';
+	puBlic static readonly ID = 'editor.contriB.smartSelectController';
 
 	static get(editor: ICodeEditor): SmartSelectController {
-		return editor.getContribution<SmartSelectController>(SmartSelectController.ID);
+		return editor.getContriBution<SmartSelectController>(SmartSelectController.ID);
 	}
 
 	private readonly _editor: ICodeEditor;
 
 	private _state?: SelectionRanges[];
-	private _selectionListener?: IDisposable;
-	private _ignoreSelection: boolean = false;
+	private _selectionListener?: IDisposaBle;
+	private _ignoreSelection: Boolean = false;
 
 	constructor(editor: ICodeEditor) {
 		this._editor = editor;
@@ -67,7 +67,7 @@ class SmartSelectController implements IEditorContribution {
 		this._selectionListener?.dispose();
 	}
 
-	run(forward: boolean): Promise<void> | void {
+	run(forward: Boolean): Promise<void> | void {
 		if (!this._editor.hasModel()) {
 			return;
 		}
@@ -88,7 +88,7 @@ class SmartSelectController implements IEditorContribution {
 					// invalid result
 					return;
 				}
-				if (!this._editor.hasModel() || !arrays.equals(this._editor.getSelections(), selections, (a, b) => a.equalsSelection(b))) {
+				if (!this._editor.hasModel() || !arrays.equals(this._editor.getSelections(), selections, (a, B) => a.equalsSelection(B))) {
 					// invalid editor state
 					return;
 				}
@@ -105,7 +105,7 @@ class SmartSelectController implements IEditorContribution {
 
 				this._state = ranges.map(ranges => new SelectionRanges(0, ranges));
 
-				// listen to caret move and forget about state
+				// listen to caret move and forget aBout state
 				this._selectionListener?.dispose();
 				this._selectionListener = this._editor.onDidChangeCursorPosition(() => {
 					if (!this._ignoreSelection) {
@@ -134,11 +134,11 @@ class SmartSelectController implements IEditorContribution {
 	}
 }
 
-abstract class AbstractSmartSelect extends EditorAction {
+aBstract class ABstractSmartSelect extends EditorAction {
 
-	private readonly _forward: boolean;
+	private readonly _forward: Boolean;
 
-	constructor(forward: boolean, opts: IActionOptions) {
+	constructor(forward: Boolean, opts: IActionOptions) {
 		super(opts);
 		this._forward = forward;
 	}
@@ -151,25 +151,25 @@ abstract class AbstractSmartSelect extends EditorAction {
 	}
 }
 
-class GrowSelectionAction extends AbstractSmartSelect {
+class GrowSelectionAction extends ABstractSmartSelect {
 	constructor() {
 		super(true, {
 			id: 'editor.action.smartSelect.expand',
-			label: nls.localize('smartSelect.expand', "Expand Selection"),
+			laBel: nls.localize('smartSelect.expand', "Expand Selection"),
 			alias: 'Expand Selection',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.RightArrow,
 				mac: {
 					primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyMod.Shift | KeyCode.RightArrow,
 					secondary: [KeyMod.WinCtrl | KeyMod.Shift | KeyCode.RightArrow],
 				},
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			menuOpts: {
-				menuId: MenuId.MenubarSelectionMenu,
-				group: '1_basic',
+				menuId: MenuId.MenuBarSelectionMenu,
+				group: '1_Basic',
 				title: nls.localize({ key: 'miSmartSelectGrow', comment: ['&& denotes a mnemonic'] }, "&&Expand Selection"),
 				order: 2
 			}
@@ -180,25 +180,25 @@ class GrowSelectionAction extends AbstractSmartSelect {
 // renamed command id
 CommandsRegistry.registerCommandAlias('editor.action.smartSelect.grow', 'editor.action.smartSelect.expand');
 
-class ShrinkSelectionAction extends AbstractSmartSelect {
+class ShrinkSelectionAction extends ABstractSmartSelect {
 	constructor() {
 		super(false, {
 			id: 'editor.action.smartSelect.shrink',
-			label: nls.localize('smartSelect.shrink', "Shrink Selection"),
+			laBel: nls.localize('smartSelect.shrink', "Shrink Selection"),
 			alias: 'Shrink Selection',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.LeftArrow,
 				mac: {
 					primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyMod.Shift | KeyCode.LeftArrow,
 					secondary: [KeyMod.WinCtrl | KeyMod.Shift | KeyCode.LeftArrow],
 				},
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			menuOpts: {
-				menuId: MenuId.MenubarSelectionMenu,
-				group: '1_basic',
+				menuId: MenuId.MenuBarSelectionMenu,
+				group: '1_Basic',
 				title: nls.localize({ key: 'miSmartSelectShrink', comment: ['&& denotes a mnemonic'] }, "&&Shrink Selection"),
 				order: 3
 			}
@@ -206,7 +206,7 @@ class ShrinkSelectionAction extends AbstractSmartSelect {
 	}
 }
 
-registerEditorContribution(SmartSelectController.ID, SmartSelectController);
+registerEditorContriBution(SmartSelectController.ID, SmartSelectController);
 registerEditorAction(GrowSelectionAction);
 registerEditorAction(ShrinkSelectionAction);
 
@@ -218,7 +218,7 @@ export function provideSelectionRanges(model: ITextModel, positions: Position[],
 	const providers = modes.SelectionRangeRegistry.all(model);
 
 	if (providers.length === 1) {
-		// add word selection and bracket selection when no provider exists
+		// add word selection and Bracket selection when no provider exists
 		providers.unshift(new BracketSelectionRangeProvider());
 	}
 
@@ -251,15 +251,15 @@ export function provideSelectionRanges(model: ITextModel, positions: Position[],
 				return [];
 			}
 
-			// sort all by start/end position
-			oneRawRanges.sort((a, b) => {
-				if (Position.isBefore(a.getStartPosition(), b.getStartPosition())) {
+			// sort all By start/end position
+			oneRawRanges.sort((a, B) => {
+				if (Position.isBefore(a.getStartPosition(), B.getStartPosition())) {
 					return 1;
-				} else if (Position.isBefore(b.getStartPosition(), a.getStartPosition())) {
+				} else if (Position.isBefore(B.getStartPosition(), a.getStartPosition())) {
 					return -1;
-				} else if (Position.isBefore(a.getEndPosition(), b.getEndPosition())) {
+				} else if (Position.isBefore(a.getEndPosition(), B.getEndPosition())) {
 					return -1;
-				} else if (Position.isBefore(b.getEndPosition(), a.getEndPosition())) {
+				} else if (Position.isBefore(B.getEndPosition(), a.getEndPosition())) {
 					return 1;
 				} else {
 					return 0;
@@ -283,14 +283,14 @@ export function provideSelectionRanges(model: ITextModel, positions: Position[],
 			for (let i = 1; i < oneRanges.length; i++) {
 				const prev = oneRanges[i - 1];
 				const cur = oneRanges[i];
-				if (cur.startLineNumber !== prev.startLineNumber || cur.endLineNumber !== prev.endLineNumber) {
-					// add line/block range without leading/failing whitespace
-					const rangeNoWhitespace = new Range(prev.startLineNumber, model.getLineFirstNonWhitespaceColumn(prev.startLineNumber), prev.endLineNumber, model.getLineLastNonWhitespaceColumn(prev.endLineNumber));
+				if (cur.startLineNumBer !== prev.startLineNumBer || cur.endLineNumBer !== prev.endLineNumBer) {
+					// add line/Block range without leading/failing whitespace
+					const rangeNoWhitespace = new Range(prev.startLineNumBer, model.getLineFirstNonWhitespaceColumn(prev.startLineNumBer), prev.endLineNumBer, model.getLineLastNonWhitespaceColumn(prev.endLineNumBer));
 					if (rangeNoWhitespace.containsRange(prev) && !rangeNoWhitespace.equalsRange(prev) && cur.containsRange(rangeNoWhitespace) && !cur.equalsRange(rangeNoWhitespace)) {
 						oneRangesWithTrivia.push(rangeNoWhitespace);
 					}
-					// add line/block range
-					const rangeFull = new Range(prev.startLineNumber, 1, prev.endLineNumber, model.getLineMaxColumn(prev.endLineNumber));
+					// add line/Block range
+					const rangeFull = new Range(prev.startLineNumBer, 1, prev.endLineNumBer, model.getLineMaxColumn(prev.endLineNumBer));
 					if (rangeFull.containsRange(prev) && !rangeFull.equalsRange(rangeNoWhitespace) && cur.containsRange(rangeFull) && !cur.equalsRange(rangeFull)) {
 						oneRangesWithTrivia.push(rangeFull);
 					}

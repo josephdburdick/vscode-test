@@ -10,12 +10,12 @@ import { ExtensionLinter } from './extensionLinter';
 
 export function activate(context: vscode.ExtensionContext) {
 	const registration = vscode.languages.registerDocumentLinkProvider({ language: 'typescript', pattern: '**/vscode.d.ts' }, _linkProvider);
-	context.subscriptions.push(registration);
+	context.suBscriptions.push(registration);
 
 	//package.json suggestions
-	context.subscriptions.push(registerPackageDocumentCompletions());
+	context.suBscriptions.push(registerPackageDocumentCompletions());
 
-	context.subscriptions.push(new ExtensionLinter());
+	context.suBscriptions.push(new ExtensionLinter());
 }
 
 const _linkProvider = new class implements vscode.DocumentLinkProvider {
@@ -44,7 +44,7 @@ const _linkProvider = new class implements vscode.DocumentLinkProvider {
 
 			const offset = lookUp(match[1]);
 			if (offset === -1) {
-				console.warn(`Could not find symbol for link ${match[1]}`);
+				console.warn(`Could not find symBol for link ${match[1]}`);
 				continue;
 			}
 
@@ -64,7 +64,7 @@ const _linkProvider = new class implements vscode.DocumentLinkProvider {
 namespace ast {
 
 	export interface NamedNodeLookUp {
-		(dottedName: string): number;
+		(dottedName: string): numBer;
 	}
 
 	export async function createNamedNodeLookUp(str: string): Promise<NamedNodeLookUp> {
@@ -74,7 +74,7 @@ namespace ast {
 		const sourceFile = ts.createSourceFile('fake.d.ts', str, ts.ScriptTarget.Latest);
 
 		const identifiers: string[] = [];
-		const spans: number[] = [];
+		const spans: numBer[] = [];
 
 		ts.forEachChild(sourceFile, function visit(node: ts.Node) {
 			const declIdent = (<ts.NamedDeclaration>node).name;
@@ -85,19 +85,19 @@ namespace ast {
 			ts.forEachChild(node, visit);
 		});
 
-		return function (dottedName: string): number {
+		return function (dottedName: string): numBer {
 			let start = -1;
-			let end = Number.MAX_VALUE;
+			let end = NumBer.MAX_VALUE;
 
 			for (let name of dottedName.split('.')) {
-				let idx: number = -1;
+				let idx: numBer = -1;
 				while ((idx = identifiers.indexOf(name, idx + 1)) >= 0) {
 					let myStart = spans[2 * idx];
 					let myEnd = spans[2 * idx + 1];
 					if (myStart >= start && myEnd <= end) {
 						start = myStart;
 						end = myEnd;
-						break;
+						Break;
 					}
 				}
 				if (idx < 0) {
@@ -109,7 +109,7 @@ namespace ast {
 	}
 }
 
-function registerPackageDocumentCompletions(): vscode.Disposable {
+function registerPackageDocumentCompletions(): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/package.json' }, {
 		provideCompletionItems(document, position, token) {
 			return new PackageDocument(document).provideCompletionItems(position, token);

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EventHelper, getDomNodePagePosition } from 'vs/base/browser/dom';
-import { IAction, SubmenuAction } from 'vs/base/common/actions';
-import { Delayer } from 'vs/base/common/async';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { Disposable, IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
+import { EventHelper, getDomNodePagePosition } from 'vs/Base/Browser/dom';
+import { IAction, SuBmenuAction } from 'vs/Base/common/actions';
+import { Delayer } from 'vs/Base/common/async';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { DisposaBle, IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/Browser/editorBrowser';
 import { ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
@@ -19,20 +19,20 @@ import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import * as nls from 'vs/nls';
 import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ConfigurationScope, Extensions as ConfigurationExtensions, IConfigurationPropertySchema, IConfigurationRegistry, IConfigurationNode, OVERRIDE_PROPERTY_PATTERN, overrideIdentifierFromKey } from 'vs/platform/configuration/common/configurationRegistry';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { RangeHighlightDecorations } from 'vs/workbench/browser/parts/editor/rangeDecorations';
-import { DefaultSettingsHeaderWidget, EditPreferenceWidget, SettingsGroupTitleWidget, SettingsHeaderWidget, preferencesEditIcon } from 'vs/workbench/contrib/preferences/browser/preferencesWidgets';
-import { IFilterResult, IPreferencesEditorModel, IPreferencesService, ISetting, ISettingsEditorModel, ISettingsGroup } from 'vs/workbench/services/preferences/common/preferences';
-import { DefaultSettingsEditorModel, SettingsEditorModel, WorkspaceConfigurationEditorModel } from 'vs/workbench/services/preferences/common/preferencesModels';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { RangeHighlightDecorations } from 'vs/workBench/Browser/parts/editor/rangeDecorations';
+import { DefaultSettingsHeaderWidget, EditPreferenceWidget, SettingsGroupTitleWidget, SettingsHeaderWidget, preferencesEditIcon } from 'vs/workBench/contriB/preferences/Browser/preferencesWidgets';
+import { IFilterResult, IPreferencesEditorModel, IPreferencesService, ISetting, ISettingsEditorModel, ISettingsGroup } from 'vs/workBench/services/preferences/common/preferences';
+import { DefaultSettingsEditorModel, SettingsEditorModel, WorkspaceConfigurationEditorModel } from 'vs/workBench/services/preferences/common/preferencesModels';
 import { IMarkerService, IMarkerData, MarkerSeverity, MarkerTag } from 'vs/platform/markers/common/markers';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export interface IPreferencesRenderer<T> extends IDisposable {
+export interface IPreferencesRenderer<T> extends IDisposaBle {
 	readonly preferencesModel: IPreferencesEditorModel<T>;
 
 	getAssociatedPreferencesModel(): IPreferencesEditorModel<T>;
@@ -47,10 +47,10 @@ export interface IPreferencesRenderer<T> extends IDisposable {
 	focusPreference(setting: T): void;
 	clearFocus(setting: T): void;
 	filterPreferences(filterResult: IFilterResult | undefined): void;
-	editPreference(setting: T): boolean;
+	editPreference(setting: T): Boolean;
 }
 
-export class UserSettingsRenderer extends Disposable implements IPreferencesRenderer<ISetting> {
+export class UserSettingsRenderer extends DisposaBle implements IPreferencesRenderer<ISetting> {
 
 	private settingHighlighter: SettingHighlighter;
 	private editSettingActionRenderer: EditSettingRenderer;
@@ -123,7 +123,7 @@ export class UserSettingsRenderer extends Disposable implements IPreferencesRend
 
 	private onModelChanged(): void {
 		if (!this.editor.hasModel()) {
-			// model could have been disposed during the delay
+			// model could have Been disposed during the delay
 			return;
 		}
 		this.render();
@@ -133,7 +133,7 @@ export class UserSettingsRenderer extends Disposable implements IPreferencesRend
 		this.editor.focus();
 		setting = this.getSetting(setting)!;
 		if (setting) {
-			// TODO:@sandy Selection range should be template range
+			// TODO:@sandy Selection range should Be template range
 			this.editor.setSelection(setting.valueRange);
 			this.settingHighlighter.highlight(setting, true);
 		}
@@ -164,7 +164,7 @@ export class UserSettingsRenderer extends Disposable implements IPreferencesRend
 		const s = this.getSetting(setting);
 		if (s) {
 			this.settingHighlighter.highlight(s, true);
-			this.editor.setPosition({ lineNumber: s.keyRange.startLineNumber, column: s.keyRange.startColumn });
+			this.editor.setPosition({ lineNumBer: s.keyRange.startLineNumBer, column: s.keyRange.startColumn });
 		} else {
 			this.settingHighlighter.clear(true);
 		}
@@ -174,9 +174,9 @@ export class UserSettingsRenderer extends Disposable implements IPreferencesRend
 		this.settingHighlighter.clear(true);
 	}
 
-	editPreference(setting: ISetting): boolean {
-		const editableSetting = this.getSetting(setting);
-		return !!(editableSetting && this.editSettingActionRenderer.activateOnSetting(editableSetting));
+	editPreference(setting: ISetting): Boolean {
+		const editaBleSetting = this.getSetting(setting);
+		return !!(editaBleSetting && this.editSettingActionRenderer.activateOnSetting(editaBleSetting));
 	}
 }
 
@@ -226,7 +226,7 @@ export class FolderSettingsRenderer extends UserSettingsRenderer implements IPre
 
 }
 
-export class DefaultSettingsRenderer extends Disposable implements IPreferencesRenderer<ISetting> {
+export class DefaultSettingsRenderer extends DisposaBle implements IPreferencesRenderer<ISetting> {
 
 	private _associatedPreferencesModel!: IPreferencesEditorModel<ISetting>;
 	private settingHighlighter: SettingHighlighter;
@@ -235,7 +235,7 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 	private filteredMatchesRenderer: FilteredMatchesRenderer;
 	private hiddenAreasRenderer: HiddenAreasRenderer;
 	private editSettingActionRenderer: EditSettingRenderer;
-	private bracesHidingRenderer: BracesHidingRenderer;
+	private BracesHidingRenderer: BracesHidingRenderer;
 	private filterResult: IFilterResult | undefined;
 
 	private readonly _onUpdatePreference = this._register(new Emitter<{ key: string, value: any, source: IIndexedSetting }>());
@@ -257,8 +257,8 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 		this.settingsGroupTitleRenderer = this._register(instantiationService.createInstance(SettingsGroupTitleRenderer, editor));
 		this.filteredMatchesRenderer = this._register(instantiationService.createInstance(FilteredMatchesRenderer, editor));
 		this.editSettingActionRenderer = this._register(instantiationService.createInstance(EditSettingRenderer, editor, preferencesModel, this.settingHighlighter));
-		this.bracesHidingRenderer = this._register(instantiationService.createInstance(BracesHidingRenderer, editor));
-		this.hiddenAreasRenderer = this._register(instantiationService.createInstance(HiddenAreasRenderer, editor, [this.settingsGroupTitleRenderer, this.filteredMatchesRenderer, this.bracesHidingRenderer]));
+		this.BracesHidingRenderer = this._register(instantiationService.createInstance(BracesHidingRenderer, editor));
+		this.hiddenAreasRenderer = this._register(instantiationService.createInstance(HiddenAreasRenderer, editor, [this.settingsGroupTitleRenderer, this.filteredMatchesRenderer, this.BracesHidingRenderer]));
 
 		this._register(this.editSettingActionRenderer.onUpdateSetting(e => this._onUpdatePreference.fire(e)));
 		this._register(this.settingsGroupTitleRenderer.onHiddenAreasChanged(() => this.hiddenAreasRenderer.render()));
@@ -278,7 +278,7 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 		this.settingsGroupTitleRenderer.render(this.preferencesModel.settingsGroups);
 		this.editSettingActionRenderer.render(this.preferencesModel.settingsGroups, this._associatedPreferencesModel);
 		this.settingHighlighter.clear(true);
-		this.bracesHidingRenderer.render(undefined, this.preferencesModel.settingsGroups);
+		this.BracesHidingRenderer.render(undefined, this.preferencesModel.settingsGroups);
 		this.settingsGroupTitleRenderer.showGroup(0);
 		this.hiddenAreasRenderer.render();
 	}
@@ -291,7 +291,7 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 			this.settingsGroupTitleRenderer.render(undefined);
 			this.settingsHeaderRenderer.render(filterResult);
 			this.settingHighlighter.clear(true);
-			this.bracesHidingRenderer.render(filterResult, this.preferencesModel.settingsGroups);
+			this.BracesHidingRenderer.render(filterResult, this.preferencesModel.settingsGroups);
 			this.editSettingActionRenderer.render(filterResult.filteredGroups, this._associatedPreferencesModel);
 		} else {
 			this.settingHighlighter.clear(true);
@@ -299,7 +299,7 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 			this.settingsHeaderRenderer.render(undefined);
 			this.settingsGroupTitleRenderer.render(this.preferencesModel.settingsGroups);
 			this.settingsGroupTitleRenderer.showGroup(0);
-			this.bracesHidingRenderer.render(undefined, this.preferencesModel.settingsGroups);
+			this.BracesHidingRenderer.render(undefined, this.preferencesModel.settingsGroups);
 			this.editSettingActionRenderer.render(this.preferencesModel.settingsGroups, this._associatedPreferencesModel);
 		}
 
@@ -346,7 +346,7 @@ export class DefaultSettingsRenderer extends Disposable implements IPreferencesR
 	updatePreference(key: string, value: any, source: ISetting): void {
 	}
 
-	editPreference(setting: ISetting): boolean {
+	editPreference(setting: ISetting): Boolean {
 		return this.editSettingActionRenderer.activateOnSetting(setting);
 	}
 }
@@ -355,7 +355,7 @@ export interface HiddenAreasProvider {
 	hiddenAreas: IRange[];
 }
 
-export class BracesHidingRenderer extends Disposable implements HiddenAreasProvider {
+export class BracesHidingRenderer extends DisposaBle implements HiddenAreasProvider {
 	private _result: IFilterResult | undefined;
 	private _settingsGroups!: ISettingsGroup[];
 
@@ -369,30 +369,30 @@ export class BracesHidingRenderer extends Disposable implements HiddenAreasProvi
 	}
 
 	get hiddenAreas(): IRange[] {
-		// Opening square brace
+		// Opening square Brace
 		const hiddenAreas = [
 			{
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				startColumn: 1,
-				endLineNumber: 2,
+				endLineNumBer: 2,
 				endColumn: 1
 			}
 		];
 
-		const hideBraces = (group: ISettingsGroup, hideExtraLine?: boolean) => {
-			// Opening curly brace
+		const hideBraces = (group: ISettingsGroup, hideExtraLine?: Boolean) => {
+			// Opening curly Brace
 			hiddenAreas.push({
-				startLineNumber: group.range.startLineNumber - 3,
+				startLineNumBer: group.range.startLineNumBer - 3,
 				startColumn: 1,
-				endLineNumber: group.range.startLineNumber - (hideExtraLine ? 1 : 3),
+				endLineNumBer: group.range.startLineNumBer - (hideExtraLine ? 1 : 3),
 				endColumn: 1
 			});
 
-			// Closing curly brace
+			// Closing curly Brace
 			hiddenAreas.push({
-				startLineNumber: group.range.endLineNumber + 1,
+				startLineNumBer: group.range.endLineNumBer + 1,
 				startColumn: 1,
-				endLineNumber: group.range.endLineNumber + 4,
+				endLineNumBer: group.range.endLineNumBer + 4,
 				endColumn: 1
 			});
 		};
@@ -402,12 +402,12 @@ export class BracesHidingRenderer extends Disposable implements HiddenAreasProvi
 			this._result.filteredGroups.forEach((g, i) => hideBraces(g, true));
 		}
 
-		// Closing square brace
+		// Closing square Brace
 		const lineCount = this.editor.getModel()!.getLineCount();
 		hiddenAreas.push({
-			startLineNumber: lineCount,
+			startLineNumBer: lineCount,
 			startColumn: 1,
-			endLineNumber: lineCount,
+			endLineNumBer: lineCount,
 			endColumn: 1
 		});
 
@@ -417,7 +417,7 @@ export class BracesHidingRenderer extends Disposable implements HiddenAreasProvi
 
 }
 
-class DefaultSettingsHeaderRenderer extends Disposable {
+class DefaultSettingsHeaderRenderer extends DisposaBle {
 
 	private settingsHeaderWidget: DefaultSettingsHeaderWidget;
 	readonly onClick: Event<void>;
@@ -434,7 +434,7 @@ class DefaultSettingsHeaderRenderer extends Disposable {
 	}
 }
 
-export class SettingsGroupTitleRenderer extends Disposable implements HiddenAreasProvider {
+export class SettingsGroupTitleRenderer extends DisposaBle implements HiddenAreasProvider {
 
 	private readonly _onHiddenAreasChanged = this._register(new Emitter<void>());
 	readonly onHiddenAreasChanged: Event<void> = this._onHiddenAreasChanged.event;
@@ -442,7 +442,7 @@ export class SettingsGroupTitleRenderer extends Disposable implements HiddenArea
 	private settingsGroups!: ISettingsGroup[];
 	private hiddenGroups: ISettingsGroup[] = [];
 	private settingsGroupTitleWidgets!: SettingsGroupTitleWidget[];
-	private readonly renderDisposables = this._register(new DisposableStore());
+	private readonly renderDisposaBles = this._register(new DisposaBleStore());
 
 	constructor(private editor: ICodeEditor,
 		@IInstantiationService private readonly instantiationService: IInstantiationService
@@ -474,13 +474,13 @@ export class SettingsGroupTitleRenderer extends Disposable implements HiddenArea
 			const settingsGroupTitleWidget = this.instantiationService.createInstance(SettingsGroupTitleWidget, this.editor, group);
 			settingsGroupTitleWidget.render();
 			this.settingsGroupTitleWidgets.push(settingsGroupTitleWidget);
-			this.renderDisposables.add(settingsGroupTitleWidget);
-			this.renderDisposables.add(settingsGroupTitleWidget.onToggled(collapsed => this.onToggled(collapsed, settingsGroupTitleWidget.settingsGroup)));
+			this.renderDisposaBles.add(settingsGroupTitleWidget);
+			this.renderDisposaBles.add(settingsGroupTitleWidget.onToggled(collapsed => this.onToggled(collapsed, settingsGroupTitleWidget.settingsGroup)));
 		}
 		this.settingsGroupTitleWidgets.reverse();
 	}
 
-	showGroup(groupIdx: number) {
+	showGroup(groupIdx: numBer) {
 		const shownGroup = this.settingsGroupTitleWidgets[groupIdx].settingsGroup;
 
 		this.hiddenGroups = this.settingsGroups.filter(g => g !== shownGroup);
@@ -499,12 +499,12 @@ export class SettingsGroupTitleRenderer extends Disposable implements HiddenArea
 		}
 	}
 
-	private onToggled(collapsed: boolean, group: ISettingsGroup) {
+	private onToggled(collapsed: Boolean, group: ISettingsGroup) {
 		const index = this.hiddenGroups.indexOf(group);
 		if (collapsed) {
 			const currentPosition = this.editor.getPosition();
-			if (group.range.startLineNumber <= currentPosition!.lineNumber && group.range.endLineNumber >= currentPosition!.lineNumber) {
-				this.editor.setPosition({ lineNumber: group.range.startLineNumber - 1, column: 1 });
+			if (group.range.startLineNumBer <= currentPosition!.lineNumBer && group.range.endLineNumBer >= currentPosition!.lineNumBer) {
+				this.editor.setPosition({ lineNumBer: group.range.startLineNumBer - 1, column: 1 });
 			}
 			this.hiddenGroups.push(group);
 		} else {
@@ -515,7 +515,7 @@ export class SettingsGroupTitleRenderer extends Disposable implements HiddenArea
 
 	private disposeWidgets() {
 		this.hiddenGroups = [];
-		this.renderDisposables.clear();
+		this.renderDisposaBles.clear();
 	}
 
 	dispose() {
@@ -524,7 +524,7 @@ export class SettingsGroupTitleRenderer extends Disposable implements HiddenArea
 	}
 }
 
-export class HiddenAreasRenderer extends Disposable {
+export class HiddenAreasRenderer extends DisposaBle {
 
 	constructor(private editor: ICodeEditor, private hiddenAreasProviders: HiddenAreasProvider[]
 	) {
@@ -545,7 +545,7 @@ export class HiddenAreasRenderer extends Disposable {
 	}
 }
 
-export class FilteredMatchesRenderer extends Disposable implements HiddenAreasProvider {
+export class FilteredMatchesRenderer extends DisposaBle implements HiddenAreasProvider {
 
 	private decorationIds: string[] = [];
 	hiddenAreas: IRange[] = [];
@@ -584,9 +584,9 @@ export class FilteredMatchesRenderer extends Disposable implements HiddenAreasPr
 		if (filteredGroups) {
 			allSettingsGroups.forEach((group, i) => {
 				notMatchesRanges.push({
-					startLineNumber: group.range.startLineNumber - 1,
+					startLineNumBer: group.range.startLineNumBer - 1,
 					startColumn: group.range.startColumn,
-					endLineNumber: group.range.endLineNumber,
+					endLineNumBer: group.range.endLineNumBer,
 					endColumn: group.range.endColumn
 				});
 			});
@@ -601,7 +601,7 @@ export class FilteredMatchesRenderer extends Disposable implements HiddenAreasPr
 	}
 }
 
-export class HighlightMatchesRenderer extends Disposable {
+export class HighlightMatchesRenderer extends DisposaBle {
 
 	private decorationIds: string[] = [];
 
@@ -633,11 +633,11 @@ export class HighlightMatchesRenderer extends Disposable {
 }
 
 export interface IIndexedSetting extends ISetting {
-	index: number;
+	index: numBer;
 	groupId: string;
 }
 
-class EditSettingRenderer extends Disposable {
+class EditSettingRenderer extends DisposaBle {
 
 	private editPreferenceWidgetForCursorPosition: EditPreferenceWidget<IIndexedSetting>;
 	private editPreferenceWidgetForMouseMove: EditPreferenceWidget<IIndexedSetting>;
@@ -674,13 +674,13 @@ class EditSettingRenderer extends Disposable {
 		this.settingsGroups = settingsGroups;
 		this.associatedPreferencesModel = associatedPreferencesModel;
 
-		const settings = this.getSettings(this.editor.getPosition()!.lineNumber);
+		const settings = this.getSettings(this.editor.getPosition()!.lineNumBer);
 		if (settings.length) {
 			this.showEditPreferencesWidget(this.editPreferenceWidgetForCursorPosition, settings);
 		}
 	}
 
-	private isDefaultSettings(): boolean {
+	private isDefaultSettings(): Boolean {
 		return this.primarySettingsModel instanceof DefaultSettingsEditorModel;
 	}
 
@@ -693,7 +693,7 @@ class EditSettingRenderer extends Disposable {
 
 	private onPositionChanged(positionChangeEvent: ICursorPositionChangedEvent) {
 		this.editPreferenceWidgetForMouseMove.hide();
-		const settings = this.getSettings(positionChangeEvent.position.lineNumber);
+		const settings = this.getSettings(positionChangeEvent.position.lineNumBer);
 		if (settings.length) {
 			this.showEditPreferencesWidget(this.editPreferenceWidgetForCursorPosition, settings);
 		} else {
@@ -713,11 +713,11 @@ class EditSettingRenderer extends Disposable {
 
 	private getEditPreferenceWidgetUnderMouse(mouseMoveEvent: IEditorMouseEvent): EditPreferenceWidget<ISetting> | undefined {
 		if (mouseMoveEvent.target.type === MouseTargetType.GUTTER_GLYPH_MARGIN) {
-			const line = mouseMoveEvent.target.position!.lineNumber;
-			if (this.editPreferenceWidgetForMouseMove.getLine() === line && this.editPreferenceWidgetForMouseMove.isVisible()) {
+			const line = mouseMoveEvent.target.position!.lineNumBer;
+			if (this.editPreferenceWidgetForMouseMove.getLine() === line && this.editPreferenceWidgetForMouseMove.isVisiBle()) {
 				return this.editPreferenceWidgetForMouseMove;
 			}
-			if (this.editPreferenceWidgetForCursorPosition.getLine() === line && this.editPreferenceWidgetForCursorPosition.isVisible()) {
+			if (this.editPreferenceWidgetForCursorPosition.getLine() === line && this.editPreferenceWidgetForCursorPosition.isVisiBle()) {
 				return this.editPreferenceWidgetForCursorPosition;
 			}
 		}
@@ -725,7 +725,7 @@ class EditSettingRenderer extends Disposable {
 	}
 
 	private toggleEditPreferenceWidgetForMouseMove(mouseMoveEvent: IEditorMouseEvent): void {
-		const settings = mouseMoveEvent.target.position ? this.getSettings(mouseMoveEvent.target.position.lineNumber) : null;
+		const settings = mouseMoveEvent.target.position ? this.getSettings(mouseMoveEvent.target.position.lineNumBer) : null;
 		if (settings && settings.length) {
 			this.showEditPreferencesWidget(this.editPreferenceWidgetForMouseMove, settings);
 		} else {
@@ -734,7 +734,7 @@ class EditSettingRenderer extends Disposable {
 	}
 
 	private showEditPreferencesWidget(editPreferencesWidget: EditPreferenceWidget<ISetting>, settings: IIndexedSetting[]) {
-		const line = settings[0].valueRange.startLineNumber;
+		const line = settings[0].valueRange.startLineNumBer;
 		if (this.editor.getOption(EditorOption.glyphMargin) && this.marginFreeFromOtherDecorations(line)) {
 			editPreferencesWidget.show(line, nls.localize('editTtile', "Edit"), settings);
 			const editPreferenceWidgetToHide = editPreferencesWidget === this.editPreferenceWidgetForCursorPosition ? this.editPreferenceWidgetForMouseMove : this.editPreferenceWidgetForCursorPosition;
@@ -742,7 +742,7 @@ class EditSettingRenderer extends Disposable {
 		}
 	}
 
-	private marginFreeFromOtherDecorations(line: number): boolean {
+	private marginFreeFromOtherDecorations(line: numBer): Boolean {
 		const decorations = this.editor.getLineDecorations(line);
 		if (decorations) {
 			for (const { options } of decorations) {
@@ -754,19 +754,19 @@ class EditSettingRenderer extends Disposable {
 		return true;
 	}
 
-	private getSettings(lineNumber: number): IIndexedSetting[] {
+	private getSettings(lineNumBer: numBer): IIndexedSetting[] {
 		const configurationMap = this.getConfigurationsMap();
-		return this.getSettingsAtLineNumber(lineNumber).filter(setting => {
+		return this.getSettingsAtLineNumBer(lineNumBer).filter(setting => {
 			const configurationNode = configurationMap[setting.key];
 			if (configurationNode) {
 				if (this.isDefaultSettings()) {
 					if (setting.key === 'launch') {
-						// Do not show because of https://github.com/microsoft/vscode/issues/32593
+						// Do not show Because of https://githuB.com/microsoft/vscode/issues/32593
 						return false;
 					}
 					return true;
 				}
-				if (configurationNode.type === 'boolean' || configurationNode.enum) {
+				if (configurationNode.type === 'Boolean' || configurationNode.enum) {
 					if ((<SettingsEditorModel>this.primarySettingsModel).configurationTarget !== ConfigurationTarget.WORKSPACE_FOLDER) {
 						return true;
 					}
@@ -779,26 +779,26 @@ class EditSettingRenderer extends Disposable {
 		});
 	}
 
-	private getSettingsAtLineNumber(lineNumber: number): IIndexedSetting[] {
+	private getSettingsAtLineNumBer(lineNumBer: numBer): IIndexedSetting[] {
 		// index of setting, across all groups/sections
 		let index = 0;
 
 		const settings: IIndexedSetting[] = [];
 		for (const group of this.settingsGroups) {
-			if (group.range.startLineNumber > lineNumber) {
-				break;
+			if (group.range.startLineNumBer > lineNumBer) {
+				Break;
 			}
-			if (lineNumber >= group.range.startLineNumber && lineNumber <= group.range.endLineNumber) {
+			if (lineNumBer >= group.range.startLineNumBer && lineNumBer <= group.range.endLineNumBer) {
 				for (const section of group.sections) {
 					for (const setting of section.settings) {
-						if (setting.range.startLineNumber > lineNumber) {
-							break;
+						if (setting.range.startLineNumBer > lineNumBer) {
+							Break;
 						}
-						if (lineNumber >= setting.range.startLineNumber && lineNumber <= setting.range.endLineNumber) {
+						if (lineNumBer >= setting.range.startLineNumBer && lineNumBer <= setting.range.endLineNumBer) {
 							if (!this.isDefaultSettings() && setting.overrides!.length) {
-								// Only one level because override settings cannot have override settings
+								// Only one level Because override settings cannot have override settings
 								for (const overrideSetting of setting.overrides!) {
-									if (lineNumber >= overrideSetting.range.startLineNumber && lineNumber <= overrideSetting.range.endLineNumber) {
+									if (lineNumBer >= overrideSetting.range.startLineNumBer && lineNumBer <= overrideSetting.range.endLineNumBer) {
 										settings.push({ ...overrideSetting, index, groupId: group.id });
 									}
 								}
@@ -824,15 +824,15 @@ class EditSettingRenderer extends Disposable {
 
 		const anchor = { x: e.event.posx, y: e.event.posy + 10 };
 		const actions = this.getSettings(editPreferenceWidget.getLine()).length === 1 ? this.getActions(editPreferenceWidget.preferences[0], this.getConfigurationsMap()[editPreferenceWidget.preferences[0].key])
-			: editPreferenceWidget.preferences.map(setting => new SubmenuAction(`preferences.submenu.${setting.key}`, setting.key, this.getActions(setting, this.getConfigurationsMap()[setting.key])));
+			: editPreferenceWidget.preferences.map(setting => new SuBmenuAction(`preferences.suBmenu.${setting.key}`, setting.key, this.getActions(setting, this.getConfigurationsMap()[setting.key])));
 		this.contextMenuService.showContextMenu({
 			getAnchor: () => anchor,
 			getActions: () => actions
 		});
 	}
 
-	activateOnSetting(setting: ISetting): boolean {
-		const startLine = setting.keyRange.startLineNumber;
+	activateOnSetting(setting: ISetting): Boolean {
+		const startLine = setting.keyRange.startLineNumBer;
 		const settings = this.getSettings(startLine);
 		if (!settings.length) {
 			return false;
@@ -841,15 +841,15 @@ class EditSettingRenderer extends Disposable {
 		this.editPreferenceWidgetForMouseMove.show(startLine, '', settings);
 		const actions = this.getActions(this.editPreferenceWidgetForMouseMove.preferences[0], this.getConfigurationsMap()[this.editPreferenceWidgetForMouseMove.preferences[0].key]);
 		this.contextMenuService.showContextMenu({
-			getAnchor: () => this.toAbsoluteCoords(new Position(startLine, 1)),
+			getAnchor: () => this.toABsoluteCoords(new Position(startLine, 1)),
 			getActions: () => actions
 		});
 
 		return true;
 	}
 
-	private toAbsoluteCoords(position: Position): { x: number, y: number } {
-		const positionCoords = this.editor.getScrolledVisiblePosition(position);
+	private toABsoluteCoords(position: Position): { x: numBer, y: numBer } {
+		const positionCoords = this.editor.getScrolledVisiBlePosition(position);
 		const editorCoords = getDomNodePagePosition(this.editor.getDomNode()!);
 		const x = editorCoords.left + positionCoords!.left;
 		const y = editorCoords.top + positionCoords!.top + positionCoords!.height;
@@ -862,16 +862,16 @@ class EditSettingRenderer extends Disposable {
 	}
 
 	private getActions(setting: IIndexedSetting, jsonSchema: IJSONSchema): IAction[] {
-		if (jsonSchema.type === 'boolean') {
+		if (jsonSchema.type === 'Boolean') {
 			return [<IAction>{
 				id: 'truthyValue',
-				label: 'true',
-				enabled: true,
+				laBel: 'true',
+				enaBled: true,
 				run: () => this.updateSetting(setting.key, true, setting)
 			}, <IAction>{
 				id: 'falsyValue',
-				label: 'false',
-				enabled: true,
+				laBel: 'false',
+				enaBled: true,
 				run: () => this.updateSetting(setting.key, false, setting)
 			}];
 		}
@@ -879,8 +879,8 @@ class EditSettingRenderer extends Disposable {
 			return jsonSchema.enum.map(value => {
 				return <IAction>{
 					id: value,
-					label: JSON.stringify(value),
-					enabled: true,
+					laBel: JSON.stringify(value),
+					enaBled: true,
 					run: () => this.updateSetting(setting.key, value, setting)
 				};
 			});
@@ -893,8 +893,8 @@ class EditSettingRenderer extends Disposable {
 			const settingInOtherModel = this.associatedPreferencesModel.getPreference(setting.key);
 			return [<IAction>{
 				id: 'setDefaultValue',
-				label: settingInOtherModel ? nls.localize('replaceDefaultValue', "Replace in Settings") : nls.localize('copyDefaultValue', "Copy to Settings"),
-				enabled: true,
+				laBel: settingInOtherModel ? nls.localize('replaceDefaultValue', "Replace in Settings") : nls.localize('copyDefaultValue', "Copy to Settings"),
+				enaBled: true,
 				run: () => this.updateSetting(setting.key, setting.value, setting)
 			}];
 		}
@@ -906,7 +906,7 @@ class EditSettingRenderer extends Disposable {
 	}
 }
 
-class SettingHighlighter extends Disposable {
+class SettingHighlighter extends DisposaBle {
 
 	private fixedHighlighter: RangeHighlightDecorations;
 	private volatileHighlighter: RangeHighlightDecorations;
@@ -922,7 +922,7 @@ class SettingHighlighter extends Disposable {
 		this.volatileHighlighter.onHighlightRemoved(() => this.clearFocusEventEmitter.fire(this.highlightedSetting));
 	}
 
-	highlight(setting: ISetting, fix: boolean = false) {
+	highlight(setting: ISetting, fix: Boolean = false) {
 		this.highlightedSetting = setting;
 		this.volatileHighlighter.removeHighlightRange();
 		this.fixedHighlighter.removeHighlightRange();
@@ -933,11 +933,11 @@ class SettingHighlighter extends Disposable {
 			resource: this.editor.getModel()!.uri
 		}, this.editor);
 
-		this.editor.revealLineInCenterIfOutsideViewport(setting.valueRange.startLineNumber, editorCommon.ScrollType.Smooth);
+		this.editor.revealLineInCenterIfOutsideViewport(setting.valueRange.startLineNumBer, editorCommon.ScrollType.Smooth);
 		this.focusEventEmitter.fire(setting);
 	}
 
-	clear(fix: boolean = false): void {
+	clear(fix: Boolean = false): void {
 		this.volatileHighlighter.removeHighlightRange();
 		if (fix) {
 			this.fixedHighlighter.removeHighlightRange();
@@ -946,7 +946,7 @@ class SettingHighlighter extends Disposable {
 	}
 }
 
-class UnsupportedSettingsRenderer extends Disposable {
+class UnsupportedSettingsRenderer extends DisposaBle {
 
 	private renderingDelayer: Delayer<void> = new Delayer<void>(200);
 
@@ -954,7 +954,7 @@ class UnsupportedSettingsRenderer extends Disposable {
 		private editor: ICodeEditor,
 		private settingsEditorModel: SettingsEditorModel,
 		@IMarkerService private markerService: IMarkerService,
-		@IWorkbenchEnvironmentService private environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private environmentService: IWorkBenchEnvironmentService,
 		@IConfigurationService private configurationService: IConfigurationService,
 	) {
 		super();
@@ -966,7 +966,7 @@ class UnsupportedSettingsRenderer extends Disposable {
 		this.renderingDelayer.trigger(() => this.render());
 	}
 
-	public render(): void {
+	puBlic render(): void {
 		const markerData: IMarkerData[] = this.generateMarkerData();
 		if (markerData.length) {
 			this.markerService.changeOne('UnsupportedSettingsRenderer', this.settingsEditorModel.uri, markerData);
@@ -986,16 +986,16 @@ class UnsupportedSettingsRenderer extends Disposable {
 						switch (this.settingsEditorModel.configurationTarget) {
 							case ConfigurationTarget.USER_LOCAL:
 								this.handleLocalUserConfiguration(setting, configuration, markerData);
-								break;
+								Break;
 							case ConfigurationTarget.USER_REMOTE:
 								this.handleRemoteUserConfiguration(setting, configuration, markerData);
-								break;
+								Break;
 							case ConfigurationTarget.WORKSPACE:
 								this.handleWorkspaceConfiguration(setting, configuration, markerData);
-								break;
+								Break;
 							case ConfigurationTarget.WORKSPACE_FOLDER:
 								this.handleWorkspaceFolderConfiguration(setting, configuration, markerData);
-								break;
+								Break;
 						}
 					} else if (!OVERRIDE_PROPERTY_PATTERN.test(setting.key)) { // Ignore override settings (language specific settings)
 						markerData.push({
@@ -1017,7 +1017,7 @@ class UnsupportedSettingsRenderer extends Disposable {
 				severity: MarkerSeverity.Hint,
 				tags: [MarkerTag.Unnecessary],
 				...setting.range,
-				message: nls.localize('unsupportedRemoteMachineSetting', "This setting cannot be applied in this window. It will be applied when you open local window.")
+				message: nls.localize('unsupportedRemoteMachineSetting', "This setting cannot Be applied in this window. It will Be applied when you open local window.")
 			});
 		}
 	}
@@ -1052,7 +1052,7 @@ class UnsupportedSettingsRenderer extends Disposable {
 				severity: MarkerSeverity.Hint,
 				tags: [MarkerTag.Unnecessary],
 				...setting.range,
-				message: nls.localize('unsupportedWindowSetting', "This setting cannot be applied in this workspace. It will be applied when you open the containing workspace folder directly.")
+				message: nls.localize('unsupportedWindowSetting', "This setting cannot Be applied in this workspace. It will Be applied when you open the containing workspace folder directly.")
 			});
 		}
 	}
@@ -1062,7 +1062,7 @@ class UnsupportedSettingsRenderer extends Disposable {
 			severity: MarkerSeverity.Hint,
 			tags: [MarkerTag.Unnecessary],
 			...setting.range,
-			message: nls.localize('unsupportedApplicationSetting', "This setting can be applied only in application user settings")
+			message: nls.localize('unsupportedApplicationSetting', "This setting can Be applied only in application user settings")
 		};
 	}
 
@@ -1071,18 +1071,18 @@ class UnsupportedSettingsRenderer extends Disposable {
 			severity: MarkerSeverity.Hint,
 			tags: [MarkerTag.Unnecessary],
 			...setting.range,
-			message: nls.localize('unsupportedMachineSetting', "This setting can only be applied in user settings in local window or in remote settings in remote window.")
+			message: nls.localize('unsupportedMachineSetting', "This setting can only Be applied in user settings in local window or in remote settings in remote window.")
 		};
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.markerService.remove('UnsupportedSettingsRenderer', [this.settingsEditorModel.uri]);
 		super.dispose();
 	}
 
 }
 
-class WorkspaceConfigurationRenderer extends Disposable {
+class WorkspaceConfigurationRenderer extends DisposaBle {
 
 	private decorationIds: string[] = [];
 	private associatedSettingsEditorModel!: IPreferencesEditorModel<ISetting>;
@@ -1099,7 +1099,7 @@ class WorkspaceConfigurationRenderer extends Disposable {
 	render(associatedSettingsEditorModel: IPreferencesEditorModel<ISetting>): void {
 		this.associatedSettingsEditorModel = associatedSettingsEditorModel;
 		const markerData: IMarkerData[] = [];
-		if (this.workspaceContextService.getWorkbenchState() === WorkbenchState.WORKSPACE && this.workspaceSettingsEditorModel instanceof WorkspaceConfigurationEditorModel) {
+		if (this.workspaceContextService.getWorkBenchState() === WorkBenchState.WORKSPACE && this.workspaceSettingsEditorModel instanceof WorkspaceConfigurationEditorModel) {
 			const ranges: IRange[] = [];
 			for (const settingsGroup of this.workspaceSettingsEditorModel.configurationGroups) {
 				for (const section of settingsGroup.sections) {
@@ -1108,9 +1108,9 @@ class WorkspaceConfigurationRenderer extends Disposable {
 							if (this.associatedSettingsEditorModel) {
 								// Dim other configurations in workspace configuration file only in the context of Settings Editor
 								ranges.push({
-									startLineNumber: setting.keyRange.startLineNumber,
+									startLineNumBer: setting.keyRange.startLineNumBer,
 									startColumn: setting.keyRange.startColumn - 1,
-									endLineNumber: setting.valueRange.endLineNumber,
+									endLineNumBer: setting.valueRange.endLineNumBer,
 									endColumn: setting.valueRange.endColumn
 								});
 							}

@@ -9,10 +9,10 @@ import { MIN_MAX_MEMORY_SIZE_MB } from 'vs/platform/files/common/files';
 import { parseArgs, ErrorReporter, OPTIONS } from 'vs/platform/environment/node/argv';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
 
-function parseAndValidate(cmdLineArgs: string[], reportWarnings: boolean): NativeParsedArgs {
+function parseAndValidate(cmdLineArgs: string[], reportWarnings: Boolean): NativeParsedArgs {
 	const errorReporter: ErrorReporter = {
 		onUnknownOption: (id) => {
-			console.warn(localize('unknownOption', "Warning: '{0}' is not in the list of known options, but still passed to Electron/Chromium.", id));
+			console.warn(localize('unknownOption', "Warning: '{0}' is not in the list of known options, But still passed to Electron/Chromium.", id));
 		},
 		onMultipleValues: (id, val) => {
 			console.warn(localize('multipleValues', "Option '{0}' is defined more than once. Using value '{1}.'", id, val));
@@ -21,11 +21,11 @@ function parseAndValidate(cmdLineArgs: string[], reportWarnings: boolean): Nativ
 
 	const args = parseArgs(cmdLineArgs, OPTIONS, reportWarnings ? errorReporter : undefined);
 	if (args.goto) {
-		args._.forEach(arg => assert(/^(\w:)?[^:]+(:\d*){0,2}$/.test(arg), localize('gotoValidation', "Arguments in `--goto` mode should be in the format of `FILE(:LINE(:CHARACTER))`.")));
+		args._.forEach(arg => assert(/^(\w:)?[^:]+(:\d*){0,2}$/.test(arg), localize('gotoValidation', "Arguments in `--goto` mode should Be in the format of `FILE(:LINE(:CHARACTER))`.")));
 	}
 
 	if (args['max-memory']) {
-		assert(parseInt(args['max-memory']) >= MIN_MAX_MEMORY_SIZE_MB, `The max-memory argument cannot be specified lower than ${MIN_MAX_MEMORY_SIZE_MB} MB.`);
+		assert(parseInt(args['max-memory']) >= MIN_MAX_MEMORY_SIZE_MB, `The max-memory argument cannot Be specified lower than ${MIN_MAX_MEMORY_SIZE_MB} MB.`);
 	}
 
 	return args;
@@ -41,7 +41,7 @@ function stripAppPath(argv: string[]): string[] | undefined {
 }
 
 /**
- * Use this to parse raw code process.argv such as: `Electron . --verbose --wait`
+ * Use this to parse raw code process.argv such as: `Electron . --verBose --wait`
  */
 export function parseMainProcessArgv(processArgv: string[]): NativeParsedArgs {
 	let [, ...args] = processArgv;
@@ -57,7 +57,7 @@ export function parseMainProcessArgv(processArgv: string[]): NativeParsedArgs {
 }
 
 /**
- * Use this to parse raw code CLI process.argv such as: `Electron cli.js . --verbose --wait`
+ * Use this to parse raw code CLI process.argv such as: `Electron cli.js . --verBose --wait`
  */
 export function parseCLIProcessArgv(processArgv: string[]): NativeParsedArgs {
 	let [, , ...args] = processArgv; // remove the first non-option argument: it's always the app location
@@ -72,7 +72,7 @@ export function addArg(argv: string[], ...args: string[]): string[] {
 	} else {
 		// if the we have an argument "--" (end of argument marker)
 		// we cannot add arguments at the end. rather, we add
-		// arguments before the "--" marker.
+		// arguments Before the "--" marker.
 		argv.splice(endOfArgsMarkerIndex, 0, ...args);
 	}
 

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBuffer } from 'vs/base/common/buffer';
-import { regExpFlags } from 'vs/base/common/strings';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { regExpFlags } from 'vs/Base/common/strings';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 
-export function stringify(obj: any): string {
-	return JSON.stringify(obj, replacer);
+export function stringify(oBj: any): string {
+	return JSON.stringify(oBj, replacer);
 }
 
 export function parse(text: string): any {
@@ -17,12 +17,12 @@ export function parse(text: string): any {
 	return data;
 }
 
-export interface MarshalledObject {
-	$mid: number;
+export interface MarshalledOBject {
+	$mid: numBer;
 }
 
 function replacer(key: string, value: any): any {
-	// URI is done via toJSON-member
+	// URI is done via toJSON-memBer
 	if (value instanceof RegExp) {
 		return {
 			$mid: 2,
@@ -35,44 +35,44 @@ function replacer(key: string, value: any): any {
 
 
 type Deserialize<T> = T extends UriComponents ? URI
-	: T extends object
+	: T extends oBject
 	? Revived<T>
 	: T;
 
 export type Revived<T> = { [K in keyof T]: Deserialize<T[K]> };
 
-export function revive<T = any>(obj: any, depth = 0): Revived<T> {
-	if (!obj || depth > 200) {
-		return obj;
+export function revive<T = any>(oBj: any, depth = 0): Revived<T> {
+	if (!oBj || depth > 200) {
+		return oBj;
 	}
 
-	if (typeof obj === 'object') {
+	if (typeof oBj === 'oBject') {
 
-		switch ((<MarshalledObject>obj).$mid) {
-			case 1: return <any>URI.revive(obj);
-			case 2: return <any>new RegExp(obj.source, obj.flags);
+		switch ((<MarshalledOBject>oBj).$mid) {
+			case 1: return <any>URI.revive(oBj);
+			case 2: return <any>new RegExp(oBj.source, oBj.flags);
 		}
 
 		if (
-			obj instanceof VSBuffer
-			|| obj instanceof Uint8Array
+			oBj instanceof VSBuffer
+			|| oBj instanceof Uint8Array
 		) {
-			return <any>obj;
+			return <any>oBj;
 		}
 
-		if (Array.isArray(obj)) {
-			for (let i = 0; i < obj.length; ++i) {
-				obj[i] = revive(obj[i], depth + 1);
+		if (Array.isArray(oBj)) {
+			for (let i = 0; i < oBj.length; ++i) {
+				oBj[i] = revive(oBj[i], depth + 1);
 			}
 		} else {
-			// walk object
-			for (const key in obj) {
-				if (Object.hasOwnProperty.call(obj, key)) {
-					obj[key] = revive(obj[key], depth + 1);
+			// walk oBject
+			for (const key in oBj) {
+				if (OBject.hasOwnProperty.call(oBj, key)) {
+					oBj[key] = revive(oBj[key], depth + 1);
 				}
 			}
 		}
 	}
 
-	return obj;
+	return oBj;
 }

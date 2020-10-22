@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IUpdateService, State } from 'vs/platform/update/common/update';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
 export class NativeUpdateService implements IUpdateService {
@@ -31,7 +31,7 @@ export class NativeUpdateService implements IUpdateService {
 			// fire initial state
 			this._onStateChange.fire(state);
 
-			// fire subsequent states as they come in from remote
+			// fire suBsequent states as they come in from remote
 
 			this.channel.listen<State>('onStateChange')(state => this._onStateChange.fire(state));
 		});
@@ -53,7 +53,7 @@ export class NativeUpdateService implements IUpdateService {
 		return this.channel.call('quitAndInstall');
 	}
 
-	isLatestVersion(): Promise<boolean> {
+	isLatestVersion(): Promise<Boolean> {
 		return this.channel.call('isLatestVersion');
 	}
 }

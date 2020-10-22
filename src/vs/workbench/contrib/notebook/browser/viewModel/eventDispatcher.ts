@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { NotebookDocumentMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookLayoutChangeEvent, NotebookLayoutInfo, CellViewModelStateChangeEvent, ICellViewModel } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { Emitter } from 'vs/Base/common/event';
+import { NoteBookDocumentMetadata } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { NoteBookLayoutChangeEvent, NoteBookLayoutInfo, CellViewModelStateChangeEvent, ICellViewModel } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 
-export enum NotebookViewEventType {
+export enum NoteBookViewEventType {
 	LayoutChanged = 1,
 	MetadataChanged = 2,
 	CellStateChanged = 3
 }
 
-export class NotebookLayoutChangedEvent {
-	public readonly type = NotebookViewEventType.LayoutChanged;
+export class NoteBookLayoutChangedEvent {
+	puBlic readonly type = NoteBookViewEventType.LayoutChanged;
 
-	constructor(readonly source: NotebookLayoutChangeEvent, readonly value: NotebookLayoutInfo) {
-
-	}
-}
-
-
-export class NotebookMetadataChangedEvent {
-	public readonly type = NotebookViewEventType.MetadataChanged;
-
-	constructor(readonly source: NotebookDocumentMetadata) {
+	constructor(readonly source: NoteBookLayoutChangeEvent, readonly value: NoteBookLayoutInfo) {
 
 	}
 }
 
-export class NotebookCellStateChangedEvent {
-	public readonly type = NotebookViewEventType.CellStateChanged;
+
+export class NoteBookMetadataChangedEvent {
+	puBlic readonly type = NoteBookViewEventType.MetadataChanged;
+
+	constructor(readonly source: NoteBookDocumentMetadata) {
+
+	}
+}
+
+export class NoteBookCellStateChangedEvent {
+	puBlic readonly type = NoteBookViewEventType.CellStateChanged;
 
 	constructor(readonly source: CellViewModelStateChangeEvent, readonly cell: ICellViewModel) {
 
@@ -39,53 +39,53 @@ export class NotebookCellStateChangedEvent {
 }
 
 
-export type NotebookViewEvent = NotebookLayoutChangedEvent | NotebookMetadataChangedEvent | NotebookCellStateChangedEvent;
+export type NoteBookViewEvent = NoteBookLayoutChangedEvent | NoteBookMetadataChangedEvent | NoteBookCellStateChangedEvent;
 
-export class NotebookEventDispatcher {
-	protected readonly _onDidChangeLayout = new Emitter<NotebookLayoutChangedEvent>();
+export class NoteBookEventDispatcher {
+	protected readonly _onDidChangeLayout = new Emitter<NoteBookLayoutChangedEvent>();
 	readonly onDidChangeLayout = this._onDidChangeLayout.event;
-	protected readonly _onDidChangeMetadata = new Emitter<NotebookMetadataChangedEvent>();
+	protected readonly _onDidChangeMetadata = new Emitter<NoteBookMetadataChangedEvent>();
 	readonly onDidChangeMetadata = this._onDidChangeMetadata.event;
-	protected readonly _onDidChangeCellState = new Emitter<NotebookCellStateChangedEvent>();
+	protected readonly _onDidChangeCellState = new Emitter<NoteBookCellStateChangedEvent>();
 	readonly onDidChangeCellState = this._onDidChangeCellState.event;
 
 	constructor() {
 	}
 
-	emit(events: NotebookViewEvent[]) {
+	emit(events: NoteBookViewEvent[]) {
 		for (let i = 0, len = events.length; i < len; i++) {
 			const e = events[i];
 
 			switch (e.type) {
-				case NotebookViewEventType.LayoutChanged:
+				case NoteBookViewEventType.LayoutChanged:
 					this._onDidChangeLayout.fire(e);
-					break;
-				case NotebookViewEventType.MetadataChanged:
+					Break;
+				case NoteBookViewEventType.MetadataChanged:
 					this._onDidChangeMetadata.fire(e);
-					break;
-				case NotebookViewEventType.CellStateChanged:
+					Break;
+				case NoteBookViewEventType.CellStateChanged:
 					this._onDidChangeCellState.fire(e);
-					break;
+					Break;
 			}
 		}
 	}
 }
 
-export class NotebookDiffEditorEventDispatcher {
-	protected readonly _onDidChangeLayout = new Emitter<NotebookLayoutChangedEvent>();
+export class NoteBookDiffEditorEventDispatcher {
+	protected readonly _onDidChangeLayout = new Emitter<NoteBookLayoutChangedEvent>();
 	readonly onDidChangeLayout = this._onDidChangeLayout.event;
 
 	constructor() {
 	}
 
-	emit(events: NotebookViewEvent[]) {
+	emit(events: NoteBookViewEvent[]) {
 		for (let i = 0, len = events.length; i < len; i++) {
 			const e = events[i];
 
 			switch (e.type) {
-				case NotebookViewEventType.LayoutChanged:
+				case NoteBookViewEventType.LayoutChanged:
 					this._onDidChangeLayout.fire(e);
-					break;
+					Break;
 			}
 		}
 	}

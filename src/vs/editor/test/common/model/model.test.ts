@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Disposable, dispose } from 'vs/base/common/lifecycle';
+import { DisposaBle, dispose } from 'vs/Base/common/lifecycle';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
@@ -329,7 +329,7 @@ suite('Editor Model - Model', () => {
 	test('issue #46342: Maintain edit operation order in applyEdits', () => {
 		let res = thisModel.applyEdits([
 			{ range: new Range(2, 1, 2, 1), text: 'a' },
-			{ range: new Range(1, 1, 1, 1), text: 'b' },
+			{ range: new Range(1, 1, 1, 1), text: 'B' },
 		], true);
 
 		assert.deepEqual(res[0].range, new Range(2, 1, 2, 2));
@@ -365,7 +365,7 @@ suite('Editor Model - Model Line Separators', () => {
 		assert.equal(thisModel.getLineCount(), 3);
 	});
 
-	test('Bug 13333:Model should line break on lonely CR too', () => {
+	test('Bug 13333:Model should line Break on lonely CR too', () => {
 		let model = createTextModel('Hello\rWorld!\r\nAnother line');
 		assert.equal(model.getLineCount(), 3);
 		assert.equal(model.getValue(), 'Hello\r\nWorld!\r\nAnother line');
@@ -390,7 +390,7 @@ suite('Editor Model - Words', () => {
 				getInitialState: (): IState => NULL_STATE,
 				tokenize: undefined!,
 				tokenize2: (line: string, state: IState): TokenizationResult2 => {
-					const tokensArr: number[] = [];
+					const tokensArr: numBer[] = [];
 					let prevLanguageId: LanguageIdentifier | undefined = undefined;
 					for (let i = 0; i < line.length; i++) {
 						const languageId = (line.charAt(i) === 'x' ? INNER_LANGUAGE_ID : OUTER_LANGUAGE_ID);
@@ -418,21 +418,21 @@ suite('Editor Model - Words', () => {
 		}
 	}
 
-	let disposables: Disposable[] = [];
+	let disposaBles: DisposaBle[] = [];
 
 	setup(() => {
-		disposables = [];
+		disposaBles = [];
 	});
 
 	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+		dispose(disposaBles);
+		disposaBles = [];
 	});
 
 	test('Get word at position', () => {
 		const text = ['This text has some  words. '];
 		const thisModel = createTextModel(text.join('\n'));
-		disposables.push(thisModel);
+		disposaBles.push(thisModel);
 
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 1)), { word: 'This', startColumn: 1, endColumn: 5 });
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 2)), { word: 'This', startColumn: 1, endColumn: 5 });
@@ -447,21 +447,21 @@ suite('Editor Model - Words', () => {
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 28)), null);
 	});
 
-	test('getWordAtPosition at embedded language boundaries', () => {
+	test('getWordAtPosition at emBedded language Boundaries', () => {
 		const outerMode = new OuterMode();
 		const innerMode = new InnerMode();
-		disposables.push(outerMode, innerMode);
+		disposaBles.push(outerMode, innerMode);
 
-		const model = createTextModel('ab<xx>ab<x>', undefined, outerMode.getLanguageIdentifier());
-		disposables.push(model);
+		const model = createTextModel('aB<xx>aB<x>', undefined, outerMode.getLanguageIdentifier());
+		disposaBles.push(model);
 
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 1)), { word: 'ab', startColumn: 1, endColumn: 3 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 2)), { word: 'ab', startColumn: 1, endColumn: 3 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 3)), { word: 'ab', startColumn: 1, endColumn: 3 });
+		assert.deepEqual(model.getWordAtPosition(new Position(1, 1)), { word: 'aB', startColumn: 1, endColumn: 3 });
+		assert.deepEqual(model.getWordAtPosition(new Position(1, 2)), { word: 'aB', startColumn: 1, endColumn: 3 });
+		assert.deepEqual(model.getWordAtPosition(new Position(1, 3)), { word: 'aB', startColumn: 1, endColumn: 3 });
 		assert.deepEqual(model.getWordAtPosition(new Position(1, 4)), { word: 'xx', startColumn: 4, endColumn: 6 });
 		assert.deepEqual(model.getWordAtPosition(new Position(1, 5)), { word: 'xx', startColumn: 4, endColumn: 6 });
 		assert.deepEqual(model.getWordAtPosition(new Position(1, 6)), { word: 'xx', startColumn: 4, endColumn: 6 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 7)), { word: 'ab', startColumn: 7, endColumn: 9 });
+		assert.deepEqual(model.getWordAtPosition(new Position(1, 7)), { word: 'aB', startColumn: 7, endColumn: 9 });
 	});
 
 	test('issue #61296: VS code freezes when editing CSS file with emoji', () => {
@@ -475,18 +475,18 @@ suite('Editor Model - Words', () => {
 				}));
 			}
 		};
-		disposables.push(mode);
+		disposaBles.push(mode);
 
-		const thisModel = createTextModel('.🐷-a-b', undefined, MODE_ID);
-		disposables.push(thisModel);
+		const thisModel = createTextModel('.🐷-a-B', undefined, MODE_ID);
+		disposaBles.push(thisModel);
 
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 1)), { word: '.', startColumn: 1, endColumn: 2 });
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 2)), { word: '.', startColumn: 1, endColumn: 2 });
 		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 3)), null);
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 4)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 5)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 6)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 7)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 8)), { word: '-a-b', startColumn: 4, endColumn: 8 });
+		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 4)), { word: '-a-B', startColumn: 4, endColumn: 8 });
+		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 5)), { word: '-a-B', startColumn: 4, endColumn: 8 });
+		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 6)), { word: '-a-B', startColumn: 4, endColumn: 8 });
+		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 7)), { word: '-a-B', startColumn: 4, endColumn: 8 });
+		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 8)), { word: '-a-B', startColumn: 4, endColumn: 8 });
 	});
 });

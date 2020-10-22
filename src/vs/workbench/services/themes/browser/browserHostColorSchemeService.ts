@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IHostColorSchemeService } from 'vs/workbench/services/themes/common/hostColorSchemeService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IHostColorSchemeService } from 'vs/workBench/services/themes/common/hostColorSchemeService';
 
-export class BrowserHostColorSchemeService extends Disposable implements IHostColorSchemeService {
+export class BrowserHostColorSchemeService extends DisposaBle implements IHostColorSchemeService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidSchemeChangeEvent = this._register(new Emitter<void>());
 
 	constructor(
-		@IWorkbenchEnvironmentService private environmentService: IWorkbenchEnvironmentService
+		@IWorkBenchEnvironmentService private environmentService: IWorkBenchEnvironmentService
 	) {
 		super();
 
@@ -37,7 +37,7 @@ export class BrowserHostColorSchemeService extends Disposable implements IHostCo
 		return this._onDidSchemeChangeEvent.event;
 	}
 
-	get dark(): boolean {
+	get dark(): Boolean {
 		if (window.matchMedia(`(prefers-color-scheme: light)`).matches) {
 			return false;
 		} else if (window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
@@ -46,7 +46,7 @@ export class BrowserHostColorSchemeService extends Disposable implements IHostCo
 		return this.environmentService.configuration.colorScheme.dark;
 	}
 
-	get highContrast(): boolean {
+	get highContrast(): Boolean {
 		if (window.matchMedia(`(forced-colors: active)`).matches) {
 			return true;
 		}

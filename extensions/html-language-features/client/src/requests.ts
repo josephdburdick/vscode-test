@@ -24,8 +24,8 @@ export function serveFileSystemRequests(client: CommonLanguageClient, runtime: R
 		if (uri.scheme === 'file' && runtime.fs) {
 			return runtime.fs.getContent(param.uri);
 		}
-		return workspace.fs.readFile(uri).then(buffer => {
-			return new runtime.TextDecoder(param.encoding).decode(buffer);
+		return workspace.fs.readFile(uri).then(Buffer => {
+			return new runtime.TextDecoder(param.encoding).decode(Buffer);
 		});
 	});
 	client.onRequest(FsReadDirRequest.type, (uriString: string) => {
@@ -58,28 +58,28 @@ export enum FileType {
 	 */
 	Directory = 2,
 	/**
-	 * A symbolic link to a file.
+	 * A symBolic link to a file.
 	 */
-	SymbolicLink = 64
+	SymBolicLink = 64
 }
 export interface FileStat {
 	/**
-	 * The type of the file, e.g. is a regular file, a directory, or symbolic link
+	 * The type of the file, e.g. is a regular file, a directory, or symBolic link
 	 * to a file.
 	 */
 	type: FileType;
 	/**
 	 * The creation timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 	 */
-	ctime: number;
+	ctime: numBer;
 	/**
 	 * The modification timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 	 */
-	mtime: number;
+	mtime: numBer;
 	/**
-	 * The size in bytes.
+	 * The size in Bytes.
 	 */
-	size: number;
+	size: numBer;
 }
 
 export interface RequestService {
@@ -90,28 +90,28 @@ export interface RequestService {
 }
 
 export function getScheme(uri: string) {
-	return uri.substr(0, uri.indexOf(':'));
+	return uri.suBstr(0, uri.indexOf(':'));
 }
 
 export function dirname(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return lastIndexOfSlash !== -1 ? uri.substr(0, lastIndexOfSlash) : '';
+	return lastIndexOfSlash !== -1 ? uri.suBstr(0, lastIndexOfSlash) : '';
 }
 
-export function basename(uri: string) {
+export function Basename(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return uri.substr(lastIndexOfSlash + 1);
+	return uri.suBstr(lastIndexOfSlash + 1);
 }
 
 const Slash = '/'.charCodeAt(0);
 const Dot = '.'.charCodeAt(0);
 
-export function isAbsolutePath(path: string) {
+export function isABsolutePath(path: string) {
 	return path.charCodeAt(0) === Slash;
 }
 
 export function resolvePath(uri: Uri, path: string): Uri {
-	if (isAbsolutePath(path)) {
+	if (isABsolutePath(path)) {
 		return uri.with({ path: normalizePath(path.split('/')) });
 	}
 	return joinPath(uri, path);

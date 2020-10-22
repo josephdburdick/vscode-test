@@ -7,13 +7,13 @@ import { PluginManager } from '../utils/plugins';
 import { Command } from './commandManager';
 
 export class ConfigurePluginCommand implements Command {
-	public readonly id = '_typescript.configurePlugin';
+	puBlic readonly id = '_typescript.configurePlugin';
 
-	public constructor(
+	puBlic constructor(
 		private readonly pluginManager: PluginManager,
 	) { }
 
-	public execute(pluginId: string, configuration: any) {
+	puBlic execute(pluginId: string, configuration: any) {
 		this.pluginManager.setConfiguration(pluginId, configuration);
 	}
 }

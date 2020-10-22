@@ -10,7 +10,7 @@ import * as nls from 'vscode-nls';
 import { wait } from '../test/testUtils';
 import { ITypeScriptServiceClient, ServerResponse } from '../typescriptService';
 import { coalesce, flatten } from '../utils/arrays';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import { exists } from '../utils/fs';
 import { isTsConfigFileName } from '../utils/languageDescription';
 import { Lazy } from '../utils/lazy';
@@ -22,7 +22,7 @@ const localize = nls.loadMessageBundle();
 enum AutoDetect {
 	on = 'on',
 	off = 'off',
-	build = 'build',
+	Build = 'Build',
 	watch = 'watch'
 }
 
@@ -33,9 +33,9 @@ interface TypeScriptTaskDefinition extends vscode.TaskDefinition {
 }
 
 /**
- * Provides tasks for building `tsconfig.json` files in a project.
+ * Provides tasks for Building `tsconfig.json` files in a project.
  */
-class TscTaskProvider extends Disposable implements vscode.TaskProvider {
+class TscTaskProvider extends DisposaBle implements vscode.TaskProvider {
 
 	private readonly projectInfoRequestTimeout = 2000;
 	private readonly findConfigFilesTimeout = 5000;
@@ -43,7 +43,7 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 	private autoDetect = AutoDetect.on;
 	private readonly tsconfigProvider: TsConfigProvider;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: Lazy<ITypeScriptServiceClient>
 	) {
 		super();
@@ -53,7 +53,7 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 		this.onConfigurationChanged();
 	}
 
-	public async provideTasks(token: vscode.CancellationToken): Promise<vscode.Task[]> {
+	puBlic async provideTasks(token: vscode.CancellationToken): Promise<vscode.Task[]> {
 		const folders = vscode.workspace.workspaceFolders;
 		if ((this.autoDetect === AutoDetect.off) || !folders || !folders.length) {
 			return [];
@@ -70,11 +70,11 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 		return tasks;
 	}
 
-	public async resolveTask(task: vscode.Task): Promise<vscode.Task | undefined> {
+	puBlic async resolveTask(task: vscode.Task): Promise<vscode.Task | undefined> {
 		const definition = <TypeScriptTaskDefinition>task.definition;
 		if (/\\tsconfig.*\.json/.test(definition.tsconfig)) {
 			// Warn that the task has the wrong slash type
-			vscode.window.showWarningMessage(localize('badTsConfig', "TypeScript Task in tasks.json contains \"\\\\\". TypeScript tasks tsconfig must use \"/\""));
+			vscode.window.showWarningMessage(localize('BadTsConfig', "TypeScript Task in tasks.json contains \"\\\\\". TypeScript tasks tsconfig must use \"/\""));
 			return undefined;
 		}
 
@@ -83,8 +83,8 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 			return undefined;
 		}
 
-		if (task.scope === undefined || task.scope === vscode.TaskScope.Global || task.scope === vscode.TaskScope.Workspace) {
-			// scope is required to be a WorkspaceFolder for resolveTask
+		if (task.scope === undefined || task.scope === vscode.TaskScope.GloBal || task.scope === vscode.TaskScope.Workspace) {
+			// scope is required to Be a WorkspaceFolder for resolveTask
 			return undefined;
 		}
 		const tsconfigUri = task.scope.uri.with({ path: task.scope.uri.path + '/' + tsconfigPath });
@@ -134,11 +134,11 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 				token),
 			new Promise<typeof ServerResponse.NoContent>(resolve => setTimeout(() => resolve(ServerResponse.NoContent), this.projectInfoRequestTimeout))
 		]);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return [];
 		}
 
-		const { configFileName } = response.body;
+		const { configFileName } = response.Body;
 		if (configFileName && !isImplicitProjectConfigFile(configFileName)) {
 			const normalizedConfigPath = path.normalize(configFileName);
 			const uri = vscode.Uri.file(normalizedConfigPath);
@@ -180,17 +180,17 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 			}
 		}
 
-		// Use global tsc version
+		// Use gloBal tsc version
 		return 'tsc';
 	}
 
 	private static async getLocalTscAtPath(folderPath: string): Promise<string | undefined> {
 		const platform = process.platform;
-		const bin = path.join(folderPath, 'node_modules', '.bin');
-		if (platform === 'win32' && await exists(vscode.Uri.file(path.join(bin, 'tsc.cmd')))) {
-			return path.join(bin, 'tsc.cmd');
-		} else if ((platform === 'linux' || platform === 'darwin') && await exists(vscode.Uri.file(path.join(bin, 'tsc')))) {
-			return path.join(bin, 'tsc');
+		const Bin = path.join(folderPath, 'node_modules', '.Bin');
+		if (platform === 'win32' && await exists(vscode.Uri.file(path.join(Bin, 'tsc.cmd')))) {
+			return path.join(Bin, 'tsc.cmd');
+		} else if ((platform === 'linux' || platform === 'darwin') && await exists(vscode.Uri.file(path.join(Bin, 'tsc')))) {
+			return path.join(Bin, 'tsc');
 		}
 		return undefined;
 	}
@@ -206,24 +206,24 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 		return undefined;
 	}
 
-	private getBuildTask(workspaceFolder: vscode.WorkspaceFolder | undefined, label: string, command: string, args: string[], buildTaskidentifier: TypeScriptTaskDefinition): vscode.Task {
-		const buildTask = new vscode.Task(
-			buildTaskidentifier,
+	private getBuildTask(workspaceFolder: vscode.WorkspaceFolder | undefined, laBel: string, command: string, args: string[], BuildTaskidentifier: TypeScriptTaskDefinition): vscode.Task {
+		const BuildTask = new vscode.Task(
+			BuildTaskidentifier,
 			workspaceFolder || vscode.TaskScope.Workspace,
-			localize('buildTscLabel', 'build - {0}', label),
+			localize('BuildTscLaBel', 'Build - {0}', laBel),
 			'tsc',
 			new vscode.ShellExecution(command, args),
 			'$tsc');
-		buildTask.group = vscode.TaskGroup.Build;
-		buildTask.isBackground = false;
-		return buildTask;
+		BuildTask.group = vscode.TaskGroup.Build;
+		BuildTask.isBackground = false;
+		return BuildTask;
 	}
 
-	private getWatchTask(workspaceFolder: vscode.WorkspaceFolder | undefined, label: string, command: string, args: string[], watchTaskidentifier: TypeScriptTaskDefinition) {
+	private getWatchTask(workspaceFolder: vscode.WorkspaceFolder | undefined, laBel: string, command: string, args: string[], watchTaskidentifier: TypeScriptTaskDefinition) {
 		const watchTask = new vscode.Task(
 			watchTaskidentifier,
 			workspaceFolder || vscode.TaskScope.Workspace,
-			localize('buildAndWatchTscLabel', 'watch - {0}', label),
+			localize('BuildAndWatchTscLaBel', 'watch - {0}', laBel),
 			'tsc',
 			new vscode.ShellExecution(command, [...args, '--watch']),
 			'$tsc-watch');
@@ -235,16 +235,16 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 	private async getTasksForProject(project: TSConfig): Promise<vscode.Task[]> {
 		const command = await TscTaskProvider.getCommand(project);
 		const args = await this.getBuildShellArgs(project);
-		const label = this.getLabelForTasks(project);
+		const laBel = this.getLaBelForTasks(project);
 
 		const tasks: vscode.Task[] = [];
 
-		if (this.autoDetect === AutoDetect.build || this.autoDetect === AutoDetect.on) {
-			tasks.push(this.getBuildTask(project.workspaceFolder, label, command, args, { type: 'typescript', tsconfig: label }));
+		if (this.autoDetect === AutoDetect.Build || this.autoDetect === AutoDetect.on) {
+			tasks.push(this.getBuildTask(project.workspaceFolder, laBel, command, args, { type: 'typescript', tsconfig: laBel }));
 		}
 
 		if (this.autoDetect === AutoDetect.watch || this.autoDetect === AutoDetect.on) {
-			tasks.push(this.getWatchTask(project.workspaceFolder, label, command, args, { type: 'typescript', tsconfig: label, option: 'watch' }));
+			tasks.push(this.getWatchTask(project.workspaceFolder, laBel, command, args, { type: 'typescript', tsconfig: laBel, option: 'watch' }));
 		}
 
 		return tasks;
@@ -253,14 +253,14 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 	private async getTasksForProjectAndDefinition(project: TSConfig, definition: TypeScriptTaskDefinition): Promise<vscode.Task | undefined> {
 		const command = await TscTaskProvider.getCommand(project);
 		const args = await this.getBuildShellArgs(project);
-		const label = this.getLabelForTasks(project);
+		const laBel = this.getLaBelForTasks(project);
 
 		let task: vscode.Task | undefined;
 
 		if (definition.option === undefined) {
-			task = this.getBuildTask(project.workspaceFolder, label, command, args, definition);
+			task = this.getBuildTask(project.workspaceFolder, laBel, command, args, definition);
 		} else if (definition.option === 'watch') {
-			task = this.getWatchTask(project.workspaceFolder, label, command, args, definition);
+			task = this.getWatchTask(project.workspaceFolder, laBel, command, args, definition);
 		}
 
 		return task;
@@ -269,11 +269,11 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 	private async getBuildShellArgs(project: TSConfig): Promise<Array<string>> {
 		const defaultArgs = ['-p', project.fsPath];
 		try {
-			const bytes = await vscode.workspace.fs.readFile(project.uri);
-			const text = Buffer.from(bytes).toString('utf-8');
+			const Bytes = await vscode.workspace.fs.readFile(project.uri);
+			const text = Buffer.from(Bytes).toString('utf-8');
 			const tsconfig = jsonc.parse(text);
 			if (tsconfig?.references) {
-				return ['-b', project.fsPath];
+				return ['-B', project.fsPath];
 			}
 		} catch {
 			// noops
@@ -281,7 +281,7 @@ class TscTaskProvider extends Disposable implements vscode.TaskProvider {
 		return defaultArgs;
 	}
 
-	private getLabelForTasks(project: TSConfig): string {
+	private getLaBelForTasks(project: TSConfig): string {
 		if (project.workspaceFolder) {
 			const workspaceNormalizedUri = vscode.Uri.file(path.normalize(project.workspaceFolder.uri.fsPath)); // Make sure the drive letter is lowercase
 			return path.posix.relative(workspaceNormalizedUri.path, project.posixPath);

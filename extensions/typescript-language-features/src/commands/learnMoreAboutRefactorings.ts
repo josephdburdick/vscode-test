@@ -7,11 +7,11 @@ import * as vscode from 'vscode';
 import { isTypeScriptDocument } from '../utils/languageModeIds';
 import { Command } from './commandManager';
 
-export class LearnMoreAboutRefactoringsCommand implements Command {
-	public static readonly id = '_typescript.learnMoreAboutRefactorings';
-	public readonly id = LearnMoreAboutRefactoringsCommand.id;
+export class LearnMoreABoutRefactoringsCommand implements Command {
+	puBlic static readonly id = '_typescript.learnMoreABoutRefactorings';
+	puBlic readonly id = LearnMoreABoutRefactoringsCommand.id;
 
-	public execute() {
+	puBlic execute() {
 		const docUrl = vscode.window.activeTextEditor && isTypeScriptDocument(vscode.window.activeTextEditor.document)
 			? 'https://go.microsoft.com/fwlink/?linkid=2114477'
 			: 'https://go.microsoft.com/fwlink/?linkid=2116761';

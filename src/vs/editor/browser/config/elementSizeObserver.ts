@@ -3,92 +3,92 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IDimension } from 'vs/editor/common/editorCommon';
 
-interface ResizeObserver {
-	observe(target: Element): void;
-	unobserve(target: Element): void;
+interface ResizeOBserver {
+	oBserve(target: Element): void;
+	unoBserve(target: Element): void;
 	disconnect(): void;
 }
 
-interface ResizeObserverSize {
-	inlineSize: number;
-	blockSize: number;
+interface ResizeOBserverSize {
+	inlineSize: numBer;
+	BlockSize: numBer;
 }
 
-interface ResizeObserverEntry {
+interface ResizeOBserverEntry {
 	readonly target: Element;
 	readonly contentRect: DOMRectReadOnly;
-	readonly borderBoxSize: ResizeObserverSize;
-	readonly contentBoxSize: ResizeObserverSize;
+	readonly BorderBoxSize: ResizeOBserverSize;
+	readonly contentBoxSize: ResizeOBserverSize;
 }
 
-type ResizeObserverCallback = (entries: ReadonlyArray<ResizeObserverEntry>, observer: ResizeObserver) => void;
+type ResizeOBserverCallBack = (entries: ReadonlyArray<ResizeOBserverEntry>, oBserver: ResizeOBserver) => void;
 
-declare const ResizeObserver: {
-	prototype: ResizeObserver;
-	new(callback: ResizeObserverCallback): ResizeObserver;
+declare const ResizeOBserver: {
+	prototype: ResizeOBserver;
+	new(callBack: ResizeOBserverCallBack): ResizeOBserver;
 };
 
 
-export class ElementSizeObserver extends Disposable {
+export class ElementSizeOBserver extends DisposaBle {
 
 	private readonly referenceDomElement: HTMLElement | null;
-	private readonly changeCallback: () => void;
-	private width: number;
-	private height: number;
-	private resizeObserver: ResizeObserver | null;
-	private measureReferenceDomElementToken: number;
+	private readonly changeCallBack: () => void;
+	private width: numBer;
+	private height: numBer;
+	private resizeOBserver: ResizeOBserver | null;
+	private measureReferenceDomElementToken: numBer;
 
-	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallback: () => void) {
+	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallBack: () => void) {
 		super();
 		this.referenceDomElement = referenceDomElement;
-		this.changeCallback = changeCallback;
+		this.changeCallBack = changeCallBack;
 		this.width = -1;
 		this.height = -1;
-		this.resizeObserver = null;
+		this.resizeOBserver = null;
 		this.measureReferenceDomElementToken = -1;
 		this.measureReferenceDomElement(false, dimension);
 	}
 
-	public dispose(): void {
-		this.stopObserving();
+	puBlic dispose(): void {
+		this.stopOBserving();
 		super.dispose();
 	}
 
-	public getWidth(): number {
+	puBlic getWidth(): numBer {
 		return this.width;
 	}
 
-	public getHeight(): number {
+	puBlic getHeight(): numBer {
 		return this.height;
 	}
 
-	public startObserving(): void {
-		if (typeof ResizeObserver !== 'undefined') {
-			if (!this.resizeObserver && this.referenceDomElement) {
-				this.resizeObserver = new ResizeObserver((entries) => {
+	puBlic startOBserving(): void {
+		if (typeof ResizeOBserver !== 'undefined') {
+			if (!this.resizeOBserver && this.referenceDomElement) {
+				this.resizeOBserver = new ResizeOBserver((entries) => {
 					if (entries && entries[0] && entries[0].contentRect) {
-						this.observe({ width: entries[0].contentRect.width, height: entries[0].contentRect.height });
+						this.oBserve({ width: entries[0].contentRect.width, height: entries[0].contentRect.height });
 					} else {
-						this.observe();
+						this.oBserve();
 					}
 				});
-				this.resizeObserver.observe(this.referenceDomElement);
+				this.resizeOBserver.oBserve(this.referenceDomElement);
 			}
 		} else {
 			if (this.measureReferenceDomElementToken === -1) {
-				// setInterval type defaults to NodeJS.Timeout instead of number, so specify it as a number
-				this.measureReferenceDomElementToken = <number><any>setInterval(() => this.observe(), 100);
+				// setInterval type defaults to NodeJS.Timeout instead of numBer, so specify it as a numBer
+				this.measureReferenceDomElementToken = <numBer><any>setInterval(() => this.oBserve(), 100);
 			}
 		}
 	}
 
-	public stopObserving(): void {
-		if (this.resizeObserver) {
-			this.resizeObserver.disconnect();
-			this.resizeObserver = null;
+	puBlic stopOBserving(): void {
+		if (this.resizeOBserver) {
+			this.resizeOBserver.disconnect();
+			this.resizeOBserver = null;
 		}
 		if (this.measureReferenceDomElementToken !== -1) {
 			clearInterval(this.measureReferenceDomElementToken);
@@ -96,27 +96,27 @@ export class ElementSizeObserver extends Disposable {
 		}
 	}
 
-	public observe(dimension?: IDimension): void {
+	puBlic oBserve(dimension?: IDimension): void {
 		this.measureReferenceDomElement(true, dimension);
 	}
 
-	private measureReferenceDomElement(callChangeCallback: boolean, dimension?: IDimension): void {
-		let observedWidth = 0;
-		let observedHeight = 0;
+	private measureReferenceDomElement(callChangeCallBack: Boolean, dimension?: IDimension): void {
+		let oBservedWidth = 0;
+		let oBservedHeight = 0;
 		if (dimension) {
-			observedWidth = dimension.width;
-			observedHeight = dimension.height;
+			oBservedWidth = dimension.width;
+			oBservedHeight = dimension.height;
 		} else if (this.referenceDomElement) {
-			observedWidth = this.referenceDomElement.clientWidth;
-			observedHeight = this.referenceDomElement.clientHeight;
+			oBservedWidth = this.referenceDomElement.clientWidth;
+			oBservedHeight = this.referenceDomElement.clientHeight;
 		}
-		observedWidth = Math.max(5, observedWidth);
-		observedHeight = Math.max(5, observedHeight);
-		if (this.width !== observedWidth || this.height !== observedHeight) {
-			this.width = observedWidth;
-			this.height = observedHeight;
-			if (callChangeCallback) {
-				this.changeCallback();
+		oBservedWidth = Math.max(5, oBservedWidth);
+		oBservedHeight = Math.max(5, oBservedHeight);
+		if (this.width !== oBservedWidth || this.height !== oBservedHeight) {
+			this.width = oBservedWidth;
+			this.height = oBservedHeight;
+			if (callChangeCallBack) {
+				this.changeCallBack();
 			}
 		}
 	}

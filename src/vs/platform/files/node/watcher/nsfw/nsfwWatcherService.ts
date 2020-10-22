@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import * as extpath from 'vs/base/common/extpath';
-import * as path from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
+import * as gloB from 'vs/Base/common/gloB';
+import * as extpath from 'vs/Base/common/extpath';
+import * as path from 'vs/Base/common/path';
+import * as platform from 'vs/Base/common/platform';
 import { IDiskFileChange, normalizeFileChanges, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
 import * as nsfw from 'vscode-nsfw';
 import { IWatcherService, IWatcherRequest } from 'vs/platform/files/node/watcher/nsfw/watcher';
-import { ThrottledDelayer } from 'vs/base/common/async';
+import { ThrottledDelayer } from 'vs/Base/common/async';
 import { FileChangeType } from 'vs/platform/files/common/files';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { Event, Emitter } from 'vs/base/common/event';
-import { realcaseSync, realpathSync } from 'vs/base/node/extpath';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { normalizeNFC } from 'vs/Base/common/normalization';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { realcaseSync, realpathSync } from 'vs/Base/node/extpath';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-const nsfwActionToRawChangeType: { [key: number]: number } = [];
+const nsfwActionToRawChangeType: { [key: numBer]: numBer } = [];
 nsfwActionToRawChangeType[nsfw.actions.CREATED] = FileChangeType.ADDED;
 nsfwActionToRawChangeType[nsfw.actions.MODIFIED] = FileChangeType.UPDATED;
 nsfwActionToRawChangeType[nsfw.actions.DELETED] = FileChangeType.DELETED;
 
-interface IWatcherObjet {
+interface IWatcherOBjet {
 	start(): void;
 	stop(): void;
 }
 
 interface IPathWatcher {
-	ready: Promise<IWatcherObjet>;
-	watcher?: IWatcherObjet;
-	ignored: glob.ParsedPattern[];
+	ready: Promise<IWatcherOBjet>;
+	watcher?: IWatcherOBjet;
+	ignored: gloB.ParsedPattern[];
 }
 
-export class NsfwWatcherService extends Disposable implements IWatcherService {
+export class NsfwWatcherService extends DisposaBle implements IWatcherService {
 
 	private static readonly FS_EVENT_DELAY = 50; // aggregate and only emit events when changes have stopped for this duration (in ms)
 
@@ -44,24 +44,24 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 	readonly onDidLogMessage: Event<ILogMessage> = this._onDidLogMessage.event;
 
 	private pathWatchers: { [watchPath: string]: IPathWatcher } = {};
-	private verboseLogging: boolean | undefined;
-	private enospcErrorLogged: boolean | undefined;
+	private verBoseLogging: Boolean | undefined;
+	private enospcErrorLogged: Boolean | undefined;
 
 	async setRoots(roots: IWatcherRequest[]): Promise<void> {
 		const normalizedRoots = this._normalizeRoots(roots);
 
-		// Gather roots that are not currently being watched
+		// Gather roots that are not currently Being watched
 		const rootsToStartWatching = normalizedRoots.filter(r => {
 			return !(r.path in this.pathWatchers);
 		});
 
 		// Gather current roots that don't exist in the new roots array
-		const rootsToStopWatching = Object.keys(this.pathWatchers).filter(r => {
+		const rootsToStopWatching = OBject.keys(this.pathWatchers).filter(r => {
 			return normalizedRoots.every(normalizedRoot => normalizedRoot.path !== r);
 		});
 
 		// Logging
-		if (this.verboseLogging) {
+		if (this.verBoseLogging) {
 			this.log(`Start watching: [${rootsToStartWatching.map(r => r.path).join(',')}]\nStop watching: [${rootsToStopWatching.join(',')}]`);
 		}
 
@@ -77,7 +77,7 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 		// Refresh ignored arrays in case they changed
 		roots.forEach(root => {
 			if (root.path in this.pathWatchers) {
-				this.pathWatchers[root.path].ignored = Array.isArray(root.excludes) ? root.excludes.map(ignored => glob.parse(ignored)) : [];
+				this.pathWatchers[root.path].ignored = Array.isArray(root.excludes) ? root.excludes.map(ignored => gloB.parse(ignored)) : [];
 			}
 		});
 	}
@@ -86,10 +86,10 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 		let undeliveredFileEvents: IDiskFileChange[] = [];
 		const fileEventDelayer = new ThrottledDelayer<void>(NsfwWatcherService.FS_EVENT_DELAY);
 
-		let readyPromiseResolve: (watcher: IWatcherObjet) => void;
+		let readyPromiseResolve: (watcher: IWatcherOBjet) => void;
 		this.pathWatchers[request.path] = {
-			ready: new Promise<IWatcherObjet>(resolve => readyPromiseResolve = resolve),
-			ignored: Array.isArray(request.excludes) ? request.excludes.map(ignored => glob.parse(ignored)) : []
+			ready: new Promise<IWatcherOBjet>(resolve => readyPromiseResolve = resolve),
+			ignored: Array.isArray(request.excludes) ? request.excludes.map(ignored => gloB.parse(ignored)) : []
 		};
 
 		process.on('uncaughtException', (e: Error | string) => {
@@ -98,7 +98,7 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 			// the watcher consumes so many file descriptors that
 			// we are running into a limit. We only want to warn
 			// once in this case to avoid log spam.
-			// See https://github.com/microsoft/vscode/issues/7950
+			// See https://githuB.com/microsoft/vscode/issues/7950
 			if (e === 'Inotify limit reached' && !this.enospcErrorLogged) {
 				this.enospcErrorLogged = true;
 				this.error('Inotify limit reached (ENOSPC)');
@@ -107,14 +107,14 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 
 		// NSFW does not report file changes in the path provided on macOS if
 		// - the path uses wrong casing
-		// - the path is a symbolic link
+		// - the path is a symBolic link
 		// We have to detect this case and massage the events to correct this.
 		let realBasePathDiffers = false;
 		let realBasePathLength = request.path.length;
 		if (platform.isMacintosh) {
 			try {
 
-				// First check for symbolic link
+				// First check for symBolic link
 				let realBasePath = realpathSync(request.path);
 
 				// Second check for casing difference
@@ -126,55 +126,55 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 					realBasePathLength = realBasePath.length;
 					realBasePathDiffers = true;
 
-					this.warn(`Watcher basePath does not match version on disk and will be corrected (original: ${request.path}, real: ${realBasePath})`);
+					this.warn(`Watcher BasePath does not match version on disk and will Be corrected (original: ${request.path}, real: ${realBasePath})`);
 				}
 			} catch (error) {
 				// ignore
 			}
 		}
 
-		if (this.verboseLogging) {
+		if (this.verBoseLogging) {
 			this.log(`Start watching with nsfw: ${request.path}`);
 		}
 
 		nsfw(request.path, events => {
 			for (const e of events) {
 				// Logging
-				if (this.verboseLogging) {
+				if (this.verBoseLogging) {
 					const logPath = e.action === nsfw.actions.RENAMED ? path.join(e.directory, e.oldFile || '') + ' -> ' + e.newFile : path.join(e.directory, e.file || '');
 					this.log(`${e.action === nsfw.actions.CREATED ? '[CREATED]' : e.action === nsfw.actions.DELETED ? '[DELETED]' : e.action === nsfw.actions.MODIFIED ? '[CHANGED]' : '[RENAMED]'} ${logPath}`);
 				}
 
 				// Convert nsfw event to IRawFileChange and add to queue
-				let absolutePath: string;
+				let aBsolutePath: string;
 				if (e.action === nsfw.actions.RENAMED) {
 					// Rename fires when a file's name changes within a single directory
-					absolutePath = path.join(e.directory, e.oldFile || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
-						undeliveredFileEvents.push({ type: FileChangeType.DELETED, path: absolutePath });
-					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+					aBsolutePath = path.join(e.directory, e.oldFile || '');
+					if (!this.isPathIgnored(aBsolutePath, this.pathWatchers[request.path].ignored)) {
+						undeliveredFileEvents.push({ type: FileChangeType.DELETED, path: aBsolutePath });
+					} else if (this.verBoseLogging) {
+						this.log(` >> ignored ${aBsolutePath}`);
 					}
-					absolutePath = path.join(e.newDirectory || e.directory, e.newFile || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
-						undeliveredFileEvents.push({ type: FileChangeType.ADDED, path: absolutePath });
-					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+					aBsolutePath = path.join(e.newDirectory || e.directory, e.newFile || '');
+					if (!this.isPathIgnored(aBsolutePath, this.pathWatchers[request.path].ignored)) {
+						undeliveredFileEvents.push({ type: FileChangeType.ADDED, path: aBsolutePath });
+					} else if (this.verBoseLogging) {
+						this.log(` >> ignored ${aBsolutePath}`);
 					}
 				} else {
-					absolutePath = path.join(e.directory, e.file || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
+					aBsolutePath = path.join(e.directory, e.file || '');
+					if (!this.isPathIgnored(aBsolutePath, this.pathWatchers[request.path].ignored)) {
 						undeliveredFileEvents.push({
 							type: nsfwActionToRawChangeType[e.action],
-							path: absolutePath
+							path: aBsolutePath
 						});
-					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+					} else if (this.verBoseLogging) {
+						this.log(` >> ignored ${aBsolutePath}`);
 					}
 				}
 			}
 
-			// Delay and send buffer
+			// Delay and send Buffer
 			fileEventDelayer.trigger(async () => {
 				const events = undeliveredFileEvents;
 				undeliveredFileEvents = [];
@@ -182,12 +182,12 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 				if (platform.isMacintosh) {
 					events.forEach(e => {
 
-						// Mac uses NFD unicode form on disk, but we want NFC
+						// Mac uses NFD unicode form on disk, But we want NFC
 						e.path = normalizeNFC(e.path);
 
-						// Convert paths back to original form in case it differs
+						// Convert paths Back to original form in case it differs
 						if (realBasePathDiffers) {
-							e.path = request.path + e.path.substr(realBasePathLength);
+							e.path = request.path + e.path.suBstr(realBasePathLength);
 						}
 					});
 				}
@@ -197,7 +197,7 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 				this._onDidChangeFile.fire(res);
 
 				// Logging
-				if (this.verboseLogging) {
+				if (this.verBoseLogging) {
 					res.forEach(r => {
 						this.log(` >> normalized ${r.type === FileChangeType.ADDED ? '[ADDED]' : r.type === FileChangeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${r.path}`);
 					});
@@ -212,8 +212,8 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 		});
 	}
 
-	async setVerboseLogging(enabled: boolean): Promise<void> {
-		this.verboseLogging = enabled;
+	async setVerBoseLogging(enaBled: Boolean): Promise<void> {
+		this.verBoseLogging = enaBled;
 	}
 
 	async stop(): Promise<void> {
@@ -223,19 +223,19 @@ export class NsfwWatcherService extends Disposable implements IWatcherService {
 			delete this.pathWatchers[path];
 		}
 
-		this.pathWatchers = Object.create(null);
+		this.pathWatchers = OBject.create(null);
 	}
 
 	protected _normalizeRoots(roots: IWatcherRequest[]): IWatcherRequest[] {
-		// Normalizes a set of root paths by removing any root paths that are
-		// sub-paths of other roots.
+		// Normalizes a set of root paths By removing any root paths that are
+		// suB-paths of other roots.
 		return roots.filter(r => roots.every(other => {
 			return !(r.path.length > other.path.length && extpath.isEqualOrParent(r.path, other.path));
 		}));
 	}
 
-	private isPathIgnored(absolutePath: string, ignored: glob.ParsedPattern[]): boolean {
-		return ignored && ignored.some(i => i(absolutePath));
+	private isPathIgnored(aBsolutePath: string, ignored: gloB.ParsedPattern[]): Boolean {
+		return ignored && ignored.some(i => i(aBsolutePath));
 	}
 
 	private log(message: string) {

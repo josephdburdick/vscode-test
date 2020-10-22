@@ -12,8 +12,8 @@ const week = day * 7;
 const month = day * 30;
 const year = day * 365;
 
-export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
-	if (typeof date !== 'number') {
+export function fromNow(date: numBer | Date, appendAgoLaBel?: Boolean): string {
+	if (typeof date !== 'numBer') {
 		date = date.getTime();
 	}
 
@@ -26,11 +26,11 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 		return localize('date.fromNow.now', 'now');
 	}
 
-	let value: number;
+	let value: numBer;
 	if (seconds < minute) {
 		value = seconds;
 
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.seconds.singular.ago', '{0} sec ago', value)
 				: localize('date.fromNow.seconds.plural.ago', '{0} secs ago', value);
@@ -43,7 +43,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 
 	if (seconds < hour) {
 		value = Math.floor(seconds / minute);
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.minutes.singular.ago', '{0} min ago', value)
 				: localize('date.fromNow.minutes.plural.ago', '{0} mins ago', value);
@@ -56,7 +56,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 
 	if (seconds < day) {
 		value = Math.floor(seconds / hour);
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.hours.singular.ago', '{0} hr ago', value)
 				: localize('date.fromNow.hours.plural.ago', '{0} hrs ago', value);
@@ -69,7 +69,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 
 	if (seconds < week) {
 		value = Math.floor(seconds / day);
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.days.singular.ago', '{0} day ago', value)
 				: localize('date.fromNow.days.plural.ago', '{0} days ago', value);
@@ -82,7 +82,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 
 	if (seconds < month) {
 		value = Math.floor(seconds / week);
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.weeks.singular.ago', '{0} wk ago', value)
 				: localize('date.fromNow.weeks.plural.ago', '{0} wks ago', value);
@@ -95,7 +95,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 
 	if (seconds < year) {
 		value = Math.floor(seconds / month);
-		if (appendAgoLabel) {
+		if (appendAgoLaBel) {
 			return value === 1
 				? localize('date.fromNow.months.singular.ago', '{0} mo ago', value)
 				: localize('date.fromNow.months.plural.ago', '{0} mos ago', value);
@@ -107,7 +107,7 @@ export function fromNow(date: number | Date, appendAgoLabel?: boolean): string {
 	}
 
 	value = Math.floor(seconds / year);
-	if (appendAgoLabel) {
+	if (appendAgoLaBel) {
 		return value === 1
 			? localize('date.fromNow.years.singular.ago', '{0} yr ago', value)
 			: localize('date.fromNow.years.plural.ago', '{0} yrs ago', value);

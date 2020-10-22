@@ -4,54 +4,54 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
-import { readFile, writeFile } from 'vs/base/node/pfs';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
+import * as path from 'vs/Base/common/path';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
+import { KeyBinding, ResolvedKeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { ScanCodeBinding } from 'vs/Base/common/scanCode';
+import { readFile, writeFile } from 'vs/Base/node/pfs';
+import { IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
+import { IKeyBoardMapper } from 'vs/workBench/services/keyBinding/common/keyBoardMapper';
 
-export interface IResolvedKeybinding {
-	label: string | null;
-	ariaLabel: string | null;
+export interface IResolvedKeyBinding {
+	laBel: string | null;
+	ariaLaBel: string | null;
 	electronAccelerator: string | null;
-	userSettingsLabel: string | null;
-	isWYSIWYG: boolean;
-	isChord: boolean;
+	userSettingsLaBel: string | null;
+	isWYSIWYG: Boolean;
+	isChord: Boolean;
 	dispatchParts: (string | null)[];
 }
 
-function toIResolvedKeybinding(kb: ResolvedKeybinding): IResolvedKeybinding {
+function toIResolvedKeyBinding(kB: ResolvedKeyBinding): IResolvedKeyBinding {
 	return {
-		label: kb.getLabel(),
-		ariaLabel: kb.getAriaLabel(),
-		electronAccelerator: kb.getElectronAccelerator(),
-		userSettingsLabel: kb.getUserSettingsLabel(),
-		isWYSIWYG: kb.isWYSIWYG(),
-		isChord: kb.isChord(),
-		dispatchParts: kb.getDispatchParts(),
+		laBel: kB.getLaBel(),
+		ariaLaBel: kB.getAriaLaBel(),
+		electronAccelerator: kB.getElectronAccelerator(),
+		userSettingsLaBel: kB.getUserSettingsLaBel(),
+		isWYSIWYG: kB.isWYSIWYG(),
+		isChord: kB.isChord(),
+		dispatchParts: kB.getDispatchParts(),
 	};
 }
 
-export function assertResolveKeybinding(mapper: IKeyboardMapper, keybinding: Keybinding | null, expected: IResolvedKeybinding[]): void {
-	let actual: IResolvedKeybinding[] = mapper.resolveKeybinding(keybinding!).map(toIResolvedKeybinding);
+export function assertResolveKeyBinding(mapper: IKeyBoardMapper, keyBinding: KeyBinding | null, expected: IResolvedKeyBinding[]): void {
+	let actual: IResolvedKeyBinding[] = mapper.resolveKeyBinding(keyBinding!).map(toIResolvedKeyBinding);
 	assert.deepEqual(actual, expected);
 }
 
-export function assertResolveKeyboardEvent(mapper: IKeyboardMapper, keyboardEvent: IKeyboardEvent, expected: IResolvedKeybinding): void {
-	let actual = toIResolvedKeybinding(mapper.resolveKeyboardEvent(keyboardEvent));
+export function assertResolveKeyBoardEvent(mapper: IKeyBoardMapper, keyBoardEvent: IKeyBoardEvent, expected: IResolvedKeyBinding): void {
+	let actual = toIResolvedKeyBinding(mapper.resolveKeyBoardEvent(keyBoardEvent));
 	assert.deepEqual(actual, expected);
 }
 
-export function assertResolveUserBinding(mapper: IKeyboardMapper, parts: (SimpleKeybinding | ScanCodeBinding)[], expected: IResolvedKeybinding[]): void {
-	let actual: IResolvedKeybinding[] = mapper.resolveUserBinding(parts).map(toIResolvedKeybinding);
+export function assertResolveUserBinding(mapper: IKeyBoardMapper, parts: (SimpleKeyBinding | ScanCodeBinding)[], expected: IResolvedKeyBinding[]): void {
+	let actual: IResolvedKeyBinding[] = mapper.resolveUserBinding(parts).map(toIResolvedKeyBinding);
 	assert.deepEqual(actual, expected);
 }
 
 export function readRawMapping<T>(file: string): Promise<T> {
-	return readFile(getPathFromAmdModule(require, `vs/workbench/services/keybinding/test/electron-browser/${file}.js`)).then((buff) => {
-		let contents = buff.toString();
+	return readFile(getPathFromAmdModule(require, `vs/workBench/services/keyBinding/test/electron-Browser/${file}.js`)).then((Buff) => {
+		let contents = Buff.toString();
 		let func = new Function('define', contents);
 		let rawMappings: T | null = null;
 		func(function (value: T) {
@@ -61,12 +61,12 @@ export function readRawMapping<T>(file: string): Promise<T> {
 	});
 }
 
-export function assertMapping(writeFileIfDifferent: boolean, mapper: IKeyboardMapper, file: string): Promise<void> {
-	const filePath = path.normalize(getPathFromAmdModule(require, `vs/workbench/services/keybinding/test/electron-browser/${file}`));
+export function assertMapping(writeFileIfDifferent: Boolean, mapper: IKeyBoardMapper, file: string): Promise<void> {
+	const filePath = path.normalize(getPathFromAmdModule(require, `vs/workBench/services/keyBinding/test/electron-Browser/${file}`));
 
-	return readFile(filePath).then((buff) => {
-		let expected = buff.toString();
-		const actual = mapper.dumpDebugInfo();
+	return readFile(filePath).then((Buff) => {
+		let expected = Buff.toString();
+		const actual = mapper.dumpDeBugInfo();
 		if (actual !== expected && writeFileIfDifferent) {
 			const destPath = filePath.replace(/vscode[\/\\]out[\/\\]vs/, 'vscode/src/vs');
 			writeFile(destPath, actual);

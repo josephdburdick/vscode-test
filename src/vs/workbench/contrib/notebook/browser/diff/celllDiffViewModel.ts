@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { NotebookDiffEditorEventDispatcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispatcher';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { CellDiffViewModelLayoutChangeEvent, DIFF_CELL_MARGIN } from 'vs/workbench/contrib/notebook/browser/diff/common';
-import { NotebookLayoutInfo } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { DiffEditorWidget } from 'vs/editor/browser/widget/diffEditorWidget';
+import { NoteBookCellTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookCellTextModel';
+import { NoteBookDiffEditorEventDispatcher } from 'vs/workBench/contriB/noteBook/Browser/viewModel/eventDispatcher';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { CellDiffViewModelLayoutChangeEvent, DIFF_CELL_MARGIN } from 'vs/workBench/contriB/noteBook/Browser/diff/common';
+import { NoteBookLayoutInfo } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { DiffEditorWidget } from 'vs/editor/Browser/widget/diffEditorWidget';
 
 export enum PropertyFoldingState {
 	Expanded,
 	Collapsed
 }
 
-export class CellDiffViewModel extends Disposable {
-	public metadataFoldingState: PropertyFoldingState;
-	public outputFoldingState: PropertyFoldingState;
+export class CellDiffViewModel extends DisposaBle {
+	puBlic metadataFoldingState: PropertyFoldingState;
+	puBlic outputFoldingState: PropertyFoldingState;
 	private _layoutInfoEmitter = new Emitter<CellDiffViewModelLayoutChangeEvent>();
 
 	onDidLayoutChange = this._layoutInfoEmitter.event;
 
 	constructor(
-		readonly original: NotebookCellTextModel | undefined,
-		readonly modified: NotebookCellTextModel | undefined,
+		readonly original: NoteBookCellTextModel | undefined,
+		readonly modified: NoteBookCellTextModel | undefined,
 		readonly type: 'unchanged' | 'insert' | 'delete' | 'modified',
-		readonly editorEventDispatcher: NotebookDiffEditorEventDispatcher
+		readonly editorEventDispatcher: NoteBookDiffEditorEventDispatcher
 	) {
 		super();
 		this.metadataFoldingState = PropertyFoldingState.Collapsed;
@@ -38,7 +38,7 @@ export class CellDiffViewModel extends Disposable {
 		}));
 	}
 
-	getComputedCellContainerWidth(layoutInfo: NotebookLayoutInfo, diffEditor: boolean, fullWidth: boolean) {
+	getComputedCellContainerWidth(layoutInfo: NoteBookLayoutInfo, diffEditor: Boolean, fullWidth: Boolean) {
 		if (fullWidth) {
 			return layoutInfo.width - 2 * DIFF_CELL_MARGIN + (diffEditor ? DiffEditorWidget.ENTIRE_DIFF_OVERVIEW_WIDTH : 0) - 2;
 		}

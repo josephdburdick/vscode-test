@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as processes from 'vs/base/common/processes';
+import * as processes from 'vs/Base/common/processes';
 
 suite('Processes', () => {
 	test('sanitizeProcessEnvironment', () => {
 		let env = {
-			FOO: 'bar',
+			FOO: 'Bar',
 			ELECTRON_ENABLE_STACK_DUMPING: 'x',
 			ELECTRON_ENABLE_LOGGING: 'x',
 			ELECTRON_NO_ASAR: 'x',
@@ -27,7 +27,7 @@ suite('Processes', () => {
 			VSCODE_NEW_VAR: 'x'
 		};
 		processes.sanitizeProcessEnvironment(env);
-		assert.equal(env['FOO'], 'bar');
-		assert.equal(Object.keys(env).length, 1);
+		assert.equal(env['FOO'], 'Bar');
+		assert.equal(OBject.keys(env).length, 1);
 	});
 });

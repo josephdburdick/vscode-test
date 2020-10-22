@@ -3,52 +3,52 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/debugViewlet';
+import 'vs/css!./media/deBugViewlet';
 import * as nls from 'vs/nls';
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
-import { IDebugService, VIEWLET_ID, State, BREAKPOINTS_VIEW_ID, IDebugConfiguration, CONTEXT_DEBUG_UX, CONTEXT_DEBUG_UX_KEY, REPL_VIEW_ID } from 'vs/workbench/contrib/debug/common/debug';
-import { StartAction, ConfigureAction, SelectAndStartAction, FocusSessionAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { StartDebugActionViewItem, FocusSessionActionViewItem } from 'vs/workbench/contrib/debug/browser/debugActionViewItems';
+import { IAction, IActionViewItem } from 'vs/Base/common/actions';
+import { IDeBugService, VIEWLET_ID, State, BREAKPOINTS_VIEW_ID, IDeBugConfiguration, CONTEXT_DEBUG_UX, CONTEXT_DEBUG_UX_KEY, REPL_VIEW_ID } from 'vs/workBench/contriB/deBug/common/deBug';
+import { StartAction, ConfigureAction, SelectAndStartAction, FocusSessionAction } from 'vs/workBench/contriB/deBug/Browser/deBugActions';
+import { StartDeBugActionViewItem, FocusSessionActionViewItem } from 'vs/workBench/contriB/deBug/Browser/deBugActionViewItems';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IProgressService } from 'vs/platform/progress/common/progress';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { memoize } from 'vs/base/common/decorators';
+import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { memoize } from 'vs/Base/common/decorators';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { DebugToolBar } from 'vs/workbench/contrib/debug/browser/debugToolBar';
-import { ViewPane, ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IMenu, MenuId, IMenuService, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
+import { DeBugToolBar } from 'vs/workBench/contriB/deBug/Browser/deBugToolBar';
+import { ViewPane, ViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { IMenu, MenuId, IMenuService, MenuItemAction, SuBmenuItemAction } from 'vs/platform/actions/common/actions';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
-import { WelcomeView } from 'vs/workbench/contrib/debug/browser/welcomeView';
-import { ToggleViewAction } from 'vs/workbench/browser/actions/layoutActions';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { ShowViewletAction } from 'vs/workbench/browser/viewlet';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { MenuEntryActionViewItem, SuBmenuEntryActionViewItem } from 'vs/platform/actions/Browser/menuEntryActionViewItem';
+import { IViewDescriptorService, IViewsService } from 'vs/workBench/common/views';
+import { WelcomeView } from 'vs/workBench/contriB/deBug/Browser/welcomeView';
+import { ToggleViewAction } from 'vs/workBench/Browser/actions/layoutActions';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import { ShowViewletAction } from 'vs/workBench/Browser/viewlet';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 
-export class DebugViewPaneContainer extends ViewPaneContainer {
+export class DeBugViewPaneContainer extends ViewPaneContainer {
 
-	private startDebugActionViewItem: StartDebugActionViewItem | undefined;
+	private startDeBugActionViewItem: StartDeBugActionViewItem | undefined;
 	private progressResolve: (() => void) | undefined;
-	private breakpointView: ViewPane | undefined;
-	private paneListeners = new Map<string, IDisposable>();
-	private debugToolBarMenu: IMenu | undefined;
-	private disposeOnTitleUpdate: IDisposable | undefined;
+	private BreakpointView: ViewPane | undefined;
+	private paneListeners = new Map<string, IDisposaBle>();
+	private deBugToolBarMenu: IMenu | undefined;
+	private disposeOnTitleUpdate: IDisposaBle | undefined;
 	private updateToolBarScheduler: RunOnceScheduler;
 
 	constructor(
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IProgressService private readonly progressService: IProgressService,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDeBugService private readonly deBugService: IDeBugService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IStorageService storageService: IStorageService,
@@ -64,15 +64,15 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 		super(VIEWLET_ID, { mergeViewWithContainerWhenSingleView: true }, instantiationService, configurationService, layoutService, contextMenuService, telemetryService, extensionService, themeService, storageService, contextService, viewDescriptorService);
 
 		this.updateToolBarScheduler = this._register(new RunOnceScheduler(() => {
-			if (this.configurationService.getValue<IDebugConfiguration>('debug').toolBarLocation === 'docked') {
+			if (this.configurationService.getValue<IDeBugConfiguration>('deBug').toolBarLocation === 'docked') {
 				this.updateTitleArea();
 			}
 		}, 20));
 
-		// When there are potential updates to the docked debug toolbar we need to update it
-		this._register(this.debugService.onDidChangeState(state => this.onDebugServiceStateChange(state)));
-		this._register(this.debugService.onDidNewSession(() => this.updateToolBarScheduler.schedule()));
-		this._register(this.debugService.getViewModel().onDidFocusSession(() => this.updateToolBarScheduler.schedule()));
+		// When there are potential updates to the docked deBug toolBar we need to update it
+		this._register(this.deBugService.onDidChangeState(state => this.onDeBugServiceStateChange(state)));
+		this._register(this.deBugService.onDidNewSession(() => this.updateToolBarScheduler.schedule()));
+		this._register(this.deBugService.getViewModel().onDidFocusSession(() => this.updateToolBarScheduler.schedule()));
 
 		this._register(this.contextKeyService.onDidChangeContext(e => {
 			if (e.affectsSome(new Set([CONTEXT_DEBUG_UX_KEY]))) {
@@ -80,9 +80,9 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 			}
 		}));
 
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.updateTitleArea()));
+		this._register(this.contextService.onDidChangeWorkBenchState(() => this.updateTitleArea()));
 		this._register(this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('debug.toolBarLocation')) {
+			if (e.affectsConfiguration('deBug.toolBarLocation')) {
 				this.updateTitleArea();
 			}
 		}));
@@ -90,14 +90,14 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 
 	create(parent: HTMLElement): void {
 		super.create(parent);
-		parent.classList.add('debug-viewlet');
+		parent.classList.add('deBug-viewlet');
 	}
 
 	focus(): void {
 		super.focus();
 
-		if (this.startDebugActionViewItem) {
-			this.startDebugActionViewItem.focus();
+		if (this.startDeBugActionViewItem) {
+			this.startDeBugActionViewItem.focus();
 		} else {
 			this.focusView(WelcomeView.ID);
 		}
@@ -114,8 +114,8 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 	}
 
 	@memoize
-	private get toggleReplAction(): OpenDebugConsoleAction {
-		return this._register(this.instantiationService.createInstance(OpenDebugConsoleAction, OpenDebugConsoleAction.ID, OpenDebugConsoleAction.LABEL));
+	private get toggleReplAction(): OpenDeBugConsoleAction {
+		return this._register(this.instantiationService.createInstance(OpenDeBugConsoleAction, OpenDeBugConsoleAction.ID, OpenDeBugConsoleAction.LABEL));
 	}
 
 	@memoize
@@ -128,37 +128,37 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 			return [];
 		}
 
-		if (!this.showInitialDebugActions) {
+		if (!this.showInitialDeBugActions) {
 
-			if (!this.debugToolBarMenu) {
-				this.debugToolBarMenu = this.menuService.createMenu(MenuId.DebugToolBar, this.contextKeyService);
-				this._register(this.debugToolBarMenu);
-				this._register(this.debugToolBarMenu.onDidChange(() => this.updateToolBarScheduler.schedule()));
+			if (!this.deBugToolBarMenu) {
+				this.deBugToolBarMenu = this.menuService.createMenu(MenuId.DeBugToolBar, this.contextKeyService);
+				this._register(this.deBugToolBarMenu);
+				this._register(this.deBugToolBarMenu.onDidChange(() => this.updateToolBarScheduler.schedule()));
 			}
 
-			const { actions, disposable } = DebugToolBar.getActions(this.debugToolBarMenu, this.debugService, this.instantiationService);
+			const { actions, disposaBle } = DeBugToolBar.getActions(this.deBugToolBarMenu, this.deBugService, this.instantiationService);
 			if (this.disposeOnTitleUpdate) {
 				dispose(this.disposeOnTitleUpdate);
 			}
-			this.disposeOnTitleUpdate = disposable;
+			this.disposeOnTitleUpdate = disposaBle;
 
 			return actions;
 		}
 
-		if (this.contextService.getWorkbenchState() === WorkbenchState.EMPTY) {
+		if (this.contextService.getWorkBenchState() === WorkBenchState.EMPTY) {
 			return [this.toggleReplAction];
 		}
 
 		return [this.startAction, this.configureAction, this.toggleReplAction];
 	}
 
-	get showInitialDebugActions(): boolean {
-		const state = this.debugService.state;
-		return state === State.Inactive || this.configurationService.getValue<IDebugConfiguration>('debug').toolBarLocation !== 'docked';
+	get showInitialDeBugActions(): Boolean {
+		const state = this.deBugService.state;
+		return state === State.Inactive || this.configurationService.getValue<IDeBugConfiguration>('deBug').toolBarLocation !== 'docked';
 	}
 
 	getSecondaryActions(): IAction[] {
-		if (this.showInitialDebugActions) {
+		if (this.showInitialDeBugActions) {
 			return [];
 		}
 
@@ -167,16 +167,16 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 
 	getActionViewItem(action: IAction): IActionViewItem | undefined {
 		if (action.id === StartAction.ID) {
-			this.startDebugActionViewItem = this.instantiationService.createInstance(StartDebugActionViewItem, null, action);
-			return this.startDebugActionViewItem;
+			this.startDeBugActionViewItem = this.instantiationService.createInstance(StartDeBugActionViewItem, null, action);
+			return this.startDeBugActionViewItem;
 		}
 		if (action.id === FocusSessionAction.ID) {
-			return new FocusSessionActionViewItem(action, this.debugService, this.themeService, this.contextViewService, this.configurationService);
+			return new FocusSessionActionViewItem(action, this.deBugService, this.themeService, this.contextViewService, this.configurationService);
 		}
 		if (action instanceof MenuItemAction) {
 			return this.instantiationService.createInstance(MenuEntryActionViewItem, action);
-		} else if (action instanceof SubmenuItemAction) {
-			return this.instantiationService.createInstance(SubmenuEntryActionViewItem, action);
+		} else if (action instanceof SuBmenuItemAction) {
+			return this.instantiationService.createInstance(SuBmenuEntryActionViewItem, action);
 		}
 
 		return undefined;
@@ -189,7 +189,7 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 		}
 	}
 
-	private onDebugServiceStateChange(state: State): void {
+	private onDeBugServiceStateChange(state: State): void {
 		if (this.progressResolve) {
 			this.progressResolve();
 			this.progressResolve = undefined;
@@ -204,13 +204,13 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 		this.updateToolBarScheduler.schedule();
 	}
 
-	addPanes(panes: { pane: ViewPane, size: number, index?: number }[]): void {
+	addPanes(panes: { pane: ViewPane, size: numBer, index?: numBer }[]): void {
 		super.addPanes(panes);
 
 		for (const { pane: pane } of panes) {
 			// attach event listener to
 			if (pane.id === BREAKPOINTS_VIEW_ID) {
-				this.breakpointView = pane;
+				this.BreakpointView = pane;
 				this.updateBreakpointsMaxSize();
 			} else {
 				this.paneListeners.set(pane.id, pane.onDidChange(() => this.updateBreakpointsMaxSize()));
@@ -227,41 +227,41 @@ export class DebugViewPaneContainer extends ViewPaneContainer {
 	}
 
 	private updateBreakpointsMaxSize(): void {
-		if (this.breakpointView) {
-			// We need to update the breakpoints view since all other views are collapsed #25384
-			const allOtherCollapsed = this.panes.every(view => !view.isExpanded() || view === this.breakpointView);
-			this.breakpointView.maximumBodySize = allOtherCollapsed ? Number.POSITIVE_INFINITY : this.breakpointView.minimumBodySize;
+		if (this.BreakpointView) {
+			// We need to update the Breakpoints view since all other views are collapsed #25384
+			const allOtherCollapsed = this.panes.every(view => !view.isExpanded() || view === this.BreakpointView);
+			this.BreakpointView.maximumBodySize = allOtherCollapsed ? NumBer.POSITIVE_INFINITY : this.BreakpointView.minimumBodySize;
 		}
 	}
 }
 
-export class OpenDebugConsoleAction extends ToggleViewAction {
-	public static readonly ID = 'workbench.debug.action.toggleRepl';
-	public static readonly LABEL = nls.localize('toggleDebugPanel', "Debug Console");
+export class OpenDeBugConsoleAction extends ToggleViewAction {
+	puBlic static readonly ID = 'workBench.deBug.action.toggleRepl';
+	puBlic static readonly LABEL = nls.localize('toggleDeBugPanel', "DeBug Console");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@IViewsService viewsService: IViewsService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService
 	) {
-		super(id, label, REPL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, layoutService, 'codicon-debug-console');
+		super(id, laBel, REPL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, layoutService, 'codicon-deBug-console');
 	}
 }
 
-export class OpenDebugViewletAction extends ShowViewletAction {
-	public static readonly ID = VIEWLET_ID;
-	public static readonly LABEL = nls.localize('toggleDebugViewlet', "Show Run and Debug");
+export class OpenDeBugViewletAction extends ShowViewletAction {
+	puBlic static readonly ID = VIEWLET_ID;
+	puBlic static readonly LABEL = nls.localize('toggleDeBugViewlet', "Show Run and DeBug");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@IViewletService viewletService: IViewletService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService
 	) {
-		super(id, label, VIEWLET_ID, viewletService, editorGroupService, layoutService);
+		super(id, laBel, VIEWLET_ID, viewletService, editorGroupService, layoutService);
 	}
 }

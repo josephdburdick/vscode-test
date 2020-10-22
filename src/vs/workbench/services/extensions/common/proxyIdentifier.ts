@@ -5,7 +5,7 @@
 
 export interface IRPCProtocol {
 	/**
-	 * Returns a proxy to an object addressable/named in the extension host process or in the renderer process.
+	 * Returns a proxy to an oBject addressaBle/named in the extension host process or in the renderer process.
 	 */
 	getProxy<T>(identifier: ProxyIdentifier<T>): T;
 
@@ -20,20 +20,20 @@ export interface IRPCProtocol {
 	assertRegistered(identifiers: ProxyIdentifier<any>[]): void;
 
 	/**
-	 * Wait for the write buffer (if applicable) to become empty.
+	 * Wait for the write Buffer (if applicaBle) to Become empty.
 	 */
 	drain(): Promise<void>;
 }
 
 export class ProxyIdentifier<T> {
-	public static count = 0;
+	puBlic static count = 0;
 	_proxyIdentifierBrand: void;
 
-	public readonly isMain: boolean;
-	public readonly sid: string;
-	public readonly nid: number;
+	puBlic readonly isMain: Boolean;
+	puBlic readonly sid: string;
+	puBlic readonly nid: numBer;
 
-	constructor(isMain: boolean, sid: string) {
+	constructor(isMain: Boolean, sid: string) {
 		this.isMain = isMain;
 		this.sid = sid;
 		this.nid = (++ProxyIdentifier.count);
@@ -54,6 +54,6 @@ export function createExtHostContextProxyIdentifier<T>(identifier: string): Prox
 	return result;
 }
 
-export function getStringIdentifierForProxy(nid: number): string {
+export function getStringIdentifierForProxy(nid: numBer): string {
 	return identifiers[nid].sid;
 }

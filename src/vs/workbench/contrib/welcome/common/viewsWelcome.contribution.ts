@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { ViewsWelcomeContribution } from 'vs/workbench/contrib/welcome/common/viewsWelcomeContribution';
-import { ViewsWelcomeExtensionPoint, viewsWelcomeExtensionPointDescriptor } from 'vs/workbench/contrib/welcome/common/viewsWelcomeExtensionPoint';
-import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { ViewsWelcomeContriBution } from 'vs/workBench/contriB/welcome/common/viewsWelcomeContriBution';
+import { ViewsWelcomeExtensionPoint, viewsWelcomeExtensionPointDescriptor } from 'vs/workBench/contriB/welcome/common/viewsWelcomeExtensionPoint';
+import { ExtensionsRegistry } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 
 const extensionPoint = ExtensionsRegistry.registerExtensionPoint<ViewsWelcomeExtensionPoint>(viewsWelcomeExtensionPointDescriptor);
 
-class WorkbenchConfigurationContribution {
+class WorkBenchConfigurationContriBution {
 	constructor(
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
-		instantiationService.createInstance(ViewsWelcomeContribution, extensionPoint);
+		instantiationService.createInstance(ViewsWelcomeContriBution, extensionPoint);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WorkbenchConfigurationContribution, LifecyclePhase.Eventually);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(WorkBenchConfigurationContriBution, LifecyclePhase.Eventually);

@@ -3,47 +3,47 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary, INumberDictionary } from 'vs/base/common/collections';
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { IStringDictionary, INumBerDictionary } from 'vs/Base/common/collections';
+import { URI } from 'vs/Base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 
 import { IModelService } from 'vs/editor/common/services/modelService';
 
-import { ILineMatcher, createLineMatcher, ProblemMatcher, ProblemMatch, ApplyToKind, WatchingPattern, getResource } from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import { ILineMatcher, createLineMatcher, ProBlemMatcher, ProBlemMatch, ApplyToKind, WatchingPattern, getResource } from 'vs/workBench/contriB/tasks/common/proBlemMatcher';
 import { IMarkerService, IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { generateUuid } from 'vs/base/common/uuid';
+import { generateUuid } from 'vs/Base/common/uuid';
 import { IFileService } from 'vs/platform/files/common/files';
 
-export const enum ProblemCollectorEventKind {
-	BackgroundProcessingBegins = 'backgroundProcessingBegins',
-	BackgroundProcessingEnds = 'backgroundProcessingEnds'
+export const enum ProBlemCollectorEventKind {
+	BackgroundProcessingBegins = 'BackgroundProcessingBegins',
+	BackgroundProcessingEnds = 'BackgroundProcessingEnds'
 }
 
-export interface ProblemCollectorEvent {
-	kind: ProblemCollectorEventKind;
+export interface ProBlemCollectorEvent {
+	kind: ProBlemCollectorEventKind;
 }
 
-namespace ProblemCollectorEvent {
-	export function create(kind: ProblemCollectorEventKind) {
-		return Object.freeze({ kind });
+namespace ProBlemCollectorEvent {
+	export function create(kind: ProBlemCollectorEventKind) {
+		return OBject.freeze({ kind });
 	}
 }
 
-export interface IProblemMatcher {
+export interface IProBlemMatcher {
 	processLine(line: string): void;
 }
 
-export abstract class AbstractProblemCollector implements IDisposable {
+export aBstract class ABstractProBlemCollector implements IDisposaBle {
 
-	private matchers: INumberDictionary<ILineMatcher[]>;
+	private matchers: INumBerDictionary<ILineMatcher[]>;
 	private activeMatcher: ILineMatcher | null;
-	private _numberOfMatches: number;
+	private _numBerOfMatches: numBer;
 	private _maxMarkerSeverity?: MarkerSeverity;
-	private buffer: string[];
-	private bufferLength: number;
-	private openModels: IStringDictionary<boolean>;
-	private readonly modelListeners = new DisposableStore();
+	private Buffer: string[];
+	private BufferLength: numBer;
+	private openModels: IStringDictionary<Boolean>;
+	private readonly modelListeners = new DisposaBleStore();
 	private tail: Promise<void> | undefined;
 
 	// [owner] -> ApplyToKind
@@ -52,18 +52,18 @@ export abstract class AbstractProblemCollector implements IDisposable {
 	private resourcesToClean: Map<string, Map<string, URI>>;
 	// [owner] -> [resource] -> [markerkey] -> markerData
 	private markers: Map<string, Map<string, Map<string, IMarkerData>>>;
-	// [owner] -> [resource] -> number;
-	private deliveredMarkers: Map<string, Map<string, number>>;
+	// [owner] -> [resource] -> numBer;
+	private deliveredMarkers: Map<string, Map<string, numBer>>;
 
-	protected _onDidStateChange: Emitter<ProblemCollectorEvent>;
+	protected _onDidStateChange: Emitter<ProBlemCollectorEvent>;
 
-	constructor(problemMatchers: ProblemMatcher[], protected markerService: IMarkerService, private modelService: IModelService, fileService?: IFileService) {
-		this.matchers = Object.create(null);
-		this.bufferLength = 1;
-		problemMatchers.map(elem => createLineMatcher(elem, fileService)).forEach((matcher) => {
+	constructor(proBlemMatchers: ProBlemMatcher[], protected markerService: IMarkerService, private modelService: IModelService, fileService?: IFileService) {
+		this.matchers = OBject.create(null);
+		this.BufferLength = 1;
+		proBlemMatchers.map(elem => createLineMatcher(elem, fileService)).forEach((matcher) => {
 			let length = matcher.matchLength;
-			if (length > this.bufferLength) {
-				this.bufferLength = length;
+			if (length > this.BufferLength) {
+				this.BufferLength = length;
 			}
 			let value = this.matchers[length];
 			if (!value) {
@@ -72,23 +72,23 @@ export abstract class AbstractProblemCollector implements IDisposable {
 			}
 			value.push(matcher);
 		});
-		this.buffer = [];
+		this.Buffer = [];
 		this.activeMatcher = null;
-		this._numberOfMatches = 0;
+		this._numBerOfMatches = 0;
 		this._maxMarkerSeverity = undefined;
-		this.openModels = Object.create(null);
+		this.openModels = OBject.create(null);
 		this.applyToByOwner = new Map<string, ApplyToKind>();
-		for (let problemMatcher of problemMatchers) {
-			let current = this.applyToByOwner.get(problemMatcher.owner);
+		for (let proBlemMatcher of proBlemMatchers) {
+			let current = this.applyToByOwner.get(proBlemMatcher.owner);
 			if (current === undefined) {
-				this.applyToByOwner.set(problemMatcher.owner, problemMatcher.applyTo);
+				this.applyToByOwner.set(proBlemMatcher.owner, proBlemMatcher.applyTo);
 			} else {
-				this.applyToByOwner.set(problemMatcher.owner, this.mergeApplyTo(current, problemMatcher.applyTo));
+				this.applyToByOwner.set(proBlemMatcher.owner, this.mergeApplyTo(current, proBlemMatcher.applyTo));
 			}
 		}
 		this.resourcesToClean = new Map<string, Map<string, URI>>();
 		this.markers = new Map<string, Map<string, Map<string, IMarkerData>>>();
-		this.deliveredMarkers = new Map<string, Map<string, number>>();
+		this.deliveredMarkers = new Map<string, Map<string, numBer>>();
 		this.modelService.onModelAdded((model) => {
 			this.openModels[model.uri.toString()] = true;
 		}, this, this.modelListeners);
@@ -100,11 +100,11 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		this._onDidStateChange = new Emitter();
 	}
 
-	public get onDidStateChange(): Event<ProblemCollectorEvent> {
+	puBlic get onDidStateChange(): Event<ProBlemCollectorEvent> {
 		return this._onDidStateChange.event;
 	}
 
-	public processLine(line: string) {
+	puBlic processLine(line: string) {
 		if (this.tail) {
 			const oldTail = this.tail;
 			this.tail = oldTail.then(() => {
@@ -115,22 +115,22 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		}
 	}
 
-	protected abstract processLineInternal(line: string): Promise<void>;
+	protected aBstract processLineInternal(line: string): Promise<void>;
 
-	public dispose() {
+	puBlic dispose() {
 		this.modelListeners.dispose();
 	}
 
-	public get numberOfMatches(): number {
-		return this._numberOfMatches;
+	puBlic get numBerOfMatches(): numBer {
+		return this._numBerOfMatches;
 	}
 
-	public get maxMarkerSeverity(): MarkerSeverity | undefined {
+	puBlic get maxMarkerSeverity(): MarkerSeverity | undefined {
 		return this._maxMarkerSeverity;
 	}
 
-	protected tryFindMarker(line: string): ProblemMatch | null {
-		let result: ProblemMatch | null = null;
+	protected tryFindMarker(line: string): ProBlemMatch | null {
+		let result: ProBlemMatch | null = null;
 		if (this.activeMatcher) {
 			result = this.activeMatcher.next(line);
 			if (result) {
@@ -140,14 +140,14 @@ export abstract class AbstractProblemCollector implements IDisposable {
 			this.clearBuffer();
 			this.activeMatcher = null;
 		}
-		if (this.buffer.length < this.bufferLength) {
-			this.buffer.push(line);
+		if (this.Buffer.length < this.BufferLength) {
+			this.Buffer.push(line);
 		} else {
-			let end = this.buffer.length - 1;
+			let end = this.Buffer.length - 1;
 			for (let i = 0; i < end; i++) {
-				this.buffer[i] = this.buffer[i + 1];
+				this.Buffer[i] = this.Buffer[i + 1];
 			}
-			this.buffer[end] = line;
+			this.Buffer[end] = line;
 		}
 
 		result = this.tryMatchers();
@@ -157,7 +157,7 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		return result;
 	}
 
-	protected async shouldApplyMatch(result: ProblemMatch): Promise<boolean> {
+	protected async shouldApplyMatch(result: ProBlemMatch): Promise<Boolean> {
 		switch (result.description.applyTo) {
 			case ApplyToKind.allDocuments:
 				return true;
@@ -177,16 +177,16 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		return ApplyToKind.allDocuments;
 	}
 
-	private tryMatchers(): ProblemMatch | null {
+	private tryMatchers(): ProBlemMatch | null {
 		this.activeMatcher = null;
-		let length = this.buffer.length;
+		let length = this.Buffer.length;
 		for (let startIndex = 0; startIndex < length; startIndex++) {
 			let candidates = this.matchers[length - startIndex];
 			if (!candidates) {
 				continue;
 			}
 			for (const matcher of candidates) {
-				let result = matcher.handle(this.buffer, startIndex);
+				let result = matcher.handle(this.Buffer, startIndex);
 				if (result.match) {
 					this.captureMatch(result.match);
 					if (result.continue) {
@@ -199,16 +199,16 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		return null;
 	}
 
-	private captureMatch(match: ProblemMatch): void {
-		this._numberOfMatches++;
+	private captureMatch(match: ProBlemMatch): void {
+		this._numBerOfMatches++;
 		if (this._maxMarkerSeverity === undefined || match.marker.severity > this._maxMarkerSeverity) {
 			this._maxMarkerSeverity = match.marker.severity;
 		}
 	}
 
 	private clearBuffer(): void {
-		if (this.buffer.length > 0) {
-			this.buffer = [];
+		if (this.Buffer.length > 0) {
+			this.Buffer = [];
 		}
 	}
 
@@ -283,7 +283,7 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		if (!markersPerResource.has(key)) {
 			markersPerResource.set(key, marker);
 		} else if (((existingMarker = markersPerResource.get(key)) !== undefined) && existingMarker.message.length < marker.message.length) {
-			// Most likely https://github.com/microsoft/vscode/issues/77475
+			// Most likely https://githuB.com/microsoft/vscode/issues/77475
 			// Heuristic dictates that when the key is the same and message is smaller, we have hit this limitation.
 			markersPerResource.set(key, marker);
 		}
@@ -311,7 +311,7 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		this.deliverMarkersPerOwnerAndResourceResolved(owner, resource, markersPerResource, deliveredMarkersPerOwner);
 	}
 
-	private deliverMarkersPerOwnerAndResourceResolved(owner: string, resource: string, markers: Map<string, IMarkerData>, reported: Map<string, number>): void {
+	private deliverMarkersPerOwnerAndResourceResolved(owner: string, resource: string, markers: Map<string, IMarkerData>, reported: Map<string, numBer>): void {
 		if (markers.size !== reported.get(resource)) {
 			let toSet: IMarkerData[] = [];
 			markers.forEach(value => toSet.push(value));
@@ -320,43 +320,43 @@ export abstract class AbstractProblemCollector implements IDisposable {
 		}
 	}
 
-	private getDeliveredMarkersPerOwner(owner: string): Map<string, number> {
+	private getDeliveredMarkersPerOwner(owner: string): Map<string, numBer> {
 		let result = this.deliveredMarkers.get(owner);
 		if (!result) {
-			result = new Map<string, number>();
+			result = new Map<string, numBer>();
 			this.deliveredMarkers.set(owner, result);
 		}
 		return result;
 	}
 
 	protected cleanMarkerCaches(): void {
-		this._numberOfMatches = 0;
+		this._numBerOfMatches = 0;
 		this._maxMarkerSeverity = undefined;
 		this.markers.clear();
 		this.deliveredMarkers.clear();
 	}
 
-	public done(): void {
+	puBlic done(): void {
 		this.reportMarkers();
 		this.cleanAllMarkers();
 	}
 }
 
-export const enum ProblemHandlingStrategy {
+export const enum ProBlemHandlingStrategy {
 	Clean
 }
 
-export class StartStopProblemCollector extends AbstractProblemCollector implements IProblemMatcher {
+export class StartStopProBlemCollector extends ABstractProBlemCollector implements IProBlemMatcher {
 	private owners: string[];
 
 	private currentOwner: string | undefined;
 	private currentResource: string | undefined;
 
-	constructor(problemMatchers: ProblemMatcher[], markerService: IMarkerService, modelService: IModelService, _strategy: ProblemHandlingStrategy = ProblemHandlingStrategy.Clean, fileService?: IFileService) {
-		super(problemMatchers, markerService, modelService, fileService);
-		let ownerSet: { [key: string]: boolean; } = Object.create(null);
-		problemMatchers.forEach(description => ownerSet[description.owner] = true);
-		this.owners = Object.keys(ownerSet);
+	constructor(proBlemMatchers: ProBlemMatcher[], markerService: IMarkerService, modelService: IModelService, _strategy: ProBlemHandlingStrategy = ProBlemHandlingStrategy.Clean, fileService?: IFileService) {
+		super(proBlemMatchers, markerService, modelService, fileService);
+		let ownerSet: { [key: string]: Boolean; } = OBject.create(null);
+		proBlemMatchers.forEach(description => ownerSet[description.owner] = true);
+		this.owners = OBject.keys(ownerSet);
 		this.owners.forEach((owner) => {
 			this.recordResourcesToClean(owner);
 		});
@@ -388,48 +388,48 @@ export class StartStopProblemCollector extends AbstractProblemCollector implemen
 
 interface BackgroundPatterns {
 	key: string;
-	matcher: ProblemMatcher;
-	begin: WatchingPattern;
+	matcher: ProBlemMatcher;
+	Begin: WatchingPattern;
 	end: WatchingPattern;
 }
 
-export class WatchingProblemCollector extends AbstractProblemCollector implements IProblemMatcher {
+export class WatchingProBlemCollector extends ABstractProBlemCollector implements IProBlemMatcher {
 
-	private problemMatchers: ProblemMatcher[];
-	private backgroundPatterns: BackgroundPatterns[];
+	private proBlemMatchers: ProBlemMatcher[];
+	private BackgroundPatterns: BackgroundPatterns[];
 
-	// workaround for https://github.com/microsoft/vscode/issues/44018
+	// workaround for https://githuB.com/microsoft/vscode/issues/44018
 	private _activeBackgroundMatchers: Set<string>;
 
 	// Current State
 	private currentOwner: string | undefined;
 	private currentResource: string | undefined;
 
-	constructor(problemMatchers: ProblemMatcher[], markerService: IMarkerService, modelService: IModelService, fileService?: IFileService) {
-		super(problemMatchers, markerService, modelService, fileService);
-		this.problemMatchers = problemMatchers;
+	constructor(proBlemMatchers: ProBlemMatcher[], markerService: IMarkerService, modelService: IModelService, fileService?: IFileService) {
+		super(proBlemMatchers, markerService, modelService, fileService);
+		this.proBlemMatchers = proBlemMatchers;
 		this.resetCurrentResource();
-		this.backgroundPatterns = [];
+		this.BackgroundPatterns = [];
 		this._activeBackgroundMatchers = new Set<string>();
-		this.problemMatchers.forEach(matcher => {
+		this.proBlemMatchers.forEach(matcher => {
 			if (matcher.watching) {
 				const key: string = generateUuid();
-				this.backgroundPatterns.push({
+				this.BackgroundPatterns.push({
 					key,
 					matcher: matcher,
-					begin: matcher.watching.beginsPattern,
+					Begin: matcher.watching.BeginsPattern,
 					end: matcher.watching.endsPattern
 				});
 			}
 		});
 	}
 
-	public aboutToStart(): void {
-		for (let background of this.backgroundPatterns) {
-			if (background.matcher.watching && background.matcher.watching.activeOnStart) {
-				this._activeBackgroundMatchers.add(background.key);
-				this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingBegins));
-				this.recordResourcesToClean(background.matcher.owner);
+	puBlic aBoutToStart(): void {
+		for (let Background of this.BackgroundPatterns) {
+			if (Background.matcher.watching && Background.matcher.watching.activeOnStart) {
+				this._activeBackgroundMatchers.add(Background.key);
+				this._onDidStateChange.fire(ProBlemCollectorEvent.create(ProBlemCollectorEventKind.BackgroundProcessingBegins));
+				this.recordResourcesToClean(Background.matcher.owner);
 			}
 		}
 	}
@@ -457,27 +457,27 @@ export class WatchingProblemCollector extends AbstractProblemCollector implement
 		}
 	}
 
-	public forceDelivery(): void {
+	puBlic forceDelivery(): void {
 		this.reportMarkersForCurrentResource();
 	}
 
-	private async tryBegin(line: string): Promise<boolean> {
+	private async tryBegin(line: string): Promise<Boolean> {
 		let result = false;
-		for (const background of this.backgroundPatterns) {
-			let matches = background.begin.regexp.exec(line);
+		for (const Background of this.BackgroundPatterns) {
+			let matches = Background.Begin.regexp.exec(line);
 			if (matches) {
-				if (this._activeBackgroundMatchers.has(background.key)) {
+				if (this._activeBackgroundMatchers.has(Background.key)) {
 					continue;
 				}
-				this._activeBackgroundMatchers.add(background.key);
+				this._activeBackgroundMatchers.add(Background.key);
 				result = true;
-				this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingBegins));
+				this._onDidStateChange.fire(ProBlemCollectorEvent.create(ProBlemCollectorEventKind.BackgroundProcessingBegins));
 				this.cleanMarkerCaches();
 				this.resetCurrentResource();
-				let owner = background.matcher.owner;
-				let file = matches[background.begin.file!];
+				let owner = Background.matcher.owner;
+				let file = matches[Background.Begin.file!];
 				if (file) {
-					let resource = getResource(file, background.matcher);
+					let resource = getResource(file, Background.matcher);
 					this.recordResourceToClean(owner, await resource);
 				} else {
 					this.recordResourcesToClean(owner);
@@ -487,17 +487,17 @@ export class WatchingProblemCollector extends AbstractProblemCollector implement
 		return result;
 	}
 
-	private tryFinish(line: string): boolean {
+	private tryFinish(line: string): Boolean {
 		let result = false;
-		for (const background of this.backgroundPatterns) {
-			let matches = background.end.regexp.exec(line);
+		for (const Background of this.BackgroundPatterns) {
+			let matches = Background.end.regexp.exec(line);
 			if (matches) {
-				if (this._activeBackgroundMatchers.has(background.key)) {
-					this._activeBackgroundMatchers.delete(background.key);
+				if (this._activeBackgroundMatchers.has(Background.key)) {
+					this._activeBackgroundMatchers.delete(Background.key);
 					this.resetCurrentResource();
-					this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingEnds));
+					this._onDidStateChange.fire(ProBlemCollectorEvent.create(ProBlemCollectorEventKind.BackgroundProcessingEnds));
 					result = true;
-					let owner = background.matcher.owner;
+					let owner = Background.matcher.owner;
 					this.cleanMarkers(owner);
 					this.cleanMarkerCaches();
 				}
@@ -518,14 +518,14 @@ export class WatchingProblemCollector extends AbstractProblemCollector implement
 		}
 	}
 
-	public done(): void {
+	puBlic done(): void {
 		[...this.applyToByOwner.keys()].forEach(owner => {
 			this.recordResourcesToClean(owner);
 		});
 		super.done();
 	}
 
-	public isWatching(): boolean {
-		return this.backgroundPatterns.length > 0;
+	puBlic isWatching(): Boolean {
+		return this.BackgroundPatterns.length > 0;
 	}
 }

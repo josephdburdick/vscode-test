@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { flatten } from 'vs/base/common/arrays';
-import { Emitter } from 'vs/base/common/event';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { codeActionCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contrib/codeAction/codeAction';
-import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
+import { flatten } from 'vs/Base/common/arrays';
+import { Emitter } from 'vs/Base/common/event';
+import { IJSONSchema, IJSONSchemaMap } from 'vs/Base/common/jsonSchema';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { codeActionCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contriB/codeAction/codeAction';
+import { CodeActionKind } from 'vs/editor/contriB/codeAction/types';
 import * as nls from 'vs/nls';
 import { Extensions, IConfigurationNode, IConfigurationRegistry, ConfigurationScope, IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { CodeActionsExtensionPoint, ContributedCodeAction } from 'vs/workbench/contrib/codeActions/common/codeActionsExtensionPoint';
-import { IExtensionPoint } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { CodeActionsExtensionPoint, ContriButedCodeAction } from 'vs/workBench/contriB/codeActions/common/codeActionsExtensionPoint';
+import { IExtensionPoint } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import { editorConfigurationBaseNode } from 'vs/editor/common/config/commonEditorConfig';
 
-const codeActionsOnSaveDefaultProperties = Object.freeze<IJSONSchemaMap>({
+const codeActionsOnSaveDefaultProperties = OBject.freeze<IJSONSchemaMap>({
 	'source.fixAll': {
-		type: 'boolean',
-		description: nls.localize('codeActionsOnSave.fixAll', "Controls whether auto fix action should be run on file save.")
+		type: 'Boolean',
+		description: nls.localize('codeActionsOnSave.fixAll', "Controls whether auto fix action should Be run on file save.")
 	}
 });
 
 const codeActionsOnSaveSchema: IConfigurationPropertySchema = {
 	oneOf: [
 		{
-			type: 'object',
+			type: 'oBject',
 			properties: codeActionsOnSaveDefaultProperties,
 			additionalProperties: {
-				type: 'boolean'
+				type: 'Boolean'
 			},
 		},
 		{
@@ -40,47 +40,47 @@ const codeActionsOnSaveSchema: IConfigurationPropertySchema = {
 		}
 	],
 	default: {},
-	description: nls.localize('codeActionsOnSave', "Code action kinds to be run on save."),
+	description: nls.localize('codeActionsOnSave', "Code action kinds to Be run on save."),
 	scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
 };
 
-export const editorConfiguration = Object.freeze<IConfigurationNode>({
+export const editorConfiguration = OBject.freeze<IConfigurationNode>({
 	...editorConfigurationBaseNode,
 	properties: {
 		'editor.codeActionsOnSave': codeActionsOnSaveSchema
 	}
 });
 
-export class CodeActionsContribution extends Disposable implements IWorkbenchContribution {
+export class CodeActionsContriBution extends DisposaBle implements IWorkBenchContriBution {
 
-	private _contributedCodeActions: CodeActionsExtensionPoint[] = [];
+	private _contriButedCodeActions: CodeActionsExtensionPoint[] = [];
 
-	private readonly _onDidChangeContributions = this._register(new Emitter<void>());
+	private readonly _onDidChangeContriButions = this._register(new Emitter<void>());
 
 	constructor(
 		codeActionsExtensionPoint: IExtensionPoint<CodeActionsExtensionPoint[]>,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 	) {
 		super();
 
 		codeActionsExtensionPoint.setHandler(extensionPoints => {
-			this._contributedCodeActions = flatten(extensionPoints.map(x => x.value));
-			this.updateConfigurationSchema(this._contributedCodeActions);
-			this._onDidChangeContributions.fire();
+			this._contriButedCodeActions = flatten(extensionPoints.map(x => x.value));
+			this.updateConfigurationSchema(this._contriButedCodeActions);
+			this._onDidChangeContriButions.fire();
 		});
 
-		keybindingService.registerSchemaContribution({
+		keyBindingService.registerSchemaContriBution({
 			getSchemaAdditions: () => this.getSchemaAdditions(),
-			onDidChange: this._onDidChangeContributions.event,
+			onDidChange: this._onDidChangeContriButions.event,
 		});
 	}
 
-	private updateConfigurationSchema(codeActionContributions: readonly CodeActionsExtensionPoint[]) {
+	private updateConfigurationSchema(codeActionContriButions: readonly CodeActionsExtensionPoint[]) {
 		const newProperties: IJSONSchemaMap = { ...codeActionsOnSaveDefaultProperties };
-		for (const [sourceAction, props] of this.getSourceActions(codeActionContributions)) {
+		for (const [sourceAction, props] of this.getSourceActions(codeActionContriButions)) {
 			newProperties[sourceAction] = {
-				type: 'boolean',
-				description: nls.localize('codeActionsOnSave.generic', "Controls whether '{0}' actions should be run on file save.", props.title)
+				type: 'Boolean',
+				description: nls.localize('codeActionsOnSave.generic', "Controls whether '{0}' actions should Be run on file save.", props.title)
 			};
 		}
 		codeActionsOnSaveSchema.properties = newProperties;
@@ -88,14 +88,14 @@ export class CodeActionsContribution extends Disposable implements IWorkbenchCon
 			.notifyConfigurationSchemaUpdated(editorConfiguration);
 	}
 
-	private getSourceActions(contributions: readonly CodeActionsExtensionPoint[]) {
-		const defaultKinds = Object.keys(codeActionsOnSaveDefaultProperties).map(value => new CodeActionKind(value));
+	private getSourceActions(contriButions: readonly CodeActionsExtensionPoint[]) {
+		const defaultKinds = OBject.keys(codeActionsOnSaveDefaultProperties).map(value => new CodeActionKind(value));
 		const sourceActions = new Map<string, { readonly title: string }>();
-		for (const contribution of contributions) {
-			for (const action of contribution.actions) {
+		for (const contriBution of contriButions) {
+			for (const action of contriBution.actions) {
 				const kind = new CodeActionKind(action.kind);
 				if (CodeActionKind.Source.contains(kind)
-					// Exclude any we already included by default
+					// Exclude any we already included By default
 					&& !defaultKinds.some(defaultKind => defaultKind.contains(kind))
 				) {
 					sourceActions.set(kind.value, action);
@@ -106,7 +106,7 @@ export class CodeActionsContribution extends Disposable implements IWorkbenchCon
 	}
 
 	private getSchemaAdditions(): IJSONSchema[] {
-		const conditionalSchema = (command: string, actions: readonly ContributedCodeAction[]): IJSONSchema => {
+		const conditionalSchema = (command: string, actions: readonly ContriButedCodeAction[]): IJSONSchema => {
 			return {
 				if: {
 					properties: {
@@ -134,10 +134,10 @@ export class CodeActionsContribution extends Disposable implements IWorkbenchCon
 			};
 		};
 
-		const getActions = (ofKind: CodeActionKind): ContributedCodeAction[] => {
-			const allActions = flatten(this._contributedCodeActions.map(desc => desc.actions.slice()));
+		const getActions = (ofKind: CodeActionKind): ContriButedCodeAction[] => {
+			const allActions = flatten(this._contriButedCodeActions.map(desc => desc.actions.slice()));
 
-			const out = new Map<string, ContributedCodeAction>();
+			const out = new Map<string, ContriButedCodeAction>();
 			for (const action of allActions) {
 				if (!out.has(action.kind) && ofKind.contains(new CodeActionKind(action.kind))) {
 					out.set(action.kind, action);

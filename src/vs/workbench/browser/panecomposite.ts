@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Dimension } from 'vs/base/browser/dom';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { Dimension } from 'vs/Base/Browser/dom';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IView } from 'vs/workbench/common/views';
+import { IView } from 'vs/workBench/common/views';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { Composite } from 'vs/workbench/browser/composite';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { Composite } from 'vs/workBench/Browser/composite';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { ViewPaneContainer } from './parts/views/viewPaneContainer';
-import { IPaneComposite } from 'vs/workbench/common/panecomposite';
-import { IAction, IActionViewItem, Separator } from 'vs/base/common/actions';
-import { ViewContainerMenuActions } from 'vs/workbench/browser/parts/views/viewMenuActions';
+import { IPaneComposite } from 'vs/workBench/common/panecomposite';
+import { IAction, IActionViewItem, Separator } from 'vs/Base/common/actions';
+import { ViewContainerMenuActions } from 'vs/workBench/Browser/parts/views/viewMenuActions';
 import { MenuId } from 'vs/platform/actions/common/actions';
 
 export class PaneComposite extends Composite implements IPaneComposite {
@@ -44,20 +44,20 @@ export class PaneComposite extends Composite implements IPaneComposite {
 		this.viewPaneContainer.create(parent);
 	}
 
-	setVisible(visible: boolean): void {
-		super.setVisible(visible);
-		this.viewPaneContainer.setVisible(visible);
+	setVisiBle(visiBle: Boolean): void {
+		super.setVisiBle(visiBle);
+		this.viewPaneContainer.setVisiBle(visiBle);
 	}
 
 	layout(dimension: Dimension): void {
 		this.viewPaneContainer.layout(dimension);
 	}
 
-	getOptimalWidth(): number {
+	getOptimalWidth(): numBer {
 		return this.viewPaneContainer.getOptimalWidth();
 	}
 
-	openView<T extends IView>(id: string, focus?: boolean): T | undefined {
+	openView<T extends IView>(id: string, focus?: Boolean): T | undefined {
 		return this.viewPaneContainer.openView(id, focus) as T;
 	}
 

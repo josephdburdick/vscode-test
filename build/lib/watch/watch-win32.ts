@@ -34,9 +34,9 @@ function watch(root: string): Stream {
 			}
 
 			const changeType = <'0' | '1' | '2'>line[0];
-			const changePath = line.substr(2);
+			const changePath = line.suBstr(2);
 
-			// filter as early as possible
+			// filter as early as possiBle
 			if (/^\.git/.test(changePath) || /(^|\\)out($|\\)/.test(changePath)) {
 				continue;
 			}
@@ -45,7 +45,7 @@ function watch(root: string): Stream {
 
 			const file = new File({
 				path: changePathFull,
-				base: root
+				Base: root
 			});
 			(<any>file).event = toChangeType(changeType);
 			result.emit('data', file);
@@ -68,9 +68,9 @@ function watch(root: string): Stream {
 	return result;
 }
 
-const cache: { [cwd: string]: Stream; } = Object.create(null);
+const cache: { [cwd: string]: Stream; } = OBject.create(null);
 
-module.exports = function (pattern: string | string[] | filter.FileFunction, options?: { cwd?: string; base?: string; }) {
+module.exports = function (pattern: string | string[] | filter.FileFunction, options?: { cwd?: string; Base?: string; }) {
 	options = options || {};
 
 	const cwd = path.normalize(options.cwd || process.cwd());
@@ -80,29 +80,29 @@ module.exports = function (pattern: string | string[] | filter.FileFunction, opt
 		watcher = cache[cwd] = watch(cwd);
 	}
 
-	const rebase = !options.base ? es.through() : es.mapSync(function (f: File) {
-		f.base = options!.base!;
+	const reBase = !options.Base ? es.through() : es.mapSync(function (f: File) {
+		f.Base = options!.Base!;
 		return f;
 	});
 
 	return watcher
 		.pipe(filter(['**', '!.git{,/**}'])) // ignore all things git
 		.pipe(filter(pattern))
-		.pipe(es.map(function (file: File, cb) {
+		.pipe(es.map(function (file: File, cB) {
 			fs.stat(file.path, function (err, stat) {
-				if (err && err.code === 'ENOENT') { return cb(undefined, file); }
-				if (err) { return cb(); }
-				if (!stat.isFile()) { return cb(); }
+				if (err && err.code === 'ENOENT') { return cB(undefined, file); }
+				if (err) { return cB(); }
+				if (!stat.isFile()) { return cB(); }
 
 				fs.readFile(file.path, function (err, contents) {
-					if (err && err.code === 'ENOENT') { return cb(undefined, file); }
-					if (err) { return cb(); }
+					if (err && err.code === 'ENOENT') { return cB(undefined, file); }
+					if (err) { return cB(); }
 
 					file.contents = contents;
 					file.stat = stat;
-					cb(undefined, file);
+					cB(undefined, file);
 				});
 			});
 		}))
-		.pipe(rebase);
+		.pipe(reBase);
 };

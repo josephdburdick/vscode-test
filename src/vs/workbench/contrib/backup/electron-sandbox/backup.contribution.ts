@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { NativeBackupTracker } from 'vs/workbench/contrib/backup/electron-sandbox/backupTracker';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { NativeBackupTracker } from 'vs/workBench/contriB/Backup/electron-sandBox/BackupTracker';
 
 // Register Backup Tracker
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(NativeBackupTracker, LifecyclePhase.Starting);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(NativeBackupTracker, LifecyclePhase.Starting);

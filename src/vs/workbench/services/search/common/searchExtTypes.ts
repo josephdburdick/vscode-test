@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
 import { IProgress } from 'vs/platform/progress/common/progress';
 
 export class Position {
-	constructor(readonly line: number, readonly character: number) { }
+	constructor(readonly line: numBer, readonly character: numBer) { }
 
-	isBefore(other: Position): boolean { return false; }
-	isBeforeOrEqual(other: Position): boolean { return false; }
-	isAfter(other: Position): boolean { return false; }
-	isAfterOrEqual(other: Position): boolean { return false; }
-	isEqual(other: Position): boolean { return false; }
-	compareTo(other: Position): number { return 0; }
-	translate(lineDelta?: number, characterDelta?: number): Position;
-	translate(change: { lineDelta?: number; characterDelta?: number; }): Position;
+	isBefore(other: Position): Boolean { return false; }
+	isBeforeOrEqual(other: Position): Boolean { return false; }
+	isAfter(other: Position): Boolean { return false; }
+	isAfterOrEqual(other: Position): Boolean { return false; }
+	isEqual(other: Position): Boolean { return false; }
+	compareTo(other: Position): numBer { return 0; }
+	translate(lineDelta?: numBer, characterDelta?: numBer): Position;
+	translate(change: { lineDelta?: numBer; characterDelta?: numBer; }): Position;
 	translate(_?: any, _2?: any): Position { return new Position(0, 0); }
-	with(line?: number, character?: number): Position;
-	with(change: { line?: number; character?: number; }): Position;
+	with(line?: numBer, character?: numBer): Position;
+	with(change: { line?: numBer; character?: numBer; }): Position;
 	with(_: any): Position { return new Position(0, 0); }
 }
 
@@ -28,15 +28,15 @@ export class Range {
 	readonly start: Position;
 	readonly end: Position;
 
-	constructor(startLine: number, startCol: number, endLine: number, endCol: number) {
+	constructor(startLine: numBer, startCol: numBer, endLine: numBer, endCol: numBer) {
 		this.start = new Position(startLine, startCol);
 		this.end = new Position(endLine, endCol);
 	}
 
 	isEmpty = false;
 	isSingleLine = false;
-	contains(positionOrRange: Position | Range): boolean { return false; }
-	isEqual(other: Range): boolean { return false; }
+	contains(positionOrRange: Position | Range): Boolean { return false; }
+	isEqual(other: Range): Boolean { return false; }
 	intersection(range: Range): Range | undefined { return undefined; }
 	union(other: Range): Range { return new Range(0, 0, 0, 0); }
 
@@ -45,48 +45,48 @@ export class Range {
 	with(_: any): Range { return new Range(0, 0, 0, 0); }
 }
 
-export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
+export type ProviderResult<T> = T | undefined | null | ThenaBle<T | undefined | null>;
 
 /**
- * A relative pattern is a helper to construct glob patterns that are matched
- * relatively to a base path. The base path can either be an absolute file path
+ * A relative pattern is a helper to construct gloB patterns that are matched
+ * relatively to a Base path. The Base path can either Be an aBsolute file path
  * or a [workspace folder](#WorkspaceFolder).
  */
 export interface RelativePattern {
 
 	/**
-	 * A base file path to which this pattern will be matched against relatively.
+	 * A Base file path to which this pattern will Be matched against relatively.
 	 */
-	base: string;
+	Base: string;
 
 	/**
-	 * A file glob pattern like `*.{ts,js}` that will be matched on file paths
-	 * relative to the base path.
+	 * A file gloB pattern like `*.{ts,js}` that will Be matched on file paths
+	 * relative to the Base path.
 	 *
-	 * Example: Given a base of `/home/work/folder` and a file path of `/home/work/folder/index.js`,
-	 * the file glob pattern will match on `index.js`.
+	 * Example: Given a Base of `/home/work/folder` and a file path of `/home/work/folder/index.js`,
+	 * the file gloB pattern will match on `index.js`.
 	 */
 	pattern: string;
 }
 
 /**
- * A file glob pattern to match file paths against. This can either be a glob pattern string
+ * A file gloB pattern to match file paths against. This can either Be a gloB pattern string
  * (like `**​/*.{ts,js}` or `*.{ts,js}`) or a [relative pattern](#RelativePattern).
  *
- * Glob patterns can have the following syntax:
+ * GloB patterns can have the following syntax:
  * * `*` to match one or more characters in a path segment
  * * `?` to match on one character in a path segment
- * * `**` to match any number of path segments, including none
+ * * `**` to match any numBer of path segments, including none
  * * `{}` to group conditions (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
  * * `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`, `example.1`, …)
- * * `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`, `example.b`, but not `example.0`)
+ * * `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`, `example.B`, But not `example.0`)
  *
- * Note: a backslash (`\`) is not valid within a glob pattern. If you have an existing file
+ * Note: a Backslash (`\`) is not valid within a gloB pattern. If you have an existing file
  * path to match against, consider to use the [relative pattern](#RelativePattern) support
- * that takes care of converting any backslash into slash. Otherwise, make sure to convert
- * any backslash to slash when creating the glob pattern.
+ * that takes care of converting any Backslash into slash. Otherwise, make sure to convert
+ * any Backslash to slash when creating the gloB pattern.
  */
-export type GlobPattern = string | RelativePattern;
+export type GloBPattern = string | RelativePattern;
 
 /**
  * The parameters of a query for text search.
@@ -100,30 +100,30 @@ export interface TextSearchQuery {
 	/**
 	 * Whether or not `pattern` should match multiple lines of text.
 	 */
-	isMultiline?: boolean;
+	isMultiline?: Boolean;
 
 	/**
-	 * Whether or not `pattern` should be interpreted as a regular expression.
+	 * Whether or not `pattern` should Be interpreted as a regular expression.
 	 */
-	isRegExp?: boolean;
+	isRegExp?: Boolean;
 
 	/**
-	 * Whether or not the search should be case-sensitive.
+	 * Whether or not the search should Be case-sensitive.
 	 */
-	isCaseSensitive?: boolean;
+	isCaseSensitive?: Boolean;
 
 	/**
 	 * Whether or not to search for whole word matches only.
 	 */
-	isWordMatch?: boolean;
+	isWordMatch?: Boolean;
 }
 
 /**
- * A file glob pattern to match file paths against.
- * TODO@roblou - merge this with the GlobPattern docs/definition in vscode.d.ts.
- * @see [GlobPattern](#GlobPattern)
+ * A file gloB pattern to match file paths against.
+ * TODO@roBlou - merge this with the GloBPattern docs/definition in vscode.d.ts.
+ * @see [GloBPattern](#GloBPattern)
  */
-export type GlobString = string;
+export type GloBString = string;
 
 /**
  * Options common to file and text search
@@ -135,32 +135,32 @@ export interface SearchOptions {
 	folder: URI;
 
 	/**
-	 * Files that match an `includes` glob pattern should be included in the search.
+	 * Files that match an `includes` gloB pattern should Be included in the search.
 	 */
-	includes: GlobString[];
+	includes: GloBString[];
 
 	/**
-	 * Files that match an `excludes` glob pattern should be excluded from the search.
+	 * Files that match an `excludes` gloB pattern should Be excluded from the search.
 	 */
-	excludes: GlobString[];
+	excludes: GloBString[];
 
 	/**
-	 * Whether external files that exclude files, like .gitignore, should be respected.
+	 * Whether external files that exclude files, like .gitignore, should Be respected.
 	 * See the vscode setting `"search.useIgnoreFiles"`.
 	 */
-	useIgnoreFiles: boolean;
+	useIgnoreFiles: Boolean;
 
 	/**
-	 * Whether symlinks should be followed while searching.
+	 * Whether symlinks should Be followed while searching.
 	 * See the vscode setting `"search.followSymlinks"`.
 	 */
-	followSymlinks: boolean;
+	followSymlinks: Boolean;
 
 	/**
-	 * Whether global files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+	 * Whether gloBal files that exclude files, like .gitignore, should Be respected.
+	 * See the vscode setting `"search.useGloBalIgnoreFiles"`.
 	 */
-	useGlobalIgnoreFiles: boolean;
+	useGloBalIgnoreFiles: Boolean;
 }
 
 /**
@@ -169,15 +169,15 @@ export interface SearchOptions {
  */
 export interface TextSearchPreviewOptions {
 	/**
-	 * The maximum number of lines in the preview.
+	 * The maximum numBer of lines in the preview.
 	 * Only search providers that support multiline search will ever return more than one line in the match.
 	 */
-	matchLines: number;
+	matchLines: numBer;
 
 	/**
-	 * The maximum number of characters included per line.
+	 * The maximum numBer of characters included per line.
 	 */
-	charsPerLine: number;
+	charsPerLine: numBer;
 }
 
 /**
@@ -185,9 +185,9 @@ export interface TextSearchPreviewOptions {
  */
 export interface TextSearchOptions extends SearchOptions {
 	/**
-	 * The maximum number of results to be returned.
+	 * The maximum numBer of results to Be returned.
 	 */
-	maxResults: number;
+	maxResults: numBer;
 
 	/**
 	 * Options to specify the size of the result text preview.
@@ -195,9 +195,9 @@ export interface TextSearchOptions extends SearchOptions {
 	previewOptions?: TextSearchPreviewOptions;
 
 	/**
-	 * Exclude files larger than `maxFileSize` in bytes.
+	 * Exclude files larger than `maxFileSize` in Bytes.
 	 */
-	maxFileSize?: number;
+	maxFileSize?: numBer;
 
 	/**
 	 * Interpret files using this encoding.
@@ -206,14 +206,14 @@ export interface TextSearchOptions extends SearchOptions {
 	encoding?: string;
 
 	/**
-	 * Number of lines of context to include before each match.
+	 * NumBer of lines of context to include Before each match.
 	 */
-	beforeContext?: number;
+	BeforeContext?: numBer;
 
 	/**
-	 * Number of lines of context to include after each match.
+	 * NumBer of lines of context to include after each match.
 	 */
-	afterContext?: number;
+	afterContext?: numBer;
 }
 
 /**
@@ -221,13 +221,13 @@ export interface TextSearchOptions extends SearchOptions {
  */
 export interface TextSearchComplete {
 	/**
-	 * Whether the search hit the limit on the maximum number of search results.
-	 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max number of results.
-	 * - If exactly that number of matches exist, this should be false.
-	 * - If `maxResults` matches are returned and more exist, this should be true.
-	 * - If search hits an internal limit which is less than `maxResults`, this should be true.
+	 * Whether the search hit the limit on the maximum numBer of search results.
+	 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max numBer of results.
+	 * - If exactly that numBer of matches exist, this should Be false.
+	 * - If `maxResults` matches are returned and more exist, this should Be true.
+	 * - If search hits an internal limit which is less than `maxResults`, this should Be true.
 	 */
-	limitHit?: boolean;
+	limitHit?: Boolean;
 }
 
 /**
@@ -245,13 +245,13 @@ export interface FileSearchQuery {
  */
 export interface FileSearchOptions extends SearchOptions {
 	/**
-	 * The maximum number of results to be returned.
+	 * The maximum numBer of results to Be returned.
 	 */
-	maxResults?: number;
+	maxResults?: numBer;
 
 	/**
-	 * A CancellationToken that represents the session for this search query. If the provider chooses to, this object can be used as the key for a cache,
-	 * and searches with the same session object can search the same cache. When the token is cancelled, the session is complete and the cache can be cleared.
+	 * A CancellationToken that represents the session for this search query. If the provider chooses to, this oBject can Be used as the key for a cache,
+	 * and searches with the same session oBject can search the same cache. When the token is cancelled, the session is complete and the cache can Be cleared.
 	 */
 	session?: CancellationToken;
 }
@@ -267,7 +267,7 @@ export interface TextSearchMatchPreview {
 
 	/**
 	 * The Range within `text` corresponding to the text of the match.
-	 * The number of matches must match the TextSearchMatch's range property.
+	 * The numBer of matches must match the TextSearchMatch's range property.
 	 */
 	matches: Range | Range[];
 }
@@ -308,28 +308,28 @@ export interface TextSearchContext {
 	text: string;
 
 	/**
-	 * The line number of this line of context.
+	 * The line numBer of this line of context.
 	 */
-	lineNumber: number;
+	lineNumBer: numBer;
 }
 
 export type TextSearchResult = TextSearchMatch | TextSearchContext;
 
 /**
- * A FileSearchProvider provides search results for files in the given folder that match a query string. It can be invoked by quickaccess or other extensions.
+ * A FileSearchProvider provides search results for files in the given folder that match a query string. It can Be invoked By quickaccess or other extensions.
  *
  * A FileSearchProvider is the more powerful of two ways to implement file search in VS Code. Use a FileSearchProvider if you wish to search within a folder for
  * all files that match the user's query.
  *
- * The FileSearchProvider will be invoked on every keypress in quickaccess. When `workspace.findFiles` is called, it will be invoked with an empty query string,
- * and in that case, every file in the folder should be returned.
+ * The FileSearchProvider will Be invoked on every keypress in quickaccess. When `workspace.findFiles` is called, it will Be invoked with an empty query string,
+ * and in that case, every file in the folder should Be returned.
  */
 export interface FileSearchProvider {
 	/**
 	 * Provide the set of files that match a certain file path pattern.
 	 * @param query The parameters for this query.
 	 * @param options A set of options to consider while searching files.
-	 * @param progress A progress callback that must be invoked for all results.
+	 * @param progress A progress callBack that must Be invoked for all results.
 	 * @param token A cancellation token.
 	 */
 	provideFileSearchResults(query: FileSearchQuery, options: FileSearchOptions, token: CancellationToken): ProviderResult<URI[]>;
@@ -343,52 +343,52 @@ export interface TextSearchProvider {
 	 * Provide results that match the given text pattern.
 	 * @param query The parameters for this query.
 	 * @param options A set of options to consider while searching.
-	 * @param progress A progress callback that must be invoked for all results.
+	 * @param progress A progress callBack that must Be invoked for all results.
 	 * @param token A cancellation token.
 	 */
 	provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: IProgress<TextSearchResult>, token: CancellationToken): ProviderResult<TextSearchComplete>;
 }
 
 /**
- * Options that can be set on a findTextInFiles search.
+ * Options that can Be set on a findTextInFiles search.
  */
 export interface FindTextInFilesOptions {
 	/**
-	 * A [glob pattern](#GlobPattern) that defines the files to search for. The glob pattern
-	 * will be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
+	 * A [gloB pattern](#GloBPattern) that defines the files to search for. The gloB pattern
+	 * will Be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
 	 * to restrict the search results to a [workspace folder](#WorkspaceFolder).
 	 */
-	include?: GlobPattern;
+	include?: GloBPattern;
 
 	/**
-	 * A [glob pattern](#GlobPattern) that defines files and folders to exclude. The glob pattern
-	 * will be matched against the file paths of resulting matches relative to their workspace. When `undefined` only default excludes will
+	 * A [gloB pattern](#GloBPattern) that defines files and folders to exclude. The gloB pattern
+	 * will Be matched against the file paths of resulting matches relative to their workspace. When `undefined` only default excludes will
 	 * apply, when `null` no excludes will apply.
 	 */
-	exclude?: GlobPattern | null;
+	exclude?: GloBPattern | null;
 
 	/**
-	 * The maximum number of results to search for
+	 * The maximum numBer of results to search for
 	 */
-	maxResults?: number;
+	maxResults?: numBer;
 
 	/**
-	 * Whether external files that exclude files, like .gitignore, should be respected.
+	 * Whether external files that exclude files, like .gitignore, should Be respected.
 	 * See the vscode setting `"search.useIgnoreFiles"`.
 	 */
-	useIgnoreFiles?: boolean;
+	useIgnoreFiles?: Boolean;
 
 	/**
-	 * Whether global files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+	 * Whether gloBal files that exclude files, like .gitignore, should Be respected.
+	 * See the vscode setting `"search.useGloBalIgnoreFiles"`.
 	 */
-	useGlobalIgnoreFiles?: boolean;
+	useGloBalIgnoreFiles?: Boolean;
 
 	/**
-	 * Whether symlinks should be followed while searching.
+	 * Whether symlinks should Be followed while searching.
 	 * See the vscode setting `"search.followSymlinks"`.
 	 */
-	followSymlinks?: boolean;
+	followSymlinks?: Boolean;
 
 	/**
 	 * Interpret files using this encoding.
@@ -402,12 +402,12 @@ export interface FindTextInFilesOptions {
 	previewOptions?: TextSearchPreviewOptions;
 
 	/**
-	 * Number of lines of context to include before each match.
+	 * NumBer of lines of context to include Before each match.
 	 */
-	beforeContext?: number;
+	BeforeContext?: numBer;
 
 	/**
-	 * Number of lines of context to include after each match.
+	 * NumBer of lines of context to include after each match.
 	 */
-	afterContext?: number;
+	afterContext?: numBer;
 }

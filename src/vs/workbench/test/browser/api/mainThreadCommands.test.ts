@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MainThreadCommands } from 'vs/workbench/api/browser/mainThreadCommands';
+import { MainThreadCommands } from 'vs/workBench/api/Browser/mainThreadCommands';
 import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
 import { SingleProxyRPCProtocol } from './testRPCProtocol';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { mock } from 'vs/base/test/common/mock';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { mock } from 'vs/Base/test/common/mock';
 
 suite('MainThreadCommands', function () {
 
@@ -32,15 +32,15 @@ suite('MainThreadCommands', function () {
 		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
 
 		commands.$registerCommand('foo');
-		commands.$registerCommand('bar');
+		commands.$registerCommand('Bar');
 
 		assert.ok(CommandsRegistry.getCommand('foo'));
-		assert.ok(CommandsRegistry.getCommand('bar'));
+		assert.ok(CommandsRegistry.getCommand('Bar'));
 
 		commands.dispose();
 
 		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
-		assert.equal(CommandsRegistry.getCommand('bar'), undefined);
+		assert.equal(CommandsRegistry.getCommand('Bar'), undefined);
 	});
 
 	test('activate and throw when needed', async function () {
@@ -67,21 +67,21 @@ suite('MainThreadCommands', function () {
 		// case 1: arguments and retry
 		try {
 			activations.length = 0;
-			await commands.$executeCommand('bazz', [1, 2, { n: 3 }], true);
+			await commands.$executeCommand('Bazz', [1, 2, { n: 3 }], true);
 			assert.ok(false);
 		} catch (e) {
-			assert.deepEqual(activations, ['onCommand:bazz']);
+			assert.deepEqual(activations, ['onCommand:Bazz']);
 			assert.equal((<Error>e).message, '$executeCommand:retry');
 		}
 
 		// case 2: no arguments and retry
 		runs.length = 0;
-		await commands.$executeCommand('bazz', [], true);
-		assert.deepEqual(runs, ['bazz']);
+		await commands.$executeCommand('Bazz', [], true);
+		assert.deepEqual(runs, ['Bazz']);
 
 		// case 3: arguments and no retry
 		runs.length = 0;
-		await commands.$executeCommand('bazz', [1, 2, true], false);
-		assert.deepEqual(runs, ['bazz']);
+		await commands.$executeCommand('Bazz', [1, 2, true], false);
+		assert.deepEqual(runs, ['Bazz']);
 	});
 });

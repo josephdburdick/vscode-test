@@ -6,7 +6,7 @@
 import { CspAlerter } from './csp';
 import { StyleLoadingMonitor } from './loading';
 
-declare global {
+declare gloBal {
 	interface Window {
 		cspAlerter: CspAlerter;
 		styleLoadingMonitor: StyleLoadingMonitor;

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import * as strings from 'vs/base/common/strings';
+import { CharCode } from 'vs/Base/common/charCode';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import * as strings from 'vs/Base/common/strings';
 import { EditorAutoClosingStrategy, EditorAutoSurroundStrategy, ConfigurationChangedEvent, EditorAutoClosingOvertypeStrategy, EditorOption, EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
@@ -17,14 +17,14 @@ import { LanguageIdentifier } from 'vs/editor/common/modes';
 import { IAutoClosingPair, StandardAutoClosingPairConditional } from 'vs/editor/common/modes/languageConfiguration';
 import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
 import { ICoordinatesConverter } from 'vs/editor/common/viewModel/viewModel';
-import { Constants } from 'vs/base/common/uint';
+import { Constants } from 'vs/Base/common/uint';
 
 export interface IColumnSelectData {
-	isReal: boolean;
-	fromViewLineNumber: number;
-	fromViewVisualColumn: number;
-	toViewLineNumber: number;
-	toViewVisualColumn: number;
+	isReal: Boolean;
+	fromViewLineNumBer: numBer;
+	fromViewVisualColumn: numBer;
+	toViewLineNumBer: numBer;
+	toViewVisualColumn: numBer;
 }
 
 export const enum RevealTarget {
@@ -34,8 +34,8 @@ export const enum RevealTarget {
 }
 
 /**
- * This is an operation type that will be recorded for undo/redo purposes.
- * The goal is to introduce an undo stop when the controller switches between different operation types.
+ * This is an operation type that will Be recorded for undo/redo purposes.
+ * The goal is to introduce an undo stop when the controller switches Between different operation types.
  */
 export const enum EditOperationType {
 	Other = 0,
@@ -58,43 +58,43 @@ const autoCloseBeforeWhitespace = (chr: string) => (chr === ' ' || chr === '\t')
 export class CursorConfiguration {
 	_cursorMoveConfigurationBrand: void;
 
-	public readonly readOnly: boolean;
-	public readonly tabSize: number;
-	public readonly indentSize: number;
-	public readonly insertSpaces: boolean;
-	public readonly pageSize: number;
-	public readonly lineHeight: number;
-	public readonly useTabStops: boolean;
-	public readonly wordSeparators: string;
-	public readonly emptySelectionClipboard: boolean;
-	public readonly copyWithSyntaxHighlighting: boolean;
-	public readonly multiCursorMergeOverlapping: boolean;
-	public readonly multiCursorPaste: 'spread' | 'full';
-	public readonly autoClosingBrackets: EditorAutoClosingStrategy;
-	public readonly autoClosingQuotes: EditorAutoClosingStrategy;
-	public readonly autoClosingOvertype: EditorAutoClosingOvertypeStrategy;
-	public readonly autoSurround: EditorAutoSurroundStrategy;
-	public readonly autoIndent: EditorAutoIndentStrategy;
-	public readonly autoClosingPairsOpen2: Map<string, StandardAutoClosingPairConditional[]>;
-	public readonly autoClosingPairsClose2: Map<string, StandardAutoClosingPairConditional[]>;
-	public readonly surroundingPairs: CharacterMap;
-	public readonly shouldAutoCloseBefore: { quote: (ch: string) => boolean, bracket: (ch: string) => boolean };
+	puBlic readonly readOnly: Boolean;
+	puBlic readonly taBSize: numBer;
+	puBlic readonly indentSize: numBer;
+	puBlic readonly insertSpaces: Boolean;
+	puBlic readonly pageSize: numBer;
+	puBlic readonly lineHeight: numBer;
+	puBlic readonly useTaBStops: Boolean;
+	puBlic readonly wordSeparators: string;
+	puBlic readonly emptySelectionClipBoard: Boolean;
+	puBlic readonly copyWithSyntaxHighlighting: Boolean;
+	puBlic readonly multiCursorMergeOverlapping: Boolean;
+	puBlic readonly multiCursorPaste: 'spread' | 'full';
+	puBlic readonly autoClosingBrackets: EditorAutoClosingStrategy;
+	puBlic readonly autoClosingQuotes: EditorAutoClosingStrategy;
+	puBlic readonly autoClosingOvertype: EditorAutoClosingOvertypeStrategy;
+	puBlic readonly autoSurround: EditorAutoSurroundStrategy;
+	puBlic readonly autoIndent: EditorAutoIndentStrategy;
+	puBlic readonly autoClosingPairsOpen2: Map<string, StandardAutoClosingPairConditional[]>;
+	puBlic readonly autoClosingPairsClose2: Map<string, StandardAutoClosingPairConditional[]>;
+	puBlic readonly surroundingPairs: CharacterMap;
+	puBlic readonly shouldAutoCloseBefore: { quote: (ch: string) => Boolean, Bracket: (ch: string) => Boolean };
 
 	private readonly _languageIdentifier: LanguageIdentifier;
-	private _electricChars: { [key: string]: boolean; } | null;
+	private _electricChars: { [key: string]: Boolean; } | null;
 
-	public static shouldRecreate(e: ConfigurationChangedEvent): boolean {
+	puBlic static shouldRecreate(e: ConfigurationChangedEvent): Boolean {
 		return (
 			e.hasChanged(EditorOption.layoutInfo)
 			|| e.hasChanged(EditorOption.wordSeparators)
-			|| e.hasChanged(EditorOption.emptySelectionClipboard)
+			|| e.hasChanged(EditorOption.emptySelectionClipBoard)
 			|| e.hasChanged(EditorOption.multiCursorMergeOverlapping)
 			|| e.hasChanged(EditorOption.multiCursorPaste)
 			|| e.hasChanged(EditorOption.autoClosingBrackets)
 			|| e.hasChanged(EditorOption.autoClosingQuotes)
 			|| e.hasChanged(EditorOption.autoClosingOvertype)
 			|| e.hasChanged(EditorOption.autoSurround)
-			|| e.hasChanged(EditorOption.useTabStops)
+			|| e.hasChanged(EditorOption.useTaBStops)
 			|| e.hasChanged(EditorOption.lineHeight)
 			|| e.hasChanged(EditorOption.readOnly)
 		);
@@ -111,14 +111,14 @@ export class CursorConfiguration {
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 
 		this.readOnly = options.get(EditorOption.readOnly);
-		this.tabSize = modelOptions.tabSize;
+		this.taBSize = modelOptions.taBSize;
 		this.indentSize = modelOptions.indentSize;
 		this.insertSpaces = modelOptions.insertSpaces;
 		this.lineHeight = options.get(EditorOption.lineHeight);
 		this.pageSize = Math.max(1, Math.floor(layoutInfo.height / this.lineHeight) - 2);
-		this.useTabStops = options.get(EditorOption.useTabStops);
+		this.useTaBStops = options.get(EditorOption.useTaBStops);
 		this.wordSeparators = options.get(EditorOption.wordSeparators);
-		this.emptySelectionClipboard = options.get(EditorOption.emptySelectionClipboard);
+		this.emptySelectionClipBoard = options.get(EditorOption.emptySelectionClipBoard);
 		this.copyWithSyntaxHighlighting = options.get(EditorOption.copyWithSyntaxHighlighting);
 		this.multiCursorMergeOverlapping = options.get(EditorOption.multiCursorMergeOverlapping);
 		this.multiCursorPaste = options.get(EditorOption.multiCursorPaste);
@@ -133,7 +133,7 @@ export class CursorConfiguration {
 
 		this.shouldAutoCloseBefore = {
 			quote: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingQuotes),
-			bracket: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingBrackets)
+			Bracket: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingBrackets)
 		};
 
 		const autoClosingPairs = LanguageConfigurationRegistry.getAutoClosingPairs(languageIdentifier.id);
@@ -148,7 +148,7 @@ export class CursorConfiguration {
 		}
 	}
 
-	public get electricChars() {
+	puBlic get electricChars() {
 		if (!this._electricChars) {
 			this._electricChars = {};
 			let electricChars = CursorConfiguration._getElectricCharacters(this._languageIdentifier);
@@ -161,7 +161,7 @@ export class CursorConfiguration {
 		return this._electricChars;
 	}
 
-	public normalizeIndentation(str: string): string {
+	puBlic normalizeIndentation(str: string): string {
 		return TextModel.normalizeIndentation(str, this.indentSize, this.insertSpaces);
 	}
 
@@ -174,9 +174,9 @@ export class CursorConfiguration {
 		}
 	}
 
-	private static _getShouldAutoClose(languageIdentifier: LanguageIdentifier, autoCloseConfig: EditorAutoClosingStrategy): (ch: string) => boolean {
+	private static _getShouldAutoClose(languageIdentifier: LanguageIdentifier, autoCloseConfig: EditorAutoClosingStrategy): (ch: string) => Boolean {
 		switch (autoCloseConfig) {
-			case 'beforeWhitespace':
+			case 'BeforeWhitespace':
 				return autoCloseBeforeWhitespace;
 			case 'languageDefined':
 				return CursorConfiguration._getLanguageDefinedShouldAutoClose(languageIdentifier);
@@ -187,7 +187,7 @@ export class CursorConfiguration {
 		}
 	}
 
-	private static _getLanguageDefinedShouldAutoClose(languageIdentifier: LanguageIdentifier): (ch: string) => boolean {
+	private static _getLanguageDefinedShouldAutoClose(languageIdentifier: LanguageIdentifier): (ch: string) => Boolean {
 		try {
 			const autoCloseBeforeSet = LanguageConfigurationRegistry.getAutoCloseBeforeSet(languageIdentifier.id);
 			return c => autoCloseBeforeSet.indexOf(c) !== -1;
@@ -211,12 +211,12 @@ export class CursorConfiguration {
  * Represents a simple model (either the model or the view model).
  */
 export interface ICursorSimpleModel {
-	getLineCount(): number;
-	getLineContent(lineNumber: number): string;
-	getLineMinColumn(lineNumber: number): number;
-	getLineMaxColumn(lineNumber: number): number;
-	getLineFirstNonWhitespaceColumn(lineNumber: number): number;
-	getLineLastNonWhitespaceColumn(lineNumber: number): number;
+	getLineCount(): numBer;
+	getLineContent(lineNumBer: numBer): string;
+	getLineMinColumn(lineNumBer: numBer): numBer;
+	getLineMaxColumn(lineNumBer: numBer): numBer;
+	getLineFirstNonWhitespaceColumn(lineNumBer: numBer): numBer;
+	getLineLastNonWhitespaceColumn(lineNumBer: numBer): numBer;
 }
 
 /**
@@ -225,83 +225,83 @@ export interface ICursorSimpleModel {
 export class SingleCursorState {
 	_singleCursorStateBrand: void;
 
-	// --- selection can start as a range (think double click and drag)
-	public readonly selectionStart: Range;
-	public readonly selectionStartLeftoverVisibleColumns: number;
-	public readonly position: Position;
-	public readonly leftoverVisibleColumns: number;
-	public readonly selection: Selection;
+	// --- selection can start as a range (think douBle click and drag)
+	puBlic readonly selectionStart: Range;
+	puBlic readonly selectionStartLeftoverVisiBleColumns: numBer;
+	puBlic readonly position: Position;
+	puBlic readonly leftoverVisiBleColumns: numBer;
+	puBlic readonly selection: Selection;
 
 	constructor(
 		selectionStart: Range,
-		selectionStartLeftoverVisibleColumns: number,
+		selectionStartLeftoverVisiBleColumns: numBer,
 		position: Position,
-		leftoverVisibleColumns: number,
+		leftoverVisiBleColumns: numBer,
 	) {
 		this.selectionStart = selectionStart;
-		this.selectionStartLeftoverVisibleColumns = selectionStartLeftoverVisibleColumns;
+		this.selectionStartLeftoverVisiBleColumns = selectionStartLeftoverVisiBleColumns;
 		this.position = position;
-		this.leftoverVisibleColumns = leftoverVisibleColumns;
+		this.leftoverVisiBleColumns = leftoverVisiBleColumns;
 		this.selection = SingleCursorState._computeSelection(this.selectionStart, this.position);
 	}
 
-	public equals(other: SingleCursorState) {
+	puBlic equals(other: SingleCursorState) {
 		return (
-			this.selectionStartLeftoverVisibleColumns === other.selectionStartLeftoverVisibleColumns
-			&& this.leftoverVisibleColumns === other.leftoverVisibleColumns
+			this.selectionStartLeftoverVisiBleColumns === other.selectionStartLeftoverVisiBleColumns
+			&& this.leftoverVisiBleColumns === other.leftoverVisiBleColumns
 			&& this.position.equals(other.position)
 			&& this.selectionStart.equalsRange(other.selectionStart)
 		);
 	}
 
-	public hasSelection(): boolean {
+	puBlic hasSelection(): Boolean {
 		return (!this.selection.isEmpty() || !this.selectionStart.isEmpty());
 	}
 
-	public move(inSelectionMode: boolean, lineNumber: number, column: number, leftoverVisibleColumns: number): SingleCursorState {
+	puBlic move(inSelectionMode: Boolean, lineNumBer: numBer, column: numBer, leftoverVisiBleColumns: numBer): SingleCursorState {
 		if (inSelectionMode) {
 			// move just position
 			return new SingleCursorState(
 				this.selectionStart,
-				this.selectionStartLeftoverVisibleColumns,
-				new Position(lineNumber, column),
-				leftoverVisibleColumns
+				this.selectionStartLeftoverVisiBleColumns,
+				new Position(lineNumBer, column),
+				leftoverVisiBleColumns
 			);
 		} else {
 			// move everything
 			return new SingleCursorState(
-				new Range(lineNumber, column, lineNumber, column),
-				leftoverVisibleColumns,
-				new Position(lineNumber, column),
-				leftoverVisibleColumns
+				new Range(lineNumBer, column, lineNumBer, column),
+				leftoverVisiBleColumns,
+				new Position(lineNumBer, column),
+				leftoverVisiBleColumns
 			);
 		}
 	}
 
 	private static _computeSelection(selectionStart: Range, position: Position): Selection {
-		let startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number;
+		let startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer;
 		if (selectionStart.isEmpty()) {
-			startLineNumber = selectionStart.startLineNumber;
+			startLineNumBer = selectionStart.startLineNumBer;
 			startColumn = selectionStart.startColumn;
-			endLineNumber = position.lineNumber;
+			endLineNumBer = position.lineNumBer;
 			endColumn = position.column;
 		} else {
 			if (position.isBeforeOrEqual(selectionStart.getStartPosition())) {
-				startLineNumber = selectionStart.endLineNumber;
+				startLineNumBer = selectionStart.endLineNumBer;
 				startColumn = selectionStart.endColumn;
-				endLineNumber = position.lineNumber;
+				endLineNumBer = position.lineNumBer;
 				endColumn = position.column;
 			} else {
-				startLineNumber = selectionStart.startLineNumber;
+				startLineNumBer = selectionStart.startLineNumBer;
 				startColumn = selectionStart.startColumn;
-				endLineNumber = position.lineNumber;
+				endLineNumBer = position.lineNumBer;
 				endColumn = position.column;
 			}
 		}
 		return new Selection(
-			startLineNumber,
+			startLineNumBer,
 			startColumn,
-			endLineNumber,
+			endLineNumBer,
 			endColumn
 		);
 	}
@@ -310,9 +310,9 @@ export class SingleCursorState {
 export class CursorContext {
 	_cursorContextBrand: void;
 
-	public readonly model: ITextModel;
-	public readonly coordinatesConverter: ICoordinatesConverter;
-	public readonly cursorConfig: CursorConfiguration;
+	puBlic readonly model: ITextModel;
+	puBlic readonly coordinatesConverter: ICoordinatesConverter;
+	puBlic readonly cursorConfig: CursorConfiguration;
 
 	constructor(model: ITextModel, coordinatesConverter: ICoordinatesConverter, cursorConfig: CursorConfiguration) {
 		this.model = model;
@@ -346,27 +346,27 @@ export type PartialCursorState = CursorState | PartialModelCursorState | Partial
 export class CursorState {
 	_cursorStateBrand: void;
 
-	public static fromModelState(modelState: SingleCursorState): PartialModelCursorState {
+	puBlic static fromModelState(modelState: SingleCursorState): PartialModelCursorState {
 		return new PartialModelCursorState(modelState);
 	}
 
-	public static fromViewState(viewState: SingleCursorState): PartialViewCursorState {
+	puBlic static fromViewState(viewState: SingleCursorState): PartialViewCursorState {
 		return new PartialViewCursorState(viewState);
 	}
 
-	public static fromModelSelection(modelSelection: ISelection): PartialModelCursorState {
-		const selectionStartLineNumber = modelSelection.selectionStartLineNumber;
+	puBlic static fromModelSelection(modelSelection: ISelection): PartialModelCursorState {
+		const selectionStartLineNumBer = modelSelection.selectionStartLineNumBer;
 		const selectionStartColumn = modelSelection.selectionStartColumn;
-		const positionLineNumber = modelSelection.positionLineNumber;
+		const positionLineNumBer = modelSelection.positionLineNumBer;
 		const positionColumn = modelSelection.positionColumn;
 		const modelState = new SingleCursorState(
-			new Range(selectionStartLineNumber, selectionStartColumn, selectionStartLineNumber, selectionStartColumn), 0,
-			new Position(positionLineNumber, positionColumn), 0
+			new Range(selectionStartLineNumBer, selectionStartColumn, selectionStartLineNumBer, selectionStartColumn), 0,
+			new Position(positionLineNumBer, positionColumn), 0
 		);
 		return CursorState.fromModelState(modelState);
 	}
 
-	public static fromModelSelections(modelSelections: readonly ISelection[]): PartialModelCursorState[] {
+	puBlic static fromModelSelections(modelSelections: readonly ISelection[]): PartialModelCursorState[] {
 		let states: PartialModelCursorState[] = [];
 		for (let i = 0, len = modelSelections.length; i < len; i++) {
 			states[i] = this.fromModelSelection(modelSelections[i]);
@@ -382,7 +382,7 @@ export class CursorState {
 		this.viewState = viewState;
 	}
 
-	public equals(other: CursorState): boolean {
+	puBlic equals(other: CursorState): Boolean {
 		return (this.viewState.equals(other.viewState) && this.modelState.equals(other.modelState));
 	}
 }
@@ -392,15 +392,15 @@ export class EditOperationResult {
 
 	readonly type: EditOperationType;
 	readonly commands: Array<ICommand | null>;
-	readonly shouldPushStackElementBefore: boolean;
-	readonly shouldPushStackElementAfter: boolean;
+	readonly shouldPushStackElementBefore: Boolean;
+	readonly shouldPushStackElementAfter: Boolean;
 
 	constructor(
 		type: EditOperationType,
 		commands: Array<ICommand | null>,
 		opts: {
-			shouldPushStackElementBefore: boolean;
-			shouldPushStackElementAfter: boolean;
+			shouldPushStackElementBefore: Boolean;
+			shouldPushStackElementAfter: Boolean;
 		}
 	) {
 		this.type = type;
@@ -411,11 +411,11 @@ export class EditOperationResult {
 }
 
 /**
- * Common operations that work and make sense both on the model and on the view model.
+ * Common operations that work and make sense Both on the model and on the view model.
  */
 export class CursorColumns {
 
-	public static visibleColumnFromColumn(lineContent: string, column: number, tabSize: number): number {
+	puBlic static visiBleColumnFromColumn(lineContent: string, column: numBer, taBSize: numBer): numBer {
 		const lineContentLength = lineContent.length;
 		const endOffset = column - 1 < lineContentLength ? column - 1 : lineContentLength;
 
@@ -425,15 +425,15 @@ export class CursorColumns {
 			const codePoint = strings.getNextCodePoint(lineContent, endOffset, i);
 			i += (codePoint >= Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN ? 2 : 1);
 
-			if (codePoint === CharCode.Tab) {
-				result = CursorColumns.nextRenderTabStop(result, tabSize);
+			if (codePoint === CharCode.TaB) {
+				result = CursorColumns.nextRenderTaBStop(result, taBSize);
 			} else {
 				let graphemeBreakType = strings.getGraphemeBreakType(codePoint);
 				while (i < endOffset) {
 					const nextCodePoint = strings.getNextCodePoint(lineContent, endOffset, i);
 					const nextGraphemeBreakType = strings.getGraphemeBreakType(nextCodePoint);
-					if (strings.breakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
-						break;
+					if (strings.BreakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
+						Break;
 					}
 					i += (nextCodePoint >= Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN ? 2 : 1);
 					graphemeBreakType = nextGraphemeBreakType;
@@ -448,7 +448,7 @@ export class CursorColumns {
 		return result;
 	}
 
-	public static toStatusbarColumn(lineContent: string, column: number, tabSize: number): number {
+	puBlic static toStatusBarColumn(lineContent: string, column: numBer, taBSize: numBer): numBer {
 		const lineContentLength = lineContent.length;
 		const endOffset = column - 1 < lineContentLength ? column - 1 : lineContentLength;
 
@@ -458,8 +458,8 @@ export class CursorColumns {
 			const codePoint = strings.getNextCodePoint(lineContent, endOffset, i);
 			i += (codePoint >= Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN ? 2 : 1);
 
-			if (codePoint === CharCode.Tab) {
-				result = CursorColumns.nextRenderTabStop(result, tabSize);
+			if (codePoint === CharCode.TaB) {
+				result = CursorColumns.nextRenderTaBStop(result, taBSize);
 			} else {
 				result = result + 1;
 			}
@@ -468,73 +468,73 @@ export class CursorColumns {
 		return result + 1;
 	}
 
-	public static visibleColumnFromColumn2(config: CursorConfiguration, model: ICursorSimpleModel, position: Position): number {
-		return this.visibleColumnFromColumn(model.getLineContent(position.lineNumber), position.column, config.tabSize);
+	puBlic static visiBleColumnFromColumn2(config: CursorConfiguration, model: ICursorSimpleModel, position: Position): numBer {
+		return this.visiBleColumnFromColumn(model.getLineContent(position.lineNumBer), position.column, config.taBSize);
 	}
 
-	public static columnFromVisibleColumn(lineContent: string, visibleColumn: number, tabSize: number): number {
-		if (visibleColumn <= 0) {
+	puBlic static columnFromVisiBleColumn(lineContent: string, visiBleColumn: numBer, taBSize: numBer): numBer {
+		if (visiBleColumn <= 0) {
 			return 1;
 		}
 
 		const lineLength = lineContent.length;
 
-		let beforeVisibleColumn = 0;
-		let beforeColumn = 1;
+		let BeforeVisiBleColumn = 0;
+		let BeforeColumn = 1;
 		let i = 0;
 		while (i < lineLength) {
 			const codePoint = strings.getNextCodePoint(lineContent, lineLength, i);
 			i += (codePoint >= Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN ? 2 : 1);
 
-			let afterVisibleColumn: number;
-			if (codePoint === CharCode.Tab) {
-				afterVisibleColumn = CursorColumns.nextRenderTabStop(beforeVisibleColumn, tabSize);
+			let afterVisiBleColumn: numBer;
+			if (codePoint === CharCode.TaB) {
+				afterVisiBleColumn = CursorColumns.nextRenderTaBStop(BeforeVisiBleColumn, taBSize);
 			} else {
 				let graphemeBreakType = strings.getGraphemeBreakType(codePoint);
 				while (i < lineLength) {
 					const nextCodePoint = strings.getNextCodePoint(lineContent, lineLength, i);
 					const nextGraphemeBreakType = strings.getGraphemeBreakType(nextCodePoint);
-					if (strings.breakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
-						break;
+					if (strings.BreakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
+						Break;
 					}
 					i += (nextCodePoint >= Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN ? 2 : 1);
 					graphemeBreakType = nextGraphemeBreakType;
 				}
 				if (strings.isFullWidthCharacter(codePoint) || strings.isEmojiImprecise(codePoint)) {
-					afterVisibleColumn = beforeVisibleColumn + 2;
+					afterVisiBleColumn = BeforeVisiBleColumn + 2;
 				} else {
-					afterVisibleColumn = beforeVisibleColumn + 1;
+					afterVisiBleColumn = BeforeVisiBleColumn + 1;
 				}
 			}
 			const afterColumn = i + 1;
 
-			if (afterVisibleColumn >= visibleColumn) {
-				const beforeDelta = visibleColumn - beforeVisibleColumn;
-				const afterDelta = afterVisibleColumn - visibleColumn;
-				if (afterDelta < beforeDelta) {
+			if (afterVisiBleColumn >= visiBleColumn) {
+				const BeforeDelta = visiBleColumn - BeforeVisiBleColumn;
+				const afterDelta = afterVisiBleColumn - visiBleColumn;
+				if (afterDelta < BeforeDelta) {
 					return afterColumn;
 				} else {
-					return beforeColumn;
+					return BeforeColumn;
 				}
 			}
 
-			beforeVisibleColumn = afterVisibleColumn;
-			beforeColumn = afterColumn;
+			BeforeVisiBleColumn = afterVisiBleColumn;
+			BeforeColumn = afterColumn;
 		}
 
 		// walked the entire string
 		return lineLength + 1;
 	}
 
-	public static columnFromVisibleColumn2(config: CursorConfiguration, model: ICursorSimpleModel, lineNumber: number, visibleColumn: number): number {
-		let result = this.columnFromVisibleColumn(model.getLineContent(lineNumber), visibleColumn, config.tabSize);
+	puBlic static columnFromVisiBleColumn2(config: CursorConfiguration, model: ICursorSimpleModel, lineNumBer: numBer, visiBleColumn: numBer): numBer {
+		let result = this.columnFromVisiBleColumn(model.getLineContent(lineNumBer), visiBleColumn, config.taBSize);
 
-		let minColumn = model.getLineMinColumn(lineNumber);
+		let minColumn = model.getLineMinColumn(lineNumBer);
 		if (result < minColumn) {
 			return minColumn;
 		}
 
-		let maxColumn = model.getLineMaxColumn(lineNumber);
+		let maxColumn = model.getLineMaxColumn(lineNumBer);
 		if (result > maxColumn) {
 			return maxColumn;
 		}
@@ -543,34 +543,34 @@ export class CursorColumns {
 	}
 
 	/**
-	 * ATTENTION: This works with 0-based columns (as oposed to the regular 1-based columns)
+	 * ATTENTION: This works with 0-Based columns (as oposed to the regular 1-Based columns)
 	 */
-	public static nextRenderTabStop(visibleColumn: number, tabSize: number): number {
-		return visibleColumn + tabSize - visibleColumn % tabSize;
+	puBlic static nextRenderTaBStop(visiBleColumn: numBer, taBSize: numBer): numBer {
+		return visiBleColumn + taBSize - visiBleColumn % taBSize;
 	}
 
 	/**
-	 * ATTENTION: This works with 0-based columns (as oposed to the regular 1-based columns)
+	 * ATTENTION: This works with 0-Based columns (as oposed to the regular 1-Based columns)
 	 */
-	public static nextIndentTabStop(visibleColumn: number, indentSize: number): number {
-		return visibleColumn + indentSize - visibleColumn % indentSize;
+	puBlic static nextIndentTaBStop(visiBleColumn: numBer, indentSize: numBer): numBer {
+		return visiBleColumn + indentSize - visiBleColumn % indentSize;
 	}
 
 	/**
-	 * ATTENTION: This works with 0-based columns (as oposed to the regular 1-based columns)
+	 * ATTENTION: This works with 0-Based columns (as oposed to the regular 1-Based columns)
 	 */
-	public static prevRenderTabStop(column: number, tabSize: number): number {
-		return column - 1 - (column - 1) % tabSize;
+	puBlic static prevRenderTaBStop(column: numBer, taBSize: numBer): numBer {
+		return column - 1 - (column - 1) % taBSize;
 	}
 
 	/**
-	 * ATTENTION: This works with 0-based columns (as oposed to the regular 1-based columns)
+	 * ATTENTION: This works with 0-Based columns (as oposed to the regular 1-Based columns)
 	 */
-	public static prevIndentTabStop(column: number, indentSize: number): number {
+	puBlic static prevIndentTaBStop(column: numBer, indentSize: numBer): numBer {
 		return column - 1 - (column - 1) % indentSize;
 	}
 }
 
-export function isQuote(ch: string): boolean {
+export function isQuote(ch: string): Boolean {
 	return (ch === '\'' || ch === '"' || ch === '`');
 }

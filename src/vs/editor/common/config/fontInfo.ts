@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 import { EditorOptions, ValidatedEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
 
 /**
- * Determined from empirical observations.
+ * Determined from empirical oBservations.
  * @internal
  */
 const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
@@ -19,12 +19,12 @@ const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
 const MINIMUM_LINE_HEIGHT = 8;
 
 export class BareFontInfo {
-	readonly _bareFontInfoBrand: void;
+	readonly _BareFontInfoBrand: void;
 
 	/**
 	 * @internal
 	 */
-	public static createFromValidatedSettings(options: ValidatedEditorOptions, zoomLevel: number, ignoreEditorZoom: boolean): BareFontInfo {
+	puBlic static createFromValidatedSettings(options: ValidatedEditorOptions, zoomLevel: numBer, ignoreEditorZoom: Boolean): BareFontInfo {
 		const fontFamily = options.get(EditorOption.fontFamily);
 		const fontWeight = options.get(EditorOption.fontWeight);
 		const fontSize = options.get(EditorOption.fontSize);
@@ -37,7 +37,7 @@ export class BareFontInfo {
 	/**
 	 * @internal
 	 */
-	public static createFromRawSettings(opts: { fontFamily?: string; fontWeight?: string; fontSize?: number; fontLigatures?: boolean | string; lineHeight?: number; letterSpacing?: number; }, zoomLevel: number, ignoreEditorZoom: boolean = false): BareFontInfo {
+	puBlic static createFromRawSettings(opts: { fontFamily?: string; fontWeight?: string; fontSize?: numBer; fontLigatures?: Boolean | string; lineHeight?: numBer; letterSpacing?: numBer; }, zoomLevel: numBer, ignoreEditorZoom: Boolean = false): BareFontInfo {
 		const fontFamily = EditorOptions.fontFamily.validate(opts.fontFamily);
 		const fontWeight = EditorOptions.fontWeight.validate(opts.fontWeight);
 		const fontSize = EditorOptions.fontSize.validate(opts.fontSize);
@@ -50,7 +50,7 @@ export class BareFontInfo {
 	/**
 	 * @internal
 	 */
-	private static _create(fontFamily: string, fontWeight: string, fontSize: number, fontFeatureSettings: string, lineHeight: number, letterSpacing: number, zoomLevel: number, ignoreEditorZoom: boolean): BareFontInfo {
+	private static _create(fontFamily: string, fontWeight: string, fontSize: numBer, fontFeatureSettings: string, lineHeight: numBer, letterSpacing: numBer, zoomLevel: numBer, ignoreEditorZoom: Boolean): BareFontInfo {
 		if (lineHeight === 0) {
 			lineHeight = Math.round(GOLDEN_LINE_HEIGHT_RATIO * fontSize);
 		} else if (lineHeight < MINIMUM_LINE_HEIGHT) {
@@ -72,25 +72,25 @@ export class BareFontInfo {
 		});
 	}
 
-	readonly zoomLevel: number;
+	readonly zoomLevel: numBer;
 	readonly fontFamily: string;
 	readonly fontWeight: string;
-	readonly fontSize: number;
+	readonly fontSize: numBer;
 	readonly fontFeatureSettings: string;
-	readonly lineHeight: number;
-	readonly letterSpacing: number;
+	readonly lineHeight: numBer;
+	readonly letterSpacing: numBer;
 
 	/**
 	 * @internal
 	 */
 	protected constructor(opts: {
-		zoomLevel: number;
+		zoomLevel: numBer;
 		fontFamily: string;
 		fontWeight: string;
-		fontSize: number;
+		fontSize: numBer;
 		fontFeatureSettings: string;
-		lineHeight: number;
-		letterSpacing: number;
+		lineHeight: numBer;
+		letterSpacing: numBer;
 	}) {
 		this.zoomLevel = opts.zoomLevel;
 		this.fontFamily = String(opts.fontFamily);
@@ -104,16 +104,16 @@ export class BareFontInfo {
 	/**
 	 * @internal
 	 */
-	public getId(): string {
+	puBlic getId(): string {
 		return this.zoomLevel + '-' + this.fontFamily + '-' + this.fontWeight + '-' + this.fontSize + '-' + this.fontFeatureSettings + '-' + this.lineHeight + '-' + this.letterSpacing;
 	}
 
 	/**
 	 * @internal
 	 */
-	public getMassagedFontFamily(): string {
+	puBlic getMassagedFontFamily(): string {
 		if (/[,"']/.test(this.fontFamily)) {
-			// Looks like the font family might be already escaped
+			// Looks like the font family might Be already escaped
 			return this.fontFamily;
 		}
 		if (/[+ ]/.test(this.fontFamily)) {
@@ -128,36 +128,36 @@ export class BareFontInfo {
 export class FontInfo extends BareFontInfo {
 	readonly _editorStylingBrand: void;
 
-	readonly isTrusted: boolean;
-	readonly isMonospace: boolean;
-	readonly typicalHalfwidthCharacterWidth: number;
-	readonly typicalFullwidthCharacterWidth: number;
-	readonly canUseHalfwidthRightwardsArrow: boolean;
-	readonly spaceWidth: number;
-	readonly middotWidth: number;
-	readonly wsmiddotWidth: number;
-	readonly maxDigitWidth: number;
+	readonly isTrusted: Boolean;
+	readonly isMonospace: Boolean;
+	readonly typicalHalfwidthCharacterWidth: numBer;
+	readonly typicalFullwidthCharacterWidth: numBer;
+	readonly canUseHalfwidthRightwardsArrow: Boolean;
+	readonly spaceWidth: numBer;
+	readonly middotWidth: numBer;
+	readonly wsmiddotWidth: numBer;
+	readonly maxDigitWidth: numBer;
 
 	/**
 	 * @internal
 	 */
 	constructor(opts: {
-		zoomLevel: number;
+		zoomLevel: numBer;
 		fontFamily: string;
 		fontWeight: string;
-		fontSize: number;
+		fontSize: numBer;
 		fontFeatureSettings: string;
-		lineHeight: number;
-		letterSpacing: number;
-		isMonospace: boolean;
-		typicalHalfwidthCharacterWidth: number;
-		typicalFullwidthCharacterWidth: number;
-		canUseHalfwidthRightwardsArrow: boolean;
-		spaceWidth: number;
-		middotWidth: number;
-		wsmiddotWidth: number;
-		maxDigitWidth: number;
-	}, isTrusted: boolean) {
+		lineHeight: numBer;
+		letterSpacing: numBer;
+		isMonospace: Boolean;
+		typicalHalfwidthCharacterWidth: numBer;
+		typicalFullwidthCharacterWidth: numBer;
+		canUseHalfwidthRightwardsArrow: Boolean;
+		spaceWidth: numBer;
+		middotWidth: numBer;
+		wsmiddotWidth: numBer;
+		maxDigitWidth: numBer;
+	}, isTrusted: Boolean) {
 		super(opts);
 		this.isTrusted = isTrusted;
 		this.isMonospace = opts.isMonospace;
@@ -173,7 +173,7 @@ export class FontInfo extends BareFontInfo {
 	/**
 	 * @internal
 	 */
-	public equals(other: FontInfo): boolean {
+	puBlic equals(other: FontInfo): Boolean {
 		return (
 			this.fontFamily === other.fontFamily
 			&& this.fontWeight === other.fontWeight

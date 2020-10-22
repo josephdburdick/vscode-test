@@ -4,37 +4,37 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/callHierarchy';
-import * as peekView from 'vs/editor/contrib/peekView/peekView';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import * as peekView from 'vs/editor/contriB/peekView/peekView';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { CallHierarchyDirection, CallHierarchyModel } from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
-import { WorkbenchAsyncDataTree, IWorkbenchAsyncDataTreeOptions } from 'vs/platform/list/browser/listService';
-import { FuzzyScore } from 'vs/base/common/filters';
-import * as callHTree from 'vs/workbench/contrib/callHierarchy/browser/callHierarchyTree';
-import { IAsyncDataTreeViewState } from 'vs/base/browser/ui/tree/asyncDataTree';
+import { CallHierarchyDirection, CallHierarchyModel } from 'vs/workBench/contriB/callHierarchy/common/callHierarchy';
+import { WorkBenchAsyncDataTree, IWorkBenchAsyncDataTreeOptions } from 'vs/platform/list/Browser/listService';
+import { FuzzyScore } from 'vs/Base/common/filters';
+import * as callHTree from 'vs/workBench/contriB/callHierarchy/Browser/callHierarchyTree';
+import { IAsyncDataTreeViewState } from 'vs/Base/Browser/ui/tree/asyncDataTree';
 import { localize } from 'vs/nls';
 import { ScrollType } from 'vs/editor/common/editorCommon';
 import { IRange, Range } from 'vs/editor/common/core/range';
-import { SplitView, Orientation, Sizing } from 'vs/base/browser/ui/splitview/splitview';
-import { Dimension } from 'vs/base/browser/dom';
-import { Event } from 'vs/base/common/event';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { EmbeddedCodeEditorWidget } from 'vs/editor/browser/widget/embeddedCodeEditorWidget';
+import { SplitView, Orientation, Sizing } from 'vs/Base/Browser/ui/splitview/splitview';
+import { Dimension } from 'vs/Base/Browser/dom';
+import { Event } from 'vs/Base/common/event';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { EmBeddedCodeEditorWidget } from 'vs/editor/Browser/widget/emBeddedCodeEditorWidget';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { toDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { TrackedRangeStickiness, IModelDeltaDecoration, IModelDecorationOptions, OverviewRulerLane } from 'vs/editor/common/model';
 import { registerThemingParticipant, themeColorFromId, IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
 import { IPosition } from 'vs/editor/common/core/position';
-import { IAction } from 'vs/base/common/actions';
-import { IActionBarOptions, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
+import { IAction } from 'vs/Base/common/actions';
+import { IActionBarOptions, ActionsOrientation } from 'vs/Base/Browser/ui/actionBar/actionBar';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { Color } from 'vs/base/common/color';
-import { TreeMouseEventTarget, ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { URI } from 'vs/base/common/uri';
+import { Color } from 'vs/Base/common/color';
+import { TreeMouseEventTarget, ITreeNode } from 'vs/Base/Browser/ui/tree/tree';
+import { URI } from 'vs/Base/common/uri';
 import { MenuId, IMenuService } from 'vs/platform/actions/common/actions';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { createAndFillInActionBarActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
+import { createAndFillInActionBarActions } from 'vs/platform/actions/Browser/menuEntryActionViewItem';
 
 const enum State {
 	Loading = 'loading',
@@ -59,12 +59,12 @@ class LayoutInfo {
 	}
 
 	constructor(
-		public ratio: number,
-		public height: number
+		puBlic ratio: numBer,
+		puBlic height: numBer
 	) { }
 }
 
-class CallHierarchyTree extends WorkbenchAsyncDataTree<CallHierarchyModel, callHTree.Call, FuzzyScore>{ }
+class CallHierarchyTree extends WorkBenchAsyncDataTree<CallHierarchyModel, callHTree.Call, FuzzyScore>{ }
 
 export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 
@@ -75,11 +75,11 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 	private _splitView!: SplitView;
 	private _tree!: CallHierarchyTree;
 	private _treeViewStates = new Map<CallHierarchyDirection, IAsyncDataTreeViewState>();
-	private _editor!: EmbeddedCodeEditorWidget;
+	private _editor!: EmBeddedCodeEditorWidget;
 	private _dim!: Dimension;
 	private _layoutInfo!: LayoutInfo;
 
-	private readonly _previewDisposable = new DisposableStore();
+	private readonly _previewDisposaBle = new DisposaBleStore();
 
 	constructor(
 		editor: ICodeEditor,
@@ -94,12 +94,12 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		@IContextKeyService private readonly _contextKeyService: IContextKeyService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 	) {
-		super(editor, { showFrame: true, showArrow: true, isResizeable: true, isAccessible: true }, _instantiationService);
+		super(editor, { showFrame: true, showArrow: true, isResizeaBle: true, isAccessiBle: true }, _instantiationService);
 		this.create();
 		this._peekViewService.addExclusiveWidget(editor, this);
 		this._applyTheme(themeService.getColorTheme());
-		this._disposables.add(themeService.onDidColorThemeChange(this._applyTheme, this));
-		this._disposables.add(this._previewDisposable);
+		this._disposaBles.add(themeService.onDidColorThemeChange(this._applyTheme, this));
+		this._disposaBles.add(this._previewDisposaBle);
 	}
 
 	dispose(): void {
@@ -115,10 +115,10 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 	}
 
 	private _applyTheme(theme: IColorTheme) {
-		const borderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
+		const BorderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
 		this.style({
-			arrowColor: borderColor,
-			frameColor: borderColor,
+			arrowColor: BorderColor,
+			frameColor: BorderColor,
 			headerBackgroundColor: theme.getColor(peekView.peekViewTitleBackground) || Color.transparent,
 			primaryHeadingColor: theme.getColor(peekView.peekViewTitleForeground),
 			secondaryHeadingColor: theme.getColor(peekView.peekViewTitleInfoForeground)
@@ -129,15 +129,15 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		super._fillHead(container, true);
 
 		const menu = this._menuService.createMenu(CallHierarchyTreePeekWidget.TitleMenu, this._contextKeyService);
-		const updateToolbar = () => {
+		const updateToolBar = () => {
 			const actions: IAction[] = [];
 			createAndFillInActionBarActions(menu, undefined, actions);
-			this._actionbarWidget!.clear();
-			this._actionbarWidget!.push(actions, { label: false, icon: true });
+			this._actionBarWidget!.clear();
+			this._actionBarWidget!.push(actions, { laBel: false, icon: true });
 		};
-		this._disposables.add(menu);
-		this._disposables.add(menu.onDidChange(updateToolbar));
-		updateToolbar();
+		this._disposaBles.add(menu);
+		this._disposaBles.add(menu.onDidChange(updateToolBar));
+		updateToolBar();
 	}
 
 	protected _getActionBarOptions(): IActionBarOptions {
@@ -159,7 +159,7 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		message.classList.add('message');
 		parent.appendChild(message);
 		this._message = message;
-		this._message.tabIndex = 0;
+		this._message.taBIndex = 0;
 
 		const container = document.createElement('div');
 		container.classList.add('results');
@@ -173,8 +173,8 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		container.appendChild(editorContainer);
 		let editorOptions: IEditorOptions = {
 			scrollBeyondLastLine: false,
-			scrollbar: {
-				verticalScrollbarSize: 14,
+			scrollBar: {
+				verticalScrollBarSize: 14,
 				horizontal: 'auto',
 				useShadows: true,
 				verticalHasArrows: false,
@@ -184,11 +184,11 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 			overviewRulerLanes: 2,
 			fixedOverflowWidgets: true,
 			minimap: {
-				enabled: false
+				enaBled: false
 			}
 		};
 		this._editor = this._instantiationService.createInstance(
-			EmbeddedCodeEditorWidget,
+			EmBeddedCodeEditorWidget,
 			editorContainer,
 			editorOptions,
 			this.editor
@@ -198,9 +198,9 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		const treeContainer = document.createElement('div');
 		treeContainer.classList.add('tree');
 		container.appendChild(treeContainer);
-		const options: IWorkbenchAsyncDataTreeOptions<callHTree.Call, FuzzyScore> = {
+		const options: IWorkBenchAsyncDataTreeOptions<callHTree.Call, FuzzyScore> = {
 			sorter: new callHTree.Sorter(),
-			accessibilityProvider: new callHTree.AccessibilityProvider(() => this._direction),
+			accessiBilityProvider: new callHTree.AccessiBilityProvider(() => this._direction),
 			identityProvider: new callHTree.IdentityProvider(() => this._direction),
 			expandOnlyOnTwistieClick: true,
 			overrideStyles: {
@@ -222,36 +222,36 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 			onDidChange: Event.None,
 			element: editorContainer,
 			minimumSize: 200,
-			maximumSize: Number.MAX_VALUE,
+			maximumSize: NumBer.MAX_VALUE,
 			layout: (width) => {
 				if (this._dim.height) {
 					this._editor.layout({ height: this._dim.height, width });
 				}
 			}
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
 		this._splitView.addView({
 			onDidChange: Event.None,
 			element: treeContainer,
 			minimumSize: 100,
-			maximumSize: Number.MAX_VALUE,
+			maximumSize: NumBer.MAX_VALUE,
 			layout: (width) => {
 				if (this._dim.height) {
 					this._tree.layout(this._dim.height, width);
 				}
 			}
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
-		this._disposables.add(this._splitView.onDidSashChange(() => {
+		this._disposaBles.add(this._splitView.onDidSashChange(() => {
 			if (this._dim.width) {
 				this._layoutInfo.ratio = this._splitView.getViewSize(0) / this._dim.width;
 			}
 		}));
 
 		// update editor
-		this._disposables.add(this._tree.onDidChangeFocus(this._updatePreview, this));
+		this._disposaBles.add(this._tree.onDidChangeFocus(this._updatePreview, this));
 
-		this._disposables.add(this._editor.onMouseDown(e => {
+		this._disposaBles.add(this._editor.onMouseDown(e => {
 			const { event, target } = e;
 			if (event.detail !== 2) {
 				return;
@@ -268,7 +268,7 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 
 		}));
 
-		this._disposables.add(this._tree.onMouseDblClick(e => {
+		this._disposaBles.add(this._tree.onMouseDBlClick(e => {
 			if (e.target === TreeMouseEventTarget.Twistie) {
 				return;
 			}
@@ -282,10 +282,10 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 			}
 		}));
 
-		this._disposables.add(this._tree.onDidChangeSelection(e => {
+		this._disposaBles.add(this._tree.onDidChangeSelection(e => {
 			const [element] = e.elements;
 			// don't close on click
-			if (element && e.browserEvent instanceof KeyboardEvent) {
+			if (element && e.BrowserEvent instanceof KeyBoardEvent) {
 				this.dispose();
 				this._editorService.openEditor({
 					resource: element.item.uri,
@@ -301,7 +301,7 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 			return;
 		}
 
-		this._previewDisposable.clear();
+		this._previewDisposaBle.clear();
 
 		// update: editor and editor highlights
 		const options: IModelDecorationOptions = {
@@ -324,7 +324,7 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		}
 
 		const value = await this._textModelService.createModelReference(previewUri);
-		this._editor.setModel(value.object.textEditorModel);
+		this._editor.setModel(value.oBject.textEditorModel);
 
 		// set decorations for caller ranges (if in the same file)
 		let decorations: IModelDeltaDecoration[] = [];
@@ -342,9 +342,9 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 		if (fullRange) {
 			this._editor.revealRangeInCenter(fullRange, ScrollType.Immediate);
 			const ids = this._editor.deltaDecorations([], decorations);
-			this._previewDisposable.add(toDisposable(() => this._editor.deltaDecorations(ids, [])));
+			this._previewDisposaBle.add(toDisposaBle(() => this._editor.deltaDecorations(ids, [])));
 		}
-		this._previewDisposable.add(value);
+		this._previewDisposaBle.add(value);
 
 		// update: title
 		const title = this._direction === CallHierarchyDirection.CallsFrom
@@ -413,18 +413,18 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 
 	private _show() {
 		if (!this._isShowing) {
-			this.editor.revealLineInCenterIfOutsideViewport(this._where.lineNumber, ScrollType.Smooth);
+			this.editor.revealLineInCenterIfOutsideViewport(this._where.lineNumBer, ScrollType.Smooth);
 			super.show(Range.fromPositions(this._where), this._layoutInfo.height);
 		}
 	}
 
-	protected _onWidth(width: number) {
+	protected _onWidth(width: numBer) {
 		if (this._dim) {
 			this._doLayoutBody(this._dim.height, width);
 		}
 	}
 
-	protected _doLayoutBody(height: number, width: number): void {
+	protected _doLayoutBody(height: numBer, width: numBer): void {
 		if (this._dim.height !== height || this._dim.width !== width) {
 			super._doLayoutBody(height, width);
 			this._dim = { height, width };
@@ -438,15 +438,15 @@ export class CallHierarchyTreePeekWidget extends peekView.PeekViewWidget {
 registerThemingParticipant((theme, collector) => {
 	const referenceHighlightColor = theme.getColor(peekView.peekViewEditorMatchHighlight);
 	if (referenceHighlightColor) {
-		collector.addRule(`.monaco-editor .call-hierarchy .call-decoration { background-color: ${referenceHighlightColor}; }`);
+		collector.addRule(`.monaco-editor .call-hierarchy .call-decoration { Background-color: ${referenceHighlightColor}; }`);
 	}
 	const referenceHighlightBorder = theme.getColor(peekView.peekViewEditorMatchHighlightBorder);
 	if (referenceHighlightBorder) {
-		collector.addRule(`.monaco-editor .call-hierarchy .call-decoration { border: 2px solid ${referenceHighlightBorder}; box-sizing: border-box; }`);
+		collector.addRule(`.monaco-editor .call-hierarchy .call-decoration { Border: 2px solid ${referenceHighlightBorder}; Box-sizing: Border-Box; }`);
 	}
 	const resultsBackground = theme.getColor(peekView.peekViewResultsBackground);
 	if (resultsBackground) {
-		collector.addRule(`.monaco-editor .call-hierarchy .tree { background-color: ${resultsBackground}; }`);
+		collector.addRule(`.monaco-editor .call-hierarchy .tree { Background-color: ${resultsBackground}; }`);
 	}
 	const resultsMatchForeground = theme.getColor(peekView.peekViewResultsFileForeground);
 	if (resultsMatchForeground) {
@@ -454,7 +454,7 @@ registerThemingParticipant((theme, collector) => {
 	}
 	const resultsSelectedBackground = theme.getColor(peekView.peekViewResultsSelectionBackground);
 	if (resultsSelectedBackground) {
-		collector.addRule(`.monaco-editor .call-hierarchy .tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { background-color: ${resultsSelectedBackground}; }`);
+		collector.addRule(`.monaco-editor .call-hierarchy .tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { Background-color: ${resultsSelectedBackground}; }`);
 	}
 	const resultsSelectedForeground = theme.getColor(peekView.peekViewResultsSelectionForeground);
 	if (resultsSelectedForeground) {
@@ -463,9 +463,9 @@ registerThemingParticipant((theme, collector) => {
 	const editorBackground = theme.getColor(peekView.peekViewEditorBackground);
 	if (editorBackground) {
 		collector.addRule(
-			`.monaco-editor .call-hierarchy .editor .monaco-editor .monaco-editor-background,` +
+			`.monaco-editor .call-hierarchy .editor .monaco-editor .monaco-editor-Background,` +
 			`.monaco-editor .call-hierarchy .editor .monaco-editor .inputarea.ime-input {` +
-			`	background-color: ${editorBackground};` +
+			`	Background-color: ${editorBackground};` +
 			`}`
 		);
 	}
@@ -473,7 +473,7 @@ registerThemingParticipant((theme, collector) => {
 	if (editorGutterBackground) {
 		collector.addRule(
 			`.monaco-editor .call-hierarchy .editor .monaco-editor .margin {` +
-			`	background-color: ${editorGutterBackground};` +
+			`	Background-color: ${editorGutterBackground};` +
 			`}`
 		);
 	}

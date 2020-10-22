@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Color scheme used by the OS and by color themes.
+ * Color scheme used By the OS and By color themes.
  */
 export enum ColorScheme {
 	DARK = 'dark',

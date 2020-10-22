@@ -4,64 +4,64 @@
  *--------------------------------------------------------------------------------------------*/
 
 // Based on @sergeche's work on the emmet plugin for atom
-// TODO: Move to https://github.com/emmetio/file-utils
+// TODO: Move to https://githuB.com/emmetio/file-utils
 
 
 
 import * as path from 'path';
 import * as fs from 'fs';
 
-const reAbsolutePosix = /^\/+/;
-const reAbsoluteWin32 = /^\\+/;
-const reAbsolute = path.sep === '/' ? reAbsolutePosix : reAbsoluteWin32;
+const reABsolutePosix = /^\/+/;
+const reABsoluteWin32 = /^\\+/;
+const reABsolute = path.sep === '/' ? reABsolutePosix : reABsoluteWin32;
 
 /**
- * Locates given `filePath` on user’s file system and returns absolute path to it.
- * This method expects either URL, or relative/absolute path to resource
- * @param basePath Base path to use if filePath is not absoulte
+ * Locates given `filePath` on user’s file system and returns aBsolute path to it.
+ * This method expects either URL, or relative/aBsolute path to resource
+ * @param BasePath Base path to use if filePath is not aBsoulte
  * @param filePath File to locate.
  */
-export function locateFile(base: string, filePath: string): Promise<string> {
+export function locateFile(Base: string, filePath: string): Promise<string> {
 	if (/^\w+:/.test(filePath)) {
-		// path with protocol, already absolute
+		// path with protocol, already aBsolute
 		return Promise.resolve(filePath);
 	}
 
 	filePath = path.normalize(filePath);
 
-	return reAbsolute.test(filePath)
-		? resolveAbsolute(base, filePath)
-		: resolveRelative(base, filePath);
+	return reABsolute.test(filePath)
+		? resolveABsolute(Base, filePath)
+		: resolveRelative(Base, filePath);
 }
 
 /**
  * Resolves relative file path
  */
-function resolveRelative(basePath: string, filePath: string): Promise<string> {
-	return tryFile(path.resolve(basePath, filePath));
+function resolveRelative(BasePath: string, filePath: string): Promise<string> {
+	return tryFile(path.resolve(BasePath, filePath));
 }
 
 /**
- * Resolves absolute file path agaist given editor: tries to find file in every
+ * Resolves aBsolute file path agaist given editor: tries to find file in every
  * parent of editor’s file
  */
-function resolveAbsolute(basePath: string, filePath: string): Promise<string> {
+function resolveABsolute(BasePath: string, filePath: string): Promise<string> {
 	return new Promise((resolve, reject) => {
-		filePath = filePath.replace(reAbsolute, '');
+		filePath = filePath.replace(reABsolute, '');
 
 		const next = (ctx: string) => {
 			tryFile(path.resolve(ctx, filePath))
 				.then(resolve, () => {
 					const dir = path.dirname(ctx);
 					if (!dir || dir === ctx) {
-						return reject(`Unable to locate absolute file ${filePath}`);
+						return reject(`UnaBle to locate aBsolute file ${filePath}`);
 					}
 
 					next(dir);
 				});
 		};
 
-		next(basePath);
+		next(BasePath);
 	});
 }
 

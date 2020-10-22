@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MainThreadCustomEditors } from 'vs/workbench/api/browser/mainThreadCustomEditors';
-import { MainThreadWebviewPanels } from 'vs/workbench/api/browser/mainThreadWebviewPanels';
-import { MainThreadWebviews } from 'vs/workbench/api/browser/mainThreadWebviews';
-import { MainThreadWebviewsViews } from 'vs/workbench/api/browser/mainThreadWebviewViews';
-import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
+import { MainThreadCustomEditors } from 'vs/workBench/api/Browser/mainThreadCustomEditors';
+import { MainThreadWeBviewPanels } from 'vs/workBench/api/Browser/mainThreadWeBviewPanels';
+import { MainThreadWeBviews } from 'vs/workBench/api/Browser/mainThreadWeBviews';
+import { MainThreadWeBviewsViews } from 'vs/workBench/api/Browser/mainThreadWeBviewViews';
+import * as extHostProtocol from 'vs/workBench/api/common/extHost.protocol';
 import { extHostCustomer } from '../common/extHostCustomers';
 
 @extHostCustomer
-export class MainThreadWebviewManager extends Disposable {
+export class MainThreadWeBviewManager extends DisposaBle {
 	constructor(
 		context: extHostProtocol.IExtHostContext,
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
 		super();
 
-		const webviews = this._register(instantiationService.createInstance(MainThreadWebviews, context));
-		context.set(extHostProtocol.MainContext.MainThreadWebviews, webviews);
+		const weBviews = this._register(instantiationService.createInstance(MainThreadWeBviews, context));
+		context.set(extHostProtocol.MainContext.MainThreadWeBviews, weBviews);
 
-		const webviewPanels = this._register(instantiationService.createInstance(MainThreadWebviewPanels, context, webviews));
-		context.set(extHostProtocol.MainContext.MainThreadWebviewPanels, webviewPanels);
+		const weBviewPanels = this._register(instantiationService.createInstance(MainThreadWeBviewPanels, context, weBviews));
+		context.set(extHostProtocol.MainContext.MainThreadWeBviewPanels, weBviewPanels);
 
-		const customEditors = this._register(instantiationService.createInstance(MainThreadCustomEditors, context, webviews, webviewPanels));
+		const customEditors = this._register(instantiationService.createInstance(MainThreadCustomEditors, context, weBviews, weBviewPanels));
 		context.set(extHostProtocol.MainContext.MainThreadCustomEditors, customEditors);
 
-		const webviewViews = this._register(instantiationService.createInstance(MainThreadWebviewsViews, context, webviews));
-		context.set(extHostProtocol.MainContext.MainThreadWebviewViews, webviewViews);
+		const weBviewViews = this._register(instantiationService.createInstance(MainThreadWeBviewsViews, context, weBviews));
+		context.set(extHostProtocol.MainContext.MainThreadWeBviewViews, weBviewViews);
 	}
 }

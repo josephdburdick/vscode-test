@@ -5,27 +5,27 @@
 
 import * as nls from 'vs/nls';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
-import { IExternalTerminalConfiguration, IExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/common/externalTerminal';
+import { URI } from 'vs/Base/common/uri';
+import { IExternalTerminalConfiguration, IExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/common/externalTerminal';
 import { MenuId, MenuRegistry, IMenuItem } from 'vs/platform/actions/common/actions';
-import { ITerminalService as IIntegratedTerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { ResourceContextKey } from 'vs/workbench/common/resources';
+import { ITerminalService as IIntegratedTerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { ResourceContextKey } from 'vs/workBench/common/resources';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IListService } from 'vs/platform/list/browser/listService';
-import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
+import { IListService } from 'vs/platform/list/Browser/listService';
+import { getMultiSelectedResources } from 'vs/workBench/contriB/files/Browser/files';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { Schemas } from 'vs/base/common/network';
-import { distinct } from 'vs/base/common/arrays';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { Schemas } from 'vs/Base/common/network';
+import { distinct } from 'vs/Base/common/arrays';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { optional } from 'vs/platform/instantiation/common/instantiation';
-import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
+import { IExplorerService } from 'vs/workBench/contriB/files/common/files';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isWeb, isWindows } from 'vs/base/common/platform';
-import { dirname, basename } from 'vs/base/common/path';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { isWeB, isWindows } from 'vs/Base/common/platform';
+import { dirname, Basename } from 'vs/Base/common/path';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
 
 const OPEN_IN_TERMINAL_COMMAND_ID = 'openInTerminal';
@@ -50,7 +50,7 @@ CommandsRegistry.registerCommand({
 				// TODO: Use uri for cwd in createterminal
 
 
-				const opened: { [path: string]: boolean } = {};
+				const opened: { [path: string]: Boolean } = {};
 				targets.map(({ stat }) => {
 					const resource = stat!.resource;
 					if (stat!.isDirectory) {
@@ -83,7 +83,7 @@ CommandsRegistry.registerCommand({
 	}
 });
 
-export class ExternalTerminalContribution extends Disposable implements IWorkbenchContribution {
+export class ExternalTerminalContriBution extends DisposaBle implements IWorkBenchContriBution {
 	private _openInTerminalMenuItem: IMenuItem;
 
 	constructor(
@@ -112,7 +112,7 @@ export class ExternalTerminalContribution extends Disposable implements IWorkben
 	}
 
 	private _refreshOpenInTerminalMenuItemTitle(): void {
-		if (isWeb) {
+		if (isWeB) {
 			this._openInTerminalMenuItem.command.title = nls.localize('scopedConsoleAction.integrated', "Open in Integrated Terminal");
 			return;
 		}
@@ -124,7 +124,7 @@ export class ExternalTerminalContribution extends Disposable implements IWorkben
 		}
 
 		if (isWindows && config.external.windowsExec) {
-			const file = basename(config.external.windowsExec);
+			const file = Basename(config.external.windowsExec);
 			if (file === 'wt' || file === 'wt.exe') {
 				this._openInTerminalMenuItem.command.title = nls.localize('scopedConsoleAction.wt', "Open in Windows Terminal");
 				return;
@@ -135,4 +135,4 @@ export class ExternalTerminalContribution extends Disposable implements IWorkben
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ExternalTerminalContribution, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(ExternalTerminalContriBution, LifecyclePhase.Restored);

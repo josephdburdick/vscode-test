@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'vs/base/common/assert';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as objects from 'vs/base/common/objects';
-import { IDiffEditor } from 'vs/editor/browser/editorBrowser';
+import * as assert from 'vs/Base/common/assert';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import * as oBjects from 'vs/Base/common/oBjects';
+import { IDiffEditor } from 'vs/editor/Browser/editorBrowser';
 import { ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { Range } from 'vs/editor/common/core/range';
 import { ILineChange, ScrollType } from 'vs/editor/common/editorCommon';
 
 
 interface IDiffRange {
-	rhs: boolean;
+	rhs: Boolean;
 	range: Range;
 }
 
 export interface Options {
-	followsCaret?: boolean;
-	ignoreCharChanges?: boolean;
-	alwaysRevealFirst?: boolean;
+	followsCaret?: Boolean;
+	ignoreCharChanges?: Boolean;
+	alwaysRevealFirst?: Boolean;
 }
 
 const defaultOptions: Options = {
@@ -31,7 +31,7 @@ const defaultOptions: Options = {
 };
 
 export interface IDiffNavigator {
-	canNavigate(): boolean;
+	canNavigate(): Boolean;
 	next(): void;
 	previous(): void;
 	dispose(): void;
@@ -40,7 +40,7 @@ export interface IDiffNavigator {
 /**
  * Create a new diff navigator for the provided diff editor.
  */
-export class DiffNavigator extends Disposable implements IDiffNavigator {
+export class DiffNavigator extends DisposaBle implements IDiffNavigator {
 
 	private readonly _editor: IDiffEditor;
 	private readonly _options: Options;
@@ -48,16 +48,16 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 
 	readonly onDidUpdate: Event<this> = this._onDidUpdate.event;
 
-	private disposed: boolean;
-	private revealFirst: boolean;
-	private nextIdx: number;
+	private disposed: Boolean;
+	private revealFirst: Boolean;
+	private nextIdx: numBer;
 	private ranges: IDiffRange[];
-	private ignoreSelectionChange: boolean;
+	private ignoreSelectionChange: Boolean;
 
 	constructor(editor: IDiffEditor, options: Options = {}) {
 		super();
 		this._editor = editor;
-		this._options = objects.mixin(options, defaultOptions, false);
+		this._options = oBjects.mixin(options, defaultOptions, false);
 
 		this.disposed = false;
 
@@ -124,9 +124,9 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 						this.ranges.push({
 							rhs: true,
 							range: new Range(
-								charChange.modifiedStartLineNumber,
+								charChange.modifiedStartLineNumBer,
 								charChange.modifiedStartColumn,
-								charChange.modifiedEndLineNumber,
+								charChange.modifiedEndLineNumBer,
 								charChange.modifiedEndColumn)
 						});
 					});
@@ -134,7 +134,7 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 				} else {
 					this.ranges.push({
 						rhs: true,
-						range: new Range(lineChange.modifiedStartLineNumber, 1, lineChange.modifiedStartLineNumber, 1)
+						range: new Range(lineChange.modifiedStartLineNumBer, 1, lineChange.modifiedStartLineNumBer, 1)
 					});
 				}
 			});
@@ -153,7 +153,7 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 		this._onDidUpdate.fire(this);
 	}
 
-	private _initIdx(fwd: boolean): void {
+	private _initIdx(fwd: Boolean): void {
 		let found = false;
 		let position = this._editor.getPosition();
 		if (!position) {
@@ -176,8 +176,8 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 		}
 	}
 
-	private _move(fwd: boolean, scrollType: ScrollType): void {
-		assert.ok(!this.disposed, 'Illegal State - diff navigator has been disposed');
+	private _move(fwd: Boolean, scrollType: ScrollType): void {
+		assert.ok(!this.disposed, 'Illegal State - diff navigator has Been disposed');
 
 		if (!this.canNavigate()) {
 			return;
@@ -209,7 +209,7 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 		}
 	}
 
-	canNavigate(): boolean {
+	canNavigate(): Boolean {
 		return this.ranges && this.ranges.length > 0;
 	}
 

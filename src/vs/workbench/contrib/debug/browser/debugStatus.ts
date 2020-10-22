@@ -4,43 +4,43 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IDebugService, State, IDebugConfiguration } from 'vs/workbench/contrib/debug/common/debug';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { IDeBugService, State, IDeBugConfiguration } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IStatusbarEntry, IStatusbarService, StatusbarAlignment, IStatusbarEntryAccessor } from 'vs/workbench/services/statusbar/common/statusbar';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IStatusBarEntry, IStatusBarService, StatusBarAlignment, IStatusBarEntryAccessor } from 'vs/workBench/services/statusBar/common/statusBar';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 
-export class DebugStatusContribution implements IWorkbenchContribution {
+export class DeBugStatusContriBution implements IWorkBenchContriBution {
 
 	private showInStatusBar!: 'never' | 'always' | 'onFirstSessionStart';
-	private toDispose: IDisposable[] = [];
-	private entryAccessor: IStatusbarEntryAccessor | undefined;
+	private toDispose: IDisposaBle[] = [];
+	private entryAccessor: IStatusBarEntryAccessor | undefined;
 
 	constructor(
-		@IStatusbarService private readonly statusBarService: IStatusbarService,
-		@IDebugService readonly debugService: IDebugService,
+		@IStatusBarService private readonly statusBarService: IStatusBarService,
+		@IDeBugService readonly deBugService: IDeBugService,
 		@IConfigurationService readonly configurationService: IConfigurationService
 	) {
 
 		const addStatusBarEntry = () => {
-			this.entryAccessor = this.statusBarService.addEntry(this.entry, 'status.debug', nls.localize('status.debug', "Debug"), StatusbarAlignment.LEFT, 30 /* Low Priority */);
+			this.entryAccessor = this.statusBarService.addEntry(this.entry, 'status.deBug', nls.localize('status.deBug', "DeBug"), StatusBarAlignment.LEFT, 30 /* Low Priority */);
 		};
 
 		const setShowInStatusBar = () => {
-			this.showInStatusBar = configurationService.getValue<IDebugConfiguration>('debug').showInStatusBar;
+			this.showInStatusBar = configurationService.getValue<IDeBugConfiguration>('deBug').showInStatusBar;
 			if (this.showInStatusBar === 'always' && !this.entryAccessor) {
 				addStatusBarEntry();
 			}
 		};
 		setShowInStatusBar();
 
-		this.toDispose.push(this.debugService.onDidChangeState(state => {
+		this.toDispose.push(this.deBugService.onDidChangeState(state => {
 			if (state !== State.Inactive && this.showInStatusBar === 'onFirstSessionStart' && !this.entryAccessor) {
 				addStatusBarEntry();
 			}
 		}));
 		this.toDispose.push(configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('debug.showInStatusBar')) {
+			if (e.affectsConfiguration('deBug.showInStatusBar')) {
 				setShowInStatusBar();
 				if (this.entryAccessor && this.showInStatusBar === 'never') {
 					this.entryAccessor.dispose();
@@ -48,16 +48,16 @@ export class DebugStatusContribution implements IWorkbenchContribution {
 				}
 			}
 		}));
-		this.toDispose.push(this.debugService.getConfigurationManager().onDidSelectConfiguration(e => {
+		this.toDispose.push(this.deBugService.getConfigurationManager().onDidSelectConfiguration(e => {
 			if (this.entryAccessor) {
 				this.entryAccessor.update(this.entry);
 			}
 		}));
 	}
 
-	private get entry(): IStatusbarEntry {
+	private get entry(): IStatusBarEntry {
 		let text = '';
-		const manager = this.debugService.getConfigurationManager();
+		const manager = this.deBugService.getConfigurationManager();
 		const name = manager.selectedConfiguration.name || '';
 		const nameAndLaunchPresent = name && manager.selectedConfiguration.launch;
 		if (nameAndLaunchPresent) {
@@ -65,10 +65,10 @@ export class DebugStatusContribution implements IWorkbenchContribution {
 		}
 
 		return {
-			text: '$(debug-alt-small) ' + text,
-			ariaLabel: nls.localize('debugTarget', "Debug: {0}", text),
-			tooltip: nls.localize('selectAndStartDebug', "Select and start debug configuration"),
-			command: 'workbench.action.debug.selectandstart'
+			text: '$(deBug-alt-small) ' + text,
+			ariaLaBel: nls.localize('deBugTarget', "DeBug: {0}", text),
+			tooltip: nls.localize('selectAndStartDeBug', "Select and start deBug configuration"),
+			command: 'workBench.action.deBug.selectandstart'
 		};
 	}
 

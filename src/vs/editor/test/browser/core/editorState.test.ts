@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { CodeEditorStateFlag, EditorState } from 'vs/editor/browser/core/editorState';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { URI } from 'vs/Base/common/uri';
+import { CodeEditorStateFlag, EditorState } from 'vs/editor/Browser/core/editorState';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
 
-interface IStubEditorState {
-	model?: { uri?: URI, version?: number };
+interface IStuBEditorState {
+	model?: { uri?: URI, version?: numBer };
 	position?: Position;
 	selection?: Selection;
-	scroll?: { left?: number, top?: number };
+	scroll?: { left?: numBer, top?: numBer };
 }
 
 suite('Editor Core - Editor State', () => {
@@ -27,12 +27,12 @@ suite('Editor Core - Editor State', () => {
 		| CodeEditorStateFlag.Scroll
 	);
 
-	test('empty editor state should be valid', () => {
+	test('empty editor state should Be valid', () => {
 		let result = validate({}, {});
 		assert.equal(result, true);
 	});
 
-	test('different model URIs should be invalid', () => {
+	test('different model URIs should Be invalid', () => {
 		let result = validate(
 			{ model: { uri: URI.parse('http://test1') } },
 			{ model: { uri: URI.parse('http://test2') } }
@@ -41,7 +41,7 @@ suite('Editor Core - Editor State', () => {
 		assert.equal(result, false);
 	});
 
-	test('different model versions should be invalid', () => {
+	test('different model versions should Be invalid', () => {
 		let result = validate(
 			{ model: { version: 1 } },
 			{ model: { version: 2 } }
@@ -50,7 +50,7 @@ suite('Editor Core - Editor State', () => {
 		assert.equal(result, false);
 	});
 
-	test('different positions should be invalid', () => {
+	test('different positions should Be invalid', () => {
 		let result = validate(
 			{ position: new Position(1, 2) },
 			{ position: new Position(2, 3) }
@@ -59,7 +59,7 @@ suite('Editor Core - Editor State', () => {
 		assert.equal(result, false);
 	});
 
-	test('different selections should be invalid', () => {
+	test('different selections should Be invalid', () => {
 		let result = validate(
 			{ selection: new Selection(1, 2, 3, 4) },
 			{ selection: new Selection(5, 2, 3, 4) }
@@ -68,7 +68,7 @@ suite('Editor Core - Editor State', () => {
 		assert.equal(result, false);
 	});
 
-	test('different scroll positions should be invalid', () => {
+	test('different scroll positions should Be invalid', () => {
 		let result = validate(
 			{ scroll: { left: 1, top: 2 } },
 			{ scroll: { left: 3, top: 2 } }
@@ -78,7 +78,7 @@ suite('Editor Core - Editor State', () => {
 	});
 
 
-	function validate(source: IStubEditorState, target: IStubEditorState) {
+	function validate(source: IStuBEditorState, target: IStuBEditorState) {
 		let sourceEditor = createEditor(source),
 			targetEditor = createEditor(target);
 
@@ -87,15 +87,15 @@ suite('Editor Core - Editor State', () => {
 		return result;
 	}
 
-	function createEditor({ model, position, selection, scroll }: IStubEditorState = {}): ICodeEditor {
+	function createEditor({ model, position, selection, scroll }: IStuBEditorState = {}): ICodeEditor {
 		let mappedModel = model ? { uri: model.uri ? model.uri : URI.parse('http://dummy.org'), getVersionId: () => model.version } : null;
 
 		return {
 			getModel: (): ITextModel => <any>mappedModel,
 			getPosition: (): Position | undefined => position,
 			getSelection: (): Selection | undefined => selection,
-			getScrollLeft: (): number | undefined => scroll && scroll.left,
-			getScrollTop: (): number | undefined => scroll && scroll.top
+			getScrollLeft: (): numBer | undefined => scroll && scroll.left,
+			getScrollTop: (): numBer | undefined => scroll && scroll.top
 		} as ICodeEditor;
 	}
 

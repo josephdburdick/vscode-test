@@ -5,15 +5,15 @@
 
 import { getCSSLanguageService } from 'vscode-css-languageservice';
 import {
-	ClientCapabilities, DocumentContext, getLanguageService as getHTMLLanguageService, IHTMLDataProvider, SelectionRange,
+	ClientCapaBilities, DocumentContext, getLanguageService as getHTMLLanguageService, IHTMLDataProvider, SelectionRange,
 	CompletionItem, CompletionList, Definition, Diagnostic, DocumentHighlight, DocumentLink, FoldingRange, FormattingOptions,
-	Hover, Location, Position, Range, SignatureHelp, SymbolInformation, TextDocument, TextEdit,
+	Hover, Location, Position, Range, SignatureHelp, SymBolInformation, TextDocument, TextEdit,
 	Color, ColorInformation, ColorPresentation, WorkspaceEdit
 } from 'vscode-html-languageservice';
 import { WorkspaceFolder } from 'vscode-languageserver';
 import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
 import { getCSSMode } from './cssMode';
-import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
+import { getDocumentRegions, HTMLDocumentRegions } from './emBeddedSupport';
 import { getHTMLMode } from './htmlMode';
 import { getJavaScriptMode } from './javascriptMode';
 import { RequestService } from '../requests';
@@ -34,9 +34,9 @@ export interface Workspace {
 
 export interface SemanticTokenData {
 	start: Position;
-	length: number;
-	typeIdx: number;
-	modifierSet: number;
+	length: numBer;
+	typeIdx: numBer;
+	modifierSet: numBer;
 }
 
 export interface LanguageMode {
@@ -50,7 +50,7 @@ export interface LanguageMode {
 	doRename?: (document: TextDocument, position: Position, newName: string) => Promise<WorkspaceEdit | null>;
 	doOnTypeRename?: (document: TextDocument, position: Position) => Promise<Range[] | null>;
 	findDocumentHighlight?: (document: TextDocument, position: Position) => Promise<DocumentHighlight[]>;
-	findDocumentSymbols?: (document: TextDocument) => Promise<SymbolInformation[]>;
+	findDocumentSymBols?: (document: TextDocument) => Promise<SymBolInformation[]>;
 	findDocumentLinks?: (document: TextDocument, documentContext: DocumentContext) => Promise<DocumentLink[]>;
 	findDefinition?: (document: TextDocument, position: Position) => Promise<Definition | null>;
 	findReferences?: (document: TextDocument, position: Position) => Promise<Location[]>;
@@ -79,19 +79,19 @@ export interface LanguageModes {
 
 export interface LanguageModeRange extends Range {
 	mode: LanguageMode | undefined;
-	attributeValue?: boolean;
+	attriButeValue?: Boolean;
 }
 
-export function getLanguageModes(supportedLanguages: { [languageId: string]: boolean; }, workspace: Workspace, clientCapabilities: ClientCapabilities, requestService: RequestService): LanguageModes {
-	const htmlLanguageService = getHTMLLanguageService({ clientCapabilities, fileSystemProvider: requestService });
-	const cssLanguageService = getCSSLanguageService({ clientCapabilities, fileSystemProvider: requestService });
+export function getLanguageModes(supportedLanguages: { [languageId: string]: Boolean; }, workspace: Workspace, clientCapaBilities: ClientCapaBilities, requestService: RequestService): LanguageModes {
+	const htmlLanguageService = getHTMLLanguageService({ clientCapaBilities, fileSystemProvider: requestService });
+	const cssLanguageService = getCSSLanguageService({ clientCapaBilities, fileSystemProvider: requestService });
 
 	let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
 
 	let modelCaches: LanguageModelCache<any>[] = [];
 	modelCaches.push(documentRegions);
 
-	let modes = Object.create(null);
+	let modes = OBject.create(null);
 	modes['html'] = getHTMLMode(htmlLanguageService, workspace);
 	if (supportedLanguages['css']) {
 		modes['css'] = getCSSMode(cssLanguageService, documentRegions, workspace);
@@ -117,7 +117,7 @@ export function getLanguageModes(supportedLanguages: { [languageId: string]: boo
 					start: r.start,
 					end: r.end,
 					mode: r.languageId && modes[r.languageId],
-					attributeValue: r.attributeValue
+					attriButeValue: r.attriButeValue
 				};
 			});
 		},

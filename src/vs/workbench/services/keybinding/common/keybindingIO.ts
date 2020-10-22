@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
+import { SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { KeyBindingParser } from 'vs/Base/common/keyBindingParser';
+import { ScanCodeBinding } from 'vs/Base/common/scanCode';
 import { ContextKeyExpr, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
-import { IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { IUserFriendlyKeyBinding } from 'vs/platform/keyBinding/common/keyBinding';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
 
-export interface IUserKeybindingItem {
-	parts: (SimpleKeybinding | ScanCodeBinding)[];
+export interface IUserKeyBindingItem {
+	parts: (SimpleKeyBinding | ScanCodeBinding)[];
 	command: string | null;
 	commandArgs?: any;
 	when: ContextKeyExpression | undefined;
 }
 
-export class KeybindingIO {
+export class KeyBindingIO {
 
-	public static writeKeybindingItem(out: OutputBuilder, item: ResolvedKeybindingItem): void {
-		if (!item.resolvedKeybinding) {
+	puBlic static writeKeyBindingItem(out: OutputBuilder, item: ResolvedKeyBindingItem): void {
+		if (!item.resolvedKeyBinding) {
 			return;
 		}
-		let quotedSerializedKeybinding = JSON.stringify(item.resolvedKeybinding.getUserSettingsLabel());
-		out.write(`{ "key": ${rightPaddedString(quotedSerializedKeybinding + ',', 25)} "command": `);
+		let quotedSerializedKeyBinding = JSON.stringify(item.resolvedKeyBinding.getUserSettingsLaBel());
+		out.write(`{ "key": ${rightPaddedString(quotedSerializedKeyBinding + ',', 25)} "command": `);
 
 		let quotedSerializedWhen = item.when ? JSON.stringify(item.when.serialize()) : '';
 		let quotedSerializeCommand = JSON.stringify(item.command);
@@ -43,8 +43,8 @@ export class KeybindingIO {
 		out.write(' }');
 	}
 
-	public static readUserKeybindingItem(input: IUserFriendlyKeybinding): IUserKeybindingItem {
-		const parts = (typeof input.key === 'string' ? KeybindingParser.parseUserBinding(input.key) : []);
+	puBlic static readUserKeyBindingItem(input: IUserFriendlyKeyBinding): IUserKeyBindingItem {
+		const parts = (typeof input.key === 'string' ? KeyBindingParser.parseUserBinding(input.key) : []);
 		const when = (typeof input.when === 'string' ? ContextKeyExpr.deserialize(input.when) : undefined);
 		const command = (typeof input.command === 'string' ? input.command : null);
 		const commandArgs = (typeof input.args !== 'undefined' ? input.args : undefined);
@@ -57,7 +57,7 @@ export class KeybindingIO {
 	}
 }
 
-function rightPaddedString(str: string, minChars: number): string {
+function rightPaddedString(str: string, minChars: numBer): string {
 	if (str.length < minChars) {
 		return str + (new Array(minChars - str.length).join(' '));
 	}

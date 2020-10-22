@@ -6,18 +6,18 @@
 import * as assert from 'assert';
 import { Extensions as ThemeingExtensions, IColorRegistry, ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ansiColorIdentifiers, registerColors } from 'vs/workbench/contrib/terminal/common/terminalColorRegistry';
+import { ansiColorIdentifiers, registerColors } from 'vs/workBench/contriB/terminal/common/terminalColorRegistry';
 import { IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 registerColors();
 
-let themingRegistry = Registry.as<IColorRegistry>(ThemeingExtensions.ColorContribution);
+let themingRegistry = Registry.as<IColorRegistry>(ThemeingExtensions.ColorContriBution);
 function getMockTheme(type: ColorScheme): IColorTheme {
 	let theme = {
 		selector: '',
-		label: '',
+		laBel: '',
 		type: type,
 		getColor: (colorId: ColorIdentifier): Color | undefined => themingRegistry.resolveDefaultColor(colorId, theme),
 		defines: () => true,
@@ -28,7 +28,7 @@ function getMockTheme(type: ColorScheme): IColorTheme {
 	return theme;
 }
 
-suite('Workbench - TerminalColorRegistry', () => {
+suite('WorkBench - TerminalColorRegistry', () => {
 
 	test('hc colors', function () {
 		let theme = getMockTheme(ColorScheme.HIGH_CONTRAST);
@@ -51,7 +51,7 @@ suite('Workbench - TerminalColorRegistry', () => {
 			'#ff00ff',
 			'#00ffff',
 			'#ffffff'
-		], 'The high contrast terminal colors should be used when the hc theme is active');
+		], 'The high contrast terminal colors should Be used when the hc theme is active');
 
 	});
 
@@ -62,21 +62,21 @@ suite('Workbench - TerminalColorRegistry', () => {
 		assert.deepEqual(colors, [
 			'#000000',
 			'#cd3131',
-			'#00bc00',
+			'#00Bc00',
 			'#949800',
 			'#0451a5',
-			'#bc05bc',
-			'#0598bc',
+			'#Bc05Bc',
+			'#0598Bc',
 			'#555555',
 			'#666666',
 			'#cd3131',
 			'#14ce14',
-			'#b5ba00',
+			'#B5Ba00',
 			'#0451a5',
-			'#bc05bc',
-			'#0598bc',
+			'#Bc05Bc',
+			'#0598Bc',
 			'#a5a5a5'
-		], 'The light terminal colors should be used when the light theme is active');
+		], 'The light terminal colors should Be used when the light theme is active');
 
 	});
 
@@ -87,20 +87,20 @@ suite('Workbench - TerminalColorRegistry', () => {
 		assert.deepEqual(colors, [
 			'#000000',
 			'#cd3131',
-			'#0dbc79',
+			'#0dBc79',
 			'#e5e510',
 			'#2472c8',
-			'#bc3fbc',
+			'#Bc3fBc',
 			'#11a8cd',
 			'#e5e5e5',
 			'#666666',
 			'#f14c4c',
-			'#23d18b',
+			'#23d18B',
 			'#f5f543',
-			'#3b8eea',
+			'#3B8eea',
 			'#d670d6',
-			'#29b8db',
+			'#29B8dB',
 			'#e5e5e5'
-		], 'The dark terminal colors should be used when a dark theme is active');
+		], 'The dark terminal colors should Be used when a dark theme is active');
 	});
 });

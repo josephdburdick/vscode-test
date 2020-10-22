@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IReplaceService } from 'vs/workbench/contrib/search/common/replace';
-import { ReplaceService, ReplacePreviewContentProvider } from 'vs/workbench/contrib/search/browser/replaceService';
+import { IReplaceService } from 'vs/workBench/contriB/search/common/replace';
+import { ReplaceService, ReplacePreviewContentProvider } from 'vs/workBench/contriB/search/Browser/replaceService';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
-export function registerContributions(): void {
+export function registerContriButions(): void {
 	registerSingleton(IReplaceService, ReplaceService, true);
-	Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ReplacePreviewContentProvider, LifecyclePhase.Starting);
+	Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(ReplacePreviewContentProvider, LifecyclePhase.Starting);
 }

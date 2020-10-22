@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CellKind, CellEditType, CellOutputKind, NotebookTextModelChangedEvent } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { withTestNotebook, TestCell, setupInstantiationService } from 'vs/workbench/contrib/notebook/test/testNotebookEditor';
-import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
+import { CellKind, CellEditType, CellOutputKind, NoteBookTextModelChangedEvent } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { withTestNoteBook, TestCell, setupInstantiationService } from 'vs/workBench/contriB/noteBook/test/testNoteBookEditor';
+import { IBulkEditService } from 'vs/editor/Browser/services/BulkEditService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 
-suite('NotebookTextModel', () => {
+suite('NoteBookTextModel', () => {
 	const instantiationService = setupInstantiationService();
 	const textModelService = instantiationService.get(ITextModelService);
-	const blukEditService = instantiationService.get(IBulkEditService);
-	const undoRedoService = instantiationService.stub(IUndoRedoService, () => { });
+	const BlukEditService = instantiationService.get(IBulkEditService);
+	const undoRedoService = instantiationService.stuB(IUndoRedoService, () => { });
 	instantiationService.spy(IUndoRedoService, 'pushElement');
 
 	test('insert', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -43,15 +43,15 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('multiple inserts at same position', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -68,15 +68,15 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('delete', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -91,15 +91,15 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('delete + insert', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -116,15 +116,15 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('delete + insert at same position', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -141,15 +141,15 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('(replace) delete + insert at same position', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
 				textModel.applyEdits(textModel.versionId, [
@@ -165,19 +165,19 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('output', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
 			],
 			(editor, viewModel, textModel) => {
 
 				// invalid index 1
 				assert.throws(() => {
 					textModel.applyEdits(textModel.versionId, [{
-						index: Number.MAX_VALUE,
+						index: NumBer.MAX_VALUE,
 						editType: CellEditType.Output,
 						outputs: []
 					}], true, undefined, () => undefined, undefined);
@@ -210,21 +210,21 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('metadata', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
 			],
 			(editor, viewModel, textModel) => {
 
 				// invalid index 1
 				assert.throws(() => {
 					textModel.applyEdits(textModel.versionId, [{
-						index: Number.MAX_VALUE,
+						index: NumBer.MAX_VALUE,
 						editType: CellEditType.Metadata,
-						metadata: { editable: false }
+						metadata: { editaBle: false }
 					}], true, undefined, () => undefined, undefined);
 				});
 
@@ -233,35 +233,35 @@ suite('NotebookTextModel', () => {
 					textModel.applyEdits(textModel.versionId, [{
 						index: -1,
 						editType: CellEditType.Metadata,
-						metadata: { editable: false }
+						metadata: { editaBle: false }
 					}], true, undefined, () => undefined, undefined);
 				});
 
 				textModel.applyEdits(textModel.versionId, [{
 					index: 0,
 					editType: CellEditType.Metadata,
-					metadata: { editable: false },
+					metadata: { editaBle: false },
 				}], true, undefined, () => undefined, undefined);
 
 				assert.equal(textModel.cells.length, 1);
-				assert.equal(textModel.cells[0].metadata?.editable, false);
+				assert.equal(textModel.cells[0].metadata?.editaBle, false);
 			}
 		);
 	});
 
 	test('multiple inserts in one edit', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
-				let changeEvent: NotebookTextModelChangedEvent | undefined = undefined;
+				let changeEvent: NoteBookTextModelChangedEvent | undefined = undefined;
 				const eventListener = textModel.onDidChangeContent(e => {
 					changeEvent = e;
 				});
@@ -287,18 +287,18 @@ suite('NotebookTextModel', () => {
 	});
 
 	test('insert and metadata change in one edit', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel, textModel) => {
-				let changeEvent: NotebookTextModelChangedEvent | undefined = undefined;
+				let changeEvent: NoteBookTextModelChangedEvent | undefined = undefined;
 				const eventListener = textModel.onDidChangeContent(e => {
 					changeEvent = e;
 				});
@@ -309,7 +309,7 @@ suite('NotebookTextModel', () => {
 					{
 						index: 0,
 						editType: CellEditType.Metadata,
-						metadata: { editable: false },
+						metadata: { editaBle: false },
 					}
 				], true, undefined, () => [0], undefined);
 

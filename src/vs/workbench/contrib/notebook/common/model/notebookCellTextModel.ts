@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { ICell, IProcessedOutput, NotebookCellOutputsSplice, CellKind, NotebookCellMetadata, NotebookDocumentMetadata, TransientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { ICell, IProcessedOutput, NoteBookCellOutputsSplice, CellKind, NoteBookCellMetadata, NoteBookDocumentMetadata, TransientOptions } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import * as model from 'vs/editor/common/model';
 import { Range } from 'vs/editor/common/core/range';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { hash } from 'vs/base/common/hash';
+import { hash } from 'vs/Base/common/hash';
 
-export class NotebookCellTextModel extends Disposable implements ICell {
-	private _onDidChangeOutputs = new Emitter<NotebookCellOutputsSplice[]>();
-	onDidChangeOutputs: Event<NotebookCellOutputsSplice[]> = this._onDidChangeOutputs.event;
+export class NoteBookCellTextModel extends DisposaBle implements ICell {
+	private _onDidChangeOutputs = new Emitter<NoteBookCellOutputsSplice[]>();
+	onDidChangeOutputs: Event<NoteBookCellOutputsSplice[]> = this._onDidChangeOutputs.event;
 
 	private _onDidChangeContent = new Emitter<void>();
 	onDidChangeContent: Event<void> = this._onDidChangeContent.event;
@@ -32,13 +32,13 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		return this._outputs;
 	}
 
-	private _metadata: NotebookCellMetadata;
+	private _metadata: NoteBookCellMetadata;
 
 	get metadata() {
 		return this._metadata;
 	}
 
-	set metadata(newMetadata: NotebookCellMetadata) {
+	set metadata(newMetadata: NoteBookCellMetadata) {
 		this._metadata = newMetadata;
 		this._hash = null;
 		this._onDidChangeMetadata.fire();
@@ -61,10 +61,10 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 			return this._textBuffer;
 		}
 
-		const builder = new PieceTreeTextBufferBuilder();
-		builder.acceptChunk(this._source);
-		const bufferFactory = builder.finish(true);
-		this._textBuffer = bufferFactory.create(model.DefaultEndOfLine.LF);
+		const Builder = new PieceTreeTextBufferBuilder();
+		Builder.acceptChunk(this._source);
+		const BufferFactory = Builder.finish(true);
+		this._textBuffer = BufferFactory.create(model.DefaultEndOfLine.LF);
 
 		this._register(this._textBuffer.onDidChangeContent(() => {
 			this._hash = null;
@@ -74,18 +74,18 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		return this._textBuffer;
 	}
 
-	private _hash: number | null = null;
+	private _hash: numBer | null = null;
 
 
 	constructor(
 		readonly uri: URI,
-		public handle: number,
+		puBlic handle: numBer,
 		private _source: string,
 		private _language: string,
-		public cellKind: CellKind,
+		puBlic cellKind: CellKind,
 		outputs: IProcessedOutput[],
-		metadata: NotebookCellMetadata | undefined,
-		public readonly transientOptions: TransientOptions,
+		metadata: NoteBookCellMetadata | undefined,
+		puBlic readonly transientOptions: TransientOptions,
 		private readonly _modelService: ITextModelService
 	) {
 		super();
@@ -103,12 +103,12 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		}
 	}
 
-	getHashValue(): number {
+	getHashValue(): numBer {
 		if (this._hash !== null) {
 			return this._hash;
 		}
 
-		// TODO@rebornix, raw outputs
+		// TODO@reBornix, raw outputs
 		this._hash = hash([hash(this.language), hash(this.getValue()), this._getPersisentMetadata, this.transientOptions.transientOutputs ? [] : this._outputs]);
 		return this._hash;
 	}
@@ -117,18 +117,18 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		let filteredMetadata: { [key: string]: any } = {};
 		const transientMetadata = this.transientOptions.transientMetadata;
 
-		const keys = new Set([...Object.keys(this.metadata)]);
+		const keys = new Set([...OBject.keys(this.metadata)]);
 		for (let key of keys) {
-			if (!(transientMetadata[key as keyof NotebookCellMetadata])
+			if (!(transientMetadata[key as keyof NoteBookCellMetadata])
 			) {
-				filteredMetadata[key] = this.metadata[key as keyof NotebookCellMetadata];
+				filteredMetadata[key] = this.metadata[key as keyof NoteBookCellMetadata];
 			}
 		}
 
 		return filteredMetadata;
 	}
 
-	getTextLength(): number {
+	getTextLength(): numBer {
 		return this.textBuffer.getLength();
 	}
 
@@ -137,7 +137,7 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		return new Range(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
 	}
 
-	spliceNotebookCellOutputs(splices: NotebookCellOutputsSplice[]): void {
+	spliceNoteBookCellOutputs(splices: NoteBookCellOutputsSplice[]): void {
 		splices.reverse().forEach(splice => {
 			this.outputs.splice(splice[0], splice[1], ...splice[2]);
 		});
@@ -145,12 +145,12 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		this._onDidChangeOutputs.fire(splices);
 	}
 
-	getEvaluatedMetadata(documentMetadata: NotebookDocumentMetadata): NotebookCellMetadata {
-		const editable = this.metadata?.editable ??
-			documentMetadata.cellEditable;
+	getEvaluatedMetadata(documentMetadata: NoteBookDocumentMetadata): NoteBookCellMetadata {
+		const editaBle = this.metadata?.editaBle ??
+			documentMetadata.cellEditaBle;
 
-		const runnable = this.metadata?.runnable ??
-			documentMetadata.cellRunnable;
+		const runnaBle = this.metadata?.runnaBle ??
+			documentMetadata.cellRunnaBle;
 
 		const hasExecutionOrder = this.metadata?.hasExecutionOrder ??
 			documentMetadata.cellHasExecutionOrder;
@@ -158,8 +158,8 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		return {
 			...(this.metadata || {}),
 			...{
-				editable,
-				runnable,
+				editaBle,
+				runnaBle,
 				hasExecutionOrder
 			}
 		};

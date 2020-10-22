@@ -11,7 +11,7 @@ import { TextModel } from 'vs/editor/common/model/textModel';
 import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-export function testApplyEditsWithSyncedModels(original: string[], edits: IIdentifiedSingleEditOperation[], expected: string[], inputEditsAreInvalid: boolean = false): void {
+export function testApplyEditsWithSyncedModels(original: string[], edits: IIdentifiedSingleEditOperation[], expected: string[], inputEditsAreInvalid: Boolean = false): void {
 	let originalStr = original.join('\n');
 	let expectedStr = expected.join('\n');
 
@@ -27,7 +27,7 @@ export function testApplyEditsWithSyncedModels(original: string[], edits: IIdent
 		// Apply the inverse edits
 		let inverseInverseEdits = model.applyEdits(inverseEdits, true);
 
-		// Assert the inverse edits brought back model to original state
+		// Assert the inverse edits Brought Back model to original state
 		assert.deepEqual(model.getValue(EndOfLinePreference.LF), originalStr);
 
 		if (!inputEditsAreInvalid) {
@@ -58,14 +58,14 @@ function assertOneDirectionLineMapping(model: TextModel, direction: AssertDocume
 
 	let line = 1, column = 1, previousIsCarriageReturn = false;
 	for (let offset = 0; offset <= allText.length; offset++) {
-		// The position coordinate system cannot express the position between \r and \n
+		// The position coordinate system cannot express the position Between \r and \n
 		let position = new Position(line, column + (previousIsCarriageReturn ? -1 : 0));
 
 		if (direction === AssertDocumentLineMappingDirection.OffsetToPosition) {
 			let actualPosition = model.getPositionAt(offset);
 			assert.equal(actualPosition.toString(), position.toString(), msg + ' - getPositionAt mismatch for offset ' + offset);
 		} else {
-			// The position coordinate system cannot express the position between \r and \n
+			// The position coordinate system cannot express the position Between \r and \n
 			let expectedOffset = offset + (previousIsCarriageReturn ? -1 : 0);
 			let actualOffset = model.getOffsetAt(position);
 			assert.equal(actualOffset, expectedOffset, msg + ' - getOffsetAt mismatch for position ' + position.toString());
@@ -88,7 +88,7 @@ function assertLineMapping(model: TextModel, msg: string): void {
 }
 
 
-export function assertSyncedModels(text: string, callback: (model: TextModel, assertMirrorModels: () => void) => void, setup: ((model: TextModel) => void) | null = null): void {
+export function assertSyncedModels(text: string, callBack: (model: TextModel, assertMirrorModels: () => void) => void, setup: ((model: TextModel) => void) | null = null): void {
 	let model = createTextModel(text, TextModel.DEFAULT_CREATION_OPTIONS, null);
 	model.setEOL(EndOfLineSequence.LF);
 	assertLineMapping(model, 'model');
@@ -104,7 +104,7 @@ export function assertSyncedModels(text: string, callback: (model: TextModel, as
 	model.onDidChangeContent((e: IModelContentChangedEvent) => {
 		let versionId = e.versionId;
 		if (versionId < mirrorModel2PrevVersionId) {
-			console.warn('Model version id did not advance between edits (2)');
+			console.warn('Model version id did not advance Between edits (2)');
 		}
 		mirrorModel2PrevVersionId = versionId;
 		mirrorModel2.onEvents(e);
@@ -116,7 +116,7 @@ export function assertSyncedModels(text: string, callback: (model: TextModel, as
 		assert.equal(mirrorModel2.version, model.getVersionId(), 'mirror model 2 version OK');
 	};
 
-	callback(model, assertMirrorModels);
+	callBack(model, assertMirrorModels);
 
 	model.dispose();
 	mirrorModel2.dispose();

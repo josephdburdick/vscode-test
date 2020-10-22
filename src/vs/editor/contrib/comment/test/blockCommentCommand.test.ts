@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { Selection } from 'vs/editor/common/core/selection';
-import { BlockCommentCommand } from 'vs/editor/contrib/comment/blockCommentCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { BlockCommentCommand } from 'vs/editor/contriB/comment/BlockCommentCommand';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
 import { CommentMode } from 'vs/editor/test/common/commentMode';
 
 function testBlockCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
+	let mode = new CommentMode({ lineComment: '!@#', BlockComment: ['<0', '0>'] });
 	testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, true), expectedLines, expectedSelection);
 	mode.dispose();
 }
 
-suite('Editor Contrib - Block Comment Command', () => {
+suite('Editor ContriB - Block Comment Command', () => {
 
 	test('empty selection wraps itself', function () {
 		testBlockCommentCommand(
@@ -36,7 +36,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 		);
 	});
 
-	test('invisible selection ignored', function () {
+	test('invisiBle selection ignored', function () {
 		testBlockCommentCommand(
 			[
 				'first',
@@ -57,7 +57,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 		);
 	});
 
-	test('bug9511', () => {
+	test('Bug9511', () => {
 		testBlockCommentCommand(
 			[
 				'first',
@@ -432,7 +432,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 		);
 	});
 
-	test('bug #30358', function () {
+	test('Bug #30358', function () {
 		testBlockCommentCommand(
 			[
 				'<0 start 0> middle end',
@@ -474,7 +474,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 
 	test('insertSpace false', () => {
 		function testLineCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-			let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
+			let mode = new CommentMode({ lineComment: '!@#', BlockComment: ['<0', '0>'] });
 			testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, false), expectedLines, expectedSelection);
 			mode.dispose();
 		}
@@ -493,7 +493,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 
 	test('insertSpace false does not remove space', () => {
 		function testLineCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-			let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
+			let mode = new CommentMode({ lineComment: '!@#', BlockComment: ['<0', '0>'] });
 			testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, false), expectedLines, expectedSelection);
 			mode.dispose();
 		}

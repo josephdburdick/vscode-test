@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { MainThreadDocumentContentProviders } from 'vs/workbench/api/browser/mainThreadDocumentContentProviders';
+import { URI } from 'vs/Base/common/uri';
+import { MainThreadDocumentContentProviders } from 'vs/workBench/api/Browser/mainThreadDocumentContentProviders';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/Base/test/common/mock';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { TestRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
+import { TestRPCProtocol } from 'vs/workBench/test/Browser/api/testRPCProtocol';
 import { TextEdit } from 'vs/editor/common/modes';
 
 suite('MainThreadDocumentContentProviders', function () {

@@ -5,15 +5,15 @@
 
 import * as vscode from 'vscode';
 
-export default class MergeConflictContentProvider implements vscode.TextDocumentContentProvider, vscode.Disposable {
+export default class MergeConflictContentProvider implements vscode.TextDocumentContentProvider, vscode.DisposaBle {
 
 	static scheme = 'merge-conflict.conflict-diff';
 
 	constructor(private context: vscode.ExtensionContext) {
 	}
 
-	begin() {
-		this.context.subscriptions.push(
+	Begin() {
+		this.context.suBscriptions.push(
 			vscode.workspace.registerTextDocumentContentProvider(MergeConflictContentProvider.scheme, this)
 		);
 	}
@@ -23,7 +23,7 @@ export default class MergeConflictContentProvider implements vscode.TextDocument
 
 	async provideTextDocumentContent(uri: vscode.Uri): Promise<string | null> {
 		try {
-			const { scheme, ranges } = JSON.parse(uri.query) as { scheme: string, ranges: [{ line: number, character: number }[], { line: number, character: number }[]][] };
+			const { scheme, ranges } = JSON.parse(uri.query) as { scheme: string, ranges: [{ line: numBer, character: numBer }[], { line: numBer, character: numBer }[]][] };
 
 			// complete diff
 			const document = await vscode.workspace.openTextDocument(uri.with({ scheme, query: '' }));
@@ -31,8 +31,8 @@ export default class MergeConflictContentProvider implements vscode.TextDocument
 			let text = '';
 			let lastPosition = new vscode.Position(0, 0);
 
-			ranges.forEach(rangeObj => {
-				let [conflictRange, fullRange] = rangeObj;
+			ranges.forEach(rangeOBj => {
+				let [conflictRange, fullRange] = rangeOBj;
 				const [start, end] = conflictRange;
 				const [fullStart, fullEnd] = fullRange;
 
@@ -47,7 +47,7 @@ export default class MergeConflictContentProvider implements vscode.TextDocument
 			return text;
 		}
 		catch (ex) {
-			await vscode.window.showErrorMessage('Unable to show comparison');
+			await vscode.window.showErrorMessage('UnaBle to show comparison');
 			return null;
 		}
 	}

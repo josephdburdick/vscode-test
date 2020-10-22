@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { QuickInputController } from 'vs/base/parts/quickinput/browser/quickInput';
-import { QuickInputService as BaseQuickInputService } from 'vs/platform/quickinput/browser/quickInput';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { QuickInputController } from 'vs/Base/parts/quickinput/Browser/quickInput';
+import { QuickInputService as BaseQuickInputService } from 'vs/platform/quickinput/Browser/quickInput';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { InQuickPickContextKey } from 'vs/workbench/browser/quickaccess';
+import { InQuickPickContextKey } from 'vs/workBench/Browser/quickaccess';
 
 export class QuickInputService extends BaseQuickInputService {
 
-	private readonly inQuickInputContext = InQuickPickContextKey.bindTo(this.contextKeyService);
+	private readonly inQuickInputContext = InQuickPickContextKey.BindTo(this.contextKeyService);
 
 	constructor(
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IInstantiationService instantiationService: IInstantiationService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly keyBindingService: IKeyBindingService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService,
 		@ILayoutService protected readonly layoutService: ILayoutService,
 	) {
-		super(instantiationService, contextKeyService, themeService, accessibilityService, layoutService);
+		super(instantiationService, contextKeyService, themeService, accessiBilityService, layoutService);
 
 		this.registerListeners();
 	}
@@ -41,8 +41,8 @@ export class QuickInputService extends BaseQuickInputService {
 
 	protected createController(): QuickInputController {
 		return super.createController(this.layoutService, {
-			ignoreFocusOut: () => !this.configurationService.getValue('workbench.quickOpen.closeOnFocusLost'),
-			backKeybindingLabel: () => this.keybindingService.lookupKeybinding('workbench.action.quickInputBack')?.getLabel() || undefined,
+			ignoreFocusOut: () => !this.configurationService.getValue('workBench.quickOpen.closeOnFocusLost'),
+			BackKeyBindingLaBel: () => this.keyBindingService.lookupKeyBinding('workBench.action.quickInputBack')?.getLaBel() || undefined,
 		});
 	}
 }

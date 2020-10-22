@@ -10,7 +10,7 @@ import { TestConfiguration } from 'vs/editor/test/common/mocks/testConfiguration
 import { MonospaceLineBreaksComputerFactory } from 'vs/editor/common/viewModel/monospaceLineBreaksComputer';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-export function testViewModel(text: string[], options: IEditorOptions, callback: (viewModel: ViewModel, model: TextModel) => void): void {
+export function testViewModel(text: string[], options: IEditorOptions, callBack: (viewModel: ViewModel, model: TextModel) => void): void {
 	const EDITOR_ID = 1;
 
 	const configuration = new TestConfiguration(options);
@@ -18,7 +18,7 @@ export function testViewModel(text: string[], options: IEditorOptions, callback:
 	const monospaceLineBreaksComputerFactory = MonospaceLineBreaksComputerFactory.create(configuration.options);
 	const viewModel = new ViewModel(EDITOR_ID, configuration, model, monospaceLineBreaksComputerFactory, monospaceLineBreaksComputerFactory, null!);
 
-	callback(viewModel, model);
+	callBack(viewModel, model);
 
 	viewModel.dispose();
 	model.dispose();

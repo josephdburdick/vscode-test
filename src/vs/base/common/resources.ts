@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as extpath from 'vs/base/common/extpath';
-import * as paths from 'vs/base/common/path';
-import { URI, uriToFsPath } from 'vs/base/common/uri';
-import { equalsIgnoreCase, compare as strCompare } from 'vs/base/common/strings';
-import { Schemas } from 'vs/base/common/network';
-import { isWindows, isLinux } from 'vs/base/common/platform';
-import { CharCode } from 'vs/base/common/charCode';
-import { ParsedExpression, IExpression, parse } from 'vs/base/common/glob';
-import { TernarySearchTree } from 'vs/base/common/map';
+import * as extpath from 'vs/Base/common/extpath';
+import * as paths from 'vs/Base/common/path';
+import { URI, uriToFsPath } from 'vs/Base/common/uri';
+import { equalsIgnoreCase, compare as strCompare } from 'vs/Base/common/strings';
+import { Schemas } from 'vs/Base/common/network';
+import { isWindows, isLinux } from 'vs/Base/common/platform';
+import { CharCode } from 'vs/Base/common/charCode';
+import { ParsedExpression, IExpression, parse } from 'vs/Base/common/gloB';
+import { TernarySearchTree } from 'vs/Base/common/map';
 
 export function originalFSPath(uri: URI): string {
 	return uriToFsPath(uri, true);
@@ -30,7 +30,7 @@ export interface IExtUri {
 	 * @param uri2 Uri
 	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
 	 */
-	compare(uri1: URI, uri2: URI, ignoreFragment?: boolean): number;
+	compare(uri1: URI, uri2: URI, ignoreFragment?: Boolean): numBer;
 
 	/**
 	 * Tests whether two uris are equal
@@ -39,34 +39,34 @@ export interface IExtUri {
 	 * @param uri2 Uri
 	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
 	 */
-	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment?: boolean): boolean;
+	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment?: Boolean): Boolean;
 
 	/**
-	 * Tests whether a `candidate` URI is a parent or equal of a given `base` URI.
+	 * Tests whether a `candidate` URI is a parent or equal of a given `Base` URI.
 	 *
-	 * @param base A uri which is "longer"
-	 * @param parentCandidate A uri which is "shorter" then `base`
+	 * @param Base A uri which is "longer"
+	 * @param parentCandidate A uri which is "shorter" then `Base`
 	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
 	 */
-	isEqualOrParent(base: URI, parentCandidate: URI, ignoreFragment?: boolean): boolean;
+	isEqualOrParent(Base: URI, parentCandidate: URI, ignoreFragment?: Boolean): Boolean;
 
 	/**
-	 * Creates a key from a resource URI to be used to resource comparison and for resource maps.
+	 * Creates a key from a resource URI to Be used to resource comparison and for resource maps.
 	 * @see ResourceMap
 	 * @param uri Uri
 	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
 	 */
-	getComparisonKey(uri: URI, ignoreFragment?: boolean): string;
+	getComparisonKey(uri: URI, ignoreFragment?: Boolean): string;
 
 	// --- path math
 
-	basenameOrAuthority(resource: URI): string;
+	BasenameOrAuthority(resource: URI): string;
 
 	/**
-	 * Returns the basename of the path component of an uri.
+	 * Returns the Basename of the path component of an uri.
 	 * @param resource
 	 */
-	basename(resource: URI): string;
+	Basename(resource: URI): string;
 
 	/**
 	 * Returns the extension of the path component of an uri.
@@ -102,25 +102,25 @@ export interface IExtUri {
 	 */
 	relativePath(from: URI, to: URI): string | undefined;
 	/**
-	 * Resolves an absolute or relative path against a base URI.
-	 * The path can be relative or absolute posix or a Windows path
+	 * Resolves an aBsolute or relative path against a Base URI.
+	 * The path can Be relative or aBsolute posix or a Windows path
 	 */
-	resolvePath(base: URI, path: string): URI;
+	resolvePath(Base: URI, path: string): URI;
 
 	// --- misc
 
 	/**
-	 * Returns true if the URI path is absolute.
+	 * Returns true if the URI path is aBsolute.
 	 */
-	isAbsolutePath(resource: URI): boolean;
+	isABsolutePath(resource: URI): Boolean;
 	/**
 	 * Tests whether the two authorities are the same
 	 */
-	isEqualAuthority(a1: string, a2: string): boolean;
+	isEqualAuthority(a1: string, a2: string): Boolean;
 	/**
 	 * Returns true if the URI path has a trailing path separator
 	 */
-	hasTrailingPathSeparator(resource: URI, sep?: string): boolean;
+	hasTrailingPathSeparator(resource: URI, sep?: string): Boolean;
 	/**
 	 * Removes a trailing path separator, if there's one.
 	 * Important: Doesn't remove the first slash, it would make the URI invalid
@@ -128,23 +128,23 @@ export interface IExtUri {
 	removeTrailingPathSeparator(resource: URI, sep?: string): URI;
 	/**
 	 * Adds a trailing path separator to the URI if there isn't one already.
-	 * For example, c:\ would be unchanged, but c:\users would become c:\users\
+	 * For example, c:\ would Be unchanged, But c:\users would Become c:\users\
 	 */
 	addTrailingPathSeparator(resource: URI, sep?: string): URI;
 }
 
 export class ExtUri implements IExtUri {
 
-	constructor(private _ignorePathCasing: (uri: URI) => boolean) { }
+	constructor(private _ignorePathCasing: (uri: URI) => Boolean) { }
 
-	compare(uri1: URI, uri2: URI, ignoreFragment: boolean = false): number {
+	compare(uri1: URI, uri2: URI, ignoreFragment: Boolean = false): numBer {
 		if (uri1 === uri2) {
 			return 0;
 		}
 		return strCompare(this.getComparisonKey(uri1, ignoreFragment), this.getComparisonKey(uri2, ignoreFragment));
 	}
 
-	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment: boolean = false): boolean {
+	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment: Boolean = false): Boolean {
 		if (uri1 === uri2) {
 			return true;
 		}
@@ -154,20 +154,20 @@ export class ExtUri implements IExtUri {
 		return this.getComparisonKey(uri1, ignoreFragment) === this.getComparisonKey(uri2, ignoreFragment);
 	}
 
-	getComparisonKey(uri: URI, ignoreFragment: boolean = false): string {
+	getComparisonKey(uri: URI, ignoreFragment: Boolean = false): string {
 		return uri.with({
 			path: this._ignorePathCasing(uri) ? uri.path.toLowerCase() : undefined,
 			fragment: ignoreFragment ? null : undefined
 		}).toString();
 	}
 
-	isEqualOrParent(base: URI, parentCandidate: URI, ignoreFragment: boolean = false): boolean {
-		if (base.scheme === parentCandidate.scheme) {
-			if (base.scheme === Schemas.file) {
-				return extpath.isEqualOrParent(originalFSPath(base), originalFSPath(parentCandidate), this._ignorePathCasing(base)) && base.query === parentCandidate.query && (ignoreFragment || base.fragment === parentCandidate.fragment);
+	isEqualOrParent(Base: URI, parentCandidate: URI, ignoreFragment: Boolean = false): Boolean {
+		if (Base.scheme === parentCandidate.scheme) {
+			if (Base.scheme === Schemas.file) {
+				return extpath.isEqualOrParent(originalFSPath(Base), originalFSPath(parentCandidate), this._ignorePathCasing(Base)) && Base.query === parentCandidate.query && (ignoreFragment || Base.fragment === parentCandidate.fragment);
 			}
-			if (isEqualAuthority(base.authority, parentCandidate.authority)) {
-				return extpath.isEqualOrParent(base.path, parentCandidate.path, this._ignorePathCasing(base), '/') && base.query === parentCandidate.query && (ignoreFragment || base.fragment === parentCandidate.fragment);
+			if (isEqualAuthority(Base.authority, parentCandidate.authority)) {
+				return extpath.isEqualOrParent(Base.path, parentCandidate.path, this._ignorePathCasing(Base), '/') && Base.query === parentCandidate.query && (ignoreFragment || Base.fragment === parentCandidate.fragment);
 			}
 		}
 		return false;
@@ -179,12 +179,12 @@ export class ExtUri implements IExtUri {
 		return URI.joinPath(resource, ...pathFragment);
 	}
 
-	basenameOrAuthority(resource: URI): string {
-		return basename(resource) || resource.authority;
+	BasenameOrAuthority(resource: URI): string {
+		return Basename(resource) || resource.authority;
 	}
 
-	basename(resource: URI): string {
-		return paths.posix.basename(resource.path);
+	Basename(resource: URI): string {
+		return paths.posix.Basename(resource.path);
 	}
 
 	extname(resource: URI): string {
@@ -202,7 +202,7 @@ export class ExtUri implements IExtUri {
 			dirname = paths.posix.dirname(resource.path);
 			if (resource.authority && dirname.length && dirname.charCodeAt(0) !== CharCode.Slash) {
 				console.error(`dirname("${resource.toString})) resulted in a relative path`);
-				dirname = '/'; // If a URI contains an authority component, then the path component must either be empty or begin with a CharCode.Slash ("/") character
+				dirname = '/'; // If a URI contains an authority component, then the path component must either Be empty or Begin with a CharCode.Slash ("/") character
 			}
 		}
 		return resource.with({
@@ -240,19 +240,19 @@ export class ExtUri implements IExtUri {
 			for (const len = Math.min(fromPath.length, toPath.length); i < len; i++) {
 				if (fromPath.charCodeAt(i) !== toPath.charCodeAt(i)) {
 					if (fromPath.charAt(i).toLowerCase() !== toPath.charAt(i).toLowerCase()) {
-						break;
+						Break;
 					}
 				}
 			}
-			fromPath = toPath.substr(0, i) + fromPath.substr(i);
+			fromPath = toPath.suBstr(0, i) + fromPath.suBstr(i);
 		}
 		return paths.posix.relative(fromPath, toPath);
 	}
 
-	resolvePath(base: URI, path: string): URI {
-		if (base.scheme === Schemas.file) {
-			const newURI = URI.file(paths.resolve(originalFSPath(base), path));
-			return base.with({
+	resolvePath(Base: URI, path: string): URI {
+		if (Base.scheme === Schemas.file) {
+			const newURI = URI.file(paths.resolve(originalFSPath(Base), path));
+			return Base.with({
 				authority: newURI.authority,
 				path: newURI.path
 			});
@@ -263,14 +263,14 @@ export class ExtUri implements IExtUri {
 				path = '/' + path;
 			}
 		}
-		return base.with({
-			path: paths.posix.resolve(base.path, path)
+		return Base.with({
+			path: paths.posix.resolve(Base.path, path)
 		});
 	}
 
 	// --- misc
 
-	isAbsolutePath(resource: URI): boolean {
+	isABsolutePath(resource: URI): Boolean {
 		return !!resource.path && resource.path[0] === '/';
 	}
 
@@ -278,7 +278,7 @@ export class ExtUri implements IExtUri {
 		return a1 === a2 || equalsIgnoreCase(a1, a2);
 	}
 
-	hasTrailingPathSeparator(resource: URI, sep: string = paths.sep): boolean {
+	hasTrailingPathSeparator(resource: URI, sep: string = paths.sep): Boolean {
 		if (resource.scheme === Schemas.file) {
 			const fsp = originalFSPath(resource);
 			return fsp.length > extpath.getRoot(fsp).length && fsp[fsp.length - 1] === sep;
@@ -289,15 +289,15 @@ export class ExtUri implements IExtUri {
 	}
 
 	removeTrailingPathSeparator(resource: URI, sep: string = paths.sep): URI {
-		// Make sure that the path isn't a drive letter. A trailing separator there is not removable.
+		// Make sure that the path isn't a drive letter. A trailing separator there is not removaBle.
 		if (hasTrailingPathSeparator(resource, sep)) {
-			return resource.with({ path: resource.path.substr(0, resource.path.length - 1) });
+			return resource.with({ path: resource.path.suBstr(0, resource.path.length - 1) });
 		}
 		return resource;
 	}
 
 	addTrailingPathSeparator(resource: URI, sep: string = paths.sep): URI {
-		let isRootSep: boolean = false;
+		let isRootSep: Boolean = false;
 		if (resource.scheme === Schemas.file) {
 			const fsp = originalFSPath(resource);
 			isRootSep = ((fsp !== undefined) && (fsp.length === extpath.getRoot(fsp).length) && (fsp[fsp.length - 1] === sep));
@@ -315,10 +315,10 @@ export class ExtUri implements IExtUri {
 
 
 /**
- * Unbiased utility that takes uris "as they are". This means it can be interchanged with
+ * UnBiased utility that takes uris "as they are". This means it can Be interchanged with
  * uri#toString() usages. The following is true
  * ```
- * assertEqual(aUri.toString() === bUri.toString(), exturi.isEqual(aUri, bUri))
+ * assertEqual(aUri.toString() === BUri.toString(), exturi.isEqual(aUri, BUri))
  * ```
  */
 export const extUri = new ExtUri(() => false);
@@ -327,16 +327,16 @@ export const extUri = new ExtUri(() => false);
  * BIASED utility that _mostly_ ignored the case of urs paths. ONLY use this util if you
  * understand what you are doing.
  *
- * This utility is INCOMPATIBLE with `uri.toString()`-usages and both CANNOT be used interchanged.
+ * This utility is INCOMPATIBLE with `uri.toString()`-usages and Both CANNOT Be used interchanged.
  *
- * When dealing with uris from files or documents, `extUri` (the unbiased friend)is sufficient
- * because those uris come from a "trustworthy source". When creating unknown uris it's always
- * better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
+ * When dealing with uris from files or documents, `extUri` (the unBiased friend)is sufficient
+ * Because those uris come from a "trustworthy source". When creating unknown uris it's always
+ * Better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
  * casing matters.
  */
 export const extUriBiasedIgnorePathCase = new ExtUri(uri => {
 	// A file scheme resource is in the same platform as code, so ignore case for non linux platforms
-	// Resource can be from another platform. Lowering the case as an hack. Should come from File system provider
+	// Resource can Be from another platform. Lowering the case as an hack. Should come from File system provider
 	return uri.scheme === Schemas.file ? !isLinux : true;
 });
 
@@ -345,31 +345,31 @@ export const extUriBiasedIgnorePathCase = new ExtUri(uri => {
  * BIASED utility that always ignores the casing of uris paths. ONLY use this util if you
  * understand what you are doing.
  *
- * This utility is INCOMPATIBLE with `uri.toString()`-usages and both CANNOT be used interchanged.
+ * This utility is INCOMPATIBLE with `uri.toString()`-usages and Both CANNOT Be used interchanged.
  *
- * When dealing with uris from files or documents, `extUri` (the unbiased friend)is sufficient
- * because those uris come from a "trustworthy source". When creating unknown uris it's always
- * better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
+ * When dealing with uris from files or documents, `extUri` (the unBiased friend)is sufficient
+ * Because those uris come from a "trustworthy source". When creating unknown uris it's always
+ * Better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
  * casing matters.
  */
 export const extUriIgnorePathCase = new ExtUri(_ => true);
 
-export const isEqual = extUri.isEqual.bind(extUri);
-export const isEqualOrParent = extUri.isEqualOrParent.bind(extUri);
-export const getComparisonKey = extUri.getComparisonKey.bind(extUri);
-export const basenameOrAuthority = extUri.basenameOrAuthority.bind(extUri);
-export const basename = extUri.basename.bind(extUri);
-export const extname = extUri.extname.bind(extUri);
-export const dirname = extUri.dirname.bind(extUri);
-export const joinPath = extUri.joinPath.bind(extUri);
-export const normalizePath = extUri.normalizePath.bind(extUri);
-export const relativePath = extUri.relativePath.bind(extUri);
-export const resolvePath = extUri.resolvePath.bind(extUri);
-export const isAbsolutePath = extUri.isAbsolutePath.bind(extUri);
-export const isEqualAuthority = extUri.isEqualAuthority.bind(extUri);
-export const hasTrailingPathSeparator = extUri.hasTrailingPathSeparator.bind(extUri);
-export const removeTrailingPathSeparator = extUri.removeTrailingPathSeparator.bind(extUri);
-export const addTrailingPathSeparator = extUri.addTrailingPathSeparator.bind(extUri);
+export const isEqual = extUri.isEqual.Bind(extUri);
+export const isEqualOrParent = extUri.isEqualOrParent.Bind(extUri);
+export const getComparisonKey = extUri.getComparisonKey.Bind(extUri);
+export const BasenameOrAuthority = extUri.BasenameOrAuthority.Bind(extUri);
+export const Basename = extUri.Basename.Bind(extUri);
+export const extname = extUri.extname.Bind(extUri);
+export const dirname = extUri.dirname.Bind(extUri);
+export const joinPath = extUri.joinPath.Bind(extUri);
+export const normalizePath = extUri.normalizePath.Bind(extUri);
+export const relativePath = extUri.relativePath.Bind(extUri);
+export const resolvePath = extUri.resolvePath.Bind(extUri);
+export const isABsolutePath = extUri.isABsolutePath.Bind(extUri);
+export const isEqualAuthority = extUri.isEqualAuthority.Bind(extUri);
+export const hasTrailingPathSeparator = extUri.hasTrailingPathSeparator.Bind(extUri);
+export const removeTrailingPathSeparator = extUri.removeTrailingPathSeparator.Bind(extUri);
+export const addTrailingPathSeparator = extUri.addTrailingPathSeparator.Bind(extUri);
 
 //#endregion
 
@@ -398,7 +398,7 @@ export function distinctParents<T>(items: T[], resourceAccessor: (item: T) => UR
  */
 export namespace DataUri {
 
-	export const META_DATA_LABEL = 'label';
+	export const META_DATA_LABEL = 'laBel';
 	export const META_DATA_DESCRIPTION = 'description';
 	export const META_DATA_SIZE = 'size';
 	export const META_DATA_MIME = 'mime';
@@ -406,9 +406,9 @@ export namespace DataUri {
 	export function parseMetaData(dataUri: URI): Map<string, string> {
 		const metadata = new Map<string, string>();
 
-		// Given a URI of:  data:image/png;size:2313;label:SomeLabel;description:SomeDescription;base64,77+9UE5...
-		// the metadata is: size:2313;label:SomeLabel;description:SomeDescription
-		const meta = dataUri.path.substring(dataUri.path.indexOf(';') + 1, dataUri.path.lastIndexOf(';'));
+		// Given a URI of:  data:image/png;size:2313;laBel:SomeLaBel;description:SomeDescription;Base64,77+9UE5...
+		// the metadata is: size:2313;laBel:SomeLaBel;description:SomeDescription
+		const meta = dataUri.path.suBstring(dataUri.path.indexOf(';') + 1, dataUri.path.lastIndexOf(';'));
 		meta.split(';').forEach(property => {
 			const [key, value] = property.split(':');
 			if (key && value) {
@@ -416,9 +416,9 @@ export namespace DataUri {
 			}
 		});
 
-		// Given a URI of:  data:image/png;size:2313;label:SomeLabel;description:SomeDescription;base64,77+9UE5...
+		// Given a URI of:  data:image/png;size:2313;laBel:SomeLaBel;description:SomeDescription;Base64,77+9UE5...
 		// the mime is: image/png
-		const mime = dataUri.path.substring(0, dataUri.path.indexOf(';'));
+		const mime = dataUri.path.suBstring(0, dataUri.path.indexOf(';'));
 		if (mime) {
 			metadata.set(META_DATA_MIME, mime);
 		}
@@ -427,30 +427,30 @@ export namespace DataUri {
 	}
 }
 
-export class ResourceGlobMatcher {
+export class ResourceGloBMatcher {
 
-	private readonly globalExpression: ParsedExpression;
+	private readonly gloBalExpression: ParsedExpression;
 	private readonly expressionsByRoot: TernarySearchTree<URI, { root: URI, expression: ParsedExpression }> = TernarySearchTree.forUris<{ root: URI, expression: ParsedExpression }>();
 
 	constructor(
-		globalExpression: IExpression,
+		gloBalExpression: IExpression,
 		rootExpressions: { root: URI, expression: IExpression }[]
 	) {
-		this.globalExpression = parse(globalExpression);
+		this.gloBalExpression = parse(gloBalExpression);
 		for (const expression of rootExpressions) {
 			this.expressionsByRoot.set(expression.root, { root: expression.root, expression: parse(expression.expression) });
 		}
 	}
 
-	matches(resource: URI): boolean {
-		const rootExpression = this.expressionsByRoot.findSubstr(resource);
+	matches(resource: URI): Boolean {
+		const rootExpression = this.expressionsByRoot.findSuBstr(resource);
 		if (rootExpression) {
 			const path = relativePath(rootExpression.root, resource);
 			if (path && !!rootExpression.expression(path)) {
 				return true;
 			}
 		}
-		return !!this.globalExpression(resource.path);
+		return !!this.gloBalExpression(resource.path);
 	}
 }
 

@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import * as platform from 'vs/base/common/platform';
-import * as buffer from 'vs/base/common/buffer';
+import * as strings from 'vs/Base/common/strings';
+import * as platform from 'vs/Base/common/platform';
+import * as Buffer from 'vs/Base/common/Buffer';
 
 declare const TextDecoder: {
 	prototype: TextDecoder;
-	new(label?: string): TextDecoder;
+	new(laBel?: string): TextDecoder;
 };
 interface TextDecoder {
 	decode(view: Uint16Array): string;
 }
 
 export interface IStringBuilder {
-	build(): string;
+	Build(): string;
 	reset(): void;
-	write1(charCode: number): void;
-	appendASCII(charCode: number): void;
+	write1(charCode: numBer): void;
+	appendASCII(charCode: numBer): void;
 	appendASCIIString(str: string): void;
 }
 
@@ -32,8 +32,8 @@ export function getPlatformTextDecoder(): TextDecoder {
 }
 
 export const hasTextDecoder = (typeof TextDecoder !== 'undefined');
-export let createStringBuilder: (capacity: number) => IStringBuilder;
-export let decodeUTF16LE: (source: Uint8Array, offset: number, len: number) => string;
+export let createStringBuilder: (capacity: numBer) => IStringBuilder;
+export let decodeUTF16LE: (source: Uint8Array, offset: numBer, len: numBer) => string;
 
 if (hasTextDecoder) {
 	createStringBuilder = (capacity) => new StringBuilder(capacity);
@@ -43,16 +43,16 @@ if (hasTextDecoder) {
 	decodeUTF16LE = compatDecodeUTF16LE;
 }
 
-function standardDecodeUTF16LE(source: Uint8Array, offset: number, len: number): string {
-	const view = new Uint16Array(source.buffer, offset, len);
+function standardDecodeUTF16LE(source: Uint8Array, offset: numBer, len: numBer): string {
+	const view = new Uint16Array(source.Buffer, offset, len);
 	return getPlatformTextDecoder().decode(view);
 }
 
-function compatDecodeUTF16LE(source: Uint8Array, offset: number, len: number): string {
+function compatDecodeUTF16LE(source: Uint8Array, offset: numBer, len: numBer): string {
 	let result: string[] = [];
 	let resultLen = 0;
 	for (let i = 0; i < len; i++) {
-		const charCode = buffer.readUInt16LE(source, offset); offset += 2;
+		const charCode = Buffer.readUInt16LE(source, offset); offset += 2;
 		result[resultLen++] = String.fromCharCode(charCode);
 	}
 	return result.join('');
@@ -60,55 +60,55 @@ function compatDecodeUTF16LE(source: Uint8Array, offset: number, len: number): s
 
 class StringBuilder implements IStringBuilder {
 
-	private readonly _capacity: number;
-	private readonly _buffer: Uint16Array;
+	private readonly _capacity: numBer;
+	private readonly _Buffer: Uint16Array;
 
 	private _completedStrings: string[] | null;
-	private _bufferLength: number;
+	private _BufferLength: numBer;
 
-	constructor(capacity: number) {
+	constructor(capacity: numBer) {
 		this._capacity = capacity | 0;
-		this._buffer = new Uint16Array(this._capacity);
+		this._Buffer = new Uint16Array(this._capacity);
 
 		this._completedStrings = null;
-		this._bufferLength = 0;
+		this._BufferLength = 0;
 	}
 
-	public reset(): void {
+	puBlic reset(): void {
 		this._completedStrings = null;
-		this._bufferLength = 0;
+		this._BufferLength = 0;
 	}
 
-	public build(): string {
+	puBlic Build(): string {
 		if (this._completedStrings !== null) {
 			this._flushBuffer();
 			return this._completedStrings.join('');
 		}
-		return this._buildBuffer();
+		return this._BuildBuffer();
 	}
 
-	private _buildBuffer(): string {
-		if (this._bufferLength === 0) {
+	private _BuildBuffer(): string {
+		if (this._BufferLength === 0) {
 			return '';
 		}
 
-		const view = new Uint16Array(this._buffer.buffer, 0, this._bufferLength);
+		const view = new Uint16Array(this._Buffer.Buffer, 0, this._BufferLength);
 		return getPlatformTextDecoder().decode(view);
 	}
 
 	private _flushBuffer(): void {
-		const bufferString = this._buildBuffer();
-		this._bufferLength = 0;
+		const BufferString = this._BuildBuffer();
+		this._BufferLength = 0;
 
 		if (this._completedStrings === null) {
-			this._completedStrings = [bufferString];
+			this._completedStrings = [BufferString];
 		} else {
-			this._completedStrings[this._completedStrings.length] = bufferString;
+			this._completedStrings[this._completedStrings.length] = BufferString;
 		}
 	}
 
-	public write1(charCode: number): void {
-		const remainingSpace = this._capacity - this._bufferLength;
+	puBlic write1(charCode: numBer): void {
+		const remainingSpace = this._capacity - this._BufferLength;
 
 		if (remainingSpace <= 1) {
 			if (remainingSpace === 0 || strings.isHighSurrogate(charCode)) {
@@ -116,22 +116,22 @@ class StringBuilder implements IStringBuilder {
 			}
 		}
 
-		this._buffer[this._bufferLength++] = charCode;
+		this._Buffer[this._BufferLength++] = charCode;
 	}
 
-	public appendASCII(charCode: number): void {
-		if (this._bufferLength === this._capacity) {
-			// buffer is full
+	puBlic appendASCII(charCode: numBer): void {
+		if (this._BufferLength === this._capacity) {
+			// Buffer is full
 			this._flushBuffer();
 		}
-		this._buffer[this._bufferLength++] = charCode;
+		this._Buffer[this._BufferLength++] = charCode;
 	}
 
-	public appendASCIIString(str: string): void {
+	puBlic appendASCIIString(str: string): void {
 		const strLen = str.length;
 
-		if (this._bufferLength + strLen >= this._capacity) {
-			// This string does not fit in the remaining buffer space
+		if (this._BufferLength + strLen >= this._capacity) {
+			// This string does not fit in the remaining Buffer space
 
 			this._flushBuffer();
 			this._completedStrings![this._completedStrings!.length] = str;
@@ -139,7 +139,7 @@ class StringBuilder implements IStringBuilder {
 		}
 
 		for (let i = 0; i < strLen; i++) {
-			this._buffer[this._bufferLength++] = str.charCodeAt(i);
+			this._Buffer[this._BufferLength++] = str.charCodeAt(i);
 		}
 	}
 }
@@ -147,31 +147,31 @@ class StringBuilder implements IStringBuilder {
 class CompatStringBuilder implements IStringBuilder {
 
 	private _pieces: string[];
-	private _piecesLen: number;
+	private _piecesLen: numBer;
 
 	constructor() {
 		this._pieces = [];
 		this._piecesLen = 0;
 	}
 
-	public reset(): void {
+	puBlic reset(): void {
 		this._pieces = [];
 		this._piecesLen = 0;
 	}
 
-	public build(): string {
+	puBlic Build(): string {
 		return this._pieces.join('');
 	}
 
-	public write1(charCode: number): void {
+	puBlic write1(charCode: numBer): void {
 		this._pieces[this._piecesLen++] = String.fromCharCode(charCode);
 	}
 
-	public appendASCII(charCode: number): void {
+	puBlic appendASCII(charCode: numBer): void {
 		this._pieces[this._piecesLen++] = String.fromCharCode(charCode);
 	}
 
-	public appendASCIIString(str: string): void {
+	puBlic appendASCIIString(str: string): void {
 		this._pieces[this._piecesLen++] = str;
 	}
 }

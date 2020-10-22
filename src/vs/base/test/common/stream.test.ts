@@ -4,27 +4,27 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { isReadableStream, newWriteableStream, Readable, consumeReadable, peekReadable, consumeStream, ReadableStream, toStream, toReadable, transform, peekStream, isReadableBufferedStream } from 'vs/base/common/stream';
-import { timeout } from 'vs/base/common/async';
+import { isReadaBleStream, newWriteaBleStream, ReadaBle, consumeReadaBle, peekReadaBle, consumeStream, ReadaBleStream, toStream, toReadaBle, transform, peekStream, isReadaBleBufferedStream } from 'vs/Base/common/stream';
+import { timeout } from 'vs/Base/common/async';
 
 suite('Stream', () => {
 
-	test('isReadableStream', () => {
-		assert.ok(!isReadableStream(Object.create(null)));
-		assert.ok(isReadableStream(newWriteableStream(d => d)));
+	test('isReadaBleStream', () => {
+		assert.ok(!isReadaBleStream(OBject.create(null)));
+		assert.ok(isReadaBleStream(newWriteaBleStream(d => d)));
 	});
 
-	test('isReadableBufferedStream', async () => {
-		assert.ok(!isReadableBufferedStream(Object.create(null)));
+	test('isReadaBleBufferedStream', async () => {
+		assert.ok(!isReadaBleBufferedStream(OBject.create(null)));
 
-		const stream = newWriteableStream(d => d);
+		const stream = newWriteaBleStream(d => d);
 		stream.end();
-		const bufferedStream = await peekStream(stream, 1);
-		assert.ok(isReadableBufferedStream(bufferedStream));
+		const BufferedStream = await peekStream(stream, 1);
+		assert.ok(isReadaBleBufferedStream(BufferedStream));
 	});
 
-	test('WriteableStream - basics', () => {
-		const stream = newWriteableStream<string>(strings => strings.join());
+	test('WriteaBleStream - Basics', () => {
+		const stream = newWriteaBleStream<string>(strings => strings.join());
 
 		let error = false;
 		stream.on('error', e => {
@@ -76,8 +76,8 @@ suite('Stream', () => {
 		assert.equal(chunks.length, 4);
 	});
 
-	test('WriteableStream - removeListener', () => {
-		const stream = newWriteableStream<string>(strings => strings.join());
+	test('WriteaBleStream - removeListener', () => {
+		const stream = newWriteaBleStream<string>(strings => strings.join());
 
 		let error = false;
 		const errorListener = (e: Error) => {
@@ -110,8 +110,8 @@ suite('Stream', () => {
 		assert.equal(error, false);
 	});
 
-	test('WriteableStream - highWaterMark', async () => {
-		const stream = newWriteableStream<string>(strings => strings.join(), { highWaterMark: 3 });
+	test('WriteaBleStream - highWaterMark', async () => {
+		const stream = newWriteaBleStream<string>(strings => strings.join(), { highWaterMark: 3 });
 
 		let res = stream.write('1');
 		assert.ok(!res);
@@ -151,38 +151,38 @@ suite('Stream', () => {
 		assert.equal(drained2, true);
 	});
 
-	test('consumeReadable', () => {
-		const readable = arrayToReadable(['1', '2', '3', '4', '5']);
-		const consumed = consumeReadable(readable, strings => strings.join());
+	test('consumeReadaBle', () => {
+		const readaBle = arrayToReadaBle(['1', '2', '3', '4', '5']);
+		const consumed = consumeReadaBle(readaBle, strings => strings.join());
 		assert.equal(consumed, '1,2,3,4,5');
 	});
 
-	test('peekReadable', () => {
+	test('peekReadaBle', () => {
 		for (let i = 0; i < 5; i++) {
-			const readable = arrayToReadable(['1', '2', '3', '4', '5']);
+			const readaBle = arrayToReadaBle(['1', '2', '3', '4', '5']);
 
-			const consumedOrReadable = peekReadable(readable, strings => strings.join(), i);
-			if (typeof consumedOrReadable === 'string') {
+			const consumedOrReadaBle = peekReadaBle(readaBle, strings => strings.join(), i);
+			if (typeof consumedOrReadaBle === 'string') {
 				assert.fail('Unexpected result');
 			} else {
-				const consumed = consumeReadable(consumedOrReadable, strings => strings.join());
+				const consumed = consumeReadaBle(consumedOrReadaBle, strings => strings.join());
 				assert.equal(consumed, '1,2,3,4,5');
 			}
 		}
 
-		let readable = arrayToReadable(['1', '2', '3', '4', '5']);
-		let consumedOrReadable = peekReadable(readable, strings => strings.join(), 5);
-		assert.equal(consumedOrReadable, '1,2,3,4,5');
+		let readaBle = arrayToReadaBle(['1', '2', '3', '4', '5']);
+		let consumedOrReadaBle = peekReadaBle(readaBle, strings => strings.join(), 5);
+		assert.equal(consumedOrReadaBle, '1,2,3,4,5');
 
-		readable = arrayToReadable(['1', '2', '3', '4', '5']);
-		consumedOrReadable = peekReadable(readable, strings => strings.join(), 6);
-		assert.equal(consumedOrReadable, '1,2,3,4,5');
+		readaBle = arrayToReadaBle(['1', '2', '3', '4', '5']);
+		consumedOrReadaBle = peekReadaBle(readaBle, strings => strings.join(), 6);
+		assert.equal(consumedOrReadaBle, '1,2,3,4,5');
 	});
 
-	test('peekReadable - error handling', async () => {
+	test('peekReadaBle - error handling', async () => {
 
 		// 0 Chunks
-		let stream = newWriteableStream(data => data);
+		let stream = newWriteaBleStream(data => data);
 
 		let error: Error | undefined = undefined;
 		let promise = (async () => {
@@ -199,7 +199,7 @@ suite('Stream', () => {
 		assert.ok(error);
 
 		// 1 Chunk
-		stream = newWriteableStream(data => data);
+		stream = newWriteaBleStream(data => data);
 
 		error = undefined;
 		promise = (async () => {
@@ -217,7 +217,7 @@ suite('Stream', () => {
 		assert.ok(error);
 
 		// 2 Chunks
-		stream = newWriteableStream(data => data);
+		stream = newWriteaBleStream(data => data);
 
 		error = undefined;
 		promise = (async () => {
@@ -229,7 +229,7 @@ suite('Stream', () => {
 		})();
 
 		stream.write('foo');
-		stream.write('bar');
+		stream.write('Bar');
 		stream.error(new Error());
 		await promise;
 
@@ -240,19 +240,19 @@ suite('Stream', () => {
 		assert.ok(error);
 	});
 
-	function arrayToReadable<T>(array: T[]): Readable<T> {
+	function arrayToReadaBle<T>(array: T[]): ReadaBle<T> {
 		return {
 			read: () => array.shift() || null
 		};
 	}
 
-	function readableToStream(readable: Readable<string>): ReadableStream<string> {
-		const stream = newWriteableStream<string>(strings => strings.join());
+	function readaBleToStream(readaBle: ReadaBle<string>): ReadaBleStream<string> {
+		const stream = newWriteaBleStream<string>(strings => strings.join());
 
-		// Simulate async behavior
+		// Simulate async Behavior
 		setTimeout(() => {
 			let chunk: string | null = null;
-			while ((chunk = readable.read()) !== null) {
+			while ((chunk = readaBle.read()) !== null) {
 				stream.write(chunk);
 			}
 
@@ -263,21 +263,21 @@ suite('Stream', () => {
 	}
 
 	test('consumeStream', async () => {
-		const stream = readableToStream(arrayToReadable(['1', '2', '3', '4', '5']));
+		const stream = readaBleToStream(arrayToReadaBle(['1', '2', '3', '4', '5']));
 		const consumed = await consumeStream(stream, strings => strings.join());
 		assert.equal(consumed, '1,2,3,4,5');
 	});
 
 	test('peekStream', async () => {
 		for (let i = 0; i < 5; i++) {
-			const stream = readableToStream(arrayToReadable(['1', '2', '3', '4', '5']));
+			const stream = readaBleToStream(arrayToReadaBle(['1', '2', '3', '4', '5']));
 
 			const result = await peekStream(stream, i);
 			assert.equal(stream, result.stream);
 			if (result.ended) {
 				assert.fail('Unexpected result, stream should not have ended yet');
 			} else {
-				assert.equal(result.buffer.length, i + 1, `maxChunks: ${i}`);
+				assert.equal(result.Buffer.length, i + 1, `maxChunks: ${i}`);
 
 				const additionalResult: string[] = [];
 				await consumeStream(stream, strings => {
@@ -286,20 +286,20 @@ suite('Stream', () => {
 					return strings.join();
 				});
 
-				assert.equal([...result.buffer, ...additionalResult].join(), '1,2,3,4,5');
+				assert.equal([...result.Buffer, ...additionalResult].join(), '1,2,3,4,5');
 			}
 		}
 
-		let stream = readableToStream(arrayToReadable(['1', '2', '3', '4', '5']));
+		let stream = readaBleToStream(arrayToReadaBle(['1', '2', '3', '4', '5']));
 		let result = await peekStream(stream, 5);
 		assert.equal(stream, result.stream);
-		assert.equal(result.buffer.join(), '1,2,3,4,5');
+		assert.equal(result.Buffer.join(), '1,2,3,4,5');
 		assert.equal(result.ended, true);
 
-		stream = readableToStream(arrayToReadable(['1', '2', '3', '4', '5']));
+		stream = readaBleToStream(arrayToReadaBle(['1', '2', '3', '4', '5']));
 		result = await peekStream(stream, 6);
 		assert.equal(stream, result.stream);
-		assert.equal(result.buffer.join(), '1,2,3,4,5');
+		assert.equal(result.Buffer.join(), '1,2,3,4,5');
 		assert.equal(result.ended, true);
 	});
 
@@ -309,18 +309,18 @@ suite('Stream', () => {
 		assert.equal(consumed, '1,2,3,4,5');
 	});
 
-	test('toReadable', async () => {
-		const readable = toReadable('1,2,3,4,5');
-		const consumed = await consumeReadable(readable, strings => strings.join());
+	test('toReadaBle', async () => {
+		const readaBle = toReadaBle('1,2,3,4,5');
+		const consumed = await consumeReadaBle(readaBle, strings => strings.join());
 		assert.equal(consumed, '1,2,3,4,5');
 	});
 
 	test('transform', async () => {
-		const source = newWriteableStream<string>(strings => strings.join());
+		const source = newWriteaBleStream<string>(strings => strings.join());
 
 		const result = transform(source, { data: string => string + string }, strings => strings.join());
 
-		// Simulate async behavior
+		// Simulate async Behavior
 		setTimeout(() => {
 			source.write('1');
 			source.write('2');

@@ -8,8 +8,8 @@ import * as jsoncParser from 'jsonc-parser';
 
 export function activate(context: vscode.ExtensionContext): any {
 
-	const tokenTypes = ['type', 'struct', 'class', 'interface', 'enum', 'parameterType', 'function', 'variable', 'testToken'];
-	const tokenModifiers = ['static', 'abstract', 'deprecated', 'declaration', 'documentation', 'member', 'async', 'testModifier'];
+	const tokenTypes = ['type', 'struct', 'class', 'interface', 'enum', 'parameterType', 'function', 'variaBle', 'testToken'];
+	const tokenModifiers = ['static', 'aBstract', 'deprecated', 'declaration', 'documentation', 'memBer', 'async', 'testModifier'];
 
 	const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
 
@@ -17,9 +17,9 @@ export function activate(context: vscode.ExtensionContext): any {
 
 	const documentSemanticHighlightProvider: vscode.DocumentSemanticTokensProvider = {
 		provideDocumentSemanticTokens(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemanticTokens> {
-			const builder = new vscode.SemanticTokensBuilder();
+			const Builder = new vscode.SemanticTokensBuilder();
 
-			function addToken(value: string, startLine: number, startCharacter: number, length: number) {
+			function addToken(value: string, startLine: numBer, startCharacter: numBer, length: numBer) {
 				const [type, ...modifiers] = value.split('.');
 
 				const selectedModifiers = [];
@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext): any {
 						selectedModifiers.push(modifier);
 					}
 				}
-				builder.push(startLine, startCharacter, length, tokenType, tokenModifiers);
+				Builder.push(startLine, startCharacter, length, tokenType, tokenModifiers);
 
 				outputChannel.appendLine(`line: ${startLine}, character: ${startCharacter}, length ${length}, ${type} (${tokenType}), ${selectedModifiers} ${tokenModifiers.toString(2)}`);
 			}
@@ -52,10 +52,10 @@ export function activate(context: vscode.ExtensionContext): any {
 			outputChannel.appendLine('---');
 
 			const visitor: jsoncParser.JSONVisitor = {
-				onObjectProperty: (property: string, _offset: number, _length: number, startLine: number, startCharacter: number) => {
+				onOBjectProperty: (property: string, _offset: numBer, _length: numBer, startLine: numBer, startCharacter: numBer) => {
 					addToken(property, startLine, startCharacter, property.length + 2);
 				},
-				onLiteralValue: (value: any, _offset: number, length: number, startLine: number, startCharacter: number) => {
+				onLiteralValue: (value: any, _offset: numBer, length: numBer, startLine: numBer, startCharacter: numBer) => {
 					if (typeof value === 'string') {
 						addToken(value, startLine, startCharacter, length);
 					}
@@ -63,11 +63,11 @@ export function activate(context: vscode.ExtensionContext): any {
 			};
 			jsoncParser.visit(document.getText(), visitor);
 
-			return builder.build();
+			return Builder.Build();
 		}
 	};
 
 
-	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider({ pattern: '**/*semantic-test.json' }, documentSemanticHighlightProvider, legend));
+	context.suBscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider({ pattern: '**/*semantic-test.json' }, documentSemanticHighlightProvider, legend));
 
 }

@@ -50,7 +50,7 @@ const isNPMPreferred = (pkgPath: string) => {
 	return pathExists(path.join(pkgPath, 'package-lock.json'));
 };
 
-export async function findPreferredPM(pkgPath: string): Promise<{ name: string, multiplePMDetected: boolean }> {
+export async function findPreferredPM(pkgPath: string): Promise<{ name: string, multiplePMDetected: Boolean }> {
 	const detectedPackageManagers: string[] = [];
 
 	if (await isNPMPreferred(pkgPath)) {

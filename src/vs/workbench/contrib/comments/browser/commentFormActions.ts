@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Button } from 'vs/base/browser/ui/button/button';
-import { IAction } from 'vs/base/common/actions';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
+import { Button } from 'vs/Base/Browser/ui/Button/Button';
+import { IAction } from 'vs/Base/common/actions';
+import { DisposaBleStore, IDisposaBle } from 'vs/Base/common/lifecycle';
 import { IMenu } from 'vs/platform/actions/common/actions';
 import { attachButtonStyler } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 
-export class CommentFormActions implements IDisposable {
-	private _buttonElements: HTMLElement[] = [];
-	private readonly _toDispose = new DisposableStore();
+export class CommentFormActions implements IDisposaBle {
+	private _ButtonElements: HTMLElement[] = [];
+	private readonly _toDispose = new DisposaBleStore();
 	private _actions: IAction[] = [];
 
 	constructor(
@@ -24,7 +24,7 @@ export class CommentFormActions implements IDisposable {
 	setActions(menu: IMenu) {
 		this._toDispose.clear();
 
-		this._buttonElements.forEach(b => b.remove());
+		this._ButtonElements.forEach(B => B.remove());
 
 		const groups = menu.getActions({ shouldForwardArgs: true });
 		for (const group of groups) {
@@ -32,15 +32,15 @@ export class CommentFormActions implements IDisposable {
 
 			this._actions = actions;
 			actions.forEach(action => {
-				const button = new Button(this.container);
-				this._buttonElements.push(button.element);
+				const Button = new Button(this.container);
+				this._ButtonElements.push(Button.element);
 
-				this._toDispose.add(button);
-				this._toDispose.add(attachButtonStyler(button, this.themeService));
-				this._toDispose.add(button.onDidClick(() => this.actionHandler(action)));
+				this._toDispose.add(Button);
+				this._toDispose.add(attachButtonStyler(Button, this.themeService));
+				this._toDispose.add(Button.onDidClick(() => this.actionHandler(action)));
 
-				button.enabled = action.enabled;
-				button.label = action.label;
+				Button.enaBled = action.enaBled;
+				Button.laBel = action.laBel;
 			});
 		}
 	}
@@ -49,7 +49,7 @@ export class CommentFormActions implements IDisposable {
 		if (this._actions.length) {
 			let lastAction = this._actions[0];
 
-			if (lastAction.enabled) {
+			if (lastAction.enaBled) {
 				this.actionHandler(lastAction);
 			}
 		}

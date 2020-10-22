@@ -10,7 +10,7 @@ import { Event, EventEmitter } from 'vscode';
  */
 export enum LogLevel {
 	Trace = 1,
-	Debug = 2,
+	DeBug = 2,
 	Info = 3,
 	Warning = 4,
 	Error = 5,

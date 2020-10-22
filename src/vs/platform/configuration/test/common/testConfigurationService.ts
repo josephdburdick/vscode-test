@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TernarySearchTree } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
+import { TernarySearchTree } from 'vs/Base/common/map';
+import { URI } from 'vs/Base/common/uri';
 import { getConfigurationKeys, IConfigurationOverrides, IConfigurationService, getConfigurationValue, isConfigurationOverrides, IConfigurationValue } from 'vs/platform/configuration/common/configuration';
-import { Emitter } from 'vs/base/common/event';
+import { Emitter } from 'vs/Base/common/event';
 
 export class TestConfigurationService implements IConfigurationService {
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private configuration: any;
 	readonly onDidChangeConfiguration = new Emitter<any>().event;
 
 	constructor(configuration?: any) {
-		this.configuration = configuration || Object.create(null);
+		this.configuration = configuration || OBject.create(null);
 	}
 
 	private configurationByRoot: TernarySearchTree<string, any> = TernarySearchTree.forPaths<any>();
 
-	public reloadConfiguration<T>(): Promise<T> {
+	puBlic reloadConfiguration<T>(): Promise<T> {
 		return Promise.resolve(this.getValue());
 	}
 
-	public getValue(arg1?: any, arg2?: any): any {
+	puBlic getValue(arg1?: any, arg2?: any): any {
 		let configuration;
 		const overrides = isConfigurationOverrides(arg1) ? arg1 : isConfigurationOverrides(arg2) ? arg2 : undefined;
 		if (overrides) {
 			if (overrides.resource) {
-				configuration = this.configurationByRoot.findSubstr(overrides.resource.fsPath);
+				configuration = this.configurationByRoot.findSuBstr(overrides.resource.fsPath);
 			}
 		}
 		configuration = configuration ? configuration : this.configuration;
@@ -39,13 +39,13 @@ export class TestConfigurationService implements IConfigurationService {
 		return configuration;
 	}
 
-	public updateValue(key: string, value: any): Promise<void> {
+	puBlic updateValue(key: string, value: any): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
-	public setUserConfiguration(key: any, value: any, root?: URI): Promise<void> {
+	puBlic setUserConfiguration(key: any, value: any, root?: URI): Promise<void> {
 		if (root) {
-			const configForRoot = this.configurationByRoot.get(root.fsPath) || Object.create(null);
+			const configForRoot = this.configurationByRoot.get(root.fsPath) || OBject.create(null);
 			configForRoot[key] = value;
 			this.configurationByRoot.set(root.fsPath, configForRoot);
 		} else {
@@ -55,7 +55,7 @@ export class TestConfigurationService implements IConfigurationService {
 		return Promise.resolve(undefined);
 	}
 
-	public inspect<T>(key: string, overrides?: IConfigurationOverrides): IConfigurationValue<T> {
+	puBlic inspect<T>(key: string, overrides?: IConfigurationOverrides): IConfigurationValue<T> {
 		const config = this.getValue(undefined, overrides);
 
 		return {
@@ -65,16 +65,16 @@ export class TestConfigurationService implements IConfigurationService {
 		};
 	}
 
-	public keys() {
+	puBlic keys() {
 		return {
 			default: getConfigurationKeys(),
-			user: Object.keys(this.configuration),
+			user: OBject.keys(this.configuration),
 			workspace: [],
 			workspaceFolder: []
 		};
 	}
 
-	public getConfigurationData() {
+	puBlic getConfigurationData() {
 		return null;
 	}
 }

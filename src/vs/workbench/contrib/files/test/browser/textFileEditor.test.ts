@@ -4,36 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { toResource } from 'vs/base/test/common/utils';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { workbenchInstantiationService, TestServiceAccessor, TestFilesConfigurationService, TestTextResourceConfigurationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
+import { toResource } from 'vs/Base/test/common/utils';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { workBenchInstantiationService, TestServiceAccessor, TestFilesConfigurationService, TestTextResourceConfigurationService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workBench/Browser/editor';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
+import { TextFileEditor } from 'vs/workBench/contriB/files/Browser/editors/textFileEditor';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { EditorInput } from 'vs/workbench/common/editor';
-import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
-import { EditorService } from 'vs/workbench/services/editor/browser/editorService';
+import { EditorInput } from 'vs/workBench/common/editor';
+import { FileEditorInput } from 'vs/workBench/contriB/files/common/editors/fileEditorInput';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
+import { EditorPart } from 'vs/workBench/Browser/parts/editor/editorPart';
+import { EditorService } from 'vs/workBench/services/editor/Browser/editorService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { Selection } from 'vs/editor/common/core/selection';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
+import { MockContextKeyService } from 'vs/platform/keyBinding/test/common/mockKeyBindingService';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 
 suite('Files - TextFileEditor', () => {
 
-	let disposables: IDisposable[] = [];
+	let disposaBles: IDisposaBle[] = [];
 
 	setup(() => {
-		disposables.push(Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
+		disposaBles.push(Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
 			EditorDescriptor.create(
 				TextFileEditor,
 				TextFileEditor.ID,
@@ -44,20 +44,20 @@ suite('Files - TextFileEditor', () => {
 	});
 
 	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+		dispose(disposaBles);
+		disposaBles = [];
 	});
 
-	async function createPart(restoreViewState: boolean): Promise<[EditorPart, TestServiceAccessor, IInstantiationService, IEditorService]> {
-		const instantiationService = workbenchInstantiationService();
+	async function createPart(restoreViewState: Boolean): Promise<[EditorPart, TestServiceAccessor, IInstantiationService, IEditorService]> {
+		const instantiationService = workBenchInstantiationService();
 
 		const configurationService = new TestConfigurationService();
-		configurationService.setUserConfiguration('workbench', { editor: { restoreViewState } });
-		instantiationService.stub(IConfigurationService, configurationService);
+		configurationService.setUserConfiguration('workBench', { editor: { restoreViewState } });
+		instantiationService.stuB(IConfigurationService, configurationService);
 
-		instantiationService.stub(ITextResourceConfigurationService, new TestTextResourceConfigurationService(configurationService));
+		instantiationService.stuB(ITextResourceConfigurationService, new TestTextResourceConfigurationService(configurationService));
 
-		instantiationService.stub(IFilesConfigurationService, new TestFilesConfigurationService(
+		instantiationService.stuB(IFilesConfigurationService, new TestFilesConfigurationService(
 			<IContextKeyService>instantiationService.createInstance(MockContextKeyService),
 			configurationService
 		));
@@ -66,10 +66,10 @@ suite('Files - TextFileEditor', () => {
 		part.create(document.createElement('div'));
 		part.layout(400, 300);
 
-		instantiationService.stub(IEditorGroupsService, part);
+		instantiationService.stuB(IEditorGroupsService, part);
 
 		const editorService: EditorService = instantiationService.createInstance(EditorService);
-		instantiationService.stub(IEditorService, editorService);
+		instantiationService.stuB(IEditorService, editorService);
 
 		const accessor = instantiationService.createInstance(TestServiceAccessor);
 
@@ -86,7 +86,7 @@ suite('Files - TextFileEditor', () => {
 		return viewStateTest(this, false);
 	});
 
-	async function viewStateTest(context: Mocha.ITestCallbackContext, restoreViewState: boolean): Promise<void> {
+	async function viewStateTest(context: Mocha.ITestCallBackContext, restoreViewState: Boolean): Promise<void> {
 		const [part, accessor] = await createPart(restoreViewState);
 
 		let editor = await accessor.editorService.openEditor(accessor.editorService.createEditorInput({ resource: toResource.call(context, '/path/index.txt'), forceFile: true }));

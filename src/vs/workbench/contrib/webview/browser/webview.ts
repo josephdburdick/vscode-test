@@ -3,80 +3,80 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Dimension } from 'vs/base/browser/dom';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Dimension } from 'vs/Base/Browser/dom';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import * as modes from 'vs/editor/common/modes';
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
+import { IMouseWheelEvent } from 'vs/Base/Browser/mouseEvent';
 
 /**
- * Set when the find widget in a webview is visible.
+ * Set when the find widget in a weBview is visiBle.
  */
-export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_VISIBLE = new RawContextKey<boolean>('webviewFindWidgetVisible', false);
-export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED = new RawContextKey<boolean>('webviewFindWidgetFocused', false);
+export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_VISIBLE = new RawContextKey<Boolean>('weBviewFindWidgetVisiBle', false);
+export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED = new RawContextKey<Boolean>('weBviewFindWidgetFocused', false);
 
-export const webviewHasOwnEditFunctionsContextKey = 'webviewHasOwnEditFunctions';
-export const webviewHasOwnEditFunctionsContext = new RawContextKey<boolean>(webviewHasOwnEditFunctionsContextKey, false);
+export const weBviewHasOwnEditFunctionsContextKey = 'weBviewHasOwnEditFunctions';
+export const weBviewHasOwnEditFunctionsContext = new RawContextKey<Boolean>(weBviewHasOwnEditFunctionsContextKey, false);
 
-export const IWebviewService = createDecorator<IWebviewService>('webviewService');
+export const IWeBviewService = createDecorator<IWeBviewService>('weBviewService');
 
-export interface WebviewIcons {
+export interface WeBviewIcons {
 	readonly light: URI;
 	readonly dark: URI;
 }
 
 /**
- * Handles the creation of webview elements.
+ * Handles the creation of weBview elements.
  */
-export interface IWebviewService {
+export interface IWeBviewService {
 	readonly _serviceBrand: undefined;
 
-	readonly activeWebview: Webview | undefined;
+	readonly activeWeBview: WeBview | undefined;
 
-	createWebviewElement(
+	createWeBviewElement(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewElement;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewElement;
 
-	createWebviewOverlay(
+	createWeBviewOverlay(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewOverlay;
 
-	setIcons(id: string, value: WebviewIcons | undefined): void;
+	setIcons(id: string, value: WeBviewIcons | undefined): void;
 }
 
-export const enum WebviewContentPurpose {
-	NotebookRenderer = 'notebookRenderer',
+export const enum WeBviewContentPurpose {
+	NoteBookRenderer = 'noteBookRenderer',
 	CustomEditor = 'customEditor',
 }
 
-export interface WebviewOptions {
-	// The purpose of the webview; this is (currently) only used for filtering in js-debug
-	readonly purpose?: WebviewContentPurpose;
+export interface WeBviewOptions {
+	// The purpose of the weBview; this is (currently) only used for filtering in js-deBug
+	readonly purpose?: WeBviewContentPurpose;
 	readonly customClasses?: string;
-	readonly enableFindWidget?: boolean;
-	readonly tryRestoreScrollPosition?: boolean;
-	readonly retainContextWhenHidden?: boolean;
+	readonly enaBleFindWidget?: Boolean;
+	readonly tryRestoreScrollPosition?: Boolean;
+	readonly retainContextWhenHidden?: Boolean;
 }
 
-export interface WebviewContentOptions {
-	readonly allowMultipleAPIAcquire?: boolean;
-	readonly allowScripts?: boolean;
+export interface WeBviewContentOptions {
+	readonly allowMultipleAPIAcquire?: Boolean;
+	readonly allowScripts?: Boolean;
 	readonly localResourceRoots?: ReadonlyArray<URI>;
-	readonly portMapping?: ReadonlyArray<modes.IWebviewPortMapping>;
-	readonly enableCommandUris?: boolean;
+	readonly portMapping?: ReadonlyArray<modes.IWeBviewPortMapping>;
+	readonly enaBleCommandUris?: Boolean;
 }
 
-export interface WebviewExtensionDescription {
+export interface WeBviewExtensionDescription {
 	readonly location: URI;
 	readonly id: ExtensionIdentifier;
 }
@@ -86,25 +86,25 @@ export interface IDataLinkClickEvent {
 	downloadName?: string;
 }
 
-export interface Webview extends IDisposable {
+export interface WeBview extends IDisposaBle {
 
 	readonly id: string;
 
 	html: string;
-	contentOptions: WebviewContentOptions;
+	contentOptions: WeBviewContentOptions;
 	localResourcesRoot: URI[];
-	extension: WebviewExtensionDescription | undefined;
-	initialScrollProgress: number;
+	extension: WeBviewExtensionDescription | undefined;
+	initialScrollProgress: numBer;
 	state: string | undefined;
 
-	readonly isFocused: boolean;
+	readonly isFocused: Boolean;
 
 	readonly onDidFocus: Event<void>;
 	readonly onDidBlur: Event<void>;
 	readonly onDidDispose: Event<void>;
 
 	readonly onDidClickLink: Event<string>;
-	readonly onDidScroll: Event<{ scrollYPercentage: number }>;
+	readonly onDidScroll: Event<{ scrollYPercentage: numBer }>;
 	readonly onDidWheel: Event<IMouseWheelEvent>;
 	readonly onDidUpdateState: Event<string | undefined>;
 	readonly onDidReload: Event<void>;
@@ -118,7 +118,7 @@ export interface Webview extends IDisposable {
 
 	showFind(): void;
 	hideFind(): void;
-	runFindAction(previous: boolean): void;
+	runFindAction(previous: Boolean): void;
 
 	selectAll(): void;
 	copy(): void;
@@ -132,23 +132,23 @@ export interface Webview extends IDisposable {
 }
 
 /**
- * Basic webview rendered in the dom
+ * Basic weBview rendered in the dom
  */
-export interface WebviewElement extends Webview {
+export interface WeBviewElement extends WeBview {
 	mountTo(parent: HTMLElement): void;
 }
 
 /**
- * Dynamically created webview drawn over another element.
+ * Dynamically created weBview drawn over another element.
  */
-export interface WebviewOverlay extends Webview {
+export interface WeBviewOverlay extends WeBview {
 	readonly container: HTMLElement;
-	options: WebviewOptions;
+	options: WeBviewOptions;
 
 	claim(owner: any): void;
 	release(owner: any): void;
 
-	getInnerWebview(): Webview | undefined;
+	getInnerWeBview(): WeBview | undefined;
 
-	layoutWebviewOverElement(element: HTMLElement, dimension?: Dimension): void;
+	layoutWeBviewOverElement(element: HTMLElement, dimension?: Dimension): void;
 }

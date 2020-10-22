@@ -4,67 +4,67 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
-import { IWebviewService, Webview, WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewIcons, WebviewOptions, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { IFrameWebview } from 'vs/workbench/contrib/webview/browser/webviewElement';
-import { DynamicWebviewEditorOverlay } from './dynamicWebviewEditorOverlay';
-import { WebviewIconManager } from './webviewIconManager';
+import { WeBviewThemeDataProvider } from 'vs/workBench/contriB/weBview/Browser/themeing';
+import { IWeBviewService, WeBview, WeBviewContentOptions, WeBviewElement, WeBviewExtensionDescription, WeBviewIcons, WeBviewOptions, WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { IFrameWeBview } from 'vs/workBench/contriB/weBview/Browser/weBviewElement';
+import { DynamicWeBviewEditorOverlay } from './dynamicWeBviewEditorOverlay';
+import { WeBviewIconManager } from './weBviewIconManager';
 
-export class WebviewService implements IWebviewService {
+export class WeBviewService implements IWeBviewService {
 	declare readonly _serviceBrand: undefined;
 
-	protected readonly _webviewThemeDataProvider: WebviewThemeDataProvider;
+	protected readonly _weBviewThemeDataProvider: WeBviewThemeDataProvider;
 
-	private readonly _iconManager: WebviewIconManager;
+	private readonly _iconManager: WeBviewIconManager;
 
 	constructor(
 		@IInstantiationService protected readonly _instantiationService: IInstantiationService,
 	) {
-		this._webviewThemeDataProvider = this._instantiationService.createInstance(WebviewThemeDataProvider);
-		this._iconManager = this._instantiationService.createInstance(WebviewIconManager);
+		this._weBviewThemeDataProvider = this._instantiationService.createInstance(WeBviewThemeDataProvider);
+		this._iconManager = this._instantiationService.createInstance(WeBviewIconManager);
 	}
 
-	private _activeWebview?: Webview;
-	public get activeWebview() { return this._activeWebview; }
+	private _activeWeBview?: WeBview;
+	puBlic get activeWeBview() { return this._activeWeBview; }
 
-	createWebviewElement(
+	createWeBviewElement(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewElement {
-		const webview = this._instantiationService.createInstance(IFrameWebview, id, options, contentOptions, extension, this._webviewThemeDataProvider);
-		this.addWebviewListeners(webview);
-		return webview;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewElement {
+		const weBview = this._instantiationService.createInstance(IFrameWeBview, id, options, contentOptions, extension, this._weBviewThemeDataProvider);
+		this.addWeBviewListeners(weBview);
+		return weBview;
 	}
 
-	createWebviewOverlay(
+	createWeBviewOverlay(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay {
-		const webview = this._instantiationService.createInstance(DynamicWebviewEditorOverlay, id, options, contentOptions, extension);
-		this.addWebviewListeners(webview);
-		return webview;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewOverlay {
+		const weBview = this._instantiationService.createInstance(DynamicWeBviewEditorOverlay, id, options, contentOptions, extension);
+		this.addWeBviewListeners(weBview);
+		return weBview;
 	}
 
-	setIcons(id: string, iconPath: WebviewIcons | undefined): void {
+	setIcons(id: string, iconPath: WeBviewIcons | undefined): void {
 		this._iconManager.setIcons(id, iconPath);
 	}
 
-	protected addWebviewListeners(webview: Webview) {
-		webview.onDidFocus(() => {
-			this._activeWebview = webview;
+	protected addWeBviewListeners(weBview: WeBview) {
+		weBview.onDidFocus(() => {
+			this._activeWeBview = weBview;
 		});
 
 		const onBlur = () => {
-			if (this._activeWebview === webview) {
-				this._activeWebview = undefined;
+			if (this._activeWeBview === weBview) {
+				this._activeWeBview = undefined;
 			}
 		};
 
-		webview.onDidBlur(onBlur);
-		webview.onDidDispose(onBlur);
+		weBview.onDidBlur(onBlur);
+		weBview.onDidDispose(onBlur);
 	}
 }

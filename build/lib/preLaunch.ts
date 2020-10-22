@@ -22,9 +22,9 @@ function runProcess(command: string, args: ReadonlyArray<string> = []) {
 	});
 }
 
-async function exists(subdir: string) {
+async function exists(suBdir: string) {
 	try {
-		await fs.stat(path.join(rootDir, subdir));
+		await fs.stat(path.join(rootDir, suBdir));
 		return true;
 	} catch {
 		return false;
@@ -53,7 +53,7 @@ async function main() {
 	await ensureCompiled();
 
 	// Can't require this until after dependencies are installed
-	const { getBuiltInExtensions } = require('./builtInExtensions');
+	const { getBuiltInExtensions } = require('./BuiltInExtensions');
 	await getBuiltInExtensions();
 }
 

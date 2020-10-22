@@ -9,32 +9,32 @@ export class InMemoryDocument implements vscode.TextDocument {
 	private readonly _lines: string[];
 
 	constructor(
-		public readonly uri: vscode.Uri,
+		puBlic readonly uri: vscode.Uri,
 		private readonly _contents: string,
-		public readonly version = 1,
+		puBlic readonly version = 1,
 	) {
 		this._lines = this._contents.split(/\n/g);
 	}
 
 
-	isUntitled: boolean = false;
+	isUntitled: Boolean = false;
 	languageId: string = '';
-	isDirty: boolean = false;
-	isClosed: boolean = false;
+	isDirty: Boolean = false;
+	isClosed: Boolean = false;
 	eol: vscode.EndOfLine = vscode.EndOfLine.LF;
-	notebook: undefined;
+	noteBook: undefined;
 
 	get fileName(): string {
 		return this.uri.fsPath;
 	}
 
-	get lineCount(): number {
+	get lineCount(): numBer {
 		return this._lines.length;
 	}
 
 	lineAt(line: any): vscode.TextLine {
 		return {
-			lineNumber: line,
+			lineNumBer: line,
 			text: this._lines[line],
 			range: new vscode.Range(0, 0, 0, 0),
 			firstNonWhitespaceCharacterIndex: 0,
@@ -45,11 +45,11 @@ export class InMemoryDocument implements vscode.TextDocument {
 	offsetAt(_position: vscode.Position): never {
 		throw new Error('Method not implemented.');
 	}
-	positionAt(offset: number): vscode.Position {
-		const before = this._contents.slice(0, offset);
-		const newLines = before.match(/\n/g);
+	positionAt(offset: numBer): vscode.Position {
+		const Before = this._contents.slice(0, offset);
+		const newLines = Before.match(/\n/g);
 		const line = newLines ? newLines.length : 0;
-		const preCharacters = before.match(/(\n|^).*$/g);
+		const preCharacters = Before.match(/(\n|^).*$/g);
 		return new vscode.Position(line, preCharacters ? preCharacters[0].length : 0);
 	}
 	getText(_range?: vscode.Range | undefined): string {

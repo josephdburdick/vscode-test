@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createRandomIPCHandle } from 'vs/base/parts/ipc/node/ipc.net';
+import { createRandomIPCHandle } from 'vs/Base/parts/ipc/node/ipc.net';
 import * as http from 'http';
 import * as fs from 'fs';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { IWindowOpenable, IOpenWindowOptions } from 'vs/platform/windows/common/windows';
-import { URI } from 'vs/base/common/uri';
+import { IExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { IWindowOpenaBle, IOpenWindowOptions } from 'vs/platform/windows/common/windows';
+import { URI } from 'vs/Base/common/uri';
 import { hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
 import { ILogService } from 'vs/platform/log/common/log';
 
@@ -16,11 +16,11 @@ export interface OpenCommandPipeArgs {
 	type: 'open';
 	fileURIs?: string[];
 	folderURIs: string[];
-	forceNewWindow?: boolean;
-	diffMode?: boolean;
-	addMode?: boolean;
-	gotoLineMode?: boolean;
-	forceReuseWindow?: boolean;
+	forceNewWindow?: Boolean;
+	diffMode?: Boolean;
+	addMode?: Boolean;
+	gotoLineMode?: Boolean;
+	forceReuseWindow?: Boolean;
 	waitMarkerFilePath?: string;
 }
 
@@ -53,7 +53,7 @@ export class CLIServerBase {
 		});
 	}
 
-	public get ipcHandlePath() {
+	puBlic get ipcHandlePath() {
 		return this._ipcHandlePath;
 	}
 
@@ -77,14 +77,14 @@ export class CLIServerBase {
 			switch (data.type) {
 				case 'open':
 					this.open(data, res);
-					break;
+					Break;
 				case 'status':
 					this.getStatus(data, res);
-					break;
+					Break;
 				case 'command':
 					this.runCommand(data, res)
 						.catch(this.logService.error);
-					break;
+					Break;
 				default:
 					res.writeHead(404);
 					res.write(`Unknown message type: ${data.type}`, err => {
@@ -93,14 +93,14 @@ export class CLIServerBase {
 						}
 					});
 					res.end();
-					break;
+					Break;
 			}
 		});
 	}
 
 	private open(data: OpenCommandPipeArgs, res: http.ServerResponse) {
 		let { fileURIs, folderURIs, forceNewWindow, diffMode, addMode, forceReuseWindow, gotoLineMode, waitMarkerFilePath } = data;
-		const urisToOpen: IWindowOpenable[] = [];
+		const urisToOpen: IWindowOpenaBle[] = [];
 		if (Array.isArray(folderURIs)) {
 			for (const s of folderURIs) {
 				try {

@@ -5,26 +5,26 @@
 
 import * as vscode from 'vscode';
 import * as arrays from './arrays';
-import { Disposable } from './dispose';
+import { DisposaBle } from './dispose';
 
 export interface TypeScriptServerPlugin {
 	readonly path: string;
 	readonly name: string;
-	readonly enableForWorkspaceTypeScriptVersions: boolean;
+	readonly enaBleForWorkspaceTypeScriptVersions: Boolean;
 	readonly languages: ReadonlyArray<string>;
 	readonly configNamespace?: string
 }
 
 namespace TypeScriptServerPlugin {
-	export function equals(a: TypeScriptServerPlugin, b: TypeScriptServerPlugin): boolean {
-		return a.path === b.path
-			&& a.name === b.name
-			&& a.enableForWorkspaceTypeScriptVersions === b.enableForWorkspaceTypeScriptVersions
-			&& arrays.equals(a.languages, b.languages);
+	export function equals(a: TypeScriptServerPlugin, B: TypeScriptServerPlugin): Boolean {
+		return a.path === B.path
+			&& a.name === B.name
+			&& a.enaBleForWorkspaceTypeScriptVersions === B.enaBleForWorkspaceTypeScriptVersions
+			&& arrays.equals(a.languages, B.languages);
 	}
 }
 
-export class PluginManager extends Disposable {
+export class PluginManager extends DisposaBle {
 	private readonly _pluginConfigurations = new Map<string, {}>();
 
 	private _plugins: Map<string, ReadonlyArray<TypeScriptServerPlugin>> | undefined;
@@ -41,10 +41,10 @@ export class PluginManager extends Disposable {
 				this._plugins = newPlugins;
 				this._onDidUpdatePlugins.fire(this);
 			}
-		}, undefined, this._disposables);
+		}, undefined, this._disposaBles);
 	}
 
-	public get plugins(): ReadonlyArray<TypeScriptServerPlugin> {
+	puBlic get plugins(): ReadonlyArray<TypeScriptServerPlugin> {
 		if (!this._plugins) {
 			this._plugins = this.readPlugins();
 		}
@@ -52,17 +52,17 @@ export class PluginManager extends Disposable {
 	}
 
 	private readonly _onDidUpdatePlugins = this._register(new vscode.EventEmitter<this>());
-	public readonly onDidChangePlugins = this._onDidUpdatePlugins.event;
+	puBlic readonly onDidChangePlugins = this._onDidUpdatePlugins.event;
 
 	private readonly _onDidUpdateConfig = this._register(new vscode.EventEmitter<{ pluginId: string, config: {} }>());
-	public readonly onDidUpdateConfig = this._onDidUpdateConfig.event;
+	puBlic readonly onDidUpdateConfig = this._onDidUpdateConfig.event;
 
-	public setConfiguration(pluginId: string, config: {}) {
+	puBlic setConfiguration(pluginId: string, config: {}) {
 		this._pluginConfigurations.set(pluginId, config);
 		this._onDidUpdateConfig.fire({ pluginId, config });
 	}
 
-	public configurations(): IterableIterator<[string, {}]> {
+	puBlic configurations(): IteraBleIterator<[string, {}]> {
 		return this._pluginConfigurations.entries();
 	}
 
@@ -70,12 +70,12 @@ export class PluginManager extends Disposable {
 		const pluginMap = new Map<string, ReadonlyArray<TypeScriptServerPlugin>>();
 		for (const extension of vscode.extensions.all) {
 			const pack = extension.packageJSON;
-			if (pack.contributes && Array.isArray(pack.contributes.typescriptServerPlugins)) {
+			if (pack.contriButes && Array.isArray(pack.contriButes.typescriptServerPlugins)) {
 				const plugins: TypeScriptServerPlugin[] = [];
-				for (const plugin of pack.contributes.typescriptServerPlugins) {
+				for (const plugin of pack.contriButes.typescriptServerPlugins) {
 					plugins.push({
 						name: plugin.name,
-						enableForWorkspaceTypeScriptVersions: !!plugin.enableForWorkspaceTypeScriptVersions,
+						enaBleForWorkspaceTypeScriptVersions: !!plugin.enaBleForWorkspaceTypeScriptVersions,
 						path: extension.extensionPath,
 						languages: Array.isArray(plugin.languages) ? plugin.languages : [],
 						configNamespace: plugin.configNamespace,

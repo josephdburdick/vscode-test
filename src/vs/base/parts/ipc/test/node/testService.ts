@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { timeout } from 'vs/Base/common/async';
 
 export interface IMarcoPoloEvent {
 	answer: string;
@@ -15,7 +15,7 @@ export interface ITestService {
 	onMarco: Event<IMarcoPoloEvent>;
 	marco(): Promise<string>;
 	pong(ping: string): Promise<{ incoming: string, outgoing: string }>;
-	cancelMe(): Promise<boolean>;
+	cancelMe(): Promise<Boolean>;
 }
 
 export class TestService implements ITestService {
@@ -32,7 +32,7 @@ export class TestService implements ITestService {
 		return Promise.resolve({ incoming: ping, outgoing: 'pong' });
 	}
 
-	cancelMe(): Promise<boolean> {
+	cancelMe(): Promise<Boolean> {
 		return Promise.resolve(timeout(100)).then(() => true);
 	}
 }
@@ -73,7 +73,7 @@ export class TestServiceClient implements ITestService {
 		return this.channel.call('pong', ping);
 	}
 
-	cancelMe(): Promise<boolean> {
+	cancelMe(): Promise<Boolean> {
 		return this.channel.call('cancelMe');
 	}
 }

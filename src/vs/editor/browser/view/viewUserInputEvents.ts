@@ -3,30 +3,30 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { MouseTarget } from 'vs/editor/browser/controller/mouseTarget';
-import { IEditorMouseEvent, IMouseTarget, IPartialEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { MouseTarget } from 'vs/editor/Browser/controller/mouseTarget';
+import { IEditorMouseEvent, IMouseTarget, IPartialEditorMouseEvent, MouseTargetType } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { ICoordinatesConverter } from 'vs/editor/common/viewModel/viewModel';
-import { IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
+import { IMouseWheelEvent } from 'vs/Base/Browser/mouseEvent';
 
-export interface EventCallback<T> {
+export interface EventCallBack<T> {
 	(event: T): void;
 }
 
 export class ViewUserInputEvents {
 
-	public onKeyDown: EventCallback<IKeyboardEvent> | null = null;
-	public onKeyUp: EventCallback<IKeyboardEvent> | null = null;
-	public onContextMenu: EventCallback<IEditorMouseEvent> | null = null;
-	public onMouseMove: EventCallback<IEditorMouseEvent> | null = null;
-	public onMouseLeave: EventCallback<IPartialEditorMouseEvent> | null = null;
-	public onMouseDown: EventCallback<IEditorMouseEvent> | null = null;
-	public onMouseUp: EventCallback<IEditorMouseEvent> | null = null;
-	public onMouseDrag: EventCallback<IEditorMouseEvent> | null = null;
-	public onMouseDrop: EventCallback<IPartialEditorMouseEvent> | null = null;
-	public onMouseWheel: EventCallback<IMouseWheelEvent> | null = null;
+	puBlic onKeyDown: EventCallBack<IKeyBoardEvent> | null = null;
+	puBlic onKeyUp: EventCallBack<IKeyBoardEvent> | null = null;
+	puBlic onContextMenu: EventCallBack<IEditorMouseEvent> | null = null;
+	puBlic onMouseMove: EventCallBack<IEditorMouseEvent> | null = null;
+	puBlic onMouseLeave: EventCallBack<IPartialEditorMouseEvent> | null = null;
+	puBlic onMouseDown: EventCallBack<IEditorMouseEvent> | null = null;
+	puBlic onMouseUp: EventCallBack<IEditorMouseEvent> | null = null;
+	puBlic onMouseDrag: EventCallBack<IEditorMouseEvent> | null = null;
+	puBlic onMouseDrop: EventCallBack<IPartialEditorMouseEvent> | null = null;
+	puBlic onMouseWheel: EventCallBack<IMouseWheelEvent> | null = null;
 
 	private readonly _coordinatesConverter: ICoordinatesConverter;
 
@@ -34,61 +34,61 @@ export class ViewUserInputEvents {
 		this._coordinatesConverter = coordinatesConverter;
 	}
 
-	public emitKeyDown(e: IKeyboardEvent): void {
+	puBlic emitKeyDown(e: IKeyBoardEvent): void {
 		if (this.onKeyDown) {
 			this.onKeyDown(e);
 		}
 	}
 
-	public emitKeyUp(e: IKeyboardEvent): void {
+	puBlic emitKeyUp(e: IKeyBoardEvent): void {
 		if (this.onKeyUp) {
 			this.onKeyUp(e);
 		}
 	}
 
-	public emitContextMenu(e: IEditorMouseEvent): void {
+	puBlic emitContextMenu(e: IEditorMouseEvent): void {
 		if (this.onContextMenu) {
 			this.onContextMenu(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseMove(e: IEditorMouseEvent): void {
+	puBlic emitMouseMove(e: IEditorMouseEvent): void {
 		if (this.onMouseMove) {
 			this.onMouseMove(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseLeave(e: IPartialEditorMouseEvent): void {
+	puBlic emitMouseLeave(e: IPartialEditorMouseEvent): void {
 		if (this.onMouseLeave) {
 			this.onMouseLeave(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseDown(e: IEditorMouseEvent): void {
+	puBlic emitMouseDown(e: IEditorMouseEvent): void {
 		if (this.onMouseDown) {
 			this.onMouseDown(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseUp(e: IEditorMouseEvent): void {
+	puBlic emitMouseUp(e: IEditorMouseEvent): void {
 		if (this.onMouseUp) {
 			this.onMouseUp(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseDrag(e: IEditorMouseEvent): void {
+	puBlic emitMouseDrag(e: IEditorMouseEvent): void {
 		if (this.onMouseDrag) {
 			this.onMouseDrag(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseDrop(e: IPartialEditorMouseEvent): void {
+	puBlic emitMouseDrop(e: IPartialEditorMouseEvent): void {
 		if (this.onMouseDrop) {
 			this.onMouseDrop(this._convertViewToModelMouseEvent(e));
 		}
 	}
 
-	public emitMouseWheel(e: IMouseWheelEvent): void {
+	puBlic emitMouseWheel(e: IMouseWheelEvent): void {
 		if (this.onMouseWheel) {
 			this.onMouseWheel(e);
 		}
@@ -110,7 +110,7 @@ export class ViewUserInputEvents {
 		return ViewUserInputEvents.convertViewToModelMouseTarget(target, this._coordinatesConverter);
 	}
 
-	public static convertViewToModelMouseTarget(target: IMouseTarget, coordinatesConverter: ICoordinatesConverter): IMouseTarget {
+	puBlic static convertViewToModelMouseTarget(target: IMouseTarget, coordinatesConverter: ICoordinatesConverter): IMouseTarget {
 		return new ExternalMouseTarget(
 			target.element,
 			target.type,
@@ -124,14 +124,14 @@ export class ViewUserInputEvents {
 
 class ExternalMouseTarget implements IMouseTarget {
 
-	public readonly element: Element | null;
-	public readonly type: MouseTargetType;
-	public readonly mouseColumn: number;
-	public readonly position: Position | null;
-	public readonly range: Range | null;
-	public readonly detail: any;
+	puBlic readonly element: Element | null;
+	puBlic readonly type: MouseTargetType;
+	puBlic readonly mouseColumn: numBer;
+	puBlic readonly position: Position | null;
+	puBlic readonly range: Range | null;
+	puBlic readonly detail: any;
 
-	constructor(element: Element | null, type: MouseTargetType, mouseColumn: number, position: Position | null, range: Range | null, detail: any) {
+	constructor(element: Element | null, type: MouseTargetType, mouseColumn: numBer, position: Position | null, range: Range | null, detail: any) {
 		this.element = element;
 		this.type = type;
 		this.mouseColumn = mouseColumn;
@@ -140,7 +140,7 @@ class ExternalMouseTarget implements IMouseTarget {
 		this.detail = detail;
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return MouseTarget.toString(this);
 	}
 }

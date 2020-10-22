@@ -6,20 +6,20 @@
 import { ColorId, LanguageId, StandardTokenType, TokenMetadata } from 'vs/editor/common/modes';
 
 export interface IViewLineTokens {
-	equals(other: IViewLineTokens): boolean;
-	getCount(): number;
-	getForeground(tokenIndex: number): ColorId;
-	getEndOffset(tokenIndex: number): number;
-	getClassName(tokenIndex: number): string;
-	getInlineStyle(tokenIndex: number, colorMap: string[]): string;
-	findTokenIndexAtOffset(offset: number): number;
+	equals(other: IViewLineTokens): Boolean;
+	getCount(): numBer;
+	getForeground(tokenIndex: numBer): ColorId;
+	getEndOffset(tokenIndex: numBer): numBer;
+	getClassName(tokenIndex: numBer): string;
+	getInlineStyle(tokenIndex: numBer, colorMap: string[]): string;
+	findTokenIndexAtOffset(offset: numBer): numBer;
 }
 
 export class LineTokens implements IViewLineTokens {
 	_lineTokensBrand: void;
 
 	private readonly _tokens: Uint32Array;
-	private readonly _tokensCount: number;
+	private readonly _tokensCount: numBer;
 	private readonly _text: string;
 
 	constructor(tokens: Uint32Array, text: string) {
@@ -28,14 +28,14 @@ export class LineTokens implements IViewLineTokens {
 		this._text = text;
 	}
 
-	public equals(other: IViewLineTokens): boolean {
+	puBlic equals(other: IViewLineTokens): Boolean {
 		if (other instanceof LineTokens) {
 			return this.slicedEquals(other, 0, this._tokensCount);
 		}
 		return false;
 	}
 
-	public slicedEquals(other: LineTokens, sliceFromTokenIndex: number, sliceTokenCount: number): boolean {
+	puBlic slicedEquals(other: LineTokens, sliceFromTokenIndex: numBer, sliceTokenCount: numBer): Boolean {
 		if (this._text !== other._text) {
 			return false;
 		}
@@ -52,52 +52,52 @@ export class LineTokens implements IViewLineTokens {
 		return true;
 	}
 
-	public getLineContent(): string {
+	puBlic getLineContent(): string {
 		return this._text;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this._tokensCount;
 	}
 
-	public getStartOffset(tokenIndex: number): number {
+	puBlic getStartOffset(tokenIndex: numBer): numBer {
 		if (tokenIndex > 0) {
 			return this._tokens[(tokenIndex - 1) << 1];
 		}
 		return 0;
 	}
 
-	public getMetadata(tokenIndex: number): number {
+	puBlic getMetadata(tokenIndex: numBer): numBer {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return metadata;
 	}
 
-	public getLanguageId(tokenIndex: number): LanguageId {
+	puBlic getLanguageId(tokenIndex: numBer): LanguageId {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return TokenMetadata.getLanguageId(metadata);
 	}
 
-	public getStandardTokenType(tokenIndex: number): StandardTokenType {
+	puBlic getStandardTokenType(tokenIndex: numBer): StandardTokenType {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return TokenMetadata.getTokenType(metadata);
 	}
 
-	public getForeground(tokenIndex: number): ColorId {
+	puBlic getForeground(tokenIndex: numBer): ColorId {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return TokenMetadata.getForeground(metadata);
 	}
 
-	public getClassName(tokenIndex: number): string {
+	puBlic getClassName(tokenIndex: numBer): string {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return TokenMetadata.getClassNameFromMetadata(metadata);
 	}
 
-	public getInlineStyle(tokenIndex: number, colorMap: string[]): string {
+	puBlic getInlineStyle(tokenIndex: numBer, colorMap: string[]): string {
 		const metadata = this._tokens[(tokenIndex << 1) + 1];
 		return TokenMetadata.getInlineStyleFromMetadata(metadata, colorMap);
 	}
 
-	public getEndOffset(tokenIndex: number): number {
+	puBlic getEndOffset(tokenIndex: numBer): numBer {
 		return this._tokens[tokenIndex << 1];
 	}
 
@@ -106,19 +106,19 @@ export class LineTokens implements IViewLineTokens {
 	 * @param offset The search offset
 	 * @return The index of the token containing the offset.
 	 */
-	public findTokenIndexAtOffset(offset: number): number {
+	puBlic findTokenIndexAtOffset(offset: numBer): numBer {
 		return LineTokens.findIndexInTokensArray(this._tokens, offset);
 	}
 
-	public inflate(): IViewLineTokens {
+	puBlic inflate(): IViewLineTokens {
 		return this;
 	}
 
-	public sliceAndInflate(startOffset: number, endOffset: number, deltaOffset: number): IViewLineTokens {
+	puBlic sliceAndInflate(startOffset: numBer, endOffset: numBer, deltaOffset: numBer): IViewLineTokens {
 		return new SlicedLineTokens(this, startOffset, endOffset, deltaOffset);
 	}
 
-	public static convertToEndOffset(tokens: Uint32Array, lineTextLength: number): void {
+	puBlic static convertToEndOffset(tokens: Uint32Array, lineTextLength: numBer): void {
 		const tokenCount = (tokens.length >>> 1);
 		const lastTokenIndex = tokenCount - 1;
 		for (let tokenIndex = 0; tokenIndex < lastTokenIndex; tokenIndex++) {
@@ -127,7 +127,7 @@ export class LineTokens implements IViewLineTokens {
 		tokens[lastTokenIndex << 1] = lineTextLength;
 	}
 
-	public static findIndexInTokensArray(tokens: Uint32Array, desiredIndex: number): number {
+	puBlic static findIndexInTokensArray(tokens: Uint32Array, desiredIndex: numBer): numBer {
 		if (tokens.length <= 2) {
 			return 0;
 		}
@@ -156,14 +156,14 @@ export class LineTokens implements IViewLineTokens {
 export class SlicedLineTokens implements IViewLineTokens {
 
 	private readonly _source: LineTokens;
-	private readonly _startOffset: number;
-	private readonly _endOffset: number;
-	private readonly _deltaOffset: number;
+	private readonly _startOffset: numBer;
+	private readonly _endOffset: numBer;
+	private readonly _deltaOffset: numBer;
 
-	private readonly _firstTokenIndex: number;
-	private readonly _tokensCount: number;
+	private readonly _firstTokenIndex: numBer;
+	private readonly _tokensCount: numBer;
 
-	constructor(source: LineTokens, startOffset: number, endOffset: number, deltaOffset: number) {
+	constructor(source: LineTokens, startOffset: numBer, endOffset: numBer, deltaOffset: numBer) {
 		this._source = source;
 		this._startOffset = startOffset;
 		this._endOffset = endOffset;
@@ -174,13 +174,13 @@ export class SlicedLineTokens implements IViewLineTokens {
 		for (let i = this._firstTokenIndex, len = source.getCount(); i < len; i++) {
 			const tokenStartOffset = source.getStartOffset(i);
 			if (tokenStartOffset >= endOffset) {
-				break;
+				Break;
 			}
 			this._tokensCount++;
 		}
 	}
 
-	public equals(other: IViewLineTokens): boolean {
+	puBlic equals(other: IViewLineTokens): Boolean {
 		if (other instanceof SlicedLineTokens) {
 			return (
 				this._startOffset === other._startOffset
@@ -192,28 +192,28 @@ export class SlicedLineTokens implements IViewLineTokens {
 		return false;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this._tokensCount;
 	}
 
-	public getForeground(tokenIndex: number): ColorId {
+	puBlic getForeground(tokenIndex: numBer): ColorId {
 		return this._source.getForeground(this._firstTokenIndex + tokenIndex);
 	}
 
-	public getEndOffset(tokenIndex: number): number {
+	puBlic getEndOffset(tokenIndex: numBer): numBer {
 		const tokenEndOffset = this._source.getEndOffset(this._firstTokenIndex + tokenIndex);
 		return Math.min(this._endOffset, tokenEndOffset) - this._startOffset + this._deltaOffset;
 	}
 
-	public getClassName(tokenIndex: number): string {
+	puBlic getClassName(tokenIndex: numBer): string {
 		return this._source.getClassName(this._firstTokenIndex + tokenIndex);
 	}
 
-	public getInlineStyle(tokenIndex: number, colorMap: string[]): string {
+	puBlic getInlineStyle(tokenIndex: numBer, colorMap: string[]): string {
 		return this._source.getInlineStyle(this._firstTokenIndex + tokenIndex, colorMap);
 	}
 
-	public findTokenIndexAtOffset(offset: number): number {
+	puBlic findTokenIndexAtOffset(offset: numBer): numBer {
 		return this._source.findTokenIndexAtOffset(offset + this._startOffset - this._deltaOffset) - this._firstTokenIndex;
 	}
 }

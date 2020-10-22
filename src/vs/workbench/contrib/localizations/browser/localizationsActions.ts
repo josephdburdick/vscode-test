@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
+import { Action } from 'vs/Base/common/actions';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { ILocalizationsService } from 'vs/platform/localizations/common/localizations';
 import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { IJSONEditingService } from 'vs/workBench/services/configuration/common/jsonEditing';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { language } from 'vs/base/common/platform';
-import { IExtensionsViewPaneContainer, VIEWLET_ID as EXTENSIONS_VIEWLET_ID } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
+import { language } from 'vs/Base/common/platform';
+import { IExtensionsViewPaneContainer, VIEWLET_ID as EXTENSIONS_VIEWLET_ID } from 'vs/workBench/contriB/extensions/common/extensions';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IProductService } from 'vs/platform/product/common/productService';
 
 export class ConfigureLocaleAction extends Action {
-	public static readonly ID = 'workbench.action.configureLocale';
-	public static readonly LABEL = localize('configureLocale', "Configure Display Language");
+	puBlic static readonly ID = 'workBench.action.configureLocale';
+	puBlic static readonly LABEL = localize('configureLocale', "Configure Display Language");
 
-	constructor(id: string, label: string,
+	constructor(id: string, laBel: string,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
 		@ILocalizationsService private readonly localizationService: ILocalizationsService,
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
@@ -32,21 +32,21 @@ export class ConfigureLocaleAction extends Action {
 		@IDialogService private readonly dialogService: IDialogService,
 		@IProductService private readonly productService: IProductService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	private async getLanguageOptions(): Promise<IQuickPickItem[]> {
-		const availableLanguages = await this.localizationService.getLanguageIds();
-		availableLanguages.sort();
+		const availaBleLanguages = await this.localizationService.getLanguageIds();
+		availaBleLanguages.sort();
 
-		return availableLanguages
-			.map(language => { return { label: language }; })
-			.concat({ label: localize('installAdditionalLanguages', "Install additional languages...") });
+		return availaBleLanguages
+			.map(language => { return { laBel: language }; })
+			.concat({ laBel: localize('installAdditionalLanguages', "Install additional languages...") });
 	}
 
-	public async run(): Promise<void> {
+	puBlic async run(): Promise<void> {
 		const languageOptions = await this.getLanguageOptions();
-		const currentLanguageIndex = languageOptions.findIndex(l => l.label === language);
+		const currentLanguageIndex = languageOptions.findIndex(l => l.laBel === language);
 
 		try {
 			const selectedLanguage = await this.quickInputService.pick(languageOptions,
@@ -67,11 +67,11 @@ export class ConfigureLocaleAction extends Action {
 			}
 
 			if (selectedLanguage) {
-				await this.jsonEditingService.write(this.environmentService.argvResource, [{ path: ['locale'], value: selectedLanguage.label }], true);
+				await this.jsonEditingService.write(this.environmentService.argvResource, [{ path: ['locale'], value: selectedLanguage.laBel }], true);
 				const restart = await this.dialogService.confirm({
 					type: 'info',
 					message: localize('relaunchDisplayLanguageMessage', "A restart is required for the change in display language to take effect."),
-					detail: localize('relaunchDisplayLanguageDetail', "Press the restart button to restart {0} and change the display language.", this.productService.nameLong),
+					detail: localize('relaunchDisplayLanguageDetail', "Press the restart Button to restart {0} and change the display language.", this.productService.nameLong),
 					primaryButton: localize('restart', "&&Restart")
 				});
 

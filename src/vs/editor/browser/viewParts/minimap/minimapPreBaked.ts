@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { once } from 'vs/base/common/functional';
+import { once } from 'vs/Base/common/functional';
 
-const charTable: { [hex: string]: number } = {
+const charTaBle: { [hex: string]: numBer } = {
 	'0': 0,
 	'1': 1,
 	'2': 2,
@@ -27,7 +27,7 @@ const charTable: { [hex: string]: number } = {
 const decodeData = (str: string) => {
 	const output = new Uint8ClampedArray(str.length / 2);
 	for (let i = 0; i < str.length; i += 2) {
-		output[i >> 1] = (charTable[str[i]] << 4) | (charTable[str[i + 1]] & 0xF);
+		output[i >> 1] = (charTaBle[str[i]] << 4) | (charTaBle[str[i + 1]] & 0xF);
 	}
 
 	return output;
@@ -45,11 +45,11 @@ const encodeData = (data: Uint8ClampedArray, length: string) => {
 */
 
 /**
- * Map of minimap scales to prebaked sample data at those scales. We don't
- * sample much larger data, because then font family becomes visible, which
- * is use-configurable.
+ * Map of minimap scales to preBaked sample data at those scales. We don't
+ * sample much larger data, Because then font family Becomes visiBle, which
+ * is use-configuraBle.
  */
-export const prebakedMiniMaps: { [scale: number]: () => Uint8ClampedArray } = {
+export const preBakedMiniMaps: { [scale: numBer]: () => Uint8ClampedArray } = {
 	1: once(() =>
 		decodeData(
 			'0000511D6300CF609C709645A78432005642574171487021003C451900274D35D762755E8B629C5BA856AF57BA649530C167D1512A272A3F6038604460398526BCA2A968DB6F8957C768BE5FBE2FB467CF5D8D5B795DC7625B5DFF50DE64C466DB2FC47CD860A65E9A2EB96CB54CE06DA763AB2EA26860524D3763536601005116008177A8705E53AB738E6A982F88BAA35B5F5B626D9C636B449B737E5B7B678598869A662F6B5B8542706C704C80736A607578685B70594A49715A4522E792'

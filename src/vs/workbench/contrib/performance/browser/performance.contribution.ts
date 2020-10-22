@@ -6,25 +6,25 @@
 import { localize } from 'vs/nls';
 import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES } from 'vs/workbench/common/actions';
-import { Extensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Extensions as Input, IEditorInputFactory, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { PerfviewContrib, PerfviewInput } from 'vs/workbench/contrib/performance/browser/perfviewEditor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { CATEGORIES } from 'vs/workBench/common/actions';
+import { Extensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { Extensions as Input, IEditorInputFactory, IEditorInputFactoryRegistry } from 'vs/workBench/common/editor';
+import { PerfviewContriB, PerfviewInput } from 'vs/workBench/contriB/performance/Browser/perfviewEditor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 
 // -- startup performance view
 
-Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(
-	PerfviewContrib,
+Registry.as<IWorkBenchContriButionsRegistry>(Extensions.WorkBench).registerWorkBenchContriBution(
+	PerfviewContriB,
 	LifecyclePhase.Ready
 );
 
 Registry.as<IEditorInputFactoryRegistry>(Input.EditorInputFactories).registerEditorInputFactory(
 	PerfviewInput.Id,
 	class implements IEditorInputFactory {
-		canSerialize(): boolean {
+		canSerialize(): Boolean {
 			return true;
 		}
 		serialize(): string {
@@ -42,7 +42,7 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super({
 			id: 'perfview.show',
-			title: { value: localize('show.label', "Startup Performance"), original: 'Startup Performance' },
+			title: { value: localize('show.laBel', "Startup Performance"), original: 'Startup Performance' },
 			category: CATEGORIES.Developer,
 			f1: true
 		});

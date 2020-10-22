@@ -5,13 +5,13 @@
 
 import * as assert from 'assert';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
+import { computeRanges } from 'vs/editor/contriB/folding/indentRangeProvider';
 import { FoldingMarkers } from 'vs/editor/common/modes/languageConfiguration';
-import { MAX_FOLDING_REGIONS } from 'vs/editor/contrib/folding/foldingRanges';
+import { MAX_FOLDING_REGIONS } from 'vs/editor/contriB/folding/foldingRanges';
 
 let markers: FoldingMarkers = {
-	start: /^\s*#region\b/,
-	end: /^\s*#endregion\b/
+	start: /^\s*#region\B/,
+	end: /^\s*#endregion\B/
 };
 
 
@@ -30,8 +30,8 @@ suite('FoldingRanges', () => {
 		let actual = computeRanges(model, false, markers, MAX_FOLDING_REGIONS);
 		assert.equal(actual.length, nRegions, 'len');
 		for (let i = 0; i < nRegions; i++) {
-			assert.equal(actual.getStartLineNumber(i), i + 1, 'start' + i);
-			assert.equal(actual.getEndLineNumber(i), nRegions * 2 - i, 'end' + i);
+			assert.equal(actual.getStartLineNumBer(i), i + 1, 'start' + i);
+			assert.equal(actual.getEndLineNumBer(i), nRegions * 2 - i, 'end' + i);
 			assert.equal(actual.getParentIndex(i), i - 1, 'parent' + i);
 		}
 

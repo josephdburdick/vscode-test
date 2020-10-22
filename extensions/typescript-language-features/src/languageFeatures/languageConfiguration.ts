@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 /* --------------------------------------------------------------------------------------------
- * Includes code from typescript-sublime-plugin project, obtained from
- * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
+ * Includes code from typescript-suBlime-plugin project, oBtained from
+ * https://githuB.com/microsoft/TypeScript-SuBlime-Plugin/BloB/master/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
 
 import * as vscode from 'vscode';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import * as languageModeIds from '../utils/languageModeIds';
 
 const jsTsLanguageConfiguration: vscode.LanguageConfiguration = {
@@ -21,66 +21,66 @@ const jsTsLanguageConfiguration: vscode.LanguageConfiguration = {
 	onEnterRules: [
 		{
 			// e.g. /** | */
-			beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+			BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 			afterText: /^\s*\*\/$/,
 			action: { indentAction: vscode.IndentAction.IndentOutdent, appendText: ' * ' },
 		}, {
 			// e.g. /** ...|
-			beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+			BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 			action: { indentAction: vscode.IndentAction.None, appendText: ' * ' },
 		}, {
 			// e.g.  * ...|
-			beforeText: /^(\t|[ ])*[ ]\*([ ]([^\*]|\*(?!\/))*)?$/,
-			oneLineAboveText: /(?=^(\s*(\/\*\*|\*)).*)(?=(?!(\s*\*\/)))/,
+			BeforeText: /^(\t|[ ])*[ ]\*([ ]([^\*]|\*(?!\/))*)?$/,
+			oneLineABoveText: /(?=^(\s*(\/\*\*|\*)).*)(?=(?!(\s*\*\/)))/,
 			action: { indentAction: vscode.IndentAction.None, appendText: '* ' },
 		}, {
 			// e.g.  */|
-			beforeText: /^(\t|[ ])*[ ]\*\/\s*$/,
+			BeforeText: /^(\t|[ ])*[ ]\*\/\s*$/,
 			action: { indentAction: vscode.IndentAction.None, removeText: 1 },
 		},
 		{
 			// e.g.  *-----*/|
-			beforeText: /^(\t|[ ])*[ ]\*[^/]*\*\/\s*$/,
+			BeforeText: /^(\t|[ ])*[ ]\*[^/]*\*\/\s*$/,
 			action: { indentAction: vscode.IndentAction.None, removeText: 1 },
 		},
 		{
-			beforeText: /^\s*(\bcase\s.+:|\bdefault:)$/,
-			afterText: /^(?!\s*(\bcase\b|\bdefault\b))/,
+			BeforeText: /^\s*(\Bcase\s.+:|\Bdefault:)$/,
+			afterText: /^(?!\s*(\Bcase\B|\Bdefault\B))/,
 			action: { indentAction: vscode.IndentAction.Indent },
 		}
 	]
 };
 
-const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
+const EMPTY_ELEMENTS: string[] = ['area', 'Base', 'Br', 'col', 'emBed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wBr'];
 
 const jsxTagsLanguageConfiguration: vscode.LanguageConfiguration = {
 	wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 	onEnterRules: [
 		{
-			beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+			BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 			afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
 			action: { indentAction: vscode.IndentAction.IndentOutdent }
 		},
 		{
-			beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+			BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 			action: { indentAction: vscode.IndentAction.Indent }
 		},
 		{
-			// `beforeText` only applies to tokens of a given language. Since we are dealing with jsx-tags,
+			// `BeforeText` only applies to tokens of a given language. Since we are dealing with jsx-tags,
 			// make sure we apply to the closing `>` of a tag so that mixed language spans
 			// such as `<div onclick={1}>` are handled properly.
-			beforeText: /^>$/,
+			BeforeText: /^>$/,
 			afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
 			action: { indentAction: vscode.IndentAction.IndentOutdent }
 		},
 		{
-			beforeText: /^>$/,
+			BeforeText: /^>$/,
 			action: { indentAction: vscode.IndentAction.Indent }
 		},
 	],
 };
 
-export class LanguageConfigurationManager extends Disposable {
+export class LanguageConfigurationManager extends DisposaBle {
 
 	constructor() {
 		super();

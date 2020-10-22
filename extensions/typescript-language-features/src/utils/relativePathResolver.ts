@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 export class RelativeWorkspacePathResolver {
-	public static asAbsoluteWorkspacePath(relativePath: string): string | undefined {
+	puBlic static asABsoluteWorkspacePath(relativePath: string): string | undefined {
 		for (const root of vscode.workspace.workspaceFolders || []) {
 			const rootPrefixes = [`./${root.name}/`, `${root.name}/`, `.\\${root.name}\\`, `${root.name}\\`];
 			for (const rootPrefix of rootPrefixes) {

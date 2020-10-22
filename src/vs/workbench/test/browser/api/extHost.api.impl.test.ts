@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { originalFSPath } from 'vs/base/common/resources';
-import { isWindows } from 'vs/base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import { originalFSPath } from 'vs/Base/common/resources';
+import { isWindows } from 'vs/Base/common/platform';
 
 suite('ExtHost API', function () {
 	test('issue #51387: originalFSPath', function () {

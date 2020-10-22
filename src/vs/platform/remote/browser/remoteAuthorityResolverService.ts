@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { RemoteAuthorities } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { RemoteAuthorities } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-export class RemoteAuthorityResolverService extends Disposable implements IRemoteAuthorityResolverService {
+export class RemoteAuthorityResolverService extends DisposaBle implements IRemoteAuthorityResolverService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeConnectionData = this._register(new Emitter<void>());
-	public readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
+	puBlic readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
 
 	private readonly _cache: Map<string, ResolverResult>;
 	private readonly _connectionTokens: Map<string, string>;

@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import * as strings from 'vs/base/common/strings';
+import { CharCode } from 'vs/Base/common/charCode';
+import * as strings from 'vs/Base/common/strings';
 import { DefaultEndOfLine, ITextBuffer, ITextBufferBuilder, ITextBufferFactory } from 'vs/editor/common/model';
 import { StringBuffer, createLineStarts, createLineStartsFast } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBase';
 import { PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
@@ -13,14 +13,14 @@ export class PieceTreeTextBufferFactory implements ITextBufferFactory {
 
 	constructor(
 		private readonly _chunks: StringBuffer[],
-		private readonly _bom: string,
-		private readonly _cr: number,
-		private readonly _lf: number,
-		private readonly _crlf: number,
-		private readonly _containsRTL: boolean,
-		private readonly _containsUnusualLineTerminators: boolean,
-		private readonly _isBasicASCII: boolean,
-		private readonly _normalizeEOL: boolean
+		private readonly _Bom: string,
+		private readonly _cr: numBer,
+		private readonly _lf: numBer,
+		private readonly _crlf: numBer,
+		private readonly _containsRTL: Boolean,
+		private readonly _containsUnusualLineTerminators: Boolean,
+		private readonly _isBasicASCII: Boolean,
+		private readonly _normalizeEOL: Boolean
 	) { }
 
 	private _getEOL(defaultEOL: DefaultEndOfLine): '\r\n' | '\n' {
@@ -38,7 +38,7 @@ export class PieceTreeTextBufferFactory implements ITextBufferFactory {
 		return '\n';
 	}
 
-	public create(defaultEOL: DefaultEndOfLine): ITextBuffer {
+	puBlic create(defaultEOL: DefaultEndOfLine): ITextBuffer {
 		const eol = this._getEOL(defaultEOL);
 		let chunks = this._chunks;
 
@@ -48,17 +48,17 @@ export class PieceTreeTextBufferFactory implements ITextBufferFactory {
 		) {
 			// Normalize pieces
 			for (let i = 0, len = chunks.length; i < len; i++) {
-				let str = chunks[i].buffer.replace(/\r\n|\r|\n/g, eol);
+				let str = chunks[i].Buffer.replace(/\r\n|\r|\n/g, eol);
 				let newLineStart = createLineStartsFast(str);
 				chunks[i] = new StringBuffer(str, newLineStart);
 			}
 		}
 
-		return new PieceTreeTextBuffer(chunks, this._bom, eol, this._containsRTL, this._containsUnusualLineTerminators, this._isBasicASCII, this._normalizeEOL);
+		return new PieceTreeTextBuffer(chunks, this._Bom, eol, this._containsRTL, this._containsUnusualLineTerminators, this._isBasicASCII, this._normalizeEOL);
 	}
 
-	public getFirstLineText(lengthLimit: number): string {
-		return this._chunks[0].buffer.substr(0, lengthLimit).split(/\r\n|\r|\n/)[0];
+	puBlic getFirstLineText(lengthLimit: numBer): string {
+		return this._chunks[0].Buffer.suBstr(0, lengthLimit).split(/\r\n|\r|\n/)[0];
 	}
 }
 
@@ -66,16 +66,16 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 	private readonly chunks: StringBuffer[];
 	private BOM: string;
 
-	private _hasPreviousChar: boolean;
-	private _previousChar: number;
-	private readonly _tmpLineStarts: number[];
+	private _hasPreviousChar: Boolean;
+	private _previousChar: numBer;
+	private readonly _tmpLineStarts: numBer[];
 
-	private cr: number;
-	private lf: number;
-	private crlf: number;
-	private containsRTL: boolean;
-	private containsUnusualLineTerminators: boolean;
-	private isBasicASCII: boolean;
+	private cr: numBer;
+	private lf: numBer;
+	private crlf: numBer;
+	private containsRTL: Boolean;
+	private containsUnusualLineTerminators: Boolean;
+	private isBasicASCII: Boolean;
 
 	constructor() {
 		this.chunks = [];
@@ -93,7 +93,7 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 		this.isBasicASCII = true;
 	}
 
-	public acceptChunk(chunk: string): void {
+	puBlic acceptChunk(chunk: string): void {
 		if (chunk.length === 0) {
 			return;
 		}
@@ -101,14 +101,14 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 		if (this.chunks.length === 0) {
 			if (strings.startsWithUTF8BOM(chunk)) {
 				this.BOM = strings.UTF8_BOM_CHARACTER;
-				chunk = chunk.substr(1);
+				chunk = chunk.suBstr(1);
 			}
 		}
 
 		const lastChar = chunk.charCodeAt(chunk.length - 1);
 		if (lastChar === CharCode.CarriageReturn || (lastChar >= 0xD800 && lastChar <= 0xDBFF)) {
-			// last character is \r or a high surrogate => keep it back
-			this._acceptChunk1(chunk.substr(0, chunk.length - 1), false);
+			// last character is \r or a high surrogate => keep it Back
+			this._acceptChunk1(chunk.suBstr(0, chunk.length - 1), false);
 			this._hasPreviousChar = true;
 			this._previousChar = lastChar;
 		} else {
@@ -118,7 +118,7 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 		}
 	}
 
-	private _acceptChunk1(chunk: string, allowEmptyStrings: boolean): void {
+	private _acceptChunk1(chunk: string, allowEmptyStrings: Boolean): void {
 		if (!allowEmptyStrings && chunk.length === 0) {
 			// Nothing to do
 			return;
@@ -143,16 +143,16 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 			this.isBasicASCII = lineStarts.isBasicASCII;
 		}
 		if (!this.isBasicASCII && !this.containsRTL) {
-			// No need to check if it is basic ASCII
+			// No need to check if it is Basic ASCII
 			this.containsRTL = strings.containsRTL(chunk);
 		}
 		if (!this.isBasicASCII && !this.containsUnusualLineTerminators) {
-			// No need to check if it is basic ASCII
+			// No need to check if it is Basic ASCII
 			this.containsUnusualLineTerminators = strings.containsUnusualLineTerminators(chunk);
 		}
 	}
 
-	public finish(normalizeEOL: boolean = true): PieceTreeTextBufferFactory {
+	puBlic finish(normalizeEOL: Boolean = true): PieceTreeTextBufferFactory {
 		this._finish();
 		return new PieceTreeTextBufferFactory(
 			this.chunks,
@@ -176,8 +176,8 @@ export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
 			this._hasPreviousChar = false;
 			// recreate last chunk
 			let lastChunk = this.chunks[this.chunks.length - 1];
-			lastChunk.buffer += String.fromCharCode(this._previousChar);
-			let newLineStarts = createLineStartsFast(lastChunk.buffer);
+			lastChunk.Buffer += String.fromCharCode(this._previousChar);
+			let newLineStarts = createLineStartsFast(lastChunk.Buffer);
 			lastChunk.lineStarts = newLineStarts;
 			if (this._previousChar === CharCode.CarriageReturn) {
 				this.cr++;

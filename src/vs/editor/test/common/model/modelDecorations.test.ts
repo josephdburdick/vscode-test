@@ -27,13 +27,13 @@ function modelHasDecorations(model: TextModel, decorations: ILightWeightDecorati
 			className: actualDecorations[i].options.className
 		});
 	}
-	modelDecorations.sort((a, b) => Range.compareRangesUsingStarts(a.range, b.range));
+	modelDecorations.sort((a, B) => Range.compareRangesUsingStarts(a.range, B.range));
 	assert.deepEqual(modelDecorations, decorations);
 }
 
-function modelHasDecoration(model: TextModel, startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, className: string) {
+function modelHasDecoration(model: TextModel, startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, className: string) {
 	modelHasDecorations(model, [{
-		range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+		range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 		className: className
 	}]);
 }
@@ -42,17 +42,17 @@ function modelHasNoDecorations(model: TextModel) {
 	assert.equal(model.getAllDecorations().length, 0, 'Model has no decoration');
 }
 
-function addDecoration(model: TextModel, startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, className: string): string {
+function addDecoration(model: TextModel, startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, className: string): string {
 	return model.changeDecorations((changeAccessor) => {
-		return changeAccessor.addDecoration(new Range(startLineNumber, startColumn, endLineNumber, endColumn), {
+		return changeAccessor.addDecoration(new Range(startLineNumBer, startColumn, endLineNumBer, endColumn), {
 			className: className
 		});
 	})!;
 }
 
-function lineHasDecorations(model: TextModel, lineNumber: number, decorations: { start: number; end: number; className: string; }[]) {
-	let lineDecorations: Array<{ start: number; end: number; className: string | null | undefined; }> = [];
-	let decs = model.getLineDecorations(lineNumber);
+function lineHasDecorations(model: TextModel, lineNumBer: numBer, decorations: { start: numBer; end: numBer; className: string; }[]) {
+	let lineDecorations: Array<{ start: numBer; end: numBer; className: string | null | undefined; }> = [];
+	let decs = model.getLineDecorations(lineNumBer);
 	for (let i = 0, len = decs.length; i < len; i++) {
 		lineDecorations.push({
 			start: decs[i].range.startColumn,
@@ -63,12 +63,12 @@ function lineHasDecorations(model: TextModel, lineNumber: number, decorations: {
 	assert.deepEqual(lineDecorations, decorations, 'Line decorations');
 }
 
-function lineHasNoDecorations(model: TextModel, lineNumber: number) {
-	lineHasDecorations(model, lineNumber, []);
+function lineHasNoDecorations(model: TextModel, lineNumBer: numBer) {
+	lineHasDecorations(model, lineNumBer, []);
 }
 
-function lineHasDecoration(model: TextModel, lineNumber: number, start: number, end: number, className: string) {
-	lineHasDecorations(model, lineNumber, [{
+function lineHasDecoration(model: TextModel, lineNumBer: numBer, start: numBer, end: numBer, className: string) {
+	lineHasDecorations(model, lineNumBer, [{
 		start: start,
 		end: end,
 		className: className
@@ -192,7 +192,7 @@ suite('Editor Model - Model Decorations', () => {
 		modelHasNoDecorations(thisModel);
 	});
 
-	test('decoration range can be changed', () => {
+	test('decoration range can Be changed', () => {
 		let decId = addDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		thisModel.changeDecorations((changeAccessor) => {
@@ -236,7 +236,7 @@ suite('Editor Model - Model Decorations', () => {
 		assert.equal(listenerCalled, 1, 'listener called');
 	});
 
-	test('decorations emit event when inserting one line text before it', () => {
+	test('decorations emit event when inserting one line text Before it', () => {
 		let listenerCalled = 0;
 		addDecoration(thisModel, 1, 2, 3, 2, 'myType');
 
@@ -265,21 +265,21 @@ suite('Editor Model - Model Decorations', () => {
 
 	// --------- editing text & effects on decorations
 
-	test('decorations are updated when inserting one line text before it', () => {
+	test('decorations are updated when inserting one line text Before it', () => {
 		addDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), 'Hallo ')]);
 		modelHasDecoration(thisModel, 1, 8, 3, 2, 'myType');
 	});
 
-	test('decorations are updated when inserting one line text before it 2', () => {
+	test('decorations are updated when inserting one line text Before it 2', () => {
 		addDecoration(thisModel, 1, 1, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 1, 1, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.replace(new Range(1, 1, 1, 1), 'Hallo ')]);
 		modelHasDecoration(thisModel, 1, 1, 3, 2, 'myType');
 	});
 
-	test('decorations are updated when inserting multiple lines text before it', () => {
+	test('decorations are updated when inserting multiple lines text Before it', () => {
 		addDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), 'Hallo\nI\'m inserting multiple\nlines')]);
@@ -321,21 +321,21 @@ suite('Editor Model - Model Decorations', () => {
 		modelHasDecoration(thisModel, 1, 2, 5, 2, 'myType');
 	});
 
-	test('decorations are updated when deleting one line text before it', () => {
+	test('decorations are updated when deleting one line text Before it', () => {
 		addDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 1, 2, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 2))]);
 		modelHasDecoration(thisModel, 1, 1, 3, 2, 'myType');
 	});
 
-	test('decorations are updated when deleting multiple lines text before it', () => {
+	test('decorations are updated when deleting multiple lines text Before it', () => {
 		addDecoration(thisModel, 2, 2, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 2, 2, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 2, 1))]);
 		modelHasDecoration(thisModel, 1, 2, 2, 2, 'myType');
 	});
 
-	test('decorations are updated when deleting multiple lines text before it 2', () => {
+	test('decorations are updated when deleting multiple lines text Before it 2', () => {
 		addDecoration(thisModel, 2, 3, 3, 2, 'myType');
 		modelHasDecoration(thisModel, 2, 3, 3, 2, 'myType');
 		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 2, 2))]);
@@ -400,7 +400,7 @@ suite('Editor Model - Model Decorations', () => {
 		]);
 	});
 
-	test('removeAllDecorationsWithOwnerId can be called after model dispose', () => {
+	test('removeAllDecorationsWithOwnerId can Be called after model dispose', () => {
 		let model = createTextModel('asd');
 		model.dispose();
 		model.removeAllDecorationsWithOwnerId(1);
@@ -415,7 +415,7 @@ suite('Editor Model - Model Decorations', () => {
 
 suite('Decorations and editing', () => {
 
-	function _runTest(decRange: Range, stickiness: TrackedRangeStickiness, editRange: Range, editText: string, editForceMoveMarkers: boolean, expectedDecRange: Range, msg: string): void {
+	function _runTest(decRange: Range, stickiness: TrackedRangeStickiness, editRange: Range, editText: string, editForceMoveMarkers: Boolean, expectedDecRange: Range, msg: string): void {
 		let model = createTextModel([
 			'My First Line',
 			'My Second Line',
@@ -448,7 +448,7 @@ suite('Decorations and editing', () => {
 
 	suite('insert', () => {
 		suite('collapsed dec', () => {
-			test('before', () => {
+			test('Before', () => {
 				runTest(
 					new Range(1, 4, 1, 4),
 					new Range(1, 3, 1, 3), 'xx',
@@ -480,7 +480,7 @@ suite('Decorations and editing', () => {
 			});
 		});
 		suite('non-collapsed dec', () => {
-			test('before', () => {
+			test('Before', () => {
 				runTest(
 					new Range(1, 4, 1, 9),
 					new Range(1, 3, 1, 3), 'xx',
@@ -1112,10 +1112,10 @@ interface ILightWeightDecoration {
 
 suite('deltaDecorations', () => {
 
-	function decoration(id: string, startLineNumber: number, startColumn: number, endLineNumber: number, endColum: number): ILightWeightDecoration {
+	function decoration(id: string, startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColum: numBer): ILightWeightDecoration {
 		return {
 			id: id,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColum)
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColum)
 		};
 	}
 
@@ -1128,11 +1128,11 @@ suite('deltaDecorations', () => {
 		};
 	}
 
-	function strcmp(a: string, b: string): number {
-		if (a === b) {
+	function strcmp(a: string, B: string): numBer {
+		if (a === B) {
 			return 0;
 		}
-		if (a < b) {
+		if (a < B) {
 			return -1;
 		}
 		return 1;
@@ -1157,8 +1157,8 @@ suite('deltaDecorations', () => {
 
 		assert.equal(initialIds.length, decorations.length, 'returns expected cnt of ids');
 		assert.equal(initialIds.length, model.getAllDecorations().length, 'does not leak decorations');
-		actualDecorations.sort((a, b) => strcmp(a.id, b.id));
-		decorations.sort((a, b) => strcmp(a.id, b.id));
+		actualDecorations.sort((a, B) => strcmp(a.id, B.id));
+		decorations.sort((a, B) => strcmp(a.id, B.id));
 		assert.deepEqual(actualDecorations, decorations);
 
 		let newIds = model.deltaDecorations(initialIds, newDecorations.map(toModelDeltaDecoration));
@@ -1166,15 +1166,15 @@ suite('deltaDecorations', () => {
 
 		assert.equal(newIds.length, newDecorations.length, 'returns expected cnt of ids');
 		assert.equal(newIds.length, model.getAllDecorations().length, 'does not leak decorations');
-		actualNewDecorations.sort((a, b) => strcmp(a.id, b.id));
-		newDecorations.sort((a, b) => strcmp(a.id, b.id));
+		actualNewDecorations.sort((a, B) => strcmp(a.id, B.id));
+		newDecorations.sort((a, B) => strcmp(a.id, B.id));
 		assert.deepEqual(actualDecorations, decorations);
 
 		model.dispose();
 	}
 
-	function range(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number): Range {
-		return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
+	function range(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer): Range {
+		return new Range(startLineNumBer, startColumn, endLineNumBer, endColumn);
 	}
 
 	test('result respects input', () => {
@@ -1185,7 +1185,7 @@ suite('deltaDecorations', () => {
 
 		let ids = model.deltaDecorations([], [
 			toModelDeltaDecoration(decoration('a', 1, 1, 1, 12)),
-			toModelDeltaDecoration(decoration('b', 2, 1, 2, 13))
+			toModelDeltaDecoration(decoration('B', 2, 1, 2, 13))
 		]);
 
 		assert.deepEqual(model.getDecorationRange(ids[0]), range(1, 1, 1, 12));
@@ -1204,7 +1204,7 @@ suite('deltaDecorations', () => {
 			],
 			[
 				decoration('a', 1, 1, 1, 2),
-				decoration('b', 1, 1, 1, 15),
+				decoration('B', 1, 1, 1, 15),
 				decoration('c', 1, 1, 2, 1),
 				decoration('d', 1, 1, 2, 24),
 				decoration('e', 2, 1, 2, 24),
@@ -1212,7 +1212,7 @@ suite('deltaDecorations', () => {
 			],
 			[
 				decoration('x', 1, 1, 1, 2),
-				decoration('b', 1, 1, 1, 15),
+				decoration('B', 1, 1, 1, 15),
 				decoration('c', 1, 1, 2, 1),
 				decoration('d', 1, 1, 2, 24),
 				decoration('e', 2, 1, 2, 21),
@@ -1231,14 +1231,14 @@ suite('deltaDecorations', () => {
 			],
 			[
 				decoration('a', 1, 1, 1, 2),
-				decoration('b', 1, 2, 1, 3),
+				decoration('B', 1, 2, 1, 3),
 				decoration('c', 1, 3, 1, 4),
 				decoration('d', 1, 4, 1, 5),
 				decoration('e', 1, 5, 1, 6)
 			],
 			[
 				decoration('a', 1, 2, 1, 3),
-				decoration('b', 1, 3, 1, 4),
+				decoration('B', 1, 3, 1, 4),
 				decoration('c', 1, 4, 1, 5),
 				decoration('d', 1, 5, 1, 6)
 			]
@@ -1255,7 +1255,7 @@ suite('deltaDecorations', () => {
 			],
 			[
 				decoration('a', 1, 1, 1, 2),
-				decoration('b', 1, 2, 1, 3),
+				decoration('B', 1, 2, 1, 3),
 				decoration('c', 1, 3, 1, 4),
 				decoration('d', 1, 4, 1, 5),
 				decoration('e', 1, 5, 1, 6)
@@ -1270,9 +1270,9 @@ suite('deltaDecorations', () => {
 
 		let ids = model.deltaDecorations([], [{
 			range: {
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				startColumn: 1,
-				endLineNumber: 100,
+				endLineNumBer: 100,
 				endColumn: 1
 			},
 			options: {
@@ -1282,9 +1282,9 @@ suite('deltaDecorations', () => {
 
 		ids = model.deltaDecorations(ids, [{
 			range: {
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				startColumn: 1,
-				endLineNumber: 100,
+				endLineNumBer: 100,
 				endColumn: 1
 			},
 			options: {
@@ -1308,9 +1308,9 @@ suite('deltaDecorations', () => {
 		let trackedRangeId = model.changeDecorations((changeAcessor) => {
 			return changeAcessor.addDecoration(
 				{
-					startLineNumber: 1,
+					startLineNumBer: 1,
 					startColumn: 1,
-					endLineNumber: 1,
+					endLineNumBer: 1,
 					endColumn: 1
 				}, {
 				stickiness: TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges
@@ -1323,7 +1323,7 @@ suite('deltaDecorations', () => {
 
 		let ids = model.deltaDecorations([], [
 			toModelDeltaDecoration(decoration('a', 1, 1, 1, 12)),
-			toModelDeltaDecoration(decoration('b', 2, 1, 2, 13))
+			toModelDeltaDecoration(decoration('B', 2, 1, 2, 13))
 		]);
 
 		assert.deepEqual(model.getDecorationRange(ids[0]), range(1, 1, 1, 12));
@@ -1331,7 +1331,7 @@ suite('deltaDecorations', () => {
 
 		ids = model.deltaDecorations(ids, [
 			toModelDeltaDecoration(decoration('a', 1, 1, 1, 12)),
-			toModelDeltaDecoration(decoration('b', 2, 1, 2, 13))
+			toModelDeltaDecoration(decoration('B', 2, 1, 2, 13))
 		]);
 
 		assert.deepEqual(model.getDecorationRange(ids[0]), range(1, 1, 1, 12));

@@ -12,7 +12,7 @@ suite('ExtensionsMerge', () => {
 	test('merge returns local extension if remote does not exist', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -27,11 +27,11 @@ suite('ExtensionsMerge', () => {
 	test('merge returns local extension if remote does not exist with ignored extensions', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -46,11 +46,11 @@ suite('ExtensionsMerge', () => {
 	test('merge returns local extension if remote does not exist with ignored extensions (ignore case)', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -65,15 +65,15 @@ suite('ExtensionsMerge', () => {
 	test('merge returns local extension if remote does not exist with skipped extensions', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const skippedExtension: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -88,14 +88,14 @@ suite('ExtensionsMerge', () => {
 	test('merge returns local extension if remote does not exist with skipped and ignored extensions', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const skippedExtension: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -107,17 +107,17 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when there is no base', () => {
+	test('merge local and remote extensions when there is no Base', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
@@ -125,37 +125,37 @@ suite('ExtensionsMerge', () => {
 
 		const actual = merge(localExtensions, remoteExtensions, null, [], []);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, []);
 		assert.deepEqual(actual.updated, []);
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when there is no base and with ignored extensions', () => {
+	test('merge local and remote extensions when there is no Base and with ignored extensions', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 
 		const actual = merge(localExtensions, remoteExtensions, null, [], ['a']);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, []);
 		assert.deepEqual(actual.updated, []);
 		assert.deepEqual(actual.remote, expected);
 	});
 
 	test('merge local and remote extensions when remote is moved forwarded', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -164,20 +164,20 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], []);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'a', uuid: 'a' }, { id: 'd', uuid: 'd' }]);
 		assert.deepEqual(actual.updated, []);
 		assert.equal(actual.remote, null);
 	});
 
-	test('merge local and remote extensions when remote is moved forwarded with disabled extension', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when remote is moved forwarded with disaBled extension', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -186,21 +186,21 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
-			{ identifier: { id: 'd', uuid: 'd' }, disabled: true, installed: true },
+			{ identifier: { id: 'd', uuid: 'd' }, disaBled: true, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], []);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'a', uuid: 'a' }]);
-		assert.deepEqual(actual.updated, [{ identifier: { id: 'd', uuid: 'd' }, disabled: true, installed: true }]);
+		assert.deepEqual(actual.updated, [{ identifier: { id: 'd', uuid: 'd' }, disaBled: true, installed: true }]);
 		assert.equal(actual.remote, null);
 	});
 
 	test('merge local and remote extensions when remote moved forwarded with ignored extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -209,20 +209,20 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], ['a']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], ['a']);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'd', uuid: 'd' }]);
 		assert.deepEqual(actual.updated, []);
 		assert.equal(actual.remote, null);
 	});
 
 	test('merge local and remote extensions when remote is moved forwarded with skipped extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -233,20 +233,20 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, []);
 
-		assert.deepEqual(actual.added, [{ identifier: { id: 'b', uuid: 'b' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
+		assert.deepEqual(actual.added, [{ identifier: { id: 'B', uuid: 'B' }, installed: true }, { identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'd', uuid: 'd' }]);
 		assert.deepEqual(actual.updated, []);
 		assert.equal(actual.remote, null);
 	});
 
 	test('merge local and remote extensions when remote is moved forwarded with skipped and ignored extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -257,11 +257,11 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, ['b']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, ['B']);
 
 		assert.deepEqual(actual.added, [{ identifier: { id: 'c', uuid: 'c' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'd', uuid: 'd' }]);
@@ -270,12 +270,12 @@ suite('ExtensionsMerge', () => {
 	});
 
 	test('merge local and remote extensions when local is moved forwarded', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -283,7 +283,7 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], []);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -291,14 +291,14 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, localExtensions);
 	});
 
-	test('merge local and remote extensions when local is moved forwarded with disabled extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when local is moved forwarded with disaBled extensions', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'a', uuid: 'a' }, disabled: true, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'a', uuid: 'a' }, disaBled: true, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -306,7 +306,7 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], []);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -315,12 +315,12 @@ suite('ExtensionsMerge', () => {
 	});
 
 	test('merge local and remote extensions when local is moved forwarded with ignored settings', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -328,7 +328,7 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], ['b']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], ['B']);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -339,7 +339,7 @@ suite('ExtensionsMerge', () => {
 	});
 
 	test('merge local and remote extensions when local is moved forwarded with skipped extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -347,7 +347,7 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -356,11 +356,11 @@ suite('ExtensionsMerge', () => {
 		];
 		const expected: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, []);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -369,7 +369,7 @@ suite('ExtensionsMerge', () => {
 	});
 
 	test('merge local and remote extensions when local is moved forwarded with skipped and ignored extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -377,7 +377,7 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -386,10 +386,10 @@ suite('ExtensionsMerge', () => {
 		];
 		const expected: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, ['c']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, ['c']);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -397,28 +397,28 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when both moved forwarded', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when Both moved forwarded', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], []);
 
 		assert.deepEqual(actual.added, [{ identifier: { id: 'e', uuid: 'e' }, installed: true }]);
 		assert.deepEqual(actual.removed, [{ id: 'a', uuid: 'a' }]);
@@ -426,28 +426,28 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when both moved forwarded with ignored extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when Both moved forwarded with ignored extensions', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, [], ['a', 'e']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, [], ['a', 'e']);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -455,8 +455,8 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when both moved forwarded with skipped extensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when Both moved forwarded with skipped extensions', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -464,21 +464,21 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, []);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, []);
 
 		assert.deepEqual(actual.added, [{ identifier: { id: 'e', uuid: 'e' }, installed: true }]);
 		assert.deepEqual(actual.removed, []);
@@ -486,8 +486,8 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge local and remote extensions when both moved forwarded with skipped and ignoredextensions', () => {
-		const baseExtensions: ISyncExtension[] = [
+	test('merge local and remote extensions when Both moved forwarded with skipped and ignoredextensions', () => {
+		const BaseExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
 		];
@@ -495,21 +495,21 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'e', uuid: 'e' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
-		const actual = merge(localExtensions, remoteExtensions, baseExtensions, skippedExtensions, ['e']);
+		const actual = merge(localExtensions, remoteExtensions, BaseExtensions, skippedExtensions, ['e']);
 
 		assert.deepEqual(actual.added, []);
 		assert.deepEqual(actual.removed, []);
@@ -520,7 +520,7 @@ suite('ExtensionsMerge', () => {
 	test('merge when remote extension has no uuid and different extension id case', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
@@ -530,7 +530,7 @@ suite('ExtensionsMerge', () => {
 		const expected: ISyncExtension[] = [
 			{ identifier: { id: 'A', uuid: 'a' }, installed: true },
 			{ identifier: { id: 'd', uuid: 'd' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' }, installed: true },
+			{ identifier: { id: 'B', uuid: 'B' }, installed: true },
 			{ identifier: { id: 'c', uuid: 'c' }, installed: true },
 		];
 
@@ -548,7 +548,7 @@ suite('ExtensionsMerge', () => {
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
-			{ identifier: { id: 'b', uuid: 'b' } },
+			{ identifier: { id: 'B', uuid: 'B' } },
 		];
 
 		const actual = merge(localExtensions, remoteExtensions, null, [], []);
@@ -559,7 +559,7 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, null);
 	});
 
-	test('merge when remote extension is not an installed extension but is an installed extension locally', () => {
+	test('merge when remote extension is not an installed extension But is an installed extension locally', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
@@ -581,7 +581,7 @@ suite('ExtensionsMerge', () => {
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' } },
-			{ identifier: { id: 'b', uuid: 'b' } },
+			{ identifier: { id: 'B', uuid: 'B' } },
 		];
 
 		const actual = merge(localExtensions, remoteExtensions, remoteExtensions, [], []);
@@ -592,15 +592,15 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, null);
 	});
 
-	test('merge when an extension is an installed extension remotely but not locally and updated locally', () => {
+	test('merge when an extension is an installed extension remotely But not locally and updated locally', () => {
 		const localExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'a', uuid: 'a' }, disabled: true },
+			{ identifier: { id: 'a', uuid: 'a' }, disaBled: true },
 		];
 		const remoteExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' }, installed: true },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'a', uuid: 'a' }, installed: true, disabled: true },
+			{ identifier: { id: 'a', uuid: 'a' }, installed: true, disaBled: true },
 		];
 
 		const actual = merge(localExtensions, remoteExtensions, remoteExtensions, [], []);
@@ -611,12 +611,12 @@ suite('ExtensionsMerge', () => {
 		assert.deepEqual(actual.remote, expected);
 	});
 
-	test('merge when an extension is an installed extension remotely but not locally and updated remotely', () => {
+	test('merge when an extension is an installed extension remotely But not locally and updated remotely', () => {
 		const localExtensions: ISyncExtension[] = [
 			{ identifier: { id: 'a', uuid: 'a' } },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'a', uuid: 'a' }, installed: true, disabled: true },
+			{ identifier: { id: 'a', uuid: 'a' }, installed: true, disaBled: true },
 		];
 
 		const actual = merge(localExtensions, remoteExtensions, localExtensions, [], []);
@@ -632,10 +632,10 @@ suite('ExtensionsMerge', () => {
 			{ identifier: { id: 'a', uuid: 'a' } },
 		];
 		const remoteExtensions: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' } },
+			{ identifier: { id: 'B', uuid: 'B' } },
 		];
 		const expected: ISyncExtension[] = [
-			{ identifier: { id: 'b', uuid: 'b' } },
+			{ identifier: { id: 'B', uuid: 'B' } },
 			{ identifier: { id: 'a', uuid: 'a' } },
 		];
 

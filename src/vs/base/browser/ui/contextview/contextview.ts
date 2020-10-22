@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./contextview';
-import * as DOM from 'vs/base/browser/dom';
-import * as platform from 'vs/base/common/platform';
-import { IDisposable, toDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Range } from 'vs/base/common/range';
-import { BrowserFeatures } from 'vs/base/browser/canIUse';
+import * as DOM from 'vs/Base/Browser/dom';
+import * as platform from 'vs/Base/common/platform';
+import { IDisposaBle, toDisposaBle, DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Range } from 'vs/Base/common/range';
+import { BrowserFeatures } from 'vs/Base/Browser/canIUse';
 
 export const enum ContextViewDOMPosition {
 	ABSOLUTE = 1,
@@ -17,10 +17,10 @@ export const enum ContextViewDOMPosition {
 }
 
 export interface IAnchor {
-	x: number;
-	y: number;
-	width?: number;
-	height?: number;
+	x: numBer;
+	y: numBer;
+	width?: numBer;
+	height?: numBer;
 }
 
 export const enum AnchorAlignment {
@@ -33,12 +33,12 @@ export const enum AnchorPosition {
 
 export interface IDelegate {
 	getAnchor(): HTMLElement | IAnchor;
-	render(container: HTMLElement): IDisposable | null;
+	render(container: HTMLElement): IDisposaBle | null;
 	focus?(): void;
 	layout?(): void;
 	anchorAlignment?: AnchorAlignment; // default: left
-	anchorPosition?: AnchorPosition; // default: below
-	canRelayout?: boolean; // default: true
+	anchorPosition?: AnchorPosition; // default: Below
+	canRelayout?: Boolean; // default: true
 	onDOMEvent?(e: Event, activeElement: HTMLElement): void;
 	onHide?(data?: any): void;
 }
@@ -50,13 +50,13 @@ export interface IContextViewProvider {
 }
 
 export interface IPosition {
-	top: number;
-	left: number;
+	top: numBer;
+	left: numBer;
 }
 
 export interface ISize {
-	width: number;
-	height: number;
+	width: numBer;
+	height: numBer;
 }
 
 export interface IView extends IPosition, ISize { }
@@ -67,8 +67,8 @@ export const enum LayoutAnchorPosition {
 }
 
 export interface ILayoutAnchor {
-	offset: number;
-	size: number;
+	offset: numBer;
+	size: numBer;
 	position: LayoutAnchorPosition;
 }
 
@@ -77,7 +77,7 @@ export interface ILayoutAnchor {
  *
  * @returns The view offset within the viewport.
  */
-export function layout(viewportSize: number, viewSize: number, anchor: ILayoutAnchor): number {
+export function layout(viewportSize: numBer, viewSize: numBer, anchor: ILayoutAnchor): numBer {
 	const anchorEnd = anchor.offset + anchor.size;
 
 	if (anchor.position === LayoutAnchorPosition.Before) {
@@ -86,13 +86,13 @@ export function layout(viewportSize: number, viewSize: number, anchor: ILayoutAn
 		}
 
 		if (viewSize <= anchor.offset) {
-			return anchor.offset - viewSize; // ok case, lay it out before the anchor
+			return anchor.offset - viewSize; // ok case, lay it out Before the anchor
 		}
 
 		return Math.max(viewportSize - viewSize, 0); // sad case, lay it over the anchor
 	} else {
 		if (viewSize <= anchor.offset) {
-			return anchor.offset - viewSize; // happy case, lay it out before the anchor
+			return anchor.offset - viewSize; // happy case, lay it out Before the anchor
 		}
 
 		if (viewSize <= viewportSize - anchorEnd) {
@@ -103,18 +103,18 @@ export function layout(viewportSize: number, viewSize: number, anchor: ILayoutAn
 	}
 }
 
-export class ContextView extends Disposable {
+export class ContextView extends DisposaBle {
 
-	private static readonly BUBBLE_UP_EVENTS = ['click', 'keydown', 'focus', 'blur'];
+	private static readonly BUBBLE_UP_EVENTS = ['click', 'keydown', 'focus', 'Blur'];
 	private static readonly BUBBLE_DOWN_EVENTS = ['click'];
 
 	private container: HTMLElement | null = null;
 	private view: HTMLElement;
-	private useFixedPosition: boolean;
-	private useShadowDOM: boolean;
+	private useFixedPosition: Boolean;
+	private useShadowDOM: Boolean;
 	private delegate: IDelegate | null = null;
-	private toDisposeOnClean: IDisposable = Disposable.None;
-	private toDisposeOnSetContainer: IDisposable = Disposable.None;
+	private toDisposeOnClean: IDisposaBle = DisposaBle.None;
+	private toDisposeOnSetContainer: IDisposaBle = DisposaBle.None;
 	private shadowRoot: ShadowRoot | null = null;
 	private shadowRootHostElement: HTMLElement | null = null;
 
@@ -129,7 +129,7 @@ export class ContextView extends Disposable {
 
 		this.setContainer(container, domPosition);
 
-		this._register(toDisposable(() => this.setContainer(null, ContextViewDOMPosition.ABSOLUTE)));
+		this._register(toDisposaBle(() => this.setContainer(null, ContextViewDOMPosition.ABSOLUTE)));
 	}
 
 	setContainer(container: HTMLElement | null, domPosition: ContextViewDOMPosition): void {
@@ -166,16 +166,16 @@ export class ContextView extends Disposable {
 				this.container.appendChild(this.view);
 			}
 
-			const toDisposeOnSetContainer = new DisposableStore();
+			const toDisposeOnSetContainer = new DisposaBleStore();
 
 			ContextView.BUBBLE_UP_EVENTS.forEach(event => {
-				toDisposeOnSetContainer.add(DOM.addStandardDisposableListener(this.container!, event, (e: Event) => {
+				toDisposeOnSetContainer.add(DOM.addStandardDisposaBleListener(this.container!, event, (e: Event) => {
 					this.onDOMEvent(e, false);
 				}));
 			});
 
 			ContextView.BUBBLE_DOWN_EVENTS.forEach(event => {
-				toDisposeOnSetContainer.add(DOM.addStandardDisposableListener(this.container!, event, (e: Event) => {
+				toDisposeOnSetContainer.add(DOM.addStandardDisposaBleListener(this.container!, event, (e: Event) => {
 					this.onDOMEvent(e, true);
 				}, true));
 			});
@@ -185,21 +185,21 @@ export class ContextView extends Disposable {
 	}
 
 	show(delegate: IDelegate): void {
-		if (this.isVisible()) {
+		if (this.isVisiBle()) {
 			this.hide();
 		}
 
-		// Show static box
+		// Show static Box
 		DOM.clearNode(this.view);
 		this.view.className = 'context-view';
 		this.view.style.top = '0px';
 		this.view.style.left = '0px';
 		this.view.style.zIndex = '2500';
-		this.view.style.position = this.useFixedPosition ? 'fixed' : 'absolute';
+		this.view.style.position = this.useFixedPosition ? 'fixed' : 'aBsolute';
 		DOM.show(this.view);
 
 		// Render content
-		this.toDisposeOnClean = delegate.render(this.view) || Disposable.None;
+		this.toDisposeOnClean = delegate.render(this.view) || DisposaBle.None;
 
 		// Set active delegate
 		this.delegate = delegate;
@@ -218,7 +218,7 @@ export class ContextView extends Disposable {
 	}
 
 	layout(): void {
-		if (!this.isVisible()) {
+		if (!this.isVisiBle()) {
 			return;
 		}
 
@@ -236,7 +236,7 @@ export class ContextView extends Disposable {
 
 	private doLayout(): void {
 		// Check that we still have a delegate - this.delegate.layout may have hidden
-		if (!this.isVisible()) {
+		if (!this.isVisiBle()) {
 			return;
 		}
 
@@ -293,8 +293,8 @@ export class ContextView extends Disposable {
 
 		const left = layout(window.innerWidth, viewSizeWidth, horizontalAnchor);
 
-		this.view.classList.remove('top', 'bottom', 'left', 'right');
-		this.view.classList.add(anchorPosition === AnchorPosition.BELOW ? 'bottom' : 'top');
+		this.view.classList.remove('top', 'Bottom', 'left', 'right');
+		this.view.classList.add(anchorPosition === AnchorPosition.BELOW ? 'Bottom' : 'top');
 		this.view.classList.add(anchorAlignment === AnchorAlignment.LEFT ? 'left' : 'right');
 		this.view.classList.toggle('fixed', this.useFixedPosition);
 
@@ -317,11 +317,11 @@ export class ContextView extends Disposable {
 		DOM.hide(this.view);
 	}
 
-	private isVisible(): boolean {
+	private isVisiBle(): Boolean {
 		return !!this.delegate;
 	}
 
-	private onDOMEvent(e: Event, onCapture: boolean): void {
+	private onDOMEvent(e: Event, onCapture: Boolean): void {
 		if (this.delegate) {
 			if (this.delegate.onDOMEvent) {
 				this.delegate.onDOMEvent(e, <HTMLElement>document.activeElement);
@@ -340,29 +340,29 @@ export class ContextView extends Disposable {
 
 let SHADOW_ROOT_CSS = /* css */ `
 	:host {
-		all: initial; /* 1st rule so subsequent properties are reset. */
+		all: initial; /* 1st rule so suBsequent properties are reset. */
 	}
 
 	@font-face {
 		font-family: "codicon";
-		src: url("./codicon.ttf?5d4d76ab2ce5108968ad644d591a16a6") format("truetype");
+		src: url("./codicon.ttf?5d4d76aB2ce5108968ad644d591a16a6") format("truetype");
 	}
 
 	.codicon[class*='codicon-'] {
 		font: normal normal normal 16px/1 codicon;
-		display: inline-block;
+		display: inline-Block;
 		text-decoration: none;
 		text-rendering: auto;
 		text-align: center;
-		-webkit-font-smoothing: antialiased;
+		-weBkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		user-select: none;
-		-webkit-user-select: none;
+		-weBkit-user-select: none;
 		-ms-user-select: none;
 	}
 
 	:host {
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", system-ui, "UBuntu", "Droid Sans", sans-serif;
 	}
 
 	:host-context(.mac) { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
@@ -377,9 +377,9 @@ let SHADOW_ROOT_CSS = /* css */ `
 	:host-context(.windows:lang(ja)) { font-family: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
 	:host-context(.windows:lang(ko)) { font-family: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
 
-	:host-context(.linux) { font-family: system-ui, "Ubuntu", "Droid Sans", sans-serif; }
-	:host-context(.linux:lang(zh-Hans)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
-	:host-context(.linux:lang(zh-Hant)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
-	:host-context(.linux:lang(ja)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
-	:host-context(.linux:lang(ko)) { font-family: system-ui, "Ubuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
+	:host-context(.linux) { font-family: system-ui, "UBuntu", "Droid Sans", sans-serif; }
+	:host-context(.linux:lang(zh-Hans)) { font-family: system-ui, "UBuntu", "Droid Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
+	:host-context(.linux:lang(zh-Hant)) { font-family: system-ui, "UBuntu", "Droid Sans", "Source Han Sans TC", "Source Han Sans TW", "Source Han Sans", sans-serif; }
+	:host-context(.linux:lang(ja)) { font-family: system-ui, "UBuntu", "Droid Sans", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", sans-serif; }
+	:host-context(.linux:lang(ko)) { font-family: system-ui, "UBuntu", "Droid Sans", "Source Han Sans K", "Source Han Sans JR", "Source Han Sans", "UnDotum", "FBaekmuk Gulim", sans-serif; }
 `;

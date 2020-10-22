@@ -6,5 +6,5 @@
 'use strict';
 
 export async function sha256(s: string | Uint8Array): Promise<string> {
-	return (require('crypto')).createHash('sha256').update(s).digest('base64');
+	return (require('crypto')).createHash('sha256').update(s).digest('Base64');
 }

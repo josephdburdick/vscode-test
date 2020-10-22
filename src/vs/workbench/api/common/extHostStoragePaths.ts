@@ -5,11 +5,11 @@
 
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IEnvironment, IStaticWorkspaceData } from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostConsumerFileSystem } from 'vs/workbench/api/common/extHostFileSystemConsumer';
-import { URI } from 'vs/base/common/uri';
+import { IEnvironment, IStaticWorkspaceData } from 'vs/workBench/api/common/extHost.protocol';
+import { IExtHostConsumerFileSystem } from 'vs/workBench/api/common/extHostFileSystemConsumer';
+import { URI } from 'vs/Base/common/uri';
 
 export const IExtensionStoragePaths = createDecorator<IExtensionStoragePaths>('IExtensionStoragePaths');
 
@@ -17,7 +17,7 @@ export interface IExtensionStoragePaths {
 	readonly _serviceBrand: undefined;
 	whenReady: Promise<any>;
 	workspaceValue(extension: IExtensionDescription): URI | undefined;
-	globalValue(extension: IExtensionDescription): URI;
+	gloBalValue(extension: IExtensionDescription): URI;
 }
 
 export class ExtensionStoragePaths implements IExtensionStoragePaths {
@@ -81,7 +81,7 @@ export class ExtensionStoragePaths implements IExtensionStoragePaths {
 		return undefined;
 	}
 
-	globalValue(extension: IExtensionDescription): URI {
-		return URI.joinPath(this._environment.globalStorageHome, extension.identifier.value.toLowerCase());
+	gloBalValue(extension: IExtensionDescription): URI {
+		return URI.joinPath(this._environment.gloBalStorageHome, extension.identifier.value.toLowerCase());
 	}
 }

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { MainContext, MainThreadKeytarShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ICredentialsService } from 'vs/workbench/services/credentials/common/credentials';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { MainContext, MainThreadKeytarShape, IExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { ICredentialsService } from 'vs/workBench/services/credentials/common/credentials';
 
 @extHostNamedCustomer(MainContext.MainThreadKeytar)
 export class MainThreadKeytar implements MainThreadKeytarShape {
@@ -23,7 +23,7 @@ export class MainThreadKeytar implements MainThreadKeytarShape {
 		return this._credentialsService.setPassword(service, account, password);
 	}
 
-	async $deletePassword(service: string, account: string): Promise<boolean> {
+	async $deletePassword(service: string, account: string): Promise<Boolean> {
 		return this._credentialsService.deletePassword(service, account);
 	}
 

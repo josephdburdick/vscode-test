@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { OutputChannel } from 'vs/workbench/services/search/node/ripgrepSearchUtils';
-import { RipgrepTextSearchEngine } from 'vs/workbench/services/search/node/ripgrepTextSearchEngine';
-import { TextSearchProvider, TextSearchComplete, TextSearchResult, TextSearchQuery, TextSearchOptions } from 'vs/workbench/services/search/common/searchExtTypes';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
+import { OutputChannel } from 'vs/workBench/services/search/node/ripgrepSearchUtils';
+import { RipgrepTextSearchEngine } from 'vs/workBench/services/search/node/ripgrepTextSearchEngine';
+import { TextSearchProvider, TextSearchComplete, TextSearchResult, TextSearchQuery, TextSearchOptions } from 'vs/workBench/services/search/common/searchExtTypes';
 import { Progress } from 'vs/platform/progress/common/progress';
 
 export class RipgrepSearchProvider implements TextSearchProvider {

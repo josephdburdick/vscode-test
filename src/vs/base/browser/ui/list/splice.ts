@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISpliceable } from 'vs/base/common/sequence';
+import { ISpliceaBle } from 'vs/Base/common/sequence';
 
-export interface ISpreadSpliceable<T> {
-	splice(start: number, deleteCount: number, ...elements: T[]): void;
+export interface ISpreadSpliceaBle<T> {
+	splice(start: numBer, deleteCount: numBer, ...elements: T[]): void;
 }
 
-export class CombinedSpliceable<T> implements ISpliceable<T> {
+export class ComBinedSpliceaBle<T> implements ISpliceaBle<T> {
 
-	constructor(private spliceables: ISpliceable<T>[]) { }
+	constructor(private spliceaBles: ISpliceaBle<T>[]) { }
 
-	splice(start: number, deleteCount: number, elements: T[]): void {
-		this.spliceables.forEach(s => s.splice(start, deleteCount, elements));
+	splice(start: numBer, deleteCount: numBer, elements: T[]): void {
+		this.spliceaBles.forEach(s => s.splice(start, deleteCount, elements));
 	}
 }

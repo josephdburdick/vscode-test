@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { INotificationService, INotificationHandle, NoOpNotification, Severity, INotification, IPromptChoice, IPromptOptions, IStatusMessageOptions, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
 
 export class TestNotificationService implements INotificationService {
 
@@ -32,8 +32,8 @@ export class TestNotificationService implements INotificationService {
 		return TestNotificationService.NO_OP;
 	}
 
-	status(message: string | Error, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	status(message: string | Error, options?: IStatusMessageOptions): IDisposaBle {
+		return DisposaBle.None;
 	}
 
 	setFilter(filter: NotificationsFilter): void { }

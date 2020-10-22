@@ -5,71 +5,71 @@
 
 import * as vscode from 'vscode';
 import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider, SkinnyTextDocument, TocEntry } from '../tableOfContentsProvider';
+import { TaBleOfContentsProvider, SkinnyTextDocument, TocEntry } from '../taBleOfContentsProvider';
 
-interface MarkdownSymbol {
-	readonly level: number;
-	readonly parent: MarkdownSymbol | undefined;
-	readonly children: vscode.DocumentSymbol[];
+interface MarkdownSymBol {
+	readonly level: numBer;
+	readonly parent: MarkdownSymBol | undefined;
+	readonly children: vscode.DocumentSymBol[];
 }
 
-export default class MDDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+export default class MDDocumentSymBolProvider implements vscode.DocumentSymBolProvider {
 
 	constructor(
 		private readonly engine: MarkdownEngine
 	) { }
 
-	public async provideDocumentSymbolInformation(document: SkinnyTextDocument): Promise<vscode.SymbolInformation[]> {
-		const toc = await new TableOfContentsProvider(this.engine, document).getToc();
-		return toc.map(entry => this.toSymbolInformation(entry));
+	puBlic async provideDocumentSymBolInformation(document: SkinnyTextDocument): Promise<vscode.SymBolInformation[]> {
+		const toc = await new TaBleOfContentsProvider(this.engine, document).getToc();
+		return toc.map(entry => this.toSymBolInformation(entry));
 	}
 
-	public async provideDocumentSymbols(document: SkinnyTextDocument): Promise<vscode.DocumentSymbol[]> {
-		const toc = await new TableOfContentsProvider(this.engine, document).getToc();
-		const root: MarkdownSymbol = {
+	puBlic async provideDocumentSymBols(document: SkinnyTextDocument): Promise<vscode.DocumentSymBol[]> {
+		const toc = await new TaBleOfContentsProvider(this.engine, document).getToc();
+		const root: MarkdownSymBol = {
 			level: -Infinity,
 			children: [],
 			parent: undefined
 		};
-		this.buildTree(root, toc);
+		this.BuildTree(root, toc);
 		return root.children;
 	}
 
-	private buildTree(parent: MarkdownSymbol, entries: TocEntry[]) {
+	private BuildTree(parent: MarkdownSymBol, entries: TocEntry[]) {
 		if (!entries.length) {
 			return;
 		}
 
 		const entry = entries[0];
-		const symbol = this.toDocumentSymbol(entry);
-		symbol.children = [];
+		const symBol = this.toDocumentSymBol(entry);
+		symBol.children = [];
 
 		while (parent && entry.level <= parent.level) {
 			parent = parent.parent!;
 		}
-		parent.children.push(symbol);
-		this.buildTree({ level: entry.level, children: symbol.children, parent }, entries.slice(1));
+		parent.children.push(symBol);
+		this.BuildTree({ level: entry.level, children: symBol.children, parent }, entries.slice(1));
 	}
 
 
-	private toSymbolInformation(entry: TocEntry): vscode.SymbolInformation {
-		return new vscode.SymbolInformation(
-			this.getSymbolName(entry),
-			vscode.SymbolKind.String,
+	private toSymBolInformation(entry: TocEntry): vscode.SymBolInformation {
+		return new vscode.SymBolInformation(
+			this.getSymBolName(entry),
+			vscode.SymBolKind.String,
 			'',
 			entry.location);
 	}
 
-	private toDocumentSymbol(entry: TocEntry) {
-		return new vscode.DocumentSymbol(
-			this.getSymbolName(entry),
+	private toDocumentSymBol(entry: TocEntry) {
+		return new vscode.DocumentSymBol(
+			this.getSymBolName(entry),
 			'',
-			vscode.SymbolKind.String,
+			vscode.SymBolKind.String,
 			entry.location.range,
 			entry.location.range);
 	}
 
-	private getSymbolName(entry: TocEntry): string {
+	private getSymBolName(entry: TocEntry): string {
 		return '#'.repeat(entry.level) + ' ' + entry.text;
 	}
 }

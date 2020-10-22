@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isWindows, isMacintosh } from 'vs/base/common/platform';
+import { isWindows, isMacintosh } from 'vs/Base/common/platform';
 import { ipcMain as ipc, nativeTheme } from 'electron';
 import { IStateService } from 'vs/platform/state/node/state';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
@@ -28,17 +28,17 @@ export class ThemeMainService implements IThemeMainService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(@IStateService private stateService: IStateService) {
-		ipc.on('vscode:changeColorTheme', (e: Event, windowId: number, broadcast: string) => {
+		ipc.on('vscode:changeColorTheme', (e: Event, windowId: numBer, Broadcast: string) => {
 			// Theme changes
-			if (typeof broadcast === 'string') {
-				this.storeBackgroundColor(JSON.parse(broadcast));
+			if (typeof Broadcast === 'string') {
+				this.storeBackgroundColor(JSON.parse(Broadcast));
 			}
 		});
 	}
 
-	private storeBackgroundColor(data: { baseTheme: string, background: string }): void {
-		this.stateService.setItem(THEME_STORAGE_KEY, data.baseTheme);
-		this.stateService.setItem(THEME_BG_STORAGE_KEY, data.background);
+	private storeBackgroundColor(data: { BaseTheme: string, Background: string }): void {
+		this.stateService.setItem(THEME_STORAGE_KEY, data.BaseTheme);
+		this.stateService.setItem(THEME_BG_STORAGE_KEY, data.Background);
 	}
 
 	getBackgroundColor(): string {
@@ -46,22 +46,22 @@ export class ThemeMainService implements IThemeMainService {
 			return DEFAULT_BG_HC_BLACK;
 		}
 
-		let background = this.stateService.getItem<string | null>(THEME_BG_STORAGE_KEY, null);
-		if (!background) {
-			let baseTheme: string;
+		let Background = this.stateService.getItem<string | null>(THEME_BG_STORAGE_KEY, null);
+		if (!Background) {
+			let BaseTheme: string;
 			if ((isWindows || isMacintosh) && nativeTheme.shouldUseInvertedColorScheme) {
-				baseTheme = 'hc-black';
+				BaseTheme = 'hc-Black';
 			} else {
-				baseTheme = this.stateService.getItem<string>(THEME_STORAGE_KEY, 'vs-dark').split(' ')[0];
+				BaseTheme = this.stateService.getItem<string>(THEME_STORAGE_KEY, 'vs-dark').split(' ')[0];
 			}
 
-			background = (baseTheme === 'hc-black') ? DEFAULT_BG_HC_BLACK : (baseTheme === 'vs' ? DEFAULT_BG_LIGHT : DEFAULT_BG_DARK);
+			Background = (BaseTheme === 'hc-Black') ? DEFAULT_BG_HC_BLACK : (BaseTheme === 'vs' ? DEFAULT_BG_LIGHT : DEFAULT_BG_DARK);
 		}
 
-		if (isMacintosh && background.toUpperCase() === DEFAULT_BG_DARK) {
-			background = '#171717'; // https://github.com/electron/electron/issues/5150
+		if (isMacintosh && Background.toUpperCase() === DEFAULT_BG_DARK) {
+			Background = '#171717'; // https://githuB.com/electron/electron/issues/5150
 		}
 
-		return background;
+		return Background;
 	}
 }

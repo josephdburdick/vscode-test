@@ -5,10 +5,10 @@
 
 import * as assert from 'assert';
 import { Selection } from 'vs/editor/common/core/selection';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { CursorUndo, CursorUndoRedoController } from 'vs/editor/contrib/cursorUndo/cursorUndo';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
+import { CursorUndo, CursorUndoRedoController } from 'vs/editor/contriB/cursorUndo/cursorUndo';
 import { Handler } from 'vs/editor/common/editorCommon';
-import { CoreNavigationCommands, CoreEditingCommands } from 'vs/editor/browser/controller/coreCommands';
+import { CoreNavigationCommands, CoreEditingCommands } from 'vs/editor/Browser/controller/coreCommands';
 
 suite('FindController', () => {
 
@@ -19,7 +19,7 @@ suite('FindController', () => {
 			''
 		], {}, (editor) => {
 
-			editor.registerAndInstantiateContribution(CursorUndoRedoController.ID, CursorUndoRedoController);
+			editor.registerAndInstantiateContriBution(CursorUndoRedoController.ID, CursorUndoRedoController);
 
 			// type hello
 			editor.trigger('test', Handler.Type, { text: 'hello' });
@@ -47,7 +47,7 @@ suite('FindController', () => {
 			''
 		], {}, (editor) => {
 
-			editor.registerAndInstantiateContribution(CursorUndoRedoController.ID, CursorUndoRedoController);
+			editor.registerAndInstantiateContriBution(CursorUndoRedoController.ID, CursorUndoRedoController);
 
 			// type hello
 			editor.trigger('test', Handler.Type, { text: 'hell' });

@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action, IAction, Separator, SubmenuAction } from 'vs/base/common/actions';
+import { Action, IAction, Separator, SuBmenuAction } from 'vs/Base/common/actions';
 import { SyncDescriptor0, createSyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { IConstructorSignature2, createDecorator, BrandedService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindings, KeybindingsRegistry, IKeybindingRule } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { IKeyBindings, KeyBindingsRegistry, IKeyBindingRule } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { ContextKeyExpr, IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
 import { ICommandService, CommandsRegistry, ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
-import { IDisposable, DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { IDisposaBle, DisposaBleStore, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { UriDto } from 'vs/base/common/types';
-import { Iterable } from 'vs/base/common/iterator';
-import { LinkedList } from 'vs/base/common/linkedList';
+import { UriDto } from 'vs/Base/common/types';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { LinkedList } from 'vs/Base/common/linkedList';
 
 export interface ILocalizedString {
 	value: string;
@@ -34,31 +34,31 @@ export interface ICommandAction {
 	toggled?: ContextKeyExpression | { condition: ContextKeyExpression, icon?: Icon, tooltip?: string | ILocalizedString };
 }
 
-export type ISerializableCommandAction = UriDto<ICommandAction>;
+export type ISerializaBleCommandAction = UriDto<ICommandAction>;
 
 export interface IMenuItem {
 	command: ICommandAction;
 	alt?: ICommandAction;
 	when?: ContextKeyExpression;
 	group?: 'navigation' | string;
-	order?: number;
+	order?: numBer;
 }
 
-export interface ISubmenuItem {
+export interface ISuBmenuItem {
 	title: string | ILocalizedString;
-	submenu: MenuId;
+	suBmenu: MenuId;
 	icon?: Icon;
 	when?: ContextKeyExpression;
 	group?: 'navigation' | string;
-	order?: number;
+	order?: numBer;
 }
 
-export function isIMenuItem(item: IMenuItem | ISubmenuItem): item is IMenuItem {
+export function isIMenuItem(item: IMenuItem | ISuBmenuItem): item is IMenuItem {
 	return (item as IMenuItem).command !== undefined;
 }
 
-export function isISubmenuItem(item: IMenuItem | ISubmenuItem): item is ISubmenuItem {
-	return (item as ISubmenuItem).submenu !== undefined;
+export function isISuBmenuItem(item: IMenuItem | ISuBmenuItem): item is ISuBmenuItem {
+	return (item as ISuBmenuItem).suBmenu !== undefined;
 }
 
 export class MenuId {
@@ -66,12 +66,12 @@ export class MenuId {
 	private static _idPool = 0;
 
 	static readonly CommandPalette = new MenuId('CommandPalette');
-	static readonly DebugBreakpointsContext = new MenuId('DebugBreakpointsContext');
-	static readonly DebugCallStackContext = new MenuId('DebugCallStackContext');
-	static readonly DebugConsoleContext = new MenuId('DebugConsoleContext');
-	static readonly DebugVariablesContext = new MenuId('DebugVariablesContext');
-	static readonly DebugWatchContext = new MenuId('DebugWatchContext');
-	static readonly DebugToolBar = new MenuId('DebugToolBar');
+	static readonly DeBugBreakpointsContext = new MenuId('DeBugBreakpointsContext');
+	static readonly DeBugCallStackContext = new MenuId('DeBugCallStackContext');
+	static readonly DeBugConsoleContext = new MenuId('DeBugConsoleContext');
+	static readonly DeBugVariaBlesContext = new MenuId('DeBugVariaBlesContext');
+	static readonly DeBugWatchContext = new MenuId('DeBugWatchContext');
+	static readonly DeBugToolBar = new MenuId('DeBugToolBar');
 	static readonly EditorContext = new MenuId('EditorContext');
 	static readonly EditorContextPeek = new MenuId('EditorContextPeek');
 	static readonly EditorTitle = new MenuId('EditorTitle');
@@ -79,25 +79,25 @@ export class MenuId {
 	static readonly EmptyEditorGroupContext = new MenuId('EmptyEditorGroupContext');
 	static readonly ExplorerContext = new MenuId('ExplorerContext');
 	static readonly ExtensionContext = new MenuId('ExtensionContext');
-	static readonly GlobalActivity = new MenuId('GlobalActivity');
-	static readonly MenubarAppearanceMenu = new MenuId('MenubarAppearanceMenu');
-	static readonly MenubarDebugMenu = new MenuId('MenubarDebugMenu');
-	static readonly MenubarEditMenu = new MenuId('MenubarEditMenu');
-	static readonly MenubarFileMenu = new MenuId('MenubarFileMenu');
-	static readonly MenubarGoMenu = new MenuId('MenubarGoMenu');
-	static readonly MenubarHelpMenu = new MenuId('MenubarHelpMenu');
-	static readonly MenubarLayoutMenu = new MenuId('MenubarLayoutMenu');
-	static readonly MenubarNewBreakpointMenu = new MenuId('MenubarNewBreakpointMenu');
-	static readonly MenubarPreferencesMenu = new MenuId('MenubarPreferencesMenu');
-	static readonly MenubarRecentMenu = new MenuId('MenubarRecentMenu');
-	static readonly MenubarSelectionMenu = new MenuId('MenubarSelectionMenu');
-	static readonly MenubarSwitchEditorMenu = new MenuId('MenubarSwitchEditorMenu');
-	static readonly MenubarSwitchGroupMenu = new MenuId('MenubarSwitchGroupMenu');
-	static readonly MenubarTerminalMenu = new MenuId('MenubarTerminalMenu');
-	static readonly MenubarViewMenu = new MenuId('MenubarViewMenu');
-	static readonly MenubarWebNavigationMenu = new MenuId('MenubarWebNavigationMenu');
+	static readonly GloBalActivity = new MenuId('GloBalActivity');
+	static readonly MenuBarAppearanceMenu = new MenuId('MenuBarAppearanceMenu');
+	static readonly MenuBarDeBugMenu = new MenuId('MenuBarDeBugMenu');
+	static readonly MenuBarEditMenu = new MenuId('MenuBarEditMenu');
+	static readonly MenuBarFileMenu = new MenuId('MenuBarFileMenu');
+	static readonly MenuBarGoMenu = new MenuId('MenuBarGoMenu');
+	static readonly MenuBarHelpMenu = new MenuId('MenuBarHelpMenu');
+	static readonly MenuBarLayoutMenu = new MenuId('MenuBarLayoutMenu');
+	static readonly MenuBarNewBreakpointMenu = new MenuId('MenuBarNewBreakpointMenu');
+	static readonly MenuBarPreferencesMenu = new MenuId('MenuBarPreferencesMenu');
+	static readonly MenuBarRecentMenu = new MenuId('MenuBarRecentMenu');
+	static readonly MenuBarSelectionMenu = new MenuId('MenuBarSelectionMenu');
+	static readonly MenuBarSwitchEditorMenu = new MenuId('MenuBarSwitchEditorMenu');
+	static readonly MenuBarSwitchGroupMenu = new MenuId('MenuBarSwitchGroupMenu');
+	static readonly MenuBarTerminalMenu = new MenuId('MenuBarTerminalMenu');
+	static readonly MenuBarViewMenu = new MenuId('MenuBarViewMenu');
+	static readonly MenuBarWeBNavigationMenu = new MenuId('MenuBarWeBNavigationMenu');
 	static readonly OpenEditorsContext = new MenuId('OpenEditorsContext');
-	static readonly ProblemsPanelContext = new MenuId('ProblemsPanelContext');
+	static readonly ProBlemsPanelContext = new MenuId('ProBlemsPanelContext');
 	static readonly SCMChangeContext = new MenuId('SCMChangeContext');
 	static readonly SCMResourceContext = new MenuId('SCMResourceContext');
 	static readonly SCMResourceFolderContext = new MenuId('SCMResourceFolderContext');
@@ -119,13 +119,13 @@ export class MenuId {
 	static readonly CommentThreadActions = new MenuId('CommentThreadActions');
 	static readonly CommentTitle = new MenuId('CommentTitle');
 	static readonly CommentActions = new MenuId('CommentActions');
-	static readonly NotebookCellTitle = new MenuId('NotebookCellTitle');
-	static readonly NotebookCellInsert = new MenuId('NotebookCellInsert');
-	static readonly NotebookCellBetween = new MenuId('NotebookCellBetween');
-	static readonly NotebookCellListTop = new MenuId('NotebookCellTop');
-	static readonly NotebookDiffCellInputTitle = new MenuId('NotebookDiffCellInputTitle');
-	static readonly NotebookDiffCellMetadataTitle = new MenuId('NotebookDiffCellMetadataTitle');
-	static readonly NotebookDiffCellOutputsTitle = new MenuId('NotebookDiffCellOutputsTitle');
+	static readonly NoteBookCellTitle = new MenuId('NoteBookCellTitle');
+	static readonly NoteBookCellInsert = new MenuId('NoteBookCellInsert');
+	static readonly NoteBookCellBetween = new MenuId('NoteBookCellBetween');
+	static readonly NoteBookCellListTop = new MenuId('NoteBookCellTop');
+	static readonly NoteBookDiffCellInputTitle = new MenuId('NoteBookDiffCellInputTitle');
+	static readonly NoteBookDiffCellMetadataTitle = new MenuId('NoteBookDiffCellMetadataTitle');
+	static readonly NoteBookDiffCellOutputsTitle = new MenuId('NoteBookDiffCellOutputsTitle');
 	static readonly BulkEditTitle = new MenuId('BulkEditTitle');
 	static readonly BulkEditContext = new MenuId('BulkEditContext');
 	static readonly TimelineItemContext = new MenuId('TimelineItemContext');
@@ -133,23 +133,23 @@ export class MenuId {
 	static readonly TimelineTitleContext = new MenuId('TimelineTitleContext');
 	static readonly AccountsContext = new MenuId('AccountsContext');
 
-	readonly id: number;
-	readonly _debugName: string;
+	readonly id: numBer;
+	readonly _deBugName: string;
 
-	constructor(debugName: string) {
+	constructor(deBugName: string) {
 		this.id = MenuId._idPool++;
-		this._debugName = debugName;
+		this._deBugName = deBugName;
 	}
 }
 
 export interface IMenuActionOptions {
 	arg?: any;
-	shouldForwardArgs?: boolean;
+	shouldForwardArgs?: Boolean;
 }
 
-export interface IMenu extends IDisposable {
+export interface IMenu extends IDisposaBle {
 	readonly onDidChange: Event<IMenu | undefined>;
-	getActions(options?: IMenuActionOptions): [string, Array<MenuItemAction | SubmenuItemAction>][];
+	getActions(options?: IMenuActionOptions): [string, Array<MenuItemAction | SuBmenuItemAction>][];
 }
 
 export const IMenuService = createDecorator<IMenuService>('menuService');
@@ -158,48 +158,48 @@ export interface IMenuService {
 
 	readonly _serviceBrand: undefined;
 
-	createMenu(id: MenuId, scopedKeybindingService: IContextKeyService): IMenu;
+	createMenu(id: MenuId, scopedKeyBindingService: IContextKeyService): IMenu;
 }
 
 export type ICommandsMap = Map<string, ICommandAction>;
 
 export interface IMenuRegistryChangeEvent {
-	has(id: MenuId): boolean;
+	has(id: MenuId): Boolean;
 }
 
 export interface IMenuRegistry {
 	readonly onDidChangeMenu: Event<IMenuRegistryChangeEvent>;
-	addCommands(newCommands: Iterable<ICommandAction>): IDisposable;
-	addCommand(userCommand: ICommandAction): IDisposable;
+	addCommands(newCommands: IteraBle<ICommandAction>): IDisposaBle;
+	addCommand(userCommand: ICommandAction): IDisposaBle;
 	getCommand(id: string): ICommandAction | undefined;
 	getCommands(): ICommandsMap;
-	appendMenuItems(items: Iterable<{ id: MenuId, item: IMenuItem | ISubmenuItem }>): IDisposable;
-	appendMenuItem(menu: MenuId, item: IMenuItem | ISubmenuItem): IDisposable;
-	getMenuItems(loc: MenuId): Array<IMenuItem | ISubmenuItem>;
+	appendMenuItems(items: IteraBle<{ id: MenuId, item: IMenuItem | ISuBmenuItem }>): IDisposaBle;
+	appendMenuItem(menu: MenuId, item: IMenuItem | ISuBmenuItem): IDisposaBle;
+	getMenuItems(loc: MenuId): Array<IMenuItem | ISuBmenuItem>;
 }
 
 export const MenuRegistry: IMenuRegistry = new class implements IMenuRegistry {
 
 	private readonly _commands = new Map<string, ICommandAction>();
-	private readonly _menuItems = new Map<MenuId, LinkedList<IMenuItem | ISubmenuItem>>();
+	private readonly _menuItems = new Map<MenuId, LinkedList<IMenuItem | ISuBmenuItem>>();
 	private readonly _onDidChangeMenu = new Emitter<IMenuRegistryChangeEvent>();
 
 	readonly onDidChangeMenu: Event<IMenuRegistryChangeEvent> = this._onDidChangeMenu.event;
 
-	addCommand(command: ICommandAction): IDisposable {
-		return this.addCommands(Iterable.single(command));
+	addCommand(command: ICommandAction): IDisposaBle {
+		return this.addCommands(IteraBle.single(command));
 	}
 
 	private readonly _commandPaletteChangeEvent: IMenuRegistryChangeEvent = {
 		has: id => id === MenuId.CommandPalette
 	};
 
-	addCommands(commands: Iterable<ICommandAction>): IDisposable {
+	addCommands(commands: IteraBle<ICommandAction>): IDisposaBle {
 		for (const command of commands) {
 			this._commands.set(command.id, command);
 		}
 		this._onDidChangeMenu.fire(this._commandPaletteChangeEvent);
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			let didChange = false;
 			for (const command of commands) {
 				didChange = this._commands.delete(command.id) || didChange;
@@ -220,11 +220,11 @@ export const MenuRegistry: IMenuRegistry = new class implements IMenuRegistry {
 		return map;
 	}
 
-	appendMenuItem(id: MenuId, item: IMenuItem | ISubmenuItem): IDisposable {
-		return this.appendMenuItems(Iterable.single({ id, item }));
+	appendMenuItem(id: MenuId, item: IMenuItem | ISuBmenuItem): IDisposaBle {
+		return this.appendMenuItems(IteraBle.single({ id, item }));
 	}
 
-	appendMenuItems(items: Iterable<{ id: MenuId, item: IMenuItem | ISubmenuItem }>): IDisposable {
+	appendMenuItems(items: IteraBle<{ id: MenuId, item: IMenuItem | ISuBmenuItem }>): IDisposaBle {
 
 		const changedIds = new Set<MenuId>();
 		const toRemove = new LinkedList<Function>();
@@ -241,7 +241,7 @@ export const MenuRegistry: IMenuRegistry = new class implements IMenuRegistry {
 
 		this._onDidChangeMenu.fire(changedIds);
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			if (toRemove.size > 0) {
 				for (let fn of toRemove) {
 					fn();
@@ -252,22 +252,22 @@ export const MenuRegistry: IMenuRegistry = new class implements IMenuRegistry {
 		});
 	}
 
-	getMenuItems(id: MenuId): Array<IMenuItem | ISubmenuItem> {
-		let result: Array<IMenuItem | ISubmenuItem>;
+	getMenuItems(id: MenuId): Array<IMenuItem | ISuBmenuItem> {
+		let result: Array<IMenuItem | ISuBmenuItem>;
 		if (this._menuItems.has(id)) {
 			result = [...this._menuItems.get(id)!];
 		} else {
 			result = [];
 		}
 		if (id === MenuId.CommandPalette) {
-			// CommandPalette is special because it shows
-			// all commands by default
+			// CommandPalette is special Because it shows
+			// all commands By default
 			this._appendImplicitItems(result);
 		}
 		return result;
 	}
 
-	private _appendImplicitItems(result: Array<IMenuItem | ISubmenuItem>) {
+	private _appendImplicitItems(result: Array<IMenuItem | ISuBmenuItem>) {
 		const set = new Set<string>();
 
 		for (const item of result) {
@@ -290,10 +290,10 @@ export class ExecuteCommandAction extends Action {
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@ICommandService private readonly _commandService: ICommandService) {
 
-		super(id, label);
+		super(id, laBel);
 	}
 
 	run(...args: any[]): Promise<any> {
@@ -301,18 +301,18 @@ export class ExecuteCommandAction extends Action {
 	}
 }
 
-export class SubmenuItemAction extends SubmenuAction {
+export class SuBmenuItemAction extends SuBmenuAction {
 
-	readonly item: ISubmenuItem;
+	readonly item: ISuBmenuItem;
 
 	constructor(
-		item: ISubmenuItem,
+		item: ISuBmenuItem,
 		menuService: IMenuService,
 		contextKeyService: IContextKeyService,
 		options?: IMenuActionOptions
 	) {
 		const result: IAction[] = [];
-		const menu = menuService.createMenu(item.submenu, contextKeyService);
+		const menu = menuService.createMenu(item.suBmenu, contextKeyService);
 		const groups = menu.getActions(options);
 		menu.dispose();
 
@@ -329,7 +329,7 @@ export class SubmenuItemAction extends SubmenuAction {
 			result.pop(); // remove last separator
 		}
 
-		super(`submenuitem.${item.submenu.id}`, typeof item.title === 'string' ? item.title : item.title.value, result, 'submenu');
+		super(`suBmenuitem.${item.suBmenu.id}`, typeof item.title === 'string' ? item.title : item.title.value, result, 'suBmenu');
 		this.item = item;
 	}
 }
@@ -351,7 +351,7 @@ export class MenuItemAction extends ExecuteCommandAction {
 		typeof item.title === 'string' ? super(item.id, item.title, commandService) : super(item.id, item.title.value, commandService);
 
 		this._cssClass = undefined;
-		this._enabled = !item.precondition || contextKeyService.contextMatchesRules(item.precondition);
+		this._enaBled = !item.precondition || contextKeyService.contextMatchesRules(item.precondition);
 		this._tooltip = item.tooltip ? typeof item.tooltip === 'string' ? item.tooltip : item.tooltip.value : undefined;
 
 		if (item.toggled) {
@@ -397,61 +397,61 @@ export class SyncActionDescriptor {
 	private readonly _descriptor: SyncDescriptor0<Action>;
 
 	private readonly _id: string;
-	private readonly _label?: string;
-	private readonly _keybindings: IKeybindings | undefined;
-	private readonly _keybindingContext: ContextKeyExpression | undefined;
-	private readonly _keybindingWeight: number | undefined;
+	private readonly _laBel?: string;
+	private readonly _keyBindings: IKeyBindings | undefined;
+	private readonly _keyBindingContext: ContextKeyExpression | undefined;
+	private readonly _keyBindingWeight: numBer | undefined;
 
-	public static create<Services extends BrandedService[]>(ctor: { new(id: string, label: string, ...services: Services): Action },
-		id: string, label: string | undefined, keybindings?: IKeybindings, keybindingContext?: ContextKeyExpression, keybindingWeight?: number
+	puBlic static create<Services extends BrandedService[]>(ctor: { new(id: string, laBel: string, ...services: Services): Action },
+		id: string, laBel: string | undefined, keyBindings?: IKeyBindings, keyBindingContext?: ContextKeyExpression, keyBindingWeight?: numBer
 	): SyncActionDescriptor {
-		return new SyncActionDescriptor(ctor as IConstructorSignature2<string, string | undefined, Action>, id, label, keybindings, keybindingContext, keybindingWeight);
+		return new SyncActionDescriptor(ctor as IConstructorSignature2<string, string | undefined, Action>, id, laBel, keyBindings, keyBindingContext, keyBindingWeight);
 	}
 
-	public static from<Services extends BrandedService[]>(
+	puBlic static from<Services extends BrandedService[]>(
 		ctor: {
-			new(id: string, label: string, ...services: Services): Action;
+			new(id: string, laBel: string, ...services: Services): Action;
 			readonly ID: string;
 			readonly LABEL: string;
 		},
-		keybindings?: IKeybindings, keybindingContext?: ContextKeyExpression, keybindingWeight?: number
+		keyBindings?: IKeyBindings, keyBindingContext?: ContextKeyExpression, keyBindingWeight?: numBer
 	): SyncActionDescriptor {
-		return SyncActionDescriptor.create(ctor, ctor.ID, ctor.LABEL, keybindings, keybindingContext, keybindingWeight);
+		return SyncActionDescriptor.create(ctor, ctor.ID, ctor.LABEL, keyBindings, keyBindingContext, keyBindingWeight);
 	}
 
 	private constructor(ctor: IConstructorSignature2<string, string | undefined, Action>,
-		id: string, label: string | undefined, keybindings?: IKeybindings, keybindingContext?: ContextKeyExpression, keybindingWeight?: number
+		id: string, laBel: string | undefined, keyBindings?: IKeyBindings, keyBindingContext?: ContextKeyExpression, keyBindingWeight?: numBer
 	) {
 		this._id = id;
-		this._label = label;
-		this._keybindings = keybindings;
-		this._keybindingContext = keybindingContext;
-		this._keybindingWeight = keybindingWeight;
-		this._descriptor = createSyncDescriptor(ctor, this._id, this._label);
+		this._laBel = laBel;
+		this._keyBindings = keyBindings;
+		this._keyBindingContext = keyBindingContext;
+		this._keyBindingWeight = keyBindingWeight;
+		this._descriptor = createSyncDescriptor(ctor, this._id, this._laBel);
 	}
 
-	public get syncDescriptor(): SyncDescriptor0<Action> {
+	puBlic get syncDescriptor(): SyncDescriptor0<Action> {
 		return this._descriptor;
 	}
 
-	public get id(): string {
+	puBlic get id(): string {
 		return this._id;
 	}
 
-	public get label(): string | undefined {
-		return this._label;
+	puBlic get laBel(): string | undefined {
+		return this._laBel;
 	}
 
-	public get keybindings(): IKeybindings | undefined {
-		return this._keybindings;
+	puBlic get keyBindings(): IKeyBindings | undefined {
+		return this._keyBindings;
 	}
 
-	public get keybindingContext(): ContextKeyExpression | undefined {
-		return this._keybindingContext;
+	puBlic get keyBindingContext(): ContextKeyExpression | undefined {
+		return this._keyBindingContext;
 	}
 
-	public get keybindingWeight(): number | undefined {
-		return this._keybindingWeight;
+	puBlic get keyBindingWeight(): numBer | undefined {
+		return this._keyBindingWeight;
 	}
 }
 
@@ -464,7 +464,7 @@ export interface IAction2Options extends ICommandAction {
 	/**
 	 * Shorthand to add this command to the command palette
 	 */
-	f1?: boolean;
+	f1?: Boolean;
 
 	/**
 	 * One or many menu items.
@@ -472,30 +472,30 @@ export interface IAction2Options extends ICommandAction {
 	menu?: OneOrN<{ id: MenuId } & Omit<IMenuItem, 'command'>>;
 
 	/**
-	 * One keybinding.
+	 * One keyBinding.
 	 */
-	keybinding?: OneOrN<Omit<IKeybindingRule, 'id'>>;
+	keyBinding?: OneOrN<Omit<IKeyBindingRule, 'id'>>;
 
 	/**
-	 * Metadata about this command, used for API commands or when
-	 * showing keybindings that have no other UX.
+	 * Metadata aBout this command, used for API commands or when
+	 * showing keyBindings that have no other UX.
 	 */
 	description?: ICommandHandlerDescription;
 }
 
-export abstract class Action2 {
+export aBstract class Action2 {
 	constructor(readonly desc: Readonly<IAction2Options>) { }
-	abstract run(accessor: ServicesAccessor, ...args: any[]): any;
+	aBstract run(accessor: ServicesAccessor, ...args: any[]): any;
 }
 
-export function registerAction2(ctor: { new(): Action2 }): IDisposable {
-	const disposables = new DisposableStore();
+export function registerAction2(ctor: { new(): Action2 }): IDisposaBle {
+	const disposaBles = new DisposaBleStore();
 	const action = new ctor();
 
-	const { f1, menu, keybinding, description, ...command } = action.desc;
+	const { f1, menu, keyBinding, description, ...command } = action.desc;
 
 	// command
-	disposables.add(CommandsRegistry.registerCommand({
+	disposaBles.add(CommandsRegistry.registerCommand({
 		id: command.id,
 		handler: (accessor, ...args) => action.run(accessor, ...args),
 		description: description,
@@ -503,33 +503,33 @@ export function registerAction2(ctor: { new(): Action2 }): IDisposable {
 
 	// menu
 	if (Array.isArray(menu)) {
-		disposables.add(MenuRegistry.appendMenuItems(menu.map(item => ({ id: item.id, item: { command, ...item } }))));
+		disposaBles.add(MenuRegistry.appendMenuItems(menu.map(item => ({ id: item.id, item: { command, ...item } }))));
 
 	} else if (menu) {
-		disposables.add(MenuRegistry.appendMenuItem(menu.id, { command, ...menu }));
+		disposaBles.add(MenuRegistry.appendMenuItem(menu.id, { command, ...menu }));
 	}
 	if (f1) {
-		disposables.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command, when: command.precondition }));
-		disposables.add(MenuRegistry.addCommand(command));
+		disposaBles.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command, when: command.precondition }));
+		disposaBles.add(MenuRegistry.addCommand(command));
 	}
 
-	// keybinding
-	if (Array.isArray(keybinding)) {
-		for (let item of keybinding) {
-			KeybindingsRegistry.registerKeybindingRule({
+	// keyBinding
+	if (Array.isArray(keyBinding)) {
+		for (let item of keyBinding) {
+			KeyBindingsRegistry.registerKeyBindingRule({
 				...item,
 				id: command.id,
 				when: command.precondition ? ContextKeyExpr.and(command.precondition, item.when) : item.when
 			});
 		}
-	} else if (keybinding) {
-		KeybindingsRegistry.registerKeybindingRule({
-			...keybinding,
+	} else if (keyBinding) {
+		KeyBindingsRegistry.registerKeyBindingRule({
+			...keyBinding,
 			id: command.id,
-			when: command.precondition ? ContextKeyExpr.and(command.precondition, keybinding.when) : keybinding.when
+			when: command.precondition ? ContextKeyExpr.and(command.precondition, keyBinding.when) : keyBinding.when
 		});
 	}
 
-	return disposables;
+	return disposaBles;
 }
 //#endregion

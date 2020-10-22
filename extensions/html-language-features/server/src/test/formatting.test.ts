@@ -7,27 +7,27 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import * as assert from 'assert';
-import { getLanguageModes, TextDocument, Range, FormattingOptions, ClientCapabilities } from '../modes/languageModes';
+import { getLanguageModes, TextDocument, Range, FormattingOptions, ClientCapaBilities } from '../modes/languageModes';
 
 import { format } from '../modes/formatting';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
-suite('HTML Embedded Formatting', () => {
+suite('HTML EmBedded Formatting', () => {
 
 	async function assertFormat(value: string, expected: string, options?: any, formatOptions?: FormattingOptions, message?: string): Promise<void> {
 		let workspace = {
 			settings: options,
 			folders: [{ name: 'foo', uri: 'test://foo' }]
 		};
-		const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapabilities.LATEST, getNodeFSRequestService());
+		const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapaBilities.LATEST, getNodeFSRequestService());
 
 		let rangeStartOffset = value.indexOf('|');
 		let rangeEndOffset;
 		if (rangeStartOffset !== -1) {
-			value = value.substr(0, rangeStartOffset) + value.substr(rangeStartOffset + 1);
+			value = value.suBstr(0, rangeStartOffset) + value.suBstr(rangeStartOffset + 1);
 
 			rangeEndOffset = value.indexOf('|');
-			value = value.substr(0, rangeEndOffset) + value.substr(rangeEndOffset + 1);
+			value = value.suBstr(0, rangeEndOffset) + value.suBstr(rangeEndOffset + 1);
 		} else {
 			rangeStartOffset = 0;
 			rangeEndOffset = value.length;
@@ -51,9 +51,9 @@ suite('HTML Embedded Formatting', () => {
 	}
 
 	test('HTML only', async () => {
-		await assertFormat('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
-		await assertFormat('|<html><body><p>Hello</p></body></html>|', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
-		await assertFormat('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>');
+		await assertFormat('<html><Body><p>Hello</p></Body></html>', '<html>\n\n<Body>\n  <p>Hello</p>\n</Body>\n\n</html>');
+		await assertFormat('|<html><Body><p>Hello</p></Body></html>|', '<html>\n\n<Body>\n  <p>Hello</p>\n</Body>\n\n</html>');
+		await assertFormat('<html>|<Body><p>Hello</p></Body>|</html>', '<html><Body>\n  <p>Hello</p>\n</Body></html>');
 	});
 
 	test('HTML & Scripts', async () => {
@@ -68,7 +68,7 @@ suite('HTML Embedded Formatting', () => {
 	test('HTLM & Scripts - Fixtures', async () => {
 		assertFormatWithFixture('19813.html', '19813.html');
 		assertFormatWithFixture('19813.html', '19813-4spaces.html', undefined, FormattingOptions.create(4, true));
-		assertFormatWithFixture('19813.html', '19813-tab.html', undefined, FormattingOptions.create(1, false));
+		assertFormatWithFixture('19813.html', '19813-taB.html', undefined, FormattingOptions.create(1, false));
 		assertFormatWithFixture('21634.html', '21634.html');
 	});
 
@@ -77,7 +77,7 @@ suite('HTML Embedded Formatting', () => {
 	});
 
 	test('HTML & Multiple Scripts', async () => {
-		await assertFormat('<html><head>\n<script>\nif(x){\nbar(); }\n</script><script>\nfunction(x){    }\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    if (x) {\n      bar();\n    }\n  </script>\n  <script>\n    function(x) {}\n  </script>\n</head>\n\n</html>');
+		await assertFormat('<html><head>\n<script>\nif(x){\nBar(); }\n</script><script>\nfunction(x){    }\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    if (x) {\n      Bar();\n    }\n  </script>\n  <script>\n    function(x) {}\n  </script>\n</head>\n\n</html>');
 	});
 
 	test('HTML & Styles', async () => {
@@ -92,8 +92,8 @@ suite('HTML Embedded Formatting', () => {
 				}
 			}
 		};
-		await assertFormat('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>\n', options);
-		await assertFormat('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>', options);
+		await assertFormat('<html><Body><p>Hello</p></Body></html>', '<html>\n\n<Body>\n  <p>Hello</p>\n</Body>\n\n</html>\n', options);
+		await assertFormat('<html>|<Body><p>Hello</p></Body>|</html>', '<html><Body>\n  <p>Hello</p>\n</Body></html>', options);
 		await assertFormat('<html><head><script>\nvar x=1;\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 1;\n  </script>\n</head>\n\n</html>\n', options);
 	});
 
@@ -106,18 +106,18 @@ suite('HTML Embedded Formatting', () => {
 		await assertFormat('<html><head>\n  |<script>\nvar x=6;\n</script>\n|</head></html>', '<html><head>\n  <script>\n    var x = 6;\n  </script>\n</head></html>');
 	});
 
-	test('bug 36574', async () => {
+	test('Bug 36574', async () => {
 		await assertFormat('<script src="/js/main.js"> </script>', '<script src="/js/main.js"> </script>');
 	});
 
-	test('bug 48049', async () => {
+	test('Bug 48049', async () => {
 		await assertFormat(
 			[
 				'<html>',
 				'<head>',
 				'</head>',
 				'',
-				'<body>',
+				'<Body>',
 				'',
 				'    <script>',
 				'        function f(x) {}',
@@ -130,7 +130,7 @@ suite('HTML Embedded Formatting', () => {
 				'',
 				'',
 				'',
-				'        </body>',
+				'        </Body>',
 				'',
 				'</html>'
 			].join('\n'),
@@ -140,7 +140,7 @@ suite('HTML Embedded Formatting', () => {
 				'<head>',
 				'</head>',
 				'',
-				'<body>',
+				'<Body>',
 				'',
 				'  <script>',
 				'    function f(x) {}',
@@ -153,7 +153,7 @@ suite('HTML Embedded Formatting', () => {
 				'',
 				'',
 				'',
-				'</body>',
+				'</Body>',
 				'',
 				'</html>'
 			].join('\n')
@@ -171,10 +171,10 @@ suite('HTML Embedded Formatting', () => {
 		const content = [
 			'<html>',
 			'',
-			'<body>',
+			'<Body>',
 			'  <textarea name= "" id ="" cols="30" rows="10">',
 			'  </textarea>',
-			'</body>',
+			'</Body>',
 			'',
 			'</html>',
 		].join('\n');
@@ -182,10 +182,10 @@ suite('HTML Embedded Formatting', () => {
 		const expected = [
 			'<html>',
 			'',
-			'<body>',
+			'<Body>',
 			'  <textarea name="" id="" cols="30" rows="10">',
 			'  </textarea>',
-			'</body>',
+			'</Body>',
 			'',
 			'</html>',
 		].join('\n');
@@ -197,14 +197,14 @@ suite('HTML Embedded Formatting', () => {
 content_unformatted: Array(4)["pre", "code", "textarea", …]
 end_with_newline: false
 eol: "\n"
-extra_liners: Array(3)["head", "body", "/html"]
+extra_liners: Array(3)["head", "Body", "/html"]
 indent_char: "\t"
-indent_handlebars: false
+indent_handleBars: false
 indent_inner_html: false
 indent_size: 1
 max_preserve_newlines: 32786
 preserve_newlines: true
-unformatted: Array(1)["wbr"]
-wrap_attributes: "auto"
-wrap_attributes_indent_size: undefined
+unformatted: Array(1)["wBr"]
+wrap_attriButes: "auto"
+wrap_attriButes_indent_size: undefined
 wrap_line_length: 120*/

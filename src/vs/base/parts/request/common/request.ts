@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBufferReadableStream } from 'vs/base/common/buffer';
+import { VSBufferReadaBleStream } from 'vs/Base/common/Buffer';
 
 export interface IHeaders {
 	[header: string]: string;
@@ -15,16 +15,16 @@ export interface IRequestOptions {
 	user?: string;
 	password?: string;
 	headers?: IHeaders;
-	timeout?: number;
+	timeout?: numBer;
 	data?: string;
-	followRedirects?: number;
+	followRedirects?: numBer;
 	proxyAuthorization?: string;
 }
 
 export interface IRequestContext {
 	res: {
 		headers: IHeaders;
-		statusCode?: number;
+		statusCode?: numBer;
 	};
-	stream: VSBufferReadableStream;
+	stream: VSBufferReadaBleStream;
 }

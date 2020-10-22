@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
 export interface ILocalization {
 	languageId: string;
@@ -27,7 +27,7 @@ export interface ILocalizationsService {
 	getLanguageIds(): Promise<string[]>;
 }
 
-export function isValidLocalization(localization: ILocalization): boolean {
+export function isValidLocalization(localization: ILocalization): Boolean {
 	if (typeof localization.languageId !== 'string') {
 		return false;
 	}

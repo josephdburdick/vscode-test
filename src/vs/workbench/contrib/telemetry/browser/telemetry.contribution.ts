@@ -4,33 +4,33 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { LifecyclePhase, ILifecycleService, StartupKind } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry, IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { LifecyclePhase, ILifecycleService, StartupKind } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IActivityBarService } from 'vs/workbench/services/activityBar/browser/activityBarService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { language } from 'vs/base/common/platform';
-import { Disposable } from 'vs/base/common/lifecycle';
-import ErrorTelemetry from 'vs/platform/telemetry/browser/errorTelemetry';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { IActivityBarService } from 'vs/workBench/services/activityBar/Browser/activityBarService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IWorkBenchThemeService } from 'vs/workBench/services/themes/common/workBenchThemeService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { language } from 'vs/Base/common/platform';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import ErrorTelemetry from 'vs/platform/telemetry/Browser/errorTelemetry';
 import { configurationTelemetry } from 'vs/platform/telemetry/common/telemetryUtils';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { ITextFileService, ITextFileSaveEvent, ITextFileLoadEvent } from 'vs/workbench/services/textfile/common/textfiles';
-import { extname, basename, isEqual, isEqualOrParent } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { guessMimeTypes } from 'vs/base/common/mime';
-import { hash } from 'vs/base/common/hash';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { ITextFileService, ITextFileSaveEvent, ITextFileLoadEvent } from 'vs/workBench/services/textfile/common/textfiles';
+import { extname, Basename, isEqual, isEqualOrParent } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { guessMimeTypes } from 'vs/Base/common/mime';
+import { hash } from 'vs/Base/common/hash';
 
 type TelemetryData = {
 	mimeType: string;
 	ext: string;
-	path: number;
-	reason?: number;
+	path: numBer;
+	reason?: numBer;
 	whitelistedjson?: string;
 };
 
@@ -42,9 +42,9 @@ type FileTelemetryDataFragment = {
 	whitelistedjson?: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 };
 
-export class TelemetryContribution extends Disposable implements IWorkbenchContribution {
+export class TelemetryContriBution extends DisposaBle implements IWorkBenchContriBution {
 
-	private static WHITELIST_JSON = ['package.json', 'package-lock.json', 'tsconfig.json', 'jsconfig.json', 'bower.json', '.eslintrc.json', 'tslint.json', 'composer.json'];
+	private static WHITELIST_JSON = ['package.json', 'package-lock.json', 'tsconfig.json', 'jsconfig.json', 'Bower.json', '.eslintrc.json', 'tslint.json', 'composer.json'];
 	private static WHITELIST_WORKSPACE_JSON = ['settings.json', 'extensions.json', 'tasks.json', 'launch.json'];
 
 	constructor(
@@ -53,9 +53,9 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 		@IActivityBarService activityBarService: IActivityBarService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IEditorService editorService: IEditorService,
-		@IKeybindingService keybindingsService: IKeybindingService,
-		@IWorkbenchThemeService themeService: IWorkbenchThemeService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IKeyBindingService keyBindingsService: IKeyBindingService,
+		@IWorkBenchThemeService themeService: IWorkBenchThemeService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IViewletService viewletService: IViewletService,
 		@ITextFileService textFileService: ITextFileService
@@ -74,11 +74,11 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 
 		type WorkspaceLoadClassification = {
 			userAgent: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			emptyWorkbench: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+			emptyWorkBench: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 			windowSize: WindowSizeFragment;
-			'workbench.filesToOpenOrCreate': { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
-			'workbench.filesToDiff': { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
-			customKeybindingsCount: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+			'workBench.filesToOpenOrCreate': { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+			'workBench.filesToDiff': { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+			customKeyBindingsCount: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 			theme: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			language: { classification: 'SystemMetaData', purpose: 'BusinessInsight' };
 			pinnedViewlets: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -89,31 +89,31 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 
 		type WorkspaceLoadEvent = {
 			userAgent: string;
-			windowSize: { innerHeight: number, innerWidth: number, outerHeight: number, outerWidth: number };
-			emptyWorkbench: boolean;
-			'workbench.filesToOpenOrCreate': number;
-			'workbench.filesToDiff': number;
-			customKeybindingsCount: number;
+			windowSize: { innerHeight: numBer, innerWidth: numBer, outerHeight: numBer, outerWidth: numBer };
+			emptyWorkBench: Boolean;
+			'workBench.filesToOpenOrCreate': numBer;
+			'workBench.filesToDiff': numBer;
+			customKeyBindingsCount: numBer;
 			theme: string;
 			language: string;
 			pinnedViewlets: string[];
 			restoredViewlet?: string;
-			restoredEditors: number;
+			restoredEditors: numBer;
 			startupKind: StartupKind;
 		};
 
-		telemetryService.publicLog2<WorkspaceLoadEvent, WorkspaceLoadClassification>('workspaceLoad', {
+		telemetryService.puBlicLog2<WorkspaceLoadEvent, WorkspaceLoadClassification>('workspaceLoad', {
 			userAgent: navigator.userAgent,
 			windowSize: { innerHeight: window.innerHeight, innerWidth: window.innerWidth, outerHeight: window.outerHeight, outerWidth: window.outerWidth },
-			emptyWorkbench: contextService.getWorkbenchState() === WorkbenchState.EMPTY,
-			'workbench.filesToOpenOrCreate': filesToOpenOrCreate && filesToOpenOrCreate.length || 0,
-			'workbench.filesToDiff': filesToDiff && filesToDiff.length || 0,
-			customKeybindingsCount: keybindingsService.customKeybindingsCount(),
+			emptyWorkBench: contextService.getWorkBenchState() === WorkBenchState.EMPTY,
+			'workBench.filesToOpenOrCreate': filesToOpenOrCreate && filesToOpenOrCreate.length || 0,
+			'workBench.filesToDiff': filesToDiff && filesToDiff.length || 0,
+			customKeyBindingsCount: keyBindingsService.customKeyBindingsCount(),
 			theme: themeService.getColorTheme().id,
 			language,
 			pinnedViewlets: activityBarService.getPinnedViewContainerIds(),
 			restoredViewlet: activeViewlet ? activeViewlet.getId() : undefined,
-			restoredEditors: editorService.visibleEditors.length,
+			restoredEditors: editorService.visiBleEditors.length,
 			startupKind: lifecycleService.startupKind
 		});
 
@@ -138,11 +138,11 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 				settingsType: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			};
 
-			this.telemetryService.publicLog2<{ settingsType: string }, SettingsReadClassification>('settingsRead', { settingsType }); // Do not log read to user settings.json and .vscode folder as a fileGet event as it ruins our JSON usage data
+			this.telemetryService.puBlicLog2<{ settingsType: string }, SettingsReadClassification>('settingsRead', { settingsType }); // Do not log read to user settings.json and .vscode folder as a fileGet event as it ruins our JSON usage data
 		} else {
 			type FileGetClassification = {} & FileTelemetryDataFragment;
 
-			this.telemetryService.publicLog2<TelemetryData, FileGetClassification>('fileGet', this.getTelemetryData(e.model.resource, e.reason));
+			this.telemetryService.puBlicLog2<TelemetryData, FileGetClassification>('fileGet', this.getTelemetryData(e.model.resource, e.reason));
 		}
 	}
 
@@ -152,10 +152,10 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 			type SettingsWrittenClassification = {
 				settingsType: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			};
-			this.telemetryService.publicLog2<{ settingsType: string }, SettingsWrittenClassification>('settingsWritten', { settingsType }); // Do not log write to user settings.json and .vscode folder as a filePUT event as it ruins our JSON usage data
+			this.telemetryService.puBlicLog2<{ settingsType: string }, SettingsWrittenClassification>('settingsWritten', { settingsType }); // Do not log write to user settings.json and .vscode folder as a filePUT event as it ruins our JSON usage data
 		} else {
 			type FilePutClassfication = {} & FileTelemetryDataFragment;
-			this.telemetryService.publicLog2<TelemetryData, FilePutClassfication>('filePUT', this.getTelemetryData(e.model.resource, e.reason));
+			this.telemetryService.puBlicLog2<TelemetryData, FilePutClassfication>('filePUT', this.getTelemetryData(e.model.resource, e.reason));
 		}
 	}
 
@@ -164,14 +164,14 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 			return '';
 		}
 
-		// Check for global settings file
+		// Check for gloBal settings file
 		if (isEqual(resource, this.environmentService.settingsResource)) {
-			return 'global-settings';
+			return 'gloBal-settings';
 		}
 
-		// Check for keybindings file
-		if (isEqual(resource, this.environmentService.keybindingsResource)) {
-			return 'keybindings';
+		// Check for keyBindings file
+		if (isEqual(resource, this.environmentService.keyBindingsResource)) {
+			return 'keyBindings';
 		}
 
 		// Check for snippets
@@ -183,8 +183,8 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 		const folders = this.contextService.getWorkspace().folders;
 		for (const folder of folders) {
 			if (isEqualOrParent(resource, folder.toResource('.vscode'))) {
-				const filename = basename(resource);
-				if (TelemetryContribution.WHITELIST_WORKSPACE_JSON.indexOf(filename) > -1) {
+				const filename = Basename(resource);
+				if (TelemetryContriBution.WHITELIST_WORKSPACE_JSON.indexOf(filename) > -1) {
 					return `.vscode/${filename}`;
 				}
 			}
@@ -193,9 +193,9 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 		return '';
 	}
 
-	private getTelemetryData(resource: URI, reason?: number): TelemetryData {
+	private getTelemetryData(resource: URI, reason?: numBer): TelemetryData {
 		const ext = extname(resource);
-		const fileName = basename(resource);
+		const fileName = Basename(resource);
 		const path = resource.scheme === Schemas.file ? resource.fsPath : resource.path;
 		const telemetryData = {
 			mimeType: guessMimeTypes(resource).join(', '),
@@ -205,7 +205,7 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 			whitelistedjson: undefined as string | undefined
 		};
 
-		if (ext === '.json' && TelemetryContribution.WHITELIST_JSON.indexOf(fileName) > -1) {
+		if (ext === '.json' && TelemetryContriBution.WHITELIST_JSON.indexOf(fileName) > -1) {
 			telemetryData['whitelistedjson'] = fileName;
 		}
 
@@ -213,4 +213,4 @@ export class TelemetryContribution extends Disposable implements IWorkbenchContr
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TelemetryContribution, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(TelemetryContriBution, LifecyclePhase.Restored);

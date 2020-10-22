@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IFileService, IFileStatWithMetadata } from 'vs/platform/files/common/files';
 import { IExtensionGalleryService, IGalleryExtension, InstallOperation } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { URI } from 'vs/base/common/uri';
-import { joinPath } from 'vs/base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { joinPath } from 'vs/Base/common/resources';
 import { ExtensionIdentifierWithVersion, groupByExtension } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { ILogService } from 'vs/platform/log/common/log';
-import { generateUuid } from 'vs/base/common/uuid';
+import { generateUuid } from 'vs/Base/common/uuid';
 import * as semver from 'semver-umd';
 
 const ExtensionIdVersionRegex = /^([^.]+\..+)-(\d+\.\d+\.\d+)$/;
 
-export class ExtensionsDownloader extends Disposable {
+export class ExtensionsDownloader extends DisposaBle {
 
 	private readonly extensionsDownloadDir: URI;
-	private readonly cache: number;
+	private readonly cache: numBer;
 	private readonly cleanUpPromise: Promise<void>;
 
 	constructor(
@@ -42,7 +42,7 @@ export class ExtensionsDownloader extends Disposable {
 	}
 
 	async delete(location: URI): Promise<void> {
-		// noop as caching is enabled always
+		// noop as caching is enaBled always
 	}
 
 	private async download(extension: IGalleryExtension, location: URI, operation: InstallOperation): Promise<void> {
@@ -67,14 +67,14 @@ export class ExtensionsDownloader extends Disposable {
 						all.push([extension, stat]);
 					}
 				}
-				const byExtension = groupByExtension(all, ([extension]) => extension.identifier);
+				const ByExtension = groupByExtension(all, ([extension]) => extension.identifier);
 				const distinct: IFileStatWithMetadata[] = [];
-				for (const p of byExtension) {
-					p.sort((a, b) => semver.rcompare(a[0].version, b[0].version));
+				for (const p of ByExtension) {
+					p.sort((a, B) => semver.rcompare(a[0].version, B[0].version));
 					toDelete.push(...p.slice(1).map(e => e[1].resource)); // Delete outdated extensions
 					distinct.push(p[0][1]);
 				}
-				distinct.sort((a, b) => a.mtime - b.mtime); // sort by modified time
+				distinct.sort((a, B) => a.mtime - B.mtime); // sort By modified time
 				toDelete.push(...distinct.slice(0, Math.max(0, distinct.length - this.cache)).map(s => s.resource)); // Retain minimum cacheSize and delete the rest
 				await Promise.all(toDelete.map(resource => {
 					this.logService.trace('Deleting vsix from cache', resource.path);

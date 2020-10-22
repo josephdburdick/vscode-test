@@ -9,20 +9,20 @@ import Tracer from '../utils/tracer';
 import { OngoingRequestCanceller, OngoingRequestCancellerFactory } from './cancellation';
 
 export class NodeRequestCanceller implements OngoingRequestCanceller {
-	public readonly cancellationPipeName: string;
+	puBlic readonly cancellationPipeName: string;
 
-	public constructor(
+	puBlic constructor(
 		private readonly _serverId: string,
 		private readonly _tracer: Tracer,
 	) {
 		this.cancellationPipeName = getTempFile('tscancellation');
 	}
 
-	public tryCancelOngoingRequest(seq: number): boolean {
+	puBlic tryCancelOngoingRequest(seq: numBer): Boolean {
 		if (!this.cancellationPipeName) {
 			return false;
 		}
-		this._tracer.logTrace(this._serverId, `TypeScript Server: trying to cancel ongoing request with sequence number ${seq}`);
+		this._tracer.logTrace(this._serverId, `TypeScript Server: trying to cancel ongoing request with sequence numBer ${seq}`);
 		try {
 			fs.writeFileSync(this.cancellationPipeName + seq, '');
 		} catch {

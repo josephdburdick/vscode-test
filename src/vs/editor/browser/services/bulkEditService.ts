@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { TextEdit, WorkspaceEdit, WorkspaceEditMetadata, WorkspaceFileEdit, WorkspaceFileEditOptions, WorkspaceTextEdit } from 'vs/editor/common/modes';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { isObject } from 'vs/base/common/types';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { isOBject } from 'vs/Base/common/types';
 
 export const IBulkEditService = createDecorator<IBulkEditService>('IWorkspaceEditService');
 
 function isWorkspaceFileEdit(thing: any): thing is WorkspaceFileEdit {
-	return isObject(thing) && (Boolean((<WorkspaceFileEdit>thing).newUri) || Boolean((<WorkspaceFileEdit>thing).oldUri));
+	return isOBject(thing) && (Boolean((<WorkspaceFileEdit>thing).newUri) || Boolean((<WorkspaceFileEdit>thing).oldUri));
 }
 
 function isWorkspaceTextEdit(thing: any): thing is WorkspaceTextEdit {
-	return isObject(thing) && URI.isUri((<WorkspaceTextEdit>thing).resource) && isObject((<WorkspaceTextEdit>thing).edit);
+	return isOBject(thing) && URI.isUri((<WorkspaceTextEdit>thing).resource) && isOBject((<WorkspaceTextEdit>thing).edit);
 }
 
 export class ResourceEdit {
@@ -44,7 +44,7 @@ export class ResourceTextEdit extends ResourceEdit {
 	constructor(
 		readonly resource: URI,
 		readonly textEdit: TextEdit,
-		readonly versionId?: number,
+		readonly versionId?: numBer,
 		readonly metadata?: WorkspaceEditMetadata
 	) {
 		super(metadata);
@@ -65,9 +65,9 @@ export class ResourceFileEdit extends ResourceEdit {
 export interface IBulkEditOptions {
 	editor?: ICodeEditor;
 	progress?: IProgress<IProgressStep>;
-	showPreview?: boolean;
-	label?: string;
-	quotableLabel?: string;
+	showPreview?: Boolean;
+	laBel?: string;
+	quotaBleLaBel?: string;
 }
 
 export interface IBulkEditResult {
@@ -79,9 +79,9 @@ export type IBulkEditPreviewHandler = (edits: ResourceEdit[], options?: IBulkEdi
 export interface IBulkEditService {
 	readonly _serviceBrand: undefined;
 
-	hasPreviewHandler(): boolean;
+	hasPreviewHandler(): Boolean;
 
-	setPreviewHandler(handler: IBulkEditPreviewHandler): IDisposable;
+	setPreviewHandler(handler: IBulkEditPreviewHandler): IDisposaBle;
 
 	apply(edit: ResourceEdit[], options?: IBulkEditOptions): Promise<IBulkEditResult>;
 }

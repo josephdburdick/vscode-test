@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as resources from 'vs/base/common/resources';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import * as errors from 'vs/base/common/errors';
+import * as resources from 'vs/Base/common/resources';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
+import * as errors from 'vs/Base/common/errors';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { ISearchService } from 'vs/workbench/services/search/common/search';
+import { QueryBuilder } from 'vs/workBench/contriB/search/common/queryBuilder';
+import { ISearchService } from 'vs/workBench/services/search/common/search';
 import { toWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 
 const WORKSPACE_CONTAINS_TIMEOUT = 7000;
 
 export interface IExtensionActivationHost {
 	readonly folders: readonly UriComponents[];
-	readonly forceUsingSearch: boolean;
+	readonly forceUsingSearch: Boolean;
 
-	exists(uri: URI): Promise<boolean>;
-	checkExists(folders: readonly UriComponents[], includes: string[], token: CancellationToken): Promise<boolean>;
+	exists(uri: URI): Promise<Boolean>;
+	checkExists(folders: readonly UriComponents[], includes: string[], token: CancellationToken): Promise<Boolean>;
 }
 
 export interface IExtensionActivationResult {
@@ -34,20 +34,20 @@ export function checkActivateWorkspaceContainsExtension(host: IExtensionActivati
 	}
 
 	const fileNames: string[] = [];
-	const globPatterns: string[] = [];
+	const gloBPatterns: string[] = [];
 
 	for (const activationEvent of activationEvents) {
 		if (/^workspaceContains:/.test(activationEvent)) {
-			const fileNameOrGlob = activationEvent.substr('workspaceContains:'.length);
-			if (fileNameOrGlob.indexOf('*') >= 0 || fileNameOrGlob.indexOf('?') >= 0 || host.forceUsingSearch) {
-				globPatterns.push(fileNameOrGlob);
+			const fileNameOrGloB = activationEvent.suBstr('workspaceContains:'.length);
+			if (fileNameOrGloB.indexOf('*') >= 0 || fileNameOrGloB.indexOf('?') >= 0 || host.forceUsingSearch) {
+				gloBPatterns.push(fileNameOrGloB);
 			} else {
-				fileNames.push(fileNameOrGlob);
+				fileNames.push(fileNameOrGloB);
 			}
 		}
 	}
 
-	if (fileNames.length === 0 && globPatterns.length === 0) {
+	if (fileNames.length === 0 && gloBPatterns.length === 0) {
 		return Promise.resolve(undefined);
 	}
 
@@ -56,9 +56,9 @@ export function checkActivateWorkspaceContainsExtension(host: IExtensionActivati
 	const activate = (activationEvent: string) => resolveResult({ activationEvent });
 
 	const fileNamePromise = Promise.all(fileNames.map((fileName) => _activateIfFileName(host, fileName, activate))).then(() => { });
-	const globPatternPromise = _activateIfGlobPatterns(host, desc.identifier, globPatterns, activate);
+	const gloBPatternPromise = _activateIfGloBPatterns(host, desc.identifier, gloBPatterns, activate);
 
-	Promise.all([fileNamePromise, globPatternPromise]).then(() => {
+	Promise.all([fileNamePromise, gloBPatternPromise]).then(() => {
 		// when all are done, resolve with undefined (relevant only if it was not activated so far)
 		resolveResult(undefined);
 	});
@@ -77,20 +77,20 @@ async function _activateIfFileName(host: IExtensionActivationHost, fileName: str
 	}
 }
 
-async function _activateIfGlobPatterns(host: IExtensionActivationHost, extensionId: ExtensionIdentifier, globPatterns: string[], activate: (activationEvent: string) => void): Promise<void> {
-	if (globPatterns.length === 0) {
+async function _activateIfGloBPatterns(host: IExtensionActivationHost, extensionId: ExtensionIdentifier, gloBPatterns: string[], activate: (activationEvent: string) => void): Promise<void> {
+	if (gloBPatterns.length === 0) {
 		return Promise.resolve(undefined);
 	}
 
 	const tokenSource = new CancellationTokenSource();
-	const searchP = host.checkExists(host.folders, globPatterns, tokenSource.token);
+	const searchP = host.checkExists(host.folders, gloBPatterns, tokenSource.token);
 
 	const timer = setTimeout(async () => {
 		tokenSource.cancel();
-		activate(`workspaceContainsTimeout:${globPatterns.join(',')}`);
+		activate(`workspaceContainsTimeout:${gloBPatterns.join(',')}`);
 	}, WORKSPACE_CONTAINS_TIMEOUT);
 
-	let exists: boolean = false;
+	let exists: Boolean = false;
 	try {
 		exists = await searchP;
 	} catch (err) {
@@ -103,17 +103,17 @@ async function _activateIfGlobPatterns(host: IExtensionActivationHost, extension
 	clearTimeout(timer);
 
 	if (exists) {
-		// a file was found matching one of the glob patterns
-		activate(`workspaceContains:${globPatterns.join(',')}`);
+		// a file was found matching one of the gloB patterns
+		activate(`workspaceContains:${gloBPatterns.join(',')}`);
 	}
 }
 
-export function checkGlobFileExists(
+export function checkGloBFileExists(
 	accessor: ServicesAccessor,
 	folders: readonly UriComponents[],
 	includes: string[],
 	token: CancellationToken,
-): Promise<boolean> {
+): Promise<Boolean> {
 	const instantiationService = accessor.get(IInstantiationService);
 	const searchService = accessor.get(ISearchService);
 	const queryBuilder = instantiationService.createInstance(QueryBuilder);

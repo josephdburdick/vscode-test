@@ -5,30 +5,30 @@
 
 import * as nls from 'vs/nls';
 import product from 'vs/platform/product/common/product';
-import { isMacintosh, isLinux, language } from 'vs/base/common/platform';
+import { isMacintosh, isLinux, language } from 'vs/Base/common/platform';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { MenuId, Action2, registerAction2, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { KeyChord, KeyMod, KeyCode } from 'vs/base/common/keyCodes';
+import { KeyChord, KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
-class KeybindingsReferenceAction extends Action2 {
+class KeyBindingsReferenceAction extends Action2 {
 
-	static readonly ID = 'workbench.action.keybindingsReference';
-	static readonly AVAILABLE = !!(isLinux ? product.keyboardShortcutsUrlLinux : isMacintosh ? product.keyboardShortcutsUrlMac : product.keyboardShortcutsUrlWin);
+	static readonly ID = 'workBench.action.keyBindingsReference';
+	static readonly AVAILABLE = !!(isLinux ? product.keyBoardShortcutsUrlLinux : isMacintosh ? product.keyBoardShortcutsUrlMac : product.keyBoardShortcutsUrlWin);
 
 	constructor() {
 		super({
-			id: KeybindingsReferenceAction.ID,
-			title: { value: nls.localize('keybindingsReference', "Keyboard Shortcuts Reference"), original: 'Keyboard Shortcuts Reference' },
+			id: KeyBindingsReferenceAction.ID,
+			title: { value: nls.localize('keyBindingsReference', "KeyBoard Shortcuts Reference"), original: 'KeyBoard Shortcuts Reference' },
 			category: CATEGORIES.Help,
 			f1: true,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				when: null,
 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_R)
 			}
@@ -39,7 +39,7 @@ class KeybindingsReferenceAction extends Action2 {
 		const productService = accessor.get(IProductService);
 		const openerService = accessor.get(IOpenerService);
 
-		const url = isLinux ? productService.keyboardShortcutsUrlLinux : isMacintosh ? productService.keyboardShortcutsUrlMac : productService.keyboardShortcutsUrlWin;
+		const url = isLinux ? productService.keyBoardShortcutsUrlLinux : isMacintosh ? productService.keyBoardShortcutsUrlMac : productService.keyBoardShortcutsUrlWin;
 		if (url) {
 			openerService.open(URI.parse(url));
 		}
@@ -48,7 +48,7 @@ class KeybindingsReferenceAction extends Action2 {
 
 class OpenDocumentationUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openDocumentationUrl';
+	static readonly ID = 'workBench.action.openDocumentationUrl';
 	static readonly AVAILABLE = !!product.documentationUrl;
 
 	constructor() {
@@ -72,7 +72,7 @@ class OpenDocumentationUrlAction extends Action2 {
 
 class OpenIntroductoryVideosUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openIntroductoryVideosUrl';
+	static readonly ID = 'workBench.action.openIntroductoryVideosUrl';
 	static readonly AVAILABLE = !!product.introductoryVideosUrl;
 
 	constructor() {
@@ -96,7 +96,7 @@ class OpenIntroductoryVideosUrlAction extends Action2 {
 
 class OpenTipsAndTricksUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openTipsAndTricksUrl';
+	static readonly ID = 'workBench.action.openTipsAndTricksUrl';
 	static readonly AVAILABLE = !!product.tipsAndTricksUrl;
 
 	constructor() {
@@ -120,7 +120,7 @@ class OpenTipsAndTricksUrlAction extends Action2 {
 
 class OpenNewsletterSignupUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openNewsletterSignupUrl';
+	static readonly ID = 'workBench.action.openNewsletterSignupUrl';
 	static readonly AVAILABLE = !!product.newsletterSignupUrl;
 
 	constructor() {
@@ -145,7 +145,7 @@ class OpenNewsletterSignupUrlAction extends Action2 {
 
 class OpenTwitterUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openTwitterUrl';
+	static readonly ID = 'workBench.action.openTwitterUrl';
 	static readonly AVAILABLE = !!product.twitterUrl;
 
 	constructor() {
@@ -169,7 +169,7 @@ class OpenTwitterUrlAction extends Action2 {
 
 class OpenRequestFeatureUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openRequestFeatureUrl';
+	static readonly ID = 'workBench.action.openRequestFeatureUrl';
 	static readonly AVAILABLE = !!product.requestFeatureUrl;
 
 	constructor() {
@@ -193,7 +193,7 @@ class OpenRequestFeatureUrlAction extends Action2 {
 
 class OpenLicenseUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openLicenseUrl';
+	static readonly ID = 'workBench.action.openLicenseUrl';
 	static readonly AVAILABLE = !!product.licenseUrl;
 
 	constructor() {
@@ -222,7 +222,7 @@ class OpenLicenseUrlAction extends Action2 {
 
 class OpenPrivacyStatementUrlAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openPrivacyStatementUrl';
+	static readonly ID = 'workBench.action.openPrivacyStatementUrl';
 	static readonly AVAILABE = !!product.privacyStatementUrl;
 
 	constructor() {
@@ -251,8 +251,8 @@ class OpenPrivacyStatementUrlAction extends Action2 {
 
 // --- Actions Registration
 
-if (KeybindingsReferenceAction.AVAILABLE) {
-	registerAction2(KeybindingsReferenceAction);
+if (KeyBindingsReferenceAction.AVAILABLE) {
+	registerAction2(KeyBindingsReferenceAction);
 }
 
 if (OpenDocumentationUrlAction.AVAILABLE) {
@@ -292,7 +292,7 @@ if (OpenPrivacyStatementUrlAction.AVAILABE) {
 // Help
 
 if (OpenDocumentationUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '1_welcome',
 		command: {
 			id: OpenDocumentationUrlAction.ID,
@@ -303,19 +303,19 @@ if (OpenDocumentationUrlAction.AVAILABLE) {
 }
 
 // Reference
-if (KeybindingsReferenceAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+if (KeyBindingsReferenceAction.AVAILABLE) {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '2_reference',
 		command: {
-			id: KeybindingsReferenceAction.ID,
-			title: nls.localize({ key: 'miKeyboardShortcuts', comment: ['&& denotes a mnemonic'] }, "&&Keyboard Shortcuts Reference")
+			id: KeyBindingsReferenceAction.ID,
+			title: nls.localize({ key: 'miKeyBoardShortcuts', comment: ['&& denotes a mnemonic'] }, "&&KeyBoard Shortcuts Reference")
 		},
 		order: 1
 	});
 }
 
 if (OpenIntroductoryVideosUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '2_reference',
 		command: {
 			id: OpenIntroductoryVideosUrlAction.ID,
@@ -326,7 +326,7 @@ if (OpenIntroductoryVideosUrlAction.AVAILABLE) {
 }
 
 if (OpenTipsAndTricksUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '2_reference',
 		command: {
 			id: OpenTipsAndTricksUrlAction.ID,
@@ -336,10 +336,10 @@ if (OpenTipsAndTricksUrlAction.AVAILABLE) {
 	});
 }
 
-// Feedback
+// FeedBack
 if (OpenTwitterUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
-		group: '3_feedback',
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
+		group: '3_feedBack',
 		command: {
 			id: OpenTwitterUrlAction.ID,
 			title: nls.localize({ key: 'miTwitter', comment: ['&& denotes a mnemonic'] }, "&&Join Us on Twitter")
@@ -349,8 +349,8 @@ if (OpenTwitterUrlAction.AVAILABLE) {
 }
 
 if (OpenRequestFeatureUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
-		group: '3_feedback',
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
+		group: '3_feedBack',
 		command: {
 			id: OpenRequestFeatureUrlAction.ID,
 			title: nls.localize({ key: 'miUserVoice', comment: ['&& denotes a mnemonic'] }, "&&Search Feature Requests")
@@ -361,7 +361,7 @@ if (OpenRequestFeatureUrlAction.AVAILABLE) {
 
 // Legal
 if (OpenLicenseUrlAction.AVAILABLE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '4_legal',
 		command: {
 			id: OpenLicenseUrlAction.ID,
@@ -372,7 +372,7 @@ if (OpenLicenseUrlAction.AVAILABLE) {
 }
 
 if (OpenPrivacyStatementUrlAction.AVAILABE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '4_legal',
 		command: {
 			id: OpenPrivacyStatementUrlAction.ID,

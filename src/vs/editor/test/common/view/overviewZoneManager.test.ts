@@ -11,7 +11,7 @@ suite('Editor View - OverviewZoneManager', () => {
 	test('pixel ratio 1, dom height 600', () => {
 		const LINE_COUNT = 50;
 		const LINE_HEIGHT = 20;
-		let manager = new OverviewZoneManager((lineNumber) => LINE_HEIGHT * lineNumber);
+		let manager = new OverviewZoneManager((lineNumBer) => LINE_HEIGHT * lineNumBer);
 		manager.setDOMWidth(30);
 		manager.setDOMHeight(600);
 		manager.setOuterHeight(LINE_COUNT * LINE_HEIGHT);
@@ -25,7 +25,7 @@ suite('Editor View - OverviewZoneManager', () => {
 			new OverviewRulerZone(50, 50, '4'),
 		]);
 
-		// one line = 12, but cap is at 6
+		// one line = 12, But cap is at 6
 		assert.deepEqual(manager.resolveColorZones(), [
 			new ColorZone(12, 24, 1), //
 			new ColorZone(120, 132, 2), // 120 -> 132
@@ -37,7 +37,7 @@ suite('Editor View - OverviewZoneManager', () => {
 	test('pixel ratio 1, dom height 300', () => {
 		const LINE_COUNT = 50;
 		const LINE_HEIGHT = 20;
-		let manager = new OverviewZoneManager((lineNumber) => LINE_HEIGHT * lineNumber);
+		let manager = new OverviewZoneManager((lineNumBer) => LINE_HEIGHT * lineNumBer);
 		manager.setDOMWidth(30);
 		manager.setDOMHeight(300);
 		manager.setOuterHeight(LINE_COUNT * LINE_HEIGHT);
@@ -63,7 +63,7 @@ suite('Editor View - OverviewZoneManager', () => {
 	test('pixel ratio 2, dom height 300', () => {
 		const LINE_COUNT = 50;
 		const LINE_HEIGHT = 20;
-		let manager = new OverviewZoneManager((lineNumber) => LINE_HEIGHT * lineNumber);
+		let manager = new OverviewZoneManager((lineNumBer) => LINE_HEIGHT * lineNumBer);
 		manager.setDOMWidth(30);
 		manager.setDOMHeight(300);
 		manager.setOuterHeight(LINE_COUNT * LINE_HEIGHT);

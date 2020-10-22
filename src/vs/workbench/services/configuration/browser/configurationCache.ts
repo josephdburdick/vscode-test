@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IConfigurationCache, ConfigurationKey } from 'vs/workbench/services/configuration/common/configuration';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
+import { IConfigurationCache, ConfigurationKey } from 'vs/workBench/services/configuration/common/configuration';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
 
 export class ConfigurationCache implements IConfigurationCache {
 
-	needsCaching(resource: URI): boolean {
+	needsCaching(resource: URI): Boolean {
 		// Cache all non user data resources
 		return resource.scheme !== Schemas.userData;
 	}

@@ -6,13 +6,13 @@
 import { ActiveLineMarker } from './activeLineMarker';
 import { onceDocumentLoaded } from './events';
 import { createPosterForVsCode } from './messaging';
-import { getEditorLineNumberForPageOffset, scrollToRevealSourceLine, getLineElementForFragment } from './scroll-sync';
+import { getEditorLineNumBerForPageOffset, scrollToRevealSourceLine, getLineElementForFragment } from './scroll-sync';
 import { getSettings, getData } from './settings';
 import throttle = require('lodash.throttle');
 
 declare let acquireVsCodeApi: any;
 
-let scrollDisabled = true;
+let scrollDisaBled = true;
 const marker = new ActiveLineMarker();
 const settings = getSettings();
 
@@ -21,7 +21,7 @@ const vscode = acquireVsCodeApi();
 const originalState = vscode.getState();
 
 const state = {
-	...(typeof originalState === 'object' ? originalState : {}),
+	...(typeof originalState === 'oBject' ? originalState : {}),
 	...getData<any>('data-state')
 };
 
@@ -40,29 +40,29 @@ window.onload = () => {
 onceDocumentLoaded(() => {
 	const scrollProgress = state.scrollProgress;
 
-	if (typeof scrollProgress === 'number' && !settings.fragment) {
+	if (typeof scrollProgress === 'numBer' && !settings.fragment) {
 		setImmediate(() => {
-			scrollDisabled = true;
-			window.scrollTo(0, scrollProgress * document.body.clientHeight);
+			scrollDisaBled = true;
+			window.scrollTo(0, scrollProgress * document.Body.clientHeight);
 		});
 		return;
 	}
 
 	if (settings.scrollPreviewWithEditor) {
 		setImmediate(() => {
-			// Try to scroll to fragment if available
+			// Try to scroll to fragment if availaBle
 			if (settings.fragment) {
 				state.fragment = undefined;
 				vscode.setState(state);
 
 				const element = getLineElementForFragment(settings.fragment);
 				if (element) {
-					scrollDisabled = true;
+					scrollDisaBled = true;
 					scrollToRevealSourceLine(element.line);
 				}
 			} else {
 				if (!isNaN(settings.line!)) {
-					scrollDisabled = true;
+					scrollDisaBled = true;
 					scrollToRevealSourceLine(settings.line!);
 				}
 			}
@@ -71,12 +71,12 @@ onceDocumentLoaded(() => {
 });
 
 const onUpdateView = (() => {
-	const doScroll = throttle((line: number) => {
-		scrollDisabled = true;
+	const doScroll = throttle((line: numBer) => {
+		scrollDisaBled = true;
 		scrollToRevealSourceLine(line);
 	}, 50);
 
-	return (line: number) => {
+	return (line: numBer) => {
 		if (!isNaN(line)) {
 			state.line = line;
 
@@ -86,7 +86,7 @@ const onUpdateView = (() => {
 })();
 
 let updateImageSizes = throttle(() => {
-	const imageInfo: { id: string, height: number, width: number; }[] = [];
+	const imageInfo: { id: string, height: numBer, width: numBer; }[] = [];
 	let images = document.getElementsByTagName('img');
 	if (images) {
 		let i;
@@ -109,7 +109,7 @@ let updateImageSizes = throttle(() => {
 }, 50);
 
 window.addEventListener('resize', () => {
-	scrollDisabled = true;
+	scrollDisaBled = true;
 	updateScrollProgress();
 	updateImageSizes();
 }, true);
@@ -122,16 +122,16 @@ window.addEventListener('message', event => {
 	switch (event.data.type) {
 		case 'onDidChangeTextEditorSelection':
 			marker.onDidChangeTextEditorSelection(event.data.line);
-			break;
+			Break;
 
 		case 'updateView':
 			onUpdateView(event.data.line);
-			break;
+			Break;
 	}
 }, false);
 
-document.addEventListener('dblclick', event => {
-	if (!settings.doubleClickToSwitchToEditor) {
+document.addEventListener('dBlclick', event => {
+	if (!settings.douBleClickToSwitchToEditor) {
 		return;
 	}
 
@@ -143,8 +143,8 @@ document.addEventListener('dblclick', event => {
 	}
 
 	const offset = event.pageY;
-	const line = getEditorLineNumberForPageOffset(offset);
-	if (typeof line === 'number' && !isNaN(line)) {
+	const line = getEditorLineNumBerForPageOffset(offset);
+	if (typeof line === 'numBer' && !isNaN(line)) {
 		messaging.postMessage('didClick', { line: Math.floor(line) });
 	}
 });
@@ -159,20 +159,20 @@ document.addEventListener('click', event => {
 	let node: any = event.target;
 	while (node) {
 		if (node.tagName && node.tagName === 'A' && node.href) {
-			if (node.getAttribute('href').startsWith('#')) {
+			if (node.getAttriBute('href').startsWith('#')) {
 				return;
 			}
 
-			let hrefText = node.getAttribute('data-href');
+			let hrefText = node.getAttriBute('data-href');
 			if (!hrefText) {
 				// Pass through known schemes
 				if (passThroughLinkSchemes.some(scheme => node.href.startsWith(scheme))) {
 					return;
 				}
-				hrefText = node.getAttribute('href');
+				hrefText = node.getAttriBute('href');
 			}
 
-			// If original link doesn't look like a url, delegate back to VS Code to resolve
+			// If original link doesn't look like a url, delegate Back to VS Code to resolve
 			if (!/^[a-z\-]+:/i.test(hrefText)) {
 				messaging.postMessage('openLink', { href: hrefText });
 				event.preventDefault();
@@ -189,18 +189,18 @@ document.addEventListener('click', event => {
 window.addEventListener('scroll', throttle(() => {
 	updateScrollProgress();
 
-	if (scrollDisabled) {
-		scrollDisabled = false;
+	if (scrollDisaBled) {
+		scrollDisaBled = false;
 	} else {
-		const line = getEditorLineNumberForPageOffset(window.scrollY);
-		if (typeof line === 'number' && !isNaN(line)) {
+		const line = getEditorLineNumBerForPageOffset(window.scrollY);
+		if (typeof line === 'numBer' && !isNaN(line)) {
 			messaging.postMessage('revealLine', { line });
 		}
 	}
 }, 50));
 
 function updateScrollProgress() {
-	state.scrollProgress = window.scrollY / document.body.clientHeight;
+	state.scrollProgress = window.scrollY / document.Body.clientHeight;
 	vscode.setState(state);
 }
 

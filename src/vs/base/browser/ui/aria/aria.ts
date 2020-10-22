@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./aria';
-import { isMacintosh } from 'vs/base/common/platform';
-import * as dom from 'vs/base/browser/dom';
+import { isMacintosh } from 'vs/Base/common/platform';
+import * as dom from 'vs/Base/Browser/dom';
 
-// Use a max length since we are inserting the whole msg in the DOM and that can cause browsers to freeze for long messages #94233
+// Use a max length since we are inserting the whole msg in the DOM and that can cause Browsers to freeze for long messages #94233
 const MAX_MESSAGE_LENGTH = 20000;
 let ariaContainer: HTMLElement;
 let alertContainer: HTMLElement;
@@ -21,8 +21,8 @@ export function setARIAContainer(parent: HTMLElement) {
 	const createAlertContainer = () => {
 		const element = document.createElement('div');
 		element.className = 'monaco-alert';
-		element.setAttribute('role', 'alert');
-		element.setAttribute('aria-atomic', 'true');
+		element.setAttriBute('role', 'alert');
+		element.setAttriBute('aria-atomic', 'true');
 		ariaContainer.appendChild(element);
 		return element;
 	};
@@ -32,9 +32,9 @@ export function setARIAContainer(parent: HTMLElement) {
 	const createStatusContainer = () => {
 		const element = document.createElement('div');
 		element.className = 'monaco-status';
-		element.setAttribute('role', 'complementary');
-		element.setAttribute('aria-live', 'polite');
-		element.setAttribute('aria-atomic', 'true');
+		element.setAttriBute('role', 'complementary');
+		element.setAttriBute('aria-live', 'polite');
+		element.setAttriBute('aria-atomic', 'true');
 		ariaContainer.appendChild(element);
 		return element;
 	};
@@ -51,7 +51,7 @@ export function alert(msg: string): void {
 		return;
 	}
 
-	// Use alternate containers such that duplicated messages get read out by screen readers #99466
+	// Use alternate containers such that duplicated messages get read out By screen readers #99466
 	if (alertContainer.textContent !== msg) {
 		dom.clearNode(alertContainer2);
 		insertMessage(alertContainer, msg);
@@ -85,11 +85,11 @@ export function status(msg: string): void {
 function insertMessage(target: HTMLElement, msg: string): void {
 	dom.clearNode(target);
 	if (msg.length > MAX_MESSAGE_LENGTH) {
-		msg = msg.substr(0, MAX_MESSAGE_LENGTH);
+		msg = msg.suBstr(0, MAX_MESSAGE_LENGTH);
 	}
 	target.textContent = msg;
 
-	// See https://www.paciellogroup.com/blog/2012/06/html5-accessibility-chops-aria-rolealert-browser-support/
-	target.style.visibility = 'hidden';
-	target.style.visibility = 'visible';
+	// See https://www.paciellogroup.com/Blog/2012/06/html5-accessiBility-chops-aria-rolealert-Browser-support/
+	target.style.visiBility = 'hidden';
+	target.style.visiBility = 'visiBle';
 }

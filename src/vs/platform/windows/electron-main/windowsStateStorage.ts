@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { IWindowState as IWindowUIState } from 'vs/platform/windows/electron-main/windows';
 import { IWindowState, IWindowsState } from 'vs/platform/windows/electron-main/windowsMainService';
 
-export type WindowsStateStorageData = object;
+export type WindowsStateStorageData = oBject;
 
 interface ISerializedWindowsState {
 	lastActiveWindow?: ISerializedWindowState;
@@ -18,7 +18,7 @@ interface ISerializedWindowsState {
 interface ISerializedWindowState {
 	workspaceIdentifier?: { id: string; configURIPath: string };
 	folder?: string;
-	backupPath?: string;
+	BackupPath?: string;
 	remoteAuthority?: string;
 	uiState: IWindowUIState;
 
@@ -49,8 +49,8 @@ export function restoreWindowsState(data: WindowsStateStorageData | undefined): 
 
 function restoreWindowState(windowState: ISerializedWindowState): IWindowState {
 	const result: IWindowState = { uiState: windowState.uiState };
-	if (windowState.backupPath) {
-		result.backupPath = windowState.backupPath;
+	if (windowState.BackupPath) {
+		result.BackupPath = windowState.BackupPath;
 	}
 
 	if (windowState.remoteAuthority) {
@@ -86,7 +86,7 @@ function serializeWindowState(windowState: IWindowState): ISerializedWindowState
 	return {
 		workspaceIdentifier: windowState.workspace && { id: windowState.workspace.id, configURIPath: windowState.workspace.configPath.toString() },
 		folder: windowState.folderUri && windowState.folderUri.toString(),
-		backupPath: windowState.backupPath,
+		BackupPath: windowState.BackupPath,
 		remoteAuthority: windowState.remoteAuthority,
 		uiState: windowState.uiState
 	};

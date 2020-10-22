@@ -5,11 +5,11 @@
 
 import { localize } from 'vs/nls';
 import { IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { IPickerQuickAccessItem, PickerQuickAccessProvider, TriggerAction } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { IPickerQuickAccessItem, PickerQuickAccessProvider, TriggerAction } from 'vs/platform/quickinput/Browser/pickerQuickAccess';
+import { matchesFuzzy } from 'vs/Base/common/filters';
+import { ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
+import { TERMINAL_COMMAND_ID } from 'vs/workBench/contriB/terminal/common/terminal';
 
 export class TerminalQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
 
@@ -25,19 +25,19 @@ export class TerminalQuickAccessProvider extends PickerQuickAccessProvider<IPick
 	protected getPicks(filter: string): Array<IPickerQuickAccessItem | IQuickPickSeparator> {
 		const terminalPicks: Array<IPickerQuickAccessItem | IQuickPickSeparator> = [];
 
-		const terminalTabs = this.terminalService.terminalTabs;
-		for (let tabIndex = 0; tabIndex < terminalTabs.length; tabIndex++) {
-			const terminalTab = terminalTabs[tabIndex];
-			for (let terminalIndex = 0; terminalIndex < terminalTab.terminalInstances.length; terminalIndex++) {
-				const terminal = terminalTab.terminalInstances[terminalIndex];
-				const label = `${tabIndex + 1}.${terminalIndex + 1}: ${terminal.title}`;
+		const terminalTaBs = this.terminalService.terminalTaBs;
+		for (let taBIndex = 0; taBIndex < terminalTaBs.length; taBIndex++) {
+			const terminalTaB = terminalTaBs[taBIndex];
+			for (let terminalIndex = 0; terminalIndex < terminalTaB.terminalInstances.length; terminalIndex++) {
+				const terminal = terminalTaB.terminalInstances[terminalIndex];
+				const laBel = `${taBIndex + 1}.${terminalIndex + 1}: ${terminal.title}`;
 
-				const highlights = matchesFuzzy(filter, label, true);
+				const highlights = matchesFuzzy(filter, laBel, true);
 				if (highlights) {
 					terminalPicks.push({
-						label,
-						highlights: { label: highlights },
-						buttons: [
+						laBel,
+						highlights: { laBel: highlights },
+						Buttons: [
 							{
 								iconClass: 'codicon-gear',
 								tooltip: localize('renameTerminal', "Rename Terminal")
@@ -47,8 +47,8 @@ export class TerminalQuickAccessProvider extends PickerQuickAccessProvider<IPick
 								tooltip: localize('killTerminal', "Kill Terminal Instance")
 							}
 						],
-						trigger: buttonIndex => {
-							switch (buttonIndex) {
+						trigger: ButtonIndex => {
+							switch (ButtonIndex) {
 								case 0:
 									this.commandService.executeCommand(TERMINAL_COMMAND_ID.RENAME, terminal);
 									return TriggerAction.NO_ACTION;
@@ -72,11 +72,11 @@ export class TerminalQuickAccessProvider extends PickerQuickAccessProvider<IPick
 			terminalPicks.push({ type: 'separator' });
 		}
 
-		const createTerminalLabel = localize("workbench.action.terminal.newplus", "Create New Integrated Terminal");
+		const createTerminalLaBel = localize("workBench.action.terminal.newplus", "Create New Integrated Terminal");
 		terminalPicks.push({
-			label: `$(plus) ${createTerminalLabel}`,
-			ariaLabel: createTerminalLabel,
-			accept: () => this.commandService.executeCommand('workbench.action.terminal.new')
+			laBel: `$(plus) ${createTerminalLaBel}`,
+			ariaLaBel: createTerminalLaBel,
+			accept: () => this.commandService.executeCommand('workBench.action.terminal.new')
 		});
 
 		return terminalPicks;

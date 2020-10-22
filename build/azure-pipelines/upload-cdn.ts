@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as es from 'event-stream';
 import * as Vinyl from 'vinyl';
 import * as vfs from 'vinyl-fs';
-import * as util from '../lib/util';
+import * as util from '../liB/util';
 import * as filter from 'gulp-filter';
 const azure = require('gulp-azure-storage');
 
@@ -17,10 +17,10 @@ const root = path.dirname(path.dirname(__dirname));
 const commit = util.getVersion(root);
 
 function main() {
-	return vfs.src('**', { cwd: '../vscode-web', base: '../vscode-web', dot: true })
+	return vfs.src('**', { cwd: '../vscode-weB', Base: '../vscode-weB', dot: true })
 		.pipe(filter(f => !f.isDirectory()))
 		.pipe(es.through(function (data: Vinyl) {
-			console.log('Uploading CDN file:', data.relative); // debug
+			console.log('Uploading CDN file:', data.relative); // deBug
 			this.emit('data', data);
 		}))
 		.pipe(azure.upload({

@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextDocument, Position, Range, TextEdit, workspace, CompletionContext } from 'vscode';
-import phpGlobals = require('./phpGlobals');
-import phpGlobalFunctions = require('./phpGlobalFunctions');
+import phpGloBals = require('./phpGloBals');
+import phpGloBalFunctions = require('./phpGloBalFunctions');
 
 export default class PHPCompletionItemProvider implements CompletionItemProvider {
 
-	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, context: CompletionContext): Promise<CompletionItem[]> {
+	puBlic provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, context: CompletionContext): Promise<CompletionItem[]> {
 		let result: CompletionItem[] = [];
 
-		let shouldProvideCompletionItems = workspace.getConfiguration('php').get<boolean>('suggest.basic', true);
+		let shouldProvideCompletionItems = workspace.getConfiguration('php').get<Boolean>('suggest.Basic', true);
 		if (!shouldProvideCompletionItems) {
 			return Promise.resolve(result);
 		}
@@ -32,7 +32,7 @@ export default class PHPCompletionItemProvider implements CompletionItemProvider
 		}
 
 		let added: any = {};
-		let createNewProposal = function (kind: CompletionItemKind, name: string, entry: phpGlobals.IEntry | null): CompletionItem {
+		let createNewProposal = function (kind: CompletionItemKind, name: string, entry: phpGloBals.IEntry | null): CompletionItem {
 			let proposal: CompletionItem = new CompletionItem(name);
 			proposal.kind = kind;
 			if (entry) {
@@ -47,14 +47,14 @@ export default class PHPCompletionItemProvider implements CompletionItemProvider
 		};
 
 		let matches = (name: string) => {
-			return prefix.length === 0 || name.length >= prefix.length && name.substr(0, prefix.length) === prefix;
+			return prefix.length === 0 || name.length >= prefix.length && name.suBstr(0, prefix.length) === prefix;
 		};
 
 		if (matches('php') && range.start.character >= 2) {
 			let twoBeforePosition = new Position(range.start.line, range.start.character - 2);
-			let beforeWord = document.getText(new Range(twoBeforePosition, range.start));
+			let BeforeWord = document.getText(new Range(twoBeforePosition, range.start));
 
-			if (beforeWord === '<?') {
+			if (BeforeWord === '<?') {
 				let proposal = createNewProposal(CompletionItemKind.Class, '<?php', null);
 				proposal.textEdit = new TextEdit(new Range(twoBeforePosition, position), '<?php');
 				result.push(proposal);
@@ -62,40 +62,40 @@ export default class PHPCompletionItemProvider implements CompletionItemProvider
 			}
 		}
 
-		for (let globalvariables in phpGlobals.globalvariables) {
-			if (phpGlobals.globalvariables.hasOwnProperty(globalvariables) && matches(globalvariables)) {
-				added[globalvariables] = true;
-				result.push(createNewProposal(CompletionItemKind.Variable, globalvariables, phpGlobals.globalvariables[globalvariables]));
+		for (let gloBalvariaBles in phpGloBals.gloBalvariaBles) {
+			if (phpGloBals.gloBalvariaBles.hasOwnProperty(gloBalvariaBles) && matches(gloBalvariaBles)) {
+				added[gloBalvariaBles] = true;
+				result.push(createNewProposal(CompletionItemKind.VariaBle, gloBalvariaBles, phpGloBals.gloBalvariaBles[gloBalvariaBles]));
 			}
 		}
-		for (let globalfunctions in phpGlobalFunctions.globalfunctions) {
-			if (phpGlobalFunctions.globalfunctions.hasOwnProperty(globalfunctions) && matches(globalfunctions)) {
-				added[globalfunctions] = true;
-				result.push(createNewProposal(CompletionItemKind.Function, globalfunctions, phpGlobalFunctions.globalfunctions[globalfunctions]));
+		for (let gloBalfunctions in phpGloBalFunctions.gloBalfunctions) {
+			if (phpGloBalFunctions.gloBalfunctions.hasOwnProperty(gloBalfunctions) && matches(gloBalfunctions)) {
+				added[gloBalfunctions] = true;
+				result.push(createNewProposal(CompletionItemKind.Function, gloBalfunctions, phpGloBalFunctions.gloBalfunctions[gloBalfunctions]));
 			}
 		}
-		for (let compiletimeconstants in phpGlobals.compiletimeconstants) {
-			if (phpGlobals.compiletimeconstants.hasOwnProperty(compiletimeconstants) && matches(compiletimeconstants)) {
+		for (let compiletimeconstants in phpGloBals.compiletimeconstants) {
+			if (phpGloBals.compiletimeconstants.hasOwnProperty(compiletimeconstants) && matches(compiletimeconstants)) {
 				added[compiletimeconstants] = true;
-				result.push(createNewProposal(CompletionItemKind.Field, compiletimeconstants, phpGlobals.compiletimeconstants[compiletimeconstants]));
+				result.push(createNewProposal(CompletionItemKind.Field, compiletimeconstants, phpGloBals.compiletimeconstants[compiletimeconstants]));
 			}
 		}
-		for (let keywords in phpGlobals.keywords) {
-			if (phpGlobals.keywords.hasOwnProperty(keywords) && matches(keywords)) {
+		for (let keywords in phpGloBals.keywords) {
+			if (phpGloBals.keywords.hasOwnProperty(keywords) && matches(keywords)) {
 				added[keywords] = true;
-				result.push(createNewProposal(CompletionItemKind.Keyword, keywords, phpGlobals.keywords[keywords]));
+				result.push(createNewProposal(CompletionItemKind.Keyword, keywords, phpGloBals.keywords[keywords]));
 			}
 		}
 
 		let text = document.getText();
 		if (prefix[0] === '$') {
-			let variableMatch = /\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/g;
+			let variaBleMatch = /\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/g;
 			let match: RegExpExecArray | null = null;
-			while (match = variableMatch.exec(text)) {
+			while (match = variaBleMatch.exec(text)) {
 				let word = match[0];
 				if (!added[word]) {
 					added[word] = true;
-					result.push(createNewProposal(CompletionItemKind.Variable, word, null));
+					result.push(createNewProposal(CompletionItemKind.VariaBle, word, null));
 				}
 			}
 		}

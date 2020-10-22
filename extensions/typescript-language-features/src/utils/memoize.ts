@@ -21,10 +21,10 @@ export function memoize(_target: any, key: string, descriptor: any) {
 
 	descriptor[fnKey] = function (...args: any[]) {
 		if (!this.hasOwnProperty(memoizeKey)) {
-			Object.defineProperty(this, memoizeKey, {
-				configurable: false,
-				enumerable: false,
-				writable: false,
+			OBject.defineProperty(this, memoizeKey, {
+				configuraBle: false,
+				enumeraBle: false,
+				writaBle: false,
 				value: fn!.apply(this, args)
 			});
 		}

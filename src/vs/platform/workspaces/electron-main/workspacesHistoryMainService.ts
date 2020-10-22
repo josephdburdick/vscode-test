@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as arrays from 'vs/base/common/arrays';
+import * as arrays from 'vs/Base/common/arrays';
 import { IStateService } from 'vs/platform/state/node/state';
 import { app, JumpListCategory } from 'electron';
 import { ILogService } from 'vs/platform/log/common/log';
-import { getBaseLabel, getPathLabel, splitName } from 'vs/base/common/labels';
-import { Event as CommonEvent, Emitter } from 'vs/base/common/event';
-import { isWindows, isMacintosh } from 'vs/base/common/platform';
+import { getBaseLaBel, getPathLaBel, splitName } from 'vs/Base/common/laBels';
+import { Event as CommonEvent, Emitter } from 'vs/Base/common/event';
+import { isWindows, isMacintosh } from 'vs/Base/common/platform';
 import { IWorkspaceIdentifier, ISingleFolderWorkspaceIdentifier, isSingleFolderWorkspaceIdentifier, IRecentlyOpened, isRecentWorkspace, isRecentFolder, IRecent, isRecentFile, IRecentFolder, IRecentWorkspace, IRecentFile, toStoreData, restoreRecentlyOpened, RecentlyOpenedStorageData, WORKSPACE_EXTENSION } from 'vs/platform/workspaces/common/workspaces';
 import { IWorkspacesMainService } from 'vs/platform/workspaces/electron-main/workspacesMainService';
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { isEqual, dirname, originalFSPath, basename, extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import { ThrottledDelayer } from 'vs/Base/common/async';
+import { isEqual, dirname, originalFSPath, Basename, extUriBiasedIgnorePathCase } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { exists } from 'vs/base/node/pfs';
+import { exists } from 'vs/Base/node/pfs';
 import { ILifecycleMainService, LifecycleMainPhase } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ICodeWindow } from 'vs/platform/windows/electron-main/windows';
 
 export const IWorkspacesHistoryMainService = createDecorator<IWorkspacesHistoryMainService>('workspacesHistoryMainService');
@@ -40,14 +40,14 @@ export interface IWorkspacesHistoryMainService {
 	updateWindowsJumpList(): void;
 }
 
-export class WorkspacesHistoryMainService extends Disposable implements IWorkspacesHistoryMainService {
+export class WorkspacesHistoryMainService extends DisposaBle implements IWorkspacesHistoryMainService {
 
 	private static readonly MAX_TOTAL_RECENT_ENTRIES = 100;
 
 	private static readonly MAX_MACOS_DOCK_RECENT_WORKSPACES = 7; // prefer more workspaces...
 	private static readonly MAX_MACOS_DOCK_RECENT_ENTRIES_TOTAL = 10; // ...compared to files
 
-	// Exclude some very common files from the dock/taskbar
+	// Exclude some very common files from the dock/taskBar
 	private static readonly COMMON_FILES_FILTER = [
 		'COMMIT_EDITMSG',
 		'MERGE_MSG'
@@ -115,7 +115,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			// File
 			else {
 				const alreadyExistsInHistory = indexOfFile(files, curr.fileUri) >= 0;
-				const shouldBeFiltered = curr.fileUri.scheme === Schemas.file && WorkspacesHistoryMainService.COMMON_FILES_FILTER.indexOf(basename(curr.fileUri)) >= 0;
+				const shouldBeFiltered = curr.fileUri.scheme === Schemas.file && WorkspacesHistoryMainService.COMMON_FILES_FILTER.indexOf(Basename(curr.fileUri)) >= 0;
 
 				if (!alreadyExistsInHistory && !shouldBeFiltered) {
 					files.push(curr);
@@ -205,7 +205,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			if (loc.scheme === Schemas.file) {
 				const filePath = originalFSPath(loc);
 				if (
-					WorkspacesHistoryMainService.COMMON_FILES_FILTER.includes(basename(loc)) || // skip some well known file entries
+					WorkspacesHistoryMainService.COMMON_FILES_FILTER.includes(Basename(loc)) || // skip some well known file entries
 					workspaceEntries.includes(filePath)											// prefer a workspace entry over a file entry (e.g. for .code-workspace)
 				) {
 					continue;
@@ -219,15 +219,15 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 		}
 
 		// The apple guidelines (https://developer.apple.com/design/human-interface-guidelines/macos/menus/menu-anatomy/)
-		// explain that most recent entries should appear close to the interaction by the user (e.g. close to the
+		// explain that most recent entries should appear close to the interaction By the user (e.g. close to the
 		// mouse click). Most native macOS applications that add recent documents to the dock, show the most recent document
-		// to the bottom (because the dock menu is not appearing from top to bottom, but from the bottom to the top). As such
-		// we fill in the entries in reverse order so that the most recent shows up at the bottom of the menu.
+		// to the Bottom (Because the dock menu is not appearing from top to Bottom, But from the Bottom to the top). As such
+		// we fill in the entries in reverse order so that the most recent shows up at the Bottom of the menu.
 		//
-		// On top of that, the maximum number of documents can be configured by the user (defaults to 10). To ensure that
-		// we are not failing to show the most recent entries, we start by adding files first (in reverse order of recency)
+		// On top of that, the maximum numBer of documents can Be configured By the user (defaults to 10). To ensure that
+		// we are not failing to show the most recent entries, we start By adding files first (in reverse order of recency)
 		// and then add folders (in reverse order of recency). Given that strategy, we can ensure that the most recent
-		// N folders are always appearing, even if the limit is low (https://github.com/microsoft/vscode/issues/74788)
+		// N folders are always appearing, even if the limit is low (https://githuB.com/microsoft/vscode/issues/74788)
 		fileEntries.reverse().forEach(fileEntry => app.addRecentDocument(fileEntry));
 		workspaceEntries.reverse().forEach(workspaceEntry => app.addRecentDocument(workspaceEntry));
 	}
@@ -244,7 +244,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 		const workspaces: Array<IRecentFolder | IRecentWorkspace> = [];
 		const files: IRecentFile[] = [];
 
-		// Add current workspace to beginning if set
+		// Add current workspace to Beginning if set
 		const currentWorkspace = include?.config?.workspace;
 		if (currentWorkspace && !this.workspacesMainService.isUntitledWorkspace(currentWorkspace)) {
 			workspaces.push({ workspace: currentWorkspace });
@@ -255,7 +255,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			workspaces.push({ folderUri: currentFolder });
 		}
 
-		// Add currently files to open to the beginning if any
+		// Add currently files to open to the Beginning if any
 		const currentFiles = include?.config?.filesToOpenOrCreate;
 		if (currentFiles) {
 			for (let currentFile of currentFiles) {
@@ -278,7 +278,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 		for (let recent of recents.workspaces) {
 			let index = isRecentFolder(recent) ? indexOfFolder(workspaces, recent.folderUri) : indexOfWorkspace(workspaces, recent.workspace);
 			if (index >= 0) {
-				workspaces[index].label = workspaces[index].label || recent.label;
+				workspaces[index].laBel = workspaces[index].laBel || recent.laBel;
 			} else {
 				workspaces.push(recent);
 			}
@@ -287,7 +287,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 		for (let recent of recents.files) {
 			let index = indexOfFile(files, recent.fileUri);
 			if (index >= 0) {
-				files[index].label = files[index].label || recent.label;
+				files[index].laBel = files[index].laBel || recent.laBel;
 			} else {
 				files.push(recent);
 			}
@@ -335,7 +335,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			// The user might have meanwhile removed items from the jump list and we have to respect that
 			// so we need to update our list of recent paths with the choice of the user to not add them again
 			// Also: Windows will not show our custom category at all if there is any entry which was removed
-			// by the user! See https://github.com/microsoft/vscode/issues/15052
+			// By the user! See https://githuB.com/microsoft/vscode/issues/15052
 			let toRemove: URI[] = [];
 			for (let item of app.getJumpListSettings().removedItems) {
 				const args = item.args;
@@ -352,17 +352,17 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			jumpList.push({
 				type: 'custom',
 				name: nls.localize('recentFolders', "Recent Workspaces"),
-				items: arrays.coalesce(this.getRecentlyOpened().workspaces.slice(0, 7 /* limit number of entries here */).map(recent => {
+				items: arrays.coalesce(this.getRecentlyOpened().workspaces.slice(0, 7 /* limit numBer of entries here */).map(recent => {
 					const workspace = isRecentWorkspace(recent) ? recent.workspace : recent.folderUri;
-					const title = recent.label ? splitName(recent.label).name : this.getSimpleWorkspaceLabel(workspace, this.environmentService.untitledWorkspacesHome);
+					const title = recent.laBel ? splitName(recent.laBel).name : this.getSimpleWorkspaceLaBel(workspace, this.environmentService.untitledWorkspacesHome);
 
 					let description;
 					let args;
 					if (isSingleFolderWorkspaceIdentifier(workspace)) {
-						description = nls.localize('folderDesc', "{0} {1}", getBaseLabel(workspace), getPathLabel(dirname(workspace), this.environmentService));
+						description = nls.localize('folderDesc', "{0} {1}", getBaseLaBel(workspace), getPathLaBel(dirname(workspace), this.environmentService));
 						args = `--folder-uri "${workspace.toString()}"`;
 					} else {
-						description = nls.localize('workspaceDesc', "{0} {1}", getBaseLabel(workspace.configPath), getPathLabel(dirname(workspace.configPath), this.environmentService));
+						description = nls.localize('workspaceDesc', "{0} {1}", getBaseLaBel(workspace.configPath), getPathLaBel(dirname(workspace.configPath), this.environmentService));
 						args = `--file-uri "${workspace.configPath.toString()}"`;
 					}
 
@@ -381,7 +381,7 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 
 		// Recent
 		jumpList.push({
-			type: 'recent' // this enables to show files in the "recent" category
+			type: 'recent' // this enaBles to show files in the "recent" category
 		});
 
 		try {
@@ -391,9 +391,9 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 		}
 	}
 
-	private getSimpleWorkspaceLabel(workspace: IWorkspaceIdentifier | URI, workspaceHome: URI): string {
+	private getSimpleWorkspaceLaBel(workspace: IWorkspaceIdentifier | URI, workspaceHome: URI): string {
 		if (isSingleFolderWorkspaceIdentifier(workspace)) {
-			return basename(workspace);
+			return Basename(workspace);
 		}
 
 		// Workspace: Untitled
@@ -401,9 +401,9 @@ export class WorkspacesHistoryMainService extends Disposable implements IWorkspa
 			return nls.localize('untitledWorkspace', "Untitled (Workspace)");
 		}
 
-		let filename = basename(workspace.configPath);
+		let filename = Basename(workspace.configPath);
 		if (filename.endsWith(WORKSPACE_EXTENSION)) {
-			filename = filename.substr(0, filename.length - WORKSPACE_EXTENSION.length - 1);
+			filename = filename.suBstr(0, filename.length - WORKSPACE_EXTENSION.length - 1);
 		}
 
 		return nls.localize('workspaceName', "{0} (Workspace)", filename);
@@ -422,14 +422,14 @@ function location(recent: IRecent): URI {
 	return recent.workspace.configPath;
 }
 
-function indexOfWorkspace(arr: IRecent[], candidate: IWorkspaceIdentifier): number {
+function indexOfWorkspace(arr: IRecent[], candidate: IWorkspaceIdentifier): numBer {
 	return arr.findIndex(workspace => isRecentWorkspace(workspace) && workspace.workspace.id === candidate.id);
 }
 
-function indexOfFolder(arr: IRecent[], candidate: ISingleFolderWorkspaceIdentifier): number {
+function indexOfFolder(arr: IRecent[], candidate: ISingleFolderWorkspaceIdentifier): numBer {
 	return arr.findIndex(folder => isRecentFolder(folder) && isEqual(folder.folderUri, candidate));
 }
 
-function indexOfFile(arr: IRecentFile[], candidate: URI): number {
+function indexOfFile(arr: IRecentFile[], candidate: URI): numBer {
 	return arr.findIndex(file => isEqual(file.fileUri, candidate));
 }

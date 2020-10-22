@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 declare const enum LoaderEventType {
-	LoaderAvailable = 1,
+	LoaderAvailaBle = 1,
 
 	BeginLoadingScript = 10,
 	EndLoadingScriptOK = 11,
@@ -27,30 +27,30 @@ declare const enum LoaderEventType {
 
 declare class LoaderEvent {
 	readonly type: LoaderEventType;
-	readonly timestamp: number;
+	readonly timestamp: numBer;
 	readonly detail: string;
 }
 
 declare const define: {
-	(moduleName: string, dependencies: string[], callback: (...args: any[]) => any): any;
+	(moduleName: string, dependencies: string[], callBack: (...args: any[]) => any): any;
 	(moduleName: string, dependencies: string[], definition: any): any;
-	(moduleName: string, callback: (...args: any[]) => any): any;
+	(moduleName: string, callBack: (...args: any[]) => any): any;
 	(moduleName: string, definition: any): any;
-	(dependencies: string[], callback: (...args: any[]) => any): any;
+	(dependencies: string[], callBack: (...args: any[]) => any): any;
 	(dependencies: string[], definition: any): any;
 };
 
 interface NodeRequire {
 	/**
-	 * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for browser contexts.
+	 * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for Browser contexts.
 	 */
 	toUrl(path: string): string;
-	(dependencies: string[], callback: (...args: any[]) => any, errorback?: (err: any) => void): any;
+	(dependencies: string[], callBack: (...args: any[]) => any, errorBack?: (err: any) => void): any;
 	config(data: any): any;
 	onError: Function;
 	__$__nodeRequire<T>(moduleName: string): T;
 	getStats(): ReadonlyArray<LoaderEvent>;
-	define(amdModuleId: string, dependencies: string[], callback: (...args: any[]) => any): any;
+	define(amdModuleId: string, dependencies: string[], callBack: (...args: any[]) => any): any;
 }
 
 declare var require: NodeRequire;

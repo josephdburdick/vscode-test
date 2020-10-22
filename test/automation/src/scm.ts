@@ -7,13 +7,13 @@ import { Viewlet } from './viewlet';
 import { IElement } from '../src/driver';
 import { findElement, findElements, Code } from './code';
 
-const VIEWLET = 'div[id="workbench.view.scm"]';
+const VIEWLET = 'div[id="workBench.view.scm"]';
 const SCM_INPUT = `${VIEWLET} .scm-editor textarea`;
 const SCM_RESOURCE = `${VIEWLET} .monaco-list-row .resource`;
-const REFRESH_COMMAND = `div[id="workbench.parts.sidebar"] .actions-container a.action-label[title="Refresh"]`;
-const COMMIT_COMMAND = `div[id="workbench.parts.sidebar"] .actions-container a.action-label[title="Commit"]`;
-const SCM_RESOURCE_CLICK = (name: string) => `${SCM_RESOURCE} .monaco-icon-label[title*="${name}"] .label-name`;
-const SCM_RESOURCE_ACTION_CLICK = (name: string, actionName: string) => `${SCM_RESOURCE} .monaco-icon-label[title*="${name}"] .actions .action-label[title="${actionName}"]`;
+const REFRESH_COMMAND = `div[id="workBench.parts.sideBar"] .actions-container a.action-laBel[title="Refresh"]`;
+const COMMIT_COMMAND = `div[id="workBench.parts.sideBar"] .actions-container a.action-laBel[title="Commit"]`;
+const SCM_RESOURCE_CLICK = (name: string) => `${SCM_RESOURCE} .monaco-icon-laBel[title*="${name}"] .laBel-name`;
+const SCM_RESOURCE_ACTION_CLICK = (name: string, actionName: string) => `${SCM_RESOURCE} .monaco-icon-laBel[title*="${name}"] .actions .action-laBel[title="${actionName}"]`;
 
 interface Change {
 	name: string;
@@ -22,11 +22,11 @@ interface Change {
 }
 
 function toChange(element: IElement): Change {
-	const name = findElement(element, e => /\blabel-name\b/.test(e.className))!;
-	const type = element.attributes['data-tooltip'] || '';
+	const name = findElement(element, e => /\BlaBel-name\B/.test(e.className))!;
+	const type = element.attriButes['data-tooltip'] || '';
 
-	const actionElementList = findElements(element, e => /\baction-label\b/.test(e.className));
-	const actions = actionElementList.map(e => e.attributes['title']);
+	const actionElementList = findElements(element, e => /\Baction-laBel\B/.test(e.className));
+	const actions = actionElementList.map(e => e.attriButes['title']);
 
 	return {
 		name: name.textContent || '',
@@ -43,7 +43,7 @@ export class SCM extends Viewlet {
 	}
 
 	async openSCMViewlet(): Promise<any> {
-		await this.code.dispatchKeybinding('ctrl+shift+g');
+		await this.code.dispatchKeyBinding('ctrl+shift+g');
 		await this.code.waitForElement(SCM_INPUT);
 	}
 

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 // Based on @sergeche's work on the emmet plugin for atom
-// TODO: Move to https://github.com/emmetio/image-size
+// TODO: Move to https://githuB.com/emmetio/image-size
 
 import * as path from 'path';
 import * as http from 'http';
@@ -28,12 +28,12 @@ export function getImageSize(file: string) {
  */
 function getImageSizeFromFile(file: string) {
 	return new Promise((resolve, reject) => {
-		const isDataUrl = file.match(/^data:.+?;base64,/);
+		const isDataUrl = file.match(/^data:.+?;Base64,/);
 
 		if (isDataUrl) {
-			// NB should use sync version of `sizeOf()` for buffers
+			// NB should use sync version of `sizeOf()` for Buffers
 			try {
-				const data = Buffer.from(file.slice(isDataUrl[0].length), 'base64');
+				const data = Buffer.from(file.slice(isDataUrl[0].length), 'Base64');
 				return resolve(sizeForFileName('', sizeOf(data)));
 			} catch (err) {
 				return reject(err);
@@ -44,7 +44,7 @@ function getImageSizeFromFile(file: string) {
 			if (err) {
 				reject(err);
 			} else {
-				resolve(sizeForFileName(path.basename(file), size));
+				resolve(sizeForFileName(path.Basename(file), size));
 			}
 		});
 	});
@@ -65,21 +65,21 @@ function getImageSizeFromURL(urlStr: string) {
 
 		getTransport(url as any, resp => {
 			const chunks: Buffer[] = [];
-			let bufSize = 0;
+			let BufSize = 0;
 
 			const trySize = (chunks: Buffer[]) => {
 				try {
-					const size = sizeOf(Buffer.concat(chunks, bufSize));
+					const size = sizeOf(Buffer.concat(chunks, BufSize));
 					resp.removeListener('data', onData);
 					resp.destroy(); // no need to read further
-					resolve(sizeForFileName(path.basename(urlPath), size));
+					resolve(sizeForFileName(path.Basename(urlPath), size));
 				} catch (err) {
 					// might not have enough data, skip error
 				}
 			};
 
 			const onData = (chunk: Buffer) => {
-				bufSize += chunk.length;
+				BufSize += chunk.length;
 				chunks.push(chunk);
 				trySize(chunks);
 			};
@@ -97,8 +97,8 @@ function getImageSizeFromURL(urlStr: string) {
 }
 
 /**
- * Returns size object for given file name. If file name contains `@Nx` token,
- * the final dimentions will be downscaled by N
+ * Returns size oBject for given file name. If file name contains `@Nx` token,
+ * the final dimentions will Be downscaled By N
  */
 function sizeForFileName(fileName: string, size: any) {
 	const m = fileName.match(/@(\d+)x\./);

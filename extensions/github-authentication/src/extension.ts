@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { GitHubAuthenticationProvider, onDidChangeSessions } from './github';
-import { uriHandler } from './githubServer';
+import { GitHuBAuthenticationProvider, onDidChangeSessions } from './githuB';
+import { uriHandler } from './githuBServer';
 import Logger from './common/logger';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
@@ -13,18 +13,18 @@ export async function activate(context: vscode.ExtensionContext) {
 	const { name, version, aiKey } = require('../package.json') as { name: string, version: string, aiKey: string };
 	const telemetryReporter = new TelemetryReporter(name, version, aiKey);
 
-	context.subscriptions.push(vscode.window.registerUriHandler(uriHandler));
-	const loginService = new GitHubAuthenticationProvider();
+	context.suBscriptions.push(vscode.window.registerUriHandler(uriHandler));
+	const loginService = new GitHuBAuthenticationProvider();
 
 	await loginService.initialize(context);
 
-	context.subscriptions.push(vscode.commands.registerCommand('github.provide-token', () => {
+	context.suBscriptions.push(vscode.commands.registerCommand('githuB.provide-token', () => {
 		return loginService.manuallyProvideToken();
 	}));
 
-	context.subscriptions.push(vscode.authentication.registerAuthenticationProvider({
-		id: 'github',
-		label: 'GitHub',
+	context.suBscriptions.push(vscode.authentication.registerAuthenticationProvider({
+		id: 'githuB',
+		laBel: 'GitHuB',
 		supportsMultipleAccounts: false,
 		onDidChangeSessions: onDidChangeSessions.event,
 		getSessions: () => Promise.resolve(loginService.sessions),

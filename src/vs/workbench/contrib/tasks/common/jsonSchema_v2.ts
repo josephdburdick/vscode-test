@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as Objects from 'vs/base/common/objects';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
+import * as OBjects from 'vs/Base/common/oBjects';
+import { IJSONSchema, IJSONSchemaMap } from 'vs/Base/common/jsonSchema';
 
 import commonSchema from './jsonSchemaCommon';
 
-import { ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import { ProBlemMatcherRegistry } from 'vs/workBench/contriB/tasks/common/proBlemMatcher';
 import { TaskDefinitionRegistry } from './taskDefinitionRegistry';
-import * as ConfigurationResolverUtils from 'vs/workbench/services/configurationResolver/common/configurationResolverUtils';
-import { inputsSchema } from 'vs/workbench/services/configurationResolver/common/configurationResolverSchema';
+import * as ConfigurationResolverUtils from 'vs/workBench/services/configurationResolver/common/configurationResolverUtils';
+import { inputsSchema } from 'vs/workBench/services/configurationResolver/common/configurationResolverSchema';
 
 function fixReferences(literal: any) {
 	if (Array.isArray(literal)) {
 		literal.forEach(fixReferences);
-	} else if (typeof literal === 'object') {
+	} else if (typeof literal === 'oBject') {
 		if (literal['$ref']) {
 			literal['$ref'] = literal['$ref'] + '2';
 		}
-		Object.getOwnPropertyNames(literal).forEach(property => {
+		OBject.getOwnPropertyNames(literal).forEach(property => {
 			let value = literal[property];
-			if (Array.isArray(value) || typeof value === 'object') {
+			if (Array.isArray(value) || typeof value === 'oBject') {
 				fixReferences(value);
 			}
 		});
@@ -33,7 +33,7 @@ function fixReferences(literal: any) {
 const shellCommand: IJSONSchema = {
 	anyOf: [
 		{
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
 			description: nls.localize('JsonSchema.shell', 'Specifies whether the command is a shell command or an external program. Defaults to false if omitted.')
 		},
@@ -45,7 +45,7 @@ const shellCommand: IJSONSchema = {
 };
 
 const taskIdentifier: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	additionalProperties: true,
 	properties: {
 		type: {
@@ -95,7 +95,7 @@ const detail: IJSONSchema = {
 };
 
 const presentation: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	default: {
 		echo: true,
 		reveal: 'always',
@@ -108,52 +108,52 @@ const presentation: IJSONSchema = {
 	additionalProperties: false,
 	properties: {
 		echo: {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
 			description: nls.localize('JsonSchema.tasks.presentation.echo', 'Controls whether the executed command is echoed to the panel. Default is true.')
 		},
 		focus: {
-			type: 'boolean',
+			type: 'Boolean',
 			default: false,
 			description: nls.localize('JsonSchema.tasks.presentation.focus', 'Controls whether the panel takes focus. Default is false. If set to true the panel is revealed as well.')
 		},
-		revealProblems: {
+		revealProBlems: {
 			type: 'string',
-			enum: ['always', 'onProblem', 'never'],
+			enum: ['always', 'onProBlem', 'never'],
 			enumDescriptions: [
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.always', 'Always reveals the problems panel when this task is executed.'),
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.onProblem', 'Only reveals the problems panel if a problem is found.'),
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.never', 'Never reveals the problems panel when this task is executed.'),
+				nls.localize('JsonSchema.tasks.presentation.revealProBlems.always', 'Always reveals the proBlems panel when this task is executed.'),
+				nls.localize('JsonSchema.tasks.presentation.revealProBlems.onProBlem', 'Only reveals the proBlems panel if a proBlem is found.'),
+				nls.localize('JsonSchema.tasks.presentation.revealProBlems.never', 'Never reveals the proBlems panel when this task is executed.'),
 			],
 			default: 'never',
-			description: nls.localize('JsonSchema.tasks.presentation.revealProblems', 'Controls whether the problems panel is revealed when running this task or not. Takes precedence over option \"reveal\". Default is \"never\".')
+			description: nls.localize('JsonSchema.tasks.presentation.revealProBlems', 'Controls whether the proBlems panel is revealed when running this task or not. Takes precedence over option \"reveal\". Default is \"never\".')
 		},
 		reveal: {
 			type: 'string',
 			enum: ['always', 'silent', 'never'],
 			enumDescriptions: [
 				nls.localize('JsonSchema.tasks.presentation.reveal.always', 'Always reveals the terminal when this task is executed.'),
-				nls.localize('JsonSchema.tasks.presentation.reveal.silent', 'Only reveals the terminal if the task exits with an error or the problem matcher finds an error.'),
+				nls.localize('JsonSchema.tasks.presentation.reveal.silent', 'Only reveals the terminal if the task exits with an error or the proBlem matcher finds an error.'),
 				nls.localize('JsonSchema.tasks.presentation.reveal.never', 'Never reveals the terminal when this task is executed.'),
 			],
 			default: 'always',
-			description: nls.localize('JsonSchema.tasks.presentation.reveal', 'Controls whether the terminal running the task is revealed or not. May be overridden by option \"revealProblems\". Default is \"always\".')
+			description: nls.localize('JsonSchema.tasks.presentation.reveal', 'Controls whether the terminal running the task is revealed or not. May Be overridden By option \"revealProBlems\". Default is \"always\".')
 		},
 		panel: {
 			type: 'string',
 			enum: ['shared', 'dedicated', 'new'],
 			default: 'shared',
-			description: nls.localize('JsonSchema.tasks.presentation.instance', 'Controls if the panel is shared between tasks, dedicated to this task or a new one is created on every run.')
+			description: nls.localize('JsonSchema.tasks.presentation.instance', 'Controls if the panel is shared Between tasks, dedicated to this task or a new one is created on every run.')
 		},
 		showReuseMessage: {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
-			description: nls.localize('JsonSchema.tasks.presentation.showReuseMessage', 'Controls whether to show the `Terminal will be reused by tasks, press any key to close it` message.')
+			description: nls.localize('JsonSchema.tasks.presentation.showReuseMessage', 'Controls whether to show the `Terminal will Be reused By tasks, press any key to close it` message.')
 		},
 		clear: {
-			type: 'boolean',
+			type: 'Boolean',
 			default: false,
-			description: nls.localize('JsonSchema.tasks.presentation.clear', 'Controls whether the terminal is cleared before executing the task.')
+			description: nls.localize('JsonSchema.tasks.presentation.clear', 'Controls whether the terminal is cleared Before executing the task.')
 		},
 		group: {
 			type: 'string',
@@ -162,7 +162,7 @@ const presentation: IJSONSchema = {
 	}
 };
 
-const terminal: IJSONSchema = Objects.deepClone(presentation);
+const terminal: IJSONSchema = OBjects.deepClone(presentation);
 terminal.deprecationMessage = nls.localize('JsonSchema.tasks.terminal', 'The terminal property is deprecated. Use presentation instead');
 
 const group: IJSONSchema = {
@@ -171,7 +171,7 @@ const group: IJSONSchema = {
 			type: 'string',
 		},
 		{
-			type: 'object',
+			type: 'oBject',
 			properties: {
 				kind: {
 					type: 'string',
@@ -179,7 +179,7 @@ const group: IJSONSchema = {
 					description: nls.localize('JsonSchema.tasks.group.kind', 'The task\'s execution group.')
 				},
 				isDefault: {
-					type: 'boolean',
+					type: 'Boolean',
 					default: false,
 					description: nls.localize('JsonSchema.tasks.group.isDefault', 'Defines if this task is the default task in the group.')
 				}
@@ -187,20 +187,20 @@ const group: IJSONSchema = {
 		},
 	],
 	enum: [
-		{ kind: 'build', isDefault: true },
+		{ kind: 'Build', isDefault: true },
 		{ kind: 'test', isDefault: true },
-		'build',
+		'Build',
 		'test',
 		'none'
 	],
 	enumDescriptions: [
-		nls.localize('JsonSchema.tasks.group.defaultBuild', 'Marks the task as the default build task.'),
+		nls.localize('JsonSchema.tasks.group.defaultBuild', 'Marks the task as the default Build task.'),
 		nls.localize('JsonSchema.tasks.group.defaultTest', 'Marks the task as the default test task.'),
-		nls.localize('JsonSchema.tasks.group.build', 'Marks the task as a build task accessible through the \'Run Build Task\' command.'),
-		nls.localize('JsonSchema.tasks.group.test', 'Marks the task as a test task accessible through the \'Run Test Task\' command.'),
+		nls.localize('JsonSchema.tasks.group.Build', 'Marks the task as a Build task accessiBle through the \'Run Build Task\' command.'),
+		nls.localize('JsonSchema.tasks.group.test', 'Marks the task as a test task accessiBle through the \'Run Test Task\' command.'),
 		nls.localize('JsonSchema.tasks.group.none', 'Assigns the task to no group')
 	],
-	description: nls.localize('JsonSchema.tasks.group', 'Defines to which execution group this task belongs to. It supports "build" to add it to the build group and "test" to add it to the test group.')
+	description: nls.localize('JsonSchema.tasks.group', 'Defines to which execution group this task Belongs to. It supports "Build" to add it to the Build group and "test" to add it to the test group.')
 };
 
 const taskType: IJSONSchema = {
@@ -222,12 +222,12 @@ const command: IJSONSchema = {
 					items: {
 						type: 'string'
 					},
-					description: nls.localize('JsonSchema.commandArray', 'The shell command to be executed. Array items will be joined using a space character')
+					description: nls.localize('JsonSchema.commandArray', 'The shell command to Be executed. Array items will Be joined using a space character')
 				}
 			]
 		},
 		{
-			type: 'object',
+			type: 'oBject',
 			required: ['value', 'quoting'],
 			properties: {
 				value: {
@@ -240,7 +240,7 @@ const command: IJSONSchema = {
 							items: {
 								type: 'string'
 							},
-							description: nls.localize('JsonSchema.commandArray', 'The shell command to be executed. Array items will be joined using a space character')
+							description: nls.localize('JsonSchema.commandArray', 'The shell command to Be executed. Array items will Be joined using a space character')
 						}
 					],
 					description: nls.localize('JsonSchema.command.quotedString.value', 'The actual command value')
@@ -249,18 +249,18 @@ const command: IJSONSchema = {
 					type: 'string',
 					enum: ['escape', 'strong', 'weak'],
 					enumDescriptions: [
-						nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under bash).'),
-						nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and bash).'),
-						nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and bash).'),
+						nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under Bash).'),
+						nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and Bash).'),
+						nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and Bash).'),
 					],
 					default: 'strong',
-					description: nls.localize('JsonSchema.command.quotesString.quote', 'How the command value should be quoted.')
+					description: nls.localize('JsonSchema.command.quotesString.quote', 'How the command value should Be quoted.')
 				}
 			}
 
 		}
 	],
-	description: nls.localize('JsonSchema.command', 'The command to be executed. Can be an external program or a shell command.')
+	description: nls.localize('JsonSchema.command', 'The command to Be executed. Can Be an external program or a shell command.')
 };
 
 const args: IJSONSchema = {
@@ -271,7 +271,7 @@ const args: IJSONSchema = {
 				type: 'string',
 			},
 			{
-				type: 'object',
+				type: 'oBject',
 				required: ['value', 'quoting'],
 				properties: {
 					value: {
@@ -282,12 +282,12 @@ const args: IJSONSchema = {
 						type: 'string',
 						enum: ['escape', 'strong', 'weak'],
 						enumDescriptions: [
-							nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under bash).'),
-							nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and bash).'),
-							nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and bash).'),
+							nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under Bash).'),
+							nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and Bash).'),
+							nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and Bash).'),
 						],
 						default: 'strong',
-						description: nls.localize('JsonSchema.args.quotesString.quote', 'How the argument value should be quoted.')
+						description: nls.localize('JsonSchema.args.quotesString.quote', 'How the argument value should Be quoted.')
 					}
 				}
 
@@ -297,41 +297,41 @@ const args: IJSONSchema = {
 	description: nls.localize('JsonSchema.tasks.args', 'Arguments passed to the command when this task is invoked.')
 };
 
-const label: IJSONSchema = {
+const laBel: IJSONSchema = {
 	type: 'string',
-	description: nls.localize('JsonSchema.tasks.label', "The task's user interface label")
+	description: nls.localize('JsonSchema.tasks.laBel', "The task's user interface laBel")
 };
 
 const version: IJSONSchema = {
 	type: 'string',
 	enum: ['2.0.0'],
-	description: nls.localize('JsonSchema.version', 'The config\'s version number.')
+	description: nls.localize('JsonSchema.version', 'The config\'s version numBer.')
 };
 
 const identifier: IJSONSchema = {
 	type: 'string',
 	description: nls.localize('JsonSchema.tasks.identifier', 'A user defined identifier to reference the task in launch.json or a dependsOn clause.'),
-	deprecationMessage: nls.localize('JsonSchema.tasks.identifier.deprecated', 'User defined identifiers are deprecated. For custom task use the name as a reference and for tasks provided by extensions use their defined task identifier.')
+	deprecationMessage: nls.localize('JsonSchema.tasks.identifier.deprecated', 'User defined identifiers are deprecated. For custom task use the name as a reference and for tasks provided By extensions use their defined task identifier.')
 };
 
 const runOptions: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	additionalProperties: false,
 	properties: {
 		reevaluateOnRerun: {
-			type: 'boolean',
-			description: nls.localize('JsonSchema.tasks.reevaluateOnRerun', 'Whether to reevaluate task variables on rerun.'),
+			type: 'Boolean',
+			description: nls.localize('JsonSchema.tasks.reevaluateOnRerun', 'Whether to reevaluate task variaBles on rerun.'),
 			default: true
 		},
 		runOn: {
 			type: 'string',
 			enum: ['default', 'folderOpen'],
-			description: nls.localize('JsonSchema.tasks.runOn', 'Configures when the task should be run. If set to folderOpen, then the task will be run automatically when the folder is opened.'),
+			description: nls.localize('JsonSchema.tasks.runOn', 'Configures when the task should Be run. If set to folderOpen, then the task will Be run automatically when the folder is opened.'),
 			default: 'default'
 		},
 		instanceLimit: {
-			type: 'number',
-			description: nls.localize('JsonSchema.tasks.instanceLimit', 'The number of instances of the task that are allowed to run simultaneously.'),
+			type: 'numBer',
+			description: nls.localize('JsonSchema.tasks.instanceLimit', 'The numBer of instances of the task that are allowed to run simultaneously.'),
 			default: 1
 		},
 	},
@@ -339,52 +339,52 @@ const runOptions: IJSONSchema = {
 };
 
 const commonSchemaDefinitions = commonSchema.definitions!;
-const options: IJSONSchema = Objects.deepClone(commonSchemaDefinitions.options);
+const options: IJSONSchema = OBjects.deepClone(commonSchemaDefinitions.options);
 const optionsProperties = options.properties!;
-optionsProperties.shell = Objects.deepClone(commonSchemaDefinitions.shellConfiguration);
+optionsProperties.shell = OBjects.deepClone(commonSchemaDefinitions.shellConfiguration);
 
 let taskConfiguration: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	additionalProperties: false,
 	properties: {
-		label: {
+		laBel: {
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.taskLabel', "The task's label")
+			description: nls.localize('JsonSchema.tasks.taskLaBel', "The task's laBel")
 		},
 		taskName: {
 			type: 'string',
 			description: nls.localize('JsonSchema.tasks.taskName', 'The task\'s name'),
-			deprecationMessage: nls.localize('JsonSchema.tasks.taskName.deprecated', 'The task\'s name property is deprecated. Use the label property instead.')
+			deprecationMessage: nls.localize('JsonSchema.tasks.taskName.deprecated', 'The task\'s name property is deprecated. Use the laBel property instead.')
 		},
-		identifier: Objects.deepClone(identifier),
-		group: Objects.deepClone(group),
+		identifier: OBjects.deepClone(identifier),
+		group: OBjects.deepClone(group),
 		isBackground: {
-			type: 'boolean',
-			description: nls.localize('JsonSchema.tasks.background', 'Whether the executed task is kept alive and is running in the background.'),
+			type: 'Boolean',
+			description: nls.localize('JsonSchema.tasks.Background', 'Whether the executed task is kept alive and is running in the Background.'),
 			default: true
 		},
 		promptOnClose: {
-			type: 'boolean',
+			type: 'Boolean',
 			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VS Code closes with a running task.'),
 			default: false
 		},
-		presentation: Objects.deepClone(presentation),
+		presentation: OBjects.deepClone(presentation),
 		options: options,
-		problemMatcher: {
-			$ref: '#/definitions/problemMatcherType',
-			description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+		proBlemMatcher: {
+			$ref: '#/definitions/proBlemMatcherType',
+			description: nls.localize('JsonSchema.tasks.matchers', 'The proBlem matcher(s) to use. Can either Be a string or a proBlem matcher definition or an array of strings and proBlem matchers.')
 		},
-		runOptions: Objects.deepClone(runOptions),
-		dependsOn: Objects.deepClone(dependsOn),
-		dependsOrder: Objects.deepClone(dependsOrder),
-		detail: Objects.deepClone(detail),
+		runOptions: OBjects.deepClone(runOptions),
+		dependsOn: OBjects.deepClone(dependsOn),
+		dependsOrder: OBjects.deepClone(dependsOrder),
+		detail: OBjects.deepClone(detail),
 	}
 };
 
 let taskDefinitions: IJSONSchema[] = [];
 TaskDefinitionRegistry.onReady().then(() => {
 	for (let taskType of TaskDefinitionRegistry.all()) {
-		let schema: IJSONSchema = Objects.deepClone(taskConfiguration);
+		let schema: IJSONSchema = OBjects.deepClone(taskConfiguration);
 		const schemaProperties = schema.properties!;
 		// Since we do this after the schema is assigned we need to patch the refs.
 		schemaProperties.type = {
@@ -397,12 +397,12 @@ TaskDefinitionRegistry.onReady().then(() => {
 		} else {
 			schema.required = [];
 		}
-		// Customized tasks require that the task type be set.
+		// Customized tasks require that the task type Be set.
 		schema.required.push('type');
 		if (taskType.properties) {
-			for (let key of Object.keys(taskType.properties)) {
+			for (let key of OBject.keys(taskType.properties)) {
 				let property = taskType.properties[key];
-				schemaProperties[key] = Objects.deepClone(property);
+				schemaProperties[key] = OBjects.deepClone(property);
 			}
 		}
 		fixReferences(schema);
@@ -410,7 +410,7 @@ TaskDefinitionRegistry.onReady().then(() => {
 	}
 });
 
-let customize = Objects.deepClone(taskConfiguration);
+let customize = OBjects.deepClone(taskConfiguration);
 customize.properties!.customize = {
 	type: 'string',
 	deprecationMessage: nls.localize('JsonSchema.tasks.customize.deprecated', 'The customize property is deprecated. See the 1.14 release notes on how to migrate to the new task customization approach')
@@ -421,32 +421,32 @@ if (!customize.required) {
 customize.required.push('customize');
 taskDefinitions.push(customize);
 
-let definitions = Objects.deepClone(commonSchemaDefinitions);
+let definitions = OBjects.deepClone(commonSchemaDefinitions);
 let taskDescription: IJSONSchema = definitions.taskDescription;
-taskDescription.required = ['label'];
+taskDescription.required = ['laBel'];
 const taskDescriptionProperties = taskDescription.properties!;
-taskDescriptionProperties.label = Objects.deepClone(label);
-taskDescriptionProperties.command = Objects.deepClone(command);
-taskDescriptionProperties.args = Objects.deepClone(args);
-taskDescriptionProperties.isShellCommand = Objects.deepClone(shellCommand);
+taskDescriptionProperties.laBel = OBjects.deepClone(laBel);
+taskDescriptionProperties.command = OBjects.deepClone(command);
+taskDescriptionProperties.args = OBjects.deepClone(args);
+taskDescriptionProperties.isShellCommand = OBjects.deepClone(shellCommand);
 taskDescriptionProperties.dependsOn = dependsOn;
 taskDescriptionProperties.dependsOrder = dependsOrder;
-taskDescriptionProperties.identifier = Objects.deepClone(identifier);
-taskDescriptionProperties.type = Objects.deepClone(taskType);
-taskDescriptionProperties.presentation = Objects.deepClone(presentation);
+taskDescriptionProperties.identifier = OBjects.deepClone(identifier);
+taskDescriptionProperties.type = OBjects.deepClone(taskType);
+taskDescriptionProperties.presentation = OBjects.deepClone(presentation);
 taskDescriptionProperties.terminal = terminal;
-taskDescriptionProperties.group = Objects.deepClone(group);
-taskDescriptionProperties.runOptions = Objects.deepClone(runOptions);
+taskDescriptionProperties.group = OBjects.deepClone(group);
+taskDescriptionProperties.runOptions = OBjects.deepClone(runOptions);
 taskDescriptionProperties.detail = detail;
 taskDescriptionProperties.taskName.deprecationMessage = nls.localize(
 	'JsonSchema.tasks.taskName.deprecated',
-	'The task\'s name property is deprecated. Use the label property instead.'
+	'The task\'s name property is deprecated. Use the laBel property instead.'
 );
 taskDescription.default = {
-	label: 'My Task',
+	laBel: 'My Task',
 	type: 'shell',
 	command: 'echo Hello',
-	problemMatcher: []
+	proBlemMatcher: []
 };
 definitions.showOutputType.deprecationMessage = nls.localize(
 	'JsonSchema.tasks.showOutput.deprecated',
@@ -469,8 +469,8 @@ taskDescriptionProperties.isTestCommand.deprecationMessage = nls.localize(
 	'The property isTestCommand is deprecated. Use the group property instead. See also the 1.14 release notes.'
 );
 
-// Process tasks are almost identical schema-wise to shell tasks, but they are required to have a command
-const processTask = Objects.deepClone(taskDescription);
+// Process tasks are almost identical schema-wise to shell tasks, But they are required to have a command
+const processTask = OBjects.deepClone(taskDescription);
 processTask.properties!.type = {
 	type: 'string',
 	enum: ['process'],
@@ -494,16 +494,16 @@ tasks.items = {
 
 definitionsTaskRunnerConfigurationProperties.inputs = inputsSchema.definitions!.inputs;
 
-definitions.commandConfiguration.properties!.isShellCommand = Objects.deepClone(shellCommand);
-definitions.commandConfiguration.properties!.args = Objects.deepClone(args);
+definitions.commandConfiguration.properties!.isShellCommand = OBjects.deepClone(shellCommand);
+definitions.commandConfiguration.properties!.args = OBjects.deepClone(args);
 definitions.options.properties!.shell = {
 	$ref: '#/definitions/shellConfiguration'
 };
 
-definitionsTaskRunnerConfigurationProperties.isShellCommand = Objects.deepClone(shellCommand);
-definitionsTaskRunnerConfigurationProperties.type = Objects.deepClone(taskType);
-definitionsTaskRunnerConfigurationProperties.group = Objects.deepClone(group);
-definitionsTaskRunnerConfigurationProperties.presentation = Objects.deepClone(presentation);
+definitionsTaskRunnerConfigurationProperties.isShellCommand = OBjects.deepClone(shellCommand);
+definitionsTaskRunnerConfigurationProperties.type = OBjects.deepClone(taskType);
+definitionsTaskRunnerConfigurationProperties.group = OBjects.deepClone(group);
+definitionsTaskRunnerConfigurationProperties.presentation = OBjects.deepClone(presentation);
 definitionsTaskRunnerConfigurationProperties.suppressTaskName.deprecationMessage = nls.localize(
 	'JsonSchema.tasks.suppressTaskName.deprecated',
 	'The property suppressTaskName is deprecated. Inline the command with its arguments into the task instead. See also the 1.14 release notes.'
@@ -513,21 +513,21 @@ definitionsTaskRunnerConfigurationProperties.taskSelector.deprecationMessage = n
 	'The property taskSelector is deprecated. Inline the command with its arguments into the task instead. See also the 1.14 release notes.'
 );
 
-let osSpecificTaskRunnerConfiguration = Objects.deepClone(definitions.taskRunnerConfiguration);
+let osSpecificTaskRunnerConfiguration = OBjects.deepClone(definitions.taskRunnerConfiguration);
 delete osSpecificTaskRunnerConfiguration.properties!.tasks;
 osSpecificTaskRunnerConfiguration.additionalProperties = false;
 definitions.osSpecificTaskRunnerConfiguration = osSpecificTaskRunnerConfiguration;
-definitionsTaskRunnerConfigurationProperties.version = Objects.deepClone(version);
+definitionsTaskRunnerConfigurationProperties.version = OBjects.deepClone(version);
 
 const schema: IJSONSchema = {
 	oneOf: [
 		{
 			'allOf': [
 				{
-					type: 'object',
+					type: 'oBject',
 					required: ['version'],
 					properties: {
-						version: Objects.deepClone(version),
+						version: OBjects.deepClone(version),
 						windows: {
 							'$ref': '#/definitions/osSpecificTaskRunnerConfiguration',
 							'description': nls.localize('JsonSchema.windows', 'Windows specific command configuration')
@@ -552,37 +552,37 @@ const schema: IJSONSchema = {
 
 schema.definitions = definitions;
 
-function deprecatedVariableMessage(schemaMap: IJSONSchemaMap, property: string) {
+function deprecatedVariaBleMessage(schemaMap: IJSONSchemaMap, property: string) {
 	const mapAtProperty = schemaMap[property].properties!;
 	if (mapAtProperty) {
-		Object.keys(mapAtProperty).forEach(name => {
-			deprecatedVariableMessage(mapAtProperty, name);
+		OBject.keys(mapAtProperty).forEach(name => {
+			deprecatedVariaBleMessage(mapAtProperty, name);
 		});
 	} else {
-		ConfigurationResolverUtils.applyDeprecatedVariableMessage(schemaMap[property]);
+		ConfigurationResolverUtils.applyDeprecatedVariaBleMessage(schemaMap[property]);
 	}
 }
 
-Object.getOwnPropertyNames(definitions).forEach(key => {
+OBject.getOwnPropertyNames(definitions).forEach(key => {
 	let newKey = key + '2';
 	definitions[newKey] = definitions[key];
 	delete definitions[key];
-	deprecatedVariableMessage(definitions, newKey);
+	deprecatedVariaBleMessage(definitions, newKey);
 });
 fixReferences(schema);
 
-export function updateProblemMatchers() {
+export function updateProBlemMatchers() {
 	try {
-		let matcherIds = ProblemMatcherRegistry.keys().map(key => '$' + key);
-		definitions.problemMatcherType2.oneOf![0].enum = matcherIds;
-		(definitions.problemMatcherType2.oneOf![2].items as IJSONSchema).anyOf![0].enum = matcherIds;
+		let matcherIds = ProBlemMatcherRegistry.keys().map(key => '$' + key);
+		definitions.proBlemMatcherType2.oneOf![0].enum = matcherIds;
+		(definitions.proBlemMatcherType2.oneOf![2].items as IJSONSchema).anyOf![0].enum = matcherIds;
 	} catch (err) {
-		console.log('Installing problem matcher ids failed');
+		console.log('Installing proBlem matcher ids failed');
 	}
 }
 
-ProblemMatcherRegistry.onReady().then(() => {
-	updateProblemMatchers();
+ProBlemMatcherRegistry.onReady().then(() => {
+	updateProBlemMatchers();
 });
 
 export default schema;

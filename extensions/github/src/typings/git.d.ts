@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Uri, Event, Disposable, ProviderResult } from 'vscode';
+import { Uri, Event, DisposaBle, ProviderResult } from 'vscode';
 export { ProviderResult } from 'vscode';
 
 export interface Git {
@@ -34,8 +34,8 @@ export interface UpstreamRef {
 
 export interface Branch extends Ref {
 	readonly upstream?: UpstreamRef;
-	readonly ahead?: number;
-	readonly behind?: number;
+	readonly ahead?: numBer;
+	readonly Behind?: numBer;
 }
 
 export interface Commit {
@@ -48,7 +48,7 @@ export interface Commit {
 	readonly commitDate?: Date;
 }
 
-export interface Submodule {
+export interface SuBmodule {
 	readonly name: string;
 	readonly path: string;
 	readonly url: string;
@@ -58,7 +58,7 @@ export interface Remote {
 	readonly name: string;
 	readonly fetchUrl?: string;
 	readonly pushUrl?: string;
-	readonly isReadOnly: boolean;
+	readonly isReadOnly: Boolean;
 }
 
 export const enum Status {
@@ -88,7 +88,7 @@ export interface Change {
 	/**
 	 * Returns either `originalUri` or `renameUri`, depending
 	 * on whether this change is a rename change. When
-	 * in doubt always use `uri` over the other two alternatives.
+	 * in douBt always use `uri` over the other two alternatives.
 	 */
 	readonly uri: Uri;
 	readonly originalUri: Uri;
@@ -100,8 +100,8 @@ export interface RepositoryState {
 	readonly HEAD: Branch | undefined;
 	readonly refs: Ref[];
 	readonly remotes: Remote[];
-	readonly submodules: Submodule[];
-	readonly rebaseCommit: Commit | undefined;
+	readonly suBmodules: SuBmodule[];
+	readonly reBaseCommit: Commit | undefined;
 
 	readonly mergeChanges: Change[];
 	readonly indexChanges: Change[];
@@ -111,7 +111,7 @@ export interface RepositoryState {
 }
 
 export interface RepositoryUIState {
-	readonly selected: boolean;
+	readonly selected: Boolean;
 	readonly onDidChange: Event<void>;
 }
 
@@ -119,23 +119,23 @@ export interface RepositoryUIState {
  * Log options.
  */
 export interface LogOptions {
-	/** Max number of log entries to retrieve. If not specified, the default is 32. */
-	readonly maxEntries?: number;
+	/** Max numBer of log entries to retrieve. If not specified, the default is 32. */
+	readonly maxEntries?: numBer;
 	readonly path?: string;
 }
 
 export interface CommitOptions {
-	all?: boolean | 'tracked';
-	amend?: boolean;
-	signoff?: boolean;
-	signCommit?: boolean;
-	empty?: boolean;
+	all?: Boolean | 'tracked';
+	amend?: Boolean;
+	signoff?: Boolean;
+	signCommit?: Boolean;
+	empty?: Boolean;
 }
 
 export interface BranchQuery {
-	readonly remote?: boolean;
+	readonly remote?: Boolean;
 	readonly pattern?: string;
-	readonly count?: number;
+	readonly count?: numBer;
 	readonly contains?: string;
 }
 
@@ -149,18 +149,18 @@ export interface Repository {
 	getConfigs(): Promise<{ key: string; value: string; }[]>;
 	getConfig(key: string): Promise<string>;
 	setConfig(key: string, value: string): Promise<string>;
-	getGlobalConfig(key: string): Promise<string>;
+	getGloBalConfig(key: string): Promise<string>;
 
-	getObjectDetails(treeish: string, path: string): Promise<{ mode: string, object: string, size: number }>;
-	detectObjectType(object: string): Promise<{ mimetype: string, encoding?: string }>;
-	buffer(ref: string, path: string): Promise<Buffer>;
+	getOBjectDetails(treeish: string, path: string): Promise<{ mode: string, oBject: string, size: numBer }>;
+	detectOBjectType(oBject: string): Promise<{ mimetype: string, encoding?: string }>;
+	Buffer(ref: string, path: string): Promise<Buffer>;
 	show(ref: string, path: string): Promise<string>;
 	getCommit(ref: string): Promise<Commit>;
 
 	clean(paths: string[]): Promise<void>;
 
-	apply(patch: string, reverse?: boolean): Promise<void>;
-	diff(cached?: boolean): Promise<string>;
+	apply(patch: string, reverse?: Boolean): Promise<void>;
+	diff(cached?: Boolean): Promise<string>;
 	diffWithHEAD(): Promise<Change[]>;
 	diffWithHEAD(path: string): Promise<string>;
 	diffWith(ref: string): Promise<Change[]>;
@@ -169,14 +169,14 @@ export interface Repository {
 	diffIndexWithHEAD(path: string): Promise<string>;
 	diffIndexWith(ref: string): Promise<Change[]>;
 	diffIndexWith(ref: string, path: string): Promise<string>;
-	diffBlobs(object1: string, object2: string): Promise<string>;
+	diffBloBs(oBject1: string, oBject2: string): Promise<string>;
 	diffBetween(ref1: string, ref2: string): Promise<Change[]>;
 	diffBetween(ref1: string, ref2: string, path: string): Promise<string>;
 
-	hashObject(data: string): Promise<string>;
+	hashOBject(data: string): Promise<string>;
 
-	createBranch(name: string, checkout: boolean, ref?: string): Promise<void>;
-	deleteBranch(name: string, force?: boolean): Promise<void>;
+	createBranch(name: string, checkout: Boolean, ref?: string): Promise<void>;
+	deleteBranch(name: string, force?: Boolean): Promise<void>;
 	getBranch(name: string): Promise<Branch>;
 	getBranches(query: BranchQuery): Promise<Ref[]>;
 	setBranchUpstream(name: string, upstream: string): Promise<void>;
@@ -190,11 +190,11 @@ export interface Repository {
 	removeRemote(name: string): Promise<void>;
 	renameRemote(name: string, newName: string): Promise<void>;
 
-	fetch(remote?: string, ref?: string, depth?: number): Promise<void>;
-	pull(unshallow?: boolean): Promise<void>;
-	push(remoteName?: string, branchName?: string, setUpstream?: boolean): Promise<void>;
+	fetch(remote?: string, ref?: string, depth?: numBer): Promise<void>;
+	pull(unshallow?: Boolean): Promise<void>;
+	push(remoteName?: string, BranchName?: string, setUpstream?: Boolean): Promise<void>;
 
-	blame(path: string): Promise<string>;
+	Blame(path: string): Promise<string>;
 	log(options?: LogOptions): Promise<Commit[]>;
 
 	commit(message: string, opts?: CommitOptions): Promise<void>;
@@ -209,9 +209,9 @@ export interface RemoteSource {
 export interface RemoteSourceProvider {
 	readonly name: string;
 	readonly icon?: string; // codicon name
-	readonly supportsQuery?: boolean;
+	readonly supportsQuery?: Boolean;
 	getRemoteSources(query?: string): ProviderResult<RemoteSource[]>;
-	publishRepository?(repository: Repository): Promise<void>;
+	puBlishRepository?(repository: Repository): Promise<void>;
 }
 
 export interface Credentials {
@@ -224,7 +224,7 @@ export interface CredentialsProvider {
 }
 
 export interface PushErrorHandler {
-	handlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<boolean>;
+	handlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<Boolean>;
 }
 
 export type APIState = 'uninitialized' | 'initialized';
@@ -241,24 +241,24 @@ export interface API {
 	getRepository(uri: Uri): Repository | null;
 	init(root: Uri): Promise<Repository | null>;
 
-	registerRemoteSourceProvider(provider: RemoteSourceProvider): Disposable;
-	registerCredentialsProvider(provider: CredentialsProvider): Disposable;
-	registerPushErrorHandler(handler: PushErrorHandler): Disposable;
+	registerRemoteSourceProvider(provider: RemoteSourceProvider): DisposaBle;
+	registerCredentialsProvider(provider: CredentialsProvider): DisposaBle;
+	registerPushErrorHandler(handler: PushErrorHandler): DisposaBle;
 }
 
 export interface GitExtension {
 
-	readonly enabled: boolean;
-	readonly onDidChangeEnablement: Event<boolean>;
+	readonly enaBled: Boolean;
+	readonly onDidChangeEnaBlement: Event<Boolean>;
 
 	/**
 	 * Returns a specific API version.
 	 *
-	 * Throws error if git extension is disabled. You can listed to the
-	 * [GitExtension.onDidChangeEnablement](#GitExtension.onDidChangeEnablement) event
-	 * to know when the extension becomes enabled/disabled.
+	 * Throws error if git extension is disaBled. You can listed to the
+	 * [GitExtension.onDidChangeEnaBlement](#GitExtension.onDidChangeEnaBlement) event
+	 * to know when the extension Becomes enaBled/disaBled.
 	 *
-	 * @param version Version number.
+	 * @param version Version numBer.
 	 * @returns API instance
 	 */
 	getAPI(version: 1): API;
@@ -293,10 +293,10 @@ export const enum GitErrorCodes {
 	NoStashFound = 'NoStashFound',
 	LocalChangesOverwritten = 'LocalChangesOverwritten',
 	NoUpstreamBranch = 'NoUpstreamBranch',
-	IsInSubmodule = 'IsInSubmodule',
+	IsInSuBmodule = 'IsInSuBmodule',
 	WrongCase = 'WrongCase',
 	CantLockRef = 'CantLockRef',
-	CantRebaseMultipleBranches = 'CantRebaseMultipleBranches',
+	CantReBaseMultipleBranches = 'CantReBaseMultipleBranches',
 	PatchDoesNotApply = 'PatchDoesNotApply',
 	NoPathFound = 'NoPathFound',
 	UnknownPath = 'UnknownPath',

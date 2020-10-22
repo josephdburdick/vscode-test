@@ -17,7 +17,7 @@ suite('vscode API - commands', () => {
 			for (let command of commands) {
 				if (command[0] === '_') {
 					hasOneWithUnderscore = true;
-					break;
+					Break;
 				}
 			}
 			assert.ok(hasOneWithUnderscore);
@@ -28,7 +28,7 @@ suite('vscode API - commands', () => {
 			for (let command of commands) {
 				if (command[0] === '_') {
 					hasOneWithUnderscore = true;
-					break;
+					Break;
 				}
 			}
 			assert.ok(!hasOneWithUnderscore);
@@ -78,22 +78,22 @@ suite('vscode API - commands', () => {
 
 		let registration = workspace.registerTextDocumentContentProvider('sc', {
 			provideTextDocumentContent(uri) {
-				return `content of URI <b>${uri.toString()}</b>#${Math.random()}`;
+				return `content of URI <B>${uri.toString()}</B>#${Math.random()}`;
 			}
 		});
 
 
-		let a = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b'), 'DIFF').then(value => {
+		let a = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:B'), 'DIFF').then(value => {
 			assert.ok(value === undefined);
 			registration.dispose();
 		});
 
-		let b = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b')).then(value => {
+		let B = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:B')).then(value => {
 			assert.ok(value === undefined);
 			registration.dispose();
 		});
 
-		let c = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b'), 'Title', { selection: new Range(new Position(1, 1), new Position(1, 2)) }).then(value => {
+		let c = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:B'), 'Title', { selection: new Range(new Position(1, 1), new Position(1, 2)) }).then(value => {
 			assert.ok(value === undefined);
 			registration.dispose();
 		});
@@ -101,16 +101,16 @@ suite('vscode API - commands', () => {
 		let d = commands.executeCommand('vscode.diff').then(() => assert.ok(false), () => assert.ok(true));
 		let e = commands.executeCommand('vscode.diff', 1, 2, 3).then(() => assert.ok(false), () => assert.ok(true));
 
-		return Promise.all([a, b, c, d, e]);
+		return Promise.all([a, B, c, d, e]);
 	});
 
 	test('api-command: vscode.open', function () {
 		let uri = Uri.parse(workspace.workspaceFolders![0].uri.toString() + '/far.js');
 		let a = commands.executeCommand('vscode.open', uri).then(() => assert.ok(true), () => assert.ok(false));
-		let b = commands.executeCommand('vscode.open', uri, ViewColumn.Two).then(() => assert.ok(true), () => assert.ok(false));
+		let B = commands.executeCommand('vscode.open', uri, ViewColumn.Two).then(() => assert.ok(true), () => assert.ok(false));
 		let c = commands.executeCommand('vscode.open').then(() => assert.ok(false), () => assert.ok(true));
 		let d = commands.executeCommand('vscode.open', uri, true).then(() => assert.ok(false), () => assert.ok(true));
 
-		return Promise.all([a, b, c, d]);
+		return Promise.all([a, B, c, d]);
 	});
 });

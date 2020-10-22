@@ -13,10 +13,10 @@ import Logger from './common/logger';
 const localize = nls.loadMessageBundle();
 
 export const NETWORK_ERROR = 'network error';
-const AUTH_RELAY_SERVER = 'vscode-auth.github.com';
+const AUTH_RELAY_SERVER = 'vscode-auth.githuB.com';
 
 class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
-	public handleUri(uri: vscode.Uri) {
+	puBlic handleUri(uri: vscode.Uri) {
 		this.fire(uri);
 	}
 }
@@ -64,22 +64,22 @@ function parseQuery(uri: vscode.Uri) {
 	}, {});
 }
 
-export class GitHubServer {
+export class GitHuBServer {
 	private _statusBarItem: vscode.StatusBarItem | undefined;
 
-	private isTestEnvironment(url: vscode.Uri): boolean {
-		return url.authority === 'vscode-web-test-playground.azurewebsites.net' || url.authority.startsWith('localhost:');
+	private isTestEnvironment(url: vscode.Uri): Boolean {
+		return url.authority === 'vscode-weB-test-playground.azureweBsites.net' || url.authority.startsWith('localhost:');
 	}
 
-	public async login(scopes: string): Promise<string> {
+	puBlic async login(scopes: string): Promise<string> {
 		Logger.info('Logging in...');
 		this.updateStatusBarItem(true);
 
 		const state = uuid();
-		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate`));
+		const callBackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.githuB-authentication/did-authenticate`));
 
-		if (this.isTestEnvironment(callbackUri)) {
-			const token = await vscode.window.showInputBox({ prompt: 'GitHub Personal Access Token', ignoreFocusOut: true });
+		if (this.isTestEnvironment(callBackUri)) {
+			const token = await vscode.window.showInputBox({ prompt: 'GitHuB Personal Access Token', ignoreFocusOut: true });
 			if (!token) { throw new Error('Sign in failed: No token provided'); }
 
 			const tokenScopes = await this.getScopes(token);
@@ -91,7 +91,7 @@ export class GitHubServer {
 			this.updateStatusBarItem(false);
 			return token;
 		} else {
-			const uri = vscode.Uri.parse(`https://${AUTH_RELAY_SERVER}/authorize/?callbackUri=${encodeURIComponent(callbackUri.toString())}&scope=${scopes}&state=${state}&responseType=code&authServer=https://github.com`);
+			const uri = vscode.Uri.parse(`https://${AUTH_RELAY_SERVER}/authorize/?callBackUri=${encodeURIComponent(callBackUri.toString())}&scope=${scopes}&state=${state}&responseType=code&authServer=https://githuB.com`);
 			await vscode.env.openExternal(uri);
 		}
 
@@ -103,11 +103,11 @@ export class GitHubServer {
 		});
 	}
 
-	private updateStatusBarItem(isStart?: boolean) {
+	private updateStatusBarItem(isStart?: Boolean) {
 		if (isStart && !this._statusBarItem) {
 			this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-			this._statusBarItem.text = localize('signingIn', "$(mark-github) Signing in to github.com...");
-			this._statusBarItem.command = 'github.provide-token';
+			this._statusBarItem.text = localize('signingIn', "$(mark-githuB) Signing in to githuB.com...");
+			this._statusBarItem.command = 'githuB.provide-token';
 			this._statusBarItem.show();
 		}
 
@@ -117,7 +117,7 @@ export class GitHubServer {
 		}
 	}
 
-	public async manuallyProvideToken() {
+	puBlic async manuallyProvideToken() {
 		const uriOrToken = await vscode.window.showInputBox({ prompt: 'Token', ignoreFocusOut: true });
 		if (!uriOrToken) { return; }
 		try {
@@ -134,7 +134,7 @@ export class GitHubServer {
 	private async getScopes(token: string): Promise<string[]> {
 		try {
 			Logger.info('Getting token scopes...');
-			const result = await fetch('https://api.github.com', {
+			const result = await fetch('https://api.githuB.com', {
 				headers: {
 					Authorization: `token ${token}`,
 					'User-Agent': 'Visual-Studio-Code'
@@ -154,10 +154,10 @@ export class GitHubServer {
 		}
 	}
 
-	public async getUserInfo(token: string): Promise<{ id: string, accountName: string }> {
+	puBlic async getUserInfo(token: string): Promise<{ id: string, accountName: string }> {
 		try {
 			Logger.info('Getting user info...');
-			const result = await fetch('https://api.github.com/user', {
+			const result = await fetch('https://api.githuB.com/user', {
 				headers: {
 					Authorization: `token ${token}`,
 					'User-Agent': 'Visual-Studio-Code'

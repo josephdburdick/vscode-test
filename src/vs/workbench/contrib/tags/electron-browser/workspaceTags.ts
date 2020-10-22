@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as crypto from 'crypto';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService, IFileStat } from 'vs/platform/files/common/files';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
-import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { ITextFileService, } from 'vs/workBench/services/textfile/common/textfiles';
+import { IWorkspaceTagsService, Tags } from 'vs/workBench/contriB/tags/common/workspaceTags';
 import { IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { isWindows } from 'vs/base/common/platform';
+import { isWindows } from 'vs/Base/common/platform';
 import { getRemotes, AllowedSecondLevelDomains, getDomainsOfRemotes } from 'vs/platform/extensionManagement/common/configRemotes';
 import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
-export function getHashedRemotesFromConfig(text: string, stripEndingDotGit: boolean = false): string[] {
+export function getHashedRemotesFromConfig(text: string, stripEndingDotGit: Boolean = false): string[] {
 	return getRemotes(text, stripEndingDotGit).map(r => {
 		return crypto.createHash('sha1').update(r).digest('hex');
 	});
 }
 
-export class WorkspaceTags implements IWorkbenchContribution {
+export class WorkspaceTags implements IWorkBenchContriBution {
 
 	constructor(
 		@IFileService private readonly fileService: IFileService,
@@ -68,12 +68,12 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			value = 'Unknown';
 		}
 
-		this.telemetryService.publicLog2<{ edition: string }, { edition: { classification: 'SystemMetaData', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: value });
+		this.telemetryService.puBlicLog2<{ edition: string }, { edition: { classification: 'SystemMetaData', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: value });
 	}
 
 	private async getWorkspaceInformation(): Promise<IWorkspaceInformation> {
 		const workspace = this.contextService.getWorkspace();
-		const state = this.contextService.getWorkbenchState();
+		const state = this.contextService.getWorkBenchState();
 		const telemetryId = this.workspaceTagsService.getTelemetryWorkspaceId(workspace, state);
 		return this.telemetryService.getTelemetryInfo().then(info => {
 			return {
@@ -94,7 +94,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 				]
 			}
 		*/
-		this.telemetryService.publicLog('workspce.tags', tags);
+		this.telemetryService.puBlicLog('workspce.tags', tags);
 	}
 
 	private reportRemoteDomains(workspaceUris: URI[]): void {
@@ -107,7 +107,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 				}
 				return this.textFileService.read(uri, { acceptTextOnly: true }).then(
 					content => getDomainsOfRemotes(content.value, AllowedSecondLevelDomains),
-					err => [] // ignore missing or binary file
+					err => [] // ignore missing or Binary file
 				);
 			});
 		})).then(domains => {
@@ -119,7 +119,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 					"domains" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog('workspace.remotes', { domains: list.sort() });
+			this.telemetryService.puBlicLog('workspace.remotes', { domains: list.sort() });
 		}, onUnexpectedError);
 	}
 
@@ -132,7 +132,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 						"remotes" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 					}
 				*/
-			this.telemetryService.publicLog('workspace.hashedRemotes', { remotes: hashedRemotes });
+			this.telemetryService.puBlicLog('workspace.hashedRemotes', { remotes: hashedRemotes });
 		}, onUnexpectedError);
 	}
 
@@ -161,7 +161,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			});
 	}
 
-	private static searchArray(arr: string[], regEx: RegExp): boolean | undefined {
+	private static searchArray(arr: string[], regEx: RegExp): Boolean | undefined {
 		return arr.some(v => v.search(regEx) > -1) || undefined;
 	}
 
@@ -192,11 +192,11 @@ export class WorkspaceTags implements IWorkbenchContribution {
 	}
 
 	private reportAzure(uris: URI[]) {
-		const tags: Tags = Object.create(null);
+		const tags: Tags = OBject.create(null);
 		this.reportAzureNode(uris, tags).then((tags) => {
 			return this.reportAzureJava(uris, tags);
 		}).then((tags) => {
-			if (Object.keys(tags).length) {
+			if (OBject.keys(tags).length) {
 				/* __GDPR__
 					"workspace.azure" : {
 						"${include}": [
@@ -204,7 +204,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 						]
 					}
 				*/
-				this.telemetryService.publicLog('workspace.azure', tags);
+				this.telemetryService.puBlicLog('workspace.azure', tags);
 			}
 		}).then(undefined, onUnexpectedError);
 	}
@@ -228,7 +228,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 				type ResolveProxyStatsClassification = {
 					type: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
 				};
-				this.telemetryService.publicLog2<{ type: String }, ResolveProxyStatsClassification>('resolveProxy.stats', { type });
+				this.telemetryService.puBlicLog2<{ type: String }, ResolveProxyStatsClassification>('resolveProxy.stats', { type });
 			}).then(undefined, onUnexpectedError);
 	}
 }

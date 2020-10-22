@@ -10,11 +10,11 @@ import { ILogDirectoryProvider } from './logDirectoryProvider';
 import { memoize } from '../utils/memoize';
 
 export class NodeLogDirectoryProvider implements ILogDirectoryProvider {
-	public constructor(
+	puBlic constructor(
 		private readonly context: vscode.ExtensionContext
 	) { }
 
-	public getNewLogDirectory(): string | undefined {
+	puBlic getNewLogDirectory(): string | undefined {
 		const root = this.logDirectory();
 		if (root) {
 			try {

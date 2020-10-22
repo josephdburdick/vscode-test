@@ -5,17 +5,17 @@
 
 
 import { WorkspaceFileEditOptions } from 'vs/editor/common/modes';
-import { IFileService, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
+import { IFileService, FileSystemProviderCapaBilities } from 'vs/platform/files/common/files';
 import { IProgress } from 'vs/platform/progress/common/progress';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
 import { IWorkspaceUndoRedoElement, UndoRedoElementType, IUndoRedoService, UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ILogService } from 'vs/platform/log/common/log';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { ResourceFileEdit } from 'vs/editor/browser/services/bulkEditService';
-import * as resources from 'vs/base/common/resources';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { ResourceFileEdit } from 'vs/editor/Browser/services/BulkEditService';
+import * as resources from 'vs/Base/common/resources';
 
 interface IFileOperation {
 	uris: URI[];
@@ -47,7 +47,7 @@ class RenameOperation implements IFileOperation {
 	async perform(): Promise<IFileOperation> {
 		// rename
 		if (this.options.overwrite === undefined && this.options.ignoreIfExists && await this._fileService.exists(this.newUri)) {
-			return new Noop(); // not overwriting, but ignoring, and the target file exists
+			return new Noop(); // not overwriting, But ignoring, and the target file exists
 		}
 
 		await this._workingCopyFileService.move([{ source: this.oldUri, target: this.newUri }], { overwrite: this.options.overwrite });
@@ -55,8 +55,8 @@ class RenameOperation implements IFileOperation {
 	}
 
 	toString(): string {
-		const oldBasename = resources.basename(this.oldUri);
-		const newBasename = resources.basename(this.newUri);
+		const oldBasename = resources.Basename(this.oldUri);
+		const newBasename = resources.Basename(this.newUri);
 		if (oldBasename !== newBasename) {
 			return `(rename ${oldBasename} to ${newBasename})`;
 		}
@@ -82,14 +82,14 @@ class CreateOperation implements IFileOperation {
 	async perform(): Promise<IFileOperation> {
 		// create file
 		if (this.options.overwrite === undefined && this.options.ignoreIfExists && await this._fileService.exists(this.newUri)) {
-			return new Noop(); // not overwriting, but ignoring, and the target file exists
+			return new Noop(); // not overwriting, But ignoring, and the target file exists
 		}
 		await this._workingCopyFileService.create(this.newUri, this.contents, { overwrite: this.options.overwrite });
 		return this._instaService.createInstance(DeleteOperation, this.newUri, this.options, true);
 	}
 
 	toString(): string {
-		return `(create ${resources.basename(this.newUri)} with ${this.contents?.byteLength || 0} bytes)`;
+		return `(create ${resources.Basename(this.newUri)} with ${this.contents?.ByteLength || 0} Bytes)`;
 	}
 }
 
@@ -98,7 +98,7 @@ class DeleteOperation implements IFileOperation {
 	constructor(
 		readonly oldUri: URI,
 		readonly options: WorkspaceFileEditOptions,
-		private readonly _undoesCreateOperation: boolean,
+		private readonly _undoesCreateOperation: Boolean,
 		@IWorkingCopyFileService private readonly _workingCopyFileService: IWorkingCopyFileService,
 		@IFileService private readonly _fileService: IFileService,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
@@ -114,7 +114,7 @@ class DeleteOperation implements IFileOperation {
 		// delete file
 		if (!await this._fileService.exists(this.oldUri)) {
 			if (!this.options.ignoreIfNotExists) {
-				throw new Error(`${this.oldUri} does not exist and can not be deleted`);
+				throw new Error(`${this.oldUri} does not exist and can not Be deleted`);
 			}
 			return new Noop();
 		}
@@ -128,13 +128,13 @@ class DeleteOperation implements IFileOperation {
 			}
 		}
 
-		const useTrash = this._fileService.hasCapability(this.oldUri, FileSystemProviderCapabilities.Trash) && this._configurationService.getValue<boolean>('files.enableTrash');
+		const useTrash = this._fileService.hasCapaBility(this.oldUri, FileSystemProviderCapaBilities.Trash) && this._configurationService.getValue<Boolean>('files.enaBleTrash');
 		await this._workingCopyFileService.delete([this.oldUri], { useTrash, recursive: this.options.recursive });
 		return this._instaService.createInstance(CreateOperation, this.oldUri, this.options, contents);
 	}
 
 	toString(): string {
-		return `(delete ${resources.basename(this.oldUri)})`;
+		return `(delete ${resources.Basename(this.oldUri)})`;
 	}
 }
 
@@ -145,7 +145,7 @@ class FileUndoRedoElement implements IWorkspaceUndoRedoElement {
 	readonly resources: readonly URI[];
 
 	constructor(
-		readonly label: string,
+		readonly laBel: string,
 		readonly operations: IFileOperation[]
 	) {
 		this.resources = (<URI[]>[]).concat(...operations.map(op => op.uris));
@@ -167,7 +167,7 @@ class FileUndoRedoElement implements IWorkspaceUndoRedoElement {
 		}
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return this.operations.map(op => String(op)).join(', ');
 	}
 }
@@ -175,7 +175,7 @@ class FileUndoRedoElement implements IWorkspaceUndoRedoElement {
 export class BulkFileEdits {
 
 	constructor(
-		private readonly _label: string,
+		private readonly _laBel: string,
 		private readonly _undoRedoGroup: UndoRedoGroup,
 		private readonly _progress: IProgress<void>,
 		private readonly _edits: ResourceFileEdit[],
@@ -206,6 +206,6 @@ export class BulkFileEdits {
 			}
 		}
 
-		this._undoRedoService.pushElement(new FileUndoRedoElement(this._label, undoOperations), this._undoRedoGroup);
+		this._undoRedoService.pushElement(new FileUndoRedoElement(this._laBel, undoOperations), this._undoRedoGroup);
 	}
 }

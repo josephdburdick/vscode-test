@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IUserDataSyncMachinesService, IUserDataSyncMachine } from 'vs/platform/userDataSync/common/userDataSyncMachines';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
-class UserDataSyncMachinesService extends Disposable implements IUserDataSyncMachinesService {
+class UserDataSyncMachinesService extends DisposaBle implements IUserDataSyncMachinesService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -41,8 +41,8 @@ class UserDataSyncMachinesService extends Disposable implements IUserDataSyncMac
 		return this.channel.call('renameMachine', [machineId, name]);
 	}
 
-	setEnablement(machineId: string, enabled: boolean): Promise<void> {
-		return this.channel.call('setEnablement', [machineId, enabled]);
+	setEnaBlement(machineId: string, enaBled: Boolean): Promise<void> {
+		return this.channel.call('setEnaBlement', [machineId, enaBled]);
 	}
 
 }

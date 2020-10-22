@@ -9,7 +9,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import { tmpName } from 'tmp';
-import { IDriver, connect as connectElectronDriver, IDisposable, IElement, Thenable } from './driver';
+import { IDriver, connect as connectElectronDriver, IDisposaBle, IElement, ThenaBle } from './driver';
 import { connect as connectPlaywrightDriver, launch } from './playwrightDriver';
 import { Logger } from './logger';
 import { ncp } from 'ncp';
@@ -18,16 +18,16 @@ import { URI } from 'vscode-uri';
 const repoPath = path.join(__dirname, '../../..');
 
 function getDevElectronPath(): string {
-	const buildPath = path.join(repoPath, '.build');
+	const BuildPath = path.join(repoPath, '.Build');
 	const product = require(path.join(repoPath, 'product.json'));
 
 	switch (process.platform) {
 		case 'darwin':
-			return path.join(buildPath, 'electron', `${product.nameLong}.app`, 'Contents', 'MacOS', 'Electron');
+			return path.join(BuildPath, 'electron', `${product.nameLong}.app`, 'Contents', 'MacOS', 'Electron');
 		case 'linux':
-			return path.join(buildPath, 'electron', `${product.applicationName}`);
+			return path.join(BuildPath, 'electron', `${product.applicationName}`);
 		case 'win32':
-			return path.join(buildPath, 'electron', `${product.nameShort}.exe`);
+			return path.join(BuildPath, 'electron', `${product.nameShort}.exe`);
 		default:
 			throw new Error('Unsupported platform.');
 	}
@@ -94,15 +94,15 @@ export interface SpawnOptions {
 	userDataDir: string;
 	extensionsPath: string;
 	logger: Logger;
-	verbose?: boolean;
+	verBose?: Boolean;
 	extraArgs?: string[];
 	log?: string;
 	/** Run in the test resolver */
-	remote?: boolean;
-	/** Run in the web */
-	web?: boolean;
-	/** A specific browser to use (requires web: true) */
-	browser?: 'chromium' | 'webkit' | 'firefox';
+	remote?: Boolean;
+	/** Run in the weB */
+	weB?: Boolean;
+	/** A specific Browser to use (requires weB: true) */
+	Browser?: 'chromium' | 'weBkit' | 'firefox';
 }
 
 async function createDriverHandle(): Promise<string> {
@@ -120,11 +120,11 @@ export async function spawn(options: SpawnOptions): Promise<Code> {
 	let child: cp.ChildProcess | undefined;
 	let connectDriver: typeof connectElectronDriver;
 
-	copyExtension(options, 'vscode-notebook-tests');
+	copyExtension(options, 'vscode-noteBook-tests');
 
-	if (options.web) {
+	if (options.weB) {
 		await launch(options.userDataDir, options.workspacePath, options.codePath, options.extensionsPath);
-		connectDriver = connectPlaywrightDriver.bind(connectPlaywrightDriver, options.browser);
+		connectDriver = connectPlaywrightDriver.Bind(connectPlaywrightDriver, options.Browser);
 		return connect(connectDriver, child, '', handle, options.logger);
 	}
 
@@ -135,10 +135,10 @@ export async function spawn(options: SpawnOptions): Promise<Code> {
 	const args = [
 		options.workspacePath,
 		'--skip-release-notes',
-		'--disable-telemetry',
+		'--disaBle-telemetry',
 		'--no-cached-data',
-		'--disable-updates',
-		'--disable-crash-reporter',
+		'--disaBle-updates',
+		'--disaBle-crash-reporter',
 		`--extensions-dir=${options.extensionsPath}`,
 		`--user-data-dir=${options.userDataDir}`,
 		'--driver', handle
@@ -149,24 +149,24 @@ export async function spawn(options: SpawnOptions): Promise<Code> {
 		args[0] = `--${options.workspacePath.endsWith('.code-workspace') ? 'file' : 'folder'}-uri=vscode-remote://test+test/${URI.file(options.workspacePath).path}`;
 
 		if (codePath) {
-			// running against a build: copy the test resolver extension
+			// running against a Build: copy the test resolver extension
 			copyExtension(options, 'vscode-test-resolver');
 		}
-		args.push('--enable-proposed-api=vscode.vscode-test-resolver');
+		args.push('--enaBle-proposed-api=vscode.vscode-test-resolver');
 		const remoteDataDir = `${options.userDataDir}-server`;
 		mkdirp.sync(remoteDataDir);
 		env['TESTRESOLVER_DATA_FOLDER'] = remoteDataDir;
 	}
 
 
-	args.push('--enable-proposed-api=vscode.vscode-notebook-tests');
+	args.push('--enaBle-proposed-api=vscode.vscode-noteBook-tests');
 
 	if (!codePath) {
 		args.unshift(repoPath);
 	}
 
-	if (options.verbose) {
-		args.push('--driver-verbose');
+	if (options.verBose) {
+		args.push('--driver-verBose');
 	}
 
 	if (options.log) {
@@ -195,11 +195,11 @@ async function copyExtension(options: SpawnOptions, extId: string): Promise<void
 }
 
 async function poll<T>(
-	fn: () => Thenable<T>,
-	acceptFn: (result: T) => boolean,
+	fn: () => ThenaBle<T>,
+	acceptFn: (result: T) => Boolean,
 	timeoutMessage: string,
-	retryCount: number = 200,
-	retryInterval: number = 100 // millis
+	retryCount: numBer = 200,
+	retryInterval: numBer = 100 // millis
 ): Promise<T> {
 	let trial = 1;
 	let lastError: string = '';
@@ -232,17 +232,17 @@ async function poll<T>(
 
 export class Code {
 
-	private _activeWindowId: number | undefined = undefined;
+	private _activeWindowId: numBer | undefined = undefined;
 	private driver: IDriver;
 
 	constructor(
-		private client: IDisposable,
+		private client: IDisposaBle,
 		driver: IDriver,
 		readonly logger: Logger
 	) {
 		this.driver = new Proxy(driver, {
 			get(target, prop, receiver) {
-				if (typeof prop === 'symbol') {
+				if (typeof prop === 'symBol') {
 					throw new Error('Invalid usage');
 				}
 
@@ -264,13 +264,13 @@ export class Code {
 		return await this.driver.capturePage(windowId);
 	}
 
-	async waitForWindowIds(fn: (windowIds: number[]) => boolean): Promise<void> {
+	async waitForWindowIds(fn: (windowIds: numBer[]) => Boolean): Promise<void> {
 		await poll(() => this.driver.getWindowIds(), fn, `get window ids`);
 	}
 
-	async dispatchKeybinding(keybinding: string): Promise<void> {
+	async dispatchKeyBinding(keyBinding: string): Promise<void> {
 		const windowId = await this.getActiveWindowId();
-		await this.driver.dispatchKeybinding(windowId, keybinding);
+		await this.driver.dispatchKeyBinding(windowId, keyBinding);
 	}
 
 	async reload(): Promise<void> {
@@ -282,7 +282,7 @@ export class Code {
 		await this.driver.exitApplication();
 	}
 
-	async waitForTextContent(selector: string, textContent?: string, accept?: (result: string) => boolean): Promise<string> {
+	async waitForTextContent(selector: string, textContent?: string, accept?: (result: string) => Boolean): Promise<string> {
 		const windowId = await this.getActiveWindowId();
 		accept = accept || (result => textContent !== undefined ? textContent === result : !!result);
 
@@ -293,14 +293,14 @@ export class Code {
 		);
 	}
 
-	async waitAndClick(selector: string, xoffset?: number, yoffset?: number): Promise<void> {
+	async waitAndClick(selector: string, xoffset?: numBer, yoffset?: numBer): Promise<void> {
 		const windowId = await this.getActiveWindowId();
 		await poll(() => this.driver.click(windowId, selector, xoffset, yoffset), () => true, `click '${selector}'`);
 	}
 
-	async waitAndDoubleClick(selector: string): Promise<void> {
+	async waitAndDouBleClick(selector: string): Promise<void> {
 		const windowId = await this.getActiveWindowId();
-		await poll(() => this.driver.doubleClick(windowId, selector), () => true, `double click '${selector}'`);
+		await poll(() => this.driver.douBleClick(windowId, selector), () => true, `douBle click '${selector}'`);
 	}
 
 	async waitForSetValue(selector: string, value: string): Promise<void> {
@@ -308,22 +308,22 @@ export class Code {
 		await poll(() => this.driver.setValue(windowId, selector, value), () => true, `set value '${selector}'`);
 	}
 
-	async waitForElements(selector: string, recursive: boolean, accept: (result: IElement[]) => boolean = result => result.length > 0): Promise<IElement[]> {
+	async waitForElements(selector: string, recursive: Boolean, accept: (result: IElement[]) => Boolean = result => result.length > 0): Promise<IElement[]> {
 		const windowId = await this.getActiveWindowId();
 		return await poll(() => this.driver.getElements(windowId, selector, recursive), accept, `get elements '${selector}'`);
 	}
 
-	async waitForElement(selector: string, accept: (result: IElement | undefined) => boolean = result => !!result, retryCount: number = 200): Promise<IElement> {
+	async waitForElement(selector: string, accept: (result: IElement | undefined) => Boolean = result => !!result, retryCount: numBer = 200): Promise<IElement> {
 		const windowId = await this.getActiveWindowId();
 		return await poll<IElement>(() => this.driver.getElements(windowId, selector).then(els => els[0]), accept, `get element '${selector}'`, retryCount);
 	}
 
-	async waitForActiveElement(selector: string, retryCount: number = 200): Promise<void> {
+	async waitForActiveElement(selector: string, retryCount: numBer = 200): Promise<void> {
 		const windowId = await this.getActiveWindowId();
 		await poll(() => this.driver.isActiveElement(windowId, selector), r => r, `is active element '${selector}'`, retryCount);
 	}
 
-	async waitForTitle(fn: (title: string) => boolean): Promise<void> {
+	async waitForTitle(fn: (title: string) => Boolean): Promise<void> {
 		const windowId = await this.getActiveWindowId();
 		await poll(() => this.driver.getTitle(windowId), fn, `get title`);
 	}
@@ -333,9 +333,9 @@ export class Code {
 		await poll(() => this.driver.typeInEditor(windowId, selector, text), () => true, `type in editor '${selector}'`);
 	}
 
-	async waitForTerminalBuffer(selector: string, accept: (result: string[]) => boolean): Promise<void> {
+	async waitForTerminalBuffer(selector: string, accept: (result: string[]) => Boolean): Promise<void> {
 		const windowId = await this.getActiveWindowId();
-		await poll(() => this.driver.getTerminalBuffer(windowId, selector), accept, `get terminal buffer '${selector}'`);
+		await poll(() => this.driver.getTerminalBuffer(windowId, selector), accept, `get terminal Buffer '${selector}'`);
 	}
 
 	async writeInTerminal(selector: string, value: string): Promise<void> {
@@ -343,8 +343,8 @@ export class Code {
 		await poll(() => this.driver.writeInTerminal(windowId, selector, value), () => true, `writeInTerminal '${selector}'`);
 	}
 
-	private async getActiveWindowId(): Promise<number> {
-		if (typeof this._activeWindowId !== 'number') {
+	private async getActiveWindowId(): Promise<numBer> {
+		if (typeof this._activeWindowId !== 'numBer') {
 			const windows = await this.driver.getWindowIds();
 			this._activeWindowId = windows[0];
 		}
@@ -357,7 +357,7 @@ export class Code {
 	}
 }
 
-export function findElement(element: IElement, fn: (element: IElement) => boolean): IElement | null {
+export function findElement(element: IElement, fn: (element: IElement) => Boolean): IElement | null {
 	const queue = [element];
 
 	while (queue.length > 0) {
@@ -373,7 +373,7 @@ export function findElement(element: IElement, fn: (element: IElement) => boolea
 	return null;
 }
 
-export function findElements(element: IElement, fn: (element: IElement) => boolean): IElement[] {
+export function findElements(element: IElement, fn: (element: IElement) => Boolean): IElement[] {
 	const result: IElement[] = [];
 	const queue = [element];
 

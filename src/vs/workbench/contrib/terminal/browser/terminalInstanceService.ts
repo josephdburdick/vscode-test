@@ -3,71 +3,71 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITerminalInstanceService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { IWindowsShellHelper, ITerminalChildProcess, IDefaultShellAndArgsRequest } from 'vs/workbench/contrib/terminal/common/terminal';
+import { ITerminalInstanceService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { IWindowsShellHelper, ITerminalChildProcess, IDefaultShellAndArgsRequest } from 'vs/workBench/contriB/terminal/common/terminal';
 import type { Terminal as XTermTerminal } from 'xterm';
 import type { SearchAddon as XTermSearchAddon } from 'xterm-addon-search';
 import type { Unicode11Addon as XTermUnicode11Addon } from 'xterm-addon-unicode11';
-import type { WebglAddon as XTermWebglAddon } from 'xterm-addon-webgl';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { Emitter, Event } from 'vs/base/common/event';
+import type { WeBglAddon as XTermWeBglAddon } from 'xterm-addon-weBgl';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
 let Terminal: typeof XTermTerminal;
 let SearchAddon: typeof XTermSearchAddon;
 let Unicode11Addon: typeof XTermUnicode11Addon;
-let WebglAddon: typeof XTermWebglAddon;
+let WeBglAddon: typeof XTermWeBglAddon;
 
 export class TerminalInstanceService implements ITerminalInstanceService {
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private readonly _onRequestDefaultShellAndArgs = new Emitter<IDefaultShellAndArgsRequest>();
-	public get onRequestDefaultShellAndArgs(): Event<IDefaultShellAndArgsRequest> { return this._onRequestDefaultShellAndArgs.event; }
+	puBlic get onRequestDefaultShellAndArgs(): Event<IDefaultShellAndArgsRequest> { return this._onRequestDefaultShellAndArgs.event; }
 
-	public async getXtermConstructor(): Promise<typeof XTermTerminal> {
+	puBlic async getXtermConstructor(): Promise<typeof XTermTerminal> {
 		if (!Terminal) {
 			Terminal = (await import('xterm')).Terminal;
 		}
 		return Terminal;
 	}
 
-	public async getXtermSearchConstructor(): Promise<typeof XTermSearchAddon> {
+	puBlic async getXtermSearchConstructor(): Promise<typeof XTermSearchAddon> {
 		if (!SearchAddon) {
 			SearchAddon = (await import('xterm-addon-search')).SearchAddon;
 		}
 		return SearchAddon;
 	}
 
-	public async getXtermUnicode11Constructor(): Promise<typeof XTermUnicode11Addon> {
+	puBlic async getXtermUnicode11Constructor(): Promise<typeof XTermUnicode11Addon> {
 		if (!Unicode11Addon) {
 			Unicode11Addon = (await import('xterm-addon-unicode11')).Unicode11Addon;
 		}
 		return Unicode11Addon;
 	}
 
-	public async getXtermWebglConstructor(): Promise<typeof XTermWebglAddon> {
-		if (!WebglAddon) {
-			WebglAddon = (await import('xterm-addon-webgl')).WebglAddon;
+	puBlic async getXtermWeBglConstructor(): Promise<typeof XTermWeBglAddon> {
+		if (!WeBglAddon) {
+			WeBglAddon = (await import('xterm-addon-weBgl')).WeBglAddon;
 		}
-		return WebglAddon;
+		return WeBglAddon;
 	}
 
-	public createWindowsShellHelper(): IWindowsShellHelper {
+	puBlic createWindowsShellHelper(): IWindowsShellHelper {
 		throw new Error('Not implemented');
 	}
 
-	public createTerminalProcess(): ITerminalChildProcess {
+	puBlic createTerminalProcess(): ITerminalChildProcess {
 		throw new Error('Not implemented');
 	}
 
-	public getDefaultShellAndArgs(useAutomationShell: boolean,): Promise<{ shell: string, args: string[] | string | undefined }> {
+	puBlic getDefaultShellAndArgs(useAutomationShell: Boolean,): Promise<{ shell: string, args: string[] | string | undefined }> {
 		return new Promise(r => this._onRequestDefaultShellAndArgs.fire({
 			useAutomationShell,
-			callback: (shell, args) => r({ shell, args })
+			callBack: (shell, args) => r({ shell, args })
 		}));
 	}
 
-	public async getMainProcessParentEnv(): Promise<IProcessEnvironment> {
+	puBlic async getMainProcessParentEnv(): Promise<IProcessEnvironment> {
 		return {};
 	}
 }

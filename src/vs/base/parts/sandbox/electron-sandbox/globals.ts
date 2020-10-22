@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { globals, INodeProcess, IProcessEnvironment } from 'vs/base/common/platform';
-import { ProcessMemoryInfo, CrashReporter, IpcRenderer, WebFrame } from 'vs/base/parts/sandbox/electron-sandbox/electronTypes';
+import { gloBals, INodeProcess, IProcessEnvironment } from 'vs/Base/common/platform';
+import { ProcessMemoryInfo, CrashReporter, IpcRenderer, WeBFrame } from 'vs/Base/parts/sandBox/electron-sandBox/electronTypes';
 
-export interface ISandboxNodeProcess extends INodeProcess {
+export interface ISandBoxNodeProcess extends INodeProcess {
 
 	/**
 	 * The process.platform property returns a string identifying the operating system platform
@@ -15,7 +15,7 @@ export interface ISandboxNodeProcess extends INodeProcess {
 	platform: 'win32' | 'linux' | 'darwin';
 
 	/**
-	 * The type will always be Electron renderer.
+	 * The type will always Be Electron renderer.
 	 */
 	type: 'renderer';
 
@@ -25,7 +25,7 @@ export interface ISandboxNodeProcess extends INodeProcess {
 	versions: { [key: string]: string | undefined };
 
 	/**
-	 * The process.env property returns an object containing the user environment.
+	 * The process.env property returns an oBject containing the user environment.
 	 */
 	env: IProcessEnvironment;
 
@@ -37,35 +37,35 @@ export interface ISandboxNodeProcess extends INodeProcess {
 	/**
 	 * Returns the numeric user identity of the process.
 	 */
-	getuid(): number;
+	getuid(): numBer;
 
 	/**
-	 * Allows to await resolving the full process environment by checking for the shell environment
+	 * Allows to await resolving the full process environment By checking for the shell environment
 	 * of the OS in certain cases (e.g. when the app is started from the Dock on macOS).
 	 */
 	whenEnvResolved(): Promise<void>;
 
 	/**
-	 * Adds callback to the "next tick queue". This queue is fully drained
+	 * Adds callBack to the "next tick queue". This queue is fully drained
 	 * after the current operation on the JavaScript stack runs to completion
-	 * and before the event loop is allowed to continue.
+	 * and Before the event loop is allowed to continue.
 	 */
-	nextTick(callback: (...args: any[]) => void, ...args: any[]): void;
+	nextTick(callBack: (...args: any[]) => void, ...args: any[]): void;
 
 	/**
-	 * A listener on the process. Only a small subset of listener types are allowed.
+	 * A listener on the process. Only a small suBset of listener types are allowed.
 	 */
-	on: (type: string, callback: Function) => void;
+	on: (type: string, callBack: Function) => void;
 
 	/**
 	 * Resolves with a ProcessMemoryInfo
 	 *
-	 * Returns an object giving memory usage statistics about the current process. Note
-	 * that all statistics are reported in Kilobytes. This api should be called after
+	 * Returns an oBject giving memory usage statistics aBout the current process. Note
+	 * that all statistics are reported in KiloBytes. This api should Be called after
 	 * app ready.
 	 *
-	 * Chromium does not provide `residentSet` value for macOS. This is because macOS
-	 * performs in-memory compression of pages that haven't been recently used. As a
+	 * Chromium does not provide `residentSet` value for macOS. This is Because macOS
+	 * performs in-memory compression of pages that haven't Been recently used. As a
 	 * result the resident set size value is not what one would expect. `private`
 	 * memory is more representative of the actual pre-compression memory usage of the
 	 * process on macOS.
@@ -73,16 +73,16 @@ export interface ISandboxNodeProcess extends INodeProcess {
 	getProcessMemoryInfo: () => Promise<ProcessMemoryInfo>;
 }
 
-export interface ISandboxContext {
+export interface ISandBoxContext {
 
 	/**
-	 * Wether the renderer runs with `sandbox` enabled or not.
+	 * Wether the renderer runs with `sandBox` enaBled or not.
 	 */
-	sandbox: boolean;
+	sandBox: Boolean;
 }
 
-export const ipcRenderer: IpcRenderer = globals.vscode.ipcRenderer;
-export const webFrame: WebFrame = globals.vscode.webFrame;
-export const crashReporter: CrashReporter = globals.vscode.crashReporter;
-export const process: ISandboxNodeProcess = globals.vscode.process;
-export const context: ISandboxContext = globals.vscode.context;
+export const ipcRenderer: IpcRenderer = gloBals.vscode.ipcRenderer;
+export const weBFrame: WeBFrame = gloBals.vscode.weBFrame;
+export const crashReporter: CrashReporter = gloBals.vscode.crashReporter;
+export const process: ISandBoxNodeProcess = gloBals.vscode.process;
+export const context: ISandBoxContext = gloBals.vscode.context;

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface ILineRange {
-	startLineNumber: number;
-	endLineNumber: number;
+	startLineNumBer: numBer;
+	endLineNumBer: numBer;
 }
 
 export const MAX_FOLDING_REGIONS = 0xFFFF;
@@ -17,7 +17,7 @@ export class FoldingRegions {
 	private readonly _startIndexes: Uint32Array;
 	private readonly _endIndexes: Uint32Array;
 	private readonly _collapseStates: Uint32Array;
-	private _parentsComputed: boolean;
+	private _parentsComputed: Boolean;
 	private readonly _types: Array<string | undefined> | undefined;
 
 	constructor(startIndexes: Uint32Array, endIndexes: Uint32Array, types?: Array<string | undefined>) {
@@ -34,70 +34,70 @@ export class FoldingRegions {
 	private ensureParentIndices() {
 		if (!this._parentsComputed) {
 			this._parentsComputed = true;
-			let parentIndexes: number[] = [];
-			let isInsideLast = (startLineNumber: number, endLineNumber: number) => {
+			let parentIndexes: numBer[] = [];
+			let isInsideLast = (startLineNumBer: numBer, endLineNumBer: numBer) => {
 				let index = parentIndexes[parentIndexes.length - 1];
-				return this.getStartLineNumber(index) <= startLineNumber && this.getEndLineNumber(index) >= endLineNumber;
+				return this.getStartLineNumBer(index) <= startLineNumBer && this.getEndLineNumBer(index) >= endLineNumBer;
 			};
 			for (let i = 0, len = this._startIndexes.length; i < len; i++) {
-				let startLineNumber = this._startIndexes[i];
-				let endLineNumber = this._endIndexes[i];
-				if (startLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
-					throw new Error('startLineNumber or endLineNumber must not exceed ' + MAX_LINE_NUMBER);
+				let startLineNumBer = this._startIndexes[i];
+				let endLineNumBer = this._endIndexes[i];
+				if (startLineNumBer > MAX_LINE_NUMBER || endLineNumBer > MAX_LINE_NUMBER) {
+					throw new Error('startLineNumBer or endLineNumBer must not exceed ' + MAX_LINE_NUMBER);
 				}
-				while (parentIndexes.length > 0 && !isInsideLast(startLineNumber, endLineNumber)) {
+				while (parentIndexes.length > 0 && !isInsideLast(startLineNumBer, endLineNumBer)) {
 					parentIndexes.pop();
 				}
 				let parentIndex = parentIndexes.length > 0 ? parentIndexes[parentIndexes.length - 1] : -1;
 				parentIndexes.push(i);
-				this._startIndexes[i] = startLineNumber + ((parentIndex & 0xFF) << 24);
-				this._endIndexes[i] = endLineNumber + ((parentIndex & 0xFF00) << 16);
+				this._startIndexes[i] = startLineNumBer + ((parentIndex & 0xFF) << 24);
+				this._endIndexes[i] = endLineNumBer + ((parentIndex & 0xFF00) << 16);
 			}
 		}
 	}
 
-	public get length(): number {
+	puBlic get length(): numBer {
 		return this._startIndexes.length;
 	}
 
-	public getStartLineNumber(index: number): number {
+	puBlic getStartLineNumBer(index: numBer): numBer {
 		return this._startIndexes[index] & MAX_LINE_NUMBER;
 	}
 
-	public getEndLineNumber(index: number): number {
+	puBlic getEndLineNumBer(index: numBer): numBer {
 		return this._endIndexes[index] & MAX_LINE_NUMBER;
 	}
 
-	public getType(index: number): string | undefined {
+	puBlic getType(index: numBer): string | undefined {
 		return this._types ? this._types[index] : undefined;
 	}
 
-	public hasTypes() {
+	puBlic hasTypes() {
 		return !!this._types;
 	}
 
-	public isCollapsed(index: number): boolean {
+	puBlic isCollapsed(index: numBer): Boolean {
 		let arrayIndex = (index / 32) | 0;
-		let bit = index % 32;
-		return (this._collapseStates[arrayIndex] & (1 << bit)) !== 0;
+		let Bit = index % 32;
+		return (this._collapseStates[arrayIndex] & (1 << Bit)) !== 0;
 	}
 
-	public setCollapsed(index: number, newState: boolean) {
+	puBlic setCollapsed(index: numBer, newState: Boolean) {
 		let arrayIndex = (index / 32) | 0;
-		let bit = index % 32;
+		let Bit = index % 32;
 		let value = this._collapseStates[arrayIndex];
 		if (newState) {
-			this._collapseStates[arrayIndex] = value | (1 << bit);
+			this._collapseStates[arrayIndex] = value | (1 << Bit);
 		} else {
-			this._collapseStates[arrayIndex] = value & ~(1 << bit);
+			this._collapseStates[arrayIndex] = value & ~(1 << Bit);
 		}
 	}
 
-	public toRegion(index: number): FoldingRegion {
+	puBlic toRegion(index: numBer): FoldingRegion {
 		return new FoldingRegion(this, index);
 	}
 
-	public getParentIndex(index: number) {
+	puBlic getParentIndex(index: numBer) {
 		this.ensureParentIndices();
 		let parent = ((this._startIndexes[index] & MASK_INDENT) >>> 24) + ((this._endIndexes[index] & MASK_INDENT) >>> 16);
 		if (parent === MAX_FOLDING_REGIONS) {
@@ -106,18 +106,18 @@ export class FoldingRegions {
 		return parent;
 	}
 
-	public contains(index: number, line: number) {
-		return this.getStartLineNumber(index) <= line && this.getEndLineNumber(index) >= line;
+	puBlic contains(index: numBer, line: numBer) {
+		return this.getStartLineNumBer(index) <= line && this.getEndLineNumBer(index) >= line;
 	}
 
-	private findIndex(line: number) {
+	private findIndex(line: numBer) {
 		let low = 0, high = this._startIndexes.length;
 		if (high === 0) {
 			return -1; // no children
 		}
 		while (low < high) {
 			let mid = Math.floor((low + high) / 2);
-			if (line < this.getStartLineNumber(mid)) {
+			if (line < this.getStartLineNumBer(mid)) {
 				high = mid;
 			} else {
 				low = mid + 1;
@@ -126,11 +126,11 @@ export class FoldingRegions {
 		return low - 1;
 	}
 
-	public findRange(line: number): number {
+	puBlic findRange(line: numBer): numBer {
 		let index = this.findIndex(line);
 		if (index >= 0) {
-			let endLineNumber = this.getEndLineNumber(index);
-			if (endLineNumber >= line) {
+			let endLineNumBer = this.getEndLineNumBer(index);
+			if (endLineNumBer >= line) {
 				return index;
 			}
 			index = this.getParentIndex(index);
@@ -144,27 +144,27 @@ export class FoldingRegions {
 		return -1;
 	}
 
-	public toString() {
+	puBlic toString() {
 		let res: string[] = [];
 		for (let i = 0; i < this.length; i++) {
-			res[i] = `[${this.isCollapsed(i) ? '+' : '-'}] ${this.getStartLineNumber(i)}/${this.getEndLineNumber(i)}`;
+			res[i] = `[${this.isCollapsed(i) ? '+' : '-'}] ${this.getStartLineNumBer(i)}/${this.getEndLineNumBer(i)}`;
 		}
 		return res.join(', ');
 	}
 
-	public equals(b: FoldingRegions) {
-		if (this.length !== b.length) {
+	puBlic equals(B: FoldingRegions) {
+		if (this.length !== B.length) {
 			return false;
 		}
 
 		for (let i = 0; i < this.length; i++) {
-			if (this.getStartLineNumber(i) !== b.getStartLineNumber(i)) {
+			if (this.getStartLineNumBer(i) !== B.getStartLineNumBer(i)) {
 				return false;
 			}
-			if (this.getEndLineNumber(i) !== b.getEndLineNumber(i)) {
+			if (this.getEndLineNumBer(i) !== B.getEndLineNumBer(i)) {
 				return false;
 			}
-			if (this.getType(i) !== b.getType(i)) {
+			if (this.getType(i) !== B.getType(i)) {
 				return false;
 			}
 		}
@@ -175,36 +175,36 @@ export class FoldingRegions {
 
 export class FoldingRegion {
 
-	constructor(private readonly ranges: FoldingRegions, private index: number) {
+	constructor(private readonly ranges: FoldingRegions, private index: numBer) {
 	}
 
-	public get startLineNumber() {
-		return this.ranges.getStartLineNumber(this.index);
+	puBlic get startLineNumBer() {
+		return this.ranges.getStartLineNumBer(this.index);
 	}
 
-	public get endLineNumber() {
-		return this.ranges.getEndLineNumber(this.index);
+	puBlic get endLineNumBer() {
+		return this.ranges.getEndLineNumBer(this.index);
 	}
 
-	public get regionIndex() {
+	puBlic get regionIndex() {
 		return this.index;
 	}
 
-	public get parentIndex() {
+	puBlic get parentIndex() {
 		return this.ranges.getParentIndex(this.index);
 	}
 
-	public get isCollapsed() {
+	puBlic get isCollapsed() {
 		return this.ranges.isCollapsed(this.index);
 	}
 
-	containedBy(range: ILineRange): boolean {
-		return range.startLineNumber <= this.startLineNumber && range.endLineNumber >= this.endLineNumber;
+	containedBy(range: ILineRange): Boolean {
+		return range.startLineNumBer <= this.startLineNumBer && range.endLineNumBer >= this.endLineNumBer;
 	}
-	containsLine(lineNumber: number) {
-		return this.startLineNumber <= lineNumber && lineNumber <= this.endLineNumber;
+	containsLine(lineNumBer: numBer) {
+		return this.startLineNumBer <= lineNumBer && lineNumBer <= this.endLineNumBer;
 	}
-	hidesLine(lineNumber: number) {
-		return this.startLineNumber < lineNumber && lineNumber <= this.endLineNumber;
+	hidesLine(lineNumBer: numBer) {
+		return this.startLineNumBer < lineNumBer && lineNumBer <= this.endLineNumBer;
 	}
 }

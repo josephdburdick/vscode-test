@@ -26,7 +26,7 @@ suite('StandardAutoClosingPairConditional', () => {
 	});
 
 	test('Invalid notIn', () => {
-		let v = new StandardAutoClosingPairConditional({ open: '{', close: '}', notIn: ['bla'] });
+		let v = new StandardAutoClosingPairConditional({ open: '{', close: '}', notIn: ['Bla'] });
 		assert.equal(v.isOK(StandardTokenType.Other), true);
 		assert.equal(v.isOK(StandardTokenType.Comment), true);
 		assert.equal(v.isOK(StandardTokenType.String), true);

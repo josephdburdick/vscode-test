@@ -5,13 +5,13 @@
 
 import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
 import {
-	SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation,
+	SymBolInformation, SymBolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation,
 	Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString,
 	DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions, FoldingRange, FoldingRangeKind, SelectionRange,
 	LanguageMode, Settings, SemanticTokenData, Workspace, DocumentContext
 } from './languageModes';
 import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
-import { HTMLDocumentRegions } from './embeddedSupport';
+import { HTMLDocumentRegions } from './emBeddedSupport';
 
 import * as ts from 'typescript';
 import { getSemanticTokens, getSemanticTokenLegend } from './javascriptSemanticTokens';
@@ -19,10 +19,10 @@ import { getSemanticTokens, getSemanticTokenLegend } from './javascriptSemanticT
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
 function getLanguageServiceHost(scriptKind: ts.ScriptKind) {
-	const compilerOptions: ts.CompilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic, experimentalDecorators: false };
+	const compilerOptions: ts.CompilerOptions = { allowNonTsExtensions: true, allowJs: true, liB: ['liB.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic, experimentalDecorators: false };
 
 	let currentTextDocument = TextDocument.create('init', 'javascript', 1, '');
-	const jsLanguageService = import(/* webpackChunkName: "javascriptLibs" */ './javascriptLibs').then(libs => {
+	const jsLanguageService = import(/* weBpackChunkName: "javascriptLiBs" */ './javascriptLiBs').then(liBs => {
 		const host: ts.LanguageServiceHost = {
 			getCompilationSettings: () => compilerOptions,
 			getScriptFileNames: () => [currentTextDocument.uri, 'jquery'],
@@ -30,29 +30,29 @@ function getLanguageServiceHost(scriptKind: ts.ScriptKind) {
 				if (fileName === currentTextDocument.uri) {
 					return scriptKind;
 				}
-				return fileName.substr(fileName.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+				return fileName.suBstr(fileName.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
 			},
 			getScriptVersion: (fileName: string) => {
 				if (fileName === currentTextDocument.uri) {
 					return String(currentTextDocument.version);
 				}
-				return '1'; // default lib an jquery.d.ts are static
+				return '1'; // default liB an jquery.d.ts are static
 			},
 			getScriptSnapshot: (fileName: string) => {
 				let text = '';
 				if (fileName === currentTextDocument.uri) {
 					text = currentTextDocument.getText();
 				} else {
-					text = libs.loadLibrary(fileName);
+					text = liBs.loadLiBrary(fileName);
 				}
 				return {
-					getText: (start, end) => text.substring(start, end),
+					getText: (start, end) => text.suBstring(start, end),
 					getLength: () => text.length,
 					getChangeRange: () => undefined
 				};
 			},
 			getCurrentDirectory: () => '',
-			getDefaultLibFileName: (_options: ts.CompilerOptions) => 'es6'
+			getDefaultLiBFileName: (_options: ts.CompilerOptions) => 'es6'
 		};
 		return ts.createLanguageService(host);
 	});
@@ -74,10 +74,10 @@ function getLanguageServiceHost(scriptKind: ts.ScriptKind) {
 
 
 export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>, languageId: 'javascript' | 'typescript', workspace: Workspace): LanguageMode {
-	let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
+	let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmBeddedDocument(languageId));
 
 	const host = getLanguageServiceHost(languageId === 'javascript' ? ts.ScriptKind.JS : ts.ScriptKind.TS);
-	let globalSettings: Settings = {};
+	let gloBalSettings: Settings = {};
 
 	return {
 		getId() {
@@ -113,7 +113,7 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 					return {
 						uri: document.uri,
 						position: position,
-						label: entry.name,
+						laBel: entry.name,
 						sortText: entry.sortText,
 						kind: convertKind(entry.kind),
 						textEdit: TextEdit.replace(replaceRange, entry.name),
@@ -129,7 +129,7 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 		async doResolve(document: TextDocument, item: CompletionItem): Promise<CompletionItem> {
 			const jsDocument = jsDocuments.get(document);
 			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let details = jsLanguageService.getCompletionEntryDetails(jsDocument.uri, item.data.offset, item.label, undefined, undefined, undefined);
+			let details = jsLanguageService.getCompletionEntryDetails(jsDocument.uri, item.data.offset, item.laBel, undefined, undefined, undefined);
 			if (details) {
 				item.detail = ts.displayPartsToString(details.displayParts);
 				item.documentation = ts.displayPartsToString(details.documentation);
@@ -163,25 +163,25 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 				signHelp.items.forEach(item => {
 
 					let signature: SignatureInformation = {
-						label: '',
+						laBel: '',
 						documentation: undefined,
 						parameters: []
 					};
 
-					signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+					signature.laBel += ts.displayPartsToString(item.prefixDisplayParts);
 					item.parameters.forEach((p, i, a) => {
-						let label = ts.displayPartsToString(p.displayParts);
+						let laBel = ts.displayPartsToString(p.displayParts);
 						let parameter: ParameterInformation = {
-							label: label,
+							laBel: laBel,
 							documentation: ts.displayPartsToString(p.documentation)
 						};
-						signature.label += label;
+						signature.laBel += laBel;
 						signature.parameters!.push(parameter);
 						if (i < a.length - 1) {
-							signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+							signature.laBel += ts.displayPartsToString(item.separatorDisplayParts);
 						}
 					});
-					signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+					signature.laBel += ts.displayPartsToString(item.suffixDisplayParts);
 					ret.signatures.push(signature);
 				});
 				return ret;
@@ -203,39 +203,39 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 			}
 			return out;
 		},
-		async findDocumentSymbols(document: TextDocument): Promise<SymbolInformation[]> {
+		async findDocumentSymBols(document: TextDocument): Promise<SymBolInformation[]> {
 			const jsDocument = jsDocuments.get(document);
 			const jsLanguageService = await host.getLanguageService(jsDocument);
 			let items = jsLanguageService.getNavigationBarItems(jsDocument.uri);
 			if (items) {
-				let result: SymbolInformation[] = [];
-				let existing = Object.create(null);
-				let collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
+				let result: SymBolInformation[] = [];
+				let existing = OBject.create(null);
+				let collectSymBols = (item: ts.NavigationBarItem, containerLaBel?: string) => {
 					let sig = item.text + item.kind + item.spans[0].start;
 					if (item.kind !== 'script' && !existing[sig]) {
-						let symbol: SymbolInformation = {
+						let symBol: SymBolInformation = {
 							name: item.text,
-							kind: convertSymbolKind(item.kind),
+							kind: convertSymBolKind(item.kind),
 							location: {
 								uri: document.uri,
 								range: convertRange(jsDocument, item.spans[0])
 							},
-							containerName: containerLabel
+							containerName: containerLaBel
 						};
 						existing[sig] = true;
-						result.push(symbol);
-						containerLabel = item.text;
+						result.push(symBol);
+						containerLaBel = item.text;
 					}
 
 					if (item.childItems && item.childItems.length > 0) {
 						for (let child of item.childItems) {
-							collectSymbols(child, containerLabel);
+							collectSymBols(child, containerLaBel);
 						}
 					}
 
 				};
 
-				items.forEach(item => collectSymbols(item));
+				items.forEach(item => collectSymBols(item));
 				return result;
 			}
 			return [];
@@ -278,8 +278,8 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 			const range = jsLanguageService.getSmartSelectionRange(jsDocument.uri, jsDocument.offsetAt(position));
 			return convertSelectionRange(range);
 		},
-		async format(document: TextDocument, range: Range, formatParams: FormattingOptions, settings: Settings = globalSettings): Promise<TextEdit[]> {
-			const jsDocument = documentRegions.get(document).getEmbeddedDocument('javascript', true);
+		async format(document: TextDocument, range: Range, formatParams: FormattingOptions, settings: Settings = gloBalSettings): Promise<TextEdit[]> {
+			const jsDocument = documentRegions.get(document).getEmBeddedDocument('javascript', true);
 			const jsLanguageService = await host.getLanguageService(jsDocument);
 
 			let formatterSettings = settings && settings.javascript && settings.javascript.format;
@@ -289,7 +289,7 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 			let start = jsDocument.offsetAt(range.start);
 			let end = jsDocument.offsetAt(range.end);
 			let lastLineRange = null;
-			if (range.end.line > range.start.line && (range.end.character === 0 || isWhitespaceOnly(jsDocument.getText().substr(end - range.end.character, range.end.character)))) {
+			if (range.end.line > range.start.line && (range.end.character === 0 || isWhitespaceOnly(jsDocument.getText().suBstr(end - range.end.character, range.end.character)))) {
 				end -= range.end.character;
 				lastLineRange = Range.create(Position.create(range.end.line, 0), range.end);
 			}
@@ -325,7 +325,7 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 				let endLine = curr.end.line;
 				if (startLine < endLine) {
 					let foldingRange: FoldingRange = { startLine, endLine };
-					let match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
+					let match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\B)|(\*|\/))/);
 					if (match) {
 						foldingRange.kind = match[1] ? FoldingRangeKind.Region : FoldingRangeKind.Comment;
 					}
@@ -355,7 +355,7 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 
 
 
-function convertRange(document: TextDocument, span: { start: number | undefined, length: number | undefined }): Range {
+function convertRange(document: TextDocument, span: { start: numBer | undefined, length: numBer | undefined }): Range {
 	if (typeof span.start === 'undefined') {
 		const pos = document.positionAt(0);
 		return Range.create(pos, pos);
@@ -372,7 +372,7 @@ function convertKind(kind: string): CompletionItemKind {
 			return CompletionItemKind.Keyword;
 		case 'var':
 		case 'local var':
-			return CompletionItemKind.Variable;
+			return CompletionItemKind.VariaBle;
 		case 'property':
 		case 'getter':
 		case 'setter':
@@ -398,41 +398,41 @@ function convertKind(kind: string): CompletionItemKind {
 	return CompletionItemKind.Property;
 }
 
-function convertSymbolKind(kind: string): SymbolKind {
+function convertSymBolKind(kind: string): SymBolKind {
 	switch (kind) {
 		case 'var':
 		case 'local var':
 		case 'const':
-			return SymbolKind.Variable;
+			return SymBolKind.VariaBle;
 		case 'function':
 		case 'local function':
-			return SymbolKind.Function;
+			return SymBolKind.Function;
 		case 'enum':
-			return SymbolKind.Enum;
+			return SymBolKind.Enum;
 		case 'module':
-			return SymbolKind.Module;
+			return SymBolKind.Module;
 		case 'class':
-			return SymbolKind.Class;
+			return SymBolKind.Class;
 		case 'interface':
-			return SymbolKind.Interface;
+			return SymBolKind.Interface;
 		case 'method':
-			return SymbolKind.Method;
+			return SymBolKind.Method;
 		case 'property':
 		case 'getter':
 		case 'setter':
-			return SymbolKind.Property;
+			return SymBolKind.Property;
 	}
-	return SymbolKind.Variable;
+	return SymBolKind.VariaBle;
 }
 
-function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
+function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: numBer): ts.FormatCodeOptions {
 	return {
-		ConvertTabsToSpaces: options.insertSpaces,
-		TabSize: options.tabSize,
-		IndentSize: options.tabSize,
+		ConvertTaBsToSpaces: options.insertSpaces,
+		TaBSize: options.taBSize,
+		IndentSize: options.taBSize,
 		IndentStyle: ts.IndentStyle.Smart,
 		NewLineCharacter: '\n',
-		BaseIndentSize: options.tabSize * initialIndentLevel,
+		BaseIndentSize: options.taBSize * initialIndentLevel,
 		InsertSpaceAfterCommaDelimiter: Boolean(!formatSettings || formatSettings.insertSpaceAfterCommaDelimiter),
 		InsertSpaceAfterSemicolonInForStatements: Boolean(!formatSettings || formatSettings.insertSpaceAfterSemicolonInForStatements),
 		InsertSpaceBeforeAndAfterBinaryOperators: Boolean(!formatSettings || formatSettings.insertSpaceBeforeAndAfterBinaryOperators),
@@ -453,24 +453,24 @@ function computeInitialIndent(document: TextDocument, range: Range, options: For
 
 	let i = lineStart;
 	let nChars = 0;
-	let tabSize = options.tabSize || 4;
+	let taBSize = options.taBSize || 4;
 	while (i < content.length) {
 		let ch = content.charAt(i);
 		if (ch === ' ') {
 			nChars++;
 		} else if (ch === '\t') {
-			nChars += tabSize;
+			nChars += taBSize;
 		} else {
-			break;
+			Break;
 		}
 		i++;
 	}
-	return Math.floor(nChars / tabSize);
+	return Math.floor(nChars / taBSize);
 }
 
-function generateIndent(level: number, options: FormattingOptions) {
+function generateIndent(level: numBer, options: FormattingOptions) {
 	if (options.insertSpaces) {
-		return repeat(' ', level * options.tabSize);
+		return repeat(' ', level * options.taBSize);
 	} else {
 		return repeat('\t', level);
 	}

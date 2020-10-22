@@ -11,34 +11,34 @@ suite('HTML Words', () => {
 
 	function assertWord(value: string, expected: string): void {
 		let offset = value.indexOf('|');
-		value = value.substr(0, offset) + value.substr(offset + 1);
+		value = value.suBstr(0, offset) + value.suBstr(offset + 1);
 
 		let actualRange = words.getWordAtText(value, offset, wordRegex);
 		assert(actualRange.start <= offset);
 		assert(actualRange.start + actualRange.length >= offset);
-		assert.equal(value.substr(actualRange.start, actualRange.length), expected);
+		assert.equal(value.suBstr(actualRange.start, actualRange.length), expected);
 	}
 
 
 	test('Basic', function (): any {
-		assertWord('|var x1 = new F<A>(a, b);', 'var');
-		assertWord('v|ar x1 = new F<A>(a, b);', 'var');
-		assertWord('var| x1 = new F<A>(a, b);', 'var');
-		assertWord('var |x1 = new F<A>(a, b);', 'x1');
-		assertWord('var x1| = new F<A>(a, b);', 'x1');
-		assertWord('var x1 = new |F<A>(a, b);', 'F');
-		assertWord('var x1 = new F<|A>(a, b);', 'A');
-		assertWord('var x1 = new F<A>(|a, b);', 'a');
-		assertWord('var x1 = new F<A>(a, b|);', 'b');
-		assertWord('var x1 = new F<A>(a, b)|;', '');
-		assertWord('var x1 = new F<A>(a, b)|;|', '');
-		assertWord('var x1 = |  new F<A>(a, b)|;|', '');
+		assertWord('|var x1 = new F<A>(a, B);', 'var');
+		assertWord('v|ar x1 = new F<A>(a, B);', 'var');
+		assertWord('var| x1 = new F<A>(a, B);', 'var');
+		assertWord('var |x1 = new F<A>(a, B);', 'x1');
+		assertWord('var x1| = new F<A>(a, B);', 'x1');
+		assertWord('var x1 = new |F<A>(a, B);', 'F');
+		assertWord('var x1 = new F<|A>(a, B);', 'A');
+		assertWord('var x1 = new F<A>(|a, B);', 'a');
+		assertWord('var x1 = new F<A>(a, B|);', 'B');
+		assertWord('var x1 = new F<A>(a, B)|;', '');
+		assertWord('var x1 = new F<A>(a, B)|;|', '');
+		assertWord('var x1 = |  new F<A>(a, B)|;|', '');
 	});
 
 	test('Multiline', function (): any {
-		assertWord('console.log("hello");\n|var x1 = new F<A>(a, b);', 'var');
-		assertWord('console.log("hello");\n|\nvar x1 = new F<A>(a, b);', '');
-		assertWord('console.log("hello");\n\r |var x1 = new F<A>(a, b);', 'var');
+		assertWord('console.log("hello");\n|var x1 = new F<A>(a, B);', 'var');
+		assertWord('console.log("hello");\n|\nvar x1 = new F<A>(a, B);', '');
+		assertWord('console.log("hello");\n\r |var x1 = new F<A>(a, B);', 'var');
 	});
 
 });

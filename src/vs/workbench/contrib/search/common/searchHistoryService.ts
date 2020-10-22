@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { isEmptyObject } from 'vs/base/common/types';
+import { isEmptyOBject } from 'vs/Base/common/types';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export interface ISearchHistoryService {
@@ -28,7 +28,7 @@ export interface ISearchHistoryValues {
 export class SearchHistoryService implements ISearchHistoryService {
 	declare readonly _serviceBrand: undefined;
 
-	private static readonly SEARCH_HISTORY_KEY = 'workbench.search.history';
+	private static readonly SEARCH_HISTORY_KEY = 'workBench.search.history';
 
 	private readonly _onDidClearHistory = new Emitter<void>();
 	readonly onDidClearHistory: Event<void> = this._onDidClearHistory.event;
@@ -58,7 +58,7 @@ export class SearchHistoryService implements ISearchHistoryService {
 	}
 
 	save(history: ISearchHistoryValues): void {
-		if (isEmptyObject(history)) {
+		if (isEmptyOBject(history)) {
 			this.storageService.remove(SearchHistoryService.SEARCH_HISTORY_KEY, StorageScope.WORKSPACE);
 		} else {
 			this.storageService.store(SearchHistoryService.SEARCH_HISTORY_KEY, JSON.stringify(history), StorageScope.WORKSPACE);

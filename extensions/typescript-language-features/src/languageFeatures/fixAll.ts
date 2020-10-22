@@ -6,9 +6,9 @@
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
-import { conditionalRegistration, requireSomeCapability, requireMinVersion } from '../utils/dependentRegistration';
+import { conditionalRegistration, requireSomeCapaBility, requireMinVersion } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import * as errorCodes from '../utils/errorCodes';
 import * as fixNames from '../utils/fixNames';
@@ -19,11 +19,11 @@ import FileConfigurationManager from './fileConfigurationManager';
 const localize = nls.loadMessageBundle();
 
 interface AutoFix {
-	readonly codes: Set<number>;
+	readonly codes: Set<numBer>;
 	readonly fixName: string;
 }
 
-async function buildIndividualFixes(
+async function BuildIndividualFixes(
 	fixes: readonly AutoFix[],
 	edit: vscode.WorkspaceEdit,
 	client: ITypeScriptServiceClient,
@@ -37,7 +37,7 @@ async function buildIndividualFixes(
 				return;
 			}
 
-			if (!codes.has(diagnostic.code as number)) {
+			if (!codes.has(diagnostic.code as numBer)) {
 				continue;
 			}
 
@@ -51,16 +51,16 @@ async function buildIndividualFixes(
 				continue;
 			}
 
-			const fix = response.body?.find(fix => fix.fixName === fixName);
+			const fix = response.Body?.find(fix => fix.fixName === fixName);
 			if (fix) {
 				typeConverters.WorkspaceEdit.withFileCodeEdits(edit, client, fix.changes);
-				break;
+				Break;
 			}
 		}
 	}
 }
 
-async function buildCombinedFix(
+async function BuildComBinedFix(
 	fixes: readonly AutoFix[],
 	edit: vscode.WorkspaceEdit,
 	client: ITypeScriptServiceClient,
@@ -74,7 +74,7 @@ async function buildCombinedFix(
 				return;
 			}
 
-			if (!codes.has(diagnostic.code as number)) {
+			if (!codes.has(diagnostic.code as numBer)) {
 				continue;
 			}
 
@@ -84,11 +84,11 @@ async function buildCombinedFix(
 			};
 
 			const response = await client.execute('getCodeFixes', args, token);
-			if (response.type !== 'response' || !response.body?.length) {
+			if (response.type !== 'response' || !response.Body?.length) {
 				continue;
 			}
 
-			const fix = response.body?.find(fix => fix.fixName === fixName);
+			const fix = response.Body?.find(fix => fix.fixName === fixName);
 			if (!fix) {
 				continue;
 			}
@@ -98,7 +98,7 @@ async function buildCombinedFix(
 				return;
 			}
 
-			const combinedArgs: Proto.GetCombinedCodeFixRequestArgs = {
+			const comBinedArgs: Proto.GetComBinedCodeFixRequestArgs = {
 				scope: {
 					type: 'file',
 					args: { file }
@@ -106,12 +106,12 @@ async function buildCombinedFix(
 				fixId: fix.fixId,
 			};
 
-			const combinedResponse = await client.execute('getCombinedCodeFix', combinedArgs, token);
-			if (combinedResponse.type !== 'response' || !combinedResponse.body) {
+			const comBinedResponse = await client.execute('getComBinedCodeFix', comBinedArgs, token);
+			if (comBinedResponse.type !== 'response' || !comBinedResponse.Body) {
 				return;
 			}
 
-			typeConverters.WorkspaceEdit.withFileCodeEdits(edit, client, combinedResponse.body.changes);
+			typeConverters.WorkspaceEdit.withFileCodeEdits(edit, client, comBinedResponse.Body.changes);
 			return;
 		}
 	}
@@ -119,8 +119,8 @@ async function buildCombinedFix(
 
 // #region Source Actions
 
-abstract class SourceAction extends vscode.CodeAction {
-	abstract build(
+aBstract class SourceAction extends vscode.CodeAction {
+	aBstract Build(
 		client: ITypeScriptServiceClient,
 		file: string,
 		diagnostics: readonly vscode.Diagnostic[],
@@ -133,19 +133,19 @@ class SourceFixAll extends SourceAction {
 	static readonly kind = vscode.CodeActionKind.SourceFixAll.append('ts');
 
 	constructor() {
-		super(localize('autoFix.label', 'Fix All'), SourceFixAll.kind);
+		super(localize('autoFix.laBel', 'Fix All'), SourceFixAll.kind);
 	}
 
-	async build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
+	async Build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
 		this.edit = new vscode.WorkspaceEdit();
 
-		await buildIndividualFixes([
+		await BuildIndividualFixes([
 			{ codes: errorCodes.incorrectlyImplementsInterface, fixName: fixNames.classIncorrectlyImplementsInterface },
 			{ codes: errorCodes.asyncOnlyAllowedInAsyncFunctions, fixName: fixNames.awaitInSyncFunction },
 		], this.edit, client, file, diagnostics, token);
 
-		await buildCombinedFix([
-			{ codes: errorCodes.unreachableCode, fixName: fixNames.unreachableCode }
+		await BuildComBinedFix([
+			{ codes: errorCodes.unreachaBleCode, fixName: fixNames.unreachaBleCode }
 		], this.edit, client, file, diagnostics, token);
 	}
 }
@@ -155,13 +155,13 @@ class SourceRemoveUnused extends SourceAction {
 	static readonly kind = vscode.CodeActionKind.Source.append('removeUnused').append('ts');
 
 	constructor() {
-		super(localize('autoFix.unused.label', 'Remove all unused code'), SourceRemoveUnused.kind);
+		super(localize('autoFix.unused.laBel', 'Remove all unused code'), SourceRemoveUnused.kind);
 	}
 
-	async build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
+	async Build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
 		this.edit = new vscode.WorkspaceEdit();
-		await buildCombinedFix([
-			{ codes: errorCodes.variableDeclaredButNeverUsed, fixName: fixNames.unusedIdentifier },
+		await BuildComBinedFix([
+			{ codes: errorCodes.variaBleDeclaredButNeverUsed, fixName: fixNames.unusedIdentifier },
 		], this.edit, client, file, diagnostics, token);
 	}
 }
@@ -171,12 +171,12 @@ class SourceAddMissingImports extends SourceAction {
 	static readonly kind = vscode.CodeActionKind.Source.append('addMissingImports').append('ts');
 
 	constructor() {
-		super(localize('autoFix.missingImports.label', 'Add all missing imports'), SourceAddMissingImports.kind);
+		super(localize('autoFix.missingImports.laBel', 'Add all missing imports'), SourceAddMissingImports.kind);
 	}
 
-	async build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
+	async Build(client: ITypeScriptServiceClient, file: string, diagnostics: readonly vscode.Diagnostic[], token: vscode.CancellationToken): Promise<void> {
 		this.edit = new vscode.WorkspaceEdit();
-		await buildCombinedFix([
+		await BuildComBinedFix([
 			{ codes: errorCodes.cannotFindName, fixName: fixNames.fixImport }
 		],
 			this.edit, client, file, diagnostics, token);
@@ -199,13 +199,13 @@ class TypeScriptAutoFixProvider implements vscode.CodeActionProvider {
 		private readonly diagnosticsManager: DiagnosticsManager,
 	) { }
 
-	public get metadata(): vscode.CodeActionProviderMetadata {
+	puBlic get metadata(): vscode.CodeActionProviderMetadata {
 		return {
 			providedCodeActionKinds: TypeScriptAutoFixProvider.kindProviders.map(x => x.kind),
 		};
 	}
 
-	public async provideCodeActions(
+	puBlic async provideCodeActions(
 		document: vscode.TextDocument,
 		_range: vscode.Range,
 		context: vscode.CodeActionContext,
@@ -221,13 +221,13 @@ class TypeScriptAutoFixProvider implements vscode.CodeActionProvider {
 		}
 
 		const actions = this.getFixAllActions(context.only);
-		if (this.client.bufferSyncSupport.hasPendingDiagnostics(document.uri)) {
+		if (this.client.BufferSyncSupport.hasPendingDiagnostics(document.uri)) {
 			return actions;
 		}
 
 		const diagnostics = this.diagnosticsManager.getDiagnostics(document.uri);
 		if (!diagnostics.length) {
-			// Actions are a no-op in this case but we still want to return them
+			// Actions are a no-op in this case But we still want to return them
 			return actions;
 		}
 
@@ -237,7 +237,7 @@ class TypeScriptAutoFixProvider implements vscode.CodeActionProvider {
 			return undefined;
 		}
 
-		await Promise.all(actions.map(action => action.build(this.client, file, diagnostics, token)));
+		await Promise.all(actions.map(action => action.Build(this.client, file, diagnostics, token)));
 
 		return actions;
 	}
@@ -257,7 +257,7 @@ export function register(
 ) {
 	return conditionalRegistration([
 		requireMinVersion(client, API.v300),
-		requireSomeCapability(client, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.Semantic),
 	], () => {
 		const provider = new TypeScriptAutoFixProvider(client, fileConfigurationManager, diagnosticsManager);
 		return vscode.languages.registerCodeActionsProvider(selector.semantic, provider, provider.metadata);

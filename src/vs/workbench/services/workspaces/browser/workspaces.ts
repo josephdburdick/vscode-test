@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
-import { hash } from 'vs/base/common/hash';
+import { URI } from 'vs/Base/common/uri';
+import { hash } from 'vs/Base/common/hash';
 
 export function getWorkspaceIdentifier(workspacePath: URI): IWorkspaceIdentifier {
 	return {

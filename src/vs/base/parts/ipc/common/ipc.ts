@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter, Relay, EventMultiplexer } from 'vs/base/common/event';
-import { IDisposable, toDisposable, combinedDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CancelablePromise, createCancelablePromise, timeout } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import * as errors from 'vs/base/common/errors';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { getRandomElement } from 'vs/base/common/arrays';
-import { isFunction, isUndefinedOrNull } from 'vs/base/common/types';
-import { revive } from 'vs/base/common/marshalling';
-import * as strings from 'vs/base/common/strings';
+import { Event, Emitter, Relay, EventMultiplexer } from 'vs/Base/common/event';
+import { IDisposaBle, toDisposaBle, comBinedDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { CancelaBlePromise, createCancelaBlePromise, timeout } from 'vs/Base/common/async';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import * as errors from 'vs/Base/common/errors';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { getRandomElement } from 'vs/Base/common/arrays';
+import { isFunction, isUndefinedOrNull } from 'vs/Base/common/types';
+import { revive } from 'vs/Base/common/marshalling';
+import * as strings from 'vs/Base/common/strings';
 
 /**
- * An `IChannel` is an abstraction over a collection of commands.
+ * An `IChannel` is an aBstraction over a collection of commands.
  * You can `call` several commands on a channel, each taking at
  * most one single argument. A `call` always returns a promise
  * with at most one single return value.
@@ -49,23 +49,23 @@ function requestTypeToStr(type: RequestType): string {
 		case RequestType.PromiseCancel:
 			return 'cancel';
 		case RequestType.EventListen:
-			return 'subscribe';
+			return 'suBscriBe';
 		case RequestType.EventDispose:
-			return 'unsubscribe';
+			return 'unsuBscriBe';
 	}
 }
 
-type IRawPromiseRequest = { type: RequestType.Promise; id: number; channelName: string; name: string; arg: any; };
-type IRawPromiseCancelRequest = { type: RequestType.PromiseCancel, id: number };
-type IRawEventListenRequest = { type: RequestType.EventListen; id: number; channelName: string; name: string; arg: any; };
-type IRawEventDisposeRequest = { type: RequestType.EventDispose, id: number };
+type IRawPromiseRequest = { type: RequestType.Promise; id: numBer; channelName: string; name: string; arg: any; };
+type IRawPromiseCancelRequest = { type: RequestType.PromiseCancel, id: numBer };
+type IRawEventListenRequest = { type: RequestType.EventListen; id: numBer; channelName: string; name: string; arg: any; };
+type IRawEventDisposeRequest = { type: RequestType.EventDispose, id: numBer };
 type IRawRequest = IRawPromiseRequest | IRawPromiseCancelRequest | IRawEventListenRequest | IRawEventDisposeRequest;
 
 export const enum ResponseType {
 	Initialize = 200,
 	PromiseSuccess = 201,
 	PromiseError = 202,
-	PromiseErrorObj = 203,
+	PromiseErrorOBj = 203,
 	EventFire = 204
 }
 
@@ -76,7 +76,7 @@ function responseTypeToStr(type: ResponseType): string {
 		case ResponseType.PromiseSuccess:
 			return `reply:`;
 		case ResponseType.PromiseError:
-		case ResponseType.PromiseErrorObj:
+		case ResponseType.PromiseErrorOBj:
 			return `replyErr:`;
 		case ResponseType.EventFire:
 			return `event:`;
@@ -84,21 +84,21 @@ function responseTypeToStr(type: ResponseType): string {
 }
 
 type IRawInitializeResponse = { type: ResponseType.Initialize };
-type IRawPromiseSuccessResponse = { type: ResponseType.PromiseSuccess; id: number; data: any };
-type IRawPromiseErrorResponse = { type: ResponseType.PromiseError; id: number; data: { message: string, name: string, stack: string[] | undefined } };
-type IRawPromiseErrorObjResponse = { type: ResponseType.PromiseErrorObj; id: number; data: any };
-type IRawEventFireResponse = { type: ResponseType.EventFire; id: number; data: any };
-type IRawResponse = IRawInitializeResponse | IRawPromiseSuccessResponse | IRawPromiseErrorResponse | IRawPromiseErrorObjResponse | IRawEventFireResponse;
+type IRawPromiseSuccessResponse = { type: ResponseType.PromiseSuccess; id: numBer; data: any };
+type IRawPromiseErrorResponse = { type: ResponseType.PromiseError; id: numBer; data: { message: string, name: string, stack: string[] | undefined } };
+type IRawPromiseErrorOBjResponse = { type: ResponseType.PromiseErrorOBj; id: numBer; data: any };
+type IRawEventFireResponse = { type: ResponseType.EventFire; id: numBer; data: any };
+type IRawResponse = IRawInitializeResponse | IRawPromiseSuccessResponse | IRawPromiseErrorResponse | IRawPromiseErrorOBjResponse | IRawEventFireResponse;
 
 interface IHandler {
 	(response: IRawResponse): void;
 }
 
 export interface IMessagePassingProtocol {
-	send(buffer: VSBuffer): void;
+	send(Buffer: VSBuffer): void;
 	onMessage: Event<VSBuffer>;
 	/**
-	 * Wait for the write buffer (if applicable) to become empty.
+	 * Wait for the write Buffer (if applicaBle) to Become empty.
 	 */
 	drain?(): Promise<void>;
 }
@@ -110,7 +110,7 @@ enum State {
 
 /**
  * An `IChannelServer` hosts a collection of channels. You are
- * able to register channels onto it, provided a channel name.
+ * aBle to register channels onto it, provided a channel name.
  */
 export interface IChannelServer<TContext = string> {
 	registerChannel(channelName: string, channel: IServerChannel<TContext>): void;
@@ -118,7 +118,7 @@ export interface IChannelServer<TContext = string> {
 
 /**
  * An `IChannelClient` has access to a collection of channels. You
- * are able to get those channels, given their channel name.
+ * are aBle to get those channels, given their channel name.
  */
 export interface IChannelClient {
 	getChannel<T extends IChannel>(channelName: string): T;
@@ -128,25 +128,25 @@ export interface Client<TContext> {
 	readonly ctx: TContext;
 }
 
-export interface IConnectionHub<TContext> {
+export interface IConnectionHuB<TContext> {
 	readonly connections: Connection<TContext>[];
 	readonly onDidAddConnection: Event<Connection<TContext>>;
 	readonly onDidRemoveConnection: Event<Connection<TContext>>;
 }
 
 /**
- * An `IClientRouter` is responsible for routing calls to specific
- * channels, in scenarios in which there are multiple possible
+ * An `IClientRouter` is responsiBle for routing calls to specific
+ * channels, in scenarios in which there are multiple possiBle
  * channels (each from a separate client) to pick from.
  */
 export interface IClientRouter<TContext = string> {
-	routeCall(hub: IConnectionHub<TContext>, command: string, arg?: any, cancellationToken?: CancellationToken): Promise<Client<TContext>>;
-	routeEvent(hub: IConnectionHub<TContext>, event: string, arg?: any): Promise<Client<TContext>>;
+	routeCall(huB: IConnectionHuB<TContext>, command: string, arg?: any, cancellationToken?: CancellationToken): Promise<Client<TContext>>;
+	routeEvent(huB: IConnectionHuB<TContext>, event: string, arg?: any): Promise<Client<TContext>>;
 }
 
 /**
  * Similar to the `IChannelClient`, you can get channels from this
- * collection of channels. The difference being that in the
+ * collection of channels. The difference Being that in the
  * `IRoutingChannelClient`, there are multiple clients providing
  * the same channel. You'll need to pass in an `IClientRouter` in
  * order to pick the right one.
@@ -156,36 +156,36 @@ export interface IRoutingChannelClient<TContext = string> {
 }
 
 interface IReader {
-	read(bytes: number): VSBuffer;
+	read(Bytes: numBer): VSBuffer;
 }
 
 interface IWriter {
-	write(buffer: VSBuffer): void;
+	write(Buffer: VSBuffer): void;
 }
 
 class BufferReader implements IReader {
 
 	private pos = 0;
 
-	constructor(private buffer: VSBuffer) { }
+	constructor(private Buffer: VSBuffer) { }
 
-	read(bytes: number): VSBuffer {
-		const result = this.buffer.slice(this.pos, this.pos + bytes);
-		this.pos += result.byteLength;
+	read(Bytes: numBer): VSBuffer {
+		const result = this.Buffer.slice(this.pos, this.pos + Bytes);
+		this.pos += result.ByteLength;
 		return result;
 	}
 }
 
 class BufferWriter implements IWriter {
 
-	private buffers: VSBuffer[] = [];
+	private Buffers: VSBuffer[] = [];
 
-	get buffer(): VSBuffer {
-		return VSBuffer.concat(this.buffers);
+	get Buffer(): VSBuffer {
+		return VSBuffer.concat(this.Buffers);
 	}
 
-	write(buffer: VSBuffer): void {
-		this.buffers.push(buffer);
+	write(Buffer: VSBuffer): void {
+		this.Buffers.push(Buffer);
 	}
 }
 
@@ -195,20 +195,20 @@ enum DataType {
 	Buffer = 2,
 	VSBuffer = 3,
 	Array = 4,
-	Object = 5
+	OBject = 5
 }
 
-function createSizeBuffer(size: number): VSBuffer {
+function createSizeBuffer(size: numBer): VSBuffer {
 	const result = VSBuffer.alloc(4);
 	result.writeUInt32BE(size, 0);
 	return result;
 }
 
-function readSizeBuffer(reader: IReader): number {
+function readSizeBuffer(reader: IReader): numBer {
 	return reader.read(4).readUInt32BE(0);
 }
 
-function createOneByteBuffer(value: number): VSBuffer {
+function createOneByteBuffer(value: numBer): VSBuffer {
 	const result = VSBuffer.alloc(1);
 	result.writeUInt8(value, 0);
 	return result;
@@ -220,7 +220,7 @@ const BufferPresets = {
 	Buffer: createOneByteBuffer(DataType.Buffer),
 	VSBuffer: createOneByteBuffer(DataType.VSBuffer),
 	Array: createOneByteBuffer(DataType.Array),
-	Object: createOneByteBuffer(DataType.Object),
+	OBject: createOneByteBuffer(DataType.OBject),
 };
 
 declare const Buffer: any;
@@ -230,18 +230,18 @@ function serialize(writer: IWriter, data: any): void {
 	if (typeof data === 'undefined') {
 		writer.write(BufferPresets.Undefined);
 	} else if (typeof data === 'string') {
-		const buffer = VSBuffer.fromString(data);
+		const Buffer = VSBuffer.fromString(data);
 		writer.write(BufferPresets.String);
-		writer.write(createSizeBuffer(buffer.byteLength));
-		writer.write(buffer);
+		writer.write(createSizeBuffer(Buffer.ByteLength));
+		writer.write(Buffer);
 	} else if (hasBuffer && Buffer.isBuffer(data)) {
-		const buffer = VSBuffer.wrap(data);
+		const Buffer = VSBuffer.wrap(data);
 		writer.write(BufferPresets.Buffer);
-		writer.write(createSizeBuffer(buffer.byteLength));
-		writer.write(buffer);
+		writer.write(createSizeBuffer(Buffer.ByteLength));
+		writer.write(Buffer);
 	} else if (data instanceof VSBuffer) {
 		writer.write(BufferPresets.VSBuffer);
-		writer.write(createSizeBuffer(data.byteLength));
+		writer.write(createSizeBuffer(data.ByteLength));
 		writer.write(data);
 	} else if (Array.isArray(data)) {
 		writer.write(BufferPresets.Array);
@@ -251,10 +251,10 @@ function serialize(writer: IWriter, data: any): void {
 			serialize(writer, el);
 		}
 	} else {
-		const buffer = VSBuffer.fromString(JSON.stringify(data));
-		writer.write(BufferPresets.Object);
-		writer.write(createSizeBuffer(buffer.byteLength));
-		writer.write(buffer);
+		const Buffer = VSBuffer.fromString(JSON.stringify(data));
+		writer.write(BufferPresets.OBject);
+		writer.write(createSizeBuffer(Buffer.ByteLength));
+		writer.write(Buffer);
 	}
 }
 
@@ -264,7 +264,7 @@ function deserialize(reader: IReader): any {
 	switch (type) {
 		case DataType.Undefined: return undefined;
 		case DataType.String: return reader.read(readSizeBuffer(reader)).toString();
-		case DataType.Buffer: return reader.read(readSizeBuffer(reader)).buffer;
+		case DataType.Buffer: return reader.read(readSizeBuffer(reader)).Buffer;
 		case DataType.VSBuffer: return reader.read(readSizeBuffer(reader));
 		case DataType.Array: {
 			const length = readSizeBuffer(reader);
@@ -276,7 +276,7 @@ function deserialize(reader: IReader): any {
 
 			return result;
 		}
-		case DataType.Object: return JSON.parse(reader.read(readSizeBuffer(reader)).toString());
+		case DataType.OBject: return JSON.parse(reader.read(readSizeBuffer(reader)).toString());
 	}
 }
 
@@ -285,17 +285,17 @@ interface PendingRequest {
 	timeoutTimer: any;
 }
 
-export class ChannelServer<TContext = string> implements IChannelServer<TContext>, IDisposable {
+export class ChannelServer<TContext = string> implements IChannelServer<TContext>, IDisposaBle {
 
 	private channels = new Map<string, IServerChannel<TContext>>();
-	private activeRequests = new Map<number, IDisposable>();
-	private protocolListener: IDisposable | null;
+	private activeRequests = new Map<numBer, IDisposaBle>();
+	private protocolListener: IDisposaBle | null;
 
 	// Requests might come in for channels which are not yet registered.
 	// They will timeout after `timeoutDelay`.
 	private pendingRequests = new Map<string, PendingRequest[]>();
 
-	constructor(private protocol: IMessagePassingProtocol, private ctx: TContext, private logger: IIPCLogger | null = null, private timeoutDelay: number = 1000) {
+	constructor(private protocol: IMessagePassingProtocol, private ctx: TContext, private logger: IIPCLogger | null = null, private timeoutDelay: numBer = 1000) {
 		this.protocolListener = this.protocol.onMessage(msg => this.onRawMessage(msg));
 		this.sendResponse({ type: ResponseType.Initialize });
 	}
@@ -303,7 +303,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 	registerChannel(channelName: string, channel: IServerChannel<TContext>): void {
 		this.channels.set(channelName, channel);
 
-		// https://github.com/microsoft/vscode/issues/72531
+		// https://githuB.com/microsoft/vscode/issues/72531
 		setTimeout(() => this.flushPendingRequests(channelName), 0);
 	}
 
@@ -320,7 +320,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 			case ResponseType.PromiseSuccess:
 			case ResponseType.PromiseError:
 			case ResponseType.EventFire:
-			case ResponseType.PromiseErrorObj: {
+			case ResponseType.PromiseErrorOBj: {
 				const msgLength = this.send([response.type, response.id], response.data);
 				if (this.logger) {
 					this.logger.logOutgoing(msgLength, response.id, RequestInitiator.OtherSide, responseTypeToStr(response.type), response.data);
@@ -330,17 +330,17 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 		}
 	}
 
-	private send(header: any, body: any = undefined): number {
+	private send(header: any, Body: any = undefined): numBer {
 		const writer = new BufferWriter();
 		serialize(writer, header);
-		serialize(writer, body);
-		return this.sendBuffer(writer.buffer);
+		serialize(writer, Body);
+		return this.sendBuffer(writer.Buffer);
 	}
 
-	private sendBuffer(message: VSBuffer): number {
+	private sendBuffer(message: VSBuffer): numBer {
 		try {
 			this.protocol.send(message);
-			return message.byteLength;
+			return message.ByteLength;
 		} catch (err) {
 			// noop
 			return 0;
@@ -350,28 +350,28 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 	private onRawMessage(message: VSBuffer): void {
 		const reader = new BufferReader(message);
 		const header = deserialize(reader);
-		const body = deserialize(reader);
+		const Body = deserialize(reader);
 		const type = header[0] as RequestType;
 
 		switch (type) {
 			case RequestType.Promise:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, body);
+					this.logger.logIncoming(message.ByteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, Body);
 				}
-				return this.onPromise({ type, id: header[1], channelName: header[2], name: header[3], arg: body });
+				return this.onPromise({ type, id: header[1], channelName: header[2], name: header[3], arg: Body });
 			case RequestType.EventListen:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, body);
+					this.logger.logIncoming(message.ByteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}: ${header[2]}.${header[3]}`, Body);
 				}
-				return this.onEventListen({ type, id: header[1], channelName: header[2], name: header[3], arg: body });
+				return this.onEventListen({ type, id: header[1], channelName: header[2], name: header[3], arg: Body });
 			case RequestType.PromiseCancel:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`);
+					this.logger.logIncoming(message.ByteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`);
 				}
 				return this.disposeActiveRequest({ type, id: header[1] });
 			case RequestType.EventDispose:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`);
+					this.logger.logIncoming(message.ByteLength, header[1], RequestInitiator.OtherSide, `${requestTypeToStr(type)}`);
 				}
 				return this.disposeActiveRequest({ type, id: header[1] });
 		}
@@ -409,14 +409,14 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 					}, type: ResponseType.PromiseError
 				});
 			} else {
-				this.sendResponse(<IRawResponse>{ id, data: err, type: ResponseType.PromiseErrorObj });
+				this.sendResponse(<IRawResponse>{ id, data: err, type: ResponseType.PromiseErrorOBj });
 			}
 
 			this.activeRequests.delete(request.id);
 		});
 
-		const disposable = toDisposable(() => cancellationTokenSource.cancel());
-		this.activeRequests.set(request.id, disposable);
+		const disposaBle = toDisposaBle(() => cancellationTokenSource.cancel());
+		this.activeRequests.set(request.id, disposaBle);
 	}
 
 	private onEventListen(request: IRawEventListenRequest): void {
@@ -429,16 +429,16 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 
 		const id = request.id;
 		const event = channel.listen(this.ctx, request.name, request.arg);
-		const disposable = event(data => this.sendResponse(<IRawResponse>{ id, data, type: ResponseType.EventFire }));
+		const disposaBle = event(data => this.sendResponse(<IRawResponse>{ id, data, type: ResponseType.EventFire }));
 
-		this.activeRequests.set(request.id, disposable);
+		this.activeRequests.set(request.id, disposaBle);
 	}
 
 	private disposeActiveRequest(request: IRawRequest): void {
-		const disposable = this.activeRequests.get(request.id);
+		const disposaBle = this.activeRequests.get(request.id);
 
-		if (disposable) {
-			disposable.dispose();
+		if (disposaBle) {
+			disposaBle.dispose();
 			this.activeRequests.delete(request.id);
 		}
 	}
@@ -474,8 +474,8 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 				clearTimeout(request.timeoutTimer);
 
 				switch (request.request.type) {
-					case RequestType.Promise: this.onPromise(request.request); break;
-					case RequestType.EventListen: this.onEventListen(request.request); break;
+					case RequestType.Promise: this.onPromise(request.request); Break;
+					case RequestType.EventListen: this.onEventListen(request.request); Break;
 				}
 			}
 
@@ -483,7 +483,7 @@ export class ChannelServer<TContext = string> implements IChannelServer<TContext
 		}
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this.protocolListener) {
 			this.protocolListener.dispose();
 			this.protocolListener = null;
@@ -499,17 +499,17 @@ export const enum RequestInitiator {
 }
 
 export interface IIPCLogger {
-	logIncoming(msgLength: number, requestId: number, initiator: RequestInitiator, str: string, data?: any): void;
-	logOutgoing(msgLength: number, requestId: number, initiator: RequestInitiator, str: string, data?: any): void;
+	logIncoming(msgLength: numBer, requestId: numBer, initiator: RequestInitiator, str: string, data?: any): void;
+	logOutgoing(msgLength: numBer, requestId: numBer, initiator: RequestInitiator, str: string, data?: any): void;
 }
 
-export class ChannelClient implements IChannelClient, IDisposable {
+export class ChannelClient implements IChannelClient, IDisposaBle {
 
 	private state: State = State.Uninitialized;
-	private activeRequests = new Set<IDisposable>();
-	private handlers = new Map<number, IHandler>();
-	private lastRequestId: number = 0;
-	private protocolListener: IDisposable | null;
+	private activeRequests = new Set<IDisposaBle>();
+	private handlers = new Map<numBer, IHandler>();
+	private lastRequestId: numBer = 0;
+	private protocolListener: IDisposaBle | null;
 	private logger: IIPCLogger | null;
 
 	private readonly _onDidInitialize = new Emitter<void>();
@@ -542,7 +542,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
 			return Promise.reject(errors.canceled());
 		}
 
-		let disposable: IDisposable;
+		let disposaBle: IDisposaBle;
 
 		const result = new Promise((c, e) => {
 			if (cancellationToken.isCancellationRequested) {
@@ -555,7 +555,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
 						case ResponseType.PromiseSuccess:
 							this.handlers.delete(id);
 							c(response.data);
-							break;
+							Break;
 
 						case ResponseType.PromiseError:
 							this.handlers.delete(id);
@@ -563,12 +563,12 @@ export class ChannelClient implements IChannelClient, IDisposable {
 							(<any>error).stack = response.data.stack;
 							error.name = response.data.name;
 							e(error);
-							break;
+							Break;
 
-						case ResponseType.PromiseErrorObj:
+						case ResponseType.PromiseErrorOBj:
 							this.handlers.delete(id);
 							e(response.data);
-							break;
+							Break;
 					}
 				};
 
@@ -576,11 +576,11 @@ export class ChannelClient implements IChannelClient, IDisposable {
 				this.sendRequest(request);
 			};
 
-			let uninitializedPromise: CancelablePromise<void> | null = null;
+			let uninitializedPromise: CancelaBlePromise<void> | null = null;
 			if (this.state === State.Idle) {
 				doRequest();
 			} else {
-				uninitializedPromise = createCancelablePromise(_ => this.whenInitialized());
+				uninitializedPromise = createCancelaBlePromise(_ => this.whenInitialized());
 				uninitializedPromise.then(() => {
 					uninitializedPromise = null;
 					doRequest();
@@ -599,11 +599,11 @@ export class ChannelClient implements IChannelClient, IDisposable {
 			};
 
 			const cancellationTokenListener = cancellationToken.onCancellationRequested(cancel);
-			disposable = combinedDisposable(toDisposable(cancel), cancellationTokenListener);
-			this.activeRequests.add(disposable);
+			disposaBle = comBinedDisposaBle(toDisposaBle(cancel), cancellationTokenListener);
+			this.activeRequests.add(disposaBle);
 		});
 
-		return result.finally(() => { this.activeRequests.delete(disposable); });
+		return result.finally(() => { this.activeRequests.delete(disposaBle); });
 	}
 
 	private requestEvent(channelName: string, name: string, arg?: any): Event<any> {
@@ -611,11 +611,11 @@ export class ChannelClient implements IChannelClient, IDisposable {
 		const type = RequestType.EventListen;
 		const request: IRawRequest = { id, type, channelName, name, arg };
 
-		let uninitializedPromise: CancelablePromise<void> | null = null;
+		let uninitializedPromise: CancelaBlePromise<void> | null = null;
 
 		const emitter = new Emitter<any>({
 			onFirstListenerAdd: () => {
-				uninitializedPromise = createCancelablePromise(_ => this.whenInitialized());
+				uninitializedPromise = createCancelaBlePromise(_ => this.whenInitialized());
 				uninitializedPromise.then(() => {
 					uninitializedPromise = null;
 					this.activeRequests.add(emitter);
@@ -661,17 +661,17 @@ export class ChannelClient implements IChannelClient, IDisposable {
 		}
 	}
 
-	private send(header: any, body: any = undefined): number {
+	private send(header: any, Body: any = undefined): numBer {
 		const writer = new BufferWriter();
 		serialize(writer, header);
-		serialize(writer, body);
-		return this.sendBuffer(writer.buffer);
+		serialize(writer, Body);
+		return this.sendBuffer(writer.Buffer);
 	}
 
-	private sendBuffer(message: VSBuffer): number {
+	private sendBuffer(message: VSBuffer): numBer {
 		try {
 			this.protocol.send(message);
-			return message.byteLength;
+			return message.ByteLength;
 		} catch (err) {
 			// noop
 			return 0;
@@ -681,24 +681,24 @@ export class ChannelClient implements IChannelClient, IDisposable {
 	private onBuffer(message: VSBuffer): void {
 		const reader = new BufferReader(message);
 		const header = deserialize(reader);
-		const body = deserialize(reader);
+		const Body = deserialize(reader);
 		const type: ResponseType = header[0];
 
 		switch (type) {
 			case ResponseType.Initialize:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, 0, RequestInitiator.LocalSide, responseTypeToStr(type));
+					this.logger.logIncoming(message.ByteLength, 0, RequestInitiator.LocalSide, responseTypeToStr(type));
 				}
 				return this.onResponse({ type: header[0] });
 
 			case ResponseType.PromiseSuccess:
 			case ResponseType.PromiseError:
 			case ResponseType.EventFire:
-			case ResponseType.PromiseErrorObj:
+			case ResponseType.PromiseErrorOBj:
 				if (this.logger) {
-					this.logger.logIncoming(message.byteLength, header[1], RequestInitiator.LocalSide, responseTypeToStr(type), body);
+					this.logger.logIncoming(message.ByteLength, header[1], RequestInitiator.LocalSide, responseTypeToStr(type), Body);
 				}
-				return this.onResponse({ type: header[0], id: header[1], data: body });
+				return this.onResponse({ type: header[0], id: header[1], data: Body });
 		}
 	}
 
@@ -745,14 +745,14 @@ interface Connection<TContext> extends Client<TContext> {
 }
 
 /**
- * An `IPCServer` is both a channel server and a routing channel
+ * An `IPCServer` is Both a channel server and a routing channel
  * client.
  *
- * As the owner of a protocol, you should extend both this
+ * As the owner of a protocol, you should extend Both this
  * and the `IPCClient` classes to get IPC implementations
  * for your protocol.
  */
-export class IPCServer<TContext = string> implements IChannelServer<TContext>, IRoutingChannelClient<TContext>, IConnectionHub<TContext>, IDisposable {
+export class IPCServer<TContext = string> implements IChannelServer<TContext>, IRoutingChannelClient<TContext>, IConnectionHuB<TContext>, IDisposaBle {
 
 	private channels = new Map<string, IServerChannel<TContext>>();
 	private _connections = new Set<Connection<TContext>>();
@@ -800,12 +800,12 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
 	 * Get a channel from a remote client. When passed a router,
 	 * one can specify which client it wants to call and listen to/from.
 	 * Otherwise, when calling without a router, a random client will
-	 * be selected and when listening without a router, every client
-	 * will be listened to.
+	 * Be selected and when listening without a router, every client
+	 * will Be listened to.
 	 */
 	getChannel<T extends IChannel>(channelName: string, router: IClientRouter<TContext>): T;
-	getChannel<T extends IChannel>(channelName: string, clientFilter: (client: Client<TContext>) => boolean): T;
-	getChannel<T extends IChannel>(channelName: string, routerOrClientFilter: IClientRouter<TContext> | ((client: Client<TContext>) => boolean)): T {
+	getChannel<T extends IChannel>(channelName: string, clientFilter: (client: Client<TContext>) => Boolean): T;
+	getChannel<T extends IChannel>(channelName: string, routerOrClientFilter: IClientRouter<TContext> | ((client: Client<TContext>) => Boolean)): T {
 		const that = this;
 
 		return {
@@ -845,9 +845,9 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
 		} as T;
 	}
 
-	private getMulticastEvent<T extends IChannel>(channelName: string, clientFilter: (client: Client<TContext>) => boolean, eventName: string, arg: any): Event<T> {
+	private getMulticastEvent<T extends IChannel>(channelName: string, clientFilter: (client: Client<TContext>) => Boolean, eventName: string, arg: any): Event<T> {
 		const that = this;
-		let disposables = new DisposableStore();
+		let disposaBles = new DisposaBleStore();
 
 		// Create an emitter which hooks up to all clients
 		// as soon as first listener is added. It also
@@ -855,42 +855,42 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
 		// is removed.
 		const emitter = new Emitter<T>({
 			onFirstListenerAdd: () => {
-				disposables = new DisposableStore();
+				disposaBles = new DisposaBleStore();
 
 				// The event multiplexer is useful since the active
 				// client list is dynamic. We need to hook up and disconnection
 				// to/from clients as they come and go.
 				const eventMultiplexer = new EventMultiplexer<T>();
-				const map = new Map<Connection<TContext>, IDisposable>();
+				const map = new Map<Connection<TContext>, IDisposaBle>();
 
 				const onDidAddConnection = (connection: Connection<TContext>) => {
 					const channel = connection.channelClient.getChannel(channelName);
 					const event = channel.listen<T>(eventName, arg);
-					const disposable = eventMultiplexer.add(event);
+					const disposaBle = eventMultiplexer.add(event);
 
-					map.set(connection, disposable);
+					map.set(connection, disposaBle);
 				};
 
 				const onDidRemoveConnection = (connection: Connection<TContext>) => {
-					const disposable = map.get(connection);
+					const disposaBle = map.get(connection);
 
-					if (!disposable) {
+					if (!disposaBle) {
 						return;
 					}
 
-					disposable.dispose();
+					disposaBle.dispose();
 					map.delete(connection);
 				};
 
 				that.connections.filter(clientFilter).forEach(onDidAddConnection);
-				Event.filter(that.onDidAddConnection, clientFilter)(onDidAddConnection, undefined, disposables);
-				that.onDidRemoveConnection(onDidRemoveConnection, undefined, disposables);
-				eventMultiplexer.event(emitter.fire, emitter, disposables);
+				Event.filter(that.onDidAddConnection, clientFilter)(onDidAddConnection, undefined, disposaBles);
+				that.onDidRemoveConnection(onDidRemoveConnection, undefined, disposaBles);
+				eventMultiplexer.event(emitter.fire, emitter, disposaBles);
 
-				disposables.add(eventMultiplexer);
+				disposaBles.add(eventMultiplexer);
 			},
 			onLastListenerRemove: () => {
-				disposables.dispose();
+				disposaBles.dispose();
 			}
 		});
 
@@ -914,13 +914,13 @@ export class IPCServer<TContext = string> implements IChannelServer<TContext>, I
 }
 
 /**
- * An `IPCClient` is both a channel client and a channel server.
+ * An `IPCClient` is Both a channel client and a channel server.
  *
- * As the owner of a protocol, you should extend both this
+ * As the owner of a protocol, you should extend Both this
  * and the `IPCClient` classes to get IPC implementations
  * for your protocol.
  */
-export class IPCClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposable {
+export class IPCClient<TContext = string> implements IChannelClient, IChannelServer<TContext>, IDisposaBle {
 
 	private channelClient: ChannelClient;
 	private channelServer: ChannelServer<TContext>;
@@ -928,7 +928,7 @@ export class IPCClient<TContext = string> implements IChannelClient, IChannelSer
 	constructor(protocol: IMessagePassingProtocol, ctx: TContext, ipcLogger: IIPCLogger | null = null) {
 		const writer = new BufferWriter();
 		serialize(writer, ctx);
-		protocol.send(writer.buffer);
+		protocol.send(writer.Buffer);
 
 		this.channelClient = new ChannelClient(protocol, ipcLogger);
 		this.channelServer = new ChannelServer(protocol, ctx, ipcLogger);
@@ -993,25 +993,25 @@ export function getNextTickChannel<T extends IChannel>(channel: T): T {
 
 export class StaticRouter<TContext = string> implements IClientRouter<TContext> {
 
-	constructor(private fn: (ctx: TContext) => boolean | Promise<boolean>) { }
+	constructor(private fn: (ctx: TContext) => Boolean | Promise<Boolean>) { }
 
-	routeCall(hub: IConnectionHub<TContext>): Promise<Client<TContext>> {
-		return this.route(hub);
+	routeCall(huB: IConnectionHuB<TContext>): Promise<Client<TContext>> {
+		return this.route(huB);
 	}
 
-	routeEvent(hub: IConnectionHub<TContext>): Promise<Client<TContext>> {
-		return this.route(hub);
+	routeEvent(huB: IConnectionHuB<TContext>): Promise<Client<TContext>> {
+		return this.route(huB);
 	}
 
-	private async route(hub: IConnectionHub<TContext>): Promise<Client<TContext>> {
-		for (const connection of hub.connections) {
+	private async route(huB: IConnectionHuB<TContext>): Promise<Client<TContext>> {
+		for (const connection of huB.connections) {
 			if (await Promise.resolve(this.fn(connection.ctx))) {
 				return Promise.resolve(connection);
 			}
 		}
 
-		await Event.toPromise(hub.onDidAddConnection);
-		return await this.route(hub);
+		await Event.toPromise(huB.onDidAddConnection);
+		return await this.route(huB);
 	}
 }
 
@@ -1019,13 +1019,13 @@ export class StaticRouter<TContext = string> implements IClientRouter<TContext> 
 //#region createChannelReceiver / createChannelSender
 
 /**
- * Use both `createChannelReceiver` and `createChannelSender`
+ * Use Both `createChannelReceiver` and `createChannelSender`
  * for automated process <=> process communication over methods
- * and events. You do not need to spell out each method on both
+ * and events. You do not need to spell out each method on Both
  * sides, a proxy will take care of this.
  *
  * Rules:
- * - if marshalling is enabled, only `URI` and `RegExp` is converted
+ * - if marshalling is enaBled, only `URI` and `RegExp` is converted
  *   automatically for you
  * - events must follow the naming convention `onUppercase`
  * - `CancellationToken` is currently not supported
@@ -1036,25 +1036,25 @@ export class StaticRouter<TContext = string> implements IClientRouter<TContext> 
 export interface IBaseChannelOptions {
 
 	/**
-	 * Disables automatic marshalling of `URI`.
-	 * If marshalling is disabled, `UriComponents`
-	 * must be used instead.
+	 * DisaBles automatic marshalling of `URI`.
+	 * If marshalling is disaBled, `UriComponents`
+	 * must Be used instead.
 	 */
-	disableMarshalling?: boolean;
+	disaBleMarshalling?: Boolean;
 }
 
 export interface IChannelReceiverOptions extends IBaseChannelOptions { }
 
 export function createChannelReceiver(service: unknown, options?: IChannelReceiverOptions): IServerChannel {
 	const handler = service as { [key: string]: unknown };
-	const disableMarshalling = options && options.disableMarshalling;
+	const disaBleMarshalling = options && options.disaBleMarshalling;
 
-	// Buffer any event that should be supported by
+	// Buffer any event that should Be supported By
 	// iterating over all property keys and finding them
 	const mapEventNameToEvent = new Map<string, Event<unknown>>();
 	for (const key in handler) {
 		if (propertyIsEvent(key)) {
-			mapEventNameToEvent.set(key, Event.buffer(handler[key] as Event<unknown>, true));
+			mapEventNameToEvent.set(key, Event.Buffer(handler[key] as Event<unknown>, true));
 		}
 	}
 
@@ -1073,8 +1073,8 @@ export function createChannelReceiver(service: unknown, options?: IChannelReceiv
 			const target = handler[command];
 			if (typeof target === 'function') {
 
-				// Revive unless marshalling disabled
-				if (!disableMarshalling && Array.isArray(args)) {
+				// Revive unless marshalling disaBled
+				if (!disaBleMarshalling && Array.isArray(args)) {
 					for (let i = 0; i < args.length; i++) {
 						args[i] = revive(args[i]);
 					}
@@ -1098,13 +1098,13 @@ export interface IChannelSenderOptions extends IBaseChannelOptions {
 
 	/**
 	 * If provided, will not proxy any of the properties
-	 * that are part of the Map but rather return that value.
+	 * that are part of the Map But rather return that value.
 	 */
 	properties?: Map<string, unknown>;
 }
 
 export function createChannelSender<T>(channel: IChannel, options?: IChannelSenderOptions): T {
-	const disableMarshalling = options && options.disableMarshalling;
+	const disaBleMarshalling = options && options.disaBleMarshalling;
 
 	return new Proxy({}, {
 		get(_target: T, propKey: PropertyKey) {
@@ -1133,8 +1133,8 @@ export function createChannelSender<T>(channel: IChannel, options?: IChannelSend
 
 					const result = await channel.call(propKey, methodArgs);
 
-					// Revive unless marshalling disabled
-					if (!disableMarshalling) {
+					// Revive unless marshalling disaBled
+					if (!disaBleMarshalling) {
 						return revive(result);
 					}
 
@@ -1147,7 +1147,7 @@ export function createChannelSender<T>(channel: IChannel, options?: IChannelSend
 	}) as T;
 }
 
-function propertyIsEvent(name: string): boolean {
+function propertyIsEvent(name: string): Boolean {
 	// Assume a property is an event if it has a form of "onSomething"
 	return name[0] === 'o' && name[1] === 'n' && strings.isUpperAsciiLetter(name.charCodeAt(2));
 }
@@ -1155,7 +1155,7 @@ function propertyIsEvent(name: string): boolean {
 //#endregion
 
 
-const colorTables = [
+const colorTaBles = [
 	['#2977B1', '#FC802D', '#34A13A', '#D3282F', '#9366BA'],
 	['#8B564C', '#E177C0', '#7F7F7F', '#BBBE3D', '#2EBECD']
 ];
@@ -1164,9 +1164,9 @@ function prettyWithoutArrays(data: any): any {
 	if (Array.isArray(data)) {
 		return data;
 	}
-	if (data && typeof data === 'object' && typeof data.toString === 'function') {
+	if (data && typeof data === 'oBject' && typeof data.toString === 'function') {
 		let result = data.toString();
-		if (result !== '[object Object]') {
+		if (result !== '[oBject OBject]') {
 			return result;
 		}
 	}
@@ -1180,11 +1180,11 @@ function pretty(data: any): any {
 	return prettyWithoutArrays(data);
 }
 
-export function logWithColors(direction: string, totalLength: number, msgLength: number, req: number, initiator: RequestInitiator, str: string, data: any): void {
+export function logWithColors(direction: string, totalLength: numBer, msgLength: numBer, req: numBer, initiator: RequestInitiator, str: string, data: any): void {
 	data = pretty(data);
 
-	const colorTable = colorTables[initiator];
-	const color = colorTable[req % colorTable.length];
+	const colorTaBle = colorTaBles[initiator];
+	const color = colorTaBle[req % colorTaBle.length];
 	let args = [`%c[${direction}]%c[${String(totalLength).padStart(7, ' ')}]%c[len: ${String(msgLength).padStart(5, ' ')}]%c${String(req).padStart(5, ' ')} - ${str}`, 'color: darkgreen', 'color: grey', 'color: grey', `color: ${color}`];
 	if (/\($/.test(str)) {
 		args = args.concat(data);
@@ -1204,12 +1204,12 @@ export class IPCLogger implements IIPCLogger {
 		private readonly _incomingPrefix: string,
 	) { }
 
-	public logOutgoing(msgLength: number, requestId: number, initiator: RequestInitiator, str: string, data?: any): void {
+	puBlic logOutgoing(msgLength: numBer, requestId: numBer, initiator: RequestInitiator, str: string, data?: any): void {
 		this._totalOutgoing += msgLength;
 		logWithColors(this._outgoingPrefix, this._totalOutgoing, msgLength, requestId, initiator, str, data);
 	}
 
-	public logIncoming(msgLength: number, requestId: number, initiator: RequestInitiator, str: string, data?: any): void {
+	puBlic logIncoming(msgLength: numBer, requestId: numBer, initiator: RequestInitiator, str: string, data?: any): void {
 		this._totalIncoming += msgLength;
 		logWithColors(this._incomingPrefix, this._totalIncoming, msgLength, requestId, initiator, str, data);
 	}

@@ -6,13 +6,13 @@
 // THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY.
 
 
-export enum AccessibilitySupport {
+export enum AccessiBilitySupport {
 	/**
-	 * This should be the browser case where it is not known if a screen reader is attached or no.
+	 * This should Be the Browser case where it is not known if a screen reader is attached or no.
 	 */
 	Unknown = 0,
-	Disabled = 1,
-	Enabled = 2
+	DisaBled = 1,
+	EnaBled = 2
 }
 
 export enum CompletionItemInsertTextRule {
@@ -32,7 +32,7 @@ export enum CompletionItemKind {
 	Function = 1,
 	Constructor = 2,
 	Field = 3,
-	Variable = 4,
+	VariaBle = 4,
 	Class = 5,
 	Struct = 6,
 	Interface = 7,
@@ -44,7 +44,7 @@ export enum CompletionItemKind {
 	Value = 13,
 	Constant = 14,
 	Enum = 15,
-	EnumMember = 16,
+	EnumMemBer = 16,
 	Keyword = 17,
 	Text = 18,
 	Color = 19,
@@ -80,17 +80,17 @@ export enum ContentWidgetPositionPreference {
 	 */
 	EXACT = 0,
 	/**
-	 * Place the content widget above a position
+	 * Place the content widget aBove a position
 	 */
 	ABOVE = 1,
 	/**
-	 * Place the content widget below a position
+	 * Place the content widget Below a position
 	 */
 	BELOW = 2
 }
 
 /**
- * Describes the reason the cursor has changed its position.
+ * DescriBes the reason the cursor has changed its position.
  */
 export enum CursorChangeReason {
 	/**
@@ -102,7 +102,7 @@ export enum CursorChangeReason {
 	 */
 	ContentFlush = 1,
 	/**
-	 * The `model` has been changed outside of this cursor and the cursor recovers its position from associated markers.
+	 * The `model` has Been changed outside of this cursor and the cursor recovers its position from associated markers.
 	 */
 	RecoverFromMarkers = 2,
 	/**
@@ -146,11 +146,11 @@ export enum DocumentHighlightKind {
 	 */
 	Text = 0,
 	/**
-	 * Read-access of a symbol, like reading a variable.
+	 * Read-access of a symBol, like reading a variaBle.
 	 */
 	Read = 1,
 	/**
-	 * Write-access of a symbol, like writing to a variable.
+	 * Write-access of a symBol, like writing to a variaBle.
 	 */
 	Write = 2
 }
@@ -169,9 +169,9 @@ export enum EditorAutoIndentStrategy {
 export enum EditorOption {
 	acceptSuggestionOnCommitCharacter = 0,
 	acceptSuggestionOnEnter = 1,
-	accessibilitySupport = 2,
-	accessibilityPageSize = 3,
-	ariaLabel = 4,
+	accessiBilitySupport = 2,
+	accessiBilityPageSize = 3,
+	ariaLaBel = 4,
 	autoClosingBrackets = 5,
 	autoClosingOvertype = 6,
 	autoClosingQuotes = 7,
@@ -190,10 +190,10 @@ export enum EditorOption {
 	cursorSurroundingLines = 20,
 	cursorSurroundingLinesStyle = 21,
 	cursorWidth = 22,
-	disableLayerHinting = 23,
-	disableMonospaceOptimizations = 24,
+	disaBleLayerHinting = 23,
+	disaBleMonospaceOptimizations = 24,
 	dragAndDrop = 25,
-	emptySelectionClipboard = 26,
+	emptySelectionClipBoard = 26,
 	extraEditorClassName = 27,
 	fastScrollSensitivity = 28,
 	find = 29,
@@ -216,11 +216,11 @@ export enum EditorOption {
 	hover = 46,
 	inDiffEditor = 47,
 	letterSpacing = 48,
-	lightbulb = 49,
+	lightBulB = 49,
 	lineDecorationsWidth = 50,
 	lineHeight = 51,
-	lineNumbers = 52,
-	lineNumbersMinChars = 53,
+	lineNumBers = 52,
+	lineNumBersMinChars = 53,
 	links = 54,
 	matchBrackets = 55,
 	minimap = 56,
@@ -251,13 +251,13 @@ export enum EditorOption {
 	revealHorizontalRightPadding = 81,
 	roundedSelection = 82,
 	rulers = 83,
-	scrollbar = 84,
+	scrollBar = 84,
 	scrollBeyondLastColumn = 85,
 	scrollBeyondLastLine = 86,
 	scrollPredominantAxis = 87,
-	selectionClipboard = 88,
+	selectionClipBoard = 88,
 	selectionHighlight = 89,
-	selectOnLineNumbers = 90,
+	selectOnLineNumBers = 90,
 	showFoldingControls = 91,
 	showUnused = 92,
 	snippetSuggestions = 93,
@@ -268,10 +268,10 @@ export enum EditorOption {
 	suggestLineHeight = 98,
 	suggestOnTriggerCharacters = 99,
 	suggestSelection = 100,
-	tabCompletion = 101,
-	tabIndex = 102,
+	taBCompletion = 101,
+	taBIndex = 102,
 	unusualLineTerminators = 103,
-	useTabStops = 104,
+	useTaBStops = 104,
 	wordSeparators = 105,
 	wordWrap = 106,
 	wordWrapBreakAfterCharacters = 107,
@@ -283,7 +283,7 @@ export enum EditorOption {
 	showDeprecated = 113,
 	editorClassName = 114,
 	pixelRatio = 115,
-	tabFocusMode = 116,
+	taBFocusMode = 116,
 	layoutInfo = 117,
 	wrappingInfo = 118
 }
@@ -293,7 +293,7 @@ export enum EditorOption {
  */
 export enum EndOfLinePreference {
 	/**
-	 * Use the end of line character identified in the text buffer.
+	 * Use the end of line character identified in the text Buffer.
 	 */
 	TextDefined = 0,
 	/**
@@ -321,7 +321,7 @@ export enum EndOfLineSequence {
 }
 
 /**
- * Describes what to do with the indentation when pressing Enter.
+ * DescriBes what to do with the indentation when pressing Enter.
  */
 export enum IndentAction {
 	/**
@@ -346,8 +346,8 @@ export enum IndentAction {
 
 /**
  * Virtual Key Codes, the value does not hold any inherent meaning.
- * Inspired somewhat from https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
- * But these are "more general", as they should work across browsers & OS`s.
+ * Inspired somewhat from https://msdn.microsoft.com/en-us/liBrary/windows/desktop/dd375731(v=vs.85).aspx
+ * But these are "more general", as they should work across Browsers & OS`s.
  */
 export enum KeyCode {
 	/**
@@ -355,7 +355,7 @@ export enum KeyCode {
 	 */
 	Unknown = 0,
 	Backspace = 1,
-	Tab = 2,
+	TaB = 2,
 	Enter = 3,
 	Shift = 4,
 	Ctrl = 5,
@@ -434,66 +434,66 @@ export enum KeyCode {
 	NumLock = 78,
 	ScrollLock = 79,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ';:' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ';:' key
 	 */
 	US_SEMICOLON = 80,
 	/**
 	 * For any country/region, the '+' key
-	 * For the US standard keyboard, the '=+' key
+	 * For the US standard keyBoard, the '=+' key
 	 */
 	US_EQUAL = 81,
 	/**
 	 * For any country/region, the ',' key
-	 * For the US standard keyboard, the ',<' key
+	 * For the US standard keyBoard, the ',<' key
 	 */
 	US_COMMA = 82,
 	/**
 	 * For any country/region, the '-' key
-	 * For the US standard keyboard, the '-_' key
+	 * For the US standard keyBoard, the '-_' key
 	 */
 	US_MINUS = 83,
 	/**
 	 * For any country/region, the '.' key
-	 * For the US standard keyboard, the '.>' key
+	 * For the US standard keyBoard, the '.>' key
 	 */
 	US_DOT = 84,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '/?' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '/?' key
 	 */
 	US_SLASH = 85,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '`~' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '`~' key
 	 */
 	US_BACKTICK = 86,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '[{' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '[{' key
 	 */
 	US_OPEN_SQUARE_BRACKET = 87,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '\|' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '\|' key
 	 */
 	US_BACKSLASH = 88,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ']}' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ']}' key
 	 */
 	US_CLOSE_SQUARE_BRACKET = 89,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ''"' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ''"' key
 	 */
 	US_QUOTE = 90,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
+	 * Used for miscellaneous characters; it can vary By keyBoard.
 	 */
 	OEM_8 = 91,
 	/**
-	 * Either the angle bracket key or the backslash key on the RT 102-key keyboard.
+	 * Either the angle Bracket key or the Backslash key on the RT 102-key keyBoard.
 	 */
 	OEM_102 = 92,
 	NUMPAD_0 = 93,
@@ -562,7 +562,7 @@ export enum MouseTargetType {
 	 */
 	GUTTER_GLYPH_MARGIN = 2,
 	/**
-	 * Mouse is on top of the line numbers
+	 * Mouse is on top of the line numBers
 	 */
 	GUTTER_LINE_NUMBERS = 3,
 	/**
@@ -570,7 +570,7 @@ export enum MouseTargetType {
 	 */
 	GUTTER_LINE_DECORATIONS = 4,
 	/**
-	 * Mouse is on top of the whitespace left in the gutter by a view zone.
+	 * Mouse is on top of the whitespace left in the gutter By a view zone.
 	 */
 	GUTTER_VIEW_ZONE = 5,
 	/**
@@ -578,7 +578,7 @@ export enum MouseTargetType {
 	 */
 	CONTENT_TEXT = 6,
 	/**
-	 * Mouse is on top of empty space in the content (e.g. after line text or below last line)
+	 * Mouse is on top of empty space in the content (e.g. after line text or Below last line)
 	 */
 	CONTENT_EMPTY = 7,
 	/**
@@ -594,7 +594,7 @@ export enum MouseTargetType {
 	 */
 	OVERVIEW_RULER = 10,
 	/**
-	 * Mouse is on top of a scrollbar.
+	 * Mouse is on top of a scrollBar.
 	 */
 	SCROLLBAR = 11,
 	/**
@@ -616,7 +616,7 @@ export enum OverlayWidgetPositionPreference {
 	 */
 	TOP_RIGHT_CORNER = 0,
 	/**
-	 * Position the overlay widget in the bottom right corner
+	 * Position the overlay widget in the Bottom right corner
 	 */
 	BOTTOM_RIGHT_CORNER = 1,
 	/**
@@ -635,7 +635,7 @@ export enum OverviewRulerLane {
 	Full = 7
 }
 
-export enum RenderLineNumbersType {
+export enum RenderLineNumBersType {
 	Off = 0,
 	On = 1,
 	Relative = 2,
@@ -654,10 +654,10 @@ export enum ScrollType {
 	Immediate = 1
 }
 
-export enum ScrollbarVisibility {
+export enum ScrollBarVisiBility {
 	Auto = 1,
 	Hidden = 2,
-	Visible = 3
+	VisiBle = 3
 }
 
 /**
@@ -665,11 +665,11 @@ export enum ScrollbarVisibility {
  */
 export enum SelectionDirection {
 	/**
-	 * The selection starts above where it ends.
+	 * The selection starts aBove where it ends.
 	 */
 	LTR = 0,
 	/**
-	 * The selection starts below where it ends.
+	 * The selection starts Below where it ends.
 	 */
 	RTL = 1
 }
@@ -681,9 +681,9 @@ export enum SignatureHelpTriggerKind {
 }
 
 /**
- * A symbol kind.
+ * A symBol kind.
  */
-export enum SymbolKind {
+export enum SymBolKind {
 	File = 0,
 	Module = 1,
 	Namespace = 2,
@@ -696,28 +696,28 @@ export enum SymbolKind {
 	Enum = 9,
 	Interface = 10,
 	Function = 11,
-	Variable = 12,
+	VariaBle = 12,
 	Constant = 13,
 	String = 14,
-	Number = 15,
+	NumBer = 15,
 	Boolean = 16,
 	Array = 17,
-	Object = 18,
+	OBject = 18,
 	Key = 19,
 	Null = 20,
-	EnumMember = 21,
+	EnumMemBer = 21,
 	Struct = 22,
 	Event = 23,
 	Operator = 24,
 	TypeParameter = 25
 }
 
-export enum SymbolTag {
+export enum SymBolTag {
 	Deprecated = 1
 }
 
 /**
- * The kind of animation in which the editor's cursor should be rendered.
+ * The kind of animation in which the editor's cursor should Be rendered.
  */
 export enum TextEditorCursorBlinkingStyle {
 	/**
@@ -747,15 +747,15 @@ export enum TextEditorCursorBlinkingStyle {
 }
 
 /**
- * The style in which the editor's cursor should be rendered.
+ * The style in which the editor's cursor should Be rendered.
  */
 export enum TextEditorCursorStyle {
 	/**
-	 * As a vertical line (sitting between two characters).
+	 * As a vertical line (sitting Between two characters).
 	 */
 	Line = 1,
 	/**
-	 * As a block (sitting on top of a character).
+	 * As a Block (sitting on top of a character).
 	 */
 	Block = 2,
 	/**
@@ -763,11 +763,11 @@ export enum TextEditorCursorStyle {
 	 */
 	Underline = 3,
 	/**
-	 * As a thin vertical line (sitting between two characters).
+	 * As a thin vertical line (sitting Between two characters).
 	 */
 	LineThin = 4,
 	/**
-	 * As an outlined block (sitting on top of a character).
+	 * As an outlined Block (sitting on top of a character).
 	 */
 	BlockOutline = 5,
 	/**
@@ -777,7 +777,7 @@ export enum TextEditorCursorStyle {
 }
 
 /**
- * Describes the behavior of decorations when typing/editing near their edges.
+ * DescriBes the Behavior of decorations when typing/editing near their edges.
  * Note: Please do not edit the values, as they very carefully match `DecorationRangeBehavior`
  */
 export enum TrackedRangeStickiness {
@@ -788,11 +788,11 @@ export enum TrackedRangeStickiness {
 }
 
 /**
- * Describes how to indent wrapped lines.
+ * DescriBes how to indent wrapped lines.
  */
 export enum WrappingIndent {
 	/**
-	 * No indentation => wrapped lines begin at column 1.
+	 * No indentation => wrapped lines Begin at column 1.
 	 */
 	None = 0,
 	/**

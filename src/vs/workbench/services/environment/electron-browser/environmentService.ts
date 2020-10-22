@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { NativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
-import { INativeWorkbenchConfiguration, INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { memoize } from 'vs/base/common/decorators';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { join } from 'vs/base/common/path';
+import { INativeWorkBenchConfiguration, INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { memoize } from 'vs/Base/common/decorators';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { join } from 'vs/Base/common/path';
 import { IProductService } from 'vs/platform/product/common/productService';
 
-export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService implements INativeWorkbenchEnvironmentService {
+export class NativeWorkBenchEnvironmentService extends NativeEnvironmentService implements INativeWorkBenchEnvironmentService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -30,18 +30,18 @@ export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService 
 	@memoize
 	get userRoamingDataHome(): URI { return this.appSettingsHome.with({ scheme: Schemas.userData }); }
 
-	// Do NOT! memoize as `backupPath` can change in configuration
-	// via the `updateBackupPath` method below
-	get backupWorkspaceHome(): URI | undefined {
-		if (this.configuration.backupPath) {
-			return URI.file(this.configuration.backupPath).with({ scheme: this.userRoamingDataHome.scheme });
+	// Do NOT! memoize as `BackupPath` can change in configuration
+	// via the `updateBackupPath` method Below
+	get BackupWorkspaceHome(): URI | undefined {
+		if (this.configuration.BackupPath) {
+			return URI.file(this.configuration.BackupPath).with({ scheme: this.userRoamingDataHome.scheme });
 		}
 
 		return undefined;
 	}
 
 	updateBackupPath(newBackupPath: string | undefined): void {
-		this.configuration.backupPath = newBackupPath;
+		this.configuration.BackupPath = newBackupPath;
 	}
 
 	@memoize
@@ -51,31 +51,31 @@ export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService 
 	get extHostLogsPath(): URI { return URI.file(join(this.logsPath, `exthost${this.configuration.windowId}`)); }
 
 	@memoize
-	get webviewExternalEndpoint(): string {
-		const baseEndpoint = 'https://{{uuid}}.vscode-webview-test.com/{{commit}}';
+	get weBviewExternalEndpoint(): string {
+		const BaseEndpoint = 'https://{{uuid}}.vscode-weBview-test.com/{{commit}}';
 
-		return baseEndpoint.replace('{{commit}}', this.productService.commit || '0d728c31ebdf03869d2687d9be0b017667c9ff37');
+		return BaseEndpoint.replace('{{commit}}', this.productService.commit || '0d728c31eBdf03869d2687d9Be0B017667c9ff37');
 	}
 
 	@memoize
-	get webviewResourceRoot(): string { return `${Schemas.vscodeWebviewResource}://{{uuid}}/{{resource}}`; }
+	get weBviewResourceRoot(): string { return `${Schemas.vscodeWeBviewResource}://{{uuid}}/{{resource}}`; }
 
 	@memoize
-	get webviewCspSource(): string { return `${Schemas.vscodeWebviewResource}:`; }
+	get weBviewCspSource(): string { return `${Schemas.vscodeWeBviewResource}:`; }
 
 	@memoize
-	get skipReleaseNotes(): boolean { return !!this.args['skip-release-notes']; }
+	get skipReleaseNotes(): Boolean { return !!this.args['skip-release-notes']; }
 
 	@memoize
-	get logExtensionHostCommunication(): boolean { return !!this.args.logExtensionHostCommunication; }
+	get logExtensionHostCommunication(): Boolean { return !!this.args.logExtensionHostCommunication; }
 
 	@memoize
-	get extensionEnabledProposedApi(): string[] | undefined {
-		if (Array.isArray(this.args['enable-proposed-api'])) {
-			return this.args['enable-proposed-api'];
+	get extensionEnaBledProposedApi(): string[] | undefined {
+		if (Array.isArray(this.args['enaBle-proposed-api'])) {
+			return this.args['enaBle-proposed-api'];
 		}
 
-		if ('enable-proposed-api' in this.args) {
+		if ('enaBle-proposed-api' in this.args) {
 			return [];
 		}
 
@@ -83,7 +83,7 @@ export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService 
 	}
 
 	constructor(
-		readonly configuration: INativeWorkbenchConfiguration,
+		readonly configuration: INativeWorkBenchConfiguration,
 		private readonly productService: IProductService
 	) {
 		super(configuration);

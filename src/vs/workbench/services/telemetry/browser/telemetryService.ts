@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITelemetryService, ITelemetryInfo, ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService, combinedAppender, ITelemetryAppender } from 'vs/platform/telemetry/common/telemetryUtils';
+import { NullTelemetryService, comBinedAppender, ITelemetryAppender } from 'vs/platform/telemetry/common/telemetryUtils';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { ILoggerService } from 'vs/platform/log/common/log';
 import { TelemetryService as BaseTelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { resolveWorkbenchCommonProperties } from 'vs/workbench/services/telemetry/browser/workbenchCommonProperties';
+import { resolveWorkBenchCommonProperties } from 'vs/workBench/services/telemetry/Browser/workBenchCommonProperties';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { TelemetryLogAppender } from 'vs/platform/telemetry/common/telemetryLogAppender';
 
-class WebTelemetryAppender implements ITelemetryAppender {
+class WeBTelemetryAppender implements ITelemetryAppender {
 
 	constructor(private _appender: IRemoteAgentService) { }
 
@@ -31,15 +31,15 @@ class WebTelemetryAppender implements ITelemetryAppender {
 	}
 }
 
-export class TelemetryService extends Disposable implements ITelemetryService {
+export class TelemetryService extends DisposaBle implements ITelemetryService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private impl: ITelemetryService;
-	public readonly sendErrorTelemetry = false;
+	puBlic readonly sendErrorTelemetry = false;
 
 	constructor(
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@ILoggerService loggerService: ILoggerService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IStorageService storageService: IStorageService,
@@ -48,10 +48,10 @@ export class TelemetryService extends Disposable implements ITelemetryService {
 	) {
 		super();
 
-		if (!!productService.enableTelemetry) {
+		if (!!productService.enaBleTelemetry) {
 			const config: ITelemetryServiceConfig = {
-				appender: combinedAppender(new WebTelemetryAppender(remoteAgentService), new TelemetryLogAppender(loggerService, environmentService)),
-				commonProperties: resolveWorkbenchCommonProperties(storageService, productService.commit, productService.version, environmentService.remoteAuthority, environmentService.options && environmentService.options.resolveCommonTelemetryProperties),
+				appender: comBinedAppender(new WeBTelemetryAppender(remoteAgentService), new TelemetryLogAppender(loggerService, environmentService)),
+				commonProperties: resolveWorkBenchCommonProperties(storageService, productService.commit, productService.version, environmentService.remoteAuthority, environmentService.options && environmentService.options.resolveCommonTelemetryProperties),
 				sendErrorTelemetry: false,
 			};
 
@@ -61,32 +61,32 @@ export class TelemetryService extends Disposable implements ITelemetryService {
 		}
 	}
 
-	setEnabled(value: boolean): void {
-		return this.impl.setEnabled(value);
+	setEnaBled(value: Boolean): void {
+		return this.impl.setEnaBled(value);
 	}
 
 	setExperimentProperty(name: string, value: string): void {
 		return this.impl.setExperimentProperty(name, value);
 	}
 
-	get isOptedIn(): boolean {
+	get isOptedIn(): Boolean {
 		return this.impl.isOptedIn;
 	}
 
-	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void> {
-		return this.impl.publicLog(eventName, data, anonymizeFilePaths);
+	puBlicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: Boolean): Promise<void> {
+		return this.impl.puBlicLog(eventName, data, anonymizeFilePaths);
 	}
 
-	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean) {
-		return this.publicLog(eventName, data as ITelemetryData, anonymizeFilePaths);
+	puBlicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: Boolean) {
+		return this.puBlicLog(eventName, data as ITelemetryData, anonymizeFilePaths);
 	}
 
-	publicLogError(errorEventName: string, data?: ITelemetryData): Promise<void> {
-		return this.impl.publicLog(errorEventName, data);
+	puBlicLogError(errorEventName: string, data?: ITelemetryData): Promise<void> {
+		return this.impl.puBlicLog(errorEventName, data);
 	}
 
-	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLogError(eventName, data as ITelemetryData);
+	puBlicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+		return this.puBlicLogError(eventName, data as ITelemetryData);
 	}
 
 	getTelemetryInfo(): Promise<ITelemetryInfo> {

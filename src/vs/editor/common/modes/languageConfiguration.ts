@@ -6,7 +6,7 @@
 import { StandardTokenType } from 'vs/editor/common/modes';
 
 /**
- * Describes how comments for a language work.
+ * DescriBes how comments for a language work.
  */
 export interface CommentRule {
 	/**
@@ -14,14 +14,14 @@ export interface CommentRule {
 	 */
 	lineComment?: string | null;
 	/**
-	 * The block comment character pair, like `/* block comment *&#47;`
+	 * The Block comment character pair, like `/* Block comment *&#47;`
 	 */
-	blockComment?: CharacterPair | null;
+	BlockComment?: CharacterPair | null;
 }
 
 /**
- * The language configuration interface defines the contract between extensions and
- * various editor features, like automatic bracket insertion, automatic indentation etc.
+ * The language configuration interface defines the contract Between extensions and
+ * various editor features, like automatic Bracket insertion, automatic indentation etc.
  */
 export interface LanguageConfiguration {
 	/**
@@ -29,15 +29,15 @@ export interface LanguageConfiguration {
 	 */
 	comments?: CommentRule;
 	/**
-	 * The language's brackets.
-	 * This configuration implicitly affects pressing Enter around these brackets.
+	 * The language's Brackets.
+	 * This configuration implicitly affects pressing Enter around these Brackets.
 	 */
-	brackets?: CharacterPair[];
+	Brackets?: CharacterPair[];
 	/**
 	 * The language's word definition.
-	 * If the language supports Unicode identifiers (e.g. JavaScript), it is preferable
+	 * If the language supports Unicode identifiers (e.g. JavaScript), it is preferaBle
 	 * to provide a word definition that uses exclusion of known separators.
-	 * e.g.: A regex that matches anything except known separators (and dot is allowed to occur in a floating point number):
+	 * e.g.: A regex that matches anything except known separators (and dot is allowed to occur in a floating point numBer):
 	 *   /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g
 	 */
 	wordPattern?: RegExp;
@@ -46,25 +46,25 @@ export interface LanguageConfiguration {
 	 */
 	indentationRules?: IndentationRule;
 	/**
-	 * The language's rules to be evaluated when pressing Enter.
+	 * The language's rules to Be evaluated when pressing Enter.
 	 */
 	onEnterRules?: OnEnterRule[];
 	/**
 	 * The language's auto closing pairs. The 'close' character is automatically inserted with the
-	 * 'open' character is typed. If not set, the configured brackets will be used.
+	 * 'open' character is typed. If not set, the configured Brackets will Be used.
 	 */
 	autoClosingPairs?: IAutoClosingPairConditional[];
 	/**
 	 * The language's surrounding pairs. When the 'open' character is typed on a selection, the
-	 * selected string is surrounded by the open and close characters. If not set, the autoclosing pairs
-	 * settings will be used.
+	 * selected string is surrounded By the open and close characters. If not set, the autoclosing pairs
+	 * settings will Be used.
 	 */
 	surroundingPairs?: IAutoClosingPair[];
 
 	/**
-	 * Defines what characters must be after the cursor for bracket or quote autoclosing to occur when using the \'languageDefined\' autoclosing setting.
+	 * Defines what characters must Be after the cursor for Bracket or quote autoclosing to occur when using the \'languageDefined\' autoclosing setting.
 	 *
-	 * This is typically the set of characters which can not start an expression, such as whitespace, closing brackets, non-unary operators, etc.
+	 * This is typically the set of characters which can not start an expression, such as whitespace, closing Brackets, non-unary operators, etc.
 	 */
 	autoCloseBefore?: string;
 
@@ -76,7 +76,7 @@ export interface LanguageConfiguration {
 	/**
 	 * **Deprecated** Do not use.
 	 *
-	 * @deprecated Will be replaced by a better API soon.
+	 * @deprecated Will Be replaced By a Better API soon.
 	 */
 	__electricCharacterSupport?: {
 		docComment?: IDocComment;
@@ -84,31 +84,31 @@ export interface LanguageConfiguration {
 }
 
 /**
- * Describes indentation rules for a language.
+ * DescriBes indentation rules for a language.
  */
 export interface IndentationRule {
 	/**
-	 * If a line matches this pattern, then all the lines after it should be unindented once (until another rule matches).
+	 * If a line matches this pattern, then all the lines after it should Be unindented once (until another rule matches).
 	 */
 	decreaseIndentPattern: RegExp;
 	/**
-	 * If a line matches this pattern, then all the lines after it should be indented once (until another rule matches).
+	 * If a line matches this pattern, then all the lines after it should Be indented once (until another rule matches).
 	 */
 	increaseIndentPattern: RegExp;
 	/**
-	 * If a line matches this pattern, then **only the next line** after it should be indented once.
+	 * If a line matches this pattern, then **only the next line** after it should Be indented once.
 	 */
 	indentNextLinePattern?: RegExp | null;
 	/**
-	 * If a line matches this pattern, then its indentation should not be changed and it should not be evaluated against the other rules.
+	 * If a line matches this pattern, then its indentation should not Be changed and it should not Be evaluated against the other rules.
 	 */
 	unIndentedLinePattern?: RegExp | null;
 
 }
 
 /**
- * Describes language specific folding markers such as '#region' and '#endregion'.
- * The start and end regexes will be tested against the contents of all lines and must be designed efficiently:
+ * DescriBes language specific folding markers such as '#region' and '#endregion'.
+ * The start and end regexes will Be tested against the contents of all lines and must Be designed efficiently:
  * - the regex should start with '^'
  * - regexp flags (i, g) are ignored
  */
@@ -118,39 +118,39 @@ export interface FoldingMarkers {
 }
 
 /**
- * Describes folding rules for a language.
+ * DescriBes folding rules for a language.
  */
 export interface FoldingRules {
 	/**
-	 * Used by the indentation based strategy to decide whether empty lines belong to the previous or the next block.
-	 * A language adheres to the off-side rule if blocks in that language are expressed by their indentation.
+	 * Used By the indentation Based strategy to decide whether empty lines Belong to the previous or the next Block.
+	 * A language adheres to the off-side rule if Blocks in that language are expressed By their indentation.
 	 * See [wikipedia](https://en.wikipedia.org/wiki/Off-side_rule) for more information.
-	 * If not set, `false` is used and empty lines belong to the previous block.
+	 * If not set, `false` is used and empty lines Belong to the previous Block.
 	 */
-	offSide?: boolean;
+	offSide?: Boolean;
 
 	/**
-	 * Region markers used by the language.
+	 * Region markers used By the language.
 	 */
 	markers?: FoldingMarkers;
 }
 
 /**
- * Describes a rule to be evaluated when pressing Enter.
+ * DescriBes a rule to Be evaluated when pressing Enter.
  */
 export interface OnEnterRule {
 	/**
-	 * This rule will only execute if the text before the cursor matches this regular expression.
+	 * This rule will only execute if the text Before the cursor matches this regular expression.
 	 */
-	beforeText: RegExp;
+	BeforeText: RegExp;
 	/**
 	 * This rule will only execute if the text after the cursor matches this regular expression.
 	 */
 	afterText?: RegExp;
 	/**
-	 * This rule will only execute if the text above the this line matches this regular expression.
+	 * This rule will only execute if the text aBove the this line matches this regular expression.
 	 */
-	oneLineAboveText?: RegExp;
+	oneLineABoveText?: RegExp;
 	/**
 	 * The action to execute.
 	 */
@@ -173,7 +173,7 @@ export interface IDocComment {
 
 /**
  * A tuple of two characters, like a pair of
- * opening and closing brackets.
+ * opening and closing Brackets.
  */
 export type CharacterPair = [string, string];
 
@@ -187,7 +187,7 @@ export interface IAutoClosingPairConditional extends IAutoClosingPair {
 }
 
 /**
- * Describes what to do with the indentation when pressing Enter.
+ * DescriBes what to do with the indentation when pressing Enter.
  */
 export enum IndentAction {
 	/**
@@ -211,21 +211,21 @@ export enum IndentAction {
 }
 
 /**
- * Describes what to do when pressing Enter.
+ * DescriBes what to do when pressing Enter.
  */
 export interface EnterAction {
 	/**
-	 * Describe what to do with the indentation.
+	 * DescriBe what to do with the indentation.
 	 */
 	indentAction: IndentAction;
 	/**
-	 * Describes text to be appended after the new line and after the indentation.
+	 * DescriBes text to Be appended after the new line and after the indentation.
 	 */
 	appendText?: string;
 	/**
-	 * Describes the number of characters to remove from the new line's indentation.
+	 * DescriBes the numBer of characters to remove from the new line's indentation.
 	 */
-	removeText?: number;
+	removeText?: numBer;
 }
 
 /**
@@ -233,17 +233,17 @@ export interface EnterAction {
  */
 export interface CompleteEnterAction {
 	/**
-	 * Describe what to do with the indentation.
+	 * DescriBe what to do with the indentation.
 	 */
 	indentAction: IndentAction;
 	/**
-	 * Describes text to be appended after the new line and after the indentation.
+	 * DescriBes text to Be appended after the new line and after the indentation.
 	 */
 	appendText: string;
 	/**
-	 * Describes the number of characters to remove from the new line's indentation.
+	 * DescriBes the numBer of characters to remove from the new line's indentation.
 	 */
-	removeText: number;
+	removeText: numBer;
 	/**
 	 * The line's indentation minus removeText
 	 */
@@ -258,7 +258,7 @@ export class StandardAutoClosingPairConditional {
 
 	readonly open: string;
 	readonly close: string;
-	private readonly _standardTokenMask: number;
+	private readonly _standardTokenMask: numBer;
 
 	constructor(source: IAutoClosingPairConditional) {
 		this.open = source.open;
@@ -273,20 +273,20 @@ export class StandardAutoClosingPairConditional {
 				switch (notIn) {
 					case 'string':
 						this._standardTokenMask |= StandardTokenType.String;
-						break;
+						Break;
 					case 'comment':
 						this._standardTokenMask |= StandardTokenType.Comment;
-						break;
+						Break;
 					case 'regex':
 						this._standardTokenMask |= StandardTokenType.RegEx;
-						break;
+						Break;
 				}
 			}
 		}
 	}
 
-	public isOK(standardToken: StandardTokenType): boolean {
-		return (this._standardTokenMask & <number>standardToken) === 0;
+	puBlic isOK(standardToken: StandardTokenType): Boolean {
+		return (this._standardTokenMask & <numBer>standardToken) === 0;
 	}
 }
 
@@ -295,8 +295,8 @@ export class StandardAutoClosingPairConditional {
  */
 export class AutoClosingPairs {
 
-	public readonly autoClosingPairsOpen: Map<string, StandardAutoClosingPairConditional[]>;
-	public readonly autoClosingPairsClose: Map<string, StandardAutoClosingPairConditional[]>;
+	puBlic readonly autoClosingPairsOpen: Map<string, StandardAutoClosingPairConditional[]>;
+	puBlic readonly autoClosingPairsClose: Map<string, StandardAutoClosingPairConditional[]>;
 
 	constructor(autoClosingPairs: StandardAutoClosingPairConditional[]) {
 		this.autoClosingPairsOpen = new Map<string, StandardAutoClosingPairConditional[]>();

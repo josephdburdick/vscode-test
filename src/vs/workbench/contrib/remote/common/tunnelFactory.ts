@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITunnelService, TunnelOptions, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
-export class TunnelFactoryContribution extends Disposable implements IWorkbenchContribution {
+export class TunnelFactoryContriBution extends DisposaBle implements IWorkBenchContriBution {
 	constructor(
 		@ITunnelService tunnelService: ITunnelService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 	) {
 		super();
 		const tunnelFactory = environmentService.options?.tunnelProvider?.tunnelFactory;

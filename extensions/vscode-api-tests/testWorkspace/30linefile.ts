@@ -1,4 +1,4 @@
-function bar(): void {
+function Bar(): void {
     var a = 1;
     a = 1;
     a = 1;

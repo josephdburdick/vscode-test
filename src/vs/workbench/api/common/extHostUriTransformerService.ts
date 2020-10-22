@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IURITransformer } from 'vs/base/common/uriIpc';
+import { IURITransformer } from 'vs/Base/common/uriIpc';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 
 export interface IURITransformerService extends IURITransformer {
 	readonly _serviceBrand: undefined;
@@ -28,10 +28,10 @@ export class URITransformerService implements IURITransformerService {
 			this.transformOutgoingURI = arg => arg;
 			this.transformOutgoingScheme = arg => arg;
 		} else {
-			this.transformIncoming = delegate.transformIncoming.bind(delegate);
-			this.transformOutgoing = delegate.transformOutgoing.bind(delegate);
-			this.transformOutgoingURI = delegate.transformOutgoingURI.bind(delegate);
-			this.transformOutgoingScheme = delegate.transformOutgoingScheme.bind(delegate);
+			this.transformIncoming = delegate.transformIncoming.Bind(delegate);
+			this.transformOutgoing = delegate.transformOutgoing.Bind(delegate);
+			this.transformOutgoingURI = delegate.transformOutgoingURI.Bind(delegate);
+			this.transformOutgoingScheme = delegate.transformOutgoingScheme.Bind(delegate);
 		}
 	}
 }

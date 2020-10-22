@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 import { DefaultEndOfLine } from 'vs/editor/common/model';
 import { PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 
-export function testTextBufferFactory(text: string, eol: string, mightContainNonBasicASCII: boolean, mightContainRTL: boolean): void {
+export function testTextBufferFactory(text: string, eol: string, mightContainNonBasicASCII: Boolean, mightContainRTL: Boolean): void {
 	const textBuffer = <PieceTreeTextBuffer>createTextBufferFactory(text).create(DefaultEndOfLine.LF);
 
 	assert.equal(textBuffer.mightContainNonBasicASCII(), mightContainNonBasicASCII);
@@ -67,6 +67,6 @@ suite('ModelBuilder', () => {
 		testTextBufferFactory('Hello world!!\nHow do you do?', '\n', false, false);
 	});
 	test('ASCII handling 2', () => {
-		testTextBufferFactory('Hello world!!\nHow do you do?Züricha📚📚b', '\n', true, false);
+		testTextBufferFactory('Hello world!!\nHow do you do?Züricha📚📚B', '\n', true, false);
 	});
 });

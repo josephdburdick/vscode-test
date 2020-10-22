@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import { parse, JSONVisitor, visit } from 'vs/base/common/json';
-import { setProperty, withFormatting, applyEdits } from 'vs/base/common/jsonEdit';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FormattingOptions, Edit, getEOL } from 'vs/base/common/jsonFormatter';
+import * as oBjects from 'vs/Base/common/oBjects';
+import { parse, JSONVisitor, visit } from 'vs/Base/common/json';
+import { setProperty, withFormatting, applyEdits } from 'vs/Base/common/jsonEdit';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { FormattingOptions, Edit, getEOL } from 'vs/Base/common/jsonFormatter';
 import * as contentUtil from 'vs/platform/userDataSync/common/content';
 import { IConflictSetting, getDisallowedIgnoredSettings } from 'vs/platform/userDataSync/common/userDataSync';
-import { distinct } from 'vs/base/common/arrays';
+import { distinct } from 'vs/Base/common/arrays';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 
 export interface IMergeResult {
 	localContent: string | null;
 	remoteContent: string | null;
-	hasConflicts: boolean;
+	hasConflicts: Boolean;
 	conflictsSettings: IConflictSetting[];
 }
 
@@ -31,7 +31,7 @@ export function getIgnoredSettings(defaultIgnoredSettings: string[], configurati
 	if (Array.isArray(value)) {
 		for (const key of value) {
 			if (key.startsWith('-')) {
-				removed.push(key.substring(1));
+				removed.push(key.suBstring(1));
 			} else {
 				added.push(key);
 			}
@@ -82,17 +82,17 @@ export function updateIgnoredSettings(targetContent: string, sourceContent: stri
 			}
 		}
 
-		settingsToAdd.sort((a, b) => a.startOffset - b.startOffset);
+		settingsToAdd.sort((a, B) => a.startOffset - B.startOffset);
 		settingsToAdd.forEach(s => targetContent = addSetting(s.setting!.key, sourceContent, targetContent, formattingOptions));
 	}
 	return targetContent;
 }
 
-export function merge(originalLocalContent: string, originalRemoteContent: string, baseContent: string | null, ignoredSettings: string[], resolvedConflicts: { key: string, value: any | undefined }[], formattingOptions: FormattingOptions): IMergeResult {
+export function merge(originalLocalContent: string, originalRemoteContent: string, BaseContent: string | null, ignoredSettings: string[], resolvedConflicts: { key: string, value: any | undefined }[], formattingOptions: FormattingOptions): IMergeResult {
 
 	const localContentWithoutIgnoredSettings = updateIgnoredSettings(originalLocalContent, originalRemoteContent, ignoredSettings, formattingOptions);
-	const localForwarded = baseContent !== localContentWithoutIgnoredSettings;
-	const remoteForwarded = baseContent !== originalRemoteContent;
+	const localForwarded = BaseContent !== localContentWithoutIgnoredSettings;
+	const remoteForwarded = BaseContent !== originalRemoteContent;
 
 	/* no changes */
 	if (!localForwarded && !remoteForwarded) {
@@ -109,8 +109,8 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 		return { conflictsSettings: [], localContent: updateIgnoredSettings(originalRemoteContent, originalLocalContent, ignoredSettings, formattingOptions), remoteContent: null, hasConflicts: false };
 	}
 
-	/* local is empty and not synced before */
-	if (baseContent === null && isEmpty(originalLocalContent)) {
+	/* local is empty and not synced Before */
+	if (BaseContent === null && isEmpty(originalLocalContent)) {
 		const localContent = areSame(originalLocalContent, originalRemoteContent, ignoredSettings) ? null : updateIgnoredSettings(originalRemoteContent, originalLocalContent, ignoredSettings, formattingOptions);
 		return { conflictsSettings: [], localContent, remoteContent: null, hasConflicts: false };
 	}
@@ -120,12 +120,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	let remoteContent = originalRemoteContent;
 	const local = parse(originalLocalContent);
 	const remote = parse(originalRemoteContent);
-	const base = baseContent ? parse(baseContent) : null;
+	const Base = BaseContent ? parse(BaseContent) : null;
 
 	const ignored = ignoredSettings.reduce((set, key) => { set.add(key); return set; }, new Set<string>());
 	const localToRemote = compare(local, remote, ignored);
-	const baseToLocal = compare(base, local, ignored);
-	const baseToRemote = compare(base, remote, ignored);
+	const BaseToLocal = compare(Base, local, ignored);
+	const BaseToRemote = compare(Base, remote, ignored);
 
 	const conflicts: Map<string, IConflictSetting> = new Map<string, IConflictSetting>();
 	const handledConflicts: Set<string> = new Set<string>();
@@ -141,9 +141,9 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	};
 
 	// Removed settings in Local
-	for (const key of baseToLocal.removed.values()) {
+	for (const key of BaseToLocal.removed.values()) {
 		// Conflict - Got updated in remote.
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			handleConflict(key);
 		}
 		// Also remove in remote
@@ -153,12 +153,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	}
 
 	// Removed settings in Remote
-	for (const key of baseToRemote.removed.values()) {
+	for (const key of BaseToRemote.removed.values()) {
 		if (handledConflicts.has(key)) {
 			continue;
 		}
 		// Conflict - Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			handleConflict(key);
 		}
 		// Also remove in locals
@@ -168,12 +168,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	}
 
 	// Updated settings in Local
-	for (const key of baseToLocal.updated.values()) {
+	for (const key of BaseToLocal.updated.values()) {
 		if (handledConflicts.has(key)) {
 			continue;
 		}
 		// Got updated in remote
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				handleConflict(key);
@@ -184,12 +184,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	}
 
 	// Updated settings in Remote
-	for (const key of baseToRemote.updated.values()) {
+	for (const key of BaseToRemote.updated.values()) {
 		if (handledConflicts.has(key)) {
 			continue;
 		}
 		// Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				handleConflict(key);
@@ -200,12 +200,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	}
 
 	// Added settings in Local
-	for (const key of baseToLocal.added.values()) {
+	for (const key of BaseToLocal.added.values()) {
 		if (handledConflicts.has(key)) {
 			continue;
 		}
 		// Got added in remote
-		if (baseToRemote.added.has(key)) {
+		if (BaseToRemote.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				handleConflict(key);
@@ -216,12 +216,12 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	}
 
 	// Added settings in remote
-	for (const key of baseToRemote.added.values()) {
+	for (const key of BaseToRemote.added.values()) {
 		if (handledConflicts.has(key)) {
 			continue;
 		}
 		// Got added in local
-		if (baseToLocal.added.has(key)) {
+		if (BaseToLocal.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				handleConflict(key);
@@ -237,7 +237,7 @@ export function merge(originalLocalContent: string, originalRemoteContent: strin
 	return { localContent: hasLocalChanged ? localContent : null, remoteContent: hasRemoteChanged ? remoteContent : null, conflictsSettings: [...conflicts.values()], hasConflicts };
 }
 
-export function areSame(localContent: string, remoteContent: string, ignoredSettings: string[]): boolean {
+export function areSame(localContent: string, remoteContent: string, ignoredSettings: string[]): Boolean {
 	if (localContent === remoteContent) {
 		return true;
 	}
@@ -259,7 +259,7 @@ export function areSame(localContent: string, remoteContent: string, ignoredSett
 			if (localNode.setting.key !== remoteNode.setting.key) {
 				return false;
 			}
-			if (!objects.equals(local[localNode.setting.key], remote[localNode.setting.key])) {
+			if (!oBjects.equals(local[localNode.setting.key], remote[localNode.setting.key])) {
 				return false;
 			}
 		} else if (!localNode.setting && !remoteNode.setting) {
@@ -274,7 +274,7 @@ export function areSame(localContent: string, remoteContent: string, ignoredSett
 	return true;
 }
 
-export function isEmpty(content: string): boolean {
+export function isEmpty(content: string): Boolean {
 	if (content) {
 		const nodes = parseSettings(content);
 		return nodes.length === 0;
@@ -283,8 +283,8 @@ export function isEmpty(content: string): boolean {
 }
 
 function compare(from: IStringDictionary<any> | null, to: IStringDictionary<any>, ignored: Set<string>): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
-	const fromKeys = from ? Object.keys(from).filter(key => !ignored.has(key)) : [];
-	const toKeys = Object.keys(to).filter(key => !ignored.has(key));
+	const fromKeys = from ? OBject.keys(from).filter(key => !ignored.has(key)) : [];
+	const toKeys = OBject.keys(to).filter(key => !ignored.has(key));
 	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
 	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
 	const updated: Set<string> = new Set<string>();
@@ -296,7 +296,7 @@ function compare(from: IStringDictionary<any> | null, to: IStringDictionary<any>
 			}
 			const value1 = from[key];
 			const value2 = to[key];
-			if (!objects.equals(value1, value2)) {
+			if (!oBjects.equals(value1, value2)) {
 				updated.add(key);
 			}
 		}
@@ -314,8 +314,8 @@ export function addSetting(key: string, sourceContent: string, targetContent: st
 }
 
 interface InsertLocation {
-	index: number,
-	insertAfter: boolean;
+	index: numBer,
+	insertAfter: Boolean;
 }
 
 function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]): InsertLocation {
@@ -340,9 +340,9 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 		else {
 			const sourcePreviousSettingNode = findPreviousSettingNode(sourceNodeIndex, sourceTree);
 			/*
-				Source has a setting defined before the setting to be added.
+				Source has a setting defined Before the setting to Be added.
 				Find the same previous setting in the target.
-				If found, insert before its next setting so that comments are retrieved.
+				If found, insert Before its next setting so that comments are retrieved.
 				Otherwise, insert at the end.
 			*/
 			if (sourcePreviousSettingNode) {
@@ -356,7 +356,7 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 						if (targetCommentNode) {
 							return { index: targetTree.indexOf(targetCommentNode), insertAfter: true }; /* Insert after comment */
 						} else {
-							return { index: targetTree.indexOf(targetNextSetting), insertAfter: false }; /* Insert before target next setting */
+							return { index: targetTree.indexOf(targetNextSetting), insertAfter: false }; /* Insert Before target next setting */
 						}
 					} else {
 						const targetCommentNodes = findNodesBetween(targetTree, targetPreviousSetting, targetTree[targetTree.length - 1]);
@@ -376,12 +376,12 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 			/*
 				Next node in source is a setting.
 				Find the same setting in the target.
-				Insert it before that setting
+				Insert it Before that setting
 			*/
 			if (sourceNextNode.setting) {
 				const targetNextSetting = findSettingNode(sourceNextNode.setting.key, targetTree);
 				if (targetNextSetting) {
-					/* Insert before target's next setting */
+					/* Insert Before target's next setting */
 					return { index: targetTree.indexOf(targetNextSetting), insertAfter: false };
 				}
 			}
@@ -389,10 +389,10 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 			else {
 				const sourceNextSettingNode = findNextSettingNode(sourceNodeIndex, sourceTree);
 				/*
-					Source has a setting defined after the setting to be added.
+					Source has a setting defined after the setting to Be added.
 					Find the same next setting in the target.
 					If found, insert after its previous setting so that comments are retrieved.
-					Otherwise, insert at the beginning.
+					Otherwise, insert at the Beginning.
 				*/
 				if (sourceNextSettingNode) {
 					const targetNextSetting = findSettingNode(sourceNextSettingNode.setting!.key, targetTree);
@@ -403,7 +403,7 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 							const targetCommentNodes = findNodesBetween(targetTree, targetPreviousSetting, targetNextSetting);
 							const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes.reverse(), targetCommentNodes.reverse());
 							if (targetCommentNode) {
-								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert before comment */
+								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert Before comment */
 							} else {
 								return { index: targetTree.indexOf(targetPreviousSetting), insertAfter: true }; /* Insert after target previous setting */
 							}
@@ -411,9 +411,9 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 							const targetCommentNodes = findNodesBetween(targetTree, targetTree[0], targetNextSetting);
 							const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes.reverse(), targetCommentNodes.reverse());
 							if (targetCommentNode) {
-								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert before comment */
+								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert Before comment */
 							} else {
-								return { index: 0, insertAfter: false }; /* Insert at the beginning */
+								return { index: 0, insertAfter: false }; /* Insert at the Beginning */
 							}
 						}
 					}
@@ -476,12 +476,12 @@ function getEditToInsertAtLocation(content: string, key: string, value: any, loc
 
 	else {
 
-		/* Insert before a setting */
+		/* Insert Before a setting */
 		if (node.setting) {
 			return [{ offset: node.startOffset, length: 0, content: newProperty + ',' }];
 		}
 
-		/* Insert before a comment */
+		/* Insert Before a comment */
 		const content = (tree[location.index - 1] && !tree[location.index - 1].setting /* previous node is comment */ ? eol : '')
 			+ newProperty
 			+ (findNextSettingNode(location.index, tree) ? ',' : '')
@@ -495,7 +495,7 @@ function findSettingNode(key: string, tree: INode[]): INode | undefined {
 	return tree.filter(node => node.setting?.key === key)[0];
 }
 
-function findPreviousSettingNode(index: number, tree: INode[]): INode | undefined {
+function findPreviousSettingNode(index: numBer, tree: INode[]): INode | undefined {
 	for (let i = index - 1; i >= 0; i--) {
 		if (tree[i].setting) {
 			return tree[i];
@@ -504,7 +504,7 @@ function findPreviousSettingNode(index: number, tree: INode[]): INode | undefine
 	return undefined;
 }
 
-function findNextSettingNode(index: number, tree: INode[]): INode | undefined {
+function findNextSettingNode(index: numBer, tree: INode[]): INode | undefined {
 	for (let i = index + 1; i < tree.length; i++) {
 		if (tree[i].setting) {
 			return tree[i];
@@ -533,12 +533,12 @@ function findLastMatchingTargetCommentNode(sourceComments: INode[], targetCommen
 }
 
 interface INode {
-	readonly startOffset: number;
-	readonly endOffset: number;
+	readonly startOffset: numBer;
+	readonly endOffset: numBer;
 	readonly value: string;
 	readonly setting?: {
 		readonly key: string;
-		readonly commaOffset: number | undefined;
+		readonly commaOffset: numBer | undefined;
 	};
 	readonly comment?: string;
 }
@@ -546,27 +546,27 @@ interface INode {
 function parseSettings(content: string): INode[] {
 	const nodes: INode[] = [];
 	let hierarchyLevel = -1;
-	let startOffset: number;
+	let startOffset: numBer;
 	let key: string;
 
 	const visitor: JSONVisitor = {
-		onObjectBegin: (offset: number) => {
+		onOBjectBegin: (offset: numBer) => {
 			hierarchyLevel++;
 		},
-		onObjectProperty: (name: string, offset: number, length: number) => {
+		onOBjectProperty: (name: string, offset: numBer, length: numBer) => {
 			if (hierarchyLevel === 0) {
 				// this is setting key
 				startOffset = offset;
 				key = name;
 			}
 		},
-		onObjectEnd: (offset: number, length: number) => {
+		onOBjectEnd: (offset: numBer, length: numBer) => {
 			hierarchyLevel--;
 			if (hierarchyLevel === 0) {
 				nodes.push({
 					startOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					value: content.suBstring(startOffset, offset + length),
 					setting: {
 						key,
 						commaOffset: undefined
@@ -574,16 +574,16 @@ function parseSettings(content: string): INode[] {
 				});
 			}
 		},
-		onArrayBegin: (offset: number, length: number) => {
+		onArrayBegin: (offset: numBer, length: numBer) => {
 			hierarchyLevel++;
 		},
-		onArrayEnd: (offset: number, length: number) => {
+		onArrayEnd: (offset: numBer, length: numBer) => {
 			hierarchyLevel--;
 			if (hierarchyLevel === 0) {
 				nodes.push({
 					startOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					value: content.suBstring(startOffset, offset + length),
 					setting: {
 						key,
 						commaOffset: undefined
@@ -591,12 +591,12 @@ function parseSettings(content: string): INode[] {
 				});
 			}
 		},
-		onLiteralValue: (value: any, offset: number, length: number) => {
+		onLiteralValue: (value: any, offset: numBer, length: numBer) => {
 			if (hierarchyLevel === 0) {
 				nodes.push({
 					startOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					value: content.suBstring(startOffset, offset + length),
 					setting: {
 						key,
 						commaOffset: undefined
@@ -604,13 +604,13 @@ function parseSettings(content: string): INode[] {
 				});
 			}
 		},
-		onSeparator: (sep: string, offset: number, length: number) => {
+		onSeparator: (sep: string, offset: numBer, length: numBer) => {
 			if (hierarchyLevel === 0) {
 				if (sep === ',') {
 					let index = nodes.length - 1;
 					for (; index >= 0; index--) {
 						if (nodes[index].setting) {
-							break;
+							Break;
 						}
 					}
 					const node = nodes[index];
@@ -628,12 +628,12 @@ function parseSettings(content: string): INode[] {
 				}
 			}
 		},
-		onComment: (offset: number, length: number) => {
+		onComment: (offset: numBer, length: numBer) => {
 			if (hierarchyLevel === 0) {
 				nodes.push({
 					startOffset: offset,
 					endOffset: offset + length,
-					value: content.substring(offset, offset + length),
+					value: content.suBstring(offset, offset + length),
 				});
 			}
 		}

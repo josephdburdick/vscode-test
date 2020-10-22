@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { formatPII, getExactExpressionStartAndEnd, getVisibleAndSorted } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { IConfig } from 'vs/workbench/contrib/debug/common/debug';
+import { formatPII, getExactExpressionStartAndEnd, getVisiBleAndSorted } from 'vs/workBench/contriB/deBug/common/deBugUtils';
+import { IConfig } from 'vs/workBench/contriB/deBug/common/deBug';
 
-suite('Debug - Utils', () => {
+suite('DeBug - Utils', () => {
 	test('formatPII', () => {
 		assert.strictEqual(formatPII('Foo Bar', false, {}), 'Foo Bar');
 		assert.strictEqual(formatPII('Foo {key} Bar', false, {}), 'Foo {key} Bar');
@@ -17,7 +17,7 @@ suite('Debug - Utils', () => {
 		assert.strictEqual(formatPII('Foo {0} Bar {1}{2}', false, { '0': 'yes', '1': 'undefined' }), 'Foo yes Bar undefined{2}');
 		assert.strictEqual(formatPII('Foo {_key0} Bar {key1}{key2}', true, { '_key0': 'yes', 'key1': '5', 'key2': 'false' }), 'Foo yes Bar {key1}{key2}');
 		assert.strictEqual(formatPII('Foo {_key0} Bar {key1}{key2}', false, { '_key0': 'yes', 'key1': '5', 'key2': 'false' }), 'Foo yes Bar 5false');
-		assert.strictEqual(formatPII('Unable to display threads:"{e}"', false, { 'e': 'detached from process' }), 'Unable to display threads:"detached from process"');
+		assert.strictEqual(formatPII('UnaBle to display threads:"{e}"', false, { 'e': 'detached from process' }), 'UnaBle to display threads:"detached from process"');
 	});
 
 	test('getExactExpressionStartAndEnd', () => {
@@ -28,16 +28,16 @@ suite('Debug - Utils', () => {
 		assert.deepEqual(getExactExpressionStartAndEnd('this.name = "John"', 6, 10), { start: 1, end: 9 });
 		// Hovers over "address" should pick up this->address
 		assert.deepEqual(getExactExpressionStartAndEnd('this->address = "Main street"', 6, 10), { start: 1, end: 13 });
-		// Hovers over "name" should pick up a.b.c.d.name
-		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.b.c.d.name', 16, 20), { start: 9, end: 20 });
+		// Hovers over "name" should pick up a.B.c.d.name
+		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.B.c.d.name', 16, 20), { start: 9, end: 20 });
 		assert.deepEqual(getExactExpressionStartAndEnd('MyClass::StaticProp', 10, 20), { start: 1, end: 19 });
-		assert.deepEqual(getExactExpressionStartAndEnd('largeNumber = myVar?.prop', 21, 25), { start: 15, end: 25 });
+		assert.deepEqual(getExactExpressionStartAndEnd('largeNumBer = myVar?.prop', 21, 25), { start: 15, end: 25 });
 
-		// For example in expression 'a.b.c.d', hover was under 'b', 'a.b' should be the exact range
-		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.b.c.d.name', 11, 12), { start: 9, end: 11 });
+		// For example in expression 'a.B.c.d', hover was under 'B', 'a.B' should Be the exact range
+		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.B.c.d.name', 11, 12), { start: 9, end: 11 });
 
-		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.b;c.d.name', 16, 20), { start: 13, end: 20 });
-		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.b.c-d.name', 16, 20), { start: 15, end: 20 });
+		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.B;c.d.name', 16, 20), { start: 13, end: 20 });
+		assert.deepEqual(getExactExpressionStartAndEnd('var t = a.B.c-d.name', 16, 20), { start: 15, end: 20 });
 	});
 
 	test('config presentation', () => {
@@ -55,7 +55,7 @@ suite('Debug - Utils', () => {
 		configs.push({
 			type: 'node',
 			request: 'launch',
-			name: 'b',
+			name: 'B',
 			presentation: {
 				hidden: false
 			}
@@ -121,7 +121,7 @@ suite('Debug - Utils', () => {
 			}
 		});
 
-		const sorted = getVisibleAndSorted(configs);
+		const sorted = getVisiBleAndSorted(configs);
 		assert.equal(sorted.length, 9);
 		assert.equal(sorted[0].name, 'f');
 		assert.equal(sorted[1].name, 'd');
@@ -129,7 +129,7 @@ suite('Debug - Utils', () => {
 		assert.equal(sorted[3].name, 'g');
 		assert.equal(sorted[4].name, 'h');
 		assert.equal(sorted[5].name, 'i');
-		assert.equal(sorted[6].name, 'b');
+		assert.equal(sorted[6].name, 'B');
 		assert.equal(sorted[7].name, 'p');
 		assert.equal(sorted[8].name, 'a');
 

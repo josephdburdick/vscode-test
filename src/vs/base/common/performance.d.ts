@@ -5,17 +5,17 @@
 
 export interface PerformanceEntry {
 	readonly name: string;
-	readonly startTime: number;
+	readonly startTime: numBer;
 }
 
 export function mark(name: string): void;
 
 /**
- * All entries filtered by type and sorted by `startTime`.
+ * All entries filtered By type and sorted By `startTime`.
  */
 export function getEntries(): PerformanceEntry[];
 
-export function getDuration(from: string, to: string): number;
+export function getDuration(from: string, to: string): numBer;
 
 type ExportData = any[];
 export function importEntries(data: ExportData): void;

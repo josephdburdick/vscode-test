@@ -5,33 +5,33 @@
 
 import * as vscode from 'vscode';
 
-export function disposeAll(disposables: vscode.Disposable[]) {
-	while (disposables.length) {
-		const item = disposables.pop();
+export function disposeAll(disposaBles: vscode.DisposaBle[]) {
+	while (disposaBles.length) {
+		const item = disposaBles.pop();
 		if (item) {
 			item.dispose();
 		}
 	}
 }
 
-export abstract class Disposable {
+export aBstract class DisposaBle {
 	private _isDisposed = false;
 
-	protected _disposables: vscode.Disposable[] = [];
+	protected _disposaBles: vscode.DisposaBle[] = [];
 
-	public dispose(): any {
+	puBlic dispose(): any {
 		if (this._isDisposed) {
 			return;
 		}
 		this._isDisposed = true;
-		disposeAll(this._disposables);
+		disposeAll(this._disposaBles);
 	}
 
-	protected _register<T extends vscode.Disposable>(value: T): T {
+	protected _register<T extends vscode.DisposaBle>(value: T): T {
 		if (this._isDisposed) {
 			value.dispose();
 		} else {
-			this._disposables.push(value);
+			this._disposaBles.push(value);
 		}
 		return value;
 	}

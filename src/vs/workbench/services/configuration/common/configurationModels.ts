@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/objects';
+import { equals } from 'vs/Base/common/oBjects';
 import { toValuesTree, IConfigurationModel, IConfigurationOverrides, IConfigurationValue, IConfigurationChange } from 'vs/platform/configuration/common/configuration';
 import { Configuration as BaseConfiguration, ConfigurationModelParser, ConfigurationModel } from 'vs/platform/configuration/common/configurationModels';
 import { IStoredWorkspaceFolder } from 'vs/platform/workspaces/common/workspaces';
 import { Workspace } from 'vs/platform/workspace/common/workspace';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { WORKSPACE_SCOPES } from 'vs/workbench/services/configuration/common/configuration';
+import { ResourceMap } from 'vs/Base/common/map';
+import { URI } from 'vs/Base/common/uri';
+import { WORKSPACE_SCOPES } from 'vs/workBench/services/configuration/common/configuration';
 import { OVERRIDE_PROPERTY_PATTERN, overrideIdentifierFromKey } from 'vs/platform/configuration/common/configurationRegistry';
 
 export class WorkspaceConfigurationModelParser extends ConfigurationModelParser {
@@ -59,9 +59,9 @@ export class WorkspaceConfigurationModelParser extends ConfigurationModelParser 
 		const data = raw[key];
 		if (data) {
 			const contents = toValuesTree(data, message => console.error(`Conflict in settings file ${this._name}: ${message}`));
-			const scopedContents = Object.create(null);
+			const scopedContents = OBject.create(null);
 			scopedContents[key] = contents;
-			const keys = Object.keys(data).map(k => `${key}.${k}`);
+			const keys = OBject.keys(data).map(k => `${key}.${k}`);
 			return new ConfigurationModel(scopedContents, keys, []);
 		}
 		return new ConfigurationModel();
@@ -76,9 +76,9 @@ export class StandaloneConfigurationModelParser extends ConfigurationModelParser
 
 	protected doParseRaw(raw: any): IConfigurationModel {
 		const contents = toValuesTree(raw, message => console.error(`Conflict in settings file ${this._name}: ${message}`));
-		const scopedContents = Object.create(null);
+		const scopedContents = OBject.create(null);
 		scopedContents[this.scope] = contents;
-		const keys = Object.keys(raw).map(key => `${this.scope}.${key}`);
+		const keys = OBject.keys(raw).map(key => `${this.scope}.${key}`);
 		return { contents: scopedContents, keys, overrides: [] };
 	}
 
@@ -129,7 +129,7 @@ export class Configuration extends BaseConfiguration {
 			keys.push(...toKeys.filter(key => fromKeys.indexOf(key) === -1));
 			keys.push(...fromKeys.filter(key => toKeys.indexOf(key) === -1));
 			keys.push(...fromKeys.filter(key => {
-				// Ignore if the key does not exist in both models
+				// Ignore if the key does not exist in Both models
 				if (toKeys.indexOf(key) === -1) {
 					return false;
 				}

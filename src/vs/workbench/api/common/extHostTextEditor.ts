@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ok } from 'vs/base/common/assert';
-import { illegalArgument, readonly } from 'vs/base/common/errors';
-import { IdGenerator } from 'vs/base/common/idGenerator';
+import { ok } from 'vs/Base/common/assert';
+import { illegalArgument, readonly } from 'vs/Base/common/errors';
+import { IdGenerator } from 'vs/Base/common/idGenerator';
 import { TextEditorCursorStyle } from 'vs/editor/common/config/editorOptions';
 import { IRange } from 'vs/editor/common/core/range';
 import { ISingleEditOperation } from 'vs/editor/common/model';
-import { IResolvedTextEditorConfiguration, ITextEditorConfigurationUpdate, MainThreadTextEditorsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentData } from 'vs/workbench/api/common/extHostDocumentData';
-import * as TypeConverters from 'vs/workbench/api/common/extHostTypeConverters';
-import { EndOfLine, Position, Range, Selection, SnippetString, TextEditorLineNumbersStyle, TextEditorRevealType } from 'vs/workbench/api/common/extHostTypes';
+import { IResolvedTextEditorConfiguration, ITextEditorConfigurationUpdate, MainThreadTextEditorsShape } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtHostDocumentData } from 'vs/workBench/api/common/extHostDocumentData';
+import * as TypeConverters from 'vs/workBench/api/common/extHostTypeConverters';
+import { EndOfLine, Position, Range, Selection, SnippetString, TextEditorLineNumBersStyle, TextEditorRevealType } from 'vs/workBench/api/common/extHostTypes';
 import type * as vscode from 'vscode';
 import { ILogService } from 'vs/platform/log/common/log';
 
@@ -21,7 +21,7 @@ export class TextEditorDecorationType implements vscode.TextEditorDecorationType
 	private static readonly _Keys = new IdGenerator('TextEditorDecorationType');
 
 	private _proxy: MainThreadTextEditorsShape;
-	public key: string;
+	puBlic key: string;
 
 	constructor(proxy: MainThreadTextEditorsShape, options: vscode.DecorationRenderOptions) {
 		this.key = TextEditorDecorationType._Keys.nextId();
@@ -29,7 +29,7 @@ export class TextEditorDecorationType implements vscode.TextEditorDecorationType
 		this._proxy.$registerTextEditorDecorationType(this.key, TypeConverters.DecorationRenderOptions.from(options));
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._proxy.$removeTextEditorDecorationType(this.key);
 	}
 }
@@ -37,28 +37,28 @@ export class TextEditorDecorationType implements vscode.TextEditorDecorationType
 export interface ITextEditOperation {
 	range: vscode.Range;
 	text: string | null;
-	forceMoveMarkers: boolean;
+	forceMoveMarkers: Boolean;
 }
 
 export interface IEditData {
-	documentVersionId: number;
+	documentVersionId: numBer;
 	edits: ITextEditOperation[];
 	setEndOfLine: EndOfLine | undefined;
-	undoStopBefore: boolean;
-	undoStopAfter: boolean;
+	undoStopBefore: Boolean;
+	undoStopAfter: Boolean;
 }
 
 export class TextEditorEdit {
 
 	private readonly _document: vscode.TextDocument;
-	private readonly _documentVersionId: number;
-	private readonly _undoStopBefore: boolean;
-	private readonly _undoStopAfter: boolean;
+	private readonly _documentVersionId: numBer;
+	private readonly _undoStopBefore: Boolean;
+	private readonly _undoStopAfter: Boolean;
 	private _collectedEdits: ITextEditOperation[] = [];
 	private _setEndOfLine: EndOfLine | undefined = undefined;
-	private _finalized: boolean = false;
+	private _finalized: Boolean = false;
 
-	constructor(document: vscode.TextDocument, options: { undoStopBefore: boolean; undoStopAfter: boolean; }) {
+	constructor(document: vscode.TextDocument, options: { undoStopBefore: Boolean; undoStopAfter: Boolean; }) {
 		this._document = document;
 		this._documentVersionId = document.version;
 		this._undoStopBefore = options.undoStopBefore;
@@ -78,7 +78,7 @@ export class TextEditorEdit {
 
 	private _throwIfFinalized() {
 		if (this._finalized) {
-			throw new Error('Edit is only valid while callback runs');
+			throw new Error('Edit is only valid while callBack runs');
 		}
 	}
 
@@ -115,7 +115,7 @@ export class TextEditorEdit {
 		this._pushEdit(range, null, true);
 	}
 
-	private _pushEdit(range: Range, text: string | null, forceMoveMarkers: boolean): void {
+	private _pushEdit(range: Range, text: string | null, forceMoveMarkers: Boolean): void {
 		const validRange = this._document.validateRange(range);
 		this._collectedEdits.push({
 			range: validRange,
@@ -140,11 +140,11 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 	private _id: string;
 	private _logService: ILogService;
 
-	private _tabSize!: number;
-	private _indentSize!: number;
-	private _insertSpaces!: boolean;
+	private _taBSize!: numBer;
+	private _indentSize!: numBer;
+	private _insertSpaces!: Boolean;
 	private _cursorStyle!: TextEditorCursorStyle;
-	private _lineNumbers!: TextEditorLineNumbersStyle;
+	private _lineNumBers!: TextEditorLineNumBersStyle;
 
 	constructor(proxy: MainThreadTextEditorsShape, id: string, source: IResolvedTextEditorConfiguration, logService: ILogService) {
 		this._proxy = proxy;
@@ -153,23 +153,23 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		this._logService = logService;
 	}
 
-	public _accept(source: IResolvedTextEditorConfiguration): void {
-		this._tabSize = source.tabSize;
+	puBlic _accept(source: IResolvedTextEditorConfiguration): void {
+		this._taBSize = source.taBSize;
 		this._indentSize = source.indentSize;
 		this._insertSpaces = source.insertSpaces;
 		this._cursorStyle = source.cursorStyle;
-		this._lineNumbers = TypeConverters.TextEditorLineNumbersStyle.to(source.lineNumbers);
+		this._lineNumBers = TypeConverters.TextEditorLineNumBersStyle.to(source.lineNumBers);
 	}
 
-	public get tabSize(): number | string {
-		return this._tabSize;
+	puBlic get taBSize(): numBer | string {
+		return this._taBSize;
 	}
 
-	private _validateTabSize(value: number | string): number | 'auto' | null {
+	private _validateTaBSize(value: numBer | string): numBer | 'auto' | null {
 		if (value === 'auto') {
 			return 'auto';
 		}
-		if (typeof value === 'number') {
+		if (typeof value === 'numBer') {
 			const r = Math.floor(value);
 			return (r > 0 ? r : null);
 		}
@@ -183,34 +183,34 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		return null;
 	}
 
-	public set tabSize(value: number | string) {
-		const tabSize = this._validateTabSize(value);
-		if (tabSize === null) {
+	puBlic set taBSize(value: numBer | string) {
+		const taBSize = this._validateTaBSize(value);
+		if (taBSize === null) {
 			// ignore invalid call
 			return;
 		}
-		if (typeof tabSize === 'number') {
-			if (this._tabSize === tabSize) {
+		if (typeof taBSize === 'numBer') {
+			if (this._taBSize === taBSize) {
 				// nothing to do
 				return;
 			}
-			// reflect the new tabSize value immediately
-			this._tabSize = tabSize;
+			// reflect the new taBSize value immediately
+			this._taBSize = taBSize;
 		}
 		this._warnOnError(this._proxy.$trySetOptions(this._id, {
-			tabSize: tabSize
+			taBSize: taBSize
 		}));
 	}
 
-	public get indentSize(): number | string {
+	puBlic get indentSize(): numBer | string {
 		return this._indentSize;
 	}
 
-	private _validateIndentSize(value: number | string): number | 'tabSize' | null {
-		if (value === 'tabSize') {
-			return 'tabSize';
+	private _validateIndentSize(value: numBer | string): numBer | 'taBSize' | null {
+		if (value === 'taBSize') {
+			return 'taBSize';
 		}
-		if (typeof value === 'number') {
+		if (typeof value === 'numBer') {
 			const r = Math.floor(value);
 			return (r > 0 ? r : null);
 		}
@@ -224,13 +224,13 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		return null;
 	}
 
-	public set indentSize(value: number | string) {
+	puBlic set indentSize(value: numBer | string) {
 		const indentSize = this._validateIndentSize(value);
 		if (indentSize === null) {
 			// ignore invalid call
 			return;
 		}
-		if (typeof indentSize === 'number') {
+		if (typeof indentSize === 'numBer') {
 			if (this._indentSize === indentSize) {
 				// nothing to do
 				return;
@@ -243,20 +243,20 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		}));
 	}
 
-	public get insertSpaces(): boolean | string {
+	puBlic get insertSpaces(): Boolean | string {
 		return this._insertSpaces;
 	}
 
-	private _validateInsertSpaces(value: boolean | string): boolean | 'auto' {
+	private _validateInsertSpaces(value: Boolean | string): Boolean | 'auto' {
 		if (value === 'auto') {
 			return 'auto';
 		}
 		return (value === 'false' ? false : Boolean(value));
 	}
 
-	public set insertSpaces(value: boolean | string) {
+	puBlic set insertSpaces(value: Boolean | string) {
 		const insertSpaces = this._validateInsertSpaces(value);
-		if (typeof insertSpaces === 'boolean') {
+		if (typeof insertSpaces === 'Boolean') {
 			if (this._insertSpaces === insertSpaces) {
 				// nothing to do
 				return;
@@ -269,11 +269,11 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		}));
 	}
 
-	public get cursorStyle(): TextEditorCursorStyle {
+	puBlic get cursorStyle(): TextEditorCursorStyle {
 		return this._cursorStyle;
 	}
 
-	public set cursorStyle(value: TextEditorCursorStyle) {
+	puBlic set cursorStyle(value: TextEditorCursorStyle) {
 		if (this._cursorStyle === value) {
 			// nothing to do
 			return;
@@ -284,48 +284,48 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 		}));
 	}
 
-	public get lineNumbers(): TextEditorLineNumbersStyle {
-		return this._lineNumbers;
+	puBlic get lineNumBers(): TextEditorLineNumBersStyle {
+		return this._lineNumBers;
 	}
 
-	public set lineNumbers(value: TextEditorLineNumbersStyle) {
-		if (this._lineNumbers === value) {
+	puBlic set lineNumBers(value: TextEditorLineNumBersStyle) {
+		if (this._lineNumBers === value) {
 			// nothing to do
 			return;
 		}
-		this._lineNumbers = value;
+		this._lineNumBers = value;
 		this._warnOnError(this._proxy.$trySetOptions(this._id, {
-			lineNumbers: TypeConverters.TextEditorLineNumbersStyle.from(value)
+			lineNumBers: TypeConverters.TextEditorLineNumBersStyle.from(value)
 		}));
 	}
 
-	public assign(newOptions: vscode.TextEditorOptions) {
-		const bulkConfigurationUpdate: ITextEditorConfigurationUpdate = {};
+	puBlic assign(newOptions: vscode.TextEditorOptions) {
+		const BulkConfigurationUpdate: ITextEditorConfigurationUpdate = {};
 		let hasUpdate = false;
 
-		if (typeof newOptions.tabSize !== 'undefined') {
-			const tabSize = this._validateTabSize(newOptions.tabSize);
-			if (tabSize === 'auto') {
+		if (typeof newOptions.taBSize !== 'undefined') {
+			const taBSize = this._validateTaBSize(newOptions.taBSize);
+			if (taBSize === 'auto') {
 				hasUpdate = true;
-				bulkConfigurationUpdate.tabSize = tabSize;
-			} else if (typeof tabSize === 'number' && this._tabSize !== tabSize) {
-				// reflect the new tabSize value immediately
-				this._tabSize = tabSize;
+				BulkConfigurationUpdate.taBSize = taBSize;
+			} else if (typeof taBSize === 'numBer' && this._taBSize !== taBSize) {
+				// reflect the new taBSize value immediately
+				this._taBSize = taBSize;
 				hasUpdate = true;
-				bulkConfigurationUpdate.tabSize = tabSize;
+				BulkConfigurationUpdate.taBSize = taBSize;
 			}
 		}
 
 		// if (typeof newOptions.indentSize !== 'undefined') {
 		// 	const indentSize = this._validateIndentSize(newOptions.indentSize);
-		// 	if (indentSize === 'tabSize') {
+		// 	if (indentSize === 'taBSize') {
 		// 		hasUpdate = true;
-		// 		bulkConfigurationUpdate.indentSize = indentSize;
-		// 	} else if (typeof indentSize === 'number' && this._indentSize !== indentSize) {
+		// 		BulkConfigurationUpdate.indentSize = indentSize;
+		// 	} else if (typeof indentSize === 'numBer' && this._indentSize !== indentSize) {
 		// 		// reflect the new indentSize value immediately
 		// 		this._indentSize = indentSize;
 		// 		hasUpdate = true;
-		// 		bulkConfigurationUpdate.indentSize = indentSize;
+		// 		BulkConfigurationUpdate.indentSize = indentSize;
 		// 	}
 		// }
 
@@ -333,12 +333,12 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 			const insertSpaces = this._validateInsertSpaces(newOptions.insertSpaces);
 			if (insertSpaces === 'auto') {
 				hasUpdate = true;
-				bulkConfigurationUpdate.insertSpaces = insertSpaces;
+				BulkConfigurationUpdate.insertSpaces = insertSpaces;
 			} else if (this._insertSpaces !== insertSpaces) {
 				// reflect the new insertSpaces value immediately
 				this._insertSpaces = insertSpaces;
 				hasUpdate = true;
-				bulkConfigurationUpdate.insertSpaces = insertSpaces;
+				BulkConfigurationUpdate.insertSpaces = insertSpaces;
 			}
 		}
 
@@ -346,20 +346,20 @@ export class ExtHostTextEditorOptions implements vscode.TextEditorOptions {
 			if (this._cursorStyle !== newOptions.cursorStyle) {
 				this._cursorStyle = newOptions.cursorStyle;
 				hasUpdate = true;
-				bulkConfigurationUpdate.cursorStyle = newOptions.cursorStyle;
+				BulkConfigurationUpdate.cursorStyle = newOptions.cursorStyle;
 			}
 		}
 
-		if (typeof newOptions.lineNumbers !== 'undefined') {
-			if (this._lineNumbers !== newOptions.lineNumbers) {
-				this._lineNumbers = newOptions.lineNumbers;
+		if (typeof newOptions.lineNumBers !== 'undefined') {
+			if (this._lineNumBers !== newOptions.lineNumBers) {
+				this._lineNumBers = newOptions.lineNumBers;
 				hasUpdate = true;
-				bulkConfigurationUpdate.lineNumbers = TypeConverters.TextEditorLineNumbersStyle.from(newOptions.lineNumbers);
+				BulkConfigurationUpdate.lineNumBers = TypeConverters.TextEditorLineNumBersStyle.from(newOptions.lineNumBers);
 			}
 		}
 
 		if (hasUpdate) {
-			this._warnOnError(this._proxy.$trySetOptions(this._id, bulkConfigurationUpdate));
+			this._warnOnError(this._proxy.$trySetOptions(this._id, BulkConfigurationUpdate));
 		}
 	}
 
@@ -374,10 +374,10 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 
 	private _selections: Selection[];
 	private _options: ExtHostTextEditorOptions;
-	private _visibleRanges: Range[];
+	private _visiBleRanges: Range[];
 	private _viewColumn: vscode.ViewColumn | undefined;
-	private _disposed: boolean = false;
-	private _hasDecorationsForKey: { [key: string]: boolean; };
+	private _disposed: Boolean = false;
+	private _hasDecorationsForKey: { [key: string]: Boolean; };
 
 	constructor(
 		readonly id: string,
@@ -385,14 +385,14 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 		private readonly _logService: ILogService,
 		document: ExtHostDocumentData,
 		selections: Selection[], options: IResolvedTextEditorConfiguration,
-		visibleRanges: Range[], viewColumn: vscode.ViewColumn | undefined
+		visiBleRanges: Range[], viewColumn: vscode.ViewColumn | undefined
 	) {
 		this._documentData = document;
 		this._selections = selections;
 		this._options = new ExtHostTextEditorOptions(this._proxy, this.id, options, _logService);
-		this._visibleRanges = visibleRanges;
+		this._visiBleRanges = visiBleRanges;
 		this._viewColumn = viewColumn;
-		this._hasDecorationsForKey = Object.create(null);
+		this._hasDecorationsForKey = OBject.create(null);
 	}
 
 	dispose() {
@@ -435,19 +435,19 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 		this._options._accept(options);
 	}
 
-	// ---- visible ranges
+	// ---- visiBle ranges
 
-	get visibleRanges(): Range[] {
-		return this._visibleRanges;
+	get visiBleRanges(): Range[] {
+		return this._visiBleRanges;
 	}
 
-	set visibleRanges(value: Range[]) {
-		throw readonly('visibleRanges');
+	set visiBleRanges(value: Range[]) {
+		throw readonly('visiBleRanges');
 	}
 
-	_acceptVisibleRanges(value: Range[]): void {
+	_acceptVisiBleRanges(value: Range[]): void {
 		ok(!this._disposed);
-		this._visibleRanges = value;
+		this._visiBleRanges = value;
 	}
 
 	// ---- view column
@@ -511,7 +511,7 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 						TypeConverters.fromRangeOrRangeWithMessage(ranges)
 					);
 				} else {
-					const _ranges: number[] = new Array<number>(4 * ranges.length);
+					const _ranges: numBer[] = new Array<numBer>(4 * ranges.length);
 					for (let i = 0, len = ranges.length; i < len; i++) {
 						const range = ranges[i];
 						_ranges[4 * i] = range.start.line + 1;
@@ -551,16 +551,16 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 
 	// ---- editing
 
-	edit(callback: (edit: TextEditorEdit) => void, options: { undoStopBefore: boolean; undoStopAfter: boolean; } = { undoStopBefore: true, undoStopAfter: true }): Promise<boolean> {
+	edit(callBack: (edit: TextEditorEdit) => void, options: { undoStopBefore: Boolean; undoStopAfter: Boolean; } = { undoStopBefore: true, undoStopAfter: true }): Promise<Boolean> {
 		if (this._disposed) {
-			return Promise.reject(new Error('TextEditor#edit not possible on closed editors'));
+			return Promise.reject(new Error('TextEditor#edit not possiBle on closed editors'));
 		}
 		const edit = new TextEditorEdit(this._documentData.document, options);
-		callback(edit);
+		callBack(edit);
 		return this._applyEdit(edit);
 	}
 
-	private _applyEdit(editBuilder: TextEditorEdit): Promise<boolean> {
+	private _applyEdit(editBuilder: TextEditorEdit): Promise<Boolean> {
 		const editData = editBuilder.finalize();
 
 		// return when there is nothing to do
@@ -571,18 +571,18 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 		// check that the edits are not overlapping (i.e. illegal)
 		const editRanges = editData.edits.map(edit => edit.range);
 
-		// sort ascending (by end and then by start)
-		editRanges.sort((a, b) => {
-			if (a.end.line === b.end.line) {
-				if (a.end.character === b.end.character) {
-					if (a.start.line === b.start.line) {
-						return a.start.character - b.start.character;
+		// sort ascending (By end and then By start)
+		editRanges.sort((a, B) => {
+			if (a.end.line === B.end.line) {
+				if (a.end.character === B.end.character) {
+					if (a.start.line === B.start.line) {
+						return a.start.character - B.start.character;
 					}
-					return a.start.line - b.start.line;
+					return a.start.line - B.start.line;
 				}
-				return a.end.character - b.end.character;
+				return a.end.character - B.end.character;
 			}
-			return a.end.line - b.end.line;
+			return a.end.line - B.end.line;
 		});
 
 		// check that no edits are overlapping
@@ -608,15 +608,15 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 		});
 
 		return this._proxy.$tryApplyEdits(this.id, editData.documentVersionId, edits, {
-			setEndOfLine: typeof editData.setEndOfLine === 'number' ? TypeConverters.EndOfLine.from(editData.setEndOfLine) : undefined,
+			setEndOfLine: typeof editData.setEndOfLine === 'numBer' ? TypeConverters.EndOfLine.from(editData.setEndOfLine) : undefined,
 			undoStopBefore: editData.undoStopBefore,
 			undoStopAfter: editData.undoStopAfter
 		});
 	}
 
-	insertSnippet(snippet: SnippetString, where?: Position | readonly Position[] | Range | readonly Range[], options: { undoStopBefore: boolean; undoStopAfter: boolean; } = { undoStopBefore: true, undoStopAfter: true }): Promise<boolean> {
+	insertSnippet(snippet: SnippetString, where?: Position | readonly Position[] | Range | readonly Range[], options: { undoStopBefore: Boolean; undoStopAfter: Boolean; } = { undoStopBefore: true, undoStopAfter: true }): Promise<Boolean> {
 		if (this._disposed) {
-			return Promise.reject(new Error('TextEditor#insertSnippet not possible on closed editors'));
+			return Promise.reject(new Error('TextEditor#insertSnippet not possiBle on closed editors'));
 		}
 		let ranges: IRange[];
 
@@ -624,8 +624,8 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 			ranges = this._selections.map(range => TypeConverters.Range.from(range));
 
 		} else if (where instanceof Position) {
-			const { lineNumber, column } = TypeConverters.Position.from(where);
-			ranges = [{ startLineNumber: lineNumber, startColumn: column, endLineNumber: lineNumber, endColumn: column }];
+			const { lineNumBer, column } = TypeConverters.Position.from(where);
+			ranges = [{ startLineNumBer: lineNumBer, startColumn: column, endLineNumBer: lineNumBer, endColumn: column }];
 
 		} else if (where instanceof Range) {
 			ranges = [TypeConverters.Range.from(where)];
@@ -635,8 +635,8 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 				if (posOrRange instanceof Range) {
 					ranges.push(TypeConverters.Range.from(posOrRange));
 				} else {
-					const { lineNumber, column } = TypeConverters.Position.from(posOrRange);
-					ranges.push({ startLineNumber: lineNumber, startColumn: column, endLineNumber: lineNumber, endColumn: column });
+					const { lineNumBer, column } = TypeConverters.Position.from(posOrRange);
+					ranges.push({ startLineNumBer: lineNumBer, startColumn: column, endLineNumBer: lineNumBer, endColumn: column });
 				}
 			}
 		}
@@ -646,12 +646,12 @@ export class ExtHostTextEditor implements vscode.TextEditor {
 
 	// ---- util
 
-	private _runOnProxy(callback: () => Promise<any>): Promise<ExtHostTextEditor | undefined | null> {
+	private _runOnProxy(callBack: () => Promise<any>): Promise<ExtHostTextEditor | undefined | null> {
 		if (this._disposed) {
 			this._logService.warn('TextEditor is closed/disposed');
 			return Promise.resolve(undefined);
 		}
-		return callback().then(() => this, err => {
+		return callBack().then(() => this, err => {
 			if (!(err instanceof Error && err.name === 'DISPOSED')) {
 				this._logService.warn(err);
 			}

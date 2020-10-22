@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
+import Severity from 'vs/Base/common/severity';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { basename } from 'vs/base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { Basename } from 'vs/Base/common/resources';
 import { localize } from 'vs/nls';
 import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 
@@ -24,25 +24,25 @@ export interface IConfirmation {
 	detail?: string;
 	primaryButton?: string;
 	secondaryButton?: string;
-	checkbox?: {
-		label: string;
-		checked?: boolean;
+	checkBox?: {
+		laBel: string;
+		checked?: Boolean;
 	};
 }
 
 export interface IConfirmationResult {
 
 	/**
-	 * Will be true if the dialog was confirmed with the primary button
+	 * Will Be true if the dialog was confirmed with the primary Button
 	 * pressed.
 	 */
-	confirmed: boolean;
+	confirmed: Boolean;
 
 	/**
-	 * This will only be defined if the confirmation was created
-	 * with the checkbox option defined.
+	 * This will only Be defined if the confirmation was created
+	 * with the checkBox option defined.
 	 */
-	checkboxChecked?: boolean;
+	checkBoxChecked?: Boolean;
 }
 
 export interface IShowResult {
@@ -52,25 +52,25 @@ export interface IShowResult {
 	 * then a promise with index of `cancelId` option is returned. If there is no such
 	 * option then promise with index `0` is returned.
 	 */
-	choice: number;
+	choice: numBer;
 
 	/**
-	 * This will only be defined if the confirmation was created
-	 * with the checkbox option defined.
+	 * This will only Be defined if the confirmation was created
+	 * with the checkBox option defined.
 	 */
-	checkboxChecked?: boolean;
+	checkBoxChecked?: Boolean;
 }
 
 export interface IPickAndOpenOptions {
-	forceNewWindow?: boolean;
+	forceNewWindow?: Boolean;
 	defaultUri?: URI;
 	telemetryExtraData?: ITelemetryData;
-	availableFileSystems?: string[];
+	availaBleFileSystems?: string[];
 }
 
 export interface ISaveDialogOptions {
 	/**
-	 * A human-readable string for the dialog title
+	 * A human-readaBle string for the dialog title
 	 */
 	title?: string;
 
@@ -80,26 +80,26 @@ export interface ISaveDialogOptions {
 	defaultUri?: URI;
 
 	/**
-	 * A set of file filters that are used by the dialog. Each entry is a human readable label,
+	 * A set of file filters that are used By the dialog. Each entry is a human readaBle laBel,
 	 * like "TypeScript", and an array of extensions.
 	 */
 	filters?: FileFilter[];
 
 	/**
-	 * A human-readable string for the ok button
+	 * A human-readaBle string for the ok Button
 	 */
-	saveLabel?: string;
+	saveLaBel?: string;
 
 	/**
 	 * Specifies a list of schemas for the file systems the user can save to. If not specified, uses the schema of the defaultURI or, if also not specified,
 	 * the schema of the current window.
 	 */
-	availableFileSystems?: readonly string[];
+	availaBleFileSystems?: readonly string[];
 }
 
 export interface IOpenDialogOptions {
 	/**
-	 * A human-readable string for the dialog title
+	 * A human-readaBle string for the dialog title
 	 */
 	title?: string;
 
@@ -109,51 +109,51 @@ export interface IOpenDialogOptions {
 	defaultUri?: URI;
 
 	/**
-	 * A human-readable string for the open button.
+	 * A human-readaBle string for the open Button.
 	 */
-	openLabel?: string;
+	openLaBel?: string;
 
 	/**
 	 * Allow to select files, defaults to `true`.
 	 */
-	canSelectFiles?: boolean;
+	canSelectFiles?: Boolean;
 
 	/**
 	 * Allow to select folders, defaults to `false`.
 	 */
-	canSelectFolders?: boolean;
+	canSelectFolders?: Boolean;
 
 	/**
 	 * Allow to select many files or folders.
 	 */
-	canSelectMany?: boolean;
+	canSelectMany?: Boolean;
 
 	/**
-	 * A set of file filters that are used by the dialog. Each entry is a human readable label,
+	 * A set of file filters that are used By the dialog. Each entry is a human readaBle laBel,
 	 * like "TypeScript", and an array of extensions.
 	 */
 	filters?: FileFilter[];
 
 	/**
-	 * Specifies a list of schemas for the file systems the user can load from. If not specified, uses the schema of the defaultURI or, if also not available,
+	 * Specifies a list of schemas for the file systems the user can load from. If not specified, uses the schema of the defaultURI or, if also not availaBle,
 	 * the schema of the current window.
 	 */
-	availableFileSystems?: readonly string[];
+	availaBleFileSystems?: readonly string[];
 }
 
 export const IDialogService = createDecorator<IDialogService>('dialogService');
 
 export interface IDialogOptions {
-	cancelId?: number;
+	cancelId?: numBer;
 	detail?: string;
-	checkbox?: {
-		label: string;
-		checked?: boolean;
+	checkBox?: {
+		laBel: string;
+		checked?: Boolean;
 	};
 }
 
 /**
- * A service to bring up modal dialogs.
+ * A service to Bring up modal dialogs.
  *
  * Note: use the `INotificationService.prompt()` method for a non-modal way to ask
  * the user for input.
@@ -174,37 +174,37 @@ export interface IDialogService {
 	 * then a promise with index of `cancelId` option is returned. If there is no such
 	 * option then promise with index `0` is returned.
 	 */
-	show(severity: Severity, message: string, buttons: string[], options?: IDialogOptions): Promise<IShowResult>;
+	show(severity: Severity, message: string, Buttons: string[], options?: IDialogOptions): Promise<IShowResult>;
 
 	/**
-	 * Present the about dialog to the user.
+	 * Present the aBout dialog to the user.
 	 */
-	about(): Promise<void>;
+	aBout(): Promise<void>;
 }
 
 export const IFileDialogService = createDecorator<IFileDialogService>('fileDialogService');
 
 /**
- * A service to bring up file dialogs.
+ * A service to Bring up file dialogs.
  */
 export interface IFileDialogService {
 
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * The default path for a new file based on previously used files.
+	 * The default path for a new file Based on previously used files.
 	 * @param schemeFilter The scheme of the file path. If no filter given, the scheme of the current window is used.
 	 */
 	defaultFilePath(schemeFilter?: string): URI | undefined;
 
 	/**
-	 * The default path for a new folder based on previously used folders.
+	 * The default path for a new folder Based on previously used folders.
 	 * @param schemeFilter The scheme of the folder path. If no filter given, the scheme of the current window is used.
 	 */
 	defaultFolderPath(schemeFilter?: string): URI | undefined;
 
 	/**
-	 * The default path for a new workspace based on previously used workspaces.
+	 * The default path for a new workspace Based on previously used workspaces.
 	 * @param schemeFilter The scheme of the workspace path. If no filter given, the scheme of the current window is used.
 	 */
 	defaultWorkspacePath(schemeFilter?: string, filename?: string): URI | undefined;
@@ -232,7 +232,7 @@ export interface IFileDialogService {
 	/**
 	 * Shows a save file dialog and save the file at the chosen file URI.
 	 */
-	pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined>;
+	pickFileToSave(defaultUri: URI, availaBleFileSystems?: string[]): Promise<URI | undefined>;
 
 	/**
 	 * Shows a save file dialog and returns the chosen file URI.
@@ -259,7 +259,7 @@ export const enum ConfirmResult {
 const MAX_CONFIRM_FILES = 10;
 export function getFileNamesMessage(fileNamesOrResources: readonly (string | URI)[]): string {
 	const message: string[] = [];
-	message.push(...fileNamesOrResources.slice(0, MAX_CONFIRM_FILES).map(fileNameOrResource => typeof fileNameOrResource === 'string' ? fileNameOrResource : basename(fileNameOrResource)));
+	message.push(...fileNamesOrResources.slice(0, MAX_CONFIRM_FILES).map(fileNameOrResource => typeof fileNameOrResource === 'string' ? fileNameOrResource : Basename(fileNameOrResource)));
 
 	if (fileNamesOrResources.length > MAX_CONFIRM_FILES) {
 		if (fileNamesOrResources.length - MAX_CONFIRM_FILES === 1) {
@@ -274,7 +274,7 @@ export function getFileNamesMessage(fileNamesOrResources: readonly (string | URI
 }
 
 export interface INativeOpenDialogOptions {
-	forceNewWindow?: boolean;
+	forceNewWindow?: Boolean;
 
 	defaultPath?: string;
 

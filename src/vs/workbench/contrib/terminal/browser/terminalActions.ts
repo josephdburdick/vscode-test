@@ -3,43 +3,43 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action, IAction } from 'vs/base/common/actions';
+import { Action, IAction } from 'vs/Base/common/actions';
 import { EndOfLinePreference } from 'vs/editor/common/model';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { TERMINAL_VIEW_ID, ITerminalConfigHelper, TitleEventSource, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, TERMINAL_ACTION_CATEGORY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { attachSelectBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { TERMINAL_VIEW_ID, ITerminalConfigHelper, TitleEventSource, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, TERMINAL_ACTION_CATEGORY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workBench/contriB/terminal/common/terminal';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { attachSelectBoxStyler, attachStylerCallBack } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IQuickInputService, IPickOptions, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IWorkspaceContextService, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { PICK_WORKSPACE_FOLDER_COMMAND_ID } from 'vs/workbench/browser/actions/workspaceCommands';
+import { PICK_WORKSPACE_FOLDER_COMMAND_ID } from 'vs/workBench/Browser/actions/workspaceCommands';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { isWindows } from 'vs/base/common/platform';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { ITerminalInstance, ITerminalService, Direction } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { ISelectOptionItem } from 'vs/Base/Browser/ui/selectBox/selectBox';
+import { IConfigurationResolverService } from 'vs/workBench/services/configurationResolver/common/configurationResolver';
+import { IHistoryService } from 'vs/workBench/services/history/common/history';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { isWindows } from 'vs/Base/common/platform';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { ITerminalInstance, ITerminalService, Direction } from 'vs/workBench/contriB/terminal/Browser/terminal';
 import { Action2, registerAction2, ILocalizedString } from 'vs/platform/actions/common/actions';
-import { TerminalQuickAccessProvider } from 'vs/workbench/contrib/terminal/browser/terminalQuickAccess';
-import { ToggleViewAction } from 'vs/workbench/browser/actions/layoutActions';
-import { IViewsService, IViewDescriptorService } from 'vs/workbench/common/views';
+import { TerminalQuickAccessProvider } from 'vs/workBench/contriB/terminal/Browser/terminalQuickAccess';
+import { ToggleViewAction } from 'vs/workBench/Browser/actions/layoutActions';
+import { IViewsService, IViewDescriptorService } from 'vs/workBench/common/views';
 import { IContextKeyService, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { addClass } from 'vs/base/browser/dom';
+import { addClass } from 'vs/Base/Browser/dom';
 import { selectBorder } from 'vs/platform/theme/common/colorRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { localize } from 'vs/nls';
-import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
+import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessiBility/common/accessiBility';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITerminalContributionService } from 'vs/workbench/contrib/terminal/common/terminalExtensionPoints';
-import { SelectActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { FindInFilesCommand, IFindInFilesArgs } from 'vs/workbench/contrib/search/browser/searchActions';
+import { ITerminalContriButionService } from 'vs/workBench/contriB/terminal/common/terminalExtensionPoints';
+import { SelectActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
+import { FindInFilesCommand, IFindInFilesArgs } from 'vs/workBench/contriB/search/Browser/searchActions';
 
 async function getCwdForSplit(configHelper: ITerminalConfigHelper, instance: ITerminalInstance, folders?: IWorkspaceFolder[], commandService?: ICommandService): Promise<string | URI | undefined> {
 	switch (configHelper.config.splitCwd) {
@@ -50,7 +50,7 @@ async function getCwdForSplit(configHelper: ITerminalConfigHelper, instance: ITe
 				} else if (folders.length > 1) {
 					// Only choose a path when there's more than 1 folder
 					const options: IPickOptions<IQuickPickItem> = {
-						placeHolder: localize('workbench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
+						placeHolder: localize('workBench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
 					};
 					const workspace = await commandService.executeCommand(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
 					if (!workspace) {
@@ -70,18 +70,18 @@ async function getCwdForSplit(configHelper: ITerminalConfigHelper, instance: ITe
 
 export class ToggleTerminalAction extends ToggleViewAction {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.TOGGLE;
-	public static readonly LABEL = localize('workbench.action.terminal.toggleTerminal', "Toggle Integrated Terminal");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.TOGGLE;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.toggleTerminal', "Toggle Integrated Terminal");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@IViewsService viewsService: IViewsService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService,
 		@ITerminalService private readonly terminalService: ITerminalService
 	) {
-		super(id, label, TERMINAL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, layoutService);
+		super(id, laBel, TERMINAL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, layoutService);
 	}
 
 	async run() {
@@ -100,15 +100,15 @@ export class ToggleTerminalAction extends ToggleViewAction {
 
 export class KillTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.KILL;
-	public static readonly LABEL = localize('workbench.action.terminal.kill', "Kill the Active Terminal Instance");
-	public static readonly PANEL_LABEL = localize('workbench.action.terminal.kill.short', "Kill Terminal");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.KILL;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.kill', "Kill the Active Terminal Instance");
+	puBlic static readonly PANEL_LABEL = localize('workBench.action.terminal.kill.short', "Kill Terminal");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label, 'terminal-action codicon-trash');
+		super(id, laBel, 'terminal-action codicon-trash');
 	}
 
 	async run() {
@@ -123,19 +123,19 @@ export class KillTerminalAction extends Action {
 
 /**
  * Copies the terminal selection. Note that since the command palette takes focus from the terminal,
- * this cannot be triggered through the command palette.
+ * this cannot Be triggered through the command palette.
  */
 export class CopyTerminalSelectionAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.COPY_SELECTION;
-	public static readonly LABEL = localize('workbench.action.terminal.copySelection', "Copy Selection");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.copySelection.short', "Copy");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.COPY_SELECTION;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.copySelection', "Copy Selection");
+	puBlic static readonly SHORT_LABEL = localize('workBench.action.terminal.copySelection.short', "Copy");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -145,14 +145,14 @@ export class CopyTerminalSelectionAction extends Action {
 
 export class SelectAllTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SELECT_ALL;
-	public static readonly LABEL = localize('workbench.action.terminal.selectAll', "Select All");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.SELECT_ALL;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.selectAll', "Select All");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -178,17 +178,17 @@ export const terminalSendSequenceCommand = (accessor: ServicesAccessor, args: { 
 
 export class CreateNewTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.NEW;
-	public static readonly LABEL = localize('workbench.action.terminal.new', "Create New Integrated Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.new.short', "New Terminal");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.NEW;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.new', "Create New Integrated Terminal");
+	puBlic static readonly SHORT_LABEL = localize('workBench.action.terminal.new.short', "New Terminal");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService,
 		@ICommandService private readonly _commandService: ICommandService,
 		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService
 	) {
-		super(id, label, 'terminal-action codicon-add');
+		super(id, laBel, 'terminal-action codicon-add');
 	}
 
 	async run(event?: any) {
@@ -210,7 +210,7 @@ export class CreateNewTerminalAction extends Action {
 				instance = this._terminalService.createTerminal(undefined);
 			} else {
 				const options: IPickOptions<IQuickPickItem> = {
-					placeHolder: localize('workbench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
+					placeHolder: localize('workBench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
 				};
 				const workspace = await this._commandService.executeCommand(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
 				if (!workspace) {
@@ -226,22 +226,22 @@ export class CreateNewTerminalAction extends Action {
 }
 
 export class SplitTerminalAction extends Action {
-	public static readonly ID = TERMINAL_COMMAND_ID.SPLIT;
-	public static readonly LABEL = localize('workbench.action.terminal.split', "Split Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.split.short', "Split");
-	public static readonly HORIZONTAL_CLASS = 'terminal-action codicon-split-horizontal';
-	public static readonly VERTICAL_CLASS = 'terminal-action codicon-split-vertical';
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.SPLIT;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.split', "Split Terminal");
+	puBlic static readonly SHORT_LABEL = localize('workBench.action.terminal.split.short', "Split");
+	puBlic static readonly HORIZONTAL_CLASS = 'terminal-action codicon-split-horizontal';
+	puBlic static readonly VERTICAL_CLASS = 'terminal-action codicon-split-vertical';
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService,
 		@ICommandService private readonly _commandService: ICommandService,
 		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService
 	) {
-		super(id, label, SplitTerminalAction.HORIZONTAL_CLASS);
+		super(id, laBel, SplitTerminalAction.HORIZONTAL_CLASS);
 	}
 
-	public async run(): Promise<any> {
+	puBlic async run(): Promise<any> {
 		await this._terminalService.doWithActiveInstance(async t => {
 			const cwd = await getCwdForSplit(this._terminalService.configHelper, t, this._workspaceContextService.getWorkspace().folders, this._commandService);
 			if (cwd === undefined) {
@@ -254,14 +254,14 @@ export class SplitTerminalAction extends Action {
 }
 
 export class SplitInActiveWorkspaceTerminalAction extends Action {
-	public static readonly ID = TERMINAL_COMMAND_ID.SPLIT_IN_ACTIVE_WORKSPACE;
-	public static readonly LABEL = localize('workbench.action.terminal.splitInActiveWorkspace', "Split Terminal (In Active Workspace)");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.SPLIT_IN_ACTIVE_WORKSPACE;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.splitInActiveWorkspace', "Split Terminal (In Active Workspace)");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -275,15 +275,15 @@ export class SplitInActiveWorkspaceTerminalAction extends Action {
 
 export class TerminalPasteAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.PASTE;
-	public static readonly LABEL = localize('workbench.action.terminal.paste', "Paste into Active Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.paste.short', "Paste");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.PASTE;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.paste', "Paste into Active Terminal");
+	puBlic static readonly SHORT_LABEL = localize('workBench.action.terminal.paste.short', "Paste");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -293,14 +293,14 @@ export class TerminalPasteAction extends Action {
 
 export class SelectDefaultShellWindowsTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SELECT_DEFAULT_SHELL;
-	public static readonly LABEL = localize('workbench.action.terminal.selectDefaultShell', "Select Default Shell");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.SELECT_DEFAULT_SHELL;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.selectDefaultShell', "Select Default Shell");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -312,38 +312,38 @@ const terminalIndexRe = /^([0-9]+): /;
 
 export class SwitchTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SWITCH_TERMINAL;
-	public static readonly LABEL = localize('workbench.action.terminal.switchTerminal', "Switch Terminal");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.SWITCH_TERMINAL;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.switchTerminal', "Switch Terminal");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService,
-		@ITerminalContributionService private readonly _contributions: ITerminalContributionService,
+		@ITerminalContriButionService private readonly _contriButions: ITerminalContriButionService,
 		@ICommandService private readonly _commands: ICommandService,
 	) {
-		super(id, label, 'terminal-action switch-terminal');
+		super(id, laBel, 'terminal-action switch-terminal');
 	}
 
-	public run(item?: string): Promise<any> {
+	puBlic run(item?: string): Promise<any> {
 		if (!item || !item.split) {
 			return Promise.resolve(null);
 		}
 		if (item === SwitchTerminalActionViewItem.SEPARATOR) {
-			this._terminalService.refreshActiveTab();
+			this._terminalService.refreshActiveTaB();
 			return Promise.resolve(null);
 		}
 		if (item === SelectDefaultShellWindowsTerminalAction.LABEL) {
-			this._terminalService.refreshActiveTab();
+			this._terminalService.refreshActiveTaB();
 			return this._terminalService.selectDefaultShell();
 		}
 
 		const indexMatches = terminalIndexRe.exec(item);
 		if (indexMatches) {
-			this._terminalService.setActiveTabByIndex(Number(indexMatches[1]) - 1);
+			this._terminalService.setActiveTaBByIndex(NumBer(indexMatches[1]) - 1);
 			return this._terminalService.showPanel(true);
 		}
 
-		const customType = this._contributions.terminalTypes.find(t => t.title === item);
+		const customType = this._contriButions.terminalTypes.find(t => t.title === item);
 		if (customType) {
 			return this._commands.executeCommand(customType.command);
 		}
@@ -355,43 +355,43 @@ export class SwitchTerminalAction extends Action {
 
 export class SwitchTerminalActionViewItem extends SelectActionViewItem {
 
-	public static readonly SEPARATOR = '─────────';
+	puBlic static readonly SEPARATOR = '─────────';
 
 	constructor(
 		action: IAction,
 		@ITerminalService private readonly _terminalService: ITerminalService,
 		@IThemeService private readonly _themeService: IThemeService,
-		@ITerminalContributionService private readonly _contributions: ITerminalContributionService,
+		@ITerminalContriButionService private readonly _contriButions: ITerminalContriButionService,
 		@IContextViewService contextViewService: IContextViewService,
 	) {
-		super(null, action, getTerminalSelectOpenItems(_terminalService, _contributions), _terminalService.activeTabIndex, contextViewService, { ariaLabel: localize('terminals', 'Open Terminals.'), optionsAsChildren: true });
+		super(null, action, getTerminalSelectOpenItems(_terminalService, _contriButions), _terminalService.activeTaBIndex, contextViewService, { ariaLaBel: localize('terminals', 'Open Terminals.'), optionsAsChildren: true });
 
 		this._register(_terminalService.onInstancesChanged(this._updateItems, this));
-		this._register(_terminalService.onActiveTabChanged(this._updateItems, this));
+		this._register(_terminalService.onActiveTaBChanged(this._updateItems, this));
 		this._register(_terminalService.onInstanceTitleChanged(this._updateItems, this));
-		this._register(_terminalService.onTabDisposed(this._updateItems, this));
+		this._register(_terminalService.onTaBDisposed(this._updateItems, this));
 		this._register(attachSelectBoxStyler(this.selectBox, this._themeService));
 	}
 
 	render(container: HTMLElement): void {
 		super.render(container);
 		addClass(container, 'switch-terminal');
-		this._register(attachStylerCallback(this._themeService, { selectBorder }, colors => {
-			container.style.borderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
+		this._register(attachStylerCallBack(this._themeService, { selectBorder }, colors => {
+			container.style.BorderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
 		}));
 	}
 
 	private _updateItems(): void {
-		this.setOptions(getTerminalSelectOpenItems(this._terminalService, this._contributions), this._terminalService.activeTabIndex);
+		this.setOptions(getTerminalSelectOpenItems(this._terminalService, this._contriButions), this._terminalService.activeTaBIndex);
 	}
 }
 
-function getTerminalSelectOpenItems(terminalService: ITerminalService, contributions: ITerminalContributionService): ISelectOptionItem[] {
-	const items = terminalService.getTabLabels().map(label => <ISelectOptionItem>{ text: label });
-	items.push({ text: SwitchTerminalActionViewItem.SEPARATOR, isDisabled: true });
+function getTerminalSelectOpenItems(terminalService: ITerminalService, contriButions: ITerminalContriButionService): ISelectOptionItem[] {
+	const items = terminalService.getTaBLaBels().map(laBel => <ISelectOptionItem>{ text: laBel });
+	items.push({ text: SwitchTerminalActionViewItem.SEPARATOR, isDisaBled: true });
 
-	for (const contributed of contributions.terminalTypes) {
-		items.push({ text: contributed.title });
+	for (const contriButed of contriButions.terminalTypes) {
+		items.push({ text: contriButed.title });
 	}
 
 	items.push({ text: SelectDefaultShellWindowsTerminalAction.LABEL });
@@ -400,14 +400,14 @@ function getTerminalSelectOpenItems(terminalService: ITerminalService, contribut
 
 export class ClearTerminalAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.CLEAR;
-	public static readonly LABEL = localize('workbench.action.terminal.clear', "Clear");
+	puBlic static readonly ID = TERMINAL_COMMAND_ID.CLEAR;
+	puBlic static readonly LABEL = localize('workBench.action.terminal.clear', "Clear");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@ITerminalService private readonly _terminalService: ITerminalService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run() {
@@ -423,11 +423,11 @@ export class TerminalLaunchHelpAction extends Action {
 	constructor(
 		@IOpenerService private readonly _openerService: IOpenerService
 	) {
-		super('workbench.action.terminal.launchHelp', localize('terminalLaunchHelp', "Open Help"));
+		super('workBench.action.terminal.launchHelp', localize('terminalLaunchHelp', "Open Help"));
 	}
 
 	async run(): Promise<void> {
-		this._openerService.open('https://aka.ms/vscode-troubleshoot-terminal-launch');
+		this._openerService.open('https://aka.ms/vscode-trouBleshoot-terminal-launch');
 	}
 }
 
@@ -438,7 +438,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NEW_IN_ACTIVE_WORKSPACE,
-				title: { value: localize('workbench.action.terminal.newInActiveWorkspace', "Create New Integrated Terminal (In Active Workspace)"), original: 'Create New Integrated Terminal (In Active Workspace)' },
+				title: { value: localize('workBench.action.terminal.newInActiveWorkspace', "Create New Integrated Terminal (In Active Workspace)"), original: 'Create New Integrated Terminal (In Active Workspace)' },
 				f1: true,
 				category
 			});
@@ -459,10 +459,10 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_PREVIOUS_PANE,
-				title: { value: localize('workbench.action.terminal.focusPreviousPane', "Focus Previous Pane"), original: 'Focus Previous Pane' },
+				title: { value: localize('workBench.action.terminal.focusPreviousPane', "Focus Previous Pane"), original: 'Focus Previous Pane' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Alt | KeyCode.LeftArrow,
 					secondary: [KeyMod.Alt | KeyCode.UpArrow],
 					mac: {
@@ -470,14 +470,14 @@ export function registerTerminalActions() {
 						secondary: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.UpArrow]
 					},
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
 			const terminalService = accessor.get(ITerminalService);
-			terminalService.getActiveTab()?.focusPreviousPane();
+			terminalService.getActiveTaB()?.focusPreviousPane();
 			await terminalService.showPanel(true);
 		}
 	});
@@ -485,10 +485,10 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_NEXT_PANE,
-				title: { value: localize('workbench.action.terminal.focusNextPane', "Focus Next Pane"), original: 'Focus Next Pane' },
+				title: { value: localize('workBench.action.terminal.focusNextPane', "Focus Next Pane"), original: 'Focus Next Pane' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Alt | KeyCode.RightArrow,
 					secondary: [KeyMod.Alt | KeyCode.DownArrow],
 					mac: {
@@ -496,14 +496,14 @@ export function registerTerminalActions() {
 						secondary: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.DownArrow]
 					},
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
 			const terminalService = accessor.get(ITerminalService);
-			terminalService.getActiveTab()?.focusNextPane();
+			terminalService.getActiveTaB()?.focusNextPane();
 			await terminalService.showPanel(true);
 		}
 	});
@@ -511,85 +511,85 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_LEFT,
-				title: { value: localize('workbench.action.terminal.resizePaneLeft', "Resize Pane Left"), original: 'Resize Pane Left' },
+				title: { value: localize('workBench.action.terminal.resizePaneLeft', "Resize Pane Left"), original: 'Resize Pane Left' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow },
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.LeftArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Left);
+			accessor.get(ITerminalService).getActiveTaB()?.resizePane(Direction.Left);
 		}
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_RIGHT,
-				title: { value: localize('workbench.action.terminal.resizePaneRight', "Resize Pane Right"), original: 'Resize Pane Right' },
+				title: { value: localize('workBench.action.terminal.resizePaneRight', "Resize Pane Right"), original: 'Resize Pane Right' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow },
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.RightArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Right);
+			accessor.get(ITerminalService).getActiveTaB()?.resizePane(Direction.Right);
 		}
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_UP,
-				title: { value: localize('workbench.action.terminal.resizePaneUp', "Resize Pane Up"), original: 'Resize Pane Up' },
+				title: { value: localize('workBench.action.terminal.resizePaneUp', "Resize Pane Up"), original: 'Resize Pane Up' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Up);
+			accessor.get(ITerminalService).getActiveTaB()?.resizePane(Direction.Up);
 		}
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_DOWN,
-				title: { value: localize('workbench.action.terminal.resizePaneDown', "Resize Pane Down"), original: 'Resize Pane Down' },
+				title: { value: localize('workBench.action.terminal.resizePaneDown', "Resize Pane Down"), original: 'Resize Pane Down' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
 		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Down);
+			accessor.get(ITerminalService).getActiveTaB()?.resizePane(Direction.Down);
 		}
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS,
-				title: { value: localize('workbench.action.terminal.focus', "Focus Terminal"), original: 'Focus Terminal' },
+				title: { value: localize('workBench.action.terminal.focus', "Focus Terminal"), original: 'Focus Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -609,7 +609,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_NEXT,
-				title: { value: localize('workbench.action.terminal.focusNext', "Focus Next Terminal"), original: 'Focus Next Terminal' },
+				title: { value: localize('workBench.action.terminal.focusNext', "Focus Next Terminal"), original: 'Focus Next Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -617,7 +617,7 @@ export function registerTerminalActions() {
 		}
 		async run(accessor: ServicesAccessor) {
 			const terminalService = accessor.get(ITerminalService);
-			terminalService.setActiveTabToNext();
+			terminalService.setActiveTaBToNext();
 			await terminalService.showPanel(true);
 		}
 	});
@@ -625,7 +625,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.focusPrevious', "Focus Previous Terminal"), original: 'Focus Previous Terminal' },
+				title: { value: localize('workBench.action.terminal.focusPrevious', "Focus Previous Terminal"), original: 'Focus Previous Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -633,7 +633,7 @@ export function registerTerminalActions() {
 		}
 		async run(accessor: ServicesAccessor) {
 			const terminalService = accessor.get(ITerminalService);
-			terminalService.setActiveTabToPrevious();
+			terminalService.setActiveTaBToPrevious();
 			await terminalService.showPanel(true);
 		}
 	});
@@ -641,7 +641,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RUN_SELECTED_TEXT,
-				title: { value: localize('workbench.action.terminal.runSelectedText', "Run Selected Text In Active Terminal"), original: 'Run Selected Text In Active Terminal' },
+				title: { value: localize('workBench.action.terminal.runSelectedText', "Run Selected Text In Active Terminal"), original: 'Run Selected Text In Active Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -659,7 +659,7 @@ export function registerTerminalActions() {
 			let selection = editor.getSelection();
 			let text: string;
 			if (selection.isEmpty()) {
-				text = editor.getModel().getLineContent(selection.selectionStartLineNumber).trim();
+				text = editor.getModel().getLineContent(selection.selectionStartLineNumBer).trim();
 			} else {
 				const endOfLinePreference = isWindows ? EndOfLinePreference.LF : EndOfLinePreference.CRLF;
 				text = editor.getModel().getValueInRange(selection, endOfLinePreference);
@@ -672,7 +672,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RUN_ACTIVE_FILE,
-				title: { value: localize('workbench.action.terminal.runActiveFile', "Run Active File In Active Terminal"), original: 'Run Active File In Active Terminal' },
+				title: { value: localize('workBench.action.terminal.runActiveFile', "Run Active File In Active Terminal"), original: 'Run Active File In Active Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -693,12 +693,12 @@ export function registerTerminalActions() {
 
 			const uri = editor.getModel().uri;
 			if (uri.scheme !== Schemas.file) {
-				notificationService.warn(localize('workbench.action.terminal.runActiveFile.noFile', 'Only files on disk can be run in the terminal'));
+				notificationService.warn(localize('workBench.action.terminal.runActiveFile.noFile', 'Only files on disk can Be run in the terminal'));
 				return;
 			}
 
 			// TODO: Convert this to ctrl+c, ctrl+v for pwsh?
-			const path = await terminalService.preparePathForTerminalAsync(uri.fsPath, instance.shellLaunchConfig.executable, instance.title, instance.shellType);
+			const path = await terminalService.preparePathForTerminalAsync(uri.fsPath, instance.shellLaunchConfig.executaBle, instance.title, instance.shellType);
 			instance.sendText(path, true);
 			return terminalService.showPanel();
 		}
@@ -707,14 +707,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_DOWN_LINE,
-				title: { value: localize('workbench.action.terminal.scrollDown', "Scroll Down (Line)"), original: 'Scroll Down (Line)' },
+				title: { value: localize('workBench.action.terminal.scrollDown', "Scroll Down (Line)"), original: 'Scroll Down (Line)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PageDown,
 					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -727,14 +727,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_DOWN_PAGE,
-				title: { value: localize('workbench.action.terminal.scrollDownPage', "Scroll Down (Page)"), original: 'Scroll Down (Page)' },
+				title: { value: localize('workBench.action.terminal.scrollDownPage', "Scroll Down (Page)"), original: 'Scroll Down (Page)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Shift | KeyCode.PageDown,
 					mac: { primary: KeyCode.PageDown },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -747,14 +747,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_BOTTOM,
-				title: { value: localize('workbench.action.terminal.scrollToBottom', "Scroll to Bottom"), original: 'Scroll to Bottom' },
+				title: { value: localize('workBench.action.terminal.scrollToBottom', "Scroll to Bottom"), original: 'Scroll to Bottom' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyCode.End,
 					linux: { primary: KeyMod.Shift | KeyCode.End },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -767,14 +767,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_UP_LINE,
-				title: { value: localize('workbench.action.terminal.scrollUp', "Scroll Up (Line)"), original: 'Scroll Up (Line)' },
+				title: { value: localize('workBench.action.terminal.scrollUp', "Scroll Up (Line)"), original: 'Scroll Up (Line)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PageUp,
 					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -787,14 +787,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_UP_PAGE,
-				title: { value: localize('workbench.action.terminal.scrollUpPage', "Scroll Up (Page)"), original: 'Scroll Up (Page)' },
+				title: { value: localize('workBench.action.terminal.scrollUpPage', "Scroll Up (Page)"), original: 'Scroll Up (Page)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Shift | KeyCode.PageUp,
 					mac: { primary: KeyCode.PageUp },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -807,14 +807,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_TOP,
-				title: { value: localize('workbench.action.terminal.scrollToTop', "Scroll to Top"), original: 'Scroll to Top' },
+				title: { value: localize('workBench.action.terminal.scrollToTop', "Scroll to Top"), original: 'Scroll to Top' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyCode.Home,
 					linux: { primary: KeyMod.Shift | KeyCode.Home },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -827,13 +827,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_EXIT,
-				title: { value: localize('workbench.action.terminal.navigationModeExit', "Exit Navigation Mode"), original: 'Exit Navigation Mode' },
+				title: { value: localize('workBench.action.terminal.navigationModeExit', "Exit Navigation Mode"), original: 'Exit Navigation Mode' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyCode.Escape,
 					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -846,16 +846,16 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.navigationModeFocusPrevious', "Focus Previous Line (Navigation Mode)"), original: 'Focus Previous Line (Navigation Mode)' },
+				title: { value: localize('workBench.action.terminal.navigationModeFocusPrevious', "Focus Previous Line (Navigation Mode)"), original: 'Focus Previous Line (Navigation Mode)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyCode.UpArrow,
 					when: ContextKeyExpr.or(
 						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
 						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
 					),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -868,16 +868,16 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_NEXT,
-				title: { value: localize('workbench.action.terminal.navigationModeFocusNext', "Focus Next Line (Navigation Mode)"), original: 'Focus Next Line (Navigation Mode)' },
+				title: { value: localize('workBench.action.terminal.navigationModeFocusNext', "Focus Next Line (Navigation Mode)"), original: 'Focus Next Line (Navigation Mode)' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyCode.DownArrow,
 					when: ContextKeyExpr.or(
 						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
 						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
 					),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -890,13 +890,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.CLEAR_SELECTION,
-				title: { value: localize('workbench.action.terminal.clearSelection', "Clear Selection"), original: 'Clear Selection' },
+				title: { value: localize('workBench.action.terminal.clearSelection', "Clear Selection"), original: 'Clear Selection' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyCode.Escape,
 					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -912,7 +912,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.MANAGE_WORKSPACE_SHELL_PERMISSIONS,
-				title: { value: localize('workbench.action.terminal.manageWorkspaceShellPermissions', "Manage Workspace Shell Permissions"), original: 'Manage Workspace Shell Permissions' },
+				title: { value: localize('workBench.action.terminal.manageWorkspaceShellPermissions', "Manage Workspace Shell Permissions"), original: 'Manage Workspace Shell Permissions' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -926,7 +926,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RENAME,
-				title: { value: localize('workbench.action.terminal.rename', "Rename"), original: 'Rename' },
+				title: { value: localize('workBench.action.terminal.rename', "Rename"), original: 'Rename' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -936,7 +936,7 @@ export function registerTerminalActions() {
 			await accessor.get(ITerminalService).doWithActiveInstance(async t => {
 				const name = await accessor.get(IQuickInputService).input({
 					value: t.title,
-					prompt: localize('workbench.action.terminal.rename.prompt', "Enter terminal name"),
+					prompt: localize('workBench.action.terminal.rename.prompt', "Enter terminal name"),
 				});
 				if (name) {
 					t.setTitle(name, TitleEventSource.Api);
@@ -948,13 +948,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_FOCUS,
-				title: { value: localize('workbench.action.terminal.focusFind', "Focus Find"), original: 'Focus Find' },
+				title: { value: localize('workBench.action.terminal.focusFind', "Focus Find"), original: 'Focus Find' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.CtrlCmd | KeyCode.KEY_F,
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FOCUS),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -967,14 +967,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_HIDE,
-				title: { value: localize('workbench.action.terminal.hideFind', "Hide Find"), original: 'Hide Find' },
+				title: { value: localize('workBench.action.terminal.hideFind', "Hide Find"), original: 'Hide Find' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyCode.Escape,
 					secondary: [KeyMod.Shift | KeyCode.Escape],
 					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1001,13 +1001,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_PREVIOUS_COMMAND,
-				title: { value: localize('workbench.action.terminal.scrollToPreviousCommand', "Scroll To Previous Command"), original: 'Scroll To Previous Command' },
+				title: { value: localize('workBench.action.terminal.scrollToPreviousCommand', "Scroll To Previous Command"), original: 'Scroll To Previous Command' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyCode.UpArrow },
 					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1023,13 +1023,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_NEXT_COMMAND,
-				title: { value: localize('workbench.action.terminal.scrollToNextCommand', "Scroll To Next Command"), original: 'Scroll To Next Command' },
+				title: { value: localize('workBench.action.terminal.scrollToNextCommand', "Scroll To Next Command"), original: 'Scroll To Next Command' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyCode.DownArrow },
 					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1045,13 +1045,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_PREVIOUS_COMMAND,
-				title: { value: localize('workbench.action.terminal.selectToPreviousCommand', "Select To Previous Command"), original: 'Select To Previous Command' },
+				title: { value: localize('workBench.action.terminal.selectToPreviousCommand', "Select To Previous Command"), original: 'Select To Previous Command' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1067,13 +1067,13 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_NEXT_COMMAND,
-				title: { value: localize('workbench.action.terminal.selectToNextCommand', "Select To Next Command"), original: 'Select To Next Command' },
+				title: { value: localize('workBench.action.terminal.selectToNextCommand', "Select To Next Command"), original: 'Select To Next Command' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1089,7 +1089,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_PREVIOUS_LINE,
-				title: { value: localize('workbench.action.terminal.selectToPreviousLine', "Select To Previous Line"), original: 'Select To Previous Line' },
+				title: { value: localize('workBench.action.terminal.selectToPreviousLine', "Select To Previous Line"), original: 'Select To Previous Line' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1106,7 +1106,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_NEXT_LINE,
-				title: { value: localize('workbench.action.terminal.selectToNextLine', "Select To Next Line"), original: 'Select To Next Line' },
+				title: { value: localize('workBench.action.terminal.selectToNextLine', "Select To Next Line"), original: 'Select To Next Line' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1123,7 +1123,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_ESCAPE_SEQUENCE_LOGGING,
-				title: { value: localize('workbench.action.terminal.toggleEscapeSequenceLogging', "Toggle Escape Sequence Logging"), original: 'Toggle Escape Sequence Logging' },
+				title: { value: localize('workBench.action.terminal.toggleEscapeSequenceLogging', "Toggle Escape Sequence Logging"), original: 'Toggle Escape Sequence Logging' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1135,7 +1135,7 @@ export function registerTerminalActions() {
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.sendSequence', "Send Custom Sequence To Terminal");
+			const title = localize('workBench.action.terminal.sendSequence', "Send Custom Sequence To Terminal");
 			super({
 				id: TERMINAL_COMMAND_ID.SEND_SEQUENCE,
 				title: { value: title, original: 'Send Custom Sequence To Terminal' },
@@ -1145,7 +1145,7 @@ export function registerTerminalActions() {
 					args: [{
 						name: 'args',
 						schema: {
-							type: 'object',
+							type: 'oBject',
 							required: ['text'],
 							properties: {
 								text: { type: 'string' }
@@ -1162,7 +1162,7 @@ export function registerTerminalActions() {
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.newWithCwd', "Create New Integrated Terminal Starting in a Custom Working Directory");
+			const title = localize('workBench.action.terminal.newWithCwd', "Create New Integrated Terminal Starting in a Custom Working Directory");
 			super({
 				id: TERMINAL_COMMAND_ID.NEW_WITH_CWD,
 				title: { value: title, original: 'Create New Integrated Terminal Starting in a Custom Working Directory' },
@@ -1172,11 +1172,11 @@ export function registerTerminalActions() {
 					args: [{
 						name: 'args',
 						schema: {
-							type: 'object',
+							type: 'oBject',
 							required: ['cwd'],
 							properties: {
 								cwd: {
-									description: localize('workbench.action.terminal.newWithCwd.cwd', "The directory to start the terminal at"),
+									description: localize('workBench.action.terminal.newWithCwd.cwd', "The directory to start the terminal at"),
 									type: 'string'
 								}
 							},
@@ -1200,7 +1200,7 @@ export function registerTerminalActions() {
 	});
 	registerAction2(class extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.renameWithArg', "Rename the Currently Active Terminal");
+			const title = localize('workBench.action.terminal.renameWithArg', "Rename the Currently Active Terminal");
 			super({
 				id: TERMINAL_COMMAND_ID.RENAME_WITH_ARG,
 				title: { value: title, original: 'Rename the Currently Active Terminal' },
@@ -1210,11 +1210,11 @@ export function registerTerminalActions() {
 					args: [{
 						name: 'args',
 						schema: {
-							type: 'object',
+							type: 'oBject',
 							required: ['name'],
 							properties: {
 								name: {
-									description: localize('workbench.action.terminal.renameWithArg.name', "The new name for the terminal"),
+									description: localize('workBench.action.terminal.renameWithArg.name', "The new name for the terminal"),
 									type: 'string',
 									minLength: 1
 								}
@@ -1228,7 +1228,7 @@ export function registerTerminalActions() {
 		run(accessor: ServicesAccessor, args?: { name?: string }) {
 			const notificationService = accessor.get(INotificationService);
 			if (!args?.name) {
-				notificationService.warn(localize('workbench.action.terminal.renameWithArg.noName', "No name argument provided"));
+				notificationService.warn(localize('workBench.action.terminal.renameWithArg.noName', "No name argument provided"));
 				return;
 			}
 			accessor.get(ITerminalService).getActiveInstance()?.setTitle(args.name, TitleEventSource.Api);
@@ -1238,14 +1238,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_REGEX,
-				title: { value: localize('workbench.action.terminal.toggleFindRegex', "Toggle Find Using Regex"), original: 'Toggle Find Using Regex' },
+				title: { value: localize('workBench.action.terminal.toggleFindRegex', "Toggle Find Using Regex"), original: 'Toggle Find Using Regex' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Alt | KeyCode.KEY_R,
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1259,14 +1259,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_WHOLE_WORD,
-				title: { value: localize('workbench.action.terminal.toggleFindWholeWord', "Toggle Find Using Whole Word"), original: 'Toggle Find Using Whole Word' },
+				title: { value: localize('workBench.action.terminal.toggleFindWholeWord', "Toggle Find Using Whole Word"), original: 'Toggle Find Using Whole Word' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Alt | KeyCode.KEY_W,
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_W },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1280,14 +1280,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_CASE_SENSITIVE,
-				title: { value: localize('workbench.action.terminal.toggleFindCaseSensitive', "Toggle Find Using Case Sensitive"), original: 'Toggle Find Using Case Sensitive' },
+				title: { value: localize('workBench.action.terminal.toggleFindCaseSensitive', "Toggle Find Using Case Sensitive"), original: 'Toggle Find Using Case Sensitive' },
 				f1: true,
 				category,
-				keybinding: {
+				keyBinding: {
 					primary: KeyMod.Alt | KeyCode.KEY_C,
 					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_C },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
-					weight: KeybindingWeight.WorkbenchContrib
+					weight: KeyBindingWeight.WorkBenchContriB
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
@@ -1301,20 +1301,20 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_NEXT,
-				title: { value: localize('workbench.action.terminal.findNext', "Find Next"), original: 'Find Next' },
+				title: { value: localize('workBench.action.terminal.findNext', "Find Next"), original: 'Find Next' },
 				f1: true,
 				category,
-				keybinding: [
+				keyBinding: [
 					{
 						primary: KeyCode.F3,
 						mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_G, secondary: [KeyCode.F3] },
 						when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
-						weight: KeybindingWeight.WorkbenchContrib
+						weight: KeyBindingWeight.WorkBenchContriB
 					},
 					{
 						primary: KeyMod.Shift | KeyCode.Enter,
 						when: KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED,
-						weight: KeybindingWeight.WorkbenchContrib
+						weight: KeyBindingWeight.WorkBenchContriB
 					}
 				],
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1328,20 +1328,20 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.findPrevious', "Find Previous"), original: 'Find Previous' },
+				title: { value: localize('workBench.action.terminal.findPrevious', "Find Previous"), original: 'Find Previous' },
 				f1: true,
 				category,
-				keybinding: [
+				keyBinding: [
 					{
 						primary: KeyMod.Shift | KeyCode.F3,
 						mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_G, secondary: [KeyMod.Shift | KeyCode.F3] },
 						when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
-						weight: KeybindingWeight.WorkbenchContrib
+						weight: KeyBindingWeight.WorkBenchContriB
 					},
 					{
 						primary: KeyCode.Enter,
 						when: KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED,
-						weight: KeybindingWeight.WorkbenchContrib
+						weight: KeyBindingWeight.WorkBenchContriB
 					}
 				],
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1355,14 +1355,14 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SEARCH_WORKSPACE,
-				title: { value: localize('workbench.action.terminal.searchWorkspace', "Search Workspace"), original: 'Search Workspace' },
+				title: { value: localize('workBench.action.terminal.searchWorkspace', "Search Workspace"), original: 'Search Workspace' },
 				f1: true,
 				category,
-				keybinding: [
+				keyBinding: [
 					{
 						primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F,
 						when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED),
-						weight: KeybindingWeight.WorkbenchContrib
+						weight: KeyBindingWeight.WorkBenchContriB
 					}
 				],
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1377,7 +1377,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RELAUNCH,
-				title: { value: localize('workbench.action.terminal.relaunch', "Relaunch Active Terminal"), original: 'Relaunch Active Terminal' },
+				title: { value: localize('workBench.action.terminal.relaunch', "Relaunch Active Terminal"), original: 'Relaunch Active Terminal' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
@@ -1391,7 +1391,7 @@ export function registerTerminalActions() {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SHOW_ENVIRONMENT_INFORMATION,
-				title: { value: localize('workbench.action.terminal.showEnvironmentInformation', "Show Environment Information"), original: 'Show Environment Information' },
+				title: { value: localize('workBench.action.terminal.showEnvironmentInformation', "Show Environment Information"), original: 'Show Environment Information' },
 				f1: true,
 				category,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED

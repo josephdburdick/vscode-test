@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IUserDataSyncResourceEnablementService, ALL_SYNC_RESOURCES, SyncResource } from 'vs/platform/userDataSync/common/userDataSync';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
+import { IUserDataSyncResourceEnaBlementService, ALL_SYNC_RESOURCES, SyncResource } from 'vs/platform/userDataSync/common/userDataSync';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IStorageService, IWorkspaceStorageChangeEvent, StorageScope } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
-type SyncEnablementClassification = {
-	enabled?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+type SyncEnaBlementClassification = {
+	enaBled?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
-const enablementKey = 'sync.enable';
-function getEnablementKey(resource: SyncResource) { return `${enablementKey}.${resource}`; }
+const enaBlementKey = 'sync.enaBle';
+function getEnaBlementKey(resource: SyncResource) { return `${enaBlementKey}.${resource}`; }
 
-export class UserDataSyncResourceEnablementService extends Disposable implements IUserDataSyncResourceEnablementService {
+export class UserDataSyncResourceEnaBlementService extends DisposaBle implements IUserDataSyncResourceEnaBlementService {
 
 	_serviceBrand: any;
 
-	private _onDidChangeResourceEnablement = new Emitter<[SyncResource, boolean]>();
-	readonly onDidChangeResourceEnablement: Event<[SyncResource, boolean]> = this._onDidChangeResourceEnablement.event;
+	private _onDidChangeResourceEnaBlement = new Emitter<[SyncResource, Boolean]>();
+	readonly onDidChangeResourceEnaBlement: Event<[SyncResource, Boolean]> = this._onDidChangeResourceEnaBlement.event;
 
 	constructor(
 		@IStorageService private readonly storageService: IStorageService,
@@ -31,23 +31,23 @@ export class UserDataSyncResourceEnablementService extends Disposable implements
 		this._register(storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
 	}
 
-	isResourceEnabled(resource: SyncResource): boolean {
-		return this.storageService.getBoolean(getEnablementKey(resource), StorageScope.GLOBAL, true);
+	isResourceEnaBled(resource: SyncResource): Boolean {
+		return this.storageService.getBoolean(getEnaBlementKey(resource), StorageScope.GLOBAL, true);
 	}
 
-	setResourceEnablement(resource: SyncResource, enabled: boolean): void {
-		if (this.isResourceEnabled(resource) !== enabled) {
-			const resourceEnablementKey = getEnablementKey(resource);
-			this.telemetryService.publicLog2<{ enabled: boolean }, SyncEnablementClassification>(resourceEnablementKey, { enabled });
-			this.storageService.store(resourceEnablementKey, enabled, StorageScope.GLOBAL);
+	setResourceEnaBlement(resource: SyncResource, enaBled: Boolean): void {
+		if (this.isResourceEnaBled(resource) !== enaBled) {
+			const resourceEnaBlementKey = getEnaBlementKey(resource);
+			this.telemetryService.puBlicLog2<{ enaBled: Boolean }, SyncEnaBlementClassification>(resourceEnaBlementKey, { enaBled });
+			this.storageService.store(resourceEnaBlementKey, enaBled, StorageScope.GLOBAL);
 		}
 	}
 
 	private onDidStorageChange(workspaceStorageChangeEvent: IWorkspaceStorageChangeEvent): void {
 		if (workspaceStorageChangeEvent.scope === StorageScope.GLOBAL) {
-			const resourceKey = ALL_SYNC_RESOURCES.filter(resourceKey => getEnablementKey(resourceKey) === workspaceStorageChangeEvent.key)[0];
+			const resourceKey = ALL_SYNC_RESOURCES.filter(resourceKey => getEnaBlementKey(resourceKey) === workspaceStorageChangeEvent.key)[0];
 			if (resourceKey) {
-				this._onDidChangeResourceEnablement.fire([resourceKey, this.isResourceEnabled(resourceKey)]);
+				this._onDidChangeResourceEnaBlement.fire([resourceKey, this.isResourceEnaBled(resourceKey)]);
 				return;
 			}
 		}

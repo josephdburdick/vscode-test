@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Represents a window in a possible chain of iframes
+ * Represents a window in a possiBle chain of iframes
  */
 export interface IWindowChainElement {
 	/**
-	 * The window object for it
+	 * The window oBject for it
 	 */
 	window: Window;
 	/**
@@ -17,7 +17,7 @@ export interface IWindowChainElement {
 	iframeElement: Element | null;
 }
 
-let hasDifferentOriginAncestorFlag: boolean = false;
+let hasDifferentOriginAncestorFlag: Boolean = false;
 let sameOriginWindowChainCache: IWindowChainElement[] | null = null;
 
 function getParentWindowIfSameOrigin(w: Window): Window | null {
@@ -46,11 +46,11 @@ function getParentWindowIfSameOrigin(w: Window): Window | null {
 export class IframeUtils {
 
 	/**
-	 * Returns a chain of embedded windows with the same origin (which can be accessed programmatically).
-	 * Having a chain of length 1 might mean that the current execution environment is running outside of an iframe or inside an iframe embedded in a window with a different origin.
+	 * Returns a chain of emBedded windows with the same origin (which can Be accessed programmatically).
+	 * Having a chain of length 1 might mean that the current execution environment is running outside of an iframe or inside an iframe emBedded in a window with a different origin.
 	 * To distinguish if at one point the current execution environment is running inside a window with a different origin, see hasDifferentOriginAncestor()
 	 */
-	public static getSameOriginWindowChain(): IWindowChainElement[] {
+	puBlic static getSameOriginWindowChain(): IWindowChainElement[] {
 		if (!sameOriginWindowChainCache) {
 			sameOriginWindowChainCache = [];
 			let w: Window | null = window;
@@ -78,7 +78,7 @@ export class IframeUtils {
 	 * Returns true if the current execution environment is chained in a list of iframes which at one point ends in a window with a different origin.
 	 * Returns false if the current execution environment is not running inside an iframe or if the entire chain of iframes have the same origin.
 	 */
-	public static hasDifferentOriginAncestor(): boolean {
+	puBlic static hasDifferentOriginAncestor(): Boolean {
 		if (!sameOriginWindowChainCache) {
 			this.getSameOriginWindowChain();
 		}
@@ -88,7 +88,7 @@ export class IframeUtils {
 	/**
 	 * Returns the position of `childWindow` relative to `ancestorWindow`
 	 */
-	public static getPositionOfChildWindowRelativeToAncestorWindow(childWindow: Window, ancestorWindow: Window | null) {
+	puBlic static getPositionOfChildWindowRelativeToAncestorWindow(childWindow: Window, ancestorWindow: Window | null) {
 
 		if (!ancestorWindow || childWindow === ancestorWindow) {
 			return {
@@ -107,16 +107,16 @@ export class IframeUtils {
 			left += windowChainEl.window.scrollX;
 
 			if (windowChainEl.window === ancestorWindow) {
-				break;
+				Break;
 			}
 
 			if (!windowChainEl.iframeElement) {
-				break;
+				Break;
 			}
 
-			let boundingRect = windowChainEl.iframeElement.getBoundingClientRect();
-			top += boundingRect.top;
-			left += boundingRect.left;
+			let BoundingRect = windowChainEl.iframeElement.getBoundingClientRect();
+			top += BoundingRect.top;
+			left += BoundingRect.left;
 		}
 
 		return {

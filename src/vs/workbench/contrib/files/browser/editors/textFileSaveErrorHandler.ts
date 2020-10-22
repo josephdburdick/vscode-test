@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { basename, isEqual } from 'vs/base/common/resources';
-import { Action, IAction } from 'vs/base/common/actions';
-import { URI } from 'vs/base/common/uri';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { Basename, isEqual } from 'vs/Base/common/resources';
+import { Action, IAction } from 'vs/Base/common/actions';
+import { URI } from 'vs/Base/common/uri';
 import { FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
-import { ITextFileService, ISaveErrorHandler, ITextFileEditorModel, IResolvedTextFileEditorModel, IWriteTextFileOptions } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileService, ISaveErrorHandler, ITextFileEditorModel, IResolvedTextFileEditorModel, IWriteTextFileOptions } from 'vs/workBench/services/textfile/common/textfiles';
 import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, dispose, Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IDisposaBle, dispose, DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { ResourceMap } from 'vs/base/common/map';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
+import { ResourceMap } from 'vs/Base/common/map';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
 import { IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { TextFileContentProvider } from 'vs/workbench/contrib/files/common/files';
-import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { SAVE_FILE_COMMAND_ID, REVERT_FILE_COMMAND_ID, SAVE_FILE_AS_COMMAND_ID, SAVE_FILE_AS_LABEL } from 'vs/workbench/contrib/files/browser/fileCommands';
+import { TextFileContentProvider } from 'vs/workBench/contriB/files/common/files';
+import { FileEditorInput } from 'vs/workBench/contriB/files/common/editors/fileEditorInput';
+import { SAVE_FILE_COMMAND_ID, REVERT_FILE_COMMAND_ID, SAVE_FILE_AS_COMMAND_ID, SAVE_FILE_AS_LABEL } from 'vs/workBench/contriB/files/Browser/fileCommands';
 import { INotificationService, INotificationHandle, INotificationActions, Severity } from 'vs/platform/notification/common/notification';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ExecuteCommandAction } from 'vs/platform/actions/common/actions';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { Event } from 'vs/base/common/event';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { isWindows } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
-import { IPreferencesService } from 'vs/workbench/services/preferences/common/preferences';
-import { SaveReason } from 'vs/workbench/common/editor';
+import { Event } from 'vs/Base/common/event';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { isWindows } from 'vs/Base/common/platform';
+import { Schemas } from 'vs/Base/common/network';
+import { IPreferencesService } from 'vs/workBench/services/preferences/common/preferences';
+import { SaveReason } from 'vs/workBench/common/editor';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
 export const CONFLICT_RESOLUTION_CONTEXT = 'saveConflictResolutionContext';
@@ -39,13 +39,13 @@ export const CONFLICT_RESOLUTION_SCHEME = 'conflictResolution';
 
 const LEARN_MORE_DIRTY_WRITE_IGNORE_KEY = 'learnMoreDirtyWriteError';
 
-const conflictEditorHelp = nls.localize('userGuide', "Use the actions in the editor tool bar to either undo your changes or overwrite the content of the file with your changes.");
+const conflictEditorHelp = nls.localize('userGuide', "Use the actions in the editor tool Bar to either undo your changes or overwrite the content of the file with your changes.");
 
 // A handler for text file save error happening with conflict resolution actions
-export class TextFileSaveErrorHandler extends Disposable implements ISaveErrorHandler, IWorkbenchContribution {
+export class TextFileSaveErrorHandler extends DisposaBle implements ISaveErrorHandler, IWorkBenchContriBution {
 
 	private readonly messages = new ResourceMap<INotificationHandle>();
-	private readonly conflictResolutionContext = new RawContextKey<boolean>(CONFLICT_RESOLUTION_CONTEXT, false).bindTo(this.contextKeyService);
+	private readonly conflictResolutionContext = new RawContextKey<Boolean>(CONFLICT_RESOLUTION_CONTEXT, false).BindTo(this.contextKeyService);
 	private activeConflictResolutionResource: URI | undefined = undefined;
 
 	constructor(
@@ -128,7 +128,7 @@ export class TextFileSaveErrorHandler extends Disposable implements ISaveErrorHa
 
 			// Otherwise show the message that will lead the user into the save conflict editor.
 			else {
-				message = nls.localize('staleSaveError', "Failed to save '{0}': The content of the file is newer. Please compare your version with the file contents or overwrite the content of the file with your changes.", basename(resource));
+				message = nls.localize('staleSaveError', "Failed to save '{0}': The content of the file is newer. Please compare your version with the file contents or overwrite the content of the file with your changes.", Basename(resource));
 
 				primaryActions.push(this.instantiationService.createInstance(ResolveSaveConflictAction, model));
 				primaryActions.push(this.instantiationService.createInstance(SaveIgnoreModifiedSinceAction, model));
@@ -140,13 +140,13 @@ export class TextFileSaveErrorHandler extends Disposable implements ISaveErrorHa
 		// Any other save error
 		else {
 			const isReadonly = fileOperationError.fileOperationResult === FileOperationResult.FILE_READ_ONLY;
-			const triedToMakeWriteable = isReadonly && fileOperationError.options && (fileOperationError.options as IWriteTextFileOptions).overwriteReadonly;
+			const triedToMakeWriteaBle = isReadonly && fileOperationError.options && (fileOperationError.options as IWriteTextFileOptions).overwriteReadonly;
 			const isPermissionDenied = fileOperationError.fileOperationResult === FileOperationResult.FILE_PERMISSION_DENIED;
-			const canHandlePermissionOrReadonlyErrors = resource.scheme === Schemas.file; // https://github.com/microsoft/vscode/issues/48659
+			const canHandlePermissionOrReadonlyErrors = resource.scheme === Schemas.file; // https://githuB.com/microsoft/vscode/issues/48659
 
 			// Save Elevated
-			if (canHandlePermissionOrReadonlyErrors && (isPermissionDenied || triedToMakeWriteable)) {
-				primaryActions.push(this.instantiationService.createInstance(SaveElevatedAction, model, !!triedToMakeWriteable));
+			if (canHandlePermissionOrReadonlyErrors && (isPermissionDenied || triedToMakeWriteaBle)) {
+				primaryActions.push(this.instantiationService.createInstance(SaveElevatedAction, model, !!triedToMakeWriteaBle));
 			}
 
 			// Overwrite
@@ -167,15 +167,15 @@ export class TextFileSaveErrorHandler extends Disposable implements ISaveErrorHa
 
 			// Message
 			if (canHandlePermissionOrReadonlyErrors && isReadonly) {
-				if (triedToMakeWriteable) {
-					message = isWindows ? nls.localize('readonlySaveErrorAdmin', "Failed to save '{0}': File is read-only. Select 'Overwrite as Admin' to retry as administrator.", basename(resource)) : nls.localize('readonlySaveErrorSudo', "Failed to save '{0}': File is read-only. Select 'Overwrite as Sudo' to retry as superuser.", basename(resource));
+				if (triedToMakeWriteaBle) {
+					message = isWindows ? nls.localize('readonlySaveErrorAdmin', "Failed to save '{0}': File is read-only. Select 'Overwrite as Admin' to retry as administrator.", Basename(resource)) : nls.localize('readonlySaveErrorSudo', "Failed to save '{0}': File is read-only. Select 'Overwrite as Sudo' to retry as superuser.", Basename(resource));
 				} else {
-					message = nls.localize('readonlySaveError', "Failed to save '{0}': File is read-only. Select 'Overwrite' to attempt to make it writeable.", basename(resource));
+					message = nls.localize('readonlySaveError', "Failed to save '{0}': File is read-only. Select 'Overwrite' to attempt to make it writeaBle.", Basename(resource));
 				}
 			} else if (canHandlePermissionOrReadonlyErrors && isPermissionDenied) {
-				message = isWindows ? nls.localize('permissionDeniedSaveError', "Failed to save '{0}': Insufficient permissions. Select 'Retry as Admin' to retry as administrator.", basename(resource)) : nls.localize('permissionDeniedSaveErrorSudo', "Failed to save '{0}': Insufficient permissions. Select 'Retry as Sudo' to retry as superuser.", basename(resource));
+				message = isWindows ? nls.localize('permissionDeniedSaveError', "Failed to save '{0}': Insufficient permissions. Select 'Retry as Admin' to retry as administrator.", Basename(resource)) : nls.localize('permissionDeniedSaveErrorSudo', "Failed to save '{0}': Insufficient permissions. Select 'Retry as Sudo' to retry as superuser.", Basename(resource));
 			} else {
-				message = nls.localize({ key: 'genericSaveError', comment: ['{0} is the resource that failed to save and {1} the error message'] }, "Failed to save '{0}': {1}", basename(resource), toErrorMessage(error, false));
+				message = nls.localize({ key: 'genericSaveError', comment: ['{0} is the resource that failed to save and {1} the error message'] }, "Failed to save '{0}': {1}", Basename(resource), toErrorMessage(error, false));
 			}
 		}
 
@@ -208,7 +208,7 @@ class ResolveConflictLearnMoreAction extends Action {
 	constructor(
 		@IOpenerService private readonly openerService: IOpenerService
 	) {
-		super('workbench.files.action.resolveConflictLearnMore', nls.localize('learnMore', "Learn More"));
+		super('workBench.files.action.resolveConflictLearnMore', nls.localize('learnMore', "Learn More"));
 	}
 
 	async run(): Promise<void> {
@@ -221,10 +221,10 @@ class DoNotShowResolveConflictLearnMoreAction extends Action {
 	constructor(
 		@IStorageService private readonly storageService: IStorageService
 	) {
-		super('workbench.files.action.resolveConflictLearnMoreDoNotShowAgain', nls.localize('dontShowAgain', "Don't Show Again"));
+		super('workBench.files.action.resolveConflictLearnMoreDoNotShowAgain', nls.localize('dontShowAgain', "Don't Show Again"));
 	}
 
-	async run(notification: IDisposable): Promise<void> {
+	async run(notification: IDisposaBle): Promise<void> {
 		this.storageService.store(LEARN_MORE_DIRTY_WRITE_IGNORE_KEY, true, StorageScope.GLOBAL);
 
 		// Hide notification
@@ -242,7 +242,7 @@ class ResolveSaveConflictAction extends Action {
 		@IProductService private readonly productService: IProductService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
 	) {
-		super('workbench.files.action.resolveConflict', nls.localize('compareChanges', "Compare"));
+		super('workBench.files.action.resolveConflict', nls.localize('compareChanges', "Compare"));
 
 		// opt-in to syncing
 		storageKeysSyncRegistryService.registerStorageKey({ key: LEARN_MORE_DIRTY_WRITE_IGNORE_KEY, version: 1 });
@@ -251,10 +251,10 @@ class ResolveSaveConflictAction extends Action {
 	async run(): Promise<void> {
 		if (!this.model.isDisposed()) {
 			const resource = this.model.resource;
-			const name = basename(resource);
-			const editorLabel = nls.localize('saveConflictDiffLabel', "{0} (in file) ↔ {1} (in {2}) - Resolve save conflict", name, name, this.productService.nameLong);
+			const name = Basename(resource);
+			const editorLaBel = nls.localize('saveConflictDiffLaBel', "{0} (in file) ↔ {1} (in {2}) - Resolve save conflict", name, name, this.productService.nameLong);
 
-			await TextFileContentProvider.open(resource, CONFLICT_RESOLUTION_SCHEME, editorLabel, this.editorService, { pinned: true });
+			await TextFileContentProvider.open(resource, CONFLICT_RESOLUTION_SCHEME, editorLaBel, this.editorService, { pinned: true });
 
 			// Show additional help how to resolve the save conflict
 			const actions: INotificationActions = { primary: [this.instantiationService.createInstance(ResolveConflictLearnMoreAction)] };
@@ -274,16 +274,16 @@ class SaveElevatedAction extends Action {
 
 	constructor(
 		private model: ITextFileEditorModel,
-		private triedToMakeWriteable: boolean
+		private triedToMakeWriteaBle: Boolean
 	) {
-		super('workbench.files.action.saveElevated', triedToMakeWriteable ? isWindows ? nls.localize('overwriteElevated', "Overwrite as Admin...") : nls.localize('overwriteElevatedSudo', "Overwrite as Sudo...") : isWindows ? nls.localize('saveElevated', "Retry as Admin...") : nls.localize('saveElevatedSudo', "Retry as Sudo..."));
+		super('workBench.files.action.saveElevated', triedToMakeWriteaBle ? isWindows ? nls.localize('overwriteElevated', "Overwrite as Admin...") : nls.localize('overwriteElevatedSudo', "Overwrite as Sudo...") : isWindows ? nls.localize('saveElevated', "Retry as Admin...") : nls.localize('saveElevatedSudo', "Retry as Sudo..."));
 	}
 
 	async run(): Promise<void> {
 		if (!this.model.isDisposed()) {
 			this.model.save({
 				writeElevated: true,
-				overwriteReadonly: this.triedToMakeWriteable,
+				overwriteReadonly: this.triedToMakeWriteaBle,
 				reason: SaveReason.EXPLICIT
 			});
 		}
@@ -295,7 +295,7 @@ class OverwriteReadonlyAction extends Action {
 	constructor(
 		private model: ITextFileEditorModel
 	) {
-		super('workbench.files.action.overwrite', nls.localize('overwrite', "Overwrite"));
+		super('workBench.files.action.overwrite', nls.localize('overwrite', "Overwrite"));
 	}
 
 	async run(): Promise<void> {
@@ -310,7 +310,7 @@ class SaveIgnoreModifiedSinceAction extends Action {
 	constructor(
 		private model: ITextFileEditorModel
 	) {
-		super('workbench.files.action.saveIgnoreModifiedSince', nls.localize('overwrite', "Overwrite"));
+		super('workBench.files.action.saveIgnoreModifiedSince', nls.localize('overwrite', "Overwrite"));
 	}
 
 	async run(): Promise<void> {
@@ -325,7 +325,7 @@ class ConfigureSaveConflictAction extends Action {
 	constructor(
 		@IPreferencesService private readonly preferencesService: IPreferencesService
 	) {
-		super('workbench.files.action.configureSaveConflict', nls.localize('configure', "Configure"));
+		super('workBench.files.action.configureSaveConflict', nls.localize('configure', "Configure"));
 	}
 
 	async run(): Promise<void> {
@@ -346,11 +346,11 @@ export const acceptLocalChangesCommand = async (accessor: ServicesAccessor, reso
 	const group = editorPane.group;
 
 	const reference = await resolverService.createModelReference(resource);
-	const model = reference.object as IResolvedTextFileEditorModel;
+	const model = reference.oBject as IResolvedTextFileEditorModel;
 
 	try {
 
-		// hide any previously shown message about how to use these actions
+		// hide any previously shown message aBout how to use these actions
 		clearPendingResolveSaveConflictMessages();
 
 		// Trigger save
@@ -380,11 +380,11 @@ export const revertLocalChangesCommand = async (accessor: ServicesAccessor, reso
 	const group = editorPane.group;
 
 	const reference = await resolverService.createModelReference(resource);
-	const model = reference.object as ITextFileEditorModel;
+	const model = reference.oBject as ITextFileEditorModel;
 
 	try {
 
-		// hide any previously shown message about how to use these actions
+		// hide any previously shown message aBout how to use these actions
 		clearPendingResolveSaveConflictMessages();
 
 		// Revert on model

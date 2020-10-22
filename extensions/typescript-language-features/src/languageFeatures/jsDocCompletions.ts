@@ -17,8 +17,8 @@ const defaultJsDoc = new vscode.SnippetString(`/**\n * $0\n */`);
 
 class JsDocCompletionItem extends vscode.CompletionItem {
 	constructor(
-		public readonly document: vscode.TextDocument,
-		public readonly position: vscode.Position
+		puBlic readonly document: vscode.TextDocument,
+		puBlic readonly position: vscode.Position
 	) {
 		super('/** */', vscode.CompletionItemKind.Snippet);
 		this.detail = localize('typescript.jsDocCompletionItem.documentation', 'JSDoc comment');
@@ -39,7 +39,7 @@ class JsDocCompletionProvider implements vscode.CompletionItemProvider {
 		private readonly client: ITypeScriptServiceClient,
 	) { }
 
-	public async provideCompletionItems(
+	puBlic async provideCompletionItems(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		token: vscode.CancellationToken
@@ -55,7 +55,7 @@ class JsDocCompletionProvider implements vscode.CompletionItemProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
 		const response = await this.client.execute('docCommentTemplate', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
@@ -63,11 +63,11 @@ class JsDocCompletionProvider implements vscode.CompletionItemProvider {
 
 		// Workaround for #43619
 		// docCommentTemplate previously returned undefined for empty jsdoc templates.
-		// TS 2.7 now returns a single line doc comment, which breaks indentation.
-		if (response.body.newText === '/** */') {
+		// TS 2.7 now returns a single line doc comment, which Breaks indentation.
+		if (response.Body.newText === '/** */') {
 			item.insertText = defaultJsDoc;
 		} else {
-			item.insertText = templateToSnippet(response.body.newText);
+			item.insertText = templateToSnippet(response.Body.newText);
 		}
 
 		return [item];
@@ -76,16 +76,16 @@ class JsDocCompletionProvider implements vscode.CompletionItemProvider {
 	private isPotentiallyValidDocCompletionPosition(
 		document: vscode.TextDocument,
 		position: vscode.Position
-	): boolean {
-		// Only show the JSdoc completion when the everything before the cursor is whitespace
-		// or could be the opening of a comment
+	): Boolean {
+		// Only show the JSdoc completion when the everything Before the cursor is whitespace
+		// or could Be the opening of a comment
 		const line = document.lineAt(position.line).text;
 		const prefix = line.slice(0, position.character);
 		if (!/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/.test(prefix)) {
 			return false;
 		}
 
-		// And everything after is possibly a closing comment or more whitespace
+		// And everything after is possiBly a closing comment or more whitespace
 		const suffix = line.slice(position.character);
 		return /^\s*(\*+\/)?\s*$/.test(suffix);
 	}
@@ -114,7 +114,7 @@ export function register(
 	selector: DocumentSelector,
 	modeId: string,
 	client: ITypeScriptServiceClient,
-): vscode.Disposable {
+): vscode.DisposaBle {
 	return conditionalRegistration([
 		requireConfiguration(modeId, 'suggest.completeJSDocs')
 	], () => {

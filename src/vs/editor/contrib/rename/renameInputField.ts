@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./renameInputField';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ContentWidgetPositionPreference, ICodeEditor, IContentWidget, IContentWidgetPosition } from 'vs/editor/browser/editorBrowser';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ContentWidgetPositionPreference, ICodeEditor, IContentWidget, IContentWidgetPosition } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange } from 'vs/editor/common/core/range';
 import { ScrollType } from 'vs/editor/common/editorCommon';
@@ -14,14 +14,14 @@ import { IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/cont
 import { inputBackground, inputBorder, inputForeground, widgetShadow, editorWidgetBackground } from 'vs/platform/theme/common/colorRegistry';
 import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
-export const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey<boolean>('renameInputVisible', false);
+export const CONTEXT_RENAME_INPUT_VISIBLE = new RawContextKey<Boolean>('renameInputVisiBle', false);
 
 export interface RenameInputFieldResult {
 	newName: string;
-	wantsPreview?: boolean;
+	wantsPreview?: Boolean;
 }
 
 export class RenameInputField implements IContentWidget {
@@ -29,35 +29,35 @@ export class RenameInputField implements IContentWidget {
 	private _position?: Position;
 	private _domNode?: HTMLElement;
 	private _input?: HTMLInputElement;
-	private _label?: HTMLDivElement;
-	private _visible?: boolean;
-	private readonly _visibleContextKey: IContextKey<boolean>;
-	private readonly _disposables = new DisposableStore();
+	private _laBel?: HTMLDivElement;
+	private _visiBle?: Boolean;
+	private readonly _visiBleContextKey: IContextKey<Boolean>;
+	private readonly _disposaBles = new DisposaBleStore();
 
-	readonly allowEditorOverflow: boolean = true;
+	readonly allowEditorOverflow: Boolean = true;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
-		private readonly _acceptKeybindings: [string, string],
+		private readonly _acceptKeyBindings: [string, string],
 		@IThemeService private readonly _themeService: IThemeService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly _keyBindingService: IKeyBindingService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
-		this._visibleContextKey = CONTEXT_RENAME_INPUT_VISIBLE.bindTo(contextKeyService);
+		this._visiBleContextKey = CONTEXT_RENAME_INPUT_VISIBLE.BindTo(contextKeyService);
 
 		this._editor.addContentWidget(this);
 
-		this._disposables.add(this._editor.onDidChangeConfiguration(e => {
+		this._disposaBles.add(this._editor.onDidChangeConfiguration(e => {
 			if (e.hasChanged(EditorOption.fontInfo)) {
 				this._updateFont();
 			}
 		}));
 
-		this._disposables.add(_themeService.onDidColorThemeChange(this._updateStyles, this));
+		this._disposaBles.add(_themeService.onDidColorThemeChange(this._updateStyles, this));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 		this._editor.removeContentWidget(this);
 	}
 
@@ -68,24 +68,24 @@ export class RenameInputField implements IContentWidget {
 	getDomNode(): HTMLElement {
 		if (!this._domNode) {
 			this._domNode = document.createElement('div');
-			this._domNode.className = 'monaco-editor rename-box';
+			this._domNode.className = 'monaco-editor rename-Box';
 
 			this._input = document.createElement('input');
 			this._input.className = 'rename-input';
 			this._input.type = 'text';
-			this._input.setAttribute('aria-label', localize('renameAriaLabel', "Rename input. Type new name and press Enter to commit."));
+			this._input.setAttriBute('aria-laBel', localize('renameAriaLaBel', "Rename input. Type new name and press Enter to commit."));
 			this._domNode.appendChild(this._input);
 
-			this._label = document.createElement('div');
-			this._label.className = 'rename-label';
-			this._domNode.appendChild(this._label);
-			const updateLabel = () => {
-				const [accept, preview] = this._acceptKeybindings;
-				this._keybindingService.lookupKeybinding(accept);
-				this._label!.innerText = localize({ key: 'label', comment: ['placeholders are keybindings, e.g "F2 to Rename, Shift+F2 to Preview"'] }, "{0} to Rename, {1} to Preview", this._keybindingService.lookupKeybinding(accept)?.getLabel(), this._keybindingService.lookupKeybinding(preview)?.getLabel());
+			this._laBel = document.createElement('div');
+			this._laBel.className = 'rename-laBel';
+			this._domNode.appendChild(this._laBel);
+			const updateLaBel = () => {
+				const [accept, preview] = this._acceptKeyBindings;
+				this._keyBindingService.lookupKeyBinding(accept);
+				this._laBel!.innerText = localize({ key: 'laBel', comment: ['placeholders are keyBindings, e.g "F2 to Rename, Shift+F2 to Preview"'] }, "{0} to Rename, {1} to Preview", this._keyBindingService.lookupKeyBinding(accept)?.getLaBel(), this._keyBindingService.lookupKeyBinding(preview)?.getLaBel());
 			};
-			updateLabel();
-			this._disposables.add(this._keybindingService.onDidUpdateKeybindings(updateLabel));
+			updateLaBel();
+			this._disposaBles.add(this._keyBindingService.onDidUpdateKeyBindings(updateLaBel));
 
 			this._updateFont();
 			this._updateStyles(this._themeService.getColorTheme());
@@ -99,20 +99,20 @@ export class RenameInputField implements IContentWidget {
 		}
 
 		const widgetShadowColor = theme.getColor(widgetShadow);
-		this._domNode.style.backgroundColor = String(theme.getColor(editorWidgetBackground) ?? '');
-		this._domNode.style.boxShadow = widgetShadowColor ? ` 0 2px 8px ${widgetShadowColor}` : '';
+		this._domNode.style.BackgroundColor = String(theme.getColor(editorWidgetBackground) ?? '');
+		this._domNode.style.BoxShadow = widgetShadowColor ? ` 0 2px 8px ${widgetShadowColor}` : '';
 		this._domNode.style.color = String(theme.getColor(inputForeground) ?? '');
 
-		this._input.style.backgroundColor = String(theme.getColor(inputBackground) ?? '');
+		this._input.style.BackgroundColor = String(theme.getColor(inputBackground) ?? '');
 		// this._input.style.color = String(theme.getColor(inputForeground) ?? '');
-		const border = theme.getColor(inputBorder);
-		this._input.style.borderWidth = border ? '1px' : '0px';
-		this._input.style.borderStyle = border ? 'solid' : 'none';
-		this._input.style.borderColor = border?.toString() ?? 'none';
+		const Border = theme.getColor(inputBorder);
+		this._input.style.BorderWidth = Border ? '1px' : '0px';
+		this._input.style.BorderStyle = Border ? 'solid' : 'none';
+		this._input.style.BorderColor = Border?.toString() ?? 'none';
 	}
 
 	private _updateFont(): void {
-		if (!this._input || !this._label) {
+		if (!this._input || !this._laBel) {
 			return;
 		}
 
@@ -121,11 +121,11 @@ export class RenameInputField implements IContentWidget {
 		this._input.style.fontWeight = fontInfo.fontWeight;
 		this._input.style.fontSize = `${fontInfo.fontSize}px`;
 
-		this._label.style.fontSize = `${fontInfo.fontSize * 0.8}px`;
+		this._laBel.style.fontSize = `${fontInfo.fontSize * 0.8}px`;
 	}
 
 	getPosition(): IContentWidgetPosition | null {
-		if (!this._visible) {
+		if (!this._visiBle) {
 			return null;
 		}
 		return {
@@ -134,34 +134,34 @@ export class RenameInputField implements IContentWidget {
 		};
 	}
 
-	private _currentAcceptInput?: (wantsPreview: boolean) => void;
-	private _currentCancelInput?: (focusEditor: boolean) => void;
+	private _currentAcceptInput?: (wantsPreview: Boolean) => void;
+	private _currentCancelInput?: (focusEditor: Boolean) => void;
 
-	acceptInput(wantsPreview: boolean): void {
+	acceptInput(wantsPreview: Boolean): void {
 		if (this._currentAcceptInput) {
 			this._currentAcceptInput(wantsPreview);
 		}
 	}
 
-	cancelInput(focusEditor: boolean): void {
+	cancelInput(focusEditor: Boolean): void {
 		if (this._currentCancelInput) {
 			this._currentCancelInput(focusEditor);
 		}
 	}
 
-	getInput(where: IRange, value: string, selectionStart: number, selectionEnd: number, supportPreview: boolean, token: CancellationToken): Promise<RenameInputFieldResult | boolean> {
+	getInput(where: IRange, value: string, selectionStart: numBer, selectionEnd: numBer, supportPreview: Boolean, token: CancellationToken): Promise<RenameInputFieldResult | Boolean> {
 
 		this._domNode!.classList.toggle('preview', supportPreview);
 
-		this._position = new Position(where.startLineNumber, where.startColumn);
+		this._position = new Position(where.startLineNumBer, where.startColumn);
 		this._input!.value = value;
-		this._input!.setAttribute('selectionStart', selectionStart.toString());
-		this._input!.setAttribute('selectionEnd', selectionEnd.toString());
+		this._input!.setAttriBute('selectionStart', selectionStart.toString());
+		this._input!.setAttriBute('selectionEnd', selectionEnd.toString());
 		this._input!.size = Math.max((where.endColumn - where.startColumn) * 1.1, 20);
 
-		const disposeOnDone = new DisposableStore();
+		const disposeOnDone = new DisposaBleStore();
 
-		return new Promise<RenameInputFieldResult | boolean>(resolve => {
+		return new Promise<RenameInputFieldResult | Boolean>(resolve => {
 
 			this._currentCancelInput = (focusEditor) => {
 				this._currentAcceptInput = undefined;
@@ -197,22 +197,22 @@ export class RenameInputField implements IContentWidget {
 	}
 
 	private _show(): void {
-		this._editor.revealLineInCenterIfOutsideViewport(this._position!.lineNumber, ScrollType.Smooth);
-		this._visible = true;
-		this._visibleContextKey.set(true);
+		this._editor.revealLineInCenterIfOutsideViewport(this._position!.lineNumBer, ScrollType.Smooth);
+		this._visiBle = true;
+		this._visiBleContextKey.set(true);
 		this._editor.layoutContentWidget(this);
 
 		setTimeout(() => {
 			this._input!.focus();
 			this._input!.setSelectionRange(
-				parseInt(this._input!.getAttribute('selectionStart')!),
-				parseInt(this._input!.getAttribute('selectionEnd')!));
+				parseInt(this._input!.getAttriBute('selectionStart')!),
+				parseInt(this._input!.getAttriBute('selectionEnd')!));
 		}, 100);
 	}
 
 	private _hide(): void {
-		this._visible = false;
-		this._visibleContextKey.reset();
+		this._visiBle = false;
+		this._visiBleContextKey.reset();
 		this._editor.layoutContentWidget(this);
 	}
 }

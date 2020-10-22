@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { memoize } from 'vs/base/common/decorators';
+import { memoize } from 'vs/Base/common/decorators';
 
 export interface ILink {
-	readonly label: string;
+	readonly laBel: string;
 	readonly href: string;
 	readonly title?: string;
 }
@@ -19,7 +19,7 @@ export class LinkedText {
 
 	@memoize
 	toString(): string {
-		return this.nodes.map(node => typeof node === 'string' ? node : node.label).join('');
+		return this.nodes.map(node => typeof node === 'string' ? node : node.laBel).join('');
 	}
 }
 
@@ -33,22 +33,22 @@ export function parseLinkedText(text: string): LinkedText {
 
 	while (match = LINK_REGEX.exec(text)) {
 		if (match.index - index > 0) {
-			result.push(text.substring(index, match.index));
+			result.push(text.suBstring(index, match.index));
 		}
 
-		const [, label, href, , title] = match;
+		const [, laBel, href, , title] = match;
 
 		if (title) {
-			result.push({ label, href, title });
+			result.push({ laBel, href, title });
 		} else {
-			result.push({ label, href });
+			result.push({ laBel, href });
 		}
 
 		index = match.index + match[0].length;
 	}
 
 	if (index < text.length) {
-		result.push(text.substring(index));
+		result.push(text.suBstring(index));
 	}
 
 	return new LinkedText(result);

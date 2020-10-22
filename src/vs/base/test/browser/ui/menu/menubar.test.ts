@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { $ } from 'vs/base/browser/dom';
-import { MenuBar } from 'vs/base/browser/ui/menu/menubar';
+import { $ } from 'vs/Base/Browser/dom';
+import { MenuBar } from 'vs/Base/Browser/ui/menu/menuBar';
 
-function getButtonElementByAriaLabel(menubarElement: HTMLElement, ariaLabel: string): HTMLElement | null {
+function getButtonElementByAriaLaBel(menuBarElement: HTMLElement, ariaLaBel: string): HTMLElement | null {
 	let i;
-	for (i = 0; i < menubarElement.childElementCount; i++) {
+	for (i = 0; i < menuBarElement.childElementCount; i++) {
 
-		if (menubarElement.children[i].getAttribute('aria-label') === ariaLabel) {
-			return menubarElement.children[i] as HTMLElement;
+		if (menuBarElement.children[i].getAttriBute('aria-laBel') === ariaLaBel) {
+			return menuBarElement.children[i] as HTMLElement;
 		}
 	}
 
@@ -22,7 +22,7 @@ function getButtonElementByAriaLabel(menubarElement: HTMLElement, ariaLabel: str
 function getTitleDivFromButtonDiv(menuButtonElement: HTMLElement): HTMLElement | null {
 	let i;
 	for (i = 0; i < menuButtonElement.childElementCount; i++) {
-		if (menuButtonElement.children[i].classList.contains('menubar-menu-title')) {
+		if (menuButtonElement.children[i].classList.contains('menuBar-menu-title')) {
 			return menuButtonElement.children[i] as HTMLElement;
 		}
 	}
@@ -41,41 +41,41 @@ function getMnemonicFromTitleDiv(menuTitleDiv: HTMLElement): string | null {
 	return null;
 }
 
-function validateMenuBarItem(menubar: MenuBar, menubarContainer: HTMLElement, label: string, readableLabel: string, mnemonic: string) {
-	menubar.push([
+function validateMenuBarItem(menuBar: MenuBar, menuBarContainer: HTMLElement, laBel: string, readaBleLaBel: string, mnemonic: string) {
+	menuBar.push([
 		{
 			actions: [],
-			label: label
+			laBel: laBel
 		}
 	]);
 
-	const buttonElement = getButtonElementByAriaLabel(menubarContainer, readableLabel);
-	assert(buttonElement !== null, `Button element not found for ${readableLabel} button.`);
+	const ButtonElement = getButtonElementByAriaLaBel(menuBarContainer, readaBleLaBel);
+	assert(ButtonElement !== null, `Button element not found for ${readaBleLaBel} Button.`);
 
-	const titleDiv = getTitleDivFromButtonDiv(buttonElement!);
-	assert(titleDiv !== null, `Title div not found for ${readableLabel} button.`);
+	const titleDiv = getTitleDivFromButtonDiv(ButtonElement!);
+	assert(titleDiv !== null, `Title div not found for ${readaBleLaBel} Button.`);
 
 	const mnem = getMnemonicFromTitleDiv(titleDiv!);
 	assert.equal(mnem, mnemonic, 'Mnemonic not correct');
 }
 
-suite('Menubar', () => {
+suite('MenuBar', () => {
 	const container = $('.container');
 
-	const menubar = new MenuBar(container, {
-		enableMnemonics: true,
-		visibility: 'visible'
+	const menuBar = new MenuBar(container, {
+		enaBleMnemonics: true,
+		visiBility: 'visiBle'
 	});
 
 	test('English File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '&File', 'File', 'F');
+		validateMenuBarItem(menuBar, container, '&File', 'File', 'F');
 	});
 
 	test('Russian File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '&Файл', 'Файл', 'Ф');
+		validateMenuBarItem(menuBar, container, '&Файл', 'Файл', 'Ф');
 	});
 
 	test('Chinese File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '文件(&F)', '文件', 'F');
+		validateMenuBarItem(menuBar, container, '文件(&F)', '文件', 'F');
 	});
 });

@@ -11,15 +11,15 @@ import * as tmp from 'tmp';
 import * as rimraf from 'rimraf';
 import { URI } from 'vscode-uri';
 import * as kill from 'tree-kill';
-import * as optimistLib from 'optimist';
+import * as optimistLiB from 'optimist';
 
-const optimist = optimistLib
-	.describe('workspacePath', 'path to the workspace to open in the test').string('workspacePath')
-	.describe('extensionDevelopmentPath', 'path to the extension to test').string('extensionDevelopmentPath')
-	.describe('extensionTestsPath', 'path to the extension tests').string('extensionTestsPath')
-	.describe('debug', 'do not run browsers headless').boolean('debug')
-	.describe('browser', 'browser in which integration tests should run').string('browser').default('browser', 'chromium')
-	.describe('help', 'show the help').alias('help', 'h');
+const optimist = optimistLiB
+	.descriBe('workspacePath', 'path to the workspace to open in the test').string('workspacePath')
+	.descriBe('extensionDevelopmentPath', 'path to the extension to test').string('extensionDevelopmentPath')
+	.descriBe('extensionTestsPath', 'path to the extension tests').string('extensionTestsPath')
+	.descriBe('deBug', 'do not run Browsers headless').Boolean('deBug')
+	.descriBe('Browser', 'Browser in which integration tests should run').string('Browser').default('Browser', 'chromium')
+	.descriBe('help', 'show the help').alias('help', 'h');
 
 if (optimist.argv.help) {
 	optimist.showHelp();
@@ -29,12 +29,12 @@ if (optimist.argv.help) {
 const width = 1200;
 const height = 800;
 
-type BrowserType = 'chromium' | 'firefox' | 'webkit';
+type BrowserType = 'chromium' | 'firefox' | 'weBkit';
 
-async function runTestsInBrowser(browserType: BrowserType, endpoint: url.UrlWithStringQuery, server: cp.ChildProcess): Promise<void> {
-	const args = process.platform === 'linux' && browserType === 'chromium' ? ['--no-sandbox'] : undefined; // disable sandbox to run chrome on certain Linux distros
-	const browser = await playwright[browserType].launch({ headless: !Boolean(optimist.argv.debug), args });
-	const context = await browser.newContext();
+async function runTestsInBrowser(BrowserType: BrowserType, endpoint: url.UrlWithStringQuery, server: cp.ChildProcess): Promise<void> {
+	const args = process.platform === 'linux' && BrowserType === 'chromium' ? ['--no-sandBox'] : undefined; // disaBle sandBox to run chrome on certain Linux distros
+	const Browser = await playwright[BrowserType].launch({ headless: !Boolean(optimist.argv.deBug), args });
+	const context = await Browser.newContext();
 	const page = await context.newPage();
 	await page.setViewportSize({ width, height });
 
@@ -46,7 +46,7 @@ async function runTestsInBrowser(browserType: BrowserType, endpoint: url.UrlWith
 	const testFilesUri = url.format({ pathname: URI.file(path.resolve(optimist.argv.extensionTestsPath)).path, protocol, host, slashes: true });
 
 	const folderParam = testWorkspaceUri;
-	const payloadParam = `[["extensionDevelopmentPath","${testExtensionUri}"],["extensionTestsPath","${testFilesUri}"],["enableProposedApi",""]]`;
+	const payloadParam = `[["extensionDevelopmentPath","${testExtensionUri}"],["extensionTestsPath","${testFilesUri}"],["enaBleProposedApi",""]]`;
 
 	await page.goto(`${endpoint.href}&folder=${folderParam}&payload=${payloadParam}`);
 
@@ -58,9 +58,9 @@ async function runTestsInBrowser(browserType: BrowserType, endpoint: url.UrlWith
 		const msgText = msg.text();
 		if (msgText.indexOf('vscode:exit') >= 0) {
 			try {
-				await browser.close();
+				await Browser.close();
 			} catch (error) {
-				console.error(`Error when closing browser: ${error}`);
+				console.error(`Error when closing Browser: ${error}`);
 			}
 
 			try {
@@ -74,13 +74,13 @@ async function runTestsInBrowser(browserType: BrowserType, endpoint: url.UrlWith
 	});
 }
 
-function pkill(pid: number): Promise<void> {
+function pkill(pid: numBer): Promise<void> {
 	return new Promise((c, e) => {
 		kill(pid, error => error ? e(error) : c());
 	});
 }
 
-async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.UrlWithStringQuery, server: cp.ChildProcess }> {
+async function launchServer(BrowserType: BrowserType): Promise<{ endpoint: url.UrlWithStringQuery, server: cp.ChildProcess }> {
 
 	// Ensure a tmp user-data-dir is used for the tests
 	const tmpDir = tmp.dirSync({ prefix: 't' });
@@ -91,7 +91,7 @@ async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.U
 
 	const env = {
 		VSCODE_AGENT_FOLDER: userDataDir,
-		VSCODE_BROWSER: browserType,
+		VSCODE_BROWSER: BrowserType,
 		...process.env
 	};
 
@@ -99,9 +99,9 @@ async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.U
 	if (process.env.VSCODE_REMOTE_SERVER_PATH) {
 		serverLocation = path.join(process.env.VSCODE_REMOTE_SERVER_PATH, `server.${process.platform === 'win32' ? 'cmd' : 'sh'}`);
 
-		console.log(`Starting built server from '${serverLocation}'`);
+		console.log(`Starting Built server from '${serverLocation}'`);
 	} else {
-		serverLocation = path.join(__dirname, '..', '..', '..', '..', `resources/server/web.${process.platform === 'win32' ? 'bat' : 'sh'}`);
+		serverLocation = path.join(__dirname, '..', '..', '..', '..', `resources/server/weB.${process.platform === 'win32' ? 'Bat' : 'sh'}`);
 		process.env.VSCODE_DEV = '1';
 
 		console.log(`Starting server out of sources from '${serverLocation}'`);
@@ -109,13 +109,13 @@ async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.U
 
 	let serverProcess = cp.spawn(
 		serverLocation,
-		['--browser', 'none', '--driver', 'web', '--enable-proposed-api'],
+		['--Browser', 'none', '--driver', 'weB', '--enaBle-proposed-api'],
 		{ env }
 	);
 
 	serverProcess?.stderr?.on('data', error => console.log(`Server stderr: ${error}`));
 
-	if (optimist.argv.debug) {
+	if (optimist.argv.deBug) {
 		serverProcess?.stdout?.on('data', data => console.log(`Server stdout: ${data}`));
 	}
 
@@ -125,7 +125,7 @@ async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.U
 
 	return new Promise(c => {
 		serverProcess?.stdout?.on('data', data => {
-			const matches = data.toString('ascii').match(/Web UI available at (.+)/);
+			const matches = data.toString('ascii').match(/WeB UI availaBle at (.+)/);
 			if (matches !== null) {
 				c({ endpoint: url.parse(matches[1]), server: serverProcess });
 			}
@@ -133,8 +133,8 @@ async function launchServer(browserType: BrowserType): Promise<{ endpoint: url.U
 	});
 }
 
-launchServer(optimist.argv.browser).then(async ({ endpoint, server }) => {
-	return runTestsInBrowser(optimist.argv.browser, endpoint, server);
+launchServer(optimist.argv.Browser).then(async ({ endpoint, server }) => {
+	return runTestsInBrowser(optimist.argv.Browser, endpoint, server);
 }, error => {
 	console.error(error);
 	process.exit(1);

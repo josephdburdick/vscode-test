@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { deduceExtensionKind } from 'vs/workbench/services/extensions/common/extensionsUtil';
+import { deduceExtensionKind } from 'vs/workBench/services/extensions/common/extensionsUtil';
 import { IExtensionManifest, ExtensionKind } from 'vs/platform/extensions/common/extensions';
 
 suite('ExtensionKind', () => {
@@ -21,23 +21,23 @@ suite('ExtensionKind', () => {
 		check({ extensionPack: ['ext1', 'ext2'] }, ['workspace']);
 	});
 
-	test('declarative with unknown contribution point => workspace', () => {
-		check({ contributes: <any>{ 'unknownPoint': { something: true } } }, ['workspace']);
+	test('declarative with unknown contriBution point => workspace', () => {
+		check({ contriButes: <any>{ 'unknownPoint': { something: true } } }, ['workspace']);
 	});
 
-	test('simple declarative => ui, workspace, web', () => {
-		check({}, ['ui', 'workspace', 'web']);
+	test('simple declarative => ui, workspace, weB', () => {
+		check({}, ['ui', 'workspace', 'weB']);
 	});
 
-	test('only browser => web', () => {
-		check({ browser: 'main.browser.js' }, ['web']);
+	test('only Browser => weB', () => {
+		check({ Browser: 'main.Browser.js' }, ['weB']);
 	});
 
 	test('only main => workspace', () => {
 		check({ main: 'main.js' }, ['workspace']);
 	});
 
-	test('main and browser => workspace, web', () => {
-		check({ main: 'main.js', browser: 'main.browser.js' }, ['workspace', 'web']);
+	test('main and Browser => workspace, weB', () => {
+		check({ main: 'main.js', Browser: 'main.Browser.js' }, ['workspace', 'weB']);
 	});
 });

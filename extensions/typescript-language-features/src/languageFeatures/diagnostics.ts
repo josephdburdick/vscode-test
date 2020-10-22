@@ -7,24 +7,24 @@ import * as vscode from 'vscode';
 import { ResourceMap } from '../utils/resourceMap';
 import { DiagnosticLanguage } from '../utils/languageDescription';
 import * as arrays from '../utils/arrays';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 
-function diagnosticsEquals(a: vscode.Diagnostic, b: vscode.Diagnostic): boolean {
-	if (a === b) {
+function diagnosticsEquals(a: vscode.Diagnostic, B: vscode.Diagnostic): Boolean {
+	if (a === B) {
 		return true;
 	}
 
-	return a.code === b.code
-		&& a.message === b.message
-		&& a.severity === b.severity
-		&& a.source === b.source
-		&& a.range.isEqual(b.range)
-		&& arrays.equals(a.relatedInformation || arrays.empty, b.relatedInformation || arrays.empty, (a, b) => {
-			return a.message === b.message
-				&& a.location.range.isEqual(b.location.range)
-				&& a.location.uri.fsPath === b.location.uri.fsPath;
+	return a.code === B.code
+		&& a.message === B.message
+		&& a.severity === B.severity
+		&& a.source === B.source
+		&& a.range.isEqual(B.range)
+		&& arrays.equals(a.relatedInformation || arrays.empty, B.relatedInformation || arrays.empty, (a, B) => {
+			return a.message === B.message
+				&& a.location.range.isEqual(B.location.range)
+				&& a.location.uri.fsPath === B.location.uri.fsPath;
 		})
-		&& arrays.equals(a.tags || arrays.empty, b.tags || arrays.empty);
+		&& arrays.equals(a.tags || arrays.empty, B.tags || arrays.empty);
 }
 
 export const enum DiagnosticKind {
@@ -37,15 +37,15 @@ class FileDiagnostics {
 	private readonly _diagnostics = new Map<DiagnosticKind, ReadonlyArray<vscode.Diagnostic>>();
 
 	constructor(
-		public readonly file: vscode.Uri,
-		public language: DiagnosticLanguage
+		puBlic readonly file: vscode.Uri,
+		puBlic language: DiagnosticLanguage
 	) { }
 
-	public updateDiagnostics(
+	puBlic updateDiagnostics(
 		language: DiagnosticLanguage,
 		kind: DiagnosticKind,
 		diagnostics: ReadonlyArray<vscode.Diagnostic>
-	): boolean {
+	): Boolean {
 		if (language !== this.language) {
 			this._diagnostics.clear();
 			this.language = language;
@@ -61,7 +61,7 @@ class FileDiagnostics {
 		return true;
 	}
 
-	public getDiagnostics(settings: DiagnosticSettings): vscode.Diagnostic[] {
+	puBlic getDiagnostics(settings: DiagnosticSettings): vscode.Diagnostic[] {
 		if (!settings.getValidate(this.language)) {
 			return [];
 		}
@@ -74,9 +74,9 @@ class FileDiagnostics {
 	}
 
 	private getSuggestionDiagnostics(settings: DiagnosticSettings) {
-		const enableSuggestions = settings.getEnableSuggestions(this.language);
+		const enaBleSuggestions = settings.getEnaBleSuggestions(this.language);
 		return this.get(DiagnosticKind.Suggestion).filter(x => {
-			if (!enableSuggestions) {
+			if (!enaBleSuggestions) {
 				// Still show unused
 				return x.tags && (x.tags.includes(vscode.DiagnosticTag.Unnecessary) || x.tags.includes(vscode.DiagnosticTag.Deprecated));
 			}
@@ -90,42 +90,42 @@ class FileDiagnostics {
 }
 
 interface LanguageDiagnosticSettings {
-	readonly validate: boolean;
-	readonly enableSuggestions: boolean;
+	readonly validate: Boolean;
+	readonly enaBleSuggestions: Boolean;
 }
 
-function areLanguageDiagnosticSettingsEqual(currentSettings: LanguageDiagnosticSettings, newSettings: LanguageDiagnosticSettings): boolean {
+function areLanguageDiagnosticSettingsEqual(currentSettings: LanguageDiagnosticSettings, newSettings: LanguageDiagnosticSettings): Boolean {
 	return currentSettings.validate === newSettings.validate
-		&& currentSettings.enableSuggestions && currentSettings.enableSuggestions;
+		&& currentSettings.enaBleSuggestions && currentSettings.enaBleSuggestions;
 }
 
 class DiagnosticSettings {
 	private static readonly defaultSettings: LanguageDiagnosticSettings = {
 		validate: true,
-		enableSuggestions: true
+		enaBleSuggestions: true
 	};
 
 	private readonly _languageSettings = new Map<DiagnosticLanguage, LanguageDiagnosticSettings>();
 
-	public getValidate(language: DiagnosticLanguage): boolean {
+	puBlic getValidate(language: DiagnosticLanguage): Boolean {
 		return this.get(language).validate;
 	}
 
-	public setValidate(language: DiagnosticLanguage, value: boolean): boolean {
+	puBlic setValidate(language: DiagnosticLanguage, value: Boolean): Boolean {
 		return this.update(language, settings => ({
 			validate: value,
-			enableSuggestions: settings.enableSuggestions,
+			enaBleSuggestions: settings.enaBleSuggestions,
 		}));
 	}
 
-	public getEnableSuggestions(language: DiagnosticLanguage): boolean {
-		return this.get(language).enableSuggestions;
+	puBlic getEnaBleSuggestions(language: DiagnosticLanguage): Boolean {
+		return this.get(language).enaBleSuggestions;
 	}
 
-	public setEnableSuggestions(language: DiagnosticLanguage, value: boolean): boolean {
+	puBlic setEnaBleSuggestions(language: DiagnosticLanguage, value: Boolean): Boolean {
 		return this.update(language, settings => ({
 			validate: settings.validate,
-			enableSuggestions: value
+			enaBleSuggestions: value
 		}));
 	}
 
@@ -133,7 +133,7 @@ class DiagnosticSettings {
 		return this._languageSettings.get(language) || DiagnosticSettings.defaultSettings;
 	}
 
-	private update(language: DiagnosticLanguage, f: (x: LanguageDiagnosticSettings) => LanguageDiagnosticSettings): boolean {
+	private update(language: DiagnosticLanguage, f: (x: LanguageDiagnosticSettings) => LanguageDiagnosticSettings): Boolean {
 		const currentSettings = this.get(language);
 		const newSettings = f(currentSettings);
 		this._languageSettings.set(language, newSettings);
@@ -141,7 +141,7 @@ class DiagnosticSettings {
 	}
 }
 
-export class DiagnosticsManager extends Disposable {
+export class DiagnosticsManager extends DisposaBle {
 	private readonly _diagnostics: ResourceMap<FileDiagnostics>;
 	private readonly _settings = new DiagnosticSettings();
 	private readonly _currentDiagnostics: vscode.DiagnosticCollection;
@@ -151,7 +151,7 @@ export class DiagnosticsManager extends Disposable {
 
 	constructor(
 		owner: string,
-		onCaseInsenitiveFileSystem: boolean
+		onCaseInsenitiveFileSystem: Boolean
 	) {
 		super();
 		this._diagnostics = new ResourceMap<FileDiagnostics>(undefined, { onCaseInsenitiveFileSystem });
@@ -160,7 +160,7 @@ export class DiagnosticsManager extends Disposable {
 		this._currentDiagnostics = this._register(vscode.languages.createDiagnosticCollection(owner));
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		super.dispose();
 
 		for (const value of this._pendingUpdates.values) {
@@ -169,26 +169,26 @@ export class DiagnosticsManager extends Disposable {
 		this._pendingUpdates.clear();
 	}
 
-	public reInitialize(): void {
+	puBlic reInitialize(): void {
 		this._currentDiagnostics.clear();
 		this._diagnostics.clear();
 	}
 
-	public setValidate(language: DiagnosticLanguage, value: boolean) {
+	puBlic setValidate(language: DiagnosticLanguage, value: Boolean) {
 		const didUpdate = this._settings.setValidate(language, value);
 		if (didUpdate) {
-			this.rebuild();
+			this.reBuild();
 		}
 	}
 
-	public setEnableSuggestions(language: DiagnosticLanguage, value: boolean) {
-		const didUpdate = this._settings.setEnableSuggestions(language, value);
+	puBlic setEnaBleSuggestions(language: DiagnosticLanguage, value: Boolean) {
+		const didUpdate = this._settings.setEnaBleSuggestions(language, value);
 		if (didUpdate) {
-			this.rebuild();
+			this.reBuild();
 		}
 	}
 
-	public updateDiagnostics(
+	puBlic updateDiagnostics(
 		file: vscode.Uri,
 		language: DiagnosticLanguage,
 		kind: DiagnosticKind,
@@ -210,19 +210,19 @@ export class DiagnosticsManager extends Disposable {
 		}
 	}
 
-	public configFileDiagnosticsReceived(
+	puBlic configFileDiagnosticsReceived(
 		file: vscode.Uri,
 		diagnostics: ReadonlyArray<vscode.Diagnostic>
 	): void {
 		this._currentDiagnostics.set(file, diagnostics);
 	}
 
-	public delete(resource: vscode.Uri): void {
+	puBlic delete(resource: vscode.Uri): void {
 		this._currentDiagnostics.delete(resource);
 		this._diagnostics.delete(resource);
 	}
 
-	public getDiagnostics(file: vscode.Uri): ReadonlyArray<vscode.Diagnostic> {
+	puBlic getDiagnostics(file: vscode.Uri): ReadonlyArray<vscode.Diagnostic> {
 		return this._currentDiagnostics.get(file) || [];
 	}
 
@@ -242,7 +242,7 @@ export class DiagnosticsManager extends Disposable {
 		this._currentDiagnostics.set(file, fileDiagnostics ? fileDiagnostics.getDiagnostics(this._settings) : []);
 	}
 
-	private rebuild(): void {
+	private reBuild(): void {
 		this._currentDiagnostics.clear();
 		for (const fileDiagnostic of this._diagnostics.values) {
 			this._currentDiagnostics.set(fileDiagnostic.file, fileDiagnostic.getDiagnostics(this._settings));

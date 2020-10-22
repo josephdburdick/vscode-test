@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createApiFactoryAndRegisterActors } from 'vs/workbench/api/common/extHost.api.impl';
-import { RequireInterceptor } from 'vs/workbench/api/common/extHostRequireInterceptor';
-import { MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtensionActivationTimesBuilder } from 'vs/workbench/api/common/extHostExtensionActivator';
-import { connectProxyResolver } from 'vs/workbench/services/extensions/node/proxyResolver';
-import { AbstractExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { ExtHostDownloadService } from 'vs/workbench/api/node/extHostDownloadService';
-import { CLIServer } from 'vs/workbench/api/node/extHostCLIServer';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import { createApiFactoryAndRegisterActors } from 'vs/workBench/api/common/extHost.api.impl';
+import { RequireInterceptor } from 'vs/workBench/api/common/extHostRequireInterceptor';
+import { MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtensionActivationTimesBuilder } from 'vs/workBench/api/common/extHostExtensionActivator';
+import { connectProxyResolver } from 'vs/workBench/services/extensions/node/proxyResolver';
+import { ABstractExtHostExtensionService } from 'vs/workBench/api/common/extHostExtensionService';
+import { ExtHostDownloadService } from 'vs/workBench/api/node/extHostDownloadService';
+import { CLIServer } from 'vs/workBench/api/node/extHostCLIServer';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ExtensionRuntime } from 'vs/workbench/api/common/extHostTypes';
+import { ExtensionRuntime } from 'vs/workBench/api/common/extHostTypes';
 
 class NodeModuleRequireInterceptor extends RequireInterceptor {
 
@@ -27,7 +27,7 @@ class NodeModuleRequireInterceptor extends RequireInterceptor {
 				let alternative = alternativeModuleName(request);
 				if (alternative) {
 					request = alternative;
-					break;
+					Break;
 				}
 			}
 			if (!that._factories.has(request)) {
@@ -42,11 +42,11 @@ class NodeModuleRequireInterceptor extends RequireInterceptor {
 	}
 }
 
-export class ExtHostExtensionService extends AbstractExtHostExtensionService {
+export class ExtHostExtensionService extends ABstractExtHostExtensionService {
 
 	readonly extensionRuntime = ExtensionRuntime.Node;
 
-	protected async _beforeAlmostReadyToRunExtensions(): Promise<void> {
+	protected async _BeforeAlmostReadyToRunExtensions(): Promise<void> {
 		// initialize API and register actors
 		const extensionApiFactory = this._instaService.invokeFunction(createApiFactoryAndRegisterActors);
 
@@ -63,7 +63,7 @@ export class ExtHostExtensionService extends AbstractExtHostExtensionService {
 		const interceptor = this._instaService.createInstance(NodeModuleRequireInterceptor, extensionApiFactory, this._registry);
 		await interceptor.install();
 
-		// Do this when extension service exists, but extensions are not being activated yet.
+		// Do this when extension service exists, But extensions are not Being activated yet.
 		const configProvider = await this._extHostConfiguration.getConfigProvider();
 		await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService, this._mainThreadTelemetryProxy, this._initData);
 
@@ -86,7 +86,7 @@ export class ExtHostExtensionService extends AbstractExtHostExtensionService {
 
 	protected _loadCommonJSModule<T>(module: URI, activationTimesBuilder: ExtensionActivationTimesBuilder): Promise<T> {
 		if (module.scheme !== Schemas.file) {
-			throw new Error(`Cannot load URI: '${module}', must be of file-scheme`);
+			throw new Error(`Cannot load URI: '${module}', must Be of file-scheme`);
 		}
 		let r: T | null = null;
 		activationTimesBuilder.codeLoadingStart();
@@ -102,7 +102,7 @@ export class ExtHostExtensionService extends AbstractExtHostExtensionService {
 		return Promise.resolve(r);
 	}
 
-	public async $setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
+	puBlic async $setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
 		if (!this._initData.remote.isRemote) {
 			return;
 		}

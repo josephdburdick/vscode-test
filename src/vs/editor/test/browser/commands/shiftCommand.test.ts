@@ -10,7 +10,7 @@ import { Selection } from 'vs/editor/common/core/selection';
 import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
 import { LanguageIdentifier } from 'vs/editor/common/modes';
 import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
-import { getEditOperation, testCommand } from 'vs/editor/test/browser/testCommand';
+import { getEditOperation, testCommand } from 'vs/editor/test/Browser/testCommand';
 import { withEditorModel } from 'vs/editor/test/common/editorTestUtils';
 import { MockMode } from 'vs/editor/test/common/mocks/mockMode';
 import { javascriptOnEnterRules } from 'vs/editor/test/common/modes/supports/javascriptOnEnterRules';
@@ -19,9 +19,9 @@ import { EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions'
 /**
  * Create single edit operation
  */
-export function createSingleEditOp(text: string, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+export function createSingleEditOp(text: string, positionLineNumBer: numBer, positionColumn: numBer, selectionLineNumBer: numBer = positionLineNumBer, selectionColumn: numBer = positionColumn): IIdentifiedSingleEditOperation {
 	return {
-		range: new Range(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
+		range: new Range(selectionLineNumBer, selectionColumn, positionLineNumBer, positionColumn),
 		text: text,
 		forceMoveMarkers: false
 	};
@@ -34,7 +34,7 @@ class DocBlockCommentMode extends MockMode {
 	constructor() {
 		super(DocBlockCommentMode._id);
 		this._register(LanguageConfigurationRegistry.register(this.getLanguageIdentifier(), {
-			brackets: [
+			Brackets: [
 				['(', ')'],
 				['{', '}'],
 				['[', ']']
@@ -45,31 +45,31 @@ class DocBlockCommentMode extends MockMode {
 	}
 }
 
-function testShiftCommand(lines: string[], languageIdentifier: LanguageIdentifier | null, useTabStops: boolean, selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+function testShiftCommand(lines: string[], languageIdentifier: LanguageIdentifier | null, useTaBStops: Boolean, selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 	testCommand(lines, languageIdentifier, selection, (sel) => new ShiftCommand(sel, {
 		isUnshift: false,
-		tabSize: 4,
+		taBSize: 4,
 		indentSize: 4,
 		insertSpaces: false,
-		useTabStops: useTabStops,
+		useTaBStops: useTaBStops,
 		autoIndent: EditorAutoIndentStrategy.Full,
 	}), expectedLines, expectedSelection);
 }
 
-function testUnshiftCommand(lines: string[], languageIdentifier: LanguageIdentifier | null, useTabStops: boolean, selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+function testUnshiftCommand(lines: string[], languageIdentifier: LanguageIdentifier | null, useTaBStops: Boolean, selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 	testCommand(lines, languageIdentifier, selection, (sel) => new ShiftCommand(sel, {
 		isUnshift: true,
-		tabSize: 4,
+		taBSize: 4,
 		indentSize: 4,
 		insertSpaces: false,
-		useTabStops: useTabStops,
+		useTaBStops: useTaBStops,
 		autoIndent: EditorAutoIndentStrategy.Full,
 	}), expectedLines, expectedSelection);
 }
 
-function withDockBlockCommentMode(callback: (mode: DocBlockCommentMode) => void): void {
+function withDockBlockCommentMode(callBack: (mode: DocBlockCommentMode) => void): void {
 	let mode = new DocBlockCommentMode();
-	callback(mode);
+	callBack(mode);
 	mode.dispose();
 }
 
@@ -554,7 +554,7 @@ suite('Editor Commands - ShiftCommand', () => {
 		);
 	});
 
-	test('issue #348: indenting around doc block comments', () => {
+	test('issue #348: indenting around doc Block comments', () => {
 		withDockBlockCommentMode((mode) => {
 
 			testShiftCommand(
@@ -623,7 +623,7 @@ suite('Editor Commands - ShiftCommand', () => {
 		});
 	});
 
-	test('issue #1609: Wrong indentation of block comments', () => {
+	test('issue #1609: Wrong indentation of Block comments', () => {
 		withDockBlockCommentMode((mode) => {
 			testShiftCommand(
 				[
@@ -631,7 +631,7 @@ suite('Editor Commands - ShiftCommand', () => {
 					'/**',
 					' * test',
 					' *',
-					' * @type {number}',
+					' * @type {numBer}',
 					' */',
 					'var foo = 0;'
 				],
@@ -643,7 +643,7 @@ suite('Editor Commands - ShiftCommand', () => {
 					'\t/**',
 					'\t * test',
 					'\t *',
-					'\t * @type {number}',
+					'\t * @type {numBer}',
 					'\t */',
 					'\tvar foo = 0;'
 				],
@@ -673,10 +673,10 @@ suite('Editor Commands - ShiftCommand', () => {
 			new Selection(1, 1, 13, 1),
 			(sel) => new ShiftCommand(sel, {
 				isUnshift: false,
-				tabSize: 4,
+				taBSize: 4,
 				indentSize: 4,
 				insertSpaces: true,
-				useTabStops: false,
+				useTaBStops: false,
 				autoIndent: EditorAutoIndentStrategy.Full,
 			}),
 			[
@@ -698,7 +698,7 @@ suite('Editor Commands - ShiftCommand', () => {
 		);
 	});
 
-	test('issue #1620: b) Line indent doesn\'t handle leading whitespace properly', () => {
+	test('issue #1620: B) Line indent doesn\'t handle leading whitespace properly', () => {
 		testCommand(
 			[
 				'       Written | Numeric',
@@ -719,10 +719,10 @@ suite('Editor Commands - ShiftCommand', () => {
 			new Selection(1, 1, 13, 1),
 			(sel) => new ShiftCommand(sel, {
 				isUnshift: true,
-				tabSize: 4,
+				taBSize: 4,
 				indentSize: 4,
 				insertSpaces: true,
-				useTabStops: false,
+				useTaBStops: false,
 				autoIndent: EditorAutoIndentStrategy.Full,
 			}),
 			[
@@ -765,10 +765,10 @@ suite('Editor Commands - ShiftCommand', () => {
 			new Selection(1, 1, 13, 1),
 			(sel) => new ShiftCommand(sel, {
 				isUnshift: true,
-				tabSize: 4,
+				taBSize: 4,
 				indentSize: 4,
 				insertSpaces: false,
-				useTabStops: false,
+				useTaBStops: false,
 				autoIndent: EditorAutoIndentStrategy.Full,
 			}),
 			[
@@ -811,10 +811,10 @@ suite('Editor Commands - ShiftCommand', () => {
 			new Selection(1, 1, 13, 1),
 			(sel) => new ShiftCommand(sel, {
 				isUnshift: true,
-				tabSize: 4,
+				taBSize: 4,
 				indentSize: 4,
 				insertSpaces: true,
-				useTabStops: false,
+				useTaBStops: false,
 				autoIndent: EditorAutoIndentStrategy.Full,
 			}),
 			[
@@ -846,10 +846,10 @@ suite('Editor Commands - ShiftCommand', () => {
 			new Selection(1, 1, 1, 13),
 			(sel) => new ShiftCommand(sel, {
 				isUnshift: false,
-				tabSize: 4,
+				taBSize: 4,
 				indentSize: 4,
 				insertSpaces: false,
-				useTabStops: true,
+				useTaBStops: true,
 				autoIndent: EditorAutoIndentStrategy.Full,
 			}),
 			[
@@ -860,9 +860,9 @@ suite('Editor Commands - ShiftCommand', () => {
 		);
 	});
 
-	test('bug #16815:Shift+Tab doesn\'t go back to tabstop', () => {
+	test('Bug #16815:Shift+TaB doesn\'t go Back to taBstop', () => {
 
-		let repeatStr = (str: string, cnt: number): string => {
+		let repeatStr = (str: string, cnt: numBer): string => {
 			let r = '';
 			for (let i = 0; i < cnt; i++) {
 				r += str;
@@ -870,28 +870,28 @@ suite('Editor Commands - ShiftCommand', () => {
 			return r;
 		};
 
-		let testOutdent = (tabSize: number, indentSize: number, insertSpaces: boolean, lineText: string, expectedIndents: number) => {
+		let testOutdent = (taBSize: numBer, indentSize: numBer, insertSpaces: Boolean, lineText: string, expectedIndents: numBer) => {
 			const oneIndent = insertSpaces ? repeatStr(' ', indentSize) : '\t';
 			let expectedIndent = repeatStr(oneIndent, expectedIndents);
 			if (lineText.length > 0) {
-				_assertUnshiftCommand(tabSize, indentSize, insertSpaces, [lineText + 'aaa'], [createSingleEditOp(expectedIndent, 1, 1, 1, lineText.length + 1)]);
+				_assertUnshiftCommand(taBSize, indentSize, insertSpaces, [lineText + 'aaa'], [createSingleEditOp(expectedIndent, 1, 1, 1, lineText.length + 1)]);
 			} else {
-				_assertUnshiftCommand(tabSize, indentSize, insertSpaces, [lineText + 'aaa'], []);
+				_assertUnshiftCommand(taBSize, indentSize, insertSpaces, [lineText + 'aaa'], []);
 			}
 		};
 
-		let testIndent = (tabSize: number, indentSize: number, insertSpaces: boolean, lineText: string, expectedIndents: number) => {
+		let testIndent = (taBSize: numBer, indentSize: numBer, insertSpaces: Boolean, lineText: string, expectedIndents: numBer) => {
 			const oneIndent = insertSpaces ? repeatStr(' ', indentSize) : '\t';
 			let expectedIndent = repeatStr(oneIndent, expectedIndents);
-			_assertShiftCommand(tabSize, indentSize, insertSpaces, [lineText + 'aaa'], [createSingleEditOp(expectedIndent, 1, 1, 1, lineText.length + 1)]);
+			_assertShiftCommand(taBSize, indentSize, insertSpaces, [lineText + 'aaa'], [createSingleEditOp(expectedIndent, 1, 1, 1, lineText.length + 1)]);
 		};
 
-		let testIndentation = (tabSize: number, indentSize: number, lineText: string, expectedOnOutdent: number, expectedOnIndent: number) => {
-			testOutdent(tabSize, indentSize, true, lineText, expectedOnOutdent);
-			testOutdent(tabSize, indentSize, false, lineText, expectedOnOutdent);
+		let testIndentation = (taBSize: numBer, indentSize: numBer, lineText: string, expectedOnOutdent: numBer, expectedOnIndent: numBer) => {
+			testOutdent(taBSize, indentSize, true, lineText, expectedOnOutdent);
+			testOutdent(taBSize, indentSize, false, lineText, expectedOnOutdent);
 
-			testIndent(tabSize, indentSize, true, lineText, expectedOnIndent);
-			testIndent(tabSize, indentSize, false, lineText, expectedOnIndent);
+			testIndent(taBSize, indentSize, true, lineText, expectedOnIndent);
+			testIndent(taBSize, indentSize, false, lineText, expectedOnIndent);
 		};
 
 		// insertSpaces: true
@@ -953,14 +953,14 @@ suite('Editor Commands - ShiftCommand', () => {
 		// 3 => 2
 		testIndentation(4, 4, '         ', 2, 3);
 
-		function _assertUnshiftCommand(tabSize: number, indentSize: number, insertSpaces: boolean, text: string[], expected: IIdentifiedSingleEditOperation[]): void {
+		function _assertUnshiftCommand(taBSize: numBer, indentSize: numBer, insertSpaces: Boolean, text: string[], expected: IIdentifiedSingleEditOperation[]): void {
 			return withEditorModel(text, (model) => {
 				let op = new ShiftCommand(new Selection(1, 1, text.length + 1, 1), {
 					isUnshift: true,
-					tabSize: tabSize,
+					taBSize: taBSize,
 					indentSize: indentSize,
 					insertSpaces: insertSpaces,
-					useTabStops: true,
+					useTaBStops: true,
 					autoIndent: EditorAutoIndentStrategy.Full,
 				});
 				let actual = getEditOperation(model, op);
@@ -968,14 +968,14 @@ suite('Editor Commands - ShiftCommand', () => {
 			});
 		}
 
-		function _assertShiftCommand(tabSize: number, indentSize: number, insertSpaces: boolean, text: string[], expected: IIdentifiedSingleEditOperation[]): void {
+		function _assertShiftCommand(taBSize: numBer, indentSize: numBer, insertSpaces: Boolean, text: string[], expected: IIdentifiedSingleEditOperation[]): void {
 			return withEditorModel(text, (model) => {
 				let op = new ShiftCommand(new Selection(1, 1, text.length + 1, 1), {
 					isUnshift: false,
-					tabSize: tabSize,
+					taBSize: taBSize,
 					indentSize: indentSize,
 					insertSpaces: insertSpaces,
-					useTabStops: true,
+					useTaBStops: true,
 					autoIndent: EditorAutoIndentStrategy.Full,
 				});
 				let actual = getEditOperation(model, op);

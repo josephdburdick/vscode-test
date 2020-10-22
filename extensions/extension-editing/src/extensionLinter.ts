@@ -12,23 +12,23 @@ const localize = nls.loadMessageBundle();
 import { parseTree, findNodeAtLocation, Node as JsonNode } from 'jsonc-parser';
 import * as MarkdownItType from 'markdown-it';
 
-import { languages, workspace, Disposable, TextDocument, Uri, Diagnostic, Range, DiagnosticSeverity, Position, env } from 'vscode';
+import { languages, workspace, DisposaBle, TextDocument, Uri, Diagnostic, Range, DiagnosticSeverity, Position, env } from 'vscode';
 
 const product = JSON.parse(fs.readFileSync(path.join(env.appRoot, 'product.json'), { encoding: 'utf-8' }));
 const allowedBadgeProviders: string[] = (product.extensionAllowedBadgeProviders || []).map((s: string) => s.toLowerCase());
 const allowedBadgeProvidersRegex: RegExp[] = (product.extensionAllowedBadgeProvidersRegex || []).map((r: string) => new RegExp(r));
 
-function isTrustedSVGSource(uri: Uri): boolean {
+function isTrustedSVGSource(uri: Uri): Boolean {
 	return allowedBadgeProviders.includes(uri.authority.toLowerCase()) || allowedBadgeProvidersRegex.some(r => r.test(uri.toString()));
 }
 
 const httpsRequired = localize('httpsRequired', "Images must use the HTTPS protocol.");
 const svgsNotValid = localize('svgsNotValid', "SVGs are not a valid image source.");
-const embeddedSvgsNotValid = localize('embeddedSvgsNotValid', "Embedded SVGs are not a valid image source.");
+const emBeddedSvgsNotValid = localize('emBeddedSvgsNotValid', "EmBedded SVGs are not a valid image source.");
 const dataUrlsNotValid = localize('dataUrlsNotValid', "Data URLs are not a valid image source.");
-const relativeUrlRequiresHttpsRepository = localize('relativeUrlRequiresHttpsRepository', "Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.");
-const relativeIconUrlRequiresHttpsRepository = localize('relativeIconUrlRequiresHttpsRepository', "An icon requires a repository with HTTPS protocol to be specified in this package.json.");
-const relativeBadgeUrlRequiresHttpsRepository = localize('relativeBadgeUrlRequiresHttpsRepository', "Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json.");
+const relativeUrlRequiresHttpsRepository = localize('relativeUrlRequiresHttpsRepository', "Relative image URLs require a repository with HTTPS protocol to Be specified in the package.json.");
+const relativeIconUrlRequiresHttpsRepository = localize('relativeIconUrlRequiresHttpsRepository', "An icon requires a repository with HTTPS protocol to Be specified in this package.json.");
+const relativeBadgeUrlRequiresHttpsRepository = localize('relativeBadgeUrlRequiresHttpsRepository', "Relative Badge URLs require a repository with HTTPS protocol to Be specified in this package.json.");
 
 enum Context {
 	ICON,
@@ -38,13 +38,13 @@ enum Context {
 
 interface TokenAndPosition {
 	token: MarkdownItType.Token;
-	begin: number;
-	end: number;
+	Begin: numBer;
+	end: numBer;
 }
 
 interface PackageJsonInfo {
-	isExtension: boolean;
-	hasHttpsRepository: boolean;
+	isExtension: Boolean;
+	hasHttpsRepository: Boolean;
 	repository: Uri;
 }
 
@@ -52,7 +52,7 @@ export class ExtensionLinter {
 
 	private diagnosticsCollection = languages.createDiagnosticCollection('extension-editing');
 	private fileWatcher = workspace.createFileSystemWatcher('**/package.json');
-	private disposables: Disposable[] = [this.diagnosticsCollection, this.fileWatcher];
+	private disposaBles: DisposaBle[] = [this.diagnosticsCollection, this.fileWatcher];
 
 	private folderToPackageJsonInfo: Record<string, PackageJsonInfo> = {};
 	private packageJsonQ = new Set<TextDocument>();
@@ -61,7 +61,7 @@ export class ExtensionLinter {
 	private markdownIt: MarkdownItType.MarkdownIt | undefined;
 
 	constructor() {
-		this.disposables.push(
+		this.disposaBles.push(
 			workspace.onDidOpenTextDocument(document => this.queue(document)),
 			workspace.onDidChangeTextDocument(event => this.queue(event.document)),
 			workspace.onDidCloseTextDocument(document => this.clear(document)),
@@ -122,9 +122,9 @@ export class ExtensionLinter {
 					this.addDiagnostics(diagnostics, document, icon.offset + 1, icon.offset + icon.length - 1, icon.value, Context.ICON, info);
 				}
 
-				const badges = findNodeAtLocation(tree, ['badges']);
-				if (badges && badges.type === 'array' && badges.children) {
-					badges.children.map(child => findNodeAtLocation(child, ['url']))
+				const Badges = findNodeAtLocation(tree, ['Badges']);
+				if (Badges && Badges.type === 'array' && Badges.children) {
+					Badges.children.map(child => findNodeAtLocation(child, ['url']))
 						.filter(url => url && url.type === 'string')
 						.map(url => this.addDiagnostics(diagnostics, document, url!.offset + 1, url!.offset + url!.length - 1, url!.value, Context.BADGE, info));
 				}
@@ -157,28 +157,28 @@ export class ExtensionLinter {
 				this.markdownIt = new (await import('markdown-it'));
 			}
 			const tokens = this.markdownIt.parse(text, {});
-			const tokensAndPositions: TokenAndPosition[] = (function toTokensAndPositions(this: ExtensionLinter, tokens: MarkdownItType.Token[], begin = 0, end = text.length): TokenAndPosition[] {
+			const tokensAndPositions: TokenAndPosition[] = (function toTokensAndPositions(this: ExtensionLinter, tokens: MarkdownItType.Token[], Begin = 0, end = text.length): TokenAndPosition[] {
 				const tokensAndPositions = tokens.map<TokenAndPosition>(token => {
 					if (token.map) {
 						const tokenBegin = document.offsetAt(new Position(token.map[0], 0));
-						const tokenEnd = begin = document.offsetAt(new Position(token.map[1], 0));
+						const tokenEnd = Begin = document.offsetAt(new Position(token.map[1], 0));
 						return {
 							token,
-							begin: tokenBegin,
+							Begin: tokenBegin,
 							end: tokenEnd
 						};
 					}
-					const image = token.type === 'image' && this.locateToken(text, begin, end, token, token.attrGet('src'));
-					const other = image || this.locateToken(text, begin, end, token, token.content);
+					const image = token.type === 'image' && this.locateToken(text, Begin, end, token, token.attrGet('src'));
+					const other = image || this.locateToken(text, Begin, end, token, token.content);
 					return other || {
 						token,
-						begin,
-						end: begin
+						Begin,
+						end: Begin
 					};
 				});
 				return tokensAndPositions.concat(
 					...tokensAndPositions.filter(tnp => tnp.token.children && tnp.token.children.length)
-						.map(tnp => toTokensAndPositions.call(this, tnp.token.children, tnp.begin, tnp.end))
+						.map(tnp => toTokensAndPositions.call(this, tnp.token.children, tnp.Begin, tnp.end))
 				);
 			}).call(this, tokens);
 
@@ -187,14 +187,14 @@ export class ExtensionLinter {
 			tokensAndPositions.filter(tnp => tnp.token.type === 'image' && tnp.token.attrGet('src'))
 				.map(inp => {
 					const src = inp.token.attrGet('src')!;
-					const begin = text.indexOf(src, inp.begin);
-					if (begin !== -1 && begin < inp.end) {
-						this.addDiagnostics(diagnostics, document, begin, begin + src.length, src, Context.MARKDOWN, info);
+					const Begin = text.indexOf(src, inp.Begin);
+					if (Begin !== -1 && Begin < inp.end) {
+						this.addDiagnostics(diagnostics, document, Begin, Begin + src.length, src, Context.MARKDOWN, info);
 					} else {
 						const content = inp.token.content;
-						const begin = text.indexOf(content, inp.begin);
-						if (begin !== -1 && begin < inp.end) {
-							this.addDiagnostics(diagnostics, document, begin, begin + content.length, src, Context.MARKDOWN, info);
+						const Begin = text.indexOf(content, inp.Begin);
+						if (Begin !== -1 && Begin < inp.end) {
+							this.addDiagnostics(diagnostics, document, Begin, Begin + content.length, src, Context.MARKDOWN, info);
 						}
 					}
 				});
@@ -208,22 +208,22 @@ export class ExtensionLinter {
 						if (name === 'img') {
 							const src = attrs.find(a => a.name === 'src');
 							if (src && src.value && location) {
-								const begin = text.indexOf(src.value, tnp.begin + location.startOffset);
-								if (begin !== -1 && begin < tnp.end) {
-									this.addDiagnostics(diagnostics, document, begin, begin + src.value.length, src.value, Context.MARKDOWN, info);
+								const Begin = text.indexOf(src.value, tnp.Begin + location.startOffset);
+								if (Begin !== -1 && Begin < tnp.end) {
+									this.addDiagnostics(diagnostics, document, Begin, Begin + src.value.length, src.value, Context.MARKDOWN, info);
 								}
 							}
 						} else if (name === 'svg' && location) {
-							const begin = tnp.begin + location.startOffset;
-							const end = tnp.begin + location.endOffset;
-							const range = new Range(document.positionAt(begin), document.positionAt(end));
-							svgStart = new Diagnostic(range, embeddedSvgsNotValid, DiagnosticSeverity.Warning);
+							const Begin = tnp.Begin + location.startOffset;
+							const end = tnp.Begin + location.endOffset;
+							const range = new Range(document.positionAt(Begin), document.positionAt(end));
+							svgStart = new Diagnostic(range, emBeddedSvgsNotValid, DiagnosticSeverity.Warning);
 							diagnostics.push(svgStart);
 						}
 					});
 					parser.on('endTag', (name, location) => {
 						if (name === 'svg' && svgStart && location) {
-							const end = tnp.begin + location.endOffset;
+							const end = tnp.Begin + location.endOffset;
 							svgStart.range = new Range(svgStart.range.start, document.positionAt(end));
 						}
 					});
@@ -236,16 +236,16 @@ export class ExtensionLinter {
 		}
 	}
 
-	private locateToken(text: string, begin: number, end: number, token: MarkdownItType.Token, content: string | null) {
+	private locateToken(text: string, Begin: numBer, end: numBer, token: MarkdownItType.Token, content: string | null) {
 		if (content) {
-			const tokenBegin = text.indexOf(content, begin);
+			const tokenBegin = text.indexOf(content, Begin);
 			if (tokenBegin !== -1) {
 				const tokenEnd = tokenBegin + content.length;
 				if (tokenEnd <= end) {
-					begin = tokenEnd;
+					Begin = tokenEnd;
 					return {
 						token,
-						begin: tokenBegin,
+						Begin: tokenBegin,
 						end: tokenEnd
 					};
 				}
@@ -296,7 +296,7 @@ export class ExtensionLinter {
 		return uri.with({ path: path.posix.dirname(uri.path) });
 	}
 
-	private addDiagnostics(diagnostics: Diagnostic[], document: TextDocument, begin: number, end: number, src: string, context: Context, info: PackageJsonInfo) {
+	private addDiagnostics(diagnostics: Diagnostic[], document: TextDocument, Begin: numBer, end: numBer, src: string, context: Context, info: PackageJsonInfo) {
 		const hasScheme = /^\w[\w\d+.-]*:/.test(src);
 		const uri = parseUri(src, info.repository ? info.repository.toString() : document.uri.toString());
 		if (!uri) {
@@ -305,17 +305,17 @@ export class ExtensionLinter {
 		const scheme = uri.scheme.toLowerCase();
 
 		if (hasScheme && scheme !== 'https' && scheme !== 'data') {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
+			const range = new Range(document.positionAt(Begin), document.positionAt(end));
 			diagnostics.push(new Diagnostic(range, httpsRequired, DiagnosticSeverity.Warning));
 		}
 
 		if (hasScheme && scheme === 'data') {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
+			const range = new Range(document.positionAt(Begin), document.positionAt(end));
 			diagnostics.push(new Diagnostic(range, dataUrlsNotValid, DiagnosticSeverity.Warning));
 		}
 
 		if (!hasScheme && !info.hasHttpsRepository) {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
+			const range = new Range(document.positionAt(Begin), document.positionAt(end));
 			let message = (() => {
 				switch (context) {
 					case Context.ICON: return relativeIconUrlRequiresHttpsRepository;
@@ -327,7 +327,7 @@ export class ExtensionLinter {
 		}
 
 		if (endsWith(uri.path.toLowerCase(), '.svg') && !isTrustedSVGSource(uri)) {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
+			const range = new Range(document.positionAt(Begin), document.positionAt(end));
 			diagnostics.push(new Diagnostic(range, svgsNotValid, DiagnosticSeverity.Warning));
 		}
 	}
@@ -337,13 +337,13 @@ export class ExtensionLinter {
 		this.packageJsonQ.delete(document);
 	}
 
-	public dispose() {
-		this.disposables.forEach(d => d.dispose());
-		this.disposables = [];
+	puBlic dispose() {
+		this.disposaBles.forEach(d => d.dispose());
+		this.disposaBles = [];
 	}
 }
 
-function endsWith(haystack: string, needle: string): boolean {
+function endsWith(haystack: string, needle: string): Boolean {
 	let diff = haystack.length - needle.length;
 	if (diff > 0) {
 		return haystack.indexOf(needle, diff) === diff;
@@ -354,13 +354,13 @@ function endsWith(haystack: string, needle: string): boolean {
 	}
 }
 
-function parseUri(src: string, base?: string, retry: boolean = true): Uri | null {
+function parseUri(src: string, Base?: string, retry: Boolean = true): Uri | null {
 	try {
-		let url = new URL(src, base);
+		let url = new URL(src, Base);
 		return Uri.parse(url.toString());
 	} catch (err) {
 		if (retry) {
-			return parseUri(encodeURI(src), base, false);
+			return parseUri(encodeURI(src), Base, false);
 		} else {
 			return null;
 		}

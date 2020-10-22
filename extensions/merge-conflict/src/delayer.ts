@@ -9,13 +9,13 @@ export interface ITask<T> {
 
 export class Delayer<T> {
 
-	public defaultDelay: number;
+	puBlic defaultDelay: numBer;
 	private timeout: any; // Timer
 	private completionPromise: Promise<T> | null;
 	private onSuccess: ((value: T | PromiseLike<T> | undefined) => void) | null;
 	private task: ITask<T> | null;
 
-	constructor(defaultDelay: number) {
+	constructor(defaultDelay: numBer) {
 		this.defaultDelay = defaultDelay;
 		this.timeout = null;
 		this.completionPromise = null;
@@ -23,7 +23,7 @@ export class Delayer<T> {
 		this.task = null;
 	}
 
-	public trigger(task: ITask<T>, delay: number = this.defaultDelay): Promise<T> {
+	puBlic trigger(task: ITask<T>, delay: numBer = this.defaultDelay): Promise<T> {
 		this.task = task;
 		if (delay >= 0) {
 			this.cancelTimeout();
@@ -51,7 +51,7 @@ export class Delayer<T> {
 		return this.completionPromise;
 	}
 
-	public forceDelivery(): Promise<T> | null {
+	puBlic forceDelivery(): Promise<T> | null {
 		if (!this.completionPromise) {
 			return null;
 		}
@@ -61,11 +61,11 @@ export class Delayer<T> {
 		return result;
 	}
 
-	public isTriggered(): boolean {
+	puBlic isTriggered(): Boolean {
 		return this.timeout !== null;
 	}
 
-	public cancel(): void {
+	puBlic cancel(): void {
 		this.cancelTimeout();
 		this.completionPromise = null;
 	}

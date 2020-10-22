@@ -5,11 +5,11 @@
 
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { DisposaBle, IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { IUndoRedoDelegate, MultiModelEditStackElement } from 'vs/editor/common/model/editStack';
 
-export class ModelUndoRedoParticipant extends Disposable implements IUndoRedoDelegate {
+export class ModelUndoRedoParticipant extends DisposaBle implements IUndoRedoDelegate {
 	constructor(
 		@IModelService private readonly _modelService: IModelService,
 		@ITextModelService private readonly _textModelService: ITextModelService,
@@ -35,27 +35,27 @@ export class ModelUndoRedoParticipant extends Disposable implements IUndoRedoDel
 		}));
 	}
 
-	public prepareUndoRedo(element: MultiModelEditStackElement): IDisposable | Promise<IDisposable> {
+	puBlic prepareUndoRedo(element: MultiModelEditStackElement): IDisposaBle | Promise<IDisposaBle> {
 		// Load all the needed text models
 		const missingModels = element.getMissingModels();
 		if (missingModels.length === 0) {
-			// All models are available!
-			return Disposable.None;
+			// All models are availaBle!
+			return DisposaBle.None;
 		}
 
-		const disposablesPromises = missingModels.map(async (uri) => {
+		const disposaBlesPromises = missingModels.map(async (uri) => {
 			try {
 				const reference = await this._textModelService.createModelReference(uri);
-				return <IDisposable>reference;
+				return <IDisposaBle>reference;
 			} catch (err) {
-				// This model could not be loaded, maybe it was deleted in the meantime?
-				return Disposable.None;
+				// This model could not Be loaded, mayBe it was deleted in the meantime?
+				return DisposaBle.None;
 			}
 		});
 
-		return Promise.all(disposablesPromises).then(disposables => {
+		return Promise.all(disposaBlesPromises).then(disposaBles => {
 			return {
-				dispose: () => dispose(disposables)
+				dispose: () => dispose(disposaBles)
 			};
 		});
 	}

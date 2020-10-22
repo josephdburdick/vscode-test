@@ -4,83 +4,83 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IResourceUndoRedoElement, UndoRedoElementType } from 'vs/platform/undoRedo/common/undoRedo';
-import { URI } from 'vs/base/common/uri';
-import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { NotebookCellMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { URI } from 'vs/Base/common/uri';
+import { NoteBookCellTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookCellTextModel';
+import { NoteBookCellMetadata } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
 /**
  * It should not modify Undo/Redo stack
  */
 export interface ITextCellEditingDelegate {
-	insertCell?(index: number, cell: NotebookCellTextModel, endSelections?: number[]): void;
-	deleteCell?(index: number, endSelections?: number[]): void;
-	moveCell?(fromIndex: number, length: number, toIndex: number, beforeSelections: number[] | undefined, endSelections: number[] | undefined): void;
-	updateCellMetadata?(index: number, newMetadata: NotebookCellMetadata): void;
+	insertCell?(index: numBer, cell: NoteBookCellTextModel, endSelections?: numBer[]): void;
+	deleteCell?(index: numBer, endSelections?: numBer[]): void;
+	moveCell?(fromIndex: numBer, length: numBer, toIndex: numBer, BeforeSelections: numBer[] | undefined, endSelections: numBer[] | undefined): void;
+	updateCellMetadata?(index: numBer, newMetadata: NoteBookCellMetadata): void;
 }
 
 export class MoveCellEdit implements IResourceUndoRedoElement {
 	type: UndoRedoElementType.Resource = UndoRedoElementType.Resource;
-	label: string = 'Move Cell';
+	laBel: string = 'Move Cell';
 
 	constructor(
-		public resource: URI,
-		private fromIndex: number,
-		private length: number,
-		private toIndex: number,
+		puBlic resource: URI,
+		private fromIndex: numBer,
+		private length: numBer,
+		private toIndex: numBer,
 		private editingDelegate: ITextCellEditingDelegate,
-		private beforedSelections: number[] | undefined,
-		private endSelections: number[] | undefined
+		private BeforedSelections: numBer[] | undefined,
+		private endSelections: numBer[] | undefined
 	) {
 	}
 
 	undo(): void {
 		if (!this.editingDelegate.moveCell) {
-			throw new Error('Notebook Move Cell not implemented for Undo/Redo');
+			throw new Error('NoteBook Move Cell not implemented for Undo/Redo');
 		}
 
-		this.editingDelegate.moveCell(this.toIndex, this.length, this.fromIndex, this.endSelections, this.beforedSelections);
+		this.editingDelegate.moveCell(this.toIndex, this.length, this.fromIndex, this.endSelections, this.BeforedSelections);
 	}
 
 	redo(): void {
 		if (!this.editingDelegate.moveCell) {
-			throw new Error('Notebook Move Cell not implemented for Undo/Redo');
+			throw new Error('NoteBook Move Cell not implemented for Undo/Redo');
 		}
 
-		this.editingDelegate.moveCell(this.fromIndex, this.length, this.toIndex, this.beforedSelections, this.endSelections);
+		this.editingDelegate.moveCell(this.fromIndex, this.length, this.toIndex, this.BeforedSelections, this.endSelections);
 	}
 }
 
 export class SpliceCellsEdit implements IResourceUndoRedoElement {
 	type: UndoRedoElementType.Resource = UndoRedoElementType.Resource;
-	label: string = 'Insert Cell';
+	laBel: string = 'Insert Cell';
 	constructor(
-		public resource: URI,
-		private diffs: [number, NotebookCellTextModel[], NotebookCellTextModel[]][],
+		puBlic resource: URI,
+		private diffs: [numBer, NoteBookCellTextModel[], NoteBookCellTextModel[]][],
 		private editingDelegate: ITextCellEditingDelegate,
-		private beforeHandles: number[] | undefined,
-		private endHandles: number[] | undefined
+		private BeforeHandles: numBer[] | undefined,
+		private endHandles: numBer[] | undefined
 	) {
 	}
 
 	undo(): void {
 		if (!this.editingDelegate.deleteCell || !this.editingDelegate.insertCell) {
-			throw new Error('Notebook Insert/Delete Cell not implemented for Undo/Redo');
+			throw new Error('NoteBook Insert/Delete Cell not implemented for Undo/Redo');
 		}
 
 		this.diffs.forEach(diff => {
 			for (let i = 0; i < diff[2].length; i++) {
-				this.editingDelegate.deleteCell!(diff[0], this.beforeHandles);
+				this.editingDelegate.deleteCell!(diff[0], this.BeforeHandles);
 			}
 
 			diff[1].reverse().forEach(cell => {
-				this.editingDelegate.insertCell!(diff[0], cell, this.beforeHandles);
+				this.editingDelegate.insertCell!(diff[0], cell, this.BeforeHandles);
 			});
 		});
 	}
 
 	redo(): void {
 		if (!this.editingDelegate.deleteCell || !this.editingDelegate.insertCell) {
-			throw new Error('Notebook Insert/Delete Cell not implemented for Undo/Redo');
+			throw new Error('NoteBook Insert/Delete Cell not implemented for Undo/Redo');
 		}
 
 		this.diffs.reverse().forEach(diff => {
@@ -97,12 +97,12 @@ export class SpliceCellsEdit implements IResourceUndoRedoElement {
 
 export class CellMetadataEdit implements IResourceUndoRedoElement {
 	type: UndoRedoElementType.Resource = UndoRedoElementType.Resource;
-	label: string = 'Update Cell Metadata';
+	laBel: string = 'Update Cell Metadata';
 	constructor(
-		public resource: URI,
-		readonly index: number,
-		readonly oldMetadata: NotebookCellMetadata,
-		readonly newMetadata: NotebookCellMetadata,
+		puBlic resource: URI,
+		readonly index: numBer,
+		readonly oldMetadata: NoteBookCellMetadata,
+		readonly newMetadata: NoteBookCellMetadata,
 		private editingDelegate: ITextCellEditingDelegate,
 	) {
 

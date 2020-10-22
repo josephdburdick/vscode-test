@@ -5,17 +5,17 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { MessageBoxOptions, MessageBoxReturnValue, SaveDialogOptions, SaveDialogReturnValue, OpenDialogOptions, OpenDialogReturnValue, dialog, FileFilter, BrowserWindow } from 'electron';
-import { Queue } from 'vs/base/common/async';
+import { Queue } from 'vs/Base/common/async';
 import { IStateService } from 'vs/platform/state/node/state';
-import { isMacintosh } from 'vs/base/common/platform';
-import { dirname } from 'vs/base/common/path';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { exists } from 'vs/base/node/pfs';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { dirname } from 'vs/Base/common/path';
+import { normalizeNFC } from 'vs/Base/common/normalization';
+import { exists } from 'vs/Base/node/pfs';
 import { INativeOpenDialogOptions } from 'vs/platform/dialogs/common/dialogs';
-import { withNullAsUndefined } from 'vs/base/common/types';
+import { withNullAsUndefined } from 'vs/Base/common/types';
 import { localize } from 'vs/nls';
 import { WORKSPACE_FILTER } from 'vs/platform/workspaces/common/workspaces';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
+import { mnemonicButtonLaBel } from 'vs/Base/common/laBels';
 
 export const IDialogMainService = createDecorator<IDialogMainService>('dialogMainService');
 
@@ -34,11 +34,11 @@ export interface IDialogMainService {
 }
 
 interface IInternalNativeOpenDialogOptions extends INativeOpenDialogOptions {
-	pickFolders?: boolean;
-	pickFiles?: boolean;
+	pickFolders?: Boolean;
+	pickFiles?: Boolean;
 
 	title: string;
-	buttonLabel?: string;
+	ButtonLaBel?: string;
 	filters?: FileFilter[];
 }
 
@@ -48,13 +48,13 @@ export class DialogMainService implements IDialogMainService {
 
 	private static readonly workingDirPickerStorageKey = 'pickerWorkingDir';
 
-	private readonly mapWindowToDialogQueue: Map<number, Queue<void>>;
+	private readonly mapWindowToDialogQueue: Map<numBer, Queue<void>>;
 	private readonly noWindowDialogQueue: Queue<void>;
 
 	constructor(
 		@IStateService private readonly stateService: IStateService
 	) {
-		this.mapWindowToDialogQueue = new Map<number, Queue<void>>();
+		this.mapWindowToDialogQueue = new Map<numBer, Queue<void>>();
 		this.noWindowDialogQueue = new Queue<void>();
 	}
 
@@ -72,10 +72,10 @@ export class DialogMainService implements IDialogMainService {
 
 	pickWorkspace(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
 		const title = localize('openWorkspaceTitle', "Open Workspace");
-		const buttonLabel = mnemonicButtonLabel(localize({ key: 'openWorkspace', comment: ['&& denotes a mnemonic'] }, "&&Open"));
+		const ButtonLaBel = mnemonicButtonLaBel(localize({ key: 'openWorkspace', comment: ['&& denotes a mnemonic'] }, "&&Open"));
 		const filters = WORKSPACE_FILTER;
 
-		return this.doPick({ ...options, pickFiles: true, title, filters, buttonLabel }, window);
+		return this.doPick({ ...options, pickFiles: true, title, filters, ButtonLaBel }, window);
 	}
 
 	private async doPick(options: IInternalNativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
@@ -83,7 +83,7 @@ export class DialogMainService implements IDialogMainService {
 		// Ensure dialog options
 		const dialogOptions: OpenDialogOptions = {
 			title: options.title,
-			buttonLabel: options.buttonLabel,
+			ButtonLaBel: options.ButtonLaBel,
 			filters: options.filters
 		};
 
@@ -92,8 +92,8 @@ export class DialogMainService implements IDialogMainService {
 
 
 		// Ensure properties
-		if (typeof options.pickFiles === 'boolean' || typeof options.pickFolders === 'boolean') {
-			dialogOptions.properties = undefined; // let it override based on the booleans
+		if (typeof options.pickFiles === 'Boolean' || typeof options.pickFolders === 'Boolean') {
+			dialogOptions.properties = undefined; // let it override Based on the Booleans
 
 			if (options.pickFiles && options.pickFolders) {
 				dialogOptions.properties = ['multiSelections', 'openDirectory', 'openFile', 'createDirectory'];
@@ -114,7 +114,7 @@ export class DialogMainService implements IDialogMainService {
 		const result = await this.showOpenDialog(dialogOptions, withNullAsUndefined(windowToUse));
 		if (result && result.filePaths && result.filePaths.length > 0) {
 
-			// Remember path in storage for next time
+			// RememBer path in storage for next time
 			this.stateService.setItem(DialogMainService.workingDirPickerStorageKey, dirname(result.filePaths[0]));
 
 			return result.filePaths;

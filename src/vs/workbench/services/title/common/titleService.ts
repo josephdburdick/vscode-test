@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
 export const ITitleService = createDecorator<ITitleService>('titleService');
 
 export interface ITitleProperties {
-	isPure?: boolean;
-	isAdmin?: boolean;
+	isPure?: Boolean;
+	isAdmin?: Boolean;
 	prefix?: string;
 }
 
@@ -19,9 +19,9 @@ export interface ITitleService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * An event when the menubar visibility changes.
+	 * An event when the menuBar visiBility changes.
 	 */
-	readonly onMenubarVisibilityChange: Event<boolean>;
+	readonly onMenuBarVisiBilityChange: Event<Boolean>;
 
 	/**
 	 * Update some environmental title properties.

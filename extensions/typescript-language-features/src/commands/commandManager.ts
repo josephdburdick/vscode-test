@@ -12,16 +12,16 @@ export interface Command {
 }
 
 export class CommandManager {
-	private readonly commands = new Map<string, vscode.Disposable>();
+	private readonly commands = new Map<string, vscode.DisposaBle>();
 
-	public dispose() {
+	puBlic dispose() {
 		for (const registration of this.commands.values()) {
 			registration.dispose();
 		}
 		this.commands.clear();
 	}
 
-	public register<T extends Command>(command: T): T {
+	puBlic register<T extends Command>(command: T): T {
 		for (const id of Array.isArray(command.id) ? command.id : [command.id]) {
 			this.registerCommand(id, command.execute, command);
 		}

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IBulkEditService } from 'vs/editor/Browser/services/BulkEditService';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { EditorWorkerServiceImpl } from 'vs/editor/common/services/editorWorkerServiceImpl';
 import { IModeService } from 'vs/editor/common/services/modeService';
@@ -13,25 +13,25 @@ import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { ITextResourceConfigurationService, ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { SimpleBulkEditService, SimpleConfigurationService, SimpleDialogService, SimpleNotificationService, SimpleEditorProgressService, SimpleResourceConfigurationService, SimpleResourcePropertiesService, SimpleUriLabelService, SimpleWorkspaceContextService, StandaloneCommandService, StandaloneKeybindingService, StandaloneTelemetryService, SimpleLayoutService } from 'vs/editor/standalone/browser/simpleServices';
-import { StandaloneCodeEditorServiceImpl } from 'vs/editor/standalone/browser/standaloneCodeServiceImpl';
-import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/browser/standaloneThemeServiceImpl';
+import { SimpleBulkEditService, SimpleConfigurationService, SimpleDialogService, SimpleNotificationService, SimpleEditorProgressService, SimpleResourceConfigurationService, SimpleResourcePropertiesService, SimpleUriLaBelService, SimpleWorkspaceContextService, StandaloneCommandService, StandaloneKeyBindingService, StandaloneTelemetryService, SimpleLayoutService } from 'vs/editor/standalone/Browser/simpleServices';
+import { StandaloneCodeEditorServiceImpl } from 'vs/editor/standalone/Browser/standaloneCodeServiceImpl';
+import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/Browser/standaloneThemeServiceImpl';
 import { IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
 import { IMenuService } from 'vs/platform/actions/common/actions';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
+import { ContextKeyService } from 'vs/platform/contextkey/Browser/contextKeyService';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { ContextMenuService } from 'vs/platform/contextview/browser/contextMenuService';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { ContextViewService } from 'vs/platform/contextview/browser/contextViewService';
+import { ContextMenuService } from 'vs/platform/contextview/Browser/contextMenuService';
+import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { ContextViewService } from 'vs/platform/contextview/Browser/contextViewService';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IInstantiationService, ServiceIdentifier, createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IListService, ListService } from 'vs/platform/list/browser/listService';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IListService, ListService } from 'vs/platform/list/Browser/listService';
 import { ConsoleLogService, ILogService } from 'vs/platform/log/common/log';
 import { MarkerService } from 'vs/platform/markers/common/markerService';
 import { IMarkerService } from 'vs/platform/markers/common/markers';
@@ -44,15 +44,15 @@ import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace
 import { MenuService } from 'vs/platform/actions/common/menuService';
 import { IMarkerDecorationsService } from 'vs/editor/common/services/markersDecorationService';
 import { MarkerDecorationsService } from 'vs/editor/common/services/markerDecorationsServiceImpl';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 import { getSingletonServiceDescriptors } from 'vs/platform/instantiation/common/extensions';
-import { AccessibilityService } from 'vs/platform/accessibility/common/accessibilityService';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { BrowserClipboardService } from 'vs/platform/clipboard/browser/clipboardService';
+import { AccessiBilityService } from 'vs/platform/accessiBility/common/accessiBilityService';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { BrowserClipBoardService } from 'vs/platform/clipBoard/Browser/clipBoardService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { StandaloneQuickInputServiceImpl } from 'vs/editor/standalone/browser/quickInput/standaloneQuickInputServiceImpl';
+import { StandaloneQuickInputServiceImpl } from 'vs/editor/standalone/Browser/quickInput/standaloneQuickInputServiceImpl';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
@@ -69,7 +69,7 @@ export module StaticServices {
 		private readonly _factory: (overrides?: IEditorOverrideServices) => T;
 		private _value: T | null;
 
-		public get id() { return this._serviceId; }
+		puBlic get id() { return this._serviceId; }
 
 		constructor(serviceId: ServiceIdentifier<T>, factory: (overrides?: IEditorOverrideServices) => T) {
 			this._serviceId = serviceId;
@@ -77,7 +77,7 @@ export module StaticServices {
 			this._value = null;
 		}
 
-		public get(overrides?: IEditorOverrideServices): T {
+		puBlic get(overrides?: IEditorOverrideServices): T {
 			if (!this._value) {
 				if (overrides) {
 					this._value = overrides[this._serviceId.toString()];
@@ -139,7 +139,7 @@ export module StaticServices {
 
 	export const contextService = define(IWorkspaceContextService, () => new SimpleWorkspaceContextService());
 
-	export const labelService = define(ILabelService, () => new SimpleUriLabelService());
+	export const laBelService = define(ILaBelService, () => new SimpleUriLaBelService());
 
 	export const telemetryService = define(ITelemetryService, () => new StandaloneTelemetryService());
 
@@ -172,7 +172,7 @@ export module StaticServices {
 	export const editorWorkerService = define(IEditorWorkerService, (o) => new EditorWorkerServiceImpl(modelService.get(o), resourceConfigurationService.get(o), logService.get(o)));
 }
 
-export class DynamicStandaloneServices extends Disposable {
+export class DynamicStandaloneServices extends DisposaBle {
 
 	private readonly _serviceCollection: ServiceCollection;
 	private readonly _instantiationService: IInstantiationService;
@@ -204,13 +204,13 @@ export class DynamicStandaloneServices extends Disposable {
 
 		let contextKeyService = ensure(IContextKeyService, () => this._register(new ContextKeyService(configurationService)));
 
-		ensure(IAccessibilityService, () => new AccessibilityService(contextKeyService, configurationService));
+		ensure(IAccessiBilityService, () => new AccessiBilityService(contextKeyService, configurationService));
 
 		ensure(IListService, () => new ListService(themeService));
 
 		let commandService = ensure(ICommandService, () => new StandaloneCommandService(this._instantiationService));
 
-		let keybindingService = ensure(IKeybindingService, () => this._register(new StandaloneKeybindingService(contextKeyService, commandService, telemetryService, notificationService, logService, domElement)));
+		let keyBindingService = ensure(IKeyBindingService, () => this._register(new StandaloneKeyBindingService(contextKeyService, commandService, telemetryService, notificationService, logService, domElement)));
 
 		let layoutService = ensure(ILayoutService, () => new SimpleLayoutService(StaticServices.codeEditorService.get(ICodeEditorService), domElement));
 
@@ -218,11 +218,11 @@ export class DynamicStandaloneServices extends Disposable {
 
 		let contextViewService = ensure(IContextViewService, () => this._register(new ContextViewService(layoutService)));
 
-		ensure(IClipboardService, () => new BrowserClipboardService());
+		ensure(IClipBoardService, () => new BrowserClipBoardService());
 
 		ensure(IContextMenuService, () => {
-			const contextMenuService = new ContextMenuService(telemetryService, notificationService, contextViewService, keybindingService, themeService);
-			contextMenuService.configure({ blockMouse: false }); // we do not want that in the standalone editor
+			const contextMenuService = new ContextMenuService(telemetryService, notificationService, contextViewService, keyBindingService, themeService);
+			contextMenuService.configure({ BlockMouse: false }); // we do not want that in the standalone editor
 
 			return this._register(contextMenuService);
 		});
@@ -232,7 +232,7 @@ export class DynamicStandaloneServices extends Disposable {
 		ensure(IBulkEditService, () => new SimpleBulkEditService(StaticServices.modelService.get(IModelService)));
 	}
 
-	public get<T>(serviceId: ServiceIdentifier<T>): T {
+	puBlic get<T>(serviceId: ServiceIdentifier<T>): T {
 		let r = <T>this._serviceCollection.get(serviceId);
 		if (!r) {
 			throw new Error('Missing service ' + serviceId);
@@ -240,11 +240,11 @@ export class DynamicStandaloneServices extends Disposable {
 		return r;
 	}
 
-	public set<T>(serviceId: ServiceIdentifier<T>, instance: T): void {
+	puBlic set<T>(serviceId: ServiceIdentifier<T>, instance: T): void {
 		this._serviceCollection.set(serviceId, instance);
 	}
 
-	public has<T>(serviceId: ServiceIdentifier<T>): boolean {
+	puBlic has<T>(serviceId: ServiceIdentifier<T>): Boolean {
 		return this._serviceCollection.has(serviceId);
 	}
 }

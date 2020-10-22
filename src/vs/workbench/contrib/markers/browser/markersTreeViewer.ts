@@ -3,63 +3,63 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import * as network from 'vs/base/common/network';
-import * as paths from 'vs/base/common/path';
-import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
-import { ResourceLabels, IResourceLabel } from 'vs/workbench/browser/labels';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
+import * as dom from 'vs/Base/Browser/dom';
+import * as network from 'vs/Base/common/network';
+import * as paths from 'vs/Base/common/path';
+import { CountBadge } from 'vs/Base/Browser/ui/countBadge/countBadge';
+import { ResourceLaBels, IResourceLaBel } from 'vs/workBench/Browser/laBels';
+import { HighlightedLaBel } from 'vs/Base/Browser/ui/highlightedlaBel/highlightedLaBel';
 import { IMarker, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { ResourceMarkers, Marker, RelatedInformation } from 'vs/workbench/contrib/markers/browser/markersModel';
-import Messages from 'vs/workbench/contrib/markers/browser/messages';
+import { ResourceMarkers, Marker, RelatedInformation } from 'vs/workBench/contriB/markers/Browser/markersModel';
+import Messages from 'vs/workBench/contriB/markers/Browser/messages';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { attachBadgeStyler } from 'vs/platform/theme/common/styler';
 import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { IDisposable, dispose, Disposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { QuickFixAction, QuickFixActionViewItem } from 'vs/workbench/contrib/markers/browser/markersViewActions';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { dirname, basename, isEqual } from 'vs/base/common/resources';
-import { IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import { ITreeFilter, TreeVisibility, TreeFilterResult, ITreeRenderer, ITreeNode, ITreeDragAndDrop, ITreeDragOverReaction } from 'vs/base/browser/ui/tree/tree';
-import { FilterOptions } from 'vs/workbench/contrib/markers/browser/markersFilterOptions';
-import { IMatch } from 'vs/base/common/filters';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { isUndefinedOrNull } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { Action, IAction } from 'vs/base/common/actions';
+import { IDisposaBle, dispose, DisposaBle, toDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ActionBar } from 'vs/Base/Browser/ui/actionBar/actionBar';
+import { QuickFixAction, QuickFixActionViewItem } from 'vs/workBench/contriB/markers/Browser/markersViewActions';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { dirname, Basename, isEqual } from 'vs/Base/common/resources';
+import { IListVirtualDelegate } from 'vs/Base/Browser/ui/list/list';
+import { ITreeFilter, TreeVisiBility, TreeFilterResult, ITreeRenderer, ITreeNode, ITreeDragAndDrop, ITreeDragOverReaction } from 'vs/Base/Browser/ui/tree/tree';
+import { FilterOptions } from 'vs/workBench/contriB/markers/Browser/markersFilterOptions';
+import { IMatch } from 'vs/Base/common/filters';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IListAccessiBilityProvider } from 'vs/Base/Browser/ui/list/listWidget';
+import { isUndefinedOrNull } from 'vs/Base/common/types';
+import { URI } from 'vs/Base/common/uri';
+import { Action, IAction } from 'vs/Base/common/actions';
 import { localize } from 'vs/nls';
-import { IDragAndDropData } from 'vs/base/browser/dnd';
-import { ElementsDragAndDropData } from 'vs/base/browser/ui/list/listView';
-import { fillResourceDataTransfers } from 'vs/workbench/browser/dnd';
-import { CancelablePromise, createCancelablePromise, Delayer } from 'vs/base/common/async';
+import { IDragAndDropData } from 'vs/Base/Browser/dnd';
+import { ElementsDragAndDropData } from 'vs/Base/Browser/ui/list/listView';
+import { fillResourceDataTransfers } from 'vs/workBench/Browser/dnd';
+import { CancelaBlePromise, createCancelaBlePromise, Delayer } from 'vs/Base/common/async';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { Range } from 'vs/editor/common/core/range';
-import { getCodeActions, CodeActionSet } from 'vs/editor/contrib/codeAction/codeAction';
-import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
+import { getCodeActions, CodeActionSet } from 'vs/editor/contriB/codeAction/codeAction';
+import { CodeActionKind } from 'vs/editor/contriB/codeAction/types';
 import { ITextModel } from 'vs/editor/common/model';
-import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { applyCodeAction } from 'vs/editor/contrib/codeAction/codeActionCommands';
+import { IEditorService, ACTIVE_GROUP } from 'vs/workBench/services/editor/common/editorService';
+import { applyCodeAction } from 'vs/editor/contriB/codeAction/codeActionCommands';
 import { SeverityIcon } from 'vs/platform/severityIcon/common/severityIcon';
 import { CodeActionTriggerType } from 'vs/editor/common/modes';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { textLinkForeground } from 'vs/platform/theme/common/colorRegistry';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { OS, OperatingSystem } from 'vs/base/common/platform';
+import { OS, OperatingSystem } from 'vs/Base/common/platform';
 import { IFileService } from 'vs/platform/files/common/files';
-import { domEvent } from 'vs/base/browser/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { domEvent } from 'vs/Base/Browser/event';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 import { Progress } from 'vs/platform/progress/common/progress';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { ActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
 export type TreeElement = ResourceMarkers | Marker | RelatedInformation;
 
 interface IResourceMarkersTemplateData {
-	resourceLabel: IResourceLabel;
+	resourceLaBel: IResourceLaBel;
 	count: CountBadge;
-	styler: IDisposable;
+	styler: IDisposaBle;
 }
 
 interface IMarkerTemplateData {
@@ -67,22 +67,22 @@ interface IMarkerTemplateData {
 }
 
 interface IRelatedInformationTemplateData {
-	resourceLabel: HighlightedLabel;
+	resourceLaBel: HighlightedLaBel;
 	lnCol: HTMLElement;
-	description: HighlightedLabel;
+	description: HighlightedLaBel;
 }
 
-export class MarkersTreeAccessibilityProvider implements IListAccessibilityProvider<TreeElement> {
+export class MarkersTreeAccessiBilityProvider implements IListAccessiBilityProvider<TreeElement> {
 
-	constructor(@ILabelService private readonly labelService: ILabelService) { }
+	constructor(@ILaBelService private readonly laBelService: ILaBelService) { }
 
-	getWidgetAriaLabel(): string {
-		return localize('problemsView', "Problems View");
+	getWidgetAriaLaBel(): string {
+		return localize('proBlemsView', "ProBlems View");
 	}
 
-	public getAriaLabel(element: TreeElement): string | null {
+	puBlic getAriaLaBel(element: TreeElement): string | null {
 		if (element instanceof ResourceMarkers) {
-			const path = this.labelService.getUriLabel(element.resource, { relative: true }) || element.resource.fsPath;
+			const path = this.laBelService.getUriLaBel(element.resource, { relative: true }) || element.resource.fsPath;
 			return Messages.MARKERS_TREE_ARIA_LABEL_RESOURCE(element.markers.length, element.name, paths.dirname(path));
 		}
 		if (element instanceof Marker) {
@@ -103,11 +103,11 @@ const enum TemplateId {
 
 export class VirtualDelegate implements IListVirtualDelegate<TreeElement> {
 
-	static LINE_HEIGHT: number = 22;
+	static LINE_HEIGHT: numBer = 22;
 
 	constructor(private readonly markersViewState: MarkersViewModel) { }
 
-	getHeight(element: TreeElement): number {
+	getHeight(element: TreeElement): numBer {
 		if (element instanceof Marker) {
 			const viewModel = this.markersViewState.getViewModel(element);
 			const noOfLines = !viewModel || viewModel.multiline ? element.lines.length : 1;
@@ -156,41 +156,41 @@ export type FilterData = ResourceMarkersFilterData | MarkerFilterData | RelatedI
 export class ResourceMarkersRenderer implements ITreeRenderer<ResourceMarkers, ResourceMarkersFilterData, IResourceMarkersTemplateData> {
 
 	private renderedNodes = new Map<ITreeNode<ResourceMarkers, ResourceMarkersFilterData>, IResourceMarkersTemplateData>();
-	private readonly disposables = new DisposableStore();
+	private readonly disposaBles = new DisposaBleStore();
 
 	constructor(
-		private labels: ResourceLabels,
+		private laBels: ResourceLaBels,
 		onDidChangeRenderNodeCount: Event<ITreeNode<ResourceMarkers, ResourceMarkersFilterData>>,
 		@IThemeService private readonly themeService: IThemeService,
-		@ILabelService private readonly labelService: ILabelService,
+		@ILaBelService private readonly laBelService: ILaBelService,
 		@IFileService private readonly fileService: IFileService
 	) {
-		onDidChangeRenderNodeCount(this.onDidChangeRenderNodeCount, this, this.disposables);
+		onDidChangeRenderNodeCount(this.onDidChangeRenderNodeCount, this, this.disposaBles);
 	}
 
 	templateId = TemplateId.ResourceMarkers;
 
 	renderTemplate(container: HTMLElement): IResourceMarkersTemplateData {
-		const data = <IResourceMarkersTemplateData>Object.create(null);
+		const data = <IResourceMarkersTemplateData>OBject.create(null);
 
-		const resourceLabelContainer = dom.append(container, dom.$('.resource-label-container'));
-		data.resourceLabel = this.labels.create(resourceLabelContainer, { supportHighlights: true });
+		const resourceLaBelContainer = dom.append(container, dom.$('.resource-laBel-container'));
+		data.resourceLaBel = this.laBels.create(resourceLaBelContainer, { supportHighlights: true });
 
-		const badgeWrapper = dom.append(container, dom.$('.count-badge-wrapper'));
-		data.count = new CountBadge(badgeWrapper);
+		const BadgeWrapper = dom.append(container, dom.$('.count-Badge-wrapper'));
+		data.count = new CountBadge(BadgeWrapper);
 		data.styler = attachBadgeStyler(data.count, this.themeService);
 
 		return data;
 	}
 
-	renderElement(node: ITreeNode<ResourceMarkers, ResourceMarkersFilterData>, _: number, templateData: IResourceMarkersTemplateData): void {
+	renderElement(node: ITreeNode<ResourceMarkers, ResourceMarkersFilterData>, _: numBer, templateData: IResourceMarkersTemplateData): void {
 		const resourceMarkers = node.element;
 		const uriMatches = node.filterData && node.filterData.uriMatches || [];
 
 		if (this.fileService.canHandleResource(resourceMarkers.resource) || resourceMarkers.resource.scheme === network.Schemas.untitled) {
-			templateData.resourceLabel.setFile(resourceMarkers.resource, { matches: uriMatches });
+			templateData.resourceLaBel.setFile(resourceMarkers.resource, { matches: uriMatches });
 		} else {
-			templateData.resourceLabel.setResource({ name: resourceMarkers.name, description: this.labelService.getUriLabel(dirname(resourceMarkers.resource), { relative: true }), resource: resourceMarkers.resource }, { matches: uriMatches });
+			templateData.resourceLaBel.setResource({ name: resourceMarkers.name, description: this.laBelService.getUriLaBel(dirname(resourceMarkers.resource), { relative: true }), resource: resourceMarkers.resource }, { matches: uriMatches });
 		}
 
 		this.updateCount(node, templateData);
@@ -202,7 +202,7 @@ export class ResourceMarkersRenderer implements ITreeRenderer<ResourceMarkers, R
 	}
 
 	disposeTemplate(templateData: IResourceMarkersTemplateData): void {
-		templateData.resourceLabel.dispose();
+		templateData.resourceLaBel.dispose();
 		templateData.styler.dispose();
 	}
 
@@ -217,11 +217,11 @@ export class ResourceMarkersRenderer implements ITreeRenderer<ResourceMarkers, R
 	}
 
 	private updateCount(node: ITreeNode<ResourceMarkers, ResourceMarkersFilterData>, templateData: IResourceMarkersTemplateData): void {
-		templateData.count.setCount(node.children.reduce((r, n) => r + (n.visible ? 1 : 0), 0));
+		templateData.count.setCount(node.children.reduce((r, n) => r + (n.visiBle ? 1 : 0), 0));
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposaBles.dispose();
 	}
 }
 
@@ -240,12 +240,12 @@ export class MarkerRenderer implements ITreeRenderer<Marker, MarkerFilterData, I
 	templateId = TemplateId.Marker;
 
 	renderTemplate(container: HTMLElement): IMarkerTemplateData {
-		const data: IMarkerTemplateData = Object.create(null);
+		const data: IMarkerTemplateData = OBject.create(null);
 		data.markerWidget = new MarkerWidget(container, this.markersViewState, this.openerService, this._configurationService, this.instantiationService);
 		return data;
 	}
 
-	renderElement(node: ITreeNode<Marker, MarkerFilterData>, _: number, templateData: IMarkerTemplateData): void {
+	renderElement(node: ITreeNode<Marker, MarkerFilterData>, _: numBer, templateData: IMarkerTemplateData): void {
 		templateData.markerWidget.render(node.element, node.filterData);
 	}
 
@@ -255,7 +255,7 @@ export class MarkerRenderer implements ITreeRenderer<Marker, MarkerFilterData, I
 
 }
 
-const toggleMultilineAction = 'problems.action.toggleMultiline';
+const toggleMultilineAction = 'proBlems.action.toggleMultiline';
 const expandedClass = 'codicon codicon-chevron-up';
 const collapsedClass = 'codicon codicon-chevron-down';
 
@@ -263,17 +263,17 @@ class ToggleMultilineActionViewItem extends ActionViewItem {
 
 	render(container: HTMLElement): void {
 		super.render(container);
-		this.updateExpandedAttribute();
+		this.updateExpandedAttriBute();
 	}
 
 	updateClass(): void {
 		super.updateClass();
-		this.updateExpandedAttribute();
+		this.updateExpandedAttriBute();
 	}
 
-	private updateExpandedAttribute(): void {
+	private updateExpandedAttriBute(): void {
 		if (this.element) {
-			this.element.setAttribute('aria-expanded', `${this._action.class === expandedClass}`);
+			this.element.setAttriBute('aria-expanded', `${this._action.class === expandedClass}`);
 		}
 	}
 
@@ -281,13 +281,13 @@ class ToggleMultilineActionViewItem extends ActionViewItem {
 
 type ModifierKey = 'meta' | 'ctrl' | 'alt';
 
-class MarkerWidget extends Disposable {
+class MarkerWidget extends DisposaBle {
 
 	private readonly actionBar: ActionBar;
 	private readonly icon: HTMLElement;
-	private readonly multilineActionbar: ActionBar;
+	private readonly multilineActionBar: ActionBar;
 	private readonly messageAndDetailsContainer: HTMLElement;
-	private readonly disposables = this._register(new DisposableStore());
+	private readonly disposaBles = this._register(new DisposaBleStore());
 
 	private _clickModifierKey: ModifierKey;
 	private _codeLink?: HTMLElement;
@@ -304,7 +304,7 @@ class MarkerWidget extends Disposable {
 			actionViewItemProvider: (action: IAction) => action.id === QuickFixAction.ID ? _instantiationService.createInstance(QuickFixActionViewItem, <QuickFixAction>action) : undefined
 		}));
 		this.icon = dom.append(parent, dom.$(''));
-		this.multilineActionbar = this._register(new ActionBar(dom.append(parent, dom.$('.multiline-actions')), {
+		this.multilineActionBar = this._register(new ActionBar(dom.append(parent, dom.$('.multiline-actions')), {
 			actionViewItemProvider: (action) => {
 				if (action.id === toggleMultilineAction) {
 					return new ToggleMultilineActionViewItem(undefined, action, { icon: true });
@@ -319,57 +319,57 @@ class MarkerWidget extends Disposable {
 
 	render(element: Marker, filterData: MarkerFilterData | undefined): void {
 		this.actionBar.clear();
-		this.multilineActionbar.clear();
-		this.disposables.clear();
+		this.multilineActionBar.clear();
+		this.disposaBles.clear();
 		dom.clearNode(this.messageAndDetailsContainer);
 
 		this.icon.className = `marker-icon codicon ${SeverityIcon.className(MarkerSeverity.toSeverity(element.marker.severity))}`;
-		this.renderQuickfixActionbar(element);
-		this.renderMultilineActionbar(element);
+		this.renderQuickfixActionBar(element);
+		this.renderMultilineActionBar(element);
 
 		this.renderMessageAndDetails(element, filterData);
-		this.disposables.add(dom.addDisposableListener(this.parent, dom.EventType.MOUSE_OVER, () => this.markersViewModel.onMarkerMouseHover(element)));
-		this.disposables.add(dom.addDisposableListener(this.parent, dom.EventType.MOUSE_LEAVE, () => this.markersViewModel.onMarkerMouseLeave(element)));
+		this.disposaBles.add(dom.addDisposaBleListener(this.parent, dom.EventType.MOUSE_OVER, () => this.markersViewModel.onMarkerMouseHover(element)));
+		this.disposaBles.add(dom.addDisposaBleListener(this.parent, dom.EventType.MOUSE_LEAVE, () => this.markersViewModel.onMarkerMouseLeave(element)));
 
-		this.disposables.add((this._configurationService.onDidChangeConfiguration(e => {
+		this.disposaBles.add((this._configurationService.onDidChangeConfiguration(e => {
 			if (e.affectsConfiguration('editor.multiCursorModifier')) {
 				this._clickModifierKey = this._getClickModifierKey();
 				if (this._codeLink) {
-					this._codeLink.setAttribute('title', this._getCodelinkTooltip());
+					this._codeLink.setAttriBute('title', this._getCodelinkTooltip());
 				}
 			}
 		})));
 	}
 
-	private renderQuickfixActionbar(marker: Marker): void {
+	private renderQuickfixActionBar(marker: Marker): void {
 		const viewModel = this.markersViewModel.getViewModel(marker);
 		if (viewModel) {
 			const quickFixAction = viewModel.quickFixAction;
-			this.actionBar.push([quickFixAction], { icon: true, label: false });
-			this.icon.classList.toggle('quickFix', quickFixAction.enabled);
-			quickFixAction.onDidChange(({ enabled }) => {
-				if (!isUndefinedOrNull(enabled)) {
-					this.icon.classList.toggle('quickFix', enabled);
+			this.actionBar.push([quickFixAction], { icon: true, laBel: false });
+			this.icon.classList.toggle('quickFix', quickFixAction.enaBled);
+			quickFixAction.onDidChange(({ enaBled }) => {
+				if (!isUndefinedOrNull(enaBled)) {
+					this.icon.classList.toggle('quickFix', enaBled);
 				}
-			}, this, this.disposables);
+			}, this, this.disposaBles);
 			quickFixAction.onShowQuickFixes(() => {
 				const quickFixActionViewItem = <QuickFixActionViewItem>this.actionBar.viewItems[0];
 				if (quickFixActionViewItem) {
 					quickFixActionViewItem.showQuickFixes();
 				}
-			}, this, this.disposables);
+			}, this, this.disposaBles);
 		}
 	}
 
-	private renderMultilineActionbar(marker: Marker): void {
+	private renderMultilineActionBar(marker: Marker): void {
 		const viewModel = this.markersViewModel.getViewModel(marker);
 		const multiline = viewModel && viewModel.multiline;
 		const action = new Action(toggleMultilineAction);
-		action.enabled = !!viewModel && marker.lines.length > 1;
+		action.enaBled = !!viewModel && marker.lines.length > 1;
 		action.tooltip = multiline ? localize('single line', "Show message in single line") : localize('multi line', "Show message in multiple lines");
 		action.class = multiline ? expandedClass : collapsedClass;
 		action.run = () => { if (viewModel) { viewModel.multiline = !viewModel.multiline; } return Promise.resolve(); };
-		this.multilineActionbar.push([action], { icon: true, label: false });
+		this.multilineActionBar.push([action], { icon: true, laBel: false });
 	}
 
 	private renderMessageAndDetails(element: Marker, filterData: MarkerFilterData | undefined) {
@@ -383,8 +383,8 @@ class MarkerWidget extends Disposable {
 		for (let index = 0; index < (multiline ? lines.length : 1); index++) {
 			lastLineElement = dom.append(this.messageAndDetailsContainer, dom.$('.marker-message-line'));
 			const messageElement = dom.append(lastLineElement, dom.$('.marker-message'));
-			const highlightedLabel = new HighlightedLabel(messageElement, false);
-			highlightedLabel.set(lines[index].length > 1000 ? `${lines[index].substring(0, 1000)}...` : lines[index], lineMatches[index]);
+			const highlightedLaBel = new HighlightedLaBel(messageElement, false);
+			highlightedLaBel.set(lines[index].length > 1000 ? `${lines[index].suBstring(0, 1000)}...` : lines[index], lineMatches[index]);
 			if (lines[index] === '') {
 				lastLineElement.style.height = `${VirtualDelegate.LINE_HEIGHT}px`;
 			}
@@ -396,31 +396,31 @@ class MarkerWidget extends Disposable {
 		parent.classList.add('details-container');
 
 		if (marker.source || marker.code) {
-			const source = new HighlightedLabel(dom.append(parent, dom.$('.marker-source')), false);
+			const source = new HighlightedLaBel(dom.append(parent, dom.$('.marker-source')), false);
 			const sourceMatches = filterData && filterData.sourceMatches || [];
 			source.set(marker.source, sourceMatches);
 
 			if (marker.code) {
 				if (typeof marker.code === 'string') {
-					const code = new HighlightedLabel(dom.append(parent, dom.$('.marker-code')), false);
+					const code = new HighlightedLaBel(dom.append(parent, dom.$('.marker-code')), false);
 					const codeMatches = filterData && filterData.codeMatches || [];
 					code.set(marker.code, codeMatches);
 				} else {
 					this._codeLink = dom.$('a.code-link');
-					this._codeLink.setAttribute('title', this._getCodelinkTooltip());
+					this._codeLink.setAttriBute('title', this._getCodelinkTooltip());
 
 					const codeUri = marker.code.target;
 					const codeLink = codeUri.toString();
 
 					dom.append(parent, this._codeLink);
-					this._codeLink.setAttribute('href', codeLink);
-					this._codeLink.tabIndex = 0;
+					this._codeLink.setAttriBute('href', codeLink);
+					this._codeLink.taBIndex = 0;
 
 					const onClick = Event.chain(domEvent(this._codeLink, 'click'))
 						.filter(e => ((this._clickModifierKey === 'meta' && e.metaKey) || (this._clickModifierKey === 'ctrl' && e.ctrlKey) || (this._clickModifierKey === 'alt' && e.altKey)))
 						.event;
 					const onEnterPress = Event.chain(domEvent(this._codeLink, 'keydown'))
-						.map(e => new StandardKeyboardEvent(e))
+						.map(e => new StandardKeyBoardEvent(e))
 						.filter(e => e.keyCode === KeyCode.Enter)
 						.event;
 					const onOpen = Event.any<dom.EventLike>(onClick, onEnterPress);
@@ -430,7 +430,7 @@ class MarkerWidget extends Disposable {
 						this._openerService.open(codeUri);
 					}));
 
-					const code = new HighlightedLabel(dom.append(this._codeLink, dom.$('.marker-code')), false);
+					const code = new HighlightedLaBel(dom.append(this._codeLink, dom.$('.marker-code')), false);
 					const codeMatches = filterData && filterData.codeMatches || [];
 					code.set(marker.code.value, codeMatches);
 				}
@@ -438,7 +438,7 @@ class MarkerWidget extends Disposable {
 		}
 
 		const lnCol = dom.append(parent, dom.$('span.marker-line'));
-		lnCol.textContent = Messages.MARKERS_PANEL_AT_LINE_COL_NUMBER(marker.startLineNumber, marker.startColumn);
+		lnCol.textContent = Messages.MARKERS_PANEL_AT_LINE_COL_NUMBER(marker.startLineNumBer, marker.startColumn);
 	}
 
 	private _getClickModifierKey(): ModifierKey {
@@ -455,51 +455,51 @@ class MarkerWidget extends Disposable {
 	}
 
 	private _getCodelinkTooltip(): string {
-		const tooltipLabel = localize('links.navigate.follow', 'Follow link');
-		const tooltipKeybinding = this._clickModifierKey === 'ctrl'
-			? localize('links.navigate.kb.meta', 'ctrl + click')
+		const tooltipLaBel = localize('links.navigate.follow', 'Follow link');
+		const tooltipKeyBinding = this._clickModifierKey === 'ctrl'
+			? localize('links.navigate.kB.meta', 'ctrl + click')
 			:
 			this._clickModifierKey === 'meta'
-				? OS === OperatingSystem.Macintosh ? localize('links.navigate.kb.meta.mac', 'cmd + click') : localize('links.navigate.kb.meta', 'ctrl + click')
-				: OS === OperatingSystem.Macintosh ? localize('links.navigate.kb.alt.mac', 'option + click') : localize('links.navigate.kb.alt', 'alt + click');
+				? OS === OperatingSystem.Macintosh ? localize('links.navigate.kB.meta.mac', 'cmd + click') : localize('links.navigate.kB.meta', 'ctrl + click')
+				: OS === OperatingSystem.Macintosh ? localize('links.navigate.kB.alt.mac', 'option + click') : localize('links.navigate.kB.alt', 'alt + click');
 
-		return `${tooltipLabel} (${tooltipKeybinding})`;
+		return `${tooltipLaBel} (${tooltipKeyBinding})`;
 	}
 }
 
 export class RelatedInformationRenderer implements ITreeRenderer<RelatedInformation, RelatedInformationFilterData, IRelatedInformationTemplateData> {
 
 	constructor(
-		@ILabelService private readonly labelService: ILabelService
+		@ILaBelService private readonly laBelService: ILaBelService
 	) { }
 
 	templateId = TemplateId.RelatedInformation;
 
 	renderTemplate(container: HTMLElement): IRelatedInformationTemplateData {
-		const data: IRelatedInformationTemplateData = Object.create(null);
+		const data: IRelatedInformationTemplateData = OBject.create(null);
 
 		dom.append(container, dom.$('.actions'));
 		dom.append(container, dom.$('.icon'));
 
-		data.resourceLabel = new HighlightedLabel(dom.append(container, dom.$('.related-info-resource')), false);
+		data.resourceLaBel = new HighlightedLaBel(dom.append(container, dom.$('.related-info-resource')), false);
 		data.lnCol = dom.append(container, dom.$('span.marker-line'));
 
 		const separator = dom.append(container, dom.$('span.related-info-resource-separator'));
 		separator.textContent = ':';
 		separator.style.paddingRight = '4px';
 
-		data.description = new HighlightedLabel(dom.append(container, dom.$('.marker-description')), false);
+		data.description = new HighlightedLaBel(dom.append(container, dom.$('.marker-description')), false);
 		return data;
 	}
 
-	renderElement(node: ITreeNode<RelatedInformation, RelatedInformationFilterData>, _: number, templateData: IRelatedInformationTemplateData): void {
+	renderElement(node: ITreeNode<RelatedInformation, RelatedInformationFilterData>, _: numBer, templateData: IRelatedInformationTemplateData): void {
 		const relatedInformation = node.element.raw;
 		const uriMatches = node.filterData && node.filterData.uriMatches || [];
 		const messageMatches = node.filterData && node.filterData.messageMatches || [];
 
-		templateData.resourceLabel.set(basename(relatedInformation.resource), uriMatches);
-		templateData.resourceLabel.element.title = this.labelService.getUriLabel(relatedInformation.resource, { relative: true });
-		templateData.lnCol.textContent = Messages.MARKERS_PANEL_AT_LINE_COL_NUMBER(relatedInformation.startLineNumber, relatedInformation.startColumn);
+		templateData.resourceLaBel.set(Basename(relatedInformation.resource), uriMatches);
+		templateData.resourceLaBel.element.title = this.laBelService.getUriLaBel(relatedInformation.resource, { relative: true });
+		templateData.lnCol.textContent = Messages.MARKERS_PANEL_AT_LINE_COL_NUMBER(relatedInformation.startLineNumBer, relatedInformation.startColumn);
 		templateData.description.set(relatedInformation.message, messageMatches);
 		templateData.description.element.title = relatedInformation.message;
 	}
@@ -511,15 +511,15 @@ export class RelatedInformationRenderer implements ITreeRenderer<RelatedInformat
 
 export class Filter implements ITreeFilter<TreeElement, FilterData> {
 
-	constructor(public options: FilterOptions) { }
+	constructor(puBlic options: FilterOptions) { }
 
-	filter(element: TreeElement, parentVisibility: TreeVisibility): TreeFilterResult<FilterData> {
+	filter(element: TreeElement, parentVisiBility: TreeVisiBility): TreeFilterResult<FilterData> {
 		if (element instanceof ResourceMarkers) {
 			return this.filterResourceMarkers(element);
 		} else if (element instanceof Marker) {
-			return this.filterMarker(element, parentVisibility);
+			return this.filterMarker(element, parentVisiBility);
 		} else {
-			return this.filterRelatedInformation(element, parentVisibility);
+			return this.filterRelatedInformation(element, parentVisiBility);
 		}
 	}
 
@@ -532,21 +532,21 @@ export class Filter implements ITreeFilter<TreeElement, FilterData> {
 			return false;
 		}
 
-		const uriMatches = FilterOptions._filter(this.options.textFilter, basename(resourceMarkers.resource));
+		const uriMatches = FilterOptions._filter(this.options.textFilter, Basename(resourceMarkers.resource));
 
 		if (this.options.textFilter && uriMatches) {
-			return { visibility: true, data: { type: FilterDataType.ResourceMarkers, uriMatches } };
+			return { visiBility: true, data: { type: FilterDataType.ResourceMarkers, uriMatches } };
 		}
 
 		if (this.options.includesMatcher.matches(resourceMarkers.resource)) {
 			return true;
 		}
 
-		return TreeVisibility.Recurse;
+		return TreeVisiBility.Recurse;
 	}
 
-	private filterMarker(marker: Marker, parentVisibility: TreeVisibility): TreeFilterResult<FilterData> {
-		let shouldAppear: boolean = false;
+	private filterMarker(marker: Marker, parentVisiBility: TreeVisiBility): TreeFilterResult<FilterData> {
+		let shouldAppear: Boolean = false;
 		if (this.options.showErrors && MarkerSeverity.Error === marker.marker.severity) {
 			shouldAppear = true;
 		}
@@ -582,35 +582,35 @@ export class Filter implements ITreeFilter<TreeElement, FilterData> {
 		}
 
 		if (sourceMatches || codeMatches || lineMatches.some(lineMatch => lineMatch.length > 0)) {
-			return { visibility: true, data: { type: FilterDataType.Marker, lineMatches, sourceMatches: sourceMatches || [], codeMatches: codeMatches || [] } };
+			return { visiBility: true, data: { type: FilterDataType.Marker, lineMatches, sourceMatches: sourceMatches || [], codeMatches: codeMatches || [] } };
 		}
 
-		return parentVisibility;
+		return parentVisiBility;
 	}
 
-	private filterRelatedInformation(relatedInformation: RelatedInformation, parentVisibility: TreeVisibility): TreeFilterResult<FilterData> {
+	private filterRelatedInformation(relatedInformation: RelatedInformation, parentVisiBility: TreeVisiBility): TreeFilterResult<FilterData> {
 		if (!this.options.textFilter) {
 			return true;
 		}
 
-		const uriMatches = FilterOptions._filter(this.options.textFilter, basename(relatedInformation.raw.resource));
-		const messageMatches = FilterOptions._messageFilter(this.options.textFilter, paths.basename(relatedInformation.raw.message));
+		const uriMatches = FilterOptions._filter(this.options.textFilter, Basename(relatedInformation.raw.resource));
+		const messageMatches = FilterOptions._messageFilter(this.options.textFilter, paths.Basename(relatedInformation.raw.message));
 
 		if (uriMatches || messageMatches) {
-			return { visibility: true, data: { type: FilterDataType.RelatedInformation, uriMatches: uriMatches || [], messageMatches: messageMatches || [] } };
+			return { visiBility: true, data: { type: FilterDataType.RelatedInformation, uriMatches: uriMatches || [], messageMatches: messageMatches || [] } };
 		}
 
-		return parentVisibility;
+		return parentVisiBility;
 	}
 }
 
-export class MarkerViewModel extends Disposable {
+export class MarkerViewModel extends DisposaBle {
 
 	private readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidChange: Event<void> = this._onDidChange.event;
 
-	private modelPromise: CancelablePromise<ITextModel> | null = null;
-	private codeActionsPromise: CancelablePromise<CodeActionSet> | null = null;
+	private modelPromise: CancelaBlePromise<ITextModel> | null = null;
+	private codeActionsPromise: CancelaBlePromise<CodeActionSet> | null = null;
 
 	constructor(
 		private readonly marker: Marker,
@@ -619,7 +619,7 @@ export class MarkerViewModel extends Disposable {
 		@IEditorService private readonly editorService: IEditorService
 	) {
 		super();
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			if (this.modelPromise) {
 				this.modelPromise.cancel();
 			}
@@ -629,12 +629,12 @@ export class MarkerViewModel extends Disposable {
 		}));
 	}
 
-	private _multiline: boolean = true;
-	get multiline(): boolean {
+	private _multiline: Boolean = true;
+	get multiline(): Boolean {
 		return this._multiline;
 	}
 
-	set multiline(value: boolean) {
+	set multiline(value: Boolean) {
 		if (this._multiline !== value) {
 			this._multiline = value;
 			this._onDidChange.fire();
@@ -649,7 +649,7 @@ export class MarkerViewModel extends Disposable {
 		return this._quickFixAction;
 	}
 
-	showLightBulb(): void {
+	showLightBulB(): void {
 		this.setQuickFixes(true);
 	}
 
@@ -657,18 +657,18 @@ export class MarkerViewModel extends Disposable {
 		this.setQuickFixes(false).then(() => this.quickFixAction.run());
 	}
 
-	async getQuickFixes(waitForModel: boolean): Promise<IAction[]> {
+	async getQuickFixes(waitForModel: Boolean): Promise<IAction[]> {
 		const codeActions = await this.getCodeActions(waitForModel);
 		return codeActions ? this.toActions(codeActions) : [];
 	}
 
-	private async setQuickFixes(waitForModel: boolean): Promise<void> {
+	private async setQuickFixes(waitForModel: Boolean): Promise<void> {
 		const codeActions = await this.getCodeActions(waitForModel);
 		this.quickFixAction.quickFixes = codeActions ? this.toActions(codeActions) : [];
-		this.quickFixAction.autoFixable(!!codeActions && codeActions.hasAutoFix);
+		this.quickFixAction.autoFixaBle(!!codeActions && codeActions.hasAutoFix);
 	}
 
-	private getCodeActions(waitForModel: boolean): Promise<CodeActionSet | null> {
+	private getCodeActions(waitForModel: Boolean): Promise<CodeActionSet | null> {
 		if (this.codeActionsPromise !== null) {
 			return this.codeActionsPromise;
 		}
@@ -676,8 +676,8 @@ export class MarkerViewModel extends Disposable {
 			.then<CodeActionSet | null>(model => {
 				if (model) {
 					if (!this.codeActionsPromise) {
-						this.codeActionsPromise = createCancelablePromise(cancellationToken => {
-							return getCodeActions(model, new Range(this.marker.range.startLineNumber, this.marker.range.startColumn, this.marker.range.endLineNumber, this.marker.range.endColumn), {
+						this.codeActionsPromise = createCancelaBlePromise(cancellationToken => {
+							return getCodeActions(model, new Range(this.marker.range.startLineNumBer, this.marker.range.startColumn, this.marker.range.endLineNumBer, this.marker.range.endColumn), {
 								type: CodeActionTriggerType.Manual, filter: { include: CodeActionKind.QuickFix }
 							}, Progress.None, cancellationToken).then(actions => {
 								return this._register(actions);
@@ -710,19 +710,19 @@ export class MarkerViewModel extends Disposable {
 				selection,
 				preserveFocus: true,
 				pinned: false,
-				revealIfVisible: true
+				revealIfVisiBle: true
 			},
 		}, ACTIVE_GROUP).then(() => undefined);
 	}
 
-	private getModel(waitForModel: boolean): Promise<ITextModel | null> {
+	private getModel(waitForModel: Boolean): Promise<ITextModel | null> {
 		const model = this.modelService.getModel(this.marker.resource);
 		if (model) {
 			return Promise.resolve(model);
 		}
 		if (waitForModel) {
 			if (!this.modelPromise) {
-				this.modelPromise = createCancelablePromise(cancellationToken => {
+				this.modelPromise = createCancelaBlePromise(cancellationToken => {
 					return new Promise((c) => {
 						this._register(this.modelService.onModelAdded(model => {
 							if (isEqual(model.uri, this.marker.resource)) {
@@ -739,21 +739,21 @@ export class MarkerViewModel extends Disposable {
 
 }
 
-export class MarkersViewModel extends Disposable {
+export class MarkersViewModel extends DisposaBle {
 
 	private readonly _onDidChange: Emitter<Marker | undefined> = this._register(new Emitter<Marker | undefined>());
 	readonly onDidChange: Event<Marker | undefined> = this._onDidChange.event;
 
-	private readonly markersViewStates: Map<string, { viewModel: MarkerViewModel, disposables: IDisposable[] }> = new Map<string, { viewModel: MarkerViewModel, disposables: IDisposable[] }>();
+	private readonly markersViewStates: Map<string, { viewModel: MarkerViewModel, disposaBles: IDisposaBle[] }> = new Map<string, { viewModel: MarkerViewModel, disposaBles: IDisposaBle[] }>();
 	private readonly markersPerResource: Map<string, Marker[]> = new Map<string, Marker[]>();
 
-	private bulkUpdate: boolean = false;
+	private BulkUpdate: Boolean = false;
 
 	private hoveredMarker: Marker | null = null;
 	private hoverDelayer: Delayer<void> = new Delayer<void>(300);
 
 	constructor(
-		multiline: boolean = true,
+		multiline: Boolean = true,
 		@IInstantiationService private instantiationService: IInstantiationService
 	) {
 		super();
@@ -763,14 +763,14 @@ export class MarkersViewModel extends Disposable {
 	add(marker: Marker): void {
 		if (!this.markersViewStates.has(marker.id)) {
 			const viewModel = this.instantiationService.createInstance(MarkerViewModel, marker);
-			const disposables: IDisposable[] = [viewModel];
+			const disposaBles: IDisposaBle[] = [viewModel];
 			viewModel.multiline = this.multiline;
 			viewModel.onDidChange(() => {
-				if (!this.bulkUpdate) {
+				if (!this.BulkUpdate) {
 					this._onDidChange.fire(marker);
 				}
-			}, this, disposables);
-			this.markersViewStates.set(marker.id, { viewModel, disposables });
+			}, this, disposaBles);
+			this.markersViewStates.set(marker.id, { viewModel, disposaBles });
 
 			const markers = this.markersPerResource.get(marker.resource.toString()) || [];
 			markers.push(marker);
@@ -783,7 +783,7 @@ export class MarkersViewModel extends Disposable {
 		for (const marker of markers) {
 			const value = this.markersViewStates.get(marker.id);
 			if (value) {
-				dispose(value.disposables);
+				dispose(value.disposaBles);
 			}
 			this.markersViewStates.delete(marker.id);
 			if (this.hoveredMarker === marker) {
@@ -804,7 +804,7 @@ export class MarkersViewModel extends Disposable {
 			if (this.hoveredMarker) {
 				const model = this.getViewModel(this.hoveredMarker);
 				if (model) {
-					model.showLightBulb();
+					model.showLightBulB();
 				}
 			}
 		});
@@ -816,32 +816,32 @@ export class MarkersViewModel extends Disposable {
 		}
 	}
 
-	private _multiline: boolean = true;
-	get multiline(): boolean {
+	private _multiline: Boolean = true;
+	get multiline(): Boolean {
 		return this._multiline;
 	}
 
-	set multiline(value: boolean) {
+	set multiline(value: Boolean) {
 		let changed = false;
 		if (this._multiline !== value) {
 			this._multiline = value;
 			changed = true;
 		}
-		this.bulkUpdate = true;
+		this.BulkUpdate = true;
 		this.markersViewStates.forEach(({ viewModel }) => {
 			if (viewModel.multiline !== value) {
 				viewModel.multiline = value;
 				changed = true;
 			}
 		});
-		this.bulkUpdate = false;
+		this.BulkUpdate = false;
 		if (changed) {
 			this._onDidChange.fire(undefined);
 		}
 	}
 
 	dispose(): void {
-		this.markersViewStates.forEach(({ disposables }) => dispose(disposables));
+		this.markersViewStates.forEach(({ disposaBles }) => dispose(disposaBles));
 		this.markersViewStates.clear();
 		this.markersPerResource.clear();
 		super.dispose();
@@ -854,7 +854,7 @@ export class ResourceDragAndDrop implements ITreeDragAndDrop<TreeElement> {
 		private instantiationService: IInstantiationService
 	) { }
 
-	onDragOver(data: IDragAndDropData, targetElement: TreeElement, targetIndex: number, originalEvent: DragEvent): boolean | ITreeDragOverReaction {
+	onDragOver(data: IDragAndDropData, targetElement: TreeElement, targetIndex: numBer, originalEvent: DragEvent): Boolean | ITreeDragOverReaction {
 		return false;
 	}
 
@@ -865,12 +865,12 @@ export class ResourceDragAndDrop implements ITreeDragAndDrop<TreeElement> {
 		return null;
 	}
 
-	getDragLabel?(elements: TreeElement[]): string | undefined {
+	getDragLaBel?(elements: TreeElement[]): string | undefined {
 		if (elements.length > 1) {
 			return String(elements.length);
 		}
 		const element = elements[0];
-		return element instanceof ResourceMarkers ? basename(element.resource) : undefined;
+		return element instanceof ResourceMarkers ? Basename(element.resource) : undefined;
 	}
 
 	onDragStart(data: IDragAndDropData, originalEvent: DragEvent): void {
@@ -885,7 +885,7 @@ export class ResourceDragAndDrop implements ITreeDragAndDrop<TreeElement> {
 		}
 	}
 
-	drop(data: IDragAndDropData, targetElement: TreeElement, targetIndex: number, originalEvent: DragEvent): void {
+	drop(data: IDragAndDropData, targetElement: TreeElement, targetIndex: numBer, originalEvent: DragEvent): void {
 	}
 }
 

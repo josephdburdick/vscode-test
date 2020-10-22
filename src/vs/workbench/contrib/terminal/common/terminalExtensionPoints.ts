@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as extensionsRegistry from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { ITerminalTypeContribution, ITerminalContributions, terminalContributionsDescriptor } from 'vs/workbench/contrib/terminal/common/terminal';
-import { flatten } from 'vs/base/common/arrays';
+import * as extensionsRegistry from 'vs/workBench/services/extensions/common/extensionsRegistry';
+import { ITerminalTypeContriBution, ITerminalContriButions, terminalContriButionsDescriptor } from 'vs/workBench/contriB/terminal/common/terminal';
+import { flatten } from 'vs/Base/common/arrays';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 // terminal extension point
-export const terminalsExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<ITerminalContributions>(terminalContributionsDescriptor);
+export const terminalsExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<ITerminalContriButions>(terminalContriButionsDescriptor);
 
-export interface ITerminalContributionService {
+export interface ITerminalContriButionService {
 	readonly _serviceBrand: undefined;
 
-	readonly terminalTypes: ReadonlyArray<ITerminalTypeContribution>;
+	readonly terminalTypes: ReadonlyArray<ITerminalTypeContriBution>;
 }
 
-export const ITerminalContributionService = createDecorator<ITerminalContributionService>('terminalContributionsService');
+export const ITerminalContriButionService = createDecorator<ITerminalContriButionService>('terminalContriButionsService');
 
-export class TerminalContributionService implements ITerminalContributionService {
-	public readonly _serviceBrand = undefined;
+export class TerminalContriButionService implements ITerminalContriButionService {
+	puBlic readonly _serviceBrand = undefined;
 
-	private _terminalTypes: ReadonlyArray<ITerminalTypeContribution> = [];
+	private _terminalTypes: ReadonlyArray<ITerminalTypeContriBution> = [];
 
-	public get terminalTypes() {
+	puBlic get terminalTypes() {
 		return this._terminalTypes;
 	}
 
 	constructor() {
-		terminalsExtPoint.setHandler(contributions => {
-			this._terminalTypes = flatten(contributions.filter(c => c.description.enableProposedApi).map(c => c.value?.types ?? []));
+		terminalsExtPoint.setHandler(contriButions => {
+			this._terminalTypes = flatten(contriButions.filter(c => c.description.enaBleProposedApi).map(c => c.value?.types ?? []));
 		});
 	}
 }

@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { WebviewTag } from 'electron';
+import { WeBviewTag } from 'electron';
 import { Action2 } from 'vs/platform/actions/common/actions';
 import * as nls from 'vs/nls';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
-export class OpenWebviewDeveloperToolsAction extends Action2 {
+export class OpenWeBviewDeveloperToolsAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.webview.openDeveloperTools',
-			title: { value: nls.localize('openToolsLabel', "Open Webview Developer Tools"), original: 'Open Webview Developer Tools' },
+			id: 'workBench.action.weBview.openDeveloperTools',
+			title: { value: nls.localize('openToolsLaBel', "Open WeBview Developer Tools"), original: 'Open WeBview Developer Tools' },
 			category: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
 	async run(accessor: ServicesAccessor): Promise<void> {
-		const elements = document.querySelectorAll('webview.ready');
+		const elements = document.querySelectorAll('weBview.ready');
 		for (let i = 0; i < elements.length; i++) {
 			try {
-				(elements.item(i) as WebviewTag).openDevTools();
+				(elements.item(i) as WeBviewTag).openDevTools();
 			} catch (e) {
 				console.error(e);
 			}

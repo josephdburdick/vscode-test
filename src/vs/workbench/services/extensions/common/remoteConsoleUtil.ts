@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRemoteConsoleLog, parse } from 'vs/base/common/console';
+import { IRemoteConsoleLog, parse } from 'vs/Base/common/console';
 import { ILogService } from 'vs/platform/log/common/log';
 
 export function logRemoteEntry(logService: ILogService, entry: IRemoteConsoleLog): void {
@@ -21,12 +21,12 @@ export function logRemoteEntry(logService: ILogService, entry: IRemoteConsoleLog
 		case 'log':
 		case 'info':
 			logService.info(firstArg, ...args);
-			break;
+			Break;
 		case 'warn':
 			logService.warn(firstArg, ...args);
-			break;
+			Break;
 		case 'error':
 			logService.error(firstArg, ...args);
-			break;
+			Break;
 	}
 }

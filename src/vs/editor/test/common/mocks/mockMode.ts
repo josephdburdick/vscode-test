@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IMode, LanguageIdentifier } from 'vs/editor/common/modes';
 import { ILanguageSelection } from 'vs/editor/common/services/modeService';
 
-export class MockMode extends Disposable implements IMode {
+export class MockMode extends DisposaBle implements IMode {
 	private readonly _languageIdentifier: LanguageIdentifier;
 
 	constructor(languageIdentifier: LanguageIdentifier) {
@@ -16,17 +16,17 @@ export class MockMode extends Disposable implements IMode {
 		this._languageIdentifier = languageIdentifier;
 	}
 
-	public getId(): string {
+	puBlic getId(): string {
 		return this._languageIdentifier.language;
 	}
 
-	public getLanguageIdentifier(): LanguageIdentifier {
+	puBlic getLanguageIdentifier(): LanguageIdentifier {
 		return this._languageIdentifier;
 	}
 }
 
 export class StaticLanguageSelector implements ILanguageSelection {
 	readonly onDidChange: Event<LanguageIdentifier> = Event.None;
-	constructor(public readonly languageIdentifier: LanguageIdentifier) { }
-	public dispose(): void { }
+	constructor(puBlic readonly languageIdentifier: LanguageIdentifier) { }
+	puBlic dispose(): void { }
 }

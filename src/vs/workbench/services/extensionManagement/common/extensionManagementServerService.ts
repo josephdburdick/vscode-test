@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { Schemas } from 'vs/base/common/network';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { Schemas } from 'vs/Base/common/network';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { isWeb } from 'vs/base/common/platform';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { isWeB } from 'vs/Base/common/platform';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { WebExtensionManagementService } from 'vs/workbench/services/extensionManagement/common/webExtensionManagementService';
+import { WeBExtensionManagementService } from 'vs/workBench/services/extensionManagement/common/weBExtensionManagementService';
 import { IExtension } from 'vs/platform/extensions/common/extensions';
-import { WebRemoteExtensionManagementService } from 'vs/workbench/services/extensionManagement/common/remoteExtensionManagementService';
+import { WeBRemoteExtensionManagementService } from 'vs/workBench/services/extensionManagement/common/remoteExtensionManagementService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IProductService } from 'vs/platform/product/common/productService';
@@ -25,11 +25,11 @@ export class ExtensionManagementServerService implements IExtensionManagementSer
 
 	readonly localExtensionManagementServer: IExtensionManagementServer | null = null;
 	readonly remoteExtensionManagementServer: IExtensionManagementServer | null = null;
-	readonly webExtensionManagementServer: IExtensionManagementServer | null = null;
+	readonly weBExtensionManagementServer: IExtensionManagementServer | null = null;
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IExtensionGalleryService galleryService: IExtensionGalleryService,
 		@IProductService productService: IProductService,
 		@IConfigurationService configurationService: IConfigurationService,
@@ -37,18 +37,18 @@ export class ExtensionManagementServerService implements IExtensionManagementSer
 	) {
 		const remoteAgentConnection = remoteAgentService.getConnection();
 		if (remoteAgentConnection) {
-			const extensionManagementService = new WebRemoteExtensionManagementService(remoteAgentConnection.getChannel<IChannel>('extensions'), galleryService, configurationService, productService);
+			const extensionManagementService = new WeBRemoteExtensionManagementService(remoteAgentConnection.getChannel<IChannel>('extensions'), galleryService, configurationService, productService);
 			this.remoteExtensionManagementServer = {
 				id: 'remote',
 				extensionManagementService,
-				get label() { return labelService.getHostLabel(Schemas.vscodeRemote, remoteAgentConnection!.remoteAuthority) || localize('remote', "Remote"); }
+				get laBel() { return laBelService.getHostLaBel(Schemas.vscodeRemote, remoteAgentConnection!.remoteAuthority) || localize('remote', "Remote"); }
 			};
-		} else if (isWeb) {
-			const extensionManagementService = instantiationService.createInstance(WebExtensionManagementService);
-			this.webExtensionManagementServer = {
-				id: 'web',
+		} else if (isWeB) {
+			const extensionManagementService = instantiationService.createInstance(WeBExtensionManagementService);
+			this.weBExtensionManagementServer = {
+				id: 'weB',
 				extensionManagementService,
-				label: localize('web', "Web")
+				laBel: localize('weB', "WeB")
 			};
 		}
 	}
@@ -57,8 +57,8 @@ export class ExtensionManagementServerService implements IExtensionManagementSer
 		if (extension.location.scheme === Schemas.vscodeRemote) {
 			return this.remoteExtensionManagementServer!;
 		}
-		if (this.webExtensionManagementServer) {
-			return this.webExtensionManagementServer;
+		if (this.weBExtensionManagementServer) {
+			return this.weBExtensionManagementServer;
 		}
 		throw new Error(`Invalid Extension ${extension.location}`);
 	}

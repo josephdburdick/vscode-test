@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ScrollEvent } from 'vs/base/common/scrollable';
+import { ScrollEvent } from 'vs/Base/common/scrollaBle';
 import { ConfigurationChangedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -31,25 +31,25 @@ export const enum ViewEventType {
 
 export class ViewConfigurationChangedEvent {
 
-	public readonly type = ViewEventType.ViewConfigurationChanged;
+	puBlic readonly type = ViewEventType.ViewConfigurationChanged;
 
-	public readonly _source: ConfigurationChangedEvent;
+	puBlic readonly _source: ConfigurationChangedEvent;
 
 	constructor(source: ConfigurationChangedEvent) {
 		this._source = source;
 	}
 
-	public hasChanged(id: EditorOption): boolean {
+	puBlic hasChanged(id: EditorOption): Boolean {
 		return this._source.hasChanged(id);
 	}
 }
 
 export class ViewCursorStateChangedEvent {
 
-	public readonly type = ViewEventType.ViewCursorStateChanged;
+	puBlic readonly type = ViewEventType.ViewCursorStateChanged;
 
-	public readonly selections: Selection[];
-	public readonly modelSelections: Selection[];
+	puBlic readonly selections: Selection[];
+	puBlic readonly modelSelections: Selection[];
 
 	constructor(selections: Selection[], modelSelections: Selection[]) {
 		this.selections = selections;
@@ -59,10 +59,10 @@ export class ViewCursorStateChangedEvent {
 
 export class ViewDecorationsChangedEvent {
 
-	public readonly type = ViewEventType.ViewDecorationsChanged;
+	puBlic readonly type = ViewEventType.ViewDecorationsChanged;
 
-	readonly affectsMinimap: boolean;
-	readonly affectsOverviewRuler: boolean;
+	readonly affectsMinimap: Boolean;
+	readonly affectsOverviewRuler: Boolean;
 
 	constructor(source: IModelDecorationsChangedEvent | null) {
 		if (source) {
@@ -77,7 +77,7 @@ export class ViewDecorationsChangedEvent {
 
 export class ViewFlushedEvent {
 
-	public readonly type = ViewEventType.ViewFlushed;
+	puBlic readonly type = ViewEventType.ViewFlushed;
 
 	constructor() {
 		// Nothing to do
@@ -86,23 +86,23 @@ export class ViewFlushedEvent {
 
 export class ViewFocusChangedEvent {
 
-	public readonly type = ViewEventType.ViewFocusChanged;
+	puBlic readonly type = ViewEventType.ViewFocusChanged;
 
-	public readonly isFocused: boolean;
+	puBlic readonly isFocused: Boolean;
 
-	constructor(isFocused: boolean) {
+	constructor(isFocused: Boolean) {
 		this.isFocused = isFocused;
 	}
 }
 
 export class ViewLanguageConfigurationEvent {
 
-	public readonly type = ViewEventType.ViewLanguageConfigurationChanged;
+	puBlic readonly type = ViewEventType.ViewLanguageConfigurationChanged;
 }
 
 export class ViewLineMappingChangedEvent {
 
-	public readonly type = ViewEventType.ViewLineMappingChanged;
+	puBlic readonly type = ViewEventType.ViewLineMappingChanged;
 
 	constructor() {
 		// Nothing to do
@@ -111,58 +111,58 @@ export class ViewLineMappingChangedEvent {
 
 export class ViewLinesChangedEvent {
 
-	public readonly type = ViewEventType.ViewLinesChanged;
+	puBlic readonly type = ViewEventType.ViewLinesChanged;
 
 	/**
 	 * The first line that has changed.
 	 */
-	public readonly fromLineNumber: number;
+	puBlic readonly fromLineNumBer: numBer;
 	/**
 	 * The last line that has changed.
 	 */
-	public readonly toLineNumber: number;
+	puBlic readonly toLineNumBer: numBer;
 
-	constructor(fromLineNumber: number, toLineNumber: number) {
-		this.fromLineNumber = fromLineNumber;
-		this.toLineNumber = toLineNumber;
+	constructor(fromLineNumBer: numBer, toLineNumBer: numBer) {
+		this.fromLineNumBer = fromLineNumBer;
+		this.toLineNumBer = toLineNumBer;
 	}
 }
 
 export class ViewLinesDeletedEvent {
 
-	public readonly type = ViewEventType.ViewLinesDeleted;
+	puBlic readonly type = ViewEventType.ViewLinesDeleted;
 
 	/**
-	 * At what line the deletion began (inclusive).
+	 * At what line the deletion Began (inclusive).
 	 */
-	public readonly fromLineNumber: number;
+	puBlic readonly fromLineNumBer: numBer;
 	/**
 	 * At what line the deletion stopped (inclusive).
 	 */
-	public readonly toLineNumber: number;
+	puBlic readonly toLineNumBer: numBer;
 
-	constructor(fromLineNumber: number, toLineNumber: number) {
-		this.fromLineNumber = fromLineNumber;
-		this.toLineNumber = toLineNumber;
+	constructor(fromLineNumBer: numBer, toLineNumBer: numBer) {
+		this.fromLineNumBer = fromLineNumBer;
+		this.toLineNumBer = toLineNumBer;
 	}
 }
 
 export class ViewLinesInsertedEvent {
 
-	public readonly type = ViewEventType.ViewLinesInserted;
+	puBlic readonly type = ViewEventType.ViewLinesInserted;
 
 	/**
-	 * Before what line did the insertion begin
+	 * Before what line did the insertion Begin
 	 */
-	public readonly fromLineNumber: number;
+	puBlic readonly fromLineNumBer: numBer;
 	/**
-	 * `toLineNumber` - `fromLineNumber` + 1 denotes the number of lines that were inserted
+	 * `toLineNumBer` - `fromLineNumBer` + 1 denotes the numBer of lines that were inserted
 	 */
-	public readonly toLineNumber: number;
+	puBlic readonly toLineNumBer: numBer;
 
-	constructor(fromLineNumber: number, toLineNumber: number) {
-		this.fromLineNumber = fromLineNumber;
-		this.toLineNumber = toLineNumber;
+	constructor(fromLineNumBer: numBer, toLineNumBer: numBer) {
+		this.fromLineNumBer = fromLineNumBer;
+		this.toLineNumBer = toLineNumBer;
 	}
 }
 
@@ -178,33 +178,33 @@ export const enum VerticalRevealType {
 
 export class ViewRevealRangeRequestEvent {
 
-	public readonly type = ViewEventType.ViewRevealRangeRequest;
+	puBlic readonly type = ViewEventType.ViewRevealRangeRequest;
 
 	/**
-	 * Range to be reavealed.
+	 * Range to Be reavealed.
 	 */
-	public readonly range: Range | null;
+	puBlic readonly range: Range | null;
 
 	/**
-	 * Selections to be revealed.
+	 * Selections to Be revealed.
 	 */
-	public readonly selections: Selection[] | null;
+	puBlic readonly selections: Selection[] | null;
 
-	public readonly verticalType: VerticalRevealType;
+	puBlic readonly verticalType: VerticalRevealType;
 	/**
-	 * If true: there should be a horizontal & vertical revealing
-	 * If false: there should be just a vertical revealing
+	 * If true: there should Be a horizontal & vertical revealing
+	 * If false: there should Be just a vertical revealing
 	 */
-	public readonly revealHorizontal: boolean;
+	puBlic readonly revealHorizontal: Boolean;
 
-	public readonly scrollType: ScrollType;
+	puBlic readonly scrollType: ScrollType;
 
 	/**
 	 * Source of the call that caused the event.
 	 */
 	readonly source: string | null | undefined;
 
-	constructor(source: string | null | undefined, range: Range | null, selections: Selection[] | null, verticalType: VerticalRevealType, revealHorizontal: boolean, scrollType: ScrollType) {
+	constructor(source: string | null | undefined, range: Range | null, selections: Selection[] | null, verticalType: VerticalRevealType, revealHorizontal: Boolean, scrollType: ScrollType) {
 		this.source = source;
 		this.range = range;
 		this.selections = selections;
@@ -216,17 +216,17 @@ export class ViewRevealRangeRequestEvent {
 
 export class ViewScrollChangedEvent {
 
-	public readonly type = ViewEventType.ViewScrollChanged;
+	puBlic readonly type = ViewEventType.ViewScrollChanged;
 
-	public readonly scrollWidth: number;
-	public readonly scrollLeft: number;
-	public readonly scrollHeight: number;
-	public readonly scrollTop: number;
+	puBlic readonly scrollWidth: numBer;
+	puBlic readonly scrollLeft: numBer;
+	puBlic readonly scrollHeight: numBer;
+	puBlic readonly scrollTop: numBer;
 
-	public readonly scrollWidthChanged: boolean;
-	public readonly scrollLeftChanged: boolean;
-	public readonly scrollHeightChanged: boolean;
-	public readonly scrollTopChanged: boolean;
+	puBlic readonly scrollWidthChanged: Boolean;
+	puBlic readonly scrollLeftChanged: Boolean;
+	puBlic readonly scrollHeightChanged: Boolean;
+	puBlic readonly scrollTopChanged: Boolean;
 
 	constructor(source: ScrollEvent) {
 		this.scrollWidth = source.scrollWidth;
@@ -243,32 +243,32 @@ export class ViewScrollChangedEvent {
 
 export class ViewThemeChangedEvent {
 
-	public readonly type = ViewEventType.ViewThemeChanged;
+	puBlic readonly type = ViewEventType.ViewThemeChanged;
 }
 
 export class ViewTokensChangedEvent {
 
-	public readonly type = ViewEventType.ViewTokensChanged;
+	puBlic readonly type = ViewEventType.ViewTokensChanged;
 
-	public readonly ranges: {
+	puBlic readonly ranges: {
 		/**
-		 * Start line number of range
+		 * Start line numBer of range
 		 */
-		readonly fromLineNumber: number;
+		readonly fromLineNumBer: numBer;
 		/**
-		 * End line number of range
+		 * End line numBer of range
 		 */
-		readonly toLineNumber: number;
+		readonly toLineNumBer: numBer;
 	}[];
 
-	constructor(ranges: { fromLineNumber: number; toLineNumber: number; }[]) {
+	constructor(ranges: { fromLineNumBer: numBer; toLineNumBer: numBer; }[]) {
 		this.ranges = ranges;
 	}
 }
 
 export class ViewTokensColorsChangedEvent {
 
-	public readonly type = ViewEventType.ViewTokensColorsChanged;
+	puBlic readonly type = ViewEventType.ViewTokensColorsChanged;
 
 	constructor() {
 		// Nothing to do
@@ -277,7 +277,7 @@ export class ViewTokensColorsChangedEvent {
 
 export class ViewZonesChangedEvent {
 
-	public readonly type = ViewEventType.ViewZonesChanged;
+	puBlic readonly type = ViewEventType.ViewZonesChanged;
 
 	constructor() {
 		// Nothing to do

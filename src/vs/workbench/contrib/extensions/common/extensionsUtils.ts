@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { Event } from 'vs/base/common/event';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IExtensionManagementService, ILocalExtension, IExtensionIdentifier, InstallOperation } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService, EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IWorkBenchExtensionEnaBlementService, EnaBlementState } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { IExtensionRecommendationsService } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
@@ -20,14 +20,14 @@ import { Severity, INotificationService } from 'vs/platform/notification/common/
 export interface IExtensionStatus {
 	identifier: IExtensionIdentifier;
 	local: ILocalExtension;
-	globallyEnabled: boolean;
+	gloBallyEnaBled: Boolean;
 }
 
-export class KeymapExtensions extends Disposable implements IWorkbenchContribution {
+export class KeymapExtensions extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
+		@IWorkBenchExtensionEnaBlementService private readonly extensionEnaBlementService: IWorkBenchExtensionEnaBlementService,
 		@IExtensionRecommendationsService private readonly tipsService: IExtensionRecommendationsService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@INotificationService private readonly notificationService: INotificationService,
@@ -45,42 +45,42 @@ export class KeymapExtensions extends Disposable implements IWorkbenchContributi
 		return this.instantiationService.invokeFunction(getInstalledExtensions).then(extensions => {
 			const keymaps = extensions.filter(extension => isKeymapExtension(this.tipsService, extension));
 			const extension = keymaps.find(extension => areSameExtensions(extension.identifier, extensionIdentifier));
-			if (extension && extension.globallyEnabled) {
-				const otherKeymaps = keymaps.filter(extension => !areSameExtensions(extension.identifier, extensionIdentifier) && extension.globallyEnabled);
+			if (extension && extension.gloBallyEnaBled) {
+				const otherKeymaps = keymaps.filter(extension => !areSameExtensions(extension.identifier, extensionIdentifier) && extension.gloBallyEnaBled);
 				if (otherKeymaps.length) {
-					return this.promptForDisablingOtherKeymaps(extension, otherKeymaps);
+					return this.promptForDisaBlingOtherKeymaps(extension, otherKeymaps);
 				}
 			}
 			return undefined;
 		});
 	}
 
-	private promptForDisablingOtherKeymaps(newKeymap: IExtensionStatus, oldKeymaps: IExtensionStatus[]): void {
-		const onPrompt = (confirmed: boolean) => {
+	private promptForDisaBlingOtherKeymaps(newKeymap: IExtensionStatus, oldKeymaps: IExtensionStatus[]): void {
+		const onPrompt = (confirmed: Boolean) => {
 			const telemetryData: { [key: string]: any; } = {
 				newKeymap: newKeymap.identifier,
 				oldKeymaps: oldKeymaps.map(k => k.identifier),
 				confirmed
 			};
 			/* __GDPR__
-				"disableOtherKeymaps" : {
+				"disaBleOtherKeymaps" : {
 					"newKeymap": { "${inline}": [ "${ExtensionIdentifier}" ] },
 					"oldKeymaps": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 					"confirmed" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('disableOtherKeymaps', telemetryData);
+			this.telemetryService.puBlicLog('disaBleOtherKeymaps', telemetryData);
 			if (confirmed) {
-				this.extensionEnablementService.setEnablement(oldKeymaps.map(keymap => keymap.local), EnablementState.DisabledGlobally);
+				this.extensionEnaBlementService.setEnaBlement(oldKeymaps.map(keymap => keymap.local), EnaBlementState.DisaBledGloBally);
 			}
 		};
 
-		this.notificationService.prompt(Severity.Info, localize('disableOtherKeymapsConfirmation', "Disable other keymaps ({0}) to avoid conflicts between keybindings?", oldKeymaps.map(k => `'${k.local.manifest.displayName}'`).join(', ')),
+		this.notificationService.prompt(Severity.Info, localize('disaBleOtherKeymapsConfirmation', "DisaBle other keymaps ({0}) to avoid conflicts Between keyBindings?", oldKeymaps.map(k => `'${k.local.manifest.displayName}'`).join(', ')),
 			[{
-				label: localize('yes', "Yes"),
+				laBel: localize('yes', "Yes"),
 				run: () => onPrompt(true)
 			}, {
-				label: localize('no', "No"),
+				laBel: localize('no', "No"),
 				run: () => onPrompt(false)
 			}]
 		);
@@ -89,15 +89,15 @@ export class KeymapExtensions extends Disposable implements IWorkbenchContributi
 
 export function onExtensionChanged(accessor: ServicesAccessor): Event<IExtensionIdentifier[]> {
 	const extensionService = accessor.get(IExtensionManagementService);
-	const extensionEnablementService = accessor.get(IWorkbenchExtensionEnablementService);
+	const extensionEnaBlementService = accessor.get(IWorkBenchExtensionEnaBlementService);
 	const onDidInstallExtension = Event.chain(extensionService.onDidInstallExtension)
 		.filter(e => e.operation === InstallOperation.Install)
 		.event;
-	return Event.debounce<IExtensionIdentifier[], IExtensionIdentifier[]>(Event.any(
+	return Event.deBounce<IExtensionIdentifier[], IExtensionIdentifier[]>(Event.any(
 		Event.chain(Event.any(onDidInstallExtension, extensionService.onDidUninstallExtension))
 			.map(e => [e.identifier])
 			.event,
-		Event.map(extensionEnablementService.onEnablementChanged, extensions => extensions.map(e => e.identifier))
+		Event.map(extensionEnaBlementService.onEnaBlementChanged, extensions => extensions.map(e => e.identifier))
 	), (result: IExtensionIdentifier[] | undefined, identifiers: IExtensionIdentifier[]) => {
 		result = result || [];
 		for (const identifier of identifiers) {
@@ -111,18 +111,18 @@ export function onExtensionChanged(accessor: ServicesAccessor): Event<IExtension
 
 export async function getInstalledExtensions(accessor: ServicesAccessor): Promise<IExtensionStatus[]> {
 	const extensionService = accessor.get(IExtensionManagementService);
-	const extensionEnablementService = accessor.get(IWorkbenchExtensionEnablementService);
+	const extensionEnaBlementService = accessor.get(IWorkBenchExtensionEnaBlementService);
 	const extensions = await extensionService.getInstalled();
 	return extensions.map(extension => {
 		return {
 			identifier: extension.identifier,
 			local: extension,
-			globallyEnabled: extensionEnablementService.isEnabled(extension)
+			gloBallyEnaBled: extensionEnaBlementService.isEnaBled(extension)
 		};
 	});
 }
 
-export function isKeymapExtension(tipsService: IExtensionRecommendationsService, extension: IExtensionStatus): boolean {
+export function isKeymapExtension(tipsService: IExtensionRecommendationsService, extension: IExtensionStatus): Boolean {
 	const cats = extension.local.manifest.categories;
 	return cats && cats.indexOf('Keymaps') !== -1 || tipsService.getKeymapRecommendations().some(extensionId => areSameExtensions({ id: extensionId }, extension.local.identifier));
 }

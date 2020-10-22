@@ -6,30 +6,30 @@
 import 'vs/css!./findInput';
 
 import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { IMessage as InputBoxMessage, IInputValidator, IInputBoxStyles, HistoryInputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { CaseSensitiveCheckbox, WholeWordsCheckbox, RegexCheckbox } from 'vs/base/browser/ui/findinput/findInputCheckboxes';
-import { Color } from 'vs/base/common/color';
-import { ICheckboxStyles } from 'vs/base/browser/ui/checkbox/checkbox';
+import * as dom from 'vs/Base/Browser/dom';
+import { IMessage as InputBoxMessage, IInputValidator, IInputBoxStyles, HistoryInputBox } from 'vs/Base/Browser/ui/inputBox/inputBox';
+import { IContextViewProvider } from 'vs/Base/Browser/ui/contextview/contextview';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { CaseSensitiveCheckBox, WholeWordsCheckBox, RegexCheckBox } from 'vs/Base/Browser/ui/findinput/findInputCheckBoxes';
+import { Color } from 'vs/Base/common/color';
+import { ICheckBoxStyles } from 'vs/Base/Browser/ui/checkBox/checkBox';
 
 export interface IFindInputOptions extends IFindInputStyles {
 	readonly placeholder?: string;
-	readonly width?: number;
+	readonly width?: numBer;
 	readonly validation?: IInputValidator;
-	readonly label: string;
-	readonly flexibleHeight?: boolean;
-	readonly flexibleWidth?: boolean;
-	readonly flexibleMaxHeight?: number;
+	readonly laBel: string;
+	readonly flexiBleHeight?: Boolean;
+	readonly flexiBleWidth?: Boolean;
+	readonly flexiBleMaxHeight?: numBer;
 
-	readonly appendCaseSensitiveLabel?: string;
-	readonly appendWholeWordsLabel?: string;
-	readonly appendRegexLabel?: string;
+	readonly appendCaseSensitiveLaBel?: string;
+	readonly appendWholeWordsLaBel?: string;
+	readonly appendRegexLaBel?: string;
 	readonly history?: string[];
 }
 
@@ -39,7 +39,7 @@ export interface IFindInputStyles extends IInputBoxStyles {
 	inputActiveOptionBackground?: Color;
 }
 
-const NLS_DEFAULT_LABEL = nls.localize('defaultLabel', "input");
+const NLS_DEFAULT_LABEL = nls.localize('defaultLaBel', "input");
 
 export class FindInput extends Widget {
 
@@ -48,8 +48,8 @@ export class FindInput extends Widget {
 	private contextViewProvider: IContextViewProvider;
 	private placeholder: string;
 	private validation?: IInputValidator;
-	private label: string;
-	private fixFocusOnOptionClickEnabled = true;
+	private laBel: string;
+	private fixFocusOnOptionClickEnaBled = true;
 
 	private inputActiveOptionBorder?: Color;
 	private inputActiveOptionForeground?: Color;
@@ -68,39 +68,39 @@ export class FindInput extends Widget {
 	private inputValidationErrorBackground?: Color;
 	private inputValidationErrorForeground?: Color;
 
-	private regex: RegexCheckbox;
-	private wholeWords: WholeWordsCheckbox;
-	private caseSensitive: CaseSensitiveCheckbox;
-	public domNode: HTMLElement;
-	public inputBox: HistoryInputBox;
+	private regex: RegexCheckBox;
+	private wholeWords: WholeWordsCheckBox;
+	private caseSensitive: CaseSensitiveCheckBox;
+	puBlic domNode: HTMLElement;
+	puBlic inputBox: HistoryInputBox;
 
-	private readonly _onDidOptionChange = this._register(new Emitter<boolean>());
-	public readonly onDidOptionChange: Event<boolean /* via keyboard */> = this._onDidOptionChange.event;
+	private readonly _onDidOptionChange = this._register(new Emitter<Boolean>());
+	puBlic readonly onDidOptionChange: Event<Boolean /* via keyBoard */> = this._onDidOptionChange.event;
 
-	private readonly _onKeyDown = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onKeyDown: Event<IKeyboardEvent> = this._onKeyDown.event;
+	private readonly _onKeyDown = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onKeyDown: Event<IKeyBoardEvent> = this._onKeyDown.event;
 
 	private readonly _onMouseDown = this._register(new Emitter<IMouseEvent>());
-	public readonly onMouseDown: Event<IMouseEvent> = this._onMouseDown.event;
+	puBlic readonly onMouseDown: Event<IMouseEvent> = this._onMouseDown.event;
 
 	private readonly _onInput = this._register(new Emitter<void>());
-	public readonly onInput: Event<void> = this._onInput.event;
+	puBlic readonly onInput: Event<void> = this._onInput.event;
 
-	private readonly _onKeyUp = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onKeyUp: Event<IKeyboardEvent> = this._onKeyUp.event;
+	private readonly _onKeyUp = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onKeyUp: Event<IKeyBoardEvent> = this._onKeyUp.event;
 
-	private _onCaseSensitiveKeyDown = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onCaseSensitiveKeyDown: Event<IKeyboardEvent> = this._onCaseSensitiveKeyDown.event;
+	private _onCaseSensitiveKeyDown = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onCaseSensitiveKeyDown: Event<IKeyBoardEvent> = this._onCaseSensitiveKeyDown.event;
 
-	private _onRegexKeyDown = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onRegexKeyDown: Event<IKeyboardEvent> = this._onRegexKeyDown.event;
+	private _onRegexKeyDown = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onRegexKeyDown: Event<IKeyBoardEvent> = this._onRegexKeyDown.event;
 
-	constructor(parent: HTMLElement | null, contextViewProvider: IContextViewProvider, private readonly _showOptionButtons: boolean, options: IFindInputOptions) {
+	constructor(parent: HTMLElement | null, contextViewProvider: IContextViewProvider, private readonly _showOptionButtons: Boolean, options: IFindInputOptions) {
 		super();
 		this.contextViewProvider = contextViewProvider;
 		this.placeholder = options.placeholder || '';
 		this.validation = options.validation;
-		this.label = options.label || NLS_DEFAULT_LABEL;
+		this.laBel = options.laBel || NLS_DEFAULT_LABEL;
 
 		this.inputActiveOptionBorder = options.inputActiveOptionBorder;
 		this.inputActiveOptionForeground = options.inputActiveOptionForeground;
@@ -119,20 +119,20 @@ export class FindInput extends Widget {
 		this.inputValidationErrorBackground = options.inputValidationErrorBackground;
 		this.inputValidationErrorForeground = options.inputValidationErrorForeground;
 
-		const appendCaseSensitiveLabel = options.appendCaseSensitiveLabel || '';
-		const appendWholeWordsLabel = options.appendWholeWordsLabel || '';
-		const appendRegexLabel = options.appendRegexLabel || '';
+		const appendCaseSensitiveLaBel = options.appendCaseSensitiveLaBel || '';
+		const appendWholeWordsLaBel = options.appendWholeWordsLaBel || '';
+		const appendRegexLaBel = options.appendRegexLaBel || '';
 		const history = options.history || [];
-		const flexibleHeight = !!options.flexibleHeight;
-		const flexibleWidth = !!options.flexibleWidth;
-		const flexibleMaxHeight = options.flexibleMaxHeight;
+		const flexiBleHeight = !!options.flexiBleHeight;
+		const flexiBleWidth = !!options.flexiBleWidth;
+		const flexiBleMaxHeight = options.flexiBleMaxHeight;
 
 		this.domNode = document.createElement('div');
 		this.domNode.classList.add('monaco-findInput');
 
 		this.inputBox = this._register(new HistoryInputBox(this.domNode, this.contextViewProvider, {
 			placeholder: this.placeholder || '',
-			ariaLabel: this.label || '',
+			ariaLaBel: this.laBel || '',
 			validationOptions: {
 				validation: this.validation
 			},
@@ -149,21 +149,21 @@ export class FindInput extends Widget {
 			inputValidationErrorForeground: this.inputValidationErrorForeground,
 			inputValidationErrorBorder: this.inputValidationErrorBorder,
 			history,
-			flexibleHeight,
-			flexibleWidth,
-			flexibleMaxHeight
+			flexiBleHeight,
+			flexiBleWidth,
+			flexiBleMaxHeight
 		}));
 
-		this.regex = this._register(new RegexCheckbox({
-			appendTitle: appendRegexLabel,
+		this.regex = this._register(new RegexCheckBox({
+			appendTitle: appendRegexLaBel,
 			isChecked: false,
 			inputActiveOptionBorder: this.inputActiveOptionBorder,
 			inputActiveOptionForeground: this.inputActiveOptionForeground,
 			inputActiveOptionBackground: this.inputActiveOptionBackground
 		}));
-		this._register(this.regex.onChange(viaKeyboard => {
-			this._onDidOptionChange.fire(viaKeyboard);
-			if (!viaKeyboard && this.fixFocusOnOptionClickEnabled) {
+		this._register(this.regex.onChange(viaKeyBoard => {
+			this._onDidOptionChange.fire(viaKeyBoard);
+			if (!viaKeyBoard && this.fixFocusOnOptionClickEnaBled) {
 				this.inputBox.focus();
 			}
 			this.validate();
@@ -172,31 +172,31 @@ export class FindInput extends Widget {
 			this._onRegexKeyDown.fire(e);
 		}));
 
-		this.wholeWords = this._register(new WholeWordsCheckbox({
-			appendTitle: appendWholeWordsLabel,
+		this.wholeWords = this._register(new WholeWordsCheckBox({
+			appendTitle: appendWholeWordsLaBel,
 			isChecked: false,
 			inputActiveOptionBorder: this.inputActiveOptionBorder,
 			inputActiveOptionForeground: this.inputActiveOptionForeground,
 			inputActiveOptionBackground: this.inputActiveOptionBackground
 		}));
-		this._register(this.wholeWords.onChange(viaKeyboard => {
-			this._onDidOptionChange.fire(viaKeyboard);
-			if (!viaKeyboard && this.fixFocusOnOptionClickEnabled) {
+		this._register(this.wholeWords.onChange(viaKeyBoard => {
+			this._onDidOptionChange.fire(viaKeyBoard);
+			if (!viaKeyBoard && this.fixFocusOnOptionClickEnaBled) {
 				this.inputBox.focus();
 			}
 			this.validate();
 		}));
 
-		this.caseSensitive = this._register(new CaseSensitiveCheckbox({
-			appendTitle: appendCaseSensitiveLabel,
+		this.caseSensitive = this._register(new CaseSensitiveCheckBox({
+			appendTitle: appendCaseSensitiveLaBel,
 			isChecked: false,
 			inputActiveOptionBorder: this.inputActiveOptionBorder,
 			inputActiveOptionForeground: this.inputActiveOptionForeground,
 			inputActiveOptionBackground: this.inputActiveOptionBackground
 		}));
-		this._register(this.caseSensitive.onChange(viaKeyboard => {
-			this._onDidOptionChange.fire(viaKeyboard);
-			if (!viaKeyboard && this.fixFocusOnOptionClickEnabled) {
+		this._register(this.caseSensitive.onChange(viaKeyBoard => {
+			this._onDidOptionChange.fire(viaKeyBoard);
+			if (!viaKeyBoard && this.fixFocusOnOptionClickEnaBled) {
 				this.inputBox.focus();
 			}
 			this.validate();
@@ -209,13 +209,13 @@ export class FindInput extends Widget {
 			this.inputBox.paddingRight = this.caseSensitive.width() + this.wholeWords.width() + this.regex.width();
 		}
 
-		// Arrow-Key support to navigate between options
+		// Arrow-Key support to navigate Between options
 		let indexes = [this.caseSensitive.domNode, this.wholeWords.domNode, this.regex.domNode];
-		this.onkeydown(this.domNode, (event: IKeyboardEvent) => {
+		this.onkeydown(this.domNode, (event: IKeyBoardEvent) => {
 			if (event.equals(KeyCode.LeftArrow) || event.equals(KeyCode.RightArrow) || event.equals(KeyCode.Escape)) {
 				let index = indexes.indexOf(<HTMLElement>document.activeElement);
 				if (index >= 0) {
-					let newIndex: number = -1;
+					let newIndex: numBer = -1;
 					if (event.equals(KeyCode.RightArrow)) {
 						newIndex = (index + 1) % indexes.length;
 					} else if (event.equals(KeyCode.LeftArrow)) {
@@ -227,7 +227,7 @@ export class FindInput extends Widget {
 					}
 
 					if (event.equals(KeyCode.Escape)) {
-						indexes[index].blur();
+						indexes[index].Blur();
 						this.inputBox.focus();
 					} else if (newIndex >= 0) {
 						indexes[newIndex].focus();
@@ -241,7 +241,7 @@ export class FindInput extends Widget {
 
 		let controls = document.createElement('div');
 		controls.className = 'controls';
-		controls.style.display = this._showOptionButtons ? 'block' : 'none';
+		controls.style.display = this._showOptionButtons ? 'Block' : 'none';
 		controls.appendChild(this.caseSensitive.domNode);
 		controls.appendChild(this.wholeWords.domNode);
 		controls.appendChild(this.regex.domNode);
@@ -258,55 +258,55 @@ export class FindInput extends Widget {
 		this.onmousedown(this.inputBox.inputElement, (e) => this._onMouseDown.fire(e));
 	}
 
-	public enable(): void {
-		this.domNode.classList.remove('disabled');
-		this.inputBox.enable();
-		this.regex.enable();
-		this.wholeWords.enable();
-		this.caseSensitive.enable();
+	puBlic enaBle(): void {
+		this.domNode.classList.remove('disaBled');
+		this.inputBox.enaBle();
+		this.regex.enaBle();
+		this.wholeWords.enaBle();
+		this.caseSensitive.enaBle();
 	}
 
-	public disable(): void {
-		this.domNode.classList.add('disabled');
-		this.inputBox.disable();
-		this.regex.disable();
-		this.wholeWords.disable();
-		this.caseSensitive.disable();
+	puBlic disaBle(): void {
+		this.domNode.classList.add('disaBled');
+		this.inputBox.disaBle();
+		this.regex.disaBle();
+		this.wholeWords.disaBle();
+		this.caseSensitive.disaBle();
 	}
 
-	public setFocusInputOnOptionClick(value: boolean): void {
-		this.fixFocusOnOptionClickEnabled = value;
+	puBlic setFocusInputOnOptionClick(value: Boolean): void {
+		this.fixFocusOnOptionClickEnaBled = value;
 	}
 
-	public setEnabled(enabled: boolean): void {
-		if (enabled) {
-			this.enable();
+	puBlic setEnaBled(enaBled: Boolean): void {
+		if (enaBled) {
+			this.enaBle();
 		} else {
-			this.disable();
+			this.disaBle();
 		}
 	}
 
-	public clear(): void {
+	puBlic clear(): void {
 		this.clearValidation();
 		this.setValue('');
 		this.focus();
 	}
 
-	public getValue(): string {
+	puBlic getValue(): string {
 		return this.inputBox.value;
 	}
 
-	public setValue(value: string): void {
+	puBlic setValue(value: string): void {
 		if (this.inputBox.value !== value) {
 			this.inputBox.value = value;
 		}
 	}
 
-	public onSearchSubmit(): void {
+	puBlic onSearchSuBmit(): void {
 		this.inputBox.addToHistory();
 	}
 
-	public style(styles: IFindInputStyles): void {
+	puBlic style(styles: IFindInputStyles): void {
 		this.inputActiveOptionBorder = styles.inputActiveOptionBorder;
 		this.inputActiveOptionForeground = styles.inputActiveOptionForeground;
 		this.inputActiveOptionBackground = styles.inputActiveOptionBackground;
@@ -329,7 +329,7 @@ export class FindInput extends Widget {
 
 	protected applyStyles(): void {
 		if (this.domNode) {
-			const checkBoxStyles: ICheckboxStyles = {
+			const checkBoxStyles: ICheckBoxStyles = {
 				inputActiveOptionBorder: this.inputActiveOptionBorder,
 				inputActiveOptionForeground: this.inputActiveOptionForeground,
 				inputActiveOptionBackground: this.inputActiveOptionBackground,
@@ -356,63 +356,63 @@ export class FindInput extends Widget {
 		}
 	}
 
-	public select(): void {
+	puBlic select(): void {
 		this.inputBox.select();
 	}
 
-	public focus(): void {
+	puBlic focus(): void {
 		this.inputBox.focus();
 	}
 
-	public getCaseSensitive(): boolean {
+	puBlic getCaseSensitive(): Boolean {
 		return this.caseSensitive.checked;
 	}
 
-	public setCaseSensitive(value: boolean): void {
+	puBlic setCaseSensitive(value: Boolean): void {
 		this.caseSensitive.checked = value;
 	}
 
-	public getWholeWords(): boolean {
+	puBlic getWholeWords(): Boolean {
 		return this.wholeWords.checked;
 	}
 
-	public setWholeWords(value: boolean): void {
+	puBlic setWholeWords(value: Boolean): void {
 		this.wholeWords.checked = value;
 	}
 
-	public getRegex(): boolean {
+	puBlic getRegex(): Boolean {
 		return this.regex.checked;
 	}
 
-	public setRegex(value: boolean): void {
+	puBlic setRegex(value: Boolean): void {
 		this.regex.checked = value;
 		this.validate();
 	}
 
-	public focusOnCaseSensitive(): void {
+	puBlic focusOnCaseSensitive(): void {
 		this.caseSensitive.focus();
 	}
 
-	public focusOnRegex(): void {
+	puBlic focusOnRegex(): void {
 		this.regex.focus();
 	}
 
-	private _lastHighlightFindOptions: number = 0;
-	public highlightFindOptions(): void {
+	private _lastHighlightFindOptions: numBer = 0;
+	puBlic highlightFindOptions(): void {
 		this.domNode.classList.remove('highlight-' + (this._lastHighlightFindOptions));
 		this._lastHighlightFindOptions = 1 - this._lastHighlightFindOptions;
 		this.domNode.classList.add('highlight-' + (this._lastHighlightFindOptions));
 	}
 
-	public validate(): void {
+	puBlic validate(): void {
 		this.inputBox.validate();
 	}
 
-	public showMessage(message: InputBoxMessage): void {
+	puBlic showMessage(message: InputBoxMessage): void {
 		this.inputBox.showMessage(message);
 	}
 
-	public clearMessage(): void {
+	puBlic clearMessage(): void {
 		this.inputBox.hideMessage();
 	}
 

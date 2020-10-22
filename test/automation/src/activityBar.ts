@@ -22,9 +22,9 @@ export class ActivityBar {
 		} else if (position === ActivityBarPosition.RIGHT) {
 			positionClass = 'right';
 		} else {
-			throw new Error('No such position for activity bar defined.');
+			throw new Error('No such position for activity Bar defined.');
 		}
 
-		await this.code.waitForElement(`.part.activitybar.${positionClass}`);
+		await this.code.waitForElement(`.part.activityBar.${positionClass}`);
 	}
 }

@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 import { FileChangeType, FileChangesEvent } from 'vs/platform/files/common/files';
-import { URI as uri } from 'vs/base/common/uri';
+import { URI as uri } from 'vs/Base/common/uri';
 import { IDiskFileChange, normalizeFileChanges, toFileChanges } from 'vs/platform/files/node/watcher/watcher';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 
 function toFileChangesEvent(changes: IDiskFileChange[]): FileChangesEvent {
 	return new FileChangesEvent(toFileChanges(changes), !platform.isLinux);
@@ -84,7 +84,7 @@ suite('Normalizer', () => {
 			const deletedFolderB = uri.file(p === Path.UNIX ? '/users/data/src/todelete2' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\todelete2' : '\\\\localhost\\users\\data\\src\\todelete2');
 			const deletedFolderBF1 = uri.file(p === Path.UNIX ? '/users/data/src/todelete2/file.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\todelete2\\file.txt' : '\\\\localhost\\users\\data\\src\\todelete2\\file.txt');
 			const deletedFolderBF2 = uri.file(p === Path.UNIX ? '/users/data/src/todelete2/more/test.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\todelete2\\more\\test.txt' : '\\\\localhost\\users\\data\\src\\todelete2\\more\\test.txt');
-			const deletedFolderBF3 = uri.file(p === Path.UNIX ? '/users/data/src/todelete2/super/bar/foo.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\todelete2\\super\\bar\\foo.txt' : '\\\\localhost\\users\\data\\src\\todelete2\\super\\bar\\foo.txt');
+			const deletedFolderBF3 = uri.file(p === Path.UNIX ? '/users/data/src/todelete2/super/Bar/foo.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\todelete2\\super\\Bar\\foo.txt' : '\\\\localhost\\users\\data\\src\\todelete2\\super\\Bar\\foo.txt');
 			const deletedFileA = uri.file(p === Path.UNIX ? '/users/data/src/deleteme.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\deleteme.txt' : '\\\\localhost\\users\\data\\src\\deleteme.txt');
 
 			const addedFile = uri.file(p === Path.UNIX ? '/users/data/src/added.txt' : p === Path.WINDOWS ? 'C:\\users\\data\\src\\added.txt' : '\\\\localhost\\users\\data\\src\\added.txt');
@@ -118,7 +118,7 @@ suite('Normalizer', () => {
 		});
 	});
 
-	test('event normalization: ignore CREATE followed by DELETE', function (done: () => void) {
+	test('event normalization: ignore CREATE followed By DELETE', function (done: () => void) {
 		const watch = new TestFileWatcher();
 
 		const created = uri.file('/users/data/src/related');
@@ -143,7 +143,7 @@ suite('Normalizer', () => {
 		watch.report(raw);
 	});
 
-	test('event normalization: flatten DELETE followed by CREATE into CHANGE', function (done: () => void) {
+	test('event normalization: flatten DELETE followed By CREATE into CHANGE', function (done: () => void) {
 		const watch = new TestFileWatcher();
 
 		const deleted = uri.file('/users/data/src/related');

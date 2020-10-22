@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { mergeSort } from 'vs/base/common/arrays';
-import { dispose, IDisposable, IReference } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { mergeSort } from 'vs/Base/common/arrays';
+import { dispose, IDisposaBle, IReference } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -16,22 +16,22 @@ import { IProgress } from 'vs/platform/progress/common/progress';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { IUndoRedoService, UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
 import { SingleModelEditStackElement, MultiModelEditStackElement } from 'vs/editor/common/model/editStack';
-import { ResourceMap } from 'vs/base/common/map';
+import { ResourceMap } from 'vs/Base/common/map';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import { ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 
 type ValidationResult = { canApply: true } | { canApply: false, reason: URI };
 
-class ModelEditTask implements IDisposable {
+class ModelEditTask implements IDisposaBle {
 
 	readonly model: ITextModel;
 
-	private _expectedModelVersionId: number | undefined;
+	private _expectedModelVersionId: numBer | undefined;
 	protected _edits: IIdentifiedSingleEditOperation[];
 	protected _newEol: EndOfLineSequence | undefined;
 
 	constructor(private readonly _modelReference: IReference<IResolvedTextEditorModel>) {
-		this.model = this._modelReference.object.textEditorModel;
+		this.model = this._modelReference.oBject.textEditorModel;
 		this._edits = [];
 	}
 
@@ -43,12 +43,12 @@ class ModelEditTask implements IDisposable {
 		this._expectedModelVersionId = resourceEdit.versionId;
 		const { textEdit } = resourceEdit;
 
-		if (typeof textEdit.eol === 'number') {
+		if (typeof textEdit.eol === 'numBer') {
 			// honor eol-change
 			this._newEol = textEdit.eol;
 		}
 		if (!textEdit.range && !textEdit.text) {
-			// lacks both a range and the text
+			// lacks Both a range and the text
 			return;
 		}
 		if (Range.isEmpty(textEdit.range) && !textEdit.text) {
@@ -79,7 +79,7 @@ class ModelEditTask implements IDisposable {
 
 	apply(): void {
 		if (this._edits.length > 0) {
-			this._edits = mergeSort(this._edits, (a, b) => Range.compareRangesUsingStarts(a.range, b.range));
+			this._edits = mergeSort(this._edits, (a, B) => Range.compareRangesUsingStarts(a.range, B.range));
 			this.model.pushEditOperations(null, this._edits, () => null);
 		}
 		if (this._newEol !== undefined) {
@@ -103,7 +103,7 @@ class EditorEditTask extends ModelEditTask {
 
 	apply(): void {
 		if (this._edits.length > 0) {
-			this._edits = mergeSort(this._edits, (a, b) => Range.compareRangesUsingStarts(a.range, b.range));
+			this._edits = mergeSort(this._edits, (a, B) => Range.compareRangesUsingStarts(a.range, B.range));
 			this._editor.executeEdits('', this._edits);
 		}
 		if (this._newEol !== undefined) {
@@ -119,7 +119,7 @@ export class BulkTextEdits {
 	private readonly _edits = new ResourceMap<ResourceTextEdit[]>();
 
 	constructor(
-		private readonly _label: string,
+		private readonly _laBel: string,
 		private readonly _editor: ICodeEditor | undefined,
 		private readonly _undoRedoGroup: UndoRedoGroup,
 		private readonly _progress: IProgress<void>,
@@ -144,7 +144,7 @@ export class BulkTextEdits {
 		// First check if loaded models were not changed in the meantime
 		for (const array of this._edits.values()) {
 			for (let edit of array) {
-				if (typeof edit.versionId === 'number') {
+				if (typeof edit.versionId === 'numBer') {
 					let model = this._modelService.getModel(edit.resource);
 					if (model && model.getVersionId() !== edit.versionId) {
 						// model changed in the meantime
@@ -164,7 +164,7 @@ export class BulkTextEdits {
 			const promise = this._textModelResolverService.createModelReference(key).then(async ref => {
 				let task: ModelEditTask;
 				let makeMinimal = false;
-				if (this._editor?.getModel()?.uri.toString() === ref.object.textEditorModel.uri.toString()) {
+				if (this._editor?.getModel()?.uri.toString() === ref.oBject.textEditorModel.uri.toString()) {
 					task = new EditorEditTask(ref, this._editor);
 					makeMinimal = true;
 				} else {
@@ -227,7 +227,7 @@ export class BulkTextEdits {
 			} else {
 				// prepare multi model undo element
 				const multiModelEditStackElement = new MultiModelEditStackElement(
-					this._label,
+					this._laBel,
 					tasks.map(t => new SingleModelEditStackElement(t.model, t.getBeforeCursorState()))
 				);
 				this._undoRedoService.pushElement(multiModelEditStackElement, this._undoRedoGroup);

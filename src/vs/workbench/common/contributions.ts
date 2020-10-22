@@ -4,54 +4,54 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IInstantiationService, IConstructorSignature0, ServicesAccessor, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { runWhenIdle, IdleDeadline } from 'vs/base/common/async';
+import { runWhenIdle, IdleDeadline } from 'vs/Base/common/async';
 
 /**
- * A workbench contribution that will be loaded when the workbench starts and disposed when the workbench shuts down.
+ * A workBench contriBution that will Be loaded when the workBench starts and disposed when the workBench shuts down.
  */
-export interface IWorkbenchContribution {
+export interface IWorkBenchContriBution {
 	// Marker Interface
 }
 
 export namespace Extensions {
-	export const Workbench = 'workbench.contributions.kind';
+	export const WorkBench = 'workBench.contriButions.kind';
 }
 
-type IWorkbenchContributionSignature<Service extends BrandedService[]> = new (...services: Service) => IWorkbenchContribution;
+type IWorkBenchContriButionSignature<Service extends BrandedService[]> = new (...services: Service) => IWorkBenchContriBution;
 
-export interface IWorkbenchContributionsRegistry {
+export interface IWorkBenchContriButionsRegistry {
 
 	/**
-	 * Registers a workbench contribution to the platform that will be loaded when the workbench starts and disposed when
-	 * the workbench shuts down.
+	 * Registers a workBench contriBution to the platform that will Be loaded when the workBench starts and disposed when
+	 * the workBench shuts down.
 	 *
-	 * @param phase the lifecycle phase when to instantiate the contribution.
+	 * @param phase the lifecycle phase when to instantiate the contriBution.
 	 */
-	registerWorkbenchContribution<Services extends BrandedService[]>(contribution: IWorkbenchContributionSignature<Services>, phase: LifecyclePhase): void;
+	registerWorkBenchContriBution<Services extends BrandedService[]>(contriBution: IWorkBenchContriButionSignature<Services>, phase: LifecyclePhase): void;
 
 	/**
-	 * Starts the registry by providing the required services.
+	 * Starts the registry By providing the required services.
 	 */
 	start(accessor: ServicesAccessor): void;
 }
 
-class WorkbenchContributionsRegistry implements IWorkbenchContributionsRegistry {
+class WorkBenchContriButionsRegistry implements IWorkBenchContriButionsRegistry {
 
 	private instantiationService: IInstantiationService | undefined;
 	private lifecycleService: ILifecycleService | undefined;
 
-	private readonly toBeInstantiated = new Map<LifecyclePhase, IConstructorSignature0<IWorkbenchContribution>[]>();
+	private readonly toBeInstantiated = new Map<LifecyclePhase, IConstructorSignature0<IWorkBenchContriBution>[]>();
 
-	registerWorkbenchContribution(ctor: IConstructorSignature0<IWorkbenchContribution>, phase: LifecyclePhase = LifecyclePhase.Starting): void {
+	registerWorkBenchContriBution(ctor: IConstructorSignature0<IWorkBenchContriBution>, phase: LifecyclePhase = LifecyclePhase.Starting): void {
 
 		// Instantiate directly if we are already matching the provided phase
 		if (this.instantiationService && this.lifecycleService && this.lifecycleService.phase >= phase) {
 			this.instantiationService.createInstance(ctor);
 		}
 
-		// Otherwise keep contributions by lifecycle phase
+		// Otherwise keep contriButions By lifecycle phase
 		else {
 			let toBeInstantiated = this.toBeInstantiated.get(phase);
 			if (!toBeInstantiated) {
@@ -59,7 +59,7 @@ class WorkbenchContributionsRegistry implements IWorkbenchContributionsRegistry 
 				this.toBeInstantiated.set(phase, toBeInstantiated);
 			}
 
-			toBeInstantiated.push(ctor as IConstructorSignature0<IWorkbenchContribution>);
+			toBeInstantiated.push(ctor as IConstructorSignature0<IWorkBenchContriBution>);
 		}
 	}
 
@@ -74,12 +74,12 @@ class WorkbenchContributionsRegistry implements IWorkbenchContributionsRegistry 
 
 	private instantiateByPhase(instantiationService: IInstantiationService, lifecycleService: ILifecycleService, phase: LifecyclePhase): void {
 
-		// Instantiate contributions directly when phase is already reached
+		// Instantiate contriButions directly when phase is already reached
 		if (lifecycleService.phase >= phase) {
 			this.doInstantiateByPhase(instantiationService, phase);
 		}
 
-		// Otherwise wait for phase to be reached
+		// Otherwise wait for phase to Be reached
 		else {
 			lifecycleService.when(phase).then(() => this.doInstantiateByPhase(instantiationService, phase));
 		}
@@ -90,24 +90,24 @@ class WorkbenchContributionsRegistry implements IWorkbenchContributionsRegistry 
 		if (toBeInstantiated) {
 			this.toBeInstantiated.delete(phase);
 			if (phase !== LifecyclePhase.Eventually) {
-				// instantiate everything synchronously and blocking
+				// instantiate everything synchronously and Blocking
 				for (const ctor of toBeInstantiated) {
-					this.safeCreateInstance(instantiationService, ctor); // catch error so that other contributions are still considered
+					this.safeCreateInstance(instantiationService, ctor); // catch error so that other contriButions are still considered
 				}
 			} else {
-				// for the Eventually-phase we instantiate contributions
-				// only when idle. this might take a few idle-busy-cycles
-				// but will finish within the timeouts
+				// for the Eventually-phase we instantiate contriButions
+				// only when idle. this might take a few idle-Busy-cycles
+				// But will finish within the timeouts
 				let forcedTimeout = 3000;
 				let i = 0;
 				let instantiateSome = (idle: IdleDeadline) => {
 					while (i < toBeInstantiated.length) {
 						const ctor = toBeInstantiated[i++];
-						this.safeCreateInstance(instantiationService, ctor); // catch error so that other contributions are still considered
+						this.safeCreateInstance(instantiationService, ctor); // catch error so that other contriButions are still considered
 						if (idle.timeRemaining() < 1) {
 							// time is up -> reschedule
 							runWhenIdle(instantiateSome, forcedTimeout);
-							break;
+							Break;
 						}
 					}
 				};
@@ -116,13 +116,13 @@ class WorkbenchContributionsRegistry implements IWorkbenchContributionsRegistry 
 		}
 	}
 
-	private safeCreateInstance(instantiationService: IInstantiationService, ctor: IConstructorSignature0<IWorkbenchContribution>): void {
+	private safeCreateInstance(instantiationService: IInstantiationService, ctor: IConstructorSignature0<IWorkBenchContriBution>): void {
 		try {
 			instantiationService.createInstance(ctor);
 		} catch (error) {
-			console.error(`Unable to instantiate workbench contribution ${ctor.name}.`, error);
+			console.error(`UnaBle to instantiate workBench contriBution ${ctor.name}.`, error);
 		}
 	}
 }
 
-Registry.add(Extensions.Workbench, new WorkbenchContributionsRegistry());
+Registry.add(Extensions.WorkBench, new WorkBenchContriButionsRegistry());

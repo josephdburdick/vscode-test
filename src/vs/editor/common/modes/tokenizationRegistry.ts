@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
+import { Color } from 'vs/Base/common/color';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { ColorId, ITokenizationRegistry, ITokenizationSupport, ITokenizationSupportChangedEvent } from 'vs/editor/common/modes';
 
 export class TokenizationRegistryImpl implements ITokenizationRegistry {
 
 	private readonly _map = new Map<string, ITokenizationSupport>();
-	private readonly _promises = new Map<string, Thenable<void>>();
+	private readonly _promises = new Map<string, ThenaBle<void>>();
 
 	private readonly _onDidChange = new Emitter<ITokenizationSupportChangedEvent>();
-	public readonly onDidChange: Event<ITokenizationSupportChangedEvent> = this._onDidChange.event;
+	puBlic readonly onDidChange: Event<ITokenizationSupportChangedEvent> = this._onDidChange.event;
 
 	private _colorMap: Color[] | null;
 
@@ -22,17 +22,17 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 		this._colorMap = null;
 	}
 
-	public fire(languages: string[]): void {
+	puBlic fire(languages: string[]): void {
 		this._onDidChange.fire({
 			changedLanguages: languages,
 			changedColorMap: false
 		});
 	}
 
-	public register(language: string, support: ITokenizationSupport) {
+	puBlic register(language: string, support: ITokenizationSupport) {
 		this._map.set(language, support);
 		this.fire([language]);
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			if (this._map.get(language) !== support) {
 				return;
 			}
@@ -41,10 +41,10 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 		});
 	}
 
-	public registerPromise(language: string, supportPromise: Thenable<ITokenizationSupport | null>): IDisposable {
+	puBlic registerPromise(language: string, supportPromise: ThenaBle<ITokenizationSupport | null>): IDisposaBle {
 
-		let registration: IDisposable | null = null;
-		let isDisposed: boolean = false;
+		let registration: IDisposaBle | null = null;
+		let isDisposed: Boolean = false;
 
 		this._promises.set(language, supportPromise.then(support => {
 			this._promises.delete(language);
@@ -54,7 +54,7 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 			registration = this.register(language, support);
 		}));
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			isDisposed = true;
 			if (registration) {
 				registration.dispose();
@@ -62,7 +62,7 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 		});
 	}
 
-	public getPromise(language: string): Thenable<ITokenizationSupport> | null {
+	puBlic getPromise(language: string): ThenaBle<ITokenizationSupport> | null {
 		const support = this.get(language);
 		if (support) {
 			return Promise.resolve(support);
@@ -74,11 +74,11 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 		return null;
 	}
 
-	public get(language: string): ITokenizationSupport | null {
+	puBlic get(language: string): ITokenizationSupport | null {
 		return (this._map.get(language) || null);
 	}
 
-	public setColorMap(colorMap: Color[]): void {
+	puBlic setColorMap(colorMap: Color[]): void {
 		this._colorMap = colorMap;
 		this._onDidChange.fire({
 			changedLanguages: Array.from(this._map.keys()),
@@ -86,11 +86,11 @@ export class TokenizationRegistryImpl implements ITokenizationRegistry {
 		});
 	}
 
-	public getColorMap(): Color[] | null {
+	puBlic getColorMap(): Color[] | null {
 		return this._colorMap;
 	}
 
-	public getDefaultBackground(): Color | null {
+	puBlic getDefaultBackground(): Color | null {
 		if (this._colorMap && this._colorMap.length > ColorId.DefaultBackground) {
 			return this._colorMap[ColorId.DefaultBackground];
 		}

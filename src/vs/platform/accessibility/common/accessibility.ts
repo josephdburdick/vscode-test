@@ -4,36 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 
-export const IAccessibilityService = createDecorator<IAccessibilityService>('accessibilityService');
+export const IAccessiBilityService = createDecorator<IAccessiBilityService>('accessiBilityService');
 
-export interface IAccessibilityService {
+export interface IAccessiBilityService {
 	readonly _serviceBrand: undefined;
 
 	readonly onDidChangeScreenReaderOptimized: Event<void>;
 
-	alwaysUnderlineAccessKeys(): Promise<boolean>;
-	isScreenReaderOptimized(): boolean;
-	getAccessibilitySupport(): AccessibilitySupport;
-	setAccessibilitySupport(accessibilitySupport: AccessibilitySupport): void;
+	alwaysUnderlineAccessKeys(): Promise<Boolean>;
+	isScreenReaderOptimized(): Boolean;
+	getAccessiBilitySupport(): AccessiBilitySupport;
+	setAccessiBilitySupport(accessiBilitySupport: AccessiBilitySupport): void;
 }
 
-export const enum AccessibilitySupport {
+export const enum AccessiBilitySupport {
 	/**
-	 * This should be the browser case where it is not known if a screen reader is attached or no.
+	 * This should Be the Browser case where it is not known if a screen reader is attached or no.
 	 */
 	Unknown = 0,
 
-	Disabled = 1,
+	DisaBled = 1,
 
-	Enabled = 2
+	EnaBled = 2
 }
 
-export const CONTEXT_ACCESSIBILITY_MODE_ENABLED = new RawContextKey<boolean>('accessibilityModeEnabled', false);
+export const CONTEXT_ACCESSIBILITY_MODE_ENABLED = new RawContextKey<Boolean>('accessiBilityModeEnaBled', false);
 
-export interface IAccessibilityInformation {
-	label: string;
+export interface IAccessiBilityInformation {
+	laBel: string;
 	role?: string;
 }

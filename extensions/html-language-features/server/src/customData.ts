@@ -31,7 +31,7 @@ function parseHTMLData(id: string, source: string): IHTMLDataProvider {
 	return newHTMLDataProvider(id, {
 		version: rawData.version || 1,
 		tags: rawData.tags || [],
-		globalAttributes: rawData.globalAttributes || [],
+		gloBalAttriButes: rawData.gloBalAttriButes || [],
 		valueSets: rawData.valueSets || []
 	});
 }

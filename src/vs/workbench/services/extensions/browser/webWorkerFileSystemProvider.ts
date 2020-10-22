@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FileSystemProviderCapabilities, IStat, FileType, FileDeleteOptions, FileOverwriteOptions, FileWriteOptions, FileSystemProviderError, FileSystemProviderErrorCode, IFileSystemProviderWithFileReadWriteCapability } from 'vs/platform/files/common/files';
-import { Event } from 'vs/base/common/event';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { NotSupportedError } from 'vs/base/common/errors';
+import { FileSystemProviderCapaBilities, IStat, FileType, FileDeleteOptions, FileOverwriteOptions, FileWriteOptions, FileSystemProviderError, FileSystemProviderErrorCode, IFileSystemProviderWithFileReadWriteCapaBility } from 'vs/platform/files/common/files';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { NotSupportedError } from 'vs/Base/common/errors';
 
-export class FetchFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability {
+export class FetchFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapaBility {
 
-	readonly capabilities = FileSystemProviderCapabilities.Readonly + FileSystemProviderCapabilities.FileReadWrite + FileSystemProviderCapabilities.PathCaseSensitive;
-	readonly onDidChangeCapabilities = Event.None;
+	readonly capaBilities = FileSystemProviderCapaBilities.Readonly + FileSystemProviderCapaBilities.FileReadWrite + FileSystemProviderCapaBilities.PathCaseSensitive;
+	readonly onDidChangeCapaBilities = Event.None;
 	readonly onDidChangeFile = Event.None;
 
 	// working implementations
@@ -38,8 +38,8 @@ export class FetchFileSystemProvider implements IFileSystemProviderWithFileReadW
 		};
 	}
 
-	watch(): IDisposable {
-		return Disposable.None;
+	watch(): IDisposaBle {
+		return DisposaBle.None;
 	}
 
 	// error implementations

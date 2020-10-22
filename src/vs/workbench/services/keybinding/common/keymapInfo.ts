@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { isWindows, isLinux } from 'vs/base/common/platform';
+import { Event } from 'vs/Base/common/event';
+import { isWindows, isLinux } from 'vs/Base/common/platform';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { DispatchConfig } from 'vs/workbench/services/keybinding/common/dispatchConfig';
-import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
+import { DispatchConfig } from 'vs/workBench/services/keyBinding/common/dispatchConfig';
+import { IKeyBoardMapper } from 'vs/workBench/services/keyBinding/common/keyBoardMapper';
+import { IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
 
 
 export interface IWindowsKeyMapping {
@@ -18,7 +18,7 @@ export interface IWindowsKeyMapping {
 	withAltGr: string;
 	withShiftAltGr: string;
 }
-export interface IWindowsKeyboardMapping {
+export interface IWindowsKeyBoardMapping {
 	[code: string]: IWindowsKeyMapping;
 }
 export interface ILinuxKeyMapping {
@@ -27,7 +27,7 @@ export interface ILinuxKeyMapping {
 	withAltGr: string;
 	withShiftAltGr: string;
 }
-export interface ILinuxKeyboardMapping {
+export interface ILinuxKeyBoardMapping {
 	[code: string]: ILinuxKeyMapping;
 }
 export interface IMacKeyMapping {
@@ -35,32 +35,32 @@ export interface IMacKeyMapping {
 	withShift: string;
 	withAltGr: string;
 	withShiftAltGr: string;
-	valueIsDeadKey: boolean;
-	withShiftIsDeadKey: boolean;
-	withAltGrIsDeadKey: boolean;
-	withShiftAltGrIsDeadKey: boolean;
+	valueIsDeadKey: Boolean;
+	withShiftIsDeadKey: Boolean;
+	withAltGrIsDeadKey: Boolean;
+	withShiftAltGrIsDeadKey: Boolean;
 }
-export interface IMacKeyboardMapping {
+export interface IMacKeyBoardMapping {
 	[code: string]: IMacKeyMapping;
 }
 
-export type IKeyboardMapping = IWindowsKeyboardMapping | ILinuxKeyboardMapping | IMacKeyboardMapping;
+export type IKeyBoardMapping = IWindowsKeyBoardMapping | ILinuxKeyBoardMapping | IMacKeyBoardMapping;
 
 /* __GDPR__FRAGMENT__
-	"IKeyboardLayoutInfo" : {
+	"IKeyBoardLayoutInfo" : {
 		"name" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"id": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"text": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	}
 */
-export interface IWindowsKeyboardLayoutInfo {
+export interface IWindowsKeyBoardLayoutInfo {
 	name: string;
 	id: string;
 	text: string;
 }
 
 /* __GDPR__FRAGMENT__
-	"IKeyboardLayoutInfo" : {
+	"IKeyBoardLayoutInfo" : {
 		"model" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"layout": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"variant": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -68,7 +68,7 @@ export interface IWindowsKeyboardLayoutInfo {
 		"rules": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	}
 */
-export interface ILinuxKeyboardLayoutInfo {
+export interface ILinuxKeyBoardLayoutInfo {
 	model: string;
 	layout: string;
 	variant: string;
@@ -77,49 +77,49 @@ export interface ILinuxKeyboardLayoutInfo {
 }
 
 /* __GDPR__FRAGMENT__
-	"IKeyboardLayoutInfo" : {
+	"IKeyBoardLayoutInfo" : {
 		"id" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"lang": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 		"localizedName": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	}
 */
-export interface IMacKeyboardLayoutInfo {
+export interface IMacKeyBoardLayoutInfo {
 	id: string;
 	lang: string;
 	localizedName?: string;
 }
 
-export type IKeyboardLayoutInfo = (IWindowsKeyboardLayoutInfo | ILinuxKeyboardLayoutInfo | IMacKeyboardLayoutInfo) & { isUserKeyboardLayout?: boolean; isUSStandard?: true };
+export type IKeyBoardLayoutInfo = (IWindowsKeyBoardLayoutInfo | ILinuxKeyBoardLayoutInfo | IMacKeyBoardLayoutInfo) & { isUserKeyBoardLayout?: Boolean; isUSStandard?: true };
 
 export const IKeymapService = createDecorator<IKeymapService>('keymapService');
 
 export interface IKeymapService {
 	readonly _serviceBrand: undefined;
-	onDidChangeKeyboardMapper: Event<void>;
-	getKeyboardMapper(dispatchConfig: DispatchConfig): IKeyboardMapper;
-	getCurrentKeyboardLayout(): IKeyboardLayoutInfo | null;
-	getAllKeyboardLayouts(): IKeyboardLayoutInfo[];
-	getRawKeyboardMapping(): IKeyboardMapping | null;
-	validateCurrentKeyboardMapping(keyboardEvent: IKeyboardEvent): void;
+	onDidChangeKeyBoardMapper: Event<void>;
+	getKeyBoardMapper(dispatchConfig: DispatchConfig): IKeyBoardMapper;
+	getCurrentKeyBoardLayout(): IKeyBoardLayoutInfo | null;
+	getAllKeyBoardLayouts(): IKeyBoardLayoutInfo[];
+	getRawKeyBoardMapping(): IKeyBoardMapping | null;
+	validateCurrentKeyBoardMapping(keyBoardEvent: IKeyBoardEvent): void;
 }
 
-export function areKeyboardLayoutsEqual(a: IKeyboardLayoutInfo | null, b: IKeyboardLayoutInfo | null): boolean {
-	if (!a || !b) {
+export function areKeyBoardLayoutsEqual(a: IKeyBoardLayoutInfo | null, B: IKeyBoardLayoutInfo | null): Boolean {
+	if (!a || !B) {
 		return false;
 	}
 
-	if ((<IWindowsKeyboardLayoutInfo>a).name && (<IWindowsKeyboardLayoutInfo>b).name && (<IWindowsKeyboardLayoutInfo>a).name === (<IWindowsKeyboardLayoutInfo>b).name) {
+	if ((<IWindowsKeyBoardLayoutInfo>a).name && (<IWindowsKeyBoardLayoutInfo>B).name && (<IWindowsKeyBoardLayoutInfo>a).name === (<IWindowsKeyBoardLayoutInfo>B).name) {
 		return true;
 	}
 
-	if ((<IMacKeyboardLayoutInfo>a).id && (<IMacKeyboardLayoutInfo>b).id && (<IMacKeyboardLayoutInfo>a).id === (<IMacKeyboardLayoutInfo>b).id) {
+	if ((<IMacKeyBoardLayoutInfo>a).id && (<IMacKeyBoardLayoutInfo>B).id && (<IMacKeyBoardLayoutInfo>a).id === (<IMacKeyBoardLayoutInfo>B).id) {
 		return true;
 	}
 
-	if ((<ILinuxKeyboardLayoutInfo>a).model &&
-		(<ILinuxKeyboardLayoutInfo>b).model &&
-		(<ILinuxKeyboardLayoutInfo>a).model === (<ILinuxKeyboardLayoutInfo>b).model &&
-		(<ILinuxKeyboardLayoutInfo>a).layout === (<ILinuxKeyboardLayoutInfo>b).layout
+	if ((<ILinuxKeyBoardLayoutInfo>a).model &&
+		(<ILinuxKeyBoardLayoutInfo>B).model &&
+		(<ILinuxKeyBoardLayoutInfo>a).model === (<ILinuxKeyBoardLayoutInfo>B).model &&
+		(<ILinuxKeyBoardLayoutInfo>a).layout === (<ILinuxKeyBoardLayoutInfo>B).layout
 	) {
 		return true;
 	}
@@ -127,66 +127,66 @@ export function areKeyboardLayoutsEqual(a: IKeyboardLayoutInfo | null, b: IKeybo
 	return false;
 }
 
-export function parseKeyboardLayoutDescription(layout: IKeyboardLayoutInfo | null): { label: string, description: string } {
+export function parseKeyBoardLayoutDescription(layout: IKeyBoardLayoutInfo | null): { laBel: string, description: string } {
 	if (!layout) {
-		return { label: '', description: '' };
+		return { laBel: '', description: '' };
 	}
 
-	if ((<IWindowsKeyboardLayoutInfo>layout).name) {
+	if ((<IWindowsKeyBoardLayoutInfo>layout).name) {
 		// windows
-		let windowsLayout = <IWindowsKeyboardLayoutInfo>layout;
+		let windowsLayout = <IWindowsKeyBoardLayoutInfo>layout;
 		return {
-			label: windowsLayout.text,
+			laBel: windowsLayout.text,
 			description: ''
 		};
 	}
 
-	if ((<IMacKeyboardLayoutInfo>layout).id) {
-		let macLayout = <IMacKeyboardLayoutInfo>layout;
+	if ((<IMacKeyBoardLayoutInfo>layout).id) {
+		let macLayout = <IMacKeyBoardLayoutInfo>layout;
 		if (macLayout.localizedName) {
 			return {
-				label: macLayout.localizedName,
+				laBel: macLayout.localizedName,
 				description: ''
 			};
 		}
 
 		if (/^com\.apple\.keylayout\./.test(macLayout.id)) {
 			return {
-				label: macLayout.id.replace(/^com\.apple\.keylayout\./, '').replace(/-/, ' '),
+				laBel: macLayout.id.replace(/^com\.apple\.keylayout\./, '').replace(/-/, ' '),
 				description: ''
 			};
 		}
 		if (/^.*inputmethod\./.test(macLayout.id)) {
 			return {
-				label: macLayout.id.replace(/^.*inputmethod\./, '').replace(/[-\.]/, ' '),
+				laBel: macLayout.id.replace(/^.*inputmethod\./, '').replace(/[-\.]/, ' '),
 				description: `Input Method (${macLayout.lang})`
 			};
 		}
 
 		return {
-			label: macLayout.lang,
+			laBel: macLayout.lang,
 			description: ''
 		};
 	}
 
-	let linuxLayout = <ILinuxKeyboardLayoutInfo>layout;
+	let linuxLayout = <ILinuxKeyBoardLayoutInfo>layout;
 
 	return {
-		label: linuxLayout.layout,
+		laBel: linuxLayout.layout,
 		description: ''
 	};
 }
 
-export function getKeyboardLayoutId(layout: IKeyboardLayoutInfo): string {
-	if ((<IWindowsKeyboardLayoutInfo>layout).name) {
-		return (<IWindowsKeyboardLayoutInfo>layout).name;
+export function getKeyBoardLayoutId(layout: IKeyBoardLayoutInfo): string {
+	if ((<IWindowsKeyBoardLayoutInfo>layout).name) {
+		return (<IWindowsKeyBoardLayoutInfo>layout).name;
 	}
 
-	if ((<IMacKeyboardLayoutInfo>layout).id) {
-		return (<IMacKeyboardLayoutInfo>layout).id;
+	if ((<IMacKeyBoardLayoutInfo>layout).id) {
+		return (<IMacKeyBoardLayoutInfo>layout).id;
 	}
 
-	return (<ILinuxKeyboardLayoutInfo>layout).layout;
+	return (<ILinuxKeyBoardLayoutInfo>layout).layout;
 }
 
 function deserializeMapping(serializedMapping: ISerializedMapping) {
@@ -194,13 +194,13 @@ function deserializeMapping(serializedMapping: ISerializedMapping) {
 
 	let ret: { [key: string]: any } = {};
 	for (let key in mapping) {
-		let result: (string | number)[] = mapping[key];
+		let result: (string | numBer)[] = mapping[key];
 		if (result.length) {
 			let value = result[0];
 			let withShift = result[1];
 			let withAltGr = result[2];
 			let withShiftAltGr = result[3];
-			let mask = Number(result[4]);
+			let mask = NumBer(result[4]);
 			let vkey = result.length === 6 ? result[5] : undefined;
 			ret[key] = {
 				'value': value,
@@ -230,65 +230,65 @@ function deserializeMapping(serializedMapping: ISerializedMapping) {
 	return ret;
 }
 
-export interface IRawMixedKeyboardMapping {
+export interface IRawMixedKeyBoardMapping {
 	[key: string]: {
 		value: string,
 		withShift: string;
 		withAltGr: string;
 		withShiftAltGr: string;
-		valueIsDeadKey?: boolean;
-		withShiftIsDeadKey?: boolean;
-		withAltGrIsDeadKey?: boolean;
-		withShiftAltGrIsDeadKey?: boolean;
+		valueIsDeadKey?: Boolean;
+		withShiftIsDeadKey?: Boolean;
+		withAltGrIsDeadKey?: Boolean;
+		withShiftAltGrIsDeadKey?: Boolean;
 
 	};
 }
 
 interface ISerializedMapping {
-	[key: string]: (string | number)[];
+	[key: string]: (string | numBer)[];
 }
 
 export interface IKeymapInfo {
-	layout: IKeyboardLayoutInfo;
-	secondaryLayouts: IKeyboardLayoutInfo[];
+	layout: IKeyBoardLayoutInfo;
+	secondaryLayouts: IKeyBoardLayoutInfo[];
 	mapping: ISerializedMapping;
-	isUserKeyboardLayout?: boolean;
+	isUserKeyBoardLayout?: Boolean;
 }
 
 export class KeymapInfo {
-	mapping: IRawMixedKeyboardMapping;
-	isUserKeyboardLayout: boolean;
+	mapping: IRawMixedKeyBoardMapping;
+	isUserKeyBoardLayout: Boolean;
 
-	constructor(public layout: IKeyboardLayoutInfo, public secondaryLayouts: IKeyboardLayoutInfo[], keyboardMapping: ISerializedMapping, isUserKeyboardLayout?: boolean) {
-		this.mapping = deserializeMapping(keyboardMapping);
-		this.isUserKeyboardLayout = !!isUserKeyboardLayout;
-		this.layout.isUserKeyboardLayout = !!isUserKeyboardLayout;
+	constructor(puBlic layout: IKeyBoardLayoutInfo, puBlic secondaryLayouts: IKeyBoardLayoutInfo[], keyBoardMapping: ISerializedMapping, isUserKeyBoardLayout?: Boolean) {
+		this.mapping = deserializeMapping(keyBoardMapping);
+		this.isUserKeyBoardLayout = !!isUserKeyBoardLayout;
+		this.layout.isUserKeyBoardLayout = !!isUserKeyBoardLayout;
 	}
 
-	static createKeyboardLayoutFromDebugInfo(layout: IKeyboardLayoutInfo, value: IRawMixedKeyboardMapping, isUserKeyboardLayout?: boolean): KeymapInfo {
-		let keyboardLayoutInfo = new KeymapInfo(layout, [], {}, true);
-		keyboardLayoutInfo.mapping = value;
-		return keyboardLayoutInfo;
+	static createKeyBoardLayoutFromDeBugInfo(layout: IKeyBoardLayoutInfo, value: IRawMixedKeyBoardMapping, isUserKeyBoardLayout?: Boolean): KeymapInfo {
+		let keyBoardLayoutInfo = new KeymapInfo(layout, [], {}, true);
+		keyBoardLayoutInfo.mapping = value;
+		return keyBoardLayoutInfo;
 	}
 
 	update(other: KeymapInfo) {
 		this.layout = other.layout;
 		this.secondaryLayouts = other.secondaryLayouts;
 		this.mapping = other.mapping;
-		this.isUserKeyboardLayout = other.isUserKeyboardLayout;
-		this.layout.isUserKeyboardLayout = other.isUserKeyboardLayout;
+		this.isUserKeyBoardLayout = other.isUserKeyBoardLayout;
+		this.layout.isUserKeyBoardLayout = other.isUserKeyBoardLayout;
 	}
 
-	getScore(other: IRawMixedKeyboardMapping): number {
+	getScore(other: IRawMixedKeyBoardMapping): numBer {
 		let score = 0;
 		for (let key in other) {
 			if (isWindows && (key === 'Backslash' || key === 'KeyQ')) {
-				// keymap from Chromium is probably wrong.
+				// keymap from Chromium is proBaBly wrong.
 				continue;
 			}
 
 			if (isLinux && (key === 'Backspace' || key === 'Escape')) {
-				// native keymap doesn't align with keyboard event
+				// native keymap doesn't align with keyBoard event
 				continue;
 			}
 
@@ -307,22 +307,22 @@ export class KeymapInfo {
 		return score;
 	}
 
-	equal(other: KeymapInfo): boolean {
-		if (this.isUserKeyboardLayout !== other.isUserKeyboardLayout) {
+	equal(other: KeymapInfo): Boolean {
+		if (this.isUserKeyBoardLayout !== other.isUserKeyBoardLayout) {
 			return false;
 		}
 
-		if (getKeyboardLayoutId(this.layout) !== getKeyboardLayoutId(other.layout)) {
+		if (getKeyBoardLayoutId(this.layout) !== getKeyBoardLayoutId(other.layout)) {
 			return false;
 		}
 
 		return this.fuzzyEqual(other.mapping);
 	}
 
-	fuzzyEqual(other: IRawMixedKeyboardMapping): boolean {
+	fuzzyEqual(other: IRawMixedKeyBoardMapping): Boolean {
 		for (let key in other) {
 			if (isWindows && (key === 'Backslash' || key === 'KeyQ')) {
-				// keymap from Chromium is probably wrong.
+				// keymap from Chromium is proBaBly wrong.
 				continue;
 			}
 			if (this.mapping[key] === undefined) {

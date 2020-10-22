@@ -9,26 +9,26 @@ import { ViewportData } from 'vs/editor/common/viewLayout/viewLinesViewportData'
 import { IViewLayout, ViewModelDecoration } from 'vs/editor/common/viewModel/viewModel';
 
 export interface IViewLines {
-	linesVisibleRangesForRange(range: Range, includeNewLines: boolean): LineVisibleRanges[] | null;
-	visibleRangeForPosition(position: Position): HorizontalPosition | null;
+	linesVisiBleRangesForRange(range: Range, includeNewLines: Boolean): LineVisiBleRanges[] | null;
+	visiBleRangeForPosition(position: Position): HorizontalPosition | null;
 }
 
-export abstract class RestrictedRenderingContext {
+export aBstract class RestrictedRenderingContext {
 	_restrictedRenderingContextBrand: void;
 
-	public readonly viewportData: ViewportData;
+	puBlic readonly viewportData: ViewportData;
 
-	public readonly scrollWidth: number;
-	public readonly scrollHeight: number;
+	puBlic readonly scrollWidth: numBer;
+	puBlic readonly scrollHeight: numBer;
 
-	public readonly visibleRange: Range;
-	public readonly bigNumbersDelta: number;
+	puBlic readonly visiBleRange: Range;
+	puBlic readonly BigNumBersDelta: numBer;
 
-	public readonly scrollTop: number;
-	public readonly scrollLeft: number;
+	puBlic readonly scrollTop: numBer;
+	puBlic readonly scrollLeft: numBer;
 
-	public readonly viewportWidth: number;
-	public readonly viewportHeight: number;
+	puBlic readonly viewportWidth: numBer;
+	puBlic readonly viewportHeight: numBer;
 
 	private readonly _viewLayout: IViewLayout;
 
@@ -39,8 +39,8 @@ export abstract class RestrictedRenderingContext {
 		this.scrollWidth = this._viewLayout.getScrollWidth();
 		this.scrollHeight = this._viewLayout.getScrollHeight();
 
-		this.visibleRange = this.viewportData.visibleRange;
-		this.bigNumbersDelta = this.viewportData.bigNumbersDelta;
+		this.visiBleRange = this.viewportData.visiBleRange;
+		this.BigNumBersDelta = this.viewportData.BigNumBersDelta;
 
 		const vInfo = this._viewLayout.getCurrentViewport();
 		this.scrollTop = vInfo.top;
@@ -49,15 +49,15 @@ export abstract class RestrictedRenderingContext {
 		this.viewportHeight = vInfo.height;
 	}
 
-	public getScrolledTopFromAbsoluteTop(absoluteTop: number): number {
-		return absoluteTop - this.scrollTop;
+	puBlic getScrolledTopFromABsoluteTop(aBsoluteTop: numBer): numBer {
+		return aBsoluteTop - this.scrollTop;
 	}
 
-	public getVerticalOffsetForLineNumber(lineNumber: number): number {
-		return this._viewLayout.getVerticalOffsetForLineNumber(lineNumber);
+	puBlic getVerticalOffsetForLineNumBer(lineNumBer: numBer): numBer {
+		return this._viewLayout.getVerticalOffsetForLineNumBer(lineNumBer);
 	}
 
-	public getDecorationsInViewport(): ViewModelDecoration[] {
+	puBlic getDecorationsInViewport(): ViewModelDecoration[] {
 		return this.viewportData.getDecorationsInViewport();
 	}
 
@@ -73,51 +73,51 @@ export class RenderingContext extends RestrictedRenderingContext {
 		this._viewLines = viewLines;
 	}
 
-	public linesVisibleRangesForRange(range: Range, includeNewLines: boolean): LineVisibleRanges[] | null {
-		return this._viewLines.linesVisibleRangesForRange(range, includeNewLines);
+	puBlic linesVisiBleRangesForRange(range: Range, includeNewLines: Boolean): LineVisiBleRanges[] | null {
+		return this._viewLines.linesVisiBleRangesForRange(range, includeNewLines);
 	}
 
-	public visibleRangeForPosition(position: Position): HorizontalPosition | null {
-		return this._viewLines.visibleRangeForPosition(position);
+	puBlic visiBleRangeForPosition(position: Position): HorizontalPosition | null {
+		return this._viewLines.visiBleRangeForPosition(position);
 	}
 }
 
-export class LineVisibleRanges {
+export class LineVisiBleRanges {
 	constructor(
-		public readonly outsideRenderedLine: boolean,
-		public readonly lineNumber: number,
-		public readonly ranges: HorizontalRange[]
+		puBlic readonly outsideRenderedLine: Boolean,
+		puBlic readonly lineNumBer: numBer,
+		puBlic readonly ranges: HorizontalRange[]
 	) { }
 }
 
 export class HorizontalRange {
-	public left: number;
-	public width: number;
+	puBlic left: numBer;
+	puBlic width: numBer;
 
-	constructor(left: number, width: number) {
+	constructor(left: numBer, width: numBer) {
 		this.left = Math.round(left);
 		this.width = Math.round(width);
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return `[${this.left},${this.width}]`;
 	}
 }
 
 export class HorizontalPosition {
-	public outsideRenderedLine: boolean;
-	public left: number;
+	puBlic outsideRenderedLine: Boolean;
+	puBlic left: numBer;
 
-	constructor(outsideRenderedLine: boolean, left: number) {
+	constructor(outsideRenderedLine: Boolean, left: numBer) {
 		this.outsideRenderedLine = outsideRenderedLine;
 		this.left = Math.round(left);
 	}
 }
 
-export class VisibleRanges {
+export class VisiBleRanges {
 	constructor(
-		public readonly outsideRenderedLine: boolean,
-		public readonly ranges: HorizontalRange[]
+		puBlic readonly outsideRenderedLine: Boolean,
+		puBlic readonly ranges: HorizontalRange[]
 	) {
 	}
 }

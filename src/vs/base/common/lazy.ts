@@ -8,7 +8,7 @@
  */
 export interface Lazy<T> {
 
-	hasValue(): boolean;
+	hasValue(): Boolean;
 
 
 	getValue(): T;
@@ -19,7 +19,7 @@ export interface Lazy<T> {
 
 export class Lazy<T> {
 
-	private _didRun: boolean = false;
+	private _didRun: Boolean = false;
 	private _value?: T;
 	private _error: Error | undefined;
 
@@ -28,14 +28,14 @@ export class Lazy<T> {
 	) { }
 
 	/**
-	 * True if the lazy value has been resolved.
+	 * True if the lazy value has Been resolved.
 	 */
 	hasValue() { return this._didRun; }
 
 	/**
 	 * Get the wrapped value.
 	 *
-	 * This will force evaluation of the lazy value if it has not been resolved yet. Lazy values are only
+	 * This will force evaluation of the lazy value if it has not Been resolved yet. Lazy values are only
 	 * resolved once. `getValue` will re-throw exceptions that are hit while resolving the value
 	 */
 	getValue(): T {

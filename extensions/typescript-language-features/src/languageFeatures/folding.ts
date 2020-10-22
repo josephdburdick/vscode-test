@@ -13,9 +13,9 @@ import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 
 class TypeScriptFoldingProvider implements vscode.FoldingRangeProvider {
-	public static readonly minVersion = API.v280;
+	puBlic static readonly minVersion = API.v280;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient
 	) { }
 
@@ -31,11 +31,11 @@ class TypeScriptFoldingProvider implements vscode.FoldingRangeProvider {
 
 		const args: Proto.FileRequestArgs = { file };
 		const response = await this.client.execute('getOutliningSpans', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return;
 		}
 
-		return coalesce(response.body.map(span => this.convertOutliningSpan(span, document)));
+		return coalesce(response.Body.map(span => this.convertOutliningSpan(span, document)));
 	}
 
 	private convertOutliningSpan(
@@ -76,7 +76,7 @@ class TypeScriptFoldingProvider implements vscode.FoldingRangeProvider {
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
-): vscode.Disposable {
+): vscode.DisposaBle {
 	return conditionalRegistration([
 		requireMinVersion(client, TypeScriptFoldingProvider.minVersion),
 	], () => {

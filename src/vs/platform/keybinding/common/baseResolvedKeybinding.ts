@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { OperatingSystem } from 'vs/base/common/platform';
-import { illegalArgument } from 'vs/base/common/errors';
-import { Modifiers, UILabelProvider, AriaLabelProvider, ElectronAcceleratorLabelProvider, UserSettingsLabelProvider } from 'vs/base/common/keybindingLabels';
-import { ResolvedKeybinding, ResolvedKeybindingPart } from 'vs/base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { illegalArgument } from 'vs/Base/common/errors';
+import { Modifiers, UILaBelProvider, AriaLaBelProvider, ElectronAcceleratorLaBelProvider, UserSettingsLaBelProvider } from 'vs/Base/common/keyBindingLaBels';
+import { ResolvedKeyBinding, ResolvedKeyBindingPart } from 'vs/Base/common/keyCodes';
 
-export abstract class BaseResolvedKeybinding<T extends Modifiers> extends ResolvedKeybinding {
+export aBstract class BaseResolvedKeyBinding<T extends Modifiers> extends ResolvedKeyBinding {
 
 	protected readonly _os: OperatingSystem;
 	protected readonly _parts: T[];
@@ -22,57 +22,57 @@ export abstract class BaseResolvedKeybinding<T extends Modifiers> extends Resolv
 		this._parts = parts;
 	}
 
-	public getLabel(): string | null {
-		return UILabelProvider.toLabel(this._os, this._parts, (keybinding) => this._getLabel(keybinding));
+	puBlic getLaBel(): string | null {
+		return UILaBelProvider.toLaBel(this._os, this._parts, (keyBinding) => this._getLaBel(keyBinding));
 	}
 
-	public getAriaLabel(): string | null {
-		return AriaLabelProvider.toLabel(this._os, this._parts, (keybinding) => this._getAriaLabel(keybinding));
+	puBlic getAriaLaBel(): string | null {
+		return AriaLaBelProvider.toLaBel(this._os, this._parts, (keyBinding) => this._getAriaLaBel(keyBinding));
 	}
 
-	public getElectronAccelerator(): string | null {
+	puBlic getElectronAccelerator(): string | null {
 		if (this._parts.length > 1) {
 			// Electron cannot handle chords
 			return null;
 		}
-		return ElectronAcceleratorLabelProvider.toLabel(this._os, this._parts, (keybinding) => this._getElectronAccelerator(keybinding));
+		return ElectronAcceleratorLaBelProvider.toLaBel(this._os, this._parts, (keyBinding) => this._getElectronAccelerator(keyBinding));
 	}
 
-	public getUserSettingsLabel(): string | null {
-		return UserSettingsLabelProvider.toLabel(this._os, this._parts, (keybinding) => this._getUserSettingsLabel(keybinding));
+	puBlic getUserSettingsLaBel(): string | null {
+		return UserSettingsLaBelProvider.toLaBel(this._os, this._parts, (keyBinding) => this._getUserSettingsLaBel(keyBinding));
 	}
 
-	public isWYSIWYG(): boolean {
-		return this._parts.every((keybinding) => this._isWYSIWYG(keybinding));
+	puBlic isWYSIWYG(): Boolean {
+		return this._parts.every((keyBinding) => this._isWYSIWYG(keyBinding));
 	}
 
-	public isChord(): boolean {
+	puBlic isChord(): Boolean {
 		return (this._parts.length > 1);
 	}
 
-	public getParts(): ResolvedKeybindingPart[] {
-		return this._parts.map((keybinding) => this._getPart(keybinding));
+	puBlic getParts(): ResolvedKeyBindingPart[] {
+		return this._parts.map((keyBinding) => this._getPart(keyBinding));
 	}
 
-	private _getPart(keybinding: T): ResolvedKeybindingPart {
-		return new ResolvedKeybindingPart(
-			keybinding.ctrlKey,
-			keybinding.shiftKey,
-			keybinding.altKey,
-			keybinding.metaKey,
-			this._getLabel(keybinding),
-			this._getAriaLabel(keybinding)
+	private _getPart(keyBinding: T): ResolvedKeyBindingPart {
+		return new ResolvedKeyBindingPart(
+			keyBinding.ctrlKey,
+			keyBinding.shiftKey,
+			keyBinding.altKey,
+			keyBinding.metaKey,
+			this._getLaBel(keyBinding),
+			this._getAriaLaBel(keyBinding)
 		);
 	}
 
-	public getDispatchParts(): (string | null)[] {
-		return this._parts.map((keybinding) => this._getDispatchPart(keybinding));
+	puBlic getDispatchParts(): (string | null)[] {
+		return this._parts.map((keyBinding) => this._getDispatchPart(keyBinding));
 	}
 
-	protected abstract _getLabel(keybinding: T): string | null;
-	protected abstract _getAriaLabel(keybinding: T): string | null;
-	protected abstract _getElectronAccelerator(keybinding: T): string | null;
-	protected abstract _getUserSettingsLabel(keybinding: T): string | null;
-	protected abstract _isWYSIWYG(keybinding: T): boolean;
-	protected abstract _getDispatchPart(keybinding: T): string | null;
+	protected aBstract _getLaBel(keyBinding: T): string | null;
+	protected aBstract _getAriaLaBel(keyBinding: T): string | null;
+	protected aBstract _getElectronAccelerator(keyBinding: T): string | null;
+	protected aBstract _getUserSettingsLaBel(keyBinding: T): string | null;
+	protected aBstract _isWYSIWYG(keyBinding: T): Boolean;
+	protected aBstract _getDispatchPart(keyBinding: T): string | null;
 }

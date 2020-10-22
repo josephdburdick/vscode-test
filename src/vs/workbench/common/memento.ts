@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { isEmptyObject } from 'vs/base/common/types';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { isEmptyOBject } from 'vs/Base/common/types';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 
-export type MementoObject = { [key: string]: any };
+export type MementoOBject = { [key: string]: any };
 
 export class Memento {
 
-	private static readonly globalMementos = new Map<string, ScopedMemento>();
+	private static readonly gloBalMementos = new Map<string, ScopedMemento>();
 	private static readonly workspaceMementos = new Map<string, ScopedMemento>();
 
 	private static readonly COMMON_PREFIX = 'memento/';
@@ -22,9 +22,9 @@ export class Memento {
 		this.id = Memento.COMMON_PREFIX + id;
 	}
 
-	getMemento(scope: StorageScope): MementoObject {
+	getMemento(scope: StorageScope): MementoOBject {
 
-		// Scope by Workspace
+		// Scope By Workspace
 		if (scope === StorageScope.WORKSPACE) {
 			let workspaceMemento = Memento.workspaceMementos.get(this.id);
 			if (!workspaceMemento) {
@@ -35,14 +35,14 @@ export class Memento {
 			return workspaceMemento.getMemento();
 		}
 
-		// Scope Global
-		let globalMemento = Memento.globalMementos.get(this.id);
-		if (!globalMemento) {
-			globalMemento = new ScopedMemento(this.id, scope, this.storageService);
-			Memento.globalMementos.set(this.id, globalMemento);
+		// Scope GloBal
+		let gloBalMemento = Memento.gloBalMementos.get(this.id);
+		if (!gloBalMemento) {
+			gloBalMemento = new ScopedMemento(this.id, scope, this.storageService);
+			Memento.gloBalMementos.set(this.id, gloBalMemento);
 		}
 
-		return globalMemento.getMemento();
+		return gloBalMemento.getMemento();
 	}
 
 	saveMemento(): void {
@@ -53,36 +53,36 @@ export class Memento {
 			workspaceMemento.save();
 		}
 
-		// Global
-		const globalMemento = Memento.globalMementos.get(this.id);
-		if (globalMemento) {
-			globalMemento.save();
+		// GloBal
+		const gloBalMemento = Memento.gloBalMementos.get(this.id);
+		if (gloBalMemento) {
+			gloBalMemento.save();
 		}
 	}
 }
 
 class ScopedMemento {
 
-	private readonly mementoObj: MementoObject;
+	private readonly mementoOBj: MementoOBject;
 
 	constructor(private id: string, private scope: StorageScope, private storageService: IStorageService) {
-		this.mementoObj = this.load();
+		this.mementoOBj = this.load();
 	}
 
-	getMemento(): MementoObject {
-		return this.mementoObj;
+	getMemento(): MementoOBject {
+		return this.mementoOBj;
 	}
 
-	private load(): MementoObject {
+	private load(): MementoOBject {
 		const memento = this.storageService.get(this.id, this.scope);
 		if (memento) {
 			try {
 				return JSON.parse(memento);
 			} catch (error) {
-				// Seeing reports from users unable to open editors
+				// Seeing reports from users unaBle to open editors
 				// from memento parsing exceptions. Log the contents
 				// to diagnose further
-				// https://github.com/microsoft/vscode/issues/102251
+				// https://githuB.com/microsoft/vscode/issues/102251
 				onUnexpectedError(`[memento]: failed to parse contents: ${error} (id: ${this.id}, scope: ${this.scope}, contents: ${memento})`);
 			}
 		}
@@ -91,8 +91,8 @@ class ScopedMemento {
 	}
 
 	save(): void {
-		if (!isEmptyObject(this.mementoObj)) {
-			this.storageService.store(this.id, JSON.stringify(this.mementoObj), this.scope);
+		if (!isEmptyOBject(this.mementoOBj)) {
+			this.storageService.store(this.id, JSON.stringify(this.mementoOBj), this.scope);
 		} else {
 			this.storageService.remove(this.id, this.scope);
 		}

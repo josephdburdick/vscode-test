@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
@@ -13,14 +13,14 @@ import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 export class Margin extends ViewPart {
 
-	public static readonly CLASS_NAME = 'glyph-margin';
-	public static readonly OUTER_CLASS_NAME = 'margin';
+	puBlic static readonly CLASS_NAME = 'glyph-margin';
+	puBlic static readonly OUTER_CLASS_NAME = 'margin';
 
 	private readonly _domNode: FastDomNode<HTMLElement>;
-	private _canUseLayerHinting: boolean;
-	private _contentLeft: number;
-	private _glyphMarginLeft: number;
-	private _glyphMarginWidth: number;
+	private _canUseLayerHinting: Boolean;
+	private _contentLeft: numBer;
+	private _glyphMarginLeft: numBer;
+	private _glyphMarginWidth: numBer;
 	private _glyphMarginBackgroundDomNode: FastDomNode<HTMLElement>;
 
 	constructor(context: ViewContext) {
@@ -28,16 +28,16 @@ export class Margin extends ViewPart {
 		const options = this._context.configuration.options;
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 
-		this._canUseLayerHinting = !options.get(EditorOption.disableLayerHinting);
+		this._canUseLayerHinting = !options.get(EditorOption.disaBleLayerHinting);
 		this._contentLeft = layoutInfo.contentLeft;
 		this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
 		this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
 
 		this._domNode = createFastDomNode(document.createElement('div'));
 		this._domNode.setClassName(Margin.OUTER_CLASS_NAME);
-		this._domNode.setPosition('absolute');
-		this._domNode.setAttribute('role', 'presentation');
-		this._domNode.setAttribute('aria-hidden', 'true');
+		this._domNode.setPosition('aBsolute');
+		this._domNode.setAttriBute('role', 'presentation');
+		this._domNode.setAttriBute('aria-hidden', 'true');
 
 		this._glyphMarginBackgroundDomNode = createFastDomNode(document.createElement('div'));
 		this._glyphMarginBackgroundDomNode.setClassName(Margin.CLASS_NAME);
@@ -45,41 +45,41 @@ export class Margin extends ViewPart {
 		this._domNode.appendChild(this._glyphMarginBackgroundDomNode);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 	}
 
-	public getDomNode(): FastDomNode<HTMLElement> {
+	puBlic getDomNode(): FastDomNode<HTMLElement> {
 		return this._domNode;
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 
-		this._canUseLayerHinting = !options.get(EditorOption.disableLayerHinting);
+		this._canUseLayerHinting = !options.get(EditorOption.disaBleLayerHinting);
 		this._contentLeft = layoutInfo.contentLeft;
 		this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
 		this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
 
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return super.onScrollChanged(e) || e.scrollTopChanged;
 	}
 
 	// --- end event handlers
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		// Nothing to read
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
+	puBlic render(ctx: RestrictedRenderingContext): void {
 		this._domNode.setLayerHinting(this._canUseLayerHinting);
 		this._domNode.setContain('strict');
-		const adjustedScrollTop = ctx.scrollTop - ctx.bigNumbersDelta;
+		const adjustedScrollTop = ctx.scrollTop - ctx.BigNumBersDelta;
 		this._domNode.setTop(-adjustedScrollTop);
 
 		const height = Math.min(ctx.scrollHeight, 1000000);

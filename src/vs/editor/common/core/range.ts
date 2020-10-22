@@ -6,59 +6,59 @@
 import { IPosition, Position } from 'vs/editor/common/core/position';
 
 /**
- * A range in the editor. This interface is suitable for serialization.
+ * A range in the editor. This interface is suitaBle for serialization.
  */
 export interface IRange {
 	/**
-	 * Line number on which the range starts (starts at 1).
+	 * Line numBer on which the range starts (starts at 1).
 	 */
-	readonly startLineNumber: number;
+	readonly startLineNumBer: numBer;
 	/**
-	 * Column on which the range starts in line `startLineNumber` (starts at 1).
+	 * Column on which the range starts in line `startLineNumBer` (starts at 1).
 	 */
-	readonly startColumn: number;
+	readonly startColumn: numBer;
 	/**
-	 * Line number on which the range ends.
+	 * Line numBer on which the range ends.
 	 */
-	readonly endLineNumber: number;
+	readonly endLineNumBer: numBer;
 	/**
-	 * Column on which the range ends in line `endLineNumber`.
+	 * Column on which the range ends in line `endLineNumBer`.
 	 */
-	readonly endColumn: number;
+	readonly endColumn: numBer;
 }
 
 /**
- * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
+ * A range in the editor. (startLineNumBer,startColumn) is <= (endLineNumBer,endColumn)
  */
 export class Range {
 
 	/**
-	 * Line number on which the range starts (starts at 1).
+	 * Line numBer on which the range starts (starts at 1).
 	 */
-	public readonly startLineNumber: number;
+	puBlic readonly startLineNumBer: numBer;
 	/**
-	 * Column on which the range starts in line `startLineNumber` (starts at 1).
+	 * Column on which the range starts in line `startLineNumBer` (starts at 1).
 	 */
-	public readonly startColumn: number;
+	puBlic readonly startColumn: numBer;
 	/**
-	 * Line number on which the range ends.
+	 * Line numBer on which the range ends.
 	 */
-	public readonly endLineNumber: number;
+	puBlic readonly endLineNumBer: numBer;
 	/**
-	 * Column on which the range ends in line `endLineNumber`.
+	 * Column on which the range ends in line `endLineNumBer`.
 	 */
-	public readonly endColumn: number;
+	puBlic readonly endColumn: numBer;
 
-	constructor(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
-		if ((startLineNumber > endLineNumber) || (startLineNumber === endLineNumber && startColumn > endColumn)) {
-			this.startLineNumber = endLineNumber;
+	constructor(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer) {
+		if ((startLineNumBer > endLineNumBer) || (startLineNumBer === endLineNumBer && startColumn > endColumn)) {
+			this.startLineNumBer = endLineNumBer;
 			this.startColumn = endColumn;
-			this.endLineNumber = startLineNumber;
+			this.endLineNumBer = startLineNumBer;
 			this.endColumn = startColumn;
 		} else {
-			this.startLineNumber = startLineNumber;
+			this.startLineNumBer = startLineNumBer;
 			this.startColumn = startColumn;
-			this.endLineNumber = endLineNumber;
+			this.endLineNumBer = endLineNumBer;
 			this.endColumn = endColumn;
 		}
 	}
@@ -66,35 +66,35 @@ export class Range {
 	/**
 	 * Test if this range is empty.
 	 */
-	public isEmpty(): boolean {
+	puBlic isEmpty(): Boolean {
 		return Range.isEmpty(this);
 	}
 
 	/**
 	 * Test if `range` is empty.
 	 */
-	public static isEmpty(range: IRange): boolean {
-		return (range.startLineNumber === range.endLineNumber && range.startColumn === range.endColumn);
+	puBlic static isEmpty(range: IRange): Boolean {
+		return (range.startLineNumBer === range.endLineNumBer && range.startColumn === range.endColumn);
 	}
 
 	/**
 	 * Test if position is in this range. If the position is at the edges, will return true.
 	 */
-	public containsPosition(position: IPosition): boolean {
+	puBlic containsPosition(position: IPosition): Boolean {
 		return Range.containsPosition(this, position);
 	}
 
 	/**
 	 * Test if `position` is in `range`. If the position is at the edges, will return true.
 	 */
-	public static containsPosition(range: IRange, position: IPosition): boolean {
-		if (position.lineNumber < range.startLineNumber || position.lineNumber > range.endLineNumber) {
+	puBlic static containsPosition(range: IRange, position: IPosition): Boolean {
+		if (position.lineNumBer < range.startLineNumBer || position.lineNumBer > range.endLineNumBer) {
 			return false;
 		}
-		if (position.lineNumber === range.startLineNumber && position.column < range.startColumn) {
+		if (position.lineNumBer === range.startLineNumBer && position.column < range.startColumn) {
 			return false;
 		}
-		if (position.lineNumber === range.endLineNumber && position.column > range.endColumn) {
+		if (position.lineNumBer === range.endLineNumBer && position.column > range.endColumn) {
 			return false;
 		}
 		return true;
@@ -103,50 +103,50 @@ export class Range {
 	/**
 	 * Test if range is in this range. If the range is equal to this range, will return true.
 	 */
-	public containsRange(range: IRange): boolean {
+	puBlic containsRange(range: IRange): Boolean {
 		return Range.containsRange(this, range);
 	}
 
 	/**
 	 * Test if `otherRange` is in `range`. If the ranges are equal, will return true.
 	 */
-	public static containsRange(range: IRange, otherRange: IRange): boolean {
-		if (otherRange.startLineNumber < range.startLineNumber || otherRange.endLineNumber < range.startLineNumber) {
+	puBlic static containsRange(range: IRange, otherRange: IRange): Boolean {
+		if (otherRange.startLineNumBer < range.startLineNumBer || otherRange.endLineNumBer < range.startLineNumBer) {
 			return false;
 		}
-		if (otherRange.startLineNumber > range.endLineNumber || otherRange.endLineNumber > range.endLineNumber) {
+		if (otherRange.startLineNumBer > range.endLineNumBer || otherRange.endLineNumBer > range.endLineNumBer) {
 			return false;
 		}
-		if (otherRange.startLineNumber === range.startLineNumber && otherRange.startColumn < range.startColumn) {
+		if (otherRange.startLineNumBer === range.startLineNumBer && otherRange.startColumn < range.startColumn) {
 			return false;
 		}
-		if (otherRange.endLineNumber === range.endLineNumber && otherRange.endColumn > range.endColumn) {
+		if (otherRange.endLineNumBer === range.endLineNumBer && otherRange.endColumn > range.endColumn) {
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * Test if `range` is strictly in this range. `range` must start after and end before this range for the result to be true.
+	 * Test if `range` is strictly in this range. `range` must start after and end Before this range for the result to Be true.
 	 */
-	public strictContainsRange(range: IRange): boolean {
+	puBlic strictContainsRange(range: IRange): Boolean {
 		return Range.strictContainsRange(this, range);
 	}
 
 	/**
-	 * Test if `otherRange` is strinctly in `range` (must start after, and end before). If the ranges are equal, will return false.
+	 * Test if `otherRange` is strinctly in `range` (must start after, and end Before). If the ranges are equal, will return false.
 	 */
-	public static strictContainsRange(range: IRange, otherRange: IRange): boolean {
-		if (otherRange.startLineNumber < range.startLineNumber || otherRange.endLineNumber < range.startLineNumber) {
+	puBlic static strictContainsRange(range: IRange, otherRange: IRange): Boolean {
+		if (otherRange.startLineNumBer < range.startLineNumBer || otherRange.endLineNumBer < range.startLineNumBer) {
 			return false;
 		}
-		if (otherRange.startLineNumber > range.endLineNumber || otherRange.endLineNumber > range.endLineNumber) {
+		if (otherRange.startLineNumBer > range.endLineNumBer || otherRange.endLineNumBer > range.endLineNumBer) {
 			return false;
 		}
-		if (otherRange.startLineNumber === range.startLineNumber && otherRange.startColumn <= range.startColumn) {
+		if (otherRange.startLineNumBer === range.startLineNumBer && otherRange.startColumn <= range.startColumn) {
 			return false;
 		}
-		if (otherRange.endLineNumber === range.endLineNumber && otherRange.endColumn >= range.endColumn) {
+		if (otherRange.endLineNumBer === range.endLineNumBer && otherRange.endColumn >= range.endColumn) {
 			return false;
 		}
 		return true;
@@ -154,217 +154,217 @@ export class Range {
 
 	/**
 	 * A reunion of the two ranges.
-	 * The smallest position will be used as the start point, and the largest one as the end point.
+	 * The smallest position will Be used as the start point, and the largest one as the end point.
 	 */
-	public plusRange(range: IRange): Range {
+	puBlic plusRange(range: IRange): Range {
 		return Range.plusRange(this, range);
 	}
 
 	/**
 	 * A reunion of the two ranges.
-	 * The smallest position will be used as the start point, and the largest one as the end point.
+	 * The smallest position will Be used as the start point, and the largest one as the end point.
 	 */
-	public static plusRange(a: IRange, b: IRange): Range {
-		let startLineNumber: number;
-		let startColumn: number;
-		let endLineNumber: number;
-		let endColumn: number;
+	puBlic static plusRange(a: IRange, B: IRange): Range {
+		let startLineNumBer: numBer;
+		let startColumn: numBer;
+		let endLineNumBer: numBer;
+		let endColumn: numBer;
 
-		if (b.startLineNumber < a.startLineNumber) {
-			startLineNumber = b.startLineNumber;
-			startColumn = b.startColumn;
-		} else if (b.startLineNumber === a.startLineNumber) {
-			startLineNumber = b.startLineNumber;
-			startColumn = Math.min(b.startColumn, a.startColumn);
+		if (B.startLineNumBer < a.startLineNumBer) {
+			startLineNumBer = B.startLineNumBer;
+			startColumn = B.startColumn;
+		} else if (B.startLineNumBer === a.startLineNumBer) {
+			startLineNumBer = B.startLineNumBer;
+			startColumn = Math.min(B.startColumn, a.startColumn);
 		} else {
-			startLineNumber = a.startLineNumber;
+			startLineNumBer = a.startLineNumBer;
 			startColumn = a.startColumn;
 		}
 
-		if (b.endLineNumber > a.endLineNumber) {
-			endLineNumber = b.endLineNumber;
-			endColumn = b.endColumn;
-		} else if (b.endLineNumber === a.endLineNumber) {
-			endLineNumber = b.endLineNumber;
-			endColumn = Math.max(b.endColumn, a.endColumn);
+		if (B.endLineNumBer > a.endLineNumBer) {
+			endLineNumBer = B.endLineNumBer;
+			endColumn = B.endColumn;
+		} else if (B.endLineNumBer === a.endLineNumBer) {
+			endLineNumBer = B.endLineNumBer;
+			endColumn = Math.max(B.endColumn, a.endColumn);
 		} else {
-			endLineNumber = a.endLineNumber;
+			endLineNumBer = a.endLineNumBer;
 			endColumn = a.endColumn;
 		}
 
-		return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
+		return new Range(startLineNumBer, startColumn, endLineNumBer, endColumn);
 	}
 
 	/**
 	 * A intersection of the two ranges.
 	 */
-	public intersectRanges(range: IRange): Range | null {
+	puBlic intersectRanges(range: IRange): Range | null {
 		return Range.intersectRanges(this, range);
 	}
 
 	/**
 	 * A intersection of the two ranges.
 	 */
-	public static intersectRanges(a: IRange, b: IRange): Range | null {
-		let resultStartLineNumber = a.startLineNumber;
+	puBlic static intersectRanges(a: IRange, B: IRange): Range | null {
+		let resultStartLineNumBer = a.startLineNumBer;
 		let resultStartColumn = a.startColumn;
-		let resultEndLineNumber = a.endLineNumber;
+		let resultEndLineNumBer = a.endLineNumBer;
 		let resultEndColumn = a.endColumn;
-		let otherStartLineNumber = b.startLineNumber;
-		let otherStartColumn = b.startColumn;
-		let otherEndLineNumber = b.endLineNumber;
-		let otherEndColumn = b.endColumn;
+		let otherStartLineNumBer = B.startLineNumBer;
+		let otherStartColumn = B.startColumn;
+		let otherEndLineNumBer = B.endLineNumBer;
+		let otherEndColumn = B.endColumn;
 
-		if (resultStartLineNumber < otherStartLineNumber) {
-			resultStartLineNumber = otherStartLineNumber;
+		if (resultStartLineNumBer < otherStartLineNumBer) {
+			resultStartLineNumBer = otherStartLineNumBer;
 			resultStartColumn = otherStartColumn;
-		} else if (resultStartLineNumber === otherStartLineNumber) {
+		} else if (resultStartLineNumBer === otherStartLineNumBer) {
 			resultStartColumn = Math.max(resultStartColumn, otherStartColumn);
 		}
 
-		if (resultEndLineNumber > otherEndLineNumber) {
-			resultEndLineNumber = otherEndLineNumber;
+		if (resultEndLineNumBer > otherEndLineNumBer) {
+			resultEndLineNumBer = otherEndLineNumBer;
 			resultEndColumn = otherEndColumn;
-		} else if (resultEndLineNumber === otherEndLineNumber) {
+		} else if (resultEndLineNumBer === otherEndLineNumBer) {
 			resultEndColumn = Math.min(resultEndColumn, otherEndColumn);
 		}
 
 		// Check if selection is now empty
-		if (resultStartLineNumber > resultEndLineNumber) {
+		if (resultStartLineNumBer > resultEndLineNumBer) {
 			return null;
 		}
-		if (resultStartLineNumber === resultEndLineNumber && resultStartColumn > resultEndColumn) {
+		if (resultStartLineNumBer === resultEndLineNumBer && resultStartColumn > resultEndColumn) {
 			return null;
 		}
-		return new Range(resultStartLineNumber, resultStartColumn, resultEndLineNumber, resultEndColumn);
+		return new Range(resultStartLineNumBer, resultStartColumn, resultEndLineNumBer, resultEndColumn);
 	}
 
 	/**
 	 * Test if this range equals other.
 	 */
-	public equalsRange(other: IRange | null): boolean {
+	puBlic equalsRange(other: IRange | null): Boolean {
 		return Range.equalsRange(this, other);
 	}
 
 	/**
-	 * Test if range `a` equals `b`.
+	 * Test if range `a` equals `B`.
 	 */
-	public static equalsRange(a: IRange | null, b: IRange | null): boolean {
+	puBlic static equalsRange(a: IRange | null, B: IRange | null): Boolean {
 		return (
 			!!a &&
-			!!b &&
-			a.startLineNumber === b.startLineNumber &&
-			a.startColumn === b.startColumn &&
-			a.endLineNumber === b.endLineNumber &&
-			a.endColumn === b.endColumn
+			!!B &&
+			a.startLineNumBer === B.startLineNumBer &&
+			a.startColumn === B.startColumn &&
+			a.endLineNumBer === B.endLineNumBer &&
+			a.endColumn === B.endColumn
 		);
 	}
 
 	/**
-	 * Return the end position (which will be after or equal to the start position)
+	 * Return the end position (which will Be after or equal to the start position)
 	 */
-	public getEndPosition(): Position {
+	puBlic getEndPosition(): Position {
 		return Range.getEndPosition(this);
 	}
 
 	/**
-	 * Return the end position (which will be after or equal to the start position)
+	 * Return the end position (which will Be after or equal to the start position)
 	 */
-	public static getEndPosition(range: IRange): Position {
-		return new Position(range.endLineNumber, range.endColumn);
+	puBlic static getEndPosition(range: IRange): Position {
+		return new Position(range.endLineNumBer, range.endColumn);
 	}
 
 	/**
-	 * Return the start position (which will be before or equal to the end position)
+	 * Return the start position (which will Be Before or equal to the end position)
 	 */
-	public getStartPosition(): Position {
+	puBlic getStartPosition(): Position {
 		return Range.getStartPosition(this);
 	}
 
 	/**
-	 * Return the start position (which will be before or equal to the end position)
+	 * Return the start position (which will Be Before or equal to the end position)
 	 */
-	public static getStartPosition(range: IRange): Position {
-		return new Position(range.startLineNumber, range.startColumn);
+	puBlic static getStartPosition(range: IRange): Position {
+		return new Position(range.startLineNumBer, range.startColumn);
 	}
 
 	/**
-	 * Transform to a user presentable string representation.
+	 * Transform to a user presentaBle string representation.
 	 */
-	public toString(): string {
-		return '[' + this.startLineNumber + ',' + this.startColumn + ' -> ' + this.endLineNumber + ',' + this.endColumn + ']';
+	puBlic toString(): string {
+		return '[' + this.startLineNumBer + ',' + this.startColumn + ' -> ' + this.endLineNumBer + ',' + this.endColumn + ']';
 	}
 
 	/**
-	 * Create a new range using this range's start position, and using endLineNumber and endColumn as the end position.
+	 * Create a new range using this range's start position, and using endLineNumBer and endColumn as the end position.
 	 */
-	public setEndPosition(endLineNumber: number, endColumn: number): Range {
-		return new Range(this.startLineNumber, this.startColumn, endLineNumber, endColumn);
+	puBlic setEndPosition(endLineNumBer: numBer, endColumn: numBer): Range {
+		return new Range(this.startLineNumBer, this.startColumn, endLineNumBer, endColumn);
 	}
 
 	/**
-	 * Create a new range using this range's end position, and using startLineNumber and startColumn as the start position.
+	 * Create a new range using this range's end position, and using startLineNumBer and startColumn as the start position.
 	 */
-	public setStartPosition(startLineNumber: number, startColumn: number): Range {
-		return new Range(startLineNumber, startColumn, this.endLineNumber, this.endColumn);
+	puBlic setStartPosition(startLineNumBer: numBer, startColumn: numBer): Range {
+		return new Range(startLineNumBer, startColumn, this.endLineNumBer, this.endColumn);
 	}
 
 	/**
 	 * Create a new empty range using this range's start position.
 	 */
-	public collapseToStart(): Range {
+	puBlic collapseToStart(): Range {
 		return Range.collapseToStart(this);
 	}
 
 	/**
 	 * Create a new empty range using this range's start position.
 	 */
-	public static collapseToStart(range: IRange): Range {
-		return new Range(range.startLineNumber, range.startColumn, range.startLineNumber, range.startColumn);
+	puBlic static collapseToStart(range: IRange): Range {
+		return new Range(range.startLineNumBer, range.startColumn, range.startLineNumBer, range.startColumn);
 	}
 
 	// ---
 
-	public static fromPositions(start: IPosition, end: IPosition = start): Range {
-		return new Range(start.lineNumber, start.column, end.lineNumber, end.column);
+	puBlic static fromPositions(start: IPosition, end: IPosition = start): Range {
+		return new Range(start.lineNumBer, start.column, end.lineNumBer, end.column);
 	}
 
 	/**
 	 * Create a `Range` from an `IRange`.
 	 */
-	public static lift(range: undefined | null): null;
-	public static lift(range: IRange): Range;
-	public static lift(range: IRange | undefined | null): Range | null {
+	puBlic static lift(range: undefined | null): null;
+	puBlic static lift(range: IRange): Range;
+	puBlic static lift(range: IRange | undefined | null): Range | null {
 		if (!range) {
 			return null;
 		}
-		return new Range(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+		return new Range(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn);
 	}
 
 	/**
-	 * Test if `obj` is an `IRange`.
+	 * Test if `oBj` is an `IRange`.
 	 */
-	public static isIRange(obj: any): obj is IRange {
+	puBlic static isIRange(oBj: any): oBj is IRange {
 		return (
-			obj
-			&& (typeof obj.startLineNumber === 'number')
-			&& (typeof obj.startColumn === 'number')
-			&& (typeof obj.endLineNumber === 'number')
-			&& (typeof obj.endColumn === 'number')
+			oBj
+			&& (typeof oBj.startLineNumBer === 'numBer')
+			&& (typeof oBj.startColumn === 'numBer')
+			&& (typeof oBj.endLineNumBer === 'numBer')
+			&& (typeof oBj.endColumn === 'numBer')
 		);
 	}
 
 	/**
 	 * Test if the two ranges are touching in any way.
 	 */
-	public static areIntersectingOrTouching(a: IRange, b: IRange): boolean {
-		// Check if `a` is before `b`
-		if (a.endLineNumber < b.startLineNumber || (a.endLineNumber === b.startLineNumber && a.endColumn < b.startColumn)) {
+	puBlic static areIntersectingOrTouching(a: IRange, B: IRange): Boolean {
+		// Check if `a` is Before `B`
+		if (a.endLineNumBer < B.startLineNumBer || (a.endLineNumBer === B.startLineNumBer && a.endColumn < B.startColumn)) {
 			return false;
 		}
 
-		// Check if `b` is before `a`
-		if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn < a.startColumn)) {
+		// Check if `B` is Before `a`
+		if (B.endLineNumBer < a.startLineNumBer || (B.endLineNumBer === a.startLineNumBer && B.endColumn < a.startColumn)) {
 			return false;
 		}
 
@@ -375,14 +375,14 @@ export class Range {
 	/**
 	 * Test if the two ranges are intersecting. If the ranges are touching it returns true.
 	 */
-	public static areIntersecting(a: IRange, b: IRange): boolean {
-		// Check if `a` is before `b`
-		if (a.endLineNumber < b.startLineNumber || (a.endLineNumber === b.startLineNumber && a.endColumn <= b.startColumn)) {
+	puBlic static areIntersecting(a: IRange, B: IRange): Boolean {
+		// Check if `a` is Before `B`
+		if (a.endLineNumBer < B.startLineNumBer || (a.endLineNumBer === B.startLineNumBer && a.endColumn <= B.startColumn)) {
 			return false;
 		}
 
-		// Check if `b` is before `a`
-		if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn <= a.startColumn)) {
+		// Check if `B` is Before `a`
+		if (B.endLineNumBer < a.startLineNumBer || (B.endLineNumBer === a.startLineNumBer && B.endColumn <= a.startColumn)) {
 			return false;
 		}
 
@@ -394,56 +394,56 @@ export class Range {
 	 * A function that compares ranges, useful for sorting ranges
 	 * It will first compare ranges on the startPosition and then on the endPosition
 	 */
-	public static compareRangesUsingStarts(a: IRange | null | undefined, b: IRange | null | undefined): number {
-		if (a && b) {
-			const aStartLineNumber = a.startLineNumber | 0;
-			const bStartLineNumber = b.startLineNumber | 0;
+	puBlic static compareRangesUsingStarts(a: IRange | null | undefined, B: IRange | null | undefined): numBer {
+		if (a && B) {
+			const aStartLineNumBer = a.startLineNumBer | 0;
+			const BStartLineNumBer = B.startLineNumBer | 0;
 
-			if (aStartLineNumber === bStartLineNumber) {
+			if (aStartLineNumBer === BStartLineNumBer) {
 				const aStartColumn = a.startColumn | 0;
-				const bStartColumn = b.startColumn | 0;
+				const BStartColumn = B.startColumn | 0;
 
-				if (aStartColumn === bStartColumn) {
-					const aEndLineNumber = a.endLineNumber | 0;
-					const bEndLineNumber = b.endLineNumber | 0;
+				if (aStartColumn === BStartColumn) {
+					const aEndLineNumBer = a.endLineNumBer | 0;
+					const BEndLineNumBer = B.endLineNumBer | 0;
 
-					if (aEndLineNumber === bEndLineNumber) {
+					if (aEndLineNumBer === BEndLineNumBer) {
 						const aEndColumn = a.endColumn | 0;
-						const bEndColumn = b.endColumn | 0;
-						return aEndColumn - bEndColumn;
+						const BEndColumn = B.endColumn | 0;
+						return aEndColumn - BEndColumn;
 					}
-					return aEndLineNumber - bEndLineNumber;
+					return aEndLineNumBer - BEndLineNumBer;
 				}
-				return aStartColumn - bStartColumn;
+				return aStartColumn - BStartColumn;
 			}
-			return aStartLineNumber - bStartLineNumber;
+			return aStartLineNumBer - BStartLineNumBer;
 		}
 		const aExists = (a ? 1 : 0);
-		const bExists = (b ? 1 : 0);
-		return aExists - bExists;
+		const BExists = (B ? 1 : 0);
+		return aExists - BExists;
 	}
 
 	/**
 	 * A function that compares ranges, useful for sorting ranges
 	 * It will first compare ranges on the endPosition and then on the startPosition
 	 */
-	public static compareRangesUsingEnds(a: IRange, b: IRange): number {
-		if (a.endLineNumber === b.endLineNumber) {
-			if (a.endColumn === b.endColumn) {
-				if (a.startLineNumber === b.startLineNumber) {
-					return a.startColumn - b.startColumn;
+	puBlic static compareRangesUsingEnds(a: IRange, B: IRange): numBer {
+		if (a.endLineNumBer === B.endLineNumBer) {
+			if (a.endColumn === B.endColumn) {
+				if (a.startLineNumBer === B.startLineNumBer) {
+					return a.startColumn - B.startColumn;
 				}
-				return a.startLineNumber - b.startLineNumber;
+				return a.startLineNumBer - B.startLineNumBer;
 			}
-			return a.endColumn - b.endColumn;
+			return a.endColumn - B.endColumn;
 		}
-		return a.endLineNumber - b.endLineNumber;
+		return a.endLineNumBer - B.endLineNumBer;
 	}
 
 	/**
 	 * Test if the range spans multiple lines.
 	 */
-	public static spansMultipleLines(range: IRange): boolean {
-		return range.endLineNumber > range.startLineNumber;
+	puBlic static spansMultipleLines(range: IRange): Boolean {
+		return range.endLineNumBer > range.startLineNumBer;
 	}
 }

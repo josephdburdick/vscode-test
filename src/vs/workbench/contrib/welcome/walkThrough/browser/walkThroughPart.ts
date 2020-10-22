@@ -4,50 +4,50 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./walkThroughPart';
-import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
-import { EventType as TouchEventType, GestureEvent, Gesture } from 'vs/base/browser/touch';
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
-import * as strings from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
-import { IDisposable, dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { EditorOptions, IEditorMemento, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import { DomScrollaBleElement } from 'vs/Base/Browser/ui/scrollBar/scrollaBleElement';
+import { EventType as TouchEventType, GestureEvent, Gesture } from 'vs/Base/Browser/touch';
+import { ScrollBarVisiBility } from 'vs/Base/common/scrollaBle';
+import * as strings from 'vs/Base/common/strings';
+import { URI } from 'vs/Base/common/uri';
+import { IDisposaBle, dispose, toDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { EditorOptions, IEditorMemento, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { WalkThroughInput } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughInput';
+import { WalkThroughInput } from 'vs/workBench/contriB/welcome/walkThrough/Browser/walkThroughInput';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import * as marked from 'vs/base/common/marked/marked';
+import * as marked from 'vs/Base/common/marked/marked';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { localize } from 'vs/nls';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { RawContextKey, IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Event } from 'vs/base/common/event';
-import { isObject } from 'vs/base/common/types';
+import { Event } from 'vs/Base/common/event';
+import { isOBject } from 'vs/Base/common/types';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { registerColor, focusBorder, textLinkForeground, textLinkActiveForeground, textPreformatForeground, contrastBorder, textBlockQuoteBackground, textBlockQuoteBorder } from 'vs/platform/theme/common/colorRegistry';
-import { getExtraColor } from 'vs/workbench/contrib/welcome/walkThrough/common/walkThroughUtils';
-import { UILabelProvider } from 'vs/base/common/keybindingLabels';
-import { OS, OperatingSystem } from 'vs/base/common/platform';
-import { deepClone } from 'vs/base/common/objects';
+import { getExtraColor } from 'vs/workBench/contriB/welcome/walkThrough/common/walkThroughUtils';
+import { UILaBelProvider } from 'vs/Base/common/keyBindingLaBels';
+import { OS, OperatingSystem } from 'vs/Base/common/platform';
+import { deepClone } from 'vs/Base/common/oBjects';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { Dimension, safeInnerHtml, size } from 'vs/base/browser/dom';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { domEvent } from 'vs/base/browser/event';
+import { Dimension, safeInnerHtml, size } from 'vs/Base/Browser/dom';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { domEvent } from 'vs/Base/Browser/event';
 
-export const WALK_THROUGH_FOCUS = new RawContextKey<boolean>('interactivePlaygroundFocus', false);
+export const WALK_THROUGH_FOCUS = new RawContextKey<Boolean>('interactivePlaygroundFocus', false);
 
-const UNBOUND_COMMAND = localize('walkThrough.unboundCommand', "unbound");
+const UNBOUND_COMMAND = localize('walkThrough.unBoundCommand', "unBound");
 const WALK_THROUGH_EDITOR_VIEW_STATE_PREFERENCE_KEY = 'walkThroughEditorViewState';
 
 interface IViewState {
-	scrollTop: number;
-	scrollLeft: number;
+	scrollTop: numBer;
+	scrollLeft: numBer;
 }
 
 interface IWalkThroughEditorViewState {
@@ -56,13 +56,13 @@ interface IWalkThroughEditorViewState {
 
 export class WalkThroughPart extends EditorPane {
 
-	static readonly ID: string = 'workbench.editor.walkThroughPart';
+	static readonly ID: string = 'workBench.editor.walkThroughPart';
 
-	private readonly disposables = new DisposableStore();
-	private contentDisposables: IDisposable[] = [];
+	private readonly disposaBles = new DisposaBleStore();
+	private contentDisposaBles: IDisposaBle[] = [];
 	private content!: HTMLDivElement;
-	private scrollbar!: DomScrollableElement;
-	private editorFocus: IContextKey<boolean>;
+	private scrollBar!: DomScrollaBleElement;
+	private editorFocus: IContextKey<Boolean>;
 	private lastFocus: HTMLElement | undefined;
 	private size: Dimension | undefined;
 	private editorMemento: IEditorMemento<IWalkThroughEditorViewState>;
@@ -73,7 +73,7 @@ export class WalkThroughPart extends EditorPane {
 		@IModelService modelService: IModelService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IOpenerService private readonly openerService: IOpenerService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly keyBindingService: IKeyBindingService,
 		@IStorageService storageService: IStorageService,
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
@@ -81,31 +81,31 @@ export class WalkThroughPart extends EditorPane {
 		@IEditorGroupsService editorGroupService: IEditorGroupsService
 	) {
 		super(WalkThroughPart.ID, telemetryService, themeService, storageService);
-		this.editorFocus = WALK_THROUGH_FOCUS.bindTo(this.contextKeyService);
+		this.editorFocus = WALK_THROUGH_FOCUS.BindTo(this.contextKeyService);
 		this.editorMemento = this.getEditorMemento<IWalkThroughEditorViewState>(editorGroupService, WALK_THROUGH_EDITOR_VIEW_STATE_PREFERENCE_KEY);
 	}
 
 	createEditor(container: HTMLElement): void {
 		this.content = document.createElement('div');
-		this.content.tabIndex = 0;
+		this.content.taBIndex = 0;
 		this.content.style.outlineStyle = 'none';
 
-		this.scrollbar = new DomScrollableElement(this.content, {
-			horizontal: ScrollbarVisibility.Auto,
-			vertical: ScrollbarVisibility.Auto
+		this.scrollBar = new DomScrollaBleElement(this.content, {
+			horizontal: ScrollBarVisiBility.Auto,
+			vertical: ScrollBarVisiBility.Auto
 		});
-		this.disposables.add(this.scrollbar);
-		container.appendChild(this.scrollbar.getDomNode());
+		this.disposaBles.add(this.scrollBar);
+		container.appendChild(this.scrollBar.getDomNode());
 
 		this.registerFocusHandlers();
 		this.registerClickHandler();
 
-		this.disposables.add(this.scrollbar.onScroll(e => this.updatedScrollPosition()));
+		this.disposaBles.add(this.scrollBar.onScroll(e => this.updatedScrollPosition()));
 	}
 
 	private updatedScrollPosition() {
-		const scrollDimensions = this.scrollbar.getScrollDimensions();
-		const scrollPosition = this.scrollbar.getScrollPosition();
+		const scrollDimensions = this.scrollBar.getScrollDimensions();
+		const scrollPosition = this.scrollBar.getScrollPosition();
 		const scrollHeight = scrollDimensions.scrollHeight;
 		if (scrollHeight && this.input instanceof WalkThroughInput) {
 			const scrollTop = scrollPosition.scrollTop;
@@ -118,31 +118,31 @@ export class WalkThroughPart extends EditorPane {
 		event.preventDefault();
 		event.stopPropagation();
 
-		const scrollPosition = this.scrollbar.getScrollPosition();
-		this.scrollbar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - event.translationY });
+		const scrollPosition = this.scrollBar.getScrollPosition();
+		this.scrollBar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - event.translationY });
 	}
 
-	private addEventListener<K extends keyof HTMLElementEventMap, E extends HTMLElement>(element: E, type: K, listener: (this: E, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): IDisposable;
-	private addEventListener<E extends HTMLElement>(element: E, type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): IDisposable;
-	private addEventListener<E extends HTMLElement>(element: E, type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): IDisposable {
+	private addEventListener<K extends keyof HTMLElementEventMap, E extends HTMLElement>(element: E, type: K, listener: (this: E, ev: HTMLElementEventMap[K]) => any, useCapture?: Boolean): IDisposaBle;
+	private addEventListener<E extends HTMLElement>(element: E, type: string, listener: EventListenerOrEventListenerOBject, useCapture?: Boolean): IDisposaBle;
+	private addEventListener<E extends HTMLElement>(element: E, type: string, listener: EventListenerOrEventListenerOBject, useCapture?: Boolean): IDisposaBle {
 		element.addEventListener(type, listener, useCapture);
-		return toDisposable(() => { element.removeEventListener(type, listener, useCapture); });
+		return toDisposaBle(() => { element.removeEventListener(type, listener, useCapture); });
 	}
 
 	private registerFocusHandlers() {
-		this.disposables.add(this.addEventListener(this.content, 'mousedown', e => {
+		this.disposaBles.add(this.addEventListener(this.content, 'mousedown', e => {
 			this.focus();
 		}));
-		this.disposables.add(this.addEventListener(this.content, 'focus', e => {
+		this.disposaBles.add(this.addEventListener(this.content, 'focus', e => {
 			this.editorFocus.set(true);
 		}));
-		this.disposables.add(this.addEventListener(this.content, 'blur', e => {
+		this.disposaBles.add(this.addEventListener(this.content, 'Blur', e => {
 			this.editorFocus.reset();
 		}));
-		this.disposables.add(this.addEventListener(this.content, 'focusin', (e: FocusEvent) => {
+		this.disposaBles.add(this.addEventListener(this.content, 'focusin', (e: FocusEvent) => {
 			// Work around scrolling as side-effect of setting focus on the offscreen zone widget (#18929)
 			if (e.target instanceof HTMLElement && e.target.classList.contains('zone-widget-container')) {
-				const scrollPosition = this.scrollbar.getScrollPosition();
+				const scrollPosition = this.scrollBar.getScrollPosition();
 				this.content.scrollTop = scrollPosition.scrollTop;
 				this.content.scrollLeft = scrollPosition.scrollLeft;
 			}
@@ -156,28 +156,28 @@ export class WalkThroughPart extends EditorPane {
 		this.content.addEventListener('click', event => {
 			for (let node = event.target as HTMLElement; node; node = node.parentNode as HTMLElement) {
 				if (node instanceof HTMLAnchorElement && node.href) {
-					let baseElement = window.document.getElementsByTagName('base')[0] || window.location;
-					if (baseElement && node.href.indexOf(baseElement.href) >= 0 && node.hash) {
+					let BaseElement = window.document.getElementsByTagName('Base')[0] || window.location;
+					if (BaseElement && node.href.indexOf(BaseElement.href) >= 0 && node.hash) {
 						const scrollTarget = this.content.querySelector(node.hash);
 						const innerContent = this.content.firstElementChild;
 						if (scrollTarget && innerContent) {
 							const targetTop = scrollTarget.getBoundingClientRect().top - 20;
 							const containerTop = innerContent.getBoundingClientRect().top;
-							this.scrollbar.setScrollPosition({ scrollTop: targetTop - containerTop });
+							this.scrollBar.setScrollPosition({ scrollTop: targetTop - containerTop });
 						}
 					} else {
 						this.open(URI.parse(node.href));
 					}
 					event.preventDefault();
-					break;
+					Break;
 				} else if (node instanceof HTMLButtonElement) {
-					const href = node.getAttribute('data-href');
+					const href = node.getAttriBute('data-href');
 					if (href) {
 						this.open(URI.parse(href));
 					}
-					break;
+					Break;
 				} else if (node === event.currentTarget) {
-					break;
+					Break;
 				}
 			}
 		});
@@ -204,12 +204,12 @@ export class WalkThroughPart extends EditorPane {
 		this.size = dimension;
 		size(this.content, dimension.width, dimension.height);
 		this.updateSizeClasses();
-		this.contentDisposables.forEach(disposable => {
-			if (disposable instanceof CodeEditorWidget) {
-				disposable.layout();
+		this.contentDisposaBles.forEach(disposaBle => {
+			if (disposaBle instanceof CodeEditorWidget) {
+				disposaBle.layout();
 			}
 		});
-		this.scrollbar.scanDomNode();
+		this.scrollBar.scanDomNode();
 	}
 
 	private updateSizeClasses() {
@@ -232,33 +232,33 @@ export class WalkThroughPart extends EditorPane {
 	}
 
 	arrowUp() {
-		const scrollPosition = this.scrollbar.getScrollPosition();
-		this.scrollbar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - this.getArrowScrollHeight() });
+		const scrollPosition = this.scrollBar.getScrollPosition();
+		this.scrollBar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - this.getArrowScrollHeight() });
 	}
 
 	arrowDown() {
-		const scrollPosition = this.scrollbar.getScrollPosition();
-		this.scrollbar.setScrollPosition({ scrollTop: scrollPosition.scrollTop + this.getArrowScrollHeight() });
+		const scrollPosition = this.scrollBar.getScrollPosition();
+		this.scrollBar.setScrollPosition({ scrollTop: scrollPosition.scrollTop + this.getArrowScrollHeight() });
 	}
 
 	private getArrowScrollHeight() {
-		let fontSize = this.configurationService.getValue<number>('editor.fontSize');
-		if (typeof fontSize !== 'number' || fontSize < 1) {
+		let fontSize = this.configurationService.getValue<numBer>('editor.fontSize');
+		if (typeof fontSize !== 'numBer' || fontSize < 1) {
 			fontSize = 12;
 		}
 		return 3 * fontSize;
 	}
 
 	pageUp() {
-		const scrollDimensions = this.scrollbar.getScrollDimensions();
-		const scrollPosition = this.scrollbar.getScrollPosition();
-		this.scrollbar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - scrollDimensions.height });
+		const scrollDimensions = this.scrollBar.getScrollDimensions();
+		const scrollPosition = this.scrollBar.getScrollPosition();
+		this.scrollBar.setScrollPosition({ scrollTop: scrollPosition.scrollTop - scrollDimensions.height });
 	}
 
 	pageDown() {
-		const scrollDimensions = this.scrollbar.getScrollDimensions();
-		const scrollPosition = this.scrollbar.getScrollPosition();
-		this.scrollbar.setScrollPosition({ scrollTop: scrollPosition.scrollTop + scrollDimensions.height });
+		const scrollDimensions = this.scrollBar.getScrollDimensions();
+		const scrollPosition = this.scrollBar.getScrollPosition();
+		this.scrollBar.setScrollPosition({ scrollTop: scrollPosition.scrollTop + scrollDimensions.height });
 	}
 
 	setInput(input: WalkThroughInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
@@ -266,7 +266,7 @@ export class WalkThroughPart extends EditorPane {
 			this.saveTextEditorViewState(this.input);
 		}
 
-		this.contentDisposables = dispose(this.contentDisposables);
+		this.contentDisposaBles = dispose(this.contentDisposaBles);
 		this.content.innerText = '';
 
 		return super.setInput(input, options, context, token)
@@ -284,11 +284,11 @@ export class WalkThroughPart extends EditorPane {
 
 					this.updateSizeClasses();
 					this.decorateContent();
-					this.contentDisposables.push(this.keybindingService.onDidUpdateKeybindings(() => this.decorateContent()));
+					this.contentDisposaBles.push(this.keyBindingService.onDidUpdateKeyBindings(() => this.decorateContent()));
 					if (input.onReady) {
 						input.onReady(this.content.firstElementChild as HTMLElement);
 					}
-					this.scrollbar.scanDomNode();
+					this.scrollBar.scanDomNode();
 					this.loadTextEditorViewState(input);
 					this.updatedScrollPosition();
 					return;
@@ -320,42 +320,42 @@ export class WalkThroughPart extends EditorPane {
 						telemetryData: telemetryData
 					});
 					editor.setModel(model);
-					this.contentDisposables.push(editor);
+					this.contentDisposaBles.push(editor);
 
-					const updateHeight = (initial: boolean) => {
+					const updateHeight = (initial: Boolean) => {
 						const lineHeight = editor.getOption(EditorOption.lineHeight);
 						const height = `${Math.max(model.getLineCount() + 1, 4) * lineHeight}px`;
 						if (div.style.height !== height) {
 							div.style.height = height;
 							editor.layout();
 							if (!initial) {
-								this.scrollbar.scanDomNode();
+								this.scrollBar.scanDomNode();
 							}
 						}
 					};
 					updateHeight(true);
-					this.contentDisposables.push(editor.onDidChangeModelContent(() => updateHeight(false)));
-					this.contentDisposables.push(editor.onDidChangeCursorPosition(e => {
+					this.contentDisposaBles.push(editor.onDidChangeModelContent(() => updateHeight(false)));
+					this.contentDisposaBles.push(editor.onDidChangeCursorPosition(e => {
 						const innerContent = this.content.firstElementChild;
 						if (innerContent) {
 							const targetTop = div.getBoundingClientRect().top;
 							const containerTop = innerContent.getBoundingClientRect().top;
 							const lineHeight = editor.getOption(EditorOption.lineHeight);
-							const lineTop = (targetTop + (e.position.lineNumber - 1) * lineHeight) - containerTop;
+							const lineTop = (targetTop + (e.position.lineNumBer - 1) * lineHeight) - containerTop;
 							const lineBottom = lineTop + lineHeight;
-							const scrollDimensions = this.scrollbar.getScrollDimensions();
-							const scrollPosition = this.scrollbar.getScrollPosition();
+							const scrollDimensions = this.scrollBar.getScrollDimensions();
+							const scrollPosition = this.scrollBar.getScrollPosition();
 							const scrollTop = scrollPosition.scrollTop;
 							const height = scrollDimensions.height;
 							if (scrollTop > lineTop) {
-								this.scrollbar.setScrollPosition({ scrollTop: lineTop });
+								this.scrollBar.setScrollPosition({ scrollTop: lineTop });
 							} else if (scrollTop < lineBottom - height) {
-								this.scrollbar.setScrollPosition({ scrollTop: lineBottom - height });
+								this.scrollBar.setScrollPosition({ scrollTop: lineBottom - height });
 							}
 						}
 					}));
 
-					this.contentDisposables.push(this.configurationService.onDidChangeConfiguration(() => {
+					this.contentDisposaBles.push(this.configurationService.onDidChangeConfiguration(() => {
 						if (snippet.textEditorModel) {
 							editor.updateOptions(this.getEditorOptions(snippet.textEditorModel.getModeId()));
 						}
@@ -369,25 +369,25 @@ export class WalkThroughPart extends EditorPane {
 					type WalkThroughSnippetInteractionEvent = {
 						from?: string,
 						type: string,
-						snippet: number
+						snippet: numBer
 					};
 
-					this.contentDisposables.push(Event.once(editor.onMouseDown)(() => {
-						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
+					this.contentDisposaBles.push(Event.once(editor.onMouseDown)(() => {
+						this.telemetryService.puBlicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'mouseDown',
 							snippet: i
 						});
 					}));
-					this.contentDisposables.push(Event.once(editor.onKeyDown)(() => {
-						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
+					this.contentDisposaBles.push(Event.once(editor.onKeyDown)(() => {
+						this.telemetryService.puBlicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'keyDown',
 							snippet: i
 						});
 					}));
-					this.contentDisposables.push(Event.once(editor.onDidChangeModelContent)(() => {
-						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
+					this.contentDisposaBles.push(Event.once(editor.onDidChangeModelContent)(() => {
+						this.telemetryService.puBlicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'changeModelContent',
 							snippet: i
@@ -396,7 +396,7 @@ export class WalkThroughPart extends EditorPane {
 				});
 				this.updateSizeClasses();
 				this.multiCursorModifier();
-				this.contentDisposables.push(this.configurationService.onDidChangeConfiguration(e => {
+				this.contentDisposaBles.push(this.configurationService.onDidChangeConfiguration(e => {
 					if (e.affectsConfiguration('editor.multiCursorModifier')) {
 						this.multiCursorModifier();
 					}
@@ -404,21 +404,21 @@ export class WalkThroughPart extends EditorPane {
 				if (input.onReady) {
 					input.onReady(innerContent);
 				}
-				this.scrollbar.scanDomNode();
+				this.scrollBar.scanDomNode();
 				this.loadTextEditorViewState(input);
 				this.updatedScrollPosition();
-				this.contentDisposables.push(Gesture.addTarget(innerContent));
-				this.contentDisposables.push(domEvent(innerContent, TouchEventType.Change)(this.onTouchChange, this, this.disposables));
+				this.contentDisposaBles.push(Gesture.addTarget(innerContent));
+				this.contentDisposaBles.push(domEvent(innerContent, TouchEventType.Change)(this.onTouchChange, this, this.disposaBles));
 			});
 	}
 
 	private getEditorOptions(language: string): IEditorOptions {
 		const config = deepClone(this.configurationService.getValue<IEditorOptions>('editor', { overrideIdentifier: language }));
 		return {
-			...isObject(config) ? config : Object.create(null),
+			...isOBject(config) ? config : OBject.create(null),
 			scrollBeyondLastLine: false,
-			scrollbar: {
-				verticalScrollbarSize: 14,
+			scrollBar: {
+				verticalScrollBarSize: 14,
 				horizontal: 'auto',
 				useShadows: true,
 				verticalHasArrows: false,
@@ -427,15 +427,15 @@ export class WalkThroughPart extends EditorPane {
 			},
 			overviewRulerLanes: 3,
 			fixedOverflowWidgets: false,
-			lineNumbersMinChars: 1,
-			minimap: { enabled: false },
+			lineNumBersMinChars: 1,
+			minimap: { enaBled: false },
 		};
 	}
 
 	private expandMacros(input: string) {
-		return input.replace(/kb\(([a-z.\d\-]+)\)/gi, (match: string, kb: string) => {
-			const keybinding = this.keybindingService.lookupKeybinding(kb);
-			const shortcut = keybinding ? keybinding.getLabel() || '' : UNBOUND_COMMAND;
+		return input.replace(/kB\(([a-z.\d\-]+)\)/gi, (match: string, kB: string) => {
+			const keyBinding = this.keyBindingService.lookupKeyBinding(kB);
+			const shortcut = keyBinding ? keyBinding.getLaBel() || '' : UNBOUND_COMMAND;
 			return `<span class="shortcut">${strings.escape(shortcut)}</span>`;
 		});
 	}
@@ -443,26 +443,26 @@ export class WalkThroughPart extends EditorPane {
 	private decorateContent() {
 		const keys = this.content.querySelectorAll('.shortcut[data-command]');
 		Array.prototype.forEach.call(keys, (key: Element) => {
-			const command = key.getAttribute('data-command');
-			const keybinding = command && this.keybindingService.lookupKeybinding(command);
-			const label = keybinding ? keybinding.getLabel() || '' : UNBOUND_COMMAND;
+			const command = key.getAttriBute('data-command');
+			const keyBinding = command && this.keyBindingService.lookupKeyBinding(command);
+			const laBel = keyBinding ? keyBinding.getLaBel() || '' : UNBOUND_COMMAND;
 			while (key.firstChild) {
 				key.removeChild(key.firstChild);
 			}
-			key.appendChild(document.createTextNode(label));
+			key.appendChild(document.createTextNode(laBel));
 		});
 		const ifkeys = this.content.querySelectorAll('.if_shortcut[data-command]');
 		Array.prototype.forEach.call(ifkeys, (key: HTMLElement) => {
-			const command = key.getAttribute('data-command');
-			const keybinding = command && this.keybindingService.lookupKeybinding(command);
-			key.style.display = !keybinding ? 'none' : '';
+			const command = key.getAttriBute('data-command');
+			const keyBinding = command && this.keyBindingService.lookupKeyBinding(command);
+			key.style.display = !keyBinding ? 'none' : '';
 		});
 	}
 
 	private multiCursorModifier() {
-		const labels = UILabelProvider.modifierLabels[OS];
+		const laBels = UILaBelProvider.modifierLaBels[OS];
 		const value = this.configurationService.getValue<string>('editor.multiCursorModifier');
-		const modifier = labels[value === 'ctrlCmd' ? (OS === OperatingSystem.Macintosh ? 'metaKey' : 'ctrlKey') : 'altKey'];
+		const modifier = laBels[value === 'ctrlCmd' ? (OS === OperatingSystem.Macintosh ? 'metaKey' : 'ctrlKey') : 'altKey'];
 		const keys = this.content.querySelectorAll('.multi-cursor-modifier');
 		Array.prototype.forEach.call(keys, (key: Element) => {
 			while (key.firstChild) {
@@ -473,7 +473,7 @@ export class WalkThroughPart extends EditorPane {
 	}
 
 	private saveTextEditorViewState(input: WalkThroughInput): void {
-		const scrollPosition = this.scrollbar.getScrollPosition();
+		const scrollPosition = this.scrollBar.getScrollPosition();
 
 		if (this.group) {
 			this.editorMemento.saveEditorState(this.group, input, {
@@ -489,12 +489,12 @@ export class WalkThroughPart extends EditorPane {
 		if (this.group) {
 			const state = this.editorMemento.loadEditorState(this.group, input);
 			if (state) {
-				this.scrollbar.setScrollPosition(state.viewState);
+				this.scrollBar.setScrollPosition(state.viewState);
 			}
 		}
 	}
 
-	public clearInput(): void {
+	puBlic clearInput(): void {
 		if (this.input instanceof WalkThroughInput) {
 			this.saveTextEditorViewState(this.input);
 		}
@@ -511,50 +511,50 @@ export class WalkThroughPart extends EditorPane {
 
 	dispose(): void {
 		this.editorFocus.reset();
-		this.contentDisposables = dispose(this.contentDisposables);
-		this.disposables.dispose();
+		this.contentDisposaBles = dispose(this.contentDisposaBles);
+		this.disposaBles.dispose();
 		super.dispose();
 	}
 }
 
 // theming
 
-export const embeddedEditorBackground = registerColor('walkThrough.embeddedEditorBackground', { dark: null, light: null, hc: null }, localize('walkThrough.embeddedEditorBackground', 'Background color for the embedded editors on the Interactive Playground.'));
+export const emBeddedEditorBackground = registerColor('walkThrough.emBeddedEditorBackground', { dark: null, light: null, hc: null }, localize('walkThrough.emBeddedEditorBackground', 'Background color for the emBedded editors on the Interactive Playground.'));
 
 registerThemingParticipant((theme, collector) => {
-	const color = getExtraColor(theme, embeddedEditorBackground, { dark: 'rgba(0, 0, 0, .4)', extra_dark: 'rgba(200, 235, 255, .064)', light: '#f4f4f4', hc: null });
+	const color = getExtraColor(theme, emBeddedEditorBackground, { dark: 'rgBa(0, 0, 0, .4)', extra_dark: 'rgBa(200, 235, 255, .064)', light: '#f4f4f4', hc: null });
 	if (color) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent .monaco-editor-background,
-			.monaco-workbench .part.editor > .content .walkThroughContent .margin-view-overlays { background: ${color}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent .monaco-editor-Background,
+			.monaco-workBench .part.editor > .content .walkThroughContent .margin-view-overlays { Background: ${color}; }`);
 	}
 	const link = theme.getColor(textLinkForeground);
 	if (link) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent a { color: ${link}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent a { color: ${link}; }`);
 	}
 	const activeLink = theme.getColor(textLinkActiveForeground);
 	if (activeLink) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent a:hover,
-			.monaco-workbench .part.editor > .content .walkThroughContent a:active { color: ${activeLink}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent a:hover,
+			.monaco-workBench .part.editor > .content .walkThroughContent a:active { color: ${activeLink}; }`);
 	}
 	const focusColor = theme.getColor(focusBorder);
 	if (focusColor) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent a:focus { outline-color: ${focusColor}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent a:focus { outline-color: ${focusColor}; }`);
 	}
 	const shortcut = theme.getColor(textPreformatForeground);
 	if (shortcut) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent code,
-			.monaco-workbench .part.editor > .content .walkThroughContent .shortcut { color: ${shortcut}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent code,
+			.monaco-workBench .part.editor > .content .walkThroughContent .shortcut { color: ${shortcut}; }`);
 	}
-	const border = theme.getColor(contrastBorder);
-	if (border) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent .monaco-editor { border-color: ${border}; }`);
+	const Border = theme.getColor(contrastBorder);
+	if (Border) {
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent .monaco-editor { Border-color: ${Border}; }`);
 	}
 	const quoteBackground = theme.getColor(textBlockQuoteBackground);
 	if (quoteBackground) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent blockquote { background: ${quoteBackground}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent Blockquote { Background: ${quoteBackground}; }`);
 	}
 	const quoteBorder = theme.getColor(textBlockQuoteBorder);
 	if (quoteBorder) {
-		collector.addRule(`.monaco-workbench .part.editor > .content .walkThroughContent blockquote { border-color: ${quoteBorder}; }`);
+		collector.addRule(`.monaco-workBench .part.editor > .content .walkThroughContent Blockquote { Border-color: ${quoteBorder}; }`);
 	}
 });

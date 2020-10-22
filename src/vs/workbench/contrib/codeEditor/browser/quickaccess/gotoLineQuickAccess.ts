@@ -6,19 +6,19 @@
 import { localize } from 'vs/nls';
 import { IKeyMods, IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { IEditorService, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService, SIDE_GROUP } from 'vs/workBench/services/editor/common/editorService';
 import { IRange } from 'vs/editor/common/core/range';
-import { AbstractGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
+import { ABstractGotoLineQuickAccessProvider } from 'vs/editor/contriB/quickAccess/gotoLineQuickAccess';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IQuickAccessRegistry, Extensions as QuickaccesExtensions } from 'vs/platform/quickinput/common/quickAccess';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchEditorConfiguration } from 'vs/workbench/common/editor';
+import { IWorkBenchEditorConfiguration } from 'vs/workBench/common/editor';
 import { Action2, registerAction2 } from 'vs/platform/actions/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 
-export class GotoLineQuickAccessProvider extends AbstractGotoLineQuickAccessProvider {
+export class GotoLineQuickAccessProvider extends ABstractGotoLineQuickAccessProvider {
 
 	protected readonly onDidActiveTextEditorControlChange = this.editorService.onDidActiveEditorChange;
 
@@ -30,10 +30,10 @@ export class GotoLineQuickAccessProvider extends AbstractGotoLineQuickAccessProv
 	}
 
 	private get configuration() {
-		const editorConfig = this.configurationService.getValue<IWorkbenchEditorConfiguration>().workbench.editor;
+		const editorConfig = this.configurationService.getValue<IWorkBenchEditorConfiguration>().workBench.editor;
 
 		return {
-			openEditorPinned: !editorConfig.enablePreviewFromQuickOpen,
+			openEditorPinned: !editorConfig.enaBlePreviewFromQuickOpen,
 		};
 	}
 
@@ -41,7 +41,7 @@ export class GotoLineQuickAccessProvider extends AbstractGotoLineQuickAccessProv
 		return this.editorService.activeTextEditorControl;
 	}
 
-	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: boolean, preserveFocus?: boolean }): void {
+	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: Boolean, preserveFocus?: Boolean }): void {
 
 		// Check for sideBySide use
 		if ((options.keyMods.ctrlCmd || options.forceSideBySide) && this.editorService.activeEditor) {
@@ -61,8 +61,8 @@ export class GotoLineQuickAccessProvider extends AbstractGotoLineQuickAccessProv
 
 Registry.as<IQuickAccessRegistry>(QuickaccesExtensions.Quickaccess).registerQuickAccessProvider({
 	ctor: GotoLineQuickAccessProvider,
-	prefix: AbstractGotoLineQuickAccessProvider.PREFIX,
-	placeholder: localize('gotoLineQuickAccessPlaceholder', "Type the line number and optional column to go to (e.g. 42:5 for line 42 and column 5)."),
+	prefix: ABstractGotoLineQuickAccessProvider.PREFIX,
+	placeholder: localize('gotoLineQuickAccessPlaceholder', "Type the line numBer and optional column to go to (e.g. 42:5 for line 42 and column 5)."),
 	helpEntries: [{ description: localize('gotoLineQuickAccess', "Go to Line/Column"), needsEditor: true }]
 });
 
@@ -70,11 +70,11 @@ class GotoLineAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.gotoLine',
+			id: 'workBench.action.gotoLine',
 			title: { value: localize('gotoLine', "Go to Line/Column..."), original: 'Go to Line/Column...' },
 			f1: true,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				when: null,
 				primary: KeyMod.CtrlCmd | KeyCode.KEY_G,
 				mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_G }

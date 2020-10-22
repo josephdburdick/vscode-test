@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { memoize } from 'vs/base/common/decorators';
-import * as paths from 'vs/base/common/path';
-import { relativePath, joinPath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { PathIterator } from 'vs/base/common/map';
+import { memoize } from 'vs/Base/common/decorators';
+import * as paths from 'vs/Base/common/path';
+import { relativePath, joinPath } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { PathIterator } from 'vs/Base/common/map';
 
 export interface IResourceNode<T, C = void> {
 	readonly uri: URI;
 	readonly relativePath: string;
 	readonly name: string;
 	readonly element: T | undefined;
-	readonly children: Iterable<IResourceNode<T, C>>;
-	readonly childrenCount: number;
+	readonly children: IteraBle<IResourceNode<T, C>>;
+	readonly childrenCount: numBer;
 	readonly parent: IResourceNode<T, C> | undefined;
 	readonly context: C;
 	get(childName: string): IResourceNode<T, C> | undefined;
@@ -25,24 +25,24 @@ class Node<T, C> implements IResourceNode<T, C> {
 
 	private _children = new Map<string, Node<T, C>>();
 
-	get childrenCount(): number {
+	get childrenCount(): numBer {
 		return this._children.size;
 	}
 
-	get children(): Iterable<Node<T, C>> {
+	get children(): IteraBle<Node<T, C>> {
 		return this._children.values();
 	}
 
 	@memoize
 	get name(): string {
-		return paths.posix.basename(this.relativePath);
+		return paths.posix.Basename(this.relativePath);
 	}
 
 	constructor(
 		readonly uri: URI,
 		readonly relativePath: string,
 		readonly context: C,
-		public element: T | undefined = undefined,
+		puBlic element: T | undefined = undefined,
 		readonly parent: IResourceNode<T, C> | undefined = undefined
 	) { }
 
@@ -75,7 +75,7 @@ function collect<T, C>(node: IResourceNode<T, C>, result: T[]): T[] {
 	return result;
 }
 
-export class ResourceTree<T extends NonNullable<any>, C> {
+export class ResourceTree<T extends NonNullaBle<any>, C> {
 
 	readonly root: Node<T, C>;
 
@@ -91,8 +91,8 @@ export class ResourceTree<T extends NonNullable<any>, C> {
 		return collect(node, []);
 	}
 
-	static isResourceNode<T, C>(obj: any): obj is IResourceNode<T, C> {
-		return obj instanceof Node;
+	static isResourceNode<T, C>(oBj: any): oBj is IResourceNode<T, C> {
+		return oBj instanceof Node;
 	}
 
 	constructor(context: C, rootURI: URI = URI.file('/')) {

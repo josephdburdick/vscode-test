@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isThenable } from 'vs/base/common/async';
+import { isThenaBle } from 'vs/Base/common/async';
 
 // Shared veto handling across main and renderer
-export function handleVetos(vetos: (boolean | Promise<boolean>)[], onError: (error: Error) => void): Promise<boolean /* veto */> {
+export function handleVetos(vetos: (Boolean | Promise<Boolean>)[], onError: (error: Error) => void): Promise<Boolean /* veto */> {
 	if (vetos.length === 0) {
 		return Promise.resolve(false);
 	}
@@ -21,7 +21,7 @@ export function handleVetos(vetos: (boolean | Promise<boolean>)[], onError: (err
 			return Promise.resolve(true);
 		}
 
-		if (isThenable(valueOrPromise)) {
+		if (isThenaBle(valueOrPromise)) {
 			promises.push(valueOrPromise.then(value => {
 				if (value) {
 					lazyValue = true; // veto, done

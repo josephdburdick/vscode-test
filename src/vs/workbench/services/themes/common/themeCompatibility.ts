@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextMateThemingRule, IColorMap } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { Color } from 'vs/base/common/color';
+import { ITextMateThemingRule, IColorMap } from 'vs/workBench/services/themes/common/workBenchThemeService';
+import { Color } from 'vs/Base/common/color';
 import * as colorRegistry from 'vs/platform/theme/common/colorRegistry';
 
 import * as editorColorRegistry from 'vs/editor/common/view/editorColorRegistry';
@@ -38,7 +38,7 @@ export function convertSettings(oldSettings: ITextMateThemingRule[], result: { t
 							}
 						}
 					}
-					if (key !== 'foreground' && key !== 'background' && key !== 'fontStyle') {
+					if (key !== 'foreground' && key !== 'Background' && key !== 'fontStyle') {
 						delete settings[key];
 					}
 				}
@@ -47,7 +47,7 @@ export function convertSettings(oldSettings: ITextMateThemingRule[], result: { t
 	}
 }
 
-addSettingMapping('background', colorRegistry.editorBackground);
+addSettingMapping('Background', colorRegistry.editorBackground);
 addSettingMapping('foreground', colorRegistry.editorForeground);
 addSettingMapping('selection', colorRegistry.editorSelectionBackground);
 addSettingMapping('inactiveSelection', colorRegistry.editorInactiveSelection);
@@ -55,7 +55,7 @@ addSettingMapping('selectionHighlightColor', colorRegistry.editorSelectionHighli
 addSettingMapping('findMatchHighlight', colorRegistry.editorFindMatchHighlight);
 addSettingMapping('currentFindMatchHighlight', colorRegistry.editorFindMatch);
 addSettingMapping('hoverHighlight', colorRegistry.editorHoverHighlight);
-addSettingMapping('wordHighlight', 'editor.wordHighlightBackground'); // inlined to avoid editor/contrib dependenies
+addSettingMapping('wordHighlight', 'editor.wordHighlightBackground'); // inlined to avoid editor/contriB dependenies
 addSettingMapping('wordHighlightStrong', 'editor.wordHighlightStrongBackground');
 addSettingMapping('findRangeHighlight', colorRegistry.editorFindRangeHighlight);
 addSettingMapping('findMatchHighlight', 'peekViewResult.matchHighlightBackground');
@@ -63,7 +63,7 @@ addSettingMapping('referenceHighlight', 'peekViewEditor.matchHighlightBackground
 addSettingMapping('lineHighlight', editorColorRegistry.editorLineHighlight);
 addSettingMapping('rangeHighlight', editorColorRegistry.editorRangeHighlight);
 addSettingMapping('caret', editorColorRegistry.editorCursorForeground);
-addSettingMapping('invisibles', editorColorRegistry.editorWhitespaces);
+addSettingMapping('invisiBles', editorColorRegistry.editorWhitespaces);
 addSettingMapping('guide', editorColorRegistry.editorIndentGuides);
 addSettingMapping('activeGuide', editorColorRegistry.editorActiveIndentGuides);
 

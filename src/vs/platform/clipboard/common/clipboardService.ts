@@ -4,46 +4,46 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-export const IClipboardService = createDecorator<IClipboardService>('clipboardService');
+export const IClipBoardService = createDecorator<IClipBoardService>('clipBoardService');
 
-export interface IClipboardService {
+export interface IClipBoardService {
 
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Writes text to the system clipboard.
+	 * Writes text to the system clipBoard.
 	 */
 	writeText(text: string, type?: string): Promise<void>;
 
 	/**
-	 * Reads the content of the clipboard in plain text
+	 * Reads the content of the clipBoard in plain text
 	 */
 	readText(type?: string): Promise<string>;
 
 	/**
-	 * Reads text from the system find pasteboard.
+	 * Reads text from the system find pasteBoard.
 	 */
 	readFindText(): Promise<string>;
 
 	/**
-	 * Writes text to the system find pasteboard.
+	 * Writes text to the system find pasteBoard.
 	 */
 	writeFindText(text: string): Promise<void>;
 
 	/**
-	 * Writes resources to the system clipboard.
+	 * Writes resources to the system clipBoard.
 	 */
 	writeResources(resources: URI[]): Promise<void>;
 
 	/**
-	 * Reads resources from the system clipboard.
+	 * Reads resources from the system clipBoard.
 	 */
 	readResources(): Promise<URI[]>;
 
 	/**
-	 * Find out if resources are copied to the clipboard.
+	 * Find out if resources are copied to the clipBoard.
 	 */
-	hasResources(): Promise<boolean>;
+	hasResources(): Promise<Boolean>;
 }

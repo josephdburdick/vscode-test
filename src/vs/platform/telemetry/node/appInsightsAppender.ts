@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as appInsights from 'applicationinsights';
-import { mixin } from 'vs/base/common/objects';
+import { mixin } from 'vs/Base/common/oBjects';
 import { ITelemetryAppender, validateTelemetryData } from 'vs/platform/telemetry/common/telemetryUtils';
 
 function getClient(aiKey: string): appInsights.TelemetryClient {
@@ -44,7 +44,7 @@ export class AppInsightsAppender implements ITelemetryAppender {
 		aiKeyOrClientFactory: string | (() => appInsights.TelemetryClient), // allow factory function for testing
 	) {
 		if (!this._defaultData) {
-			this._defaultData = Object.create(null);
+			this._defaultData = OBject.create(null);
 		}
 
 		if (typeof aiKeyOrClientFactory === 'string') {
@@ -72,7 +72,7 @@ export class AppInsightsAppender implements ITelemetryAppender {
 		if (this._aiClient) {
 			return new Promise(resolve => {
 				this._aiClient!.flush({
-					callback: () => {
+					callBack: () => {
 						// all data flushed
 						this._aiClient = undefined;
 						resolve(undefined);

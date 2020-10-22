@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { renderText, renderFormattedText } from 'vs/base/browser/formattedTextRenderer';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { renderText, renderFormattedText } from 'vs/Base/Browser/formattedTextRenderer';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 
 suite('FormattedTextRenderer', () => {
-	const store = new DisposableStore();
+	const store = new DisposaBleStore();
 
 	setup(() => {
 		store.clear();
@@ -35,17 +35,17 @@ suite('FormattedTextRenderer', () => {
 	});
 
 	test('simple formatting', () => {
-		let result: HTMLElement = renderFormattedText('**bold**');
+		let result: HTMLElement = renderFormattedText('**Bold**');
 		assert.strictEqual(result.children.length, 1);
-		assert.strictEqual(result.firstChild!.textContent, 'bold');
+		assert.strictEqual(result.firstChild!.textContent, 'Bold');
 		assert.strictEqual((<HTMLElement>result.firstChild).tagName, 'B');
-		assert.strictEqual(result.innerHTML, '<b>bold</b>');
+		assert.strictEqual(result.innerHTML, '<B>Bold</B>');
 
 		result = renderFormattedText('__italics__');
 		assert.strictEqual(result.innerHTML, '<i>italics</i>');
 
-		result = renderFormattedText('this string has **bold** and __italics__');
-		assert.strictEqual(result.innerHTML, 'this string has <b>bold</b> and <i>italics</i>');
+		result = renderFormattedText('this string has **Bold** and __italics__');
+		assert.strictEqual(result.innerHTML, 'this string has <B>Bold</B> and <i>italics</i>');
 	});
 
 	test('no formatting', () => {
@@ -55,18 +55,18 @@ suite('FormattedTextRenderer', () => {
 
 	test('preserve newlines', () => {
 		let result: HTMLElement = renderFormattedText('line one\nline two');
-		assert.strictEqual(result.innerHTML, 'line one<br>line two');
+		assert.strictEqual(result.innerHTML, 'line one<Br>line two');
 	});
 
 	test('action', () => {
-		let callbackCalled = false;
+		let callBackCalled = false;
 		let result: HTMLElement = renderFormattedText('[[action]]', {
 			actionHandler: {
-				callback(content) {
+				callBack(content) {
 					assert.strictEqual(content, '0');
-					callbackCalled = true;
+					callBackCalled = true;
 				},
-				disposeables: store
+				disposeaBles: store
 			}
 		});
 		assert.strictEqual(result.innerHTML, '<a href="#">action</a>');
@@ -74,31 +74,31 @@ suite('FormattedTextRenderer', () => {
 		let event: MouseEvent = <any>document.createEvent('MouseEvent');
 		event.initEvent('click', true, true);
 		result.firstChild!.dispatchEvent(event);
-		assert.strictEqual(callbackCalled, true);
+		assert.strictEqual(callBackCalled, true);
 	});
 
 	test('fancy action', () => {
-		let callbackCalled = false;
+		let callBackCalled = false;
 		let result: HTMLElement = renderFormattedText('__**[[action]]**__', {
 			actionHandler: {
-				callback(content) {
+				callBack(content) {
 					assert.strictEqual(content, '0');
-					callbackCalled = true;
+					callBackCalled = true;
 				},
-				disposeables: store
+				disposeaBles: store
 			}
 		});
-		assert.strictEqual(result.innerHTML, '<i><b><a href="#">action</a></b></i>');
+		assert.strictEqual(result.innerHTML, '<i><B><a href="#">action</a></B></i>');
 
 		let event: MouseEvent = <any>document.createEvent('MouseEvent');
 		event.initEvent('click', true, true);
 		result.firstChild!.firstChild!.firstChild!.dispatchEvent(event);
-		assert.strictEqual(callbackCalled, true);
+		assert.strictEqual(callBackCalled, true);
 	});
 
 	test('escaped formatting', () => {
-		let result: HTMLElement = renderFormattedText('\\*\\*bold\\*\\*');
+		let result: HTMLElement = renderFormattedText('\\*\\*Bold\\*\\*');
 		assert.strictEqual(result.children.length, 0);
-		assert.strictEqual(result.innerHTML, '**bold**');
+		assert.strictEqual(result.innerHTML, '**Bold**');
 	});
 });

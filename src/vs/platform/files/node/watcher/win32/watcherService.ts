@@ -5,11 +5,11 @@
 
 import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
 import { OutOfProcessWin32FolderWatcher } from 'vs/platform/files/node/watcher/win32/csharpWatcherService';
-import { posix } from 'vs/base/common/path';
-import { rtrim } from 'vs/base/common/strings';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { posix } from 'vs/Base/common/path';
+import { rtrim } from 'vs/Base/common/strings';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
-export class FileWatcher implements IDisposable {
+export class FileWatcher implements IDisposaBle {
 
 	private folder: { path: string, excludes: string[] };
 	private service: OutOfProcessWin32FolderWatcher | undefined = undefined;
@@ -18,22 +18,22 @@ export class FileWatcher implements IDisposable {
 		folders: { path: string, excludes: string[] }[],
 		private onDidFilesChange: (changes: IDiskFileChange[]) => void,
 		private onLogMessage: (msg: ILogMessage) => void,
-		private verboseLogging: boolean
+		private verBoseLogging: Boolean
 	) {
 		this.folder = folders[0];
 
 		if (this.folder.path.indexOf('\\\\') === 0 && this.folder.path.endsWith(posix.sep)) {
 			// for some weird reason, node adds a trailing slash to UNC paths
-			// we never ever want trailing slashes as our base path unless
+			// we never ever want trailing slashes as our Base path unless
 			// someone opens root ("/").
-			// See also https://github.com/nodejs/io.js/issues/1765
+			// See also https://githuB.com/nodejs/io.js/issues/1765
 			this.folder.path = rtrim(this.folder.path, posix.sep);
 		}
 
 		this.service = this.startWatching();
 	}
 
-	private get isDisposed(): boolean {
+	private get isDisposed(): Boolean {
 		return !this.service;
 	}
 
@@ -43,12 +43,12 @@ export class FileWatcher implements IDisposable {
 			this.folder.excludes,
 			events => this.onFileEvents(events),
 			message => this.onLogMessage(message),
-			this.verboseLogging
+			this.verBoseLogging
 		);
 	}
 
-	setVerboseLogging(verboseLogging: boolean): void {
-		this.verboseLogging = verboseLogging;
+	setVerBoseLogging(verBoseLogging: Boolean): void {
+		this.verBoseLogging = verBoseLogging;
 		if (this.service) {
 			this.service.dispose();
 			this.service = this.startWatching();

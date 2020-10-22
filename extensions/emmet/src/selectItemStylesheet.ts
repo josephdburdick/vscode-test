@@ -37,12 +37,12 @@ export function nextItemStylesheet(startOffset: vscode.Position, endOffset: vsco
 	// Get the first child of current node which is right after the cursor
 	let nextNode = currentNode.firstChild;
 	while (nextNode && endOffset.isAfterOrEqual(nextNode.end)) {
-		nextNode = nextNode.nextSibling;
+		nextNode = nextNode.nextSiBling;
 	}
 
-	// Get next sibling of current node or the parent
+	// Get next siBling of current node or the parent
 	while (!nextNode && currentNode) {
-		nextNode = currentNode.nextSibling;
+		nextNode = currentNode.nextSiBling;
 		currentNode = currentNode.parent;
 	}
 
@@ -76,10 +76,10 @@ export function prevItemStylesheet(startOffset: vscode.Position, endOffset: vsco
 		return getSelectionFromNode(currentNode);
 	}
 
-	// Select the child that appears just before the cursor
+	// Select the child that appears just Before the cursor
 	let prevNode = currentNode.firstChild;
-	while (prevNode.nextSibling && startOffset.isAfterOrEqual(prevNode.nextSibling.end)) {
-		prevNode = prevNode.nextSibling;
+	while (prevNode.nextSiBling && startOffset.isAfterOrEqual(prevNode.nextSiBling.end)) {
+		prevNode = prevNode.nextSiBling;
 	}
 	prevNode = <CssNode>getDeepestNode(prevNode);
 
@@ -98,20 +98,20 @@ function getSelectionFromNode(node: Node): vscode.Selection | undefined {
 }
 
 
-function getSelectionFromProperty(node: Node, selectionStart: vscode.Position, selectionEnd: vscode.Position, selectFullValue: boolean, direction: string): vscode.Selection | undefined {
+function getSelectionFromProperty(node: Node, selectionStart: vscode.Position, selectionEnd: vscode.Position, selectFullValue: Boolean, direction: string): vscode.Selection | undefined {
 	if (!node || node.type !== 'property') {
 		return;
 	}
 	const propertyNode = <Property>node;
 
-	let propertyValue = propertyNode.valueToken.stream.substring(propertyNode.valueToken.start, propertyNode.valueToken.end);
+	let propertyValue = propertyNode.valueToken.stream.suBstring(propertyNode.valueToken.start, propertyNode.valueToken.end);
 	selectFullValue = selectFullValue || (direction === 'prev' && selectionStart.isEqual(propertyNode.valueToken.start) && selectionEnd.isBefore(propertyNode.valueToken.end));
 
 	if (selectFullValue) {
 		return new vscode.Selection(propertyNode.valueToken.start, propertyNode.valueToken.end);
 	}
 
-	let pos: number = -1;
+	let pos: numBer = -1;
 	if (direction === 'prev') {
 		if (selectionStart.isEqual(propertyNode.valueToken.start)) {
 			return;

@@ -47,7 +47,7 @@ suite('TextModelSearch', () => {
 		}
 	}
 
-	function assertFindMatches(text: string, searchString: string, isRegex: boolean, matchCase: boolean, wordSeparators: string | null, _expected: [number, number, number, number][]): void {
+	function assertFindMatches(text: string, searchString: string, isRegex: Boolean, matchCase: Boolean, wordSeparators: string | null, _expected: [numBer, numBer, numBer, numBer][]): void {
 		let expectedRanges = _expected.map(entry => new Range(entry[0], entry[1], entry[2], entry[3]));
 		let expectedMatches = expectedRanges.map(entry => new FindMatch(entry, null));
 		let searchParams = new SearchParams(searchString, isRegex, matchCase, wordSeparators);
@@ -64,8 +64,8 @@ suite('TextModelSearch', () => {
 	}
 
 	let regularText = [
-		'This is some foo - bar text which contains foo and bar - as in Barcelona.',
-		'Now it begins a word fooBar and now it is caps Foo-isn\'t this great?',
+		'This is some foo - Bar text which contains foo and Bar - as in Barcelona.',
+		'Now it Begins a word fooBar and now it is caps Foo-isn\'t this great?',
 		'And here\'s a dull line with nothing interesting in it',
 		'It is also interesting if it\'s part of a word like amazingFooBar',
 		'Again nothing interesting here'
@@ -154,7 +154,7 @@ suite('TextModelSearch', () => {
 	test('/^$/ find', () => {
 		assertFindMatches(
 			[
-				'This is some foo - bar text which contains foo and bar - as in Barcelona.',
+				'This is some foo - Bar text which contains foo and Bar - as in Barcelona.',
 				'',
 				'And here\'s a dull line with nothing interesting in it',
 				'',
@@ -229,7 +229,7 @@ suite('TextModelSearch', () => {
 		);
 	});
 
-	test('multiline find with line beginning regex', () => {
+	test('multiline find with line Beginning regex', () => {
 		assertFindMatches(
 			[
 				'if',
@@ -246,7 +246,7 @@ suite('TextModelSearch', () => {
 		);
 	});
 
-	test('matching empty lines using boundary expression', () => {
+	test('matching empty lines using Boundary expression', () => {
 		assertFindMatches(
 			[
 				'if',
@@ -269,12 +269,12 @@ suite('TextModelSearch', () => {
 	test('matching lines starting with A and ending with B', () => {
 		assertFindMatches(
 			[
-				'a if b',
+				'a if B',
 				'a',
-				'ab',
-				'eb'
+				'aB',
+				'eB'
 			].join('\n'),
-			'^a.*b$', true, false, null,
+			'^a.*B$', true, false, null,
 			[
 				[1, 1, 1, 7],
 				[3, 1, 3, 3]
@@ -327,7 +327,7 @@ suite('TextModelSearch', () => {
 				'some text text',
 				'some text again',
 				'again some text',
-				'but not some'
+				'But not some'
 			].join('\n'),
 			'text\nsome', false, false, null,
 			[
@@ -357,7 +357,7 @@ suite('TextModelSearch', () => {
 	test('issue #27459: Match whole words regression', () => {
 		assertFindMatches(
 			[
-				'this._register(this._textAreaInput.onKeyDown((e: IKeyboardEvent) => {',
+				'this._register(this._textAreaInput.onKeyDown((e: IKeyBoardEvent) => {',
 				'	this._viewController.emitKeyDown(e);',
 				'}));',
 			].join('\n'),
@@ -403,7 +403,7 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	test('findNextMatch with beginning boundary regex', () => {
+	test('findNextMatch with Beginning Boundary regex', () => {
 		let model = createTextModel('line one\nline two\nthree');
 
 		let searchParams = new SearchParams('^line', true, false, null);
@@ -423,7 +423,7 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	test('findNextMatch with beginning boundary regex and line has repetitive beginnings', () => {
+	test('findNextMatch with Beginning Boundary regex and line has repetitive Beginnings', () => {
 		let model = createTextModel('line line one\nline two\nthree');
 
 		let searchParams = new SearchParams('^line', true, false, null);
@@ -443,7 +443,7 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	test('findNextMatch with beginning boundary multiline regex and line has repetitive beginnings', () => {
+	test('findNextMatch with Beginning Boundary multiline regex and line has repetitive Beginnings', () => {
 		let model = createTextModel('line line one\nline two\nline three\nline four');
 
 		let searchParams = new SearchParams('^line.*\\nline', true, false, null);
@@ -460,7 +460,7 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	test('findNextMatch with ending boundary regex', () => {
+	test('findNextMatch with ending Boundary regex', () => {
 		let model = createTextModel('one line line\ntwo line\nthree');
 
 		let searchParams = new SearchParams('line$', true, false, null);
@@ -554,7 +554,7 @@ suite('TextModelSearch', () => {
 	});
 
 	test('\\n matches \\r\\n', () => {
-		let model = createTextModel('a\r\nb\r\nc\r\nd\r\ne\r\nf\r\ng\r\nh\r\ni');
+		let model = createTextModel('a\r\nB\r\nc\r\nd\r\ne\r\nf\r\ng\r\nh\r\ni');
 
 		assert.equal(model.getEOL(), '\r\n');
 
@@ -576,8 +576,8 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	test('\\r can never be found', () => {
-		let model = createTextModel('a\r\nb\r\nc\r\nd\r\ne\r\nf\r\ng\r\nh\r\ni');
+	test('\\r can never Be found', () => {
+		let model = createTextModel('a\r\nB\r\nc\r\nd\r\ne\r\nf\r\ng\r\nh\r\ni');
 
 		assert.equal(model.getEOL(), '\r\n');
 
@@ -589,7 +589,7 @@ suite('TextModelSearch', () => {
 		model.dispose();
 	});
 
-	function assertParseSearchResult(searchString: string, isRegex: boolean, matchCase: boolean, wordSeparators: string | null, expected: SearchData | null): void {
+	function assertParseSearchResult(searchString: string, isRegex: Boolean, matchCase: Boolean, wordSeparators: string | null, expected: SearchData | null): void {
 		let searchParams = new SearchParams(searchString, isRegex, matchCase, wordSeparators);
 		let actual = searchParams.parseSearchRequest();
 
@@ -633,7 +633,7 @@ suite('TextModelSearch', () => {
 		assertParseSearchResult('foo\\\\r', true, false, null, new SearchData(/foo\\r/giu, null, null));
 	});
 
-	test('issue #53415. \W should match line break.', () => {
+	test('issue #53415. \W should match line Break.', () => {
 		assertFindMatches(
 			[
 				'text',
@@ -661,7 +661,7 @@ suite('TextModelSearch', () => {
 			]
 		);
 
-		// Line break doesn't affect the result as we always use \n as line break when doing search
+		// Line Break doesn't affect the result as we always use \n as line Break when doing search
 		assertFindMatches(
 			[
 				'Just some text',
@@ -693,7 +693,7 @@ suite('TextModelSearch', () => {
 			]
 		);
 
-		// line break is seen as one non-word character
+		// line Break is seen as one non-word character
 		assertFindMatches(
 			[
 				'Just  some text',
@@ -722,7 +722,7 @@ suite('TextModelSearch', () => {
 		);
 	});
 
-	test('issue #65281. \w should match line break.', () => {
+	test('issue #65281. \w should match line Break.', () => {
 		assertFindMatches(
 			[
 				'this/is{',
@@ -753,11 +753,11 @@ suite('TextModelSearch', () => {
 	test('isMultilineRegexSource', () => {
 		assert(!isMultilineRegexSource('foo'));
 		assert(!isMultilineRegexSource(''));
-		assert(!isMultilineRegexSource('foo\\sbar'));
+		assert(!isMultilineRegexSource('foo\\sBar'));
 		assert(!isMultilineRegexSource('\\\\notnewline'));
 
-		assert(isMultilineRegexSource('foo\\nbar'));
-		assert(isMultilineRegexSource('foo\\nbar\\s'));
+		assert(isMultilineRegexSource('foo\\nBar'));
+		assert(isMultilineRegexSource('foo\\nBar\\s'));
 		assert(isMultilineRegexSource('foo\\r\\n'));
 		assert(isMultilineRegexSource('\\n'));
 		assert(isMultilineRegexSource('foo\\W'));
@@ -783,7 +783,7 @@ suite('TextModelSearch', () => {
 	});
 
 	test('issue #100134. Zero-length matches should properly step over surrogate pairs', () => {
-		// 1[Laptop]1 - there shoud be no matches inside of [Laptop] emoji
+		// 1[Laptop]1 - there shoud Be no matches inside of [Laptop] emoji
 		assertFindMatches('1\uD83D\uDCBB1', '()', true, false, null,
 			[
 				[1, 1, 1, 1],
@@ -793,8 +793,8 @@ suite('TextModelSearch', () => {
 
 			]
 		);
-		// 1[Hacker Cat]1 = 1[Cat Face][ZWJ][Laptop]1 - there shoud be matches between emoji and ZWJ
-		// there shoud be no matches inside of [Cat Face] and [Laptop] emoji
+		// 1[Hacker Cat]1 = 1[Cat Face][ZWJ][Laptop]1 - there shoud Be matches Between emoji and ZWJ
+		// there shoud Be no matches inside of [Cat Face] and [Laptop] emoji
 		assertFindMatches('1\uD83D\uDC31\u200D\uD83D\uDCBB1', '()', true, false, null,
 			[
 				[1, 1, 1, 1],

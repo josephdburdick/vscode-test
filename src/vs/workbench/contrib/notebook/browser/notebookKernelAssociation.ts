@@ -4,46 +4,46 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { IConfigurationNode, IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
+import { workBenchConfigurationNodeBase } from 'vs/workBench/common/configuration';
 import { Registry } from 'vs/platform/registry/common/platform';
 
-export class NotebookKernelProviderAssociationRegistry {
+export class NoteBookKernelProviderAssociationRegistry {
 	static extensionIds: (string | null)[] = [];
 	static extensionDescriptions: string[] = [];
 }
 
-export class NotebookViewTypesExtensionRegistry {
+export class NoteBookViewTypesExtensionRegistry {
 	static viewTypes: string[] = [];
 	static viewTypeDescriptions: string[] = [];
 }
 
-export type NotebookKernelProviderAssociation = {
+export type NoteBookKernelProviderAssociation = {
 	readonly viewType: string;
 	readonly kernelProvider?: string;
 };
 
-export type NotebookKernelProviderAssociations = readonly NotebookKernelProviderAssociation[];
+export type NoteBookKernelProviderAssociations = readonly NoteBookKernelProviderAssociation[];
 
 
-export const notebookKernelProviderAssociationsSettingId = 'notebook.kernelProviderAssociations';
+export const noteBookKernelProviderAssociationsSettingId = 'noteBook.kernelProviderAssociations';
 
 export const viewTypeSchamaAddition: IJSONSchema = {
 	type: 'string',
 	enum: []
 };
 
-export const notebookKernelProviderAssociationsConfigurationNode: IConfigurationNode = {
-	...workbenchConfigurationNodeBase,
+export const noteBookKernelProviderAssociationsConfigurationNode: IConfigurationNode = {
+	...workBenchConfigurationNodeBase,
 	properties: {
-		[notebookKernelProviderAssociationsSettingId]: {
+		[noteBookKernelProviderAssociationsSettingId]: {
 			type: 'array',
-			markdownDescription: nls.localize('notebook.kernelProviderAssociations', "Defines a default kernel provider which takes precedence over all other kernel providers settings. Must be the identifier of an extension contributing a kernel provider."),
+			markdownDescription: nls.localize('noteBook.kernelProviderAssociations', "Defines a default kernel provider which takes precedence over all other kernel providers settings. Must Be the identifier of an extension contriButing a kernel provider."),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				defaultSnippets: [{
-					body: {
+					Body: {
 						'viewType': '$1',
 						'kernelProvider': '$2'
 					}
@@ -52,14 +52,14 @@ export const notebookKernelProviderAssociationsConfigurationNode: IConfiguration
 					'viewType': {
 						type: ['string', 'null'],
 						default: null,
-						enum: NotebookViewTypesExtensionRegistry.viewTypes,
-						markdownEnumDescriptions: NotebookViewTypesExtensionRegistry.viewTypeDescriptions
+						enum: NoteBookViewTypesExtensionRegistry.viewTypes,
+						markdownEnumDescriptions: NoteBookViewTypesExtensionRegistry.viewTypeDescriptions
 					},
 					'kernelProvider': {
 						type: ['string', 'null'],
 						default: null,
-						enum: NotebookKernelProviderAssociationRegistry.extensionIds,
-						markdownEnumDescriptions: NotebookKernelProviderAssociationRegistry.extensionDescriptions
+						enum: NoteBookKernelProviderAssociationRegistry.extensionIds,
+						markdownEnumDescriptions: NoteBookKernelProviderAssociationRegistry.extensionDescriptions
 					}
 				}
 			}
@@ -67,10 +67,10 @@ export const notebookKernelProviderAssociationsConfigurationNode: IConfiguration
 	}
 };
 
-export function updateNotebookKernelProvideAssociationSchema(): void {
+export function updateNoteBookKernelProvideAssociationSchema(): void {
 	Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-		.notifyConfigurationSchemaUpdated(notebookKernelProviderAssociationsConfigurationNode);
+		.notifyConfigurationSchemaUpdated(noteBookKernelProviderAssociationsConfigurationNode);
 }
 
 Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-	.registerConfiguration(notebookKernelProviderAssociationsConfigurationNode);
+	.registerConfiguration(noteBookKernelProviderAssociationsConfigurationNode);

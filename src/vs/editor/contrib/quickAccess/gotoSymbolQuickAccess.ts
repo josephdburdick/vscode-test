@@ -5,122 +5,122 @@
 
 import { localize } from 'vs/nls';
 import { IQuickPick, IQuickPickItem, IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { DisposableStore, IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { DisposaBleStore, IDisposaBle, DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { IEditor, ScrollType } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 import { IRange, Range } from 'vs/editor/common/core/range';
-import { AbstractEditorNavigationQuickAccessProvider, IEditorNavigationQuickAccessOptions } from 'vs/editor/contrib/quickAccess/editorNavigationQuickAccess';
-import { DocumentSymbol, SymbolKinds, SymbolTag, DocumentSymbolProviderRegistry, SymbolKind } from 'vs/editor/common/modes';
-import { OutlineModel, OutlineElement } from 'vs/editor/contrib/documentSymbols/outlineModel';
-import { trim, format } from 'vs/base/common/strings';
-import { prepareQuery, IPreparedQuery, pieceToQuery, scoreFuzzy2 } from 'vs/base/common/fuzzyScorer';
-import { IMatch } from 'vs/base/common/filters';
-import { Iterable } from 'vs/base/common/iterator';
-import { Codicon } from 'vs/base/common/codicons';
+import { ABstractEditorNavigationQuickAccessProvider, IEditorNavigationQuickAccessOptions } from 'vs/editor/contriB/quickAccess/editorNavigationQuickAccess';
+import { DocumentSymBol, SymBolKinds, SymBolTag, DocumentSymBolProviderRegistry, SymBolKind } from 'vs/editor/common/modes';
+import { OutlineModel, OutlineElement } from 'vs/editor/contriB/documentSymBols/outlineModel';
+import { trim, format } from 'vs/Base/common/strings';
+import { prepareQuery, IPreparedQuery, pieceToQuery, scoreFuzzy2 } from 'vs/Base/common/fuzzyScorer';
+import { IMatch } from 'vs/Base/common/filters';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { Codicon } from 'vs/Base/common/codicons';
 
-export interface IGotoSymbolQuickPickItem extends IQuickPickItem {
-	kind: SymbolKind,
-	index: number,
-	score?: number;
+export interface IGotoSymBolQuickPickItem extends IQuickPickItem {
+	kind: SymBolKind,
+	index: numBer,
+	score?: numBer;
 	range?: { decoration: IRange, selection: IRange }
 }
 
-export interface IGotoSymbolQuickAccessProviderOptions extends IEditorNavigationQuickAccessOptions {
+export interface IGotoSymBolQuickAccessProviderOptions extends IEditorNavigationQuickAccessOptions {
 	openSideBySideDirection?: () => undefined | 'right' | 'down'
 }
 
-export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEditorNavigationQuickAccessProvider {
+export aBstract class ABstractGotoSymBolQuickAccessProvider extends ABstractEditorNavigationQuickAccessProvider {
 
 	static PREFIX = '@';
 	static SCOPE_PREFIX = ':';
-	static PREFIX_BY_CATEGORY = `${AbstractGotoSymbolQuickAccessProvider.PREFIX}${AbstractGotoSymbolQuickAccessProvider.SCOPE_PREFIX}`;
+	static PREFIX_BY_CATEGORY = `${ABstractGotoSymBolQuickAccessProvider.PREFIX}${ABstractGotoSymBolQuickAccessProvider.SCOPE_PREFIX}`;
 
-	constructor(protected options: IGotoSymbolQuickAccessProviderOptions = Object.create(null)) {
+	constructor(protected options: IGotoSymBolQuickAccessProviderOptions = OBject.create(null)) {
 		super(options);
 
 		options.canAcceptInBackground = true;
 	}
 
-	protected provideWithoutTextEditor(picker: IQuickPick<IGotoSymbolQuickPickItem>): IDisposable {
-		this.provideLabelPick(picker, localize('cannotRunGotoSymbolWithoutEditor', "To go to a symbol, first open a text editor with symbol information."));
+	protected provideWithoutTextEditor(picker: IQuickPick<IGotoSymBolQuickPickItem>): IDisposaBle {
+		this.provideLaBelPick(picker, localize('cannotRunGotoSymBolWithoutEditor', "To go to a symBol, first open a text editor with symBol information."));
 
-		return Disposable.None;
+		return DisposaBle.None;
 	}
 
-	protected provideWithTextEditor(editor: IEditor, picker: IQuickPick<IGotoSymbolQuickPickItem>, token: CancellationToken): IDisposable {
+	protected provideWithTextEditor(editor: IEditor, picker: IQuickPick<IGotoSymBolQuickPickItem>, token: CancellationToken): IDisposaBle {
 		const model = this.getModel(editor);
 		if (!model) {
-			return Disposable.None;
+			return DisposaBle.None;
 		}
 
-		// Provide symbols from model if available in registry
-		if (DocumentSymbolProviderRegistry.has(model)) {
-			return this.doProvideWithEditorSymbols(editor, model, picker, token);
+		// Provide symBols from model if availaBle in registry
+		if (DocumentSymBolProviderRegistry.has(model)) {
+			return this.doProvideWithEditorSymBols(editor, model, picker, token);
 		}
 
 		// Otherwise show an entry for a model without registry
-		// But give a chance to resolve the symbols at a later
-		// point if possible
-		return this.doProvideWithoutEditorSymbols(editor, model, picker, token);
+		// But give a chance to resolve the symBols at a later
+		// point if possiBle
+		return this.doProvideWithoutEditorSymBols(editor, model, picker, token);
 	}
 
-	private doProvideWithoutEditorSymbols(editor: IEditor, model: ITextModel, picker: IQuickPick<IGotoSymbolQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	private doProvideWithoutEditorSymBols(editor: IEditor, model: ITextModel, picker: IQuickPick<IGotoSymBolQuickPickItem>, token: CancellationToken): IDisposaBle {
+		const disposaBles = new DisposaBleStore();
 
-		// Generic pick for not having any symbol information
-		this.provideLabelPick(picker, localize('cannotRunGotoSymbolWithoutSymbolProvider', "The active text editor does not provide symbol information."));
+		// Generic pick for not having any symBol information
+		this.provideLaBelPick(picker, localize('cannotRunGotoSymBolWithoutSymBolProvider', "The active text editor does not provide symBol information."));
 
 		// Wait for changes to the registry and see if eventually
-		// we do get symbols. This can happen if the picker is opened
-		// very early after the model has loaded but before the
+		// we do get symBols. This can happen if the picker is opened
+		// very early after the model has loaded But Before the
 		// language registry is ready.
-		// https://github.com/microsoft/vscode/issues/70607
+		// https://githuB.com/microsoft/vscode/issues/70607
 		(async () => {
-			const result = await this.waitForLanguageSymbolRegistry(model, disposables);
+			const result = await this.waitForLanguageSymBolRegistry(model, disposaBles);
 			if (!result || token.isCancellationRequested) {
 				return;
 			}
 
-			disposables.add(this.doProvideWithEditorSymbols(editor, model, picker, token));
+			disposaBles.add(this.doProvideWithEditorSymBols(editor, model, picker, token));
 		})();
 
-		return disposables;
+		return disposaBles;
 	}
 
-	private provideLabelPick(picker: IQuickPick<IGotoSymbolQuickPickItem>, label: string): void {
-		picker.items = [{ label, index: 0, kind: SymbolKind.String }];
-		picker.ariaLabel = label;
+	private provideLaBelPick(picker: IQuickPick<IGotoSymBolQuickPickItem>, laBel: string): void {
+		picker.items = [{ laBel, index: 0, kind: SymBolKind.String }];
+		picker.ariaLaBel = laBel;
 	}
 
-	protected async waitForLanguageSymbolRegistry(model: ITextModel, disposables: DisposableStore): Promise<boolean> {
-		if (DocumentSymbolProviderRegistry.has(model)) {
+	protected async waitForLanguageSymBolRegistry(model: ITextModel, disposaBles: DisposaBleStore): Promise<Boolean> {
+		if (DocumentSymBolProviderRegistry.has(model)) {
 			return true;
 		}
 
-		let symbolProviderRegistryPromiseResolve: (res: boolean) => void;
-		const symbolProviderRegistryPromise = new Promise<boolean>(resolve => symbolProviderRegistryPromiseResolve = resolve);
+		let symBolProviderRegistryPromiseResolve: (res: Boolean) => void;
+		const symBolProviderRegistryPromise = new Promise<Boolean>(resolve => symBolProviderRegistryPromiseResolve = resolve);
 
 		// Resolve promise when registry knows model
-		const symbolProviderListener = disposables.add(DocumentSymbolProviderRegistry.onDidChange(() => {
-			if (DocumentSymbolProviderRegistry.has(model)) {
-				symbolProviderListener.dispose();
+		const symBolProviderListener = disposaBles.add(DocumentSymBolProviderRegistry.onDidChange(() => {
+			if (DocumentSymBolProviderRegistry.has(model)) {
+				symBolProviderListener.dispose();
 
-				symbolProviderRegistryPromiseResolve(true);
+				symBolProviderRegistryPromiseResolve(true);
 			}
 		}));
 
 		// Resolve promise when we get disposed too
-		disposables.add(toDisposable(() => symbolProviderRegistryPromiseResolve(false)));
+		disposaBles.add(toDisposaBle(() => symBolProviderRegistryPromiseResolve(false)));
 
-		return symbolProviderRegistryPromise;
+		return symBolProviderRegistryPromise;
 	}
 
-	private doProvideWithEditorSymbols(editor: IEditor, model: ITextModel, picker: IQuickPick<IGotoSymbolQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	private doProvideWithEditorSymBols(editor: IEditor, model: ITextModel, picker: IQuickPick<IGotoSymBolQuickPickItem>, token: CancellationToken): IDisposaBle {
+		const disposaBles = new DisposaBleStore();
 
-		// Goto symbol once picked
-		disposables.add(picker.onDidAccept(event => {
+		// Goto symBol once picked
+		disposaBles.add(picker.onDidAccept(event => {
 			const [item] = picker.selectedItems;
 			if (item && item.range) {
 				this.gotoLocation(editor, { range: item.range.selection, keyMods: picker.keyMods, preserveFocus: event.inBackground });
@@ -131,8 +131,8 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 			}
 		}));
 
-		// Goto symbol side by side if enabled
-		disposables.add(picker.onDidTriggerItemButton(({ item }) => {
+		// Goto symBol side By side if enaBled
+		disposaBles.add(picker.onDidTriggerItemButton(({ item }) => {
 			if (item && item.range) {
 				this.gotoLocation(editor, { range: item.range.selection, keyMods: picker.keyMods, forceSideBySide: true });
 
@@ -140,26 +140,26 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 			}
 		}));
 
-		// Resolve symbols from document once and reuse this
+		// Resolve symBols from document once and reuse this
 		// request for all filtering and typing then on
-		const symbolsPromise = this.getDocumentSymbols(model, true, token);
+		const symBolsPromise = this.getDocumentSymBols(model, true, token);
 
 		// Set initial picks and update on type
 		let picksCts: CancellationTokenSource | undefined = undefined;
 		const updatePickerItems = async () => {
 
-			// Cancel any previous ask for picks and busy
+			// Cancel any previous ask for picks and Busy
 			picksCts?.dispose(true);
-			picker.busy = false;
+			picker.Busy = false;
 
 			// Create new cancellation source for this run
 			picksCts = new CancellationTokenSource(token);
 
-			// Collect symbol picks
-			picker.busy = true;
+			// Collect symBol picks
+			picker.Busy = true;
 			try {
-				const query = prepareQuery(picker.value.substr(AbstractGotoSymbolQuickAccessProvider.PREFIX.length).trim());
-				const items = await this.doGetSymbolPicks(symbolsPromise, query, undefined, picksCts.token);
+				const query = prepareQuery(picker.value.suBstr(ABstractGotoSymBolQuickAccessProvider.PREFIX.length).trim());
+				const items = await this.doGetSymBolPicks(symBolsPromise, query, undefined, picksCts.token);
 				if (token.isCancellationRequested) {
 					return;
 				}
@@ -168,18 +168,18 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 					picker.items = items;
 				} else {
 					if (query.original.length > 0) {
-						this.provideLabelPick(picker, localize('noMatchingSymbolResults', "No matching editor symbols"));
+						this.provideLaBelPick(picker, localize('noMatchingSymBolResults', "No matching editor symBols"));
 					} else {
-						this.provideLabelPick(picker, localize('noSymbolResults', "No editor symbols"));
+						this.provideLaBelPick(picker, localize('noSymBolResults', "No editor symBols"));
 					}
 				}
 			} finally {
 				if (!token.isCancellationRequested) {
-					picker.busy = false;
+					picker.Busy = false;
 				}
 			}
 		};
-		disposables.add(picker.onDidChangeValue(() => updatePickerItems()));
+		disposaBles.add(picker.onDidChangeValue(() => updatePickerItems()));
 		updatePickerItems();
 
 		// Reveal and decorate when active item changes
@@ -187,7 +187,7 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 		// opening the picker is not immediately revealing
 		// and decorating the first entry.
 		let ignoreFirstActiveEvent = true;
-		disposables.add(picker.onDidChangeActive(() => {
+		disposaBles.add(picker.onDidChangeActive(() => {
 			const [item] = picker.activeItems;
 			if (item && item.range) {
 				if (ignoreFirstActiveEvent) {
@@ -203,109 +203,109 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 			}
 		}));
 
-		return disposables;
+		return disposaBles;
 	}
 
-	protected async doGetSymbolPicks(symbolsPromise: Promise<DocumentSymbol[]>, query: IPreparedQuery, options: { extraContainerLabel?: string } | undefined, token: CancellationToken): Promise<Array<IGotoSymbolQuickPickItem | IQuickPickSeparator>> {
-		const symbols = await symbolsPromise;
+	protected async doGetSymBolPicks(symBolsPromise: Promise<DocumentSymBol[]>, query: IPreparedQuery, options: { extraContainerLaBel?: string } | undefined, token: CancellationToken): Promise<Array<IGotoSymBolQuickPickItem | IQuickPickSeparator>> {
+		const symBols = await symBolsPromise;
 		if (token.isCancellationRequested) {
 			return [];
 		}
 
-		const filterBySymbolKind = query.original.indexOf(AbstractGotoSymbolQuickAccessProvider.SCOPE_PREFIX) === 0;
-		const filterPos = filterBySymbolKind ? 1 : 0;
+		const filterBySymBolKind = query.original.indexOf(ABstractGotoSymBolQuickAccessProvider.SCOPE_PREFIX) === 0;
+		const filterPos = filterBySymBolKind ? 1 : 0;
 
-		// Split between symbol and container query
-		let symbolQuery: IPreparedQuery;
+		// Split Between symBol and container query
+		let symBolQuery: IPreparedQuery;
 		let containerQuery: IPreparedQuery | undefined;
 		if (query.values && query.values.length > 1) {
-			symbolQuery = pieceToQuery(query.values[0]); 		  // symbol: only match on first part
-			containerQuery = pieceToQuery(query.values.slice(1)); // container: match on all but first parts
+			symBolQuery = pieceToQuery(query.values[0]); 		  // symBol: only match on first part
+			containerQuery = pieceToQuery(query.values.slice(1)); // container: match on all But first parts
 		} else {
-			symbolQuery = query;
+			symBolQuery = query;
 		}
 
-		// Convert to symbol picks and apply filtering
-		const filteredSymbolPicks: IGotoSymbolQuickPickItem[] = [];
-		for (let index = 0; index < symbols.length; index++) {
-			const symbol = symbols[index];
+		// Convert to symBol picks and apply filtering
+		const filteredSymBolPicks: IGotoSymBolQuickPickItem[] = [];
+		for (let index = 0; index < symBols.length; index++) {
+			const symBol = symBols[index];
 
-			const symbolLabel = trim(symbol.name);
-			const symbolLabelWithIcon = `$(symbol-${SymbolKinds.toString(symbol.kind) || 'property'}) ${symbolLabel}`;
-			const symbolLabelIconOffset = symbolLabelWithIcon.length - symbolLabel.length;
+			const symBolLaBel = trim(symBol.name);
+			const symBolLaBelWithIcon = `$(symBol-${SymBolKinds.toString(symBol.kind) || 'property'}) ${symBolLaBel}`;
+			const symBolLaBelIconOffset = symBolLaBelWithIcon.length - symBolLaBel.length;
 
-			let containerLabel = symbol.containerName;
-			if (options?.extraContainerLabel) {
-				if (containerLabel) {
-					containerLabel = `${options.extraContainerLabel} • ${containerLabel}`;
+			let containerLaBel = symBol.containerName;
+			if (options?.extraContainerLaBel) {
+				if (containerLaBel) {
+					containerLaBel = `${options.extraContainerLaBel} • ${containerLaBel}`;
 				} else {
-					containerLabel = options.extraContainerLabel;
+					containerLaBel = options.extraContainerLaBel;
 				}
 			}
 
-			let symbolScore: number | undefined = undefined;
-			let symbolMatches: IMatch[] | undefined = undefined;
+			let symBolScore: numBer | undefined = undefined;
+			let symBolMatches: IMatch[] | undefined = undefined;
 
-			let containerScore: number | undefined = undefined;
+			let containerScore: numBer | undefined = undefined;
 			let containerMatches: IMatch[] | undefined = undefined;
 
 			if (query.original.length > filterPos) {
 
-				// First: try to score on the entire query, it is possible that
-				// the symbol matches perfectly (e.g. searching for "change log"
-				// can be a match on a markdown symbol "change log"). In that
+				// First: try to score on the entire query, it is possiBle that
+				// the symBol matches perfectly (e.g. searching for "change log"
+				// can Be a match on a markdown symBol "change log"). In that
 				// case we want to skip the container query altogether.
 				let skipContainerQuery = false;
-				if (symbolQuery !== query) {
-					[symbolScore, symbolMatches] = scoreFuzzy2(symbolLabelWithIcon, { ...query, values: undefined /* disable multi-query support */ }, filterPos, symbolLabelIconOffset);
-					if (typeof symbolScore === 'number') {
+				if (symBolQuery !== query) {
+					[symBolScore, symBolMatches] = scoreFuzzy2(symBolLaBelWithIcon, { ...query, values: undefined /* disaBle multi-query support */ }, filterPos, symBolLaBelIconOffset);
+					if (typeof symBolScore === 'numBer') {
 						skipContainerQuery = true; // since we consumed the query, skip any container matching
 					}
 				}
 
-				// Otherwise: score on the symbol query and match on the container later
-				if (typeof symbolScore !== 'number') {
-					[symbolScore, symbolMatches] = scoreFuzzy2(symbolLabelWithIcon, symbolQuery, filterPos, symbolLabelIconOffset);
-					if (typeof symbolScore !== 'number') {
+				// Otherwise: score on the symBol query and match on the container later
+				if (typeof symBolScore !== 'numBer') {
+					[symBolScore, symBolMatches] = scoreFuzzy2(symBolLaBelWithIcon, symBolQuery, filterPos, symBolLaBelIconOffset);
+					if (typeof symBolScore !== 'numBer') {
 						continue;
 					}
 				}
 
-				// Score by container if specified
+				// Score By container if specified
 				if (!skipContainerQuery && containerQuery) {
-					if (containerLabel && containerQuery.original.length > 0) {
-						[containerScore, containerMatches] = scoreFuzzy2(containerLabel, containerQuery);
+					if (containerLaBel && containerQuery.original.length > 0) {
+						[containerScore, containerMatches] = scoreFuzzy2(containerLaBel, containerQuery);
 					}
 
-					if (typeof containerScore !== 'number') {
+					if (typeof containerScore !== 'numBer') {
 						continue;
 					}
 
-					if (typeof symbolScore === 'number') {
-						symbolScore += containerScore; // boost symbolScore by containerScore
+					if (typeof symBolScore === 'numBer') {
+						symBolScore += containerScore; // Boost symBolScore By containerScore
 					}
 				}
 			}
 
-			const deprecated = symbol.tags && symbol.tags.indexOf(SymbolTag.Deprecated) >= 0;
+			const deprecated = symBol.tags && symBol.tags.indexOf(SymBolTag.Deprecated) >= 0;
 
-			filteredSymbolPicks.push({
+			filteredSymBolPicks.push({
 				index,
-				kind: symbol.kind,
-				score: symbolScore,
-				label: symbolLabelWithIcon,
-				ariaLabel: symbolLabel,
-				description: containerLabel,
+				kind: symBol.kind,
+				score: symBolScore,
+				laBel: symBolLaBelWithIcon,
+				ariaLaBel: symBolLaBel,
+				description: containerLaBel,
 				highlights: deprecated ? undefined : {
-					label: symbolMatches,
+					laBel: symBolMatches,
 					description: containerMatches
 				},
 				range: {
-					selection: Range.collapseToStart(symbol.selectionRange),
-					decoration: symbol.range
+					selection: Range.collapseToStart(symBol.selectionRange),
+					decoration: symBol.range
 				},
 				strikethrough: deprecated,
-				buttons: (() => {
+				Buttons: (() => {
 					const openSideBySideDirection = this.options?.openSideBySideDirection ? this.options?.openSideBySideDirection() : undefined;
 					if (!openSideBySideDirection) {
 						return undefined;
@@ -321,134 +321,134 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 			});
 		}
 
-		// Sort by score
-		const sortedFilteredSymbolPicks = filteredSymbolPicks.sort((symbolA, symbolB) => filterBySymbolKind ?
-			this.compareByKindAndScore(symbolA, symbolB) :
-			this.compareByScore(symbolA, symbolB)
+		// Sort By score
+		const sortedFilteredSymBolPicks = filteredSymBolPicks.sort((symBolA, symBolB) => filterBySymBolKind ?
+			this.compareByKindAndScore(symBolA, symBolB) :
+			this.compareByScore(symBolA, symBolB)
 		);
 
 		// Add separator for types
-		// - @  only total number of symbols
-		// - @: grouped by symbol kind
-		let symbolPicks: Array<IGotoSymbolQuickPickItem | IQuickPickSeparator> = [];
-		if (filterBySymbolKind) {
-			let lastSymbolKind: SymbolKind | undefined = undefined;
+		// - @  only total numBer of symBols
+		// - @: grouped By symBol kind
+		let symBolPicks: Array<IGotoSymBolQuickPickItem | IQuickPickSeparator> = [];
+		if (filterBySymBolKind) {
+			let lastSymBolKind: SymBolKind | undefined = undefined;
 			let lastSeparator: IQuickPickSeparator | undefined = undefined;
-			let lastSymbolKindCounter = 0;
+			let lastSymBolKindCounter = 0;
 
-			function updateLastSeparatorLabel(): void {
-				if (lastSeparator && typeof lastSymbolKind === 'number' && lastSymbolKindCounter > 0) {
-					lastSeparator.label = format(NLS_SYMBOL_KIND_CACHE[lastSymbolKind] || FALLBACK_NLS_SYMBOL_KIND, lastSymbolKindCounter);
+			function updateLastSeparatorLaBel(): void {
+				if (lastSeparator && typeof lastSymBolKind === 'numBer' && lastSymBolKindCounter > 0) {
+					lastSeparator.laBel = format(NLS_SYMBOL_KIND_CACHE[lastSymBolKind] || FALLBACK_NLS_SYMBOL_KIND, lastSymBolKindCounter);
 				}
 			}
 
-			for (const symbolPick of sortedFilteredSymbolPicks) {
+			for (const symBolPick of sortedFilteredSymBolPicks) {
 
 				// Found new kind
-				if (lastSymbolKind !== symbolPick.kind) {
+				if (lastSymBolKind !== symBolPick.kind) {
 
-					// Update last separator with number of symbols we found for kind
-					updateLastSeparatorLabel();
+					// Update last separator with numBer of symBols we found for kind
+					updateLastSeparatorLaBel();
 
-					lastSymbolKind = symbolPick.kind;
-					lastSymbolKindCounter = 1;
+					lastSymBolKind = symBolPick.kind;
+					lastSymBolKindCounter = 1;
 
 					// Add new separator for new kind
 					lastSeparator = { type: 'separator' };
-					symbolPicks.push(lastSeparator);
+					symBolPicks.push(lastSeparator);
 				}
 
 				// Existing kind, keep counting
 				else {
-					lastSymbolKindCounter++;
+					lastSymBolKindCounter++;
 				}
 
 				// Add to final result
-				symbolPicks.push(symbolPick);
+				symBolPicks.push(symBolPick);
 			}
 
-			// Update last separator with number of symbols we found for kind
-			updateLastSeparatorLabel();
-		} else if (sortedFilteredSymbolPicks.length > 0) {
-			symbolPicks = [
-				{ label: localize('symbols', "symbols ({0})", filteredSymbolPicks.length), type: 'separator' },
-				...sortedFilteredSymbolPicks
+			// Update last separator with numBer of symBols we found for kind
+			updateLastSeparatorLaBel();
+		} else if (sortedFilteredSymBolPicks.length > 0) {
+			symBolPicks = [
+				{ laBel: localize('symBols', "symBols ({0})", filteredSymBolPicks.length), type: 'separator' },
+				...sortedFilteredSymBolPicks
 			];
 		}
 
-		return symbolPicks;
+		return symBolPicks;
 	}
 
-	private compareByScore(symbolA: IGotoSymbolQuickPickItem, symbolB: IGotoSymbolQuickPickItem): number {
-		if (typeof symbolA.score !== 'number' && typeof symbolB.score === 'number') {
+	private compareByScore(symBolA: IGotoSymBolQuickPickItem, symBolB: IGotoSymBolQuickPickItem): numBer {
+		if (typeof symBolA.score !== 'numBer' && typeof symBolB.score === 'numBer') {
 			return 1;
-		} else if (typeof symbolA.score === 'number' && typeof symbolB.score !== 'number') {
+		} else if (typeof symBolA.score === 'numBer' && typeof symBolB.score !== 'numBer') {
 			return -1;
 		}
 
-		if (typeof symbolA.score === 'number' && typeof symbolB.score === 'number') {
-			if (symbolA.score > symbolB.score) {
+		if (typeof symBolA.score === 'numBer' && typeof symBolB.score === 'numBer') {
+			if (symBolA.score > symBolB.score) {
 				return -1;
-			} else if (symbolA.score < symbolB.score) {
+			} else if (symBolA.score < symBolB.score) {
 				return 1;
 			}
 		}
 
-		if (symbolA.index < symbolB.index) {
+		if (symBolA.index < symBolB.index) {
 			return -1;
-		} else if (symbolA.index > symbolB.index) {
+		} else if (symBolA.index > symBolB.index) {
 			return 1;
 		}
 
 		return 0;
 	}
 
-	private compareByKindAndScore(symbolA: IGotoSymbolQuickPickItem, symbolB: IGotoSymbolQuickPickItem): number {
-		const kindA = NLS_SYMBOL_KIND_CACHE[symbolA.kind] || FALLBACK_NLS_SYMBOL_KIND;
-		const kindB = NLS_SYMBOL_KIND_CACHE[symbolB.kind] || FALLBACK_NLS_SYMBOL_KIND;
+	private compareByKindAndScore(symBolA: IGotoSymBolQuickPickItem, symBolB: IGotoSymBolQuickPickItem): numBer {
+		const kindA = NLS_SYMBOL_KIND_CACHE[symBolA.kind] || FALLBACK_NLS_SYMBOL_KIND;
+		const kindB = NLS_SYMBOL_KIND_CACHE[symBolB.kind] || FALLBACK_NLS_SYMBOL_KIND;
 
-		// Sort by type first if scoped search
+		// Sort By type first if scoped search
 		const result = kindA.localeCompare(kindB);
 		if (result === 0) {
-			return this.compareByScore(symbolA, symbolB);
+			return this.compareByScore(symBolA, symBolB);
 		}
 
 		return result;
 	}
 
-	protected async getDocumentSymbols(document: ITextModel, flatten: boolean, token: CancellationToken): Promise<DocumentSymbol[]> {
+	protected async getDocumentSymBols(document: ITextModel, flatten: Boolean, token: CancellationToken): Promise<DocumentSymBol[]> {
 		const model = await OutlineModel.create(document, token);
 		if (token.isCancellationRequested) {
 			return [];
 		}
 
-		const roots: DocumentSymbol[] = [];
+		const roots: DocumentSymBol[] = [];
 		for (const child of model.children.values()) {
 			if (child instanceof OutlineElement) {
-				roots.push(child.symbol);
+				roots.push(child.symBol);
 			} else {
-				roots.push(...Iterable.map(child.children.values(), child => child.symbol));
+				roots.push(...IteraBle.map(child.children.values(), child => child.symBol));
 			}
 		}
 
-		let flatEntries: DocumentSymbol[] = [];
+		let flatEntries: DocumentSymBol[] = [];
 		if (flatten) {
-			this.flattenDocumentSymbols(flatEntries, roots, '');
+			this.flattenDocumentSymBols(flatEntries, roots, '');
 		} else {
 			flatEntries = roots;
 		}
 
-		return flatEntries.sort((symbolA, symbolB) => Range.compareRangesUsingStarts(symbolA.range, symbolB.range));
+		return flatEntries.sort((symBolA, symBolB) => Range.compareRangesUsingStarts(symBolA.range, symBolB.range));
 	}
 
-	private flattenDocumentSymbols(bucket: DocumentSymbol[], entries: DocumentSymbol[], overrideContainerLabel: string): void {
+	private flattenDocumentSymBols(Bucket: DocumentSymBol[], entries: DocumentSymBol[], overrideContainerLaBel: string): void {
 		for (const entry of entries) {
-			bucket.push({
+			Bucket.push({
 				kind: entry.kind,
 				tags: entry.tags,
 				name: entry.name,
 				detail: entry.detail,
-				containerName: entry.containerName || overrideContainerLabel,
+				containerName: entry.containerName || overrideContainerLaBel,
 				range: entry.range,
 				selectionRange: entry.selectionRange,
 				children: undefined, // we flatten it...
@@ -456,7 +456,7 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 
 			// Recurse over children
 			if (entry.children) {
-				this.flattenDocumentSymbols(bucket, entry.children, entry.name);
+				this.flattenDocumentSymBols(Bucket, entry.children, entry.name);
 			}
 		}
 	}
@@ -465,32 +465,32 @@ export abstract class AbstractGotoSymbolQuickAccessProvider extends AbstractEdit
 // #region NLS Helpers
 
 const FALLBACK_NLS_SYMBOL_KIND = localize('property', "properties ({0})");
-const NLS_SYMBOL_KIND_CACHE: { [type: number]: string } = {
-	[SymbolKind.Method]: localize('method', "methods ({0})"),
-	[SymbolKind.Function]: localize('function', "functions ({0})"),
-	[SymbolKind.Constructor]: localize('_constructor', "constructors ({0})"),
-	[SymbolKind.Variable]: localize('variable', "variables ({0})"),
-	[SymbolKind.Class]: localize('class', "classes ({0})"),
-	[SymbolKind.Struct]: localize('struct', "structs ({0})"),
-	[SymbolKind.Event]: localize('event', "events ({0})"),
-	[SymbolKind.Operator]: localize('operator', "operators ({0})"),
-	[SymbolKind.Interface]: localize('interface', "interfaces ({0})"),
-	[SymbolKind.Namespace]: localize('namespace', "namespaces ({0})"),
-	[SymbolKind.Package]: localize('package', "packages ({0})"),
-	[SymbolKind.TypeParameter]: localize('typeParameter', "type parameters ({0})"),
-	[SymbolKind.Module]: localize('modules', "modules ({0})"),
-	[SymbolKind.Property]: localize('property', "properties ({0})"),
-	[SymbolKind.Enum]: localize('enum', "enumerations ({0})"),
-	[SymbolKind.EnumMember]: localize('enumMember', "enumeration members ({0})"),
-	[SymbolKind.String]: localize('string', "strings ({0})"),
-	[SymbolKind.File]: localize('file', "files ({0})"),
-	[SymbolKind.Array]: localize('array', "arrays ({0})"),
-	[SymbolKind.Number]: localize('number', "numbers ({0})"),
-	[SymbolKind.Boolean]: localize('boolean', "booleans ({0})"),
-	[SymbolKind.Object]: localize('object', "objects ({0})"),
-	[SymbolKind.Key]: localize('key', "keys ({0})"),
-	[SymbolKind.Field]: localize('field', "fields ({0})"),
-	[SymbolKind.Constant]: localize('constant', "constants ({0})")
+const NLS_SYMBOL_KIND_CACHE: { [type: numBer]: string } = {
+	[SymBolKind.Method]: localize('method', "methods ({0})"),
+	[SymBolKind.Function]: localize('function', "functions ({0})"),
+	[SymBolKind.Constructor]: localize('_constructor', "constructors ({0})"),
+	[SymBolKind.VariaBle]: localize('variaBle', "variaBles ({0})"),
+	[SymBolKind.Class]: localize('class', "classes ({0})"),
+	[SymBolKind.Struct]: localize('struct', "structs ({0})"),
+	[SymBolKind.Event]: localize('event', "events ({0})"),
+	[SymBolKind.Operator]: localize('operator', "operators ({0})"),
+	[SymBolKind.Interface]: localize('interface', "interfaces ({0})"),
+	[SymBolKind.Namespace]: localize('namespace', "namespaces ({0})"),
+	[SymBolKind.Package]: localize('package', "packages ({0})"),
+	[SymBolKind.TypeParameter]: localize('typeParameter', "type parameters ({0})"),
+	[SymBolKind.Module]: localize('modules', "modules ({0})"),
+	[SymBolKind.Property]: localize('property', "properties ({0})"),
+	[SymBolKind.Enum]: localize('enum', "enumerations ({0})"),
+	[SymBolKind.EnumMemBer]: localize('enumMemBer', "enumeration memBers ({0})"),
+	[SymBolKind.String]: localize('string', "strings ({0})"),
+	[SymBolKind.File]: localize('file', "files ({0})"),
+	[SymBolKind.Array]: localize('array', "arrays ({0})"),
+	[SymBolKind.NumBer]: localize('numBer', "numBers ({0})"),
+	[SymBolKind.Boolean]: localize('Boolean', "Booleans ({0})"),
+	[SymBolKind.OBject]: localize('oBject', "oBjects ({0})"),
+	[SymBolKind.Key]: localize('key', "keys ({0})"),
+	[SymBolKind.Field]: localize('field', "fields ({0})"),
+	[SymBolKind.Constant]: localize('constant', "constants ({0})")
 };
 
 //#endregion

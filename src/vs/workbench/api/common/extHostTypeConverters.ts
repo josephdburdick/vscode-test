@@ -5,38 +5,38 @@
 
 import * as modes from 'vs/editor/common/modes';
 import * as types from './extHostTypes';
-import * as search from 'vs/workbench/contrib/search/common/search';
+import * as search from 'vs/workBench/contriB/search/common/search';
 import { ITextEditorOptions } from 'vs/platform/editor/common/editor';
-import { EditorViewColumn } from 'vs/workbench/api/common/shared/editor';
+import { EditorViewColumn } from 'vs/workBench/api/common/shared/editor';
 import { IDecorationOptions, IThemeDecorationRenderOptions, IDecorationRenderOptions, IContentDecorationRenderOptions } from 'vs/editor/common/editorCommon';
 import { EndOfLineSequence, TrackedRangeStickiness } from 'vs/editor/common/model';
 import type * as vscode from 'vscode';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { ProgressLocation as MainProgressLocation } from 'vs/platform/progress/common/progress';
-import { SaveReason } from 'vs/workbench/common/editor';
+import { SaveReason } from 'vs/workBench/common/editor';
 import { IPosition } from 'vs/editor/common/core/position';
 import * as editorRange from 'vs/editor/common/core/range';
 import { ISelection } from 'vs/editor/common/core/selection';
-import * as htmlContent from 'vs/base/common/htmlContent';
+import * as htmlContent from 'vs/Base/common/htmlContent';
 import * as languageSelector from 'vs/editor/common/modes/languageSelector';
-import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
+import * as extHostProtocol from 'vs/workBench/api/common/extHost.protocol';
 import { MarkerSeverity, IRelatedInformation, IMarkerData, MarkerTag } from 'vs/platform/markers/common/markers';
-import { ACTIVE_GROUP, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { isString, isNumber } from 'vs/base/common/types';
-import * as marked from 'vs/base/common/marked/marked';
-import { parse } from 'vs/base/common/marshalling';
-import { cloneAndChange } from 'vs/base/common/objects';
+import { ACTIVE_GROUP, SIDE_GROUP } from 'vs/workBench/services/editor/common/editorService';
+import { ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
+import { isString, isNumBer } from 'vs/Base/common/types';
+import * as marked from 'vs/Base/common/marked/marked';
+import { parse } from 'vs/Base/common/marshalling';
+import { cloneAndChange } from 'vs/Base/common/oBjects';
 import { LogLevel as _MainLogLevel } from 'vs/platform/log/common/log';
-import { coalesce, isNonEmptyArray } from 'vs/base/common/arrays';
-import { RenderLineNumbersType } from 'vs/editor/common/config/editorOptions';
-import { CommandsConverter } from 'vs/workbench/api/common/extHostCommands';
-import { ExtHostNotebookController } from 'vs/workbench/api/common/extHostNotebook';
-import { CellOutputKind, IDisplayOutput, INotebookDecorationRenderOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { coalesce, isNonEmptyArray } from 'vs/Base/common/arrays';
+import { RenderLineNumBersType } from 'vs/editor/common/config/editorOptions';
+import { CommandsConverter } from 'vs/workBench/api/common/extHostCommands';
+import { ExtHostNoteBookController } from 'vs/workBench/api/common/extHostNoteBook';
+import { CellOutputKind, IDisplayOutput, INoteBookDecorationRenderOptions } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
 export interface PositionLike {
-	line: number;
-	character: number;
+	line: numBer;
+	character: numBer;
 }
 
 export interface RangeLike {
@@ -51,18 +51,18 @@ export interface SelectionLike extends RangeLike {
 export namespace Selection {
 
 	export function to(selection: ISelection): types.Selection {
-		const { selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn } = selection;
-		const start = new types.Position(selectionStartLineNumber - 1, selectionStartColumn - 1);
-		const end = new types.Position(positionLineNumber - 1, positionColumn - 1);
+		const { selectionStartLineNumBer, selectionStartColumn, positionLineNumBer, positionColumn } = selection;
+		const start = new types.Position(selectionStartLineNumBer - 1, selectionStartColumn - 1);
+		const end = new types.Position(positionLineNumBer - 1, positionColumn - 1);
 		return new types.Selection(start, end);
 	}
 
 	export function from(selection: SelectionLike): ISelection {
 		const { anchor, active } = selection;
 		return {
-			selectionStartLineNumber: anchor.line + 1,
+			selectionStartLineNumBer: anchor.line + 1,
 			selectionStartColumn: anchor.character + 1,
-			positionLineNumber: active.line + 1,
+			positionLineNumBer: active.line + 1,
 			positionColumn: active.character + 1
 		};
 	}
@@ -78,9 +78,9 @@ export namespace Range {
 		}
 		const { start, end } = range;
 		return {
-			startLineNumber: start.line + 1,
+			startLineNumBer: start.line + 1,
 			startColumn: start.character + 1,
-			endLineNumber: end.line + 1,
+			endLineNumBer: end.line + 1,
 			endColumn: end.character + 1
 		};
 	}
@@ -92,8 +92,8 @@ export namespace Range {
 		if (!range) {
 			return undefined;
 		}
-		const { startLineNumber, startColumn, endLineNumber, endColumn } = range;
-		return new types.Range(startLineNumber - 1, startColumn - 1, endLineNumber - 1, endColumn - 1);
+		const { startLineNumBer, startColumn, endLineNumBer, endColumn } = range;
+		return new types.Range(startLineNumBer - 1, startColumn - 1, endLineNumBer - 1, endColumn - 1);
 	}
 }
 
@@ -110,10 +110,10 @@ export namespace TokenType {
 
 export namespace Position {
 	export function to(position: IPosition): types.Position {
-		return new types.Position(position.lineNumber - 1, position.column - 1);
+		return new types.Position(position.lineNumBer - 1, position.column - 1);
 	}
 	export function from(position: types.Position | vscode.Position): IPosition {
-		return { lineNumber: position.line + 1, column: position.character + 1 };
+		return { lineNumBer: position.line + 1, column: position.character + 1 };
 	}
 }
 
@@ -144,7 +144,7 @@ export namespace Diagnostic {
 		let code: string | { value: string; target: URI } | undefined;
 
 		if (value.code) {
-			if (isString(value.code) || isNumber(value.code)) {
+			if (isString(value.code) || isNumBer(value.code)) {
 				code = String(value.code);
 			} else {
 				code = {
@@ -189,7 +189,7 @@ export namespace DiagnosticRelatedInformation {
 }
 export namespace DiagnosticSeverity {
 
-	export function from(value: number): MarkerSeverity {
+	export function from(value: numBer): MarkerSeverity {
 		switch (value) {
 			case types.DiagnosticSeverity.Error:
 				return MarkerSeverity.Error;
@@ -221,7 +221,7 @@ export namespace DiagnosticSeverity {
 
 export namespace ViewColumn {
 	export function from(column?: vscode.ViewColumn): EditorViewColumn {
-		if (typeof column === 'number' && column >= types.ViewColumn.One) {
+		if (typeof column === 'numBer' && column >= types.ViewColumn.One) {
 			return column - 1; // adjust zero index (ViewColumn.ONE => 0)
 		}
 
@@ -233,7 +233,7 @@ export namespace ViewColumn {
 	}
 
 	export function to(position: EditorViewColumn): vscode.ViewColumn {
-		if (typeof position === 'number' && position >= 0) {
+		if (typeof position === 'numBer' && position >= 0) {
 			return position + 1; // adjust to index (ViewColumn.ONE => 1)
 		}
 
@@ -258,20 +258,20 @@ export namespace MarkdownString {
 		return markup.map(MarkdownString.from);
 	}
 
-	interface Codeblock {
+	interface CodeBlock {
 		language: string;
 		value: string;
 	}
 
-	function isCodeblock(thing: any): thing is Codeblock {
-		return thing && typeof thing === 'object'
-			&& typeof (<Codeblock>thing).language === 'string'
-			&& typeof (<Codeblock>thing).value === 'string';
+	function isCodeBlock(thing: any): thing is CodeBlock {
+		return thing && typeof thing === 'oBject'
+			&& typeof (<CodeBlock>thing).language === 'string'
+			&& typeof (<CodeBlock>thing).value === 'string';
 	}
 
 	export function from(markup: vscode.MarkdownString | vscode.MarkedString): htmlContent.IMarkdownString {
 		let res: htmlContent.IMarkdownString;
-		if (isCodeblock(markup)) {
+		if (isCodeBlock(markup)) {
 			const { language, value } = markup;
 			res = { value: '```' + language + '\n' + value + '\n```\n' };
 		} else if (htmlContent.isMarkdownString(markup)) {
@@ -282,8 +282,8 @@ export namespace MarkdownString {
 			res = { value: '' };
 		}
 
-		// extract uris into a separate object
-		const resUris: { [href: string]: UriComponents; } = Object.create(null);
+		// extract uris into a separate oBject
+		const resUris: { [href: string]: UriComponents; } = OBject.create(null);
 		res.uris = resUris;
 
 		const collectUri = (href: string): string => {
@@ -305,7 +305,7 @@ export namespace MarkdownString {
 		return res;
 	}
 
-	function _uriMassage(part: string, bucket: { [n: string]: UriComponents; }): string {
+	function _uriMassage(part: string, Bucket: { [n: string]: UriComponents; }): string {
 		if (!part) {
 			return part;
 		}
@@ -322,7 +322,7 @@ export namespace MarkdownString {
 		data = cloneAndChange(data, value => {
 			if (URI.isUri(value)) {
 				const key = `__uri_${Math.random().toString(16).slice(2, 8)}`;
-				bucket[key] = value;
+				Bucket[key] = value;
 				changed = true;
 				return key;
 			} else {
@@ -382,21 +382,21 @@ export function pathOrURIToURI(value: string | URI): URI {
 	}
 }
 
-export namespace ThemableDecorationAttachmentRenderOptions {
-	export function from(options: vscode.ThemableDecorationAttachmentRenderOptions): IContentDecorationRenderOptions {
+export namespace ThemaBleDecorationAttachmentRenderOptions {
+	export function from(options: vscode.ThemaBleDecorationAttachmentRenderOptions): IContentDecorationRenderOptions {
 		if (typeof options === 'undefined') {
 			return options;
 		}
 		return {
 			contentText: options.contentText,
 			contentIconPath: options.contentIconPath ? pathOrURIToURI(options.contentIconPath) : undefined,
-			border: options.border,
-			borderColor: <string | types.ThemeColor>options.borderColor,
+			Border: options.Border,
+			BorderColor: <string | types.ThemeColor>options.BorderColor,
 			fontStyle: options.fontStyle,
 			fontWeight: options.fontWeight,
 			textDecoration: options.textDecoration,
 			color: <string | types.ThemeColor>options.color,
-			backgroundColor: <string | types.ThemeColor>options.backgroundColor,
+			BackgroundColor: <string | types.ThemeColor>options.BackgroundColor,
 			margin: options.margin,
 			width: options.width,
 			height: options.height,
@@ -404,23 +404,23 @@ export namespace ThemableDecorationAttachmentRenderOptions {
 	}
 }
 
-export namespace ThemableDecorationRenderOptions {
-	export function from(options: vscode.ThemableDecorationRenderOptions): IThemeDecorationRenderOptions {
+export namespace ThemaBleDecorationRenderOptions {
+	export function from(options: vscode.ThemaBleDecorationRenderOptions): IThemeDecorationRenderOptions {
 		if (typeof options === 'undefined') {
 			return options;
 		}
 		return {
-			backgroundColor: <string | types.ThemeColor>options.backgroundColor,
+			BackgroundColor: <string | types.ThemeColor>options.BackgroundColor,
 			outline: options.outline,
 			outlineColor: <string | types.ThemeColor>options.outlineColor,
 			outlineStyle: options.outlineStyle,
 			outlineWidth: options.outlineWidth,
-			border: options.border,
-			borderColor: <string | types.ThemeColor>options.borderColor,
-			borderRadius: options.borderRadius,
-			borderSpacing: options.borderSpacing,
-			borderStyle: options.borderStyle,
-			borderWidth: options.borderWidth,
+			Border: options.Border,
+			BorderColor: <string | types.ThemeColor>options.BorderColor,
+			BorderRadius: options.BorderRadius,
+			BorderSpacing: options.BorderSpacing,
+			BorderStyle: options.BorderStyle,
+			BorderWidth: options.BorderWidth,
 			fontStyle: options.fontStyle,
 			fontWeight: options.fontWeight,
 			textDecoration: options.textDecoration,
@@ -431,8 +431,8 @@ export namespace ThemableDecorationRenderOptions {
 			gutterIconPath: options.gutterIconPath ? pathOrURIToURI(options.gutterIconPath) : undefined,
 			gutterIconSize: options.gutterIconSize,
 			overviewRulerColor: <string | types.ThemeColor>options.overviewRulerColor,
-			before: options.before ? ThemableDecorationAttachmentRenderOptions.from(options.before) : undefined,
-			after: options.after ? ThemableDecorationAttachmentRenderOptions.from(options.after) : undefined,
+			Before: options.Before ? ThemaBleDecorationAttachmentRenderOptions.from(options.Before) : undefined,
+			after: options.after ? ThemaBleDecorationAttachmentRenderOptions.from(options.after) : undefined,
 		};
 	}
 }
@@ -461,20 +461,20 @@ export namespace DecorationRenderOptions {
 			isWholeLine: options.isWholeLine,
 			rangeBehavior: options.rangeBehavior ? DecorationRangeBehavior.from(options.rangeBehavior) : undefined,
 			overviewRulerLane: options.overviewRulerLane,
-			light: options.light ? ThemableDecorationRenderOptions.from(options.light) : undefined,
-			dark: options.dark ? ThemableDecorationRenderOptions.from(options.dark) : undefined,
+			light: options.light ? ThemaBleDecorationRenderOptions.from(options.light) : undefined,
+			dark: options.dark ? ThemaBleDecorationRenderOptions.from(options.dark) : undefined,
 
-			backgroundColor: <string | types.ThemeColor>options.backgroundColor,
+			BackgroundColor: <string | types.ThemeColor>options.BackgroundColor,
 			outline: options.outline,
 			outlineColor: <string | types.ThemeColor>options.outlineColor,
 			outlineStyle: options.outlineStyle,
 			outlineWidth: options.outlineWidth,
-			border: options.border,
-			borderColor: <string | types.ThemeColor>options.borderColor,
-			borderRadius: options.borderRadius,
-			borderSpacing: options.borderSpacing,
-			borderStyle: options.borderStyle,
-			borderWidth: options.borderWidth,
+			Border: options.Border,
+			BorderColor: <string | types.ThemeColor>options.BorderColor,
+			BorderRadius: options.BorderRadius,
+			BorderSpacing: options.BorderSpacing,
+			BorderStyle: options.BorderStyle,
+			BorderWidth: options.BorderWidth,
 			fontStyle: options.fontStyle,
 			fontWeight: options.fontWeight,
 			textDecoration: options.textDecoration,
@@ -485,8 +485,8 @@ export namespace DecorationRenderOptions {
 			gutterIconPath: options.gutterIconPath ? pathOrURIToURI(options.gutterIconPath) : undefined,
 			gutterIconSize: options.gutterIconSize,
 			overviewRulerColor: <string | types.ThemeColor>options.overviewRulerColor,
-			before: options.before ? ThemableDecorationAttachmentRenderOptions.from(options.before) : undefined,
-			after: options.after ? ThemableDecorationAttachmentRenderOptions.from(options.after) : undefined,
+			Before: options.Before ? ThemaBleDecorationAttachmentRenderOptions.from(options.Before) : undefined,
+			after: options.after ? ThemaBleDecorationAttachmentRenderOptions.from(options.after) : undefined,
 		};
 	}
 }
@@ -509,7 +509,7 @@ export namespace TextEdit {
 }
 
 export namespace WorkspaceEdit {
-	export function from(value: vscode.WorkspaceEdit, documents?: ExtHostDocumentsAndEditors, notebooks?: ExtHostNotebookController): extHostProtocol.IWorkspaceEditDto {
+	export function from(value: vscode.WorkspaceEdit, documents?: ExtHostDocumentsAndEditors, noteBooks?: ExtHostNoteBookController): extHostProtocol.IWorkspaceEditDto {
 		const result: extHostProtocol.IWorkspaceEditDto = {
 			edits: []
 		};
@@ -543,8 +543,8 @@ export namespace WorkspaceEdit {
 						metadata: entry.metadata,
 						resource: entry.uri,
 						edit: entry.edit,
-						notebookMetadata: entry.notebookMetadata,
-						notebookVersionId: notebooks?.lookupNotebookDocument(entry.uri)?.notebookDocument.version
+						noteBookMetadata: entry.noteBookMetadata,
+						noteBookVersionId: noteBooks?.lookupNoteBookDocument(entry.uri)?.noteBookDocument.version
 					});
 				}
 			}
@@ -574,112 +574,112 @@ export namespace WorkspaceEdit {
 }
 
 
-export namespace SymbolKind {
+export namespace SymBolKind {
 
-	const _fromMapping: { [kind: number]: modes.SymbolKind; } = Object.create(null);
-	_fromMapping[types.SymbolKind.File] = modes.SymbolKind.File;
-	_fromMapping[types.SymbolKind.Module] = modes.SymbolKind.Module;
-	_fromMapping[types.SymbolKind.Namespace] = modes.SymbolKind.Namespace;
-	_fromMapping[types.SymbolKind.Package] = modes.SymbolKind.Package;
-	_fromMapping[types.SymbolKind.Class] = modes.SymbolKind.Class;
-	_fromMapping[types.SymbolKind.Method] = modes.SymbolKind.Method;
-	_fromMapping[types.SymbolKind.Property] = modes.SymbolKind.Property;
-	_fromMapping[types.SymbolKind.Field] = modes.SymbolKind.Field;
-	_fromMapping[types.SymbolKind.Constructor] = modes.SymbolKind.Constructor;
-	_fromMapping[types.SymbolKind.Enum] = modes.SymbolKind.Enum;
-	_fromMapping[types.SymbolKind.Interface] = modes.SymbolKind.Interface;
-	_fromMapping[types.SymbolKind.Function] = modes.SymbolKind.Function;
-	_fromMapping[types.SymbolKind.Variable] = modes.SymbolKind.Variable;
-	_fromMapping[types.SymbolKind.Constant] = modes.SymbolKind.Constant;
-	_fromMapping[types.SymbolKind.String] = modes.SymbolKind.String;
-	_fromMapping[types.SymbolKind.Number] = modes.SymbolKind.Number;
-	_fromMapping[types.SymbolKind.Boolean] = modes.SymbolKind.Boolean;
-	_fromMapping[types.SymbolKind.Array] = modes.SymbolKind.Array;
-	_fromMapping[types.SymbolKind.Object] = modes.SymbolKind.Object;
-	_fromMapping[types.SymbolKind.Key] = modes.SymbolKind.Key;
-	_fromMapping[types.SymbolKind.Null] = modes.SymbolKind.Null;
-	_fromMapping[types.SymbolKind.EnumMember] = modes.SymbolKind.EnumMember;
-	_fromMapping[types.SymbolKind.Struct] = modes.SymbolKind.Struct;
-	_fromMapping[types.SymbolKind.Event] = modes.SymbolKind.Event;
-	_fromMapping[types.SymbolKind.Operator] = modes.SymbolKind.Operator;
-	_fromMapping[types.SymbolKind.TypeParameter] = modes.SymbolKind.TypeParameter;
+	const _fromMapping: { [kind: numBer]: modes.SymBolKind; } = OBject.create(null);
+	_fromMapping[types.SymBolKind.File] = modes.SymBolKind.File;
+	_fromMapping[types.SymBolKind.Module] = modes.SymBolKind.Module;
+	_fromMapping[types.SymBolKind.Namespace] = modes.SymBolKind.Namespace;
+	_fromMapping[types.SymBolKind.Package] = modes.SymBolKind.Package;
+	_fromMapping[types.SymBolKind.Class] = modes.SymBolKind.Class;
+	_fromMapping[types.SymBolKind.Method] = modes.SymBolKind.Method;
+	_fromMapping[types.SymBolKind.Property] = modes.SymBolKind.Property;
+	_fromMapping[types.SymBolKind.Field] = modes.SymBolKind.Field;
+	_fromMapping[types.SymBolKind.Constructor] = modes.SymBolKind.Constructor;
+	_fromMapping[types.SymBolKind.Enum] = modes.SymBolKind.Enum;
+	_fromMapping[types.SymBolKind.Interface] = modes.SymBolKind.Interface;
+	_fromMapping[types.SymBolKind.Function] = modes.SymBolKind.Function;
+	_fromMapping[types.SymBolKind.VariaBle] = modes.SymBolKind.VariaBle;
+	_fromMapping[types.SymBolKind.Constant] = modes.SymBolKind.Constant;
+	_fromMapping[types.SymBolKind.String] = modes.SymBolKind.String;
+	_fromMapping[types.SymBolKind.NumBer] = modes.SymBolKind.NumBer;
+	_fromMapping[types.SymBolKind.Boolean] = modes.SymBolKind.Boolean;
+	_fromMapping[types.SymBolKind.Array] = modes.SymBolKind.Array;
+	_fromMapping[types.SymBolKind.OBject] = modes.SymBolKind.OBject;
+	_fromMapping[types.SymBolKind.Key] = modes.SymBolKind.Key;
+	_fromMapping[types.SymBolKind.Null] = modes.SymBolKind.Null;
+	_fromMapping[types.SymBolKind.EnumMemBer] = modes.SymBolKind.EnumMemBer;
+	_fromMapping[types.SymBolKind.Struct] = modes.SymBolKind.Struct;
+	_fromMapping[types.SymBolKind.Event] = modes.SymBolKind.Event;
+	_fromMapping[types.SymBolKind.Operator] = modes.SymBolKind.Operator;
+	_fromMapping[types.SymBolKind.TypeParameter] = modes.SymBolKind.TypeParameter;
 
-	export function from(kind: vscode.SymbolKind): modes.SymbolKind {
-		return typeof _fromMapping[kind] === 'number' ? _fromMapping[kind] : modes.SymbolKind.Property;
+	export function from(kind: vscode.SymBolKind): modes.SymBolKind {
+		return typeof _fromMapping[kind] === 'numBer' ? _fromMapping[kind] : modes.SymBolKind.Property;
 	}
 
-	export function to(kind: modes.SymbolKind): vscode.SymbolKind {
+	export function to(kind: modes.SymBolKind): vscode.SymBolKind {
 		for (const k in _fromMapping) {
 			if (_fromMapping[k] === kind) {
-				return Number(k);
+				return NumBer(k);
 			}
 		}
-		return types.SymbolKind.Property;
+		return types.SymBolKind.Property;
 	}
 }
 
-export namespace SymbolTag {
+export namespace SymBolTag {
 
-	export function from(kind: types.SymbolTag): modes.SymbolTag {
+	export function from(kind: types.SymBolTag): modes.SymBolTag {
 		switch (kind) {
-			case types.SymbolTag.Deprecated: return modes.SymbolTag.Deprecated;
+			case types.SymBolTag.Deprecated: return modes.SymBolTag.Deprecated;
 		}
 	}
 
-	export function to(kind: modes.SymbolTag): types.SymbolTag {
+	export function to(kind: modes.SymBolTag): types.SymBolTag {
 		switch (kind) {
-			case modes.SymbolTag.Deprecated: return types.SymbolTag.Deprecated;
+			case modes.SymBolTag.Deprecated: return types.SymBolTag.Deprecated;
 		}
 	}
 }
 
-export namespace WorkspaceSymbol {
-	export function from(info: vscode.SymbolInformation): search.IWorkspaceSymbol {
-		return <search.IWorkspaceSymbol>{
+export namespace WorkspaceSymBol {
+	export function from(info: vscode.SymBolInformation): search.IWorkspaceSymBol {
+		return <search.IWorkspaceSymBol>{
 			name: info.name,
-			kind: SymbolKind.from(info.kind),
-			tags: info.tags && info.tags.map(SymbolTag.from),
+			kind: SymBolKind.from(info.kind),
+			tags: info.tags && info.tags.map(SymBolTag.from),
 			containerName: info.containerName,
 			location: location.from(info.location)
 		};
 	}
-	export function to(info: search.IWorkspaceSymbol): types.SymbolInformation {
-		const result = new types.SymbolInformation(
+	export function to(info: search.IWorkspaceSymBol): types.SymBolInformation {
+		const result = new types.SymBolInformation(
 			info.name,
-			SymbolKind.to(info.kind),
+			SymBolKind.to(info.kind),
 			info.containerName,
 			location.to(info.location)
 		);
-		result.tags = info.tags && info.tags.map(SymbolTag.to);
+		result.tags = info.tags && info.tags.map(SymBolTag.to);
 		return result;
 	}
 }
 
-export namespace DocumentSymbol {
-	export function from(info: vscode.DocumentSymbol): modes.DocumentSymbol {
-		const result: modes.DocumentSymbol = {
+export namespace DocumentSymBol {
+	export function from(info: vscode.DocumentSymBol): modes.DocumentSymBol {
+		const result: modes.DocumentSymBol = {
 			name: info.name || '!!MISSING: name!!',
 			detail: info.detail,
 			range: Range.from(info.range),
 			selectionRange: Range.from(info.selectionRange),
-			kind: SymbolKind.from(info.kind),
-			tags: info.tags?.map(SymbolTag.from) ?? []
+			kind: SymBolKind.from(info.kind),
+			tags: info.tags?.map(SymBolTag.from) ?? []
 		};
 		if (info.children) {
 			result.children = info.children.map(from);
 		}
 		return result;
 	}
-	export function to(info: modes.DocumentSymbol): vscode.DocumentSymbol {
-		const result = new types.DocumentSymbol(
+	export function to(info: modes.DocumentSymBol): vscode.DocumentSymBol {
+		const result = new types.DocumentSymBol(
 			info.name,
 			info.detail,
-			SymbolKind.to(info.kind),
+			SymBolKind.to(info.kind),
 			Range.to(info.range),
 			Range.to(info.selectionRange),
 		);
 		if (isNonEmptyArray(info.tags)) {
-			result.tags = info.tags.map(SymbolTag.to);
+			result.tags = info.tags.map(SymBolTag.to);
 		}
 		if (info.children) {
 			result.children = info.children.map(to) as any;
@@ -692,7 +692,7 @@ export namespace CallHierarchyItem {
 
 	export function to(item: extHostProtocol.ICallHierarchyItemDto): types.CallHierarchyItem {
 		const result = new types.CallHierarchyItem(
-			SymbolKind.to(item.kind),
+			SymBolKind.to(item.kind),
 			item.name,
 			item.detail || '',
 			URI.revive(item.uri),
@@ -783,16 +783,16 @@ export namespace Hover {
 	}
 }
 
-export namespace EvaluatableExpression {
-	export function from(expression: vscode.EvaluatableExpression): modes.EvaluatableExpression {
-		return <modes.EvaluatableExpression>{
+export namespace EvaluataBleExpression {
+	export function from(expression: vscode.EvaluataBleExpression): modes.EvaluataBleExpression {
+		return <modes.EvaluataBleExpression>{
 			range: Range.from(expression.range),
 			expression: expression.expression
 		};
 	}
 
-	export function to(info: modes.EvaluatableExpression): types.EvaluatableExpression {
-		return new types.EvaluatableExpression(Range.to(info.range), info.expression);
+	export function to(info: modes.EvaluataBleExpression): types.EvaluataBleExpression {
+		return new types.EvaluataBleExpression(Range.to(info.range), info.expression);
 	}
 }
 
@@ -853,7 +853,7 @@ export namespace CompletionItemKind {
 		[types.CompletionItemKind.Function, modes.CompletionItemKind.Function],
 		[types.CompletionItemKind.Constructor, modes.CompletionItemKind.Constructor],
 		[types.CompletionItemKind.Field, modes.CompletionItemKind.Field],
-		[types.CompletionItemKind.Variable, modes.CompletionItemKind.Variable],
+		[types.CompletionItemKind.VariaBle, modes.CompletionItemKind.VariaBle],
 		[types.CompletionItemKind.Class, modes.CompletionItemKind.Class],
 		[types.CompletionItemKind.Interface, modes.CompletionItemKind.Interface],
 		[types.CompletionItemKind.Struct, modes.CompletionItemKind.Struct],
@@ -863,7 +863,7 @@ export namespace CompletionItemKind {
 		[types.CompletionItemKind.Value, modes.CompletionItemKind.Value],
 		[types.CompletionItemKind.Constant, modes.CompletionItemKind.Constant],
 		[types.CompletionItemKind.Enum, modes.CompletionItemKind.Enum],
-		[types.CompletionItemKind.EnumMember, modes.CompletionItemKind.EnumMember],
+		[types.CompletionItemKind.EnumMemBer, modes.CompletionItemKind.EnumMemBer],
 		[types.CompletionItemKind.Keyword, modes.CompletionItemKind.Keyword],
 		[types.CompletionItemKind.Snippet, modes.CompletionItemKind.Snippet],
 		[types.CompletionItemKind.Text, modes.CompletionItemKind.Text],
@@ -887,7 +887,7 @@ export namespace CompletionItemKind {
 		[modes.CompletionItemKind.Function, types.CompletionItemKind.Function],
 		[modes.CompletionItemKind.Constructor, types.CompletionItemKind.Constructor],
 		[modes.CompletionItemKind.Field, types.CompletionItemKind.Field],
-		[modes.CompletionItemKind.Variable, types.CompletionItemKind.Variable],
+		[modes.CompletionItemKind.VariaBle, types.CompletionItemKind.VariaBle],
 		[modes.CompletionItemKind.Class, types.CompletionItemKind.Class],
 		[modes.CompletionItemKind.Interface, types.CompletionItemKind.Interface],
 		[modes.CompletionItemKind.Struct, types.CompletionItemKind.Struct],
@@ -897,7 +897,7 @@ export namespace CompletionItemKind {
 		[modes.CompletionItemKind.Value, types.CompletionItemKind.Value],
 		[modes.CompletionItemKind.Constant, types.CompletionItemKind.Constant],
 		[modes.CompletionItemKind.Enum, types.CompletionItemKind.Enum],
-		[modes.CompletionItemKind.EnumMember, types.CompletionItemKind.EnumMember],
+		[modes.CompletionItemKind.EnumMemBer, types.CompletionItemKind.EnumMemBer],
 		[modes.CompletionItemKind.Keyword, types.CompletionItemKind.Keyword],
 		[modes.CompletionItemKind.Snippet, types.CompletionItemKind.Snippet],
 		[modes.CompletionItemKind.Text, types.CompletionItemKind.Text],
@@ -921,9 +921,9 @@ export namespace CompletionItem {
 
 	export function to(suggestion: modes.CompletionItem, converter?: CommandsConverter): types.CompletionItem {
 
-		const result = new types.CompletionItem(typeof suggestion.label === 'string' ? suggestion.label : suggestion.label.name);
-		if (typeof suggestion.label !== 'string') {
-			result.label2 = suggestion.label;
+		const result = new types.CompletionItem(typeof suggestion.laBel === 'string' ? suggestion.laBel : suggestion.laBel.name);
+		if (typeof suggestion.laBel !== 'string') {
+			result.laBel2 = suggestion.laBel;
 		}
 
 		result.insertText = suggestion.insertText;
@@ -939,7 +939,7 @@ export namespace CompletionItem {
 		// range
 		if (editorRange.Range.isIRange(suggestion.range)) {
 			result.range = Range.to(suggestion.range);
-		} else if (typeof suggestion.range === 'object') {
+		} else if (typeof suggestion.range === 'oBject') {
 			result.range = { inserting: Range.to(suggestion.range.insert), replacing: Range.to(suggestion.range.replace) };
 		}
 
@@ -963,13 +963,13 @@ export namespace CompletionItem {
 export namespace ParameterInformation {
 	export function from(info: types.ParameterInformation): modes.ParameterInformation {
 		return {
-			label: info.label,
+			laBel: info.laBel,
 			documentation: info.documentation ? MarkdownString.fromStrict(info.documentation) : undefined
 		};
 	}
 	export function to(info: modes.ParameterInformation): types.ParameterInformation {
 		return {
-			label: info.label,
+			laBel: info.laBel,
 			documentation: htmlContent.isMarkdownString(info.documentation) ? MarkdownString.to(info.documentation) : info.documentation
 		};
 	}
@@ -979,7 +979,7 @@ export namespace SignatureInformation {
 
 	export function from(info: types.SignatureInformation): modes.SignatureInformation {
 		return {
-			label: info.label,
+			laBel: info.laBel,
 			documentation: info.documentation ? MarkdownString.fromStrict(info.documentation) : undefined,
 			parameters: Array.isArray(info.parameters) ? info.parameters.map(ParameterInformation.from) : [],
 			activeParameter: info.activeParameter,
@@ -988,7 +988,7 @@ export namespace SignatureInformation {
 
 	export function to(info: modes.SignatureInformation): types.SignatureInformation {
 		return {
-			label: info.label,
+			laBel: info.laBel,
 			documentation: htmlContent.isMarkdownString(info.documentation) ? MarkdownString.to(info.documentation) : info.documentation,
 			parameters: Array.isArray(info.parameters) ? info.parameters.map(ParameterInformation.to) : [],
 			activeParameter: info.activeParameter,
@@ -1040,7 +1040,7 @@ export namespace DocumentLink {
 
 export namespace ColorPresentation {
 	export function to(colorPresentation: modes.IColorPresentation): types.ColorPresentation {
-		const cp = new types.ColorPresentation(colorPresentation.label);
+		const cp = new types.ColorPresentation(colorPresentation.laBel);
 		if (colorPresentation.textEdit) {
 			cp.textEdit = TextEdit.to(colorPresentation.textEdit);
 		}
@@ -1052,7 +1052,7 @@ export namespace ColorPresentation {
 
 	export function from(colorPresentation: vscode.ColorPresentation): modes.IColorPresentation {
 		return {
-			label: colorPresentation.label,
+			laBel: colorPresentation.laBel,
 			textEdit: colorPresentation.textEdit ? TextEdit.from(colorPresentation.textEdit) : undefined,
 			additionalTextEdits: colorPresentation.additionalTextEdits ? colorPresentation.additionalTextEdits.map(value => TextEdit.from(value)) : undefined
 		};
@@ -1060,22 +1060,22 @@ export namespace ColorPresentation {
 }
 
 export namespace Color {
-	export function to(c: [number, number, number, number]): types.Color {
+	export function to(c: [numBer, numBer, numBer, numBer]): types.Color {
 		return new types.Color(c[0], c[1], c[2], c[3]);
 	}
-	export function from(color: types.Color): [number, number, number, number] {
-		return [color.red, color.green, color.blue, color.alpha];
+	export function from(color: types.Color): [numBer, numBer, numBer, numBer] {
+		return [color.red, color.green, color.Blue, color.alpha];
 	}
 }
 
 
 export namespace SelectionRange {
-	export function from(obj: vscode.SelectionRange): modes.SelectionRange {
-		return { range: Range.from(obj.range) };
+	export function from(oBj: vscode.SelectionRange): modes.SelectionRange {
+		return { range: Range.from(oBj.range) };
 	}
 
-	export function to(obj: modes.SelectionRange): vscode.SelectionRange {
-		return new types.SelectionRange(Range.to(obj.range));
+	export function to(oBj: modes.SelectionRange): vscode.SelectionRange {
+		return new types.SelectionRange(Range.to(oBj.range));
 	}
 }
 
@@ -1094,27 +1094,27 @@ export namespace TextDocumentSaveReason {
 	}
 }
 
-export namespace TextEditorLineNumbersStyle {
-	export function from(style: vscode.TextEditorLineNumbersStyle): RenderLineNumbersType {
+export namespace TextEditorLineNumBersStyle {
+	export function from(style: vscode.TextEditorLineNumBersStyle): RenderLineNumBersType {
 		switch (style) {
-			case types.TextEditorLineNumbersStyle.Off:
-				return RenderLineNumbersType.Off;
-			case types.TextEditorLineNumbersStyle.Relative:
-				return RenderLineNumbersType.Relative;
-			case types.TextEditorLineNumbersStyle.On:
+			case types.TextEditorLineNumBersStyle.Off:
+				return RenderLineNumBersType.Off;
+			case types.TextEditorLineNumBersStyle.Relative:
+				return RenderLineNumBersType.Relative;
+			case types.TextEditorLineNumBersStyle.On:
 			default:
-				return RenderLineNumbersType.On;
+				return RenderLineNumBersType.On;
 		}
 	}
-	export function to(style: RenderLineNumbersType): vscode.TextEditorLineNumbersStyle {
+	export function to(style: RenderLineNumBersType): vscode.TextEditorLineNumBersStyle {
 		switch (style) {
-			case RenderLineNumbersType.Off:
-				return types.TextEditorLineNumbersStyle.Off;
-			case RenderLineNumbersType.Relative:
-				return types.TextEditorLineNumbersStyle.Relative;
-			case RenderLineNumbersType.On:
+			case RenderLineNumBersType.Off:
+				return types.TextEditorLineNumBersStyle.Off;
+			case RenderLineNumBersType.Relative:
+				return types.TextEditorLineNumBersStyle.Relative;
+			case RenderLineNumBersType.On:
 			default:
-				return types.TextEditorLineNumbersStyle.On;
+				return types.TextEditorLineNumBersStyle.On;
 		}
 	}
 }
@@ -1142,7 +1142,7 @@ export namespace EndOfLine {
 
 export namespace ProgressLocation {
 	export function from(loc: vscode.ProgressLocation | { viewId: string }): MainProgressLocation | string {
-		if (typeof loc === 'object') {
+		if (typeof loc === 'oBject') {
 			return loc.viewId;
 		}
 
@@ -1182,7 +1182,7 @@ export namespace FoldingRangeKind {
 }
 
 export interface TextEditorOpenOptions extends vscode.TextDocumentShowOptions {
-	background?: boolean;
+	Background?: Boolean;
 }
 
 export namespace TextEditorOpenOptions {
@@ -1190,10 +1190,10 @@ export namespace TextEditorOpenOptions {
 	export function from(options?: TextEditorOpenOptions): ITextEditorOptions | undefined {
 		if (options) {
 			return {
-				pinned: typeof options.preview === 'boolean' ? !options.preview : undefined,
-				inactive: options.background,
+				pinned: typeof options.preview === 'Boolean' ? !options.preview : undefined,
+				inactive: options.Background,
 				preserveFocus: options.preserveFocus,
-				selection: typeof options.selection === 'object' ? Range.from(options.selection) : undefined,
+				selection: typeof options.selection === 'oBject' ? Range.from(options.selection) : undefined,
 			};
 		}
 
@@ -1202,13 +1202,13 @@ export namespace TextEditorOpenOptions {
 
 }
 
-export namespace GlobPattern {
+export namespace GloBPattern {
 
-	export function from(pattern: vscode.GlobPattern): string | types.RelativePattern;
+	export function from(pattern: vscode.GloBPattern): string | types.RelativePattern;
 	export function from(pattern: undefined): undefined;
 	export function from(pattern: null): null;
-	export function from(pattern: vscode.GlobPattern | undefined | null): string | types.RelativePattern | undefined | null;
-	export function from(pattern: vscode.GlobPattern | undefined | null): string | types.RelativePattern | undefined | null {
+	export function from(pattern: vscode.GloBPattern | undefined | null): string | types.RelativePattern | undefined | null;
+	export function from(pattern: vscode.GloBPattern | undefined | null): string | types.RelativePattern | undefined | null {
 		if (pattern instanceof types.RelativePattern) {
 			return pattern;
 		}
@@ -1218,15 +1218,15 @@ export namespace GlobPattern {
 		}
 
 		if (isRelativePattern(pattern)) {
-			return new types.RelativePattern(pattern.base, pattern.pattern);
+			return new types.RelativePattern(pattern.Base, pattern.pattern);
 		}
 
 		return pattern; // preserve `undefined` and `null`
 	}
 
-	function isRelativePattern(obj: any): obj is vscode.RelativePattern {
-		const rp = obj as vscode.RelativePattern;
-		return rp && typeof rp.base === 'string' && typeof rp.pattern === 'string';
+	function isRelativePattern(oBj: any): oBj is vscode.RelativePattern {
+		const rp = oBj as vscode.RelativePattern;
+		return rp && typeof rp.Base === 'string' && typeof rp.pattern === 'string';
 	}
 }
 
@@ -1246,7 +1246,7 @@ export namespace LanguageSelector {
 			return <languageSelector.LanguageFilter>{
 				language: selector.language,
 				scheme: selector.scheme,
-				pattern: typeof selector.pattern === 'undefined' ? undefined : GlobPattern.from(selector.pattern),
+				pattern: typeof selector.pattern === 'undefined' ? undefined : GloBPattern.from(selector.pattern),
 				exclusive: selector.exclusive
 			};
 		}
@@ -1258,8 +1258,8 @@ export namespace LogLevel {
 		switch (extLevel) {
 			case types.LogLevel.Trace:
 				return _MainLogLevel.Trace;
-			case types.LogLevel.Debug:
-				return _MainLogLevel.Debug;
+			case types.LogLevel.DeBug:
+				return _MainLogLevel.DeBug;
 			case types.LogLevel.Info:
 				return _MainLogLevel.Info;
 			case types.LogLevel.Warning:
@@ -1279,8 +1279,8 @@ export namespace LogLevel {
 		switch (mainLevel) {
 			case _MainLogLevel.Trace:
 				return types.LogLevel.Trace;
-			case _MainLogLevel.Debug:
-				return types.LogLevel.Debug;
+			case _MainLogLevel.DeBug:
+				return types.LogLevel.DeBug;
 			case _MainLogLevel.Info:
 				return types.LogLevel.Info;
 			case _MainLogLevel.Warning:
@@ -1297,14 +1297,14 @@ export namespace LogLevel {
 	}
 }
 
-export namespace NotebookCellOutput {
-	export function from(output: types.NotebookCellOutput): IDisplayOutput {
+export namespace NoteBookCellOutput {
+	export function from(output: types.NoteBookCellOutput): IDisplayOutput {
 		return output.toJSON();
 	}
 }
 
-export namespace NotebookCellOutputItem {
-	export function from(output: types.NotebookCellOutputItem): IDisplayOutput {
+export namespace NoteBookCellOutputItem {
+	export function from(output: types.NoteBookCellOutputItem): IDisplayOutput {
 		return {
 			outputKind: CellOutputKind.Rich,
 			data: { [output.mime]: output.value },
@@ -1313,12 +1313,12 @@ export namespace NotebookCellOutputItem {
 	}
 }
 
-export namespace NotebookExclusiveDocumentPattern {
-	export function from(pattern: { include: vscode.GlobPattern | undefined, exclude: vscode.GlobPattern | undefined }): { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined };
-	export function from(pattern: vscode.GlobPattern): string | types.RelativePattern;
+export namespace NoteBookExclusiveDocumentPattern {
+	export function from(pattern: { include: vscode.GloBPattern | undefined, exclude: vscode.GloBPattern | undefined }): { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined };
+	export function from(pattern: vscode.GloBPattern): string | types.RelativePattern;
 	export function from(pattern: undefined): undefined;
-	export function from(pattern: { include: vscode.GlobPattern | undefined | null, exclude: vscode.GlobPattern | undefined } | vscode.GlobPattern | undefined): string | types.RelativePattern | { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined } | undefined;
-	export function from(pattern: { include: vscode.GlobPattern | undefined | null, exclude: vscode.GlobPattern | undefined } | vscode.GlobPattern | undefined): string | types.RelativePattern | { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined } | undefined {
+	export function from(pattern: { include: vscode.GloBPattern | undefined | null, exclude: vscode.GloBPattern | undefined } | vscode.GloBPattern | undefined): string | types.RelativePattern | { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined } | undefined;
+	export function from(pattern: { include: vscode.GloBPattern | undefined | null, exclude: vscode.GloBPattern | undefined } | vscode.GloBPattern | undefined): string | types.RelativePattern | { include: string | types.RelativePattern | undefined, exclude: string | types.RelativePattern | undefined } | undefined {
 		if (pattern === null || pattern === undefined) {
 			return undefined;
 		}
@@ -1333,13 +1333,13 @@ export namespace NotebookExclusiveDocumentPattern {
 
 
 		if (isRelativePattern(pattern)) {
-			return new types.RelativePattern(pattern.base, pattern.pattern);
+			return new types.RelativePattern(pattern.Base, pattern.pattern);
 		}
 
 		if (isExclusivePattern(pattern)) {
 			return {
-				include: GlobPattern.from(pattern.include) || undefined,
-				exclude: GlobPattern.from(pattern.exclude) || undefined
+				include: GloBPattern.from(pattern.include) || undefined,
+				exclude: GloBPattern.from(pattern.exclude) || undefined
 			};
 		}
 
@@ -1347,14 +1347,14 @@ export namespace NotebookExclusiveDocumentPattern {
 
 	}
 
-	export function to(pattern: string | types.RelativePattern | { include: string | types.RelativePattern, exclude: string | types.RelativePattern }): { include: vscode.GlobPattern, exclude: vscode.GlobPattern } | vscode.GlobPattern {
+	export function to(pattern: string | types.RelativePattern | { include: string | types.RelativePattern, exclude: string | types.RelativePattern }): { include: vscode.GloBPattern, exclude: vscode.GloBPattern } | vscode.GloBPattern {
 		if (typeof pattern === 'string') {
 			return pattern;
 		}
 
 		if (isRelativePattern(pattern)) {
 			return {
-				base: pattern.base,
+				Base: pattern.Base,
 				pattern: pattern.pattern
 			};
 		}
@@ -1365,14 +1365,14 @@ export namespace NotebookExclusiveDocumentPattern {
 		};
 	}
 
-	function isExclusivePattern(obj: any): obj is { include: types.RelativePattern | undefined | null, exclude: types.RelativePattern | undefined | null } {
-		const ep = obj as { include: vscode.GlobPattern, exclude: vscode.GlobPattern };
-		const include = GlobPattern.from(ep.include);
+	function isExclusivePattern(oBj: any): oBj is { include: types.RelativePattern | undefined | null, exclude: types.RelativePattern | undefined | null } {
+		const ep = oBj as { include: vscode.GloBPattern, exclude: vscode.GloBPattern };
+		const include = GloBPattern.from(ep.include);
 		if (!(include && include instanceof types.RelativePattern || typeof include === 'string')) {
 			return false;
 		}
 
-		const exclude = GlobPattern.from(ep.exclude);
+		const exclude = GloBPattern.from(ep.exclude);
 		if (!(exclude && exclude instanceof types.RelativePattern || typeof exclude === 'string')) {
 			return false;
 		}
@@ -1380,18 +1380,18 @@ export namespace NotebookExclusiveDocumentPattern {
 		return true;
 	}
 
-	function isRelativePattern(obj: any): obj is vscode.RelativePattern {
-		const rp = obj as vscode.RelativePattern;
-		return rp && typeof rp.base === 'string' && typeof rp.pattern === 'string';
+	function isRelativePattern(oBj: any): oBj is vscode.RelativePattern {
+		const rp = oBj as vscode.RelativePattern;
+		return rp && typeof rp.Base === 'string' && typeof rp.pattern === 'string';
 	}
 }
 
-export namespace NotebookDecorationRenderOptions {
-	export function from(options: vscode.NotebookDecorationRenderOptions): INotebookDecorationRenderOptions {
+export namespace NoteBookDecorationRenderOptions {
+	export function from(options: vscode.NoteBookDecorationRenderOptions): INoteBookDecorationRenderOptions {
 		return {
-			backgroundColor: <string | types.ThemeColor>options.backgroundColor,
-			borderColor: <string | types.ThemeColor>options.borderColor,
-			top: options.top ? ThemableDecorationAttachmentRenderOptions.from(options.top) : undefined
+			BackgroundColor: <string | types.ThemeColor>options.BackgroundColor,
+			BorderColor: <string | types.ThemeColor>options.BorderColor,
+			top: options.top ? ThemaBleDecorationAttachmentRenderOptions.from(options.top) : undefined
 		};
 	}
 }

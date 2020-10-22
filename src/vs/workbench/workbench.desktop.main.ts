@@ -7,25 +7,25 @@
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-//#region --- workbench common & sandbox
+//#region --- workBench common & sandBox
 
-import 'vs/workbench/workbench.sandbox.main';
+import 'vs/workBench/workBench.sandBox.main';
 
 //#endregion
 
 
-//#region --- workbench actions
+//#region --- workBench actions
 
-import 'vs/workbench/electron-browser/actions/developerActions';
+import 'vs/workBench/electron-Browser/actions/developerActions';
 
 //#endregion
 
@@ -33,65 +33,65 @@ import 'vs/workbench/electron-browser/actions/developerActions';
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-//#region --- workbench (desktop main)
+//#region --- workBench (desktop main)
 
-import 'vs/workbench/electron-browser/desktop.main';
+import 'vs/workBench/electron-Browser/desktop.main';
 
 //#endregion
 
 
-//#region --- workbench services
+//#region --- workBench services
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-import 'vs/workbench/services/integrity/node/integrityService';
-import 'vs/workbench/services/search/electron-browser/searchService';
-import 'vs/workbench/services/output/electron-browser/outputChannelModelService';
-import 'vs/workbench/services/textfile/electron-browser/nativeTextFileService';
-import 'vs/workbench/services/keybinding/electron-browser/nativeKeymapService';
-import 'vs/workbench/services/extensions/electron-browser/extensionService';
-import 'vs/workbench/services/extensionManagement/electron-browser/extensionManagementServerService';
-import 'vs/workbench/services/extensionManagement/electron-browser/extensionTipsService';
-import 'vs/workbench/services/remote/electron-browser/remoteAgentServiceImpl';
-import 'vs/workbench/services/telemetry/electron-browser/telemetryService';
-import 'vs/workbench/services/backup/node/backupFileService';
-import 'vs/workbench/services/userDataSync/electron-browser/userDataSyncMachinesService';
-import 'vs/workbench/services/userDataSync/electron-browser/userDataSyncService';
-import 'vs/workbench/services/userDataSync/electron-browser/userDataSyncAccountService';
-import 'vs/workbench/services/userDataSync/electron-browser/userDataSyncStoreManagementService';
-import 'vs/workbench/services/userDataSync/electron-browser/userDataAutoSyncService';
-import 'vs/workbench/services/sharedProcess/electron-browser/sharedProcessService';
-import 'vs/workbench/services/localizations/electron-browser/localizationsService';
-import 'vs/workbench/services/diagnostics/electron-browser/diagnosticsService';
+import 'vs/workBench/services/integrity/node/integrityService';
+import 'vs/workBench/services/search/electron-Browser/searchService';
+import 'vs/workBench/services/output/electron-Browser/outputChannelModelService';
+import 'vs/workBench/services/textfile/electron-Browser/nativeTextFileService';
+import 'vs/workBench/services/keyBinding/electron-Browser/nativeKeymapService';
+import 'vs/workBench/services/extensions/electron-Browser/extensionService';
+import 'vs/workBench/services/extensionManagement/electron-Browser/extensionManagementServerService';
+import 'vs/workBench/services/extensionManagement/electron-Browser/extensionTipsService';
+import 'vs/workBench/services/remote/electron-Browser/remoteAgentServiceImpl';
+import 'vs/workBench/services/telemetry/electron-Browser/telemetryService';
+import 'vs/workBench/services/Backup/node/BackupFileService';
+import 'vs/workBench/services/userDataSync/electron-Browser/userDataSyncMachinesService';
+import 'vs/workBench/services/userDataSync/electron-Browser/userDataSyncService';
+import 'vs/workBench/services/userDataSync/electron-Browser/userDataSyncAccountService';
+import 'vs/workBench/services/userDataSync/electron-Browser/userDataSyncStoreManagementService';
+import 'vs/workBench/services/userDataSync/electron-Browser/userDataAutoSyncService';
+import 'vs/workBench/services/sharedProcess/electron-Browser/sharedProcessService';
+import 'vs/workBench/services/localizations/electron-Browser/localizationsService';
+import 'vs/workBench/services/diagnostics/electron-Browser/diagnosticsService';
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -108,92 +108,92 @@ registerSingleton(ITunnelService, TunnelService);
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-//#region --- workbench contributions
+//#region --- workBench contriButions
 
 // Tags
-import 'vs/workbench/contrib/tags/electron-browser/workspaceTagsService';
-import 'vs/workbench/contrib/tags/electron-browser/tags.contribution';
+import 'vs/workBench/contriB/tags/electron-Browser/workspaceTagsService';
+import 'vs/workBench/contriB/tags/electron-Browser/tags.contriBution';
 
 // Rapid Render Splash
-import 'vs/workbench/contrib/splash/electron-browser/partsSplash.contribution';
+import 'vs/workBench/contriB/splash/electron-Browser/partsSplash.contriBution';
 
-// Debug
-import 'vs/workbench/contrib/debug/node/debugHelperService';
+// DeBug
+import 'vs/workBench/contriB/deBug/node/deBugHelperService';
 
-// Webview
-import 'vs/workbench/contrib/webview/electron-browser/webview.contribution';
+// WeBview
+import 'vs/workBench/contriB/weBview/electron-Browser/weBview.contriBution';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-// Notebook
-import 'vs/workbench/contrib/notebook/electron-browser/notebook.contribution';
+// NoteBook
+import 'vs/workBench/contriB/noteBook/electron-Browser/noteBook.contriBution';
 
 // Extensions Management
-import 'vs/workbench/contrib/extensions/electron-browser/extensions.contribution';
+import 'vs/workBench/contriB/extensions/electron-Browser/extensions.contriBution';
 
 // Terminal
-import 'vs/workbench/contrib/terminal/electron-browser/terminal.contribution';
+import 'vs/workBench/contriB/terminal/electron-Browser/terminal.contriBution';
 
-// CodeEditor Contributions
-import 'vs/workbench/contrib/codeEditor/electron-browser/codeEditor.contribution';
+// CodeEditor ContriButions
+import 'vs/workBench/contriB/codeEditor/electron-Browser/codeEditor.contriBution';
 
 // External Terminal
-import 'vs/workbench/contrib/externalTerminal/node/externalTerminal.contribution';
+import 'vs/workBench/contriB/externalTerminal/node/externalTerminal.contriBution';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 // Performance
-import 'vs/workbench/contrib/performance/electron-browser/performance.contribution';
+import 'vs/workBench/contriB/performance/electron-Browser/performance.contriBution';
 
 // CLI
-import 'vs/workbench/contrib/cli/node/cli.contribution';
+import 'vs/workBench/contriB/cli/node/cli.contriBution';
 
 // Tasks
-import 'vs/workbench/contrib/tasks/electron-browser/taskService';
+import 'vs/workBench/contriB/tasks/electron-Browser/taskService';
 
 // User Data Sync
-import 'vs/workbench/contrib/userDataSync/electron-browser/userDataSync.contribution';
+import 'vs/workBench/contriB/userDataSync/electron-Browser/userDataSync.contriBution';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // NOTE: Please do NOT register services here. Use `registerSingleton()`
-//       from `workbench.common.main.ts` if the service is shared between
-//       desktop and web or `workbench.sandbox.main.ts` if the service
+//       from `workBench.common.main.ts` if the service is shared Between
+//       desktop and weB or `workBench.sandBox.main.ts` if the service
 //       is desktop only.
 //
-//       The `node` & `electron-browser` layer is deprecated for workbench!
+//       The `node` & `electron-Browser` layer is deprecated for workBench!
 //
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

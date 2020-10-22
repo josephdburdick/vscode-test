@@ -8,26 +8,26 @@ import { IndentAction } from 'vs/editor/common/modes/languageConfiguration';
 export const javascriptOnEnterRules = [
 	{
 		// e.g. /** | */
-		beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+		BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 		afterText: /^\s*\*\/$/,
 		action: { indentAction: IndentAction.IndentOutdent, appendText: ' * ' }
 	}, {
 		// e.g. /** ...|
-		beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+		BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 		action: { indentAction: IndentAction.None, appendText: ' * ' }
 	}, {
 		// e.g.  * ...|
-		beforeText: /^(\t|[ ])*[ ]\*([ ]([^\*]|\*(?!\/))*)?$/,
-		oneLineAboveText: /(?=^(\s*(\/\*\*|\*)).*)(?=(?!(\s*\*\/)))/,
+		BeforeText: /^(\t|[ ])*[ ]\*([ ]([^\*]|\*(?!\/))*)?$/,
+		oneLineABoveText: /(?=^(\s*(\/\*\*|\*)).*)(?=(?!(\s*\*\/)))/,
 		action: { indentAction: IndentAction.None, appendText: '* ' }
 	}, {
 		// e.g.  */|
-		beforeText: /^(\t|[ ])*[ ]\*\/\s*$/,
+		BeforeText: /^(\t|[ ])*[ ]\*\/\s*$/,
 		action: { indentAction: IndentAction.None, removeText: 1 }
 	},
 	{
 		// e.g.  *-----*/|
-		beforeText: /^(\t|[ ])*[ ]\*[^/]*\*\/\s*$/,
+		BeforeText: /^(\t|[ ])*[ ]\*[^/]*\*\/\s*$/,
 		action: { indentAction: IndentAction.None, removeText: 1 }
 	}
 ];

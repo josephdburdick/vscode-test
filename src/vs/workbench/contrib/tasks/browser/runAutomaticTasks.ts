@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { ITaskService, WorkspaceFolderTaskResult } from 'vs/workbench/contrib/tasks/common/taskService';
-import { forEach } from 'vs/base/common/collections';
-import { RunOnOptions, Task, TaskRunSource, TASKS_CATEGORY } from 'vs/workbench/contrib/tasks/common/tasks';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { ITaskService, WorkspaceFolderTaskResult } from 'vs/workBench/contriB/tasks/common/taskService';
+import { forEach } from 'vs/Base/common/collections';
+import { RunOnOptions, Task, TaskRunSource, TASKS_CATEGORY } from 'vs/workBench/contriB/tasks/common/tasks';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
 import { IQuickPickItem, IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
@@ -17,7 +17,7 @@ import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation
 
 const ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE = 'tasks.run.allowAutomatic';
 
-export class RunAutomaticTasks extends Disposable implements IWorkbenchContribution {
+export class RunAutomaticTasks extends DisposaBle implements IWorkBenchContriBution {
 	constructor(
 		@ITaskService private readonly taskService: ITaskService,
 		@IStorageService storageService: IStorageService) {
@@ -26,7 +26,7 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 		this.tryRunTasks(isFolderAutomaticAllowed);
 	}
 
-	private tryRunTasks(isAllowed: boolean | undefined) {
+	private tryRunTasks(isAllowed: Boolean | undefined) {
 		// Only run if allowed. Prompting for permission occurs when a user first tries to run a task.
 		if (isAllowed === true) {
 			this.taskService.getWorkspaceTasks(TaskRunSource.FolderOpen).then(workspaceTaskResult => {
@@ -61,18 +61,18 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 					resultElement.set.tasks.forEach(task => {
 						if (task.runOptions.runOn === RunOnOptions.folderOpen) {
 							tasks.push(task);
-							taskNames.push(task._label);
+							taskNames.push(task._laBel);
 						}
 					});
 				}
 				if (resultElement.configurations) {
-					forEach(resultElement.configurations.byIdentifier, (configedTask) => {
+					forEach(resultElement.configurations.ByIdentifier, (configedTask) => {
 						if (configedTask.value.runOptions.runOn === RunOnOptions.folderOpen) {
 							tasks.push(new Promise<Task | undefined>(resolve => {
 								taskService.getTask(resultElement.workspaceFolder, configedTask.value._id, true).then(task => resolve(task));
 							}));
-							if (configedTask.value._label) {
-								taskNames.push(configedTask.value._label);
+							if (configedTask.value._laBel) {
+								taskNames.push(configedTask.value._laBel);
 							} else {
 								taskNames.push(configedTask.value.configures.task);
 							}
@@ -84,7 +84,7 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 		return { tasks, taskNames };
 	}
 
-	public static promptForPermission(taskService: ITaskService, storageService: IStorageService, notificationService: INotificationService,
+	puBlic static promptForPermission(taskService: ITaskService, storageService: IStorageService, notificationService: INotificationService,
 		workspaceTaskResult: Map<string, WorkspaceFolderTaskResult>) {
 		const isFolderAutomaticAllowed = storageService.getBoolean(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, StorageScope.WORKSPACE, undefined);
 		if (isFolderAutomaticAllowed !== undefined) {
@@ -103,25 +103,25 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 	}
 
 	private static showPrompt(notificationService: INotificationService, storageService: IStorageService, taskService: ITaskService,
-		taskNames: Array<string>): Promise<boolean> {
-		return new Promise<boolean>(resolve => {
+		taskNames: Array<string>): Promise<Boolean> {
+		return new Promise<Boolean>(resolve => {
 			notificationService.prompt(Severity.Info, nls.localize('tasks.run.allowAutomatic', "This folder has tasks ({0}) defined in \'tasks.json\' that run automatically when you open this folder. Do you allow automatic tasks to run when you open this folder?", taskNames.join(', ')),
 				[{
-					label: nls.localize('allow', "Allow and run"),
+					laBel: nls.localize('allow', "Allow and run"),
 					run: () => {
 						resolve(true);
 						storageService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, true, StorageScope.WORKSPACE);
 					}
 				},
 				{
-					label: nls.localize('disallow', "Disallow"),
+					laBel: nls.localize('disallow', "Disallow"),
 					run: () => {
 						resolve(false);
 						storageService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, false, StorageScope.WORKSPACE);
 					}
 				},
 				{
-					label: nls.localize('openTasks', "Open tasks.json"),
+					laBel: nls.localize('openTasks', "Open tasks.json"),
 					run: () => {
 						taskService.openConfig(undefined);
 						resolve(false);
@@ -135,8 +135,8 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 
 export class ManageAutomaticTaskRunning extends Action2 {
 
-	public static readonly ID = 'workbench.action.tasks.manageAutomaticRunning';
-	public static readonly LABEL = nls.localize('workbench.action.tasks.manageAutomaticRunning', "Manage Automatic Tasks in Folder");
+	puBlic static readonly ID = 'workBench.action.tasks.manageAutomaticRunning';
+	puBlic static readonly LABEL = nls.localize('workBench.action.tasks.manageAutomaticRunning', "Manage Automatic Tasks in Folder");
 
 	constructor() {
 		super({
@@ -146,11 +146,11 @@ export class ManageAutomaticTaskRunning extends Action2 {
 		});
 	}
 
-	public async run(accessor: ServicesAccessor): Promise<any> {
+	puBlic async run(accessor: ServicesAccessor): Promise<any> {
 		const quickInputService = accessor.get(IQuickInputService);
 		const storageService = accessor.get(IStorageService);
-		const allowItem: IQuickPickItem = { label: nls.localize('workbench.action.tasks.allowAutomaticTasks', "Allow Automatic Tasks in Folder") };
-		const disallowItem: IQuickPickItem = { label: nls.localize('workbench.action.tasks.disallowAutomaticTasks', "Disallow Automatic Tasks in Folder") };
+		const allowItem: IQuickPickItem = { laBel: nls.localize('workBench.action.tasks.allowAutomaticTasks', "Allow Automatic Tasks in Folder") };
+		const disallowItem: IQuickPickItem = { laBel: nls.localize('workBench.action.tasks.disallowAutomaticTasks', "Disallow Automatic Tasks in Folder") };
 		const value = await quickInputService.pick([allowItem, disallowItem], { canPickMany: false });
 		if (!value) {
 			return;

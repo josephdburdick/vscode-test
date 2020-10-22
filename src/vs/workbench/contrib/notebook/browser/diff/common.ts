@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { NotebookLayoutInfo } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { CellDiffViewModel } from 'vs/workbench/contrib/notebook/browser/diff/celllDiffViewModel';
-import { Event } from 'vs/base/common/event';
+import { NoteBookLayoutInfo } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { CellDiffViewModel } from 'vs/workBench/contriB/noteBook/Browser/diff/celllDiffViewModel';
+import { Event } from 'vs/Base/common/event';
 import { BareFontInfo } from 'vs/editor/common/config/fontInfo';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { NoteBookTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookTextModel';
 
-export interface INotebookTextDiffEditor {
-	readonly textModel?: NotebookTextModel;
+export interface INoteBookTextDiffEditor {
+	readonly textModel?: NoteBookTextModel;
 	onMouseUp: Event<{ readonly event: MouseEvent; readonly target: CellDiffViewModel; }>;
 	getOverflowContainerDomNode(): HTMLElement;
-	getLayoutInfo(): NotebookLayoutInfo;
-	layoutNotebookCell(cell: CellDiffViewModel, height: number): void;
+	getLayoutInfo(): NoteBookLayoutInfo;
+	layoutNoteBookCell(cell: CellDiffViewModel, height: numBer): void;
 }
 
 export interface CellDiffRenderTemplate {
 	readonly container: HTMLElement;
-	readonly elementDisposables: DisposableStore;
+	readonly elementDisposaBles: DisposaBleStore;
 }
 
 export interface CellDiffViewModelLayoutChangeEvent {
 	font?: BareFontInfo;
-	outerWidth?: number;
+	outerWidth?: numBer;
 }
 
 export const DIFF_CELL_MARGIN = 16;

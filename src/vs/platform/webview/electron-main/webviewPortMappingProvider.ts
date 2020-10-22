@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { OnBeforeRequestListenerDetails, session } from 'electron';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IAddress } from 'vs/platform/remote/common/remoteAgentConnection';
 import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { webviewPartitionId } from 'vs/platform/webview/common/resourceLoader';
-import { IWebviewPortMapping, WebviewPortMappingManager } from 'vs/platform/webview/common/webviewPortMapping';
+import { weBviewPartitionId } from 'vs/platform/weBview/common/resourceLoader';
+import { IWeBviewPortMapping, WeBviewPortMappingManager } from 'vs/platform/weBview/common/weBviewPortMapping';
 
 interface OnBeforeRequestListenerDetails_Extended extends OnBeforeRequestListenerDetails {
 	readonly lastCommittedOrigin?: string;
@@ -17,14 +17,14 @@ interface OnBeforeRequestListenerDetails_Extended extends OnBeforeRequestListene
 
 interface PortMappingData {
 	readonly extensionLocation: URI | undefined;
-	readonly mappings: readonly IWebviewPortMapping[];
+	readonly mappings: readonly IWeBviewPortMapping[];
 	readonly resolvedAuthority: IAddress | null | undefined;
 }
 
-export class WebviewPortMappingProvider extends Disposable {
+export class WeBviewPortMappingProvider extends DisposaBle {
 
-	private readonly _webviewData = new Map<string, {
-		readonly manager: WebviewPortMappingManager;
+	private readonly _weBviewData = new Map<string, {
+		readonly manager: WeBviewPortMappingManager;
 		metadata: PortMappingData;
 	}>();
 
@@ -33,54 +33,54 @@ export class WebviewPortMappingProvider extends Disposable {
 	) {
 		super();
 
-		const sess = session.fromPartition(webviewPartitionId);
+		const sess = session.fromPartition(weBviewPartitionId);
 
-		sess.webRequest.onBeforeRequest({
+		sess.weBRequest.onBeforeRequest({
 			urls: [
 				'*://localhost:*/*',
 				'*://127.0.0.1:*/*',
 				'*://0.0.0.0:*/*',
 			]
-		}, async (details: OnBeforeRequestListenerDetails_Extended, callback) => {
+		}, async (details: OnBeforeRequestListenerDetails_Extended, callBack) => {
 			let origin: URI;
 			try {
 				origin = URI.parse(details.lastCommittedOrigin!);
 			} catch {
-				return callback({});
+				return callBack({});
 			}
 
-			const webviewId = origin.authority;
-			const entry = this._webviewData.get(webviewId);
+			const weBviewId = origin.authority;
+			const entry = this._weBviewData.get(weBviewId);
 			if (!entry) {
-				return callback({});
+				return callBack({});
 			}
 
 			const redirect = await entry.manager.getRedirect(entry.metadata.resolvedAuthority, details.url);
-			return callback(redirect ? { redirectURL: redirect } : {});
+			return callBack(redirect ? { redirectURL: redirect } : {});
 		});
 	}
 
-	public async registerWebview(id: string, metadata: PortMappingData): Promise<void> {
-		const manager = new WebviewPortMappingManager(
-			() => this._webviewData.get(id)?.metadata.extensionLocation,
-			() => this._webviewData.get(id)?.metadata.mappings || [],
+	puBlic async registerWeBview(id: string, metadata: PortMappingData): Promise<void> {
+		const manager = new WeBviewPortMappingManager(
+			() => this._weBviewData.get(id)?.metadata.extensionLocation,
+			() => this._weBviewData.get(id)?.metadata.mappings || [],
 			this._tunnelService);
 
-		this._webviewData.set(id, { metadata, manager });
+		this._weBviewData.set(id, { metadata, manager });
 	}
 
-	public unregisterWebview(id: string): void {
-		const existing = this._webviewData.get(id);
+	puBlic unregisterWeBview(id: string): void {
+		const existing = this._weBviewData.get(id);
 		if (existing) {
 			existing.manager.dispose();
-			this._webviewData.delete(id);
+			this._weBviewData.delete(id);
 		}
 	}
 
-	public async updateWebviewMetadata(id: string, metadataDelta: Partial<PortMappingData>): Promise<void> {
-		const entry = this._webviewData.get(id);
+	puBlic async updateWeBviewMetadata(id: string, metadataDelta: Partial<PortMappingData>): Promise<void> {
+		const entry = this._weBviewData.get(id);
 		if (entry) {
-			this._webviewData.set(id, {
+			this._weBviewData.set(id, {
 				...entry,
 				...metadataDelta,
 			});

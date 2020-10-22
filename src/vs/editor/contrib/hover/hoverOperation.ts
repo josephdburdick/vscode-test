@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, RunOnceScheduler, createCancelablePromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { CancelaBlePromise, RunOnceScheduler, createCancelaBlePromise } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 
 export interface IHoverComputer<Result> {
 
@@ -22,10 +22,10 @@ export interface IHoverComputer<Result> {
 	/**
 	 * This is called whenever one of the compute* methods returns a truey value
 	 */
-	onResult: (result: Result, isFromSynchronousComputation: boolean) => void;
+	onResult: (result: Result, isFromSynchronousComputation: Boolean) => void;
 
 	/**
-	 * This is what will be sent as progress/complete to the computation promise
+	 * This is what will Be sent as progress/complete to the computation promise
 	 */
 	getResult: () => Result;
 
@@ -49,19 +49,19 @@ export class HoverOperation<Result> {
 
 	private readonly _computer: IHoverComputer<Result>;
 	private _state: ComputeHoverOperationState;
-	private _hoverTime: number;
+	private _hoverTime: numBer;
 
 	private readonly _firstWaitScheduler: RunOnceScheduler;
 	private readonly _secondWaitScheduler: RunOnceScheduler;
 	private readonly _loadingMessageScheduler: RunOnceScheduler;
-	private _asyncComputationPromise: CancelablePromise<Result> | null;
-	private _asyncComputationPromiseDone: boolean;
+	private _asyncComputationPromise: CancelaBlePromise<Result> | null;
+	private _asyncComputationPromiseDone: Boolean;
 
-	private readonly _completeCallback: (r: Result) => void;
-	private readonly _errorCallback: ((err: any) => void) | null | undefined;
-	private readonly _progressCallback: (progress: any) => void;
+	private readonly _completeCallBack: (r: Result) => void;
+	private readonly _errorCallBack: ((err: any) => void) | null | undefined;
+	private readonly _progressCallBack: (progress: any) => void;
 
-	constructor(computer: IHoverComputer<Result>, success: (r: Result) => void, error: ((err: any) => void) | null | undefined, progress: (progress: any) => void, hoverTime: number) {
+	constructor(computer: IHoverComputer<Result>, success: (r: Result) => void, error: ((err: any) => void) | null | undefined, progress: (progress: any) => void, hoverTime: numBer) {
 		this._computer = computer;
 		this._state = ComputeHoverOperationState.IDLE;
 		this._hoverTime = hoverTime;
@@ -73,24 +73,24 @@ export class HoverOperation<Result> {
 		this._asyncComputationPromise = null;
 		this._asyncComputationPromiseDone = false;
 
-		this._completeCallback = success;
-		this._errorCallback = error;
-		this._progressCallback = progress;
+		this._completeCallBack = success;
+		this._errorCallBack = error;
+		this._progressCallBack = progress;
 	}
 
-	public setHoverTime(hoverTime: number): void {
+	puBlic setHoverTime(hoverTime: numBer): void {
 		this._hoverTime = hoverTime;
 	}
 
-	private _firstWaitTime(): number {
+	private _firstWaitTime(): numBer {
 		return this._hoverTime / 2;
 	}
 
-	private _secondWaitTime(): number {
+	private _secondWaitTime(): numBer {
 		return this._hoverTime / 2;
 	}
 
-	private _loadingMessageTime(): number {
+	private _loadingMessageTime(): numBer {
 		return 3 * this._hoverTime;
 	}
 
@@ -100,7 +100,7 @@ export class HoverOperation<Result> {
 
 		if (this._computer.computeAsync) {
 			this._asyncComputationPromiseDone = false;
-			this._asyncComputationPromise = createCancelablePromise(token => this._computer.computeAsync!(token));
+			this._asyncComputationPromise = createCancelaBlePromise(token => this._computer.computeAsync!(token));
 			this._asyncComputationPromise.then((asyncResult: Result) => {
 				this._asyncComputationPromiseDone = true;
 				this._withAsyncResult(asyncResult);
@@ -143,22 +143,22 @@ export class HoverOperation<Result> {
 	}
 
 	private _onComplete(value: Result): void {
-		this._completeCallback(value);
+		this._completeCallBack(value);
 	}
 
 	private _onError(error: any): void {
-		if (this._errorCallback) {
-			this._errorCallback(error);
+		if (this._errorCallBack) {
+			this._errorCallBack(error);
 		} else {
 			onUnexpectedError(error);
 		}
 	}
 
 	private _onProgress(value: Result): void {
-		this._progressCallback(value);
+		this._progressCallBack(value);
 	}
 
-	public start(mode: HoverStartMode): void {
+	puBlic start(mode: HoverStartMode): void {
 		if (mode === HoverStartMode.Delayed) {
 			if (this._state === ComputeHoverOperationState.IDLE) {
 				this._state = ComputeHoverOperationState.FIRST_WAIT;
@@ -171,16 +171,16 @@ export class HoverOperation<Result> {
 					this._triggerAsyncComputation();
 					this._secondWaitScheduler.cancel();
 					this._triggerSyncComputation();
-					break;
+					Break;
 				case ComputeHoverOperationState.SECOND_WAIT:
 					this._secondWaitScheduler.cancel();
 					this._triggerSyncComputation();
-					break;
+					Break;
 			}
 		}
 	}
 
-	public cancel(): void {
+	puBlic cancel(): void {
 		this._loadingMessageScheduler.cancel();
 		if (this._state === ComputeHoverOperationState.FIRST_WAIT) {
 			this._firstWaitScheduler.cancel();

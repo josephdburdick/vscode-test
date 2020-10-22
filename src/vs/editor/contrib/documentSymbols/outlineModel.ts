@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { binarySearch, coalesceInPlace, equals } from 'vs/base/common/arrays';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { LRUCache } from 'vs/base/common/map';
-import { commonPrefixLength } from 'vs/base/common/strings';
+import { BinarySearch, coalesceInPlace, equals } from 'vs/Base/common/arrays';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { LRUCache } from 'vs/Base/common/map';
+import { commonPrefixLength } from 'vs/Base/common/strings';
 import { IPosition } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
-import { DocumentSymbol, DocumentSymbolProvider, DocumentSymbolProviderRegistry } from 'vs/editor/common/modes';
+import { DocumentSymBol, DocumentSymBolProvider, DocumentSymBolProviderRegistry } from 'vs/editor/common/modes';
 import { MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { Iterable } from 'vs/base/common/iterator';
-import { URI } from 'vs/base/common/uri';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { URI } from 'vs/Base/common/uri';
 import { LanguageFeatureRequestDelays } from 'vs/editor/common/modes/languageFeatureRegistry';
 
-export abstract class TreeElement {
+export aBstract class TreeElement {
 
-	abstract id: string;
-	abstract children: Map<string, TreeElement>;
-	abstract parent: TreeElement | undefined;
+	aBstract id: string;
+	aBstract children: Map<string, TreeElement>;
+	aBstract parent: TreeElement | undefined;
 
-	abstract adopt(newParent: TreeElement): TreeElement;
+	aBstract adopt(newParent: TreeElement): TreeElement;
 
 	remove(): void {
 		if (this.parent) {
@@ -31,7 +31,7 @@ export abstract class TreeElement {
 		}
 	}
 
-	static findId(candidate: DocumentSymbol | string, container: TreeElement): string {
+	static findId(candidate: DocumentSymBol | string, container: TreeElement): string {
 		// complex id-computation which contains the origin/extension,
 		// the parent path, and some dedupe logic when names collide
 		let candidateId: string;
@@ -40,7 +40,7 @@ export abstract class TreeElement {
 		} else {
 			candidateId = `${container.id}/${candidate.name}`;
 			if (container.children.get(candidateId) !== undefined) {
-				candidateId = `${container.id}/${candidate.name}_${candidate.range.startLineNumber}_${candidate.range.startColumn}`;
+				candidateId = `${container.id}/${candidate.name}_${candidate.range.startLineNumBer}_${candidate.range.startColumn}`;
 			}
 		}
 
@@ -72,7 +72,7 @@ export abstract class TreeElement {
 		return undefined;
 	}
 
-	static size(element: TreeElement): number {
+	static size(element: TreeElement): numBer {
 		let res = 1;
 		for (const [, child] of element.children) {
 			res += TreeElement.size(child);
@@ -80,34 +80,34 @@ export abstract class TreeElement {
 		return res;
 	}
 
-	static empty(element: TreeElement): boolean {
+	static empty(element: TreeElement): Boolean {
 		return element.children.size === 0;
 	}
 }
 
 export interface IOutlineMarker {
-	startLineNumber: number;
-	startColumn: number;
-	endLineNumber: number;
-	endColumn: number;
+	startLineNumBer: numBer;
+	startColumn: numBer;
+	endLineNumBer: numBer;
+	endColumn: numBer;
 	severity: MarkerSeverity;
 }
 
 export class OutlineElement extends TreeElement {
 
 	children = new Map<string, OutlineElement>();
-	marker: { count: number, topSev: MarkerSeverity } | undefined;
+	marker: { count: numBer, topSev: MarkerSeverity } | undefined;
 
 	constructor(
 		readonly id: string,
-		public parent: TreeElement | undefined,
-		readonly symbol: DocumentSymbol
+		puBlic parent: TreeElement | undefined,
+		readonly symBol: DocumentSymBol
 	) {
 		super();
 	}
 
 	adopt(parent: TreeElement): OutlineElement {
-		let res = new OutlineElement(this.id, parent, this.symbol);
+		let res = new OutlineElement(this.id, parent, this.symBol);
 		for (const [key, value] of this.children) {
 			res.children.set(key, value.adopt(res));
 		}
@@ -121,15 +121,15 @@ export class OutlineGroup extends TreeElement {
 
 	constructor(
 		readonly id: string,
-		public parent: TreeElement | undefined,
-		readonly label: string,
-		readonly order: number,
+		puBlic parent: TreeElement | undefined,
+		readonly laBel: string,
+		readonly order: numBer,
 	) {
 		super();
 	}
 
 	adopt(parent: TreeElement): OutlineGroup {
-		let res = new OutlineGroup(this.id, parent, this.label, this.order);
+		let res = new OutlineGroup(this.id, parent, this.laBel, this.order);
 		for (const [key, value] of this.children) {
 			res.children.set(key, value.adopt(res));
 		}
@@ -142,7 +142,7 @@ export class OutlineGroup extends TreeElement {
 
 	private _getItemEnclosingPosition(position: IPosition, children: Map<string, OutlineElement>): OutlineElement | undefined {
 		for (const [, item] of children) {
-			if (!item.symbol.range || !Range.containsPosition(item.symbol.range, position)) {
+			if (!item.symBol.range || !Range.containsPosition(item.symBol.range, position)) {
 				continue;
 			}
 			return this._getItemEnclosingPosition(position, item.children) || item;
@@ -160,11 +160,11 @@ export class OutlineGroup extends TreeElement {
 		item.marker = undefined;
 
 		// find the proper start index to check for item/marker overlap.
-		let idx = binarySearch<IRange>(markers, item.symbol.range, Range.compareRangesUsingStarts);
-		let start: number;
+		let idx = BinarySearch<IRange>(markers, item.symBol.range, Range.compareRangesUsingStarts);
+		let start: numBer;
 		if (idx < 0) {
 			start = ~idx;
-			if (start > 0 && Range.areIntersecting(markers[start - 1], item.symbol.range)) {
+			if (start > 0 && Range.areIntersecting(markers[start - 1], item.symBol.range)) {
 				start -= 1;
 			}
 		} else {
@@ -174,7 +174,7 @@ export class OutlineGroup extends TreeElement {
 		let myMarkers: IOutlineMarker[] = [];
 		let myTopSev: MarkerSeverity | undefined;
 
-		for (; start < markers.length && Range.areIntersecting(item.symbol.range, markers[start]); start++) {
+		for (; start < markers.length && Range.areIntersecting(item.symBol.range, markers[start]); start++) {
 			// remove markers intersecting with this outline element
 			// and store them in a 'private' array.
 			let marker = markers[start];
@@ -187,7 +187,7 @@ export class OutlineGroup extends TreeElement {
 
 		// Recurse into children and let them match markers that have matched
 		// this outline element. This might remove markers from this element and
-		// therefore we remember that we have had markers. That allows us to render
+		// therefore we rememBer that we have had markers. That allows us to render
 		// the dot, saying 'this element has children with markers'
 		for (const [, child] of item.children) {
 			this._updateMarker(myMarkers, child);
@@ -208,18 +208,18 @@ export class OutlineGroup extends TreeElement {
 
 export class OutlineModel extends TreeElement {
 
-	private static readonly _requestDurations = new LanguageFeatureRequestDelays(DocumentSymbolProviderRegistry, 350);
-	private static readonly _requests = new LRUCache<string, { promiseCnt: number, source: CancellationTokenSource, promise: Promise<any>, model: OutlineModel | undefined }>(9, 0.75);
+	private static readonly _requestDurations = new LanguageFeatureRequestDelays(DocumentSymBolProviderRegistry, 350);
+	private static readonly _requests = new LRUCache<string, { promiseCnt: numBer, source: CancellationTokenSource, promise: Promise<any>, model: OutlineModel | undefined }>(9, 0.75);
 	private static readonly _keys = new class {
 
 		private _counter = 1;
-		private _data = new WeakMap<DocumentSymbolProvider, number>();
+		private _data = new WeakMap<DocumentSymBolProvider, numBer>();
 
-		for(textModel: ITextModel, version: boolean): string {
-			return `${textModel.id}/${version ? textModel.getVersionId() : ''}/${this._hash(DocumentSymbolProviderRegistry.all(textModel))}`;
+		for(textModel: ITextModel, version: Boolean): string {
+			return `${textModel.id}/${version ? textModel.getVersionId() : ''}/${this._hash(DocumentSymBolProviderRegistry.all(textModel))}`;
 		}
 
-		private _hash(providers: DocumentSymbolProvider[]): string {
+		private _hash(providers: DocumentSymBolProvider[]): string {
 			let result = '';
 			for (const provider of providers) {
 				let n = this._data.get(provider);
@@ -283,7 +283,7 @@ export class OutlineModel extends TreeElement {
 		});
 	}
 
-	static getRequestDelay(textModel: ITextModel | null): number {
+	static getRequestDelay(textModel: ITextModel | null): numBer {
 		return textModel ? this._requestDurations.get(textModel) : this._requestDurations.min;
 	}
 
@@ -291,13 +291,13 @@ export class OutlineModel extends TreeElement {
 
 		const cts = new CancellationTokenSource(token);
 		const result = new OutlineModel(textModel.uri);
-		const provider = DocumentSymbolProviderRegistry.ordered(textModel);
+		const provider = DocumentSymBolProviderRegistry.ordered(textModel);
 		const promises = provider.map((provider, index) => {
 
 			let id = TreeElement.findId(`provider_${index}`, result);
 			let group = new OutlineGroup(id, result, provider.displayName ?? 'Unknown Outline Provider', index);
 
-			return Promise.resolve(provider.provideDocumentSymbols(textModel, cts.token)).then(result => {
+			return Promise.resolve(provider.provideDocumentSymBols(textModel, cts.token)).then(result => {
 				for (const info of result || []) {
 					OutlineModel._makeOutlineElement(info, group);
 				}
@@ -314,8 +314,8 @@ export class OutlineModel extends TreeElement {
 			});
 		});
 
-		const listener = DocumentSymbolProviderRegistry.onDidChange(() => {
-			const newProvider = DocumentSymbolProviderRegistry.ordered(textModel);
+		const listener = DocumentSymBolProviderRegistry.onDidChange(() => {
+			const newProvider = DocumentSymBolProviderRegistry.ordered(textModel);
 			if (!equals(newProvider, provider)) {
 				cts.cancel();
 			}
@@ -332,7 +332,7 @@ export class OutlineModel extends TreeElement {
 		});
 	}
 
-	private static _makeOutlineElement(info: DocumentSymbol, container: OutlineGroup | OutlineElement): void {
+	private static _makeOutlineElement(info: DocumentSymBol, container: OutlineGroup | OutlineElement): void {
 		let id = TreeElement.findId(info, container);
 		let res = new OutlineElement(id, container, info);
 		if (info.children) {
@@ -388,7 +388,7 @@ export class OutlineModel extends TreeElement {
 			this.children = this._groups;
 		} else {
 			// adopt all elements of the first group
-			let group = Iterable.first(this._groups.values())!;
+			let group = IteraBle.first(this._groups.values())!;
 			for (let [, child] of group.children) {
 				child.parent = this;
 				this.children.set(child.id, child);
@@ -397,7 +397,7 @@ export class OutlineModel extends TreeElement {
 		return this;
 	}
 
-	merge(other: OutlineModel): boolean {
+	merge(other: OutlineModel): Boolean {
 		if (this.uri.toString() !== other.uri.toString()) {
 			return false;
 		}
@@ -426,7 +426,7 @@ export class OutlineModel extends TreeElement {
 		for (const [, group] of this._groups) {
 			result = group.getItemEnclosingPosition(position);
 			if (result && (!preferredGroup || preferredGroup === group)) {
-				break;
+				Break;
 			}
 		}
 		return result;
@@ -437,7 +437,7 @@ export class OutlineModel extends TreeElement {
 	}
 
 	updateMarker(marker: IOutlineMarker[]): void {
-		// sort markers by start range so that we can use
+		// sort markers By start range so that we can use
 		// outline element starts for quicker look up
 		marker.sort(Range.compareRangesUsingStarts);
 

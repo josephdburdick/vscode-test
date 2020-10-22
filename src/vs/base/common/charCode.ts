@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// Names from https://blog.codinghorror.com/ascii-pronunciation-rules-for-programmers/
+// Names from https://Blog.codinghorror.com/ascii-pronunciation-rules-for-programmers/
 
 /**
- * An inlined enum containing useful character codes (to be used with String.charCodeAt).
+ * An inlined enum containing useful character codes (to Be used with String.charCodeAt).
  * Please leave the const keyword such that it gets inlined when compiled to JavaScript!
  */
 export const enum CharCode {
 	Null = 0,
 	/**
-	 * The `\b` character.
+	 * The `\B` character.
 	 */
 	Backspace = 8,
 	/**
 	 * The `\t` character.
 	 */
-	Tab = 9,
+	TaB = 9,
 	/**
 	 * The `\n` character.
 	 */
@@ -35,7 +35,7 @@ export const enum CharCode {
 	/**
 	 * The `"` character.
 	 */
-	DoubleQuote = 34,
+	DouBleQuote = 34,
 	/**
 	 * The `#` character.
 	 */
@@ -182,7 +182,7 @@ export const enum CharCode {
 	BackTick = 96,
 
 	a = 97,
-	b = 98,
+	B = 98,
 	c = 99,
 	d = 100,
 	e = 101,
@@ -225,118 +225,118 @@ export const enum CharCode {
 	 */
 	Tilde = 126,
 
-	U_Combining_Grave_Accent = 0x0300,								//	U+0300	Combining Grave Accent
-	U_Combining_Acute_Accent = 0x0301,								//	U+0301	Combining Acute Accent
-	U_Combining_Circumflex_Accent = 0x0302,							//	U+0302	Combining Circumflex Accent
-	U_Combining_Tilde = 0x0303,										//	U+0303	Combining Tilde
-	U_Combining_Macron = 0x0304,									//	U+0304	Combining Macron
-	U_Combining_Overline = 0x0305,									//	U+0305	Combining Overline
-	U_Combining_Breve = 0x0306,										//	U+0306	Combining Breve
-	U_Combining_Dot_Above = 0x0307,									//	U+0307	Combining Dot Above
-	U_Combining_Diaeresis = 0x0308,									//	U+0308	Combining Diaeresis
-	U_Combining_Hook_Above = 0x0309,								//	U+0309	Combining Hook Above
-	U_Combining_Ring_Above = 0x030A,								//	U+030A	Combining Ring Above
-	U_Combining_Double_Acute_Accent = 0x030B,						//	U+030B	Combining Double Acute Accent
-	U_Combining_Caron = 0x030C,										//	U+030C	Combining Caron
-	U_Combining_Vertical_Line_Above = 0x030D,						//	U+030D	Combining Vertical Line Above
-	U_Combining_Double_Vertical_Line_Above = 0x030E,				//	U+030E	Combining Double Vertical Line Above
-	U_Combining_Double_Grave_Accent = 0x030F,						//	U+030F	Combining Double Grave Accent
-	U_Combining_Candrabindu = 0x0310,								//	U+0310	Combining Candrabindu
-	U_Combining_Inverted_Breve = 0x0311,							//	U+0311	Combining Inverted Breve
-	U_Combining_Turned_Comma_Above = 0x0312,						//	U+0312	Combining Turned Comma Above
-	U_Combining_Comma_Above = 0x0313,								//	U+0313	Combining Comma Above
-	U_Combining_Reversed_Comma_Above = 0x0314,						//	U+0314	Combining Reversed Comma Above
-	U_Combining_Comma_Above_Right = 0x0315,							//	U+0315	Combining Comma Above Right
-	U_Combining_Grave_Accent_Below = 0x0316,						//	U+0316	Combining Grave Accent Below
-	U_Combining_Acute_Accent_Below = 0x0317,						//	U+0317	Combining Acute Accent Below
-	U_Combining_Left_Tack_Below = 0x0318,							//	U+0318	Combining Left Tack Below
-	U_Combining_Right_Tack_Below = 0x0319,							//	U+0319	Combining Right Tack Below
-	U_Combining_Left_Angle_Above = 0x031A,							//	U+031A	Combining Left Angle Above
-	U_Combining_Horn = 0x031B,										//	U+031B	Combining Horn
-	U_Combining_Left_Half_Ring_Below = 0x031C,						//	U+031C	Combining Left Half Ring Below
-	U_Combining_Up_Tack_Below = 0x031D,								//	U+031D	Combining Up Tack Below
-	U_Combining_Down_Tack_Below = 0x031E,							//	U+031E	Combining Down Tack Below
-	U_Combining_Plus_Sign_Below = 0x031F,							//	U+031F	Combining Plus Sign Below
-	U_Combining_Minus_Sign_Below = 0x0320,							//	U+0320	Combining Minus Sign Below
-	U_Combining_Palatalized_Hook_Below = 0x0321,					//	U+0321	Combining Palatalized Hook Below
-	U_Combining_Retroflex_Hook_Below = 0x0322,						//	U+0322	Combining Retroflex Hook Below
-	U_Combining_Dot_Below = 0x0323,									//	U+0323	Combining Dot Below
-	U_Combining_Diaeresis_Below = 0x0324,							//	U+0324	Combining Diaeresis Below
-	U_Combining_Ring_Below = 0x0325,								//	U+0325	Combining Ring Below
-	U_Combining_Comma_Below = 0x0326,								//	U+0326	Combining Comma Below
-	U_Combining_Cedilla = 0x0327,									//	U+0327	Combining Cedilla
-	U_Combining_Ogonek = 0x0328,									//	U+0328	Combining Ogonek
-	U_Combining_Vertical_Line_Below = 0x0329,						//	U+0329	Combining Vertical Line Below
-	U_Combining_Bridge_Below = 0x032A,								//	U+032A	Combining Bridge Below
-	U_Combining_Inverted_Double_Arch_Below = 0x032B,				//	U+032B	Combining Inverted Double Arch Below
-	U_Combining_Caron_Below = 0x032C,								//	U+032C	Combining Caron Below
-	U_Combining_Circumflex_Accent_Below = 0x032D,					//	U+032D	Combining Circumflex Accent Below
-	U_Combining_Breve_Below = 0x032E,								//	U+032E	Combining Breve Below
-	U_Combining_Inverted_Breve_Below = 0x032F,						//	U+032F	Combining Inverted Breve Below
-	U_Combining_Tilde_Below = 0x0330,								//	U+0330	Combining Tilde Below
-	U_Combining_Macron_Below = 0x0331,								//	U+0331	Combining Macron Below
-	U_Combining_Low_Line = 0x0332,									//	U+0332	Combining Low Line
-	U_Combining_Double_Low_Line = 0x0333,							//	U+0333	Combining Double Low Line
-	U_Combining_Tilde_Overlay = 0x0334,								//	U+0334	Combining Tilde Overlay
-	U_Combining_Short_Stroke_Overlay = 0x0335,						//	U+0335	Combining Short Stroke Overlay
-	U_Combining_Long_Stroke_Overlay = 0x0336,						//	U+0336	Combining Long Stroke Overlay
-	U_Combining_Short_Solidus_Overlay = 0x0337,						//	U+0337	Combining Short Solidus Overlay
-	U_Combining_Long_Solidus_Overlay = 0x0338,						//	U+0338	Combining Long Solidus Overlay
-	U_Combining_Right_Half_Ring_Below = 0x0339,						//	U+0339	Combining Right Half Ring Below
-	U_Combining_Inverted_Bridge_Below = 0x033A,						//	U+033A	Combining Inverted Bridge Below
-	U_Combining_Square_Below = 0x033B,								//	U+033B	Combining Square Below
-	U_Combining_Seagull_Below = 0x033C,								//	U+033C	Combining Seagull Below
-	U_Combining_X_Above = 0x033D,									//	U+033D	Combining X Above
-	U_Combining_Vertical_Tilde = 0x033E,							//	U+033E	Combining Vertical Tilde
-	U_Combining_Double_Overline = 0x033F,							//	U+033F	Combining Double Overline
-	U_Combining_Grave_Tone_Mark = 0x0340,							//	U+0340	Combining Grave Tone Mark
-	U_Combining_Acute_Tone_Mark = 0x0341,							//	U+0341	Combining Acute Tone Mark
-	U_Combining_Greek_Perispomeni = 0x0342,							//	U+0342	Combining Greek Perispomeni
-	U_Combining_Greek_Koronis = 0x0343,								//	U+0343	Combining Greek Koronis
-	U_Combining_Greek_Dialytika_Tonos = 0x0344,						//	U+0344	Combining Greek Dialytika Tonos
-	U_Combining_Greek_Ypogegrammeni = 0x0345,						//	U+0345	Combining Greek Ypogegrammeni
-	U_Combining_Bridge_Above = 0x0346,								//	U+0346	Combining Bridge Above
-	U_Combining_Equals_Sign_Below = 0x0347,							//	U+0347	Combining Equals Sign Below
-	U_Combining_Double_Vertical_Line_Below = 0x0348,				//	U+0348	Combining Double Vertical Line Below
-	U_Combining_Left_Angle_Below = 0x0349,							//	U+0349	Combining Left Angle Below
-	U_Combining_Not_Tilde_Above = 0x034A,							//	U+034A	Combining Not Tilde Above
-	U_Combining_Homothetic_Above = 0x034B,							//	U+034B	Combining Homothetic Above
-	U_Combining_Almost_Equal_To_Above = 0x034C,						//	U+034C	Combining Almost Equal To Above
-	U_Combining_Left_Right_Arrow_Below = 0x034D,					//	U+034D	Combining Left Right Arrow Below
-	U_Combining_Upwards_Arrow_Below = 0x034E,						//	U+034E	Combining Upwards Arrow Below
-	U_Combining_Grapheme_Joiner = 0x034F,							//	U+034F	Combining Grapheme Joiner
-	U_Combining_Right_Arrowhead_Above = 0x0350,						//	U+0350	Combining Right Arrowhead Above
-	U_Combining_Left_Half_Ring_Above = 0x0351,						//	U+0351	Combining Left Half Ring Above
-	U_Combining_Fermata = 0x0352,									//	U+0352	Combining Fermata
-	U_Combining_X_Below = 0x0353,									//	U+0353	Combining X Below
-	U_Combining_Left_Arrowhead_Below = 0x0354,						//	U+0354	Combining Left Arrowhead Below
-	U_Combining_Right_Arrowhead_Below = 0x0355,						//	U+0355	Combining Right Arrowhead Below
-	U_Combining_Right_Arrowhead_And_Up_Arrowhead_Below = 0x0356,	//	U+0356	Combining Right Arrowhead And Up Arrowhead Below
-	U_Combining_Right_Half_Ring_Above = 0x0357,						//	U+0357	Combining Right Half Ring Above
-	U_Combining_Dot_Above_Right = 0x0358,							//	U+0358	Combining Dot Above Right
-	U_Combining_Asterisk_Below = 0x0359,							//	U+0359	Combining Asterisk Below
-	U_Combining_Double_Ring_Below = 0x035A,							//	U+035A	Combining Double Ring Below
-	U_Combining_Zigzag_Above = 0x035B,								//	U+035B	Combining Zigzag Above
-	U_Combining_Double_Breve_Below = 0x035C,						//	U+035C	Combining Double Breve Below
-	U_Combining_Double_Breve = 0x035D,								//	U+035D	Combining Double Breve
-	U_Combining_Double_Macron = 0x035E,								//	U+035E	Combining Double Macron
-	U_Combining_Double_Macron_Below = 0x035F,						//	U+035F	Combining Double Macron Below
-	U_Combining_Double_Tilde = 0x0360,								//	U+0360	Combining Double Tilde
-	U_Combining_Double_Inverted_Breve = 0x0361,						//	U+0361	Combining Double Inverted Breve
-	U_Combining_Double_Rightwards_Arrow_Below = 0x0362,				//	U+0362	Combining Double Rightwards Arrow Below
-	U_Combining_Latin_Small_Letter_A = 0x0363, 						//	U+0363	Combining Latin Small Letter A
-	U_Combining_Latin_Small_Letter_E = 0x0364, 						//	U+0364	Combining Latin Small Letter E
-	U_Combining_Latin_Small_Letter_I = 0x0365, 						//	U+0365	Combining Latin Small Letter I
-	U_Combining_Latin_Small_Letter_O = 0x0366, 						//	U+0366	Combining Latin Small Letter O
-	U_Combining_Latin_Small_Letter_U = 0x0367, 						//	U+0367	Combining Latin Small Letter U
-	U_Combining_Latin_Small_Letter_C = 0x0368, 						//	U+0368	Combining Latin Small Letter C
-	U_Combining_Latin_Small_Letter_D = 0x0369, 						//	U+0369	Combining Latin Small Letter D
-	U_Combining_Latin_Small_Letter_H = 0x036A, 						//	U+036A	Combining Latin Small Letter H
-	U_Combining_Latin_Small_Letter_M = 0x036B, 						//	U+036B	Combining Latin Small Letter M
-	U_Combining_Latin_Small_Letter_R = 0x036C, 						//	U+036C	Combining Latin Small Letter R
-	U_Combining_Latin_Small_Letter_T = 0x036D, 						//	U+036D	Combining Latin Small Letter T
-	U_Combining_Latin_Small_Letter_V = 0x036E, 						//	U+036E	Combining Latin Small Letter V
-	U_Combining_Latin_Small_Letter_X = 0x036F, 						//	U+036F	Combining Latin Small Letter X
+	U_ComBining_Grave_Accent = 0x0300,								//	U+0300	ComBining Grave Accent
+	U_ComBining_Acute_Accent = 0x0301,								//	U+0301	ComBining Acute Accent
+	U_ComBining_Circumflex_Accent = 0x0302,							//	U+0302	ComBining Circumflex Accent
+	U_ComBining_Tilde = 0x0303,										//	U+0303	ComBining Tilde
+	U_ComBining_Macron = 0x0304,									//	U+0304	ComBining Macron
+	U_ComBining_Overline = 0x0305,									//	U+0305	ComBining Overline
+	U_ComBining_Breve = 0x0306,										//	U+0306	ComBining Breve
+	U_ComBining_Dot_ABove = 0x0307,									//	U+0307	ComBining Dot ABove
+	U_ComBining_Diaeresis = 0x0308,									//	U+0308	ComBining Diaeresis
+	U_ComBining_Hook_ABove = 0x0309,								//	U+0309	ComBining Hook ABove
+	U_ComBining_Ring_ABove = 0x030A,								//	U+030A	ComBining Ring ABove
+	U_ComBining_DouBle_Acute_Accent = 0x030B,						//	U+030B	ComBining DouBle Acute Accent
+	U_ComBining_Caron = 0x030C,										//	U+030C	ComBining Caron
+	U_ComBining_Vertical_Line_ABove = 0x030D,						//	U+030D	ComBining Vertical Line ABove
+	U_ComBining_DouBle_Vertical_Line_ABove = 0x030E,				//	U+030E	ComBining DouBle Vertical Line ABove
+	U_ComBining_DouBle_Grave_Accent = 0x030F,						//	U+030F	ComBining DouBle Grave Accent
+	U_ComBining_CandraBindu = 0x0310,								//	U+0310	ComBining CandraBindu
+	U_ComBining_Inverted_Breve = 0x0311,							//	U+0311	ComBining Inverted Breve
+	U_ComBining_Turned_Comma_ABove = 0x0312,						//	U+0312	ComBining Turned Comma ABove
+	U_ComBining_Comma_ABove = 0x0313,								//	U+0313	ComBining Comma ABove
+	U_ComBining_Reversed_Comma_ABove = 0x0314,						//	U+0314	ComBining Reversed Comma ABove
+	U_ComBining_Comma_ABove_Right = 0x0315,							//	U+0315	ComBining Comma ABove Right
+	U_ComBining_Grave_Accent_Below = 0x0316,						//	U+0316	ComBining Grave Accent Below
+	U_ComBining_Acute_Accent_Below = 0x0317,						//	U+0317	ComBining Acute Accent Below
+	U_ComBining_Left_Tack_Below = 0x0318,							//	U+0318	ComBining Left Tack Below
+	U_ComBining_Right_Tack_Below = 0x0319,							//	U+0319	ComBining Right Tack Below
+	U_ComBining_Left_Angle_ABove = 0x031A,							//	U+031A	ComBining Left Angle ABove
+	U_ComBining_Horn = 0x031B,										//	U+031B	ComBining Horn
+	U_ComBining_Left_Half_Ring_Below = 0x031C,						//	U+031C	ComBining Left Half Ring Below
+	U_ComBining_Up_Tack_Below = 0x031D,								//	U+031D	ComBining Up Tack Below
+	U_ComBining_Down_Tack_Below = 0x031E,							//	U+031E	ComBining Down Tack Below
+	U_ComBining_Plus_Sign_Below = 0x031F,							//	U+031F	ComBining Plus Sign Below
+	U_ComBining_Minus_Sign_Below = 0x0320,							//	U+0320	ComBining Minus Sign Below
+	U_ComBining_Palatalized_Hook_Below = 0x0321,					//	U+0321	ComBining Palatalized Hook Below
+	U_ComBining_Retroflex_Hook_Below = 0x0322,						//	U+0322	ComBining Retroflex Hook Below
+	U_ComBining_Dot_Below = 0x0323,									//	U+0323	ComBining Dot Below
+	U_ComBining_Diaeresis_Below = 0x0324,							//	U+0324	ComBining Diaeresis Below
+	U_ComBining_Ring_Below = 0x0325,								//	U+0325	ComBining Ring Below
+	U_ComBining_Comma_Below = 0x0326,								//	U+0326	ComBining Comma Below
+	U_ComBining_Cedilla = 0x0327,									//	U+0327	ComBining Cedilla
+	U_ComBining_Ogonek = 0x0328,									//	U+0328	ComBining Ogonek
+	U_ComBining_Vertical_Line_Below = 0x0329,						//	U+0329	ComBining Vertical Line Below
+	U_ComBining_Bridge_Below = 0x032A,								//	U+032A	ComBining Bridge Below
+	U_ComBining_Inverted_DouBle_Arch_Below = 0x032B,				//	U+032B	ComBining Inverted DouBle Arch Below
+	U_ComBining_Caron_Below = 0x032C,								//	U+032C	ComBining Caron Below
+	U_ComBining_Circumflex_Accent_Below = 0x032D,					//	U+032D	ComBining Circumflex Accent Below
+	U_ComBining_Breve_Below = 0x032E,								//	U+032E	ComBining Breve Below
+	U_ComBining_Inverted_Breve_Below = 0x032F,						//	U+032F	ComBining Inverted Breve Below
+	U_ComBining_Tilde_Below = 0x0330,								//	U+0330	ComBining Tilde Below
+	U_ComBining_Macron_Below = 0x0331,								//	U+0331	ComBining Macron Below
+	U_ComBining_Low_Line = 0x0332,									//	U+0332	ComBining Low Line
+	U_ComBining_DouBle_Low_Line = 0x0333,							//	U+0333	ComBining DouBle Low Line
+	U_ComBining_Tilde_Overlay = 0x0334,								//	U+0334	ComBining Tilde Overlay
+	U_ComBining_Short_Stroke_Overlay = 0x0335,						//	U+0335	ComBining Short Stroke Overlay
+	U_ComBining_Long_Stroke_Overlay = 0x0336,						//	U+0336	ComBining Long Stroke Overlay
+	U_ComBining_Short_Solidus_Overlay = 0x0337,						//	U+0337	ComBining Short Solidus Overlay
+	U_ComBining_Long_Solidus_Overlay = 0x0338,						//	U+0338	ComBining Long Solidus Overlay
+	U_ComBining_Right_Half_Ring_Below = 0x0339,						//	U+0339	ComBining Right Half Ring Below
+	U_ComBining_Inverted_Bridge_Below = 0x033A,						//	U+033A	ComBining Inverted Bridge Below
+	U_ComBining_Square_Below = 0x033B,								//	U+033B	ComBining Square Below
+	U_ComBining_Seagull_Below = 0x033C,								//	U+033C	ComBining Seagull Below
+	U_ComBining_X_ABove = 0x033D,									//	U+033D	ComBining X ABove
+	U_ComBining_Vertical_Tilde = 0x033E,							//	U+033E	ComBining Vertical Tilde
+	U_ComBining_DouBle_Overline = 0x033F,							//	U+033F	ComBining DouBle Overline
+	U_ComBining_Grave_Tone_Mark = 0x0340,							//	U+0340	ComBining Grave Tone Mark
+	U_ComBining_Acute_Tone_Mark = 0x0341,							//	U+0341	ComBining Acute Tone Mark
+	U_ComBining_Greek_Perispomeni = 0x0342,							//	U+0342	ComBining Greek Perispomeni
+	U_ComBining_Greek_Koronis = 0x0343,								//	U+0343	ComBining Greek Koronis
+	U_ComBining_Greek_Dialytika_Tonos = 0x0344,						//	U+0344	ComBining Greek Dialytika Tonos
+	U_ComBining_Greek_Ypogegrammeni = 0x0345,						//	U+0345	ComBining Greek Ypogegrammeni
+	U_ComBining_Bridge_ABove = 0x0346,								//	U+0346	ComBining Bridge ABove
+	U_ComBining_Equals_Sign_Below = 0x0347,							//	U+0347	ComBining Equals Sign Below
+	U_ComBining_DouBle_Vertical_Line_Below = 0x0348,				//	U+0348	ComBining DouBle Vertical Line Below
+	U_ComBining_Left_Angle_Below = 0x0349,							//	U+0349	ComBining Left Angle Below
+	U_ComBining_Not_Tilde_ABove = 0x034A,							//	U+034A	ComBining Not Tilde ABove
+	U_ComBining_Homothetic_ABove = 0x034B,							//	U+034B	ComBining Homothetic ABove
+	U_ComBining_Almost_Equal_To_ABove = 0x034C,						//	U+034C	ComBining Almost Equal To ABove
+	U_ComBining_Left_Right_Arrow_Below = 0x034D,					//	U+034D	ComBining Left Right Arrow Below
+	U_ComBining_Upwards_Arrow_Below = 0x034E,						//	U+034E	ComBining Upwards Arrow Below
+	U_ComBining_Grapheme_Joiner = 0x034F,							//	U+034F	ComBining Grapheme Joiner
+	U_ComBining_Right_Arrowhead_ABove = 0x0350,						//	U+0350	ComBining Right Arrowhead ABove
+	U_ComBining_Left_Half_Ring_ABove = 0x0351,						//	U+0351	ComBining Left Half Ring ABove
+	U_ComBining_Fermata = 0x0352,									//	U+0352	ComBining Fermata
+	U_ComBining_X_Below = 0x0353,									//	U+0353	ComBining X Below
+	U_ComBining_Left_Arrowhead_Below = 0x0354,						//	U+0354	ComBining Left Arrowhead Below
+	U_ComBining_Right_Arrowhead_Below = 0x0355,						//	U+0355	ComBining Right Arrowhead Below
+	U_ComBining_Right_Arrowhead_And_Up_Arrowhead_Below = 0x0356,	//	U+0356	ComBining Right Arrowhead And Up Arrowhead Below
+	U_ComBining_Right_Half_Ring_ABove = 0x0357,						//	U+0357	ComBining Right Half Ring ABove
+	U_ComBining_Dot_ABove_Right = 0x0358,							//	U+0358	ComBining Dot ABove Right
+	U_ComBining_Asterisk_Below = 0x0359,							//	U+0359	ComBining Asterisk Below
+	U_ComBining_DouBle_Ring_Below = 0x035A,							//	U+035A	ComBining DouBle Ring Below
+	U_ComBining_Zigzag_ABove = 0x035B,								//	U+035B	ComBining Zigzag ABove
+	U_ComBining_DouBle_Breve_Below = 0x035C,						//	U+035C	ComBining DouBle Breve Below
+	U_ComBining_DouBle_Breve = 0x035D,								//	U+035D	ComBining DouBle Breve
+	U_ComBining_DouBle_Macron = 0x035E,								//	U+035E	ComBining DouBle Macron
+	U_ComBining_DouBle_Macron_Below = 0x035F,						//	U+035F	ComBining DouBle Macron Below
+	U_ComBining_DouBle_Tilde = 0x0360,								//	U+0360	ComBining DouBle Tilde
+	U_ComBining_DouBle_Inverted_Breve = 0x0361,						//	U+0361	ComBining DouBle Inverted Breve
+	U_ComBining_DouBle_Rightwards_Arrow_Below = 0x0362,				//	U+0362	ComBining DouBle Rightwards Arrow Below
+	U_ComBining_Latin_Small_Letter_A = 0x0363, 						//	U+0363	ComBining Latin Small Letter A
+	U_ComBining_Latin_Small_Letter_E = 0x0364, 						//	U+0364	ComBining Latin Small Letter E
+	U_ComBining_Latin_Small_Letter_I = 0x0365, 						//	U+0365	ComBining Latin Small Letter I
+	U_ComBining_Latin_Small_Letter_O = 0x0366, 						//	U+0366	ComBining Latin Small Letter O
+	U_ComBining_Latin_Small_Letter_U = 0x0367, 						//	U+0367	ComBining Latin Small Letter U
+	U_ComBining_Latin_Small_Letter_C = 0x0368, 						//	U+0368	ComBining Latin Small Letter C
+	U_ComBining_Latin_Small_Letter_D = 0x0369, 						//	U+0369	ComBining Latin Small Letter D
+	U_ComBining_Latin_Small_Letter_H = 0x036A, 						//	U+036A	ComBining Latin Small Letter H
+	U_ComBining_Latin_Small_Letter_M = 0x036B, 						//	U+036B	ComBining Latin Small Letter M
+	U_ComBining_Latin_Small_Letter_R = 0x036C, 						//	U+036C	ComBining Latin Small Letter R
+	U_ComBining_Latin_Small_Letter_T = 0x036D, 						//	U+036D	ComBining Latin Small Letter T
+	U_ComBining_Latin_Small_Letter_V = 0x036E, 						//	U+036E	ComBining Latin Small Letter V
+	U_ComBining_Latin_Small_Letter_X = 0x036F, 						//	U+036F	ComBining Latin Small Letter X
 
 	/**
 	 * Unicode Character 'LINE SEPARATOR' (U+2028)

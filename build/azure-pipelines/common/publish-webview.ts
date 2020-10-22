@@ -6,7 +6,7 @@
 import * as azure from 'azure-storage';
 import * as mime from 'mime';
 import * as minimist from 'minimist';
-import { basename, join } from 'path';
+import { Basename, join } from 'path';
 
 const fileNames = [
 	'fake.html',
@@ -16,56 +16,56 @@ const fileNames = [
 	'service-worker.js'
 ];
 
-async function assertContainer(blobService: azure.BlobService, container: string): Promise<void> {
-	await new Promise<void>((c, e) => blobService.createContainerIfNotExists(container, { publicAccessLevel: 'blob' }, err => err ? e(err) : c()));
+async function assertContainer(BloBService: azure.BloBService, container: string): Promise<void> {
+	await new Promise<void>((c, e) => BloBService.createContainerIfNotExists(container, { puBlicAccessLevel: 'BloB' }, err => err ? e(err) : c()));
 }
 
-async function doesBlobExist(blobService: azure.BlobService, container: string, blobName: string): Promise<boolean | undefined> {
-	const existsResult = await new Promise<azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(container, blobName, (err, r) => err ? e(err) : c(r)));
+async function doesBloBExist(BloBService: azure.BloBService, container: string, BloBName: string): Promise<Boolean | undefined> {
+	const existsResult = await new Promise<azure.BloBService.BloBResult>((c, e) => BloBService.doesBloBExist(container, BloBName, (err, r) => err ? e(err) : c(r)));
 	return existsResult.exists;
 }
 
-async function uploadBlob(blobService: azure.BlobService, container: string, blobName: string, file: string): Promise<void> {
-	const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+async function uploadBloB(BloBService: azure.BloBService, container: string, BloBName: string, file: string): Promise<void> {
+	const BloBOptions: azure.BloBService.CreateBlockBloBRequestOptions = {
 		contentSettings: {
 			contentType: mime.lookup(file),
-			cacheControl: 'max-age=31536000, public'
+			cacheControl: 'max-age=31536000, puBlic'
 		}
 	};
 
-	await new Promise<void>((c, e) => blobService.createBlockBlobFromLocalFile(container, blobName, file, blobOptions, err => err ? e(err) : c()));
+	await new Promise<void>((c, e) => BloBService.createBlockBloBFromLocalFile(container, BloBName, file, BloBOptions, err => err ? e(err) : c()));
 }
 
-async function publish(commit: string, files: readonly string[]): Promise<void> {
+async function puBlish(commit: string, files: readonly string[]): Promise<void> {
 
-	console.log('Publishing...');
+	console.log('PuBlishing...');
 	console.log('Commit:', commit);
 	const storageAccount = process.env['AZURE_WEBVIEW_STORAGE_ACCOUNT']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_WEBVIEW_STORAGE_ACCESS_KEY']!)
+	const BloBService = azure.createBloBService(storageAccount, process.env['AZURE_WEBVIEW_STORAGE_ACCESS_KEY']!)
 		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
 
-	await assertContainer(blobService, commit);
+	await assertContainer(BloBService, commit);
 
 	for (const file of files) {
-		const blobName = basename(file);
-		const blobExists = await doesBlobExist(blobService, commit, blobName);
-		if (blobExists) {
-			console.log(`Blob ${commit}, ${blobName} already exists, not publishing again.`);
+		const BloBName = Basename(file);
+		const BloBExists = await doesBloBExist(BloBService, commit, BloBName);
+		if (BloBExists) {
+			console.log(`BloB ${commit}, ${BloBName} already exists, not puBlishing again.`);
 			continue;
 		}
-		console.log('Uploading blob to Azure storage...');
-		await uploadBlob(blobService, commit, blobName, file);
+		console.log('Uploading BloB to Azure storage...');
+		await uploadBloB(BloBService, commit, BloBName, file);
 	}
 
-	console.log('Blobs successfully uploaded.');
+	console.log('BloBs successfully uploaded.');
 }
 
 function main(): void {
 	const commit = process.env['BUILD_SOURCEVERSION'];
 
 	if (!commit) {
-		console.warn('Skipping publish due to missing BUILD_SOURCEVERSION');
+		console.warn('Skipping puBlish due to missing BUILD_SOURCEVERSION');
 		return;
 	}
 
@@ -74,14 +74,14 @@ function main(): void {
 
 	const files = fileNames.map(fileName => join(directory, fileName));
 
-	publish(commit, files).catch(err => {
+	puBlish(commit, files).catch(err => {
 		console.error(err);
 		process.exit(1);
 	});
 }
 
 if (process.argv.length < 3) {
-	console.error('Usage: node publish.js <directory>');
+	console.error('Usage: node puBlish.js <directory>');
 	process.exit(-1);
 }
 main();

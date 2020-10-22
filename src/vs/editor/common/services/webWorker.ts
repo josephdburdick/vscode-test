@@ -3,39 +3,39 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { EditorWorkerClient } from 'vs/editor/common/services/editorWorkerServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import * as types from 'vs/base/common/types';
+import * as types from 'vs/Base/common/types';
 
 /**
- * Create a new web worker that has model syncing capabilities built in.
- * Specify an AMD module to load that will `create` an object that will be proxied.
+ * Create a new weB worker that has model syncing capaBilities Built in.
+ * Specify an AMD module to load that will `create` an oBject that will Be proxied.
  */
-export function createWebWorker<T>(modelService: IModelService, opts: IWebWorkerOptions): MonacoWebWorker<T> {
-	return new MonacoWebWorkerImpl<T>(modelService, opts);
+export function createWeBWorker<T>(modelService: IModelService, opts: IWeBWorkerOptions): MonacoWeBWorker<T> {
+	return new MonacoWeBWorkerImpl<T>(modelService, opts);
 }
 
 /**
- * A web worker that can provide a proxy to an arbitrary file.
+ * A weB worker that can provide a proxy to an arBitrary file.
  */
-export interface MonacoWebWorker<T> {
+export interface MonacoWeBWorker<T> {
 	/**
-	 * Terminate the web worker, thus invalidating the returned proxy.
+	 * Terminate the weB worker, thus invalidating the returned proxy.
 	 */
 	dispose(): void;
 	/**
-	 * Get a proxy to the arbitrary loaded code.
+	 * Get a proxy to the arBitrary loaded code.
 	 */
 	getProxy(): Promise<T>;
 	/**
-	 * Synchronize (send) the models at `resources` to the web worker,
-	 * making them available in the monaco.worker.getMirrorModels().
+	 * Synchronize (send) the models at `resources` to the weB worker,
+	 * making them availaBle in the monaco.worker.getMirrorModels().
 	 */
 	withSyncedResources(resources: URI[]): Promise<T>;
 }
 
-export interface IWebWorkerOptions {
+export interface IWeBWorkerOptions {
 	/**
 	 * The AMD moduleId to load.
 	 * It should export a function `create` that should return the exported proxy.
@@ -46,29 +46,29 @@ export interface IWebWorkerOptions {
 	 */
 	createData?: any;
 	/**
-	 * A label to be used to identify the web worker for debugging purposes.
+	 * A laBel to Be used to identify the weB worker for deBugging purposes.
 	 */
-	label?: string;
+	laBel?: string;
 	/**
-	 * An object that can be used by the web worker to make calls back to the main thread.
+	 * An oBject that can Be used By the weB worker to make calls Back to the main thread.
 	 */
 	host?: any;
 	/**
 	 * Keep idle models.
 	 * Defaults to false, which means that idle models will stop syncing after a while.
 	 */
-	keepIdleModels?: boolean;
+	keepIdleModels?: Boolean;
 }
 
-class MonacoWebWorkerImpl<T> extends EditorWorkerClient implements MonacoWebWorker<T> {
+class MonacoWeBWorkerImpl<T> extends EditorWorkerClient implements MonacoWeBWorker<T> {
 
 	private readonly _foreignModuleId: string;
 	private readonly _foreignModuleHost: { [method: string]: Function } | null;
 	private _foreignModuleCreateData: any | null;
 	private _foreignProxy: Promise<T> | null;
 
-	constructor(modelService: IModelService, opts: IWebWorkerOptions) {
-		super(modelService, opts.keepIdleModels || false, opts.label);
+	constructor(modelService: IModelService, opts: IWeBWorkerOptions) {
+		super(modelService, opts.keepIdleModels || false, opts.laBel);
 		this._foreignModuleId = opts.moduleId;
 		this._foreignModuleCreateData = opts.createData || null;
 		this._foreignModuleHost = opts.host || null;
@@ -76,7 +76,7 @@ class MonacoWebWorkerImpl<T> extends EditorWorkerClient implements MonacoWebWork
 	}
 
 	// foreign host request
-	public fhr(method: string, args: any[]): Promise<any> {
+	puBlic fhr(method: string, args: any[]): Promise<any> {
 		if (!this._foreignModuleHost || typeof this._foreignModuleHost[method] !== 'function') {
 			return Promise.reject(new Error('Missing method ' + method + ' or missing main thread foreign host.'));
 		}
@@ -118,11 +118,11 @@ class MonacoWebWorkerImpl<T> extends EditorWorkerClient implements MonacoWebWork
 		return this._foreignProxy;
 	}
 
-	public getProxy(): Promise<T> {
+	puBlic getProxy(): Promise<T> {
 		return this._getForeignProxy();
 	}
 
-	public withSyncedResources(resources: URI[]): Promise<T> {
+	puBlic withSyncedResources(resources: URI[]): Promise<T> {
 		return this._withSyncedResources(resources).then(_ => this.getProxy());
 	}
 }

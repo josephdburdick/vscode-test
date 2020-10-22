@@ -6,15 +6,15 @@ declare module 'gulp-remote-retry-src' {
 
 	module remote {
 		export interface IRequestOptions {
-			body?: any;
-			json?: boolean;
+			Body?: any;
+			json?: Boolean;
 			method?: string;
 			headers?: any;
 		}
 
 		export interface IOptions {
-			base?: string;
-			buffer?: boolean;
+			Base?: string;
+			Buffer?: Boolean;
 			requestOptions?: IRequestOptions;
 		}
 	}

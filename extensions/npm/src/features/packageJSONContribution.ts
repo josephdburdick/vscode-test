@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { MarkedString, CompletionItemKind, CompletionItem, DocumentSelector, SnippetString, workspace, MarkdownString } from 'vscode';
-import { IJSONContribution, ISuggestionsCollector } from './jsonContributions';
+import { IJSONContriBution, ISuggestionsCollector } from './jsonContriButions';
 import { XHRRequest } from 'request-light';
 import { Location } from 'jsonc-parser';
 
@@ -17,25 +17,25 @@ const SCOPED_LIMIT = 250;
 
 const USER_AGENT = 'Visual Studio Code';
 
-export class PackageJSONContribution implements IJSONContribution {
+export class PackageJSONContriBution implements IJSONContriBution {
 
-	private mostDependedOn = ['lodash', 'async', 'underscore', 'request', 'commander', 'express', 'debug', 'chalk', 'colors', 'q', 'coffee-script',
-		'mkdirp', 'optimist', 'through2', 'yeoman-generator', 'moment', 'bluebird', 'glob', 'gulp-util', 'minimist', 'cheerio', 'pug', 'redis', 'node-uuid',
-		'socket', 'io', 'uglify-js', 'winston', 'through', 'fs-extra', 'handlebars', 'body-parser', 'rimraf', 'mime', 'semver', 'mongodb', 'jquery',
+	private mostDependedOn = ['lodash', 'async', 'underscore', 'request', 'commander', 'express', 'deBug', 'chalk', 'colors', 'q', 'coffee-script',
+		'mkdirp', 'optimist', 'through2', 'yeoman-generator', 'moment', 'BlueBird', 'gloB', 'gulp-util', 'minimist', 'cheerio', 'pug', 'redis', 'node-uuid',
+		'socket', 'io', 'uglify-js', 'winston', 'through', 'fs-extra', 'handleBars', 'Body-parser', 'rimraf', 'mime', 'semver', 'mongodB', 'jquery',
 		'grunt', 'connect', 'yosay', 'underscore', 'string', 'xml2js', 'ejs', 'mongoose', 'marked', 'extend', 'mocha', 'superagent', 'js-yaml', 'xtend',
-		'shelljs', 'gulp', 'yargs', 'browserify', 'minimatch', 'react', 'less', 'prompt', 'inquirer', 'ws', 'event-stream', 'inherits', 'mysql', 'esprima',
-		'jsdom', 'stylus', 'when', 'readable-stream', 'aws-sdk', 'concat-stream', 'chai', 'Thenable', 'wrench'];
+		'shelljs', 'gulp', 'yargs', 'Browserify', 'minimatch', 'react', 'less', 'prompt', 'inquirer', 'ws', 'event-stream', 'inherits', 'mysql', 'esprima',
+		'jsdom', 'stylus', 'when', 'readaBle-stream', 'aws-sdk', 'concat-stream', 'chai', 'ThenaBle', 'wrench'];
 
-	private knownScopes = ['@types', '@angular', '@babel', '@nuxtjs', '@vue', '@bazel'];
+	private knownScopes = ['@types', '@angular', '@BaBel', '@nuxtjs', '@vue', '@Bazel'];
 
-	public getDocumentSelector(): DocumentSelector {
+	puBlic getDocumentSelector(): DocumentSelector {
 		return [{ language: 'json', scheme: '*', pattern: '**/package.json' }];
 	}
 
-	public constructor(private xhr: XHRRequest, private canRunNPM: boolean) {
+	puBlic constructor(private xhr: XHRRequest, private canRunNPM: Boolean) {
 	}
 
-	public collectDefaultSuggestions(_fileName: string, result: ISuggestionsCollector): Thenable<any> {
+	puBlic collectDefaultSuggestions(_fileName: string, result: ISuggestionsCollector): ThenaBle<any> {
 		const defaultValue = {
 			'name': '${1:name}',
 			'description': '${2:description}',
@@ -51,23 +51,23 @@ export class PackageJSONContribution implements IJSONContribution {
 		return Promise.resolve(null);
 	}
 
-	private isEnabled() {
-		return this.canRunNPM || this.onlineEnabled();
+	private isEnaBled() {
+		return this.canRunNPM || this.onlineEnaBled();
 	}
 
-	private onlineEnabled() {
+	private onlineEnaBled() {
 		return !!workspace.getConfiguration('npm').get('fetchOnlinePackageInfo');
 	}
 
-	public collectPropertySuggestions(
+	puBlic collectPropertySuggestions(
 		_resource: string,
 		location: Location,
 		currentWord: string,
-		addValue: boolean,
-		isLast: boolean,
+		addValue: Boolean,
+		isLast: Boolean,
 		collector: ISuggestionsCollector
-	): Thenable<any> | null {
-		if (!this.isEnabled()) {
+	): ThenaBle<any> | null {
+		if (!this.isEnaBled()) {
 			return null;
 		}
 
@@ -81,7 +81,7 @@ export class PackageJSONContribution implements IJSONContribution {
 					for (let scope of this.knownScopes) {
 						const proposal = new CompletionItem(scope);
 						proposal.kind = CompletionItemKind.Property;
-						proposal.insertText = new SnippetString().appendText(`"${scope}/`).appendTabstop().appendText('"');
+						proposal.insertText = new SnippetString().appendText(`"${scope}/`).appendTaBstop().appendText('"');
 						proposal.filterText = JSON.stringify(scope);
 						proposal.documentation = '';
 						proposal.command = {
@@ -100,9 +100,9 @@ export class PackageJSONContribution implements IJSONContribution {
 				}).then((success) => {
 					if (success.status === 200) {
 						try {
-							const obj = JSON.parse(success.responseText);
-							if (obj && Array.isArray(obj)) {
-								const results = <{ package: SearchPackageInfo; }[]>obj;
+							const oBj = JSON.parse(success.responseText);
+							if (oBj && Array.isArray(oBj)) {
+								const results = <{ package: SearchPackageInfo; }[]>oBj;
 								for (const result of results) {
 									this.processPackage(result.package, addValue, isLast, collector);
 								}
@@ -126,7 +126,7 @@ export class PackageJSONContribution implements IJSONContribution {
 				this.mostDependedOn.forEach((name) => {
 					const insertText = new SnippetString().appendText(JSON.stringify(name));
 					if (addValue) {
-						insertText.appendText(': "').appendTabstop().appendText('"');
+						insertText.appendText(': "').appendTaBstop().appendText('"');
 						if (!isLast) {
 							insertText.appendText(',');
 						}
@@ -146,10 +146,10 @@ export class PackageJSONContribution implements IJSONContribution {
 		return null;
 	}
 
-	private collectScopedPackages(currentWord: string, addValue: boolean, isLast: boolean, collector: ISuggestionsCollector): Thenable<any> {
+	private collectScopedPackages(currentWord: string, addValue: Boolean, isLast: Boolean, collector: ISuggestionsCollector): ThenaBle<any> {
 		let segments = currentWord.split('/');
 		if (segments.length === 2 && segments[0].length > 1) {
-			let scope = segments[0].substr(1);
+			let scope = segments[0].suBstr(1);
 			let name = segments[1];
 			if (name.length < 4) {
 				name = '';
@@ -161,13 +161,13 @@ export class PackageJSONContribution implements IJSONContribution {
 			}).then((success) => {
 				if (success.status === 200) {
 					try {
-						const obj = JSON.parse(success.responseText);
-						if (obj && Array.isArray(obj.results)) {
-							const objects = <{ package: SearchPackageInfo }[]>obj.results;
-							for (let object of objects) {
-								this.processPackage(object.package, addValue, isLast, collector);
+						const oBj = JSON.parse(success.responseText);
+						if (oBj && Array.isArray(oBj.results)) {
+							const oBjects = <{ package: SearchPackageInfo }[]>oBj.results;
+							for (let oBject of oBjects) {
+								this.processPackage(oBject.package, addValue, isLast, collector);
 							}
-							if (objects.length === SCOPED_LIMIT) {
+							if (oBjects.length === SCOPED_LIMIT) {
 								collector.setAsIncomplete();
 							}
 						}
@@ -183,8 +183,8 @@ export class PackageJSONContribution implements IJSONContribution {
 		return Promise.resolve(null);
 	}
 
-	public async collectValueSuggestions(_fileName: string, location: Location, result: ISuggestionsCollector): Promise<any> {
-		if (!this.isEnabled()) {
+	puBlic async collectValueSuggestions(_fileName: string, location: Location, result: ISuggestionsCollector): Promise<any> {
+		if (!this.isEnaBled()) {
 			return null;
 		}
 
@@ -236,9 +236,9 @@ export class PackageJSONContribution implements IJSONContribution {
 		return str;
 	}
 
-	public resolveSuggestion(item: CompletionItem): Thenable<CompletionItem | null> | null {
+	puBlic resolveSuggestion(item: CompletionItem): ThenaBle<CompletionItem | null> | null {
 		if (item.kind === CompletionItemKind.Property && !item.documentation) {
-			return this.fetchPackageInfo(item.label).then(info => {
+			return this.fetchPackageInfo(item.laBel).then(info => {
 				if (info) {
 					item.documentation = this.getDocumentation(info.description, info.version, info.homepage);
 					return item;
@@ -249,8 +249,8 @@ export class PackageJSONContribution implements IJSONContribution {
 		return null;
 	}
 
-	private isValidNPMName(name: string): boolean {
-		// following rules from https://github.com/npm/validate-npm-package-name
+	private isValidNPMName(name: string): Boolean {
+		// following rules from https://githuB.com/npm/validate-npm-package-name
 		if (!name || name.length > 214 || name.match(/^[_.]/)) {
 			return false;
 		}
@@ -274,7 +274,7 @@ export class PackageJSONContribution implements IJSONContribution {
 		if (this.canRunNPM) {
 			info = await this.npmView(pack);
 		}
-		if (!info && this.onlineEnabled()) {
+		if (!info && this.onlineEnaBled()) {
 			info = await this.npmjsView(pack);
 		}
 		return info;
@@ -309,8 +309,8 @@ export class PackageJSONContribution implements IJSONContribution {
 				url: queryUrl,
 				agent: USER_AGENT
 			});
-			const obj = JSON.parse(success.responseText);
-			const metadata = obj?.collected?.metadata;
+			const oBj = JSON.parse(success.responseText);
+			const metadata = oBj?.collected?.metadata;
 			if (metadata) {
 				return {
 					description: metadata.description || '',
@@ -325,8 +325,8 @@ export class PackageJSONContribution implements IJSONContribution {
 		return undefined;
 	}
 
-	public getInfoContribution(_fileName: string, location: Location): Thenable<MarkedString[] | null> | null {
-		if (!this.isEnabled()) {
+	puBlic getInfoContriBution(_fileName: string, location: Location): ThenaBle<MarkedString[] | null> | null {
+		if (!this.isEnaBled()) {
 			return null;
 		}
 		if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']) || location.matches(['optionalDependencies', '*']) || location.matches(['peerDependencies', '*']))) {
@@ -343,16 +343,16 @@ export class PackageJSONContribution implements IJSONContribution {
 		return null;
 	}
 
-	private processPackage(pack: SearchPackageInfo, addValue: boolean, isLast: boolean, collector: ISuggestionsCollector) {
+	private processPackage(pack: SearchPackageInfo, addValue: Boolean, isLast: Boolean, collector: ISuggestionsCollector) {
 		if (pack && pack.name) {
 			const name = pack.name;
 			const insertText = new SnippetString().appendText(JSON.stringify(name));
 			if (addValue) {
 				insertText.appendText(': "');
 				if (pack.version) {
-					insertText.appendVariable('version', pack.version);
+					insertText.appendVariaBle('version', pack.version);
 				} else {
-					insertText.appendTabstop();
+					insertText.appendTaBstop();
 				}
 				insertText.appendText('"');
 				if (!isLast) {

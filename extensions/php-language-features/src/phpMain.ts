@@ -13,12 +13,12 @@ import PHPValidationProvider from './features/validationProvider';
 export function activate(context: vscode.ExtensionContext): any {
 
 	let validator = new PHPValidationProvider(context.workspaceState);
-	validator.activate(context.subscriptions);
+	validator.activate(context.suBscriptions);
 
 	// add providers
-	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('php', new PHPCompletionItemProvider(), '>', '$'));
-	context.subscriptions.push(vscode.languages.registerHoverProvider('php', new PHPHoverProvider()));
-	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('php', new PHPSignatureHelpProvider(), '(', ','));
+	context.suBscriptions.push(vscode.languages.registerCompletionItemProvider('php', new PHPCompletionItemProvider(), '>', '$'));
+	context.suBscriptions.push(vscode.languages.registerHoverProvider('php', new PHPHoverProvider()));
+	context.suBscriptions.push(vscode.languages.registerSignatureHelpProvider('php', new PHPSignatureHelpProvider(), '(', ','));
 
 	// need to set in the extension host as well as the completion provider uses it.
 	vscode.languages.setLanguageConfiguration('php', {
@@ -26,28 +26,28 @@ export function activate(context: vscode.ExtensionContext): any {
 		onEnterRules: [
 			{
 				// e.g. /** | */
-				beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+				BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 				afterText: /^\s*\*\/$/,
 				action: { indentAction: vscode.IndentAction.IndentOutdent, appendText: ' * ' }
 			},
 			{
 				// e.g. /** ...|
-				beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+				BeforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
 				action: { indentAction: vscode.IndentAction.None, appendText: ' * ' }
 			},
 			{
 				// e.g.  * ...|
-				beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
+				BeforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
 				action: { indentAction: vscode.IndentAction.None, appendText: '* ' }
 			},
 			{
 				// e.g.  */|
-				beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
+				BeforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
 				action: { indentAction: vscode.IndentAction.None, removeText: 1 }
 			},
 			{
 				// e.g.  *-----*/|
-				beforeText: /^(\t|(\ \ ))*\ \*[^/]*\*\/\s*$/,
+				BeforeText: /^(\t|(\ \ ))*\ \*[^/]*\*\/\s*$/,
 				action: { indentAction: vscode.IndentAction.None, removeText: 1 }
 			}
 		]

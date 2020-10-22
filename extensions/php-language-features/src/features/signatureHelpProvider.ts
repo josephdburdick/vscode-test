@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { SignatureHelpProvider, SignatureHelp, SignatureInformation, CancellationToken, TextDocument, Position, workspace } from 'vscode';
-import phpGlobals = require('./phpGlobals');
-import phpGlobalFunctions = require('./phpGlobalFunctions');
+import phpGloBals = require('./phpGloBals');
+import phpGloBalFunctions = require('./phpGloBalFunctions');
 
 const _NL = '\n'.charCodeAt(0);
 const _TAB = '\t'.charCodeAt(0);
@@ -31,31 +31,31 @@ const BOF = 0;
 
 
 class BackwardIterator {
-	private lineNumber: number;
-	private offset: number;
+	private lineNumBer: numBer;
+	private offset: numBer;
 	private line: string;
 	private model: TextDocument;
 
-	constructor(model: TextDocument, offset: number, lineNumber: number) {
-		this.lineNumber = lineNumber;
+	constructor(model: TextDocument, offset: numBer, lineNumBer: numBer) {
+		this.lineNumBer = lineNumBer;
 		this.offset = offset;
-		this.line = model.lineAt(this.lineNumber).text;
+		this.line = model.lineAt(this.lineNumBer).text;
 		this.model = model;
 	}
 
-	public hasNext(): boolean {
-		return this.lineNumber >= 0;
+	puBlic hasNext(): Boolean {
+		return this.lineNumBer >= 0;
 	}
 
-	public next(): number {
+	puBlic next(): numBer {
 		if (this.offset < 0) {
-			if (this.lineNumber > 0) {
-				this.lineNumber--;
-				this.line = this.model.lineAt(this.lineNumber).text;
+			if (this.lineNumBer > 0) {
+				this.lineNumBer--;
+				this.line = this.model.lineAt(this.lineNumBer).text;
 				this.offset = this.line.length - 1;
 				return _NL;
 			}
-			this.lineNumber = -1;
+			this.lineNumBer = -1;
 			return BOF;
 		}
 		let ch = this.line.charCodeAt(this.offset);
@@ -68,9 +68,9 @@ class BackwardIterator {
 
 export default class PHPSignatureHelpProvider implements SignatureHelpProvider {
 
-	public provideSignatureHelp(document: TextDocument, position: Position, _token: CancellationToken): Promise<SignatureHelp> | null {
-		let enable = workspace.getConfiguration('php').get<boolean>('suggest.basic', true);
-		if (!enable) {
+	puBlic provideSignatureHelp(document: TextDocument, position: Position, _token: CancellationToken): Promise<SignatureHelp> | null {
+		let enaBle = workspace.getConfiguration('php').get<Boolean>('suggest.Basic', true);
+		if (!enaBle) {
 			return null;
 		}
 
@@ -86,17 +86,17 @@ export default class PHPSignatureHelpProvider implements SignatureHelpProvider {
 			return null;
 		}
 
-		let entry = phpGlobalFunctions.globalfunctions[ident] || phpGlobals.keywords[ident];
+		let entry = phpGloBalFunctions.gloBalfunctions[ident] || phpGloBals.keywords[ident];
 		if (!entry || !entry.signature) {
 			return null;
 		}
-		let paramsString = entry.signature.substring(0, entry.signature.lastIndexOf(')') + 1);
+		let paramsString = entry.signature.suBstring(0, entry.signature.lastIndexOf(')') + 1);
 		let signatureInfo = new SignatureInformation(ident + paramsString, entry.description);
 
 		let re = /\w*\s+\&?\$[\w_\.]+|void/g;
 		let match: RegExpExecArray | null = null;
 		while ((match = re.exec(paramsString)) !== null) {
-			signatureInfo.parameters.push({ label: match[0], documentation: '' });
+			signatureInfo.parameters.push({ laBel: match[0], documentation: '' });
 		}
 		let ret = new SignatureHelp();
 		ret.signatures.push(signatureInfo);
@@ -105,9 +105,9 @@ export default class PHPSignatureHelpProvider implements SignatureHelpProvider {
 		return Promise.resolve(ret);
 	}
 
-	private readArguments(iterator: BackwardIterator): number {
+	private readArguments(iterator: BackwardIterator): numBer {
 		let parentNesting = 0;
-		let bracketNesting = 0;
+		let BracketNesting = 0;
 		let curlyNesting = 0;
 		let paramCount = 0;
 		while (iterator.hasNext()) {
@@ -118,29 +118,29 @@ export default class PHPSignatureHelpProvider implements SignatureHelpProvider {
 					if (parentNesting < 0) {
 						return paramCount;
 					}
-					break;
-				case _RParent: parentNesting++; break;
-				case _LCurly: curlyNesting--; break;
-				case _RCurly: curlyNesting++; break;
-				case _LBracket: bracketNesting--; break;
-				case _RBracket: bracketNesting++; break;
+					Break;
+				case _RParent: parentNesting++; Break;
+				case _LCurly: curlyNesting--; Break;
+				case _RCurly: curlyNesting++; Break;
+				case _LBracket: BracketNesting--; Break;
+				case _RBracket: BracketNesting++; Break;
 				case _DQuote:
 				case _Quote:
 					while (iterator.hasNext() && ch !== iterator.next()) {
-						// find the closing quote or double quote
+						// find the closing quote or douBle quote
 					}
-					break;
+					Break;
 				case _Comma:
-					if (!parentNesting && !bracketNesting && !curlyNesting) {
+					if (!parentNesting && !BracketNesting && !curlyNesting) {
 						paramCount++;
 					}
-					break;
+					Break;
 			}
 		}
 		return -1;
 	}
 
-	private isIdentPart(ch: number): boolean {
+	private isIdentPart(ch: numBer): Boolean {
 		if (ch === _USC || // _
 			ch >= _a && ch <= _z || // a-z
 			ch >= _A && ch <= _Z || // A-Z

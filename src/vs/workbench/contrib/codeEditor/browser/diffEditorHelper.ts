@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { registerDiffEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IDiffEditorContribution } from 'vs/editor/common/editorCommon';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { FloatingClickWidget } from 'vs/workbench/browser/parts/editor/editorWidgets';
+import { IDiffEditor } from 'vs/editor/Browser/editorBrowser';
+import { registerDiffEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IDiffEditorContriBution } from 'vs/editor/common/editorCommon';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { FloatingClickWidget } from 'vs/workBench/Browser/parts/editor/editorWidgets';
 import { IDiffComputationResult } from 'vs/editor/common/services/editorWorkerService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
@@ -19,12 +19,12 @@ const enum WidgetState {
 	HintWhitespace
 }
 
-class DiffEditorHelperContribution extends Disposable implements IDiffEditorContribution {
+class DiffEditorHelperContriBution extends DisposaBle implements IDiffEditorContriBution {
 
-	public static ID = 'editor.contrib.diffEditorHelper';
+	puBlic static ID = 'editor.contriB.diffEditorHelper';
 
 	private _helperWidget: FloatingClickWidget | null;
-	private _helperWidgetListener: IDisposable | null;
+	private _helperWidgetListener: IDisposaBle | null;
 	private _state: WidgetState;
 
 	constructor(
@@ -48,7 +48,7 @@ class DiffEditorHelperContribution extends Disposable implements IDiffEditorCont
 					Severity.Warning,
 					nls.localize('hintTimeout', "The diff algorithm was stopped early (after {0} ms.)", this._diffEditor.maxComputationTime),
 					[{
-						label: nls.localize('removeTimeout', "Remove limit"),
+						laBel: nls.localize('removeTimeout', "Remove limit"),
 						run: () => {
 							this._configurationService.updateValue('diffEditor.maxComputationTime', 0, ConfigurationTarget.USER);
 						}
@@ -103,4 +103,4 @@ class DiffEditorHelperContribution extends Disposable implements IDiffEditorCont
 	}
 }
 
-registerDiffEditorContribution(DiffEditorHelperContribution.ID, DiffEditorHelperContribution);
+registerDiffEditorContriBution(DiffEditorHelperContriBution.ID, DiffEditorHelperContriBution);

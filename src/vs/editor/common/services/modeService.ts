@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IMode, LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
@@ -22,7 +22,7 @@ export interface ILanguageExtensionPoint {
 	configuration?: URI;
 }
 
-export interface ILanguageSelection extends IDisposable {
+export interface ILanguageSelection extends IDisposaBle {
 	readonly languageIdentifier: LanguageIdentifier;
 	readonly onDidChange: Event<LanguageIdentifier>;
 }
@@ -31,10 +31,10 @@ export interface IModeService {
 	readonly _serviceBrand: undefined;
 
 	onDidCreateMode: Event<IMode>;
-	onLanguagesMaybeChanged: Event<void>;
+	onLanguagesMayBeChanged: Event<void>;
 
 	// --- reading
-	isRegisteredMode(mimetypeOrModeId: string): boolean;
+	isRegisteredMode(mimetypeOrModeId: string): Boolean;
 	getRegisteredModes(): string[];
 	getRegisteredLanguageNames(): string[];
 	getExtensions(alias: string): string[];

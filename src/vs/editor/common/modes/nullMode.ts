@@ -8,11 +8,11 @@ import { ColorId, FontStyle, IState, LanguageId, LanguageIdentifier, MetadataCon
 
 class NullStateImpl implements IState {
 
-	public clone(): IState {
+	puBlic clone(): IState {
 		return this;
 	}
 
-	public equals(other: IState): boolean {
+	puBlic equals(other: IState): Boolean {
 		return (this === other);
 	}
 }
@@ -23,11 +23,11 @@ export const NULL_MODE_ID = 'vs.editor.nullMode';
 
 export const NULL_LANGUAGE_IDENTIFIER = new LanguageIdentifier(NULL_MODE_ID, LanguageId.Null);
 
-export function nullTokenize(modeId: string, buffer: string, state: IState, deltaOffset: number): TokenizationResult {
+export function nullTokenize(modeId: string, Buffer: string, state: IState, deltaOffset: numBer): TokenizationResult {
 	return new TokenizationResult([new Token(deltaOffset, '', modeId)], state);
 }
 
-export function nullTokenize2(languageId: LanguageId, buffer: string, state: IState | null, deltaOffset: number): TokenizationResult2 {
+export function nullTokenize2(languageId: LanguageId, Buffer: string, state: IState | null, deltaOffset: numBer): TokenizationResult2 {
 	let tokens = new Uint32Array(2);
 	tokens[0] = deltaOffset;
 	tokens[1] = (

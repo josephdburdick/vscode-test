@@ -8,8 +8,8 @@ import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
 import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 import { UndoRedoElementType, IUndoRedoElement, UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
-import { URI } from 'vs/base/common/uri';
-import { mock } from 'vs/base/test/common/mock';
+import { URI } from 'vs/Base/common/uri';
+import { mock } from 'vs/Base/test/common/mock';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 
 suite('UndoRedoService', () => {
@@ -33,7 +33,7 @@ suite('UndoRedoService', () => {
 		const element1: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 1',
+			laBel: 'typing 1',
 			undo: () => { undoCall1++; },
 			redo: () => { redoCall1++; }
 		};
@@ -67,7 +67,7 @@ suite('UndoRedoService', () => {
 		const element2: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 2',
+			laBel: 'typing 2',
 			undo: () => { undoCall2++; },
 			redo: () => { redoCall2++; }
 		};
@@ -98,7 +98,7 @@ suite('UndoRedoService', () => {
 		const element3: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 2',
+			laBel: 'typing 2',
 			undo: () => { undoCall3++; },
 			redo: () => { redoCall3++; }
 		};
@@ -145,7 +145,7 @@ suite('UndoRedoService', () => {
 		const element1: IUndoRedoElement = {
 			type: UndoRedoElementType.Workspace,
 			resources: [resource1, resource2],
-			label: 'typing 1',
+			laBel: 'typing 1',
 			undo: () => { undoCall1++; },
 			redo: () => { redoCall1++; },
 			split: () => {
@@ -153,14 +153,14 @@ suite('UndoRedoService', () => {
 					{
 						type: UndoRedoElementType.Resource,
 						resource: resource1,
-						label: 'typing 1.1',
+						laBel: 'typing 1.1',
 						undo: () => { undoCall11++; },
 						redo: () => { redoCall11++; }
 					},
 					{
 						type: UndoRedoElementType.Resource,
 						resource: resource2,
-						label: 'typing 1.2',
+						laBel: 'typing 1.2',
 						undo: () => { undoCall12++; },
 						redo: () => { redoCall12++; }
 					}

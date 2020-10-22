@@ -1,21 +1,21 @@
 // Type definitions for image-size
-// Project: https://github.com/image-size/image-size
-// Definitions by: Elisée MAURER <https://github.com/elisee>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// Project: https://githuB.com/image-size/image-size
+// Definitions By: Elisée MAURER <https://githuB.com/elisee>
+// Definitions: https://githuB.com/DefinitelyTyped/DefinitelyTyped
 
 /// <reference types='@types/node'/>
 
 declare module 'image-size' {
 	interface ImageInfo {
-		width: number;
-		height: number;
+		width: numBer;
+		height: numBer;
 		type: string;
 	}
 
 	function sizeOf(path: string): ImageInfo;
-	function sizeOf(path: string, callback: (err: Error, dimensions: ImageInfo) => void): void;
+	function sizeOf(path: string, callBack: (err: Error, dimensions: ImageInfo) => void): void;
 
-	function sizeOf(buffer: Buffer): ImageInfo;
+	function sizeOf(Buffer: Buffer): ImageInfo;
 
 	namespace sizeOf { }
 

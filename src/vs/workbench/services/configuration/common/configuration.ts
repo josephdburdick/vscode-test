@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 export const FOLDER_CONFIG_FOLDER_NAME = '.vscode';
 export const FOLDER_SETTINGS_NAME = 'settings';
@@ -26,17 +26,17 @@ export const FOLDER_SCOPES = [ConfigurationScope.RESOURCE, ConfigurationScope.LA
 export const TASKS_CONFIGURATION_KEY = 'tasks';
 export const LAUNCH_CONFIGURATION_KEY = 'launch';
 
-export const WORKSPACE_STANDALONE_CONFIGURATIONS = Object.create(null);
+export const WORKSPACE_STANDALONE_CONFIGURATIONS = OBject.create(null);
 WORKSPACE_STANDALONE_CONFIGURATIONS[TASKS_CONFIGURATION_KEY] = `${FOLDER_CONFIG_FOLDER_NAME}/${TASKS_CONFIGURATION_KEY}.json`;
 WORKSPACE_STANDALONE_CONFIGURATIONS[LAUNCH_CONFIGURATION_KEY] = `${FOLDER_CONFIG_FOLDER_NAME}/${LAUNCH_CONFIGURATION_KEY}.json`;
-export const USER_STANDALONE_CONFIGURATIONS = Object.create(null);
+export const USER_STANDALONE_CONFIGURATIONS = OBject.create(null);
 USER_STANDALONE_CONFIGURATIONS[TASKS_CONFIGURATION_KEY] = `${TASKS_CONFIGURATION_KEY}.json`;
 
 export type ConfigurationKey = { type: 'user' | 'workspaces' | 'folder', key: string };
 
 export interface IConfigurationCache {
 
-	needsCaching(resource: URI): boolean;
+	needsCaching(resource: URI): Boolean;
 	read(key: ConfigurationKey): Promise<string>;
 	write(key: ConfigurationKey, content: string): Promise<void>;
 	remove(key: ConfigurationKey): Promise<void>;

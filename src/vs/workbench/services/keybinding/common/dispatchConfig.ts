@@ -11,7 +11,7 @@ export const enum DispatchConfig {
 }
 
 export function getDispatchConfig(configurationService: IConfigurationService): DispatchConfig {
-	const keyboard = configurationService.getValue('keyboard');
-	const r = (keyboard ? (<any>keyboard).dispatch : null);
+	const keyBoard = configurationService.getValue('keyBoard');
+	const r = (keyBoard ? (<any>keyBoard).dispatch : null);
 	return (r === 'keyCode' ? DispatchConfig.KeyCode : DispatchConfig.Code);
 }

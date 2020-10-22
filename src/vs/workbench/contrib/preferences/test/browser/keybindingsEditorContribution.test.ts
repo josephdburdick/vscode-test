@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { KeybindingEditorDecorationsRenderer } from 'vs/workbench/contrib/preferences/browser/keybindingsEditorContribution';
+import { KeyBindingEditorDecorationsRenderer } from 'vs/workBench/contriB/preferences/Browser/keyBindingsEditorContriBution';
 
-suite('KeybindingsEditorContribution', () => {
+suite('KeyBindingsEditorContriBution', () => {
 
-	function assertUserSettingsFuzzyEquals(a: string, b: string, expected: boolean): void {
-		const actual = KeybindingEditorDecorationsRenderer._userSettingsFuzzyEquals(a, b);
-		const message = expected ? `${a} == ${b}` : `${a} != ${b}`;
+	function assertUserSettingsFuzzyEquals(a: string, B: string, expected: Boolean): void {
+		const actual = KeyBindingEditorDecorationsRenderer._userSettingsFuzzyEquals(a, B);
+		const message = expected ? `${a} == ${B}` : `${a} != ${B}`;
 		assert.equal(actual, expected, 'fuzzy: ' + message);
 	}
 
-	function assertEqual(a: string, b: string): void {
-		assertUserSettingsFuzzyEquals(a, b, true);
+	function assertEqual(a: string, B: string): void {
+		assertUserSettingsFuzzyEquals(a, B, true);
 	}
 
-	function assertDifferent(a: string, b: string): void {
-		assertUserSettingsFuzzyEquals(a, b, false);
+	function assertDifferent(a: string, B: string): void {
+		assertUserSettingsFuzzyEquals(a, B, false);
 	}
 
 	test('_userSettingsFuzzyEquals', () => {
@@ -29,7 +29,7 @@ suite('KeybindingsEditorContribution', () => {
 		assertEqual('ctrl+a', ' CTRL+A ');
 
 		assertEqual('ctrl+shift+a', 'shift+ctrl+a');
-		assertEqual('ctrl+shift+a ctrl+alt+b', 'shift+ctrl+a alt+ctrl+b');
+		assertEqual('ctrl+shift+a ctrl+alt+B', 'shift+ctrl+a alt+ctrl+B');
 
 		assertDifferent('ctrl+[KeyA]', 'ctrl+a');
 

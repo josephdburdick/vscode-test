@@ -6,26 +6,26 @@
 import * as assert from 'assert';
 import { IUserDataSyncStoreService, IUserDataSyncService, SyncResource, SyncStatus, PREVIEW_DIR_NAME, ISyncData, IResourcePreview } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataSyncClient, UserDataSyncTestServer } from 'vs/platform/userDataSync/test/common/userDataSyncClient';
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { DisposaBleStore, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { UserDataSyncService } from 'vs/platform/userDataSync/common/userDataSyncService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { SnippetsSynchroniser } from 'vs/platform/userDataSync/common/snippetsSync';
-import { joinPath, dirname } from 'vs/base/common/resources';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { URI } from 'vs/base/common/uri';
+import { joinPath, dirname } from 'vs/Base/common/resources';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { URI } from 'vs/Base/common/uri';
 
 const tsSnippet1 = `{
 
-	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, Placeholders with the
+	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position, Placeholders with the
 	// same ids are connected.
 	"Print to console": {
 	// Example:
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -36,14 +36,14 @@ const tsSnippet1 = `{
 
 const tsSnippet2 = `{
 
-	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, Placeholders with the
+	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position, Placeholders with the
 	// same ids are connected.
 	"Print to console": {
 	// Example:
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -54,12 +54,12 @@ const tsSnippet2 = `{
 
 const htmlSnippet1 = `{
 /*
-	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted.
+	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -68,7 +68,7 @@ const htmlSnippet1 = `{
 */
 "Div": {
 	"prefix": "div",
-		"body": [
+		"Body": [
 			"<div>",
 			"",
 			"</div>"
@@ -79,12 +79,12 @@ const htmlSnippet1 = `{
 
 const htmlSnippet2 = `{
 /*
-	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted.
+	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -93,7 +93,7 @@ const htmlSnippet2 = `{
 */
 "Div": {
 	"prefix": "div",
-		"body": [
+		"Body": [
 			"<div>",
 			"",
 			"</div>"
@@ -104,12 +104,12 @@ const htmlSnippet2 = `{
 
 const htmlSnippet3 = `{
 /*
-	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted.
+	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -118,7 +118,7 @@ const htmlSnippet3 = `{
 */
 "Div": {
 	"prefix": "div",
-		"body": [
+		"Body": [
 			"<div>",
 			"",
 			"</div>"
@@ -127,18 +127,18 @@ const htmlSnippet3 = `{
 	}
 }`;
 
-const globalSnippet = `{
-	// Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
-	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+const gloBalSnippet = `{
+	// Place your gloBal snippets here. Each snippet is defined under a snippet name and has a scope, prefix, Body and
+	// description. Add comma separated ids of the languages where the snippet is applicaBle in the scope field. If scope
 	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
-	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, and {1: label}, { 2: another } for placeholders.
+	// used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position, and {1: laBel}, { 2: another } for placeholders.
 	// Placeholders with the same ids are connected.
 	// Example:
 	// "Print to console": {
 	// 	"scope": "javascript,typescript",
 	// 	"prefix": "log",
-	// 	"body": [
+	// 	"Body": [
 	// 		"console.log('$1');",
 	// 		"$2"
 	// 	],
@@ -148,71 +148,71 @@ const globalSnippet = `{
 
 suite('SnippetsSync', () => {
 
-	const disposableStore = new DisposableStore();
+	const disposaBleStore = new DisposaBleStore();
 	const server = new UserDataSyncTestServer();
 	let testClient: UserDataSyncClient;
 	let client2: UserDataSyncClient;
 
-	let testObject: SnippetsSynchroniser;
+	let testOBject: SnippetsSynchroniser;
 
 	setup(async () => {
-		testClient = disposableStore.add(new UserDataSyncClient(server));
+		testClient = disposaBleStore.add(new UserDataSyncClient(server));
 		await testClient.setUp(true);
-		testObject = (testClient.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Snippets) as SnippetsSynchroniser;
-		disposableStore.add(toDisposable(() => testClient.instantiationService.get(IUserDataSyncStoreService).clear()));
+		testOBject = (testClient.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Snippets) as SnippetsSynchroniser;
+		disposaBleStore.add(toDisposaBle(() => testClient.instantiationService.get(IUserDataSyncStoreService).clear()));
 
-		client2 = disposableStore.add(new UserDataSyncClient(server));
+		client2 = disposaBleStore.add(new UserDataSyncClient(server));
 		await client2.setUp(true);
 	});
 
-	teardown(() => disposableStore.clear());
+	teardown(() => disposaBleStore.clear());
 
 	test('when snippets does not exist', async () => {
 		const fileService = testClient.instantiationService.get(IFileService);
 		const snippetsResource = testClient.instantiationService.get(IEnvironmentService).snippetsHome;
 
-		assert.deepEqual(await testObject.getLastSyncUserData(), null);
+		assert.deepEqual(await testOBject.getLastSyncUserData(), null);
 		let manifest = await testClient.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 
 		assert.deepEqual(server.requests, [
-			{ type: 'GET', url: `${server.url}/v1/resource/${testObject.resource}/latest`, headers: {} },
+			{ type: 'GET', url: `${server.url}/v1/resource/${testOBject.resource}/latest`, headers: {} },
 		]);
 		assert.ok(!await fileService.exists(snippetsResource));
 
-		const lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		const lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.deepEqual(lastSyncUserData!.ref, remoteUserData.ref);
 		assert.deepEqual(lastSyncUserData!.syncData, remoteUserData.syncData);
 		assert.equal(lastSyncUserData!.syncData, null);
 
 		manifest = await testClient.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 		assert.deepEqual(server.requests, []);
 
 		manifest = await testClient.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 		assert.deepEqual(server.requests, []);
 	});
 
 	test('when snippet is created after first sync', async () => {
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 		await updateSnippet('html.json', htmlSnippet1, testClient);
 
-		let lastSyncUserData = await testObject.getLastSyncUserData();
+		let lastSyncUserData = await testOBject.getLastSyncUserData();
 		const manifest = await testClient.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 
 		assert.deepEqual(server.requests, [
-			{ type: 'POST', url: `${server.url}/v1/resource/${testObject.resource}`, headers: { 'If-Match': lastSyncUserData?.ref } },
+			{ type: 'POST', url: `${server.url}/v1/resource/${testOBject.resource}`, headers: { 'If-Match': lastSyncUserData?.ref } },
 		]);
 
-		lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.deepEqual(lastSyncUserData!.ref, remoteUserData.ref);
 		assert.deepEqual(lastSyncUserData!.syncData, remoteUserData.syncData);
 		assert.deepEqual(lastSyncUserData!.syncData!.content, JSON.stringify({ 'html.json': htmlSnippet1 }));
@@ -222,11 +222,11 @@ suite('SnippetsSync', () => {
 		await updateSnippet('html.json', htmlSnippet1, testClient);
 		await updateSnippet('typescript.json', tsSnippet1, testClient);
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 });
@@ -237,9 +237,9 @@ suite('SnippetsSync', () => {
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
@@ -252,16 +252,16 @@ suite('SnippetsSync', () => {
 		await client2.sync();
 
 		await updateSnippet('typescript.json', tsSnippet1, testClient);
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
 		const actual2 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual2, tsSnippet1);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 });
@@ -272,12 +272,12 @@ suite('SnippetsSync', () => {
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		const environmentService = testClient.instantiationService.get(IEnvironmentService);
-		const local = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json');
-		assertPreviews(testObject.conflicts, [local]);
+		const local = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json');
+		assertPreviews(testOBject.conflicts, [local]);
 	});
 
 	test('first time sync when snippets exists - has conflicts and accept conflicts', async () => {
@@ -285,18 +285,18 @@ suite('SnippetsSync', () => {
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
-		const conflicts = testObject.conflicts;
-		await testObject.accept(conflicts[0].previewResource, htmlSnippet1);
-		await testObject.apply(false);
+		await testOBject.sync(await testClient.manifest());
+		const conflicts = testOBject.conflicts;
+		await testOBject.accept(conflicts[0].previewResource, htmlSnippet1);
+		await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet1 });
@@ -309,13 +309,13 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		const environmentService = testClient.instantiationService.get(IEnvironmentService);
-		const local1 = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json');
-		const local2 = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json');
-		assertPreviews(testObject.conflicts, [local1, local2]);
+		const local1 = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json');
+		const local2 = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json');
+		assertPreviews(testOBject.conflicts, [local1, local2]);
 	});
 
 	test('first time sync when snippets exists - has multiple conflicts and accept one conflict', async () => {
@@ -325,16 +325,16 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		let conflicts = testObject.conflicts;
-		await testObject.accept(conflicts[0].previewResource, htmlSnippet2);
+		let conflicts = testOBject.conflicts;
+		await testOBject.accept(conflicts[0].previewResource, htmlSnippet2);
 
-		conflicts = testObject.conflicts;
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		conflicts = testOBject.conflicts;
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		const environmentService = testClient.instantiationService.get(IEnvironmentService);
-		const local = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json');
-		assertPreviews(testObject.conflicts, [local]);
+		const local = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json');
+		assertPreviews(testOBject.conflicts, [local]);
 	});
 
 	test('first time sync when snippets exists - has multiple conflicts and accept all conflicts', async () => {
@@ -344,22 +344,22 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		const conflicts = testObject.conflicts;
-		await testObject.accept(conflicts[0].previewResource, htmlSnippet2);
-		await testObject.accept(conflicts[1].previewResource, tsSnippet1);
-		await testObject.apply(false);
+		const conflicts = testOBject.conflicts;
+		await testOBject.accept(conflicts[0].previewResource, htmlSnippet2);
+		await testOBject.accept(conflicts[1].previewResource, tsSnippet1);
+		await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet2);
 		const actual2 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual2, tsSnippet1);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet2, 'typescript.json': tsSnippet1 });
@@ -367,19 +367,19 @@ suite('SnippetsSync', () => {
 
 	test('sync adding a snippet', async () => {
 		await updateSnippet('html.json', htmlSnippet1, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('typescript.json', tsSnippet1, testClient);
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
 		const actual2 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual2, tsSnippet1);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 });
@@ -388,14 +388,14 @@ suite('SnippetsSync', () => {
 	test('sync adding a snippet - accept', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
@@ -405,17 +405,17 @@ suite('SnippetsSync', () => {
 
 	test('sync updating a snippet', async () => {
 		await updateSnippet('html.json', htmlSnippet1, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet2);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet2 });
@@ -424,14 +424,14 @@ suite('SnippetsSync', () => {
 	test('sync updating a snippet - accept', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('html.json', htmlSnippet2, client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet2);
@@ -440,39 +440,39 @@ suite('SnippetsSync', () => {
 	test('sync updating a snippet - conflict', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('html.json', htmlSnippet2, client2);
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet3, testClient);
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		const environmentService = testClient.instantiationService.get(IEnvironmentService);
-		const local = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json');
-		assertPreviews(testObject.conflicts, [local]);
+		const local = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json');
+		assertPreviews(testOBject.conflicts, [local]);
 	});
 
 	test('sync updating a snippet - resolve conflict', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('html.json', htmlSnippet2, client2);
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet3, testClient);
-		await testObject.sync(await testClient.manifest());
-		await testObject.accept(testObject.conflicts[0].previewResource, htmlSnippet2);
-		await testObject.apply(false);
+		await testOBject.sync(await testClient.manifest());
+		await testOBject.accept(testOBject.conflicts[0].previewResource, htmlSnippet2);
+		await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet2);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'html.json': htmlSnippet2 });
@@ -481,19 +481,19 @@ suite('SnippetsSync', () => {
 	test('sync removing a snippet', async () => {
 		await updateSnippet('html.json', htmlSnippet1, testClient);
 		await updateSnippet('typescript.json', tsSnippet1, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await removeSnippet('html.json', testClient);
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
 		const actual2 = await readSnippet('html.json', testClient);
 		assert.equal(actual2, null);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'typescript.json': tsSnippet1 });
@@ -503,14 +503,14 @@ suite('SnippetsSync', () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await removeSnippet('html.json', client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
@@ -522,16 +522,16 @@ suite('SnippetsSync', () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await updateSnippet('html.json', htmlSnippet2, client2);
 		await client2.sync();
 
 		await removeSnippet('html.json', testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
@@ -543,117 +543,117 @@ suite('SnippetsSync', () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await removeSnippet('html.json', client2);
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		const environmentService = testClient.instantiationService.get(IEnvironmentService);
-		const local = joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json');
-		assertPreviews(testObject.conflicts, [local]);
+		const local = joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json');
+		assertPreviews(testOBject.conflicts, [local]);
 	});
 
 	test('sync removing a snippet - resolve conflict', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await removeSnippet('html.json', client2);
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
-		await testObject.accept(testObject.conflicts[0].previewResource, htmlSnippet3);
-		await testObject.apply(false);
+		await testOBject.sync(await testClient.manifest());
+		await testOBject.accept(testOBject.conflicts[0].previewResource, htmlSnippet3);
+		await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
 		const actual2 = await readSnippet('html.json', testClient);
 		assert.equal(actual2, htmlSnippet3);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'typescript.json': tsSnippet1, 'html.json': htmlSnippet3 });
 	});
 
-	test('sync removing a snippet - resolve conflict by removing', async () => {
+	test('sync removing a snippet - resolve conflict By removing', async () => {
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
 		await removeSnippet('html.json', client2);
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
-		await testObject.accept(testObject.conflicts[0].previewResource, null);
-		await testObject.apply(false);
+		await testOBject.sync(await testClient.manifest());
+		await testOBject.accept(testOBject.conflicts[0].previewResource, null);
+		await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
 		const actual2 = await readSnippet('html.json', testClient);
 		assert.equal(actual2, null);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
 		assert.deepEqual(actual, { 'typescript.json': tsSnippet1 });
 	});
 
-	test('sync global and language snippet', async () => {
-		await updateSnippet('global.code-snippets', globalSnippet, client2);
+	test('sync gloBal and language snippet', async () => {
+		await updateSnippet('gloBal.code-snippets', gloBalSnippet, client2);
 		await updateSnippet('html.json', htmlSnippet1, client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('html.json', testClient);
 		assert.equal(actual1, htmlSnippet1);
-		const actual2 = await readSnippet('global.code-snippets', testClient);
-		assert.equal(actual2, globalSnippet);
+		const actual2 = await readSnippet('gloBal.code-snippets', testClient);
+		assert.equal(actual2, gloBalSnippet);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
-		assert.deepEqual(actual, { 'html.json': htmlSnippet1, 'global.code-snippets': globalSnippet });
+		assert.deepEqual(actual, { 'html.json': htmlSnippet1, 'gloBal.code-snippets': gloBalSnippet });
 	});
 
 	test('sync should ignore non snippets', async () => {
-		await updateSnippet('global.code-snippets', globalSnippet, client2);
+		await updateSnippet('gloBal.code-snippets', gloBalSnippet, client2);
 		await updateSnippet('html.html', htmlSnippet1, client2);
 		await updateSnippet('typescript.json', tsSnippet1, client2);
 		await client2.sync();
 
-		await testObject.sync(await testClient.manifest());
-		assert.equal(testObject.status, SyncStatus.Idle);
-		assert.deepEqual(testObject.conflicts, []);
+		await testOBject.sync(await testClient.manifest());
+		assert.equal(testOBject.status, SyncStatus.Idle);
+		assert.deepEqual(testOBject.conflicts, []);
 
 		const actual1 = await readSnippet('typescript.json', testClient);
 		assert.equal(actual1, tsSnippet1);
-		const actual2 = await readSnippet('global.code-snippets', testClient);
-		assert.equal(actual2, globalSnippet);
+		const actual2 = await readSnippet('gloBal.code-snippets', testClient);
+		assert.equal(actual2, gloBalSnippet);
 		const actual3 = await readSnippet('html.html', testClient);
 		assert.equal(actual3, null);
 
-		const { content } = await testClient.read(testObject.resource);
+		const { content } = await testClient.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSnippets(content!);
-		assert.deepEqual(actual, { 'typescript.json': tsSnippet1, 'global.code-snippets': globalSnippet });
+		assert.deepEqual(actual, { 'typescript.json': tsSnippet1, 'gloBal.code-snippets': gloBalSnippet });
 	});
 
 	test('previews are reset after all conflicts resolved', async () => {
@@ -662,11 +662,11 @@ suite('SnippetsSync', () => {
 		await client2.sync();
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
-		await testObject.sync(await testClient.manifest());
+		await testOBject.sync(await testClient.manifest());
 
-		let conflicts = testObject.conflicts;
-		await testObject.accept(conflicts[0].previewResource, htmlSnippet2);
-		await testObject.apply(false);
+		let conflicts = testOBject.conflicts;
+		await testOBject.accept(conflicts[0].previewResource, htmlSnippet2);
+		await testOBject.apply(false);
 
 		const fileService = testClient.instantiationService.get(IFileService);
 		assert.ok(!await fileService.exists(dirname(conflicts[0].previewResource)));
@@ -677,25 +677,25 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].localResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].localResource);
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('merge when there are multiple snippets and all snippets are merged', async () => {
@@ -703,26 +703,26 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].localResource);
-		preview = await testObject.merge(preview!.resourcePreviews[1].localResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].localResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[1].localResource);
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('merge when there are multiple snippets and all snippets are merged and applied', async () => {
@@ -730,23 +730,23 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].localResource);
-		preview = await testObject.merge(preview!.resourcePreviews[1].localResource);
-		preview = await testObject.apply(false);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].localResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[1].localResource);
+		preview = await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
+		assert.equal(testOBject.status, SyncStatus.Idle);
 		assert.equal(preview, null);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('merge when there are multiple snippets and one snippet has no changes and one snippet is merged', async () => {
@@ -757,25 +757,25 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet1, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].localResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].localResource);
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('merge when there are multiple snippets and one snippet has no changes and one snippet is merged and applied', async () => {
@@ -786,22 +786,22 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet1, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].localResource);
-		preview = await testObject.apply(false);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].localResource);
+		preview = await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
+		assert.equal(testOBject.status, SyncStatus.Idle);
 		assert.equal(preview, null);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('merge when there are multiple snippets with conflicts and only one snippet is merged', async () => {
@@ -813,27 +813,27 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].previewResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].previewResource);
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assertPreviews(testObject.conflicts,
+		assertPreviews(testOBject.conflicts,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
 			]);
 	});
 
@@ -846,29 +846,29 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.merge(preview!.resourcePreviews[0].previewResource);
-		preview = await testObject.merge(preview!.resourcePreviews[1].previewResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[0].previewResource);
+		preview = await testOBject.merge(preview!.resourcePreviews[1].previewResource);
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assertPreviews(testObject.conflicts,
+		assertPreviews(testOBject.conflicts,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
 	});
 
@@ -881,25 +881,25 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
+		preview = await testOBject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('accept when there are multiple snippets with conflicts and all snippets are accepted', async () => {
@@ -911,26 +911,26 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
-		preview = await testObject.accept(preview!.resourcePreviews[1].previewResource, tsSnippet2);
+		preview = await testOBject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
+		preview = await testOBject.accept(preview!.resourcePreviews[1].previewResource, tsSnippet2);
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	test('accept when there are multiple snippets with conflicts and all snippets are accepted and applied', async () => {
@@ -942,23 +942,23 @@ suite('SnippetsSync', () => {
 
 		await updateSnippet('html.json', htmlSnippet2, testClient);
 		await updateSnippet('typescript.json', tsSnippet2, testClient);
-		let preview = await testObject.preview(await testClient.manifest());
+		let preview = await testOBject.preview(await testClient.manifest());
 
-		assert.equal(testObject.status, SyncStatus.Syncing);
+		assert.equal(testOBject.status, SyncStatus.Syncing);
 		assertPreviews(preview!.resourcePreviews,
 			[
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'html.json'),
-				joinPath(environmentService.userDataSyncHome, testObject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'html.json'),
+				joinPath(environmentService.userDataSyncHome, testOBject.resource, PREVIEW_DIR_NAME, 'typescript.json'),
 			]);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 
-		preview = await testObject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
-		preview = await testObject.accept(preview!.resourcePreviews[1].previewResource, tsSnippet2);
-		preview = await testObject.apply(false);
+		preview = await testOBject.accept(preview!.resourcePreviews[0].previewResource, htmlSnippet2);
+		preview = await testOBject.accept(preview!.resourcePreviews[1].previewResource, tsSnippet2);
+		preview = await testOBject.apply(false);
 
-		assert.equal(testObject.status, SyncStatus.Idle);
+		assert.equal(testOBject.status, SyncStatus.Idle);
 		assert.equal(preview, null);
-		assert.deepEqual(testObject.conflicts, []);
+		assert.deepEqual(testOBject.conflicts, []);
 	});
 
 	function parseSnippets(content: string): IStringDictionary<string> {

@@ -6,36 +6,36 @@
 import { registerAction2, Action2, MenuId } from 'vs/platform/actions/common/actions';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { localize } from 'vs/nls';
-import { NOTEBOOK_IS_ACTIVE_EDITOR, NOTEBOOK_EDITOR_EDITABLE } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { NOTEBOOK_IS_ACTIVE_EDITOR, NOTEBOOK_EDITOR_EDITABLE } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
 import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { getActiveNotebookEditor, NOTEBOOK_ACTIONS_CATEGORY } from 'vs/workbench/contrib/notebook/browser/contrib/coreActions';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { getActiveNoteBookEditor, NOTEBOOK_ACTIONS_CATEGORY } from 'vs/workBench/contriB/noteBook/Browser/contriB/coreActions';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { getDocumentFormattingEditsUntilResult, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { getDocumentFormattingEditsUntilResult, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contriB/format/format';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IBulkEditService, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IBulkEditService, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { registerEditorAction, EditorAction } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { registerEditorAction, EditorAction } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Progress } from 'vs/platform/progress/common/progress';
 
-// format notebook
+// format noteBook
 registerAction2(class extends Action2 {
 	constructor() {
 		super({
-			id: 'notebook.format',
-			title: { value: localize('format.title', "Format Notebook"), original: 'Format Notebook' },
+			id: 'noteBook.format',
+			title: { value: localize('format.title', "Format NoteBook"), original: 'Format NoteBook' },
 			category: NOTEBOOK_ACTIONS_CATEGORY,
 			precondition: ContextKeyExpr.and(NOTEBOOK_IS_ACTIVE_EDITOR, NOTEBOOK_EDITOR_EDITABLE),
-			keybinding: {
+			keyBinding: {
 				when: EditorContextKeys.editorTextFocus.toNegated(),
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
-				weight: KeybindingWeight.WorkbenchContrib
+				weight: KeyBindingWeight.WorkBenchContriB
 			},
 			f1: true,
 			menu: {
@@ -51,25 +51,25 @@ registerAction2(class extends Action2 {
 		const editorService = accessor.get(IEditorService);
 		const textModelService = accessor.get(ITextModelService);
 		const editorWorkerService = accessor.get(IEditorWorkerService);
-		const bulkEditService = accessor.get(IBulkEditService);
+		const BulkEditService = accessor.get(IBulkEditService);
 
-		const editor = getActiveNotebookEditor(editorService);
+		const editor = getActiveNoteBookEditor(editorService);
 		if (!editor || !editor.viewModel) {
 			return;
 		}
 
-		const notebook = editor.viewModel.notebookDocument;
-		const disposable = new DisposableStore();
+		const noteBook = editor.viewModel.noteBookDocument;
+		const disposaBle = new DisposaBleStore();
 		try {
 
 			const edits: ResourceTextEdit[] = [];
 
-			for (const cell of notebook.cells) {
+			for (const cell of noteBook.cells) {
 
 				const ref = await textModelService.createModelReference(cell.uri);
-				disposable.add(ref);
+				disposaBle.add(ref);
 
-				const model = ref.object.textEditorModel;
+				const model = ref.oBject.textEditorModel;
 
 				const formatEdits = await getDocumentFormattingEditsUntilResult(
 					editorWorkerService, model,
@@ -83,10 +83,10 @@ registerAction2(class extends Action2 {
 				}
 			}
 
-			await bulkEditService.apply(edits, { label: localize('label', "Format Notebook") });
+			await BulkEditService.apply(edits, { laBel: localize('laBel', "Format NoteBook") });
 
 		} finally {
-			disposable.dispose();
+			disposaBle.dispose();
 		}
 	}
 });
@@ -95,15 +95,15 @@ registerAction2(class extends Action2 {
 registerEditorAction(class FormatCellAction extends EditorAction {
 	constructor() {
 		super({
-			id: 'notebook.formatCell',
-			label: localize('formatCell.label', "Format Cell"),
+			id: 'noteBook.formatCell',
+			laBel: localize('formatCell.laBel', "Format Cell"),
 			alias: 'Format Cell',
-			precondition: ContextKeyExpr.and(NOTEBOOK_IS_ACTIVE_EDITOR, NOTEBOOK_EDITOR_EDITABLE, EditorContextKeys.inCompositeEditor, EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider),
-			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus),
+			precondition: ContextKeyExpr.and(NOTEBOOK_IS_ACTIVE_EDITOR, NOTEBOOK_EDITOR_EDITABLE, EditorContextKeys.inCompositeEditor, EditorContextKeys.writaBle, EditorContextKeys.hasDocumentFormattingProvider),
+			kBOpts: {
+				kBExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus),
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			contextMenuOpts: {
 				group: '1_modification',

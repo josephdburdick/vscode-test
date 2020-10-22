@@ -6,14 +6,14 @@
 (function () {
 
 	let MonacoEnvironment = (<any>self).MonacoEnvironment;
-	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.baseUrl ? MonacoEnvironment.baseUrl : '../../../';
+	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.BaseUrl ? MonacoEnvironment.BaseUrl : '../../../';
 
 	if (typeof (<any>self).define !== 'function' || !(<any>self).define.amd) {
 		importScripts(monacoBaseUrl + 'vs/loader.js');
 	}
 
 	require.config({
-		baseUrl: monacoBaseUrl,
+		BaseUrl: monacoBaseUrl,
 		catchError: true,
 		createTrustedScriptURL: (value: string) => value,
 	});
@@ -21,23 +21,23 @@
 	let loadCode = function (moduleId: string) {
 		require([moduleId], function (ws) {
 			setTimeout(function () {
-				let messageHandler = ws.create((msg: any, transfer?: Transferable[]) => {
+				let messageHandler = ws.create((msg: any, transfer?: TransferaBle[]) => {
 					(<any>self).postMessage(msg, transfer);
 				}, null);
 
 				self.onmessage = (e: MessageEvent) => messageHandler.onmessage(e.data);
-				while (beforeReadyMessages.length > 0) {
-					self.onmessage(beforeReadyMessages.shift()!);
+				while (BeforeReadyMessages.length > 0) {
+					self.onmessage(BeforeReadyMessages.shift()!);
 				}
 			}, 0);
 		});
 	};
 
 	let isFirstMessage = true;
-	let beforeReadyMessages: MessageEvent[] = [];
+	let BeforeReadyMessages: MessageEvent[] = [];
 	self.onmessage = (message: MessageEvent) => {
 		if (!isFirstMessage) {
-			beforeReadyMessages.push(message);
+			BeforeReadyMessages.push(message);
 			return;
 		}
 

@@ -3,49 +3,49 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
+import { IViewletViewOptions } from 'vs/workBench/Browser/parts/views/viewsViewlet';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService, RawContextKey, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { localize } from 'vs/nls';
-import { StartAction, ConfigureAction, SelectAndStartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { IDebugService, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
+import { StartAction, ConfigureAction, SelectAndStartAction } from 'vs/workBench/contriB/deBug/Browser/deBugActions';
+import { IDeBugService, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workBench/contriB/deBug/common/deBug';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { ViewPane } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IViewDescriptorService, IViewsRegistry, Extensions, ViewContentGroups } from 'vs/workbench/common/views';
+import { IViewDescriptorService, IViewsRegistry, Extensions, ViewContentGroups } from 'vs/workBench/common/views';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { WorkbenchStateContext } from 'vs/workbench/browser/contextkeys';
-import { OpenFolderAction, OpenFileAction, OpenFileFolderAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { isMacintosh } from 'vs/base/common/platform';
-import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
+import { WorkBenchStateContext } from 'vs/workBench/Browser/contextkeys';
+import { OpenFolderAction, OpenFileAction, OpenFileFolderAction } from 'vs/workBench/Browser/actions/workspaceActions';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { isCodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 
-const debugStartLanguageKey = 'debugStartLanguage';
-const CONTEXT_DEBUG_START_LANGUAGE = new RawContextKey<string>(debugStartLanguageKey, undefined);
-const CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR = new RawContextKey<boolean>('debuggerInterestedInActiveEditor', false);
+const deBugStartLanguageKey = 'deBugStartLanguage';
+const CONTEXT_DEBUG_START_LANGUAGE = new RawContextKey<string>(deBugStartLanguageKey, undefined);
+const CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR = new RawContextKey<Boolean>('deBuggerInterestedInActiveEditor', false);
 
 export class WelcomeView extends ViewPane {
 
-	static ID = 'workbench.debug.welcome';
+	static ID = 'workBench.deBug.welcome';
 	static LABEL = localize('run', "Run");
 
-	private debugStartLanguageContext: IContextKey<string | undefined>;
-	private debuggerInterestedContext: IContextKey<boolean>;
+	private deBugStartLanguageContext: IContextKey<string | undefined>;
+	private deBuggerInterestedContext: IContextKey<Boolean>;
 
 	constructor(
 		options: IViewletViewOptions,
 		@IThemeService themeService: IThemeService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDeBugService private readonly deBugService: IDeBugService,
 		@IEditorService private readonly editorService: IEditorService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
@@ -53,93 +53,93 @@ export class WelcomeView extends ViewPane {
 		@IStorageService storageSevice: IStorageService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keyBindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
 
-		this.debugStartLanguageContext = CONTEXT_DEBUG_START_LANGUAGE.bindTo(contextKeyService);
-		this.debuggerInterestedContext = CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.bindTo(contextKeyService);
-		const lastSetLanguage = storageSevice.get(debugStartLanguageKey, StorageScope.WORKSPACE);
-		this.debugStartLanguageContext.set(lastSetLanguage);
+		this.deBugStartLanguageContext = CONTEXT_DEBUG_START_LANGUAGE.BindTo(contextKeyService);
+		this.deBuggerInterestedContext = CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.BindTo(contextKeyService);
+		const lastSetLanguage = storageSevice.get(deBugStartLanguageKey, StorageScope.WORKSPACE);
+		this.deBugStartLanguageContext.set(lastSetLanguage);
 
 		const setContextKey = () => {
 			const editorControl = this.editorService.activeTextEditorControl;
 			if (isCodeEditor(editorControl)) {
 				const model = editorControl.getModel();
 				const language = model ? model.getLanguageIdentifier().language : undefined;
-				if (language && this.debugService.getConfigurationManager().isDebuggerInterestedInLanguage(language)) {
-					this.debugStartLanguageContext.set(language);
-					this.debuggerInterestedContext.set(true);
-					storageSevice.store(debugStartLanguageKey, language, StorageScope.WORKSPACE);
+				if (language && this.deBugService.getConfigurationManager().isDeBuggerInterestedInLanguage(language)) {
+					this.deBugStartLanguageContext.set(language);
+					this.deBuggerInterestedContext.set(true);
+					storageSevice.store(deBugStartLanguageKey, language, StorageScope.WORKSPACE);
 					return;
 				}
 			}
-			this.debuggerInterestedContext.set(false);
+			this.deBuggerInterestedContext.set(false);
 		};
 
-		const disposables = new DisposableStore();
-		this._register(disposables);
+		const disposaBles = new DisposaBleStore();
+		this._register(disposaBles);
 
 		this._register(editorService.onDidActiveEditorChange(() => {
-			disposables.clear();
+			disposaBles.clear();
 
 			const editorControl = this.editorService.activeTextEditorControl;
 			if (isCodeEditor(editorControl)) {
-				disposables.add(editorControl.onDidChangeModelLanguage(setContextKey));
+				disposaBles.add(editorControl.onDidChangeModelLanguage(setContextKey));
 			}
 
 			setContextKey();
 		}));
-		this._register(this.debugService.getConfigurationManager().onDidRegisterDebugger(setContextKey));
-		this._register(this.onDidChangeBodyVisibility(visible => {
-			if (visible) {
+		this._register(this.deBugService.getConfigurationManager().onDidRegisterDeBugger(setContextKey));
+		this._register(this.onDidChangeBodyVisiBility(visiBle => {
+			if (visiBle) {
 				setContextKey();
 			}
 		}));
 		setContextKey();
 
-		const debugKeybinding = this.keybindingService.lookupKeybinding(StartAction.ID);
-		debugKeybindingLabel = debugKeybinding ? ` (${debugKeybinding.getLabel()})` : '';
+		const deBugKeyBinding = this.keyBindingService.lookupKeyBinding(StartAction.ID);
+		deBugKeyBindingLaBel = deBugKeyBinding ? ` (${deBugKeyBinding.getLaBel()})` : '';
 	}
 
-	shouldShowWelcome(): boolean {
+	shouldShowWelcome(): Boolean {
 		return true;
 	}
 }
 
 const viewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'openAFileWhichCanBeDebugged', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Open a file](command:{0}) which can be debugged or run.", isMacintosh ? OpenFileFolderAction.ID : OpenFileAction.ID),
+	content: localize({ key: 'openAFileWhichCanBeDeBugged', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
+		"[Open a file](command:{0}) which can Be deBugged or run.", isMacintosh ? OpenFileFolderAction.ID : OpenFileAction.ID),
 	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.toNegated()),
 	group: ViewContentGroups.Open
 });
 
-let debugKeybindingLabel = '';
+let deBugKeyBindingLaBel = '';
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'runAndDebugAction', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Run and Debug{0}](command:{1})", debugKeybindingLabel, StartAction.ID),
+	content: localize({ key: 'runAndDeBugAction', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
+		"[Run and DeBug{0}](command:{1})", deBugKeyBindingLaBel, StartAction.ID),
 	preconditions: [CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR],
 	when: CONTEXT_DEBUGGERS_AVAILABLE,
-	group: ViewContentGroups.Debug
+	group: ViewContentGroups.DeBug
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'detectThenRunAndDebug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Show](command:{0}) all automatic debug configurations.", SelectAndStartAction.ID),
+	content: localize({ key: 'detectThenRunAndDeBug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
+		"[Show](command:{0}) all automatic deBug configurations.", SelectAndStartAction.ID),
 	when: CONTEXT_DEBUGGERS_AVAILABLE,
-	group: ViewContentGroups.Debug,
+	group: ViewContentGroups.DeBug,
 	order: 10
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'customizeRunAndDebug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"To customize Run and Debug [create a launch.json file](command:{0}).", ConfigureAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.notEqualsTo('empty')),
-	group: ViewContentGroups.Debug
+	content: localize({ key: 'customizeRunAndDeBug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
+		"To customize Run and DeBug [create a launch.json file](command:{0}).", ConfigureAction.ID),
+	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkBenchStateContext.notEqualsTo('empty')),
+	group: ViewContentGroups.DeBug
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'customizeRunAndDebugOpenFolder', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"To customize Run and Debug, [open a folder](command:{0}) and create a launch.json file.", isMacintosh ? OpenFileFolderAction.ID : OpenFolderAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.isEqualTo('empty')),
-	group: ViewContentGroups.Debug
+	content: localize({ key: 'customizeRunAndDeBugOpenFolder', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
+		"To customize Run and DeBug, [open a folder](command:{0}) and create a launch.json file.", isMacintosh ? OpenFileFolderAction.ID : OpenFolderAction.ID),
+	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkBenchStateContext.isEqualTo('empty')),
+	group: ViewContentGroups.DeBug
 });

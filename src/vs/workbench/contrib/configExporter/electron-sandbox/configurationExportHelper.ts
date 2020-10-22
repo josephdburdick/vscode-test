@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationNode, IConfigurationRegistry, Extensions, IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IFileService } from 'vs/platform/files/common/files';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { URI } from 'vs/base/common/uri';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { URI } from 'vs/Base/common/uri';
 import { IProductService } from 'vs/platform/product/common/productService';
 
 interface IExportedConfigurationNode {
@@ -24,15 +24,15 @@ interface IExportedConfigurationNode {
 
 interface IConfigurationExport {
 	settings: IExportedConfigurationNode[];
-	buildTime: number;
+	BuildTime: numBer;
 	commit?: string;
-	buildNumber?: number;
+	BuildNumBer?: numBer;
 }
 
 export class DefaultConfigurationExportHelper {
 
 	constructor(
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService environmentService: INativeWorkBenchEnvironmentService,
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@ICommandService private readonly commandService: ICommandService,
 		@IFileService private readonly fileService: IFileService,
@@ -49,7 +49,7 @@ export class DefaultConfigurationExportHelper {
 			await this.extensionService.whenInstalledExtensionsRegistered();
 			await this.writeConfigModel(target);
 		} finally {
-			this.commandService.executeCommand('workbench.action.quit');
+			this.commandService.executeCommand('workBench.action.quit');
 		}
 	}
 
@@ -111,10 +111,10 @@ export class DefaultConfigurationExportHelper {
 		}
 
 		const result: IConfigurationExport = {
-			settings: settings.sort((a, b) => a.name.localeCompare(b.name)),
-			buildTime: Date.now(),
+			settings: settings.sort((a, B) => a.name.localeCompare(B.name)),
+			BuildTime: Date.now(),
 			commit: this.productService.commit,
-			buildNumber: this.productService.settingsSearchBuildId
+			BuildNumBer: this.productService.settingsSearchBuildId
 		};
 
 		return result;

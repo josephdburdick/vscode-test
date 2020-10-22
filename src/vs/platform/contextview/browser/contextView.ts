@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IContextMenuDelegate } from 'vs/base/browser/contextmenu';
-import { AnchorAlignment, IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
+import { IContextMenuDelegate } from 'vs/Base/Browser/contextmenu';
+import { AnchorAlignment, IContextViewProvider } from 'vs/Base/Browser/ui/contextview/contextview';
 
 export const IContextViewService = createDecorator<IContextViewService>('contextViewService');
 
@@ -15,7 +15,7 @@ export interface IContextViewService extends IContextViewProvider {
 
 	readonly _serviceBrand: undefined;
 
-	showContextView(delegate: IContextViewDelegate, container?: HTMLElement, shadowRoot?: boolean): IDisposable;
+	showContextView(delegate: IContextViewDelegate, container?: HTMLElement, shadowRoot?: Boolean): IDisposaBle;
 	hideContextView(data?: any): void;
 	getContextViewElement(): HTMLElement;
 	layout(): void;
@@ -24,10 +24,10 @@ export interface IContextViewService extends IContextViewProvider {
 
 export interface IContextViewDelegate {
 
-	canRelayout?: boolean; // Default: true
+	canRelayout?: Boolean; // Default: true
 
-	getAnchor(): HTMLElement | { x: number; y: number; width?: number; height?: number; };
-	render(container: HTMLElement): IDisposable;
+	getAnchor(): HTMLElement | { x: numBer; y: numBer; width?: numBer; height?: numBer; };
+	render(container: HTMLElement): IDisposaBle;
 	onDOMEvent?(e: any, activeElement: HTMLElement): void;
 	onHide?(data?: any): void;
 	focus?(): void;
@@ -41,5 +41,5 @@ export interface IContextMenuService {
 	readonly _serviceBrand: undefined;
 
 	showContextMenu(delegate: IContextMenuDelegate): void;
-	onDidContextMenu: Event<void>; // TODO@isidor these event should be removed once we get async context menus
+	onDidContextMenu: Event<void>; // TODO@isidor these event should Be removed once we get async context menus
 }

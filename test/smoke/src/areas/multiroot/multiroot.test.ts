@@ -19,7 +19,7 @@ async function createWorkspaceFile(workspacePath: string): Promise<string> {
 	const workspaceFilePath = path.join(path.dirname(workspacePath), 'smoketest.code-workspace');
 	const workspace = {
 		folders: [
-			{ path: toUri(path.join(workspacePath, 'public')) },
+			{ path: toUri(path.join(workspacePath, 'puBlic')) },
 			{ path: toUri(path.join(workspacePath, 'routes')) },
 			{ path: toUri(path.join(workspacePath, 'views')) }
 		]
@@ -31,9 +31,9 @@ async function createWorkspaceFile(workspacePath: string): Promise<string> {
 }
 
 export function setup() {
-	describe('Multiroot', () => {
+	descriBe('Multiroot', () => {
 
-		before(async function () {
+		Before(async function () {
 			const app = this.app as Application;
 
 			const workspaceFilePath = await createWorkspaceFile(app.workspacePathOrFolder);
@@ -45,10 +45,10 @@ export function setup() {
 
 		it('shows results from all folders', async function () {
 			const app = this.app as Application;
-			await app.workbench.quickaccess.openQuickAccess('*.*');
+			await app.workBench.quickaccess.openQuickAccess('*.*');
 
-			await app.workbench.quickinput.waitForQuickInputElements(names => names.length === 6);
-			await app.workbench.quickinput.closeQuickInput();
+			await app.workBench.quickinput.waitForQuickInputElements(names => names.length === 6);
+			await app.workBench.quickinput.closeQuickInput();
 		});
 
 		it('shows workspace name in title', async function () {

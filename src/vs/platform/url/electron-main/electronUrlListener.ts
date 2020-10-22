@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
 import { IURLService } from 'vs/platform/url/common/url';
 import product from 'vs/platform/product/common/product';
 import { app, Event as ElectronEvent } from 'electron';
-import { URI } from 'vs/base/common/uri';
-import { IDisposable, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { IDisposaBle, DisposaBleStore, DisposaBle } from 'vs/Base/common/lifecycle';
 import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
-import { isWindows } from 'vs/base/common/platform';
-import { disposableTimeout } from 'vs/base/common/async';
+import { isWindows } from 'vs/Base/common/platform';
+import { disposaBleTimeout } from 'vs/Base/common/async';
 
 function uriFromRawUrl(url: string): URI | null {
 	try {
@@ -23,21 +23,21 @@ function uriFromRawUrl(url: string): URI | null {
 }
 
 /**
- * A listener for URLs that are opened from the OS and handled by VSCode.
+ * A listener for URLs that are opened from the OS and handled By VSCode.
  * Depending on the platform, this works differently:
  * - Windows: we use `app.setAsDefaultProtocolClient()` to register VSCode with the OS
  *            and additionally add the `open-url` command line argument to identify.
- * - macOS:   we rely on `app.on('open-url')` to be called by the OS
+ * - macOS:   we rely on `app.on('open-url')` to Be called By the OS
  * - Linux:   we have a special shortcut installed (`resources/linux/code-url-handler.desktop`)
  *            that calls VSCode with the `open-url` command line argument
- *            (https://github.com/microsoft/vscode/pull/56727)
+ *            (https://githuB.com/microsoft/vscode/pull/56727)
  */
 export class ElectronURLListener {
 
 	private uris: URI[] = [];
 	private retryCount = 0;
-	private flushDisposable: IDisposable = Disposable.None;
-	private disposables = new DisposableStore();
+	private flushDisposaBle: IDisposaBle = DisposaBle.None;
+	private disposaBles = new DisposaBleStore();
 
 	constructor(
 		initialUrisToHandle: URI[],
@@ -65,7 +65,7 @@ export class ElectronURLListener {
 			});
 
 		const onOpenUrl = Event.filter<URI | null, URI>(Event.map(onOpenElectronUrl, uriFromRawUrl), (uri): uri is URI => !!uri);
-		onOpenUrl(this.urlService.open, this.urlService, this.disposables);
+		onOpenUrl(this.urlService.open, this.urlService, this.disposaBles);
 
 		// Send initial links to the window once it has loaded
 		const isWindowReady = windowsMainService.getWindows()
@@ -75,7 +75,7 @@ export class ElectronURLListener {
 		if (isWindowReady) {
 			this.flush();
 		} else {
-			Event.once(windowsMainService.onWindowReady)(this.flush, this, this.disposables);
+			Event.once(windowsMainService.onWindowReady)(this.flush, this, this.disposaBles);
 		}
 	}
 
@@ -99,11 +99,11 @@ export class ElectronURLListener {
 		}
 
 		this.uris = uris;
-		this.flushDisposable = disposableTimeout(() => this.flush(), 500);
+		this.flushDisposaBle = disposaBleTimeout(() => this.flush(), 500);
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
-		this.flushDisposable.dispose();
+		this.disposaBles.dispose();
+		this.flushDisposaBle.dispose();
 	}
 }

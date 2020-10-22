@@ -7,12 +7,12 @@ import { IEnvConfiguration } from 'vs/editor/common/config/commonEditorConfig';
 import { IEditorHoverOptions, EditorOption, ConfigurationChangedEvent, IQuickSuggestionsOptions } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
 import { TestConfiguration } from 'vs/editor/test/common/mocks/testConfiguration';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
+import { AccessiBilitySupport } from 'vs/platform/accessiBility/common/accessiBility';
 
 suite('Common Editor Config', () => {
 	test('Zoom Level', () => {
 
-		//Zoom levels are defined to go between -5, 20 inclusive
+		//Zoom levels are defined to go Between -5, 20 inclusive
 		const zoom = EditorZoom;
 
 		zoom.setZoomLevel(0);
@@ -48,7 +48,7 @@ suite('Common Editor Config', () => {
 		zoom.setZoomLevel(Infinity);
 		assert.equal(zoom.getZoomLevel(), 20);
 
-		zoom.setZoomLevel(Number.NEGATIVE_INFINITY);
+		zoom.setZoomLevel(NumBer.NEGATIVE_INFINITY);
 		assert.equal(zoom.getZoomLevel(), -5);
 	});
 
@@ -58,15 +58,15 @@ suite('Common Editor Config', () => {
 				extraEditorClassName: '',
 				outerWidth: 1000,
 				outerHeight: 100,
-				emptySelectionClipboard: true,
+				emptySelectionClipBoard: true,
 				pixelRatio: 1,
 				zoomLevel: 0,
-				accessibilitySupport: AccessibilitySupport.Unknown
+				accessiBilitySupport: AccessiBilitySupport.Unknown
 			};
 		}
 	}
 
-	function assertWrapping(config: TestConfiguration, isViewportWrapping: boolean, wrappingColumn: number): void {
+	function assertWrapping(config: TestConfiguration, isViewportWrapping: Boolean, wrappingColumn: numBer): void {
 		const options = config.options;
 		const wrappingInfo = options.get(EditorOption.wrappingInfo);
 		assert.equal(wrappingInfo.isViewportWrapping, isViewportWrapping);
@@ -103,7 +103,7 @@ suite('Common Editor Config', () => {
 		let config = new TestWrappingConfiguration({
 			wordWrap: 'on',
 			minimap: {
-				enabled: false
+				enaBled: false
 			}
 		});
 		assertWrapping(config, true, 88);
@@ -155,40 +155,40 @@ suite('Common Editor Config', () => {
 		assertWrapping(config, false, 1);
 	});
 
-	test('wordWrap bounded uses default wordWrapColumn', () => {
+	test('wordWrap Bounded uses default wordWrapColumn', () => {
 		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded'
+			wordWrap: 'Bounded'
 		});
 		assertWrapping(config, true, 80);
 	});
 
-	test('wordWrap bounded uses wordWrapColumn', () => {
+	test('wordWrap Bounded uses wordWrapColumn', () => {
 		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded',
+			wordWrap: 'Bounded',
 			wordWrapColumn: 40
 		});
 		assertWrapping(config, true, 40);
 	});
 
-	test('wordWrap bounded validates wordWrapColumn', () => {
+	test('wordWrap Bounded validates wordWrapColumn', () => {
 		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded',
+			wordWrap: 'Bounded',
 			wordWrapColumn: -1
 		});
 		assertWrapping(config, true, 1);
 	});
 
-	test('issue #53152: Cannot assign to read only property \'enabled\' of object', () => {
+	test('issue #53152: Cannot assign to read only property \'enaBled\' of oBject', () => {
 		let hoverOptions: IEditorHoverOptions = {};
-		Object.defineProperty(hoverOptions, 'enabled', {
-			writable: false,
+		OBject.defineProperty(hoverOptions, 'enaBled', {
+			writaBle: false,
 			value: true
 		});
 		let config = new TestConfiguration({ hover: hoverOptions });
 
-		assert.equal(config.options.get(EditorOption.hover).enabled, true);
-		config.updateOptions({ hover: { enabled: false } });
-		assert.equal(config.options.get(EditorOption.hover).enabled, false);
+		assert.equal(config.options.get(EditorOption.hover).enaBled, true);
+		config.updateOptions({ hover: { enaBled: false } });
+		assert.equal(config.options.get(EditorOption.hover).enaBled, false);
 	});
 
 	test('does not emit event when nothing changes', () => {
@@ -202,7 +202,7 @@ suite('Common Editor Config', () => {
 		assert.equal(event, null);
 	});
 
-	test('issue #94931: Unable to open source file', () => {
+	test('issue #94931: UnaBle to open source file', () => {
 		const config = new TestConfiguration({ quickSuggestions: null! });
 		const actual = <Readonly<Required<IQuickSuggestionsOptions>>>config.options.get(EditorOption.quickSuggestions);
 		assert.deepEqual(actual, {

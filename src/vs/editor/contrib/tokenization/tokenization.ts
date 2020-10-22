@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
-import { StopWatch } from 'vs/base/common/stopwatch';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
+import { StopWatch } from 'vs/Base/common/stopwatch';
 
 class ForceRetokenizeAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.forceRetokenize',
-			label: nls.localize('forceRetokenize', "Developer: Force Retokenize"),
+			laBel: nls.localize('forceRetokenize', "Developer: Force Retokenize"),
 			alias: 'Developer: Force Retokenize',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
 		if (!editor.hasModel()) {
 			return;
 		}

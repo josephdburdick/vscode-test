@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { SmoothScrollingOperation, SmoothScrollingUpdate } from 'vs/base/common/scrollable';
+import { SmoothScrollingOperation, SmoothScrollingUpdate } from 'vs/Base/common/scrollaBle';
 
 class TestSmoothScrollingOperation extends SmoothScrollingOperation {
 
-	constructor(from: number, to: number, viewportSize: number, startTime: number, duration: number) {
+	constructor(from: numBer, to: numBer, viewportSize: numBer, startTime: numBer, duration: numBer) {
 		duration = duration + 10;
 		startTime = startTime - 10;
 
@@ -20,7 +20,7 @@ class TestSmoothScrollingOperation extends SmoothScrollingOperation {
 		);
 	}
 
-	public testTick(now: number): SmoothScrollingUpdate {
+	puBlic testTick(now: numBer): SmoothScrollingUpdate {
 		return this._tick(now);
 	}
 
@@ -32,30 +32,30 @@ suite('SmoothScrollingOperation', () => {
 	const ANIMATION_DURATION = 125;
 	const LINE_HEIGHT = 20;
 
-	function extractLines(scrollable: TestSmoothScrollingOperation, now: number): [number, number] {
-		let scrollTop = scrollable.testTick(now).scrollTop;
+	function extractLines(scrollaBle: TestSmoothScrollingOperation, now: numBer): [numBer, numBer] {
+		let scrollTop = scrollaBle.testTick(now).scrollTop;
 		let scrollBottom = scrollTop + VIEWPORT_HEIGHT;
 
-		const startLineNumber = Math.floor(scrollTop / LINE_HEIGHT);
-		const endLineNumber = Math.ceil(scrollBottom / LINE_HEIGHT);
+		const startLineNumBer = Math.floor(scrollTop / LINE_HEIGHT);
+		const endLineNumBer = Math.ceil(scrollBottom / LINE_HEIGHT);
 
-		return [startLineNumber, endLineNumber];
+		return [startLineNumBer, endLineNumBer];
 	}
 
-	function simulateSmoothScroll(from: number, to: number): [number, number][] {
-		const scrollable = new TestSmoothScrollingOperation(from, to, VIEWPORT_HEIGHT, 0, ANIMATION_DURATION);
+	function simulateSmoothScroll(from: numBer, to: numBer): [numBer, numBer][] {
+		const scrollaBle = new TestSmoothScrollingOperation(from, to, VIEWPORT_HEIGHT, 0, ANIMATION_DURATION);
 
-		let result: [number, number][] = [], resultLen = 0;
-		result[resultLen++] = extractLines(scrollable, 0);
-		result[resultLen++] = extractLines(scrollable, 25);
-		result[resultLen++] = extractLines(scrollable, 50);
-		result[resultLen++] = extractLines(scrollable, 75);
-		result[resultLen++] = extractLines(scrollable, 100);
-		result[resultLen++] = extractLines(scrollable, 125);
+		let result: [numBer, numBer][] = [], resultLen = 0;
+		result[resultLen++] = extractLines(scrollaBle, 0);
+		result[resultLen++] = extractLines(scrollaBle, 25);
+		result[resultLen++] = extractLines(scrollaBle, 50);
+		result[resultLen++] = extractLines(scrollaBle, 75);
+		result[resultLen++] = extractLines(scrollaBle, 100);
+		result[resultLen++] = extractLines(scrollaBle, 125);
 		return result;
 	}
 
-	function assertSmoothScroll(from: number, to: number, expected: [number, number][]): void {
+	function assertSmoothScroll(from: numBer, to: numBer, expected: [numBer, numBer][]): void {
 		const actual = simulateSmoothScroll(from, to);
 		assert.deepEqual(actual, expected);
 	}

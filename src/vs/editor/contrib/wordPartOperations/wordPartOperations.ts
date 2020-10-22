@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { registerEditorCommand } from 'vs/editor/browser/editorExtensions';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { registerEditorCommand } from 'vs/editor/Browser/editorExtensions';
 import { DeleteWordContext, WordNavigationType, WordPartOperations } from 'vs/editor/common/controller/cursorWordOperations';
 import { WordCharacterClassifier } from 'vs/editor/common/controller/wordCharacterClassifier';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ITextModel } from 'vs/editor/common/model';
-import { DeleteWordCommand, MoveWordCommand } from 'vs/editor/contrib/wordOperations/wordOperations';
+import { DeleteWordCommand, MoveWordCommand } from 'vs/editor/contriB/wordOperations/wordOperations';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 
 export class DeleteWordPartLeft extends DeleteWordCommand {
 	constructor() {
@@ -21,12 +21,12 @@ export class DeleteWordPartLeft extends DeleteWordCommand {
 			whitespaceHeuristics: true,
 			wordNavigationType: WordNavigationType.WordStart,
 			id: 'deleteWordPartLeft',
-			precondition: EditorContextKeys.writable,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			precondition: EditorContextKeys.writaBle,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.Backspace },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -46,12 +46,12 @@ export class DeleteWordPartRight extends DeleteWordCommand {
 			whitespaceHeuristics: true,
 			wordNavigationType: WordNavigationType.WordEnd,
 			id: 'deleteWordPartRight',
-			precondition: EditorContextKeys.writable,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			precondition: EditorContextKeys.writaBle,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.Delete },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -79,16 +79,16 @@ export class CursorWordPartLeft extends WordPartLeftCommand {
 			wordNavigationType: WordNavigationType.WordStart,
 			id: 'cursorWordPartLeft',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.LeftArrow },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 }
-// Register previous id for compatibility purposes
+// Register previous id for compatiBility purposes
 CommandsRegistry.registerCommandAlias('cursorWordPartStartLeft', 'cursorWordPartLeft');
 
 export class CursorWordPartLeftSelect extends WordPartLeftCommand {
@@ -98,16 +98,16 @@ export class CursorWordPartLeftSelect extends WordPartLeftCommand {
 			wordNavigationType: WordNavigationType.WordStart,
 			id: 'cursorWordPartLeftSelect',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyMod.Shift | KeyCode.LeftArrow },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 }
-// Register previous id for compatibility purposes
+// Register previous id for compatiBility purposes
 CommandsRegistry.registerCommandAlias('cursorWordPartStartLeftSelect', 'cursorWordPartLeftSelect');
 
 export class WordPartRightCommand extends MoveWordCommand {
@@ -122,11 +122,11 @@ export class CursorWordPartRight extends WordPartRightCommand {
 			wordNavigationType: WordNavigationType.WordEnd,
 			id: 'cursorWordPartRight',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.RightArrow },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -138,11 +138,11 @@ export class CursorWordPartRightSelect extends WordPartRightCommand {
 			wordNavigationType: WordNavigationType.WordEnd,
 			id: 'cursorWordPartRightSelect',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Alt | KeyMod.Shift | KeyCode.RightArrow },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}

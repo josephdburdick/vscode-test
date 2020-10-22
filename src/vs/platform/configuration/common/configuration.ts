@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import * as types from 'vs/base/common/types';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
+import * as oBjects from 'vs/Base/common/oBjects';
+import * as types from 'vs/Base/common/types';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IConfigurationRegistry, Extensions, OVERRIDE_PROPERTY_PATTERN, overrideIdentifierFromKey } from 'vs/platform/configuration/common/configurationRegistry';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 export const IConfigurationService = createDecorator<IConfigurationService>('configurationService');
 
 export function isConfigurationOverrides(thing: any): thing is IConfigurationOverrides {
 	return thing
-		&& typeof thing === 'object'
+		&& typeof thing === 'oBject'
 		&& (!thing.overrideIdentifier || typeof thing.overrideIdentifier === 'string')
 		&& (!thing.resource || thing.resource instanceof URI);
 }
@@ -59,7 +59,7 @@ export interface IConfigurationChangeEvent {
 	readonly affectedKeys: string[];
 	readonly change: IConfigurationChange;
 
-	affectsConfiguration(configuration: string, overrides?: IConfigurationOverrides): boolean;
+	affectsConfiguration(configuration: string, overrides?: IConfigurationOverrides): Boolean;
 
 	// Following data is used for telemetry
 	readonly sourceConfig: any;
@@ -96,10 +96,10 @@ export interface IConfigurationService {
 
 	/**
 	 * Fetches the value of the section for the given overrides.
-	 * Value can be of native type or an object keyed off the section name.
+	 * Value can Be of native type or an oBject keyed off the section name.
 	 *
-	 * @param section - Section of the configuraion. Can be `null` or `undefined`.
-	 * @param overrides - Overrides that has to be applied while fetching
+	 * @param section - Section of the configuraion. Can Be `null` or `undefined`.
+	 * @param overrides - Overrides that has to Be applied while fetching
 	 *
 	 */
 	getValue<T>(): T;
@@ -110,7 +110,7 @@ export interface IConfigurationService {
 	updateValue(key: string, value: any): Promise<void>;
 	updateValue(key: string, value: any, overrides: IConfigurationOverrides): Promise<void>;
 	updateValue(key: string, value: any, target: ConfigurationTarget): Promise<void>;
-	updateValue(key: string, value: any, overrides: IConfigurationOverrides, target: ConfigurationTarget, donotNotifyError?: boolean): Promise<void>;
+	updateValue(key: string, value: any, overrides: IConfigurationOverrides, target: ConfigurationTarget, donotNotifyError?: Boolean): Promise<void>;
 
 	inspect<T>(key: string, overrides?: IConfigurationOverrides): IConfigurationValue<T>;
 
@@ -165,7 +165,7 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 			if (to.keys.indexOf(key) !== -1) {
 				const value1 = getConfigurationValue(from.contents, key);
 				const value2 = getConfigurationValue(to.contents, key);
-				if (!objects.equals(value1, value2)) {
+				if (!oBjects.equals(value1, value2)) {
 					updated.push(key);
 				}
 			}
@@ -173,7 +173,7 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 	}
 
 	const overrides: [string, string[]][] = [];
-	const byOverrideIdentifier = (overrides: IOverrides[]): IStringDictionary<IOverrides> => {
+	const ByOverrideIdentifier = (overrides: IOverrides[]): IStringDictionary<IOverrides> => {
 		const result: IStringDictionary<IOverrides> = {};
 		for (const override of overrides) {
 			for (const identifier of override.identifiers) {
@@ -182,10 +182,10 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 		}
 		return result;
 	};
-	const toOverridesByIdentifier: IStringDictionary<IOverrides> = to ? byOverrideIdentifier(to.overrides) : {};
-	const fromOverridesByIdentifier: IStringDictionary<IOverrides> = from ? byOverrideIdentifier(from.overrides) : {};
+	const toOverridesByIdentifier: IStringDictionary<IOverrides> = to ? ByOverrideIdentifier(to.overrides) : {};
+	const fromOverridesByIdentifier: IStringDictionary<IOverrides> = from ? ByOverrideIdentifier(from.overrides) : {};
 
-	if (Object.keys(toOverridesByIdentifier).length) {
+	if (OBject.keys(toOverridesByIdentifier).length) {
 		for (const key of added) {
 			const override = toOverridesByIdentifier[key];
 			if (override) {
@@ -193,7 +193,7 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 			}
 		}
 	}
-	if (Object.keys(fromOverridesByIdentifier).length) {
+	if (OBject.keys(fromOverridesByIdentifier).length) {
 		for (const key of removed) {
 			const override = fromOverridesByIdentifier[key];
 			if (override) {
@@ -202,7 +202,7 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 		}
 	}
 
-	if (Object.keys(toOverridesByIdentifier).length && Object.keys(fromOverridesByIdentifier).length) {
+	if (OBject.keys(toOverridesByIdentifier).length && OBject.keys(fromOverridesByIdentifier).length) {
 		for (const key of updated) {
 			const fromOverride = fromOverridesByIdentifier[key];
 			const toOverride = toOverridesByIdentifier[key];
@@ -218,7 +218,7 @@ export function compare(from: IConfigurationModel | undefined, to: IConfiguratio
 
 export function toOverrides(raw: any, conflictReporter: (message: string) => void): IOverrides[] {
 	const overrides: IOverrides[] = [];
-	for (const key of Object.keys(raw)) {
+	for (const key of OBject.keys(raw)) {
 		if (OVERRIDE_PROPERTY_PATTERN.test(key)) {
 			const overrideRaw: any = {};
 			for (const keyInOverrideRaw in raw[key]) {
@@ -226,7 +226,7 @@ export function toOverrides(raw: any, conflictReporter: (message: string) => voi
 			}
 			overrides.push({
 				identifiers: [overrideIdentifierFromKey(key).trim()],
-				keys: Object.keys(overrideRaw),
+				keys: OBject.keys(overrideRaw),
 				contents: toValuesTree(overrideRaw, conflictReporter)
 			});
 		}
@@ -235,7 +235,7 @@ export function toOverrides(raw: any, conflictReporter: (message: string) => voi
 }
 
 export function toValuesTree(properties: { [qualifiedKey: string]: any }, conflictReporter: (message: string) => void): any {
-	const root = Object.create(null);
+	const root = OBject.create(null);
 
 	for (let key in properties) {
 		addToValueTree(root, key, properties[key], conflictReporter);
@@ -251,23 +251,23 @@ export function addToValueTree(settingsTreeRoot: any, key: string, value: any, c
 	let curr = settingsTreeRoot;
 	for (let i = 0; i < segments.length; i++) {
 		let s = segments[i];
-		let obj = curr[s];
-		switch (typeof obj) {
+		let oBj = curr[s];
+		switch (typeof oBj) {
 			case 'undefined':
-				obj = curr[s] = Object.create(null);
-				break;
-			case 'object':
-				break;
+				oBj = curr[s] = OBject.create(null);
+				Break;
+			case 'oBject':
+				Break;
 			default:
-				conflictReporter(`Ignoring ${key} as ${segments.slice(0, i + 1).join('.')} is ${JSON.stringify(obj)}`);
+				conflictReporter(`Ignoring ${key} as ${segments.slice(0, i + 1).join('.')} is ${JSON.stringify(oBj)}`);
 				return;
 		}
-		curr = obj;
+		curr = oBj;
 	}
 
-	if (typeof curr === 'object' && curr !== null) {
+	if (typeof curr === 'oBject' && curr !== null) {
 		try {
-			curr[last] = value; // workaround https://github.com/microsoft/vscode/issues/13606
+			curr[last] = value; // workaround https://githuB.com/microsoft/vscode/issues/13606
 		} catch (e) {
 			conflictReporter(`Ignoring ${key} as ${segments.join('.')} is ${JSON.stringify(curr)}`);
 		}
@@ -289,11 +289,11 @@ function doRemoveFromValueTree(valueTree: any, segments: string[]): void {
 		return;
 	}
 
-	if (Object.keys(valueTree).indexOf(first) !== -1) {
+	if (OBject.keys(valueTree).indexOf(first) !== -1) {
 		const value = valueTree[first];
-		if (typeof value === 'object' && !Array.isArray(value)) {
+		if (typeof value === 'oBject' && !Array.isArray(value)) {
 			doRemoveFromValueTree(value, segments);
-			if (Object.keys(value).length === 0) {
+			if (OBject.keys(value).length === 0) {
 				delete valueTree[first];
 			}
 		}
@@ -307,7 +307,7 @@ export function getConfigurationValue<T>(config: any, settingPath: string, defau
 	function accessSetting(config: any, path: string[]): any {
 		let current = config;
 		for (const component of path) {
-			if (typeof current !== 'object' || current === null) {
+			if (typeof current !== 'oBject' || current === null) {
 				return undefined;
 			}
 			current = current[component];
@@ -321,17 +321,17 @@ export function getConfigurationValue<T>(config: any, settingPath: string, defau
 	return typeof result === 'undefined' ? defaultValue : result;
 }
 
-export function merge(base: any, add: any, overwrite: boolean): void {
-	Object.keys(add).forEach(key => {
+export function merge(Base: any, add: any, overwrite: Boolean): void {
+	OBject.keys(add).forEach(key => {
 		if (key !== '__proto__') {
-			if (key in base) {
-				if (types.isObject(base[key]) && types.isObject(add[key])) {
-					merge(base[key], add[key], overwrite);
+			if (key in Base) {
+				if (types.isOBject(Base[key]) && types.isOBject(add[key])) {
+					merge(Base[key], add[key], overwrite);
 				} else if (overwrite) {
-					base[key] = add[key];
+					Base[key] = add[key];
 				}
 			} else {
-				base[key] = add[key];
+				Base[key] = add[key];
 			}
 		}
 	});
@@ -339,11 +339,11 @@ export function merge(base: any, add: any, overwrite: boolean): void {
 
 export function getConfigurationKeys(): string[] {
 	const properties = Registry.as<IConfigurationRegistry>(Extensions.Configuration).getConfigurationProperties();
-	return Object.keys(properties);
+	return OBject.keys(properties);
 }
 
 export function getDefaultValues(): any {
-	const valueTreeRoot: any = Object.create(null);
+	const valueTreeRoot: any = OBject.create(null);
 	const properties = Registry.as<IConfigurationRegistry>(Extensions.Configuration).getConfigurationProperties();
 
 	for (let key in properties) {

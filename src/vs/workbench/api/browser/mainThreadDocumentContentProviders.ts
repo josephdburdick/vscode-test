@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
@@ -13,14 +13,14 @@ import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerServ
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ExtHostContext, ExtHostDocumentContentProvidersShape, IExtHostContext, MainContext, MainThreadDocumentContentProvidersShape } from '../common/extHost.protocol';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 
 @extHostNamedCustomer(MainContext.MainThreadDocumentContentProviders)
 export class MainThreadDocumentContentProviders implements MainThreadDocumentContentProvidersShape {
 
-	private readonly _resourceContentProvider = new Map<number, IDisposable>();
+	private readonly _resourceContentProvider = new Map<numBer, IDisposaBle>();
 	private readonly _pendingUpdate = new Map<string, CancellationTokenSource>();
 	private readonly _proxy: ExtHostDocumentContentProvidersShape;
 
@@ -39,12 +39,12 @@ export class MainThreadDocumentContentProviders implements MainThreadDocumentCon
 		dispose(this._pendingUpdate.values());
 	}
 
-	$registerTextContentProvider(handle: number, scheme: string): void {
+	$registerTextContentProvider(handle: numBer, scheme: string): void {
 		const registration = this._textModelResolverService.registerTextModelContentProvider(scheme, {
 			provideTextContent: (uri: URI): Promise<ITextModel | null> => {
 				return this._proxy.$provideTextDocumentContent(handle, uri).then(value => {
 					if (typeof value === 'string') {
-						const firstLineText = value.substr(0, 1 + value.search(/\r?\n/));
+						const firstLineText = value.suBstr(0, 1 + value.search(/\r?\n/));
 						const languageSelection = this._modeService.createByFilepathOrFirstLine(uri, firstLineText);
 						return this._modelService.createModel(value, languageSelection, uri);
 					}
@@ -55,7 +55,7 @@ export class MainThreadDocumentContentProviders implements MainThreadDocumentCon
 		this._resourceContentProvider.set(handle, registration);
 	}
 
-	$unregisterTextContentProvider(handle: number): void {
+	$unregisterTextContentProvider(handle: numBer): void {
 		const registration = this._resourceContentProvider.get(handle);
 		if (registration) {
 			registration.dispose();

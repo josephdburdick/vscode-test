@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import * as dom from 'vs/base/browser/dom';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Keybinding, ResolvedKeybinding, SimpleKeybinding, createKeybinding } from 'vs/base/common/keyCodes';
-import { IDisposable, IReference, ImmortalReference, toDisposable, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
-import { OS, isLinux, isMacintosh } from 'vs/base/common/platform';
-import Severity from 'vs/base/common/severity';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor, IDiffEditor, isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IBulkEditOptions, IBulkEditResult, IBulkEditService, ResourceEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import * as strings from 'vs/Base/common/strings';
+import * as dom from 'vs/Base/Browser/dom';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { KeyBinding, ResolvedKeyBinding, SimpleKeyBinding, createKeyBinding } from 'vs/Base/common/keyCodes';
+import { IDisposaBle, IReference, ImmortalReference, toDisposaBle, DisposaBleStore, DisposaBle } from 'vs/Base/common/lifecycle';
+import { OS, isLinux, isMacintosh } from 'vs/Base/common/platform';
+import Severity from 'vs/Base/common/severity';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor, IDiffEditor, isCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { IBulkEditOptions, IBulkEditResult, IBulkEditService, ResourceEdit, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 import { isDiffEditorConfigurationKey, isEditorConfigurationKey } from 'vs/editor/common/config/commonEditorConfig';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { IPosition, Position as Pos } from 'vs/editor/common/core/position';
@@ -29,23 +29,23 @@ import { Configuration, ConfigurationModel, DefaultConfigurationModel, Configura
 import { IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
 import { IConfirmation, IConfirmationResult, IDialogOptions, IDialogService, IShowResult } from 'vs/platform/dialogs/common/dialogs';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { AbstractKeybindingService } from 'vs/platform/keybinding/common/abstractKeybindingService';
-import { IKeybindingEvent, IKeyboardEvent, KeybindingSource, KeybindingsSchemaContribution } from 'vs/platform/keybinding/common/keybinding';
-import { KeybindingResolver } from 'vs/platform/keybinding/common/keybindingResolver';
-import { IKeybindingItem, KeybindingsRegistry } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { ILabelService, ResourceLabelFormatter, IFormatterChangeEvent } from 'vs/platform/label/common/label';
+import { ABstractKeyBindingService } from 'vs/platform/keyBinding/common/aBstractKeyBindingService';
+import { IKeyBindingEvent, IKeyBoardEvent, KeyBindingSource, KeyBindingsSchemaContriBution } from 'vs/platform/keyBinding/common/keyBinding';
+import { KeyBindingResolver } from 'vs/platform/keyBinding/common/keyBindingResolver';
+import { IKeyBindingItem, KeyBindingsRegistry } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { ILaBelService, ResourceLaBelFormatter, IFormatterChangeEvent } from 'vs/platform/laBel/common/laBel';
 import { INotification, INotificationHandle, INotificationService, IPromptChoice, IPromptOptions, NoOpNotification, IStatusMessageOptions, NotificationsFilter } from 'vs/platform/notification/common/notification';
 import { IProgressRunner, IEditorProgressService } from 'vs/platform/progress/common/progress';
 import { ITelemetryInfo, ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspace, IWorkspaceContextService, IWorkspaceFolder, IWorkspaceFoldersChangeEvent, WorkbenchState, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import { IWorkspace, IWorkspaceContextService, IWorkspaceFolder, IWorkspaceFoldersChangeEvent, WorkBenchState, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { ISingleFolderWorkspaceIdentifier, IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 import { SimpleServicesNLS } from 'vs/editor/common/standaloneStrings';
 import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
-import { basename } from 'vs/base/common/resources';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { Basename } from 'vs/Base/common/resources';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { ILogService } from 'vs/platform/log/common/log';
 
 export class SimpleModel implements IResolvedTextEditorModel {
@@ -58,62 +58,62 @@ export class SimpleModel implements IResolvedTextEditorModel {
 		this._onDispose = new Emitter<void>();
 	}
 
-	public get onDispose(): Event<void> {
+	puBlic get onDispose(): Event<void> {
 		return this._onDispose.event;
 	}
 
-	public load(): Promise<SimpleModel> {
+	puBlic load(): Promise<SimpleModel> {
 		return Promise.resolve(this);
 	}
 
-	public get textEditorModel(): ITextModel {
+	puBlic get textEditorModel(): ITextModel {
 		return this.model;
 	}
 
-	public createSnapshot(): ITextSnapshot {
+	puBlic createSnapshot(): ITextSnapshot {
 		return this.model.createSnapshot();
 	}
 
-	public isReadonly(): boolean {
+	puBlic isReadonly(): Boolean {
 		return false;
 	}
 
 	private disposed = false;
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.disposed = true;
 
 		this._onDispose.fire();
 	}
 
-	public isDisposed(): boolean {
+	puBlic isDisposed(): Boolean {
 		return this.disposed;
 	}
 
-	public isResolved(): boolean {
+	puBlic isResolved(): Boolean {
 		return true;
 	}
 
-	public getMode(): string | undefined {
+	puBlic getMode(): string | undefined {
 		return this.model.getModeId();
 	}
 }
 
 export interface IOpenEditorDelegate {
-	(url: string): boolean;
+	(url: string): Boolean;
 }
 
-function withTypedEditor<T>(widget: IEditor, codeEditorCallback: (editor: ICodeEditor) => T, diffEditorCallback: (editor: IDiffEditor) => T): T {
+function withTypedEditor<T>(widget: IEditor, codeEditorCallBack: (editor: ICodeEditor) => T, diffEditorCallBack: (editor: IDiffEditor) => T): T {
 	if (isCodeEditor(widget)) {
 		// Single Editor
-		return codeEditorCallback(<ICodeEditor>widget);
+		return codeEditorCallBack(<ICodeEditor>widget);
 	} else {
 		// Diff Editor
-		return diffEditorCallback(<IDiffEditor>widget);
+		return diffEditorCallBack(<IDiffEditor>widget);
 	}
 }
 
 export class SimpleEditorModelResolverService implements ITextModelService {
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private editor?: IEditor;
 
@@ -121,11 +121,11 @@ export class SimpleEditorModelResolverService implements ITextModelService {
 		@IModelService private readonly modelService: IModelService
 	) { }
 
-	public setEditor(editor: IEditor): void {
+	puBlic setEditor(editor: IEditor): void {
 		this.editor = editor;
 	}
 
-	public createModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>> {
+	puBlic createModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>> {
 		let model: ITextModel | null = null;
 		if (this.editor) {
 			model = withTypedEditor(this.editor,
@@ -141,13 +141,13 @@ export class SimpleEditorModelResolverService implements ITextModelService {
 		return Promise.resolve(new ImmortalReference(new SimpleModel(model)));
 	}
 
-	public registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposable {
+	puBlic registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposaBle {
 		return {
 			dispose: function () { /* no op */ }
 		};
 	}
 
-	public canHandleResource(resource: URI): boolean {
+	puBlic canHandleResource(resource: URI): Boolean {
 		return false;
 	}
 
@@ -170,31 +170,31 @@ export class SimpleEditorProgressService implements IEditorProgressService {
 		worked: () => { }
 	};
 
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
+	show(infinite: true, delay?: numBer): IProgressRunner;
+	show(total: numBer, delay?: numBer): IProgressRunner;
 	show(): IProgressRunner {
 		return SimpleEditorProgressService.NULL_PROGRESS_RUNNER;
 	}
 
-	showWhile(promise: Promise<any>, delay?: number): Promise<void> {
+	showWhile(promise: Promise<any>, delay?: numBer): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 }
 
 export class SimpleDialogService implements IDialogService {
 
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
-	public confirm(confirmation: IConfirmation): Promise<IConfirmationResult> {
+	puBlic confirm(confirmation: IConfirmation): Promise<IConfirmationResult> {
 		return this.doConfirm(confirmation).then(confirmed => {
 			return {
 				confirmed,
-				checkboxChecked: false // unsupported
+				checkBoxChecked: false // unsupported
 			} as IConfirmationResult;
 		});
 	}
 
-	private doConfirm(confirmation: IConfirmation): Promise<boolean> {
+	private doConfirm(confirmation: IConfirmation): Promise<Boolean> {
 		let messageText = confirmation.message;
 		if (confirmation.detail) {
 			messageText = messageText + '\n\n' + confirmation.detail;
@@ -203,58 +203,58 @@ export class SimpleDialogService implements IDialogService {
 		return Promise.resolve(window.confirm(messageText));
 	}
 
-	public show(severity: Severity, message: string, buttons: string[], options?: IDialogOptions): Promise<IShowResult> {
+	puBlic show(severity: Severity, message: string, Buttons: string[], options?: IDialogOptions): Promise<IShowResult> {
 		return Promise.resolve({ choice: 0 });
 	}
 
-	public about(): Promise<void> {
+	puBlic aBout(): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 }
 
 export class SimpleNotificationService implements INotificationService {
 
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private static readonly NO_OP: INotificationHandle = new NoOpNotification();
 
-	public info(message: string): INotificationHandle {
+	puBlic info(message: string): INotificationHandle {
 		return this.notify({ severity: Severity.Info, message });
 	}
 
-	public warn(message: string): INotificationHandle {
+	puBlic warn(message: string): INotificationHandle {
 		return this.notify({ severity: Severity.Warning, message });
 	}
 
-	public error(error: string | Error): INotificationHandle {
+	puBlic error(error: string | Error): INotificationHandle {
 		return this.notify({ severity: Severity.Error, message: error });
 	}
 
-	public notify(notification: INotification): INotificationHandle {
+	puBlic notify(notification: INotification): INotificationHandle {
 		switch (notification.severity) {
 			case Severity.Error:
 				console.error(notification.message);
-				break;
+				Break;
 			case Severity.Warning:
 				console.warn(notification.message);
-				break;
+				Break;
 			default:
 				console.log(notification.message);
-				break;
+				Break;
 		}
 
 		return SimpleNotificationService.NO_OP;
 	}
 
-	public prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
+	puBlic prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
 		return SimpleNotificationService.NO_OP;
 	}
 
-	public status(message: string | Error, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	puBlic status(message: string | Error, options?: IStatusMessageOptions): IDisposaBle {
+		return DisposaBle.None;
 	}
 
-	public setFilter(filter: NotificationsFilter): void { }
+	puBlic setFilter(filter: NotificationsFilter): void { }
 }
 
 export class StandaloneCommandService implements ICommandService {
@@ -264,14 +264,14 @@ export class StandaloneCommandService implements ICommandService {
 
 	private readonly _onWillExecuteCommand = new Emitter<ICommandEvent>();
 	private readonly _onDidExecuteCommand = new Emitter<ICommandEvent>();
-	public readonly onWillExecuteCommand: Event<ICommandEvent> = this._onWillExecuteCommand.event;
-	public readonly onDidExecuteCommand: Event<ICommandEvent> = this._onDidExecuteCommand.event;
+	puBlic readonly onWillExecuteCommand: Event<ICommandEvent> = this._onWillExecuteCommand.event;
+	puBlic readonly onDidExecuteCommand: Event<ICommandEvent> = this._onDidExecuteCommand.event;
 
 	constructor(instantiationService: IInstantiationService) {
 		this._instantiationService = instantiationService;
 	}
 
-	public executeCommand<T>(id: string, ...args: any[]): Promise<T> {
+	puBlic executeCommand<T>(id: string, ...args: any[]): Promise<T> {
 		const command = CommandsRegistry.getCommand(id);
 		if (!command) {
 			return Promise.reject(new Error(`command '${id}' not found`));
@@ -289,9 +289,9 @@ export class StandaloneCommandService implements ICommandService {
 	}
 }
 
-export class StandaloneKeybindingService extends AbstractKeybindingService {
-	private _cachedResolver: KeybindingResolver | null;
-	private readonly _dynamicKeybindings: IKeybindingItem[];
+export class StandaloneKeyBindingService extends ABstractKeyBindingService {
+	private _cachedResolver: KeyBindingResolver | null;
+	private readonly _dynamicKeyBindings: IKeyBindingItem[];
 
 	constructor(
 		contextKeyService: IContextKeyService,
@@ -304,10 +304,10 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 		super(contextKeyService, commandService, telemetryService, notificationService, logService);
 
 		this._cachedResolver = null;
-		this._dynamicKeybindings = [];
+		this._dynamicKeyBindings = [];
 
-		this._register(dom.addDisposableListener(domNode, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => {
-			let keyEvent = new StandardKeyboardEvent(e);
+		this._register(dom.addDisposaBleListener(domNode, dom.EventType.KEY_DOWN, (e: KeyBoardEvent) => {
+			let keyEvent = new StandardKeyBoardEvent(e);
 			let shouldPreventDefault = this._dispatch(keyEvent, keyEvent.target);
 			if (shouldPreventDefault) {
 				keyEvent.preventDefault();
@@ -316,14 +316,14 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 		}));
 	}
 
-	public addDynamicKeybinding(commandId: string, _keybinding: number, handler: ICommandHandler, when: ContextKeyExpression | undefined): IDisposable {
-		const keybinding = createKeybinding(_keybinding, OS);
+	puBlic addDynamicKeyBinding(commandId: string, _keyBinding: numBer, handler: ICommandHandler, when: ContextKeyExpression | undefined): IDisposaBle {
+		const keyBinding = createKeyBinding(_keyBinding, OS);
 
-		const toDispose = new DisposableStore();
+		const toDispose = new DisposaBleStore();
 
-		if (keybinding) {
-			this._dynamicKeybindings.push({
-				keybinding: keybinding,
+		if (keyBinding) {
+			this._dynamicKeyBindings.push({
+				keyBinding: keyBinding,
 				command: commandId,
 				when: when,
 				weight1: 1000,
@@ -331,12 +331,12 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 				extensionId: null
 			});
 
-			toDispose.add(toDisposable(() => {
-				for (let i = 0; i < this._dynamicKeybindings.length; i++) {
-					let kb = this._dynamicKeybindings[i];
-					if (kb.command === commandId) {
-						this._dynamicKeybindings.splice(i, 1);
-						this.updateResolver({ source: KeybindingSource.Default });
+			toDispose.add(toDisposaBle(() => {
+				for (let i = 0; i < this._dynamicKeyBindings.length; i++) {
+					let kB = this._dynamicKeyBindings[i];
+					if (kB.command === commandId) {
+						this._dynamicKeyBindings.splice(i, 1);
+						this.updateResolver({ source: KeyBindingSource.Default });
 						return;
 					}
 				}
@@ -345,42 +345,42 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 
 		toDispose.add(CommandsRegistry.registerCommand(commandId, handler));
 
-		this.updateResolver({ source: KeybindingSource.Default });
+		this.updateResolver({ source: KeyBindingSource.Default });
 
 		return toDispose;
 	}
 
-	private updateResolver(event: IKeybindingEvent): void {
+	private updateResolver(event: IKeyBindingEvent): void {
 		this._cachedResolver = null;
-		this._onDidUpdateKeybindings.fire(event);
+		this._onDidUpdateKeyBindings.fire(event);
 	}
 
-	protected _getResolver(): KeybindingResolver {
+	protected _getResolver(): KeyBindingResolver {
 		if (!this._cachedResolver) {
-			const defaults = this._toNormalizedKeybindingItems(KeybindingsRegistry.getDefaultKeybindings(), true);
-			const overrides = this._toNormalizedKeybindingItems(this._dynamicKeybindings, false);
-			this._cachedResolver = new KeybindingResolver(defaults, overrides, (str) => this._log(str));
+			const defaults = this._toNormalizedKeyBindingItems(KeyBindingsRegistry.getDefaultKeyBindings(), true);
+			const overrides = this._toNormalizedKeyBindingItems(this._dynamicKeyBindings, false);
+			this._cachedResolver = new KeyBindingResolver(defaults, overrides, (str) => this._log(str));
 		}
 		return this._cachedResolver;
 	}
 
-	protected _documentHasFocus(): boolean {
+	protected _documentHasFocus(): Boolean {
 		return document.hasFocus();
 	}
 
-	private _toNormalizedKeybindingItems(items: IKeybindingItem[], isDefault: boolean): ResolvedKeybindingItem[] {
-		let result: ResolvedKeybindingItem[] = [], resultLen = 0;
+	private _toNormalizedKeyBindingItems(items: IKeyBindingItem[], isDefault: Boolean): ResolvedKeyBindingItem[] {
+		let result: ResolvedKeyBindingItem[] = [], resultLen = 0;
 		for (const item of items) {
 			const when = item.when || undefined;
-			const keybinding = item.keybinding;
+			const keyBinding = item.keyBinding;
 
-			if (!keybinding) {
-				// This might be a removal keybinding item in user settings => accept it
-				result[resultLen++] = new ResolvedKeybindingItem(undefined, item.command, item.commandArgs, when, isDefault, null);
+			if (!keyBinding) {
+				// This might Be a removal keyBinding item in user settings => accept it
+				result[resultLen++] = new ResolvedKeyBindingItem(undefined, item.command, item.commandArgs, when, isDefault, null);
 			} else {
-				const resolvedKeybindings = this.resolveKeybinding(keybinding);
-				for (const resolvedKeybinding of resolvedKeybindings) {
-					result[resultLen++] = new ResolvedKeybindingItem(resolvedKeybinding, item.command, item.commandArgs, when, isDefault, null);
+				const resolvedKeyBindings = this.resolveKeyBinding(keyBinding);
+				for (const resolvedKeyBinding of resolvedKeyBindings) {
+					result[resultLen++] = new ResolvedKeyBindingItem(resolvedKeyBinding, item.command, item.commandArgs, when, isDefault, null);
 				}
 			}
 		}
@@ -388,41 +388,41 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 		return result;
 	}
 
-	public resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[] {
-		return [new USLayoutResolvedKeybinding(keybinding, OS)];
+	puBlic resolveKeyBinding(keyBinding: KeyBinding): ResolvedKeyBinding[] {
+		return [new USLayoutResolvedKeyBinding(keyBinding, OS)];
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
-		let keybinding = new SimpleKeybinding(
-			keyboardEvent.ctrlKey,
-			keyboardEvent.shiftKey,
-			keyboardEvent.altKey,
-			keyboardEvent.metaKey,
-			keyboardEvent.keyCode
+	puBlic resolveKeyBoardEvent(keyBoardEvent: IKeyBoardEvent): ResolvedKeyBinding {
+		let keyBinding = new SimpleKeyBinding(
+			keyBoardEvent.ctrlKey,
+			keyBoardEvent.shiftKey,
+			keyBoardEvent.altKey,
+			keyBoardEvent.metaKey,
+			keyBoardEvent.keyCode
 		).toChord();
-		return new USLayoutResolvedKeybinding(keybinding, OS);
+		return new USLayoutResolvedKeyBinding(keyBinding, OS);
 	}
 
-	public resolveUserBinding(userBinding: string): ResolvedKeybinding[] {
+	puBlic resolveUserBinding(userBinding: string): ResolvedKeyBinding[] {
 		return [];
 	}
 
-	public _dumpDebugInfo(): string {
+	puBlic _dumpDeBugInfo(): string {
 		return '';
 	}
 
-	public _dumpDebugInfoJSON(): string {
+	puBlic _dumpDeBugInfoJSON(): string {
 		return '';
 	}
 
-	public registerSchemaContribution(contribution: KeybindingsSchemaContribution): void {
+	puBlic registerSchemaContriBution(contriBution: KeyBindingsSchemaContriBution): void {
 		// noop
 	}
 }
 
 function isConfigurationOverrides(thing: any): thing is IConfigurationOverrides {
 	return thing
-		&& typeof thing === 'object'
+		&& typeof thing === 'oBject'
 		&& (!thing.overrideIdentifier || typeof thing.overrideIdentifier === 'string')
 		&& (!thing.resource || thing.resource instanceof URI);
 }
@@ -432,7 +432,7 @@ export class SimpleConfigurationService implements IConfigurationService {
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeConfiguration = new Emitter<IConfigurationChangeEvent>();
-	public readonly onDidChangeConfiguration: Event<IConfigurationChangeEvent> = this._onDidChangeConfiguration.event;
+	puBlic readonly onDidChangeConfiguration: Event<IConfigurationChangeEvent> = this._onDidChangeConfiguration.event;
 
 	private readonly _configuration: Configuration;
 
@@ -450,7 +450,7 @@ export class SimpleConfigurationService implements IConfigurationService {
 		return this._configuration.getValue(section, overrides, undefined);
 	}
 
-	public updateValues(values: [string, any][]): Promise<void> {
+	puBlic updateValues(values: [string, any][]): Promise<void> {
 		const previous = { data: this._configuration.toData() };
 
 		let changedKeys: string[] = [];
@@ -474,23 +474,23 @@ export class SimpleConfigurationService implements IConfigurationService {
 		return Promise.resolve();
 	}
 
-	public updateValue(key: string, value: any, arg3?: any, arg4?: any): Promise<void> {
+	puBlic updateValue(key: string, value: any, arg3?: any, arg4?: any): Promise<void> {
 		return this.updateValues([[key, value]]);
 	}
 
-	public inspect<C>(key: string, options: IConfigurationOverrides = {}): IConfigurationValue<C> {
+	puBlic inspect<C>(key: string, options: IConfigurationOverrides = {}): IConfigurationValue<C> {
 		return this._configuration.inspect<C>(key, options, undefined);
 	}
 
-	public keys() {
+	puBlic keys() {
 		return this._configuration.keys(undefined);
 	}
 
-	public reloadConfiguration(): Promise<void> {
+	puBlic reloadConfiguration(): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
-	public getConfigurationData(): IConfigurationData | null {
+	puBlic getConfigurationData(): IConfigurationData | null {
 		const emptyModel: IConfigurationModel = {
 			contents: {},
 			keys: [],
@@ -510,7 +510,7 @@ export class SimpleResourceConfigurationService implements ITextResourceConfigur
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeConfiguration = new Emitter<ITextResourceConfigurationChangeEvent>();
-	public readonly onDidChangeConfiguration = this._onDidChangeConfiguration.event;
+	puBlic readonly onDidChangeConfiguration = this._onDidChangeConfiguration.event;
 
 	constructor(private readonly configurationService: SimpleConfigurationService) {
 		this.configurationService.onDidChangeConfiguration((e) => {
@@ -555,90 +555,90 @@ export class SimpleResourcePropertiesService implements ITextResourcePropertiesS
 export class StandaloneTelemetryService implements ITelemetryService {
 	declare readonly _serviceBrand: undefined;
 
-	public isOptedIn = false;
-	public sendErrorTelemetry = false;
+	puBlic isOptedIn = false;
+	puBlic sendErrorTelemetry = false;
 
-	public setEnabled(value: boolean): void {
+	puBlic setEnaBled(value: Boolean): void {
 	}
 
-	public setExperimentProperty(name: string, value: string): void {
+	puBlic setExperimentProperty(name: string, value: string): void {
 	}
 
-	public publicLog(eventName: string, data?: any): Promise<void> {
+	puBlic puBlicLog(eventName: string, data?: any): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
-	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLog(eventName, data as any);
+	puBlicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+		return this.puBlicLog(eventName, data as any);
 	}
 
-	public publicLogError(eventName: string, data?: any): Promise<void> {
+	puBlic puBlicLogError(eventName: string, data?: any): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
-	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLogError(eventName, data as any);
+	puBlicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+		return this.puBlicLogError(eventName, data as any);
 	}
 
-	public getTelemetryInfo(): Promise<ITelemetryInfo> {
-		throw new Error(`Not available`);
+	puBlic getTelemetryInfo(): Promise<ITelemetryInfo> {
+		throw new Error(`Not availaBle`);
 	}
 }
 
 export class SimpleWorkspaceContextService implements IWorkspaceContextService {
 
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private static readonly SCHEME = 'inmemory';
 
 	private readonly _onDidChangeWorkspaceName = new Emitter<void>();
-	public readonly onDidChangeWorkspaceName: Event<void> = this._onDidChangeWorkspaceName.event;
+	puBlic readonly onDidChangeWorkspaceName: Event<void> = this._onDidChangeWorkspaceName.event;
 
 	private readonly _onDidChangeWorkspaceFolders = new Emitter<IWorkspaceFoldersChangeEvent>();
-	public readonly onDidChangeWorkspaceFolders: Event<IWorkspaceFoldersChangeEvent> = this._onDidChangeWorkspaceFolders.event;
+	puBlic readonly onDidChangeWorkspaceFolders: Event<IWorkspaceFoldersChangeEvent> = this._onDidChangeWorkspaceFolders.event;
 
-	private readonly _onDidChangeWorkbenchState = new Emitter<WorkbenchState>();
-	public readonly onDidChangeWorkbenchState: Event<WorkbenchState> = this._onDidChangeWorkbenchState.event;
+	private readonly _onDidChangeWorkBenchState = new Emitter<WorkBenchState>();
+	puBlic readonly onDidChangeWorkBenchState: Event<WorkBenchState> = this._onDidChangeWorkBenchState.event;
 
 	private readonly workspace: IWorkspace;
 
 	constructor() {
 		const resource = URI.from({ scheme: SimpleWorkspaceContextService.SCHEME, authority: 'model', path: '/' });
-		this.workspace = { id: '4064f6ec-cb38-4ad0-af64-ee6467e63c82', folders: [new WorkspaceFolder({ uri: resource, name: '', index: 0 })] };
+		this.workspace = { id: '4064f6ec-cB38-4ad0-af64-ee6467e63c82', folders: [new WorkspaceFolder({ uri: resource, name: '', index: 0 })] };
 	}
 
 	getCompleteWorkspace(): Promise<IWorkspace> {
 		return Promise.resolve(this.getWorkspace());
 	}
 
-	public getWorkspace(): IWorkspace {
+	puBlic getWorkspace(): IWorkspace {
 		return this.workspace;
 	}
 
-	public getWorkbenchState(): WorkbenchState {
+	puBlic getWorkBenchState(): WorkBenchState {
 		if (this.workspace) {
 			if (this.workspace.configuration) {
-				return WorkbenchState.WORKSPACE;
+				return WorkBenchState.WORKSPACE;
 			}
-			return WorkbenchState.FOLDER;
+			return WorkBenchState.FOLDER;
 		}
-		return WorkbenchState.EMPTY;
+		return WorkBenchState.EMPTY;
 	}
 
-	public getWorkspaceFolder(resource: URI): IWorkspaceFolder | null {
+	puBlic getWorkspaceFolder(resource: URI): IWorkspaceFolder | null {
 		return resource && resource.scheme === SimpleWorkspaceContextService.SCHEME ? this.workspace.folders[0] : null;
 	}
 
-	public isInsideWorkspace(resource: URI): boolean {
+	puBlic isInsideWorkspace(resource: URI): Boolean {
 		return resource && resource.scheme === SimpleWorkspaceContextService.SCHEME;
 	}
 
-	public isCurrentWorkspace(workspaceIdentifier: ISingleFolderWorkspaceIdentifier | IWorkspaceIdentifier): boolean {
+	puBlic isCurrentWorkspace(workspaceIdentifier: ISingleFolderWorkspaceIdentifier | IWorkspaceIdentifier): Boolean {
 		return true;
 	}
 }
 
-export function applyConfigurationValues(configurationService: IConfigurationService, source: any, isDiffEditor: boolean): void {
+export function applyConfigurationValues(configurationService: IConfigurationService, source: any, isDiffEditor: Boolean): void {
 	if (!source) {
 		return;
 	}
@@ -646,7 +646,7 @@ export function applyConfigurationValues(configurationService: IConfigurationSer
 		return;
 	}
 	let toUpdate: [string, any][] = [];
-	Object.keys(source).forEach((key) => {
+	OBject.keys(source).forEach((key) => {
 		if (isEditorConfigurationKey(key)) {
 			toUpdate.push([`editor.${key}`, source[key]]);
 		}
@@ -670,8 +670,8 @@ export class SimpleBulkEditService implements IBulkEditService {
 		return false;
 	}
 
-	setPreviewHandler(): IDisposable {
-		return Disposable.None;
+	setPreviewHandler(): IDisposaBle {
+		return DisposaBle.None;
 	}
 
 	async apply(edits: ResourceEdit[], _options?: IBulkEditOptions): Promise<IBulkEditResult> {
@@ -680,14 +680,14 @@ export class SimpleBulkEditService implements IBulkEditService {
 
 		for (let edit of edits) {
 			if (!(edit instanceof ResourceTextEdit)) {
-				throw new Error('bad edit - only text edits are supported');
+				throw new Error('Bad edit - only text edits are supported');
 			}
 			const model = this._modelService.getModel(edit.resource);
 			if (!model) {
-				throw new Error('bad edit - model not found');
+				throw new Error('Bad edit - model not found');
 			}
-			if (typeof edit.versionId === 'number' && model.getVersionId() !== edit.versionId) {
-				throw new Error('bad state - model changed in the meantime');
+			if (typeof edit.versionId === 'numBer' && model.getVersionId() !== edit.versionId) {
+				throw new Error('Bad state - model changed in the meantime');
 			}
 			let array = textEdits.get(model);
 			if (!array) {
@@ -709,41 +709,41 @@ export class SimpleBulkEditService implements IBulkEditService {
 		}
 
 		return {
-			ariaSummary: strings.format(SimpleServicesNLS.bulkEditServiceSummary, totalEdits, totalFiles)
+			ariaSummary: strings.format(SimpleServicesNLS.BulkEditServiceSummary, totalEdits, totalFiles)
 		};
 	}
 }
 
-export class SimpleUriLabelService implements ILabelService {
+export class SimpleUriLaBelService implements ILaBelService {
 
 	declare readonly _serviceBrand: undefined;
 
-	public readonly onDidChangeFormatters: Event<IFormatterChangeEvent> = Event.None;
+	puBlic readonly onDidChangeFormatters: Event<IFormatterChangeEvent> = Event.None;
 
-	public getUriLabel(resource: URI, options?: { relative?: boolean, forceNoTildify?: boolean }): string {
+	puBlic getUriLaBel(resource: URI, options?: { relative?: Boolean, forceNoTildify?: Boolean }): string {
 		if (resource.scheme === 'file') {
 			return resource.fsPath;
 		}
 		return resource.path;
 	}
 
-	getUriBasenameLabel(resource: URI): string {
-		return basename(resource);
+	getUriBasenameLaBel(resource: URI): string {
+		return Basename(resource);
 	}
 
-	public getWorkspaceLabel(workspace: IWorkspaceIdentifier | URI | IWorkspace, options?: { verbose: boolean; }): string {
+	puBlic getWorkspaceLaBel(workspace: IWorkspaceIdentifier | URI | IWorkspace, options?: { verBose: Boolean; }): string {
 		return '';
 	}
 
-	public getSeparator(scheme: string, authority?: string): '/' | '\\' {
+	puBlic getSeparator(scheme: string, authority?: string): '/' | '\\' {
 		return '/';
 	}
 
-	public registerFormatter(formatter: ResourceLabelFormatter): IDisposable {
+	puBlic registerFormatter(formatter: ResourceLaBelFormatter): IDisposaBle {
 		throw new Error('Not implemented');
 	}
 
-	public getHostLabel(): string {
+	puBlic getHostLaBel(): string {
 		return '';
 	}
 }
@@ -751,12 +751,12 @@ export class SimpleUriLabelService implements ILabelService {
 export class SimpleLayoutService implements ILayoutService {
 	declare readonly _serviceBrand: undefined;
 
-	public onLayout = Event.None;
+	puBlic onLayout = Event.None;
 
 	private _dimension?: dom.IDimension;
 	get dimension(): dom.IDimension {
 		if (!this._dimension) {
-			this._dimension = dom.getClientArea(window.document.body);
+			this._dimension = dom.getClientArea(window.document.Body);
 		}
 
 		return this._dimension;

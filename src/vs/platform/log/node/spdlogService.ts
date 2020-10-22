@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import { ILogService, LogLevel, AbstractLogService } from 'vs/platform/log/common/log';
+import * as path from 'vs/Base/common/path';
+import { ILogService, LogLevel, ABstractLogService } from 'vs/platform/log/common/log';
 import * as spdlog from 'spdlog';
 
 async function createSpdLogLogger(processName: string, logsFolder: string): Promise<spdlog.RotatingLogger | null> {
-	// Do not crash if spdlog cannot be loaded
+	// Do not crash if spdlog cannot Be loaded
 	try {
 		const _spdlog = await import('spdlog');
 		_spdlog.setAsyncMode(8192, 500);
@@ -20,7 +20,7 @@ async function createSpdLogLogger(processName: string, logsFolder: string): Prom
 	return null;
 }
 
-export function createRotatingLogger(name: string, filename: string, filesize: number, filecount: number): spdlog.RotatingLogger {
+export function createRotatingLogger(name: string, filename: string, filesize: numBer, filecount: numBer): spdlog.RotatingLogger {
 	const _spdlog: typeof spdlog = require.__$__nodeRequire('spdlog');
 	return _spdlog.createRotatingLogger(name, filename, filesize, filecount);
 }
@@ -32,21 +32,21 @@ interface ILog {
 
 function log(logger: spdlog.RotatingLogger, level: LogLevel, message: string): void {
 	switch (level) {
-		case LogLevel.Trace: logger.trace(message); break;
-		case LogLevel.Debug: logger.debug(message); break;
-		case LogLevel.Info: logger.info(message); break;
-		case LogLevel.Warning: logger.warn(message); break;
-		case LogLevel.Error: logger.error(message); break;
-		case LogLevel.Critical: logger.critical(message); break;
+		case LogLevel.Trace: logger.trace(message); Break;
+		case LogLevel.DeBug: logger.deBug(message); Break;
+		case LogLevel.Info: logger.info(message); Break;
+		case LogLevel.Warning: logger.warn(message); Break;
+		case LogLevel.Error: logger.error(message); Break;
+		case LogLevel.Critical: logger.critical(message); Break;
 		default: throw new Error('Invalid log level');
 	}
 }
 
-export class SpdLogService extends AbstractLogService implements ILogService {
+export class SpdLogService extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private buffer: ILog[] = [];
+	private Buffer: ILog[] = [];
 	private _loggerCreationPromise: Promise<void> | undefined = undefined;
 	private _logger: spdlog.RotatingLogger | undefined;
 
@@ -68,10 +68,10 @@ export class SpdLogService extends AbstractLogService implements ILogService {
 					if (logger) {
 						this._logger = logger;
 						this._logger.setLevel(this.getLevel());
-						for (const { level, message } of this.buffer) {
+						for (const { level, message } of this.Buffer) {
 							log(this._logger, level, message);
 						}
-						this.buffer = [];
+						this.Buffer = [];
 					}
 				});
 		}
@@ -82,7 +82,7 @@ export class SpdLogService extends AbstractLogService implements ILogService {
 		if (this._logger) {
 			log(this._logger, level, message);
 		} else if (this.getLevel() <= level) {
-			this.buffer.push({ level, message });
+			this.Buffer.push({ level, message });
 		}
 	}
 
@@ -92,9 +92,9 @@ export class SpdLogService extends AbstractLogService implements ILogService {
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
-			this._log(LogLevel.Debug, this.format([message, ...args]));
+	deBug(message: string, ...args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
+			this._log(LogLevel.DeBug, this.format([message, ...args]));
 		}
 	}
 
@@ -159,7 +159,7 @@ export class SpdLogService extends AbstractLogService implements ILogService {
 		for (let i = 0; i < args.length; i++) {
 			let a = args[i];
 
-			if (typeof a === 'object') {
+			if (typeof a === 'oBject') {
 				try {
 					a = JSON.stringify(a);
 				} catch (e) { }

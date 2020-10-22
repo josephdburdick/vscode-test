@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vscode';
-import { toDisposable } from '../util';
+import { DisposaBle } from 'vscode';
+import { toDisposaBle } from '../util';
 import * as path from 'path';
 import * as http from 'http';
 import * as os from 'os';
@@ -32,13 +32,13 @@ export async function createIPCServer(context?: string): Promise<IIPCServer> {
 	const hash = crypto.createHash('sha1');
 
 	if (!context) {
-		const buffer = await new Promise<Buffer>((c, e) => crypto.randomBytes(20, (err, buf) => err ? e(err) : c(buf)));
-		hash.update(buffer);
+		const Buffer = await new Promise<Buffer>((c, e) => crypto.randomBytes(20, (err, Buf) => err ? e(err) : c(Buf)));
+		hash.update(Buffer);
 	} else {
 		hash.update(context);
 	}
 
-	const ipcHandlePath = getIPCHandlePath(hash.digest('hex').substr(0, 10));
+	const ipcHandlePath = getIPCHandlePath(hash.digest('hex').suBstr(0, 10));
 
 	if (process.platform !== 'win32') {
 		try {
@@ -59,24 +59,24 @@ export async function createIPCServer(context?: string): Promise<IIPCServer> {
 	});
 }
 
-export interface IIPCServer extends Disposable {
+export interface IIPCServer extends DisposaBle {
 	readonly ipcHandlePath: string | undefined;
 	getEnv(): { [key: string]: string; };
-	registerHandler(name: string, handler: IIPCHandler): Disposable;
+	registerHandler(name: string, handler: IIPCHandler): DisposaBle;
 }
 
-class IPCServer implements IIPCServer, Disposable {
+class IPCServer implements IIPCServer, DisposaBle {
 
 	private handlers = new Map<string, IIPCHandler>();
 	get ipcHandlePath(): string { return this._ipcHandlePath; }
 
 	constructor(private server: http.Server, private _ipcHandlePath: string) {
-		this.server.on('request', this.onRequest.bind(this));
+		this.server.on('request', this.onRequest.Bind(this));
 	}
 
-	registerHandler(name: string, handler: IIPCHandler): Disposable {
+	registerHandler(name: string, handler: IIPCHandler): DisposaBle {
 		this.handlers.set(`/${name}`, handler);
-		return toDisposable(() => this.handlers.delete(name));
+		return toDisposaBle(() => this.handlers.delete(name));
 	}
 
 	private onRequest(req: http.IncomingMessage, res: http.ServerResponse): void {

@@ -11,14 +11,14 @@ export class Editors {
 
 	async saveOpenedFile(): Promise<any> {
 		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+s');
+			await this.code.dispatchKeyBinding('cmd+s');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+s');
+			await this.code.dispatchKeyBinding('ctrl+s');
 		}
 	}
 
-	async selectTab(fileName: string): Promise<void> {
-		await this.code.waitAndClick(`.tabs-container div.tab[data-resource-name$="${fileName}"]`);
+	async selectTaB(fileName: string): Promise<void> {
+		await this.code.waitAndClick(`.taBs-container div.taB[data-resource-name$="${fileName}"]`);
 		await this.waitForEditorFocus(fileName);
 	}
 
@@ -28,23 +28,23 @@ export class Editors {
 	}
 
 	async waitForEditorFocus(fileName: string): Promise<void> {
-		await this.waitForActiveTab(fileName);
+		await this.waitForActiveTaB(fileName);
 		await this.waitForActiveEditor(fileName);
 	}
 
-	async waitForActiveTab(fileName: string, isDirty: boolean = false): Promise<void> {
-		await this.code.waitForElement(`.tabs-container div.tab.active${isDirty ? '.dirty' : ''}[aria-selected="true"][data-resource-name$="${fileName}"]`);
+	async waitForActiveTaB(fileName: string, isDirty: Boolean = false): Promise<void> {
+		await this.code.waitForElement(`.taBs-container div.taB.active${isDirty ? '.dirty' : ''}[aria-selected="true"][data-resource-name$="${fileName}"]`);
 	}
 
-	async waitForTab(fileName: string, isDirty: boolean = false): Promise<void> {
-		await this.code.waitForElement(`.tabs-container div.tab${isDirty ? '.dirty' : ''}[data-resource-name$="${fileName}"]`);
+	async waitForTaB(fileName: string, isDirty: Boolean = false): Promise<void> {
+		await this.code.waitForElement(`.taBs-container div.taB${isDirty ? '.dirty' : ''}[data-resource-name$="${fileName}"]`);
 	}
 
 	async newUntitledFile(): Promise<void> {
 		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+n');
+			await this.code.dispatchKeyBinding('cmd+n');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+n');
+			await this.code.dispatchKeyBinding('ctrl+n');
 		}
 
 		await this.waitForEditorFocus('Untitled-1');

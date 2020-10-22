@@ -4,57 +4,57 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IURLService } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractURLService } from 'vs/platform/url/common/urlService';
-import { Event } from 'vs/base/common/event';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { ABstractURLService } from 'vs/platform/url/common/urlService';
+import { Event } from 'vs/Base/common/event';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
-export interface IURLCallbackProvider {
+export interface IURLCallBackProvider {
 
 	/**
-	 * Indicates that a Uri has been opened outside of VSCode. The Uri
-	 * will be forwarded to all installed Uri handlers in the system.
+	 * Indicates that a Uri has Been opened outside of VSCode. The Uri
+	 * will Be forwarded to all installed Uri handlers in the system.
 	 */
-	readonly onCallback: Event<URI>;
+	readonly onCallBack: Event<URI>;
 
 	/**
-	 * Creates a Uri that - if opened in a browser - must result in
-	 * the `onCallback` to fire.
+	 * Creates a Uri that - if opened in a Browser - must result in
+	 * the `onCallBack` to fire.
 	 *
-	 * The optional `Partial<UriComponents>` must be properly restored for
-	 * the Uri passed to the `onCallback` handler.
+	 * The optional `Partial<UriComponents>` must Be properly restored for
+	 * the Uri passed to the `onCallBack` handler.
 	 *
-	 * For example: if a Uri is to be created with `scheme:"vscode"`,
-	 * `authority:"foo"` and `path:"bar"` the `onCallback` should fire
-	 * with a Uri `vscode://foo/bar`.
+	 * For example: if a Uri is to Be created with `scheme:"vscode"`,
+	 * `authority:"foo"` and `path:"Bar"` the `onCallBack` should fire
+	 * with a Uri `vscode://foo/Bar`.
 	 *
 	 * If there are additional `query` values in the Uri, they should
-	 * be added to the list of provided `query` arguments from the
+	 * Be added to the list of provided `query` arguments from the
 	 * `Partial<UriComponents>`.
 	 */
 	create(options?: Partial<UriComponents>): URI;
 }
 
-export class BrowserURLService extends AbstractURLService {
+export class BrowserURLService extends ABstractURLService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private provider: IURLCallbackProvider | undefined;
+	private provider: IURLCallBackProvider | undefined;
 
 	constructor(
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService
 	) {
 		super();
 
-		this.provider = environmentService.options?.urlCallbackProvider;
+		this.provider = environmentService.options?.urlCallBackProvider;
 
 		this.registerListeners();
 	}
 
 	private registerListeners(): void {
 		if (this.provider) {
-			this._register(this.provider.onCallback(uri => this.open(uri, { trusted: true })));
+			this._register(this.provider.onCallBack(uri => this.open(uri, { trusted: true })));
 		}
 	}
 

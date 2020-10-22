@@ -5,12 +5,12 @@
 
 export interface Lazy<T> {
 	value: T;
-	hasValue: boolean;
+	hasValue: Boolean;
 	map<R>(f: (x: T) => R): Lazy<R>;
 }
 
 class LazyValue<T> implements Lazy<T> {
-	private _hasValue: boolean = false;
+	private _hasValue: Boolean = false;
 	private _value?: T;
 
 	constructor(
@@ -25,11 +25,11 @@ class LazyValue<T> implements Lazy<T> {
 		return this._value!;
 	}
 
-	get hasValue(): boolean {
+	get hasValue(): Boolean {
 		return this._hasValue;
 	}
 
-	public map<R>(f: (x: T) => R): Lazy<R> {
+	puBlic map<R>(f: (x: T) => R): Lazy<R> {
 		return new LazyValue(() => f(this.value));
 	}
 }

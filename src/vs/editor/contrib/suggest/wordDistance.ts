@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { binarySearch, isFalsyOrEmpty } from 'vs/base/common/arrays';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { BinarySearch, isFalsyOrEmpty } from 'vs/Base/common/arrays';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { IPosition } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { CompletionItem, CompletionItemKind } from 'vs/editor/common/modes';
-import { BracketSelectionRangeProvider } from 'vs/editor/contrib/smartSelect/bracketSelections';
+import { BracketSelectionRangeProvider } from 'vs/editor/contriB/smartSelect/BracketSelections';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export abstract class WordDistance {
+export aBstract class WordDistance {
 
 	static readonly None = new class extends WordDistance {
 		distance() { return 0; }
@@ -57,26 +57,26 @@ export abstract class WordDistance {
 				if (suggestion.kind === CompletionItemKind.Keyword) {
 					return 2 << 20;
 				}
-				let word = typeof suggestion.label === 'string' ? suggestion.label : suggestion.label.name;
+				let word = typeof suggestion.laBel === 'string' ? suggestion.laBel : suggestion.laBel.name;
 				let wordLines = wordRanges[word];
 				if (isFalsyOrEmpty(wordLines)) {
 					return 2 << 20;
 				}
-				let idx = binarySearch(wordLines, Range.fromPositions(anchor), Range.compareRangesUsingStarts);
-				let bestWordRange = idx >= 0 ? wordLines[idx] : wordLines[Math.max(0, ~idx - 1)];
-				let blockDistance = ranges.length;
+				let idx = BinarySearch(wordLines, Range.fromPositions(anchor), Range.compareRangesUsingStarts);
+				let BestWordRange = idx >= 0 ? wordLines[idx] : wordLines[Math.max(0, ~idx - 1)];
+				let BlockDistance = ranges.length;
 				for (const range of ranges) {
-					if (!Range.containsRange(range.range, bestWordRange)) {
-						break;
+					if (!Range.containsRange(range.range, BestWordRange)) {
+						Break;
 					}
-					blockDistance -= 1;
+					BlockDistance -= 1;
 				}
-				return blockDistance;
+				return BlockDistance;
 			}
 		};
 	}
 
-	abstract distance(anchor: IPosition, suggestion: CompletionItem): number;
+	aBstract distance(anchor: IPosition, suggestion: CompletionItem): numBer;
 }
 
 

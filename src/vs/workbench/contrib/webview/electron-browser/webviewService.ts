@@ -5,13 +5,13 @@
 
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { DynamicWebviewEditorOverlay } from 'vs/workbench/contrib/webview/browser/dynamicWebviewEditorOverlay';
-import { WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewOptions, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { WebviewService } from 'vs/workbench/contrib/webview/browser/webviewService';
-import { ElectronIframeWebview } from 'vs/workbench/contrib/webview/electron-sandbox/iframeWebviewElement';
-import { ElectronWebviewBasedWebview } from 'vs/workbench/contrib/webview/electron-browser/webviewElement';
+import { DynamicWeBviewEditorOverlay } from 'vs/workBench/contriB/weBview/Browser/dynamicWeBviewEditorOverlay';
+import { WeBviewContentOptions, WeBviewElement, WeBviewExtensionDescription, WeBviewOptions, WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { WeBviewService } from 'vs/workBench/contriB/weBview/Browser/weBviewService';
+import { ElectronIframeWeBview } from 'vs/workBench/contriB/weBview/electron-sandBox/iframeWeBviewElement';
+import { ElectronWeBviewBasedWeBview } from 'vs/workBench/contriB/weBview/electron-Browser/weBviewElement';
 
-export class ElectronWebviewService extends WebviewService {
+export class ElectronWeBviewService extends WeBviewService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
@@ -21,26 +21,26 @@ export class ElectronWebviewService extends WebviewService {
 		super(instantiationService);
 	}
 
-	createWebviewElement(
+	createWeBviewElement(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewElement {
-		const useIframes = this._configService.getValue<string>('webview.experimental.useIframes');
-		const webview = this._instantiationService.createInstance(useIframes ? ElectronIframeWebview : ElectronWebviewBasedWebview, id, options, contentOptions, extension, this._webviewThemeDataProvider);
-		this.addWebviewListeners(webview);
-		return webview;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewElement {
+		const useIframes = this._configService.getValue<string>('weBview.experimental.useIframes');
+		const weBview = this._instantiationService.createInstance(useIframes ? ElectronIframeWeBview : ElectronWeBviewBasedWeBview, id, options, contentOptions, extension, this._weBviewThemeDataProvider);
+		this.addWeBviewListeners(weBview);
+		return weBview;
 	}
 
-	createWebviewOverlay(
+	createWeBviewOverlay(
 		id: string,
-		options: WebviewOptions,
-		contentOptions: WebviewContentOptions,
-		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay {
-		const webview = this._instantiationService.createInstance(DynamicWebviewEditorOverlay, id, options, contentOptions, extension);
-		this.addWebviewListeners(webview);
-		return webview;
+		options: WeBviewOptions,
+		contentOptions: WeBviewContentOptions,
+		extension: WeBviewExtensionDescription | undefined,
+	): WeBviewOverlay {
+		const weBview = this._instantiationService.createInstance(DynamicWeBviewEditorOverlay, id, options, contentOptions, extension);
+		this.addWeBviewListeners(weBview);
+		return weBview;
 	}
 }

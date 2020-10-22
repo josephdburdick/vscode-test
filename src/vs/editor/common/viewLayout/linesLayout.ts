@@ -5,28 +5,28 @@
 
 import { IPartialViewLinesViewportData } from 'vs/editor/common/viewLayout/viewLinesViewportData';
 import { IViewWhitespaceViewportData } from 'vs/editor/common/viewModel/viewModel';
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 
 export interface IEditorWhitespace {
 	readonly id: string;
-	readonly afterLineNumber: number;
-	readonly height: number;
+	readonly afterLineNumBer: numBer;
+	readonly height: numBer;
 }
 
 /**
- * An accessor that allows for whtiespace to be added, removed or changed in bulk.
+ * An accessor that allows for whtiespace to Be added, removed or changed in Bulk.
  */
 export interface IWhitespaceChangeAccessor {
-	insertWhitespace(afterLineNumber: number, ordinal: number, heightInPx: number, minWidth: number): string;
-	changeOneWhitespace(id: string, newAfterLineNumber: number, newHeight: number): void;
+	insertWhitespace(afterLineNumBer: numBer, ordinal: numBer, heightInPx: numBer, minWidth: numBer): string;
+	changeOneWhitespace(id: string, newAfterLineNumBer: numBer, newHeight: numBer): void;
 	removeWhitespace(id: string): void;
 }
 
-interface IPendingChange { id: string; newAfterLineNumber: number; newHeight: number; }
+interface IPendingChange { id: string; newAfterLineNumBer: numBer; newHeight: numBer; }
 interface IPendingRemove { id: string; }
 
 class PendingChanges {
-	private _hasPending: boolean;
+	private _hasPending: Boolean;
 	private _inserts: EditorWhitespace[];
 	private _changes: IPendingChange[];
 	private _removes: IPendingRemove[];
@@ -38,26 +38,26 @@ class PendingChanges {
 		this._removes = [];
 	}
 
-	public insert(x: EditorWhitespace): void {
+	puBlic insert(x: EditorWhitespace): void {
 		this._hasPending = true;
 		this._inserts.push(x);
 	}
 
-	public change(x: IPendingChange): void {
+	puBlic change(x: IPendingChange): void {
 		this._hasPending = true;
 		this._changes.push(x);
 	}
 
-	public remove(x: IPendingRemove): void {
+	puBlic remove(x: IPendingRemove): void {
 		this._hasPending = true;
 		this._removes.push(x);
 	}
 
-	public mustCommit(): boolean {
+	puBlic mustCommit(): Boolean {
 		return this._hasPending;
 	}
 
-	public commit(linesLayout: LinesLayout): void {
+	puBlic commit(linesLayout: LinesLayout): void {
 		if (!this._hasPending) {
 			return;
 		}
@@ -76,16 +76,16 @@ class PendingChanges {
 }
 
 export class EditorWhitespace implements IEditorWhitespace {
-	public id: string;
-	public afterLineNumber: number;
-	public ordinal: number;
-	public height: number;
-	public minWidth: number;
-	public prefixSum: number;
+	puBlic id: string;
+	puBlic afterLineNumBer: numBer;
+	puBlic ordinal: numBer;
+	puBlic height: numBer;
+	puBlic minWidth: numBer;
+	puBlic prefixSum: numBer;
 
-	constructor(id: string, afterLineNumber: number, ordinal: number, height: number, minWidth: number) {
+	constructor(id: string, afterLineNumBer: numBer, ordinal: numBer, height: numBer, minWidth: numBer) {
 		this.id = id;
-		this.afterLineNumber = afterLineNumber;
+		this.afterLineNumBer = afterLineNumBer;
 		this.ordinal = ordinal;
 		this.height = height;
 		this.minWidth = minWidth;
@@ -94,9 +94,9 @@ export class EditorWhitespace implements IEditorWhitespace {
 }
 
 /**
- * Layouting of objects that take vertical space (by having a height) and push down other objects.
+ * Layouting of oBjects that take vertical space (By having a height) and push down other oBjects.
  *
- * These objects are basically either text (lines) or spaces between those lines (whitespaces).
+ * These oBjects are Basically either text (lines) or spaces Between those lines (whitespaces).
  * This provides commodity operations for working with lines that contain whitespace that pushes lines lower (vertically).
  */
 export class LinesLayout {
@@ -105,22 +105,22 @@ export class LinesLayout {
 
 	private readonly _instanceId: string;
 	private readonly _pendingChanges: PendingChanges;
-	private _lastWhitespaceId: number;
+	private _lastWhitespaceId: numBer;
 	private _arr: EditorWhitespace[];
-	private _prefixSumValidIndex: number;
-	private _minWidth: number;
-	private _lineCount: number;
-	private _lineHeight: number;
-	private _paddingTop: number;
-	private _paddingBottom: number;
+	private _prefixSumValidIndex: numBer;
+	private _minWidth: numBer;
+	private _lineCount: numBer;
+	private _lineHeight: numBer;
+	private _paddingTop: numBer;
+	private _paddingBottom: numBer;
 
-	constructor(lineCount: number, lineHeight: number, paddingTop: number, paddingBottom: number) {
+	constructor(lineCount: numBer, lineHeight: numBer, paddingTop: numBer, paddingBottom: numBer) {
 		this._instanceId = strings.singleLetterHash(++LinesLayout.INSTANCE_COUNT);
 		this._pendingChanges = new PendingChanges();
 		this._lastWhitespaceId = 0;
 		this._arr = [];
 		this._prefixSumValidIndex = -1;
-		this._minWidth = -1; /* marker for not being computed */
+		this._minWidth = -1; /* marker for not Being computed */
 		this._lineCount = lineCount;
 		this._lineHeight = lineHeight;
 		this._paddingTop = paddingTop;
@@ -129,22 +129,22 @@ export class LinesLayout {
 
 	/**
 	 * Find the insertion index for a new value inside a sorted array of values.
-	 * If the value is already present in the sorted array, the insertion index will be after the already existing value.
+	 * If the value is already present in the sorted array, the insertion index will Be after the already existing value.
 	 */
-	public static findInsertionIndex(arr: EditorWhitespace[], afterLineNumber: number, ordinal: number): number {
+	puBlic static findInsertionIndex(arr: EditorWhitespace[], afterLineNumBer: numBer, ordinal: numBer): numBer {
 		let low = 0;
 		let high = arr.length;
 
 		while (low < high) {
 			const mid = ((low + high) >>> 1);
 
-			if (afterLineNumber === arr[mid].afterLineNumber) {
+			if (afterLineNumBer === arr[mid].afterLineNumBer) {
 				if (ordinal < arr[mid].ordinal) {
 					high = mid;
 				} else {
 					low = mid + 1;
 				}
-			} else if (afterLineNumber < arr[mid].afterLineNumber) {
+			} else if (afterLineNumBer < arr[mid].afterLineNumBer) {
 				high = mid;
 			} else {
 				low = mid + 1;
@@ -157,7 +157,7 @@ export class LinesLayout {
 	/**
 	 * Change the height of a line in pixels.
 	 */
-	public setLineHeight(lineHeight: number): void {
+	puBlic setLineHeight(lineHeight: numBer): void {
 		this._checkPendingChanges();
 		this._lineHeight = lineHeight;
 	}
@@ -165,56 +165,56 @@ export class LinesLayout {
 	/**
 	 * Changes the padding used to calculate vertical offsets.
 	 */
-	public setPadding(paddingTop: number, paddingBottom: number): void {
+	puBlic setPadding(paddingTop: numBer, paddingBottom: numBer): void {
 		this._paddingTop = paddingTop;
 		this._paddingBottom = paddingBottom;
 	}
 
 	/**
-	 * Set the number of lines.
+	 * Set the numBer of lines.
 	 *
-	 * @param lineCount New number of lines.
+	 * @param lineCount New numBer of lines.
 	 */
-	public onFlushed(lineCount: number): void {
+	puBlic onFlushed(lineCount: numBer): void {
 		this._checkPendingChanges();
 		this._lineCount = lineCount;
 	}
 
-	public changeWhitespace(callback: (accessor: IWhitespaceChangeAccessor) => void): boolean {
+	puBlic changeWhitespace(callBack: (accessor: IWhitespaceChangeAccessor) => void): Boolean {
 		let hadAChange = false;
 		try {
 			const accessor: IWhitespaceChangeAccessor = {
-				insertWhitespace: (afterLineNumber: number, ordinal: number, heightInPx: number, minWidth: number): string => {
+				insertWhitespace: (afterLineNumBer: numBer, ordinal: numBer, heightInPx: numBer, minWidth: numBer): string => {
 					hadAChange = true;
-					afterLineNumber = afterLineNumber | 0;
+					afterLineNumBer = afterLineNumBer | 0;
 					ordinal = ordinal | 0;
 					heightInPx = heightInPx | 0;
 					minWidth = minWidth | 0;
 					const id = this._instanceId + (++this._lastWhitespaceId);
-					this._pendingChanges.insert(new EditorWhitespace(id, afterLineNumber, ordinal, heightInPx, minWidth));
+					this._pendingChanges.insert(new EditorWhitespace(id, afterLineNumBer, ordinal, heightInPx, minWidth));
 					return id;
 				},
-				changeOneWhitespace: (id: string, newAfterLineNumber: number, newHeight: number): void => {
+				changeOneWhitespace: (id: string, newAfterLineNumBer: numBer, newHeight: numBer): void => {
 					hadAChange = true;
-					newAfterLineNumber = newAfterLineNumber | 0;
+					newAfterLineNumBer = newAfterLineNumBer | 0;
 					newHeight = newHeight | 0;
-					this._pendingChanges.change({ id, newAfterLineNumber, newHeight });
+					this._pendingChanges.change({ id, newAfterLineNumBer, newHeight });
 				},
 				removeWhitespace: (id: string): void => {
 					hadAChange = true;
 					this._pendingChanges.remove({ id });
 				}
 			};
-			callback(accessor);
+			callBack(accessor);
 		} finally {
 			this._pendingChanges.commit(this);
 		}
 		return hadAChange;
 	}
 
-	public _commitPendingChanges(inserts: EditorWhitespace[], changes: IPendingChange[], removes: IPendingRemove[]): void {
+	puBlic _commitPendingChanges(inserts: EditorWhitespace[], changes: IPendingChange[], removes: IPendingRemove[]): void {
 		if (inserts.length > 0 || removes.length > 0) {
-			this._minWidth = -1; /* marker for not being computed */
+			this._minWidth = -1; /* marker for not Being computed */
 		}
 
 		if (inserts.length + changes.length + removes.length <= 1) {
@@ -223,7 +223,7 @@ export class LinesLayout {
 				this._insertWhitespace(insert);
 			}
 			for (const change of changes) {
-				this._changeOneWhitespace(change.id, change.newAfterLineNumber, change.newHeight);
+				this._changeOneWhitespace(change.id, change.newAfterLineNumBer, change.newHeight);
 			}
 			for (const remove of removes) {
 				const index = this._findWhitespaceIndex(remove.id);
@@ -235,7 +235,7 @@ export class LinesLayout {
 			return;
 		}
 
-		// simply rebuild the entire datastructure
+		// simply reBuild the entire datastructure
 
 		const toRemove = new Set<string>();
 		for (const remove of removes) {
@@ -255,7 +255,7 @@ export class LinesLayout {
 				}
 				if (toChange.has(whitespace.id)) {
 					const change = toChange.get(whitespace.id)!;
-					whitespace.afterLineNumber = change.newAfterLineNumber;
+					whitespace.afterLineNumBer = change.newAfterLineNumBer;
 					whitespace.height = change.newHeight;
 				}
 				result.push(whitespace);
@@ -264,11 +264,11 @@ export class LinesLayout {
 		};
 
 		const result = applyRemoveAndChange(this._arr).concat(applyRemoveAndChange(inserts));
-		result.sort((a, b) => {
-			if (a.afterLineNumber === b.afterLineNumber) {
-				return a.ordinal - b.ordinal;
+		result.sort((a, B) => {
+			if (a.afterLineNumBer === B.afterLineNumBer) {
+				return a.ordinal - B.ordinal;
 			}
-			return a.afterLineNumber - b.afterLineNumber;
+			return a.afterLineNumBer - B.afterLineNumBer;
 		});
 
 		this._arr = result;
@@ -282,12 +282,12 @@ export class LinesLayout {
 	}
 
 	private _insertWhitespace(whitespace: EditorWhitespace): void {
-		const insertIndex = LinesLayout.findInsertionIndex(this._arr, whitespace.afterLineNumber, whitespace.ordinal);
+		const insertIndex = LinesLayout.findInsertionIndex(this._arr, whitespace.afterLineNumBer, whitespace.ordinal);
 		this._arr.splice(insertIndex, 0, whitespace);
 		this._prefixSumValidIndex = Math.min(this._prefixSumValidIndex, insertIndex - 1);
 	}
 
-	private _findWhitespaceIndex(id: string): number {
+	private _findWhitespaceIndex(id: string): numBer {
 		const arr = this._arr;
 		for (let i = 0, len = arr.length; i < len; i++) {
 			if (arr[i].id === id) {
@@ -297,7 +297,7 @@ export class LinesLayout {
 		return -1;
 	}
 
-	private _changeOneWhitespace(id: string, newAfterLineNumber: number, newHeight: number): void {
+	private _changeOneWhitespace(id: string, newAfterLineNumBer: numBer, newHeight: numBer): void {
 		const index = this._findWhitespaceIndex(id);
 		if (index === -1) {
 			return;
@@ -306,71 +306,71 @@ export class LinesLayout {
 			this._arr[index].height = newHeight;
 			this._prefixSumValidIndex = Math.min(this._prefixSumValidIndex, index - 1);
 		}
-		if (this._arr[index].afterLineNumber !== newAfterLineNumber) {
-			// `afterLineNumber` changed for this whitespace
+		if (this._arr[index].afterLineNumBer !== newAfterLineNumBer) {
+			// `afterLineNumBer` changed for this whitespace
 
 			// Record old whitespace
 			const whitespace = this._arr[index];
 
-			// Since changing `afterLineNumber` can trigger a reordering, we're gonna remove this whitespace
+			// Since changing `afterLineNumBer` can trigger a reordering, we're gonna remove this whitespace
 			this._removeWhitespace(index);
 
-			whitespace.afterLineNumber = newAfterLineNumber;
+			whitespace.afterLineNumBer = newAfterLineNumBer;
 
 			// And add it again
 			this._insertWhitespace(whitespace);
 		}
 	}
 
-	private _removeWhitespace(removeIndex: number): void {
+	private _removeWhitespace(removeIndex: numBer): void {
 		this._arr.splice(removeIndex, 1);
 		this._prefixSumValidIndex = Math.min(this._prefixSumValidIndex, removeIndex - 1);
 	}
 
 	/**
-	 * Notify the layouter that lines have been deleted (a continuous zone of lines).
+	 * Notify the layouter that lines have Been deleted (a continuous zone of lines).
 	 *
-	 * @param fromLineNumber The line number at which the deletion started, inclusive
-	 * @param toLineNumber The line number at which the deletion ended, inclusive
+	 * @param fromLineNumBer The line numBer at which the deletion started, inclusive
+	 * @param toLineNumBer The line numBer at which the deletion ended, inclusive
 	 */
-	public onLinesDeleted(fromLineNumber: number, toLineNumber: number): void {
+	puBlic onLinesDeleted(fromLineNumBer: numBer, toLineNumBer: numBer): void {
 		this._checkPendingChanges();
-		fromLineNumber = fromLineNumber | 0;
-		toLineNumber = toLineNumber | 0;
+		fromLineNumBer = fromLineNumBer | 0;
+		toLineNumBer = toLineNumBer | 0;
 
-		this._lineCount -= (toLineNumber - fromLineNumber + 1);
+		this._lineCount -= (toLineNumBer - fromLineNumBer + 1);
 		for (let i = 0, len = this._arr.length; i < len; i++) {
-			const afterLineNumber = this._arr[i].afterLineNumber;
+			const afterLineNumBer = this._arr[i].afterLineNumBer;
 
-			if (fromLineNumber <= afterLineNumber && afterLineNumber <= toLineNumber) {
-				// The line this whitespace was after has been deleted
-				//  => move whitespace to before first deleted line
-				this._arr[i].afterLineNumber = fromLineNumber - 1;
-			} else if (afterLineNumber > toLineNumber) {
-				// The line this whitespace was after has been moved up
+			if (fromLineNumBer <= afterLineNumBer && afterLineNumBer <= toLineNumBer) {
+				// The line this whitespace was after has Been deleted
+				//  => move whitespace to Before first deleted line
+				this._arr[i].afterLineNumBer = fromLineNumBer - 1;
+			} else if (afterLineNumBer > toLineNumBer) {
+				// The line this whitespace was after has Been moved up
 				//  => move whitespace up
-				this._arr[i].afterLineNumber -= (toLineNumber - fromLineNumber + 1);
+				this._arr[i].afterLineNumBer -= (toLineNumBer - fromLineNumBer + 1);
 			}
 		}
 	}
 
 	/**
-	 * Notify the layouter that lines have been inserted (a continuous zone of lines).
+	 * Notify the layouter that lines have Been inserted (a continuous zone of lines).
 	 *
-	 * @param fromLineNumber The line number at which the insertion started, inclusive
-	 * @param toLineNumber The line number at which the insertion ended, inclusive.
+	 * @param fromLineNumBer The line numBer at which the insertion started, inclusive
+	 * @param toLineNumBer The line numBer at which the insertion ended, inclusive.
 	 */
-	public onLinesInserted(fromLineNumber: number, toLineNumber: number): void {
+	puBlic onLinesInserted(fromLineNumBer: numBer, toLineNumBer: numBer): void {
 		this._checkPendingChanges();
-		fromLineNumber = fromLineNumber | 0;
-		toLineNumber = toLineNumber | 0;
+		fromLineNumBer = fromLineNumBer | 0;
+		toLineNumBer = toLineNumBer | 0;
 
-		this._lineCount += (toLineNumber - fromLineNumber + 1);
+		this._lineCount += (toLineNumBer - fromLineNumBer + 1);
 		for (let i = 0, len = this._arr.length; i < len; i++) {
-			const afterLineNumber = this._arr[i].afterLineNumber;
+			const afterLineNumBer = this._arr[i].afterLineNumBer;
 
-			if (fromLineNumber <= afterLineNumber) {
-				this._arr[i].afterLineNumber += (toLineNumber - fromLineNumber + 1);
+			if (fromLineNumBer <= afterLineNumBer) {
+				this._arr[i].afterLineNumBer += (toLineNumBer - fromLineNumBer + 1);
 			}
 		}
 	}
@@ -378,7 +378,7 @@ export class LinesLayout {
 	/**
 	 * Get the sum of all the whitespaces.
 	 */
-	public getWhitespacesTotalHeight(): number {
+	puBlic getWhitespacesTotalHeight(): numBer {
 		this._checkPendingChanges();
 		if (this._arr.length === 0) {
 			return 0;
@@ -391,9 +391,9 @@ export class LinesLayout {
 	 * This includes the whitespace at `index`.
 	 *
 	 * @param index The index of the whitespace.
-	 * @return The sum of the heights of all whitespaces before the one at `index`, including the one at `index`.
+	 * @return The sum of the heights of all whitespaces Before the one at `index`, including the one at `index`.
 	 */
-	public getWhitespacesAccumulatedHeight(index: number): number {
+	puBlic getWhitespacesAccumulatedHeight(index: numBer): numBer {
 		this._checkPendingChanges();
 		index = index | 0;
 
@@ -411,11 +411,11 @@ export class LinesLayout {
 	}
 
 	/**
-	 * Get the sum of heights for all objects.
+	 * Get the sum of heights for all oBjects.
 	 *
-	 * @return The sum of heights for all objects.
+	 * @return The sum of heights for all oBjects.
 	 */
-	public getLinesTotalHeight(): number {
+	puBlic getLinesTotalHeight(): numBer {
 		this._checkPendingChanges();
 		const linesHeight = this._lineHeight * this._lineCount;
 		const whitespacesHeight = this.getWhitespacesTotalHeight();
@@ -424,27 +424,27 @@ export class LinesLayout {
 	}
 
 	/**
-	 * Returns the accumulated height of whitespaces before the given line number.
+	 * Returns the accumulated height of whitespaces Before the given line numBer.
 	 *
-	 * @param lineNumber The line number
+	 * @param lineNumBer The line numBer
 	 */
-	public getWhitespaceAccumulatedHeightBeforeLineNumber(lineNumber: number): number {
+	puBlic getWhitespaceAccumulatedHeightBeforeLineNumBer(lineNumBer: numBer): numBer {
 		this._checkPendingChanges();
-		lineNumber = lineNumber | 0;
+		lineNumBer = lineNumBer | 0;
 
-		const lastWhitespaceBeforeLineNumber = this._findLastWhitespaceBeforeLineNumber(lineNumber);
+		const lastWhitespaceBeforeLineNumBer = this._findLastWhitespaceBeforeLineNumBer(lineNumBer);
 
-		if (lastWhitespaceBeforeLineNumber === -1) {
+		if (lastWhitespaceBeforeLineNumBer === -1) {
 			return 0;
 		}
 
-		return this.getWhitespacesAccumulatedHeight(lastWhitespaceBeforeLineNumber);
+		return this.getWhitespacesAccumulatedHeight(lastWhitespaceBeforeLineNumBer);
 	}
 
-	private _findLastWhitespaceBeforeLineNumber(lineNumber: number): number {
-		lineNumber = lineNumber | 0;
+	private _findLastWhitespaceBeforeLineNumBer(lineNumBer: numBer): numBer {
+		lineNumBer = lineNumBer | 0;
 
-		// Find the whitespace before line number
+		// Find the whitespace Before line numBer
 		const arr = this._arr;
 		let low = 0;
 		let high = arr.length - 1;
@@ -454,8 +454,8 @@ export class LinesLayout {
 			const halfDelta = (delta / 2) | 0;
 			const mid = (low + halfDelta) | 0;
 
-			if (arr[mid].afterLineNumber < lineNumber) {
-				if (mid + 1 >= arr.length || arr[mid + 1].afterLineNumber >= lineNumber) {
+			if (arr[mid].afterLineNumBer < lineNumBer) {
+				if (mid + 1 >= arr.length || arr[mid + 1].afterLineNumBer >= lineNumBer) {
 					return mid;
 				} else {
 					low = (mid + 1) | 0;
@@ -468,48 +468,48 @@ export class LinesLayout {
 		return -1;
 	}
 
-	private _findFirstWhitespaceAfterLineNumber(lineNumber: number): number {
-		lineNumber = lineNumber | 0;
+	private _findFirstWhitespaceAfterLineNumBer(lineNumBer: numBer): numBer {
+		lineNumBer = lineNumBer | 0;
 
-		const lastWhitespaceBeforeLineNumber = this._findLastWhitespaceBeforeLineNumber(lineNumber);
-		const firstWhitespaceAfterLineNumber = lastWhitespaceBeforeLineNumber + 1;
+		const lastWhitespaceBeforeLineNumBer = this._findLastWhitespaceBeforeLineNumBer(lineNumBer);
+		const firstWhitespaceAfterLineNumBer = lastWhitespaceBeforeLineNumBer + 1;
 
-		if (firstWhitespaceAfterLineNumber < this._arr.length) {
-			return firstWhitespaceAfterLineNumber;
+		if (firstWhitespaceAfterLineNumBer < this._arr.length) {
+			return firstWhitespaceAfterLineNumBer;
 		}
 
 		return -1;
 	}
 
 	/**
-	 * Find the index of the first whitespace which has `afterLineNumber` >= `lineNumber`.
-	 * @return The index of the first whitespace with `afterLineNumber` >= `lineNumber` or -1 if no whitespace is found.
+	 * Find the index of the first whitespace which has `afterLineNumBer` >= `lineNumBer`.
+	 * @return The index of the first whitespace with `afterLineNumBer` >= `lineNumBer` or -1 if no whitespace is found.
 	 */
-	public getFirstWhitespaceIndexAfterLineNumber(lineNumber: number): number {
+	puBlic getFirstWhitespaceIndexAfterLineNumBer(lineNumBer: numBer): numBer {
 		this._checkPendingChanges();
-		lineNumber = lineNumber | 0;
+		lineNumBer = lineNumBer | 0;
 
-		return this._findFirstWhitespaceAfterLineNumber(lineNumber);
+		return this._findFirstWhitespaceAfterLineNumBer(lineNumBer);
 	}
 
 	/**
-	 * Get the vertical offset (the sum of heights for all objects above) a certain line number.
+	 * Get the vertical offset (the sum of heights for all oBjects aBove) a certain line numBer.
 	 *
-	 * @param lineNumber The line number
-	 * @return The sum of heights for all objects above `lineNumber`.
+	 * @param lineNumBer The line numBer
+	 * @return The sum of heights for all oBjects aBove `lineNumBer`.
 	 */
-	public getVerticalOffsetForLineNumber(lineNumber: number): number {
+	puBlic getVerticalOffsetForLineNumBer(lineNumBer: numBer): numBer {
 		this._checkPendingChanges();
-		lineNumber = lineNumber | 0;
+		lineNumBer = lineNumBer | 0;
 
-		let previousLinesHeight: number;
-		if (lineNumber > 1) {
-			previousLinesHeight = this._lineHeight * (lineNumber - 1);
+		let previousLinesHeight: numBer;
+		if (lineNumBer > 1) {
+			previousLinesHeight = this._lineHeight * (lineNumBer - 1);
 		} else {
 			previousLinesHeight = 0;
 		}
 
-		const previousWhitespacesHeight = this.getWhitespaceAccumulatedHeightBeforeLineNumber(lineNumber);
+		const previousWhitespacesHeight = this.getWhitespaceAccumulatedHeightBeforeLineNumBer(lineNumBer);
 
 		return previousLinesHeight + previousWhitespacesHeight + this._paddingTop;
 	}
@@ -517,7 +517,7 @@ export class LinesLayout {
 	/**
 	 * Returns if there is any whitespace in the document.
 	 */
-	public hasWhitespace(): boolean {
+	puBlic hasWhitespace(): Boolean {
 		this._checkPendingChanges();
 		return this.getWhitespacesCount() > 0;
 	}
@@ -525,7 +525,7 @@ export class LinesLayout {
 	/**
 	 * The maximum min width for all whitespaces.
 	 */
-	public getWhitespaceMinWidth(): number {
+	puBlic getWhitespaceMinWidth(): numBer {
 		this._checkPendingChanges();
 		if (this._minWidth === -1) {
 			let minWidth = 0;
@@ -538,23 +538,23 @@ export class LinesLayout {
 	}
 
 	/**
-	 * Check if `verticalOffset` is below all lines.
+	 * Check if `verticalOffset` is Below all lines.
 	 */
-	public isAfterLines(verticalOffset: number): boolean {
+	puBlic isAfterLines(verticalOffset: numBer): Boolean {
 		this._checkPendingChanges();
 		const totalHeight = this.getLinesTotalHeight();
 		return verticalOffset > totalHeight;
 	}
 
 	/**
-	 * Find the first line number that is at or after vertical offset `verticalOffset`.
+	 * Find the first line numBer that is at or after vertical offset `verticalOffset`.
 	 * i.e. if getVerticalOffsetForLine(line) is x and getVerticalOffsetForLine(line + 1) is y, then
-	 * getLineNumberAtOrAfterVerticalOffset(i) = line, x <= i < y.
+	 * getLineNumBerAtOrAfterVerticalOffset(i) = line, x <= i < y.
 	 *
 	 * @param verticalOffset The vertical offset to search at.
-	 * @return The line number at or after vertical offset `verticalOffset`.
+	 * @return The line numBer at or after vertical offset `verticalOffset`.
 	 */
-	public getLineNumberAtOrAfterVerticalOffset(verticalOffset: number): number {
+	puBlic getLineNumBerAtOrAfterVerticalOffset(verticalOffset: numBer): numBer {
 		this._checkPendingChanges();
 		verticalOffset = verticalOffset | 0;
 
@@ -564,105 +564,105 @@ export class LinesLayout {
 
 		const linesCount = this._lineCount | 0;
 		const lineHeight = this._lineHeight;
-		let minLineNumber = 1;
-		let maxLineNumber = linesCount;
+		let minLineNumBer = 1;
+		let maxLineNumBer = linesCount;
 
-		while (minLineNumber < maxLineNumber) {
-			const midLineNumber = ((minLineNumber + maxLineNumber) / 2) | 0;
+		while (minLineNumBer < maxLineNumBer) {
+			const midLineNumBer = ((minLineNumBer + maxLineNumBer) / 2) | 0;
 
-			const midLineNumberVerticalOffset = this.getVerticalOffsetForLineNumber(midLineNumber) | 0;
+			const midLineNumBerVerticalOffset = this.getVerticalOffsetForLineNumBer(midLineNumBer) | 0;
 
-			if (verticalOffset >= midLineNumberVerticalOffset + lineHeight) {
-				// vertical offset is after mid line number
-				minLineNumber = midLineNumber + 1;
-			} else if (verticalOffset >= midLineNumberVerticalOffset) {
+			if (verticalOffset >= midLineNumBerVerticalOffset + lineHeight) {
+				// vertical offset is after mid line numBer
+				minLineNumBer = midLineNumBer + 1;
+			} else if (verticalOffset >= midLineNumBerVerticalOffset) {
 				// Hit
-				return midLineNumber;
+				return midLineNumBer;
 			} else {
-				// vertical offset is before mid line number, but mid line number could still be what we're searching for
-				maxLineNumber = midLineNumber;
+				// vertical offset is Before mid line numBer, But mid line numBer could still Be what we're searching for
+				maxLineNumBer = midLineNumBer;
 			}
 		}
 
-		if (minLineNumber > linesCount) {
+		if (minLineNumBer > linesCount) {
 			return linesCount;
 		}
 
-		return minLineNumber;
+		return minLineNumBer;
 	}
 
 	/**
-	 * Get all the lines and their relative vertical offsets that are positioned between `verticalOffset1` and `verticalOffset2`.
+	 * Get all the lines and their relative vertical offsets that are positioned Between `verticalOffset1` and `verticalOffset2`.
 	 *
-	 * @param verticalOffset1 The beginning of the viewport.
+	 * @param verticalOffset1 The Beginning of the viewport.
 	 * @param verticalOffset2 The end of the viewport.
-	 * @return A structure describing the lines positioned between `verticalOffset1` and `verticalOffset2`.
+	 * @return A structure descriBing the lines positioned Between `verticalOffset1` and `verticalOffset2`.
 	 */
-	public getLinesViewportData(verticalOffset1: number, verticalOffset2: number): IPartialViewLinesViewportData {
+	puBlic getLinesViewportData(verticalOffset1: numBer, verticalOffset2: numBer): IPartialViewLinesViewportData {
 		this._checkPendingChanges();
 		verticalOffset1 = verticalOffset1 | 0;
 		verticalOffset2 = verticalOffset2 | 0;
 		const lineHeight = this._lineHeight;
 
-		// Find first line number
-		// We don't live in a perfect world, so the line number might start before or after verticalOffset1
-		const startLineNumber = this.getLineNumberAtOrAfterVerticalOffset(verticalOffset1) | 0;
-		const startLineNumberVerticalOffset = this.getVerticalOffsetForLineNumber(startLineNumber) | 0;
+		// Find first line numBer
+		// We don't live in a perfect world, so the line numBer might start Before or after verticalOffset1
+		const startLineNumBer = this.getLineNumBerAtOrAfterVerticalOffset(verticalOffset1) | 0;
+		const startLineNumBerVerticalOffset = this.getVerticalOffsetForLineNumBer(startLineNumBer) | 0;
 
-		let endLineNumber = this._lineCount | 0;
+		let endLineNumBer = this._lineCount | 0;
 
 		// Also keep track of what whitespace we've got
-		let whitespaceIndex = this.getFirstWhitespaceIndexAfterLineNumber(startLineNumber) | 0;
+		let whitespaceIndex = this.getFirstWhitespaceIndexAfterLineNumBer(startLineNumBer) | 0;
 		const whitespaceCount = this.getWhitespacesCount() | 0;
-		let currentWhitespaceHeight: number;
-		let currentWhitespaceAfterLineNumber: number;
+		let currentWhitespaceHeight: numBer;
+		let currentWhitespaceAfterLineNumBer: numBer;
 
 		if (whitespaceIndex === -1) {
 			whitespaceIndex = whitespaceCount;
-			currentWhitespaceAfterLineNumber = endLineNumber + 1;
+			currentWhitespaceAfterLineNumBer = endLineNumBer + 1;
 			currentWhitespaceHeight = 0;
 		} else {
-			currentWhitespaceAfterLineNumber = this.getAfterLineNumberForWhitespaceIndex(whitespaceIndex) | 0;
+			currentWhitespaceAfterLineNumBer = this.getAfterLineNumBerForWhitespaceIndex(whitespaceIndex) | 0;
 			currentWhitespaceHeight = this.getHeightForWhitespaceIndex(whitespaceIndex) | 0;
 		}
 
-		let currentVerticalOffset = startLineNumberVerticalOffset;
+		let currentVerticalOffset = startLineNumBerVerticalOffset;
 		let currentLineRelativeOffset = currentVerticalOffset;
 
-		// IE (all versions) cannot handle units above about 1,533,908 px, so every 500k pixels bring numbers down
+		// IE (all versions) cannot handle units aBove aBout 1,533,908 px, so every 500k pixels Bring numBers down
 		const STEP_SIZE = 500000;
-		let bigNumbersDelta = 0;
-		if (startLineNumberVerticalOffset >= STEP_SIZE) {
+		let BigNumBersDelta = 0;
+		if (startLineNumBerVerticalOffset >= STEP_SIZE) {
 			// Compute a delta that guarantees that lines are positioned at `lineHeight` increments
-			bigNumbersDelta = Math.floor(startLineNumberVerticalOffset / STEP_SIZE) * STEP_SIZE;
-			bigNumbersDelta = Math.floor(bigNumbersDelta / lineHeight) * lineHeight;
+			BigNumBersDelta = Math.floor(startLineNumBerVerticalOffset / STEP_SIZE) * STEP_SIZE;
+			BigNumBersDelta = Math.floor(BigNumBersDelta / lineHeight) * lineHeight;
 
-			currentLineRelativeOffset -= bigNumbersDelta;
+			currentLineRelativeOffset -= BigNumBersDelta;
 		}
 
-		const linesOffsets: number[] = [];
+		const linesOffsets: numBer[] = [];
 
 		const verticalCenter = verticalOffset1 + (verticalOffset2 - verticalOffset1) / 2;
-		let centeredLineNumber = -1;
+		let centeredLineNumBer = -1;
 
 		// Figure out how far the lines go
-		for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
+		for (let lineNumBer = startLineNumBer; lineNumBer <= endLineNumBer; lineNumBer++) {
 
-			if (centeredLineNumber === -1) {
+			if (centeredLineNumBer === -1) {
 				const currentLineTop = currentVerticalOffset;
 				const currentLineBottom = currentVerticalOffset + lineHeight;
 				if ((currentLineTop <= verticalCenter && verticalCenter < currentLineBottom) || currentLineTop > verticalCenter) {
-					centeredLineNumber = lineNumber;
+					centeredLineNumBer = lineNumBer;
 				}
 			}
 
 			// Count current line height in the vertical offsets
 			currentVerticalOffset += lineHeight;
-			linesOffsets[lineNumber - startLineNumber] = currentLineRelativeOffset;
+			linesOffsets[lineNumBer - startLineNumBer] = currentLineRelativeOffset;
 
 			// Next line starts immediately after this one
 			currentLineRelativeOffset += lineHeight;
-			while (currentWhitespaceAfterLineNumber === lineNumber) {
+			while (currentWhitespaceAfterLineNumBer === lineNumBer) {
 				// Push down next line with the height of the current whitespace
 				currentLineRelativeOffset += currentWhitespaceHeight;
 
@@ -671,65 +671,65 @@ export class LinesLayout {
 				whitespaceIndex++;
 
 				if (whitespaceIndex >= whitespaceCount) {
-					currentWhitespaceAfterLineNumber = endLineNumber + 1;
+					currentWhitespaceAfterLineNumBer = endLineNumBer + 1;
 				} else {
-					currentWhitespaceAfterLineNumber = this.getAfterLineNumberForWhitespaceIndex(whitespaceIndex) | 0;
+					currentWhitespaceAfterLineNumBer = this.getAfterLineNumBerForWhitespaceIndex(whitespaceIndex) | 0;
 					currentWhitespaceHeight = this.getHeightForWhitespaceIndex(whitespaceIndex) | 0;
 				}
 			}
 
 			if (currentVerticalOffset >= verticalOffset2) {
 				// We have covered the entire viewport area, time to stop
-				endLineNumber = lineNumber;
-				break;
+				endLineNumBer = lineNumBer;
+				Break;
 			}
 		}
 
-		if (centeredLineNumber === -1) {
-			centeredLineNumber = endLineNumber;
+		if (centeredLineNumBer === -1) {
+			centeredLineNumBer = endLineNumBer;
 		}
 
-		const endLineNumberVerticalOffset = this.getVerticalOffsetForLineNumber(endLineNumber) | 0;
+		const endLineNumBerVerticalOffset = this.getVerticalOffsetForLineNumBer(endLineNumBer) | 0;
 
-		let completelyVisibleStartLineNumber = startLineNumber;
-		let completelyVisibleEndLineNumber = endLineNumber;
+		let completelyVisiBleStartLineNumBer = startLineNumBer;
+		let completelyVisiBleEndLineNumBer = endLineNumBer;
 
-		if (completelyVisibleStartLineNumber < completelyVisibleEndLineNumber) {
-			if (startLineNumberVerticalOffset < verticalOffset1) {
-				completelyVisibleStartLineNumber++;
+		if (completelyVisiBleStartLineNumBer < completelyVisiBleEndLineNumBer) {
+			if (startLineNumBerVerticalOffset < verticalOffset1) {
+				completelyVisiBleStartLineNumBer++;
 			}
 		}
-		if (completelyVisibleStartLineNumber < completelyVisibleEndLineNumber) {
-			if (endLineNumberVerticalOffset + lineHeight > verticalOffset2) {
-				completelyVisibleEndLineNumber--;
+		if (completelyVisiBleStartLineNumBer < completelyVisiBleEndLineNumBer) {
+			if (endLineNumBerVerticalOffset + lineHeight > verticalOffset2) {
+				completelyVisiBleEndLineNumBer--;
 			}
 		}
 
 		return {
-			bigNumbersDelta: bigNumbersDelta,
-			startLineNumber: startLineNumber,
-			endLineNumber: endLineNumber,
+			BigNumBersDelta: BigNumBersDelta,
+			startLineNumBer: startLineNumBer,
+			endLineNumBer: endLineNumBer,
 			relativeVerticalOffset: linesOffsets,
-			centeredLineNumber: centeredLineNumber,
-			completelyVisibleStartLineNumber: completelyVisibleStartLineNumber,
-			completelyVisibleEndLineNumber: completelyVisibleEndLineNumber
+			centeredLineNumBer: centeredLineNumBer,
+			completelyVisiBleStartLineNumBer: completelyVisiBleStartLineNumBer,
+			completelyVisiBleEndLineNumBer: completelyVisiBleEndLineNumBer
 		};
 	}
 
-	public getVerticalOffsetForWhitespaceIndex(whitespaceIndex: number): number {
+	puBlic getVerticalOffsetForWhitespaceIndex(whitespaceIndex: numBer): numBer {
 		this._checkPendingChanges();
 		whitespaceIndex = whitespaceIndex | 0;
 
-		const afterLineNumber = this.getAfterLineNumberForWhitespaceIndex(whitespaceIndex);
+		const afterLineNumBer = this.getAfterLineNumBerForWhitespaceIndex(whitespaceIndex);
 
-		let previousLinesHeight: number;
-		if (afterLineNumber >= 1) {
-			previousLinesHeight = this._lineHeight * afterLineNumber;
+		let previousLinesHeight: numBer;
+		if (afterLineNumBer >= 1) {
+			previousLinesHeight = this._lineHeight * afterLineNumBer;
 		} else {
 			previousLinesHeight = 0;
 		}
 
-		let previousWhitespacesHeight: number;
+		let previousWhitespacesHeight: numBer;
 		if (whitespaceIndex > 0) {
 			previousWhitespacesHeight = this.getWhitespacesAccumulatedHeight(whitespaceIndex - 1);
 		} else {
@@ -738,7 +738,7 @@ export class LinesLayout {
 		return previousLinesHeight + previousWhitespacesHeight + this._paddingTop;
 	}
 
-	public getWhitespaceIndexAtOrAfterVerticallOffset(verticalOffset: number): number {
+	puBlic getWhitespaceIndexAtOrAfterVerticallOffset(verticalOffset: numBer): numBer {
 		this._checkPendingChanges();
 		verticalOffset = verticalOffset | 0;
 
@@ -749,7 +749,7 @@ export class LinesLayout {
 			return -1;
 		}
 
-		// Special case: nothing to be found
+		// Special case: nothing to Be found
 		const maxWhitespaceVerticalOffset = this.getVerticalOffsetForWhitespaceIndex(maxWhitespaceIndex);
 		const maxWhitespaceHeight = this.getHeightForWhitespaceIndex(maxWhitespaceIndex);
 		if (verticalOffset >= maxWhitespaceVerticalOffset + maxWhitespaceHeight) {
@@ -769,7 +769,7 @@ export class LinesLayout {
 				// Hit
 				return midWhitespaceIndex;
 			} else {
-				// vertical offset is before whitespace, but midWhitespaceIndex might still be what we're searching for
+				// vertical offset is Before whitespace, But midWhitespaceIndex might still Be what we're searching for
 				maxWhitespaceIndex = midWhitespaceIndex;
 			}
 		}
@@ -782,7 +782,7 @@ export class LinesLayout {
 	 * @param verticalOffset The vertical offset.
 	 * @return Precisely the whitespace that is layouted at `verticaloffset` or null.
 	 */
-	public getWhitespaceAtVerticalOffset(verticalOffset: number): IViewWhitespaceViewportData | null {
+	puBlic getWhitespaceAtVerticalOffset(verticalOffset: numBer): IViewWhitespaceViewportData | null {
 		this._checkPendingChanges();
 		verticalOffset = verticalOffset | 0;
 
@@ -804,24 +804,24 @@ export class LinesLayout {
 
 		const candidateHeight = this.getHeightForWhitespaceIndex(candidateIndex);
 		const candidateId = this.getIdForWhitespaceIndex(candidateIndex);
-		const candidateAfterLineNumber = this.getAfterLineNumberForWhitespaceIndex(candidateIndex);
+		const candidateAfterLineNumBer = this.getAfterLineNumBerForWhitespaceIndex(candidateIndex);
 
 		return {
 			id: candidateId,
-			afterLineNumber: candidateAfterLineNumber,
+			afterLineNumBer: candidateAfterLineNumBer,
 			verticalOffset: candidateTop,
 			height: candidateHeight
 		};
 	}
 
 	/**
-	 * Get a list of whitespaces that are positioned between `verticalOffset1` and `verticalOffset2`.
+	 * Get a list of whitespaces that are positioned Between `verticalOffset1` and `verticalOffset2`.
 	 *
-	 * @param verticalOffset1 The beginning of the viewport.
+	 * @param verticalOffset1 The Beginning of the viewport.
 	 * @param verticalOffset2 The end of the viewport.
 	 * @return An array with all the whitespaces in the viewport. If no whitespace is in viewport, the array is empty.
 	 */
-	public getWhitespaceViewportData(verticalOffset1: number, verticalOffset2: number): IViewWhitespaceViewportData[] {
+	puBlic getWhitespaceViewportData(verticalOffset1: numBer, verticalOffset2: numBer): IViewWhitespaceViewportData[] {
 		this._checkPendingChanges();
 		verticalOffset1 = verticalOffset1 | 0;
 		verticalOffset2 = verticalOffset2 | 0;
@@ -838,12 +838,12 @@ export class LinesLayout {
 			const top = this.getVerticalOffsetForWhitespaceIndex(i);
 			const height = this.getHeightForWhitespaceIndex(i);
 			if (top >= verticalOffset2) {
-				break;
+				Break;
 			}
 
 			result.push({
 				id: this.getIdForWhitespaceIndex(i),
-				afterLineNumber: this.getAfterLineNumberForWhitespaceIndex(i),
+				afterLineNumBer: this.getAfterLineNumBerForWhitespaceIndex(i),
 				verticalOffset: top,
 				height: height
 			});
@@ -855,15 +855,15 @@ export class LinesLayout {
 	/**
 	 * Get all whitespaces.
 	 */
-	public getWhitespaces(): IEditorWhitespace[] {
+	puBlic getWhitespaces(): IEditorWhitespace[] {
 		this._checkPendingChanges();
 		return this._arr.slice(0);
 	}
 
 	/**
-	 * The number of whitespaces.
+	 * The numBer of whitespaces.
 	 */
-	public getWhitespacesCount(): number {
+	puBlic getWhitespacesCount(): numBer {
 		this._checkPendingChanges();
 		return this._arr.length;
 	}
@@ -874,7 +874,7 @@ export class LinesLayout {
 	 * @param index The index of the whitespace.
 	 * @return `id` of whitespace at `index`.
 	 */
-	public getIdForWhitespaceIndex(index: number): string {
+	puBlic getIdForWhitespaceIndex(index: numBer): string {
 		this._checkPendingChanges();
 		index = index | 0;
 
@@ -882,16 +882,16 @@ export class LinesLayout {
 	}
 
 	/**
-	 * Get the `afterLineNumber` for whitespace at index `index`.
+	 * Get the `afterLineNumBer` for whitespace at index `index`.
 	 *
 	 * @param index The index of the whitespace.
-	 * @return `afterLineNumber` of whitespace at `index`.
+	 * @return `afterLineNumBer` of whitespace at `index`.
 	 */
-	public getAfterLineNumberForWhitespaceIndex(index: number): number {
+	puBlic getAfterLineNumBerForWhitespaceIndex(index: numBer): numBer {
 		this._checkPendingChanges();
 		index = index | 0;
 
-		return this._arr[index].afterLineNumber;
+		return this._arr[index].afterLineNumBer;
 	}
 
 	/**
@@ -900,7 +900,7 @@ export class LinesLayout {
 	 * @param index The index of the whitespace.
 	 * @return `height` of whitespace at `index`.
 	 */
-	public getHeightForWhitespaceIndex(index: number): number {
+	puBlic getHeightForWhitespaceIndex(index: numBer): numBer {
 		this._checkPendingChanges();
 		index = index | 0;
 

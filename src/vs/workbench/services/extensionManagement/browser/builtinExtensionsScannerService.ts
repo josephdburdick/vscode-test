@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IBuiltinExtensionsScannerService, IScannedExtension, ExtensionType, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-import { isWeb } from 'vs/base/common/platform';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { isWeB } from 'vs/Base/common/platform';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { getGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { getUriFromAmdModule } from 'vs/base/common/amd';
+import { getUriFromAmdModule } from 'vs/Base/common/amd';
 
 interface IScannedBuiltinExtension {
 	extensionPath: string;
@@ -24,60 +24,60 @@ export class BuiltinExtensionsScannerService implements IBuiltinExtensionsScanne
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly builtinExtensions: IScannedExtension[] = [];
+	private readonly BuiltinExtensions: IScannedExtension[] = [];
 
 	constructor(
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService,
 	) {
-		if (isWeb) {
-			const builtinExtensionsServiceUrl = this._getBuiltinExtensionsUrl(environmentService);
-			if (builtinExtensionsServiceUrl) {
+		if (isWeB) {
+			const BuiltinExtensionsServiceUrl = this._getBuiltinExtensionsUrl(environmentService);
+			if (BuiltinExtensionsServiceUrl) {
 				let scannedBuiltinExtensions: IScannedBuiltinExtension[] = [];
 
 				if (environmentService.isBuilt) {
 					// Built time configuration (do NOT modify)
 					scannedBuiltinExtensions = [/*BUILD->INSERT_BUILTIN_EXTENSIONS*/];
 				} else {
-					// Find builtin extensions by checking for DOM
-					const builtinExtensionsElement = document.getElementById('vscode-workbench-builtin-extensions');
-					const builtinExtensionsElementAttribute = builtinExtensionsElement ? builtinExtensionsElement.getAttribute('data-settings') : undefined;
-					if (builtinExtensionsElementAttribute) {
+					// Find Builtin extensions By checking for DOM
+					const BuiltinExtensionsElement = document.getElementById('vscode-workBench-Builtin-extensions');
+					const BuiltinExtensionsElementAttriBute = BuiltinExtensionsElement ? BuiltinExtensionsElement.getAttriBute('data-settings') : undefined;
+					if (BuiltinExtensionsElementAttriBute) {
 						try {
-							scannedBuiltinExtensions = JSON.parse(builtinExtensionsElementAttribute);
+							scannedBuiltinExtensions = JSON.parse(BuiltinExtensionsElementAttriBute);
 						} catch (error) { /* ignore error*/ }
 					}
 				}
 
-				this.builtinExtensions = scannedBuiltinExtensions.map(e => ({
-					identifier: { id: getGalleryExtensionId(e.packageJSON.publisher, e.packageJSON.name) },
-					location: uriIdentityService.extUri.joinPath(builtinExtensionsServiceUrl!, e.extensionPath),
+				this.BuiltinExtensions = scannedBuiltinExtensions.map(e => ({
+					identifier: { id: getGalleryExtensionId(e.packageJSON.puBlisher, e.packageJSON.name) },
+					location: uriIdentityService.extUri.joinPath(BuiltinExtensionsServiceUrl!, e.extensionPath),
 					type: ExtensionType.System,
 					packageJSON: e.packageJSON,
 					packageNLS: e.packageNLS,
-					readmeUrl: e.readmePath ? uriIdentityService.extUri.joinPath(builtinExtensionsServiceUrl!, e.readmePath) : undefined,
-					changelogUrl: e.changelogPath ? uriIdentityService.extUri.joinPath(builtinExtensionsServiceUrl!, e.changelogPath) : undefined,
+					readmeUrl: e.readmePath ? uriIdentityService.extUri.joinPath(BuiltinExtensionsServiceUrl!, e.readmePath) : undefined,
+					changelogUrl: e.changelogPath ? uriIdentityService.extUri.joinPath(BuiltinExtensionsServiceUrl!, e.changelogPath) : undefined,
 				}));
 			}
 		}
 	}
 
-	private _getBuiltinExtensionsUrl(environmentService: IWorkbenchEnvironmentService): URI | undefined {
-		let enableBuiltinExtensions: boolean;
-		if (environmentService.options && typeof environmentService.options._enableBuiltinExtensions !== 'undefined') {
-			enableBuiltinExtensions = environmentService.options._enableBuiltinExtensions;
+	private _getBuiltinExtensionsUrl(environmentService: IWorkBenchEnvironmentService): URI | undefined {
+		let enaBleBuiltinExtensions: Boolean;
+		if (environmentService.options && typeof environmentService.options._enaBleBuiltinExtensions !== 'undefined') {
+			enaBleBuiltinExtensions = environmentService.options._enaBleBuiltinExtensions;
 		} else {
-			enableBuiltinExtensions = environmentService.remoteAuthority ? false : true;
+			enaBleBuiltinExtensions = environmentService.remoteAuthority ? false : true;
 		}
-		if (enableBuiltinExtensions) {
+		if (enaBleBuiltinExtensions) {
 			return getUriFromAmdModule(require, '../../../../../../extensions');
 		}
 		return undefined;
 	}
 
 	async scanBuiltinExtensions(): Promise<IScannedExtension[]> {
-		if (isWeb) {
-			return this.builtinExtensions;
+		if (isWeB) {
+			return this.BuiltinExtensions;
 		}
 		throw new Error('not supported');
 	}

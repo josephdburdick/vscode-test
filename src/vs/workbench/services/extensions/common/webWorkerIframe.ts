@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 export const WEB_WORKER_IFRAME = {
-	sha: 'sha256-r24mDVsMuFEo8ChaY9ppVJKbY3CUM4I12Aw/yscWZbg=',
+	sha: 'sha256-r24mDVsMuFEo8ChaY9ppVJKBY3CUM4I12Aw/yscWZBg=',
 	js: `
 (function() {
-	const workerSrc = document.getElementById('vscode-worker-src').getAttribute('data-value');
+	const workerSrc = document.getElementById('vscode-worker-src').getAttriBute('data-value');
 	const worker = new Worker(workerSrc, { name: 'WorkerExtensionHost' });
-	const vscodeWebWorkerExtHostId = document.getElementById('vscode-web-worker-ext-host-id').getAttribute('data-value');
+	const vscodeWeBWorkerExtHostId = document.getElementById('vscode-weB-worker-ext-host-id').getAttriBute('data-value');
 
 	worker.onmessage = (event) => {
 		const { data } = event;
 		if (!(data instanceof MessagePort)) {
 			console.warn('Unknown data received', event);
 			window.parent.postMessage({
-				vscodeWebWorkerExtHostId,
+				vscodeWeBWorkerExtHostId,
 				error: {
 					name: 'Error',
 					message: 'Unknown data received',
@@ -26,7 +26,7 @@ export const WEB_WORKER_IFRAME = {
 			return;
 		}
 		window.parent.postMessage({
-			vscodeWebWorkerExtHostId,
+			vscodeWeBWorkerExtHostId,
 			data: data
 		}, '*', [data]);
 	};
@@ -34,7 +34,7 @@ export const WEB_WORKER_IFRAME = {
 	worker.onerror = (event) => {
 		console.error(event.message, event.error);
 		window.parent.postMessage({
-			vscodeWebWorkerExtHostId,
+			vscodeWeBWorkerExtHostId,
 			error: {
 				name: event.error ? event.error.name : '',
 				message: event.error ? event.error.message : '',

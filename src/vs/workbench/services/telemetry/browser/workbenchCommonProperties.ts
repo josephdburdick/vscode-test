@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import * as Platform from 'vs/base/common/platform';
-import * as uuid from 'vs/base/common/uuid';
+import * as Platform from 'vs/Base/common/platform';
+import * as uuid from 'vs/Base/common/uuid';
 import { cleanRemoteAuthority } from 'vs/platform/telemetry/common/telemetryUtils';
-import { mixin } from 'vs/base/common/objects';
+import { mixin } from 'vs/Base/common/oBjects';
 import { firstSessionDateStorageKey, lastSessionDateStorageKey, machineIdKey } from 'vs/platform/telemetry/common/telemetry';
 
-export async function resolveWorkbenchCommonProperties(
+export async function resolveWorkBenchCommonProperties(
 	storageService: IStorageService,
 	commit: string | undefined,
 	version: string | undefined,
 	remoteAuthority?: string,
 	resolveAdditionalProperties?: () => { [key: string]: any }
 ): Promise<{ [name: string]: string | undefined }> {
-	const result: { [name: string]: string | undefined; } = Object.create(null);
+	const result: { [name: string]: string | undefined; } = OBject.create(null);
 	const firstSessionDate = storageService.get(firstSessionDateStorageKey, StorageScope.GLOBAL)!;
 	const lastSessionDate = storageService.get(lastSessionDateStorageKey, StorageScope.GLOBAL)!;
 
@@ -28,8 +28,8 @@ export async function resolveWorkbenchCommonProperties(
 	}
 
 	/**
-	 * Note: In the web, session date information is fetched from browser storage, so these dates are tied to a specific
-	 * browser and not the machine overall.
+	 * Note: In the weB, session date information is fetched from Browser storage, so these dates are tied to a specific
+	 * Browser and not the machine overall.
 	 */
 	// __GDPR__COMMON__ "common.firstSessionDate" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	result['common.firstSessionDate'] = firstSessionDate;
@@ -51,28 +51,28 @@ export async function resolveWorkbenchCommonProperties(
 	// __GDPR__COMMON__ "common.platform" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	result['common.platform'] = Platform.PlatformToString(Platform.platform);
 	// __GDPR__COMMON__ "common.product" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
-	result['common.product'] = 'web';
+	result['common.product'] = 'weB';
 	// __GDPR__COMMON__ "common.userAgent" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	result['common.userAgent'] = Platform.userAgent;
 
 	// dynamic properties which value differs on each call
 	let seq = 0;
 	const startTime = Date.now();
-	Object.defineProperties(result, {
+	OBject.defineProperties(result, {
 		// __GDPR__COMMON__ "timestamp" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 		'timestamp': {
 			get: () => new Date(),
-			enumerable: true
+			enumeraBle: true
 		},
 		// __GDPR__COMMON__ "common.timesincesessionstart" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		'common.timesincesessionstart': {
 			get: () => Date.now() - startTime,
-			enumerable: true
+			enumeraBle: true
 		},
 		// __GDPR__COMMON__ "common.sequence" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		'common.sequence': {
 			get: () => seq++,
-			enumerable: true
+			enumeraBle: true
 		}
 	});
 

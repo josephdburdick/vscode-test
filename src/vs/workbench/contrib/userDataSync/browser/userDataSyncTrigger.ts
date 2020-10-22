@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { SettingsEditor2Input, KeybindingsEditorInput, PreferencesEditorInput } from 'vs/workbench/services/preferences/common/preferencesEditorInput';
-import { isEqual } from 'vs/base/common/resources';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { VIEWLET_ID } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IEditorInput } from 'vs/workbench/common/editor';
-import { IViewsService } from 'vs/workbench/common/views';
+import { Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { SettingsEditor2Input, KeyBindingsEditorInput, PreferencesEditorInput } from 'vs/workBench/services/preferences/common/preferencesEditorInput';
+import { isEqual } from 'vs/Base/common/resources';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { VIEWLET_ID } from 'vs/workBench/contriB/extensions/common/extensions';
+import { IEditorInput } from 'vs/workBench/common/editor';
+import { IViewsService } from 'vs/workBench/common/views';
 import { IUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataSync';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { isWeb } from 'vs/base/common/platform';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { isWeB } from 'vs/Base/common/platform';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 
-export class UserDataSyncTrigger extends Disposable implements IWorkbenchContribution {
+export class UserDataSyncTrigger extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IEditorService editorService: IEditorService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IViewsService viewsService: IViewsService,
 		@IUserDataAutoSyncService userDataAutoSyncService: IUserDataAutoSyncService,
 		@IHostService hostService: IHostService,
@@ -30,10 +30,10 @@ export class UserDataSyncTrigger extends Disposable implements IWorkbenchContrib
 		const event = Event.filter(
 			Event.any<string | undefined>(
 				Event.map(editorService.onDidActiveEditorChange, () => this.getUserDataEditorInputSource(editorService.activeEditor)),
-				Event.map(Event.filter(viewsService.onDidChangeViewContainerVisibility, e => e.id === VIEWLET_ID && e.visible), e => e.id)
+				Event.map(Event.filter(viewsService.onDidChangeViewContainerVisiBility, e => e.id === VIEWLET_ID && e.visiBle), e => e.id)
 			), source => source !== undefined);
-		if (isWeb) {
-			this._register(Event.debounce<string, string[]>(
+		if (isWeB) {
+			this._register(Event.deBounce<string, string[]>(
 				Event.any<string>(
 					Event.map(hostService.onDidChangeFocus, () => 'windowFocus'),
 					Event.map(event, source => source!),
@@ -54,15 +54,15 @@ export class UserDataSyncTrigger extends Disposable implements IWorkbenchContrib
 		if (editorInput instanceof PreferencesEditorInput) {
 			return 'settingsEditor';
 		}
-		if (editorInput instanceof KeybindingsEditorInput) {
-			return 'keybindingsEditor';
+		if (editorInput instanceof KeyBindingsEditorInput) {
+			return 'keyBindingsEditor';
 		}
 		const resource = editorInput.resource;
 		if (isEqual(resource, this.environmentService.settingsResource)) {
 			return 'settingsEditor';
 		}
-		if (isEqual(resource, this.environmentService.keybindingsResource)) {
-			return 'keybindingsEditor';
+		if (isEqual(resource, this.environmentService.keyBindingsResource)) {
+			return 'keyBindingsEditor';
 		}
 		return undefined;
 	}

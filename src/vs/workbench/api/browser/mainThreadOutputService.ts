@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IOutputService, IOutputChannel, OUTPUT_VIEW_ID } from 'vs/workbench/contrib/output/common/output';
-import { Extensions, IOutputChannelRegistry } from 'vs/workbench/services/output/common/output';
+import { IOutputService, IOutputChannel, OUTPUT_VIEW_ID } from 'vs/workBench/contriB/output/common/output';
+import { Extensions, IOutputChannelRegistry } from 'vs/workBench/services/output/common/output';
 import { MainThreadOutputServiceShape, MainContext, IExtHostContext, ExtHostOutputServiceShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { IViewsService } from 'vs/workbench/common/views';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { UriComponents, URI } from 'vs/Base/common/uri';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { IViewsService } from 'vs/workBench/common/views';
 
 @extHostNamedCustomer(MainContext.MainThreadOutputService)
-export class MainThreadOutputService extends Disposable implements MainThreadOutputServiceShape {
+export class MainThreadOutputService extends DisposaBle implements MainThreadOutputServiceShape {
 
 	private static _idPool = 1;
 
@@ -33,22 +33,22 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostOutputService);
 
-		const setVisibleChannel = () => {
-			const visibleChannel = this._viewsService.isViewVisible(OUTPUT_VIEW_ID) ? this._outputService.getActiveChannel() : undefined;
-			this._proxy.$setVisibleChannel(visibleChannel ? visibleChannel.id : null);
+		const setVisiBleChannel = () => {
+			const visiBleChannel = this._viewsService.isViewVisiBle(OUTPUT_VIEW_ID) ? this._outputService.getActiveChannel() : undefined;
+			this._proxy.$setVisiBleChannel(visiBleChannel ? visiBleChannel.id : null);
 		};
-		this._register(Event.any<any>(this._outputService.onActiveOutputChannel, Event.filter(this._viewsService.onDidChangeViewVisibility, ({ id }) => id === OUTPUT_VIEW_ID))(() => setVisibleChannel()));
-		setVisibleChannel();
+		this._register(Event.any<any>(this._outputService.onActiveOutputChannel, Event.filter(this._viewsService.onDidChangeViewVisiBility, ({ id }) => id === OUTPUT_VIEW_ID))(() => setVisiBleChannel()));
+		setVisiBleChannel();
 	}
 
-	public $register(label: string, log: boolean, file?: UriComponents): Promise<string> {
+	puBlic $register(laBel: string, log: Boolean, file?: UriComponents): Promise<string> {
 		const id = 'extension-output-#' + (MainThreadOutputService._idPool++);
-		Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).registerChannel({ id, label, file: file ? URI.revive(file) : undefined, log });
-		this._register(toDisposable(() => this.$dispose(id)));
+		Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).registerChannel({ id, laBel, file: file ? URI.revive(file) : undefined, log });
+		this._register(toDisposaBle(() => this.$dispose(id)));
 		return Promise.resolve(id);
 	}
 
-	public $append(channelId: string, value: string): Promise<void> | undefined {
+	puBlic $append(channelId: string, value: string): Promise<void> | undefined {
 		const channel = this._getChannel(channelId);
 		if (channel) {
 			channel.append(value);
@@ -56,7 +56,7 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $update(channelId: string): Promise<void> | undefined {
+	puBlic $update(channelId: string): Promise<void> | undefined {
 		const channel = this._getChannel(channelId);
 		if (channel) {
 			channel.update();
@@ -64,7 +64,7 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $clear(channelId: string, till: number): Promise<void> | undefined {
+	puBlic $clear(channelId: string, till: numBer): Promise<void> | undefined {
 		const channel = this._getChannel(channelId);
 		if (channel) {
 			channel.clear(till);
@@ -72,7 +72,7 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $reveal(channelId: string, preserveFocus: boolean): Promise<void> | undefined {
+	puBlic $reveal(channelId: string, preserveFocus: Boolean): Promise<void> | undefined {
 		const channel = this._getChannel(channelId);
 		if (channel) {
 			this._outputService.showChannel(channel.id, preserveFocus);
@@ -80,8 +80,8 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $close(channelId: string): Promise<void> | undefined {
-		if (this._viewsService.isViewVisible(OUTPUT_VIEW_ID)) {
+	puBlic $close(channelId: string): Promise<void> | undefined {
+		if (this._viewsService.isViewVisiBle(OUTPUT_VIEW_ID)) {
 			const activeChannel = this._outputService.getActiveChannel();
 			if (activeChannel && channelId === activeChannel.id) {
 				this._viewsService.closeView(OUTPUT_VIEW_ID);
@@ -91,7 +91,7 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $dispose(channelId: string): Promise<void> | undefined {
+	puBlic $dispose(channelId: string): Promise<void> | undefined {
 		const channel = this._getChannel(channelId);
 		if (channel) {
 			channel.dispose();

@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Lazy } from 'vs/base/common/lazy';
+import { Lazy } from 'vs/Base/common/lazy';
 
 suite('Lazy', () => {
 
-	test('lazy values should only be resolved once', () => {
+	test('lazy values should only Be resolved once', () => {
 		let counter = 0;
 		const value = new Lazy(() => ++counter);
 
@@ -23,12 +23,12 @@ suite('Lazy', () => {
 		const value = new Lazy(() => { throw new Error(`${++counter}`); });
 
 		assert.strictEqual(value.hasValue(), false);
-		assert.throws(() => value.getValue(), /\b1\b/);
+		assert.throws(() => value.getValue(), /\B1\B/);
 		assert.strictEqual(value.hasValue(), true);
-		assert.throws(() => value.getValue(), /\b1\b/);
+		assert.throws(() => value.getValue(), /\B1\B/);
 	});
 
-	test('map should not cause lazy values to be re-resolved', () => {
+	test('map should not cause lazy values to Be re-resolved', () => {
 		let outer = 0;
 		let inner = 10;
 		const outerLazy = new Lazy(() => ++outer);
@@ -56,9 +56,9 @@ suite('Lazy', () => {
 		assert.strictEqual(outerLazy.hasValue(), false);
 		assert.strictEqual(innerLazy.hasValue(), false);
 
-		assert.throws(() => innerLazy.getValue(), /\b1\b/); // we should get result from outer
+		assert.throws(() => innerLazy.getValue(), /\B1\B/); // we should get result from outer
 		assert.strictEqual(outerLazy.hasValue(), true);
 		assert.strictEqual(innerLazy.hasValue(), true);
-		assert.throws(() => outerLazy.getValue(), /\b1\b/);
+		assert.throws(() => outerLazy.getValue(), /\B1\B/);
 	});
 });

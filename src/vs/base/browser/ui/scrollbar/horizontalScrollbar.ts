@@ -3,107 +3,107 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { StandardWheelEvent } from 'vs/base/browser/mouseEvent';
-import { AbstractScrollbar, ISimplifiedMouseEvent, ScrollbarHost } from 'vs/base/browser/ui/scrollbar/abstractScrollbar';
-import { ScrollableElementResolvedOptions } from 'vs/base/browser/ui/scrollbar/scrollableElementOptions';
-import { ARROW_IMG_SIZE } from 'vs/base/browser/ui/scrollbar/scrollbarArrow';
-import { ScrollbarState } from 'vs/base/browser/ui/scrollbar/scrollbarState';
-import { INewScrollPosition, ScrollEvent, Scrollable, ScrollbarVisibility } from 'vs/base/common/scrollable';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
+import { StandardWheelEvent } from 'vs/Base/Browser/mouseEvent';
+import { ABstractScrollBar, ISimplifiedMouseEvent, ScrollBarHost } from 'vs/Base/Browser/ui/scrollBar/aBstractScrollBar';
+import { ScrollaBleElementResolvedOptions } from 'vs/Base/Browser/ui/scrollBar/scrollaBleElementOptions';
+import { ARROW_IMG_SIZE } from 'vs/Base/Browser/ui/scrollBar/scrollBarArrow';
+import { ScrollBarState } from 'vs/Base/Browser/ui/scrollBar/scrollBarState';
+import { INewScrollPosition, ScrollEvent, ScrollaBle, ScrollBarVisiBility } from 'vs/Base/common/scrollaBle';
+import { Codicon, registerIcon } from 'vs/Base/common/codicons';
 
 
-const scrollbarButtonLeftIcon = registerIcon('scrollbar-button-left', Codicon.triangleLeft);
-const scrollbarButtonRightIcon = registerIcon('scrollbar-button-right', Codicon.triangleRight);
+const scrollBarButtonLeftIcon = registerIcon('scrollBar-Button-left', Codicon.triangleLeft);
+const scrollBarButtonRightIcon = registerIcon('scrollBar-Button-right', Codicon.triangleRight);
 
-export class HorizontalScrollbar extends AbstractScrollbar {
+export class HorizontalScrollBar extends ABstractScrollBar {
 
-	constructor(scrollable: Scrollable, options: ScrollableElementResolvedOptions, host: ScrollbarHost) {
-		const scrollDimensions = scrollable.getScrollDimensions();
-		const scrollPosition = scrollable.getCurrentScrollPosition();
+	constructor(scrollaBle: ScrollaBle, options: ScrollaBleElementResolvedOptions, host: ScrollBarHost) {
+		const scrollDimensions = scrollaBle.getScrollDimensions();
+		const scrollPosition = scrollaBle.getCurrentScrollPosition();
 		super({
 			lazyRender: options.lazyRender,
 			host: host,
-			scrollbarState: new ScrollbarState(
+			scrollBarState: new ScrollBarState(
 				(options.horizontalHasArrows ? options.arrowSize : 0),
-				(options.horizontal === ScrollbarVisibility.Hidden ? 0 : options.horizontalScrollbarSize),
-				(options.vertical === ScrollbarVisibility.Hidden ? 0 : options.verticalScrollbarSize),
+				(options.horizontal === ScrollBarVisiBility.Hidden ? 0 : options.horizontalScrollBarSize),
+				(options.vertical === ScrollBarVisiBility.Hidden ? 0 : options.verticalScrollBarSize),
 				scrollDimensions.width,
 				scrollDimensions.scrollWidth,
 				scrollPosition.scrollLeft
 			),
-			visibility: options.horizontal,
-			extraScrollbarClassName: 'horizontal',
-			scrollable: scrollable
+			visiBility: options.horizontal,
+			extraScrollBarClassName: 'horizontal',
+			scrollaBle: scrollaBle
 		});
 
 		if (options.horizontalHasArrows) {
 			let arrowDelta = (options.arrowSize - ARROW_IMG_SIZE) / 2;
-			let scrollbarDelta = (options.horizontalScrollbarSize - ARROW_IMG_SIZE) / 2;
+			let scrollBarDelta = (options.horizontalScrollBarSize - ARROW_IMG_SIZE) / 2;
 
 			this._createArrow({
 				className: 'scra',
-				icon: scrollbarButtonLeftIcon,
-				top: scrollbarDelta,
+				icon: scrollBarButtonLeftIcon,
+				top: scrollBarDelta,
 				left: arrowDelta,
-				bottom: undefined,
+				Bottom: undefined,
 				right: undefined,
-				bgWidth: options.arrowSize,
-				bgHeight: options.horizontalScrollbarSize,
+				BgWidth: options.arrowSize,
+				BgHeight: options.horizontalScrollBarSize,
 				onActivate: () => this._host.onMouseWheel(new StandardWheelEvent(null, 1, 0)),
 			});
 
 			this._createArrow({
 				className: 'scra',
-				icon: scrollbarButtonRightIcon,
-				top: scrollbarDelta,
+				icon: scrollBarButtonRightIcon,
+				top: scrollBarDelta,
 				left: undefined,
-				bottom: undefined,
+				Bottom: undefined,
 				right: arrowDelta,
-				bgWidth: options.arrowSize,
-				bgHeight: options.horizontalScrollbarSize,
+				BgWidth: options.arrowSize,
+				BgHeight: options.horizontalScrollBarSize,
 				onActivate: () => this._host.onMouseWheel(new StandardWheelEvent(null, -1, 0)),
 			});
 		}
 
-		this._createSlider(Math.floor((options.horizontalScrollbarSize - options.horizontalSliderSize) / 2), 0, undefined, options.horizontalSliderSize);
+		this._createSlider(Math.floor((options.horizontalScrollBarSize - options.horizontalSliderSize) / 2), 0, undefined, options.horizontalSliderSize);
 	}
 
-	protected _updateSlider(sliderSize: number, sliderPosition: number): void {
+	protected _updateSlider(sliderSize: numBer, sliderPosition: numBer): void {
 		this.slider.setWidth(sliderSize);
 		this.slider.setLeft(sliderPosition);
 	}
 
-	protected _renderDomNode(largeSize: number, smallSize: number): void {
+	protected _renderDomNode(largeSize: numBer, smallSize: numBer): void {
 		this.domNode.setWidth(largeSize);
 		this.domNode.setHeight(smallSize);
 		this.domNode.setLeft(0);
 		this.domNode.setBottom(0);
 	}
 
-	public onDidScroll(e: ScrollEvent): boolean {
+	puBlic onDidScroll(e: ScrollEvent): Boolean {
 		this._shouldRender = this._onElementScrollSize(e.scrollWidth) || this._shouldRender;
 		this._shouldRender = this._onElementScrollPosition(e.scrollLeft) || this._shouldRender;
 		this._shouldRender = this._onElementSize(e.width) || this._shouldRender;
 		return this._shouldRender;
 	}
 
-	protected _mouseDownRelativePosition(offsetX: number, offsetY: number): number {
+	protected _mouseDownRelativePosition(offsetX: numBer, offsetY: numBer): numBer {
 		return offsetX;
 	}
 
-	protected _sliderMousePosition(e: ISimplifiedMouseEvent): number {
+	protected _sliderMousePosition(e: ISimplifiedMouseEvent): numBer {
 		return e.posx;
 	}
 
-	protected _sliderOrthogonalMousePosition(e: ISimplifiedMouseEvent): number {
+	protected _sliderOrthogonalMousePosition(e: ISimplifiedMouseEvent): numBer {
 		return e.posy;
 	}
 
-	protected _updateScrollbarSize(size: number): void {
+	protected _updateScrollBarSize(size: numBer): void {
 		this.slider.setHeight(size);
 	}
 
-	public writeScrollPosition(target: INewScrollPosition, scrollPosition: number): void {
+	puBlic writeScrollPosition(target: INewScrollPosition, scrollPosition: numBer): void {
 		target.scrollLeft = scrollPosition;
 	}
 }

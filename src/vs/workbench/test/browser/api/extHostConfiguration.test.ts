@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { ExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import { ExtHostConfigProvider } from 'vs/workbench/api/common/extHostConfiguration';
-import { MainThreadConfigurationShape, IConfigurationInitData } from 'vs/workbench/api/common/extHost.protocol';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { ExtHostWorkspace } from 'vs/workBench/api/common/extHostWorkspace';
+import { ExtHostConfigProvider } from 'vs/workBench/api/common/extHostConfiguration';
+import { MainThreadConfigurationShape, IConfigurationInitData } from 'vs/workBench/api/common/extHost.protocol';
 import { ConfigurationModel, ConfigurationModelParser } from 'vs/platform/configuration/common/configurationModels';
 import { TestRPCProtocol } from './testRPCProtocol';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/Base/test/common/mock';
 import { IWorkspaceFolder, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { ConfigurationTarget, IConfigurationModel, IConfigurationChange } from 'vs/platform/configuration/common/configuration';
 import { NullLogService } from 'vs/platform/log/common/log';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
 
 suite('ExtHostConfiguration', function () {
 
@@ -30,7 +30,7 @@ suite('ExtHostConfiguration', function () {
 		return new ExtHostWorkspace(new TestRPCProtocol(), new class extends mock<IExtHostInitDataService>() { }, new NullLogService());
 	}
 
-	function createExtHostConfiguration(contents: any = Object.create(null), shape?: MainThreadConfigurationShape) {
+	function createExtHostConfiguration(contents: any = OBject.create(null), shape?: MainThreadConfigurationShape) {
 		if (!shape) {
 			shape = new class extends mock<MainThreadConfigurationShape>() { };
 		}
@@ -67,7 +67,7 @@ suite('ExtHostConfiguration', function () {
 	test('has/get', () => {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'nested': {
 					'config1': 42,
@@ -77,7 +77,7 @@ suite('ExtHostConfiguration', function () {
 			}
 		});
 
-		const config = all.getConfiguration('farboo');
+		const config = all.getConfiguration('farBoo');
 
 		assert.ok(config.has('config0'));
 		assert.equal(config.get('config0'), true);
@@ -97,7 +97,7 @@ suite('ExtHostConfiguration', function () {
 	test('can modify the returned configuration', function () {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'nested': {
 					'config1': 42,
@@ -105,53 +105,53 @@ suite('ExtHostConfiguration', function () {
 				},
 				'config4': ''
 			},
-			'workbench': {
+			'workBench': {
 				'colorCustomizations': {
 					'statusBar.foreground': 'somevalue'
 				}
 			}
 		});
 
-		let testObject = all.getConfiguration();
-		let actual = testObject.get<any>('farboo')!;
+		let testOBject = all.getConfiguration();
+		let actual = testOBject.get<any>('farBoo')!;
 		actual['nested']['config1'] = 41;
 		assert.equal(41, actual['nested']['config1']);
-		actual['farboo1'] = 'newValue';
-		assert.equal('newValue', actual['farboo1']);
+		actual['farBoo1'] = 'newValue';
+		assert.equal('newValue', actual['farBoo1']);
 
-		testObject = all.getConfiguration();
-		actual = testObject.get('farboo')!;
+		testOBject = all.getConfiguration();
+		actual = testOBject.get('farBoo')!;
 		assert.equal(actual['nested']['config1'], 42);
-		assert.equal(actual['farboo1'], undefined);
+		assert.equal(actual['farBoo1'], undefined);
 
-		testObject = all.getConfiguration();
-		actual = testObject.get('farboo')!;
+		testOBject = all.getConfiguration();
+		actual = testOBject.get('farBoo')!;
 		assert.equal(actual['config0'], true);
 		actual['config0'] = false;
 		assert.equal(actual['config0'], false);
 
-		testObject = all.getConfiguration();
-		actual = testObject.get('farboo')!;
+		testOBject = all.getConfiguration();
+		actual = testOBject.get('farBoo')!;
 		assert.equal(actual['config0'], true);
 
-		testObject = all.getConfiguration();
-		actual = testObject.inspect('farboo')!;
+		testOBject = all.getConfiguration();
+		actual = testOBject.inspect('farBoo')!;
 		actual['value'] = 'effectiveValue';
 		assert.equal('effectiveValue', actual['value']);
 
-		testObject = all.getConfiguration('workbench');
-		actual = testObject.get('colorCustomizations')!;
+		testOBject = all.getConfiguration('workBench');
+		actual = testOBject.get('colorCustomizations')!;
 		actual['statusBar.foreground'] = undefined;
 		assert.equal(actual['statusBar.foreground'], undefined);
-		testObject = all.getConfiguration('workbench');
-		actual = testObject.get('colorCustomizations')!;
+		testOBject = all.getConfiguration('workBench');
+		actual = testOBject.get('colorCustomizations')!;
 		assert.equal(actual['statusBar.foreground'], 'somevalue');
 	});
 
 	test('Stringify returned configuration', function () {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'nested': {
 					'config1': 42,
@@ -159,17 +159,17 @@ suite('ExtHostConfiguration', function () {
 				},
 				'config4': ''
 			},
-			'workbench': {
+			'workBench': {
 				'colorCustomizations': {
 					'statusBar.foreground': 'somevalue'
 				},
-				'emptyobjectkey': {
+				'emptyoBjectkey': {
 				}
 			}
 		});
 
-		const testObject = all.getConfiguration();
-		let actual: any = testObject.get('farboo');
+		const testOBject = all.getConfiguration();
+		let actual: any = testOBject.get('farBoo');
 		assert.deepEqual(JSON.stringify({
 			'config0': true,
 			'nested': {
@@ -179,9 +179,9 @@ suite('ExtHostConfiguration', function () {
 			'config4': ''
 		}), JSON.stringify(actual));
 
-		assert.deepEqual(undefined, JSON.stringify(testObject.get('unknownkey')));
+		assert.deepEqual(undefined, JSON.stringify(testOBject.get('unknownkey')));
 
-		actual = testObject.get('farboo')!;
+		actual = testOBject.get('farBoo')!;
 		actual['config0'] = false;
 		assert.deepEqual(JSON.stringify({
 			'config0': false,
@@ -192,42 +192,42 @@ suite('ExtHostConfiguration', function () {
 			'config4': ''
 		}), JSON.stringify(actual));
 
-		actual = testObject.get<any>('workbench')!['colorCustomizations']!;
-		actual['statusBar.background'] = 'anothervalue';
+		actual = testOBject.get<any>('workBench')!['colorCustomizations']!;
+		actual['statusBar.Background'] = 'anothervalue';
 		assert.deepEqual(JSON.stringify({
 			'statusBar.foreground': 'somevalue',
-			'statusBar.background': 'anothervalue'
+			'statusBar.Background': 'anothervalue'
 		}), JSON.stringify(actual));
 
-		actual = testObject.get('workbench');
+		actual = testOBject.get('workBench');
 		actual['unknownkey'] = 'somevalue';
 		assert.deepEqual(JSON.stringify({
 			'colorCustomizations': {
 				'statusBar.foreground': 'somevalue'
 			},
-			'emptyobjectkey': {},
+			'emptyoBjectkey': {},
 			'unknownkey': 'somevalue'
 		}), JSON.stringify(actual));
 
-		actual = all.getConfiguration('workbench').get('emptyobjectkey');
+		actual = all.getConfiguration('workBench').get('emptyoBjectkey');
 		actual = {
 			...(actual || {}),
-			'statusBar.background': `#0ff`,
+			'statusBar.Background': `#0ff`,
 			'statusBar.foreground': `#ff0`,
 		};
 		assert.deepEqual(JSON.stringify({
-			'statusBar.background': `#0ff`,
+			'statusBar.Background': `#0ff`,
 			'statusBar.foreground': `#ff0`,
 		}), JSON.stringify(actual));
 
-		actual = all.getConfiguration('workbench').get('unknownkey');
+		actual = all.getConfiguration('workBench').get('unknownkey');
 		actual = {
 			...(actual || {}),
-			'statusBar.background': `#0ff`,
+			'statusBar.Background': `#0ff`,
 			'statusBar.foreground': `#ff0`,
 		};
 		assert.deepEqual(JSON.stringify({
-			'statusBar.background': `#0ff`,
+			'statusBar.Background': `#0ff`,
 			'statusBar.foreground': `#ff0`,
 		}), JSON.stringify(actual));
 	});
@@ -235,7 +235,7 @@ suite('ExtHostConfiguration', function () {
 	test('cannot modify returned configuration', function () {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'nested': {
 					'config1': 42,
@@ -245,29 +245,29 @@ suite('ExtHostConfiguration', function () {
 			}
 		});
 
-		let testObject: any = all.getConfiguration();
+		let testOBject: any = all.getConfiguration();
 
 		try {
-			testObject['get'] = null;
-			assert.fail('This should be readonly');
+			testOBject['get'] = null;
+			assert.fail('This should Be readonly');
 		} catch (e) {
 		}
 
 		try {
-			testObject['farboo']['config0'] = false;
-			assert.fail('This should be readonly');
+			testOBject['farBoo']['config0'] = false;
+			assert.fail('This should Be readonly');
 		} catch (e) {
 		}
 
 		try {
-			testObject['farboo']['farboo1'] = 'hello';
-			assert.fail('This should be readonly');
+			testOBject['farBoo']['farBoo1'] = 'hello';
+			assert.fail('This should Be readonly');
 		} catch (e) {
 		}
 	});
 
 	test('inspect in no workspace context', function () {
-		const testObject = new ExtHostConfigProvider(
+		const testOBject = new ExtHostConfigProvider(
 			new class extends mock<MainThreadConfigurationShape>() { },
 			createExtHostWorkspace(),
 			{
@@ -288,15 +288,15 @@ suite('ExtHostConfiguration', function () {
 			new NullLogService()
 		);
 
-		let actual = testObject.getConfiguration().inspect('editor.wordWrap')!;
+		let actual = testOBject.getConfiguration().inspect('editor.wordWrap')!;
 		assert.equal(actual.defaultValue, 'off');
-		assert.equal(actual.globalValue, 'on');
+		assert.equal(actual.gloBalValue, 'on');
 		assert.equal(actual.workspaceValue, undefined);
 		assert.equal(actual.workspaceFolderValue, undefined);
 
-		actual = testObject.getConfiguration('editor').inspect('wordWrap')!;
+		actual = testOBject.getConfiguration('editor').inspect('wordWrap')!;
 		assert.equal(actual.defaultValue, 'off');
-		assert.equal(actual.globalValue, 'on');
+		assert.equal(actual.gloBalValue, 'on');
 		assert.equal(actual.workspaceValue, undefined);
 		assert.equal(actual.workspaceFolderValue, undefined);
 	});
@@ -306,7 +306,7 @@ suite('ExtHostConfiguration', function () {
 		const folders: [UriComponents, IConfigurationModel][] = [];
 		const workspace = new ConfigurationModel({
 			'editor': {
-				'wordWrap': 'bounded'
+				'wordWrap': 'Bounded'
 			}
 		}, ['editor.wordWrap']);
 		folders.push([workspaceUri, workspace]);
@@ -316,7 +316,7 @@ suite('ExtHostConfiguration', function () {
 			'folders': [aWorkspaceFolder(URI.file('foo'), 0)],
 			'name': 'foo'
 		});
-		const testObject = new ExtHostConfigProvider(
+		const testOBject = new ExtHostConfigProvider(
 			new class extends mock<MainThreadConfigurationShape>() { },
 			extHostWorkspace,
 			{
@@ -337,35 +337,35 @@ suite('ExtHostConfiguration', function () {
 			new NullLogService()
 		);
 
-		let actual1 = testObject.getConfiguration().inspect('editor.wordWrap')!;
+		let actual1 = testOBject.getConfiguration().inspect('editor.wordWrap')!;
 		assert.equal(actual1.defaultValue, 'off');
-		assert.equal(actual1.globalValue, 'on');
-		assert.equal(actual1.workspaceValue, 'bounded');
+		assert.equal(actual1.gloBalValue, 'on');
+		assert.equal(actual1.workspaceValue, 'Bounded');
 		assert.equal(actual1.workspaceFolderValue, undefined);
 
-		actual1 = testObject.getConfiguration('editor').inspect('wordWrap')!;
+		actual1 = testOBject.getConfiguration('editor').inspect('wordWrap')!;
 		assert.equal(actual1.defaultValue, 'off');
-		assert.equal(actual1.globalValue, 'on');
-		assert.equal(actual1.workspaceValue, 'bounded');
+		assert.equal(actual1.gloBalValue, 'on');
+		assert.equal(actual1.workspaceValue, 'Bounded');
 		assert.equal(actual1.workspaceFolderValue, undefined);
 
-		let actual2 = testObject.getConfiguration(undefined, workspaceUri).inspect('editor.wordWrap')!;
+		let actual2 = testOBject.getConfiguration(undefined, workspaceUri).inspect('editor.wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
-		assert.equal(actual2.workspaceFolderValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
+		assert.equal(actual2.workspaceFolderValue, 'Bounded');
 
-		actual2 = testObject.getConfiguration('editor', workspaceUri).inspect('wordWrap')!;
+		actual2 = testOBject.getConfiguration('editor', workspaceUri).inspect('wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
-		assert.equal(actual2.workspaceFolderValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
+		assert.equal(actual2.workspaceFolderValue, 'Bounded');
 	});
 
 	test('inspect in multi root context', function () {
 		const workspace = new ConfigurationModel({
 			'editor': {
-				'wordWrap': 'bounded'
+				'wordWrap': 'Bounded'
 			}
 		}, ['editor.wordWrap']);
 
@@ -376,7 +376,7 @@ suite('ExtHostConfiguration', function () {
 		folders.push([firstRoot, new ConfigurationModel({
 			'editor': {
 				'wordWrap': 'off',
-				'lineNumbers': 'relative'
+				'lineNumBers': 'relative'
 			}
 		}, ['editor.wordWrap'])]);
 		folders.push([secondRoot, new ConfigurationModel({
@@ -392,14 +392,14 @@ suite('ExtHostConfiguration', function () {
 			'folders': [aWorkspaceFolder(firstRoot, 0), aWorkspaceFolder(secondRoot, 1)],
 			'name': 'foo'
 		});
-		const testObject = new ExtHostConfigProvider(
+		const testOBject = new ExtHostConfigProvider(
 			new class extends mock<MainThreadConfigurationShape>() { },
 			extHostWorkspace,
 			{
 				defaults: new ConfigurationModel({
 					'editor': {
 						'wordWrap': 'off',
-						'lineNumbers': 'on'
+						'lineNumBers': 'on'
 					}
 				}, ['editor.wordWrap']),
 				user: new ConfigurationModel({
@@ -414,66 +414,66 @@ suite('ExtHostConfiguration', function () {
 			new NullLogService()
 		);
 
-		let actual1 = testObject.getConfiguration().inspect('editor.wordWrap')!;
+		let actual1 = testOBject.getConfiguration().inspect('editor.wordWrap')!;
 		assert.equal(actual1.defaultValue, 'off');
-		assert.equal(actual1.globalValue, 'on');
-		assert.equal(actual1.workspaceValue, 'bounded');
+		assert.equal(actual1.gloBalValue, 'on');
+		assert.equal(actual1.workspaceValue, 'Bounded');
 		assert.equal(actual1.workspaceFolderValue, undefined);
 
-		actual1 = testObject.getConfiguration('editor').inspect('wordWrap')!;
+		actual1 = testOBject.getConfiguration('editor').inspect('wordWrap')!;
 		assert.equal(actual1.defaultValue, 'off');
-		assert.equal(actual1.globalValue, 'on');
-		assert.equal(actual1.workspaceValue, 'bounded');
+		assert.equal(actual1.gloBalValue, 'on');
+		assert.equal(actual1.workspaceValue, 'Bounded');
 		assert.equal(actual1.workspaceFolderValue, undefined);
 
-		actual1 = testObject.getConfiguration('editor').inspect('lineNumbers')!;
+		actual1 = testOBject.getConfiguration('editor').inspect('lineNumBers')!;
 		assert.equal(actual1.defaultValue, 'on');
-		assert.equal(actual1.globalValue, undefined);
+		assert.equal(actual1.gloBalValue, undefined);
 		assert.equal(actual1.workspaceValue, undefined);
 		assert.equal(actual1.workspaceFolderValue, undefined);
 
-		let actual2 = testObject.getConfiguration(undefined, firstRoot).inspect('editor.wordWrap')!;
+		let actual2 = testOBject.getConfiguration(undefined, firstRoot).inspect('editor.wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
 		assert.equal(actual2.workspaceFolderValue, 'off');
 
-		actual2 = testObject.getConfiguration('editor', firstRoot).inspect('wordWrap')!;
+		actual2 = testOBject.getConfiguration('editor', firstRoot).inspect('wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
 		assert.equal(actual2.workspaceFolderValue, 'off');
 
-		actual2 = testObject.getConfiguration('editor', firstRoot).inspect('lineNumbers')!;
+		actual2 = testOBject.getConfiguration('editor', firstRoot).inspect('lineNumBers')!;
 		assert.equal(actual2.defaultValue, 'on');
-		assert.equal(actual2.globalValue, undefined);
+		assert.equal(actual2.gloBalValue, undefined);
 		assert.equal(actual2.workspaceValue, undefined);
 		assert.equal(actual2.workspaceFolderValue, 'relative');
 
-		actual2 = testObject.getConfiguration(undefined, secondRoot).inspect('editor.wordWrap')!;
+		actual2 = testOBject.getConfiguration(undefined, secondRoot).inspect('editor.wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
 		assert.equal(actual2.workspaceFolderValue, 'on');
 
-		actual2 = testObject.getConfiguration('editor', secondRoot).inspect('wordWrap')!;
+		actual2 = testOBject.getConfiguration('editor', secondRoot).inspect('wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
 		assert.equal(actual2.workspaceFolderValue, 'on');
 
-		actual2 = testObject.getConfiguration(undefined, thirdRoot).inspect('editor.wordWrap')!;
+		actual2 = testOBject.getConfiguration(undefined, thirdRoot).inspect('editor.wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
-		assert.ok(Object.keys(actual2).indexOf('workspaceFolderValue') !== -1);
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
+		assert.ok(OBject.keys(actual2).indexOf('workspaceFolderValue') !== -1);
 		assert.equal(actual2.workspaceFolderValue, undefined);
 
-		actual2 = testObject.getConfiguration('editor', thirdRoot).inspect('wordWrap')!;
+		actual2 = testOBject.getConfiguration('editor', thirdRoot).inspect('wordWrap')!;
 		assert.equal(actual2.defaultValue, 'off');
-		assert.equal(actual2.globalValue, 'on');
-		assert.equal(actual2.workspaceValue, 'bounded');
-		assert.ok(Object.keys(actual2).indexOf('workspaceFolderValue') !== -1);
+		assert.equal(actual2.gloBalValue, 'on');
+		assert.equal(actual2.workspaceValue, 'Bounded');
+		assert.ok(OBject.keys(actual2).indexOf('workspaceFolderValue') !== -1);
 		assert.equal(actual2.workspaceFolderValue, undefined);
 	});
 
@@ -482,9 +482,9 @@ suite('ExtHostConfiguration', function () {
 		const secondRoot = URI.file('foo2');
 		const folders: [UriComponents, IConfigurationModel][] = [];
 		folders.push([firstRoot, toConfigurationModel({
-			'editor.wordWrap': 'bounded',
+			'editor.wordWrap': 'Bounded',
 			'[typescript]': {
-				'editor.wordWrap': 'unbounded',
+				'editor.wordWrap': 'unBounded',
 			}
 		})]);
 		folders.push([secondRoot, toConfigurationModel({})]);
@@ -495,26 +495,26 @@ suite('ExtHostConfiguration', function () {
 			'folders': [aWorkspaceFolder(firstRoot, 0), aWorkspaceFolder(secondRoot, 1)],
 			'name': 'foo'
 		});
-		const testObject = new ExtHostConfigProvider(
+		const testOBject = new ExtHostConfigProvider(
 			new class extends mock<MainThreadConfigurationShape>() { },
 			extHostWorkspace,
 			{
 				defaults: toConfigurationModel({
 					'editor.wordWrap': 'off',
 					'[markdown]': {
-						'editor.wordWrap': 'bounded',
+						'editor.wordWrap': 'Bounded',
 					}
 				}),
 				user: toConfigurationModel({
-					'editor.wordWrap': 'bounded',
+					'editor.wordWrap': 'Bounded',
 					'[typescript]': {
-						'editor.lineNumbers': 'off',
+						'editor.lineNumBers': 'off',
 					}
 				}),
 				workspace: toConfigurationModel({
 					'[typescript]': {
-						'editor.wordWrap': 'unbounded',
-						'editor.lineNumbers': 'off',
+						'editor.wordWrap': 'unBounded',
+						'editor.lineNumBers': 'off',
 					}
 				}),
 				folders,
@@ -523,25 +523,25 @@ suite('ExtHostConfiguration', function () {
 			new NullLogService()
 		);
 
-		let actual = testObject.getConfiguration(undefined, { uri: firstRoot, languageId: 'typescript' }).inspect('editor.wordWrap')!;
+		let actual = testOBject.getConfiguration(undefined, { uri: firstRoot, languageId: 'typescript' }).inspect('editor.wordWrap')!;
 		assert.equal(actual.defaultValue, 'off');
-		assert.equal(actual.globalValue, 'bounded');
+		assert.equal(actual.gloBalValue, 'Bounded');
 		assert.equal(actual.workspaceValue, undefined);
-		assert.equal(actual.workspaceFolderValue, 'bounded');
+		assert.equal(actual.workspaceFolderValue, 'Bounded');
 		assert.equal(actual.defaultLanguageValue, undefined);
-		assert.equal(actual.globalLanguageValue, undefined);
-		assert.equal(actual.workspaceLanguageValue, 'unbounded');
-		assert.equal(actual.workspaceFolderLanguageValue, 'unbounded');
+		assert.equal(actual.gloBalLanguageValue, undefined);
+		assert.equal(actual.workspaceLanguageValue, 'unBounded');
+		assert.equal(actual.workspaceFolderLanguageValue, 'unBounded');
 		assert.deepEqual(actual.languageIds, ['markdown', 'typescript']);
 
-		actual = testObject.getConfiguration(undefined, { uri: secondRoot, languageId: 'typescript' }).inspect('editor.wordWrap')!;
+		actual = testOBject.getConfiguration(undefined, { uri: secondRoot, languageId: 'typescript' }).inspect('editor.wordWrap')!;
 		assert.equal(actual.defaultValue, 'off');
-		assert.equal(actual.globalValue, 'bounded');
+		assert.equal(actual.gloBalValue, 'Bounded');
 		assert.equal(actual.workspaceValue, undefined);
 		assert.equal(actual.workspaceFolderValue, undefined);
 		assert.equal(actual.defaultLanguageValue, undefined);
-		assert.equal(actual.globalLanguageValue, undefined);
-		assert.equal(actual.workspaceLanguageValue, 'unbounded');
+		assert.equal(actual.gloBalLanguageValue, undefined);
+		assert.equal(actual.workspaceLanguageValue, 'unBounded');
 		assert.equal(actual.workspaceFolderLanguageValue, undefined);
 		assert.deepEqual(actual.languageIds, ['markdown', 'typescript']);
 	});
@@ -550,17 +550,17 @@ suite('ExtHostConfiguration', function () {
 	test('getConfiguration vs get', function () {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'config4': 38
 			}
 		});
 
-		let config = all.getConfiguration('farboo.config0');
+		let config = all.getConfiguration('farBoo.config0');
 		assert.equal(config.get(''), undefined);
 		assert.equal(config.has(''), false);
 
-		config = all.getConfiguration('farboo');
+		config = all.getConfiguration('farBoo');
 		assert.equal(config.get('config0'), true);
 		assert.equal(config.has('config0'), true);
 	});
@@ -568,28 +568,28 @@ suite('ExtHostConfiguration', function () {
 	test('getConfiguration vs get', function () {
 
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'config0': true,
 				'config4': 38
 			}
 		});
 
-		let config = all.getConfiguration('farboo.config0');
+		let config = all.getConfiguration('farBoo.config0');
 		assert.equal(config.get(''), undefined);
 		assert.equal(config.has(''), false);
 
-		config = all.getConfiguration('farboo');
+		config = all.getConfiguration('farBoo');
 		assert.equal(config.get('config0'), true);
 		assert.equal(config.has('config0'), true);
 	});
 
 	test('name vs property', function () {
 		const all = createExtHostConfiguration({
-			'farboo': {
+			'farBoo': {
 				'get': 'get-prop'
 			}
 		});
-		const config = all.getConfiguration('farboo');
+		const config = all.getConfiguration('farBoo');
 
 		assert.ok(config.has('get'));
 		assert.equal(config.get('get'), 'get-prop');
@@ -601,13 +601,13 @@ suite('ExtHostConfiguration', function () {
 		const shape = new RecordingShape();
 		const allConfig = createExtHostConfiguration({
 			'foo': {
-				'bar': 1,
+				'Bar': 1,
 				'far': 1
 			}
 		}, shape);
 
 		let config = allConfig.getConfiguration('foo');
-		config.update('bar', 42);
+		config.update('Bar', 42);
 
 		assert.equal(shape.lastArgs[0], null);
 	});
@@ -617,24 +617,24 @@ suite('ExtHostConfiguration', function () {
 		const shape = new RecordingShape();
 		const allConfig = createExtHostConfiguration({
 			'foo': {
-				'bar': 1,
+				'Bar': 1,
 				'far': 1
 			}
 		}, shape);
 
 		let config = allConfig.getConfiguration('foo');
-		config.update('bar', 42, true);
+		config.update('Bar', 42, true);
 
 		assert.equal(shape.lastArgs[0], ConfigurationTarget.USER);
-		assert.equal(shape.lastArgs[1], 'foo.bar');
+		assert.equal(shape.lastArgs[1], 'foo.Bar');
 		assert.equal(shape.lastArgs[2], 42);
 
 		config = allConfig.getConfiguration('');
-		config.update('bar', 42, true);
-		assert.equal(shape.lastArgs[1], 'bar');
+		config.update('Bar', 42, true);
+		assert.equal(shape.lastArgs[1], 'Bar');
 
-		config.update('foo.bar', 42, true);
-		assert.equal(shape.lastArgs[1], 'foo.bar');
+		config.update('foo.Bar', 42, true);
+		assert.equal(shape.lastArgs[1], 'foo.Bar');
 	});
 
 	test('update, what is #15834', function () {
@@ -673,11 +673,11 @@ suite('ExtHostConfiguration', function () {
 			'folders': [workspaceFolder],
 			'name': 'foo'
 		});
-		const testObject = new ExtHostConfigProvider(
+		const testOBject = new ExtHostConfigProvider(
 			new class extends mock<MainThreadConfigurationShape>() { },
 			extHostWorkspace,
 			createConfigurationData({
-				'farboo': {
+				'farBoo': {
 					'config': false,
 					'updatedConfig': false
 				}
@@ -686,49 +686,49 @@ suite('ExtHostConfiguration', function () {
 		);
 
 		const newConfigData = createConfigurationData({
-			'farboo': {
+			'farBoo': {
 				'config': false,
 				'updatedConfig': true,
 				'newConfig': true,
 			}
 		});
-		const configEventData: IConfigurationChange = { keys: ['farboo.updatedConfig', 'farboo.newConfig'], overrides: [] };
-		testObject.onDidChangeConfiguration(e => {
+		const configEventData: IConfigurationChange = { keys: ['farBoo.updatedConfig', 'farBoo.newConfig'], overrides: [] };
+		testOBject.onDidChangeConfiguration(e => {
 
-			assert.deepEqual(testObject.getConfiguration().get('farboo'), {
+			assert.deepEqual(testOBject.getConfiguration().get('farBoo'), {
 				'config': false,
 				'updatedConfig': true,
 				'newConfig': true,
 			});
 
-			assert.ok(e.affectsConfiguration('farboo'));
-			assert.ok(e.affectsConfiguration('farboo', workspaceFolder.uri));
-			assert.ok(e.affectsConfiguration('farboo', URI.file('any')));
+			assert.ok(e.affectsConfiguration('farBoo'));
+			assert.ok(e.affectsConfiguration('farBoo', workspaceFolder.uri));
+			assert.ok(e.affectsConfiguration('farBoo', URI.file('any')));
 
-			assert.ok(e.affectsConfiguration('farboo.updatedConfig'));
-			assert.ok(e.affectsConfiguration('farboo.updatedConfig', workspaceFolder.uri));
-			assert.ok(e.affectsConfiguration('farboo.updatedConfig', URI.file('any')));
+			assert.ok(e.affectsConfiguration('farBoo.updatedConfig'));
+			assert.ok(e.affectsConfiguration('farBoo.updatedConfig', workspaceFolder.uri));
+			assert.ok(e.affectsConfiguration('farBoo.updatedConfig', URI.file('any')));
 
-			assert.ok(e.affectsConfiguration('farboo.newConfig'));
-			assert.ok(e.affectsConfiguration('farboo.newConfig', workspaceFolder.uri));
-			assert.ok(e.affectsConfiguration('farboo.newConfig', URI.file('any')));
+			assert.ok(e.affectsConfiguration('farBoo.newConfig'));
+			assert.ok(e.affectsConfiguration('farBoo.newConfig', workspaceFolder.uri));
+			assert.ok(e.affectsConfiguration('farBoo.newConfig', URI.file('any')));
 
-			assert.ok(!e.affectsConfiguration('farboo.config'));
-			assert.ok(!e.affectsConfiguration('farboo.config', workspaceFolder.uri));
-			assert.ok(!e.affectsConfiguration('farboo.config', URI.file('any')));
+			assert.ok(!e.affectsConfiguration('farBoo.config'));
+			assert.ok(!e.affectsConfiguration('farBoo.config', workspaceFolder.uri));
+			assert.ok(!e.affectsConfiguration('farBoo.config', URI.file('any')));
 			done();
 		});
 
-		testObject.$acceptConfigurationChanged(newConfigData, configEventData);
+		testOBject.$acceptConfigurationChanged(newConfigData, configEventData);
 	});
 
-	function aWorkspaceFolder(uri: URI, index: number, name: string = ''): IWorkspaceFolder {
+	function aWorkspaceFolder(uri: URI, index: numBer, name: string = ''): IWorkspaceFolder {
 		return new WorkspaceFolder({ uri, name, index });
 	}
 
-	function toConfigurationModel(obj: any): ConfigurationModel {
+	function toConfigurationModel(oBj: any): ConfigurationModel {
 		const parser = new ConfigurationModelParser('test');
-		parser.parseContent(JSON.stringify(obj));
+		parser.parseContent(JSON.stringify(oBj));
 		return parser.configurationModel;
 	}
 

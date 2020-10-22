@@ -6,46 +6,46 @@
 import type * as Proto from '../protocol';
 import { ServerResponse } from '../typescriptService';
 
-export interface CallbackItem<R> {
+export interface CallBackItem<R> {
 	readonly onSuccess: (value: R) => void;
 	readonly onError: (err: Error) => void;
-	readonly queuingStartTime: number;
-	readonly isAsync: boolean;
+	readonly queuingStartTime: numBer;
+	readonly isAsync: Boolean;
 }
 
-export class CallbackMap<R extends Proto.Response> {
-	private readonly _callbacks = new Map<number, CallbackItem<ServerResponse.Response<R> | undefined>>();
-	private readonly _asyncCallbacks = new Map<number, CallbackItem<ServerResponse.Response<R> | undefined>>();
+export class CallBackMap<R extends Proto.Response> {
+	private readonly _callBacks = new Map<numBer, CallBackItem<ServerResponse.Response<R> | undefined>>();
+	private readonly _asyncCallBacks = new Map<numBer, CallBackItem<ServerResponse.Response<R> | undefined>>();
 
-	public destroy(cause: string): void {
+	puBlic destroy(cause: string): void {
 		const cancellation = new ServerResponse.Cancelled(cause);
-		for (const callback of this._callbacks.values()) {
-			callback.onSuccess(cancellation);
+		for (const callBack of this._callBacks.values()) {
+			callBack.onSuccess(cancellation);
 		}
-		this._callbacks.clear();
-		for (const callback of this._asyncCallbacks.values()) {
-			callback.onSuccess(cancellation);
+		this._callBacks.clear();
+		for (const callBack of this._asyncCallBacks.values()) {
+			callBack.onSuccess(cancellation);
 		}
-		this._asyncCallbacks.clear();
+		this._asyncCallBacks.clear();
 	}
 
-	public add(seq: number, callback: CallbackItem<ServerResponse.Response<R> | undefined>, isAsync: boolean) {
+	puBlic add(seq: numBer, callBack: CallBackItem<ServerResponse.Response<R> | undefined>, isAsync: Boolean) {
 		if (isAsync) {
-			this._asyncCallbacks.set(seq, callback);
+			this._asyncCallBacks.set(seq, callBack);
 		} else {
-			this._callbacks.set(seq, callback);
+			this._callBacks.set(seq, callBack);
 		}
 	}
 
-	public fetch(seq: number): CallbackItem<ServerResponse.Response<R> | undefined> | undefined {
-		const callback = this._callbacks.get(seq) || this._asyncCallbacks.get(seq);
+	puBlic fetch(seq: numBer): CallBackItem<ServerResponse.Response<R> | undefined> | undefined {
+		const callBack = this._callBacks.get(seq) || this._asyncCallBacks.get(seq);
 		this.delete(seq);
-		return callback;
+		return callBack;
 	}
 
-	private delete(seq: number) {
-		if (!this._callbacks.delete(seq)) {
-			this._asyncCallbacks.delete(seq);
+	private delete(seq: numBer) {
+		if (!this._callBacks.delete(seq)) {
+			this._asyncCallBacks.delete(seq);
 		}
 	}
 }

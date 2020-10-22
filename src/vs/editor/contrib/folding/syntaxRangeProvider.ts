@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { FoldingRangeProvider, FoldingRange, FoldingContext } from 'vs/editor/common/modes';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
 import { ITextModel } from 'vs/editor/common/model';
 import { RangeProvider } from './folding';
 import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRanges';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 
 const MAX_FOLDING_REGIONS = 5000;
 
 export interface IFoldingRangeData extends FoldingRange {
-	rank: number;
+	rank: numBer;
 }
 
 const foldingContext: FoldingContext = {
@@ -26,15 +26,15 @@ export class SyntaxRangeProvider implements RangeProvider {
 
 	readonly id = ID_SYNTAX_PROVIDER;
 
-	readonly disposables: DisposableStore | undefined;
+	readonly disposaBles: DisposaBleStore | undefined;
 
 	constructor(private readonly editorModel: ITextModel, private providers: FoldingRangeProvider[], handleFoldingRangesChange: () => void, private limit = MAX_FOLDING_REGIONS) {
 		for (const provider of providers) {
 			if (typeof provider.onDidChange === 'function') {
-				if (!this.disposables) {
-					this.disposables = new DisposableStore();
+				if (!this.disposaBles) {
+					this.disposaBles = new DisposaBleStore();
 				}
-				this.disposables.add(provider.onDidChange(handleFoldingRangesChange));
+				this.disposaBles.add(provider.onDidChange(handleFoldingRangesChange));
 			}
 		}
 	}
@@ -50,7 +50,7 @@ export class SyntaxRangeProvider implements RangeProvider {
 	}
 
 	dispose() {
-		this.disposables?.dispose();
+		this.disposaBles?.dispose();
 	}
 }
 
@@ -80,15 +80,15 @@ function collectSyntaxRanges(providers: FoldingRangeProvider[], model: ITextMode
 }
 
 export class RangesCollector {
-	private readonly _startIndexes: number[];
-	private readonly _endIndexes: number[];
-	private readonly _nestingLevels: number[];
-	private readonly _nestingLevelCounts: number[];
+	private readonly _startIndexes: numBer[];
+	private readonly _endIndexes: numBer[];
+	private readonly _nestingLevels: numBer[];
+	private readonly _nestingLevelCounts: numBer[];
 	private readonly _types: Array<string | undefined>;
-	private _length: number;
-	private readonly _foldingRangesLimit: number;
+	private _length: numBer;
+	private readonly _foldingRangesLimit: numBer;
 
-	constructor(foldingRangesLimit: number) {
+	constructor(foldingRangesLimit: numBer) {
 		this._startIndexes = [];
 		this._endIndexes = [];
 		this._nestingLevels = [];
@@ -98,13 +98,13 @@ export class RangesCollector {
 		this._foldingRangesLimit = foldingRangesLimit;
 	}
 
-	public add(startLineNumber: number, endLineNumber: number, type: string | undefined, nestingLevel: number) {
-		if (startLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
+	puBlic add(startLineNumBer: numBer, endLineNumBer: numBer, type: string | undefined, nestingLevel: numBer) {
+		if (startLineNumBer > MAX_LINE_NUMBER || endLineNumBer > MAX_LINE_NUMBER) {
 			return;
 		}
 		let index = this._length;
-		this._startIndexes[index] = startLineNumber;
-		this._endIndexes[index] = endLineNumber;
+		this._startIndexes[index] = startLineNumBer;
+		this._endIndexes[index] = endLineNumBer;
 		this._nestingLevels[index] = nestingLevel;
 		this._types[index] = type;
 		this._length++;
@@ -113,7 +113,7 @@ export class RangesCollector {
 		}
 	}
 
-	public toIndentRanges() {
+	puBlic toIndentRanges() {
 		if (this._length <= this._foldingRangesLimit) {
 			let startIndexes = new Uint32Array(this._length);
 			let endIndexes = new Uint32Array(this._length);
@@ -130,7 +130,7 @@ export class RangesCollector {
 				if (n) {
 					if (n + entries > this._foldingRangesLimit) {
 						maxLevel = i;
-						break;
+						Break;
 					}
 					entries += n;
 				}
@@ -155,7 +155,7 @@ export class RangesCollector {
 
 }
 
-export function sanitizeRanges(rangeData: IFoldingRangeData[], limit: number): FoldingRegions {
+export function sanitizeRanges(rangeData: IFoldingRangeData[], limit: numBer): FoldingRegions {
 
 	let sorted = rangeData.sort((d1, d2) => {
 		let diff = d1.start - d2.start;

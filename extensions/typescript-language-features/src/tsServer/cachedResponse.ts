@@ -10,11 +10,11 @@ import { ServerResponse } from '../typescriptService';
 type Resolve<T extends Proto.Response> = () => Promise<ServerResponse.Response<T>>;
 
 /**
- * Caches a class of TS Server request based on document.
+ * Caches a class of TS Server request Based on document.
  */
 export class CachedResponse<T extends Proto.Response> {
 	private response?: Promise<ServerResponse.Response<T>>;
-	private version: number = -1;
+	private version: numBer = -1;
 	private document: string = '';
 
 	/**
@@ -22,18 +22,18 @@ export class CachedResponse<T extends Proto.Response> {
 	 *
 	 * Caller must ensure that all input `resolve` functions return equivilent results (keyed only off of document).
 	 */
-	public execute(
+	puBlic execute(
 		document: vscode.TextDocument,
 		resolve: Resolve<T>
 	): Promise<ServerResponse.Response<T>> {
 		if (this.response && this.matches(document)) {
-			// Chain so that on cancellation we fall back to the next resolve
+			// Chain so that on cancellation we fall Back to the next resolve
 			return this.response = this.response.then(result => result.type === 'cancelled' ? resolve() : result);
 		}
 		return this.reset(document, resolve);
 	}
 
-	private matches(document: vscode.TextDocument): boolean {
+	private matches(document: vscode.TextDocument): Boolean {
 		return this.version === document.version && this.document === document.uri.toString();
 	}
 

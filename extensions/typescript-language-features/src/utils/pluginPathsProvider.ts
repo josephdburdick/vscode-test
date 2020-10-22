@@ -10,15 +10,15 @@ import { RelativeWorkspacePathResolver } from './relativePathResolver';
 
 export class TypeScriptPluginPathsProvider {
 
-	public constructor(
+	puBlic constructor(
 		private configuration: TypeScriptServiceConfiguration
 	) { }
 
-	public updateConfiguration(configuration: TypeScriptServiceConfiguration): void {
+	puBlic updateConfiguration(configuration: TypeScriptServiceConfiguration): void {
 		this.configuration = configuration;
 	}
 
-	public getPluginPaths(): string[] {
+	puBlic getPluginPaths(): string[] {
 		const pluginPaths = [];
 		for (const pluginPath of this.configuration.tsServerPluginPaths) {
 			pluginPaths.push(...this.resolvePluginPath(pluginPath));
@@ -27,11 +27,11 @@ export class TypeScriptPluginPathsProvider {
 	}
 
 	private resolvePluginPath(pluginPath: string): string[] {
-		if (path.isAbsolute(pluginPath)) {
+		if (path.isABsolute(pluginPath)) {
 			return [pluginPath];
 		}
 
-		const workspacePath = RelativeWorkspacePathResolver.asAbsoluteWorkspacePath(pluginPath);
+		const workspacePath = RelativeWorkspacePathResolver.asABsoluteWorkspacePath(pluginPath);
 		if (workspacePath !== undefined) {
 			return [workspacePath];
 		}

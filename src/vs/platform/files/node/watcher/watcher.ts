@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI as uri } from 'vs/base/common/uri';
+import { URI as uri } from 'vs/Base/common/uri';
 import { FileChangeType, isParent, IFileChange } from 'vs/platform/files/common/files';
-import { isLinux } from 'vs/base/common/platform';
+import { isLinux } from 'vs/Base/common/platform';
 
 export interface IDiskFileChange {
 	type: FileChangeType;
@@ -47,13 +47,13 @@ class EventNormalizer {
 			const currentChangeType = existingEvent.type;
 			const newChangeType = event.type;
 
-			// ignore CREATE followed by DELETE in one go
+			// ignore CREATE followed By DELETE in one go
 			if (currentChangeType === FileChangeType.ADDED && newChangeType === FileChangeType.DELETED) {
 				this.mapPathToChange.delete(event.path);
 				this.normalized.splice(this.normalized.indexOf(existingEvent), 1);
 			}
 
-			// flatten DELETE followed by CREATE into CHANGE
+			// flatten DELETE followed By CREATE into CHANGE
 			else if (currentChangeType === FileChangeType.DELETED && newChangeType === FileChangeType.ADDED) {
 				existingEvent.type = FileChangeType.UPDATED;
 			}

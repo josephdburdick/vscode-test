@@ -5,31 +5,31 @@
 
 import * as nls from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isMacintosh } from 'vs/base/common/platform';
-import { KeyMod, KeyChord, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchContributionsExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { KeyMod, KeyChord, KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions as WorkBenchContriButionsExtensions } from 'vs/workBench/common/contriButions';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { Schemas } from 'vs/base/common/network';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { Schemas } from 'vs/Base/common/network';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
 import { DownloadServiceChannel } from 'vs/platform/download/common/downloadIpc';
 import { LoggerChannel } from 'vs/platform/log/common/logIpc';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { ipcRenderer } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 import { IDiagnosticInfoOptions, IRemoteDiagnosticInfo } from 'vs/platform/diagnostics/common/diagnostics';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { PersistentConnectionEventType } from 'vs/platform/remote/common/remoteAgentConnection';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IDownloadService } from 'vs/platform/download/common/download';
-import { OpenLocalFileFolderCommand, OpenLocalFileCommand, OpenLocalFolderCommand, SaveLocalFileCommand, RemoteFileDialogContext } from 'vs/workbench/services/dialogs/browser/simpleFileDialog';
+import { OpenLocalFileFolderCommand, OpenLocalFileCommand, OpenLocalFolderCommand, SaveLocalFileCommand, RemoteFileDialogContext } from 'vs/workBench/services/dialogs/Browser/simpleFileDialog';
 
-class RemoteChannelsContribution implements IWorkbenchContribution {
+class RemoteChannelsContriBution implements IWorkBenchContriBution {
 
 	constructor(
 		@ILogService logService: ILogService,
@@ -44,15 +44,15 @@ class RemoteChannelsContribution implements IWorkbenchContribution {
 	}
 }
 
-class RemoteAgentDiagnosticListener implements IWorkbenchContribution {
+class RemoteAgentDiagnosticListener implements IWorkBenchContriBution {
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@ILabelService labelService: ILabelService
+		@ILaBelService laBelService: ILaBelService
 	) {
 		ipcRenderer.on('vscode:getDiagnosticInfo', (event: unknown, request: { replyChannel: string, args: IDiagnosticInfoOptions }): void => {
 			const connection = remoteAgentService.getConnection();
 			if (connection) {
-				const hostName = labelService.getHostLabel(Schemas.vscodeRemote, connection.remoteAuthority);
+				const hostName = laBelService.getHostLaBel(Schemas.vscodeRemote, connection.remoteAuthority);
 				remoteAgentService.getDiagnosticInfo(request.args)
 					.then(info => {
 						if (info) {
@@ -72,7 +72,7 @@ class RemoteAgentDiagnosticListener implements IWorkbenchContribution {
 	}
 }
 
-class RemoteExtensionHostEnvironmentUpdater implements IWorkbenchContribution {
+class RemoteExtensionHostEnvironmentUpdater implements IWorkBenchContriBution {
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
 		@IRemoteAuthorityResolverService remoteResolverService: IRemoteAuthorityResolverService,
@@ -92,25 +92,25 @@ class RemoteExtensionHostEnvironmentUpdater implements IWorkbenchContribution {
 	}
 }
 
-class RemoteTelemetryEnablementUpdater extends Disposable implements IWorkbenchContribution {
+class RemoteTelemetryEnaBlementUpdater extends DisposaBle implements IWorkBenchContriBution {
 	constructor(
 		@IRemoteAgentService private readonly remoteAgentService: IRemoteAgentService,
 		@IConfigurationService private readonly configurationService: IConfigurationService
 	) {
 		super();
 
-		this.updateRemoteTelemetryEnablement();
+		this.updateRemoteTelemetryEnaBlement();
 
 		this._register(configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('telemetry.enableTelemetry')) {
-				this.updateRemoteTelemetryEnablement();
+			if (e.affectsConfiguration('telemetry.enaBleTelemetry')) {
+				this.updateRemoteTelemetryEnaBlement();
 			}
 		}));
 	}
 
-	private updateRemoteTelemetryEnablement(): Promise<void> {
-		if (!this.configurationService.getValue('telemetry.enableTelemetry')) {
-			return this.remoteAgentService.disableTelemetry();
+	private updateRemoteTelemetryEnaBlement(): Promise<void> {
+		if (!this.configurationService.getValue('telemetry.enaBleTelemetry')) {
+			return this.remoteAgentService.disaBleTelemetry();
 		}
 
 		return Promise.resolve();
@@ -118,21 +118,21 @@ class RemoteTelemetryEnablementUpdater extends Disposable implements IWorkbenchC
 }
 
 
-class RemoteEmptyWorkbenchPresentation extends Disposable implements IWorkbenchContribution {
+class RemoteEmptyWorkBenchPresentation extends DisposaBle implements IWorkBenchContriBution {
 	constructor(
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService environmentService: INativeWorkBenchEnvironmentService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@ICommandService commandService: ICommandService,
 	) {
 		super();
 
-		function shouldShowExplorer(): boolean {
-			const startupEditor = configurationService.getValue<string>('workbench.startupEditor');
-			return startupEditor !== 'welcomePage' && startupEditor !== 'welcomePageInEmptyWorkbench';
+		function shouldShowExplorer(): Boolean {
+			const startupEditor = configurationService.getValue<string>('workBench.startupEditor');
+			return startupEditor !== 'welcomePage' && startupEditor !== 'welcomePageInEmptyWorkBench';
 		}
 
-		function shouldShowTerminal(): boolean {
+		function shouldShowTerminal(): Boolean {
 			return shouldShowExplorer();
 		}
 
@@ -140,58 +140,58 @@ class RemoteEmptyWorkbenchPresentation extends Disposable implements IWorkbenchC
 		if (remoteAuthority && !folderUri && !workspace && !filesToDiff?.length && !filesToOpenOrCreate?.length && !filesToWait) {
 			remoteAuthorityResolverService.resolveAuthority(remoteAuthority).then(() => {
 				if (shouldShowExplorer()) {
-					commandService.executeCommand('workbench.view.explorer');
+					commandService.executeCommand('workBench.view.explorer');
 				}
 				if (shouldShowTerminal()) {
-					commandService.executeCommand('workbench.action.terminal.toggleTerminal');
+					commandService.executeCommand('workBench.action.terminal.toggleTerminal');
 				}
 			});
 		}
 	}
 }
 
-const workbenchContributionsRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchContributionsExtensions.Workbench);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteChannelsContribution, LifecyclePhase.Starting);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteAgentDiagnosticListener, LifecyclePhase.Eventually);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteExtensionHostEnvironmentUpdater, LifecyclePhase.Eventually);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteTelemetryEnablementUpdater, LifecyclePhase.Ready);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteEmptyWorkbenchPresentation, LifecyclePhase.Starting);
+const workBenchContriButionsRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchContriButionsExtensions.WorkBench);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(RemoteChannelsContriBution, LifecyclePhase.Starting);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(RemoteAgentDiagnosticListener, LifecyclePhase.Eventually);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(RemoteExtensionHostEnvironmentUpdater, LifecyclePhase.Eventually);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(RemoteTelemetryEnaBlementUpdater, LifecyclePhase.Ready);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(RemoteEmptyWorkBenchPresentation, LifecyclePhase.Starting);
 
 Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
 	.registerConfiguration({
 		id: 'remote',
 		title: nls.localize('remote', "Remote"),
-		type: 'object',
+		type: 'oBject',
 		properties: {
 			'remote.downloadExtensionsLocally': {
-				type: 'boolean',
-				markdownDescription: nls.localize('remote.downloadExtensionsLocally', "When enabled extensions are downloaded locally and installed on remote."),
+				type: 'Boolean',
+				markdownDescription: nls.localize('remote.downloadExtensionsLocally', "When enaBled extensions are downloaded locally and installed on remote."),
 				default: false
 			},
 		}
 	});
 
 if (isMacintosh) {
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: OpenLocalFileFolderCommand.ID,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_O,
 		when: RemoteFileDialogContext,
 		description: { description: OpenLocalFileFolderCommand.LABEL, args: [] },
 		handler: OpenLocalFileFolderCommand.handler()
 	});
 } else {
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: OpenLocalFileCommand.ID,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_O,
 		when: RemoteFileDialogContext,
 		description: { description: OpenLocalFileCommand.LABEL, args: [] },
 		handler: OpenLocalFileCommand.handler()
 	});
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: OpenLocalFolderCommand.ID,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_O),
 		when: RemoteFileDialogContext,
 		description: { description: OpenLocalFolderCommand.LABEL, args: [] },
@@ -199,9 +199,9 @@ if (isMacintosh) {
 	});
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: SaveLocalFileCommand.ID,
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_S,
 	when: RemoteFileDialogContext,
 	description: { description: SaveLocalFileCommand.LABEL, args: [] },

@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AsyncEmitter, Emitter, Event, IWaitUntil } from 'vs/base/common/event';
-import { IRelativePattern, parse } from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
+import { AsyncEmitter, Emitter, Event, IWaitUntil } from 'vs/Base/common/event';
+import { IRelativePattern, parse } from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri';
+import { ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
 import type * as vscode from 'vscode';
 import { ExtHostFileSystemEventServiceShape, FileSystemEvents, IMainContext, MainContext, SourceTargetPair, IWorkspaceEditDto, MainThreadBulkEditsShape } from './extHost.protocol';
 import * as typeConverter from './extHostTypeConverters';
-import { Disposable, WorkspaceEdit } from './extHostTypes';
+import { DisposaBle, WorkspaceEdit } from './extHostTypes';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { FileOperation } from 'vs/platform/files/common/files';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ILogService } from 'vs/platform/log/common/log';
 
 class FileSystemWatcher implements vscode.FileSystemWatcher {
@@ -21,37 +21,37 @@ class FileSystemWatcher implements vscode.FileSystemWatcher {
 	private readonly _onDidCreate = new Emitter<vscode.Uri>();
 	private readonly _onDidChange = new Emitter<vscode.Uri>();
 	private readonly _onDidDelete = new Emitter<vscode.Uri>();
-	private _disposable: Disposable;
-	private _config: number;
+	private _disposaBle: DisposaBle;
+	private _config: numBer;
 
-	get ignoreCreateEvents(): boolean {
-		return Boolean(this._config & 0b001);
+	get ignoreCreateEvents(): Boolean {
+		return Boolean(this._config & 0B001);
 	}
 
-	get ignoreChangeEvents(): boolean {
-		return Boolean(this._config & 0b010);
+	get ignoreChangeEvents(): Boolean {
+		return Boolean(this._config & 0B010);
 	}
 
-	get ignoreDeleteEvents(): boolean {
-		return Boolean(this._config & 0b100);
+	get ignoreDeleteEvents(): Boolean {
+		return Boolean(this._config & 0B100);
 	}
 
-	constructor(dispatcher: Event<FileSystemEvents>, globPattern: string | IRelativePattern, ignoreCreateEvents?: boolean, ignoreChangeEvents?: boolean, ignoreDeleteEvents?: boolean) {
+	constructor(dispatcher: Event<FileSystemEvents>, gloBPattern: string | IRelativePattern, ignoreCreateEvents?: Boolean, ignoreChangeEvents?: Boolean, ignoreDeleteEvents?: Boolean) {
 
 		this._config = 0;
 		if (ignoreCreateEvents) {
-			this._config += 0b001;
+			this._config += 0B001;
 		}
 		if (ignoreChangeEvents) {
-			this._config += 0b010;
+			this._config += 0B010;
 		}
 		if (ignoreDeleteEvents) {
-			this._config += 0b100;
+			this._config += 0B100;
 		}
 
-		const parsedPattern = parse(globPattern);
+		const parsedPattern = parse(gloBPattern);
 
-		const subscription = dispatcher(events => {
+		const suBscription = dispatcher(events => {
 			if (!ignoreCreateEvents) {
 				for (let created of events.created) {
 					const uri = URI.revive(created);
@@ -78,11 +78,11 @@ class FileSystemWatcher implements vscode.FileSystemWatcher {
 			}
 		});
 
-		this._disposable = Disposable.from(this._onDidCreate, this._onDidChange, this._onDidDelete, subscription);
+		this._disposaBle = DisposaBle.from(this._onDidCreate, this._onDidChange, this._onDidDelete, suBscription);
 	}
 
 	dispose() {
-		this._disposable.dispose();
+		this._disposaBle.dispose();
 	}
 
 	get onDidCreate(): Event<vscode.Uri> {
@@ -130,8 +130,8 @@ export class ExtHostFileSystemEventService implements ExtHostFileSystemEventServ
 
 	//--- file events
 
-	createFileSystemWatcher(globPattern: string | IRelativePattern, ignoreCreateEvents?: boolean, ignoreChangeEvents?: boolean, ignoreDeleteEvents?: boolean): vscode.FileSystemWatcher {
-		return new FileSystemWatcher(this._onFileSystemEvent.event, globPattern, ignoreCreateEvents, ignoreChangeEvents, ignoreDeleteEvents);
+	createFileSystemWatcher(gloBPattern: string | IRelativePattern, ignoreCreateEvents?: Boolean, ignoreChangeEvents?: Boolean, ignoreDeleteEvents?: Boolean): vscode.FileSystemWatcher {
+		return new FileSystemWatcher(this._onFileSystemEvent.event, gloBPattern, ignoreCreateEvents, ignoreChangeEvents, ignoreDeleteEvents);
 	}
 
 	$onFileEvent(events: FileSystemEvents) {
@@ -144,14 +144,14 @@ export class ExtHostFileSystemEventService implements ExtHostFileSystemEventServ
 	$onDidRunFileOperation(operation: FileOperation, files: SourceTargetPair[]): void {
 		switch (operation) {
 			case FileOperation.MOVE:
-				this._onDidRenameFile.fire(Object.freeze({ files: files.map(f => ({ oldUri: URI.revive(f.source!), newUri: URI.revive(f.target) })) }));
-				break;
+				this._onDidRenameFile.fire(OBject.freeze({ files: files.map(f => ({ oldUri: URI.revive(f.source!), newUri: URI.revive(f.target) })) }));
+				Break;
 			case FileOperation.DELETE:
-				this._onDidDeleteFile.fire(Object.freeze({ files: files.map(f => URI.revive(f.target)) }));
-				break;
+				this._onDidDeleteFile.fire(OBject.freeze({ files: files.map(f => URI.revive(f.target)) }));
+				Break;
 			case FileOperation.CREATE:
-				this._onDidCreateFile.fire(Object.freeze({ files: files.map(f => URI.revive(f.target)) }));
-				break;
+				this._onDidCreateFile.fire(OBject.freeze({ files: files.map(f => URI.revive(f.target)) }));
+				Break;
 			default:
 			//ignore, dont send
 		}
@@ -171,37 +171,37 @@ export class ExtHostFileSystemEventService implements ExtHostFileSystemEventServ
 	}
 
 	private _createWillExecuteEvent<E extends IWaitUntil>(extension: IExtensionDescription, emitter: AsyncEmitter<E>): Event<E> {
-		return (listener, thisArg, disposables) => {
+		return (listener, thisArg, disposaBles) => {
 			const wrappedListener: IExtensionListener<E> = function wrapped(e: E) { listener.call(thisArg, e); };
 			wrappedListener.extension = extension;
-			return emitter.event(wrappedListener, undefined, disposables);
+			return emitter.event(wrappedListener, undefined, disposaBles);
 		};
 	}
 
-	async $onWillRunFileOperation(operation: FileOperation, files: SourceTargetPair[], timeout: number, token: CancellationToken): Promise<any> {
+	async $onWillRunFileOperation(operation: FileOperation, files: SourceTargetPair[], timeout: numBer, token: CancellationToken): Promise<any> {
 		switch (operation) {
 			case FileOperation.MOVE:
 				await this._fireWillEvent(this._onWillRenameFile, { files: files.map(f => ({ oldUri: URI.revive(f.source!), newUri: URI.revive(f.target) })) }, timeout, token);
-				break;
+				Break;
 			case FileOperation.DELETE:
 				await this._fireWillEvent(this._onWillDeleteFile, { files: files.map(f => URI.revive(f.target)) }, timeout, token);
-				break;
+				Break;
 			case FileOperation.CREATE:
 				await this._fireWillEvent(this._onWillCreateFile, { files: files.map(f => URI.revive(f.target)) }, timeout, token);
-				break;
+				Break;
 			default:
 			//ignore, dont send
 		}
 	}
 
-	private async _fireWillEvent<E extends IWaitUntil>(emitter: AsyncEmitter<E>, data: Omit<E, 'waitUntil'>, timeout: number, token: CancellationToken): Promise<any> {
+	private async _fireWillEvent<E extends IWaitUntil>(emitter: AsyncEmitter<E>, data: Omit<E, 'waitUntil'>, timeout: numBer, token: CancellationToken): Promise<any> {
 
 		const edits: WorkspaceEdit[] = [];
 
-		await emitter.fireAsync(data, token, async (thenable, listener) => {
+		await emitter.fireAsync(data, token, async (thenaBle, listener) => {
 			// ignore all results except for WorkspaceEdits. Those are stored in an array.
 			const now = Date.now();
-			const result = await Promise.resolve(thenable);
+			const result = await Promise.resolve(thenaBle);
 			if (result instanceof WorkspaceEdit) {
 				edits.push(result);
 			}

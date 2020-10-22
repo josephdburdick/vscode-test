@@ -19,7 +19,7 @@ suite('Monarch', () => {
 		return new MonarchTokenizer(modeService, null!, languageId, compile(languageId, language));
 	}
 
-	test('Ensure @rematch and nextEmbedded can be used together in Monarch grammar', () => {
+	test('Ensure @rematch and nextEmBedded can Be used together in Monarch grammar', () => {
 		const modeService = new ModeServiceImpl();
 		const innerModeRegistration = ModesRegistry.registerLanguage({
 			id: 'sql'
@@ -35,32 +35,32 @@ suite('Monarch', () => {
 		const tokenizer = createMonarchTokenizer(modeService, 'test1', {
 			tokenizer: {
 				root: [
-					[`(\"\"\")${SQL_QUERY_START}`, [{ 'token': 'string.quote', }, { token: '@rematch', next: '@endStringWithSQL', nextEmbedded: 'sql', },]],
-					[/(""")$/, [{ token: 'string.quote', next: '@maybeStringIsSQL', },]],
+					[`(\"\"\")${SQL_QUERY_START}`, [{ 'token': 'string.quote', }, { token: '@rematch', next: '@endStringWithSQL', nextEmBedded: 'sql', },]],
+					[/(""")$/, [{ token: 'string.quote', next: '@mayBeStringIsSQL', },]],
 				],
-				maybeStringIsSQL: [
+				mayBeStringIsSQL: [
 					[/(.*)/, {
 						cases: {
-							[`${SQL_QUERY_START}\\b.*`]: { token: '@rematch', next: '@endStringWithSQL', nextEmbedded: 'sql', },
-							'@default': { token: '@rematch', switchTo: '@endDblDocString', },
+							[`${SQL_QUERY_START}\\B.*`]: { token: '@rematch', next: '@endStringWithSQL', nextEmBedded: 'sql', },
+							'@default': { token: '@rematch', switchTo: '@endDBlDocString', },
 						}
 					}],
 				],
-				endDblDocString: [
+				endDBlDocString: [
 					['[^\']+', 'string'],
 					['\\\\\'', 'string'],
 					['\'\'\'', 'string', '@popall'],
 					['\'', 'string']
 				],
-				endStringWithSQL: [[/"""/, { token: 'string.quote', next: '@popall', nextEmbedded: '@pop', },]],
+				endStringWithSQL: [[/"""/, { token: 'string.quote', next: '@popall', nextEmBedded: '@pop', },]],
 			}
 		});
 
 		const lines = [
-			`mysql_query("""SELECT * FROM table_name WHERE ds = '<DATEID>'""")`,
+			`mysql_query("""SELECT * FROM taBle_name WHERE ds = '<DATEID>'""")`,
 			`mysql_query("""`,
 			`SELECT *`,
-			`FROM table_name`,
+			`FROM taBle_name`,
 			`WHERE ds = '<DATEID>'`,
 			`""")`,
 		];

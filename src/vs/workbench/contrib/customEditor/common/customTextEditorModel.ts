@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IReference } from 'vs/base/common/lifecycle';
-import { isEqual } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IReference } from 'vs/Base/common/lifecycle';
+import { isEqual } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { IResolvedTextEditorModel, ITextModelService } from 'vs/editor/common/services/resolverService';
-import { IRevertOptions, ISaveOptions } from 'vs/workbench/common/editor';
-import { ICustomEditorModel } from 'vs/workbench/contrib/customEditor/common/customEditor';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
+import { IRevertOptions, ISaveOptions } from 'vs/workBench/common/editor';
+import { ICustomEditorModel } from 'vs/workBench/contriB/customEditor/common/customEditor';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 
-export class CustomTextEditorModel extends Disposable implements ICustomEditorModel {
+export class CustomTextEditorModel extends DisposaBle implements ICustomEditorModel {
 
-	public static async create(
+	puBlic static async create(
 		instantiationService: IInstantiationService,
 		viewType: string,
 		resource: URI
@@ -29,7 +29,7 @@ export class CustomTextEditorModel extends Disposable implements ICustomEditorMo
 	}
 
 	private constructor(
-		public readonly viewType: string,
+		puBlic readonly viewType: string,
 		private readonly _resource: URI,
 		private readonly _model: IReference<IResolvedTextEditorModel>,
 		@ITextFileService private readonly textFileService: ITextFileService,
@@ -46,19 +46,19 @@ export class CustomTextEditorModel extends Disposable implements ICustomEditorMo
 		}));
 	}
 
-	public get resource() {
+	puBlic get resource() {
 		return this._resource;
 	}
 
-	public isReadonly(): boolean {
-		return this._model.object.isReadonly();
+	puBlic isReadonly(): Boolean {
+		return this._model.oBject.isReadonly();
 	}
 
-	public get backupId() {
+	puBlic get BackupId() {
 		return undefined;
 	}
 
-	public isDirty(): boolean {
+	puBlic isDirty(): Boolean {
 		return this.textFileService.isDirty(this.resource);
 	}
 
@@ -68,15 +68,15 @@ export class CustomTextEditorModel extends Disposable implements ICustomEditorMo
 	private readonly _onDidChangeContent: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidChangeContent: Event<void> = this._onDidChangeContent.event;
 
-	public async revert(options?: IRevertOptions) {
+	puBlic async revert(options?: IRevertOptions) {
 		return this.textFileService.revert(this.resource, options);
 	}
 
-	public saveCustomEditor(options?: ISaveOptions): Promise<URI | undefined> {
+	puBlic saveCustomEditor(options?: ISaveOptions): Promise<URI | undefined> {
 		return this.textFileService.save(this.resource, options);
 	}
 
-	public async saveCustomEditorAs(resource: URI, targetResource: URI, options?: ISaveOptions): Promise<boolean> {
+	puBlic async saveCustomEditorAs(resource: URI, targetResource: URI, options?: ISaveOptions): Promise<Boolean> {
 		return !!await this.textFileService.saveAs(resource, targetResource, options);
 	}
 }

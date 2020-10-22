@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { ipcRenderer } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 import { INativeOpenFileRequest } from 'vs/platform/windows/common/windows';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService } from 'vs/platform/files/common/files';
-import { getWindowsBuildNumber, linuxDistro } from 'vs/workbench/contrib/terminal/node/terminal';
-import { escapeNonWindowsPath } from 'vs/workbench/contrib/terminal/common/terminalEnvironment';
+import { getWindowsBuildNumBer, linuxDistro } from 'vs/workBench/contriB/terminal/node/terminal';
+import { escapeNonWindowsPath } from 'vs/workBench/contriB/terminal/common/terminalEnvironment';
 import { execFile } from 'child_process';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { registerRemoteContributions } from 'vs/workbench/contrib/terminal/electron-browser/terminalRemote';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { registerRemoteContriButions } from 'vs/workBench/contriB/terminal/electron-Browser/terminalRemote';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 
-export class TerminalNativeContribution extends Disposable implements IWorkbenchContribution {
-	public _serviceBrand: undefined;
+export class TerminalNativeContriBution extends DisposaBle implements IWorkBenchContriBution {
+	puBlic _serviceBrand: undefined;
 
 	constructor(
 		@IFileService private readonly _fileService: IFileService,
@@ -35,13 +35,13 @@ export class TerminalNativeContribution extends Disposable implements IWorkbench
 
 		this._terminalService.setLinuxDistro(linuxDistro);
 		this._terminalService.setNativeWindowsDelegate({
-			getWslPath: this._getWslPath.bind(this),
-			getWindowsBuildNumber: this._getWindowsBuildNumber.bind(this)
+			getWslPath: this._getWslPath.Bind(this),
+			getWindowsBuildNumBer: this._getWindowsBuildNumBer.Bind(this)
 		});
 
 		const connection = remoteAgentService.getConnection();
 		if (connection && connection.remoteAuthority) {
-			registerRemoteContributions();
+			registerRemoteContriButions();
 		}
 	}
 
@@ -51,8 +51,8 @@ export class TerminalNativeContribution extends Disposable implements IWorkbench
 
 	private async _onOpenFileRequest(request: INativeOpenFileRequest): Promise<void> {
 		// if the request to open files is coming in from the integrated terminal (identified though
-		// the termProgram variable) and we are instructed to wait for editors close, wait for the
-		// marker file to get deleted and then focus back to the integrated terminal.
+		// the termProgram variaBle) and we are instructed to wait for editors close, wait for the
+		// marker file to get deleted and then focus Back to the integrated terminal.
 		if (request.termProgram === 'vscode' && request.filesToWait) {
 			const waitMarkerFileUri = URI.revive(request.filesToWait.waitMarkerFileUri);
 			await this._whenFileDeleted(waitMarkerFileUri);
@@ -86,18 +86,18 @@ export class TerminalNativeContribution extends Disposable implements IWorkbench
 	 * @param path The original path.
 	 */
 	private _getWslPath(path: string): Promise<string> {
-		if (getWindowsBuildNumber() < 17063) {
-			throw new Error('wslpath does not exist on Windows build < 17063');
+		if (getWindowsBuildNumBer() < 17063) {
+			throw new Error('wslpath does not exist on Windows Build < 17063');
 		}
 		return new Promise<string>(c => {
-			const proc = execFile('bash.exe', ['-c', `wslpath ${escapeNonWindowsPath(path)}`], {}, (error, stdout, stderr) => {
+			const proc = execFile('Bash.exe', ['-c', `wslpath ${escapeNonWindowsPath(path)}`], {}, (error, stdout, stderr) => {
 				c(escapeNonWindowsPath(stdout.trim()));
 			});
 			proc.stdin!.end();
 		});
 	}
 
-	private _getWindowsBuildNumber(): number {
-		return getWindowsBuildNumber();
+	private _getWindowsBuildNumBer(): numBer {
+		return getWindowsBuildNumBer();
 	}
 }

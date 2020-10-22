@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
+import { URI } from 'vs/Base/common/uri';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
 import { ITextModelService, ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
 import { ITextModel } from 'vs/editor/common/model';
-import { ILifecycleService, LifecyclePhase, StartupKindToString } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILifecycleService, LifecyclePhase, StartupKindToString } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ITimerService, IStartupMetrics } from 'vs/workbench/services/timer/browser/timerService';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import * as perf from 'vs/base/common/performance';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { writeTransientState } from 'vs/workbench/contrib/codeEditor/browser/toggleWordWrap';
-import { mergeSort } from 'vs/base/common/arrays';
+import { ITimerService, IStartupMetrics } from 'vs/workBench/services/timer/Browser/timerService';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import * as perf from 'vs/Base/common/performance';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { writeTransientState } from 'vs/workBench/contriB/codeEditor/Browser/toggleWordWrap';
+import { mergeSort } from 'vs/Base/common/arrays';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
 
-export class PerfviewContrib {
+export class PerfviewContriB {
 
-	private readonly _registration: IDisposable;
+	private readonly _registration: IDisposaBle;
 
 	constructor(
 		@IInstantiationService instaService: IInstantiationService,
@@ -54,7 +54,7 @@ export class PerfviewInput extends ResourceEditorInput {
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
 		super(
@@ -67,7 +67,7 @@ export class PerfviewInput extends ResourceEditorInput {
 			editorService,
 			editorGroupService,
 			fileService,
-			labelService,
+			laBelService,
 			filesConfigurationService
 		);
 	}
@@ -80,7 +80,7 @@ export class PerfviewInput extends ResourceEditorInput {
 class PerfModelContentProvider implements ITextModelContentProvider {
 
 	private _model: ITextModel | undefined;
-	private _modelDisposables: IDisposable[] = [];
+	private _modelDisposaBles: IDisposaBle[] = [];
 
 	constructor(
 		@IModelService private readonly _modelService: IModelService,
@@ -95,17 +95,17 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 	provideTextContent(resource: URI): Promise<ITextModel> {
 
 		if (!this._model || this._model.isDisposed()) {
-			dispose(this._modelDisposables);
+			dispose(this._modelDisposaBles);
 			const langId = this._modeService.create('markdown');
 			this._model = this._modelService.getModel(resource) || this._modelService.createModel('Loading...', langId, resource);
 
-			this._modelDisposables.push(langId.onDidChange(e => {
+			this._modelDisposaBles.push(langId.onDidChange(e => {
 				if (this._model) {
 					this._model.setMode(e);
 				}
 			}));
-			this._modelDisposables.push(langId);
-			this._modelDisposables.push(this._extensionService.onDidChangeExtensionsStatus(this._updateModel, this));
+			this._modelDisposaBles.push(langId);
+			this._modelDisposaBles.push(this._extensionService.onDidChangeExtensionsStatus(this._updateModel, this));
 
 			writeTransientState(this._model, { forceWordWrap: 'off', forceWordWrapMinified: false }, this._editorService);
 		}
@@ -125,15 +125,15 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 				let stats = LoaderStats.get();
 				let md = new MarkdownBuilder();
 				this._addSummary(md, metrics);
-				md.blank();
-				this._addSummaryTable(md, metrics, stats);
-				md.blank();
-				this._addExtensionsTable(md);
-				md.blank();
+				md.Blank();
+				this._addSummaryTaBle(md, metrics, stats);
+				md.Blank();
+				this._addExtensionsTaBle(md);
+				md.Blank();
 				this._addRawPerfMarks(md);
-				md.blank();
+				md.Blank();
 				this._addLoaderStats(md, stats);
-				md.blank();
+				md.Blank();
 				this._addCachedDataStats(md);
 
 				this._model.setValue(md.value);
@@ -149,7 +149,7 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 		if (metrics.cpus) {
 			md.li(`CPUs: ${metrics.cpus.model}(${metrics.cpus.count} x ${metrics.cpus.speed})`);
 		}
-		if (typeof metrics.totalmem === 'number' && typeof metrics.freemem === 'number') {
+		if (typeof metrics.totalmem === 'numBer' && typeof metrics.freemem === 'numBer') {
 			md.li(`Memory(System): ${(metrics.totalmem / (1024 * 1024 * 1024)).toFixed(2)} GB(${(metrics.freemem / (1024 * 1024 * 1024)).toFixed(2)}GB free)`);
 		}
 		if (metrics.meminfo) {
@@ -158,35 +158,35 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 		md.li(`VM(likelyhood): ${metrics.isVMLikelyhood}%`);
 		md.li(`Initial Startup: ${metrics.initialStartup}`);
 		md.li(`Has ${metrics.windowCount - 1} other windows`);
-		md.li(`Screen Reader Active: ${metrics.hasAccessibilitySupport}`);
-		md.li(`Empty Workspace: ${metrics.emptyWorkbench}`);
+		md.li(`Screen Reader Active: ${metrics.hasAccessiBilitySupport}`);
+		md.li(`Empty Workspace: ${metrics.emptyWorkBench}`);
 	}
 
-	private _addSummaryTable(md: MarkdownBuilder, metrics: IStartupMetrics, stats?: LoaderStats): void {
+	private _addSummaryTaBle(md: MarkdownBuilder, metrics: IStartupMetrics, stats?: LoaderStats): void {
 
-		const table: Array<Array<string | number | undefined>> = [];
-		table.push(['start => app.isReady', metrics.timers.ellapsedAppReady, '[main]', `initial startup: ${metrics.initialStartup}`]);
-		table.push(['nls:start => nls:end', metrics.timers.ellapsedNlsGeneration, '[main]', `initial startup: ${metrics.initialStartup}`]);
-		table.push(['require(main.bundle.js)', metrics.initialStartup ? perf.getDuration('willLoadMainBundle', 'didLoadMainBundle') : undefined, '[main]', `initial startup: ${metrics.initialStartup}`]);
-		table.push(['app.isReady => window.loadUrl()', metrics.timers.ellapsedWindowLoad, '[main]', `initial startup: ${metrics.initialStartup}`]);
-		table.push(['window.loadUrl() => begin to require(workbench.desktop.main.js)', metrics.timers.ellapsedWindowLoadToRequire, '[main->renderer]', StartupKindToString(metrics.windowKind)]);
-		table.push(['require(workbench.desktop.main.js)', metrics.timers.ellapsedRequire, '[renderer]', `cached data: ${(metrics.didUseCachedData ? 'YES' : 'NO')}${stats ? `, node_modules took ${stats.nodeRequireTotal}ms` : ''}`]);
-		table.push(['require & init workspace storage', metrics.timers.ellapsedWorkspaceStorageInit, '[renderer]', undefined]);
-		table.push(['init workspace service', metrics.timers.ellapsedWorkspaceServiceInit, '[renderer]', undefined]);
-		table.push(['register extensions & spawn extension host', metrics.timers.ellapsedExtensions, '[renderer]', undefined]);
-		table.push(['restore viewlet', metrics.timers.ellapsedViewletRestore, '[renderer]', metrics.viewletId]);
-		table.push(['restore panel', metrics.timers.ellapsedPanelRestore, '[renderer]', metrics.panelId]);
-		table.push(['restore editors', metrics.timers.ellapsedEditorRestore, '[renderer]', `${metrics.editorIds.length}: ${metrics.editorIds.join(', ')}`]);
-		table.push(['overall workbench load', metrics.timers.ellapsedWorkbench, '[renderer]', undefined]);
-		table.push(['workbench ready', metrics.ellapsed, '[main->renderer]', undefined]);
-		table.push(['renderer ready', metrics.timers.ellapsedRenderer, '[renderer]', undefined]);
-		table.push(['extensions registered', metrics.timers.ellapsedExtensionsReady, '[renderer]', undefined]);
+		const taBle: Array<Array<string | numBer | undefined>> = [];
+		taBle.push(['start => app.isReady', metrics.timers.ellapsedAppReady, '[main]', `initial startup: ${metrics.initialStartup}`]);
+		taBle.push(['nls:start => nls:end', metrics.timers.ellapsedNlsGeneration, '[main]', `initial startup: ${metrics.initialStartup}`]);
+		taBle.push(['require(main.Bundle.js)', metrics.initialStartup ? perf.getDuration('willLoadMainBundle', 'didLoadMainBundle') : undefined, '[main]', `initial startup: ${metrics.initialStartup}`]);
+		taBle.push(['app.isReady => window.loadUrl()', metrics.timers.ellapsedWindowLoad, '[main]', `initial startup: ${metrics.initialStartup}`]);
+		taBle.push(['window.loadUrl() => Begin to require(workBench.desktop.main.js)', metrics.timers.ellapsedWindowLoadToRequire, '[main->renderer]', StartupKindToString(metrics.windowKind)]);
+		taBle.push(['require(workBench.desktop.main.js)', metrics.timers.ellapsedRequire, '[renderer]', `cached data: ${(metrics.didUseCachedData ? 'YES' : 'NO')}${stats ? `, node_modules took ${stats.nodeRequireTotal}ms` : ''}`]);
+		taBle.push(['require & init workspace storage', metrics.timers.ellapsedWorkspaceStorageInit, '[renderer]', undefined]);
+		taBle.push(['init workspace service', metrics.timers.ellapsedWorkspaceServiceInit, '[renderer]', undefined]);
+		taBle.push(['register extensions & spawn extension host', metrics.timers.ellapsedExtensions, '[renderer]', undefined]);
+		taBle.push(['restore viewlet', metrics.timers.ellapsedViewletRestore, '[renderer]', metrics.viewletId]);
+		taBle.push(['restore panel', metrics.timers.ellapsedPanelRestore, '[renderer]', metrics.panelId]);
+		taBle.push(['restore editors', metrics.timers.ellapsedEditorRestore, '[renderer]', `${metrics.editorIds.length}: ${metrics.editorIds.join(', ')}`]);
+		taBle.push(['overall workBench load', metrics.timers.ellapsedWorkBench, '[renderer]', undefined]);
+		taBle.push(['workBench ready', metrics.ellapsed, '[main->renderer]', undefined]);
+		taBle.push(['renderer ready', metrics.timers.ellapsedRenderer, '[renderer]', undefined]);
+		taBle.push(['extensions registered', metrics.timers.ellapsedExtensionsReady, '[renderer]', undefined]);
 
 		md.heading(2, 'Performance Marks');
-		md.table(['What', 'Duration', 'Process', 'Info'], table);
+		md.taBle(['What', 'Duration', 'Process', 'Info'], taBle);
 	}
 
-	private _addExtensionsTable(md: MarkdownBuilder): void {
+	private _addExtensionsTaBle(md: MarkdownBuilder): void {
 
 		const eager: ({ toString(): string })[][] = [];
 		const normal: ({ toString(): string })[][] = [];
@@ -203,12 +203,12 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 			}
 		}
 
-		const table = eager.concat(normal);
-		if (table.length > 0) {
+		const taBle = eager.concat(normal);
+		if (taBle.length > 0) {
 			md.heading(2, 'Extension Activation Stats');
-			md.table(
+			md.taBle(
 				['Extension', 'Eager', 'Load Code', 'Call Activate', 'Finish Activate', 'Event', 'By'],
-				table
+				taBle
 			);
 		}
 	}
@@ -231,16 +231,16 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 	private _addLoaderStats(md: MarkdownBuilder, stats: LoaderStats): void {
 		md.heading(2, 'Loader Stats');
 		md.heading(3, 'Load AMD-module');
-		md.table(['Module', 'Duration'], stats.amdLoad);
-		md.blank();
+		md.taBle(['Module', 'Duration'], stats.amdLoad);
+		md.Blank();
 		md.heading(3, 'Load commonjs-module');
-		md.table(['Module', 'Duration'], stats.nodeRequire);
-		md.blank();
+		md.taBle(['Module', 'Duration'], stats.nodeRequire);
+		md.Blank();
 		md.heading(3, 'Invoke AMD-module factory');
-		md.table(['Module', 'Duration'], stats.amdInvoke);
-		md.blank();
+		md.taBle(['Module', 'Duration'], stats.amdInvoke);
+		md.Blank();
 		md.heading(3, 'Invoke commonjs-module');
-		md.table(['Module', 'Duration'], stats.nodeEval);
+		md.taBle(['Module', 'Duration'], stats.nodeEval);
 	}
 
 	private _addCachedDataStats(md: MarkdownBuilder): void {
@@ -262,12 +262,12 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 				for (const e of arr) {
 					md.li(`${e}`);
 				}
-				md.blank();
+				md.Blank();
 			}
 		};
 
 		md.heading(2, 'Node Cached Data Stats');
-		md.blank();
+		md.Blank();
 		md.heading(3, 'cached data used');
 		printLists(map.get(LoaderEventType.CachedDataFound));
 		md.heading(3, 'cached data missed');
@@ -279,23 +279,23 @@ class PerfModelContentProvider implements ITextModelContentProvider {
 	}
 }
 
-abstract class LoaderStats {
-	abstract get amdLoad(): (string | number)[][];
-	abstract get amdInvoke(): (string | number)[][];
-	abstract get nodeRequire(): (string | number)[][];
-	abstract get nodeEval(): (string | number)[][];
-	abstract get nodeRequireTotal(): number;
+aBstract class LoaderStats {
+	aBstract get amdLoad(): (string | numBer)[][];
+	aBstract get amdInvoke(): (string | numBer)[][];
+	aBstract get nodeRequire(): (string | numBer)[][];
+	aBstract get nodeEval(): (string | numBer)[][];
+	aBstract get nodeRequireTotal(): numBer;
 
 
 	static get(): LoaderStats {
 
 
-		const amdLoadScript = new Map<string, number>();
-		const amdInvokeFactory = new Map<string, number>();
-		const nodeRequire = new Map<string, number>();
-		const nodeEval = new Map<string, number>();
+		const amdLoadScript = new Map<string, numBer>();
+		const amdInvokeFactory = new Map<string, numBer>();
+		const nodeRequire = new Map<string, numBer>();
+		const nodeEval = new Map<string, numBer>();
 
-		function mark(map: Map<string, number>, stat: LoaderEvent) {
+		function mark(map: Map<string, numBer>, stat: LoaderEvent) {
 			if (map.has(stat.detail)) {
 				// console.warn('BAD events, DOUBLE start', stat);
 				// map.delete(stat.detail);
@@ -304,7 +304,7 @@ abstract class LoaderStats {
 			map.set(stat.detail, -stat.timestamp);
 		}
 
-		function diff(map: Map<string, number>, stat: LoaderEvent) {
+		function diff(map: Map<string, numBer>, stat: LoaderEvent) {
 			let duration = map.get(stat.detail);
 			if (!duration) {
 				// console.warn('BAD events, end WITHOUT start', stat);
@@ -319,46 +319,46 @@ abstract class LoaderStats {
 			map.set(stat.detail, duration + stat.timestamp);
 		}
 
-		const stats = mergeSort(require.getStats().slice(0), (a, b) => a.timestamp - b.timestamp);
+		const stats = mergeSort(require.getStats().slice(0), (a, B) => a.timestamp - B.timestamp);
 
 		for (const stat of stats) {
 			switch (stat.type) {
 				case LoaderEventType.BeginLoadingScript:
 					mark(amdLoadScript, stat);
-					break;
+					Break;
 				case LoaderEventType.EndLoadingScriptOK:
 				case LoaderEventType.EndLoadingScriptError:
 					diff(amdLoadScript, stat);
-					break;
+					Break;
 
 				case LoaderEventType.BeginInvokeFactory:
 					mark(amdInvokeFactory, stat);
-					break;
+					Break;
 				case LoaderEventType.EndInvokeFactory:
 					diff(amdInvokeFactory, stat);
-					break;
+					Break;
 
 				case LoaderEventType.NodeBeginNativeRequire:
 					mark(nodeRequire, stat);
-					break;
+					Break;
 				case LoaderEventType.NodeEndNativeRequire:
 					diff(nodeRequire, stat);
-					break;
+					Break;
 
 				case LoaderEventType.NodeBeginEvaluatingScript:
 					mark(nodeEval, stat);
-					break;
+					Break;
 				case LoaderEventType.NodeEndEvaluatingScript:
 					diff(nodeEval, stat);
-					break;
+					Break;
 			}
 		}
 
 		let nodeRequireTotal = 0;
 		nodeRequire.forEach(value => nodeRequireTotal += value);
 
-		function to2dArray(map: Map<string, number>): (string | number)[][] {
-			let res: (string | number)[][] = [];
+		function to2dArray(map: Map<string, numBer>): (string | numBer)[][] {
+			let res: (string | numBer)[][] = [];
 			map.forEach((value, index) => res.push([index, value]));
 			return res;
 		}
@@ -377,12 +377,12 @@ class MarkdownBuilder {
 
 	value: string = '';
 
-	heading(level: number, value: string): this {
+	heading(level: numBer, value: string): this {
 		this.value += `${'#'.repeat(level)} ${value}\n\n`;
 		return this;
 	}
 
-	blank() {
+	Blank() {
 		this.value += '\n';
 		return this;
 	}
@@ -392,8 +392,8 @@ class MarkdownBuilder {
 		return this;
 	}
 
-	table(header: string[], rows: Array<Array<{ toString(): string } | undefined>>) {
-		let lengths: number[] = [];
+	taBle(header: string[], rows: Array<Array<{ toString(): string } | undefined>>) {
+		let lengths: numBer[] = [];
 		header.forEach((cell, ci) => {
 			lengths[ci] = cell.length;
 		});

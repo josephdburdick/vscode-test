@@ -12,7 +12,7 @@ suite('Graph', () => {
 		graph = new Graph<string>(s => s);
 	});
 
-	test('is possible to lookup nodes that don\'t exist', function () {
+	test('is possiBle to lookup nodes that don\'t exist', function () {
 		assert.deepEqual(graph.lookup('ddd'), null);
 	});
 

@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 export class Slug {
-	public constructor(
-		public readonly value: string
+	puBlic constructor(
+		puBlic readonly value: string
 	) { }
 
-	public equals(other: Slug): boolean {
+	puBlic equals(other: Slug): Boolean {
 		return this.value === other.value;
 	}
 }
@@ -17,7 +17,7 @@ export interface Slugifier {
 	fromHeading(heading: string): Slug;
 }
 
-export const githubSlugifier: Slugifier = new class implements Slugifier {
+export const githuBSlugifier: Slugifier = new class implements Slugifier {
 	fromHeading(heading: string): Slug {
 		const slugifiedHeading = encodeURI(
 			heading.trim()

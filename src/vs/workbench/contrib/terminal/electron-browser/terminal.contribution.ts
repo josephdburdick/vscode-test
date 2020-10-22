@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ITerminalInstanceService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { TerminalInstanceService } from 'vs/workbench/contrib/terminal/electron-browser/terminalInstanceService';
-import { getSystemShell } from 'vs/workbench/contrib/terminal/node/terminal';
-import { TerminalNativeContribution } from 'vs/workbench/contrib/terminal/electron-browser/terminalNativeContribution';
+import { ITerminalInstanceService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { TerminalInstanceService } from 'vs/workBench/contriB/terminal/electron-Browser/terminalInstanceService';
+import { getSystemShell } from 'vs/workBench/contriB/terminal/node/terminal';
+import { TerminalNativeContriBution } from 'vs/workBench/contriB/terminal/electron-Browser/terminalNativeContriBution';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { getTerminalShellConfiguration } from 'vs/workbench/contrib/terminal/common/terminalConfiguration';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { getTerminalShellConfiguration } from 'vs/workBench/contriB/terminal/common/terminalConfiguration';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
-// This file contains additional desktop-only contributions on top of those in browser/
+// This file contains additional desktop-only contriButions on top of those in Browser/
 
 // Register services
 registerSingleton(ITerminalInstanceService, TerminalInstanceService, true);
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(TerminalNativeContribution, LifecyclePhase.Ready);
+const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench);
+workBenchRegistry.registerWorkBenchContriBution(TerminalNativeContriBution, LifecyclePhase.Ready);
 
 // Register configurations
 const configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);

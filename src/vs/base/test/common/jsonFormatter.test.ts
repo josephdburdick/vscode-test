@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as Formatter from 'vs/base/common/jsonFormatter';
+import * as Formatter from 'vs/Base/common/jsonFormatter';
 import * as assert from 'assert';
 
 suite('JSON - formatter', () => {
@@ -12,11 +12,11 @@ suite('JSON - formatter', () => {
 		const rangeStart = content.indexOf('|');
 		const rangeEnd = content.lastIndexOf('|');
 		if (rangeStart !== -1 && rangeEnd !== -1) {
-			content = content.substring(0, rangeStart) + content.substring(rangeStart + 1, rangeEnd) + content.substring(rangeEnd + 1);
+			content = content.suBstring(0, rangeStart) + content.suBstring(rangeStart + 1, rangeEnd) + content.suBstring(rangeEnd + 1);
 			range = { offset: rangeStart, length: rangeEnd - rangeStart };
 		}
 
-		const edits = Formatter.format(content, range, { tabSize: 2, insertSpaces: insertSpaces, eol: '\n' });
+		const edits = Formatter.format(content, range, { taBSize: 2, insertSpaces: insertSpaces, eol: '\n' });
 
 		let lastEditOffset = content.length;
 		for (let i = edits.length - 1; i >= 0; i--) {
@@ -25,13 +25,13 @@ suite('JSON - formatter', () => {
 			assert(typeof edit.content === 'string');
 			assert(lastEditOffset >= edit.offset + edit.length); // make sure all edits are ordered
 			lastEditOffset = edit.offset;
-			content = content.substring(0, edit.offset) + edit.content + content.substring(edit.offset + edit.length);
+			content = content.suBstring(0, edit.offset) + edit.content + content.suBstring(edit.offset + edit.length);
 		}
 
 		assert.equal(content, expected);
 	}
 
-	test('object - single property', () => {
+	test('oBject - single property', () => {
 		const content = [
 			'{"x" : 1}'
 		].join('\n');
@@ -44,7 +44,7 @@ suite('JSON - formatter', () => {
 
 		format(content, expected);
 	});
-	test('object - multiple properties', () => {
+	test('oBject - multiple properties', () => {
 		const content = [
 			'{"x" : 1,  "y" : "foo", "z"  : true}'
 		].join('\n');
@@ -59,7 +59,7 @@ suite('JSON - formatter', () => {
 
 		format(content, expected);
 	});
-	test('object - no properties ', () => {
+	test('oBject - no properties ', () => {
 		const content = [
 			'{"x" : {    },  "y" : {}}'
 		].join('\n');
@@ -73,7 +73,7 @@ suite('JSON - formatter', () => {
 
 		format(content, expected);
 	});
-	test('object - nesting', () => {
+	test('oBject - nesting', () => {
 		const content = [
 			'{"x" : {  "y" : { "z"  : { }}, "a": true}}'
 		].join('\n');
@@ -173,14 +173,14 @@ suite('JSON - formatter', () => {
 			'{',
 			'"a": true,',
 			'',
-			'"b": true',
+			'"B": true',
 			'}',
 		].join('\n');
 
 		const expected = [
 			'{',
 			'\t"a": true,',
-			'\t"b": true',
+			'\t"B": true',
 			'}',
 		].join('\n');
 
@@ -190,7 +190,7 @@ suite('JSON - formatter', () => {
 		const content = [
 			'[ ',
 			'//comment',
-			'"foo", "bar"',
+			'"foo", "Bar"',
 			'] '
 		].join('\n');
 
@@ -198,13 +198,13 @@ suite('JSON - formatter', () => {
 			'[',
 			'  //comment',
 			'  "foo",',
-			'  "bar"',
+			'  "Bar"',
 			']',
 		].join('\n');
 
 		format(content, expected);
 	});
-	test('block line comment', () => {
+	test('Block line comment', () => {
 		const content = [
 			'[{',
 			'        /*comment*/     ',
@@ -251,17 +251,17 @@ suite('JSON - formatter', () => {
 
 		format(content, expected);
 	});
-	test('block comment on same line', () => {
+	test('Block comment on same line', () => {
 		const content = [
 			'{      "a": {}, /*comment*/    ',
-			'        /*comment*/ "b": {},    ',
+			'        /*comment*/ "B": {},    ',
 			'        "c": {/*comment*/}    } ',
 		].join('\n');
 
 		const expected = [
 			'{',
 			'  "a": {}, /*comment*/',
-			'  /*comment*/ "b": {},',
+			'  /*comment*/ "B": {},',
 			'  "c": { /*comment*/}',
 			'}',
 		].join('\n');
@@ -269,7 +269,7 @@ suite('JSON - formatter', () => {
 		format(content, expected);
 	});
 
-	test('block comment on same line advanced', () => {
+	test('Block comment on same line advanced', () => {
 		const content = [
 			' {       "d": [',
 			'             null',
@@ -291,16 +291,16 @@ suite('JSON - formatter', () => {
 		format(content, expected);
 	});
 
-	test('multiple block comments on same line', () => {
+	test('multiple Block comments on same line', () => {
 		const content = [
 			'{      "a": {} /*comment*/, /*comment*/   ',
-			'        /*comment*/ "b": {}  /*comment*/  } '
+			'        /*comment*/ "B": {}  /*comment*/  } '
 		].join('\n');
 
 		const expected = [
 			'{',
 			'  "a": {} /*comment*/, /*comment*/',
-			'  /*comment*/ "b": {} /*comment*/',
+			'  /*comment*/ "B": {} /*comment*/',
 			'}',
 		].join('\n');
 
@@ -323,13 +323,13 @@ suite('JSON - formatter', () => {
 	test('range', () => {
 		const content = [
 			'{ "a": {},',
-			'|"b": [null, null]|',
+			'|"B": [null, null]|',
 			'} '
 		].join('\n');
 
 		const expected = [
 			'{ "a": {},',
-			'"b": [',
+			'"B": [',
 			'  null,',
 			'  null',
 			']',
@@ -342,14 +342,14 @@ suite('JSON - formatter', () => {
 	test('range with existing indent', () => {
 		const content = [
 			'{ "a": {},',
-			'   |"b": [null],',
+			'   |"B": [null],',
 			'"c": {}',
 			'}|'
 		].join('\n');
 
 		const expected = [
 			'{ "a": {},',
-			'   "b": [',
+			'   "B": [',
 			'    null',
 			'  ],',
 			'  "c": {}',
@@ -359,17 +359,17 @@ suite('JSON - formatter', () => {
 		format(content, expected);
 	});
 
-	test('range with existing indent - tabs', () => {
+	test('range with existing indent - taBs', () => {
 		const content = [
 			'{ "a": {},',
-			'|  "b": [null],   ',
+			'|  "B": [null],   ',
 			'"c": {}',
 			'} |    '
 		].join('\n');
 
 		const expected = [
 			'{ "a": {},',
-			'\t"b": [',
+			'\t"B": [',
 			'\t\tnull',
 			'\t],',
 			'\t"c": {}',
@@ -380,7 +380,7 @@ suite('JSON - formatter', () => {
 	});
 
 
-	test('block comment none-line breaking symbols', () => {
+	test('Block comment none-line Breaking symBols', () => {
 		const content = [
 			'{ "a": [ 1',
 			'/* comment */',
@@ -389,7 +389,7 @@ suite('JSON - formatter', () => {
 			']',
 			'/* comment */',
 			',',
-			' "b": true',
+			' "B": true',
 			'/* comment */',
 			'}'
 		].join('\n');
@@ -405,19 +405,19 @@ suite('JSON - formatter', () => {
 			'  ]',
 			'  /* comment */',
 			'  ,',
-			'  "b": true',
+			'  "B": true',
 			'  /* comment */',
 			'}',
 		].join('\n');
 
 		format(content, expected);
 	});
-	test('line comment after none-line breaking symbols', () => {
+	test('line comment after none-line Breaking symBols', () => {
 		const content = [
 			'{ "a":',
 			'// comment',
 			'null,',
-			' "b"',
+			' "B"',
 			'// comment',
 			': null',
 			'// comment',
@@ -429,7 +429,7 @@ suite('JSON - formatter', () => {
 			'  "a":',
 			'  // comment',
 			'  null,',
-			'  "b"',
+			'  "B"',
 			'  // comment',
 			'  : null',
 			'  // comment',

@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CancelablePromise, createCancelablePromise } from 'vs/base/common/async';
+import { Event } from 'vs/Base/common/event';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { CancelaBlePromise, createCancelaBlePromise } from 'vs/Base/common/async';
 
-export class ActiveWindowManager extends Disposable {
+export class ActiveWindowManager extends DisposaBle {
 
-	private readonly disposables = this._register(new DisposableStore());
-	private firstActiveWindowIdPromise: CancelablePromise<number | undefined> | undefined;
+	private readonly disposaBles = this._register(new DisposaBleStore());
+	private firstActiveWindowIdPromise: CancelaBlePromise<numBer | undefined> | undefined;
 
-	private activeWindowId: number | undefined;
+	private activeWindowId: numBer | undefined;
 
 	constructor({ onDidOpenWindow, onDidFocusWindow, getActiveWindowId }: {
-		onDidOpenWindow: Event<number>,
-		onDidFocusWindow: Event<number>,
-		getActiveWindowId(): Promise<number | undefined>
+		onDidOpenWindow: Event<numBer>,
+		onDidFocusWindow: Event<numBer>,
+		getActiveWindowId(): Promise<numBer | undefined>
 	}) {
 		super();
 
-		// remember last active window id upon events
+		// rememBer last active window id upon events
 		const onActiveWindowChange = Event.latch(Event.any(onDidOpenWindow, onDidFocusWindow));
-		onActiveWindowChange(this.setActiveWindow, this, this.disposables);
+		onActiveWindowChange(this.setActiveWindow, this, this.disposaBles);
 
 		// resolve current active window
-		this.firstActiveWindowIdPromise = createCancelablePromise(() => getActiveWindowId());
+		this.firstActiveWindowIdPromise = createCancelaBlePromise(() => getActiveWindowId());
 		(async () => {
 			try {
 				const windowId = await this.firstActiveWindowIdPromise;
-				this.activeWindowId = (typeof this.activeWindowId === 'number') ? this.activeWindowId : windowId;
+				this.activeWindowId = (typeof this.activeWindowId === 'numBer') ? this.activeWindowId : windowId;
 			} catch (error) {
 				// ignore
 			} finally {
@@ -39,7 +39,7 @@ export class ActiveWindowManager extends Disposable {
 		})();
 	}
 
-	private setActiveWindow(windowId: number | undefined) {
+	private setActiveWindow(windowId: numBer | undefined) {
 		if (this.firstActiveWindowIdPromise) {
 			this.firstActiveWindowIdPromise.cancel();
 			this.firstActiveWindowIdPromise = undefined;

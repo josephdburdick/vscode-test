@@ -11,11 +11,11 @@ import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 
 class TypeScriptDocumentHighlightProvider implements vscode.DocumentHighlightProvider {
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideDocumentHighlights(
+	puBlic async provideDocumentHighlights(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		token: vscode.CancellationToken
@@ -30,12 +30,12 @@ class TypeScriptDocumentHighlightProvider implements vscode.DocumentHighlightPro
 			filesToSearch: [file]
 		};
 		const response = await this.client.execute('documentHighlights', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return [];
 		}
 
 		return flatten(
-			response.body
+			response.Body
 				.filter(highlight => highlight.file === file)
 				.map(convertDocumentHighlight));
 	}

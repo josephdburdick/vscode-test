@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename, dirname, join } from 'vs/base/common/path';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { readdir, rimraf, stat } from 'vs/base/node/pfs';
+import { Basename, dirname, join } from 'vs/Base/common/path';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { toDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { readdir, rimraf, stat } from 'vs/Base/node/pfs';
 import product from 'vs/platform/product/common/product';
 
 export class NodeCachedDataCleaner {
@@ -15,7 +15,7 @@ export class NodeCachedDataCleaner {
 		? 1000 * 60 * 60 * 24 * 7 // roughly 1 week
 		: 1000 * 60 * 60 * 24 * 30 * 3; // roughly 3 months
 
-	private readonly _disposables = new DisposableStore();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	constructor(
 		private readonly nodeCachedDataDir: string | undefined
@@ -24,7 +24,7 @@ export class NodeCachedDataCleaner {
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 	}
 
 	private _manageCachedDataSoon(): void {
@@ -38,7 +38,7 @@ export class NodeCachedDataCleaner {
 		// The folder which contains folders of cached data. Each of these folder is per
 		// version
 		const nodeCachedDataRootDir = dirname(this.nodeCachedDataDir);
-		const nodeCachedDataCurrent = basename(this.nodeCachedDataDir);
+		const nodeCachedDataCurrent = Basename(this.nodeCachedDataDir);
 
 		let handle: NodeJS.Timeout | undefined = setTimeout(() => {
 			handle = undefined;
@@ -75,7 +75,7 @@ export class NodeCachedDataCleaner {
 
 		}, 30 * 1000);
 
-		this._disposables.add(toDisposable(() => {
+		this._disposaBles.add(toDisposaBle(() => {
 			if (handle) {
 				clearTimeout(handle);
 				handle = undefined;

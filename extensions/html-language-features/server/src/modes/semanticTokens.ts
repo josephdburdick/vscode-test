@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { SemanticTokenData, Range, TextDocument, LanguageModes, Position } from './languageModes';
-import { beforeOrSame } from '../utils/positions';
+import { BeforeOrSame } from '../utils/positions';
 
 interface LegendMapping {
-	types: number[] | undefined;
-	modifiers: number[] | undefined;
+	types: numBer[] | undefined;
+	modifiers: numBer[] | undefined;
 }
 
 export interface SemanticTokenProvider {
 	readonly legend: { types: string[]; modifiers: string[] };
-	getSemanticTokens(document: TextDocument, ranges?: Range[]): Promise<number[]>;
+	getSemanticTokens(document: TextDocument, ranges?: Range[]): Promise<numBer[]>;
 }
 
 
 export function newSemanticTokenProvider(languageModes: LanguageModes): SemanticTokenProvider {
 
-	// combined legend across modes
+	// comBined legend across modes
 	const legend: { types: string[], modifiers: string[] } = { types: [], modifiers: [] };
 	const legendMappings: { [modeId: string]: LegendMapping } = {};
 
@@ -32,7 +32,7 @@ export function newSemanticTokenProvider(languageModes: LanguageModes): Semantic
 
 	return {
 		legend,
-		async getSemanticTokens(document: TextDocument, ranges?: Range[]): Promise<number[]> {
+		async getSemanticTokens(document: TextDocument, ranges?: Range[]): Promise<numBer[]> {
 			const allTokens: SemanticTokenData[] = [];
 			for (let mode of languageModes.getAllModesInDocument(document)) {
 				if (mode.getSemanticTokens) {
@@ -50,8 +50,8 @@ export function newSemanticTokenProvider(languageModes: LanguageModes): Semantic
 	};
 }
 
-function createMapping(origLegend: string[], newLegend: string[]): number[] | undefined {
-	const mapping: number[] = [];
+function createMapping(origLegend: string[], newLegend: string[]): numBer[] | undefined {
+	const mapping: numBer[] = [];
 	let needsMapping = false;
 	for (let origIndex = 0; origIndex < origLegend.length; origIndex++) {
 		const entry = origLegend[origIndex];
@@ -66,7 +66,7 @@ function createMapping(origLegend: string[], newLegend: string[]): number[] | un
 	return needsMapping ? mapping : undefined;
 }
 
-function applyTypesMapping(tokens: SemanticTokenData[], typesMapping: number[] | undefined): void {
+function applyTypesMapping(tokens: SemanticTokenData[], typesMapping: numBer[] | undefined): void {
 	if (typesMapping) {
 		for (let token of tokens) {
 			token.typeIdx = typesMapping[token.typeIdx];
@@ -74,7 +74,7 @@ function applyTypesMapping(tokens: SemanticTokenData[], typesMapping: number[] |
 	}
 }
 
-function applyModifiersMapping(tokens: SemanticTokenData[], modifiersMapping: number[] | undefined): void {
+function applyModifiersMapping(tokens: SemanticTokenData[], modifiersMapping: numBer[] | undefined): void {
 	if (modifiersMapping) {
 		for (let token of tokens) {
 			let modifierSet = token.modifierSet;
@@ -94,9 +94,9 @@ function applyModifiersMapping(tokens: SemanticTokenData[], modifiersMapping: nu
 	}
 }
 
-const fullRange = [Range.create(Position.create(0, 0), Position.create(Number.MAX_VALUE, 0))];
+const fullRange = [Range.create(Position.create(0, 0), Position.create(NumBer.MAX_VALUE, 0))];
 
-function encodeTokens(tokens: SemanticTokenData[], ranges?: Range[]): number[] {
+function encodeTokens(tokens: SemanticTokenData[], ranges?: Range[]): numBer[] {
 
 	const resultTokens = tokens.sort((d1, d2) => d1.start.line - d2.start.line || d1.start.character - d2.start.character);
 	if (ranges) {
@@ -111,15 +111,15 @@ function encodeTokens(tokens: SemanticTokenData[], ranges?: Range[]): number[] {
 	let prefLine = 0;
 	let prevChar = 0;
 
-	let encodedResult: number[] = [];
+	let encodedResult: numBer[] = [];
 
 	for (let k = 0; k < resultTokens.length && currRange; k++) {
 		const curr = resultTokens[k];
 		const start = curr.start;
-		while (currRange && beforeOrSame(currRange.end, start)) {
+		while (currRange && BeforeOrSame(currRange.end, start)) {
 			currRange = ranges[rangeIndex++];
 		}
-		if (currRange && beforeOrSame(currRange.start, start) && beforeOrSame({ line: start.line, character: start.character + curr.length }, currRange.end)) {
+		if (currRange && BeforeOrSame(currRange.start, start) && BeforeOrSame({ line: start.line, character: start.character + curr.length }, currRange.end)) {
 			// token inside a range
 
 			if (prefLine !== start.line) {

@@ -4,41 +4,41 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { createMatches } from 'vs/base/common/filters';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { append, $, hide, show } from 'vs/base/browser/dom';
-import { IListRenderer } from 'vs/base/browser/ui/list/list';
+import { createMatches } from 'vs/Base/common/filters';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { append, $, hide, show } from 'vs/Base/Browser/dom';
+import { IListRenderer } from 'vs/Base/Browser/ui/list/list';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { CompletionItem } from './suggest';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { CompletionItemKind, completionKindToCssClass, CompletionItemTag } from 'vs/editor/common/modes';
-import { IconLabel, IIconLabelValueOptions } from 'vs/base/browser/ui/iconLabel/iconLabel';
+import { IconLaBel, IIconLaBelValueOptions } from 'vs/Base/Browser/ui/iconLaBel/iconLaBel';
 import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { FileKind } from 'vs/platform/files/common/files';
-import { flatten } from 'vs/base/common/arrays';
+import { flatten } from 'vs/Base/common/arrays';
 import { canExpandCompletionItem } from './suggestWidgetDetails';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
-import { Emitter, Event } from 'vs/base/common/event';
+import { Codicon, registerIcon } from 'vs/Base/common/codicons';
+import { Emitter, Event } from 'vs/Base/common/event';
 
-export function getAriaId(index: number): string {
+export function getAriaId(index: numBer): string {
 	return `suggest-aria-id:${index}`;
 }
 
 export const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight);
 
-const colorRegExp = /^(#([\da-f]{3}){1,2}|(rgb|hsl)a\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgb|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))$/i;
+const colorRegExp = /^(#([\da-f]{3}){1,2}|(rgB|hsl)a\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgB|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))$/i;
 
-function extractColor(item: CompletionItem, out: string[]): boolean {
-	const label = typeof item.completion.label === 'string'
-		? item.completion.label
-		: item.completion.label.name;
+function extractColor(item: CompletionItem, out: string[]): Boolean {
+	const laBel = typeof item.completion.laBel === 'string'
+		? item.completion.laBel
+		: item.completion.laBel.name;
 
-	if (label.match(colorRegExp)) {
-		out[0] = label;
+	if (laBel.match(colorRegExp)) {
+		out[0] = laBel;
 		return true;
 	}
 	if (typeof item.completion.documentation === 'string' && item.completion.documentation.match(colorRegExp)) {
@@ -53,25 +53,25 @@ export interface ISuggestionTemplateData {
 	root: HTMLElement;
 
 	/**
-	 * Flexbox
+	 * FlexBox
 	 * < ------------- left ------------ >     < --- right -- >
-	 * <icon><label><signature><qualifier>     <type><readmore>
+	 * <icon><laBel><signature><qualifier>     <type><readmore>
 	 */
 	left: HTMLElement;
 	right: HTMLElement;
 
 	icon: HTMLElement;
 	colorspan: HTMLElement;
-	iconLabel: IconLabel;
+	iconLaBel: IconLaBel;
 	iconContainer: HTMLElement;
-	parametersLabel: HTMLElement;
-	qualifierLabel: HTMLElement;
+	parametersLaBel: HTMLElement;
+	qualifierLaBel: HTMLElement;
 	/**
-	 * Showing either `CompletionItem#details` or `CompletionItemLabel#type`
+	 * Showing either `CompletionItem#details` or `CompletionItemLaBel#type`
 	 */
-	detailsLabel: HTMLElement;
+	detailsLaBel: HTMLElement;
 	readMore: HTMLElement;
-	disposables: DisposableStore;
+	disposaBles: DisposaBleStore;
 }
 
 export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTemplateData> {
@@ -83,7 +83,7 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 
 	constructor(
 		private readonly _editor: ICodeEditor,
-		private readonly _triggerKeybindingLabel: string,
+		private readonly _triggerKeyBindingLaBel: string,
 		@IModelService private readonly _modelService: IModelService,
 		@IModeService private readonly _modeService: IModeService,
 		@IThemeService private readonly _themeService: IThemeService
@@ -94,8 +94,8 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 	}
 
 	renderTemplate(container: HTMLElement): ISuggestionTemplateData {
-		const data = <ISuggestionTemplateData>Object.create(null);
-		data.disposables = new DisposableStore();
+		const data = <ISuggestionTemplateData>OBject.create(null);
+		data.disposaBles = new DisposaBleStore();
 
 		data.root = container;
 		data.root.classList.add('show-file-icons');
@@ -106,19 +106,19 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 		const text = append(container, $('.contents'));
 		const main = append(text, $('.main'));
 
-		data.iconContainer = append(main, $('.icon-label.codicon'));
+		data.iconContainer = append(main, $('.icon-laBel.codicon'));
 		data.left = append(main, $('span.left'));
 		data.right = append(main, $('span.right'));
 
-		data.iconLabel = new IconLabel(data.left, { supportHighlights: true, supportCodicons: true });
-		data.disposables.add(data.iconLabel);
+		data.iconLaBel = new IconLaBel(data.left, { supportHighlights: true, supportCodicons: true });
+		data.disposaBles.add(data.iconLaBel);
 
-		data.parametersLabel = append(data.left, $('span.signature-label'));
-		data.qualifierLabel = append(data.left, $('span.qualifier-label'));
-		data.detailsLabel = append(data.right, $('span.details-label'));
+		data.parametersLaBel = append(data.left, $('span.signature-laBel'));
+		data.qualifierLaBel = append(data.left, $('span.qualifier-laBel'));
+		data.detailsLaBel = append(data.right, $('span.details-laBel'));
 
 		data.readMore = append(data.right, $('span.readMore' + suggestMoreInfoIcon.cssSelector));
-		data.readMore.title = nls.localize('readMore', "Read More ({0})", this._triggerKeybindingLabel);
+		data.readMore.title = nls.localize('readMore', "Read More ({0})", this._triggerKeyBindingLaBel);
 
 		const configureFont = () => {
 			const options = this._editor.getOptions();
@@ -144,7 +144,7 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 
 		configureFont();
 
-		data.disposables.add(this._editor.onDidChangeConfiguration(e => {
+		data.disposaBles.add(this._editor.onDidChangeConfiguration(e => {
 			if (e.hasChanged(EditorOption.fontInfo) || e.hasChanged(EditorOption.suggestFontSize) || e.hasChanged(EditorOption.suggestLineHeight)) {
 				configureFont();
 			}
@@ -153,15 +153,15 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 		return data;
 	}
 
-	renderElement(element: CompletionItem, index: number, data: ISuggestionTemplateData): void {
+	renderElement(element: CompletionItem, index: numBer, data: ISuggestionTemplateData): void {
 		const { completion } = element;
-		const textLabel = typeof completion.label === 'string' ? completion.label : completion.label.name;
+		const textLaBel = typeof completion.laBel === 'string' ? completion.laBel : completion.laBel.name;
 
 		data.root.id = getAriaId(index);
-		data.colorspan.style.backgroundColor = '';
+		data.colorspan.style.BackgroundColor = '';
 
-		const labelOptions: IIconLabelValueOptions = {
-			labelEscapeNewLines: true,
+		const laBelOptions: IIconLaBelValueOptions = {
+			laBelEscapeNewLines: true,
 			matches: createMatches(element.score)
 		};
 
@@ -170,22 +170,22 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 			// special logic for 'color' completion items
 			data.icon.className = 'icon customcolor';
 			data.iconContainer.className = 'icon hide';
-			data.colorspan.style.backgroundColor = color[0];
+			data.colorspan.style.BackgroundColor = color[0];
 
 		} else if (completion.kind === CompletionItemKind.File && this._themeService.getFileIconTheme().hasFileIcons) {
 			// special logic for 'file' completion items
 			data.icon.className = 'icon hide';
 			data.iconContainer.className = 'icon hide';
-			const labelClasses = getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLabel }), FileKind.FILE);
+			const laBelClasses = getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLaBel }), FileKind.FILE);
 			const detailClasses = getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: completion.detail }), FileKind.FILE);
-			labelOptions.extraClasses = labelClasses.length > detailClasses.length ? labelClasses : detailClasses;
+			laBelOptions.extraClasses = laBelClasses.length > detailClasses.length ? laBelClasses : detailClasses;
 
 		} else if (completion.kind === CompletionItemKind.Folder && this._themeService.getFileIconTheme().hasFolderIcons) {
 			// special logic for 'folder' completion items
 			data.icon.className = 'icon hide';
 			data.iconContainer.className = 'icon hide';
-			labelOptions.extraClasses = flatten([
-				getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLabel }), FileKind.FOLDER),
+			laBelOptions.extraClasses = flatten([
+				getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLaBel }), FileKind.FOLDER),
 				getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: completion.detail }), FileKind.FOLDER)
 			]);
 		} else {
@@ -196,23 +196,23 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 		}
 
 		if (completion.tags && completion.tags.indexOf(CompletionItemTag.Deprecated) >= 0) {
-			labelOptions.extraClasses = (labelOptions.extraClasses || []).concat(['deprecated']);
-			labelOptions.matches = [];
+			laBelOptions.extraClasses = (laBelOptions.extraClasses || []).concat(['deprecated']);
+			laBelOptions.matches = [];
 		}
 
-		data.iconLabel.setLabel(textLabel, undefined, labelOptions);
-		if (typeof completion.label === 'string') {
-			data.parametersLabel.textContent = '';
-			data.qualifierLabel.textContent = '';
-			data.detailsLabel.textContent = (completion.detail || '').replace(/\n.*$/m, '');
-			data.root.classList.add('string-label');
+		data.iconLaBel.setLaBel(textLaBel, undefined, laBelOptions);
+		if (typeof completion.laBel === 'string') {
+			data.parametersLaBel.textContent = '';
+			data.qualifierLaBel.textContent = '';
+			data.detailsLaBel.textContent = (completion.detail || '').replace(/\n.*$/m, '');
+			data.root.classList.add('string-laBel');
 			data.root.title = '';
 		} else {
-			data.parametersLabel.textContent = (completion.label.parameters || '').replace(/\n.*$/m, '');
-			data.qualifierLabel.textContent = (completion.label.qualifier || '').replace(/\n.*$/m, '');
-			data.detailsLabel.textContent = (completion.label.type || '').replace(/\n.*$/m, '');
-			data.root.classList.remove('string-label');
-			data.root.title = `${textLabel}${completion.label.parameters ?? ''}  ${completion.label.qualifier ?? ''}  ${completion.label.type ?? ''}`;
+			data.parametersLaBel.textContent = (completion.laBel.parameters || '').replace(/\n.*$/m, '');
+			data.qualifierLaBel.textContent = (completion.laBel.qualifier || '').replace(/\n.*$/m, '');
+			data.detailsLaBel.textContent = (completion.laBel.type || '').replace(/\n.*$/m, '');
+			data.root.classList.remove('string-laBel');
+			data.root.title = `${textLaBel}${completion.laBel.parameters ?? ''}  ${completion.laBel.qualifier ?? ''}  ${completion.laBel.type ?? ''}`;
 		}
 
 		if (canExpandCompletionItem(element)) {
@@ -236,6 +236,6 @@ export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTe
 	}
 
 	disposeTemplate(templateData: ISuggestionTemplateData): void {
-		templateData.disposables.dispose();
+		templateData.disposaBles.dispose();
 	}
 }

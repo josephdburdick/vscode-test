@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
 export interface IExtensionDevOptions {
-	readonly isExtensionDevHost: boolean;
-	readonly isExtensionDevDebug: boolean;
-	readonly isExtensionDevDebugBrk: boolean;
-	readonly isExtensionDevTestFromCli: boolean;
+	readonly isExtensionDevHost: Boolean;
+	readonly isExtensionDevDeBug: Boolean;
+	readonly isExtensionDevDeBugBrk: Boolean;
+	readonly isExtensionDevTestFromCli: Boolean;
 }
 
 export function parseExtensionDevOptions(environmentService: IEnvironmentService): IExtensionDevOptions {
-	// handle extension host lifecycle a bit special when we know we are developing an extension that runs inside
+	// handle extension host lifecycle a Bit special when we know we are developing an extension that runs inside
 	let isExtensionDevHost = environmentService.isExtensionDevelopment;
 
-	let debugOk = true;
+	let deBugOk = true;
 	let extDevLocs = environmentService.extensionDevelopmentLocationURI;
 	if (extDevLocs) {
 		for (let x of extDevLocs) {
 			if (x.scheme !== Schemas.file) {
-				debugOk = false;
+				deBugOk = false;
 			}
 		}
 	}
 
-	let isExtensionDevDebug = debugOk && typeof environmentService.debugExtensionHost.port === 'number';
-	let isExtensionDevDebugBrk = debugOk && !!environmentService.debugExtensionHost.break;
-	let isExtensionDevTestFromCli = isExtensionDevHost && !!environmentService.extensionTestsLocationURI && !environmentService.debugExtensionHost.debugId;
+	let isExtensionDevDeBug = deBugOk && typeof environmentService.deBugExtensionHost.port === 'numBer';
+	let isExtensionDevDeBugBrk = deBugOk && !!environmentService.deBugExtensionHost.Break;
+	let isExtensionDevTestFromCli = isExtensionDevHost && !!environmentService.extensionTestsLocationURI && !environmentService.deBugExtensionHost.deBugId;
 	return {
 		isExtensionDevHost,
-		isExtensionDevDebug,
-		isExtensionDevDebugBrk,
+		isExtensionDevDeBug,
+		isExtensionDevDeBugBrk,
 		isExtensionDevTestFromCli
 	};
 }

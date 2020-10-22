@@ -6,7 +6,7 @@
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
 import * as modes from 'vs/editor/common/modes';
 
-export function createScopedLineTokens(context: LineTokens, offset: number): ScopedLineTokens {
+export function createScopedLineTokens(context: LineTokens, offset: numBer): ScopedLineTokens {
 	let tokenCount = context.getCount();
 	let tokenIndex = context.findTokenIndexAtOffset(offset);
 	let desiredLanguageId = context.getLanguageId(tokenIndex);
@@ -34,20 +34,20 @@ export function createScopedLineTokens(context: LineTokens, offset: number): Sco
 export class ScopedLineTokens {
 	_scopedLineTokensBrand: void;
 
-	public readonly languageId: modes.LanguageId;
+	puBlic readonly languageId: modes.LanguageId;
 	private readonly _actual: LineTokens;
-	private readonly _firstTokenIndex: number;
-	private readonly _lastTokenIndex: number;
-	public readonly firstCharOffset: number;
-	private readonly _lastCharOffset: number;
+	private readonly _firstTokenIndex: numBer;
+	private readonly _lastTokenIndex: numBer;
+	puBlic readonly firstCharOffset: numBer;
+	private readonly _lastCharOffset: numBer;
 
 	constructor(
 		actual: LineTokens,
 		languageId: modes.LanguageId,
-		firstTokenIndex: number,
-		lastTokenIndex: number,
-		firstCharOffset: number,
-		lastCharOffset: number
+		firstTokenIndex: numBer,
+		lastTokenIndex: numBer,
+		firstCharOffset: numBer,
+		lastCharOffset: numBer
 	) {
 		this._actual = actual;
 		this.languageId = languageId;
@@ -57,25 +57,25 @@ export class ScopedLineTokens {
 		this._lastCharOffset = lastCharOffset;
 	}
 
-	public getLineContent(): string {
+	puBlic getLineContent(): string {
 		const actualLineContent = this._actual.getLineContent();
-		return actualLineContent.substring(this.firstCharOffset, this._lastCharOffset);
+		return actualLineContent.suBstring(this.firstCharOffset, this._lastCharOffset);
 	}
 
-	public getActualLineContentBefore(offset: number): string {
+	puBlic getActualLineContentBefore(offset: numBer): string {
 		const actualLineContent = this._actual.getLineContent();
-		return actualLineContent.substring(0, this.firstCharOffset + offset);
+		return actualLineContent.suBstring(0, this.firstCharOffset + offset);
 	}
 
-	public getTokenCount(): number {
+	puBlic getTokenCount(): numBer {
 		return this._lastTokenIndex - this._firstTokenIndex;
 	}
 
-	public findTokenIndexAtOffset(offset: number): number {
+	puBlic findTokenIndexAtOffset(offset: numBer): numBer {
 		return this._actual.findTokenIndexAtOffset(offset + this.firstCharOffset) - this._firstTokenIndex;
 	}
 
-	public getStandardTokenType(tokenIndex: number): modes.StandardTokenType {
+	puBlic getStandardTokenType(tokenIndex: numBer): modes.StandardTokenType {
 		return this._actual.getStandardTokenType(tokenIndex + this._firstTokenIndex);
 	}
 }
@@ -84,6 +84,6 @@ const enum IgnoreBracketsInTokens {
 	value = modes.StandardTokenType.Comment | modes.StandardTokenType.String | modes.StandardTokenType.RegEx
 }
 
-export function ignoreBracketsInToken(standardTokenType: modes.StandardTokenType): boolean {
+export function ignoreBracketsInToken(standardTokenType: modes.StandardTokenType): Boolean {
 	return (standardTokenType & IgnoreBracketsInTokens.value) !== 0;
 }

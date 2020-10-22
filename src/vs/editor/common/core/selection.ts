@@ -12,21 +12,21 @@ import { Range } from 'vs/editor/common/core/range';
  */
 export interface ISelection {
 	/**
-	 * The line number on which the selection has started.
+	 * The line numBer on which the selection has started.
 	 */
-	readonly selectionStartLineNumber: number;
+	readonly selectionStartLineNumBer: numBer;
 	/**
-	 * The column on `selectionStartLineNumber` where the selection has started.
+	 * The column on `selectionStartLineNumBer` where the selection has started.
 	 */
-	readonly selectionStartColumn: number;
+	readonly selectionStartColumn: numBer;
 	/**
-	 * The line number on which the selection has ended.
+	 * The line numBer on which the selection has ended.
 	 */
-	readonly positionLineNumber: number;
+	readonly positionLineNumBer: numBer;
 	/**
-	 * The column on `positionLineNumber` where the selection has ended.
+	 * The column on `positionLineNumBer` where the selection has ended.
 	 */
-	readonly positionColumn: number;
+	readonly positionColumn: numBer;
 }
 
 /**
@@ -34,11 +34,11 @@ export interface ISelection {
  */
 export const enum SelectionDirection {
 	/**
-	 * The selection starts above where it ends.
+	 * The selection starts aBove where it ends.
 	 */
 	LTR,
 	/**
-	 * The selection starts below where it ends.
+	 * The selection starts Below where it ends.
 	 */
 	RTL
 }
@@ -49,41 +49,41 @@ export const enum SelectionDirection {
  */
 export class Selection extends Range {
 	/**
-	 * The line number on which the selection has started.
+	 * The line numBer on which the selection has started.
 	 */
-	public readonly selectionStartLineNumber: number;
+	puBlic readonly selectionStartLineNumBer: numBer;
 	/**
-	 * The column on `selectionStartLineNumber` where the selection has started.
+	 * The column on `selectionStartLineNumBer` where the selection has started.
 	 */
-	public readonly selectionStartColumn: number;
+	puBlic readonly selectionStartColumn: numBer;
 	/**
-	 * The line number on which the selection has ended.
+	 * The line numBer on which the selection has ended.
 	 */
-	public readonly positionLineNumber: number;
+	puBlic readonly positionLineNumBer: numBer;
 	/**
-	 * The column on `positionLineNumber` where the selection has ended.
+	 * The column on `positionLineNumBer` where the selection has ended.
 	 */
-	public readonly positionColumn: number;
+	puBlic readonly positionColumn: numBer;
 
-	constructor(selectionStartLineNumber: number, selectionStartColumn: number, positionLineNumber: number, positionColumn: number) {
-		super(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn);
-		this.selectionStartLineNumber = selectionStartLineNumber;
+	constructor(selectionStartLineNumBer: numBer, selectionStartColumn: numBer, positionLineNumBer: numBer, positionColumn: numBer) {
+		super(selectionStartLineNumBer, selectionStartColumn, positionLineNumBer, positionColumn);
+		this.selectionStartLineNumBer = selectionStartLineNumBer;
 		this.selectionStartColumn = selectionStartColumn;
-		this.positionLineNumber = positionLineNumber;
+		this.positionLineNumBer = positionLineNumBer;
 		this.positionColumn = positionColumn;
 	}
 
 	/**
-	 * Transform to a human-readable representation.
+	 * Transform to a human-readaBle representation.
 	 */
-	public toString(): string {
-		return '[' + this.selectionStartLineNumber + ',' + this.selectionStartColumn + ' -> ' + this.positionLineNumber + ',' + this.positionColumn + ']';
+	puBlic toString(): string {
+		return '[' + this.selectionStartLineNumBer + ',' + this.selectionStartColumn + ' -> ' + this.positionLineNumBer + ',' + this.positionColumn + ']';
 	}
 
 	/**
 	 * Test if equals other selection.
 	 */
-	public equalsSelection(other: ISelection): boolean {
+	puBlic equalsSelection(other: ISelection): Boolean {
 		return (
 			Selection.selectionsEqual(this, other)
 		);
@@ -92,50 +92,50 @@ export class Selection extends Range {
 	/**
 	 * Test if the two selections are equal.
 	 */
-	public static selectionsEqual(a: ISelection, b: ISelection): boolean {
+	puBlic static selectionsEqual(a: ISelection, B: ISelection): Boolean {
 		return (
-			a.selectionStartLineNumber === b.selectionStartLineNumber &&
-			a.selectionStartColumn === b.selectionStartColumn &&
-			a.positionLineNumber === b.positionLineNumber &&
-			a.positionColumn === b.positionColumn
+			a.selectionStartLineNumBer === B.selectionStartLineNumBer &&
+			a.selectionStartColumn === B.selectionStartColumn &&
+			a.positionLineNumBer === B.positionLineNumBer &&
+			a.positionColumn === B.positionColumn
 		);
 	}
 
 	/**
 	 * Get directions (LTR or RTL).
 	 */
-	public getDirection(): SelectionDirection {
-		if (this.selectionStartLineNumber === this.startLineNumber && this.selectionStartColumn === this.startColumn) {
+	puBlic getDirection(): SelectionDirection {
+		if (this.selectionStartLineNumBer === this.startLineNumBer && this.selectionStartColumn === this.startColumn) {
 			return SelectionDirection.LTR;
 		}
 		return SelectionDirection.RTL;
 	}
 
 	/**
-	 * Create a new selection with a different `positionLineNumber` and `positionColumn`.
+	 * Create a new selection with a different `positionLineNumBer` and `positionColumn`.
 	 */
-	public setEndPosition(endLineNumber: number, endColumn: number): Selection {
+	puBlic setEndPosition(endLineNumBer: numBer, endColumn: numBer): Selection {
 		if (this.getDirection() === SelectionDirection.LTR) {
-			return new Selection(this.startLineNumber, this.startColumn, endLineNumber, endColumn);
+			return new Selection(this.startLineNumBer, this.startColumn, endLineNumBer, endColumn);
 		}
-		return new Selection(endLineNumber, endColumn, this.startLineNumber, this.startColumn);
+		return new Selection(endLineNumBer, endColumn, this.startLineNumBer, this.startColumn);
 	}
 
 	/**
-	 * Get the position at `positionLineNumber` and `positionColumn`.
+	 * Get the position at `positionLineNumBer` and `positionColumn`.
 	 */
-	public getPosition(): Position {
-		return new Position(this.positionLineNumber, this.positionColumn);
+	puBlic getPosition(): Position {
+		return new Position(this.positionLineNumBer, this.positionColumn);
 	}
 
 	/**
-	 * Create a new selection with a different `selectionStartLineNumber` and `selectionStartColumn`.
+	 * Create a new selection with a different `selectionStartLineNumBer` and `selectionStartColumn`.
 	 */
-	public setStartPosition(startLineNumber: number, startColumn: number): Selection {
+	puBlic setStartPosition(startLineNumBer: numBer, startColumn: numBer): Selection {
 		if (this.getDirection() === SelectionDirection.LTR) {
-			return new Selection(startLineNumber, startColumn, this.endLineNumber, this.endColumn);
+			return new Selection(startLineNumBer, startColumn, this.endLineNumBer, this.endColumn);
 		}
-		return new Selection(this.endLineNumber, this.endColumn, startLineNumber, startColumn);
+		return new Selection(this.endLineNumBer, this.endColumn, startLineNumBer, startColumn);
 	}
 
 	// ----
@@ -143,32 +143,32 @@ export class Selection extends Range {
 	/**
 	 * Create a `Selection` from one or two positions
 	 */
-	public static fromPositions(start: IPosition, end: IPosition = start): Selection {
-		return new Selection(start.lineNumber, start.column, end.lineNumber, end.column);
+	puBlic static fromPositions(start: IPosition, end: IPosition = start): Selection {
+		return new Selection(start.lineNumBer, start.column, end.lineNumBer, end.column);
 	}
 
 	/**
 	 * Create a `Selection` from an `ISelection`.
 	 */
-	public static liftSelection(sel: ISelection): Selection {
-		return new Selection(sel.selectionStartLineNumber, sel.selectionStartColumn, sel.positionLineNumber, sel.positionColumn);
+	puBlic static liftSelection(sel: ISelection): Selection {
+		return new Selection(sel.selectionStartLineNumBer, sel.selectionStartColumn, sel.positionLineNumBer, sel.positionColumn);
 	}
 
 	/**
-	 * `a` equals `b`.
+	 * `a` equals `B`.
 	 */
-	public static selectionsArrEqual(a: ISelection[], b: ISelection[]): boolean {
-		if (a && !b || !a && b) {
+	puBlic static selectionsArrEqual(a: ISelection[], B: ISelection[]): Boolean {
+		if (a && !B || !a && B) {
 			return false;
 		}
-		if (!a && !b) {
+		if (!a && !B) {
 			return true;
 		}
-		if (a.length !== b.length) {
+		if (a.length !== B.length) {
 			return false;
 		}
 		for (let i = 0, len = a.length; i < len; i++) {
-			if (!this.selectionsEqual(a[i], b[i])) {
+			if (!this.selectionsEqual(a[i], B[i])) {
 				return false;
 			}
 		}
@@ -176,27 +176,27 @@ export class Selection extends Range {
 	}
 
 	/**
-	 * Test if `obj` is an `ISelection`.
+	 * Test if `oBj` is an `ISelection`.
 	 */
-	public static isISelection(obj: any): obj is ISelection {
+	puBlic static isISelection(oBj: any): oBj is ISelection {
 		return (
-			obj
-			&& (typeof obj.selectionStartLineNumber === 'number')
-			&& (typeof obj.selectionStartColumn === 'number')
-			&& (typeof obj.positionLineNumber === 'number')
-			&& (typeof obj.positionColumn === 'number')
+			oBj
+			&& (typeof oBj.selectionStartLineNumBer === 'numBer')
+			&& (typeof oBj.selectionStartColumn === 'numBer')
+			&& (typeof oBj.positionLineNumBer === 'numBer')
+			&& (typeof oBj.positionColumn === 'numBer')
 		);
 	}
 
 	/**
 	 * Create with a direction.
 	 */
-	public static createWithDirection(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, direction: SelectionDirection): Selection {
+	puBlic static createWithDirection(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, direction: SelectionDirection): Selection {
 
 		if (direction === SelectionDirection.LTR) {
-			return new Selection(startLineNumber, startColumn, endLineNumber, endColumn);
+			return new Selection(startLineNumBer, startColumn, endLineNumBer, endColumn);
 		}
 
-		return new Selection(endLineNumber, endColumn, startLineNumber, startColumn);
+		return new Selection(endLineNumBer, endColumn, startLineNumBer, startColumn);
 	}
 }

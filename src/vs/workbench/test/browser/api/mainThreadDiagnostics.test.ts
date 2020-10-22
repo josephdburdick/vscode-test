@@ -5,11 +5,11 @@
 
 import * as assert from 'assert';
 import { MarkerService } from 'vs/platform/markers/common/markerService';
-import { MainThreadDiagnostics } from 'vs/workbench/api/browser/mainThreadDiagnostics';
-import { URI } from 'vs/base/common/uri';
-import { IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { mock } from 'vs/workbench/test/common/workbenchTestServices';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { MainThreadDiagnostics } from 'vs/workBench/api/Browser/mainThreadDiagnostics';
+import { URI } from 'vs/Base/common/uri';
+import { IExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { mock } from 'vs/workBench/test/common/workBenchTestServices';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
 
 suite('MainThreadDiagnostics', function () {
@@ -42,9 +42,9 @@ suite('MainThreadDiagnostics', function () {
 
 		diag.$changeMany('foo', [[URI.file('a'), [{
 			code: '666',
-			startLineNumber: 1,
+			startLineNumBer: 1,
 			startColumn: 1,
-			endLineNumber: 1,
+			endLineNumBer: 1,
 			endColumn: 1,
 			message: 'fffff',
 			severity: 1,

@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { IConfigurationNode, IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
+import { workBenchConfigurationNodeBase } from 'vs/workBench/common/configuration';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ICustomEditorInfo, IEditorService, IOpenEditorOverrideHandler, IOpenEditorOverrideEntry } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorInput, IEditorPane, IEditorInputFactoryRegistry, Extensions as EditorExtensions, EditorResourceAccessor } from 'vs/workbench/common/editor';
+import { ICustomEditorInfo, IEditorService, IOpenEditorOverrideHandler, IOpenEditorOverrideEntry } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorInput, IEditorPane, IEditorInputFactoryRegistry, Extensions as EditorExtensions, EditorResourceAccessor } from 'vs/workBench/common/editor';
 import { ITextEditorOptions, IEditorOptions } from 'vs/platform/editor/common/editor';
-import { IEditorGroup, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { IEditorGroup, OpenEditorContext } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { URI } from 'vs/base/common/uri';
-import { extname, basename, isEqual } from 'vs/base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { extname, Basename, isEqual } from 'vs/Base/common/resources';
 
 /**
  * Id of the default editor for open with.
@@ -44,7 +44,7 @@ export async function openEditorWith(
 
 	const overrideOptions = { ...options, override: id };
 
-	const allEditorOverrides = getAllAvailableEditors(resource, id, overrideOptions, group, editorService);
+	const allEditorOverrides = getAllAvailaBleEditors(resource, id, overrideOptions, group, editorService);
 	if (!allEditorOverrides.length) {
 		return;
 	}
@@ -67,10 +67,10 @@ export async function openEditorWith(
 		return {
 			handler: handler,
 			id: entry.id,
-			label: entry.label,
+			laBel: entry.laBel,
 			description: entry.active ? nls.localize('promptOpenWith.currentlyActive', 'Currently Active') : undefined,
 			detail: entry.detail,
-			buttons: resourceExt ? [{
+			Buttons: resourceExt ? [{
 				iconClass: 'codicon-settings-gear',
 				tooltip: nls.localize('promptOpenWith.setDefaultTooltip', "Set as default editor for '{0}' files", resourceExt)
 			}] : undefined
@@ -82,7 +82,7 @@ export async function openEditorWith(
 	if (items.length) {
 		picker.selectedItems = [items[0]];
 	}
-	picker.placeholder = nls.localize('promptOpenWith.placeHolder', "Select editor for '{0}'", basename(originalResource));
+	picker.placeholder = nls.localize('promptOpenWith.placeHolder', "Select editor for '{0}'", Basename(originalResource));
 
 	const pickedItem = await new Promise<(IQuickPickItem & { handler: IOpenEditorOverrideHandler }) | undefined>(resolve => {
 		picker.onDidAccept(() => {
@@ -123,18 +123,18 @@ export async function openEditorWith(
 	return pickedItem?.handler.open(input, { ...options, override: pickedItem.id }, group, OpenEditorContext.NEW_EDITOR)?.override;
 }
 
-const builtinProviderDisplayName = nls.localize('builtinProviderDisplayName', "Built-in");
+const BuiltinProviderDisplayName = nls.localize('BuiltinProviderDisplayName', "Built-in");
 
-export const defaultEditorOverrideEntry = Object.freeze({
+export const defaultEditorOverrideEntry = OBject.freeze({
 	id: DEFAULT_EDITOR_ID,
-	label: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
-	detail: builtinProviderDisplayName
+	laBel: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
+	detail: BuiltinProviderDisplayName
 });
 
 /**
- * Get a list of all available editors, including the default text editor.
+ * Get a list of all availaBle editors, including the default text editor.
  */
-export function getAllAvailableEditors(
+export function getAllAvailaBleEditors(
 	resource: URI,
 	id: string | undefined,
 	options: IEditorOptions | ITextEditorOptions | undefined,
@@ -166,7 +166,7 @@ export function getAllAvailableEditors(
 	return overrides;
 }
 
-export const customEditorsAssociationsSettingId = 'workbench.editorAssociations';
+export const customEditorsAssociationsSettingId = 'workBench.editorAssociations';
 
 export const viewTypeSchamaAddition: IJSONSchema = {
 	type: 'string',
@@ -181,15 +181,15 @@ export type CustomEditorAssociation = {
 export type CustomEditorsAssociations = readonly CustomEditorAssociation[];
 
 export const editorAssociationsConfigurationNode: IConfigurationNode = {
-	...workbenchConfigurationNodeBase,
+	...workBenchConfigurationNodeBase,
 	properties: {
 		[customEditorsAssociationsSettingId]: {
 			type: 'array',
 			markdownDescription: nls.localize('editor.editorAssociations', "Configure which editor to use for specific file types."),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				defaultSnippets: [{
-					body: {
+					Body: {
 						'viewType': '$1',
 						'filenamePattern': '$2'
 					}
@@ -206,7 +206,7 @@ export const editorAssociationsConfigurationNode: IConfigurationNode = {
 					},
 					'filenamePattern': {
 						type: 'string',
-						description: nls.localize('editor.editorAssociations.filenamePattern', "Glob pattern specifying which files the editor should be used for."),
+						description: nls.localize('editor.editorAssociations.filenamePattern', "GloB pattern specifying which files the editor should Be used for."),
 					}
 				}
 			}
@@ -217,7 +217,7 @@ export const editorAssociationsConfigurationNode: IConfigurationNode = {
 export const DEFAULT_CUSTOM_EDITOR: ICustomEditorInfo = {
 	id: 'default',
 	displayName: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
-	providerDisplayName: builtinProviderDisplayName
+	providerDisplayName: BuiltinProviderDisplayName
 };
 
 export function updateViewTypeSchema(enumValues: string[], enumDescriptions: string[]): void {

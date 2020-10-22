@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
 
 suite('Errors', () => {
 	test('Get Error Message', function () {

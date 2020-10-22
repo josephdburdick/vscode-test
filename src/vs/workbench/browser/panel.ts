@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IPanel } from 'vs/workbench/common/panel';
-import { CompositeDescriptor, CompositeRegistry } from 'vs/workbench/browser/composite';
+import { IPanel } from 'vs/workBench/common/panel';
+import { CompositeDescriptor, CompositeRegistry } from 'vs/workBench/Browser/composite';
 import { IConstructorSignature0, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { assertIsDefined } from 'vs/base/common/types';
-import { PaneComposite } from 'vs/workbench/browser/panecomposite';
+import { assertIsDefined } from 'vs/Base/common/types';
+import { PaneComposite } from 'vs/workBench/Browser/panecomposite';
 
-export abstract class Panel extends PaneComposite implements IPanel { }
+export aBstract class Panel extends PaneComposite implements IPanel { }
 
 /**
- * A panel descriptor is a leightweight descriptor of a panel in the workbench.
+ * A panel descriptor is a leightweight descriptor of a panel in the workBench.
  */
 export class PanelDescriptor extends CompositeDescriptor<Panel> {
 
-	static create<Services extends BrandedService[]>(ctor: { new(...services: Services): Panel }, id: string, name: string, cssClass?: string, order?: number, requestedIndex?: number, _commandId?: string): PanelDescriptor {
+	static create<Services extends BrandedService[]>(ctor: { new(...services: Services): Panel }, id: string, name: string, cssClass?: string, order?: numBer, requestedIndex?: numBer, _commandId?: string): PanelDescriptor {
 		return new PanelDescriptor(ctor as IConstructorSignature0<Panel>, id, name, cssClass, order, requestedIndex, _commandId);
 	}
 
-	private constructor(ctor: IConstructorSignature0<Panel>, id: string, name: string, cssClass?: string, order?: number, requestedIndex?: number, _commandId?: string) {
+	private constructor(ctor: IConstructorSignature0<Panel>, id: string, name: string, cssClass?: string, order?: numBer, requestedIndex?: numBer, _commandId?: string) {
 		super(ctor, id, name, cssClass, order, requestedIndex, _commandId);
 	}
 }
@@ -44,7 +44,7 @@ export class PanelRegistry extends CompositeRegistry<Panel> {
 	}
 
 	/**
-	 * Returns a panel by id.
+	 * Returns a panel By id.
 	 */
 	getPanel(id: string): PanelDescriptor | undefined {
 		return this.getComposite(id);
@@ -58,14 +58,14 @@ export class PanelRegistry extends CompositeRegistry<Panel> {
 	}
 
 	/**
-	 * Sets the id of the panel that should open on startup by default.
+	 * Sets the id of the panel that should open on startup By default.
 	 */
 	setDefaultPanelId(id: string): void {
 		this.defaultPanelId = id;
 	}
 
 	/**
-	 * Gets the id of the panel that should open on startup by default.
+	 * Gets the id of the panel that should open on startup By default.
 	 */
 	getDefaultPanelId(): string {
 		return assertIsDefined(this.defaultPanelId);
@@ -74,13 +74,13 @@ export class PanelRegistry extends CompositeRegistry<Panel> {
 	/**
 	 * Find out if a panel exists with the provided ID.
 	 */
-	hasPanel(id: string): boolean {
+	hasPanel(id: string): Boolean {
 		return this.getPanels().some(panel => panel.id === id);
 	}
 }
 
 export const Extensions = {
-	Panels: 'workbench.contributions.panels'
+	Panels: 'workBench.contriButions.panels'
 };
 
 Registry.add(Extensions.Panels, new PanelRegistry());

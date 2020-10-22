@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { TestRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
+import { URI } from 'vs/Base/common/uri';
+import { ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
+import { TestRPCProtocol } from 'vs/workBench/test/Browser/api/testRPCProtocol';
 import { NullLogService } from 'vs/platform/log/common/log';
 
 suite('ExtHostDocumentsAndEditors', () => {
@@ -24,7 +24,7 @@ suite('ExtHostDocumentsAndEditors', () => {
 				EOL: '\n',
 				isDirty: true,
 				modeId: 'fooLang',
-				uri: URI.parse('foo:bar'),
+				uri: URI.parse('foo:Bar'),
 				versionId: 1,
 				lines: [
 					'first',
@@ -48,7 +48,7 @@ suite('ExtHostDocumentsAndEditors', () => {
 			});
 
 			editors.$acceptDocumentsAndEditorsDelta({
-				removedDocuments: [URI.parse('foo:bar')]
+				removedDocuments: [URI.parse('foo:Bar')]
 			});
 
 		});

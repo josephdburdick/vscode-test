@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { mergeSort } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { illegalArgument, onUnexpectedExternalError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
+import { mergeSort } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { illegalArgument, onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import { registerLanguageCommand } from 'vs/editor/Browser/editorExtensions';
 import { ITextModel } from 'vs/editor/common/model';
 import { CodeLensProvider, CodeLensProviderRegistry, CodeLens, CodeLensList } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 
 export interface CodeLensItem {
-	symbol: CodeLens;
+	symBol: CodeLens;
 	provider: CodeLensProvider;
 }
 
@@ -22,16 +22,16 @@ export class CodeLensModel {
 
 	lenses: CodeLensItem[] = [];
 
-	private readonly _disposables = new DisposableStore();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 	}
 
 	add(list: CodeLensList, provider: CodeLensProvider): void {
-		this._disposables.add(list);
-		for (const symbol of list.lenses) {
-			this.lenses.push({ symbol, provider });
+		this._disposaBles.add(list);
+		for (const symBol of list.lenses) {
+			this.lenses.push({ symBol, provider });
 		}
 	}
 }
@@ -39,7 +39,7 @@ export class CodeLensModel {
 export async function getCodeLensModel(model: ITextModel, token: CancellationToken): Promise<CodeLensModel> {
 
 	const provider = CodeLensProviderRegistry.ordered(model);
-	const providerRanks = new Map<CodeLensProvider, number>();
+	const providerRanks = new Map<CodeLensProvider, numBer>();
 	const result = new CodeLensModel();
 
 	const promises = provider.map(async (provider, i) => {
@@ -58,19 +58,19 @@ export async function getCodeLensModel(model: ITextModel, token: CancellationTok
 
 	await Promise.all(promises);
 
-	result.lenses = mergeSort(result.lenses, (a, b) => {
-		// sort by lineNumber, provider-rank, and column
-		if (a.symbol.range.startLineNumber < b.symbol.range.startLineNumber) {
+	result.lenses = mergeSort(result.lenses, (a, B) => {
+		// sort By lineNumBer, provider-rank, and column
+		if (a.symBol.range.startLineNumBer < B.symBol.range.startLineNumBer) {
 			return -1;
-		} else if (a.symbol.range.startLineNumber > b.symbol.range.startLineNumber) {
+		} else if (a.symBol.range.startLineNumBer > B.symBol.range.startLineNumBer) {
 			return 1;
-		} else if ((providerRanks.get(a.provider)!) < (providerRanks.get(b.provider)!)) {
+		} else if ((providerRanks.get(a.provider)!) < (providerRanks.get(B.provider)!)) {
 			return -1;
-		} else if ((providerRanks.get(a.provider)!) > (providerRanks.get(b.provider)!)) {
+		} else if ((providerRanks.get(a.provider)!) > (providerRanks.get(B.provider)!)) {
 			return 1;
-		} else if (a.symbol.range.startColumn < b.symbol.range.startColumn) {
+		} else if (a.symBol.range.startColumn < B.symBol.range.startColumn) {
 			return -1;
-		} else if (a.symbol.range.startColumn > b.symbol.range.startColumn) {
+		} else if (a.symBol.range.startColumn > B.symBol.range.startColumn) {
 			return 1;
 		} else {
 			return 0;
@@ -92,17 +92,17 @@ registerLanguageCommand('_executeCodeLensProvider', function (accessor, args) {
 	}
 
 	const result: CodeLens[] = [];
-	const disposables = new DisposableStore();
+	const disposaBles = new DisposaBleStore();
 	return getCodeLensModel(model, CancellationToken.None).then(value => {
 
-		disposables.add(value);
+		disposaBles.add(value);
 		let resolve: Promise<any>[] = [];
 
 		for (const item of value.lenses) {
-			if (typeof itemResolveCount === 'undefined' || Boolean(item.symbol.command)) {
-				result.push(item.symbol);
+			if (typeof itemResolveCount === 'undefined' || Boolean(item.symBol.command)) {
+				result.push(item.symBol);
 			} else if (itemResolveCount-- > 0 && item.provider.resolveCodeLens) {
-				resolve.push(Promise.resolve(item.provider.resolveCodeLens(model, item.symbol, CancellationToken.None)).then(symbol => result.push(symbol || item.symbol)));
+				resolve.push(Promise.resolve(item.provider.resolveCodeLens(model, item.symBol, CancellationToken.None)).then(symBol => result.push(symBol || item.symBol)));
 			}
 		}
 
@@ -113,6 +113,6 @@ registerLanguageCommand('_executeCodeLensProvider', function (accessor, args) {
 	}).finally(() => {
 		// make sure to return results, then (on next tick)
 		// dispose the results
-		setTimeout(() => disposables.dispose(), 100);
+		setTimeout(() => disposaBles.dispose(), 100);
 	});
 });

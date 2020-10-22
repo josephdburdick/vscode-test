@@ -11,34 +11,34 @@ import { ITextModel } from 'vs/editor/common/model';
 export class CopyLinesCommand implements ICommand {
 
 	private readonly _selection: Selection;
-	private readonly _isCopyingDown: boolean;
+	private readonly _isCopyingDown: Boolean;
 
 	private _selectionDirection: SelectionDirection;
 	private _selectionId: string | null;
-	private _startLineNumberDelta: number;
-	private _endLineNumberDelta: number;
+	private _startLineNumBerDelta: numBer;
+	private _endLineNumBerDelta: numBer;
 
-	constructor(selection: Selection, isCopyingDown: boolean) {
+	constructor(selection: Selection, isCopyingDown: Boolean) {
 		this._selection = selection;
 		this._isCopyingDown = isCopyingDown;
 		this._selectionDirection = SelectionDirection.LTR;
 		this._selectionId = null;
-		this._startLineNumberDelta = 0;
-		this._endLineNumberDelta = 0;
+		this._startLineNumBerDelta = 0;
+		this._endLineNumBerDelta = 0;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
 		let s = this._selection;
 
-		this._startLineNumberDelta = 0;
-		this._endLineNumberDelta = 0;
-		if (s.startLineNumber < s.endLineNumber && s.endColumn === 1) {
-			this._endLineNumberDelta = 1;
-			s = s.setEndPosition(s.endLineNumber - 1, model.getLineMaxColumn(s.endLineNumber - 1));
+		this._startLineNumBerDelta = 0;
+		this._endLineNumBerDelta = 0;
+		if (s.startLineNumBer < s.endLineNumBer && s.endColumn === 1) {
+			this._endLineNumBerDelta = 1;
+			s = s.setEndPosition(s.endLineNumBer - 1, model.getLineMaxColumn(s.endLineNumBer - 1));
 		}
 
 		let sourceLines: string[] = [];
-		for (let i = s.startLineNumber; i <= s.endLineNumber; i++) {
+		for (let i = s.startLineNumBer; i <= s.endLineNumBer; i++) {
 			sourceLines.push(model.getLineContent(i));
 		}
 		const sourceText = sourceLines.join('\n');
@@ -46,41 +46,41 @@ export class CopyLinesCommand implements ICommand {
 		if (sourceText === '') {
 			// Duplicating empty line
 			if (this._isCopyingDown) {
-				this._startLineNumberDelta++;
-				this._endLineNumberDelta++;
+				this._startLineNumBerDelta++;
+				this._endLineNumBerDelta++;
 			}
 		}
 
 		if (!this._isCopyingDown) {
-			builder.addEditOperation(new Range(s.endLineNumber, model.getLineMaxColumn(s.endLineNumber), s.endLineNumber, model.getLineMaxColumn(s.endLineNumber)), '\n' + sourceText);
+			Builder.addEditOperation(new Range(s.endLineNumBer, model.getLineMaxColumn(s.endLineNumBer), s.endLineNumBer, model.getLineMaxColumn(s.endLineNumBer)), '\n' + sourceText);
 		} else {
-			builder.addEditOperation(new Range(s.startLineNumber, 1, s.startLineNumber, 1), sourceText + '\n');
+			Builder.addEditOperation(new Range(s.startLineNumBer, 1, s.startLineNumBer, 1), sourceText + '\n');
 		}
 
-		this._selectionId = builder.trackSelection(s);
+		this._selectionId = Builder.trackSelection(s);
 		this._selectionDirection = this._selection.getDirection();
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		let result = helper.getTrackedSelection(this._selectionId!);
 
-		if (this._startLineNumberDelta !== 0 || this._endLineNumberDelta !== 0) {
-			let startLineNumber = result.startLineNumber;
+		if (this._startLineNumBerDelta !== 0 || this._endLineNumBerDelta !== 0) {
+			let startLineNumBer = result.startLineNumBer;
 			let startColumn = result.startColumn;
-			let endLineNumber = result.endLineNumber;
+			let endLineNumBer = result.endLineNumBer;
 			let endColumn = result.endColumn;
 
-			if (this._startLineNumberDelta !== 0) {
-				startLineNumber = startLineNumber + this._startLineNumberDelta;
+			if (this._startLineNumBerDelta !== 0) {
+				startLineNumBer = startLineNumBer + this._startLineNumBerDelta;
 				startColumn = 1;
 			}
 
-			if (this._endLineNumberDelta !== 0) {
-				endLineNumber = endLineNumber + this._endLineNumberDelta;
+			if (this._endLineNumBerDelta !== 0) {
+				endLineNumBer = endLineNumBer + this._endLineNumBerDelta;
 				endColumn = 1;
 			}
 
-			result = Selection.createWithDirection(startLineNumber, startColumn, endLineNumber, endColumn, this._selectionDirection);
+			result = Selection.createWithDirection(startLineNumBer, startColumn, endLineNumBer, endColumn, this._selectionDirection);
 		}
 
 		return result;

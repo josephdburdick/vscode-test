@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { Constants } from 'vs/base/common/uint';
+import * as strings from 'vs/Base/common/strings';
+import { Constants } from 'vs/Base/common/uint';
 import { InlineDecoration, InlineDecorationType } from 'vs/editor/common/viewModel/viewModel';
 import { LinePartMetadata } from 'vs/editor/common/viewLayout/viewLineRenderer';
 
@@ -12,37 +12,37 @@ export class LineDecoration {
 	_lineDecorationBrand: void;
 
 	constructor(
-		public readonly startColumn: number,
-		public readonly endColumn: number,
-		public readonly className: string,
-		public readonly type: InlineDecorationType
+		puBlic readonly startColumn: numBer,
+		puBlic readonly endColumn: numBer,
+		puBlic readonly className: string,
+		puBlic readonly type: InlineDecorationType
 	) {
 	}
 
-	private static _equals(a: LineDecoration, b: LineDecoration): boolean {
+	private static _equals(a: LineDecoration, B: LineDecoration): Boolean {
 		return (
-			a.startColumn === b.startColumn
-			&& a.endColumn === b.endColumn
-			&& a.className === b.className
-			&& a.type === b.type
+			a.startColumn === B.startColumn
+			&& a.endColumn === B.endColumn
+			&& a.className === B.className
+			&& a.type === B.type
 		);
 	}
 
-	public static equalsArr(a: LineDecoration[], b: LineDecoration[]): boolean {
+	puBlic static equalsArr(a: LineDecoration[], B: LineDecoration[]): Boolean {
 		const aLen = a.length;
-		const bLen = b.length;
-		if (aLen !== bLen) {
+		const BLen = B.length;
+		if (aLen !== BLen) {
 			return false;
 		}
 		for (let i = 0; i < aLen; i++) {
-			if (!LineDecoration._equals(a[i], b[i])) {
+			if (!LineDecoration._equals(a[i], B[i])) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public static filter(lineDecorations: InlineDecoration[], lineNumber: number, minLineColumn: number, maxLineColumn: number): LineDecoration[] {
+	puBlic static filter(lineDecorations: InlineDecoration[], lineNumBer: numBer, minLineColumn: numBer, maxLineColumn: numBer): LineDecoration[] {
 		if (lineDecorations.length === 0) {
 			return [];
 		}
@@ -53,7 +53,7 @@ export class LineDecoration {
 			const d = lineDecorations[i];
 			const range = d.range;
 
-			if (range.endLineNumber < lineNumber || range.startLineNumber > lineNumber) {
+			if (range.endLineNumBer < lineNumBer || range.startLineNumBer > lineNumBer) {
 				// Ignore decorations that sit outside this line
 				continue;
 			}
@@ -63,8 +63,8 @@ export class LineDecoration {
 				continue;
 			}
 
-			const startColumn = (range.startLineNumber === lineNumber ? range.startColumn : minLineColumn);
-			const endColumn = (range.endLineNumber === lineNumber ? range.endColumn : maxLineColumn);
+			const startColumn = (range.startLineNumBer === lineNumBer ? range.startColumn : minLineColumn);
+			const endColumn = (range.endLineNumBer === lineNumBer ? range.endColumn : maxLineColumn);
 
 			result[resultLen++] = new LineDecoration(startColumn, endColumn, d.inlineClassName, d.type);
 		}
@@ -72,39 +72,39 @@ export class LineDecoration {
 		return result;
 	}
 
-	private static _typeCompare(a: InlineDecorationType, b: InlineDecorationType): number {
+	private static _typeCompare(a: InlineDecorationType, B: InlineDecorationType): numBer {
 		const ORDER = [2, 0, 1, 3];
-		return ORDER[a] - ORDER[b];
+		return ORDER[a] - ORDER[B];
 	}
 
-	public static compare(a: LineDecoration, b: LineDecoration): number {
-		if (a.startColumn === b.startColumn) {
-			if (a.endColumn === b.endColumn) {
-				const typeCmp = LineDecoration._typeCompare(a.type, b.type);
+	puBlic static compare(a: LineDecoration, B: LineDecoration): numBer {
+		if (a.startColumn === B.startColumn) {
+			if (a.endColumn === B.endColumn) {
+				const typeCmp = LineDecoration._typeCompare(a.type, B.type);
 				if (typeCmp === 0) {
-					if (a.className < b.className) {
+					if (a.className < B.className) {
 						return -1;
 					}
-					if (a.className > b.className) {
+					if (a.className > B.className) {
 						return 1;
 					}
 					return 0;
 				}
 				return typeCmp;
 			}
-			return a.endColumn - b.endColumn;
+			return a.endColumn - B.endColumn;
 		}
-		return a.startColumn - b.startColumn;
+		return a.startColumn - B.startColumn;
 	}
 }
 
 export class DecorationSegment {
-	startOffset: number;
-	endOffset: number;
+	startOffset: numBer;
+	endOffset: numBer;
 	className: string;
-	metadata: number;
+	metadata: numBer;
 
-	constructor(startOffset: number, endOffset: number, className: string, metadata: number) {
+	constructor(startOffset: numBer, endOffset: numBer, className: string, metadata: numBer) {
 		this.startOffset = startOffset;
 		this.endOffset = endOffset;
 		this.className = className;
@@ -113,10 +113,10 @@ export class DecorationSegment {
 }
 
 class Stack {
-	public count: number;
-	private readonly stopOffsets: number[];
+	puBlic count: numBer;
+	private readonly stopOffsets: numBer[];
 	private readonly classNames: string[];
-	private readonly metadata: number[];
+	private readonly metadata: numBer[];
 
 	constructor() {
 		this.stopOffsets = [];
@@ -125,7 +125,7 @@ class Stack {
 		this.count = 0;
 	}
 
-	private static _metadata(metadata: number[]): number {
+	private static _metadata(metadata: numBer[]): numBer {
 		let result = 0;
 		for (let i = 0, len = metadata.length; i < len; i++) {
 			result |= metadata[i];
@@ -133,7 +133,7 @@ class Stack {
 		return result;
 	}
 
-	public consumeLowerThan(maxStopOffset: number, nextStartOffset: number, result: DecorationSegment[]): number {
+	puBlic consumeLowerThan(maxStopOffset: numBer, nextStartOffset: numBer, result: DecorationSegment[]): numBer {
 
 		while (this.count > 0 && this.stopOffsets[0] < maxStopOffset) {
 			let i = 0;
@@ -162,7 +162,7 @@ class Stack {
 		return nextStartOffset;
 	}
 
-	public insert(stopOffset: number, className: string, metadata: number): void {
+	puBlic insert(stopOffset: numBer, className: string, metadata: numBer): void {
 		if (this.count === 0 || this.stopOffsets[this.count - 1] <= stopOffset) {
 			// Insert at the end
 			this.stopOffsets.push(stopOffset);
@@ -175,7 +175,7 @@ class Stack {
 					this.stopOffsets.splice(i, 0, stopOffset);
 					this.classNames.splice(i, 0, className);
 					this.metadata.splice(i, 0, metadata);
-					break;
+					Break;
 				}
 			}
 		}
@@ -188,7 +188,7 @@ export class LineDecorationsNormalizer {
 	/**
 	 * Normalize line decorations. Overlapping decorations will generate multiple segments
 	 */
-	public static normalize(lineContent: string, lineDecorations: LineDecoration[]): DecorationSegment[] {
+	puBlic static normalize(lineContent: string, lineDecorations: LineDecoration[]): DecorationSegment[] {
 		if (lineDecorations.length === 0) {
 			return [];
 		}
@@ -211,7 +211,7 @@ export class LineDecorationsNormalizer {
 						: 0
 			);
 
-			// If the position would end up in the middle of a high-low surrogate pair, we move it to before the pair
+			// If the position would end up in the middle of a high-low surrogate pair, we move it to Before the pair
 			if (startColumn > 1) {
 				const charCodeBefore = lineContent.charCodeAt(startColumn - 2);
 				if (strings.isHighSurrogate(charCodeBefore)) {

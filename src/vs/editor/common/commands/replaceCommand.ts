@@ -12,25 +12,25 @@ export class ReplaceCommand implements ICommand {
 
 	private readonly _range: Range;
 	private readonly _text: string;
-	public readonly insertsAutoWhitespace: boolean;
+	puBlic readonly insertsAutoWhitespace: Boolean;
 
-	constructor(range: Range, text: string, insertsAutoWhitespace: boolean = false) {
+	constructor(range: Range, text: string, insertsAutoWhitespace: Boolean = false) {
 		this._range = range;
 		this._text = text;
 		this.insertsAutoWhitespace = insertsAutoWhitespace;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._range, this._text);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._range, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		let inverseEditOperations = helper.getInverseEditOperations();
 		let srcRange = inverseEditOperations[0].range;
 		return new Selection(
-			srcRange.endLineNumber,
+			srcRange.endLineNumBer,
 			srcRange.endColumn,
-			srcRange.endLineNumber,
+			srcRange.endLineNumBer,
 			srcRange.endColumn
 		);
 	}
@@ -46,14 +46,14 @@ export class ReplaceCommandThatSelectsText implements ICommand {
 		this._text = text;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._range, this._text);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._range, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		const inverseEditOperations = helper.getInverseEditOperations();
 		const srcRange = inverseEditOperations[0].range;
-		return new Selection(srcRange.startLineNumber, srcRange.startColumn, srcRange.endLineNumber, srcRange.endColumn);
+		return new Selection(srcRange.startLineNumBer, srcRange.startColumn, srcRange.endLineNumBer, srcRange.endColumn);
 	}
 }
 
@@ -61,25 +61,25 @@ export class ReplaceCommandWithoutChangingPosition implements ICommand {
 
 	private readonly _range: Range;
 	private readonly _text: string;
-	public readonly insertsAutoWhitespace: boolean;
+	puBlic readonly insertsAutoWhitespace: Boolean;
 
-	constructor(range: Range, text: string, insertsAutoWhitespace: boolean = false) {
+	constructor(range: Range, text: string, insertsAutoWhitespace: Boolean = false) {
 		this._range = range;
 		this._text = text;
 		this.insertsAutoWhitespace = insertsAutoWhitespace;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._range, this._text);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._range, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		let inverseEditOperations = helper.getInverseEditOperations();
 		let srcRange = inverseEditOperations[0].range;
 		return new Selection(
-			srcRange.startLineNumber,
+			srcRange.startLineNumBer,
 			srcRange.startColumn,
-			srcRange.startLineNumber,
+			srcRange.startLineNumBer,
 			srcRange.startColumn
 		);
 	}
@@ -89,29 +89,29 @@ export class ReplaceCommandWithOffsetCursorState implements ICommand {
 
 	private readonly _range: Range;
 	private readonly _text: string;
-	private readonly _columnDeltaOffset: number;
-	private readonly _lineNumberDeltaOffset: number;
-	public readonly insertsAutoWhitespace: boolean;
+	private readonly _columnDeltaOffset: numBer;
+	private readonly _lineNumBerDeltaOffset: numBer;
+	puBlic readonly insertsAutoWhitespace: Boolean;
 
-	constructor(range: Range, text: string, lineNumberDeltaOffset: number, columnDeltaOffset: number, insertsAutoWhitespace: boolean = false) {
+	constructor(range: Range, text: string, lineNumBerDeltaOffset: numBer, columnDeltaOffset: numBer, insertsAutoWhitespace: Boolean = false) {
 		this._range = range;
 		this._text = text;
 		this._columnDeltaOffset = columnDeltaOffset;
-		this._lineNumberDeltaOffset = lineNumberDeltaOffset;
+		this._lineNumBerDeltaOffset = lineNumBerDeltaOffset;
 		this.insertsAutoWhitespace = insertsAutoWhitespace;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._range, this._text);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._range, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		let inverseEditOperations = helper.getInverseEditOperations();
 		let srcRange = inverseEditOperations[0].range;
 		return new Selection(
-			srcRange.endLineNumber + this._lineNumberDeltaOffset,
+			srcRange.endLineNumBer + this._lineNumBerDeltaOffset,
 			srcRange.endColumn + this._columnDeltaOffset,
-			srcRange.endLineNumber + this._lineNumberDeltaOffset,
+			srcRange.endLineNumBer + this._lineNumBerDeltaOffset,
 			srcRange.endColumn + this._columnDeltaOffset
 		);
 	}
@@ -122,10 +122,10 @@ export class ReplaceCommandThatPreservesSelection implements ICommand {
 	private readonly _range: Range;
 	private readonly _text: string;
 	private readonly _initialSelection: Selection;
-	private readonly _forceMoveMarkers: boolean;
+	private readonly _forceMoveMarkers: Boolean;
 	private _selectionId: string | null;
 
-	constructor(editRange: Range, text: string, initialSelection: Selection, forceMoveMarkers: boolean = false) {
+	constructor(editRange: Range, text: string, initialSelection: Selection, forceMoveMarkers: Boolean = false) {
 		this._range = editRange;
 		this._text = text;
 		this._initialSelection = initialSelection;
@@ -133,12 +133,12 @@ export class ReplaceCommandThatPreservesSelection implements ICommand {
 		this._selectionId = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._range, this._text, this._forceMoveMarkers);
-		this._selectionId = builder.trackSelection(this._initialSelection);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._range, this._text, this._forceMoveMarkers);
+		this._selectionId = Builder.trackSelection(this._initialSelection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		return helper.getTrackedSelection(this._selectionId!);
 	}
 }

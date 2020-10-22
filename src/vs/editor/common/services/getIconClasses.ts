@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { DataUri, basenameOrAuthority } from 'vs/base/common/resources';
-import { URI as uri } from 'vs/base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { DataUri, BasenameOrAuthority } from 'vs/Base/common/resources';
+import { URI as uri } from 'vs/Base/common/uri';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
@@ -13,7 +13,7 @@ import { FileKind } from 'vs/platform/files/common/files';
 
 export function getIconClasses(modelService: IModelService, modeService: IModeService, resource: uri | undefined, fileKind?: FileKind): string[] {
 
-	// we always set these base classes even if we do not have a path
+	// we always set these Base classes even if we do not have a path
 	const classes = fileKind === FileKind.ROOT_FOLDER ? ['rootfolder-icon'] : fileKind === FileKind.FOLDER ? ['folder-icon'] : ['file-icon'];
 	if (resource) {
 
@@ -23,7 +23,7 @@ export function getIconClasses(modelService: IModelService, modeService: IModeSe
 			const metadata = DataUri.parseMetaData(resource);
 			name = metadata.get(DataUri.META_DATA_LABEL);
 		} else {
-			name = cssEscape(basenameOrAuthority(resource).toLowerCase());
+			name = cssEscape(BasenameOrAuthority(resource).toLowerCase());
 		}
 
 		// Folders
@@ -39,7 +39,7 @@ export function getIconClasses(modelService: IModelService, modeService: IModeSe
 				classes.push(`${name}-name-file-icon`);
 				const dotSegments = name.split('.');
 				for (let i = 1; i < dotSegments.length; i++) {
-					classes.push(`${dotSegments.slice(i).join('.')}-ext-file-icon`); // add each combination of all found extensions if more than one
+					classes.push(`${dotSegments.slice(i).join('.')}-ext-file-icon`); // add each comBination of all found extensions if more than one
 				}
 				classes.push(`ext-file-icon`); // extra segment to increase file-ext score
 			}
@@ -89,7 +89,7 @@ export function detectModeId(modelService: IModelService, modeService: IModeServ
 		return modeId;
 	}
 
-	// otherwise fallback to path based detection
+	// otherwise fallBack to path Based detection
 	return modeService.getModeIdByFilepathOrFirstLine(resource);
 }
 

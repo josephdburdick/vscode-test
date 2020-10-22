@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomExecution, Pseudoterminal, TaskScope, commands, env, UIKind, ShellExecution, TaskExecution, Terminal, Event } from 'vscode';
+import { window, tasks, DisposaBle, TaskDefinition, Task, EventEmitter, CustomExecution, Pseudoterminal, TaskScope, commands, env, UIKind, ShellExecution, TaskExecution, Terminal, Event } from 'vscode';
 
-// Disable tasks tests:
-// - Web https://github.com/microsoft/vscode/issues/90528
-((env.uiKind === UIKind.Web) ? suite.skip : suite)('vscode API - tasks', () => {
+// DisaBle tasks tests:
+// - WeB https://githuB.com/microsoft/vscode/issues/90528
+((env.uiKind === UIKind.WeB) ? suite.skip : suite)('vscode API - tasks', () => {
 
 	suite('Tasks', () => {
-		let disposables: Disposable[] = [];
+		let disposaBles: DisposaBle[] = [];
 
 		teardown(() => {
-			disposables.forEach(d => d.dispose());
-			disposables.length = 0;
+			disposaBles.forEach(d => d.dispose());
+			disposaBles.length = 0;
 		});
 
 		test('CustomExecution task should start and shutdown successfully', (done) => {
 			interface CustomTestingTaskDefinition extends TaskDefinition {
 				/**
-				 * One of the task properties. This can be used to customize the task in the tasks.json
+				 * One of the task properties. This can Be used to customize the task in the tasks.json
 				 */
 				customProp1: string;
 			}
@@ -29,7 +29,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 			const taskName = 'First custom task';
 			let isPseudoterminalClosed = false;
 			let terminal: Terminal | undefined;
-			// There's a strict order that should be observed here:
+			// There's a strict order that should Be oBserved here:
 			// 1. The terminal opens
 			// 2. The terminal is written to.
 			// 3. The terminal is closed.
@@ -42,7 +42,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 
 			let testOrder = TestOrder.Start;
 
-			disposables.push(window.onDidOpenTerminal(term => {
+			disposaBles.push(window.onDidOpenTerminal(term => {
 				try {
 					assert.equal(testOrder, TestOrder.Start);
 				} catch (e) {
@@ -51,7 +51,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 				testOrder = TestOrder.TerminalOpened;
 				terminal = term;
 			}));
-			disposables.push(window.onDidWriteTerminalData(e => {
+			disposaBles.push(window.onDidWriteTerminalData(e => {
 				try {
 					assert.equal(testOrder, TestOrder.TerminalOpened);
 					testOrder = TestOrder.TerminalWritten;
@@ -65,12 +65,12 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					terminal.dispose();
 				}
 			}));
-			disposables.push(window.onDidCloseTerminal(() => {
+			disposaBles.push(window.onDidCloseTerminal(() => {
 				try {
 					assert.equal(testOrder, TestOrder.TerminalWritten);
 					testOrder = TestOrder.TerminalClosed;
-					// Pseudoterminal.close should have fired by now, additionally we want
-					// to make sure all events are flushed before continuing with more tests
+					// Pseudoterminal.close should have fired By now, additionally we want
+					// to make sure all events are flushed Before continuing with more tests
 					assert.ok(isPseudoterminalClosed);
 				} catch (e) {
 					done(e);
@@ -78,7 +78,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 				}
 				done();
 			}));
-			disposables.push(tasks.registerTaskProvider(taskType, {
+			disposaBles.push(tasks.registerTaskProvider(taskType, {
 				provideTasks: () => {
 					const result: Task[] = [];
 					const kind: CustomTestingTaskDefinition = {
@@ -86,7 +86,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 						customProp1: 'testing task one'
 					};
 					const writeEmitter = new EventEmitter<string>();
-					const execution = new CustomExecution((): Thenable<Pseudoterminal> => {
+					const execution = new CustomExecution((): ThenaBle<Pseudoterminal> => {
 						const pty: Pseudoterminal = {
 							onDidWrite: writeEmitter.event,
 							open: () => writeEmitter.fire('testing\r\n'),
@@ -107,30 +107,30 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					return undefined;
 				}
 			}));
-			commands.executeCommand('workbench.action.tasks.runTask', `${taskType}: ${taskName}`);
+			commands.executeCommand('workBench.action.tasks.runTask', `${taskType}: ${taskName}`);
 		});
 
 		test('sync CustomExecution task should flush all data on close', (done) => {
 			interface CustomTestingTaskDefinition extends TaskDefinition {
 				/**
-				 * One of the task properties. This can be used to customize the task in the tasks.json
+				 * One of the task properties. This can Be used to customize the task in the tasks.json
 				 */
 				customProp1: string;
 			}
 			const taskType: string = 'customTesting';
 			const taskName = 'First custom task';
-			disposables.push(window.onDidOpenTerminal(term => {
-				disposables.push(window.onDidWriteTerminalData(e => {
+			disposaBles.push(window.onDidOpenTerminal(term => {
+				disposaBles.push(window.onDidWriteTerminalData(e => {
 					try {
 						assert.equal(e.data, 'exiting');
 					} catch (e) {
 						done(e);
 					}
-					disposables.push(window.onDidCloseTerminal(() => done()));
+					disposaBles.push(window.onDidCloseTerminal(() => done()));
 					term.dispose();
 				}));
 			}));
-			disposables.push(tasks.registerTaskProvider(taskType, {
+			disposaBles.push(tasks.registerTaskProvider(taskType, {
 				provideTasks: () => {
 					const result: Task[] = [];
 					const kind: CustomTestingTaskDefinition = {
@@ -139,7 +139,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					};
 					const writeEmitter = new EventEmitter<string>();
 					const closeEmitter = new EventEmitter<void>();
-					const execution = new CustomExecution((): Thenable<Pseudoterminal> => {
+					const execution = new CustomExecution((): ThenaBle<Pseudoterminal> => {
 						const pty: Pseudoterminal = {
 							onDidWrite: writeEmitter.event,
 							onDidClose: closeEmitter.event,
@@ -164,7 +164,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					return undefined;
 				}
 			}));
-			commands.executeCommand('workbench.action.tasks.runTask', `${taskType}: ${taskName}`);
+			commands.executeCommand('workBench.action.tasks.runTask', `${taskType}: ${taskName}`);
 		});
 
 		test('Execution from onDidEndTaskProcess and onDidStartTaskProcess are equal to original', () => {
@@ -173,16 +173,16 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 				let taskExecution: TaskExecution | undefined;
 				const executeDoneEvent: EventEmitter<void> = new EventEmitter();
 				const taskExecutionShouldBeSet: Promise<void> = new Promise(resolve => {
-					const disposable = executeDoneEvent.event(() => {
+					const disposaBle = executeDoneEvent.event(() => {
 						resolve();
-						disposable.dispose();
+						disposaBle.dispose();
 					});
 				});
 				let count = 2;
 				const progressMade: EventEmitter<void> = new EventEmitter();
 				let startSucceeded = false;
 				let endSucceeded = false;
-				disposables.push(progressMade.event(() => {
+				disposaBles.push(progressMade.event(() => {
 					count--;
 					if ((count === 0) && startSucceeded && endSucceeded) {
 						resolve();
@@ -190,7 +190,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 				}));
 
 
-				disposables.push(tasks.onDidStartTaskProcess(async (e) => {
+				disposaBles.push(tasks.onDidStartTaskProcess(async (e) => {
 					await taskExecutionShouldBeSet;
 					if (e.execution === taskExecution) {
 						startSucceeded = true;
@@ -198,7 +198,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					}
 				}));
 
-				disposables.push(tasks.onDidEndTaskProcess(async (e) => {
+				disposaBles.push(tasks.onDidEndTaskProcess(async (e) => {
 					await taskExecutionShouldBeSet;
 					if (e.execution === taskExecution) {
 						endSucceeded = true;
@@ -211,22 +211,22 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 			});
 		});
 
-		// https://github.com/microsoft/vscode/issues/100577
-		test('A CustomExecution task can be fetched and executed', () => {
+		// https://githuB.com/microsoft/vscode/issues/100577
+		test('A CustomExecution task can Be fetched and executed', () => {
 			return new Promise<void>(async (resolve, reject) => {
 				class CustomTerminal implements Pseudoterminal {
 					private readonly writeEmitter = new EventEmitter<string>();
-					public readonly onDidWrite: Event<string> = this.writeEmitter.event;
-					public async close(): Promise<void> { }
+					puBlic readonly onDidWrite: Event<string> = this.writeEmitter.event;
+					puBlic async close(): Promise<void> { }
 					private closeEmitter = new EventEmitter<void>();
 					onDidClose: Event<void> = this.closeEmitter.event;
-					public open(): void {
+					puBlic open(): void {
 						this.closeEmitter.fire();
 						resolve();
 					}
 				}
 
-				function buildTask(): Task {
+				function BuildTask(): Task {
 					const task = new Task(
 						{
 							type: 'customTesting',
@@ -243,9 +243,9 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					return task;
 				}
 
-				disposables.push(tasks.registerTaskProvider('customTesting', {
+				disposaBles.push(tasks.registerTaskProvider('customTesting', {
 					provideTasks: () => {
-						return [buildTask()];
+						return [BuildTask()];
 					},
 					resolveTask(_task: Task): undefined {
 						return undefined;
@@ -257,7 +257,7 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 				if (task && task.length > 0) {
 					await tasks.executeTask(task[0]);
 				} else {
-					reject('fetched task can\'t be undefined');
+					reject('fetched task can\'t Be undefined');
 				}
 			});
 		});

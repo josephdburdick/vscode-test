@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWebviewService } from 'vs/workbench/contrib/webview/browser/webview';
-import { WebviewService } from './webviewService';
+import { IWeBviewService } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { WeBviewService } from './weBviewService';
 
-registerSingleton(IWebviewService, WebviewService, true);
+registerSingleton(IWeBviewService, WeBviewService, true);

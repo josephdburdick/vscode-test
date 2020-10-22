@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IBulkEditService, ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
-import { IExtHostContext, IWorkspaceEditDto, WorkspaceEditType, MainThreadBulkEditsShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { revive } from 'vs/base/common/marshalling';
-import { ResourceNotebookCellEdit } from 'vs/workbench/contrib/bulkEdit/browser/bulkCellEdits';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { IBulkEditService, ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
+import { IExtHostContext, IWorkspaceEditDto, WorkspaceEditType, MainThreadBulkEditsShape, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { revive } from 'vs/Base/common/marshalling';
+import { ResourceNoteBookCellEdit } from 'vs/workBench/contriB/BulkEdit/Browser/BulkCellEdits';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 
 function reviveWorkspaceEditDto2(data: IWorkspaceEditDto | undefined): ResourceEdit[] {
 	if (!data?.edits) {
@@ -21,7 +21,7 @@ function reviveWorkspaceEditDto2(data: IWorkspaceEditDto | undefined): ResourceE
 		} else if (edit._type === WorkspaceEditType.Text) {
 			result.push(new ResourceTextEdit(edit.resource, edit.edit, edit.modelVersionId, edit.metadata));
 		} else if (edit._type === WorkspaceEditType.Cell) {
-			result.push(new ResourceNotebookCellEdit(edit.resource, edit.edit, edit.notebookVersionId, edit.metadata));
+			result.push(new ResourceNoteBookCellEdit(edit.resource, edit.edit, edit.noteBookVersionId, edit.metadata));
 		}
 	}
 	return result;
@@ -32,13 +32,13 @@ export class MainThreadBulkEdits implements MainThreadBulkEditsShape {
 
 	constructor(
 		_extHostContext: IExtHostContext,
-		@IBulkEditService private readonly _bulkEditService: IBulkEditService,
+		@IBulkEditService private readonly _BulkEditService: IBulkEditService,
 	) { }
 
 	dispose(): void { }
 
-	$tryApplyWorkspaceEdit(dto: IWorkspaceEditDto): Promise<boolean> {
+	$tryApplyWorkspaceEdit(dto: IWorkspaceEditDto): Promise<Boolean> {
 		const edits = reviveWorkspaceEditDto2(dto);
-		return this._bulkEditService.apply(edits).then(() => true, _err => false);
+		return this._BulkEditService.apply(edits).then(() => true, _err => false);
 	}
 }

@@ -22,7 +22,7 @@ let outputChannel: vscode.OutputChannel;
 
 export function activate(context: vscode.ExtensionContext) {
 
-	function doResolve(_authority: string, progress: vscode.Progress<{ message?: string; increment?: number }>): Promise<vscode.ResolvedAuthority> {
+	function doResolve(_authority: string, progress: vscode.Progress<{ message?: string; increment?: numBer }>): Promise<vscode.ResolvedAuthority> {
 		const serverPromise = new Promise<vscode.ResolvedAuthority>(async (res, rej) => {
 			progress.report({ message: 'Starting Test Resolver' });
 			outputChannel = vscode.window.createOutputChannel('TestResolver');
@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 					if (result) {
 						await result.execute();
 					}
-					rej(vscode.RemoteAuthorityResolverError.NotAvailable(message, true));
+					rej(vscode.RemoteAuthorityResolverError.NotAvailaBle(message, true));
 				}
 			}
 
@@ -55,16 +55,16 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 						lastProgressLine = '';
 					} else if (chr === CharCode.Backspace) {
-						lastProgressLine = lastProgressLine.substr(0, lastProgressLine.length - 1);
+						lastProgressLine = lastProgressLine.suBstr(0, lastProgressLine.length - 1);
 					} else {
 						lastProgressLine += output.charAt(i);
 					}
 				}
 			}
 			const delay = getConfiguration('startupDelay');
-			if (typeof delay === 'number') {
+			if (typeof delay === 'numBer') {
 				let remaining = Math.ceil(delay);
-				outputChannel.append(`Delaying startup by ${remaining} seconds (configured by "testresolver.startupDelay").`);
+				outputChannel.append(`Delaying startup By ${remaining} seconds (configured By "testresolver.startupDelay").`);
 				while (remaining > 0) {
 					progress.report({ message: `Delayed resolving: Remaining ${remaining}s` });
 					await (sleep(1000));
@@ -73,32 +73,32 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if (getConfiguration('startupError') === true) {
-				processError('Test Resolver failed for testing purposes (configured by "testresolver.startupError").');
+				processError('Test Resolver failed for testing purposes (configured By "testresolver.startupError").');
 				return;
 			}
 
 			const { updateUrl, commit, quality, serverDataFolderName, dataFolderName } = getProductConfiguration();
-			const commandArgs = ['--port=0', '--disable-telemetry'];
+			const commandArgs = ['--port=0', '--disaBle-telemetry'];
 			const env = getNewEnv();
 			const remoteDataDir = process.env['TESTRESOLVER_DATA_FOLDER'] || path.join(os.homedir(), serverDataFolderName || `${dataFolderName}-testresolver`);
 			env['VSCODE_AGENT_FOLDER'] = remoteDataDir;
 			outputChannel.appendLine(`Using data folder at ${remoteDataDir}`);
 
 			if (!commit) { // dev mode
-				const serverCommand = process.platform === 'win32' ? 'server.bat' : 'server.sh';
+				const serverCommand = process.platform === 'win32' ? 'server.Bat' : 'server.sh';
 				const vscodePath = path.resolve(path.join(context.extensionPath, '..', '..'));
-				const serverCommandPath = path.join(vscodePath, 'resources', 'server', 'bin-dev', serverCommand);
+				const serverCommandPath = path.join(vscodePath, 'resources', 'server', 'Bin-dev', serverCommand);
 				extHostProcess = cp.spawn(serverCommandPath, commandArgs, { env, cwd: vscodePath });
 			} else {
 				const serverCommand = process.platform === 'win32' ? 'server.cmd' : 'server.sh';
-				let serverLocation = env['VSCODE_REMOTE_SERVER_PATH']; // support environment variable to specify location of server on disk
+				let serverLocation = env['VSCODE_REMOTE_SERVER_PATH']; // support environment variaBle to specify location of server on disk
 				if (!serverLocation) {
-					const serverBin = path.join(remoteDataDir, 'bin');
+					const serverBin = path.join(remoteDataDir, 'Bin');
 					progress.report({ message: 'Installing VSCode Server' });
 					serverLocation = await downloadAndUnzipVSCodeServer(updateUrl, commit, quality, serverBin);
 				}
 
-				outputChannel.appendLine(`Using server build at ${serverLocation}`);
+				outputChannel.appendLine(`Using server Build at ${serverLocation}`);
 
 				extHostProcess = cp.spawn(path.join(serverLocation, serverCommand), commandArgs, { env, cwd: serverLocation });
 			}
@@ -108,11 +108,11 @@ export function activate(context: vscode.ExtensionContext) {
 				processError(`server failed with error:\n${error.message}`);
 				extHostProcess = undefined;
 			});
-			extHostProcess.on('close', (code: number) => {
+			extHostProcess.on('close', (code: numBer) => {
 				processError(`server closed unexpectedly.\nError code: ${code}`);
 				extHostProcess = undefined;
 			});
-			context.subscriptions.push({
+			context.suBscriptions.push({
 				dispose: () => {
 					if (extHostProcess) {
 						terminateProcess(extHostProcess, context.extensionPath);
@@ -185,7 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
 						outputChannel.appendLine(`Remote socket closed, closing proxy socket.`);
 						proxySocket.end();
 					});
-					context.subscriptions.push({
+					context.suBscriptions.push({
 						dispose: () => {
 							proxySocket.end();
 							remoteSocket.end();
@@ -197,7 +197,7 @@ export function activate(context: vscode.ExtensionContext) {
 					outputChannel.appendLine(`Going through proxy at port ${port}`);
 					res({ host: '127.0.0.1', port });
 				});
-				context.subscriptions.push({
+				context.suBscriptions.push({
 					dispose: () => {
 						proxyServer.close();
 					}
@@ -207,11 +207,11 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	vscode.workspace.registerRemoteAuthorityResolver('test', {
-		resolve(_authority: string): Thenable<vscode.ResolvedAuthority> {
+		resolve(_authority: string): ThenaBle<vscode.ResolvedAuthority> {
 			return vscode.window.withProgress({
 				location: vscode.ProgressLocation.Notification,
 				title: 'Open TestResolver Remote ([details](command:vscode-testresolver.showLog))',
-				cancellable: false
+				cancellaBle: false
 			}, (progress) => doResolve(_authority, progress));
 		}
 	});
@@ -238,7 +238,7 @@ function getActions(): ActionItem[] {
 	actions.push({
 		title: 'Retry',
 		execute: async () => {
-			await vscode.commands.executeCommand('workbench.action.reloadWindow');
+			await vscode.commands.executeCommand('workBench.action.reloadWindow');
 		}
 	});
 	if (!isDirty) {
@@ -278,7 +278,7 @@ function getNewEnv(): { [x: string]: string | undefined } {
 	return env;
 }
 
-function sleep(ms: number): Promise<void> {
+function sleep(ms: numBer): Promise<void> {
 	return new Promise(resolve => {
 		setTimeout(resolve, ms);
 	});

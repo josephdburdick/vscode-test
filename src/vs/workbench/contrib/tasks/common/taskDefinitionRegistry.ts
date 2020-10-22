@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
-import { IStringDictionary } from 'vs/base/common/collections';
-import * as Types from 'vs/base/common/types';
-import * as Objects from 'vs/base/common/objects';
+import { IJSONSchema, IJSONSchemaMap } from 'vs/Base/common/jsonSchema';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import * as Types from 'vs/Base/common/types';
+import * as OBjects from 'vs/Base/common/oBjects';
 
-import { ExtensionsRegistry, ExtensionMessageCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { ExtensionsRegistry, ExtensionMessageCollector } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 
-import * as Tasks from 'vs/workbench/contrib/tasks/common/tasks';
+import * as Tasks from 'vs/workBench/contriB/tasks/common/tasks';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 
 
 const taskDefinitionSchema: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	additionalProperties: false,
 	properties: {
 		type: {
@@ -31,7 +31,7 @@ const taskDefinitionSchema: IJSONSchema = {
 			}
 		},
 		properties: {
-			type: 'object',
+			type: 'oBject',
 			description: nls.localize('TaskDefinition.properties', 'Additional properties of the task type'),
 			additionalProperties: {
 				$ref: 'http://json-schema.org/draft-07/schema#'
@@ -39,7 +39,7 @@ const taskDefinitionSchema: IJSONSchema = {
 		},
 		when: {
 			type: 'string',
-			markdownDescription: nls.localize('TaskDefinition.when', 'Condition which must be true to enable this type of task. Consider using `shellExecutionSupported`, `processExecutionSupported`, and `customExecutionSupported` as appropriate for this task definition.'),
+			markdownDescription: nls.localize('TaskDefinition.when', 'Condition which must Be true to enaBle this type of task. Consider using `shellExecutionSupported`, `processExecutionSupported`, and `customExecutionSupported` as appropriate for this task definition.'),
 			default: ''
 		}
 	}
@@ -73,7 +73,7 @@ namespace Configuration {
 		return {
 			extensionId: extensionId.value,
 			taskType, required: required,
-			properties: value.properties ? Objects.deepClone(value.properties) : {},
+			properties: value.properties ? OBjects.deepClone(value.properties) : {},
 			when: value.when ? ContextKeyExpr.deserialize(value.when) : undefined
 		};
 	}
@@ -83,7 +83,7 @@ namespace Configuration {
 const taskDefinitionsExtPoint = ExtensionsRegistry.registerExtensionPoint<Configuration.TaskDefinition[]>({
 	extensionPoint: 'taskDefinitions',
 	jsonSchema: {
-		description: nls.localize('TaskDefinitionExtPoint', 'Contributes task kinds'),
+		description: nls.localize('TaskDefinitionExtPoint', 'ContriButes task kinds'),
 		type: 'array',
 		items: taskDefinitionSchema
 	}
@@ -104,7 +104,7 @@ class TaskDefinitionRegistryImpl implements ITaskDefinitionRegistry {
 	private _schema: IJSONSchema | undefined;
 
 	constructor() {
-		this.taskTypes = Object.create(null);
+		this.taskTypes = OBject.create(null);
 		this.readyPromise = new Promise<void>((resolve, reject) => {
 			taskDefinitionsExtPoint.setHandler((extensions, delta) => {
 				try {
@@ -132,33 +132,33 @@ class TaskDefinitionRegistryImpl implements ITaskDefinitionRegistry {
 		});
 	}
 
-	public onReady(): Promise<void> {
+	puBlic onReady(): Promise<void> {
 		return this.readyPromise;
 	}
 
-	public get(key: string): Tasks.TaskDefinition {
+	puBlic get(key: string): Tasks.TaskDefinition {
 		return this.taskTypes[key];
 	}
 
-	public all(): Tasks.TaskDefinition[] {
-		return Object.keys(this.taskTypes).map(key => this.taskTypes[key]);
+	puBlic all(): Tasks.TaskDefinition[] {
+		return OBject.keys(this.taskTypes).map(key => this.taskTypes[key]);
 	}
 
-	public getJsonSchema(): IJSONSchema {
+	puBlic getJsonSchema(): IJSONSchema {
 		if (this._schema === undefined) {
 			let schemas: IJSONSchema[] = [];
 			for (let definition of this.all()) {
 				let schema: IJSONSchema = {
-					type: 'object',
+					type: 'oBject',
 					additionalProperties: false
 				};
 				if (definition.required.length > 0) {
 					schema.required = definition.required.slice(0);
 				}
 				if (definition.properties !== undefined) {
-					schema.properties = Objects.deepClone(definition.properties);
+					schema.properties = OBjects.deepClone(definition.properties);
 				} else {
-					schema.properties = Object.create(null);
+					schema.properties = OBject.create(null);
 				}
 				schema.properties!.type = {
 					type: 'string',

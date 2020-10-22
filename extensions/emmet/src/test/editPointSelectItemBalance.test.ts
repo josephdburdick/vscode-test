@@ -9,28 +9,28 @@ import { Selection } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
 import { fetchEditPoint } from '../editPoint';
 import { fetchSelectItem } from '../selectItem';
-import { balanceOut, balanceIn } from '../balance';
+import { BalanceOut, BalanceIn } from '../Balance';
 
 suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 	teardown(closeAllEditors);
 
 	const cssContents = `
-.boo {
+.Boo {
 	margin: 20px 10px;
-	background-image: url('tryme.png');
+	Background-image: url('tryme.png');
 }
 
-.boo .hoo {
+.Boo .hoo {
 	margin: 10px;
 }
 `;
 
 	const scssContents = `
-.boo {
+.Boo {
 	margin: 20px 10px;
-	background-image: url('tryme.png');
+	Background-image: url('tryme.png');
 
-	.boo .hoo {
+	.Boo .hoo {
 		margin: 10px;
 	}
 }
@@ -44,7 +44,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title></title>
 </head>
-<body>
+<Body>
 	<div>
 \t\t
 	</div>
@@ -54,7 +54,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 			<li class="item2">Item 2</li>
 		</ul>
 	</div>
-</body>
+</Body>
 </html>
 `;
 
@@ -62,7 +62,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlContents, '.html', (editor, _) => {
 			editor.selections = [new Selection(1, 5, 1, 5)];
 
-			let expectedNextEditPoints: [number, number][] = [[4, 16], [6, 8], [10, 2], [20, 0]];
+			let expectedNextEditPoints: [numBer, numBer][] = [[4, 16], [6, 8], [10, 2], [20, 0]];
 			expectedNextEditPoints.forEach(([line, col]) => {
 				fetchEditPoint('next');
 				testSelection(editor.selection, col, line);
@@ -82,7 +82,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlContents, '.html', (editor, _) => {
 			editor.selections = [new Selection(2, 2, 2, 2)];
 
-			let expectedNextItemPoints: [number, number, number][] = [
+			let expectedNextItemPoints: [numBer, numBer, numBer][] = [
 				[2, 1, 5],   // html
 				[2, 6, 15],  // lang="en"
 				[2, 12, 14], // en
@@ -113,7 +113,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		});
 	});
 
-	test('Emmet Select Next/Prev item at boundary', function(): any {
+	test('Emmet Select Next/Prev item at Boundary', function(): any {
 		return withRandomFileEditor(htmlContents, '.html', (editor, _) => {
 			editor.selections = [new Selection(4, 1, 4, 1)];
 
@@ -141,7 +141,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(templateContents, '.html', (editor, _) => {
 			editor.selections = [new Selection(2, 2, 2, 2)];
 
-			let expectedNextItemPoints: [number, number, number][] = [
+			let expectedNextItemPoints: [numBer, numBer, numBer][] = [
 				[2, 2, 5],  // div
 				[2, 6, 20], // class="header"
 				[2, 13, 19], // header
@@ -170,15 +170,15 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(cssContents, '.css', (editor, _) => {
 			editor.selections = [new Selection(0, 0, 0, 0)];
 
-			let expectedNextItemPoints: [number, number, number][] = [
-				[1, 0, 4],   // .boo
+			let expectedNextItemPoints: [numBer, numBer, numBer][] = [
+				[1, 0, 4],   // .Boo
 				[2, 1, 19],  // margin: 20px 10px;
 				[2, 9, 18],   // 20px 10px
 				[2, 9, 13],   // 20px
 				[2, 14, 18], // 10px
-				[3, 1, 36],   // background-image: url('tryme.png');
+				[3, 1, 36],   // Background-image: url('tryme.png');
 				[3, 19, 35], // url('tryme.png')
-				[6, 0, 9], // .boo .hoo
+				[6, 0, 9], // .Boo .hoo
 				[7, 1, 14], // margin: 10px;
 				[7, 9, 13], // 10px
 			];
@@ -201,15 +201,15 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(scssContents, '.scss', (editor, _) => {
 			editor.selections = [new Selection(0, 0, 0, 0)];
 
-			let expectedNextItemPoints: [number, number, number][] = [
-				[1, 0, 4],   // .boo
+			let expectedNextItemPoints: [numBer, numBer, numBer][] = [
+				[1, 0, 4],   // .Boo
 				[2, 1, 19],  // margin: 20px 10px;
 				[2, 9, 18],   // 20px 10px
 				[2, 9, 13],   // 20px
 				[2, 14, 18], // 10px
-				[3, 1, 36],   // background-image: url('tryme.png');
+				[3, 1, 36],   // Background-image: url('tryme.png');
 				[3, 19, 35], // url('tryme.png')
-				[5, 1, 10], // .boo .hoo
+				[5, 1, 10], // .Boo .hoo
 				[6, 2, 15], // margin: 10px;
 				[6, 10, 14], // 10px
 			];
@@ -232,24 +232,24 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlContents, 'html', (editor, _) => {
 
 			editor.selections = [new Selection(14, 6, 14, 10)];
-			let expectedBalanceOutRanges: [number, number, number, number][] = [
+			let expectedBalanceOutRanges: [numBer, numBer, numBer, numBer][] = [
 				[14, 3, 14, 32],   // <li class="item1">Item 1</li>
 				[13, 23, 16, 2],  // inner contents of <ul class="nav main">
 				[13, 2, 16, 7],		// outer contents of <ul class="nav main">
 				[12, 21, 17, 1], // inner contents of <div class="header">
 				[12, 1, 17, 7], // outer contents of <div class="header">
-				[8, 6, 18, 0],	// inner contents of <body>
-				[8, 0, 18, 7], // outer contents of <body>
+				[8, 6, 18, 0],	// inner contents of <Body>
+				[8, 0, 18, 7], // outer contents of <Body>
 				[2, 16, 19, 0],   // inner contents of <html>
 				[2, 0, 19, 7],   // outer contents of <html>
 			];
 			expectedBalanceOutRanges.forEach(([linestart, colstart, lineend, colend]) => {
-				balanceOut();
+				BalanceOut();
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
 			});
 
 			editor.selections = [new Selection(12, 7, 12, 7)];
-			let expectedBalanceInRanges: [number, number, number, number][] = [
+			let expectedBalanceInRanges: [numBer, numBer, numBer, numBer][] = [
 				[12, 21, 17, 1],   // inner contents of <div class="header">
 				[13, 2, 16, 7],		// outer contents of <ul class="nav main">
 				[13, 23, 16, 2],  // inner contents of <ul class="nav main">
@@ -257,7 +257,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 				[14, 21, 14, 27]   // Item 1
 			];
 			expectedBalanceInRanges.forEach(([linestart, colstart, lineend, colend]) => {
-				balanceIn();
+				BalanceIn();
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
 			});
 
@@ -269,25 +269,25 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlContents, 'html', (editor, _) => {
 
 			editor.selections = [new Selection(15, 6, 15, 10)];
-			let expectedBalanceOutRanges: [number, number, number, number][] = [
+			let expectedBalanceOutRanges: [numBer, numBer, numBer, numBer][] = [
 				[15, 3, 15, 32],   // <li class="item1">Item 2</li>
 				[13, 23, 16, 2],  // inner contents of <ul class="nav main">
 				[13, 2, 16, 7],		// outer contents of <ul class="nav main">
 				[12, 21, 17, 1], // inner contents of <div class="header">
 				[12, 1, 17, 7], // outer contents of <div class="header">
-				[8, 6, 18, 0],	// inner contents of <body>
-				[8, 0, 18, 7], // outer contents of <body>
+				[8, 6, 18, 0],	// inner contents of <Body>
+				[8, 0, 18, 7], // outer contents of <Body>
 				[2, 16, 19, 0],   // inner contents of <html>
 				[2, 0, 19, 7],   // outer contents of <html>
 			];
 			expectedBalanceOutRanges.forEach(([linestart, colstart, lineend, colend]) => {
-				balanceOut();
+				BalanceOut();
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
 			});
 
 			expectedBalanceOutRanges.reverse().forEach(([linestart, colstart, lineend, colend]) => {
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
-				balanceIn();
+				BalanceIn();
 			});
 
 			return Promise.resolve();
@@ -298,15 +298,15 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlContents, 'html', (editor, _) => {
 
 			editor.selection = new Selection(13, 7, 13, 10); // Inside the open tag of <ul class="nav main">
-			balanceIn();
+			BalanceIn();
 			testSelection(editor.selection, 23, 13, 2, 16); // inner contents of <ul class="nav main">
 
 			editor.selection = new Selection(16, 4, 16, 5); // Inside the open close of <ul class="nav main">
-			balanceIn();
+			BalanceIn();
 			testSelection(editor.selection, 23, 13, 2, 16); // inner contents of <ul class="nav main">
 
 			editor.selection = new Selection(13, 7, 14, 2); // Inside the open tag of <ul class="nav main"> and the next line
-			balanceIn();
+			BalanceIn();
 			testSelection(editor.selection, 23, 13, 2, 16); // inner contents of <ul class="nav main">
 
 			return Promise.resolve();
@@ -327,7 +327,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 		return withRandomFileEditor(htmlTemplate, 'html', (editor, _) => {
 
 			editor.selections = [new Selection(5, 24, 5, 24)];
-			let expectedBalanceOutRanges: [number, number, number, number][] = [
+			let expectedBalanceOutRanges: [numBer, numBer, numBer, numBer][] = [
 				[5, 20, 5, 26],	// <li class="item1">``Item 2''</li>
 				[5, 2, 5, 31],	// ``<li class="item1">Item 2</li>''
 				[3, 22, 6, 1],	// inner contents of ul
@@ -336,13 +336,13 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 				[2, 0, 7, 6],	// outer contents of div
 			];
 			expectedBalanceOutRanges.forEach(([linestart, colstart, lineend, colend]) => {
-				balanceOut();
+				BalanceOut();
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
 			});
 
 			expectedBalanceOutRanges.pop();
 			expectedBalanceOutRanges.reverse().forEach(([linestart, colstart, lineend, colend]) => {
-				balanceIn();
+				BalanceIn();
 				testSelection(editor.selection, colstart, linestart, colend, lineend);
 			});
 
@@ -351,7 +351,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 	});
 });
 
-function testSelection(selection: Selection, startChar: number, startline: number, endChar?: number, endLine?: number) {
+function testSelection(selection: Selection, startChar: numBer, startline: numBer, endChar?: numBer, endLine?: numBer) {
 
 	assert.equal(selection.anchor.line, startline);
 	assert.equal(selection.anchor.character, startChar);

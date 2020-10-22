@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
+import { IViewletViewOptions } from 'vs/workBench/Browser/parts/views/viewsViewlet';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { ResourcesDropHandler, DragAndDropObserver } from 'vs/workbench/browser/dnd';
+import { ViewPane } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { ResourcesDropHandler, DragAndDropOBserver } from 'vs/workBench/Browser/dnd';
 import { listDropBackground } from 'vs/platform/theme/common/colorRegistry';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IViewDescriptorService } from 'vs/workbench/common/views';
+import { IViewDescriptorService } from 'vs/workBench/common/views';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 export class EmptyView extends ViewPane {
 
-	static readonly ID: string = 'workbench.explorer.emptyView';
+	static readonly ID: string = 'workBench.explorer.emptyView';
 	static readonly NAME = nls.localize('noWorkspace', "No Folder Opened");
 
 	constructor(
@@ -30,43 +30,43 @@ export class EmptyView extends ViewPane {
 		@IThemeService themeService: IThemeService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IInstantiationService instantiationService: IInstantiationService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@ILabelService private labelService: ILabelService,
+		@ILaBelService private laBelService: ILaBelService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IOpenerService openerService: IOpenerService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keyBindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
 
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.refreshTitle()));
-		this._register(this.labelService.onDidChangeFormatters(() => this.refreshTitle()));
+		this._register(this.contextService.onDidChangeWorkBenchState(() => this.refreshTitle()));
+		this._register(this.laBelService.onDidChangeFormatters(() => this.refreshTitle()));
 	}
 
-	shouldShowWelcome(): boolean {
+	shouldShowWelcome(): Boolean {
 		return true;
 	}
 
 	protected renderBody(container: HTMLElement): void {
 		super.renderBody(container);
 
-		this._register(new DragAndDropObserver(container, {
+		this._register(new DragAndDropOBserver(container, {
 			onDrop: e => {
-				container.style.backgroundColor = '';
+				container.style.BackgroundColor = '';
 				const dropHandler = this.instantiationService.createInstance(ResourcesDropHandler, { allowWorkspaceOpen: true });
 				dropHandler.handleDrop(e, () => undefined, () => undefined);
 			},
 			onDragEnter: () => {
 				const color = this.themeService.getColorTheme().getColor(listDropBackground);
-				container.style.backgroundColor = color ? color.toString() : '';
+				container.style.BackgroundColor = color ? color.toString() : '';
 			},
 			onDragEnd: () => {
-				container.style.backgroundColor = '';
+				container.style.BackgroundColor = '';
 			},
 			onDragLeave: () => {
-				container.style.backgroundColor = '';
+				container.style.BackgroundColor = '';
 			},
 			onDragOver: e => {
 				if (e.dataTransfer) {
@@ -79,7 +79,7 @@ export class EmptyView extends ViewPane {
 	}
 
 	private refreshTitle(): void {
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
+		if (this.contextService.getWorkBenchState() === WorkBenchState.WORKSPACE) {
 			this.updateTitle(EmptyView.NAME);
 		} else {
 			this.updateTitle(this.title);

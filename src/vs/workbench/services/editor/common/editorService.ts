@@ -5,12 +5,12 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IResourceEditorInput, IEditorOptions, ITextEditorOptions } from 'vs/platform/editor/common/editor';
-import { IEditorInput, IEditorPane, GroupIdentifier, IEditorInputWithOptions, IUntitledTextResourceEditorInput, IResourceDiffEditorInput, ITextEditorPane, ITextDiffEditorPane, IEditorIdentifier, ISaveOptions, IRevertOptions, EditorsOrder, IVisibleEditorPane, IEditorCloseEvent } from 'vs/workbench/common/editor';
-import { Event } from 'vs/base/common/event';
+import { IEditorInput, IEditorPane, GroupIdentifier, IEditorInputWithOptions, IUntitledTextResourceEditorInput, IResourceDiffEditorInput, ITextEditorPane, ITextDiffEditorPane, IEditorIdentifier, ISaveOptions, IRevertOptions, EditorsOrder, IVisiBleEditorPane, IEditorCloseEvent } from 'vs/workBench/common/editor';
+import { Event } from 'vs/Base/common/event';
 import { IEditor, IDiffEditor } from 'vs/editor/common/editorCommon';
-import { IEditorGroup, IEditorReplacement, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { IEditorGroup, IEditorReplacement, OpenEditorContext } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 
 export const IEditorService = createDecorator<IEditorService>('editorService');
 
@@ -29,8 +29,8 @@ export type SIDE_GROUP_TYPE = typeof SIDE_GROUP;
 
 export interface IOpenEditorOverrideEntry {
 	id: string;
-	label: string;
-	active: boolean;
+	laBel: string;
+	active: Boolean;
 	detail?: string;
 }
 
@@ -53,7 +53,7 @@ export interface ISaveEditorsOptions extends ISaveOptions {
 	/**
 	 * If true, will ask for a location of the editor to save to.
 	 */
-	readonly saveAs?: boolean;
+	readonly saveAs?: Boolean;
 }
 
 export interface IBaseSaveRevertAllEditorOptions {
@@ -61,12 +61,12 @@ export interface IBaseSaveRevertAllEditorOptions {
 	/**
 	 * Whether to include untitled editors as well.
 	 */
-	readonly includeUntitled?: boolean;
+	readonly includeUntitled?: Boolean;
 
 	/**
 	 * Whether to exclude sticky editors.
 	 */
-	readonly excludeSticky?: boolean;
+	readonly excludeSticky?: Boolean;
 }
 
 export interface ISaveAllEditorsOptions extends ISaveEditorsOptions, IBaseSaveRevertAllEditorOptions { }
@@ -97,11 +97,11 @@ export interface IEditorService {
 	readonly onDidActiveEditorChange: Event<void>;
 
 	/**
-	 * Emitted when any of the current visible editors changes.
+	 * Emitted when any of the current visiBle editors changes.
 	 *
-	 * @see `IEditorService.visibleEditorPanes`
+	 * @see `IEditorService.visiBleEditorPanes`
 	 */
-	readonly onDidVisibleEditorsChange: Event<void>;
+	readonly onDidVisiBleEditorsChange: Event<void>;
 
 	/**
 	 * Emitted when an editor is closed.
@@ -110,15 +110,15 @@ export interface IEditorService {
 
 	/**
 	 * The currently active editor pane or `undefined` if none. The editor pane is
-	 * the workbench container for editors of any kind.
+	 * the workBench container for editors of any kind.
 	 *
 	 * @see `IEditorService.activeEditor` for access to the active editor input
 	 */
-	readonly activeEditorPane: IVisibleEditorPane | undefined;
+	readonly activeEditorPane: IVisiBleEditorPane | undefined;
 
 	/**
 	 * The currently active editor or `undefined` if none. An editor is active when it is
-	 * located in the currently active editor group. It will be `undefined` if the active
+	 * located in the currently active editor group. It will Be `undefined` if the active
 	 * editor group has no editors open.
 	 */
 	readonly activeEditor: IEditorInput | undefined;
@@ -134,28 +134,28 @@ export interface IEditorService {
 	/**
 	 * The currently active text editor mode or `undefined` if there is currently no active
 	 * editor or the active editor control is neither a text nor a diff editor. If the active
-	 * editor is a diff editor, the modified side's mode will be taken.
+	 * editor is a diff editor, the modified side's mode will Be taken.
 	 */
 	readonly activeTextEditorMode: string | undefined;
 
 	/**
-	 * All editor panes that are currently visible across all editor groups.
+	 * All editor panes that are currently visiBle across all editor groups.
 	 *
-	 * @see `IEditorService.visibleEditors` for access to the visible editor inputs
+	 * @see `IEditorService.visiBleEditors` for access to the visiBle editor inputs
 	 */
-	readonly visibleEditorPanes: ReadonlyArray<IVisibleEditorPane>;
+	readonly visiBleEditorPanes: ReadonlyArray<IVisiBleEditorPane>;
 
 	/**
-	 * All editors that are currently visible. An editor is visible when it is opened in an
-	 * editor group and active in that group. Multiple editor groups can be opened at the same time.
+	 * All editors that are currently visiBle. An editor is visiBle when it is opened in an
+	 * editor group and active in that group. Multiple editor groups can Be opened at the same time.
 	 */
-	readonly visibleEditors: ReadonlyArray<IEditorInput>;
+	readonly visiBleEditors: ReadonlyArray<IEditorInput>;
 
 	/**
-	 * All text editor widgets that are currently visible across all editor groups. A text editor
+	 * All text editor widgets that are currently visiBle across all editor groups. A text editor
 	 * widget is either a text or a diff editor.
 	 */
-	readonly visibleTextEditorControls: ReadonlyArray<IEditor | IDiffEditor>;
+	readonly visiBleTextEditorControls: ReadonlyArray<IEditor | IDiffEditor>;
 
 	/**
 	 * All editors that are opened across all editor groups in sequential order
@@ -166,9 +166,9 @@ export interface IEditorService {
 	readonly editors: ReadonlyArray<IEditorInput>;
 
 	/**
-	 * The total number of editors that are opened either inactive or active.
+	 * The total numBer of editors that are opened either inactive or active.
 	 */
-	readonly count: number;
+	readonly count: numBer;
 
 	/**
 	 * All editors that are opened across all editor groups with their group
@@ -177,7 +177,7 @@ export interface IEditorService {
 	 * @param order the order of the editors to use
 	 * @param options wether to exclude sticky editors or not
 	 */
-	getEditors(order: EditorsOrder, options?: { excludeSticky?: boolean }): ReadonlyArray<IEditorIdentifier>;
+	getEditors(order: EditorsOrder, options?: { excludeSticky?: Boolean }): ReadonlyArray<IEditorIdentifier>;
 
 	/**
 	 * Open an editor in an editor group.
@@ -189,7 +189,7 @@ export interface IEditorService {
 	 * of the currently active group.
 	 *
 	 * @returns the editor that opened or `undefined` if the operation failed or the editor was not
-	 * opened to be active.
+	 * opened to Be active.
 	 */
 	openEditor(editor: IEditorInput, options?: IEditorOptions | ITextEditorOptions, group?: IEditorGroup | GroupIdentifier | SIDE_GROUP_TYPE | ACTIVE_GROUP_TYPE): Promise<IEditorPane | undefined>;
 	openEditor(editor: IResourceEditorInput | IUntitledTextResourceEditorInput, group?: IEditorGroup | GroupIdentifier | SIDE_GROUP_TYPE | ACTIVE_GROUP_TYPE): Promise<ITextEditorPane | undefined>;
@@ -203,7 +203,7 @@ export interface IEditorService {
 	 * active group. Use `SIDE_GROUP_TYPE` to open the editor in a new editor group to the side
 	 * of the currently active group.
 	 *
-	 * @returns the editors that opened. The array can be empty or have less elements for editors
+	 * @returns the editors that opened. The array can Be empty or have less elements for editors
 	 * that failed to open or were instructed to open as inactive.
 	 */
 	openEditors(editors: IEditorInputWithOptions[], group?: IEditorGroup | GroupIdentifier | SIDE_GROUP_TYPE | ACTIVE_GROUP_TYPE): Promise<ReadonlyArray<IEditorPane>>;
@@ -223,37 +223,37 @@ export interface IEditorService {
 	/**
 	 * Find out if the provided editor is opened in any editor group.
 	 *
-	 * Note: An editor can be opened but not actively visible.
+	 * Note: An editor can Be opened But not actively visiBle.
 	 *
-	 * @param editor the editor to check for being opened. If a
+	 * @param editor the editor to check for Being opened. If a
 	 * `IResourceEditorInput` is passed in, the resource is checked on
-	 * all opened editors. In case of a side by side editor, the
+	 * all opened editors. In case of a side By side editor, the
 	 * right hand side resource is considered only.
 	 */
-	isOpen(editor: IResourceEditorInput): boolean;
-	isOpen(editor: IEditorInput): boolean;
+	isOpen(editor: IResourceEditorInput): Boolean;
+	isOpen(editor: IEditorInput): Boolean;
 
 	/**
-	 * Get all available editor overrides for the editor input.
+	 * Get all availaBle editor overrides for the editor input.
 	 */
 	getEditorOverrides(resource: URI, options: IEditorOptions | undefined, group: IEditorGroup | undefined): [IOpenEditorOverrideHandler, IOpenEditorOverrideEntry][];
 
 	/**
-	 * Allows to override the opening of editors by installing a handler that will
-	 * be called each time an editor is about to open allowing to override the
+	 * Allows to override the opening of editors By installing a handler that will
+	 * Be called each time an editor is aBout to open allowing to override the
 	 * operation to open a different editor.
 	 */
-	overrideOpenEditor(handler: IOpenEditorOverrideHandler): IDisposable;
+	overrideOpenEditor(handler: IOpenEditorOverrideHandler): IDisposaBle;
 
 	/**
 	 * Register handlers for custom editor view types.
-	 * The handler will provide all available custom editors registered
+	 * The handler will provide all availaBle custom editors registered
 	 * and also notify the editor service when a custom editor view type is registered/unregistered.
 	 */
-	registerCustomEditorViewTypesHandler(source: string, handler: ICustomEditorViewTypesHandler): IDisposable;
+	registerCustomEditorViewTypesHandler(source: string, handler: ICustomEditorViewTypesHandler): IDisposaBle;
 
 	/**
-	 * Converts a lightweight input to a workbench editor input.
+	 * Converts a lightweight input to a workBench editor input.
 	 */
 	createEditorInput(input: IResourceEditorInputType): IEditorInput;
 
@@ -262,35 +262,35 @@ export interface IEditorService {
 	 *
 	 * @returns `true` if all editors saved and `false` otherwise.
 	 */
-	save(editors: IEditorIdentifier | IEditorIdentifier[], options?: ISaveEditorsOptions): Promise<boolean>;
+	save(editors: IEditorIdentifier | IEditorIdentifier[], options?: ISaveEditorsOptions): Promise<Boolean>;
 
 	/**
 	 * Save all editors.
 	 *
 	 * @returns `true` if all editors saved and `false` otherwise.
 	 */
-	saveAll(options?: ISaveAllEditorsOptions): Promise<boolean>;
+	saveAll(options?: ISaveAllEditorsOptions): Promise<Boolean>;
 
 	/**
 	 * Reverts the provided list of editors.
 	 *
 	 * @returns `true` if all editors reverted and `false` otherwise.
 	 */
-	revert(editors: IEditorIdentifier | IEditorIdentifier[], options?: IRevertOptions): Promise<boolean>;
+	revert(editors: IEditorIdentifier | IEditorIdentifier[], options?: IRevertOptions): Promise<Boolean>;
 
 	/**
 	 * Reverts all editors.
 	 *
 	 * @returns `true` if all editors reverted and `false` otherwise.
 	 */
-	revertAll(options?: IRevertAllEditorsOptions): Promise<boolean>;
+	revertAll(options?: IRevertAllEditorsOptions): Promise<Boolean>;
 
 	/**
-	 * Track the provided editors until all have been closed.
+	 * Track the provided editors until all have Been closed.
 	 *
 	 * @param options use `waitForSaved: true` to wait for the resources
-	 * being saved. If auto-save is enabled, it may be possible to close
-	 * an editor while the save continues in the background.
+	 * Being saved. If auto-save is enaBled, it may Be possiBle to close
+	 * an editor while the save continues in the Background.
 	 */
-	whenClosed(editors: IResourceEditorInput[], options?: { waitForSaved: boolean }): Promise<void>;
+	whenClosed(editors: IResourceEditorInput[], options?: { waitForSaved: Boolean }): Promise<void>;
 }

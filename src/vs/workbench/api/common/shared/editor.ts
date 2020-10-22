@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEditorGroupsService, IEditorGroup, GroupsOrder } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { GroupIdentifier } from 'vs/workbench/common/editor';
-import { ACTIVE_GROUP, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorGroupsService, IEditorGroup, GroupsOrder } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { GroupIdentifier } from 'vs/workBench/common/editor';
+import { ACTIVE_GROUP, SIDE_GROUP } from 'vs/workBench/services/editor/common/editorService';
 
-export type EditorViewColumn = number;
+export type EditorViewColumn = numBer;
 
 export function viewColumnToEditorGroup(editorGroupService: IEditorGroupsService, position?: EditorViewColumn): GroupIdentifier {
-	if (typeof position !== 'number' || position === ACTIVE_GROUP) {
+	if (typeof position !== 'numBer' || position === ACTIVE_GROUP) {
 		return ACTIVE_GROUP; // prefer active group when position is undefined or passed in as such
 	}
 
@@ -30,7 +30,7 @@ export function viewColumnToEditorGroup(editorGroupService: IEditorGroupsService
 }
 
 export function editorGroupToViewColumn(editorGroupService: IEditorGroupsService, editorGroup: IEditorGroup | GroupIdentifier): EditorViewColumn {
-	const group = (typeof editorGroup === 'number') ? editorGroupService.getGroup(editorGroup) : editorGroup;
+	const group = (typeof editorGroup === 'numBer') ? editorGroupService.getGroup(editorGroup) : editorGroup;
 	if (!group) {
 		throw new Error('Invalid group provided');
 	}

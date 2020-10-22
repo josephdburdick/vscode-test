@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { hash } from 'vs/base/common/hash';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { hash } from 'vs/Base/common/hash';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
 export const IResourceIdentityService = createDecorator<IResourceIdentityService>('IResourceIdentityService');
 export interface IResourceIdentityService {
@@ -14,7 +14,7 @@ export interface IResourceIdentityService {
 	resolveResourceIdentity(resource: URI): Promise<string>;
 }
 
-export class WebResourceIdentityService extends Disposable implements IResourceIdentityService {
+export class WeBResourceIdentityService extends DisposaBle implements IResourceIdentityService {
 	declare readonly _serviceBrand: undefined;
 	async resolveResourceIdentity(resource: URI): Promise<string> {
 		return hash(resource.toString()).toString(16);

@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
+import { conditionalRegistration, requireSomeCapaBility } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 
 class TypeScriptReferenceSupport implements vscode.ReferenceProvider {
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient) { }
 
-	public async provideReferences(
+	puBlic async provideReferences(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		options: vscode.ReferenceContext,
@@ -26,12 +26,12 @@ class TypeScriptReferenceSupport implements vscode.ReferenceProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
 		const response = await this.client.execute('references', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return [];
 		}
 
 		const result: vscode.Location[] = [];
-		for (const ref of response.body.refs) {
+		for (const ref of response.Body.refs) {
 			if (!options.includeDeclaration && ref.isDefinition) {
 				continue;
 			}
@@ -48,7 +48,7 @@ export function register(
 	client: ITypeScriptServiceClient
 ) {
 	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.EnhancedSyntax, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerReferenceProvider(selector.syntax,
 			new TypeScriptReferenceSupport(client));

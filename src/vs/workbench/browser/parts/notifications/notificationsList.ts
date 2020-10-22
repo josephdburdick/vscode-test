@@ -5,27 +5,27 @@
 
 import 'vs/css!./media/notificationsList';
 import { localize } from 'vs/nls';
-import { isAncestor, trackFocus } from 'vs/base/browser/dom';
-import { WorkbenchList } from 'vs/platform/list/browser/listService';
+import { isAncestor, trackFocus } from 'vs/Base/Browser/dom';
+import { WorkBenchList } from 'vs/platform/list/Browser/listService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IListOptions } from 'vs/base/browser/ui/list/listWidget';
-import { NOTIFICATIONS_LINKS, NOTIFICATIONS_BACKGROUND, NOTIFICATIONS_FOREGROUND, NOTIFICATIONS_ERROR_ICON_FOREGROUND, NOTIFICATIONS_WARNING_ICON_FOREGROUND, NOTIFICATIONS_INFO_ICON_FOREGROUND } from 'vs/workbench/common/theme';
-import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector, Themable } from 'vs/platform/theme/common/themeService';
+import { IListOptions } from 'vs/Base/Browser/ui/list/listWidget';
+import { NOTIFICATIONS_LINKS, NOTIFICATIONS_BACKGROUND, NOTIFICATIONS_FOREGROUND, NOTIFICATIONS_ERROR_ICON_FOREGROUND, NOTIFICATIONS_WARNING_ICON_FOREGROUND, NOTIFICATIONS_INFO_ICON_FOREGROUND } from 'vs/workBench/common/theme';
+import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector, ThemaBle } from 'vs/platform/theme/common/themeService';
 import { contrastBorder, focusBorder } from 'vs/platform/theme/common/colorRegistry';
-import { INotificationViewItem } from 'vs/workbench/common/notifications';
-import { NotificationsListDelegate, NotificationRenderer } from 'vs/workbench/browser/parts/notifications/notificationsViewer';
-import { NotificationActionRunner, CopyNotificationMessageAction } from 'vs/workbench/browser/parts/notifications/notificationsActions';
-import { NotificationFocusedContext } from 'vs/workbench/browser/parts/notifications/notificationsCommands';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { assertIsDefined, assertAllDefined } from 'vs/base/common/types';
-import { Codicon } from 'vs/base/common/codicons';
+import { INotificationViewItem } from 'vs/workBench/common/notifications';
+import { NotificationsListDelegate, NotificationRenderer } from 'vs/workBench/Browser/parts/notifications/notificationsViewer';
+import { NotificationActionRunner, CopyNotificationMessageAction } from 'vs/workBench/Browser/parts/notifications/notificationsActions';
+import { NotificationFocusedContext } from 'vs/workBench/Browser/parts/notifications/notificationsCommands';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { assertIsDefined, assertAllDefined } from 'vs/Base/common/types';
+import { Codicon } from 'vs/Base/common/codicons';
 
-export class NotificationsList extends Themable {
+export class NotificationsList extends ThemaBle {
 	private listContainer: HTMLElement | undefined;
-	private list: WorkbenchList<INotificationViewItem> | undefined;
+	private list: WorkBenchList<INotificationViewItem> | undefined;
 	private listDelegate: NotificationsListDelegate | undefined;
 	private viewModel: INotificationViewItem[] = [];
-	private isVisible: boolean | undefined;
+	private isVisiBle: Boolean | undefined;
 
 	constructor(
 		private readonly container: HTMLElement,
@@ -37,14 +37,14 @@ export class NotificationsList extends Themable {
 		super(themeService);
 	}
 
-	show(focus?: boolean): void {
-		if (this.isVisible) {
+	show(focus?: Boolean): void {
+		if (this.isVisiBle) {
 			if (focus) {
 				const list = assertIsDefined(this.list);
 				list.domFocus();
 			}
 
-			return; // already visible
+			return; // already visiBle
 		}
 
 		// Lazily create if showing for the first time
@@ -52,8 +52,8 @@ export class NotificationsList extends Themable {
 			this.createNotificationsList();
 		}
 
-		// Make visible
-		this.isVisible = true;
+		// Make visiBle
+		this.isVisiBle = true;
 
 		// Focus
 		if (focus) {
@@ -75,8 +75,8 @@ export class NotificationsList extends Themable {
 
 		// List
 		const listDelegate = this.listDelegate = new NotificationsListDelegate(this.listContainer);
-		const list = this.list = <WorkbenchList<INotificationViewItem>>this._register(this.instantiationService.createInstance(
-			WorkbenchList,
+		const list = this.list = <WorkBenchList<INotificationViewItem>>this._register(this.instantiationService.createInstance(
+			WorkBenchList,
 			'NotificationsList',
 			this.listContainer,
 			listDelegate,
@@ -88,19 +88,19 @@ export class NotificationsList extends Themable {
 				overrideStyles: {
 					listBackground: NOTIFICATIONS_BACKGROUND
 				},
-				accessibilityProvider: {
-					getAriaLabel(element: INotificationViewItem): string {
+				accessiBilityProvider: {
+					getAriaLaBel(element: INotificationViewItem): string {
 						if (!element.source) {
-							return localize('notificationAriaLabel', "{0}, notification", element.message.raw);
+							return localize('notificationAriaLaBel', "{0}, notification", element.message.raw);
 						}
 
-						return localize('notificationWithSourceAriaLabel', "{0}, source: {1}, notification", element.message.raw, element.source);
+						return localize('notificationWithSourceAriaLaBel', "{0}, source: {1}, notification", element.message.raw, element.source);
 					},
-					getWidgetAriaLabel(): string {
+					getWidgetAriaLaBel(): string {
 						return localize('notificationsList', "Notifications List");
 					},
 					getRole(): string {
-						return 'dialog'; // https://github.com/microsoft/vscode/issues/82728
+						return 'dialog'; // https://githuB.com/microsoft/vscode/issues/82728
 					}
 				}
 			}
@@ -121,12 +121,12 @@ export class NotificationsList extends Themable {
 			});
 		})));
 
-		// Toggle on double click
-		this._register((list.onMouseDblClick(event => (event.element as INotificationViewItem).toggle())));
+		// Toggle on douBle click
+		this._register((list.onMouseDBlClick(event => (event.element as INotificationViewItem).toggle())));
 
 		// Clear focus when DOM focus moves out
 		// Use document.hasFocus() to not clear the focus when the entire window lost focus
-		// This ensures that when the focus comes back, the notification is still focused
+		// This ensures that when the focus comes Back, the notification is still focused
 		const listFocusTracker = this._register(trackFocus(list.getHTMLElement()));
 		this._register(listFocusTracker.onDidBlur(() => {
 			if (document.hasFocus()) {
@@ -135,7 +135,7 @@ export class NotificationsList extends Themable {
 		}));
 
 		// Context key
-		NotificationFocusedContext.bindTo(list.contextKeyService);
+		NotificationFocusedContext.BindTo(list.contextKeyService);
 
 		// Only allow for focus in notifications, as the
 		// selection is too strong over the contents of
@@ -151,16 +151,16 @@ export class NotificationsList extends Themable {
 		this.updateStyles();
 	}
 
-	updateNotificationsList(start: number, deleteCount: number, items: INotificationViewItem[] = []) {
+	updateNotificationsList(start: numBer, deleteCount: numBer, items: INotificationViewItem[] = []) {
 		const [list, listContainer] = assertAllDefined(this.list, this.listContainer);
 		const listHasDOMFocus = isAncestor(document.activeElement, listContainer);
 
-		// Remember focus and relative top of that item
+		// RememBer focus and relative top of that item
 		const focusedIndex = list.getFocus()[0];
 		const focusedItem = this.viewModel[focusedIndex];
 
-		let focusRelativeTop: number | null = null;
-		if (typeof focusedIndex === 'number') {
+		let focusRelativeTop: numBer | null = null;
+		if (typeof focusedIndex === 'numBer') {
 			focusRelativeTop = list.getRelativeTop(focusedIndex);
 		}
 
@@ -177,12 +177,12 @@ export class NotificationsList extends Themable {
 		}
 
 		// Otherwise restore focus if we had
-		else if (typeof focusedIndex === 'number') {
+		else if (typeof focusedIndex === 'numBer') {
 			let indexToFocus = 0;
 			if (focusedItem) {
 				let indexToFocusCandidate = this.viewModel.indexOf(focusedItem);
 				if (indexToFocusCandidate === -1) {
-					indexToFocusCandidate = focusedIndex - 1; // item could have been removed
+					indexToFocusCandidate = focusedIndex - 1; // item could have Been removed
 				}
 
 				if (indexToFocusCandidate < this.viewModel.length && indexToFocusCandidate >= 0) {
@@ -190,15 +190,15 @@ export class NotificationsList extends Themable {
 				}
 			}
 
-			if (typeof focusRelativeTop === 'number') {
+			if (typeof focusRelativeTop === 'numBer') {
 				list.reveal(indexToFocus, focusRelativeTop);
 			}
 
 			list.setFocus([indexToFocus]);
 		}
 
-		// Restore DOM focus if we had focus before
-		if (this.isVisible && listHasDOMFocus) {
+		// Restore DOM focus if we had focus Before
+		if (this.isVisiBle && listHasDOMFocus) {
 			list.domFocus();
 		}
 	}
@@ -215,12 +215,12 @@ export class NotificationsList extends Themable {
 	}
 
 	hide(): void {
-		if (!this.isVisible || !this.list) {
+		if (!this.isVisiBle || !this.list) {
 			return; // already hidden
 		}
 
 		// Hide
-		this.isVisible = false;
+		this.isVisiBle = false;
 
 		// Clear list
 		this.list.splice(0, this.viewModel.length);
@@ -230,7 +230,7 @@ export class NotificationsList extends Themable {
 	}
 
 	focusFirst(): void {
-		if (!this.isVisible || !this.list) {
+		if (!this.isVisiBle || !this.list) {
 			return; // hidden
 		}
 
@@ -238,8 +238,8 @@ export class NotificationsList extends Themable {
 		this.list.domFocus();
 	}
 
-	hasFocus(): boolean {
-		if (!this.isVisible || !this.listContainer) {
+	hasFocus(): Boolean {
+		if (!this.isVisiBle || !this.listContainer) {
 			return false; // hidden
 		}
 
@@ -251,19 +251,19 @@ export class NotificationsList extends Themable {
 			const foreground = this.getColor(NOTIFICATIONS_FOREGROUND);
 			this.listContainer.style.color = foreground ? foreground : '';
 
-			const background = this.getColor(NOTIFICATIONS_BACKGROUND);
-			this.listContainer.style.background = background ? background : '';
+			const Background = this.getColor(NOTIFICATIONS_BACKGROUND);
+			this.listContainer.style.Background = Background ? Background : '';
 
 			const outlineColor = this.getColor(contrastBorder);
 			this.listContainer.style.outlineColor = outlineColor ? outlineColor : '';
 		}
 	}
 
-	layout(width: number, maxHeight?: number): void {
+	layout(width: numBer, maxHeight?: numBer): void {
 		if (this.listContainer && this.list) {
 			this.listContainer.style.width = `${width}px`;
 
-			if (typeof maxHeight === 'number') {
+			if (typeof maxHeight === 'numBer') {
 				this.list.getHTMLElement().style.maxHeight = `${maxHeight}px`;
 			}
 
@@ -281,13 +281,13 @@ export class NotificationsList extends Themable {
 registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
 	const linkColor = theme.getColor(NOTIFICATIONS_LINKS);
 	if (linkColor) {
-		collector.addRule(`.monaco-workbench .notifications-list-container .notification-list-item .notification-list-item-message a { color: ${linkColor}; }`);
+		collector.addRule(`.monaco-workBench .notifications-list-container .notification-list-item .notification-list-item-message a { color: ${linkColor}; }`);
 	}
 
 	const focusOutline = theme.getColor(focusBorder);
 	if (focusOutline) {
 		collector.addRule(`
-		.monaco-workbench .notifications-list-container .notification-list-item .notification-list-item-message a:focus {
+		.monaco-workBench .notifications-list-container .notification-list-item .notification-list-item-message a:focus {
 			outline-color: ${focusOutline};
 		}`);
 	}
@@ -297,8 +297,8 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	if (notificationErrorIconForegroundColor) {
 		const errorCodiconSelector = Codicon.error.cssSelector;
 		collector.addRule(`
-		.monaco-workbench .notifications-center ${errorCodiconSelector},
-		.monaco-workbench .notifications-toasts ${errorCodiconSelector} {
+		.monaco-workBench .notifications-center ${errorCodiconSelector},
+		.monaco-workBench .notifications-toasts ${errorCodiconSelector} {
 			color: ${notificationErrorIconForegroundColor};
 		}`);
 	}
@@ -308,8 +308,8 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	if (notificationWarningIconForegroundColor) {
 		const warningCodiconSelector = Codicon.warning.cssSelector;
 		collector.addRule(`
-		.monaco-workbench .notifications-center ${warningCodiconSelector},
-		.monaco-workbench .notifications-toasts ${warningCodiconSelector} {
+		.monaco-workBench .notifications-center ${warningCodiconSelector},
+		.monaco-workBench .notifications-toasts ${warningCodiconSelector} {
 			color: ${notificationWarningIconForegroundColor};
 		}`);
 	}
@@ -319,8 +319,8 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	if (notificationInfoIconForegroundColor) {
 		const infoCodiconSelector = Codicon.info.cssSelector;
 		collector.addRule(`
-		.monaco-workbench .notifications-center ${infoCodiconSelector},
-		.monaco-workbench .notifications-toasts ${infoCodiconSelector} {
+		.monaco-workBench .notifications-center ${infoCodiconSelector},
+		.monaco-workBench .notifications-toasts ${infoCodiconSelector} {
 			color: ${notificationInfoIconForegroundColor};
 		}`);
 	}

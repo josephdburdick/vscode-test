@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
+import { URI } from 'vs/Base/common/uri';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
+import { ResourceEditorModel } from 'vs/workBench/common/editor/resourceEditorModel';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { workBenchInstantiationService, TestServiceAccessor } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
 import { ModesRegistry, PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 
 suite('Resource text editors', () => {
@@ -18,11 +18,11 @@ suite('Resource text editors', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
-	test('basics', async () => {
+	test('Basics', async () => {
 		const resource = URI.from({ scheme: 'inmemory', authority: null!, path: 'thePath' });
 		accessor.modelService.createModel('function test() {}', accessor.modeService.create('text'), resource);
 

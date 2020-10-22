@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, LogLevel, AbstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
-import { URI } from 'vs/base/common/uri';
+import { ILogService, LogLevel, ABstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
+import { URI } from 'vs/Base/common/uri';
 import { FileOperationError, FileOperationResult, IFileService, whenProviderRegistered } from 'vs/platform/files/common/files';
-import { Queue } from 'vs/base/common/async';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { dirname, joinPath, basename } from 'vs/base/common/resources';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Queue } from 'vs/Base/common/async';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { dirname, joinPath, Basename } from 'vs/Base/common/resources';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { BufferLogService } from 'vs/platform/log/common/bufferLog';
+import { BufferLogService } from 'vs/platform/log/common/BufferLog';
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 
-export class FileLogService extends AbstractLogService implements ILogService {
+export class FileLogService extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly initializePromise: Promise<void>;
 	private readonly queue: Queue<void>;
-	private backupIndex: number = 1;
+	private BackupIndex: numBer = 1;
 
 	constructor(
 		private readonly name: string,
@@ -41,9 +41,9 @@ export class FileLogService extends AbstractLogService implements ILogService {
 		}
 	}
 
-	debug(): void {
-		if (this.getLevel() <= LogLevel.Debug) {
-			this._log(LogLevel.Debug, this.format(arguments));
+	deBug(): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
+			this._log(LogLevel.DeBug, this.format(arguments));
 		}
 	}
 
@@ -110,15 +110,15 @@ export class FileLogService extends AbstractLogService implements ILogService {
 	}
 
 	private getCurrentTimestamp(): string {
-		const toTwoDigits = (v: number) => v < 10 ? `0${v}` : v;
-		const toThreeDigits = (v: number) => v < 10 ? `00${v}` : v < 100 ? `0${v}` : v;
+		const toTwoDigits = (v: numBer) => v < 10 ? `0${v}` : v;
+		const toThreeDigits = (v: numBer) => v < 10 ? `00${v}` : v < 100 ? `0${v}` : v;
 		const currentTime = new Date();
 		return `${currentTime.getFullYear()}-${toTwoDigits(currentTime.getMonth() + 1)}-${toTwoDigits(currentTime.getDate())} ${toTwoDigits(currentTime.getHours())}:${toTwoDigits(currentTime.getMinutes())}:${toTwoDigits(currentTime.getSeconds())}.${toThreeDigits(currentTime.getMilliseconds())}`;
 	}
 
 	private getBackupResource(): URI {
-		this.backupIndex = this.backupIndex > 5 ? 1 : this.backupIndex;
-		return joinPath(dirname(this.resource), `${basename(this.resource)}_${this.backupIndex++}`);
+		this.BackupIndex = this.BackupIndex > 5 ? 1 : this.BackupIndex;
+		return joinPath(dirname(this.resource), `${Basename(this.resource)}_${this.BackupIndex++}`);
 	}
 
 	private async loadContent(): Promise<string> {
@@ -133,7 +133,7 @@ export class FileLogService extends AbstractLogService implements ILogService {
 	private stringifyLogLevel(level: LogLevel): string {
 		switch (level) {
 			case LogLevel.Critical: return 'critical';
-			case LogLevel.Debug: return 'debug';
+			case LogLevel.DeBug: return 'deBug';
 			case LogLevel.Error: return 'error';
 			case LogLevel.Info: return 'info';
 			case LogLevel.Trace: return 'trace';
@@ -148,7 +148,7 @@ export class FileLogService extends AbstractLogService implements ILogService {
 		for (let i = 0; i < args.length; i++) {
 			let a = args[i];
 
-			if (typeof a === 'object') {
+			if (typeof a === 'oBject') {
 				try {
 					a = JSON.stringify(a);
 				} catch (e) { }
@@ -161,7 +161,7 @@ export class FileLogService extends AbstractLogService implements ILogService {
 	}
 }
 
-export class FileLoggerService extends Disposable implements ILoggerService {
+export class FileLoggerService extends DisposaBle implements ILoggerService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -181,7 +181,7 @@ export class FileLoggerService extends Disposable implements ILoggerService {
 		if (!logger) {
 			logger = new BufferLogService(this.logService.getLevel());
 			this.loggers.set(resource.toString(), logger);
-			whenProviderRegistered(resource, this.fileService).then(() => (<BufferLogService>logger).logger = this.instantiationService.createInstance(FileLogService, basename(resource), resource, this.logService.getLevel()));
+			whenProviderRegistered(resource, this.fileService).then(() => (<BufferLogService>logger).logger = this.instantiationService.createInstance(FileLogService, Basename(resource), resource, this.logService.getLevel()));
 		}
 		return logger;
 	}

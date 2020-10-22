@@ -5,12 +5,12 @@
 
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { RawContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { INotificationViewItem, isNotificationViewItem } from 'vs/workbench/common/notifications';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { INotificationViewItem, isNotificationViewItem } from 'vs/workBench/common/notifications';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
 import { localize } from 'vs/nls';
-import { IListService, WorkbenchList } from 'vs/platform/list/browser/listService';
+import { IListService, WorkBenchList } from 'vs/platform/list/Browser/listService';
 
 // Center
 export const SHOW_NOTIFICATIONS_CENTER = 'notifications.showList';
@@ -32,12 +32,12 @@ export const TOGGLE_NOTIFICATION = 'notification.toggle';
 export const CLEAR_NOTIFICATION = 'notification.clear';
 export const CLEAR_ALL_NOTIFICATIONS = 'notifications.clearAll';
 
-export const NotificationFocusedContext = new RawContextKey<boolean>('notificationFocus', true);
-export const NotificationsCenterVisibleContext = new RawContextKey<boolean>('notificationCenterVisible', false);
-export const NotificationsToastsVisibleContext = new RawContextKey<boolean>('notificationToastsVisible', false);
+export const NotificationFocusedContext = new RawContextKey<Boolean>('notificationFocus', true);
+export const NotificationsCenterVisiBleContext = new RawContextKey<Boolean>('notificationCenterVisiBle', false);
+export const NotificationsToastsVisiBleContext = new RawContextKey<Boolean>('notificationToastsVisiBle', false);
 
 export interface INotificationsCenterController {
-	readonly isVisible: boolean;
+	readonly isVisiBle: Boolean;
 
 	show(): void;
 	hide(): void;
@@ -63,7 +63,7 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 		}
 
 		const list = listService.lastFocusedList;
-		if (list instanceof WorkbenchList) {
+		if (list instanceof WorkBenchList) {
 			const focusedElement = list.getFocusedElements()[0];
 			if (isNotificationViewItem(focusedElement)) {
 				return focusedElement;
@@ -80,17 +80,17 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Hide Notifications Center
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: HIDE_NOTIFICATIONS_CENTER,
-		weight: KeybindingWeight.WorkbenchContrib + 50,
-		when: NotificationsCenterVisibleContext,
+		weight: KeyBindingWeight.WorkBenchContriB + 50,
+		when: NotificationsCenterVisiBleContext,
 		primary: KeyCode.Escape,
 		handler: accessor => center.hide()
 	});
 
 	// Toggle Notifications Center
 	CommandsRegistry.registerCommand(TOGGLE_NOTIFICATIONS_CENTER, accessor => {
-		if (center.isVisible) {
+		if (center.isVisiBle) {
 			center.hide();
 		} else {
 			toasts.hide();
@@ -99,9 +99,9 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Clear Notification
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: CLEAR_NOTIFICATION,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		when: NotificationFocusedContext,
 		primary: KeyCode.Delete,
 		mac: {
@@ -116,9 +116,9 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Expand Notification
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: EXPAND_NOTIFICATION,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		when: NotificationFocusedContext,
 		primary: KeyCode.RightArrow,
 		handler: (accessor, args?) => {
@@ -130,9 +130,9 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Collapse Notification
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: COLLAPSE_NOTIFICATION,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		when: NotificationFocusedContext,
 		primary: KeyCode.LeftArrow,
 		handler: (accessor, args?) => {
@@ -144,9 +144,9 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Toggle Notification
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: TOGGLE_NOTIFICATION,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		when: NotificationFocusedContext,
 		primary: KeyCode.Space,
 		secondary: [KeyCode.Enter],
@@ -159,10 +159,10 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Hide Toasts
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: HIDE_NOTIFICATION_TOAST,
-		weight: KeybindingWeight.WorkbenchContrib + 50,
-		when: NotificationsToastsVisibleContext,
+		weight: KeyBindingWeight.WorkBenchContriB + 50,
+		when: NotificationsToastsVisiBleContext,
 		primary: KeyCode.Escape,
 		handler: accessor => toasts.hide()
 	});
@@ -171,10 +171,10 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	CommandsRegistry.registerCommand(FOCUS_NOTIFICATION_TOAST, () => toasts.focus());
 
 	// Focus Next Toast
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: FOCUS_NEXT_NOTIFICATION_TOAST,
-		weight: KeybindingWeight.WorkbenchContrib,
-		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisibleContext),
+		weight: KeyBindingWeight.WorkBenchContriB,
+		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisiBleContext),
 		primary: KeyCode.DownArrow,
 		handler: (accessor) => {
 			toasts.focusNext();
@@ -182,10 +182,10 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Focus Previous Toast
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: FOCUS_PREVIOUS_NOTIFICATION_TOAST,
-		weight: KeybindingWeight.WorkbenchContrib,
-		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisibleContext),
+		weight: KeyBindingWeight.WorkBenchContriB,
+		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisiBleContext),
 		primary: KeyCode.UpArrow,
 		handler: (accessor) => {
 			toasts.focusPrevious();
@@ -193,10 +193,10 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Focus First Toast
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: FOCUS_FIRST_NOTIFICATION_TOAST,
-		weight: KeybindingWeight.WorkbenchContrib,
-		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisibleContext),
+		weight: KeyBindingWeight.WorkBenchContriB,
+		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisiBleContext),
 		primary: KeyCode.PageUp,
 		secondary: [KeyCode.Home],
 		handler: (accessor) => {
@@ -205,10 +205,10 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	});
 
 	// Focus Last Toast
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: FOCUS_LAST_NOTIFICATION_TOAST,
-		weight: KeybindingWeight.WorkbenchContrib,
-		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisibleContext),
+		weight: KeyBindingWeight.WorkBenchContriB,
+		when: ContextKeyExpr.and(NotificationFocusedContext, NotificationsToastsVisiBleContext),
 		primary: KeyCode.PageDown,
 		secondary: [KeyCode.End],
 		handler: (accessor) => {
@@ -222,7 +222,7 @@ export function registerNotificationCommands(center: INotificationsCenterControl
 	// Commands for Command Palette
 	const category = { value: localize('notifications', "Notifications"), original: 'Notifications' };
 	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: SHOW_NOTIFICATIONS_CENTER, title: { value: localize('showNotifications', "Show Notifications"), original: 'Show Notifications' }, category } });
-	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: HIDE_NOTIFICATIONS_CENTER, title: { value: localize('hideNotifications', "Hide Notifications"), original: 'Hide Notifications' }, category }, when: NotificationsCenterVisibleContext });
+	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: HIDE_NOTIFICATIONS_CENTER, title: { value: localize('hideNotifications', "Hide Notifications"), original: 'Hide Notifications' }, category }, when: NotificationsCenterVisiBleContext });
 	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: CLEAR_ALL_NOTIFICATIONS, title: { value: localize('clearAllNotifications', "Clear All Notifications"), original: 'Clear All Notifications' }, category } });
-	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: FOCUS_NOTIFICATION_TOAST, title: { value: localize('focusNotificationToasts', "Focus Notification Toast"), original: 'Focus Notification Toast' }, category }, when: NotificationsToastsVisibleContext });
+	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: FOCUS_NOTIFICATION_TOAST, title: { value: localize('focusNotificationToasts', "Focus Notification Toast"), original: 'Focus Notification Toast' }, category }, when: NotificationsToastsVisiBleContext });
 }

@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionRunner, IActionViewItem } from 'vs/base/common/actions';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
+import { IAction, IActionRunner, IActionViewItem } from 'vs/Base/common/actions';
+import { ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
+import { AnchorAlignment } from 'vs/Base/Browser/ui/contextview/contextview';
 
 export interface IContextMenuEvent {
-	readonly shiftKey?: boolean;
-	readonly ctrlKey?: boolean;
-	readonly altKey?: boolean;
-	readonly metaKey?: boolean;
+	readonly shiftKey?: Boolean;
+	readonly ctrlKey?: Boolean;
+	readonly altKey?: Boolean;
+	readonly metaKey?: Boolean;
 }
 
 export interface IContextMenuDelegate {
-	getAnchor(): HTMLElement | { x: number; y: number; width?: number; height?: number; };
+	getAnchor(): HTMLElement | { x: numBer; y: numBer; width?: numBer; height?: numBer; };
 	getActions(): IAction[];
-	getCheckedActionsRepresentation?(action: IAction): 'radio' | 'checkbox';
+	getCheckedActionsRepresentation?(action: IAction): 'radio' | 'checkBox';
 	getActionViewItem?(action: IAction): IActionViewItem | undefined;
 	getActionsContext?(event?: IContextMenuEvent): any;
-	getKeyBinding?(action: IAction): ResolvedKeybinding | undefined;
+	getKeyBinding?(action: IAction): ResolvedKeyBinding | undefined;
 	getMenuClassName?(): string;
-	onHide?(didCancel: boolean): void;
+	onHide?(didCancel: Boolean): void;
 	actionRunner?: IActionRunner;
-	autoSelectFirstItem?: boolean;
+	autoSelectFirstItem?: Boolean;
 	anchorAlignment?: AnchorAlignment;
 	domForShadowRoot?: HTMLElement;
 }

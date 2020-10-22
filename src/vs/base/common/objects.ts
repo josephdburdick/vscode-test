@@ -3,103 +3,103 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isObject, isUndefinedOrNull, isArray } from 'vs/base/common/types';
+import { isOBject, isUndefinedOrNull, isArray } from 'vs/Base/common/types';
 
-export function deepClone<T>(obj: T): T {
-	if (!obj || typeof obj !== 'object') {
-		return obj;
+export function deepClone<T>(oBj: T): T {
+	if (!oBj || typeof oBj !== 'oBject') {
+		return oBj;
 	}
-	if (obj instanceof RegExp) {
-		// See https://github.com/microsoft/TypeScript/issues/10990
-		return obj as any;
+	if (oBj instanceof RegExp) {
+		// See https://githuB.com/microsoft/TypeScript/issues/10990
+		return oBj as any;
 	}
-	const result: any = Array.isArray(obj) ? [] : {};
-	Object.keys(<any>obj).forEach((key: string) => {
-		if ((<any>obj)[key] && typeof (<any>obj)[key] === 'object') {
-			result[key] = deepClone((<any>obj)[key]);
+	const result: any = Array.isArray(oBj) ? [] : {};
+	OBject.keys(<any>oBj).forEach((key: string) => {
+		if ((<any>oBj)[key] && typeof (<any>oBj)[key] === 'oBject') {
+			result[key] = deepClone((<any>oBj)[key]);
 		} else {
-			result[key] = (<any>obj)[key];
+			result[key] = (<any>oBj)[key];
 		}
 	});
 	return result;
 }
 
-export function deepFreeze<T>(obj: T): T {
-	if (!obj || typeof obj !== 'object') {
-		return obj;
+export function deepFreeze<T>(oBj: T): T {
+	if (!oBj || typeof oBj !== 'oBject') {
+		return oBj;
 	}
-	const stack: any[] = [obj];
+	const stack: any[] = [oBj];
 	while (stack.length > 0) {
-		const obj = stack.shift();
-		Object.freeze(obj);
-		for (const key in obj) {
-			if (_hasOwnProperty.call(obj, key)) {
-				const prop = obj[key];
-				if (typeof prop === 'object' && !Object.isFrozen(prop)) {
+		const oBj = stack.shift();
+		OBject.freeze(oBj);
+		for (const key in oBj) {
+			if (_hasOwnProperty.call(oBj, key)) {
+				const prop = oBj[key];
+				if (typeof prop === 'oBject' && !OBject.isFrozen(prop)) {
 					stack.push(prop);
 				}
 			}
 		}
 	}
-	return obj;
+	return oBj;
 }
 
-const _hasOwnProperty = Object.prototype.hasOwnProperty;
+const _hasOwnProperty = OBject.prototype.hasOwnProperty;
 
-export function cloneAndChange(obj: any, changer: (orig: any) => any): any {
-	return _cloneAndChange(obj, changer, new Set());
+export function cloneAndChange(oBj: any, changer: (orig: any) => any): any {
+	return _cloneAndChange(oBj, changer, new Set());
 }
 
-function _cloneAndChange(obj: any, changer: (orig: any) => any, seen: Set<any>): any {
-	if (isUndefinedOrNull(obj)) {
-		return obj;
+function _cloneAndChange(oBj: any, changer: (orig: any) => any, seen: Set<any>): any {
+	if (isUndefinedOrNull(oBj)) {
+		return oBj;
 	}
 
-	const changed = changer(obj);
+	const changed = changer(oBj);
 	if (typeof changed !== 'undefined') {
 		return changed;
 	}
 
-	if (isArray(obj)) {
+	if (isArray(oBj)) {
 		const r1: any[] = [];
-		for (const e of obj) {
+		for (const e of oBj) {
 			r1.push(_cloneAndChange(e, changer, seen));
 		}
 		return r1;
 	}
 
-	if (isObject(obj)) {
-		if (seen.has(obj)) {
+	if (isOBject(oBj)) {
+		if (seen.has(oBj)) {
 			throw new Error('Cannot clone recursive data-structure');
 		}
-		seen.add(obj);
+		seen.add(oBj);
 		const r2 = {};
-		for (let i2 in obj) {
-			if (_hasOwnProperty.call(obj, i2)) {
-				(r2 as any)[i2] = _cloneAndChange(obj[i2], changer, seen);
+		for (let i2 in oBj) {
+			if (_hasOwnProperty.call(oBj, i2)) {
+				(r2 as any)[i2] = _cloneAndChange(oBj[i2], changer, seen);
 			}
 		}
-		seen.delete(obj);
+		seen.delete(oBj);
 		return r2;
 	}
 
-	return obj;
+	return oBj;
 }
 
 /**
  * Copies all properties of source into destination. The optional parameter "overwrite" allows to control
- * if existing properties on the destination should be overwritten or not. Defaults to true (overwrite).
+ * if existing properties on the destination should Be overwritten or not. Defaults to true (overwrite).
  */
-export function mixin(destination: any, source: any, overwrite: boolean = true): any {
-	if (!isObject(destination)) {
+export function mixin(destination: any, source: any, overwrite: Boolean = true): any {
+	if (!isOBject(destination)) {
 		return source;
 	}
 
-	if (isObject(source)) {
-		Object.keys(source).forEach(key => {
+	if (isOBject(source)) {
+		OBject.keys(source).forEach(key => {
 			if (key in destination) {
 				if (overwrite) {
-					if (isObject(destination[key]) && isObject(source[key])) {
+					if (isOBject(destination[key]) && isOBject(source[key])) {
 						mixin(destination[key], source[key], overwrite);
 					} else {
 						destination[key] = source[key];
@@ -113,7 +113,7 @@ export function mixin(destination: any, source: any, overwrite: boolean = true):
 	return destination;
 }
 
-export function equals(one: any, other: any): boolean {
+export function equals(one: any, other: any): Boolean {
 	if (one === other) {
 		return true;
 	}
@@ -123,14 +123,14 @@ export function equals(one: any, other: any): boolean {
 	if (typeof one !== typeof other) {
 		return false;
 	}
-	if (typeof one !== 'object') {
+	if (typeof one !== 'oBject') {
 		return false;
 	}
 	if ((Array.isArray(one)) !== (Array.isArray(other))) {
 		return false;
 	}
 
-	let i: number;
+	let i: numBer;
 	let key: string;
 
 	if (Array.isArray(one)) {
@@ -167,14 +167,14 @@ export function equals(one: any, other: any): boolean {
 }
 
 /**
- * Calls `JSON.Stringify` with a replacer to break apart any circular references.
+ * Calls `JSON.Stringify` with a replacer to Break apart any circular references.
  * This prevents `JSON`.stringify` from throwing the exception
  *  "Uncaught TypeError: Converting circular structure to JSON"
  */
-export function safeStringify(obj: any): string {
+export function safeStringify(oBj: any): string {
 	const seen = new Set<any>();
-	return JSON.stringify(obj, (key, value) => {
-		if (isObject(value) || Array.isArray(value)) {
+	return JSON.stringify(oBj, (key, value) => {
+		if (isOBject(value) || Array.isArray(value)) {
 			if (seen.has(value)) {
 				return '[Circular]';
 			} else {
@@ -185,35 +185,35 @@ export function safeStringify(obj: any): string {
 	});
 }
 
-export function getOrDefault<T, R>(obj: T, fn: (obj: T) => R | undefined, defaultValue: R): R {
-	const result = fn(obj);
+export function getOrDefault<T, R>(oBj: T, fn: (oBj: T) => R | undefined, defaultValue: R): R {
+	const result = fn(oBj);
 	return typeof result === 'undefined' ? defaultValue : result;
 }
 
-type obj = { [key: string]: any; };
+type oBj = { [key: string]: any; };
 /**
- * Returns an object that has keys for each value that is different in the base object. Keys
- * that do not exist in the target but in the base object are not considered.
+ * Returns an oBject that has keys for each value that is different in the Base oBject. Keys
+ * that do not exist in the target But in the Base oBject are not considered.
  *
  * Note: This is not a deep-diffing method, so the values are strictly taken into the resulting
- * object if they differ.
+ * oBject if they differ.
  *
- * @param base the object to diff against
- * @param obj the object to use for diffing
+ * @param Base the oBject to diff against
+ * @param oBj the oBject to use for diffing
  */
-export function distinct(base: obj, target: obj): obj {
-	const result = Object.create(null);
+export function distinct(Base: oBj, target: oBj): oBj {
+	const result = OBject.create(null);
 
-	if (!base || !target) {
+	if (!Base || !target) {
 		return result;
 	}
 
-	const targetKeys = Object.keys(target);
+	const targetKeys = OBject.keys(target);
 	targetKeys.forEach(k => {
-		const baseValue = base[k];
+		const BaseValue = Base[k];
 		const targetValue = target[k];
 
-		if (!equals(baseValue, targetValue)) {
+		if (!equals(BaseValue, targetValue)) {
 			result[k] = targetValue;
 		}
 	});

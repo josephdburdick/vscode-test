@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { IndentationToSpacesCommand, IndentationToTabsCommand } from 'vs/editor/contrib/indentation/indentation';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { IndentationToSpacesCommand, IndentationToTaBsCommand } from 'vs/editor/contriB/indentation/indentation';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
 
-function testIndentationToSpacesCommand(lines: string[], selection: Selection, tabSize: number, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new IndentationToSpacesCommand(sel, tabSize), expectedLines, expectedSelection);
+function testIndentationToSpacesCommand(lines: string[], selection: Selection, taBSize: numBer, expectedLines: string[], expectedSelection: Selection): void {
+	testCommand(lines, null, selection, (sel) => new IndentationToSpacesCommand(sel, taBSize), expectedLines, expectedSelection);
 }
 
-function testIndentationToTabsCommand(lines: string[], selection: Selection, tabSize: number, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new IndentationToTabsCommand(sel, tabSize), expectedLines, expectedSelection);
+function testIndentationToTaBsCommand(lines: string[], selection: Selection, taBSize: numBer, expectedLines: string[], expectedSelection: Selection): void {
+	testCommand(lines, null, selection, (sel) => new IndentationToTaBsCommand(sel, taBSize), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Indentation to Spaces', () => {
+suite('Editor ContriB - Indentation to Spaces', () => {
 
-	test('single tabs only at start of line', function () {
+	test('single taBs only at start of line', function () {
 		testIndentationToSpacesCommand(
 			[
 				'first',
@@ -39,7 +39,7 @@ suite('Editor Contrib - Indentation to Spaces', () => {
 		);
 	});
 
-	test('multiple tabs at start of line', function () {
+	test('multiple taBs at start of line', function () {
 		testIndentationToSpacesCommand(
 			[
 				'\t\tfirst',
@@ -61,7 +61,7 @@ suite('Editor Contrib - Indentation to Spaces', () => {
 		);
 	});
 
-	test('multiple tabs', function () {
+	test('multiple taBs', function () {
 		testIndentationToSpacesCommand(
 			[
 				'\t\tfirst\t',
@@ -102,10 +102,10 @@ suite('Editor Contrib - Indentation to Spaces', () => {
 	});
 });
 
-suite('Editor Contrib - Indentation to Tabs', () => {
+suite('Editor ContriB - Indentation to TaBs', () => {
 
 	test('spaces only at start of line', function () {
-		testIndentationToTabsCommand(
+		testIndentationToTaBsCommand(
 			[
 				'    first',
 				'second line',
@@ -127,7 +127,7 @@ suite('Editor Contrib - Indentation to Tabs', () => {
 	});
 
 	test('multiple spaces at start of line', function () {
-		testIndentationToTabsCommand(
+		testIndentationToTaBsCommand(
 			[
 				'first',
 				'   second line',
@@ -149,7 +149,7 @@ suite('Editor Contrib - Indentation to Tabs', () => {
 	});
 
 	test('multiple spaces', function () {
-		testIndentationToTabsCommand(
+		testIndentationToTaBsCommand(
 			[
 				'      first   ',
 				'  second     line \t',
@@ -173,12 +173,12 @@ suite('Editor Contrib - Indentation to Tabs', () => {
 	test('issue #45996', function () {
 		testIndentationToSpacesCommand(
 			[
-				'\tabc',
+				'\taBc',
 			],
 			new Selection(1, 3, 1, 3),
 			4,
 			[
-				'    abc',
+				'    aBc',
 			],
 			new Selection(1, 6, 1, 6)
 		);

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IPanel } from 'vs/workbench/common/panel';
+import { Event } from 'vs/Base/common/event';
+import { IPanel } from 'vs/workBench/common/panel';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IBadge } from 'vs/workbench/services/activity/common/activity';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IBadge } from 'vs/workBench/services/activity/common/activity';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { IProgressIndicator } from 'vs/platform/progress/common/progress';
 
 export const IPanelService = createDecorator<IPanelService>('panelService');
@@ -22,13 +22,13 @@ export interface IPanelService {
 
 	readonly _serviceBrand: undefined;
 
-	readonly onDidPanelOpen: Event<{ readonly panel: IPanel, readonly focus: boolean }>;
+	readonly onDidPanelOpen: Event<{ readonly panel: IPanel, readonly focus: Boolean }>;
 	readonly onDidPanelClose: Event<IPanel>;
 
 	/**
-	 * Opens a panel with the given identifier and pass keyboard focus to it if specified.
+	 * Opens a panel with the given identifier and pass keyBoard focus to it if specified.
 	 */
-	openPanel(id?: string, focus?: boolean): Promise<IPanel | undefined>;
+	openPanel(id?: string, focus?: Boolean): Promise<IPanel | undefined>;
 
 	/**
 	 * Returns the current active panel or null if none
@@ -36,12 +36,12 @@ export interface IPanelService {
 	getActivePanel(): IPanel | undefined;
 
 	/**
-	 * Returns the panel by id.
+	 * Returns the panel By id.
 	 */
 	getPanel(id: string): IPanelIdentifier | undefined;
 
 	/**
-	 * Returns all built-in panels following the default order
+	 * Returns all Built-in panels following the default order
 	 */
 	getPanels(): readonly IPanelIdentifier[];
 
@@ -51,14 +51,14 @@ export interface IPanelService {
 	getPinnedPanels(): readonly IPanelIdentifier[];
 
 	/**
-	 * Returns the progress indicator for the panel bar.
+	 * Returns the progress indicator for the panel Bar.
 	 */
 	getProgressIndicator(id: string): IProgressIndicator | undefined;
 
 	/**
 	 * Show an activity in a panel.
 	 */
-	showActivity(panelId: string, badge: IBadge, clazz?: string): IDisposable;
+	showActivity(panelId: string, Badge: IBadge, clazz?: string): IDisposaBle;
 
 	/**
 	 * Hide the currently active panel.

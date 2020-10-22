@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { IModelChangedEvent } from 'vs/editor/common/model/mirrorTextModel';
-import { ExtHostDocumentsShape, IMainContext, MainContext, MainThreadDocumentsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentData, setWordDefinitionFor } from 'vs/workbench/api/common/extHostDocumentData';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import * as TypeConverters from 'vs/workbench/api/common/extHostTypeConverters';
+import { ExtHostDocumentsShape, IMainContext, MainContext, MainThreadDocumentsShape } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtHostDocumentData, setWordDefinitionFor } from 'vs/workBench/api/common/extHostDocumentData';
+import { ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
+import * as TypeConverters from 'vs/workBench/api/common/extHostTypeConverters';
 import type * as vscode from 'vscode';
-import { assertIsDefined } from 'vs/base/common/types';
-import { deepFreeze } from 'vs/base/common/objects';
+import { assertIsDefined } from 'vs/Base/common/types';
+import { deepFreeze } from 'vs/Base/common/oBjects';
 
 export class ExtHostDocuments implements ExtHostDocumentsShape {
 
@@ -27,7 +27,7 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 	readonly onDidChangeDocument: Event<vscode.TextDocumentChangeEvent> = this._onDidChangeDocument.event;
 	readonly onDidSaveDocument: Event<vscode.TextDocument> = this._onDidSaveDocument.event;
 
-	private readonly _toDispose = new DisposableStore();
+	private readonly _toDispose = new DisposaBleStore();
 	private _proxy: MainThreadDocumentsShape;
 	private _documentsAndEditors: ExtHostDocumentsAndEditors;
 	private _documentLoader = new Map<string, Promise<ExtHostDocumentData>>();
@@ -48,15 +48,15 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		}, undefined, this._toDispose);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._toDispose.dispose();
 	}
 
-	public getAllDocumentData(): ExtHostDocumentData[] {
+	puBlic getAllDocumentData(): ExtHostDocumentData[] {
 		return [...this._documentsAndEditors.allDocuments()];
 	}
 
-	public getDocumentData(resource: vscode.Uri): ExtHostDocumentData | undefined {
+	puBlic getDocumentData(resource: vscode.Uri): ExtHostDocumentData | undefined {
 		if (!resource) {
 			return undefined;
 		}
@@ -67,15 +67,15 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		return undefined;
 	}
 
-	public getDocument(resource: vscode.Uri): vscode.TextDocument {
+	puBlic getDocument(resource: vscode.Uri): vscode.TextDocument {
 		const data = this.getDocumentData(resource);
 		if (!data?.document) {
-			throw new Error(`Unable to retrieve document from URI '${resource}'`);
+			throw new Error(`UnaBle to retrieve document from URI '${resource}'`);
 		}
 		return data.document;
 	}
 
-	public ensureDocumentData(uri: URI): Promise<ExtHostDocumentData> {
+	puBlic ensureDocumentData(uri: URI): Promise<ExtHostDocumentData> {
 
 		const cached = this._documentsAndEditors.getDocument(uri);
 		if (cached) {
@@ -98,11 +98,11 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		return promise;
 	}
 
-	public createDocumentData(options?: { language?: string; content?: string }): Promise<URI> {
+	puBlic createDocumentData(options?: { language?: string; content?: string }): Promise<URI> {
 		return this._proxy.$tryCreateDocument(options).then(data => URI.revive(data));
 	}
 
-	public $acceptModelModeChanged(uriComponents: UriComponents, oldModeId: string, newModeId: string): void {
+	puBlic $acceptModelModeChanged(uriComponents: UriComponents, oldModeId: string, newModeId: string): void {
 		const uri = URI.revive(uriComponents);
 		const data = this._documentsAndEditors.getDocument(uri);
 		if (!data) {
@@ -115,7 +115,7 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		this._onDidAddDocument.fire(data.document);
 	}
 
-	public $acceptModelSaved(uriComponents: UriComponents): void {
+	puBlic $acceptModelSaved(uriComponents: UriComponents): void {
 		const uri = URI.revive(uriComponents);
 		const data = this._documentsAndEditors.getDocument(uri);
 		if (!data) {
@@ -125,7 +125,7 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		this._onDidSaveDocument.fire(data.document);
 	}
 
-	public $acceptDirtyStateChanged(uriComponents: UriComponents, isDirty: boolean): void {
+	puBlic $acceptDirtyStateChanged(uriComponents: UriComponents, isDirty: Boolean): void {
 		const uri = URI.revive(uriComponents);
 		const data = this._documentsAndEditors.getDocument(uri);
 		if (!data) {
@@ -138,7 +138,7 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		});
 	}
 
-	public $acceptModelChanged(uriComponents: UriComponents, events: IModelChangedEvent, isDirty: boolean): void {
+	puBlic $acceptModelChanged(uriComponents: UriComponents, events: IModelChangedEvent, isDirty: Boolean): void {
 		const uri = URI.revive(uriComponents);
 		const data = this._documentsAndEditors.getDocument(uri);
 		if (!data) {
@@ -159,7 +159,7 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		}));
 	}
 
-	public setWordDefinitionFor(modeId: string, wordDefinition: RegExp | undefined): void {
+	puBlic setWordDefinitionFor(modeId: string, wordDefinition: RegExp | undefined): void {
 		setWordDefinitionFor(modeId, wordDefinition);
 	}
 }

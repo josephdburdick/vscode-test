@@ -8,13 +8,13 @@ import { Lazy } from '../utils/lazy';
 import { Command } from './commandManager';
 
 export class SelectTypeScriptVersionCommand implements Command {
-	public readonly id = 'typescript.selectTypeScriptVersion';
+	puBlic readonly id = 'typescript.selectTypeScriptVersion';
 
-	public constructor(
+	puBlic constructor(
 		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		this.lazyClientHost.value.serviceClient.showVersionPicker();
 	}
 }

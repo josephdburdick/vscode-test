@@ -9,16 +9,16 @@ export interface MessagePoster {
 	/**
 	 * Post a message to the markdown extension
 	 */
-	postMessage(type: string, body: object): void;
+	postMessage(type: string, Body: oBject): void;
 }
 
 export const createPosterForVsCode = (vscode: any) => {
 	return new class implements MessagePoster {
-		postMessage(type: string, body: object): void {
+		postMessage(type: string, Body: oBject): void {
 			vscode.postMessage({
 				type,
 				source: getSettings().source,
-				body
+				Body
 			});
 		}
 	};

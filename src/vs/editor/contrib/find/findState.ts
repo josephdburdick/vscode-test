@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { Range } from 'vs/editor/common/core/range';
 import { MATCHES_LIMIT } from './findModel';
 
 export interface FindReplaceStateChangedEvent {
-	moveCursor: boolean;
-	updateHistory: boolean;
+	moveCursor: Boolean;
+	updateHistory: Boolean;
 
-	searchString: boolean;
-	replaceString: boolean;
-	isRevealed: boolean;
-	isReplaceRevealed: boolean;
-	isRegex: boolean;
-	wholeWord: boolean;
-	matchCase: boolean;
-	preserveCase: boolean;
-	searchScope: boolean;
-	matchesPosition: boolean;
-	matchesCount: boolean;
-	currentMatch: boolean;
-	loop: boolean;
+	searchString: Boolean;
+	replaceString: Boolean;
+	isRevealed: Boolean;
+	isReplaceRevealed: Boolean;
+	isRegex: Boolean;
+	wholeWord: Boolean;
+	matchCase: Boolean;
+	preserveCase: Boolean;
+	searchScope: Boolean;
+	matchesPosition: Boolean;
+	matchesCount: Boolean;
+	currentMatch: Boolean;
+	loop: Boolean;
 }
 
 export const enum FindOptionOverride {
@@ -36,21 +36,21 @@ export const enum FindOptionOverride {
 export interface INewFindReplaceState {
 	searchString?: string;
 	replaceString?: string;
-	isRevealed?: boolean;
-	isReplaceRevealed?: boolean;
-	isRegex?: boolean;
+	isRevealed?: Boolean;
+	isReplaceRevealed?: Boolean;
+	isRegex?: Boolean;
 	isRegexOverride?: FindOptionOverride;
-	wholeWord?: boolean;
+	wholeWord?: Boolean;
 	wholeWordOverride?: FindOptionOverride;
-	matchCase?: boolean;
+	matchCase?: Boolean;
 	matchCaseOverride?: FindOptionOverride;
-	preserveCase?: boolean;
+	preserveCase?: Boolean;
 	preserveCaseOverride?: FindOptionOverride;
 	searchScope?: Range[] | null;
-	loop?: boolean;
+	loop?: Boolean;
 }
 
-function effectiveOptionValue(override: FindOptionOverride, value: boolean): boolean {
+function effectiveOptionValue(override: FindOptionOverride, value: Boolean): Boolean {
 	if (override === FindOptionOverride.True) {
 		return true;
 	}
@@ -60,45 +60,45 @@ function effectiveOptionValue(override: FindOptionOverride, value: boolean): boo
 	return value;
 }
 
-export class FindReplaceState extends Disposable {
+export class FindReplaceState extends DisposaBle {
 	private _searchString: string;
 	private _replaceString: string;
-	private _isRevealed: boolean;
-	private _isReplaceRevealed: boolean;
-	private _isRegex: boolean;
+	private _isRevealed: Boolean;
+	private _isReplaceRevealed: Boolean;
+	private _isRegex: Boolean;
 	private _isRegexOverride: FindOptionOverride;
-	private _wholeWord: boolean;
+	private _wholeWord: Boolean;
 	private _wholeWordOverride: FindOptionOverride;
-	private _matchCase: boolean;
+	private _matchCase: Boolean;
 	private _matchCaseOverride: FindOptionOverride;
-	private _preserveCase: boolean;
+	private _preserveCase: Boolean;
 	private _preserveCaseOverride: FindOptionOverride;
 	private _searchScope: Range[] | null;
-	private _matchesPosition: number;
-	private _matchesCount: number;
+	private _matchesPosition: numBer;
+	private _matchesCount: numBer;
 	private _currentMatch: Range | null;
-	private _loop: boolean;
+	private _loop: Boolean;
 	private readonly _onFindReplaceStateChange = this._register(new Emitter<FindReplaceStateChangedEvent>());
 
-	public get searchString(): string { return this._searchString; }
-	public get replaceString(): string { return this._replaceString; }
-	public get isRevealed(): boolean { return this._isRevealed; }
-	public get isReplaceRevealed(): boolean { return this._isReplaceRevealed; }
-	public get isRegex(): boolean { return effectiveOptionValue(this._isRegexOverride, this._isRegex); }
-	public get wholeWord(): boolean { return effectiveOptionValue(this._wholeWordOverride, this._wholeWord); }
-	public get matchCase(): boolean { return effectiveOptionValue(this._matchCaseOverride, this._matchCase); }
-	public get preserveCase(): boolean { return effectiveOptionValue(this._preserveCaseOverride, this._preserveCase); }
+	puBlic get searchString(): string { return this._searchString; }
+	puBlic get replaceString(): string { return this._replaceString; }
+	puBlic get isRevealed(): Boolean { return this._isRevealed; }
+	puBlic get isReplaceRevealed(): Boolean { return this._isReplaceRevealed; }
+	puBlic get isRegex(): Boolean { return effectiveOptionValue(this._isRegexOverride, this._isRegex); }
+	puBlic get wholeWord(): Boolean { return effectiveOptionValue(this._wholeWordOverride, this._wholeWord); }
+	puBlic get matchCase(): Boolean { return effectiveOptionValue(this._matchCaseOverride, this._matchCase); }
+	puBlic get preserveCase(): Boolean { return effectiveOptionValue(this._preserveCaseOverride, this._preserveCase); }
 
-	public get actualIsRegex(): boolean { return this._isRegex; }
-	public get actualWholeWord(): boolean { return this._wholeWord; }
-	public get actualMatchCase(): boolean { return this._matchCase; }
-	public get actualPreserveCase(): boolean { return this._preserveCase; }
+	puBlic get actualIsRegex(): Boolean { return this._isRegex; }
+	puBlic get actualWholeWord(): Boolean { return this._wholeWord; }
+	puBlic get actualMatchCase(): Boolean { return this._matchCase; }
+	puBlic get actualPreserveCase(): Boolean { return this._preserveCase; }
 
-	public get searchScope(): Range[] | null { return this._searchScope; }
-	public get matchesPosition(): number { return this._matchesPosition; }
-	public get matchesCount(): number { return this._matchesCount; }
-	public get currentMatch(): Range | null { return this._currentMatch; }
-	public readonly onFindReplaceStateChange: Event<FindReplaceStateChangedEvent> = this._onFindReplaceStateChange.event;
+	puBlic get searchScope(): Range[] | null { return this._searchScope; }
+	puBlic get matchesPosition(): numBer { return this._matchesPosition; }
+	puBlic get matchesCount(): numBer { return this._matchesCount; }
+	puBlic get currentMatch(): Range | null { return this._currentMatch; }
+	puBlic readonly onFindReplaceStateChange: Event<FindReplaceStateChangedEvent> = this._onFindReplaceStateChange.event;
 
 	constructor() {
 		super();
@@ -121,7 +121,7 @@ export class FindReplaceState extends Disposable {
 		this._loop = true;
 	}
 
-	public changeMatchInfo(matchesPosition: number, matchesCount: number, currentMatch: Range | undefined): void {
+	puBlic changeMatchInfo(matchesPosition: numBer, matchesCount: numBer, currentMatch: Range | undefined): void {
 		let changeEvent: FindReplaceStateChangedEvent = {
 			moveCursor: false,
 			updateHistory: false,
@@ -172,7 +172,7 @@ export class FindReplaceState extends Disposable {
 		}
 	}
 
-	public change(newState: INewFindReplaceState, moveCursor: boolean, updateHistory: boolean = true): void {
+	puBlic change(newState: INewFindReplaceState, moveCursor: Boolean, updateHistory: Boolean = true): void {
 		let changeEvent: FindReplaceStateChangedEvent = {
 			moveCursor: moveCursor,
 			updateHistory: updateHistory,
@@ -284,15 +284,15 @@ export class FindReplaceState extends Disposable {
 		}
 	}
 
-	public canNavigateBack(): boolean {
+	puBlic canNavigateBack(): Boolean {
 		return this.canNavigateInLoop() || (this.matchesPosition !== 1);
 	}
 
-	public canNavigateForward(): boolean {
+	puBlic canNavigateForward(): Boolean {
 		return this.canNavigateInLoop() || (this.matchesPosition < this.matchesCount);
 	}
 
-	private canNavigateInLoop(): boolean {
+	private canNavigateInLoop(): Boolean {
 		return this._loop || (this.matchesCount >= MATCHES_LIMIT);
 	}
 

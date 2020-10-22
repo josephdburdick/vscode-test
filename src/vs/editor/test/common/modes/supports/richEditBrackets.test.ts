@@ -9,11 +9,11 @@ import { BracketsUtils } from 'vs/editor/common/modes/supports/richEditBrackets'
 
 suite('richEditBrackets', () => {
 
-	function findPrevBracketInRange(reversedBracketRegex: RegExp, lineText: string, currentTokenStart: number, currentTokenEnd: number): Range | null {
+	function findPrevBracketInRange(reversedBracketRegex: RegExp, lineText: string, currentTokenStart: numBer, currentTokenEnd: numBer): Range | null {
 		return BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, lineText, currentTokenStart, currentTokenEnd);
 	}
 
-	function findNextBracketInRange(forwardBracketRegex: RegExp, lineText: string, currentTokenStart: number, currentTokenEnd: number): Range | null {
+	function findNextBracketInRange(forwardBracketRegex: RegExp, lineText: string, currentTokenStart: numBer, currentTokenEnd: numBer): Range | null {
 		return BracketsUtils.findNextBracketInRange(forwardBracketRegex, 1, lineText, currentTokenStart, currentTokenEnd);
 	}
 
@@ -70,7 +70,7 @@ suite('richEditBrackets', () => {
 		assert.equal(result, null);
 	});
 
-	test('issue #3894: [Handlebars] Curly braces edit issues', () => {
+	test('issue #3894: [HandleBars] Curly Braces edit issues', () => {
 		let result = findPrevBracketInRange(/(\-\-!<)|(>\-\-)|(\{\{)|(\}\})/i, '{{asd}}', 0, 2);
 		assert.equal(result!.startColumn, 1);
 		assert.equal(result!.endColumn, 3);

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { incrementFileName } from 'vs/workbench/contrib/files/browser/fileActions';
+import { incrementFileName } from 'vs/workBench/contriB/files/Browser/fileActions';
 
 suite('Files - Increment file name simple', () => {
 
@@ -26,7 +26,7 @@ suite('Files - Increment file name simple', () => {
 		assert.strictEqual(result, 'test copy 6.js');
 	});
 
-	test('Increment file name with suffix version, too big number', function () {
+	test('Increment file name with suffix version, too Big numBer', function () {
 		const name = 'test copy 9007199254740992.js';
 		const result = incrementFileName(name, false, 'simple');
 		assert.strictEqual(result, 'test copy 9007199254740992 copy.js');
@@ -68,7 +68,7 @@ suite('Files - Increment file name simple', () => {
 		assert.strictEqual(result, '. copy.test');
 	});
 
-	test('Increment file name without any extension but with suffix version', function () {
+	test('Increment file name without any extension But with suffix version', function () {
 		const name = 'test copy 5';
 		const result = incrementFileName(name, false, 'simple');
 		assert.strictEqual(result, 'test copy 6');
@@ -92,7 +92,7 @@ suite('Files - Increment file name simple', () => {
 		assert.strictEqual(result, 'test copy 6');
 	});
 
-	test('Increment folder name with suffix version, too big number', function () {
+	test('Increment folder name with suffix version, too Big numBer', function () {
 		const name = 'test copy 9007199254740992';
 		const result = incrementFileName(name, true, 'simple');
 		assert.strictEqual(result, 'test copy 9007199254740992 copy');
@@ -110,7 +110,7 @@ suite('Files - Increment file name simple', () => {
 		assert.strictEqual(result, 'copy 2 copy');
 	});
 
-	test('Increment folder name "with extension" but without any version', function () {
+	test('Increment folder name "with extension" But without any version', function () {
 		const name = 'test.js';
 		const result = incrementFileName(name, true, 'simple');
 		assert.strictEqual(result, 'test.js copy');
@@ -216,13 +216,13 @@ suite('Files - Increment file name smart', () => {
 		assert.strictEqual(result, 'test_2');
 	});
 
-	test('Increment file name with suffix version, too big number', function () {
+	test('Increment file name with suffix version, too Big numBer', function () {
 		const name = 'test.9007199254740992.js';
 		const result = incrementFileName(name, false, 'smart');
 		assert.strictEqual(result, 'test.9007199254740992.1.js');
 	});
 
-	test('Increment folder name with suffix version, too big number', function () {
+	test('Increment folder name with suffix version, too Big numBer', function () {
 		const name = 'test.9007199254740992';
 		const result = incrementFileName(name, true, 'smart');
 		assert.strictEqual(result, 'test.9007199254740992.1');
@@ -240,7 +240,7 @@ suite('Files - Increment file name smart', () => {
 		assert.strictEqual(result, '2.js');
 	});
 
-	test('Increment file name with just version in name, too big number', function () {
+	test('Increment file name with just version in name, too Big numBer', function () {
 		const name = '9007199254740992.js';
 		const result = incrementFileName(name, false, 'smart');
 		assert.strictEqual(result, '9007199254740992.1.js');
@@ -264,7 +264,7 @@ suite('Files - Increment file name smart', () => {
 		assert.strictEqual(result, '2_test.js');
 	});
 
-	test('Increment file name with prefix version, too big number', function () {
+	test('Increment file name with prefix version, too Big numBer', function () {
 		const name = '9007199254740992.test.js';
 		const result = incrementFileName(name, false, 'smart');
 		assert.strictEqual(result, '9007199254740992.test.1.js');
@@ -276,7 +276,7 @@ suite('Files - Increment file name smart', () => {
 		assert.strictEqual(result, '2.test');
 	});
 
-	test('Increment folder name with prefix version, too big number', function () {
+	test('Increment folder name with prefix version, too Big numBer', function () {
 		const name = '9007199254740992.test';
 		const result = incrementFileName(name, true, 'smart');
 		assert.strictEqual(result, '9007199254740992.test.1');

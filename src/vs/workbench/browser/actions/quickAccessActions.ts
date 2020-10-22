@@ -5,40 +5,40 @@
 
 import { localize } from 'vs/nls';
 import { MenuRegistry, MenuId, Action2, registerAction2, ILocalizedString } from 'vs/platform/actions/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingsRegistry, KeybindingWeight, IKeybindingRule } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingsRegistry, KeyBindingWeight, IKeyBindingRule } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { IQuickInputService, ItemActivation } from 'vs/platform/quickinput/common/quickInput';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { inQuickPickContext, defaultQuickAccessContext, getQuickNavigateHandler } from 'vs/workbench/browser/quickaccess';
+import { inQuickPickContext, defaultQuickAccessContext, getQuickNavigateHandler } from 'vs/workBench/Browser/quickaccess';
 
 //#region Quick access management commands and keys
 
-const globalQuickAccessKeybinding = {
+const gloBalQuickAccessKeyBinding = {
 	primary: KeyMod.CtrlCmd | KeyCode.KEY_P,
 	secondary: [KeyMod.CtrlCmd | KeyCode.KEY_E],
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_P, secondary: undefined }
 };
 
-const QUICKACCESS_ACTION_ID = 'workbench.action.quickOpen';
+const QUICKACCESS_ACTION_ID = 'workBench.action.quickOpen';
 
 MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 	command: { id: QUICKACCESS_ACTION_ID, title: { value: localize('quickOpen', "Go to File..."), original: 'Go to File...' } }
 });
 
-KeybindingsRegistry.registerKeybindingRule({
+KeyBindingsRegistry.registerKeyBindingRule({
 	id: QUICKACCESS_ACTION_ID,
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: undefined,
-	primary: globalQuickAccessKeybinding.primary,
-	secondary: globalQuickAccessKeybinding.secondary,
-	mac: globalQuickAccessKeybinding.mac
+	primary: gloBalQuickAccessKeyBinding.primary,
+	secondary: gloBalQuickAccessKeyBinding.secondary,
+	mac: gloBalQuickAccessKeyBinding.mac
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.closeQuickOpen',
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.closeQuickOpen',
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: inQuickPickContext,
 	primary: KeyCode.Escape, secondary: [KeyMod.Shift | KeyCode.Escape],
 	handler: accessor => {
@@ -47,9 +47,9 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.acceptSelectedQuickOpenItem',
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.acceptSelectedQuickOpenItem',
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: inQuickPickContext,
 	primary: 0,
 	handler: accessor => {
@@ -58,9 +58,9 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.alternativeAcceptSelectedQuickOpenItem',
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.alternativeAcceptSelectedQuickOpenItem',
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: inQuickPickContext,
 	primary: 0,
 	handler: accessor => {
@@ -69,9 +69,9 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.focusQuickOpen',
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.focusQuickOpen',
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: inQuickPickContext,
 	primary: 0,
 	handler: accessor => {
@@ -80,34 +80,34 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-const quickAccessNavigateNextInFilePickerId = 'workbench.action.quickOpenNavigateNextInFilePicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const quickAccessNavigateNextInFilePickerId = 'workBench.action.quickOpenNavigateNextInFilePicker';
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: quickAccessNavigateNextInFilePickerId,
-	weight: KeybindingWeight.WorkbenchContrib + 50,
+	weight: KeyBindingWeight.WorkBenchContriB + 50,
 	handler: getQuickNavigateHandler(quickAccessNavigateNextInFilePickerId, true),
 	when: defaultQuickAccessContext,
-	primary: globalQuickAccessKeybinding.primary,
-	secondary: globalQuickAccessKeybinding.secondary,
-	mac: globalQuickAccessKeybinding.mac
+	primary: gloBalQuickAccessKeyBinding.primary,
+	secondary: gloBalQuickAccessKeyBinding.secondary,
+	mac: gloBalQuickAccessKeyBinding.mac
 });
 
-const quickAccessNavigatePreviousInFilePickerId = 'workbench.action.quickOpenNavigatePreviousInFilePicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const quickAccessNavigatePreviousInFilePickerId = 'workBench.action.quickOpenNavigatePreviousInFilePicker';
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: quickAccessNavigatePreviousInFilePickerId,
-	weight: KeybindingWeight.WorkbenchContrib + 50,
+	weight: KeyBindingWeight.WorkBenchContriB + 50,
 	handler: getQuickNavigateHandler(quickAccessNavigatePreviousInFilePickerId, false),
 	when: defaultQuickAccessContext,
-	primary: globalQuickAccessKeybinding.primary | KeyMod.Shift,
-	secondary: [globalQuickAccessKeybinding.secondary[0] | KeyMod.Shift],
+	primary: gloBalQuickAccessKeyBinding.primary | KeyMod.Shift,
+	secondary: [gloBalQuickAccessKeyBinding.secondary[0] | KeyMod.Shift],
 	mac: {
-		primary: globalQuickAccessKeybinding.mac.primary | KeyMod.Shift,
+		primary: gloBalQuickAccessKeyBinding.mac.primary | KeyMod.Shift,
 		secondary: undefined
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.quickPickManyToggle',
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.quickPickManyToggle',
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: inQuickPickContext,
 	primary: 0,
 	handler: accessor => {
@@ -116,9 +116,9 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.quickInputBack',
-	weight: KeybindingWeight.WorkbenchContrib + 50,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	id: 'workBench.action.quickInputBack',
+	weight: KeyBindingWeight.WorkBenchContriB + 50,
 	when: inQuickPickContext,
 	primary: 0,
 	win: { primary: KeyMod.Alt | KeyCode.LeftArrow },
@@ -126,7 +126,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	linux: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.US_MINUS },
 	handler: accessor => {
 		const quickInputService = accessor.get(IQuickInputService);
-		quickInputService.back();
+		quickInputService.Back();
 	}
 });
 
@@ -148,7 +148,7 @@ CommandsRegistry.registerCommand({
 	}
 });
 
-CommandsRegistry.registerCommand('workbench.action.quickOpenPreviousEditor', async accessor => {
+CommandsRegistry.registerCommand('workBench.action.quickOpenPreviousEditor', async accessor => {
 	const quickInputService = accessor.get(IQuickInputService);
 
 	quickInputService.quickAccess.show('', { itemActivation: ItemActivation.SECOND });
@@ -156,26 +156,26 @@ CommandsRegistry.registerCommand('workbench.action.quickOpenPreviousEditor', asy
 
 //#endregion
 
-//#region Workbench actions
+//#region WorkBench actions
 
 class BaseQuickAccessNavigateAction extends Action2 {
 
 	constructor(
 		private id: string,
 		title: ILocalizedString,
-		private next: boolean,
-		private quickNavigate: boolean,
-		keybinding?: Omit<IKeybindingRule, 'id'>
+		private next: Boolean,
+		private quickNavigate: Boolean,
+		keyBinding?: Omit<IKeyBindingRule, 'id'>
 	) {
-		super({ id, title, f1: true, keybinding });
+		super({ id, title, f1: true, keyBinding });
 	}
 
 	async run(accessor: ServicesAccessor): Promise<void> {
-		const keybindingService = accessor.get(IKeybindingService);
+		const keyBindingService = accessor.get(IKeyBindingService);
 		const quickInputService = accessor.get(IQuickInputService);
 
-		const keys = keybindingService.lookupKeybindings(this.id);
-		const quickNavigate = this.quickNavigate ? { keybindings: keys } : undefined;
+		const keys = keyBindingService.lookupKeyBindings(this.id);
+		const quickNavigate = this.quickNavigate ? { keyBindings: keys } : undefined;
 
 		quickInputService.navigate(this.next, quickNavigate);
 	}
@@ -184,14 +184,14 @@ class BaseQuickAccessNavigateAction extends Action2 {
 class QuickAccessNavigateNextAction extends BaseQuickAccessNavigateAction {
 
 	constructor() {
-		super('workbench.action.quickOpenNavigateNext', { value: localize('quickNavigateNext', "Navigate Next in Quick Open"), original: 'Navigate Next in Quick Open' }, true, true);
+		super('workBench.action.quickOpenNavigateNext', { value: localize('quickNavigateNext', "Navigate Next in Quick Open"), original: 'Navigate Next in Quick Open' }, true, true);
 	}
 }
 
 class QuickAccessNavigatePreviousAction extends BaseQuickAccessNavigateAction {
 
 	constructor() {
-		super('workbench.action.quickOpenNavigatePrevious', { value: localize('quickNavigatePrevious', "Navigate Previous in Quick Open"), original: 'Navigate Previous in Quick Open' }, false, true);
+		super('workBench.action.quickOpenNavigatePrevious', { value: localize('quickNavigatePrevious', "Navigate Previous in Quick Open"), original: 'Navigate Previous in Quick Open' }, false, true);
 	}
 }
 
@@ -199,12 +199,12 @@ class QuickAccessSelectNextAction extends BaseQuickAccessNavigateAction {
 
 	constructor() {
 		super(
-			'workbench.action.quickOpenSelectNext',
+			'workBench.action.quickOpenSelectNext',
 			{ value: localize('quickSelectNext', "Select Next in Quick Open"), original: 'Select Next in Quick Open' },
 			true,
 			false,
 			{
-				weight: KeybindingWeight.WorkbenchContrib + 50,
+				weight: KeyBindingWeight.WorkBenchContriB + 50,
 				when: inQuickPickContext,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_N }
@@ -217,12 +217,12 @@ class QuickAccessSelectPreviousAction extends BaseQuickAccessNavigateAction {
 
 	constructor() {
 		super(
-			'workbench.action.quickOpenSelectPrevious',
+			'workBench.action.quickOpenSelectPrevious',
 			{ value: localize('quickSelectPrevious', "Select Previous in Quick Open"), original: 'Select Previous in Quick Open' },
 			false,
 			false,
 			{
-				weight: KeybindingWeight.WorkbenchContrib + 50,
+				weight: KeyBindingWeight.WorkBenchContriB + 50,
 				when: inQuickPickContext,
 				primary: 0,
 				mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_P }

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export interface IActivity {
-	readonly badge: IBadge;
+	readonly Badge: IBadge;
 	readonly clazz?: string;
-	readonly priority?: number;
+	readonly priority?: numBer;
 }
 
 export const IActivityService = createDecorator<IActivityService>('activityService');
@@ -21,22 +21,22 @@ export interface IActivityService {
 	/**
 	 * Show activity for the given view container
 	 */
-	showViewContainerActivity(viewContainerId: string, badge: IActivity): IDisposable;
+	showViewContainerActivity(viewContainerId: string, Badge: IActivity): IDisposaBle;
 
 	/**
 	 * Show activity for the given view
 	 */
-	showViewActivity(viewId: string, badge: IActivity): IDisposable;
+	showViewActivity(viewId: string, Badge: IActivity): IDisposaBle;
 
 	/**
 	 * Show accounts activity
 	 */
-	showAccountsActivity(activity: IActivity): IDisposable;
+	showAccountsActivity(activity: IActivity): IDisposaBle;
 
 	/**
-	 * Show global activity
+	 * Show gloBal activity
 	 */
-	showGlobalActivity(activity: IActivity): IDisposable;
+	showGloBalActivity(activity: IActivity): IDisposaBle;
 }
 
 export interface IBadge {
@@ -45,7 +45,7 @@ export interface IBadge {
 
 class BaseBadge implements IBadge {
 
-	constructor(public readonly descriptorFn: (arg: any) => string) {
+	constructor(puBlic readonly descriptorFn: (arg: any) => string) {
 		this.descriptorFn = descriptorFn;
 	}
 
@@ -54,22 +54,22 @@ class BaseBadge implements IBadge {
 	}
 }
 
-export class NumberBadge extends BaseBadge {
+export class NumBerBadge extends BaseBadge {
 
-	constructor(public readonly number: number, descriptorFn: (num: number) => string) {
+	constructor(puBlic readonly numBer: numBer, descriptorFn: (num: numBer) => string) {
 		super(descriptorFn);
 
-		this.number = number;
+		this.numBer = numBer;
 	}
 
 	getDescription(): string {
-		return this.descriptorFn(this.number);
+		return this.descriptorFn(this.numBer);
 	}
 }
 
 export class TextBadge extends BaseBadge {
 
-	constructor(public readonly text: string, descriptorFn: () => string) {
+	constructor(puBlic readonly text: string, descriptorFn: () => string) {
 		super(descriptorFn);
 	}
 }

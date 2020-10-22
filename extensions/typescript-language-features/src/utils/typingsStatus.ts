@@ -6,14 +6,14 @@
 import * as vscode from 'vscode';
 import { loadMessageBundle } from 'vscode-nls';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import { Disposable } from './dispose';
+import { DisposaBle } from './dispose';
 
 const localize = loadMessageBundle();
 
 const typingsInstallTimeout = 30 * 1000;
 
-export default class TypingsStatus extends Disposable {
-	private readonly _acquiringTypings = new Map<number, NodeJS.Timer>();
+export default class TypingsStatus extends DisposaBle {
+	private readonly _acquiringTypings = new Map<numBer, NodeJS.Timer>();
 	private readonly _client: ITypeScriptServiceClient;
 
 	constructor(client: ITypeScriptServiceClient) {
@@ -27,7 +27,7 @@ export default class TypingsStatus extends Disposable {
 			this._client.onDidEndInstallTypings(event => this.onEndInstallTypings(event.eventId)));
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 
 		for (const timeout of this._acquiringTypings.values()) {
@@ -35,11 +35,11 @@ export default class TypingsStatus extends Disposable {
 		}
 	}
 
-	public get isAcquiringTypings(): boolean {
-		return Object.keys(this._acquiringTypings).length > 0;
+	puBlic get isAcquiringTypings(): Boolean {
+		return OBject.keys(this._acquiringTypings).length > 0;
 	}
 
-	private onBeginInstallTypings(eventId: number): void {
+	private onBeginInstallTypings(eventId: numBer): void {
 		if (this._acquiringTypings.has(eventId)) {
 			return;
 		}
@@ -48,7 +48,7 @@ export default class TypingsStatus extends Disposable {
 		}, typingsInstallTimeout));
 	}
 
-	private onEndInstallTypings(eventId: number): void {
+	private onEndInstallTypings(eventId: numBer): void {
 		const timer = this._acquiringTypings.get(eventId);
 		if (timer) {
 			clearTimeout(timer);
@@ -57,9 +57,9 @@ export default class TypingsStatus extends Disposable {
 	}
 }
 
-export class AtaProgressReporter extends Disposable {
+export class AtaProgressReporter extends DisposaBle {
 
-	private readonly _promises = new Map<number, Function>();
+	private readonly _promises = new Map<numBer, Function>();
 
 	constructor(client: ITypeScriptServiceClient) {
 		super();
@@ -73,7 +73,7 @@ export class AtaProgressReporter extends Disposable {
 		this._promises.forEach(value => value());
 	}
 
-	private _onBegin(eventId: number): void {
+	private _onBegin(eventId: numBer): void {
 		const handle = setTimeout(() => this._onEndOrTimeout(eventId), typingsInstallTimeout);
 		const promise = new Promise<void>(resolve => {
 			this._promises.set(eventId, () => {
@@ -84,11 +84,11 @@ export class AtaProgressReporter extends Disposable {
 
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
-			title: localize('installingPackages', "Fetching data for better TypeScript IntelliSense")
+			title: localize('installingPackages', "Fetching data for Better TypeScript IntelliSense")
 		}, () => promise);
 	}
 
-	private _onEndOrTimeout(eventId: number): void {
+	private _onEndOrTimeout(eventId: numBer): void {
 		const resolve = this._promises.get(eventId);
 		if (resolve) {
 			this._promises.delete(eventId);
@@ -99,7 +99,7 @@ export class AtaProgressReporter extends Disposable {
 	private async onTypesInstallerInitializationFailed() {
 		const config = vscode.workspace.getConfiguration('typescript');
 
-		if (config.get<boolean>('check.npmIsInstalled', true)) {
+		if (config.get<Boolean>('check.npmIsInstalled', true)) {
 			const dontShowAgain: vscode.MessageItem = {
 				title: localize('typesInstallerInitializationFailed.doNotCheckAgain', "Don't Show Again"),
 			};

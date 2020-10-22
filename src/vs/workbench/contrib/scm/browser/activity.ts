@@ -4,39 +4,39 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { basename } from 'vs/base/common/resources';
-import { IDisposable, dispose, Disposable, DisposableStore, combinedDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { VIEW_PANE_ID, ISCMService, ISCMRepository } from 'vs/workbench/contrib/scm/common/scm';
-import { IActivityService, NumberBadge } from 'vs/workbench/services/activity/common/activity';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { Basename } from 'vs/Base/common/resources';
+import { IDisposaBle, dispose, DisposaBle, DisposaBleStore, comBinedDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { VIEW_PANE_ID, ISCMService, ISCMRepository } from 'vs/workBench/contriB/scm/common/scm';
+import { IActivityService, NumBerBadge } from 'vs/workBench/services/activity/common/activity';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IStatusbarService, StatusbarAlignment as MainThreadStatusBarAlignment } from 'vs/workbench/services/statusbar/common/statusbar';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IStatusBarService, StatusBarAlignment as MainThreadStatusBarAlignment } from 'vs/workBench/services/statusBar/common/statusBar';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { EditorResourceAccessor } from 'vs/workbench/common/editor';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { EditorResourceAccessor } from 'vs/workBench/common/editor';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
-function getCount(repository: ISCMRepository): number {
-	if (typeof repository.provider.count === 'number') {
+function getCount(repository: ISCMRepository): numBer {
+	if (typeof repository.provider.count === 'numBer') {
 		return repository.provider.count;
 	} else {
-		return repository.provider.groups.elements.reduce<number>((r, g) => r + g.elements.length, 0);
+		return repository.provider.groups.elements.reduce<numBer>((r, g) => r + g.elements.length, 0);
 	}
 }
 
-export class SCMStatusController implements IWorkbenchContribution {
+export class SCMStatusController implements IWorkBenchContriBution {
 
-	private statusBarDisposable: IDisposable = Disposable.None;
-	private focusDisposable: IDisposable = Disposable.None;
+	private statusBarDisposaBle: IDisposaBle = DisposaBle.None;
+	private focusDisposaBle: IDisposaBle = DisposaBle.None;
 	private focusedRepository: ISCMRepository | undefined = undefined;
 	private focusedProviderContextKey: IContextKey<string | undefined>;
-	private readonly badgeDisposable = new MutableDisposable<IDisposable>();
-	private disposables: IDisposable[] = [];
+	private readonly BadgeDisposaBle = new MutaBleDisposaBle<IDisposaBle>();
+	private disposaBles: IDisposaBle[] = [];
 
 	constructor(
 		@ISCMService private readonly scmService: ISCMService,
-		@IStatusbarService private readonly statusbarService: IStatusbarService,
+		@IStatusBarService private readonly statusBarService: IStatusBarService,
 		@IContextKeyService readonly contextKeyService: IContextKeyService,
 		@IActivityService private readonly activityService: IActivityService,
 		@IEditorService private readonly editorService: IEditorService,
@@ -44,29 +44,29 @@ export class SCMStatusController implements IWorkbenchContribution {
 		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
 	) {
 		this.focusedProviderContextKey = contextKeyService.createKey<string | undefined>('scmProvider', undefined);
-		this.scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposables);
-		this.scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposables);
+		this.scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposaBles);
+		this.scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposaBles);
 
 		const onDidChangeSCMCountBadge = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration('scm.countBadge'));
-		onDidChangeSCMCountBadge(this.renderActivityCount, this, this.disposables);
+		onDidChangeSCMCountBadge(this.renderActivityCount, this, this.disposaBles);
 
 		for (const repository of this.scmService.repositories) {
 			this.onDidAddRepository(repository);
 		}
 
-		editorService.onDidActiveEditorChange(this.tryFocusRepositoryBasedOnActiveEditor, this, this.disposables);
+		editorService.onDidActiveEditorChange(this.tryFocusRepositoryBasedOnActiveEditor, this, this.disposaBles);
 		this.renderActivityCount();
 	}
 
-	private tryFocusRepositoryBasedOnActiveEditor(): boolean {
+	private tryFocusRepositoryBasedOnActiveEditor(): Boolean {
 		const resource = EditorResourceAccessor.getOriginalUri(this.editorService.activeEditor);
 
 		if (!resource) {
 			return false;
 		}
 
-		let bestRepository: ISCMRepository | null = null;
-		let bestMatchLength = Number.POSITIVE_INFINITY;
+		let BestRepository: ISCMRepository | null = null;
+		let BestMatchLength = NumBer.POSITIVE_INFINITY;
 
 		for (const repository of this.scmService.repositories) {
 			const root = repository.provider.rootUri;
@@ -77,30 +77,30 @@ export class SCMStatusController implements IWorkbenchContribution {
 
 			const path = this.uriIdentityService.extUri.relativePath(root, resource);
 
-			if (path && !/^\.\./.test(path) && path.length < bestMatchLength) {
-				bestRepository = repository;
-				bestMatchLength = path.length;
+			if (path && !/^\.\./.test(path) && path.length < BestMatchLength) {
+				BestRepository = repository;
+				BestMatchLength = path.length;
 			}
 		}
 
-		if (!bestRepository) {
+		if (!BestRepository) {
 			return false;
 		}
 
-		this.focusRepository(bestRepository);
+		this.focusRepository(BestRepository);
 		return true;
 	}
 
 	private onDidAddRepository(repository: ISCMRepository): void {
-		const selectedDisposable = Event.filter(repository.onDidChangeSelection, selected => selected)(() => this.focusRepository(repository));
+		const selectedDisposaBle = Event.filter(repository.onDidChangeSelection, selected => selected)(() => this.focusRepository(repository));
 
 		const onDidChange = Event.any(repository.provider.onDidChange, repository.provider.onDidChangeResources);
-		const changeDisposable = onDidChange(() => this.renderActivityCount());
+		const changeDisposaBle = onDidChange(() => this.renderActivityCount());
 
 		const onDidRemove = Event.filter(this.scmService.onDidRemoveRepository, e => e === repository);
-		const removeDisposable = onDidRemove(() => {
-			disposable.dispose();
-			this.disposables = this.disposables.filter(d => d !== removeDisposable);
+		const removeDisposaBle = onDidRemove(() => {
+			disposaBle.dispose();
+			this.disposaBles = this.disposaBles.filter(d => d !== removeDisposaBle);
 
 			if (this.scmService.repositories.length === 0) {
 				this.focusRepository(undefined);
@@ -109,8 +109,8 @@ export class SCMStatusController implements IWorkbenchContribution {
 			this.renderActivityCount();
 		});
 
-		const disposable = combinedDisposable(selectedDisposable, changeDisposable, removeDisposable);
-		this.disposables.push(disposable);
+		const disposaBle = comBinedDisposaBle(selectedDisposaBle, changeDisposaBle, removeDisposaBle);
+		this.disposaBles.push(disposaBle);
 
 		if (this.focusedRepository) {
 			return;
@@ -136,12 +136,12 @@ export class SCMStatusController implements IWorkbenchContribution {
 			return;
 		}
 
-		this.focusDisposable.dispose();
+		this.focusDisposaBle.dispose();
 		this.focusedRepository = repository;
 		this.focusedProviderContextKey.set(repository && repository.provider.id);
 
 		if (repository && repository.provider.onDidChangeStatusBarCommands) {
-			this.focusDisposable = repository.provider.onDidChangeStatusBarCommands(() => this.renderStatusBar(repository));
+			this.focusDisposaBle = repository.provider.onDidChangeStatusBarCommands(() => this.renderStatusBar(repository));
 		}
 
 		this.renderStatusBar(repository);
@@ -149,34 +149,34 @@ export class SCMStatusController implements IWorkbenchContribution {
 	}
 
 	private renderStatusBar(repository: ISCMRepository | undefined): void {
-		this.statusBarDisposable.dispose();
+		this.statusBarDisposaBle.dispose();
 
 		if (!repository) {
 			return;
 		}
 
 		const commands = repository.provider.statusBarCommands || [];
-		const label = repository.provider.rootUri
-			? `${basename(repository.provider.rootUri)} (${repository.provider.label})`
-			: repository.provider.label;
+		const laBel = repository.provider.rootUri
+			? `${Basename(repository.provider.rootUri)} (${repository.provider.laBel})`
+			: repository.provider.laBel;
 
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 		for (const command of commands) {
-			const tooltip = `${label} - ${command.tooltip}`;
+			const tooltip = `${laBel} - ${command.tooltip}`;
 
-			disposables.add(this.statusbarService.addEntry({
+			disposaBles.add(this.statusBarService.addEntry({
 				text: command.title,
-				ariaLabel: command.tooltip || label,
+				ariaLaBel: command.tooltip || laBel,
 				tooltip,
 				command: command.id ? command : undefined
 			}, 'status.scm', localize('status.scm', "Source Control"), MainThreadStatusBarAlignment.LEFT, 10000));
 		}
 
-		this.statusBarDisposable = disposables;
+		this.statusBarDisposaBle = disposaBles;
 	}
 
 	private renderActivityCount(): void {
-		this.badgeDisposable.clear();
+		this.BadgeDisposaBle.clear();
 
 		const countBadgeType = this.configurationService.getValue<'all' | 'focused' | 'off'>('scm.countBadge');
 
@@ -189,17 +189,17 @@ export class SCMStatusController implements IWorkbenchContribution {
 		}
 
 		if (count > 0) {
-			const badge = new NumberBadge(count, num => localize('scmPendingChangesBadge', '{0} pending changes', num));
-			this.badgeDisposable.value = this.activityService.showViewActivity(VIEW_PANE_ID, { badge, clazz: 'scm-viewlet-label' });
+			const Badge = new NumBerBadge(count, num => localize('scmPendingChangesBadge', '{0} pending changes', num));
+			this.BadgeDisposaBle.value = this.activityService.showViewActivity(VIEW_PANE_ID, { Badge, clazz: 'scm-viewlet-laBel' });
 		} else {
-			this.badgeDisposable.clear();
+			this.BadgeDisposaBle.clear();
 		}
 	}
 
 	dispose(): void {
-		this.focusDisposable.dispose();
-		this.statusBarDisposable.dispose();
-		this.badgeDisposable.dispose();
-		this.disposables = dispose(this.disposables);
+		this.focusDisposaBle.dispose();
+		this.statusBarDisposaBle.dispose();
+		this.BadgeDisposaBle.dispose();
+		this.disposaBles = dispose(this.disposaBles);
 	}
 }

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import * as editorCommon from 'vs/editor/common/editorCommon';
@@ -18,14 +18,14 @@ export interface IDecorationsViewportData {
 	 */
 	readonly decorations: ViewModelDecoration[];
 	/**
-	 * inline decorations grouped by each line in the viewport.
+	 * inline decorations grouped By each line in the viewport.
 	 */
 	readonly inlineDecorations: InlineDecoration[][];
 }
 
-export class ViewModelDecorations implements IDisposable {
+export class ViewModelDecorations implements IDisposaBle {
 
-	private readonly editorId: number;
+	private readonly editorId: numBer;
 	private readonly model: ITextModel;
 	private readonly configuration: editorCommon.IConfiguration;
 	private readonly _linesCollection: IViewModelLinesCollection;
@@ -36,13 +36,13 @@ export class ViewModelDecorations implements IDisposable {
 	private _cachedModelDecorationsResolver: IDecorationsViewportData | null;
 	private _cachedModelDecorationsResolverViewRange: Range | null;
 
-	constructor(editorId: number, model: ITextModel, configuration: editorCommon.IConfiguration, linesCollection: IViewModelLinesCollection, coordinatesConverter: ICoordinatesConverter) {
+	constructor(editorId: numBer, model: ITextModel, configuration: editorCommon.IConfiguration, linesCollection: IViewModelLinesCollection, coordinatesConverter: ICoordinatesConverter) {
 		this.editorId = editorId;
 		this.model = model;
 		this.configuration = configuration;
 		this._linesCollection = linesCollection;
 		this._coordinatesConverter = coordinatesConverter;
-		this._decorationsCache = Object.create(null);
+		this._decorationsCache = OBject.create(null);
 		this._cachedModelDecorationsResolver = null;
 		this._cachedModelDecorationsResolverViewRange = null;
 	}
@@ -52,23 +52,23 @@ export class ViewModelDecorations implements IDisposable {
 		this._cachedModelDecorationsResolverViewRange = null;
 	}
 
-	public dispose(): void {
-		this._decorationsCache = Object.create(null);
+	puBlic dispose(): void {
+		this._decorationsCache = OBject.create(null);
 		this._clearCachedModelDecorationsResolver();
 	}
 
-	public reset(): void {
-		this._decorationsCache = Object.create(null);
+	puBlic reset(): void {
+		this._decorationsCache = OBject.create(null);
 		this._clearCachedModelDecorationsResolver();
 	}
 
-	public onModelDecorationsChanged(): void {
-		this._decorationsCache = Object.create(null);
+	puBlic onModelDecorationsChanged(): void {
+		this._decorationsCache = OBject.create(null);
 		this._clearCachedModelDecorationsResolver();
 	}
 
-	public onLineMappingChanged(): void {
-		this._decorationsCache = Object.create(null);
+	puBlic onLineMappingChanged(): void {
+		this._decorationsCache = OBject.create(null);
 
 		this._clearCachedModelDecorationsResolver();
 	}
@@ -81,9 +81,9 @@ export class ViewModelDecorations implements IDisposable {
 			const options = modelDecoration.options;
 			let viewRange: Range;
 			if (options.isWholeLine) {
-				const start = this._coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.startLineNumber, 1));
-				const end = this._coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.endLineNumber, this.model.getLineMaxColumn(modelRange.endLineNumber)));
-				viewRange = new Range(start.lineNumber, start.column, end.lineNumber, end.column);
+				const start = this._coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.startLineNumBer, 1));
+				const end = this._coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.endLineNumBer, this.model.getLineMaxColumn(modelRange.endLineNumBer)));
+				viewRange = new Range(start.lineNumBer, start.column, end.lineNumBer, end.column);
 			} else {
 				viewRange = this._coordinatesConverter.convertModelRangeToViewRange(modelRange);
 			}
@@ -93,7 +93,7 @@ export class ViewModelDecorations implements IDisposable {
 		return r;
 	}
 
-	public getDecorationsViewportData(viewRange: Range): IDecorationsViewportData {
+	puBlic getDecorationsViewportData(viewRange: Range): IDecorationsViewportData {
 		let cacheIsValid = (this._cachedModelDecorationsResolver !== null);
 		cacheIsValid = cacheIsValid && (viewRange.equalsRange(this._cachedModelDecorationsResolverViewRange));
 		if (!cacheIsValid) {
@@ -105,13 +105,13 @@ export class ViewModelDecorations implements IDisposable {
 
 	private _getDecorationsViewportData(viewportRange: Range): IDecorationsViewportData {
 		const modelDecorations = this._linesCollection.getDecorationsInRange(viewportRange, this.editorId, filterValidationDecorations(this.configuration.options));
-		const startLineNumber = viewportRange.startLineNumber;
-		const endLineNumber = viewportRange.endLineNumber;
+		const startLineNumBer = viewportRange.startLineNumBer;
+		const endLineNumBer = viewportRange.endLineNumBer;
 
 		let decorationsInViewport: ViewModelDecoration[] = [], decorationsInViewportLen = 0;
 		let inlineDecorations: InlineDecoration[][] = [];
-		for (let j = startLineNumber; j <= endLineNumber; j++) {
-			inlineDecorations[j - startLineNumber] = [];
+		for (let j = startLineNumBer; j <= endLineNumBer; j++) {
+			inlineDecorations[j - startLineNumBer] = [];
 		}
 
 		for (let i = 0, len = modelDecorations.length; i < len; i++) {
@@ -125,30 +125,30 @@ export class ViewModelDecorations implements IDisposable {
 
 			if (decorationOptions.inlineClassName) {
 				let inlineDecoration = new InlineDecoration(viewRange, decorationOptions.inlineClassName, decorationOptions.inlineClassNameAffectsLetterSpacing ? InlineDecorationType.RegularAffectingLetterSpacing : InlineDecorationType.Regular);
-				let intersectedStartLineNumber = Math.max(startLineNumber, viewRange.startLineNumber);
-				let intersectedEndLineNumber = Math.min(endLineNumber, viewRange.endLineNumber);
-				for (let j = intersectedStartLineNumber; j <= intersectedEndLineNumber; j++) {
-					inlineDecorations[j - startLineNumber].push(inlineDecoration);
+				let intersectedStartLineNumBer = Math.max(startLineNumBer, viewRange.startLineNumBer);
+				let intersectedEndLineNumBer = Math.min(endLineNumBer, viewRange.endLineNumBer);
+				for (let j = intersectedStartLineNumBer; j <= intersectedEndLineNumBer; j++) {
+					inlineDecorations[j - startLineNumBer].push(inlineDecoration);
 				}
 			}
-			if (decorationOptions.beforeContentClassName) {
-				if (startLineNumber <= viewRange.startLineNumber && viewRange.startLineNumber <= endLineNumber) {
+			if (decorationOptions.BeforeContentClassName) {
+				if (startLineNumBer <= viewRange.startLineNumBer && viewRange.startLineNumBer <= endLineNumBer) {
 					let inlineDecoration = new InlineDecoration(
-						new Range(viewRange.startLineNumber, viewRange.startColumn, viewRange.startLineNumber, viewRange.startColumn),
-						decorationOptions.beforeContentClassName,
+						new Range(viewRange.startLineNumBer, viewRange.startColumn, viewRange.startLineNumBer, viewRange.startColumn),
+						decorationOptions.BeforeContentClassName,
 						InlineDecorationType.Before
 					);
-					inlineDecorations[viewRange.startLineNumber - startLineNumber].push(inlineDecoration);
+					inlineDecorations[viewRange.startLineNumBer - startLineNumBer].push(inlineDecoration);
 				}
 			}
 			if (decorationOptions.afterContentClassName) {
-				if (startLineNumber <= viewRange.endLineNumber && viewRange.endLineNumber <= endLineNumber) {
+				if (startLineNumBer <= viewRange.endLineNumBer && viewRange.endLineNumBer <= endLineNumBer) {
 					let inlineDecoration = new InlineDecoration(
-						new Range(viewRange.endLineNumber, viewRange.endColumn, viewRange.endLineNumber, viewRange.endColumn),
+						new Range(viewRange.endLineNumBer, viewRange.endColumn, viewRange.endLineNumBer, viewRange.endColumn),
 						decorationOptions.afterContentClassName,
 						InlineDecorationType.After
 					);
-					inlineDecorations[viewRange.endLineNumber - startLineNumber].push(inlineDecoration);
+					inlineDecorations[viewRange.endLineNumBer - startLineNumBer].push(inlineDecoration);
 				}
 			}
 		}

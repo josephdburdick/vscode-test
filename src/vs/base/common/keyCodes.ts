@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { OperatingSystem } from 'vs/base/common/platform';
-import { illegalArgument } from 'vs/base/common/errors';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { illegalArgument } from 'vs/Base/common/errors';
 
 /**
  * Virtual Key Codes, the value does not hold any inherent meaning.
- * Inspired somewhat from https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
- * But these are "more general", as they should work across browsers & OS`s.
+ * Inspired somewhat from https://msdn.microsoft.com/en-us/liBrary/windows/desktop/dd375731(v=vs.85).aspx
+ * But these are "more general", as they should work across Browsers & OS`s.
  */
 export const enum KeyCode {
 	/**
@@ -18,7 +18,7 @@ export const enum KeyCode {
 	Unknown = 0,
 
 	Backspace = 1,
-	Tab = 2,
+	TaB = 2,
 	Enter = 3,
 	Shift = 4,
 	Ctrl = 5,
@@ -103,66 +103,66 @@ export const enum KeyCode {
 	ScrollLock = 79,
 
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ';:' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ';:' key
 	 */
 	US_SEMICOLON = 80,
 	/**
 	 * For any country/region, the '+' key
-	 * For the US standard keyboard, the '=+' key
+	 * For the US standard keyBoard, the '=+' key
 	 */
 	US_EQUAL = 81,
 	/**
 	 * For any country/region, the ',' key
-	 * For the US standard keyboard, the ',<' key
+	 * For the US standard keyBoard, the ',<' key
 	 */
 	US_COMMA = 82,
 	/**
 	 * For any country/region, the '-' key
-	 * For the US standard keyboard, the '-_' key
+	 * For the US standard keyBoard, the '-_' key
 	 */
 	US_MINUS = 83,
 	/**
 	 * For any country/region, the '.' key
-	 * For the US standard keyboard, the '.>' key
+	 * For the US standard keyBoard, the '.>' key
 	 */
 	US_DOT = 84,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '/?' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '/?' key
 	 */
 	US_SLASH = 85,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '`~' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '`~' key
 	 */
 	US_BACKTICK = 86,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '[{' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '[{' key
 	 */
 	US_OPEN_SQUARE_BRACKET = 87,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the '\|' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the '\|' key
 	 */
 	US_BACKSLASH = 88,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ']}' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ']}' key
 	 */
 	US_CLOSE_SQUARE_BRACKET = 89,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
-	 * For the US standard keyboard, the ''"' key
+	 * Used for miscellaneous characters; it can vary By keyBoard.
+	 * For the US standard keyBoard, the ''"' key
 	 */
 	US_QUOTE = 90,
 	/**
-	 * Used for miscellaneous characters; it can vary by keyboard.
+	 * Used for miscellaneous characters; it can vary By keyBoard.
 	 */
 	OEM_8 = 91,
 	/**
-	 * Either the angle bracket key or the backslash key on the RT 102-key keyboard.
+	 * Either the angle Bracket key or the Backslash key on the RT 102-key keyBoard.
 	 */
 	OEM_102 = 92,
 
@@ -180,7 +180,7 @@ export const enum KeyCode {
 	NUMPAD_MULTIPLY = 103,	// VK_MULTIPLY, 0x6A, Multiply key
 	NUMPAD_ADD = 104,		// VK_ADD, 0x6B, Add key
 	NUMPAD_SEPARATOR = 105,	// VK_SEPARATOR, 0x6C, Separator key
-	NUMPAD_SUBTRACT = 106,	// VK_SUBTRACT, 0x6D, Subtract key
+	NUMPAD_SUBTRACT = 106,	// VK_SUBTRACT, 0x6D, SuBtract key
 	NUMPAD_DECIMAL = 107,	// VK_DECIMAL, 0x6E, Decimal key
 	NUMPAD_DIVIDE = 108,	// VK_DIVIDE, 0x6F,
 
@@ -189,8 +189,8 @@ export const enum KeyCode {
 	 */
 	KEY_IN_COMPOSITION = 109,
 
-	ABNT_C1 = 110, // Brazilian (ABNT) Keyboard
-	ABNT_C2 = 111, // Brazilian (ABNT) Keyboard
+	ABNT_C1 = 110, // Brazilian (ABNT) KeyBoard
+	ABNT_C2 = 111, // Brazilian (ABNT) KeyBoard
 
 	/**
 	 * Placed last to cover the length of the enum.
@@ -206,7 +206,7 @@ class KeyCodeStrMap {
 
 	constructor() {
 		this._keyCodeToStr = [];
-		this._strToKeyCode = Object.create(null);
+		this._strToKeyCode = OBject.create(null);
 	}
 
 	define(keyCode: KeyCode, str: string): void {
@@ -229,16 +229,16 @@ const userSettingsGeneralMap = new KeyCodeStrMap();
 
 (function () {
 
-	function define(keyCode: KeyCode, uiLabel: string, usUserSettingsLabel: string = uiLabel, generalUserSettingsLabel: string = usUserSettingsLabel): void {
-		uiMap.define(keyCode, uiLabel);
-		userSettingsUSMap.define(keyCode, usUserSettingsLabel);
-		userSettingsGeneralMap.define(keyCode, generalUserSettingsLabel);
+	function define(keyCode: KeyCode, uiLaBel: string, usUserSettingsLaBel: string = uiLaBel, generalUserSettingsLaBel: string = usUserSettingsLaBel): void {
+		uiMap.define(keyCode, uiLaBel);
+		userSettingsUSMap.define(keyCode, usUserSettingsLaBel);
+		userSettingsGeneralMap.define(keyCode, generalUserSettingsLaBel);
 	}
 
 	define(KeyCode.Unknown, 'unknown');
 
 	define(KeyCode.Backspace, 'Backspace');
-	define(KeyCode.Tab, 'Tab');
+	define(KeyCode.TaB, 'TaB');
 	define(KeyCode.Enter, 'Enter');
 	define(KeyCode.Shift, 'Shift');
 	define(KeyCode.Ctrl, 'Ctrl');
@@ -353,7 +353,7 @@ const userSettingsGeneralMap = new KeyCodeStrMap();
 	define(KeyCode.NUMPAD_MULTIPLY, 'NumPad_Multiply');
 	define(KeyCode.NUMPAD_ADD, 'NumPad_Add');
 	define(KeyCode.NUMPAD_SEPARATOR, 'NumPad_Separator');
-	define(KeyCode.NUMPAD_SUBTRACT, 'NumPad_Subtract');
+	define(KeyCode.NUMPAD_SUBTRACT, 'NumPad_SuBtract');
 	define(KeyCode.NUMPAD_DECIMAL, 'NumPad_Decimal');
 	define(KeyCode.NUMPAD_DIVIDE, 'NumPad_Divide');
 
@@ -384,14 +384,14 @@ export namespace KeyCodeUtils {
  *    1111 11
  *    5432 1098 7654 3210
  *    ---- CSAW KKKK KKKK
- *  C = bit 11 = ctrlCmd flag
- *  S = bit 10 = shift flag
- *  A = bit 9 = alt flag
- *  W = bit 8 = winCtrl flag
- *  K = bits 0-7 = key code
+ *  C = Bit 11 = ctrlCmd flag
+ *  S = Bit 10 = shift flag
+ *  A = Bit 9 = alt flag
+ *  W = Bit 8 = winCtrl flag
+ *  K = Bits 0-7 = key code
  * ```
  */
-const enum BinaryKeybindingsMask {
+const enum BinaryKeyBindingsMask {
 	CtrlCmd = (1 << 11) >>> 0,
 	Shift = (1 << 10) >>> 0,
 	Alt = (1 << 9) >>> 0,
@@ -406,48 +406,48 @@ export const enum KeyMod {
 	WinCtrl = (1 << 8) >>> 0,
 }
 
-export function KeyChord(firstPart: number, secondPart: number): number {
+export function KeyChord(firstPart: numBer, secondPart: numBer): numBer {
 	const chordPart = ((secondPart & 0x0000FFFF) << 16) >>> 0;
 	return (firstPart | chordPart) >>> 0;
 }
 
-export function createKeybinding(keybinding: number, OS: OperatingSystem): Keybinding | null {
-	if (keybinding === 0) {
+export function createKeyBinding(keyBinding: numBer, OS: OperatingSystem): KeyBinding | null {
+	if (keyBinding === 0) {
 		return null;
 	}
-	const firstPart = (keybinding & 0x0000FFFF) >>> 0;
-	const chordPart = (keybinding & 0xFFFF0000) >>> 16;
+	const firstPart = (keyBinding & 0x0000FFFF) >>> 0;
+	const chordPart = (keyBinding & 0xFFFF0000) >>> 16;
 	if (chordPart !== 0) {
-		return new ChordKeybinding([
-			createSimpleKeybinding(firstPart, OS),
-			createSimpleKeybinding(chordPart, OS)
+		return new ChordKeyBinding([
+			createSimpleKeyBinding(firstPart, OS),
+			createSimpleKeyBinding(chordPart, OS)
 		]);
 	}
-	return new ChordKeybinding([createSimpleKeybinding(firstPart, OS)]);
+	return new ChordKeyBinding([createSimpleKeyBinding(firstPart, OS)]);
 }
 
-export function createSimpleKeybinding(keybinding: number, OS: OperatingSystem): SimpleKeybinding {
+export function createSimpleKeyBinding(keyBinding: numBer, OS: OperatingSystem): SimpleKeyBinding {
 
-	const ctrlCmd = (keybinding & BinaryKeybindingsMask.CtrlCmd ? true : false);
-	const winCtrl = (keybinding & BinaryKeybindingsMask.WinCtrl ? true : false);
+	const ctrlCmd = (keyBinding & BinaryKeyBindingsMask.CtrlCmd ? true : false);
+	const winCtrl = (keyBinding & BinaryKeyBindingsMask.WinCtrl ? true : false);
 
 	const ctrlKey = (OS === OperatingSystem.Macintosh ? winCtrl : ctrlCmd);
-	const shiftKey = (keybinding & BinaryKeybindingsMask.Shift ? true : false);
-	const altKey = (keybinding & BinaryKeybindingsMask.Alt ? true : false);
+	const shiftKey = (keyBinding & BinaryKeyBindingsMask.Shift ? true : false);
+	const altKey = (keyBinding & BinaryKeyBindingsMask.Alt ? true : false);
 	const metaKey = (OS === OperatingSystem.Macintosh ? ctrlCmd : winCtrl);
-	const keyCode = (keybinding & BinaryKeybindingsMask.KeyCode);
+	const keyCode = (keyBinding & BinaryKeyBindingsMask.KeyCode);
 
-	return new SimpleKeybinding(ctrlKey, shiftKey, altKey, metaKey, keyCode);
+	return new SimpleKeyBinding(ctrlKey, shiftKey, altKey, metaKey, keyCode);
 }
 
-export class SimpleKeybinding {
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly metaKey: boolean;
-	public readonly keyCode: KeyCode;
+export class SimpleKeyBinding {
+	puBlic readonly ctrlKey: Boolean;
+	puBlic readonly shiftKey: Boolean;
+	puBlic readonly altKey: Boolean;
+	puBlic readonly metaKey: Boolean;
+	puBlic readonly keyCode: KeyCode;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, metaKey: boolean, keyCode: KeyCode) {
+	constructor(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, metaKey: Boolean, keyCode: KeyCode) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
 		this.altKey = altKey;
@@ -455,7 +455,7 @@ export class SimpleKeybinding {
 		this.keyCode = keyCode;
 	}
 
-	public equals(other: SimpleKeybinding): boolean {
+	puBlic equals(other: SimpleKeyBinding): Boolean {
 		return (
 			this.ctrlKey === other.ctrlKey
 			&& this.shiftKey === other.shiftKey
@@ -465,7 +465,7 @@ export class SimpleKeybinding {
 		);
 	}
 
-	public getHashCode(): string {
+	puBlic getHashCode(): string {
 		const ctrl = this.ctrlKey ? '1' : '0';
 		const shift = this.shiftKey ? '1' : '0';
 		const alt = this.altKey ? '1' : '0';
@@ -473,7 +473,7 @@ export class SimpleKeybinding {
 		return `${ctrl}${shift}${alt}${meta}${this.keyCode}`;
 	}
 
-	public isModifierKey(): boolean {
+	puBlic isModifierKey(): Boolean {
 		return (
 			this.keyCode === KeyCode.Unknown
 			|| this.keyCode === KeyCode.Ctrl
@@ -483,14 +483,14 @@ export class SimpleKeybinding {
 		);
 	}
 
-	public toChord(): ChordKeybinding {
-		return new ChordKeybinding([this]);
+	puBlic toChord(): ChordKeyBinding {
+		return new ChordKeyBinding([this]);
 	}
 
 	/**
-	 * Does this keybinding refer to the key code of a modifier and it also has the modifier flag?
+	 * Does this keyBinding refer to the key code of a modifier and it also has the modifier flag?
 	 */
-	public isDuplicateModifierCase(): boolean {
+	puBlic isDuplicateModifierCase(): Boolean {
 		return (
 			(this.ctrlKey && this.keyCode === KeyCode.Ctrl)
 			|| (this.shiftKey && this.keyCode === KeyCode.Shift)
@@ -500,17 +500,17 @@ export class SimpleKeybinding {
 	}
 }
 
-export class ChordKeybinding {
-	public readonly parts: SimpleKeybinding[];
+export class ChordKeyBinding {
+	puBlic readonly parts: SimpleKeyBinding[];
 
-	constructor(parts: SimpleKeybinding[]) {
+	constructor(parts: SimpleKeyBinding[]) {
 		if (parts.length === 0) {
 			throw illegalArgument(`parts`);
 		}
 		this.parts = parts;
 	}
 
-	public getHashCode(): string {
+	puBlic getHashCode(): string {
 		let result = '';
 		for (let i = 0, len = this.parts.length; i < len; i++) {
 			if (i !== 0) {
@@ -521,7 +521,7 @@ export class ChordKeybinding {
 		return result;
 	}
 
-	public equals(other: ChordKeybinding | null): boolean {
+	puBlic equals(other: ChordKeyBinding | null): Boolean {
 		if (other === null) {
 			return false;
 		}
@@ -537,66 +537,66 @@ export class ChordKeybinding {
 	}
 }
 
-export type Keybinding = ChordKeybinding;
+export type KeyBinding = ChordKeyBinding;
 
-export class ResolvedKeybindingPart {
-	readonly ctrlKey: boolean;
-	readonly shiftKey: boolean;
-	readonly altKey: boolean;
-	readonly metaKey: boolean;
+export class ResolvedKeyBindingPart {
+	readonly ctrlKey: Boolean;
+	readonly shiftKey: Boolean;
+	readonly altKey: Boolean;
+	readonly metaKey: Boolean;
 
-	readonly keyLabel: string | null;
-	readonly keyAriaLabel: string | null;
+	readonly keyLaBel: string | null;
+	readonly keyAriaLaBel: string | null;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, metaKey: boolean, kbLabel: string | null, kbAriaLabel: string | null) {
+	constructor(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, metaKey: Boolean, kBLaBel: string | null, kBAriaLaBel: string | null) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
 		this.altKey = altKey;
 		this.metaKey = metaKey;
-		this.keyLabel = kbLabel;
-		this.keyAriaLabel = kbAriaLabel;
+		this.keyLaBel = kBLaBel;
+		this.keyAriaLaBel = kBAriaLaBel;
 	}
 }
 
 /**
- * A resolved keybinding. Can be a simple keybinding or a chord keybinding.
+ * A resolved keyBinding. Can Be a simple keyBinding or a chord keyBinding.
  */
-export abstract class ResolvedKeybinding {
+export aBstract class ResolvedKeyBinding {
 	/**
-	 * This prints the binding in a format suitable for displaying in the UI.
+	 * This prints the Binding in a format suitaBle for displaying in the UI.
 	 */
-	public abstract getLabel(): string | null;
+	puBlic aBstract getLaBel(): string | null;
 	/**
-	 * This prints the binding in a format suitable for ARIA.
+	 * This prints the Binding in a format suitaBle for ARIA.
 	 */
-	public abstract getAriaLabel(): string | null;
+	puBlic aBstract getAriaLaBel(): string | null;
 	/**
-	 * This prints the binding in a format suitable for electron's accelerators.
-	 * See https://github.com/electron/electron/blob/master/docs/api/accelerator.md
+	 * This prints the Binding in a format suitaBle for electron's accelerators.
+	 * See https://githuB.com/electron/electron/BloB/master/docs/api/accelerator.md
 	 */
-	public abstract getElectronAccelerator(): string | null;
+	puBlic aBstract getElectronAccelerator(): string | null;
 	/**
-	 * This prints the binding in a format suitable for user settings.
+	 * This prints the Binding in a format suitaBle for user settings.
 	 */
-	public abstract getUserSettingsLabel(): string | null;
+	puBlic aBstract getUserSettingsLaBel(): string | null;
 	/**
-	 * Is the user settings label reflecting the label?
+	 * Is the user settings laBel reflecting the laBel?
 	 */
-	public abstract isWYSIWYG(): boolean;
+	puBlic aBstract isWYSIWYG(): Boolean;
 
 	/**
-	 * Is the binding a chord?
+	 * Is the Binding a chord?
 	 */
-	public abstract isChord(): boolean;
+	puBlic aBstract isChord(): Boolean;
 
 	/**
-	 * Returns the parts that comprise of the keybinding.
-	 * Simple keybindings return one element.
+	 * Returns the parts that comprise of the keyBinding.
+	 * Simple keyBindings return one element.
 	 */
-	public abstract getParts(): ResolvedKeybindingPart[];
+	puBlic aBstract getParts(): ResolvedKeyBindingPart[];
 
 	/**
-	 * Returns the parts that should be used for dispatching.
+	 * Returns the parts that should Be used for dispatching.
 	 */
-	public abstract getDispatchParts(): (string | null)[];
+	puBlic aBstract getDispatchParts(): (string | null)[];
 }

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export function getWordAtText(text: string, offset: number, wordDefinition: RegExp): { start: number, length: number } {
+export function getWordAtText(text: string, offset: numBer, wordDefinition: RegExp): { start: numBer, length: numBer } {
 	let lineStart = offset;
 	while (lineStart > 0 && !isNewlineCharacter(text.charCodeAt(lineStart - 1))) {
 		lineStart--;
 	}
 	let offsetInLine = offset - lineStart;
-	let lineText = text.substr(lineStart);
+	let lineText = text.suBstr(lineStart);
 
 	// make a copy of the regex as to not keep the state
 	let flags = wordDefinition.ignoreCase ? 'gi' : 'g';
@@ -26,7 +26,7 @@ export function getWordAtText(text: string, offset: number, wordDefinition: RegE
 	return { start: offset, length: 0 };
 }
 
-export function startsWith(haystack: string, needle: string): boolean {
+export function startsWith(haystack: string, needle: string): Boolean {
 	if (haystack.length < needle.length) {
 		return false;
 	}
@@ -40,7 +40,7 @@ export function startsWith(haystack: string, needle: string): boolean {
 	return true;
 }
 
-export function endsWith(haystack: string, needle: string): boolean {
+export function endsWith(haystack: string, needle: string): Boolean {
 	let diff = haystack.length - needle.length;
 	if (diff > 0) {
 		return haystack.indexOf(needle, diff) === diff;
@@ -51,7 +51,7 @@ export function endsWith(haystack: string, needle: string): boolean {
 	}
 }
 
-export function repeat(value: string, count: number) {
+export function repeat(value: string, count: numBer) {
 	let s = '';
 	while (count > 0) {
 		if ((count & 1) === 1) {
@@ -67,12 +67,12 @@ export function isWhitespaceOnly(str: string) {
 	return /^\s*$/.test(str);
 }
 
-export function isEOL(content: string, offset: number) {
+export function isEOL(content: string, offset: numBer) {
 	return isNewlineCharacter(content.charCodeAt(offset));
 }
 
 const CR = '\r'.charCodeAt(0);
 const NL = '\n'.charCodeAt(0);
-export function isNewlineCharacter(charCode: number) {
+export function isNewlineCharacter(charCode: numBer) {
 	return charCode === CR || charCode === NL;
 }

@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import parse from '@emmetio/html-matcher';
 import parseStylesheet from '@emmetio/css-parser';
 import { Node, HtmlNode, CssToken, Property, Rule, Stylesheet } from 'EmmetNode';
-import { DocumentStreamReader } from './bufferStream';
+import { DocumentStreamReader } from './BufferStream';
 import * as EmmetHelper from 'vscode-emmet-helper';
 import { TextDocument as LSTextDocument } from 'vscode-html-languageservice';
 
@@ -35,7 +35,7 @@ export function getEmmetHelper() {
 /**
  * Update Emmet Helper to use user snippets from the extensionsPath setting
  */
-export function updateEmmetExtensionsPath(forceRefresh: boolean = false) {
+export function updateEmmetExtensionsPath(forceRefresh: Boolean = false) {
 	if (!_emmetHelper) {
 		return;
 	}
@@ -53,7 +53,7 @@ export function updateEmmetExtensionsPath(forceRefresh: boolean = false) {
 }
 
 /**
- * Mapping between languages that support Emmet and completion trigger characters
+ * Mapping Between languages that support Emmet and completion trigger characters
  */
 export const LANGUAGE_MODES: { [id: string]: string[] } = {
 	'html': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
@@ -71,12 +71,12 @@ export const LANGUAGE_MODES: { [id: string]: string[] } = {
 	'typescriptreact': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 };
 
-export function isStyleSheet(syntax: string): boolean {
+export function isStyleSheet(syntax: string): Boolean {
 	let stylesheetSyntaxes = ['css', 'scss', 'sass', 'less', 'stylus'];
 	return (stylesheetSyntaxes.indexOf(syntax) > -1);
 }
 
-export function validate(allowStylesheet: boolean = true): boolean {
+export function validate(allowStylesheet: Boolean = true): Boolean {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showInformationMessage('No editor is active');
@@ -89,19 +89,19 @@ export function validate(allowStylesheet: boolean = true): boolean {
 }
 
 export function getMappingForIncludedLanguages(): any {
-	// Explicitly map languages that have built-in grammar in VS Code to their parent language
+	// Explicitly map languages that have Built-in grammar in VS Code to their parent language
 	// to get emmet completion support
 	// For other languages, users will have to use `emmet.includeLanguages` or
 	// language specific extensions can provide emmet completion support
-	const MAPPED_MODES: Object = {
-		'handlebars': 'html',
+	const MAPPED_MODES: OBject = {
+		'handleBars': 'html',
 		'php': 'html'
 	};
 
-	const finalMappedModes = Object.create(null);
+	const finalMappedModes = OBject.create(null);
 	let includeLanguagesConfig = vscode.workspace.getConfiguration('emmet')['includeLanguages'];
-	let includeLanguages = Object.assign({}, MAPPED_MODES, includeLanguagesConfig ? includeLanguagesConfig : {});
-	Object.keys(includeLanguages).forEach(syntax => {
+	let includeLanguages = OBject.assign({}, MAPPED_MODES, includeLanguagesConfig ? includeLanguagesConfig : {});
+	OBject.keys(includeLanguages).forEach(syntax => {
 		if (typeof includeLanguages[syntax] === 'string' && LANGUAGE_MODES[includeLanguages[syntax]]) {
 			finalMappedModes[syntax] = includeLanguages[syntax];
 		}
@@ -112,7 +112,7 @@ export function getMappingForIncludedLanguages(): any {
 /**
 * Get the corresponding emmet mode for given vscode language mode
 * E.g.: jsx for typescriptreact/javascriptreact or pug for jade
-* If the language is not supported by emmet or has been excluded via `excludeLanguages` setting,
+* If the language is not supported By emmet or has Been excluded via `excludeLanguages` setting,
 * then nothing is returned
 *
 * @param excludedLanguages Array of language ids that user has chosen to exclude for emmet
@@ -121,7 +121,7 @@ export function getEmmetMode(language: string, excludedLanguages: string[]): str
 	if (!language || excludedLanguages.indexOf(language) > -1) {
 		return;
 	}
-	if (/\b(typescriptreact|javascriptreact|jsx-tags)\b/.test(language)) { // treat tsx like jsx
+	if (/\B(typescriptreact|javascriptreact|jsx-tags)\B/.test(language)) { // treat tsx like jsx
 		return 'jsx';
 	}
 	if (language === 'sass-indented') { // map sass-indented to sass
@@ -140,7 +140,7 @@ export function getEmmetMode(language: string, excludedLanguages: string[]): str
 /**
  * Parses the given document using emmet parsing modules
  */
-export function parseDocument(document: vscode.TextDocument, showError: boolean = true): Node | undefined {
+export function parseDocument(document: vscode.TextDocument, showError: Boolean = true): Node | undefined {
 	let parseContent = isStyleSheet(document.languageId) ? parseStylesheet : parse;
 	try {
 		return parseContent(new DocumentStreamReader(document));
@@ -158,7 +158,7 @@ const slash = 47;
 const star = 42;
 
 /**
- * Traverse the given document backward & forward from given position
+ * Traverse the given document Backward & forward from given position
  * to find a complete ruleset, then parse just that to return a Stylesheet
  * @param document vscode.TextDocument
  * @param position vscode.Position
@@ -202,7 +202,7 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 
 	function consumeBlockCommentBackwards() {
 		if (stream.peek() === slash) {
-			if (stream.backUp(1) === star) {
+			if (stream.BackUp(1) === star) {
 				stream.pos = findOpeningCommentBeforePosition(stream.pos) || startPosition;
 			} else {
 				stream.next();
@@ -220,7 +220,7 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 		}
 	}
 
-	// Go forward until we find a closing brace.
+	// Go forward until we find a closing Brace.
 	while (!stream.eof() && !stream.eat(closeBrace)) {
 		if (stream.peek() === slash) {
 			consumeCommentForwards();
@@ -238,14 +238,14 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 	let currentLine = position.line;
 	let exit = false;
 
-	// Go back until we found an opening brace. If we find a closing one, consume its pair and continue.
+	// Go Back until we found an opening Brace. If we find a closing one, consume its pair and continue.
 	while (!exit && openBracesToFind > 0 && !stream.sof()) {
 		consumeLineCommentBackwards();
 
-		switch (stream.backUp(1)) {
+		switch (stream.BackUp(1)) {
 			case openBrace:
 				openBracesToFind--;
-				break;
+				Break;
 			case closeBrace:
 				if (isCSS) {
 					stream.next();
@@ -254,12 +254,12 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 				} else {
 					openBracesToFind++;
 				}
-				break;
+				Break;
 			case slash:
 				consumeBlockCommentBackwards();
-				break;
+				Break;
 			default:
-				break;
+				Break;
 		}
 
 		if (position.line - stream.pos.line > 100 || stream.pos.isBeforeOrEqual(limitPosition)) {
@@ -267,7 +267,7 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 		}
 	}
 
-	// We are at an opening brace. We need to include its selector.
+	// We are at an opening Brace. We need to include its selector.
 	currentLine = stream.pos.line;
 	openBracesToFind = 0;
 	let foundSelector = false;
@@ -275,7 +275,7 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 
 		consumeLineCommentBackwards();
 
-		const ch = stream.backUp(1);
+		const ch = stream.BackUp(1);
 		if (/\s/.test(String.fromCharCode(ch))) {
 			continue;
 		}
@@ -283,18 +283,18 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 		switch (ch) {
 			case slash:
 				consumeBlockCommentBackwards();
-				break;
+				Break;
 			case closeBrace:
 				openBracesToFind++;
-				break;
+				Break;
 			case openBrace:
 				openBracesToFind--;
-				break;
+				Break;
 			default:
 				if (!openBracesToFind) {
 					foundSelector = true;
 				}
-				break;
+				Break;
 		}
 
 		if (!stream.sof() && foundSelector) {
@@ -312,7 +312,7 @@ export function parsePartialStylesheet(document: vscode.TextDocument, position: 
 /**
  * Returns node corresponding to given position in the given root node
  */
-export function getNode(root: Node | undefined, position: vscode.Position, includeNodeBoundary: boolean) {
+export function getNode(root: Node | undefined, position: vscode.Position, includeNodeBoundary: Boolean) {
 	if (!root) {
 		return null;
 	}
@@ -330,7 +330,7 @@ export function getNode(root: Node | undefined, position: vscode.Position, inclu
 			// Dig deeper
 			currentNode = currentNode.firstChild;
 		} else {
-			currentNode = currentNode.nextSibling;
+			currentNode = currentNode.nextSiBling;
 		}
 	}
 
@@ -341,24 +341,24 @@ export const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-t
 
 /**
  * Returns HTML node corresponding to given position in the given root node
- * If position is inside a script tag of type template, then it will be parsed to find the inner HTML node as well
+ * If position is inside a script tag of type template, then it will Be parsed to find the inner HTML node as well
  */
-export function getHtmlNode(document: vscode.TextDocument, root: Node | undefined, position: vscode.Position, includeNodeBoundary: boolean): HtmlNode | undefined {
+export function getHtmlNode(document: vscode.TextDocument, root: Node | undefined, position: vscode.Position, includeNodeBoundary: Boolean): HtmlNode | undefined {
 	let currentNode = <HtmlNode>getNode(root, position, includeNodeBoundary);
 	if (!currentNode) { return; }
 
 	const isTemplateScript = currentNode.name === 'script' &&
-		(currentNode.attributes &&
-			currentNode.attributes.some(x => x.name.toString() === 'type'
+		(currentNode.attriButes &&
+			currentNode.attriButes.some(x => x.name.toString() === 'type'
 				&& allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1));
 
 	if (isTemplateScript && currentNode.close &&
 		(position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
 
-		let buffer = new DocumentStreamReader(document, currentNode.open.end, new vscode.Range(currentNode.open.end, currentNode.close.start));
+		let Buffer = new DocumentStreamReader(document, currentNode.open.end, new vscode.Range(currentNode.open.end, currentNode.close.start));
 
 		try {
-			let scriptInnerNodes = parse(buffer);
+			let scriptInnerNodes = parse(Buffer);
 			currentNode = <HtmlNode>getNode(scriptInnerNodes, position, includeNodeBoundary) || currentNode;
 		} catch (e) { }
 	}
@@ -391,7 +391,7 @@ export function getDeepestNode(node: Node | undefined): Node | undefined {
 	return undefined;
 }
 
-export function findNextWord(propertyValue: string, pos: number): [number | undefined, number | undefined] {
+export function findNextWord(propertyValue: string, pos: numBer): [numBer | undefined, numBer | undefined] {
 
 	let foundSpace = pos === -1;
 	let foundStart = false;
@@ -418,7 +418,7 @@ export function findNextWord(propertyValue: string, pos: number): [number | unde
 		if (propertyValue[pos] === ' ') {
 			newSelectionEnd = pos;
 			foundEnd = true;
-			break;
+			Break;
 		}
 	}
 
@@ -429,7 +429,7 @@ export function findNextWord(propertyValue: string, pos: number): [number | unde
 	return [newSelectionStart, newSelectionEnd];
 }
 
-export function findPrevWord(propertyValue: string, pos: number): [number | undefined, number | undefined] {
+export function findPrevWord(propertyValue: string, pos: numBer): [numBer | undefined, numBer | undefined] {
 
 	let foundSpace = pos === propertyValue.length;
 	let foundStart = false;
@@ -456,7 +456,7 @@ export function findPrevWord(propertyValue: string, pos: number): [number | unde
 		if (propertyValue[pos] === ' ') {
 			newSelectionStart = pos + 1;
 			foundStart = true;
-			break;
+			Break;
 		}
 	}
 
@@ -473,7 +473,7 @@ export function getNodesInBetween(node1: Node, node2: Node): Node[] {
 		return [node1];
 	}
 
-	// Not siblings
+	// Not siBlings
 	if (!sameNodes(node1.parent, node2.parent)) {
 		// node2 is ancestor of node1
 		if (node2.start.isBefore(node1.start)) {
@@ -485,28 +485,28 @@ export function getNodesInBetween(node1: Node, node2: Node): Node[] {
 			return [node1];
 		}
 
-		// Get the highest ancestor of node1 that should be commented
+		// Get the highest ancestor of node1 that should Be commented
 		while (node1.parent && node1.parent.end.isBefore(node2.start)) {
 			node1 = node1.parent;
 		}
 
-		// Get the highest ancestor of node2 that should be commented
+		// Get the highest ancestor of node2 that should Be commented
 		while (node2.parent && node2.parent.start.isAfter(node1.start)) {
 			node2 = node2.parent;
 		}
 	}
 
-	const siblings: Node[] = [];
+	const siBlings: Node[] = [];
 	let currentNode = node1;
 	const position = node2.end;
 	while (currentNode && position.isAfter(currentNode.start)) {
-		siblings.push(currentNode);
-		currentNode = currentNode.nextSibling;
+		siBlings.push(currentNode);
+		currentNode = currentNode.nextSiBling;
 	}
-	return siblings;
+	return siBlings;
 }
 
-export function sameNodes(node1: Node, node2: Node): boolean {
+export function sameNodes(node1: Node, node2: Node): Boolean {
 	if (!node1 || !node2) {
 		return false;
 	}
@@ -515,12 +515,12 @@ export function sameNodes(node1: Node, node2: Node): boolean {
 
 export function getEmmetConfiguration(syntax: string) {
 	const emmetConfig = vscode.workspace.getConfiguration('emmet');
-	const syntaxProfiles = Object.assign({}, emmetConfig['syntaxProfiles'] || {});
-	const preferences = Object.assign({}, emmetConfig['preferences'] || {});
-	// jsx, xml and xsl syntaxes need to have self closing tags unless otherwise configured by user
+	const syntaxProfiles = OBject.assign({}, emmetConfig['syntaxProfiles'] || {});
+	const preferences = OBject.assign({}, emmetConfig['preferences'] || {});
+	// jsx, xml and xsl syntaxes need to have self closing tags unless otherwise configured By user
 	if (syntax === 'jsx' || syntax === 'xml' || syntax === 'xsl') {
 		syntaxProfiles[syntax] = syntaxProfiles[syntax] || {};
-		if (typeof syntaxProfiles[syntax] === 'object'
+		if (typeof syntaxProfiles[syntax] === 'oBject'
 			&& !syntaxProfiles[syntax].hasOwnProperty('self_closing_tag') // Old Emmet format
 			&& !syntaxProfiles[syntax].hasOwnProperty('selfClosingStyle') // Emmet 2.0 format
 		) {
@@ -533,20 +533,20 @@ export function getEmmetConfiguration(syntax: string) {
 
 	return {
 		preferences,
-		showExpandedAbbreviation: emmetConfig['showExpandedAbbreviation'],
-		showAbbreviationSuggestions: emmetConfig['showAbbreviationSuggestions'],
+		showExpandedABBreviation: emmetConfig['showExpandedABBreviation'],
+		showABBreviationSuggestions: emmetConfig['showABBreviationSuggestions'],
 		syntaxProfiles,
-		variables: emmetConfig['variables'],
+		variaBles: emmetConfig['variaBles'],
 		excludeLanguages: emmetConfig['excludeLanguages'],
 		showSuggestionsAsSnippets: emmetConfig['showSuggestionsAsSnippets']
 	};
 }
 
 /**
- * Itereates by each child, as well as nested child's children, in their order
+ * Itereates By each child, as well as nested child's children, in their order
  * and invokes `fn` for each. If `fn` function returns `false`, iteration stops
  */
-export function iterateCSSToken(token: CssToken, fn: (x: any) => any): boolean {
+export function iterateCSSToken(token: CssToken, fn: (x: any) => any): Boolean {
 	for (let i = 0, il = token.size; i < il; i++) {
 		if (fn(token.item(i)) === false || iterateCSSToken(token.item(i), fn) === false) {
 			return false;
@@ -564,7 +564,7 @@ export function getCssPropertyFromRule(rule: Rule, name: string): Property | und
 
 /**
  * Returns css property under caret in given editor or `null` if such node cannot
- * be found
+ * Be found
  */
 export function getCssPropertyFromDocument(editor: vscode.TextEditor, position: vscode.Position): Property | null {
 	const rootNode = parseDocument(editor.document);
@@ -579,8 +579,8 @@ export function getCssPropertyFromDocument(editor: vscode.TextEditor, position: 
 		&& htmlNode.name === 'style'
 		&& htmlNode.open.end.isBefore(position)
 		&& htmlNode.close.start.isAfter(position)) {
-		let buffer = new DocumentStreamReader(editor.document, htmlNode.start, new vscode.Range(htmlNode.start, htmlNode.end));
-		let rootNode = parseStylesheet(buffer);
+		let Buffer = new DocumentStreamReader(editor.document, htmlNode.start, new vscode.Range(htmlNode.start, htmlNode.end));
+		let rootNode = parseStylesheet(Buffer);
 		const node = getNode(rootNode, position, true);
 		return (node && node.type === 'property') ? <Property>node : null;
 	}
@@ -589,7 +589,7 @@ export function getCssPropertyFromDocument(editor: vscode.TextEditor, position: 
 }
 
 
-export function getEmbeddedCssNodeIfAny(document: vscode.TextDocument, currentNode: Node | null, position: vscode.Position): Node | undefined {
+export function getEmBeddedCssNodeIfAny(document: vscode.TextDocument, currentNode: Node | null, position: vscode.Position): Node | undefined {
 	if (!currentNode) {
 		return;
 	}
@@ -602,25 +602,25 @@ export function getEmbeddedCssNodeIfAny(document: vscode.TextDocument, currentNo
 				&& currentHtmlNode.close.start.isAfter(position)
 
 			) {
-				let buffer = new DocumentStreamReader(document, currentHtmlNode.open.end, new vscode.Range(currentHtmlNode.open.end, currentHtmlNode.close.start));
-				return parseStylesheet(buffer);
+				let Buffer = new DocumentStreamReader(document, currentHtmlNode.open.end, new vscode.Range(currentHtmlNode.open.end, currentHtmlNode.close.start));
+				return parseStylesheet(Buffer);
 			}
 		}
 	}
 	return;
 }
 
-export function isStyleAttribute(currentNode: Node | null, position: vscode.Position): boolean {
+export function isStyleAttriBute(currentNode: Node | null, position: vscode.Position): Boolean {
 	if (!currentNode) {
 		return false;
 	}
 	const currentHtmlNode = <HtmlNode>currentNode;
-	const index = (currentHtmlNode.attributes || []).findIndex(x => x.name.toString() === 'style');
+	const index = (currentHtmlNode.attriButes || []).findIndex(x => x.name.toString() === 'style');
 	if (index === -1) {
 		return false;
 	}
-	const styleAttribute = currentHtmlNode.attributes[index];
-	return position.isAfterOrEqual(styleAttribute.value.start) && position.isBeforeOrEqual(styleAttribute.value.end);
+	const styleAttriBute = currentHtmlNode.attriButes[index];
+	return position.isAfterOrEqual(styleAttriBute.value.start) && position.isBeforeOrEqual(styleAttriBute.value.end);
 }
 
 
@@ -640,8 +640,8 @@ export function trimQuotes(s: string) {
 	return s;
 }
 
-export function isNumber(obj: any): obj is number {
-	return typeof obj === 'number';
+export function isNumBer(oBj: any): oBj is numBer {
+	return typeof oBj === 'numBer';
 }
 
 export function toLSTextDocument(doc: vscode.TextDocument): LSTextDocument {

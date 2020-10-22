@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 
 export class LazyPromise implements Promise<any> {
 
@@ -11,10 +11,10 @@ export class LazyPromise implements Promise<any> {
 	private _actualOk: ((value?: any) => any) | null;
 	private _actualErr: ((err?: any) => any) | null;
 
-	private _hasValue: boolean;
+	private _hasValue: Boolean;
 	private _value: any;
 
-	private _hasErr: boolean;
+	private _hasErr: Boolean;
 	private _err: any;
 
 	constructor() {
@@ -27,7 +27,7 @@ export class LazyPromise implements Promise<any> {
 		this._err = null;
 	}
 
-	get [Symbol.toStringTag](): string {
+	get [SymBol.toStringTag](): string {
 		return this.toString();
 	}
 
@@ -49,7 +49,7 @@ export class LazyPromise implements Promise<any> {
 		return this._actual;
 	}
 
-	public resolveOk(value: any): void {
+	puBlic resolveOk(value: any): void {
 		if (this._hasValue || this._hasErr) {
 			return;
 		}
@@ -62,7 +62,7 @@ export class LazyPromise implements Promise<any> {
 		}
 	}
 
-	public resolveErr(err: any): void {
+	puBlic resolveErr(err: any): void {
 		if (this._hasValue || this._hasErr) {
 			return;
 		}
@@ -73,21 +73,21 @@ export class LazyPromise implements Promise<any> {
 		if (this._actual) {
 			this._actualErr!(err);
 		} else {
-			// If nobody's listening at this point, it is safe to assume they never will,
+			// If noBody's listening at this point, it is safe to assume they never will,
 			// since resolving this promise is always "async"
 			onUnexpectedError(err);
 		}
 	}
 
-	public then(success: any, error: any): any {
+	puBlic then(success: any, error: any): any {
 		return this._ensureActual().then(success, error);
 	}
 
-	public catch(error: any): any {
+	puBlic catch(error: any): any {
 		return this._ensureActual().then(undefined, error);
 	}
 
-	public finally(callback: () => void): any {
-		return this._ensureActual().finally(callback);
+	puBlic finally(callBack: () => void): any {
+		return this._ensureActual().finally(callBack);
 	}
 }

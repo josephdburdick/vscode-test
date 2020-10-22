@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { DiskFileSystemProvider as NodeDiskFileSystemProvider, IDiskFileSystemProviderOptions } from 'vs/platform/files/node/diskFileSystemProvider';
-import { FileDeleteOptions, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { isWindows } from 'vs/base/common/platform';
+import { FileDeleteOptions, FileSystemProviderCapaBilities } from 'vs/platform/files/common/files';
+import { isWindows } from 'vs/Base/common/platform';
 import { localize } from 'vs/nls';
-import { basename } from 'vs/base/common/path';
+import { Basename } from 'vs/Base/common/path';
 import { ILogService } from 'vs/platform/log/common/log';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
 export class DiskFileSystemProvider extends NodeDiskFileSystemProvider {
 
@@ -21,12 +21,12 @@ export class DiskFileSystemProvider extends NodeDiskFileSystemProvider {
 		super(logService, options);
 	}
 
-	get capabilities(): FileSystemProviderCapabilities {
-		if (!this._capabilities) {
-			this._capabilities = super.capabilities | FileSystemProviderCapabilities.Trash;
+	get capaBilities(): FileSystemProviderCapaBilities {
+		if (!this._capaBilities) {
+			this._capaBilities = super.capaBilities | FileSystemProviderCapaBilities.Trash;
 		}
 
-		return this._capabilities;
+		return this._capaBilities;
 	}
 
 	protected async doDelete(filePath: string, opts: FileDeleteOptions): Promise<void> {
@@ -36,7 +36,7 @@ export class DiskFileSystemProvider extends NodeDiskFileSystemProvider {
 
 		const result = await this.nativeHostService.moveItemToTrash(filePath);
 		if (!result) {
-			throw new Error(isWindows ? localize('binFailed', "Failed to move '{0}' to the recycle bin", basename(filePath)) : localize('trashFailed', "Failed to move '{0}' to the trash", basename(filePath)));
+			throw new Error(isWindows ? localize('BinFailed', "Failed to move '{0}' to the recycle Bin", Basename(filePath)) : localize('trashFailed', "Failed to move '{0}' to the trash", Basename(filePath)));
 		}
 	}
 }

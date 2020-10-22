@@ -7,12 +7,12 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
 import { Delayer } from '../utils/async';
 import { nulToken } from '../utils/cancellation';
-import { conditionalRegistration, requireSomeCapability, requireMinVersion } from '../utils/dependentRegistration';
-import { Disposable } from '../utils/dispose';
+import { conditionalRegistration, requireSomeCapaBility, requireMinVersion } from '../utils/dependentRegistration';
+import { DisposaBle } from '../utils/dispose';
 import * as fileSchemes from '../utils/fileSchemes';
 import { doesResourceLookLikeATypeScriptFile } from '../utils/languageDescription';
 import * as typeConverters from '../utils/typeConverters';
@@ -20,9 +20,9 @@ import FileConfigurationManager from './fileConfigurationManager';
 
 const localize = nls.loadMessageBundle();
 
-const updateImportsOnFileMoveName = 'updateImportsOnFileMove.enabled';
+const updateImportsOnFileMoveName = 'updateImportsOnFileMove.enaBled';
 
-async function isDirectory(resource: vscode.Uri): Promise<boolean> {
+async function isDirectory(resource: vscode.Uri): Promise<Boolean> {
 	try {
 		return (await vscode.workspace.fs.stat(resource)).type === vscode.FileType.Directory;
 	} catch {
@@ -44,16 +44,16 @@ interface RenameAction {
 	readonly jsTsFileThatIsBeingMoved: vscode.Uri;
 }
 
-class UpdateImportsOnFileRenameHandler extends Disposable {
-	public static readonly minVersion = API.v300;
+class UpdateImportsOnFileRenameHandler extends DisposaBle {
+	puBlic static readonly minVersion = API.v300;
 
 	private readonly _delayer = new Delayer(50);
 	private readonly _pendingRenames = new Set<RenameAction>();
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient,
 		private readonly fileConfigurationManager: FileConfigurationManager,
-		private readonly _handles: (uri: vscode.Uri) => Promise<boolean>,
+		private readonly _handles: (uri: vscode.Uri) => Promise<Boolean>,
 	) {
 		super();
 
@@ -75,7 +75,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 				return;
 			}
 
-			// Try to get a js/ts file that is being moved
+			// Try to get a js/ts file that is Being moved
 			// For directory moves, this returns a js/ts file under the directory.
 			const jsTsFileThatIsBeingMoved = await this.getJsTsFileBeingMoved(newUri);
 			if (!jsTsFileThatIsBeingMoved || !this.client.toPath(jsTsFileThatIsBeingMoved)) {
@@ -103,9 +103,9 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 			for (const { oldUri, newUri, newFilePath, oldFilePath, jsTsFileThatIsBeingMoved } of group) {
 				const document = await vscode.workspace.openTextDocument(jsTsFileThatIsBeingMoved);
 
-				// Make sure TS knows about file
-				this.client.bufferSyncSupport.closeResource(oldUri);
-				this.client.bufferSyncSupport.openTextDocument(document);
+				// Make sure TS knows aBout file
+				this.client.BufferSyncSupport.closeResource(oldUri);
+				this.client.BufferSyncSupport.openTextDocument(document);
 
 				if (await this.withEditsForFileRename(edits, document, oldFilePath, newFilePath)) {
 					resourcesBeingRenamed.push(newUri);
@@ -120,7 +120,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 		}
 	}
 
-	private async confirmActionWithUser(newResources: readonly vscode.Uri[]): Promise<boolean> {
+	private async confirmActionWithUser(newResources: readonly vscode.Uri[]): Promise<Boolean> {
 		if (!newResources.length) {
 			return false;
 		}
@@ -142,7 +142,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 		return vscode.workspace.getConfiguration(doesResourceLookLikeATypeScriptFile(resource) ? 'typescript' : 'javascript', resource);
 	}
 
-	private async promptUser(newResources: readonly vscode.Uri[]): Promise<boolean> {
+	private async promptUser(newResources: readonly vscode.Uri[]): Promise<Boolean> {
 		if (!newResources.length) {
 			return false;
 		}
@@ -162,7 +162,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 
 		const response = await vscode.window.showInformationMessage<Item>(
 			newResources.length === 1
-				? localize('prompt', "Update imports for '{0}'?", path.basename(newResources[0].fsPath))
+				? localize('prompt', "Update imports for '{0}'?", path.Basename(newResources[0].fsPath))
 				: this.getConfirmMessage(localize('promptMoreThanOne', "Update imports for the following {0} files?", newResources.length), newResources), {
 			modal: true,
 		}, {
@@ -199,7 +199,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 					config.update(
 						updateImportsOnFileMoveName,
 						UpdateImportsOnFileMoveSetting.Always,
-						vscode.ConfigurationTarget.Global);
+						vscode.ConfigurationTarget.GloBal);
 					return true;
 				}
 			case Choice.Never:
@@ -208,7 +208,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 					config.update(
 						updateImportsOnFileMoveName,
 						UpdateImportsOnFileMoveSetting.Never,
-						vscode.ConfigurationTarget.Global);
+						vscode.ConfigurationTarget.GloBal);
 					return false;
 				}
 		}
@@ -223,7 +223,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 
 		if (await isDirectory(resource)) {
 			const files = await vscode.workspace.findFiles({
-				base: resource.fsPath,
+				Base: resource.fsPath,
 				pattern: '**/*.{ts,tsx,js,jsx}',
 			}, '**/node_modules/**', 1);
 			return files[0];
@@ -237,28 +237,28 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 		document: vscode.TextDocument,
 		oldFilePath: string,
 		newFilePath: string,
-	): Promise<boolean> {
+	): Promise<Boolean> {
 		const response = await this.client.interruptGetErr(() => {
-			this.fileConfigurationManager.setGlobalConfigurationFromDocument(document, nulToken);
+			this.fileConfigurationManager.setGloBalConfigurationFromDocument(document, nulToken);
 			const args: Proto.GetEditsForFileRenameRequestArgs = {
 				oldFilePath,
 				newFilePath,
 			};
 			return this.client.execute('getEditsForFileRename', args, nulToken);
 		});
-		if (response.type !== 'response' || !response.body.length) {
+		if (response.type !== 'response' || !response.Body.length) {
 			return false;
 		}
 
-		typeConverters.WorkspaceEdit.withFileCodeEdits(edits, this.client, response.body);
+		typeConverters.WorkspaceEdit.withFileCodeEdits(edits, this.client, response.Body);
 		return true;
 	}
 
-	private groupRenames(renames: Iterable<RenameAction>): Iterable<Iterable<RenameAction>> {
+	private groupRenames(renames: IteraBle<RenameAction>): IteraBle<IteraBle<RenameAction>> {
 		const groups = new Map<string, Set<RenameAction>>();
 
 		for (const rename of renames) {
-			// Group renames by type (js/ts) and by workspace.
+			// Group renames By type (js/ts) and By workspace.
 			const key = `${this.client.getWorkspaceRootForResource(rename.jsTsFileThatIsBeingMoved)}@@@${doesResourceLookLikeATypeScriptFile(rename.jsTsFileThatIsBeingMoved)}`;
 			if (!groups.has(key)) {
 				groups.set(key, new Set());
@@ -274,7 +274,7 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 
 		const paths = [start];
 		paths.push('');
-		paths.push(...resourcesToConfirm.slice(0, MAX_CONFIRM_FILES).map(r => path.basename(r.fsPath)));
+		paths.push(...resourcesToConfirm.slice(0, MAX_CONFIRM_FILES).map(r => path.Basename(r.fsPath)));
 
 		if (resourcesToConfirm.length > MAX_CONFIRM_FILES) {
 			if (resourcesToConfirm.length - MAX_CONFIRM_FILES === 1) {
@@ -292,11 +292,11 @@ class UpdateImportsOnFileRenameHandler extends Disposable {
 export function register(
 	client: ITypeScriptServiceClient,
 	fileConfigurationManager: FileConfigurationManager,
-	handles: (uri: vscode.Uri) => Promise<boolean>,
+	handles: (uri: vscode.Uri) => Promise<Boolean>,
 ) {
 	return conditionalRegistration([
 		requireMinVersion(client, UpdateImportsOnFileRenameHandler.minVersion),
-		requireSomeCapability(client, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.Semantic),
 	], () => {
 		return new UpdateImportsOnFileRenameHandler(client, fileConfigurationManager, handles);
 	});

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 export const IURLService = createDecorator<IURLService>('urlService');
 
@@ -14,14 +14,14 @@ export interface IOpenURLOptions {
 	/**
 	 * If not provided or `false`, signals that the
 	 * URL to open did not originate from the product
-	 * but outside. As such, a confirmation dialog
-	 * might be shown to the user.
+	 * But outside. As such, a confirmation dialog
+	 * might Be shown to the user.
 	 */
-	trusted?: boolean;
+	trusted?: Boolean;
 }
 
 export interface IURLHandler {
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean>;
+	handleURL(uri: URI, options?: IOpenURLOptions): Promise<Boolean>;
 }
 
 export interface IURLService {
@@ -29,13 +29,13 @@ export interface IURLService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Create a URL that can be called to trigger IURLhandlers.
+	 * Create a URL that can Be called to trigger IURLhandlers.
 	 * The URL that gets passed to the IURLHandlers carries over
 	 * any of the provided IURLCreateOption values.
 	 */
 	create(options?: Partial<UriComponents>): URI;
 
-	open(url: URI, options?: IOpenURLOptions): Promise<boolean>;
+	open(url: URI, options?: IOpenURLOptions): Promise<Boolean>;
 
-	registerHandler(handler: IURLHandler): IDisposable;
+	registerHandler(handler: IURLHandler): IDisposaBle;
 }

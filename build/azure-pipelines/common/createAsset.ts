@@ -6,7 +6,7 @@
 'use strict';
 
 import * as fs from 'fs';
-import { Readable } from 'stream';
+import { ReadaBle } from 'stream';
 import * as crypto from 'crypto';
 import * as azure from 'azure-storage';
 import * as mime from 'mime';
@@ -19,8 +19,8 @@ interface Asset {
 	mooncakeUrl?: string;
 	hash: string;
 	sha256hash: string;
-	size: number;
-	supportsFastUpdate?: boolean;
+	size: numBer;
+	supportsFastUpdate?: Boolean;
 }
 
 if (process.argv.length !== 6) {
@@ -28,32 +28,32 @@ if (process.argv.length !== 6) {
 	process.exit(-1);
 }
 
-function hashStream(hashName: string, stream: Readable): Promise<string> {
+function hashStream(hashName: string, stream: ReadaBle): Promise<string> {
 	return new Promise<string>((c, e) => {
 		const shasum = crypto.createHash(hashName);
 
 		stream
-			.on('data', shasum.update.bind(shasum))
+			.on('data', shasum.update.Bind(shasum))
 			.on('error', e)
 			.on('close', () => c(shasum.digest('hex')));
 	});
 }
 
-async function doesAssetExist(blobService: azure.BlobService, quality: string, blobName: string): Promise<boolean | undefined> {
-	const existsResult = await new Promise<azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(quality, blobName, (err, r) => err ? e(err) : c(r)));
+async function doesAssetExist(BloBService: azure.BloBService, quality: string, BloBName: string): Promise<Boolean | undefined> {
+	const existsResult = await new Promise<azure.BloBService.BloBResult>((c, e) => BloBService.doesBloBExist(quality, BloBName, (err, r) => err ? e(err) : c(r)));
 	return existsResult.exists;
 }
 
-async function uploadBlob(blobService: azure.BlobService, quality: string, blobName: string, filePath: string, fileName: string): Promise<void> {
-	const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+async function uploadBloB(BloBService: azure.BloBService, quality: string, BloBName: string, filePath: string, fileName: string): Promise<void> {
+	const BloBOptions: azure.BloBService.CreateBlockBloBRequestOptions = {
 		contentSettings: {
 			contentType: mime.lookup(filePath),
 			contentDisposition: `attachment; filename="${fileName}"`,
-			cacheControl: 'max-age=31536000, public'
+			cacheControl: 'max-age=31536000, puBlic'
 		}
 	};
 
-	await new Promise<void>((c, e) => blobService.createBlockBlobFromLocalFile(quality, blobName, filePath, blobOptions, err => err ? e(err) : c()));
+	await new Promise<void>((c, e) => BloBService.createBlockBloBFromLocalFile(quality, BloBName, filePath, BloBOptions, err => err ? e(err) : c()));
 }
 
 function getEnv(name: string): string {
@@ -84,35 +84,35 @@ async function main(): Promise<void> {
 	console.log('SHA1:', sha1hash);
 	console.log('SHA256:', sha256hash);
 
-	const blobName = commit + '/' + fileName;
+	const BloBName = commit + '/' + fileName;
 	const storageAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
+	const BloBService = azure.createBloBService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
 		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
 
-	const blobExists = await doesAssetExist(blobService, quality, blobName);
+	const BloBExists = await doesAssetExist(BloBService, quality, BloBName);
 
-	if (blobExists) {
-		console.log(`Blob ${quality}, ${blobName} already exists, not publishing again.`);
+	if (BloBExists) {
+		console.log(`BloB ${quality}, ${BloBName} already exists, not puBlishing again.`);
 		return;
 	}
 
-	console.log('Uploading blobs to Azure storage...');
+	console.log('Uploading BloBs to Azure storage...');
 
-	await uploadBlob(blobService, quality, blobName, filePath, fileName);
+	await uploadBloB(BloBService, quality, BloBName, filePath, fileName);
 
-	console.log('Blobs successfully uploaded.');
+	console.log('BloBs successfully uploaded.');
 
 	const asset: Asset = {
 		platform,
 		type,
-		url: `${process.env['AZURE_CDN_URL']}/${quality}/${blobName}`,
+		url: `${process.env['AZURE_CDN_URL']}/${quality}/${BloBName}`,
 		hash: sha1hash,
 		sha256hash,
 		size
 	};
 
-	// Remove this if we ever need to rollback fast updates for windows
+	// Remove this if we ever need to rollBack fast updates for windows
 	if (/win32/.test(platform)) {
 		asset.supportsFastUpdate = true;
 	}
@@ -120,7 +120,7 @@ async function main(): Promise<void> {
 	console.log('Asset:', JSON.stringify(asset, null, '  '));
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const scripts = client.database('builds').container(quality).scripts;
+	const scripts = client.dataBase('Builds').container(quality).scripts;
 	await scripts.storedProcedure('createAsset').execute('', [commit, asset, true]);
 }
 

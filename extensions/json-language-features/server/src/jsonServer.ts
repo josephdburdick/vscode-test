@@ -6,13 +6,13 @@
 import {
 	Connection,
 	TextDocuments, InitializeParams, InitializeResult, NotificationType, RequestType,
-	DocumentRangeFormattingRequest, Disposable, ServerCapabilities, TextDocumentSyncKind, TextEdit
+	DocumentRangeFormattingRequest, DisposaBle, ServerCapaBilities, TextDocumentSyncKind, TextEdit
 } from 'vscode-languageserver';
 
 import { formatError, runSafe, runSafeAsync } from './utils/runner';
-import { TextDocument, JSONDocument, JSONSchema, getLanguageService, DocumentLanguageSettings, SchemaConfiguration, ClientCapabilities, Diagnostic, Range, Position } from 'vscode-json-languageservice';
+import { TextDocument, JSONDocument, JSONSchema, getLanguageService, DocumentLanguageSettings, SchemaConfiguration, ClientCapaBilities, Diagnostic, Range, Position } from 'vscode-json-languageservice';
 import { getLanguageModelCache } from './languageModelCache';
-import { RequestService, basename, resolvePath } from './requests';
+import { RequestService, Basename, resolvePath } from './requests';
 
 type ISchemaAssociations = Record<string, string[]>;
 
@@ -39,34 +39,34 @@ namespace ForceValidateRequest {
 
 const workspaceContext = {
 	resolveRelativePath: (relativePath: string, resource: string) => {
-		const base = resource.substr(0, resource.lastIndexOf('/') + 1);
-		return resolvePath(base, relativePath);
+		const Base = resource.suBstr(0, resource.lastIndexOf('/') + 1);
+		return resolvePath(Base, relativePath);
 	}
 };
 
 export interface RuntimeEnvironment {
 	file?: RequestService;
 	http?: RequestService
-	configureHttpRequests?(proxy: string, strictSSL: boolean): void;
+	configureHttpRequests?(proxy: string, strictSSL: Boolean): void;
 }
 
 export function startServer(connection: Connection, runtime: RuntimeEnvironment) {
 
 	function getSchemaRequestService(handledSchemas: string[] = ['https', 'http', 'file']) {
-		const builtInHandlers: { [protocol: string]: RequestService | undefined } = {};
+		const BuiltInHandlers: { [protocol: string]: RequestService | undefined } = {};
 		for (let protocol of handledSchemas) {
 			if (protocol === 'file') {
-				builtInHandlers[protocol] = runtime.file;
+				BuiltInHandlers[protocol] = runtime.file;
 			} else if (protocol === 'http' || protocol === 'https') {
-				builtInHandlers[protocol] = runtime.http;
+				BuiltInHandlers[protocol] = runtime.http;
 			}
 		}
-		return (uri: string): Thenable<string> => {
-			const protocol = uri.substr(0, uri.indexOf(':'));
+		return (uri: string): ThenaBle<string> => {
+			const protocol = uri.suBstr(0, uri.indexOf(':'));
 
-			const builtInHandler = builtInHandlers[protocol];
-			if (builtInHandler) {
-				return builtInHandler.getContent(uri);
+			const BuiltInHandler = BuiltInHandlers[protocol];
+			if (BuiltInHandler) {
+				return BuiltInHandler.getContent(uri);
 			}
 			return connection.sendRequest(VSCodeContentRequest.type, uri).then(responseText => {
 				return responseText;
@@ -79,8 +79,8 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 	// create the JSON language service
 	let languageService = getLanguageService({
 		workspaceContext,
-		contributions: [],
-		clientCapabilities: ClientCapabilities.LATEST
+		contriButions: [],
+		clientCapaBilities: ClientCapaBilities.LATEST
 	});
 
 	// Create a text document manager.
@@ -92,15 +92,15 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 
 	let clientSnippetSupport = false;
 	let dynamicFormatterRegistration = false;
-	let hierarchicalDocumentSymbolSupport = false;
+	let hierarchicalDocumentSymBolSupport = false;
 
-	let foldingRangeLimitDefault = Number.MAX_VALUE;
-	let foldingRangeLimit = Number.MAX_VALUE;
-	let resultLimit = Number.MAX_VALUE;
-	let formatterMaxNumberOfEdits = Number.MAX_VALUE;
+	let foldingRangeLimitDefault = NumBer.MAX_VALUE;
+	let foldingRangeLimit = NumBer.MAX_VALUE;
+	let resultLimit = NumBer.MAX_VALUE;
+	let formatterMaxNumBerOfEdits = NumBer.MAX_VALUE;
 
 	// After the server has started the client sends an initialize request. The server receives
-	// in the passed params the rootPath of the workspace plus the client capabilities.
+	// in the passed params the rootPath of the workspace plus the client capaBilities.
 	connection.onInitialize((params: InitializeParams): InitializeResult => {
 
 		const handledProtocols = params.initializationOptions?.handledSchemaProtocols;
@@ -108,13 +108,13 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		languageService = getLanguageService({
 			schemaRequestService: getSchemaRequestService(handledProtocols),
 			workspaceContext,
-			contributions: [],
-			clientCapabilities: params.capabilities
+			contriButions: [],
+			clientCapaBilities: params.capaBilities
 		});
 
-		function getClientCapability<T>(name: string, def: T) {
+		function getClientCapaBility<T>(name: string, def: T) {
 			const keys = name.split('.');
-			let c: any = params.capabilities;
+			let c: any = params.capaBilities;
 			for (let i = 0; c && i < keys.length; i++) {
 				if (!c.hasOwnProperty(keys[i])) {
 					return def;
@@ -124,19 +124,19 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			return c;
 		}
 
-		clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-		dynamicFormatterRegistration = getClientCapability('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof params.initializationOptions?.provideFormatter !== 'boolean');
-		foldingRangeLimitDefault = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
-		hierarchicalDocumentSymbolSupport = getClientCapability('textDocument.documentSymbol.hierarchicalDocumentSymbolSupport', false);
-		formatterMaxNumberOfEdits = params.initializationOptions?.customCapabilities?.rangeFormatting?.editLimit || Number.MAX_VALUE;
-		const capabilities: ServerCapabilities = {
+		clientSnippetSupport = getClientCapaBility('textDocument.completion.completionItem.snippetSupport', false);
+		dynamicFormatterRegistration = getClientCapaBility('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof params.initializationOptions?.provideFormatter !== 'Boolean');
+		foldingRangeLimitDefault = getClientCapaBility('textDocument.foldingRange.rangeLimit', NumBer.MAX_VALUE);
+		hierarchicalDocumentSymBolSupport = getClientCapaBility('textDocument.documentSymBol.hierarchicalDocumentSymBolSupport', false);
+		formatterMaxNumBerOfEdits = params.initializationOptions?.customCapaBilities?.rangeFormatting?.editLimit || NumBer.MAX_VALUE;
+		const capaBilities: ServerCapaBilities = {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			completionProvider: clientSnippetSupport ? {
 				resolveProvider: false, // turn off resolving as the current language service doesn't do anything on resolve. Also fixes #91747
 				triggerCharacters: ['"', ':']
 			} : undefined,
 			hoverProvider: true,
-			documentSymbolProvider: true,
+			documentSymBolProvider: true,
 			documentRangeFormattingProvider: params.initializationOptions?.provideFormatter === true,
 			colorProvider: {},
 			foldingRangeProvider: true,
@@ -144,21 +144,21 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			definitionProvider: true
 		};
 
-		return { capabilities };
+		return { capaBilities };
 	});
 
 
 
-	// The settings interface describes the server relevant settings part
+	// The settings interface descriBes the server relevant settings part
 	interface Settings {
 		json: {
 			schemas: JSONSchemaSettings[];
-			format: { enable: boolean; };
-			resultLimit?: number;
+			format: { enaBle: Boolean; };
+			resultLimit?: numBer;
 		};
 		http: {
 			proxy: string;
-			proxyStrictSSL: boolean;
+			proxyStrictSSL: Boolean;
 		};
 	}
 
@@ -181,7 +181,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 				}
 			},
 
-			onResultLimitExceeded(uri: string, resultLimit: number, name: string) {
+			onResultLimitExceeded(uri: string, resultLimit: numBer, name: string) {
 				return () => {
 					let warning = pendingWarnings[uri];
 					if (warning) {
@@ -194,7 +194,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 					} else {
 						warning = { features: { [name]: name } };
 						warning.timeout = setTimeout(() => {
-							connection.sendNotification(ResultLimitReachedNotification.type, `${basename(uri)}: For performance reasons, ${Object.keys(warning.features).join(' and ')} have been limited to ${resultLimit} items.`);
+							connection.sendNotification(ResultLimitReachedNotification.type, `${Basename(uri)}: For performance reasons, ${OBject.keys(warning.features).join(' and ')} have Been limited to ${resultLimit} items.`);
 							warning.timeout = undefined;
 						}, 2000);
 						pendingWarnings[uri] = warning;
@@ -206,7 +206,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 
 	let jsonConfigurationSettings: JSONSchemaSettings[] | undefined = undefined;
 	let schemaAssociations: ISchemaAssociations | SchemaConfiguration[] | undefined = undefined;
-	let formatterRegistration: Thenable<Disposable> | null = null;
+	let formatterRegistration: ThenaBle<DisposaBle> | null = null;
 
 	// The settings have changed. Is send on server activation as well.
 	connection.onDidChangeConfiguration((change) => {
@@ -218,12 +218,12 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		updateConfiguration();
 
 		foldingRangeLimit = Math.trunc(Math.max(settings.json && settings.json.resultLimit || foldingRangeLimitDefault, 0));
-		resultLimit = Math.trunc(Math.max(settings.json && settings.json.resultLimit || Number.MAX_VALUE, 0));
+		resultLimit = Math.trunc(Math.max(settings.json && settings.json.resultLimit || NumBer.MAX_VALUE, 0));
 
-		// dynamically enable & disable the formatter
+		// dynamically enaBle & disaBle the formatter
 		if (dynamicFormatterRegistration) {
-			const enableFormatter = settings && settings.json && settings.json.format && settings.json.format.enable;
-			if (enableFormatter) {
+			const enaBleFormatter = settings && settings.json && settings.json.format && settings.json.format.enaBle;
+			if (enaBleFormatter) {
 				if (!formatterRegistration) {
 					formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector: [{ language: 'json' }, { language: 'jsonc' }] });
 				}
@@ -330,11 +330,11 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, validationDelayMs);
 	}
 
-	function validateTextDocument(textDocument: TextDocument, callback?: (diagnostics: Diagnostic[]) => void): void {
+	function validateTextDocument(textDocument: TextDocument, callBack?: (diagnostics: Diagnostic[]) => void): void {
 		const respond = (diagnostics: Diagnostic[]) => {
 			connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-			if (callback) {
-				callback(diagnostics);
+			if (callBack) {
+				callBack(diagnostics);
 			}
 		};
 		if (textDocument.getText().length === 0) {
@@ -404,20 +404,20 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, null, `Error while computing hover for ${textDocumentPositionParams.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentSymbol((documentSymbolParams, token) => {
+	connection.onDocumentSymBol((documentSymBolParams, token) => {
 		return runSafe(() => {
-			const document = documents.get(documentSymbolParams.textDocument.uri);
+			const document = documents.get(documentSymBolParams.textDocument.uri);
 			if (document) {
 				const jsonDocument = getJSONDocument(document);
-				const onResultLimitExceeded = limitExceededWarnings.onResultLimitExceeded(document.uri, resultLimit, 'document symbols');
-				if (hierarchicalDocumentSymbolSupport) {
-					return languageService.findDocumentSymbols2(document, jsonDocument, { resultLimit, onResultLimitExceeded });
+				const onResultLimitExceeded = limitExceededWarnings.onResultLimitExceeded(document.uri, resultLimit, 'document symBols');
+				if (hierarchicalDocumentSymBolSupport) {
+					return languageService.findDocumentSymBols2(document, jsonDocument, { resultLimit, onResultLimitExceeded });
 				} else {
-					return languageService.findDocumentSymbols(document, jsonDocument, { resultLimit, onResultLimitExceeded });
+					return languageService.findDocumentSymBols(document, jsonDocument, { resultLimit, onResultLimitExceeded });
 				}
 			}
 			return [];
-		}, [], `Error while computing document symbols for ${documentSymbolParams.textDocument.uri}`, token);
+		}, [], `Error while computing document symBols for ${documentSymBolParams.textDocument.uri}`, token);
 	});
 
 	connection.onDocumentRangeFormatting((formatParams, token) => {
@@ -425,7 +425,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			const document = documents.get(formatParams.textDocument.uri);
 			if (document) {
 				const edits = languageService.format(document, formatParams.range, formatParams.options);
-				if (edits.length > formatterMaxNumberOfEdits) {
+				if (edits.length > formatterMaxNumBerOfEdits) {
 					const newText = TextDocument.applyEdits(document, edits);
 					return [TextEdit.replace(Range.create(Position.create(0, 0), document.positionAt(document.getText().length)), newText)];
 				}

@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { BaseWindowDriver } from 'vs/platform/driver/browser/baseDriver';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { BaseWindowDriver } from 'vs/platform/driver/Browser/BaseDriver';
 
 class BrowserWindowDriver extends BaseWindowDriver {
-	click(selector: string, xoffset?: number | undefined, yoffset?: number | undefined): Promise<void> {
+	click(selector: string, xoffset?: numBer | undefined, yoffset?: numBer | undefined): Promise<void> {
 		throw new Error('Method not implemented.');
 	}
-	doubleClick(selector: string): Promise<void> {
+	douBleClick(selector: string): Promise<void> {
 		throw new Error('Method not implemented.');
 	}
 	openDevTools(): Promise<void> {
@@ -18,8 +18,8 @@ class BrowserWindowDriver extends BaseWindowDriver {
 	}
 }
 
-export async function registerWindowDriver(): Promise<IDisposable> {
+export async function registerWindowDriver(): Promise<IDisposaBle> {
 	(<any>window).driver = new BrowserWindowDriver();
 
-	return Disposable.None;
+	return DisposaBle.None;
 }

@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { first } from 'vs/base/common/async';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { registerDefaultLanguageCommand } from 'vs/editor/browser/editorExtensions';
+import { first } from 'vs/Base/common/async';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { registerDefaultLanguageCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { ITextModel } from 'vs/editor/common/model';
 import * as modes from 'vs/editor/common/modes';
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 export const Context = {
-	Visible: new RawContextKey<boolean>('parameterHintsVisible', false),
-	MultipleSignatures: new RawContextKey<boolean>('parameterHintsMultipleSignatures', false),
+	VisiBle: new RawContextKey<Boolean>('parameterHintsVisiBle', false),
+	MultipleSignatures: new RawContextKey<Boolean>('parameterHintsMultipleSignatures', false),
 };
 
 export function provideSignatureHelp(

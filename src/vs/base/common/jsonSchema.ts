@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'null' | 'array' | 'object';
+export type JSONSchemaType = 'string' | 'numBer' | 'integer' | 'Boolean' | 'null' | 'array' | 'oBject';
 
 export interface IJSONSchema {
 	id?: string;
@@ -16,23 +16,23 @@ export interface IJSONSchema {
 	description?: string;
 	properties?: IJSONSchemaMap;
 	patternProperties?: IJSONSchemaMap;
-	additionalProperties?: boolean | IJSONSchema;
-	minProperties?: number;
-	maxProperties?: number;
+	additionalProperties?: Boolean | IJSONSchema;
+	minProperties?: numBer;
+	maxProperties?: numBer;
 	dependencies?: IJSONSchemaMap | { [prop: string]: string[] };
 	items?: IJSONSchema | IJSONSchema[];
-	minItems?: number;
-	maxItems?: number;
-	uniqueItems?: boolean;
-	additionalItems?: boolean | IJSONSchema;
+	minItems?: numBer;
+	maxItems?: numBer;
+	uniqueItems?: Boolean;
+	additionalItems?: Boolean | IJSONSchema;
 	pattern?: string;
-	minLength?: number;
-	maxLength?: number;
-	minimum?: number;
-	maximum?: number;
-	exclusiveMinimum?: boolean | number;
-	exclusiveMaximum?: boolean | number;
-	multipleOf?: number;
+	minLength?: numBer;
+	maxLength?: numBer;
+	minimum?: numBer;
+	maximum?: numBer;
+	exclusiveMinimum?: Boolean | numBer;
+	exclusiveMaximum?: Boolean | numBer;
+	multipleOf?: numBer;
 	required?: string[];
 	$ref?: string;
 	anyOf?: IJSONSchema[];
@@ -62,10 +62,10 @@ export interface IJSONSchema {
 	enumDescriptions?: string[];
 	markdownEnumDescriptions?: string[];
 	markdownDescription?: string;
-	doNotSuggest?: boolean;
+	doNotSuggest?: Boolean;
 	suggestSortText?: string;
-	allowComments?: boolean;
-	allowTrailingCommas?: boolean;
+	allowComments?: Boolean;
+	allowTrailingCommas?: Boolean;
 }
 
 export interface IJSONSchemaMap {
@@ -73,8 +73,8 @@ export interface IJSONSchemaMap {
 }
 
 export interface IJSONSchemaSnippet {
-	label?: string;
+	laBel?: string;
 	description?: string;
-	body?: any; // a object that will be JSON stringified
-	bodyText?: string; // an already stringified JSON object that can contain new lines (\n) and tabs (\t)
+	Body?: any; // a oBject that will Be JSON stringified
+	BodyText?: string; // an already stringified JSON oBject that can contain new lines (\n) and taBs (\t)
 }

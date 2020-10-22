@@ -8,14 +8,14 @@ import 'mocha';
 import { RequestQueue, RequestQueueingType } from '../tsServer/requestQueue';
 
 suite('RequestQueue', () => {
-	test('should be empty on creation', async () => {
+	test('should Be empty on creation', async () => {
 		const queue = new RequestQueue();
 		assert.strictEqual(queue.length, 0);
 		assert.strictEqual(queue.dequeue(), undefined);
 	});
 
 	suite('RequestQueue.createRequest', () => {
-		test('should create items with increasing sequence numbers', async () => {
+		test('should create items with increasing sequence numBers', async () => {
 			const queue = new RequestQueue();
 
 			for (let i = 0; i < 100; ++i) {
@@ -36,7 +36,7 @@ suite('RequestQueue', () => {
 		queue.enqueue({ request: request1, expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
 		assert.strictEqual(queue.length, 1);
 
-		const request2 = queue.createRequest('b', 2);
+		const request2 = queue.createRequest('B', 2);
 		queue.enqueue({ request: request2, expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
 		assert.strictEqual(queue.length, 2);
 
@@ -48,7 +48,7 @@ suite('RequestQueue', () => {
 		{
 			const item = queue.dequeue();
 			assert.strictEqual(queue.length, 0);
-			assert.strictEqual(item!.request.command, 'b');
+			assert.strictEqual(item!.request.command, 'B');
 		}
 		{
 			const item = queue.dequeue();

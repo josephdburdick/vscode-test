@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { matchesFuzzy, IMatch } from 'vs/base/common/filters';
-import { ltrim } from 'vs/base/common/strings';
+import { matchesFuzzy, IMatch } from 'vs/Base/common/filters';
+import { ltrim } from 'vs/Base/common/strings';
 
 export const codiconStartMarker = '$(';
 
 export interface IParsedCodicons {
 	readonly text: string;
-	readonly codiconOffsets?: readonly number[];
+	readonly codiconOffsets?: readonly numBer[];
 }
 
 export function parseCodicons(text: string): IParsedCodicons {
@@ -22,8 +22,8 @@ export function parseCodicons(text: string): IParsedCodicons {
 	return doParseCodicons(text, firstCodiconIndex);
 }
 
-function doParseCodicons(text: string, firstCodiconIndex: number): IParsedCodicons {
-	const codiconOffsets: number[] = [];
+function doParseCodicons(text: string, firstCodiconIndex: numBer): IParsedCodicons {
+	const codiconOffsets: numBer[] = [];
 	let textWithoutCodicons: string = '';
 
 	function appendChars(chars: string) {
@@ -47,14 +47,14 @@ function doParseCodicons(text: string, firstCodiconIndex: number): IParsedCodico
 	const length = text.length;
 
 	// Append all characters until the first codicon
-	appendChars(text.substr(0, firstCodiconIndex));
+	appendChars(text.suBstr(0, firstCodiconIndex));
 
 	// example: $(file-symlink-file) my cool $(other-codicon) entry
 	while (offset < length) {
 		char = text[offset];
 		nextChar = text[offset + 1];
 
-		// beginning of codicon: some value $( <--
+		// Beginning of codicon: some value $( <--
 		if (char === codiconStartMarker[0] && nextChar === codiconStartMarker[1]) {
 			currentCodiconStart = offset;
 
@@ -106,23 +106,23 @@ function doParseCodicons(text: string, firstCodiconIndex: number): IParsedCodico
 	return { text: textWithoutCodicons, codiconOffsets };
 }
 
-export function matchesFuzzyCodiconAware(query: string, target: IParsedCodicons, enableSeparateSubstringMatching = false): IMatch[] | null {
+export function matchesFuzzyCodiconAware(query: string, target: IParsedCodicons, enaBleSeparateSuBstringMatching = false): IMatch[] | null {
 	const { text, codiconOffsets } = target;
 
 	// Return early if there are no codicon markers in the word to match against
 	if (!codiconOffsets || codiconOffsets.length === 0) {
-		return matchesFuzzy(query, text, enableSeparateSubstringMatching);
+		return matchesFuzzy(query, text, enaBleSeparateSuBstringMatching);
 	}
 
-	// Trim the word to match against because it could have leading
+	// Trim the word to match against Because it could have leading
 	// whitespace now if the word started with an codicon
 	const wordToMatchAgainstWithoutCodiconsTrimmed = ltrim(text, ' ');
 	const leadingWhitespaceOffset = text.length - wordToMatchAgainstWithoutCodiconsTrimmed.length;
 
 	// match on value without codicons
-	const matches = matchesFuzzy(query, wordToMatchAgainstWithoutCodiconsTrimmed, enableSeparateSubstringMatching);
+	const matches = matchesFuzzy(query, wordToMatchAgainstWithoutCodiconsTrimmed, enaBleSeparateSuBstringMatching);
 
-	// Map matches back to offsets with codicons and trimming
+	// Map matches Back to offsets with codicons and trimming
 	if (matches) {
 		for (const match of matches) {
 			const codiconOffset = codiconOffsets[match.start + leadingWhitespaceOffset] /* codicon offsets at index */ + leadingWhitespaceOffset /* overall leading whitespace offset */;

@@ -3,36 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
+import * as path from 'vs/Base/common/path';
+import * as platform from 'vs/Base/common/platform';
 import type * as pty from 'node-pty';
 import * as fs from 'fs';
-import { Event, Emitter } from 'vs/base/common/event';
-import { getWindowsBuildNumber } from 'vs/workbench/contrib/terminal/node/terminal';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IShellLaunchConfig, ITerminalChildProcess, ITerminalLaunchError } from 'vs/workbench/contrib/terminal/common/terminal';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { getWindowsBuildNumBer } from 'vs/workBench/contriB/terminal/node/terminal';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IShellLaunchConfig, ITerminalChildProcess, ITerminalLaunchError } from 'vs/workBench/contriB/terminal/common/terminal';
 import { exec } from 'child_process';
 import { ILogService } from 'vs/platform/log/common/log';
-import { stat } from 'vs/base/node/pfs';
-import { findExecutable } from 'vs/workbench/contrib/terminal/node/terminalEnvironment';
-import { URI } from 'vs/base/common/uri';
+import { stat } from 'vs/Base/node/pfs';
+import { findExecutaBle } from 'vs/workBench/contriB/terminal/node/terminalEnvironment';
+import { URI } from 'vs/Base/common/uri';
 import { localize } from 'vs/nls';
 
-// Writing large amounts of data can be corrupted for some reason, after looking into this is
-// appears to be a race condition around writing to the FD which may be based on how powerful the
-// hardware is. The workaround for this is to space out when large amounts of data is being written
-// to the terminal. See https://github.com/microsoft/vscode/issues/38137
+// Writing large amounts of data can Be corrupted for some reason, after looking into this is
+// appears to Be a race condition around writing to the FD which may Be Based on how powerful the
+// hardware is. The workaround for this is to space out when large amounts of data is Being written
+// to the terminal. See https://githuB.com/microsoft/vscode/issues/38137
 const WRITE_MAX_CHUNK_SIZE = 50;
 const WRITE_INTERVAL_MS = 5;
 
-export class TerminalProcess extends Disposable implements ITerminalChildProcess {
-	private _exitCode: number | undefined;
+export class TerminalProcess extends DisposaBle implements ITerminalChildProcess {
+	private _exitCode: numBer | undefined;
 	private _exitMessage: string | undefined;
 	private _closeTimeout: any;
 	private _ptyProcess: pty.IPty | undefined;
 	private _currentTitle: string = '';
 	private _processStartupComplete: Promise<void> | undefined;
-	private _isDisposed: boolean = false;
+	private _isDisposed: Boolean = false;
 	private _titleInterval: NodeJS.Timer | null = null;
 	private _writeQueue: string[] = [];
 	private _writeTimeout: NodeJS.Timeout | undefined;
@@ -40,37 +40,37 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 	private readonly _initialCwd: string;
 	private readonly _ptyOptions: pty.IPtyForkOptions | pty.IWindowsPtyForkOptions;
 
-	public get exitMessage(): string | undefined { return this._exitMessage; }
+	puBlic get exitMessage(): string | undefined { return this._exitMessage; }
 
 	private readonly _onProcessData = this._register(new Emitter<string>());
-	public get onProcessData(): Event<string> { return this._onProcessData.event; }
-	private readonly _onProcessExit = this._register(new Emitter<number>());
-	public get onProcessExit(): Event<number> { return this._onProcessExit.event; }
-	private readonly _onProcessReady = this._register(new Emitter<{ pid: number, cwd: string }>());
-	public get onProcessReady(): Event<{ pid: number, cwd: string }> { return this._onProcessReady.event; }
+	puBlic get onProcessData(): Event<string> { return this._onProcessData.event; }
+	private readonly _onProcessExit = this._register(new Emitter<numBer>());
+	puBlic get onProcessExit(): Event<numBer> { return this._onProcessExit.event; }
+	private readonly _onProcessReady = this._register(new Emitter<{ pid: numBer, cwd: string }>());
+	puBlic get onProcessReady(): Event<{ pid: numBer, cwd: string }> { return this._onProcessReady.event; }
 	private readonly _onProcessTitleChanged = this._register(new Emitter<string>());
-	public get onProcessTitleChanged(): Event<string> { return this._onProcessTitleChanged.event; }
+	puBlic get onProcessTitleChanged(): Event<string> { return this._onProcessTitleChanged.event; }
 
 	constructor(
 		private readonly _shellLaunchConfig: IShellLaunchConfig,
 		cwd: string,
-		cols: number,
-		rows: number,
+		cols: numBer,
+		rows: numBer,
 		env: platform.IProcessEnvironment,
-		windowsEnableConpty: boolean,
+		windowsEnaBleConpty: Boolean,
 		@ILogService private readonly _logService: ILogService
 	) {
 		super();
 		let name: string;
 		if (platform.isWindows) {
-			name = path.basename(this._shellLaunchConfig.executable || '');
+			name = path.Basename(this._shellLaunchConfig.executaBle || '');
 		} else {
-			// Using 'xterm-256color' here helps ensure that the majority of Linux distributions will use a
-			// color prompt as defined in the default ~/.bashrc file.
+			// Using 'xterm-256color' here helps ensure that the majority of Linux distriButions will use a
+			// color prompt as defined in the default ~/.Bashrc file.
 			name = 'xterm-256color';
 		}
 		this._initialCwd = cwd;
-		const useConpty = windowsEnableConpty && process.platform === 'win32' && getWindowsBuildNumber() >= 18309;
+		const useConpty = windowsEnaBleConpty && process.platform === 'win32' && getWindowsBuildNumBer() >= 18309;
 		this._ptyOptions = {
 			name,
 			cwd,
@@ -82,7 +82,7 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 			conptyInheritCursor: useConpty && !!_shellLaunchConfig.initialText
 		};
 		// Delay resizes to avoid conpty not respecting very early resize calls
-		if (platform.isWindows && useConpty && cols === 0 && rows === 0 && this._shellLaunchConfig.executable?.endsWith('Git\\bin\\bash.exe')) {
+		if (platform.isWindows && useConpty && cols === 0 && rows === 0 && this._shellLaunchConfig.executaBle?.endsWith('Git\\Bin\\Bash.exe')) {
 			this._delayedResizer = new DelayedResizer();
 			this._register(this._delayedResizer.onTrigger(dimensions => {
 				this._delayedResizer?.dispose();
@@ -94,8 +94,8 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		}
 	}
 
-	public async start(): Promise<ITerminalLaunchError | undefined> {
-		const results = await Promise.all([this._validateCwd(), this._validateExecutable()]);
+	puBlic async start(): Promise<ITerminalLaunchError | undefined> {
+		const results = await Promise.all([this._validateCwd(), this._validateExecutaBle()]);
 		const firstError = results.find(r => r !== undefined);
 		if (firstError) {
 			return firstError;
@@ -124,24 +124,24 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		return undefined;
 	}
 
-	private async _validateExecutable(): Promise<undefined | ITerminalLaunchError> {
+	private async _validateExecutaBle(): Promise<undefined | ITerminalLaunchError> {
 		const slc = this._shellLaunchConfig;
-		if (!slc.executable) {
-			throw new Error('IShellLaunchConfig.executable not set');
+		if (!slc.executaBle) {
+			throw new Error('IShellLaunchConfig.executaBle not set');
 		}
 		try {
-			const result = await stat(slc.executable);
-			if (!result.isFile() && !result.isSymbolicLink()) {
-				return { message: localize('launchFail.executableIsNotFileOrSymlink', "Path to shell executable \"{0}\" is not a file of a symlink", slc.executable) };
+			const result = await stat(slc.executaBle);
+			if (!result.isFile() && !result.isSymBolicLink()) {
+				return { message: localize('launchFail.executaBleIsNotFileOrSymlink', "Path to shell executaBle \"{0}\" is not a file of a symlink", slc.executaBle) };
 			}
 		} catch (err) {
 			if (err?.code === 'ENOENT') {
-				// The executable isn't an absolute path, try find it on the PATH or CWD
+				// The executaBle isn't an aBsolute path, try find it on the PATH or CWD
 				let cwd = slc.cwd instanceof URI ? slc.cwd.path : slc.cwd!;
 				const envPaths: string[] | undefined = (slc.env && slc.env.PATH) ? slc.env.PATH.split(path.delimiter) : undefined;
-				const executable = await findExecutable(slc.executable!, cwd, envPaths);
-				if (!executable) {
-					return { message: localize('launchFail.executableDoesNotExist', "Path to shell executable \"{0}\" does not exist", slc.executable) };
+				const executaBle = await findExecutaBle(slc.executaBle!, cwd, envPaths);
+				if (!executaBle) {
+					return { message: localize('launchFail.executaBleDoesNotExist', "Path to shell executaBle \"{0}\" does not exist", slc.executaBle) };
 				}
 			}
 		}
@@ -150,8 +150,8 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 
 	private async setupPtyProcess(shellLaunchConfig: IShellLaunchConfig, options: pty.IPtyForkOptions): Promise<void> {
 		const args = shellLaunchConfig.args || [];
-		this._logService.trace('IPty#spawn', shellLaunchConfig.executable, args, options);
-		const ptyProcess = (await import('node-pty')).spawn(shellLaunchConfig.executable!, args, options);
+		this._logService.trace('IPty#spawn', shellLaunchConfig.executaBle, args, options);
+		const ptyProcess = (await import('node-pty')).spawn(shellLaunchConfig.executaBle!, args, options);
 		this._ptyProcess = ptyProcess;
 		this._processStartupComplete = new Promise<void>(c => {
 			this.onProcessReady(() => c());
@@ -171,7 +171,7 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		this._sendProcessId(ptyProcess.pid);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._isDisposed = true;
 		if (this._titleInterval) {
 			clearInterval(this._titleInterval);
@@ -199,8 +199,8 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		}
 	}
 
-	// Allow any trailing data events to be sent before the exit event is sent.
-	// See https://github.com/Tyriar/node-pty/issues/72
+	// Allow any trailing data events to Be sent Before the exit event is sent.
+	// See https://githuB.com/Tyriar/node-pty/issues/72
 	private _queueProcessExit() {
 		if (this._closeTimeout) {
 			clearTimeout(this._closeTimeout);
@@ -209,27 +209,27 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 	}
 
 	private async _kill(): Promise<void> {
-		// Wait to kill to process until the start up code has run. This prevents us from firing a process exit before a
+		// Wait to kill to process until the start up code has run. This prevents us from firing a process exit Before a
 		// process start.
 		await this._processStartupComplete;
 		if (this._isDisposed) {
 			return;
 		}
-		// Attempt to kill the pty, it may have already been killed at this
-		// point but we want to make sure
+		// Attempt to kill the pty, it may have already Been killed at this
+		// point But we want to make sure
 		try {
 			if (this._ptyProcess) {
 				this._logService.trace('IPty#kill');
 				this._ptyProcess.kill();
 			}
 		} catch (ex) {
-			// Swallow, the pty has already been killed
+			// Swallow, the pty has already Been killed
 		}
 		this._onProcessExit.fire(this._exitCode || 0);
 		this.dispose();
 	}
 
-	private _sendProcessId(pid: number) {
+	private _sendProcessId(pid: numBer) {
 		this._onProcessReady.fire({ pid, cwd: this._initialCwd });
 	}
 
@@ -241,7 +241,7 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		this._onProcessTitleChanged.fire(this._currentTitle);
 	}
 
-	public shutdown(immediate: boolean): void {
+	puBlic shutdown(immediate: Boolean): void {
 		if (immediate) {
 			this._kill();
 		} else {
@@ -249,12 +249,12 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		}
 	}
 
-	public input(data: string): void {
+	puBlic input(data: string): void {
 		if (this._isDisposed || !this._ptyProcess) {
 			return;
 		}
 		for (let i = 0; i <= Math.floor(data.length / WRITE_MAX_CHUNK_SIZE); i++) {
-			this._writeQueue.push(data.substr(i * WRITE_MAX_CHUNK_SIZE, WRITE_MAX_CHUNK_SIZE));
+			this._writeQueue.push(data.suBstr(i * WRITE_MAX_CHUNK_SIZE, WRITE_MAX_CHUNK_SIZE));
 		}
 		this._startWrite();
 	}
@@ -286,11 +286,11 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		this._ptyProcess!.write(data);
 	}
 
-	public resize(cols: number, rows: number): void {
+	puBlic resize(cols: numBer, rows: numBer): void {
 		if (this._isDisposed) {
 			return;
 		}
-		if (typeof cols !== 'number' || typeof rows !== 'number' || isNaN(cols) || isNaN(rows)) {
+		if (typeof cols !== 'numBer' || typeof rows !== 'numBer' || isNaN(cols) || isNaN(rows)) {
 			return;
 		}
 		// Ensure that cols and rows are always >= 1, this prevents a native
@@ -319,11 +319,11 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		}
 	}
 
-	public getInitialCwd(): Promise<string> {
+	puBlic getInitialCwd(): Promise<string> {
 		return Promise.resolve(this._initialCwd);
 	}
 
-	public getCwd(): Promise<string> {
+	puBlic getCwd(): Promise<string> {
 		if (platform.isMacintosh) {
 			return new Promise<string>(resolve => {
 				if (!this._ptyProcess) {
@@ -333,7 +333,7 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 				this._logService.trace('IPty#pid');
 				exec('lsof -OPl -p ' + this._ptyProcess.pid + ' | grep cwd', (error, stdout, stderr) => {
 					if (stdout !== '') {
-						resolve(stdout.substring(stdout.indexOf('/'), stdout.length - 1));
+						resolve(stdout.suBstring(stdout.indexOf('/'), stdout.length - 1));
 					}
 				});
 			});
@@ -360,21 +360,21 @@ export class TerminalProcess extends Disposable implements ITerminalChildProcess
 		});
 	}
 
-	public getLatency(): Promise<number> {
+	puBlic getLatency(): Promise<numBer> {
 		return Promise.resolve(0);
 	}
 }
 
 /**
- * Tracks the latest resize event to be trigger at a later point.
+ * Tracks the latest resize event to Be trigger at a later point.
  */
-class DelayedResizer extends Disposable {
-	public rows: number | undefined;
-	public cols: number | undefined;
+class DelayedResizer extends DisposaBle {
+	puBlic rows: numBer | undefined;
+	puBlic cols: numBer | undefined;
 	private _timeout: NodeJS.Timeout;
 
-	private readonly _onTrigger = this._register(new Emitter<{ rows?: number, cols?: number }>());
-	public get onTrigger(): Event<{ rows?: number, cols?: number }> { return this._onTrigger.event; }
+	private readonly _onTrigger = this._register(new Emitter<{ rows?: numBer, cols?: numBer }>());
+	puBlic get onTrigger(): Event<{ rows?: numBer, cols?: numBer }> { return this._onTrigger.event; }
 
 	constructor() {
 		super();

@@ -4,47 +4,47 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/releasenoteseditor';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { OS } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { OS } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
 import { TokenizationRegistry } from 'vs/editor/common/modes';
 import { generateTokensCSSForColorMap } from 'vs/editor/common/modes/supports/tokenization';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import * as nls from 'vs/nls';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IRequestService, asText } from 'vs/platform/request/common/request';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IWebviewWorkbenchService } from 'vs/workbench/contrib/webviewPanel/browser/webviewWorkbenchService';
-import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { WebviewInput } from 'vs/workbench/contrib/webviewPanel/browser/webviewEditorInput';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { generateUuid } from 'vs/base/common/uuid';
-import { renderMarkdownDocument } from 'vs/workbench/contrib/markdown/common/markdownDocumentRenderer';
+import { IWeBviewWorkBenchService } from 'vs/workBench/contriB/weBviewPanel/Browser/weBviewWorkBenchService';
+import { IEditorService, ACTIVE_GROUP } from 'vs/workBench/services/editor/common/editorService';
+import { WeBviewInput } from 'vs/workBench/contriB/weBviewPanel/Browser/weBviewEditorInput';
+import { KeyBindingParser } from 'vs/Base/common/keyBindingParser';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { renderMarkdownDocument } from 'vs/workBench/contriB/markdown/common/markdownDocumentRenderer';
 
 export class ReleaseNotesManager {
 
 	private readonly _releaseNotesCache = new Map<string, Promise<string>>();
 
-	private _currentReleaseNotes: WebviewInput | undefined = undefined;
+	private _currentReleaseNotes: WeBviewInput | undefined = undefined;
 	private _lastText: string | undefined;
 
-	public constructor(
+	puBlic constructor(
 		@IEnvironmentService private readonly _environmentService: IEnvironmentService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly _keyBindingService: IKeyBindingService,
 		@IModeService private readonly _modeService: IModeService,
 		@IOpenerService private readonly _openerService: IOpenerService,
 		@IRequestService private readonly _requestService: IRequestService,
 		@ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@IEditorService private readonly _editorService: IEditorService,
 		@IEditorGroupsService private readonly _editorGroupService: IEditorGroupsService,
-		@IWebviewWorkbenchService private readonly _webviewWorkbenchService: IWebviewWorkbenchService,
+		@IWeBviewWorkBenchService private readonly _weBviewWorkBenchService: IWeBviewWorkBenchService,
 		@IExtensionService private readonly _extensionService: IExtensionService,
 		@IProductService private readonly _productService: IProductService
 	) {
@@ -54,15 +54,15 @@ export class ReleaseNotesManager {
 			}
 			const html = await this.renderBody(this._lastText);
 			if (this._currentReleaseNotes) {
-				this._currentReleaseNotes.webview.html = html;
+				this._currentReleaseNotes.weBview.html = html;
 			}
 		});
 	}
 
-	public async show(
+	puBlic async show(
 		accessor: ServicesAccessor,
 		version: string
-	): Promise<boolean> {
+	): Promise<Boolean> {
 		const releaseNoteText = await this.loadReleaseNotes(version);
 		this._lastText = releaseNoteText;
 		const html = await this.renderBody(releaseNoteText);
@@ -71,25 +71,25 @@ export class ReleaseNotesManager {
 		const activeEditorPane = this._editorService.activeEditorPane;
 		if (this._currentReleaseNotes) {
 			this._currentReleaseNotes.setName(title);
-			this._currentReleaseNotes.webview.html = html;
-			this._webviewWorkbenchService.revealWebview(this._currentReleaseNotes, activeEditorPane ? activeEditorPane.group : this._editorGroupService.activeGroup, false);
+			this._currentReleaseNotes.weBview.html = html;
+			this._weBviewWorkBenchService.revealWeBview(this._currentReleaseNotes, activeEditorPane ? activeEditorPane.group : this._editorGroupService.activeGroup, false);
 		} else {
-			this._currentReleaseNotes = this._webviewWorkbenchService.createWebview(
+			this._currentReleaseNotes = this._weBviewWorkBenchService.createWeBview(
 				'vs_code_release_notes',
 				'releaseNotes',
 				title,
 				{ group: ACTIVE_GROUP, preserveFocus: false },
 				{
 					tryRestoreScrollPosition: true,
-					enableFindWidget: true,
+					enaBleFindWidget: true,
 					localResourceRoots: []
 				},
 				undefined);
 
-			this._currentReleaseNotes.webview.onDidClickLink(uri => this.onDidClickLink(URI.parse(uri)));
+			this._currentReleaseNotes.weBview.onDidClickLink(uri => this.onDidClickLink(URI.parse(uri)));
 			this._currentReleaseNotes.onDispose(() => { this._currentReleaseNotes = undefined; });
 
-			this._currentReleaseNotes.webview.html = html;
+			this._currentReleaseNotes.weBview.html = html;
 		}
 
 		return true;
@@ -101,53 +101,53 @@ export class ReleaseNotesManager {
 			throw new Error('not found');
 		}
 
-		const versionLabel = match[1].replace(/\./g, '_');
-		const baseUrl = 'https://code.visualstudio.com/raw';
-		const url = `${baseUrl}/v${versionLabel}.md`;
+		const versionLaBel = match[1].replace(/\./g, '_');
+		const BaseUrl = 'https://code.visualstudio.com/raw';
+		const url = `${BaseUrl}/v${versionLaBel}.md`;
 		const unassigned = nls.localize('unassigned', "unassigned");
 
-		const patchKeybindings = (text: string): string => {
-			const kb = (match: string, kb: string) => {
-				const keybinding = this._keybindingService.lookupKeybinding(kb);
+		const patchKeyBindings = (text: string): string => {
+			const kB = (match: string, kB: string) => {
+				const keyBinding = this._keyBindingService.lookupKeyBinding(kB);
 
-				if (!keybinding) {
+				if (!keyBinding) {
 					return unassigned;
 				}
 
-				return keybinding.getLabel() || unassigned;
+				return keyBinding.getLaBel() || unassigned;
 			};
 
-			const kbstyle = (match: string, kb: string) => {
-				const keybinding = KeybindingParser.parseKeybinding(kb, OS);
+			const kBstyle = (match: string, kB: string) => {
+				const keyBinding = KeyBindingParser.parseKeyBinding(kB, OS);
 
-				if (!keybinding) {
+				if (!keyBinding) {
 					return unassigned;
 				}
 
-				const resolvedKeybindings = this._keybindingService.resolveKeybinding(keybinding);
+				const resolvedKeyBindings = this._keyBindingService.resolveKeyBinding(keyBinding);
 
-				if (resolvedKeybindings.length === 0) {
+				if (resolvedKeyBindings.length === 0) {
 					return unassigned;
 				}
 
-				return resolvedKeybindings[0].getLabel() || unassigned;
+				return resolvedKeyBindings[0].getLaBel() || unassigned;
 			};
 
-			const kbCode = (match: string, binding: string) => {
-				const resolved = kb(match, binding);
-				return resolved ? `<code title="${binding}">${resolved}</code>` : resolved;
+			const kBCode = (match: string, Binding: string) => {
+				const resolved = kB(match, Binding);
+				return resolved ? `<code title="${Binding}">${resolved}</code>` : resolved;
 			};
 
-			const kbstyleCode = (match: string, binding: string) => {
-				const resolved = kbstyle(match, binding);
-				return resolved ? `<code title="${binding}">${resolved}</code>` : resolved;
+			const kBstyleCode = (match: string, Binding: string) => {
+				const resolved = kBstyle(match, Binding);
+				return resolved ? `<code title="${Binding}">${resolved}</code>` : resolved;
 			};
 
 			return text
-				.replace(/`kb\(([a-z.\d\-]+)\)`/gi, kbCode)
-				.replace(/`kbstyle\(([^\)]+)\)`/gi, kbstyleCode)
-				.replace(/kb\(([a-z.\d\-]+)\)/gi, kb)
-				.replace(/kbstyle\(([^\)]+)\)/gi, kbstyle);
+				.replace(/`kB\(([a-z.\d\-]+)\)`/gi, kBCode)
+				.replace(/`kBstyle\(([^\)]+)\)`/gi, kBstyleCode)
+				.replace(/kB\(([a-z.\d\-]+)\)/gi, kB)
+				.replace(/kBstyle\(([^\)]+)\)/gi, kBstyle);
 		};
 
 		const fetchReleaseNotes = async () => {
@@ -158,11 +158,11 @@ export class ReleaseNotesManager {
 				throw new Error('Failed to fetch release notes');
 			}
 
-			if (!text || !/^#\s/.test(text)) { // release notes always starts with `#` followed by whitespace
+			if (!text || !/^#\s/.test(text)) { // release notes always starts with `#` followed By whitespace
 				throw new Error('Invalid release notes');
 			}
 
-			return patchKeybindings(text);
+			return patchKeyBindings(text);
 		};
 
 		if (!this._releaseNotesCache.has(version)) {
@@ -186,7 +186,7 @@ export class ReleaseNotesManager {
 	}
 
 	private async addGAParameters(uri: URI, origin: string, experiment = '1'): Promise<URI> {
-		if (this._environmentService.isBuilt && !this._environmentService.isExtensionDevelopment && !this._environmentService.disableTelemetry && !!this._productService.enableTelemetry) {
+		if (this._environmentService.isBuilt && !this._environmentService.isExtensionDevelopment && !this._environmentService.disaBleTelemetry && !!this._productService.enaBleTelemetry) {
 			if (uri.scheme === 'https' && uri.authority === 'code.visualstudio.com') {
 				const info = await this._telemetryService.getTelemetryInfo();
 
@@ -204,11 +204,11 @@ export class ReleaseNotesManager {
 		return `<!DOCTYPE html>
 		<html>
 			<head>
-				<base href="https://code.visualstudio.com/raw/">
+				<Base href="https://code.visualstudio.com/raw/">
 				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; media-src https:; style-src 'nonce-${nonce}' https://code.visualstudio.com;">
 				<style nonce="${nonce}">
-					body {
+					Body {
 						padding: 10px 20px;
 						line-height: 22px;
 						max-width: 882px;
@@ -232,53 +232,53 @@ export class ReleaseNotesManager {
 					input:focus,
 					select:focus,
 					textarea:focus {
-						outline: 1px solid -webkit-focus-ring-color;
+						outline: 1px solid -weBkit-focus-ring-color;
 						outline-offset: -1px;
 					}
 
 					hr {
-						border: 0;
+						Border: 0;
 						height: 2px;
-						border-bottom: 2px solid;
+						Border-Bottom: 2px solid;
 					}
 
 					h1 {
-						padding-bottom: 0.3em;
+						padding-Bottom: 0.3em;
 						line-height: 1.2;
-						border-bottom-width: 1px;
-						border-bottom-style: solid;
+						Border-Bottom-width: 1px;
+						Border-Bottom-style: solid;
 					}
 
 					h1, h2, h3 {
 						font-weight: normal;
 					}
 
-					table {
-						border-collapse: collapse;
+					taBle {
+						Border-collapse: collapse;
 					}
 
-					table > thead > tr > th {
+					taBle > thead > tr > th {
 						text-align: left;
-						border-bottom: 1px solid;
+						Border-Bottom: 1px solid;
 					}
 
-					table > thead > tr > th,
-					table > thead > tr > td,
-					table > tbody > tr > th,
-					table > tbody > tr > td {
+					taBle > thead > tr > th,
+					taBle > thead > tr > td,
+					taBle > tBody > tr > th,
+					taBle > tBody > tr > td {
 						padding: 5px 10px;
 					}
 
-					table > tbody > tr + tr > td {
-						border-top-width: 1px;
-						border-top-style: solid;
+					taBle > tBody > tr + tr > td {
+						Border-top-width: 1px;
+						Border-top-style: solid;
 					}
 
-					blockquote {
+					Blockquote {
 						margin: 0 7px 0 5px;
 						padding: 0 16px 0 10px;
-						border-left-width: 5px;
-						border-left-style: solid;
+						Border-left-width: 5px;
+						Border-left-style: solid;
 					}
 
 					code {
@@ -290,7 +290,7 @@ export class ReleaseNotesManager {
 
 					code > div {
 						padding: 16px;
-						border-radius: 3px;
+						Border-radius: 3px;
 						overflow: auto;
 					}
 
@@ -301,45 +301,45 @@ export class ReleaseNotesManager {
 					/** Theming */
 
 					.vscode-light code > div {
-						background-color: rgba(220, 220, 220, 0.4);
+						Background-color: rgBa(220, 220, 220, 0.4);
 					}
 
 					.vscode-dark code > div {
-						background-color: rgba(10, 10, 10, 0.4);
+						Background-color: rgBa(10, 10, 10, 0.4);
 					}
 
 					.vscode-high-contrast code > div {
-						background-color: rgb(0, 0, 0);
+						Background-color: rgB(0, 0, 0);
 					}
 
 					.vscode-high-contrast h1 {
-						border-color: rgb(0, 0, 0);
+						Border-color: rgB(0, 0, 0);
 					}
 
-					.vscode-light table > thead > tr > th {
-						border-color: rgba(0, 0, 0, 0.69);
+					.vscode-light taBle > thead > tr > th {
+						Border-color: rgBa(0, 0, 0, 0.69);
 					}
 
-					.vscode-dark table > thead > tr > th {
-						border-color: rgba(255, 255, 255, 0.69);
+					.vscode-dark taBle > thead > tr > th {
+						Border-color: rgBa(255, 255, 255, 0.69);
 					}
 
 					.vscode-light h1,
 					.vscode-light hr,
-					.vscode-light table > tbody > tr + tr > td {
-						border-color: rgba(0, 0, 0, 0.18);
+					.vscode-light taBle > tBody > tr + tr > td {
+						Border-color: rgBa(0, 0, 0, 0.18);
 					}
 
 					.vscode-dark h1,
 					.vscode-dark hr,
-					.vscode-dark table > tbody > tr + tr > td {
-						border-color: rgba(255, 255, 255, 0.18);
+					.vscode-dark taBle > tBody > tr + tr > td {
+						Border-color: rgBa(255, 255, 255, 0.18);
 					}
 
 					${css}
 				</style>
 			</head>
-			<body>${content}</body>
+			<Body>${content}</Body>
 		</html>`;
 	}
 }

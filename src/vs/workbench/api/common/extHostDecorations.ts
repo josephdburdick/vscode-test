@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { MainContext, ExtHostDecorationsShape, MainThreadDecorationsShape, DecorationData, DecorationRequest, DecorationReply } from 'vs/workbench/api/common/extHost.protocol';
-import { Disposable, FileDecoration } from 'vs/workbench/api/common/extHostTypes';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { MainContext, ExtHostDecorationsShape, MainThreadDecorationsShape, DecorationData, DecorationRequest, DecorationReply } from 'vs/workBench/api/common/extHost.protocol';
+import { DisposaBle, FileDecoration } from 'vs/workBench/api/common/extHostTypes';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 import { ILogService } from 'vs/platform/log/common/log';
-import { asArray } from 'vs/base/common/arrays';
+import { asArray } from 'vs/Base/common/arrays';
 
 interface ProviderData {
 	provider: vscode.FileDecorationProvider;
@@ -24,7 +24,7 @@ export class ExtHostDecorations implements ExtHostDecorationsShape {
 	private static _handlePool = 0;
 
 	readonly _serviceBrand: undefined;
-	private readonly _provider = new Map<number, ProviderData>();
+	private readonly _provider = new Map<numBer, ProviderData>();
 	private readonly _proxy: MainThreadDecorationsShape;
 
 	constructor(
@@ -34,7 +34,7 @@ export class ExtHostDecorations implements ExtHostDecorationsShape {
 		this._proxy = extHostRpc.getProxy(MainContext.MainThreadDecorations);
 	}
 
-	registerDecorationProvider(provider: vscode.FileDecorationProvider, extensionId: ExtensionIdentifier): vscode.Disposable {
+	registerDecorationProvider(provider: vscode.FileDecorationProvider, extensionId: ExtensionIdentifier): vscode.DisposaBle {
 		const handle = ExtHostDecorations._handlePool++;
 		this._provider.set(handle, { provider, extensionId });
 		this._proxy.$registerDecorationProvider(handle, extensionId.value);
@@ -45,21 +45,21 @@ export class ExtHostDecorations implements ExtHostDecorationsShape {
 				: asArray(e));
 		});
 
-		return new Disposable(() => {
+		return new DisposaBle(() => {
 			listener.dispose();
 			this._proxy.$unregisterDecorationProvider(handle);
 			this._provider.delete(handle);
 		});
 	}
 
-	async $provideDecorations(handle: number, requests: DecorationRequest[], token: CancellationToken): Promise<DecorationReply> {
+	async $provideDecorations(handle: numBer, requests: DecorationRequest[], token: CancellationToken): Promise<DecorationReply> {
 
 		if (!this._provider.has(handle)) {
-			// might have been unregistered in the meantime
-			return Object.create(null);
+			// might have Been unregistered in the meantime
+			return OBject.create(null);
 		}
 
-		const result: DecorationReply = Object.create(null);
+		const result: DecorationReply = OBject.create(null);
 		const { provider, extensionId } = this._provider.get(handle)!;
 
 		await Promise.all(requests.map(async request => {
@@ -71,7 +71,7 @@ export class ExtHostDecorations implements ExtHostDecorationsShape {
 				}
 				try {
 					FileDecoration.validate(data);
-					result[id] = <DecorationData>[data.propagate, data.tooltip, data.badge, data.color];
+					result[id] = <DecorationData>[data.propagate, data.tooltip, data.Badge, data.color];
 				} catch (e) {
 					this._logService.warn(`INVALID decoration from extension '${extensionId.value}': ${e}`);
 				}

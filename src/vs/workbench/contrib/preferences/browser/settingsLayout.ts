@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { ISetting } from 'vs/workbench/services/preferences/common/preferences';
+import { ISetting } from 'vs/workBench/services/preferences/common/preferences';
 
 export interface ITOCEntry {
 	id: string;
-	label: string;
+	laBel: string;
 
 	children?: ITOCEntry[];
 	settings?: Array<string | ISetting>;
@@ -16,209 +16,209 @@ export interface ITOCEntry {
 
 export const commonlyUsedData: ITOCEntry = {
 	id: 'commonlyUsed',
-	label: localize('commonlyUsed', "Commonly Used"),
-	settings: ['files.autoSave', 'editor.fontSize', 'editor.fontFamily', 'editor.tabSize', 'editor.renderWhitespace', 'editor.cursorStyle', 'editor.multiCursorModifier', 'editor.insertSpaces', 'editor.wordWrap', 'files.exclude', 'files.associations']
+	laBel: localize('commonlyUsed', "Commonly Used"),
+	settings: ['files.autoSave', 'editor.fontSize', 'editor.fontFamily', 'editor.taBSize', 'editor.renderWhitespace', 'editor.cursorStyle', 'editor.multiCursorModifier', 'editor.insertSpaces', 'editor.wordWrap', 'files.exclude', 'files.associations']
 };
 
 export const tocData: ITOCEntry = {
 	id: 'root',
-	label: 'root',
+	laBel: 'root',
 	children: [
 		{
 			id: 'editor',
-			label: localize('textEditor', "Text Editor"),
+			laBel: localize('textEditor', "Text Editor"),
 			settings: ['editor.*'],
 			children: [
 				{
 					id: 'editor/cursor',
-					label: localize('cursor', "Cursor"),
+					laBel: localize('cursor', "Cursor"),
 					settings: ['editor.cursor*']
 				},
 				{
 					id: 'editor/find',
-					label: localize('find', "Find"),
+					laBel: localize('find', "Find"),
 					settings: ['editor.find.*']
 				},
 				{
 					id: 'editor/font',
-					label: localize('font', "Font"),
+					laBel: localize('font', "Font"),
 					settings: ['editor.font*']
 				},
 				{
 					id: 'editor/format',
-					label: localize('formatting', "Formatting"),
+					laBel: localize('formatting', "Formatting"),
 					settings: ['editor.format*']
 				},
 				{
 					id: 'editor/diffEditor',
-					label: localize('diffEditor', "Diff Editor"),
+					laBel: localize('diffEditor', "Diff Editor"),
 					settings: ['diffEditor.*']
 				},
 				{
 					id: 'editor/minimap',
-					label: localize('minimap', "Minimap"),
+					laBel: localize('minimap', "Minimap"),
 					settings: ['editor.minimap.*']
 				},
 				{
 					id: 'editor/suggestions',
-					label: localize('suggestions', "Suggestions"),
+					laBel: localize('suggestions', "Suggestions"),
 					settings: ['editor.*suggest*']
 				},
 				{
 					id: 'editor/files',
-					label: localize('files', "Files"),
+					laBel: localize('files', "Files"),
 					settings: ['files.*']
 				}
 			]
 		},
 		{
-			id: 'workbench',
-			label: localize('workbench', "Workbench"),
-			settings: ['workbench.*'],
+			id: 'workBench',
+			laBel: localize('workBench', "WorkBench"),
+			settings: ['workBench.*'],
 			children: [
 				{
-					id: 'workbench/appearance',
-					label: localize('appearance', "Appearance"),
-					settings: ['workbench.activityBar.*', 'workbench.*color*', 'workbench.fontAliasing', 'workbench.iconTheme', 'workbench.sidebar.location', 'workbench.*.visible', 'workbench.tips.enabled', 'workbench.tree.*', 'workbench.view.*']
+					id: 'workBench/appearance',
+					laBel: localize('appearance', "Appearance"),
+					settings: ['workBench.activityBar.*', 'workBench.*color*', 'workBench.fontAliasing', 'workBench.iconTheme', 'workBench.sideBar.location', 'workBench.*.visiBle', 'workBench.tips.enaBled', 'workBench.tree.*', 'workBench.view.*']
 				},
 				{
-					id: 'workbench/breadcrumbs',
-					label: localize('breadcrumbs', "Breadcrumbs"),
-					settings: ['breadcrumbs.*']
+					id: 'workBench/BreadcrumBs',
+					laBel: localize('BreadcrumBs', "BreadcrumBs"),
+					settings: ['BreadcrumBs.*']
 				},
 				{
-					id: 'workbench/editor',
-					label: localize('editorManagement', "Editor Management"),
-					settings: ['workbench.editor.*']
+					id: 'workBench/editor',
+					laBel: localize('editorManagement', "Editor Management"),
+					settings: ['workBench.editor.*']
 				},
 				{
-					id: 'workbench/settings',
-					label: localize('settings', "Settings Editor"),
-					settings: ['workbench.settings.*']
+					id: 'workBench/settings',
+					laBel: localize('settings', "Settings Editor"),
+					settings: ['workBench.settings.*']
 				},
 				{
-					id: 'workbench/zenmode',
-					label: localize('zenMode', "Zen Mode"),
+					id: 'workBench/zenmode',
+					laBel: localize('zenMode', "Zen Mode"),
 					settings: ['zenmode.*']
 				},
 				{
-					id: 'workbench/screencastmode',
-					label: localize('screencastMode', "Screencast Mode"),
+					id: 'workBench/screencastmode',
+					laBel: localize('screencastMode', "Screencast Mode"),
 					settings: ['screencastMode.*']
 				}
 			]
 		},
 		{
 			id: 'window',
-			label: localize('window', "Window"),
+			laBel: localize('window', "Window"),
 			settings: ['window.*'],
 			children: [
 				{
 					id: 'window/newWindow',
-					label: localize('newWindow', "New Window"),
+					laBel: localize('newWindow', "New Window"),
 					settings: ['window.*newwindow*']
 				}
 			]
 		},
 		{
 			id: 'features',
-			label: localize('features', "Features"),
+			laBel: localize('features', "Features"),
 			children: [
 				{
 					id: 'features/explorer',
-					label: localize('fileExplorer', "Explorer"),
+					laBel: localize('fileExplorer', "Explorer"),
 					settings: ['explorer.*', 'outline.*']
 				},
 				{
 					id: 'features/search',
-					label: localize('search', "Search"),
+					laBel: localize('search', "Search"),
 					settings: ['search.*']
 				}
 				,
 				{
-					id: 'features/debug',
-					label: localize('debug', "Debug"),
-					settings: ['debug.*', 'launch']
+					id: 'features/deBug',
+					laBel: localize('deBug', "DeBug"),
+					settings: ['deBug.*', 'launch']
 				},
 				{
 					id: 'features/scm',
-					label: localize('scm', "SCM"),
+					laBel: localize('scm', "SCM"),
 					settings: ['scm.*']
 				},
 				{
 					id: 'features/extensions',
-					label: localize('extensions', "Extensions"),
+					laBel: localize('extensions', "Extensions"),
 					settings: ['extensions.*']
 				},
 				{
 					id: 'features/terminal',
-					label: localize('terminal', "Terminal"),
+					laBel: localize('terminal', "Terminal"),
 					settings: ['terminal.*']
 				},
 				{
 					id: 'features/task',
-					label: localize('task', "Task"),
+					laBel: localize('task', "Task"),
 					settings: ['task.*']
 				},
 				{
-					id: 'features/problems',
-					label: localize('problems', "Problems"),
-					settings: ['problems.*']
+					id: 'features/proBlems',
+					laBel: localize('proBlems', "ProBlems"),
+					settings: ['proBlems.*']
 				},
 				{
 					id: 'features/output',
-					label: localize('output', "Output"),
+					laBel: localize('output', "Output"),
 					settings: ['output.*']
 				},
 				{
 					id: 'features/comments',
-					label: localize('comments', "Comments"),
+					laBel: localize('comments', "Comments"),
 					settings: ['comments.*']
 				},
 				{
 					id: 'features/remote',
-					label: localize('remote', "Remote"),
+					laBel: localize('remote', "Remote"),
 					settings: ['remote.*']
 				},
 				{
 					id: 'features/timeline',
-					label: localize('timeline', "Timeline"),
+					laBel: localize('timeline', "Timeline"),
 					settings: ['timeline.*']
 				},
 				{
-					id: 'features/notebook',
-					label: localize('notebook', 'Notebook'),
-					settings: ['notebook.*']
+					id: 'features/noteBook',
+					laBel: localize('noteBook', 'NoteBook'),
+					settings: ['noteBook.*']
 				}
 			]
 		},
 		{
 			id: 'application',
-			label: localize('application', "Application"),
+			laBel: localize('application', "Application"),
 			children: [
 				{
 					id: 'application/http',
-					label: localize('proxy', "Proxy"),
+					laBel: localize('proxy', "Proxy"),
 					settings: ['http.*']
 				},
 				{
-					id: 'application/keyboard',
-					label: localize('keyboard', "Keyboard"),
-					settings: ['keyboard.*']
+					id: 'application/keyBoard',
+					laBel: localize('keyBoard', "KeyBoard"),
+					settings: ['keyBoard.*']
 				},
 				{
 					id: 'application/update',
-					label: localize('update', "Update"),
+					laBel: localize('update', "Update"),
 					settings: ['update.*']
 				},
 				{
 					id: 'application/telemetry',
-					label: localize('telemetry', "Telemetry"),
+					laBel: localize('telemetry', "Telemetry"),
 					settings: ['telemetry.*']
 				},
 				{
 					id: 'application/settingsSync',
-					label: localize('settingsSync', "Settings Sync"),
+					laBel: localize('settingsSync', "Settings Sync"),
 					settings: ['settingsSync.*', 'sync.*']
 				}
 			]

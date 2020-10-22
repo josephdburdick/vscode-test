@@ -3,39 +3,39 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ISearchConfiguration, ISearchConfigurationProperties } from 'vs/workbench/services/search/common/search';
-import { SymbolKind, Location, ProviderResult, SymbolTag } from 'vs/editor/common/modes';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ISearchConfiguration, ISearchConfigurationProperties } from 'vs/workBench/services/search/common/search';
+import { SymBolKind, Location, ProviderResult, SymBolTag } from 'vs/editor/common/modes';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
-import { EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { EditorResourceAccessor, SideBySideEditor } from 'vs/workBench/common/editor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IRange } from 'vs/editor/common/core/range';
-import { isNumber } from 'vs/base/common/types';
+import { isNumBer } from 'vs/Base/common/types';
 
-export interface IWorkspaceSymbol {
+export interface IWorkspaceSymBol {
 	name: string;
 	containerName?: string;
-	kind: SymbolKind;
-	tags?: SymbolTag[];
+	kind: SymBolKind;
+	tags?: SymBolTag[];
 	location: Location;
 }
 
-export interface IWorkspaceSymbolProvider {
-	provideWorkspaceSymbols(search: string, token: CancellationToken): ProviderResult<IWorkspaceSymbol[]>;
-	resolveWorkspaceSymbol?(item: IWorkspaceSymbol, token: CancellationToken): ProviderResult<IWorkspaceSymbol>;
+export interface IWorkspaceSymBolProvider {
+	provideWorkspaceSymBols(search: string, token: CancellationToken): ProviderResult<IWorkspaceSymBol[]>;
+	resolveWorkspaceSymBol?(item: IWorkspaceSymBol, token: CancellationToken): ProviderResult<IWorkspaceSymBol>;
 }
 
-export namespace WorkspaceSymbolProviderRegistry {
+export namespace WorkspaceSymBolProviderRegistry {
 
-	const _supports: IWorkspaceSymbolProvider[] = [];
+	const _supports: IWorkspaceSymBolProvider[] = [];
 
-	export function register(provider: IWorkspaceSymbolProvider): IDisposable {
-		let support: IWorkspaceSymbolProvider | undefined = provider;
+	export function register(provider: IWorkspaceSymBolProvider): IDisposaBle {
+		let support: IWorkspaceSymBolProvider | undefined = provider;
 		if (support) {
 			_supports.push(support);
 		}
@@ -53,17 +53,17 @@ export namespace WorkspaceSymbolProviderRegistry {
 		};
 	}
 
-	export function all(): IWorkspaceSymbolProvider[] {
+	export function all(): IWorkspaceSymBolProvider[] {
 		return _supports.slice(0);
 	}
 }
 
-export function getWorkspaceSymbols(query: string, token: CancellationToken = CancellationToken.None): Promise<[IWorkspaceSymbolProvider, IWorkspaceSymbol[]][]> {
+export function getWorkspaceSymBols(query: string, token: CancellationToken = CancellationToken.None): Promise<[IWorkspaceSymBolProvider, IWorkspaceSymBol[]][]> {
 
-	const result: [IWorkspaceSymbolProvider, IWorkspaceSymbol[]][] = [];
+	const result: [IWorkspaceSymBolProvider, IWorkspaceSymBol[]][] = [];
 
-	const promises = WorkspaceSymbolProviderRegistry.all().map(support => {
-		return Promise.resolve(support.provideWorkspaceSymbols(query, token)).then(value => {
+	const promises = WorkspaceSymBolProviderRegistry.all().map(support => {
+		return Promise.resolve(support.provideWorkspaceSymBols(query, token)).then(value => {
 			if (Array.isArray(value)) {
 				result.push([support, value]);
 			}
@@ -73,22 +73,22 @@ export function getWorkspaceSymbols(query: string, token: CancellationToken = Ca
 	return Promise.all(promises).then(_ => result);
 }
 
-export interface IWorkbenchSearchConfigurationProperties extends ISearchConfigurationProperties {
+export interface IWorkBenchSearchConfigurationProperties extends ISearchConfigurationProperties {
 	quickOpen: {
-		includeSymbols: boolean;
-		includeHistory: boolean;
+		includeSymBols: Boolean;
+		includeHistory: Boolean;
 		history: {
 			filterSortOrder: 'default' | 'recency'
 		}
 	};
 }
 
-export interface IWorkbenchSearchConfiguration extends ISearchConfiguration {
-	search: IWorkbenchSearchConfigurationProperties;
+export interface IWorkBenchSearchConfiguration extends ISearchConfiguration {
+	search: IWorkBenchSearchConfigurationProperties;
 }
 
 /**
- * Helper to return all opened editors with resources not belonging to the currently opened workspace.
+ * Helper to return all opened editors with resources not Belonging to the currently opened workspace.
  */
 export function getOutOfWorkspaceEditorResources(accessor: ServicesAccessor): URI[] {
 	const editorService = accessor.get(IEditorService);
@@ -117,39 +117,39 @@ export function extractRangeFromFilter(filter: string, unless?: string[]): IFilt
 
 	let range: IRange | undefined = undefined;
 
-	// Find Line/Column number from search value using RegExp
+	// Find Line/Column numBer from search value using RegExp
 	const patternMatch = LINE_COLON_PATTERN.exec(filter);
 
 	if (patternMatch) {
-		const startLineNumber = parseInt(patternMatch[1] ?? '', 10);
+		const startLineNumBer = parseInt(patternMatch[1] ?? '', 10);
 
-		// Line Number
-		if (isNumber(startLineNumber)) {
+		// Line NumBer
+		if (isNumBer(startLineNumBer)) {
 			range = {
-				startLineNumber: startLineNumber,
+				startLineNumBer: startLineNumBer,
 				startColumn: 1,
-				endLineNumber: startLineNumber,
+				endLineNumBer: startLineNumBer,
 				endColumn: 1
 			};
 
-			// Column Number
+			// Column NumBer
 			const startColumn = parseInt(patternMatch[2] ?? '', 10);
-			if (isNumber(startColumn)) {
+			if (isNumBer(startColumn)) {
 				range = {
-					startLineNumber: range.startLineNumber,
+					startLineNumBer: range.startLineNumBer,
 					startColumn: startColumn,
-					endLineNumber: range.endLineNumber,
+					endLineNumBer: range.endLineNumBer,
 					endColumn: startColumn
 				};
 			}
 		}
 
-		// User has typed "something:" or "something#" without a line number, in this case treat as start of file
+		// User has typed "something:" or "something#" without a line numBer, in this case treat as start of file
 		else if (patternMatch[1] === '') {
 			range = {
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				startColumn: 1,
-				endLineNumber: 1,
+				endLineNumBer: 1,
 				endColumn: 1
 			};
 		}
@@ -157,7 +157,7 @@ export function extractRangeFromFilter(filter: string, unless?: string[]): IFilt
 
 	if (patternMatch && range) {
 		return {
-			filter: filter.substr(0, patternMatch.index), // clear range suffix from search value
+			filter: filter.suBstr(0, patternMatch.index), // clear range suffix from search value
 			range
 		};
 	}

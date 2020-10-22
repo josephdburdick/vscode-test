@@ -4,48 +4,48 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Action, Separator } from 'vs/base/common/actions';
-import * as dom from 'vs/base/browser/dom';
+import { Action, Separator } from 'vs/Base/common/actions';
+import * as dom from 'vs/Base/Browser/dom';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { dispose, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { dispose, toDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
 import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { TextBadge, NumberBadge, IBadge, IconBadge, ProgressBadge } from 'vs/workbench/services/activity/common/activity';
+import { TextBadge, NumBerBadge, IBadge, IconBadge, ProgressBadge } from 'vs/workBench/services/activity/common/activity';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { contrastBorder } from 'vs/platform/theme/common/colorRegistry';
-import { DelayedDragHandler } from 'vs/base/browser/dnd';
-import { IActivity } from 'vs/workbench/common/activity';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { Emitter, Event } from 'vs/base/common/event';
-import { CompositeDragAndDropObserver, ICompositeDragAndDrop, Before2D, toggleDropEffect } from 'vs/workbench/browser/dnd';
-import { Color } from 'vs/base/common/color';
-import { Codicon } from 'vs/base/common/codicons';
-import { IBaseActionViewItemOptions, BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { DelayedDragHandler } from 'vs/Base/Browser/dnd';
+import { IActivity } from 'vs/workBench/common/activity';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { CompositeDragAndDropOBserver, ICompositeDragAndDrop, Before2D, toggleDropEffect } from 'vs/workBench/Browser/dnd';
+import { Color } from 'vs/Base/common/color';
+import { Codicon } from 'vs/Base/common/codicons';
+import { IBaseActionViewItemOptions, BaseActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
 export interface ICompositeActivity {
-	badge: IBadge;
+	Badge: IBadge;
 	clazz?: string;
-	priority: number;
+	priority: numBer;
 }
 
 export interface ICompositeBar {
 	/**
-	 * Unpins a composite from the composite bar.
+	 * Unpins a composite from the composite Bar.
 	 */
 	unpin(compositeId: string): void;
 
 	/**
-	 * Pin a composite inside the composite bar.
+	 * Pin a composite inside the composite Bar.
 	 */
 	pin(compositeId: string): void;
 
 	/**
-	 * Find out if a composite is pinned in the composite bar.
+	 * Find out if a composite is pinned in the composite Bar.
 	 */
-	isPinned(compositeId: string): boolean;
+	isPinned(compositeId: string): Boolean;
 
 	/**
-	 * Reorder composite ordering by moving a composite to the location of another composite.
+	 * Reorder composite ordering By moving a composite to the location of another composite.
 	 */
 	move(compositeId: string, tocompositeId: string): void;
 }
@@ -58,7 +58,7 @@ export class ActivityAction extends Action {
 	private readonly _onDidChangeBadge = this._register(new Emitter<ActivityAction>());
 	readonly onDidChangeBadge = this._onDidChangeBadge.event;
 
-	private badge: IBadge | undefined;
+	private Badge: IBadge | undefined;
 	private clazz: string | undefined;
 
 	constructor(private _activity: IActivity) {
@@ -70,7 +70,7 @@ export class ActivityAction extends Action {
 	}
 
 	set activity(activity: IActivity) {
-		this._label = activity.name;
+		this._laBel = activity.name;
 		this._activity = activity;
 		this._onDidChangeActivity.fire(this);
 	}
@@ -88,15 +88,15 @@ export class ActivityAction extends Action {
 	}
 
 	getBadge(): IBadge | undefined {
-		return this.badge;
+		return this.Badge;
 	}
 
 	getClass(): string | undefined {
 		return this.clazz;
 	}
 
-	setBadge(badge: IBadge | undefined, clazz?: string): void {
-		this.badge = badge;
+	setBadge(Badge: IBadge | undefined, clazz?: string): void {
+		this.Badge = Badge;
 		this.clazz = clazz;
 		this._onDidChangeBadge.fire(this);
 	}
@@ -117,24 +117,24 @@ export interface ICompositeBarColors {
 	activeBorderBottomColor?: Color;
 	activeForegroundColor?: Color;
 	inactiveForegroundColor?: Color;
-	badgeBackground?: Color;
-	badgeForeground?: Color;
+	BadgeBackground?: Color;
+	BadgeForeground?: Color;
 	dragAndDropBorder?: Color;
 }
 
 export interface IActivityActionViewItemOptions extends IBaseActionViewItemOptions {
-	icon?: boolean;
+	icon?: Boolean;
 	colors: (theme: IColorTheme) => ICompositeBarColors;
 }
 
 export class ActivityActionViewItem extends BaseActionViewItem {
 	protected container!: HTMLElement;
-	protected label!: HTMLElement;
-	protected badge!: HTMLElement;
+	protected laBel!: HTMLElement;
+	protected Badge!: HTMLElement;
 	protected options!: IActivityActionViewItemOptions;
 
-	private badgeContent: HTMLElement | undefined;
-	private readonly badgeDisposable = this._register(new MutableDisposable());
+	private BadgeContent: HTMLElement | undefined;
+	private readonly BadgeDisposaBle = this._register(new MutaBleDisposaBle());
 	private mouseUpTimeout: any;
 
 	constructor(
@@ -157,40 +157,40 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 		const theme = this.themeService.getColorTheme();
 		const colors = this.options.colors(theme);
 
-		if (this.label) {
+		if (this.laBel) {
 			if (this.options.icon) {
 				const foreground = this._action.checked ? colors.activeBackgroundColor || colors.activeForegroundColor : colors.inactiveBackgroundColor || colors.inactiveForegroundColor;
 				if (this.activity.iconUrl) {
-					// Apply background color to activity bar item provided with iconUrls
-					this.label.style.backgroundColor = foreground ? foreground.toString() : '';
-					this.label.style.color = '';
+					// Apply Background color to activity Bar item provided with iconUrls
+					this.laBel.style.BackgroundColor = foreground ? foreground.toString() : '';
+					this.laBel.style.color = '';
 				} else {
-					// Apply foreground color to activity bar items provided with codicons
-					this.label.style.color = foreground ? foreground.toString() : '';
-					this.label.style.backgroundColor = '';
+					// Apply foreground color to activity Bar items provided with codicons
+					this.laBel.style.color = foreground ? foreground.toString() : '';
+					this.laBel.style.BackgroundColor = '';
 				}
 			} else {
 				const foreground = this._action.checked ? colors.activeForegroundColor : colors.inactiveForegroundColor;
-				const borderBottomColor = this._action.checked ? colors.activeBorderBottomColor : null;
-				this.label.style.color = foreground ? foreground.toString() : '';
-				this.label.style.borderBottomColor = borderBottomColor ? borderBottomColor.toString() : '';
+				const BorderBottomColor = this._action.checked ? colors.activeBorderBottomColor : null;
+				this.laBel.style.color = foreground ? foreground.toString() : '';
+				this.laBel.style.BorderBottomColor = BorderBottomColor ? BorderBottomColor.toString() : '';
 			}
 
-			this.container.style.setProperty('--insert-border-color', colors.dragAndDropBorder ? colors.dragAndDropBorder.toString() : '');
+			this.container.style.setProperty('--insert-Border-color', colors.dragAndDropBorder ? colors.dragAndDropBorder.toString() : '');
 		}
 
 		// Badge
-		if (this.badgeContent) {
-			const badgeForeground = colors.badgeForeground;
-			const badgeBackground = colors.badgeBackground;
+		if (this.BadgeContent) {
+			const BadgeForeground = colors.BadgeForeground;
+			const BadgeBackground = colors.BadgeBackground;
 			const contrastBorderColor = theme.getColor(contrastBorder);
 
-			this.badgeContent.style.color = badgeForeground ? badgeForeground.toString() : '';
-			this.badgeContent.style.backgroundColor = badgeBackground ? badgeBackground.toString() : '';
+			this.BadgeContent.style.color = BadgeForeground ? BadgeForeground.toString() : '';
+			this.BadgeContent.style.BackgroundColor = BadgeBackground ? BadgeBackground.toString() : '';
 
-			this.badgeContent.style.borderStyle = contrastBorderColor ? 'solid' : '';
-			this.badgeContent.style.borderWidth = contrastBorderColor ? '1px' : '';
-			this.badgeContent.style.borderColor = contrastBorderColor ? contrastBorderColor.toString() : '';
+			this.BadgeContent.style.BorderStyle = contrastBorderColor ? 'solid' : '';
+			this.BadgeContent.style.BorderWidth = contrastBorderColor ? '1px' : '';
+			this.BadgeContent.style.BorderColor = contrastBorderColor ? contrastBorderColor.toString() : '';
 		}
 	}
 
@@ -199,39 +199,39 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 
 		this.container = container;
 
-		// Make the container tab-able for keyboard navigation
-		this.container.tabIndex = 0;
-		this.container.setAttribute('role', 'tab');
+		// Make the container taB-aBle for keyBoard navigation
+		this.container.taBIndex = 0;
+		this.container.setAttriBute('role', 'taB');
 
-		// Try hard to prevent keyboard only focus feedback when using mouse
-		this._register(dom.addDisposableListener(this.container, dom.EventType.MOUSE_DOWN, () => {
+		// Try hard to prevent keyBoard only focus feedBack when using mouse
+		this._register(dom.addDisposaBleListener(this.container, dom.EventType.MOUSE_DOWN, () => {
 			this.container.classList.add('clicked');
 		}));
 
-		this._register(dom.addDisposableListener(this.container, dom.EventType.MOUSE_UP, () => {
+		this._register(dom.addDisposaBleListener(this.container, dom.EventType.MOUSE_UP, () => {
 			if (this.mouseUpTimeout) {
 				clearTimeout(this.mouseUpTimeout);
 			}
 
 			this.mouseUpTimeout = setTimeout(() => {
 				this.container.classList.remove('clicked');
-			}, 800); // delayed to prevent focus feedback from showing on mouse up
+			}, 800); // delayed to prevent focus feedBack from showing on mouse up
 		}));
 
-		// Label
-		this.label = dom.append(container, dom.$('a'));
+		// LaBel
+		this.laBel = dom.append(container, dom.$('a'));
 
 		// Badge
-		this.badge = dom.append(container, dom.$('.badge'));
-		this.badgeContent = dom.append(this.badge, dom.$('.badge-content'));
+		this.Badge = dom.append(container, dom.$('.Badge'));
+		this.BadgeContent = dom.append(this.Badge, dom.$('.Badge-content'));
 
-		// Activity bar active border + background
+		// Activity Bar active Border + Background
 		const isActivityBarItem = this.options.icon;
 		if (isActivityBarItem) {
 			dom.append(container, dom.$('.active-item-indicator'));
 		}
 
-		dom.hide(this.badge);
+		dom.hide(this.Badge);
 
 		this.updateActivity();
 		this.updateStyles();
@@ -242,7 +242,7 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 	}
 
 	protected updateActivity(): void {
-		this.updateLabel();
+		this.updateLaBel();
 		this.updateTitle(this.activity.name);
 		this.updateBadge();
 		this.updateStyles();
@@ -250,67 +250,67 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 
 	protected updateBadge(): void {
 		const action = this.getAction();
-		if (!this.badge || !this.badgeContent || !(action instanceof ActivityAction)) {
+		if (!this.Badge || !this.BadgeContent || !(action instanceof ActivityAction)) {
 			return;
 		}
 
-		const badge = action.getBadge();
+		const Badge = action.getBadge();
 		const clazz = action.getClass();
 
-		this.badgeDisposable.clear();
+		this.BadgeDisposaBle.clear();
 
-		dom.clearNode(this.badgeContent);
-		dom.hide(this.badge);
+		dom.clearNode(this.BadgeContent);
+		dom.hide(this.Badge);
 
-		if (badge) {
+		if (Badge) {
 
-			// Number
-			if (badge instanceof NumberBadge) {
-				if (badge.number) {
-					let number = badge.number.toString();
-					if (badge.number > 999) {
-						const noOfThousands = badge.number / 1000;
+			// NumBer
+			if (Badge instanceof NumBerBadge) {
+				if (Badge.numBer) {
+					let numBer = Badge.numBer.toString();
+					if (Badge.numBer > 999) {
+						const noOfThousands = Badge.numBer / 1000;
 						const floor = Math.floor(noOfThousands);
 						if (noOfThousands > floor) {
-							number = `${floor}K+`;
+							numBer = `${floor}K+`;
 						} else {
-							number = `${noOfThousands}K`;
+							numBer = `${noOfThousands}K`;
 						}
 					}
-					this.badgeContent.textContent = number;
-					dom.show(this.badge);
+					this.BadgeContent.textContent = numBer;
+					dom.show(this.Badge);
 				}
 			}
 
 			// Text
-			else if (badge instanceof TextBadge) {
-				this.badgeContent.textContent = badge.text;
-				dom.show(this.badge);
+			else if (Badge instanceof TextBadge) {
+				this.BadgeContent.textContent = Badge.text;
+				dom.show(this.Badge);
 			}
 
 			// Text
-			else if (badge instanceof IconBadge) {
-				dom.show(this.badge);
+			else if (Badge instanceof IconBadge) {
+				dom.show(this.Badge);
 			}
 
 			// Progress
-			else if (badge instanceof ProgressBadge) {
-				dom.show(this.badge);
+			else if (Badge instanceof ProgressBadge) {
+				dom.show(this.Badge);
 			}
 
 			if (clazz) {
-				this.badge.classList.add(...clazz.split(' '));
-				this.badgeDisposable.value = toDisposable(() => this.badge.classList.remove(...clazz.split(' ')));
+				this.Badge.classList.add(...clazz.split(' '));
+				this.BadgeDisposaBle.value = toDisposaBle(() => this.Badge.classList.remove(...clazz.split(' ')));
 			}
 		}
 
 		// Title
 		let title: string;
-		if (badge?.getDescription()) {
+		if (Badge?.getDescription()) {
 			if (this.activity.name) {
-				title = nls.localize('badgeTitle', "{0} - {1}", this.activity.name, badge.getDescription());
+				title = nls.localize('BadgeTitle', "{0} - {1}", this.activity.name, Badge.getDescription());
 			} else {
-				title = badge.getDescription();
+				title = Badge.getDescription();
 			}
 		} else {
 			title = this.activity.name;
@@ -319,27 +319,27 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 		this.updateTitle(title);
 	}
 
-	protected updateLabel(): void {
-		this.label.className = 'action-label';
+	protected updateLaBel(): void {
+		this.laBel.className = 'action-laBel';
 
 		if (this.activity.cssClass) {
-			this.label.classList.add(...this.activity.cssClass.split(' '));
+			this.laBel.classList.add(...this.activity.cssClass.split(' '));
 		}
 
 		if (this.options.icon && !this.activity.iconUrl) {
-			// Only apply codicon class to activity bar icon items without iconUrl
-			this.label.classList.add('codicon');
+			// Only apply codicon class to activity Bar icon items without iconUrl
+			this.laBel.classList.add('codicon');
 		}
 
 		if (!this.options.icon) {
-			this.label.textContent = this.getAction().label;
+			this.laBel.textContent = this.getAction().laBel;
 		}
 	}
 
 	private updateTitle(title: string): void {
-		[this.label, this.badge, this.container].forEach(element => {
+		[this.laBel, this.Badge, this.container].forEach(element => {
 			if (element) {
-				element.setAttribute('aria-label', title);
+				element.setAttriBute('aria-laBel', title);
 				element.title = title;
 			}
 		});
@@ -352,7 +352,7 @@ export class ActivityActionViewItem extends BaseActionViewItem {
 			clearTimeout(this.mouseUpTimeout);
 		}
 
-		this.badge.remove();
+		this.Badge.remove();
 	}
 }
 
@@ -409,18 +409,18 @@ export class CompositeOverflowActivityActionViewItem extends ActivityActionViewI
 			const action = this.getCompositeOpenAction(composite.id);
 			action.checked = this.getActiveCompositeId() === action.id;
 
-			const badge = this.getBadge(composite.id);
-			let suffix: string | number | undefined;
-			if (badge instanceof NumberBadge) {
-				suffix = badge.number;
-			} else if (badge instanceof TextBadge) {
-				suffix = badge.text;
+			const Badge = this.getBadge(composite.id);
+			let suffix: string | numBer | undefined;
+			if (Badge instanceof NumBerBadge) {
+				suffix = Badge.numBer;
+			} else if (Badge instanceof TextBadge) {
+				suffix = Badge.text;
 			}
 
 			if (suffix) {
-				action.label = nls.localize('numberBadge', "{0} ({1})", composite.name, suffix);
+				action.laBel = nls.localize('numBerBadge', "{0} ({1})", composite.name, suffix);
 			} else {
-				action.label = composite.name || '';
+				action.laBel = composite.name || '';
 			}
 
 			return action;
@@ -441,7 +441,7 @@ class ManageExtensionAction extends Action {
 	constructor(
 		@ICommandService private readonly commandService: ICommandService
 	) {
-		super('activitybar.manage.extension', nls.localize('manageExtension', "Manage Extension"));
+		super('activityBar.manage.extension', nls.localize('manageExtension', "Manage Extension"));
 	}
 
 	run(id: string): Promise<void> {
@@ -461,15 +461,15 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 		private compositeContextMenuActionsProvider: (compositeId: string) => ReadonlyArray<Action>,
 		private contextMenuActionsProvider: () => ReadonlyArray<Action>,
 		colors: (theme: IColorTheme) => ICompositeBarColors,
-		icon: boolean,
+		icon: Boolean,
 		private dndHandler: ICompositeDragAndDrop,
 		private compositeBar: ICompositeBar,
 		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly keyBindingService: IKeyBindingService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IThemeService themeService: IThemeService
 	) {
-		super(compositeActivityAction, { draggable: true, colors, icon }, themeService);
+		super(compositeActivityAction, { draggaBle: true, colors, icon }, themeService);
 
 		if (!CompositeActionViewItem.manageExtensionAction) {
 			CompositeActionViewItem.manageExtensionAction = instantiationService.createInstance(ManageExtensionAction);
@@ -481,7 +481,7 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 		}, this));
 		this._register(Event.any(
 			compositeActivityAction.onDidChangeActivity,
-			Event.filter(keybindingService.onDidUpdateKeybindings, () => this.compositeActivity!.name !== this.getActivtyName())
+			Event.filter(keyBindingService.onDidUpdateKeyBindings, () => this.compositeActivity!.name !== this.getActivtyName())
 		)(() => {
 			if (this.compositeActivity && this.compositeActivity.name !== this.getActivtyName()) {
 				this.compositeActivity = undefined;
@@ -501,17 +501,17 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 	}
 
 	private getActivtyName(): string {
-		const keybinding = this.compositeActivityAction.activity.keybindingId ? this.keybindingService.lookupKeybinding(this.compositeActivityAction.activity.keybindingId) : null;
-		return keybinding ? nls.localize('titleKeybinding', "{0} ({1})", this.compositeActivityAction.activity.name, keybinding.getLabel()) : this.compositeActivityAction.activity.name;
+		const keyBinding = this.compositeActivityAction.activity.keyBindingId ? this.keyBindingService.lookupKeyBinding(this.compositeActivityAction.activity.keyBindingId) : null;
+		return keyBinding ? nls.localize('titleKeyBinding', "{0} ({1})", this.compositeActivityAction.activity.name, keyBinding.getLaBel()) : this.compositeActivityAction.activity.name;
 	}
 
 	render(container: HTMLElement): void {
 		super.render(container);
 
 		this.updateChecked();
-		this.updateEnabled();
+		this.updateEnaBled();
 
-		this._register(dom.addDisposableListener(this.container, dom.EventType.CONTEXT_MENU, e => {
+		this._register(dom.addDisposaBleListener(this.container, dom.EventType.CONTEXT_MENU, e => {
 			dom.EventHelper.stop(e, true);
 
 			this.showContextMenu(container);
@@ -519,7 +519,7 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 
 		let insertDropBefore: Before2D | undefined = undefined;
 		// Allow to drag
-		this._register(CompositeDragAndDropObserver.INSTANCE.registerDraggable(this.container, () => { return { type: 'composite', id: this.activity.id }; }, {
+		this._register(CompositeDragAndDropOBserver.INSTANCE.registerDraggaBle(this.container, () => { return { type: 'composite', id: this.activity.id }; }, {
 			onDragOver: e => {
 				const isValidMove = e.dragAndDropData.getData().id !== this.activity.id && this.dndHandler.onDragOver(e.dragAndDropData, this.activity.id, e.eventData);
 				toggleDropEffect(e.eventData.dataTransfer, 'move', isValidMove);
@@ -548,12 +548,12 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 					e.eventData.dataTransfer.effectAllowed = 'move';
 				}
 				// Remove focus indicator when dragging
-				this.blur();
+				this.Blur();
 			}
 		}));
 
 		// Activate on drag over to reveal targets
-		[this.badge, this.label].forEach(b => this._register(new DelayedDragHandler(b, () => {
+		[this.Badge, this.laBel].forEach(B => this._register(new DelayedDragHandler(B, () => {
 			if (!this.getAction().checked) {
 				this.getAction().run();
 			}
@@ -562,15 +562,15 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 		this.updateStyles();
 	}
 
-	private updateFromDragging(element: HTMLElement, showFeedback: boolean, event: DragEvent): Before2D | undefined {
+	private updateFromDragging(element: HTMLElement, showFeedBack: Boolean, event: DragEvent): Before2D | undefined {
 		const rect = element.getBoundingClientRect();
 		const posX = event.clientX;
 		const posY = event.clientY;
-		const height = rect.bottom - rect.top;
+		const height = rect.Bottom - rect.top;
 		const width = rect.right - rect.left;
 
 		const forceTop = posY <= rect.top + height * 0.4;
-		const forceBottom = posY > rect.bottom - height * 0.4;
+		const forceBottom = posY > rect.Bottom - height * 0.4;
 		const preferTop = posY <= rect.top + height * 0.5;
 
 		const forceLeft = posX <= rect.left + width * 0.4;
@@ -579,21 +579,21 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 
 		const classes = element.classList;
 		const lastClasses = {
-			vertical: classes.contains('top') ? 'top' : (classes.contains('bottom') ? 'bottom' : undefined),
+			vertical: classes.contains('top') ? 'top' : (classes.contains('Bottom') ? 'Bottom' : undefined),
 			horizontal: classes.contains('left') ? 'left' : (classes.contains('right') ? 'right' : undefined)
 		};
 
 		const top = forceTop || (preferTop && !lastClasses.vertical) || (!forceBottom && lastClasses.vertical === 'top');
-		const bottom = forceBottom || (!preferTop && !lastClasses.vertical) || (!forceTop && lastClasses.vertical === 'bottom');
+		const Bottom = forceBottom || (!preferTop && !lastClasses.vertical) || (!forceTop && lastClasses.vertical === 'Bottom');
 		const left = forceLeft || (preferLeft && !lastClasses.horizontal) || (!forceRight && lastClasses.horizontal === 'left');
 		const right = forceRight || (!preferLeft && !lastClasses.horizontal) || (!forceLeft && lastClasses.horizontal === 'right');
 
-		element.classList.toggle('top', showFeedback && top);
-		element.classList.toggle('bottom', showFeedback && bottom);
-		element.classList.toggle('left', showFeedback && left);
-		element.classList.toggle('right', showFeedback && right);
+		element.classList.toggle('top', showFeedBack && top);
+		element.classList.toggle('Bottom', showFeedBack && Bottom);
+		element.classList.toggle('left', showFeedBack && left);
+		element.classList.toggle('right', showFeedBack && right);
 
-		if (!showFeedback) {
+		if (!showFeedBack) {
 			return undefined;
 		}
 
@@ -615,10 +615,10 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 
 		const isPinned = this.compositeBar.isPinned(this.activity.id);
 		if (isPinned) {
-			this.toggleCompositePinnedAction.label = nls.localize('hide', "Hide");
+			this.toggleCompositePinnedAction.laBel = nls.localize('hide', "Hide");
 			this.toggleCompositePinnedAction.checked = false;
 		} else {
-			this.toggleCompositePinnedAction.label = nls.localize('keep', "Keep");
+			this.toggleCompositePinnedAction.laBel = nls.localize('keep', "Keep");
 		}
 
 		const otherActions = this.contextMenuActionsProvider();
@@ -647,33 +647,33 @@ export class CompositeActionViewItem extends ActivityActionViewItem {
 	protected updateChecked(): void {
 		if (this.getAction().checked) {
 			this.container.classList.add('checked');
-			this.container.setAttribute('aria-label', this.container.title);
-			this.container.setAttribute('aria-expanded', 'true');
-			this.container.setAttribute('aria-selected', 'true');
+			this.container.setAttriBute('aria-laBel', this.container.title);
+			this.container.setAttriBute('aria-expanded', 'true');
+			this.container.setAttriBute('aria-selected', 'true');
 		} else {
 			this.container.classList.remove('checked');
-			this.container.setAttribute('aria-label', this.container.title);
-			this.container.setAttribute('aria-expanded', 'false');
-			this.container.setAttribute('aria-selected', 'false');
+			this.container.setAttriBute('aria-laBel', this.container.title);
+			this.container.setAttriBute('aria-expanded', 'false');
+			this.container.setAttriBute('aria-selected', 'false');
 		}
 		this.updateStyles();
 	}
 
-	protected updateEnabled(): void {
+	protected updateEnaBled(): void {
 		if (!this.element) {
 			return;
 		}
 
-		if (this.getAction().enabled) {
-			this.element.classList.remove('disabled');
+		if (this.getAction().enaBled) {
+			this.element.classList.remove('disaBled');
 		} else {
-			this.element.classList.add('disabled');
+			this.element.classList.add('disaBled');
 		}
 	}
 
 	dispose(): void {
 		super.dispose();
-		this.label.remove();
+		this.laBel.remove();
 	}
 }
 

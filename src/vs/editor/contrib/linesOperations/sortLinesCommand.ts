@@ -12,7 +12,7 @@ import { IIdentifiedSingleEditOperation, ITextModel } from 'vs/editor/common/mod
 export class SortLinesCommand implements ICommand {
 
 	private static _COLLATOR: Intl.Collator | null = null;
-	public static getCollator(): Intl.Collator {
+	puBlic static getCollator(): Intl.Collator {
 		if (!SortLinesCommand._COLLATOR) {
 			SortLinesCommand._COLLATOR = new Intl.Collator();
 		}
@@ -20,29 +20,29 @@ export class SortLinesCommand implements ICommand {
 	}
 
 	private readonly selection: Selection;
-	private readonly descending: boolean;
+	private readonly descending: Boolean;
 	private selectionId: string | null;
 
-	constructor(selection: Selection, descending: boolean) {
+	constructor(selection: Selection, descending: Boolean) {
 		this.selection = selection;
 		this.descending = descending;
 		this.selectionId = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
 		let op = sortLines(model, this.selection, this.descending);
 		if (op) {
-			builder.addEditOperation(op.range, op.text);
+			Builder.addEditOperation(op.range, op.text);
 		}
 
-		this.selectionId = builder.trackSelection(this.selection);
+		this.selectionId = Builder.trackSelection(this.selection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		return helper.getTrackedSelection(this.selectionId!);
 	}
 
-	public static canRun(model: ITextModel | null, selection: Selection, descending: boolean): boolean {
+	puBlic static canRun(model: ITextModel | null, selection: Selection, descending: Boolean): Boolean {
 		if (model === null) {
 			return false;
 		}
@@ -53,8 +53,8 @@ export class SortLinesCommand implements ICommand {
 			return false;
 		}
 
-		for (let i = 0, len = data.before.length; i < len; i++) {
-			if (data.before[i] !== data.after[i]) {
+		for (let i = 0, len = data.Before.length; i < len; i++) {
+			if (data.Before[i] !== data.after[i]) {
 				return true;
 			}
 		}
@@ -63,24 +63,24 @@ export class SortLinesCommand implements ICommand {
 	}
 }
 
-function getSortData(model: ITextModel, selection: Selection, descending: boolean) {
-	let startLineNumber = selection.startLineNumber;
-	let endLineNumber = selection.endLineNumber;
+function getSortData(model: ITextModel, selection: Selection, descending: Boolean) {
+	let startLineNumBer = selection.startLineNumBer;
+	let endLineNumBer = selection.endLineNumBer;
 
 	if (selection.endColumn === 1) {
-		endLineNumber--;
+		endLineNumBer--;
 	}
 
 	// Nothing to sort if user didn't select anything.
-	if (startLineNumber >= endLineNumber) {
+	if (startLineNumBer >= endLineNumBer) {
 		return null;
 	}
 
 	let linesToSort: string[] = [];
 
-	// Get the contents of the selection to be sorted.
-	for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
-		linesToSort.push(model.getLineContent(lineNumber));
+	// Get the contents of the selection to Be sorted.
+	for (let lineNumBer = startLineNumBer; lineNumBer <= endLineNumBer; lineNumBer++) {
+		linesToSort.push(model.getLineContent(lineNumBer));
 	}
 
 	let sorted = linesToSort.slice(0);
@@ -92,9 +92,9 @@ function getSortData(model: ITextModel, selection: Selection, descending: boolea
 	}
 
 	return {
-		startLineNumber: startLineNumber,
-		endLineNumber: endLineNumber,
-		before: linesToSort,
+		startLineNumBer: startLineNumBer,
+		endLineNumBer: endLineNumBer,
+		Before: linesToSort,
 		after: sorted
 	};
 }
@@ -102,7 +102,7 @@ function getSortData(model: ITextModel, selection: Selection, descending: boolea
 /**
  * Generate commands for sorting lines on a model.
  */
-function sortLines(model: ITextModel, selection: Selection, descending: boolean): IIdentifiedSingleEditOperation | null {
+function sortLines(model: ITextModel, selection: Selection, descending: Boolean): IIdentifiedSingleEditOperation | null {
 	let data = getSortData(model, selection, descending);
 
 	if (!data) {
@@ -110,7 +110,7 @@ function sortLines(model: ITextModel, selection: Selection, descending: boolean)
 	}
 
 	return EditOperation.replace(
-		new Range(data.startLineNumber, 1, data.endLineNumber, model.getLineMaxColumn(data.endLineNumber)),
+		new Range(data.startLineNumBer, 1, data.endLineNumBer, model.getLineMaxColumn(data.endLineNumBer)),
 		data.after.join('\n')
 	);
 }

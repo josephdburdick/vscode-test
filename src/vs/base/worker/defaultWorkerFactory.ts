@@ -3,72 +3,72 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { globals } from 'vs/base/common/platform';
-import { IWorker, IWorkerCallback, IWorkerFactory, logOnceWebWorkerWarning } from 'vs/base/common/worker/simpleWorker';
+import { gloBals } from 'vs/Base/common/platform';
+import { IWorker, IWorkerCallBack, IWorkerFactory, logOnceWeBWorkerWarning } from 'vs/Base/common/worker/simpleWorker';
 
-function getWorker(workerId: string, label: string): Worker | Promise<Worker> {
+function getWorker(workerId: string, laBel: string): Worker | Promise<Worker> {
 	// Option for hosts to overwrite the worker script (used in the standalone editor)
-	if (globals.MonacoEnvironment) {
-		if (typeof globals.MonacoEnvironment.getWorker === 'function') {
-			return globals.MonacoEnvironment.getWorker(workerId, label);
+	if (gloBals.MonacoEnvironment) {
+		if (typeof gloBals.MonacoEnvironment.getWorker === 'function') {
+			return gloBals.MonacoEnvironment.getWorker(workerId, laBel);
 		}
-		if (typeof globals.MonacoEnvironment.getWorkerUrl === 'function') {
-			return new Worker(globals.MonacoEnvironment.getWorkerUrl(workerId, label));
+		if (typeof gloBals.MonacoEnvironment.getWorkerUrl === 'function') {
+			return new Worker(gloBals.MonacoEnvironment.getWorkerUrl(workerId, laBel));
 		}
 	}
-	// ESM-comment-begin
+	// ESM-comment-Begin
 	if (typeof require === 'function') {
 		// check if the JS lives on a different origin
-		const workerMain = require.toUrl('./' + workerId); // explicitly using require.toUrl(), see https://github.com/microsoft/vscode/issues/107440#issuecomment-698982321
-		const workerUrl = getWorkerBootstrapUrl(workerMain, label);
-		return new Worker(workerUrl, { name: label });
+		const workerMain = require.toUrl('./' + workerId); // explicitly using require.toUrl(), see https://githuB.com/microsoft/vscode/issues/107440#issuecomment-698982321
+		const workerUrl = getWorkerBootstrapUrl(workerMain, laBel);
+		return new Worker(workerUrl, { name: laBel });
 	}
 	// ESM-comment-end
 	throw new Error(`You must define a function MonacoEnvironment.getWorkerUrl or MonacoEnvironment.getWorker`);
 }
 
-// ESM-comment-begin
-export function getWorkerBootstrapUrl(scriptPath: string, label: string, forceDataUri: boolean = false): string {
+// ESM-comment-Begin
+export function getWorkerBootstrapUrl(scriptPath: string, laBel: string, forceDataUri: Boolean = false): string {
 	if (forceDataUri || /^((http:)|(https:)|(file:))/.test(scriptPath)) {
 		const currentUrl = String(window.location);
-		const currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
-		if (forceDataUri || scriptPath.substring(0, currentOrigin.length) !== currentOrigin) {
+		const currentOrigin = currentUrl.suBstr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+		if (forceDataUri || scriptPath.suBstring(0, currentOrigin.length) !== currentOrigin) {
 			// this is the cross-origin case
-			// i.e. the webpage is running at a different origin than where the scripts are loaded from
-			const myPath = 'vs/base/worker/defaultWorkerFactory.js';
-			const workerBaseUrl = require.toUrl(myPath).slice(0, -myPath.length); // explicitly using require.toUrl(), see https://github.com/microsoft/vscode/issues/107440#issuecomment-698982321
-			const js = `/*${label}*/self.MonacoEnvironment={baseUrl: '${workerBaseUrl}'};importScripts('${scriptPath}');/*${label}*/`;
+			// i.e. the weBpage is running at a different origin than where the scripts are loaded from
+			const myPath = 'vs/Base/worker/defaultWorkerFactory.js';
+			const workerBaseUrl = require.toUrl(myPath).slice(0, -myPath.length); // explicitly using require.toUrl(), see https://githuB.com/microsoft/vscode/issues/107440#issuecomment-698982321
+			const js = `/*${laBel}*/self.MonacoEnvironment={BaseUrl: '${workerBaseUrl}'};importScripts('${scriptPath}');/*${laBel}*/`;
 			if (forceDataUri) {
 				const url = `data:text/javascript;charset=utf-8,${encodeURIComponent(js)}`;
 				return url;
 			}
-			const blob = new Blob([js], { type: 'application/javascript' });
-			return URL.createObjectURL(blob);
+			const BloB = new BloB([js], { type: 'application/javascript' });
+			return URL.createOBjectURL(BloB);
 		}
 	}
-	return scriptPath + '#' + label;
+	return scriptPath + '#' + laBel;
 }
 // ESM-comment-end
 
-function isPromiseLike<T>(obj: any): obj is PromiseLike<T> {
-	if (typeof obj.then === 'function') {
+function isPromiseLike<T>(oBj: any): oBj is PromiseLike<T> {
+	if (typeof oBj.then === 'function') {
 		return true;
 	}
 	return false;
 }
 
 /**
- * A worker that uses HTML5 web workers so that is has
- * its own global scope and its own thread.
+ * A worker that uses HTML5 weB workers so that is has
+ * its own gloBal scope and its own thread.
  */
-class WebWorker implements IWorker {
+class WeBWorker implements IWorker {
 
-	private id: number;
+	private id: numBer;
 	private worker: Promise<Worker> | null;
 
-	constructor(moduleId: string, id: number, label: string, onMessageCallback: IWorkerCallback, onErrorCallback: (err: any) => void) {
+	constructor(moduleId: string, id: numBer, laBel: string, onMessageCallBack: IWorkerCallBack, onErrorCallBack: (err: any) => void) {
 		this.id = id;
-		const workerOrPromise = getWorker('workerMain.js', label);
+		const workerOrPromise = getWorker('workerMain.js', laBel);
 		if (isPromiseLike(workerOrPromise)) {
 			this.worker = workerOrPromise;
 		} else {
@@ -77,26 +77,26 @@ class WebWorker implements IWorker {
 		this.postMessage(moduleId, []);
 		this.worker.then((w) => {
 			w.onmessage = function (ev: any) {
-				onMessageCallback(ev.data);
+				onMessageCallBack(ev.data);
 			};
-			(<any>w).onmessageerror = onErrorCallback;
+			(<any>w).onmessageerror = onErrorCallBack;
 			if (typeof w.addEventListener === 'function') {
-				w.addEventListener('error', onErrorCallback);
+				w.addEventListener('error', onErrorCallBack);
 			}
 		});
 	}
 
-	public getId(): number {
+	puBlic getId(): numBer {
 		return this.id;
 	}
 
-	public postMessage(message: any, transfer: Transferable[]): void {
+	puBlic postMessage(message: any, transfer: TransferaBle[]): void {
 		if (this.worker) {
 			this.worker.then(w => w.postMessage(message, transfer));
 		}
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this.worker) {
 			this.worker.then(w => w.terminate());
 		}
@@ -108,25 +108,25 @@ export class DefaultWorkerFactory implements IWorkerFactory {
 
 	private static LAST_WORKER_ID = 0;
 
-	private _label: string | undefined;
-	private _webWorkerFailedBeforeError: any;
+	private _laBel: string | undefined;
+	private _weBWorkerFailedBeforeError: any;
 
-	constructor(label: string | undefined) {
-		this._label = label;
-		this._webWorkerFailedBeforeError = false;
+	constructor(laBel: string | undefined) {
+		this._laBel = laBel;
+		this._weBWorkerFailedBeforeError = false;
 	}
 
-	public create(moduleId: string, onMessageCallback: IWorkerCallback, onErrorCallback: (err: any) => void): IWorker {
+	puBlic create(moduleId: string, onMessageCallBack: IWorkerCallBack, onErrorCallBack: (err: any) => void): IWorker {
 		let workerId = (++DefaultWorkerFactory.LAST_WORKER_ID);
 
-		if (this._webWorkerFailedBeforeError) {
-			throw this._webWorkerFailedBeforeError;
+		if (this._weBWorkerFailedBeforeError) {
+			throw this._weBWorkerFailedBeforeError;
 		}
 
-		return new WebWorker(moduleId, workerId, this._label || 'anonymous' + workerId, onMessageCallback, (err) => {
-			logOnceWebWorkerWarning(err);
-			this._webWorkerFailedBeforeError = err;
-			onErrorCallback(err);
+		return new WeBWorker(moduleId, workerId, this._laBel || 'anonymous' + workerId, onMessageCallBack, (err) => {
+			logOnceWeBWorkerWarning(err);
+			this._weBWorkerFailedBeforeError = err;
+			onErrorCallBack(err);
 		});
 	}
 }

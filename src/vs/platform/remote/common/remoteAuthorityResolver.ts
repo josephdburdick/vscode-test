@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
 export const IRemoteAuthorityResolverService = createDecorator<IRemoteAuthorityResolverService>('remoteAuthorityResolverService');
 
 export interface ResolvedAuthority {
 	readonly authority: string;
 	readonly host: string;
-	readonly port: number;
+	readonly port: numBer;
 }
 
 export interface ResolvedOptions {
@@ -19,8 +19,8 @@ export interface ResolvedOptions {
 }
 
 export interface TunnelDescription {
-	remoteAddress: { port: number, host: string };
-	localAddress: { port: number, host: string } | string;
+	remoteAddress: { port: numBer, host: string };
+	localAddress: { port: numBer, host: string } | string;
 }
 export interface TunnelInformation {
 	environmentTunnels?: TunnelDescription[];
@@ -34,36 +34,36 @@ export interface ResolverResult {
 
 export interface IRemoteConnectionData {
 	host: string;
-	port: number;
+	port: numBer;
 	connectionToken: string | undefined;
 }
 
 export enum RemoteAuthorityResolverErrorCode {
 	Unknown = 'Unknown',
-	NotAvailable = 'NotAvailable',
-	TemporarilyNotAvailable = 'TemporarilyNotAvailable',
+	NotAvailaBle = 'NotAvailaBle',
+	TemporarilyNotAvailaBle = 'TemporarilyNotAvailaBle',
 	NoResolverFound = 'NoResolverFound'
 }
 
 export class RemoteAuthorityResolverError extends Error {
 
-	public static isTemporarilyNotAvailable(err: any): boolean {
-		return (err instanceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable;
+	puBlic static isTemporarilyNotAvailaBle(err: any): Boolean {
+		return (err instanceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.TemporarilyNotAvailaBle;
 	}
 
-	public static isNoResolverFound(err: any): err is RemoteAuthorityResolverError {
+	puBlic static isNoResolverFound(err: any): err is RemoteAuthorityResolverError {
 		return (err instanceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.NoResolverFound;
 	}
 
-	public static isHandled(err: any): boolean {
+	puBlic static isHandled(err: any): Boolean {
 		return (err instanceof RemoteAuthorityResolverError) && err.isHandled;
 	}
 
-	public readonly _message: string | undefined;
-	public readonly _code: RemoteAuthorityResolverErrorCode;
-	public readonly _detail: any;
+	puBlic readonly _message: string | undefined;
+	puBlic readonly _code: RemoteAuthorityResolverErrorCode;
+	puBlic readonly _detail: any;
 
-	public isHandled: boolean;
+	puBlic isHandled: Boolean;
 
 	constructor(message?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detail?: any) {
 		super(message);
@@ -72,12 +72,12 @@ export class RemoteAuthorityResolverError extends Error {
 		this._code = code;
 		this._detail = detail;
 
-		this.isHandled = (code === RemoteAuthorityResolverErrorCode.NotAvailable) && detail === true;
+		this.isHandled = (code === RemoteAuthorityResolverErrorCode.NotAvailaBle) && detail === true;
 
-		// workaround when extending builtin objects and when compiling to ES5, see:
-		// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-		if (typeof (<any>Object).setPrototypeOf === 'function') {
-			(<any>Object).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
+		// workaround when extending Builtin oBjects and when compiling to ES5, see:
+		// https://githuB.com/microsoft/TypeScript-wiki/BloB/master/Breaking-Changes.md#extending-Built-ins-like-error-array-and-map-may-no-longer-work
+		if (typeof (<any>OBject).setPrototypeOf === 'function') {
+			(<any>OBject).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
 		}
 	}
 }

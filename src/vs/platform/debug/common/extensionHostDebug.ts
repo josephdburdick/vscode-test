@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IRemoteConsoleLog } from 'vs/base/common/console';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { Event } from 'vs/Base/common/event';
+import { IRemoteConsoleLog } from 'vs/Base/common/console';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
 
-export const IExtensionHostDebugService = createDecorator<IExtensionHostDebugService>('extensionHostDebugService');
+export const IExtensionHostDeBugService = createDecorator<IExtensionHostDeBugService>('extensionHostDeBugService');
 
 export interface IAttachSessionEvent {
 	sessionId: string;
-	subId?: string;
-	port: number;
+	suBId?: string;
+	port: numBer;
 }
 
 export interface ILogToSessionEvent {
@@ -23,7 +23,7 @@ export interface ILogToSessionEvent {
 
 export interface ITerminateSessionEvent {
 	sessionId: string;
-	subId?: string;
+	suBId?: string;
 }
 
 export interface IReloadSessionEvent {
@@ -35,10 +35,10 @@ export interface ICloseSessionEvent {
 }
 
 export interface IOpenExtensionWindowResult {
-	rendererDebugPort?: number;
+	rendererDeBugPort?: numBer;
 }
 
-export interface IExtensionHostDebugService {
+export interface IExtensionHostDeBugService {
 	readonly _serviceBrand: undefined;
 
 	reload(sessionId: string): void;
@@ -47,14 +47,14 @@ export interface IExtensionHostDebugService {
 	close(sessionId: string): void;
 	readonly onClose: Event<ICloseSessionEvent>;
 
-	attachSession(sessionId: string, port: number, subId?: string): void;
+	attachSession(sessionId: string, port: numBer, suBId?: string): void;
 	readonly onAttachSession: Event<IAttachSessionEvent>;
 
 	logToSession(sessionId: string, log: IRemoteConsoleLog): void;
 	readonly onLogToSession: Event<ILogToSessionEvent>;
 
-	terminateSession(sessionId: string, subId?: string): void;
+	terminateSession(sessionId: string, suBId?: string): void;
 	readonly onTerminateSession: Event<ITerminateSessionEvent>;
 
-	openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, debugRenderer: boolean): Promise<IOpenExtensionWindowResult>;
+	openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, deBugRenderer: Boolean): Promise<IOpenExtensionWindowResult>;
 }

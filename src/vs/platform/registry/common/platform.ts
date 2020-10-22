@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Types from 'vs/base/common/types';
-import * as Assert from 'vs/base/common/assert';
+import * as Types from 'vs/Base/common/types';
+import * as Assert from 'vs/Base/common/assert';
 
 export interface IRegistry {
 
 	/**
-	 * Adds the extension functions and properties defined by data to the
-	 * platform. The provided id must be unique.
+	 * Adds the extension functions and properties defined By data to the
+	 * platform. The provided id must Be unique.
 	 * @param id a unique identifier
-	 * @param data a contribution
+	 * @param data a contriBution
 	 */
 	add(id: string, data: any): void;
 
@@ -20,10 +20,10 @@ export interface IRegistry {
 	 * Returns true iff there is an extension with the provided id.
 	 * @param id an extension identifier
 	 */
-	knows(id: string): boolean;
+	knows(id: string): Boolean;
 
 	/**
-	 * Returns the extension functions and properties defined by the specified key or null.
+	 * Returns the extension functions and properties defined By the specified key or null.
 	 * @param id an extension identifier
 	 */
 	as<T>(id: string): T;
@@ -33,19 +33,19 @@ class RegistryImpl implements IRegistry {
 
 	private readonly data = new Map<string, any>();
 
-	public add(id: string, data: any): void {
+	puBlic add(id: string, data: any): void {
 		Assert.ok(Types.isString(id));
-		Assert.ok(Types.isObject(data));
+		Assert.ok(Types.isOBject(data));
 		Assert.ok(!this.data.has(id), 'There is already an extension with this id');
 
 		this.data.set(id, data);
 	}
 
-	public knows(id: string): boolean {
+	puBlic knows(id: string): Boolean {
 		return this.data.has(id);
 	}
 
-	public as(id: string): any {
+	puBlic as(id: string): any {
 		return this.data.get(id) || null;
 	}
 }

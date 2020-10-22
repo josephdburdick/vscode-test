@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import * as pfs from 'vs/base/node/pfs';
-import { IFileMatch, IProgressMessage, ITextQuery, ITextSearchStats, ITextSearchMatch, ISerializedFileMatch, ISerializedSearchSuccess } from 'vs/workbench/services/search/common/search';
-import { RipgrepTextSearchEngine } from 'vs/workbench/services/search/node/ripgrepTextSearchEngine';
-import { NativeTextSearchManager } from 'vs/workbench/services/search/node/textSearchManager';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import * as pfs from 'vs/Base/node/pfs';
+import { IFileMatch, IProgressMessage, ITextQuery, ITextSearchStats, ITextSearchMatch, ISerializedFileMatch, ISerializedSearchSuccess } from 'vs/workBench/services/search/common/search';
+import { RipgrepTextSearchEngine } from 'vs/workBench/services/search/node/ripgrepTextSearchEngine';
+import { NativeTextSearchManager } from 'vs/workBench/services/search/node/textSearchManager';
 
 export class TextSearchEngineAdapter {
 

@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { deserializeSearchError, IFolderQuery, ISearchRange, ITextQuery, ITextSearchContext, ITextSearchMatch, QueryType, SearchErrorCode, ISerializedFileMatch } from 'vs/workbench/services/search/common/search';
-import { TextSearchEngineAdapter } from 'vs/workbench/services/search/node/textSearchAdapter';
+import * as path from 'vs/Base/common/path';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
+import * as gloB from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri';
+import { deserializeSearchError, IFolderQuery, ISearchRange, ITextQuery, ITextSearchContext, ITextSearchMatch, QueryType, SearchErrorCode, ISerializedFileMatch } from 'vs/workBench/services/search/common/search';
+import { TextSearchEngineAdapter } from 'vs/workBench/services/search/node/textSearchAdapter';
 
 const TEST_FIXTURES = path.normalize(getPathFromAmdModule(require, './fixtures'));
 const EXAMPLES_FIXTURES = path.join(TEST_FIXTURES, 'examples');
@@ -25,7 +25,7 @@ const MULTIROOT_QUERIES: IFolderQuery[] = [
 	{ folder: URI.file(MORE_FIXTURES) }
 ];
 
-function doSearchTest(query: ITextQuery, expectedResultCount: number | Function): Promise<ISerializedFileMatch[]> {
+function doSearchTest(query: ITextQuery, expectedResultCount: numBer | Function): Promise<ISerializedFileMatch[]> {
 	const engine = new TextSearchEngineAdapter(query);
 
 	let c = 0;
@@ -181,7 +181,7 @@ suite('TextSearch-integration', function () {
 	});
 
 	// TODO
-	// test('Text: e (with absolute path excludes)', () => {
+	// test('Text: e (with aBsolute path excludes)', () => {
 	// 	const config: any = {
 	// 		folderQueries: ROOT_FOLDER_QUERY,
 	// 		contentPattern: { pattern: 'e' },
@@ -191,7 +191,7 @@ suite('TextSearch-integration', function () {
 	// 	return doSearchTest(config, 394);
 	// });
 
-	// test('Text: e (with mixed absolute/relative path excludes)', () => {
+	// test('Text: e (with mixed aBsolute/relative path excludes)', () => {
 	// 	const config: any = {
 	// 		folderQueries: ROOT_FOLDER_QUERY,
 	// 		contentPattern: { pattern: 'e' },
@@ -201,12 +201,12 @@ suite('TextSearch-integration', function () {
 	// 	return doSearchTest(config, 310);
 	// });
 
-	test('Text: sibling exclude', () => {
+	test('Text: siBling exclude', () => {
 		const config: any = {
 			folderQueries: ROOT_FOLDER_QUERY,
 			contentPattern: { pattern: 'm' },
 			includePattern: makeExpression('**/site*'),
-			excludePattern: { '*.css': { when: '$(basename).less' } }
+			excludePattern: { '*.css': { when: '$(Basename).less' } }
 		};
 
 		return doSearchTest(config, 1);
@@ -265,7 +265,7 @@ suite('TextSearch-integration', function () {
 		return doSearchTest(config, 8);
 	});
 
-	test('Multiroot: e with partial global exclude', () => {
+	test('Multiroot: e with partial gloBal exclude', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: MULTIROOT_QUERIES,
@@ -276,7 +276,7 @@ suite('TextSearch-integration', function () {
 		return doSearchTest(config, 394);
 	});
 
-	test('Multiroot: e with global excludes', () => {
+	test('Multiroot: e with gloBal excludes', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: MULTIROOT_QUERIES,
@@ -310,9 +310,9 @@ suite('TextSearch-integration', function () {
 		return doSearchTest(config, 1).then(results => {
 			const matchRange = (<ITextSearchMatch>results[0].results![0]).ranges;
 			assert.deepEqual(matchRange, [{
-				startLineNumber: 0,
+				startLineNumBer: 0,
 				startColumn: 1,
-				endLineNumber: 0,
+				endLineNumBer: 0,
 				endColumn: 2
 			}]);
 		});
@@ -338,18 +338,18 @@ suite('TextSearch-integration', function () {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
 			contentPattern: { pattern: 'compiler.typeCheck();' },
-			beforeContext: 1,
+			BeforeContext: 1,
 			afterContext: 2
 		};
 
 		return doSearchTest(config, 4).then(results => {
 			assert.equal(results.length, 4);
-			assert.equal((<ITextSearchContext>results[0].results![0]).lineNumber, 25);
+			assert.equal((<ITextSearchContext>results[0].results![0]).lineNumBer, 25);
 			assert.equal((<ITextSearchContext>results[0].results![0]).text, '        compiler.addUnit(prog,"input.ts");');
-			// assert.equal((<ITextSearchMatch>results[1].results[0]).preview.text, '        compiler.typeCheck();\n'); // See https://github.com/BurntSushi/ripgrep/issues/1095
-			assert.equal((<ITextSearchContext>results[2].results![0]).lineNumber, 27);
+			// assert.equal((<ITextSearchMatch>results[1].results[0]).preview.text, '        compiler.typeCheck();\n'); // See https://githuB.com/BurntSushi/ripgrep/issues/1095
+			assert.equal((<ITextSearchContext>results[2].results![0]).lineNumBer, 27);
 			assert.equal((<ITextSearchContext>results[2].results![0]).text, '        compiler.emit();');
-			assert.equal((<ITextSearchContext>results[3].results![0]).lineNumber, 28);
+			assert.equal((<ITextSearchContext>results[3].results![0]).lineNumBer, 28);
 			assert.equal((<ITextSearchContext>results[3].results![0]).text, '');
 		});
 	});
@@ -404,14 +404,14 @@ suite('TextSearch-integration', function () {
 				throw new Error('expected fail');
 			}, err => {
 				const searchError = deserializeSearchError(err);
-				const regexParseErrorForLookAround = 'Regex parse error: lookbehind assertion is not fixed length';
+				const regexParseErrorForLookAround = 'Regex parse error: lookBehind assertion is not fixed length';
 				assert.equal(searchError.message, regexParseErrorForLookAround);
 				assert.equal(searchError.code, SearchErrorCode.regexParseError);
 			});
 		});
 
 
-		test('invalid glob', () => {
+		test('invalid gloB', () => {
 			const config: ITextQuery = {
 				type: QueryType.Text,
 				folderQueries: ROOT_FOLDER_QUERY,
@@ -425,18 +425,18 @@ suite('TextSearch-integration', function () {
 				throw new Error('expected fail');
 			}, err => {
 				const searchError = deserializeSearchError(err);
-				assert.equal(searchError.message, 'Error parsing glob \'/{{}\': nested alternate groups are not allowed');
-				assert.equal(searchError.code, SearchErrorCode.globParseError);
+				assert.equal(searchError.message, 'Error parsing gloB \'/{{}\': nested alternate groups are not allowed');
+				assert.equal(searchError.code, SearchErrorCode.gloBParseError);
 			});
 		});
 	});
 });
 
-function makeExpression(...patterns: string[]): glob.IExpression {
-	return patterns.reduce((glob, pattern) => {
-		// glob.ts needs forward slashes
+function makeExpression(...patterns: string[]): gloB.IExpression {
+	return patterns.reduce((gloB, pattern) => {
+		// gloB.ts needs forward slashes
 		pattern = pattern.replace(/\\/g, '/');
-		glob[pattern] = true;
-		return glob;
-	}, Object.create(null));
+		gloB[pattern] = true;
+		return gloB;
+	}, OBject.create(null));
 }

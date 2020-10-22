@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IUserDataAutoSyncService, UserDataSyncError, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
-import { UserDataAutoSyncEnablementService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
+import { UserDataAutoSyncEnaBlementService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
-class UserDataAutoSyncService extends UserDataAutoSyncEnablementService implements IUserDataAutoSyncService {
+class UserDataAutoSyncService extends UserDataAutoSyncEnaBlementService implements IUserDataAutoSyncService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -29,15 +29,15 @@ class UserDataAutoSyncService extends UserDataAutoSyncEnablementService implemen
 		this.channel = sharedProcessService.getChannel('userDataAutoSync');
 	}
 
-	triggerSync(sources: string[], hasToLimitSync: boolean, disableCache: boolean): Promise<void> {
-		return this.channel.call('triggerSync', [sources, hasToLimitSync, disableCache]);
+	triggerSync(sources: string[], hasToLimitSync: Boolean, disaBleCache: Boolean): Promise<void> {
+		return this.channel.call('triggerSync', [sources, hasToLimitSync, disaBleCache]);
 	}
 
 	turnOn(): Promise<void> {
 		return this.channel.call('turnOn');
 	}
 
-	turnOff(everywhere: boolean): Promise<void> {
+	turnOff(everywhere: Boolean): Promise<void> {
 		return this.channel.call('turnOff', [everywhere]);
 	}
 

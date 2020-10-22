@@ -13,9 +13,9 @@ export const enum CharWidthRequestType {
 
 export class CharWidthRequest {
 
-	public readonly chr: string;
-	public readonly type: CharWidthRequestType;
-	public width: number;
+	puBlic readonly chr: string;
+	puBlic readonly type: CharWidthRequestType;
+	puBlic width: numBer;
 
 	constructor(chr: string, type: CharWidthRequestType) {
 		this.chr = chr;
@@ -23,39 +23,39 @@ export class CharWidthRequest {
 		this.width = 0;
 	}
 
-	public fulfill(width: number) {
+	puBlic fulfill(width: numBer) {
 		this.width = width;
 	}
 }
 
 class DomCharWidthReader {
 
-	private readonly _bareFontInfo: BareFontInfo;
+	private readonly _BareFontInfo: BareFontInfo;
 	private readonly _requests: CharWidthRequest[];
 
 	private _container: HTMLElement | null;
 	private _testElements: HTMLSpanElement[] | null;
 
-	constructor(bareFontInfo: BareFontInfo, requests: CharWidthRequest[]) {
-		this._bareFontInfo = bareFontInfo;
+	constructor(BareFontInfo: BareFontInfo, requests: CharWidthRequest[]) {
+		this._BareFontInfo = BareFontInfo;
 		this._requests = requests;
 
 		this._container = null;
 		this._testElements = null;
 	}
 
-	public read(): void {
+	puBlic read(): void {
 		// Create a test container with all these test elements
 		this._createDomElements();
 
 		// Add the container to the DOM
-		document.body.appendChild(this._container!);
+		document.Body.appendChild(this._container!);
 
 		// Read character widths
 		this._readFromDomElements();
 
 		// Remove the container from the DOM
-		document.body.removeChild(this._container!);
+		document.Body.removeChild(this._container!);
 
 		this._container = null;
 		this._testElements = null;
@@ -63,35 +63,35 @@ class DomCharWidthReader {
 
 	private _createDomElements(): void {
 		const container = document.createElement('div');
-		container.style.position = 'absolute';
+		container.style.position = 'aBsolute';
 		container.style.top = '-50000px';
 		container.style.width = '50000px';
 
 		const regularDomNode = document.createElement('div');
-		regularDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
-		regularDomNode.style.fontWeight = this._bareFontInfo.fontWeight;
-		regularDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		regularDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		regularDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		regularDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
+		regularDomNode.style.fontFamily = this._BareFontInfo.getMassagedFontFamily();
+		regularDomNode.style.fontWeight = this._BareFontInfo.fontWeight;
+		regularDomNode.style.fontSize = this._BareFontInfo.fontSize + 'px';
+		regularDomNode.style.fontFeatureSettings = this._BareFontInfo.fontFeatureSettings;
+		regularDomNode.style.lineHeight = this._BareFontInfo.lineHeight + 'px';
+		regularDomNode.style.letterSpacing = this._BareFontInfo.letterSpacing + 'px';
 		container.appendChild(regularDomNode);
 
-		const boldDomNode = document.createElement('div');
-		boldDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
-		boldDomNode.style.fontWeight = 'bold';
-		boldDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		boldDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		boldDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		boldDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
-		container.appendChild(boldDomNode);
+		const BoldDomNode = document.createElement('div');
+		BoldDomNode.style.fontFamily = this._BareFontInfo.getMassagedFontFamily();
+		BoldDomNode.style.fontWeight = 'Bold';
+		BoldDomNode.style.fontSize = this._BareFontInfo.fontSize + 'px';
+		BoldDomNode.style.fontFeatureSettings = this._BareFontInfo.fontFeatureSettings;
+		BoldDomNode.style.lineHeight = this._BareFontInfo.lineHeight + 'px';
+		BoldDomNode.style.letterSpacing = this._BareFontInfo.letterSpacing + 'px';
+		container.appendChild(BoldDomNode);
 
 		const italicDomNode = document.createElement('div');
-		italicDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
-		italicDomNode.style.fontWeight = this._bareFontInfo.fontWeight;
-		italicDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		italicDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		italicDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		italicDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
+		italicDomNode.style.fontFamily = this._BareFontInfo.getMassagedFontFamily();
+		italicDomNode.style.fontWeight = this._BareFontInfo.fontWeight;
+		italicDomNode.style.fontSize = this._BareFontInfo.fontSize + 'px';
+		italicDomNode.style.fontFeatureSettings = this._BareFontInfo.fontFeatureSettings;
+		italicDomNode.style.lineHeight = this._BareFontInfo.lineHeight + 'px';
+		italicDomNode.style.letterSpacing = this._BareFontInfo.letterSpacing + 'px';
 		italicDomNode.style.fontStyle = 'italic';
 		container.appendChild(italicDomNode);
 
@@ -103,13 +103,13 @@ class DomCharWidthReader {
 				parent = regularDomNode;
 			}
 			if (request.type === CharWidthRequestType.Bold) {
-				parent = boldDomNode;
+				parent = BoldDomNode;
 			}
 			if (request.type === CharWidthRequestType.Italic) {
 				parent = italicDomNode;
 			}
 
-			parent!.appendChild(document.createElement('br'));
+			parent!.appendChild(document.createElement('Br'));
 
 			const testElement = document.createElement('span');
 			DomCharWidthReader._render(testElement, request);
@@ -150,7 +150,7 @@ class DomCharWidthReader {
 	}
 }
 
-export function readCharWidths(bareFontInfo: BareFontInfo, requests: CharWidthRequest[]): void {
-	const reader = new DomCharWidthReader(bareFontInfo, requests);
+export function readCharWidths(BareFontInfo: BareFontInfo, requests: CharWidthRequest[]): void {
+	const reader = new DomCharWidthReader(BareFontInfo, requests);
 	reader.read();
 }

@@ -31,11 +31,11 @@ suite('Editor Model - Model Edit Operation', () => {
 		model.dispose();
 	});
 
-	function createSingleEditOp(text: string, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+	function createSingleEditOp(text: string, positionLineNumBer: numBer, positionColumn: numBer, selectionLineNumBer: numBer = positionLineNumBer, selectionColumn: numBer = positionColumn): IIdentifiedSingleEditOperation {
 		let range = new Range(
-			selectionLineNumber,
+			selectionLineNumBer,
 			selectionColumn,
-			positionLineNumber,
+			positionLineNumBer,
 			positionColumn
 		);
 
@@ -93,9 +93,9 @@ suite('Editor Model - Model Edit Operation', () => {
 
 	test('Replace inline/inline 1', () => {
 		assertSingleEditOp(
-			createSingleEditOp(' incredibly awesome', 1, 3),
+			createSingleEditOp(' incrediBly awesome', 1, 3),
 			[
-				'My incredibly awesome First Line',
+				'My incrediBly awesome First Line',
 				LINE2,
 				LINE3,
 				LINE4,

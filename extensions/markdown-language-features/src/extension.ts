@@ -7,70 +7,70 @@ import * as vscode from 'vscode';
 import { CommandManager } from './commandManager';
 import * as commands from './commands/index';
 import LinkProvider from './features/documentLinkProvider';
-import MDDocumentSymbolProvider from './features/documentSymbolProvider';
+import MDDocumentSymBolProvider from './features/documentSymBolProvider';
 import MarkdownFoldingProvider from './features/foldingProvider';
 import { MarkdownContentProvider } from './features/previewContentProvider';
 import { MarkdownPreviewManager } from './features/previewManager';
-import MarkdownWorkspaceSymbolProvider from './features/workspaceSymbolProvider';
+import MarkdownWorkspaceSymBolProvider from './features/workspaceSymBolProvider';
 import { Logger } from './logger';
 import { MarkdownEngine } from './markdownEngine';
-import { getMarkdownExtensionContributions } from './markdownExtensions';
-import { ContentSecurityPolicyArbiter, ExtensionContentSecurityPolicyArbiter, PreviewSecuritySelector } from './security';
-import { githubSlugifier } from './slugify';
+import { getMarkdownExtensionContriButions } from './markdownExtensions';
+import { ContentSecurityPolicyArBiter, ExtensionContentSecurityPolicyArBiter, PreviewSecuritySelector } from './security';
+import { githuBSlugifier } from './slugify';
 import { loadDefaultTelemetryReporter, TelemetryReporter } from './telemetryReporter';
 
 
 export function activate(context: vscode.ExtensionContext) {
 	const telemetryReporter = loadDefaultTelemetryReporter();
-	context.subscriptions.push(telemetryReporter);
+	context.suBscriptions.push(telemetryReporter);
 
-	const contributions = getMarkdownExtensionContributions(context);
-	context.subscriptions.push(contributions);
+	const contriButions = getMarkdownExtensionContriButions(context);
+	context.suBscriptions.push(contriButions);
 
-	const cspArbiter = new ExtensionContentSecurityPolicyArbiter(context.globalState, context.workspaceState);
-	const engine = new MarkdownEngine(contributions, githubSlugifier);
+	const cspArBiter = new ExtensionContentSecurityPolicyArBiter(context.gloBalState, context.workspaceState);
+	const engine = new MarkdownEngine(contriButions, githuBSlugifier);
 	const logger = new Logger();
 
-	const contentProvider = new MarkdownContentProvider(engine, context, cspArbiter, contributions, logger);
-	const symbolProvider = new MDDocumentSymbolProvider(engine);
-	const previewManager = new MarkdownPreviewManager(contentProvider, logger, contributions, engine);
-	context.subscriptions.push(previewManager);
+	const contentProvider = new MarkdownContentProvider(engine, context, cspArBiter, contriButions, logger);
+	const symBolProvider = new MDDocumentSymBolProvider(engine);
+	const previewManager = new MarkdownPreviewManager(contentProvider, logger, contriButions, engine);
+	context.suBscriptions.push(previewManager);
 
-	context.subscriptions.push(registerMarkdownLanguageFeatures(symbolProvider, engine));
-	context.subscriptions.push(registerMarkdownCommands(previewManager, telemetryReporter, cspArbiter, engine));
+	context.suBscriptions.push(registerMarkdownLanguageFeatures(symBolProvider, engine));
+	context.suBscriptions.push(registerMarkdownCommands(previewManager, telemetryReporter, cspArBiter, engine));
 
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
+	context.suBscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
 		logger.updateConfiguration();
 		previewManager.updateConfiguration();
 	}));
 }
 
 function registerMarkdownLanguageFeatures(
-	symbolProvider: MDDocumentSymbolProvider,
+	symBolProvider: MDDocumentSymBolProvider,
 	engine: MarkdownEngine
-): vscode.Disposable {
+): vscode.DisposaBle {
 	const selector: vscode.DocumentSelector = { language: 'markdown', scheme: '*' };
 
-	const charPattern = '(\\p{Alphabetic}|\\p{Number}|\\p{Nonspacing_Mark})';
+	const charPattern = '(\\p{AlphaBetic}|\\p{NumBer}|\\p{Nonspacing_Mark})';
 
-	return vscode.Disposable.from(
+	return vscode.DisposaBle.from(
 		vscode.languages.setLanguageConfiguration('markdown', {
 			wordPattern: new RegExp(`${charPattern}((${charPattern}|[_])?${charPattern})*`, 'ug'),
 		}),
-		vscode.languages.registerDocumentSymbolProvider(selector, symbolProvider),
+		vscode.languages.registerDocumentSymBolProvider(selector, symBolProvider),
 		vscode.languages.registerDocumentLinkProvider(selector, new LinkProvider()),
 		vscode.languages.registerFoldingRangeProvider(selector, new MarkdownFoldingProvider(engine)),
-		vscode.languages.registerWorkspaceSymbolProvider(new MarkdownWorkspaceSymbolProvider(symbolProvider))
+		vscode.languages.registerWorkspaceSymBolProvider(new MarkdownWorkspaceSymBolProvider(symBolProvider))
 	);
 }
 
 function registerMarkdownCommands(
 	previewManager: MarkdownPreviewManager,
 	telemetryReporter: TelemetryReporter,
-	cspArbiter: ContentSecurityPolicyArbiter,
+	cspArBiter: ContentSecurityPolicyArBiter,
 	engine: MarkdownEngine
-): vscode.Disposable {
-	const previewSecuritySelector = new PreviewSecuritySelector(cspArbiter, previewManager);
+): vscode.DisposaBle {
+	const previewSecuritySelector = new PreviewSecuritySelector(cspArBiter, previewManager);
 
 	const commandManager = new CommandManager();
 	commandManager.register(new commands.ShowPreviewCommand(previewManager, telemetryReporter));

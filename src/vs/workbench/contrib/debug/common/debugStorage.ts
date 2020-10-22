@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { StorageScope, IStorageService } from 'vs/platform/storage/common/storage';
-import { ExceptionBreakpoint, Expression, Breakpoint, FunctionBreakpoint, DataBreakpoint } from 'vs/workbench/contrib/debug/common/debugModel';
-import { IEvaluate, IExpression, IDebugModel } from 'vs/workbench/contrib/debug/common/debug';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { ExceptionBreakpoint, Expression, Breakpoint, FunctionBreakpoint, DataBreakpoint } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { IEvaluate, IExpression, IDeBugModel } from 'vs/workBench/contriB/deBug/common/deBug';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
-const DEBUG_BREAKPOINTS_KEY = 'debug.breakpoint';
-const DEBUG_FUNCTION_BREAKPOINTS_KEY = 'debug.functionbreakpoint';
-const DEBUG_DATA_BREAKPOINTS_KEY = 'debug.databreakpoint';
-const DEBUG_EXCEPTION_BREAKPOINTS_KEY = 'debug.exceptionbreakpoint';
-const DEBUG_WATCH_EXPRESSIONS_KEY = 'debug.watchexpressions';
+const DEBUG_BREAKPOINTS_KEY = 'deBug.Breakpoint';
+const DEBUG_FUNCTION_BREAKPOINTS_KEY = 'deBug.functionBreakpoint';
+const DEBUG_DATA_BREAKPOINTS_KEY = 'deBug.dataBreakpoint';
+const DEBUG_EXCEPTION_BREAKPOINTS_KEY = 'deBug.exceptionBreakpoint';
+const DEBUG_WATCH_EXPRESSIONS_KEY = 'deBug.watchexpressions';
 
-export class DebugStorage {
+export class DeBugStorage {
 	constructor(
 		@IStorageService private readonly storageService: IStorageService,
 		@ITextFileService private readonly textFileService: ITextFileService,
@@ -26,8 +26,8 @@ export class DebugStorage {
 	loadBreakpoints(): Breakpoint[] {
 		let result: Breakpoint[] | undefined;
 		try {
-			result = JSON.parse(this.storageService.get(DEBUG_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((breakpoint: any) => {
-				return new Breakpoint(URI.parse(breakpoint.uri.external || breakpoint.source.uri.external), breakpoint.lineNumber, breakpoint.column, breakpoint.enabled, breakpoint.condition, breakpoint.hitCondition, breakpoint.logMessage, breakpoint.adapterData, this.textFileService, this.uriIdentityService);
+			result = JSON.parse(this.storageService.get(DEBUG_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((Breakpoint: any) => {
+				return new Breakpoint(URI.parse(Breakpoint.uri.external || Breakpoint.source.uri.external), Breakpoint.lineNumBer, Breakpoint.column, Breakpoint.enaBled, Breakpoint.condition, Breakpoint.hitCondition, Breakpoint.logMessage, Breakpoint.adapterData, this.textFileService, this.uriIdentityService);
 			});
 		} catch (e) { }
 
@@ -37,8 +37,8 @@ export class DebugStorage {
 	loadFunctionBreakpoints(): FunctionBreakpoint[] {
 		let result: FunctionBreakpoint[] | undefined;
 		try {
-			result = JSON.parse(this.storageService.get(DEBUG_FUNCTION_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((fb: any) => {
-				return new FunctionBreakpoint(fb.name, fb.enabled, fb.hitCondition, fb.condition, fb.logMessage);
+			result = JSON.parse(this.storageService.get(DEBUG_FUNCTION_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((fB: any) => {
+				return new FunctionBreakpoint(fB.name, fB.enaBled, fB.hitCondition, fB.condition, fB.logMessage);
 			});
 		} catch (e) { }
 
@@ -49,7 +49,7 @@ export class DebugStorage {
 		let result: ExceptionBreakpoint[] | undefined;
 		try {
 			result = JSON.parse(this.storageService.get(DEBUG_EXCEPTION_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((exBreakpoint: any) => {
-				return new ExceptionBreakpoint(exBreakpoint.filter, exBreakpoint.label, exBreakpoint.enabled);
+				return new ExceptionBreakpoint(exBreakpoint.filter, exBreakpoint.laBel, exBreakpoint.enaBled);
 			});
 		} catch (e) { }
 
@@ -59,8 +59,8 @@ export class DebugStorage {
 	loadDataBreakpoints(): DataBreakpoint[] {
 		let result: DataBreakpoint[] | undefined;
 		try {
-			result = JSON.parse(this.storageService.get(DEBUG_DATA_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((dbp: any) => {
-				return new DataBreakpoint(dbp.description, dbp.dataId, true, dbp.enabled, dbp.hitCondition, dbp.condition, dbp.logMessage, dbp.accessTypes);
+			result = JSON.parse(this.storageService.get(DEBUG_DATA_BREAKPOINTS_KEY, StorageScope.WORKSPACE, '[]')).map((dBp: any) => {
+				return new DataBreakpoint(dBp.description, dBp.dataId, true, dBp.enaBled, dBp.hitCondition, dBp.condition, dBp.logMessage, dBp.accessTypes);
 			});
 		} catch (e) { }
 
@@ -86,29 +86,29 @@ export class DebugStorage {
 		}
 	}
 
-	storeBreakpoints(debugModel: IDebugModel): void {
-		const breakpoints = debugModel.getBreakpoints();
-		if (breakpoints.length) {
-			this.storageService.store(DEBUG_BREAKPOINTS_KEY, JSON.stringify(breakpoints), StorageScope.WORKSPACE);
+	storeBreakpoints(deBugModel: IDeBugModel): void {
+		const Breakpoints = deBugModel.getBreakpoints();
+		if (Breakpoints.length) {
+			this.storageService.store(DEBUG_BREAKPOINTS_KEY, JSON.stringify(Breakpoints), StorageScope.WORKSPACE);
 		} else {
 			this.storageService.remove(DEBUG_BREAKPOINTS_KEY, StorageScope.WORKSPACE);
 		}
 
-		const functionBreakpoints = debugModel.getFunctionBreakpoints();
+		const functionBreakpoints = deBugModel.getFunctionBreakpoints();
 		if (functionBreakpoints.length) {
 			this.storageService.store(DEBUG_FUNCTION_BREAKPOINTS_KEY, JSON.stringify(functionBreakpoints), StorageScope.WORKSPACE);
 		} else {
 			this.storageService.remove(DEBUG_FUNCTION_BREAKPOINTS_KEY, StorageScope.WORKSPACE);
 		}
 
-		const dataBreakpoints = debugModel.getDataBreakpoints().filter(dbp => dbp.canPersist);
+		const dataBreakpoints = deBugModel.getDataBreakpoints().filter(dBp => dBp.canPersist);
 		if (dataBreakpoints.length) {
 			this.storageService.store(DEBUG_DATA_BREAKPOINTS_KEY, JSON.stringify(dataBreakpoints), StorageScope.WORKSPACE);
 		} else {
 			this.storageService.remove(DEBUG_DATA_BREAKPOINTS_KEY, StorageScope.WORKSPACE);
 		}
 
-		const exceptionBreakpoints = debugModel.getExceptionBreakpoints();
+		const exceptionBreakpoints = deBugModel.getExceptionBreakpoints();
 		if (exceptionBreakpoints.length) {
 			this.storageService.store(DEBUG_EXCEPTION_BREAKPOINTS_KEY, JSON.stringify(exceptionBreakpoints), StorageScope.WORKSPACE);
 		} else {

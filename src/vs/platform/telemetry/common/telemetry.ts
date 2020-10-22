@@ -12,7 +12,7 @@ export interface ITelemetryInfo {
 	sessionId: string;
 	machineId: string;
 	instanceId: string;
-	msftInternal?: boolean;
+	msftInternal?: Boolean;
 }
 
 export interface ITelemetryData {
@@ -24,31 +24,31 @@ export interface ITelemetryData {
 export interface ITelemetryService {
 
 	/**
-	 * Whether error telemetry will get sent. If false, `publicLogError` will no-op.
+	 * Whether error telemetry will get sent. If false, `puBlicLogError` will no-op.
 	 */
-	readonly sendErrorTelemetry: boolean;
+	readonly sendErrorTelemetry: Boolean;
 
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Sends a telemetry event that has been privacy approved.
-	 * Do not call this unless you have been given approval.
+	 * Sends a telemetry event that has Been privacy approved.
+	 * Do not call this unless you have Been given approval.
 	 */
-	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void>;
+	puBlicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: Boolean): Promise<void>;
 
-	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean): Promise<void>;
+	puBlicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: Boolean): Promise<void>;
 
-	publicLogError(errorEventName: string, data?: ITelemetryData): Promise<void>;
+	puBlicLogError(errorEventName: string, data?: ITelemetryData): Promise<void>;
 
-	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>): Promise<void>;
+	puBlicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>): Promise<void>;
 
-	setEnabled(value: boolean): void;
+	setEnaBled(value: Boolean): void;
 
 	getTelemetryInfo(): Promise<ITelemetryInfo>;
 
 	setExperimentProperty(name: string, value: string): void;
 
-	isOptedIn: boolean;
+	isOptedIn: Boolean;
 }
 
 // Keys

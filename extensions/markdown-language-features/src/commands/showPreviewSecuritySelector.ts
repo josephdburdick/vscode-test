@@ -10,14 +10,14 @@ import { isMarkdownFile } from '../util/file';
 import { MarkdownPreviewManager } from '../features/previewManager';
 
 export class ShowPreviewSecuritySelectorCommand implements Command {
-	public readonly id = 'markdown.showPreviewSecuritySelector';
+	puBlic readonly id = 'markdown.showPreviewSecuritySelector';
 
-	public constructor(
+	puBlic constructor(
 		private readonly previewSecuritySelector: PreviewSecuritySelector,
 		private readonly previewManager: MarkdownPreviewManager
 	) { }
 
-	public execute(resource: string | undefined) {
+	puBlic execute(resource: string | undefined) {
 		if (this.previewManager.activePreviewResource) {
 			this.previewSecuritySelector.showSecuritySelectorForResource(this.previewManager.activePreviewResource);
 		} else if (resource) {

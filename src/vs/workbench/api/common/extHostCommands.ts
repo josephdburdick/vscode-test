@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { validateConstraint } from 'vs/base/common/types';
+import { validateConstraint } from 'vs/Base/common/types';
 import { ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
-import * as extHostTypes from 'vs/workbench/api/common/extHostTypes';
-import * as extHostTypeConverter from 'vs/workbench/api/common/extHostTypeConverters';
-import { cloneAndChange } from 'vs/base/common/objects';
-import { MainContext, MainThreadCommandsShape, ExtHostCommandsShape, ObjectIdentifier, ICommandDto } from './extHost.protocol';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
+import * as extHostTypes from 'vs/workBench/api/common/extHostTypes';
+import * as extHostTypeConverter from 'vs/workBench/api/common/extHostTypeConverters';
+import { cloneAndChange } from 'vs/Base/common/oBjects';
+import { MainContext, MainThreadCommandsShape, ExtHostCommandsShape, OBjectIdentifier, ICommandDto } from './extHost.protocol';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
 import * as modes from 'vs/editor/common/modes';
 import type * as vscode from 'vscode';
 import { ILogService } from 'vs/platform/log/common/log';
-import { revive } from 'vs/base/common/marshalling';
+import { revive } from 'vs/Base/common/marshalling';
 import { Range } from 'vs/editor/common/core/range';
 import { Position } from 'vs/editor/common/core/position';
-import { URI } from 'vs/base/common/uri';
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { DisposaBleStore, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
 interface CommandHandler {
-	callback: Function;
+	callBack: Function;
 	thisArg: any;
 	description?: ICommandHandlerDescription;
 }
@@ -57,19 +57,19 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 			},
 			{
 				processArgument(arg) {
-					return cloneAndChange(arg, function (obj) {
-						// Reverse of https://github.com/microsoft/vscode/blob/1f28c5fc681f4c01226460b6d1c7e91b8acb4a5b/src/vs/workbench/api/node/extHostCommands.ts#L112-L127
-						if (Range.isIRange(obj)) {
-							return extHostTypeConverter.Range.to(obj);
+					return cloneAndChange(arg, function (oBj) {
+						// Reverse of https://githuB.com/microsoft/vscode/BloB/1f28c5fc681f4c01226460B6d1c7e91B8acB4a5B/src/vs/workBench/api/node/extHostCommands.ts#L112-L127
+						if (Range.isIRange(oBj)) {
+							return extHostTypeConverter.Range.to(oBj);
 						}
-						if (Position.isIPosition(obj)) {
-							return extHostTypeConverter.Position.to(obj);
+						if (Position.isIPosition(oBj)) {
+							return extHostTypeConverter.Position.to(oBj);
 						}
-						if (Range.isIRange((obj as modes.Location).range) && URI.isUri((obj as modes.Location).uri)) {
-							return extHostTypeConverter.location.to(obj);
+						if (Range.isIRange((oBj as modes.Location).range) && URI.isUri((oBj as modes.Location).uri)) {
+							return extHostTypeConverter.location.to(oBj);
 						}
-						if (!Array.isArray(obj)) {
-							return obj;
+						if (!Array.isArray(oBj)) {
+							return oBj;
 						}
 					});
 				}
@@ -85,7 +85,7 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		this._argumentProcessors.push(processor);
 	}
 
-	registerCommand(global: boolean, id: string, callback: <T>(...args: any[]) => T | Thenable<T>, thisArg?: any, description?: ICommandHandlerDescription): extHostTypes.Disposable {
+	registerCommand(gloBal: Boolean, id: string, callBack: <T>(...args: any[]) => T | ThenaBle<T>, thisArg?: any, description?: ICommandHandlerDescription): extHostTypes.DisposaBle {
 		this._logService.trace('ExtHostCommands#registerCommand', id);
 
 		if (!id.trim().length) {
@@ -96,14 +96,14 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 			throw new Error(`command '${id}' already exists`);
 		}
 
-		this._commands.set(id, { callback, thisArg, description });
-		if (global) {
+		this._commands.set(id, { callBack, thisArg, description });
+		if (gloBal) {
 			this._proxy.$registerCommand(id);
 		}
 
-		return new extHostTypes.Disposable(() => {
+		return new extHostTypes.DisposaBle(() => {
 			if (this._commands.delete(id)) {
-				if (global) {
+				if (gloBal) {
 					this._proxy.$unregisterCommand(id);
 				}
 			}
@@ -115,12 +115,12 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		return this._doExecuteCommand(id, args, true);
 	}
 
-	private async _doExecuteCommand<T>(id: string, args: any[], retry: boolean): Promise<T> {
+	private async _doExecuteCommand<T>(id: string, args: any[], retry: Boolean): Promise<T> {
 
 		if (this._commands.has(id)) {
 			// we stay inside the extension host and support
 			// to pass any kind of parameters around
-			return this._executeContributedCommand<T>(id, args);
+			return this._executeContriButedCommand<T>(id, args);
 
 		} else {
 			// automagically convert some argument types
@@ -144,7 +144,7 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 				return revive<any>(result);
 			} catch (e) {
 				// Rerun the command when it wasn't known, had arguments, and when retry
-				// is enabled. We do this because the command might be registered inside
+				// is enaBled. We do this Because the command might Be registered inside
 				// the extension host now and can therfore accept the arguments as-is.
 				if (e instanceof Error && e.message === '$executeCommand:retry') {
 					return this._doExecuteCommand(id, args, false);
@@ -155,43 +155,43 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		}
 	}
 
-	private _executeContributedCommand<T>(id: string, args: any[]): Promise<T> {
+	private _executeContriButedCommand<T>(id: string, args: any[]): Promise<T> {
 		const command = this._commands.get(id);
 		if (!command) {
 			throw new Error('Unknown command');
 		}
-		let { callback, thisArg, description } = command;
+		let { callBack, thisArg, description } = command;
 		if (description) {
 			for (let i = 0; i < description.args.length; i++) {
 				try {
 					validateConstraint(args[i], description.args[i].constraint);
 				} catch (err) {
-					return Promise.reject(new Error(`Running the contributed command: '${id}' failed. Illegal argument '${description.args[i].name}' - ${description.args[i].description}`));
+					return Promise.reject(new Error(`Running the contriButed command: '${id}' failed. Illegal argument '${description.args[i].name}' - ${description.args[i].description}`));
 				}
 			}
 		}
 
 		try {
-			const result = callback.apply(thisArg, args);
+			const result = callBack.apply(thisArg, args);
 			return Promise.resolve(result);
 		} catch (err) {
 			this._logService.error(err, id);
-			return Promise.reject(new Error(`Running the contributed command: '${id}' failed.`));
+			return Promise.reject(new Error(`Running the contriButed command: '${id}' failed.`));
 		}
 	}
 
-	$executeContributedCommand<T>(id: string, ...args: any[]): Promise<T> {
-		this._logService.trace('ExtHostCommands#$executeContributedCommand', id);
+	$executeContriButedCommand<T>(id: string, ...args: any[]): Promise<T> {
+		this._logService.trace('ExtHostCommands#$executeContriButedCommand', id);
 
 		if (!this._commands.has(id)) {
-			return Promise.reject(new Error(`Contributed command '${id}' does not exist.`));
+			return Promise.reject(new Error(`ContriButed command '${id}' does not exist.`));
 		} else {
 			args = args.map(arg => this._argumentProcessors.reduce((r, p) => p.processArgument(r), arg));
-			return this._executeContributedCommand(id, args);
+			return this._executeContriButedCommand(id, args);
 		}
 	}
 
-	getCommands(filterUnderscoreCommands: boolean = false): Promise<string[]> {
+	getCommands(filterUnderscoreCommands: Boolean = false): Promise<string[]> {
 		this._logService.trace('ExtHostCommands#getCommands', filterUnderscoreCommands);
 
 		return this._proxy.$getCommands().then(result => {
@@ -202,8 +202,8 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		});
 	}
 
-	$getContributedCommandHandlerDescriptions(): Promise<{ [id: string]: string | ICommandHandlerDescription }> {
-		const result: { [id: string]: string | ICommandHandlerDescription } = Object.create(null);
+	$getContriButedCommandHandlerDescriptions(): Promise<{ [id: string]: string | ICommandHandlerDescription }> {
+		const result: { [id: string]: string | ICommandHandlerDescription } = OBject.create(null);
 		for (let [id, command] of this._commands) {
 			let { description } = command;
 			if (description) {
@@ -218,10 +218,10 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 export class CommandsConverter {
 
 	private readonly _delegatingCommandId: string;
-	private readonly _cache = new Map<number, vscode.Command>();
+	private readonly _cache = new Map<numBer, vscode.Command>();
 	private _cachIdPool = 0;
 
-	// --- conversion between internal and api commands
+	// --- conversion Between internal and api commands
 	constructor(
 		private readonly _commands: ExtHostCommands,
 		private readonly _logService: ILogService
@@ -230,9 +230,9 @@ export class CommandsConverter {
 		this._commands.registerCommand(true, this._delegatingCommandId, this._executeConvertedCommand, this);
 	}
 
-	toInternal(command: vscode.Command, disposables: DisposableStore): ICommandDto;
-	toInternal(command: vscode.Command | undefined, disposables: DisposableStore): ICommandDto | undefined;
-	toInternal(command: vscode.Command | undefined, disposables: DisposableStore): ICommandDto | undefined {
+	toInternal(command: vscode.Command, disposaBles: DisposaBleStore): ICommandDto;
+	toInternal(command: vscode.Command | undefined, disposaBles: DisposaBleStore): ICommandDto | undefined;
+	toInternal(command: vscode.Command | undefined, disposaBles: DisposaBleStore): ICommandDto | undefined {
 
 		if (!command) {
 			return undefined;
@@ -246,12 +246,12 @@ export class CommandsConverter {
 		};
 
 		if (command.command && isNonEmptyArray(command.arguments)) {
-			// we have a contributed command with arguments. that
+			// we have a contriButed command with arguments. that
 			// means we don't want to send the arguments around
 
 			const id = ++this._cachIdPool;
 			this._cache.set(id, command);
-			disposables.add(toDisposable(() => {
+			disposaBles.add(toDisposaBle(() => {
 				this._cache.delete(id);
 				this._logService.trace('CommandsConverter#DISPOSE', id);
 			}));
@@ -268,8 +268,8 @@ export class CommandsConverter {
 
 	fromInternal(command: modes.Command): vscode.Command | undefined {
 
-		const id = ObjectIdentifier.of(command);
-		if (typeof id === 'number') {
+		const id = OBjectIdentifier.of(command);
+		if (typeof id === 'numBer') {
 			return this._cache.get(id);
 
 		} else {

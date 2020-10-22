@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/platform/update/common/update.config.contribution';
+import 'vs/platform/update/common/update.config.contriBution';
 import { app, dialog } from 'electron';
 import * as fs from 'fs';
-import { isWindows, IProcessEnvironment, isMacintosh } from 'vs/base/common/platform';
+import { isWindows, IProcessEnvironment, isMacintosh } from 'vs/Base/common/platform';
 import product from 'vs/platform/product/common/product';
 import { parseMainProcessArgv, addArg } from 'vs/platform/environment/node/argvHelper';
 import { createWaitMarkerFile } from 'vs/platform/environment/node/waitMarkerFile';
-import { mkdirp } from 'vs/base/node/pfs';
+import { mkdirp } from 'vs/Base/node/pfs';
 import { LifecycleMainService, ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import { Server, serve, connect, XDG_RUNTIME_DIR } from 'vs/base/parts/ipc/node/ipc.net';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
+import { Server, serve, connect, XDG_RUNTIME_DIR } from 'vs/Base/parts/ipc/node/ipc.net';
+import { createChannelSender } from 'vs/Base/parts/ipc/common/ipc';
 import { ILaunchMainService } from 'vs/platform/launch/electron-main/launchMainService';
 import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
@@ -30,29 +30,29 @@ import { IRequestService } from 'vs/platform/request/common/request';
 import { RequestMainService } from 'vs/platform/request/electron-main/requestMainService';
 import { CodeApplication } from 'vs/code/electron-main/app';
 import { localize } from 'vs/nls';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
+import { mnemonicButtonLaBel } from 'vs/Base/common/laBels';
 import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { BufferLogService } from 'vs/platform/log/common/bufferLog';
-import { setUnexpectedErrorHandler } from 'vs/base/common/errors';
+import { BufferLogService } from 'vs/platform/log/common/BufferLog';
+import { setUnexpectedErrorHandler } from 'vs/Base/common/errors';
 import { IThemeMainService, ThemeMainService } from 'vs/platform/theme/electron-main/themeMainService';
-import { Client } from 'vs/base/parts/ipc/common/ipc.net';
-import { once } from 'vs/base/common/functional';
+import { Client } from 'vs/Base/parts/ipc/common/ipc.net';
+import { once } from 'vs/Base/common/functional';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { SignService } from 'vs/platform/sign/node/signService';
 import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 import { ITunnelService } from 'vs/platform/remote/common/tunnel';
 import { TunnelService } from 'vs/platform/remote/node/tunnelService';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IPathWithLineAndColumn, isValidBasename, parseLineAndColumnAware, sanitizeFilePath } from 'vs/base/common/extpath';
-import { isNumber } from 'vs/base/common/types';
-import { rtrim, trim } from 'vs/base/common/strings';
-import { basename, resolve } from 'vs/base/common/path';
-import { coalesce, distinct } from 'vs/base/common/arrays';
+import { IPathWithLineAndColumn, isValidBasename, parseLineAndColumnAware, sanitizeFilePath } from 'vs/Base/common/extpath';
+import { isNumBer } from 'vs/Base/common/types';
+import { rtrim, trim } from 'vs/Base/common/strings';
+import { Basename, resolve } from 'vs/Base/common/path';
+import { coalesce, distinct } from 'vs/Base/common/arrays';
 import { EnvironmentMainService, IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
 
 class ExpectedError extends Error {
@@ -81,13 +81,13 @@ class CodeMain {
 
 		// If we are started with --wait create a random temporary file
 		// and pass it over to the starting instance. We can use this file
-		// to wait for it to be deleted to monitor that the edited file
+		// to wait for it to Be deleted to monitor that the edited file
 		// is closed and then exit the waiting process.
 		//
-		// Note: we are not doing this if the wait marker has been already
+		// Note: we are not doing this if the wait marker has Been already
 		// added as argument. This can happen if Code was started from CLI.
 		if (args.wait && !args.waitMarkerFilePath) {
-			const waitMarkerFilePath = createWaitMarkerFile(args.verbose);
+			const waitMarkerFilePath = createWaitMarkerFile(args.verBose);
 			if (waitMarkerFilePath) {
 				addArg(process.argv, '--waitMarkerFilePath', waitMarkerFilePath);
 				args.waitMarkerFilePath = waitMarkerFilePath;
@@ -100,12 +100,12 @@ class CodeMain {
 
 	private async startup(args: NativeParsedArgs): Promise<void> {
 
-		// We need to buffer the spdlog logs until we are sure
+		// We need to Buffer the spdlog logs until we are sure
 		// we are the only instance running, otherwise we'll have concurrent
-		// log file access on Windows (https://github.com/microsoft/vscode/issues/41218)
-		const bufferLogService = new BufferLogService();
+		// log file access on Windows (https://githuB.com/microsoft/vscode/issues/41218)
+		const BufferLogService = new BufferLogService();
 
-		const [instantiationService, instanceEnvironment, environmentService] = this.createServices(args, bufferLogService);
+		const [instantiationService, instanceEnvironment, environmentService] = this.createServices(args, BufferLogService);
 		try {
 
 			// Init services
@@ -117,7 +117,7 @@ class CodeMain {
 					await this.initServices(environmentService, configurationService as ConfigurationService, stateService as StateService);
 				} catch (error) {
 
-					// Show a dialog for errors that can be resolved by the user
+					// Show a dialog for errors that can Be resolved By the user
 					this.handleStartupDataDirError(environmentService, error);
 
 					throw error;
@@ -133,7 +133,7 @@ class CodeMain {
 
 				const mainIpcServer = await this.doStartup(args, logService, environmentService, lifecycleMainService, instantiationService, true);
 
-				bufferLogService.logger = new SpdLogService('main', environmentService.logsPath, bufferLogService.getLevel());
+				BufferLogService.logger = new SpdLogService('main', environmentService.logsPath, BufferLogService.getLevel());
 				once(lifecycleMainService.onWillShutdown)(() => {
 					fileService.dispose();
 					(configurationService as ConfigurationService).dispose();
@@ -146,7 +146,7 @@ class CodeMain {
 		}
 	}
 
-	private createServices(args: NativeParsedArgs, bufferLogService: BufferLogService): [IInstantiationService, IProcessEnvironment, IEnvironmentMainService] {
+	private createServices(args: NativeParsedArgs, BufferLogService: BufferLogService): [IInstantiationService, IProcessEnvironment, IEnvironmentMainService] {
 		const services = new ServiceCollection();
 
 		const environmentService = new EnvironmentMainService(args);
@@ -154,7 +154,7 @@ class CodeMain {
 		services.set(IEnvironmentService, environmentService);
 		services.set(IEnvironmentMainService, environmentService);
 
-		const logService = new MultiplexLogService([new ConsoleLogMainService(getLogLevel(environmentService)), bufferLogService]);
+		const logService = new MultiplexLogService([new ConsoleLogMainService(getLogLevel(environmentService)), BufferLogService]);
 		process.once('exit', () => logService.dispose());
 		services.set(ILogService, logService);
 
@@ -183,9 +183,9 @@ class CodeMain {
 			environmentService.extensionsPath,
 			environmentService.nodeCachedDataDir,
 			environmentService.logsPath,
-			environmentService.globalStorageHome.fsPath,
+			environmentService.gloBalStorageHome.fsPath,
 			environmentService.workspaceStorageHome.fsPath,
-			environmentService.backupHome
+			environmentService.BackupHome
 		].map((path): undefined | Promise<void> => path ? mkdirp(path) : undefined));
 
 		// Configuration service
@@ -209,12 +209,12 @@ class CodeMain {
 			}
 		});
 
-		Object.assign(process.env, instanceEnvironment);
+		OBject.assign(process.env, instanceEnvironment);
 
 		return instanceEnvironment;
 	}
 
-	private async doStartup(args: NativeParsedArgs, logService: ILogService, environmentService: IEnvironmentMainService, lifecycleMainService: ILifecycleMainService, instantiationService: IInstantiationService, retry: boolean): Promise<Server> {
+	private async doStartup(args: NativeParsedArgs, logService: ILogService, environmentService: IEnvironmentMainService, lifecycleMainService: ILifecycleMainService, instantiationService: IInstantiationService, retry: Boolean): Promise<Server> {
 
 		// Try to setup a server for running. If that succeeds it means
 		// we are the first instance to startup. Otherwise it is likely
@@ -229,7 +229,7 @@ class CodeMain {
 			// indicates a second instance of Code is running)
 			if (error.code !== 'EADDRINUSE') {
 
-				// Show a dialog for errors that can be resolved by the user
+				// Show a dialog for errors that can Be resolved By the user
 				this.handleStartupDataDirError(environmentService, error);
 
 				// Any other runtime error is just printed to the console
@@ -242,7 +242,7 @@ class CodeMain {
 				client = await connect(environmentService.mainIPCHandle, 'main');
 			} catch (error) {
 
-				// Handle unexpected connection errors by showing a dialog to the user
+				// Handle unexpected connection errors By showing a dialog to the user
 				if (!retry || isWindows || error.code !== 'ECONNREFUSED') {
 					if (error.code === 'EPERM') {
 						this.showStartupWarningDialog(
@@ -254,13 +254,13 @@ class CodeMain {
 					throw error;
 				}
 
-				// it happens on Linux and OS X that the pipe is left behind
+				// it happens on Linux and OS X that the pipe is left Behind
 				// let's delete it, since we can't connect to it and then
 				// retry the whole thing
 				try {
 					fs.unlinkSync(environmentService.mainIPCHandle);
 				} catch (error) {
-					logService.warn('Could not delete obsolete instance handle', error);
+					logService.warn('Could not delete oBsolete instance handle', error);
 
 					throw error;
 				}
@@ -268,8 +268,8 @@ class CodeMain {
 				return this.doStartup(args, logService, environmentService, lifecycleMainService, instantiationService, false);
 			}
 
-			// Tests from CLI require to be the only instance currently
-			if (environmentService.extensionTestsLocationURI && !environmentService.debugExtensionHost.break) {
+			// Tests from CLI require to Be the only instance currently
+			if (environmentService.extensionTestsLocationURI && !environmentService.deBugExtensionHost.Break) {
 				const msg = 'Running extension tests from the command line is currently only supported if no other instance of Code is running.';
 				logService.error(msg);
 				client.dispose();
@@ -284,13 +284,13 @@ class CodeMain {
 			if (!args.wait && !args.status) {
 				startupWarningDialogHandle = setTimeout(() => {
 					this.showStartupWarningDialog(
-						localize('secondInstanceNoResponse', "Another instance of {0} is running but not responding", product.nameShort),
+						localize('secondInstanceNoResponse', "Another instance of {0} is running But not responding", product.nameShort),
 						localize('secondInstanceNoResponseDetail', "Please close all other instances and try again.")
 					);
 				}, 10000);
 			}
 
-			const launchService = createChannelSender<ILaunchMainService>(client.getChannel('launch'), { disableMarshalling: true });
+			const launchService = createChannelSender<ILaunchMainService>(client.getChannel('launch'), { disaBleMarshalling: true });
 
 			// Process Info
 			if (args.status) {
@@ -331,12 +331,12 @@ class CodeMain {
 
 		// Print --status usage info
 		if (args.status) {
-			logService.warn('Warning: The --status argument can only be used if Code is already running. Please run it again after Code has started.');
+			logService.warn('Warning: The --status argument can only Be used if Code is already running. Please run it again after Code has started.');
 
 			throw new ExpectedError('Terminating...');
 		}
 
-		// Set the VSCODE_PID variable here when we are sure we are the first
+		// Set the VSCODE_PID variaBle here when we are sure we are the first
 		// instance to startup. Otherwise we would wrongly overwrite the PID
 		process.env['VSCODE_PID'] = String(process.pid);
 
@@ -356,20 +356,20 @@ class CodeMain {
 			}
 
 			this.showStartupWarningDialog(
-				localize('startupDataDirError', "Unable to write program user data."),
-				localize('startupUserDataAndExtensionsDirErrorDetail', "Please make sure the following directories are writeable:\n\n{0}", directories.join('\n'))
+				localize('startupDataDirError', "UnaBle to write program user data."),
+				localize('startupUserDataAndExtensionsDirErrorDetail', "Please make sure the following directories are writeaBle:\n\n{0}", directories.join('\n'))
 			);
 		}
 	}
 
 	private showStartupWarningDialog(message: string, detail: string): void {
-		// use sync variant here because we likely exit after this method
+		// use sync variant here Because we likely exit after this method
 		// due to startup issues and otherwise the dialog seems to disappear
-		// https://github.com/microsoft/vscode/issues/104493
+		// https://githuB.com/microsoft/vscode/issues/104493
 		dialog.showMessageBoxSync({
 			title: product.nameLong,
 			type: 'warning',
-			buttons: [mnemonicButtonLabel(localize({ key: 'close', comment: ['&& denotes a mnemonic'] }, "&&Close"))],
+			Buttons: [mnemonicButtonLaBel(localize({ key: 'close', comment: ['&& denotes a mnemonic'] }, "&&Close"))],
 			message,
 			detail,
 			noLink: true
@@ -419,7 +419,7 @@ class CodeMain {
 
 	private validatePaths(args: NativeParsedArgs): NativeParsedArgs {
 
-		// Track URLs if they're going to be used
+		// Track URLs if they're going to Be used
 		if (args['open-url']) {
 			args._urls = args._;
 			args._ = [];
@@ -434,7 +434,7 @@ class CodeMain {
 		return args;
 	}
 
-	private doValidatePaths(args: string[], gotoLineMode?: boolean): string[] {
+	private doValidatePaths(args: string[], gotoLineMode?: Boolean): string[] {
 		const cwd = process.env['VSCODE_CWD'] || process.cwd();
 		const result = args.map(arg => {
 			let pathCandidate = String(arg);
@@ -451,8 +451,8 @@ class CodeMain {
 
 			const sanitizedFilePath = sanitizeFilePath(pathCandidate, cwd);
 
-			const filePathBasename = basename(sanitizedFilePath);
-			if (filePathBasename /* can be empty if code is opened on root */ && !isValidBasename(filePathBasename)) {
+			const filePathBasename = Basename(sanitizedFilePath);
+			if (filePathBasename /* can Be empty if code is opened on root */ && !isValidBasename(filePathBasename)) {
 				return null; // do not allow invalid file names
 			}
 
@@ -475,7 +475,7 @@ class CodeMain {
 
 		// Trim trailing quotes
 		if (isWindows) {
-			path = rtrim(path, '"'); // https://github.com/microsoft/vscode/issues/1498
+			path = rtrim(path, '"'); // https://githuB.com/microsoft/vscode/issues/1498
 		}
 
 		// Trim whitespaces
@@ -496,11 +496,11 @@ class CodeMain {
 	private toPath(pathWithLineAndCol: IPathWithLineAndColumn): string {
 		const segments = [pathWithLineAndCol.path];
 
-		if (isNumber(pathWithLineAndCol.line)) {
+		if (isNumBer(pathWithLineAndCol.line)) {
 			segments.push(String(pathWithLineAndCol.line));
 		}
 
-		if (isNumber(pathWithLineAndCol.column)) {
+		if (isNumBer(pathWithLineAndCol.column)) {
 			segments.push(String(pathWithLineAndCol.column));
 		}
 

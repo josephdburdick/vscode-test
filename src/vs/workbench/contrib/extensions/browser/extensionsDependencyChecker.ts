@@ -3,32 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IExtensionsWorkbenchService } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionsWorkBenchService } from 'vs/workBench/contriB/extensions/common/extensions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
 import { localize } from 'vs/nls';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { Action } from 'vs/base/common/actions';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { Action } from 'vs/Base/common/actions';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
-export class ExtensionDependencyChecker extends Disposable implements IWorkbenchContribution {
+export class ExtensionDependencyChecker extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IExtensionService private readonly extensionService: IExtensionService,
-		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
+		@IExtensionsWorkBenchService private readonly extensionsWorkBenchService: IExtensionsWorkBenchService,
 		@INotificationService private readonly notificationService: INotificationService,
 		@IHostService private readonly hostService: IHostService
 	) {
 		super();
-		CommandsRegistry.registerCommand('workbench.extensions.installMissingDependencies', () => this.installMissingDependencies());
+		CommandsRegistry.registerCommand('workBench.extensions.installMissingDependencies', () => this.installMissingDependencies());
 		MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 			command: {
-				id: 'workbench.extensions.installMissingDependencies',
+				id: 'workBench.extensions.installMissingDependencies',
 				category: localize('extensions', "Extensions"),
 				title: localize('auto install missing deps', "Install Missing Dependencies")
 			}
@@ -37,7 +37,7 @@ export class ExtensionDependencyChecker extends Disposable implements IWorkbench
 
 	private async getUninstalledMissingDependencies(): Promise<string[]> {
 		const allMissingDependencies = await this.getAllMissingDependencies();
-		const localExtensions = await this.extensionsWorkbenchService.queryLocal();
+		const localExtensions = await this.extensionsWorkBenchService.queryLocal();
 		return allMissingDependencies.filter(id => localExtensions.every(l => !areSameExtensions(l.identifier, { id })));
 	}
 
@@ -60,9 +60,9 @@ export class ExtensionDependencyChecker extends Disposable implements IWorkbench
 	private async installMissingDependencies(): Promise<void> {
 		const missingDependencies = await this.getUninstalledMissingDependencies();
 		if (missingDependencies.length) {
-			const extensions = (await this.extensionsWorkbenchService.queryGallery({ names: missingDependencies, pageSize: missingDependencies.length }, CancellationToken.None)).firstPage;
+			const extensions = (await this.extensionsWorkBenchService.queryGallery({ names: missingDependencies, pageSize: missingDependencies.length }, CancellationToken.None)).firstPage;
 			if (extensions.length) {
-				await Promise.all(extensions.map(extension => this.extensionsWorkbenchService.install(extension)));
+				await Promise.all(extensions.map(extension => this.extensionsWorkBenchService.install(extension)));
 				this.notificationService.notify({
 					severity: Severity.Info,
 					message: localize('finished installing missing deps', "Finished installing missing dependencies. Please reload the window now."),

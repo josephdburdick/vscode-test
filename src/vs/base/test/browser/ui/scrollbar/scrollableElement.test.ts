@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MouseWheelClassifier } from 'vs/base/browser/ui/scrollbar/scrollableElement';
+import { MouseWheelClassifier } from 'vs/Base/Browser/ui/scrollBar/scrollaBleElement';
 
-export type IMouseWheelEvent = [number, number, number];
+export type IMouseWheelEvent = [numBer, numBer, numBer];
 
 suite('MouseWheelClassifier', () => {
 
@@ -468,7 +468,7 @@ suite('MouseWheelClassifier', () => {
 		}
 	});
 
-	test('Windows - Microsoft basic v2 physical wheel', () => {
+	test('Windows - Microsoft Basic v2 physical wheel', () => {
 		const testData: IMouseWheelEvent[] = [
 			[1503418994564, -2, 0],
 			[1503418994643, -2, 0],

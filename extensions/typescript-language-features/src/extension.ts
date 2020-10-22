@@ -22,18 +22,18 @@ export function activate(
 	context: vscode.ExtensionContext
 ): Api {
 	const pluginManager = new PluginManager();
-	context.subscriptions.push(pluginManager);
+	context.suBscriptions.push(pluginManager);
 
 	const commandManager = new CommandManager();
-	context.subscriptions.push(commandManager);
+	context.suBscriptions.push(commandManager);
 
 	const onCompletionAccepted = new vscode.EventEmitter<vscode.CompletionItem>();
-	context.subscriptions.push(onCompletionAccepted);
+	context.suBscriptions.push(onCompletionAccepted);
 
 	const logDirectoryProvider = new NodeLogDirectoryProvider(context);
 	const versionProvider = new DiskTypeScriptVersionProvider();
 
-	context.subscriptions.push(new LanguageConfigurationManager());
+	context.suBscriptions.push(new LanguageConfigurationManager());
 
 	const lazyClientHost = createLazyClientHost(context, onCaseInsenitiveFileSystem(), {
 		pluginManager,
@@ -49,14 +49,14 @@ export function activate(
 	registerBaseCommands(commandManager, lazyClientHost, pluginManager);
 
 	import('./task/taskProvider').then(module => {
-		context.subscriptions.push(module.register(lazyClientHost.map(x => x.serviceClient)));
+		context.suBscriptions.push(module.register(lazyClientHost.map(x => x.serviceClient)));
 	});
 
 	import('./languageFeatures/tsconfig').then(module => {
-		context.subscriptions.push(module.register());
+		context.suBscriptions.push(module.register());
 	});
 
-	context.subscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
+	context.suBscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
 
 	return getExtensionApi(onCompletionAccepted.event, pluginManager);
 }

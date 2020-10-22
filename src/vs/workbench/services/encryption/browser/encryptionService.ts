@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IEncryptionService } from 'vs/workbench/services/encryption/common/encryptionService';
+import { IEncryptionService } from 'vs/workBench/services/encryption/common/encryptionService';
 
 export class EncryptionService {
 

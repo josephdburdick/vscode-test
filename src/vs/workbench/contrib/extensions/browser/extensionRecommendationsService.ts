@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IExtensionManagementService, IExtensionGalleryService, InstallOperation, DidInstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService, ExtensionRecommendationReason, IExtensionIgnoredRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { IExtensionRecommendationsService, ExtensionRecommendationReason, IExtensionIgnoredRecommendationsService } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ShowRecommendationsOnlyOnDemandKey } from 'vs/workbench/contrib/extensions/common/extensions';
+import { ShowRecommendationsOnlyOnDemandKey } from 'vs/workBench/contriB/extensions/common/extensions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { distinct, shuffle } from 'vs/base/common/arrays';
-import { Emitter, Event } from 'vs/base/common/event';
+import { distinct, shuffle } from 'vs/Base/common/arrays';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { LifecyclePhase, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { DynamicWorkspaceRecommendations } from 'vs/workbench/contrib/extensions/browser/dynamicWorkspaceRecommendations';
-import { ExeBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/exeBasedRecommendations';
-import { ExperimentalRecommendations } from 'vs/workbench/contrib/extensions/browser/experimentalRecommendations';
-import { WorkspaceRecommendations } from 'vs/workbench/contrib/extensions/browser/workspaceRecommendations';
-import { FileBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/fileBasedRecommendations';
-import { KeymapRecommendations } from 'vs/workbench/contrib/extensions/browser/keymapRecommendations';
-import { ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ConfigBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/configBasedRecommendations';
+import { LifecyclePhase, ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { DynamicWorkspaceRecommendations } from 'vs/workBench/contriB/extensions/Browser/dynamicWorkspaceRecommendations';
+import { ExeBasedRecommendations } from 'vs/workBench/contriB/extensions/Browser/exeBasedRecommendations';
+import { ExperimentalRecommendations } from 'vs/workBench/contriB/extensions/Browser/experimentalRecommendations';
+import { WorkspaceRecommendations } from 'vs/workBench/contriB/extensions/Browser/workspaceRecommendations';
+import { FileBasedRecommendations } from 'vs/workBench/contriB/extensions/Browser/fileBasedRecommendations';
+import { KeymapRecommendations } from 'vs/workBench/contriB/extensions/Browser/keymapRecommendations';
+import { ExtensionRecommendation } from 'vs/workBench/contriB/extensions/Browser/extensionRecommendations';
+import { ConfigBasedRecommendations } from 'vs/workBench/contriB/extensions/Browser/configBasedRecommendations';
 import { IExtensionRecommendationNotificationService } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
 
 type IgnoreRecommendationClassification = {
 	recommendationReason: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
-	extensionId: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
+	extensionId: { classification: 'PuBlicNonPersonalData', purpose: 'FeatureInsight' };
 };
 
-export class ExtensionRecommendationsService extends Disposable implements IExtensionRecommendationsService {
+export class ExtensionRecommendationsService extends DisposaBle implements IExtensionRecommendationsService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -42,8 +42,8 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 	private readonly dynamicWorkspaceRecommendations: DynamicWorkspaceRecommendations;
 	private readonly keymapRecommendations: KeymapRecommendations;
 
-	public readonly activationPromise: Promise<void>;
-	private sessionSeed: number;
+	puBlic readonly activationPromise: Promise<void>;
+	private sessionSeed: numBer;
 
 	private _onDidChangeRecommendations = this._register(new Emitter<void>());
 	readonly onDidChangeRecommendations = this._onDidChangeRecommendations.event;
@@ -69,7 +69,7 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		this.dynamicWorkspaceRecommendations = instantiationService.createInstance(DynamicWorkspaceRecommendations);
 		this.keymapRecommendations = instantiationService.createInstance(KeymapRecommendations);
 
-		if (!this.isEnabled()) {
+		if (!this.isEnaBled()) {
 			this.sessionSeed = 0;
 			this.activationPromise = Promise.resolve();
 			return;
@@ -94,18 +94,18 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 			this.keymapRecommendations.activate(),
 			this.lifecycleService.when(LifecyclePhase.Eventually)
 				.then(async () => {
-					if (!this.configurationService.getValue<boolean>(ShowRecommendationsOnlyOnDemandKey)) {
+					if (!this.configurationService.getValue<Boolean>(ShowRecommendationsOnlyOnDemandKey)) {
 						await this.activateProactiveRecommendations();
 					}
 				})
 		]);
 
 		this._register(this.extensionRecommendationsManagementService.onDidChangeIgnoredRecommendations(() => this._onDidChangeRecommendations.fire()));
-		this._register(this.extensionRecommendationsManagementService.onDidChangeGlobalIgnoredRecommendation(({ extensionId, isRecommended }) => {
+		this._register(this.extensionRecommendationsManagementService.onDidChangeGloBalIgnoredRecommendation(({ extensionId, isRecommended }) => {
 			if (!isRecommended) {
 				const reason = this.getAllRecommendationsWithReason()[extensionId];
 				if (reason && reason.reasonId) {
-					this.telemetryService.publicLog2<{ extensionId: string, recommendationReason: ExtensionRecommendationReason }, IgnoreRecommendationClassification>('extensionsRecommendations:ignoreRecommendation', { extensionId, recommendationReason: reason.reasonId });
+					this.telemetryService.puBlicLog2<{ extensionId: string, recommendationReason: ExtensionRecommendationReason }, IgnoreRecommendationClassification>('extensionsRecommendations:ignoreRecommendation', { extensionId, recommendationReason: reason.reasonId });
 				}
 			}
 		}));
@@ -114,8 +114,8 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		this._register(Event.any(this.workspaceRecommendations.onDidChangeRecommendations, this.configBasedRecommendations.onDidChangeRecommendations)(() => this.promptWorkspaceRecommendations()));
 	}
 
-	private isEnabled(): boolean {
-		return this.galleryService.isEnabled() && !this.environmentService.extensionDevelopmentLocationURI;
+	private isEnaBled(): Boolean {
+		return this.galleryService.isEnaBled() && !this.environmentService.extensionDevelopmentLocationURI;
 	}
 
 	private async activateProactiveRecommendations(): Promise<void> {
@@ -126,7 +126,7 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		/* Activate proactive recommendations */
 		this.activateProactiveRecommendations();
 
-		const output: { [id: string]: { reasonId: ExtensionRecommendationReason, reasonText: string }; } = Object.create(null);
+		const output: { [id: string]: { reasonId: ExtensionRecommendationReason, reasonText: string }; } = OBject.create(null);
 
 		const allRecommendations = [
 			...this.dynamicWorkspaceRecommendations.recommendations,
@@ -195,7 +195,7 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 	}
 
 	async getWorkspaceRecommendations(): Promise<string[]> {
-		if (!this.isEnabled()) {
+		if (!this.isEnaBled()) {
 			return [];
 		}
 		await this.workspaceRecommendations.activate();
@@ -226,7 +226,7 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 						]
 					}
 				*/
-				this.telemetryService.publicLog('extensionGallery:install:recommendations', { ...e.gallery.telemetryData, recommendationReason: recommendationReason.reasonId });
+				this.telemetryService.puBlicLog('extensionGallery:install:recommendations', { ...e.gallery.telemetryData, recommendationReason: recommendationReason.reasonId });
 			}
 		}
 	}
@@ -238,7 +238,7 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		return extensionIds;
 	}
 
-	private isExtensionAllowedToBeRecommended(extensionId: string): boolean {
+	private isExtensionAllowedToBeRecommended(extensionId: string): Boolean {
 		return !this.extensionRecommendationsManagementService.ignoredRecommendations.includes(extensionId.toLowerCase());
 	}
 

@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { Emitter } from 'vs/Base/common/event';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IRange } from 'vs/editor/common/core/range';
 import { CursorChangeReason, ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { ICodeEditor, isCodeEditor, isCompositeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor, isCodeEditor, isCompositeEditor } from 'vs/editor/Browser/editorBrowser';
 import { TrackedRangeStickiness, IModelDecorationsChangeAccessor } from 'vs/editor/common/model';
-import { isEqual } from 'vs/base/common/resources';
+import { isEqual } from 'vs/Base/common/resources';
 
 export interface IRangeHighlightDecoration {
 	resource: URI;
 	range: IRange;
-	isWholeLine?: boolean;
+	isWholeLine?: Boolean;
 }
 
-export class RangeHighlightDecorations extends Disposable {
+export class RangeHighlightDecorations extends DisposaBle {
 
 	private rangeHighlightDecorationId: string | null = null;
 	private editor: ICodeEditor | null = null;
-	private readonly editorDisposables = this._register(new DisposableStore());
+	private readonly editorDisposaBles = this._register(new DisposaBleStore());
 
 	private readonly _onHighlightRemoved: Emitter<void> = this._register(new Emitter<void>());
 	readonly onHighlightRemoved = this._onHighlightRemoved.event;
@@ -75,9 +75,9 @@ export class RangeHighlightDecorations extends Disposable {
 
 	private setEditor(editor: ICodeEditor) {
 		if (this.editor !== editor) {
-			this.editorDisposables.clear();
+			this.editorDisposaBles.clear();
 			this.editor = editor;
-			this.editorDisposables.add(this.editor.onDidChangeCursorPosition((e: ICursorPositionChangedEvent) => {
+			this.editorDisposaBles.add(this.editor.onDidChangeCursorPosition((e: ICursorPositionChangedEvent) => {
 				if (
 					e.reason === CursorChangeReason.NotSet
 					|| e.reason === CursorChangeReason.Explicit
@@ -87,8 +87,8 @@ export class RangeHighlightDecorations extends Disposable {
 					this.removeHighlightRange();
 				}
 			}));
-			this.editorDisposables.add(this.editor.onDidChangeModel(() => { this.removeHighlightRange(); }));
-			this.editorDisposables.add(this.editor.onDidDispose(() => {
+			this.editorDisposaBles.add(this.editor.onDidChangeModel(() => { this.removeHighlightRange(); }));
+			this.editorDisposaBles.add(this.editor.onDidDispose(() => {
 				this.removeHighlightRange();
 				this.editor = null;
 			}));
@@ -106,7 +106,7 @@ export class RangeHighlightDecorations extends Disposable {
 		className: 'rangeHighlight'
 	});
 
-	private createRangeHighlightDecoration(isWholeLine: boolean = true): ModelDecorationOptions {
+	private createRangeHighlightDecoration(isWholeLine: Boolean = true): ModelDecorationOptions {
 		return (isWholeLine ? RangeHighlightDecorations._WHOLE_LINE_RANGE_HIGHLIGHT : RangeHighlightDecorations._RANGE_HIGHLIGHT);
 	}
 

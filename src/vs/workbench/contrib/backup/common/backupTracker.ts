@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { Disposable, IDisposable, dispose, toDisposable } from 'vs/base/common/lifecycle';
-import { IWorkingCopyService, IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { IBackupFileService } from 'vs/workBench/services/Backup/common/Backup';
+import { DisposaBle, IDisposaBle, dispose, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkingCopyService, IWorkingCopy } from 'vs/workBench/services/workingCopy/common/workingCopyService';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ShutdownReason, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { ShutdownReason, ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 
-export abstract class BackupTracker extends Disposable {
+export aBstract class BackupTracker extends DisposaBle {
 
 	// A map from working copy to a version ID we compute on each content
-	// change. This version ID allows to e.g. ask if a backup for a specific
-	// content has been made before closing.
-	private readonly mapWorkingCopyToContentVersion = new Map<IWorkingCopy, number>();
+	// change. This version ID allows to e.g. ask if a Backup for a specific
+	// content has Been made Before closing.
+	private readonly mapWorkingCopyToContentVersion = new Map<IWorkingCopy, numBer>();
 
-	// A map of scheduled pending backups for working copies
-	private readonly pendingBackups = new Map<IWorkingCopy, IDisposable>();
+	// A map of scheduled pending Backups for working copies
+	private readonly pendingBackups = new Map<IWorkingCopy, IDisposaBle>();
 
 	constructor(
-		protected readonly backupFileService: IBackupFileService,
+		protected readonly BackupFileService: IBackupFileService,
 		protected readonly workingCopyService: IWorkingCopyService,
 		protected readonly logService: ILogService,
 		protected readonly lifecycleService: ILifecycleService
@@ -42,7 +42,7 @@ export abstract class BackupTracker extends Disposable {
 		this._register(this.workingCopyService.onDidChangeDirty(workingCopy => this.onDidChangeDirty(workingCopy)));
 		this._register(this.workingCopyService.onDidChangeContent(workingCopy => this.onDidChangeContent(workingCopy)));
 
-		// Lifecycle (handled in subclasses)
+		// Lifecycle (handled in suBclasses)
 		this.lifecycleService.onBeforeShutdown(event => event.veto(this.onBeforeShutdown(event.reason)));
 	}
 
@@ -57,7 +57,7 @@ export abstract class BackupTracker extends Disposable {
 		// Remove from content version map
 		this.mapWorkingCopyToContentVersion.delete(workingCopy);
 
-		// Discard backup
+		// Discard Backup
 		this.discardBackup(workingCopy);
 	}
 
@@ -75,9 +75,9 @@ export abstract class BackupTracker extends Disposable {
 		const contentVersionId = this.getContentVersion(workingCopy);
 		this.mapWorkingCopyToContentVersion.set(workingCopy, contentVersionId + 1);
 
-		// Schedule backup if dirty
+		// Schedule Backup if dirty
 		if (workingCopy.isDirty()) {
-			// this listener will make sure that the backup is
+			// this listener will make sure that the Backup is
 			// pushed out for as long as the user is still changing
 			// the content of the working copy.
 			this.scheduleBackup(workingCopy);
@@ -85,30 +85,30 @@ export abstract class BackupTracker extends Disposable {
 	}
 
 	/**
-	 * Allows subclasses to conditionally opt-out of doing a backup, e.g. if
-	 * auto save is enabled.
+	 * Allows suBclasses to conditionally opt-out of doing a Backup, e.g. if
+	 * auto save is enaBled.
 	 */
-	protected abstract shouldScheduleBackup(workingCopy: IWorkingCopy): boolean;
+	protected aBstract shouldScheduleBackup(workingCopy: IWorkingCopy): Boolean;
 
 	/**
-	 * Allows subclasses to control the delay before performing a backup from
+	 * Allows suBclasses to control the delay Before performing a Backup from
 	 * working copy content changes.
 	 */
-	protected abstract getBackupScheduleDelay(workingCopy: IWorkingCopy): number;
+	protected aBstract getBackupScheduleDelay(workingCopy: IWorkingCopy): numBer;
 
 	private scheduleBackup(workingCopy: IWorkingCopy): void {
 
-		// Clear any running backup operation
+		// Clear any running Backup operation
 		this.cancelBackup(workingCopy);
 
-		// subclass prevented backup for working copy
+		// suBclass prevented Backup for working copy
 		if (!this.shouldScheduleBackup(workingCopy)) {
 			return;
 		}
 
-		this.logService.trace(`[backup tracker] scheduling backup`, workingCopy.resource.toString());
+		this.logService.trace(`[Backup tracker] scheduling Backup`, workingCopy.resource.toString());
 
-		// Schedule new backup
+		// Schedule new Backup
 		const cts = new CancellationTokenSource();
 		const handle = setTimeout(async () => {
 			if (cts.token.isCancellationRequested) {
@@ -117,18 +117,18 @@ export abstract class BackupTracker extends Disposable {
 
 			// Backup if dirty
 			if (workingCopy.isDirty()) {
-				this.logService.trace(`[backup tracker] creating backup`, workingCopy.resource.toString());
+				this.logService.trace(`[Backup tracker] creating Backup`, workingCopy.resource.toString());
 
 				try {
-					const backup = await workingCopy.backup(cts.token);
+					const Backup = await workingCopy.Backup(cts.token);
 					if (cts.token.isCancellationRequested) {
 						return;
 					}
 
 					if (workingCopy.isDirty()) {
-						this.logService.trace(`[backup tracker] storing backup`, workingCopy.resource.toString());
+						this.logService.trace(`[Backup tracker] storing Backup`, workingCopy.resource.toString());
 
-						await this.backupFileService.backup(workingCopy.resource, backup.content, this.getContentVersion(workingCopy), backup.meta, cts.token);
+						await this.BackupFileService.Backup(workingCopy.resource, Backup.content, this.getContentVersion(workingCopy), Backup.meta, cts.token);
 					}
 				} catch (error) {
 					this.logService.error(error);
@@ -139,32 +139,32 @@ export abstract class BackupTracker extends Disposable {
 				return;
 			}
 
-			// Clear disposable
+			// Clear disposaBle
 			this.pendingBackups.delete(workingCopy);
 
 		}, this.getBackupScheduleDelay(workingCopy));
 
 		// Keep in map for disposal as needed
-		this.pendingBackups.set(workingCopy, toDisposable(() => {
-			this.logService.trace(`[backup tracker] clearing pending backup`, workingCopy.resource.toString());
+		this.pendingBackups.set(workingCopy, toDisposaBle(() => {
+			this.logService.trace(`[Backup tracker] clearing pending Backup`, workingCopy.resource.toString());
 
 			cts.dispose(true);
 			clearTimeout(handle);
 		}));
 	}
 
-	protected getContentVersion(workingCopy: IWorkingCopy): number {
+	protected getContentVersion(workingCopy: IWorkingCopy): numBer {
 		return this.mapWorkingCopyToContentVersion.get(workingCopy) || 0;
 	}
 
 	private discardBackup(workingCopy: IWorkingCopy): void {
-		this.logService.trace(`[backup tracker] discarding backup`, workingCopy.resource.toString());
+		this.logService.trace(`[Backup tracker] discarding Backup`, workingCopy.resource.toString());
 
-		// Clear any running backup operation
+		// Clear any running Backup operation
 		this.cancelBackup(workingCopy);
 
-		// Forward to backup file service
-		this.backupFileService.discardBackup(workingCopy.resource);
+		// Forward to Backup file service
+		this.BackupFileService.discardBackup(workingCopy.resource);
 	}
 
 	private cancelBackup(workingCopy: IWorkingCopy): void {
@@ -172,5 +172,5 @@ export abstract class BackupTracker extends Disposable {
 		this.pendingBackups.delete(workingCopy);
 	}
 
-	protected abstract onBeforeShutdown(reason: ShutdownReason): boolean | Promise<boolean>;
+	protected aBstract onBeforeShutdown(reason: ShutdownReason): Boolean | Promise<Boolean>;
 }

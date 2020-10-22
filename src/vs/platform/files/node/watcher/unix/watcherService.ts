@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createChannelSender, getNextTickChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Client } from 'vs/base/parts/ipc/node/ipc.cp';
+import { createChannelSender, getNextTickChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Client } from 'vs/Base/parts/ipc/node/ipc.cp';
 import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IWatcherRequest, IWatcherOptions, IWatcherService } from 'vs/platform/files/node/watcher/unix/watcher';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
-export class FileWatcher extends Disposable {
+export class FileWatcher extends DisposaBle {
 
 	private static readonly MAX_RESTARTS = 5;
 
-	private isDisposed: boolean;
-	private restartCounter: number;
+	private isDisposed: Boolean;
+	private restartCounter: numBer;
 	private service: IWatcherService | undefined;
 
 	constructor(
 		private folders: IWatcherRequest[],
 		private onDidFilesChange: (changes: IDiskFileChange[]) => void,
 		private onLogMessage: (msg: ILogMessage) => void,
-		private verboseLogging: boolean,
+		private verBoseLogging: Boolean,
 		private watcherOptions: IWatcherOptions = {}
 	) {
 		super();
@@ -35,7 +35,7 @@ export class FileWatcher extends Disposable {
 
 	private startWatching(): void {
 		const client = this._register(new Client(
-			FileAccess.asFileUri('bootstrap-fork', require).fsPath,
+			FileAccess.asFileUri('Bootstrap-fork', require).fsPath,
 			{
 				serverName: 'File Watcher (chokidar)',
 				args: ['--type=watcherService'],
@@ -48,22 +48,22 @@ export class FileWatcher extends Disposable {
 		));
 
 		this._register(client.onDidProcessExit(() => {
-			// our watcher app should never be completed because it keeps on watching. being in here indicates
-			// that the watcher process died and we want to restart it here. we only do it a max number of times
+			// our watcher app should never Be completed Because it keeps on watching. Being in here indicates
+			// that the watcher process died and we want to restart it here. we only do it a max numBer of times
 			if (!this.isDisposed) {
 				if (this.restartCounter <= FileWatcher.MAX_RESTARTS) {
 					this.error('terminated unexpectedly and is restarted again...');
 					this.restartCounter++;
 					this.startWatching();
 				} else {
-					this.error('failed to start after retrying for some time, giving up. Please report this as a bug report!');
+					this.error('failed to start after retrying for some time, giving up. Please report this as a Bug report!');
 				}
 			}
 		}));
 
 		// Initialize watcher
 		this.service = createChannelSender<IWatcherService>(getNextTickChannel(client.getChannel('watcher')));
-		this.service.init({ ...this.watcherOptions, verboseLogging: this.verboseLogging });
+		this.service.init({ ...this.watcherOptions, verBoseLogging: this.verBoseLogging });
 
 		this._register(this.service.onDidChangeFile(e => !this.isDisposed && this.onDidFilesChange(e)));
 		this._register(this.service.onDidLogMessage(m => this.onLogMessage(m)));
@@ -76,11 +76,11 @@ export class FileWatcher extends Disposable {
 		this.onLogMessage({ type: 'error', message: `[File Watcher (chokidar)] ${message}` });
 	}
 
-	setVerboseLogging(verboseLogging: boolean): void {
-		this.verboseLogging = verboseLogging;
+	setVerBoseLogging(verBoseLogging: Boolean): void {
+		this.verBoseLogging = verBoseLogging;
 
 		if (this.service) {
-			this.service.setVerboseLogging(verboseLogging);
+			this.service.setVerBoseLogging(verBoseLogging);
 		}
 	}
 

@@ -3,58 +3,58 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as errors from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import * as errors from 'vs/Base/common/errors';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IMessagePassingProtocol } from 'vs/Base/parts/ipc/common/ipc';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostCustomersRegistry } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, ExtHostExtensionServiceShape, IExtHostContext, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ProxyIdentifier } from 'vs/workbench/services/extensions/common/proxyIdentifier';
-import { IRPCProtocolLogger, RPCProtocol, RequestInitiator, ResponsiveState } from 'vs/workbench/services/extensions/common/rpcProtocol';
+import { ExtHostCustomersRegistry } from 'vs/workBench/api/common/extHostCustomers';
+import { ExtHostContext, ExtHostExtensionServiceShape, IExtHostContext, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { ProxyIdentifier } from 'vs/workBench/services/extensions/common/proxyIdentifier';
+import { IRPCProtocolLogger, RPCProtocol, RequestInitiator, ResponsiveState } from 'vs/workBench/services/extensions/common/rpcProtocol';
 import { RemoteAuthorityResolverError, ResolverResult } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import * as nls from 'vs/nls';
 import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IExtensionHost, ExtensionHostKind, ActivationKind } from 'vs/workbench/services/extensions/common/extensions';
-import { ExtensionActivationReason } from 'vs/workbench/api/common/extHostExtensionActivator';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { StopWatch } from 'vs/Base/common/stopwatch';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { IExtensionHost, ExtensionHostKind, ActivationKind } from 'vs/workBench/services/extensions/common/extensions';
+import { ExtensionActivationReason } from 'vs/workBench/api/common/extHostExtensionActivator';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
-// Enable to see detailed message communication between window and extension host
+// EnaBle to see detailed message communication Between window and extension host
 const LOG_EXTENSION_HOST_COMMUNICATION = false;
 const LOG_USE_COLORS = true;
 
-export class ExtensionHostManager extends Disposable {
+export class ExtensionHostManager extends DisposaBle {
 
-	public readonly kind: ExtensionHostKind;
-	public readonly onDidExit: Event<[number, string | null]>;
+	puBlic readonly kind: ExtensionHostKind;
+	puBlic readonly onDidExit: Event<[numBer, string | null]>;
 
 	private readonly _onDidChangeResponsiveState: Emitter<ResponsiveState> = this._register(new Emitter<ResponsiveState>());
-	public readonly onDidChangeResponsiveState: Event<ResponsiveState> = this._onDidChangeResponsiveState.event;
+	puBlic readonly onDidChangeResponsiveState: Event<ResponsiveState> = this._onDidChangeResponsiveState.event;
 
 	/**
 	 * A map of already requested activation events to speed things up if the same activation event is triggered multiple times.
 	 */
 	private readonly _cachedActivationEvents: Map<string, Promise<void>>;
 	private _rpcProtocol: RPCProtocol | null;
-	private readonly _customers: IDisposable[];
+	private readonly _customers: IDisposaBle[];
 	private readonly _extensionHost: IExtensionHost;
 	/**
-	 * winjs believes a proxy is a promise because it has a `then` method, so wrap the result in an object.
+	 * winjs Believes a proxy is a promise Because it has a `then` method, so wrap the result in an oBject.
 	 */
 	private _proxy: Promise<{ value: ExtHostExtensionServiceShape; } | null> | null;
-	private _resolveAuthorityAttempt: number;
+	private _resolveAuthorityAttempt: numBer;
 	private _hasStarted = false;
 
 	constructor(
 		extensionHost: IExtensionHost,
 		initialActivationEvents: string[],
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly _environmentService: IWorkBenchEnvironmentService,
 	) {
 		super();
 		this._cachedActivationEvents = new Map<string, Promise<void>>();
@@ -84,7 +84,7 @@ export class ExtensionHostManager extends Disposable {
 		this._resolveAuthorityAttempt = 0;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this._extensionHost) {
 			this._extensionHost.dispose();
 		}
@@ -131,7 +131,7 @@ export class ExtensionHostManager extends Disposable {
 		return p.value;
 	}
 
-	private async _measureLatency(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	private async _measureLatency(proxy: ExtHostExtensionServiceShape): Promise<numBer> {
 		const COUNT = 10;
 
 		let sum = 0;
@@ -144,25 +144,25 @@ export class ExtensionHostManager extends Disposable {
 		return (sum / COUNT);
 	}
 
-	private static _convert(byteCount: number, elapsedMillis: number): number {
-		return (byteCount * 1000 * 8) / elapsedMillis;
+	private static _convert(ByteCount: numBer, elapsedMillis: numBer): numBer {
+		return (ByteCount * 1000 * 8) / elapsedMillis;
 	}
 
-	private async _measureUp(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	private async _measureUp(proxy: ExtHostExtensionServiceShape): Promise<numBer> {
 		const SIZE = 10 * 1024 * 1024; // 10MB
 
-		let buff = VSBuffer.alloc(SIZE);
+		let Buff = VSBuffer.alloc(SIZE);
 		let value = Math.ceil(Math.random() * 256);
-		for (let i = 0; i < buff.byteLength; i++) {
-			buff.writeUInt8(i, value);
+		for (let i = 0; i < Buff.ByteLength; i++) {
+			Buff.writeUInt8(i, value);
 		}
 		const sw = StopWatch.create(true);
-		await proxy.$test_up(buff);
+		await proxy.$test_up(Buff);
 		sw.stop();
 		return ExtensionHostManager._convert(SIZE, sw.elapsed());
 	}
 
-	private async _measureDown(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	private async _measureDown(proxy: ExtHostExtensionServiceShape): Promise<numBer> {
 		const SIZE = 10 * 1024 * 1024; // 10MB
 
 		const sw = StopWatch.create(true);
@@ -205,13 +205,13 @@ export class ExtensionHostManager extends Disposable {
 		}
 
 		// Check that no named customers are missing
-		const expected: ProxyIdentifier<any>[] = Object.keys(MainContext).map((key) => (<any>MainContext)[key]);
+		const expected: ProxyIdentifier<any>[] = OBject.keys(MainContext).map((key) => (<any>MainContext)[key]);
 		this._rpcProtocol.assertRegistered(expected);
 
 		return this._rpcProtocol.getProxy(ExtHostContext.ExtHostExtensionService);
 	}
 
-	public async activate(extension: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<boolean> {
+	puBlic async activate(extension: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<Boolean> {
 		const proxy = await this._getProxy();
 		if (!proxy) {
 			return false;
@@ -219,7 +219,7 @@ export class ExtensionHostManager extends Disposable {
 		return proxy.$activate(extension, reason);
 	}
 
-	public activateByEvent(activationEvent: string, activationKind: ActivationKind): Promise<void> {
+	puBlic activateByEvent(activationEvent: string, activationKind: ActivationKind): Promise<void> {
 		if (activationKind === ActivationKind.Immediate && !this._hasStarted) {
 			return Promise.resolve();
 		}
@@ -236,17 +236,17 @@ export class ExtensionHostManager extends Disposable {
 		}
 		const proxy = await this._proxy;
 		if (!proxy) {
-			// this case is already covered above and logged.
-			// i.e. the extension host could not be started
+			// this case is already covered aBove and logged.
+			// i.e. the extension host could not Be started
 			return;
 		}
 		return proxy.value.$activateByEvent(activationEvent, activationKind);
 	}
 
-	public async getInspectPort(tryEnableInspector: boolean): Promise<number> {
+	puBlic async getInspectPort(tryEnaBleInspector: Boolean): Promise<numBer> {
 		if (this._extensionHost) {
-			if (tryEnableInspector) {
-				await this._extensionHost.enableInspectPort();
+			if (tryEnaBleInspector) {
+				await this._extensionHost.enaBleInspectPort();
 			}
 			let port = this._extensionHost.getInspectPort();
 			if (port) {
@@ -256,10 +256,10 @@ export class ExtensionHostManager extends Disposable {
 		return 0;
 	}
 
-	public async resolveAuthority(remoteAuthority: string): Promise<ResolverResult> {
+	puBlic async resolveAuthority(remoteAuthority: string): Promise<ResolverResult> {
 		const authorityPlusIndex = remoteAuthority.indexOf('+');
 		if (authorityPlusIndex === -1) {
-			// This authority does not need to be resolved, simply parse the port number
+			// This authority does not need to Be resolved, simply parse the port numBer
 			const pieces = remoteAuthority.split(':');
 			return Promise.resolve({
 				authority: {
@@ -282,15 +282,15 @@ export class ExtensionHostManager extends Disposable {
 		}
 	}
 
-	public async start(enabledExtensionIds: ExtensionIdentifier[]): Promise<void> {
+	puBlic async start(enaBledExtensionIds: ExtensionIdentifier[]): Promise<void> {
 		const proxy = await this._getProxy();
 		if (!proxy) {
 			return;
 		}
-		return proxy.$startExtensionHost(enabledExtensionIds);
+		return proxy.$startExtensionHost(enaBledExtensionIds);
 	}
 
-	public async deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): Promise<void> {
+	puBlic async deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): Promise<void> {
 		const proxy = await this._getProxy();
 		if (!proxy) {
 			return;
@@ -298,7 +298,7 @@ export class ExtensionHostManager extends Disposable {
 		return proxy.$deltaExtensions(toAdd, toRemove);
 	}
 
-	public async setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
+	puBlic async setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
 		const proxy = await this._getProxy();
 		if (!proxy) {
 			return;
@@ -308,7 +308,7 @@ export class ExtensionHostManager extends Disposable {
 	}
 }
 
-const colorTables = [
+const colorTaBles = [
 	['#2977B1', '#FC802D', '#34A13A', '#D3282F', '#9366BA'],
 	['#8B564C', '#E177C0', '#7F7F7F', '#BBBE3D', '#2EBECD']
 ];
@@ -317,9 +317,9 @@ function prettyWithoutArrays(data: any): any {
 	if (Array.isArray(data)) {
 		return data;
 	}
-	if (data && typeof data === 'object' && typeof data.toString === 'function') {
+	if (data && typeof data === 'oBject' && typeof data.toString === 'function') {
 		let result = data.toString();
-		if (result !== '[object Object]') {
+		if (result !== '[oBject OBject]') {
 			return result;
 		}
 	}
@@ -338,11 +338,11 @@ class RPCLogger implements IRPCProtocolLogger {
 	private _totalIncoming = 0;
 	private _totalOutgoing = 0;
 
-	private _log(direction: string, totalLength: number, msgLength: number, req: number, initiator: RequestInitiator, str: string, data: any): void {
+	private _log(direction: string, totalLength: numBer, msgLength: numBer, req: numBer, initiator: RequestInitiator, str: string, data: any): void {
 		data = pretty(data);
 
-		const colorTable = colorTables[initiator];
-		const color = LOG_USE_COLORS ? colorTable[req % colorTable.length] : '#000000';
+		const colorTaBle = colorTaBles[initiator];
+		const color = LOG_USE_COLORS ? colorTaBle[req % colorTaBle.length] : '#000000';
 		let args = [`%c[${direction}]%c[${String(totalLength).padStart(7)}]%c[len: ${String(msgLength).padStart(5)}]%c${String(req).padStart(5)} - ${str}`, 'color: darkgreen', 'color: grey', 'color: grey', `color: ${color}`];
 		if (/\($/.test(str)) {
 			args = args.concat(data);
@@ -353,12 +353,12 @@ class RPCLogger implements IRPCProtocolLogger {
 		console.log.apply(console, args as [string, ...string[]]);
 	}
 
-	logIncoming(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void {
+	logIncoming(msgLength: numBer, req: numBer, initiator: RequestInitiator, str: string, data?: any): void {
 		this._totalIncoming += msgLength;
 		this._log('Ext \u2192 Win', this._totalIncoming, msgLength, req, initiator, str, data);
 	}
 
-	logOutgoing(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void {
+	logOutgoing(msgLength: numBer, req: numBer, initiator: RequestInitiator, str: string, data?: any): void {
 		this._totalOutgoing += msgLength;
 		this._log('Win \u2192 Ext', this._totalOutgoing, msgLength, req, initiator, str, data);
 	}
@@ -366,9 +366,9 @@ class RPCLogger implements IRPCProtocolLogger {
 
 interface ExtHostLatencyResult {
 	remoteAuthority: string | null;
-	up: number;
-	down: number;
-	latency: number;
+	up: numBer;
+	down: numBer;
+	latency: numBer;
 }
 
 interface ExtHostLatencyProvider {
@@ -376,7 +376,7 @@ interface ExtHostLatencyProvider {
 }
 
 let providers: ExtHostLatencyProvider[] = [];
-function registerLatencyTestProvider(provider: ExtHostLatencyProvider): IDisposable {
+function registerLatencyTestProvider(provider: ExtHostLatencyProvider): IDisposaBle {
 	providers.push(provider);
 	return {
 		dispose: () => {
@@ -423,13 +423,13 @@ registerAction2(class MeasureExtHostLatencyAction extends Action2 {
 		return `${m.remoteAuthority ? `Authority: ${m.remoteAuthority}\n` : ``}Roundtrip latency: ${m.latency.toFixed(3)}ms\nUp: ${MeasureExtHostLatencyAction._printSpeed(m.up)}\nDown: ${MeasureExtHostLatencyAction._printSpeed(m.down)}\n`;
 	}
 
-	private static _printSpeed(n: number): string {
+	private static _printSpeed(n: numBer): string {
 		if (n <= 1024) {
-			return `${n} bps`;
+			return `${n} Bps`;
 		}
 		if (n < 1024 * 1024) {
-			return `${(n / 1024).toFixed(1)} kbps`;
+			return `${(n / 1024).toFixed(1)} kBps`;
 		}
-		return `${(n / 1024 / 1024).toFixed(1)} Mbps`;
+		return `${(n / 1024 / 1024).toFixed(1)} MBps`;
 	}
 });

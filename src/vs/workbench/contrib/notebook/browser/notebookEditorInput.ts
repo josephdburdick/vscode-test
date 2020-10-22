@@ -3,40 +3,40 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { EditorInput, IEditorInput, GroupIdentifier, ISaveOptions, IMoveResult, IRevertOptions } from 'vs/workbench/common/editor';
-import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
-import { URI } from 'vs/base/common/uri';
-import { isEqual, basename, joinPath } from 'vs/base/common/resources';
+import * as gloB from 'vs/Base/common/gloB';
+import { EditorInput, IEditorInput, GroupIdentifier, ISaveOptions, IMoveResult, IRevertOptions } from 'vs/workBench/common/editor';
+import { INoteBookService } from 'vs/workBench/contriB/noteBook/common/noteBookService';
+import { URI } from 'vs/Base/common/uri';
+import { isEqual, Basename, joinPath } from 'vs/Base/common/resources';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { IFilesConfigurationService, AutoSaveMode } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
 import { IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { INotebookEditorModelResolverService } from 'vs/workbench/contrib/notebook/common/notebookEditorModelResolverService';
-import { IReference } from 'vs/base/common/lifecycle';
-import { INotebookEditorModel } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { INoteBookEditorModelResolverService } from 'vs/workBench/contriB/noteBook/common/noteBookEditorModelResolverService';
+import { IReference } from 'vs/Base/common/lifecycle';
+import { INoteBookEditorModel } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
 
-interface NotebookEditorInputOptions {
-	startDirty?: boolean;
+interface NoteBookEditorInputOptions {
+	startDirty?: Boolean;
 }
 
-export class NotebookEditorInput extends EditorInput {
-	static create(instantiationService: IInstantiationService, resource: URI, name: string, viewType: string | undefined, options: NotebookEditorInputOptions = {}) {
-		return instantiationService.createInstance(NotebookEditorInput, resource, name, viewType, options);
+export class NoteBookEditorInput extends EditorInput {
+	static create(instantiationService: IInstantiationService, resource: URI, name: string, viewType: string | undefined, options: NoteBookEditorInputOptions = {}) {
+		return instantiationService.createInstance(NoteBookEditorInput, resource, name, viewType, options);
 	}
 
-	static readonly ID: string = 'workbench.input.notebook';
+	static readonly ID: string = 'workBench.input.noteBook';
 
-	private _textModel: IReference<INotebookEditorModel> | null = null;
-	private _defaultDirtyState: boolean = false;
+	private _textModel: IReference<INoteBookEditorModel> | null = null;
+	private _defaultDirtyState: Boolean = false;
 
 	constructor(
-		public readonly resource: URI,
-		public readonly name: string,
-		public readonly viewType: string | undefined,
-		public readonly options: NotebookEditorInputOptions,
-		@INotebookService private readonly _notebookService: INotebookService,
-		@INotebookEditorModelResolverService private readonly _notebookModelResolverService: INotebookEditorModelResolverService,
+		puBlic readonly resource: URI,
+		puBlic readonly name: string,
+		puBlic readonly viewType: string | undefined,
+		puBlic readonly options: NoteBookEditorInputOptions,
+		@INoteBookService private readonly _noteBookService: INoteBookService,
+		@INoteBookEditorModelResolverService private readonly _noteBookModelResolverService: INoteBookEditorModelResolverService,
 		@IFilesConfigurationService private readonly _filesConfigurationService: IFilesConfigurationService,
 		@IFileDialogService private readonly _fileDialogService: IFileDialogService,
 		@IPathService private readonly _pathService: IPathService,
@@ -47,7 +47,7 @@ export class NotebookEditorInput extends EditorInput {
 	}
 
 	getTypeId(): string {
-		return NotebookEditorInput.ID;
+		return NoteBookEditorInput.ID;
 	}
 
 	getName(): string {
@@ -58,28 +58,28 @@ export class NotebookEditorInput extends EditorInput {
 		if (!this._textModel) {
 			return !!this._defaultDirtyState;
 		}
-		return this._textModel.object.isDirty();
+		return this._textModel.oBject.isDirty();
 	}
 
-	isUntitled(): boolean {
-		return this._textModel?.object.isUntitled() || false;
+	isUntitled(): Boolean {
+		return this._textModel?.oBject.isUntitled() || false;
 	}
 
 	isReadonly() {
 		return false;
 	}
 
-	isSaving(): boolean {
+	isSaving(): Boolean {
 		if (this.isUntitled()) {
 			return false; // untitled is never saving automatically
 		}
 
 		if (!this.isDirty()) {
-			return false; // the editor needs to be dirty for being saved
+			return false; // the editor needs to Be dirty for Being saved
 		}
 
 		if (this._filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-			return true; // a short auto save is configured, treat this as being saved
+			return true; // a short auto save is configured, treat this as Being saved
 		}
 
 		return false;
@@ -91,7 +91,7 @@ export class NotebookEditorInput extends EditorInput {
 			if (this.isUntitled()) {
 				return this.saveAs(group, options);
 			} else {
-				await this._textModel.object.save();
+				await this._textModel.oBject.save();
 			}
 
 			return this;
@@ -105,15 +105,15 @@ export class NotebookEditorInput extends EditorInput {
 			return undefined;
 		}
 
-		const provider = this._notebookService.getContributedNotebookProvider(this.viewType!);
+		const provider = this._noteBookService.getContriButedNoteBookProvider(this.viewType!);
 
 		if (!provider) {
 			return undefined;
 		}
 
-		const dialogPath = this.isUntitled() ? await this.suggestName(this.name) : this._textModel.object.resource;
+		const dialogPath = this.isUntitled() ? await this.suggestName(this.name) : this._textModel.oBject.resource;
 
-		const target = await this._fileDialogService.pickFileToSave(dialogPath, options?.availableFileSystems);
+		const target = await this._fileDialogService.pickFileToSave(dialogPath, options?.availaBleFileSystems);
 		if (!target) {
 			return undefined; // save cancelled
 		}
@@ -124,20 +124,20 @@ export class NotebookEditorInput extends EditorInput {
 					return pattern;
 				}
 
-				if (glob.isRelativePattern(pattern)) {
-					return `${pattern} (base ${pattern.base})`;
+				if (gloB.isRelativePattern(pattern)) {
+					return `${pattern} (Base ${pattern.Base})`;
 				}
 
 				return `${pattern.include} (exclude: ${pattern.exclude})`;
 			}).join(', ');
-			throw new Error(`File name ${target} is not supported by ${provider.providerDisplayName}.
+			throw new Error(`File name ${target} is not supported By ${provider.providerDisplayName}.
 
 Please make sure the file name matches following patterns:
 ${patterns}
 `);
 		}
 
-		if (!await this._textModel.object.saveAs(target)) {
+		if (!await this._textModel.oBject.saveAs(target)) {
 			return undefined;
 		}
 
@@ -148,12 +148,12 @@ ${patterns}
 		return joinPath(this._fileDialogService.defaultFilePath() || (await this._pathService.userHome()), suggestedFilename);
 	}
 
-	// called when users rename a notebook document
+	// called when users rename a noteBook document
 	rename(group: GroupIdentifier, target: URI): IMoveResult | undefined {
 		if (this._textModel) {
-			const contributedNotebookProviders = this._notebookService.getContributedNotebookProviders(target);
+			const contriButedNoteBookProviders = this._noteBookService.getContriButedNoteBookProviders(target);
 
-			if (contributedNotebookProviders.find(provider => provider.id === this._textModel!.object.viewType)) {
+			if (contriButedNoteBookProviders.find(provider => provider.id === this._textModel!.oBject.viewType)) {
 				return this._move(group, target);
 			}
 		}
@@ -161,43 +161,43 @@ ${patterns}
 	}
 
 	private _move(group: GroupIdentifier, newResource: URI): { editor: IEditorInput } | undefined {
-		const editorInput = NotebookEditorInput.create(this._instantiationService, newResource, basename(newResource), this.viewType);
+		const editorInput = NoteBookEditorInput.create(this._instantiationService, newResource, Basename(newResource), this.viewType);
 		return { editor: editorInput };
 	}
 
 	async revert(group: GroupIdentifier, options?: IRevertOptions): Promise<void> {
-		if (this._textModel && this._textModel.object.isDirty()) {
-			await this._textModel.object.revert(options);
+		if (this._textModel && this._textModel.oBject.isDirty()) {
+			await this._textModel.oBject.revert(options);
 		}
 
 		return;
 	}
 
-	async resolve(): Promise<INotebookEditorModel | null> {
-		if (!await this._notebookService.canResolve(this.viewType!)) {
+	async resolve(): Promise<INoteBookEditorModel | null> {
+		if (!await this._noteBookService.canResolve(this.viewType!)) {
 			return null;
 		}
 
 		if (!this._textModel) {
-			this._textModel = await this._notebookModelResolverService.resolve(this.resource, this.viewType!);
+			this._textModel = await this._noteBookModelResolverService.resolve(this.resource, this.viewType!);
 
-			this._register(this._textModel.object.onDidChangeDirty(() => {
+			this._register(this._textModel.oBject.onDidChangeDirty(() => {
 				this._onDidChangeDirty.fire();
 			}));
 
-			if (this._textModel.object.isDirty()) {
+			if (this._textModel.oBject.isDirty()) {
 				this._onDidChangeDirty.fire();
 			}
 		}
 
-		return this._textModel.object;
+		return this._textModel.oBject;
 	}
 
-	matches(otherInput: unknown): boolean {
+	matches(otherInput: unknown): Boolean {
 		if (this === otherInput) {
 			return true;
 		}
-		if (otherInput instanceof NotebookEditorInput) {
+		if (otherInput instanceof NoteBookEditorInput) {
 			return this.viewType === otherInput.viewType
 				&& isEqual(this.resource, otherInput.resource);
 		}

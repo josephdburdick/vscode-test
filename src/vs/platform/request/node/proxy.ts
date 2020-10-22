@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Url, parse as parseUrl } from 'url';
-import { isBoolean } from 'vs/base/common/types';
+import { isBoolean } from 'vs/Base/common/types';
 
 export type Agent = any;
 
@@ -20,7 +20,7 @@ function getSystemProxyURI(requestURL: Url): string | null {
 
 export interface IOptions {
 	proxyUrl?: string;
-	strictSSL?: boolean;
+	strictSSL?: Boolean;
 }
 
 export async function getProxyAgent(rawRequestURL: string, options: IOptions = {}): Promise<Agent> {

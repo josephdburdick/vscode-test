@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editableTextModelTestUtils';
+import { testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editaBleTextModelTestUtils';
 
 const GENERATE_TESTS = false;
 
 suite('EditorModel Auto Tests', () => {
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, text: string[]): IIdentifiedSingleEditOperation {
 		return {
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			text: text.join('\n'),
 			forceMoveMarkers: false
 		};
@@ -31,11 +31,11 @@ suite('EditorModel Auto Tests', () => {
 				'',
 			],
 			[
-				editOp(1, 2, 1, 2, ['b', 'r', 'fq']),
+				editOp(1, 2, 1, 2, ['B', 'r', 'fq']),
 				editOp(1, 4, 2, 1, ['', '']),
 			],
 			[
-				'ib',
+				'iB',
 				'r',
 				'fqoe',
 				'',
@@ -58,14 +58,14 @@ suite('EditorModel Auto Tests', () => {
 			],
 			[
 				editOp(1, 2, 1, 2, ['', 'o']),
-				editOp(2, 4, 2, 4, ['zaq', 'avb']),
+				editOp(2, 4, 2, 4, ['zaq', 'avB']),
 				editOp(2, 5, 6, 2, ['jlr', 'zl', 'j']),
 			],
 			[
 				'f',
 				'o',
 				'litzaq',
-				'avbtjlr',
+				'avBtjlr',
 				'zl',
 				'jmm',
 			]
@@ -80,11 +80,11 @@ suite('EditorModel Auto Tests', () => {
 				'rp',
 				'qsnymek',
 				'elth',
-				'wmgzbwudxz',
+				'wmgzBwudxz',
 				'iwsdkndh',
-				'bujlbwb',
+				'BujlBwB',
 				'asuouxfv',
-				'xuccnb',
+				'xuccnB',
 			],
 			[
 				editOp(4, 3, 4, 3, ['']),
@@ -95,11 +95,11 @@ suite('EditorModel Auto Tests', () => {
 				'rp',
 				'qsnymek',
 				'elth',
-				'wmgzbwudxz',
+				'wmgzBwudxz',
 				'iwsdkndh',
-				'bujlbwb',
+				'BujlBwB',
 				'asuouxfv',
-				'xuccnb',
+				'xuccnB',
 			]
 		);
 	});
@@ -134,11 +134,11 @@ suite('EditorModel Auto Tests', () => {
 	});
 });
 
-function getRandomInt(min: number, max: number): number {
+function getRandomInt(min: numBer, max: numBer): numBer {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getRandomString(minLength: number, maxLength: number): string {
+function getRandomString(minLength: numBer, maxLength: numBer): string {
 	let length = getRandomInt(minLength, maxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {
@@ -147,7 +147,7 @@ function getRandomString(minLength: number, maxLength: number): string {
 	return r;
 }
 
-function generateFile(small: boolean): string {
+function generateFile(small: Boolean): string {
 	let lineCount = getRandomInt(1, small ? 3 : 10);
 	let lines: string[] = [];
 	for (let i = 0; i < lineCount; i++) {
@@ -185,29 +185,29 @@ function generateEdits(content: string): ITestModelEdit[] {
 }
 
 interface ITestModelEdit {
-	offset: number;
-	length: number;
+	offset: numBer;
+	length: numBer;
 	text: string;
 }
 
 class TestModel {
 
-	public initialContent: string;
-	public resultingContent: string;
-	public edits: IIdentifiedSingleEditOperation[];
+	puBlic initialContent: string;
+	puBlic resultingContent: string;
+	puBlic edits: IIdentifiedSingleEditOperation[];
 
 	private static _generateOffsetToPosition(content: string): Position[] {
 		let result: Position[] = [];
-		let lineNumber = 1;
+		let lineNumBer = 1;
 		let column = 1;
 
 		for (let offset = 0, len = content.length; offset <= len; offset++) {
 			let ch = content.charAt(offset);
 
-			result[offset] = new Position(lineNumber, column);
+			result[offset] = new Position(lineNumBer, column);
 
 			if (ch === '\n') {
-				lineNumber++;
+				lineNumBer++;
 				column = 1;
 			} else {
 				column++;
@@ -228,7 +228,7 @@ class TestModel {
 			let startPosition = offsetToPosition[edit.offset];
 			let endPosition = offsetToPosition[edit.offset + edit.length];
 			this.edits.push({
-				range: new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column),
+				range: new Range(startPosition.lineNumBer, startPosition.column, endPosition.lineNumBer, endPosition.column),
 				text: edit.text
 			});
 		}
@@ -236,14 +236,14 @@ class TestModel {
 		this.resultingContent = this.initialContent;
 		for (let i = edits.length - 1; i >= 0; i--) {
 			this.resultingContent = (
-				this.resultingContent.substring(0, edits[i].offset) +
+				this.resultingContent.suBstring(0, edits[i].offset) +
 				edits[i].text +
-				this.resultingContent.substring(edits[i].offset + edits[i].length)
+				this.resultingContent.suBstring(edits[i].offset + edits[i].length)
 			);
 		}
 	}
 
-	public print(): string {
+	puBlic print(): string {
 		let r: string[] = [];
 		r.push('testApplyEditsWithSyncedModels(');
 		r.push('\t[');
@@ -253,7 +253,7 @@ class TestModel {
 		r.push('\t[');
 		r = r.concat(this.edits.map((i) => {
 			let text = `['` + i.text!.split('\n').join(`', '`) + `']`;
-			return `\t\teditOp(${i.range.startLineNumber}, ${i.range.startColumn}, ${i.range.endLineNumber}, ${i.range.endColumn}, ${text}),`;
+			return `\t\teditOp(${i.range.startLineNumBer}, ${i.range.startColumn}, ${i.range.endLineNumBer}, ${i.range.endColumn}, ${text}),`;
 		}));
 		r.push('\t],');
 		r.push('\t[');
@@ -267,16 +267,16 @@ class TestModel {
 }
 
 if (GENERATE_TESTS) {
-	let number = 1;
+	let numBer = 1;
 	while (true) {
 
-		console.log('------BEGIN NEW TEST: ' + number);
+		console.log('------BEGIN NEW TEST: ' + numBer);
 
 		let testModel = new TestModel();
 
 		// console.log(testModel.print());
 
-		console.log('------END NEW TEST: ' + (number++));
+		console.log('------END NEW TEST: ' + (numBer++));
 
 		try {
 			testApplyEditsWithSyncedModels(
@@ -288,10 +288,10 @@ if (GENERATE_TESTS) {
 		} catch (err) {
 			console.log(err);
 			console.log(testModel.print());
-			break;
+			Break;
 		}
 
-		// break;
+		// Break;
 	}
 
 }

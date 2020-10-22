@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as cp from 'child_process';
-import * as platform from 'vs/base/common/platform';
-import { WindowsExternalTerminalService, MacExternalTerminalService, LinuxExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/node/externalTerminalService';
+import * as platform from 'vs/Base/common/platform';
+import { WindowsExternalTerminalService, MacExternalTerminalService, LinuxExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/node/externalTerminalService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/common/externalTerminal';
-import { ExtHostConfigProvider } from 'vs/workbench/api/common/extHostConfiguration';
+import { IExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/common/externalTerminal';
+import { ExtHostConfigProvider } from 'vs/workBench/api/common/extHostConfiguration';
 
 let externalTerminalService: IExternalTerminalService | undefined = undefined;
 
-export function runInExternalTerminal(args: DebugProtocol.RunInTerminalRequestArguments, configProvider: ExtHostConfigProvider): Promise<number | undefined> {
+export function runInExternalTerminal(args: DeBugProtocol.RunInTerminalRequestArguments, configProvider: ExtHostConfigProvider): Promise<numBer | undefined> {
 	if (!externalTerminalService) {
 		if (platform.isWindows) {
 			externalTerminalService = new WindowsExternalTerminalService(<IConfigurationService><unknown>undefined);
@@ -46,9 +46,9 @@ function spawnAsPromised(command: string, args: string[]): Promise<string> {
 	});
 }
 
-export function hasChildProcesses(processId: number | undefined): Promise<boolean> {
+export function hasChildProcesses(processId: numBer | undefined): Promise<Boolean> {
 	if (processId) {
-		// if shell has at least one child process, assume that shell is busy
+		// if shell has at least one child process, assume that shell is Busy
 		if (platform.isWindows) {
 			return spawnAsPromised('wmic', ['process', 'get', 'ParentProcessId']).then(stdout => {
 				const pids = stdout.split('\r\n');
@@ -57,7 +57,7 @@ export function hasChildProcesses(processId: number | undefined): Promise<boolea
 				return true;
 			});
 		} else {
-			return spawnAsPromised('/usr/bin/pgrep', ['-lP', String(processId)]).then(stdout => {
+			return spawnAsPromised('/usr/Bin/pgrep', ['-lP', String(processId)]).then(stdout => {
 				const r = stdout.trim();
 				if (r.length === 0 || r.indexOf(' tmux') >= 0) { // ignore 'tmux'; see #43683
 					return false;
@@ -69,11 +69,11 @@ export function hasChildProcesses(processId: number | undefined): Promise<boolea
 			});
 		}
 	}
-	// fall back to safe side
+	// fall Back to safe side
 	return Promise.resolve(true);
 }
 
-const enum ShellType { cmd, powershell, bash }
+const enum ShellType { cmd, powershell, Bash }
 
 
 export function prepareCommand(shell: string, args: string[], cwd?: string, env?: { [key: string]: string | null; }): string {
@@ -86,16 +86,16 @@ export function prepareCommand(shell: string, args: string[], cwd?: string, env?
 		shellType = ShellType.powershell;
 	} else if (shell.indexOf('cmd.exe') >= 0) {
 		shellType = ShellType.cmd;
-	} else if (shell.indexOf('bash') >= 0) {
-		shellType = ShellType.bash;
+	} else if (shell.indexOf('Bash') >= 0) {
+		shellType = ShellType.Bash;
 	} else if (platform.isWindows) {
 		shellType = ShellType.cmd; // pick a good default for Windows
 	} else {
-		shellType = ShellType.bash;	// pick a good default for anything else
+		shellType = ShellType.Bash;	// pick a good default for anything else
 	}
 
 	let quote: (s: string) => string;
-	// begin command with a space to avoid polluting shell history
+	// Begin command with a space to avoid polluting shell history
 	let command = ' ';
 
 	switch (shellType) {
@@ -130,7 +130,7 @@ export function prepareCommand(shell: string, args: string[], cwd?: string, env?
 					command += `${quote(a)} `;
 				}
 			}
-			break;
+			Break;
 
 		case ShellType.cmd:
 
@@ -160,9 +160,9 @@ export function prepareCommand(shell: string, args: string[], cwd?: string, env?
 			if (env) {
 				command += '"';
 			}
-			break;
+			Break;
 
-		case ShellType.bash:
+		case ShellType.Bash:
 
 			quote = (s: string) => {
 				s = s.replace(/(["'\\\$])/g, '\\$1');
@@ -177,7 +177,7 @@ export function prepareCommand(shell: string, args: string[], cwd?: string, env?
 				command += `cd ${quote(cwd)} ; `;
 			}
 			if (env) {
-				command += '/usr/bin/env';
+				command += '/usr/Bin/env';
 				for (let key in env) {
 					const value = env[key];
 					if (value === null) {
@@ -191,7 +191,7 @@ export function prepareCommand(shell: string, args: string[], cwd?: string, env?
 			for (let a of args) {
 				command += `${quote(a)} `;
 			}
-			break;
+			Break;
 	}
 
 	return command;

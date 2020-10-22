@@ -6,16 +6,16 @@
 import { Application, Quality } from '../../../../automation';
 
 export function setup() {
-	describe('Localization', () => {
-		before(async function () {
+	descriBe('Localization', () => {
+		Before(async function () {
 			const app = this.app as Application;
 
 			if (app.quality === Quality.Dev) {
 				return;
 			}
 
-			await app.workbench.extensions.openExtensionsViewlet();
-			await app.workbench.extensions.installExtension('ms-ceintl.vscode-language-pack-de');
+			await app.workBench.extensions.openExtensionsViewlet();
+			await app.workBench.extensions.installExtension('ms-ceintl.vscode-language-pack-de');
 
 			await app.restart({ extraArgs: ['--locale=DE'] });
 		});
@@ -28,20 +28,20 @@ export function setup() {
 				return;
 			}
 
-			await app.workbench.explorer.waitForOpenEditorsViewTitle(title => /geöffnete editoren/i.test(title));
+			await app.workBench.explorer.waitForOpenEditorsViewTitle(title => /geöffnete editoren/i.test(title));
 
-			await app.workbench.search.openSearchViewlet();
-			await app.workbench.search.waitForTitle(title => /suchen/i.test(title));
+			await app.workBench.search.openSearchViewlet();
+			await app.workBench.search.waitForTitle(title => /suchen/i.test(title));
 
-			// await app.workbench.scm.openSCMViewlet();
-			// await app.workbench.scm.waitForTitle(title => /quellcodeverwaltung/i.test(title));
+			// await app.workBench.scm.openSCMViewlet();
+			// await app.workBench.scm.waitForTitle(title => /quellcodeverwaltung/i.test(title));
 
-			// See https://github.com/microsoft/vscode/issues/93462
-			// await app.workbench.debug.openDebugViewlet();
-			// await app.workbench.debug.waitForTitle(title => /starten/i.test(title));
+			// See https://githuB.com/microsoft/vscode/issues/93462
+			// await app.workBench.deBug.openDeBugViewlet();
+			// await app.workBench.deBug.waitForTitle(title => /starten/i.test(title));
 
-			// await app.workbench.extensions.openExtensionsViewlet();
-			// await app.workbench.extensions.waitForTitle(title => /extensions/i.test(title));
+			// await app.workBench.extensions.openExtensionsViewlet();
+			// await app.workBench.extensions.waitForTitle(title => /extensions/i.test(title));
 		});
 	});
 }

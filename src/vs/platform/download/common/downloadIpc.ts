@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
 import { IDownloadService } from 'vs/platform/download/common/download';
-import { IURITransformer } from 'vs/base/common/uriIpc';
+import { IURITransformer } from 'vs/Base/common/uriIpc';
 
 export class DownloadServiceChannel implements IServerChannel {
 

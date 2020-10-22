@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as decoder from 'vs/base/node/decoder';
+import * as decoder from 'vs/Base/node/decoder';
 
 suite('Decoder', () => {
 

@@ -4,23 +4,23 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, IActionOptions, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, IActionOptions, ServicesAccessor, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
 import { ICommand } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { MoveCaretCommand } from 'vs/editor/contrib/caretOperations/moveCaretCommand';
+import { MoveCaretCommand } from 'vs/editor/contriB/caretOperations/moveCaretCommand';
 
 class MoveCaretAction extends EditorAction {
 
-	private readonly left: boolean;
+	private readonly left: Boolean;
 
-	constructor(left: boolean, opts: IActionOptions) {
+	constructor(left: Boolean, opts: IActionOptions) {
 		super(opts);
 
 		this.left = left;
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
 		if (!editor.hasModel()) {
 			return;
 		}
@@ -42,9 +42,9 @@ class MoveCaretLeftAction extends MoveCaretAction {
 	constructor() {
 		super(true, {
 			id: 'editor.action.moveCarretLeftAction',
-			label: nls.localize('caret.moveLeft', "Move Selected Text Left"),
+			laBel: nls.localize('caret.moveLeft', "Move Selected Text Left"),
 			alias: 'Move Selected Text Left',
-			precondition: EditorContextKeys.writable
+			precondition: EditorContextKeys.writaBle
 		});
 	}
 }
@@ -53,9 +53,9 @@ class MoveCaretRightAction extends MoveCaretAction {
 	constructor() {
 		super(false, {
 			id: 'editor.action.moveCarretRightAction',
-			label: nls.localize('caret.moveRight', "Move Selected Text Right"),
+			laBel: nls.localize('caret.moveRight', "Move Selected Text Right"),
 			alias: 'Move Selected Text Right',
-			precondition: EditorContextKeys.writable
+			precondition: EditorContextKeys.writaBle
 		});
 	}
 }

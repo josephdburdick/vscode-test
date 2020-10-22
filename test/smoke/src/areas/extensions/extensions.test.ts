@@ -6,7 +6,7 @@
 import { Application, Quality } from '../../../../automation';
 
 export function setup() {
-	describe('Extensions', () => {
+	descriBe('Extensions', () => {
 		it(`install and activate vscode-smoketest-check extension`, async function () {
 			const app = this.app as Application;
 
@@ -15,17 +15,17 @@ export function setup() {
 				return;
 			}
 
-			await app.workbench.extensions.openExtensionsViewlet();
+			await app.workBench.extensions.openExtensionsViewlet();
 
-			await app.workbench.extensions.installExtension('michelkaporin.vscode-smoketest-check');
+			await app.workBench.extensions.installExtension('michelkaporin.vscode-smoketest-check');
 
-			await app.workbench.extensions.waitForExtensionsViewlet();
+			await app.workBench.extensions.waitForExtensionsViewlet();
 
 			if (app.remote) {
 				await app.reload();
 			}
-			await app.workbench.quickaccess.runCommand('Smoke Test Check');
-			await app.workbench.statusbar.waitForStatusbarText('smoke test', 'VS Code Smoke Test Check');
+			await app.workBench.quickaccess.runCommand('Smoke Test Check');
+			await app.workBench.statusBar.waitForStatusBarText('smoke test', 'VS Code Smoke Test Check');
 		});
 	});
 }

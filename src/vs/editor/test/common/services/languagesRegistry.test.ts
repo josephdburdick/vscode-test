@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { LanguagesRegistry } from 'vs/editor/common/services/languagesRegistry';
 
 suite('LanguagesRegistry', () => {
@@ -29,7 +29,7 @@ suite('LanguagesRegistry', () => {
 			id: 'modeId',
 			extensions: [],
 			aliases: ['ModeName'],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		assert.deepEqual(registry.getRegisteredLanguageNames(), ['ModeName']);
@@ -42,28 +42,28 @@ suite('LanguagesRegistry', () => {
 		registry._registerLanguages([{
 			id: 'modeId',
 			extensions: [],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		assert.deepEqual(registry.getRegisteredLanguageNames(), ['modeId']);
 		assert.deepEqual(registry.getLanguageName('modeId'), 'modeId');
 	});
 
-	test('bug #4360: f# not shown in status bar', () => {
+	test('Bug #4360: f# not shown in status Bar', () => {
 		let registry = new LanguagesRegistry(false);
 
 		registry._registerLanguages([{
 			id: 'modeId',
 			extensions: ['.ext1'],
 			aliases: ['ModeName'],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		registry._registerLanguages([{
 			id: 'modeId',
 			extensions: ['.ext2'],
 			aliases: [],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		assert.deepEqual(registry.getRegisteredLanguageNames(), ['ModeName']);
@@ -77,14 +77,14 @@ suite('LanguagesRegistry', () => {
 			id: 'modeId',
 			extensions: ['.ext1'],
 			aliases: ['ModeName'],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		registry._registerLanguages([{
 			id: 'modeId',
 			extensions: ['.ext2'],
 			aliases: ['BetterModeName'],
-			mimetypes: ['bla'],
+			mimetypes: ['Bla'],
 		}]);
 
 		assert.deepEqual(registry.getRegisteredLanguageNames(), ['BetterModeName']);
@@ -185,17 +185,17 @@ suite('LanguagesRegistry', () => {
 		assert.deepEqual(registry.getLanguageName('a'), 'a');
 
 		registry._registerLanguages([{
-			id: 'b',
+			id: 'B',
 			aliases: []
 		}]);
 
 		assert.deepEqual(registry.getRegisteredLanguageNames(), ['a']);
 		assert.deepEqual(registry.getModeIdsFromLanguageName('a'), ['a']);
-		assert.deepEqual(registry.getModeIdsFromLanguageName('b'), []);
+		assert.deepEqual(registry.getModeIdsFromLanguageName('B'), []);
 		assert.deepEqual(registry.getModeIdForLanguageNameLowercase('a'), 'a');
-		assert.deepEqual(registry.getModeIdForLanguageNameLowercase('b'), 'b');
+		assert.deepEqual(registry.getModeIdForLanguageNameLowercase('B'), 'B');
 		assert.deepEqual(registry.getLanguageName('a'), 'a');
-		assert.deepEqual(registry.getLanguageName('b'), null);
+		assert.deepEqual(registry.getLanguageName('B'), null);
 	});
 
 	test('extensions', () => {

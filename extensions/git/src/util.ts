@@ -3,53 +3,53 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Disposable, EventEmitter } from 'vscode';
+import { Event, DisposaBle, EventEmitter } from 'vscode';
 import { dirname, sep } from 'path';
-import { Readable } from 'stream';
+import { ReadaBle } from 'stream';
 import { promises as fs, createReadStream } from 'fs';
-import * as byline from 'byline';
+import * as Byline from 'Byline';
 
 export function log(...args: any[]): void {
 	console.log.apply(console, ['git:', ...args]);
 }
 
-export interface IDisposable {
+export interface IDisposaBle {
 	dispose(): void;
 }
 
-export function dispose<T extends IDisposable>(disposables: T[]): T[] {
-	disposables.forEach(d => d.dispose());
+export function dispose<T extends IDisposaBle>(disposaBles: T[]): T[] {
+	disposaBles.forEach(d => d.dispose());
 	return [];
 }
 
-export function toDisposable(dispose: () => void): IDisposable {
+export function toDisposaBle(dispose: () => void): IDisposaBle {
 	return { dispose };
 }
 
-export function combinedDisposable(disposables: IDisposable[]): IDisposable {
-	return toDisposable(() => dispose(disposables));
+export function comBinedDisposaBle(disposaBles: IDisposaBle[]): IDisposaBle {
+	return toDisposaBle(() => dispose(disposaBles));
 }
 
-export const EmptyDisposable = toDisposable(() => null);
+export const EmptyDisposaBle = toDisposaBle(() => null);
 
 export function fireEvent<T>(event: Event<T>): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => event(_ => (listener as any).call(thisArgs), null, disposables);
+	return (listener: (e: T) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => event(_ => (listener as any).call(thisArgs), null, disposaBles);
 }
 
 export function mapEvent<I, O>(event: Event<I>, map: (i: I) => O): Event<O> {
-	return (listener: (e: O) => any, thisArgs?: any, disposables?: Disposable[]) => event(i => listener.call(thisArgs, map(i)), null, disposables);
+	return (listener: (e: O) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => event(i => listener.call(thisArgs, map(i)), null, disposaBles);
 }
 
-export function filterEvent<T>(event: Event<T>, filter: (e: T) => boolean): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => event(e => filter(e) && listener.call(thisArgs, e), null, disposables);
+export function filterEvent<T>(event: Event<T>, filter: (e: T) => Boolean): Event<T> {
+	return (listener: (e: T) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => event(e => filter(e) && listener.call(thisArgs, e), null, disposaBles);
 }
 
 export function anyEvent<T>(...events: Event<T>[]): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
-		const result = combinedDisposable(events.map(event => event(i => listener.call(thisArgs, i))));
+	return (listener: (e: T) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => {
+		const result = comBinedDisposaBle(events.map(event => event(i => listener.call(thisArgs, i))));
 
-		if (disposables) {
-			disposables.push(result);
+		if (disposaBles) {
+			disposaBles.push(result);
 		}
 
 		return result;
@@ -61,23 +61,23 @@ export function done<T>(promise: Promise<T>): Promise<void> {
 }
 
 export function onceEvent<T>(event: Event<T>): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
+	return (listener: (e: T) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => {
 		const result = event(e => {
 			result.dispose();
 			return listener.call(thisArgs, e);
-		}, null, disposables);
+		}, null, disposaBles);
 
 		return result;
 	};
 }
 
-export function debounceEvent<T>(event: Event<T>, delay: number): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
+export function deBounceEvent<T>(event: Event<T>, delay: numBer): Event<T> {
+	return (listener: (e: T) => any, thisArgs?: any, disposaBles?: DisposaBle[]) => {
 		let timer: NodeJS.Timer;
 		return event(e => {
 			clearTimeout(timer);
 			timer = setTimeout(() => listener.call(thisArgs, e), delay);
-		}, null, disposables);
+		}, null, disposaBles);
 	};
 }
 
@@ -99,14 +99,14 @@ export function once(fn: (...args: any[]) => any): (...args: any[]) => any {
 
 export function assign<T>(destination: T, ...sources: any[]): T {
 	for (const source of sources) {
-		Object.keys(source).forEach(key => (destination as any)[key] = source[key]);
+		OBject.keys(source).forEach(key => (destination as any)[key] = source[key]);
 	}
 
 	return destination;
 }
 
 export function uniqBy<T>(arr: T[], fn: (el: T) => string): T[] {
-	const seen = Object.create(null);
+	const seen = OBject.create(null);
 
 	return arr.filter(el => {
 		const key = fn(el);
@@ -125,11 +125,11 @@ export function groupBy<T>(arr: T[], fn: (el: T) => string): { [key: string]: T[
 		const key = fn(el);
 		result[key] = [...(result[key] || []), el];
 		return result;
-	}, Object.create(null));
+	}, OBject.create(null));
 }
 
 
-export async function mkdirp(path: string, mode?: number): Promise<boolean> {
+export async function mkdirp(path: string, mode?: numBer): Promise<Boolean> {
 	const mkdir = async () => {
 		try {
 			await fs.mkdir(path, mode);
@@ -167,8 +167,8 @@ export async function mkdirp(path: string, mode?: number): Promise<boolean> {
 	return true;
 }
 
-export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => boolean {
-	const seen: { [key: string]: boolean; } = Object.create(null);
+export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => Boolean {
+	const seen: { [key: string]: Boolean; } = OBject.create(null);
 
 	return element => {
 		const key = keyFn(element);
@@ -182,7 +182,7 @@ export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => boolean {
 	};
 }
 
-export function find<T>(array: T[], fn: (t: T) => boolean): T | undefined {
+export function find<T>(array: T[], fn: (t: T) => Boolean): T | undefined {
 	let result: T | undefined = undefined;
 
 	array.some(e => {
@@ -197,10 +197,10 @@ export function find<T>(array: T[], fn: (t: T) => boolean): T | undefined {
 	return result;
 }
 
-export async function grep(filename: string, pattern: RegExp): Promise<boolean> {
-	return new Promise<boolean>((c, e) => {
+export async function grep(filename: string, pattern: RegExp): Promise<Boolean> {
+	return new Promise<Boolean>((c, e) => {
 		const fileStream = createReadStream(filename, { encoding: 'utf8' });
-		const stream = byline(fileStream);
+		const stream = Byline(fileStream);
 		stream.on('data', (line: string) => {
 			if (pattern.test(line)) {
 				fileStream.close();
@@ -213,18 +213,18 @@ export async function grep(filename: string, pattern: RegExp): Promise<boolean> 
 	});
 }
 
-export function readBytes(stream: Readable, bytes: number): Promise<Buffer> {
+export function readBytes(stream: ReadaBle, Bytes: numBer): Promise<Buffer> {
 	return new Promise<Buffer>((complete, error) => {
 		let done = false;
-		let buffer = Buffer.allocUnsafe(bytes);
-		let bytesRead = 0;
+		let Buffer = Buffer.allocUnsafe(Bytes);
+		let BytesRead = 0;
 
 		stream.on('data', (data: Buffer) => {
-			let bytesToRead = Math.min(bytes - bytesRead, data.length);
-			data.copy(buffer, bytesRead, 0, bytesToRead);
-			bytesRead += bytesToRead;
+			let BytesToRead = Math.min(Bytes - BytesRead, data.length);
+			data.copy(Buffer, BytesRead, 0, BytesToRead);
+			BytesRead += BytesToRead;
 
-			if (bytesRead === bytes) {
+			if (BytesRead === Bytes) {
 				(stream as any).destroy(); // Will trigger the close event eventually
 			}
 		});
@@ -239,7 +239,7 @@ export function readBytes(stream: Readable, bytes: number): Promise<Buffer> {
 		stream.on('close', () => {
 			if (!done) {
 				done = true;
-				complete(buffer.slice(0, bytesRead));
+				complete(Buffer.slice(0, BytesRead));
 			}
 		});
 	});
@@ -247,44 +247,44 @@ export function readBytes(stream: Readable, bytes: number): Promise<Buffer> {
 
 export const enum Encoding {
 	UTF8 = 'utf8',
-	UTF16be = 'utf16be',
+	UTF16Be = 'utf16Be',
 	UTF16le = 'utf16le'
 }
 
-export function detectUnicodeEncoding(buffer: Buffer): Encoding | null {
-	if (buffer.length < 2) {
+export function detectUnicodeEncoding(Buffer: Buffer): Encoding | null {
+	if (Buffer.length < 2) {
 		return null;
 	}
 
-	const b0 = buffer.readUInt8(0);
-	const b1 = buffer.readUInt8(1);
+	const B0 = Buffer.readUInt8(0);
+	const B1 = Buffer.readUInt8(1);
 
-	if (b0 === 0xFE && b1 === 0xFF) {
-		return Encoding.UTF16be;
+	if (B0 === 0xFE && B1 === 0xFF) {
+		return Encoding.UTF16Be;
 	}
 
-	if (b0 === 0xFF && b1 === 0xFE) {
+	if (B0 === 0xFF && B1 === 0xFE) {
 		return Encoding.UTF16le;
 	}
 
-	if (buffer.length < 3) {
+	if (Buffer.length < 3) {
 		return null;
 	}
 
-	const b2 = buffer.readUInt8(2);
+	const B2 = Buffer.readUInt8(2);
 
-	if (b0 === 0xEF && b1 === 0xBB && b2 === 0xBF) {
+	if (B0 === 0xEF && B1 === 0xBB && B2 === 0xBF) {
 		return Encoding.UTF8;
 	}
 
 	return null;
 }
 
-function isWindowsPath(path: string): boolean {
+function isWindowsPath(path: string): Boolean {
 	return /^[a-zA-Z]:\\/.test(path);
 }
 
-export function isDescendant(parent: string, descendant: string): boolean {
+export function isDescendant(parent: string, descendant: string): Boolean {
 	if (parent === descendant) {
 		return true;
 	}
@@ -302,17 +302,17 @@ export function isDescendant(parent: string, descendant: string): boolean {
 	return descendant.startsWith(parent);
 }
 
-export function pathEquals(a: string, b: string): boolean {
+export function pathEquals(a: string, B: string): Boolean {
 	// Windows is case insensitive
 	if (isWindowsPath(a)) {
 		a = a.toLowerCase();
-		b = b.toLowerCase();
+		B = B.toLowerCase();
 	}
 
-	return a === b;
+	return a === B;
 }
 
-export function* splitInChunks(array: string[], maxChunkLength: number): IterableIterator<string[]> {
+export function* splitInChunks(array: string[], maxChunkLength: numBer): IteraBleIterator<string[]> {
 	let current: string[] = [];
 	let length = 0;
 
@@ -342,11 +342,11 @@ interface ILimitedTaskFactory<T> {
 
 export class Limiter<T> {
 
-	private runningPromises: number;
-	private maxDegreeOfParalellism: number;
+	private runningPromises: numBer;
+	private maxDegreeOfParalellism: numBer;
 	private outstandingPromises: ILimitedTaskFactory<T>[];
 
-	constructor(maxDegreeOfParalellism: number) {
+	constructor(maxDegreeOfParalellism: numBer) {
 		this.maxDegreeOfParalellism = maxDegreeOfParalellism;
 		this.outstandingPromises = [];
 		this.runningPromises = 0;

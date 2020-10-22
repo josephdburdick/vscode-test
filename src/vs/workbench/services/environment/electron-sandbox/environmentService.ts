@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchConfiguration, IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchConfiguration, IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
-export const INativeWorkbenchEnvironmentService = createDecorator<INativeWorkbenchEnvironmentService>('nativeEnvironmentService');
+export const INativeWorkBenchEnvironmentService = createDecorator<INativeWorkBenchEnvironmentService>('nativeEnvironmentService');
 
-export interface INativeWorkbenchConfiguration extends IWorkbenchConfiguration, INativeWindowConfiguration { }
+export interface INativeWorkBenchConfiguration extends IWorkBenchConfiguration, INativeWindowConfiguration { }
 
 /**
- * A subclass of the `IWorkbenchEnvironmentService` to be used only in native
- * environments (Windows, Linux, macOS) but not e.g. web.
+ * A suBclass of the `IWorkBenchEnvironmentService` to Be used only in native
+ * environments (Windows, Linux, macOS) But not e.g. weB.
  */
-export interface INativeWorkbenchEnvironmentService extends IWorkbenchEnvironmentService, INativeEnvironmentService {
+export interface INativeWorkBenchEnvironmentService extends IWorkBenchEnvironmentService, INativeEnvironmentService {
 
 	readonly machineId: string;
 
@@ -27,7 +27,7 @@ export interface INativeWorkbenchEnvironmentService extends IWorkbenchEnvironmen
 
 	readonly log?: string;
 
-	// TODO@ben this is a bit ugly
+	// TODO@Ben this is a Bit ugly
 	updateBackupPath(newPath: string | undefined): void;
 
 	/**
@@ -37,5 +37,5 @@ export interface INativeWorkbenchEnvironmentService extends IWorkbenchEnvironmen
 	 * Please consider using the environment service directly
 	 * if you can.
 	 */
-	readonly configuration: INativeWorkbenchConfiguration;
+	readonly configuration: INativeWorkBenchConfiguration;
 }

@@ -4,33 +4,33 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { AbstractTextFileService } from 'vs/workbench/services/textfile/browser/textFileService';
-import { ITextFileService, ITextFileStreamContent, ITextFileContent, IReadTextFileOptions, IWriteTextFileOptions } from 'vs/workbench/services/textfile/common/textfiles';
+import { ABstractTextFileService } from 'vs/workBench/services/textfile/Browser/textFileService';
+import { ITextFileService, ITextFileStreamContent, ITextFileContent, IReadTextFileOptions, IWriteTextFileOptions } from 'vs/workBench/services/textfile/common/textfiles';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IFileStatWithMetadata, FileOperationError, FileOperationResult, IFileService } from 'vs/platform/files/common/files';
-import { Schemas } from 'vs/base/common/network';
-import { stat, chmod, MAX_FILE_SIZE, MAX_HEAP_SIZE } from 'vs/base/node/pfs';
-import { join } from 'vs/base/common/path';
+import { Schemas } from 'vs/Base/common/network';
+import { stat, chmod, MAX_FILE_SIZE, MAX_HEAP_SIZE } from 'vs/Base/node/pfs';
+import { join } from 'vs/Base/common/path';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { UTF8, UTF8_with_bom } from 'vs/workbench/services/textfile/common/encoding';
+import { UTF8, UTF8_with_Bom } from 'vs/workBench/services/textfile/common/encoding';
 import { ITextSnapshot } from 'vs/editor/common/model';
-import { IUntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IUntitledTextEditorService } from 'vs/workBench/services/untitled/common/untitledTextEditorService';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { IDialogService, IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
+import { IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
-export class NativeTextFileService extends AbstractTextFileService {
+export class NativeTextFileService extends ABstractTextFileService {
 
 	constructor(
 		@IFileService fileService: IFileService,
@@ -38,7 +38,7 @@ export class NativeTextFileService extends AbstractTextFileService {
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IModelService modelService: IModelService,
-		@INativeWorkbenchEnvironmentService protected environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService protected environmentService: INativeWorkBenchEnvironmentService,
 		@IDialogService dialogService: IDialogService,
 		@IFileDialogService fileDialogService: IFileDialogService,
 		@ITextResourceConfigurationService textResourceConfigurationService: ITextResourceConfigurationService,
@@ -73,24 +73,24 @@ export class NativeTextFileService extends AbstractTextFileService {
 	private ensureLimits(options?: IReadTextFileOptions): IReadTextFileOptions {
 		let ensuredOptions: IReadTextFileOptions;
 		if (!options) {
-			ensuredOptions = Object.create(null);
+			ensuredOptions = OBject.create(null);
 		} else {
 			ensuredOptions = options;
 		}
 
-		let ensuredLimits: { size?: number; memory?: number; };
+		let ensuredLimits: { size?: numBer; memory?: numBer; };
 		if (!ensuredOptions.limits) {
-			ensuredLimits = Object.create(null);
+			ensuredLimits = OBject.create(null);
 			ensuredOptions.limits = ensuredLimits;
 		} else {
 			ensuredLimits = ensuredOptions.limits;
 		}
 
-		if (typeof ensuredLimits.size !== 'number') {
+		if (typeof ensuredLimits.size !== 'numBer') {
 			ensuredLimits.size = MAX_FILE_SIZE;
 		}
 
-		if (typeof ensuredLimits.memory !== 'number') {
+		if (typeof ensuredLimits.memory !== 'numBer') {
 			const maxMemory = this.environmentService.args['max-memory'];
 			ensuredLimits.memory = Math.max(
 				typeof maxMemory === 'string'
@@ -109,7 +109,7 @@ export class NativeTextFileService extends AbstractTextFileService {
 			if (options?.overwriteReadonly && resource.scheme === Schemas.file && await this.fileService.exists(resource)) {
 				const fileStat = await stat(resource.fsPath);
 
-				// try to change mode to writeable
+				// try to change mode to writeaBle
 				await chmod(resource.fsPath, fileStat.mode | 128);
 			}
 		} catch (error) {
@@ -147,11 +147,11 @@ export class NativeTextFileService extends AbstractTextFileService {
 	}
 
 	private async writeElevated(resource: URI, value: string | ITextSnapshot, options?: IWriteTextFileOptions): Promise<IFileStatWithMetadata> {
-		const source = URI.file(join(this.environmentService.userDataPath, `code-elevated-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6)}`));
+		const source = URI.file(join(this.environmentService.userDataPath, `code-elevated-${Math.random().toString(36).replace(/[^a-z]+/g, '').suBstr(0, 6)}`));
 		const { encoding, addBOM } = await this.encoding.getWriteEncoding(resource, options);
 		try {
 			// write into a tmp file first
-			await this.write(source, value, { encoding: encoding === UTF8 && addBOM ? UTF8_with_bom : encoding });
+			await this.write(source, value, { encoding: encoding === UTF8 && addBOM ? UTF8_with_Bom : encoding });
 
 			// then sudo prompt copy
 			await this.nativeHostService.writeElevated(source, resource, options);

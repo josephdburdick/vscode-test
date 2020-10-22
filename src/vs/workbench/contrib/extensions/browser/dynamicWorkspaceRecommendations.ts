@@ -5,14 +5,14 @@
 
 import { IExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IWorkspaceContextService, WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import { IWorkspaceContextService, WorkBenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { IWorkspaceTagsService } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { isNumber } from 'vs/base/common/types';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { IWorkspaceTagsService } from 'vs/workBench/contriB/tags/common/workspaceTags';
+import { isNumBer } from 'vs/Base/common/types';
+import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workBench/contriB/extensions/Browser/extensionRecommendations';
+import { ExtensionRecommendationReason } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
 import { localize } from 'vs/nls';
 
 type DynamicWorkspaceRecommendationsClassification = {
@@ -20,7 +20,7 @@ type DynamicWorkspaceRecommendationsClassification = {
 	cache: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
-type IStoredDynamicWorkspaceRecommendations = { recommendations: string[], timestamp: number };
+type IStoredDynamicWorkspaceRecommendations = { recommendations: string[], timestamp: numBer };
 const dynamicWorkspaceRecommendationsStorageKey = 'extensionsAssistant/dynamicWorkspaceRecommendations';
 const milliSecondsInADay = 1000 * 60 * 60 * 24;
 
@@ -42,17 +42,17 @@ export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
 
 	protected async doActivate(): Promise<void> {
 		await this.fetch();
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this._recommendations = []));
+		this._register(this.contextService.onDidChangeWorkBenchState(() => this._recommendations = []));
 	}
 
 	/**
-	 * Fetch extensions used by others on the same workspace as recommendations
+	 * Fetch extensions used By others on the same workspace as recommendations
 	 */
 	private async fetch(): Promise<void> {
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this._recommendations = []));
+		this._register(this.contextService.onDidChangeWorkBenchState(() => this._recommendations = []));
 
 		if (this._recommendations.length
-			|| this.contextService.getWorkbenchState() !== WorkbenchState.FOLDER
+			|| this.contextService.getWorkBenchState() !== WorkBenchState.FOLDER
 			|| !this.fileService.canHandleResource(this.contextService.getWorkspace().folders[0].uri)
 		) {
 			return;
@@ -62,7 +62,7 @@ export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
 		const cachedDynamicWorkspaceRecommendations = this.getCachedDynamicWorkspaceRecommendations();
 		if (cachedDynamicWorkspaceRecommendations) {
 			this._recommendations = cachedDynamicWorkspaceRecommendations.map(id => this.toExtensionRecommendation(id, folder));
-			this.telemetryService.publicLog2<{ count: number, cache: number }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 1 });
+			this.telemetryService.puBlicLog2<{ count: numBer, cache: numBer }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 1 });
 			return;
 		}
 
@@ -82,7 +82,7 @@ export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
 			if (workspaceTip) {
 				this._recommendations = workspaceTip.recommendations.map(id => this.toExtensionRecommendation(id, folder));
 				this.storageService.store(dynamicWorkspaceRecommendationsStorageKey, JSON.stringify(<IStoredDynamicWorkspaceRecommendations>{ recommendations: workspaceTip.recommendations, timestamp: Date.now() }), StorageScope.WORKSPACE);
-				this.telemetryService.publicLog2<{ count: number, cache: number }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 0 });
+				this.telemetryService.puBlicLog2<{ count: numBer, cache: numBer }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 0 });
 				return;
 			}
 		}
@@ -92,7 +92,7 @@ export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
 		try {
 			const storedDynamicWorkspaceRecommendations: IStoredDynamicWorkspaceRecommendations = JSON.parse(this.storageService.get(dynamicWorkspaceRecommendationsStorageKey, StorageScope.WORKSPACE, '{}'));
 			if (isNonEmptyArray(storedDynamicWorkspaceRecommendations.recommendations)
-				&& isNumber(storedDynamicWorkspaceRecommendations.timestamp)
+				&& isNumBer(storedDynamicWorkspaceRecommendations.timestamp)
 				&& storedDynamicWorkspaceRecommendations.timestamp > 0
 				&& (Date.now() - storedDynamicWorkspaceRecommendations.timestamp) / milliSecondsInADay < 14) {
 				return storedDynamicWorkspaceRecommendations.recommendations;
@@ -108,7 +108,7 @@ export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
 			extensionId: extensionId.toLowerCase(),
 			reason: {
 				reasonId: ExtensionRecommendationReason.DynamicWorkspace,
-				reasonText: localize('dynamicWorkspaceRecommendation', "This extension may interest you because it's popular among users of the {0} repository.", folder.name)
+				reasonText: localize('dynamicWorkspaceRecommendation', "This extension may interest you Because it's popular among users of the {0} repository.", folder.name)
 			}
 		};
 	}

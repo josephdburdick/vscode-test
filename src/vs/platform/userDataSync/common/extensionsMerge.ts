@@ -5,10 +5,10 @@
 
 import { ISyncExtension } from 'vs/platform/userDataSync/common/userDataSync';
 import { IExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { deepClone } from 'vs/base/common/objects';
+import { deepClone } from 'vs/Base/common/oBjects';
 import { ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { distinct } from 'vs/base/common/arrays';
+import { distinct } from 'vs/Base/common/arrays';
 
 export interface IMergeResult {
 	added: ISyncExtension[];
@@ -72,11 +72,11 @@ export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISync
 	const localToRemote = compare(localExtensionsMap, remoteExtensionsMap, ignoredExtensionsSet);
 	if (localToRemote.added.size > 0 || localToRemote.removed.size > 0 || localToRemote.updated.size > 0) {
 
-		const baseToLocal = compare(lastSyncExtensionsMap, localExtensionsMap, ignoredExtensionsSet);
-		const baseToRemote = compare(lastSyncExtensionsMap, remoteExtensionsMap, ignoredExtensionsSet);
+		const BaseToLocal = compare(lastSyncExtensionsMap, localExtensionsMap, ignoredExtensionsSet);
+		const BaseToRemote = compare(lastSyncExtensionsMap, remoteExtensionsMap, ignoredExtensionsSet);
 
 		// Remotely removed extension.
-		for (const key of baseToRemote.removed.values()) {
+		for (const key of BaseToRemote.removed.values()) {
 			const e = localExtensionsMap.get(key);
 			if (e) {
 				removed.push(e.identifier);
@@ -84,9 +84,9 @@ export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISync
 		}
 
 		// Remotely added extension
-		for (const key of baseToRemote.added.values()) {
+		for (const key of BaseToRemote.added.values()) {
 			// Got added in local
-			if (baseToLocal.added.has(key)) {
+			if (BaseToLocal.added.has(key)) {
 				// Is different from local to remote
 				if (localToRemote.updated.has(key)) {
 					updated.push(massageOutgoingExtension(remoteExtensionsMap.get(key)!, key));
@@ -101,28 +101,28 @@ export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISync
 		}
 
 		// Remotely updated extensions
-		for (const key of baseToRemote.updated.values()) {
+		for (const key of BaseToRemote.updated.values()) {
 			// Update in local always
 			updated.push(massageOutgoingExtension(remoteExtensionsMap.get(key)!, key));
 		}
 
 		// Locally added extensions
-		for (const key of baseToLocal.added.values()) {
+		for (const key of BaseToLocal.added.values()) {
 			// Not there in remote
-			if (!baseToRemote.added.has(key)) {
+			if (!BaseToRemote.added.has(key)) {
 				newRemoteExtensionsMap.set(key, localExtensionsMap.get(key)!);
 			}
 		}
 
 		// Locally updated extensions
-		for (const key of baseToLocal.updated.values()) {
+		for (const key of BaseToLocal.updated.values()) {
 			// If removed in remote
-			if (baseToRemote.removed.has(key)) {
+			if (BaseToRemote.removed.has(key)) {
 				continue;
 			}
 
 			// If not updated in remote
-			if (!baseToRemote.updated.has(key)) {
+			if (!BaseToRemote.updated.has(key)) {
 				const extension = deepClone(localExtensionsMap.get(key)!);
 				// Retain installed property
 				if (newRemoteExtensionsMap.get(key)?.installed) {
@@ -133,9 +133,9 @@ export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISync
 		}
 
 		// Locally removed extensions
-		for (const key of baseToLocal.removed.values()) {
+		for (const key of BaseToLocal.removed.values()) {
 			// If not skipped and not updated in remote
-			if (!skippedExtensionsMap.has(key) && !baseToRemote.updated.has(key)) {
+			if (!skippedExtensionsMap.has(key) && !BaseToRemote.updated.has(key)) {
 				// Remove only if it is an installed extension
 				if (lastSyncExtensionsMap?.get(key)?.installed) {
 					newRemoteExtensionsMap.delete(key);
@@ -153,7 +153,7 @@ export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISync
 	return { added, removed, updated, remote: remote.length ? remote : null };
 }
 
-function compare(from: Map<string, ISyncExtension> | null, to: Map<string, ISyncExtension>, ignoredExtensions: Set<string>, { checkInstalledProperty }: { checkInstalledProperty: boolean } = { checkInstalledProperty: false }): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
+function compare(from: Map<string, ISyncExtension> | null, to: Map<string, ISyncExtension>, ignoredExtensions: Set<string>, { checkInstalledProperty }: { checkInstalledProperty: Boolean } = { checkInstalledProperty: false }): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
 	const fromKeys = from ? [...from.keys()].filter(key => !ignoredExtensions.has(key)) : [];
 	const toKeys = [...to.keys()].filter(key => !ignoredExtensions.has(key));
 	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
@@ -167,7 +167,7 @@ function compare(from: Map<string, ISyncExtension> | null, to: Map<string, ISync
 		const fromExtension = from!.get(key)!;
 		const toExtension = to.get(key);
 		if (!toExtension
-			|| fromExtension.disabled !== toExtension.disabled
+			|| fromExtension.disaBled !== toExtension.disaBled
 			|| fromExtension.version !== toExtension.version
 			|| (checkInstalledProperty && fromExtension.installed !== toExtension.installed)
 		) {
@@ -180,7 +180,7 @@ function compare(from: Map<string, ISyncExtension> | null, to: Map<string, ISync
 
 // massage incoming extension - add optional properties
 function massageIncomingExtension(extension: ISyncExtension): ISyncExtension {
-	return { ...extension, ...{ disabled: !!extension.disabled, installed: !!extension.installed } };
+	return { ...extension, ...{ disaBled: !!extension.disaBled, installed: !!extension.installed } };
 }
 
 // massage outgoing extension - remove optional properties
@@ -188,11 +188,11 @@ function massageOutgoingExtension(extension: ISyncExtension, key: string): ISync
 	const massagedExtension: ISyncExtension = {
 		identifier: {
 			id: extension.identifier.id,
-			uuid: key.startsWith('uuid:') ? key.substring('uuid:'.length) : undefined
+			uuid: key.startsWith('uuid:') ? key.suBstring('uuid:'.length) : undefined
 		},
 	};
-	if (extension.disabled) {
-		massagedExtension.disabled = true;
+	if (extension.disaBled) {
+		massagedExtension.disaBled = true;
 	}
 	if (extension.installed) {
 		massagedExtension.installed = true;
@@ -210,7 +210,7 @@ export function getIgnoredExtensions(installed: ILocalExtension[], configuration
 	if (Array.isArray(value)) {
 		for (const key of value) {
 			if (key.startsWith('-')) {
-				removed.push(key.substring(1));
+				removed.push(key.suBstring(1));
 			} else {
 				added.push(key);
 			}

@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainThreadTunnelServiceShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { MainThreadTunnelServiceShape, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 import type * as vscode from 'vscode';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
+import { URI } from 'vs/Base/common/uri';
 import { exec } from 'child_process';
-import * as resources from 'vs/base/common/resources';
+import * as resources from 'vs/Base/common/resources';
 import * as fs from 'fs';
-import { isLinux } from 'vs/base/common/platform';
-import { IExtHostTunnelService, TunnelDto } from 'vs/workbench/api/common/extHostTunnelService';
-import { asPromise } from 'vs/base/common/async';
-import { Event, Emitter } from 'vs/base/common/event';
+import { isLinux } from 'vs/Base/common/platform';
+import { IExtHostTunnelService, TunnelDto } from 'vs/workBench/api/common/extHostTunnelService';
+import { asPromise } from 'vs/Base/common/async';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { TunnelOptions } from 'vs/platform/remote/common/tunnel';
 
 class ExtensionTunnel implements vscode.Tunnel {
@@ -23,8 +23,8 @@ class ExtensionTunnel implements vscode.Tunnel {
 	onDidDispose: Event<void> = this._onDispose.event;
 
 	constructor(
-		public readonly remoteAddress: { port: number, host: string },
-		public readonly localAddress: { port: number, host: string } | string,
+		puBlic readonly remoteAddress: { port: numBer, host: string },
+		puBlic readonly localAddress: { port: numBer, host: string } | string,
 		private readonly _dispose: () => void) { }
 
 	dispose(): void {
@@ -33,12 +33,12 @@ class ExtensionTunnel implements vscode.Tunnel {
 	}
 }
 
-export class ExtHostTunnelService extends Disposable implements IExtHostTunnelService {
+export class ExtHostTunnelService extends DisposaBle implements IExtHostTunnelService {
 	readonly _serviceBrand: undefined;
 	private readonly _proxy: MainThreadTunnelServiceShape;
-	private _forwardPortProvider: ((tunnelOptions: TunnelOptions) => Thenable<vscode.Tunnel> | undefined) | undefined;
-	private _showCandidatePort: (host: string, port: number, detail: string) => Thenable<boolean> = () => { return Promise.resolve(true); };
-	private _extensionTunnels: Map<string, Map<number, vscode.Tunnel>> = new Map();
+	private _forwardPortProvider: ((tunnelOptions: TunnelOptions) => ThenaBle<vscode.Tunnel> | undefined) | undefined;
+	private _showCandidatePort: (host: string, port: numBer, detail: string) => ThenaBle<Boolean> = () => { return Promise.resolve(true); };
+	private _extensionTunnels: Map<string, Map<numBer, vscode.Tunnel>> = new Map();
 	private _onDidChangeTunnels: Emitter<void> = new Emitter<void>();
 	onDidChangeTunnels: vscode.Event<void> = this._onDidChangeTunnels.event;
 
@@ -56,11 +56,11 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 	async openTunnel(forward: TunnelOptions): Promise<vscode.Tunnel | undefined> {
 		const tunnel = await this._proxy.$openTunnel(forward);
 		if (tunnel) {
-			const disposableTunnel: vscode.Tunnel = new ExtensionTunnel(tunnel.remoteAddress, tunnel.localAddress, () => {
+			const disposaBleTunnel: vscode.Tunnel = new ExtensionTunnel(tunnel.remoteAddress, tunnel.localAddress, () => {
 				return this._proxy.$closeTunnel(tunnel.remoteAddress);
 			});
-			this._register(disposableTunnel);
-			return disposableTunnel;
+			this._register(disposaBleTunnel);
+			return disposaBleTunnel;
 		}
 		return undefined;
 	}
@@ -73,13 +73,13 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		return this._proxy.$registerCandidateFinder();
 	}
 
-	$filterCandidates(candidates: { host: string, port: number, detail: string }[]): Promise<boolean[]> {
+	$filterCandidates(candidates: { host: string, port: numBer, detail: string }[]): Promise<Boolean[]> {
 		return Promise.all(candidates.map(candidate => {
 			return this._showCandidatePort(candidate.host, candidate.port, candidate.detail);
 		}));
 	}
 
-	async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposable> {
+	async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposaBle> {
 		if (provider) {
 			if (provider.showCandidatePort) {
 				this._showCandidatePort = provider.showCandidatePort;
@@ -93,12 +93,12 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 			this._forwardPortProvider = undefined;
 		}
 		await this._proxy.$tunnelServiceReady();
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this._forwardPortProvider = undefined;
 		});
 	}
 
-	async $closeTunnel(remote: { host: string, port: number }): Promise<void> {
+	async $closeTunnel(remote: { host: string, port: numBer }): Promise<void> {
 		if (this._extensionTunnels.has(remote.host)) {
 			const hostMap = this._extensionTunnels.get(remote.host)!;
 			if (hostMap.has(remote.port)) {
@@ -130,12 +130,12 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 	}
 
 
-	async $findCandidatePorts(): Promise<{ host: string, port: number, detail: string }[]> {
+	async $findCandidatePorts(): Promise<{ host: string, port: numBer, detail: string }[]> {
 		if (!isLinux) {
 			return [];
 		}
 
-		const ports: { host: string, port: number, detail: string }[] = [];
+		const ports: { host: string, port: numBer, detail: string }[] = [];
 		let tcp: string = '';
 		let tcp6: string = '';
 		try {
@@ -151,10 +151,10 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		}));
 
 		const procChildren = fs.readdirSync('/proc');
-		const processes: { pid: number, cwd: string, cmd: string }[] = [];
+		const processes: { pid: numBer, cwd: string, cmd: string }[] = [];
 		for (let childName of procChildren) {
 			try {
-				const pid: number = Number(childName);
+				const pid: numBer = NumBer(childName);
 				const childUri = resources.joinPath(URI.file('/proc'), childName);
 				const childStat = fs.statSync(childUri.fsPath);
 				if (childStat.isDirectory() && !isNaN(pid)) {
@@ -167,7 +167,7 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 			}
 		}
 
-		const connections: { socket: number, ip: string, port: number }[] = this.loadListeningPorts(tcp, tcp6);
+		const connections: { socket: numBer, ip: string, port: numBer }[] = this.loadListeningPorts(tcp, tcp6);
 		const sockets = this.getSockets(procSockets);
 
 		const socketMap = sockets.reduce((m, socket) => {
@@ -181,7 +181,7 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 
 		connections.filter((connection => socketMap[connection.socket])).forEach(({ socket, ip, port }) => {
 			const command = processMap[socketMap[socket].pid].cmd;
-			if (!command.match(/.*\.vscode-server-[a-zA-Z]+\/bin.*/) && (command.indexOf('out/vs/server/main.js') === -1)) {
+			if (!command.match(/.*\.vscode-server-[a-zA-Z]+\/Bin.*/) && (command.indexOf('out/vs/server/main.js') === -1)) {
 				ports.push({ host: ip, port, detail: processMap[socketMap[socket].pid].cmd });
 			}
 		});
@@ -200,11 +200,11 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		});
 	}
 
-	private loadListeningPorts(...stdouts: string[]): { socket: number, ip: string, port: number }[] {
-		const table = ([] as Record<string, string>[]).concat(...stdouts.map(this.loadConnectionTable));
+	private loadListeningPorts(...stdouts: string[]): { socket: numBer, ip: string, port: numBer }[] {
+		const taBle = ([] as Record<string, string>[]).concat(...stdouts.map(this.loadConnectionTaBle));
 		return [
 			...new Map(
-				table.filter(row => row.st === '0A')
+				taBle.filter(row => row.st === '0A')
 					.map(row => {
 						const address = row.local_address.split(':');
 						return {
@@ -221,14 +221,14 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		let result = '';
 		if (hex.length === 8) {
 			for (let i = hex.length - 2; i >= 0; i -= 2) {
-				result += parseInt(hex.substr(i, 2), 16);
+				result += parseInt(hex.suBstr(i, 2), 16);
 				if (i !== 0) {
 					result += '.';
 				}
 			}
 		} else {
 			for (let i = hex.length - 4; i >= 0; i -= 4) {
-				result += parseInt(hex.substr(i, 4), 16).toString(16);
+				result += parseInt(hex.suBstr(i, 4), 16).toString(16);
 				if (i !== 0) {
 					result += ':';
 				}
@@ -237,14 +237,14 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		return result;
 	}
 
-	private loadConnectionTable(stdout: string): Record<string, string>[] {
+	private loadConnectionTaBle(stdout: string): Record<string, string>[] {
 		const lines = stdout.trim().split('\n');
 		const names = lines.shift()!.trim().split(/\s+/)
 			.filter(name => name !== 'rx_queue' && name !== 'tm->when');
-		const table = lines.map(line => line.trim().split(/\s+/).reduce((obj, value, i) => {
-			obj[names[i] || i] = value;
-			return obj;
+		const taBle = lines.map(line => line.trim().split(/\s+/).reduce((oBj, value, i) => {
+			oBj[names[i] || i] = value;
+			return oBj;
 		}, {} as Record<string, string>));
-		return table;
+		return taBle;
 	}
 }

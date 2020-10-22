@@ -31,7 +31,7 @@ suite('vscode API - env', () => {
 		const knownWorkspaceExtension = extensions.getExtension('vscode.git');
 		const knownUiExtension = extensions.getExtension('vscode.git-ui');
 		if (typeof remoteName === 'undefined') {
-			// not running in remote, so we expect both extensions
+			// not running in remote, so we expect Both extensions
 			assert.ok(knownWorkspaceExtension);
 			assert.ok(knownUiExtension);
 			assert.equal(ExtensionKind.UI, knownUiExtension!.extensionKind);
@@ -53,7 +53,7 @@ suite('vscode API - env', () => {
 
 		const kind = env.uiKind;
 		if (result.scheme === 'http' || result.scheme === 'https') {
-			assert.equal(kind, UIKind.Web);
+			assert.equal(kind, UIKind.WeB);
 		} else {
 			assert.equal(kind, UIKind.Desktop);
 		}

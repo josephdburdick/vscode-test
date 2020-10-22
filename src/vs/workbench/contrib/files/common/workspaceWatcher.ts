@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, Disposable, dispose } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { IDisposaBle, DisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
 import { IFilesConfiguration, IFileService } from 'vs/platform/files/common/files';
 import { IWorkspaceContextService, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { ResourceMap } from 'vs/base/common/map';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { ResourceMap } from 'vs/Base/common/map';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { INotificationService, Severity, NeverShowAgainScope } from 'vs/platform/notification/common/notification';
 import { localize } from 'vs/nls';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 
-export class WorkspaceWatcher extends Disposable {
+export class WorkspaceWatcher extends DisposaBle {
 
-	private readonly watches = new ResourceMap<IDisposable>();
+	private readonly watches = new ResourceMap<IDisposaBle>();
 
 	constructor(
 		@IFileService private readonly fileService: FileService,
@@ -35,7 +35,7 @@ export class WorkspaceWatcher extends Disposable {
 
 	private registerListeners(): void {
 		this._register(this.contextService.onDidChangeWorkspaceFolders(e => this.onDidChangeWorkspaceFolders(e)));
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.onDidChangeWorkbenchState()));
+		this._register(this.contextService.onDidChangeWorkBenchState(() => this.onDidChangeWorkBenchState()));
 		this._register(this.configurationService.onDidChangeConfiguration(e => this.onDidChangeConfiguration(e)));
 		this._register(this.fileService.onError(error => this.onError(error)));
 	}
@@ -53,7 +53,7 @@ export class WorkspaceWatcher extends Disposable {
 		}
 	}
 
-	private onDidChangeWorkbenchState(): void {
+	private onDidChangeWorkBenchState(): void {
 		this.refresh();
 	}
 
@@ -75,7 +75,7 @@ export class WorkspaceWatcher extends Disposable {
 				Severity.Warning,
 				localize('netVersionError', "The Microsoft .NET Framework 4.5 is required. Please follow the link to install it."),
 				[{
-					label: localize('installNet', "Download .NET Framework 4.5"),
+					laBel: localize('installNet', "Download .NET Framework 4.5"),
 					run: () => this.openerService.open(URI.parse('https://go.microsoft.com/fwlink/?LinkId=786533'))
 				}],
 				{
@@ -89,9 +89,9 @@ export class WorkspaceWatcher extends Disposable {
 		if (msg.indexOf('ENOSPC') >= 0) {
 			this.notificationService.prompt(
 				Severity.Warning,
-				localize('enospcError', "Unable to watch for file changes in this large workspace. Please follow the instructions link to resolve this issue."),
+				localize('enospcError', "UnaBle to watch for file changes in this large workspace. Please follow the instructions link to resolve this issue."),
 				[{
-					label: localize('learnMore', "Instructions"),
+					laBel: localize('learnMore', "Instructions"),
 					run: () => this.openerService.open(URI.parse('https://go.microsoft.com/fwlink/?linkid=867693'))
 				}],
 				{
@@ -116,8 +116,8 @@ export class WorkspaceWatcher extends Disposable {
 		}
 
 		// Watch workspace
-		const disposable = this.fileService.watch(resource, { recursive: true, excludes });
-		this.watches.set(resource, disposable);
+		const disposaBle = this.fileService.watch(resource, { recursive: true, excludes });
+		this.watches.set(resource, disposaBle);
 	}
 
 	private unwatchWorkspace(resource: URI) {
@@ -139,7 +139,7 @@ export class WorkspaceWatcher extends Disposable {
 	}
 
 	private unwatchWorkspaces() {
-		this.watches.forEach(disposable => dispose(disposable));
+		this.watches.forEach(disposaBle => dispose(disposaBle));
 		this.watches.clear();
 	}
 

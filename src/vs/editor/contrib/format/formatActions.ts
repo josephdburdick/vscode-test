@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { KeyChord, KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, registerEditorAction, registerEditorContribution, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { KeyChord, KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, registerEditorAction, registerEditorContriBution, ServicesAccessor } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { CharacterSet } from 'vs/editor/common/core/characterClassifier';
 import { Range } from 'vs/editor/common/core/range';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { DocumentRangeFormattingEditProviderRegistry, OnTypeFormattingEditProviderRegistry } from 'vs/editor/common/modes';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { getOnTypeFormattingEdits, alertFormattingEdits, formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
-import { FormattingEdit } from 'vs/editor/contrib/format/formattingEdit';
+import { getOnTypeFormattingEdits, alertFormattingEdits, formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contriB/format/format';
+import { FormattingEdit } from 'vs/editor/contriB/format/formattingEdit';
 import * as nls from 'vs/nls';
 import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Progress, IEditorProgressService } from 'vs/platform/progress/common/progress';
 
-class FormatOnType implements IEditorContribution {
+class FormatOnType implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.autoFormat';
+	puBlic static readonly ID = 'editor.contriB.autoFormat';
 
 	private readonly _editor: ICodeEditor;
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModel = new DisposableStore();
+	private readonly _callOnDispose = new DisposaBleStore();
+	private readonly _callOnModel = new DisposaBleStore();
 
 	constructor(
 		editor: ICodeEditor,
@@ -56,7 +56,7 @@ class FormatOnType implements IEditorContribution {
 		// clean up
 		this._callOnModel.clear();
 
-		// we are disabled
+		// we are disaBled
 		if (!this._editor.getOption(EditorOption.formatOnType)) {
 			return;
 		}
@@ -100,24 +100,24 @@ class FormatOnType implements IEditorContribution {
 		const position = this._editor.getPosition();
 		let canceled = false;
 
-		// install a listener that checks if edits happens before the
+		// install a listener that checks if edits happens Before the
 		// position on which we format right now. If so, we won't
 		// apply the format edits
-		const unbind = this._editor.onDidChangeModelContent((e) => {
+		const unBind = this._editor.onDidChangeModelContent((e) => {
 			if (e.isFlush) {
 				// a model.setValue() was called
 				// cancel only once
 				canceled = true;
-				unbind.dispose();
+				unBind.dispose();
 				return;
 			}
 
 			for (let i = 0, len = e.changes.length; i < len; i++) {
 				const change = e.changes[i];
-				if (change.range.endLineNumber <= position.lineNumber) {
+				if (change.range.endLineNumBer <= position.lineNumBer) {
 					// cancel only once
 					canceled = true;
-					unbind.dispose();
+					unBind.dispose();
 					return;
 				}
 			}
@@ -132,7 +132,7 @@ class FormatOnType implements IEditorContribution {
 			model.getFormattingOptions()
 		).then(edits => {
 
-			unbind.dispose();
+			unBind.dispose();
 
 			if (canceled) {
 				return;
@@ -144,18 +144,18 @@ class FormatOnType implements IEditorContribution {
 			}
 
 		}, (err) => {
-			unbind.dispose();
+			unBind.dispose();
 			throw err;
 		});
 	}
 }
 
-class FormatOnPaste implements IEditorContribution {
+class FormatOnPaste implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.formatOnPaste';
+	puBlic static readonly ID = 'editor.contriB.formatOnPaste';
 
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModel = new DisposableStore();
+	private readonly _callOnDispose = new DisposaBleStore();
+	private readonly _callOnModel = new DisposaBleStore();
 
 	constructor(
 		private readonly editor: ICodeEditor,
@@ -177,7 +177,7 @@ class FormatOnPaste implements IEditorContribution {
 		// clean up
 		this._callOnModel.clear();
 
-		// we are disabled
+		// we are disaBled
 		if (!this.editor.getOption(EditorOption.formatOnPaste)) {
 			return;
 		}
@@ -211,14 +211,14 @@ class FormatDocumentAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.formatDocument',
-			label: nls.localize('formatDocument.label', "Format Document"),
+			laBel: nls.localize('formatDocument.laBel', "Format Document"),
 			alias: 'Format Document',
-			precondition: ContextKeyExpr.and(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider),
-			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentFormattingProvider),
+			precondition: ContextKeyExpr.and(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writaBle, EditorContextKeys.hasDocumentFormattingProvider),
+			kBOpts: {
+				kBExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentFormattingProvider),
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			contextMenuOpts: {
 				when: EditorContextKeys.hasDocumentFormattingProvider,
@@ -245,13 +245,13 @@ class FormatSelectionAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.formatSelection',
-			label: nls.localize('formatSelection.label', "Format Selection"),
+			laBel: nls.localize('formatSelection.laBel', "Format Selection"),
 			alias: 'Format Selection',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
-			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentSelectionFormattingProvider),
+			precondition: ContextKeyExpr.and(EditorContextKeys.writaBle, EditorContextKeys.hasDocumentSelectionFormattingProvider),
+			kBOpts: {
+				kBExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentSelectionFormattingProvider),
 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_F),
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			contextMenuOpts: {
 				when: ContextKeyExpr.and(EditorContextKeys.hasDocumentSelectionFormattingProvider, EditorContextKeys.hasNonEmptySelection),
@@ -270,7 +270,7 @@ class FormatSelectionAction extends EditorAction {
 
 		const ranges = editor.getSelections().map(range => {
 			return range.isEmpty()
-				? new Range(range.startLineNumber, 1, range.startLineNumber, model.getLineMaxColumn(range.startLineNumber))
+				? new Range(range.startLineNumBer, 1, range.startLineNumBer, model.getLineMaxColumn(range.startLineNumBer))
 				: range;
 		});
 
@@ -282,13 +282,13 @@ class FormatSelectionAction extends EditorAction {
 	}
 }
 
-registerEditorContribution(FormatOnType.ID, FormatOnType);
-registerEditorContribution(FormatOnPaste.ID, FormatOnPaste);
+registerEditorContriBution(FormatOnType.ID, FormatOnType);
+registerEditorContriBution(FormatOnPaste.ID, FormatOnPaste);
 registerEditorAction(FormatDocumentAction);
 registerEditorAction(FormatSelectionAction);
 
-// this is the old format action that does both (format document OR format selection)
-// and we keep it here such that existing keybinding configurations etc will still work
+// this is the old format action that does Both (format document OR format selection)
+// and we keep it here such that existing keyBinding configurations etc will still work
 CommandsRegistry.registerCommand('editor.action.format', async accessor => {
 	const editor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
 	if (!editor || !editor.hasModel()) {

@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { IDisposable, dispose, Disposable } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { IDisposaBle, dispose, DisposaBle } from 'vs/Base/common/lifecycle';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IOutputChannel, IOutputService, OUTPUT_VIEW_ID, OUTPUT_SCHEME, LOG_SCHEME, LOG_MIME, OUTPUT_MIME } from 'vs/workbench/contrib/output/common/output';
-import { IOutputChannelDescriptor, Extensions, IOutputChannelRegistry } from 'vs/workbench/services/output/common/output';
-import { OutputLinkProvider } from 'vs/workbench/contrib/output/common/outputLinkProvider';
+import { IOutputChannel, IOutputService, OUTPUT_VIEW_ID, OUTPUT_SCHEME, LOG_SCHEME, LOG_MIME, OUTPUT_MIME } from 'vs/workBench/contriB/output/common/output';
+import { IOutputChannelDescriptor, Extensions, IOutputChannelRegistry } from 'vs/workBench/services/output/common/output';
+import { OutputLinkProvider } from 'vs/workBench/contriB/output/common/outputLinkProvider';
 import { ITextModelService, ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
 import { ITextModel } from 'vs/editor/common/model';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IOutputChannelModel, IOutputChannelModelService } from 'vs/workbench/services/output/common/outputChannelModel';
-import { IViewsService } from 'vs/workbench/common/views';
-import { OutputViewPane } from 'vs/workbench/contrib/output/browser/outputView';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { IOutputChannelModel, IOutputChannelModelService } from 'vs/workBench/services/output/common/outputChannelModel';
+import { IViewsService } from 'vs/workBench/common/views';
+import { OutputViewPane } from 'vs/workBench/contriB/output/Browser/outputView';
 
 const OUTPUT_ACTIVE_CHANNEL_KEY = 'output.activechannel';
 
-class OutputChannel extends Disposable implements IOutputChannel {
+class OutputChannel extends DisposaBle implements IOutputChannel {
 
-	scrollLock: boolean = false;
+	scrollLock: Boolean = false;
 	readonly model: IOutputChannelModel;
 	readonly id: string;
-	readonly label: string;
+	readonly laBel: string;
 	readonly uri: URI;
 
 	constructor(
@@ -36,7 +36,7 @@ class OutputChannel extends Disposable implements IOutputChannel {
 	) {
 		super();
 		this.id = outputChannelDescriptor.id;
-		this.label = outputChannelDescriptor.label;
+		this.laBel = outputChannelDescriptor.laBel;
 		this.uri = URI.from({ scheme: OUTPUT_SCHEME, path: this.id });
 		this.model = this._register(outputChannelModelService.createOutputChannelModel(this.id, this.uri, outputChannelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChannelDescriptor.file));
 	}
@@ -49,12 +49,12 @@ class OutputChannel extends Disposable implements IOutputChannel {
 		this.model.update();
 	}
 
-	clear(till?: number): void {
+	clear(till?: numBer): void {
 		this.model.clear(till);
 	}
 }
 
-export class OutputService extends Disposable implements IOutputService, ITextModelContentProvider {
+export class OutputService extends DisposaBle implements IOutputService, ITextModelContentProvider {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -104,7 +104,7 @@ export class OutputService extends Disposable implements IOutputService, ITextMo
 		return null;
 	}
 
-	async showChannel(id: string, preserveFocus?: boolean): Promise<void> {
+	async showChannel(id: string, preserveFocus?: Boolean): Promise<void> {
 		const channel = this.getChannel(id);
 		if (this.activeChannel?.id !== channel?.id) {
 			this.setActiveChannel(channel);
@@ -146,7 +146,7 @@ export class OutputService extends Disposable implements IOutputService, ITextMo
 	}
 
 	private createChannel(id: string): OutputChannel {
-		const channelDisposables: IDisposable[] = [];
+		const channelDisposaBles: IDisposaBle[] = [];
 		const channel = this.instantiateChannel(id);
 		channel.model.onDispose(() => {
 			if (this.activeChannel === channel) {
@@ -158,8 +158,8 @@ export class OutputService extends Disposable implements IOutputService, ITextMo
 				}
 			}
 			Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).removeChannel(id);
-			dispose(channelDisposables);
-		}, channelDisposables);
+			dispose(channelDisposaBles);
+		}, channelDisposaBles);
 
 		return channel;
 	}
@@ -208,11 +208,11 @@ export class LogContentProvider {
 		const channelId = resource.path;
 		let channelModel = this.channelModels.get(channelId);
 		if (!channelModel) {
-			const channelDisposables: IDisposable[] = [];
+			const channelDisposaBles: IDisposaBle[] = [];
 			const outputChannelDescriptor = this.outputService.getChannelDescriptors().filter(({ id }) => id === channelId)[0];
 			if (outputChannelDescriptor && outputChannelDescriptor.file) {
 				channelModel = this.outputChannelModelService.createOutputChannelModel(channelId, resource, outputChannelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChannelDescriptor.file);
-				channelModel.onDispose(() => dispose(channelDisposables), channelDisposables);
+				channelModel.onDispose(() => dispose(channelDisposaBles), channelDisposaBles);
 				this.channelModels.set(channelId, channelModel);
 			}
 		}

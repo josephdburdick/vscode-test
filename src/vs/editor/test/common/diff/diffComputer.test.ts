@@ -7,17 +7,17 @@ import { DiffComputer } from 'vs/editor/common/diff/diffComputer';
 import { IChange, ICharChange, ILineChange } from 'vs/editor/common/editorCommon';
 
 function extractCharChangeRepresentation(change: ICharChange, expectedChange: ICharChange | null): ICharChange {
-	let hasOriginal = expectedChange && expectedChange.originalStartLineNumber > 0;
-	let hasModified = expectedChange && expectedChange.modifiedStartLineNumber > 0;
+	let hasOriginal = expectedChange && expectedChange.originalStartLineNumBer > 0;
+	let hasModified = expectedChange && expectedChange.modifiedStartLineNumBer > 0;
 	return {
-		originalStartLineNumber: hasOriginal ? change.originalStartLineNumber : 0,
+		originalStartLineNumBer: hasOriginal ? change.originalStartLineNumBer : 0,
 		originalStartColumn: hasOriginal ? change.originalStartColumn : 0,
-		originalEndLineNumber: hasOriginal ? change.originalEndLineNumber : 0,
+		originalEndLineNumBer: hasOriginal ? change.originalEndLineNumBer : 0,
 		originalEndColumn: hasOriginal ? change.originalEndColumn : 0,
 
-		modifiedStartLineNumber: hasModified ? change.modifiedStartLineNumber : 0,
+		modifiedStartLineNumBer: hasModified ? change.modifiedStartLineNumBer : 0,
 		modifiedStartColumn: hasModified ? change.modifiedStartColumn : 0,
-		modifiedEndLineNumber: hasModified ? change.modifiedEndLineNumber : 0,
+		modifiedEndLineNumBer: hasModified ? change.modifiedEndLineNumBer : 0,
 		modifiedEndColumn: hasModified ? change.modifiedEndColumn : 0,
 	};
 }
@@ -34,23 +34,23 @@ function extractLineChangeRepresentation(change: ILineChange, expectedChange: IL
 			);
 		}
 		return {
-			originalStartLineNumber: change.originalStartLineNumber,
-			originalEndLineNumber: change.originalEndLineNumber,
-			modifiedStartLineNumber: change.modifiedStartLineNumber,
-			modifiedEndLineNumber: change.modifiedEndLineNumber,
+			originalStartLineNumBer: change.originalStartLineNumBer,
+			originalEndLineNumBer: change.originalEndLineNumBer,
+			modifiedStartLineNumBer: change.modifiedStartLineNumBer,
+			modifiedEndLineNumBer: change.modifiedEndLineNumBer,
 			charChanges: charChanges
 		};
 	}
 	return {
-		originalStartLineNumber: change.originalStartLineNumber,
-		originalEndLineNumber: change.originalEndLineNumber,
-		modifiedStartLineNumber: change.modifiedStartLineNumber,
-		modifiedEndLineNumber: change.modifiedEndLineNumber,
+		originalStartLineNumBer: change.originalStartLineNumBer,
+		originalEndLineNumBer: change.originalEndLineNumBer,
+		modifiedStartLineNumBer: change.modifiedStartLineNumBer,
+		modifiedEndLineNumBer: change.modifiedEndLineNumBer,
 		charChanges: undefined
 	};
 }
 
-function assertDiff(originalLines: string[], modifiedLines: string[], expectedChanges: IChange[], shouldComputeCharChanges: boolean = true, shouldPostProcessCharChanges: boolean = false, shouldIgnoreTrimWhitespace: boolean = false) {
+function assertDiff(originalLines: string[], modifiedLines: string[], expectedChanges: IChange[], shouldComputeCharChanges: Boolean = true, shouldPostProcessCharChanges: Boolean = false, shouldIgnoreTrimWhitespace: Boolean = false) {
 	let diffComputer = new DiffComputer(originalLines, modifiedLines, {
 		shouldComputeCharChanges,
 		shouldPostProcessCharChanges,
@@ -67,74 +67,74 @@ function assertDiff(originalLines: string[], modifiedLines: string[], expectedCh
 	assert.deepEqual(extracted, expectedChanges);
 }
 
-function createLineDeletion(startLineNumber: number, endLineNumber: number, modifiedLineNumber: number): ILineChange {
+function createLineDeletion(startLineNumBer: numBer, endLineNumBer: numBer, modifiedLineNumBer: numBer): ILineChange {
 	return {
-		originalStartLineNumber: startLineNumber,
-		originalEndLineNumber: endLineNumber,
-		modifiedStartLineNumber: modifiedLineNumber,
-		modifiedEndLineNumber: 0,
+		originalStartLineNumBer: startLineNumBer,
+		originalEndLineNumBer: endLineNumBer,
+		modifiedStartLineNumBer: modifiedLineNumBer,
+		modifiedEndLineNumBer: 0,
 		charChanges: undefined
 	};
 }
 
-function createLineInsertion(startLineNumber: number, endLineNumber: number, originalLineNumber: number): ILineChange {
+function createLineInsertion(startLineNumBer: numBer, endLineNumBer: numBer, originalLineNumBer: numBer): ILineChange {
 	return {
-		originalStartLineNumber: originalLineNumber,
-		originalEndLineNumber: 0,
-		modifiedStartLineNumber: startLineNumber,
-		modifiedEndLineNumber: endLineNumber,
+		originalStartLineNumBer: originalLineNumBer,
+		originalEndLineNumBer: 0,
+		modifiedStartLineNumBer: startLineNumBer,
+		modifiedEndLineNumBer: endLineNumBer,
 		charChanges: undefined
 	};
 }
 
-function createLineChange(originalStartLineNumber: number, originalEndLineNumber: number, modifiedStartLineNumber: number, modifiedEndLineNumber: number, charChanges?: ICharChange[]): ILineChange {
+function createLineChange(originalStartLineNumBer: numBer, originalEndLineNumBer: numBer, modifiedStartLineNumBer: numBer, modifiedEndLineNumBer: numBer, charChanges?: ICharChange[]): ILineChange {
 	return {
-		originalStartLineNumber: originalStartLineNumber,
-		originalEndLineNumber: originalEndLineNumber,
-		modifiedStartLineNumber: modifiedStartLineNumber,
-		modifiedEndLineNumber: modifiedEndLineNumber,
+		originalStartLineNumBer: originalStartLineNumBer,
+		originalEndLineNumBer: originalEndLineNumBer,
+		modifiedStartLineNumBer: modifiedStartLineNumBer,
+		modifiedEndLineNumBer: modifiedEndLineNumBer,
 		charChanges: charChanges
 	};
 }
 
-function createCharInsertion(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
+function createCharInsertion(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer) {
 	return {
-		originalStartLineNumber: 0,
+		originalStartLineNumBer: 0,
 		originalStartColumn: 0,
-		originalEndLineNumber: 0,
+		originalEndLineNumBer: 0,
 		originalEndColumn: 0,
-		modifiedStartLineNumber: startLineNumber,
+		modifiedStartLineNumBer: startLineNumBer,
 		modifiedStartColumn: startColumn,
-		modifiedEndLineNumber: endLineNumber,
+		modifiedEndLineNumBer: endLineNumBer,
 		modifiedEndColumn: endColumn
 	};
 }
 
-function createCharDeletion(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
+function createCharDeletion(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer) {
 	return {
-		originalStartLineNumber: startLineNumber,
+		originalStartLineNumBer: startLineNumBer,
 		originalStartColumn: startColumn,
-		originalEndLineNumber: endLineNumber,
+		originalEndLineNumBer: endLineNumBer,
 		originalEndColumn: endColumn,
-		modifiedStartLineNumber: 0,
+		modifiedStartLineNumBer: 0,
 		modifiedStartColumn: 0,
-		modifiedEndLineNumber: 0,
+		modifiedEndLineNumBer: 0,
 		modifiedEndColumn: 0
 	};
 }
 
 function createCharChange(
-	originalStartLineNumber: number, originalStartColumn: number, originalEndLineNumber: number, originalEndColumn: number,
-	modifiedStartLineNumber: number, modifiedStartColumn: number, modifiedEndLineNumber: number, modifiedEndColumn: number
+	originalStartLineNumBer: numBer, originalStartColumn: numBer, originalEndLineNumBer: numBer, originalEndColumn: numBer,
+	modifiedStartLineNumBer: numBer, modifiedStartColumn: numBer, modifiedEndLineNumBer: numBer, modifiedEndColumn: numBer
 ) {
 	return {
-		originalStartLineNumber: originalStartLineNumber,
+		originalStartLineNumBer: originalStartLineNumBer,
 		originalStartColumn: originalStartColumn,
-		originalEndLineNumber: originalEndLineNumber,
+		originalEndLineNumBer: originalEndLineNumBer,
 		originalEndColumn: originalEndColumn,
-		modifiedStartLineNumber: modifiedStartLineNumber,
+		modifiedStartLineNumBer: modifiedStartLineNumBer,
 		modifiedStartColumn: modifiedStartColumn,
-		modifiedEndLineNumber: modifiedEndLineNumber,
+		modifiedEndLineNumBer: modifiedEndLineNumBer,
 		modifiedEndColumn: modifiedEndColumn
 	};
 }
@@ -143,28 +143,28 @@ suite('Editor Diff - DiffComputer', () => {
 
 	// ---- insertions
 
-	test('one inserted line below', () => {
+	test('one inserted line Below', () => {
 		let original = ['line'];
 		let modified = ['line', 'new line'];
 		let expected = [createLineInsertion(2, 2, 1)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('two inserted lines below', () => {
+	test('two inserted lines Below', () => {
 		let original = ['line'];
 		let modified = ['line', 'new line', 'another new line'];
 		let expected = [createLineInsertion(2, 3, 1)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('one inserted line above', () => {
+	test('one inserted line aBove', () => {
 		let original = ['line'];
 		let modified = ['new line', 'line'];
 		let expected = [createLineInsertion(1, 1, 0)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('two inserted lines above', () => {
+	test('two inserted lines aBove', () => {
 		let original = ['line'];
 		let modified = ['new line', 'another new line', 'line'];
 		let expected = [createLineInsertion(1, 2, 0)];
@@ -194,28 +194,28 @@ suite('Editor Diff - DiffComputer', () => {
 
 	// ---- deletions
 
-	test('one deleted line below', () => {
+	test('one deleted line Below', () => {
 		let original = ['line', 'new line'];
 		let modified = ['line'];
 		let expected = [createLineDeletion(2, 2, 1)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('two deleted lines below', () => {
+	test('two deleted lines Below', () => {
 		let original = ['line', 'new line', 'another new line'];
 		let modified = ['line'];
 		let expected = [createLineDeletion(2, 3, 1)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('one deleted lines above', () => {
+	test('one deleted lines aBove', () => {
 		let original = ['new line', 'line'];
 		let modified = ['line'];
 		let expected = [createLineDeletion(1, 1, 0)];
 		assertDiff(original, modified, expected);
 	});
 
-	test('two deleted lines above', () => {
+	test('two deleted lines aBove', () => {
 		let original = ['new line', 'another new line', 'line'];
 		let modified = ['line'];
 		let expected = [createLineDeletion(1, 2, 0)];
@@ -256,7 +256,7 @@ suite('Editor Diff - DiffComputer', () => {
 		assertDiff(original, modified, expected);
 	});
 
-	test('one line changed: chars inserted at the beginning', () => {
+	test('one line changed: chars inserted at the Beginning', () => {
 		let original = ['line'];
 		let modified = ['my line'];
 		let expected = [
@@ -268,8 +268,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('one line changed: chars inserted in the middle', () => {
-		let original = ['abba'];
-		let modified = ['abzzba'];
+		let original = ['aBBa'];
+		let modified = ['aBzzBa'];
 		let expected = [
 			createLineChange(1, 1, 1, 1, [
 				createCharInsertion(1, 3, 1, 5)
@@ -279,8 +279,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('one line changed: chars inserted in the middle (two spots)', () => {
-		let original = ['abba'];
-		let modified = ['abzzbzza'];
+		let original = ['aBBa'];
+		let modified = ['aBzzBzza'];
 		let expected = [
 			createLineChange(1, 1, 1, 1, [
 				createCharInsertion(1, 3, 1, 5),
@@ -291,8 +291,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('one line changed: chars deleted 1', () => {
-		let original = ['abcdefg'];
-		let modified = ['abcfg'];
+		let original = ['aBcdefg'];
+		let modified = ['aBcfg'];
 		let expected = [
 			createLineChange(1, 1, 1, 1, [
 				createCharDeletion(1, 4, 1, 6)
@@ -302,7 +302,7 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('one line changed: chars deleted 2', () => {
-		let original = ['abcdefg'];
+		let original = ['aBcdefg'];
 		let modified = ['acfg'];
 		let expected = [
 			createLineChange(1, 1, 1, 1, [
@@ -314,8 +314,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('two lines changed 1', () => {
-		let original = ['abcd', 'efgh'];
-		let modified = ['abcz'];
+		let original = ['aBcd', 'efgh'];
+		let modified = ['aBcz'];
 		let expected = [
 			createLineChange(1, 2, 1, 1, [
 				createCharChange(1, 4, 2, 5, 1, 4, 1, 5)
@@ -325,8 +325,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('two lines changed 2', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
-		let modified = ['foo', 'abcz', 'BAR'];
+		let original = ['foo', 'aBcd', 'efgh', 'BAR'];
+		let modified = ['foo', 'aBcz', 'BAR'];
 		let expected = [
 			createLineChange(2, 3, 2, 2, [
 				createCharChange(2, 4, 3, 5, 2, 4, 2, 5)
@@ -336,8 +336,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('two lines changed 3', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
-		let modified = ['foo', 'abcz', 'zzzzefgh', 'BAR'];
+		let original = ['foo', 'aBcd', 'efgh', 'BAR'];
+		let modified = ['foo', 'aBcz', 'zzzzefgh', 'BAR'];
 		let expected = [
 			createLineChange(2, 3, 2, 3, [
 				createCharChange(2, 4, 2, 5, 2, 4, 3, 5)
@@ -347,7 +347,7 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('three lines changed', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
+		let original = ['foo', 'aBcd', 'efgh', 'BAR'];
 		let modified = ['foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
 			createLineChange(2, 3, 2, 3, [
@@ -358,8 +358,8 @@ suite('Editor Diff - DiffComputer', () => {
 		assertDiff(original, modified, expected);
 	});
 
-	test('big change part 1', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
+	test('Big change part 1', () => {
+		let original = ['foo', 'aBcd', 'efgh', 'BAR'];
 		let modified = ['hello', 'foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
 			createLineInsertion(1, 1, 0),
@@ -371,8 +371,8 @@ suite('Editor Diff - DiffComputer', () => {
 		assertDiff(original, modified, expected);
 	});
 
-	test('big change part 2', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR', 'RAB'];
+	test('Big change part 2', () => {
+		let original = ['foo', 'aBcd', 'efgh', 'BAR', 'RAB'];
 		let modified = ['hello', 'foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
 			createLineInsertion(1, 1, 0),
@@ -386,8 +386,8 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('char change postprocessing merges', () => {
-		let original = ['abba'];
-		let modified = ['azzzbzzzbzzza'];
+		let original = ['aBBa'];
+		let modified = ['azzzBzzzBzzza'];
 		let expected = [
 			createLineChange(1, 1, 1, 1, [
 				createCharChange(1, 2, 1, 4, 1, 2, 1, 13)
@@ -397,7 +397,7 @@ suite('Editor Diff - DiffComputer', () => {
 	});
 
 	test('ignore trim whitespace', () => {
-		let original = ['\t\t foo ', 'abcd', 'efgh', '\t\t BAR\t\t'];
+		let original = ['\t\t foo ', 'aBcd', 'efgh', '\t\t BAR\t\t'];
 		let modified = ['  hello\t', '\t foo   \t', 'zzzefgh', 'xxx', '   BAR   \t'];
 		let expected = [
 			createLineInsertion(1, 1, 0),
@@ -503,14 +503,14 @@ suite('Editor Diff - DiffComputer', () => {
 		let original = [
 			'// Just a comment',
 			'',
-			'function compute(a, b, c, d) {',
+			'function compute(a, B, c, d) {',
 			'	if (a) {',
-			'		if (b) {',
+			'		if (B) {',
 			'			if (c) {',
 			'				return 5;',
 			'			}',
 			'		}',
-			'		// These next lines will be deleted',
+			'		// These next lines will Be deleted',
 			'		if (d) {',
 			'			return -1;',
 			'		}',
@@ -524,9 +524,9 @@ suite('Editor Diff - DiffComputer', () => {
 			'// and another one',
 			'// Just a comment',
 			'',
-			'function compute(a, b, c, d) {',
+			'function compute(a, B, c, d) {',
 			'	if (a) {',
-			'		if (b) {',
+			'		if (B) {',
 			'			if (c) {',
 			'				return 5;',
 			'			}',
@@ -585,28 +585,28 @@ suite('Editor Diff - DiffComputer', () => {
 			'if(!TextDrawLoad[playerid])',
 			'{',
 			'',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[4]);',
-			'	if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'	TextDrawHideForPlayer(playerid,TD_AppleJoB[3]);',
+			'	TextDrawHideForPlayer(playerid,TD_AppleJoB[4]);',
+			'	if(!AppleJoBTreesType[AppleJoBTreesPlayerNum[playerid]])',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[5+i]);',
+			'		for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[5+i]);',
 			'	}',
 			'	else',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[15+i]);',
+			'		for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[15+i]);',
 			'	}',
 			'}',
 			'else',
 			'{',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[27]);',
-			'	if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'	TextDrawHideForPlayer(playerid,TD_AppleJoB[3]);',
+			'	TextDrawHideForPlayer(playerid,TD_AppleJoB[27]);',
+			'	if(!AppleJoBTreesType[AppleJoBTreesPlayerNum[playerid]])',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[28+i]);',
+			'		for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[28+i]);',
 			'	}',
 			'	else',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[38+i]);',
+			'		for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[38+i]);',
 			'	}',
 			'}',
 		];
@@ -614,28 +614,28 @@ suite('Editor Diff - DiffComputer', () => {
 			'	if(!TextDrawLoad[playerid])',
 			'	{',
 			'	',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[4]);',
-			'		if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'		TextDrawHideForPlayer(playerid,TD_AppleJoB[3]);',
+			'		TextDrawHideForPlayer(playerid,TD_AppleJoB[4]);',
+			'		if(!AppleJoBTreesType[AppleJoBTreesPlayerNum[playerid]])',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[5+i]);',
+			'			for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[5+i]);',
 			'		}',
 			'		else',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[15+i]);',
+			'			for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[15+i]);',
 			'		}',
 			'	}',
 			'	else',
 			'	{',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[27]);',
-			'		if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'		TextDrawHideForPlayer(playerid,TD_AppleJoB[3]);',
+			'		TextDrawHideForPlayer(playerid,TD_AppleJoB[27]);',
+			'		if(!AppleJoBTreesType[AppleJoBTreesPlayerNum[playerid]])',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[28+i]);',
+			'			for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[28+i]);',
 			'		}',
 			'		else',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[38+i]);',
+			'			for(new i=0;i<10;i++) if(StatusTD_AppleJoBApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJoB[38+i]);',
 			'		}',
 			'	}',
 		];
@@ -739,7 +739,7 @@ suite('Editor Diff - DiffComputer', () => {
 		let original = [
 			'export class C {',
 			'',
-			'	public m1(): void {',
+			'	puBlic m1(): void {',
 			'		{',
 			'		//2',
 			'		//3',
@@ -761,9 +761,9 @@ suite('Editor Diff - DiffComputer', () => {
 			'		}',
 			'	}',
 			'',
-			'	public m2(): void {',
+			'	puBlic m2(): void {',
 			'		if (a) {',
-			'			if (b) {',
+			'			if (B) {',
 			'				//A1',
 			'				//A2',
 			'				//A3',
@@ -784,7 +784,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'		//A15',
 			'	}',
 			'',
-			'	public m3(): void {',
+			'	puBlic m3(): void {',
 			'		if (a) {',
 			'			//B1',
 			'		}',
@@ -792,7 +792,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'		//B3',
 			'	}',
 			'',
-			'	public m4(): boolean {',
+			'	puBlic m4(): Boolean {',
 			'		//1',
 			'		//2',
 			'		//3',
@@ -811,7 +811,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'',
 			'	}',
 			'',
-			'	public m1(): void {',
+			'	puBlic m1(): void {',
 			'		{',
 			'		//2',
 			'		//3',
@@ -833,7 +833,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'		}',
 			'	}',
 			'',
-			'	public m4(): boolean {',
+			'	puBlic m4(): Boolean {',
 			'		//1',
 			'		//2',
 			'		//3',

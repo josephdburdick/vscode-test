@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITerminalContributionService, TerminalContributionService } from './terminalExtensionPoints';
+import { ITerminalContriButionService, TerminalContriButionService } from './terminalExtensionPoints';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
-registerSingleton(ITerminalContributionService, TerminalContributionService, true);
+registerSingleton(ITerminalContriButionService, TerminalContriButionService, true);

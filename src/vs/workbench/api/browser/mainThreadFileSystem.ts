@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable, dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { FileWriteOptions, FileSystemProviderCapabilities, IFileChange, IFileService, IStat, IWatchOptions, FileType, FileOverwriteOptions, FileDeleteOptions, FileOpenOptions, IFileStat, FileOperationError, FileOperationResult, FileSystemProviderErrorCode, IFileSystemProviderWithOpenReadWriteCloseCapability, IFileSystemProviderWithFileReadWriteCapability, IFileSystemProviderWithFileFolderCopyCapability } from 'vs/platform/files/common/files';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IDisposaBle, dispose, toDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { FileWriteOptions, FileSystemProviderCapaBilities, IFileChange, IFileService, IStat, IWatchOptions, FileType, FileOverwriteOptions, FileDeleteOptions, FileOpenOptions, IFileStat, FileOperationError, FileOperationResult, FileSystemProviderErrorCode, IFileSystemProviderWithOpenReadWriteCloseCapaBility, IFileSystemProviderWithFileReadWriteCapaBility, IFileSystemProviderWithFileFolderCopyCapaBility } from 'vs/platform/files/common/files';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ExtHostContext, ExtHostFileSystemShape, IExtHostContext, IFileChangeDto, MainContext, MainThreadFileSystemShape } from '../common/extHost.protocol';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 
 @extHostNamedCustomer(MainContext.MainThreadFileSystem)
 export class MainThreadFileSystem implements MainThreadFileSystemShape {
 
 	private readonly _proxy: ExtHostFileSystemShape;
-	private readonly _fileProvider = new Map<number, RemoteFileSystemProvider>();
-	private readonly _disposables = new DisposableStore();
+	private readonly _fileProvider = new Map<numBer, RemoteFileSystemProvider>();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -26,29 +26,29 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 
 		const infoProxy = extHostContext.getProxy(ExtHostContext.ExtHostFileSystemInfo);
 
-		for (let entry of _fileService.listCapabilities()) {
-			infoProxy.$acceptProviderInfos(entry.scheme, entry.capabilities);
+		for (let entry of _fileService.listCapaBilities()) {
+			infoProxy.$acceptProviderInfos(entry.scheme, entry.capaBilities);
 		}
-		this._disposables.add(_fileService.onDidChangeFileSystemProviderRegistrations(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider?.capabilities ?? null)));
-		this._disposables.add(_fileService.onDidChangeFileSystemProviderCapabilities(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider.capabilities)));
+		this._disposaBles.add(_fileService.onDidChangeFileSystemProviderRegistrations(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider?.capaBilities ?? null)));
+		this._disposaBles.add(_fileService.onDidChangeFileSystemProviderCapaBilities(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider.capaBilities)));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 		dispose(this._fileProvider.values());
 		this._fileProvider.clear();
 	}
 
-	async $registerFileSystemProvider(handle: number, scheme: string, capabilities: FileSystemProviderCapabilities): Promise<void> {
-		this._fileProvider.set(handle, new RemoteFileSystemProvider(this._fileService, scheme, capabilities, handle, this._proxy));
+	async $registerFileSystemProvider(handle: numBer, scheme: string, capaBilities: FileSystemProviderCapaBilities): Promise<void> {
+		this._fileProvider.set(handle, new RemoteFileSystemProvider(this._fileService, scheme, capaBilities, handle, this._proxy));
 	}
 
-	$unregisterProvider(handle: number): void {
+	$unregisterProvider(handle: numBer): void {
 		this._fileProvider.get(handle)?.dispose();
 		this._fileProvider.delete(handle);
 	}
 
-	$onFileSystemChange(handle: number, changes: IFileChangeDto[]): void {
+	$onFileSystemChange(handle: numBer, changes: IFileChangeDto[]): void {
 		const fileProvider = this._fileProvider.get(handle);
 		if (!fileProvider) {
 			throw new Error('Unknown file provider');
@@ -89,8 +89,8 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 		} else if (stat.isDirectory) {
 			res += FileType.Directory;
 		}
-		if (stat.isSymbolicLink) {
-			res += FileType.SymbolicLink;
+		if (stat.isSymBolicLink) {
+			res += FileType.SymBolicLink;
 		}
 		return res;
 	}
@@ -128,16 +128,16 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 			switch (err.fileOperationResult) {
 				case FileOperationResult.FILE_NOT_FOUND:
 					err.name = FileSystemProviderErrorCode.FileNotFound;
-					break;
+					Break;
 				case FileOperationResult.FILE_IS_DIRECTORY:
 					err.name = FileSystemProviderErrorCode.FileIsADirectory;
-					break;
+					Break;
 				case FileOperationResult.FILE_PERMISSION_DENIED:
 					err.name = FileSystemProviderErrorCode.NoPermissions;
-					break;
+					Break;
 				case FileOperationResult.FILE_MOVE_CONFLICT:
 					err.name = FileSystemProviderErrorCode.FileExists;
-					break;
+					Break;
 			}
 		}
 
@@ -145,24 +145,24 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 	}
 }
 
-class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability, IFileSystemProviderWithOpenReadWriteCloseCapability, IFileSystemProviderWithFileFolderCopyCapability {
+class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapaBility, IFileSystemProviderWithOpenReadWriteCloseCapaBility, IFileSystemProviderWithFileFolderCopyCapaBility {
 
 	private readonly _onDidChange = new Emitter<readonly IFileChange[]>();
-	private readonly _registration: IDisposable;
+	private readonly _registration: IDisposaBle;
 
 	readonly onDidChangeFile: Event<readonly IFileChange[]> = this._onDidChange.event;
 
-	readonly capabilities: FileSystemProviderCapabilities;
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	readonly capaBilities: FileSystemProviderCapaBilities;
+	readonly onDidChangeCapaBilities: Event<void> = Event.None;
 
 	constructor(
 		fileService: IFileService,
 		scheme: string,
-		capabilities: FileSystemProviderCapabilities,
-		private readonly _handle: number,
+		capaBilities: FileSystemProviderCapaBilities,
+		private readonly _handle: numBer,
 		private readonly _proxy: ExtHostFileSystemShape
 	) {
-		this.capabilities = capabilities;
+		this.capaBilities = capaBilities;
 		this._registration = fileService.registerProvider(scheme, this);
 	}
 
@@ -174,7 +174,7 @@ class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCa
 	watch(resource: URI, opts: IWatchOptions) {
 		const session = Math.random();
 		this._proxy.$watch(this._handle, session, resource, opts);
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this._proxy.$unwatch(this._handle, session);
 		});
 	}
@@ -196,7 +196,7 @@ class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCa
 	}
 
 	readFile(resource: URI): Promise<Uint8Array> {
-		return this._proxy.$readFile(this._handle, resource).then(buffer => buffer.buffer);
+		return this._proxy.$readFile(this._handle, resource).then(Buffer => Buffer.Buffer);
 	}
 
 	writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
@@ -223,22 +223,22 @@ class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCa
 		return this._proxy.$copy(this._handle, resource, target, opts);
 	}
 
-	open(resource: URI, opts: FileOpenOptions): Promise<number> {
+	open(resource: URI, opts: FileOpenOptions): Promise<numBer> {
 		return this._proxy.$open(this._handle, resource, opts);
 	}
 
-	close(fd: number): Promise<void> {
+	close(fd: numBer): Promise<void> {
 		return this._proxy.$close(this._handle, fd);
 	}
 
-	read(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
+	read(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer> {
 		return this._proxy.$read(this._handle, fd, pos, length).then(readData => {
-			data.set(readData.buffer, offset);
-			return readData.byteLength;
+			data.set(readData.Buffer, offset);
+			return readData.ByteLength;
 		});
 	}
 
-	write(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
+	write(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer> {
 		return this._proxy.$write(this._handle, fd, pos, VSBuffer.wrap(data).slice(offset, offset + length));
 	}
 }

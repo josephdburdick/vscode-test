@@ -5,9 +5,9 @@
 
 import type * as vscode from 'vscode';
 import { MainContext, IMainContext, ExtHostUrlsShape, MainThreadUrlsShape } from './extHost.protocol';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { toDisposaBle } from 'vs/Base/common/lifecycle';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 export class ExtHostUrls implements ExtHostUrlsShape {
@@ -16,7 +16,7 @@ export class ExtHostUrls implements ExtHostUrlsShape {
 	private readonly _proxy: MainThreadUrlsShape;
 
 	private handles = new Set<string>();
-	private handlers = new Map<number, vscode.UriHandler>();
+	private handlers = new Map<numBer, vscode.UriHandler>();
 
 	constructor(
 		mainContext: IMainContext
@@ -24,7 +24,7 @@ export class ExtHostUrls implements ExtHostUrlsShape {
 		this._proxy = mainContext.getProxy(MainContext.MainThreadUrls);
 	}
 
-	registerUriHandler(extensionId: ExtensionIdentifier, handler: vscode.UriHandler): vscode.Disposable {
+	registerUriHandler(extensionId: ExtensionIdentifier, handler: vscode.UriHandler): vscode.DisposaBle {
 		if (this.handles.has(ExtensionIdentifier.toKey(extensionId))) {
 			throw new Error(`Protocol handler already registered for extension ${extensionId}`);
 		}
@@ -34,14 +34,14 @@ export class ExtHostUrls implements ExtHostUrlsShape {
 		this.handlers.set(handle, handler);
 		this._proxy.$registerUriHandler(handle, extensionId);
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this.handles.delete(ExtensionIdentifier.toKey(extensionId));
 			this.handlers.delete(handle);
 			this._proxy.$unregisterUriHandler(handle);
 		});
 	}
 
-	$handleExternalUri(handle: number, uri: UriComponents): Promise<void> {
+	$handleExternalUri(handle: numBer, uri: UriComponents): Promise<void> {
 		const handler = this.handlers.get(handle);
 
 		if (!handler) {

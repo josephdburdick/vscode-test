@@ -4,53 +4,53 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as objects from 'vs/base/common/objects';
+import * as oBjects from 'vs/Base/common/oBjects';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { ExtensionsRegistry, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { ExtensionsRegistry, IExtensionPointUser } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import { IConfigurationNode, IConfigurationRegistry, Extensions, resourceLanguageSettingsSchemaId, validateProperty, ConfigurationScope, OVERRIDE_PROPERTY_PATTERN } from 'vs/platform/configuration/common/configurationRegistry';
-import { IJSONContributionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { workspaceSettingsSchemaId, launchSchemaId, tasksSchemaId } from 'vs/workbench/services/configuration/common/configuration';
-import { isObject } from 'vs/base/common/types';
+import { IJSONContriButionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
+import { workspaceSettingsSchemaId, launchSchemaId, tasksSchemaId } from 'vs/workBench/services/configuration/common/configuration';
+import { isOBject } from 'vs/Base/common/types';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 const configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);
 
 const configurationEntrySchema: IJSONSchema = {
-	type: 'object',
-	defaultSnippets: [{ body: { title: '', properties: {} } }],
+	type: 'oBject',
+	defaultSnippets: [{ Body: { title: '', properties: {} } }],
 	properties: {
 		title: {
-			description: nls.localize('vscode.extension.contributes.configuration.title', 'A summary of the settings. This label will be used in the settings file as separating comment.'),
+			description: nls.localize('vscode.extension.contriButes.configuration.title', 'A summary of the settings. This laBel will Be used in the settings file as separating comment.'),
 			type: 'string'
 		},
 		properties: {
-			description: nls.localize('vscode.extension.contributes.configuration.properties', 'Description of the configuration properties.'),
-			type: 'object',
+			description: nls.localize('vscode.extension.contriButes.configuration.properties', 'Description of the configuration properties.'),
+			type: 'oBject',
 			additionalProperties: {
 				anyOf: [
 					{ $ref: 'http://json-schema.org/draft-07/schema#' },
 					{
-						type: 'object',
+						type: 'oBject',
 						properties: {
-							isExecutable: {
-								type: 'boolean',
+							isExecutaBle: {
+								type: 'Boolean',
 								deprecationMessage: 'This property is deprecated. Instead use `scope` property and set it to `machine` value.'
 							},
 							scope: {
 								type: 'string',
-								enum: ['application', 'machine', 'window', 'resource', 'language-overridable', 'machine-overridable'],
+								enum: ['application', 'machine', 'window', 'resource', 'language-overridaBle', 'machine-overridaBle'],
 								default: 'window',
 								enumDescriptions: [
-									nls.localize('scope.application.description', "Configuration that can be configured only in the user settings."),
-									nls.localize('scope.machine.description', "Configuration that can be configured only in the user settings or only in the remote settings."),
-									nls.localize('scope.window.description', "Configuration that can be configured in the user, remote or workspace settings."),
-									nls.localize('scope.resource.description', "Configuration that can be configured in the user, remote, workspace or folder settings."),
-									nls.localize('scope.language-overridable.description', "Resource configuration that can be configured in language specific settings."),
-									nls.localize('scope.machine-overridable.description', "Machine configuration that can be configured also in workspace or folder settings.")
+									nls.localize('scope.application.description', "Configuration that can Be configured only in the user settings."),
+									nls.localize('scope.machine.description', "Configuration that can Be configured only in the user settings or only in the remote settings."),
+									nls.localize('scope.window.description', "Configuration that can Be configured in the user, remote or workspace settings."),
+									nls.localize('scope.resource.description', "Configuration that can Be configured in the user, remote, workspace or folder settings."),
+									nls.localize('scope.language-overridaBle.description', "Resource configuration that can Be configured in language specific settings."),
+									nls.localize('scope.machine-overridaBle.description', "Machine configuration that can Be configured also in workspace or folder settings.")
 								],
-								description: nls.localize('scope.description', "Scope in which the configuration is applicable. Available scopes are `application`, `machine`, `window`, `resource`, and `machine-overridable`.")
+								description: nls.localize('scope.description', "Scope in which the configuration is applicaBle. AvailaBle scopes are `application`, `machine`, `window`, `resource`, and `machine-overridaBle`.")
 							},
 							enumDescriptions: {
 								type: 'array',
@@ -90,11 +90,11 @@ const configurationEntrySchema: IJSONSchema = {
 const defaultConfigurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IConfigurationNode>({
 	extensionPoint: 'configurationDefaults',
 	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.defaultConfiguration', 'Contributes default editor configuration settings by language.'),
-		type: 'object',
+		description: nls.localize('vscode.extension.contriButes.defaultConfiguration', 'ContriButes default editor configuration settings By language.'),
+		type: 'oBject',
 		patternProperties: {
 			'^\\[.*\\]$': {
-				type: 'object',
+				type: 'oBject',
 				default: {},
 				$ref: resourceLanguageSettingsSchemaId,
 			}
@@ -105,14 +105,14 @@ const defaultConfigurationExtPoint = ExtensionsRegistry.registerExtensionPoint<I
 });
 defaultConfigurationExtPoint.setHandler((extensions, { added, removed }) => {
 	if (removed.length) {
-		const removedDefaultConfigurations = removed.map<IStringDictionary<any>>(extension => objects.deepClone(extension.value));
+		const removedDefaultConfigurations = removed.map<IStringDictionary<any>>(extension => oBjects.deepClone(extension.value));
 		configurationRegistry.deregisterDefaultConfigurations(removedDefaultConfigurations);
 	}
 	if (added.length) {
 		const addedDefaultConfigurations = added.map<IStringDictionary<any>>(extension => {
-			const defaults: IStringDictionary<any> = objects.deepClone(extension.value);
-			for (const key of Object.keys(defaults)) {
-				if (!OVERRIDE_PROPERTY_PATTERN.test(key) || typeof defaults[key] !== 'object') {
+			const defaults: IStringDictionary<any> = oBjects.deepClone(extension.value);
+			for (const key of OBject.keys(defaults)) {
+				if (!OVERRIDE_PROPERTY_PATTERN.test(key) || typeof defaults[key] !== 'oBject') {
 					extension.collector.warn(nls.localize('config.property.defaultConfiguration.warning', "Cannot register configuration defaults for '{0}'. Only defaults for language specific settings are supported.", key));
 					delete defaults[key];
 				}
@@ -130,7 +130,7 @@ const configurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IConfigu
 	extensionPoint: 'configuration',
 	deps: [defaultConfigurationExtPoint],
 	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.configuration', 'Contributes configuration settings.'),
+		description: nls.localize('vscode.extension.contriButes.configuration', 'ContriButes configuration settings.'),
 		oneOf: [
 			configurationEntrySchema,
 			{
@@ -157,10 +157,10 @@ configurationExtPoint.setHandler((extensions, { added, removed }) => {
 
 	function handleConfiguration(node: IConfigurationNode, extension: IExtensionPointUser<any>): IConfigurationNode[] {
 		const configurations: IConfigurationNode[] = [];
-		let configuration = objects.deepClone(node);
+		let configuration = oBjects.deepClone(node);
 
 		if (configuration.title && (typeof configuration.title !== 'string')) {
-			extension.collector.error(nls.localize('invalid.title', "'configuration.title' must be a string"));
+			extension.collector.error(nls.localize('invalid.title', "'configuration.title' must Be a string"));
 		}
 
 		validateProperties(configuration, extension);
@@ -195,8 +195,8 @@ configurationExtPoint.setHandler((extensions, { added, removed }) => {
 function validateProperties(configuration: IConfigurationNode, extension: IExtensionPointUser<any>): void {
 	let properties = configuration.properties;
 	if (properties) {
-		if (typeof properties !== 'object') {
-			extension.collector.error(nls.localize('invalid.properties', "'configuration.properties' must be an object"));
+		if (typeof properties !== 'oBject') {
+			extension.collector.error(nls.localize('invalid.properties', "'configuration.properties' must Be an oBject"));
 			configuration.properties = {};
 		}
 		for (let key in properties) {
@@ -207,9 +207,9 @@ function validateProperties(configuration: IConfigurationNode, extension: IExten
 				continue;
 			}
 			const propertyConfiguration = properties[key];
-			if (!isObject(propertyConfiguration)) {
+			if (!isOBject(propertyConfiguration)) {
 				delete properties[key];
-				extension.collector.error(nls.localize('invalid.property', "'configuration.property' must be an object"));
+				extension.collector.error(nls.localize('invalid.property', "'configuration.property' must Be an oBject"));
 				continue;
 			}
 			if (propertyConfiguration.scope) {
@@ -219,9 +219,9 @@ function validateProperties(configuration: IConfigurationNode, extension: IExten
 					propertyConfiguration.scope = ConfigurationScope.MACHINE;
 				} else if (propertyConfiguration.scope.toString() === 'resource') {
 					propertyConfiguration.scope = ConfigurationScope.RESOURCE;
-				} else if (propertyConfiguration.scope.toString() === 'machine-overridable') {
+				} else if (propertyConfiguration.scope.toString() === 'machine-overridaBle') {
 					propertyConfiguration.scope = ConfigurationScope.MACHINE_OVERRIDABLE;
-				} else if (propertyConfiguration.scope.toString() === 'language-overridable') {
+				} else if (propertyConfiguration.scope.toString() === 'language-overridaBle') {
 					propertyConfiguration.scope = ConfigurationScope.LANGUAGE_OVERRIDABLE;
 				} else {
 					propertyConfiguration.scope = ConfigurationScope.WINDOW;
@@ -231,16 +231,16 @@ function validateProperties(configuration: IConfigurationNode, extension: IExten
 			}
 		}
 	}
-	let subNodes = configuration.allOf;
-	if (subNodes) {
-		extension.collector.error(nls.localize('invalid.allOf', "'configuration.allOf' is deprecated and should no longer be used. Instead, pass multiple configuration sections as an array to the 'configuration' contribution point."));
-		for (let node of subNodes) {
+	let suBNodes = configuration.allOf;
+	if (suBNodes) {
+		extension.collector.error(nls.localize('invalid.allOf', "'configuration.allOf' is deprecated and should no longer Be used. Instead, pass multiple configuration sections as an array to the 'configuration' contriBution point."));
+		for (let node of suBNodes) {
 			validateProperties(node, extension);
 		}
 	}
 }
 
-const jsonRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+const jsonRegistry = Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 jsonRegistry.registerSchema('vscode://schemas/workspaceConfig', {
 	allowComments: true,
 	allowTrailingCommas: true,
@@ -258,15 +258,15 @@ jsonRegistry.registerSchema('vscode://schemas/workspaceConfig', {
 		'folders': {
 			minItems: 0,
 			uniqueItems: true,
-			description: nls.localize('workspaceConfig.folders.description', "List of folders to be loaded in the workspace."),
+			description: nls.localize('workspaceConfig.folders.description', "List of folders to Be loaded in the workspace."),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				default: { path: '' },
 				oneOf: [{
 					properties: {
 						path: {
 							type: 'string',
-							description: nls.localize('workspaceConfig.path.description', "A file path. e.g. `/root/folderA` or `./folderA` for a relative path that will be resolved against the location of the workspace file.")
+							description: nls.localize('workspaceConfig.path.description', "A file path. e.g. `/root/folderA` or `./folderA` for a relative path that will Be resolved against the location of the workspace file.")
 						},
 						name: {
 							type: 'string',
@@ -290,25 +290,25 @@ jsonRegistry.registerSchema('vscode://schemas/workspaceConfig', {
 			}
 		},
 		'settings': {
-			type: 'object',
+			type: 'oBject',
 			default: {},
 			description: nls.localize('workspaceConfig.settings.description', "Workspace settings"),
 			$ref: workspaceSettingsSchemaId
 		},
 		'launch': {
-			type: 'object',
+			type: 'oBject',
 			default: { configurations: [], compounds: [] },
 			description: nls.localize('workspaceConfig.launch.description', "Workspace launch configurations"),
 			$ref: launchSchemaId
 		},
 		'tasks': {
-			type: 'object',
+			type: 'oBject',
 			default: { version: '2.0.0', tasks: [] },
 			description: nls.localize('workspaceConfig.tasks.description', "Workspace task configurations"),
 			$ref: tasksSchemaId
 		},
 		'extensions': {
-			type: 'object',
+			type: 'oBject',
 			default: {},
 			description: nls.localize('workspaceConfig.extensions.description', "Workspace extensions"),
 			$ref: 'vscode://schemas/extensions'
@@ -316,7 +316,7 @@ jsonRegistry.registerSchema('vscode://schemas/workspaceConfig', {
 		'remoteAuthority': {
 			type: 'string',
 			doNotSuggest: true,
-			description: nls.localize('workspaceConfig.remoteAuthority', "The remote server where the workspace is located. Only used by unsaved remote workspaces."),
+			description: nls.localize('workspaceConfig.remoteAuthority', "The remote server where the workspace is located. Only used By unsaved remote workspaces."),
 		}
 	},
 	errorMessage: nls.localize('unknownWorkspaceProperty', "Unknown workspace configuration property")

@@ -12,14 +12,14 @@ import * as File from 'vinyl';
 import * as appInsights from 'applicationinsights';
 
 class Entry {
-	constructor(readonly name: string, public totalCount: number, public totalSize: number) { }
+	constructor(readonly name: string, puBlic totalCount: numBer, puBlic totalSize: numBer) { }
 
-	toString(pretty?: boolean): string {
+	toString(pretty?: Boolean): string {
 		if (!pretty) {
 			if (this.totalCount === 1) {
-				return `${this.name}: ${this.totalSize} bytes`;
+				return `${this.name}: ${this.totalSize} Bytes`;
 			} else {
-				return `${this.name}: ${this.totalCount} files with ${this.totalSize} bytes`;
+				return `${this.name}: ${this.totalCount} files with ${this.totalSize} Bytes`;
 			}
 		} else {
 			if (this.totalCount === 1) {
@@ -38,7 +38,7 @@ class Entry {
 
 const _entries = new Map<string, Entry>();
 
-export function createStatsStream(group: string, log?: boolean): es.ThroughStream {
+export function createStatsStream(group: string, log?: Boolean): es.ThroughStream {
 
 	const entry = new Entry(group, 0, 0);
 	_entries.set(entry.name, entry);
@@ -49,7 +49,7 @@ export function createStatsStream(group: string, log?: boolean): es.ThroughStrea
 			entry.totalCount += 1;
 			if (Buffer.isBuffer(file.contents)) {
 				entry.totalSize += file.contents.length;
-			} else if (file.stat && typeof file.stat.size === 'number') {
+			} else if (file.stat && typeof file.stat.size === 'numBer') {
 				entry.totalSize += file.stat.size;
 			} else {
 				// funky file...
@@ -74,7 +74,7 @@ export function createStatsStream(group: string, log?: boolean): es.ThroughStrea
 	});
 }
 
-export function submitAllStats(productJson: any, commit: string): Promise<boolean> {
+export function suBmitAllStats(productJson: any, commit: string): Promise<Boolean> {
 
 	const sorted: Entry[] = [];
 	// move entries for single files to the front
@@ -119,27 +119,27 @@ export function submitAllStats(productJson: any, commit: string): Promise<boolea
 			appInsights.defaultClient.config.endpointUrl = 'https://vortex.data.microsoft.com/collect/v1';
 
 			/* __GDPR__
-				"monacoworkbench/packagemetrics" : {
+				"monacoworkBench/packagemetrics" : {
 					"commit" : {"classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
 					"size" : {"classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
 					"count" : {"classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 				}
 			*/
 			appInsights.defaultClient.trackEvent({
-				name: 'monacoworkbench/packagemetrics',
+				name: 'monacoworkBench/packagemetrics',
 				properties: { commit, size: JSON.stringify(sizes), count: JSON.stringify(counts) }
 			});
 
 
 			appInsights.defaultClient.flush({
-				callback: () => {
+				callBack: () => {
 					appInsights.dispose();
 					resolve(true);
 				}
 			});
 
 		} catch (err) {
-			console.error('ERROR sending build stats as telemetry event!');
+			console.error('ERROR sending Build stats as telemetry event!');
 			console.error(err);
 			resolve(false);
 		}

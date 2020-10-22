@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { BrowserClipboardService } from 'vs/platform/clipboard/browser/clipboardService';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { BrowserClipBoardService } from 'vs/platform/clipBoard/Browser/clipBoardService';
 
-registerSingleton(IClipboardService, BrowserClipboardService, true);
+registerSingleton(IClipBoardService, BrowserClipBoardService, true);

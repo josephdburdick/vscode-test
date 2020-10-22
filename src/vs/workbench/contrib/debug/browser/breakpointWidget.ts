@@ -3,38 +3,38 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/breakpointWidget';
+import 'vs/css!./media/BreakpointWidget';
 import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { SelectBox, ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
-import * as lifecycle from 'vs/base/common/lifecycle';
-import * as dom from 'vs/base/browser/dom';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { SelectBox, ISelectOptionItem } from 'vs/Base/Browser/ui/selectBox/selectBox';
+import * as lifecycle from 'vs/Base/common/lifecycle';
+import * as dom from 'vs/Base/Browser/dom';
 import { Position, IPosition } from 'vs/editor/common/core/position';
-import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ZoneWidget } from 'vs/editor/contrib/zoneWidget/zoneWidget';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IDebugService, IBreakpoint, BreakpointWidgetContext as Context, CONTEXT_BREAKPOINT_WIDGET_VISIBLE, DEBUG_SCHEME, CONTEXT_IN_BREAKPOINT_WIDGET, IBreakpointUpdateData, IBreakpointEditorContribution, BREAKPOINT_EDITOR_CONTRIBUTION_ID } from 'vs/workbench/contrib/debug/common/debug';
+import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { ZoneWidget } from 'vs/editor/contriB/zoneWidget/zoneWidget';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { IDeBugService, IBreakpoint, BreakpointWidgetContext as Context, CONTEXT_BREAKPOINT_WIDGET_VISIBLE, DEBUG_SCHEME, CONTEXT_IN_BREAKPOINT_WIDGET, IBreakpointUpdateData, IBreakpointEditorContriBution, BREAKPOINT_EDITOR_CONTRIBUTION_ID } from 'vs/workBench/contriB/deBug/common/deBug';
 import { attachSelectBoxStyler } from 'vs/platform/theme/common/styler';
 import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { ServicesAccessor, EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
+import { ServicesAccessor, EditorCommand, registerEditorCommand } from 'vs/editor/Browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { URI as uri } from 'vs/base/common/uri';
+import { URI as uri } from 'vs/Base/common/uri';
 import { CompletionProviderRegistry, CompletionList, CompletionContext, CompletionItemKind } from 'vs/editor/common/modes';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ITextModel } from 'vs/editor/common/model';
-import { provideSuggestionItems, CompletionOptions } from 'vs/editor/contrib/suggest/suggest';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { provideSuggestionItems, CompletionOptions } from 'vs/editor/contriB/suggest/suggest';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { transparent, editorForeground } from 'vs/platform/theme/common/colorRegistry';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IDecorationOptions } from 'vs/editor/common/editorCommon';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { getSimpleEditorOptions, getSimpleCodeEditorWidgetOptions } from 'vs/workbench/contrib/codeEditor/browser/simpleEditorOptions';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { getSimpleEditorOptions, getSimpleCodeEditorWidgetOptions } from 'vs/workBench/contriB/codeEditor/Browser/simpleEditorOptions';
 import { IRange, Range } from 'vs/editor/common/core/range';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
 
@@ -42,11 +42,11 @@ const $ = dom.$;
 const IPrivateBreakpointWidgetService = createDecorator<IPrivateBreakpointWidgetService>('privateBreakpointWidgetService');
 export interface IPrivateBreakpointWidgetService {
 	readonly _serviceBrand: undefined;
-	close(success: boolean): void;
+	close(success: Boolean): void;
 }
-const DECORATION_KEY = 'breakpointwidgetdecoration';
+const DECORATION_KEY = 'Breakpointwidgetdecoration';
 
-function isCurlyBracketOpen(input: IActiveCodeEditor): boolean {
+function isCurlyBracketOpen(input: IActiveCodeEditor): Boolean {
 	const model = input.getModel();
 	const prevBracket = model.findPrevBracket(input.getPosition());
 	if (prevBracket && prevBracket.isOpen) {
@@ -60,8 +60,8 @@ function createDecorations(theme: IColorTheme, placeHolder: string): IDecoration
 	const transparentForeground = transparent(editorForeground, 0.4)(theme);
 	return [{
 		range: {
-			startLineNumber: 0,
-			endLineNumber: 0,
+			startLineNumBer: 0,
+			endLineNumBer: 0,
 			startColumn: 0,
 			endColumn: 1
 		},
@@ -80,17 +80,17 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 	private selectContainer!: HTMLElement;
 	private inputContainer!: HTMLElement;
 	private input!: IActiveCodeEditor;
-	private toDispose: lifecycle.IDisposable[];
+	private toDispose: lifecycle.IDisposaBle[];
 	private conditionInput = '';
 	private hitCountInput = '';
 	private logMessageInput = '';
-	private breakpoint: IBreakpoint | undefined;
+	private Breakpoint: IBreakpoint | undefined;
 	private context: Context;
-	private heightInPx: number | undefined;
+	private heightInPx: numBer | undefined;
 
-	constructor(editor: ICodeEditor, private lineNumber: number, private column: number | undefined, context: Context | undefined,
+	constructor(editor: ICodeEditor, private lineNumBer: numBer, private column: numBer | undefined, context: Context | undefined,
 		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDeBugService private readonly deBugService: IDeBugService,
 		@IThemeService private readonly themeService: IThemeService,
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
@@ -104,14 +104,14 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 		const model = this.editor.getModel();
 		if (model) {
 			const uri = model.uri;
-			const breakpoints = this.debugService.getModel().getBreakpoints({ lineNumber: this.lineNumber, column: this.column, uri });
-			this.breakpoint = breakpoints.length ? breakpoints[0] : undefined;
+			const Breakpoints = this.deBugService.getModel().getBreakpoints({ lineNumBer: this.lineNumBer, column: this.column, uri });
+			this.Breakpoint = Breakpoints.length ? Breakpoints[0] : undefined;
 		}
 
 		if (context === undefined) {
-			if (this.breakpoint && !this.breakpoint.condition && !this.breakpoint.hitCondition && this.breakpoint.logMessage) {
+			if (this.Breakpoint && !this.Breakpoint.condition && !this.Breakpoint.hitCondition && this.Breakpoint.logMessage) {
 				this.context = Context.LOG_MESSAGE;
-			} else if (this.breakpoint && !this.breakpoint.condition && this.breakpoint.hitCondition) {
+			} else if (this.Breakpoint && !this.Breakpoint.condition && this.Breakpoint.hitCondition) {
 				this.context = Context.HIT_COUNT;
 			} else {
 				this.context = Context.CONDITION;
@@ -120,8 +120,8 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 			this.context = context;
 		}
 
-		this.toDispose.push(this.debugService.getModel().onDidChangeBreakpoints(e => {
-			if (this.breakpoint && e && e.removed && e.removed.indexOf(this.breakpoint) >= 0) {
+		this.toDispose.push(this.deBugService.getModel().onDidChangeBreakpoints(e => {
+			if (this.Breakpoint && e && e.removed && e.removed.indexOf(this.Breakpoint) >= 0) {
 				this.dispose();
 			}
 		}));
@@ -133,34 +133,34 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 	private get placeholder(): string {
 		switch (this.context) {
 			case Context.LOG_MESSAGE:
-				return nls.localize('breakpointWidgetLogMessagePlaceholder', "Message to log when breakpoint is hit. Expressions within {} are interpolated. 'Enter' to accept, 'esc' to cancel.");
+				return nls.localize('BreakpointWidgetLogMessagePlaceholder', "Message to log when Breakpoint is hit. Expressions within {} are interpolated. 'Enter' to accept, 'esc' to cancel.");
 			case Context.HIT_COUNT:
-				return nls.localize('breakpointWidgetHitCountPlaceholder', "Break when hit count condition is met. 'Enter' to accept, 'esc' to cancel.");
+				return nls.localize('BreakpointWidgetHitCountPlaceholder', "Break when hit count condition is met. 'Enter' to accept, 'esc' to cancel.");
 			default:
-				return nls.localize('breakpointWidgetExpressionPlaceholder', "Break when expression evaluates to true. 'Enter' to accept, 'esc' to cancel.");
+				return nls.localize('BreakpointWidgetExpressionPlaceholder', "Break when expression evaluates to true. 'Enter' to accept, 'esc' to cancel.");
 		}
 	}
 
-	private getInputValue(breakpoint: IBreakpoint | undefined): string {
+	private getInputValue(Breakpoint: IBreakpoint | undefined): string {
 		switch (this.context) {
 			case Context.LOG_MESSAGE:
-				return breakpoint && breakpoint.logMessage ? breakpoint.logMessage : this.logMessageInput;
+				return Breakpoint && Breakpoint.logMessage ? Breakpoint.logMessage : this.logMessageInput;
 			case Context.HIT_COUNT:
-				return breakpoint && breakpoint.hitCondition ? breakpoint.hitCondition : this.hitCountInput;
+				return Breakpoint && Breakpoint.hitCondition ? Breakpoint.hitCondition : this.hitCountInput;
 			default:
-				return breakpoint && breakpoint.condition ? breakpoint.condition : this.conditionInput;
+				return Breakpoint && Breakpoint.condition ? Breakpoint.condition : this.conditionInput;
 		}
 	}
 
-	private rememberInput(): void {
+	private rememBerInput(): void {
 		const value = this.input.getModel().getValue();
 		switch (this.context) {
 			case Context.LOG_MESSAGE:
 				this.logMessageInput = value;
-				break;
+				Break;
 			case Context.HIT_COUNT:
 				this.hitCountInput = value;
-				break;
+				Break;
 			default:
 				this.conditionInput = value;
 		}
@@ -177,16 +177,16 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 	}
 
 	protected _fillContainer(container: HTMLElement): void {
-		this.setCssClass('breakpoint-widget');
-		const selectBox = new SelectBox(<ISelectOptionItem[]>[{ text: nls.localize('expression', "Expression") }, { text: nls.localize('hitCount', "Hit Count") }, { text: nls.localize('logMessage', "Log Message") }], this.context, this.contextViewService, undefined, { ariaLabel: nls.localize('breakpointType', 'Breakpoint Type') });
+		this.setCssClass('Breakpoint-widget');
+		const selectBox = new SelectBox(<ISelectOptionItem[]>[{ text: nls.localize('expression', "Expression") }, { text: nls.localize('hitCount', "Hit Count") }, { text: nls.localize('logMessage', "Log Message") }], this.context, this.contextViewService, undefined, { ariaLaBel: nls.localize('BreakpointType', 'Breakpoint Type') });
 		this.toDispose.push(attachSelectBoxStyler(selectBox, this.themeService));
-		this.selectContainer = $('.breakpoint-select-container');
+		this.selectContainer = $('.Breakpoint-select-container');
 		selectBox.render(dom.append(container, this.selectContainer));
 		selectBox.onDidSelect(e => {
-			this.rememberInput();
+			this.rememBerInput();
 			this.context = e.index;
 
-			const value = this.getInputValue(this.breakpoint);
+			const value = this.getInputValue(this.Breakpoint);
 			this.input.getModel().setValue(value);
 			this.input.focus();
 		});
@@ -194,16 +194,16 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 		this.inputContainer = $('.inputContainer');
 		this.createBreakpointInput(dom.append(container, this.inputContainer));
 
-		this.input.getModel().setValue(this.getInputValue(this.breakpoint));
+		this.input.getModel().setValue(this.getInputValue(this.Breakpoint));
 		this.toDispose.push(this.input.getModel().onDidChangeContent(() => {
 			this.fitHeightToContent();
 		}));
-		this.input.setPosition({ lineNumber: 1, column: this.input.getModel().getLineMaxColumn(1) });
-		// Due to an electron bug we have to do the timeout, otherwise we do not get focus
+		this.input.setPosition({ lineNumBer: 1, column: this.input.getModel().getLineMaxColumn(1) });
+		// Due to an electron Bug we have to do the timeout, otherwise we do not get focus
 		setTimeout(() => this.input.focus(), 150);
 	}
 
-	protected _doLayout(heightInPixel: number, widthInPixel: number): void {
+	protected _doLayout(heightInPixel: numBer, widthInPixel: numBer): void {
 		this.heightInPx = heightInPixel;
 		this.input.layout({ height: heightInPixel, width: widthInPixel - 113 });
 		this.centerInputVertically();
@@ -219,8 +219,8 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 		const options = this.createEditorOptions();
 		const codeEditorWidgetOptions = getSimpleCodeEditorWidgetOptions();
 		this.input = <IActiveCodeEditor>scopedInstatiationService.createInstance(CodeEditorWidget, container, options, codeEditorWidgetOptions);
-		CONTEXT_IN_BREAKPOINT_WIDGET.bindTo(scopedContextKeyService).set(true);
-		const model = this.modelService.createModel('', null, uri.parse(`${DEBUG_SCHEME}:${this.editor.getId()}:breakpointinput`), true);
+		CONTEXT_IN_BREAKPOINT_WIDGET.BindTo(scopedContextKeyService).set(true);
+		const model = this.modelService.createModel('', null, uri.parse(`${DEBUG_SCHEME}:${this.editor.getId()}:Breakpointinput`), true);
 		this.input.setModel(model);
 		this.toDispose.push(model);
 		const setDecorations = () => {
@@ -236,13 +236,13 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 				let suggestionsPromise: Promise<CompletionList>;
 				const underlyingModel = this.editor.getModel();
 				if (underlyingModel && (this.context === Context.CONDITION || (this.context === Context.LOG_MESSAGE && isCurlyBracketOpen(this.input)))) {
-					suggestionsPromise = provideSuggestionItems(underlyingModel, new Position(this.lineNumber, 1), new CompletionOptions(undefined, new Set<CompletionItemKind>().add(CompletionItemKind.Snippet)), _context, token).then(suggestions => {
+					suggestionsPromise = provideSuggestionItems(underlyingModel, new Position(this.lineNumBer, 1), new CompletionOptions(undefined, new Set<CompletionItemKind>().add(CompletionItemKind.Snippet)), _context, token).then(suggestions => {
 
 						let overwriteBefore = 0;
 						if (this.context === Context.CONDITION) {
 							overwriteBefore = position.column - 1;
 						} else {
-							// Inside the currly brackets, need to count how many useful characters are behind the position so they would all be taken into account
+							// Inside the currly Brackets, need to count how many useful characters are Behind the position so they would all Be taken into account
 							const value = this.input.getModel().getValue();
 							while ((position.column - 2 - overwriteBefore >= 0) && value[position.column - 2 - overwriteBefore] !== '{' && value[position.column - 2 - overwriteBefore] !== ' ') {
 								overwriteBefore++;
@@ -280,7 +280,7 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 	}
 
 	private centerInputVertically() {
-		if (this.container && typeof this.heightInPx === 'number') {
+		if (this.container && typeof this.heightInPx === 'numBer') {
 			const lineHeight = this.input.getOption(EditorOption.lineHeight);
 			const lineNum = this.input.getModel().getLineCount();
 			const newTopMargin = (this.heightInPx - lineNum * lineHeight) / 2;
@@ -288,14 +288,14 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 		}
 	}
 
-	close(success: boolean): void {
+	close(success: Boolean): void {
 		if (success) {
-			// if there is already a breakpoint on this location - remove it.
+			// if there is already a Breakpoint on this location - remove it.
 
-			let condition = this.breakpoint && this.breakpoint.condition;
-			let hitCondition = this.breakpoint && this.breakpoint.hitCondition;
-			let logMessage = this.breakpoint && this.breakpoint.logMessage;
-			this.rememberInput();
+			let condition = this.Breakpoint && this.Breakpoint.condition;
+			let hitCondition = this.Breakpoint && this.Breakpoint.hitCondition;
+			let logMessage = this.Breakpoint && this.Breakpoint.logMessage;
+			this.rememBerInput();
 
 			if (this.conditionInput || this.context === Context.CONDITION) {
 				condition = this.conditionInput;
@@ -307,21 +307,21 @@ export class BreakpointWidget extends ZoneWidget implements IPrivateBreakpointWi
 				logMessage = this.logMessageInput;
 			}
 
-			if (this.breakpoint) {
+			if (this.Breakpoint) {
 				const data = new Map<string, IBreakpointUpdateData>();
-				data.set(this.breakpoint.getId(), {
+				data.set(this.Breakpoint.getId(), {
 					condition,
 					hitCondition,
 					logMessage
 				});
-				this.debugService.updateBreakpoints(this.breakpoint.uri, data, false).then(undefined, onUnexpectedError);
+				this.deBugService.updateBreakpoints(this.Breakpoint.uri, data, false).then(undefined, onUnexpectedError);
 			} else {
 				const model = this.editor.getModel();
 				if (model) {
-					this.debugService.addBreakpoints(model.uri, [{
-						lineNumber: this.lineNumber,
+					this.deBugService.addBreakpoints(model.uri, [{
+						lineNumBer: this.lineNumBer,
 						column: this.column,
-						enabled: true,
+						enaBled: true,
 						condition,
 						hitCondition,
 						logMessage
@@ -345,12 +345,12 @@ class AcceptBreakpointWidgetInputAction extends EditorCommand {
 
 	constructor() {
 		super({
-			id: 'breakpointWidget.action.acceptInput',
+			id: 'BreakpointWidget.action.acceptInput',
 			precondition: CONTEXT_BREAKPOINT_WIDGET_VISIBLE,
-			kbOpts: {
-				kbExpr: CONTEXT_IN_BREAKPOINT_WIDGET,
+			kBOpts: {
+				kBExpr: CONTEXT_IN_BREAKPOINT_WIDGET,
 				primary: KeyCode.Enter,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -366,20 +366,20 @@ class CloseBreakpointWidgetCommand extends EditorCommand {
 		super({
 			id: 'closeBreakpointWidget',
 			precondition: CONTEXT_BREAKPOINT_WIDGET_VISIBLE,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: KeyCode.Escape,
 				secondary: [KeyMod.Shift | KeyCode.Escape],
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
 	runEditorCommand(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
-		const debugContribution = editor.getContribution<IBreakpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID);
-		if (debugContribution) {
-			// if focus is in outer editor we need to use the debug contribution to close
-			return debugContribution.closeBreakpointWidget();
+		const deBugContriBution = editor.getContriBution<IBreakpointEditorContriBution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID);
+		if (deBugContriBution) {
+			// if focus is in outer editor we need to use the deBug contriBution to close
+			return deBugContriBution.closeBreakpointWidget();
 		}
 
 		accessor.get(IPrivateBreakpointWidgetService).close(false);

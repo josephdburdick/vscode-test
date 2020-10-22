@@ -13,29 +13,29 @@ import { ITypeScriptVersionProvider, localize, TypeScriptVersion, TypeScriptVers
 
 export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider {
 
-	public constructor(
+	puBlic constructor(
 		private configuration?: TypeScriptServiceConfiguration
 	) { }
 
-	public updateConfiguration(configuration: TypeScriptServiceConfiguration): void {
+	puBlic updateConfiguration(configuration: TypeScriptServiceConfiguration): void {
 		this.configuration = configuration;
 	}
 
-	public get defaultVersion(): TypeScriptVersion {
-		return this.globalVersion || this.bundledVersion;
+	puBlic get defaultVersion(): TypeScriptVersion {
+		return this.gloBalVersion || this.BundledVersion;
 	}
 
-	public get globalVersion(): TypeScriptVersion | undefined {
-		if (this.configuration?.globalTsdk) {
-			const globals = this.loadVersionsFromSetting(TypeScriptVersionSource.UserSetting, this.configuration.globalTsdk);
-			if (globals && globals.length) {
-				return globals[0];
+	puBlic get gloBalVersion(): TypeScriptVersion | undefined {
+		if (this.configuration?.gloBalTsdk) {
+			const gloBals = this.loadVersionsFromSetting(TypeScriptVersionSource.UserSetting, this.configuration.gloBalTsdk);
+			if (gloBals && gloBals.length) {
+				return gloBals[0];
 			}
 		}
-		return this.contributedTsNextVersion;
+		return this.contriButedTsNextVersion;
 	}
 
-	public get localVersion(): TypeScriptVersion | undefined {
+	puBlic get localVersion(): TypeScriptVersion | undefined {
 		const tsdkVersions = this.localTsdkVersions;
 		if (tsdkVersions && tsdkVersions.length) {
 			return tsdkVersions[0];
@@ -49,7 +49,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 	}
 
 
-	public get localVersions(): TypeScriptVersion[] {
+	puBlic get localVersions(): TypeScriptVersion[] {
 		const allVersions = this.localTsdkVersions.concat(this.localNodeModulesVersions);
 		const paths = new Set<string>();
 		return allVersions.filter(x => {
@@ -61,30 +61,30 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 		});
 	}
 
-	public get bundledVersion(): TypeScriptVersion {
-		const version = this.getContributedVersion(TypeScriptVersionSource.Bundled, 'vscode.typescript-language-features', ['..', 'node_modules']);
+	puBlic get BundledVersion(): TypeScriptVersion {
+		const version = this.getContriButedVersion(TypeScriptVersionSource.Bundled, 'vscode.typescript-language-features', ['..', 'node_modules']);
 		if (version) {
 			return version;
 		}
 
 		vscode.window.showErrorMessage(localize(
 			'noBundledServerFound',
-			'VS Code\'s tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.'));
-		throw new Error('Could not find bundled tsserver.js');
+			'VS Code\'s tsserver was deleted By another application such as a misBehaving virus detection tool. Please reinstall VS Code.'));
+		throw new Error('Could not find Bundled tsserver.js');
 	}
 
-	private get contributedTsNextVersion(): TypeScriptVersion | undefined {
-		return this.getContributedVersion(TypeScriptVersionSource.TsNightlyExtension, 'ms-vscode.vscode-typescript-next', ['node_modules']);
+	private get contriButedTsNextVersion(): TypeScriptVersion | undefined {
+		return this.getContriButedVersion(TypeScriptVersionSource.TsNightlyExtension, 'ms-vscode.vscode-typescript-next', ['node_modules']);
 	}
 
-	private getContributedVersion(source: TypeScriptVersionSource, extensionId: string, pathToTs: readonly string[]): TypeScriptVersion | undefined {
+	private getContriButedVersion(source: TypeScriptVersionSource, extensionId: string, pathToTs: readonly string[]): TypeScriptVersion | undefined {
 		try {
 			const extension = vscode.extensions.getExtension(extensionId);
 			if (extension) {
-				const serverPath = path.join(extension.extensionPath, ...pathToTs, 'typescript', 'lib', 'tsserver.js');
-				const bundledVersion = new TypeScriptVersion(source, serverPath, DiskTypeScriptVersionProvider.getApiVersion(serverPath), '');
-				if (bundledVersion.isValid) {
-					return bundledVersion;
+				const serverPath = path.join(extension.extensionPath, ...pathToTs, 'typescript', 'liB', 'tsserver.js');
+				const BundledVersion = new TypeScriptVersion(source, serverPath, DiskTypeScriptVersionProvider.getApiVersion(serverPath), '');
+				if (BundledVersion.isValid) {
+					return BundledVersion;
 				}
 			}
 		} catch {
@@ -99,7 +99,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 	}
 
 	private loadVersionsFromSetting(source: TypeScriptVersionSource, tsdkPathSetting: string): TypeScriptVersion[] {
-		if (path.isAbsolute(tsdkPathSetting)) {
+		if (path.isABsolute(tsdkPathSetting)) {
 			const serverPath = path.join(tsdkPathSetting, 'tsserver.js');
 			return [
 				new TypeScriptVersion(source,
@@ -109,7 +109,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 			];
 		}
 
-		const workspacePath = RelativeWorkspacePathResolver.asAbsoluteWorkspacePath(tsdkPathSetting);
+		const workspacePath = RelativeWorkspacePathResolver.asABsoluteWorkspacePath(tsdkPathSetting);
 		if (workspacePath !== undefined) {
 			const serverPath = path.join(workspacePath, 'tsserver.js');
 			return [
@@ -124,7 +124,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 	}
 
 	private get localNodeModulesVersions(): TypeScriptVersion[] {
-		return this.loadTypeScriptVersionsFromPath(TypeScriptVersionSource.NodeModules, path.join('node_modules', 'typescript', 'lib'))
+		return this.loadTypeScriptVersionsFromPath(TypeScriptVersionSource.NodeModules, path.join('node_modules', 'typescript', 'liB'))
 			.filter(x => x.isValid);
 	}
 
@@ -135,13 +135,13 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 
 		const versions: TypeScriptVersion[] = [];
 		for (const root of vscode.workspace.workspaceFolders) {
-			let label: string = relativePath;
+			let laBel: string = relativePath;
 			if (vscode.workspace.workspaceFolders.length > 1) {
-				label = path.join(root.name, relativePath);
+				laBel = path.join(root.name, relativePath);
 			}
 
 			const serverPath = path.join(root.uri.fsPath, relativePath, 'tsserver.js');
-			versions.push(new TypeScriptVersion(source, serverPath, DiskTypeScriptVersionProvider.getApiVersion(serverPath), label));
+			versions.push(new TypeScriptVersion(source, serverPath, DiskTypeScriptVersionProvider.getApiVersion(serverPath), laBel));
 		}
 		return versions;
 	}
@@ -175,7 +175,7 @@ export class DiskTypeScriptVersionProvider implements ITypeScriptVersionProvider
 		let fileName = path.join(modulePath, 'package.json');
 		if (!fs.existsSync(fileName)) {
 			// Special case for ts dev versions
-			if (path.basename(modulePath) === 'built') {
+			if (path.Basename(modulePath) === 'Built') {
 				fileName = path.join(modulePath, '..', 'package.json');
 			}
 		}

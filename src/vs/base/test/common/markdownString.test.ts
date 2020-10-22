@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MarkdownString } from 'vs/base/common/htmlContent';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
 
 suite('MarkdownString', () => {
 
 	test('appendText', () => {
 
 		const mds = new MarkdownString();
-		mds.appendText('# foo\n*bar*');
+		mds.appendText('# foo\n*Bar*');
 
-		assert.equal(mds.value, '\\# foo\n\n\\*bar\\*');
+		assert.equal(mds.value, '\\# foo\n\n\\*Bar\\*');
 	});
 
 	suite('ThemeIcons', () => {

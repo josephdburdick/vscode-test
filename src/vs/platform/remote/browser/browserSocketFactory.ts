@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISocketFactory, IConnectCallback } from 'vs/platform/remote/common/remoteAgentConnection';
-import { ISocket } from 'vs/base/parts/ipc/common/ipc.net';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as dom from 'vs/base/browser/dom';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { ISocketFactory, IConnectCallBack } from 'vs/platform/remote/common/remoteAgentConnection';
+import { ISocket } from 'vs/Base/parts/ipc/common/ipc.net';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import * as dom from 'vs/Base/Browser/dom';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 import { RemoteAuthorityResolverError, RemoteAuthorityResolverErrorCode } from 'vs/platform/remote/common/remoteAuthorityResolver';
 
-export interface IWebSocketFactory {
-	create(url: string): IWebSocket;
+export interface IWeBSocketFactory {
+	create(url: string): IWeBSocket;
 }
 
-export interface IWebSocket {
+export interface IWeBSocket {
 	readonly onData: Event<ArrayBuffer>;
 	readonly onOpen: Event<void>;
 	readonly onClose: Event<void>;
@@ -26,28 +26,28 @@ export interface IWebSocket {
 	close(): void;
 }
 
-class BrowserWebSocket extends Disposable implements IWebSocket {
+class BrowserWeBSocket extends DisposaBle implements IWeBSocket {
 
 	private readonly _onData = new Emitter<ArrayBuffer>();
-	public readonly onData = this._onData.event;
+	puBlic readonly onData = this._onData.event;
 
-	public readonly onOpen: Event<void>;
+	puBlic readonly onOpen: Event<void>;
 
 	private readonly _onClose = this._register(new Emitter<void>());
-	public readonly onClose = this._onClose.event;
+	puBlic readonly onClose = this._onClose.event;
 
 	private readonly _onError = this._register(new Emitter<any>());
-	public readonly onError = this._onError.event;
+	puBlic readonly onError = this._onError.event;
 
-	private readonly _socket: WebSocket;
+	private readonly _socket: WeBSocket;
 	private readonly _fileReader: FileReader;
-	private readonly _queue: Blob[];
-	private _isReading: boolean;
-	private _isClosed: boolean;
+	private readonly _queue: BloB[];
+	private _isReading: Boolean;
+	private _isClosed: Boolean;
 
 	private readonly _socketMessageListener: (ev: MessageEvent) => void;
 
-	constructor(socket: WebSocket) {
+	constructor(socket: WeBSocket) {
 		super();
 		this._socket = socket;
 		this._fileReader = new FileReader();
@@ -57,38 +57,38 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 
 		this._fileReader.onload = (event) => {
 			this._isReading = false;
-			const buff = <ArrayBuffer>(<any>event.target).result;
+			const Buff = <ArrayBuffer>(<any>event.target).result;
 
-			this._onData.fire(buff);
+			this._onData.fire(Buff);
 
 			if (this._queue.length > 0) {
 				enqueue(this._queue.shift()!);
 			}
 		};
 
-		const enqueue = (blob: Blob) => {
+		const enqueue = (BloB: BloB) => {
 			if (this._isReading) {
-				this._queue.push(blob);
+				this._queue.push(BloB);
 				return;
 			}
 			this._isReading = true;
-			this._fileReader.readAsArrayBuffer(blob);
+			this._fileReader.readAsArrayBuffer(BloB);
 		};
 
 		this._socketMessageListener = (ev: MessageEvent) => {
-			enqueue(<Blob>ev.data);
+			enqueue(<BloB>ev.data);
 		};
 		this._socket.addEventListener('message', this._socketMessageListener);
 
 		this.onOpen = Event.fromDOMEventEmitter(this._socket, 'open');
 
-		// WebSockets emit error events that do not contain any real information
+		// WeBSockets emit error events that do not contain any real information
 		// Our only chance of getting to the root cause of an error is to
 		// listen to the close event which gives out some real information:
-		// - https://www.w3.org/TR/websockets/#closeevent
+		// - https://www.w3.org/TR/weBsockets/#closeevent
 		// - https://tools.ietf.org/html/rfc6455#section-11.7
 		//
-		// But the error event is emitted before the close event, so we therefore
+		// But the error event is emitted Before the close event, so we therefore
 		// delay the error event processing in the hope of receiving a close event
 		// with more information
 
@@ -114,19 +114,19 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 			sendPendingErrorNow();
 		};
 
-		this._register(dom.addDisposableListener(this._socket, 'close', (e: CloseEvent) => {
+		this._register(dom.addDisposaBleListener(this._socket, 'close', (e: CloseEvent) => {
 			this._isClosed = true;
 
 			if (pendingErrorEvent) {
 				if (!window.navigator.onLine) {
-					// The browser is offline => this is a temporary error which might resolve itself
-					sendErrorNow(new RemoteAuthorityResolverError('Browser is offline', RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable, e));
+					// The Browser is offline => this is a temporary error which might resolve itself
+					sendErrorNow(new RemoteAuthorityResolverError('Browser is offline', RemoteAuthorityResolverErrorCode.TemporarilyNotAvailaBle, e));
 				} else {
 					// An error event is pending
-					// The browser appears to be online...
+					// The Browser appears to Be online...
 					if (!e.wasClean) {
-						// Let's be optimistic and hope that perhaps the server could not be reached or something
-						sendErrorNow(new RemoteAuthorityResolverError(e.reason || `WebSocket close with status code ${e.code}`, RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable, e));
+						// Let's Be optimistic and hope that perhaps the server could not Be reached or something
+						sendErrorNow(new RemoteAuthorityResolverError(e.reason || `WeBSocket close with status code ${e.code}`, RemoteAuthorityResolverErrorCode.TemporarilyNotAvailaBle, e));
 					} else {
 						// this was a clean close => send existing error
 						errorRunner.cancel();
@@ -138,12 +138,12 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 			this._onClose.fire();
 		}));
 
-		this._register(dom.addDisposableListener(this._socket, 'error', sendErrorSoon));
+		this._register(dom.addDisposaBleListener(this._socket, 'error', sendErrorSoon));
 	}
 
 	send(data: ArrayBuffer | ArrayBufferView): void {
 		if (this._isClosed) {
-			// Refuse to write data to closed WebSocket...
+			// Refuse to write data to closed WeBSocket...
 			return;
 		}
 		this._socket.send(data);
@@ -157,62 +157,62 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 	}
 }
 
-export const defaultWebSocketFactory = new class implements IWebSocketFactory {
-	create(url: string): IWebSocket {
-		return new BrowserWebSocket(new WebSocket(url));
+export const defaultWeBSocketFactory = new class implements IWeBSocketFactory {
+	create(url: string): IWeBSocket {
+		return new BrowserWeBSocket(new WeBSocket(url));
 	}
 };
 
 class BrowserSocket implements ISocket {
-	public readonly socket: IWebSocket;
+	puBlic readonly socket: IWeBSocket;
 
-	constructor(socket: IWebSocket) {
+	constructor(socket: IWeBSocket) {
 		this.socket = socket;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.socket.close();
 	}
 
-	public onData(listener: (e: VSBuffer) => void): IDisposable {
+	puBlic onData(listener: (e: VSBuffer) => void): IDisposaBle {
 		return this.socket.onData((data) => listener(VSBuffer.wrap(new Uint8Array(data))));
 	}
 
-	public onClose(listener: () => void): IDisposable {
+	puBlic onClose(listener: () => void): IDisposaBle {
 		return this.socket.onClose(listener);
 	}
 
-	public onEnd(listener: () => void): IDisposable {
-		return Disposable.None;
+	puBlic onEnd(listener: () => void): IDisposaBle {
+		return DisposaBle.None;
 	}
 
-	public write(buffer: VSBuffer): void {
-		this.socket.send(buffer.buffer);
+	puBlic write(Buffer: VSBuffer): void {
+		this.socket.send(Buffer.Buffer);
 	}
 
-	public end(): void {
+	puBlic end(): void {
 		this.socket.close();
 	}
 
-	public drain(): Promise<void> {
+	puBlic drain(): Promise<void> {
 		return Promise.resolve();
 	}
 }
 
 
 export class BrowserSocketFactory implements ISocketFactory {
-	private readonly _webSocketFactory: IWebSocketFactory;
+	private readonly _weBSocketFactory: IWeBSocketFactory;
 
-	constructor(webSocketFactory: IWebSocketFactory | null | undefined) {
-		this._webSocketFactory = webSocketFactory || defaultWebSocketFactory;
+	constructor(weBSocketFactory: IWeBSocketFactory | null | undefined) {
+		this._weBSocketFactory = weBSocketFactory || defaultWeBSocketFactory;
 	}
 
-	connect(host: string, port: number, query: string, callback: IConnectCallback): void {
-		const socket = this._webSocketFactory.create(`ws://${host}:${port}/?${query}&skipWebSocketFrames=false`);
-		const errorListener = socket.onError((err) => callback(err, undefined));
+	connect(host: string, port: numBer, query: string, callBack: IConnectCallBack): void {
+		const socket = this._weBSocketFactory.create(`ws://${host}:${port}/?${query}&skipWeBSocketFrames=false`);
+		const errorListener = socket.onError((err) => callBack(err, undefined));
 		socket.onOpen(() => {
 			errorListener.dispose();
-			callback(undefined, new BrowserSocket(socket));
+			callBack(undefined, new BrowserSocket(socket));
 		});
 	}
 }

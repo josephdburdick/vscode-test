@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IContextViewService, IContextViewDelegate } from './contextView';
-import { ContextView, ContextViewDOMPosition } from 'vs/base/browser/ui/contextview/contextview';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { ContextView, ContextViewDOMPosition } from 'vs/Base/Browser/ui/contextview/contextview';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 
-export class ContextViewService extends Disposable implements IContextViewService {
+export class ContextViewService extends DisposaBle implements IContextViewService {
 	declare readonly _serviceBrand: undefined;
 
-	private currentViewDisposable: IDisposable = Disposable.None;
+	private currentViewDisposaBle: IDisposaBle = DisposaBle.None;
 	private contextView: ContextView;
 	private container: HTMLElement;
 
@@ -33,7 +33,7 @@ export class ContextViewService extends Disposable implements IContextViewServic
 		this.contextView.setContainer(container, domPosition || ContextViewDOMPosition.ABSOLUTE);
 	}
 
-	showContextView(delegate: IContextViewDelegate, container?: HTMLElement, shadowRoot?: boolean): IDisposable {
+	showContextView(delegate: IContextViewDelegate, container?: HTMLElement, shadowRoot?: Boolean): IDisposaBle {
 		if (container) {
 			if (container !== this.container) {
 				this.container = container;
@@ -48,14 +48,14 @@ export class ContextViewService extends Disposable implements IContextViewServic
 
 		this.contextView.show(delegate);
 
-		const disposable = toDisposable(() => {
-			if (this.currentViewDisposable === disposable) {
+		const disposaBle = toDisposaBle(() => {
+			if (this.currentViewDisposaBle === disposaBle) {
 				this.hideContextView();
 			}
 		});
 
-		this.currentViewDisposable = disposable;
-		return disposable;
+		this.currentViewDisposaBle = disposaBle;
+		return disposaBle;
 	}
 
 	getContextViewElement(): HTMLElement {

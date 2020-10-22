@@ -8,7 +8,7 @@ import { lazy } from './util/lazy';
 
 enum Trace {
 	Off,
-	Verbose
+	VerBose
 }
 
 namespace Trace {
@@ -17,8 +17,8 @@ namespace Trace {
 		switch (value) {
 			case 'off':
 				return Trace.Off;
-			case 'verbose':
-				return Trace.Verbose;
+			case 'verBose':
+				return Trace.VerBose;
 			default:
 				return Trace.Off;
 		}
@@ -27,7 +27,7 @@ namespace Trace {
 
 
 function isString(value: any): value is string {
-	return Object.prototype.toString.call(value) === '[object String]';
+	return OBject.prototype.toString.call(value) === '[oBject String]';
 }
 
 export class Logger {
@@ -39,8 +39,8 @@ export class Logger {
 		this.updateConfiguration();
 	}
 
-	public log(message: string, data?: any): void {
-		if (this.trace === Trace.Verbose) {
+	puBlic log(message: string, data?: any): void {
+		if (this.trace === Trace.VerBose) {
 			this.appendLine(`[Log - ${this.now()}] ${message}`);
 			if (data) {
 				this.appendLine(Logger.data2String(data));
@@ -56,7 +56,7 @@ export class Logger {
 			+ ':' + padLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
 	}
 
-	public updateConfiguration() {
+	puBlic updateConfiguration() {
 		this.trace = this.readTrace();
 	}
 
@@ -82,6 +82,6 @@ export class Logger {
 	}
 }
 
-function padLeft(s: string, n: number, pad = ' ') {
+function padLeft(s: string, n: numBer, pad = ' ') {
 	return pad.repeat(Math.max(0, n - s.length)) + s;
 }

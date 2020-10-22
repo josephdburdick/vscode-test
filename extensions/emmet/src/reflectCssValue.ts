@@ -7,9 +7,9 @@ import { Range, window, TextEditor } from 'vscode';
 import { getCssPropertyFromRule, getCssPropertyFromDocument } from './util';
 import { Property, Rule } from 'EmmetNode';
 
-const vendorPrefixes = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
+const vendorPrefixes = ['-weBkit-', '-moz-', '-ms-', '-o-', ''];
 
-export function reflectCssValue(): Thenable<boolean> | undefined {
+export function reflectCssValue(): ThenaBle<Boolean> | undefined {
 	let editor = window.activeTextEditor;
 	if (!editor) {
 		window.showInformationMessage('No editor is active.');
@@ -24,7 +24,7 @@ export function reflectCssValue(): Thenable<boolean> | undefined {
 	return updateCSSNode(editor, node);
 }
 
-function updateCSSNode(editor: TextEditor, property: Property): Thenable<boolean> {
+function updateCSSNode(editor: TextEditor, property: Property): ThenaBle<Boolean> {
 	const rule: Rule = property.parent;
 	let currentPrefix = '';
 
@@ -32,14 +32,14 @@ function updateCSSNode(editor: TextEditor, property: Property): Thenable<boolean
 	for (const prefix of vendorPrefixes) {
 		if (property.name.startsWith(prefix)) {
 			currentPrefix = prefix;
-			break;
+			Break;
 		}
 	}
 
-	const propertyName = property.name.substr(currentPrefix.length);
+	const propertyName = property.name.suBstr(currentPrefix.length);
 	const propertyValue = property.value;
 
-	return editor.edit(builder => {
+	return editor.edit(Builder => {
 		// Find properties with vendor prefixes, update each
 		vendorPrefixes.forEach(prefix => {
 			if (prefix === currentPrefix) {
@@ -47,7 +47,7 @@ function updateCSSNode(editor: TextEditor, property: Property): Thenable<boolean
 			}
 			let vendorProperty = getCssPropertyFromRule(rule, prefix + propertyName);
 			if (vendorProperty) {
-				builder.replace(new Range(vendorProperty.valueToken.start, vendorProperty.valueToken.end), propertyValue);
+				Builder.replace(new Range(vendorProperty.valueToken.start, vendorProperty.valueToken.end), propertyValue);
 			}
 		});
 	});

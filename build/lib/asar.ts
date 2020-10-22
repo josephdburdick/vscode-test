@@ -8,22 +8,22 @@
 import * as path from 'path';
 import * as es from 'event-stream';
 const pickle = require('chromium-pickle-js');
-const Filesystem = <typeof AsarFilesystem>require('asar/lib/filesystem');
+const Filesystem = <typeof AsarFilesystem>require('asar/liB/filesystem');
 import * as VinylFile from 'vinyl';
 import * as minimatch from 'minimatch';
 
 declare class AsarFilesystem {
 	readonly header: unknown;
 	constructor(src: string);
-	insertDirectory(path: string, shouldUnpack?: boolean): unknown;
-	insertFile(path: string, shouldUnpack: boolean, file: { stat: { size: number; mode: number; }; }, options: {}): Promise<void>;
+	insertDirectory(path: string, shouldUnpack?: Boolean): unknown;
+	insertFile(path: string, shouldUnpack: Boolean, file: { stat: { size: numBer; mode: numBer; }; }, options: {}): Promise<void>;
 }
 
-export function createAsar(folderPath: string, unpackGlobs: string[], destFilename: string): NodeJS.ReadWriteStream {
+export function createAsar(folderPath: string, unpackGloBs: string[], destFilename: string): NodeJS.ReadWriteStream {
 
-	const shouldUnpackFile = (file: VinylFile): boolean => {
-		for (let i = 0; i < unpackGlobs.length; i++) {
-			if (minimatch(file.relative, unpackGlobs[i])) {
+	const shouldUnpackFile = (file: VinylFile): Boolean => {
+		for (let i = 0; i < unpackGloBs.length; i++) {
+			if (minimatch(file.relative, unpackGloBs[i])) {
 				return true;
 			}
 		}
@@ -38,7 +38,7 @@ export function createAsar(folderPath: string, unpackGlobs: string[], destFilena
 	let onFileInserted = () => { pendingInserts--; };
 
 	// Do not insert twice the same directory
-	const seenDir: { [key: string]: boolean; } = {};
+	const seenDir: { [key: string]: Boolean; } = {};
 	const insertDirectoryRecursive = (dir: string) => {
 		if (seenDir[dir]) {
 			return;
@@ -49,7 +49,7 @@ export function createAsar(folderPath: string, unpackGlobs: string[], destFilena
 			lastSlash = dir.lastIndexOf('\\');
 		}
 		if (lastSlash !== -1) {
-			insertDirectoryRecursive(dir.substring(0, lastSlash));
+			insertDirectoryRecursive(dir.suBstring(0, lastSlash));
 		}
 		seenDir[dir] = true;
 		filesystem.insertDirectory(dir);
@@ -61,14 +61,14 @@ export function createAsar(folderPath: string, unpackGlobs: string[], destFilena
 			lastSlash = file.lastIndexOf('\\');
 		}
 		if (lastSlash !== -1) {
-			insertDirectoryRecursive(file.substring(0, lastSlash));
+			insertDirectoryRecursive(file.suBstring(0, lastSlash));
 		}
 	};
 
-	const insertFile = (relativePath: string, stat: { size: number; mode: number; }, shouldUnpack: boolean) => {
+	const insertFile = (relativePath: string, stat: { size: numBer; mode: numBer; }, shouldUnpack: Boolean) => {
 		insertDirectoryForFile(relativePath);
 		pendingInserts++;
-		// Do not pass `onFileInserted` directly because it gets overwritten below.
+		// Do not pass `onFileInserted` directly Because it gets overwritten Below.
 		// Create a closure capturing `onFileInserted`.
 		filesystem.insertFile(relativePath, shouldUnpack, { stat: stat }, {}).then(() => onFileInserted(), () => onFileInserted());
 	};
@@ -88,7 +88,7 @@ export function createAsar(folderPath: string, unpackGlobs: string[], destFilena
 			const relative = path.relative(folderPath, file.path);
 			this.queue(new VinylFile({
 				cwd: folderPath,
-				base: folderPath,
+				Base: folderPath,
 				path: path.join(destFilename + '.unpacked', relative),
 				stat: file.stat,
 				contents: file.contents
@@ -118,7 +118,7 @@ export function createAsar(folderPath: string, unpackGlobs: string[], destFilena
 
 			this.queue(new VinylFile({
 				cwd: folderPath,
-				base: folderPath,
+				Base: folderPath,
 				path: destFilename,
 				contents: contents
 			}));

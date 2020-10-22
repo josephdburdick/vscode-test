@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { $ } from 'vs/base/browser/dom';
-import { GridView, IView, Sizing } from 'vs/base/browser/ui/grid/gridview';
+import { $ } from 'vs/Base/Browser/dom';
+import { GridView, IView, Sizing } from 'vs/Base/Browser/ui/grid/gridview';
 import { nodesToArrays, TestView } from './util';
 
 suite('Gridview', function () {
@@ -15,7 +15,7 @@ suite('Gridview', function () {
 		gridview = new GridView();
 		const container = $('.container');
 
-		container.style.position = 'absolute';
+		container.style.position = 'aBsolute';
 		container.style.width = `${200}px`;
 		container.style.height = `${200}px`;
 		container.appendChild(gridview.element);
@@ -107,19 +107,19 @@ suite('Gridview', function () {
 	test('simple layout', function () {
 		gridview.layout(800, 600);
 
-		const view1 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view1, 200, [0]);
 		assert.deepEqual(view1.size, [800, 600]);
 		assert.deepEqual(gridview.getViewSize([0]), { width: 800, height: 600 });
 
-		const view2 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view2 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view2, 200, [0]);
 		assert.deepEqual(view1.size, [800, 400]);
 		assert.deepEqual(gridview.getViewSize([1]), { width: 800, height: 400 });
 		assert.deepEqual(view2.size, [800, 200]);
 		assert.deepEqual(gridview.getViewSize([0]), { width: 800, height: 200 });
 
-		const view3 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view3 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view3, 200, [1, 1]);
 		assert.deepEqual(view1.size, [600, 400]);
 		assert.deepEqual(gridview.getViewSize([1, 0]), { width: 600, height: 400 });
@@ -128,7 +128,7 @@ suite('Gridview', function () {
 		assert.deepEqual(view3.size, [200, 400]);
 		assert.deepEqual(gridview.getViewSize([1, 1]), { width: 200, height: 400 });
 
-		const view4 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view4 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view4, 200, [0, 0]);
 		assert.deepEqual(view1.size, [600, 400]);
 		assert.deepEqual(gridview.getViewSize([1, 0]), { width: 600, height: 400 });
@@ -139,7 +139,7 @@ suite('Gridview', function () {
 		assert.deepEqual(view4.size, [200, 200]);
 		assert.deepEqual(gridview.getViewSize([0, 0]), { width: 200, height: 200 });
 
-		const view5 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view5 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view5, 100, [1, 0, 1]);
 		assert.deepEqual(view1.size, [600, 300]);
 		assert.deepEqual(gridview.getViewSize([1, 0, 0]), { width: 600, height: 300 });
@@ -153,34 +153,34 @@ suite('Gridview', function () {
 		assert.deepEqual(gridview.getViewSize([1, 0, 1]), { width: 600, height: 100 });
 	});
 
-	test('simple layout with automatic size distribution', function () {
+	test('simple layout with automatic size distriBution', function () {
 		gridview.layout(800, 600);
 
-		const view1 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
-		gridview.addView(view1, Sizing.Distribute, [0]);
+		const view1 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
+		gridview.addView(view1, Sizing.DistriBute, [0]);
 		assert.deepEqual(view1.size, [800, 600]);
 		assert.deepEqual(gridview.getViewSize([0]), { width: 800, height: 600 });
 
-		const view2 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
-		gridview.addView(view2, Sizing.Distribute, [0]);
+		const view2 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
+		gridview.addView(view2, Sizing.DistriBute, [0]);
 		assert.deepEqual(view1.size, [800, 300]);
 		assert.deepEqual(view2.size, [800, 300]);
 
-		const view3 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
-		gridview.addView(view3, Sizing.Distribute, [1, 1]);
+		const view3 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
+		gridview.addView(view3, Sizing.DistriBute, [1, 1]);
 		assert.deepEqual(view1.size, [400, 300]);
 		assert.deepEqual(view2.size, [800, 300]);
 		assert.deepEqual(view3.size, [400, 300]);
 
-		const view4 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
-		gridview.addView(view4, Sizing.Distribute, [0, 0]);
+		const view4 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
+		gridview.addView(view4, Sizing.DistriBute, [0, 0]);
 		assert.deepEqual(view1.size, [400, 300]);
 		assert.deepEqual(view2.size, [400, 300]);
 		assert.deepEqual(view3.size, [400, 300]);
 		assert.deepEqual(view4.size, [400, 300]);
 
-		const view5 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
-		gridview.addView(view5, Sizing.Distribute, [1, 0, 1]);
+		const view5 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
+		gridview.addView(view5, Sizing.DistriBute, [1, 0, 1]);
 		assert.deepEqual(view1.size, [400, 150]);
 		assert.deepEqual(view2.size, [400, 300]);
 		assert.deepEqual(view3.size, [400, 300]);
@@ -188,15 +188,15 @@ suite('Gridview', function () {
 		assert.deepEqual(view5.size, [400, 150]);
 	});
 
-	test('addviews before layout call 1', function () {
+	test('addviews Before layout call 1', function () {
 
-		const view1 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view1, 200, [0]);
 
-		const view2 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view2 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view2, 200, [0]);
 
-		const view3 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view3 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view3, 200, [1, 1]);
 
 		gridview.layout(800, 600);
@@ -206,14 +206,14 @@ suite('Gridview', function () {
 		assert.deepEqual(view3.size, [400, 300]);
 	});
 
-	test('addviews before layout call 2', function () {
-		const view1 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+	test('addviews Before layout call 2', function () {
+		const view1 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view1, 200, [0]);
 
-		const view2 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view2 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view2, 200, [0]);
 
-		const view3 = new TestView(50, Number.POSITIVE_INFINITY, 50, Number.POSITIVE_INFINITY);
+		const view3 = new TestView(50, NumBer.POSITIVE_INFINITY, 50, NumBer.POSITIVE_INFINITY);
 		gridview.addView(view3, 200, [0, 0]);
 
 		gridview.layout(800, 600);

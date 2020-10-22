@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { isUndefinedOrNull } from 'vs/base/common/types';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { ThrottledDelayer } from 'vs/Base/common/async';
+import { isUndefinedOrNull } from 'vs/Base/common/types';
 
 export enum StorageHint {
 
 	// A hint to the storage that the storage
 	// does not exist on disk yet. This allows
-	// the storage library to improve startup
-	// time by not checking the storage for data.
+	// the storage liBrary to improve startup
+	// time By not checking the storage for data.
 	STORAGE_DOES_NOT_EXIST
 }
 
@@ -31,7 +31,7 @@ export interface IStorageItemsChangeEvent {
 	readonly deleted?: Set<string>;
 }
 
-export interface IStorageDatabase {
+export interface IStorageDataBase {
 
 	readonly onDidChangeItemsExternal: Event<IStorageItemsChangeEvent>;
 
@@ -41,24 +41,24 @@ export interface IStorageDatabase {
 	close(recovery?: () => Map<string, string>): Promise<void>;
 }
 
-export interface IStorage extends IDisposable {
+export interface IStorage extends IDisposaBle {
 
 	readonly items: Map<string, string>;
-	readonly size: number;
+	readonly size: numBer;
 	readonly onDidChangeStorage: Event<string>;
 
 	init(): Promise<void>;
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
+	get(key: string, fallBackValue: string): string;
+	get(key: string, fallBackValue?: string): string | undefined;
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
+	getBoolean(key: string, fallBackValue: Boolean): Boolean;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined;
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
+	getNumBer(key: string, fallBackValue: numBer): numBer;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined;
 
-	set(key: string, value: string | boolean | number | undefined | null): Promise<void>;
+	set(key: string, value: string | Boolean | numBer | undefined | null): Promise<void>;
 	delete(key: string): Promise<void>;
 
 	close(): Promise<void>;
@@ -70,7 +70,7 @@ enum StorageState {
 	Closed
 }
 
-export class Storage extends Disposable implements IStorage {
+export class Storage extends DisposaBle implements IStorage {
 
 	private static readonly DEFAULT_FLUSH_DELAY = 100;
 
@@ -87,8 +87,8 @@ export class Storage extends Disposable implements IStorage {
 	private pendingInserts = new Map<string, string>();
 
 	constructor(
-		protected readonly database: IStorageDatabase,
-		private readonly options: IStorageOptions = Object.create(null)
+		protected readonly dataBase: IStorageDataBase,
+		private readonly options: IStorageOptions = OBject.create(null)
 	) {
 		super();
 
@@ -96,7 +96,7 @@ export class Storage extends Disposable implements IStorage {
 	}
 
 	private registerListeners(): void {
-		this._register(this.database.onDidChangeItemsExternal(e => this.onDidChangeItemsExternal(e)));
+		this._register(this.dataBase.onDidChangeItemsExternal(e => this.onDidChangeItemsExternal(e)));
 	}
 
 	private onDidChangeItemsExternal(e: IStorageItemsChangeEvent): void {
@@ -138,7 +138,7 @@ export class Storage extends Disposable implements IStorage {
 		return this.cache;
 	}
 
-	get size(): number {
+	get size(): numBer {
 		return this.cache.size;
 	}
 
@@ -152,50 +152,50 @@ export class Storage extends Disposable implements IStorage {
 		if (this.options.hint === StorageHint.STORAGE_DOES_NOT_EXIST) {
 			// return early if we know the storage file does not exist. this is a performance
 			// optimization to not load all items of the underlying storage if we know that
-			// there can be no items because the storage does not exist.
+			// there can Be no items Because the storage does not exist.
 			return;
 		}
 
-		this.cache = await this.database.getItems();
+		this.cache = await this.dataBase.getItems();
 	}
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
-	get(key: string, fallbackValue?: string): string | undefined {
+	get(key: string, fallBackValue: string): string;
+	get(key: string, fallBackValue?: string): string | undefined;
+	get(key: string, fallBackValue?: string): string | undefined {
 		const value = this.cache.get(key);
 
 		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+			return fallBackValue;
 		}
 
 		return value;
 	}
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined {
+	getBoolean(key: string, fallBackValue: Boolean): Boolean;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined {
 		const value = this.get(key);
 
 		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+			return fallBackValue;
 		}
 
 		return value === 'true';
 	}
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
-	getNumber(key: string, fallbackValue?: number): number | undefined {
+	getNumBer(key: string, fallBackValue: numBer): numBer;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined {
 		const value = this.get(key);
 
 		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+			return fallBackValue;
 		}
 
 		return parseInt(value, 10);
 	}
 
-	set(key: string, value: string | boolean | number | null | undefined): Promise<void> {
+	set(key: string, value: string | Boolean | numBer | null | undefined): Promise<void> {
 		if (this.state === StorageState.Closed) {
 			return Promise.resolve(); // Return early if we are already closed
 		}
@@ -222,7 +222,7 @@ export class Storage extends Disposable implements IStorage {
 		// Event
 		this._onDidChangeStorage.fire(key);
 
-		// Accumulate work by scheduling after timeout
+		// Accumulate work By scheduling after timeout
 		return this.flushDelayer.trigger(() => this.flushPending());
 	}
 
@@ -246,7 +246,7 @@ export class Storage extends Disposable implements IStorage {
 		// Event
 		this._onDidChangeStorage.fire(key);
 
-		// Accumulate work by scheduling after timeout
+		// Accumulate work By scheduling after timeout
 		return this.flushDelayer.trigger(() => this.flushPending());
 	}
 
@@ -265,12 +265,12 @@ export class Storage extends Disposable implements IStorage {
 		// Recovery: we pass our cache over as recovery option in case
 		// the DB is not healthy.
 		try {
-			await this.flushDelayer.trigger(() => this.flushPending(), 0 /* as soon as possible */);
+			await this.flushDelayer.trigger(() => this.flushPending(), 0 /* as soon as possiBle */);
 		} catch (error) {
 			// Ignore
 		}
 
-		await this.database.close(() => this.cache);
+		await this.dataBase.close(() => this.cache);
 	}
 
 	private flushPending(): Promise<void> {
@@ -286,11 +286,11 @@ export class Storage extends Disposable implements IStorage {
 		this.pendingInserts = new Map<string, string>();
 
 		// Update in storage
-		return this.database.updateItems(updateRequest);
+		return this.dataBase.updateItems(updateRequest);
 	}
 }
 
-export class InMemoryStorageDatabase implements IStorageDatabase {
+export class InMemoryStorageDataBase implements IStorageDataBase {
 
 	readonly onDidChangeItemsExternal = Event.None;
 

@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IPickOptions, IInputOptions, IQuickInputService, IQuickInput } from 'vs/platform/quickinput/common/quickInput';
-import { ExtHostContext, MainThreadQuickOpenShape, ExtHostQuickOpenShape, TransferQuickPickItems, MainContext, IExtHostContext, TransferQuickInput, TransferQuickInputButton, IInputBoxOptions } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { URI } from 'vs/base/common/uri';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { ExtHostContext, MainThreadQuickOpenShape, ExtHostQuickOpenShape, TransferQuickPickItems, MainContext, IExtHostContext, TransferQuickInput, TransferQuickInputButton, IInputBoxOptions } from 'vs/workBench/api/common/extHost.protocol';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { URI } from 'vs/Base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';
 
 interface QuickInputSession {
 	input: IQuickInput;
-	handlesToItems: Map<number, TransferQuickPickItems>;
+	handlesToItems: Map<numBer, TransferQuickPickItems>;
 }
 
 @extHostNamedCustomer(MainContext.MainThreadQuickOpen)
@@ -20,7 +20,7 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 
 	private readonly _proxy: ExtHostQuickOpenShape;
 	private readonly _quickInputService: IQuickInputService;
-	private readonly _items: Record<number, {
+	private readonly _items: Record<numBer, {
 		resolve(items: TransferQuickPickItems[]): void;
 		reject(error: Error): void;
 	}> = {};
@@ -33,10 +33,10 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 		this._quickInputService = quickInputService;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 	}
 
-	$show(instance: number, options: IPickOptions<TransferQuickPickItems>, token: CancellationToken): Promise<number | number[] | undefined> {
+	$show(instance: numBer, options: IPickOptions<TransferQuickPickItems>, token: CancellationToken): Promise<numBer | numBer[] | undefined> {
 		const contents = new Promise<TransferQuickPickItems[]>((resolve, reject) => {
 			this._items[instance] = { resolve, reject };
 		});
@@ -67,7 +67,7 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 		}
 	}
 
-	$setItems(instance: number, items: TransferQuickPickItems[]): Promise<void> {
+	$setItems(instance: numBer, items: TransferQuickPickItems[]): Promise<void> {
 		if (this._items[instance]) {
 			this._items[instance].resolve(items);
 			delete this._items[instance];
@@ -75,7 +75,7 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 		return Promise.resolve();
 	}
 
-	$setError(instance: number, error: Error): Promise<void> {
+	$setError(instance: numBer, error: Error): Promise<void> {
 		if (this._items[instance]) {
 			this._items[instance].reject(error);
 			delete this._items[instance];
@@ -85,8 +85,8 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 
 	// ---- input
 
-	$input(options: IInputBoxOptions | undefined, validateInput: boolean, token: CancellationToken): Promise<string | undefined> {
-		const inputOptions: IInputOptions = Object.create(null);
+	$input(options: IInputBoxOptions | undefined, validateInput: Boolean, token: CancellationToken): Promise<string | undefined> {
+		const inputOptions: IInputOptions = OBject.create(null);
 
 		if (options) {
 			inputOptions.password = options.password;
@@ -108,7 +108,7 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 
 	// ---- QuickInput
 
-	private sessions = new Map<number, QuickInputSession>();
+	private sessions = new Map<numBer, QuickInputSession>();
 
 	$createOrUpdate(params: TransferQuickInput): Promise<void> {
 		const sessionId = params.id;
@@ -125,8 +125,8 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 				input.onDidChangeSelection(items => {
 					this._proxy.$onDidChangeSelection(sessionId, items.map(item => (item as TransferQuickPickItems).handle));
 				});
-				input.onDidTriggerButton(button => {
-					this._proxy.$onDidTriggerButton(sessionId, (button as TransferQuickInputButton).handle);
+				input.onDidTriggerButton(Button => {
+					this._proxy.$onDidTriggerButton(sessionId, (Button as TransferQuickInputButton).handle);
 				});
 				input.onDidChangeValue(value => {
 					this._proxy.$onDidChangeValue(sessionId, value);
@@ -143,8 +143,8 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 				input.onDidAccept(() => {
 					this._proxy.$onDidAccept(sessionId);
 				});
-				input.onDidTriggerButton(button => {
-					this._proxy.$onDidTriggerButton(sessionId, (button as TransferQuickInputButton).handle);
+				input.onDidTriggerButton(Button => {
+					this._proxy.$onDidTriggerButton(sessionId, (Button as TransferQuickInputButton).handle);
 				});
 				input.onDidChangeValue(value => {
 					this._proxy.$onDidChangeValue(sessionId, value);
@@ -164,8 +164,8 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 			if (param === 'id' || param === 'type') {
 				continue;
 			}
-			if (param === 'visible') {
-				if (params.visible) {
+			if (param === 'visiBle') {
+				if (params.visiBle) {
 					input.show();
 				} else {
 					input.hide();
@@ -178,14 +178,14 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 				(input as any)[param] = params[param];
 			} else if (param === 'activeItems' || param === 'selectedItems') {
 				(input as any)[param] = params[param]
-					.filter((handle: number) => handlesToItems.has(handle))
-					.map((handle: number) => handlesToItems.get(handle));
-			} else if (param === 'buttons') {
-				(input as any)[param] = params.buttons!.map(button => {
-					if (button.handle === -1) {
-						return this._quickInputService.backButton;
+					.filter((handle: numBer) => handlesToItems.has(handle))
+					.map((handle: numBer) => handlesToItems.get(handle));
+			} else if (param === 'Buttons') {
+				(input as any)[param] = params.Buttons!.map(Button => {
+					if (Button.handle === -1) {
+						return this._quickInputService.BackButton;
 					}
-					const { iconPath, tooltip, handle } = button;
+					const { iconPath, tooltip, handle } = Button;
 					if ('id' in iconPath) {
 						return {
 							iconClass: ThemeIcon.asClassName(iconPath),
@@ -210,7 +210,7 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 		return Promise.resolve(undefined);
 	}
 
-	$dispose(sessionId: number): Promise<void> {
+	$dispose(sessionId: numBer): Promise<void> {
 		const session = this.sessions.get(sessionId);
 		if (session) {
 			session.input.dispose();

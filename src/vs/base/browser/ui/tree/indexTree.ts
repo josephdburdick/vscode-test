@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/tree';
-import { Iterable } from 'vs/base/common/iterator';
-import { AbstractTree, IAbstractTreeOptions } from 'vs/base/browser/ui/tree/abstractTree';
-import { IndexTreeModel, IList } from 'vs/base/browser/ui/tree/indexTreeModel';
-import { ITreeElement, ITreeModel, ITreeNode, ITreeRenderer } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { ABstractTree, IABstractTreeOptions } from 'vs/Base/Browser/ui/tree/aBstractTree';
+import { IndexTreeModel, IList } from 'vs/Base/Browser/ui/tree/indexTreeModel';
+import { ITreeElement, ITreeModel, ITreeNode, ITreeRenderer } from 'vs/Base/Browser/ui/tree/tree';
+import { IListVirtualDelegate } from 'vs/Base/Browser/ui/list/list';
 
-export interface IIndexTreeOptions<T, TFilterData = void> extends IAbstractTreeOptions<T, TFilterData> { }
+export interface IIndexTreeOptions<T, TFilterData = void> extends IABstractTreeOptions<T, TFilterData> { }
 
-export class IndexTree<T, TFilterData = void> extends AbstractTree<T, TFilterData, number[]> {
+export class IndexTree<T, TFilterData = void> extends ABstractTree<T, TFilterData, numBer[]> {
 
 	protected model!: IndexTreeModel<T, TFilterData>;
 
@@ -27,11 +27,11 @@ export class IndexTree<T, TFilterData = void> extends AbstractTree<T, TFilterDat
 		super(user, container, delegate, renderers, options);
 	}
 
-	splice(location: number[], deleteCount: number, toInsert: Iterable<ITreeElement<T>> = Iterable.empty()): void {
+	splice(location: numBer[], deleteCount: numBer, toInsert: IteraBle<ITreeElement<T>> = IteraBle.empty()): void {
 		this.model.splice(location, deleteCount, toInsert);
 	}
 
-	rerender(location?: number[]): void {
+	rerender(location?: numBer[]): void {
 		if (location === undefined) {
 			this.view.rerender();
 			return;
@@ -40,11 +40,11 @@ export class IndexTree<T, TFilterData = void> extends AbstractTree<T, TFilterDat
 		this.model.rerender(location);
 	}
 
-	updateElementHeight(location: number[], height: number): void {
+	updateElementHeight(location: numBer[], height: numBer): void {
 		this.model.updateElementHeight(location, height);
 	}
 
-	protected createModel(user: string, view: IList<ITreeNode<T, TFilterData>>, options: IIndexTreeOptions<T, TFilterData>): ITreeModel<T, TFilterData, number[]> {
+	protected createModel(user: string, view: IList<ITreeNode<T, TFilterData>>, options: IIndexTreeOptions<T, TFilterData>): ITreeModel<T, TFilterData, numBer[]> {
 		return new IndexTreeModel(user, view, this.rootElement, options);
 	}
 }

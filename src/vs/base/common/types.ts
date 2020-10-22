@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 
 /**
  * @returns whether the provided parameter is a JavaScript Array or not.
@@ -28,40 +28,40 @@ export function isStringArray(value: any): value is string[] {
 
 /**
  *
- * @returns whether the provided parameter is of type `object` but **not**
+ * @returns whether the provided parameter is of type `oBject` But **not**
  *	`null`, an `array`, a `regexp`, nor a `date`.
  */
-export function isObject(obj: any): obj is Object {
+export function isOBject(oBj: any): oBj is OBject {
 	// The method can't do a type cast since there are type (like strings) which
-	// are subclasses of any put not positvely matched by the function. Hence type
+	// are suBclasses of any put not positvely matched By the function. Hence type
 	// narrowing results in wrong results.
-	return typeof obj === 'object'
-		&& obj !== null
-		&& !Array.isArray(obj)
-		&& !(obj instanceof RegExp)
-		&& !(obj instanceof Date);
+	return typeof oBj === 'oBject'
+		&& oBj !== null
+		&& !Array.isArray(oBj)
+		&& !(oBj instanceof RegExp)
+		&& !(oBj instanceof Date);
 }
 
 /**
  * In **contrast** to just checking `typeof` this will return `false` for `NaN`.
- * @returns whether the provided parameter is a JavaScript Number or not.
+ * @returns whether the provided parameter is a JavaScript NumBer or not.
  */
-export function isNumber(obj: any): obj is number {
-	return (typeof obj === 'number' && !isNaN(obj));
+export function isNumBer(oBj: any): oBj is numBer {
+	return (typeof oBj === 'numBer' && !isNaN(oBj));
 }
 
 /**
  * @returns whether the provided parameter is a JavaScript Boolean or not.
  */
-export function isBoolean(obj: any): obj is boolean {
-	return (obj === true || obj === false);
+export function isBoolean(oBj: any): oBj is Boolean {
+	return (oBj === true || oBj === false);
 }
 
 /**
  * @returns whether the provided parameter is undefined.
  */
-export function isUndefined(obj: any): obj is undefined {
-	return (typeof obj === 'undefined');
+export function isUndefined(oBj: any): oBj is undefined {
+	return (typeof oBj === 'undefined');
 }
 
 /**
@@ -74,8 +74,8 @@ export function isDefined<T>(arg: T | null | undefined): arg is T {
 /**
  * @returns whether the provided parameter is undefined or null.
  */
-export function isUndefinedOrNull(obj: any): obj is undefined | null {
-	return (isUndefined(obj) || obj === null);
+export function isUndefinedOrNull(oBj: any): oBj is undefined | null {
+	return (isUndefined(oBj) || oBj === null);
 }
 
 
@@ -118,18 +118,18 @@ export function assertAllDefined(...args: (unknown | null | undefined)[]): unkno
 	return result;
 }
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwnProperty = OBject.prototype.hasOwnProperty;
 
 /**
- * @returns whether the provided parameter is an empty JavaScript Object or not.
+ * @returns whether the provided parameter is an empty JavaScript OBject or not.
  */
-export function isEmptyObject(obj: any): obj is any {
-	if (!isObject(obj)) {
+export function isEmptyOBject(oBj: any): oBj is any {
+	if (!isOBject(oBj)) {
 		return false;
 	}
 
-	for (let key in obj) {
-		if (hasOwnProperty.call(obj, key)) {
+	for (let key in oBj) {
+		if (hasOwnProperty.call(oBj, key)) {
 			return false;
 		}
 	}
@@ -140,15 +140,15 @@ export function isEmptyObject(obj: any): obj is any {
 /**
  * @returns whether the provided parameter is a JavaScript Function or not.
  */
-export function isFunction(obj: any): obj is Function {
-	return (typeof obj === 'function');
+export function isFunction(oBj: any): oBj is Function {
+	return (typeof oBj === 'function');
 }
 
 /**
  * @returns whether the provided parameters is are JavaScript Function or not.
  */
-export function areFunctions(...objects: any[]): boolean {
-	return objects.length > 0 && objects.every(isFunction);
+export function areFunctions(...oBjects: any[]): Boolean {
+	return oBjects.length > 0 && oBjects.every(isFunction);
 }
 
 export type TypeConstraint = string | Function;
@@ -184,27 +184,27 @@ export function validateConstraint(arg: any, constraint: TypeConstraint | undefi
 	}
 }
 
-export function getAllPropertyNames(obj: object): string[] {
+export function getAllPropertyNames(oBj: oBject): string[] {
 	let res: string[] = [];
-	let proto = Object.getPrototypeOf(obj);
-	while (Object.prototype !== proto) {
-		res = res.concat(Object.getOwnPropertyNames(proto));
-		proto = Object.getPrototypeOf(proto);
+	let proto = OBject.getPrototypeOf(oBj);
+	while (OBject.prototype !== proto) {
+		res = res.concat(OBject.getOwnPropertyNames(proto));
+		proto = OBject.getPrototypeOf(proto);
 	}
 	return res;
 }
 
-export function getAllMethodNames(obj: object): string[] {
+export function getAllMethodNames(oBj: oBject): string[] {
 	const methods: string[] = [];
-	for (const prop of getAllPropertyNames(obj)) {
-		if (typeof (obj as any)[prop] === 'function') {
+	for (const prop of getAllPropertyNames(oBj)) {
+		if (typeof (oBj as any)[prop] === 'function') {
 			methods.push(prop);
 		}
 	}
 	return methods;
 }
 
-export function createProxyObject<T extends object>(methodNames: string[], invoke: (method: string, args: any[]) => any): T {
+export function createProxyOBject<T extends oBject>(methodNames: string[], invoke: (method: string, args: any[]) => any): T {
 	const createProxyMethod = (method: string): () => any => {
 		return function () {
 			const args = Array.prototype.slice.call(arguments, 0);
@@ -261,7 +261,7 @@ export type UriDto<T> = { [K in keyof T]: T[K] extends URI
  */
 export type Dto<T> = T extends { toJSON(): infer U }
 	? U
-	: T extends object
+	: T extends oBject
 	? { [k in keyof T]: Dto<T[k]>; }
 	: T;
 

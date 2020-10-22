@@ -4,56 +4,56 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MainThreadDocumentsAndEditors } from 'vs/workbench/api/browser/mainThreadDocumentsAndEditors';
+import { MainThreadDocumentsAndEditors } from 'vs/workBench/api/Browser/mainThreadDocumentsAndEditors';
 import { SingleProxyRPCProtocol, TestRPCProtocol } from './testRPCProtocol';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
-import { TestCodeEditorService } from 'vs/editor/test/browser/editorTestServices';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { ExtHostDocumentsAndEditorsShape, ExtHostContext, ExtHostDocumentsShape, IWorkspaceTextEditDto, WorkspaceEditType } from 'vs/workbench/api/common/extHost.protocol';
-import { mock } from 'vs/base/test/common/mock';
-import { Event } from 'vs/base/common/event';
-import { MainThreadTextEditors } from 'vs/workbench/api/browser/mainThreadEditors';
-import { URI } from 'vs/base/common/uri';
+import { TestCodeEditorService } from 'vs/editor/test/Browser/editorTestServices';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { ExtHostDocumentsAndEditorsShape, ExtHostContext, ExtHostDocumentsShape, IWorkspaceTextEditDto, WorkspaceEditType } from 'vs/workBench/api/common/extHost.protocol';
+import { mock } from 'vs/Base/test/common/mock';
+import { Event } from 'vs/Base/common/event';
+import { MainThreadTextEditors } from 'vs/workBench/api/Browser/mainThreadEditors';
+import { URI } from 'vs/Base/common/uri';
 import { Range } from 'vs/editor/common/core/range';
 import { Position } from 'vs/editor/common/core/position';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { TestFileService, TestEditorService, TestEditorGroupsService, TestEnvironmentService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { BulkEditService } from 'vs/workbench/contrib/bulkEdit/browser/bulkEditService';
+import { TestFileService, TestEditorService, TestEditorGroupsService, TestEnvironmentService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { BulkEditService } from 'vs/workBench/contriB/BulkEdit/Browser/BulkEditService';
 import { NullLogService, ILogService } from 'vs/platform/log/common/log';
 import { ITextModelService, IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IReference, ImmortalReference } from 'vs/base/common/lifecycle';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { LabelService } from 'vs/workbench/services/label/common/labelService';
+import { IReference, ImmortalReference } from 'vs/Base/common/lifecycle';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
+import { LaBelService } from 'vs/workBench/services/laBel/common/laBelService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
+import { IBulkEditService } from 'vs/editor/Browser/services/BulkEditService';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
 import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
 import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { TestTextResourcePropertiesService, TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { extUri } from 'vs/base/common/resources';
+import { TestTextResourcePropertiesService, TestContextService } from 'vs/workBench/test/common/workBenchTestServices';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
+import { extUri } from 'vs/Base/common/resources';
 
 suite('MainThreadEditors', () => {
 
-	const resource = URI.parse('foo:bar');
+	const resource = URI.parse('foo:Bar');
 
 	let modelService: IModelService;
 	let editors: MainThreadTextEditors;
@@ -80,10 +80,10 @@ suite('MainThreadEditors', () => {
 
 		const services = new ServiceCollection();
 		services.set(IBulkEditService, new SyncDescriptor(BulkEditService));
-		services.set(ILabelService, new SyncDescriptor(LabelService));
+		services.set(ILaBelService, new SyncDescriptor(LaBelService));
 		services.set(ILogService, new NullLogService());
 		services.set(IWorkspaceContextService, new TestContextService());
-		services.set(IWorkbenchEnvironmentService, TestEnvironmentService);
+		services.set(IWorkBenchEnvironmentService, TestEnvironmentService);
 		services.set(IConfigurationService, configService);
 		services.set(IDialogService, dialogService);
 		services.set(INotificationService, notificationService);
@@ -105,17 +105,17 @@ suite('MainThreadEditors', () => {
 			onDidRunWorkingCopyFileOperation = Event.None;
 			create(resource: URI) {
 				createdResources.add(resource);
-				return Promise.resolve(Object.create(null));
+				return Promise.resolve(OBject.create(null));
 			}
 			move(files: { source: URI, target: URI }[]) {
 				const { source, target } = files[0];
 				movedResources.set(source, target);
-				return Promise.resolve(Object.create(null));
+				return Promise.resolve(OBject.create(null));
 			}
 			copy(files: { source: URI, target: URI }[]) {
 				const { source, target } = files[0];
 				copiedResources.set(source, target);
-				return Promise.resolve(Object.create(null));
+				return Promise.resolve(OBject.create(null));
 			}
 			delete(resources: URI[]) {
 				for (const resource of resources) {
@@ -165,7 +165,7 @@ suite('MainThreadEditors', () => {
 		editors = instaService.createInstance(MainThreadTextEditors, documentAndEditor, SingleProxyRPCProtocol(null));
 	});
 
-	test(`applyWorkspaceEdit returns false if model is changed by user`, () => {
+	test(`applyWorkspaceEdit returns false if model is changed By user`, () => {
 
 		let model = modelService.createModel('something', null, resource);
 

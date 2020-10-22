@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { Event } from 'vs/base/common/event';
-import { IPager } from 'vs/base/common/paging';
+import { Event } from 'vs/Base/common/event';
+import { IPager } from 'vs/Base/common/paging';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IExtensionManifest, IExtension, ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 export const EXTENSION_IDENTIFIER_PATTERN = '^([a-z0-9A-Z][a-z0-9-A-Z]*)\\.([a-z0-9A-Z][a-z0-9-A-Z]*)$';
 export const EXTENSION_IDENTIFIER_REGEX = new RegExp(EXTENSION_IDENTIFIER_PATTERN);
@@ -20,12 +20,12 @@ export interface IGalleryExtensionProperties {
 	extensionPack?: string[];
 	engine?: string;
 	localizedLanguages?: string[];
-	webExtension?: boolean;
+	weBExtension?: Boolean;
 }
 
 export interface IGalleryExtensionAsset {
 	uri: string;
-	fallbackUri: string;
+	fallBackUri: string;
 }
 
 export interface IGalleryExtensionAssets {
@@ -41,7 +41,7 @@ export interface IGalleryExtensionAssets {
 
 export function isIExtensionIdentifier(thing: any): thing is IExtensionIdentifier {
 	return thing
-		&& typeof thing === 'object'
+		&& typeof thing === 'oBject'
 		&& typeof thing.id === 'string'
 		&& (!thing.uuid || typeof thing.uuid === 'string');
 }
@@ -72,41 +72,41 @@ export interface IGalleryExtension {
 	version: string;
 	date: string;
 	displayName: string;
-	publisherId: string;
-	publisher: string;
-	publisherDisplayName: string;
+	puBlisherId: string;
+	puBlisher: string;
+	puBlisherDisplayName: string;
 	description: string;
-	installCount: number;
-	rating: number;
-	ratingCount: number;
+	installCount: numBer;
+	rating: numBer;
+	ratingCount: numBer;
 	assetUri: URI;
 	assetTypes: string[];
 	assets: IGalleryExtensionAssets;
 	properties: IGalleryExtensionProperties;
 	telemetryData: any;
-	preview: boolean;
-	webResource?: URI;
+	preview: Boolean;
+	weBResource?: URI;
 }
 
 export interface IGalleryMetadata {
 	id: string;
-	publisherId: string;
-	publisherDisplayName: string;
+	puBlisherId: string;
+	puBlisherDisplayName: string;
 }
 
 export interface ILocalExtension extends IExtension {
-	isMachineScoped: boolean;
-	publisherId: string | null;
-	publisherDisplayName: string | null;
+	isMachineScoped: Boolean;
+	puBlisherId: string | null;
+	puBlisherDisplayName: string | null;
 }
 
 export const enum SortBy {
 	NoneOrRelevance = 0,
 	LastUpdatedDate = 1,
 	Title = 2,
-	PublisherName = 3,
+	PuBlisherName = 3,
 	InstallCount = 4,
-	PublishedDate = 5,
+	PuBlishedDate = 5,
 	AverageRating = 6,
 	WeightedRating = 12
 }
@@ -121,7 +121,7 @@ export interface IQueryOptions {
 	text?: string;
 	ids?: string[];
 	names?: string[];
-	pageSize?: number;
+	pageSize?: numBer;
 	sortBy?: SortBy;
 	sortOrder?: SortOrder;
 	source?: string;
@@ -133,7 +133,7 @@ export const enum StatisticType {
 
 export interface IReportedExtension {
 	id: IExtensionIdentifier;
-	malicious: boolean;
+	malicious: Boolean;
 }
 
 export const enum InstallOperation {
@@ -149,19 +149,19 @@ export interface ITranslation {
 export const IExtensionGalleryService = createDecorator<IExtensionGalleryService>('extensionGalleryService');
 export interface IExtensionGalleryService {
 	readonly _serviceBrand: undefined;
-	isEnabled(): boolean;
+	isEnaBled(): Boolean;
 	query(token: CancellationToken): Promise<IPager<IGalleryExtension>>;
 	query(options: IQueryOptions, token: CancellationToken): Promise<IPager<IGalleryExtension>>;
 	download(extension: IGalleryExtension, location: URI, operation: InstallOperation): Promise<void>;
-	reportStatistic(publisher: string, name: string, version: string, type: StatisticType): Promise<void>;
+	reportStatistic(puBlisher: string, name: string, version: string, type: StatisticType): Promise<void>;
 	getReadme(extension: IGalleryExtension, token: CancellationToken): Promise<string>;
 	getManifest(extension: IGalleryExtension, token: CancellationToken): Promise<IExtensionManifest | null>;
 	getChangelog(extension: IGalleryExtension, token: CancellationToken): Promise<string>;
 	getCoreTranslation(extension: IGalleryExtension, languageId: string): Promise<ITranslation | null>;
-	getAllVersions(extension: IGalleryExtension, compatible: boolean): Promise<IGalleryExtensionVersion[]>;
+	getAllVersions(extension: IGalleryExtension, compatiBle: Boolean): Promise<IGalleryExtensionVersion[]>;
 	getExtensionsReport(): Promise<IReportedExtension[]>;
-	getCompatibleExtension(extension: IGalleryExtension): Promise<IGalleryExtension | null>;
-	getCompatibleExtension(id: IExtensionIdentifier, version?: string): Promise<IGalleryExtension | null>;
+	getCompatiBleExtension(extension: IGalleryExtension): Promise<IGalleryExtension | null>;
+	getCompatiBleExtension(id: IExtensionIdentifier, version?: string): Promise<IGalleryExtension | null>;
 }
 
 export interface InstallExtensionEvent {
@@ -186,7 +186,7 @@ export interface DidUninstallExtensionEvent {
 
 export const INSTALL_ERROR_NOT_SUPPORTED = 'notsupported';
 export const INSTALL_ERROR_MALICIOUS = 'malicious';
-export const INSTALL_ERROR_INCOMPATIBLE = 'incompatible';
+export const INSTALL_ERROR_INCOMPATIBLE = 'incompatiBle';
 
 export class ExtensionManagementError extends Error {
 	constructor(message: string, readonly code: string) {
@@ -194,7 +194,7 @@ export class ExtensionManagementError extends Error {
 	}
 }
 
-export type InstallOptions = { isBuiltin?: boolean, isMachineScoped?: boolean };
+export type InstallOptions = { isBuiltin?: Boolean, isMachineScoped?: Boolean };
 
 export const IExtensionManagementService = createDecorator<IExtensionManagementService>('extensionManagementService');
 export interface IExtensionManagementService {
@@ -209,9 +209,9 @@ export interface IExtensionManagementService {
 	unzip(zipLocation: URI): Promise<IExtensionIdentifier>;
 	getManifest(vsix: URI): Promise<IExtensionManifest>;
 	install(vsix: URI, options?: InstallOptions): Promise<ILocalExtension>;
-	canInstall(extension: IGalleryExtension): Promise<boolean>;
+	canInstall(extension: IGalleryExtension): Promise<Boolean>;
 	installFromGallery(extension: IGalleryExtension, options?: InstallOptions): Promise<ILocalExtension>;
-	uninstall(extension: ILocalExtension, force?: boolean): Promise<void>;
+	uninstall(extension: ILocalExtension, force?: Boolean): Promise<void>;
 	reinstallFromGallery(extension: ILocalExtension): Promise<void>;
 	getInstalled(type?: ExtensionType): Promise<ILocalExtension[]>;
 	getExtensionsReport(): Promise<IReportedExtension[]>;
@@ -219,32 +219,32 @@ export interface IExtensionManagementService {
 	updateMetadata(local: ILocalExtension, metadata: IGalleryMetadata): Promise<ILocalExtension>;
 }
 
-export const DISABLED_EXTENSIONS_STORAGE_PATH = 'extensionsIdentifiers/disabled';
-export const ENABLED_EXTENSIONS_STORAGE_PATH = 'extensionsIdentifiers/enabled';
-export const IGlobalExtensionEnablementService = createDecorator<IGlobalExtensionEnablementService>('IGlobalExtensionEnablementService');
+export const DISABLED_EXTENSIONS_STORAGE_PATH = 'extensionsIdentifiers/disaBled';
+export const ENABLED_EXTENSIONS_STORAGE_PATH = 'extensionsIdentifiers/enaBled';
+export const IGloBalExtensionEnaBlementService = createDecorator<IGloBalExtensionEnaBlementService>('IGloBalExtensionEnaBlementService');
 
-export interface IGlobalExtensionEnablementService {
+export interface IGloBalExtensionEnaBlementService {
 	readonly _serviceBrand: undefined;
-	readonly onDidChangeEnablement: Event<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }>;
+	readonly onDidChangeEnaBlement: Event<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }>;
 
-	getDisabledExtensions(): IExtensionIdentifier[];
-	enableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean>;
-	disableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean>;
+	getDisaBledExtensions(): IExtensionIdentifier[];
+	enaBleExtension(extension: IExtensionIdentifier, source?: string): Promise<Boolean>;
+	disaBleExtension(extension: IExtensionIdentifier, source?: string): Promise<Boolean>;
 
 }
 
 export type IConfigBasedExtensionTip = {
 	readonly extensionId: string,
 	readonly extensionName: string,
-	readonly isExtensionPack: boolean,
+	readonly isExtensionPack: Boolean,
 	readonly configName: string,
-	readonly important: boolean,
+	readonly important: Boolean,
 };
 
-export type IExecutableBasedExtensionTip = {
+export type IExecutaBleBasedExtensionTip = {
 	readonly extensionId: string,
 	readonly extensionName: string,
-	readonly isExtensionPack: boolean,
+	readonly isExtensionPack: Boolean,
 	readonly exeName: string,
 	readonly exeFriendlyName: string,
 	readonly windowsPath?: string,
@@ -257,15 +257,15 @@ export interface IExtensionTipsService {
 	readonly _serviceBrand: undefined;
 
 	getConfigBasedTips(folder: URI): Promise<IConfigBasedExtensionTip[]>;
-	getImportantExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]>;
-	getOtherExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]>;
+	getImportantExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]>;
+	getOtherExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]>;
 	getAllWorkspacesTips(): Promise<IWorkspaceTips[]>;
 }
 
 
 export const DefaultIconPath = FileAccess.asBrowserUri('./media/defaultIcon.png', require).toString(true);
-export const ExtensionsLabel = localize('extensions', "Extensions");
-export const ExtensionsLocalizedLabel = { value: ExtensionsLabel, original: 'Extensions' };
+export const ExtensionsLaBel = localize('extensions', "Extensions");
+export const ExtensionsLocalizedLaBel = { value: ExtensionsLaBel, original: 'Extensions' };
 export const ExtensionsChannelId = 'extensions';
-export const PreferencesLabel = localize('preferences', "Preferences");
-export const PreferencesLocalizedLabel = { value: PreferencesLabel, original: 'Preferences' };
+export const PreferencesLaBel = localize('preferences', "Preferences");
+export const PreferencesLocalizedLaBel = { value: PreferencesLaBel, original: 'Preferences' };

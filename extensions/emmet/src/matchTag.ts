@@ -34,7 +34,7 @@ function getUpdatedSelections(editor: vscode.TextEditor, position: vscode.Positi
 	let currentNode = getHtmlNode(editor.document, rootNode, position, true);
 	if (!currentNode) { return; }
 
-	// If no closing tag or cursor is between open and close tag, then no-op
+	// If no closing tag or cursor is Between open and close tag, then no-op
 	if (!currentNode.close || (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
 		return;
 	}

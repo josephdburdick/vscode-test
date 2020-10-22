@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor, IDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor, IDiffEditor } from 'vs/editor/Browser/editorBrowser';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
 import { IModelDecorationOptions, ITextModel } from 'vs/editor/common/model';
 import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-export abstract class AbstractCodeEditorService extends Disposable implements ICodeEditorService {
+export aBstract class ABstractCodeEditorService extends DisposaBle implements ICodeEditorService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onCodeEditorAdd: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
-	public readonly onCodeEditorAdd: Event<ICodeEditor> = this._onCodeEditorAdd.event;
+	puBlic readonly onCodeEditorAdd: Event<ICodeEditor> = this._onCodeEditorAdd.event;
 
 	private readonly _onCodeEditorRemove: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
-	public readonly onCodeEditorRemove: Event<ICodeEditor> = this._onCodeEditorRemove.event;
+	puBlic readonly onCodeEditorRemove: Event<ICodeEditor> = this._onCodeEditorRemove.event;
 
 	private readonly _onDiffEditorAdd: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
-	public readonly onDiffEditorAdd: Event<IDiffEditor> = this._onDiffEditorAdd.event;
+	puBlic readonly onDiffEditorAdd: Event<IDiffEditor> = this._onDiffEditorAdd.event;
 
 	private readonly _onDiffEditorRemove: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
-	public readonly onDiffEditorRemove: Event<IDiffEditor> = this._onDiffEditorRemove.event;
+	puBlic readonly onDiffEditorRemove: Event<IDiffEditor> = this._onDiffEditorRemove.event;
 
 	private readonly _onDidChangeTransientModelProperty: Emitter<ITextModel> = this._register(new Emitter<ITextModel>());
-	public readonly onDidChangeTransientModelProperty: Event<ITextModel> = this._onDidChangeTransientModelProperty.event;
+	puBlic readonly onDidChangeTransientModelProperty: Event<ITextModel> = this._onDidChangeTransientModelProperty.event;
 
 
 	private readonly _codeEditors: { [editorId: string]: ICodeEditor; };
@@ -37,8 +37,8 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 
 	constructor() {
 		super();
-		this._codeEditors = Object.create(null);
-		this._diffEditors = Object.create(null);
+		this._codeEditors = OBject.create(null);
+		this._diffEditors = OBject.create(null);
 	}
 
 	addCodeEditor(editor: ICodeEditor): void {
@@ -53,7 +53,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 	}
 
 	listCodeEditors(): ICodeEditor[] {
-		return Object.keys(this._codeEditors).map(id => this._codeEditors[id]);
+		return OBject.keys(this._codeEditors).map(id => this._codeEditors[id]);
 	}
 
 	addDiffEditor(editor: IDiffEditor): void {
@@ -68,7 +68,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 	}
 
 	listDiffEditors(): IDiffEditor[] {
-		return Object.keys(this._diffEditors).map(id => this._diffEditors[id]);
+		return OBject.keys(this._diffEditors).map(id => this._diffEditors[id]);
 	}
 
 	getFocusedCodeEditor(): ICodeEditor | null {
@@ -78,7 +78,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		for (const editor of editors) {
 
 			if (editor.hasTextFocus()) {
-				// bingo!
+				// Bingo!
 				return editor;
 			}
 
@@ -90,14 +90,14 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		return editorWithWidgetFocus;
 	}
 
-	abstract registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void;
-	abstract removeDecorationType(key: string): void;
-	abstract resolveDecorationOptions(decorationTypeKey: string | undefined, writable: boolean): IModelDecorationOptions;
+	aBstract registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void;
+	aBstract removeDecorationType(key: string): void;
+	aBstract resolveDecorationOptions(decorationTypeKey: string | undefined, writaBle: Boolean): IModelDecorationOptions;
 
 	private readonly _transientWatchers: { [uri: string]: ModelTransientSettingWatcher; } = {};
 	private readonly _modelProperties = new Map<string, Map<string, any>>();
 
-	public setModelProperty(resource: URI, key: string, value: any): void {
+	puBlic setModelProperty(resource: URI, key: string, value: any): void {
 		const key1 = resource.toString();
 		let dest: Map<string, any>;
 		if (this._modelProperties.has(key1)) {
@@ -110,7 +110,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		dest.set(key, value);
 	}
 
-	public getModelProperty(resource: URI, key: string): any {
+	puBlic getModelProperty(resource: URI, key: string): any {
 		const key1 = resource.toString();
 		if (this._modelProperties.has(key1)) {
 			const innerMap = this._modelProperties.get(key1)!;
@@ -119,7 +119,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		return undefined;
 	}
 
-	public setTransientModelProperty(model: ITextModel, key: string, value: any): void {
+	puBlic setTransientModelProperty(model: ITextModel, key: string, value: any): void {
 		const uri = model.uri.toString();
 
 		let w: ModelTransientSettingWatcher;
@@ -134,7 +134,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		this._onDidChangeTransientModelProperty.fire(model);
 	}
 
-	public getTransientModelProperty(model: ITextModel, key: string): any {
+	puBlic getTransientModelProperty(model: ITextModel, key: string): any {
 		const uri = model.uri.toString();
 
 		if (!this._transientWatchers.hasOwnProperty(uri)) {
@@ -144,7 +144,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		return this._transientWatchers[uri].get(key);
 	}
 
-	public getTransientModelProperties(model: ITextModel): [string, any][] | undefined {
+	puBlic getTransientModelProperties(model: ITextModel): [string, any][] | undefined {
 		const uri = model.uri.toString();
 
 		if (!this._transientWatchers.hasOwnProperty(uri)) {
@@ -158,29 +158,29 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		delete this._transientWatchers[w.uri];
 	}
 
-	abstract getActiveCodeEditor(): ICodeEditor | null;
-	abstract openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null>;
+	aBstract getActiveCodeEditor(): ICodeEditor | null;
+	aBstract openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: Boolean): Promise<ICodeEditor | null>;
 }
 
 export class ModelTransientSettingWatcher {
-	public readonly uri: string;
+	puBlic readonly uri: string;
 	private readonly _values: { [key: string]: any; };
 
-	constructor(uri: string, model: ITextModel, owner: AbstractCodeEditorService) {
+	constructor(uri: string, model: ITextModel, owner: ABstractCodeEditorService) {
 		this.uri = uri;
 		this._values = {};
 		model.onWillDispose(() => owner._removeWatcher(this));
 	}
 
-	public set(key: string, value: any): void {
+	puBlic set(key: string, value: any): void {
 		this._values[key] = value;
 	}
 
-	public get(key: string): any {
+	puBlic get(key: string): any {
 		return this._values[key];
 	}
 
-	public keys(): string[] {
-		return Object.keys(this._values);
+	puBlic keys(): string[] {
+		return OBject.keys(this._values);
 	}
 }

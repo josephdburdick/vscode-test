@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBufferReadableStream } from 'vs/base/common/buffer';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { isUNC } from 'vs/base/common/extpath';
-import { Schemas } from 'vs/base/common/network';
-import { sep } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
+import { VSBufferReadaBleStream } from 'vs/Base/common/Buffer';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { isUNC } from 'vs/Base/common/extpath';
+import { Schemas } from 'vs/Base/common/network';
+import { sep } from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
 import { IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { getWebviewContentMimeType } from 'vs/platform/webview/common/mimeTypes';
+import { getWeBviewContentMimeType } from 'vs/platform/weBview/common/mimeTypes';
 
 
-export const webviewPartitionId = 'webview';
+export const weBviewPartitionId = 'weBview';
 
-export namespace WebviewResourceResponse {
+export namespace WeBviewResourceResponse {
 	export enum Type { Success, Failed, AccessDenied }
 
 	export class StreamSuccess {
 		readonly type = Type.Success;
 
 		constructor(
-			public readonly stream: VSBufferReadableStream,
-			public readonly mimeType: string
+			puBlic readonly stream: VSBufferReadaBleStream,
+			puBlic readonly mimeType: string
 		) { }
 	}
 
@@ -35,7 +35,7 @@ export namespace WebviewResourceResponse {
 }
 
 interface FileReader {
-	readFileStream(resource: URI): Promise<VSBufferReadableStream>;
+	readFileStream(resource: URI): Promise<VSBufferReadaBleStream>;
 }
 
 export async function loadLocalResource(
@@ -48,13 +48,13 @@ export async function loadLocalResource(
 	},
 	fileReader: FileReader,
 	requestService: IRequestService,
-): Promise<WebviewResourceResponse.StreamResponse> {
+): Promise<WeBviewResourceResponse.StreamResponse> {
 	let resourceToLoad = getResourceToLoad(requestUri, options.roots);
 	if (!resourceToLoad) {
-		return WebviewResourceResponse.AccessDenied;
+		return WeBviewResourceResponse.AccessDenied;
 	}
 
-	const mime = getWebviewContentMimeType(requestUri); // Use the original path for the mime
+	const mime = getWeBviewContentMimeType(requestUri); // Use the original path for the mime
 
 	// Perform extra normalization if needed
 	if (options.rewriteUri) {
@@ -64,17 +64,17 @@ export async function loadLocalResource(
 	if (resourceToLoad.scheme === Schemas.http || resourceToLoad.scheme === Schemas.https) {
 		const response = await requestService.request({ url: resourceToLoad.toString(true) }, CancellationToken.None);
 		if (response.res.statusCode === 200) {
-			return new WebviewResourceResponse.StreamSuccess(response.stream, mime);
+			return new WeBviewResourceResponse.StreamSuccess(response.stream, mime);
 		}
-		return WebviewResourceResponse.Failed;
+		return WeBviewResourceResponse.Failed;
 	}
 
 	try {
 		const contents = await fileReader.readFileStream(resourceToLoad);
-		return new WebviewResourceResponse.StreamSuccess(contents, mime);
+		return new WeBviewResourceResponse.StreamSuccess(contents, mime);
 	} catch (err) {
 		console.log(err);
-		return WebviewResourceResponse.Failed;
+		return WeBviewResourceResponse.Failed;
 	}
 }
 
@@ -94,10 +94,10 @@ function getResourceToLoad(
 }
 
 function normalizeRequestPath(requestUri: URI) {
-	if (requestUri.scheme === Schemas.vscodeWebviewResource) {
-		// The `vscode-webview-resource` scheme has the following format:
+	if (requestUri.scheme === Schemas.vscodeWeBviewResource) {
+		// The `vscode-weBview-resource` scheme has the following format:
 		//
-		// vscode-webview-resource://id/scheme//authority?/path
+		// vscode-weBview-resource://id/scheme//authority?/path
 		//
 
 		// Encode requestUri.path so that URI.parse can properly parse special characters like '#', '?', etc.
@@ -117,7 +117,7 @@ function normalizeRequestPath(requestUri: URI) {
 	}
 }
 
-function containsResource(root: URI, resource: URI): boolean {
+function containsResource(root: URI, resource: URI): Boolean {
 	let rootPath = root.fsPath + (root.fsPath.endsWith(sep) ? '' : sep);
 	let resourceFsPath = resource.fsPath;
 

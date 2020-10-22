@@ -5,36 +5,36 @@
 
 import { ContextKeyExpr, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { ICommandHandler } from 'vs/platform/commands/common/commands';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 
 export const inQuickPickContextKeyValue = 'inQuickOpen';
-export const InQuickPickContextKey = new RawContextKey<boolean>(inQuickPickContextKeyValue, false);
+export const InQuickPickContextKey = new RawContextKey<Boolean>(inQuickPickContextKeyValue, false);
 export const inQuickPickContext = ContextKeyExpr.has(inQuickPickContextKeyValue);
 
 export const defaultQuickAccessContextKeyValue = 'inFilesPicker';
 export const defaultQuickAccessContext = ContextKeyExpr.and(inQuickPickContext, ContextKeyExpr.has(defaultQuickAccessContextKeyValue));
 
-export interface IWorkbenchQuickAccessConfiguration {
-	workbench: {
+export interface IWorkBenchQuickAccessConfiguration {
+	workBench: {
 		commandPalette: {
-			history: number;
-			preserveInput: boolean;
+			history: numBer;
+			preserveInput: Boolean;
 		},
 		quickOpen: {
-			enableExperimentalNewVersion: boolean;
-			preserveInput: boolean;
+			enaBleExperimentalNewVersion: Boolean;
+			preserveInput: Boolean;
 		}
 	};
 }
 
-export function getQuickNavigateHandler(id: string, next?: boolean): ICommandHandler {
+export function getQuickNavigateHandler(id: string, next?: Boolean): ICommandHandler {
 	return accessor => {
-		const keybindingService = accessor.get(IKeybindingService);
+		const keyBindingService = accessor.get(IKeyBindingService);
 		const quickInputService = accessor.get(IQuickInputService);
 
-		const keys = keybindingService.lookupKeybindings(id);
-		const quickNavigate = { keybindings: keys };
+		const keys = keyBindingService.lookupKeyBindings(id);
+		const quickNavigate = { keyBindings: keys };
 
 		quickInputService.navigate(!!next, quickNavigate);
 	};

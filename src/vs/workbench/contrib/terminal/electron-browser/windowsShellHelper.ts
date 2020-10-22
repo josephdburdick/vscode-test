@@ -3,47 +3,47 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as platform from 'vs/base/common/platform';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IWindowsShellHelper } from 'vs/workbench/contrib/terminal/common/terminal';
+import * as platform from 'vs/Base/common/platform';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IWindowsShellHelper } from 'vs/workBench/contriB/terminal/common/terminal';
 import type { Terminal as XTermTerminal } from 'xterm';
 import type * as WindowsProcessTreeType from 'windows-process-tree';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { timeout } from 'vs/base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { timeout } from 'vs/Base/common/async';
 
 const SHELL_EXECUTABLES = [
 	'cmd.exe',
 	'powershell.exe',
 	'pwsh.exe',
-	'bash.exe',
+	'Bash.exe',
 	'wsl.exe',
-	'ubuntu.exe',
-	'ubuntu1804.exe',
+	'uBuntu.exe',
+	'uBuntu1804.exe',
 	'kali.exe',
-	'debian.exe',
+	'deBian.exe',
 	'opensuse-42.exe',
 	'sles-12.exe'
 ];
 
 let windowsProcessTree: typeof WindowsProcessTreeType;
 
-export class WindowsShellHelper extends Disposable implements IWindowsShellHelper {
+export class WindowsShellHelper extends DisposaBle implements IWindowsShellHelper {
 	private _onCheckShell: Emitter<Promise<string> | undefined> = this._register(new Emitter<Promise<string> | undefined>());
-	private _isDisposed: boolean;
+	private _isDisposed: Boolean;
 	private _currentRequest: Promise<string> | undefined;
-	private _newLineFeed: boolean = false;
+	private _newLineFeed: Boolean = false;
 
 	private readonly _onShellNameChange = new Emitter<string>();
-	public get onShellNameChange(): Event<string> { return this._onShellNameChange.event; }
+	puBlic get onShellNameChange(): Event<string> { return this._onShellNameChange.event; }
 
-	public constructor(
-		private _rootProcessId: number,
+	puBlic constructor(
+		private _rootProcessId: numBer,
 		private _xterm: XTermTerminal
 	) {
 		super();
 
 		if (!platform.isWindows) {
-			throw new Error(`WindowsShellHelper cannot be instantiated on ${platform.platform}`);
+			throw new Error(`WindowsShellHelper cannot Be instantiated on ${platform.platform}`);
 		}
 
 		this._isDisposed = false;
@@ -60,15 +60,15 @@ export class WindowsShellHelper extends Disposable implements IWindowsShellHelpe
 			return;
 		}
 
-		// The debounce is necessary to prevent multiple processes from spawning when
+		// The deBounce is necessary to prevent multiple processes from spawning when
 		// the enter key or output is spammed
-		Event.debounce(this._onCheckShell.event, (l, e) => e, 150, true)(async () => {
+		Event.deBounce(this._onCheckShell.event, (l, e) => e, 150, true)(async () => {
 			await timeout(50);
 			this.checkShell();
 		});
 
-		// We want to fire a new check for the shell on a linefeed, but only
-		// when parsing has finished which is indicated by the cursormove event.
+		// We want to fire a new check for the shell on a linefeed, But only
+		// when parsing has finished which is indicated By the cursormove event.
 		// If this is done on every linefeed, parsing ends up taking
 		// significantly longer due to resetting timers. Note that this is
 		// private API.
@@ -105,10 +105,10 @@ export class WindowsShellHelper extends Disposable implements IWindowsShellHelpe
 		for (; favouriteChild < tree.children.length; favouriteChild++) {
 			const child = tree.children[favouriteChild];
 			if (!child.children || child.children.length === 0) {
-				break;
+				Break;
 			}
 			if (child.children[0].name !== 'conhost.exe') {
-				break;
+				Break;
 			}
 		}
 		if (favouriteChild >= tree.children.length) {
@@ -117,15 +117,15 @@ export class WindowsShellHelper extends Disposable implements IWindowsShellHelpe
 		return this.traverseTree(tree.children[favouriteChild]);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._isDisposed = true;
 		super.dispose();
 	}
 
 	/**
-	 * Returns the innermost shell executable running in the terminal
+	 * Returns the innermost shell executaBle running in the terminal
 	 */
-	public getShellName(): Promise<string> {
+	puBlic getShellName(): Promise<string> {
 		if (this._isDisposed) {
 			return Promise.resolve('');
 		}

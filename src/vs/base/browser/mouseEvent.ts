@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as browser from 'vs/base/browser/browser';
-import { IframeUtils } from 'vs/base/browser/iframe';
-import * as platform from 'vs/base/common/platform';
+import * as Browser from 'vs/Base/Browser/Browser';
+import { IframeUtils } from 'vs/Base/Browser/iframe';
+import * as platform from 'vs/Base/common/platform';
 
 export interface IMouseEvent {
-	readonly browserEvent: MouseEvent;
-	readonly leftButton: boolean;
-	readonly middleButton: boolean;
-	readonly rightButton: boolean;
-	readonly buttons: number;
+	readonly BrowserEvent: MouseEvent;
+	readonly leftButton: Boolean;
+	readonly middleButton: Boolean;
+	readonly rightButton: Boolean;
+	readonly Buttons: numBer;
 	readonly target: HTMLElement;
-	readonly detail: number;
-	readonly posx: number;
-	readonly posy: number;
-	readonly ctrlKey: boolean;
-	readonly shiftKey: boolean;
-	readonly altKey: boolean;
-	readonly metaKey: boolean;
-	readonly timestamp: number;
+	readonly detail: numBer;
+	readonly posx: numBer;
+	readonly posy: numBer;
+	readonly ctrlKey: Boolean;
+	readonly shiftKey: Boolean;
+	readonly altKey: Boolean;
+	readonly metaKey: Boolean;
+	readonly timestamp: numBer;
 
 	preventDefault(): void;
 	stopPropagation(): void;
@@ -29,34 +29,34 @@ export interface IMouseEvent {
 
 export class StandardMouseEvent implements IMouseEvent {
 
-	public readonly browserEvent: MouseEvent;
+	puBlic readonly BrowserEvent: MouseEvent;
 
-	public readonly leftButton: boolean;
-	public readonly middleButton: boolean;
-	public readonly rightButton: boolean;
-	public readonly buttons: number;
-	public readonly target: HTMLElement;
-	public detail: number;
-	public readonly posx: number;
-	public readonly posy: number;
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly metaKey: boolean;
-	public readonly timestamp: number;
+	puBlic readonly leftButton: Boolean;
+	puBlic readonly middleButton: Boolean;
+	puBlic readonly rightButton: Boolean;
+	puBlic readonly Buttons: numBer;
+	puBlic readonly target: HTMLElement;
+	puBlic detail: numBer;
+	puBlic readonly posx: numBer;
+	puBlic readonly posy: numBer;
+	puBlic readonly ctrlKey: Boolean;
+	puBlic readonly shiftKey: Boolean;
+	puBlic readonly altKey: Boolean;
+	puBlic readonly metaKey: Boolean;
+	puBlic readonly timestamp: numBer;
 
 	constructor(e: MouseEvent) {
 		this.timestamp = Date.now();
-		this.browserEvent = e;
-		this.leftButton = e.button === 0;
-		this.middleButton = e.button === 1;
-		this.rightButton = e.button === 2;
-		this.buttons = e.buttons;
+		this.BrowserEvent = e;
+		this.leftButton = e.Button === 0;
+		this.middleButton = e.Button === 1;
+		this.rightButton = e.Button === 2;
+		this.Buttons = e.Buttons;
 
 		this.target = <HTMLElement>e.target;
 
 		this.detail = e.detail || 1;
-		if (e.type === 'dblclick') {
+		if (e.type === 'dBlclick') {
 			this.detail = 2;
 		}
 		this.ctrlKey = e.ctrlKey;
@@ -64,13 +64,13 @@ export class StandardMouseEvent implements IMouseEvent {
 		this.altKey = e.altKey;
 		this.metaKey = e.metaKey;
 
-		if (typeof e.pageX === 'number') {
+		if (typeof e.pageX === 'numBer') {
 			this.posx = e.pageX;
 			this.posy = e.pageY;
 		} else {
-			// Probably hit by MSGestureEvent
-			this.posx = e.clientX + document.body.scrollLeft + document.documentElement!.scrollLeft;
-			this.posy = e.clientY + document.body.scrollTop + document.documentElement!.scrollTop;
+			// ProBaBly hit By MSGestureEvent
+			this.posx = e.clientX + document.Body.scrollLeft + document.documentElement!.scrollLeft;
+			this.posy = e.clientY + document.Body.scrollTop + document.documentElement!.scrollTop;
 		}
 
 		// Find the position of the iframe this code is executing in relative to the iframe where the event was captured.
@@ -79,12 +79,12 @@ export class StandardMouseEvent implements IMouseEvent {
 		this.posy -= iframeOffsets.top;
 	}
 
-	public preventDefault(): void {
-		this.browserEvent.preventDefault();
+	puBlic preventDefault(): void {
+		this.BrowserEvent.preventDefault();
 	}
 
-	public stopPropagation(): void {
-		this.browserEvent.stopPropagation();
+	puBlic stopPropagation(): void {
+		this.BrowserEvent.stopPropagation();
 	}
 }
 
@@ -95,7 +95,7 @@ export interface IDataTransfer {
 	files: any[];
 
 	setData(type: string, data: string): void;
-	setDragImage(image: any, x: number, y: number): void;
+	setDragImage(image: any, x: numBer, y: numBer): void;
 
 	getData(type: string): string;
 	clearData(types?: string[]): void;
@@ -103,7 +103,7 @@ export interface IDataTransfer {
 
 export class DragMouseEvent extends StandardMouseEvent {
 
-	public readonly dataTransfer: IDataTransfer;
+	puBlic readonly dataTransfer: IDataTransfer;
 
 	constructor(e: MouseEvent) {
 		super(e);
@@ -113,38 +113,38 @@ export class DragMouseEvent extends StandardMouseEvent {
 }
 
 export interface IMouseWheelEvent extends MouseEvent {
-	readonly wheelDelta: number;
-	readonly wheelDeltaX: number;
-	readonly wheelDeltaY: number;
+	readonly wheelDelta: numBer;
+	readonly wheelDeltaX: numBer;
+	readonly wheelDeltaY: numBer;
 
-	readonly deltaX: number;
-	readonly deltaY: number;
-	readonly deltaZ: number;
-	readonly deltaMode: number;
+	readonly deltaX: numBer;
+	readonly deltaY: numBer;
+	readonly deltaZ: numBer;
+	readonly deltaMode: numBer;
 }
 
-interface IWebKitMouseWheelEvent {
-	wheelDeltaY: number;
-	wheelDeltaX: number;
+interface IWeBKitMouseWheelEvent {
+	wheelDeltaY: numBer;
+	wheelDeltaX: numBer;
 }
 
 interface IGeckoMouseWheelEvent {
-	HORIZONTAL_AXIS: number;
-	VERTICAL_AXIS: number;
-	axis: number;
-	detail: number;
+	HORIZONTAL_AXIS: numBer;
+	VERTICAL_AXIS: numBer;
+	axis: numBer;
+	detail: numBer;
 }
 
 export class StandardWheelEvent {
 
-	public readonly browserEvent: IMouseWheelEvent | null;
-	public readonly deltaY: number;
-	public readonly deltaX: number;
-	public readonly target: Node;
+	puBlic readonly BrowserEvent: IMouseWheelEvent | null;
+	puBlic readonly deltaY: numBer;
+	puBlic readonly deltaX: numBer;
+	puBlic readonly target: Node;
 
-	constructor(e: IMouseWheelEvent | null, deltaX: number = 0, deltaY: number = 0) {
+	constructor(e: IMouseWheelEvent | null, deltaX: numBer = 0, deltaY: numBer = 0) {
 
-		this.browserEvent = e || null;
+		this.BrowserEvent = e || null;
 		this.target = e ? (e.target || (<any>e).targetNode || e.srcElement) : null;
 
 		this.deltaY = deltaY;
@@ -152,7 +152,7 @@ export class StandardWheelEvent {
 
 		if (e) {
 			// Old (deprecated) wheel events
-			let e1 = <IWebKitMouseWheelEvent><any>e;
+			let e1 = <IWeBKitMouseWheelEvent><any>e;
 			let e2 = <IGeckoMouseWheelEvent><any>e;
 
 			// vertical delta scroll
@@ -162,12 +162,12 @@ export class StandardWheelEvent {
 				this.deltaY = -e2.detail / 3;
 			} else if (e.type === 'wheel') {
 				// Modern wheel event
-				// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
+				// https://developer.mozilla.org/en-US/docs/WeB/API/WheelEvent
 				const ev = <WheelEvent><unknown>e;
 
 				if (ev.deltaMode === ev.DOM_DELTA_LINE) {
 					// the deltas are expressed in lines
-					if (browser.isFirefox && !platform.isMacintosh) {
+					if (Browser.isFirefox && !platform.isMacintosh) {
 						this.deltaY = -e.deltaY / 3;
 					} else {
 						this.deltaY = -e.deltaY;
@@ -179,7 +179,7 @@ export class StandardWheelEvent {
 
 			// horizontal delta scroll
 			if (typeof e1.wheelDeltaX !== 'undefined') {
-				if (browser.isSafari && platform.isWindows) {
+				if (Browser.isSafari && platform.isWindows) {
 					this.deltaX = - (e1.wheelDeltaX / 120);
 				} else {
 					this.deltaX = e1.wheelDeltaX / 120;
@@ -188,12 +188,12 @@ export class StandardWheelEvent {
 				this.deltaX = -e.detail / 3;
 			} else if (e.type === 'wheel') {
 				// Modern wheel event
-				// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
+				// https://developer.mozilla.org/en-US/docs/WeB/API/WheelEvent
 				const ev = <WheelEvent><unknown>e;
 
 				if (ev.deltaMode === ev.DOM_DELTA_LINE) {
 					// the deltas are expressed in lines
-					if (browser.isFirefox && !platform.isMacintosh) {
+					if (Browser.isFirefox && !platform.isMacintosh) {
 						this.deltaX = -e.deltaX / 3;
 					} else {
 						this.deltaX = -e.deltaX;
@@ -210,15 +210,15 @@ export class StandardWheelEvent {
 		}
 	}
 
-	public preventDefault(): void {
-		if (this.browserEvent) {
-			this.browserEvent.preventDefault();
+	puBlic preventDefault(): void {
+		if (this.BrowserEvent) {
+			this.BrowserEvent.preventDefault();
 		}
 	}
 
-	public stopPropagation(): void {
-		if (this.browserEvent) {
-			this.browserEvent.stopPropagation();
+	puBlic stopPropagation(): void {
+		if (this.BrowserEvent) {
+			this.BrowserEvent.stopPropagation();
 		}
 	}
 }

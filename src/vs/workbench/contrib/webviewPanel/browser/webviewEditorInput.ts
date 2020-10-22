@@ -3,112 +3,112 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Lazy } from 'vs/base/common/lazy';
-import { URI } from 'vs/base/common/uri';
-import { EditorInput, GroupIdentifier, IEditorInput, Verbosity } from 'vs/workbench/common/editor';
-import { IWebviewService, WebviewIcons, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { Schemas } from 'vs/base/common/network';
+import { Lazy } from 'vs/Base/common/lazy';
+import { URI } from 'vs/Base/common/uri';
+import { EditorInput, GroupIdentifier, IEditorInput, VerBosity } from 'vs/workBench/common/editor';
+import { IWeBviewService, WeBviewIcons, WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { Schemas } from 'vs/Base/common/network';
 
-export class WebviewInput extends EditorInput {
+export class WeBviewInput extends EditorInput {
 
-	public static typeId = 'workbench.editors.webviewInput';
+	puBlic static typeId = 'workBench.editors.weBviewInput';
 
 	private _name: string;
-	private _iconPath?: WebviewIcons;
+	private _iconPath?: WeBviewIcons;
 	private _group?: GroupIdentifier;
 
-	private _webview: Lazy<WebviewOverlay>;
+	private _weBview: Lazy<WeBviewOverlay>;
 
 	private _hasTransfered = false;
 
 	get resource() {
 		return URI.from({
-			scheme: Schemas.webviewPanel,
-			path: `webview-panel/webview-${this.id}`
+			scheme: Schemas.weBviewPanel,
+			path: `weBview-panel/weBview-${this.id}`
 		});
 	}
 
 	constructor(
-		public readonly id: string,
-		public readonly viewType: string,
+		puBlic readonly id: string,
+		puBlic readonly viewType: string,
 		name: string,
-		webview: Lazy<WebviewOverlay>,
-		@IWebviewService private readonly _webviewService: IWebviewService,
+		weBview: Lazy<WeBviewOverlay>,
+		@IWeBviewService private readonly _weBviewService: IWeBviewService,
 	) {
 		super();
 		this._name = name;
-		this._webview = webview;
+		this._weBview = weBview;
 	}
 
 	dispose() {
 		if (!this.isDisposed()) {
 			if (!this._hasTransfered) {
-				this._webview.rawValue?.dispose();
+				this._weBview.rawValue?.dispose();
 			}
 		}
 		super.dispose();
 	}
 
-	public getTypeId(): string {
-		return WebviewInput.typeId;
+	puBlic getTypeId(): string {
+		return WeBviewInput.typeId;
 	}
 
-	public getName(): string {
+	puBlic getName(): string {
 		return this._name;
 	}
 
-	public getTitle(_verbosity?: Verbosity): string {
+	puBlic getTitle(_verBosity?: VerBosity): string {
 		return this.getName();
 	}
 
-	public getDescription(): string | undefined {
+	puBlic getDescription(): string | undefined {
 		return undefined;
 	}
 
-	public setName(value: string): void {
+	puBlic setName(value: string): void {
 		this._name = value;
-		this._onDidChangeLabel.fire();
+		this._onDidChangeLaBel.fire();
 	}
 
-	public get webview(): WebviewOverlay {
-		return this._webview.getValue();
+	puBlic get weBview(): WeBviewOverlay {
+		return this._weBview.getValue();
 	}
 
-	public get extension() {
-		return this.webview.extension;
+	puBlic get extension() {
+		return this.weBview.extension;
 	}
 
-	public get iconPath() {
+	puBlic get iconPath() {
 		return this._iconPath;
 	}
 
-	public set iconPath(value: WebviewIcons | undefined) {
+	puBlic set iconPath(value: WeBviewIcons | undefined) {
 		this._iconPath = value;
-		this._webviewService.setIcons(this.id, value);
+		this._weBviewService.setIcons(this.id, value);
 	}
 
-	public matches(other: IEditorInput): boolean {
+	puBlic matches(other: IEditorInput): Boolean {
 		return other === this;
 	}
 
-	public get group(): GroupIdentifier | undefined {
+	puBlic get group(): GroupIdentifier | undefined {
 		return this._group;
 	}
 
-	public updateGroup(group: GroupIdentifier): void {
+	puBlic updateGroup(group: GroupIdentifier): void {
 		this._group = group;
 	}
 
-	public supportsSplitEditor() {
+	puBlic supportsSplitEditor() {
 		return false;
 	}
 
-	protected transfer(other: WebviewInput): WebviewInput | undefined {
+	protected transfer(other: WeBviewInput): WeBviewInput | undefined {
 		if (this._hasTransfered) {
 			return undefined;
 		}
 		this._hasTransfered = true;
-		other._webview = this._webview;
+		other._weBview = this._weBview;
 		return other;
 	}
 }

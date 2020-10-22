@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { URI } from 'vs/Base/common/uri';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
 
-export function asWebviewUri(
-	environmentService: IWorkbenchEnvironmentService,
+export function asWeBviewUri(
+	environmentService: IWorkBenchEnvironmentService,
 	uuid: string,
 	resource: URI,
 ): URI {
-	const uri = environmentService.webviewResourceRoot
-		// Make sure we preserve the scheme of the resource but convert it into a normal path segment
+	const uri = environmentService.weBviewResourceRoot
+		// Make sure we preserve the scheme of the resource But convert it into a normal path segment
 		// The scheme is important as we need to know if we are requesting a local or a remote resource.
 		.replace('{{resource}}', resource.scheme + withoutScheme(resource))
 		.replace('{{uuid}}', uuid);

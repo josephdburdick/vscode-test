@@ -4,42 +4,42 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { alert } from 'vs/base/browser/ui/aria/aria';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
-import { TabFocus } from 'vs/editor/common/config/commonEditorConfig';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { alert } from 'vs/Base/Browser/ui/aria/aria';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
+import { TaBFocus } from 'vs/editor/common/config/commonEditorConfig';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 
-export class ToggleTabFocusModeAction extends EditorAction {
+export class ToggleTaBFocusModeAction extends EditorAction {
 
-	public static readonly ID = 'editor.action.toggleTabFocusMode';
+	puBlic static readonly ID = 'editor.action.toggleTaBFocusMode';
 
 	constructor() {
 		super({
-			id: ToggleTabFocusModeAction.ID,
-			label: nls.localize({ key: 'toggle.tabMovesFocus', comment: ['Turn on/off use of tab key for moving focus around VS Code'] }, "Toggle Tab Key Moves Focus"),
-			alias: 'Toggle Tab Key Moves Focus',
+			id: ToggleTaBFocusModeAction.ID,
+			laBel: nls.localize({ key: 'toggle.taBMovesFocus', comment: ['Turn on/off use of taB key for moving focus around VS Code'] }, "Toggle TaB Key Moves Focus"),
+			alias: 'Toggle TaB Key Moves Focus',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: null,
+			kBOpts: {
+				kBExpr: null,
 				primary: KeyMod.CtrlCmd | KeyCode.KEY_M,
 				mac: { primary: KeyMod.WinCtrl | KeyMod.Shift | KeyCode.KEY_M },
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		const oldValue = TabFocus.getTabFocusMode();
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+		const oldValue = TaBFocus.getTaBFocusMode();
 		const newValue = !oldValue;
-		TabFocus.setTabFocusMode(newValue);
+		TaBFocus.setTaBFocusMode(newValue);
 		if (newValue) {
-			alert(nls.localize('toggle.tabMovesFocus.on', "Pressing Tab will now move focus to the next focusable element"));
+			alert(nls.localize('toggle.taBMovesFocus.on', "Pressing TaB will now move focus to the next focusaBle element"));
 		} else {
-			alert(nls.localize('toggle.tabMovesFocus.off', "Pressing Tab will now insert the tab character"));
+			alert(nls.localize('toggle.taBMovesFocus.off', "Pressing TaB will now insert the taB character"));
 		}
 	}
 }
 
-registerEditorAction(ToggleTabFocusModeAction);
+registerEditorAction(ToggleTaBFocusModeAction);

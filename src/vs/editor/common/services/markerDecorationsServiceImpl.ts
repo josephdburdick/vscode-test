@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IMarkerService, IMarker, MarkerSeverity, MarkerTag } from 'vs/platform/markers/common/markers';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IModelDeltaDecoration, ITextModel, IModelDecorationOptions, TrackedRangeStickiness, OverviewRulerLane, IModelDecoration, MinimapPosition, IModelDecorationMinimapOptions } from 'vs/editor/common/model';
 import { ClassName } from 'vs/editor/common/model/intervalTree';
 import { themeColorFromId, ThemeColor } from 'vs/platform/theme/common/themeService';
@@ -13,15 +13,15 @@ import { overviewRulerWarning, overviewRulerInfo, overviewRulerError } from 'vs/
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { Range } from 'vs/editor/common/core/range';
 import { IMarkerDecorationsService } from 'vs/editor/common/services/markersDecorationService';
-import { Schemas } from 'vs/base/common/network';
-import { Emitter, Event } from 'vs/base/common/event';
+import { Schemas } from 'vs/Base/common/network';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { minimapWarning, minimapError } from 'vs/platform/theme/common/colorRegistry';
 
 function MODEL_ID(resource: URI): string {
 	return resource.toString();
 }
 
-class MarkerDecorations extends Disposable {
+class MarkerDecorations extends DisposaBle {
 
 	private readonly _markersData: Map<string, IMarker> = new Map<string, IMarker>();
 
@@ -29,13 +29,13 @@ class MarkerDecorations extends Disposable {
 		readonly model: ITextModel
 	) {
 		super();
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			this.model.deltaDecorations([...this._markersData.keys()], []);
 			this._markersData.clear();
 		}));
 	}
 
-	public update(markers: IMarker[], newDecorations: IModelDeltaDecoration[]): boolean {
+	puBlic update(markers: IMarker[], newDecorations: IModelDeltaDecoration[]): Boolean {
 		const oldIds = [...this._markersData.keys()];
 		this._markersData.clear();
 		const ids = this.model.deltaDecorations(oldIds, newDecorations);
@@ -61,7 +61,7 @@ class MarkerDecorations extends Disposable {
 	}
 }
 
-export class MarkerDecorationsService extends Disposable implements IMarkerDecorationsService {
+export class MarkerDecorationsService extends DisposaBle implements IMarkerDecorationsService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -150,7 +150,7 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 		if (rawMarker.severity === MarkerSeverity.Hint && !this._hasMarkerTag(rawMarker, MarkerTag.Unnecessary) && !this._hasMarkerTag(rawMarker, MarkerTag.Deprecated)) {
 			// * never render hints on multiple lines
 			// * make enough space for three dots
-			ret = ret.setEndPosition(ret.startLineNumber, ret.startColumn + 2);
+			ret = ret.setEndPosition(ret.startLineNumBer, ret.startColumn + 2);
 		}
 
 		ret = model.validateRange(ret);
@@ -158,26 +158,26 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 		if (ret.isEmpty()) {
 			let word = model.getWordAtPosition(ret.getStartPosition());
 			if (word) {
-				ret = new Range(ret.startLineNumber, word.startColumn, ret.endLineNumber, word.endColumn);
+				ret = new Range(ret.startLineNumBer, word.startColumn, ret.endLineNumBer, word.endColumn);
 			} else {
-				let maxColumn = model.getLineLastNonWhitespaceColumn(ret.startLineNumber) ||
-					model.getLineMaxColumn(ret.startLineNumber);
+				let maxColumn = model.getLineLastNonWhitespaceColumn(ret.startLineNumBer) ||
+					model.getLineMaxColumn(ret.startLineNumBer);
 
 				if (maxColumn === 1) {
 					// empty line
 					// console.warn('marker on empty line:', marker);
 				} else if (ret.endColumn >= maxColumn) {
-					// behind eol
-					ret = new Range(ret.startLineNumber, maxColumn - 1, ret.endLineNumber, maxColumn);
+					// Behind eol
+					ret = new Range(ret.startLineNumBer, maxColumn - 1, ret.endLineNumBer, maxColumn);
 				} else {
 					// extend marker to width = 1
-					ret = new Range(ret.startLineNumber, ret.startColumn, ret.endLineNumber, ret.endColumn + 1);
+					ret = new Range(ret.startLineNumBer, ret.startColumn, ret.endLineNumBer, ret.endColumn + 1);
 				}
 			}
-		} else if (rawMarker.endColumn === Number.MAX_VALUE && rawMarker.startColumn === 1 && ret.startLineNumber === ret.endLineNumber) {
-			let minColumn = model.getLineFirstNonWhitespaceColumn(rawMarker.startLineNumber);
+		} else if (rawMarker.endColumn === NumBer.MAX_VALUE && rawMarker.startColumn === 1 && ret.startLineNumBer === ret.endLineNumBer) {
+			let minColumn = model.getLineFirstNonWhitespaceColumn(rawMarker.startLineNumBer);
 			if (minColumn < ret.endColumn) {
-				ret = new Range(ret.startLineNumber, minColumn, ret.endLineNumber, ret.endColumn);
+				ret = new Range(ret.startLineNumBer, minColumn, ret.endLineNumBer, ret.endColumn);
 				rawMarker.startColumn = minColumn;
 			}
 		}
@@ -188,7 +188,7 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 
 		let className: string | undefined;
 		let color: ThemeColor | undefined = undefined;
-		let zIndex: number;
+		let zIndex: numBer;
 		let inlineClassName: string | undefined = undefined;
 		let minimap: IModelDecorationMinimapOptions | undefined;
 
@@ -202,7 +202,7 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 					className = ClassName.EditorHintDecoration;
 				}
 				zIndex = 0;
-				break;
+				Break;
 			case MarkerSeverity.Warning:
 				className = ClassName.EditorWarningDecoration;
 				color = themeColorFromId(overviewRulerWarning);
@@ -211,12 +211,12 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 					color: themeColorFromId(minimapWarning),
 					position: MinimapPosition.Inline
 				};
-				break;
+				Break;
 			case MarkerSeverity.Info:
 				className = ClassName.EditorInfoDecoration;
 				color = themeColorFromId(overviewRulerInfo);
 				zIndex = 10;
-				break;
+				Break;
 			case MarkerSeverity.Error:
 			default:
 				className = ClassName.EditorErrorDecoration;
@@ -226,7 +226,7 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 					color: themeColorFromId(minimapError),
 					position: MinimapPosition.Inline
 				};
-				break;
+				Break;
 		}
 
 		if (marker.tags) {
@@ -252,7 +252,7 @@ export class MarkerDecorationsService extends Disposable implements IMarkerDecor
 		};
 	}
 
-	private _hasMarkerTag(marker: IMarker, tag: MarkerTag): boolean {
+	private _hasMarkerTag(marker: IMarker, tag: MarkerTag): Boolean {
 		if (marker.tags) {
 			return marker.tags.indexOf(tag) >= 0;
 		}

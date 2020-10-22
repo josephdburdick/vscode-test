@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI as uri } from 'vs/base/common/uri';
-import { getNextTickChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Client, IIPCOptions } from 'vs/base/parts/ipc/node/ipc.cp';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI as uri } from 'vs/Base/common/uri';
+import { getNextTickChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Client, IIPCOptions } from 'vs/Base/parts/ipc/node/ipc.cp';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IDebugParams } from 'vs/platform/environment/common/environment';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { IDeBugParams } from 'vs/platform/environment/common/environment';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { parseSearchPort } from 'vs/platform/environment/node/environmentService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ILogService } from 'vs/platform/log/common/log';
-import { FileMatch, IFileMatch, IFileQuery, IProgressMessage, IRawSearchService, ISearchComplete, ISearchConfiguration, ISearchProgressItem, ISearchResultProvider, ISerializedFileMatch, ISerializedSearchComplete, ISerializedSearchProgressItem, isSerializedSearchComplete, isSerializedSearchSuccess, ITextQuery, ISearchService, isFileMatch } from 'vs/workbench/services/search/common/search';
-import { SearchChannelClient } from 'vs/workbench/services/search/node/searchIpc';
-import { SearchService } from 'vs/workbench/services/search/common/searchService';
+import { FileMatch, IFileMatch, IFileQuery, IProgressMessage, IRawSearchService, ISearchComplete, ISearchConfiguration, ISearchProgressItem, ISearchResultProvider, ISerializedFileMatch, ISerializedSearchComplete, ISerializedSearchProgressItem, isSerializedSearchComplete, isSerializedSearchSuccess, ITextQuery, ISearchService, isFileMatch } from 'vs/workBench/services/search/common/search';
+import { SearchChannelClient } from 'vs/workBench/services/search/node/searchIpc';
+import { SearchService } from 'vs/workBench/services/search/common/searchService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 export class LocalSearchService extends SearchService {
 	constructor(
@@ -35,12 +35,12 @@ export class LocalSearchService extends SearchService {
 		@ILogService logService: ILogService,
 		@IExtensionService extensionService: IExtensionService,
 		@IFileService fileService: IFileService,
-		@INativeWorkbenchEnvironmentService readonly environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService readonly environmentService: INativeWorkBenchEnvironmentService,
 		@IInstantiationService readonly instantiationService: IInstantiationService
 	) {
 		super(modelService, editorService, telemetryService, logService, extensionService, fileService);
 
-		this.diskSearch = instantiationService.createInstance(DiskSearch, !environmentService.isBuilt || environmentService.verbose, parseSearchPort(environmentService.args, environmentService.isBuilt));
+		this.diskSearch = instantiationService.createInstance(DiskSearch, !environmentService.isBuilt || environmentService.verBose, parseSearchPort(environmentService.args, environmentService.isBuilt));
 	}
 }
 
@@ -48,8 +48,8 @@ export class DiskSearch implements ISearchResultProvider {
 	private raw: IRawSearchService;
 
 	constructor(
-		verboseLogging: boolean,
-		searchDebug: IDebugParams | undefined,
+		verBoseLogging: Boolean,
+		searchDeBug: IDeBugParams | undefined,
 		@ILogService private readonly logService: ILogService,
 		@IConfigurationService private readonly configService: IConfigurationService,
 	) {
@@ -61,28 +61,28 @@ export class DiskSearch implements ISearchResultProvider {
 			serverName: 'Search',
 			timeout,
 			args: ['--type=searchService'],
-			// See https://github.com/microsoft/vscode/issues/27665
+			// See https://githuB.com/microsoft/vscode/issues/27665
 			// Pass in fresh execArgv to the forked process such that it doesn't inherit them from `process.execArgv`.
-			// e.g. Launching the extension host process with `--inspect-brk=xxx` and then forking a process from the extension host
-			// results in the forked process inheriting `--inspect-brk=xxx`.
+			// e.g. Launching the extension host process with `--inspect-Brk=xxx` and then forking a process from the extension host
+			// results in the forked process inheriting `--inspect-Brk=xxx`.
 			freshExecArgv: true,
 			env: {
-				AMD_ENTRYPOINT: 'vs/workbench/services/search/node/searchApp',
+				AMD_ENTRYPOINT: 'vs/workBench/services/search/node/searchApp',
 				PIPE_LOGGING: 'true',
-				VERBOSE_LOGGING: verboseLogging
+				VERBOSE_LOGGING: verBoseLogging
 			},
 			useQueue: true
 		};
 
-		if (searchDebug) {
-			if (searchDebug.break && searchDebug.port) {
-				opts.debugBrk = searchDebug.port;
-			} else if (!searchDebug.break && searchDebug.port) {
-				opts.debug = searchDebug.port;
+		if (searchDeBug) {
+			if (searchDeBug.Break && searchDeBug.port) {
+				opts.deBugBrk = searchDeBug.port;
+			} else if (!searchDeBug.Break && searchDeBug.port) {
+				opts.deBug = searchDeBug.port;
 			}
 		}
 
-		const client = new Client(FileAccess.asFileUri('bootstrap-fork', require).fsPath, opts);
+		const client = new Client(FileAccess.asFileUri('Bootstrap-fork', require).fsPath, opts);
 		const channel = getNextTickChannel(client.getChannel('search'));
 		this.raw = new SearchChannelClient(channel);
 	}
@@ -107,8 +107,8 @@ export class DiskSearch implements ISearchResultProvider {
 
 		const onProgress = (p: ISearchProgressItem) => {
 			if (!isFileMatch(p)) {
-				// Should only be for logs
-				this.logService.debug('SearchService#search', p.message);
+				// Should only Be for logs
+				this.logService.deBug('SearchService#search', p.message);
 			}
 		};
 
@@ -116,12 +116,12 @@ export class DiskSearch implements ISearchResultProvider {
 	}
 
 	/**
-	 * Public for test
+	 * PuBlic for test
 	 */
 	static collectResultsFromEvent(event: Event<ISerializedSearchProgressItem | ISerializedSearchComplete>, onProgress?: (p: ISearchProgressItem) => void, token?: CancellationToken): Promise<ISearchComplete> {
 		let result: IFileMatch[] = [];
 
-		let listener: IDisposable;
+		let listener: IDisposaBle;
 		return new Promise<ISearchComplete>((c, e) => {
 			if (token) {
 				token.onCancellationRequested(() => {

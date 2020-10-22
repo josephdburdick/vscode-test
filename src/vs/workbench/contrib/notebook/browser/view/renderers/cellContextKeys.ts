@@ -4,65 +4,65 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { INotebookTextModel, NotebookCellRunState } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { BaseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/baseCellViewModel';
-import { NOTEBOOK_CELL_TYPE, NOTEBOOK_VIEW_TYPE, NOTEBOOK_CELL_EDITABLE, NOTEBOOK_CELL_RUNNABLE, NOTEBOOK_CELL_MARKDOWN_EDIT_MODE, NOTEBOOK_CELL_RUN_STATE, NOTEBOOK_CELL_HAS_OUTPUTS, CellViewModelStateChangeEvent, CellEditState, NOTEBOOK_CELL_INPUT_COLLAPSED, NOTEBOOK_CELL_OUTPUT_COLLAPSED, NOTEBOOK_CELL_FOCUSED, INotebookEditor, NOTEBOOK_CELL_EDITOR_FOCUSED, CellFocusMode } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { CodeCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/codeCellViewModel';
-import { MarkdownCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/markdownCellViewModel';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { INoteBookTextModel, NoteBookCellRunState } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { BaseCellViewModel } from 'vs/workBench/contriB/noteBook/Browser/viewModel/BaseCellViewModel';
+import { NOTEBOOK_CELL_TYPE, NOTEBOOK_VIEW_TYPE, NOTEBOOK_CELL_EDITABLE, NOTEBOOK_CELL_RUNNABLE, NOTEBOOK_CELL_MARKDOWN_EDIT_MODE, NOTEBOOK_CELL_RUN_STATE, NOTEBOOK_CELL_HAS_OUTPUTS, CellViewModelStateChangeEvent, CellEditState, NOTEBOOK_CELL_INPUT_COLLAPSED, NOTEBOOK_CELL_OUTPUT_COLLAPSED, NOTEBOOK_CELL_FOCUSED, INoteBookEditor, NOTEBOOK_CELL_EDITOR_FOCUSED, CellFocusMode } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { CodeCellViewModel } from 'vs/workBench/contriB/noteBook/Browser/viewModel/codeCellViewModel';
+import { MarkdownCellViewModel } from 'vs/workBench/contriB/noteBook/Browser/viewModel/markdownCellViewModel';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 
-export class CellContextKeyManager extends Disposable {
+export class CellContextKeyManager extends DisposaBle {
 
 	private cellType!: IContextKey<string>;
 	private viewType!: IContextKey<string>;
-	private cellEditable!: IContextKey<boolean>;
-	private cellRunnable!: IContextKey<boolean>;
-	private cellFocused!: IContextKey<boolean>;
-	private cellEditorFocused!: IContextKey<boolean>;
+	private cellEditaBle!: IContextKey<Boolean>;
+	private cellRunnaBle!: IContextKey<Boolean>;
+	private cellFocused!: IContextKey<Boolean>;
+	private cellEditorFocused!: IContextKey<Boolean>;
 	private cellRunState!: IContextKey<string>;
-	private cellHasOutputs!: IContextKey<boolean>;
-	private cellContentCollapsed!: IContextKey<boolean>;
-	private cellOutputCollapsed!: IContextKey<boolean>;
+	private cellHasOutputs!: IContextKey<Boolean>;
+	private cellContentCollapsed!: IContextKey<Boolean>;
+	private cellOutputCollapsed!: IContextKey<Boolean>;
 
-	private markdownEditMode!: IContextKey<boolean>;
+	private markdownEditMode!: IContextKey<Boolean>;
 
-	private elementDisposables = new DisposableStore();
+	private elementDisposaBles = new DisposaBleStore();
 
 	constructor(
 		private readonly contextKeyService: IContextKeyService,
-		private readonly notebookEditor: INotebookEditor,
-		private readonly notebookTextModel: INotebookTextModel,
+		private readonly noteBookEditor: INoteBookEditor,
+		private readonly noteBookTextModel: INoteBookTextModel,
 		private element: BaseCellViewModel
 	) {
 		super();
 
-		this.contextKeyService.bufferChangeEvents(() => {
-			this.cellType = NOTEBOOK_CELL_TYPE.bindTo(this.contextKeyService);
-			this.viewType = NOTEBOOK_VIEW_TYPE.bindTo(this.contextKeyService);
-			this.cellEditable = NOTEBOOK_CELL_EDITABLE.bindTo(this.contextKeyService);
-			this.cellFocused = NOTEBOOK_CELL_FOCUSED.bindTo(this.contextKeyService);
-			this.cellEditorFocused = NOTEBOOK_CELL_EDITOR_FOCUSED.bindTo(this.contextKeyService);
-			this.cellRunnable = NOTEBOOK_CELL_RUNNABLE.bindTo(this.contextKeyService);
-			this.markdownEditMode = NOTEBOOK_CELL_MARKDOWN_EDIT_MODE.bindTo(this.contextKeyService);
-			this.cellRunState = NOTEBOOK_CELL_RUN_STATE.bindTo(this.contextKeyService);
-			this.cellHasOutputs = NOTEBOOK_CELL_HAS_OUTPUTS.bindTo(this.contextKeyService);
-			this.cellContentCollapsed = NOTEBOOK_CELL_INPUT_COLLAPSED.bindTo(this.contextKeyService);
-			this.cellOutputCollapsed = NOTEBOOK_CELL_OUTPUT_COLLAPSED.bindTo(this.contextKeyService);
+		this.contextKeyService.BufferChangeEvents(() => {
+			this.cellType = NOTEBOOK_CELL_TYPE.BindTo(this.contextKeyService);
+			this.viewType = NOTEBOOK_VIEW_TYPE.BindTo(this.contextKeyService);
+			this.cellEditaBle = NOTEBOOK_CELL_EDITABLE.BindTo(this.contextKeyService);
+			this.cellFocused = NOTEBOOK_CELL_FOCUSED.BindTo(this.contextKeyService);
+			this.cellEditorFocused = NOTEBOOK_CELL_EDITOR_FOCUSED.BindTo(this.contextKeyService);
+			this.cellRunnaBle = NOTEBOOK_CELL_RUNNABLE.BindTo(this.contextKeyService);
+			this.markdownEditMode = NOTEBOOK_CELL_MARKDOWN_EDIT_MODE.BindTo(this.contextKeyService);
+			this.cellRunState = NOTEBOOK_CELL_RUN_STATE.BindTo(this.contextKeyService);
+			this.cellHasOutputs = NOTEBOOK_CELL_HAS_OUTPUTS.BindTo(this.contextKeyService);
+			this.cellContentCollapsed = NOTEBOOK_CELL_INPUT_COLLAPSED.BindTo(this.contextKeyService);
+			this.cellOutputCollapsed = NOTEBOOK_CELL_OUTPUT_COLLAPSED.BindTo(this.contextKeyService);
 
 			this.updateForElement(element);
 		});
 	}
 
-	public updateForElement(element: BaseCellViewModel) {
-		this.elementDisposables.clear();
-		this.elementDisposables.add(element.onDidChangeState(e => this.onDidChangeState(e)));
+	puBlic updateForElement(element: BaseCellViewModel) {
+		this.elementDisposaBles.clear();
+		this.elementDisposaBles.add(element.onDidChangeState(e => this.onDidChangeState(e)));
 
 		if (element instanceof CodeCellViewModel) {
-			this.elementDisposables.add(element.onDidChangeOutputs(() => this.updateForOutputs()));
+			this.elementDisposaBles.add(element.onDidChangeOutputs(() => this.updateForOutputs()));
 		}
 
-		this.elementDisposables.add(element.model.onDidChangeMetadata(() => this.updateForCollapseState()));
-		this.elementDisposables.add(this.notebookEditor.onDidChangeActiveCell(() => this.updateForFocusState()));
+		this.elementDisposaBles.add(element.model.onDidChangeMetadata(() => this.updateForCollapseState()));
+		this.elementDisposaBles.add(this.noteBookEditor.onDidChangeActiveCell(() => this.updateForFocusState()));
 
 		this.element = element;
 		if (this.element instanceof MarkdownCellViewModel) {
@@ -71,7 +71,7 @@ export class CellContextKeyManager extends Disposable {
 			this.cellType.set('code');
 		}
 
-		this.contextKeyService.bufferChangeEvents(() => {
+		this.contextKeyService.BufferChangeEvents(() => {
 			this.updateForFocusState();
 			this.updateForMetadata();
 			this.updateForEditState();
@@ -83,7 +83,7 @@ export class CellContextKeyManager extends Disposable {
 	}
 
 	private onDidChangeState(e: CellViewModelStateChangeEvent) {
-		this.contextKeyService.bufferChangeEvents(() => {
+		this.contextKeyService.BufferChangeEvents(() => {
 			if (e.metadataChanged) {
 				this.updateForMetadata();
 			}
@@ -103,8 +103,8 @@ export class CellContextKeyManager extends Disposable {
 	}
 
 	private updateForFocusState() {
-		const activeCell = this.notebookEditor.getActiveCell();
-		this.cellFocused.set(this.notebookEditor.getActiveCell() === this.element);
+		const activeCell = this.noteBookEditor.getActiveCell();
+		this.cellFocused.set(this.noteBookEditor.getActiveCell() === this.element);
 
 		if (activeCell === this.element) {
 			this.cellEditorFocused.set(this.element.focusMode === CellFocusMode.Editor);
@@ -115,12 +115,12 @@ export class CellContextKeyManager extends Disposable {
 	}
 
 	private updateForMetadata() {
-		const metadata = this.element.getEvaluatedMetadata(this.notebookTextModel.metadata);
-		this.cellEditable.set(!!metadata.editable);
-		this.cellRunnable.set(!!metadata.runnable);
+		const metadata = this.element.getEvaluatedMetadata(this.noteBookTextModel.metadata);
+		this.cellEditaBle.set(!!metadata.editaBle);
+		this.cellRunnaBle.set(!!metadata.runnaBle);
 
-		const runState = metadata.runState ?? NotebookCellRunState.Idle;
-		this.cellRunState.set(NotebookCellRunState[runState]);
+		const runState = metadata.runState ?? NoteBookCellRunState.Idle;
+		this.cellRunState.set(NoteBookCellRunState[runState]);
 	}
 
 	private updateForEditState() {

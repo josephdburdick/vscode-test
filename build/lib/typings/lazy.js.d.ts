@@ -1,20 +1,20 @@
 // Type definitions for Lazy.js 0.3.2
-// Project: https://github.com/dtao/lazy.js/
-// Definitions by: Bart van der Schoor <https://github.com/Bartvds>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Project: https://githuB.com/dtao/lazy.js/
+// Definitions By: Bart van der Schoor <https://githuB.com/Bartvds>
+// Definitions: https://githuB.com/Borisyankov/DefinitelyTyped
 
 declare function Lazy(value: string): Lazy.StringLikeSequence;
 declare function Lazy<T>(value: T[]): Lazy.ArrayLikeSequence<T>;
 declare function Lazy(value: any[]): Lazy.ArrayLikeSequence<any>;
-declare function Lazy<T>(value: Object): Lazy.ObjectLikeSequence<T>;
-declare function Lazy(value: Object): Lazy.ObjectLikeSequence<any>;
+declare function Lazy<T>(value: OBject): Lazy.OBjectLikeSequence<T>;
+declare function Lazy(value: OBject): Lazy.OBjectLikeSequence<any>;
 
 declare module Lazy {
 	function strict(): StrictLazy;
-	function generate<T>(generatorFn: GeneratorCallback<T>, length?: number): GeneratedSequence<T>;
-	function range(to: number): GeneratedSequence<number>;
-	function range(from: number, to: number, step?: number): GeneratedSequence<number>;
-	function repeat<T>(value: T, count?: number): GeneratedSequence<T>;
+	function generate<T>(generatorFn: GeneratorCallBack<T>, length?: numBer): GeneratedSequence<T>;
+	function range(to: numBer): GeneratedSequence<numBer>;
+	function range(from: numBer, to: numBer, step?: numBer): GeneratedSequence<numBer>;
+	function repeat<T>(value: T, count?: numBer): GeneratedSequence<T>;
 	function on<T>(eventType: string): Sequence<T>;
 	function readFile(path: string): StringLikeSequence;
 	function makeHttpRequest(path: string): StringLikeSequence;
@@ -23,65 +23,65 @@ declare module Lazy {
 		(value: string): StringLikeSequence;
 		<T>(value: T[]): ArrayLikeSequence<T>;
 		(value: any[]): ArrayLikeSequence<any>;
-		<T>(value: Object): ObjectLikeSequence<T>;
-		(value: Object): ObjectLikeSequence<any>;
+		<T>(value: OBject): OBjectLikeSequence<T>;
+		(value: OBject): OBjectLikeSequence<any>;
 		strict(): StrictLazy;
-		generate<T>(generatorFn: GeneratorCallback<T>, length?: number): GeneratedSequence<T>;
-		range(to: number): GeneratedSequence<number>;
-		range(from: number, to: number, step?: number): GeneratedSequence<number>;
-		repeat<T>(value: T, count?: number): GeneratedSequence<T>;
+		generate<T>(generatorFn: GeneratorCallBack<T>, length?: numBer): GeneratedSequence<T>;
+		range(to: numBer): GeneratedSequence<numBer>;
+		range(from: numBer, to: numBer, step?: numBer): GeneratedSequence<numBer>;
+		repeat<T>(value: T, count?: numBer): GeneratedSequence<T>;
 		on<T>(eventType: string): Sequence<T>;
 		readFile(path: string): StringLikeSequence;
 		makeHttpRequest(path: string): StringLikeSequence;
 	}
 
 	interface ArrayLike<T> {
-		length: number;
-		[index: number]: T;
+		length: numBer;
+		[index: numBer]: T;
 	}
 
-	interface Callback {
+	interface CallBack {
 		(): void;
 	}
 
-	interface ErrorCallback {
+	interface ErrorCallBack {
 		(error: any): void;
 	}
 
-	interface ValueCallback<T> {
+	interface ValueCallBack<T> {
 		(value: T): void;
 	}
 
-	interface GetKeyCallback<T> {
+	interface GetKeyCallBack<T> {
 		(value: T): string;
 	}
 
-	interface TestCallback<T> {
-		(value: T): boolean;
+	interface TestCallBack<T> {
+		(value: T): Boolean;
 	}
 
-	interface MapCallback<T, U> {
+	interface MapCallBack<T, U> {
 		(value: T): U;
 	}
 
-	interface MapStringCallback {
+	interface MapStringCallBack {
 		(value: string): string;
 	}
 
-	interface NumberCallback<T> {
-		(value: T): number;
+	interface NumBerCallBack<T> {
+		(value: T): numBer;
 	}
 
-	interface MemoCallback<T, U> {
+	interface MemoCallBack<T, U> {
 		(memo: U, value: T): U;
 	}
 
-	interface GeneratorCallback<T> {
-		(index: number): T;
+	interface GeneratorCallBack<T> {
+		(index: numBer): T;
 	}
 
-	interface CompareCallback {
-		(x: any, y: any): number;
+	interface CompareCallBack {
+		(x: any, y: any): numBer;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,32 +89,32 @@ declare module Lazy {
 	interface Iterator<T> {
 		new(sequence: Sequence<T>): Iterator<T>;
 		current(): T;
-		moveNext(): boolean;
+		moveNext(): Boolean;
 	}
 
 	interface GeneratedSequence<T> extends Sequence<T> {
-		new(generatorFn: GeneratorCallback<T>, length: number): GeneratedSequence<T>;
-		length(): number;
+		new(generatorFn: GeneratorCallBack<T>, length: numBer): GeneratedSequence<T>;
+		length(): numBer;
 	}
 
 	interface AsyncSequence<T> extends SequenceBase<T> {
-		each(callback: ValueCallback<T>): AsyncHandle<T>;
+		each(callBack: ValueCallBack<T>): AsyncHandle<T>;
 	}
 
 	interface AsyncHandle<T> {
 		cancel(): void;
-		onComplete(callback: Callback): void;
-		onError(callback: ErrorCallback): void;
+		onComplete(callBack: CallBack): void;
+		onError(callBack: ErrorCallBack): void;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	module Sequence {
-		function define(methodName: string[], overrides: Object): Function;
+		function define(methodName: string[], overrides: OBject): Function;
 	}
 
 	interface Sequence<T> extends SequenceBase<T> {
-		each(eachFn: ValueCallback<T>): Sequence<T>;
+		each(eachFn: ValueCallBack<T>): Sequence<T>;
 	}
 
 	interface ArraySequence<T> extends SequenceBase<T[]> {
@@ -123,11 +123,11 @@ declare module Lazy {
 
 	interface SequenceBase<T> extends SequenceBaser<T> {
 		first(): any;
-		first(count: number): Sequence<T>;
-		indexOf(value: any, startIndex?: number): Sequence<T>;
+		first(count: numBer): Sequence<T>;
+		indexOf(value: any, startIndex?: numBer): Sequence<T>;
 
 		last(): any;
-		last(count: number): Sequence<T>;
+		last(count: numBer): Sequence<T>;
 		lastIndexOf(value: any): Sequence<T>;
 
 		reverse(): Sequence<T>;
@@ -135,136 +135,136 @@ declare module Lazy {
 
 	interface SequenceBaser<T> {
 		// TODO improve define() (needs ugly overload)
-		async(interval: number): AsyncSequence<T>;
-		chunk(size: number): Sequence<T>;
+		async(interval: numBer): AsyncSequence<T>;
+		chunk(size: numBer): Sequence<T>;
 		compact(): Sequence<T>;
 		concat(var_args: T[]): Sequence<T>;
 		concat(sequence: Sequence<T>): Sequence<T>;
-		consecutive(length: number): Sequence<T>;
-		contains(value: T): boolean;
-		countBy(keyFn: GetKeyCallback<T>): ObjectLikeSequence<T>;
-		countBy(propertyName: string): ObjectLikeSequence<T>;
-		dropWhile(predicateFn: TestCallback<T>): Sequence<T>;
-		every(predicateFn: TestCallback<T>): boolean;
-		filter(predicateFn: TestCallback<T>): Sequence<T>;
-		find(predicateFn: TestCallback<T>): Sequence<T>;
-		findWhere(properties: Object): Sequence<T>;
+		consecutive(length: numBer): Sequence<T>;
+		contains(value: T): Boolean;
+		countBy(keyFn: GetKeyCallBack<T>): OBjectLikeSequence<T>;
+		countBy(propertyName: string): OBjectLikeSequence<T>;
+		dropWhile(predicateFn: TestCallBack<T>): Sequence<T>;
+		every(predicateFn: TestCallBack<T>): Boolean;
+		filter(predicateFn: TestCallBack<T>): Sequence<T>;
+		find(predicateFn: TestCallBack<T>): Sequence<T>;
+		findWhere(properties: OBject): Sequence<T>;
 
-		groupBy(keyFn: GetKeyCallback<T>): ObjectLikeSequence<T>;
-		initial(count?: number): Sequence<T>;
+		groupBy(keyFn: GetKeyCallBack<T>): OBjectLikeSequence<T>;
+		initial(count?: numBer): Sequence<T>;
 		intersection(var_args: T[]): Sequence<T>;
 		invoke(methodName: string): Sequence<T>;
-		isEmpty(): boolean;
+		isEmpty(): Boolean;
 		join(delimiter?: string): string;
-		map<U>(mapFn: MapCallback<T, U[]>): ArraySequence<U>;
-		map<U>(mapFn: MapCallback<T, U>): Sequence<U>;
+		map<U>(mapFn: MapCallBack<T, U[]>): ArraySequence<U>;
+		map<U>(mapFn: MapCallBack<T, U>): Sequence<U>;
 
 		// TODO: vscode addition to workaround strict null errors
 		flatten(): Sequence<any>;
 
-		max(valueFn?: NumberCallback<T>): T;
-		min(valueFn?: NumberCallback<T>): T;
-		none(valueFn?: TestCallback<T>): boolean;
+		max(valueFn?: NumBerCallBack<T>): T;
+		min(valueFn?: NumBerCallBack<T>): T;
+		none(valueFn?: TestCallBack<T>): Boolean;
 		pluck(propertyName: string): Sequence<T>;
-		reduce<U>(aggregatorFn: MemoCallback<T, U>, memo?: U): U;
-		reduceRight<U>(aggregatorFn: MemoCallback<T, U>, memo: U): U;
-		reject(predicateFn: TestCallback<T>): Sequence<T>;
-		rest(count?: number): Sequence<T>;
+		reduce<U>(aggregatorFn: MemoCallBack<T, U>, memo?: U): U;
+		reduceRight<U>(aggregatorFn: MemoCallBack<T, U>, memo: U): U;
+		reject(predicateFn: TestCallBack<T>): Sequence<T>;
+		rest(count?: numBer): Sequence<T>;
 		shuffle(): Sequence<T>;
-		some(predicateFn?: TestCallback<T>): boolean;
-		sort(sortFn?: CompareCallback, descending?: boolean): Sequence<T>;
-		sortBy(sortFn: string, descending?: boolean): Sequence<T>;
-		sortBy(sortFn: NumberCallback<T>, descending?: boolean): Sequence<T>;
+		some(predicateFn?: TestCallBack<T>): Boolean;
+		sort(sortFn?: CompareCallBack, descending?: Boolean): Sequence<T>;
+		sortBy(sortFn: string, descending?: Boolean): Sequence<T>;
+		sortBy(sortFn: NumBerCallBack<T>, descending?: Boolean): Sequence<T>;
 		sortedIndex(value: T): Sequence<T>;
-		size(): number;
-		sum(valueFn?: NumberCallback<T>): Sequence<T>;
-		takeWhile(predicateFn: TestCallback<T>): Sequence<T>;
+		size(): numBer;
+		sum(valueFn?: NumBerCallBack<T>): Sequence<T>;
+		takeWhile(predicateFn: TestCallBack<T>): Sequence<T>;
 		union(var_args: T[]): Sequence<T>;
 		uniq(): Sequence<T>;
-		where(properties: Object): Sequence<T>;
+		where(properties: OBject): Sequence<T>;
 		without(...var_args: T[]): Sequence<T>;
 		without(var_args: T[]): Sequence<T>;
 		zip(var_args: T[]): ArraySequence<T>;
 
 		toArray(): T[];
-		toObject(): Object;
+		toOBject(): OBject;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	module ArrayLikeSequence {
-		function define(methodName: string[], overrides: Object): Function;
+		function define(methodName: string[], overrides: OBject): Function;
 	}
 
 	interface ArrayLikeSequence<T> extends Sequence<T> {
 		// define()X;
 		concat(var_args: T[]): ArrayLikeSequence<T>;
 		concat(sequence: Sequence<T>): Sequence<T>;
-		first(count?: number): ArrayLikeSequence<T>;
-		get(index: number): T;
-		length(): number;
-		map<U>(mapFn: MapCallback<T, U[]>): ArraySequence<U>;
-		map<U>(mapFn: MapCallback<T, U>): ArrayLikeSequence<U>;
+		first(count?: numBer): ArrayLikeSequence<T>;
+		get(index: numBer): T;
+		length(): numBer;
+		map<U>(mapFn: MapCallBack<T, U[]>): ArraySequence<U>;
+		map<U>(mapFn: MapCallBack<T, U>): ArrayLikeSequence<U>;
 		pop(): ArrayLikeSequence<T>;
-		rest(count?: number): ArrayLikeSequence<T>;
+		rest(count?: numBer): ArrayLikeSequence<T>;
 		reverse(): ArrayLikeSequence<T>;
 		shift(): ArrayLikeSequence<T>;
-		slice(begin: number, end?: number): ArrayLikeSequence<T>;
+		slice(Begin: numBer, end?: numBer): ArrayLikeSequence<T>;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	module ObjectLikeSequence {
-		function define(methodName: string[], overrides: Object): Function;
+	module OBjectLikeSequence {
+		function define(methodName: string[], overrides: OBject): Function;
 	}
 
-	interface ObjectLikeSequence<T> extends Sequence<T> {
-		assign(other: Object): ObjectLikeSequence<T>;
+	interface OBjectLikeSequence<T> extends Sequence<T> {
+		assign(other: OBject): OBjectLikeSequence<T>;
 		// throws error
 		//async(): X;
-		defaults(defaults: Object): ObjectLikeSequence<T>;
+		defaults(defaults: OBject): OBjectLikeSequence<T>;
 		functions(): Sequence<T>;
-		get(property: string): ObjectLikeSequence<T>;
-		invert(): ObjectLikeSequence<T>;
+		get(property: string): OBjectLikeSequence<T>;
+		invert(): OBjectLikeSequence<T>;
 		keys(): Sequence<string>;
-		omit(properties: string[]): ObjectLikeSequence<T>;
+		omit(properties: string[]): OBjectLikeSequence<T>;
 		pairs(): Sequence<T>;
-		pick(properties: string[]): ObjectLikeSequence<T>;
+		pick(properties: string[]): OBjectLikeSequence<T>;
 		toArray(): T[];
-		toObject(): Object;
+		toOBject(): OBject;
 		values(): Sequence<T>;
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	module StringLikeSequence {
-		function define(methodName: string[], overrides: Object): Function;
+		function define(methodName: string[], overrides: OBject): Function;
 	}
 
 	interface StringLikeSequence extends SequenceBaser<string> {
-		charAt(index: number): string;
-		charCodeAt(index: number): number;
-		contains(value: string): boolean;
-		endsWith(suffix: string): boolean;
+		charAt(index: numBer): string;
+		charCodeAt(index: numBer): numBer;
+		contains(value: string): Boolean;
+		endsWith(suffix: string): Boolean;
 
 		first(): string;
-		first(count: number): StringLikeSequence;
+		first(count: numBer): StringLikeSequence;
 
-		indexOf(substring: string, startIndex?: number): number;
+		indexOf(suBstring: string, startIndex?: numBer): numBer;
 
 		last(): string;
-		last(count: number): StringLikeSequence;
+		last(count: numBer): StringLikeSequence;
 
-		lastIndexOf(substring: string, startIndex?: number): number;
-		mapString(mapFn: MapStringCallback): StringLikeSequence;
+		lastIndexOf(suBstring: string, startIndex?: numBer): numBer;
+		mapString(mapFn: MapStringCallBack): StringLikeSequence;
 		match(pattern: RegExp): StringLikeSequence;
 		reverse(): StringLikeSequence;
 
 		split(delimiter: string): StringLikeSequence;
 		split(delimiter: RegExp): StringLikeSequence;
 
-		startsWith(prefix: string): boolean;
-		substring(start: number, stop?: number): StringLikeSequence;
+		startsWith(prefix: string): Boolean;
+		suBstring(start: numBer, stop?: numBer): StringLikeSequence;
 		toLowerCase(): StringLikeSequence;
 		toUpperCase(): StringLikeSequence;
 	}

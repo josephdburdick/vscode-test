@@ -12,14 +12,14 @@ import * as interfaces from './interfaces';
 
 const ConfigurationSectionName = 'merge-conflict';
 
-export default class ServiceWrapper implements vscode.Disposable {
+export default class ServiceWrapper implements vscode.DisposaBle {
 
-	private services: vscode.Disposable[] = [];
+	private services: vscode.DisposaBle[] = [];
 
 	constructor(private context: vscode.ExtensionContext) {
 	}
 
-	begin() {
+	Begin() {
 
 		let configuration = this.createExtensionConfiguration();
 		const documentTracker = new DocumentTracker();
@@ -33,8 +33,8 @@ export default class ServiceWrapper implements vscode.Disposable {
 		);
 
 		this.services.forEach((service: any) => {
-			if (service.begin && service.begin instanceof Function) {
-				service.begin(configuration);
+			if (service.Begin && service.Begin instanceof Function) {
+				service.Begin(configuration);
 			}
 		});
 
@@ -49,18 +49,18 @@ export default class ServiceWrapper implements vscode.Disposable {
 
 	createExtensionConfiguration(): interfaces.IExtensionConfiguration {
 		const workspaceConfiguration = vscode.workspace.getConfiguration(ConfigurationSectionName);
-		const codeLensEnabled: boolean = workspaceConfiguration.get('codeLens.enabled', true);
-		const decoratorsEnabled: boolean = workspaceConfiguration.get('decorators.enabled', true);
+		const codeLensEnaBled: Boolean = workspaceConfiguration.get('codeLens.enaBled', true);
+		const decoratorsEnaBled: Boolean = workspaceConfiguration.get('decorators.enaBled', true);
 
 		return {
-			enableCodeLens: codeLensEnabled,
-			enableDecorations: decoratorsEnabled,
-			enableEditorOverview: decoratorsEnabled
+			enaBleCodeLens: codeLensEnaBled,
+			enaBleDecorations: decoratorsEnaBled,
+			enaBleEditorOverview: decoratorsEnaBled
 		};
 	}
 
 	dispose() {
-		this.services.forEach(disposable => disposable.dispose());
+		this.services.forEach(disposaBle => disposaBle.dispose());
 		this.services = [];
 	}
 }

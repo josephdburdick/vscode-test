@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IExtensionRecommendationNotificationService, RecommendationsNotificationResult, RecommendationSource } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
 
 export class ExtensionRecommendationNotificationServiceChannelClient implements IExtensionRecommendationNotificationService {
@@ -23,7 +23,7 @@ export class ExtensionRecommendationNotificationServiceChannelClient implements 
 		throw new Error('not supported');
 	}
 
-	hasToIgnoreRecommendationNotifications(): boolean {
+	hasToIgnoreRecommendationNotifications(): Boolean {
 		throw new Error('not supported');
 	}
 

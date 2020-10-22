@@ -6,8 +6,8 @@
 import * as vscode from 'vscode';
 import type * as Proto from '../protocol';
 import { localize } from '../tsServer/versionProvider';
-import { ClientCapability, ITypeScriptServiceClient, ServerType } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import { ClientCapaBility, ITypeScriptServiceClient, ServerType } from '../typescriptService';
+import { conditionalRegistration, requireSomeCapaBility } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import { markdownDocumentation } from '../utils/previewer';
 import * as typeConverters from '../utils/typeConverters';
@@ -15,11 +15,11 @@ import * as typeConverters from '../utils/typeConverters';
 
 class TypeScriptHoverProvider implements vscode.HoverProvider {
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideHover(
+	puBlic async provideHover(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		token: vscode.CancellationToken
@@ -31,13 +31,13 @@ class TypeScriptHoverProvider implements vscode.HoverProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
 		const response = await this.client.interruptGetErr(() => this.client.execute('quickinfo', args, token));
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
 		return new vscode.Hover(
-			this.getContents(document.uri, response.body, response._serverType),
-			typeConverters.Range.fromTextSpan(response.body));
+			this.getContents(document.uri, response.Body, response._serverType),
+			typeConverters.Range.fromTextSpan(response.Body));
 	}
 
 	private getContents(
@@ -50,7 +50,7 @@ class TypeScriptHoverProvider implements vscode.HoverProvider {
 		if (data.displayString) {
 			const displayParts: string[] = [];
 
-			if (source === ServerType.Syntax && this.client.hasCapabilityForResource(resource, ClientCapability.Semantic)) {
+			if (source === ServerType.Syntax && this.client.hasCapaBilityForResource(resource, ClientCapaBility.Semantic)) {
 				displayParts.push(
 					localize({
 						key: 'loadingPrefix',
@@ -70,9 +70,9 @@ class TypeScriptHoverProvider implements vscode.HoverProvider {
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient
-): vscode.Disposable {
+): vscode.DisposaBle {
 	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.EnhancedSyntax, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerHoverProvider(selector.syntax,
 			new TypeScriptHoverProvider(client));

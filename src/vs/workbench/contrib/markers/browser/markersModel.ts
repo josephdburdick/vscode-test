@@ -3,30 +3,30 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename, extUri } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { Basename, extUri } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { Range, IRange } from 'vs/editor/common/core/range';
 import { IMarker, MarkerSeverity, IRelatedInformation, IMarkerData } from 'vs/platform/markers/common/markers';
-import { mergeSort, isNonEmptyArray, flatten } from 'vs/base/common/arrays';
-import { ResourceMap } from 'vs/base/common/map';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Hasher } from 'vs/base/common/hash';
-import { withUndefinedAsNull } from 'vs/base/common/types';
+import { mergeSort, isNonEmptyArray, flatten } from 'vs/Base/common/arrays';
+import { ResourceMap } from 'vs/Base/common/map';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { Hasher } from 'vs/Base/common/hash';
+import { withUndefinedAsNull } from 'vs/Base/common/types';
 
 
-export function compareMarkersByUri(a: IMarker, b: IMarker) {
-	return extUri.compare(a.resource, b.resource);
+export function compareMarkersByUri(a: IMarker, B: IMarker) {
+	return extUri.compare(a.resource, B.resource);
 }
 
-function compareResourceMarkers(a: ResourceMarkers, b: ResourceMarkers): number {
+function compareResourceMarkers(a: ResourceMarkers, B: ResourceMarkers): numBer {
 	let [firstMarkerOfA] = a.markers;
-	let [firstMarkerOfB] = b.markers;
+	let [firstMarkerOfB] = B.markers;
 	let res = 0;
 	if (firstMarkerOfA && firstMarkerOfB) {
 		res = MarkerSeverity.compare(firstMarkerOfA.marker.severity, firstMarkerOfB.marker.severity);
 	}
 	if (res === 0) {
-		res = a.path.localeCompare(b.path) || a.name.localeCompare(b.name);
+		res = a.path.localeCompare(B.path) || a.name.localeCompare(B.name);
 	}
 	return res;
 }
@@ -40,11 +40,11 @@ export class ResourceMarkers {
 
 	private _markersMap = new ResourceMap<Marker[]>();
 	private _cachedMarkers: Marker[] | undefined;
-	private _total: number = 0;
+	private _total: numBer = 0;
 
 	constructor(readonly id: string, readonly resource: URI) {
 		this.path = this.resource.fsPath;
-		this.name = basename(this.resource);
+		this.name = Basename(this.resource);
 	}
 
 	get markers(): readonly Marker[] {
@@ -80,10 +80,10 @@ export class ResourceMarkers {
 		return this._total;
 	}
 
-	private static _compareMarkers(a: Marker, b: Marker): number {
-		return MarkerSeverity.compare(a.marker.severity, b.marker.severity)
-			|| extUri.compare(a.resource, b.resource)
-			|| Range.compareRangesUsingStarts(a.marker, b.marker);
+	private static _compareMarkers(a: Marker, B: Marker): numBer {
+		return MarkerSeverity.compare(a.marker.severity, B.marker.severity)
+			|| extUri.compare(a.resource, B.resource)
+			|| Range.compareRangesUsingStarts(a.marker, B.marker);
 	}
 }
 
@@ -150,8 +150,8 @@ export class MarkersModel {
 		this.resourcesByUri = new Map<string, ResourceMarkers>();
 	}
 
-	private _total: number = 0;
-	get total(): number {
+	private _total: numBer = 0;
+	get total(): numBer {
 		return this._total;
 	}
 
@@ -176,7 +176,7 @@ export class MarkersModel {
 				} else {
 					change.updated.add(resourceMarkers);
 				}
-				const markersCountByKey = new Map<string, number>();
+				const markersCountByKey = new Map<string, numBer>();
 				const markers = rawMarkers.map((rawMarker) => {
 					const key = IMarkerData.makeKey(rawMarker);
 					const index = markersCountByKey.get(key) || 0;
@@ -186,7 +186,7 @@ export class MarkersModel {
 
 					let relatedInformation: RelatedInformation[] | undefined = undefined;
 					if (rawMarker.relatedInformation) {
-						relatedInformation = rawMarker.relatedInformation.map((r, index) => new RelatedInformation(this.id(markerId, r.resource.toString(), r.startLineNumber, r.startColumn, r.endLineNumber, r.endColumn, index), rawMarker, r));
+						relatedInformation = rawMarker.relatedInformation.map((r, index) => new RelatedInformation(this.id(markerId, r.resource.toString(), r.startLineNumBer, r.startColumn, r.endLineNumBer, r.endColumn, index), rawMarker, r));
 					}
 
 					return new Marker(markerId, rawMarker, relatedInformation);
@@ -216,7 +216,7 @@ export class MarkersModel {
 		}
 	}
 
-	private id(...values: (string | number)[]): string {
+	private id(...values: (string | numBer)[]): string {
 		const hasher = new Hasher();
 		for (const value of values) {
 			hasher.hash(value);

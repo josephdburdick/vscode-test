@@ -24,7 +24,7 @@ function logErr(message: any, ...rest: any[]): void {
 type SourceFileGetter = (moduleId: string) => ts.SourceFile | null;
 
 type TSTopLevelDeclaration = ts.InterfaceDeclaration | ts.EnumDeclaration | ts.ClassDeclaration | ts.TypeAliasDeclaration | ts.FunctionDeclaration | ts.ModuleDeclaration;
-type TSTopLevelDeclare = TSTopLevelDeclaration | ts.VariableStatement;
+type TSTopLevelDeclare = TSTopLevelDeclaration | ts.VariaBleStatement;
 
 function isDeclaration(a: TSTopLevelDeclare): a is TSTopLevelDeclaration {
 	return (
@@ -37,7 +37,7 @@ function isDeclaration(a: TSTopLevelDeclare): a is TSTopLevelDeclaration {
 	);
 }
 
-function visitTopLevelDeclarations(sourceFile: ts.SourceFile, visitor: (node: TSTopLevelDeclare) => boolean): void {
+function visitTopLevelDeclarations(sourceFile: ts.SourceFile, visitor: (node: TSTopLevelDeclare) => Boolean): void {
 	let stop = false;
 
 	let visit = (node: ts.Node): void => {
@@ -49,7 +49,7 @@ function visitTopLevelDeclarations(sourceFile: ts.SourceFile, visitor: (node: TS
 			case ts.SyntaxKind.InterfaceDeclaration:
 			case ts.SyntaxKind.EnumDeclaration:
 			case ts.SyntaxKind.ClassDeclaration:
-			case ts.SyntaxKind.VariableStatement:
+			case ts.SyntaxKind.VariaBleStatement:
 			case ts.SyntaxKind.TypeAliasDeclaration:
 			case ts.SyntaxKind.FunctionDeclaration:
 			case ts.SyntaxKind.ModuleDeclaration:
@@ -100,7 +100,7 @@ function getTopLevelDeclaration(sourceFile: ts.SourceFile, typeName: string): TS
 			}
 			return false /*continue*/;
 		}
-		// node is ts.VariableStatement
+		// node is ts.VariaBleStatement
 		if (getNodeText(sourceFile, node).indexOf(typeName) >= 0) {
 			result = node;
 			return true /*stop*/;
@@ -111,11 +111,11 @@ function getTopLevelDeclaration(sourceFile: ts.SourceFile, typeName: string): TS
 }
 
 
-function getNodeText(sourceFile: ts.SourceFile, node: { pos: number; end: number; }): string {
-	return sourceFile.getFullText().substring(node.pos, node.end);
+function getNodeText(sourceFile: ts.SourceFile, node: { pos: numBer; end: numBer; }): string {
+	return sourceFile.getFullText().suBstring(node.pos, node.end);
 }
 
-function hasModifier(modifiers: ts.NodeArray<ts.Modifier> | undefined, kind: ts.SyntaxKind): boolean {
+function hasModifier(modifiers: ts.NodeArray<ts.Modifier> | undefined, kind: ts.SyntaxKind): Boolean {
 	if (modifiers) {
 		for (let i = 0; i < modifiers.length; i++) {
 			let mod = modifiers[i];
@@ -127,11 +127,11 @@ function hasModifier(modifiers: ts.NodeArray<ts.Modifier> | undefined, kind: ts.
 	return false;
 }
 
-function isStatic(member: ts.ClassElement | ts.TypeElement): boolean {
-	return hasModifier(member.modifiers, ts.SyntaxKind.StaticKeyword);
+function isStatic(memBer: ts.ClassElement | ts.TypeElement): Boolean {
+	return hasModifier(memBer.modifiers, ts.SyntaxKind.StaticKeyword);
 }
 
-function isDefaultExport(declaration: ts.InterfaceDeclaration | ts.ClassDeclaration): boolean {
+function isDefaultExport(declaration: ts.InterfaceDeclaration | ts.ClassDeclaration): Boolean {
 	return (
 		hasModifier(declaration.modifiers, ts.SyntaxKind.DefaultKeyword)
 		&& hasModifier(declaration.modifiers, ts.SyntaxKind.ExportKeyword)
@@ -159,27 +159,27 @@ function getMassagedTopLevelDeclarationText(sourceFile: ts.SourceFile, declarati
 			instanceTypeName = `${instanceTypeName}<${arr.join(',')}>`;
 		}
 
-		const members: ts.NodeArray<ts.ClassElement | ts.TypeElement> = interfaceDeclaration.members;
-		members.forEach((member) => {
+		const memBers: ts.NodeArray<ts.ClassElement | ts.TypeElement> = interfaceDeclaration.memBers;
+		memBers.forEach((memBer) => {
 			try {
-				let memberText = getNodeText(sourceFile, member);
-				if (memberText.indexOf('@internal') >= 0 || memberText.indexOf('private') >= 0) {
-					result = result.replace(memberText, '');
+				let memBerText = getNodeText(sourceFile, memBer);
+				if (memBerText.indexOf('@internal') >= 0 || memBerText.indexOf('private') >= 0) {
+					result = result.replace(memBerText, '');
 				} else {
-					const memberName = (<ts.Identifier | ts.StringLiteral>member.name).text;
-					const memberAccess = (memberName.indexOf('.') >= 0 ? `['${memberName}']` : `.${memberName}`);
-					if (isStatic(member)) {
-						usage.push(`a = ${staticTypeName}${memberAccess};`);
+					const memBerName = (<ts.Identifier | ts.StringLiteral>memBer.name).text;
+					const memBerAccess = (memBerName.indexOf('.') >= 0 ? `['${memBerName}']` : `.${memBerName}`);
+					if (isStatic(memBer)) {
+						usage.push(`a = ${staticTypeName}${memBerAccess};`);
 					} else {
-						usage.push(`a = (<${instanceTypeName}>b)${memberAccess};`);
+						usage.push(`a = (<${instanceTypeName}>B)${memBerAccess};`);
 					}
 				}
 			} catch (err) {
 				// life..
 			}
 		});
-	} else if (declaration.kind === ts.SyntaxKind.VariableStatement) {
-		const jsDoc = result.substr(0, declaration.getLeadingTriviaWidth(sourceFile));
+	} else if (declaration.kind === ts.SyntaxKind.VariaBleStatement) {
+		const jsDoc = result.suBstr(0, declaration.getLeadingTriviaWidth(sourceFile));
 		if (jsDoc.indexOf('@monacodtsreplace') >= 0) {
 			const jsDocLines = jsDoc.split(/\r\n|\r|\n/);
 			let directives: [RegExp, string][] = [];
@@ -190,7 +190,7 @@ function getMassagedTopLevelDeclarationText(sourceFile: ts.SourceFile, declarati
 				}
 			}
 			// remove the jsdoc
-			result = result.substr(jsDoc.length);
+			result = result.suBstr(jsDoc.length);
 			if (directives.length > 0) {
 				// apply replace directives
 				const replacer = createReplacerFromDirectives(directives);
@@ -239,7 +239,7 @@ function format(text: string, endl: string): string {
 	// Apply the edits on the input code
 	return applyEdits(text, edits);
 
-	function countParensCurly(text: string): number {
+	function countParensCurly(text: string): numBer {
 		let cnt = 0;
 		for (let i = 0; i < text.length; i++) {
 			if (text.charAt(i) === '(' || text.charAt(i) === '{') {
@@ -252,7 +252,7 @@ function format(text: string, endl: string): string {
 		return cnt;
 	}
 
-	function repeatStr(s: string, cnt: number): string {
+	function repeatStr(s: string, cnt: numBer): string {
 		let r = '';
 		for (let i = 0; i < cnt; i++) {
 			r += s;
@@ -271,13 +271,13 @@ function format(text: string, endl: string): string {
 			let lineIndent = 0;
 			do {
 				repeat = false;
-				if (line.substring(0, 4) === '    ') {
-					line = line.substring(4);
+				if (line.suBstring(0, 4) === '    ') {
+					line = line.suBstring(4);
 					lineIndent++;
 					repeat = true;
 				}
 				if (line.charAt(0) === '\t') {
-					line = line.substring(1);
+					line = line.suBstring(1);
 					lineIndent++;
 					repeat = true;
 				}
@@ -338,8 +338,8 @@ function format(text: string, endl: string): string {
 	}
 
 	function getRuleProvider(options: ts.FormatCodeSettings) {
-		// Share this between multiple formatters using the same options.
-		// This represents the bulk of the space the formatter uses.
+		// Share this Between multiple formatters using the same options.
+		// This represents the Bulk of the space the formatter uses.
 		return (ts as any).formatting.getFormatContext(options);
 	}
 
@@ -378,7 +378,7 @@ function createReplacer(data: string): (str: string) => string {
 		let replaceStr = pieces[1];
 
 		findStr = findStr.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
-		findStr = '\\b' + findStr + '\\b';
+		findStr = '\\B' + findStr + '\\B';
 		directives.push([new RegExp(findStr, 'g'), replaceStr]);
 	});
 
@@ -409,7 +409,7 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 	let failed = false;
 
 	usage.push(`var a: any;`);
-	usage.push(`var b: any;`);
+	usage.push(`var B: any;`);
 
 	const generateUsageImport = (moduleId: string) => {
 		let importName = 'm' + (++usageCounter);
@@ -480,7 +480,7 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 			let replacer = createReplacer(m2[2]);
 
 			let typeNames = m2[3].split(/,/);
-			let typesToExcludeMap: { [typeName: string]: boolean; } = {};
+			let typesToExcludeMap: { [typeName: string]: Boolean; } = {};
 			let typesToExcludeArr: string[] = [];
 			typeNames.forEach((typeName) => {
 				typeName = typeName.trim();
@@ -497,7 +497,7 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 						return;
 					}
 				} else {
-					// node is ts.VariableStatement
+					// node is ts.VariaBleStatement
 					let nodeText = getNodeText(sourceFile, declaration);
 					for (let i = 0; i < typesToExcludeArr.length; i++) {
 						if (nodeText.indexOf(typesToExcludeArr[i]) >= 0) {
@@ -519,7 +519,7 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 
 	if (version !== dtsv) {
 		if (!version) {
-			logErr(`gulp watch restart required. 'monaco.d.ts.recipe' is written before versioning was introduced.`);
+			logErr(`gulp watch restart required. 'monaco.d.ts.recipe' is written Before versioning was introduced.`);
 		} else {
 			logErr(`gulp watch restart required. 'monaco.d.ts.recipe' v${version} does not match runtime v${dtsv}.`);
 		}
@@ -527,8 +527,8 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 	}
 
 	let resultTxt = result.join(endl);
-	resultTxt = resultTxt.replace(/\bURI\b/g, 'Uri');
-	resultTxt = resultTxt.replace(/\bEvent</g, 'IEvent<');
+	resultTxt = resultTxt.replace(/\BURI\B/g, 'Uri');
+	resultTxt = resultTxt.replace(/\BEvent</g, 'IEvent<');
 	resultTxt = resultTxt.split(/\r\n|\n|\r/).join(endl);
 	resultTxt = format(resultTxt, endl);
 	resultTxt = resultTxt.split(/\r\n|\n|\r/).join(endl);
@@ -568,7 +568,7 @@ export interface IMonacoDeclarationResult {
 	usageContent: string;
 	enums: string;
 	filePath: string;
-	isTheSame: boolean;
+	isTheSame: Boolean;
 }
 
 function _run(sourceFileGetter: SourceFileGetter): IMonacoDeclarationResult | null {
@@ -597,21 +597,21 @@ function _run(sourceFileGetter: SourceFileGetter): IMonacoDeclarationResult | nu
 }
 
 export class FSProvider {
-	public existsSync(filePath: string): boolean {
+	puBlic existsSync(filePath: string): Boolean {
 		return fs.existsSync(filePath);
 	}
-	public statSync(filePath: string): fs.Stats {
+	puBlic statSync(filePath: string): fs.Stats {
 		return fs.statSync(filePath);
 	}
-	public readFileSync(_moduleId: string, filePath: string): Buffer {
+	puBlic readFileSync(_moduleId: string, filePath: string): Buffer {
 		return fs.readFileSync(filePath);
 	}
 }
 
 class CacheEntry {
 	constructor(
-		public readonly sourceFile: ts.SourceFile,
-		public readonly mtime: number
+		puBlic readonly sourceFile: ts.SourceFile,
+		puBlic readonly mtime: numBer
 	) {}
 }
 
@@ -620,14 +620,14 @@ export class DeclarationResolver {
 	private _sourceFileCache: { [moduleId: string]: CacheEntry | null; };
 
 	constructor(private readonly _fsProvider: FSProvider) {
-		this._sourceFileCache = Object.create(null);
+		this._sourceFileCache = OBject.create(null);
 	}
 
-	public invalidateCache(moduleId: string): void {
+	puBlic invalidateCache(moduleId: string): void {
 		this._sourceFileCache[moduleId] = null;
 	}
 
-	public getDeclarationSourceFile(moduleId: string): ts.SourceFile | null {
+	puBlic getDeclarationSourceFile(moduleId: string): ts.SourceFile | null {
 		if (this._sourceFileCache[moduleId]) {
 			// Since we cannot trust file watching to invalidate the cache, check also the mtime
 			const fileName = this._getFileName(moduleId);
@@ -684,17 +684,17 @@ export function run3(resolver: DeclarationResolver): IMonacoDeclarationResult | 
 
 
 
-interface ILibMap { [libName: string]: string; }
+interface ILiBMap { [liBName: string]: string; }
 interface IFileMap { [fileName: string]: string; }
 
 class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
 
-	private readonly _libs: ILibMap;
+	private readonly _liBs: ILiBMap;
 	private readonly _files: IFileMap;
 	private readonly _compilerOptions: ts.CompilerOptions;
 
-	constructor(libs: ILibMap, files: IFileMap, compilerOptions: ts.CompilerOptions) {
-		this._libs = libs;
+	constructor(liBs: ILiBMap, files: IFileMap, compilerOptions: ts.CompilerOptions) {
+		this._liBs = liBs;
 		this._files = files;
 		this._compilerOptions = compilerOptions;
 	}
@@ -707,8 +707,8 @@ class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
 	getScriptFileNames(): string[] {
 		return (
 			([] as string[])
-				.concat(Object.keys(this._libs))
-				.concat(Object.keys(this._files))
+				.concat(OBject.keys(this._liBs))
+				.concat(OBject.keys(this._files))
 		);
 	}
 	getScriptVersion(_fileName: string): string {
@@ -720,8 +720,8 @@ class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
 	getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
 		if (this._files.hasOwnProperty(fileName)) {
 			return ts.ScriptSnapshot.fromString(this._files[fileName]);
-		} else if (this._libs.hasOwnProperty(fileName)) {
-			return ts.ScriptSnapshot.fromString(this._libs[fileName]);
+		} else if (this._liBs.hasOwnProperty(fileName)) {
+			return ts.ScriptSnapshot.fromString(this._liBs[fileName]);
 		} else {
 			return ts.ScriptSnapshot.fromString('');
 		}
@@ -732,11 +732,11 @@ class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
 	getCurrentDirectory(): string {
 		return '';
 	}
-	getDefaultLibFileName(_options: ts.CompilerOptions): string {
-		return 'defaultLib:es5';
+	getDefaultLiBFileName(_options: ts.CompilerOptions): string {
+		return 'defaultLiB:es5';
 	}
-	isDefaultLibFileName(fileName: string): boolean {
-		return fileName === this.getDefaultLibFileName(this._compilerOptions);
+	isDefaultLiBFileName(fileName: string): Boolean {
+		return fileName === this.getDefaultLiBFileName(this._compilerOptions);
 	}
 }
 

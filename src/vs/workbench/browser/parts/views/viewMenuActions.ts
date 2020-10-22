@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
-import { Disposable, MutableDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
+import { IAction } from 'vs/Base/common/actions';
+import { DisposaBle, MutaBleDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { MenuId, IMenuService } from 'vs/platform/actions/common/actions';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { createAndFillInActionBarActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
+import { createAndFillInActionBarActions } from 'vs/platform/actions/Browser/menuEntryActionViewItem';
 
-export class ViewMenuActions extends Disposable {
+export class ViewMenuActions extends DisposaBle {
 
 	private primaryActions: IAction[] = [];
-	private readonly titleActionsDisposable = this._register(new MutableDisposable());
+	private readonly titleActionsDisposaBle = this._register(new MutaBleDisposaBle());
 	private secondaryActions: IAction[] = [];
 	private contextMenuActions: IAction[] = [];
 
@@ -36,7 +36,7 @@ export class ViewMenuActions extends Disposable {
 		const updateActions = () => {
 			this.primaryActions = [];
 			this.secondaryActions = [];
-			this.titleActionsDisposable.value = createAndFillInActionBarActions(menu, { shouldForwardArgs: true }, { primary: this.primaryActions, secondary: this.secondaryActions });
+			this.titleActionsDisposaBle.value = createAndFillInActionBarActions(menu, { shouldForwardArgs: true }, { primary: this.primaryActions, secondary: this.secondaryActions });
 			this._onDidChangeTitle.fire();
 		};
 		this._register(menu.onDidChange(updateActions));
@@ -45,12 +45,12 @@ export class ViewMenuActions extends Disposable {
 		const contextMenu = this._register(this.menuService.createMenu(contextMenuId, scopedContextKeyService));
 		const updateContextMenuActions = () => {
 			this.contextMenuActions = [];
-			this.titleActionsDisposable.value = createAndFillInActionBarActions(contextMenu, { shouldForwardArgs: true }, { primary: [], secondary: this.contextMenuActions });
+			this.titleActionsDisposaBle.value = createAndFillInActionBarActions(contextMenu, { shouldForwardArgs: true }, { primary: [], secondary: this.contextMenuActions });
 		};
 		this._register(contextMenu.onDidChange(updateContextMenuActions));
 		updateContextMenuActions();
 
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			this.primaryActions = [];
 			this.secondaryActions = [];
 			this.contextMenuActions = [];
@@ -70,9 +70,9 @@ export class ViewMenuActions extends Disposable {
 	}
 }
 
-export class ViewContainerMenuActions extends Disposable {
+export class ViewContainerMenuActions extends DisposaBle {
 
-	private readonly titleActionsDisposable = this._register(new MutableDisposable());
+	private readonly titleActionsDisposaBle = this._register(new MutaBleDisposaBle());
 	private contextMenuActions: IAction[] = [];
 
 	constructor(
@@ -89,12 +89,12 @@ export class ViewContainerMenuActions extends Disposable {
 		const contextMenu = this._register(this.menuService.createMenu(contextMenuId, scopedContextKeyService));
 		const updateContextMenuActions = () => {
 			this.contextMenuActions = [];
-			this.titleActionsDisposable.value = createAndFillInActionBarActions(contextMenu, { shouldForwardArgs: true }, { primary: [], secondary: this.contextMenuActions });
+			this.titleActionsDisposaBle.value = createAndFillInActionBarActions(contextMenu, { shouldForwardArgs: true }, { primary: [], secondary: this.contextMenuActions });
 		};
 		this._register(contextMenu.onDidChange(updateContextMenuActions));
 		updateContextMenuActions();
 
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			this.contextMenuActions = [];
 		}));
 	}

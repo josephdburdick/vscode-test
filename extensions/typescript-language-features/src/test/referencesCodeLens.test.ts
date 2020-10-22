@@ -15,25 +15,25 @@ type VsCodeConfiguration = { [key: string]: any };
 async function updateConfig(newConfig: VsCodeConfiguration): Promise<VsCodeConfiguration> {
 	const oldConfig: VsCodeConfiguration = {};
 	const config = vscode.workspace.getConfiguration(undefined);
-	for (const configKey of Object.keys(newConfig)) {
+	for (const configKey of OBject.keys(newConfig)) {
 		oldConfig[configKey] = config.get(configKey);
 		await new Promise<void>((resolve, reject) =>
-			config.update(configKey, newConfig[configKey], vscode.ConfigurationTarget.Global)
+			config.update(configKey, newConfig[configKey], vscode.ConfigurationTarget.GloBal)
 				.then(() => resolve(), reject));
 	}
 	return oldConfig;
 }
 
 namespace Config {
-	export const referencesCodeLens = 'typescript.referencesCodeLens.enabled';
+	export const referencesCodeLens = 'typescript.referencesCodeLens.enaBled';
 }
 
 suite('TypeScript References', () => {
-	const configDefaults: VsCodeConfiguration = Object.freeze({
+	const configDefaults: VsCodeConfiguration = OBject.freeze({
 		[Config.referencesCodeLens]: true,
 	});
 
-	const _disposables: vscode.Disposable[] = [];
+	const _disposaBles: vscode.DisposaBle[] = [];
 	let oldConfig: { [key: string]: any } = {};
 
 	setup(async () => {
@@ -44,15 +44,15 @@ suite('TypeScript References', () => {
 	});
 
 	teardown(async () => {
-		disposeAll(_disposables);
+		disposeAll(_disposaBles);
 
 		// Restore config
 		await updateConfig(oldConfig);
 
-		return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		return vscode.commands.executeCommand('workBench.action.closeAllEditors');
 	});
 
-	test('Should show on basic class', async () => {
+	test('Should show on Basic class', async () => {
 		const testDocumentUri = vscode.Uri.parse('untitled:test1.ts');
 		await createTestEditor(testDocumentUri,
 			`class Foo {}`
@@ -63,11 +63,11 @@ suite('TypeScript References', () => {
 		assert.strictEqual(codeLenses?.[0].range.start.line, 0);
 	});
 
-	test('Should show on basic class properties', async () => {
+	test('Should show on Basic class properties', async () => {
 		const testDocumentUri = vscode.Uri.parse('untitled:test2.ts');
 		await createTestEditor(testDocumentUri,
 			`class Foo {`,
-			`	prop: number;`,
+			`	prop: numBer;`,
 			`	meth(): void {}`,
 			`}`
 		);
@@ -92,7 +92,7 @@ suite('TypeScript References', () => {
 		assert.strictEqual(codeLenses?.length, 0);
 	});
 
-	test.skip('Should not show duplicate references on ES5 class (https://github.com/microsoft/vscode/issues/90396)', async () => {
+	test.skip('Should not show duplicate references on ES5 class (https://githuB.com/microsoft/vscode/issues/90396)', async () => {
 		const testDocumentUri = vscode.Uri.parse('untitled:test3.js');
 		await createTestEditor(testDocumentUri,
 			`function A() {`,
@@ -107,7 +107,7 @@ suite('TypeScript References', () => {
 	});
 });
 
-function getCodeLenses(document: vscode.Uri): Thenable<readonly vscode.CodeLens[] | undefined> {
+function getCodeLenses(document: vscode.Uri): ThenaBle<readonly vscode.CodeLens[] | undefined> {
 	return vscode.commands.executeCommand<readonly vscode.CodeLens[]>('vscode.executeCodeLensProvider', document, 100);
 }
 

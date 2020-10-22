@@ -6,7 +6,7 @@
 export function getStrings(): { [key: string]: string } {
 	const store = document.getElementById('vscode-markdown-preview-data');
 	if (store) {
-		const data = store.getAttribute('data-strings');
+		const data = store.getAttriBute('data-strings');
 		if (data) {
 			return JSON.parse(data);
 		}

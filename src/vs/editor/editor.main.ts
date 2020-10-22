@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/editor/editor.all';
-import 'vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp';
-import 'vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard';
-import 'vs/editor/standalone/browser/inspectTokens/inspectTokens';
-import 'vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess';
-import 'vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess';
-import 'vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess';
-import 'vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess';
-import 'vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch';
-import 'vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast';
+import 'vs/editor/standalone/Browser/accessiBilityHelp/accessiBilityHelp';
+import 'vs/editor/standalone/Browser/iPadShowKeyBoard/iPadShowKeyBoard';
+import 'vs/editor/standalone/Browser/inspectTokens/inspectTokens';
+import 'vs/editor/standalone/Browser/quickAccess/standaloneHelpQuickAccess';
+import 'vs/editor/standalone/Browser/quickAccess/standaloneGotoLineQuickAccess';
+import 'vs/editor/standalone/Browser/quickAccess/standaloneGotoSymBolQuickAccess';
+import 'vs/editor/standalone/Browser/quickAccess/standaloneCommandsQuickAccess';
+import 'vs/editor/standalone/Browser/referenceSearch/standaloneReferenceSearch';
+import 'vs/editor/standalone/Browser/toggleHighContrast/toggleHighContrast';
 
 export * from 'vs/editor/editor.api';

@@ -8,14 +8,14 @@ import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 import { IViewLayout, IViewModel } from 'vs/editor/common/viewModel/viewModel';
 import { IColorTheme } from 'vs/platform/theme/common/themeService';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 export class EditorTheme {
 
 	private _theme: IColorTheme;
 
-	public get type(): ColorScheme {
+	puBlic get type(): ColorScheme {
 		return this._theme.type;
 	}
 
@@ -23,21 +23,21 @@ export class EditorTheme {
 		this._theme = theme;
 	}
 
-	public update(theme: IColorTheme): void {
+	puBlic update(theme: IColorTheme): void {
 		this._theme = theme;
 	}
 
-	public getColor(color: ColorIdentifier): Color | undefined {
+	puBlic getColor(color: ColorIdentifier): Color | undefined {
 		return this._theme.getColor(color);
 	}
 }
 
 export class ViewContext {
 
-	public readonly configuration: IConfiguration;
-	public readonly model: IViewModel;
-	public readonly viewLayout: IViewLayout;
-	public readonly theme: EditorTheme;
+	puBlic readonly configuration: IConfiguration;
+	puBlic readonly model: IViewModel;
+	puBlic readonly viewLayout: IViewLayout;
+	puBlic readonly theme: EditorTheme;
 
 	constructor(
 		configuration: IConfiguration,
@@ -50,11 +50,11 @@ export class ViewContext {
 		this.viewLayout = model.viewLayout;
 	}
 
-	public addEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic addEventHandler(eventHandler: ViewEventHandler): void {
 		this.model.addViewEventHandler(eventHandler);
 	}
 
-	public removeEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic removeEventHandler(eventHandler: ViewEventHandler): void {
 		this.model.removeViewEventHandler(eventHandler);
 	}
 }

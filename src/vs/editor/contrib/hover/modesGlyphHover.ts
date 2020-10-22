@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { $ } from 'vs/base/browser/dom';
-import { IMarkdownString, isEmptyMarkdownString } from 'vs/base/common/htmlContent';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { HoverOperation, HoverStartMode, IHoverComputer } from 'vs/editor/contrib/hover/hoverOperation';
-import { GlyphHoverWidget } from 'vs/editor/contrib/hover/hoverWidgets';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
+import { $ } from 'vs/Base/Browser/dom';
+import { IMarkdownString, isEmptyMarkdownString } from 'vs/Base/common/htmlContent';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { HoverOperation, HoverStartMode, IHoverComputer } from 'vs/editor/contriB/hover/hoverOperation';
+import { GlyphHoverWidget } from 'vs/editor/contriB/hover/hoverWidgets';
+import { MarkdownRenderer } from 'vs/editor/Browser/core/markdownRenderer';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IOpenerService, NullOpenerService } from 'vs/platform/opener/common/opener';
-import { asArray } from 'vs/base/common/arrays';
+import { asArray } from 'vs/Base/common/arrays';
 
 export interface IHoverMessage {
 	value: IMarkdownString;
@@ -21,25 +21,25 @@ export interface IHoverMessage {
 class MarginComputer implements IHoverComputer<IHoverMessage[]> {
 
 	private readonly _editor: ICodeEditor;
-	private _lineNumber: number;
+	private _lineNumBer: numBer;
 	private _result: IHoverMessage[];
 
 	constructor(editor: ICodeEditor) {
 		this._editor = editor;
-		this._lineNumber = -1;
+		this._lineNumBer = -1;
 		this._result = [];
 	}
 
-	public setLineNumber(lineNumber: number): void {
-		this._lineNumber = lineNumber;
+	puBlic setLineNumBer(lineNumBer: numBer): void {
+		this._lineNumBer = lineNumBer;
 		this._result = [];
 	}
 
-	public clearResult(): void {
+	puBlic clearResult(): void {
 		this._result = [];
 	}
 
-	public computeSync(): IHoverMessage[] {
+	puBlic computeSync(): IHoverMessage[] {
 
 		const toHoverMessage = (contents: IMarkdownString): IHoverMessage => {
 			return {
@@ -47,7 +47,7 @@ class MarginComputer implements IHoverComputer<IHoverMessage[]> {
 			};
 		};
 
-		const lineDecorations = this._editor.getLineDecorations(this._lineNumber);
+		const lineDecorations = this._editor.getLineDecorations(this._lineNumBer);
 
 		const result: IHoverMessage[] = [];
 		if (!lineDecorations) {
@@ -70,29 +70,29 @@ class MarginComputer implements IHoverComputer<IHoverMessage[]> {
 		return result;
 	}
 
-	public onResult(result: IHoverMessage[], isFromSynchronousComputation: boolean): void {
+	puBlic onResult(result: IHoverMessage[], isFromSynchronousComputation: Boolean): void {
 		this._result = this._result.concat(result);
 	}
 
-	public getResult(): IHoverMessage[] {
+	puBlic getResult(): IHoverMessage[] {
 		return this._result;
 	}
 
-	public getResultWithLoadingMessage(): IHoverMessage[] {
+	puBlic getResultWithLoadingMessage(): IHoverMessage[] {
 		return this.getResult();
 	}
 }
 
 export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 
-	public static readonly ID = 'editor.contrib.modesGlyphHoverWidget';
+	puBlic static readonly ID = 'editor.contriB.modesGlyphHoverWidget';
 	private _messages: IHoverMessage[];
-	private _lastLineNumber: number;
+	private _lastLineNumBer: numBer;
 
 	private readonly _markdownRenderer: MarkdownRenderer;
 	private readonly _computer: MarginComputer;
 	private readonly _hoverOperation: HoverOperation<IHoverMessage[]>;
-	private readonly _renderDisposeables = this._register(new DisposableStore());
+	private readonly _renderDisposeaBles = this._register(new DisposaBleStore());
 
 	constructor(
 		editor: ICodeEditor,
@@ -102,7 +102,7 @@ export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 		super(ModesGlyphHoverWidget.ID, editor);
 
 		this._messages = [];
-		this._lastLineNumber = -1;
+		this._lastLineNumBer = -1;
 
 		this._markdownRenderer = this._register(new MarkdownRenderer({ editor: this._editor }, modeService, openerService));
 		this._computer = new MarginComputer(this._editor);
@@ -117,14 +117,14 @@ export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._hoverOperation.cancel();
 		super.dispose();
 	}
 
-	public onModelDecorationsChanged(): void {
-		if (this.isVisible) {
-			// The decorations have changed and the hover is visible,
+	puBlic onModelDecorationsChanged(): void {
+		if (this.isVisiBle) {
+			// The decorations have changed and the hover is visiBle,
 			// we need to recompute the displayed text
 			this._hoverOperation.cancel();
 			this._computer.clearResult();
@@ -132,9 +132,9 @@ export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 		}
 	}
 
-	public startShowingAt(lineNumber: number): void {
-		if (this._lastLineNumber === lineNumber) {
-			// We have to show the widget at the exact same line number as before, so no work is needed
+	puBlic startShowingAt(lineNumBer: numBer): void {
+		if (this._lastLineNumBer === lineNumBer) {
+			// We have to show the widget at the exact same line numBer as Before, so no work is needed
 			return;
 		}
 
@@ -142,39 +142,39 @@ export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 
 		this.hide();
 
-		this._lastLineNumber = lineNumber;
-		this._computer.setLineNumber(lineNumber);
+		this._lastLineNumBer = lineNumBer;
+		this._computer.setLineNumBer(lineNumBer);
 		this._hoverOperation.start(HoverStartMode.Delayed);
 	}
 
-	public hide(): void {
-		this._lastLineNumber = -1;
+	puBlic hide(): void {
+		this._lastLineNumBer = -1;
 		this._hoverOperation.cancel();
 		super.hide();
 	}
 
-	public _withResult(result: IHoverMessage[]): void {
+	puBlic _withResult(result: IHoverMessage[]): void {
 		this._messages = result;
 
 		if (this._messages.length > 0) {
-			this._renderMessages(this._lastLineNumber, this._messages);
+			this._renderMessages(this._lastLineNumBer, this._messages);
 		} else {
 			this.hide();
 		}
 	}
 
-	private _renderMessages(lineNumber: number, messages: IHoverMessage[]): void {
-		this._renderDisposeables.clear();
+	private _renderMessages(lineNumBer: numBer, messages: IHoverMessage[]): void {
+		this._renderDisposeaBles.clear();
 
 		const fragment = document.createDocumentFragment();
 
 		for (const msg of messages) {
 			const renderedContents = this._markdownRenderer.render(msg.value);
-			this._renderDisposeables.add(renderedContents);
+			this._renderDisposeaBles.add(renderedContents);
 			fragment.appendChild($('div.hover-row', undefined, renderedContents.element));
 		}
 
 		this.updateContents(fragment);
-		this.showAt(lineNumber);
+		this.showAt(lineNumBer);
 	}
 }

@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as platform from 'vs/platform/registry/common/platform';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
+import { IJSONSchema, IJSONSchemaMap } from 'vs/Base/common/jsonSchema';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { localize } from 'vs/nls';
-import { Extensions as JSONExtensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import * as Codicons from 'vs/base/common/codicons';
+import { Extensions as JSONExtensions, IJSONContriButionRegistry } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import * as Codicons from 'vs/Base/common/codicons';
 
 //  ------ API types
 
 
 // color registry
 export const Extensions = {
-	IconContribution: 'base.contributions.icons'
+	IconContriBution: 'Base.contriButions.icons'
 };
 
 export type IconDefaults = ThemeIcon | IconDefinition;
@@ -27,7 +27,7 @@ export interface IconDefinition {
 	character: string;
 }
 
-export interface IconContribution {
+export interface IconContriBution {
 	id: string;
 	description: string;
 	deprecationMessage?: string;
@@ -52,22 +52,22 @@ export interface IIconRegistry {
 	deregisterIcon(id: string): void;
 
 	/**
-	 * Get all icon contributions
+	 * Get all icon contriButions
 	 */
-	getIcons(): IconContribution[];
+	getIcons(): IconContriBution[];
 
 	/**
 	 * Get the icon for the given id
 	 */
-	getIcon(id: string): IconContribution | undefined;
+	getIcon(id: string): IconContriBution | undefined;
 
 	/**
-	 * JSON schema for an object to assign icon values to one of the color contributions.
+	 * JSON schema for an oBject to assign icon values to one of the color contriButions.
 	 */
 	getIconSchema(): IJSONSchema;
 
 	/**
-	 * JSON schema to for a reference to a icon contribution.
+	 * JSON schema to for a reference to a icon contriBution.
 	 */
 	getIconReferenceSchema(): IJSONSchema;
 
@@ -78,20 +78,20 @@ class IconRegistry implements IIconRegistry {
 	private readonly _onDidChangeSchema = new Emitter<void>();
 	readonly onDidChangeSchema: Event<void> = this._onDidChangeSchema.event;
 
-	private iconsById: { [key: string]: IconContribution };
+	private iconsById: { [key: string]: IconContriBution };
 	private iconSchema: IJSONSchema & { properties: IJSONSchemaMap } = {
 		definitions: {
 			icons: {
-				type: 'object',
+				type: 'oBject',
 				properties: {
 					fontId: { type: 'string', description: localize('iconDefintion.fontId', 'The id of the font to use. If not set, the font that is defined first is used.') },
 					fontCharacter: { type: 'string', description: localize('iconDefintion.fontCharacter', 'The font character associated with the icon definition.') }
 				},
 				additionalProperties: false,
-				defaultSnippets: [{ body: { fontCharacter: '\\\\e030' } }]
+				defaultSnippets: [{ Body: { fontCharacter: '\\\\e030' } }]
 			}
 		},
-		type: 'object',
+		type: 'oBject',
 		properties: {}
 	};
 	private iconReferenceSchema: IJSONSchema & { enum: string[], enumDescriptions: string[] } = { type: 'string', enum: [], enumDescriptions: [] };
@@ -100,12 +100,12 @@ class IconRegistry implements IIconRegistry {
 		this.iconsById = {};
 	}
 
-	public registerIcon(id: string, defaults: IconDefaults, description?: string, deprecationMessage?: string): ThemeIcon {
+	puBlic registerIcon(id: string, defaults: IconDefaults, description?: string, deprecationMessage?: string): ThemeIcon {
 		if (!description) {
 			description = localize('icon.defaultDescription', 'Icon with identifier \'{0}\'', id);
 		}
-		let iconContribution: IconContribution = { id, description, defaults, deprecationMessage };
-		this.iconsById[id] = iconContribution;
+		let iconContriBution: IconContriBution = { id, description, defaults, deprecationMessage };
+		this.iconsById[id] = iconContriBution;
 		let propertySchema: IJSONSchema = { $ref: '#/definitions/icons' };
 		if (deprecationMessage) {
 			propertySchema.deprecationMessage = deprecationMessage;
@@ -120,7 +120,7 @@ class IconRegistry implements IIconRegistry {
 	}
 
 
-	public deregisterIcon(id: string): void {
+	puBlic deregisterIcon(id: string): void {
 		delete this.iconsById[id];
 		delete this.iconSchema.properties[id];
 		const index = this.iconReferenceSchema.enum.indexOf(id);
@@ -131,24 +131,24 @@ class IconRegistry implements IIconRegistry {
 		this._onDidChangeSchema.fire();
 	}
 
-	public getIcons(): IconContribution[] {
-		return Object.keys(this.iconsById).map(id => this.iconsById[id]);
+	puBlic getIcons(): IconContriBution[] {
+		return OBject.keys(this.iconsById).map(id => this.iconsById[id]);
 	}
 
-	public getIcon(id: string): IconContribution | undefined {
+	puBlic getIcon(id: string): IconContriBution | undefined {
 		return this.iconsById[id];
 	}
 
-	public getIconSchema(): IJSONSchema {
+	puBlic getIconSchema(): IJSONSchema {
 		return this.iconSchema;
 	}
 
-	public getIconReferenceSchema(): IJSONSchema {
+	puBlic getIconReferenceSchema(): IJSONSchema {
 		return this.iconReferenceSchema;
 	}
 
-	public toString() {
-		const sorter = (i1: IconContribution, i2: IconContribution) => {
+	puBlic toString() {
+		const sorter = (i1: IconContriBution, i2: IconContriBution) => {
 			const isThemeIcon1 = ThemeIcon.isThemeIcon(i1.defaults);
 			const isThemeIcon2 = ThemeIcon.isThemeIcon(i2.defaults);
 			if (isThemeIcon1 !== isThemeIcon2) {
@@ -156,7 +156,7 @@ class IconRegistry implements IIconRegistry {
 			}
 			return i1.id.localeCompare(i2.id);
 		};
-		const classNames = (i: IconContribution) => {
+		const classNames = (i: IconContriBution) => {
 			while (ThemeIcon.isThemeIcon(i.defaults)) {
 				i = this.iconsById[i.defaults.id];
 			}
@@ -166,13 +166,13 @@ class IconRegistry implements IIconRegistry {
 		let reference = [];
 		let docCss = [];
 
-		const contributions = Object.keys(this.iconsById).map(key => this.iconsById[key]);
+		const contriButions = OBject.keys(this.iconsById).map(key => this.iconsById[key]);
 
-		for (const i of contributions.sort(sorter)) {
+		for (const i of contriButions.sort(sorter)) {
 			reference.push(`|<i class="${classNames(i)}"></i>|${i.id}|${ThemeIcon.isThemeIcon(i.defaults) ? i.defaults.id : ''}|`);
 
 			if (!ThemeIcon.isThemeIcon((i.defaults))) {
-				docCss.push(`.codicon-${i.id}:before { content: "${i.defaults.character}" }`);
+				docCss.push(`.codicon-${i.id}:Before { content: "${i.defaults.character}" }`);
 			}
 		}
 		return reference.join('\n') + '\n\n' + docCss.join('\n');
@@ -181,7 +181,7 @@ class IconRegistry implements IIconRegistry {
 }
 
 const iconRegistry = new IconRegistry();
-platform.Registry.add(Extensions.IconContribution, iconRegistry);
+platform.Registry.add(Extensions.IconContriBution, iconRegistry);
 
 export function registerIcon(id: string, defaults: IconDefaults, description?: string, deprecationMessage?: string): ThemeIcon {
 	return iconRegistry.registerIcon(id, defaults, description, deprecationMessage);
@@ -202,7 +202,7 @@ initialize();
 
 export const iconsSchemaId = 'vscode://schemas/icons';
 
-let schemaRegistry = platform.Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+let schemaRegistry = platform.Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 schemaRegistry.registerSchema(iconsSchemaId, iconRegistry.getIconSchema());
 
 const delayer = new RunOnceScheduler(() => schemaRegistry.notifySchemaChanged(iconsSchemaId), 200);

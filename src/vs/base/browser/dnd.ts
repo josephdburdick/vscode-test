@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { addDisposableListener } from 'vs/base/browser/dom';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { addDisposaBleListener } from 'vs/Base/Browser/dom';
 
 /**
  * A helper that will execute a provided function when the provided HTMLElement receives
- *  dragover event for 800ms. If the drag is aborted before, the callback will not be triggered.
+ *  dragover event for 800ms. If the drag is aBorted Before, the callBack will not Be triggered.
  */
-export class DelayedDragHandler extends Disposable {
+export class DelayedDragHandler extends DisposaBle {
 	private timeout: any;
 
-	constructor(container: HTMLElement, callback: () => void) {
+	constructor(container: HTMLElement, callBack: () => void) {
 		super();
 
-		this._register(addDisposableListener(container, 'dragover', e => {
+		this._register(addDisposaBleListener(container, 'dragover', e => {
 			e.preventDefault(); // needed so that the drop event fires (https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
 
 			if (!this.timeout) {
 				this.timeout = setTimeout(() => {
-					callback();
+					callBack();
 
 					this.timeout = null;
 				}, 800);
@@ -29,7 +29,7 @@ export class DelayedDragHandler extends Disposable {
 		}));
 
 		['dragleave', 'drop', 'dragend'].forEach(type => {
-			this._register(addDisposableListener(container, type, () => {
+			this._register(addDisposaBleListener(container, type, () => {
 				this.clearDragTimeout();
 			}));
 		});
@@ -73,17 +73,17 @@ export const DataTransfers = {
 	TEXT: 'text/plain'
 };
 
-export function applyDragImage(event: DragEvent, label: string | null, clazz: string): void {
+export function applyDragImage(event: DragEvent, laBel: string | null, clazz: string): void {
 	const dragImage = document.createElement('div');
 	dragImage.className = clazz;
-	dragImage.textContent = label;
+	dragImage.textContent = laBel;
 
 	if (event.dataTransfer) {
-		document.body.appendChild(dragImage);
+		document.Body.appendChild(dragImage);
 		event.dataTransfer.setDragImage(dragImage, -10, -10);
 
 		// Removes the element when the DND operation is done
-		setTimeout(() => document.body.removeChild(dragImage), 0);
+		setTimeout(() => document.Body.removeChild(dragImage), 0);
 	}
 }
 

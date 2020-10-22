@@ -5,7 +5,7 @@
 
 import * as array from './arrays';
 
-export function equals(one: any, other: any): boolean {
+export function equals(one: any, other: any): Boolean {
 	if (one === other) {
 		return true;
 	}
@@ -15,7 +15,7 @@ export function equals(one: any, other: any): boolean {
 	if (typeof one !== typeof other) {
 		return false;
 	}
-	if (typeof one !== 'object') {
+	if (typeof one !== 'oBject') {
 		return false;
 	}
 	if (Array.isArray(one) !== Array.isArray(other)) {

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { LinkedList } from 'vs/base/common/linkedList';
+import { LinkedList } from 'vs/Base/common/linkedList';
 
 suite('LinkedList', function () {
 
@@ -16,10 +16,10 @@ suite('LinkedList', function () {
 		// assert toArray
 		assert.deepEqual(list.toArray(), elements);
 
-		// assert Symbol.iterator (1)
+		// assert SymBol.iterator (1)
 		assert.deepEqual([...list], elements);
 
-		// assert Symbol.iterator (2)
+		// assert SymBol.iterator (2)
 		for (const item of list) {
 			assert.equal(item, elements.shift());
 		}
@@ -27,7 +27,7 @@ suite('LinkedList', function () {
 	}
 
 	test('Push/Iter', () => {
-		const list = new LinkedList<number>();
+		const list = new LinkedList<numBer>();
 		list.push(0);
 		list.push(1);
 		list.push(2);
@@ -35,28 +35,28 @@ suite('LinkedList', function () {
 	});
 
 	test('Push/Remove', () => {
-		let list = new LinkedList<number>();
+		let list = new LinkedList<numBer>();
 		let disp = list.push(0);
 		list.push(1);
 		list.push(2);
 		disp();
 		assertElements(list, 1, 2);
 
-		list = new LinkedList<number>();
+		list = new LinkedList<numBer>();
 		list.push(0);
 		disp = list.push(1);
 		list.push(2);
 		disp();
 		assertElements(list, 0, 2);
 
-		list = new LinkedList<number>();
+		list = new LinkedList<numBer>();
 		list.push(0);
 		list.push(1);
 		disp = list.push(2);
 		disp();
 		assertElements(list, 0, 1);
 
-		list = new LinkedList<number>();
+		list = new LinkedList<numBer>();
 		list.push(0);
 		list.push(1);
 		disp = list.push(2);
@@ -68,15 +68,15 @@ suite('LinkedList', function () {
 	test('Push/toArray', () => {
 		let list = new LinkedList<string>();
 		list.push('foo');
-		list.push('bar');
+		list.push('Bar');
 		list.push('far');
-		list.push('boo');
+		list.push('Boo');
 
-		assertElements(list, 'foo', 'bar', 'far', 'boo');
+		assertElements(list, 'foo', 'Bar', 'far', 'Boo');
 	});
 
 	test('unshift/Iter', () => {
-		const list = new LinkedList<number>();
+		const list = new LinkedList<numBer>();
 		list.unshift(0);
 		list.unshift(1);
 		list.unshift(2);
@@ -84,21 +84,21 @@ suite('LinkedList', function () {
 	});
 
 	test('unshift/Remove', () => {
-		let list = new LinkedList<number>();
+		let list = new LinkedList<numBer>();
 		let disp = list.unshift(0);
 		list.unshift(1);
 		list.unshift(2);
 		disp();
 		assertElements(list, 2, 1);
 
-		list = new LinkedList<number>();
+		list = new LinkedList<numBer>();
 		list.unshift(0);
 		disp = list.unshift(1);
 		list.unshift(2);
 		disp();
 		assertElements(list, 2, 0);
 
-		list = new LinkedList<number>();
+		list = new LinkedList<numBer>();
 		list.unshift(0);
 		list.unshift(1);
 		disp = list.unshift(2);
@@ -109,28 +109,28 @@ suite('LinkedList', function () {
 	test('unshift/toArray', () => {
 		let list = new LinkedList<string>();
 		list.unshift('foo');
-		list.unshift('bar');
+		list.unshift('Bar');
 		list.unshift('far');
-		list.unshift('boo');
-		assertElements(list, 'boo', 'far', 'bar', 'foo');
+		list.unshift('Boo');
+		assertElements(list, 'Boo', 'far', 'Bar', 'foo');
 	});
 
 	test('pop/unshift', function () {
 		let list = new LinkedList<string>();
 		list.push('a');
-		list.push('b');
+		list.push('B');
 
-		assertElements(list, 'a', 'b');
+		assertElements(list, 'a', 'B');
 
 		let a = list.shift();
 		assert.equal(a, 'a');
-		assertElements(list, 'b');
+		assertElements(list, 'B');
 
 		list.unshift('a');
-		assertElements(list, 'a', 'b');
+		assertElements(list, 'a', 'B');
 
-		let b = list.pop();
-		assert.equal(b, 'b');
+		let B = list.pop();
+		assert.equal(B, 'B');
 		assertElements(list, 'a');
 
 	});

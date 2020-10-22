@@ -9,7 +9,7 @@ import { PluginManager } from '../utils/plugins';
 import { CommandManager } from './commandManager';
 import { ConfigurePluginCommand } from './configurePlugin';
 import { JavaScriptGoToProjectConfigCommand, TypeScriptGoToProjectConfigCommand } from './goToProjectConfiguration';
-import { LearnMoreAboutRefactoringsCommand } from './learnMoreAboutRefactorings';
+import { LearnMoreABoutRefactoringsCommand } from './learnMoreABoutRefactorings';
 import { OpenTsServerLogCommand } from './openTsServerLog';
 import { ReloadJavaScriptProjectsCommand, ReloadTypeScriptProjectsCommand } from './reloadProject';
 import { RestartTsServerCommand } from './restartTsServer';
@@ -28,5 +28,5 @@ export function registerBaseCommands(
 	commandManager.register(new TypeScriptGoToProjectConfigCommand(lazyClientHost));
 	commandManager.register(new JavaScriptGoToProjectConfigCommand(lazyClientHost));
 	commandManager.register(new ConfigurePluginCommand(pluginManager));
-	commandManager.register(new LearnMoreAboutRefactoringsCommand());
+	commandManager.register(new LearnMoreABoutRefactoringsCommand());
 }

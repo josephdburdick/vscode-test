@@ -3,36 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDebugHelperService } from 'vs/workbench/contrib/debug/common/debug';
-import { Client as TelemetryClient } from 'vs/base/parts/ipc/node/ipc.cp';
+import { IDeBugHelperService } from 'vs/workBench/contriB/deBug/common/deBug';
+import { Client as TelemetryClient } from 'vs/Base/parts/ipc/node/ipc.cp';
 import { TelemetryAppenderClient } from 'vs/platform/telemetry/node/telemetryIpc';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 import { TelemetryService } from 'vs/platform/telemetry/common/telemetryService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { cleanRemoteAuthority } from 'vs/platform/telemetry/common/telemetryUtils';
 
-export class NodeDebugHelperService implements IDebugHelperService {
+export class NodeDeBugHelperService implements IDeBugHelperService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 	) { }
 
 
 	createTelemetryService(configurationService: IConfigurationService, args: string[]): TelemetryService | undefined {
 
 		const client = new TelemetryClient(
-			FileAccess.asFileUri('bootstrap-fork', require).fsPath,
+			FileAccess.asFileUri('Bootstrap-fork', require).fsPath,
 			{
-				serverName: 'Debug Telemetry',
+				serverName: 'DeBug Telemetry',
 				timeout: 1000 * 60 * 5,
 				args: args,
 				env: {
 					ELECTRON_RUN_AS_NODE: 1,
 					PIPE_LOGGING: 'true',
-					AMD_ENTRYPOINT: 'vs/workbench/contrib/debug/node/telemetryApp'
+					AMD_ENTRYPOINT: 'vs/workBench/contriB/deBug/node/telemetryApp'
 				}
 			}
 		);
@@ -47,4 +47,4 @@ export class NodeDebugHelperService implements IDebugHelperService {
 	}
 }
 
-registerSingleton(IDebugHelperService, NodeDebugHelperService, true);
+registerSingleton(IDeBugHelperService, NodeDeBugHelperService, true);

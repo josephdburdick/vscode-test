@@ -1,3 +1,3 @@
-declare module 'github-releases' {
+declare module 'githuB-releases' {
 
 }

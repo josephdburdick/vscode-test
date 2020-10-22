@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { FileChangeType, FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapabilities, FileType, IFileChange, IStat, IWatchOptions, FileOpenOptions, IFileSystemProviderWithFileReadWriteCapability, FileWriteOptions, IFileSystemProviderWithFileReadStreamCapability, IFileSystemProviderWithFileFolderCopyCapability, FileReadStreamOptions, IFileSystemProviderWithOpenReadWriteCloseCapability } from 'vs/platform/files/common/files';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { newWriteableStream, ReadableStreamEvents, ReadableStreamEventPayload } from 'vs/base/common/stream';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { FileChangeType, FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapaBilities, FileType, IFileChange, IStat, IWatchOptions, FileOpenOptions, IFileSystemProviderWithFileReadWriteCapaBility, FileWriteOptions, IFileSystemProviderWithFileReadStreamCapaBility, IFileSystemProviderWithFileFolderCopyCapaBility, FileReadStreamOptions, IFileSystemProviderWithOpenReadWriteCloseCapaBility } from 'vs/platform/files/common/files';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { newWriteaBleStream, ReadaBleStreamEvents, ReadaBleStreamEventPayload } from 'vs/Base/common/stream';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
 
 export const REMOTE_FILE_SYSTEM_CHANNEL_NAME = 'remotefilesystem';
 
@@ -24,11 +24,11 @@ export interface IFileChangeDto {
 	type: FileChangeType;
 }
 
-export class RemoteFileSystemProvider extends Disposable implements
-	IFileSystemProviderWithFileReadWriteCapability,
-	IFileSystemProviderWithOpenReadWriteCloseCapability,
-	IFileSystemProviderWithFileReadStreamCapability,
-	IFileSystemProviderWithFileFolderCopyCapability {
+export class RemoteFileSystemProvider extends DisposaBle implements
+	IFileSystemProviderWithFileReadWriteCapaBility,
+	IFileSystemProviderWithOpenReadWriteCloseCapaBility,
+	IFileSystemProviderWithFileReadStreamCapaBility,
+	IFileSystemProviderWithFileFolderCopyCapaBility {
 
 	private readonly session: string = generateUuid();
 	private readonly channel: IChannel;
@@ -39,11 +39,11 @@ export class RemoteFileSystemProvider extends Disposable implements
 	private _onDidWatchErrorOccur = this._register(new Emitter<string>());
 	readonly onDidErrorOccur = this._onDidWatchErrorOccur.event;
 
-	private readonly _onDidChangeCapabilities = this._register(new Emitter<void>());
-	readonly onDidChangeCapabilities = this._onDidChangeCapabilities.event;
+	private readonly _onDidChangeCapaBilities = this._register(new Emitter<void>());
+	readonly onDidChangeCapaBilities = this._onDidChangeCapaBilities.event;
 
-	private _capabilities!: FileSystemProviderCapabilities;
-	get capabilities(): FileSystemProviderCapabilities { return this._capabilities; }
+	private _capaBilities!: FileSystemProviderCapaBilities;
+	get capaBilities(): FileSystemProviderCapaBilities { return this._capaBilities; }
 
 	constructor(remoteAgentService: IRemoteAgentService) {
 		super();
@@ -73,20 +73,20 @@ export class RemoteFileSystemProvider extends Disposable implements
 		}));
 	}
 
-	setCaseSensitive(isCaseSensitive: boolean) {
-		let capabilities = (
-			FileSystemProviderCapabilities.FileReadWrite
-			| FileSystemProviderCapabilities.FileOpenReadWriteClose
-			| FileSystemProviderCapabilities.FileReadStream
-			| FileSystemProviderCapabilities.FileFolderCopy
+	setCaseSensitive(isCaseSensitive: Boolean) {
+		let capaBilities = (
+			FileSystemProviderCapaBilities.FileReadWrite
+			| FileSystemProviderCapaBilities.FileOpenReadWriteClose
+			| FileSystemProviderCapaBilities.FileReadStream
+			| FileSystemProviderCapaBilities.FileFolderCopy
 		);
 
 		if (isCaseSensitive) {
-			capabilities |= FileSystemProviderCapabilities.PathCaseSensitive;
+			capaBilities |= FileSystemProviderCapaBilities.PathCaseSensitive;
 		}
 
-		this._capabilities = capabilities;
-		this._onDidChangeCapabilities.fire(undefined);
+		this._capaBilities = capaBilities;
+		this._onDidChangeCapaBilities.fire(undefined);
 	}
 
 	// --- forwarding calls
@@ -95,41 +95,41 @@ export class RemoteFileSystemProvider extends Disposable implements
 		return this.channel.call('stat', [resource]);
 	}
 
-	open(resource: URI, opts: FileOpenOptions): Promise<number> {
+	open(resource: URI, opts: FileOpenOptions): Promise<numBer> {
 		return this.channel.call('open', [resource, opts]);
 	}
 
-	close(fd: number): Promise<void> {
+	close(fd: numBer): Promise<void> {
 		return this.channel.call('close', [fd]);
 	}
 
-	async read(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
-		const [bytes, bytesRead]: [VSBuffer, number] = await this.channel.call('read', [fd, pos, length]);
+	async read(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer> {
+		const [Bytes, BytesRead]: [VSBuffer, numBer] = await this.channel.call('read', [fd, pos, length]);
 
-		// copy back the data that was written into the buffer on the remote
-		// side. we need to do this because buffers are not referenced by
-		// pointer, but only by value and as such cannot be directly written
+		// copy Back the data that was written into the Buffer on the remote
+		// side. we need to do this Because Buffers are not referenced By
+		// pointer, But only By value and as such cannot Be directly written
 		// to from the other process.
-		data.set(bytes.buffer.slice(0, bytesRead), offset);
+		data.set(Bytes.Buffer.slice(0, BytesRead), offset);
 
-		return bytesRead;
+		return BytesRead;
 	}
 
 	async readFile(resource: URI): Promise<Uint8Array> {
-		const buff = <VSBuffer>await this.channel.call('readFile', [resource]);
+		const Buff = <VSBuffer>await this.channel.call('readFile', [resource]);
 
-		return buff.buffer;
+		return Buff.Buffer;
 	}
 
-	readFileStream(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadableStreamEvents<Uint8Array> {
-		const stream = newWriteableStream<Uint8Array>(data => VSBuffer.concat(data.map(data => VSBuffer.wrap(data))).buffer);
+	readFileStream(resource: URI, opts: FileReadStreamOptions, token: CancellationToken): ReadaBleStreamEvents<Uint8Array> {
+		const stream = newWriteaBleStream<Uint8Array>(data => VSBuffer.concat(data.map(data => VSBuffer.wrap(data))).Buffer);
 
 		// Reading as file stream goes through an event to the remote side
-		const listener = this.channel.listen<ReadableStreamEventPayload<VSBuffer>>('readFileStream', [resource, opts])(dataOrErrorOrEnd => {
+		const listener = this.channel.listen<ReadaBleStreamEventPayload<VSBuffer>>('readFileStream', [resource, opts])(dataOrErrorOrEnd => {
 
 			// data
 			if (dataOrErrorOrEnd instanceof VSBuffer) {
-				stream.write(dataOrErrorOrEnd.buffer);
+				stream.write(dataOrErrorOrEnd.Buffer);
 			}
 
 			// end or error
@@ -163,7 +163,7 @@ export class RemoteFileSystemProvider extends Disposable implements
 			stream.end(canceled());
 
 			// Ensure to dispose the listener upon cancellation. This will
-			// bubble through the remote side as event and allows to stop
+			// BuBBle through the remote side as event and allows to stop
 			// reading the file.
 			listener.dispose();
 		});
@@ -171,7 +171,7 @@ export class RemoteFileSystemProvider extends Disposable implements
 		return stream;
 	}
 
-	write(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
+	write(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): Promise<numBer> {
 		return this.channel.call('write', [fd, pos, VSBuffer.wrap(data), offset, length]);
 	}
 
@@ -199,10 +199,10 @@ export class RemoteFileSystemProvider extends Disposable implements
 		return this.channel.call('copy', [resource, target, opts]);
 	}
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
+	watch(resource: URI, opts: IWatchOptions): IDisposaBle {
 		const req = Math.random();
 		this.channel.call('watch', [this.session, req, resource, opts]);
 
-		return toDisposable(() => this.channel.call('unwatch', [this.session, req]));
+		return toDisposaBle(() => this.channel.call('unwatch', [this.session, req]));
 	}
 }

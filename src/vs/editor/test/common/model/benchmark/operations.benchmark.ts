@@ -5,7 +5,7 @@
 
 import { Range } from 'vs/editor/common/core/range';
 import { EndOfLinePreference, ITextBufferBuilder } from 'vs/editor/common/model';
-import { BenchmarkSuite } from 'vs/editor/test/common/model/benchmark/benchmarkUtils';
+import { BenchmarkSuite } from 'vs/editor/test/common/model/Benchmark/BenchmarkUtils';
 import { generateRandomChunkWithLF, generateRandomEdits, generateSequentialInserts, getRandomInt } from 'vs/editor/test/common/model/linesTextBuffer/textBufferAutoTestUtils';
 
 let fileSizes = [1, 1000, 64 * 1000, 32 * 1000 * 1000];
@@ -44,7 +44,7 @@ for (let fileSize of fileSizes) {
 
 		editsSuite.add({
 			name: `apply 1000 edits`,
-			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
+			BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
 				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
@@ -61,7 +61,7 @@ for (let fileSize of fileSizes) {
 
 		editsSuite.add({
 			name: `Read all lines after 1000 edits`,
-			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
+			BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
 				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
@@ -85,7 +85,7 @@ for (let fileSize of fileSizes) {
 
 		editsSuite.add({
 			name: `Read 10 random windows after 1000 edits`,
-			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
+			BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
 				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
@@ -115,7 +115,7 @@ for (let fileSize of fileSizes) {
 
 		editsSuite.add({
 			name: `save file after 1000 edits`,
-			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
+			BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
 				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
 				return textBufferBuilder.finish();
 			},

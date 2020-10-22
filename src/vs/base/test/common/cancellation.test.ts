@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
 
 suite('CancellationToken', function () {
 
@@ -12,7 +12,7 @@ suite('CancellationToken', function () {
 		assert.equal(typeof CancellationToken.None.onCancellationRequested, 'function');
 	});
 
-	test('cancel before token', function (done) {
+	test('cancel Before token', function (done) {
 
 		const source = new CancellationTokenSource();
 		assert.equal(source.token.isCancellationRequested, false);

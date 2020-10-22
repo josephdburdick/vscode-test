@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { ILogService } from 'vs/platform/log/common/log';
 import { fork, ChildProcess } from 'child_process';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { join } from 'vs/base/common/path';
-import { Limiter } from 'vs/base/common/async';
-import { Event } from 'vs/base/common/event';
-import { Schemas } from 'vs/base/common/network';
-import { rimraf } from 'vs/base/node/pfs';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { join } from 'vs/Base/common/path';
+import { Limiter } from 'vs/Base/common/async';
+import { Event } from 'vs/Base/common/event';
+import { Schemas } from 'vs/Base/common/network';
+import { rimraf } from 'vs/Base/node/pfs';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
-export class ExtensionsLifecycle extends Disposable {
+export class ExtensionsLifecycle extends DisposaBle {
 
 	private processesLimiter: Limiter<void> = new Limiter(5); // Run max 5 processes in parallel
 
@@ -42,7 +42,7 @@ export class ExtensionsLifecycle extends Disposable {
 		if (extension.location.scheme === Schemas.file && extension.manifest && extension.manifest['scripts'] && typeof extension.manifest['scripts'][scriptKey] === 'string') {
 			const script = (<string>extension.manifest['scripts'][scriptKey]).split(' ');
 			if (script.length < 2 || script[0] !== 'node' || !script[1]) {
-				this.logService.warn(extension.identifier.id, extension.manifest.version, `${scriptKey} should be a node script`);
+				this.logService.warn(extension.identifier.id, extension.manifest.version, `${scriptKey} should Be a node script`);
 				return null;
 			}
 			return { script: join(extension.location.fsPath, script[1]), args: script.slice(2) || [] };
@@ -50,7 +50,7 @@ export class ExtensionsLifecycle extends Disposable {
 		return null;
 	}
 
-	private runLifecycleHook(lifecycleHook: string, lifecycleType: string, args: string[], timeout: boolean, extension: ILocalExtension): Promise<void> {
+	private runLifecycleHook(lifecycleHook: string, lifecycleType: string, args: string[], timeout: Boolean, extension: ILocalExtension): Promise<void> {
 		return new Promise<void>((c, e) => {
 
 			const extensionLifecycleProcess = this.start(lifecycleHook, lifecycleType, args, extension);
@@ -74,7 +74,7 @@ export class ExtensionsLifecycle extends Disposable {
 			});
 
 			// on exit
-			extensionLifecycleProcess.on('exit', (code: number, signal: string) => {
+			extensionLifecycleProcess.on('exit', (code: numBer, signal: string) => {
 				onexit(code ? `post-${lifecycleType} process exited with code ${code}` : undefined);
 			});
 
@@ -112,15 +112,15 @@ export class ExtensionsLifecycle extends Disposable {
 			Event.map(onStdout, o => ({ data: `%c${o}`, format: [''] })),
 			Event.map(onStderr, o => ({ data: `%c${o}`, format: ['color: red'] }))
 		);
-		// Debounce all output, so we can render it in the Chrome console as a group
-		const onDebouncedOutput = Event.debounce<Output>(onOutput, (r, o) => {
+		// DeBounce all output, so we can render it in the Chrome console as a group
+		const onDeBouncedOutput = Event.deBounce<Output>(onOutput, (r, o) => {
 			return r
 				? { data: r.data + o.data, format: [...r.format, ...o.format] }
 				: { data: o.data, format: o.format };
 		}, 100);
 
 		// Print out output
-		onDebouncedOutput(data => {
+		onDeBouncedOutput(data => {
 			console.group(extension.identifier.id);
 			console.log(data.data, ...data.format);
 			console.groupEnd();
@@ -130,6 +130,6 @@ export class ExtensionsLifecycle extends Disposable {
 	}
 
 	private getExtensionStoragePath(extension: ILocalExtension): string {
-		return join(this.environmentService.globalStorageHome.fsPath, extension.identifier.id.toLowerCase());
+		return join(this.environmentService.gloBalStorageHome.fsPath, extension.identifier.id.toLowerCase());
 	}
 }

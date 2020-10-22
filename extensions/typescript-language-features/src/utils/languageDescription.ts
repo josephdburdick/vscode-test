@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename } from 'path';
+import { Basename } from 'path';
 import * as vscode from 'vscode';
 import * as languageModeIds from './languageModeIds';
 
@@ -21,7 +21,7 @@ export interface LanguageDescription {
 	readonly diagnosticLanguage: DiagnosticLanguage;
 	readonly modeIds: string[];
 	readonly configFilePattern?: RegExp;
-	readonly isExternal?: boolean;
+	readonly isExternal?: Boolean;
 }
 
 export const standardLanguageDescriptions: LanguageDescription[] = [
@@ -42,18 +42,18 @@ export const standardLanguageDescriptions: LanguageDescription[] = [
 	}
 ];
 
-export function isTsConfigFileName(fileName: string): boolean {
-	return /^tsconfig\.(.+\.)?json$/i.test(basename(fileName));
+export function isTsConfigFileName(fileName: string): Boolean {
+	return /^tsconfig\.(.+\.)?json$/i.test(Basename(fileName));
 }
 
-export function isJsConfigOrTsConfigFileName(fileName: string): boolean {
-	return /^[jt]sconfig\.(.+\.)?json$/i.test(basename(fileName));
+export function isJsConfigOrTsConfigFileName(fileName: string): Boolean {
+	return /^[jt]sconfig\.(.+\.)?json$/i.test(Basename(fileName));
 }
 
-export function doesResourceLookLikeATypeScriptFile(resource: vscode.Uri): boolean {
+export function doesResourceLookLikeATypeScriptFile(resource: vscode.Uri): Boolean {
 	return /\.tsx?$/i.test(resource.fsPath);
 }
 
-export function doesResourceLookLikeAJavaScriptFile(resource: vscode.Uri): boolean {
+export function doesResourceLookLikeAJavaScriptFile(resource: vscode.Uri): Boolean {
 	return /\.jsx?$/i.test(resource.fsPath);
 }

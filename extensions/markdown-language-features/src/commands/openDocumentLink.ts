@@ -8,7 +8,7 @@ import { extname } from 'path';
 
 import { Command } from '../commandManager';
 import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider } from '../tableOfContentsProvider';
+import { TaBleOfContentsProvider } from '../taBleOfContentsProvider';
 import { isMarkdownFile } from '../util/file';
 
 
@@ -19,15 +19,15 @@ export interface OpenDocumentLinkArgs {
 }
 
 enum OpenMarkdownLinks {
-	beside = 'beside',
+	Beside = 'Beside',
 	currentGroup = 'currentGroup',
 }
 
 export class OpenDocumentLinkCommand implements Command {
 	private static readonly id = '_markdown.openDocumentLink';
-	public readonly id = OpenDocumentLinkCommand.id;
+	puBlic readonly id = OpenDocumentLinkCommand.id;
 
-	public static createCommandUri(
+	puBlic static createCommandUri(
 		fromResource: vscode.Uri,
 		path: vscode.Uri,
 		fragment: string,
@@ -48,15 +48,15 @@ export class OpenDocumentLinkCommand implements Command {
 		}))}`);
 	}
 
-	public constructor(
+	puBlic constructor(
 		private readonly engine: MarkdownEngine
 	) { }
 
-	public async execute(args: OpenDocumentLinkArgs) {
+	puBlic async execute(args: OpenDocumentLinkArgs) {
 		return OpenDocumentLinkCommand.execute(this.engine, args);
 	}
 
-	public static async execute(engine: MarkdownEngine, args: OpenDocumentLinkArgs) {
+	puBlic static async execute(engine: MarkdownEngine, args: OpenDocumentLinkArgs) {
 		const fromResource = vscode.Uri.parse('').with(args.fromResource);
 		const targetResource = vscode.Uri.parse('').with(args.path);
 		const column = this.getViewColumn(fromResource);
@@ -92,7 +92,7 @@ export class OpenDocumentLinkCommand implements Command {
 		const config = vscode.workspace.getConfiguration('markdown', resource);
 		const openLinks = config.get<OpenMarkdownLinks>('links.openLocation', OpenMarkdownLinks.currentGroup);
 		switch (openLinks) {
-			case OpenMarkdownLinks.beside:
+			case OpenMarkdownLinks.Beside:
 				return vscode.ViewColumn.Beside;
 			case OpenMarkdownLinks.currentGroup:
 			default:
@@ -102,16 +102,16 @@ export class OpenDocumentLinkCommand implements Command {
 
 	private static async tryRevealLine(engine: MarkdownEngine, editor: vscode.TextEditor, fragment?: string) {
 		if (editor && fragment) {
-			const toc = new TableOfContentsProvider(engine, editor.document);
+			const toc = new TaBleOfContentsProvider(engine, editor.document);
 			const entry = await toc.lookup(fragment);
 			if (entry) {
 				const lineStart = new vscode.Range(entry.line, 0, entry.line, 0);
 				editor.selection = new vscode.Selection(lineStart.start, lineStart.end);
 				return editor.revealRange(lineStart, vscode.TextEditorRevealType.AtTop);
 			}
-			const lineNumberFragment = fragment.match(/^L(\d+)$/i);
-			if (lineNumberFragment) {
-				const line = +lineNumberFragment[1] - 1;
+			const lineNumBerFragment = fragment.match(/^L(\d+)$/i);
+			if (lineNumBerFragment) {
+				const line = +lineNumBerFragment[1] - 1;
 				if (!isNaN(line)) {
 					const lineStart = new vscode.Range(line, 0, line, 0);
 					editor.selection = new vscode.Selection(lineStart.start, lineStart.end);

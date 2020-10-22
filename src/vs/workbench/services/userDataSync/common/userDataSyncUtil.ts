@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IUserDataSyncUtilService, getDefaultIgnoredSettings } from 'vs/platform/userDataSync/common/userDataSync';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
-import { URI } from 'vs/base/common/uri';
+import { FormattingOptions } from 'vs/Base/common/jsonFormatter';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { ITextResourcePropertiesService, ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 
@@ -17,7 +17,7 @@ class UserDataSyncUtilService implements IUserDataSyncUtilService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
-		@IKeybindingService private readonly keybindingsService: IKeybindingService,
+		@IKeyBindingService private readonly keyBindingsService: IKeyBindingService,
 		@ITextModelService private readonly textModelService: ITextModelService,
 		@ITextResourcePropertiesService private readonly textResourcePropertiesService: ITextResourcePropertiesService,
 		@ITextResourceConfigurationService private readonly textResourceConfigurationService: ITextResourceConfigurationService,
@@ -29,8 +29,8 @@ class UserDataSyncUtilService implements IUserDataSyncUtilService {
 
 	async resolveUserBindings(userBindings: string[]): Promise<IStringDictionary<string>> {
 		const keys: IStringDictionary<string> = {};
-		for (const userbinding of userBindings) {
-			keys[userbinding] = this.keybindingsService.resolveUserBinding(userbinding).map(part => part.getUserSettingsLabel()).join(' ');
+		for (const userBinding of userBindings) {
+			keys[userBinding] = this.keyBindingsService.resolveUserBinding(userBinding).map(part => part.getUserSettingsLaBel()).join(' ');
 		}
 		return keys;
 	}
@@ -38,16 +38,16 @@ class UserDataSyncUtilService implements IUserDataSyncUtilService {
 	async resolveFormattingOptions(resource: URI): Promise<FormattingOptions> {
 		try {
 			const modelReference = await this.textModelService.createModelReference(resource);
-			const { insertSpaces, tabSize } = modelReference.object.textEditorModel.getOptions();
-			const eol = modelReference.object.textEditorModel.getEOL();
+			const { insertSpaces, taBSize } = modelReference.oBject.textEditorModel.getOptions();
+			const eol = modelReference.oBject.textEditorModel.getEOL();
 			modelReference.dispose();
-			return { eol, insertSpaces, tabSize };
+			return { eol, insertSpaces, taBSize };
 		} catch (e) {
 		}
 		return {
 			eol: this.textResourcePropertiesService.getEOL(resource),
-			insertSpaces: this.textResourceConfigurationService.getValue<boolean>(resource, 'editor.insertSpaces'),
-			tabSize: this.textResourceConfigurationService.getValue(resource, 'editor.tabSize')
+			insertSpaces: this.textResourceConfigurationService.getValue<Boolean>(resource, 'editor.insertSpaces'),
+			taBSize: this.textResourceConfigurationService.getValue(resource, 'editor.taBSize')
 		};
 	}
 

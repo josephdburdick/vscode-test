@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IProductService, IConfigBasedExtensionTip as IRawConfigBasedExtensionTip } from 'vs/platform/product/common/productService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { IExtensionTipsService, IExecutableBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { forEach } from 'vs/base/common/collections';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { IExtensionTipsService, IExecutaBleBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { forEach } from 'vs/Base/common/collections';
 import { IRequestService, asJson } from 'vs/platform/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { ILogService } from 'vs/platform/log/common/log';
-import { joinPath } from 'vs/base/common/resources';
+import { joinPath } from 'vs/Base/common/resources';
 import { getDomainsOfRemotes } from 'vs/platform/extensionManagement/common/configRemotes';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-export class ExtensionTipsService extends Disposable implements IExtensionTipsService {
+export class ExtensionTipsService extends DisposaBle implements IExtensionTipsService {
 
 	_serviceBrand: any;
 
@@ -42,11 +42,11 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 		return this.fetchWorkspacesTips();
 	}
 
-	async getImportantExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
+	async getImportantExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]> {
 		return [];
 	}
 
-	async getOtherExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
+	async getOtherExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]> {
 		return [];
 	}
 

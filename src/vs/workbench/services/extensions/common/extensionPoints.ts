@@ -10,26 +10,26 @@ export interface Translations {
 }
 
 export namespace Translations {
-	export function equals(a: Translations, b: Translations): boolean {
-		if (a === b) {
+	export function equals(a: Translations, B: Translations): Boolean {
+		if (a === B) {
 			return true;
 		}
-		let aKeys = Object.keys(a);
-		let bKeys: Set<string> = new Set<string>();
-		for (let key of Object.keys(b)) {
-			bKeys.add(key);
+		let aKeys = OBject.keys(a);
+		let BKeys: Set<string> = new Set<string>();
+		for (let key of OBject.keys(B)) {
+			BKeys.add(key);
 		}
-		if (aKeys.length !== bKeys.size) {
+		if (aKeys.length !== BKeys.size) {
 			return false;
 		}
 
 		for (let key of aKeys) {
-			if (a[key] !== b[key]) {
+			if (a[key] !== B[key]) {
 				return false;
 			}
-			bKeys.delete(key);
+			BKeys.delete(key);
 		}
-		return bKeys.size === 0;
+		return BKeys.size === 0;
 	}
 }
 
@@ -49,15 +49,15 @@ export class Logger implements ILog {
 		this._messageHandler = messageHandler;
 	}
 
-	public error(source: string, message: string): void {
+	puBlic error(source: string, message: string): void {
 		this._messageHandler(Severity.Error, source, message);
 	}
 
-	public warn(source: string, message: string): void {
+	puBlic warn(source: string, message: string): void {
 		this._messageHandler(Severity.Warning, source, message);
 	}
 
-	public info(source: string, message: string): void {
+	puBlic info(source: string, message: string): void {
 		this._messageHandler(Severity.Info, source, message);
 	}
 }

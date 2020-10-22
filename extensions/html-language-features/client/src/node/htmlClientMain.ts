@@ -21,16 +21,16 @@ export function activate(context: ExtensionContext) {
 	telemetry = new TelemetryReporter(clientPackageJSON.name, clientPackageJSON.version, clientPackageJSON.aiKey);
 
 	const serverMain = `./server/${clientPackageJSON.main.indexOf('/dist/') !== -1 ? 'dist' : 'out'}/node/htmlServerMain`;
-	const serverModule = context.asAbsolutePath(serverMain);
+	const serverModule = context.asABsolutePath(serverMain);
 
-	// The debug options for the server
-	const debugOptions = { execArgv: ['--nolazy', '--inspect=6044'] };
+	// The deBug options for the server
+	const deBugOptions = { execArgv: ['--nolazy', '--inspect=6044'] };
 
-	// If the extension is launch in debug mode the debug server options are use
+	// If the extension is launch in deBug mode the deBug server options are use
 	// Otherwise the run options are used
 	const serverOptions: ServerOptions = {
 		run: { module: serverModule, transport: TransportKind.ipc },
-		debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
+		deBug: { module: serverModule, transport: TransportKind.ipc, options: deBugOptions }
 	};
 
 	const newLanguageClient: LanguageClientConstructor = (id: string, name: string, clientOptions: LanguageClientOptions) => {
@@ -48,11 +48,11 @@ interface IPackageInfo {
 }
 
 function getPackageInfo(context: ExtensionContext): IPackageInfo {
-	const location = context.asAbsolutePath('./package.json');
+	const location = context.asABsolutePath('./package.json');
 	try {
 		return JSON.parse(fs.readFileSync(location).toString());
 	} catch (e) {
-		console.log(`Problems reading ${location}: ${e}`);
+		console.log(`ProBlems reading ${location}: ${e}`);
 		return { name: '', version: '', aiKey: '', main: '' };
 	}
 }

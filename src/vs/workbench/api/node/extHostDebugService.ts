@@ -5,33 +5,33 @@
 
 import * as nls from 'vs/nls';
 import type * as vscode from 'vscode';
-import * as env from 'vs/base/common/platform';
-import { DebugAdapterExecutable } from 'vs/workbench/api/common/extHostTypes';
-import { ExecutableDebugAdapter, SocketDebugAdapter, NamedPipeDebugAdapter } from 'vs/workbench/contrib/debug/node/debugAdapter';
-import { AbstractDebugAdapter } from 'vs/workbench/contrib/debug/common/abstractDebugAdapter';
-import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { IAdapterDescriptor } from 'vs/workbench/contrib/debug/common/debug';
+import * as env from 'vs/Base/common/platform';
+import { DeBugAdapterExecutaBle } from 'vs/workBench/api/common/extHostTypes';
+import { ExecutaBleDeBugAdapter, SocketDeBugAdapter, NamedPipeDeBugAdapter } from 'vs/workBench/contriB/deBug/node/deBugAdapter';
+import { ABstractDeBugAdapter } from 'vs/workBench/contriB/deBug/common/aBstractDeBugAdapter';
+import { IExtHostWorkspace } from 'vs/workBench/api/common/extHostWorkspace';
+import { IExtHostExtensionService } from 'vs/workBench/api/common/extHostExtensionService';
+import { IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors } from 'vs/workBench/api/common/extHostDocumentsAndEditors';
+import { IAdapterDescriptor } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IExtHostConfiguration, ExtHostConfigProvider } from '../common/extHostConfiguration';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostDebugServiceBase, ExtHostDebugSession, ExtHostVariableResolverService } from 'vs/workbench/api/common/extHostDebugService';
+import { IExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { ExtensionDescriptionRegistry } from 'vs/workBench/services/extensions/common/extensionDescriptionRegistry';
+import { IExtHostTerminalService } from 'vs/workBench/api/common/extHostTerminalService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { ExtHostDeBugServiceBase, ExtHostDeBugSession, ExtHostVariaBleResolverService } from 'vs/workBench/api/common/extHostDeBugService';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { SignService } from 'vs/platform/sign/node/signService';
-import { hasChildProcesses, prepareCommand, runInExternalTerminal } from 'vs/workbench/contrib/debug/node/terminals';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { AbstractVariableResolverService } from 'vs/workbench/services/configurationResolver/common/variableResolver';
+import { hasChildProcesses, prepareCommand, runInExternalTerminal } from 'vs/workBench/contriB/deBug/node/terminals';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ABstractVariaBleResolverService } from 'vs/workBench/services/configurationResolver/common/variaBleResolver';
 
 
-export class ExtHostDebugService extends ExtHostDebugServiceBase {
+export class ExtHostDeBugService extends ExtHostDeBugServiceBase {
 
 	readonly _serviceBrand: undefined;
 
 	private _integratedTerminalInstance?: vscode.Terminal;
-	private _terminalDisposedListener: IDisposable | undefined;
+	private _terminalDisposedListener: IDisposaBle | undefined;
 
 	constructor(
 		@IExtHostRpcService extHostRpcService: IExtHostRpcService,
@@ -45,22 +45,22 @@ export class ExtHostDebugService extends ExtHostDebugServiceBase {
 		super(extHostRpcService, workspaceService, extensionService, editorsService, configurationService, commandService);
 	}
 
-	protected createDebugAdapter(adapter: IAdapterDescriptor, session: ExtHostDebugSession): AbstractDebugAdapter | undefined {
+	protected createDeBugAdapter(adapter: IAdapterDescriptor, session: ExtHostDeBugSession): ABstractDeBugAdapter | undefined {
 		switch (adapter.type) {
 			case 'server':
-				return new SocketDebugAdapter(adapter);
+				return new SocketDeBugAdapter(adapter);
 			case 'pipeServer':
-				return new NamedPipeDebugAdapter(adapter);
-			case 'executable':
-				return new ExecutableDebugAdapter(adapter, session.type);
+				return new NamedPipeDeBugAdapter(adapter);
+			case 'executaBle':
+				return new ExecutaBleDeBugAdapter(adapter, session.type);
 		}
-		return super.createDebugAdapter(adapter, session);
+		return super.createDeBugAdapter(adapter, session);
 	}
 
-	protected daExecutableFromPackage(session: ExtHostDebugSession, extensionRegistry: ExtensionDescriptionRegistry): DebugAdapterExecutable | undefined {
-		const dae = ExecutableDebugAdapter.platformAdapterExecutable(extensionRegistry.getAllExtensionDescriptions(), session.type);
+	protected daExecutaBleFromPackage(session: ExtHostDeBugSession, extensionRegistry: ExtensionDescriptionRegistry): DeBugAdapterExecutaBle | undefined {
+		const dae = ExecutaBleDeBugAdapter.platformAdapterExecutaBle(extensionRegistry.getAllExtensionDescriptions(), session.type);
 		if (dae) {
-			return new DebugAdapterExecutable(dae.command, dae.args, dae.options);
+			return new DeBugAdapterExecutaBle(dae.command, dae.args, dae.options);
 		}
 		return undefined;
 	}
@@ -69,12 +69,12 @@ export class ExtHostDebugService extends ExtHostDebugServiceBase {
 		return new SignService();
 	}
 
-	public async $runInTerminal(args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined> {
+	puBlic async $runInTerminal(args: DeBugProtocol.RunInTerminalRequestArguments): Promise<numBer | undefined> {
 
 		if (args.kind === 'integrated') {
 
 			if (!this._terminalDisposedListener) {
-				// React on terminal disposed and check if that is the debug terminal #12956
+				// React on terminal disposed and check if that is the deBug terminal #12956
 				this._terminalDisposedListener = this._terminalService.onDidCloseTerminal(terminal => {
 					if (this._integratedTerminalInstance && this._integratedTerminalInstance === terminal) {
 						this._integratedTerminalInstance = undefined;
@@ -82,7 +82,7 @@ export class ExtHostDebugService extends ExtHostDebugServiceBase {
 				});
 			}
 
-			let needNewTerminal = true;	// be pessimistic
+			let needNewTerminal = true;	// Be pessimistic
 			if (this._integratedTerminalInstance) {
 				const pid = await this._integratedTerminalInstance.processId;
 				needNewTerminal = await hasChildProcesses(pid);		// if no processes running in terminal reuse terminal
@@ -98,7 +98,7 @@ export class ExtHostDebugService extends ExtHostDebugServiceBase {
 					shellPath: shell,
 					// shellArgs: this._terminalService._getDefaultShellArgs(configProvider),
 					cwd: args.cwd,
-					name: args.title || nls.localize('debug.terminal.title', "debuggee"),
+					name: args.title || nls.localize('deBug.terminal.title', "deBuggee"),
 				};
 				this._integratedTerminalInstance = this._terminalService.createTerminalFromOptions(options);
 			} else {
@@ -122,7 +122,7 @@ export class ExtHostDebugService extends ExtHostDebugServiceBase {
 		return super.$runInTerminal(args);
 	}
 
-	protected createVariableResolver(folders: vscode.WorkspaceFolder[], editorService: ExtHostDocumentsAndEditors, configurationService: ExtHostConfigProvider): AbstractVariableResolverService {
-		return new ExtHostVariableResolverService(folders, editorService, configurationService, process.env as env.IProcessEnvironment);
+	protected createVariaBleResolver(folders: vscode.WorkspaceFolder[], editorService: ExtHostDocumentsAndEditors, configurationService: ExtHostConfigProvider): ABstractVariaBleResolverService {
+		return new ExtHostVariaBleResolverService(folders, editorService, configurationService, process.env as env.IProcessEnvironment);
 	}
 }

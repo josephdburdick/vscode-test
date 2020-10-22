@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isArray } from 'vs/base/common/types';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { range } from 'vs/base/common/arrays';
+import { isArray } from 'vs/Base/common/types';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
+import { range } from 'vs/Base/common/arrays';
 
 /**
- * A Pager is a stateless abstraction over a paged collection.
+ * A Pager is a stateless aBstraction over a paged collection.
  */
 export interface IPager<T> {
 	firstPage: T[];
-	total: number;
-	pageSize: number;
-	getPage(pageIndex: number, cancellationToken: CancellationToken): Promise<T[]>;
+	total: numBer;
+	pageSize: numBer;
+	getPage(pageIndex: numBer, cancellationToken: CancellationToken): Promise<T[]>;
 }
 
 interface IPage<T> {
-	isResolved: boolean;
+	isResolved: Boolean;
 	promise: Promise<void> | null;
 	cts: CancellationTokenSource | null;
-	promiseIndexes: Set<number>;
+	promiseIndexes: Set<numBer>;
 	elements: T[];
 }
 
@@ -31,19 +31,19 @@ function createPage<T>(elements?: T[]): IPage<T> {
 		isResolved: !!elements,
 		promise: null,
 		cts: null,
-		promiseIndexes: new Set<number>(),
+		promiseIndexes: new Set<numBer>(),
 		elements: elements || []
 	};
 }
 
 /**
- * A PagedModel is a stateful model over an abstracted paged collection.
+ * A PagedModel is a stateful model over an aBstracted paged collection.
  */
 export interface IPagedModel<T> {
-	length: number;
-	isResolved(index: number): boolean;
-	get(index: number): T;
-	resolve(index: number, cancellationToken: CancellationToken): Promise<T>;
+	length: numBer;
+	isResolved(index: numBer): Boolean;
+	get(index: numBer): T;
+	resolve(index: numBer, cancellationToken: CancellationToken): Promise<T>;
 }
 
 export function singlePagePager<T>(elements: T[]): IPager<T> {
@@ -51,7 +51,7 @@ export function singlePagePager<T>(elements: T[]): IPager<T> {
 		firstPage: elements,
 		total: elements.length,
 		pageSize: elements.length,
-		getPage: (pageIndex: number, cancellationToken: CancellationToken): Promise<T[]> => {
+		getPage: (pageIndex: numBer, cancellationToken: CancellationToken): Promise<T[]> => {
 			return Promise.resolve(elements);
 		}
 	};
@@ -62,7 +62,7 @@ export class PagedModel<T> implements IPagedModel<T> {
 	private pager: IPager<T>;
 	private pages: IPage<T>[] = [];
 
-	get length(): number { return this.pager.total; }
+	get length(): numBer { return this.pager.total; }
 
 	constructor(arg: IPager<T> | T[]) {
 		this.pager = isArray(arg) ? singlePagePager<T>(arg) : arg;
@@ -75,14 +75,14 @@ export class PagedModel<T> implements IPagedModel<T> {
 		];
 	}
 
-	isResolved(index: number): boolean {
+	isResolved(index: numBer): Boolean {
 		const pageIndex = Math.floor(index / this.pager.pageSize);
 		const page = this.pages[pageIndex];
 
 		return !!page.isResolved;
 	}
 
-	get(index: number): T {
+	get(index: numBer): T {
 		const pageIndex = Math.floor(index / this.pager.pageSize);
 		const indexInPage = index % this.pager.pageSize;
 		const page = this.pages[pageIndex];
@@ -90,7 +90,7 @@ export class PagedModel<T> implements IPagedModel<T> {
 		return page.elements[indexInPage];
 	}
 
-	resolve(index: number, cancellationToken: CancellationToken): Promise<T> {
+	resolve(index: numBer, cancellationToken: CancellationToken): Promise<T> {
 		if (cancellationToken.isCancellationRequested) {
 			return Promise.reject(canceled());
 		}
@@ -139,19 +139,19 @@ export class PagedModel<T> implements IPagedModel<T> {
 
 export class DelayedPagedModel<T> implements IPagedModel<T> {
 
-	get length(): number { return this.model.length; }
+	get length(): numBer { return this.model.length; }
 
-	constructor(private model: IPagedModel<T>, private timeout: number = 500) { }
+	constructor(private model: IPagedModel<T>, private timeout: numBer = 500) { }
 
-	isResolved(index: number): boolean {
+	isResolved(index: numBer): Boolean {
 		return this.model.isResolved(index);
 	}
 
-	get(index: number): T {
+	get(index: numBer): T {
 		return this.model.get(index);
 	}
 
-	resolve(index: number, cancellationToken: CancellationToken): Promise<T> {
+	resolve(index: numBer, cancellationToken: CancellationToken): Promise<T> {
 		return new Promise((c, e) => {
 			if (cancellationToken.isCancellationRequested) {
 				return e(canceled());
@@ -177,7 +177,7 @@ export class DelayedPagedModel<T> implements IPagedModel<T> {
 
 /**
  * Similar to array.map, `mapPager` lets you map the elements of an
- * abstract paged collection to another type.
+ * aBstract paged collection to another type.
  */
 export function mapPager<T, R>(pager: IPager<T>, fn: (t: T) => R): IPager<R> {
 	return {
@@ -196,7 +196,7 @@ export function mergePagers<T>(one: IPager<T>, other: IPager<T>): IPager<T> {
 		firstPage: [...one.firstPage, ...other.firstPage],
 		total: one.total + other.total,
 		pageSize: one.pageSize + other.pageSize,
-		getPage(pageIndex: number, token): Promise<T[]> {
+		getPage(pageIndex: numBer, token): Promise<T[]> {
 			return Promise.all([one.getPage(pageIndex, token), other.getPage(pageIndex, token)])
 				.then(([onePage, otherPage]) => [...onePage, ...otherPage]);
 		}

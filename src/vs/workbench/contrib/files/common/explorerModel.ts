@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/extpath';
-import { posix } from 'vs/base/common/path';
-import { ResourceMap } from 'vs/base/common/map';
-import { IFileStat, IFileService, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { rtrim, startsWithIgnoreCase, equalsIgnoreCase } from 'vs/base/common/strings';
-import { coalesce } from 'vs/base/common/arrays';
+import { URI } from 'vs/Base/common/uri';
+import { isEqual } from 'vs/Base/common/extpath';
+import { posix } from 'vs/Base/common/path';
+import { ResourceMap } from 'vs/Base/common/map';
+import { IFileStat, IFileService, FileSystemProviderCapaBilities } from 'vs/platform/files/common/files';
+import { rtrim, startsWithIgnoreCase, equalsIgnoreCase } from 'vs/Base/common/strings';
+import { coalesce } from 'vs/Base/common/arrays';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { memoize } from 'vs/base/common/decorators';
-import { Emitter, Event } from 'vs/base/common/event';
-import { joinPath, isEqualOrParent, basenameOrAuthority } from 'vs/base/common/resources';
-import { SortOrder } from 'vs/workbench/contrib/files/common/files';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { memoize } from 'vs/Base/common/decorators';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { joinPath, isEqualOrParent, BasenameOrAuthority } from 'vs/Base/common/resources';
+import { SortOrder } from 'vs/workBench/contriB/files/common/files';
 
-export class ExplorerModel implements IDisposable {
+export class ExplorerModel implements IDisposaBle {
 
 	private _roots!: ExplorerItem[];
-	private _listener: IDisposable;
+	private _listener: IDisposaBle;
 	private readonly _onDidChangeRoots = new Emitter<void>();
 
 	constructor(
@@ -77,24 +77,24 @@ export class ExplorerModel implements IDisposable {
 }
 
 export class ExplorerItem {
-	protected _isDirectoryResolved: boolean;
-	public isError = false;
+	protected _isDirectoryResolved: Boolean;
+	puBlic isError = false;
 	private _isExcluded = false;
 
 	constructor(
-		public resource: URI,
+		puBlic resource: URI,
 		private readonly fileService: IFileService,
 		private _parent: ExplorerItem | undefined,
-		private _isDirectory?: boolean,
-		private _isSymbolicLink?: boolean,
-		private _name: string = basenameOrAuthority(resource),
-		private _mtime?: number,
+		private _isDirectory?: Boolean,
+		private _isSymBolicLink?: Boolean,
+		private _name: string = BasenameOrAuthority(resource),
+		private _mtime?: numBer,
 		private _unknown = false
 	) {
 		this._isDirectoryResolved = false;
 	}
 
-	get isExcluded(): boolean {
+	get isExcluded(): Boolean {
 		if (this._isExcluded) {
 			return true;
 		}
@@ -105,27 +105,27 @@ export class ExplorerItem {
 		return this._parent.isExcluded;
 	}
 
-	set isExcluded(value: boolean) {
+	set isExcluded(value: Boolean) {
 		this._isExcluded = value;
 	}
 
-	get isDirectoryResolved(): boolean {
+	get isDirectoryResolved(): Boolean {
 		return this._isDirectoryResolved;
 	}
 
-	get isSymbolicLink(): boolean {
-		return !!this._isSymbolicLink;
+	get isSymBolicLink(): Boolean {
+		return !!this._isSymBolicLink;
 	}
 
-	get isDirectory(): boolean {
+	get isDirectory(): Boolean {
 		return !!this._isDirectory;
 	}
 
-	get isReadonly(): boolean {
-		return this.fileService.hasCapability(this.resource, FileSystemProviderCapabilities.Readonly);
+	get isReadonly(): Boolean {
+		return this.fileService.hasCapaBility(this.resource, FileSystemProviderCapaBilities.Readonly);
 	}
 
-	get mtime(): number | undefined {
+	get mtime(): numBer | undefined {
 		return this._mtime;
 	}
 
@@ -133,7 +133,7 @@ export class ExplorerItem {
 		return this._name;
 	}
 
-	get isUnknown(): boolean {
+	get isUnknown(): Boolean {
 		return this._unknown;
 	}
 
@@ -168,18 +168,18 @@ export class ExplorerItem {
 		return this.resource.toString();
 	}
 
-	get isRoot(): boolean {
+	get isRoot(): Boolean {
 		return this === this.root;
 	}
 
 	static create(fileService: IFileService, raw: IFileStat, parent: ExplorerItem | undefined, resolveTo?: readonly URI[]): ExplorerItem {
-		const stat = new ExplorerItem(raw.resource, fileService, parent, raw.isDirectory, raw.isSymbolicLink, raw.name, raw.mtime, !raw.isFile && !raw.isDirectory);
+		const stat = new ExplorerItem(raw.resource, fileService, parent, raw.isDirectory, raw.isSymBolicLink, raw.name, raw.mtime, !raw.isFile && !raw.isDirectory);
 
 		// Recursively add children if present
 		if (stat.isDirectory) {
 
 			// isDirectoryResolved is a very important indicator in the stat model that tells if the folder was fully resolved
-			// the folder is fully resolved if either it has a list of children or the client requested this by using the resolveTo
+			// the folder is fully resolved if either it has a list of children or the client requested this By using the resolveTo
 			// array of resource path to resolve.
 			stat._isDirectoryResolved = !!raw.children || (!!resolveTo && resolveTo.some((r) => {
 				return isEqualOrParent(r, stat.resource);
@@ -198,7 +198,7 @@ export class ExplorerItem {
 	}
 
 	/**
-	 * Merges the stat which was resolved from the disk with the local stat by copying over properties
+	 * Merges the stat which was resolved from the disk with the local stat By copying over properties
 	 * and children. The merge will only consider resolved stat elements to avoid overwriting data which
 	 * exists locally.
 	 */
@@ -221,7 +221,7 @@ export class ExplorerItem {
 		local._isDirectory = disk.isDirectory;
 		local._mtime = disk.mtime;
 		local._isDirectoryResolved = disk._isDirectoryResolved;
-		local._isSymbolicLink = disk.isSymbolicLink;
+		local._isSymBolicLink = disk.isSymBolicLink;
 		local.isError = disk.isError;
 
 		// Merge Children if resolved
@@ -276,7 +276,7 @@ export class ExplorerItem {
 
 	async fetchChildren(sortOrder: SortOrder): Promise<ExplorerItem[]> {
 		if (!this._isDirectoryResolved) {
-			// Resolve metadata only when the mtime is needed since this can be expensive
+			// Resolve metadata only when the mtime is needed since this can Be expensive
 			// Mtime is only used when the sort order is 'modified'
 			const resolveMetadata = sortOrder === SortOrder.Modified;
 			try {
@@ -311,7 +311,7 @@ export class ExplorerItem {
 	}
 
 	private getPlatformAwareName(name: string): string {
-		return this.fileService.hasCapability(this.resource, FileSystemProviderCapabilities.PathCaseSensitive) ? name : name.toLowerCase();
+		return this.fileService.hasCapaBility(this.resource, FileSystemProviderCapaBilities.PathCaseSensitive) ? name : name.toLowerCase();
 	}
 
 	/**
@@ -326,7 +326,7 @@ export class ExplorerItem {
 		this.updateResource(true);
 	}
 
-	private updateResource(recursive: boolean): void {
+	private updateResource(recursive: Boolean): void {
 		if (this._parent) {
 			this.resource = joinPath(this._parent.resource, this.name);
 		}
@@ -342,11 +342,11 @@ export class ExplorerItem {
 
 	/**
 	 * Tells this stat that it was renamed. This requires changes to all children of this stat (if any)
-	 * so that the path property can be updated properly.
+	 * so that the path property can Be updated properly.
 	 */
-	rename(renamedStat: { name: string, mtime?: number }): void {
+	rename(renamedStat: { name: string, mtime?: numBer }): void {
 
-		// Merge a subset of Properties that can change on rename
+		// Merge a suBset of Properties that can change on rename
 		this.updateName(renamedStat.name);
 		this._mtime = renamedStat.mtime;
 
@@ -360,17 +360,17 @@ export class ExplorerItem {
 	 */
 	find(resource: URI): ExplorerItem | null {
 		// Return if path found
-		// For performance reasons try to do the comparison as fast as possible
-		const ignoreCase = !this.fileService.hasCapability(resource, FileSystemProviderCapabilities.PathCaseSensitive);
+		// For performance reasons try to do the comparison as fast as possiBle
+		const ignoreCase = !this.fileService.hasCapaBility(resource, FileSystemProviderCapaBilities.PathCaseSensitive);
 		if (resource && this.resource.scheme === resource.scheme && equalsIgnoreCase(this.resource.authority, resource.authority) &&
 			(ignoreCase ? startsWithIgnoreCase(resource.path, this.resource.path) : resource.path.startsWith(this.resource.path))) {
 			return this.findByPath(rtrim(resource.path, posix.sep), this.resource.path.length, ignoreCase);
 		}
 
-		return null; //Unable to find
+		return null; //UnaBle to find
 	}
 
-	private findByPath(path: string, index: number, ignoreCase: boolean): ExplorerItem | null {
+	private findByPath(path: string, index: numBer, ignoreCase: Boolean): ExplorerItem | null {
 		if (isEqual(rtrim(this.resource.path, posix.sep), path, ignoreCase)) {
 			return this;
 		}
@@ -386,8 +386,8 @@ export class ExplorerItem {
 				// If there is no separator take the remainder of the path
 				indexOfNextSep = path.length;
 			}
-			// The name to search is between two separators
-			const name = path.substring(index, indexOfNextSep);
+			// The name to search is Between two separators
+			const name = path.suBstring(index, indexOfNextSep);
 
 			const child = this.children.get(this.getPlatformAwareName(name));
 
@@ -402,7 +402,7 @@ export class ExplorerItem {
 }
 
 export class NewExplorerItem extends ExplorerItem {
-	constructor(fileService: IFileService, parent: ExplorerItem, isDirectory: boolean) {
+	constructor(fileService: IFileService, parent: ExplorerItem, isDirectory: Boolean) {
 		super(URI.file(''), fileService, parent, isDirectory);
 		this._isDirectoryResolved = true;
 	}

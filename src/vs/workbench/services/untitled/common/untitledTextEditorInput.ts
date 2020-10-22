@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEncodingSupport, EncodingMode, Verbosity, IModeSupport } from 'vs/workbench/common/editor';
-import { AbstractTextResourceEditorInput } from 'vs/workbench/common/editor/textResourceEditorInput';
-import { IUntitledTextEditorModel } from 'vs/workbench/services/untitled/common/untitledTextEditorModel';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { IEncodingSupport, EncodingMode, VerBosity, IModeSupport } from 'vs/workBench/common/editor';
+import { ABstractTextResourceEditorInput } from 'vs/workBench/common/editor/textResourceEditorInput';
+import { IUntitledTextEditorModel } from 'vs/workBench/services/untitled/common/untitledTextEditorModel';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { isEqual } from 'vs/base/common/resources';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
+import { isEqual } from 'vs/Base/common/resources';
 
 /**
- * An editor input to be used for untitled text buffers.
+ * An editor input to Be used for untitled text Buffers.
  */
-export class UntitledTextEditorInput extends AbstractTextResourceEditorInput implements IEncodingSupport, IModeSupport {
+export class UntitledTextEditorInput extends ABstractTextResourceEditorInput implements IEncodingSupport, IModeSupport {
 
-	static readonly ID: string = 'workbench.editors.untitledEditorInput';
+	static readonly ID: string = 'workBench.editors.untitledEditorInput';
 
 	private modelResolve: Promise<IUntitledTextEditorModel & IResolvedTextEditorModel> | undefined = undefined;
 
 	constructor(
-		public readonly model: IUntitledTextEditorModel,
+		puBlic readonly model: IUntitledTextEditorModel,
 		@ITextFileService textFileService: ITextFileService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
-		super(model.resource, undefined, editorService, editorGroupService, textFileService, labelService, fileService, filesConfigurationService);
+		super(model.resource, undefined, editorService, editorGroupService, textFileService, laBelService, fileService, filesConfigurationService);
 
 		this.registerModelListeners(model);
 	}
@@ -42,7 +42,7 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 
 		// re-emit some events from the model
 		this._register(model.onDidChangeDirty(() => this._onDidChangeDirty.fire()));
-		this._register(model.onDidChangeName(() => this._onDidChangeLabel.fire()));
+		this._register(model.onDidChangeName(() => this._onDidChangeLaBel.fire()));
 
 		// a reverted untitled text editor model renders this input disposed
 		this._register(model.onDidRevert(() => this.dispose()));
@@ -56,7 +56,7 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 		return this.model.name;
 	}
 
-	getDescription(verbosity: Verbosity = Verbosity.MEDIUM): string | undefined {
+	getDescription(verBosity: VerBosity = VerBosity.MEDIUM): string | undefined {
 
 		// Without associated path: only use if name and description differ
 		if (!this.model.hasAssociatedFilePath) {
@@ -69,13 +69,13 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 		}
 
 		// With associated path: delegate to parent
-		return super.getDescription(verbosity);
+		return super.getDescription(verBosity);
 	}
 
-	getTitle(verbosity: Verbosity): string {
+	getTitle(verBosity: VerBosity): string {
 
 		// Without associated path: check if name and description differ to decide
-		// if description should appear besides the name to distinguish better
+		// if description should appear Besides the name to distinguish Better
 		if (!this.model.hasAssociatedFilePath) {
 			const name = this.getName();
 			const description = this.getDescription();
@@ -87,10 +87,10 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 		}
 
 		// With associated path: delegate to parent
-		return super.getTitle(verbosity);
+		return super.getTitle(verBosity);
 	}
 
-	isDirty(): boolean {
+	isDirty(): Boolean {
 		return this.model.isDirty();
 	}
 
@@ -112,7 +112,7 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 
 	resolve(): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel> {
 
-		// Join a model resolve if we have had one before
+		// Join a model resolve if we have had one Before
 		if (this.modelResolve) {
 			return this.modelResolve;
 		}
@@ -122,7 +122,7 @@ export class UntitledTextEditorInput extends AbstractTextResourceEditorInput imp
 		return this.modelResolve;
 	}
 
-	matches(otherInput: unknown): boolean {
+	matches(otherInput: unknown): Boolean {
 		if (otherInput === this) {
 			return true;
 		}

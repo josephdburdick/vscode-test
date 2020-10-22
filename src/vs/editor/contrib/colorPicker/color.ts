@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { illegalArgument } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { illegalArgument } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
+import { registerLanguageCommand } from 'vs/editor/Browser/editorExtensions';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
 import { ColorProviderRegistry, DocumentColorProvider, IColorInformation, IColorPresentation } from 'vs/editor/common/modes';
@@ -48,12 +48,12 @@ registerLanguageCommand('_executeDocumentColorProvider', function (accessor, arg
 		throw illegalArgument();
 	}
 
-	const rawCIs: { range: IRange, color: [number, number, number, number] }[] = [];
+	const rawCIs: { range: IRange, color: [numBer, numBer, numBer, numBer] }[] = [];
 	const providers = ColorProviderRegistry.ordered(model).reverse();
 	const promises = providers.map(provider => Promise.resolve(provider.provideDocumentColors(model, CancellationToken.None)).then(result => {
 		if (Array.isArray(result)) {
 			for (let ci of result) {
-				rawCIs.push({ range: ci.range, color: [ci.color.red, ci.color.green, ci.color.blue, ci.color.alpha] });
+				rawCIs.push({ range: ci.range, color: [ci.color.red, ci.color.green, ci.color.Blue, ci.color.alpha] });
 			}
 		}
 	}));
@@ -68,7 +68,7 @@ registerLanguageCommand('_executeColorPresentationProvider', function (accessor,
 	if (!(resource instanceof URI) || !Array.isArray(color) || color.length !== 4 || !Range.isIRange(range)) {
 		throw illegalArgument();
 	}
-	const [red, green, blue, alpha] = color;
+	const [red, green, Blue, alpha] = color;
 
 	const model = accessor.get(IModelService).getModel(resource);
 	if (!model) {
@@ -77,7 +77,7 @@ registerLanguageCommand('_executeColorPresentationProvider', function (accessor,
 
 	const colorInfo = {
 		range,
-		color: { red, green, blue, alpha }
+		color: { red, green, Blue, alpha }
 	};
 
 	const presentations: IColorPresentation[] = [];

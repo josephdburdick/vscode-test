@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/Browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { DocumentFormattingEditProviderRegistry } from 'vs/editor/common/modes';
 import * as nls from 'vs/nls';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { VIEWLET_ID, IExtensionsViewPaneContainer } from 'vs/workbench/contrib/extensions/common/extensions';
+import { VIEWLET_ID, IExtensionsViewPaneContainer } from 'vs/workBench/contriB/extensions/common/extensions';
 
 async function showExtensionQuery(viewletService: IViewletService, query: string) {
 	const viewlet = await viewletService.openViewlet(VIEWLET_ID, true);
@@ -28,14 +28,14 @@ registerEditorAction(class FormatDocumentMultipleAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.formatDocument.none',
-			label: nls.localize('formatDocument.label.multiple', "Format Document"),
+			laBel: nls.localize('formatDocument.laBel.multiple', "Format Document"),
 			alias: 'Format Document',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider.toNegated()),
-			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentFormattingProvider.toNegated()),
+			precondition: ContextKeyExpr.and(EditorContextKeys.writaBle, EditorContextKeys.hasDocumentFormattingProvider.toNegated()),
+			kBOpts: {
+				kBExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentFormattingProvider.toNegated()),
 				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
-				weight: KeybindingWeight.EditorContrib,
+				weight: KeyBindingWeight.EditorContriB,
 			}
 		});
 	}
@@ -59,7 +59,7 @@ registerEditorAction(class FormatDocumentMultipleAction extends EditorAction {
 			const langName = model.getLanguageIdentifier().language;
 			const message = nls.localize('no.provider', "There is no formatter for '{0}' files installed.", langName);
 			const choice = {
-				label: nls.localize('install.formatter', "Install Formatter..."),
+				laBel: nls.localize('install.formatter', "Install Formatter..."),
 				run: () => showExtensionQuery(viewletService, `category:formatters ${langName}`)
 			};
 			notificationService.prompt(Severity.Info, message, [choice]);

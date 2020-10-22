@@ -5,32 +5,32 @@
 
 import { IUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
-export class WebUserDataAutoSyncService extends UserDataAutoSyncService implements IUserDataAutoSyncService {
+export class WeBUserDataAutoSyncService extends UserDataAutoSyncService implements IUserDataAutoSyncService {
 
-	private get workbenchEnvironmentService(): IWorkbenchEnvironmentService { return <IWorkbenchEnvironmentService>this.environmentService; }
-	private enabled: boolean | undefined = undefined;
+	private get workBenchEnvironmentService(): IWorkBenchEnvironmentService { return <IWorkBenchEnvironmentService>this.environmentService; }
+	private enaBled: Boolean | undefined = undefined;
 
-	isEnabled(): boolean {
-		if (this.enabled === undefined) {
-			this.enabled = this.workbenchEnvironmentService.options?.settingsSyncOptions?.enabled;
+	isEnaBled(): Boolean {
+		if (this.enaBled === undefined) {
+			this.enaBled = this.workBenchEnvironmentService.options?.settingsSyncOptions?.enaBled;
 		}
-		if (this.enabled === undefined) {
-			this.enabled = super.isEnabled(this.workbenchEnvironmentService.options?.enableSyncByDefault);
+		if (this.enaBled === undefined) {
+			this.enaBled = super.isEnaBled(this.workBenchEnvironmentService.options?.enaBleSyncByDefault);
 		}
-		return this.enabled;
+		return this.enaBled;
 	}
 
-	protected setEnablement(enabled: boolean) {
-		if (this.enabled !== enabled) {
-			this.enabled = enabled;
-			if (this.workbenchEnvironmentService.options?.settingsSyncOptions) {
-				if (this.workbenchEnvironmentService.options.settingsSyncOptions?.enablementHandler) {
-					this.workbenchEnvironmentService.options.settingsSyncOptions.enablementHandler(this.enabled);
+	protected setEnaBlement(enaBled: Boolean) {
+		if (this.enaBled !== enaBled) {
+			this.enaBled = enaBled;
+			if (this.workBenchEnvironmentService.options?.settingsSyncOptions) {
+				if (this.workBenchEnvironmentService.options.settingsSyncOptions?.enaBlementHandler) {
+					this.workBenchEnvironmentService.options.settingsSyncOptions.enaBlementHandler(this.enaBled);
 				}
 			} else {
-				super.setEnablement(enabled);
+				super.setEnaBlement(enaBled);
 			}
 		}
 	}

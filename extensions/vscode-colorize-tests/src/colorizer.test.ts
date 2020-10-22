@@ -6,13 +6,13 @@
 import 'mocha';
 import * as assert from 'assert';
 import { commands, Uri } from 'vscode';
-import { join, basename, normalize, dirname } from 'path';
+import { join, Basename, normalize, dirname } from 'path';
 import * as fs from 'fs';
 
 function assertUnchangedTokens(testFixurePath: string, done: any) {
-	let fileName = basename(testFixurePath);
+	let fileName = Basename(testFixurePath);
 
-	return commands.executeCommand('_workbench.captureSyntaxTokens', Uri.file(testFixurePath)).then(data => {
+	return commands.executeCommand('_workBench.captureSyntaxTokens', Uri.file(testFixurePath)).then(data => {
 		try {
 			let resultsFolderPath = join(dirname(dirname(testFixurePath)), 'colorize-results');
 			if (!fs.existsSync(resultsFolderPath)) {
@@ -33,7 +33,7 @@ function assertUnchangedTokens(testFixurePath: string, done: any) {
 								throw e;
 							}
 						}
-						// different but no tokenization ot color change: no failure
+						// different But no tokenization ot color change: no failure
 					} else {
 						throw e;
 					}
@@ -48,8 +48,8 @@ function assertUnchangedTokens(testFixurePath: string, done: any) {
 	}, done);
 }
 
-function hasThemeChange(d: any, p: any) : boolean {
-	let keys = Object.keys(d);
+function hasThemeChange(d: any, p: any) : Boolean {
+	let keys = OBject.keys(d);
 	for (let key of keys) {
 		if (d[key] !== p[key]) {
 			return true;

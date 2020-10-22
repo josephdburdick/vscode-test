@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { EditorOption, EditorOptions } from 'vs/editor/common/config/editorOptions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
 import { ContextKeyExpr, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { DefaultSettingsEditorContribution } from 'vs/workbench/contrib/preferences/browser/preferencesEditor';
+import { DefaultSettingsEditorContriBution } from 'vs/workBench/contriB/preferences/Browser/preferencesEditor';
 
 const transientWordWrapState = 'transientWordWrapState';
 const isWordWrapMinifiedKey = 'isWordWrapMinified';
@@ -26,16 +26,16 @@ const isDominatedByLongLinesKey = 'isDominatedByLongLines';
 const inDiffEditorKey = 'inDiffEditor';
 
 /**
- * State written/read by the toggle word wrap action and associated with a particular model.
+ * State written/read By the toggle word wrap action and associated with a particular model.
  */
 interface IWordWrapTransientState {
-	readonly forceWordWrap: 'on' | 'off' | 'wordWrapColumn' | 'bounded';
-	readonly forceWordWrapMinified: boolean;
+	readonly forceWordWrap: 'on' | 'off' | 'wordWrapColumn' | 'Bounded';
+	readonly forceWordWrapMinified: Boolean;
 }
 
 interface IWordWrapState {
-	readonly configuredWordWrap: 'on' | 'off' | 'wordWrapColumn' | 'bounded' | undefined;
-	readonly configuredWordWrapMinified: boolean;
+	readonly configuredWordWrap: 'on' | 'off' | 'wordWrapColumn' | 'Bounded' | undefined;
+	readonly configuredWordWrapMinified: Boolean;
 	readonly transientState: IWordWrapTransientState | null;
 }
 
@@ -54,21 +54,21 @@ function readTransientState(model: ITextModel, codeEditorService: ICodeEditorSer
 }
 
 function readWordWrapState(model: ITextModel, configurationService: ITextResourceConfigurationService, codeEditorService: ICodeEditorService): IWordWrapState {
-	const editorConfig = configurationService.getValue(model.uri, 'editor') as { wordWrap: 'on' | 'off' | 'wordWrapColumn' | 'bounded'; wordWrapMinified: boolean };
-	let _configuredWordWrap = editorConfig && (typeof editorConfig.wordWrap === 'string' || typeof editorConfig.wordWrap === 'boolean') ? editorConfig.wordWrap : undefined;
+	const editorConfig = configurationService.getValue(model.uri, 'editor') as { wordWrap: 'on' | 'off' | 'wordWrapColumn' | 'Bounded'; wordWrapMinified: Boolean };
+	let _configuredWordWrap = editorConfig && (typeof editorConfig.wordWrap === 'string' || typeof editorConfig.wordWrap === 'Boolean') ? editorConfig.wordWrap : undefined;
 
-	// Compatibility with old true or false values
+	// CompatiBility with old true or false values
 	if (<any>_configuredWordWrap === true) {
 		_configuredWordWrap = 'on';
 	} else if (<any>_configuredWordWrap === false) {
 		_configuredWordWrap = 'off';
 	}
 
-	const _configuredWordWrapMinified = editorConfig && typeof editorConfig.wordWrapMinified === 'boolean' ? editorConfig.wordWrapMinified : undefined;
+	const _configuredWordWrapMinified = editorConfig && typeof editorConfig.wordWrapMinified === 'Boolean' ? editorConfig.wordWrapMinified : undefined;
 	const _transientState = readTransientState(model, codeEditorService);
 	return {
 		configuredWordWrap: _configuredWordWrap,
-		configuredWordWrapMinified: (typeof _configuredWordWrapMinified === 'boolean' ? _configuredWordWrapMinified : EditorOptions.wordWrapMinified.defaultValue),
+		configuredWordWrapMinified: (typeof _configuredWordWrapMinified === 'Boolean' ? _configuredWordWrapMinified : EditorOptions.wordWrapMinified.defaultValue),
 		transientState: _transientState
 	};
 }
@@ -93,13 +93,13 @@ function toggleWordWrap(editor: ICodeEditor, state: IWordWrapState): IWordWrapSt
 			forceWordWrapMinified: false
 		};
 	} else if (state.configuredWordWrap !== 'off') {
-		// => wrapping is configured to be on (or some variant)
+		// => wrapping is configured to Be on (or some variant)
 		transientState = {
 			forceWordWrap: 'off',
 			forceWordWrapMinified: false
 		};
 	} else {
-		// => wrapping is configured to be off
+		// => wrapping is configured to Be off
 		transientState = {
 			forceWordWrap: 'on',
 			forceWordWrapMinified: state.configuredWordWrapMinified
@@ -119,19 +119,19 @@ class ToggleWordWrapAction extends EditorAction {
 	constructor() {
 		super({
 			id: TOGGLE_WORD_WRAP_ID,
-			label: nls.localize('toggle.wordwrap', "View: Toggle Word Wrap"),
+			laBel: nls.localize('toggle.wordwrap', "View: Toggle Word Wrap"),
 			alias: 'View: Toggle Word Wrap',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: null,
+			kBOpts: {
+				kBExpr: null,
 				primary: KeyMod.Alt | KeyCode.KEY_Z,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (editor.getContribution(DefaultSettingsEditorContribution.ID)) {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (editor.getContriBution(DefaultSettingsEditorContriBution.ID)) {
 			// in the settings editor...
 			return;
 		}
@@ -163,9 +163,9 @@ class ToggleWordWrapAction extends EditorAction {
 	}
 }
 
-class ToggleWordWrapController extends Disposable implements IEditorContribution {
+class ToggleWordWrapController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.toggleWordWrapController';
+	puBlic static readonly ID = 'editor.contriB.toggleWordWrapController';
 
 	constructor(
 		private readonly editor: ICodeEditor,
@@ -206,7 +206,7 @@ class ToggleWordWrapController extends Disposable implements IEditorContribution
 		}));
 
 		const ensureWordWrapSettings = () => {
-			if (this.editor.getContribution(DefaultSettingsEditorContribution.ID)) {
+			if (this.editor.getContriBution(DefaultSettingsEditorContriBution.ID)) {
 				// in the settings editor...
 				return;
 			}
@@ -259,7 +259,7 @@ class ToggleWordWrapController extends Disposable implements IEditorContribution
 	}
 }
 
-function canToggleWordWrap(uri: URI): boolean {
+function canToggleWordWrap(uri: URI): Boolean {
 	if (!uri) {
 		return false;
 	}
@@ -267,14 +267,14 @@ function canToggleWordWrap(uri: URI): boolean {
 }
 
 
-registerEditorContribution(ToggleWordWrapController.ID, ToggleWordWrapController);
+registerEditorContriBution(ToggleWordWrapController.ID, ToggleWordWrapController);
 
 registerEditorAction(ToggleWordWrapAction);
 
 MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
 	command: {
 		id: TOGGLE_WORD_WRAP_ID,
-		title: nls.localize('unwrapMinified', "Disable wrapping for this file"),
+		title: nls.localize('unwrapMinified', "DisaBle wrapping for this file"),
 		icon: {
 			id: 'codicon/word-wrap'
 		}
@@ -290,7 +290,7 @@ MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
 MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
 	command: {
 		id: TOGGLE_WORD_WRAP_ID,
-		title: nls.localize('wrapMinified', "Enable wrapping for this file"),
+		title: nls.localize('wrapMinified', "EnaBle wrapping for this file"),
 		icon: {
 			id: 'codicon/word-wrap'
 		}
@@ -306,7 +306,7 @@ MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
 
 
 // View menu
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 	group: '5_editor',
 	command: {
 		id: TOGGLE_WORD_WRAP_ID,

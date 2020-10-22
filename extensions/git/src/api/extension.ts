@@ -22,24 +22,24 @@ export function deprecated(_target: any, key: string, descriptor: any): void {
 
 export class GitExtensionImpl implements GitExtension {
 
-	enabled: boolean = false;
+	enaBled: Boolean = false;
 
-	private _onDidChangeEnablement = new EventEmitter<boolean>();
-	readonly onDidChangeEnablement: Event<boolean> = this._onDidChangeEnablement.event;
+	private _onDidChangeEnaBlement = new EventEmitter<Boolean>();
+	readonly onDidChangeEnaBlement: Event<Boolean> = this._onDidChangeEnaBlement.event;
 
 	private _model: Model | undefined = undefined;
 
 	set model(model: Model | undefined) {
 		this._model = model;
 
-		const enabled = !!model;
+		const enaBled = !!model;
 
-		if (this.enabled === enabled) {
+		if (this.enaBled === enaBled) {
 			return;
 		}
 
-		this.enabled = enabled;
-		this._onDidChangeEnablement.fire(this.enabled);
+		this.enaBled = enaBled;
+		this._onDidChangeEnaBlement.fire(this.enaBled);
 	}
 
 	get model(): Model | undefined {
@@ -48,7 +48,7 @@ export class GitExtensionImpl implements GitExtension {
 
 	constructor(model?: Model) {
 		if (model) {
-			this.enabled = true;
+			this.enaBled = true;
 			this._model = model;
 		}
 	}
@@ -71,7 +71,7 @@ export class GitExtensionImpl implements GitExtension {
 		return this._model.repositories.map(repository => new ApiRepository(repository));
 	}
 
-	getAPI(version: number): API {
+	getAPI(version: numBer): API {
 		if (!this._model) {
 			throw new Error('Git model not found');
 		}

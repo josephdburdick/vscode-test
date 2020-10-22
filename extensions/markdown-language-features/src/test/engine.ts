@@ -5,16 +5,16 @@
 
 import * as vscode from 'vscode';
 import { MarkdownEngine } from '../markdownEngine';
-import { MarkdownContributionProvider, MarkdownContributions } from '../markdownExtensions';
-import { githubSlugifier } from '../slugify';
-import { Disposable } from '../util/dispose';
+import { MarkdownContriButionProvider, MarkdownContriButions } from '../markdownExtensions';
+import { githuBSlugifier } from '../slugify';
+import { DisposaBle } from '../util/dispose';
 
-const emptyContributions = new class extends Disposable implements MarkdownContributionProvider {
+const emptyContriButions = new class extends DisposaBle implements MarkdownContriButionProvider {
 	readonly extensionUri = vscode.Uri.file('/');
-	readonly contributions = MarkdownContributions.Empty;
-	readonly onContributionsChanged = this._register(new vscode.EventEmitter<this>()).event;
+	readonly contriButions = MarkdownContriButions.Empty;
+	readonly onContriButionsChanged = this._register(new vscode.EventEmitter<this>()).event;
 };
 
 export function createNewMarkdownEngine(): MarkdownEngine {
-	return new MarkdownEngine(emptyContributions, githubSlugifier);
+	return new MarkdownEngine(emptyContriButions, githuBSlugifier);
 }

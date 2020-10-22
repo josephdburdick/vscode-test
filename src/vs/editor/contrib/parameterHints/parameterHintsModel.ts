@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, createCancelablePromise, Delayer } from 'vs/base/common/async';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { CancelaBlePromise, createCancelaBlePromise, Delayer } from 'vs/Base/common/async';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { ICursorSelectionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { CharacterSet } from 'vs/editor/common/core/characterClassifier';
 import * as modes from 'vs/editor/common/modes';
-import { provideSignatureHelp } from 'vs/editor/contrib/parameterHints/provideSignatureHelp';
+import { provideSignatureHelp } from 'vs/editor/contriB/parameterHints/provideSignatureHelp';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 export interface TriggerContext {
@@ -31,7 +31,7 @@ namespace ParameterHintState {
 	export class Pending {
 		readonly type = Type.Pending;
 		constructor(
-			readonly request: CancelablePromise<modes.SignatureHelpResult | undefined | null>,
+			readonly request: CancelaBlePromise<modes.SignatureHelpResult | undefined | null>,
 			readonly previouslyActiveHints: modes.SignatureHelp | undefined,
 		) { }
 	}
@@ -46,27 +46,27 @@ namespace ParameterHintState {
 	export type State = typeof Default | Pending | Active;
 }
 
-export class ParameterHintsModel extends Disposable {
+export class ParameterHintsModel extends DisposaBle {
 
 	private static readonly DEFAULT_DELAY = 120; // ms
 
 	private readonly _onChangedHints = this._register(new Emitter<modes.SignatureHelp | undefined>());
-	public readonly onChangedHints = this._onChangedHints.event;
+	puBlic readonly onChangedHints = this._onChangedHints.event;
 
 	private readonly editor: ICodeEditor;
 	private triggerOnType = false;
 	private _state: ParameterHintState.State = ParameterHintState.Default;
 	private _pendingTriggers: TriggerContext[] = [];
-	private readonly _lastSignatureHelpResult = this._register(new MutableDisposable<modes.SignatureHelpResult>());
+	private readonly _lastSignatureHelpResult = this._register(new MutaBleDisposaBle<modes.SignatureHelpResult>());
 	private triggerChars = new CharacterSet();
 	private retriggerChars = new CharacterSet();
 
-	private readonly throttledDelayer: Delayer<boolean>;
+	private readonly throttledDelayer: Delayer<Boolean>;
 	private triggerId = 0;
 
 	constructor(
 		editor: ICodeEditor,
-		delay: number = ParameterHintsModel.DEFAULT_DELAY
+		delay: numBer = ParameterHintsModel.DEFAULT_DELAY
 	) {
 		super();
 
@@ -94,7 +94,7 @@ export class ParameterHintsModel extends Disposable {
 		this._state = value;
 	}
 
-	cancel(silent: boolean = false): void {
+	cancel(silent: Boolean = false): void {
 		this.state = ParameterHintState.Default;
 
 		this.throttledDelayer.cancel();
@@ -104,7 +104,7 @@ export class ParameterHintsModel extends Disposable {
 		}
 	}
 
-	trigger(context: TriggerContext, delay?: number): void {
+	trigger(context: TriggerContext, delay?: numBer): void {
 		const model = this.editor.getModel();
 		if (!model || !modes.SignatureHelpProviderRegistry.has(model)) {
 			return;
@@ -119,7 +119,7 @@ export class ParameterHintsModel extends Disposable {
 			.catch(onUnexpectedError);
 	}
 
-	public next(): void {
+	puBlic next(): void {
 		if (this.state.type !== ParameterHintState.Type.Active) {
 			return;
 		}
@@ -138,7 +138,7 @@ export class ParameterHintsModel extends Disposable {
 		this.updateActiveSignature(last && cycle ? 0 : activeSignature + 1);
 	}
 
-	public previous(): void {
+	puBlic previous(): void {
 		if (this.state.type !== ParameterHintState.Type.Active) {
 			return;
 		}
@@ -157,7 +157,7 @@ export class ParameterHintsModel extends Disposable {
 		this.updateActiveSignature(first && cycle ? length - 1 : activeSignature - 1);
 	}
 
-	private updateActiveSignature(activeSignature: number) {
+	private updateActiveSignature(activeSignature: numBer) {
 		if (this.state.type !== ParameterHintState.Type.Active) {
 			return;
 		}
@@ -166,7 +166,7 @@ export class ParameterHintsModel extends Disposable {
 		this._onChangedHints.fire(this.state.hints);
 	}
 
-	private async doTrigger(triggerId: number): Promise<boolean> {
+	private async doTrigger(triggerId: numBer): Promise<Boolean> {
 		const isRetrigger = this.state.type === ParameterHintState.Type.Active || this.state.type === ParameterHintState.Type.Pending;
 		const activeSignatureHelp = this.getLastActiveHints();
 		this.cancel(true);
@@ -193,7 +193,7 @@ export class ParameterHintsModel extends Disposable {
 		const position = this.editor.getPosition();
 
 		this.state = new ParameterHintState.Pending(
-			createCancelablePromise(token => provideSignatureHelp(model, position, triggerContext, token)),
+			createCancelaBlePromise(token => provideSignatureHelp(model, position, triggerContext, token)),
 			activeSignatureHelp);
 
 		try {
@@ -234,7 +234,7 @@ export class ParameterHintsModel extends Disposable {
 		}
 	}
 
-	private get isTriggered(): boolean {
+	private get isTriggered(): Boolean {
 		return this.state.type === ParameterHintState.Type.Active
 			|| this.state.type === ParameterHintState.Type.Pending
 			|| this.throttledDelayer.isTriggered();
@@ -297,7 +297,7 @@ export class ParameterHintsModel extends Disposable {
 	}
 
 	private onEditorConfigurationChange(): void {
-		this.triggerOnType = this.editor.getOption(EditorOption.parameterHints).enabled;
+		this.triggerOnType = this.editor.getOption(EditorOption.parameterHints).enaBled;
 
 		if (!this.triggerOnType) {
 			this.cancel();

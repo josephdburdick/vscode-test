@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IRequestOptions, IRequestContext } from 'vs/Base/parts/request/common/request';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILogService } from 'vs/platform/log/common/log';
 import { RequestChannelClient } from 'vs/platform/request/common/requestIpc';
-import { IRemoteAgentService, IRemoteAgentConnection } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { RequestService } from 'vs/platform/request/browser/requestService';
+import { IRemoteAgentService, IRemoteAgentConnection } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { RequestService } from 'vs/platform/request/Browser/requestService';
 
 export class BrowserRequestService extends RequestService {
 

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
-import 'vs/css!./media/scrollbar';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import * as platform from 'vs/Base/common/platform';
+import 'vs/css!./media/scrollBar';
 import 'vs/css!./media/terminal';
 import 'vs/css!./media/widgets';
 import 'vs/css!./media/xterm';
@@ -13,29 +13,29 @@ import * as nls from 'vs/nls';
 import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { ContextKeyExpr, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight, KeybindingsRegistry, IKeybindings } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight, KeyBindingsRegistry, IKeyBindings } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import * as panel from 'vs/workbench/browser/panel';
-import { getQuickNavigateHandler } from 'vs/workbench/browser/quickaccess';
-import { CATEGORIES, Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
-import { Extensions as ViewContainerExtensions, IViewContainersRegistry, ViewContainerLocation, IViewsRegistry } from 'vs/workbench/common/views';
-import { registerTerminalActions, ClearTerminalAction, CopyTerminalSelectionAction, CreateNewTerminalAction, KillTerminalAction, SelectAllTerminalAction, SelectDefaultShellWindowsTerminalAction, SplitInActiveWorkspaceTerminalAction, SplitTerminalAction, TerminalPasteAction, ToggleTerminalAction, terminalSendSequenceCommand } from 'vs/workbench/contrib/terminal/browser/terminalActions';
-import { TerminalViewPane } from 'vs/workbench/contrib/terminal/browser/terminalView';
-import { KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, TERMINAL_VIEW_ID, TERMINAL_ACTION_CATEGORY, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workbench/contrib/terminal/common/terminal';
-import { registerColors } from 'vs/workbench/contrib/terminal/common/terminalColorRegistry';
-import { setupTerminalCommands } from 'vs/workbench/contrib/terminal/browser/terminalCommands';
-import { setupTerminalMenu } from 'vs/workbench/contrib/terminal/common/terminalMenu';
+import * as panel from 'vs/workBench/Browser/panel';
+import { getQuickNavigateHandler } from 'vs/workBench/Browser/quickaccess';
+import { CATEGORIES, Extensions as ActionExtensions, IWorkBenchActionRegistry } from 'vs/workBench/common/actions';
+import { Extensions as ViewContainerExtensions, IViewContainersRegistry, ViewContainerLocation, IViewsRegistry } from 'vs/workBench/common/views';
+import { registerTerminalActions, ClearTerminalAction, CopyTerminalSelectionAction, CreateNewTerminalAction, KillTerminalAction, SelectAllTerminalAction, SelectDefaultShellWindowsTerminalAction, SplitInActiveWorkspaceTerminalAction, SplitTerminalAction, TerminalPasteAction, ToggleTerminalAction, terminalSendSequenceCommand } from 'vs/workBench/contriB/terminal/Browser/terminalActions';
+import { TerminalViewPane } from 'vs/workBench/contriB/terminal/Browser/terminalView';
+import { KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, TERMINAL_VIEW_ID, TERMINAL_ACTION_CATEGORY, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workBench/contriB/terminal/common/terminal';
+import { registerColors } from 'vs/workBench/contriB/terminal/common/terminalColorRegistry';
+import { setupTerminalCommands } from 'vs/workBench/contriB/terminal/Browser/terminalCommands';
+import { setupTerminalMenu } from 'vs/workBench/contriB/terminal/common/terminalMenu';
 import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { TerminalService } from 'vs/workbench/contrib/terminal/browser/terminalService';
+import { TerminalService } from 'vs/workBench/contriB/terminal/Browser/terminalService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ITerminalService, WindowsShellType } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { BrowserFeatures } from 'vs/base/browser/canIUse';
+import { ITerminalService, WindowsShellType } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { BrowserFeatures } from 'vs/Base/Browser/canIUse';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
+import { ViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
 import { IQuickAccessRegistry, Extensions as QuickAccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
-import { TerminalQuickAccessProvider } from 'vs/workbench/contrib/terminal/browser/terminalQuickAccess';
-import { terminalConfiguration } from 'vs/workbench/contrib/terminal/common/terminalConfiguration';
-import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
+import { TerminalQuickAccessProvider } from 'vs/workBench/contriB/terminal/Browser/terminalQuickAccess';
+import { terminalConfiguration } from 'vs/workBench/contriB/terminal/common/terminalConfiguration';
+import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessiBility/common/accessiBility';
 
 // Register services
 registerSingleton(ITerminalService, TerminalService, true);
@@ -50,9 +50,9 @@ quickAccessRegistry.registerQuickAccessProvider({
 	placeholder: nls.localize('tasksQuickAccessPlaceholder', "Type the name of a terminal to open."),
 	helpEntries: [{ description: nls.localize('tasksQuickAccessHelp', "Show All Opened Terminals"), needsEditor: false }]
 });
-const quickAccessNavigateNextInTerminalPickerId = 'workbench.action.quickOpenNavigateNextInTerminalPicker';
+const quickAccessNavigateNextInTerminalPickerId = 'workBench.action.quickOpenNavigateNextInTerminalPicker';
 CommandsRegistry.registerCommand({ id: quickAccessNavigateNextInTerminalPickerId, handler: getQuickNavigateHandler(quickAccessNavigateNextInTerminalPickerId, true) });
-const quickAccessNavigatePreviousInTerminalPickerId = 'workbench.action.quickOpenNavigatePreviousInTerminalPicker';
+const quickAccessNavigatePreviousInTerminalPickerId = 'workBench.action.quickOpenNavigatePreviousInTerminalPicker';
 CommandsRegistry.registerCommand({ id: quickAccessNavigatePreviousInTerminalPickerId, handler: getQuickNavigateHandler(quickAccessNavigatePreviousInTerminalPickerId, false) });
 
 // Register configurations
@@ -75,62 +75,62 @@ Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry).registerViews
 	id: TERMINAL_VIEW_ID,
 	name: nls.localize('terminal', "Terminal"),
 	containerIcon: 'codicon-terminal',
-	canToggleVisibility: false,
+	canToggleVisiBility: false,
 	canMoveView: true,
 	ctorDescriptor: new SyncDescriptor(TerminalViewPane)
 }], VIEW_CONTAINER);
 
 // Register actions
-const actionRegistry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+const actionRegistry = Registry.as<IWorkBenchActionRegistry>(ActionExtensions.WorkBenchActions);
 registerTerminalActions();
 const category = TERMINAL_ACTION_CATEGORY;
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(KillTerminalAction), 'Terminal: Kill the Active Terminal Instance', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(CreateNewTerminalAction, {
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(KillTerminalAction), 'Terminal: Kill the Active Terminal Instance', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(CreateNewTerminalAction, {
 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_BACKTICK,
 	mac: { primary: KeyMod.WinCtrl | KeyMod.Shift | KeyCode.US_BACKTICK }
 }), 'Terminal: Create New Integrated Terminal', category);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(SelectAllTerminalAction, {
-	// Don't use ctrl+a by default as that would override the common go to start
-	// of prompt shell binding
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(SelectAllTerminalAction, {
+	// Don't use ctrl+a By default as that would override the common go to start
+	// of prompt shell Binding
 	primary: 0,
-	// Technically this doesn't need to be here as it will fall back to this
-	// behavior anyway when handed to xterm.js, having this handled by VS Code
+	// Technically this doesn't need to Be here as it will fall Back to this
+	// Behavior anyway when handed to xterm.js, having this handled By VS Code
 	// makes it easier for users to see how it works though.
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_A }
 }, KEYBINDING_CONTEXT_TERMINAL_FOCUS), 'Terminal: Select All', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleTerminalAction, {
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(ToggleTerminalAction, {
 	primary: KeyMod.CtrlCmd | KeyCode.US_BACKTICK,
 	mac: { primary: KeyMod.WinCtrl | KeyCode.US_BACKTICK }
 }), 'View: Toggle Integrated Terminal', CATEGORIES.View.value);
-// Weight is higher than work workbench contributions so the keybinding remains
+// Weight is higher than work workBench contriButions so the keyBinding remains
 // highest priority when chords are registered afterwards
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ClearTerminalAction, {
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(ClearTerminalAction, {
 	primary: 0,
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_K }
-}, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KeybindingWeight.WorkbenchContrib + 1), 'Terminal: Clear', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(SelectDefaultShellWindowsTerminalAction), 'Terminal: Select Default Shell', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(SplitTerminalAction, {
+}, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KeyBindingWeight.WorkBenchContriB + 1), 'Terminal: Clear', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(SelectDefaultShellWindowsTerminalAction), 'Terminal: Select Default Shell', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(SplitTerminalAction, {
 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_5,
 	mac: {
 		primary: KeyMod.CtrlCmd | KeyCode.US_BACKSLASH,
 		secondary: [KeyMod.WinCtrl | KeyMod.Shift | KeyCode.KEY_5]
 	}
 }, KEYBINDING_CONTEXT_TERMINAL_FOCUS), 'Terminal: Split Terminal', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(SplitInActiveWorkspaceTerminalAction), 'Terminal: Split Terminal (In Active Workspace)', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
+actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(SplitInActiveWorkspaceTerminalAction), 'Terminal: Split Terminal (In Active Workspace)', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
 
-// Commands might be affected by Web restrictons
-if (BrowserFeatures.clipboard.writeText) {
-	actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(CopyTerminalSelectionAction, {
+// Commands might Be affected By WeB restrictons
+if (BrowserFeatures.clipBoard.writeText) {
+	actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(CopyTerminalSelectionAction, {
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_C,
 		win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_C, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_C] },
 		linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_C }
 	}, ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FOCUS)), 'Terminal: Copy Selection', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
 }
 
-function registerSendSequenceKeybinding(text: string, rule: { when?: ContextKeyExpression } & IKeybindings): void {
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+function registerSendSequenceKeyBinding(text: string, rule: { when?: ContextKeyExpression } & IKeyBindings): void {
+	KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 		id: TERMINAL_COMMAND_ID.SEND_SEQUENCE,
-		weight: KeybindingWeight.WorkbenchContrib,
+		weight: KeyBindingWeight.WorkBenchContriB,
 		when: rule.when || KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 		primary: rule.primary,
 		mac: rule.mac,
@@ -144,18 +144,18 @@ function registerSendSequenceKeybinding(text: string, rule: { when?: ContextKeyE
 // The text representation of `^<letter>` is `'A'.charCodeAt(0) + 1`.
 const CTRL_LETTER_OFFSET = 64;
 
-if (BrowserFeatures.clipboard.readText) {
-	actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(TerminalPasteAction, platform.isNative ? {
+if (BrowserFeatures.clipBoard.readText) {
+	actionRegistry.registerWorkBenchAction(SyncActionDescriptor.from(TerminalPasteAction, platform.isNative ? {
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_V,
 		win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_V, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_V] },
 		linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_V }
 	} : undefined, KEYBINDING_CONTEXT_TERMINAL_FOCUS), 'Terminal: Paste into Active Terminal', category, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED);
-	// An extra Windows-only ctrl+v keybinding is used for pwsh that sends ctrl+v directly to the
-	// shell, this gets handled by PSReadLine which properly handles multi-line pastes. This is
-	// disabled in accessibility mode as PowerShell does not run PSReadLine when it detects a screen
+	// An extra Windows-only ctrl+v keyBinding is used for pwsh that sends ctrl+v directly to the
+	// shell, this gets handled By PSReadLine which properly handles multi-line pastes. This is
+	// disaBled in accessiBility mode as PowerShell does not run PSReadLine when it detects a screen
 	// reader.
 	if (platform.isWindows) {
-		registerSendSequenceKeybinding(String.fromCharCode('V'.charCodeAt(0) - CTRL_LETTER_OFFSET), { // ctrl+v
+		registerSendSequenceKeyBinding(String.fromCharCode('V'.charCodeAt(0) - CTRL_LETTER_OFFSET), { // ctrl+v
 			when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, ContextKeyExpr.equals(KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, WindowsShellType.PowerShell), CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
 			primary: KeyMod.CtrlCmd | KeyCode.KEY_V
 		});
@@ -163,33 +163,33 @@ if (BrowserFeatures.clipboard.readText) {
 }
 
 // Delete word left: ctrl+w
-registerSendSequenceKeybinding(String.fromCharCode('W'.charCodeAt(0) - CTRL_LETTER_OFFSET), {
+registerSendSequenceKeyBinding(String.fromCharCode('W'.charCodeAt(0) - CTRL_LETTER_OFFSET), {
 	primary: KeyMod.CtrlCmd | KeyCode.Backspace,
 	mac: { primary: KeyMod.Alt | KeyCode.Backspace }
 });
 if (platform.isWindows) {
 	// Delete word left: ctrl+h
 	// Windows cmd.exe requires ^H to delete full word left
-	registerSendSequenceKeybinding(String.fromCharCode('H'.charCodeAt(0) - CTRL_LETTER_OFFSET), {
+	registerSendSequenceKeyBinding(String.fromCharCode('H'.charCodeAt(0) - CTRL_LETTER_OFFSET), {
 		when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, ContextKeyExpr.equals(KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, WindowsShellType.CommandPrompt)),
 		primary: KeyMod.CtrlCmd | KeyCode.Backspace,
 	});
 }
 // Delete word right: alt+d
-registerSendSequenceKeybinding('\x1bd', {
+registerSendSequenceKeyBinding('\x1Bd', {
 	primary: KeyMod.CtrlCmd | KeyCode.Delete,
 	mac: { primary: KeyMod.Alt | KeyCode.Delete }
 });
 // Delete to line start: ctrl+u
-registerSendSequenceKeybinding('\u0015', {
+registerSendSequenceKeyBinding('\u0015', {
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.Backspace }
 });
 // Move to line start: ctrl+A
-registerSendSequenceKeybinding(String.fromCharCode('A'.charCodeAt(0) - 64), {
+registerSendSequenceKeyBinding(String.fromCharCode('A'.charCodeAt(0) - 64), {
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.LeftArrow }
 });
 // Move to line end: ctrl+E
-registerSendSequenceKeybinding(String.fromCharCode('E'.charCodeAt(0) - 64), {
+registerSendSequenceKeyBinding(String.fromCharCode('E'.charCodeAt(0) - 64), {
 	mac: { primary: KeyMod.CtrlCmd | KeyCode.RightArrow }
 });
 

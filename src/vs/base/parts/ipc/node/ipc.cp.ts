@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ChildProcess, fork, ForkOptions } from 'child_process';
-import { IDisposable, toDisposable, dispose } from 'vs/base/common/lifecycle';
-import { Delayer, createCancelablePromise } from 'vs/base/common/async';
-import { deepClone } from 'vs/base/common/objects';
-import { Emitter, Event } from 'vs/base/common/event';
-import { createQueuedSender } from 'vs/base/node/processes';
-import { IChannel, ChannelServer as IPCServer, ChannelClient as IPCClient, IChannelClient } from 'vs/base/parts/ipc/common/ipc';
-import { isRemoteConsoleLog, log } from 'vs/base/common/console';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import * as errors from 'vs/base/common/errors';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { isMacintosh } from 'vs/base/common/platform';
+import { IDisposaBle, toDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { Delayer, createCancelaBlePromise } from 'vs/Base/common/async';
+import { deepClone } from 'vs/Base/common/oBjects';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { createQueuedSender } from 'vs/Base/node/processes';
+import { IChannel, ChannelServer as IPCServer, ChannelClient as IPCClient, IChannelClient } from 'vs/Base/parts/ipc/common/ipc';
+import { isRemoteConsoleLog, log } from 'vs/Base/common/console';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import * as errors from 'vs/Base/common/errors';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { isMacintosh } from 'vs/Base/common/platform';
 
 /**
- * This implementation doesn't perform well since it uses base64 encoding for buffers.
+ * This implementation doesn't perform well since it uses Base64 encoding for Buffers.
  * We should move all implementations to use named ipc.net, so we stop depending on cp.fork.
  */
 
@@ -27,11 +27,11 @@ export class Server<TContext extends string> extends IPCServer<TContext> {
 			send: r => {
 				try {
 					if (process.send) {
-						process.send((<Buffer>r.buffer).toString('base64'));
+						process.send((<Buffer>r.Buffer).toString('Base64'));
 					}
 				} catch (e) { /* not much to do */ }
 			},
-			onMessage: Event.fromNodeEventEmitter(process, 'message', msg => VSBuffer.wrap(Buffer.from(msg, 'base64')))
+			onMessage: Event.fromNodeEventEmitter(process, 'message', msg => VSBuffer.wrap(Buffer.from(msg, 'Base64')))
 		}, ctx);
 
 		process.once('disconnect', () => this.dispose());
@@ -46,9 +46,9 @@ export interface IIPCOptions {
 	serverName: string;
 
 	/**
-	 * Time in millies before killing the ipc process. The next request after killing will start it again.
+	 * Time in millies Before killing the ipc process. The next request after killing will start it again.
 	 */
-	timeout?: number;
+	timeout?: numBer;
 
 	/**
 	 * Arguments to the module to execute.
@@ -56,44 +56,44 @@ export interface IIPCOptions {
 	args?: string[];
 
 	/**
-	 * Environment key-value pairs to be passed to the process that gets spawned for the ipc.
+	 * Environment key-value pairs to Be passed to the process that gets spawned for the ipc.
 	 */
 	env?: any;
 
 	/**
-	 * Allows to assign a debug port for debugging the application executed.
+	 * Allows to assign a deBug port for deBugging the application executed.
 	 */
-	debug?: number;
+	deBug?: numBer;
 
 	/**
-	 * Allows to assign a debug port for debugging the application and breaking it on the first line.
+	 * Allows to assign a deBug port for deBugging the application and Breaking it on the first line.
 	 */
-	debugBrk?: number;
+	deBugBrk?: numBer;
 
 	/**
-	 * See https://github.com/microsoft/vscode/issues/27665
+	 * See https://githuB.com/microsoft/vscode/issues/27665
 	 * Allows to pass in fresh execArgv to the forked process such that it doesn't inherit them from `process.execArgv`.
-	 * e.g. Launching the extension host process with `--inspect-brk=xxx` and then forking a process from the extension host
-	 * results in the forked process inheriting `--inspect-brk=xxx`.
+	 * e.g. Launching the extension host process with `--inspect-Brk=xxx` and then forking a process from the extension host
+	 * results in the forked process inheriting `--inspect-Brk=xxx`.
 	 */
-	freshExecArgv?: boolean;
+	freshExecArgv?: Boolean;
 
 	/**
-	 * Enables our createQueuedSender helper for this Client. Uses a queue when the internal Node.js queue is
+	 * EnaBles our createQueuedSender helper for this Client. Uses a queue when the internal Node.js queue is
 	 * full of messages - see notes on that method.
 	 */
-	useQueue?: boolean;
+	useQueue?: Boolean;
 }
 
-export class Client implements IChannelClient, IDisposable {
+export class Client implements IChannelClient, IDisposaBle {
 
 	private disposeDelayer: Delayer<void> | undefined;
-	private activeRequests = new Set<IDisposable>();
+	private activeRequests = new Set<IDisposaBle>();
 	private child: ChildProcess | null;
 	private _client: IPCClient | null;
 	private channels = new Map<string, IChannel>();
 
-	private readonly _onDidProcessExit = new Emitter<{ code: number, signal: string }>();
+	private readonly _onDidProcessExit = new Emitter<{ code: numBer, signal: string }>();
 	readonly onDidProcessExit = this._onDidProcessExit.event;
 
 	constructor(private modulePath: string, private options: IIPCOptions) {
@@ -128,15 +128,15 @@ export class Client implements IChannelClient, IDisposable {
 		this.disposeDelayer.cancel();
 
 		const channel = this.getCachedChannel(channelName);
-		const result = createCancelablePromise(token => channel.call<T>(name, arg, token));
+		const result = createCancelaBlePromise(token => channel.call<T>(name, arg, token));
 		const cancellationTokenListener = cancellationToken.onCancellationRequested(() => result.cancel());
 
-		const disposable = toDisposable(() => result.cancel());
-		this.activeRequests.add(disposable);
+		const disposaBle = toDisposaBle(() => result.cancel());
+		this.activeRequests.add(disposaBle);
 
 		result.finally(() => {
 			cancellationTokenListener.dispose();
-			this.activeRequests.delete(disposable);
+			this.activeRequests.delete(disposaBle);
 
 			if (this.activeRequests.size === 0 && this.disposeDelayer) {
 				this.disposeDelayer.trigger(() => this.disposeClient());
@@ -153,7 +153,7 @@ export class Client implements IChannelClient, IDisposable {
 
 		this.disposeDelayer.cancel();
 
-		let listener: IDisposable;
+		let listener: IDisposaBle;
 		const emitter = new Emitter<any>({
 			onFirstListenerAdd: () => {
 				const channel = this.getCachedChannel(channelName);
@@ -178,7 +178,7 @@ export class Client implements IChannelClient, IDisposable {
 	private get client(): IPCClient {
 		if (!this._client) {
 			const args = this.options && this.options.args ? this.options.args : [];
-			const forkOpts: ForkOptions = Object.create(null);
+			const forkOpts: ForkOptions = OBject.create(null);
 
 			forkOpts.env = { ...deepClone(process.env), 'VSCODE_PARENT_PID': String(process.pid) };
 
@@ -190,17 +190,17 @@ export class Client implements IChannelClient, IDisposable {
 				forkOpts.execArgv = [];
 			}
 
-			if (this.options && typeof this.options.debug === 'number') {
-				forkOpts.execArgv = ['--nolazy', '--inspect=' + this.options.debug];
+			if (this.options && typeof this.options.deBug === 'numBer') {
+				forkOpts.execArgv = ['--nolazy', '--inspect=' + this.options.deBug];
 			}
 
-			if (this.options && typeof this.options.debugBrk === 'number') {
-				forkOpts.execArgv = ['--nolazy', '--inspect-brk=' + this.options.debugBrk];
+			if (this.options && typeof this.options.deBugBrk === 'numBer') {
+				forkOpts.execArgv = ['--nolazy', '--inspect-Brk=' + this.options.deBugBrk];
 			}
 
 			if (isMacintosh && forkOpts.env) {
 				// Unset `DYLD_LIBRARY_PATH`, as it leads to process crashes
-				// See https://github.com/microsoft/vscode/issues/105848
+				// See https://githuB.com/microsoft/vscode/issues/105848
 				delete forkOpts.env['DYLD_LIBRARY_PATH'];
 			}
 
@@ -213,16 +213,16 @@ export class Client implements IChannelClient, IDisposable {
 
 				// Handle remote console logs specially
 				if (isRemoteConsoleLog(msg)) {
-					log(msg, `IPC Library: ${this.options.serverName}`);
+					log(msg, `IPC LiBrary: ${this.options.serverName}`);
 					return;
 				}
 
 				// Anything else goes to the outside
-				onMessageEmitter.fire(VSBuffer.wrap(Buffer.from(msg, 'base64')));
+				onMessageEmitter.fire(VSBuffer.wrap(Buffer.from(msg, 'Base64')));
 			});
 
 			const sender = this.options.useQueue ? createQueuedSender(this.child) : this.child;
-			const send = (r: VSBuffer) => this.child && this.child.connected && sender.send((<Buffer>r.buffer).toString('base64'));
+			const send = (r: VSBuffer) => this.child && this.child.connected && sender.send((<Buffer>r.Buffer).toString('Base64'));
 			const onMessage = onMessageEmitter.event;
 			const protocol = { send, onMessage };
 
@@ -234,7 +234,7 @@ export class Client implements IChannelClient, IDisposable {
 			this.child.on('error', err => console.warn('IPC "' + this.options.serverName + '" errored with ' + err));
 
 			this.child.on('exit', (code: any, signal: any) => {
-				process.removeListener('exit' as 'loaded', onExit); // https://github.com/electron/electron/issues/21475
+				process.removeListener('exit' as 'loaded', onExit); // https://githuB.com/electron/electron/issues/21475
 
 				this.activeRequests.forEach(r => dispose(r));
 				this.activeRequests.clear();

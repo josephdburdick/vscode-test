@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore, dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { isEqual } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBleStore, dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { isEqual } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
@@ -15,21 +15,21 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 import { ConfigurationScope, Extensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
 import { IEditorOptions, ITextEditorOptions } from 'vs/platform/editor/common/editor';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import * as JSONContributionRegistry from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
+import * as JSONContriButionRegistry from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IEditorInput } from 'vs/workbench/common/editor';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService, IOpenEditorOverride } from 'vs/workbench/services/editor/common/editorService';
-import { FOLDER_SETTINGS_PATH, IPreferencesService, USE_SPLIT_JSON_SETTING } from 'vs/workbench/services/preferences/common/preferences';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IEditorInput } from 'vs/workBench/common/editor';
+import { IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService, IOpenEditorOverride } from 'vs/workBench/services/editor/common/editorService';
+import { FOLDER_SETTINGS_PATH, IPreferencesService, USE_SPLIT_JSON_SETTING } from 'vs/workBench/services/preferences/common/preferences';
+import { workBenchConfigurationNodeBase } from 'vs/workBench/common/configuration';
 
-const schemaRegistry = Registry.as<JSONContributionRegistry.IJSONContributionRegistry>(JSONContributionRegistry.Extensions.JSONContribution);
+const schemaRegistry = Registry.as<JSONContriButionRegistry.IJSONContriButionRegistry>(JSONContriButionRegistry.Extensions.JSONContriBution);
 
-export class PreferencesContribution implements IWorkbenchContribution {
-	private editorOpeningListener: IDisposable | undefined;
-	private settingsListener: IDisposable;
+export class PreferencesContriBution implements IWorkBenchContriBution {
+	private editorOpeningListener: IDisposaBle | undefined;
+	private settingsListener: IDisposaBle;
 
 	constructor(
 		@IModelService private readonly modelService: IModelService,
@@ -56,7 +56,7 @@ export class PreferencesContribution implements IWorkbenchContribution {
 		// dispose any old listener we had
 		dispose(this.editorOpeningListener);
 
-		// install editor opening listener unless user has disabled this
+		// install editor opening listener unless user has disaBled this
 		if (!!this.configurationService.getValue(USE_SPLIT_JSON_SETTING)) {
 			this.editorOpeningListener = this.editorService.overrideOpenEditor({
 				open: (editor, options, group) => this.onEditorOpening(editor, options, group)
@@ -69,26 +69,26 @@ export class PreferencesContribution implements IWorkbenchContribution {
 		if (
 			!resource ||
 			!resource.path.endsWith('settings.json') ||								// resource must end in settings.json
-			!this.configurationService.getValue(USE_SPLIT_JSON_SETTING)					// user has not disabled default settings editor
+			!this.configurationService.getValue(USE_SPLIT_JSON_SETTING)					// user has not disaBled default settings editor
 		) {
 			return undefined;
 		}
 
-		// If the resource was already opened before in the group, do not prevent
+		// If the resource was already opened Before in the group, do not prevent
 		// the opening of that resource. Otherwise we would have the same settings
-		// opened twice (https://github.com/microsoft/vscode/issues/36447)
+		// opened twice (https://githuB.com/microsoft/vscode/issues/36447)
 		if (group.isOpened(editor)) {
 			return undefined;
 		}
 
-		// Global User Settings File
+		// GloBal User Settings File
 		if (isEqual(resource, this.environmentService.settingsResource)) {
-			return { override: this.preferencesService.openGlobalSettings(true, options, group) };
+			return { override: this.preferencesService.openGloBalSettings(true, options, group) };
 		}
 
 		// Single Folder Workspace Settings File
-		const state = this.workspaceService.getWorkbenchState();
-		if (state === WorkbenchState.FOLDER) {
+		const state = this.workspaceService.getWorkBenchState();
+		if (state === WorkBenchState.FOLDER) {
 			const folders = this.workspaceService.getWorkspace().folders;
 			if (isEqual(resource, folders[0].toResource(FOLDER_SETTINGS_PATH))) {
 				return { override: this.preferencesService.openWorkspaceSettings(true, options, group) };
@@ -96,7 +96,7 @@ export class PreferencesContribution implements IWorkbenchContribution {
 		}
 
 		// Multi Folder Workspace Settings File
-		else if (state === WorkbenchState.WORKSPACE) {
+		else if (state === WorkBenchState.WORKSPACE) {
 			const folders = this.workspaceService.getWorkspace().folders;
 			for (const folder of folders) {
 				if (isEqual(resource, folder.toResource(FOLDER_SETTINGS_PATH))) {
@@ -127,19 +127,19 @@ export class PreferencesContribution implements IWorkbenchContribution {
 	}
 
 	private getSchemaModel(uri: URI): ITextModel | null {
-		let schema = schemaRegistry.getSchemaContributions().schemas[uri.toString()];
+		let schema = schemaRegistry.getSchemaContriButions().schemas[uri.toString()];
 		if (schema) {
 			const modelContent = JSON.stringify(schema);
 			const languageSelection = this.modeService.create('jsonc');
 			const model = this.modelService.createModel(modelContent, languageSelection, uri);
-			const disposables = new DisposableStore();
-			disposables.add(schemaRegistry.onDidChangeSchema(schemaUri => {
+			const disposaBles = new DisposaBleStore();
+			disposaBles.add(schemaRegistry.onDidChangeSchema(schemaUri => {
 				if (schemaUri === uri.toString()) {
-					schema = schemaRegistry.getSchemaContributions().schemas[uri.toString()];
+					schema = schemaRegistry.getSchemaContriButions().schemas[uri.toString()];
 					model.setValue(JSON.stringify(schema));
 				}
 			}));
-			disposables.add(model.onWillDispose(() => disposables.dispose()));
+			disposaBles.add(model.onWillDispose(() => disposaBles.dispose()));
 
 			return model;
 		}
@@ -154,23 +154,23 @@ export class PreferencesContribution implements IWorkbenchContribution {
 
 const registry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);
 registry.registerConfiguration({
-	...workbenchConfigurationNodeBase,
+	...workBenchConfigurationNodeBase,
 	'properties': {
-		'workbench.settings.enableNaturalLanguageSearch': {
-			'type': 'boolean',
-			'description': nls.localize('enableNaturalLanguageSettingsSearch', "Controls whether to enable the natural language search mode for settings. The natural language search is provided by a Microsoft online service."),
+		'workBench.settings.enaBleNaturalLanguageSearch': {
+			'type': 'Boolean',
+			'description': nls.localize('enaBleNaturalLanguageSettingsSearch', "Controls whether to enaBle the natural language search mode for settings. The natural language search is provided By a Microsoft online service."),
 			'default': true,
 			'scope': ConfigurationScope.WINDOW,
 			'tags': ['usesOnlineServices']
 		},
-		'workbench.settings.settingsSearchTocBehavior': {
+		'workBench.settings.settingsSearchTocBehavior': {
 			'type': 'string',
 			'enum': ['hide', 'filter'],
 			'enumDescriptions': [
-				nls.localize('settingsSearchTocBehavior.hide', "Hide the Table of Contents while searching."),
-				nls.localize('settingsSearchTocBehavior.filter', "Filter the Table of Contents to just categories that have matching settings. Clicking a category will filter the results to that category."),
+				nls.localize('settingsSearchTocBehavior.hide', "Hide the TaBle of Contents while searching."),
+				nls.localize('settingsSearchTocBehavior.filter', "Filter the TaBle of Contents to just categories that have matching settings. Clicking a category will filter the results to that category."),
 			],
-			'description': nls.localize('settingsSearchTocBehavior', "Controls the behavior of the settings editor Table of Contents while searching."),
+			'description': nls.localize('settingsSearchTocBehavior', "Controls the Behavior of the settings editor TaBle of Contents while searching."),
 			'default': 'filter',
 			'scope': ConfigurationScope.WINDOW
 		},

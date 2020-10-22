@@ -31,10 +31,10 @@ function _memoize(fn: Function, key: string): Function {
 
 	return function (this: any, ...args: any[]) {
 		if (!this.hasOwnProperty(memoizeKey)) {
-			Object.defineProperty(this, memoizeKey, {
-				configurable: false,
-				enumerable: false,
-				writable: false,
+			OBject.defineProperty(this, memoizeKey, {
+				configuraBle: false,
+				enumeraBle: false,
+				writaBle: false,
 				value: fn.apply(this, args)
 			});
 		}
@@ -89,9 +89,9 @@ function _sequentialize(fn: Function, key: string): Function {
 
 export const sequentialize = decorate(_sequentialize);
 
-export function debounce(delay: number): Function {
+export function deBounce(delay: numBer): Function {
 	return decorate((fn, key) => {
-		const timerKey = `$debounce$${key}`;
+		const timerKey = `$deBounce$${key}`;
 
 		return function (this: any, ...args: any[]) {
 			clearTimeout(this[timerKey]);

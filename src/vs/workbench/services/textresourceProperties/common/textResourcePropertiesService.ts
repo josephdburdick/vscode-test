@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { OperatingSystem, OS } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
+import { OperatingSystem, OS } from 'vs/Base/common/platform';
+import { Schemas } from 'vs/Base/common/network';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 
 export class TextResourcePropertiesService implements ITextResourcePropertiesService {
 
@@ -23,7 +23,7 @@ export class TextResourcePropertiesService implements ITextResourcePropertiesSer
 	constructor(
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IStorageService private readonly storageService: IStorageService
 	) {
 		remoteAgentService.getEnvironment().then(remoteEnv => this.remoteEnvironment = remoteEnv);
@@ -45,7 +45,7 @@ export class TextResourcePropertiesService implements ITextResourcePropertiesSer
 		if (remoteAuthority) {
 			if (resource && resource.scheme !== Schemas.file) {
 				const osCacheKey = `resource.authority.os.${remoteAuthority}`;
-				os = this.remoteEnvironment ? this.remoteEnvironment.os : /* Get it from cache */ this.storageService.getNumber(osCacheKey, StorageScope.WORKSPACE, OS);
+				os = this.remoteEnvironment ? this.remoteEnvironment.os : /* Get it from cache */ this.storageService.getNumBer(osCacheKey, StorageScope.WORKSPACE, OS);
 				this.storageService.store(osCacheKey, os, StorageScope.WORKSPACE);
 			}
 		}

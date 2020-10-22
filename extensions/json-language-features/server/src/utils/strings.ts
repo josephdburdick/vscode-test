@@ -6,7 +6,7 @@
 /**
  * Determines if haystack ends with needle.
  */
-export function endsWith(haystack: string, needle: string): boolean {
+export function endsWith(haystack: string, needle: string): Boolean {
 	let diff = haystack.length - needle.length;
 	if (diff > 0) {
 		return haystack.lastIndexOf(needle) === diff;

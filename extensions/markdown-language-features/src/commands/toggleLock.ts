@@ -7,13 +7,13 @@ import { Command } from '../commandManager';
 import { MarkdownPreviewManager } from '../features/previewManager';
 
 export class ToggleLockCommand implements Command {
-	public readonly id = 'markdown.preview.toggleLock';
+	puBlic readonly id = 'markdown.preview.toggleLock';
 
-	public constructor(
+	puBlic constructor(
 		private readonly previewManager: MarkdownPreviewManager
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		this.previewManager.toggleLock();
 	}
 }

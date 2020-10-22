@@ -3,38 +3,38 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
+import { ITextMateService } from 'vs/workBench/services/textMate/common/textMateService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractTextMateService } from 'vs/workbench/services/textMate/browser/abstractTextMateService';
+import { ABstractTextMateService } from 'vs/workBench/services/textMate/Browser/aBstractTextMateService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
+import { IWorkBenchThemeService } from 'vs/workBench/services/themes/common/workBenchThemeService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { createWebWorker, MonacoWebWorker } from 'vs/editor/common/services/webWorker';
+import { createWeBWorker, MonacoWeBWorker } from 'vs/editor/common/services/weBWorker';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import type { IRawTheme } from 'vscode-textmate';
-import { IValidGrammarDefinition } from 'vs/workbench/services/textMate/common/TMScopeRegistry';
-import { TextMateWorker } from 'vs/workbench/services/textMate/electron-sandbox/textMateWorker';
+import { IValidGrammarDefinition } from 'vs/workBench/services/textMate/common/TMScopeRegistry';
+import { TextMateWorker } from 'vs/workBench/services/textMate/electron-sandBox/textMateWorker';
 import { ITextModel } from 'vs/editor/common/model';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { UriComponents, URI } from 'vs/base/common/uri';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { UriComponents, URI } from 'vs/Base/common/uri';
 import { MultilineTokensBuilder } from 'vs/editor/common/model/tokensStore';
-import { TMGrammarFactory } from 'vs/workbench/services/textMate/common/TMGrammarFactory';
+import { TMGrammarFactory } from 'vs/workBench/services/textMate/common/TMGrammarFactory';
 import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IExtensionResourceLoaderService } from 'vs/workBench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { IProgressService } from 'vs/platform/progress/common/progress';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 const RUN_TEXTMATE_IN_WORKER = false;
 
-class ModelWorkerTextMateTokenizer extends Disposable {
+class ModelWorkerTextMateTokenizer extends DisposaBle {
 
 	private readonly _worker: TextMateWorker;
 	private readonly _model: ITextModel;
-	private _isSynced: boolean;
+	private _isSynced: Boolean;
 	private _pendingChanges: IModelContentChangedEvent[] = [];
 
 	constructor(worker: TextMateWorker, model: ITextModel) {
@@ -63,7 +63,7 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 	private _onDidChangeAttached(): void {
 		if (this._model.isAttachedToEditor()) {
 			if (!this._isSynced) {
-				this._beginSync();
+				this._BeginSync();
 			}
 		} else {
 			if (this._isSynced) {
@@ -72,7 +72,7 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 		}
 	}
 
-	private _beginSync(): void {
+	private _BeginSync(): void {
 		this._isSynced = true;
 		this._worker.acceptNewModel({
 			uri: this._model.uri,
@@ -88,18 +88,18 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 		this._worker.acceptRemovedModel(this._model.uri.toString());
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		super.dispose();
 		this._endSync();
 	}
 
-	private _confirm(versionId: number): void {
+	private _confirm(versionId: numBer): void {
 		while (this._pendingChanges.length > 0 && this._pendingChanges[0].versionId <= versionId) {
 			this._pendingChanges.shift();
 		}
 	}
 
-	public setTokens(versionId: number, rawTokens: ArrayBuffer): void {
+	puBlic setTokens(versionId: numBer, rawTokens: ArrayBuffer): void {
 		this._confirm(versionId);
 		const tokens = MultilineTokensBuilder.deserialize(new Uint8Array(rawTokens));
 
@@ -129,21 +129,21 @@ export class TextMateWorkerHost {
 		return this._extensionResourceLoaderService.readExtensionResource(resource);
 	}
 
-	async setTokens(_resource: UriComponents, versionId: number, tokens: Uint8Array): Promise<void> {
+	async setTokens(_resource: UriComponents, versionId: numBer, tokens: Uint8Array): Promise<void> {
 		const resource = URI.revive(_resource);
 		this.textMateService.setTokens(resource, versionId, tokens);
 	}
 }
 
-export class TextMateService extends AbstractTextMateService {
+export class TextMateService extends ABstractTextMateService {
 
-	private _worker: MonacoWebWorker<TextMateWorker> | null;
+	private _worker: MonacoWeBWorker<TextMateWorker> | null;
 	private _workerProxy: TextMateWorker | null;
 	private _tokenizers: { [uri: string]: ModelWorkerTextMateTokenizer; };
 
 	constructor(
 		@IModeService modeService: IModeService,
-		@IWorkbenchThemeService themeService: IWorkbenchThemeService,
+		@IWorkBenchThemeService themeService: IWorkBenchThemeService,
 		@IExtensionResourceLoaderService extensionResourceLoaderService: IExtensionResourceLoaderService,
 		@INotificationService notificationService: INotificationService,
 		@ILogService logService: ILogService,
@@ -151,12 +151,12 @@ export class TextMateService extends AbstractTextMateService {
 		@IStorageService storageService: IStorageService,
 		@IProgressService progressService: IProgressService,
 		@IModelService private readonly _modelService: IModelService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly _environmentService: IWorkBenchEnvironmentService,
 	) {
 		super(modeService, themeService, extensionResourceLoaderService, notificationService, logService, configurationService, storageService, progressService);
 		this._worker = null;
 		this._workerProxy = null;
-		this._tokenizers = Object.create(null);
+		this._tokenizers = OBject.create(null);
 		this._register(this._modelService.onModelAdded(model => this._onModelAdded(model)));
 		this._register(this._modelService.onModelRemoved(model => this._onModelRemoved(model)));
 		this._modelService.getModels().forEach((model) => this._onModelAdded(model));
@@ -194,12 +194,12 @@ export class TextMateService extends AbstractTextMateService {
 
 		if (RUN_TEXTMATE_IN_WORKER) {
 			const workerHost = new TextMateWorkerHost(this, this._extensionResourceLoaderService);
-			const worker = createWebWorker<TextMateWorker>(this._modelService, {
+			const worker = createWeBWorker<TextMateWorker>(this._modelService, {
 				createData: {
 					grammarDefinitions
 				},
-				label: 'textMateWorker',
-				moduleId: 'vs/workbench/services/textMate/electron-browser/textMateWorker',
+				laBel: 'textMateWorker',
+				moduleId: 'vs/workBench/services/textMate/electron-Browser/textMateWorker',
 				host: workerHost
 			});
 
@@ -230,10 +230,10 @@ export class TextMateService extends AbstractTextMateService {
 	}
 
 	private _killWorker(): void {
-		for (let key of Object.keys(this._tokenizers)) {
+		for (let key of OBject.keys(this._tokenizers)) {
 			this._tokenizers[key].dispose();
 		}
-		this._tokenizers = Object.create(null);
+		this._tokenizers = OBject.create(null);
 
 		if (this._worker) {
 			this._worker.dispose();
@@ -242,7 +242,7 @@ export class TextMateService extends AbstractTextMateService {
 		this._workerProxy = null;
 	}
 
-	setTokens(resource: URI, versionId: number, tokens: ArrayBuffer): void {
+	setTokens(resource: URI, versionId: numBer, tokens: ArrayBuffer): void {
 		const key = resource.toString();
 		if (!this._tokenizers[key]) {
 			return;

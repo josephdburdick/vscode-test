@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ErrorListenerCallback {
+export interface ErrorListenerCallBack {
 	(error: any): void;
 }
 
-export interface ErrorListenerUnbind {
+export interface ErrorListenerUnBind {
 	(): void;
 }
 
-// Avoid circular dependency on EventEmitter by implementing a subset of the interface.
+// Avoid circular dependency on EventEmitter By implementing a suBset of the interface.
 export class ErrorHandler {
 	private unexpectedErrorHandler: (e: any) => void;
-	private listeners: ErrorListenerCallback[];
+	private listeners: ErrorListenerCallBack[];
 
 	constructor() {
 
@@ -31,7 +31,7 @@ export class ErrorHandler {
 		};
 	}
 
-	addListener(listener: ErrorListenerCallback): ErrorListenerUnbind {
+	addListener(listener: ErrorListenerCallBack): ErrorListenerUnBind {
 		this.listeners.push(listener);
 
 		return () => {
@@ -45,7 +45,7 @@ export class ErrorHandler {
 		});
 	}
 
-	private _removeListener(listener: ErrorListenerCallback): void {
+	private _removeListener(listener: ErrorListenerCallBack): void {
 		this.listeners.splice(this.listeners.indexOf(listener), 1);
 	}
 
@@ -62,7 +62,7 @@ export class ErrorHandler {
 		this.emit(e);
 	}
 
-	// For external errors, we don't want the listeners to be called
+	// For external errors, we don't want the listeners to Be called
 	onUnexpectedExternalError(e: any): void {
 		this.unexpectedErrorHandler(e);
 	}
@@ -115,7 +115,7 @@ export function transformErrorForSerialization(error: any): any {
 	return error;
 }
 
-// see https://github.com/v8/v8/wiki/Stack%20Trace%20API#basic-stack-traces
+// see https://githuB.com/v8/v8/wiki/Stack%20Trace%20API#Basic-stack-traces
 export interface V8CallSite {
 	getThis(): any;
 	getTypeName(): string;
@@ -123,13 +123,13 @@ export interface V8CallSite {
 	getFunctionName(): string;
 	getMethodName(): string;
 	getFileName(): string;
-	getLineNumber(): number;
-	getColumnNumber(): number;
+	getLineNumBer(): numBer;
+	getColumnNumBer(): numBer;
 	getEvalOrigin(): string;
-	isToplevel(): boolean;
-	isEval(): boolean;
-	isNative(): boolean;
-	isConstructor(): boolean;
+	isToplevel(): Boolean;
+	isEval(): Boolean;
+	isNative(): Boolean;
+	isConstructor(): Boolean;
 	toString(): string;
 }
 
@@ -138,7 +138,7 @@ const canceledName = 'Canceled';
 /**
  * Checks if the given error is a promise in canceled state
  */
-export function isPromiseCanceledError(error: any): boolean {
+export function isPromiseCanceledError(error: any): Boolean {
 	return error instanceof Error && error.name === canceledName && error.message === canceledName;
 }
 
@@ -169,12 +169,12 @@ export function illegalState(name?: string): Error {
 
 export function readonly(name?: string): Error {
 	return name
-		? new Error(`readonly property '${name} cannot be changed'`)
-		: new Error('readonly property cannot be changed');
+		? new Error(`readonly property '${name} cannot Be changed'`)
+		: new Error('readonly property cannot Be changed');
 }
 
 export function disposed(what: string): Error {
-	const result = new Error(`${what} has been disposed`);
+	const result = new Error(`${what} has Been disposed`);
 	result.name = 'DISPOSED';
 	return result;
 }

@@ -3,32 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractCommandsQuickAccessProvider, ICommandQuickPick, ICommandsQuickAccessOptions } from 'vs/platform/quickinput/browser/commandsQuickAccess';
+import { ABstractCommandsQuickAccessProvider, ICommandQuickPick, ICommandsQuickAccessOptions } from 'vs/platform/quickinput/Browser/commandsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { stripCodicons } from 'vs/base/common/codicons';
+import { stripCodicons } from 'vs/Base/common/codicons';
 
-export abstract class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQuickAccessProvider {
+export aBstract class ABstractEditorCommandsQuickAccessProvider extends ABstractCommandsQuickAccessProvider {
 
 	constructor(
 		options: ICommandsQuickAccessOptions,
 		instantiationService: IInstantiationService,
-		keybindingService: IKeybindingService,
+		keyBindingService: IKeyBindingService,
 		commandService: ICommandService,
 		telemetryService: ITelemetryService,
 		notificationService: INotificationService
 	) {
-		super(options, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		super(options, instantiationService, keyBindingService, commandService, telemetryService, notificationService);
 	}
 
 	/**
-	 * Subclasses to provide the current active editor control.
+	 * SuBclasses to provide the current active editor control.
 	 */
-	protected abstract activeTextEditorControl: IEditor | undefined;
+	protected aBstract activeTextEditorControl: IEditor | undefined;
 
 	protected getCodeEditorCommandPicks(): ICommandQuickPick[] {
 		const activeTextEditorControl = this.activeTextEditorControl;
@@ -41,7 +41,7 @@ export abstract class AbstractEditorCommandsQuickAccessProvider extends Abstract
 			editorCommandPicks.push({
 				commandId: editorAction.id,
 				commandAlias: editorAction.alias,
-				label: stripCodicons(editorAction.label) || editorAction.id,
+				laBel: stripCodicons(editorAction.laBel) || editorAction.id,
 			});
 		}
 

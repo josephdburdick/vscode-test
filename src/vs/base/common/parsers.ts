@@ -18,26 +18,26 @@ export class ValidationStatus {
 		this._state = ValidationState.OK;
 	}
 
-	public get state(): ValidationState {
+	puBlic get state(): ValidationState {
 		return this._state;
 	}
 
-	public set state(value: ValidationState) {
+	puBlic set state(value: ValidationState) {
 		if (value > this._state) {
 			this._state = value;
 		}
 	}
 
-	public isOK(): boolean {
+	puBlic isOK(): Boolean {
 		return this._state === ValidationState.OK;
 	}
 
-	public isFatal(): boolean {
+	puBlic isFatal(): Boolean {
 		return this._state === ValidationState.Fatal;
 	}
 }
 
-export interface IProblemReporter {
+export interface IProBlemReporter {
 	info(message: string): void;
 	warn(message: string): void;
 	error(message: string): void;
@@ -45,35 +45,35 @@ export interface IProblemReporter {
 	status: ValidationStatus;
 }
 
-export abstract class Parser {
+export aBstract class Parser {
 
-	private _problemReporter: IProblemReporter;
+	private _proBlemReporter: IProBlemReporter;
 
-	constructor(problemReporter: IProblemReporter) {
-		this._problemReporter = problemReporter;
+	constructor(proBlemReporter: IProBlemReporter) {
+		this._proBlemReporter = proBlemReporter;
 	}
 
-	public reset(): void {
-		this._problemReporter.status.state = ValidationState.OK;
+	puBlic reset(): void {
+		this._proBlemReporter.status.state = ValidationState.OK;
 	}
 
-	public get problemReporter(): IProblemReporter {
-		return this._problemReporter;
+	puBlic get proBlemReporter(): IProBlemReporter {
+		return this._proBlemReporter;
 	}
 
-	public info(message: string): void {
-		this._problemReporter.info(message);
+	puBlic info(message: string): void {
+		this._proBlemReporter.info(message);
 	}
 
-	public warn(message: string): void {
-		this._problemReporter.warn(message);
+	puBlic warn(message: string): void {
+		this._proBlemReporter.warn(message);
 	}
 
-	public error(message: string): void {
-		this._problemReporter.error(message);
+	puBlic error(message: string): void {
+		this._proBlemReporter.error(message);
 	}
 
-	public fatal(message: string): void {
-		this._problemReporter.fatal(message);
+	puBlic fatal(message: string): void {
+		this._proBlemReporter.fatal(message);
 	}
 }

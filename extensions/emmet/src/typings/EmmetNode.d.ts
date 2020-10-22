@@ -12,8 +12,8 @@ declare module 'EmmetNode' {
         type: string
         parent: Node
         firstChild: Node
-        nextSibling: Node
-        previousSibling: Node
+        nextSiBling: Node
+        previousSiBling: Node
         children: Node[]
     }
 
@@ -25,8 +25,8 @@ declare module 'EmmetNode' {
     }
 
     export interface CssToken extends Token {
-        size: number
-        item(number: number): any
+        size: numBer
+        item(numBer: numBer): any
         type: string
     }
 
@@ -34,7 +34,7 @@ declare module 'EmmetNode' {
         value: string
     }
 
-    export interface Attribute extends Token {
+    export interface AttriBute extends Token {
         name: Token
         value: Token
     }
@@ -45,18 +45,18 @@ declare module 'EmmetNode' {
         close: Token
         parent: HtmlNode
         firstChild: HtmlNode
-        nextSibling: HtmlNode
-        previousSibling: HtmlNode
+        nextSiBling: HtmlNode
+        previousSiBling: HtmlNode
         children: HtmlNode[]
-        attributes: Attribute[]
+        attriButes: AttriBute[]
     }
 
     export interface CssNode extends Node {
         name: string
         parent: CssNode
         firstChild: CssNode
-        nextSibling: CssNode
-        previousSibling: CssNode
+        nextSiBling: CssNode
+        previousSiBling: CssNode
         children: CssNode[]
     }
 
@@ -80,13 +80,13 @@ declare module 'EmmetNode' {
     }
 
     export interface BufferStream {
-        peek(): number
-        next(): number
-        backUp(n: number): number
+        peek(): numBer
+        next(): numBer
+        BackUp(n: numBer): numBer
         current(): string
-        substring(from: Position, to: Position): string
-        eat(match: any): boolean
-        eatWhile(match: any): boolean
+        suBstring(from: Position, to: Position): string
+        eat(match: any): Boolean
+        eatWhile(match: any): Boolean
     }
 }
 

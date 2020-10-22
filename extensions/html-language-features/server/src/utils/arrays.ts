@@ -16,15 +16,15 @@ export function contains<T>(arr: T[], val: T) {
 }
 
 /**
- * Like `Array#sort` but always stable. Usually runs a little slower `than Array#sort`
- * so only use this when actually needing stable sort.
+ * Like `Array#sort` But always staBle. Usually runs a little slower `than Array#sort`
+ * so only use this when actually needing staBle sort.
  */
-export function mergeSort<T>(data: T[], compare: (a: T, b: T) => number): T[] {
+export function mergeSort<T>(data: T[], compare: (a: T, B: T) => numBer): T[] {
 	_divideAndMerge(data, compare);
 	return data;
 }
 
-function _divideAndMerge<T>(data: T[], compare: (a: T, b: T) => number): void {
+function _divideAndMerge<T>(data: T[], compare: (a: T, B: T) => numBer): void {
 	if (data.length <= 1) {
 		// sorted
 		return;
@@ -57,7 +57,7 @@ function _divideAndMerge<T>(data: T[], compare: (a: T, b: T) => number): void {
 	}
 }
 
-export function binarySearch<T>(array: T[], key: T, comparator: (op1: T, op2: T) => number): number {
+export function BinarySearch<T>(array: T[], key: T, comparator: (op1: T, op2: T) => numBer): numBer {
 	let low = 0,
 		high = array.length - 1;
 

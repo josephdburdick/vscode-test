@@ -3,40 +3,40 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { basename } from 'vs/base/common/path';
-import { INotebookExclusiveDocumentFilter, isDocumentExcludePattern, NotebookEditorPriority, TransientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import * as gloB from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri';
+import { Basename } from 'vs/Base/common/path';
+import { INoteBookExclusiveDocumentFilter, isDocumentExcludePattern, NoteBookEditorPriority, TransientOptions } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
-export type NotebookSelector = string | glob.IRelativePattern | INotebookExclusiveDocumentFilter;
+export type NoteBookSelector = string | gloB.IRelativePattern | INoteBookExclusiveDocumentFilter;
 
-export interface NotebookEditorDescriptor {
+export interface NoteBookEditorDescriptor {
 	readonly id: string;
 	readonly displayName: string;
 	readonly selectors: readonly { filenamePattern?: string; excludeFileNamePattern?: string; }[];
-	readonly priority: NotebookEditorPriority;
+	readonly priority: NoteBookEditorPriority;
 	readonly providerExtensionId?: string;
 	readonly providerDescription?: string;
 	readonly providerDisplayName: string;
 	readonly providerExtensionLocation: URI;
-	readonly dynamicContribution: boolean;
-	readonly exclusive: boolean;
+	readonly dynamicContriBution: Boolean;
+	readonly exclusive: Boolean;
 }
 
-export class NotebookProviderInfo {
+export class NoteBookProviderInfo {
 
 	readonly id: string;
 	readonly displayName: string;
 
-	readonly priority: NotebookEditorPriority;
+	readonly priority: NoteBookEditorPriority;
 	// it's optional as the memento might not have it
 	readonly providerExtensionId?: string;
 	readonly providerDescription?: string;
 	readonly providerDisplayName: string;
 	readonly providerExtensionLocation: URI;
-	readonly dynamicContribution: boolean;
-	readonly exclusive: boolean;
-	private _selectors: NotebookSelector[];
+	readonly dynamicContriBution: Boolean;
+	readonly exclusive: Boolean;
+	private _selectors: NoteBookSelector[];
 	get selectors() {
 		return this._selectors;
 	}
@@ -45,7 +45,7 @@ export class NotebookProviderInfo {
 		return this._options;
 	}
 
-	constructor(descriptor: NotebookEditorDescriptor) {
+	constructor(descriptor: NoteBookEditorDescriptor) {
 		this.id = descriptor.id;
 		this.displayName = descriptor.displayName;
 		this._selectors = descriptor.selectors?.map(selector => ({
@@ -57,7 +57,7 @@ export class NotebookProviderInfo {
 		this.providerDescription = descriptor.providerDescription;
 		this.providerDisplayName = descriptor.providerDisplayName;
 		this.providerExtensionLocation = descriptor.providerExtensionLocation;
-		this.dynamicContribution = descriptor.dynamicContribution;
+		this.dynamicContriBution = descriptor.dynamicContriBution;
 		this.exclusive = descriptor.exclusive;
 		this._options = {
 			transientMetadata: {},
@@ -65,7 +65,7 @@ export class NotebookProviderInfo {
 		};
 	}
 
-	update(args: { selectors?: NotebookSelector[]; options?: TransientOptions }) {
+	update(args: { selectors?: NoteBookSelector[]; options?: TransientOptions }) {
 		if (args.selectors) {
 			this._selectors = args.selectors;
 		}
@@ -75,20 +75,20 @@ export class NotebookProviderInfo {
 		}
 	}
 
-	matches(resource: URI): boolean {
-		return this.selectors?.some(selector => NotebookProviderInfo.selectorMatches(selector, resource));
+	matches(resource: URI): Boolean {
+		return this.selectors?.some(selector => NoteBookProviderInfo.selectorMatches(selector, resource));
 	}
 
-	static selectorMatches(selector: NotebookSelector, resource: URI): boolean {
+	static selectorMatches(selector: NoteBookSelector, resource: URI): Boolean {
 		if (typeof selector === 'string') {
 			// filenamePattern
-			if (glob.match(selector.toLowerCase(), basename(resource.fsPath).toLowerCase())) {
+			if (gloB.match(selector.toLowerCase(), Basename(resource.fsPath).toLowerCase())) {
 				return true;
 			}
 		}
 
-		if (glob.isRelativePattern(selector)) {
-			if (glob.match(selector, basename(resource.fsPath).toLowerCase())) {
+		if (gloB.isRelativePattern(selector)) {
+			if (gloB.match(selector, Basename(resource.fsPath).toLowerCase())) {
 				return true;
 			}
 		}
@@ -100,9 +100,9 @@ export class NotebookProviderInfo {
 		let filenamePattern = selector.include;
 		let excludeFilenamePattern = selector.exclude;
 
-		if (glob.match(filenamePattern, basename(resource.fsPath).toLowerCase())) {
+		if (gloB.match(filenamePattern, Basename(resource.fsPath).toLowerCase())) {
 			if (excludeFilenamePattern) {
-				if (glob.match(excludeFilenamePattern, basename(resource.fsPath).toLowerCase())) {
+				if (gloB.match(excludeFilenamePattern, Basename(resource.fsPath).toLowerCase())) {
 					return false;
 				}
 			}

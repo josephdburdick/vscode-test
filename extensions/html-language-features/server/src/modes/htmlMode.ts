@@ -40,8 +40,8 @@ export function getHTMLMode(htmlLanguageService: HTMLLanguageService, workspace:
 		async findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
 			return htmlLanguageService.findDocumentLinks(document, documentContext);
 		},
-		async findDocumentSymbols(document: TextDocument) {
-			return htmlLanguageService.findDocumentSymbols(document, htmlDocuments.get(document));
+		async findDocumentSymBols(document: TextDocument) {
+			return htmlLanguageService.findDocumentSymBols(document, htmlDocuments.get(document));
 		},
 		async format(document: TextDocument, range: Range, formatParams: FormattingOptions, settings = workspace.settings) {
 			let formatSettings: HTMLFormatConfiguration = settings && settings.html && settings.html.format;

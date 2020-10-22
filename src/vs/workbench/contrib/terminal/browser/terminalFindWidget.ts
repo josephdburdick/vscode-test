@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SimpleFindWidget } from 'vs/workbench/contrib/codeEditor/browser/find/simpleFindWidget';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED } from 'vs/workbench/contrib/terminal/common/terminal';
+import { SimpleFindWidget } from 'vs/workBench/contriB/codeEditor/Browser/find/simpleFindWidget';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED } from 'vs/workBench/contriB/terminal/common/terminal';
 import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { FindReplaceState } from 'vs/editor/contriB/find/findState';
+import { ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
 
 export class TerminalFindWidget extends SimpleFindWidget {
-	protected _findInputFocused: IContextKey<boolean>;
-	protected _findWidgetFocused: IContextKey<boolean>;
+	protected _findInputFocused: IContextKey<Boolean>;
+	protected _findWidgetFocused: IContextKey<Boolean>;
 
 	constructor(
 		findState: FindReplaceState,
@@ -24,11 +24,11 @@ export class TerminalFindWidget extends SimpleFindWidget {
 		this._register(findState.onFindReplaceStateChange(() => {
 			this.show();
 		}));
-		this._findInputFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED.bindTo(this._contextKeyService);
-		this._findWidgetFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED.bindTo(this._contextKeyService);
+		this._findInputFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED.BindTo(this._contextKeyService);
+		this._findWidgetFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED.BindTo(this._contextKeyService);
 	}
 
-	public find(previous: boolean) {
+	puBlic find(previous: Boolean) {
 		const instance = this._terminalService.getActiveInstance();
 		if (instance !== null) {
 			if (previous) {
@@ -39,7 +39,7 @@ export class TerminalFindWidget extends SimpleFindWidget {
 		}
 	}
 
-	public hide() {
+	puBlic hide() {
 		super.hide();
 		const instance = this._terminalService.getActiveInstance();
 		if (instance) {
@@ -80,7 +80,7 @@ export class TerminalFindWidget extends SimpleFindWidget {
 		this._findInputFocused.reset();
 	}
 
-	public findFirst() {
+	puBlic findFirst() {
 		const instance = this._terminalService.getActiveInstance();
 		if (instance) {
 			if (instance.hasSelection()) {

@@ -5,10 +5,10 @@
 
 import * as assert from 'assert';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as uuid from 'vs/base/common/uuid';
-import * as pfs from 'vs/base/node/pfs';
-import { realcaseSync, realpath, realpathSync } from 'vs/base/node/extpath';
+import * as path from 'vs/Base/common/path';
+import * as uuid from 'vs/Base/common/uuid';
+import * as pfs from 'vs/Base/node/pfs';
+import { realcaseSync, realpath, realpathSync } from 'vs/Base/node/extpath';
 
 suite('Extpath', () => {
 
@@ -24,7 +24,7 @@ suite('Extpath', () => {
 			const upper = newDir.toUpperCase();
 			const real = realcaseSync(upper);
 
-			if (real) { // can be null in case of permission errors
+			if (real) { // can Be null in case of permission errors
 				assert.notEqual(real, upper);
 				assert.equal(real.toUpperCase(), upper);
 				assert.equal(real, newDir);

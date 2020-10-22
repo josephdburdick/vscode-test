@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IThemeService, IColorTheme, IFileIconTheme, ITokenStyle } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 export class TestColorTheme implements IColorTheme {
 
-	public readonly label = 'test';
+	puBlic readonly laBel = 'test';
 
-	constructor(private colors: { [id: string]: string; } = {}, public type = ColorScheme.DARK) {
+	constructor(private colors: { [id: string]: string; } = {}, puBlic type = ColorScheme.DARK) {
 	}
 
-	getColor(color: string, useDefault?: boolean): Color | undefined {
+	getColor(color: string, useDefault?: Boolean): Color | undefined {
 		let value = this.colors[color];
 		if (value) {
 			return Color.fromHex(value);
@@ -23,7 +23,7 @@ export class TestColorTheme implements IColorTheme {
 		return undefined;
 	}
 
-	defines(color: string): boolean {
+	defines(color: string): Boolean {
 		throw new Error('Method not implemented.');
 	}
 
@@ -70,7 +70,7 @@ export class TestThemeService implements IThemeService {
 		this._onThemeChange.fire(this._colorTheme);
 	}
 
-	public get onDidColorThemeChange(): Event<IColorTheme> {
+	puBlic get onDidColorThemeChange(): Event<IColorTheme> {
 		return this._onThemeChange.event;
 	}
 
@@ -78,7 +78,7 @@ export class TestThemeService implements IThemeService {
 		return this._fileIconTheme;
 	}
 
-	public get onDidFileIconThemeChange(): Event<IFileIconTheme> {
+	puBlic get onDidFileIconThemeChange(): Event<IFileIconTheme> {
 		return this._onFileIconThemeChange.event;
 	}
 }

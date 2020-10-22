@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 
 class CursorState {
 	readonly selections: readonly Selection[];
@@ -20,7 +20,7 @@ class CursorState {
 		this.selections = selections;
 	}
 
-	public equals(other: CursorState): boolean {
+	puBlic equals(other: CursorState): Boolean {
 		const thisLen = this.selections.length;
 		const otherLen = other.selections.length;
 		if (thisLen !== otherLen) {
@@ -37,22 +37,22 @@ class CursorState {
 
 class StackElement {
 	constructor(
-		public readonly cursorState: CursorState,
-		public readonly scrollTop: number,
-		public readonly scrollLeft: number
+		puBlic readonly cursorState: CursorState,
+		puBlic readonly scrollTop: numBer,
+		puBlic readonly scrollLeft: numBer
 	) { }
 }
 
-export class CursorUndoRedoController extends Disposable implements IEditorContribution {
+export class CursorUndoRedoController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.cursorUndoRedoController';
+	puBlic static readonly ID = 'editor.contriB.cursorUndoRedoController';
 
-	public static get(editor: ICodeEditor): CursorUndoRedoController {
-		return editor.getContribution<CursorUndoRedoController>(CursorUndoRedoController.ID);
+	puBlic static get(editor: ICodeEditor): CursorUndoRedoController {
+		return editor.getContriBution<CursorUndoRedoController>(CursorUndoRedoController.ID);
 	}
 
 	private readonly _editor: ICodeEditor;
-	private _isCursorUndoRedo: boolean;
+	private _isCursorUndoRedo: Boolean;
 
 	private _undoStack: StackElement[];
 	private _redoStack: StackElement[];
@@ -89,14 +89,14 @@ export class CursorUndoRedoController extends Disposable implements IEditorContr
 				this._undoStack.push(new StackElement(prevState, editor.getScrollTop(), editor.getScrollLeft()));
 				this._redoStack = [];
 				if (this._undoStack.length > 50) {
-					// keep the cursor undo stack bounded
+					// keep the cursor undo stack Bounded
 					this._undoStack.shift();
 				}
 			}
 		}));
 	}
 
-	public cursorUndo(): void {
+	puBlic cursorUndo(): void {
 		if (!this._editor.hasModel() || this._undoStack.length === 0) {
 			return;
 		}
@@ -105,7 +105,7 @@ export class CursorUndoRedoController extends Disposable implements IEditorContr
 		this._applyState(this._undoStack.pop()!);
 	}
 
-	public cursorRedo(): void {
+	puBlic cursorRedo(): void {
 		if (!this._editor.hasModel() || this._redoStack.length === 0) {
 			return;
 		}
@@ -129,18 +129,18 @@ export class CursorUndo extends EditorAction {
 	constructor() {
 		super({
 			id: 'cursorUndo',
-			label: nls.localize('cursor.undo', "Cursor Undo"),
+			laBel: nls.localize('cursor.undo', "Cursor Undo"),
 			alias: 'Cursor Undo',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: KeyMod.CtrlCmd | KeyCode.KEY_U,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
 		CursorUndoRedoController.get(editor).cursorUndo();
 	}
 }
@@ -149,17 +149,17 @@ export class CursorRedo extends EditorAction {
 	constructor() {
 		super({
 			id: 'cursorRedo',
-			label: nls.localize('cursor.redo', "Cursor Redo"),
+			laBel: nls.localize('cursor.redo', "Cursor Redo"),
 			alias: 'Cursor Redo',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
 		CursorUndoRedoController.get(editor).cursorRedo();
 	}
 }
 
-registerEditorContribution(CursorUndoRedoController.ID, CursorUndoRedoController);
+registerEditorContriBution(CursorUndoRedoController.ID, CursorUndoRedoController);
 registerEditorAction(CursorUndo);
 registerEditorAction(CursorRedo);

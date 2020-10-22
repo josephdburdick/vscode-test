@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { isLinux, isWindows } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { join } from 'vs/base/common/path';
-import { validateFileName } from 'vs/workbench/contrib/files/browser/fileActions';
-import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { toResource } from 'vs/base/test/common/utils';
-import { TestFileService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { isLinux, isWindows } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import { join } from 'vs/Base/common/path';
+import { validateFileName } from 'vs/workBench/contriB/files/Browser/fileActions';
+import { ExplorerItem } from 'vs/workBench/contriB/files/common/explorerModel';
+import { toResource } from 'vs/Base/test/common/utils';
+import { TestFileService } from 'vs/workBench/test/Browser/workBenchTestServices';
 
 const fileService = new TestFileService();
-function createStat(this: any, path: string, name: string, isFolder: boolean, hasChildren: boolean, size: number, mtime: number): ExplorerItem {
+function createStat(this: any, path: string, name: string, isFolder: Boolean, hasChildren: Boolean, size: numBer, mtime: numBer): ExplorerItem {
 	return new ExplorerItem(toResource.call(this, path), fileService, undefined, isFolder, false, name, mtime);
 }
 
@@ -37,7 +37,7 @@ suite('Files - View Model', function () {
 		const s = createStat.call(this, '/path/to/stat', 'sName', true, false, 8096, d);
 
 		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child4 = createStat.call(this, '/otherpath/to/other/otherbar.html', 'otherbar.html', false, false, 8096, d);
+		const child4 = createStat.call(this, '/otherpath/to/other/otherBar.html', 'otherBar.html', false, false, 8096, d);
 
 		s.addChild(child1);
 
@@ -72,7 +72,7 @@ suite('Files - View Model', function () {
 		// Assert the new path of the moved element
 		assert.strictEqual(s4.resource.fsPath, toResource.call(this, '/' + s4.name).fsPath);
 
-		// Move a subtree with children
+		// Move a suBtree with children
 		const leaf = createStat.call(this, '/leaf', 'leaf', true, false, 8096, d);
 		const leafC1 = createStat.call(this, '/leaf/folder', 'folder', true, false, 8096, d);
 		const leafCC2 = createStat.call(this, '/leaf/folder/index.html', 'index.html', true, false, 8096, d);
@@ -126,7 +126,7 @@ suite('Files - View Model', function () {
 		const s4Upper = createStat.call(this, '/path/to/STAT', 'stat', true, false, 8096, d);
 
 		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child2 = createStat.call(this, '/path/to/stat/foo/bar.html', 'bar.html', false, false, 8096, d);
+		const child2 = createStat.call(this, '/path/to/stat/foo/Bar.html', 'Bar.html', false, false, 8096, d);
 
 		s1.addChild(s2);
 		s2.addChild(s3);
@@ -146,7 +146,7 @@ suite('Files - View Model', function () {
 			assert.strictEqual(s1.find(s4Upper.resource), s4);
 		}
 
-		assert.strictEqual(s1.find(toResource.call(this, 'foobar')), null);
+		assert.strictEqual(s1.find(toResource.call(this, 'fooBar')), null);
 
 		assert.strictEqual(s1.find(toResource.call(this, '/')), s1);
 	});
@@ -160,7 +160,7 @@ suite('Files - View Model', function () {
 		const s4 = createStat.call(this, '/path/to/stat', 'stat', true, false, 8096, d);
 
 		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child2 = createStat.call(this, '/path/to/stat/foo/bar.html', 'bar.html', false, false, 8096, d);
+		const child2 = createStat.call(this, '/path/to/stat/foo/Bar.html', 'Bar.html', false, false, 8096, d);
 
 		s1.addChild(s2);
 		s2.addChild(s3);
@@ -170,10 +170,10 @@ suite('Files - View Model', function () {
 
 		if (isLinux) { // linux is case sensitive
 			assert.ok(!s1.find(toResource.call(this, '/path/to/stat/Foo')));
-			assert.ok(!s1.find(toResource.call(this, '/Path/to/stat/foo/bar.html')));
+			assert.ok(!s1.find(toResource.call(this, '/Path/to/stat/foo/Bar.html')));
 		} else {
 			assert.ok(s1.find(toResource.call(this, '/path/to/stat/Foo')));
-			assert.ok(s1.find(toResource.call(this, '/Path/to/stat/foo/bar.html')));
+			assert.ok(s1.find(toResource.call(this, '/Path/to/stat/foo/Bar.html')));
 		}
 	});
 
@@ -189,16 +189,16 @@ suite('Files - View Model', function () {
 		assert(validateFileName(s, 'Read Me') === null, 'name containing space');
 
 		if (isWindows) {
-			assert(validateFileName(s, 'foo:bar') !== null);
-			assert(validateFileName(s, 'foo*bar') !== null);
-			assert(validateFileName(s, 'foo?bar') !== null);
-			assert(validateFileName(s, 'foo<bar') !== null);
-			assert(validateFileName(s, 'foo>bar') !== null);
-			assert(validateFileName(s, 'foo|bar') !== null);
+			assert(validateFileName(s, 'foo:Bar') !== null);
+			assert(validateFileName(s, 'foo*Bar') !== null);
+			assert(validateFileName(s, 'foo?Bar') !== null);
+			assert(validateFileName(s, 'foo<Bar') !== null);
+			assert(validateFileName(s, 'foo>Bar') !== null);
+			assert(validateFileName(s, 'foo|Bar') !== null);
 		}
 		assert(validateFileName(s, 'alles.klar') === null);
 		assert(validateFileName(s, '.foo') === null);
-		assert(validateFileName(s, 'foo.bar') === null);
+		assert(validateFileName(s, 'foo.Bar') === null);
 		assert(validateFileName(s, 'foo') === null);
 	});
 
@@ -214,7 +214,7 @@ suite('Files - View Model', function () {
 		assert(validateFileName(s, 'Alles.Klar') === null);
 
 		assert(validateFileName(s, '.foo') === null);
-		assert(validateFileName(s, 'foo.bar') === null);
+		assert(validateFileName(s, 'foo.Bar') === null);
 		assert(validateFileName(s, 'foo') === null);
 	});
 
@@ -222,8 +222,8 @@ suite('Files - View Model', function () {
 		const d = new Date().getTime();
 		const wsFolder = createStat.call(this, '/', 'workspaceFolder', true, false, 8096, d);
 
-		assert(validateFileName(wsFolder, 'foo/bar') === null);
-		assert(validateFileName(wsFolder, 'foo\\bar') === null);
+		assert(validateFileName(wsFolder, 'foo/Bar') === null);
+		assert(validateFileName(wsFolder, 'foo\\Bar') === null);
 		assert(validateFileName(wsFolder, 'all/slashes/are/same') === null);
 		assert(validateFileName(wsFolder, 'theres/one/different\\slash') === null);
 		assert(validateFileName(wsFolder, '/slashAtBeginning') !== null);
@@ -265,7 +265,7 @@ suite('Files - View Model', function () {
 		assert.strictEqual(merge1.getChild('foo.html')!.name, 'foo.html');
 		assert.deepEqual(merge1.getChild('foo.html')!.parent, merge1, 'Check parent');
 
-		// Verify that merge does not replace existing children, but updates properties in that case
+		// Verify that merge does not replace existing children, But updates properties in that case
 		const existingChild = merge1.getChild('foo.html');
 		ExplorerItem.mergeLocalWithDisk(merge2, merge1);
 		assert.ok(existingChild === merge1.getChild(existingChild!.name));

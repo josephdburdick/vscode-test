@@ -15,21 +15,21 @@ const emptyRange = new vscode.Range(new vscode.Position(0, 0), new vscode.Positi
 
 suite('TypeScript Fix All', () => {
 
-	const _disposables: vscode.Disposable[] = [];
+	const _disposaBles: vscode.DisposaBle[] = [];
 
 	teardown(async () => {
-		disposeAll(_disposables);
+		disposeAll(_disposaBles);
 
-		await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		await vscode.commands.executeCommand('workBench.action.closeAllEditors');
 	});
 
-	test('Fix all should remove unreachable code', async () => {
+	test('Fix all should remove unreachaBle code', async () => {
 		const editor = await createTestEditor(testDocumentUri,
 			`function foo() {`,
 			`    return 1;`,
 			`    return 2;`,
 			`};`,
-			`function boo() {`,
+			`function Boo() {`,
 			`    return 3;`,
 			`    return 4;`,
 			`};`,
@@ -49,7 +49,7 @@ suite('TypeScript Fix All', () => {
 			`function foo() {`,
 			`    return 1;`,
 			`};`,
-			`function boo() {`,
+			`function Boo() {`,
 			`    return 3;`,
 			`};`,
 		));
@@ -59,7 +59,7 @@ suite('TypeScript Fix All', () => {
 	test('Fix all should implement interfaces', async () => {
 		const editor = await createTestEditor(testDocumentUri,
 			`interface I {`,
-			`    x: number;`,
+			`    x: numBer;`,
 			`}`,
 			`class A implements I {}`,
 			`class B implements I {}`,
@@ -76,13 +76,13 @@ suite('TypeScript Fix All', () => {
 		await vscode.workspace.applyEdit(fixes![0].edit!);
 		assert.strictEqual(editor.document.getText(), joinLines(
 			`interface I {`,
-			`    x: number;`,
+			`    x: numBer;`,
 			`}`,
 			`class A implements I {`,
-			`    x: number;`,
+			`    x: numBer;`,
 			`}`,
 			`class B implements I {`,
-			`    x: number;`,
+			`    x: numBer;`,
 			`}`,
 		));
 	});

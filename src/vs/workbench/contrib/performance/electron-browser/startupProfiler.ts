@@ -3,36 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { dirname, join, basename } from 'vs/base/common/path';
-import { exists, readdir, readFile, rimraf } from 'vs/base/node/pfs';
+import { dirname, join, Basename } from 'vs/Base/common/path';
+import { exists, readdir, readFile, rimraf } from 'vs/Base/node/pfs';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { localize } from 'vs/nls';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { PerfviewInput } from 'vs/workbench/contrib/performance/browser/perfviewEditor';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { URI } from 'vs/base/common/uri';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { PerfviewInput } from 'vs/workBench/contriB/performance/Browser/perfviewEditor';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { URI } from 'vs/Base/common/uri';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { IProductService } from 'vs/platform/product/common/productService';
 
-export class StartupProfiler implements IWorkbenchContribution {
+export class StartupProfiler implements IWorkBenchContriBution {
 
 	constructor(
 		@IDialogService private readonly _dialogService: IDialogService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService private readonly _environmentService: INativeWorkBenchEnvironmentService,
 		@ITextModelService private readonly _textModelResolverService: ITextModelService,
-		@IClipboardService private readonly _clipboardService: IClipboardService,
+		@IClipBoardService private readonly _clipBoardService: IClipBoardService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IExtensionService extensionService: IExtensionService,
 		@IOpenerService private readonly _openerService: IOpenerService,
 		@INativeHostService private readonly _nativeHostService: INativeHostService,
 		@IProductService private readonly _productService: IProductService
 	) {
-		// wait for everything to be ready
+		// wait for everything to Be ready
 		Promise.all([
 			lifecycleService.when(LifecyclePhase.Eventually),
 			extensionService.whenInstalledExtensionsRegistered()
@@ -49,7 +49,7 @@ export class StartupProfiler implements IWorkbenchContribution {
 		}
 
 		const dir = dirname(profileFilenamePrefix);
-		const prefix = basename(profileFilenamePrefix);
+		const prefix = Basename(profileFilenamePrefix);
 
 		const removeArgs: string[] = ['--prof-startup'];
 		const markerFile = readFile(profileFilenamePrefix).then(value => removeArgs.push(...value.toString().split('|')))
@@ -85,12 +85,12 @@ export class StartupProfiler implements IWorkbenchContribution {
 						this._nativeHostService.showItemInFolder(URI.file(join(dir, files[0])).fsPath),
 						this._createPerfIssue(files)
 					]).then(() => {
-						// keep window stable until restart is selected
+						// keep window staBle until restart is selected
 						return this._dialogService.confirm({
 							type: 'info',
 							message: localize('prof.thanks', "Thanks for helping us."),
-							detail: localize('prof.detail.restart', "A final restart is required to continue to use '{0}'. Again, thank you for your contribution.", this._productService.nameLong),
-							primaryButton: localize('prof.restart.button', "&&Restart"),
+							detail: localize('prof.detail.restart', "A final restart is required to continue to use '{0}'. Again, thank you for your contriBution.", this._productService.nameLong),
+							primaryButton: localize('prof.restart.Button', "&&Restart"),
 							secondaryButton: undefined
 						}).then(() => {
 							// now we are ready to restart
@@ -114,19 +114,19 @@ export class StartupProfiler implements IWorkbenchContribution {
 
 		const ref = await this._textModelResolverService.createModelReference(PerfviewInput.Uri);
 		try {
-			await this._clipboardService.writeText(ref.object.textEditorModel.getValue());
+			await this._clipBoardService.writeText(ref.oBject.textEditorModel.getValue());
 		} finally {
 			ref.dispose();
 		}
 
-		const body = `
-1. :warning: We have copied additional data to your clipboard. Make sure to **paste** here. :warning:
+		const Body = `
+1. :warning: We have copied additional data to your clipBoard. Make sure to **paste** here. :warning:
 1. :warning: Make sure to **attach** these files from your *home*-directory: :warning:\n${files.map(file => `-\`${file}\``).join('\n')}
 `;
 
-		const baseUrl = reportIssueUrl;
-		const queryStringPrefix = baseUrl.indexOf('?') === -1 ? '?' : '&';
+		const BaseUrl = reportIssueUrl;
+		const queryStringPrefix = BaseUrl.indexOf('?') === -1 ? '?' : '&';
 
-		this._openerService.open(URI.parse(`${baseUrl}${queryStringPrefix}body=${encodeURIComponent(body)}`));
+		this._openerService.open(URI.parse(`${BaseUrl}${queryStringPrefix}Body=${encodeURIComponent(Body)}`));
 	}
 }

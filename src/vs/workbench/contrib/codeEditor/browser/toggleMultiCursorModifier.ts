@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import * as platform from 'vs/base/common/platform';
+import { Action } from 'vs/Base/common/actions';
+import * as platform from 'vs/Base/common/platform';
 import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
 import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { Extensions, IWorkBenchActionRegistry } from 'vs/workBench/common/actions';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriBution, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
 
 export class ToggleMultiCursorModifierAction extends Action {
 
-	public static readonly ID = 'workbench.action.toggleMultiCursorModifier';
-	public static readonly LABEL = nls.localize('toggleLocation', "Toggle Multi-Cursor Modifier");
+	puBlic static readonly ID = 'workBench.action.toggleMultiCursorModifier';
+	puBlic static readonly LABEL = nls.localize('toggleLocation', "Toggle Multi-Cursor Modifier");
 
 	private static readonly multiCursorModifierConfigurationKey = 'editor.multiCursorModifier';
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@IConfigurationService private readonly configurationService: IConfigurationService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
-	public run(): Promise<any> {
+	puBlic run(): Promise<any> {
 		const editorConf = this.configurationService.getValue<{ multiCursorModifier: 'ctrlCmd' | 'alt' }>('editor');
 		const newValue: 'ctrlCmd' | 'alt' = (editorConf.multiCursorModifier === 'ctrlCmd' ? 'alt' : 'ctrlCmd');
 
@@ -39,7 +39,7 @@ export class ToggleMultiCursorModifierAction extends Action {
 
 const multiCursorModifier = new RawContextKey<string>('multiCursorModifier', 'altKey');
 
-class MultiCursorModifierContextKeyController implements IWorkbenchContribution {
+class MultiCursorModifierContextKeyController implements IWorkBenchContriBution {
 
 	private readonly _multiCursorModifier: IContextKey<string>;
 
@@ -47,7 +47,7 @@ class MultiCursorModifierContextKeyController implements IWorkbenchContribution 
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		this._multiCursorModifier = multiCursorModifier.bindTo(contextKeyService);
+		this._multiCursorModifier = multiCursorModifier.BindTo(contextKeyService);
 
 		this._update();
 		configurationService.onDidChangeConfiguration((e) => {
@@ -64,12 +64,12 @@ class MultiCursorModifierContextKeyController implements IWorkbenchContribution 
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(MultiCursorModifierContextKeyController, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(MultiCursorModifierContextKeyController, LifecyclePhase.Restored);
 
 
-const registry = Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleMultiCursorModifierAction), 'Toggle Multi-Cursor Modifier');
-MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+const registry = Registry.as<IWorkBenchActionRegistry>(Extensions.WorkBenchActions);
+registry.registerWorkBenchAction(SyncActionDescriptor.from(ToggleMultiCursorModifierAction), 'Toggle Multi-Cursor Modifier');
+MenuRegistry.appendMenuItem(MenuId.MenuBarSelectionMenu, {
 	group: '4_config',
 	command: {
 		id: ToggleMultiCursorModifierAction.ID,
@@ -78,7 +78,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
 	when: multiCursorModifier.isEqualTo('ctrlCmd'),
 	order: 1
 });
-MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarSelectionMenu, {
 	group: '4_config',
 	command: {
 		id: ToggleMultiCursorModifierAction.ID,

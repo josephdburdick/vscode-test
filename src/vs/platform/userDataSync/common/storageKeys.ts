@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export interface IStorageKey {
 
 	readonly key: string;
-	readonly version: number;
+	readonly version: numBer;
 
 }
 
@@ -31,13 +31,13 @@ export interface IStorageKeysSyncRegistryService {
 	readonly onDidChangeStorageKeys: Event<ReadonlyArray<IStorageKey>>;
 
 	/**
-	 * Register a storage key that has to be synchronized during sync.
+	 * Register a storage key that has to Be synchronized during sync.
 	 */
 	registerStorageKey(key: IStorageKey): void;
 
 }
 
-export class StorageKeysSyncRegistryService extends Disposable implements IStorageKeysSyncRegistryService {
+export class StorageKeysSyncRegistryService extends DisposaBle implements IStorageKeysSyncRegistryService {
 
 	_serviceBrand: any;
 
@@ -49,7 +49,7 @@ export class StorageKeysSyncRegistryService extends Disposable implements IStora
 
 	constructor() {
 		super();
-		this._register(toDisposable(() => this._storageKeys.clear()));
+		this._register(toDisposaBle(() => this._storageKeys.clear()));
 	}
 
 	registerStorageKey(storageKey: IStorageKey): void {

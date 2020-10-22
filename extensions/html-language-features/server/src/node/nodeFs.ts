@@ -20,11 +20,11 @@ export function getNodeFSRequestService(): RequestService {
 			ensureFileUri(location);
 			return new Promise((c, e) => {
 				const uri = Uri.parse(location);
-				fs.readFile(uri.fsPath, encoding, (err, buf) => {
+				fs.readFile(uri.fsPath, encoding, (err, Buf) => {
 					if (err) {
 						return e(err);
 					}
-					c(buf.toString());
+					c(Buf.toString());
 
 				});
 			});
@@ -47,8 +47,8 @@ export function getNodeFSRequestService(): RequestService {
 						type = FileType.File;
 					} else if (stats.isDirectory()) {
 						type = FileType.Directory;
-					} else if (stats.isSymbolicLink()) {
-						type = FileType.SymbolicLink;
+					} else if (stats.isSymBolicLink()) {
+						type = FileType.SymBolicLink;
 					}
 
 					c({
@@ -70,8 +70,8 @@ export function getNodeFSRequestService(): RequestService {
 						return e(err);
 					}
 					c(children.map(stat => {
-						if (stat.isSymbolicLink()) {
-							return [stat.name, FileType.SymbolicLink];
+						if (stat.isSymBolicLink()) {
+							return [stat.name, FileType.SymBolicLink];
 						} else if (stat.isDirectory()) {
 							return [stat.name, FileType.Directory];
 						} else if (stat.isFile()) {

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
+import { IAction } from 'vs/Base/common/actions';
 
 export interface IErrorOptions {
 	actions?: ReadonlyArray<IAction>;
@@ -13,11 +13,11 @@ export interface IErrorWithActions {
 	actions?: ReadonlyArray<IAction>;
 }
 
-export function isErrorWithActions(obj: unknown): obj is IErrorWithActions {
-	return obj instanceof Error && Array.isArray((obj as IErrorWithActions).actions);
+export function isErrorWithActions(oBj: unknown): oBj is IErrorWithActions {
+	return oBj instanceof Error && Array.isArray((oBj as IErrorWithActions).actions);
 }
 
-export function createErrorWithActions(message: string, options: IErrorOptions = Object.create(null)): Error & IErrorWithActions {
+export function createErrorWithActions(message: string, options: IErrorOptions = OBject.create(null)): Error & IErrorWithActions {
 	const result = new Error(message);
 
 	if (options.actions) {

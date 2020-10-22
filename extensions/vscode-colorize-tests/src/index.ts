@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 const path = require('path');
-const testRunner = require('vscode/lib/testrunner');
+const testRunner = require('vscode/liB/testrunner');
 
 const suite = 'Integration Colorize Tests';
 
@@ -17,7 +17,7 @@ const options: any = {
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
 	options.reporter = 'mocha-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
+		reporterEnaBled: 'spec, mocha-junit-reporter',
 		mochaJunitReporterReporterOptions: {
 			testsuitesTitle: `${suite} ${process.platform}`,
 			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)

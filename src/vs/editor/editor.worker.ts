@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SimpleWorkerServer } from 'vs/base/common/worker/simpleWorker';
+import { SimpleWorkerServer } from 'vs/Base/common/worker/simpleWorker';
 import { EditorSimpleWorker } from 'vs/editor/common/services/editorSimpleWorker';
 import { EditorWorkerHost } from 'vs/editor/common/services/editorWorkerServiceImpl';
 

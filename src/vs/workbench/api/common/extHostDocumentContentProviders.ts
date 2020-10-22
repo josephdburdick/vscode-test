@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Disposable } from 'vs/workbench/api/common/extHostTypes';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { DisposaBle } from 'vs/workBench/api/common/extHostTypes';
 import type * as vscode from 'vscode';
 import { MainContext, ExtHostDocumentContentProvidersShape, MainThreadDocumentContentProvidersShape, IMainContext } from './extHost.protocol';
 import { ExtHostDocumentsAndEditors } from './extHostDocumentsAndEditors';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { ILogService } from 'vs/platform/log/common/log';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 export class ExtHostDocumentContentProvider implements ExtHostDocumentContentProvidersShape {
 
 	private static _handlePool = 0;
 
-	private readonly _documentContentProviders = new Map<number, vscode.TextDocumentContentProvider>();
+	private readonly _documentContentProviders = new Map<numBer, vscode.TextDocumentContentProvider>();
 	private readonly _proxy: MainThreadDocumentContentProvidersShape;
 
 	constructor(
@@ -29,10 +29,10 @@ export class ExtHostDocumentContentProvider implements ExtHostDocumentContentPro
 		this._proxy = mainContext.getProxy(MainContext.MainThreadDocumentContentProviders);
 	}
 
-	registerTextDocumentContentProvider(scheme: string, provider: vscode.TextDocumentContentProvider): vscode.Disposable {
+	registerTextDocumentContentProvider(scheme: string, provider: vscode.TextDocumentContentProvider): vscode.DisposaBle {
 		// todo@remote
 		// check with scheme from fs-providers!
-		if (Object.keys(Schemas).indexOf(scheme) >= 0) {
+		if (OBject.keys(Schemas).indexOf(scheme) >= 0) {
 			throw new Error(`scheme '${scheme}' already registered`);
 		}
 
@@ -41,11 +41,11 @@ export class ExtHostDocumentContentProvider implements ExtHostDocumentContentPro
 		this._documentContentProviders.set(handle, provider);
 		this._proxy.$registerTextContentProvider(handle, scheme);
 
-		let subscription: IDisposable | undefined;
+		let suBscription: IDisposaBle | undefined;
 		if (typeof provider.onDidChange === 'function') {
-			subscription = provider.onDidChange(uri => {
+			suBscription = provider.onDidChange(uri => {
 				if (uri.scheme !== scheme) {
-					this._logService.warn(`Provider for scheme '${scheme}' is firing event for schema '${uri.scheme}' which will be IGNORED`);
+					this._logService.warn(`Provider for scheme '${scheme}' is firing event for schema '${uri.scheme}' which will Be IGNORED`);
 					return;
 				}
 				if (this._documentsAndEditors.getDocument(uri)) {
@@ -63,7 +63,7 @@ export class ExtHostDocumentContentProvider implements ExtHostDocumentContentPro
 						// create lines and compare
 						const lines = value.split(/\r\n|\r|\n/);
 
-						// broadcast event when content changed
+						// Broadcast event when content changed
 						if (!document.equalLines(lines)) {
 							return this._proxy.$onVirtualDocumentChange(uri, value);
 						}
@@ -72,18 +72,18 @@ export class ExtHostDocumentContentProvider implements ExtHostDocumentContentPro
 				}
 			});
 		}
-		return new Disposable(() => {
+		return new DisposaBle(() => {
 			if (this._documentContentProviders.delete(handle)) {
 				this._proxy.$unregisterTextContentProvider(handle);
 			}
-			if (subscription) {
-				subscription.dispose();
-				subscription = undefined;
+			if (suBscription) {
+				suBscription.dispose();
+				suBscription = undefined;
 			}
 		});
 	}
 
-	$provideTextDocumentContent(handle: number, uri: UriComponents): Promise<string | null | undefined> {
+	$provideTextDocumentContent(handle: numBer, uri: UriComponents): Promise<string | null | undefined> {
 		const provider = this._documentContentProviders.get(handle);
 		if (!provider) {
 			return Promise.reject(new Error(`unsupported uri-scheme: ${uri.scheme}`));

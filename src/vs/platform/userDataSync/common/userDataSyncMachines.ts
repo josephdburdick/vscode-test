@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { getServiceMachineId } from 'vs/platform/serviceMachineId/common/serviceMachineId';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IFileService } from 'vs/platform/files/common/files';
@@ -12,22 +12,22 @@ import { IStorageService, StorageScope } from 'vs/platform/storage/common/storag
 import { IUserDataSyncStoreService, IUserData, IUserDataSyncLogService, IUserDataManifest } from 'vs/platform/userDataSync/common/userDataSync';
 import { localize } from 'vs/nls';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { PlatformToString, isWeb, Platform, platform } from 'vs/base/common/platform';
-import { escapeRegExpCharacters } from 'vs/base/common/strings';
-import { Event, Emitter } from 'vs/base/common/event';
+import { PlatformToString, isWeB, Platform, platform } from 'vs/Base/common/platform';
+import { escapeRegExpCharacters } from 'vs/Base/common/strings';
+import { Event, Emitter } from 'vs/Base/common/event';
 
 interface IMachineData {
 	id: string;
 	name: string;
-	disabled?: boolean;
+	disaBled?: Boolean;
 }
 
 interface IMachinesData {
-	version: number;
+	version: numBer;
 	machines: IMachineData[];
 }
 
-export type IUserDataSyncMachine = Readonly<IMachineData> & { readonly isCurrent: boolean };
+export type IUserDataSyncMachine = Readonly<IMachineData> & { readonly isCurrent: Boolean };
 
 export const IUserDataSyncMachinesService = createDecorator<IUserDataSyncMachinesService>('IUserDataSyncMachinesService');
 export interface IUserDataSyncMachinesService {
@@ -40,12 +40,12 @@ export interface IUserDataSyncMachinesService {
 	addCurrentMachine(manifest?: IUserDataManifest): Promise<void>;
 	removeCurrentMachine(manifest?: IUserDataManifest): Promise<void>;
 	renameMachine(machineId: string, name: string): Promise<void>;
-	setEnablement(machineId: string, enabled: boolean): Promise<void>;
+	setEnaBlement(machineId: string, enaBled: Boolean): Promise<void>;
 }
 
 const currentMachineNameKey = 'sync.currentMachineName';
 
-export class UserDataSyncMachinesService extends Disposable implements IUserDataSyncMachinesService {
+export class UserDataSyncMachinesService extends DisposaBle implements IUserDataSyncMachinesService {
 
 	private static readonly VERSION = 1;
 	private static readonly RESOURCE = 'machines';
@@ -108,11 +108,11 @@ export class UserDataSyncMachinesService extends Disposable implements IUserData
 		}
 	}
 
-	async setEnablement(machineId: string, enabled: boolean): Promise<void> {
+	async setEnaBlement(machineId: string, enaBled: Boolean): Promise<void> {
 		const machineData = await this.readMachinesData();
 		const machine = machineData.machines.find(({ id }) => id === machineId);
 		if (machine) {
-			machine.disabled = enabled ? undefined : true;
+			machine.disaBled = enaBled ? undefined : true;
 			await this.writeMachinesData(machineData);
 		}
 	}
@@ -123,7 +123,7 @@ export class UserDataSyncMachinesService extends Disposable implements IUserData
 			return previousName;
 		}
 
-		const namePrefix = `${this.productService.nameLong} (${PlatformToString(isWeb ? Platform.Web : platform)})`;
+		const namePrefix = `${this.productService.nameLong} (${PlatformToString(isWeB ? Platform.WeB : platform)})`;
 		const nameRegEx = new RegExp(`${escapeRegExpCharacters(namePrefix)}\\s#(\\d+)`);
 		let nameIndex = 0;
 		for (const machine of machines) {
@@ -138,7 +138,7 @@ export class UserDataSyncMachinesService extends Disposable implements IUserData
 		this.userData = await this.readUserData(manifest);
 		const machinesData = this.parse(this.userData);
 		if (machinesData.version !== UserDataSyncMachinesService.VERSION) {
-			throw new Error(localize('error incompatible', "Cannot read machines data as the current version is incompatible. Please update {0} and try again.", this.productService.nameLong));
+			throw new Error(localize('error incompatiBle', "Cannot read machines data as the current version is incompatiBle. Please update {0} and try again.", this.productService.nameLong));
 		}
 		return machinesData;
 	}

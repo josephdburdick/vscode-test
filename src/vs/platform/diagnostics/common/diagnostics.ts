@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriComponents } from 'vs/base/common/uri';
-import { ProcessItem } from 'vs/base/common/processes';
+import { UriComponents } from 'vs/Base/common/uri';
+import { ProcessItem } from 'vs/Base/common/processes';
 import { IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 export interface IMachineInfo {
 	os: string;
@@ -46,21 +46,21 @@ export interface IRemoteDiagnosticError {
 }
 
 export interface IDiagnosticInfoOptions {
-	includeProcesses?: boolean;
+	includeProcesses?: Boolean;
 	folders?: UriComponents[];
-	includeExtensions?: boolean;
+	includeExtensions?: Boolean;
 }
 
 export interface WorkspaceStatItem {
 	name: string;
-	count: number;
+	count: numBer;
 }
 
 export interface WorkspaceStats {
 	fileTypes: WorkspaceStatItem[];
 	configFiles: WorkspaceStatItem[];
-	fileCount: number;
-	maxFilesReached: boolean;
+	fileCount: numBer;
+	maxFilesReached: Boolean;
 	launchConfigFiles: WorkspaceStatItem[];
 }
 

@@ -9,7 +9,7 @@ const localize = nls.loadMessageBundle();
 import {
 	workspace, window, languages, commands, ExtensionContext, extensions, Uri, LanguageConfiguration,
 	Diagnostic, StatusBarAlignment, TextEditor, TextDocument, FormattingOptions, CancellationToken,
-	ProviderResult, TextEdit, Range, Position, Disposable, CompletionItem, CompletionList, CompletionContext, Hover, MarkdownString,
+	ProviderResult, TextEdit, Range, Position, DisposaBle, CompletionItem, CompletionList, CompletionContext, Hover, MarkdownString,
 } from 'vscode';
 import {
 	LanguageClientOptions, RequestType, NotificationType,
@@ -52,12 +52,12 @@ namespace ResultLimitReachedNotification {
 interface Settings {
 	json?: {
 		schemas?: JSONSchemaSettings[];
-		format?: { enable: boolean; };
-		resultLimit?: number;
+		format?: { enaBle: Boolean; };
+		resultLimit?: numBer;
 	};
 	http?: {
 		proxy?: string;
-		proxyStrictSSL?: boolean;
+		proxyStrictSSL?: Boolean;
 	};
 }
 
@@ -68,8 +68,8 @@ interface JSONSchemaSettings {
 }
 
 namespace SettingIds {
-	export const enableFormatter = 'json.format.enable';
-	export const enableSchemaDownload = 'json.schemaDownload.enable';
+	export const enaBleFormatter = 'json.format.enaBle';
+	export const enaBleSchemaDownload = 'json.schemaDownload.enaBle';
 	export const maxItemsComputed = 'json.maxItemsComputed';
 }
 
@@ -77,7 +77,7 @@ export interface TelemetryReporter {
 	sendTelemetryEvent(eventName: string, properties?: {
 		[key: string]: string;
 	}, measurements?: {
-		[key: string]: number;
+		[key: string]: numBer;
 	}): void;
 }
 
@@ -90,9 +90,9 @@ export interface Runtime {
 
 export function startClient(context: ExtensionContext, newLanguageClient: LanguageClientConstructor, runtime: Runtime) {
 
-	const toDispose = context.subscriptions;
+	const toDispose = context.suBscriptions;
 
-	let rangeFormatting: Disposable | undefined = undefined;
+	let rangeFormatting: DisposaBle | undefined = undefined;
 
 
 	const documentSelector = ['json', 'jsonc'];
@@ -107,7 +107,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 	toDispose.push(schemaResolutionErrorStatusBarItem);
 
 	const fileSchemaErrors = new Map<string, string>();
-	let schemaDownloadEnabled = true;
+	let schemaDownloadEnaBled = true;
 
 	// Options to control the language client
 	const clientOptions: LanguageClientOptions = {
@@ -115,8 +115,8 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 		documentSelector,
 		initializationOptions: {
 			handledSchemaProtocols: ['file'], // language server only loads file-URI. Fetching schemas with other protocols ('http'...) are made on the client.
-			provideFormatter: false, // tell the server to not provide formatting capability and ignore the `json.format.enable` setting.
-			customCapabilities: { rangeFormatting: { editLimit: 10000 } }
+			provideFormatter: false, // tell the server to not provide formatting capaBility and ignore the `json.format.enaBle` setting.
+			customCapaBilities: { rangeFormatting: { editLimit: 10000 } }
 		},
 		synchronize: {
 			// Synchronize the setting section 'json' to the server
@@ -138,7 +138,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				const schemaResolveDiagnostic = diagnostics[schemaErrorIndex];
 				fileSchemaErrors.set(uri.toString(), schemaResolveDiagnostic.message);
 
-				if (!schemaDownloadEnabled) {
+				if (!schemaDownloadEnaBled) {
 					diagnostics = diagnostics.filter(d => !isSchemaResolveError(d));
 				}
 
@@ -168,7 +168,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				}
 
 				const r = next(document, position, context, token);
-				if (isThenable<CompletionItem[] | CompletionList | null | undefined>(r)) {
+				if (isThenaBle<CompletionItem[] | CompletionList | null | undefined>(r)) {
 					return r.then(updateProposals);
 				}
 				return updateProposals(r);
@@ -181,7 +181,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 					return r;
 				}
 				const r = next(document, position, token);
-				if (isThenable<Hover | null | undefined>(r)) {
+				if (isThenaBle<Hover | null | undefined>(r)) {
 					return r.then(updateHover);
 				}
 				return updateHover(r);
@@ -193,16 +193,16 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 	const client = newLanguageClient('json', localize('jsonserver.name', 'JSON Language Server'), clientOptions);
 	client.registerProposedFeatures();
 
-	const disposable = client.start();
-	toDispose.push(disposable);
+	const disposaBle = client.start();
+	toDispose.push(disposaBle);
 	client.onReady().then(() => {
-		const schemaDocuments: { [uri: string]: boolean } = {};
+		const schemaDocuments: { [uri: string]: Boolean } = {};
 
 		// handle content request
 		client.onRequest(VSCodeContentRequest.type, (uriPath: string) => {
 			const uri = Uri.parse(uriPath);
 			if (uri.scheme === 'untitled') {
-				return Promise.reject(new ResponseError(3, localize('untitled.schema', 'Unable to load {0}', uri.toString())));
+				return Promise.reject(new ResponseError(3, localize('untitled.schema', 'UnaBle to load {0}', uri.toString())));
 			}
 			if (uri.scheme !== 'http' && uri.scheme !== 'https') {
 				return workspace.openTextDocument(uri).then(doc => {
@@ -211,7 +211,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				}, error => {
 					return Promise.reject(new ResponseError(2, error.toString()));
 				});
-			} else if (schemaDownloadEnabled) {
+			} else if (schemaDownloadEnaBled) {
 				if (runtime.telemetry && uri.authority === 'schema.management.azure.com') {
 					/* __GDPR__
 						"json.schema" : {
@@ -222,7 +222,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				}
 				return runtime.http.getContent(uriPath);
 			} else {
-				return Promise.reject(new ResponseError(1, localize('schemaDownloadDisabled', 'Downloading schemas is disabled through setting \'{0}\'', SettingIds.enableSchemaDownload)));
+				return Promise.reject(new ResponseError(1, localize('schemaDownloadDisaBled', 'Downloading schemas is disaBled through setting \'{0}\'', SettingIds.enaBleSchemaDownload)));
 			}
 		});
 
@@ -265,7 +265,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				client.sendRequest(ForceValidateRequest.type, activeDocUri).then((diagnostics) => {
 					const schemaErrorIndex = diagnostics.findIndex(isSchemaResolveError);
 					if (schemaErrorIndex !== -1) {
-						// Show schema resolution errors in status bar only; ref: #51032
+						// Show schema resolution errors in status Bar only; ref: #51032
 						const schemaResolveDiagnostic = diagnostics[schemaErrorIndex];
 						fileSchemaErrors.set(activeDocUri, schemaResolveDiagnostic.message);
 					} else {
@@ -284,16 +284,16 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 			client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociations(context));
 		});
 
-		// manually register / deregister format provider based on the `json.format.enable` setting avoiding issues with late registration. See #71652.
+		// manually register / deregister format provider Based on the `json.format.enaBle` setting avoiding issues with late registration. See #71652.
 		updateFormatterRegistration();
 		toDispose.push({ dispose: () => rangeFormatting && rangeFormatting.dispose() });
 
 		updateSchemaDownloadSetting();
 
 		toDispose.push(workspace.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(SettingIds.enableFormatter)) {
+			if (e.affectsConfiguration(SettingIds.enaBleFormatter)) {
 				updateFormatterRegistration();
-			} else if (e.affectsConfiguration(SettingIds.enableSchemaDownload)) {
+			} else if (e.affectsConfiguration(SettingIds.enaBleSchemaDownload)) {
 				updateSchemaDownloadSetting();
 			}
 		}));
@@ -303,11 +303,11 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 		});
 
 		function updateFormatterRegistration() {
-			const formatEnabled = workspace.getConfiguration().get(SettingIds.enableFormatter);
-			if (!formatEnabled && rangeFormatting) {
+			const formatEnaBled = workspace.getConfiguration().get(SettingIds.enaBleFormatter);
+			if (!formatEnaBled && rangeFormatting) {
 				rangeFormatting.dispose();
 				rangeFormatting = undefined;
-			} else if (formatEnabled && !rangeFormatting) {
+			} else if (formatEnaBled && !rangeFormatting) {
 				rangeFormatting = languages.registerDocumentRangeFormattingEditProvider(documentSelector, {
 					provideDocumentRangeFormattingEdits(document: TextDocument, range: Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 						const params: DocumentRangeFormattingParams = {
@@ -328,14 +328,14 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 		}
 
 		function updateSchemaDownloadSetting() {
-			schemaDownloadEnabled = workspace.getConfiguration().get(SettingIds.enableSchemaDownload) !== false;
-			if (schemaDownloadEnabled) {
-				schemaResolutionErrorStatusBarItem.tooltip = localize('json.schemaResolutionErrorMessage', 'Unable to resolve schema. Click to retry.');
+			schemaDownloadEnaBled = workspace.getConfiguration().get(SettingIds.enaBleSchemaDownload) !== false;
+			if (schemaDownloadEnaBled) {
+				schemaResolutionErrorStatusBarItem.tooltip = localize('json.schemaResolutionErrorMessage', 'UnaBle to resolve schema. Click to retry.');
 				schemaResolutionErrorStatusBarItem.command = '_json.retryResolveSchema';
 				handleRetryResolveSchemaCommand();
 			} else {
-				schemaResolutionErrorStatusBarItem.tooltip = localize('json.schemaResolutionDisabledMessage', 'Downloading schemas is disabled. Click to configure.');
-				schemaResolutionErrorStatusBarItem.command = { command: 'workbench.action.openSettings', arguments: [SettingIds.enableSchemaDownload], title: '' };
+				schemaResolutionErrorStatusBarItem.tooltip = localize('json.schemaResolutionDisaBledMessage', 'Downloading schemas is disaBled. Click to configure.');
+				schemaResolutionErrorStatusBarItem.command = { command: 'workBench.action.openSettings', arguments: [SettingIds.enaBleSchemaDownload], title: '' };
 			}
 		}
 
@@ -357,8 +357,8 @@ function getSchemaAssociations(_context: ExtensionContext): ISchemaAssociation[]
 	const associations: ISchemaAssociation[] = [];
 	extensions.all.forEach(extension => {
 		const packageJSON = extension.packageJSON;
-		if (packageJSON && packageJSON.contributes && packageJSON.contributes.jsonValidation) {
-			const jsonValidation = packageJSON.contributes.jsonValidation;
+		if (packageJSON && packageJSON.contriButes && packageJSON.contriButes.jsonValidation) {
+			const jsonValidation = packageJSON.contriButes.jsonValidation;
 			if (Array.isArray(jsonValidation)) {
 				jsonValidation.forEach(jv => {
 					let { fileMatch, url } = jv;
@@ -392,7 +392,7 @@ function getSchemaAssociations(_context: ExtensionContext): ISchemaAssociation[]
 function getSettings(): Settings {
 	const httpSettings = workspace.getConfiguration('http');
 
-	const resultLimit: number = Math.trunc(Math.max(0, Number(workspace.getConfiguration().get(SettingIds.maxItemsComputed)))) || 5000;
+	const resultLimit: numBer = Math.trunc(Math.max(0, NumBer(workspace.getConfiguration().get(SettingIds.maxItemsComputed)))) || 5000;
 
 	const settings: Settings = {
 		http: {
@@ -404,14 +404,14 @@ function getSettings(): Settings {
 			resultLimit
 		}
 	};
-	const schemaSettingsById: { [schemaId: string]: JSONSchemaSettings } = Object.create(null);
-	const collectSchemaSettings = (schemaSettings: JSONSchemaSettings[], folderUri?: Uri, isMultiRoot?: boolean) => {
+	const schemaSettingsById: { [schemaId: string]: JSONSchemaSettings } = OBject.create(null);
+	const collectSchemaSettings = (schemaSettings: JSONSchemaSettings[], folderUri?: Uri, isMultiRoot?: Boolean) => {
 
 		let fileMatchPrefix = undefined;
 		if (folderUri && isMultiRoot) {
 			fileMatchPrefix = folderUri.toString();
 			if (fileMatchPrefix[fileMatchPrefix.length - 1] === '/') {
-				fileMatchPrefix = fileMatchPrefix.substr(0, fileMatchPrefix.length - 1);
+				fileMatchPrefix = fileMatchPrefix.suBstr(0, fileMatchPrefix.length - 1);
 			}
 		}
 		for (const setting of schemaSettings) {
@@ -455,11 +455,11 @@ function getSettings(): Settings {
 
 	const folders = workspace.workspaceFolders;
 
-	// merge global and folder settings. Qualify all file matches with the folder path.
-	const globalSettings = workspace.getConfiguration('json', null).get<JSONSchemaSettings[]>('schemas');
-	if (Array.isArray(globalSettings)) {
+	// merge gloBal and folder settings. Qualify all file matches with the folder path.
+	const gloBalSettings = workspace.getConfiguration('json', null).get<JSONSchemaSettings[]>('schemas');
+	if (Array.isArray(gloBalSettings)) {
 		if (!folders) {
-			collectSchemaSettings(globalSettings);
+			collectSchemaSettings(gloBalSettings);
 		}
 	}
 	if (folders) {
@@ -473,8 +473,8 @@ function getSettings(): Settings {
 			if (Array.isArray(folderSchemas)) {
 				collectSchemaSettings(folderSchemas, folderUri, isMultiRoot);
 			}
-			if (Array.isArray(globalSettings)) {
-				collectSchemaSettings(globalSettings, folderUri, isMultiRoot);
+			if (Array.isArray(gloBalSettings)) {
+				collectSchemaSettings(gloBalSettings, folderUri, isMultiRoot);
 			}
 
 		}
@@ -494,8 +494,8 @@ function getSchemaId(schema: JSONSchemaSettings, folderUri?: Uri): string | unde
 	return url;
 }
 
-function isThenable<T>(obj: ProviderResult<T>): obj is Thenable<T> {
-	return obj && (<any>obj)['then'];
+function isThenaBle<T>(oBj: ProviderResult<T>): oBj is ThenaBle<T> {
+	return oBj && (<any>oBj)['then'];
 }
 
 function updateMarkdownString(h: MarkdownString): MarkdownString {

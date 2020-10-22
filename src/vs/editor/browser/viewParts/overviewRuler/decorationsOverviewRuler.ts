@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { Color } from 'vs/base/common/color';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { Color } from 'vs/Base/common/color';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { Position } from 'vs/editor/common/core/position';
 import { IConfiguration } from 'vs/editor/common/editorCommon';
 import { TokenizationRegistry } from 'vs/editor/common/modes';
@@ -18,28 +18,28 @@ import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 class Settings {
 
-	public readonly lineHeight: number;
-	public readonly pixelRatio: number;
-	public readonly overviewRulerLanes: number;
+	puBlic readonly lineHeight: numBer;
+	puBlic readonly pixelRatio: numBer;
+	puBlic readonly overviewRulerLanes: numBer;
 
-	public readonly renderBorder: boolean;
-	public readonly borderColor: string | null;
+	puBlic readonly renderBorder: Boolean;
+	puBlic readonly BorderColor: string | null;
 
-	public readonly hideCursor: boolean;
-	public readonly cursorColor: string | null;
+	puBlic readonly hideCursor: Boolean;
+	puBlic readonly cursorColor: string | null;
 
-	public readonly themeType: 'light' | 'dark' | 'hc';
-	public readonly backgroundColor: string | null;
+	puBlic readonly themeType: 'light' | 'dark' | 'hc';
+	puBlic readonly BackgroundColor: string | null;
 
-	public readonly top: number;
-	public readonly right: number;
-	public readonly domWidth: number;
-	public readonly domHeight: number;
-	public readonly canvasWidth: number;
-	public readonly canvasHeight: number;
+	puBlic readonly top: numBer;
+	puBlic readonly right: numBer;
+	puBlic readonly domWidth: numBer;
+	puBlic readonly domHeight: numBer;
+	puBlic readonly canvasWidth: numBer;
+	puBlic readonly canvasHeight: numBer;
 
-	public readonly x: number[];
-	public readonly w: number[];
+	puBlic readonly x: numBer[];
+	puBlic readonly w: numBer[];
 
 	constructor(config: IConfiguration, theme: EditorTheme) {
 		const options = config.options;
@@ -48,8 +48,8 @@ class Settings {
 		this.overviewRulerLanes = options.get(EditorOption.overviewRulerLanes);
 
 		this.renderBorder = options.get(EditorOption.overviewRulerBorder);
-		const borderColor = theme.getColor(editorOverviewRulerBorder);
-		this.borderColor = borderColor ? borderColor.toString() : null;
+		const BorderColor = theme.getColor(editorOverviewRulerBorder);
+		this.BorderColor = BorderColor ? BorderColor.toString() : null;
 
 		this.hideCursor = options.get(EditorOption.hideCursorInOverviewRuler);
 		const cursorColor = theme.getColor(editorCursorForeground);
@@ -58,16 +58,16 @@ class Settings {
 		this.themeType = theme.type;
 
 		const minimapOpts = options.get(EditorOption.minimap);
-		const minimapEnabled = minimapOpts.enabled;
+		const minimapEnaBled = minimapOpts.enaBled;
 		const minimapSide = minimapOpts.side;
-		const backgroundColor = minimapEnabled
+		const BackgroundColor = minimapEnaBled
 			? theme.getColor(editorOverviewRulerBackground) || TokenizationRegistry.getDefaultBackground()
 			: null;
 
-		if (backgroundColor === null || minimapSide === 'left') {
-			this.backgroundColor = null;
+		if (BackgroundColor === null || minimapSide === 'left') {
+			this.BackgroundColor = null;
 		} else {
-			this.backgroundColor = Color.Format.CSS.formatHex(backgroundColor);
+			this.BackgroundColor = Color.Format.CSS.formatHex(BackgroundColor);
 		}
 
 		const layoutInfo = options.get(EditorOption.layoutInfo);
@@ -90,7 +90,7 @@ class Settings {
 		this.w = w;
 	}
 
-	private _initLanes(canvasLeftOffset: number, canvasWidth: number, laneCount: number): [number[], number[]] {
+	private _initLanes(canvasLeftOffset: numBer, canvasWidth: numBer, laneCount: numBer): [numBer[], numBer[]] {
 		const remainingWidth = canvasWidth - canvasLeftOffset;
 
 		if (laneCount >= 3) {
@@ -177,17 +177,17 @@ class Settings {
 		}
 	}
 
-	public equals(other: Settings): boolean {
+	puBlic equals(other: Settings): Boolean {
 		return (
 			this.lineHeight === other.lineHeight
 			&& this.pixelRatio === other.pixelRatio
 			&& this.overviewRulerLanes === other.overviewRulerLanes
 			&& this.renderBorder === other.renderBorder
-			&& this.borderColor === other.borderColor
+			&& this.BorderColor === other.BorderColor
 			&& this.hideCursor === other.hideCursor
 			&& this.cursorColor === other.cursorColor
 			&& this.themeType === other.themeType
-			&& this.backgroundColor === other.backgroundColor
+			&& this.BackgroundColor === other.BackgroundColor
 			&& this.top === other.top
 			&& this.right === other.right
 			&& this.domWidth === other.domWidth
@@ -211,7 +211,7 @@ const enum OverviewRulerLane {
 
 export class DecorationsOverviewRuler extends ViewPart {
 
-	private readonly _tokensColorTrackerListener: IDisposable;
+	private readonly _tokensColorTrackerListener: IDisposaBle;
 	private readonly _domNode: FastDomNode<HTMLCanvasElement>;
 	private _settings!: Settings;
 	private _cursorPositions: Position[];
@@ -221,10 +221,10 @@ export class DecorationsOverviewRuler extends ViewPart {
 
 		this._domNode = createFastDomNode(document.createElement('canvas'));
 		this._domNode.setClassName('decorationsOverviewRuler');
-		this._domNode.setPosition('absolute');
+		this._domNode.setPosition('aBsolute');
 		this._domNode.setLayerHinting(true);
 		this._domNode.setContain('strict');
-		this._domNode.setAttribute('aria-hidden', 'true');
+		this._domNode.setAttriBute('aria-hidden', 'true');
 
 		this._updateSettings(false);
 
@@ -237,12 +237,12 @@ export class DecorationsOverviewRuler extends ViewPart {
 		this._cursorPositions = [];
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 		this._tokensColorTrackerListener.dispose();
 	}
 
-	private _updateSettings(renderNow: boolean): boolean {
+	private _updateSettings(renderNow: Boolean): Boolean {
 		const newSettings = new Settings(this._context.configuration, this._context.theme);
 		if (this._settings && this._settings.equals(newSettings)) {
 			// nothing to do
@@ -265,12 +265,12 @@ export class DecorationsOverviewRuler extends ViewPart {
 		return true;
 	}
 
-	// ---- begin view event handlers
+	// ---- Begin view event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		return this._updateSettings(false);
 	}
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
+	puBlic onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): Boolean {
 		this._cursorPositions = [];
 		for (let i = 0, len = e.selections.length; i < len; i++) {
 			this._cursorPositions[i] = e.selections[i].getPosition();
@@ -278,22 +278,22 @@ export class DecorationsOverviewRuler extends ViewPart {
 		this._cursorPositions.sort(Position.compare);
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	puBlic onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): Boolean {
 		if (e.affectsOverviewRuler) {
 			return true;
 		}
 		return false;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return e.scrollHeightChanged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return true;
 	}
-	public onThemeChanged(e: viewEvents.ViewThemeChangedEvent): boolean {
+	puBlic onThemeChanged(e: viewEvents.ViewThemeChangedEvent): Boolean {
 		// invalidate color cache
 		this._context.model.invalidateOverviewRulerColorCache();
 		return this._updateSettings(false);
@@ -301,22 +301,22 @@ export class DecorationsOverviewRuler extends ViewPart {
 
 	// ---- end view event handlers
 
-	public getDomNode(): HTMLElement {
+	puBlic getDomNode(): HTMLElement {
 		return this._domNode.domNode;
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		// Nothing to read
 	}
 
-	public render(editorCtx: RestrictedRenderingContext): void {
+	puBlic render(editorCtx: RestrictedRenderingContext): void {
 		this._render();
 	}
 
 	private _render(): void {
 		if (this._settings.overviewRulerLanes === 0) {
 			// overview ruler is off
-			this._domNode.setBackgroundColor(this._settings.backgroundColor ? this._settings.backgroundColor : '');
+			this._domNode.setBackgroundColor(this._settings.BackgroundColor ? this._settings.BackgroundColor : '');
 			return;
 		}
 		const canvasWidth = this._settings.canvasWidth;
@@ -331,18 +331,18 @@ export class DecorationsOverviewRuler extends ViewPart {
 		const halfMinDecorationHeight = (minDecorationHeight / 2) | 0;
 
 		const canvasCtx = this._domNode.domNode.getContext('2d')!;
-		if (this._settings.backgroundColor === null) {
+		if (this._settings.BackgroundColor === null) {
 			canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 		} else {
-			canvasCtx.fillStyle = this._settings.backgroundColor;
+			canvasCtx.fillStyle = this._settings.BackgroundColor;
 			canvasCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 		}
 
 		const x = this._settings.x;
 		const w = this._settings.w;
-		// Avoid flickering by always rendering the colors in the same order
-		// colors that don't use transparency will be sorted last (they start with #)
-		const colors = Object.keys(decorations);
+		// Avoid flickering By always rendering the colors in the same order
+		// colors that don't use transparency will Be sorted last (they start with #)
+		const colors = OBject.keys(decorations);
 		colors.sort();
 		for (let cIndex = 0, cLen = colors.length; cIndex < cLen; cIndex++) {
 			const color = colors[cIndex];
@@ -356,11 +356,11 @@ export class DecorationsOverviewRuler extends ViewPart {
 			let prevY2 = 0;
 			for (let i = 0, len = colorDecorations.length; i < len; i++) {
 				const lane = colorDecorations[3 * i];
-				const startLineNumber = colorDecorations[3 * i + 1];
-				const endLineNumber = colorDecorations[3 * i + 2];
+				const startLineNumBer = colorDecorations[3 * i + 1];
+				const endLineNumBer = colorDecorations[3 * i + 2];
 
-				let y1 = (viewLayout.getVerticalOffsetForLineNumber(startLineNumber) * heightRatio) | 0;
-				let y2 = ((viewLayout.getVerticalOffsetForLineNumber(endLineNumber) + lineHeight) * heightRatio) | 0;
+				let y1 = (viewLayout.getVerticalOffsetForLineNumBer(startLineNumBer) * heightRatio) | 0;
+				let y2 = ((viewLayout.getVerticalOffsetForLineNumBer(endLineNumBer) + lineHeight) * heightRatio) | 0;
 				const height = y2 - y1;
 				if (height < minDecorationHeight) {
 					let yCenter = ((y1 + y2) / 2) | 0;
@@ -404,7 +404,7 @@ export class DecorationsOverviewRuler extends ViewPart {
 			for (let i = 0, len = this._cursorPositions.length; i < len; i++) {
 				const cursor = this._cursorPositions[i];
 
-				let yCenter = (viewLayout.getVerticalOffsetForLineNumber(cursor.lineNumber) * heightRatio) | 0;
+				let yCenter = (viewLayout.getVerticalOffsetForLineNumBer(cursor.lineNumBer) * heightRatio) | 0;
 				if (yCenter < halfCursorHeight) {
 					yCenter = halfCursorHeight;
 				} else if (yCenter + halfCursorHeight > canvasHeight) {
@@ -430,10 +430,10 @@ export class DecorationsOverviewRuler extends ViewPart {
 			canvasCtx.fillRect(cursorX, prevY1, cursorW, prevY2 - prevY1);
 		}
 
-		if (this._settings.renderBorder && this._settings.borderColor && this._settings.overviewRulerLanes > 0) {
-			canvasCtx.beginPath();
+		if (this._settings.renderBorder && this._settings.BorderColor && this._settings.overviewRulerLanes > 0) {
+			canvasCtx.BeginPath();
 			canvasCtx.lineWidth = 1;
-			canvasCtx.strokeStyle = this._settings.borderColor;
+			canvasCtx.strokeStyle = this._settings.BorderColor;
 			canvasCtx.moveTo(0, 0);
 			canvasCtx.lineTo(0, canvasHeight);
 			canvasCtx.stroke();

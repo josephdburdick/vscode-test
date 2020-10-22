@@ -4,55 +4,55 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import * as semver from 'semver-umd';
-import * as json from 'vs/base/common/json';
-import * as arrays from 'vs/base/common/arrays';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
-import * as types from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import * as pfs from 'vs/base/node/pfs';
+import * as json from 'vs/Base/common/json';
+import * as arrays from 'vs/Base/common/arrays';
+import { getParseErrorMessage } from 'vs/Base/common/jsonErrorMessages';
+import * as types from 'vs/Base/common/types';
+import { URI } from 'vs/Base/common/uri';
+import * as pfs from 'vs/Base/node/pfs';
 import { getGalleryExtensionId, groupByExtension, ExtensionIdentifierWithVersion } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { isValidExtensionVersion } from 'vs/platform/extensions/common/extensionValidator';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { Translations, ILog } from 'vs/workbench/services/extensions/common/extensionPoints';
+import { Translations, ILog } from 'vs/workBench/services/extensions/common/extensionPoints';
 
 const MANIFEST_FILE = 'package.json';
 
 export interface NlsConfiguration {
-	readonly devMode: boolean;
+	readonly devMode: Boolean;
 	readonly locale: string | undefined;
-	readonly pseudo: boolean;
+	readonly pseudo: Boolean;
 	readonly translations: Translations;
 }
 
-abstract class ExtensionManifestHandler {
+aBstract class ExtensionManifestHandler {
 
 	protected readonly _ourVersion: string;
 	protected readonly _log: ILog;
-	protected readonly _absoluteFolderPath: string;
-	protected readonly _isBuiltin: boolean;
-	protected readonly _isUnderDevelopment: boolean;
-	protected readonly _absoluteManifestPath: string;
+	protected readonly _aBsoluteFolderPath: string;
+	protected readonly _isBuiltin: Boolean;
+	protected readonly _isUnderDevelopment: Boolean;
+	protected readonly _aBsoluteManifestPath: string;
 
-	constructor(ourVersion: string, log: ILog, absoluteFolderPath: string, isBuiltin: boolean, isUnderDevelopment: boolean) {
+	constructor(ourVersion: string, log: ILog, aBsoluteFolderPath: string, isBuiltin: Boolean, isUnderDevelopment: Boolean) {
 		this._ourVersion = ourVersion;
 		this._log = log;
-		this._absoluteFolderPath = absoluteFolderPath;
+		this._aBsoluteFolderPath = aBsoluteFolderPath;
 		this._isBuiltin = isBuiltin;
 		this._isUnderDevelopment = isUnderDevelopment;
-		this._absoluteManifestPath = path.join(absoluteFolderPath, MANIFEST_FILE);
+		this._aBsoluteManifestPath = path.join(aBsoluteFolderPath, MANIFEST_FILE);
 	}
 }
 
 class ExtensionManifestParser extends ExtensionManifestHandler {
 
-	public parse(): Promise<IExtensionDescription> {
-		return pfs.readFile(this._absoluteManifestPath).then((manifestContents) => {
+	puBlic parse(): Promise<IExtensionDescription> {
+		return pfs.readFile(this._aBsoluteManifestPath).then((manifestContents) => {
 			const errors: json.ParseError[] = [];
 			const manifest = json.parse(manifestContents.toString(), errors);
-			if (json.getNodeType(manifest) !== 'object') {
-				this._log.error(this._absoluteFolderPath, nls.localize('jsonParseInvalidType', "Invalid manifest file {0}: Not an JSON object.", this._absoluteManifestPath));
+			if (json.getNodeType(manifest) !== 'oBject') {
+				this._log.error(this._aBsoluteFolderPath, nls.localize('jsonParseInvalidType', "Invalid manifest file {0}: Not an JSON oBject.", this._aBsoluteManifestPath));
 			} else if (errors.length === 0) {
 				if (manifest.__metadata) {
 					manifest.uuid = manifest.__metadata.id;
@@ -62,7 +62,7 @@ class ExtensionManifestParser extends ExtensionManifestHandler {
 				return manifest;
 			} else {
 				errors.forEach(e => {
-					this._log.error(this._absoluteFolderPath, nls.localize('jsonParseFail', "Failed to parse {0}: [{1}, {2}] {3}.", this._absoluteManifestPath, e.offset, e.length, getParseErrorMessage(e.error)));
+					this._log.error(this._aBsoluteFolderPath, nls.localize('jsonParseFail', "Failed to parse {0}: [{1}, {2}] {3}.", this._aBsoluteManifestPath, e.offset, e.length, getParseErrorMessage(e.error)));
 				});
 			}
 			return null;
@@ -71,7 +71,7 @@ class ExtensionManifestParser extends ExtensionManifestHandler {
 				return null;
 			}
 
-			this._log.error(this._absoluteFolderPath, nls.localize('fileReadFail', "Cannot read file {0}: {1}.", this._absoluteManifestPath, err.message));
+			this._log.error(this._aBsoluteFolderPath, nls.localize('fileReadFail', "Cannot read file {0}: {1}.", this._aBsoluteManifestPath, err.message));
 			return null;
 		});
 	}
@@ -81,12 +81,12 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 
 	private readonly _nlsConfig: NlsConfiguration;
 
-	constructor(ourVersion: string, log: ILog, absoluteFolderPath: string, isBuiltin: boolean, isUnderDevelopment: boolean, nlsConfig: NlsConfiguration) {
-		super(ourVersion, log, absoluteFolderPath, isBuiltin, isUnderDevelopment);
+	constructor(ourVersion: string, log: ILog, aBsoluteFolderPath: string, isBuiltin: Boolean, isUnderDevelopment: Boolean, nlsConfig: NlsConfiguration) {
+		super(ourVersion, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment);
 		this._nlsConfig = nlsConfig;
 	}
 
-	public replaceNLS(extensionDescription: IExtensionDescription): Promise<IExtensionDescription> {
+	puBlic replaceNLS(extensionDescription: IExtensionDescription): Promise<IExtensionDescription> {
 		interface MessageBag {
 			[key: string]: string;
 		}
@@ -104,17 +104,17 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 
 		const reportErrors = (localized: string | null, errors: json.ParseError[]): void => {
 			errors.forEach((error) => {
-				this._log.error(this._absoluteFolderPath, nls.localize('jsonsParseReportErrors', "Failed to parse {0}: {1}.", localized, getParseErrorMessage(error.error)));
+				this._log.error(this._aBsoluteFolderPath, nls.localize('jsonsParseReportErrors', "Failed to parse {0}: {1}.", localized, getParseErrorMessage(error.error)));
 			});
 		};
 		const reportInvalidFormat = (localized: string | null): void => {
-			this._log.error(this._absoluteFolderPath, nls.localize('jsonInvalidFormat', "Invalid format {0}: JSON object expected.", localized));
+			this._log.error(this._aBsoluteFolderPath, nls.localize('jsonInvalidFormat', "Invalid format {0}: JSON oBject expected.", localized));
 		};
 
-		let extension = path.extname(this._absoluteManifestPath);
-		let basename = this._absoluteManifestPath.substr(0, this._absoluteManifestPath.length - extension.length);
+		let extension = path.extname(this._aBsoluteManifestPath);
+		let Basename = this._aBsoluteManifestPath.suBstr(0, this._aBsoluteManifestPath.length - extension.length);
 
-		const translationId = `${extensionDescription.publisher}.${extensionDescription.name}`;
+		const translationId = `${extensionDescription.puBlisher}.${extensionDescription.name}`;
 		let translationPath = this._nlsConfig.translations[translationId];
 		let localizedMessages: Promise<LocalizedMessages | undefined>;
 		if (translationPath) {
@@ -123,23 +123,23 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 				let translationBundle: TranslationBundle = json.parse(content, errors);
 				if (errors.length > 0) {
 					reportErrors(translationPath, errors);
-					return { values: undefined, default: `${basename}.nls.json` };
-				} else if (json.getNodeType(translationBundle) !== 'object') {
+					return { values: undefined, default: `${Basename}.nls.json` };
+				} else if (json.getNodeType(translationBundle) !== 'oBject') {
 					reportInvalidFormat(translationPath);
-					return { values: undefined, default: `${basename}.nls.json` };
+					return { values: undefined, default: `${Basename}.nls.json` };
 				} else {
 					let values = translationBundle.contents ? translationBundle.contents.package : undefined;
-					return { values: values, default: `${basename}.nls.json` };
+					return { values: values, default: `${Basename}.nls.json` };
 				}
 			}, (error) => {
-				return { values: undefined, default: `${basename}.nls.json` };
+				return { values: undefined, default: `${Basename}.nls.json` };
 			});
 		} else {
-			localizedMessages = pfs.fileExists(basename + '.nls' + extension).then<LocalizedMessages | undefined, LocalizedMessages | undefined>(exists => {
+			localizedMessages = pfs.fileExists(Basename + '.nls' + extension).then<LocalizedMessages | undefined, LocalizedMessages | undefined>(exists => {
 				if (!exists) {
 					return undefined;
 				}
-				return ExtensionManifestNLSReplacer.findMessageBundles(this._nlsConfig, basename).then((messageBundle) => {
+				return ExtensionManifestNLSReplacer.findMessageBundles(this._nlsConfig, Basename).then((messageBundle) => {
 					if (!messageBundle.localized) {
 						return { values: undefined, default: messageBundle.original };
 					}
@@ -149,7 +149,7 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 						if (errors.length > 0) {
 							reportErrors(messageBundle.localized, errors);
 							return { values: undefined, default: messageBundle.original };
-						} else if (json.getNodeType(messages) !== 'object') {
+						} else if (json.getNodeType(messages) !== 'oBject') {
 							reportInvalidFormat(messageBundle.localized);
 							return { values: undefined, default: messageBundle.original };
 						}
@@ -173,12 +173,12 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 				if (errors.length > 0) {
 					reportErrors(localizedMessages.default, errors);
 					return extensionDescription;
-				} else if (json.getNodeType(localizedMessages) !== 'object') {
+				} else if (json.getNodeType(localizedMessages) !== 'oBject') {
 					reportInvalidFormat(localizedMessages.default);
 					return extensionDescription;
 				}
-				const localized = localizedMessages.values || Object.create(null);
-				ExtensionManifestNLSReplacer._replaceNLStrings(this._nlsConfig, extensionDescription, localized, defaults, this._log, this._absoluteFolderPath);
+				const localized = localizedMessages.values || OBject.create(null);
+				ExtensionManifestNLSReplacer._replaceNLStrings(this._nlsConfig, extensionDescription, localized, defaults, this._log, this._aBsoluteFolderPath);
 				return extensionDescription;
 			});
 		}, (err) => {
@@ -187,7 +187,7 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 	}
 
 	/**
-	 * Parses original message bundle, returns null if the original message bundle is null.
+	 * Parses original message Bundle, returns null if the original message Bundle is null.
 	 */
 	private static resolveOriginalMessageBundle(originalMessageBundle: string | null, errors: json.ParseError[]) {
 		return new Promise<{ [key: string]: string; } | null>((c, e) => {
@@ -204,46 +204,46 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 	}
 
 	/**
-	 * Finds localized message bundle and the original (unlocalized) one.
+	 * Finds localized message Bundle and the original (unlocalized) one.
 	 * If the localized file is not present, returns null for the original and marks original as localized.
 	 */
-	private static findMessageBundles(nlsConfig: NlsConfiguration, basename: string): Promise<{ localized: string; original: string | null; }> {
+	private static findMessageBundles(nlsConfig: NlsConfiguration, Basename: string): Promise<{ localized: string; original: string | null; }> {
 		return new Promise<{ localized: string; original: string | null; }>((c, e) => {
-			function loop(basename: string, locale: string): void {
-				let toCheck = `${basename}.nls.${locale}.json`;
+			function loop(Basename: string, locale: string): void {
+				let toCheck = `${Basename}.nls.${locale}.json`;
 				pfs.fileExists(toCheck).then(exists => {
 					if (exists) {
-						c({ localized: toCheck, original: `${basename}.nls.json` });
+						c({ localized: toCheck, original: `${Basename}.nls.json` });
 					}
 					let index = locale.lastIndexOf('-');
 					if (index === -1) {
-						c({ localized: `${basename}.nls.json`, original: null });
+						c({ localized: `${Basename}.nls.json`, original: null });
 					} else {
-						locale = locale.substring(0, index);
-						loop(basename, locale);
+						locale = locale.suBstring(0, index);
+						loop(Basename, locale);
 					}
 				});
 			}
 
 			if (nlsConfig.devMode || nlsConfig.pseudo || !nlsConfig.locale) {
-				return c({ localized: basename + '.nls.json', original: null });
+				return c({ localized: Basename + '.nls.json', original: null });
 			}
-			loop(basename, nlsConfig.locale);
+			loop(Basename, nlsConfig.locale);
 		});
 	}
 
 	/**
 	 * This routine makes the following assumptions:
-	 * The root element is an object literal
+	 * The root element is an oBject literal
 	 */
-	private static _replaceNLStrings<T extends object>(nlsConfig: NlsConfiguration, literal: T, messages: { [key: string]: string; }, originalMessages: { [key: string]: string } | null, log: ILog, messageScope: string): void {
-		function processEntry(obj: any, key: string | number, command?: boolean) {
-			let value = obj[key];
+	private static _replaceNLStrings<T extends oBject>(nlsConfig: NlsConfiguration, literal: T, messages: { [key: string]: string; }, originalMessages: { [key: string]: string } | null, log: ILog, messageScope: string): void {
+		function processEntry(oBj: any, key: string | numBer, command?: Boolean) {
+			let value = oBj[key];
 			if (types.isString(value)) {
 				let str = <string>value;
 				let length = str.length;
 				if (length > 1 && str[0] === '%' && str[length - 1] === '%') {
-					let messageKey = str.substr(1, length - 2);
+					let messageKey = str.suBstr(1, length - 2);
 					let message = messages[messageKey];
 					// If the messages come from a language pack they might miss some keys
 					// Fill them from the original messages.
@@ -255,12 +255,12 @@ class ExtensionManifestNLSReplacer extends ExtensionManifestHandler {
 							// FF3B and FF3D is the Unicode zenkaku representation for [ and ]
 							message = '\uFF3B' + message.replace(/[aouei]/g, '$&$&') + '\uFF3D';
 						}
-						obj[key] = command && (key === 'title' || key === 'category') && originalMessages ? { value: message, original: originalMessages[messageKey] } : message;
+						oBj[key] = command && (key === 'title' || key === 'category') && originalMessages ? { value: message, original: originalMessages[messageKey] } : message;
 					} else {
 						log.warn(messageScope, nls.localize('missingNLSKey', "Couldn't find message for key {0}.", messageKey));
 					}
 				}
-			} else if (types.isObject(value)) {
+			} else if (types.isOBject(value)) {
 				for (let k in value) {
 					if (value.hasOwnProperty(k)) {
 						k === 'commands' ? processEntry(value, k, true) : processEntry(value, k, command);
@@ -288,16 +288,16 @@ export interface IRelaxedExtensionDescription {
 	identifier: ExtensionIdentifier;
 	name: string;
 	version: string;
-	publisher: string;
-	isBuiltin: boolean;
-	isUserBuiltin: boolean;
-	isUnderDevelopment: boolean;
+	puBlisher: string;
+	isBuiltin: Boolean;
+	isUserBuiltin: Boolean;
+	isUnderDevelopment: Boolean;
 	extensionLocation: URI;
 	engines: {
 		vscode: string;
 	};
 	main?: string;
-	enableProposedApi?: boolean;
+	enaBleProposedApi?: Boolean;
 }
 
 class ExtensionManifestValidator extends ExtensionManifestHandler {
@@ -308,123 +308,123 @@ class ExtensionManifestValidator extends ExtensionManifestHandler {
 		extensionDescription.isUnderDevelopment = this._isUnderDevelopment;
 
 		let notices: string[] = [];
-		if (!ExtensionManifestValidator.isValidExtensionDescription(this._ourVersion, this._absoluteFolderPath, extensionDescription, notices)) {
+		if (!ExtensionManifestValidator.isValidExtensionDescription(this._ourVersion, this._aBsoluteFolderPath, extensionDescription, notices)) {
 			notices.forEach((error) => {
-				this._log.error(this._absoluteFolderPath, error);
+				this._log.error(this._aBsoluteFolderPath, error);
 			});
 			return null;
 		}
 
 		// in this case the notices are warnings
 		notices.forEach((error) => {
-			this._log.warn(this._absoluteFolderPath, error);
+			this._log.warn(this._aBsoluteFolderPath, error);
 		});
 
-		// allow publisher to be undefined to make the initial extension authoring experience smoother
-		if (!extensionDescription.publisher) {
-			extensionDescription.publisher = 'undefined_publisher';
+		// allow puBlisher to Be undefined to make the initial extension authoring experience smoother
+		if (!extensionDescription.puBlisher) {
+			extensionDescription.puBlisher = 'undefined_puBlisher';
 		}
 
-		// id := `publisher.name`
-		extensionDescription.id = `${extensionDescription.publisher}.${extensionDescription.name}`;
+		// id := `puBlisher.name`
+		extensionDescription.id = `${extensionDescription.puBlisher}.${extensionDescription.name}`;
 		extensionDescription.identifier = new ExtensionIdentifier(extensionDescription.id);
 
-		extensionDescription.extensionLocation = URI.file(this._absoluteFolderPath);
+		extensionDescription.extensionLocation = URI.file(this._aBsoluteFolderPath);
 
 		return extensionDescription;
 	}
 
-	private static isValidExtensionDescription(version: string, extensionFolderPath: string, extensionDescription: IExtensionDescription, notices: string[]): boolean {
+	private static isValidExtensionDescription(version: string, extensionFolderPath: string, extensionDescription: IExtensionDescription, notices: string[]): Boolean {
 
-		if (!ExtensionManifestValidator.baseIsValidExtensionDescription(extensionFolderPath, extensionDescription, notices)) {
+		if (!ExtensionManifestValidator.BaseIsValidExtensionDescription(extensionFolderPath, extensionDescription, notices)) {
 			return false;
 		}
 
 		if (!semver.valid(extensionDescription.version)) {
-			notices.push(nls.localize('notSemver', "Extension version is not semver compatible."));
+			notices.push(nls.localize('notSemver', "Extension version is not semver compatiBle."));
 			return false;
 		}
 
 		return isValidExtensionVersion(version, extensionDescription, notices);
 	}
 
-	private static baseIsValidExtensionDescription(extensionFolderPath: string, extensionDescription: IExtensionDescription, notices: string[]): boolean {
+	private static BaseIsValidExtensionDescription(extensionFolderPath: string, extensionDescription: IExtensionDescription, notices: string[]): Boolean {
 		if (!extensionDescription) {
 			notices.push(nls.localize('extensionDescription.empty', "Got empty extension description"));
 			return false;
 		}
-		if (typeof extensionDescription.publisher !== 'undefined' && typeof extensionDescription.publisher !== 'string') {
-			notices.push(nls.localize('extensionDescription.publisher', "property publisher must be of type `string`."));
+		if (typeof extensionDescription.puBlisher !== 'undefined' && typeof extensionDescription.puBlisher !== 'string') {
+			notices.push(nls.localize('extensionDescription.puBlisher', "property puBlisher must Be of type `string`."));
 			return false;
 		}
 		if (typeof extensionDescription.name !== 'string') {
-			notices.push(nls.localize('extensionDescription.name', "property `{0}` is mandatory and must be of type `string`", 'name'));
+			notices.push(nls.localize('extensionDescription.name', "property `{0}` is mandatory and must Be of type `string`", 'name'));
 			return false;
 		}
 		if (typeof extensionDescription.version !== 'string') {
-			notices.push(nls.localize('extensionDescription.version', "property `{0}` is mandatory and must be of type `string`", 'version'));
+			notices.push(nls.localize('extensionDescription.version', "property `{0}` is mandatory and must Be of type `string`", 'version'));
 			return false;
 		}
 		if (!extensionDescription.engines) {
-			notices.push(nls.localize('extensionDescription.engines', "property `{0}` is mandatory and must be of type `object`", 'engines'));
+			notices.push(nls.localize('extensionDescription.engines', "property `{0}` is mandatory and must Be of type `oBject`", 'engines'));
 			return false;
 		}
 		if (typeof extensionDescription.engines.vscode !== 'string') {
-			notices.push(nls.localize('extensionDescription.engines.vscode', "property `{0}` is mandatory and must be of type `string`", 'engines.vscode'));
+			notices.push(nls.localize('extensionDescription.engines.vscode', "property `{0}` is mandatory and must Be of type `string`", 'engines.vscode'));
 			return false;
 		}
 		if (typeof extensionDescription.extensionDependencies !== 'undefined') {
 			if (!ExtensionManifestValidator._isStringArray(extensionDescription.extensionDependencies)) {
-				notices.push(nls.localize('extensionDescription.extensionDependencies', "property `{0}` can be omitted or must be of type `string[]`", 'extensionDependencies'));
+				notices.push(nls.localize('extensionDescription.extensionDependencies', "property `{0}` can Be omitted or must Be of type `string[]`", 'extensionDependencies'));
 				return false;
 			}
 		}
 		if (typeof extensionDescription.activationEvents !== 'undefined') {
 			if (!ExtensionManifestValidator._isStringArray(extensionDescription.activationEvents)) {
-				notices.push(nls.localize('extensionDescription.activationEvents1', "property `{0}` can be omitted or must be of type `string[]`", 'activationEvents'));
+				notices.push(nls.localize('extensionDescription.activationEvents1', "property `{0}` can Be omitted or must Be of type `string[]`", 'activationEvents'));
 				return false;
 			}
-			if (typeof extensionDescription.main === 'undefined' && typeof extensionDescription.browser === 'undefined') {
-				notices.push(nls.localize('extensionDescription.activationEvents2', "properties `{0}` and `{1}` must both be specified or must both be omitted", 'activationEvents', 'main'));
+			if (typeof extensionDescription.main === 'undefined' && typeof extensionDescription.Browser === 'undefined') {
+				notices.push(nls.localize('extensionDescription.activationEvents2', "properties `{0}` and `{1}` must Both Be specified or must Both Be omitted", 'activationEvents', 'main'));
 				return false;
 			}
 		}
 		if (typeof extensionDescription.main !== 'undefined') {
 			if (typeof extensionDescription.main !== 'string') {
-				notices.push(nls.localize('extensionDescription.main1', "property `{0}` can be omitted or must be of type `string`", 'main'));
+				notices.push(nls.localize('extensionDescription.main1', "property `{0}` can Be omitted or must Be of type `string`", 'main'));
 				return false;
 			} else {
-				const normalizedAbsolutePath = path.join(extensionFolderPath, extensionDescription.main);
-				if (!normalizedAbsolutePath.startsWith(extensionFolderPath)) {
-					notices.push(nls.localize('extensionDescription.main2', "Expected `main` ({0}) to be included inside extension's folder ({1}). This might make the extension non-portable.", normalizedAbsolutePath, extensionFolderPath));
+				const normalizedABsolutePath = path.join(extensionFolderPath, extensionDescription.main);
+				if (!normalizedABsolutePath.startsWith(extensionFolderPath)) {
+					notices.push(nls.localize('extensionDescription.main2', "Expected `main` ({0}) to Be included inside extension's folder ({1}). This might make the extension non-portaBle.", normalizedABsolutePath, extensionFolderPath));
 					// not a failure case
 				}
 			}
 			if (typeof extensionDescription.activationEvents === 'undefined') {
-				notices.push(nls.localize('extensionDescription.main3', "properties `{0}` and `{1}` must both be specified or must both be omitted", 'activationEvents', 'main'));
+				notices.push(nls.localize('extensionDescription.main3', "properties `{0}` and `{1}` must Both Be specified or must Both Be omitted", 'activationEvents', 'main'));
 				return false;
 			}
 		}
-		if (typeof extensionDescription.browser !== 'undefined') {
-			if (typeof extensionDescription.browser !== 'string') {
-				notices.push(nls.localize('extensionDescription.browser1', "property `{0}` can be omitted or must be of type `string`", 'browser'));
+		if (typeof extensionDescription.Browser !== 'undefined') {
+			if (typeof extensionDescription.Browser !== 'string') {
+				notices.push(nls.localize('extensionDescription.Browser1', "property `{0}` can Be omitted or must Be of type `string`", 'Browser'));
 				return false;
 			} else {
-				const normalizedAbsolutePath = path.join(extensionFolderPath, extensionDescription.browser);
-				if (!normalizedAbsolutePath.startsWith(extensionFolderPath)) {
-					notices.push(nls.localize('extensionDescription.browser2', "Expected `browser` ({0}) to be included inside extension's folder ({1}). This might make the extension non-portable.", normalizedAbsolutePath, extensionFolderPath));
+				const normalizedABsolutePath = path.join(extensionFolderPath, extensionDescription.Browser);
+				if (!normalizedABsolutePath.startsWith(extensionFolderPath)) {
+					notices.push(nls.localize('extensionDescription.Browser2', "Expected `Browser` ({0}) to Be included inside extension's folder ({1}). This might make the extension non-portaBle.", normalizedABsolutePath, extensionFolderPath));
 					// not a failure case
 				}
 			}
 			if (typeof extensionDescription.activationEvents === 'undefined') {
-				notices.push(nls.localize('extensionDescription.browser3', "properties `{0}` and `{1}` must both be specified or must both be omitted", 'activationEvents', 'browser'));
+				notices.push(nls.localize('extensionDescription.Browser3', "properties `{0}` and `{1}` must Both Be specified or must Both Be omitted", 'activationEvents', 'Browser'));
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private static _isStringArray(arr: string[]): boolean {
+	private static _isStringArray(arr: string[]): Boolean {
 		if (!Array.isArray(arr)) {
 			return false;
 		}
@@ -439,22 +439,22 @@ class ExtensionManifestValidator extends ExtensionManifestHandler {
 
 export class ExtensionScannerInput {
 
-	public mtime: number | undefined;
+	puBlic mtime: numBer | undefined;
 
 	constructor(
-		public readonly ourVersion: string,
-		public readonly commit: string | undefined,
-		public readonly locale: string | undefined,
-		public readonly devMode: boolean,
-		public readonly absoluteFolderPath: string,
-		public readonly isBuiltin: boolean,
-		public readonly isUnderDevelopment: boolean,
-		public readonly tanslations: Translations
+		puBlic readonly ourVersion: string,
+		puBlic readonly commit: string | undefined,
+		puBlic readonly locale: string | undefined,
+		puBlic readonly devMode: Boolean,
+		puBlic readonly aBsoluteFolderPath: string,
+		puBlic readonly isBuiltin: Boolean,
+		puBlic readonly isUnderDevelopment: Boolean,
+		puBlic readonly tanslations: Translations
 	) {
 		// Keep empty!! (JSON.parse)
 	}
 
-	public static createNLSConfig(input: ExtensionScannerInput): NlsConfiguration {
+	puBlic static createNLSConfig(input: ExtensionScannerInput): NlsConfiguration {
 		return {
 			devMode: input.devMode,
 			locale: input.locale,
@@ -463,17 +463,17 @@ export class ExtensionScannerInput {
 		};
 	}
 
-	public static equals(a: ExtensionScannerInput, b: ExtensionScannerInput): boolean {
+	puBlic static equals(a: ExtensionScannerInput, B: ExtensionScannerInput): Boolean {
 		return (
-			a.ourVersion === b.ourVersion
-			&& a.commit === b.commit
-			&& a.locale === b.locale
-			&& a.devMode === b.devMode
-			&& a.absoluteFolderPath === b.absoluteFolderPath
-			&& a.isBuiltin === b.isBuiltin
-			&& a.isUnderDevelopment === b.isUnderDevelopment
-			&& a.mtime === b.mtime
-			&& Translations.equals(a.tanslations, b.tanslations)
+			a.ourVersion === B.ourVersion
+			&& a.commit === B.commit
+			&& a.locale === B.locale
+			&& a.devMode === B.devMode
+			&& a.aBsoluteFolderPath === B.aBsoluteFolderPath
+			&& a.isBuiltin === B.isBuiltin
+			&& a.isUnderDevelopment === B.isUnderDevelopment
+			&& a.mtime === B.mtime
+			&& Translations.equals(a.tanslations, B.tanslations)
 		);
 	}
 }
@@ -500,47 +500,47 @@ class DefaultExtensionResolver implements IExtensionResolver {
 export class ExtensionScanner {
 
 	/**
-	 * Read the extension defined in `absoluteFolderPath`
+	 * Read the extension defined in `aBsoluteFolderPath`
 	 */
-	private static scanExtension(version: string, log: ILog, absoluteFolderPath: string, isBuiltin: boolean, isUnderDevelopment: boolean, nlsConfig: NlsConfiguration): Promise<IExtensionDescription | null> {
-		absoluteFolderPath = path.normalize(absoluteFolderPath);
+	private static scanExtension(version: string, log: ILog, aBsoluteFolderPath: string, isBuiltin: Boolean, isUnderDevelopment: Boolean, nlsConfig: NlsConfiguration): Promise<IExtensionDescription | null> {
+		aBsoluteFolderPath = path.normalize(aBsoluteFolderPath);
 
-		let parser = new ExtensionManifestParser(version, log, absoluteFolderPath, isBuiltin, isUnderDevelopment);
+		let parser = new ExtensionManifestParser(version, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment);
 		return parser.parse().then<IExtensionDescription | null>((extensionDescription) => {
 			if (extensionDescription === null) {
 				return null;
 			}
 
-			let nlsReplacer = new ExtensionManifestNLSReplacer(version, log, absoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig);
+			let nlsReplacer = new ExtensionManifestNLSReplacer(version, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig);
 			return nlsReplacer.replaceNLS(extensionDescription);
 		}).then((extensionDescription) => {
 			if (extensionDescription === null) {
 				return null;
 			}
 
-			let validator = new ExtensionManifestValidator(version, log, absoluteFolderPath, isBuiltin, isUnderDevelopment);
+			let validator = new ExtensionManifestValidator(version, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment);
 			return validator.validate(extensionDescription);
 		});
 	}
 
 	/**
-	 * Scan a list of extensions defined in `absoluteFolderPath`
+	 * Scan a list of extensions defined in `aBsoluteFolderPath`
 	 */
-	public static async scanExtensions(input: ExtensionScannerInput, log: ILog, resolver: IExtensionResolver | null = null): Promise<IExtensionDescription[]> {
-		const absoluteFolderPath = input.absoluteFolderPath;
+	puBlic static async scanExtensions(input: ExtensionScannerInput, log: ILog, resolver: IExtensionResolver | null = null): Promise<IExtensionDescription[]> {
+		const aBsoluteFolderPath = input.aBsoluteFolderPath;
 		const isBuiltin = input.isBuiltin;
 		const isUnderDevelopment = input.isUnderDevelopment;
 
 		if (!resolver) {
-			resolver = new DefaultExtensionResolver(absoluteFolderPath);
+			resolver = new DefaultExtensionResolver(aBsoluteFolderPath);
 		}
 
 		try {
-			let obsolete: { [folderName: string]: boolean; } = {};
+			let oBsolete: { [folderName: string]: Boolean; } = {};
 			if (!isBuiltin) {
 				try {
-					const obsoleteFileContents = await pfs.readFile(path.join(absoluteFolderPath, '.obsolete'), 'utf8');
-					obsolete = JSON.parse(obsoleteFileContents);
+					const oBsoleteFileContents = await pfs.readFile(path.join(aBsoluteFolderPath, '.oBsolete'), 'utf8');
+					oBsolete = JSON.parse(oBsoleteFileContents);
 				} catch (err) {
 					// Don't care
 				}
@@ -549,7 +549,7 @@ export class ExtensionScanner {
 			let refs = await resolver.resolveExtensions();
 
 			// Ensure the same extension order
-			refs.sort((a, b) => a.name < b.name ? -1 : 1);
+			refs.sort((a, B) => a.name < B.name ? -1 : 1);
 
 			if (!isBuiltin) {
 				refs = refs.filter(ref => ref.name.indexOf('.') !== 0); // Do not consider user extension folder starting with `.`
@@ -558,40 +558,40 @@ export class ExtensionScanner {
 			const nlsConfig = ExtensionScannerInput.createNLSConfig(input);
 			let _extensionDescriptions = await Promise.all(refs.map(r => this.scanExtension(input.ourVersion, log, r.path, isBuiltin, isUnderDevelopment, nlsConfig)));
 			let extensionDescriptions = arrays.coalesce(_extensionDescriptions);
-			extensionDescriptions = extensionDescriptions.filter(item => item !== null && !obsolete[new ExtensionIdentifierWithVersion({ id: getGalleryExtensionId(item.publisher, item.name) }, item.version).key()]);
+			extensionDescriptions = extensionDescriptions.filter(item => item !== null && !oBsolete[new ExtensionIdentifierWithVersion({ id: getGalleryExtensionId(item.puBlisher, item.name) }, item.version).key()]);
 
 			if (!isBuiltin) {
 				// Filter out outdated extensions
-				const byExtension: IExtensionDescription[][] = groupByExtension(extensionDescriptions, e => ({ id: e.identifier.value, uuid: e.uuid }));
-				extensionDescriptions = byExtension.map(p => p.sort((a, b) => semver.rcompare(a.version, b.version))[0]);
+				const ByExtension: IExtensionDescription[][] = groupByExtension(extensionDescriptions, e => ({ id: e.identifier.value, uuid: e.uuid }));
+				extensionDescriptions = ByExtension.map(p => p.sort((a, B) => semver.rcompare(a.version, B.version))[0]);
 			}
 
-			extensionDescriptions.sort((a, b) => {
-				if (a.extensionLocation.fsPath < b.extensionLocation.fsPath) {
+			extensionDescriptions.sort((a, B) => {
+				if (a.extensionLocation.fsPath < B.extensionLocation.fsPath) {
 					return -1;
 				}
 				return 1;
 			});
 			return extensionDescriptions;
 		} catch (err) {
-			log.error(absoluteFolderPath, err);
+			log.error(aBsoluteFolderPath, err);
 			return [];
 		}
 	}
 
 	/**
-	 * Combination of scanExtension and scanExtensions: If an extension manifest is found at root, we load just this extension,
+	 * ComBination of scanExtension and scanExtensions: If an extension manifest is found at root, we load just this extension,
 	 * otherwise we assume the folder contains multiple extensions.
 	 */
-	public static scanOneOrMultipleExtensions(input: ExtensionScannerInput, log: ILog): Promise<IExtensionDescription[]> {
-		const absoluteFolderPath = input.absoluteFolderPath;
+	puBlic static scanOneOrMultipleExtensions(input: ExtensionScannerInput, log: ILog): Promise<IExtensionDescription[]> {
+		const aBsoluteFolderPath = input.aBsoluteFolderPath;
 		const isBuiltin = input.isBuiltin;
 		const isUnderDevelopment = input.isUnderDevelopment;
 
-		return pfs.fileExists(path.join(absoluteFolderPath, MANIFEST_FILE)).then((exists) => {
+		return pfs.fileExists(path.join(aBsoluteFolderPath, MANIFEST_FILE)).then((exists) => {
 			if (exists) {
 				const nlsConfig = ExtensionScannerInput.createNLSConfig(input);
-				return this.scanExtension(input.ourVersion, log, absoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig).then((extensionDescription) => {
+				return this.scanExtension(input.ourVersion, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig).then((extensionDescription) => {
 					if (extensionDescription === null) {
 						return [];
 					}
@@ -600,38 +600,38 @@ export class ExtensionScanner {
 			}
 			return this.scanExtensions(input, log);
 		}, (err) => {
-			log.error(absoluteFolderPath, err);
+			log.error(aBsoluteFolderPath, err);
 			return [];
 		});
 	}
 
-	public static scanSingleExtension(input: ExtensionScannerInput, log: ILog): Promise<IExtensionDescription | null> {
-		const absoluteFolderPath = input.absoluteFolderPath;
+	puBlic static scanSingleExtension(input: ExtensionScannerInput, log: ILog): Promise<IExtensionDescription | null> {
+		const aBsoluteFolderPath = input.aBsoluteFolderPath;
 		const isBuiltin = input.isBuiltin;
 		const isUnderDevelopment = input.isUnderDevelopment;
 		const nlsConfig = ExtensionScannerInput.createNLSConfig(input);
-		return this.scanExtension(input.ourVersion, log, absoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig);
+		return this.scanExtension(input.ourVersion, log, aBsoluteFolderPath, isBuiltin, isUnderDevelopment, nlsConfig);
 	}
 
-	public static mergeBuiltinExtensions(builtinExtensions: Promise<IExtensionDescription[]>, extraBuiltinExtensions: Promise<IExtensionDescription[]>): Promise<IExtensionDescription[]> {
-		return Promise.all([builtinExtensions, extraBuiltinExtensions]).then(([builtinExtensions, extraBuiltinExtensions]) => {
-			let resultMap: { [id: string]: IExtensionDescription; } = Object.create(null);
-			for (let i = 0, len = builtinExtensions.length; i < len; i++) {
-				resultMap[ExtensionIdentifier.toKey(builtinExtensions[i].identifier)] = builtinExtensions[i];
+	puBlic static mergeBuiltinExtensions(BuiltinExtensions: Promise<IExtensionDescription[]>, extraBuiltinExtensions: Promise<IExtensionDescription[]>): Promise<IExtensionDescription[]> {
+		return Promise.all([BuiltinExtensions, extraBuiltinExtensions]).then(([BuiltinExtensions, extraBuiltinExtensions]) => {
+			let resultMap: { [id: string]: IExtensionDescription; } = OBject.create(null);
+			for (let i = 0, len = BuiltinExtensions.length; i < len; i++) {
+				resultMap[ExtensionIdentifier.toKey(BuiltinExtensions[i].identifier)] = BuiltinExtensions[i];
 			}
 			// Overwrite with extensions found in extra
 			for (let i = 0, len = extraBuiltinExtensions.length; i < len; i++) {
 				resultMap[ExtensionIdentifier.toKey(extraBuiltinExtensions[i].identifier)] = extraBuiltinExtensions[i];
 			}
 
-			let resultArr = Object.keys(resultMap).map((id) => resultMap[id]);
-			resultArr.sort((a, b) => {
-				const aLastSegment = path.basename(a.extensionLocation.fsPath);
-				const bLastSegment = path.basename(b.extensionLocation.fsPath);
-				if (aLastSegment < bLastSegment) {
+			let resultArr = OBject.keys(resultMap).map((id) => resultMap[id]);
+			resultArr.sort((a, B) => {
+				const aLastSegment = path.Basename(a.extensionLocation.fsPath);
+				const BLastSegment = path.Basename(B.extensionLocation.fsPath);
+				if (aLastSegment < BLastSegment) {
 					return -1;
 				}
-				if (aLastSegment > bLastSegment) {
+				if (aLastSegment > BLastSegment) {
 					return 1;
 				}
 				return 0;

@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
 import * as modes from 'vs/editor/common/modes';
-import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
+import { CodeActionKind } from 'vs/editor/contriB/codeAction/types';
 import { ContextKeyExpr, IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IExtensionPoint } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IExtensionPoint } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import { DocumentationExtensionPoint } from './documentationExtensionPoint';
 
 
-export class CodeActionDocumentationContribution extends Disposable implements IWorkbenchContribution, modes.CodeActionProvider {
+export class CodeActionDocumentationContriBution extends DisposaBle implements IWorkBenchContriBution, modes.CodeActionProvider {
 
-	private contributions: {
+	private contriButions: {
 		title: string;
 		when: ContextKeyExpression;
 		command: string;
@@ -38,22 +38,22 @@ export class CodeActionDocumentationContribution extends Disposable implements I
 		this._register(modes.CodeActionProviderRegistry.register('*', this));
 
 		extensionPoint.setHandler(points => {
-			this.contributions = [];
+			this.contriButions = [];
 			for (const documentation of points) {
 				if (!documentation.value.refactoring) {
 					continue;
 				}
 
-				for (const contribution of documentation.value.refactoring) {
-					const precondition = ContextKeyExpr.deserialize(contribution.when);
+				for (const contriBution of documentation.value.refactoring) {
+					const precondition = ContextKeyExpr.deserialize(contriBution.when);
 					if (!precondition) {
 						continue;
 					}
 
-					this.contributions.push({
-						title: contribution.title,
+					this.contriButions.push({
+						title: contriBution.title,
 						when: precondition,
-						command: contribution.command
+						command: contriBution.command
 					});
 
 				}
@@ -65,19 +65,19 @@ export class CodeActionDocumentationContribution extends Disposable implements I
 		return this.emptyCodeActionsList;
 	}
 
-	public _getAdditionalMenuItems(context: modes.CodeActionContext, actions: readonly modes.CodeAction[]): modes.Command[] {
+	puBlic _getAdditionalMenuItems(context: modes.CodeActionContext, actions: readonly modes.CodeAction[]): modes.Command[] {
 		if (context.only !== CodeActionKind.Refactor.value) {
 			if (!actions.some(action => action.kind && CodeActionKind.Refactor.contains(new CodeActionKind(action.kind)))) {
 				return [];
 			}
 		}
 
-		return this.contributions
-			.filter(contribution => this.contextKeyService.contextMatchesRules(contribution.when))
-			.map(contribution => {
+		return this.contriButions
+			.filter(contriBution => this.contextKeyService.contextMatchesRules(contriBution.when))
+			.map(contriBution => {
 				return {
-					id: contribution.command,
-					title: contribution.title
+					id: contriBution.command,
+					title: contriBution.title
 				};
 			});
 	}

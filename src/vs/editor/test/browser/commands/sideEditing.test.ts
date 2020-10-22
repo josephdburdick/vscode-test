@@ -9,7 +9,7 @@ import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 
 function testCommand(lines: string[], selections: Selection[], edits: IIdentifiedSingleEditOperation[], expectedLines: string[], expectedSelections: Selection[]): void {
 	withTestCodeEditor(lines, {}, (editor, viewModel) => {
@@ -121,14 +121,14 @@ suite('Editor Side Editing - collapsed selection', () => {
 	test('issue #3994: replace on top of selection', () => {
 		testCommand(
 			[
-				'$obj = New-Object "system.col"'
+				'$oBj = New-OBject "system.col"'
 			],
 			[new Selection(1, 30, 1, 30)],
 			[
 				EditOperation.replaceMove(new Range(1, 19, 1, 31), '"System.Collections"')
 			],
 			[
-				'$obj = New-Object "System.Collections"'
+				'$oBj = New-OBject "System.Collections"'
 			],
 			[new Selection(1, 39, 1, 39)]
 		);
@@ -167,10 +167,10 @@ suite('Editor Side Editing - collapsed selection', () => {
 		);
 	});
 
-	test('issue #15236: Selections broke after deleting text using vscode.TextEditor.edit ', () => {
+	test('issue #15236: Selections Broke after deleting text using vscode.TextEditor.edit ', () => {
 		testCommand(
 			[
-				'foofoofoo, foofoofoo, bar'
+				'foofoofoo, foofoofoo, Bar'
 			],
 			[new Selection(1, 1, 1, 10), new Selection(1, 12, 1, 21)],
 			[
@@ -178,7 +178,7 @@ suite('Editor Side Editing - collapsed selection', () => {
 				EditOperation.replace(new Range(1, 12, 1, 21), ''),
 			],
 			[
-				', , bar'
+				', , Bar'
 			],
 			[new Selection(1, 1, 1, 1), new Selection(1, 3, 1, 3)]
 		);
@@ -193,7 +193,7 @@ suite('SideEditing', () => {
 		'Third Line'
 	];
 
-	function _runTest(selection: Selection, editRange: Range, editText: string, editForceMoveMarkers: boolean, expected: Selection, msg: string): void {
+	function _runTest(selection: Selection, editRange: Range, editText: string, editForceMoveMarkers: Boolean, expected: Selection, msg: string): void {
 		withTestCodeEditor(LINES.join('\n'), {}, (editor, viewModel) => {
 			viewModel.setSelections('tests', [selection]);
 			editor.getModel().applyEdits([{
@@ -207,19 +207,19 @@ suite('SideEditing', () => {
 	}
 
 	function runTest(selection: Range, editRange: Range, editText: string, expected: Selection[][]): void {
-		const sel1 = new Selection(selection.startLineNumber, selection.startColumn, selection.endLineNumber, selection.endColumn);
+		const sel1 = new Selection(selection.startLineNumBer, selection.startColumn, selection.endLineNumBer, selection.endColumn);
 		_runTest(sel1, editRange, editText, false, expected[0][0], '0-0-regular-no-force');
 		_runTest(sel1, editRange, editText, true, expected[1][0], '1-0-regular-force');
 
 		// RTL selection
-		const sel2 = new Selection(selection.endLineNumber, selection.endColumn, selection.startLineNumber, selection.startColumn);
+		const sel2 = new Selection(selection.endLineNumBer, selection.endColumn, selection.startLineNumBer, selection.startColumn);
 		_runTest(sel2, editRange, editText, false, expected[0][1], '0-1-inverse-no-force');
 		_runTest(sel2, editRange, editText, true, expected[1][1], '1-1-inverse-force');
 	}
 
 	suite('insert', () => {
 		suite('collapsed sel', () => {
-			test('before', () => {
+			test('Before', () => {
 				runTest(
 					new Range(1, 4, 1, 4),
 					new Range(1, 3, 1, 3), 'xx',
@@ -251,7 +251,7 @@ suite('SideEditing', () => {
 			});
 		});
 		suite('non-collapsed dec', () => {
-			test('before', () => {
+			test('Before', () => {
 				runTest(
 					new Range(1, 4, 1, 9),
 					new Range(1, 3, 1, 3), 'xx',

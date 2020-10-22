@@ -22,7 +22,7 @@ export class ServiceCollection {
 		return result;
 	}
 
-	has(id: ServiceIdentifier<any>): boolean {
+	has(id: ServiceIdentifier<any>): Boolean {
 		return this._entries.has(id);
 	}
 

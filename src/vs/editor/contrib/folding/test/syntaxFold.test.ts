@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { SyntaxRangeProvider } from 'vs/editor/contrib/folding/syntaxRangeProvider';
+import { SyntaxRangeProvider } from 'vs/editor/contriB/folding/syntaxRangeProvider';
 import { FoldingRangeProvider, FoldingRange, FoldingContext, ProviderResult } from 'vs/editor/common/modes';
 import { ITextModel } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 interface IndentRange {
-	start: number;
-	end: number;
+	start: numBer;
+	end: numBer;
 }
 
 class TestFoldingRangeProvider implements FoldingRangeProvider {
@@ -27,11 +27,11 @@ class TestFoldingRangeProvider implements FoldingRangeProvider {
 }
 
 suite('Syntax folding', () => {
-	function r(start: number, end: number): IndentRange {
+	function r(start: numBer, end: numBer): IndentRange {
 		return { start, end };
 	}
 
-	test('Limit by nesting level', async () => {
+	test('Limit By nesting level', async () => {
 		let lines = [
 			/* 1*/	'{',
 			/* 2*/	'  A',
@@ -73,12 +73,12 @@ suite('Syntax folding', () => {
 		let ranges = [r1, r2, r3, r4, r5, r6, r7, r8, r9];
 		let providers = [new TestFoldingRangeProvider(model, ranges)];
 
-		async function assertLimit(maxEntries: number, expectedRanges: IndentRange[], message: string) {
+		async function assertLimit(maxEntries: numBer, expectedRanges: IndentRange[], message: string) {
 			let indentRanges = await new SyntaxRangeProvider(model, providers, () => { }, maxEntries).compute(CancellationToken.None);
 			let actual: IndentRange[] = [];
 			if (indentRanges) {
 				for (let i = 0; i < indentRanges.length; i++) {
-					actual.push({ start: indentRanges.getStartLineNumber(i), end: indentRanges.getEndLineNumber(i) });
+					actual.push({ start: indentRanges.getStartLineNumBer(i), end: indentRanges.getEndLineNumBer(i) });
 				}
 			}
 			assert.deepEqual(actual, expectedRanges, message);

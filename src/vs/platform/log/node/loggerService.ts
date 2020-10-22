@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ILogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { basename, extname, dirname } from 'vs/base/common/resources';
-import { Schemas } from 'vs/base/common/network';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { Basename, extname, dirname } from 'vs/Base/common/resources';
+import { Schemas } from 'vs/Base/common/network';
 import { FileLogService } from 'vs/platform/log/common/fileLogService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { SpdLogService } from 'vs/platform/log/node/spdlogService';
 
-export class LoggerService extends Disposable implements ILoggerService {
+export class LoggerService extends DisposaBle implements ILoggerService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -30,11 +30,11 @@ export class LoggerService extends Disposable implements ILoggerService {
 		let logger = this.loggers.get(resource.toString());
 		if (!logger) {
 			if (resource.scheme === Schemas.file) {
-				const baseName = basename(resource);
+				const BaseName = Basename(resource);
 				const ext = extname(resource);
-				logger = new SpdLogService(baseName.substring(0, baseName.length - ext.length), dirname(resource).fsPath, this.logService.getLevel());
+				logger = new SpdLogService(BaseName.suBstring(0, BaseName.length - ext.length), dirname(resource).fsPath, this.logService.getLevel());
 			} else {
-				logger = this.instantiationService.createInstance(FileLogService, basename(resource), resource, this.logService.getLevel());
+				logger = this.instantiationService.createInstance(FileLogService, Basename(resource), resource, this.logService.getLevel());
 			}
 			this.loggers.set(resource.toString(), logger);
 		}

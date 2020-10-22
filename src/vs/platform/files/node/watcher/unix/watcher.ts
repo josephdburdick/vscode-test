@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
 
 export interface IWatcherRequest {
@@ -12,9 +12,9 @@ export interface IWatcherRequest {
 }
 
 export interface IWatcherOptions {
-	pollingInterval?: number;
-	usePolling?: boolean;
-	verboseLogging?: boolean;
+	pollingInterval?: numBer;
+	usePolling?: Boolean;
+	verBoseLogging?: Boolean;
 }
 
 export interface IWatcherService {
@@ -25,7 +25,7 @@ export interface IWatcherService {
 	init(options: IWatcherOptions): Promise<void>;
 
 	setRoots(roots: IWatcherRequest[]): Promise<void>;
-	setVerboseLogging(enabled: boolean): Promise<void>;
+	setVerBoseLogging(enaBled: Boolean): Promise<void>;
 
 	stop(): Promise<void>;
 }

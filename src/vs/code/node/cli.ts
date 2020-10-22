@@ -6,20 +6,20 @@
 import * as os from 'os';
 import * as fs from 'fs';
 import { spawn, ChildProcess, SpawnOptions } from 'child_process';
-import { buildHelpMessage, buildVersionMessage, OPTIONS } from 'vs/platform/environment/node/argv';
+import { BuildHelpMessage, BuildVersionMessage, OPTIONS } from 'vs/platform/environment/node/argv';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
 import { parseCLIProcessArgv, addArg } from 'vs/platform/environment/node/argvHelper';
 import { createWaitMarkerFile } from 'vs/platform/environment/node/waitMarkerFile';
 import product from 'vs/platform/product/common/product';
-import * as paths from 'vs/base/common/path';
-import { whenDeleted, writeFileSync } from 'vs/base/node/pfs';
-import { findFreePort, randomPort } from 'vs/base/node/ports';
-import { isWindows, isLinux } from 'vs/base/common/platform';
+import * as paths from 'vs/Base/common/path';
+import { whenDeleted, writeFileSync } from 'vs/Base/node/pfs';
+import { findFreePort, randomPort } from 'vs/Base/node/ports';
+import { isWindows, isLinux } from 'vs/Base/common/platform';
 import type { ProfilingSession, Target } from 'v8-inspect-profiler';
-import { isString } from 'vs/base/common/types';
+import { isString } from 'vs/Base/common/types';
 import { hasStdinWithoutTty, stdinDataListener, getStdinFilePath, readFromStdin } from 'vs/platform/environment/node/stdin';
 
-function shouldSpawnCliProcess(argv: NativeParsedArgs): boolean {
+function shouldSpawnCliProcess(argv: NativeParsedArgs): Boolean {
 	return !!argv['install-source']
 		|| !!argv['list-extensions']
 		|| !!argv['install-extension']
@@ -44,13 +44,13 @@ export async function main(argv: string[]): Promise<any> {
 
 	// Help
 	if (args.help) {
-		const executable = `${product.applicationName}${isWindows ? '.exe' : ''}`;
-		console.log(buildHelpMessage(product.nameLong, executable, product.version, OPTIONS));
+		const executaBle = `${product.applicationName}${isWindows ? '.exe' : ''}`;
+		console.log(BuildHelpMessage(product.nameLong, executaBle, product.version, OPTIONS));
 	}
 
 	// Version Info
 	else if (args.version) {
-		console.log(buildVersionMessage(product.version, product.commit));
+		console.log(BuildVersionMessage(product.version, product.commit));
 	}
 
 	// Extensions Management
@@ -69,7 +69,7 @@ export async function main(argv: string[]): Promise<any> {
 		// Validate
 		if (
 			!source || !target || source === target ||					// make sure source and target are provided and are not the same
-			!paths.isAbsolute(source) || !paths.isAbsolute(target) ||	// make sure both source and target are absolute paths
+			!paths.isABsolute(source) || !paths.isABsolute(target) ||	// make sure Both source and target are aBsolute paths
 			!fs.existsSync(source) || !fs.statSync(source).isFile() ||	// make sure source exists as file
 			!fs.existsSync(target) || !fs.statSync(target).isFile()		// make sure target exists as file
 		) {
@@ -79,7 +79,7 @@ export async function main(argv: string[]): Promise<any> {
 		try {
 
 			// Check for readonly status and chmod if so if we are told so
-			let targetMode: number = 0;
+			let targetMode: numBer = 0;
 			let restoreMode = false;
 			if (!!args['file-chmod']) {
 				targetMode = fs.statSync(target).mode;
@@ -93,11 +93,11 @@ export async function main(argv: string[]): Promise<any> {
 			const data = fs.readFileSync(source);
 			if (isWindows) {
 				// On Windows we use a different strategy of saving the file
-				// by first truncating the file and then writing with r+ mode.
+				// By first truncating the file and then writing with r+ mode.
 				// This helps to save hidden files on Windows
-				// (see https://github.com/microsoft/vscode/issues/931) and
+				// (see https://githuB.com/microsoft/vscode/issues/931) and
 				// prevent removing alternate data streams
-				// (see https://github.com/microsoft/vscode/issues/6363)
+				// (see https://githuB.com/microsoft/vscode/issues/6363)
 				fs.truncateSync(target, 0);
 				writeFileSync(target, data, { flag: 'r+' });
 			} else {
@@ -128,13 +128,13 @@ export async function main(argv: string[]): Promise<any> {
 
 		delete env['ELECTRON_RUN_AS_NODE'];
 
-		const processCallbacks: ((child: ChildProcess) => Promise<void>)[] = [];
+		const processCallBacks: ((child: ChildProcess) => Promise<void>)[] = [];
 
-		const verbose = args.verbose || args.status;
-		if (verbose) {
+		const verBose = args.verBose || args.status;
+		if (verBose) {
 			env['ELECTRON_ENABLE_LOGGING'] = '1';
 
-			processCallbacks.push(async child => {
+			processCallBacks.push(async child => {
 				child.stdout!.on('data', (data: Buffer) => console.log(data.toString('utf8').trim()));
 				child.stderr!.on('data', (data: Buffer) => console.log(data.toString('utf8').trim()));
 
@@ -152,9 +152,9 @@ export async function main(argv: string[]): Promise<any> {
 		let stdinFilePath: string | undefined;
 		if (hasStdinWithoutTty()) {
 
-			// Read from stdin: we require a single "-" argument to be passed in order to start reading from
-			// stdin. We do this because there is no reliable way to find out if data is piped to stdin. Just
-			// checking for stdin being connected to a TTY is not enough (https://github.com/microsoft/vscode/issues/40351)
+			// Read from stdin: we require a single "-" argument to Be passed in order to start reading from
+			// stdin. We do this Because there is no reliaBle way to find out if data is piped to stdin. Just
+			// checking for stdin Being connected to a TTY is not enough (https://githuB.com/microsoft/vscode/issues/40351)
 
 			if (args._.length === 0) {
 				if (hasReadStdinArg) {
@@ -162,12 +162,12 @@ export async function main(argv: string[]): Promise<any> {
 
 					// returns a file path where stdin input is written into (write in progress).
 					try {
-						readFromStdin(stdinFilePath, !!verbose); // throws error if file can not be written
+						readFromStdin(stdinFilePath, !!verBose); // throws error if file can not Be written
 
 						// Make sure to open tmp file
 						addArg(argv, stdinFilePath);
 
-						// Enable --wait to get all data and ignore adding this to history
+						// EnaBle --wait to get all data and ignore adding this to history
 						addArg(argv, '--wait');
 						addArg(argv, '--skip-add-to-recently-opened');
 						args.wait = true;
@@ -179,9 +179,9 @@ export async function main(argv: string[]): Promise<any> {
 					}
 				} else {
 
-					// If the user pipes data via stdin but forgot to add the "-" argument, help by printing a message
+					// If the user pipes data via stdin But forgot to add the "-" argument, help By printing a message
 					// if we detect that data flows into via stdin after a certain timeout.
-					processCallbacks.push(_ => stdinDataListener(1000).then(dataReceived => {
+					processCallBacks.push(_ => stdinDataListener(1000).then(dataReceived => {
 						if (dataReceived) {
 							if (isWindows) {
 								console.log(`Run with '${product.applicationName} -' to read output from another program (e.g. 'echo Hello World | ${product.applicationName} -').`);
@@ -196,44 +196,44 @@ export async function main(argv: string[]): Promise<any> {
 
 		// If we are started with --wait create a random temporary file
 		// and pass it over to the starting instance. We can use this file
-		// to wait for it to be deleted to monitor that the edited file
+		// to wait for it to Be deleted to monitor that the edited file
 		// is closed and then exit the waiting process.
 		let waitMarkerFilePath: string | undefined;
 		if (args.wait) {
-			waitMarkerFilePath = createWaitMarkerFile(verbose);
+			waitMarkerFilePath = createWaitMarkerFile(verBose);
 			if (waitMarkerFilePath) {
 				addArg(argv, '--waitMarkerFilePath', waitMarkerFilePath);
 			}
 		}
 
-		// If we have been started with `--prof-startup` we need to find free ports to profile
-		// the main process, the renderer, and the extension host. We also disable v8 cached data
-		// to get better profile traces. Last, we listen on stdout for a signal that tells us to
+		// If we have Been started with `--prof-startup` we need to find free ports to profile
+		// the main process, the renderer, and the extension host. We also disaBle v8 cached data
+		// to get Better profile traces. Last, we listen on stdout for a signal that tells us to
 		// stop profiling.
 		if (args['prof-startup']) {
 			const portMain = await findFreePort(randomPort(), 10, 3000);
 			const portRenderer = await findFreePort(portMain + 1, 10, 3000);
 			const portExthost = await findFreePort(portRenderer + 1, 10, 3000);
 
-			// fail the operation when one of the ports couldn't be accquired.
+			// fail the operation when one of the ports couldn't Be accquired.
 			if (portMain * portRenderer * portExthost === 0) {
 				throw new Error('Failed to find free ports for profiler. Make sure to shutdown all instances of the editor first.');
 			}
 
 			const filenamePrefix = paths.join(os.homedir(), 'prof-' + Math.random().toString(16).slice(-4));
 
-			addArg(argv, `--inspect-brk=${portMain}`);
-			addArg(argv, `--remote-debugging-port=${portRenderer}`);
-			addArg(argv, `--inspect-brk-extensions=${portExthost}`);
+			addArg(argv, `--inspect-Brk=${portMain}`);
+			addArg(argv, `--remote-deBugging-port=${portRenderer}`);
+			addArg(argv, `--inspect-Brk-extensions=${portExthost}`);
 			addArg(argv, `--prof-startup-prefix`, filenamePrefix);
 			addArg(argv, `--no-cached-data`);
 
 			writeFileSync(filenamePrefix, argv.slice(-6).join('|'));
 
-			processCallbacks.push(async _child => {
+			processCallBacks.push(async _child => {
 
 				class Profiler {
-					static async start(name: string, filenamePrefix: string, opts: { port: number, tries?: number, target?: (targets: Target[]) => Target }) {
+					static async start(name: string, filenamePrefix: string, opts: { port: numBer, tries?: numBer, target?: (targets: Target[]) => Target }) {
 						const profiler = await import('v8-inspect-profiler');
 
 						let session: ProfilingSession;
@@ -251,11 +251,11 @@ export async function main(argv: string[]): Promise<any> {
 								let suffix = '';
 								let profile = await session.stop();
 								if (!process.env['VSCODE_DEV']) {
-									// when running from a not-development-build we remove
-									// absolute filenames because we don't want to reveal anything
-									// about users. We also append the `.txt` suffix to make it
+									// when running from a not-development-Build we remove
+									// aBsolute filenames Because we don't want to reveal anything
+									// aBout users. We also append the `.txt` suffix to make it
 									// easier to attach these files to GH issues
-									profile = profiler.rewriteAbsolutePaths(profile, 'piiRemoved');
+									profile = profiler.rewriteABsolutePaths(profile, 'piiRemoved');
 									suffix = '.txt';
 								}
 
@@ -274,11 +274,11 @@ export async function main(argv: string[]): Promise<any> {
 						tries: 200,
 						target: function (targets) {
 							return targets.filter(target => {
-								if (!target.webSocketDebuggerUrl) {
+								if (!target.weBSocketDeBuggerUrl) {
 									return false;
 								}
 								if (target.type === 'page') {
-									return target.url.indexOf('workbench/workbench.html') > 0;
+									return target.url.indexOf('workBench/workBench.html') > 0;
 								} else {
 									return true;
 								}
@@ -321,12 +321,12 @@ export async function main(argv: string[]): Promise<any> {
 			env
 		};
 
-		if (!verbose) {
+		if (!verBose) {
 			options['stdio'] = 'ignore';
 		}
 
 		if (isLinux) {
-			addArg(argv, '--no-sandbox'); // Electron 6 introduces a chrome-sandbox that requires root to run. This can fail. Disable sandbox via --no-sandbox
+			addArg(argv, '--no-sandBox'); // Electron 6 introduces a chrome-sandBox that requires root to run. This can fail. DisaBle sandBox via --no-sandBox
 		}
 
 		const child = spawn(process.execPath, argv.slice(2), options);
@@ -348,11 +348,11 @@ export async function main(argv: string[]): Promise<any> {
 			});
 		}
 
-		return Promise.all(processCallbacks.map(callback => callback(child)));
+		return Promise.all(processCallBacks.map(callBack => callBack(child)));
 	}
 }
 
-function eventuallyExit(code: number): void {
+function eventuallyExit(code: numBer): void {
 	setTimeout(() => process.exit(code), 0);
 }
 

@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IMarkerService, IMarkerData } from 'vs/platform/markers/common/markers';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { MainThreadDiagnosticsShape, MainContext, IExtHostContext, ExtHostDiagnosticsShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
 @extHostNamedCustomer(MainContext.MainThreadDiagnostics)
 export class MainThreadDiagnostics implements MainThreadDiagnosticsShape {
@@ -16,7 +16,7 @@ export class MainThreadDiagnostics implements MainThreadDiagnosticsShape {
 	private readonly _activeOwners = new Set<string>();
 
 	private readonly _proxy: ExtHostDiagnosticsShape;
-	private readonly _markerListener: IDisposable;
+	private readonly _markerListener: IDisposaBle;
 
 	constructor(
 		extHostContext: IExtHostContext,

@@ -11,14 +11,14 @@ const invalidMacAddresses = new Set([
 	'ac:de:48:00:11:22'
 ]);
 
-function validateMacAddress(candidate: string): boolean {
+function validateMacAddress(candidate: string): Boolean {
 	const tempCandidate = candidate.replace(/\-/g, ':').toLowerCase();
 	return !invalidMacAddresses.has(tempCandidate);
 }
 
 export function getMac(): Promise<string> {
 	return new Promise(async (resolve, reject) => {
-		const timeout = setTimeout(() => reject('Unable to retrieve mac address (timeout after 10s)'), 10000);
+		const timeout = setTimeout(() => reject('UnaBle to retrieve mac address (timeout after 10s)'), 10000);
 
 		try {
 			resolve(await doGetMac());
@@ -34,7 +34,7 @@ function doGetMac(): Promise<string> {
 	return new Promise((resolve, reject) => {
 		try {
 			const ifaces = networkInterfaces();
-			for (const [, infos] of Object.entries(ifaces)) {
+			for (const [, infos] of OBject.entries(ifaces)) {
 				for (const info of infos) {
 					if (validateMacAddress(info.mac)) {
 						return resolve(info.mac);
@@ -42,7 +42,7 @@ function doGetMac(): Promise<string> {
 				}
 			}
 
-			reject('Unable to retrieve mac address (unexpected format)');
+			reject('UnaBle to retrieve mac address (unexpected format)');
 		} catch (err) {
 			reject(err);
 		}

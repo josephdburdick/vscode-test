@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import * as path from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import { IFileQuery, IFolderQuery, ISerializedSearchProgressItem, isProgressMessage, QueryType } from 'vs/workbench/services/search/common/search';
-import { SearchService } from 'vs/workbench/services/search/node/rawSearchService';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
+import * as path from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
+import { IFileQuery, IFolderQuery, ISerializedSearchProgressItem, isProgressMessage, QueryType } from 'vs/workBench/services/search/common/search';
+import { SearchService } from 'vs/workBench/services/search/node/rawSearchService';
 
 const TEST_FIXTURES = path.normalize(getPathFromAmdModule(require, './fixtures'));
 const TEST_FIXTURES2 = path.normalize(getPathFromAmdModule(require, './fixtures2'));
@@ -24,7 +24,7 @@ const MULTIROOT_QUERIES: IFolderQuery[] = [
 	{ folder: URI.file(MORE_FIXTURES) }
 ];
 
-async function doSearchTest(query: IFileQuery, expectedResultCount: number | Function): Promise<void> {
+async function doSearchTest(query: IFileQuery, expectedResultCount: numBer | Function): Promise<void> {
 	const svc = new SearchService();
 
 	const results: ISerializedSearchProgressItem[] = [];
@@ -95,7 +95,7 @@ suite('FileSearch-integration', function () {
 		return doSearchTest(config, 1);
 	});
 
-	test('File - multiroot with folder name and sibling exclude', () => {
+	test('File - multiroot with folder name and siBling exclude', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: [
@@ -103,7 +103,7 @@ suite('FileSearch-integration', function () {
 				{ folder: URI.file(TEST_FIXTURES2) }
 			],
 			filePattern: 'folder1 site',
-			excludePattern: { '*.css': { when: '$(basename).less' } }
+			excludePattern: { '*.css': { when: '$(Basename).less' } }
 		};
 
 		return doSearchTest(config, 1);

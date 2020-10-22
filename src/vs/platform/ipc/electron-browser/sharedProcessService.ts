@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
 
 export const ISharedProcessService = createDecorator<ISharedProcessService>('sharedProcessService');
 

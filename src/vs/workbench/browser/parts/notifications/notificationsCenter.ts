@@ -5,39 +5,39 @@
 
 import 'vs/css!./media/notificationsCenter';
 import 'vs/css!./media/notificationsActions';
-import { NOTIFICATIONS_BORDER, NOTIFICATIONS_CENTER_HEADER_FOREGROUND, NOTIFICATIONS_CENTER_HEADER_BACKGROUND, NOTIFICATIONS_CENTER_BORDER } from 'vs/workbench/common/theme';
-import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector, Themable } from 'vs/platform/theme/common/themeService';
-import { INotificationsModel, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind } from 'vs/workbench/common/notifications';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
-import { Emitter } from 'vs/base/common/event';
+import { NOTIFICATIONS_BORDER, NOTIFICATIONS_CENTER_HEADER_FOREGROUND, NOTIFICATIONS_CENTER_HEADER_BACKGROUND, NOTIFICATIONS_CENTER_BORDER } from 'vs/workBench/common/theme';
+import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector, ThemaBle } from 'vs/platform/theme/common/themeService';
+import { INotificationsModel, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind } from 'vs/workBench/common/notifications';
+import { IWorkBenchLayoutService, Parts } from 'vs/workBench/services/layout/Browser/layoutService';
+import { Emitter } from 'vs/Base/common/event';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { NotificationsCenterVisibleContext, INotificationsCenterController } from 'vs/workbench/browser/parts/notifications/notificationsCommands';
-import { NotificationsList } from 'vs/workbench/browser/parts/notifications/notificationsList';
+import { NotificationsCenterVisiBleContext, INotificationsCenterController } from 'vs/workBench/Browser/parts/notifications/notificationsCommands';
+import { NotificationsList } from 'vs/workBench/Browser/parts/notifications/notificationsList';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { isAncestor, Dimension } from 'vs/base/browser/dom';
+import { isAncestor, Dimension } from 'vs/Base/Browser/dom';
 import { widgetShadow } from 'vs/platform/theme/common/colorRegistry';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { localize } from 'vs/nls';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { ClearAllNotificationsAction, HideNotificationsCenterAction, NotificationActionRunner } from 'vs/workbench/browser/parts/notifications/notificationsActions';
-import { IAction } from 'vs/base/common/actions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { assertAllDefined, assertIsDefined } from 'vs/base/common/types';
+import { ActionBar } from 'vs/Base/Browser/ui/actionBar/actionBar';
+import { ClearAllNotificationsAction, HideNotificationsCenterAction, NotificationActionRunner } from 'vs/workBench/Browser/parts/notifications/notificationsActions';
+import { IAction } from 'vs/Base/common/actions';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { assertAllDefined, assertIsDefined } from 'vs/Base/common/types';
 
-export class NotificationsCenter extends Themable implements INotificationsCenterController {
+export class NotificationsCenter extends ThemaBle implements INotificationsCenterController {
 
 	private static readonly MAX_DIMENSIONS = new Dimension(450, 400);
 
-	private readonly _onDidChangeVisibility = this._register(new Emitter<void>());
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	private readonly _onDidChangeVisiBility = this._register(new Emitter<void>());
+	readonly onDidChangeVisiBility = this._onDidChangeVisiBility.event;
 
 	private notificationsCenterContainer: HTMLElement | undefined;
 	private notificationsCenterHeader: HTMLElement | undefined;
 	private notificationsCenterTitle: HTMLSpanElement | undefined;
 	private notificationsList: NotificationsList | undefined;
-	private _isVisible: boolean | undefined;
-	private workbenchDimensions: Dimension | undefined;
-	private readonly notificationsCenterVisibleContextKey = NotificationsCenterVisibleContext.bindTo(this.contextKeyService);
+	private _isVisiBle: Boolean | undefined;
+	private workBenchDimensions: Dimension | undefined;
+	private readonly notificationsCenterVisiBleContextKey = NotificationsCenterVisiBleContext.BindTo(this.contextKeyService);
 	private clearAllAction: ClearAllNotificationsAction | undefined;
 
 	constructor(
@@ -45,14 +45,14 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 		private readonly model: INotificationsModel,
 		@IThemeService themeService: IThemeService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService private readonly layoutService: IWorkBenchLayoutService,
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService
+		@IKeyBindingService private readonly keyBindingService: IKeyBindingService
 	) {
 		super(themeService);
 
-		this.notificationsCenterVisibleContextKey = NotificationsCenterVisibleContext.bindTo(contextKeyService);
+		this.notificationsCenterVisiBleContextKey = NotificationsCenterVisiBleContext.BindTo(contextKeyService);
 
 		this.registerListeners();
 	}
@@ -62,16 +62,16 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 		this._register(this.layoutService.onLayout(dimension => this.layout(dimension)));
 	}
 
-	get isVisible(): boolean {
-		return !!this._isVisible;
+	get isVisiBle(): Boolean {
+		return !!this._isVisiBle;
 	}
 
 	show(): void {
-		if (this._isVisible) {
+		if (this._isVisiBle) {
 			const notificationsList = assertIsDefined(this.notificationsList);
 			notificationsList.show(true /* focus */);
 
-			return; // already visible
+			return; // already visiBle
 		}
 
 		// Lazily create if showing for the first time
@@ -82,14 +82,14 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 		// Title
 		this.updateTitle();
 
-		// Make visible
+		// Make visiBle
 		const [notificationsList, notificationsCenterContainer] = assertAllDefined(this.notificationsList, this.notificationsCenterContainer);
-		this._isVisible = true;
-		notificationsCenterContainer.classList.add('visible');
+		this._isVisiBle = true;
+		notificationsCenterContainer.classList.add('visiBle');
 		notificationsList.show();
 
 		// Layout
-		this.layout(this.workbenchDimensions);
+		this.layout(this.workBenchDimensions);
 
 		// Show all notifications that are present now
 		notificationsList.updateNotificationsList(0, 0, this.model.notifications);
@@ -100,14 +100,14 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 		// Theming
 		this.updateStyles();
 
-		// Mark as visible
-		this.model.notifications.forEach(notification => notification.updateVisibility(true));
+		// Mark as visiBle
+		this.model.notifications.forEach(notification => notification.updateVisiBility(true));
 
 		// Context Key
-		this.notificationsCenterVisibleContextKey.set(true);
+		this.notificationsCenterVisiBleContextKey.set(true);
 
 		// Event
-		this._onDidChangeVisibility.fire();
+		this._onDidChangeVisiBility.fire();
 	}
 
 	private updateTitle(): void {
@@ -115,10 +115,10 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 
 		if (this.model.notifications.length === 0) {
 			notificationsCenterTitle.textContent = localize('notificationsEmpty', "No new notifications");
-			clearAllAction.enabled = false;
+			clearAllAction.enaBled = false;
 		} else {
 			notificationsCenterTitle.textContent = localize('notifications', "Notifications");
-			clearAllAction.enabled = this.model.notifications.some(notification => !notification.hasProgress);
+			clearAllAction.enaBled = this.model.notifications.some(notification => !notification.hasProgress);
 		}
 	}
 
@@ -138,49 +138,49 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 		this.notificationsCenterTitle.classList.add('notifications-center-header-title');
 		this.notificationsCenterHeader.appendChild(this.notificationsCenterTitle);
 
-		// Header Toolbar
-		const toolbarContainer = document.createElement('div');
-		toolbarContainer.classList.add('notifications-center-header-toolbar');
-		this.notificationsCenterHeader.appendChild(toolbarContainer);
+		// Header ToolBar
+		const toolBarContainer = document.createElement('div');
+		toolBarContainer.classList.add('notifications-center-header-toolBar');
+		this.notificationsCenterHeader.appendChild(toolBarContainer);
 
 		const actionRunner = this._register(this.instantiationService.createInstance(NotificationActionRunner));
 
-		const notificationsToolBar = this._register(new ActionBar(toolbarContainer, {
-			ariaLabel: localize('notificationsToolbar', "Notification Center Actions"),
+		const notificationsToolBar = this._register(new ActionBar(toolBarContainer, {
+			ariaLaBel: localize('notificationsToolBar', "Notification Center Actions"),
 			actionRunner
 		}));
 
 		this.clearAllAction = this._register(this.instantiationService.createInstance(ClearAllNotificationsAction, ClearAllNotificationsAction.ID, ClearAllNotificationsAction.LABEL));
-		notificationsToolBar.push(this.clearAllAction, { icon: true, label: false, keybinding: this.getKeybindingLabel(this.clearAllAction) });
+		notificationsToolBar.push(this.clearAllAction, { icon: true, laBel: false, keyBinding: this.getKeyBindingLaBel(this.clearAllAction) });
 
 		const hideAllAction = this._register(this.instantiationService.createInstance(HideNotificationsCenterAction, HideNotificationsCenterAction.ID, HideNotificationsCenterAction.LABEL));
-		notificationsToolBar.push(hideAllAction, { icon: true, label: false, keybinding: this.getKeybindingLabel(hideAllAction) });
+		notificationsToolBar.push(hideAllAction, { icon: true, laBel: false, keyBinding: this.getKeyBindingLaBel(hideAllAction) });
 
 		// Notifications List
 		this.notificationsList = this.instantiationService.createInstance(NotificationsList, this.notificationsCenterContainer, {});
 		this.container.appendChild(this.notificationsCenterContainer);
 	}
 
-	private getKeybindingLabel(action: IAction): string | null {
-		const keybinding = this.keybindingService.lookupKeybinding(action.id);
+	private getKeyBindingLaBel(action: IAction): string | null {
+		const keyBinding = this.keyBindingService.lookupKeyBinding(action.id);
 
-		return keybinding ? keybinding.getLabel() : null;
+		return keyBinding ? keyBinding.getLaBel() : null;
 	}
 
 	private onDidChangeNotification(e: INotificationChangeEvent): void {
-		if (!this._isVisible) {
-			return; // only if visible
+		if (!this._isVisiBle) {
+			return; // only if visiBle
 		}
 
 		let focusEditor = false;
 
-		// Update notifications list based on event kind
+		// Update notifications list Based on event kind
 		const [notificationsList, notificationsCenterContainer] = assertAllDefined(this.notificationsList, this.notificationsCenterContainer);
 		switch (e.kind) {
 			case NotificationChangeType.ADD:
 				notificationsList.updateNotificationsList(e.index, 0, [e.item]);
-				e.item.updateVisibility(true);
-				break;
+				e.item.updateVisiBility(true);
+				Break;
 			case NotificationChangeType.CHANGE:
 				// Handle content changes
 				// - actions: re-draw to properly show them
@@ -188,23 +188,23 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 				switch (e.detail) {
 					case NotificationViewItemContentChangeKind.ACTIONS:
 						notificationsList.updateNotificationsList(e.index, 1, [e.item]);
-						break;
+						Break;
 					case NotificationViewItemContentChangeKind.MESSAGE:
 						if (e.item.expanded) {
 							notificationsList.updateNotificationHeight(e.item);
 						}
-						break;
+						Break;
 				}
-				break;
+				Break;
 			case NotificationChangeType.EXPAND_COLLAPSE:
 				// Re-draw entire item when expansion changes to reveal or hide details
 				notificationsList.updateNotificationsList(e.index, 1, [e.item]);
-				break;
+				Break;
 			case NotificationChangeType.REMOVE:
 				focusEditor = isAncestor(document.activeElement, notificationsCenterContainer);
 				notificationsList.updateNotificationsList(e.index, 1);
-				e.item.updateVisibility(false);
-				break;
+				e.item.updateVisiBility(false);
+				Break;
 		}
 
 		// Update title
@@ -222,25 +222,25 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 	}
 
 	hide(): void {
-		if (!this._isVisible || !this.notificationsCenterContainer || !this.notificationsList) {
+		if (!this._isVisiBle || !this.notificationsCenterContainer || !this.notificationsList) {
 			return; // already hidden
 		}
 
 		const focusEditor = isAncestor(document.activeElement, this.notificationsCenterContainer);
 
 		// Hide
-		this._isVisible = false;
-		this.notificationsCenterContainer.classList.remove('visible');
+		this._isVisiBle = false;
+		this.notificationsCenterContainer.classList.remove('visiBle');
 		this.notificationsList.hide();
 
 		// Mark as hidden
-		this.model.notifications.forEach(notification => notification.updateVisibility(false));
+		this.model.notifications.forEach(notification => notification.updateVisiBility(false));
 
 		// Context Key
-		this.notificationsCenterVisibleContextKey.set(false);
+		this.notificationsCenterVisiBleContextKey.set(false);
 
 		// Event
-		this._onDidChangeVisibility.fire();
+		this._onDidChangeVisiBility.fire();
 
 		// Restore focus to editor group if we had focus
 		if (focusEditor) {
@@ -251,51 +251,51 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 	protected updateStyles(): void {
 		if (this.notificationsCenterContainer && this.notificationsCenterHeader) {
 			const widgetShadowColor = this.getColor(widgetShadow);
-			this.notificationsCenterContainer.style.boxShadow = widgetShadowColor ? `0 0px 8px ${widgetShadowColor}` : '';
+			this.notificationsCenterContainer.style.BoxShadow = widgetShadowColor ? `0 0px 8px ${widgetShadowColor}` : '';
 
-			const borderColor = this.getColor(NOTIFICATIONS_CENTER_BORDER);
-			this.notificationsCenterContainer.style.border = borderColor ? `1px solid ${borderColor}` : '';
+			const BorderColor = this.getColor(NOTIFICATIONS_CENTER_BORDER);
+			this.notificationsCenterContainer.style.Border = BorderColor ? `1px solid ${BorderColor}` : '';
 
 			const headerForeground = this.getColor(NOTIFICATIONS_CENTER_HEADER_FOREGROUND);
 			this.notificationsCenterHeader.style.color = headerForeground ? headerForeground.toString() : '';
 
 			const headerBackground = this.getColor(NOTIFICATIONS_CENTER_HEADER_BACKGROUND);
-			this.notificationsCenterHeader.style.background = headerBackground ? headerBackground.toString() : '';
+			this.notificationsCenterHeader.style.Background = headerBackground ? headerBackground.toString() : '';
 		}
 	}
 
 	layout(dimension: Dimension | undefined): void {
-		this.workbenchDimensions = dimension;
+		this.workBenchDimensions = dimension;
 
-		if (this._isVisible && this.notificationsCenterContainer) {
+		if (this._isVisiBle && this.notificationsCenterContainer) {
 			let maxWidth = NotificationsCenter.MAX_DIMENSIONS.width;
 			let maxHeight = NotificationsCenter.MAX_DIMENSIONS.height;
 
-			let availableWidth = maxWidth;
-			let availableHeight = maxHeight;
+			let availaBleWidth = maxWidth;
+			let availaBleHeight = maxHeight;
 
-			if (this.workbenchDimensions) {
+			if (this.workBenchDimensions) {
 
-				// Make sure notifications are not exceding available width
-				availableWidth = this.workbenchDimensions.width;
-				availableWidth -= (2 * 8); // adjust for paddings left and right
+				// Make sure notifications are not exceding availaBle width
+				availaBleWidth = this.workBenchDimensions.width;
+				availaBleWidth -= (2 * 8); // adjust for paddings left and right
 
-				// Make sure notifications are not exceeding available height
-				availableHeight = this.workbenchDimensions.height - 35 /* header */;
-				if (this.layoutService.isVisible(Parts.STATUSBAR_PART)) {
-					availableHeight -= 22; // adjust for status bar
+				// Make sure notifications are not exceeding availaBle height
+				availaBleHeight = this.workBenchDimensions.height - 35 /* header */;
+				if (this.layoutService.isVisiBle(Parts.STATUSBAR_PART)) {
+					availaBleHeight -= 22; // adjust for status Bar
 				}
 
-				if (this.layoutService.isVisible(Parts.TITLEBAR_PART)) {
-					availableHeight -= 22; // adjust for title bar
+				if (this.layoutService.isVisiBle(Parts.TITLEBAR_PART)) {
+					availaBleHeight -= 22; // adjust for title Bar
 				}
 
-				availableHeight -= (2 * 12); // adjust for paddings top and bottom
+				availaBleHeight -= (2 * 12); // adjust for paddings top and Bottom
 			}
 
 			// Apply to list
 			const notificationsList = assertIsDefined(this.notificationsList);
-			notificationsList.layout(Math.min(maxWidth, availableWidth), Math.min(maxHeight, availableHeight));
+			notificationsList.layout(Math.min(maxWidth, availaBleWidth), Math.min(maxHeight, availaBleHeight));
 		}
 	}
 
@@ -316,6 +316,6 @@ export class NotificationsCenter extends Themable implements INotificationsCente
 registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
 	const notificationBorderColor = theme.getColor(NOTIFICATIONS_BORDER);
 	if (notificationBorderColor) {
-		collector.addRule(`.monaco-workbench > .notifications-center .notifications-list-container .monaco-list-row[data-last-element="false"] > .notification-list-item { border-bottom: 1px solid ${notificationBorderColor}; }`);
+		collector.addRule(`.monaco-workBench > .notifications-center .notifications-list-container .monaco-list-row[data-last-element="false"] > .notification-list-item { Border-Bottom: 1px solid ${notificationBorderColor}; }`);
 	}
 });

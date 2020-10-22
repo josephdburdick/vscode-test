@@ -9,33 +9,33 @@ import { IViewModel, IViewWhitespaceViewportData, ViewLineRenderingData, ViewMod
 
 export interface IPartialViewLinesViewportData {
 	/**
-	 * Value to be substracted from `scrollTop` (in order to vertical offset numbers < 1MM)
+	 * Value to Be suBstracted from `scrollTop` (in order to vertical offset numBers < 1MM)
 	 */
-	readonly bigNumbersDelta: number;
+	readonly BigNumBersDelta: numBer;
 	/**
-	 * The first (partially) visible line number.
+	 * The first (partially) visiBle line numBer.
 	 */
-	readonly startLineNumber: number;
+	readonly startLineNumBer: numBer;
 	/**
-	 * The last (partially) visible line number.
+	 * The last (partially) visiBle line numBer.
 	 */
-	readonly endLineNumber: number;
+	readonly endLineNumBer: numBer;
 	/**
-	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumber`.
+	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumBer`.
 	 */
-	readonly relativeVerticalOffset: number[];
+	readonly relativeVerticalOffset: numBer[];
 	/**
 	 * The centered line in the viewport.
 	 */
-	readonly centeredLineNumber: number;
+	readonly centeredLineNumBer: numBer;
 	/**
-	 * The first completely visible line number.
+	 * The first completely visiBle line numBer.
 	 */
-	readonly completelyVisibleStartLineNumber: number;
+	readonly completelyVisiBleStartLineNumBer: numBer;
 	/**
-	 * The last completely visible line number.
+	 * The last completely visiBle line numBer.
 	 */
-	readonly completelyVisibleEndLineNumber: number;
+	readonly completelyVisiBleEndLineNumBer: numBer;
 }
 
 /**
@@ -43,37 +43,37 @@ export interface IPartialViewLinesViewportData {
  */
 export class ViewportData {
 
-	public readonly selections: Selection[];
+	puBlic readonly selections: Selection[];
 
 	/**
-	 * The line number at which to start rendering (inclusive).
+	 * The line numBer at which to start rendering (inclusive).
 	 */
-	public readonly startLineNumber: number;
+	puBlic readonly startLineNumBer: numBer;
 
 	/**
-	 * The line number at which to end rendering (inclusive).
+	 * The line numBer at which to end rendering (inclusive).
 	 */
-	public readonly endLineNumber: number;
+	puBlic readonly endLineNumBer: numBer;
 
 	/**
-	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumber`.
+	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumBer`.
 	 */
-	public readonly relativeVerticalOffset: number[];
+	puBlic readonly relativeVerticalOffset: numBer[];
 
 	/**
-	 * The viewport as a range (startLineNumber,1) -> (endLineNumber,maxColumn(endLineNumber)).
+	 * The viewport as a range (startLineNumBer,1) -> (endLineNumBer,maxColumn(endLineNumBer)).
 	 */
-	public readonly visibleRange: Range;
+	puBlic readonly visiBleRange: Range;
 
 	/**
-	 * Value to be substracted from `scrollTop` (in order to vertical offset numbers < 1MM)
+	 * Value to Be suBstracted from `scrollTop` (in order to vertical offset numBers < 1MM)
 	 */
-	public readonly bigNumbersDelta: number;
+	puBlic readonly BigNumBersDelta: numBer;
 
 	/**
-	 * Positioning information about gaps whitespace.
+	 * Positioning information aBout gaps whitespace.
 	 */
-	public readonly whitespaceViewportData: IViewWhitespaceViewportData[];
+	puBlic readonly whitespaceViewportData: IViewWhitespaceViewportData[];
 
 	private readonly _model: IViewModel;
 
@@ -84,27 +84,27 @@ export class ViewportData {
 		model: IViewModel
 	) {
 		this.selections = selections;
-		this.startLineNumber = partialData.startLineNumber | 0;
-		this.endLineNumber = partialData.endLineNumber | 0;
+		this.startLineNumBer = partialData.startLineNumBer | 0;
+		this.endLineNumBer = partialData.endLineNumBer | 0;
 		this.relativeVerticalOffset = partialData.relativeVerticalOffset;
-		this.bigNumbersDelta = partialData.bigNumbersDelta | 0;
+		this.BigNumBersDelta = partialData.BigNumBersDelta | 0;
 		this.whitespaceViewportData = whitespaceViewportData;
 
 		this._model = model;
 
-		this.visibleRange = new Range(
-			partialData.startLineNumber,
-			this._model.getLineMinColumn(partialData.startLineNumber),
-			partialData.endLineNumber,
-			this._model.getLineMaxColumn(partialData.endLineNumber)
+		this.visiBleRange = new Range(
+			partialData.startLineNumBer,
+			this._model.getLineMinColumn(partialData.startLineNumBer),
+			partialData.endLineNumBer,
+			this._model.getLineMaxColumn(partialData.endLineNumBer)
 		);
 	}
 
-	public getViewLineRenderingData(lineNumber: number): ViewLineRenderingData {
-		return this._model.getViewLineRenderingData(this.visibleRange, lineNumber);
+	puBlic getViewLineRenderingData(lineNumBer: numBer): ViewLineRenderingData {
+		return this._model.getViewLineRenderingData(this.visiBleRange, lineNumBer);
 	}
 
-	public getDecorationsInViewport(): ViewModelDecoration[] {
-		return this._model.getDecorationsInViewport(this.visibleRange);
+	puBlic getDecorationsInViewport(): ViewModelDecoration[] {
+		return this._model.getDecorationsInViewport(this.visiBleRange);
 	}
 }

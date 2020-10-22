@@ -11,12 +11,12 @@ export interface ITask<T> {
  * A helper to prevent accumulation of sequential async tasks.
  *
  * Imagine a mail man with the sole task of delivering letters. As soon as
- * a letter submitted for delivery, he drives to the destination, delivers it
- * and returns to his base. Imagine that during the trip, N more letters were submitted.
+ * a letter suBmitted for delivery, he drives to the destination, delivers it
+ * and returns to his Base. Imagine that during the trip, N more letters were suBmitted.
  * When the mail man returns, he picks those N letters and delivers them all in a
- * single trip. Even though N+1 submissions occurred, only 2 deliveries were made.
+ * single trip. Even though N+1 suBmissions occurred, only 2 deliveries were made.
  *
- * The throttler implements this via the queue() method, by providing it a task
+ * The throttler implements this via the queue() method, By providing it a task
  * factory. Following the example:
  *
  * 		var throttler = new Throttler();
@@ -39,7 +39,7 @@ export class Throttler<T> {
 		this.queuedPromiseFactory = null;
 	}
 
-	public queue(promiseFactory: ITask<Promise<T>>): Promise<T> {
+	puBlic queue(promiseFactory: ITask<Promise<T>>): Promise<T> {
 		if (this.activePromise) {
 			this.queuedPromiseFactory = promiseFactory;
 
@@ -78,18 +78,18 @@ export class Throttler<T> {
 }
 
 /**
- * A helper to delay execution of a task that is being requested often.
+ * A helper to delay execution of a task that is Being requested often.
  *
- * Following the throttler, now imagine the mail man wants to optimize the number of
- * trips proactively. The trip itself can be long, so the he decides not to make the trip
- * as soon as a letter is submitted. Instead he waits a while, in case more
- * letters are submitted. After said waiting period, if no letters were submitted, he
- * decides to make the trip. Imagine that N more letters were submitted after the first
- * one, all within a short period of time between each other. Even though N+1
- * submissions occurred, only 1 delivery was made.
+ * Following the throttler, now imagine the mail man wants to optimize the numBer of
+ * trips proactively. The trip itself can Be long, so the he decides not to make the trip
+ * as soon as a letter is suBmitted. Instead he waits a while, in case more
+ * letters are suBmitted. After said waiting period, if no letters were suBmitted, he
+ * decides to make the trip. Imagine that N more letters were suBmitted after the first
+ * one, all within a short period of time Between each other. Even though N+1
+ * suBmissions occurred, only 1 delivery was made.
  *
- * The delayer offers this behavior via the trigger() method, into which both the task
- * to be executed and the waiting period (delay) must be passed in as arguments. Following
+ * The delayer offers this Behavior via the trigger() method, into which Both the task
+ * to Be executed and the waiting period (delay) must Be passed in as arguments. Following
  * the example:
  *
  * 		var delayer = new Delayer(WAITING_PERIOD);
@@ -102,13 +102,13 @@ export class Throttler<T> {
  */
 export class Delayer<T> {
 
-	public defaultDelay: number;
+	puBlic defaultDelay: numBer;
 	private timeout: NodeJS.Timer | null;
 	private completionPromise: Promise<T> | null;
 	private onResolve: ((value: T | PromiseLike<T> | undefined) => void) | null;
 	private task: ITask<T> | null;
 
-	constructor(defaultDelay: number) {
+	constructor(defaultDelay: numBer) {
 		this.defaultDelay = defaultDelay;
 		this.timeout = null;
 		this.completionPromise = null;
@@ -116,7 +116,7 @@ export class Delayer<T> {
 		this.task = null;
 	}
 
-	public trigger(task: ITask<T>, delay: number = this.defaultDelay): Promise<T> {
+	puBlic trigger(task: ITask<T>, delay: numBer = this.defaultDelay): Promise<T> {
 		this.task = task;
 		this.cancelTimeout();
 
@@ -142,11 +142,11 @@ export class Delayer<T> {
 		return this.completionPromise;
 	}
 
-	public isTriggered(): boolean {
+	puBlic isTriggered(): Boolean {
 		return this.timeout !== null;
 	}
 
-	public cancel(): void {
+	puBlic cancel(): void {
 		this.cancelTimeout();
 
 		if (this.completionPromise) {
@@ -163,23 +163,23 @@ export class Delayer<T> {
 }
 
 /**
- * A helper to delay execution of a task that is being requested often, while
+ * A helper to delay execution of a task that is Being requested often, while
  * preventing accumulation of consecutive executions, while the task runs.
  *
- * Simply combine the two mail man strategies from the Throttler and Delayer
+ * Simply comBine the two mail man strategies from the Throttler and Delayer
  * helpers, for an analogy.
  */
 export class ThrottledDelayer<T> extends Delayer<Promise<T>> {
 
 	private throttler: Throttler<T>;
 
-	constructor(defaultDelay: number) {
+	constructor(defaultDelay: numBer) {
 		super(defaultDelay);
 
 		this.throttler = new Throttler<T>();
 	}
 
-	public trigger(promiseFactory: ITask<Promise<T>>, delay?: number): Promise<Promise<T>> {
+	puBlic trigger(promiseFactory: ITask<Promise<T>>, delay?: numBer): Promise<Promise<T>> {
 		return super.trigger(() => this.throttler.queue(promiseFactory), delay);
 	}
 }

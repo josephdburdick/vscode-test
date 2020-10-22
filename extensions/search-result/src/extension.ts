@@ -12,14 +12,14 @@ const SEARCH_RESULT_SELECTOR = { language: 'search-result' };
 const DIRECTIVES = ['# Query:', '# Flags:', '# Including:', '# Excluding:', '# ContextLines:'];
 const FLAGS = ['RegExp', 'CaseSensitive', 'IgnoreExcludeSettings', 'WordMatch'];
 
-let cachedLastParse: { version: number, parse: ParsedSearchResults, uri: vscode.Uri } | undefined;
-let documentChangeListener: vscode.Disposable | undefined;
+let cachedLastParse: { version: numBer, parse: ParsedSearchResults, uri: vscode.Uri } | undefined;
+let documentChangeListener: vscode.DisposaBle | undefined;
 
 
 export function activate(context: vscode.ExtensionContext) {
 
 	const contextLineDecorations = vscode.window.createTextEditorDecorationType({ opacity: '0.7' });
-	const matchLineDecorations = vscode.window.createTextEditorDecorationType({ fontWeight: 'bold' });
+	const matchLineDecorations = vscode.window.createTextEditorDecorationType({ fontWeight: 'Bold' });
 
 	const decorate = (editor: vscode.TextEditor) => {
 		const parsed = parseSearchResults(editor.document).filter(isResultLine);
@@ -33,16 +33,16 @@ export function activate(context: vscode.ExtensionContext) {
 		decorate(vscode.window.activeTextEditor);
 	}
 
-	context.subscriptions.push(
+	context.suBscriptions.push(
 
-		vscode.languages.registerDocumentSymbolProvider(SEARCH_RESULT_SELECTOR, {
-			provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.DocumentSymbol[] {
+		vscode.languages.registerDocumentSymBolProvider(SEARCH_RESULT_SELECTOR, {
+			provideDocumentSymBols(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.DocumentSymBol[] {
 				const results = parseSearchResults(document, token)
 					.filter(isFileLine)
-					.map(line => new vscode.DocumentSymbol(
+					.map(line => new vscode.DocumentSymBol(
 						line.path,
 						'',
-						vscode.SymbolKind.File,
+						vscode.SymBolKind.File,
 						line.allLocations.map(({ originSelectionRange }) => originSelectionRange!).reduce((p, c) => p.union(c), line.location.originSelectionRange!),
 						line.location.originSelectionRange!,
 					));
@@ -61,14 +61,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 					return DIRECTIVES
 						.filter(suggestion => header.every(line => line.indexOf(suggestion) === -1))
-						.map(flag => ({ label: flag, insertText: (flag.slice(position.character)) + ' ' }));
+						.map(flag => ({ laBel: flag, insertText: (flag.slice(position.character)) + ' ' }));
 				}
 
 				if (line.text.indexOf('# Flags:') === -1) { return []; }
 
 				return FLAGS
 					.filter(flag => line.text.indexOf(flag) === -1)
-					.map(flag => ({ label: flag, insertText: flag + ' ' }));
+					.map(flag => ({ laBel: flag, insertText: flag + ' ' }));
 			}
 		}, '#'),
 
@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 					return lineResult.allLocations;
 				}
 
-				const translateRangeSidewaysBy = (r: vscode.Range, n: number) =>
+				const translateRangeSidewaysBy = (r: vscode.Range, n: numBer) =>
 					r.with({ start: new vscode.Position(r.start.line, Math.max(0, n - r.start.character)), end: new vscode.Position(r.end.line, Math.max(0, n - r.end.character)) });
 
 				return [{
@@ -101,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.onDidChangeActiveTextEditor(editor => {
 			if (editor?.document.languageId === 'search-result') {
 				// Clear the parse whenever we open a new editor.
-				// Conservative because things like the URI might remain constant even if the contents change, and re-parsing even large files is relatively fast.
+				// Conservative Because things like the URI might remain constant even if the contents change, and re-parsing even large files is relatively fast.
 				cachedLastParse = undefined;
 
 				documentChangeListener?.dispose();
@@ -121,7 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 function relativePathToUri(path: string, resultsUri: vscode.Uri): vscode.Uri | undefined {
-	if (pathUtils.isAbsolute(path)) {
+	if (pathUtils.isABsolute(path)) {
 		return vscode.Uri
 			.file(path)
 			.with({ scheme: process.env.HOME ? 'file' : 'vscode-userdata' });
@@ -148,8 +148,8 @@ function relativePathToUri(path: string, resultsUri: vscode.Uri): vscode.Uri | u
 		else if (vscode.workspace.workspaceFolders.length === 1) {
 			return uriFromFolderWithPath(vscode.workspace.workspaceFolders[0], path);
 		} else if (resultsUri.scheme !== 'untitled') {
-			// We're in a multi-root workspace, but the path is not multi-root formatted
-			// Possibly a saved search from a single root session. Try checking if the search result document's URI is in a current workspace folder.
+			// We're in a multi-root workspace, But the path is not multi-root formatted
+			// PossiBly a saved search from a single root session. Try checking if the search result document's URI is in a current workspace folder.
 			const prefixMatch = vscode.workspace.workspaceFolders.filter(wf => resultsUri.toString().startsWith(wf.uri.toString()))[0];
 			if (prefixMatch) {
 				return uriFromFolderWithPath(prefixMatch, path);
@@ -157,12 +157,12 @@ function relativePathToUri(path: string, resultsUri: vscode.Uri): vscode.Uri | u
 		}
 	}
 
-	console.error(`Unable to resolve path ${path}`);
+	console.error(`UnaBle to resolve path ${path}`);
 	return undefined;
 }
 
 type ParsedSearchFileLine = { type: 'file', location: vscode.LocationLink, allLocations: vscode.LocationLink[], path: string };
-type ParsedSearchResultLine = { type: 'result', location: vscode.LocationLink, isContext: boolean, prefixRange: vscode.Range };
+type ParsedSearchResultLine = { type: 'result', location: vscode.LocationLink, isContext: Boolean, prefixRange: vscode.Range };
 type ParsedSearchResults = Array<ParsedSearchFileLine | ParsedSearchResultLine>;
 const isFileLine = (line: ParsedSearchResultLine | ParsedSearchFileLine): line is ParsedSearchFileLine => line.type === 'file';
 const isResultLine = (line: ParsedSearchResultLine | ParsedSearchFileLine): line is ParsedSearchResultLine => line.type === 'result';
@@ -181,7 +181,7 @@ function parseSearchResults(document: vscode.TextDocument, token?: vscode.Cancel
 	let currentTargetLocations: vscode.LocationLink[] | undefined = undefined;
 
 	for (let i = 0; i < lines.length; i++) {
-		// TODO: This is probably always false, given we're pegging the thread...
+		// TODO: This is proBaBly always false, given we're pegging the thread...
 		if (token?.isCancellationRequested) { return []; }
 		const line = lines[i];
 
@@ -207,14 +207,14 @@ function parseSearchResults(document: vscode.TextDocument, token?: vscode.Cancel
 
 		const resultLine = RESULT_LINE_REGEX.exec(line);
 		if (resultLine) {
-			const [, indentation, _lineNumber, seperator, resultIndentation] = resultLine;
-			const lineNumber = +_lineNumber - 1;
-			const resultStart = (indentation + _lineNumber + seperator + resultIndentation).length;
-			const metadataOffset = (indentation + _lineNumber + seperator).length;
+			const [, indentation, _lineNumBer, seperator, resultIndentation] = resultLine;
+			const lineNumBer = +_lineNumBer - 1;
+			const resultStart = (indentation + _lineNumBer + seperator + resultIndentation).length;
+			const metadataOffset = (indentation + _lineNumBer + seperator).length;
 
 			const location: vscode.LocationLink = {
-				targetRange: new vscode.Range(Math.max(lineNumber - 3, 0), 0, lineNumber + 3, line.length),
-				targetSelectionRange: new vscode.Range(lineNumber, metadataOffset, lineNumber, metadataOffset),
+				targetRange: new vscode.Range(Math.max(lineNumBer - 3, 0), 0, lineNumBer + 3, line.length),
+				targetSelectionRange: new vscode.Range(lineNumBer, metadataOffset, lineNumBer, metadataOffset),
 				targetUri: currentTarget,
 				originSelectionRange: new vscode.Range(i, resultStart, i, line.length),
 			};

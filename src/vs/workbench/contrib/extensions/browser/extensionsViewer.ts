@@ -3,38 +3,38 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
+import * as dom from 'vs/Base/Browser/dom';
 import { localize } from 'vs/nls';
-import { IDisposable, dispose, Disposable, DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
-import { Action } from 'vs/base/common/actions';
-import { IExtensionsWorkbenchService, IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
-import { Event } from 'vs/base/common/event';
-import { domEvent } from 'vs/base/browser/event';
+import { IDisposaBle, dispose, DisposaBle, DisposaBleStore, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Action } from 'vs/Base/common/actions';
+import { IExtensionsWorkBenchService, IExtension } from 'vs/workBench/contriB/extensions/common/extensions';
+import { Event } from 'vs/Base/common/event';
+import { domEvent } from 'vs/Base/Browser/event';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IListService, WorkbenchAsyncDataTree } from 'vs/platform/list/browser/listService';
+import { IListService, WorkBenchAsyncDataTree } from 'vs/platform/list/Browser/listService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { IAsyncDataSource, ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { IAsyncDataSource, ITreeNode } from 'vs/Base/Browser/ui/tree/tree';
+import { IListVirtualDelegate, IListRenderer } from 'vs/Base/Browser/ui/list/list';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
 import { IColorMapping } from 'vs/platform/theme/common/styler';
-import { Renderer, Delegate } from 'vs/workbench/contrib/extensions/browser/extensionsList';
+import { Renderer, Delegate } from 'vs/workBench/contriB/extensions/Browser/extensionsList';
 import { listFocusForeground, listFocusBackground } from 'vs/platform/theme/common/colorRegistry';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { StandardMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { IListAccessiBilityProvider } from 'vs/Base/Browser/ui/list/listWidget';
 
-export class ExtensionsGridView extends Disposable {
+export class ExtensionsGridView extends DisposaBle {
 
 	readonly element: HTMLElement;
 	private readonly renderer: Renderer;
 	private readonly delegate: Delegate;
-	private readonly disposableStore: DisposableStore;
+	private readonly disposaBleStore: DisposaBleStore;
 
 	constructor(
 		parent: HTMLElement,
@@ -44,29 +44,29 @@ export class ExtensionsGridView extends Disposable {
 		this.element = dom.append(parent, dom.$('.extensions-grid-view'));
 		this.renderer = this.instantiationService.createInstance(Renderer, { onFocus: Event.None, onBlur: Event.None });
 		this.delegate = new Delegate();
-		this.disposableStore = new DisposableStore();
+		this.disposaBleStore = new DisposaBleStore();
 	}
 
 	setExtensions(extensions: IExtension[]): void {
-		this.disposableStore.clear();
+		this.disposaBleStore.clear();
 		extensions.forEach((e, index) => this.renderExtension(e, index));
 	}
 
-	private renderExtension(extension: IExtension, index: number): void {
+	private renderExtension(extension: IExtension, index: numBer): void {
 		const extensionContainer = dom.append(this.element, dom.$('.extension-container'));
 		extensionContainer.style.height = `${this.delegate.getHeight()}px`;
 		extensionContainer.style.width = `275px`;
-		extensionContainer.setAttribute('tabindex', '0');
+		extensionContainer.setAttriBute('taBindex', '0');
 
 		const template = this.renderer.renderTemplate(extensionContainer);
-		this.disposableStore.add(toDisposable(() => this.renderer.disposeTemplate(template)));
+		this.disposaBleStore.add(toDisposaBle(() => this.renderer.disposeTemplate(template)));
 
 		const openExtensionAction = this.instantiationService.createInstance(OpenExtensionAction);
 		openExtensionAction.extension = extension;
-		template.name.setAttribute('tabindex', '0');
+		template.name.setAttriBute('taBindex', '0');
 
-		const handleEvent = (e: StandardMouseEvent | StandardKeyboardEvent) => {
-			if (e instanceof StandardKeyboardEvent && e.keyCode !== KeyCode.Enter) {
+		const handleEvent = (e: StandardMouseEvent | StandardKeyBoardEvent) => {
+			if (e instanceof StandardKeyBoardEvent && e.keyCode !== KeyCode.Enter) {
 				return;
 			}
 			openExtensionAction.run(e.ctrlKey || e.metaKey);
@@ -74,9 +74,9 @@ export class ExtensionsGridView extends Disposable {
 			e.preventDefault();
 		};
 
-		this.disposableStore.add(dom.addDisposableListener(template.name, dom.EventType.CLICK, (e: MouseEvent) => handleEvent(new StandardMouseEvent(e))));
-		this.disposableStore.add(dom.addDisposableListener(template.name, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => handleEvent(new StandardKeyboardEvent(e))));
-		this.disposableStore.add(dom.addDisposableListener(extensionContainer, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => handleEvent(new StandardKeyboardEvent(e))));
+		this.disposaBleStore.add(dom.addDisposaBleListener(template.name, dom.EventType.CLICK, (e: MouseEvent) => handleEvent(new StandardMouseEvent(e))));
+		this.disposaBleStore.add(dom.addDisposaBleListener(template.name, dom.EventType.KEY_DOWN, (e: KeyBoardEvent) => handleEvent(new StandardKeyBoardEvent(e))));
+		this.disposaBleStore.add(dom.addDisposaBleListener(extensionContainer, dom.EventType.KEY_DOWN, (e: KeyBoardEvent) => handleEvent(new StandardKeyBoardEvent(e))));
 
 		this.renderer.renderElement(extension, index, template);
 	}
@@ -87,7 +87,7 @@ export interface IExtensionTemplateData {
 	name: HTMLElement;
 	identifier: HTMLElement;
 	author: HTMLElement;
-	extensionDisposables: IDisposable[];
+	extensionDisposaBles: IDisposaBle[];
 	extensionData: IExtensionData;
 }
 
@@ -97,18 +97,18 @@ export interface IUnknownExtensionTemplateData {
 
 export interface IExtensionData {
 	extension: IExtension;
-	hasChildren: boolean;
+	hasChildren: Boolean;
 	getChildren: () => Promise<IExtensionData[] | null>;
 	parent: IExtensionData | null;
 }
 
 export class AsyncDataSource implements IAsyncDataSource<IExtensionData, any> {
 
-	public hasChildren({ hasChildren }: IExtensionData): boolean {
+	puBlic hasChildren({ hasChildren }: IExtensionData): Boolean {
 		return hasChildren;
 	}
 
-	public getChildren(extensionData: IExtensionData): Promise<any> {
+	puBlic getChildren(extensionData: IExtensionData): Promise<any> {
 		return extensionData.getChildren();
 	}
 
@@ -116,10 +116,10 @@ export class AsyncDataSource implements IAsyncDataSource<IExtensionData, any> {
 
 export class VirualDelegate implements IListVirtualDelegate<IExtensionData> {
 
-	public getHeight(element: IExtensionData): number {
+	puBlic getHeight(element: IExtensionData): numBer {
 		return 62;
 	}
-	public getTemplateId({ extension }: IExtensionData): string {
+	puBlic getTemplateId({ extension }: IExtensionData): string {
 		return extension ? ExtensionRenderer.TEMPLATE_ID : UnknownExtensionRenderer.TEMPLATE_ID;
 	}
 }
@@ -131,11 +131,11 @@ export class ExtensionRenderer implements IListRenderer<ITreeNode<IExtensionData
 	constructor(@IInstantiationService private readonly instantiationService: IInstantiationService) {
 	}
 
-	public get templateId(): string {
+	puBlic get templateId(): string {
 		return ExtensionRenderer.TEMPLATE_ID;
 	}
 
-	public renderTemplate(container: HTMLElement): IExtensionTemplateData {
+	puBlic renderTemplate(container: HTMLElement): IExtensionTemplateData {
 		container.classList.add('extension');
 
 		const icon = dom.append(container, dom.$<HTMLImageElement>('img.icon'));
@@ -144,7 +144,7 @@ export class ExtensionRenderer implements IListRenderer<ITreeNode<IExtensionData
 		const header = dom.append(details, dom.$('.header'));
 		const name = dom.append(header, dom.$('span.name'));
 		const openExtensionAction = this.instantiationService.createInstance(OpenExtensionAction);
-		const extensionDisposables = [dom.addDisposableListener(name, 'click', (e: MouseEvent) => {
+		const extensionDisposaBles = [dom.addDisposaBleListener(name, 'click', (e: MouseEvent) => {
 			openExtensionAction.run(e.ctrlKey || e.metaKey);
 			e.stopPropagation();
 			e.preventDefault();
@@ -158,34 +158,34 @@ export class ExtensionRenderer implements IListRenderer<ITreeNode<IExtensionData
 			name,
 			identifier,
 			author,
-			extensionDisposables,
+			extensionDisposaBles,
 			set extensionData(extensionData: IExtensionData) {
 				openExtensionAction.extension = extensionData.extension;
 			}
 		};
 	}
 
-	public renderElement(node: ITreeNode<IExtensionData>, index: number, data: IExtensionTemplateData): void {
+	puBlic renderElement(node: ITreeNode<IExtensionData>, index: numBer, data: IExtensionTemplateData): void {
 		const extension = node.element.extension;
 		const onError = Event.once(domEvent(data.icon, 'error'));
-		onError(() => data.icon.src = extension.iconUrlFallback, null, data.extensionDisposables);
+		onError(() => data.icon.src = extension.iconUrlFallBack, null, data.extensionDisposaBles);
 		data.icon.src = extension.iconUrl;
 
 		if (!data.icon.complete) {
-			data.icon.style.visibility = 'hidden';
-			data.icon.onload = () => data.icon.style.visibility = 'inherit';
+			data.icon.style.visiBility = 'hidden';
+			data.icon.onload = () => data.icon.style.visiBility = 'inherit';
 		} else {
-			data.icon.style.visibility = 'inherit';
+			data.icon.style.visiBility = 'inherit';
 		}
 
 		data.name.textContent = extension.displayName;
 		data.identifier.textContent = extension.identifier.id;
-		data.author.textContent = extension.publisherDisplayName;
+		data.author.textContent = extension.puBlisherDisplayName;
 		data.extensionData = node.element;
 	}
 
-	public disposeTemplate(templateData: IExtensionTemplateData): void {
-		templateData.extensionDisposables = dispose((<IExtensionTemplateData>templateData).extensionDisposables);
+	puBlic disposeTemplate(templateData: IExtensionTemplateData): void {
+		templateData.extensionDisposaBles = dispose((<IExtensionTemplateData>templateData).extensionDisposaBles);
 	}
 }
 
@@ -193,11 +193,11 @@ export class UnknownExtensionRenderer implements IListRenderer<ITreeNode<IExtens
 
 	static readonly TEMPLATE_ID = 'unknown-extension-template';
 
-	public get templateId(): string {
+	puBlic get templateId(): string {
 		return UnknownExtensionRenderer.TEMPLATE_ID;
 	}
 
-	public renderTemplate(container: HTMLElement): IUnknownExtensionTemplateData {
+	puBlic renderTemplate(container: HTMLElement): IUnknownExtensionTemplateData {
 		const messageContainer = dom.append(container, dom.$('div.unknown-extension'));
 		dom.append(messageContainer, dom.$('span.error-marker')).textContent = localize('error', "Error");
 		dom.append(messageContainer, dom.$('span.message')).textContent = localize('Unknown Extension', "Unknown Extension:");
@@ -206,11 +206,11 @@ export class UnknownExtensionRenderer implements IListRenderer<ITreeNode<IExtens
 		return { identifier };
 	}
 
-	public renderElement(node: ITreeNode<IExtensionData>, index: number, data: IUnknownExtensionTemplateData): void {
+	puBlic renderElement(node: ITreeNode<IExtensionData>, index: numBer, data: IUnknownExtensionTemplateData): void {
 		data.identifier.textContent = node.element.extension.identifier.id;
 	}
 
-	public disposeTemplate(data: IUnknownExtensionTemplateData): void {
+	puBlic disposeTemplate(data: IUnknownExtensionTemplateData): void {
 	}
 }
 
@@ -218,23 +218,23 @@ class OpenExtensionAction extends Action {
 
 	private _extension: IExtension | undefined;
 
-	constructor(@IExtensionsWorkbenchService private readonly extensionsWorkdbenchService: IExtensionsWorkbenchService) {
+	constructor(@IExtensionsWorkBenchService private readonly extensionsWorkdBenchService: IExtensionsWorkBenchService) {
 		super('extensions.action.openExtension', '');
 	}
 
-	public set extension(extension: IExtension) {
+	puBlic set extension(extension: IExtension) {
 		this._extension = extension;
 	}
 
-	run(sideByside: boolean): Promise<any> {
+	run(sideByside: Boolean): Promise<any> {
 		if (this._extension) {
-			return this.extensionsWorkdbenchService.open(this._extension, { sideByside });
+			return this.extensionsWorkdBenchService.open(this._extension, { sideByside });
 		}
 		return Promise.resolve();
 	}
 }
 
-export class ExtensionsTree extends WorkbenchAsyncDataTree<IExtensionData, IExtensionData> {
+export class ExtensionsTree extends WorkBenchAsyncDataTree<IExtensionData, IExtensionData> {
 
 	constructor(
 		input: IExtensionData,
@@ -245,9 +245,9 @@ export class ExtensionsTree extends WorkbenchAsyncDataTree<IExtensionData, IExte
 		@IThemeService themeService: IThemeService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@IKeybindingService keybindingService: IKeybindingService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
-		@IExtensionsWorkbenchService extensionsWorkdbenchService: IExtensionsWorkbenchService
+		@IKeyBindingService keyBindingService: IKeyBindingService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService,
+		@IExtensionsWorkBenchService extensionsWorkdBenchService: IExtensionsWorkBenchService
 	) {
 		const delegate = new VirualDelegate();
 		const dataSource = new AsyncDataSource();
@@ -269,24 +269,24 @@ export class ExtensionsTree extends WorkbenchAsyncDataTree<IExtensionData, IExte
 				identityProvider,
 				multipleSelectionSupport: false,
 				overrideStyles,
-				accessibilityProvider: <IListAccessibilityProvider<IExtensionData>>{
-					getAriaLabel(extensionData: IExtensionData): string {
+				accessiBilityProvider: <IListAccessiBilityProvider<IExtensionData>>{
+					getAriaLaBel(extensionData: IExtensionData): string {
 						const extension = extensionData.extension;
-						return localize('extension-arialabel', "{0}, {1}, {2}, press enter for extension details.", extension.displayName, extension.version, extension.publisherDisplayName);
+						return localize('extension-arialaBel', "{0}, {1}, {2}, press enter for extension details.", extension.displayName, extension.version, extension.puBlisherDisplayName);
 					},
-					getWidgetAriaLabel(): string {
+					getWidgetAriaLaBel(): string {
 						return localize('extensions', "Extensions");
 					}
 				}
 			},
-			contextKeyService, listService, themeService, configurationService, keybindingService, accessibilityService
+			contextKeyService, listService, themeService, configurationService, keyBindingService, accessiBilityService
 		);
 
 		this.setInput(input);
 
-		this.disposables.add(this.onDidChangeSelection(event => {
-			if (event.browserEvent && event.browserEvent instanceof KeyboardEvent) {
-				extensionsWorkdbenchService.open(event.elements[0].extension, { sideByside: false });
+		this.disposaBles.add(this.onDidChangeSelection(event => {
+			if (event.BrowserEvent && event.BrowserEvent instanceof KeyBoardEvent) {
+				extensionsWorkdBenchService.open(event.elements[0].extension, { sideByside: false });
 			}
 		}));
 	}
@@ -298,31 +298,31 @@ export class ExtensionData implements IExtensionData {
 	readonly parent: IExtensionData | null;
 	private readonly getChildrenExtensionIds: (extension: IExtension) => string[];
 	private readonly childrenExtensionIds: string[];
-	private readonly extensionsWorkbenchService: IExtensionsWorkbenchService;
+	private readonly extensionsWorkBenchService: IExtensionsWorkBenchService;
 
-	constructor(extension: IExtension, parent: IExtensionData | null, getChildrenExtensionIds: (extension: IExtension) => string[], extensionsWorkbenchService: IExtensionsWorkbenchService) {
+	constructor(extension: IExtension, parent: IExtensionData | null, getChildrenExtensionIds: (extension: IExtension) => string[], extensionsWorkBenchService: IExtensionsWorkBenchService) {
 		this.extension = extension;
 		this.parent = parent;
 		this.getChildrenExtensionIds = getChildrenExtensionIds;
-		this.extensionsWorkbenchService = extensionsWorkbenchService;
+		this.extensionsWorkBenchService = extensionsWorkBenchService;
 		this.childrenExtensionIds = this.getChildrenExtensionIds(extension);
 	}
 
-	get hasChildren(): boolean {
+	get hasChildren(): Boolean {
 		return isNonEmptyArray(this.childrenExtensionIds);
 	}
 
 	async getChildren(): Promise<IExtensionData[] | null> {
 		if (this.hasChildren) {
-			const result: IExtension[] = await getExtensions(this.childrenExtensionIds, this.extensionsWorkbenchService);
-			return result.map(extension => new ExtensionData(extension, this, this.getChildrenExtensionIds, this.extensionsWorkbenchService));
+			const result: IExtension[] = await getExtensions(this.childrenExtensionIds, this.extensionsWorkBenchService);
+			return result.map(extension => new ExtensionData(extension, this, this.getChildrenExtensionIds, this.extensionsWorkBenchService));
 		}
 		return null;
 	}
 }
 
-export async function getExtensions(extensions: string[], extensionsWorkbenchService: IExtensionsWorkbenchService): Promise<IExtension[]> {
-	const localById = extensionsWorkbenchService.local.reduce((result, e) => { result.set(e.identifier.id.toLowerCase(), e); return result; }, new Map<string, IExtension>());
+export async function getExtensions(extensions: string[], extensionsWorkBenchService: IExtensionsWorkBenchService): Promise<IExtension[]> {
+	const localById = extensionsWorkBenchService.local.reduce((result, e) => { result.set(e.identifier.id.toLowerCase(), e); return result; }, new Map<string, IExtension>());
 	const result: IExtension[] = [];
 	const toQuery: string[] = [];
 	for (const extensionId of extensions) {
@@ -335,7 +335,7 @@ export async function getExtensions(extensions: string[], extensionsWorkbenchSer
 		}
 	}
 	if (toQuery.length) {
-		const galleryResult = await extensionsWorkbenchService.queryGallery({ names: toQuery, pageSize: toQuery.length }, CancellationToken.None);
+		const galleryResult = await extensionsWorkBenchService.queryGallery({ names: toQuery, pageSize: toQuery.length }, CancellationToken.None);
 		result.push(...galleryResult.firstPage);
 	}
 	return result;
@@ -344,7 +344,7 @@ export async function getExtensions(extensions: string[], extensionsWorkbenchSer
 registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
 	const focusBackground = theme.getColor(listFocusBackground);
 	if (focusBackground) {
-		collector.addRule(`.extensions-grid-view .extension-container:focus { background-color: ${focusBackground}; outline: none; }`);
+		collector.addRule(`.extensions-grid-view .extension-container:focus { Background-color: ${focusBackground}; outline: none; }`);
 	}
 	const focusForeground = theme.getColor(listFocusForeground);
 	if (focusForeground) {

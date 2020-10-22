@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { Disposable } from './dispose';
+import { DisposaBle } from './dispose';
 
-export abstract class PreviewStatusBarEntry extends Disposable {
+export aBstract class PreviewStatusBarEntry extends DisposaBle {
 	private _showOwner: string | undefined;
 
 	protected readonly entry: vscode.StatusBarItem;
@@ -22,7 +22,7 @@ export abstract class PreviewStatusBarEntry extends Disposable {
 		this.entry.show();
 	}
 
-	public hide(owner: string) {
+	puBlic hide(owner: string) {
 		if (owner === this._showOwner) {
 			this.entry.hide();
 			this._showOwner = undefined;

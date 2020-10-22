@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { BoundModelReferenceCollection } from 'vs/workbench/api/browser/mainThreadDocuments';
+import { BoundModelReferenceCollection } from 'vs/workBench/api/Browser/mainThreadDocuments';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { timeout } from 'vs/base/common/async';
-import { URI } from 'vs/base/common/uri';
-import { extUri } from 'vs/base/common/resources';
+import { timeout } from 'vs/Base/common/async';
+import { URI } from 'vs/Base/common/uri';
+import { extUri } from 'vs/Base/common/resources';
 
 suite('BoundModelReferenceCollection', () => {
 
@@ -23,9 +23,9 @@ suite('BoundModelReferenceCollection', () => {
 		let didDispose = false;
 
 		col.add(
-			URI.parse('test://farboo'),
+			URI.parse('test://farBoo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				oBject: <any>{ textEditorModel: createTextModel('farBoo') },
 				dispose() {
 					didDispose = true;
 				}
@@ -37,21 +37,21 @@ suite('BoundModelReferenceCollection', () => {
 
 	test('max size', () => {
 
-		let disposed: number[] = [];
+		let disposed: numBer[] = [];
 
 		col.add(
-			URI.parse('test://farboo'),
+			URI.parse('test://farBoo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				oBject: <any>{ textEditorModel: createTextModel('farBoo') },
 				dispose() {
 					disposed.push(0);
 				}
 			});
 
 		col.add(
-			URI.parse('test://boofar'),
+			URI.parse('test://Boofar'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boofar') },
+				oBject: <any>{ textEditorModel: createTextModel('Boofar') },
 				dispose() {
 					disposed.push(1);
 				}
@@ -60,7 +60,7 @@ suite('BoundModelReferenceCollection', () => {
 		col.add(
 			URI.parse('test://xxxxxxx'),
 			{
-				object: <any>{ textEditorModel: createTextModel(new Array(71).join('x')) },
+				oBject: <any>{ textEditorModel: createTextModel(new Array(71).join('x')) },
 				dispose() {
 					disposed.push(2);
 				}
@@ -71,48 +71,48 @@ suite('BoundModelReferenceCollection', () => {
 
 	test('dispose uri', () => {
 
-		let disposed: number[] = [];
+		let disposed: numBer[] = [];
 
 		col.add(
-			URI.parse('test:///farboo'),
+			URI.parse('test:///farBoo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				oBject: <any>{ textEditorModel: createTextModel('farBoo') },
 				dispose() {
 					disposed.push(0);
 				}
 			});
 
 		col.add(
-			URI.parse('test:///boofar'),
+			URI.parse('test:///Boofar'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boofar') },
+				oBject: <any>{ textEditorModel: createTextModel('Boofar') },
 				dispose() {
 					disposed.push(1);
 				}
 			});
 
 		col.add(
-			URI.parse('test:///boo/far1'),
+			URI.parse('test:///Boo/far1'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo/far1') },
+				oBject: <any>{ textEditorModel: createTextModel('Boo/far1') },
 				dispose() {
 					disposed.push(2);
 				}
 			});
 
 		col.add(
-			URI.parse('test:///boo/far2'),
+			URI.parse('test:///Boo/far2'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo/far2') },
+				oBject: <any>{ textEditorModel: createTextModel('Boo/far2') },
 				dispose() {
 					disposed.push(3);
 				}
 			});
 
 		col.add(
-			URI.parse('test:///boo1/far'),
+			URI.parse('test:///Boo1/far'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo1/far') },
+				oBject: <any>{ textEditorModel: createTextModel('Boo1/far') },
 				dispose() {
 					disposed.push(4);
 				}
@@ -121,12 +121,12 @@ suite('BoundModelReferenceCollection', () => {
 		col.remove(URI.parse('test:///unknown'));
 		assert.equal(disposed.length, 0);
 
-		col.remove(URI.parse('test:///farboo'));
+		col.remove(URI.parse('test:///farBoo'));
 		assert.deepEqual(disposed, [0]);
 
 		disposed = [];
 
-		col.remove(URI.parse('test:///boo'));
+		col.remove(URI.parse('test:///Boo'));
 		assert.deepEqual(disposed, [2, 3]);
 	});
 

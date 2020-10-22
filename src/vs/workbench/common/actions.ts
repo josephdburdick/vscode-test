@@ -5,73 +5,73 @@
 
 import { localize } from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { ICommandHandler, CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { SyncActionDescriptor, MenuRegistry, MenuId, ICommandAction } from 'vs/platform/actions/common/actions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { ContextKeyExpr, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
 
 export const Extensions = {
-	WorkbenchActions: 'workbench.contributions.actions'
+	WorkBenchActions: 'workBench.contriButions.actions'
 };
 
-export interface IWorkbenchActionRegistry {
+export interface IWorkBenchActionRegistry {
 
 	/**
-	 * Registers a workbench action to the platform. Workbench actions are not
-	 * visible by default and can only be invoked through a keybinding if provided.
-	 * @deprecated Register directly with KeybindingsRegistry and MenuRegistry or use registerAction2 instead.
+	 * Registers a workBench action to the platform. WorkBench actions are not
+	 * visiBle By default and can only Be invoked through a keyBinding if provided.
+	 * @deprecated Register directly with KeyBindingsRegistry and MenuRegistry or use registerAction2 instead.
 	 */
-	registerWorkbenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpr): IDisposable;
+	registerWorkBenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpr): IDisposaBle;
 }
 
-Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionRegistry {
+Registry.add(Extensions.WorkBenchActions, new class implements IWorkBenchActionRegistry {
 
-	registerWorkbenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposable {
-		return this.registerWorkbenchCommandFromAction(descriptor, alias, category, when);
+	registerWorkBenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposaBle {
+		return this.registerWorkBenchCommandFromAction(descriptor, alias, category, when);
 	}
 
-	private registerWorkbenchCommandFromAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposable {
-		const registrations = new DisposableStore();
+	private registerWorkBenchCommandFromAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposaBle {
+		const registrations = new DisposaBleStore();
 
 		// command
 		registrations.add(CommandsRegistry.registerCommand(descriptor.id, this.createCommandHandler(descriptor)));
 
-		// keybinding
-		const weight = (typeof descriptor.keybindingWeight === 'undefined' ? KeybindingWeight.WorkbenchContrib : descriptor.keybindingWeight);
-		const keybindings = descriptor.keybindings;
-		KeybindingsRegistry.registerKeybindingRule({
+		// keyBinding
+		const weight = (typeof descriptor.keyBindingWeight === 'undefined' ? KeyBindingWeight.WorkBenchContriB : descriptor.keyBindingWeight);
+		const keyBindings = descriptor.keyBindings;
+		KeyBindingsRegistry.registerKeyBindingRule({
 			id: descriptor.id,
 			weight: weight,
 			when:
-				descriptor.keybindingContext && when
-					? ContextKeyExpr.and(descriptor.keybindingContext, when)
-					: descriptor.keybindingContext || when || null,
-			primary: keybindings ? keybindings.primary : 0,
-			secondary: keybindings?.secondary,
-			win: keybindings?.win,
-			mac: keybindings?.mac,
-			linux: keybindings?.linux
+				descriptor.keyBindingContext && when
+					? ContextKeyExpr.and(descriptor.keyBindingContext, when)
+					: descriptor.keyBindingContext || when || null,
+			primary: keyBindings ? keyBindings.primary : 0,
+			secondary: keyBindings?.secondary,
+			win: keyBindings?.win,
+			mac: keyBindings?.mac,
+			linux: keyBindings?.linux
 		});
 
 		// menu item
-		// TODO@Rob slightly weird if-check required because of
-		// https://github.com/microsoft/vscode/blob/master/src/vs/workbench/contrib/search/electron-browser/search.contribution.ts#L266
-		if (descriptor.label) {
+		// TODO@RoB slightly weird if-check required Because of
+		// https://githuB.com/microsoft/vscode/BloB/master/src/vs/workBench/contriB/search/electron-Browser/search.contriBution.ts#L266
+		if (descriptor.laBel) {
 
 			let idx = alias.indexOf(': ');
 			let categoryOriginal = '';
 			if (idx > 0) {
-				categoryOriginal = alias.substr(0, idx);
-				alias = alias.substr(idx + 2);
+				categoryOriginal = alias.suBstr(0, idx);
+				alias = alias.suBstr(idx + 2);
 			}
 
 			const command: ICommandAction = {
 				id: descriptor.id,
-				title: { value: descriptor.label, original: alias },
+				title: { value: descriptor.laBel, original: alias },
 				category: category ? { value: category, original: categoryOriginal } : undefined
 			};
 
@@ -81,7 +81,7 @@ Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionR
 		}
 
 		// TODO@alex,joh
-		// support removal of keybinding rule
+		// support removal of keyBinding rule
 		// support removal of command-ui
 		return registrations;
 	}
@@ -102,14 +102,14 @@ Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionR
 
 	private async triggerAndDisposeAction(instantiationService: IInstantiationService, lifecycleService: ILifecycleService, descriptor: SyncActionDescriptor, args: unknown): Promise<void> {
 
-		// run action when workbench is created
+		// run action when workBench is created
 		await lifecycleService.when(LifecyclePhase.Ready);
 
 		const actionInstance = instantiationService.createInstance(descriptor.syncDescriptor);
-		actionInstance.label = descriptor.label || actionInstance.label;
+		actionInstance.laBel = descriptor.laBel || actionInstance.laBel;
 
-		// don't run the action when not enabled
-		if (!actionInstance.enabled) {
+		// don't run the action when not enaBled
+		if (!actionInstance.enaBled) {
 			actionInstance.dispose();
 
 			return;
@@ -117,7 +117,7 @@ Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionR
 
 		// otherwise run and dispose
 		try {
-			const from = (args as any)?.from || 'keybinding';
+			const from = (args as any)?.from || 'keyBinding';
 			await actionInstance.run(undefined, { from });
 		} finally {
 			actionInstance.dispose();

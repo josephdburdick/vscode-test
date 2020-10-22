@@ -9,29 +9,29 @@ import { EndOfLinePreference, EndOfLineSequence, IIdentifiedSingleEditOperation 
 import { MirrorTextModel } from 'vs/editor/common/model/mirrorTextModel';
 import { TextModel } from 'vs/editor/common/model/textModel';
 import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
-import { assertSyncedModels, testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editableTextModelTestUtils';
+import { assertSyncedModels, testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editaBleTextModelTestUtils';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-function createEditableTextModelFromString(text: string): TextModel {
+function createEditaBleTextModelFromString(text: string): TextModel {
 	return createTextModel(text, TextModel.DEFAULT_CREATION_OPTIONS, null);
 }
 
-suite('EditorModel - EditableTextModel.applyEdits updates mightContainRTL', () => {
+suite('EditorModel - EditaBleTextModel.applyEdits updates mightContainRTL', () => {
 
-	function testApplyEdits(original: string[], edits: IIdentifiedSingleEditOperation[], before: boolean, after: boolean): void {
-		let model = createEditableTextModelFromString(original.join('\n'));
+	function testApplyEdits(original: string[], edits: IIdentifiedSingleEditOperation[], Before: Boolean, after: Boolean): void {
+		let model = createEditaBleTextModelFromString(original.join('\n'));
 		model.setEOL(EndOfLineSequence.LF);
 
-		assert.equal(model.mightContainRTL(), before);
+		assert.equal(model.mightContainRTL(), Before);
 
 		model.applyEdits(edits);
 		assert.equal(model.mightContainRTL(), after);
 		model.dispose();
 	}
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, text: string[]): IIdentifiedSingleEditOperation {
 		return {
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			text: text.join('\n')
 		};
 	}
@@ -62,22 +62,22 @@ suite('EditorModel - EditableTextModel.applyEdits updates mightContainRTL', () =
 });
 
 
-suite('EditorModel - EditableTextModel.applyEdits updates mightContainNonBasicASCII', () => {
+suite('EditorModel - EditaBleTextModel.applyEdits updates mightContainNonBasicASCII', () => {
 
-	function testApplyEdits(original: string[], edits: IIdentifiedSingleEditOperation[], before: boolean, after: boolean): void {
-		let model = createEditableTextModelFromString(original.join('\n'));
+	function testApplyEdits(original: string[], edits: IIdentifiedSingleEditOperation[], Before: Boolean, after: Boolean): void {
+		let model = createEditaBleTextModelFromString(original.join('\n'));
 		model.setEOL(EndOfLineSequence.LF);
 
-		assert.equal(model.mightContainNonBasicASCII(), before);
+		assert.equal(model.mightContainNonBasicASCII(), Before);
 
 		model.applyEdits(edits);
 		assert.equal(model.mightContainNonBasicASCII(), after);
 		model.dispose();
 	}
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, text: string[]): IIdentifiedSingleEditOperation {
 		return {
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			text: text.join('\n')
 		};
 	}
@@ -104,12 +104,12 @@ suite('EditorModel - EditableTextModel.applyEdits updates mightContainNonBasicAS
 
 });
 
-suite('EditorModel - EditableTextModel.applyEdits', () => {
+suite('EditorModel - EditaBleTextModel.applyEdits', () => {
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, text: string[]): IIdentifiedSingleEditOperation {
 		return {
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			text: text.join('\n'),
 			forceMoveMarkers: false
 		};
@@ -428,7 +428,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 			],
 			[
 				editOp(1, 3, 1, 3, ['', '', '', '', '']),
-				editOp(3, 15, 3, 15, ['a', 'b'])
+				editOp(3, 15, 3, 15, ['a', 'B'])
 			],
 			[
 				'My',
@@ -438,7 +438,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 				' First Line',
 				'\t\tMy Second Line',
 				'    Third Linea',
-				'b',
+				'B',
 				'',
 				'1'
 			]
@@ -680,7 +680,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 				'{',
 				'"a": true,',
 				'',
-				'"b": true',
+				'"B": true',
 				'}'
 			],
 			[
@@ -690,7 +690,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 			[
 				'{',
 				'\t"a": true,',
-				'\t"b": true',
+				'\t"B": true',
 				'}'
 			]
 		);
@@ -762,7 +762,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 	test('advanced simplified', () => {
 		testApplyEditsWithSyncedModels(
 			[
-				'   abc',
+				'   aBc',
 				' ,def'
 			],
 			[
@@ -771,7 +771,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 				editOp(2, 3, 2, 3, ['', ''])
 			],
 			[
-				'abc,',
+				'aBc,',
 				'def'
 			]
 		);
@@ -858,7 +858,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 	});
 
 	function testApplyEditsFails(original: string[], edits: IIdentifiedSingleEditOperation[]): void {
-		let model = createEditableTextModelFromString(original.join('\n'));
+		let model = createEditaBleTextModelFromString(original.join('\n'));
 
 		let hasThrown = false;
 		try {
@@ -878,10 +878,10 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 			],
 			[
 				editOp(1, 1, 1, 1, ['a']),
-				editOp(1, 1, 1, 1, ['b']),
+				editOp(1, 1, 1, 1, ['B']),
 			],
 			[
-				'abhello world'
+				'aBhello world'
 			]
 		);
 	});
@@ -892,11 +892,11 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 				'hello world'
 			],
 			[
-				editOp(1, 1, 1, 1, ['b']),
-				editOp(1, 1, 1, 3, ['ab']),
+				editOp(1, 1, 1, 1, ['B']),
+				editOp(1, 1, 1, 3, ['aB']),
 			],
 			[
-				'babllo world'
+				'BaBllo world'
 			]
 		);
 	});
@@ -907,8 +907,8 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 				'hello world'
 			],
 			[
-				editOp(1, 1, 1, 2, ['b']),
-				editOp(1, 1, 1, 3, ['ab']),
+				editOp(1, 1, 1, 2, ['B']),
+				editOp(1, 1, 1, 3, ['aB']),
 			]
 		);
 	});
@@ -1042,7 +1042,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 	});
 
 	test('issue #1580: Changes in line endings are not correctly reflected in the extension host, leading to invalid offsets sent to external refactoring tools', () => {
-		let model = createEditableTextModelFromString('Hello\nWorld!');
+		let model = createEditaBleTextModelFromString('Hello\nWorld!');
 		assert.equal(model.getEOL(), '\n');
 
 		let mirrorModel2 = new MirrorTextModel(null!, model.getLinesContent(), model.getEOL(), model.getVersionId());
@@ -1051,7 +1051,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 		model.onDidChangeContent((e: IModelContentChangedEvent) => {
 			let versionId = e.versionId;
 			if (versionId < mirrorModel2PrevVersionId) {
-				console.warn('Model version id did not advance between edits (2)');
+				console.warn('Model version id did not advance Between edits (2)');
 			}
 			mirrorModel2PrevVersionId = versionId;
 			mirrorModel2.onEvents(e);
@@ -1070,7 +1070,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 	});
 
 	test('issue #47733: Undo mangles unicode characters', () => {
-		let model = createEditableTextModelFromString('\'👁\'');
+		let model = createEditaBleTextModelFromString('\'👁\'');
 
 		model.applyEdits([
 			{ range: new Range(1, 1, 1, 1), text: '"' },
@@ -1092,7 +1092,7 @@ suite('EditorModel - EditableTextModel.applyEdits', () => {
 	});
 
 	test('issue #48741: Broken undo stack with move lines up with multiple cursors', () => {
-		let model = createEditableTextModelFromString([
+		let model = createEditaBleTextModelFromString([
 			'line1',
 			'line2',
 			'line3',

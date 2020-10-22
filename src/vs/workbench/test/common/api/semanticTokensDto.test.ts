@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IFullSemanticTokensDto, IDeltaSemanticTokensDto, encodeSemanticTokensDto, ISemanticTokensDto, decodeSemanticTokensDto } from 'vs/workbench/api/common/shared/semanticTokensDto';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { IFullSemanticTokensDto, IDeltaSemanticTokensDto, encodeSemanticTokensDto, ISemanticTokensDto, decodeSemanticTokensDto } from 'vs/workBench/api/common/shared/semanticTokensDto';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 
 suite('SemanticTokensDto', () => {
 
-	function toArr(arr: Uint32Array): number[] {
-		const result: number[] = [];
+	function toArr(arr: Uint32Array): numBer[] {
+		const result: numBer[] = [];
 		for (let i = 0, len = arr.length; i < len; i++) {
 			result[i] = arr[i];
 		}
@@ -29,7 +29,7 @@ suite('SemanticTokensDto', () => {
 	}
 
 	function assertEqualDelta(actual: IDeltaSemanticTokensDto, expected: IDeltaSemanticTokensDto): void {
-		const convertOne = (delta: { start: number; deleteCount: number; data?: Uint32Array; }) => {
+		const convertOne = (delta: { start: numBer; deleteCount: numBer; data?: Uint32Array; }) => {
 			if (!delta.data) {
 				return delta;
 			}
@@ -88,7 +88,7 @@ suite('SemanticTokensDto', () => {
 		});
 	});
 
-	test('partial array buffer', () => {
+	test('partial array Buffer', () => {
 		const sharedArr = new Uint32Array([
 			(1 << 24) + (2 << 16) + (3 << 8) + 4,
 			1, 2, 3, 4, 5, (1 << 24) + (2 << 16) + (3 << 8) + 4
@@ -99,23 +99,23 @@ suite('SemanticTokensDto', () => {
 			deltas: [{
 				start: 0,
 				deleteCount: 4,
-				data: sharedArr.subarray(0, 1)
+				data: sharedArr.suBarray(0, 1)
 			}, {
 				start: 15,
 				deleteCount: 0,
-				data: sharedArr.subarray(1, sharedArr.length)
+				data: sharedArr.suBarray(1, sharedArr.length)
 			}]
 		});
 	});
 
-	test('issue #94521: unusual backing array buffer', () => {
-		function wrapAndSliceUint8Arry(buff: Uint8Array, prefixLength: number, suffixLength: number): Uint8Array {
-			const wrapped = new Uint8Array(prefixLength + buff.byteLength + suffixLength);
-			wrapped.set(buff, prefixLength);
-			return wrapped.subarray(prefixLength, prefixLength + buff.byteLength);
+	test('issue #94521: unusual Backing array Buffer', () => {
+		function wrapAndSliceUint8Arry(Buff: Uint8Array, prefixLength: numBer, suffixLength: numBer): Uint8Array {
+			const wrapped = new Uint8Array(prefixLength + Buff.ByteLength + suffixLength);
+			wrapped.set(Buff, prefixLength);
+			return wrapped.suBarray(prefixLength, prefixLength + Buff.ByteLength);
 		}
-		function wrapAndSlice(buff: VSBuffer, prefixLength: number, suffixLength: number): VSBuffer {
-			return VSBuffer.wrap(wrapAndSliceUint8Arry(buff.buffer, prefixLength, suffixLength));
+		function wrapAndSlice(Buff: VSBuffer, prefixLength: numBer, suffixLength: numBer): VSBuffer {
+			return VSBuffer.wrap(wrapAndSliceUint8Arry(Buff.Buffer, prefixLength, suffixLength));
 		}
 		const dto: ISemanticTokensDto = {
 			id: 5,

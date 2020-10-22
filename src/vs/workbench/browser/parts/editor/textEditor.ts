@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { distinct, deepClone } from 'vs/base/common/objects';
-import { Event } from 'vs/base/common/event';
-import { isObject, assertIsDefined, withNullAsUndefined, isFunction } from 'vs/base/common/types';
-import { Dimension } from 'vs/base/browser/dom';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
-import { EditorInput, EditorOptions, IEditorMemento, ITextEditorPane, TextEditorOptions, IEditorCloseEvent, IEditorInput, computeEditorAriaLabel, IEditorOpenContext, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import { URI } from 'vs/Base/common/uri';
+import { distinct, deepClone } from 'vs/Base/common/oBjects';
+import { Event } from 'vs/Base/common/event';
+import { isOBject, assertIsDefined, withNullAsUndefined, isFunction } from 'vs/Base/common/types';
+import { Dimension } from 'vs/Base/Browser/dom';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
+import { EditorInput, EditorOptions, IEditorMemento, ITextEditorPane, TextEditorOptions, IEditorCloseEvent, IEditorInput, computeEditorAriaLaBel, IEditorOpenContext, EditorResourceAccessor, SideBySideEditor } from 'vs/workBench/common/editor';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
 import { IEditorViewState, IEditor, ScrollType } from 'vs/editor/common/editorCommon';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -19,34 +19,34 @@ import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { isCodeEditor, getCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IEditorGroupsService, IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IExtUri } from 'vs/base/common/resources';
-import { MutableDisposable } from 'vs/base/common/lifecycle';
+import { isCodeEditor, getCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { IEditorGroupsService, IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IExtUri } from 'vs/Base/common/resources';
+import { MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 
 export interface IEditorConfiguration {
-	editor: object;
-	diffEditor: object;
+	editor: oBject;
+	diffEditor: oBject;
 }
 
 /**
- * The base class of editors that leverage the text editor for the editing experience. This class is only intended to
- * be subclassed and not instantiated.
+ * The Base class of editors that leverage the text editor for the editing experience. This class is only intended to
+ * Be suBclassed and not instantiated.
  */
-export abstract class BaseTextEditor extends EditorPane implements ITextEditorPane {
+export aBstract class BaseTextEditor extends EditorPane implements ITextEditorPane {
 
 	static readonly TEXT_EDITOR_VIEW_STATE_PREFERENCE_KEY = 'textEditorViewState';
 
 	private editorControl: IEditor | undefined;
 	private editorContainer: HTMLElement | undefined;
-	private hasPendingConfigurationChange: boolean | undefined;
+	private hasPendingConfigurationChange: Boolean | undefined;
 	private lastAppliedEditorOptions?: IEditorOptions;
 	private editorMemento: IEditorMemento<IEditorViewState>;
 
-	private readonly groupListener = this._register(new MutableDisposable());
+	private readonly groupListener = this._register(new MutaBleDisposaBle());
 
 	private _instantiationService: IInstantiationService;
 	protected get instantiationService(): IInstantiationService { return this._instantiationService; }
@@ -79,17 +79,17 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 		}));
 
 		// ARIA: if a group is added or removed, update the editor's ARIA
-		// label so that it appears in the label for when there are > 1 groups
+		// laBel so that it appears in the laBel for when there are > 1 groups
 		this._register(Event.any(this.editorGroupService.onDidAddGroup, this.editorGroupService.onDidRemoveGroup)(() => {
-			const ariaLabel = this.computeAriaLabel();
+			const ariaLaBel = this.computeAriaLaBel();
 
-			this.editorContainer?.setAttribute('aria-label', ariaLabel);
-			this.editorControl?.updateOptions({ ariaLabel });
+			this.editorContainer?.setAttriBute('aria-laBel', ariaLaBel);
+			this.editorControl?.updateOptions({ ariaLaBel });
 		}));
 	}
 
 	protected handleConfigurationChangeEvent(configuration?: IEditorConfiguration): void {
-		if (this.isVisible()) {
+		if (this.isVisiBle()) {
 			this.updateEditorConfiguration(configuration);
 		} else {
 			this.hasPendingConfigurationChange = true;
@@ -106,27 +106,27 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 	protected computeConfiguration(configuration: IEditorConfiguration): IEditorOptions {
 
 		// Specific editor options always overwrite user configuration
-		const editorConfiguration: IEditorOptions = isObject(configuration.editor) ? deepClone(configuration.editor) : Object.create(null);
-		Object.assign(editorConfiguration, this.getConfigurationOverrides());
+		const editorConfiguration: IEditorOptions = isOBject(configuration.editor) ? deepClone(configuration.editor) : OBject.create(null);
+		OBject.assign(editorConfiguration, this.getConfigurationOverrides());
 
-		// ARIA label
-		editorConfiguration.ariaLabel = this.computeAriaLabel();
+		// ARIA laBel
+		editorConfiguration.ariaLaBel = this.computeAriaLaBel();
 
 		return editorConfiguration;
 	}
 
-	private computeAriaLabel(): string {
-		return this._input ? computeEditorAriaLabel(this._input, undefined, this.group, this.editorGroupService.count) : localize('editor', "Editor");
+	private computeAriaLaBel(): string {
+		return this._input ? computeEditorAriaLaBel(this._input, undefined, this.group, this.editorGroupService.count) : localize('editor', "Editor");
 	}
 
 	protected getConfigurationOverrides(): IEditorOptions {
 		return {
 			overviewRulerLanes: 3,
-			lineNumbersMinChars: 3,
+			lineNumBersMinChars: 3,
 			fixedOverflowWidgets: true,
 			readOnly: this.input?.isReadonly(),
-			// render problems even in readonly editors
-			// https://github.com/microsoft/vscode/issues/89057
+			// render proBlems even in readonly editors
+			// https://githuB.com/microsoft/vscode/issues/89057
 			renderValidationDecorations: 'on'
 		};
 	}
@@ -146,27 +146,27 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 	}
 
 	/**
-	 * This method creates and returns the text editor control to be used. Subclasses can override to
-	 * provide their own editor control that should be used (e.g. a DiffEditor).
+	 * This method creates and returns the text editor control to Be used. SuBclasses can override to
+	 * provide their own editor control that should Be used (e.g. a DiffEditor).
 	 *
-	 * The passed in configuration object should be passed to the editor control when creating it.
+	 * The passed in configuration oBject should Be passed to the editor control when creating it.
 	 */
 	protected createEditorControl(parent: HTMLElement, configuration: IEditorOptions): IEditor {
 
-		// Use a getter for the instantiation service since some subclasses might use scoped instantiation services
+		// Use a getter for the instantiation service since some suBclasses might use scoped instantiation services
 		return this.instantiationService.createInstance(CodeEditorWidget, parent, configuration, {});
 	}
 
 	async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
 		await super.setInput(input, options, context, token);
 
-		// Update editor options after having set the input. We do this because there can be
-		// editor input specific options (e.g. an ARIA label depending on the input showing)
+		// Update editor options after having set the input. We do this Because there can Be
+		// editor input specific options (e.g. an ARIA laBel depending on the input showing)
 		this.updateEditorConfiguration();
 
-		// Update aria label on editor
+		// Update aria laBel on editor
 		const editorContainer = assertIsDefined(this.editorContainer);
-		editorContainer.setAttribute('aria-label', this.computeAriaLabel());
+		editorContainer.setAttriBute('aria-laBel', this.computeAriaLaBel());
 	}
 
 	setOptions(options: EditorOptions | undefined): void {
@@ -177,13 +177,13 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 		}
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
+	protected setEditorVisiBle(visiBle: Boolean, group: IEditorGroup | undefined): void {
 
 		// Pass on to Editor
 		const editorControl = assertIsDefined(this.editorControl);
-		if (visible) {
+		if (visiBle) {
 			this.consumePendingConfigurationChangeEvent();
-			editorControl.onVisible();
+			editorControl.onVisiBle();
 		} else {
 			editorControl.onHide();
 		}
@@ -191,7 +191,7 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 		// Listen to close events to trigger `onWillCloseEditorInGroup`
 		this.groupListener.value = group?.onWillCloseEditor(e => this.onWillCloseEditor(e));
 
-		super.setEditorVisible(visible, group);
+		super.setEditorVisiBle(visiBle, group);
 	}
 
 	private onWillCloseEditor(e: IEditorCloseEvent): void {
@@ -202,7 +202,7 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 	}
 
 	protected onWillCloseEditorInGroup(editor: IEditorInput): void {
-		// Subclasses can override
+		// SuBclasses can override
 	}
 
 	focus(): void {
@@ -232,11 +232,11 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 		this.editorMemento.saveEditorState(this.group, resource, editorViewState);
 	}
 
-	protected shouldRestoreTextEditorViewState(editor: IEditorInput, context?: IEditorOpenContext): boolean {
+	protected shouldRestoreTextEditorViewState(editor: IEditorInput, context?: IEditorOpenContext): Boolean {
 
-		// new editor: check with workbench.editor.restoreViewState setting
+		// new editor: check with workBench.editor.restoreViewState setting
 		if (context?.newInGroup) {
-			return this.textResourceConfigurationService.getValue<boolean>(EditorResourceAccessor.getOriginalUri(editor, { supportSideBySide: SideBySideEditor.PRIMARY }), 'workbench.editor.restoreViewState') === false ? false : true /* restore by default */;
+			return this.textResourceConfigurationService.getValue<Boolean>(EditorResourceAccessor.getOriginalUri(editor, { supportSideBySide: SideBySideEditor.PRIMARY }), 'workBench.editor.restoreViewState') === false ? false : true /* restore By default */;
 		}
 
 		// existing editor: always restore viewstate
@@ -305,13 +305,13 @@ export abstract class BaseTextEditor extends EditorPane implements ITextEditorPa
 
 		// Try to figure out the actual editor options that changed from the last time we updated the editor.
 		// We do this so that we are not overwriting some dynamic editor settings (e.g. word wrap) that might
-		// have been applied to the editor directly.
+		// have Been applied to the editor directly.
 		let editorSettingsToApply = editorConfiguration;
 		if (this.lastAppliedEditorOptions) {
 			editorSettingsToApply = distinct(this.lastAppliedEditorOptions, editorSettingsToApply);
 		}
 
-		if (Object.keys(editorSettingsToApply).length > 0) {
+		if (OBject.keys(editorSettingsToApply).length > 0) {
 			this.lastAppliedEditorOptions = editorConfiguration;
 			this.editorControl.updateOptions(editorSettingsToApply);
 		}

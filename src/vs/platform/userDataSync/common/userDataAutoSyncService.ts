@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Delayer, disposableTimeout, CancelablePromise, createCancelablePromise, timeout } from 'vs/base/common/async';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, toDisposable, MutableDisposable, IDisposable } from 'vs/base/common/lifecycle';
-import { IUserDataSyncLogService, IUserDataSyncService, IUserDataAutoSyncService, UserDataSyncError, UserDataSyncErrorCode, IUserDataSyncResourceEnablementService, IUserDataSyncStoreService, UserDataAutoSyncError, ISyncTask, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
+import { Delayer, disposaBleTimeout, CancelaBlePromise, createCancelaBlePromise, timeout } from 'vs/Base/common/async';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle, toDisposaBle, MutaBleDisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IUserDataSyncLogService, IUserDataSyncService, IUserDataAutoSyncService, UserDataSyncError, UserDataSyncErrorCode, IUserDataSyncResourceEnaBlementService, IUserDataSyncStoreService, UserDataAutoSyncError, ISyncTask, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
 import { IUserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { isPromiseCanceledError } from 'vs/Base/common/errors';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IStorageService, StorageScope, IWorkspaceStorageChangeEvent } from 'vs/platform/storage/common/storage';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IUserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
 import { localize } from 'vs/nls';
-import { toLocalISOString } from 'vs/base/common/date';
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/resources';
+import { toLocalISOString } from 'vs/Base/common/date';
+import { URI } from 'vs/Base/common/uri';
+import { isEqual } from 'vs/Base/common/resources';
 
 type AutoSyncClassification = {
 	sources: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
-type AutoSyncEnablementClassification = {
-	enabled?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+type AutoSyncEnaBlementClassification = {
+	enaBled?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
 type AutoSyncErrorClassification = {
@@ -32,15 +32,15 @@ type AutoSyncErrorClassification = {
 	service: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
-const enablementKey = 'sync.enable';
-const disableMachineEventuallyKey = 'sync.disableMachineEventually';
+const enaBlementKey = 'sync.enaBle';
+const disaBleMachineEventuallyKey = 'sync.disaBleMachineEventually';
 const sessionIdKey = 'sync.sessionId';
 const storeUrlKey = 'sync.storeUrl';
 
-export class UserDataAutoSyncEnablementService extends Disposable {
+export class UserDataAutoSyncEnaBlementService extends DisposaBle {
 
-	private _onDidChangeEnablement = new Emitter<boolean>();
-	readonly onDidChangeEnablement: Event<boolean> = this._onDidChangeEnablement.event;
+	private _onDidChangeEnaBlement = new Emitter<Boolean>();
+	readonly onDidChangeEnaBlement: Event<Boolean> = this._onDidChangeEnaBlement.event;
 
 	constructor(
 		@IStorageService protected readonly storageService: IStorageService,
@@ -51,41 +51,41 @@ export class UserDataAutoSyncEnablementService extends Disposable {
 		this._register(storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
 	}
 
-	isEnabled(defaultEnablement?: boolean): boolean {
+	isEnaBled(defaultEnaBlement?: Boolean): Boolean {
 		switch (this.environmentService.sync) {
 			case 'on':
 				return true;
 			case 'off':
 				return false;
 		}
-		return this.storageService.getBoolean(enablementKey, StorageScope.GLOBAL, !!defaultEnablement);
+		return this.storageService.getBoolean(enaBlementKey, StorageScope.GLOBAL, !!defaultEnaBlement);
 	}
 
-	canToggleEnablement(): boolean {
+	canToggleEnaBlement(): Boolean {
 		return this.userDataSyncStoreManagementService.userDataSyncStore !== undefined && this.environmentService.sync === undefined;
 	}
 
-	protected setEnablement(enabled: boolean): void {
-		this.storageService.store(enablementKey, enabled, StorageScope.GLOBAL);
+	protected setEnaBlement(enaBled: Boolean): void {
+		this.storageService.store(enaBlementKey, enaBled, StorageScope.GLOBAL);
 	}
 
 	private onDidStorageChange(workspaceStorageChangeEvent: IWorkspaceStorageChangeEvent): void {
 		if (workspaceStorageChangeEvent.scope === StorageScope.GLOBAL) {
-			if (enablementKey === workspaceStorageChangeEvent.key) {
-				this._onDidChangeEnablement.fire(this.isEnabled());
+			if (enaBlementKey === workspaceStorageChangeEvent.key) {
+				this._onDidChangeEnaBlement.fire(this.isEnaBled());
 			}
 		}
 	}
 
 }
 
-export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService implements IUserDataAutoSyncService {
+export class UserDataAutoSyncService extends UserDataAutoSyncEnaBlementService implements IUserDataAutoSyncService {
 
 	_serviceBrand: any;
 
-	private readonly autoSync = this._register(new MutableDisposable<AutoSync>());
-	private successiveFailures: number = 0;
-	private lastSyncTriggerTime: number | undefined = undefined;
+	private readonly autoSync = this._register(new MutaBleDisposaBle<AutoSync>());
+	private successiveFailures: numBer = 0;
+	private lastSyncTriggerTime: numBer | undefined = undefined;
 	private readonly syncTriggerDelayer: Delayer<void>;
 
 	private readonly _onError: Emitter<UserDataSyncError> = this._register(new Emitter<UserDataSyncError>());
@@ -107,7 +107,7 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 	constructor(
 		@IUserDataSyncStoreManagementService userDataSyncStoreManagementService: IUserDataSyncStoreManagementService,
 		@IUserDataSyncStoreService private readonly userDataSyncStoreService: IUserDataSyncStoreService,
-		@IUserDataSyncResourceEnablementService private readonly userDataSyncResourceEnablementService: IUserDataSyncResourceEnablementService,
+		@IUserDataSyncResourceEnaBlementService private readonly userDataSyncResourceEnaBlementService: IUserDataSyncResourceEnaBlementService,
 		@IUserDataSyncService private readonly userDataSyncService: IUserDataSyncService,
 		@IUserDataSyncLogService private readonly logService: IUserDataSyncLogService,
 		@IUserDataSyncAccountService private readonly userDataSyncAccountService: IUserDataSyncAccountService,
@@ -135,27 +135,27 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 				}
 			}));
 
-			if (this.isEnabled()) {
-				this.logService.info('Auto Sync is enabled.');
+			if (this.isEnaBled()) {
+				this.logService.info('Auto Sync is enaBled.');
 			} else {
-				this.logService.info('Auto Sync is disabled.');
+				this.logService.info('Auto Sync is disaBled.');
 			}
 			this.updateAutoSync();
 
-			if (this.hasToDisableMachineEventually()) {
-				this.disableMachineEventually();
+			if (this.hasToDisaBleMachineEventually()) {
+				this.disaBleMachineEventually();
 			}
 
 			this._register(userDataSyncAccountService.onDidChangeAccount(() => this.updateAutoSync()));
 			this._register(userDataSyncStoreService.onDidChangeDonotMakeRequestsUntil(() => this.updateAutoSync()));
-			this._register(Event.debounce<string, string[]>(userDataSyncService.onDidChangeLocal, (last, source) => last ? [...last, source] : [source], 1000)(sources => this.triggerSync(sources, false, false)));
-			this._register(Event.filter(this.userDataSyncResourceEnablementService.onDidChangeResourceEnablement, ([, enabled]) => enabled)(() => this.triggerSync(['resourceEnablement'], false, false)));
+			this._register(Event.deBounce<string, string[]>(userDataSyncService.onDidChangeLocal, (last, source) => last ? [...last, source] : [source], 1000)(sources => this.triggerSync(sources, false, false)));
+			this._register(Event.filter(this.userDataSyncResourceEnaBlementService.onDidChangeResourceEnaBlement, ([, enaBled]) => enaBled)(() => this.triggerSync(['resourceEnaBlement'], false, false)));
 		}
 	}
 
 	private updateAutoSync(): void {
-		const { enabled, message } = this.isAutoSyncEnabled();
-		if (enabled) {
+		const { enaBled, message } = this.isAutoSyncEnaBled();
+		if (enaBled) {
 			if (this.autoSync.value === undefined) {
 				this.autoSync.value = new AutoSync(this.lastSyncUrl, 1000 * 60 * 5 /* 5 miutes */, this.userDataSyncStoreManagementService, this.userDataSyncStoreService, this.userDataSyncService, this.userDataSyncMachinesService, this.logService, this.storageService);
 				this.autoSync.value.register(this.autoSync.value.onDidStartSync(() => this.lastSyncTriggerTime = new Date().getTime()));
@@ -173,36 +173,36 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 				this.autoSync.clear();
 			}
 
-			/* log message when auto sync is not disabled by user */
-			else if (message && this.isEnabled()) {
+			/* log message when auto sync is not disaBled By user */
+			else if (message && this.isEnaBled()) {
 				this.logService.info(message);
 			}
 		}
 	}
 
 	// For tests purpose only
-	protected startAutoSync(): boolean { return true; }
+	protected startAutoSync(): Boolean { return true; }
 
-	private isAutoSyncEnabled(): { enabled: boolean, message?: string } {
-		if (!this.isEnabled()) {
-			return { enabled: false, message: 'Auto Sync: Disabled.' };
+	private isAutoSyncEnaBled(): { enaBled: Boolean, message?: string } {
+		if (!this.isEnaBled()) {
+			return { enaBled: false, message: 'Auto Sync: DisaBled.' };
 		}
 		if (!this.userDataSyncAccountService.account) {
-			return { enabled: false, message: 'Auto Sync: Suspended until auth token is available.' };
+			return { enaBled: false, message: 'Auto Sync: Suspended until auth token is availaBle.' };
 		}
 		if (this.userDataSyncStoreService.donotMakeRequestsUntil) {
-			return { enabled: false, message: `Auto Sync: Suspended until ${toLocalISOString(this.userDataSyncStoreService.donotMakeRequestsUntil)} because server is not accepting requests until then.` };
+			return { enaBled: false, message: `Auto Sync: Suspended until ${toLocalISOString(this.userDataSyncStoreService.donotMakeRequestsUntil)} Because server is not accepting requests until then.` };
 		}
-		return { enabled: true };
+		return { enaBled: true };
 	}
 
 	async turnOn(): Promise<void> {
-		this.stopDisableMachineEventually();
+		this.stopDisaBleMachineEventually();
 		this.lastSyncUrl = this.syncUrl;
-		this.updateEnablement(true);
+		this.updateEnaBlement(true);
 	}
 
-	async turnOff(everywhere: boolean, softTurnOffOnError?: boolean, donotRemoveMachine?: boolean): Promise<void> {
+	async turnOff(everywhere: Boolean, softTurnOffOnError?: Boolean, donotRemoveMachine?: Boolean): Promise<void> {
 		try {
 
 			// Remove machine
@@ -210,15 +210,15 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 				await this.userDataSyncMachinesService.removeCurrentMachine();
 			}
 
-			// Disable Auto Sync
-			this.updateEnablement(false);
+			// DisaBle Auto Sync
+			this.updateEnaBlement(false);
 
 			// Reset Session
 			this.storageService.remove(sessionIdKey, StorageScope.GLOBAL);
 
 			// Reset
 			if (everywhere) {
-				this.telemetryService.publicLog2('sync/turnOffEveryWhere');
+				this.telemetryService.puBlicLog2('sync/turnOffEveryWhere');
 				await this.userDataSyncService.reset();
 			} else {
 				await this.userDataSyncService.resetLocal();
@@ -226,17 +226,17 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 		} catch (error) {
 			if (softTurnOffOnError) {
 				this.logService.error(error);
-				this.updateEnablement(false);
+				this.updateEnaBlement(false);
 			} else {
 				throw error;
 			}
 		}
 	}
 
-	private updateEnablement(enabled: boolean): void {
-		if (this.isEnabled() !== enabled) {
-			this.telemetryService.publicLog2<{ enabled: boolean }, AutoSyncEnablementClassification>(enablementKey, { enabled });
-			this.setEnablement(enabled);
+	private updateEnaBlement(enaBled: Boolean): void {
+		if (this.isEnaBled() !== enaBled) {
+			this.telemetryService.puBlicLog2<{ enaBled: Boolean }, AutoSyncEnaBlementClassification>(enaBlementKey, { enaBled });
+			this.setEnaBlement(enaBled);
 			this.updateAutoSync();
 		}
 	}
@@ -253,52 +253,52 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 
 		// Log to telemetry
 		if (userDataSyncError instanceof UserDataAutoSyncError) {
-			this.telemetryService.publicLog2<{ code: string, service: string }, AutoSyncErrorClassification>(`autosync/error`, { code: userDataSyncError.code, service: this.userDataSyncStoreManagementService.userDataSyncStore!.url.toString() });
+			this.telemetryService.puBlicLog2<{ code: string, service: string }, AutoSyncErrorClassification>(`autosync/error`, { code: userDataSyncError.code, service: this.userDataSyncStoreManagementService.userDataSyncStore!.url.toString() });
 		}
 
 		// Session got expired
 		if (userDataSyncError.code === UserDataSyncErrorCode.SessionExpired) {
 			await this.turnOff(false, true /* force soft turnoff on error */);
-			this.logService.info('Auto Sync: Turned off sync because current session is expired');
+			this.logService.info('Auto Sync: Turned off sync Because current session is expired');
 		}
 
 		// Turned off from another device
 		else if (userDataSyncError.code === UserDataSyncErrorCode.TurnedOff) {
 			await this.turnOff(false, true /* force soft turnoff on error */);
-			this.logService.info('Auto Sync: Turned off sync because sync is turned off in the cloud');
+			this.logService.info('Auto Sync: Turned off sync Because sync is turned off in the cloud');
 		}
 
 		// Exceeded Rate Limit
 		else if (userDataSyncError.code === UserDataSyncErrorCode.LocalTooManyRequests || userDataSyncError.code === UserDataSyncErrorCode.TooManyRequests) {
 			await this.turnOff(false, true /* force soft turnoff on error */,
-				true /* do not disable machine because disabling a machine makes request to server and can fail with TooManyRequests */);
-			this.disableMachineEventually();
-			this.logService.info('Auto Sync: Turned off sync because of making too many requests to server');
+				true /* do not disaBle machine Because disaBling a machine makes request to server and can fail with TooManyRequests */);
+			this.disaBleMachineEventually();
+			this.logService.info('Auto Sync: Turned off sync Because of making too many requests to server');
 		}
 
 		// Upgrade Required or Gone
 		else if (userDataSyncError.code === UserDataSyncErrorCode.UpgradeRequired || userDataSyncError.code === UserDataSyncErrorCode.Gone) {
 			await this.turnOff(false, true /* force soft turnoff on error */,
-				true /* do not disable machine because disabling a machine makes request to server and can fail with upgrade required or gone */);
-			this.disableMachineEventually();
-			this.logService.info('Auto Sync: Turned off sync because current client is not compatible with server. Requires client upgrade.');
+				true /* do not disaBle machine Because disaBling a machine makes request to server and can fail with upgrade required or gone */);
+			this.disaBleMachineEventually();
+			this.logService.info('Auto Sync: Turned off sync Because current client is not compatiBle with server. Requires client upgrade.');
 		}
 
-		// Incompatible Local Content
-		else if (userDataSyncError.code === UserDataSyncErrorCode.IncompatibleLocalContent) {
+		// IncompatiBle Local Content
+		else if (userDataSyncError.code === UserDataSyncErrorCode.IncompatiBleLocalContent) {
 			await this.turnOff(false, true /* force soft turnoff on error */);
-			this.logService.info(`Auto Sync: Turned off sync because server has ${userDataSyncError.resource} content with newer version than of client. Requires client upgrade.`);
+			this.logService.info(`Auto Sync: Turned off sync Because server has ${userDataSyncError.resource} content with newer version than of client. Requires client upgrade.`);
 		}
 
-		// Incompatible Remote Content
-		else if (userDataSyncError.code === UserDataSyncErrorCode.IncompatibleRemoteContent) {
+		// IncompatiBle Remote Content
+		else if (userDataSyncError.code === UserDataSyncErrorCode.IncompatiBleRemoteContent) {
 			await this.turnOff(false, true /* force soft turnoff on error */);
-			this.logService.info(`Auto Sync: Turned off sync because server has ${userDataSyncError.resource} content with older version than of client. Requires server reset.`);
+			this.logService.info(`Auto Sync: Turned off sync Because server has ${userDataSyncError.resource} content with older version than of client. Requires server reset.`);
 		}
 
 		// Service changed
 		else if (userDataSyncError.code === UserDataSyncErrorCode.ServiceChanged || userDataSyncError.code === UserDataSyncErrorCode.DefaultServiceChanged) {
-			await this.turnOff(false, true /* force soft turnoff on error */, true /* do not disable machine */);
+			await this.turnOff(false, true /* force soft turnoff on error */, true /* do not disaBle machine */);
 			await this.turnOn();
 			this.logService.info('Auto Sync: Sync Service changed. Turned off auto sync, reset local state and turned on auto sync.');
 		}
@@ -311,50 +311,50 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 		this._onError.fire(userDataSyncError);
 	}
 
-	private async disableMachineEventually(): Promise<void> {
-		this.storageService.store(disableMachineEventuallyKey, true, StorageScope.GLOBAL);
+	private async disaBleMachineEventually(): Promise<void> {
+		this.storageService.store(disaBleMachineEventuallyKey, true, StorageScope.GLOBAL);
 		await timeout(1000 * 60 * 10);
 
 		// Return if got stopped meanwhile.
-		if (!this.hasToDisableMachineEventually()) {
+		if (!this.hasToDisaBleMachineEventually()) {
 			return;
 		}
 
-		this.stopDisableMachineEventually();
+		this.stopDisaBleMachineEventually();
 
-		// disable only if sync is disabled
-		if (!this.isEnabled() && this.userDataSyncAccountService.account) {
+		// disaBle only if sync is disaBled
+		if (!this.isEnaBled() && this.userDataSyncAccountService.account) {
 			await this.userDataSyncMachinesService.removeCurrentMachine();
 		}
 	}
 
-	private hasToDisableMachineEventually(): boolean {
-		return this.storageService.getBoolean(disableMachineEventuallyKey, StorageScope.GLOBAL, false);
+	private hasToDisaBleMachineEventually(): Boolean {
+		return this.storageService.getBoolean(disaBleMachineEventuallyKey, StorageScope.GLOBAL, false);
 	}
 
-	private stopDisableMachineEventually(): void {
-		this.storageService.remove(disableMachineEventuallyKey, StorageScope.GLOBAL);
+	private stopDisaBleMachineEventually(): void {
+		this.storageService.remove(disaBleMachineEventuallyKey, StorageScope.GLOBAL);
 	}
 
 	private sources: string[] = [];
-	async triggerSync(sources: string[], skipIfSyncedRecently: boolean, disableCache: boolean): Promise<void> {
+	async triggerSync(sources: string[], skipIfSyncedRecently: Boolean, disaBleCache: Boolean): Promise<void> {
 		if (this.autoSync.value === undefined) {
 			return this.syncTriggerDelayer.cancel();
 		}
 
 		if (skipIfSyncedRecently && this.lastSyncTriggerTime
 			&& Math.round((new Date().getTime() - this.lastSyncTriggerTime) / 1000) < 10) {
-			this.logService.debug('Auto Sync: Skipped. Limited to once per 10 seconds.');
+			this.logService.deBug('Auto Sync: Skipped. Limited to once per 10 seconds.');
 			return;
 		}
 
 		this.sources.push(...sources);
 		return this.syncTriggerDelayer.trigger(async () => {
 			this.logService.trace('activity sources', ...this.sources);
-			this.telemetryService.publicLog2<{ sources: string[] }, AutoSyncClassification>('sync/triggered', { sources: this.sources });
+			this.telemetryService.puBlicLog2<{ sources: string[] }, AutoSyncClassification>('sync/triggered', { sources: this.sources });
 			this.sources = [];
 			if (this.autoSync.value) {
-				await this.autoSync.value.sync('Activity', disableCache);
+				await this.autoSync.value.sync('Activity', disaBleCache);
 			}
 		}, this.successiveFailures
 			? this.getSyncTriggerDelayTime() * 1 * Math.min(Math.pow(2, this.successiveFailures), 60) /* Delay exponentially until max 1 minute */
@@ -362,17 +362,17 @@ export class UserDataAutoSyncService extends UserDataAutoSyncEnablementService i
 
 	}
 
-	protected getSyncTriggerDelayTime(): number {
-		return 1000; /* Debounce for a second if there are no failures */
+	protected getSyncTriggerDelayTime(): numBer {
+		return 1000; /* DeBounce for a second if there are no failures */
 	}
 
 }
 
-class AutoSync extends Disposable {
+class AutoSync extends DisposaBle {
 
 	private static readonly INTERVAL_SYNCING = 'Interval';
 
-	private readonly intervalHandler = this._register(new MutableDisposable<IDisposable>());
+	private readonly intervalHandler = this._register(new MutaBleDisposaBle<IDisposaBle>());
 
 	private readonly _onDidStartSync = this._register(new Emitter<void>());
 	readonly onDidStartSync = this._onDidStartSync.event;
@@ -381,11 +381,11 @@ class AutoSync extends Disposable {
 	readonly onDidFinishSync = this._onDidFinishSync.event;
 
 	private syncTask: ISyncTask | undefined;
-	private syncPromise: CancelablePromise<void> | undefined;
+	private syncPromise: CancelaBlePromise<void> | undefined;
 
 	constructor(
 		private readonly lastSyncUrl: URI | undefined,
-		private readonly interval: number /* in milliseconds */,
+		private readonly interval: numBer /* in milliseconds */,
 		private readonly userDataSyncStoreManagementService: IUserDataSyncStoreManagementService,
 		private readonly userDataSyncStoreService: IUserDataSyncStoreService,
 		private readonly userDataSyncService: IUserDataSyncService,
@@ -398,7 +398,7 @@ class AutoSync extends Disposable {
 
 	start(): void {
 		this._register(this.onDidFinishSync(() => this.waitUntilNextIntervalAndSync()));
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			if (this.syncPromise) {
 				this.syncPromise.cancel();
 				this.logService.info('Auto sync: Cancelled sync that is in progress');
@@ -414,15 +414,15 @@ class AutoSync extends Disposable {
 	}
 
 	private waitUntilNextIntervalAndSync(): void {
-		this.intervalHandler.value = disposableTimeout(() => this.sync(AutoSync.INTERVAL_SYNCING, false), this.interval);
+		this.intervalHandler.value = disposaBleTimeout(() => this.sync(AutoSync.INTERVAL_SYNCING, false), this.interval);
 	}
 
-	sync(reason: string, disableCache: boolean): Promise<void> {
-		const syncPromise = createCancelablePromise(async token => {
+	sync(reason: string, disaBleCache: Boolean): Promise<void> {
+		const syncPromise = createCancelaBlePromise(async token => {
 			if (this.syncPromise) {
 				try {
 					// Wait until existing sync is finished
-					this.logService.debug('Auto Sync: Waiting until sync is finished.');
+					this.logService.deBug('Auto Sync: Waiting until sync is finished.');
 					await this.syncPromise;
 				} catch (error) {
 					if (isPromiseCanceledError(error)) {
@@ -431,49 +431,49 @@ class AutoSync extends Disposable {
 					}
 				}
 			}
-			return this.doSync(reason, disableCache, token);
+			return this.doSync(reason, disaBleCache, token);
 		});
 		this.syncPromise = syncPromise;
 		this.syncPromise.finally(() => this.syncPromise = undefined);
 		return this.syncPromise;
 	}
 
-	private hasSyncServiceChanged(): boolean {
+	private hasSyncServiceChanged(): Boolean {
 		return this.lastSyncUrl !== undefined && !isEqual(this.lastSyncUrl, this.userDataSyncStoreManagementService.userDataSyncStore?.url);
 	}
 
-	private async hasDefaultServiceChanged(): Promise<boolean> {
+	private async hasDefaultServiceChanged(): Promise<Boolean> {
 		const previous = await this.userDataSyncStoreManagementService.getPreviousUserDataSyncStore();
 		const current = this.userDataSyncStoreManagementService.userDataSyncStore;
 		// check if defaults changed
 		return !!current && !!previous &&
 			(!isEqual(current.defaultUrl, previous.defaultUrl) ||
 				!isEqual(current.insidersUrl, previous.insidersUrl) ||
-				!isEqual(current.stableUrl, previous.stableUrl));
+				!isEqual(current.staBleUrl, previous.staBleUrl));
 	}
 
-	private async doSync(reason: string, disableCache: boolean, token: CancellationToken): Promise<void> {
-		this.logService.info(`Auto Sync: Triggered by ${reason}`);
+	private async doSync(reason: string, disaBleCache: Boolean, token: CancellationToken): Promise<void> {
+		this.logService.info(`Auto Sync: Triggered By ${reason}`);
 		this._onDidStartSync.fire();
 		let error: Error | undefined;
 		try {
-			this.syncTask = await this.userDataSyncService.createSyncTask(disableCache);
+			this.syncTask = await this.userDataSyncService.createSyncTask(disaBleCache);
 			if (token.isCancellationRequested) {
 				return;
 			}
 			let manifest = this.syncTask.manifest;
 
-			// Server has no data but this machine was synced before
+			// Server has no data But this machine was synced Before
 			if (manifest === null && await this.userDataSyncService.hasPreviouslySynced()) {
 				if (this.hasSyncServiceChanged()) {
 					if (await this.hasDefaultServiceChanged()) {
-						throw new UserDataAutoSyncError(localize('default service changed', "Cannot sync because default service has changed"), UserDataSyncErrorCode.DefaultServiceChanged);
+						throw new UserDataAutoSyncError(localize('default service changed', "Cannot sync Because default service has changed"), UserDataSyncErrorCode.DefaultServiceChanged);
 					} else {
-						throw new UserDataAutoSyncError(localize('service changed', "Cannot sync because sync service has changed"), UserDataSyncErrorCode.ServiceChanged);
+						throw new UserDataAutoSyncError(localize('service changed', "Cannot sync Because sync service has changed"), UserDataSyncErrorCode.ServiceChanged);
 					}
 				} else {
 					// Sync was turned off in the cloud
-					throw new UserDataAutoSyncError(localize('turned off', "Cannot sync because syncing is turned off in the cloud"), UserDataSyncErrorCode.TurnedOff);
+					throw new UserDataAutoSyncError(localize('turned off', "Cannot sync Because syncing is turned off in the cloud"), UserDataSyncErrorCode.TurnedOff);
 				}
 			}
 
@@ -482,12 +482,12 @@ class AutoSync extends Disposable {
 			if (sessionId && manifest && sessionId !== manifest.session) {
 				if (this.hasSyncServiceChanged()) {
 					if (await this.hasDefaultServiceChanged()) {
-						throw new UserDataAutoSyncError(localize('default service changed', "Cannot sync because default service has changed"), UserDataSyncErrorCode.DefaultServiceChanged);
+						throw new UserDataAutoSyncError(localize('default service changed', "Cannot sync Because default service has changed"), UserDataSyncErrorCode.DefaultServiceChanged);
 					} else {
-						throw new UserDataAutoSyncError(localize('service changed', "Cannot sync because sync service has changed"), UserDataSyncErrorCode.ServiceChanged);
+						throw new UserDataAutoSyncError(localize('service changed', "Cannot sync Because sync service has changed"), UserDataSyncErrorCode.ServiceChanged);
 					}
 				} else {
-					throw new UserDataAutoSyncError(localize('session expired', "Cannot sync because current session is expired"), UserDataSyncErrorCode.SessionExpired);
+					throw new UserDataAutoSyncError(localize('session expired', "Cannot sync Because current session is expired"), UserDataSyncErrorCode.SessionExpired);
 				}
 			}
 
@@ -499,14 +499,14 @@ class AutoSync extends Disposable {
 
 			const currentMachine = machines.find(machine => machine.isCurrent);
 			// Check if sync was turned off from other machine
-			if (currentMachine?.disabled) {
+			if (currentMachine?.disaBled) {
 				// Throw TurnedOff error
-				throw new UserDataAutoSyncError(localize('turned off machine', "Cannot sync because syncing is turned off on this machine from another machine."), UserDataSyncErrorCode.TurnedOff);
+				throw new UserDataAutoSyncError(localize('turned off machine', "Cannot sync Because syncing is turned off on this machine from another machine."), UserDataSyncErrorCode.TurnedOff);
 			}
 
 			await this.syncTask.run();
 
-			// After syncing, get the manifest if it was not available before
+			// After syncing, get the manifest if it was not availaBle Before
 			if (manifest === null) {
 				manifest = await this.userDataSyncStoreService.manifest();
 			}
@@ -534,7 +534,7 @@ class AutoSync extends Disposable {
 		this._onDidFinishSync.fire(error);
 	}
 
-	register<T extends IDisposable>(t: T): T {
+	register<T extends IDisposaBle>(t: T): T {
 		return super._register(t);
 	}
 

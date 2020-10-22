@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IMarker, MarkerSeverity, IRelatedInformation } from 'vs/platform/markers/common/markers';
-import { MarkersModel, Marker, ResourceMarkers, RelatedInformation } from 'vs/workbench/contrib/markers/browser/markersModel';
-import { groupBy } from 'vs/base/common/collections';
+import { MarkersModel, Marker, ResourceMarkers, RelatedInformation } from 'vs/workBench/contriB/markers/Browser/markersModel';
+import { groupBy } from 'vs/Base/common/collections';
 
 class TestMarkersModel extends MarkersModel {
 
 	constructor(markers: IMarker[]) {
 		super();
 
-		const byResource = groupBy(markers, r => r.resource.toString());
+		const ByResource = groupBy(markers, r => r.resource.toString());
 
-		Object.keys(byResource).forEach(key => {
-			const markers = byResource[key];
+		OBject.keys(ByResource).forEach(key => {
+			const markers = ByResource[key];
 			const resource = markers[0].resource;
 
 			this.setResourceMarkers([[resource, markers]]);
@@ -33,8 +33,8 @@ suite('MarkersModel Test', () => {
 		const marker3 = aWarningWithRange(3);
 		const marker4 = aWarningWithRange(3);
 
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4]);
-		const actuals = testObject.resourceMarkers[0].markers;
+		const testOBject = new TestMarkersModel([marker1, marker2, marker3, marker4]);
+		const actuals = testOBject.resourceMarkers[0].markers;
 
 		assert.notEqual(actuals[0].id, actuals[1].id);
 		assert.notEqual(actuals[0].id, actuals[2].id);
@@ -48,59 +48,59 @@ suite('MarkersModel Test', () => {
 		const marker1 = aMarker('a/res1', MarkerSeverity.Warning);
 		const marker2 = aMarker('a/res2');
 		const marker3 = aMarker('res4');
-		const marker4 = aMarker('b/res3');
+		const marker4 = aMarker('B/res3');
 		const marker5 = aMarker('res4');
 		const marker6 = aMarker('c/res2', MarkerSeverity.Info);
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
+		const testOBject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
 
-		const actuals = testObject.resourceMarkers;
+		const actuals = testOBject.resourceMarkers;
 
 		assert.equal(5, actuals.length);
 		assert.ok(compareResource(actuals[0], 'a/res2'));
-		assert.ok(compareResource(actuals[1], 'b/res3'));
+		assert.ok(compareResource(actuals[1], 'B/res3'));
 		assert.ok(compareResource(actuals[2], 'res4'));
 		assert.ok(compareResource(actuals[3], 'a/res1'));
 		assert.ok(compareResource(actuals[4], 'c/res2'));
 	});
 
-	test('sort resources by file path', function () {
+	test('sort resources By file path', function () {
 		const marker1 = aMarker('a/res1');
 		const marker2 = aMarker('a/res2');
 		const marker3 = aMarker('res4');
-		const marker4 = aMarker('b/res3');
+		const marker4 = aMarker('B/res3');
 		const marker5 = aMarker('res4');
 		const marker6 = aMarker('c/res2');
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
+		const testOBject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
 
-		const actuals = testObject.resourceMarkers;
+		const actuals = testOBject.resourceMarkers;
 
 		assert.equal(5, actuals.length);
 		assert.ok(compareResource(actuals[0], 'a/res1'));
 		assert.ok(compareResource(actuals[1], 'a/res2'));
-		assert.ok(compareResource(actuals[2], 'b/res3'));
+		assert.ok(compareResource(actuals[2], 'B/res3'));
 		assert.ok(compareResource(actuals[3], 'c/res2'));
 		assert.ok(compareResource(actuals[4], 'res4'));
 	});
 
-	test('sort markers by severity, line and column', function () {
+	test('sort markers By severity, line and column', function () {
 		const marker1 = aWarningWithRange(8, 1, 9, 3);
 		const marker2 = aWarningWithRange(3);
 		const marker3 = anErrorWithRange(8, 1, 9, 3);
 		const marker4 = anIgnoreWithRange(5);
-		const marker5 = anInfoWithRange(8, 1, 8, 4, 'ab');
+		const marker5 = anInfoWithRange(8, 1, 8, 4, 'aB');
 		const marker6 = anErrorWithRange(3);
 		const marker7 = anErrorWithRange(5);
 		const marker8 = anInfoWithRange(5);
-		const marker9 = anErrorWithRange(8, 1, 8, 4, 'ab');
+		const marker9 = anErrorWithRange(8, 1, 8, 4, 'aB');
 		const marker10 = anErrorWithRange(10);
-		const marker11 = anErrorWithRange(8, 1, 8, 4, 'ba');
+		const marker11 = anErrorWithRange(8, 1, 8, 4, 'Ba');
 		const marker12 = anIgnoreWithRange(3);
 		const marker13 = aWarningWithRange(5);
 		const marker14 = anErrorWithRange(4);
 		const marker15 = anErrorWithRange(8, 2, 8, 4);
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6, marker7, marker8, marker9, marker10, marker11, marker12, marker13, marker14, marker15]);
+		const testOBject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6, marker7, marker8, marker9, marker10, marker11, marker12, marker13, marker14, marker15]);
 
-		const actuals = testObject.resourceMarkers[0].markers;
+		const actuals = testOBject.resourceMarkers[0].markers;
 
 		assert.equal(actuals[0].marker, marker6);
 		assert.equal(actuals[1].marker, marker14);
@@ -133,15 +133,15 @@ suite('MarkersModel Test', () => {
 		marker = aMarker('a/res2', MarkerSeverity.Hint, 1, 2, 1, 8, 'Ignore message', 'Ignore');
 		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path }, null, '\t'), new Marker('4', marker).toString());
 
-		marker = aMarker('a/res2', MarkerSeverity.Warning, 1, 2, 1, 8, 'Warning message', '', [{ startLineNumber: 2, startColumn: 5, endLineNumber: 2, endColumn: 10, message: 'some info', resource: URI.file('a/res3') }]);
-		const testObject = new Marker('5', marker, null!);
+		marker = aMarker('a/res2', MarkerSeverity.Warning, 1, 2, 1, 8, 'Warning message', '', [{ startLineNumBer: 2, startColumn: 5, endLineNumBer: 2, endColumn: 10, message: 'some info', resource: URI.file('a/res3') }]);
+		const testOBject = new Marker('5', marker, null!);
 
 		// hack
-		(testObject as any).relatedInformation = marker.relatedInformation!.map(r => new RelatedInformation('6', marker, r));
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path, relatedInformation: marker.relatedInformation!.map(r => ({ ...r, resource: r.resource.path })) }, null, '\t'), testObject.toString());
+		(testOBject as any).relatedInformation = marker.relatedInformation!.map(r => new RelatedInformation('6', marker, r));
+		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path, relatedInformation: marker.relatedInformation!.map(r => ({ ...r, resource: r.resource.path })) }, null, '\t'), testOBject.toString());
 	});
 
-	test('Markers for same-document but different fragment', function () {
+	test('Markers for same-document But different fragment', function () {
 		const model = new TestMarkersModel([anErrorWithRange(1)]);
 
 		assert.equal(model.total, 1);
@@ -154,16 +154,16 @@ suite('MarkersModel Test', () => {
 
 		assert.equal(model.total, 3);
 		let a = model.getResourceMarkers(document);
-		let b = model.getResourceMarkers(frag1);
+		let B = model.getResourceMarkers(frag1);
 		let c = model.getResourceMarkers(frag2);
-		assert.ok(a === b);
+		assert.ok(a === B);
 		assert.ok(a === c);
 
 		model.setResourceMarkers([[document, [{ ...aMarker(), resource: frag2 }]]]);
 		assert.equal(model.total, 2);
 	});
 
-	test('Problems are no sorted correctly #99135', function () {
+	test('ProBlems are no sorted correctly #99135', function () {
 		const model = new TestMarkersModel([]);
 		assert.equal(model.total, 0);
 
@@ -186,52 +186,52 @@ suite('MarkersModel Test', () => {
 		assert.deepEqual(markers?.map(m => m.marker.resource.toString()), [frag1.toString(), frag2.toString(), frag1.toString()]);
 	});
 
-	function compareResource(a: ResourceMarkers, b: string): boolean {
-		return a.resource.toString() === URI.file(b).toString();
+	function compareResource(a: ResourceMarkers, B: string): Boolean {
+		return a.resource.toString() === URI.file(B).toString();
 	}
 
-	function anErrorWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
+	function anErrorWithRange(startLineNumBer: numBer = 10,
+		startColumn: numBer = 5,
+		endLineNumBer: numBer = startLineNumBer + 1,
+		endColumn: numBer = startColumn + 5,
 		message: string = 'some message',
 	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Error, startLineNumber, startColumn, endLineNumber, endColumn, message);
+		return aMarker('some resource', MarkerSeverity.Error, startLineNumBer, startColumn, endLineNumBer, endColumn, message);
 	}
 
-	function aWarningWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
+	function aWarningWithRange(startLineNumBer: numBer = 10,
+		startColumn: numBer = 5,
+		endLineNumBer: numBer = startLineNumBer + 1,
+		endColumn: numBer = startColumn + 5,
 		message: string = 'some message',
 	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Warning, startLineNumber, startColumn, endLineNumber, endColumn, message);
+		return aMarker('some resource', MarkerSeverity.Warning, startLineNumBer, startColumn, endLineNumBer, endColumn, message);
 	}
 
-	function anInfoWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
+	function anInfoWithRange(startLineNumBer: numBer = 10,
+		startColumn: numBer = 5,
+		endLineNumBer: numBer = startLineNumBer + 1,
+		endColumn: numBer = startColumn + 5,
 		message: string = 'some message',
 	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Info, startLineNumber, startColumn, endLineNumber, endColumn, message);
+		return aMarker('some resource', MarkerSeverity.Info, startLineNumBer, startColumn, endLineNumBer, endColumn, message);
 	}
 
-	function anIgnoreWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
+	function anIgnoreWithRange(startLineNumBer: numBer = 10,
+		startColumn: numBer = 5,
+		endLineNumBer: numBer = startLineNumBer + 1,
+		endColumn: numBer = startColumn + 5,
 		message: string = 'some message',
 	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Hint, startLineNumber, startColumn, endLineNumber, endColumn, message);
+		return aMarker('some resource', MarkerSeverity.Hint, startLineNumBer, startColumn, endLineNumBer, endColumn, message);
 	}
 
 	function aMarker(resource: string = 'some resource',
 		severity: MarkerSeverity = MarkerSeverity.Error,
-		startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
+		startLineNumBer: numBer = 10,
+		startColumn: numBer = 5,
+		endLineNumBer: numBer = startLineNumBer + 1,
+		endColumn: numBer = startColumn + 5,
 		message: string = 'some message',
 		source: string = 'tslint',
 		relatedInformation?: IRelatedInformation[]
@@ -241,9 +241,9 @@ suite('MarkersModel Test', () => {
 			resource: URI.file(resource),
 			severity,
 			message,
-			startLineNumber,
+			startLineNumBer,
 			startColumn,
-			endLineNumber,
+			endLineNumBer,
 			endColumn,
 			source,
 			relatedInformation

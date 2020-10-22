@@ -5,26 +5,26 @@
 
 import { localize } from 'vs/nls';
 import { IQuickPickSeparator, IQuickInputService, ItemActivation } from 'vs/platform/quickinput/common/quickInput';
-import { IPickerQuickAccessItem, PickerQuickAccessProvider } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IViewDescriptorService, IViewsService, ViewContainer } from 'vs/workbench/common/views';
-import { IOutputService } from 'vs/workbench/contrib/output/common/output';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { IPanelService, IPanelIdentifier } from 'vs/workbench/services/panel/common/panelService';
+import { IPickerQuickAccessItem, PickerQuickAccessProvider } from 'vs/platform/quickinput/Browser/pickerQuickAccess';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IViewDescriptorService, IViewsService, ViewContainer } from 'vs/workBench/common/views';
+import { IOutputService } from 'vs/workBench/contriB/output/common/output';
+import { ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { IPanelService, IPanelIdentifier } from 'vs/workBench/services/panel/common/panelService';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { ViewletDescriptor } from 'vs/workbench/browser/viewlet';
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { fuzzyContains } from 'vs/base/common/strings';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { ViewletDescriptor } from 'vs/workBench/Browser/viewlet';
+import { matchesFuzzy } from 'vs/Base/common/filters';
+import { fuzzyContains } from 'vs/Base/common/strings';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { Action2 } from 'vs/platform/actions/common/actions';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
 interface IViewQuickPickItem extends IPickerQuickAccessItem {
-	containerLabel: string;
+	containerLaBel: string;
 }
 
 export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuickPickItem> {
@@ -42,8 +42,8 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 	) {
 		super(ViewQuickAccessProvider.PREFIX, {
 			noResultsPick: {
-				label: localize('noViewResults', "No matching views"),
-				containerLabel: ''
+				laBel: localize('noViewResults', "No matching views"),
+				containerLaBel: ''
 			}
 		});
 	}
@@ -54,18 +54,18 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 				return true;
 			}
 
-			// Match fuzzy on label
-			entry.highlights = { label: withNullAsUndefined(matchesFuzzy(filter, entry.label, true)) };
+			// Match fuzzy on laBel
+			entry.highlights = { laBel: withNullAsUndefined(matchesFuzzy(filter, entry.laBel, true)) };
 
-			// Return if we have a match on label or container
-			return entry.highlights.label || fuzzyContains(entry.containerLabel, filter);
+			// Return if we have a match on laBel or container
+			return entry.highlights.laBel || fuzzyContains(entry.containerLaBel, filter);
 		});
 
-		// Map entries to container labels
+		// Map entries to container laBels
 		const mapEntryToContainer = new Map<string, string>();
 		for (const entry of filteredViewEntries) {
-			if (!mapEntryToContainer.has(entry.label)) {
-				mapEntryToContainer.set(entry.label, entry.containerLabel);
+			if (!mapEntryToContainer.has(entry.laBel)) {
+				mapEntryToContainer.set(entry.laBel, entry.containerLaBel);
 			}
 		}
 
@@ -73,19 +73,19 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		const filteredViewEntriesWithSeparators: Array<IViewQuickPickItem | IQuickPickSeparator> = [];
 		let lastContainer: string | undefined = undefined;
 		for (const entry of filteredViewEntries) {
-			if (lastContainer !== entry.containerLabel) {
-				lastContainer = entry.containerLabel;
+			if (lastContainer !== entry.containerLaBel) {
+				lastContainer = entry.containerLaBel;
 
 				// When the entry container has a parent container, set container
-				// label as Parent / Child. For example, `Views / Explorer`.
-				let separatorLabel: string;
+				// laBel as Parent / Child. For example, `Views / Explorer`.
+				let separatorLaBel: string;
 				if (mapEntryToContainer.has(lastContainer)) {
-					separatorLabel = `${mapEntryToContainer.get(lastContainer)} / ${lastContainer}`;
+					separatorLaBel = `${mapEntryToContainer.get(lastContainer)} / ${lastContainer}`;
 				} else {
-					separatorLabel = lastContainer;
+					separatorLaBel = lastContainer;
 				}
 
-				filteredViewEntriesWithSeparators.push({ type: 'separator', label: separatorLabel });
+				filteredViewEntriesWithSeparators.push({ type: 'separator', laBel: separatorLaBel });
 
 			}
 
@@ -104,8 +104,8 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 			for (const view of viewContainerModel.allViewDescriptors) {
 				if (this.contextKeyService.contextMatchesRules(view.when)) {
 					result.push({
-						label: view.name,
-						containerLabel: viewlet.name,
+						laBel: view.name,
+						containerLaBel: viewlet.name,
 						accept: () => this.viewsService.openView(view.id, true)
 					});
 				}
@@ -119,8 +119,8 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		for (const viewlet of viewlets) {
 			if (this.includeViewContainer(viewlet)) {
 				viewEntries.push({
-					label: viewlet.name,
-					containerLabel: localize('views', "Side Bar"),
+					laBel: viewlet.name,
+					containerLaBel: localize('views', "Side Bar"),
 					accept: () => this.viewletService.openViewlet(viewlet.id, true)
 				});
 			}
@@ -131,8 +131,8 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		for (const panel of panels) {
 			if (this.includeViewContainer(panel)) {
 				viewEntries.push({
-					label: panel.name,
-					containerLabel: localize('panels', "Panel"),
+					laBel: panel.name,
+					containerLaBel: localize('panels', "Panel"),
 					accept: () => this.panelService.openPanel(panel.id, true)
 				});
 			}
@@ -147,12 +147,12 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		}
 
 		// Terminals
-		this.terminalService.terminalTabs.forEach((tab, tabIndex) => {
-			tab.terminalInstances.forEach((terminal, terminalIndex) => {
-				const label = localize('terminalTitle', "{0}: {1}", `${tabIndex + 1}.${terminalIndex + 1}`, terminal.title);
+		this.terminalService.terminalTaBs.forEach((taB, taBIndex) => {
+			taB.terminalInstances.forEach((terminal, terminalIndex) => {
+				const laBel = localize('terminalTitle', "{0}: {1}", `${taBIndex + 1}.${terminalIndex + 1}`, terminal.title);
 				viewEntries.push({
-					label,
-					containerLabel: localize('terminals', "Terminal"),
+					laBel,
+					containerLaBel: localize('terminals', "Terminal"),
 					accept: async () => {
 						await this.terminalService.showPanel(true);
 
@@ -165,10 +165,10 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		// Output Channels
 		const channels = this.outputService.getChannelDescriptors();
 		for (const channel of channels) {
-			const label = channel.log ? localize('logChannel', "Log ({0})", channel.label) : channel.label;
+			const laBel = channel.log ? localize('logChannel', "Log ({0})", channel.laBel) : channel.laBel;
 			viewEntries.push({
-				label,
-				containerLabel: localize('channels', "Output"),
+				laBel,
+				containerLaBel: localize('channels', "Output"),
 				accept: () => this.outputService.showChannel(channel.id)
 			});
 		}
@@ -176,7 +176,7 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 		return viewEntries;
 	}
 
-	private includeViewContainer(container: ViewletDescriptor | IPanelIdentifier): boolean {
+	private includeViewContainer(container: ViewletDescriptor | IPanelIdentifier): Boolean {
 		const viewContainer = this.viewDescriptorService.getViewContainerById(container.id);
 		if (viewContainer?.hideIfEmpty) {
 			return this.viewDescriptorService.getViewContainerModel(viewContainer).activeViewDescriptors.length > 0;
@@ -191,7 +191,7 @@ export class ViewQuickAccessProvider extends PickerQuickAccessProvider<IViewQuic
 
 export class OpenViewPickerAction extends Action2 {
 
-	static readonly ID = 'workbench.action.openView';
+	static readonly ID = 'workBench.action.openView';
 
 	constructor() {
 		super({
@@ -209,7 +209,7 @@ export class OpenViewPickerAction extends Action2 {
 
 export class QuickAccessViewPickerAction extends Action2 {
 
-	static readonly ID = 'workbench.action.quickOpenView';
+	static readonly ID = 'workBench.action.quickOpenView';
 	static readonly KEYBINDING = {
 		primary: KeyMod.CtrlCmd | KeyCode.KEY_Q,
 		mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_Q },
@@ -222,8 +222,8 @@ export class QuickAccessViewPickerAction extends Action2 {
 			title: { value: localize('quickOpenView', "Quick Open View"), original: 'Quick Open View' },
 			category: CATEGORIES.View,
 			f1: true,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				when: undefined,
 				...QuickAccessViewPickerAction.KEYBINDING
 			}
@@ -231,12 +231,12 @@ export class QuickAccessViewPickerAction extends Action2 {
 	}
 
 	async run(accessor: ServicesAccessor): Promise<void> {
-		const keybindingService = accessor.get(IKeybindingService);
+		const keyBindingService = accessor.get(IKeyBindingService);
 		const quickInputService = accessor.get(IQuickInputService);
 
-		const keys = keybindingService.lookupKeybindings(QuickAccessViewPickerAction.ID);
+		const keys = keyBindingService.lookupKeyBindings(QuickAccessViewPickerAction.ID);
 
-		quickInputService.quickAccess.show(ViewQuickAccessProvider.PREFIX, { quickNavigateConfiguration: { keybindings: keys }, itemActivation: ItemActivation.FIRST });
+		quickInputService.quickAccess.show(ViewQuickAccessProvider.PREFIX, { quickNavigateConfiguration: { keyBindings: keys }, itemActivation: ItemActivation.FIRST });
 	}
 }
 

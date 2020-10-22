@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { SimpleConfigurationService, SimpleNotificationService, StandaloneCommandService, StandaloneKeybindingService } from 'vs/editor/standalone/browser/simpleServices';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { SimpleConfigurationService, SimpleNotificationService, StandaloneCommandService, StandaloneKeyBindingService } from 'vs/editor/standalone/Browser/simpleServices';
+import { ContextKeyService } from 'vs/platform/contextkey/Browser/contextKeyService';
 import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
 
-suite('StandaloneKeybindingService', () => {
+suite('StandaloneKeyBindingService', () => {
 
-	class TestStandaloneKeybindingService extends StandaloneKeybindingService {
-		public testDispatch(e: IKeyboardEvent): void {
+	class TestStandaloneKeyBindingService extends StandaloneKeyBindingService {
+		puBlic testDispatch(e: IKeyBoardEvent): void {
 			super._dispatch(e, null!);
 		}
 	}
@@ -35,15 +35,15 @@ suite('StandaloneKeybindingService', () => {
 
 		let domElement = document.createElement('div');
 
-		let keybindingService = new TestStandaloneKeybindingService(contextKeyService, commandService, NullTelemetryService, notificationService, new NullLogService(), domElement);
+		let keyBindingService = new TestStandaloneKeyBindingService(contextKeyService, commandService, NullTelemetryService, notificationService, new NullLogService(), domElement);
 
 		let commandInvoked = false;
-		keybindingService.addDynamicKeybinding('testCommand', KeyCode.F9, () => {
+		keyBindingService.addDynamicKeyBinding('testCommand', KeyCode.F9, () => {
 			commandInvoked = true;
 		}, undefined);
 
-		keybindingService.testDispatch({
-			_standardKeyboardEventBrand: true,
+		keyBindingService.testDispatch({
+			_standardKeyBoardEventBrand: true,
 			ctrlKey: false,
 			shiftKey: false,
 			altKey: false,

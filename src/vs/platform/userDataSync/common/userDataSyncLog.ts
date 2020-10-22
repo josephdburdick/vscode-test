@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IUserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSync';
-import { AbstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
+import { ABstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
-export class UserDataSyncLogService extends AbstractLogService implements IUserDataSyncLogService {
+export class UserDataSyncLogService extends ABstractLogService implements IUserDataSyncLogService {
 
 	declare readonly _serviceBrand: undefined;
 	private readonly logger: ILogger;
@@ -24,8 +24,8 @@ export class UserDataSyncLogService extends AbstractLogService implements IUserD
 		this.logger.trace(message, ...args);
 	}
 
-	debug(message: string, ...args: any[]): void {
-		this.logger.debug(message, ...args);
+	deBug(message: string, ...args: any[]): void {
+		this.logger.deBug(message, ...args);
 	}
 
 	info(message: string, ...args: any[]): void {

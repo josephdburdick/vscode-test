@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import Severity from 'vs/base/common/severity';
-import { TerminateResponse } from 'vs/base/common/processes';
-import { Event } from 'vs/base/common/event';
-import { Platform } from 'vs/base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import Severity from 'vs/Base/common/severity';
+import { TerminateResponse } from 'vs/Base/common/processes';
+import { Event } from 'vs/Base/common/event';
+import { Platform } from 'vs/Base/common/platform';
 import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { Task, TaskEvent, KeyedTaskIdentifier } from './tasks';
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
@@ -24,9 +24,9 @@ export const enum TaskErrors {
 }
 
 export class TaskError {
-	public severity: Severity;
-	public message: string;
-	public code: TaskErrors;
+	puBlic severity: Severity;
+	puBlic message: string;
+	puBlic code: TaskErrors;
 
 	constructor(severity: Severity, message: string, code: TaskErrors) {
 		this.severity = severity;
@@ -57,10 +57,10 @@ export interface TelemetryEvent {
 	command: string;
 
 	// Whether the task ran successful
-	success: boolean;
+	success: Boolean;
 
 	// The exit code
-	exitCode?: number;
+	exitCode?: numBer;
 }
 
 export namespace Triggers {
@@ -72,7 +72,7 @@ export interface ITaskSummary {
 	/**
 	 * Exit code of the process.
 	 */
-	exitCode?: number;
+	exitCode?: numBer;
 }
 
 export const enum TaskExecuteKind {
@@ -88,8 +88,8 @@ export interface ITaskExecuteResult {
 		restartOnFileChanges?: string;
 	};
 	active?: {
-		same: boolean;
-		background: boolean;
+		same: Boolean;
+		Background: Boolean;
 	};
 }
 
@@ -107,21 +107,21 @@ export interface ResolveSet {
 		cwd?: string;
 		path?: string;
 	};
-	variables: Set<string>;
+	variaBles: Set<string>;
 }
 
-export interface ResolvedVariables {
+export interface ResolvedVariaBles {
 	process?: string;
-	variables: Map<string, string>;
+	variaBles: Map<string, string>;
 }
 
 export interface TaskSystemInfo {
 	platform: Platform;
 	context: any;
 	uriProvider: (this: void, path: string) => URI;
-	resolveVariables(workspaceFolder: IWorkspaceFolder, toResolve: ResolveSet, target: ConfigurationTarget): Promise<ResolvedVariables | undefined>;
+	resolveVariaBles(workspaceFolder: IWorkspaceFolder, toResolve: ResolveSet, target: ConfigurationTarget): Promise<ResolvedVariaBles | undefined>;
 	getDefaultShellAndArgs(): Promise<{ shell: string, args: string[] | string | undefined }>;
-	findExecutable(command: string, cwd?: string, paths?: string[]): Promise<string | undefined>;
+	findExecutaBle(command: string, cwd?: string, paths?: string[]): Promise<string | undefined>;
 }
 
 export interface TaskSystemInfoResolver {
@@ -132,15 +132,15 @@ export interface ITaskSystem {
 	onDidStateChange: Event<TaskEvent>;
 	run(task: Task, resolver: ITaskResolver): ITaskExecuteResult;
 	rerun(): ITaskExecuteResult | undefined;
-	isActive(): Promise<boolean>;
-	isActiveSync(): boolean;
+	isActive(): Promise<Boolean>;
+	isActiveSync(): Boolean;
 	getActiveTasks(): Task[];
 	getLastInstance(task: Task): Task | undefined;
 	getBusyTasks(): Task[];
-	canAutoTerminate(): boolean;
+	canAutoTerminate(): Boolean;
 	terminate(task: Task): Promise<TaskTerminateResponse>;
 	terminateAll(): Promise<TaskTerminateResponse[]>;
-	revealTask(task: Task): boolean;
-	customExecutionComplete(task: Task, result: number): Promise<void>;
-	isTaskVisible(task: Task): boolean;
+	revealTask(task: Task): Boolean;
+	customExecutionComplete(task: Task, result: numBer): Promise<void>;
+	isTaskVisiBle(task: Task): Boolean;
 }

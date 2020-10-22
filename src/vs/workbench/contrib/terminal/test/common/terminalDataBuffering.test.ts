@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { TerminalDataBufferer } from 'vs/workbench/contrib/terminal/common/terminalDataBuffering';
+import { Emitter } from 'vs/Base/common/event';
+import { TerminalDataBufferer } from 'vs/workBench/contriB/terminal/common/terminalDataBuffering';
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const wait = (ms: numBer) => new Promise(resolve => setTimeout(resolve, ms));
 
-suite('Workbench - TerminalDataBufferer', () => {
-	let bufferer: TerminalDataBufferer;
-	let counter: { [id: number]: number };
-	let data: { [id: number]: string };
+suite('WorkBench - TerminalDataBufferer', () => {
+	let Bufferer: TerminalDataBufferer;
+	let counter: { [id: numBer]: numBer };
+	let data: { [id: numBer]: string };
 
 	setup(async () => {
 		counter = {};
 		data = {};
-		bufferer = new TerminalDataBufferer((id, e) => {
+		Bufferer = new TerminalDataBufferer((id, e) => {
 			if (!(id in counter)) {
 				counter[id] = 0;
 			}
@@ -32,7 +32,7 @@ suite('Workbench - TerminalDataBufferer', () => {
 	test('start', async () => {
 		const terminalOnData = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminalOnData.event, 0);
+		Bufferer.startBuffering(1, terminalOnData.event, 0);
 
 		terminalOnData.fire('1');
 		terminalOnData.fire('2');
@@ -55,8 +55,8 @@ suite('Workbench - TerminalDataBufferer', () => {
 		const terminal1OnData = new Emitter<string>();
 		const terminal2OnData = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		Bufferer.startBuffering(1, terminal1OnData.event, 0);
+		Bufferer.startBuffering(2, terminal2OnData.event, 0);
 
 		terminal1OnData.fire('1');
 		terminal2OnData.fire('4');
@@ -82,13 +82,13 @@ suite('Workbench - TerminalDataBufferer', () => {
 	test('stop', async () => {
 		let terminalOnData = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminalOnData.event, 0);
+		Bufferer.startBuffering(1, terminalOnData.event, 0);
 
 		terminalOnData.fire('1');
 		terminalOnData.fire('2');
 		terminalOnData.fire('3');
 
-		bufferer.stopBuffering(1);
+		Bufferer.stopBuffering(1);
 		await wait(0);
 
 		assert.equal(counter[1], 1);
@@ -99,8 +99,8 @@ suite('Workbench - TerminalDataBufferer', () => {
 		const terminal1OnData = new Emitter<string>();
 		const terminal2OnData = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		Bufferer.startBuffering(1, terminal1OnData.event, 0);
+		Bufferer.startBuffering(2, terminal2OnData.event, 0);
 
 		terminal1OnData.fire('1');
 		terminal2OnData.fire('4');
@@ -115,7 +115,7 @@ suite('Workbench - TerminalDataBufferer', () => {
 		assert.equal(counter[2], undefined);
 		assert.equal(data[2], undefined);
 
-		bufferer.stopBuffering(1);
+		Bufferer.stopBuffering(1);
 		await wait(0);
 
 		assert.equal(counter[1], 1);
@@ -128,8 +128,8 @@ suite('Workbench - TerminalDataBufferer', () => {
 		const terminal1OnData = new Emitter<string>();
 		const terminal2OnData = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		Bufferer.startBuffering(1, terminal1OnData.event, 0);
+		Bufferer.startBuffering(2, terminal2OnData.event, 0);
 
 		terminal1OnData.fire('1');
 		terminal2OnData.fire('4');
@@ -144,7 +144,7 @@ suite('Workbench - TerminalDataBufferer', () => {
 		assert.equal(counter[2], undefined);
 		assert.equal(data[2], undefined);
 
-		bufferer.dispose();
+		Bufferer.dispose();
 		await wait(0);
 
 		assert.equal(counter[1], 1);

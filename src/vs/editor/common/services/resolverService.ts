@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, IReference } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { IDisposaBle, IReference } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModel, ITextSnapshot } from 'vs/editor/common/model';
 import { IEditorModel } from 'vs/platform/editor/common/editor';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
@@ -16,19 +16,19 @@ export interface ITextModelService {
 
 	/**
 	 * Provided a resource URI, it will return a model reference
-	 * which should be disposed once not needed anymore.
+	 * which should Be disposed once not needed anymore.
 	 */
 	createModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>>;
 
 	/**
 	 * Registers a specific `scheme` content provider.
 	 */
-	registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposable;
+	registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposaBle;
 
 	/**
-	 * Check if the given resource can be resolved to a text model.
+	 * Check if the given resource can Be resolved to a text model.
 	 */
-	canHandleResource(resource: URI): boolean;
+	canHandleResource(resource: URI): Boolean;
 }
 
 export interface ITextModelContentProvider {
@@ -55,7 +55,7 @@ export interface ITextEditorModel extends IEditorModel {
 	/**
 	 * Signals if this model is readonly or not.
 	 */
-	isReadonly(): boolean;
+	isReadonly(): Boolean;
 
 	/**
 	 * Figure out if this model is resolved or not.
@@ -71,7 +71,7 @@ export interface ITextEditorModel extends IEditorModel {
 export interface IResolvedTextEditorModel extends ITextEditorModel {
 
 	/**
-	 * Same as ITextEditorModel#textEditorModel, but never null.
+	 * Same as ITextEditorModel#textEditorModel, But never null.
 	 */
 	readonly textEditorModel: ITextModel;
 }

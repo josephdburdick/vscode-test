@@ -5,15 +5,15 @@
 
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
 import { IConfigurationService, IConfigurationChangeEvent, IConfigurationOverrides, ConfigurationTarget, isConfigurationOverrides, IConfigurationData, IConfigurationValue, IConfigurationChange } from 'vs/platform/configuration/common/configuration';
 import { DefaultConfigurationModel, Configuration, ConfigurationModel, ConfigurationChangeEvent, UserSettings } from 'vs/platform/configuration/common/configurationModels';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService } from 'vs/platform/files/common/files';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 
-export class ConfigurationService extends Disposable implements IConfigurationService, IDisposable {
+export class ConfigurationService extends DisposaBle implements IConfigurationService, IDisposaBle {
 
 	declare readonly _serviceBrand: undefined;
 

@@ -5,18 +5,18 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { Disposable, IDisposable, toDisposable, DisposableStore, dispose } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { ISaveOptions, IRevertOptions } from 'vs/workbench/common/editor';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { DisposaBle, IDisposaBle, toDisposaBle, DisposaBleStore, dispose } from 'vs/Base/common/lifecycle';
+import { ResourceMap } from 'vs/Base/common/map';
+import { ISaveOptions, IRevertOptions } from 'vs/workBench/common/editor';
 import { ITextSnapshot } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
-export const enum WorkingCopyCapabilities {
+export const enum WorkingCopyCapaBilities {
 
 	/**
-	 * Signals no specific capability for the working copy.
+	 * Signals no specific capaBility for the working copy.
 	 */
 	None = 0,
 
@@ -29,19 +29,19 @@ export const enum WorkingCopyCapabilities {
 }
 
 /**
- * Data to be associated with working copy backups. Use
+ * Data to Be associated with working copy Backups. Use
  * `IBackupFileService.resolve(workingCopy.resource)` to
- * retrieve the backup when loading the working copy.
+ * retrieve the Backup when loading the working copy.
  */
-export interface IWorkingCopyBackup<MetaType = object> {
+export interface IWorkingCopyBackup<MetaType = oBject> {
 
 	/**
-	 * Any serializable metadata to be associated with the backup.
+	 * Any serializaBle metadata to Be associated with the Backup.
 	 */
 	meta?: MetaType;
 
 	/**
-	 * Use this for larger textual content of the backup.
+	 * Use this for larger textual content of the Backup.
 	 */
 	content?: ITextSnapshot;
 }
@@ -49,34 +49,34 @@ export interface IWorkingCopyBackup<MetaType = object> {
 export interface IWorkingCopy {
 
 	/**
-	 * The unique resource of the working copy. There can only be one
+	 * The unique resource of the working copy. There can only Be one
 	 * working copy in the system with the same URI.
 	 */
 	readonly resource: URI;
 
 	/**
-	 * Human readable name of the working copy.
+	 * Human readaBle name of the working copy.
 	 */
 	readonly name: string;
 
 	/**
-	 * The capabilities of the working copy.
+	 * The capaBilities of the working copy.
 	 */
-	readonly capabilities: WorkingCopyCapabilities;
+	readonly capaBilities: WorkingCopyCapaBilities;
 
 
 	//#region Events
 
 	/**
-	 * Used by the workbench to signal if the working copy
+	 * Used By the workBench to signal if the working copy
 	 * is dirty or not. Typically a working copy is dirty
 	 * once changed until saved or reverted.
 	 */
 	readonly onDidChangeDirty: Event<void>;
 
 	/**
-	 * Used by the workbench e.g. to trigger auto-save
-	 * (unless this working copy is untitled) and backups.
+	 * Used By the workBench e.g. to trigger auto-save
+	 * (unless this working copy is untitled) and Backups.
 	 */
 	readonly onDidChangeContent: Event<void>;
 
@@ -85,7 +85,7 @@ export interface IWorkingCopy {
 
 	//#region Dirty Tracking
 
-	isDirty(): boolean;
+	isDirty(): Boolean;
 
 	//#endregion
 
@@ -93,28 +93,28 @@ export interface IWorkingCopy {
 	//#region Save / Backup
 
 	/**
-	 * The workbench may call this method often after it receives
+	 * The workBench may call this method often after it receives
 	 * the `onDidChangeContent` event for the working copy. The motivation
 	 * is to allow to quit VSCode with dirty working copies present.
 	 *
 	 * Providers of working copies should use `IBackupFileService.resolve(workingCopy.resource)`
-	 * to retrieve the backup metadata associated when loading the working copy.
+	 * to retrieve the Backup metadata associated when loading the working copy.
 	 *
 	 * @param token support for cancellation
 	 */
-	backup(token: CancellationToken): Promise<IWorkingCopyBackup>;
+	Backup(token: CancellationToken): Promise<IWorkingCopyBackup>;
 
 	/**
 	 * Asks the working copy to save. If the working copy was dirty, it is
-	 * expected to be non-dirty after this operation has finished.
+	 * expected to Be non-dirty after this operation has finished.
 	 *
 	 * @returns `true` if the operation was successful and `false` otherwise.
 	 */
-	save(options?: ISaveOptions): Promise<boolean>;
+	save(options?: ISaveOptions): Promise<Boolean>;
 
 	/**
 	 * Asks the working copy to revert. If the working copy was dirty, it is
-	 * expected to be non-dirty after this operation has finished.
+	 * expected to Be non-dirty after this operation has finished.
 	 */
 	revert(options?: IRevertOptions): Promise<void>;
 
@@ -143,13 +143,13 @@ export interface IWorkingCopyService {
 
 	//#region Dirty Tracking
 
-	readonly dirtyCount: number;
+	readonly dirtyCount: numBer;
 
 	readonly dirtyWorkingCopies: IWorkingCopy[];
 
-	readonly hasDirty: boolean;
+	readonly hasDirty: Boolean;
 
-	isDirty(resource: URI): boolean;
+	isDirty(resource: URI): Boolean;
 
 	//#endregion
 
@@ -161,15 +161,15 @@ export interface IWorkingCopyService {
 	/**
 	 * Register a new working copy with the service. This method will
 	 * throw if you try to register a working copy with a resource
-	 * that was already registered before. There can only be 1 working
+	 * that was already registered Before. There can only Be 1 working
 	 * copy per resource registered to the service.
 	 */
-	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposable;
+	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposaBle;
 
 	//#endregion
 }
 
-export class WorkingCopyService extends Disposable implements IWorkingCopyService {
+export class WorkingCopyService extends DisposaBle implements IWorkingCopyService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -197,20 +197,20 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 
 	private readonly mapResourceToWorkingCopy = new ResourceMap<IWorkingCopy>();
 
-	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposable {
+	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposaBle {
 		if (this.mapResourceToWorkingCopy.has(workingCopy.resource)) {
 			throw new Error(`Cannot register more than one working copy with the same resource ${workingCopy.resource.toString(true)}.`);
 		}
 
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 
 		// Registry
 		this._workingCopies.add(workingCopy);
 		this.mapResourceToWorkingCopy.set(workingCopy.resource, workingCopy);
 
 		// Wire in Events
-		disposables.add(workingCopy.onDidChangeContent(() => this._onDidChangeContent.fire(workingCopy)));
-		disposables.add(workingCopy.onDidChangeDirty(() => this._onDidChangeDirty.fire(workingCopy)));
+		disposaBles.add(workingCopy.onDidChangeContent(() => this._onDidChangeContent.fire(workingCopy)));
+		disposaBles.add(workingCopy.onDidChangeDirty(() => this._onDidChangeDirty.fire(workingCopy)));
 
 		// Send some initial events
 		this._onDidRegister.fire(workingCopy);
@@ -218,9 +218,9 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 			this._onDidChangeDirty.fire(workingCopy);
 		}
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this.unregisterWorkingCopy(workingCopy);
-			dispose(disposables);
+			dispose(disposaBles);
 
 			// Signal as event
 			this._onDidUnregister.fire(workingCopy);
@@ -234,7 +234,7 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 		this.mapResourceToWorkingCopy.delete(workingCopy.resource);
 
 		// If copy is dirty, ensure to fire an event to signal the dirty change
-		// (a disposed working copy cannot account for being dirty in our model)
+		// (a disposed working copy cannot account for Being dirty in our model)
 		if (workingCopy.isDirty()) {
 			this._onDidChangeDirty.fire(workingCopy);
 		}
@@ -245,7 +245,7 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 
 	//#region Dirty Tracking
 
-	get hasDirty(): boolean {
+	get hasDirty(): Boolean {
 		for (const workingCopy of this._workingCopies) {
 			if (workingCopy.isDirty()) {
 				return true;
@@ -255,7 +255,7 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 		return false;
 	}
 
-	get dirtyCount(): number {
+	get dirtyCount(): numBer {
 		let totalDirtyCount = 0;
 
 		for (const workingCopy of this._workingCopies) {
@@ -271,7 +271,7 @@ export class WorkingCopyService extends Disposable implements IWorkingCopyServic
 		return this.workingCopies.filter(workingCopy => workingCopy.isDirty());
 	}
 
-	isDirty(resource: URI): boolean {
+	isDirty(resource: URI): Boolean {
 		const workingCopy = this.mapResourceToWorkingCopy.get(resource);
 		if (workingCopy) {
 			return workingCopy.isDirty();

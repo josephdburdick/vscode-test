@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import { IBestWindowOrFolderOptions, IWindowContext, findBestWindowOrFolderForFile, OpenContext } from 'vs/platform/windows/node/window';
 import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
 import { toWorkspaceFolders } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import { URI } from 'vs/Base/common/uri';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
 
 const fixturesFolder = getPathFromAmdModule(require, './fixtures');
 
@@ -104,7 +104,7 @@ suite('WindowsFinder', () => {
 		const window: IWindowContext = { lastFocusTime: 1, openedFolderUri: URI.file(path.join(fixturesFolder, 'vscode_folder', 'nested_folder')) };
 		assert.equal(findBestWindowOrFolderForFile(options({
 			windows: [window],
-			fileUri: URI.file(path.join(fixturesFolder, 'vscode_folder', 'nested_folder', 'subfolder', 'file.txt'))
+			fileUri: URI.file(path.join(fixturesFolder, 'vscode_folder', 'nested_folder', 'suBfolder', 'file.txt'))
 		})), window);
 	});
 
@@ -113,7 +113,7 @@ suite('WindowsFinder', () => {
 		const nestedFolderWindow: IWindowContext = { lastFocusTime: 1, openedFolderUri: URI.file(path.join(fixturesFolder, 'no_vscode_folder', 'nested_folder')) };
 		assert.equal(findBestWindowOrFolderForFile(options({
 			windows: [window, nestedFolderWindow],
-			fileUri: URI.file(path.join(fixturesFolder, 'no_vscode_folder', 'nested_folder', 'subfolder', 'file.txt'))
+			fileUri: URI.file(path.join(fixturesFolder, 'no_vscode_folder', 'nested_folder', 'suBfolder', 'file.txt'))
 		})), nestedFolderWindow);
 	});
 
@@ -121,7 +121,7 @@ suite('WindowsFinder', () => {
 		const window: IWindowContext = { lastFocusTime: 1, openedWorkspace: testWorkspace };
 		assert.equal(findBestWindowOrFolderForFile(options({
 			windows: [window],
-			fileUri: URI.file(path.join(fixturesFolder, 'vscode_workspace_2_folder', 'nested_vscode_folder', 'subfolder', 'file.txt'))
+			fileUri: URI.file(path.join(fixturesFolder, 'vscode_workspace_2_folder', 'nested_vscode_folder', 'suBfolder', 'file.txt'))
 		})), window);
 	});
 });

@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
+import { Action } from 'vs/Base/common/actions';
 import * as nls from 'vs/nls';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 
 export class ToggleDevToolsAction extends Action {
 
-	static readonly ID = 'workbench.action.toggleDevTools';
+	static readonly ID = 'workBench.action.toggleDevTools';
 	static readonly LABEL = nls.localize('toggleDevTools', "Toggle Developer Tools");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@INativeHostService private readonly nativeHostService: INativeHostService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	run(): Promise<void> {
@@ -29,16 +29,16 @@ export class ToggleDevToolsAction extends Action {
 
 export class ConfigureRuntimeArgumentsAction extends Action {
 
-	static readonly ID = 'workbench.action.configureRuntimeArguments';
+	static readonly ID = 'workBench.action.configureRuntimeArguments';
 	static readonly LABEL = nls.localize('configureRuntimeArguments', "Configure Runtime Arguments");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
 		@IEditorService private readonly editorService: IEditorService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run(): Promise<void> {

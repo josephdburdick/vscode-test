@@ -10,7 +10,7 @@ import { ICommand, IEditOperationBuilder } from 'vs/editor/common/editorCommon';
 import { IIdentifiedSingleEditOperation, ITextModel } from 'vs/editor/common/model';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 import { LanguageIdentifier } from 'vs/editor/common/modes';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 
 export function testCommand(
 	lines: string[],
@@ -19,7 +19,7 @@ export function testCommand(
 	commandFactory: (selection: Selection) => ICommand,
 	expectedLines: string[],
 	expectedSelection: Selection,
-	forceTokenization?: boolean
+	forceTokenization?: Boolean
 ): void {
 	let model = createTextModel(lines.join('\n'), undefined, languageIdentifier);
 	withTestCodeEditor('', { model: model }, (_editor, cursor) => {
@@ -50,7 +50,7 @@ export function testCommand(
 export function getEditOperation(model: ITextModel, command: ICommand): IIdentifiedSingleEditOperation[] {
 	let operations: IIdentifiedSingleEditOperation[] = [];
 	let editOperationBuilder: IEditOperationBuilder = {
-		addEditOperation: (range: IRange, text: string, forceMoveMarkers: boolean = false) => {
+		addEditOperation: (range: IRange, text: string, forceMoveMarkers: Boolean = false) => {
 			operations.push({
 				range: range,
 				text: text,
@@ -58,7 +58,7 @@ export function getEditOperation(model: ITextModel, command: ICommand): IIdentif
 			});
 		},
 
-		addTrackedEditOperation: (range: IRange, text: string, forceMoveMarkers: boolean = false) => {
+		addTrackedEditOperation: (range: IRange, text: string, forceMoveMarkers: Boolean = false) => {
 			operations.push({
 				range: range,
 				text: text,

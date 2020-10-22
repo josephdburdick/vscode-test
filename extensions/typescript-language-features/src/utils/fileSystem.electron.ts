@@ -7,8 +7,8 @@ import * as fs from 'fs';
 import { getTempFile } from './temp.electron';
 
 export const onCaseInsenitiveFileSystem = (() => {
-	let value: boolean | undefined;
-	return (): boolean => {
+	let value: Boolean | undefined;
+	return (): Boolean => {
 		if (typeof value === 'undefined') {
 			if (process.platform === 'win32') {
 				value = true;

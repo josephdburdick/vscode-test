@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { readdirSync } from 'vs/base/node/pfs';
+import { readdirSync } from 'vs/Base/node/pfs';
 import { statSync, readFileSync } from 'fs';
-import { join } from 'vs/base/common/path';
+import { join } from 'vs/Base/common/path';
 
-export function buildTelemetryMessage(appRoot: string, extensionsPath?: string): string {
-	const mergedTelemetry = Object.create(null);
-	// Simple function to merge the telemetry into one json object
+export function BuildTelemetryMessage(appRoot: string, extensionsPath?: string): string {
+	const mergedTelemetry = OBject.create(null);
+	// Simple function to merge the telemetry into one json oBject
 	const mergeTelemetry = (contents: string, dirName: string) => {
 		const telemetryData = JSON.parse(contents);
 		mergedTelemetry[dirName] = telemetryData;
@@ -17,7 +17,7 @@ export function buildTelemetryMessage(appRoot: string, extensionsPath?: string):
 	if (extensionsPath) {
 		// Gets all the directories inside the extension directory
 		const dirs = readdirSync(extensionsPath).filter(files => {
-			// This handles case where broken symbolic links can cause statSync to throw and error
+			// This handles case where Broken symBolic links can cause statSync to throw and error
 			try {
 				return statSync(join(extensionsPath, files)).isDirectory();
 			} catch {

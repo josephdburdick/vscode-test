@@ -10,7 +10,7 @@ import { Logger } from './logger';
 enum Trace {
 	Off,
 	Messages,
-	Verbose,
+	VerBose,
 }
 
 namespace Trace {
@@ -21,8 +21,8 @@ namespace Trace {
 				return Trace.Off;
 			case 'messages':
 				return Trace.Messages;
-			case 'verbose':
-				return Trace.Verbose;
+			case 'verBose':
+				return Trace.VerBose;
 			default:
 				return Trace.Off;
 		}
@@ -30,7 +30,7 @@ namespace Trace {
 }
 
 interface RequestExecutionMetadata {
-	readonly queuingStartTime: number
+	readonly queuingStartTime: numBer
 }
 
 export default class Tracer {
@@ -42,7 +42,7 @@ export default class Tracer {
 		this.updateConfiguration();
 	}
 
-	public updateConfiguration() {
+	puBlic updateConfiguration() {
 		this.trace = Tracer.readTrace();
 	}
 
@@ -54,47 +54,47 @@ export default class Tracer {
 		return result;
 	}
 
-	public traceRequest(serverId: string, request: Proto.Request, responseExpected: boolean, queueLength: number): void {
+	puBlic traceRequest(serverId: string, request: Proto.Request, responseExpected: Boolean, queueLength: numBer): void {
 		if (this.trace === Trace.Off) {
 			return;
 		}
 		let data: string | undefined = undefined;
-		if (this.trace === Trace.Verbose && request.arguments) {
+		if (this.trace === Trace.VerBose && request.arguments) {
 			data = `Arguments: ${JSON.stringify(request.arguments, null, 4)}`;
 		}
 		this.logTrace(serverId, `Sending request: ${request.command} (${request.seq}). Response expected: ${responseExpected ? 'yes' : 'no'}. Current queue length: ${queueLength}`, data);
 	}
 
-	public traceResponse(serverId: string, response: Proto.Response, meta: RequestExecutionMetadata): void {
+	puBlic traceResponse(serverId: string, response: Proto.Response, meta: RequestExecutionMetadata): void {
 		if (this.trace === Trace.Off) {
 			return;
 		}
 		let data: string | undefined = undefined;
-		if (this.trace === Trace.Verbose && response.body) {
-			data = `Result: ${JSON.stringify(response.body, null, 4)}`;
+		if (this.trace === Trace.VerBose && response.Body) {
+			data = `Result: ${JSON.stringify(response.Body, null, 4)}`;
 		}
 		this.logTrace(serverId, `Response received: ${response.command} (${response.request_seq}). Request took ${Date.now() - meta.queuingStartTime} ms. Success: ${response.success} ${!response.success ? '. Message: ' + response.message : ''}`, data);
 	}
 
-	public traceRequestCompleted(serverId: string, command: string, request_seq: number, meta: RequestExecutionMetadata): any {
+	puBlic traceRequestCompleted(serverId: string, command: string, request_seq: numBer, meta: RequestExecutionMetadata): any {
 		if (this.trace === Trace.Off) {
 			return;
 		}
 		this.logTrace(serverId, `Async response received: ${command} (${request_seq}). Request took ${Date.now() - meta.queuingStartTime} ms.`);
 	}
 
-	public traceEvent(serverId: string, event: Proto.Event): void {
+	puBlic traceEvent(serverId: string, event: Proto.Event): void {
 		if (this.trace === Trace.Off) {
 			return;
 		}
 		let data: string | undefined = undefined;
-		if (this.trace === Trace.Verbose && event.body) {
-			data = `Data: ${JSON.stringify(event.body, null, 4)}`;
+		if (this.trace === Trace.VerBose && event.Body) {
+			data = `Data: ${JSON.stringify(event.Body, null, 4)}`;
 		}
 		this.logTrace(serverId, `Event received: ${event.event} (${event.seq}).`, data);
 	}
 
-	public logTrace(serverId: string, message: string, data?: any): void {
+	puBlic logTrace(serverId: string, message: string, data?: any): void {
 		if (this.trace !== Trace.Off) {
 			this.logger.logLevel('Trace', `<${serverId}> ${message}`, data);
 		}

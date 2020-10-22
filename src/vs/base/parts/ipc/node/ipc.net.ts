@@ -5,63 +5,63 @@
 
 import { createHash } from 'crypto';
 import { Socket, Server as NetServer, createConnection, createServer } from 'net';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ClientConnectionEvent, IPCServer } from 'vs/base/parts/ipc/common/ipc';
-import { join } from 'vs/base/common/path';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { ClientConnectionEvent, IPCServer } from 'vs/Base/parts/ipc/common/ipc';
+import { join } from 'vs/Base/common/path';
 import { tmpdir } from 'os';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { ISocket, Protocol, Client, ChunkStream } from 'vs/base/parts/ipc/common/ipc.net';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Platform, platform } from 'vs/base/common/platform';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { ISocket, Protocol, Client, ChunkStream } from 'vs/Base/parts/ipc/common/ipc.net';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { Platform, platform } from 'vs/Base/common/platform';
 
 export class NodeSocket implements ISocket {
-	public readonly socket: Socket;
+	puBlic readonly socket: Socket;
 
 	constructor(socket: Socket) {
 		this.socket = socket;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.socket.destroy();
 	}
 
-	public onData(_listener: (e: VSBuffer) => void): IDisposable {
-		const listener = (buff: Buffer) => _listener(VSBuffer.wrap(buff));
+	puBlic onData(_listener: (e: VSBuffer) => void): IDisposaBle {
+		const listener = (Buff: Buffer) => _listener(VSBuffer.wrap(Buff));
 		this.socket.on('data', listener);
 		return {
 			dispose: () => this.socket.off('data', listener)
 		};
 	}
 
-	public onClose(listener: () => void): IDisposable {
+	puBlic onClose(listener: () => void): IDisposaBle {
 		this.socket.on('close', listener);
 		return {
 			dispose: () => this.socket.off('close', listener)
 		};
 	}
 
-	public onEnd(listener: () => void): IDisposable {
+	puBlic onEnd(listener: () => void): IDisposaBle {
 		this.socket.on('end', listener);
 		return {
 			dispose: () => this.socket.off('end', listener)
 		};
 	}
 
-	public write(buffer: VSBuffer): void {
-		// return early if socket has been destroyed in the meantime
+	puBlic write(Buffer: VSBuffer): void {
+		// return early if socket has Been destroyed in the meantime
 		if (this.socket.destroyed) {
 			return;
 		}
 
-		// we ignore the returned value from `write` because we would have to cached the data
+		// we ignore the returned value from `write` Because we would have to cached the data
 		// anyways and nodejs is already doing that for us:
-		// > https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
-		// > However, the false return value is only advisory and the writable stream will unconditionally
-		// > accept and buffer chunk even if it has not been allowed to drain.
+		// > https://nodejs.org/api/stream.html#stream_writaBle_write_chunk_encoding_callBack
+		// > However, the false return value is only advisory and the writaBle stream will unconditionally
+		// > accept and Buffer chunk even if it has not Been allowed to drain.
 		try {
-			this.socket.write(<Buffer>buffer.buffer);
+			this.socket.write(<Buffer>Buffer.Buffer);
 		} catch (err) {
 			if (err.code === 'EPIPE') {
 				// An EPIPE exception at the wrong time can lead to a renderer process crash
@@ -69,20 +69,20 @@ export class NodeSocket implements ISocket {
 				// > https://nodejs.org/api/errors.html#errors_common_system_errors
 				// > EPIPE (Broken pipe): A write on a pipe, socket, or FIFO for which there is no
 				// > process to read the data. Commonly encountered at the net and http layers,
-				// > indicative that the remote side of the stream being written to has been closed.
+				// > indicative that the remote side of the stream Being written to has Been closed.
 				return;
 			}
 			onUnexpectedError(err);
 		}
 	}
 
-	public end(): void {
+	puBlic end(): void {
 		this.socket.end();
 	}
 
-	public drain(): Promise<void> {
+	puBlic drain(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			if (this.socket.bufferSize === 0) {
+			if (this.socket.BufferSize === 0) {
 				resolve();
 				return;
 			}
@@ -117,9 +117,9 @@ const enum ReadState {
 /**
  * See https://tools.ietf.org/html/rfc6455#section-5.2
  */
-export class WebSocketNodeSocket extends Disposable implements ISocket {
+export class WeBSocketNodeSocket extends DisposaBle implements ISocket {
 
-	public readonly socket: NodeSocket;
+	puBlic readonly socket: NodeSocket;
 	private readonly _incomingData: ChunkStream;
 	private readonly _onData = this._register(new Emitter<VSBuffer>());
 
@@ -136,41 +136,41 @@ export class WebSocketNodeSocket extends Disposable implements ISocket {
 		this._register(this.socket.onData(data => this._acceptChunk(data)));
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.socket.dispose();
 	}
 
-	public onData(listener: (e: VSBuffer) => void): IDisposable {
+	puBlic onData(listener: (e: VSBuffer) => void): IDisposaBle {
 		return this._onData.event(listener);
 	}
 
-	public onClose(listener: () => void): IDisposable {
+	puBlic onClose(listener: () => void): IDisposaBle {
 		return this.socket.onClose(listener);
 	}
 
-	public onEnd(listener: () => void): IDisposable {
+	puBlic onEnd(listener: () => void): IDisposaBle {
 		return this.socket.onEnd(listener);
 	}
 
-	public write(buffer: VSBuffer): void {
+	puBlic write(Buffer: VSBuffer): void {
 		let headerLen = Constants.MinHeaderByteSize;
-		if (buffer.byteLength < 126) {
+		if (Buffer.ByteLength < 126) {
 			headerLen += 0;
-		} else if (buffer.byteLength < 2 ** 16) {
+		} else if (Buffer.ByteLength < 2 ** 16) {
 			headerLen += 2;
 		} else {
 			headerLen += 8;
 		}
 		const header = VSBuffer.alloc(headerLen);
 
-		header.writeUInt8(0b10000010, 0);
-		if (buffer.byteLength < 126) {
-			header.writeUInt8(buffer.byteLength, 1);
-		} else if (buffer.byteLength < 2 ** 16) {
+		header.writeUInt8(0B10000010, 0);
+		if (Buffer.ByteLength < 126) {
+			header.writeUInt8(Buffer.ByteLength, 1);
+		} else if (Buffer.ByteLength < 2 ** 16) {
 			header.writeUInt8(126, 1);
 			let offset = 1;
-			header.writeUInt8((buffer.byteLength >>> 8) & 0b11111111, ++offset);
-			header.writeUInt8((buffer.byteLength >>> 0) & 0b11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 8) & 0B11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 0) & 0B11111111, ++offset);
 		} else {
 			header.writeUInt8(127, 1);
 			let offset = 1;
@@ -178,36 +178,36 @@ export class WebSocketNodeSocket extends Disposable implements ISocket {
 			header.writeUInt8(0, ++offset);
 			header.writeUInt8(0, ++offset);
 			header.writeUInt8(0, ++offset);
-			header.writeUInt8((buffer.byteLength >>> 24) & 0b11111111, ++offset);
-			header.writeUInt8((buffer.byteLength >>> 16) & 0b11111111, ++offset);
-			header.writeUInt8((buffer.byteLength >>> 8) & 0b11111111, ++offset);
-			header.writeUInt8((buffer.byteLength >>> 0) & 0b11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 24) & 0B11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 16) & 0B11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 8) & 0B11111111, ++offset);
+			header.writeUInt8((Buffer.ByteLength >>> 0) & 0B11111111, ++offset);
 		}
 
-		this.socket.write(VSBuffer.concat([header, buffer]));
+		this.socket.write(VSBuffer.concat([header, Buffer]));
 	}
 
-	public end(): void {
+	puBlic end(): void {
 		this.socket.end();
 	}
 
 	private _acceptChunk(data: VSBuffer): void {
-		if (data.byteLength === 0) {
+		if (data.ByteLength === 0) {
 			return;
 		}
 
 		this._incomingData.acceptChunk(data);
 
-		while (this._incomingData.byteLength >= this._state.readLen) {
+		while (this._incomingData.ByteLength >= this._state.readLen) {
 
 			if (this._state.state === ReadState.PeekHeader) {
 				// peek to see if we can read the entire header
 				const peekHeader = this._incomingData.peek(this._state.readLen);
 				// const firstByte = peekHeader.readUInt8(0);
-				// const finBit = (firstByte & 0b10000000) >>> 7;
+				// const finBit = (firstByte & 0B10000000) >>> 7;
 				const secondByte = peekHeader.readUInt8(1);
-				const hasMask = (secondByte & 0b10000000) >>> 7;
-				const len = (secondByte & 0b01111111);
+				const hasMask = (secondByte & 0B10000000) >>> 7;
+				const len = (secondByte & 0B01111111);
 
 				this._state.state = ReadState.ReadHeader;
 				this._state.readLen = Constants.MinHeaderByteSize + (hasMask ? 4 : 0) + (len === 126 ? 2 : 0) + (len === 127 ? 8 : 0);
@@ -217,8 +217,8 @@ export class WebSocketNodeSocket extends Disposable implements ISocket {
 				// read entire header
 				const header = this._incomingData.read(this._state.readLen);
 				const secondByte = header.readUInt8(1);
-				const hasMask = (secondByte & 0b10000000) >>> 7;
-				let len = (secondByte & 0b01111111);
+				const hasMask = (secondByte & 0B10000000) >>> 7;
+				let len = (secondByte & 0B01111111);
 
 				let offset = 1;
 				if (len === 126) {
@@ -254,55 +254,55 @@ export class WebSocketNodeSocket extends Disposable implements ISocket {
 				this._state.mask = mask;
 
 			} else if (this._state.state === ReadState.ReadBody) {
-				// read body
+				// read Body
 
-				const body = this._incomingData.read(this._state.readLen);
-				unmask(body, this._state.mask);
+				const Body = this._incomingData.read(this._state.readLen);
+				unmask(Body, this._state.mask);
 
 				this._state.state = ReadState.PeekHeader;
 				this._state.readLen = Constants.MinHeaderByteSize;
 				this._state.mask = 0;
 
-				this._onData.fire(body);
+				this._onData.fire(Body);
 			}
 		}
 	}
 
-	public drain(): Promise<void> {
+	puBlic drain(): Promise<void> {
 		return this.socket.drain();
 	}
 }
 
-function unmask(buffer: VSBuffer, mask: number): void {
+function unmask(Buffer: VSBuffer, mask: numBer): void {
 	if (mask === 0) {
 		return;
 	}
-	let cnt = buffer.byteLength >>> 2;
+	let cnt = Buffer.ByteLength >>> 2;
 	for (let i = 0; i < cnt; i++) {
-		const v = buffer.readUInt32BE(i * 4);
-		buffer.writeUInt32BE(v ^ mask, i * 4);
+		const v = Buffer.readUInt32BE(i * 4);
+		Buffer.writeUInt32BE(v ^ mask, i * 4);
 	}
 	let offset = cnt * 4;
-	let bytesLeft = buffer.byteLength - offset;
-	const m3 = (mask >>> 24) & 0b11111111;
-	const m2 = (mask >>> 16) & 0b11111111;
-	const m1 = (mask >>> 8) & 0b11111111;
-	if (bytesLeft >= 1) {
-		buffer.writeUInt8(buffer.readUInt8(offset) ^ m3, offset);
+	let BytesLeft = Buffer.ByteLength - offset;
+	const m3 = (mask >>> 24) & 0B11111111;
+	const m2 = (mask >>> 16) & 0B11111111;
+	const m1 = (mask >>> 8) & 0B11111111;
+	if (BytesLeft >= 1) {
+		Buffer.writeUInt8(Buffer.readUInt8(offset) ^ m3, offset);
 	}
-	if (bytesLeft >= 2) {
-		buffer.writeUInt8(buffer.readUInt8(offset + 1) ^ m2, offset + 1);
+	if (BytesLeft >= 2) {
+		Buffer.writeUInt8(Buffer.readUInt8(offset + 1) ^ m2, offset + 1);
 	}
-	if (bytesLeft >= 3) {
-		buffer.writeUInt8(buffer.readUInt8(offset + 2) ^ m1, offset + 2);
+	if (BytesLeft >= 3) {
+		Buffer.writeUInt8(Buffer.readUInt8(offset + 2) ^ m1, offset + 2);
 	}
 }
 
-// Read this before there's any chance it is overwritten
-// Related to https://github.com/microsoft/vscode/issues/30624
+// Read this Before there's any chance it is overwritten
+// Related to https://githuB.com/microsoft/vscode/issues/30624
 export const XDG_RUNTIME_DIR = <string | undefined>process.env['XDG_RUNTIME_DIR'];
 
-const safeIpcPathLengths: { [platform: number]: number } = {
+const safeIpcPathLengths: { [platform: numBer]: numBer } = {
 	[Platform.Linux]: 107,
 	[Platform.Mac]: 103
 };
@@ -340,10 +340,10 @@ export function createStaticIPCHandle(directoryPath: string, type: string, versi
 
 	// Mac/Unix: use socket file and prefer
 	// XDG_RUNTIME_DIR over user data path
-	// unless portable
+	// unless portaBle
 	let result: string;
 	if (XDG_RUNTIME_DIR && !process.env['VSCODE_PORTABLE']) {
-		result = join(XDG_RUNTIME_DIR, `vscode-${scope.substr(0, 8)}-${version}-${type}.sock`);
+		result = join(XDG_RUNTIME_DIR, `vscode-${scope.suBstr(0, 8)}-${version}-${type}.sock`);
 	} else {
 		result = join(directoryPath, `${version}-${type}.sock`);
 	}
@@ -356,7 +356,7 @@ export function createStaticIPCHandle(directoryPath: string, type: string, versi
 
 function validateIPCHandleLength(handle: string): void {
 	const limit = safeIpcPathLengths[platform];
-	if (typeof limit === 'number' && handle.length >= limit) {
+	if (typeof limit === 'numBer' && handle.length >= limit) {
 		// https://nodejs.org/api/net.html#net_identifying_paths_for_ipc_connections
 		console.warn(`WARNING: IPC handle "${handle}" is longer than ${limit} chars, try a shorter --user-data-dir`);
 	}
@@ -389,7 +389,7 @@ export class Server extends IPCServer {
 	}
 }
 
-export function serve(port: number): Promise<Server>;
+export function serve(port: numBer): Promise<Server>;
 export function serve(namedPipe: string): Promise<Server>;
 export function serve(hook: any): Promise<Server> {
 	return new Promise<Server>((c, e) => {
@@ -403,8 +403,8 @@ export function serve(hook: any): Promise<Server> {
 	});
 }
 
-export function connect(options: { host: string, port: number }, clientId: string): Promise<Client>;
-export function connect(port: number, clientId: string): Promise<Client>;
+export function connect(options: { host: string, port: numBer }, clientId: string): Promise<Client>;
+export function connect(port: numBer, clientId: string): Promise<Client>;
 export function connect(namedPipe: string, clientId: string): Promise<Client>;
 export function connect(hook: any, clientId: string): Promise<Client> {
 	return new Promise<Client>((c, e) => {

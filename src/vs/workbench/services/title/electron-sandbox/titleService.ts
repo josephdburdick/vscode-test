@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { TitlebarPart } from 'vs/workbench/electron-sandbox/parts/titlebar/titlebarPart';
-import { ITitleService } from 'vs/workbench/services/title/common/titleService';
+import { TitleBarPart } from 'vs/workBench/electron-sandBox/parts/titleBar/titleBarPart';
+import { ITitleService } from 'vs/workBench/services/title/common/titleService';
 
-registerSingleton(ITitleService, TitlebarPart);
+registerSingleton(ITitleService, TitleBarPart);

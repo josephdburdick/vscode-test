@@ -11,8 +11,8 @@ import { BracketsUtils, RichEditBrackets } from 'vs/editor/common/modes/supports
  * @internal
  */
 export interface IElectricAction {
-	// The line will be indented at the same level of the line
-	// which contains the matching given bracket type.
+	// The line will Be indented at the same level of the line
+	// which contains the matching given Bracket type.
 	matchOpenBracket: string;
 }
 
@@ -24,12 +24,12 @@ export class BracketElectricCharacterSupport {
 		this._richEditBrackets = richEditBrackets;
 	}
 
-	public getElectricCharacters(): string[] {
+	puBlic getElectricCharacters(): string[] {
 		let result: string[] = [];
 
 		if (this._richEditBrackets) {
-			for (const bracket of this._richEditBrackets.brackets) {
-				for (const close of bracket.close) {
+			for (const Bracket of this._richEditBrackets.Brackets) {
+				for (const close of Bracket.close) {
 					const lastChar = close.charAt(close.length - 1);
 					result.push(lastChar);
 				}
@@ -44,8 +44,8 @@ export class BracketElectricCharacterSupport {
 		return result;
 	}
 
-	public onElectricCharacter(character: string, context: ScopedLineTokens, column: number): IElectricAction | null {
-		if (!this._richEditBrackets || this._richEditBrackets.brackets.length === 0) {
+	puBlic onElectricCharacter(character: string, context: ScopedLineTokens, column: numBer): IElectricAction | null {
+		if (!this._richEditBrackets || this._richEditBrackets.Brackets.length === 0) {
 			return null;
 		}
 
@@ -55,28 +55,28 @@ export class BracketElectricCharacterSupport {
 		}
 
 		const reversedBracketRegex = this._richEditBrackets.reversedRegex;
-		const text = context.getLineContent().substring(0, column - 1) + character;
+		const text = context.getLineContent().suBstring(0, column - 1) + character;
 
 		const r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text, 0, text.length);
 		if (!r) {
 			return null;
 		}
 
-		const bracketText = text.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
+		const BracketText = text.suBstring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
 
-		const isOpen = this._richEditBrackets.textIsOpenBracket[bracketText];
+		const isOpen = this._richEditBrackets.textIsOpenBracket[BracketText];
 		if (isOpen) {
 			return null;
 		}
 
 		const textBeforeBracket = context.getActualLineContentBefore(r.startColumn - 1);
 		if (!/^\s*$/.test(textBeforeBracket)) {
-			// There is other text on the line before the bracket
+			// There is other text on the line Before the Bracket
 			return null;
 		}
 
 		return {
-			matchOpenBracket: bracketText
+			matchOpenBracket: BracketText
 		};
 	}
 }

@@ -3,41 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { transformErrorForSerialization } from 'vs/base/common/errors';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { isWeb } from 'vs/base/common/platform';
-import * as types from 'vs/base/common/types';
+import { transformErrorForSerialization } from 'vs/Base/common/errors';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { isWeB } from 'vs/Base/common/platform';
+import * as types from 'vs/Base/common/types';
 
 const INITIALIZE = '$initialize';
 
-export interface IWorker extends IDisposable {
-	getId(): number;
+export interface IWorker extends IDisposaBle {
+	getId(): numBer;
 	postMessage(message: any, transfer: ArrayBuffer[]): void;
 }
 
-export interface IWorkerCallback {
+export interface IWorkerCallBack {
 	(message: any): void;
 }
 
 export interface IWorkerFactory {
-	create(moduleId: string, callback: IWorkerCallback, onErrorCallback: (err: any) => void): IWorker;
+	create(moduleId: string, callBack: IWorkerCallBack, onErrorCallBack: (err: any) => void): IWorker;
 }
 
-let webWorkerWarningLogged = false;
-export function logOnceWebWorkerWarning(err: any): void {
-	if (!isWeb) {
+let weBWorkerWarningLogged = false;
+export function logOnceWeBWorkerWarning(err: any): void {
+	if (!isWeB) {
 		// running tests
 		return;
 	}
-	if (!webWorkerWarningLogged) {
-		webWorkerWarningLogged = true;
-		console.warn('Could not create web worker(s). Falling back to loading web worker code in main thread, which might cause UI freezes. Please see https://github.com/microsoft/monaco-editor#faq');
+	if (!weBWorkerWarningLogged) {
+		weBWorkerWarningLogged = true;
+		console.warn('Could not create weB worker(s). Falling Back to loading weB worker code in main thread, which might cause UI freezes. Please see https://githuB.com/microsoft/monaco-editor#faq');
 	}
 	console.warn(err.message);
 }
 
 interface IMessage {
-	vsWorker: number;
+	vsWorker: numBer;
 	req?: string;
 	seq?: string;
 }
@@ -66,8 +66,8 @@ interface IMessageHandler {
 
 class SimpleWorkerProtocol {
 
-	private _workerId: number;
-	private _lastSentReq: number;
+	private _workerId: numBer;
+	private _lastSentReq: numBer;
 	private _pendingReplies: { [req: string]: IMessageReply; };
 	private _handler: IMessageHandler;
 
@@ -75,14 +75,14 @@ class SimpleWorkerProtocol {
 		this._workerId = -1;
 		this._handler = handler;
 		this._lastSentReq = 0;
-		this._pendingReplies = Object.create(null);
+		this._pendingReplies = OBject.create(null);
 	}
 
-	public setWorkerId(workerId: number): void {
+	puBlic setWorkerId(workerId: numBer): void {
 		this._workerId = workerId;
 	}
 
-	public sendMessage(method: string, args: any[]): Promise<any> {
+	puBlic sendMessage(method: string, args: any[]): Promise<any> {
 		let req = String(++this._lastSentReq);
 		return new Promise<any>((resolve, reject) => {
 			this._pendingReplies[req] = {
@@ -98,7 +98,7 @@ class SimpleWorkerProtocol {
 		});
 	}
 
-	public handleMessage(message: IMessage): void {
+	puBlic handleMessage(message: IMessage): void {
 		if (!message || !message.vsWorker) {
 			return;
 		}
@@ -179,14 +179,14 @@ class SimpleWorkerProtocol {
 }
 
 export interface IWorkerClient<W> {
-	getProxyObject(): Promise<W>;
+	getProxyOBject(): Promise<W>;
 	dispose(): void;
 }
 
 /**
  * Main thread side
  */
-export class SimpleWorkerClient<W extends object, H extends object> extends Disposable implements IWorkerClient<W> {
+export class SimpleWorkerClient<W extends oBject, H extends oBject> extends DisposaBle implements IWorkerClient<W> {
 
 	private readonly _worker: IWorker;
 	private readonly _onModuleLoaded: Promise<string[]>;
@@ -199,12 +199,12 @@ export class SimpleWorkerClient<W extends object, H extends object> extends Disp
 		let lazyProxyReject: ((err: any) => void) | null = null;
 
 		this._worker = this._register(workerFactory.create(
-			'vs/base/common/worker/simpleWorker',
+			'vs/Base/common/worker/simpleWorker',
 			(msg: any) => {
 				this._protocol.handleMessage(msg);
 			},
 			(err: any) => {
-				// in Firefox, web workers fail lazily :(
+				// in Firefox, weB workers fail lazily :(
 				// we will reject the proxy
 				if (lazyProxyReject) {
 					lazyProxyReject(err);
@@ -257,8 +257,8 @@ export class SimpleWorkerClient<W extends object, H extends object> extends Disp
 
 		this._lazyProxy = new Promise<W>((resolve, reject) => {
 			lazyProxyReject = reject;
-			this._onModuleLoaded.then((availableMethods: string[]) => {
-				resolve(types.createProxyObject<W>(availableMethods, proxyMethodRequest));
+			this._onModuleLoaded.then((availaBleMethods: string[]) => {
+				resolve(types.createProxyOBject<W>(availaBleMethods, proxyMethodRequest));
 			}, (e) => {
 				reject(e);
 				this._onError('Worker failed to load ' + moduleId, e);
@@ -266,7 +266,7 @@ export class SimpleWorkerClient<W extends object, H extends object> extends Disp
 		});
 	}
 
-	public getProxyObject(): Promise<W> {
+	puBlic getProxyOBject(): Promise<W> {
 		return this._lazyProxy;
 	}
 
@@ -296,7 +296,7 @@ export interface IRequestHandlerFactory<H> {
 /**
  * Worker side
  */
-export class SimpleWorkerServer<H extends object> {
+export class SimpleWorkerServer<H extends oBject> {
 
 	private _requestHandlerFactory: IRequestHandlerFactory<H> | null;
 	private _requestHandler: IRequestHandler | null;
@@ -313,13 +313,13 @@ export class SimpleWorkerServer<H extends object> {
 		});
 	}
 
-	public onmessage(msg: any): void {
+	puBlic onmessage(msg: any): void {
 		this._protocol.handleMessage(msg);
 	}
 
 	private _handleMessage(method: string, args: any[]): Promise<any> {
 		if (method === INITIALIZE) {
-			return this.initialize(<number>args[0], <any>args[1], <string>args[2], <string[]>args[3]);
+			return this.initialize(<numBer>args[0], <any>args[1], <string>args[2], <string[]>args[3]);
 		}
 
 		if (!this._requestHandler || typeof this._requestHandler[method] !== 'function') {
@@ -333,14 +333,14 @@ export class SimpleWorkerServer<H extends object> {
 		}
 	}
 
-	private initialize(workerId: number, loaderConfig: any, moduleId: string, hostMethods: string[]): Promise<string[]> {
+	private initialize(workerId: numBer, loaderConfig: any, moduleId: string, hostMethods: string[]): Promise<string[]> {
 		this._protocol.setWorkerId(workerId);
 
 		const proxyMethodRequest = (method: string, args: any[]): Promise<any> => {
 			return this._protocol.sendMessage(method, args);
 		};
 
-		const hostProxy = types.createProxyObject<H>(hostMethods, proxyMethodRequest);
+		const hostProxy = types.createProxyOBject<H>(hostMethods, proxyMethodRequest);
 
 		if (this._requestHandlerFactory) {
 			// static request handler
@@ -349,9 +349,9 @@ export class SimpleWorkerServer<H extends object> {
 		}
 
 		if (loaderConfig) {
-			// Remove 'baseUrl', handling it is beyond scope for now
-			if (typeof loaderConfig.baseUrl !== 'undefined') {
-				delete loaderConfig['baseUrl'];
+			// Remove 'BaseUrl', handling it is Beyond scope for now
+			if (typeof loaderConfig.BaseUrl !== 'undefined') {
+				delete loaderConfig['BaseUrl'];
 			}
 			if (typeof loaderConfig.paths !== 'undefined') {
 				if (typeof loaderConfig.paths.vs !== 'undefined') {
@@ -359,13 +359,13 @@ export class SimpleWorkerServer<H extends object> {
 				}
 			}
 
-			// Since this is in a web worker, enable catching errors
+			// Since this is in a weB worker, enaBle catching errors
 			loaderConfig.catchError = true;
 			(<any>self).require.config(loaderConfig);
 		}
 
 		return new Promise<string[]>((resolve, reject) => {
-			// Use the global require to be sure to get the global config
+			// Use the gloBal require to Be sure to get the gloBal config
 			(<any>self).require([moduleId], (module: { create: IRequestHandlerFactory<H> }) => {
 				this._requestHandler = module.create(hostProxy);
 

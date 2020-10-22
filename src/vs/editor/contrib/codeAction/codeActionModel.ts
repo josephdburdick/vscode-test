@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, createCancelablePromise, TimeoutTimer } from 'vs/base/common/async';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { CancelaBlePromise, createCancelaBlePromise, TimeoutTimer } from 'vs/Base/common/async';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -18,7 +18,7 @@ import { IEditorProgressService, Progress } from 'vs/platform/progress/common/pr
 import { getCodeActions, CodeActionSet } from './codeAction';
 import { CodeActionTrigger } from './types';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { isEqual } from 'vs/base/common/resources';
+import { isEqual } from 'vs/Base/common/resources';
 
 export const SUPPORTED_CODE_ACTIONS = new RawContextKey<string>('supportedCodeAction', '');
 
@@ -28,7 +28,7 @@ export type TriggeredCodeAction = undefined | {
 	readonly position: Position;
 };
 
-class CodeActionOracle extends Disposable {
+class CodeActionOracle extends DisposaBle {
 
 	private readonly _autoTriggerTimer = this._register(new TimeoutTimer());
 
@@ -36,14 +36,14 @@ class CodeActionOracle extends Disposable {
 		private readonly _editor: ICodeEditor,
 		private readonly _markerService: IMarkerService,
 		private readonly _signalChange: (triggered: TriggeredCodeAction) => void,
-		private readonly _delay: number = 250,
+		private readonly _delay: numBer = 250,
 	) {
 		super();
 		this._register(this._markerService.onMarkerChanged(e => this._onMarkerChanges(e)));
 		this._register(this._editor.onDidChangeCursorPosition(() => this._onCursorChange()));
 	}
 
-	public trigger(trigger: CodeActionTrigger): TriggeredCodeAction {
+	puBlic trigger(trigger: CodeActionTrigger): TriggeredCodeAction {
 		const selection = this._getRangeOfSelectionUnlessWhitespaceEnclosed(trigger);
 		return this._createEventAndSignalChange(trigger, selection);
 	}
@@ -89,8 +89,8 @@ class CodeActionOracle extends Disposable {
 		const model = this._editor.getModel();
 		const selection = this._editor.getSelection();
 		if (selection.isEmpty() && trigger.type === CodeActionTriggerType.Auto) {
-			const { lineNumber, column } = selection.getPosition();
-			const line = model.getLineContent(lineNumber);
+			const { lineNumBer, column } = selection.getPosition();
+			const line = model.getLineContent(lineNumBer);
 			if (line.length === 0) {
 				// empty line
 				return undefined;
@@ -99,7 +99,7 @@ class CodeActionOracle extends Disposable {
 				if (/\s/.test(line[0])) {
 					return undefined;
 				}
-			} else if (column === model.getLineMaxColumn(lineNumber)) {
+			} else if (column === model.getLineMaxColumn(lineNumBer)) {
 				// look only left
 				if (/\s/.test(line[line.length - 1])) {
 					return undefined;
@@ -148,24 +148,24 @@ export namespace CodeActionsState {
 		readonly type = Type.Triggered;
 
 		constructor(
-			public readonly trigger: CodeActionTrigger,
-			public readonly rangeOrSelection: Range | Selection,
-			public readonly position: Position,
-			public readonly actions: CancelablePromise<CodeActionSet>,
+			puBlic readonly trigger: CodeActionTrigger,
+			puBlic readonly rangeOrSelection: Range | Selection,
+			puBlic readonly position: Position,
+			puBlic readonly actions: CancelaBlePromise<CodeActionSet>,
 		) { }
 	}
 
 	export type State = typeof Empty | Triggered;
 }
 
-export class CodeActionModel extends Disposable {
+export class CodeActionModel extends DisposaBle {
 
-	private readonly _codeActionOracle = this._register(new MutableDisposable<CodeActionOracle>());
+	private readonly _codeActionOracle = this._register(new MutaBleDisposaBle<CodeActionOracle>());
 	private _state: CodeActionsState.State = CodeActionsState.Empty;
 	private readonly _supportedCodeActions: IContextKey<string>;
 
 	private readonly _onDidChangeState = this._register(new Emitter<CodeActionsState.State>());
-	public readonly onDidChangeState = this._onDidChangeState.event;
+	puBlic readonly onDidChangeState = this._onDidChangeState.event;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
@@ -174,7 +174,7 @@ export class CodeActionModel extends Disposable {
 		private readonly _progressService?: IEditorProgressService
 	) {
 		super();
-		this._supportedCodeActions = SUPPORTED_CODE_ACTIONS.bindTo(contextKeyService);
+		this._supportedCodeActions = SUPPORTED_CODE_ACTIONS.BindTo(contextKeyService);
 
 		this._register(this._editor.onDidChangeModel(() => this._update()));
 		this._register(this._editor.onDidChangeModelLanguage(() => this._update()));
@@ -213,7 +213,7 @@ export class CodeActionModel extends Disposable {
 					return;
 				}
 
-				const actions = createCancelablePromise(token => getCodeActions(model, trigger.selection, trigger.trigger, Progress.None, token));
+				const actions = createCancelaBlePromise(token => getCodeActions(model, trigger.selection, trigger.trigger, Progress.None, token));
 				if (trigger.trigger.type === CodeActionTriggerType.Manual) {
 					this._progressService?.showWhile(actions, 250);
 				}
@@ -227,13 +227,13 @@ export class CodeActionModel extends Disposable {
 		}
 	}
 
-	public trigger(trigger: CodeActionTrigger) {
+	puBlic trigger(trigger: CodeActionTrigger) {
 		if (this._codeActionOracle.value) {
 			this._codeActionOracle.value.trigger(trigger);
 		}
 	}
 
-	private setState(newState: CodeActionsState.State, skipNotify?: boolean) {
+	private setState(newState: CodeActionsState.State, skipNotify?: Boolean) {
 		if (newState === this._state) {
 			return;
 		}

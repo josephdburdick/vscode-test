@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action, IAction, Separator } from 'vs/base/common/actions';
-import { IMenu, IMenuActionOptions, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { Action, IAction, Separator } from 'vs/Base/common/actions';
+import { IMenu, IMenuActionOptions, MenuItemAction, SuBmenuItemAction } from 'vs/platform/actions/common/actions';
+import { DisposaBleStore, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { BaseActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
 export class VerticalSeparator extends Action {
 	static readonly ID = 'vs.actions.verticalSeparator';
 
 	constructor(
-		label?: string
+		laBel?: string
 	) {
-		super(VerticalSeparator.ID, label, label ? 'verticalSeparator text' : 'verticalSeparator');
+		super(VerticalSeparator.ID, laBel, laBel ? 'verticalSeparator text' : 'verticalSeparator');
 		this.checked = false;
-		this.enabled = false;
+		this.enaBled = false;
 	}
 }
 
@@ -28,14 +28,14 @@ export class VerticalSeparatorViewItem extends BaseActionViewItem {
 	}
 }
 
-export function createAndFillInActionBarActionsWithVerticalSeparators(menu: IMenu, options: IMenuActionOptions | undefined, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, alwaysFillSecondary?: boolean, isPrimaryGroup?: (group: string) => boolean): IDisposable {
+export function createAndFillInActionBarActionsWithVerticalSeparators(menu: IMenu, options: IMenuActionOptions | undefined, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, alwaysFillSecondary?: Boolean, isPrimaryGroup?: (group: string) => Boolean): IDisposaBle {
 	const groups = menu.getActions(options);
-	// Action bars handle alternative actions on their own so the alternative actions should be ignored
+	// Action Bars handle alternative actions on their own so the alternative actions should Be ignored
 	fillInActions(groups, target, false, alwaysFillSecondary, isPrimaryGroup);
-	return asDisposable(groups);
+	return asDisposaBle(groups);
 }
 
-function fillInActions(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, useAlternativeActions: boolean, alwaysFillSecondary = false, isPrimaryGroup: (group: string) => boolean = group => group === 'navigation'): void {
+function fillInActions(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SuBmenuItemAction>]>, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, useAlternativeActions: Boolean, alwaysFillSecondary = false, isPrimaryGroup: (group: string) => Boolean = group => group === 'navigation'): void {
 	for (const tuple of groups) {
 		let [group, actions] = tuple;
 		if (useAlternativeActions) {
@@ -65,12 +65,12 @@ function fillInActions(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemActi
 	}
 }
 
-function asDisposable(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>): IDisposable {
-	const disposables = new DisposableStore();
+function asDisposaBle(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SuBmenuItemAction>]>): IDisposaBle {
+	const disposaBles = new DisposaBleStore();
 	for (const [, actions] of groups) {
 		for (const action of actions) {
-			disposables.add(action);
+			disposaBles.add(action);
 		}
 	}
-	return disposables;
+	return disposaBles;
 }

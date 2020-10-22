@@ -5,40 +5,40 @@
 
 import * as https from 'https';
 import * as http from 'http';
-import * as streams from 'vs/base/common/stream';
-import { createGunzip } from 'zlib';
+import * as streams from 'vs/Base/common/stream';
+import { createGunzip } from 'zliB';
 import { parse as parseUrl } from 'url';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isBoolean, isNumber } from 'vs/base/common/types';
-import { canceled } from 'vs/base/common/errors';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { isBoolean, isNumBer } from 'vs/Base/common/types';
+import { canceled } from 'vs/Base/common/errors';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IRequestService, IHTTPConfiguration } from 'vs/platform/request/common/request';
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
+import { IRequestOptions, IRequestContext } from 'vs/Base/parts/request/common/request';
 import { getProxyAgent, Agent } from 'vs/platform/request/node/proxy';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILogService } from 'vs/platform/log/common/log';
-import { streamToBufferReadableStream } from 'vs/base/common/buffer';
+import { streamToBufferReadaBleStream } from 'vs/Base/common/Buffer';
 
 export interface IRawRequestFunction {
-	(options: http.RequestOptions, callback?: (res: http.IncomingMessage) => void): http.ClientRequest;
+	(options: http.RequestOptions, callBack?: (res: http.IncomingMessage) => void): http.ClientRequest;
 }
 
 export interface NodeRequestOptions extends IRequestOptions {
 	agent?: Agent;
-	strictSSL?: boolean;
+	strictSSL?: Boolean;
 	getRawRequest?(options: IRequestOptions): IRawRequestFunction;
 }
 
 /**
- * This service exposes the `request` API, while using the global
+ * This service exposes the `request` API, while using the gloBal
  * or configured proxy settings.
  */
-export class RequestService extends Disposable implements IRequestService {
+export class RequestService extends DisposaBle implements IRequestService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private proxyUrl?: string;
-	private strictSSL: boolean | undefined;
+	private strictSSL: Boolean | undefined;
 	private authorization?: string;
 
 	constructor(
@@ -107,7 +107,7 @@ export class RequestService extends Disposable implements IRequestService {
 			}
 
 			req = rawRequest(opts, (res: http.IncomingMessage) => {
-				const followRedirects: number = isNumber(options.followRedirects) ? options.followRedirects : 3;
+				const followRedirects: numBer = isNumBer(options.followRedirects) ? options.followRedirects : 3;
 				if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && followRedirects > 0 && res.headers['location']) {
 					this._request({
 						...options,
@@ -115,13 +115,13 @@ export class RequestService extends Disposable implements IRequestService {
 						followRedirects: followRedirects - 1
 					}, token).then(c, e);
 				} else {
-					let stream: streams.ReadableStreamEvents<Uint8Array> = res;
+					let stream: streams.ReadaBleStreamEvents<Uint8Array> = res;
 
 					if (res.headers['content-encoding'] === 'gzip') {
 						stream = res.pipe(createGunzip());
 					}
 
-					c({ res, stream: streamToBufferReadableStream(stream) } as IRequestContext);
+					c({ res, stream: streamToBufferReadaBleStream(stream) } as IRequestContext);
 				}
 			});
 
@@ -140,7 +140,7 @@ export class RequestService extends Disposable implements IRequestService {
 			req.end();
 
 			token.onCancellationRequested(() => {
-				req.abort();
+				req.aBort();
 				e(canceled());
 			});
 		});

@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/workbench.web.main';
-import { main } from 'vs/workbench/browser/web.main';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { IFileSystemProvider, FileSystemProviderCapabilities, IFileChange, FileChangeType } from 'vs/platform/files/common/files';
-import { IWebSocketFactory, IWebSocket } from 'vs/platform/remote/browser/browserSocketFactory';
+import 'vs/workBench/workBench.weB.main';
+import { main } from 'vs/workBench/Browser/weB.main';
+import { UriComponents, URI } from 'vs/Base/common/uri';
+import { IFileSystemProvider, FileSystemProviderCapaBilities, IFileChange, FileChangeType } from 'vs/platform/files/common/files';
+import { IWeBSocketFactory, IWeBSocket } from 'vs/platform/remote/Browser/BrowserSocketFactory';
 import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-import { IURLCallbackProvider } from 'vs/workbench/services/url/browser/urlService';
+import { IURLCallBackProvider } from 'vs/workBench/services/url/Browser/urlService';
 import { LogLevel } from 'vs/platform/log/common/log';
-import { IUpdateProvider, IUpdate } from 'vs/workbench/services/update/browser/updateService';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IWorkspaceProvider, IWorkspace } from 'vs/workbench/services/host/browser/browserHostService';
+import { IUpdateProvider, IUpdate } from 'vs/workBench/services/update/Browser/updateService';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkspaceProvider, IWorkspace } from 'vs/workBench/services/host/Browser/BrowserHostService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IProductConfiguration } from 'vs/platform/product/common/productService';
-import { mark } from 'vs/base/common/performance';
-import { ICredentialsProvider } from 'vs/workbench/services/credentials/common/credentials';
+import { mark } from 'vs/Base/common/performance';
+import { ICredentialsProvider } from 'vs/workBench/services/credentials/common/credentials';
 
 interface IResourceUriProvider {
 	(uri: URI): URI;
@@ -27,7 +27,7 @@ interface IResourceUriProvider {
 interface IStaticExtension {
 	packageJSON: IExtensionManifest;
 	extensionLocation: URI;
-	isBuiltin?: boolean;
+	isBuiltin?: Boolean;
 }
 
 interface ICommonTelemetryPropertiesResolver {
@@ -56,18 +56,18 @@ interface ITunnelFactory {
 }
 
 interface ITunnelOptions {
-	remoteAddress: { port: number, host: string };
+	remoteAddress: { port: numBer, host: string };
 
 	/**
-	 * The desired local port. If this port can't be used, then another will be chosen.
+	 * The desired local port. If this port can't Be used, then another will Be chosen.
 	 */
-	localAddressPort?: number;
+	localAddressPort?: numBer;
 
-	label?: string;
+	laBel?: string;
 }
 
-interface ITunnel extends IDisposable {
-	remoteAddress: { port: number, host: string };
+interface ITunnel extends IDisposaBle {
+	remoteAddress: { port: numBer, host: string };
 
 	/**
 	 * The complete local address(ex. localhost:1234)
@@ -81,23 +81,23 @@ interface ITunnel extends IDisposable {
 }
 
 interface IShowPortCandidate {
-	(host: string, port: number, detail: string): Promise<boolean>;
+	(host: string, port: numBer, detail: string): Promise<Boolean>;
 }
 
 interface ICommand {
 
 	/**
-	 * An identifier for the command. Commands can be executed from extensions
+	 * An identifier for the command. Commands can Be executed from extensions
 	 * using the `vscode.commands.executeCommand` API using that command ID.
 	 */
 	id: string,
 
 	/**
-	 * A function that is being executed with any arguments passed over. The
-	 * return type will be send back to the caller.
+	 * A function that is Being executed with any arguments passed over. The
+	 * return type will Be send Back to the caller.
 	 *
-	 * Note: arguments and return type should be serializable so that they can
-	 * be exchanged across processes boundaries.
+	 * Note: arguments and return type should Be serializaBle so that they can
+	 * Be exchanged across processes Boundaries.
 	 */
 	handler: (...args: any[]) => unknown;
 }
@@ -110,7 +110,7 @@ interface IHomeIndicator {
 	href: string;
 
 	/**
-	 * The icon name for the home indicator. This needs to be one of the existing
+	 * The icon name for the home indicator. This needs to Be one of the existing
 	 * icons from our Codicon icon set. For example `sync`.
 	 */
 	icon: string;
@@ -129,14 +129,14 @@ interface IWindowIndicator {
 	onDidChange: Event<void>;
 
 	/**
-	 * Label of the window indicator may include octicons
-	 * e.g. `$(remote) label`
+	 * LaBel of the window indicator may include octicons
+	 * e.g. `$(remote) laBel`
 	 */
-	label: string;
+	laBel: string;
 
 	/**
 	 * Tooltip of the window indicator should not include
-	 * octicons and be descriptive.
+	 * octicons and Be descriptive.
 	 */
 	tooltip: string;
 
@@ -161,48 +161,48 @@ interface IInitialColorTheme {
 	themeType: ColorScheme;
 
 	/**
-	 * A list of workbench colors to apply initially.
+	 * A list of workBench colors to apply initially.
 	 */
 	colors?: { [colorId: string]: string };
 }
 
 interface IDefaultSideBarLayout {
-	visible?: boolean;
+	visiBle?: Boolean;
 	containers?: ({
 		id: 'explorer' | 'run' | 'scm' | 'search' | 'extensions' | 'remote' | string;
 		active: true;
-		order?: number;
+		order?: numBer;
 		views?: {
 			id: string;
-			order?: number;
-			visible?: boolean;
-			collapsed?: boolean;
+			order?: numBer;
+			visiBle?: Boolean;
+			collapsed?: Boolean;
 		}[];
 	} | {
 		id: 'explorer' | 'run' | 'scm' | 'search' | 'extensions' | 'remote' | string;
 		active?: false;
-		order?: number;
-		visible?: boolean;
+		order?: numBer;
+		visiBle?: Boolean;
 		views?: {
 			id: string;
-			order?: number;
-			visible?: boolean;
-			collapsed?: boolean;
+			order?: numBer;
+			visiBle?: Boolean;
+			collapsed?: Boolean;
 		}[];
 	})[];
 }
 
 interface IDefaultPanelLayout {
-	visible?: boolean;
+	visiBle?: Boolean;
 	containers?: ({
-		id: 'terminal' | 'debug' | 'problems' | 'output' | 'comments' | string;
-		order?: number;
+		id: 'terminal' | 'deBug' | 'proBlems' | 'output' | 'comments' | string;
+		order?: numBer;
 		active: true;
 	} | {
-		id: 'terminal' | 'debug' | 'problems' | 'output' | 'comments' | string;
-		order?: number;
+		id: 'terminal' | 'deBug' | 'proBlems' | 'output' | 'comments' | string;
+		order?: numBer;
 		active?: false;
-		visible?: boolean;
+		visiBle?: Boolean;
 	})[];
 }
 
@@ -212,13 +212,13 @@ interface IDefaultView {
 
 interface IDefaultEditor {
 	readonly uri: UriComponents;
-	readonly openOnlyIfExists?: boolean;
+	readonly openOnlyIfExists?: Boolean;
 	readonly openWith?: string;
 }
 
 interface IDefaultLayout {
 	/** @deprecated Use views instead (TODO@eamodio remove eventually) */
-	readonly sidebar?: IDefaultSideBarLayout;
+	readonly sideBar?: IDefaultSideBarLayout;
 	/** @deprecated Use views instead (TODO@eamodio remove eventually) */
 	readonly panel?: IDefaultPanelLayout;
 	readonly views?: IDefaultView[];
@@ -228,10 +228,10 @@ interface IDefaultLayout {
 interface IProductQualityChangeHandler {
 
 	/**
-	 * Handler is being called when the user wants to switch between
-	 * `insider` or `stable` product qualities.
+	 * Handler is Being called when the user wants to switch Between
+	 * `insider` or `staBle` product qualities.
 	 */
-	(newQuality: 'insider' | 'stable'): void;
+	(newQuality: 'insider' | 'staBle'): void;
 }
 
 /**
@@ -239,23 +239,23 @@ interface IProductQualityChangeHandler {
  */
 interface ISettingsSyncOptions {
 	/**
-	 * Is settings sync enabled
+	 * Is settings sync enaBled
 	 */
-	readonly enabled: boolean;
+	readonly enaBled: Boolean;
 
 	/**
-	 * Handler is being called when the user changes Settings Sync enablement.
+	 * Handler is Being called when the user changes Settings Sync enaBlement.
 	 */
-	enablementHandler?(enablement: boolean): void;
+	enaBlementHandler?(enaBlement: Boolean): void;
 }
 
-interface IWorkbenchConstructionOptions {
+interface IWorkBenchConstructionOptions {
 
 	//#region Connection related configuration
 
 	/**
-	 * The remote authority is the IP:PORT from where the workbench is served
-	 * from. It is for example being used for the websocket connections as address.
+	 * The remote authority is the IP:PORT from where the workBench is served
+	 * from. It is for example Being used for the weBsocket connections as address.
 	 */
 	readonly remoteAuthority?: string;
 
@@ -272,15 +272,15 @@ interface IWorkbenchConstructionOptions {
 	readonly authenticationSessionId?: string;
 
 	/**
-	 * An endpoint to serve iframe content ("webview") from. This is required
-	 * to provide full security isolation from the workbench host.
+	 * An endpoint to serve iframe content ("weBview") from. This is required
+	 * to provide full security isolation from the workBench host.
 	 */
-	readonly webviewEndpoint?: string;
+	readonly weBviewEndpoint?: string;
 
 	/**
-	 * A factory for web sockets.
+	 * A factory for weB sockets.
 	 */
-	readonly webSocketFactory?: IWebSocketFactory;
+	readonly weBSocketFactory?: IWeBSocketFactory;
 
 	/**
 	 * A provider for resource URIs.
@@ -288,7 +288,7 @@ interface IWorkbenchConstructionOptions {
 	readonly resourceUriProvider?: IResourceUriProvider;
 
 	/**
-	 * Resolves an external uri before it is opened.
+	 * Resolves an external uri Before it is opened.
 	 */
 	readonly resolveExternalUri?: IExternalUriResolver;
 
@@ -299,14 +299,14 @@ interface IWorkbenchConstructionOptions {
 	readonly tunnelProvider?: ITunnelProvider;
 
 	/**
-	 * Endpoints to be used for proxying authentication code exchange calls in the browser.
+	 * Endpoints to Be used for proxying authentication code exchange calls in the Browser.
 	 */
 	readonly codeExchangeProxyEndpoints?: { [providerId: string]: string }
 
 	//#endregion
 
 
-	//#region Workbench configuration
+	//#region WorkBench configuration
 
 	/**
 	 * A handler for opening workspaces and providing the initial workspace.
@@ -314,13 +314,13 @@ interface IWorkbenchConstructionOptions {
 	readonly workspaceProvider?: IWorkspaceProvider;
 
 	/**
-	 * Enables Settings Sync by default.
+	 * EnaBles Settings Sync By default.
 	 *
-	 * Syncs with the current authenticated user account (provided in [credentialsProvider](#credentialsProvider)) by default.
+	 * Syncs with the current authenticated user account (provided in [credentialsProvider](#credentialsProvider)) By default.
 	 *
-	 * @deprecated Instead use [settingsSyncOptions](#settingsSyncOptions) to enable/disable settings sync in the workbench.
+	 * @deprecated Instead use [settingsSyncOptions](#settingsSyncOptions) to enaBle/disaBle settings sync in the workBench.
 	 */
-	readonly enableSyncByDefault?: boolean;
+	readonly enaBleSyncByDefault?: Boolean;
 
 	/**
 	 * Settings sync options
@@ -333,28 +333,28 @@ interface IWorkbenchConstructionOptions {
 	readonly credentialsProvider?: ICredentialsProvider;
 
 	/**
-	 * Add static extensions that cannot be uninstalled but only be disabled.
+	 * Add static extensions that cannot Be uninstalled But only Be disaBled.
 	 */
 	readonly staticExtensions?: ReadonlyArray<IStaticExtension>;
 
 	/**
-	 * [TEMPORARY]: This will be removed soon.
-	 * Enable inlined extensions.
+	 * [TEMPORARY]: This will Be removed soon.
+	 * EnaBle inlined extensions.
 	 * Defaults to false on serverful and true on serverless.
 	 */
-	readonly _enableBuiltinExtensions?: boolean;
+	readonly _enaBleBuiltinExtensions?: Boolean;
 
 	/**
-	 * [TEMPORARY]: This will be removed soon.
-	 * Enable `<iframe>` wrapping.
+	 * [TEMPORARY]: This will Be removed soon.
+	 * EnaBle `<iframe>` wrapping.
 	 * Defaults to false.
 	 */
-	readonly _wrapWebWorkerExtHostInIframe?: boolean;
+	readonly _wrapWeBWorkerExtHostInIframe?: Boolean;
 
 	/**
-	 * Support for URL callbacks.
+	 * Support for URL callBacks.
 	 */
-	readonly urlCallbackProvider?: IURLCallbackProvider;
+	readonly urlCallBackProvider?: IURLCallBackProvider;
 
 	/**
 	 * Support adding additional properties to telemetry.
@@ -362,10 +362,10 @@ interface IWorkbenchConstructionOptions {
 	readonly resolveCommonTelemetryProperties?: ICommonTelemetryPropertiesResolver;
 
 	/**
-	 * A set of optional commands that should be registered with the commands
+	 * A set of optional commands that should Be registered with the commands
 	 * registry.
 	 *
-	 * Note: commands can be called from extensions if the identifier is known!
+	 * Note: commands can Be called from extensions if the identifier is known!
 	 */
 	readonly commands?: readonly ICommand[];
 
@@ -375,7 +375,7 @@ interface IWorkbenchConstructionOptions {
 	readonly defaultLayout?: IDefaultLayout;
 
 	/**
-	 * Optional configuration default overrides contributed to the workbench.
+	 * Optional configuration default overrides contriButed to the workBench.
 	 */
 	readonly configurationDefaults?: Record<string, any>;
 
@@ -400,7 +400,7 @@ interface IWorkbenchConstructionOptions {
 	//#region Branding
 
 	/**
-	 * Optional home indicator to appear above the hamburger menu in the activity bar.
+	 * Optional home indicator to appear aBove the hamBurger menu in the activity Bar.
 	 */
 	readonly homeIndicator?: IHomeIndicator;
 
@@ -410,14 +410,14 @@ interface IWorkbenchConstructionOptions {
 	readonly productConfiguration?: Partial<IProductConfiguration>;
 
 	/**
-	 * Optional override for properties of the window indicator in the status bar.
+	 * Optional override for properties of the window indicator in the status Bar.
 	 */
 	readonly windowIndicator?: IWindowIndicator;
 
 	/**
 	 * Specifies the default theme type (LIGHT, DARK..) and allows to provide initial colors that are shown
 	 * until the color theme that is specified in the settings (`editor.colorTheme`) is loaded and applied.
-	 * Once there are persisted colors from a last run these will be used.
+	 * Once there are persisted colors from a last run these will Be used.
 	 *
 	 * The idea is that the colors match the main colors from the theme defined in the `configurationDefaults`.
 	 */
@@ -434,14 +434,14 @@ interface IWorkbenchConstructionOptions {
 	readonly logLevel?: LogLevel;
 
 	/**
-	 * Whether to enable the smoke test driver.
+	 * Whether to enaBle the smoke test driver.
 	 */
-	readonly driver?: boolean;
+	readonly driver?: Boolean;
 
 	//#endregion
 }
 
-interface IWorkbench {
+interface IWorkBench {
 	commands: {
 		executeCommand(command: string, ...args: any[]): Promise<unknown>;
 	},
@@ -449,24 +449,24 @@ interface IWorkbench {
 }
 
 /**
- * Creates the workbench with the provided options in the provided container.
+ * Creates the workBench with the provided options in the provided container.
  *
- * @param domElement the container to create the workbench in
- * @param options for setting up the workbench
+ * @param domElement the container to create the workBench in
+ * @param options for setting up the workBench
  */
 let created = false;
-let workbenchPromiseResolve: Function;
-const workbenchPromise = new Promise<IWorkbench>(resolve => workbenchPromiseResolve = resolve);
-function create(domElement: HTMLElement, options: IWorkbenchConstructionOptions): IDisposable {
+let workBenchPromiseResolve: Function;
+const workBenchPromise = new Promise<IWorkBench>(resolve => workBenchPromiseResolve = resolve);
+function create(domElement: HTMLElement, options: IWorkBenchConstructionOptions): IDisposaBle {
 
-	// Mark start of workbench
-	mark('didLoadWorkbenchMain');
-	performance.mark('workbench-start');
+	// Mark start of workBench
+	mark('didLoadWorkBenchMain');
+	performance.mark('workBench-start');
 
-	// Assert that the workbench is not created more than once. We currently
+	// Assert that the workBench is not created more than once. We currently
 	// do not support this and require a full context switch to clean-up.
 	if (created) {
-		throw new Error('Unable to create the VSCode workbench more than once.');
+		throw new Error('UnaBle to create the VSCode workBench more than once.');
 	} else {
 		created = true;
 	}
@@ -475,25 +475,25 @@ function create(domElement: HTMLElement, options: IWorkbenchConstructionOptions)
 	if (Array.isArray(options.commands)) {
 		for (const command of options.commands) {
 			CommandsRegistry.registerCommand(command.id, (accessor, ...args) => {
-				// we currently only pass on the arguments but not the accessor
+				// we currently only pass on the arguments But not the accessor
 				// to the command to reduce our exposure of internal API.
 				return command.handler(...args);
 			});
 		}
 	}
 
-	// Startup workbench and resolve waiters
-	let instantiatedWorkbench: IWorkbench | undefined = undefined;
-	main(domElement, options).then(workbench => {
-		instantiatedWorkbench = workbench;
-		workbenchPromiseResolve(workbench);
+	// Startup workBench and resolve waiters
+	let instantiatedWorkBench: IWorkBench | undefined = undefined;
+	main(domElement, options).then(workBench => {
+		instantiatedWorkBench = workBench;
+		workBenchPromiseResolve(workBench);
 	});
 
-	return toDisposable(() => {
-		if (instantiatedWorkbench) {
-			instantiatedWorkbench.shutdown();
+	return toDisposaBle(() => {
+		if (instantiatedWorkBench) {
+			instantiatedWorkBench.shutdown();
 		} else {
-			workbenchPromise.then(instantiatedWorkbench => instantiatedWorkbench.shutdown());
+			workBenchPromise.then(instantiatedWorkBench => instantiatedWorkBench.shutdown());
 		}
 	});
 }
@@ -511,9 +511,9 @@ namespace commands {
 	* @return A promise that resolves to the returned value of the given command.
 	*/
 	export async function executeCommand(command: string, ...args: any[]): Promise<unknown> {
-		const workbench = await workbenchPromise;
+		const workBench = await workBenchPromise;
 
-		return workbench.commands.executeCommand(command, ...args);
+		return workBench.commands.executeCommand(command, ...args);
 	}
 }
 
@@ -521,16 +521,16 @@ export {
 
 	// Factory
 	create,
-	IWorkbenchConstructionOptions,
-	IWorkbench,
+	IWorkBenchConstructionOptions,
+	IWorkBench,
 
 	// Basic Types
 	URI,
 	UriComponents,
 	Event,
 	Emitter,
-	IDisposable,
-	Disposable,
+	IDisposaBle,
+	DisposaBle,
 
 	// Workspace
 	IWorkspace,
@@ -538,13 +538,13 @@ export {
 
 	// FileSystem
 	IFileSystemProvider,
-	FileSystemProviderCapabilities,
+	FileSystemProviderCapaBilities,
 	IFileChange,
 	FileChangeType,
 
-	// WebSockets
-	IWebSocketFactory,
-	IWebSocket,
+	// WeBSockets
+	IWeBSocketFactory,
+	IWeBSocket,
 
 	// Resources
 	IResourceUriProvider,
@@ -556,8 +556,8 @@ export {
 	IStaticExtension,
 	IExtensionManifest,
 
-	// Callbacks
-	IURLCallbackProvider,
+	// CallBacks
+	IURLCallBackProvider,
 
 	// LogLevel
 	LogLevel,

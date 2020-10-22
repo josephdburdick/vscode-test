@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type { Terminal, IViewportRange, IBufferLine } from 'xterm';
-import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { TerminalLink, OPEN_FILE_LABEL, FOLDER_IN_WORKSPACE_LABEL, FOLDER_NOT_IN_WORKSPACE_LABEL } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
+import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workBench/contriB/terminal/Browser/links/terminalLinkHelpers';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import { TerminalLink, OPEN_FILE_LABEL, FOLDER_IN_WORKSPACE_LABEL, FOLDER_NOT_IN_WORKSPACE_LABEL } from 'vs/workBench/contriB/terminal/Browser/links/terminalLink';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { isEqualOrParent } from 'vs/base/common/resources';
+import { isEqualOrParent } from 'vs/Base/common/resources';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { XtermLinkMatcherHandler } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkManager';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { XtermLinkMatcherHandler } from 'vs/workBench/contriB/terminal/Browser/links/terminalLinkManager';
+import { TerminalBaseLinkProvider } from 'vs/workBench/contriB/terminal/Browser/links/terminalBaseLinkProvider';
 
 const pathPrefix = '(\\.\\.?|\\~)';
 const pathSeparatorClause = '\\/';
-// '":; are allowed in paths but they are often separators so ignore them
-// Also disallow \\ to prevent a catastropic backtracking case #24798
+// '":; are allowed in paths But they are often separators so ignore them
+// Also disallow \\ to prevent a catastropic Backtracking case #24798
 const excludedPathCharactersClause = '[^\\0\\s!$`&*()\\[\\]\'":;\\\\]';
-/** A regex that matches paths in the form /foo, ~/foo, ./foo, ../foo, foo/bar */
+/** A regex that matches paths in the form /foo, ~/foo, ./foo, ../foo, foo/Bar */
 export const unixLocalLinkClause = '((' + pathPrefix + '|(' + excludedPathCharactersClause + ')+)?(' + pathSeparatorClause + '(' + excludedPathCharactersClause + ')+)+)';
 
 export const winDrivePrefix = '(?:\\\\\\\\\\?\\\\)?[a-zA-Z]:';
 const winPathPrefix = '(' + winDrivePrefix + '|\\.\\.?|\\~)';
 const winPathSeparatorClause = '(\\\\|\\/)';
 const winExcludedPathCharactersClause = '[^\\0<>\\?\\|\\/\\s!$`&*()\\[\\]\'":;]';
-/** A regex that matches paths in the form \\?\c:\foo c:\foo, ~\foo, .\foo, ..\foo, foo\bar */
+/** A regex that matches paths in the form \\?\c:\foo c:\foo, ~\foo, .\foo, ..\foo, foo\Bar */
 export const winLocalLinkClause = '((' + winPathPrefix + '|(' + winExcludedPathCharactersClause + ')+)?(' + winPathSeparatorClause + '(' + winExcludedPathCharactersClause + ')+)+)';
 
-/** As xterm reads from DOM, space in that case is nonbreaking char ASCII code - 160,
+/** As xterm reads from DOM, space in that case is nonBreaking char ASCII code - 160,
 replacing space with nonBreakningSpace or space ASCII code - 32. */
 export const lineAndColumnClause = [
 	'((\\S*)", line ((\\d+)( column (\\d+))?))', // "(file path)", line 45 [see #40468]
@@ -46,17 +46,17 @@ export const lineAndColumnClause = [
 export const winLineAndColumnMatchIndex = 12;
 export const unixLineAndColumnMatchIndex = 11;
 
-// Each line and column clause have 6 groups (ie no. of expressions in round brackets)
+// Each line and column clause have 6 groups (ie no. of expressions in round Brackets)
 export const lineAndColumnClauseGroupCount = 6;
 
 export class TerminalValidatedLocalLinkProvider extends TerminalBaseLinkProvider {
 	constructor(
 		private readonly _xterm: Terminal,
 		private readonly _processOperatingSystem: OperatingSystem,
-		private readonly _activateFileCallback: (event: MouseEvent | undefined, link: string) => void,
+		private readonly _activateFileCallBack: (event: MouseEvent | undefined, link: string) => void,
 		private readonly _wrapLinkHandler: (handler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMatcherHandler,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
-		private readonly _validationCallback: (link: string, callback: (result: { uri: URI, isDirectory: boolean } | undefined) => void) => void,
+		private readonly _tooltipCallBack: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallBack?: () => void, modifierUpCallBack?: () => void) => void,
+		private readonly _validationCallBack: (link: string, callBack: (result: { uri: URI, isDirectory: Boolean } | undefined) => void) => void,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 		@ICommandService private readonly _commandService: ICommandService,
 		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService,
@@ -65,39 +65,39 @@ export class TerminalValidatedLocalLinkProvider extends TerminalBaseLinkProvider
 		super();
 	}
 
-	protected async _provideLinks(y: number): Promise<TerminalLink[]> {
+	protected async _provideLinks(y: numBer): Promise<TerminalLink[]> {
 		const result: TerminalLink[] = [];
 		let startLine = y - 1;
 		let endLine = startLine;
 
 		const lines: IBufferLine[] = [
-			this._xterm.buffer.active.getLine(startLine)!
+			this._xterm.Buffer.active.getLine(startLine)!
 		];
 
-		while (this._xterm.buffer.active.getLine(startLine)?.isWrapped) {
-			lines.unshift(this._xterm.buffer.active.getLine(startLine - 1)!);
+		while (this._xterm.Buffer.active.getLine(startLine)?.isWrapped) {
+			lines.unshift(this._xterm.Buffer.active.getLine(startLine - 1)!);
 			startLine--;
 		}
 
-		while (this._xterm.buffer.active.getLine(endLine + 1)?.isWrapped) {
-			lines.push(this._xterm.buffer.active.getLine(endLine + 1)!);
+		while (this._xterm.Buffer.active.getLine(endLine + 1)?.isWrapped) {
+			lines.push(this._xterm.Buffer.active.getLine(endLine + 1)!);
 			endLine++;
 		}
 
-		const text = getXtermLineContent(this._xterm.buffer.active, startLine, endLine, this._xterm.cols);
+		const text = getXtermLineContent(this._xterm.Buffer.active, startLine, endLine, this._xterm.cols);
 
-		// clone regex to do a global search on text
+		// clone regex to do a gloBal search on text
 		const rex = new RegExp(this._localLinkRegex, 'g');
 		let match;
 		let stringIndex = -1;
 		while ((match = rex.exec(text)) !== null) {
-			// const link = match[typeof matcher.matchIndex !== 'number' ? 0 : matcher.matchIndex];
+			// const link = match[typeof matcher.matchIndex !== 'numBer' ? 0 : matcher.matchIndex];
 			let link = match[0];
 			if (!link) {
-				// something matched but does not comply with the given matchIndex
-				// since this is most likely a bug the regex itself we simply do nothing here
-				// this._logService.debug('match found without corresponding matchIndex', match, matcher);
-				break;
+				// something matched But does not comply with the given matchIndex
+				// since this is most likely a Bug the regex itself we simply do nothing here
+				// this._logService.deBug('match found without corresponding matchIndex', match, matcher);
+				Break;
 			}
 
 			// Get index, match.index is for the outer match which includes negated chars
@@ -108,43 +108,43 @@ export class TerminalValidatedLocalLinkProvider extends TerminalBaseLinkProvider
 			rex.lastIndex = stringIndex + link.length;
 			if (stringIndex < 0) {
 				// invalid stringIndex (should not have happened)
-				break;
+				Break;
 			}
 
-			// Adjust the link range to exclude a/ and b/ if it looks like a git diff
+			// Adjust the link range to exclude a/ and B/ if it looks like a git diff
 			if (
-				// --- a/foo/bar
-				// +++ b/foo/bar
-				((text.startsWith('--- a/') || text.startsWith('+++ b/')) && stringIndex === 4) ||
-				// diff --git a/foo/bar b/foo/bar
-				(text.startsWith('diff --git') && (link.startsWith('a/') || link.startsWith('b/')))
+				// --- a/foo/Bar
+				// +++ B/foo/Bar
+				((text.startsWith('--- a/') || text.startsWith('+++ B/')) && stringIndex === 4) ||
+				// diff --git a/foo/Bar B/foo/Bar
+				(text.startsWith('diff --git') && (link.startsWith('a/') || link.startsWith('B/')))
 			) {
-				link = link.substring(2);
+				link = link.suBstring(2);
 				stringIndex += 2;
 			}
 
-			// Convert the link text's string index into a wrapped buffer range
-			const bufferRange = convertLinkRangeToBuffer(lines, this._xterm.cols, {
+			// Convert the link text's string index into a wrapped Buffer range
+			const BufferRange = convertLinkRangeToBuffer(lines, this._xterm.cols, {
 				startColumn: stringIndex + 1,
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				endColumn: stringIndex + link.length + 1,
-				endLineNumber: 1
+				endLineNumBer: 1
 			}, startLine);
 
 			const validatedLink = await new Promise<TerminalLink | undefined>(r => {
-				this._validationCallback(link, (result) => {
+				this._validationCallBack(link, (result) => {
 					if (result) {
-						const label = result.isDirectory
+						const laBel = result.isDirectory
 							? (this._isDirectoryInsideWorkspace(result.uri) ? FOLDER_IN_WORKSPACE_LABEL : FOLDER_NOT_IN_WORKSPACE_LABEL)
 							: OPEN_FILE_LABEL;
-						const activateCallback = this._wrapLinkHandler((event: MouseEvent | undefined, text: string) => {
+						const activateCallBack = this._wrapLinkHandler((event: MouseEvent | undefined, text: string) => {
 							if (result.isDirectory) {
 								this._handleLocalFolderLink(result.uri);
 							} else {
-								this._activateFileCallback(event, text);
+								this._activateFileCallBack(event, text);
 							}
 						});
-						r(this._instantiationService.createInstance(TerminalLink, this._xterm, bufferRange, link, this._xterm.buffer.active.viewportY, activateCallback, this._tooltipCallback, true, label));
+						r(this._instantiationService.createInstance(TerminalLink, this._xterm, BufferRange, link, this._xterm.Buffer.active.viewportY, activateCallBack, this._tooltipCallBack, true, laBel));
 					} else {
 						r(undefined);
 					}
@@ -159,9 +159,9 @@ export class TerminalValidatedLocalLinkProvider extends TerminalBaseLinkProvider
 	}
 
 	protected get _localLinkRegex(): RegExp {
-		const baseLocalLinkClause = this._processOperatingSystem === OperatingSystem.Windows ? winLocalLinkClause : unixLocalLinkClause;
-		// Append line and column number regex
-		return new RegExp(`${baseLocalLinkClause}(${lineAndColumnClause})`);
+		const BaseLocalLinkClause = this._processOperatingSystem === OperatingSystem.Windows ? winLocalLinkClause : unixLocalLinkClause;
+		// Append line and column numBer regex
+		return new RegExp(`${BaseLocalLinkClause}(${lineAndColumnClause})`);
 	}
 
 	private async _handleLocalFolderLink(uri: URI): Promise<void> {

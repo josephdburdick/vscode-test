@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { extractRangeFromFilter } from 'vs/workbench/contrib/search/common/search';
+import { extractRangeFromFilter } from 'vs/workBench/contriB/search/common/search';
 
 suite('extractRangeFromFilter', () => {
 
-	test('basics', async function () {
+	test('Basics', async function () {
 		assert.ok(!extractRangeFromFilter(''));
 		assert.ok(!extractRangeFromFilter('/some/path'));
 		assert.ok(!extractRangeFromFilter('/some/path/file.txt'));
 
 		for (const lineSep of [':', '#', '(', ':line ']) {
 			for (const colSep of [':', '#', ',']) {
-				const base = '/some/path/file.txt';
+				const Base = '/some/path/file.txt';
 
-				let res = extractRangeFromFilter(`${base}${lineSep}20`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
+				let res = extractRangeFromFilter(`${Base}${lineSep}20`);
+				assert.equal(res?.filter, Base);
+				assert.equal(res?.range.startLineNumBer, 20);
 				assert.equal(res?.range.startColumn, 1);
 
-				res = extractRangeFromFilter(`${base}${lineSep}20${colSep}`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
+				res = extractRangeFromFilter(`${Base}${lineSep}20${colSep}`);
+				assert.equal(res?.filter, Base);
+				assert.equal(res?.range.startLineNumBer, 20);
 				assert.equal(res?.range.startColumn, 1);
 
-				res = extractRangeFromFilter(`${base}${lineSep}20${colSep}3`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
+				res = extractRangeFromFilter(`${Base}${lineSep}20${colSep}3`);
+				assert.equal(res?.filter, Base);
+				assert.equal(res?.range.startLineNumBer, 20);
 				assert.equal(res?.range.startColumn, 3);
 			}
 		}
@@ -39,7 +39,7 @@ suite('extractRangeFromFilter', () => {
 		const res = extractRangeFromFilter('/some/path/file.txt (19,20)');
 
 		assert.equal(res?.filter, '/some/path/file.txt');
-		assert.equal(res?.range.startLineNumber, 19);
+		assert.equal(res?.range.startLineNumBer, 19);
 		assert.equal(res?.range.startColumn, 20);
 	});
 

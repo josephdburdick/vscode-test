@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { BackupFileService as CommonBackupFileService } from 'vs/workbench/services/backup/common/backupFileService';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import { BackupFileService as CommonBackupFileService } from 'vs/workBench/services/Backup/common/BackupFileService';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
 import * as crypto from 'crypto';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
+import { IBackupFileService } from 'vs/workBench/services/Backup/common/Backup';
 
 export class BackupFileService extends CommonBackupFileService {
 

@@ -3,82 +3,82 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore, dispose, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { SimpleWorkerClient } from 'vs/base/common/worker/simpleWorker';
-import { DefaultWorkerFactory } from 'vs/base/worker/defaultWorkerFactory';
-import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { IMainCellDto, INotebookDiffResult, NotebookCellsChangeType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
-import { NotebookEditorSimpleWorker } from 'vs/workbench/contrib/notebook/common/services/notebookSimpleWorker';
-import { INotebookEditorWorkerService } from 'vs/workbench/contrib/notebook/common/services/notebookWorkerService';
+import { DisposaBle, DisposaBleStore, dispose, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { SimpleWorkerClient } from 'vs/Base/common/worker/simpleWorker';
+import { DefaultWorkerFactory } from 'vs/Base/worker/defaultWorkerFactory';
+import { NoteBookCellTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookCellTextModel';
+import { IMainCellDto, INoteBookDiffResult, NoteBookCellsChangeType } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { INoteBookService } from 'vs/workBench/contriB/noteBook/common/noteBookService';
+import { NoteBookEditorSimpleWorker } from 'vs/workBench/contriB/noteBook/common/services/noteBookSimpleWorker';
+import { INoteBookEditorWorkerService } from 'vs/workBench/contriB/noteBook/common/services/noteBookWorkerService';
 
-export class NotebookEditorWorkerServiceImpl extends Disposable implements INotebookEditorWorkerService {
+export class NoteBookEditorWorkerServiceImpl extends DisposaBle implements INoteBookEditorWorkerService {
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _workerManager: WorkerManager;
 
 	constructor(
-		@INotebookService notebookService: INotebookService
+		@INoteBookService noteBookService: INoteBookService
 	) {
 		super();
 
-		this._workerManager = this._register(new WorkerManager(notebookService));
+		this._workerManager = this._register(new WorkerManager(noteBookService));
 	}
-	canComputeDiff(original: URI, modified: URI): boolean {
+	canComputeDiff(original: URI, modified: URI): Boolean {
 		throw new Error('Method not implemented.');
 	}
 
-	computeDiff(original: URI, modified: URI): Promise<INotebookDiffResult> {
+	computeDiff(original: URI, modified: URI): Promise<INoteBookDiffResult> {
 		return this._workerManager.withWorker().then(client => {
 			return client.computeDiff(original, modified);
 		});
 	}
 }
 
-export class WorkerManager extends Disposable {
-	private _editorWorkerClient: NotebookWorkerClient | null;
-	// private _lastWorkerUsedTime: number;
+export class WorkerManager extends DisposaBle {
+	private _editorWorkerClient: NoteBookWorkerClient | null;
+	// private _lastWorkerUsedTime: numBer;
 
 	constructor(
-		private readonly _notebookService: INotebookService
+		private readonly _noteBookService: INoteBookService
 	) {
 		super();
 		this._editorWorkerClient = null;
 		// this._lastWorkerUsedTime = (new Date()).getTime();
 	}
 
-	withWorker(): Promise<NotebookWorkerClient> {
+	withWorker(): Promise<NoteBookWorkerClient> {
 		// this._lastWorkerUsedTime = (new Date()).getTime();
 		if (!this._editorWorkerClient) {
-			this._editorWorkerClient = new NotebookWorkerClient(this._notebookService, 'notebookEditorWorkerService');
+			this._editorWorkerClient = new NoteBookWorkerClient(this._noteBookService, 'noteBookEditorWorkerService');
 		}
 		return Promise.resolve(this._editorWorkerClient);
 	}
 }
 
 export interface IWorkerClient<W> {
-	getProxyObject(): Promise<W>;
+	getProxyOBject(): Promise<W>;
 	dispose(): void;
 }
 
-export class NotebookEditorModelManager extends Disposable {
-	private _syncedModels: { [modelUrl: string]: IDisposable; } = Object.create(null);
-	private _syncedModelsLastUsedTime: { [modelUrl: string]: number; } = Object.create(null);
+export class NoteBookEditorModelManager extends DisposaBle {
+	private _syncedModels: { [modelUrl: string]: IDisposaBle; } = OBject.create(null);
+	private _syncedModelsLastUsedTime: { [modelUrl: string]: numBer; } = OBject.create(null);
 
 	constructor(
-		private readonly _proxy: NotebookEditorSimpleWorker,
-		private readonly _notebookService: INotebookService
+		private readonly _proxy: NoteBookEditorSimpleWorker,
+		private readonly _noteBookService: INoteBookService
 	) {
 		super();
 	}
 
-	public ensureSyncedResources(resources: URI[]): void {
+	puBlic ensureSyncedResources(resources: URI[]): void {
 		for (const resource of resources) {
 			let resourceStr = resource.toString();
 
 			if (!this._syncedModels[resourceStr]) {
-				this._beginModelSync(resource);
+				this._BeginModelSync(resource);
 			}
 			if (this._syncedModels[resourceStr]) {
 				this._syncedModelsLastUsedTime[resourceStr] = (new Date()).getTime();
@@ -86,8 +86,8 @@ export class NotebookEditorModelManager extends Disposable {
 		}
 	}
 
-	private _beginModelSync(resource: URI): void {
-		let model = this._notebookService.listNotebookDocuments().find(document => document.uri.toString() === resource.toString());
+	private _BeginModelSync(resource: URI): void {
+		let model = this._noteBookService.listNoteBookDocuments().find(document => document.uri.toString() === resource.toString());
 		if (!model) {
 			return;
 		}
@@ -112,9 +112,9 @@ export class NotebookEditorModelManager extends Disposable {
 			}
 		);
 
-		const toDispose = new DisposableStore();
+		const toDispose = new DisposaBleStore();
 
-		const cellToDto = (cell: NotebookCellTextModel): IMainCellDto => {
+		const cellToDto = (cell: NoteBookCellTextModel): IMainCellDto => {
 			return {
 				handle: cell.handle,
 				uri: cell.uri,
@@ -130,21 +130,21 @@ export class NotebookEditorModelManager extends Disposable {
 		toDispose.add(model.onDidChangeContent((event) => {
 			const dto = event.rawEvents.map(e => {
 				const data =
-					e.kind === NotebookCellsChangeType.ModelChange || e.kind === NotebookCellsChangeType.Initialize
+					e.kind === NoteBookCellsChangeType.ModelChange || e.kind === NoteBookCellsChangeType.Initialize
 						? {
 							kind: e.kind,
 							versionId: event.versionId,
-							changes: e.changes.map(diff => [diff[0], diff[1], diff[2].map(cell => cellToDto(cell as NotebookCellTextModel))] as [number, number, IMainCellDto[]])
+							changes: e.changes.map(diff => [diff[0], diff[1], diff[2].map(cell => cellToDto(cell as NoteBookCellTextModel))] as [numBer, numBer, IMainCellDto[]])
 						}
 						: (
-							e.kind === NotebookCellsChangeType.Move
+							e.kind === NoteBookCellsChangeType.Move
 								? {
 									kind: e.kind,
 									index: e.index,
 									length: e.length,
 									newIdx: e.newIdx,
 									versionId: event.versionId,
-									cells: e.cells.map(cell => cellToDto(cell as NotebookCellTextModel))
+									cells: e.cells.map(cell => cellToDto(cell as NoteBookCellTextModel))
 								}
 								: e
 						);
@@ -161,7 +161,7 @@ export class NotebookEditorModelManager extends Disposable {
 		toDispose.add(model.onWillDispose(() => {
 			this._stopModelSync(modelUrl);
 		}));
-		toDispose.add(toDisposable(() => {
+		toDispose.add(toDisposaBle(() => {
 			this._proxy.acceptRemovedModel(modelUrl);
 		}));
 
@@ -178,34 +178,34 @@ export class NotebookEditorModelManager extends Disposable {
 
 export class EditorWorkerHost {
 
-	private readonly _workerClient: NotebookWorkerClient;
+	private readonly _workerClient: NoteBookWorkerClient;
 
-	constructor(workerClient: NotebookWorkerClient) {
+	constructor(workerClient: NoteBookWorkerClient) {
 		this._workerClient = workerClient;
 	}
 
 	// foreign host request
-	public fhr(method: string, args: any[]): Promise<any> {
+	puBlic fhr(method: string, args: any[]): Promise<any> {
 		return this._workerClient.fhr(method, args);
 	}
 }
 
-export class NotebookWorkerClient extends Disposable {
-	private _worker: IWorkerClient<NotebookEditorSimpleWorker> | null;
+export class NoteBookWorkerClient extends DisposaBle {
+	private _worker: IWorkerClient<NoteBookEditorSimpleWorker> | null;
 	private readonly _workerFactory: DefaultWorkerFactory;
-	private _modelManager: NotebookEditorModelManager | null;
+	private _modelManager: NoteBookEditorModelManager | null;
 
 
-	constructor(private readonly _notebookService: INotebookService, label: string) {
+	constructor(private readonly _noteBookService: INoteBookService, laBel: string) {
 		super();
-		this._workerFactory = new DefaultWorkerFactory(label);
+		this._workerFactory = new DefaultWorkerFactory(laBel);
 		this._worker = null;
 		this._modelManager = null;
 
 	}
 
 	// foreign host request
-	public fhr(method: string, args: any[]): Promise<any> {
+	puBlic fhr(method: string, args: any[]): Promise<any> {
 		throw new Error(`Not implemented!`);
 	}
 
@@ -215,30 +215,30 @@ export class NotebookWorkerClient extends Disposable {
 		});
 	}
 
-	private _getOrCreateModelManager(proxy: NotebookEditorSimpleWorker): NotebookEditorModelManager {
+	private _getOrCreateModelManager(proxy: NoteBookEditorSimpleWorker): NoteBookEditorModelManager {
 		if (!this._modelManager) {
-			this._modelManager = this._register(new NotebookEditorModelManager(proxy, this._notebookService));
+			this._modelManager = this._register(new NoteBookEditorModelManager(proxy, this._noteBookService));
 		}
 		return this._modelManager;
 	}
 
-	protected _withSyncedResources(resources: URI[]): Promise<NotebookEditorSimpleWorker> {
+	protected _withSyncedResources(resources: URI[]): Promise<NoteBookEditorSimpleWorker> {
 		return this._getProxy().then((proxy) => {
 			this._getOrCreateModelManager(proxy).ensureSyncedResources(resources);
 			return proxy;
 		});
 	}
 
-	private _getOrCreateWorker(): IWorkerClient<NotebookEditorSimpleWorker> {
+	private _getOrCreateWorker(): IWorkerClient<NoteBookEditorSimpleWorker> {
 		if (!this._worker) {
 			try {
-				this._worker = this._register(new SimpleWorkerClient<NotebookEditorSimpleWorker, EditorWorkerHost>(
+				this._worker = this._register(new SimpleWorkerClient<NoteBookEditorSimpleWorker, EditorWorkerHost>(
 					this._workerFactory,
-					'vs/workbench/contrib/notebook/common/services/notebookSimpleWorker',
+					'vs/workBench/contriB/noteBook/common/services/noteBookSimpleWorker',
 					new EditorWorkerHost(this)
 				));
 			} catch (err) {
-				// logOnceWebWorkerWarning(err);
+				// logOnceWeBWorkerWarning(err);
 				// this._worker = new SynchronousWorkerClient(new EditorSimpleWorker(new EditorWorkerHost(this), null));
 				throw (err);
 			}
@@ -246,11 +246,11 @@ export class NotebookWorkerClient extends Disposable {
 		return this._worker;
 	}
 
-	protected _getProxy(): Promise<NotebookEditorSimpleWorker> {
-		return this._getOrCreateWorker().getProxyObject().then(undefined, (err) => {
-			// logOnceWebWorkerWarning(err);
+	protected _getProxy(): Promise<NoteBookEditorSimpleWorker> {
+		return this._getOrCreateWorker().getProxyOBject().then(undefined, (err) => {
+			// logOnceWeBWorkerWarning(err);
 			// this._worker = new SynchronousWorkerClient(new EditorSimpleWorker(new EditorWorkerHost(this), null));
-			// return this._getOrCreateWorker().getProxyObject();
+			// return this._getOrCreateWorker().getProxyOBject();
 			throw (err);
 		});
 	}

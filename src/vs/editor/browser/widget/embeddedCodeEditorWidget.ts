@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
-import { DiffEditorWidget } from 'vs/editor/browser/widget/diffEditorWidget';
+import * as oBjects from 'vs/Base/common/oBjects';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
+import { DiffEditorWidget } from 'vs/editor/Browser/widget/diffEditorWidget';
 import { ConfigurationChangedEvent, IDiffEditorOptions, IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { ICommandService } from 'vs/platform/commands/common/commands';
@@ -15,12 +15,12 @@ import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 import { IEditorProgressService } from 'vs/platform/progress/common/progress';
 
-export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
+export class EmBeddedCodeEditorWidget extends CodeEditorWidget {
 
 	private readonly _parentEditor: ICodeEditor;
 	private readonly _overwriteOptions: IEditorOptions;
@@ -35,9 +35,9 @@ export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
 		@INotificationService notificationService: INotificationService,
-		@IAccessibilityService accessibilityService: IAccessibilityService
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService
 	) {
-		super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, {}, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService);
+		super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, {}, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessiBilityService);
 
 		this._parentEditor = parentEditor;
 		this._overwriteOptions = options;
@@ -58,12 +58,12 @@ export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
 	}
 
 	updateOptions(newOptions: IEditorOptions): void {
-		objects.mixin(this._overwriteOptions, newOptions, true);
+		oBjects.mixin(this._overwriteOptions, newOptions, true);
 		super.updateOptions(this._overwriteOptions);
 	}
 }
 
-export class EmbeddedDiffEditorWidget extends DiffEditorWidget {
+export class EmBeddedDiffEditorWidget extends DiffEditorWidget {
 
 	private readonly _parentEditor: ICodeEditor;
 	private readonly _overwriteOptions: IDiffEditorOptions;
@@ -79,10 +79,10 @@ export class EmbeddedDiffEditorWidget extends DiffEditorWidget {
 		@IThemeService themeService: IThemeService,
 		@INotificationService notificationService: INotificationService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IClipboardService clipboardService: IClipboardService,
+		@IClipBoardService clipBoardService: IClipBoardService,
 		@IEditorProgressService editorProgressService: IEditorProgressService,
 	) {
-		super(domElement, parentEditor.getRawOptions(), clipboardService, editorWorkerService, contextKeyService, instantiationService, codeEditorService, themeService, notificationService, contextMenuService, editorProgressService);
+		super(domElement, parentEditor.getRawOptions(), clipBoardService, editorWorkerService, contextKeyService, instantiationService, codeEditorService, themeService, notificationService, contextMenuService, editorProgressService);
 
 		this._parentEditor = parentEditor;
 		this._overwriteOptions = options;
@@ -103,7 +103,7 @@ export class EmbeddedDiffEditorWidget extends DiffEditorWidget {
 	}
 
 	updateOptions(newOptions: IEditorOptions): void {
-		objects.mixin(this._overwriteOptions, newOptions, true);
+		oBjects.mixin(this._overwriteOptions, newOptions, true);
 		super.updateOptions(this._overwriteOptions);
 	}
 }

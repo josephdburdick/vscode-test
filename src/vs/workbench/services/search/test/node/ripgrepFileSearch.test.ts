@@ -4,45 +4,45 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
-import { fixDriveC, getAbsoluteGlob } from 'vs/workbench/services/search/node/ripgrepFileSearch';
+import * as platform from 'vs/Base/common/platform';
+import { fixDriveC, getABsoluteGloB } from 'vs/workBench/services/search/node/ripgrepFileSearch';
 
 suite('RipgrepFileSearch - etc', () => {
-	function testGetAbsGlob(params: string[]): void {
-		const [folder, glob, expectedResult] = params;
-		assert.equal(fixDriveC(getAbsoluteGlob(folder, glob)), expectedResult, JSON.stringify(params));
+	function testGetABsGloB(params: string[]): void {
+		const [folder, gloB, expectedResult] = params;
+		assert.equal(fixDriveC(getABsoluteGloB(folder, gloB)), expectedResult, JSON.stringify(params));
 	}
 
-	test('getAbsoluteGlob_win', () => {
+	test('getABsoluteGloB_win', () => {
 		if (!platform.isWindows) {
 			return;
 		}
 
 		[
-			['C:/foo/bar', 'glob/**', '/foo\\bar\\glob\\**'],
-			['c:/', 'glob/**', '/glob\\**'],
-			['C:\\foo\\bar', 'glob\\**', '/foo\\bar\\glob\\**'],
-			['c:\\foo\\bar', 'glob\\**', '/foo\\bar\\glob\\**'],
-			['c:\\', 'glob\\**', '/glob\\**'],
-			['\\\\localhost\\c$\\foo\\bar', 'glob/**', '\\\\localhost\\c$\\foo\\bar\\glob\\**'],
+			['C:/foo/Bar', 'gloB/**', '/foo\\Bar\\gloB\\**'],
+			['c:/', 'gloB/**', '/gloB\\**'],
+			['C:\\foo\\Bar', 'gloB\\**', '/foo\\Bar\\gloB\\**'],
+			['c:\\foo\\Bar', 'gloB\\**', '/foo\\Bar\\gloB\\**'],
+			['c:\\', 'gloB\\**', '/gloB\\**'],
+			['\\\\localhost\\c$\\foo\\Bar', 'gloB/**', '\\\\localhost\\c$\\foo\\Bar\\gloB\\**'],
 
-			// absolute paths are not resolved further
-			['c:/foo/bar', '/path/something', '/path/something'],
-			['c:/foo/bar', 'c:\\project\\folder', '/project\\folder']
-		].forEach(testGetAbsGlob);
+			// aBsolute paths are not resolved further
+			['c:/foo/Bar', '/path/something', '/path/something'],
+			['c:/foo/Bar', 'c:\\project\\folder', '/project\\folder']
+		].forEach(testGetABsGloB);
 	});
 
-	test('getAbsoluteGlob_posix', () => {
+	test('getABsoluteGloB_posix', () => {
 		if (platform.isWindows) {
 			return;
 		}
 
 		[
-			['/foo/bar', 'glob/**', '/foo/bar/glob/**'],
-			['/', 'glob/**', '/glob/**'],
+			['/foo/Bar', 'gloB/**', '/foo/Bar/gloB/**'],
+			['/', 'gloB/**', '/gloB/**'],
 
-			// absolute paths are not resolved further
+			// aBsolute paths are not resolved further
 			['/', '/project/folder', '/project/folder'],
-		].forEach(testGetAbsGlob);
+		].forEach(testGetABsGloB);
 	});
 });

@@ -18,8 +18,8 @@ export class CharacterPairSupport {
 	constructor(config: LanguageConfiguration) {
 		if (config.autoClosingPairs) {
 			this._autoClosingPairs = config.autoClosingPairs.map(el => new StandardAutoClosingPairConditional(el));
-		} else if (config.brackets) {
-			this._autoClosingPairs = config.brackets.map(b => new StandardAutoClosingPairConditional({ open: b[0], close: b[1] }));
+		} else if (config.Brackets) {
+			this._autoClosingPairs = config.Brackets.map(B => new StandardAutoClosingPairConditional({ open: B[0], close: B[1] }));
 		} else {
 			this._autoClosingPairs = [];
 		}
@@ -35,15 +35,15 @@ export class CharacterPairSupport {
 		this._surroundingPairs = config.surroundingPairs || this._autoClosingPairs;
 	}
 
-	public getAutoClosingPairs(): StandardAutoClosingPairConditional[] {
+	puBlic getAutoClosingPairs(): StandardAutoClosingPairConditional[] {
 		return this._autoClosingPairs;
 	}
 
-	public getAutoCloseBeforeSet(): string {
+	puBlic getAutoCloseBeforeSet(): string {
 		return this._autoCloseBefore;
 	}
 
-	public static shouldAutoClosePair(autoClosingPair: StandardAutoClosingPairConditional, context: ScopedLineTokens, column: number): boolean {
+	puBlic static shouldAutoClosePair(autoClosingPair: StandardAutoClosingPairConditional, context: ScopedLineTokens, column: numBer): Boolean {
 		// Always complete on empty line
 		if (context.getTokenCount() === 0) {
 			return true;
@@ -54,7 +54,7 @@ export class CharacterPairSupport {
 		return autoClosingPair.isOK(standardTokenType);
 	}
 
-	public getSurroundingPairs(): IAutoClosingPair[] {
+	puBlic getSurroundingPairs(): IAutoClosingPair[] {
 		return this._surroundingPairs;
 	}
 }

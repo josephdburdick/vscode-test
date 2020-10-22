@@ -6,26 +6,26 @@
 import * as assert from 'assert';
 import { IUserDataSyncStoreService, IUserDataSyncService, SyncResource, UserDataSyncError, UserDataSyncErrorCode, ISyncData, SyncStatus } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataSyncClient, UserDataSyncTestServer } from 'vs/platform/userDataSync/test/common/userDataSyncClient';
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { DisposaBleStore, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { SettingsSynchroniser, ISettingsSyncContent, parseSettingsSyncContent } from 'vs/platform/userDataSync/common/settingsSync';
 import { UserDataSyncService } from 'vs/platform/userDataSync/common/userDataSyncService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 
 Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfiguration({
 	'id': 'settingsSync',
-	'type': 'object',
+	'type': 'oBject',
 	'properties': {
 		'settingsSync.machine': {
 			'type': 'string',
 			'scope': ConfigurationScope.MACHINE
 		},
-		'settingsSync.machineOverridable': {
+		'settingsSync.machineOverridaBle': {
 			'type': 'string',
 			'scope': ConfigurationScope.MACHINE_OVERRIDABLE
 		}
@@ -34,48 +34,48 @@ Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfigurat
 
 suite('SettingsSync - Auto', () => {
 
-	const disposableStore = new DisposableStore();
+	const disposaBleStore = new DisposaBleStore();
 	const server = new UserDataSyncTestServer();
 	let client: UserDataSyncClient;
-	let testObject: SettingsSynchroniser;
+	let testOBject: SettingsSynchroniser;
 
 	setup(async () => {
-		client = disposableStore.add(new UserDataSyncClient(server));
+		client = disposaBleStore.add(new UserDataSyncClient(server));
 		await client.setUp(true);
-		testObject = (client.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Settings) as SettingsSynchroniser;
-		disposableStore.add(toDisposable(() => client.instantiationService.get(IUserDataSyncStoreService).clear()));
+		testOBject = (client.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Settings) as SettingsSynchroniser;
+		disposaBleStore.add(toDisposaBle(() => client.instantiationService.get(IUserDataSyncStoreService).clear()));
 	});
 
-	teardown(() => disposableStore.clear());
+	teardown(() => disposaBleStore.clear());
 
 	test('when settings file does not exist', async () => {
 		const fileService = client.instantiationService.get(IFileService);
 		const settingResource = client.instantiationService.get(IEnvironmentService).settingsResource;
 
-		assert.deepEqual(await testObject.getLastSyncUserData(), null);
+		assert.deepEqual(await testOBject.getLastSyncUserData(), null);
 		let manifest = await client.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 
 		assert.deepEqual(server.requests, [
-			{ type: 'GET', url: `${server.url}/v1/resource/${testObject.resource}/latest`, headers: {} },
+			{ type: 'GET', url: `${server.url}/v1/resource/${testOBject.resource}/latest`, headers: {} },
 		]);
 		assert.ok(!await fileService.exists(settingResource));
 
-		const lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		const lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.deepEqual(lastSyncUserData!.ref, remoteUserData.ref);
 		assert.deepEqual(lastSyncUserData!.syncData, remoteUserData.syncData);
 		assert.equal(lastSyncUserData!.syncData, null);
 
 		manifest = await client.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 		assert.deepEqual(server.requests, []);
 
 		manifest = await client.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 		assert.deepEqual(server.requests, []);
 	});
 
@@ -84,39 +84,39 @@ suite('SettingsSync - Auto', () => {
 		const settingsResource = client.instantiationService.get(IEnvironmentService).settingsResource;
 		await fileService.writeFile(settingsResource, VSBuffer.fromString(''));
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		const lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.equal(parseSettingsSyncContent(lastSyncUserData!.syncData!.content!)?.settings, '{}');
 		assert.equal(parseSettingsSyncContent(remoteUserData!.syncData!.content!)?.settings, '{}');
 		assert.equal((await fileService.readFile(settingsResource)).value.toString(), '');
 	});
 
 	test('when settings file is empty and remote has changes', async () => {
-		const client2 = disposableStore.add(new UserDataSyncClient(server));
+		const client2 = disposaBleStore.add(new UserDataSyncClient(server));
 		await client2.setUp(true);
 		const content =
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
-	"workbench.tree.indent": 20,
-	"workbench.colorCustomizations": {
-		"editorLineNumber.activeForeground": "#ff0000",
-		"[GitHub Sharp]": {
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
+	"workBench.tree.indent": 20,
+	"workBench.colorCustomizations": {
+		"editorLineNumBer.activeForeground": "#ff0000",
+		"[GitHuB Sharp]": {
 			"statusBarItem.remoteBackground": "#24292E",
-			"editorPane.background": "#f3f1f11a"
+			"editorPane.Background": "#f3f1f11a"
 		}
 	},
 
-	"gitBranch.base": "remote-repo/master",
+	"gitBranch.Base": "remote-repo/master",
 
 	// Experimental
-	"workbench.view.experimental.allowMovingToNewContainer": true,
+	"workBench.view.experimental.allowMovingToNewContainer": true,
 }`;
 		await client2.instantiationService.get(IFileService).writeFile(client2.instantiationService.get(IEnvironmentService).settingsResource, VSBuffer.fromString(content));
 		await client2.sync();
@@ -125,10 +125,10 @@ suite('SettingsSync - Auto', () => {
 		const settingsResource = client.instantiationService.get(IEnvironmentService).settingsResource;
 		await fileService.writeFile(settingsResource, VSBuffer.fromString(''));
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		const lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.equal(parseSettingsSyncContent(lastSyncUserData!.syncData!.content!)?.settings, content);
 		assert.equal(parseSettingsSyncContent(remoteUserData!.syncData!.content!)?.settings, content);
 		assert.equal((await fileService.readFile(settingsResource)).value.toString(), content);
@@ -138,20 +138,20 @@ suite('SettingsSync - Auto', () => {
 		const fileService = client.instantiationService.get(IFileService);
 
 		const settingsResource = client.instantiationService.get(IEnvironmentService).settingsResource;
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 		await fileService.createFile(settingsResource, VSBuffer.fromString('{}'));
 
-		let lastSyncUserData = await testObject.getLastSyncUserData();
+		let lastSyncUserData = await testOBject.getLastSyncUserData();
 		const manifest = await client.manifest();
 		server.reset();
-		await testObject.sync(manifest);
+		await testOBject.sync(manifest);
 
 		assert.deepEqual(server.requests, [
-			{ type: 'POST', url: `${server.url}/v1/resource/${testObject.resource}`, headers: { 'If-Match': lastSyncUserData?.ref } },
+			{ type: 'POST', url: `${server.url}/v1/resource/${testOBject.resource}`, headers: { 'If-Match': lastSyncUserData?.ref } },
 		]);
 
-		lastSyncUserData = await testObject.getLastSyncUserData();
-		const remoteUserData = await testObject.getRemoteUserData(null);
+		lastSyncUserData = await testOBject.getLastSyncUserData();
+		const remoteUserData = await testOBject.getRemoteUserData(null);
 		assert.deepEqual(lastSyncUserData!.ref, remoteUserData.ref);
 		assert.deepEqual(lastSyncUserData!.syncData, remoteUserData.syncData);
 		assert.equal(parseSettingsSyncContent(lastSyncUserData!.syncData!.content!)?.settings, '{}');
@@ -162,29 +162,29 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
-	"workbench.tree.indent": 20,
-	"workbench.colorCustomizations": {
-		"editorLineNumber.activeForeground": "#ff0000",
-		"[GitHub Sharp]": {
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
+	"workBench.tree.indent": 20,
+	"workBench.colorCustomizations": {
+		"editorLineNumBer.activeForeground": "#ff0000",
+		"[GitHuB Sharp]": {
 			"statusBarItem.remoteBackground": "#24292E",
-			"editorPane.background": "#f3f1f11a"
+			"editorPane.Background": "#f3f1f11a"
 		}
 	},
 
-	"gitBranch.base": "remote-repo/master",
+	"gitBranch.Base": "remote-repo/master",
 
 	// Experimental
-	"workbench.view.experimental.allowMovingToNewContainer": true,
+	"workBench.view.experimental.allowMovingToNewContainer": true,
 }`;
 
 		await updateSettings(expected, client);
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, expected);
@@ -195,29 +195,29 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Machine
 	"settingsSync.machine": "someValue",
-	"settingsSync.machineOverridable": "someValue"
+	"settingsSync.machineOverridaBle": "someValue"
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp"
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp"
 }`);
 	});
 
@@ -227,28 +227,28 @@ suite('SettingsSync - Auto', () => {
 	// Always
 	"files.autoSave": "afterDelay",
 	"settingsSync.machine": "someValue",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Machine
-	"settingsSync.machineOverridable": "someValue"
+	"settingsSync.machineOverridaBle": "someValue"
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp"
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp"
 }`);
 	});
 
@@ -259,27 +259,27 @@ suite('SettingsSync - Auto', () => {
 	"files.autoSave": "afterDelay",
 	"settingsSync.machine": "someValue",
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Machine
-	"settingsSync.machineOverridable": "someValue",
-	"files.simpleDialog.enable": true,
+	"settingsSync.machineOverridaBle": "someValue",
+	"files.simpleDialog.enaBle": true,
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
-	"files.simpleDialog.enable": true,
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
+	"files.simpleDialog.enaBle": true,
 }`);
 	});
 
@@ -288,13 +288,13 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Machine
 	"settingsSync.machine": "someValue",
-	"settingsSync.machineOverridable": "someValue"
+	"settingsSync.machineOverridaBle": "someValue"
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
@@ -306,13 +306,13 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Machine
 	"settingsSync.machine": "someValue",
-	"settingsSync.machineOverridable": "someValue",
+	"settingsSync.machineOverridaBle": "someValue",
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
@@ -324,16 +324,16 @@ suite('SettingsSync - Auto', () => {
 		const content =
 			`{
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 }`;
 
 		await updateSettings(content, client);
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const promise = Event.toPromise(testObject.onDidChangeLocal);
+		const promise = Event.toPromise(testOBject.onDidChangeLocal);
 		await updateSettings(`{
 	"files.autoSave": "off",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 }`, client);
 		await promise;
 	});
@@ -343,7 +343,7 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
 	// Editor
 	"editor.fontFamily": "Fira Code",
@@ -351,8 +351,8 @@ suite('SettingsSync - Auto', () => {
 	// Terminal
 	"terminal.integrated.shell.osx": "some path",
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [
@@ -362,18 +362,18 @@ suite('SettingsSync - Auto', () => {
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [
@@ -388,7 +388,7 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
 	// Editor
 	"editor.fontFamily": "Fira Code",
@@ -396,8 +396,8 @@ suite('SettingsSync - Auto', () => {
 	// Terminal
 	"terminal.integrated.shell.osx": "some path",
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [
@@ -410,18 +410,18 @@ suite('SettingsSync - Auto', () => {
 }`;
 		await updateSettings(settingsContent, client);
 
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [
@@ -436,29 +436,29 @@ suite('SettingsSync - Auto', () => {
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
-	"workbench.tree.indent": 20,
-	"workbench.colorCustomizations": {
-		"editorLineNumber.activeForeground": "#ff0000",
-		"[GitHub Sharp]": {
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
+	"workBench.tree.indent": 20,
+	"workBench.colorCustomizations": {
+		"editorLineNumBer.activeForeground": "#ff0000",
+		"[GitHuB Sharp]": {
 			"statusBarItem.remoteBackground": "#24292E",
-			"editorPane.background": "#f3f1f11a"
+			"editorPane.Background": "#f3f1f11a"
 		}
 	}
 
-	"gitBranch.base": "remote-repo/master",
+	"gitBranch.Base": "remote-repo/master",
 
 	// Experimental
-	"workbench.view.experimental.allowMovingToNewContainer": true,
+	"workBench.view.experimental.allowMovingToNewContainer": true,
 }`;
 
 		await updateSettings(expected, client);
 
 		try {
-			await testObject.sync(await client.manifest());
+			await testOBject.sync(await client.manifest());
 			assert.fail('should fail with invalid content error');
 		} catch (e) {
 			assert.ok(e instanceof UserDataSyncError);
@@ -467,29 +467,29 @@ suite('SettingsSync - Auto', () => {
 	});
 
 	test('sync when there are conflicts', async () => {
-		const client2 = disposableStore.add(new UserDataSyncClient(server));
+		const client2 = disposaBleStore.add(new UserDataSyncClient(server));
 		await client2.setUp(true);
 		await updateSettings(JSON.stringify({
 			'a': 1,
-			'b': 2,
+			'B': 2,
 			'settingsSync.ignoredSettings': ['a']
 		}), client2);
 		await client2.sync();
 
 		await updateSettings(JSON.stringify({
 			'a': 2,
-			'b': 1,
+			'B': 1,
 			'settingsSync.ignoredSettings': ['a']
 		}), client);
-		await testObject.sync(await client.manifest());
+		await testOBject.sync(await client.manifest());
 
-		assert.equal(testObject.status, SyncStatus.HasConflicts);
-		assert.equal(testObject.conflicts[0].localResource.toString(), testObject.localResource);
+		assert.equal(testOBject.status, SyncStatus.HasConflicts);
+		assert.equal(testOBject.conflicts[0].localResource.toString(), testOBject.localResource);
 
 		const fileService = client.instantiationService.get(IFileService);
-		const mergeContent = (await fileService.readFile(testObject.conflicts[0].previewResource)).value.toString();
+		const mergeContent = (await fileService.readFile(testOBject.conflicts[0].previewResource)).value.toString();
 		assert.deepEqual(JSON.parse(mergeContent), {
-			'b': 1,
+			'B': 1,
 			'settingsSync.ignoredSettings': ['a']
 		});
 	});
@@ -498,26 +498,26 @@ suite('SettingsSync - Auto', () => {
 
 suite('SettingsSync - Manual', () => {
 
-	const disposableStore = new DisposableStore();
+	const disposaBleStore = new DisposaBleStore();
 	const server = new UserDataSyncTestServer();
 	let client: UserDataSyncClient;
-	let testObject: SettingsSynchroniser;
+	let testOBject: SettingsSynchroniser;
 
 	setup(async () => {
-		client = disposableStore.add(new UserDataSyncClient(server));
+		client = disposaBleStore.add(new UserDataSyncClient(server));
 		await client.setUp(true);
-		testObject = (client.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Settings) as SettingsSynchroniser;
-		disposableStore.add(toDisposable(() => client.instantiationService.get(IUserDataSyncStoreService).clear()));
+		testOBject = (client.instantiationService.get(IUserDataSyncService) as UserDataSyncService).getSynchroniser(SyncResource.Settings) as SettingsSynchroniser;
+		disposaBleStore.add(toDisposaBle(() => client.instantiationService.get(IUserDataSyncStoreService).clear()));
 	});
 
-	teardown(() => disposableStore.clear());
+	teardown(() => disposaBleStore.clear());
 
 	test('do not sync ignored settings', async () => {
 		const settingsContent =
 			`{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
 	// Editor
 	"editor.fontFamily": "Fira Code",
@@ -525,8 +525,8 @@ suite('SettingsSync - Manual', () => {
 	// Terminal
 	"terminal.integrated.shell.osx": "some path",
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [
@@ -536,21 +536,21 @@ suite('SettingsSync - Manual', () => {
 }`;
 		await updateSettings(settingsContent, client);
 
-		let preview = await testObject.preview(await client.manifest());
-		assert.equal(testObject.status, SyncStatus.Syncing);
-		preview = await testObject.accept(preview!.resourcePreviews[0].previewResource);
-		preview = await testObject.apply(false);
+		let preview = await testOBject.preview(await client.manifest());
+		assert.equal(testOBject.status, SyncStatus.Syncing);
+		preview = await testOBject.accept(preview!.resourcePreviews[0].previewResource);
+		preview = await testOBject.apply(false);
 
-		const { content } = await client.read(testObject.resource);
+		const { content } = await client.read(testOBject.resource);
 		assert.ok(content !== null);
 		const actual = parseSettings(content!);
 		assert.deepEqual(actual, `{
 	// Always
 	"files.autoSave": "afterDelay",
-	"files.simpleDialog.enable": true,
+	"files.simpleDialog.enaBle": true,
 
-	// Workbench
-	"workbench.colorTheme": "GitHub Sharp",
+	// WorkBench
+	"workBench.colorTheme": "GitHuB Sharp",
 
 	// Ignored
 	"settingsSync.ignoredSettings": [

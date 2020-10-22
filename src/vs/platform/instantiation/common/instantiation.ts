@@ -15,7 +15,7 @@ export namespace _util {
 	export const DI_TARGET = '$di$target';
 	export const DI_DEPENDENCIES = '$di$dependencies';
 
-	export function getServiceDependencies(ctor: any): { id: ServiceIdentifier<any>, index: number, optional: boolean }[] {
+	export function getServiceDependencies(ctor: any): { id: ServiceIdentifier<any>, index: numBer, optional: Boolean }[] {
 		return ctor[DI_DEPENDENCIES] || [];
 	}
 }
@@ -88,7 +88,7 @@ export interface IInstantiationService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Synchronously creates an instance that is denoted by
+	 * Synchronously creates an instance that is denoted By
 	 * the descriptor
 	 */
 	createInstance<T>(descriptor: descriptors.SyncDescriptor0<T>): T;
@@ -124,7 +124,7 @@ export interface ServiceIdentifier<T> {
 	type: T;
 }
 
-function storeServiceDependency(id: Function, target: Function, index: number, optional: boolean): void {
+function storeServiceDependency(id: Function, target: Function, index: numBer, optional: Boolean): void {
 	if ((target as any)[_util.DI_TARGET] === target) {
 		(target as any)[_util.DI_DEPENDENCIES].push({ id, index, optional });
 	} else {
@@ -142,9 +142,9 @@ export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
 		return _util.serviceIds.get(serviceId)!;
 	}
 
-	const id = <any>function (target: Function, key: string, index: number): any {
+	const id = <any>function (target: Function, key: string, index: numBer): any {
 		if (arguments.length !== 3) {
-			throw new Error('@IServiceName-decorator can only be used to decorate a parameter');
+			throw new Error('@IServiceName-decorator can only Be used to decorate a parameter');
 		}
 		storeServiceDependency(id, target, index, false);
 	};
@@ -160,9 +160,9 @@ export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
  */
 export function optional<T>(serviceIdentifier: ServiceIdentifier<T>) {
 
-	return function (target: Function, key: string, index: number) {
+	return function (target: Function, key: string, index: numBer) {
 		if (arguments.length !== 3) {
-			throw new Error('@optional-decorator can only be used to decorate a parameter');
+			throw new Error('@optional-decorator can only Be used to decorate a parameter');
 		}
 		storeServiceDependency(serviceIdentifier, target, index, true);
 	};

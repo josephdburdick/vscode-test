@@ -5,30 +5,30 @@
 
 import * as assert from 'assert';
 import * as cp from 'child_process';
-import * as objects from 'vs/base/common/objects';
-import * as platform from 'vs/base/common/platform';
-import * as processes from 'vs/base/node/processes';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import * as oBjects from 'vs/Base/common/oBjects';
+import * as platform from 'vs/Base/common/platform';
+import * as processes from 'vs/Base/node/processes';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
 
 function fork(id: string): cp.ChildProcess {
 	const opts: any = {
-		env: objects.mixin(objects.deepClone(process.env), {
+		env: oBjects.mixin(oBjects.deepClone(process.env), {
 			AMD_ENTRYPOINT: id,
 			PIPE_LOGGING: 'true',
 			VERBOSE_LOGGING: true
 		})
 	};
 
-	return cp.fork(getPathFromAmdModule(require, 'bootstrap-fork'), ['--type=processTests'], opts);
+	return cp.fork(getPathFromAmdModule(require, 'Bootstrap-fork'), ['--type=processTests'], opts);
 }
 
 suite('Processes', () => {
-	test('buffered sending - simple data', function (done: () => void) {
+	test('Buffered sending - simple data', function (done: () => void) {
 		if (process.env['VSCODE_PID']) {
 			return done(); // this test fails when run from within VS Code
 		}
 
-		const child = fork('vs/base/test/node/processes/fixtures/fork');
+		const child = fork('vs/Base/test/node/processes/fixtures/fork');
 		const sender = processes.createQueuedSender(child);
 
 		let counter = 0;
@@ -59,20 +59,20 @@ suite('Processes', () => {
 		});
 	});
 
-	test('buffered sending - lots of data (potential deadlock on win32)', function (done: () => void) {
+	test('Buffered sending - lots of data (potential deadlock on win32)', function (done: () => void) {
 		if (!platform.isWindows || process.env['VSCODE_PID']) {
-			return done(); // test is only relevant for Windows and seems to crash randomly on some Linux builds
+			return done(); // test is only relevant for Windows and seems to crash randomly on some Linux Builds
 		}
 
-		const child = fork('vs/base/test/node/processes/fixtures/fork_large');
+		const child = fork('vs/Base/test/node/processes/fixtures/fork_large');
 		const sender = processes.createQueuedSender(child);
 
-		const largeObj = Object.create(null);
+		const largeOBj = OBject.create(null);
 		for (let i = 0; i < 10000; i++) {
-			largeObj[i] = 'some data';
+			largeOBj[i] = 'some data';
 		}
 
-		const msg = JSON.stringify(largeObj);
+		const msg = JSON.stringify(largeOBj);
 		child.on('message', msgFromChild => {
 			if (msgFromChild === 'ready') {
 				sender.send(msg);

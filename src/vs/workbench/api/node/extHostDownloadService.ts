@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
+import { join } from 'vs/Base/common/path';
 import { tmpdir } from 'os';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { URI } from 'vs/base/common/uri';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { IExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { URI } from 'vs/Base/common/uri';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
-export class ExtHostDownloadService extends Disposable {
+export class ExtHostDownloadService extends DisposaBle {
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
@@ -22,7 +22,7 @@ export class ExtHostDownloadService extends Disposable {
 
 		const proxy = extHostRpc.getProxy(MainContext.MainThreadDownloadService);
 
-		commands.registerCommand(false, '_workbench.downloadResource', async (resource: URI): Promise<any> => {
+		commands.registerCommand(false, '_workBench.downloadResource', async (resource: URI): Promise<any> => {
 			const location = URI.file(join(tmpdir(), generateUuid()));
 			await proxy.$download(resource, location);
 			return location;

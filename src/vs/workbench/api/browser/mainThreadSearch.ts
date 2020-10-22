@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { dispose, IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { dispose, IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IFileMatch, IFileQuery, IRawFileMatch2, ISearchComplete, ISearchCompleteStats, ISearchProgressItem, ISearchResultProvider, ISearchService, ITextQuery, QueryType, SearchProviderType } from 'vs/workbench/services/search/common/search';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { IFileMatch, IFileQuery, IRawFileMatch2, ISearchComplete, ISearchCompleteStats, ISearchProgressItem, ISearchResultProvider, ISearchService, ITextQuery, QueryType, SearchProviderType } from 'vs/workBench/services/search/common/search';
 import { ExtHostContext, ExtHostSearchShape, IExtHostContext, MainContext, MainThreadSearchShape } from '../common/extHost.protocol';
 
 @extHostNamedCustomer(MainContext.MainThreadSearch)
 export class MainThreadSearch implements MainThreadSearchShape {
 
 	private readonly _proxy: ExtHostSearchShape;
-	private readonly _searchProvider = new Map<number, RemoteSearchProvider>();
+	private readonly _searchProvider = new Map<numBer, RemoteSearchProvider>();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -30,20 +30,20 @@ export class MainThreadSearch implements MainThreadSearchShape {
 		this._searchProvider.clear();
 	}
 
-	$registerTextSearchProvider(handle: number, scheme: string): void {
+	$registerTextSearchProvider(handle: numBer, scheme: string): void {
 		this._searchProvider.set(handle, new RemoteSearchProvider(this._searchService, SearchProviderType.text, scheme, handle, this._proxy));
 	}
 
-	$registerFileSearchProvider(handle: number, scheme: string): void {
+	$registerFileSearchProvider(handle: numBer, scheme: string): void {
 		this._searchProvider.set(handle, new RemoteSearchProvider(this._searchService, SearchProviderType.file, scheme, handle, this._proxy));
 	}
 
-	$unregisterProvider(handle: number): void {
+	$unregisterProvider(handle: numBer): void {
 		dispose(this._searchProvider.get(handle));
 		this._searchProvider.delete(handle);
 	}
 
-	$handleFileMatch(handle: number, session: number, data: UriComponents[]): void {
+	$handleFileMatch(handle: numBer, session: numBer, data: UriComponents[]): void {
 		const provider = this._searchProvider.get(handle);
 		if (!provider) {
 			throw new Error('Got result for unknown provider');
@@ -52,7 +52,7 @@ export class MainThreadSearch implements MainThreadSearchShape {
 		provider.handleFindMatch(session, data);
 	}
 
-	$handleTextMatch(handle: number, session: number, data: IRawFileMatch2[]): void {
+	$handleTextMatch(handle: numBer, session: numBer, data: IRawFileMatch2[]): void {
 		const provider = this._searchProvider.get(handle);
 		if (!provider) {
 			throw new Error('Got result for unknown provider');
@@ -62,7 +62,7 @@ export class MainThreadSearch implements MainThreadSearchShape {
 	}
 
 	$handleTelemetry(eventName: string, data: any): void {
-		this._telemetryService.publicLog(eventName, data);
+		this._telemetryService.puBlicLog(eventName, data);
 	}
 }
 
@@ -72,7 +72,7 @@ class SearchOperation {
 
 	constructor(
 		readonly progress?: (match: IFileMatch) => any,
-		readonly id: number = ++SearchOperation._idPool,
+		readonly id: numBer = ++SearchOperation._idPool,
 		readonly matches = new Map<string, IFileMatch>()
 	) {
 		//
@@ -81,9 +81,9 @@ class SearchOperation {
 	addMatch(match: IFileMatch): void {
 		const existingMatch = this.matches.get(match.resource.toString());
 		if (existingMatch) {
-			// TODO@rob clean up text/file result types
-			// If a file search returns the same file twice, we would enter this branch.
-			// It's possible that could happen, #90813
+			// TODO@roB clean up text/file result types
+			// If a file search returns the same file twice, we would enter this Branch.
+			// It's possiBle that could happen, #90813
 			if (existingMatch.results && match.results) {
 				existingMatch.results.push(...match.results);
 			}
@@ -97,16 +97,16 @@ class SearchOperation {
 	}
 }
 
-class RemoteSearchProvider implements ISearchResultProvider, IDisposable {
+class RemoteSearchProvider implements ISearchResultProvider, IDisposaBle {
 
-	private readonly _registrations = new DisposableStore();
-	private readonly _searches = new Map<number, SearchOperation>();
+	private readonly _registrations = new DisposaBleStore();
+	private readonly _searches = new Map<numBer, SearchOperation>();
 
 	constructor(
 		searchService: ISearchService,
 		type: SearchProviderType,
 		private readonly _scheme: string,
-		private readonly _handle: number,
+		private readonly _handle: numBer,
 		private readonly _proxy: ExtHostSearchShape
 	) {
 		this._registrations.add(searchService.registerSearchResultProvider(this._scheme, type, this));
@@ -149,7 +149,7 @@ class RemoteSearchProvider implements ISearchResultProvider, IDisposable {
 		return Promise.resolve(this._proxy.$clearCache(cacheKey));
 	}
 
-	handleFindMatch(session: number, dataOrUri: Array<UriComponents | IRawFileMatch2>): void {
+	handleFindMatch(session: numBer, dataOrUri: Array<UriComponents | IRawFileMatch2>): void {
 		const searchOp = this._searches.get(session);
 
 		if (!searchOp) {

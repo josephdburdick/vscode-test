@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IExtensionIdentifier, IGlobalExtensionEnablementService, DISABLED_EXTENSIONS_STORAGE_PATH } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtensionIdentifier, IGloBalExtensionEnaBlementService, DISABLED_EXTENSIONS_STORAGE_PATH } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { IStorageService, StorageScope, IWorkspaceStorageChangeEvent } from 'vs/platform/storage/common/storage';
-import { isUndefinedOrNull } from 'vs/base/common/types';
+import { isUndefinedOrNull } from 'vs/Base/common/types';
 
-export class GlobalExtensionEnablementService extends Disposable implements IGlobalExtensionEnablementService {
+export class GloBalExtensionEnaBlementService extends DisposaBle implements IGloBalExtensionEnaBlementService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private _onDidChangeEnablement = new Emitter<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }>();
-	readonly onDidChangeEnablement: Event<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }> = this._onDidChangeEnablement.event;
+	private _onDidChangeEnaBlement = new Emitter<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }>();
+	readonly onDidChangeEnaBlement: Event<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }> = this._onDidChangeEnaBlement.event;
 	private readonly storageManger: StorageManager;
 
 	constructor(
@@ -23,58 +23,58 @@ export class GlobalExtensionEnablementService extends Disposable implements IGlo
 	) {
 		super();
 		this.storageManger = this._register(new StorageManager(storageService));
-		this._register(this.storageManger.onDidChange(extensions => this._onDidChangeEnablement.fire({ extensions, source: 'storage' })));
+		this._register(this.storageManger.onDidChange(extensions => this._onDidChangeEnaBlement.fire({ extensions, source: 'storage' })));
 	}
 
-	async enableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean> {
-		if (this._removeFromDisabledExtensions(extension)) {
-			this._onDidChangeEnablement.fire({ extensions: [extension], source });
+	async enaBleExtension(extension: IExtensionIdentifier, source?: string): Promise<Boolean> {
+		if (this._removeFromDisaBledExtensions(extension)) {
+			this._onDidChangeEnaBlement.fire({ extensions: [extension], source });
 			return true;
 		}
 		return false;
 	}
 
-	async disableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean> {
-		if (this._addToDisabledExtensions(extension)) {
-			this._onDidChangeEnablement.fire({ extensions: [extension], source });
+	async disaBleExtension(extension: IExtensionIdentifier, source?: string): Promise<Boolean> {
+		if (this._addToDisaBledExtensions(extension)) {
+			this._onDidChangeEnaBlement.fire({ extensions: [extension], source });
 			return true;
 		}
 		return false;
 	}
 
-	getDisabledExtensions(): IExtensionIdentifier[] {
+	getDisaBledExtensions(): IExtensionIdentifier[] {
 		return this._getExtensions(DISABLED_EXTENSIONS_STORAGE_PATH);
 	}
 
-	async getDisabledExtensionsAsync(): Promise<IExtensionIdentifier[]> {
-		return this.getDisabledExtensions();
+	async getDisaBledExtensionsAsync(): Promise<IExtensionIdentifier[]> {
+		return this.getDisaBledExtensions();
 	}
 
-	private _addToDisabledExtensions(identifier: IExtensionIdentifier): boolean {
-		let disabledExtensions = this.getDisabledExtensions();
-		if (disabledExtensions.every(e => !areSameExtensions(e, identifier))) {
-			disabledExtensions.push(identifier);
-			this._setDisabledExtensions(disabledExtensions);
+	private _addToDisaBledExtensions(identifier: IExtensionIdentifier): Boolean {
+		let disaBledExtensions = this.getDisaBledExtensions();
+		if (disaBledExtensions.every(e => !areSameExtensions(e, identifier))) {
+			disaBledExtensions.push(identifier);
+			this._setDisaBledExtensions(disaBledExtensions);
 			return true;
 		}
 		return false;
 	}
 
-	private _removeFromDisabledExtensions(identifier: IExtensionIdentifier): boolean {
-		let disabledExtensions = this.getDisabledExtensions();
-		for (let index = 0; index < disabledExtensions.length; index++) {
-			const disabledExtension = disabledExtensions[index];
-			if (areSameExtensions(disabledExtension, identifier)) {
-				disabledExtensions.splice(index, 1);
-				this._setDisabledExtensions(disabledExtensions);
+	private _removeFromDisaBledExtensions(identifier: IExtensionIdentifier): Boolean {
+		let disaBledExtensions = this.getDisaBledExtensions();
+		for (let index = 0; index < disaBledExtensions.length; index++) {
+			const disaBledExtension = disaBledExtensions[index];
+			if (areSameExtensions(disaBledExtension, identifier)) {
+				disaBledExtensions.splice(index, 1);
+				this._setDisaBledExtensions(disaBledExtensions);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private _setDisabledExtensions(disabledExtensions: IExtensionIdentifier[]): void {
-		this._setExtensions(DISABLED_EXTENSIONS_STORAGE_PATH, disabledExtensions);
+	private _setDisaBledExtensions(disaBledExtensions: IExtensionIdentifier[]): void {
+		this._setExtensions(DISABLED_EXTENSIONS_STORAGE_PATH, disaBledExtensions);
 	}
 
 	private _getExtensions(storageId: string): IExtensionIdentifier[] {
@@ -87,9 +87,9 @@ export class GlobalExtensionEnablementService extends Disposable implements IGlo
 
 }
 
-export class StorageManager extends Disposable {
+export class StorageManager extends DisposaBle {
 
-	private storage: { [key: string]: string } = Object.create(null);
+	private storage: { [key: string]: string } = OBject.create(null);
 
 	private _onDidChange: Emitter<IExtensionIdentifier[]> = this._register(new Emitter<IExtensionIdentifier[]>());
 	readonly onDidChange: Event<IExtensionIdentifier[]> = this._onDidChange.event;

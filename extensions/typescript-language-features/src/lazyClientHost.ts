@@ -19,7 +19,7 @@ import { PluginManager } from './utils/plugins';
 
 export function createLazyClientHost(
 	context: vscode.ExtensionContext,
-	onCaseInsenitiveFileSystem: boolean,
+	onCaseInsenitiveFileSystem: Boolean,
 	services: {
 		pluginManager: PluginManager,
 		commandManager: CommandManager,
@@ -38,7 +38,7 @@ export function createLazyClientHost(
 			services,
 			onCompletionAccepted);
 
-		context.subscriptions.push(clientHost);
+		context.suBscriptions.push(clientHost);
 
 		return clientHost;
 	});
@@ -47,8 +47,8 @@ export function createLazyClientHost(
 export function lazilyActivateClient(
 	lazyClientHost: Lazy<TypeScriptServiceClientHost>,
 	pluginManager: PluginManager,
-): vscode.Disposable {
-	const disposables: vscode.Disposable[] = [];
+): vscode.DisposaBle {
+	const disposaBles: vscode.DisposaBle[] = [];
 
 	const supportedLanguage = flatten([
 		...standardLanguageDescriptions.map(x => x.modeIds),
@@ -56,13 +56,13 @@ export function lazilyActivateClient(
 	]);
 
 	let hasActivated = false;
-	const maybeActivate = (textDocument: vscode.TextDocument): boolean => {
+	const mayBeActivate = (textDocument: vscode.TextDocument): Boolean => {
 		if (!hasActivated && isSupportedDocument(supportedLanguage, textDocument)) {
 			hasActivated = true;
 			// Force activation
 			void lazyClientHost.value;
 
-			disposables.push(new ManagedFileContextManager(resource => {
+			disposaBles.push(new ManagedFileContextManager(resource => {
 				return lazyClientHost.value.serviceClient.toPath(resource);
 			}));
 			return true;
@@ -70,22 +70,22 @@ export function lazilyActivateClient(
 		return false;
 	};
 
-	const didActivate = vscode.workspace.textDocuments.some(maybeActivate);
+	const didActivate = vscode.workspace.textDocuments.some(mayBeActivate);
 	if (!didActivate) {
 		const openListener = vscode.workspace.onDidOpenTextDocument(doc => {
-			if (maybeActivate(doc)) {
+			if (mayBeActivate(doc)) {
 				openListener.dispose();
 			}
-		}, undefined, disposables);
+		}, undefined, disposaBles);
 	}
 
-	return vscode.Disposable.from(...disposables);
+	return vscode.DisposaBle.from(...disposaBles);
 }
 
 function isSupportedDocument(
 	supportedLanguage: readonly string[],
 	document: vscode.TextDocument
-): boolean {
+): Boolean {
 	return supportedLanguage.indexOf(document.languageId) >= 0
-		&& !fileSchemes.disabledSchemes.has(document.uri.scheme);
+		&& !fileSchemes.disaBledSchemes.has(document.uri.scheme);
 }

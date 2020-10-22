@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IQuickInputService, IQuickPickItem, IPickOptions, IInputOptions, IQuickNavigateConfiguration, IQuickPick, IQuickInputButton, IInputBox, QuickPickInput, IKeyMods } from 'vs/platform/quickinput/common/quickInput';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService, Themable } from 'vs/platform/theme/common/themeService';
-import { inputBackground, inputForeground, inputBorder, inputValidationInfoBackground, inputValidationInfoForeground, inputValidationInfoBorder, inputValidationWarningBackground, inputValidationWarningForeground, inputValidationWarningBorder, inputValidationErrorBackground, inputValidationErrorForeground, inputValidationErrorBorder, badgeBackground, badgeForeground, contrastBorder, buttonForeground, buttonBackground, buttonHoverBackground, progressBarBackground, widgetShadow, listFocusForeground, listFocusBackground, activeContrastBorder, pickerGroupBorder, pickerGroupForeground, quickInputForeground, quickInputBackground, quickInputTitleBackground } from 'vs/platform/theme/common/colorRegistry';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IThemeService, ThemaBle } from 'vs/platform/theme/common/themeService';
+import { inputBackground, inputForeground, inputBorder, inputValidationInfoBackground, inputValidationInfoForeground, inputValidationInfoBorder, inputValidationWarningBackground, inputValidationWarningForeground, inputValidationWarningBorder, inputValidationErrorBackground, inputValidationErrorForeground, inputValidationErrorBorder, BadgeBackground, BadgeForeground, contrastBorder, ButtonForeground, ButtonBackground, ButtonHoverBackground, progressBarBackground, widgetShadow, listFocusForeground, listFocusBackground, activeContrastBorder, pickerGroupBorder, pickerGroupForeground, quickInputForeground, quickInputBackground, quickInputTitleBackground } from 'vs/platform/theme/common/colorRegistry';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { computeStyles } from 'vs/platform/theme/common/styler';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { QuickInputController, IQuickInputStyles, IQuickInputOptions } from 'vs/base/parts/quickinput/browser/quickInput';
-import { WorkbenchList, IWorkbenchListOptions } from 'vs/platform/list/browser/listService';
-import { List } from 'vs/base/browser/ui/list/listWidget';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { QuickInputController, IQuickInputStyles, IQuickInputOptions } from 'vs/Base/parts/quickinput/Browser/quickInput';
+import { WorkBenchList, IWorkBenchListOptions } from 'vs/platform/list/Browser/listService';
+import { List } from 'vs/Base/Browser/ui/list/listWidget';
+import { IListVirtualDelegate, IListRenderer } from 'vs/Base/Browser/ui/list/list';
 import { IQuickAccessController } from 'vs/platform/quickinput/common/quickAccess';
-import { QuickAccessController } from 'vs/platform/quickinput/browser/quickAccess';
+import { QuickAccessController } from 'vs/platform/quickinput/Browser/quickAccess';
 
 export interface IQuickInputControllerHost extends ILayoutService { }
 
-export class QuickInputService extends Themable implements IQuickInputService {
+export class QuickInputService extends ThemaBle implements IQuickInputService {
 
 	declare readonly _serviceBrand: undefined;
 
-	get backButton(): IQuickInputButton { return this.controller.backButton; }
+	get BackButton(): IQuickInputButton { return this.controller.BackButton; }
 
 	get onShow() { return this.controller.onShow; }
 	get onHide() { return this.controller.onHide; }
@@ -48,13 +48,13 @@ export class QuickInputService extends Themable implements IQuickInputService {
 		return this._quickAccess;
 	}
 
-	private readonly contexts = new Map<string, IContextKey<boolean>>();
+	private readonly contexts = new Map<string, IContextKey<Boolean>>();
 
 	constructor(
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IContextKeyService protected readonly contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@IAccessibilityService private readonly accessibilityService: IAccessibilityService,
+		@IAccessiBilityService private readonly accessiBilityService: IAccessiBilityService,
 		@ILayoutService protected readonly layoutService: ILayoutService
 	) {
 		super(themeService);
@@ -65,8 +65,8 @@ export class QuickInputService extends Themable implements IQuickInputService {
 			idPrefix: 'quickInput_', // Constant since there is still only one.
 			container: host.container,
 			ignoreFocusOut: () => false,
-			isScreenReaderOptimized: () => this.accessibilityService.isScreenReaderOptimized(),
-			backKeybindingLabel: () => undefined,
+			isScreenReaderOptimized: () => this.accessiBilityService.isScreenReaderOptimized(),
+			BackKeyBindingLaBel: () => undefined,
 			setContextKey: (id?: string) => this.setContextKey(id),
 			returnFocus: () => host.focus(),
 			createList: <T>(
@@ -74,8 +74,8 @@ export class QuickInputService extends Themable implements IQuickInputService {
 				container: HTMLElement,
 				delegate: IListVirtualDelegate<T>,
 				renderers: IListRenderer<T, any>[],
-				options: IWorkbenchListOptions<T>,
-			) => this.instantiationService.createInstance(WorkbenchList, user, container, delegate, renderers, options) as List<T>,
+				options: IWorkBenchListOptions<T>,
+			) => this.instantiationService.createInstance(WorkBenchList, user, container, delegate, renderers, options) as List<T>,
 			styles: this.computeStyles()
 		};
 
@@ -97,12 +97,12 @@ export class QuickInputService extends Themable implements IQuickInputService {
 	}
 
 	private setContextKey(id?: string) {
-		let key: IContextKey<boolean> | undefined;
+		let key: IContextKey<Boolean> | undefined;
 		if (id) {
 			key = this.contexts.get(id);
 			if (!key) {
-				key = new RawContextKey<boolean>(id, false)
-					.bindTo(this.contextKeyService);
+				key = new RawContextKey<Boolean>(id, false)
+					.BindTo(this.contextKeyService);
 				this.contexts.set(id, key);
 			}
 		}
@@ -150,7 +150,7 @@ export class QuickInputService extends Themable implements IQuickInputService {
 		this.controller.toggle();
 	}
 
-	navigate(next: boolean, quickNavigate?: IQuickNavigateConfiguration) {
+	navigate(next: Boolean, quickNavigate?: IQuickNavigateConfiguration) {
 		this.controller.navigate(next, quickNavigate);
 	}
 
@@ -158,8 +158,8 @@ export class QuickInputService extends Themable implements IQuickInputService {
 		return this.controller.accept(keyMods);
 	}
 
-	back() {
-		return this.controller.back();
+	Back() {
+		return this.controller.Back();
 	}
 
 	cancel() {
@@ -196,15 +196,15 @@ export class QuickInputService extends Themable implements IQuickInputService {
 				inputValidationErrorBorder
 			}),
 			countBadge: computeStyles(this.theme, {
-				badgeBackground,
-				badgeForeground,
-				badgeBorder: contrastBorder
+				BadgeBackground,
+				BadgeForeground,
+				BadgeBorder: contrastBorder
 			}),
-			button: computeStyles(this.theme, {
-				buttonForeground,
-				buttonBackground,
-				buttonHoverBackground,
-				buttonBorder: contrastBorder
+			Button: computeStyles(this.theme, {
+				ButtonForeground,
+				ButtonBackground,
+				ButtonHoverBackground,
+				ButtonBorder: contrastBorder
 			}),
 			progressBar: computeStyles(this.theme, {
 				progressBarBackground

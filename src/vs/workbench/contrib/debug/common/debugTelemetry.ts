@@ -3,33 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDebugModel, IDebugSession, AdapterEndEvent } from 'vs/workbench/contrib/debug/common/debug';
+import { IDeBugModel, IDeBugSession, AdapterEndEvent } from 'vs/workBench/contriB/deBug/common/deBug';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { Debugger } from 'vs/workbench/contrib/debug/common/debugger';
+import { DeBugger } from 'vs/workBench/contriB/deBug/common/deBugger';
 
-export class DebugTelemetry {
+export class DeBugTelemetry {
 
 	constructor(
-		private readonly model: IDebugModel,
+		private readonly model: IDeBugModel,
 		@ITelemetryService private readonly telemetryService: ITelemetryService,
 	) { }
 
-	logDebugSessionStart(dbgr: Debugger, launchJsonExists: boolean): Promise<void> {
-		const extension = dbgr.getMainExtensionDescriptor();
+	logDeBugSessionStart(dBgr: DeBugger, launchJsonExists: Boolean): Promise<void> {
+		const extension = dBgr.getMainExtensionDescriptor();
 		/* __GDPR__
-			"debugSessionStart" : {
+			"deBugSessionStart" : {
 				"type": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-				"breakpointCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+				"BreakpointCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"exceptionBreakpoints": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 				"watchExpressionsCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-				"extensionName": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" },
+				"extensionName": { "classification": "PuBlicNonPersonalData", "purpose": "FeatureInsight" },
 				"isBuiltin": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true},
 				"launchJsonExists": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 			}
 		*/
-		return this.telemetryService.publicLog('debugSessionStart', {
-			type: dbgr.type,
-			breakpointCount: this.model.getBreakpoints().length,
+		return this.telemetryService.puBlicLog('deBugSessionStart', {
+			type: dBgr.type,
+			BreakpointCount: this.model.getBreakpoints().length,
 			exceptionBreakpoints: this.model.getExceptionBreakpoints(),
 			watchExpressionsCount: this.model.getWatchExpressions().length,
 			extensionName: extension.identifier.value,
@@ -38,24 +38,24 @@ export class DebugTelemetry {
 		});
 	}
 
-	logDebugSessionStop(session: IDebugSession, adapterExitEvent: AdapterEndEvent): Promise<any> {
+	logDeBugSessionStop(session: IDeBugSession, adapterExitEvent: AdapterEndEvent): Promise<any> {
 
-		const breakpoints = this.model.getBreakpoints();
+		const Breakpoints = this.model.getBreakpoints();
 
 		/* __GDPR__
-			"debugSessionStop" : {
+			"deBugSessionStop" : {
 				"type" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 				"success": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"sessionLengthInSeconds": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-				"breakpointCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+				"BreakpointCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"watchExpressionsCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 			}
 		*/
-		return this.telemetryService.publicLog('debugSessionStop', {
+		return this.telemetryService.puBlicLog('deBugSessionStop', {
 			type: session && session.configuration.type,
-			success: adapterExitEvent.emittedStopped || breakpoints.length === 0,
+			success: adapterExitEvent.emittedStopped || Breakpoints.length === 0,
 			sessionLengthInSeconds: adapterExitEvent.sessionLengthInSeconds,
-			breakpointCount: breakpoints.length,
+			BreakpointCount: Breakpoints.length,
 			watchExpressionsCount: this.model.getWatchExpressions().length
 		});
 	}

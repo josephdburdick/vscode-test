@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { NOTEBOOK_DISPLAY_ORDER, sortMimeTypes, CellKind, diff, CellUri } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { TestCell, setupInstantiationService } from 'vs/workbench/contrib/notebook/test/testNotebookEditor';
-import { URI } from 'vs/base/common/uri';
+import { NOTEBOOK_DISPLAY_ORDER, sortMimeTypes, CellKind, diff, CellUri } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { TestCell, setupInstantiationService } from 'vs/workBench/contriB/noteBook/test/testNoteBookEditor';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 
-suite('NotebookCommon', () => {
+suite('NoteBookCommon', () => {
 	const instantiationService = setupInstantiationService();
 	const textModelService = instantiationService.get(ITextModelService);
 
@@ -212,7 +212,7 @@ suite('NotebookCommon', () => {
 		);
 	});
 
-	test('sortMimeTypes glob', function () {
+	test('sortMimeTypes gloB', function () {
 		const defaultDisplayOrder = NOTEBOOK_DISPLAY_ORDER;
 
 		// unknown mime types come last
@@ -260,7 +260,7 @@ suite('NotebookCommon', () => {
 				'application/javascript',
 				'application/vnd-plot.json'
 			],
-			'glob *'
+			'gloB *'
 		);
 	});
 
@@ -269,7 +269,7 @@ suite('NotebookCommon', () => {
 
 		for (let i = 0; i < 5; i++) {
 			cells.push(
-				new TestCell('notebook', i, `var a = ${i};`, 'javascript', CellKind.Code, [], textModelService)
+				new TestCell('noteBook', i, `var a = ${i};`, 'javascript', CellKind.Code, [], textModelService)
 			);
 		}
 
@@ -295,8 +295,8 @@ suite('NotebookCommon', () => {
 		]
 		);
 
-		const cellA = new TestCell('notebook', 6, 'var a = 6;', 'javascript', CellKind.Code, [], textModelService);
-		const cellB = new TestCell('notebook', 7, 'var a = 7;', 'javascript', CellKind.Code, [], textModelService);
+		const cellA = new TestCell('noteBook', 6, 'var a = 6;', 'javascript', CellKind.Code, [], textModelService);
+		const cellB = new TestCell('noteBook', 7, 'var a = 7;', 'javascript', CellKind.Code, [], textModelService);
 
 		const modifiedCells = [
 			cells[0],
@@ -333,25 +333,25 @@ suite('CellUri', function () {
 
 	test('parse, generate (file-scheme)', function () {
 
-		const nb = URI.parse('foo:///bar/følder/file.nb');
+		const nB = URI.parse('foo:///Bar/følder/file.nB');
 		const id = 17;
 
-		const data = CellUri.generate(nb, id);
+		const data = CellUri.generate(nB, id);
 		const actual = CellUri.parse(data);
 		assert.ok(Boolean(actual));
 		assert.equal(actual?.handle, id);
-		assert.equal(actual?.notebook.toString(), nb.toString());
+		assert.equal(actual?.noteBook.toString(), nB.toString());
 	});
 
 	test('parse, generate (foo-scheme)', function () {
 
-		const nb = URI.parse('foo:///bar/følder/file.nb');
+		const nB = URI.parse('foo:///Bar/følder/file.nB');
 		const id = 17;
 
-		const data = CellUri.generate(nb, id);
+		const data = CellUri.generate(nB, id);
 		const actual = CellUri.parse(data);
 		assert.ok(Boolean(actual));
 		assert.equal(actual?.handle, id);
-		assert.equal(actual?.notebook.toString(), nb.toString());
+		assert.equal(actual?.noteBook.toString(), nB.toString());
 	});
 });

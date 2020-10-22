@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ExtHostWebview, ExtHostWebviews, toExtensionData } from 'vs/workbench/api/common/extHostWebview';
+import { ExtHostWeBview, ExtHostWeBviews, toExtensionData } from 'vs/workBench/api/common/extHostWeBview';
 import type * as vscode from 'vscode';
 import * as extHostProtocol from './extHost.protocol';
 import * as extHostTypes from './extHostTypes';
 
-class ExtHostWebviewView extends Disposable implements vscode.WebviewView {
+class ExtHostWeBviewView extends DisposaBle implements vscode.WeBviewView {
 
-	readonly #handle: extHostProtocol.WebviewHandle;
-	readonly #proxy: extHostProtocol.MainThreadWebviewViewsShape;
+	readonly #handle: extHostProtocol.WeBviewHandle;
+	readonly #proxy: extHostProtocol.MainThreadWeBviewViewsShape;
 
 	readonly #viewType: string;
-	readonly #webview: ExtHostWebview;
+	readonly #weBview: ExtHostWeBview;
 
 	#isDisposed = false;
-	#isVisible: boolean;
+	#isVisiBle: Boolean;
 	#title: string | undefined;
 	#description: string | undefined;
 
 	constructor(
-		handle: extHostProtocol.WebviewHandle,
-		proxy: extHostProtocol.MainThreadWebviewViewsShape,
+		handle: extHostProtocol.WeBviewHandle,
+		proxy: extHostProtocol.MainThreadWeBviewViewsShape,
 		viewType: string,
 		title: string | undefined,
-		webview: ExtHostWebview,
-		isVisible: boolean,
+		weBview: ExtHostWeBview,
+		isVisiBle: Boolean,
 	) {
 		super();
 
@@ -39,11 +39,11 @@ class ExtHostWebviewView extends Disposable implements vscode.WebviewView {
 		this.#title = title;
 		this.#handle = handle;
 		this.#proxy = proxy;
-		this.#webview = webview;
-		this.#isVisible = isVisible;
+		this.#weBview = weBview;
+		this.#isVisiBle = isVisiBle;
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		if (this.#isDisposed) {
 			return;
 		}
@@ -51,111 +51,111 @@ class ExtHostWebviewView extends Disposable implements vscode.WebviewView {
 		this.#isDisposed = true;
 		this.#onDidDispose.fire();
 
-		this.#webview.dispose();
+		this.#weBview.dispose();
 
 		super.dispose();
 	}
 
-	readonly #onDidChangeVisibility = this._register(new Emitter<void>());
-	public readonly onDidChangeVisibility = this.#onDidChangeVisibility.event;
+	readonly #onDidChangeVisiBility = this._register(new Emitter<void>());
+	puBlic readonly onDidChangeVisiBility = this.#onDidChangeVisiBility.event;
 
 	readonly #onDidDispose = this._register(new Emitter<void>());
-	public readonly onDidDispose = this.#onDidDispose.event;
+	puBlic readonly onDidDispose = this.#onDidDispose.event;
 
-	public get title(): string | undefined {
+	puBlic get title(): string | undefined {
 		this.assertNotDisposed();
 		return this.#title;
 	}
 
-	public set title(value: string | undefined) {
+	puBlic set title(value: string | undefined) {
 		this.assertNotDisposed();
 		if (this.#title !== value) {
 			this.#title = value;
-			this.#proxy.$setWebviewViewTitle(this.#handle, value);
+			this.#proxy.$setWeBviewViewTitle(this.#handle, value);
 		}
 	}
 
-	public get description(): string | undefined {
+	puBlic get description(): string | undefined {
 		this.assertNotDisposed();
 		return this.#description;
 	}
 
-	public set description(value: string | undefined) {
+	puBlic set description(value: string | undefined) {
 		this.assertNotDisposed();
 		if (this.#description !== value) {
 			this.#description = value;
-			this.#proxy.$setWebviewViewDescription(this.#handle, value);
+			this.#proxy.$setWeBviewViewDescription(this.#handle, value);
 		}
 	}
 
-	public get visible(): boolean { return this.#isVisible; }
+	puBlic get visiBle(): Boolean { return this.#isVisiBle; }
 
-	public get webview(): vscode.Webview { return this.#webview; }
+	puBlic get weBview(): vscode.WeBview { return this.#weBview; }
 
-	public get viewType(): string { return this.#viewType; }
+	puBlic get viewType(): string { return this.#viewType; }
 
-	/* internal */ _setVisible(visible: boolean) {
-		if (visible === this.#isVisible || this.#isDisposed) {
+	/* internal */ _setVisiBle(visiBle: Boolean) {
+		if (visiBle === this.#isVisiBle || this.#isDisposed) {
 			return;
 		}
 
-		this.#isVisible = visible;
-		this.#onDidChangeVisibility.fire();
+		this.#isVisiBle = visiBle;
+		this.#onDidChangeVisiBility.fire();
 	}
 
-	public show(preserveFocus?: boolean): void {
+	puBlic show(preserveFocus?: Boolean): void {
 		this.assertNotDisposed();
 		this.#proxy.$show(this.#handle, !!preserveFocus);
 	}
 
 	private assertNotDisposed() {
 		if (this.#isDisposed) {
-			throw new Error('Webview is disposed');
+			throw new Error('WeBview is disposed');
 		}
 	}
 }
 
-export class ExtHostWebviewViews implements extHostProtocol.ExtHostWebviewViewsShape {
+export class ExtHostWeBviewViews implements extHostProtocol.ExtHostWeBviewViewsShape {
 
-	private readonly _proxy: extHostProtocol.MainThreadWebviewViewsShape;
+	private readonly _proxy: extHostProtocol.MainThreadWeBviewViewsShape;
 
 	private readonly _viewProviders = new Map<string, {
-		readonly provider: vscode.WebviewViewProvider;
+		readonly provider: vscode.WeBviewViewProvider;
 		readonly extension: IExtensionDescription;
 	}>();
 
-	private readonly _webviewViews = new Map<extHostProtocol.WebviewHandle, ExtHostWebviewView>();
+	private readonly _weBviewViews = new Map<extHostProtocol.WeBviewHandle, ExtHostWeBviewView>();
 
 	constructor(
 		mainContext: extHostProtocol.IMainContext,
-		private readonly _extHostWebview: ExtHostWebviews,
+		private readonly _extHostWeBview: ExtHostWeBviews,
 	) {
-		this._proxy = mainContext.getProxy(extHostProtocol.MainContext.MainThreadWebviewViews);
+		this._proxy = mainContext.getProxy(extHostProtocol.MainContext.MainThreadWeBviewViews);
 	}
 
-	public registerWebviewViewProvider(
+	puBlic registerWeBviewViewProvider(
 		extension: IExtensionDescription,
 		viewType: string,
-		provider: vscode.WebviewViewProvider,
-		webviewOptions?: {
-			retainContextWhenHidden?: boolean
+		provider: vscode.WeBviewViewProvider,
+		weBviewOptions?: {
+			retainContextWhenHidden?: Boolean
 		},
-	): vscode.Disposable {
+	): vscode.DisposaBle {
 		if (this._viewProviders.has(viewType)) {
 			throw new Error(`View provider for '${viewType}' already registered`);
 		}
 
 		this._viewProviders.set(viewType, { provider, extension });
-		this._proxy.$registerWebviewViewProvider(toExtensionData(extension), viewType, webviewOptions);
+		this._proxy.$registerWeBviewViewProvider(toExtensionData(extension), viewType, weBviewOptions);
 
-		return new extHostTypes.Disposable(() => {
+		return new extHostTypes.DisposaBle(() => {
 			this._viewProviders.delete(viewType);
-			this._proxy.$unregisterWebviewViewProvider(viewType);
+			this._proxy.$unregisterWeBviewViewProvider(viewType);
 		});
 	}
 
-	async $resolveWebviewView(
-		webviewHandle: string,
+	async $resolveWeBviewView(
+		weBviewHandle: string,
 		viewType: string,
 		title: string | undefined,
 		state: any,
@@ -168,34 +168,34 @@ export class ExtHostWebviewViews implements extHostProtocol.ExtHostWebviewViewsS
 
 		const { provider, extension } = entry;
 
-		const webview = this._extHostWebview.createNewWebview(webviewHandle, { /* todo */ }, extension);
-		const revivedView = new ExtHostWebviewView(webviewHandle, this._proxy, viewType, title, webview, true);
+		const weBview = this._extHostWeBview.createNewWeBview(weBviewHandle, { /* todo */ }, extension);
+		const revivedView = new ExtHostWeBviewView(weBviewHandle, this._proxy, viewType, title, weBview, true);
 
-		this._webviewViews.set(webviewHandle, revivedView);
+		this._weBviewViews.set(weBviewHandle, revivedView);
 
-		await provider.resolveWebviewView(revivedView, { state }, cancellation);
+		await provider.resolveWeBviewView(revivedView, { state }, cancellation);
 	}
 
-	async $onDidChangeWebviewViewVisibility(
-		webviewHandle: string,
-		visible: boolean
+	async $onDidChangeWeBviewViewVisiBility(
+		weBviewHandle: string,
+		visiBle: Boolean
 	) {
-		const webviewView = this.getWebviewView(webviewHandle);
-		webviewView._setVisible(visible);
+		const weBviewView = this.getWeBviewView(weBviewHandle);
+		weBviewView._setVisiBle(visiBle);
 	}
 
-	async $disposeWebviewView(webviewHandle: string) {
-		const webviewView = this.getWebviewView(webviewHandle);
-		this._webviewViews.delete(webviewHandle);
-		webviewView.dispose();
+	async $disposeWeBviewView(weBviewHandle: string) {
+		const weBviewView = this.getWeBviewView(weBviewHandle);
+		this._weBviewViews.delete(weBviewHandle);
+		weBviewView.dispose();
 
-		this._extHostWebview.deleteWebview(webviewHandle);
+		this._extHostWeBview.deleteWeBview(weBviewHandle);
 	}
 
-	private getWebviewView(handle: string): ExtHostWebviewView {
-		const entry = this._webviewViews.get(handle);
+	private getWeBviewView(handle: string): ExtHostWeBviewView {
+		const entry = this._weBviewViews.get(handle);
 		if (!entry) {
-			throw new Error('No webview found');
+			throw new Error('No weBview found');
 		}
 		return entry;
 	}

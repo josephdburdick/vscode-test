@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { JSONPath } from 'vs/base/common/json';
+import { JSONPath } from 'vs/Base/common/json';
 
 export const IJSONEditingService = createDecorator<IJSONEditingService>('jsonEditingService');
 
@@ -23,7 +23,7 @@ export const enum JSONEditingErrorCode {
 }
 
 export class JSONEditingError extends Error {
-	constructor(message: string, public code: JSONEditingErrorCode) {
+	constructor(message: string, puBlic code: JSONEditingErrorCode) {
 		super(message);
 	}
 }
@@ -37,5 +37,5 @@ export interface IJSONEditingService {
 
 	readonly _serviceBrand: undefined;
 
-	write(resource: URI, values: IJSONValue[], save: boolean): Promise<void>;
+	write(resource: URI, values: IJSONValue[], save: Boolean): Promise<void>;
 }

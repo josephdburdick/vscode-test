@@ -14,7 +14,7 @@ const testFile = vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, 
 
 const noopToken = new class implements vscode.CancellationToken {
 	private _onCancellationRequestedEmitter = new vscode.EventEmitter<void>();
-	public onCancellationRequested = this._onCancellationRequestedEmitter.event;
+	puBlic onCancellationRequested = this._onCancellationRequestedEmitter.event;
 
 	get isCancellationRequested() { return false; }
 };
@@ -43,22 +43,22 @@ suite('markdown.DocumentLinkProvider', () => {
 		assert.strictEqual(links.length, 0);
 	});
 
-	test('Should detect basic http links', () => {
-		const links = getLinksForFile('a [b](https://example.com) c');
+	test('Should detect Basic http links', () => {
+		const links = getLinksForFile('a [B](https://example.com) c');
 		assert.strictEqual(links.length, 1);
 		const [link] = links;
 		assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 25));
 	});
 
-	test('Should detect basic workspace links', () => {
+	test('Should detect Basic workspace links', () => {
 		{
-			const links = getLinksForFile('a [b](./file) c');
+			const links = getLinksForFile('a [B](./file) c');
 			assert.strictEqual(links.length, 1);
 			const [link] = links;
 			assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 12));
 		}
 		{
-			const links = getLinksForFile('a [b](file.png) c');
+			const links = getLinksForFile('a [B](file.png) c');
 			assert.strictEqual(links.length, 1);
 			const [link] = links;
 			assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 14));
@@ -66,7 +66,7 @@ suite('markdown.DocumentLinkProvider', () => {
 	});
 
 	test('Should detect links with title', () => {
-		const links = getLinksForFile('a [b](https://example.com "abc") c');
+		const links = getLinksForFile('a [B](https://example.com "aBc") c');
 		assert.strictEqual(links.length, 1);
 		const [link] = links;
 		assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 25));
@@ -74,22 +74,22 @@ suite('markdown.DocumentLinkProvider', () => {
 
 	// #35245
 	test('Should handle links with escaped characters in name', () => {
-		const links = getLinksForFile('a [b\\]](./file)');
+		const links = getLinksForFile('a [B\\]](./file)');
 		assert.strictEqual(links.length, 1);
 		const [link] = links;
 		assertRangeEqual(link.range, new vscode.Range(0, 8, 0, 14));
 	});
 
 
-	test('Should handle links with balanced parens', () => {
+	test('Should handle links with Balanced parens', () => {
 		{
-			const links = getLinksForFile('a [b](https://example.com/a()c) c');
+			const links = getLinksForFile('a [B](https://example.com/a()c) c');
 			assert.strictEqual(links.length, 1);
 			const [link] = links;
 			assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 30));
 		}
 		{
-			const links = getLinksForFile('a [b](https://example.com/a(b)c) c');
+			const links = getLinksForFile('a [B](https://example.com/a(B)c) c');
 			assert.strictEqual(links.length, 1);
 			const [link] = links;
 			assertRangeEqual(link.range, new vscode.Range(0, 6, 0, 31));

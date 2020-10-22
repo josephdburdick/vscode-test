@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { BaseResolvedKeybinding } from 'vs/platform/keybinding/common/baseResolvedKeybinding';
+import { KeyCode, KeyCodeUtils, KeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { BaseResolvedKeyBinding } from 'vs/platform/keyBinding/common/BaseResolvedKeyBinding';
 
 /**
- * Do not instantiate. Use KeybindingService to get a ResolvedKeybinding seeded with information about the current kb layout.
+ * Do not instantiate. Use KeyBindingService to get a ResolvedKeyBinding seeded with information aBout the current kB layout.
  */
-export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<SimpleKeybinding> {
+export class USLayoutResolvedKeyBinding extends BaseResolvedKeyBinding<SimpleKeyBinding> {
 
-	constructor(actual: Keybinding, os: OperatingSystem) {
+	constructor(actual: KeyBinding, os: OperatingSystem) {
 		super(os, actual.parts);
 	}
 
-	private _keyCodeToUILabel(keyCode: KeyCode): string {
+	private _keyCodeToUILaBel(keyCode: KeyCode): string {
 		if (this._os === OperatingSystem.Macintosh) {
 			switch (keyCode) {
 				case KeyCode.LeftArrow:
@@ -32,18 +32,18 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<SimpleKey
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	protected _getLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getLaBel(keyBinding: SimpleKeyBinding): string | null {
+		if (keyBinding.isDuplicateModifierCase()) {
 			return '';
 		}
-		return this._keyCodeToUILabel(keybinding.keyCode);
+		return this._keyCodeToUILaBel(keyBinding.keyCode);
 	}
 
-	protected _getAriaLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getAriaLaBel(keyBinding: SimpleKeyBinding): string | null {
+		if (keyBinding.isDuplicateModifierCase()) {
 			return '';
 		}
-		return KeyCodeUtils.toString(keybinding.keyCode);
+		return KeyCodeUtils.toString(keyBinding.keyCode);
 	}
 
 	private _keyCodeToElectronAccelerator(keyCode: KeyCode): string | null {
@@ -66,48 +66,48 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<SimpleKey
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	protected _getElectronAccelerator(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getElectronAccelerator(keyBinding: SimpleKeyBinding): string | null {
+		if (keyBinding.isDuplicateModifierCase()) {
 			return null;
 		}
-		return this._keyCodeToElectronAccelerator(keybinding.keyCode);
+		return this._keyCodeToElectronAccelerator(keyBinding.keyCode);
 	}
 
-	protected _getUserSettingsLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getUserSettingsLaBel(keyBinding: SimpleKeyBinding): string | null {
+		if (keyBinding.isDuplicateModifierCase()) {
 			return '';
 		}
-		const result = KeyCodeUtils.toUserSettingsUS(keybinding.keyCode);
+		const result = KeyCodeUtils.toUserSettingsUS(keyBinding.keyCode);
 		return (result ? result.toLowerCase() : result);
 	}
 
-	protected _isWYSIWYG(): boolean {
+	protected _isWYSIWYG(): Boolean {
 		return true;
 	}
 
-	protected _getDispatchPart(keybinding: SimpleKeybinding): string | null {
-		return USLayoutResolvedKeybinding.getDispatchStr(keybinding);
+	protected _getDispatchPart(keyBinding: SimpleKeyBinding): string | null {
+		return USLayoutResolvedKeyBinding.getDispatchStr(keyBinding);
 	}
 
-	public static getDispatchStr(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isModifierKey()) {
+	puBlic static getDispatchStr(keyBinding: SimpleKeyBinding): string | null {
+		if (keyBinding.isModifierKey()) {
 			return null;
 		}
 		let result = '';
 
-		if (keybinding.ctrlKey) {
+		if (keyBinding.ctrlKey) {
 			result += 'ctrl+';
 		}
-		if (keybinding.shiftKey) {
+		if (keyBinding.shiftKey) {
 			result += 'shift+';
 		}
-		if (keybinding.altKey) {
+		if (keyBinding.altKey) {
 			result += 'alt+';
 		}
-		if (keybinding.metaKey) {
+		if (keyBinding.metaKey) {
 			result += 'meta+';
 		}
-		result += KeyCodeUtils.toString(keybinding.keyCode);
+		result += KeyCodeUtils.toString(keyBinding.keyCode);
 
 		return result;
 	}

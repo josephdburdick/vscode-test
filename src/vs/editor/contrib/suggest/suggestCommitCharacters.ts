@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { ISelectedSuggestion, SuggestWidget } from './suggestWidget';
 import { CharacterSet } from 'vs/editor/common/core/characterClassifier';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 export class CommitCharacterController {
 
-	private readonly _disposables = new DisposableStore();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	private _active?: {
 		readonly acceptCharacters: CharacterSet;
@@ -21,11 +21,11 @@ export class CommitCharacterController {
 
 	constructor(editor: ICodeEditor, widget: SuggestWidget, accept: (selected: ISelectedSuggestion) => any) {
 
-		this._disposables.add(widget.onDidShow(() => this._onItem(widget.getFocusedItem())));
-		this._disposables.add(widget.onDidFocus(this._onItem, this));
-		this._disposables.add(widget.onDidHide(this.reset, this));
+		this._disposaBles.add(widget.onDidShow(() => this._onItem(widget.getFocusedItem())));
+		this._disposaBles.add(widget.onDidFocus(this._onItem, this));
+		this._disposaBles.add(widget.onDidHide(this.reset, this));
 
-		this._disposables.add(editor.onWillType(text => {
+		this._disposaBles.add(editor.onWillType(text => {
 			if (this._active && !widget.isFrozen()) {
 				const ch = text.charCodeAt(text.length - 1);
 				if (this._active.acceptCharacters.has(ch) && editor.getOption(EditorOption.acceptSuggestionOnCommitCharacter)) {
@@ -62,6 +62,6 @@ export class CommitCharacterController {
 	}
 
 	dispose() {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 	}
 }

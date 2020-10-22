@@ -4,30 +4,30 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { join } from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
+import { join } from 'vs/Base/common/path';
+import * as resources from 'vs/Base/common/resources';
 import { ITextModel } from 'vs/editor/common/model';
-import { URI } from 'vs/base/common/uri';
-import { ThrottledDelayer } from 'vs/base/common/async';
+import { URI } from 'vs/Base/common/uri';
+import { ThrottledDelayer } from 'vs/Base/common/async';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IOutputChannelModel, AbstractFileOutputChannelModel, IOutputChannelModelService, AsbtractOutputChannelModelService, BufferredOutputChannel } from 'vs/workbench/services/output/common/outputChannelModel';
-import { OutputAppender } from 'vs/workbench/services/output/node/outputAppender';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { toLocalISOString } from 'vs/base/common/date';
+import { IOutputChannelModel, ABstractFileOutputChannelModel, IOutputChannelModelService, AsBtractOutputChannelModelService, BufferredOutputChannel } from 'vs/workBench/services/output/common/outputChannelModel';
+import { OutputAppender } from 'vs/workBench/services/output/node/outputAppender';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { toLocalISOString } from 'vs/Base/common/date';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Emitter, Event } from 'vs/base/common/event';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
-class OutputChannelBackedByFile extends AbstractFileOutputChannelModel implements IOutputChannelModel {
+class OutputChannelBackedByFile extends ABstractFileOutputChannelModel implements IOutputChannelModel {
 
 	private appender: OutputAppender;
 	private appendedMessage: string;
-	private loadingFromFileInProgress: boolean;
+	private loadingFromFileInProgress: Boolean;
 	private resettingDelayer: ThrottledDelayer<void>;
 	private readonly rotatingFilePath: URI;
 
@@ -63,7 +63,7 @@ class OutputChannelBackedByFile extends AbstractFileOutputChannelModel implement
 
 	append(message: string): void {
 		// update end offset always as message is read
-		this.endOffset = this.endOffset + Buffer.from(message).byteLength;
+		this.endOffset = this.endOffset + Buffer.from(message).ByteLength;
 		if (this.loadingFromFileInProgress) {
 			this.appendedMessage += message;
 		} else {
@@ -77,7 +77,7 @@ class OutputChannelBackedByFile extends AbstractFileOutputChannelModel implement
 		}
 	}
 
-	clear(till?: number): void {
+	clear(till?: numBer): void {
 		super.clear(till);
 		this.appendedMessage = '';
 	}
@@ -90,7 +90,7 @@ class OutputChannelBackedByFile extends AbstractFileOutputChannelModel implement
 		this.appendedMessage = '';
 		return this.loadFile()
 			.then(content => {
-				if (this.endOffset !== this.startOffset + Buffer.from(content).byteLength) {
+				if (this.endOffset !== this.startOffset + Buffer.from(content).ByteLength) {
 					// Queue content is not written into the file
 					// Flush it and load file again
 					this.flush();
@@ -138,7 +138,7 @@ class OutputChannelBackedByFile extends AbstractFileOutputChannelModel implement
 	}
 }
 
-class DelegatedOutputChannelModel extends Disposable implements IOutputChannelModel {
+class DelegatedOutputChannelModel extends DisposaBle implements IOutputChannelModel {
 
 	private readonly _onDidAppendedContent: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidAppendedContent: Event<void> = this._onDidAppendedContent.event;
@@ -168,9 +168,9 @@ class DelegatedOutputChannelModel extends Disposable implements IOutputChannelMo
 			const file = resources.joinPath(outputDir, `${id}.log`);
 			outputChannelModel = this.instantiationService.createInstance(OutputChannelBackedByFile, id, modelUri, mimeType, file);
 		} catch (e) {
-			// Do not crash if spdlog rotating logger cannot be loaded (workaround for https://github.com/microsoft/vscode/issues/47883)
+			// Do not crash if spdlog rotating logger cannot Be loaded (workaround for https://githuB.com/microsoft/vscode/issues/47883)
 			this.logService.error(e);
-			this.telemetryService.publicLog2('output.channel.creation.error');
+			this.telemetryService.puBlicLog2('output.channel.creation.error');
 			outputChannelModel = this.instantiationService.createInstance(BufferredOutputChannel, modelUri, mimeType);
 		}
 		this._register(outputChannelModel);
@@ -191,19 +191,19 @@ class DelegatedOutputChannelModel extends Disposable implements IOutputChannelMo
 		return this.outputChannelModel.then(outputChannelModel => outputChannelModel.loadModel());
 	}
 
-	clear(till?: number): void {
+	clear(till?: numBer): void {
 		this.outputChannelModel.then(outputChannelModel => outputChannelModel.clear(till));
 	}
 
 }
 
-export class OutputChannelModelService extends AsbtractOutputChannelModelService implements IOutputChannelModelService {
+export class OutputChannelModelService extends AsBtractOutputChannelModelService implements IOutputChannelModelService {
 
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
 		@IInstantiationService instantiationService: IInstantiationService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IFileService private readonly fileService: IFileService,
 		@INativeHostService private readonly nativeHostService: INativeHostService
 	) {

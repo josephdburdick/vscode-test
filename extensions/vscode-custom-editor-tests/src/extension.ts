@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { AbcTextEditorProvider } from './customTextEditor';
+import { ABcTextEditorProvider } from './customTextEditor';
 
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(new AbcTextEditorProvider(context).register());
+	context.suBscriptions.push(new ABcTextEditorProvider(context).register());
 }

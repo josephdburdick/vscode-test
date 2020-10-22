@@ -3,49 +3,49 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 import { RawContextKey, IContextKeyService, ContextKeyExpr, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ISnippetsService } from './snippets.contribution';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { ISnippetsService } from './snippets.contriBution';
 import { getNonWhitespacePrefix } from './snippetsService';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { Range } from 'vs/editor/common/core/range';
-import { registerEditorContribution, EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
-import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { showSimpleSuggestions } from 'vs/editor/contrib/suggest/suggest';
+import { registerEditorContriBution, EditorCommand, registerEditorCommand } from 'vs/editor/Browser/editorExtensions';
+import { SnippetController2 } from 'vs/editor/contriB/snippet/snippetController2';
+import { showSimpleSuggestions } from 'vs/editor/contriB/suggest/suggest';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Snippet } from './snippetsFile';
 import { SnippetCompletion } from './snippetCompletionProvider';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { EditorState, CodeEditorStateFlag } from 'vs/editor/browser/core/editorState';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { EditorState, CodeEditorStateFlag } from 'vs/editor/Browser/core/editorState';
 
-export class TabCompletionController implements IEditorContribution {
+export class TaBCompletionController implements IEditorContriBution {
 
-	public static readonly ID = 'editor.tabCompletionController';
-	static readonly ContextKey = new RawContextKey<boolean>('hasSnippetCompletions', undefined);
+	puBlic static readonly ID = 'editor.taBCompletionController';
+	static readonly ContextKey = new RawContextKey<Boolean>('hasSnippetCompletions', undefined);
 
-	public static get(editor: ICodeEditor): TabCompletionController {
-		return editor.getContribution<TabCompletionController>(TabCompletionController.ID);
+	puBlic static get(editor: ICodeEditor): TaBCompletionController {
+		return editor.getContriBution<TaBCompletionController>(TaBCompletionController.ID);
 	}
 
-	private _hasSnippets: IContextKey<boolean>;
+	private _hasSnippets: IContextKey<Boolean>;
 	private _activeSnippets: Snippet[] = [];
-	private _enabled?: boolean;
-	private _selectionListener?: IDisposable;
-	private readonly _configListener: IDisposable;
+	private _enaBled?: Boolean;
+	private _selectionListener?: IDisposaBle;
+	private readonly _configListener: IDisposaBle;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
 		@ISnippetsService private readonly _snippetService: ISnippetsService,
-		@IClipboardService private readonly _clipboardService: IClipboardService,
+		@IClipBoardService private readonly _clipBoardService: IClipBoardService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
-		this._hasSnippets = TabCompletionController.ContextKey.bindTo(contextKeyService);
+		this._hasSnippets = TaBCompletionController.ContextKey.BindTo(contextKeyService);
 		this._configListener = this._editor.onDidChangeConfiguration(e => {
-			if (e.hasChanged(EditorOption.tabCompletion)) {
+			if (e.hasChanged(EditorOption.taBCompletion)) {
 				this._update();
 			}
 		});
@@ -58,10 +58,10 @@ export class TabCompletionController implements IEditorContribution {
 	}
 
 	private _update(): void {
-		const enabled = this._editor.getOption(EditorOption.tabCompletion) === 'onlySnippets';
-		if (this._enabled !== enabled) {
-			this._enabled = enabled;
-			if (!this._enabled) {
+		const enaBled = this._editor.getOption(EditorOption.taBCompletion) === 'onlySnippets';
+		if (this._enaBled !== enaBled) {
+			this._enaBled = enaBled;
+			if (!this._enaBled) {
 				this._selectionListener?.dispose();
 			} else {
 				this._selectionListener = this._editor.onDidChangeCursorSelection(e => this._updateSnippets());
@@ -84,8 +84,8 @@ export class TabCompletionController implements IEditorContribution {
 		// lots of dance for getting the
 		const selection = this._editor.getSelection();
 		const model = this._editor.getModel();
-		model.tokenizeIfCheap(selection.positionLineNumber);
-		const id = model.getLanguageIdAtPosition(selection.positionLineNumber, selection.positionColumn);
+		model.tokenizeIfCheap(selection.positionLineNumBer);
+		const id = model.getLanguageIdAtPosition(selection.positionLineNumBer, selection.positionColumn);
 		const snippets = this._snippetService.getSnippetsSync(id);
 
 		if (!snippets) {
@@ -106,7 +106,7 @@ export class TabCompletionController implements IEditorContribution {
 			}
 
 		} else if (!Range.spansMultipleLines(selection) && model.getValueLengthInRange(selection) <= 100) {
-			// actual selection -> snippet must be a full match
+			// actual selection -> snippet must Be a full match
 			const selected = model.getValueInRange(selection);
 			if (selected) {
 				for (const snippet of snippets) {
@@ -129,24 +129,24 @@ export class TabCompletionController implements IEditorContribution {
 			// one -> just insert
 			const [snippet] = this._activeSnippets;
 
-			// async clipboard access might be required and in that case
+			// async clipBoard access might Be required and in that case
 			// we need to check if the editor has changed in flight and then
-			// bail out (or be smarter than that)
-			let clipboardText: string | undefined;
-			if (snippet.needsClipboard) {
+			// Bail out (or Be smarter than that)
+			let clipBoardText: string | undefined;
+			if (snippet.needsClipBoard) {
 				const state = new EditorState(this._editor, CodeEditorStateFlag.Value | CodeEditorStateFlag.Position);
-				clipboardText = await this._clipboardService.readText();
+				clipBoardText = await this._clipBoardService.readText();
 				if (!state.validate(this._editor)) {
 					return;
 				}
 			}
 			SnippetController2.get(this._editor).insert(snippet.codeSnippet, {
 				overwriteBefore: snippet.prefix.length, overwriteAfter: 0,
-				clipboardText
+				clipBoardText
 			});
 
 		} else if (this._activeSnippets.length > 1) {
-			// two or more -> show IntelliSense box
+			// two or more -> show IntelliSense Box
 			const position = this._editor.getPosition();
 			showSimpleSuggestions(this._editor, this._activeSnippets.map(snippet => {
 				const range = Range.fromPositions(position.delta(0, -snippet.prefix.length), position);
@@ -156,21 +156,21 @@ export class TabCompletionController implements IEditorContribution {
 	}
 }
 
-registerEditorContribution(TabCompletionController.ID, TabCompletionController);
+registerEditorContriBution(TaBCompletionController.ID, TaBCompletionController);
 
-const TabCompletionCommand = EditorCommand.bindToContribution<TabCompletionController>(TabCompletionController.get);
+const TaBCompletionCommand = EditorCommand.BindToContriBution<TaBCompletionController>(TaBCompletionController.get);
 
-registerEditorCommand(new TabCompletionCommand({
+registerEditorCommand(new TaBCompletionCommand({
 	id: 'insertSnippet',
-	precondition: TabCompletionController.ContextKey,
+	precondition: TaBCompletionController.ContextKey,
 	handler: x => x.performSnippetCompletions(),
-	kbOpts: {
-		weight: KeybindingWeight.EditorContrib,
-		kbExpr: ContextKeyExpr.and(
+	kBOpts: {
+		weight: KeyBindingWeight.EditorContriB,
+		kBExpr: ContextKeyExpr.and(
 			EditorContextKeys.editorTextFocus,
-			EditorContextKeys.tabDoesNotMoveFocus,
+			EditorContextKeys.taBDoesNotMoveFocus,
 			SnippetController2.InSnippetMode.toNegated()
 		),
-		primary: KeyCode.Tab
+		primary: KeyCode.TaB
 	}
 }));

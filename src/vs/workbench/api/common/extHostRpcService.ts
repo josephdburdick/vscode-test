@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ProxyIdentifier, IRPCProtocol } from 'vs/workbench/services/extensions/common/proxyIdentifier';
+import { ProxyIdentifier, IRPCProtocol } from 'vs/workBench/services/extensions/common/proxyIdentifier';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export const IExtHostRpcService = createDecorator<IExtHostRpcService>('IExtHostRpcService');
@@ -21,9 +21,9 @@ export class ExtHostRpcService implements IExtHostRpcService {
 	readonly drain: () => Promise<void>;
 
 	constructor(rpcProtocol: IRPCProtocol) {
-		this.getProxy = rpcProtocol.getProxy.bind(rpcProtocol);
-		this.set = rpcProtocol.set.bind(rpcProtocol);
-		this.assertRegistered = rpcProtocol.assertRegistered.bind(rpcProtocol);
-		this.drain = rpcProtocol.drain.bind(rpcProtocol);
+		this.getProxy = rpcProtocol.getProxy.Bind(rpcProtocol);
+		this.set = rpcProtocol.set.Bind(rpcProtocol);
+		this.assertRegistered = rpcProtocol.assertRegistered.Bind(rpcProtocol);
+		this.drain = rpcProtocol.drain.Bind(rpcProtocol);
 	}
 }

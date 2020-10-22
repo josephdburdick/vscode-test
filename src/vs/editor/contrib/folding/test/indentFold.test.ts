@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
+import { computeRanges } from 'vs/editor/contriB/folding/indentRangeProvider';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
 interface IndentRange {
-	start: number;
-	end: number;
+	start: numBer;
+	end: numBer;
 }
 
 suite('Indentation Folding', () => {
-	function r(start: number, end: number): IndentRange {
+	function r(start: numBer, end: numBer): IndentRange {
 		return { start, end };
 	}
 
-	test('Limit by indent', () => {
+	test('Limit By indent', () => {
 
 
 		let lines = [
@@ -49,12 +49,12 @@ suite('Indentation Folding', () => {
 
 		let model = createTextModel(lines.join('\n'));
 
-		function assertLimit(maxEntries: number, expectedRanges: IndentRange[], message: string) {
+		function assertLimit(maxEntries: numBer, expectedRanges: IndentRange[], message: string) {
 			let indentRanges = computeRanges(model, true, undefined, maxEntries);
 			assert.ok(indentRanges.length <= maxEntries, 'max ' + message);
 			let actual: IndentRange[] = [];
 			for (let i = 0; i < indentRanges.length; i++) {
-				actual.push({ start: indentRanges.getStartLineNumber(i), end: indentRanges.getEndLineNumber(i) });
+				actual.push({ start: indentRanges.getStartLineNumBer(i), end: indentRanges.getEndLineNumBer(i) });
 			}
 			assert.deepEqual(actual, expectedRanges, message);
 		}

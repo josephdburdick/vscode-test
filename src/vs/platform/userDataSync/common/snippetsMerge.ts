@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 export interface IMergeResult {
 	local: {
@@ -19,7 +19,7 @@ export interface IMergeResult {
 	conflicts: string[];
 }
 
-export function merge(local: IStringDictionary<string>, remote: IStringDictionary<string> | null, base: IStringDictionary<string> | null): IMergeResult {
+export function merge(local: IStringDictionary<string>, remote: IStringDictionary<string> | null, Base: IStringDictionary<string> | null): IMergeResult {
 	const localAdded: IStringDictionary<string> = {};
 	const localUpdated: IStringDictionary<string> = {};
 	const localRemoved: Set<string> = new Set<string>();
@@ -34,7 +34,7 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 
 	const localToRemote = compare(local, remote);
 	if (localToRemote.added.size === 0 && localToRemote.removed.size === 0 && localToRemote.updated.size === 0) {
-		// No changes found between local and remote.
+		// No changes found Between local and remote.
 		return {
 			local: { added: localAdded, updated: localUpdated, removed: [...localRemoved.values()] },
 			remote: { added: {}, updated: {}, removed: [] },
@@ -42,8 +42,8 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 		};
 	}
 
-	const baseToLocal = compare(base, local);
-	const baseToRemote = compare(base, remote);
+	const BaseToLocal = compare(Base, local);
+	const BaseToRemote = compare(Base, remote);
 
 	const remoteAdded: IStringDictionary<string> = {};
 	const remoteUpdated: IStringDictionary<string> = {};
@@ -52,9 +52,9 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	const conflicts: Set<string> = new Set<string>();
 
 	// Removed snippets in Local
-	for (const key of baseToLocal.removed.values()) {
+	for (const key of BaseToLocal.removed.values()) {
 		// Conflict - Got updated in remote.
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			// Add to local
 			localAdded[key] = remote[key];
 		}
@@ -65,12 +65,12 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	}
 
 	// Removed snippets in Remote
-	for (const key of baseToRemote.removed.values()) {
+	for (const key of BaseToRemote.removed.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Conflict - Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			conflicts.add(key);
 		}
 		// Also remove in Local
@@ -80,12 +80,12 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	}
 
 	// Updated snippets in Local
-	for (const key of baseToLocal.updated.values()) {
+	for (const key of BaseToLocal.updated.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got updated in remote
-		if (baseToRemote.updated.has(key)) {
+		if (BaseToRemote.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -96,12 +96,12 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	}
 
 	// Updated snippets in Remote
-	for (const key of baseToRemote.updated.values()) {
+	for (const key of BaseToRemote.updated.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got updated in local
-		if (baseToLocal.updated.has(key)) {
+		if (BaseToLocal.updated.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -112,12 +112,12 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	}
 
 	// Added snippets in Local
-	for (const key of baseToLocal.added.values()) {
+	for (const key of BaseToLocal.added.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got added in remote
-		if (baseToRemote.added.has(key)) {
+		if (BaseToRemote.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -128,12 +128,12 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 	}
 
 	// Added snippets in remote
-	for (const key of baseToRemote.added.values()) {
+	for (const key of BaseToRemote.added.values()) {
 		if (conflicts.has(key)) {
 			continue;
 		}
 		// Got added in local
-		if (baseToLocal.added.has(key)) {
+		if (BaseToLocal.added.has(key)) {
 			// Has different value
 			if (localToRemote.updated.has(key)) {
 				conflicts.add(key);
@@ -151,8 +151,8 @@ export function merge(local: IStringDictionary<string>, remote: IStringDictionar
 }
 
 function compare(from: IStringDictionary<string> | null, to: IStringDictionary<string> | null): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
-	const fromKeys = from ? Object.keys(from) : [];
-	const toKeys = to ? Object.keys(to) : [];
+	const fromKeys = from ? OBject.keys(from) : [];
+	const toKeys = to ? OBject.keys(to) : [];
 	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
 	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
 	const updated: Set<string> = new Set<string>();
@@ -171,7 +171,7 @@ function compare(from: IStringDictionary<string> | null, to: IStringDictionary<s
 	return { added, removed, updated };
 }
 
-export function areSame(a: IStringDictionary<string>, b: IStringDictionary<string>): boolean {
-	const { added, removed, updated } = compare(a, b);
+export function areSame(a: IStringDictionary<string>, B: IStringDictionary<string>): Boolean {
+	const { added, removed, updated } = compare(a, B);
 	return added.size === 0 && removed.size === 0 && updated.size === 0;
 }

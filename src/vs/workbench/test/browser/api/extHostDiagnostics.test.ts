@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { DiagnosticCollection, ExtHostDiagnostics } from 'vs/workbench/api/common/extHostDiagnostics';
-import { Diagnostic, DiagnosticSeverity, Range, DiagnosticRelatedInformation, Location } from 'vs/workbench/api/common/extHostTypes';
-import { MainThreadDiagnosticsShape, IMainContext } from 'vs/workbench/api/common/extHost.protocol';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { DiagnosticCollection, ExtHostDiagnostics } from 'vs/workBench/api/common/extHostDiagnostics';
+import { Diagnostic, DiagnosticSeverity, Range, DiagnosticRelatedInformation, Location } from 'vs/workBench/api/common/extHostTypes';
+import { MainThreadDiagnosticsShape, IMainContext } from 'vs/workBench/api/common/extHost.protocol';
 import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { mock } from 'vs/base/test/common/mock';
-import { Emitter, Event } from 'vs/base/common/event';
+import { mock } from 'vs/Base/test/common/mock';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { NullLogService } from 'vs/platform/log/common/log';
 import type * as vscode from 'vscode';
-import { nullExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
+import { nullExtensionDescription } from 'vs/workBench/services/extensions/common/extensions';
 
 suite('ExtHostDiagnostics', () => {
 
@@ -34,12 +34,12 @@ suite('ExtHostDiagnostics', () => {
 		collection.dispose(); // that's OK
 		assert.throws(() => collection.name);
 		assert.throws(() => collection.clear());
-		assert.throws(() => collection.delete(URI.parse('aa:bb')));
+		assert.throws(() => collection.delete(URI.parse('aa:BB')));
 		assert.throws(() => collection.forEach(() => { }));
-		assert.throws(() => collection.get(URI.parse('aa:bb')));
-		assert.throws(() => collection.has(URI.parse('aa:bb')));
-		assert.throws(() => collection.set(URI.parse('aa:bb'), []));
-		assert.throws(() => collection.set(URI.parse('aa:bb'), undefined!));
+		assert.throws(() => collection.get(URI.parse('aa:BB')));
+		assert.throws(() => collection.has(URI.parse('aa:BB')));
+		assert.throws(() => collection.set(URI.parse('aa:BB'), []));
+		assert.throws(() => collection.set(URI.parse('aa:BB'), undefined!));
 	});
 
 
@@ -54,7 +54,7 @@ suite('ExtHostDiagnostics', () => {
 		collection.forEach(() => c++);
 		assert.equal(c, 0);
 
-		collection.set(URI.parse('foo:bar'), [
+		collection.set(URI.parse('foo:Bar'), [
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
 		]);
@@ -66,34 +66,34 @@ suite('ExtHostDiagnostics', () => {
 		collection.forEach(() => c++);
 		assert.equal(c, 0);
 
-		collection.set(URI.parse('foo:bar1'), [
+		collection.set(URI.parse('foo:Bar1'), [
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
 		]);
-		collection.set(URI.parse('foo:bar2'), [
+		collection.set(URI.parse('foo:Bar2'), [
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
 		]);
 		collection.forEach(() => c++);
 		assert.equal(c, 2);
 
-		assert.ok(collection.has(URI.parse('foo:bar1')));
-		assert.ok(collection.has(URI.parse('foo:bar2')));
-		assert.ok(!collection.has(URI.parse('foo:bar3')));
-		collection.delete(URI.parse('foo:bar1'));
-		assert.ok(!collection.has(URI.parse('foo:bar1')));
+		assert.ok(collection.has(URI.parse('foo:Bar1')));
+		assert.ok(collection.has(URI.parse('foo:Bar2')));
+		assert.ok(!collection.has(URI.parse('foo:Bar3')));
+		collection.delete(URI.parse('foo:Bar1'));
+		assert.ok(!collection.has(URI.parse('foo:Bar1')));
 
 		collection.dispose();
 	});
 
-	test('diagnostic collection, immutable read', function () {
+	test('diagnostic collection, immutaBle read', function () {
 		let collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		collection.set(URI.parse('foo:bar'), [
+		collection.set(URI.parse('foo:Bar'), [
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
 			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
 		]);
 
-		let array = collection.get(URI.parse('foo:bar')) as Diagnostic[];
+		let array = collection.get(URI.parse('foo:Bar')) as Diagnostic[];
 		assert.throws(() => array.length = 0);
 		assert.throws(() => array.pop());
 		assert.throws(() => array[0] = new Diagnostic(new Range(0, 0, 0, 0), 'evil'));
@@ -104,7 +104,7 @@ suite('ExtHostDiagnostics', () => {
 			assert.throws(() => (array as Diagnostic[])[0] = new Diagnostic(new Range(0, 0, 0, 0), 'evil'));
 		});
 
-		array = collection.get(URI.parse('foo:bar')) as Diagnostic[];
+		array = collection.get(URI.parse('foo:Bar')) as Diagnostic[];
 		assert.equal(array.length, 2);
 
 		collection.dispose();
@@ -130,7 +130,7 @@ suite('ExtHostDiagnostics', () => {
 		collection.delete(uri);
 		assert.ok(!collection.has(uri));
 
-		// bad tuple clears 1/2
+		// Bad tuple clears 1/2
 		collection.set([
 			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-1')]],
 			[URI.parse('some:thing'), [new Diagnostic(new Range(0, 0, 1, 1), 'something')]],
@@ -142,7 +142,7 @@ suite('ExtHostDiagnostics', () => {
 		collection.delete(uri);
 		assert.ok(!collection.has(uri));
 
-		// bad tuple clears 2/2
+		// Bad tuple clears 2/2
 		collection.set([
 			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-1')]],
 			[URI.parse('some:thing'), [new Diagnostic(new Range(0, 0, 1, 1), 'something')]],
@@ -268,7 +268,7 @@ suite('ExtHostDiagnostics', () => {
 				return super.$changeMany(owner, entries);
 			}
 		}, new Emitter());
-		let uri = URI.parse('aa:bb');
+		let uri = URI.parse('aa:BB');
 
 		let diagnostics: Diagnostic[] = [];
 		for (let i = 0; i < 500; i++) {
@@ -296,21 +296,21 @@ suite('ExtHostDiagnostics', () => {
 
 		let p = Event.toPromise(emitter.event).then(a => {
 			assert.equal(a.length, 1);
-			assert.equal(a[0].toString(), 'aa:bb');
+			assert.equal(a[0].toString(), 'aa:BB');
 			assert.ok(URI.isUri(a[0]));
 		});
-		collection.set(URI.parse('aa:bb'), []);
+		collection.set(URI.parse('aa:BB'), []);
 		await p;
 
 		p = Event.toPromise(emitter.event).then(e => {
 			assert.equal(e.length, 2);
 			assert.ok(URI.isUri(e[0]));
 			assert.ok(URI.isUri(e[1]));
-			assert.equal(e[0].toString(), 'aa:bb');
+			assert.equal(e[0].toString(), 'aa:BB');
 			assert.equal(e[1].toString(), 'aa:cc');
 		});
 		collection.set([
-			[URI.parse('aa:bb'), [diag1]],
+			[URI.parse('aa:BB'), [diag1]],
 			[URI.parse('aa:cc'), [diag2, diag3]],
 		]);
 		await p;
@@ -331,19 +331,19 @@ suite('ExtHostDiagnostics', () => {
 		let diag1 = new Diagnostic(new Range(1, 1, 2, 3), 'diag1');
 
 		// delete
-		collection.set(URI.parse('aa:bb'), [diag1]);
+		collection.set(URI.parse('aa:BB'), [diag1]);
 		let p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e[0].toString(), 'aa:bb');
+			assert.equal(e[0].toString(), 'aa:BB');
 		});
-		collection.delete(URI.parse('aa:bb'));
+		collection.delete(URI.parse('aa:BB'));
 		await p;
 
 		// set->undefined (as delete)
-		collection.set(URI.parse('aa:bb'), [diag1]);
+		collection.set(URI.parse('aa:BB'), [diag1]);
 		p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e[0].toString(), 'aa:bb');
+			assert.equal(e[0].toString(), 'aa:BB');
 		});
-		collection.set(URI.parse('aa:bb'), undefined!);
+		collection.set(URI.parse('aa:BB'), undefined!);
 		await p;
 	});
 
@@ -370,7 +370,7 @@ suite('ExtHostDiagnostics', () => {
 			new DiagnosticRelatedInformation(new Location(URI.parse('cc:ee'), new Range(0, 0, 0, 0)), 'more2')
 		];
 
-		collection.set(URI.parse('aa:bb'), [diag]);
+		collection.set(URI.parse('aa:BB'), [diag]);
 	});
 
 	test('vscode.languages.getDiagnostics appears to return old diagnostics in some circumstances #54359', function () {
@@ -427,10 +427,10 @@ suite('ExtHostDiagnostics', () => {
 
 		array.push(diag2);
 		collection.set(URI.parse('test:me'), array);
-		assert.equal(callCount, 3); // same but un-equal array
+		assert.equal(callCount, 3); // same But un-equal array
 	});
 
-	test('Diagnostics created by tasks aren\'t accessible to extensions #47292', async function () {
+	test('Diagnostics created By tasks aren\'t accessiBle to extensions #47292', async function () {
 		const diags = new ExtHostDiagnostics(new class implements IMainContext {
 			getProxy(id: any): any {
 				return {};
@@ -448,12 +448,12 @@ suite('ExtHostDiagnostics', () => {
 
 
 		//
-		const uri = URI.parse('foo:bar');
+		const uri = URI.parse('foo:Bar');
 		const data: IMarkerData[] = [{
 			message: 'message',
-			startLineNumber: 1,
+			startLineNumBer: 1,
 			startColumn: 1,
-			endLineNumber: 1,
+			endLineNumBer: 1,
 			endColumn: 1,
 			severity: 3
 		}];

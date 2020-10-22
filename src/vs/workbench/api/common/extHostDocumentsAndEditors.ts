@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'vs/base/common/assert';
+import * as assert from 'vs/Base/common/assert';
 import * as vscode from 'vscode';
-import { Emitter, Event } from 'vs/base/common/event';
-import { dispose } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { dispose } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostDocumentsAndEditorsShape, IDocumentsAndEditorsDelta, IModelAddedData, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentData } from 'vs/workbench/api/common/extHostDocumentData';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostTextEditor } from 'vs/workbench/api/common/extHostTextEditor';
-import * as typeConverters from 'vs/workbench/api/common/extHostTypeConverters';
+import { ExtHostDocumentsAndEditorsShape, IDocumentsAndEditorsDelta, IModelAddedData, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtHostDocumentData } from 'vs/workBench/api/common/extHostDocumentData';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { ExtHostTextEditor } from 'vs/workBench/api/common/extHostTextEditor';
+import * as typeConverters from 'vs/workBench/api/common/extHostTypeConverters';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { Iterable } from 'vs/base/common/iterator';
+import { ResourceMap } from 'vs/Base/common/map';
+import { Schemas } from 'vs/Base/common/network';
+import { IteraBle } from 'vs/Base/common/iterator';
 
 class Reference<T> {
 	private _count = 0;
@@ -31,7 +31,7 @@ class Reference<T> {
 }
 
 export interface IExtHostModelAddedData extends IModelAddedData {
-	notebook?: vscode.NotebookDocument;
+	noteBook?: vscode.NoteBookDocument;
 }
 
 export interface IExtHostDocumentsAndEditorsDelta extends IDocumentsAndEditorsDelta {
@@ -49,12 +49,12 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 
 	private readonly _onDidAddDocuments = new Emitter<ExtHostDocumentData[]>();
 	private readonly _onDidRemoveDocuments = new Emitter<ExtHostDocumentData[]>();
-	private readonly _onDidChangeVisibleTextEditors = new Emitter<ExtHostTextEditor[]>();
+	private readonly _onDidChangeVisiBleTextEditors = new Emitter<ExtHostTextEditor[]>();
 	private readonly _onDidChangeActiveTextEditor = new Emitter<ExtHostTextEditor | undefined>();
 
 	readonly onDidAddDocuments: Event<ExtHostDocumentData[]> = this._onDidAddDocuments.event;
 	readonly onDidRemoveDocuments: Event<ExtHostDocumentData[]> = this._onDidRemoveDocuments.event;
-	readonly onDidChangeVisibleTextEditors: Event<ExtHostTextEditor[]> = this._onDidChangeVisibleTextEditors.event;
+	readonly onDidChangeVisiBleTextEditors: Event<ExtHostTextEditor[]> = this._onDidChangeVisiBleTextEditors.event;
 	readonly onDidChangeActiveTextEditor: Event<ExtHostTextEditor | undefined> = this._onDidChangeActiveTextEditor.event;
 
 	constructor(
@@ -88,10 +88,10 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 				const resource = URI.revive(data.uri);
 				let ref = this._documents.get(resource);
 
-				// double check -> only notebook cell documents should be
+				// douBle check -> only noteBook cell documents should Be
 				// referenced/opened more than once...
 				if (ref) {
-					if (resource.scheme !== Schemas.vscodeNotebookCell) {
+					if (resource.scheme !== Schemas.vscodeNoteBookCell) {
 						throw new Error(`document '${resource} already exists!'`);
 					}
 				}
@@ -104,7 +104,7 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 						data.versionId,
 						data.modeId,
 						data.isDirty,
-						data.notebook
+						data.noteBook
 					));
 					this._documents.set(resource, ref);
 					addedDocuments.push(ref.value);
@@ -138,8 +138,8 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 					documentData,
 					data.selections.map(typeConverters.Selection.to),
 					data.options,
-					data.visibleRanges.map(range => typeConverters.Range.to(range)),
-					typeof data.editorPosition === 'number' ? typeConverters.ViewColumn.to(data.editorPosition) : undefined
+					data.visiBleRanges.map(range => typeConverters.Range.to(range)),
+					typeof data.editorPosition === 'numBer' ? typeConverters.ViewColumn.to(data.editorPosition) : undefined
 				);
 				this._editors.set(data.id, editor);
 			}
@@ -162,7 +162,7 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 		}
 
 		if (delta.removedEditors || delta.addedEditors) {
-			this._onDidChangeVisibleTextEditors.fire(this.allEditors());
+			this._onDidChangeVisiBleTextEditors.fire(this.allEditors());
 		}
 		if (delta.newActiveEditor !== undefined) {
 			this._onDidChangeActiveTextEditor.fire(this.activeEditor());
@@ -173,8 +173,8 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 		return this._documents.get(uri)?.value;
 	}
 
-	allDocuments(): Iterable<ExtHostDocumentData> {
-		return Iterable.map(this._documents.values(), ref => ref.value);
+	allDocuments(): IteraBle<ExtHostDocumentData> {
+		return IteraBle.map(this._documents.values(), ref => ref.value);
 	}
 
 	getEditor(id: string): ExtHostTextEditor | undefined {

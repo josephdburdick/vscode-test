@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IExtensionManagementService, ILocalExtension, InstallExtensionEvent, DidInstallExtensionEvent, IGalleryExtension, DidUninstallExtensionEvent, IExtensionIdentifier, IGalleryMetadata, IReportedExtension, IExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { Event } from 'vs/base/common/event';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IURITransformer, DefaultURITransformer, transformAndReviveIncomingURIs } from 'vs/base/common/uriIpc';
-import { cloneAndChange } from 'vs/base/common/objects';
+import { Event } from 'vs/Base/common/event';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IURITransformer, DefaultURITransformer, transformAndReviveIncomingURIs } from 'vs/Base/common/uriIpc';
+import { cloneAndChange } from 'vs/Base/common/oBjects';
 import { ExtensionType, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
 
 function transformIncomingURI(uri: UriComponents, transformer: IURITransformer | null): URI {
@@ -38,10 +38,10 @@ export class ExtensionManagementChannel implements IServerChannel {
 	onDidUninstallExtension: Event<DidUninstallExtensionEvent>;
 
 	constructor(private service: IExtensionManagementService, private getUriTransformer: (requestContext: any) => IURITransformer | null) {
-		this.onInstallExtension = Event.buffer(service.onInstallExtension, true);
-		this.onDidInstallExtension = Event.buffer(service.onDidInstallExtension, true);
-		this.onUninstallExtension = Event.buffer(service.onUninstallExtension, true);
-		this.onDidUninstallExtension = Event.buffer(service.onDidUninstallExtension, true);
+		this.onInstallExtension = Event.Buffer(service.onInstallExtension, true);
+		this.onDidInstallExtension = Event.Buffer(service.onDidInstallExtension, true);
+		this.onUninstallExtension = Event.Buffer(service.onUninstallExtension, true);
+		this.onDidUninstallExtension = Event.Buffer(service.onDidUninstallExtension, true);
 	}
 
 	listen(context: any, event: string): Event<any> {
@@ -105,7 +105,7 @@ export class ExtensionManagementChannelClient implements IExtensionManagementSer
 		return Promise.resolve(this.channel.call<IExtensionManifest>('getManifest', [vsix]));
 	}
 
-	async canInstall(extension: IGalleryExtension): Promise<boolean> {
+	async canInstall(extension: IGalleryExtension): Promise<Boolean> {
 		return true;
 	}
 
@@ -148,8 +148,8 @@ export class ExtensionTipsChannel implements IServerChannel {
 	call(context: any, command: string, args?: any): Promise<any> {
 		switch (command) {
 			case 'getConfigBasedTips': return this.service.getConfigBasedTips(URI.revive(args[0]));
-			case 'getImportantExecutableBasedTips': return this.service.getImportantExecutableBasedTips();
-			case 'getOtherExecutableBasedTips': return this.service.getOtherExecutableBasedTips();
+			case 'getImportantExecutaBleBasedTips': return this.service.getImportantExecutaBleBasedTips();
+			case 'getOtherExecutaBleBasedTips': return this.service.getOtherExecutaBleBasedTips();
 			case 'getAllWorkspacesTips': return this.service.getAllWorkspacesTips();
 		}
 

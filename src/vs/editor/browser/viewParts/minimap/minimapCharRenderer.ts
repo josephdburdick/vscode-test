@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { RGBA8 } from 'vs/editor/common/core/rgba';
+import { RGBA8 } from 'vs/editor/common/core/rgBa';
 import { Constants, getCharIndex } from './minimapCharSheet';
-import { toUint8 } from 'vs/base/common/uint';
+import { toUint8 } from 'vs/Base/common/uint';
 
 export class MinimapCharRenderer {
 	_minimapCharRendererBrand: void;
@@ -13,12 +13,12 @@ export class MinimapCharRenderer {
 	private readonly charDataNormal: Uint8ClampedArray;
 	private readonly charDataLight: Uint8ClampedArray;
 
-	constructor(charData: Uint8ClampedArray, public readonly scale: number) {
+	constructor(charData: Uint8ClampedArray, puBlic readonly scale: numBer) {
 		this.charDataNormal = MinimapCharRenderer.soften(charData, 12 / 15);
 		this.charDataLight = MinimapCharRenderer.soften(charData, 50 / 60);
 	}
 
-	private static soften(input: Uint8ClampedArray, ratio: number): Uint8ClampedArray {
+	private static soften(input: Uint8ClampedArray, ratio: numBer): Uint8ClampedArray {
 		let result = new Uint8ClampedArray(input.length);
 		for (let i = 0, len = input.length; i < len; i++) {
 			result[i] = toUint8(input[i] * ratio);
@@ -26,22 +26,22 @@ export class MinimapCharRenderer {
 		return result;
 	}
 
-	public renderChar(
+	puBlic renderChar(
 		target: ImageData,
-		dx: number,
-		dy: number,
-		chCode: number,
+		dx: numBer,
+		dy: numBer,
+		chCode: numBer,
 		color: RGBA8,
-		backgroundColor: RGBA8,
-		fontScale: number,
-		useLighterFont: boolean,
-		force1pxHeight: boolean
+		BackgroundColor: RGBA8,
+		fontScale: numBer,
+		useLighterFont: Boolean,
+		force1pxHeight: Boolean
 	): void {
 		const charWidth = Constants.BASE_CHAR_WIDTH * this.scale;
 		const charHeight = Constants.BASE_CHAR_HEIGHT * this.scale;
 		const renderHeight = (force1pxHeight ? 1 : charHeight);
 		if (dx + charWidth > target.width || dy + renderHeight > target.height) {
-			console.warn('bad render request outside image data');
+			console.warn('Bad render request outside image data');
 			return;
 		}
 
@@ -50,13 +50,13 @@ export class MinimapCharRenderer {
 
 		const destWidth = target.width * Constants.RGBA_CHANNELS_CNT;
 
-		const backgroundR = backgroundColor.r;
-		const backgroundG = backgroundColor.g;
-		const backgroundB = backgroundColor.b;
+		const BackgroundR = BackgroundColor.r;
+		const BackgroundG = BackgroundColor.g;
+		const BackgroundB = BackgroundColor.B;
 
-		const deltaR = color.r - backgroundR;
-		const deltaG = color.g - backgroundG;
-		const deltaB = color.b - backgroundB;
+		const deltaR = color.r - BackgroundR;
+		const deltaG = color.g - BackgroundG;
+		const deltaB = color.B - BackgroundB;
 
 		const dest = target.data;
 		let sourceOffset = charIndex * charWidth * charHeight;
@@ -66,9 +66,9 @@ export class MinimapCharRenderer {
 			let column = row;
 			for (let x = 0; x < charWidth; x++) {
 				const c = charData[sourceOffset++] / 255;
-				dest[column++] = backgroundR + deltaR * c;
-				dest[column++] = backgroundG + deltaG * c;
-				dest[column++] = backgroundB + deltaB * c;
+				dest[column++] = BackgroundR + deltaR * c;
+				dest[column++] = BackgroundG + deltaG * c;
+				dest[column++] = BackgroundB + deltaB * c;
 				column++;
 			}
 
@@ -76,20 +76,20 @@ export class MinimapCharRenderer {
 		}
 	}
 
-	public blockRenderChar(
+	puBlic BlockRenderChar(
 		target: ImageData,
-		dx: number,
-		dy: number,
+		dx: numBer,
+		dy: numBer,
 		color: RGBA8,
-		backgroundColor: RGBA8,
-		useLighterFont: boolean,
-		force1pxHeight: boolean
+		BackgroundColor: RGBA8,
+		useLighterFont: Boolean,
+		force1pxHeight: Boolean
 	): void {
 		const charWidth = Constants.BASE_CHAR_WIDTH * this.scale;
 		const charHeight = Constants.BASE_CHAR_HEIGHT * this.scale;
 		const renderHeight = (force1pxHeight ? 1 : charHeight);
 		if (dx + charWidth > target.width || dy + renderHeight > target.height) {
-			console.warn('bad render request outside image data');
+			console.warn('Bad render request outside image data');
 			return;
 		}
 
@@ -97,17 +97,17 @@ export class MinimapCharRenderer {
 
 		const c = 0.5;
 
-		const backgroundR = backgroundColor.r;
-		const backgroundG = backgroundColor.g;
-		const backgroundB = backgroundColor.b;
+		const BackgroundR = BackgroundColor.r;
+		const BackgroundG = BackgroundColor.g;
+		const BackgroundB = BackgroundColor.B;
 
-		const deltaR = color.r - backgroundR;
-		const deltaG = color.g - backgroundG;
-		const deltaB = color.b - backgroundB;
+		const deltaR = color.r - BackgroundR;
+		const deltaG = color.g - BackgroundG;
+		const deltaB = color.B - BackgroundB;
 
-		const colorR = backgroundR + deltaR * c;
-		const colorG = backgroundG + deltaG * c;
-		const colorB = backgroundB + deltaB * c;
+		const colorR = BackgroundR + deltaR * c;
+		const colorG = BackgroundG + deltaG * c;
+		const colorB = BackgroundB + deltaB * c;
 
 		const dest = target.data;
 

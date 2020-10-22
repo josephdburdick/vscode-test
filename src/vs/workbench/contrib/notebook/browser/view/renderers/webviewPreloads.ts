@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type { Event } from 'vs/base/common/event';
-import type { IDisposable } from 'vs/base/common/lifecycle';
-import { ToWebviewMessage } from 'vs/workbench/contrib/notebook/browser/view/renderers/backLayerWebView';
-import { RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import type { Event } from 'vs/Base/common/event';
+import type { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ToWeBviewMessage } from 'vs/workBench/contriB/noteBook/Browser/view/renderers/BackLayerWeBView';
+import { RenderOutputType } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
-// !! IMPORTANT !! everything must be in-line within the webviewPreloads
+// !! IMPORTANT !! everything must Be in-line within the weBviewPreloads
 // function. Imports are not allowed. This is stringifies and injected into
-// the webview.
+// the weBview.
 
 declare const acquireVsCodeApi: () => ({ getState(): { [key: string]: unknown; }, setState(data: { [key: string]: unknown; }): void, postMessage: (msg: unknown) => void; });
 
-declare class ResizeObserver {
+declare class ResizeOBserver {
 	constructor(onChange: (entries: { target: HTMLElement, contentRect?: ClientRect; }[]) => void);
-	observe(element: Element): void;
+	oBserve(element: Element): void;
 	disconnect(): void;
 }
 
-declare const __outputNodePadding__: number;
+declare const __outputNodePadding__: numBer;
 
 type Listener<T> = { fn: (evt: T) => void; thisArg: unknown; };
 
@@ -29,7 +29,7 @@ interface EmitterLike<T> {
 	event: Event<T>;
 }
 
-function webviewPreloads() {
+function weBviewPreloads() {
 	const vscode = acquireVsCodeApi();
 
 	const handleInnerClick = (event: MouseEvent) => {
@@ -39,72 +39,72 @@ function webviewPreloads() {
 
 		for (let node = event.target as HTMLElement | null; node; node = node.parentNode as HTMLElement) {
 			if (node instanceof HTMLAnchorElement && node.href) {
-				if (node.href.startsWith('blob:')) {
-					handleBlobUrlClick(node.href, node.download);
+				if (node.href.startsWith('BloB:')) {
+					handleBloBUrlClick(node.href, node.download);
 				}
 				event.preventDefault();
-				break;
+				Break;
 			}
 		}
 	};
 
-	const handleBlobUrlClick = async (url: string, downloadName: string) => {
+	const handleBloBUrlClick = async (url: string, downloadName: string) => {
 		try {
 			const response = await fetch(url);
-			const blob = await response.blob();
+			const BloB = await response.BloB();
 			const reader = new FileReader();
 			reader.addEventListener('load', () => {
 				const data = reader.result;
 				vscode.postMessage({
-					__vscode_notebook_message: true,
+					__vscode_noteBook_message: true,
 					type: 'clicked-data-url',
 					data,
 					downloadName
 				});
 			});
-			reader.readAsDataURL(blob);
+			reader.readAsDataURL(BloB);
 		} catch (e) {
 			console.error(e.message);
 		}
 	};
 
-	document.body.addEventListener('click', handleInnerClick);
+	document.Body.addEventListener('click', handleInnerClick);
 
-	const preservedScriptAttributes: (keyof HTMLScriptElement)[] = [
+	const preservedScriptAttriButes: (keyof HTMLScriptElement)[] = [
 		'type', 'src', 'nonce', 'noModule', 'async',
 	];
 
-	// derived from https://github.com/jquery/jquery/blob/d0ce00cdfa680f1f0c38460bc51ea14079ae8b07/src/core/DOMEval.js
+	// derived from https://githuB.com/jquery/jquery/BloB/d0ce00cdfa680f1f0c38460Bc51ea14079ae8B07/src/core/DOMEval.js
 	const domEval = (container: Element) => {
 		const arr = Array.from(container.getElementsByTagName('script'));
 		for (let n = 0; n < arr.length; n++) {
 			const node = arr[n];
 			const scriptTag = document.createElement('script');
 			scriptTag.text = node.innerText;
-			for (const key of preservedScriptAttributes) {
-				const val = node[key] || node.getAttribute && node.getAttribute(key);
+			for (const key of preservedScriptAttriButes) {
+				const val = node[key] || node.getAttriBute && node.getAttriBute(key);
 				if (val) {
-					scriptTag.setAttribute(key, val as any);
+					scriptTag.setAttriBute(key, val as any);
 				}
 			}
 
-			// TODO@connor4312: should script with src not be removed?
+			// TODO@connor4312: should script with src not Be removed?
 			container.appendChild(scriptTag).parentNode!.removeChild(scriptTag);
 		}
 	};
 
-	const outputObservers = new Map<string, ResizeObserver>();
+	const outputOBservers = new Map<string, ResizeOBserver>();
 
-	const resizeObserve = (container: Element, id: string) => {
-		const resizeObserver = new ResizeObserver(entries => {
+	const resizeOBserve = (container: Element, id: string) => {
+		const resizeOBserver = new ResizeOBserver(entries => {
 			for (const entry of entries) {
-				if (!document.body.contains(entry.target)) {
+				if (!document.Body.contains(entry.target)) {
 					return;
 				}
 
 				if (entry.target.id === id && entry.contentRect) {
 					vscode.postMessage({
-						__vscode_notebook_message: true,
+						__vscode_noteBook_message: true,
 						type: 'dimension',
 						id: id,
 						data: {
@@ -115,12 +115,12 @@ function webviewPreloads() {
 			}
 		});
 
-		resizeObserver.observe(container);
-		if (outputObservers.has(id)) {
-			outputObservers.get(id)?.disconnect();
+		resizeOBserver.oBserve(container);
+		if (outputOBservers.has(id)) {
+			outputOBservers.get(id)?.disconnect();
 		}
 
-		outputObservers.set(id, resizeObserver);
+		outputOBservers.set(id, resizeOBserver);
 	};
 
 	function scrollWillGoToParent(event: WheelEvent) {
@@ -147,7 +147,7 @@ function webviewPreloads() {
 		}
 
 		vscode.postMessage({
-			__vscode_notebook_message: true,
+			__vscode_noteBook_message: true,
 			type: 'did-scroll-wheel',
 			payload: {
 				deltaMode: event.deltaMode,
@@ -160,28 +160,28 @@ function webviewPreloads() {
 		});
 	};
 
-	function focusFirstFocusableInCell(cellId: string) {
+	function focusFirstFocusaBleInCell(cellId: string) {
 		const cellOutputContainer = document.getElementById(cellId);
 		if (cellOutputContainer) {
-			const focusableElement = cellOutputContainer.querySelector('[tabindex="0"], [href], button, input, option, select, textarea') as HTMLElement | null;
-			focusableElement?.focus();
+			const focusaBleElement = cellOutputContainer.querySelector('[taBindex="0"], [href], Button, input, option, select, textarea') as HTMLElement | null;
+			focusaBleElement?.focus();
 		}
 	}
 
-	function createFocusSink(cellId: string, outputId: string, focusNext?: boolean) {
+	function createFocusSink(cellId: string, outputId: string, focusNext?: Boolean) {
 		const element = document.createElement('div');
-		element.tabIndex = 0;
+		element.taBIndex = 0;
 		element.addEventListener('focus', () => {
 			vscode.postMessage({
-				__vscode_notebook_message: true,
+				__vscode_noteBook_message: true,
 				type: 'focus-editor',
 				id: outputId,
 				focusNext
 			});
 
-			setTimeout(() => { // Wait a tick to prevent the focus indicator blinking before webview blurs
+			setTimeout(() => { // Wait a tick to prevent the focus indicator Blinking Before weBview Blurs
 				// Move focus off the focus sink - single use
-				focusFirstFocusableInCell(cellId);
+				focusFirstFocusaBleInCell(cellId);
 			}, 50);
 		});
 
@@ -191,7 +191,7 @@ function webviewPreloads() {
 	function addMouseoverListeners(element: HTMLElement, outputId: string): void {
 		element.addEventListener('mouseenter', () => {
 			vscode.postMessage({
-				__vscode_notebook_message: true,
+				__vscode_noteBook_message: true,
 				type: 'mouseenter',
 				id: outputId,
 				data: {}
@@ -199,7 +199,7 @@ function webviewPreloads() {
 		});
 		element.addEventListener('mouseleave', () => {
 			vscode.postMessage({
-				__vscode_notebook_message: true,
+				__vscode_noteBook_message: true,
 				type: 'mouseleave',
 				id: outputId,
 				data: {}
@@ -207,7 +207,7 @@ function webviewPreloads() {
 		});
 	}
 
-	const dontEmit = Symbol('dontEmit');
+	const dontEmit = SymBol('dontEmit');
 
 	function createEmitter<T>(listenerChange: (listeners: Set<Listener<T>>) => void = () => undefined): EmitterLike<T> {
 		const listeners = new Set<Listener<T>>();
@@ -217,33 +217,33 @@ function webviewPreloads() {
 					listener.fn.call(listener.thisArg, data);
 				}
 			},
-			event(fn, thisArg, disposables) {
-				const listenerObj = { fn, thisArg };
-				const disposable: IDisposable = {
+			event(fn, thisArg, disposaBles) {
+				const listenerOBj = { fn, thisArg };
+				const disposaBle: IDisposaBle = {
 					dispose: () => {
-						listeners.delete(listenerObj);
+						listeners.delete(listenerOBj);
 						listenerChange(listeners);
 					},
 				};
 
-				listeners.add(listenerObj);
+				listeners.add(listenerOBj);
 				listenerChange(listeners);
 
-				if (disposables instanceof Array) {
-					disposables.push(disposable);
-				} else if (disposables) {
-					disposables.add(disposable);
+				if (disposaBles instanceof Array) {
+					disposaBles.push(disposaBle);
+				} else if (disposaBles) {
+					disposaBles.add(disposaBle);
 				}
 
-				return disposable;
+				return disposaBle;
 			},
 		};
 	}
 
 	// Maps the events in the given emitter, invoking mapFn on each one. mapFn can return
-	// the dontEmit symbol to skip emission.
+	// the dontEmit symBol to skip emission.
 	function mapEmitter<T, R>(emitter: EmitterLike<T>, mapFn: (data: T) => R | typeof dontEmit) {
-		let listener: IDisposable;
+		let listener: IDisposaBle;
 		const mapped = createEmitter(listeners => {
 			if (listeners.size && !listener) {
 				listener = emitter.event(data => {
@@ -277,15 +277,15 @@ function webviewPreloads() {
 
 	const matchesNs = (namespace: string, query: string | undefined) => namespace === '*' || query === namespace || query === 'undefined';
 
-	(window as any).acquireNotebookRendererApi = <T>(namespace: string) => {
+	(window as any).acquireNoteBookRendererApi = <T>(namespace: string) => {
 		if (!namespace || typeof namespace !== 'string') {
-			throw new Error(`acquireNotebookRendererApi should be called your renderer type as a string, got: ${namespace}.`);
+			throw new Error(`acquireNoteBookRendererApi should Be called your renderer type as a string, got: ${namespace}.`);
 		}
 
 		return {
 			postMessage(message: unknown) {
 				vscode.postMessage({
-					__vscode_notebook_message: true,
+					__vscode_noteBook_message: true,
 					type: 'customRendererMessage',
 					rendererId: namespace,
 					message,
@@ -296,7 +296,7 @@ function webviewPreloads() {
 			},
 			getState(): T | undefined {
 				const state = vscode.getState();
-				return typeof state === 'object' && state ? state[namespace] as T : undefined;
+				return typeof state === 'oBject' && state ? state[namespace] as T : undefined;
 			},
 			onDidReceiveMessage: mapEmitter(onDidReceiveMessage, ([ns, data]) => ns === namespace ? data : dontEmit),
 			onWillDestroyOutput: mapEmitter(onWillDestroyOutput, ([ns, data]) => matchesNs(namespace, ns) ? data : dontEmit),
@@ -312,19 +312,19 @@ function webviewPreloads() {
 	const queuedOuputActions = new Map<string, Promise<void>>();
 
 	/**
-	 * Enqueues an action that affects a output. This blocks behind renderer load
-	 * requests that affect the same output. This should be called whenever you
+	 * Enqueues an action that affects a output. This Blocks Behind renderer load
+	 * requests that affect the same output. This should Be called whenever you
 	 * do something that affects output to ensure it runs in
 	 * the correct order.
 	 */
 	const enqueueOutputAction = <T extends { outputId: string; }>(event: T, fn: (event: T) => Promise<void> | void) => {
 		const queued = queuedOuputActions.get(event.outputId);
-		const maybePromise = queued ? queued.then(() => fn(event)) : fn(event);
-		if (typeof maybePromise === 'undefined') {
+		const mayBePromise = queued ? queued.then(() => fn(event)) : fn(event);
+		if (typeof mayBePromise === 'undefined') {
 			return; // a synchonrously-called function, we're done
 		}
 
-		const promise = maybePromise.then(() => {
+		const promise = mayBePromise.then(() => {
 			if (queuedOuputActions.get(event.outputId) === promise) {
 				queuedOuputActions.delete(event.outputId);
 			}
@@ -336,7 +336,7 @@ function webviewPreloads() {
 	window.addEventListener('wheel', handleWheel);
 
 	window.addEventListener('message', rawEvent => {
-		const event = rawEvent as ({ data: ToWebviewMessage; });
+		const event = rawEvent as ({ data: ToWeBviewMessage; });
 
 		switch (event.data.type) {
 			case 'html':
@@ -365,7 +365,7 @@ function webviewPreloads() {
 					}
 
 					const outputNode = document.createElement('div');
-					outputNode.style.position = 'absolute';
+					outputNode.style.position = 'aBsolute';
 					outputNode.style.top = data.top + 'px';
 					outputNode.style.left = data.left + 'px';
 					outputNode.style.width = 'calc(100% - ' + data.left + 'px)';
@@ -400,10 +400,10 @@ function webviewPreloads() {
 						cellOutputContainer.appendChild(outputNode);
 					}
 
-					resizeObserve(outputNode, outputId);
+					resizeOBserve(outputNode, outputId);
 
 					vscode.postMessage({
-						__vscode_notebook_message: true,
+						__vscode_noteBook_message: true,
 						type: 'dimension',
 						id: outputId,
 						data: {
@@ -412,9 +412,9 @@ function webviewPreloads() {
 					});
 
 					// don't hide until after this step so that the height is right
-					cellOutputContainer.style.display = data.initiallyHidden ? 'none' : 'block';
+					cellOutputContainer.style.display = data.initiallyHidden ? 'none' : 'Block';
 				});
-				break;
+				Break;
 			case 'view-scroll':
 				{
 					// const date = new Date();
@@ -425,22 +425,22 @@ function webviewPreloads() {
 						if (widget) {
 							widget.style.top = event.data.widgets[i].top + 'px';
 							if (event.data.forceDisplay) {
-								widget.parentElement!.style.display = 'block';
+								widget.parentElement!.style.display = 'Block';
 							}
 						}
 					}
-					break;
+					Break;
 				}
 			case 'clear':
 				queuedOuputActions.clear(); // stop all loading outputs
 				onWillDestroyOutput.fire([undefined, undefined]);
 				document.getElementById('container')!.innerText = '';
 
-				outputObservers.forEach(ob => {
-					ob.disconnect();
+				outputOBservers.forEach(oB => {
+					oB.disconnect();
 				});
-				outputObservers.clear();
-				break;
+				outputOBservers.clear();
+				Break;
 			case 'clearOutput':
 				const output = document.getElementById(event.data.outputId);
 				queuedOuputActions.delete(event.data.outputId); // stop any in-progress rendering
@@ -448,7 +448,7 @@ function webviewPreloads() {
 					onWillDestroyOutput.fire([event.data.apiNamespace, { outputId: event.data.outputId }]);
 					output.parentNode.removeChild(output);
 				}
-				break;
+				Break;
 			case 'hideOutput':
 				enqueueOutputAction(event.data, ({ outputId }) => {
 					const container = document.getElementById(outputId)?.parentElement;
@@ -456,16 +456,16 @@ function webviewPreloads() {
 						container.style.display = 'none';
 					}
 				});
-				break;
+				Break;
 			case 'showOutput':
 				enqueueOutputAction(event.data, ({ outputId, top }) => {
 					const output = document.getElementById(outputId);
 					if (output) {
-						output.parentElement!.style.display = 'block';
+						output.parentElement!.style.display = 'Block';
 						output.style.top = top + 'px';
 
 						vscode.postMessage({
-							__vscode_notebook_message: true,
+							__vscode_noteBook_message: true,
 							type: 'dimension',
 							id: outputId,
 							data: {
@@ -474,14 +474,14 @@ function webviewPreloads() {
 						});
 					}
 				});
-				break;
+				Break;
 			case 'preload':
 				const resources = event.data.resources;
 				const preloadsContainer = document.getElementById('__vscode_preloads')!;
 				for (let i = 0; i < resources.length; i++) {
 					const { uri, originalUri } = resources[i];
 					const scriptTag = document.createElement('script');
-					scriptTag.setAttribute('src', uri);
+					scriptTag.setAttriBute('src', uri);
 					preloadsContainer.appendChild(scriptTag);
 					preloadPromises.set(uri, new Promise<string | undefined>(resolve => {
 						scriptTag.addEventListener('load', () => resolve(undefined));
@@ -490,10 +490,10 @@ function webviewPreloads() {
 						);
 					}));
 				}
-				break;
+				Break;
 			case 'focus-output':
-				focusFirstFocusableInCell(event.data.cellId);
-				break;
+				focusFirstFocusaBleInCell(event.data.cellId);
+				Break;
 			case 'decorations':
 				{
 					const outputContainer = document.getElementById(event.data.cellId);
@@ -506,17 +506,17 @@ function webviewPreloads() {
 					});
 				}
 
-				break;
+				Break;
 			case 'customRendererMessage':
 				onDidReceiveMessage.fire([event.data.rendererId, event.data.message]);
-				break;
+				Break;
 		}
 	});
 
 	vscode.postMessage({
-		__vscode_notebook_message: true,
+		__vscode_noteBook_message: true,
 		type: 'initialized'
 	});
 }
 
-export const preloadsScriptStr = (outputNodePadding: number) => `(${webviewPreloads})()`.replace(/__outputNodePadding__/g, `${outputNodePadding}`);
+export const preloadsScriptStr = (outputNodePadding: numBer) => `(${weBviewPreloads})()`.replace(/__outputNodePadding__/g, `${outputNodePadding}`);

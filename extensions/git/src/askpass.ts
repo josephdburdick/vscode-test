@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { window, InputBoxOptions, Uri, OutputChannel, Disposable, workspace } from 'vscode';
-import { IDisposable, EmptyDisposable, toDisposable } from './util';
+import { window, InputBoxOptions, Uri, OutputChannel, DisposaBle, workspace } from 'vscode';
+import { IDisposaBle, EmptyDisposaBle, toDisposaBle } from './util';
 import * as path from 'path';
 import { IIPCHandler, IIPCServer, createIPCServer } from './ipc/ipcServer';
 import { CredentialsProvider, Credentials } from './api/git';
 
 export class Askpass implements IIPCHandler {
 
-	private disposable: IDisposable = EmptyDisposable;
+	private disposaBle: IDisposaBle = EmptyDisposaBle;
 	private cache = new Map<string, Credentials>();
 	private credentialsProviders = new Set<CredentialsProvider>();
 
@@ -26,15 +26,15 @@ export class Askpass implements IIPCHandler {
 
 	private constructor(private ipc?: IIPCServer) {
 		if (ipc) {
-			this.disposable = ipc.registerHandler('askpass', this);
+			this.disposaBle = ipc.registerHandler('askpass', this);
 		}
 	}
 
 	async handle({ request, host }: { request: string, host: string }): Promise<string> {
 		const config = workspace.getConfiguration('git', null);
-		const enabled = config.get<boolean>('enabled');
+		const enaBled = config.get<Boolean>('enaBled');
 
-		if (!enabled) {
+		if (!enaBled) {
 			return '';
 		}
 
@@ -87,12 +87,12 @@ export class Askpass implements IIPCHandler {
 		};
 	}
 
-	registerCredentialsProvider(provider: CredentialsProvider): Disposable {
+	registerCredentialsProvider(provider: CredentialsProvider): DisposaBle {
 		this.credentialsProviders.add(provider);
-		return toDisposable(() => this.credentialsProviders.delete(provider));
+		return toDisposaBle(() => this.credentialsProviders.delete(provider));
 	}
 
 	dispose(): void {
-		this.disposable.dispose();
+		this.disposaBle.dispose();
 	}
 }

@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { CoreEditingCommands } from 'vs/editor/browser/controller/coreCommands';
+import { CoreEditingCommands } from 'vs/editor/Browser/controller/coreCommands';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 import { Handler } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
-import { TitleCaseAction, DeleteAllLeftAction, DeleteAllRightAction, IndentLinesAction, InsertLineAfterAction, InsertLineBeforeAction, JoinLinesAction, LowerCaseAction, SortLinesAscendingAction, SortLinesDescendingAction, TransposeAction, UpperCaseAction, DeleteLinesAction } from 'vs/editor/contrib/linesOperations/linesOperations';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { TitleCaseAction, DeleteAllLeftAction, DeleteAllRightAction, IndentLinesAction, InsertLineAfterAction, InsertLineBeforeAction, JoinLinesAction, LowerCaseAction, SortLinesAscendingAction, SortLinesDescendingAction, TransposeAction, UpperCaseAction, DeleteLinesAction } from 'vs/editor/contriB/linesOperations/linesOperations';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import type { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction } from 'vs/editor/browser/editorExtensions';
+import type { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction } from 'vs/editor/Browser/editorExtensions';
 import { ViewModel } from 'vs/editor/common/viewModel/viewModelImpl';
 
 function assertSelection(editor: ICodeEditor, expected: Selection | Selection[]): void {
@@ -26,13 +26,13 @@ function executeAction(action: EditorAction, editor: ICodeEditor): void {
 	action.run(null!, editor, undefined);
 }
 
-suite('Editor Contrib - Line Operations', () => {
+suite('Editor ContriB - Line Operations', () => {
 	suite('SortLinesAscendingAction', () => {
 		test('should sort selected lines in ascending order', function () {
 			withTestCodeEditor(
 				[
 					'omicron',
-					'beta',
+					'Beta',
 					'alpha'
 				], {}, (editor) => {
 					let model = editor.getModel()!;
@@ -42,7 +42,7 @@ suite('Editor Contrib - Line Operations', () => {
 					executeAction(sortLinesAscendingAction, editor);
 					assert.deepEqual(model.getLinesContent(), [
 						'alpha',
-						'beta',
+						'Beta',
 						'omicron'
 					]);
 					assertSelection(editor, new Selection(1, 1, 3, 7));
@@ -53,11 +53,11 @@ suite('Editor Contrib - Line Operations', () => {
 			withTestCodeEditor(
 				[
 					'omicron',
-					'beta',
+					'Beta',
 					'alpha',
 					'',
 					'omicron',
-					'beta',
+					'Beta',
 					'alpha'
 				], {}, (editor) => {
 					let model = editor.getModel()!;
@@ -67,11 +67,11 @@ suite('Editor Contrib - Line Operations', () => {
 					executeAction(sortLinesAscendingAction, editor);
 					assert.deepEqual(model.getLinesContent(), [
 						'alpha',
-						'beta',
+						'Beta',
 						'omicron',
 						'',
 						'alpha',
-						'beta',
+						'Beta',
 						'omicron'
 					]);
 					let expectedSelections = [
@@ -90,7 +90,7 @@ suite('Editor Contrib - Line Operations', () => {
 			withTestCodeEditor(
 				[
 					'alpha',
-					'beta',
+					'Beta',
 					'omicron'
 				], {}, (editor) => {
 					let model = editor.getModel()!;
@@ -100,7 +100,7 @@ suite('Editor Contrib - Line Operations', () => {
 					executeAction(sortLinesDescendingAction, editor);
 					assert.deepEqual(model.getLinesContent(), [
 						'omicron',
-						'beta',
+						'Beta',
 						'alpha'
 					]);
 					assertSelection(editor, new Selection(1, 1, 3, 5));
@@ -111,11 +111,11 @@ suite('Editor Contrib - Line Operations', () => {
 			withTestCodeEditor(
 				[
 					'alpha',
-					'beta',
+					'Beta',
 					'omicron',
 					'',
 					'alpha',
-					'beta',
+					'Beta',
 					'omicron'
 				], {}, (editor) => {
 					let model = editor.getModel()!;
@@ -125,11 +125,11 @@ suite('Editor Contrib - Line Operations', () => {
 					executeAction(sortLinesDescendingAction, editor);
 					assert.deepEqual(model.getLinesContent(), [
 						'omicron',
-						'beta',
+						'Beta',
 						'alpha',
 						'',
 						'omicron',
-						'beta',
+						'Beta',
 						'alpha'
 					]);
 					let expectedSelections = [
@@ -197,18 +197,18 @@ suite('Editor Contrib - Line Operations', () => {
 					'hi my name is Carlos Matos',
 					'BCC',
 					'waso waso waso',
-					'my wife doesnt believe in me',
+					'my wife doesnt Believe in me',
 					'nonononono',
-					'bitconneeeect'
+					'Bitconneeeect'
 				], {}, (editor) => {
 					let model = editor.getModel()!;
 					let deleteAllLeftAction = new DeleteAllLeftAction();
 
-					const beforeSecondWasoSelection = new Selection(3, 5, 3, 5);
+					const BeforeSecondWasoSelection = new Selection(3, 5, 3, 5);
 					const endOfBCCSelection = new Selection(2, 4, 2, 4);
 					const endOfNonono = new Selection(5, 11, 5, 11);
 
-					editor.setSelections([beforeSecondWasoSelection, endOfBCCSelection, endOfNonono]);
+					editor.setSelections([BeforeSecondWasoSelection, endOfBCCSelection, endOfNonono]);
 
 					executeAction(deleteAllLeftAction, editor);
 					let selections = editor.getSelections()!;
@@ -218,23 +218,23 @@ suite('Editor Contrib - Line Operations', () => {
 					assert.equal(model.getLineContent(5), '');
 
 					assert.deepEqual([
-						selections[0].startLineNumber,
+						selections[0].startLineNumBer,
 						selections[0].startColumn,
-						selections[0].endLineNumber,
+						selections[0].endLineNumBer,
 						selections[0].endColumn
 					], [3, 1, 3, 1]);
 
 					assert.deepEqual([
-						selections[1].startLineNumber,
+						selections[1].startLineNumBer,
 						selections[1].startColumn,
-						selections[1].endLineNumber,
+						selections[1].endLineNumBer,
 						selections[1].endColumn
 					], [2, 1, 2, 1]);
 
 					assert.deepEqual([
-						selections[2].startLineNumber,
+						selections[2].startLineNumBer,
 						selections[2].startColumn,
-						selections[2].endLineNumber,
+						selections[2].endLineNumBer,
 						selections[2].endColumn
 					], [5, 1, 5, 1]);
 
@@ -245,16 +245,16 @@ suite('Editor Contrib - Line Operations', () => {
 					assert.equal(selections.length, 2);
 
 					assert.deepEqual([
-						selections[0].startLineNumber,
+						selections[0].startLineNumBer,
 						selections[0].startColumn,
-						selections[0].endLineNumber,
+						selections[0].endLineNumBer,
 						selections[0].endColumn
 					], [1, 27, 1, 27]);
 
 					assert.deepEqual([
-						selections[1].startLineNumber,
+						selections[1].startLineNumBer,
 						selections[1].startColumn,
-						selections[1].endLineNumber,
+						selections[1].endLineNumBer,
 						selections[1].endColumn
 					], [2, 29, 2, 29]);
 				});
@@ -267,7 +267,7 @@ suite('Editor Contrib - Line Operations', () => {
 					'world',
 					'hello world',
 					'hello',
-					'bonjour',
+					'Bonjour',
 					'hola',
 					'world',
 					'hello world',
@@ -309,7 +309,7 @@ suite('Editor Contrib - Line Operations', () => {
 
 					editor.setSelection(new Selection(1, 1, 1, 1));
 
-					editor.trigger('keyboard', Handler.Type, { text: 'Typing some text here on line ' });
+					editor.trigger('keyBoard', Handler.Type, { text: 'Typing some text here on line ' });
 					assert.equal(model.getLineContent(1), 'Typing some text here on line one');
 					assert.deepEqual(editor.getSelection(), new Selection(1, 31, 1, 31));
 
@@ -439,7 +439,7 @@ suite('Editor Contrib - Line Operations', () => {
 
 					editor.setSelection(new Selection(1, 6, 1, 6));
 
-					editor.trigger('keyboard', Handler.Type, { text: ' my dear' });
+					editor.trigger('keyBoard', Handler.Type, { text: ' my dear' });
 					assert.equal(model.getLineContent(1), 'hello my dear');
 					assert.deepEqual(editor.getSelection(), new Selection(1, 14, 1, 14));
 
@@ -585,12 +585,12 @@ suite('Editor Contrib - Line Operations', () => {
 
 		withTestCodeEditor(
 			[
-				'foO baR BaZ',
-				'foO\'baR\'BaZ',
-				'foO[baR]BaZ',
-				'foO`baR~BaZ',
-				'foO^baR%BaZ',
-				'foO$baR!BaZ'
+				'foO BaR BaZ',
+				'foO\'BaR\'BaZ',
+				'foO[BaR]BaZ',
+				'foO`BaR~BaZ',
+				'foO^BaR%BaZ',
+				'foO$BaR!BaZ'
 			], {}, (editor) => {
 				let model = editor.getModel()!;
 				let titlecaseAction = new TitleCaseAction();
@@ -654,7 +654,7 @@ suite('Editor Contrib - Line Operations', () => {
 	});
 
 	suite('DeleteAllRightAction', () => {
-		test('should be noop on empty', () => {
+		test('should Be noop on empty', () => {
 			withTestCodeEditor([''], {}, (editor) => {
 				const model = editor.getModel()!;
 				const action = new DeleteAllRightAction();
@@ -831,18 +831,18 @@ suite('Editor Contrib - Line Operations', () => {
 	});
 
 	test('InsertLineBeforeAction', () => {
-		function testInsertLineBefore(lineNumber: number, column: number, callback: (model: ITextModel, viewModel: ViewModel) => void): void {
+		function testInsertLineBefore(lineNumBer: numBer, column: numBer, callBack: (model: ITextModel, viewModel: ViewModel) => void): void {
 			const TEXT = [
 				'First line',
 				'Second line',
 				'Third line'
 			];
 			withTestCodeEditor(TEXT, {}, (editor, viewModel) => {
-				editor.setPosition(new Position(lineNumber, column));
+				editor.setPosition(new Position(lineNumBer, column));
 				let insertLineBeforeAction = new InsertLineBeforeAction();
 
 				executeAction(insertLineBeforeAction, editor);
-				callback(editor.getModel()!, viewModel);
+				callBack(editor.getModel()!, viewModel);
 			});
 		}
 
@@ -872,18 +872,18 @@ suite('Editor Contrib - Line Operations', () => {
 	});
 
 	test('InsertLineAfterAction', () => {
-		function testInsertLineAfter(lineNumber: number, column: number, callback: (model: ITextModel, viewModel: ViewModel) => void): void {
+		function testInsertLineAfter(lineNumBer: numBer, column: numBer, callBack: (model: ITextModel, viewModel: ViewModel) => void): void {
 			const TEXT = [
 				'First line',
 				'Second line',
 				'Third line'
 			];
 			withTestCodeEditor(TEXT, {}, (editor, viewModel) => {
-				editor.setPosition(new Position(lineNumber, column));
+				editor.setPosition(new Position(lineNumBer, column));
 				let insertLineAfterAction = new InsertLineAfterAction();
 
 				executeAction(insertLineAfterAction, editor);
-				callback(editor.getModel()!, viewModel);
+				callBack(editor.getModel()!, viewModel);
 			});
 		}
 
@@ -912,11 +912,11 @@ suite('Editor Contrib - Line Operations', () => {
 		});
 	});
 
-	test('Bug 18276:[editor] Indentation broken when selection is empty', () => {
+	test('Bug 18276:[editor] Indentation Broken when selection is empty', () => {
 
 		let model = createTextModel(
 			[
-				'function baz() {'
+				'function Baz() {'
 			].join('\n'),
 			{
 				insertSpaces: false,
@@ -928,17 +928,17 @@ suite('Editor Contrib - Line Operations', () => {
 			editor.setPosition(new Position(1, 2));
 
 			executeAction(indentLinesAction, editor);
-			assert.equal(model.getLineContent(1), '\tfunction baz() {');
+			assert.equal(model.getLineContent(1), '\tfunction Baz() {');
 			assert.deepEqual(editor.getSelection(), new Selection(1, 3, 1, 3));
 
-			CoreEditingCommands.Tab.runEditorCommand(null, editor, null);
-			assert.equal(model.getLineContent(1), '\tf\tunction baz() {');
+			CoreEditingCommands.TaB.runEditorCommand(null, editor, null);
+			assert.equal(model.getLineContent(1), '\tf\tunction Baz() {');
 		});
 
 		model.dispose();
 	});
 
-	test('issue #80736: Indenting while the cursor is at the start of a line of text causes the added spaces or tab to be selected', () => {
+	test('issue #80736: Indenting while the cursor is at the start of a line of text causes the added spaces or taB to Be selected', () => {
 		const model = createTextModel(
 			[
 				'Some text'
@@ -967,7 +967,7 @@ suite('Editor Contrib - Line Operations', () => {
 			].join('\n')
 		);
 
-		withTestCodeEditor(null, { model: model, useTabStops: false }, (editor) => {
+		withTestCodeEditor(null, { model: model, useTaBStops: false }, (editor) => {
 			const indentLinesAction = new IndentLinesAction();
 			editor.setPosition(new Position(1, 1));
 
@@ -982,7 +982,7 @@ suite('Editor Contrib - Line Operations', () => {
 	test('issue #62112: Delete line does not work properly when multiple cursors are on line', () => {
 		const TEXT = [
 			'a',
-			'foo boo',
+			'foo Boo',
 			'too',
 			'c',
 		];
@@ -1202,7 +1202,7 @@ suite('Editor Contrib - Line Operations', () => {
 				'',
 				'    getB() {',
 				'        if (true) {',
-				'            return "b";',
+				'            return "B";',
 				'        }',
 				'    }',
 				'',
@@ -1227,7 +1227,7 @@ suite('Editor Contrib - Line Operations', () => {
 				'    }',
 				'',
 				'    getB() {',
-				'            return "b";',
+				'            return "B";',
 				'        }',
 				'    }',
 				'',

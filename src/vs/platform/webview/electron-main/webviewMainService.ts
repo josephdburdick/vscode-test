@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { webContents } from 'electron';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { weBContents } from 'electron';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ITunnelService } from 'vs/platform/remote/common/tunnel';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { IWebviewManagerService, RegisterWebviewMetadata } from 'vs/platform/webview/common/webviewManagerService';
-import { WebviewPortMappingProvider } from 'vs/platform/webview/electron-main/webviewPortMappingProvider';
-import { WebviewProtocolProvider } from 'vs/platform/webview/electron-main/webviewProtocolProvider';
+import { IWeBviewManagerService, RegisterWeBviewMetadata } from 'vs/platform/weBview/common/weBviewManagerService';
+import { WeBviewPortMappingProvider } from 'vs/platform/weBview/electron-main/weBviewPortMappingProvider';
+import { WeBviewProtocolProvider } from 'vs/platform/weBview/electron-main/weBviewProtocolProvider';
 import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
 
-export class WebviewMainService extends Disposable implements IWebviewManagerService {
+export class WeBviewMainService extends DisposaBle implements IWeBviewManagerService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly protocolProvider: WebviewProtocolProvider;
-	private readonly portMappingProvider: WebviewPortMappingProvider;
+	private readonly protocolProvider: WeBviewProtocolProvider;
+	private readonly portMappingProvider: WeBviewPortMappingProvider;
 
 	constructor(
 		@IFileService fileService: IFileService,
@@ -29,58 +29,58 @@ export class WebviewMainService extends Disposable implements IWebviewManagerSer
 		@IWindowsMainService windowsMainService: IWindowsMainService,
 	) {
 		super();
-		this.protocolProvider = this._register(new WebviewProtocolProvider(fileService, requestService, windowsMainService));
-		this.portMappingProvider = this._register(new WebviewPortMappingProvider(tunnelService));
+		this.protocolProvider = this._register(new WeBviewProtocolProvider(fileService, requestService, windowsMainService));
+		this.portMappingProvider = this._register(new WeBviewPortMappingProvider(tunnelService));
 	}
 
-	public async registerWebview(id: string, windowId: number, metadata: RegisterWebviewMetadata): Promise<void> {
+	puBlic async registerWeBview(id: string, windowId: numBer, metadata: RegisterWeBviewMetadata): Promise<void> {
 		const extensionLocation = metadata.extensionLocation ? URI.from(metadata.extensionLocation) : undefined;
 
-		this.protocolProvider.registerWebview(id, {
+		this.protocolProvider.registerWeBview(id, {
 			...metadata,
 			windowId: windowId,
 			extensionLocation,
 			localResourceRoots: metadata.localResourceRoots.map(x => URI.from(x))
 		});
 
-		this.portMappingProvider.registerWebview(id, {
+		this.portMappingProvider.registerWeBview(id, {
 			extensionLocation,
 			mappings: metadata.portMappings,
 			resolvedAuthority: metadata.remoteConnectionData,
 		});
 	}
 
-	public async unregisterWebview(id: string): Promise<void> {
-		this.protocolProvider.unregisterWebview(id);
-		this.portMappingProvider.unregisterWebview(id);
+	puBlic async unregisterWeBview(id: string): Promise<void> {
+		this.protocolProvider.unregisterWeBview(id);
+		this.portMappingProvider.unregisterWeBview(id);
 	}
 
-	public async updateWebviewMetadata(id: string, metaDataDelta: Partial<RegisterWebviewMetadata>): Promise<void> {
+	puBlic async updateWeBviewMetadata(id: string, metaDataDelta: Partial<RegisterWeBviewMetadata>): Promise<void> {
 		const extensionLocation = metaDataDelta.extensionLocation ? URI.from(metaDataDelta.extensionLocation) : undefined;
 
-		this.protocolProvider.updateWebviewMetadata(id, {
+		this.protocolProvider.updateWeBviewMetadata(id, {
 			...metaDataDelta,
 			extensionLocation,
 			localResourceRoots: metaDataDelta.localResourceRoots?.map(x => URI.from(x)),
 		});
 
-		this.portMappingProvider.updateWebviewMetadata(id, {
+		this.portMappingProvider.updateWeBviewMetadata(id, {
 			...metaDataDelta,
 			extensionLocation,
 		});
 	}
 
-	public async setIgnoreMenuShortcuts(webContentsId: number, enabled: boolean): Promise<void> {
-		const contents = webContents.fromId(webContentsId);
+	puBlic async setIgnoreMenuShortcuts(weBContentsId: numBer, enaBled: Boolean): Promise<void> {
+		const contents = weBContents.fromId(weBContentsId);
 		if (!contents) {
-			throw new Error(`Invalid webContentsId: ${webContentsId}`);
+			throw new Error(`Invalid weBContentsId: ${weBContentsId}`);
 		}
 		if (!contents.isDestroyed()) {
-			contents.setIgnoreMenuShortcuts(enabled);
+			contents.setIgnoreMenuShortcuts(enaBled);
 		}
 	}
 
-	public async didLoadResource(requestId: number, content: VSBuffer | undefined): Promise<void> {
+	puBlic async didLoadResource(requestId: numBer, content: VSBuffer | undefined): Promise<void> {
 		this.protocolProvider.didLoadResource(requestId, content);
 	}
 }

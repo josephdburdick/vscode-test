@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { MainThreadLanguagesShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { IPosition } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { StandardTokenType } from 'vs/editor/common/modes';
@@ -50,12 +50,12 @@ export class MainThreadLanguages implements MainThreadLanguagesShape {
 		if (!model) {
 			return undefined;
 		}
-		model.tokenizeIfCheap(position.lineNumber);
-		const tokens = model.getLineTokens(position.lineNumber);
+		model.tokenizeIfCheap(position.lineNumBer);
+		const tokens = model.getLineTokens(position.lineNumBer);
 		const idx = tokens.findTokenIndexAtOffset(position.column - 1);
 		return {
 			type: tokens.getStandardTokenType(idx),
-			range: new Range(position.lineNumber, 1 + tokens.getStartOffset(idx), position.lineNumber, 1 + tokens.getEndOffset(idx))
+			range: new Range(position.lineNumBer, 1 + tokens.getStartOffset(idx), position.lineNumBer, 1 + tokens.getEndOffset(idx))
 		};
 	}
 }

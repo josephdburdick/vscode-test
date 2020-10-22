@@ -6,14 +6,14 @@
 import { ContextMenuHandler, IContextMenuHandlerOptions } from './contextMenuHandler';
 import { IContextViewService, IContextMenuService } from './contextView';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IContextMenuDelegate } from 'vs/base/browser/contextmenu';
+import { IContextMenuDelegate } from 'vs/Base/Browser/contextmenu';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-export class ContextMenuService extends Disposable implements IContextMenuService {
+export class ContextMenuService extends DisposaBle implements IContextMenuService {
 	declare readonly _serviceBrand: undefined;
 
 	private _onDidContextMenu = this._register(new Emitter<void>());
@@ -25,12 +25,12 @@ export class ContextMenuService extends Disposable implements IContextMenuServic
 		@ITelemetryService telemetryService: ITelemetryService,
 		@INotificationService notificationService: INotificationService,
 		@IContextViewService contextViewService: IContextViewService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@IThemeService themeService: IThemeService
 	) {
 		super();
 
-		this.contextMenuHandler = new ContextMenuHandler(contextViewService, telemetryService, notificationService, keybindingService, themeService);
+		this.contextMenuHandler = new ContextMenuHandler(contextViewService, telemetryService, notificationService, keyBindingService, themeService);
 	}
 
 	configure(options: IContextMenuHandlerOptions): void {

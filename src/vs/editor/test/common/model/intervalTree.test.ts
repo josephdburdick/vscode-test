@@ -22,34 +22,34 @@ suite('IntervalTree', () => {
 	class Interval {
 		_intervalBrand: void;
 
-		public start: number;
-		public end: number;
+		puBlic start: numBer;
+		puBlic end: numBer;
 
-		constructor(start: number, end: number) {
+		constructor(start: numBer, end: numBer) {
 			this.start = start;
 			this.end = end;
 		}
 	}
 
 	class Oracle {
-		public intervals: Interval[];
+		puBlic intervals: Interval[];
 
 		constructor() {
 			this.intervals = [];
 		}
 
-		public insert(interval: Interval): Interval {
+		puBlic insert(interval: Interval): Interval {
 			this.intervals.push(interval);
-			this.intervals.sort((a, b) => {
-				if (a.start === b.start) {
-					return a.end - b.end;
+			this.intervals.sort((a, B) => {
+				if (a.start === B.start) {
+					return a.end - B.end;
 				}
-				return a.start - b.start;
+				return a.start - B.start;
 			});
 			return interval;
 		}
 
-		public delete(interval: Interval): void {
+		puBlic delete(interval: Interval): void {
 			for (let i = 0, len = this.intervals.length; i < len; i++) {
 				if (this.intervals[i] === interval) {
 					this.intervals.splice(i, 1);
@@ -58,7 +58,7 @@ suite('IntervalTree', () => {
 			}
 		}
 
-		public search(interval: Interval): Interval[] {
+		puBlic search(interval: Interval): Interval[] {
 			let result: Interval[] = [];
 			for (let i = 0, len = this.intervals.length; i < len; i++) {
 				let int = this.intervals[i];
@@ -77,16 +77,16 @@ suite('IntervalTree', () => {
 		private _treeNodes: Array<IntervalNode | null> = [];
 		private _oracleNodes: Array<Interval | null> = [];
 
-		public acceptOp(op: IOperation): void {
+		puBlic acceptOp(op: IOperation): void {
 
 			if (op.type === 'insert') {
 				if (PRINT_TREE) {
-					console.log(`insert: {${JSON.stringify(new Interval(op.begin, op.end))}}`);
+					console.log(`insert: {${JSON.stringify(new Interval(op.Begin, op.end))}}`);
 				}
 				let nodeId = (++this._lastNodeId);
-				this._treeNodes[nodeId] = new IntervalNode(null!, op.begin, op.end);
+				this._treeNodes[nodeId] = new IntervalNode(null!, op.Begin, op.end);
 				this._tree.insert(this._treeNodes[nodeId]!);
-				this._oracleNodes[nodeId] = this._oracle.insert(new Interval(op.begin, op.end));
+				this._oracleNodes[nodeId] = this._oracle.insert(new Interval(op.Begin, op.end));
 			} else if (op.type === 'delete') {
 				if (PRINT_TREE) {
 					console.log(`delete: {${JSON.stringify(this._oracleNodes[op.id])}}`);
@@ -99,18 +99,18 @@ suite('IntervalTree', () => {
 			} else if (op.type === 'change') {
 
 				this._tree.delete(this._treeNodes[op.id]!);
-				this._treeNodes[op.id]!.reset(0, op.begin, op.end, null!);
+				this._treeNodes[op.id]!.reset(0, op.Begin, op.end, null!);
 				this._tree.insert(this._treeNodes[op.id]!);
 
 				this._oracle.delete(this._oracleNodes[op.id]!);
-				this._oracleNodes[op.id]!.start = op.begin;
+				this._oracleNodes[op.id]!.start = op.Begin;
 				this._oracleNodes[op.id]!.end = op.end;
 				this._oracle.insert(this._oracleNodes[op.id]!);
 
 			} else {
-				let actualNodes = this._tree.intervalSearch(op.begin, op.end, 0, false, 0);
-				let actual = actualNodes.map(n => new Interval(n.cachedAbsoluteStart, n.cachedAbsoluteEnd));
-				let expected = this._oracle.search(new Interval(op.begin, op.end));
+				let actualNodes = this._tree.intervalSearch(op.Begin, op.end, 0, false, 0);
+				let actual = actualNodes.map(n => new Interval(n.cachedABsoluteStart, n.cachedABsoluteEnd));
+				let expected = this._oracle.search(new Interval(op.Begin, op.end));
 				assert.deepEqual(actual, expected);
 				return;
 			}
@@ -121,12 +121,12 @@ suite('IntervalTree', () => {
 
 			assertTreeInvariants(this._tree);
 
-			let actual = this._tree.getAllInOrder().map(n => new Interval(n.cachedAbsoluteStart, n.cachedAbsoluteEnd));
+			let actual = this._tree.getAllInOrder().map(n => new Interval(n.cachedABsoluteStart, n.cachedABsoluteEnd));
 			let expected = this._oracle.intervals;
 			assert.deepEqual(actual, expected);
 		}
 
-		public getExistingNodeId(index: number): number {
+		puBlic getExistingNodeId(index: numBer): numBer {
 			let currIndex = -1;
 			for (let i = 0; i < this._treeNodes.length; i++) {
 				if (this._treeNodes[i] === null) {
@@ -143,26 +143,26 @@ suite('IntervalTree', () => {
 
 	interface IInsertOperation {
 		type: 'insert';
-		begin: number;
-		end: number;
+		Begin: numBer;
+		end: numBer;
 	}
 
 	interface IDeleteOperation {
 		type: 'delete';
-		id: number;
+		id: numBer;
 	}
 
 	interface IChangeOperation {
 		type: 'change';
-		id: number;
-		begin: number;
-		end: number;
+		id: numBer;
+		Begin: numBer;
+		end: numBer;
 	}
 
 	interface ISearchOperation {
 		type: 'search';
-		begin: number;
-		end: number;
+		Begin: numBer;
+		end: numBer;
 	}
 
 	type IOperation = IInsertOperation | IDeleteOperation | IChangeOperation | ISearchOperation;
@@ -174,29 +174,29 @@ suite('IntervalTree', () => {
 		}
 	}
 
-	function getRandomInt(min: number, max: number): number {
+	function getRandomInt(min: numBer, max: numBer): numBer {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	function getRandomRange(min: number, max: number): [number, number] {
-		let begin = getRandomInt(min, max);
-		let length: number;
+	function getRandomRange(min: numBer, max: numBer): [numBer, numBer] {
+		let Begin = getRandomInt(min, max);
+		let length: numBer;
 		if (getRandomInt(1, 10) <= 2) {
 			// large range
-			length = getRandomInt(0, max - begin);
+			length = getRandomInt(0, max - Begin);
 		} else {
 			// small range
-			length = getRandomInt(0, Math.min(max - begin, 10));
+			length = getRandomInt(0, Math.min(max - Begin, 10));
 		}
-		return [begin, begin + length];
+		return [Begin, Begin + length];
 	}
 
 	class AutoTest {
 		private _ops: IOperation[] = [];
 		private _state: TestState = new TestState();
-		private _insertCnt: number;
-		private _deleteCnt: number;
-		private _changeCnt: number;
+		private _insertCnt: numBer;
+		private _deleteCnt: numBer;
+		private _changeCnt: numBer;
 
 		constructor() {
 			this._insertCnt = getRandomInt(MIN_INSERTS, MAX_INSERTS);
@@ -208,7 +208,7 @@ suite('IntervalTree', () => {
 			let range = getRandomRange(MIN_INTERVAL_START, MAX_INTERVAL_END);
 			this._run({
 				type: 'insert',
-				begin: range[0],
+				Begin: range[0],
 				end: range[1]
 			});
 		}
@@ -227,12 +227,12 @@ suite('IntervalTree', () => {
 			this._run({
 				type: 'change',
 				id: this._state.getExistingNodeId(idx),
-				begin: range[0],
+				Begin: range[0],
 				end: range[1]
 			});
 		}
 
-		public run() {
+		puBlic run() {
 			while (this._insertCnt > 0 || this._deleteCnt > 0 || this._changeCnt > 0) {
 				if (this._insertCnt > 0) {
 					this._doRandomInsert();
@@ -250,7 +250,7 @@ suite('IntervalTree', () => {
 				let searchRange = getRandomRange(MIN_INTERVAL_START, MAX_INTERVAL_END);
 				this._run({
 					type: 'search',
-					begin: searchRange[0],
+					Begin: searchRange[0],
 					end: searchRange[1]
 				});
 			}
@@ -261,7 +261,7 @@ suite('IntervalTree', () => {
 			this._state.acceptOp(op);
 		}
 
-		public print(): void {
+		puBlic print(): void {
 			console.log(`testIntervalTree(${JSON.stringify(this._ops)})`);
 		}
 
@@ -270,40 +270,40 @@ suite('IntervalTree', () => {
 	suite('generated', () => {
 		test('gen01', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 28, end: 35 },
-				{ type: 'insert', begin: 52, end: 54 },
-				{ type: 'insert', begin: 63, end: 69 }
+				{ type: 'insert', Begin: 28, end: 35 },
+				{ type: 'insert', Begin: 52, end: 54 },
+				{ type: 'insert', Begin: 63, end: 69 }
 			]);
 		});
 
 		test('gen02', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 80, end: 89 },
-				{ type: 'insert', begin: 92, end: 100 },
-				{ type: 'insert', begin: 99, end: 99 }
+				{ type: 'insert', Begin: 80, end: 89 },
+				{ type: 'insert', Begin: 92, end: 100 },
+				{ type: 'insert', Begin: 99, end: 99 }
 			]);
 		});
 
 		test('gen03', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 89, end: 96 },
-				{ type: 'insert', begin: 71, end: 74 },
+				{ type: 'insert', Begin: 89, end: 96 },
+				{ type: 'insert', Begin: 71, end: 74 },
 				{ type: 'delete', id: 1 }
 			]);
 		});
 
 		test('gen04', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 44, end: 46 },
-				{ type: 'insert', begin: 85, end: 88 },
+				{ type: 'insert', Begin: 44, end: 46 },
+				{ type: 'insert', Begin: 85, end: 88 },
 				{ type: 'delete', id: 0 }
 			]);
 		});
 
 		test('gen05', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 82, end: 90 },
-				{ type: 'insert', begin: 69, end: 73 },
+				{ type: 'insert', Begin: 82, end: 90 },
+				{ type: 'insert', Begin: 69, end: 73 },
 				{ type: 'delete', id: 0 },
 				{ type: 'delete', id: 1 }
 			]);
@@ -311,120 +311,120 @@ suite('IntervalTree', () => {
 
 		test('gen06', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 41, end: 63 },
-				{ type: 'insert', begin: 98, end: 98 },
-				{ type: 'insert', begin: 47, end: 51 },
+				{ type: 'insert', Begin: 41, end: 63 },
+				{ type: 'insert', Begin: 98, end: 98 },
+				{ type: 'insert', Begin: 47, end: 51 },
 				{ type: 'delete', id: 2 }
 			]);
 		});
 
 		test('gen07', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 24, end: 26 },
-				{ type: 'insert', begin: 11, end: 28 },
-				{ type: 'insert', begin: 27, end: 30 },
-				{ type: 'insert', begin: 80, end: 85 },
+				{ type: 'insert', Begin: 24, end: 26 },
+				{ type: 'insert', Begin: 11, end: 28 },
+				{ type: 'insert', Begin: 27, end: 30 },
+				{ type: 'insert', Begin: 80, end: 85 },
 				{ type: 'delete', id: 1 }
 			]);
 		});
 
 		test('gen08', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 100, end: 100 },
-				{ type: 'insert', begin: 100, end: 100 }
+				{ type: 'insert', Begin: 100, end: 100 },
+				{ type: 'insert', Begin: 100, end: 100 }
 			]);
 		});
 
 		test('gen09', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 58, end: 65 },
-				{ type: 'insert', begin: 82, end: 96 },
-				{ type: 'insert', begin: 58, end: 65 }
+				{ type: 'insert', Begin: 58, end: 65 },
+				{ type: 'insert', Begin: 82, end: 96 },
+				{ type: 'insert', Begin: 58, end: 65 }
 			]);
 		});
 
 		test('gen10', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 32, end: 40 },
-				{ type: 'insert', begin: 25, end: 29 },
-				{ type: 'insert', begin: 24, end: 32 }
+				{ type: 'insert', Begin: 32, end: 40 },
+				{ type: 'insert', Begin: 25, end: 29 },
+				{ type: 'insert', Begin: 24, end: 32 }
 			]);
 		});
 
 		test('gen11', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 25, end: 70 },
-				{ type: 'insert', begin: 99, end: 100 },
-				{ type: 'insert', begin: 46, end: 51 },
-				{ type: 'insert', begin: 57, end: 57 },
+				{ type: 'insert', Begin: 25, end: 70 },
+				{ type: 'insert', Begin: 99, end: 100 },
+				{ type: 'insert', Begin: 46, end: 51 },
+				{ type: 'insert', Begin: 57, end: 57 },
 				{ type: 'delete', id: 2 }
 			]);
 		});
 
 		test('gen12', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 20, end: 26 },
-				{ type: 'insert', begin: 10, end: 18 },
-				{ type: 'insert', begin: 99, end: 99 },
-				{ type: 'insert', begin: 37, end: 59 },
+				{ type: 'insert', Begin: 20, end: 26 },
+				{ type: 'insert', Begin: 10, end: 18 },
+				{ type: 'insert', Begin: 99, end: 99 },
+				{ type: 'insert', Begin: 37, end: 59 },
 				{ type: 'delete', id: 2 }
 			]);
 		});
 
 		test('gen13', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 3, end: 91 },
-				{ type: 'insert', begin: 57, end: 57 },
-				{ type: 'insert', begin: 35, end: 44 },
-				{ type: 'insert', begin: 72, end: 81 },
+				{ type: 'insert', Begin: 3, end: 91 },
+				{ type: 'insert', Begin: 57, end: 57 },
+				{ type: 'insert', Begin: 35, end: 44 },
+				{ type: 'insert', Begin: 72, end: 81 },
 				{ type: 'delete', id: 2 }
 			]);
 		});
 
 		test('gen14', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 58, end: 61 },
-				{ type: 'insert', begin: 34, end: 35 },
-				{ type: 'insert', begin: 56, end: 62 },
-				{ type: 'insert', begin: 69, end: 78 },
+				{ type: 'insert', Begin: 58, end: 61 },
+				{ type: 'insert', Begin: 34, end: 35 },
+				{ type: 'insert', Begin: 56, end: 62 },
+				{ type: 'insert', Begin: 69, end: 78 },
 				{ type: 'delete', id: 0 }
 			]);
 		});
 
 		test('gen15', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 63, end: 69 },
-				{ type: 'insert', begin: 17, end: 24 },
-				{ type: 'insert', begin: 3, end: 13 },
-				{ type: 'insert', begin: 84, end: 94 },
-				{ type: 'insert', begin: 18, end: 23 },
-				{ type: 'insert', begin: 96, end: 98 },
+				{ type: 'insert', Begin: 63, end: 69 },
+				{ type: 'insert', Begin: 17, end: 24 },
+				{ type: 'insert', Begin: 3, end: 13 },
+				{ type: 'insert', Begin: 84, end: 94 },
+				{ type: 'insert', Begin: 18, end: 23 },
+				{ type: 'insert', Begin: 96, end: 98 },
 				{ type: 'delete', id: 1 }
 			]);
 		});
 
 		test('gen16', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 27, end: 27 },
-				{ type: 'insert', begin: 42, end: 87 },
-				{ type: 'insert', begin: 42, end: 49 },
-				{ type: 'insert', begin: 69, end: 71 },
-				{ type: 'insert', begin: 20, end: 27 },
-				{ type: 'insert', begin: 8, end: 9 },
-				{ type: 'insert', begin: 42, end: 49 },
+				{ type: 'insert', Begin: 27, end: 27 },
+				{ type: 'insert', Begin: 42, end: 87 },
+				{ type: 'insert', Begin: 42, end: 49 },
+				{ type: 'insert', Begin: 69, end: 71 },
+				{ type: 'insert', Begin: 20, end: 27 },
+				{ type: 'insert', Begin: 8, end: 9 },
+				{ type: 'insert', Begin: 42, end: 49 },
 				{ type: 'delete', id: 1 }
 			]);
 		});
 
 		test('gen17', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 21, end: 23 },
-				{ type: 'insert', begin: 83, end: 87 },
-				{ type: 'insert', begin: 56, end: 58 },
-				{ type: 'insert', begin: 1, end: 55 },
-				{ type: 'insert', begin: 56, end: 59 },
-				{ type: 'insert', begin: 58, end: 60 },
-				{ type: 'insert', begin: 56, end: 65 },
+				{ type: 'insert', Begin: 21, end: 23 },
+				{ type: 'insert', Begin: 83, end: 87 },
+				{ type: 'insert', Begin: 56, end: 58 },
+				{ type: 'insert', Begin: 1, end: 55 },
+				{ type: 'insert', Begin: 56, end: 59 },
+				{ type: 'insert', Begin: 58, end: 60 },
+				{ type: 'insert', Begin: 56, end: 65 },
 				{ type: 'delete', id: 1 },
 				{ type: 'delete', id: 0 },
 				{ type: 'delete', id: 6 }
@@ -433,10 +433,10 @@ suite('IntervalTree', () => {
 
 		test('gen18', () => {
 			testIntervalTree([
-				{ type: 'insert', begin: 25, end: 25 },
-				{ type: 'insert', begin: 67, end: 79 },
+				{ type: 'insert', Begin: 25, end: 25 },
+				{ type: 'insert', Begin: 67, end: 79 },
 				{ type: 'delete', id: 0 },
-				{ type: 'search', begin: 65, end: 75 }
+				{ type: 'search', Begin: 65, end: 75 }
 			]);
 		});
 
@@ -444,12 +444,12 @@ suite('IntervalTree', () => {
 			// Search the IntervalNode ctor for FORCE_OVERFLOWING_TEST
 			// to force that this test leads to a delta normalization
 			testIntervalTree([
-				{ type: 'insert', begin: 686081138593427, end: 733009856502260 },
-				{ type: 'insert', begin: 591031326181669, end: 591031326181672 },
-				{ type: 'insert', begin: 940037682731896, end: 940037682731903 },
-				{ type: 'insert', begin: 598413641151120, end: 598413641151128 },
-				{ type: 'insert', begin: 800564156553344, end: 800564156553351 },
-				{ type: 'insert', begin: 894198957565481, end: 894198957565491 }
+				{ type: 'insert', Begin: 686081138593427, end: 733009856502260 },
+				{ type: 'insert', Begin: 591031326181669, end: 591031326181672 },
+				{ type: 'insert', Begin: 940037682731896, end: 940037682731903 },
+				{ type: 'insert', Begin: 598413641151120, end: 598413641151128 },
+				{ type: 'insert', Begin: 800564156553344, end: 800564156553351 },
+				{ type: 'insert', Begin: 894198957565481, end: 894198957565491 }
 			]);
 		});
 	});
@@ -476,7 +476,7 @@ suite('IntervalTree', () => {
 
 		function createCormenTree(): IntervalTree {
 			let r = new IntervalTree();
-			let data: [number, number][] = [
+			let data: [numBer, numBer][] = [
 				[16, 21],
 				[8, 9],
 				[25, 30],
@@ -497,9 +497,9 @@ suite('IntervalTree', () => {
 
 		const T = createCormenTree();
 
-		function assertIntervalSearch(start: number, end: number, expected: [number, number][]): void {
+		function assertIntervalSearch(start: numBer, end: numBer, expected: [numBer, numBer][]): void {
 			let actualNodes = T.intervalSearch(start, end, 0, false, 0);
-			let actual = actualNodes.map((n) => <[number, number]>[n.cachedAbsoluteStart, n.cachedAbsoluteEnd]);
+			let actual = actualNodes.map((n) => <[numBer, numBer]>[n.cachedABsoluteStart, n.cachedABsoluteEnd]);
 			assert.deepEqual(actual, expected);
 		}
 
@@ -555,7 +555,7 @@ suite('IntervalTree', () => {
 });
 
 suite('IntervalTree', () => {
-	function assertNodeAcceptEdit(msg: string, nodeStart: number, nodeEnd: number, nodeStickiness: TrackedRangeStickiness, start: number, end: number, textLength: number, forceMoveMarkers: boolean, expectedNodeStart: number, expectedNodeEnd: number): void {
+	function assertNodeAcceptEdit(msg: string, nodeStart: numBer, nodeEnd: numBer, nodeStickiness: TrackedRangeStickiness, start: numBer, end: numBer, textLength: numBer, forceMoveMarkers: Boolean, expectedNodeStart: numBer, expectedNodeEnd: numBer): void {
 		let node = new IntervalNode('', nodeStart, nodeEnd);
 		setNodeStickiness(node, nodeStickiness);
 		nodeAcceptEdit(node, start, end, textLength, forceMoveMarkers);
@@ -831,7 +831,7 @@ function printTree(T: IntervalTree): void {
 	console.log(out.join(''));
 }
 
-function _printTree(T: IntervalTree, n: IntervalNode, indent: string, delta: number, out: string[]): void {
+function _printTree(T: IntervalTree, n: IntervalNode, indent: string, delta: numBer, out: string[]): void {
 	out.push(`${indent}[${getNodeColor(n) === NodeColor.Red ? 'R' : 'B'},${n.delta}, ${n.start}->${n.end}, ${n.maxEnd}] : {${delta + n.start}->${delta + n.end}}, maxEnd: ${n.maxEnd + delta}\n`);
 	if (n.left !== SENTINEL) {
 		_printTree(T, n.left, indent + '    ', delta, out);
@@ -859,16 +859,16 @@ function assertTreeInvariants(T: IntervalTree): void {
 	assertValidTree(T);
 }
 
-function depth(n: IntervalNode): number {
+function depth(n: IntervalNode): numBer {
 	if (n === SENTINEL) {
-		// The leafs are black
+		// The leafs are Black
 		return 1;
 	}
 	assert(depth(n.left) === depth(n.right));
 	return (getNodeColor(n) === NodeColor.Black ? 1 : 0) + depth(n.left);
 }
 
-function assertValidNode(n: IntervalNode, delta: number): void {
+function assertValidNode(n: IntervalNode, delta: numBer): void {
 	if (n === SENTINEL) {
 		return;
 	}

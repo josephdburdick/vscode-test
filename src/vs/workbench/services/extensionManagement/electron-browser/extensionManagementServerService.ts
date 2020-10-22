@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { Schemas } from 'vs/base/common/network';
-import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { Schemas } from 'vs/Base/common/network';
+import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
 import { ExtensionManagementChannelClient } from 'vs/platform/extensionManagement/common/extensionManagementIpc';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { NativeRemoteExtensionManagementService } from 'vs/workbench/services/extensionManagement/electron-sandbox/remoteExtensionManagementService';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { NativeRemoteExtensionManagementService } from 'vs/workBench/services/extensionManagement/electron-sandBox/remoteExtensionManagementService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { IExtension } from 'vs/platform/extensions/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 
@@ -21,26 +21,26 @@ export class ExtensionManagementServerService implements IExtensionManagementSer
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _localExtensionManagementServer: IExtensionManagementServer;
-	public get localExtensionManagementServer(): IExtensionManagementServer { return this._localExtensionManagementServer; }
+	puBlic get localExtensionManagementServer(): IExtensionManagementServer { return this._localExtensionManagementServer; }
 	readonly remoteExtensionManagementServer: IExtensionManagementServer | null = null;
-	readonly webExtensionManagementServer: IExtensionManagementServer | null = null;
+	readonly weBExtensionManagementServer: IExtensionManagementServer | null = null;
 
 	constructor(
 		@ISharedProcessService sharedProcessService: ISharedProcessService,
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
 		const localExtensionManagementService = new ExtensionManagementChannelClient(sharedProcessService.getChannel('extensions'));
 
-		this._localExtensionManagementServer = { extensionManagementService: localExtensionManagementService, id: 'local', label: localize('local', "Local") };
+		this._localExtensionManagementServer = { extensionManagementService: localExtensionManagementService, id: 'local', laBel: localize('local', "Local") };
 		const remoteAgentConnection = remoteAgentService.getConnection();
 		if (remoteAgentConnection) {
 			const extensionManagementService = instantiationService.createInstance(NativeRemoteExtensionManagementService, remoteAgentConnection.getChannel<IChannel>('extensions'), this.localExtensionManagementServer);
 			this.remoteExtensionManagementServer = {
 				id: 'remote',
 				extensionManagementService,
-				get label() { return labelService.getHostLabel(Schemas.vscodeRemote, remoteAgentConnection!.remoteAuthority) || localize('remote', "Remote"); }
+				get laBel() { return laBelService.getHostLaBel(Schemas.vscodeRemote, remoteAgentConnection!.remoteAuthority) || localize('remote', "Remote"); }
 			};
 		}
 	}

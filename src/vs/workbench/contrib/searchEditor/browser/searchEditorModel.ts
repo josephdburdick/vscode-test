@@ -3,39 +3,39 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { parseSavedSearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
+import { parseSavedSearchEditor } from 'vs/workBench/contriB/searchEditor/Browser/searchEditorSerialization';
+import { IBackupFileService } from 'vs/workBench/services/Backup/common/Backup';
 import { SearchConfiguration } from './searchEditorInput';
-import { assertIsDefined } from 'vs/base/common/types';
+import { assertIsDefined } from 'vs/Base/common/types';
 
 
 export class SearchEditorModel {
 	private cachedContentsModel: ITextModel | undefined = undefined;
 	private resolveContents!: (model: ITextModel) => void;
-	public onModelResolved: Promise<ITextModel>;
+	puBlic onModelResolved: Promise<ITextModel>;
 
 	private ongoingResolve = Promise.resolve<any>(undefined);
 
 	constructor(
 		private modelUri: URI,
-		public config: SearchConfiguration,
-		private existingData: ({ config: Partial<SearchConfiguration>; backingUri?: URI; } &
+		puBlic config: SearchConfiguration,
+		private existingData: ({ config: Partial<SearchConfiguration>; BackingUri?: URI; } &
 			({ modelUri: URI; text?: never; } |
 			{ text: string; modelUri?: never; } |
-			{ backingUri: URI; text?: never; modelUri?: never; })),
+			{ BackingUri: URI; text?: never; modelUri?: never; })),
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IBackupFileService readonly backupService: IBackupFileService,
+		@IBackupFileService readonly BackupService: IBackupFileService,
 		@IModelService private readonly modelService: IModelService,
 		@IModeService private readonly modeService: IModeService) {
 		this.onModelResolved = new Promise<ITextModel>(resolve => this.resolveContents = resolve);
 		this.onModelResolved.then(model => this.cachedContentsModel = model);
-		this.ongoingResolve = backupService.resolve(modelUri)
-			.then(backup => modelService.getModel(modelUri) ?? (backup ? modelService.createModel(backup.value, modeService.create('search-result'), modelUri) : undefined))
+		this.ongoingResolve = BackupService.resolve(modelUri)
+			.then(Backup => modelService.getModel(modelUri) ?? (Backup ? modelService.createModel(Backup.value, modeService.create('search-result'), modelUri) : undefined))
 			.then(model => { if (model) { this.resolveContents(model); } });
 	}
 
@@ -49,8 +49,8 @@ export class SearchEditorModel {
 			if (this.existingData.text !== undefined) {
 				return this.existingData.text;
 			}
-			else if (this.existingData.backingUri !== undefined) {
-				return (await this.instantiationService.invokeFunction(parseSavedSearchEditor, this.existingData.backingUri)).text;
+			else if (this.existingData.BackingUri !== undefined) {
+				return (await this.instantiationService.invokeFunction(parseSavedSearchEditor, this.existingData.BackingUri)).text;
 			}
 			else {
 				return '';

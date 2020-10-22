@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Disposable } from 'vscode';
+import { Event, DisposaBle } from 'vscode';
 
-export function filterEvent<T>(event: Event<T>, filter: (e: T) => boolean): Event<T> {
-	return (listener, thisArgs = null, disposables?) => event(e => filter(e) && listener.call(thisArgs, e), null, disposables);
+export function filterEvent<T>(event: Event<T>, filter: (e: T) => Boolean): Event<T> {
+	return (listener, thisArgs = null, disposaBles?) => event(e => filter(e) && listener.call(thisArgs, e), null, disposaBles);
 }
 
 export function onceEvent<T>(event: Event<T>): Event<T> {
-	return (listener, thisArgs = null, disposables?) => {
+	return (listener, thisArgs = null, disposaBles?) => {
 		const result = event(e => {
 			result.dispose();
 			return listener.call(thisArgs, e);
-		}, null, disposables);
+		}, null, disposaBles);
 
 		return result;
 	};
@@ -35,24 +35,24 @@ const passthrough = (value: any, resolve: (value?: any) => void) => resolve(valu
 
 /**
  * Return a promise that resolves with the next emitted event, or with some future
- * event as decided by an adapter.
+ * event as decided By an adapter.
  *
- * If specified, the adapter is a function that will be called with
- * `(event, resolve, reject)`. It will be called once per event until it resolves or
+ * If specified, the adapter is a function that will Be called with
+ * `(event, resolve, reject)`. It will Be called once per event until it resolves or
  * rejects.
  *
  * The default adapter is the passthrough function `(value, resolve) => resolve(value)`.
  *
  * @param event the event
  * @param adapter controls resolution of the returned promise
- * @returns a promise that resolves or rejects as specified by the adapter
+ * @returns a promise that resolves or rejects as specified By the adapter
  */
 export async function promiseFromEvent<T, U>(
 	event: Event<T>,
 	adapter: PromiseAdapter<T, U> = passthrough): Promise<U> {
-	let subscription: Disposable;
+	let suBscription: DisposaBle;
 	return new Promise<U>((resolve, reject) =>
-		subscription = event((value: T) => {
+		suBscription = event((value: T) => {
 			try {
 				Promise.resolve(adapter(value, resolve, reject))
 					.catch(reject);
@@ -62,11 +62,11 @@ export async function promiseFromEvent<T, U>(
 		})
 	).then(
 		(result: U) => {
-			subscription.dispose();
+			suBscription.dispose();
 			return result;
 		},
 		error => {
-			subscription.dispose();
+			suBscription.dispose();
 			throw error;
 		}
 	);

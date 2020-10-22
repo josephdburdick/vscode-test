@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MockDebugAdapter } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
-import { timeout } from 'vs/base/common/async';
+import { MockDeBugAdapter } from 'vs/workBench/contriB/deBug/test/Browser/mockDeBug';
+import { timeout } from 'vs/Base/common/async';
 
-suite('Debug - AbstractDebugAdapter', () => {
+suite('DeBug - ABstractDeBugAdapter', () => {
 	suite('event ordering', () => {
-		let adapter: MockDebugAdapter;
+		let adapter: MockDeBugAdapter;
 		let output: string[];
 		setup(() => {
-			adapter = new MockDebugAdapter();
+			adapter = new MockDeBugAdapter();
 			output = [];
 			adapter.onEvent(ev => {
-				output.push((ev as DebugProtocol.OutputEvent).body.output);
+				output.push((ev as DeBugProtocol.OutputEvent).Body.output);
 				Promise.resolve().then(() => output.push('--end microtask--'));
 			});
 		});
@@ -26,27 +26,27 @@ suite('Debug - AbstractDebugAdapter', () => {
 			Promise.resolve().then(() => output.push('--end microtask--'));
 		};
 
-		test('inserts task boundary before response', async () => {
-			await evaluate('before.foo');
+		test('inserts task Boundary Before response', async () => {
+			await evaluate('Before.foo');
 			await timeout(0);
 
-			assert.deepStrictEqual(output, ['before.foo', '--end microtask--', '=before.foo', '--end microtask--']);
+			assert.deepStrictEqual(output, ['Before.foo', '--end microtask--', '=Before.foo', '--end microtask--']);
 		});
 
-		test('inserts task boundary after response', async () => {
+		test('inserts task Boundary after response', async () => {
 			await evaluate('after.foo');
 			await timeout(0);
 
 			assert.deepStrictEqual(output, ['=after.foo', '--end microtask--', 'after.foo', '--end microtask--']);
 		});
 
-		test('does not insert boundaries between events', async () => {
+		test('does not insert Boundaries Between events', async () => {
 			adapter.sendEventBody('output', { output: 'a' });
-			adapter.sendEventBody('output', { output: 'b' });
+			adapter.sendEventBody('output', { output: 'B' });
 			adapter.sendEventBody('output', { output: 'c' });
 			await timeout(0);
 
-			assert.deepStrictEqual(output, ['a', 'b', 'c', '--end microtask--', '--end microtask--', '--end microtask--']);
+			assert.deepStrictEqual(output, ['a', 'B', 'c', '--end microtask--', '--end microtask--', '--end microtask--']);
 		});
 	});
 });

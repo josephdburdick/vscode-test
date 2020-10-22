@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IDebugService, VIEWLET_ID, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
+import { Event } from 'vs/Base/common/event';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IDeBugService, VIEWLET_ID, IDeBugSession } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IViewsService } from 'vs/workbench/common/views';
+import { dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IViewsService } from 'vs/workBench/common/views';
 
-export class DebugProgressContribution implements IWorkbenchContribution {
+export class DeBugProgressContriBution implements IWorkBenchContriBution {
 
-	private toDispose: IDisposable[] = [];
+	private toDispose: IDisposaBle[] = [];
 
 	constructor(
-		@IDebugService debugService: IDebugService,
+		@IDeBugService deBugService: IDeBugService,
 		@IProgressService progressService: IProgressService,
 		@IViewsService viewsService: IViewsService
 	) {
-		let progressListener: IDisposable | undefined;
-		const listenOnProgress = (session: IDebugSession | undefined) => {
+		let progressListener: IDisposaBle | undefined;
+		const listenOnProgress = (session: IDeBugSession | undefined) => {
 			if (progressListener) {
 				progressListener.dispose();
 				progressListener = undefined;
@@ -29,56 +29,56 @@ export class DebugProgressContribution implements IWorkbenchContribution {
 				progressListener = session.onDidProgressStart(async progressStartEvent => {
 					const promise = new Promise<void>(r => {
 						// Show progress until a progress end event comes or the session ends
-						const listener = Event.any(Event.filter(session.onDidProgressEnd, e => e.body.progressId === progressStartEvent.body.progressId),
+						const listener = Event.any(Event.filter(session.onDidProgressEnd, e => e.Body.progressId === progressStartEvent.Body.progressId),
 							session.onDidEndAdapter)(() => {
 								listener.dispose();
 								r();
 							});
 					});
 
-					if (viewsService.isViewContainerVisible(VIEWLET_ID)) {
+					if (viewsService.isViewContainerVisiBle(VIEWLET_ID)) {
 						progressService.withProgress({ location: VIEWLET_ID }, () => promise);
 					}
-					const source = debugService.getConfigurationManager().getDebuggerLabel(session.configuration.type);
+					const source = deBugService.getConfigurationManager().getDeBuggerLaBel(session.configuration.type);
 					progressService.withProgress({
 						location: ProgressLocation.Notification,
-						title: progressStartEvent.body.title,
-						cancellable: progressStartEvent.body.cancellable,
+						title: progressStartEvent.Body.title,
+						cancellaBle: progressStartEvent.Body.cancellaBle,
 						silent: true,
 						source,
 						delay: 500
 					}, progressStep => {
 						let total = 0;
-						const reportProgress = (progress: { message?: string, percentage?: number }) => {
+						const reportProgress = (progress: { message?: string, percentage?: numBer }) => {
 							let increment = undefined;
-							if (typeof progress.percentage === 'number') {
+							if (typeof progress.percentage === 'numBer') {
 								increment = progress.percentage - total;
 								total += increment;
 							}
 							progressStep.report({
 								message: progress.message,
 								increment,
-								total: typeof increment === 'number' ? 100 : undefined,
+								total: typeof increment === 'numBer' ? 100 : undefined,
 							});
 						};
 
-						if (progressStartEvent.body.message) {
-							reportProgress(progressStartEvent.body);
+						if (progressStartEvent.Body.message) {
+							reportProgress(progressStartEvent.Body);
 						}
 						const progressUpdateListener = session.onDidProgressUpdate(e => {
-							if (e.body.progressId === progressStartEvent.body.progressId) {
-								reportProgress(e.body);
+							if (e.Body.progressId === progressStartEvent.Body.progressId) {
+								reportProgress(e.Body);
 							}
 						});
 
 						return promise.then(() => progressUpdateListener.dispose());
-					}, () => session.cancel(progressStartEvent.body.progressId));
+					}, () => session.cancel(progressStartEvent.Body.progressId));
 				});
 			}
 		};
-		this.toDispose.push(debugService.getViewModel().onDidFocusSession(listenOnProgress));
-		listenOnProgress(debugService.getViewModel().focusedSession);
-		this.toDispose.push(debugService.onWillNewSession(session => {
+		this.toDispose.push(deBugService.getViewModel().onDidFocusSession(listenOnProgress));
+		listenOnProgress(deBugService.getViewModel().focusedSession);
+		this.toDispose.push(deBugService.onWillNewSession(session => {
 			if (!progressListener) {
 				listenOnProgress(session);
 			}

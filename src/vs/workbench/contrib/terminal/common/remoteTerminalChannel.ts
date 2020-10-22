@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IEnvironmentVariableService, ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { serializeEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariableShared';
-import { ITerminalConfiguration, ITerminalEnvironment, ITerminalLaunchError, TERMINAL_CONFIG_SECTION } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { SideBySideEditor, EditorResourceAccessor } from 'vs/workbench/common/editor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { Schemas } from 'vs/base/common/network';
+import { IEnvironmentVariaBleService, ISerializaBleEnvironmentVariaBleCollection } from 'vs/workBench/contriB/terminal/common/environmentVariaBle';
+import { serializeEnvironmentVariaBleCollection } from 'vs/workBench/contriB/terminal/common/environmentVariaBleShared';
+import { ITerminalConfiguration, ITerminalEnvironment, ITerminalLaunchError, TERMINAL_CONFIG_SECTION } from 'vs/workBench/contriB/terminal/common/terminal';
+import { IConfigurationResolverService } from 'vs/workBench/services/configurationResolver/common/configurationResolver';
+import { SideBySideEditor, EditorResourceAccessor } from 'vs/workBench/common/editor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { Schemas } from 'vs/Base/common/network';
 
 export const REMOTE_TERMINAL_CHANNEL_NAME = 'remoteterminal';
 
 export interface IShellLaunchConfigDto {
 	name?: string;
-	executable?: string;
+	executaBle?: string;
 	args?: string[] | string;
 	cwd?: string | UriComponents;
 	env?: { [key: string]: string | null; };
-	hideFromUser?: boolean;
+	hideFromUser?: Boolean;
 }
 
 export interface ISingleTerminalConfiguration<T> {
@@ -49,76 +49,76 @@ export interface ICompleteTerminalConfiguration {
 	'terminal.integrated.env.windows': ISingleTerminalConfiguration<ITerminalEnvironment>;
 	'terminal.integrated.env.osx': ISingleTerminalConfiguration<ITerminalEnvironment>;
 	'terminal.integrated.env.linux': ISingleTerminalConfiguration<ITerminalEnvironment>;
-	'terminal.integrated.inheritEnv': boolean;
+	'terminal.integrated.inheritEnv': Boolean;
 	'terminal.integrated.cwd': string;
 	'terminal.integrated.detectLocale': 'auto' | 'off' | 'on';
 }
 
-export type ITerminalEnvironmentVariableCollections = [string, ISerializableEnvironmentVariableCollection][];
+export type ITerminalEnvironmentVariaBleCollections = [string, ISerializaBleEnvironmentVariaBleCollection][];
 
 export interface IWorkspaceFolderData {
 	uri: UriComponents;
 	name: string;
-	index: number;
+	index: numBer;
 }
 
 export interface ICreateTerminalProcessArguments {
 	configuration: ICompleteTerminalConfiguration;
-	resolvedVariables: { [name: string]: string; };
-	envVariableCollections: ITerminalEnvironmentVariableCollections;
+	resolvedVariaBles: { [name: string]: string; };
+	envVariaBleCollections: ITerminalEnvironmentVariaBleCollections;
 	shellLaunchConfig: IShellLaunchConfigDto;
 	workspaceFolders: IWorkspaceFolderData[];
 	activeWorkspaceFolder: IWorkspaceFolderData | null;
 	activeFileResource: UriComponents | undefined;
-	cols: number;
-	rows: number;
-	isWorkspaceShellAllowed: boolean;
+	cols: numBer;
+	rows: numBer;
+	isWorkspaceShellAllowed: Boolean;
 	resolverEnv: { [key: string]: string | null; } | undefined
 }
 
 export interface ICreateTerminalProcessResult {
-	terminalId: number;
+	terminalId: numBer;
 	resolvedShellLaunchConfig: IShellLaunchConfigDto;
 }
 
 export interface IStartTerminalProcessArguments {
-	id: number;
+	id: numBer;
 }
 
 export interface ISendInputToTerminalProcessArguments {
-	id: number;
+	id: numBer;
 	data: string;
 }
 
 export interface IShutdownTerminalProcessArguments {
-	id: number;
-	immediate: boolean;
+	id: numBer;
+	immediate: Boolean;
 }
 
 export interface IResizeTerminalProcessArguments {
-	id: number;
-	cols: number;
-	rows: number;
+	id: numBer;
+	cols: numBer;
+	rows: numBer;
 }
 
 export interface IGetTerminalInitialCwdArguments {
-	id: number;
+	id: numBer;
 }
 
 export interface IGetTerminalCwdArguments {
-	id: number;
+	id: numBer;
 }
 
 export interface ISendCommandResultToTerminalProcessArguments {
-	id: number;
-	reqId: number;
-	isError: boolean;
+	id: numBer;
+	reqId: numBer;
+	isError: Boolean;
 	payload: any;
 }
 
 export interface IRemoteTerminalProcessReadyEvent {
 	type: 'ready';
-	pid: number;
+	pid: numBer;
 	cwd: string;
 }
 export interface IRemoteTerminalProcessTitleChangedEvent {
@@ -131,11 +131,11 @@ export interface IRemoteTerminalProcessDataEvent {
 }
 export interface IRemoteTerminalProcessExitEvent {
 	type: 'exit'
-	exitCode: number | undefined;
+	exitCode: numBer | undefined;
 }
 export interface IRemoteTerminalProcessExecCommandEvent {
 	type: 'execCommand';
-	reqId: number;
+	reqId: numBer;
 	commandId: string;
 	commandArgs: any[];
 }
@@ -148,7 +148,7 @@ export type IRemoteTerminalProcessEvent = (
 );
 
 export interface IOnTerminalProcessEventArguments {
-	id: number;
+	id: numBer;
 }
 
 export class RemoteTerminalChannelClient {
@@ -159,7 +159,7 @@ export class RemoteTerminalChannelClient {
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
 		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService,
 		@IConfigurationResolverService private readonly _resolverService: IConfigurationResolverService,
-		@IEnvironmentVariableService private readonly _environmentVariableService: IEnvironmentVariableService,
+		@IEnvironmentVariaBleService private readonly _environmentVariaBleService: IEnvironmentVariaBleService,
 		@IRemoteAuthorityResolverService private readonly _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ILogService private readonly _logService: ILogService,
 		@IEditorService private readonly _editorService: IEditorService,
@@ -175,7 +175,7 @@ export class RemoteTerminalChannelClient {
 		};
 	}
 
-	public async createTerminalProcess(shellLaunchConfig: IShellLaunchConfigDto, activeWorkspaceRootUri: URI | undefined, cols: number, rows: number, isWorkspaceShellAllowed: boolean): Promise<ICreateTerminalProcessResult> {
+	puBlic async createTerminalProcess(shellLaunchConfig: IShellLaunchConfigDto, activeWorkspaceRootUri: URI | undefined, cols: numBer, rows: numBer, isWorkspaceShellAllowed: Boolean): Promise<ICreateTerminalProcessResult> {
 		const terminalConfig = this._configurationService.getValue<ITerminalConfiguration>(TERMINAL_CONFIG_SECTION);
 		const configuration: ICompleteTerminalConfiguration = {
 			'terminal.integrated.automationShell.windows': this._readSingleTemrinalConfiguration('terminal.integrated.automationShell.windows'),
@@ -195,30 +195,30 @@ export class RemoteTerminalChannelClient {
 			'terminal.integrated.detectLocale': terminalConfig.detectLocale,
 		};
 
-		// We will use the resolver service to resolve all the variables in the config / launch config
-		// But then we will keep only some variables, since the rest need to be resolved on the remote side
-		const resolvedVariables = Object.create(null);
+		// We will use the resolver service to resolve all the variaBles in the config / launch config
+		// But then we will keep only some variaBles, since the rest need to Be resolved on the remote side
+		const resolvedVariaBles = OBject.create(null);
 		const lastActiveWorkspace = activeWorkspaceRootUri ? withNullAsUndefined(this._workspaceContextService.getWorkspaceFolder(activeWorkspaceRootUri)) : undefined;
-		let allResolvedVariables: Map<string, string> | undefined = undefined;
+		let allResolvedVariaBles: Map<string, string> | undefined = undefined;
 		try {
-			allResolvedVariables = await this._resolverService.resolveWithInteraction(lastActiveWorkspace, {
+			allResolvedVariaBles = await this._resolverService.resolveWithInteraction(lastActiveWorkspace, {
 				shellLaunchConfig,
 				configuration
 			});
 		} catch (err) {
 			this._logService.error(err);
 		}
-		if (allResolvedVariables) {
-			for (const [name, value] of allResolvedVariables.entries()) {
-				if (/^config:/.test(name) || name === 'selectedText' || name === 'lineNumber') {
-					resolvedVariables[name] = value;
+		if (allResolvedVariaBles) {
+			for (const [name, value] of allResolvedVariaBles.entries()) {
+				if (/^config:/.test(name) || name === 'selectedText' || name === 'lineNumBer') {
+					resolvedVariaBles[name] = value;
 				}
 			}
 		}
 
-		const envVariableCollections: ITerminalEnvironmentVariableCollections = [];
-		for (const [k, v] of this._environmentVariableService.collections.entries()) {
-			envVariableCollections.push([k, serializeEnvironmentVariableCollection(v.map)]);
+		const envVariaBleCollections: ITerminalEnvironmentVariaBleCollections = [];
+		for (const [k, v] of this._environmentVariaBleService.collections.entries()) {
+			envVariaBleCollections.push([k, serializeEnvironmentVariaBleCollection(v.map)]);
 		}
 
 		const resolverResult = await this._remoteAuthorityResolverService.resolveAuthority(this._remoteAuthority);
@@ -234,8 +234,8 @@ export class RemoteTerminalChannelClient {
 
 		const args: ICreateTerminalProcessArguments = {
 			configuration,
-			resolvedVariables,
-			envVariableCollections,
+			resolvedVariaBles,
+			envVariaBleCollections,
 			shellLaunchConfig,
 			workspaceFolders,
 			activeWorkspaceFolder,
@@ -248,56 +248,56 @@ export class RemoteTerminalChannelClient {
 		return await this._channel.call<ICreateTerminalProcessResult>('$createTerminalProcess', args);
 	}
 
-	public async startTerminalProcess(terminalId: number): Promise<ITerminalLaunchError | void> {
+	puBlic async startTerminalProcess(terminalId: numBer): Promise<ITerminalLaunchError | void> {
 		const args: IStartTerminalProcessArguments = {
 			id: terminalId
 		};
 		return this._channel.call<ITerminalLaunchError | void>('$startTerminalProcess', args);
 	}
 
-	public onTerminalProcessEvent(terminalId: number): Event<IRemoteTerminalProcessEvent> {
+	puBlic onTerminalProcessEvent(terminalId: numBer): Event<IRemoteTerminalProcessEvent> {
 		const args: IOnTerminalProcessEventArguments = {
 			id: terminalId
 		};
 		return this._channel.listen<IRemoteTerminalProcessEvent>('$onTerminalProcessEvent', args);
 	}
 
-	public sendInputToTerminalProcess(id: number, data: string): Promise<void> {
+	puBlic sendInputToTerminalProcess(id: numBer, data: string): Promise<void> {
 		const args: ISendInputToTerminalProcessArguments = {
 			id, data
 		};
 		return this._channel.call<void>('$sendInputToTerminalProcess', args);
 	}
 
-	public shutdownTerminalProcess(id: number, immediate: boolean): Promise<void> {
+	puBlic shutdownTerminalProcess(id: numBer, immediate: Boolean): Promise<void> {
 		const args: IShutdownTerminalProcessArguments = {
 			id, immediate
 		};
 		return this._channel.call<void>('$shutdownTerminalProcess', args);
 	}
 
-	public resizeTerminalProcess(id: number, cols: number, rows: number): Promise<void> {
+	puBlic resizeTerminalProcess(id: numBer, cols: numBer, rows: numBer): Promise<void> {
 		const args: IResizeTerminalProcessArguments = {
 			id, cols, rows
 		};
 		return this._channel.call<void>('$resizeTerminalProcess', args);
 	}
 
-	public getTerminalInitialCwd(id: number): Promise<string> {
+	puBlic getTerminalInitialCwd(id: numBer): Promise<string> {
 		const args: IGetTerminalInitialCwdArguments = {
 			id
 		};
 		return this._channel.call<string>('$getTerminalInitialCwd', args);
 	}
 
-	public getTerminalCwd(id: number): Promise<string> {
+	puBlic getTerminalCwd(id: numBer): Promise<string> {
 		const args: IGetTerminalCwdArguments = {
 			id
 		};
 		return this._channel.call<string>('$getTerminalCwd', args);
 	}
 
-	public sendCommandResultToTerminalProcess(id: number, reqId: number, isError: boolean, payload: any): Promise<void> {
+	puBlic sendCommandResultToTerminalProcess(id: numBer, reqId: numBer, isError: Boolean, payload: any): Promise<void> {
 		const args: ISendCommandResultToTerminalProcessArguments = {
 			id,
 			reqId,

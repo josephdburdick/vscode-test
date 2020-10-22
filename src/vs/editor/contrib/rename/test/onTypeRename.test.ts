@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { Handler } from 'vs/editor/common/editorCommon';
 import * as modes from 'vs/editor/common/modes';
-import { OnTypeRenameContribution } from 'vs/editor/contrib/rename/onTypeRename';
-import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { OnTypeRenameContriBution } from 'vs/editor/contriB/rename/onTypeRename';
+import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { CoreEditingCommands } from 'vs/editor/browser/controller/coreCommands';
+import { CoreEditingCommands } from 'vs/editor/Browser/controller/coreCommands';
 import { ITextModel } from 'vs/editor/common/model';
 import { USUAL_WORD_SEPARATORS } from 'vs/editor/common/model/wordHelper';
 
@@ -30,14 +30,14 @@ interface TestEditor {
 }
 
 suite('On type rename', () => {
-	const disposables = new DisposableStore();
+	const disposaBles = new DisposaBleStore();
 
 	setup(() => {
-		disposables.clear();
+		disposaBles.clear();
 	});
 
 	teardown(() => {
-		disposables.clear();
+		disposaBles.clear();
 	});
 
 	function createMockEditor(text: string | string[]): ITestCodeEditor {
@@ -46,8 +46,8 @@ suite('On type rename', () => {
 			: createTextModel(text.join('\n'), undefined, undefined, mockFile);
 
 		const editor = createTestCodeEditor({ model });
-		disposables.add(model);
-		disposables.add(editor);
+		disposaBles.add(model);
+		disposaBles.add(editor);
 
 		return editor;
 	}
@@ -60,7 +60,7 @@ suite('On type rename', () => {
 		expectedEndText: string | string[]
 	) {
 		test(name, async () => {
-			disposables.add(modes.OnTypeRenameProviderRegistry.register(mockFileSelector, {
+			disposaBles.add(modes.OnTypeRenameProviderRegistry.register(mockFileSelector, {
 				wordPattern: initialState.providerWordPattern,
 				provideOnTypeRenameRanges(model: ITextModel, pos: IPosition) {
 					const wordAtPos = model.getWordAtPosition(pos);
@@ -75,24 +75,24 @@ suite('On type rename', () => {
 
 			const editor = createMockEditor(initialState.text);
 			editor.updateOptions({ renameOnType: true });
-			const ontypeRenameContribution = editor.registerAndInstantiateContribution(
-				OnTypeRenameContribution.ID,
-				OnTypeRenameContribution
+			const ontypeRenameContriBution = editor.registerAndInstantiateContriBution(
+				OnTypeRenameContriBution.ID,
+				OnTypeRenameContriBution
 			);
-			ontypeRenameContribution.setDebounceDuration(0);
+			ontypeRenameContriBution.setDeBounceDuration(0);
 
 			const testEditor: TestEditor = {
 				setPosition(pos: Position) {
 					editor.setPosition(pos);
-					return ontypeRenameContribution.currentUpdateTriggerPromise;
+					return ontypeRenameContriBution.currentUpdateTriggerPromise;
 				},
 				setSelection(sel: IRange) {
 					editor.setSelection(sel);
-					return ontypeRenameContribution.currentUpdateTriggerPromise;
+					return ontypeRenameContriBution.currentUpdateTriggerPromise;
 				},
 				trigger(source: string | null | undefined, handlerId: string, payload: any) {
 					editor.trigger(source, handlerId, payload);
-					return ontypeRenameContribution.currentSyncTriggerPromise;
+					return ontypeRenameContriBution.currentSyncTriggerPromise;
 				},
 				undo() {
 					CoreEditingCommands.Undo.runEditorCommand(null, editor, null);
@@ -127,19 +127,19 @@ suite('On type rename', () => {
 	testCase('Simple insert - initial', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
 	testCase('Simple insert - middle', state, async (editor) => {
 		const pos = new Position(1, 3);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<oioo></oioo>');
 
 	testCase('Simple insert - end', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<oooi></oooi>');
 
 	/**
@@ -148,46 +148,46 @@ suite('On type rename', () => {
 	testCase('Simple insert end - initial', state, async (editor) => {
 		const pos = new Position(1, 8);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
 	testCase('Simple insert end - middle', state, async (editor) => {
 		const pos = new Position(1, 9);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<oioo></oioo>');
 
 	testCase('Simple insert end - end', state, async (editor) => {
 		const pos = new Position(1, 11);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<oooi></oooi>');
 
 	/**
 	 * Boundary insertion
 	 */
-	testCase('Simple insert - out of boundary', state, async (editor) => {
+	testCase('Simple insert - out of Boundary', state, async (editor) => {
 		const pos = new Position(1, 1);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, 'i<ooo></ooo>');
 
-	testCase('Simple insert - out of boundary 2', state, async (editor) => {
+	testCase('Simple insert - out of Boundary 2', state, async (editor) => {
 		const pos = new Position(1, 6);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<ooo>i</ooo>');
 
-	testCase('Simple insert - out of boundary 3', state, async (editor) => {
+	testCase('Simple insert - out of Boundary 3', state, async (editor) => {
 		const pos = new Position(1, 7);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<ooo><i/ooo>');
 
-	testCase('Simple insert - out of boundary 4', state, async (editor) => {
+	testCase('Simple insert - out of Boundary 4', state, async (editor) => {
 		const pos = new Position(1, 12);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<ooo></ooo>i');
 
 	/**
@@ -196,24 +196,24 @@ suite('On type rename', () => {
 	testCase('Continuous insert', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iiooo></iiooo>');
 
 	testCase('Insert - move - insert', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 		await editor.setPosition(new Position(1, 4));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<ioioo></ioioo>');
 
 	testCase('Insert - move - insert outside region', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 		await editor.setPosition(new Position(1, 7));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iooo>i</iooo>');
 
 	/**
@@ -223,74 +223,74 @@ suite('On type rename', () => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
 		await editor.setSelection(new Range(1, 2, 1, 3));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<ioo></ioo>');
 
 	testCase('Selection insert - whole', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
 		await editor.setSelection(new Range(1, 2, 1, 5));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<i></i>');
 
-	testCase('Selection insert - across boundary', state, async (editor) => {
+	testCase('Selection insert - across Boundary', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
 		await editor.setSelection(new Range(1, 1, 1, 3));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, 'ioo></oo>');
 
 	/**
 	 * @todo
-	 * Undefined behavior
+	 * Undefined Behavior
 	 */
-	// testCase('Selection insert - across two boundary', state, async (editor) => {
+	// testCase('Selection insert - across two Boundary', state, async (editor) => {
 	// 	const pos = new Position(1, 2);
 	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
+	// 	await ontypeRenameContriBution.updateLinkedUI(pos);
 	// 	await editor.setSelection(new Range(1, 4, 1, 9));
-	// 	await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+	// 	await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	// }, '<ooioo>');
 
 	/**
-	 * Break out behavior
+	 * Break out Behavior
 	 */
 	testCase('Breakout - type space', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		await editor.trigger('keyBoard', Handler.Type, { text: ' ' });
 	}, '<ooo ></ooo>');
 
 	testCase('Breakout - type space then undo', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		await editor.trigger('keyBoard', Handler.Type, { text: ' ' });
 		editor.undo();
 	}, '<ooo></ooo>');
 
 	testCase('Breakout - type space in middle', state, async (editor) => {
 		const pos = new Position(1, 4);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		await editor.trigger('keyBoard', Handler.Type, { text: ' ' });
 	}, '<oo o></ooo>');
 
 	testCase('Breakout - paste content starting with space', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i="i"' });
+		await editor.trigger('keyBoard', Handler.Paste, { text: ' i="i"' });
 	}, '<ooo i="i"></ooo>');
 
 	testCase('Breakout - paste content starting with space then undo', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i="i"' });
+		await editor.trigger('keyBoard', Handler.Paste, { text: ' i="i"' });
 		editor.undo();
 	}, '<ooo></ooo>');
 
 	testCase('Breakout - paste content starting with space in middle', state, async (editor) => {
 		const pos = new Position(1, 4);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i' });
+		await editor.trigger('keyBoard', Handler.Paste, { text: ' i' });
 	}, '<oo io></ooo>');
 
 	/**
@@ -305,31 +305,31 @@ suite('On type rename', () => {
 	testCase('Breakout with stop pattern - insert', state3, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
 	testCase('Breakout with stop pattern - insert stop char', state3, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'z' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'z' });
 	}, '<zooo></ooo>');
 
 	testCase('Breakout with stop pattern - paste char', state3, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: 'z' });
+		await editor.trigger('keyBoard', Handler.Paste, { text: 'z' });
 	}, '<zooo></ooo>');
 
 	testCase('Breakout with stop pattern - paste string', state3, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: 'zo' });
+		await editor.trigger('keyBoard', Handler.Paste, { text: 'zo' });
 	}, '<zoooo></ooo>');
 
 	testCase('Breakout with stop pattern - insert at end', state3, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'z' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'z' });
 	}, '<oooz></ooo>');
 
 	const state4 = {
@@ -341,7 +341,7 @@ suite('On type rename', () => {
 	testCase('Breakout with stop pattern - insert stop char, respos', state4, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, '<iooo></ooo>');
 
 	/**
@@ -350,26 +350,26 @@ suite('On type rename', () => {
 	testCase('Delete - left char', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		await editor.trigger('keyBoard', 'deleteLeft', {});
 	}, '<oo></oo>');
 
 	testCase('Delete - left char then undo', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		await editor.trigger('keyBoard', 'deleteLeft', {});
 		editor.undo();
 	}, '<ooo></ooo>');
 
 	testCase('Delete - left word', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteWordLeft', {});
+		await editor.trigger('keyBoard', 'deleteWordLeft', {});
 	}, '<></>');
 
 	testCase('Delete - left word then undo', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteWordLeft', {});
+		await editor.trigger('keyBoard', 'deleteWordLeft', {});
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
@@ -380,8 +380,8 @@ suite('On type rename', () => {
 	// testCase('Delete - left all', state, async (editor) => {
 	// 	const pos = new Position(1, 3);
 	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
-	// 	await editor.trigger('keyboard', 'deleteAllLeft', {});
+	// 	await ontypeRenameContriBution.updateLinkedUI(pos);
+	// 	await editor.trigger('keyBoard', 'deleteAllLeft', {});
 	// }, '></>');
 
 	/**
@@ -390,15 +390,15 @@ suite('On type rename', () => {
 	// testCase('Delete - left all then undo', state, async (editor) => {
 	// 	const pos = new Position(1, 5);
 	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
-	// 	await editor.trigger('keyboard', 'deleteAllLeft', {});
+	// 	await ontypeRenameContriBution.updateLinkedUI(pos);
+	// 	await editor.trigger('keyBoard', 'deleteAllLeft', {});
 	// 	editor.undo();
 	// }, '></ooo>');
 
 	testCase('Delete - left all then undo twice', state, async (editor) => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteAllLeft', {});
+		await editor.trigger('keyBoard', 'deleteAllLeft', {});
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
@@ -407,14 +407,14 @@ suite('On type rename', () => {
 		const pos = new Position(1, 5);
 		await editor.setPosition(pos);
 		await editor.setSelection(new Range(1, 2, 1, 3));
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		await editor.trigger('keyBoard', 'deleteLeft', {});
 	}, '<oo></oo>');
 
-	testCase('Delete - selection across boundary', state, async (editor) => {
+	testCase('Delete - selection across Boundary', state, async (editor) => {
 		const pos = new Position(1, 3);
 		await editor.setPosition(pos);
 		await editor.setSelection(new Range(1, 1, 1, 3));
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		await editor.trigger('keyBoard', 'deleteLeft', {});
 	}, 'oo></oo>');
 
 	/**
@@ -423,7 +423,7 @@ suite('On type rename', () => {
 	testCase('Undo/redo - simple undo', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
@@ -431,7 +431,7 @@ suite('On type rename', () => {
 	testCase('Undo/redo - simple undo/redo', state, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 		editor.undo();
 		editor.redo();
 	}, '<iooo></iooo>');
@@ -449,7 +449,7 @@ suite('On type rename', () => {
 	testCase('Multiline insert', state2, async (editor) => {
 		const pos = new Position(1, 2);
 		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		await editor.trigger('keyBoard', Handler.Type, { text: 'i' });
 	}, [
 		'<iooo>',
 		'</iooo>'

@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { References } from './peek';
-import { Commands } from './workbench';
+import { Commands } from './workBench';
 import { Code } from './code';
 
-const RENAME_BOX = '.monaco-editor .monaco-editor.rename-box';
+const RENAME_BOX = '.monaco-editor .monaco-editor.rename-Box';
 const RENAME_INPUT = `${RENAME_BOX} .rename-input`;
 const EDITOR = (filename: string) => `.monaco-editor[data-uri$="${filename}"]`;
 const VIEW_LINES = (filename: string) => `${EDITOR(filename)} .view-lines`;
-const LINE_NUMBERS = (filename: string) => `${EDITOR(filename)} .margin .margin-view-overlays .line-numbers`;
+const LINE_NUMBERS = (filename: string) => `${EDITOR(filename)} .margin .margin-view-overlays .line-numBers`;
 
 export class Editor {
 
@@ -20,7 +20,7 @@ export class Editor {
 
 	constructor(private code: Code, private commands: Commands) { }
 
-	async findReferences(filename: string, term: string, line: number): Promise<References> {
+	async findReferences(filename: string, term: string, line: numBer): Promise<References> {
 		await this.clickOnTerm(filename, term, line);
 		await this.commands.runCommand('Peek References');
 		const references = new References(this.code);
@@ -28,22 +28,22 @@ export class Editor {
 		return references;
 	}
 
-	async rename(filename: string, line: number, from: string, to: string): Promise<void> {
+	async rename(filename: string, line: numBer, from: string, to: string): Promise<void> {
 		await this.clickOnTerm(filename, from, line);
-		await this.commands.runCommand('Rename Symbol');
+		await this.commands.runCommand('Rename SymBol');
 
 		await this.code.waitForActiveElement(RENAME_INPUT);
 		await this.code.waitForSetValue(RENAME_INPUT, to);
 
-		await this.code.dispatchKeybinding('enter');
+		await this.code.dispatchKeyBinding('enter');
 	}
 
-	async gotoDefinition(filename: string, term: string, line: number): Promise<void> {
+	async gotoDefinition(filename: string, term: string, line: numBer): Promise<void> {
 		await this.clickOnTerm(filename, term, line);
 		await this.commands.runCommand('Go to Implementations');
 	}
 
-	async peekDefinition(filename: string, term: string, line: number): Promise<References> {
+	async peekDefinition(filename: string, term: string, line: numBer): Promise<References> {
 		await this.clickOnTerm(filename, term, line);
 		await this.commands.runCommand('Peek Definition');
 		const peek = new References(this.code);
@@ -51,7 +51,7 @@ export class Editor {
 		return peek;
 	}
 
-	async waitForHighlightingLine(filename: string, line: number): Promise<void> {
+	async waitForHighlightingLine(filename: string, line: numBer): Promise<void> {
 		const currentLineIndex = await this.getViewLineIndex(filename, line);
 		if (currentLineIndex) {
 			await this.code.waitForElement(`.monaco-editor .view-overlays>:nth-child(${currentLineIndex}) .current-line`);
@@ -60,33 +60,33 @@ export class Editor {
 		throw new Error('Cannot find line ' + line);
 	}
 
-	private async getSelector(filename: string, term: string, line: number): Promise<string> {
+	private async getSelector(filename: string, term: string, line: numBer): Promise<string> {
 		const lineIndex = await this.getViewLineIndex(filename, line);
 		const classNames = await this.getClassSelectors(filename, term, lineIndex);
 
 		return `${VIEW_LINES(filename)}>:nth-child(${lineIndex}) span span.${classNames[0]}`;
 	}
 
-	async foldAtLine(filename: string, line: number): Promise<any> {
+	async foldAtLine(filename: string, line: numBer): Promise<any> {
 		const lineIndex = await this.getViewLineIndex(filename, line);
 		await this.code.waitAndClick(Editor.FOLDING_EXPANDED.replace('${INDEX}', '' + lineIndex));
 		await this.code.waitForElement(Editor.FOLDING_COLLAPSED.replace('${INDEX}', '' + lineIndex));
 	}
 
-	async unfoldAtLine(filename: string, line: number): Promise<any> {
+	async unfoldAtLine(filename: string, line: numBer): Promise<any> {
 		const lineIndex = await this.getViewLineIndex(filename, line);
 		await this.code.waitAndClick(Editor.FOLDING_COLLAPSED.replace('${INDEX}', '' + lineIndex));
 		await this.code.waitForElement(Editor.FOLDING_EXPANDED.replace('${INDEX}', '' + lineIndex));
 	}
 
-	private async clickOnTerm(filename: string, term: string, line: number): Promise<void> {
+	private async clickOnTerm(filename: string, term: string, line: numBer): Promise<void> {
 		const selector = await this.getSelector(filename, term, line);
 		await this.code.waitAndClick(selector);
 	}
 
-	async waitForEditorFocus(filename: string, lineNumber: number, selectorPrefix = ''): Promise<void> {
+	async waitForEditorFocus(filename: string, lineNumBer: numBer, selectorPrefix = ''): Promise<void> {
 		const editor = [selectorPrefix || '', EDITOR(filename)].join(' ');
-		const line = `${editor} .view-lines > .view-line:nth-child(${lineNumber})`;
+		const line = `${editor} .view-lines > .view-line:nth-child(${lineNumBer})`;
 		const textarea = `${editor} textarea`;
 
 		await this.code.waitAndClick(line, 1, 1);
@@ -106,18 +106,18 @@ export class Editor {
 		await this.waitForEditorContents(filename, c => c.indexOf(text) > -1, selectorPrefix);
 	}
 
-	async waitForEditorContents(filename: string, accept: (contents: string) => boolean, selectorPrefix = ''): Promise<any> {
+	async waitForEditorContents(filename: string, accept: (contents: string) => Boolean, selectorPrefix = ''): Promise<any> {
 		const selector = [selectorPrefix || '', `${EDITOR(filename)} .view-lines`].join(' ');
 		return this.code.waitForTextContent(selector, undefined, c => accept(c.replace(/\u00a0/g, ' ')));
 	}
 
-	private async getClassSelectors(filename: string, term: string, viewline: number): Promise<string[]> {
+	private async getClassSelectors(filename: string, term: string, viewline: numBer): Promise<string[]> {
 		const elements = await this.code.waitForElements(`${VIEW_LINES(filename)}>:nth-child(${viewline}) span span`, false, els => els.some(el => el.textContent === term));
 		const { className } = elements.filter(r => r.textContent === term)[0];
 		return className.split(/\s/g);
 	}
 
-	private async getViewLineIndex(filename: string, line: number): Promise<number> {
+	private async getViewLineIndex(filename: string, line: numBer): Promise<numBer> {
 		const elements = await this.code.waitForElements(LINE_NUMBERS(filename), false, els => {
 			return els.some(el => el.textContent === `${line}`);
 		});

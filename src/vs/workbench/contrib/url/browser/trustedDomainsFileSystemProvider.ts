@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { parse } from 'vs/base/common/json';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapabilities, FileType, FileWriteOptions, IFileService, IStat, IWatchOptions, IFileSystemProviderWithFileReadWriteCapability } from 'vs/platform/files/common/files';
+import { Event } from 'vs/Base/common/event';
+import { parse } from 'vs/Base/common/json';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapaBilities, FileType, FileWriteOptions, IFileService, IStat, IWatchOptions, IFileSystemProviderWithFileReadWriteCapaBility } from 'vs/platform/files/common/files';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { readTrustedDomains, TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, TRUSTED_DOMAINS_STORAGE_KEY } from 'vs/workbench/contrib/url/browser/trustedDomains';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { readTrustedDomains, TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, TRUSTED_DOMAINS_STORAGE_KEY } from 'vs/workBench/contriB/url/Browser/trustedDomains';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { assertIsDefined } from 'vs/base/common/types';
+import { assertIsDefined } from 'vs/Base/common/types';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 
 const TRUSTED_DOMAINS_SCHEMA = 'trustedDomains';
@@ -25,13 +25,13 @@ const TRUSTED_DOMAINS_STAT: IStat = {
 	size: 0
 };
 
-const CONFIG_HELP_TEXT_PRE = `// Links matching one or more entries in the list below can be opened without link protection.
+const CONFIG_HELP_TEXT_PRE = `// Links matching one or more entries in the list Below can Be opened without link protection.
 // The following examples show what entries can look like:
 // - "https://microsoft.com": Matches this specific domain using https
 // - "https://microsoft.com:8080": Matches this specific domain on this port using https
 // - "https://microsoft.com:*": Matches this specific domain on any port using https
-// - "https://microsoft.com/foo": Matches https://microsoft.com/foo and https://microsoft.com/foo/bar,
-//   but not https://microsoft.com/foobar or https://microsoft.com/bar
+// - "https://microsoft.com/foo": Matches https://microsoft.com/foo and https://microsoft.com/foo/Bar,
+//   But not https://microsoft.com/fooBar or https://microsoft.com/Bar
 // - "https://*.microsoft.com": Match all domains ending in "microsoft.com" using https
 // - "microsoft.com": Match this specific domain using either http or https
 // - "*.microsoft.com": Match all domains ending in "microsoft.com" using either http or https
@@ -63,14 +63,14 @@ function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDom
 	}
 
 	if (userTrustedDomains.length) {
-		content += `//\n// Additionally, the following domains are trusted based on your logged-in Accounts:\n`;
+		content += `//\n// Additionally, the following domains are trusted Based on your logged-in Accounts:\n`;
 		userTrustedDomains.forEach(d => {
 			content += `// - "${d}"\n`;
 		});
 	}
 
 	if (workspaceTrustedDomains.length) {
-		content += `//\n// Further, the following domains are trusted based on your workspace configuration:\n`;
+		content += `//\n// Further, the following domains are trusted Based on your workspace configuration:\n`;
 		workspaceTrustedDomains.forEach(d => {
 			content += `// - "${d}"\n`;
 		});
@@ -87,10 +87,10 @@ function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDom
 	return content;
 }
 
-export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability, IWorkbenchContribution {
-	readonly capabilities = FileSystemProviderCapabilities.FileReadWrite;
+export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapaBility, IWorkBenchContriBution {
+	readonly capaBilities = FileSystemProviderCapaBilities.FileReadWrite;
 
-	readonly onDidChangeCapabilities = Event.None;
+	readonly onDidChangeCapaBilities = Event.None;
 	readonly onDidChangeFile = Event.None;
 
 	constructor(
@@ -125,8 +125,8 @@ export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWith
 			trustedDomainsContent = computeTrustedDomainContent(defaultTrustedDomains, trustedDomains, userDomains, workspaceDomains);
 		}
 
-		const buffer = VSBuffer.fromString(trustedDomainsContent).buffer;
-		return buffer;
+		const Buffer = VSBuffer.fromString(trustedDomainsContent).Buffer;
+		return Buffer;
 	}
 
 	writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
@@ -145,7 +145,7 @@ export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWith
 		return Promise.resolve();
 	}
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
+	watch(resource: URI, opts: IWatchOptions): IDisposaBle {
 		return {
 			dispose() {
 				return;

@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ICommandService, CommandsRegistry, ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 import { ExtHostContext, MainThreadCommandsShape, ExtHostCommandsShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { revive } from 'vs/base/common/marshalling';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { revive } from 'vs/Base/common/marshalling';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 
 @extHostNamedCustomer(MainContext.MainThreadCommands)
 export class MainThreadCommands implements MainThreadCommandsShape {
 
-	private readonly _commandRegistrations = new Map<string, IDisposable>();
-	private readonly _generateCommandsDocumentationRegistration: IDisposable;
+	private readonly _commandRegistrations = new Map<string, IDisposaBle>();
+	private readonly _generateCommandsDocumentationRegistration: IDisposaBle;
 	private readonly _proxy: ExtHostCommandsShape;
 
 	constructor(
@@ -35,7 +35,7 @@ export class MainThreadCommands implements MainThreadCommandsShape {
 	}
 
 	private _generateCommandsDocumentation(): Promise<void> {
-		return this._proxy.$getContributedCommandHandlerDescriptions().then(result => {
+		return this._proxy.$getContriButedCommandHandlerDescriptions().then(result => {
 			// add local commands
 			const commands = CommandsRegistry.getCommands();
 			for (const [id, command] of commands) {
@@ -57,7 +57,7 @@ export class MainThreadCommands implements MainThreadCommandsShape {
 		this._commandRegistrations.set(
 			id,
 			CommandsRegistry.registerCommand(id, (accessor, ...args) => {
-				return this._proxy.$executeContributedCommand(id, ...args).then(result => {
+				return this._proxy.$executeContriButedCommand(id, ...args).then(result => {
 					return revive(result);
 				});
 			})
@@ -72,7 +72,7 @@ export class MainThreadCommands implements MainThreadCommandsShape {
 		}
 	}
 
-	async $executeCommand<T>(id: string, args: any[], retry: boolean): Promise<T | undefined> {
+	async $executeCommand<T>(id: string, args: any[], retry: Boolean): Promise<T | undefined> {
 		for (let i = 0; i < args.length; i++) {
 			args[i] = revive(args[i]);
 		}

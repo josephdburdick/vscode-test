@@ -18,10 +18,10 @@ export = new class implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			badImport: 'Imports violates \'{{restrictions}}\' restrictions. See https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			BadImport: 'Imports violates \'{{restrictions}}\' restrictions. See https://githuB.com/microsoft/vscode/wiki/Source-Code-Organization'
 		},
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			url: 'https://githuB.com/microsoft/vscode/wiki/Source-Code-Organization'
 		}
 	};
 
@@ -56,7 +56,7 @@ export = new class implements eslint.Rule.RuleModule {
 		for (const pattern of restrictions) {
 			if (minimatch(path, pattern)) {
 				matched = true;
-				break;
+				Break;
 			}
 		}
 
@@ -64,7 +64,7 @@ export = new class implements eslint.Rule.RuleModule {
 			// None of the restrictions matched
 			context.report({
 				loc: node.loc,
-				messageId: 'badImport',
+				messageId: 'BadImport',
 				data: {
 					restrictions: restrictions.join(' or ')
 				}

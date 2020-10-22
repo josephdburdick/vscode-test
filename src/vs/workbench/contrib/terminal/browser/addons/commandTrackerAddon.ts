@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type { Terminal, IMarker, ITerminalAddon } from 'xterm';
-import { ICommandTracker } from 'vs/workbench/contrib/terminal/common/terminal';
+import { ICommandTracker } from 'vs/workBench/contriB/terminal/common/terminal';
 
 /**
  * The minimum size of the prompt in which to assume the line is a command.
@@ -24,15 +24,15 @@ export const enum ScrollPosition {
 export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 	private _currentMarker: IMarker | Boundary = Boundary.Bottom;
 	private _selectionStart: IMarker | Boundary | null = null;
-	private _isDisposable: boolean = false;
+	private _isDisposaBle: Boolean = false;
 	private _terminal: Terminal | undefined;
 
-	public activate(terminal: Terminal): void {
+	puBlic activate(terminal: Terminal): void {
 		this._terminal = terminal;
 		terminal.onKey(e => this._onKey(e.key));
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 	}
 
 	private _onKey(key: string): void {
@@ -41,7 +41,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		}
 
 		// Clear the current marker so successive focus/selection actions are performed from the
-		// bottom of the buffer
+		// Bottom of the Buffer
 		this._currentMarker = Boundary.Bottom;
 		this._selectionStart = null;
 	}
@@ -50,12 +50,12 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		if (!this._terminal) {
 			return;
 		}
-		if (this._terminal.buffer.active.cursorX >= MINIMUM_PROMPT_LENGTH) {
+		if (this._terminal.Buffer.active.cursorX >= MINIMUM_PROMPT_LENGTH) {
 			this._terminal.registerMarker(0);
 		}
 	}
 
-	public scrollToPreviousCommand(scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: boolean = false): void {
+	puBlic scrollToPreviousCommand(scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: Boolean = false): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -64,10 +64,10 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		}
 
 		let markerIndex;
-		const currentLineY = Math.min(this._getLine(this._terminal, this._currentMarker), this._terminal.buffer.active.baseY);
-		const viewportY = this._terminal.buffer.active.viewportY;
+		const currentLineY = Math.min(this._getLine(this._terminal, this._currentMarker), this._terminal.Buffer.active.BaseY);
+		const viewportY = this._terminal.Buffer.active.viewportY;
 		if (!retainSelection && currentLineY !== viewportY) {
-			// The user has scrolled, find the line based on the current scroll position. This only
+			// The user has scrolled, find the line Based on the current scroll position. This only
 			// works when not retaining selection
 			const markersBelowViewport = this._terminal.markers.filter(e => e.line >= viewportY).length;
 			// -1 will scroll to the top
@@ -76,10 +76,10 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 			markerIndex = this._terminal.markers.length - 1;
 		} else if (this._currentMarker === Boundary.Top) {
 			markerIndex = -1;
-		} else if (this._isDisposable) {
+		} else if (this._isDisposaBle) {
 			markerIndex = this._findPreviousCommand(this._terminal);
 			this._currentMarker.dispose();
-			this._isDisposable = false;
+			this._isDisposaBle = false;
 		} else {
 			markerIndex = this._terminal.markers.indexOf(this._currentMarker) - 1;
 		}
@@ -94,7 +94,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		this._scrollToMarker(this._currentMarker, scrollPosition);
 	}
 
-	public scrollToNextCommand(scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: boolean = false): void {
+	puBlic scrollToNextCommand(scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: Boolean = false): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -103,22 +103,22 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		}
 
 		let markerIndex;
-		const currentLineY = Math.min(this._getLine(this._terminal, this._currentMarker), this._terminal.buffer.active.baseY);
-		const viewportY = this._terminal.buffer.active.viewportY;
+		const currentLineY = Math.min(this._getLine(this._terminal, this._currentMarker), this._terminal.Buffer.active.BaseY);
+		const viewportY = this._terminal.Buffer.active.viewportY;
 		if (!retainSelection && currentLineY !== viewportY) {
-			// The user has scrolled, find the line based on the current scroll position. This only
+			// The user has scrolled, find the line Based on the current scroll position. This only
 			// works when not retaining selection
-			const markersAboveViewport = this._terminal.markers.filter(e => e.line <= viewportY).length;
-			// markers.length will scroll to the bottom
-			markerIndex = markersAboveViewport;
+			const markersABoveViewport = this._terminal.markers.filter(e => e.line <= viewportY).length;
+			// markers.length will scroll to the Bottom
+			markerIndex = markersABoveViewport;
 		} else if (this._currentMarker === Boundary.Bottom) {
 			markerIndex = this._terminal.markers.length;
 		} else if (this._currentMarker === Boundary.Top) {
 			markerIndex = 0;
-		} else if (this._isDisposable) {
+		} else if (this._isDisposaBle) {
 			markerIndex = this._findNextCommand(this._terminal);
 			this._currentMarker.dispose();
-			this._isDisposable = false;
+			this._isDisposaBle = false;
 		} else {
 			markerIndex = this._terminal.markers.indexOf(this._currentMarker) + 1;
 		}
@@ -144,7 +144,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		this._terminal.scrollToLine(line);
 	}
 
-	public selectToPreviousCommand(): void {
+	puBlic selectToPreviousCommand(): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -155,7 +155,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		this._selectLines(this._terminal, this._currentMarker, this._selectionStart);
 	}
 
-	public selectToNextCommand(): void {
+	puBlic selectToNextCommand(): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -166,7 +166,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		this._selectLines(this._terminal, this._currentMarker, this._selectionStart);
 	}
 
-	public selectToPreviousLine(): void {
+	puBlic selectToPreviousLine(): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -177,7 +177,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		this._selectLines(this._terminal, this._currentMarker, this._selectionStart);
 	}
 
-	public selectToNextLine(): void {
+	puBlic selectToNextLine(): void {
 		if (!this._terminal) {
 			return;
 		}
@@ -202,17 +202,17 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 			endLine = temp;
 		}
 
-		// Subtract a line as the marker is on the line the command run, we do not want the next
+		// SuBtract a line as the marker is on the line the command run, we do not want the next
 		// command in the selection for the current command
 		endLine -= 1;
 
 		xterm.selectLines(startLine, endLine);
 	}
 
-	private _getLine(xterm: Terminal, marker: IMarker | Boundary): number {
+	private _getLine(xterm: Terminal, marker: IMarker | Boundary): numBer {
 		// Use the _second last_ row as the last row is likely the prompt
 		if (marker === Boundary.Bottom) {
-			return xterm.buffer.active.baseY + xterm.rows - 1;
+			return xterm.Buffer.active.BaseY + xterm.rows - 1;
 		}
 
 		if (marker === Boundary.Top) {
@@ -222,7 +222,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		return marker.line;
 	}
 
-	public scrollToPreviousLine(xterm: Terminal, scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: boolean = false): void {
+	puBlic scrollToPreviousLine(xterm: Terminal, scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: Boolean = false): void {
 		if (!retainSelection) {
 			this._selectionStart = null;
 		}
@@ -236,16 +236,16 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 			this._currentMarker = this._addMarkerOrThrow(xterm, this._getOffset(xterm) - 1);
 		} else {
 			const offset = this._getOffset(xterm);
-			if (this._isDisposable) {
+			if (this._isDisposaBle) {
 				this._currentMarker.dispose();
 			}
 			this._currentMarker = this._addMarkerOrThrow(xterm, offset - 1);
 		}
-		this._isDisposable = true;
+		this._isDisposaBle = true;
 		this._scrollToMarker(this._currentMarker, scrollPosition);
 	}
 
-	public scrollToNextLine(xterm: Terminal, scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: boolean = false): void {
+	puBlic scrollToNextLine(xterm: Terminal, scrollPosition: ScrollPosition = ScrollPosition.Top, retainSelection: Boolean = false): void {
 		if (!retainSelection) {
 			this._selectionStart = null;
 		}
@@ -259,16 +259,16 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 			this._currentMarker = this._addMarkerOrThrow(xterm, this._getOffset(xterm) + 1);
 		} else {
 			const offset = this._getOffset(xterm);
-			if (this._isDisposable) {
+			if (this._isDisposaBle) {
 				this._currentMarker.dispose();
 			}
 			this._currentMarker = this._addMarkerOrThrow(xterm, offset + 1);
 		}
-		this._isDisposable = true;
+		this._isDisposaBle = true;
 		this._scrollToMarker(this._currentMarker, scrollPosition);
 	}
 
-	private _addMarkerOrThrow(xterm: Terminal, cursorYOffset: number): IMarker {
+	private _addMarkerOrThrow(xterm: Terminal, cursorYOffset: numBer): IMarker {
 		const marker = xterm.addMarker(cursorYOffset);
 		if (!marker) {
 			throw new Error(`Could not create marker for ${cursorYOffset}`);
@@ -276,19 +276,19 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		return marker;
 	}
 
-	private _getOffset(xterm: Terminal): number {
+	private _getOffset(xterm: Terminal): numBer {
 		if (this._currentMarker === Boundary.Bottom) {
 			return 0;
 		} else if (this._currentMarker === Boundary.Top) {
-			return 0 - (xterm.buffer.active.baseY + xterm.buffer.active.cursorY);
+			return 0 - (xterm.Buffer.active.BaseY + xterm.Buffer.active.cursorY);
 		} else {
 			let offset = this._getLine(xterm, this._currentMarker);
-			offset -= xterm.buffer.active.baseY + xterm.buffer.active.cursorY;
+			offset -= xterm.Buffer.active.BaseY + xterm.Buffer.active.cursorY;
 			return offset;
 		}
 	}
 
-	private _findPreviousCommand(xterm: Terminal): number {
+	private _findPreviousCommand(xterm: Terminal): numBer {
 		if (this._currentMarker === Boundary.Top) {
 			return 0;
 		} else if (this._currentMarker === Boundary.Bottom) {
@@ -305,7 +305,7 @@ export class CommandTrackerAddon implements ICommandTracker, ITerminalAddon {
 		return -1;
 	}
 
-	private _findNextCommand(xterm: Terminal): number {
+	private _findNextCommand(xterm: Terminal): numBer {
 		if (this._currentMarker === Boundary.Top) {
 			return 0;
 		} else if (this._currentMarker === Boundary.Bottom) {

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { JSONScanner, createScanner as createJSONScanner, SyntaxKind as JSONSyntaxKind } from 'vs/base/common/json';
+import { JSONScanner, createScanner as createJSONScanner, SyntaxKind as JSONSyntaxKind } from 'vs/Base/common/json';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
@@ -16,7 +16,7 @@ export interface InsertSnippetResult {
 
 export class SmartSnippetInserter {
 
-	private static hasOpenBrace(scanner: JSONScanner): boolean {
+	private static hasOpenBrace(scanner: JSONScanner): Boolean {
 
 		while (scanner.scan() !== JSONSyntaxKind.EOF) {
 			const kind = scanner.getToken();
@@ -29,17 +29,17 @@ export class SmartSnippetInserter {
 		return false;
 	}
 
-	private static offsetToPosition(model: ITextModel, offset: number): Position {
+	private static offsetToPosition(model: ITextModel, offset: numBer): Position {
 		let offsetBeforeLine = 0;
 		const eolLength = model.getEOL().length;
 		const lineCount = model.getLineCount();
-		for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-			const lineTotalLength = model.getLineContent(lineNumber).length + eolLength;
+		for (let lineNumBer = 1; lineNumBer <= lineCount; lineNumBer++) {
+			const lineTotalLength = model.getLineContent(lineNumBer).length + eolLength;
 			const offsetAfterLine = offsetBeforeLine + lineTotalLength;
 
 			if (offsetAfterLine > offset) {
 				return new Position(
-					lineNumber,
+					lineNumBer,
 					offset - offsetBeforeLine + 1
 				);
 			}
@@ -53,7 +53,7 @@ export class SmartSnippetInserter {
 
 	static insertSnippet(model: ITextModel, _position: Position): InsertSnippetResult {
 
-		const desiredPosition = model.getValueLengthInRange(new Range(1, 1, _position.lineNumber, _position.column));
+		const desiredPosition = model.getValueLengthInRange(new Range(1, 1, _position.lineNumBer, _position.column));
 
 		// <INVALID> [ <BEFORE_OBJECT> { <INVALID> } <AFTER_OBJECT>, <BEFORE_OBJECT> { <INVALID> } <AFTER_OBJECT> ] <INVALID>
 		enum State {
@@ -67,10 +67,10 @@ export class SmartSnippetInserter {
 
 		const scanner = createJSONScanner(model.getValue());
 		let arrayLevel = 0;
-		let objLevel = 0;
+		let oBjLevel = 0;
 
-		const checkRangeStatus = (pos: number, state: State) => {
-			if (state !== State.INVALID && arrayLevel === 1 && objLevel === 0) {
+		const checkRangeStatus = (pos: numBer, state: State) => {
+			if (state !== State.INVALID && arrayLevel === 1 && oBjLevel === 0) {
 				currentState = state;
 				lastValidPos = pos;
 				lastValidState = state;
@@ -92,33 +92,33 @@ export class SmartSnippetInserter {
 					goodKind = true;
 					arrayLevel++;
 					checkRangeStatus(currentPos, State.BEFORE_OBJECT);
-					break;
+					Break;
 				case JSONSyntaxKind.CloseBracketToken:
 					goodKind = true;
 					arrayLevel--;
 					checkRangeStatus(currentPos, State.INVALID);
-					break;
+					Break;
 				case JSONSyntaxKind.CommaToken:
 					goodKind = true;
 					checkRangeStatus(currentPos, State.BEFORE_OBJECT);
-					break;
+					Break;
 				case JSONSyntaxKind.OpenBraceToken:
 					goodKind = true;
-					objLevel++;
+					oBjLevel++;
 					checkRangeStatus(currentPos, State.INVALID);
-					break;
+					Break;
 				case JSONSyntaxKind.CloseBraceToken:
 					goodKind = true;
-					objLevel--;
+					oBjLevel--;
 					checkRangeStatus(currentPos, State.AFTER_OBJECT);
-					break;
+					Break;
 				case JSONSyntaxKind.Trivia:
 				case JSONSyntaxKind.LineBreakTrivia:
 					goodKind = true;
 			}
 
 			if (currentPos >= desiredPosition && (currentState !== State.INVALID || lastValidPos !== -1)) {
-				let acceptPosition: number;
+				let acceptPosition: numBer;
 				let acceptState: State;
 
 				if (currentState !== State.INVALID) {

@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IPCClient } from 'vs/base/parts/ipc/common/ipc';
-import { Protocol } from 'vs/base/parts/ipc/common/ipc.electron';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { Event } from 'vs/Base/common/event';
+import { IPCClient } from 'vs/Base/parts/ipc/common/ipc';
+import { Protocol } from 'vs/Base/parts/ipc/common/ipc.electron';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { ipcRenderer } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 
-export class Client extends IPCClient implements IDisposable {
+export class Client extends IPCClient implements IDisposaBle {
 
 	private protocol: Protocol;
 

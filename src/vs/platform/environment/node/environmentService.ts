@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDebugParams, IExtensionHostDebugParams, INativeEnvironmentService } from 'vs/platform/environment/common/environment';
+import { IDeBugParams, IExtensionHostDeBugParams, INativeEnvironmentService } from 'vs/platform/environment/common/environment';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import * as paths from 'vs/base/node/paths';
+import * as paths from 'vs/Base/node/paths';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
-import { memoize } from 'vs/base/common/decorators';
+import * as path from 'vs/Base/common/path';
+import * as resources from 'vs/Base/common/resources';
+import { memoize } from 'vs/Base/common/decorators';
 import product from 'vs/platform/product/common/product';
-import { toLocalISOString } from 'vs/base/common/date';
-import { FileAccess } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { createStaticIPCHandle } from 'vs/base/parts/ipc/node/ipc.net';
+import { toLocalISOString } from 'vs/Base/common/date';
+import { FileAccess } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { createStaticIPCHandle } from 'vs/Base/parts/ipc/node/ipc.net';
 
 export class NativeEnvironmentService implements INativeEnvironmentService {
 
@@ -32,9 +32,9 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 
 	@memoize
 	get userDataPath(): string {
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return path.join(vscodePortable, 'user-data');
+		const vscodePortaBle = process.env['VSCODE_PORTABLE'];
+		if (vscodePortaBle) {
+			return path.join(vscodePortaBle, 'user-data');
 		}
 
 		return parseUserDataDir(this._args, process);
@@ -65,22 +65,22 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 	get machineSettingsResource(): URI { return resources.joinPath(URI.file(path.join(this.userDataPath, 'Machine')), 'settings.json'); }
 
 	@memoize
-	get globalStorageHome(): URI { return URI.joinPath(this.appSettingsHome, 'globalStorage'); }
+	get gloBalStorageHome(): URI { return URI.joinPath(this.appSettingsHome, 'gloBalStorage'); }
 
 	@memoize
 	get workspaceStorageHome(): URI { return URI.joinPath(this.appSettingsHome, 'workspaceStorage'); }
 
 	@memoize
-	get keybindingsResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keybindings.json'); }
+	get keyBindingsResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keyBindings.json'); }
 
 	@memoize
-	get keyboardLayoutResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keyboardLayout.json'); }
+	get keyBoardLayoutResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keyBoardLayout.json'); }
 
 	@memoize
 	get argvResource(): URI {
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return URI.file(path.join(vscodePortable, 'argv.json'));
+		const vscodePortaBle = process.env['VSCODE_PORTABLE'];
+		if (vscodePortaBle) {
+			return URI.file(path.join(vscodePortaBle, 'argv.json'));
 		}
 
 		return resources.joinPath(this.userHome, product.dataFolderName, 'argv.json');
@@ -90,7 +90,7 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 	get snippetsHome(): URI { return resources.joinPath(this.userRoamingDataHome, 'snippets'); }
 
 	@memoize
-	get isExtensionDevelopment(): boolean { return !!this._args.extensionDevelopmentPath; }
+	get isExtensionDevelopment(): Boolean { return !!this._args.extensionDevelopmentPath; }
 
 	@memoize
 	get untitledWorkspacesHome(): URI { return URI.file(path.join(this.userDataPath, 'Workspaces')); }
@@ -99,8 +99,8 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 	get installSourcePath(): string { return path.join(this.userDataPath, 'installSource'); }
 
 	@memoize
-	get builtinExtensionsPath(): string {
-		const fromArgs = parsePathArg(this._args['builtin-extensions-dir'], process);
+	get BuiltinExtensionsPath(): string {
+		const fromArgs = parsePathArg(this._args['Builtin-extensions-dir'], process);
 		if (fromArgs) {
 			return fromArgs;
 		} else {
@@ -130,9 +130,9 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 			return vscodeExtensions;
 		}
 
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return path.join(vscodePortable, 'extensions');
+		const vscodePortaBle = process.env['VSCODE_PORTABLE'];
+		if (vscodePortaBle) {
+			return path.join(vscodePortaBle, 'extensions');
 		}
 
 		return resources.joinPath(this.userHome, product.dataFolderName, 'extensions').fsPath;
@@ -164,28 +164,28 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 		return undefined;
 	}
 
-	get disableExtensions(): boolean | string[] {
-		if (this._args['disable-extensions']) {
+	get disaBleExtensions(): Boolean | string[] {
+		if (this._args['disaBle-extensions']) {
 			return true;
 		}
-		const disableExtensions = this._args['disable-extension'];
-		if (disableExtensions) {
-			if (typeof disableExtensions === 'string') {
-				return [disableExtensions];
+		const disaBleExtensions = this._args['disaBle-extension'];
+		if (disaBleExtensions) {
+			if (typeof disaBleExtensions === 'string') {
+				return [disaBleExtensions];
 			}
-			if (Array.isArray(disableExtensions) && disableExtensions.length > 0) {
-				return disableExtensions;
+			if (Array.isArray(disaBleExtensions) && disaBleExtensions.length > 0) {
+				return disaBleExtensions;
 			}
 		}
 		return false;
 	}
 
 	@memoize
-	get debugExtensionHost(): IExtensionHostDebugParams { return parseExtensionHostPort(this._args, this.isBuilt); }
-	get debugRenderer(): boolean { return !!this._args.debugRenderer; }
+	get deBugExtensionHost(): IExtensionHostDeBugParams { return parseExtensionHostPort(this._args, this.isBuilt); }
+	get deBugRenderer(): Boolean { return !!this._args.deBugRenderer; }
 
-	get isBuilt(): boolean { return !process.env['VSCODE_DEV']; }
-	get verbose(): boolean { return !!this._args.verbose; }
+	get isBuilt(): Boolean { return !process.env['VSCODE_DEV']; }
+	get verBose(): Boolean { return !!this._args.verBose; }
 	get logLevel(): string | undefined { return this._args.log; }
 
 	@memoize
@@ -201,7 +201,7 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 
 	@memoize
 	get telemetryLogResource(): URI { return URI.file(path.join(this.logsPath, 'telemetry.log')); }
-	get disableTelemetry(): boolean { return !!this._args['disable-telemetry']; }
+	get disaBleTelemetry(): Boolean { return !!this._args['disaBle-telemetry']; }
 
 	constructor(protected _args: NativeParsedArgs) {
 		if (!process.env['VSCODE_LOGS']) {
@@ -213,20 +213,20 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 	}
 }
 
-export function parseExtensionHostPort(args: NativeParsedArgs, isBuild: boolean): IExtensionHostDebugParams {
-	return parseDebugPort(args['inspect-extensions'], args['inspect-brk-extensions'], 5870, isBuild, args.debugId);
+export function parseExtensionHostPort(args: NativeParsedArgs, isBuild: Boolean): IExtensionHostDeBugParams {
+	return parseDeBugPort(args['inspect-extensions'], args['inspect-Brk-extensions'], 5870, isBuild, args.deBugId);
 }
 
-export function parseSearchPort(args: NativeParsedArgs, isBuild: boolean): IDebugParams {
-	return parseDebugPort(args['inspect-search'], args['inspect-brk-search'], 5876, isBuild);
+export function parseSearchPort(args: NativeParsedArgs, isBuild: Boolean): IDeBugParams {
+	return parseDeBugPort(args['inspect-search'], args['inspect-Brk-search'], 5876, isBuild);
 }
 
-function parseDebugPort(debugArg: string | undefined, debugBrkArg: string | undefined, defaultBuildPort: number, isBuild: boolean, debugId?: string): IExtensionHostDebugParams {
-	const portStr = debugBrkArg || debugArg;
-	const port = Number(portStr) || (!isBuild ? defaultBuildPort : null);
-	const brk = port ? Boolean(!!debugBrkArg) : false;
+function parseDeBugPort(deBugArg: string | undefined, deBugBrkArg: string | undefined, defaultBuildPort: numBer, isBuild: Boolean, deBugId?: string): IExtensionHostDeBugParams {
+	const portStr = deBugBrkArg || deBugArg;
+	const port = NumBer(portStr) || (!isBuild ? defaultBuildPort : null);
+	const Brk = port ? Boolean(!!deBugBrkArg) : false;
 
-	return { port, break: brk, debugId };
+	return { port, Break: Brk, deBugId };
 }
 
 export function parsePathArg(arg: string | undefined, process: NodeJS.Process): string | undefined {
@@ -234,7 +234,7 @@ export function parsePathArg(arg: string | undefined, process: NodeJS.Process): 
 		return undefined;
 	}
 
-	// Determine if the arg is relative or absolute, if relative use the original CWD
+	// Determine if the arg is relative or aBsolute, if relative use the original CWD
 	// (VSCODE_CWD), not the potentially overridden one (process.cwd()).
 	const resolved = path.resolve(arg);
 

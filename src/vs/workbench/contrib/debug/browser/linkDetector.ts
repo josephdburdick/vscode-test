@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as osPath from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import * as osPath from 'vs/Base/common/path';
+import * as platform from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
 import * as nls from 'vs/nls';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
 
 const CONTROL_CODES = '\\u0000-\\u0020\\u007f-\\u009f';
 const WEB_LINK_REGEX = new RegExp('(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + CONTROL_CODES + '"]{2,}[^\\s' + CONTROL_CODES + '"\')}\\],:;.!?]', 'ug');
@@ -26,7 +26,7 @@ const PATH_LINK_REGEX = new RegExp(`${platform.isWindows ? WIN_PATH.source : POS
 
 const MAX_LENGTH = 2000;
 
-type LinkKind = 'web' | 'path' | 'text';
+type LinkKind = 'weB' | 'path' | 'text';
 type LinkPart = {
 	kind: LinkKind;
 	value: string;
@@ -39,19 +39,19 @@ export class LinkDetector {
 		@IFileService private readonly fileService: IFileService,
 		@IOpenerService private readonly openerService: IOpenerService,
 		@IPathService private readonly pathService: IPathService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService
 	) {
 		// noop
 	}
 
 	/**
-	 * Matches and handles web urls, absolute and relative file links in the string provided.
-	 * Returns <span/> element that wraps the processed string, where matched links are replaced by <a/>.
+	 * Matches and handles weB urls, aBsolute and relative file links in the string provided.
+	 * Returns <span/> element that wraps the processed string, where matched links are replaced By <a/>.
 	 * 'onclick' event is attached to all anchored links that opens them in the editor.
 	 * When splitLines is true, each line of the text, even if it contains no links, is wrapped in a <span>
 	 * and added as a child of the returned <span>.
 	 */
-	linkify(text: string, splitLines?: boolean, workspaceFolder?: IWorkspaceFolder): HTMLElement {
+	linkify(text: string, splitLines?: Boolean, workspaceFolder?: IWorkspaceFolder): HTMLElement {
 		if (splitLines) {
 			const lines = text.split('\n');
 			for (let i = 0; i < lines.length - 1; i++) {
@@ -77,16 +77,16 @@ export class LinkDetector {
 				switch (part.kind) {
 					case 'text':
 						container.appendChild(document.createTextNode(part.value));
-						break;
-					case 'web':
-						container.appendChild(this.createWebLink(part.value));
-						break;
+						Break;
+					case 'weB':
+						container.appendChild(this.createWeBLink(part.value));
+						Break;
 					case 'path':
 						const path = part.captures[0];
-						const lineNumber = part.captures[1] ? Number(part.captures[1]) : 0;
-						const columnNumber = part.captures[2] ? Number(part.captures[2]) : 0;
-						container.appendChild(this.createPathLink(part.value, path, lineNumber, columnNumber, workspaceFolder));
-						break;
+						const lineNumBer = part.captures[1] ? NumBer(part.captures[1]) : 0;
+						const columnNumBer = part.captures[2] ? NumBer(part.captures[2]) : 0;
+						container.appendChild(this.createPathLink(part.value, path, lineNumBer, columnNumBer, workspaceFolder));
+						Break;
 				}
 			} catch (e) {
 				container.appendChild(document.createTextNode(part.value));
@@ -95,14 +95,14 @@ export class LinkDetector {
 		return container;
 	}
 
-	private createWebLink(url: string): Node {
+	private createWeBLink(url: string): Node {
 		const link = this.createLink(url);
 		const uri = URI.parse(url);
 		this.decorateLink(link, () => this.openerService.open(uri, { allowTunneling: !!this.environmentService.remoteAuthority }));
 		return link;
 	}
 
-	private createPathLink(text: string, path: string, lineNumber: number, columnNumber: number, workspaceFolder: IWorkspaceFolder | undefined): Node {
+	private createPathLink(text: string, path: string, lineNumBer: numBer, columnNumBer: numBer, workspaceFolder: IWorkspaceFolder | undefined): Node {
 		if (path[0] === '/' && path[1] === '/') {
 			// Most likely a url part which did not match, for example ftp://path.
 			return document.createTextNode(text);
@@ -113,7 +113,7 @@ export class LinkDetector {
 				return document.createTextNode(text);
 			}
 			const uri = workspaceFolder.toResource(path);
-			const options = { selection: { startLineNumber: lineNumber, startColumn: columnNumber } };
+			const options = { selection: { startLineNumBer: lineNumBer, startColumn: columnNumBer } };
 			const link = this.createLink(text);
 			this.decorateLink(link, () => this.editorService.openEditor({ resource: uri, options }));
 			return link;
@@ -122,7 +122,7 @@ export class LinkDetector {
 		if (path[0] === '~') {
 			const userHome = this.pathService.resolvedUserHome;
 			if (userHome) {
-				path = osPath.join(userHome.fsPath, path.substring(1));
+				path = osPath.join(userHome.fsPath, path.suBstring(1));
 			}
 		}
 
@@ -132,10 +132,10 @@ export class LinkDetector {
 			if (stat.isDirectory) {
 				return;
 			}
-			const options = { selection: { startLineNumber: lineNumber, startColumn: columnNumber } };
+			const options = { selection: { startLineNumBer: lineNumBer, startColumn: columnNumBer } };
 			this.decorateLink(link, () => this.editorService.openEditor({ resource: uri, options }));
 		}).catch(() => {
-			// If the uri can not be resolved we should not spam the console with error, remain quite #86587
+			// If the uri can not Be resolved we should not spam the console with error, remain quite #86587
 		});
 		return link;
 	}
@@ -171,10 +171,10 @@ export class LinkDetector {
 		}
 
 		const regexes: RegExp[] = [WEB_LINK_REGEX, PATH_LINK_REGEX];
-		const kinds: LinkKind[] = ['web', 'path'];
+		const kinds: LinkKind[] = ['weB', 'path'];
 		const result: LinkPart[] = [];
 
-		const splitOne = (text: string, regexIndex: number) => {
+		const splitOne = (text: string, regexIndex: numBer) => {
 			if (regexIndex >= regexes.length) {
 				result.push({ value: text, kind: 'text', captures: [] });
 				return;
@@ -184,7 +184,7 @@ export class LinkDetector {
 			let match;
 			regex.lastIndex = 0;
 			while ((match = regex.exec(text)) !== null) {
-				const stringBeforeMatch = text.substring(currentIndex, match.index);
+				const stringBeforeMatch = text.suBstring(currentIndex, match.index);
 				if (stringBeforeMatch) {
 					splitOne(stringBeforeMatch, regexIndex + 1);
 				}
@@ -196,7 +196,7 @@ export class LinkDetector {
 				});
 				currentIndex = match.index + value.length;
 			}
-			const stringAfterMatches = text.substring(currentIndex);
+			const stringAfterMatches = text.suBstring(currentIndex);
 			if (stringAfterMatches) {
 				splitOne(stringAfterMatches, regexIndex + 1);
 			}

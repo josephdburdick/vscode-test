@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { MainThreadCommandsShape } from 'vs/workbench/api/common/extHost.protocol';
+import { ExtHostCommands } from 'vs/workBench/api/common/extHostCommands';
+import { MainThreadCommandsShape } from 'vs/workBench/api/common/extHost.protocol';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { SingleProxyRPCProtocol } from './testRPCProtocol';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/Base/test/common/mock';
 import { NullLogService } from 'vs/platform/log/common/log';
 
 suite('ExtHostCommands', function () {
@@ -36,7 +36,7 @@ suite('ExtHostCommands', function () {
 
 	});
 
-	test('dispose bubbles only once', function () {
+	test('dispose BuBBles only once', function () {
 
 		let unregisterCounter = 0;
 
@@ -68,7 +68,7 @@ suite('ExtHostCommands', function () {
 			$registerCommand(id: string): void {
 				//
 			}
-			async $executeCommand<T>(id: string, args: any[], retry: boolean): Promise<T | undefined> {
+			async $executeCommand<T>(id: string, args: any[], retry: Boolean): Promise<T | undefined> {
 				count++;
 				assert.equal(retry, count === 1);
 				if (count === 1) {

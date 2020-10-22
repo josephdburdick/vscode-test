@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor, isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IBulkEditOptions, IBulkEditResult, IBulkEditService, IBulkEditPreviewHandler, ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor, isCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { IBulkEditOptions, IBulkEditResult, IBulkEditService, IBulkEditPreviewHandler, ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IProgress, IProgressStep, Progress } from 'vs/platform/progress/common/progress';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { BulkTextEdits } from 'vs/workbench/contrib/bulkEdit/browser/bulkTextEdits';
-import { BulkFileEdits } from 'vs/workbench/contrib/bulkEdit/browser/bulkFileEdits';
-import { BulkCellEdits, ResourceNotebookCellEdit } from 'vs/workbench/contrib/bulkEdit/browser/bulkCellEdits';
+import { BulkTextEdits } from 'vs/workBench/contriB/BulkEdit/Browser/BulkTextEdits';
+import { BulkFileEdits } from 'vs/workBench/contriB/BulkEdit/Browser/BulkFileEdits';
+import { BulkCellEdits, ResourceNoteBookCellEdit } from 'vs/workBench/contriB/BulkEdit/Browser/BulkCellEdits';
 import { UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
 
 class BulkEdit {
 
 	constructor(
-		private readonly _label: string | undefined,
+		private readonly _laBel: string | undefined,
 		private readonly _editor: ICodeEditor | undefined,
 		private readonly _progress: IProgress<IProgressStep>,
 		private readonly _edits: ResourceEdit[],
@@ -49,9 +49,9 @@ class BulkEdit {
 			return;
 		}
 
-		const ranges: number[] = [1];
+		const ranges: numBer[] = [1];
 		for (let i = 1; i < this._edits.length; i++) {
-			if (Object.getPrototypeOf(this._edits[i - 1]) === Object.getPrototypeOf(this._edits[i])) {
+			if (OBject.getPrototypeOf(this._edits[i - 1]) === OBject.getPrototypeOf(this._edits[i])) {
 				ranges[ranges.length - 1]++;
 			} else {
 				ranges.push(1);
@@ -70,8 +70,8 @@ class BulkEdit {
 				await this._performFileEdits(<ResourceFileEdit[]>group, undoRedoGroup, progress);
 			} else if (group[0] instanceof ResourceTextEdit) {
 				await this._performTextEdits(<ResourceTextEdit[]>group, undoRedoGroup, progress);
-			} else if (group[0] instanceof ResourceNotebookCellEdit) {
-				await this._performCellEdits(<ResourceNotebookCellEdit[]>group, undoRedoGroup, progress);
+			} else if (group[0] instanceof ResourceNoteBookCellEdit) {
+				await this._performCellEdits(<ResourceNoteBookCellEdit[]>group, undoRedoGroup, progress);
 			} else {
 				console.log('UNKNOWN EDIT');
 			}
@@ -80,19 +80,19 @@ class BulkEdit {
 	}
 
 	private async _performFileEdits(edits: ResourceFileEdit[], undoRedoGroup: UndoRedoGroup, progress: IProgress<void>) {
-		this._logService.debug('_performFileEdits', JSON.stringify(edits));
-		const model = this._instaService.createInstance(BulkFileEdits, this._label || localize('workspaceEdit', "Workspace Edit"), undoRedoGroup, progress, edits);
+		this._logService.deBug('_performFileEdits', JSON.stringify(edits));
+		const model = this._instaService.createInstance(BulkFileEdits, this._laBel || localize('workspaceEdit', "Workspace Edit"), undoRedoGroup, progress, edits);
 		await model.apply();
 	}
 
 	private async _performTextEdits(edits: ResourceTextEdit[], undoRedoGroup: UndoRedoGroup, progress: IProgress<void>): Promise<void> {
-		this._logService.debug('_performTextEdits', JSON.stringify(edits));
-		const model = this._instaService.createInstance(BulkTextEdits, this._label || localize('workspaceEdit', "Workspace Edit"), this._editor, undoRedoGroup, progress, edits);
+		this._logService.deBug('_performTextEdits', JSON.stringify(edits));
+		const model = this._instaService.createInstance(BulkTextEdits, this._laBel || localize('workspaceEdit', "Workspace Edit"), this._editor, undoRedoGroup, progress, edits);
 		await model.apply();
 	}
 
-	private async _performCellEdits(edits: ResourceNotebookCellEdit[], undoRedoGroup: UndoRedoGroup, progress: IProgress<void>): Promise<void> {
-		this._logService.debug('_performCellEdits', JSON.stringify(edits));
+	private async _performCellEdits(edits: ResourceNoteBookCellEdit[], undoRedoGroup: UndoRedoGroup, progress: IProgress<void>): Promise<void> {
+		this._logService.deBug('_performCellEdits', JSON.stringify(edits));
 		const model = this._instaService.createInstance(BulkCellEdits, undoRedoGroup, progress, edits);
 		await model.apply();
 	}
@@ -110,16 +110,16 @@ export class BulkEditService implements IBulkEditService {
 		@IEditorService private readonly _editorService: IEditorService,
 	) { }
 
-	setPreviewHandler(handler: IBulkEditPreviewHandler): IDisposable {
+	setPreviewHandler(handler: IBulkEditPreviewHandler): IDisposaBle {
 		this._previewHandler = handler;
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			if (this._previewHandler === handler) {
 				this._previewHandler = undefined;
 			}
 		});
 	}
 
-	hasPreviewHandler(): boolean {
+	hasPreviewHandler(): Boolean {
 		return Boolean(this._previewHandler);
 	}
 
@@ -143,20 +143,20 @@ export class BulkEditService implements IBulkEditService {
 		}
 
 		if (codeEditor && codeEditor.getOption(EditorOption.readOnly)) {
-			// If the code editor is readonly still allow bulk edits to be applied #68549
+			// If the code editor is readonly still allow Bulk edits to Be applied #68549
 			codeEditor = undefined;
 		}
 
-		const bulkEdit = this._instaService.createInstance(
+		const BulkEdit = this._instaService.createInstance(
 			BulkEdit,
-			options?.quotableLabel || options?.label,
+			options?.quotaBleLaBel || options?.laBel,
 			codeEditor, options?.progress ?? Progress.None,
 			edits
 		);
 
 		try {
-			await bulkEdit.perform();
-			return { ariaSummary: bulkEdit.ariaMessage() };
+			await BulkEdit.perform();
+			return { ariaSummary: BulkEdit.ariaMessage() };
 		} catch (err) {
 			// console.log('apply FAILED');
 			// console.log(err);

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { getFirstFrame } from 'vs/base/common/console';
-import { normalize } from 'vs/base/common/path';
+import { getFirstFrame } from 'vs/Base/common/console';
+import { normalize } from 'vs/Base/common/path';
 
 suite('Console', () => {
 
@@ -31,7 +31,7 @@ suite('Console', () => {
 		assert.equal(frame.line, 18);
 		assert.equal(frame.column, 17);
 
-		stack = 'at e.$executeContributedCommand(c:\\Users\\someone\\Desktop\\end-js\\extension.js:18:17)';
+		stack = 'at e.$executeContriButedCommand(c:\\Users\\someone\\Desktop\\end-js\\extension.js:18:17)';
 		frame = getFirstFrame(stack)!;
 
 		assert.equal(frame.uri.fsPath, 'c:\\Users\\someone\\Desktop\\end-js\\extension.js');

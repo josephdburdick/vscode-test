@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import { mapArrayOrNot } from 'vs/base/common/arrays';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import * as resources from 'vs/base/common/resources';
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { IExtendedExtensionSearchOptions, IFileMatch, IFolderQuery, IPatternInfo, ISearchCompleteStats, ITextQuery, ITextSearchContext, ITextSearchMatch, ITextSearchResult, QueryGlobTester, resolvePatternsForProvider } from 'vs/workbench/services/search/common/search';
-import { TextSearchProvider, TextSearchResult, TextSearchMatch, TextSearchComplete, Range, TextSearchOptions, TextSearchQuery } from 'vs/workbench/services/search/common/searchExtTypes';
-import { nextTick } from 'vs/base/common/process';
-import { Schemas } from 'vs/base/common/network';
+import * as path from 'vs/Base/common/path';
+import { mapArrayOrNot } from 'vs/Base/common/arrays';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import * as resources from 'vs/Base/common/resources';
+import * as gloB from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri';
+import { IExtendedExtensionSearchOptions, IFileMatch, IFolderQuery, IPatternInfo, ISearchCompleteStats, ITextQuery, ITextSearchContext, ITextSearchMatch, ITextSearchResult, QueryGloBTester, resolvePatternsForProvider } from 'vs/workBench/services/search/common/search';
+import { TextSearchProvider, TextSearchResult, TextSearchMatch, TextSearchComplete, Range, TextSearchOptions, TextSearchQuery } from 'vs/workBench/services/search/common/searchExtTypes';
+import { nextTick } from 'vs/Base/common/process';
+import { Schemas } from 'vs/Base/common/network';
 
 export interface IFileUtils {
 	readdir: (resource: URI) => Promise<string[]>;
@@ -38,14 +38,14 @@ export class TextSearchManager {
 			this.collector = new TextSearchResultsCollector(onProgress);
 
 			let isCanceled = false;
-			const onResult = (result: TextSearchResult, folderIdx: number) => {
+			const onResult = (result: TextSearchResult, folderIdx: numBer) => {
 				if (isCanceled) {
 					return;
 				}
 
 				if (!this.isLimitHit) {
 					const resultSize = this.resultSize(result);
-					if (extensionResultIsMatch(result) && typeof this.query.maxResults === 'number' && this.resultCount + resultSize > this.query.maxResults) {
+					if (extensionResultIsMatch(result) && typeof this.query.maxResults === 'numBer' && this.resultCount + resultSize > this.query.maxResults) {
 						this.isLimitHit = true;
 						isCanceled = true;
 						tokenSource.cancel();
@@ -83,7 +83,7 @@ export class TextSearchManager {
 		});
 	}
 
-	private resultSize(result: TextSearchResult): number {
+	private resultSize(result: TextSearchResult): numBer {
 		if (extensionResultIsMatch(result)) {
 			return Array.isArray(result.ranges) ?
 				result.ranges.length :
@@ -95,7 +95,7 @@ export class TextSearchManager {
 		}
 	}
 
-	private trimResultToSize(result: TextSearchMatch, size: number): TextSearchMatch {
+	private trimResultToSize(result: TextSearchMatch, size: numBer): TextSearchMatch {
 		const rangesArr = Array.isArray(result.ranges) ? result.ranges : [result.ranges];
 		const matchesArr = Array.isArray(result.preview.matches) ? result.preview.matches : [result.preview.matches];
 
@@ -110,7 +110,7 @@ export class TextSearchManager {
 	}
 
 	private searchInFolder(folderQuery: IFolderQuery<URI>, onResult: (result: TextSearchResult) => void, token: CancellationToken): Promise<TextSearchComplete | null | undefined> {
-		const queryTester = new QueryGlobTester(this.query, folderQuery);
+		const queryTester = new QueryGloBTester(this.query, folderQuery);
 		const testingPs: Promise<void>[] = [];
 		const progress = {
 			report: (result: TextSearchResult) => {
@@ -118,8 +118,8 @@ export class TextSearchManager {
 					return;
 				}
 
-				const hasSibling = folderQuery.folder.scheme === Schemas.file ?
-					glob.hasSiblingPromiseFn(() => {
+				const hasSiBling = folderQuery.folder.scheme === Schemas.file ?
+					gloB.hasSiBlingPromiseFn(() => {
 						return this.fileUtils.readdir(resources.dirname(result.uri));
 					}) :
 					undefined;
@@ -127,7 +127,7 @@ export class TextSearchManager {
 				const relativePath = resources.relativePath(folderQuery.folder, result.uri);
 				if (relativePath) {
 					testingPs.push(
-						queryTester.includedInQuery(relativePath, path.basename(relativePath), hasSibling)
+						queryTester.includedInQuery(relativePath, path.Basename(relativePath), hasSiBling)
 							.then(included => {
 								if (included) {
 									onResult(result);
@@ -146,7 +146,7 @@ export class TextSearchManager {
 			});
 	}
 
-	private validateProviderResult(result: TextSearchResult): boolean {
+	private validateProviderResult(result: TextSearchResult): Boolean {
 		if (extensionResultIsMatch(result)) {
 			if (Array.isArray(result.ranges)) {
 				if (!Array.isArray(result.preview.matches)) {
@@ -178,14 +178,14 @@ export class TextSearchManager {
 			excludes,
 			includes,
 			useIgnoreFiles: !fq.disregardIgnoreFiles,
-			useGlobalIgnoreFiles: !fq.disregardGlobalIgnoreFiles,
+			useGloBalIgnoreFiles: !fq.disregardGloBalIgnoreFiles,
 			followSymlinks: !fq.ignoreSymlinks,
 			encoding: fq.fileEncoding && this.fileUtils.toCanonicalName(fq.fileEncoding),
 			maxFileSize: this.query.maxFileSize,
 			maxResults: this.query.maxResults,
 			previewOptions: this.query.previewOptions,
 			afterContext: this.query.afterContext,
-			beforeContext: this.query.beforeContext
+			BeforeContext: this.query.BeforeContext
 		};
 		(<IExtendedExtensionSearchOptions>options).usePCRE2 = this.query.usePCRE2;
 		return options;
@@ -203,19 +203,19 @@ function patternInfoToQuery(patternInfo: IPatternInfo): TextSearchQuery {
 }
 
 export class TextSearchResultsCollector {
-	private _batchedCollector: BatchedCollector<IFileMatch>;
+	private _BatchedCollector: BatchedCollector<IFileMatch>;
 
-	private _currentFolderIdx: number = -1;
+	private _currentFolderIdx: numBer = -1;
 	private _currentUri: URI | undefined;
 	private _currentFileMatch: IFileMatch | null = null;
 
 	constructor(private _onResult: (result: IFileMatch[]) => void) {
-		this._batchedCollector = new BatchedCollector<IFileMatch>(512, items => this.sendItems(items));
+		this._BatchedCollector = new BatchedCollector<IFileMatch>(512, items => this.sendItems(items));
 	}
 
-	add(data: TextSearchResult, folderIdx: number): void {
+	add(data: TextSearchResult, folderIdx: numBer): void {
 		// Collects TextSearchResults into IInternalFileMatches and collates using BatchedCollector.
-		// This is efficient for ripgrep which sends results back one file at a time. It wouldn't be efficient for other search
+		// This is efficient for ripgrep which sends results Back one file at a time. It wouldn't Be efficient for other search
 		// providers that send results in random order. We could do this step afterwards instead.
 		if (this._currentFileMatch && (this._currentFolderIdx !== folderIdx || !resources.isEqual(this._currentUri, data.uri))) {
 			this.pushToCollector();
@@ -237,12 +237,12 @@ export class TextSearchResultsCollector {
 		const size = this._currentFileMatch && this._currentFileMatch.results ?
 			this._currentFileMatch.results.length :
 			0;
-		this._batchedCollector.addItem(this._currentFileMatch!, size);
+		this._BatchedCollector.addItem(this._currentFileMatch!, size);
 	}
 
 	flush(): void {
 		this.pushToCollector();
-		this._batchedCollector.flush();
+		this._BatchedCollector.flush();
 	}
 
 	private sendItems(items: IFileMatch[]): void {
@@ -251,29 +251,29 @@ export class TextSearchResultsCollector {
 }
 
 function extensionResultToFrontendResult(data: TextSearchResult): ITextSearchResult {
-	// Warning: result from RipgrepTextSearchEH has fake Range. Don't depend on any other props beyond these...
+	// Warning: result from RipgrepTextSearchEH has fake Range. Don't depend on any other props Beyond these...
 	if (extensionResultIsMatch(data)) {
 		return <ITextSearchMatch>{
 			preview: {
 				matches: mapArrayOrNot(data.preview.matches, m => ({
-					startLineNumber: m.start.line,
+					startLineNumBer: m.start.line,
 					startColumn: m.start.character,
-					endLineNumber: m.end.line,
+					endLineNumBer: m.end.line,
 					endColumn: m.end.character
 				})),
 				text: data.preview.text
 			},
 			ranges: mapArrayOrNot(data.ranges, r => ({
-				startLineNumber: r.start.line,
+				startLineNumBer: r.start.line,
 				startColumn: r.start.character,
-				endLineNumber: r.end.line,
+				endLineNumBer: r.end.line,
 				endColumn: r.end.character
 			}))
 		};
 	} else {
 		return <ITextSearchContext>{
 			text: data.text,
-			lineNumber: data.lineNumber
+			lineNumBer: data.lineNumBer
 		};
 	}
 }
@@ -283,26 +283,26 @@ export function extensionResultIsMatch(data: TextSearchResult): data is TextSear
 }
 
 /**
- * Collects items that have a size - before the cumulative size of collected items reaches START_BATCH_AFTER_COUNT, the callback is called for every
+ * Collects items that have a size - Before the cumulative size of collected items reaches START_BATCH_AFTER_COUNT, the callBack is called for every
  * set of items collected.
- * But after that point, the callback is called with batches of maxBatchSize.
- * If the batch isn't filled within some time, the callback is also called.
+ * But after that point, the callBack is called with Batches of maxBatchSize.
+ * If the Batch isn't filled within some time, the callBack is also called.
  */
 export class BatchedCollector<T> {
 	private static readonly TIMEOUT = 4000;
 
-	// After START_BATCH_AFTER_COUNT items have been collected, stop flushing on timeout
+	// After START_BATCH_AFTER_COUNT items have Been collected, stop flushing on timeout
 	private static readonly START_BATCH_AFTER_COUNT = 50;
 
-	private totalNumberCompleted = 0;
-	private batch: T[] = [];
-	private batchSize = 0;
+	private totalNumBerCompleted = 0;
+	private Batch: T[] = [];
+	private BatchSize = 0;
 	private timeoutHandle: any;
 
-	constructor(private maxBatchSize: number, private cb: (items: T[]) => void) {
+	constructor(private maxBatchSize: numBer, private cB: (items: T[]) => void) {
 	}
 
-	addItem(item: T, size: number): void {
+	addItem(item: T, size: numBer): void {
 		if (!item) {
 			return;
 		}
@@ -310,7 +310,7 @@ export class BatchedCollector<T> {
 		this.addItemToBatch(item, size);
 	}
 
-	addItems(items: T[], size: number): void {
+	addItems(items: T[], size: numBer): void {
 		if (!items) {
 			return;
 		}
@@ -318,24 +318,24 @@ export class BatchedCollector<T> {
 		this.addItemsToBatch(items, size);
 	}
 
-	private addItemToBatch(item: T, size: number): void {
-		this.batch.push(item);
-		this.batchSize += size;
+	private addItemToBatch(item: T, size: numBer): void {
+		this.Batch.push(item);
+		this.BatchSize += size;
 		this.onUpdate();
 	}
 
-	private addItemsToBatch(item: T[], size: number): void {
-		this.batch = this.batch.concat(item);
-		this.batchSize += size;
+	private addItemsToBatch(item: T[], size: numBer): void {
+		this.Batch = this.Batch.concat(item);
+		this.BatchSize += size;
 		this.onUpdate();
 	}
 
 	private onUpdate(): void {
-		if (this.totalNumberCompleted < BatchedCollector.START_BATCH_AFTER_COUNT) {
-			// Flush because we aren't batching yet
+		if (this.totalNumBerCompleted < BatchedCollector.START_BATCH_AFTER_COUNT) {
+			// Flush Because we aren't Batching yet
 			this.flush();
-		} else if (this.batchSize >= this.maxBatchSize) {
-			// Flush because the batch is full
+		} else if (this.BatchSize >= this.maxBatchSize) {
+			// Flush Because the Batch is full
 			this.flush();
 		} else if (!this.timeoutHandle) {
 			// No timeout running, start a timeout to flush
@@ -346,11 +346,11 @@ export class BatchedCollector<T> {
 	}
 
 	flush(): void {
-		if (this.batchSize) {
-			this.totalNumberCompleted += this.batchSize;
-			this.cb(this.batch);
-			this.batch = [];
-			this.batchSize = 0;
+		if (this.BatchSize) {
+			this.totalNumBerCompleted += this.BatchSize;
+			this.cB(this.Batch);
+			this.Batch = [];
+			this.BatchSize = 0;
 
 			if (this.timeoutHandle) {
 				clearTimeout(this.timeoutHandle);

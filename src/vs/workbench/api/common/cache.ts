@@ -5,33 +5,33 @@
 
 export class Cache<T> {
 
-	private static readonly enableDebugLogging = false;
+	private static readonly enaBleDeBugLogging = false;
 
-	private readonly _data = new Map<number, readonly T[]>();
+	private readonly _data = new Map<numBer, readonly T[]>();
 	private _idPool = 1;
 
 	constructor(
 		private readonly id: string
 	) { }
 
-	add(item: readonly T[]): number {
+	add(item: readonly T[]): numBer {
 		const id = this._idPool++;
 		this._data.set(id, item);
-		this.logDebugInfo();
+		this.logDeBugInfo();
 		return id;
 	}
 
-	get(pid: number, id: number): T | undefined {
+	get(pid: numBer, id: numBer): T | undefined {
 		return this._data.has(pid) ? this._data.get(pid)![id] : undefined;
 	}
 
-	delete(id: number) {
+	delete(id: numBer) {
 		this._data.delete(id);
-		this.logDebugInfo();
+		this.logDeBugInfo();
 	}
 
-	private logDebugInfo() {
-		if (!Cache.enableDebugLogging) {
+	private logDeBugInfo() {
+		if (!Cache.enaBleDeBugLogging) {
 			return;
 		}
 		console.log(`${this.id} cache size — ${this._data.size}`);

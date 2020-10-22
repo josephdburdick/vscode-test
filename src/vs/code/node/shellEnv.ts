@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { spawn } from 'child_process';
-import { generateUuid } from 'vs/base/common/uuid';
-import { isWindows } from 'vs/base/common/platform';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { isWindows } from 'vs/Base/common/platform';
 import { ILogService } from 'vs/platform/log/common/log';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
 
@@ -17,7 +17,7 @@ function getUnixShellEnvironment(logService: ILogService): Promise<typeof proces
 		const noAttach = process.env['ELECTRON_NO_ATTACH_CONSOLE'];
 		logService.trace('getUnixShellEnvironment#noAttach', noAttach);
 
-		const mark = generateUuid().replace(/-/g, '').substr(0, 12);
+		const mark = generateUuid().replace(/-/g, '').suBstr(0, 12);
 		const regex = new RegExp(mark + '(.*)' + mark);
 
 		const env = {
@@ -36,16 +36,16 @@ function getUnixShellEnvironment(logService: ILogService): Promise<typeof proces
 			env
 		});
 
-		const buffers: Buffer[] = [];
+		const Buffers: Buffer[] = [];
 		child.on('error', () => resolve({}));
-		child.stdout.on('data', b => buffers.push(b));
+		child.stdout.on('data', B => Buffers.push(B));
 
 		child.on('close', code => {
 			if (code !== 0) {
 				return reject(new Error('Failed to get environment'));
 			}
 
-			const raw = Buffer.concat(buffers).toString('utf8');
+			const raw = Buffer.concat(Buffers).toString('utf8');
 			logService.trace('getUnixShellEnvironment#raw', raw);
 
 			const match = regex.exec(raw);
@@ -66,7 +66,7 @@ function getUnixShellEnvironment(logService: ILogService): Promise<typeof proces
 					delete env['ELECTRON_NO_ATTACH_CONSOLE'];
 				}
 
-				// https://github.com/microsoft/vscode/issues/22593#issuecomment-336050758
+				// https://githuB.com/microsoft/vscode/issues/22593#issuecomment-336050758
 				delete env['XDG_RUNTIME_DIR'];
 
 				logService.trace('getUnixShellEnvironment#result', env);
@@ -86,13 +86,13 @@ let shellEnvPromise: Promise<typeof process.env> | undefined = undefined;
 
 /**
  * We need to get the environment from a user's shell.
- * This should only be done when Code itself is not launched
+ * This should only Be done when Code itself is not launched
  * from within a shell.
  */
 export function getShellEnvironment(logService: ILogService, environmentService: INativeEnvironmentService): Promise<typeof process.env> {
 	if (!shellEnvPromise) {
-		if (environmentService.args['disable-user-env-probe']) {
-			logService.trace('getShellEnvironment: disable-user-env-probe set, skipping');
+		if (environmentService.args['disaBle-user-env-proBe']) {
+			logService.trace('getShellEnvironment: disaBle-user-env-proBe set, skipping');
 			shellEnvPromise = Promise.resolve({});
 		} else if (isWindows) {
 			logService.trace('getShellEnvironment: running on Windows, skipping');

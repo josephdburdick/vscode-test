@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as mime from 'vs/base/common/mime';
-import * as resources from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import * as mime from 'vs/Base/common/mime';
+import * as resources from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
 import { ILanguageExtensionPoint, IModeService } from 'vs/editor/common/services/modeService';
 import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { FILES_ASSOCIATIONS_CONFIG, IFilesConfiguration } from 'vs/platform/files/common/files';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ExtensionMessageCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { ExtensionMessageCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
 export interface IRawLanguageExtensionPoint {
@@ -31,25 +31,25 @@ export interface IRawLanguageExtensionPoint {
 export const languagesExtPoint: IExtensionPoint<IRawLanguageExtensionPoint[]> = ExtensionsRegistry.registerExtensionPoint<IRawLanguageExtensionPoint[]>({
 	extensionPoint: 'languages',
 	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.languages', 'Contributes language declarations.'),
+		description: nls.localize('vscode.extension.contriButes.languages', 'ContriButes language declarations.'),
 		type: 'array',
 		items: {
-			type: 'object',
-			defaultSnippets: [{ body: { id: '${1:languageId}', aliases: ['${2:label}'], extensions: ['${3:extension}'], configuration: './language-configuration.json' } }],
+			type: 'oBject',
+			defaultSnippets: [{ Body: { id: '${1:languageId}', aliases: ['${2:laBel}'], extensions: ['${3:extension}'], configuration: './language-configuration.json' } }],
 			properties: {
 				id: {
-					description: nls.localize('vscode.extension.contributes.languages.id', 'ID of the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.id', 'ID of the language.'),
 					type: 'string'
 				},
 				aliases: {
-					description: nls.localize('vscode.extension.contributes.languages.aliases', 'Name aliases for the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.aliases', 'Name aliases for the language.'),
 					type: 'array',
 					items: {
 						type: 'string'
 					}
 				},
 				extensions: {
-					description: nls.localize('vscode.extension.contributes.languages.extensions', 'File extensions associated to the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.extensions', 'File extensions associated to the language.'),
 					default: ['.foo'],
 					type: 'array',
 					items: {
@@ -57,32 +57,32 @@ export const languagesExtPoint: IExtensionPoint<IRawLanguageExtensionPoint[]> = 
 					}
 				},
 				filenames: {
-					description: nls.localize('vscode.extension.contributes.languages.filenames', 'File names associated to the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.filenames', 'File names associated to the language.'),
 					type: 'array',
 					items: {
 						type: 'string'
 					}
 				},
 				filenamePatterns: {
-					description: nls.localize('vscode.extension.contributes.languages.filenamePatterns', 'File name glob patterns associated to the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.filenamePatterns', 'File name gloB patterns associated to the language.'),
 					type: 'array',
 					items: {
 						type: 'string'
 					}
 				},
 				mimetypes: {
-					description: nls.localize('vscode.extension.contributes.languages.mimetypes', 'Mime types associated to the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.mimetypes', 'Mime types associated to the language.'),
 					type: 'array',
 					items: {
 						type: 'string'
 					}
 				},
 				firstLine: {
-					description: nls.localize('vscode.extension.contributes.languages.firstLine', 'A regular expression matching the first line of a file of the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.firstLine', 'A regular expression matching the first line of a file of the language.'),
 					type: 'string'
 				},
 				configuration: {
-					description: nls.localize('vscode.extension.contributes.languages.configuration', 'A relative path to a file containing configuration options for the language.'),
+					description: nls.localize('vscode.extension.contriButes.languages.configuration', 'A relative path to a file containing configuration options for the language.'),
 					type: 'string',
 					default: './language-configuration.json'
 				}
@@ -91,17 +91,17 @@ export const languagesExtPoint: IExtensionPoint<IRawLanguageExtensionPoint[]> = 
 	}
 });
 
-export class WorkbenchModeServiceImpl extends ModeServiceImpl {
+export class WorkBenchModeServiceImpl extends ModeServiceImpl {
 	private _configurationService: IConfigurationService;
 	private _extensionService: IExtensionService;
-	private _onReadyPromise: Promise<boolean> | undefined;
+	private _onReadyPromise: Promise<Boolean> | undefined;
 
 	constructor(
 		@IExtensionService extensionService: IExtensionService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IEnvironmentService environmentService: IEnvironmentService
 	) {
-		super(environmentService.verbose || environmentService.isExtensionDevelopment || !environmentService.isBuilt);
+		super(environmentService.verBose || environmentService.isExtensionDevelopment || !environmentService.isBuilt);
 		this._configurationService = configurationService;
 		this._extensionService = extensionService;
 
@@ -112,7 +112,7 @@ export class WorkbenchModeServiceImpl extends ModeServiceImpl {
 				let extension = extensions[i];
 
 				if (!Array.isArray(extension.value)) {
-					extension.collector.error(nls.localize('invalid', "Invalid `contributes.{0}`. Expected an array.", languagesExtPoint.name));
+					extension.collector.error(nls.localize('invalid', "Invalid `contriButes.{0}`. Expected an array.", languagesExtPoint.name));
 					continue;
 				}
 
@@ -156,7 +156,7 @@ export class WorkbenchModeServiceImpl extends ModeServiceImpl {
 		});
 	}
 
-	protected _onReady(): Promise<boolean> {
+	protected _onReady(): Promise<Boolean> {
 		if (!this._onReadyPromise) {
 			this._onReadyPromise = Promise.resolve(
 				this._extensionService.whenInstalledExtensionsRegistered().then(() => true)
@@ -172,9 +172,9 @@ export class WorkbenchModeServiceImpl extends ModeServiceImpl {
 		// Clear user configured mime associations
 		mime.clearTextMimes(true /* user configured */);
 
-		// Register based on settings
+		// Register Based on settings
 		if (configuration.files?.associations) {
-			Object.keys(configuration.files.associations).forEach(pattern => {
+			OBject.keys(configuration.files.associations).forEach(pattern => {
 				const langId = configuration.files.associations[pattern];
 				const mimetype = this.getMimeForMode(langId) || `text/x-${langId}`;
 
@@ -182,11 +182,11 @@ export class WorkbenchModeServiceImpl extends ModeServiceImpl {
 			});
 		}
 
-		this._onLanguagesMaybeChanged.fire();
+		this._onLanguagesMayBeChanged.fire();
 	}
 }
 
-function isUndefinedOrStringArray(value: string[]): boolean {
+function isUndefinedOrStringArray(value: string[]): Boolean {
 	if (typeof value === 'undefined') {
 		return true;
 	}
@@ -196,40 +196,40 @@ function isUndefinedOrStringArray(value: string[]): boolean {
 	return value.every(item => typeof item === 'string');
 }
 
-function isValidLanguageExtensionPoint(value: IRawLanguageExtensionPoint, collector: ExtensionMessageCollector): boolean {
+function isValidLanguageExtensionPoint(value: IRawLanguageExtensionPoint, collector: ExtensionMessageCollector): Boolean {
 	if (!value) {
-		collector.error(nls.localize('invalid.empty', "Empty value for `contributes.{0}`", languagesExtPoint.name));
+		collector.error(nls.localize('invalid.empty', "Empty value for `contriButes.{0}`", languagesExtPoint.name));
 		return false;
 	}
 	if (typeof value.id !== 'string') {
-		collector.error(nls.localize('require.id', "property `{0}` is mandatory and must be of type `string`", 'id'));
+		collector.error(nls.localize('require.id', "property `{0}` is mandatory and must Be of type `string`", 'id'));
 		return false;
 	}
 	if (!isUndefinedOrStringArray(value.extensions)) {
-		collector.error(nls.localize('opt.extensions', "property `{0}` can be omitted and must be of type `string[]`", 'extensions'));
+		collector.error(nls.localize('opt.extensions', "property `{0}` can Be omitted and must Be of type `string[]`", 'extensions'));
 		return false;
 	}
 	if (!isUndefinedOrStringArray(value.filenames)) {
-		collector.error(nls.localize('opt.filenames', "property `{0}` can be omitted and must be of type `string[]`", 'filenames'));
+		collector.error(nls.localize('opt.filenames', "property `{0}` can Be omitted and must Be of type `string[]`", 'filenames'));
 		return false;
 	}
 	if (typeof value.firstLine !== 'undefined' && typeof value.firstLine !== 'string') {
-		collector.error(nls.localize('opt.firstLine', "property `{0}` can be omitted and must be of type `string`", 'firstLine'));
+		collector.error(nls.localize('opt.firstLine', "property `{0}` can Be omitted and must Be of type `string`", 'firstLine'));
 		return false;
 	}
 	if (typeof value.configuration !== 'undefined' && typeof value.configuration !== 'string') {
-		collector.error(nls.localize('opt.configuration', "property `{0}` can be omitted and must be of type `string`", 'configuration'));
+		collector.error(nls.localize('opt.configuration', "property `{0}` can Be omitted and must Be of type `string`", 'configuration'));
 		return false;
 	}
 	if (!isUndefinedOrStringArray(value.aliases)) {
-		collector.error(nls.localize('opt.aliases', "property `{0}` can be omitted and must be of type `string[]`", 'aliases'));
+		collector.error(nls.localize('opt.aliases', "property `{0}` can Be omitted and must Be of type `string[]`", 'aliases'));
 		return false;
 	}
 	if (!isUndefinedOrStringArray(value.mimetypes)) {
-		collector.error(nls.localize('opt.mimetypes', "property `{0}` can be omitted and must be of type `string[]`", 'mimetypes'));
+		collector.error(nls.localize('opt.mimetypes', "property `{0}` can Be omitted and must Be of type `string[]`", 'mimetypes'));
 		return false;
 	}
 	return true;
 }
 
-registerSingleton(IModeService, WorkbenchModeServiceImpl);
+registerSingleton(IModeService, WorkBenchModeServiceImpl);

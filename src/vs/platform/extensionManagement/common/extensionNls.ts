@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { cloneAndChange } from 'vs/base/common/objects';
+import { cloneAndChange } from 'vs/Base/common/oBjects';
 import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
 
 const nlsRegex = /^%([\w\d.-]+)%$/i;

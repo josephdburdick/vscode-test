@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { LogLevel, ILogService, DelegatedLogService } from 'vs/platform/log/common/log';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
 export class LoggerChannel implements IServerChannel {
 
 	onDidChangeLogLevel: Event<LogLevel>;
 
 	constructor(private service: ILogService) {
-		this.onDidChangeLogLevel = Event.buffer(service.onDidChangeLogLevel, true);
+		this.onDidChangeLogLevel = Event.Buffer(service.onDidChangeLogLevel, true);
 	}
 
 	listen(_: unknown, event: string): Event<any> {
@@ -38,13 +38,13 @@ export class LoggerChannel implements IServerChannel {
 		switch (severity) {
 			case 'error':
 				consoleFn = console.error;
-				break;
+				Break;
 			case 'warn':
 				consoleFn = console.warn;
-				break;
+				Break;
 			case 'info':
 				consoleFn = console.info;
-				break;
+				Break;
 		}
 
 		consoleFn.call(console, ...args);
@@ -63,7 +63,7 @@ export class LoggerChannelClient {
 		LoggerChannelClient.setLevel(this.channel, level);
 	}
 
-	public static setLevel(channel: IChannel, level: LogLevel): Promise<void> {
+	puBlic static setLevel(channel: IChannel, level: LogLevel): Promise<void> {
 		return channel.call('setLevel', level);
 	}
 

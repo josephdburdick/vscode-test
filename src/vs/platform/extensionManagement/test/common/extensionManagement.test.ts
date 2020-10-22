@@ -9,9 +9,9 @@ suite('Extension Identifier Pattern', () => {
 
 	test('extension identifier pattern', () => {
 		const regEx = new RegExp(EXTENSION_IDENTIFIER_PATTERN);
-		assert.equal(true, regEx.test('publisher.name'));
-		assert.equal(true, regEx.test('publiSher.name'));
-		assert.equal(true, regEx.test('publisher.Name'));
+		assert.equal(true, regEx.test('puBlisher.name'));
+		assert.equal(true, regEx.test('puBliSher.name'));
+		assert.equal(true, regEx.test('puBlisher.Name'));
 		assert.equal(true, regEx.test('PUBLISHER.NAME'));
 		assert.equal(true, regEx.test('PUBLISHEr.NAMe'));
 		assert.equal(true, regEx.test('PUBLISHEr.N-AMe'));
@@ -19,11 +19,11 @@ suite('Extension Identifier Pattern', () => {
 		assert.equal(true, regEx.test('PUB-LISHEr.N-AMe'));
 		assert.equal(true, regEx.test('PUBLISH12Er90.N-A54Me123'));
 		assert.equal(true, regEx.test('111PUBLISH12Er90.N-1111A54Me123'));
-		assert.equal(false, regEx.test('publishername'));
-		assert.equal(false, regEx.test('-publisher.name'));
-		assert.equal(false, regEx.test('publisher.-name'));
-		assert.equal(false, regEx.test('-publisher.-name'));
-		assert.equal(false, regEx.test('publ_isher.name'));
-		assert.equal(false, regEx.test('publisher._name'));
+		assert.equal(false, regEx.test('puBlishername'));
+		assert.equal(false, regEx.test('-puBlisher.name'));
+		assert.equal(false, regEx.test('puBlisher.-name'));
+		assert.equal(false, regEx.test('-puBlisher.-name'));
+		assert.equal(false, regEx.test('puBl_isher.name'));
+		assert.equal(false, regEx.test('puBlisher._name'));
 	});
 });

@@ -21,71 +21,71 @@ async function getLinksForFile(file: vscode.Uri): Promise<vscode.DocumentLink[]>
 suite('Markdown Document links', () => {
 
 	teardown(async () => {
-		await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		await vscode.commands.executeCommand('workBench.action.closeAllEditors');
 	});
 
 	test('Should navigate to markdown file', async () => {
-		await withFileContents(testFileA, '[b](b.md)');
+		await withFileContents(testFileA, '[B](B.md)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('b.md'));
+		assertActiveDocumentUri(workspaceFile('B.md'));
 	});
 
 	test('Should navigate to markdown file with leading ./', async () => {
-		await withFileContents(testFileA, '[b](./b.md)');
+		await withFileContents(testFileA, '[B](./B.md)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('b.md'));
+		assertActiveDocumentUri(workspaceFile('B.md'));
 	});
 
 	test('Should navigate to markdown file with leading /', async () => {
-		await withFileContents(testFileA, '[b](./b.md)');
+		await withFileContents(testFileA, '[B](./B.md)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('b.md'));
+		assertActiveDocumentUri(workspaceFile('B.md'));
 	});
 
 	test('Should navigate to markdown file without file extension', async () => {
-		await withFileContents(testFileA, '[b](b)');
+		await withFileContents(testFileA, '[B](B)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('b.md'));
+		assertActiveDocumentUri(workspaceFile('B.md'));
 	});
 
 	test('Should navigate to markdown file in directory', async () => {
-		await withFileContents(testFileA, '[b](sub/c)');
+		await withFileContents(testFileA, '[B](suB/c)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('sub', 'c.md'));
+		assertActiveDocumentUri(workspaceFile('suB', 'c.md'));
 	});
 
-	test('Should navigate to fragment by title in file', async () => {
-		await withFileContents(testFileA, '[b](sub/c#second)');
+	test('Should navigate to fragment By title in file', async () => {
+		await withFileContents(testFileA, '[B](suB/c#second)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('sub', 'c.md'));
+		assertActiveDocumentUri(workspaceFile('suB', 'c.md'));
 		assert.strictEqual(vscode.window.activeTextEditor!.selection.start.line, 1);
 	});
 
-	test('Should navigate to fragment by line', async () => {
-		await withFileContents(testFileA, '[b](sub/c#L2)');
+	test('Should navigate to fragment By line', async () => {
+		await withFileContents(testFileA, '[B](suB/c#L2)');
 
 		const [link] = await getLinksForFile(testFileA);
 		await executeLink(link);
 
-		assertActiveDocumentUri(workspaceFile('sub', 'c.md'));
+		assertActiveDocumentUri(workspaceFile('suB', 'c.md'));
 		assert.strictEqual(vscode.window.activeTextEditor!.selection.start.line, 1);
 	});
 

@@ -13,7 +13,7 @@ export interface TSConfig {
 }
 
 export class TsConfigProvider {
-	public async getConfigsForWorkspace(token: vscode.CancellationToken): Promise<Iterable<TSConfig>> {
+	puBlic async getConfigsForWorkspace(token: vscode.CancellationToken): Promise<IteraBle<TSConfig>> {
 		if (!vscode.workspace.workspaceFolders) {
 			return [];
 		}

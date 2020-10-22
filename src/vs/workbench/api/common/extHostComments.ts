@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { asPromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { debounce } from 'vs/base/common/decorators';
-import { Emitter } from 'vs/base/common/event';
-import { DisposableStore, IDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { asPromise } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { deBounce } from 'vs/Base/common/decorators';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBleStore, IDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { IRange } from 'vs/editor/common/core/range';
 import * as modes from 'vs/editor/common/modes';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import * as extHostTypeConverter from 'vs/workbench/api/common/extHostTypeConverters';
-import * as types from 'vs/workbench/api/common/extHostTypes';
+import { ExtHostDocuments } from 'vs/workBench/api/common/extHostDocuments';
+import * as extHostTypeConverter from 'vs/workBench/api/common/extHostTypeConverters';
+import * as types from 'vs/workBench/api/common/extHostTypes';
 import type * as vscode from 'vscode';
 import { ExtHostCommentsShape, IMainContext, MainContext, MainThreadCommentsShape, CommentThreadChanges } from './extHost.protocol';
 import { ExtHostCommands } from './extHostCommands';
 
-type ProviderHandle = number;
+type ProviderHandle = numBer;
 
-export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
+export class ExtHostComments implements ExtHostCommentsShape, IDisposaBle {
 
 	private static handlePool = 0;
 
@@ -116,7 +116,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 						return arg;
 					}
 
-					let body = arg.text;
+					let Body = arg.text;
 					let commentUniqueId = arg.commentUniqueId;
 
 					let comment = commentThread.getCommentByUniqueId(commentUniqueId);
@@ -125,7 +125,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 						return arg;
 					}
 
-					comment.body = body;
+					comment.Body = Body;
 					return comment;
 				}
 
@@ -134,9 +134,9 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		});
 	}
 
-	createCommentController(extension: IExtensionDescription, id: string, label: string): vscode.CommentController {
+	createCommentController(extension: IExtensionDescription, id: string, laBel: string): vscode.CommentController {
 		const handle = ExtHostComments.handlePool++;
-		const commentController = new ExtHostCommentController(extension, handle, this._proxy, id, label);
+		const commentController = new ExtHostCommentController(extension, handle, this._proxy, id, laBel);
 		this._commentControllers.set(commentController.handle, commentController);
 
 		const commentControllers = this._commentControllersByExtension.get(ExtensionIdentifier.toKey(extension.identifier)) || [];
@@ -146,7 +146,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		return commentController;
 	}
 
-	$createCommentThreadTemplate(commentControllerHandle: number, uriComponents: UriComponents, range: IRange): void {
+	$createCommentThreadTemplate(commentControllerHandle: numBer, uriComponents: UriComponents, range: IRange): void {
 		const commentController = this._commentControllers.get(commentControllerHandle);
 
 		if (!commentController) {
@@ -156,7 +156,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		commentController.$createCommentThreadTemplate(uriComponents, range);
 	}
 
-	async $updateCommentThreadTemplate(commentControllerHandle: number, threadHandle: number, range: IRange) {
+	async $updateCommentThreadTemplate(commentControllerHandle: numBer, threadHandle: numBer, range: IRange) {
 		const commentController = this._commentControllers.get(commentControllerHandle);
 
 		if (!commentController) {
@@ -166,7 +166,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		commentController.$updateCommentThreadTemplate(threadHandle, range);
 	}
 
-	$deleteCommentThread(commentControllerHandle: number, commentThreadHandle: number) {
+	$deleteCommentThread(commentControllerHandle: numBer, commentThreadHandle: numBer) {
 		const commentController = this._commentControllers.get(commentControllerHandle);
 
 		if (commentController) {
@@ -174,7 +174,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		}
 	}
 
-	$provideCommentingRanges(commentControllerHandle: number, uriComponents: UriComponents, token: CancellationToken): Promise<IRange[] | undefined> {
+	$provideCommentingRanges(commentControllerHandle: numBer, uriComponents: UriComponents, token: CancellationToken): Promise<IRange[] | undefined> {
 		const commentController = this._commentControllers.get(commentControllerHandle);
 
 		if (!commentController || !commentController.commentingRangeProvider) {
@@ -187,7 +187,7 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 		}).then(ranges => ranges ? ranges.map(x => extHostTypeConverter.Range.from(x)) : undefined);
 	}
 
-	$toggleReaction(commentControllerHandle: number, threadHandle: number, uri: UriComponents, comment: modes.Comment, reaction: modes.CommentReaction): Promise<void> {
+	$toggleReaction(commentControllerHandle: numBer, threadHandle: numBer, uri: UriComponents, comment: modes.Comment, reaction: modes.CommentReaction): Promise<void> {
 		const commentController = this._commentControllers.get(commentControllerHandle);
 
 		if (!commentController || !commentController.reactionHandler) {
@@ -215,19 +215,19 @@ export class ExtHostComments implements ExtHostCommentsShape, IDisposable {
 }
 type CommentThreadModification = Partial<{
 	range: vscode.Range,
-	label: string | undefined,
+	laBel: string | undefined,
 	contextValue: string | undefined,
 	comments: vscode.Comment[],
-	collapsibleState: vscode.CommentThreadCollapsibleState
-	canReply: boolean;
+	collapsiBleState: vscode.CommentThreadCollapsiBleState
+	canReply: Boolean;
 }>;
 
 export class ExtHostCommentThread implements vscode.CommentThread {
-	private static _handlePool: number = 0;
+	private static _handlePool: numBer = 0;
 	readonly handle = ExtHostCommentThread._handlePool++;
-	public commentHandle: number = 0;
+	puBlic commentHandle: numBer = 0;
 
-	private modifications: CommentThreadModification = Object.create(null);
+	private modifications: CommentThreadModification = OBject.create(null);
 
 	set threadId(id: string) {
 		this._id = id;
@@ -264,9 +264,9 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 		return this._range;
 	}
 
-	private _canReply: boolean = true;
+	private _canReply: Boolean = true;
 
-	set canReply(state: boolean) {
+	set canReply(state: Boolean) {
 		if (this._canReply !== state) {
 			this._canReply = state;
 			this.modifications.canReply = state;
@@ -277,15 +277,15 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 		return this._canReply;
 	}
 
-	private _label: string | undefined;
+	private _laBel: string | undefined;
 
-	get label(): string | undefined {
-		return this._label;
+	get laBel(): string | undefined {
+		return this._laBel;
 	}
 
-	set label(label: string | undefined) {
-		this._label = label;
-		this.modifications.label = label;
+	set laBel(laBel: string | undefined) {
+		this._laBel = laBel;
+		this.modifications.laBel = laBel;
 		this._onDidUpdateCommentThread.fire();
 	}
 
@@ -311,29 +311,29 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 		this._onDidUpdateCommentThread.fire();
 	}
 
-	private _collapseState?: vscode.CommentThreadCollapsibleState;
+	private _collapseState?: vscode.CommentThreadCollapsiBleState;
 
-	get collapsibleState(): vscode.CommentThreadCollapsibleState {
+	get collapsiBleState(): vscode.CommentThreadCollapsiBleState {
 		return this._collapseState!;
 	}
 
-	set collapsibleState(newState: vscode.CommentThreadCollapsibleState) {
+	set collapsiBleState(newState: vscode.CommentThreadCollapsiBleState) {
 		this._collapseState = newState;
-		this.modifications.collapsibleState = newState;
+		this.modifications.collapsiBleState = newState;
 		this._onDidUpdateCommentThread.fire();
 	}
 
-	private _localDisposables: types.Disposable[];
+	private _localDisposaBles: types.DisposaBle[];
 
-	private _isDiposed: boolean;
+	private _isDiposed: Boolean;
 
-	public get isDisposed(): boolean {
+	puBlic get isDisposed(): Boolean {
 		return this._isDiposed;
 	}
 
-	private _commentsMap: Map<vscode.Comment, number> = new Map<vscode.Comment, number>();
+	private _commentsMap: Map<vscode.Comment, numBer> = new Map<vscode.Comment, numBer>();
 
-	private _acceptInputDisposables = new MutableDisposable<DisposableStore>();
+	private _acceptInputDisposaBles = new MutaBleDisposaBle<DisposaBleStore>();
 
 	constructor(
 		private _proxy: MainThreadCommentsShape,
@@ -344,7 +344,7 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 		private _comments: vscode.Comment[],
 		extensionId: ExtensionIdentifier
 	) {
-		this._acceptInputDisposables.value = new DisposableStore();
+		this._acceptInputDisposaBles.value = new DisposaBleStore();
 
 		if (this._id === undefined) {
 			this._id = `${_commentController.id}.${this.handle}`;
@@ -359,37 +359,37 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 			extensionId
 		);
 
-		this._localDisposables = [];
+		this._localDisposaBles = [];
 		this._isDiposed = false;
 
-		this._localDisposables.push(this.onDidUpdateCommentThread(() => {
+		this._localDisposaBles.push(this.onDidUpdateCommentThread(() => {
 			this.eventuallyUpdateCommentThread();
 		}));
 
-		// set up comments after ctor to batch update events.
+		// set up comments after ctor to Batch update events.
 		this.comments = _comments;
 	}
 
 
-	@debounce(100)
+	@deBounce(100)
 	eventuallyUpdateCommentThread(): void {
 		if (this._isDiposed) {
 			return;
 		}
 
-		if (!this._acceptInputDisposables.value) {
-			this._acceptInputDisposables.value = new DisposableStore();
+		if (!this._acceptInputDisposaBles.value) {
+			this._acceptInputDisposaBles.value = new DisposaBleStore();
 		}
 
-		const modified = (value: keyof CommentThreadModification): boolean =>
-			Object.prototype.hasOwnProperty.call(this.modifications, value);
+		const modified = (value: keyof CommentThreadModification): Boolean =>
+			OBject.prototype.hasOwnProperty.call(this.modifications, value);
 
 		const formattedModifications: CommentThreadChanges = {};
 		if (modified('range')) {
 			formattedModifications.range = extHostTypeConverter.Range.from(this._range);
 		}
-		if (modified('label')) {
-			formattedModifications.label = this.label;
+		if (modified('laBel')) {
+			formattedModifications.laBel = this.laBel;
 		}
 		if (modified('contextValue')) {
 			formattedModifications.contextValue = this.contextValue;
@@ -398,8 +398,8 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 			formattedModifications.comments =
 				this._comments.map(cmt => convertToModeComment(this, this._commentController, cmt, this._commentsMap));
 		}
-		if (modified('collapsibleState')) {
-			formattedModifications.collapseState = convertToCollapsibleState(this._collapseState);
+		if (modified('collapsiBleState')) {
+			formattedModifications.collapseState = convertToCollapsiBleState(this._collapseState);
 		}
 		if (modified('canReply')) {
 			formattedModifications.canReply = this.canReply;
@@ -415,7 +415,7 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 		);
 	}
 
-	getCommentByUniqueId(uniqueId: number): vscode.Comment | undefined {
+	getCommentByUniqueId(uniqueId: numBer): vscode.Comment | undefined {
 		for (let key of this._commentsMap) {
 			let comment = key[0];
 			let id = key[1];
@@ -429,8 +429,8 @@ export class ExtHostCommentThread implements vscode.CommentThread {
 
 	dispose() {
 		this._isDiposed = true;
-		this._acceptInputDisposables.dispose();
-		this._localDisposables.forEach(disposable => disposable.dispose());
+		this._acceptInputDisposaBles.dispose();
+		this._localDisposaBles.forEach(disposaBle => disposaBle.dispose());
 		this._proxy.$deleteCommentThread(
 			this._commentController.handle,
 			this.handle
@@ -445,15 +445,15 @@ class ExtHostCommentController implements vscode.CommentController {
 		return this._id;
 	}
 
-	get label(): string {
-		return this._label;
+	get laBel(): string {
+		return this._laBel;
 	}
 
-	public get handle(): number {
+	puBlic get handle(): numBer {
 		return this._handle;
 	}
 
-	private _threads: Map<number, ExtHostCommentThread> = new Map<number, ExtHostCommentThread>();
+	private _threads: Map<numBer, ExtHostCommentThread> = new Map<numBer, ExtHostCommentThread>();
 	commentingRangeProvider?: vscode.CommentingRangeProvider;
 
 	private _reactionHandler?: ReactionHandler;
@@ -482,12 +482,12 @@ class ExtHostCommentController implements vscode.CommentController {
 
 	constructor(
 		private _extension: IExtensionDescription,
-		private _handle: number,
+		private _handle: numBer,
 		private _proxy: MainThreadCommentsShape,
 		private _id: string,
-		private _label: string
+		private _laBel: string
 	) {
-		this._proxy.$registerCommentController(this.handle, _id, _label);
+		this._proxy.$registerCommentController(this.handle, _id, _laBel);
 	}
 
 	createCommentThread(resource: vscode.Uri, range: vscode.Range, comments: vscode.Comment[]): vscode.CommentThread;
@@ -505,19 +505,19 @@ class ExtHostCommentController implements vscode.CommentController {
 
 	$createCommentThreadTemplate(uriComponents: UriComponents, range: IRange): ExtHostCommentThread {
 		const commentThread = new ExtHostCommentThread(this._proxy, this, undefined, URI.revive(uriComponents), extHostTypeConverter.Range.to(range), [], this._extension.identifier);
-		commentThread.collapsibleState = modes.CommentThreadCollapsibleState.Expanded;
+		commentThread.collapsiBleState = modes.CommentThreadCollapsiBleState.Expanded;
 		this._threads.set(commentThread.handle, commentThread);
 		return commentThread;
 	}
 
-	$updateCommentThreadTemplate(threadHandle: number, range: IRange): void {
+	$updateCommentThreadTemplate(threadHandle: numBer, range: IRange): void {
 		let thread = this._threads.get(threadHandle);
 		if (thread) {
 			thread.range = extHostTypeConverter.Range.to(range);
 		}
 	}
 
-	$deleteCommentThread(threadHandle: number): void {
+	$deleteCommentThread(threadHandle: numBer): void {
 		let thread = this._threads.get(threadHandle);
 
 		if (thread) {
@@ -527,7 +527,7 @@ class ExtHostCommentController implements vscode.CommentController {
 		this._threads.delete(threadHandle);
 	}
 
-	getCommentThread(handle: number): ExtHostCommentThread | undefined {
+	getCommentThread(handle: numBer): ExtHostCommentThread | undefined {
 		return this._threads.get(handle);
 	}
 
@@ -540,7 +540,7 @@ class ExtHostCommentController implements vscode.CommentController {
 	}
 }
 
-function convertToModeComment(thread: ExtHostCommentThread, commentController: ExtHostCommentController, vscodeComment: vscode.Comment, commentsMap: Map<vscode.Comment, number>): modes.Comment {
+function convertToModeComment(thread: ExtHostCommentThread, commentController: ExtHostCommentController, vscodeComment: vscode.Comment, commentsMap: Map<vscode.Comment, numBer>): modes.Comment {
 	let commentUniqueId = commentsMap.get(vscodeComment)!;
 	if (!commentUniqueId) {
 		commentUniqueId = ++thread.commentHandle;
@@ -553,17 +553,17 @@ function convertToModeComment(thread: ExtHostCommentThread, commentController: E
 		mode: vscodeComment.mode,
 		contextValue: vscodeComment.contextValue,
 		uniqueIdInThread: commentUniqueId,
-		body: extHostTypeConverter.MarkdownString.from(vscodeComment.body),
+		Body: extHostTypeConverter.MarkdownString.from(vscodeComment.Body),
 		userName: vscodeComment.author.name,
 		userIconPath: iconPath,
-		label: vscodeComment.label,
+		laBel: vscodeComment.laBel,
 		commentReactions: vscodeComment.reactions ? vscodeComment.reactions.map(reaction => convertToReaction(reaction)) : undefined
 	};
 }
 
 function convertToReaction(reaction: vscode.CommentReaction): modes.CommentReaction {
 	return {
-		label: reaction.label,
+		laBel: reaction.laBel,
 		iconPath: reaction.iconPath ? extHostTypeConverter.pathOrURIToURI(reaction.iconPath) : undefined,
 		count: reaction.count,
 		hasReacted: reaction.authorHasReacted,
@@ -572,21 +572,21 @@ function convertToReaction(reaction: vscode.CommentReaction): modes.CommentReact
 
 function convertFromReaction(reaction: modes.CommentReaction): vscode.CommentReaction {
 	return {
-		label: reaction.label || '',
+		laBel: reaction.laBel || '',
 		count: reaction.count || 0,
 		iconPath: reaction.iconPath ? URI.revive(reaction.iconPath) : '',
 		authorHasReacted: reaction.hasReacted || false
 	};
 }
 
-function convertToCollapsibleState(kind: vscode.CommentThreadCollapsibleState | undefined): modes.CommentThreadCollapsibleState {
+function convertToCollapsiBleState(kind: vscode.CommentThreadCollapsiBleState | undefined): modes.CommentThreadCollapsiBleState {
 	if (kind !== undefined) {
 		switch (kind) {
-			case types.CommentThreadCollapsibleState.Expanded:
-				return modes.CommentThreadCollapsibleState.Expanded;
-			case types.CommentThreadCollapsibleState.Collapsed:
-				return modes.CommentThreadCollapsibleState.Collapsed;
+			case types.CommentThreadCollapsiBleState.Expanded:
+				return modes.CommentThreadCollapsiBleState.Expanded;
+			case types.CommentThreadCollapsiBleState.Collapsed:
+				return modes.CommentThreadCollapsiBleState.Collapsed;
 		}
 	}
-	return modes.CommentThreadCollapsibleState.Collapsed;
+	return modes.CommentThreadCollapsiBleState.Collapsed;
 }

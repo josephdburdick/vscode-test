@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { ExtensionHostDebugChannelClient, ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
+import { IExtensionHostDeBugService } from 'vs/platform/deBug/common/extensionHostDeBug';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
+import { ExtensionHostDeBugChannelClient, ExtensionHostDeBugBroadcastChannel } from 'vs/platform/deBug/common/extensionHostDeBugIpc';
 
-export class ExtensionHostDebugService extends ExtensionHostDebugChannelClient {
+export class ExtensionHostDeBugService extends ExtensionHostDeBugChannelClient {
 
 	constructor(
 		@IMainProcessService readonly mainProcessService: IMainProcessService
 	) {
-		super(mainProcessService.getChannel(ExtensionHostDebugBroadcastChannel.ChannelName));
+		super(mainProcessService.getChannel(ExtensionHostDeBugBroadcastChannel.ChannelName));
 	}
 }
 
-registerSingleton(IExtensionHostDebugService, ExtensionHostDebugService, true);
+registerSingleton(IExtensionHostDeBugService, ExtensionHostDeBugService, true);

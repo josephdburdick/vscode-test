@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope, getScopes } from 'vs/platform/configuration/common/configurationRegistry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
 import { MainThreadConfigurationShape, MainContext, ExtHostContext, IExtHostContext, IConfigurationInitData } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ConfigurationTarget, IConfigurationService, IConfigurationOverrides } from 'vs/platform/configuration/common/configuration';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
 @extHostNamedCustomer(MainContext.MainThreadConfiguration)
 export class MainThreadConfiguration implements MainThreadConfigurationShape {
 
-	private readonly _configurationListener: IDisposable;
+	private readonly _configurationListener: IDisposaBle;
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -41,21 +41,21 @@ export class MainThreadConfiguration implements MainThreadConfigurationShape {
 		return configurationData;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._configurationListener.dispose();
 	}
 
-	$updateConfigurationOption(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides | undefined, scopeToLanguage: boolean | undefined): Promise<void> {
+	$updateConfigurationOption(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides | undefined, scopeToLanguage: Boolean | undefined): Promise<void> {
 		overrides = { resource: overrides?.resource ? URI.revive(overrides.resource) : undefined, overrideIdentifier: overrides?.overrideIdentifier };
 		return this.writeConfiguration(target, key, value, overrides, scopeToLanguage);
 	}
 
-	$removeConfigurationOption(target: ConfigurationTarget | null, key: string, overrides: IConfigurationOverrides | undefined, scopeToLanguage: boolean | undefined): Promise<void> {
+	$removeConfigurationOption(target: ConfigurationTarget | null, key: string, overrides: IConfigurationOverrides | undefined, scopeToLanguage: Boolean | undefined): Promise<void> {
 		overrides = { resource: overrides?.resource ? URI.revive(overrides.resource) : undefined, overrideIdentifier: overrides?.overrideIdentifier };
 		return this.writeConfiguration(target, key, undefined, overrides, scopeToLanguage);
 	}
 
-	private writeConfiguration(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides, scopeToLanguage: boolean | undefined): Promise<void> {
+	private writeConfiguration(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides, scopeToLanguage: Boolean | undefined): Promise<void> {
 		target = target !== null && target !== undefined ? target : this.deriveConfigurationTarget(key, overrides);
 		const configurationValue = this.configurationService.inspect(key, overrides);
 		switch (target) {
@@ -72,7 +72,7 @@ export class MainThreadConfiguration implements MainThreadConfigurationShape {
 		}
 	}
 
-	private _updateValue(key: string, value: any, configurationTarget: ConfigurationTarget, overriddenValue: any | undefined, overrides: IConfigurationOverrides, scopeToLanguage: boolean | undefined): Promise<void> {
+	private _updateValue(key: string, value: any, configurationTarget: ConfigurationTarget, overriddenValue: any | undefined, overrides: IConfigurationOverrides, scopeToLanguage: Boolean | undefined): Promise<void> {
 		overrides = scopeToLanguage === true ? overrides
 			: scopeToLanguage === false ? { resource: overrides.resource }
 				: overrides.overrideIdentifier && overriddenValue !== undefined ? overrides
@@ -81,7 +81,7 @@ export class MainThreadConfiguration implements MainThreadConfigurationShape {
 	}
 
 	private deriveConfigurationTarget(key: string, overrides: IConfigurationOverrides): ConfigurationTarget {
-		if (overrides.resource && this._workspaceContextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
+		if (overrides.resource && this._workspaceContextService.getWorkBenchState() === WorkBenchState.WORKSPACE) {
 			const configurationProperties = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).getConfigurationProperties();
 			if (configurationProperties[key] && (configurationProperties[key].scope === ConfigurationScope.RESOURCE || configurationProperties[key].scope === ConfigurationScope.LANGUAGE_OVERRIDABLE)) {
 				return ConfigurationTarget.WORKSPACE_FOLDER;

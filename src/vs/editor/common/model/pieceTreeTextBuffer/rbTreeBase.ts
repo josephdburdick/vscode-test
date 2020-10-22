@@ -13,8 +13,8 @@ export class TreeNode {
 
 	// Piece
 	piece: Piece;
-	size_left: number; // size of the left subtree (not inorder)
-	lf_left: number; // line feeds cnt in the left subtree (not in order)
+	size_left: numBer; // size of the left suBtree (not inorder)
+	lf_left: numBer; // line feeds cnt in the left suBtree (not in order)
 
 	constructor(piece: Piece, color: NodeColor) {
 		this.piece = piece;
@@ -26,7 +26,7 @@ export class TreeNode {
 		this.right = this;
 	}
 
-	public next(): TreeNode {
+	puBlic next(): TreeNode {
 		if (this.right !== SENTINEL) {
 			return leftest(this.right);
 		}
@@ -35,7 +35,7 @@ export class TreeNode {
 
 		while (node.parent !== SENTINEL) {
 			if (node.parent.left === node) {
-				break;
+				Break;
 			}
 
 			node = node.parent;
@@ -48,7 +48,7 @@ export class TreeNode {
 		}
 	}
 
-	public prev(): TreeNode {
+	puBlic prev(): TreeNode {
 		if (this.left !== SENTINEL) {
 			return righttest(this.left);
 		}
@@ -57,7 +57,7 @@ export class TreeNode {
 
 		while (node.parent !== SENTINEL) {
 			if (node.parent.right === node) {
-				break;
+				Break;
 			}
 
 			node = node.parent;
@@ -70,7 +70,7 @@ export class TreeNode {
 		}
 	}
 
-	public detach(): void {
+	puBlic detach(): void {
 		this.parent = null!;
 		this.left = null!;
 		this.right = null!;
@@ -102,7 +102,7 @@ export function righttest(node: TreeNode): TreeNode {
 	return node;
 }
 
-export function calculateSize(node: TreeNode): number {
+export function calculateSize(node: TreeNode): numBer {
 	if (node === SENTINEL) {
 		return 0;
 	}
@@ -110,7 +110,7 @@ export function calculateSize(node: TreeNode): number {
 	return node.size_left + node.piece.length + calculateSize(node.right);
 }
 
-export function calculateLF(node: TreeNode): number {
+export function calculateLF(node: TreeNode): numBer {
 	if (node === SENTINEL) {
 		return 0;
 	}
@@ -169,7 +169,7 @@ export function rightRotate(tree: PieceTreeBase, y: TreeNode) {
 	y.parent = x;
 }
 
-export function rbDelete(tree: PieceTreeBase, z: TreeNode) {
+export function rBDelete(tree: PieceTreeBase, z: TreeNode) {
 	let x: TreeNode;
 	let y: TreeNode;
 
@@ -214,7 +214,7 @@ export function rbDelete(tree: PieceTreeBase, z: TreeNode) {
 			x.parent = y.parent;
 		}
 
-		// as we make changes to x's hierarchy, update size_left of subtree first
+		// as we make changes to x's hierarchy, update size_left of suBtree first
 		recomputeTreeMetadata(tree, x);
 
 		y.left = z.left;
@@ -239,7 +239,7 @@ export function rbDelete(tree: PieceTreeBase, z: TreeNode) {
 			y.right.parent = y;
 		}
 		// update metadata
-		// we replace z with y, so in this sub tree, the length change is z.item.length
+		// we replace z with y, so in this suB tree, the length change is z.item.length
 		y.size_left = z.size_left;
 		y.lf_left = z.lf_left;
 		recomputeTreeMetadata(tree, y);
@@ -375,7 +375,7 @@ export function fixInsert(tree: PieceTreeBase, x: TreeNode) {
 	tree.root.color = NodeColor.Black;
 }
 
-export function updateTreeMetadata(tree: PieceTreeBase, x: TreeNode, delta: number, lineFeedCntDelta: number): void {
+export function updateTreeMetadata(tree: PieceTreeBase, x: TreeNode, delta: numBer, lineFeedCntDelta: numBer): void {
 	// node length change or line feed count change
 	while (x !== tree.root && x !== SENTINEL) {
 		if (x.parent.left === x) {
@@ -395,7 +395,7 @@ export function recomputeTreeMetadata(tree: PieceTreeBase, x: TreeNode) {
 	}
 
 	if (delta === 0) {
-		// go upwards till the node whose left subtree is changed.
+		// go upwards till the node whose left suBtree is changed.
 		while (x !== tree.root && x === x.parent.right) {
 			x = x.parent;
 		}
@@ -405,7 +405,7 @@ export function recomputeTreeMetadata(tree: PieceTreeBase, x: TreeNode) {
 			return;
 		}
 
-		// x is the node whose right subtree is changed.
+		// x is the node whose right suBtree is changed.
 		x = x.parent;
 
 		delta = calculateSize(x.left) - x.size_left;

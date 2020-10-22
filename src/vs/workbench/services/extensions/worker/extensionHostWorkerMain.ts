@@ -6,17 +6,17 @@
 (function () {
 
 	let MonacoEnvironment = (<any>self).MonacoEnvironment;
-	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.baseUrl ? MonacoEnvironment.baseUrl : '../../../../../';
+	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.BaseUrl ? MonacoEnvironment.BaseUrl : '../../../../../';
 
 	if (typeof (<any>self).define !== 'function' || !(<any>self).define.amd) {
 		importScripts(monacoBaseUrl + 'vs/loader.js');
 	}
 
 	require.config({
-		baseUrl: monacoBaseUrl,
+		BaseUrl: monacoBaseUrl,
 		catchError: true,
 		createTrustedScriptURL: (value: string) => value
 	});
 
-	require(['vs/workbench/services/extensions/worker/extensionHostWorker'], () => { }, err => console.error(err));
+	require(['vs/workBench/services/extensions/worker/extensionHostWorker'], () => { }, err => console.error(err));
 })();

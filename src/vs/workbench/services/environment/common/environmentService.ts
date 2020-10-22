@@ -6,18 +6,18 @@
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IWindowConfiguration } from 'vs/platform/windows/common/windows';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import type { IWorkbenchConstructionOptions as IWorkbenchOptions } from 'vs/workbench/workbench.web.api';
-import { URI } from 'vs/base/common/uri';
+import type { IWorkBenchConstructionOptions as IWorkBenchOptions } from 'vs/workBench/workBench.weB.api';
+import { URI } from 'vs/Base/common/uri';
 
-export const IWorkbenchEnvironmentService = createDecorator<IWorkbenchEnvironmentService>('environmentService');
+export const IWorkBenchEnvironmentService = createDecorator<IWorkBenchEnvironmentService>('environmentService');
 
-export interface IWorkbenchConfiguration extends IWindowConfiguration { }
+export interface IWorkBenchConfiguration extends IWindowConfiguration { }
 
 /**
- * A workbench specific environment service that is only present in workbench
+ * A workBench specific environment service that is only present in workBench
  * layer.
  */
-export interface IWorkbenchEnvironmentService extends IEnvironmentService {
+export interface IWorkBenchEnvironmentService extends IEnvironmentService {
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// NOTE: KEEP THIS INTERFACE AS SMALL AS POSSIBLE. AS SUCH:
@@ -27,26 +27,26 @@ export interface IWorkbenchEnvironmentService extends IEnvironmentService {
 
 	readonly _serviceBrand: undefined;
 
-	readonly options?: IWorkbenchOptions;
+	readonly options?: IWorkBenchOptions;
 
 	readonly remoteAuthority?: string;
 
 	readonly sessionId: string;
 
 	readonly logFile: URI;
-	readonly backupWorkspaceHome?: URI;
+	readonly BackupWorkspaceHome?: URI;
 
 	readonly extHostLogsPath: URI;
-	readonly logExtensionHostCommunication?: boolean;
-	readonly extensionEnabledProposedApi?: string[];
+	readonly logExtensionHostCommunication?: Boolean;
+	readonly extensionEnaBledProposedApi?: string[];
 
-	readonly webviewExternalEndpoint: string;
-	readonly webviewResourceRoot: string;
-	readonly webviewCspSource: string;
+	readonly weBviewExternalEndpoint: string;
+	readonly weBviewResourceRoot: string;
+	readonly weBviewCspSource: string;
 
-	readonly skipReleaseNotes: boolean;
+	readonly skipReleaseNotes: Boolean;
 
-	readonly debugRenderer: boolean;
+	readonly deBugRenderer: Boolean;
 
 	/**
 	 * @deprecated this property will go away eventually as it
@@ -55,7 +55,7 @@ export interface IWorkbenchEnvironmentService extends IEnvironmentService {
 	 * Please consider using the environment service directly
 	 * if you can.
 	 */
-	readonly configuration: IWorkbenchConfiguration;
+	readonly configuration: IWorkBenchConfiguration;
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// NOTE: KEEP THIS INTERFACE AS SMALL AS POSSIBLE. AS SUCH:

@@ -6,28 +6,28 @@
 import { Application } from '../../../../automation';
 
 export function setup() {
-	describe('Dataloss', () => {
+	descriBe('Dataloss', () => {
 		it(`verifies that 'hot exit' works for dirty files`, async function () {
 			const app = this.app as Application;
-			await app.workbench.editors.newUntitledFile();
+			await app.workBench.editors.newUntitledFile();
 
 			const untitled = 'Untitled-1';
 			const textToTypeInUntitled = 'Hello from Untitled';
-			await app.workbench.editor.waitForTypeInEditor(untitled, textToTypeInUntitled);
+			await app.workBench.editor.waitForTypeInEditor(untitled, textToTypeInUntitled);
 
 			const readmeMd = 'readme.md';
 			const textToType = 'Hello, Code';
-			await app.workbench.quickaccess.openFile(readmeMd);
-			await app.workbench.editor.waitForTypeInEditor(readmeMd, textToType);
+			await app.workBench.quickaccess.openFile(readmeMd);
+			await app.workBench.editor.waitForTypeInEditor(readmeMd, textToType);
 
 			await app.reload();
 
-			await app.workbench.editors.waitForActiveTab(readmeMd, true);
-			await app.workbench.editor.waitForEditorContents(readmeMd, c => c.indexOf(textToType) > -1);
+			await app.workBench.editors.waitForActiveTaB(readmeMd, true);
+			await app.workBench.editor.waitForEditorContents(readmeMd, c => c.indexOf(textToType) > -1);
 
-			await app.workbench.editors.waitForTab(untitled);
-			await app.workbench.editors.selectTab(untitled);
-			await app.workbench.editor.waitForEditorContents(untitled, c => c.indexOf(textToTypeInUntitled) > -1);
+			await app.workBench.editors.waitForTaB(untitled);
+			await app.workBench.editors.selectTaB(untitled);
+			await app.workBench.editor.waitForEditorContents(untitled, c => c.indexOf(textToTypeInUntitled) > -1);
 		});
 	});
 }

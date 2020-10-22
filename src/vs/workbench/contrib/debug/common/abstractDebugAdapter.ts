@@ -3,65 +3,65 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDebugAdapter } from 'vs/workbench/contrib/debug/common/debug';
-import { timeout } from 'vs/base/common/async';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IDeBugAdapter } from 'vs/workBench/contriB/deBug/common/deBug';
+import { timeout } from 'vs/Base/common/async';
 import { localize } from 'vs/nls';
 
 /**
- * Abstract implementation of the low level API for a debug adapter.
- * Missing is how this API communicates with the debug adapter.
+ * ABstract implementation of the low level API for a deBug adapter.
+ * Missing is how this API communicates with the deBug adapter.
  */
-export abstract class AbstractDebugAdapter implements IDebugAdapter {
-	private sequence: number;
-	private pendingRequests = new Map<number, (e: DebugProtocol.Response) => void>();
-	private requestCallback: ((request: DebugProtocol.Request) => void) | undefined;
-	private eventCallback: ((request: DebugProtocol.Event) => void) | undefined;
-	private messageCallback: ((message: DebugProtocol.ProtocolMessage) => void) | undefined;
-	private queue: DebugProtocol.ProtocolMessage[] = [];
+export aBstract class ABstractDeBugAdapter implements IDeBugAdapter {
+	private sequence: numBer;
+	private pendingRequests = new Map<numBer, (e: DeBugProtocol.Response) => void>();
+	private requestCallBack: ((request: DeBugProtocol.Request) => void) | undefined;
+	private eventCallBack: ((request: DeBugProtocol.Event) => void) | undefined;
+	private messageCallBack: ((message: DeBugProtocol.ProtocolMessage) => void) | undefined;
+	private queue: DeBugProtocol.ProtocolMessage[] = [];
 	protected readonly _onError = new Emitter<Error>();
-	protected readonly _onExit = new Emitter<number | null>();
+	protected readonly _onExit = new Emitter<numBer | null>();
 
 	constructor() {
 		this.sequence = 1;
 	}
 
-	abstract startSession(): Promise<void>;
+	aBstract startSession(): Promise<void>;
 
-	abstract stopSession(): Promise<void>;
+	aBstract stopSession(): Promise<void>;
 
-	abstract sendMessage(message: DebugProtocol.ProtocolMessage): void;
+	aBstract sendMessage(message: DeBugProtocol.ProtocolMessage): void;
 
 	get onError(): Event<Error> {
 		return this._onError.event;
 	}
 
-	get onExit(): Event<number | null> {
+	get onExit(): Event<numBer | null> {
 		return this._onExit.event;
 	}
 
-	onMessage(callback: (message: DebugProtocol.ProtocolMessage) => void): void {
-		if (this.messageCallback) {
-			this._onError.fire(new Error(`attempt to set more than one 'Message' callback`));
+	onMessage(callBack: (message: DeBugProtocol.ProtocolMessage) => void): void {
+		if (this.messageCallBack) {
+			this._onError.fire(new Error(`attempt to set more than one 'Message' callBack`));
 		}
-		this.messageCallback = callback;
+		this.messageCallBack = callBack;
 	}
 
-	onEvent(callback: (event: DebugProtocol.Event) => void): void {
-		if (this.eventCallback) {
-			this._onError.fire(new Error(`attempt to set more than one 'Event' callback`));
+	onEvent(callBack: (event: DeBugProtocol.Event) => void): void {
+		if (this.eventCallBack) {
+			this._onError.fire(new Error(`attempt to set more than one 'Event' callBack`));
 		}
-		this.eventCallback = callback;
+		this.eventCallBack = callBack;
 	}
 
-	onRequest(callback: (request: DebugProtocol.Request) => void): void {
-		if (this.requestCallback) {
-			this._onError.fire(new Error(`attempt to set more than one 'Request' callback`));
+	onRequest(callBack: (request: DeBugProtocol.Request) => void): void {
+		if (this.requestCallBack) {
+			this._onError.fire(new Error(`attempt to set more than one 'Request' callBack`));
 		}
-		this.requestCallback = callback;
+		this.requestCallBack = callBack;
 	}
 
-	sendResponse(response: DebugProtocol.Response): void {
+	sendResponse(response: DeBugProtocol.Response): void {
 		if (response.seq > 0) {
 			this._onError.fire(new Error(`attempt to send more than one response for command ${response.command}`));
 		} else {
@@ -69,21 +69,21 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 		}
 	}
 
-	sendRequest(command: string, args: any, clb: (result: DebugProtocol.Response) => void, timeout?: number): number {
+	sendRequest(command: string, args: any, clB: (result: DeBugProtocol.Response) => void, timeout?: numBer): numBer {
 		const request: any = {
 			command: command
 		};
-		if (args && Object.keys(args).length > 0) {
+		if (args && OBject.keys(args).length > 0) {
 			request.arguments = args;
 		}
 		this.internalSend('request', request);
-		if (typeof timeout === 'number') {
+		if (typeof timeout === 'numBer') {
 			const timer = setTimeout(() => {
 				clearTimeout(timer);
-				const clb = this.pendingRequests.get(request.seq);
-				if (clb) {
+				const clB = this.pendingRequests.get(request.seq);
+				if (clB) {
 					this.pendingRequests.delete(request.seq);
-					const err: DebugProtocol.Response = {
+					const err: DeBugProtocol.Response = {
 						type: 'response',
 						seq: 0,
 						request_seq: request.seq,
@@ -91,21 +91,21 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 						command,
 						message: localize('timeout', "Timeout after {0} ms for '{1}'", timeout, command)
 					};
-					clb(err);
+					clB(err);
 				}
 			}, timeout);
 		}
-		if (clb) {
-			// store callback for this request
-			this.pendingRequests.set(request.seq, clb);
+		if (clB) {
+			// store callBack for this request
+			this.pendingRequests.set(request.seq, clB);
 		}
 
 		return request.seq;
 	}
 
-	acceptMessage(message: DebugProtocol.ProtocolMessage): void {
-		if (this.messageCallback) {
-			this.messageCallback(message);
+	acceptMessage(message: DeBugProtocol.ProtocolMessage): void {
+		if (this.messageCallBack) {
+			this.messageCallBack(message);
 		} else {
 			this.queue.push(message);
 			if (this.queue.length === 1) {
@@ -116,9 +116,9 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 	}
 
 	/**
-	 * Returns whether we should insert a timeout between processing messageA
+	 * Returns whether we should insert a timeout Between processing messageA
 	 * and messageB. Artificially queueing protocol messages guarantees that any
-	 * microtasks for previous message finish before next message is processed.
+	 * microtasks for previous message finish Before next message is processed.
 	 * This is essential ordering when using promises anywhere along the call path.
 	 *
 	 * For example, take the following, where `chooseAndSendGreeting` returns
@@ -130,11 +130,11 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 	 * person = await adapter.chooseAndSendGreeting();
 	 * ```
 	 *
-	 * Because the event is dispatched synchronously, it may fire before person
+	 * Because the event is dispatched synchronously, it may fire Before person
 	 * is assigned if they're processed in the same task. Inserting a task
-	 * boundary avoids this issue.
+	 * Boundary avoids this issue.
 	 */
-	protected needsTaskBoundaryBetween(messageA: DebugProtocol.ProtocolMessage, messageB: DebugProtocol.ProtocolMessage) {
+	protected needsTaskBoundaryBetween(messageA: DeBugProtocol.ProtocolMessage, messageB: DeBugProtocol.ProtocolMessage) {
 		return messageA.type !== 'event' || messageB.type !== 'event';
 	}
 
@@ -142,7 +142,7 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 	 * Reads and dispatches items from the queue until it is empty.
 	 */
 	private async processQueue() {
-		let message: DebugProtocol.ProtocolMessage | undefined;
+		let message: DeBugProtocol.ProtocolMessage | undefined;
 		while (this.queue.length) {
 			if (!message || this.needsTaskBoundaryBetween(this.queue[0], message)) {
 				await timeout(0);
@@ -150,33 +150,33 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 
 			message = this.queue.shift();
 			if (!message) {
-				return; // may have been disposed of
+				return; // may have Been disposed of
 			}
 
 			switch (message.type) {
 				case 'event':
-					if (this.eventCallback) {
-						this.eventCallback(<DebugProtocol.Event>message);
+					if (this.eventCallBack) {
+						this.eventCallBack(<DeBugProtocol.Event>message);
 					}
-					break;
+					Break;
 				case 'request':
-					if (this.requestCallback) {
-						this.requestCallback(<DebugProtocol.Request>message);
+					if (this.requestCallBack) {
+						this.requestCallBack(<DeBugProtocol.Request>message);
 					}
-					break;
+					Break;
 				case 'response':
-					const response = <DebugProtocol.Response>message;
-					const clb = this.pendingRequests.get(response.request_seq);
-					if (clb) {
+					const response = <DeBugProtocol.Response>message;
+					const clB = this.pendingRequests.get(response.request_seq);
+					if (clB) {
 						this.pendingRequests.delete(response.request_seq);
-						clb(response);
+						clB(response);
 					}
-					break;
+					Break;
 			}
 		}
 	}
 
-	private internalSend(typ: 'request' | 'response' | 'event', message: DebugProtocol.ProtocolMessage): void {
+	private internalSend(typ: 'request' | 'response' | 'event', message: DeBugProtocol.ProtocolMessage): void {
 		message.type = typ;
 		message.seq = this.sequence++;
 		this.sendMessage(message);
@@ -187,11 +187,11 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 			return Promise.resolve();
 		}
 
-		const pending = new Map<number, (e: DebugProtocol.Response) => void>();
+		const pending = new Map<numBer, (e: DeBugProtocol.Response) => void>();
 		this.pendingRequests.forEach((value, key) => pending.set(key, value));
 		await timeout(500);
-		pending.forEach((callback, request_seq) => {
-			const err: DebugProtocol.Response = {
+		pending.forEach((callBack, request_seq) => {
+			const err: DeBugProtocol.Response = {
 				type: 'response',
 				seq: 0,
 				request_seq,
@@ -199,12 +199,12 @@ export abstract class AbstractDebugAdapter implements IDebugAdapter {
 				command: 'canceled',
 				message: 'canceled'
 			};
-			callback(err);
+			callBack(err);
 			this.pendingRequests.delete(request_seq);
 		});
 	}
 
-	getPendingRequestIds(): number[] {
+	getPendingRequestIds(): numBer[] {
 		return Array.from(this.pendingRequests.keys());
 	}
 

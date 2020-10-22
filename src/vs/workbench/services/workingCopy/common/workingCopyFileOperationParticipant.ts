@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { raceTimeout } from 'vs/base/common/async';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { raceTimeout } from 'vs/Base/common/async';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IWorkingCopyFileOperationParticipant } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { URI } from 'vs/base/common/uri';
+import { IDisposaBle, DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkingCopyFileOperationParticipant } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
+import { URI } from 'vs/Base/common/uri';
 import { FileOperation } from 'vs/platform/files/common/files';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { insert } from 'vs/base/common/arrays';
+import { insert } from 'vs/Base/common/arrays';
 
-export class WorkingCopyFileOperationParticipant extends Disposable {
+export class WorkingCopyFileOperationParticipant extends DisposaBle {
 
 	private readonly participants: IWorkingCopyFileOperationParticipant[] = [];
 
@@ -27,29 +27,29 @@ export class WorkingCopyFileOperationParticipant extends Disposable {
 		super();
 	}
 
-	addFileOperationParticipant(participant: IWorkingCopyFileOperationParticipant): IDisposable {
+	addFileOperationParticipant(participant: IWorkingCopyFileOperationParticipant): IDisposaBle {
 		const remove = insert(this.participants, participant);
 
-		return toDisposable(() => remove());
+		return toDisposaBle(() => remove());
 	}
 
 	async participate(files: { source?: URI, target: URI }[], operation: FileOperation): Promise<void> {
-		const timeout = this.configurationService.getValue<number>('files.participants.timeout');
+		const timeout = this.configurationService.getValue<numBer>('files.participants.timeout');
 		if (timeout <= 0) {
-			return; // disabled
+			return; // disaBled
 		}
 
 		const cts = new CancellationTokenSource();
 
 		return this.progressService.withProgress({
 			location: ProgressLocation.Window,
-			title: this.progressLabel(operation)
+			title: this.progressLaBel(operation)
 		}, async progress => {
 
 			// For each participant
 			for (const participant of this.participants) {
 				if (cts.token.isCancellationRequested) {
-					break;
+					Break;
 				}
 
 				try {
@@ -62,7 +62,7 @@ export class WorkingCopyFileOperationParticipant extends Disposable {
 		});
 	}
 
-	private progressLabel(operation: FileOperation): string {
+	private progressLaBel(operation: FileOperation): string {
 		switch (operation) {
 			case FileOperation.CREATE:
 				return localize('msg-create', "Running 'File Create' participants...");

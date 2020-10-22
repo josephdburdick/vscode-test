@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 //
 import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, ResolvedOptions, IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import * as errors from 'vs/base/common/errors';
-import { RemoteAuthorities } from 'vs/base/common/network';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
+import * as errors from 'vs/Base/common/errors';
+import { RemoteAuthorities } from 'vs/Base/common/network';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter } from 'vs/Base/common/event';
 
 class PendingResolveAuthorityRequest {
 
-	public value: ResolverResult | null;
+	puBlic value: ResolverResult | null;
 
 	constructor(
 		private readonly _resolve: (value: ResolverResult) => void,
 		private readonly _reject: (err: any) => void,
-		public readonly promise: Promise<ResolverResult>,
+		puBlic readonly promise: Promise<ResolverResult>,
 	) {
 		this.value = null;
 	}
@@ -31,12 +31,12 @@ class PendingResolveAuthorityRequest {
 	}
 }
 
-export class RemoteAuthorityResolverService extends Disposable implements IRemoteAuthorityResolverService {
+export class RemoteAuthorityResolverService extends DisposaBle implements IRemoteAuthorityResolverService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeConnectionData = this._register(new Emitter<void>());
-	public readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
+	puBlic readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
 
 	private readonly _resolveAuthorityRequests: Map<string, PendingResolveAuthorityRequest>;
 	private readonly _connectionTokens: Map<string, string>;

@@ -6,21 +6,21 @@
 import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 import { ViewEvent } from 'vs/editor/common/view/viewEvents';
 import { IContentSizeChangedEvent } from 'vs/editor/common/editorCommon';
-import { Emitter } from 'vs/base/common/event';
+import { Emitter } from 'vs/Base/common/event';
 import { Selection } from 'vs/editor/common/core/selection';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { CursorChangeReason } from 'vs/editor/common/controller/cursorEvents';
 
-export class ViewModelEventDispatcher extends Disposable {
+export class ViewModelEventDispatcher extends DisposaBle {
 
 	private readonly _onEvent = this._register(new Emitter<OutgoingViewModelEvent>());
-	public readonly onEvent = this._onEvent.event;
+	puBlic readonly onEvent = this._onEvent.event;
 
 	private readonly _eventHandlers: ViewEventHandler[];
 	private _viewEventQueue: ViewEvent[] | null;
-	private _isConsumingViewEventQueue: boolean;
+	private _isConsumingViewEventQueue: Boolean;
 	private _collector: ViewModelEventsCollector | null;
-	private _collectorCnt: number;
+	private _collectorCnt: numBer;
 	private _outgoingEvents: OutgoingViewModelEvent[];
 
 	constructor() {
@@ -33,7 +33,7 @@ export class ViewModelEventDispatcher extends Disposable {
 		this._outgoingEvents = [];
 	}
 
-	public emitOutgoingEvent(e: OutgoingViewModelEvent): void {
+	puBlic emitOutgoingEvent(e: OutgoingViewModelEvent): void {
 		this._addOutgoingEvent(e);
 		this._emitOugoingEvents();
 	}
@@ -63,7 +63,7 @@ export class ViewModelEventDispatcher extends Disposable {
 		}
 	}
 
-	public addViewEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic addViewEventHandler(eventHandler: ViewEventHandler): void {
 		for (let i = 0, len = this._eventHandlers.length; i < len; i++) {
 			if (this._eventHandlers[i] === eventHandler) {
 				console.warn('Detected duplicate listener in ViewEventDispatcher', eventHandler);
@@ -72,16 +72,16 @@ export class ViewModelEventDispatcher extends Disposable {
 		this._eventHandlers.push(eventHandler);
 	}
 
-	public removeViewEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic removeViewEventHandler(eventHandler: ViewEventHandler): void {
 		for (let i = 0; i < this._eventHandlers.length; i++) {
 			if (this._eventHandlers[i] === eventHandler) {
 				this._eventHandlers.splice(i, 1);
-				break;
+				Break;
 			}
 		}
 	}
 
-	public beginEmitViewEvents(): ViewModelEventsCollector {
+	puBlic BeginEmitViewEvents(): ViewModelEventsCollector {
 		this._collectorCnt++;
 		if (this._collectorCnt === 1) {
 			this._collector = new ViewModelEventsCollector();
@@ -89,7 +89,7 @@ export class ViewModelEventDispatcher extends Disposable {
 		return this._collector!;
 	}
 
-	public endEmitViewEvents(): void {
+	puBlic endEmitViewEvents(): void {
 		this._collectorCnt--;
 		if (this._collectorCnt === 0) {
 			const outgoingEvents = this._collector!.outgoingEvents;
@@ -107,9 +107,9 @@ export class ViewModelEventDispatcher extends Disposable {
 		this._emitOugoingEvents();
 	}
 
-	public emitSingleViewEvent(event: ViewEvent): void {
+	puBlic emitSingleViewEvent(event: ViewEvent): void {
 		try {
-			const eventsCollector = this.beginEmitViewEvents();
+			const eventsCollector = this.BeginEmitViewEvents();
 			eventsCollector.emitViewEvent(event);
 		} finally {
 			this.endEmitViewEvents();
@@ -154,19 +154,19 @@ export class ViewModelEventDispatcher extends Disposable {
 
 export class ViewModelEventsCollector {
 
-	public readonly viewEvents: ViewEvent[];
-	public readonly outgoingEvents: OutgoingViewModelEvent[];
+	puBlic readonly viewEvents: ViewEvent[];
+	puBlic readonly outgoingEvents: OutgoingViewModelEvent[];
 
 	constructor() {
 		this.viewEvents = [];
 		this.outgoingEvents = [];
 	}
 
-	public emitViewEvent(event: ViewEvent) {
+	puBlic emitViewEvent(event: ViewEvent) {
 		this.viewEvents.push(event);
 	}
 
-	public emitOutgoingEvent(e: OutgoingViewModelEvent): void {
+	puBlic emitOutgoingEvent(e: OutgoingViewModelEvent): void {
 		this.outgoingEvents.push(e);
 	}
 }
@@ -182,17 +182,17 @@ export const enum OutgoingViewModelEventKind {
 
 export class ContentSizeChangedEvent implements IContentSizeChangedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ContentSizeChanged;
+	puBlic readonly kind = OutgoingViewModelEventKind.ContentSizeChanged;
 
-	private readonly _oldContentWidth: number;
-	private readonly _oldContentHeight: number;
+	private readonly _oldContentWidth: numBer;
+	private readonly _oldContentHeight: numBer;
 
-	readonly contentWidth: number;
-	readonly contentHeight: number;
-	readonly contentWidthChanged: boolean;
-	readonly contentHeightChanged: boolean;
+	readonly contentWidth: numBer;
+	readonly contentHeight: numBer;
+	readonly contentWidthChanged: Boolean;
+	readonly contentHeightChanged: Boolean;
 
-	constructor(oldContentWidth: number, oldContentHeight: number, contentWidth: number, contentHeight: number) {
+	constructor(oldContentWidth: numBer, oldContentHeight: numBer, contentWidth: numBer, contentHeight: numBer) {
 		this._oldContentWidth = oldContentWidth;
 		this._oldContentHeight = oldContentHeight;
 		this.contentWidth = contentWidth;
@@ -201,12 +201,12 @@ export class ContentSizeChangedEvent implements IContentSizeChangedEvent {
 		this.contentHeightChanged = (this._oldContentHeight !== this.contentHeight);
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return (!this.contentWidthChanged && !this.contentHeightChanged);
 	}
 
 
-	public merge(other: OutgoingViewModelEvent): ContentSizeChangedEvent {
+	puBlic merge(other: OutgoingViewModelEvent): ContentSizeChangedEvent {
 		if (other.kind !== OutgoingViewModelEventKind.ContentSizeChanged) {
 			return this;
 		}
@@ -216,21 +216,21 @@ export class ContentSizeChangedEvent implements IContentSizeChangedEvent {
 
 export class FocusChangedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.FocusChanged;
+	puBlic readonly kind = OutgoingViewModelEventKind.FocusChanged;
 
-	readonly oldHasFocus: boolean;
-	readonly hasFocus: boolean;
+	readonly oldHasFocus: Boolean;
+	readonly hasFocus: Boolean;
 
-	constructor(oldHasFocus: boolean, hasFocus: boolean) {
+	constructor(oldHasFocus: Boolean, hasFocus: Boolean) {
 		this.oldHasFocus = oldHasFocus;
 		this.hasFocus = hasFocus;
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return (this.oldHasFocus === this.hasFocus);
 	}
 
-	public merge(other: OutgoingViewModelEvent): FocusChangedEvent {
+	puBlic merge(other: OutgoingViewModelEvent): FocusChangedEvent {
 		if (other.kind !== OutgoingViewModelEventKind.FocusChanged) {
 			return this;
 		}
@@ -240,26 +240,26 @@ export class FocusChangedEvent {
 
 export class ScrollChangedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ScrollChanged;
+	puBlic readonly kind = OutgoingViewModelEventKind.ScrollChanged;
 
-	private readonly _oldScrollWidth: number;
-	private readonly _oldScrollLeft: number;
-	private readonly _oldScrollHeight: number;
-	private readonly _oldScrollTop: number;
+	private readonly _oldScrollWidth: numBer;
+	private readonly _oldScrollLeft: numBer;
+	private readonly _oldScrollHeight: numBer;
+	private readonly _oldScrollTop: numBer;
 
-	public readonly scrollWidth: number;
-	public readonly scrollLeft: number;
-	public readonly scrollHeight: number;
-	public readonly scrollTop: number;
+	puBlic readonly scrollWidth: numBer;
+	puBlic readonly scrollLeft: numBer;
+	puBlic readonly scrollHeight: numBer;
+	puBlic readonly scrollTop: numBer;
 
-	public readonly scrollWidthChanged: boolean;
-	public readonly scrollLeftChanged: boolean;
-	public readonly scrollHeightChanged: boolean;
-	public readonly scrollTopChanged: boolean;
+	puBlic readonly scrollWidthChanged: Boolean;
+	puBlic readonly scrollLeftChanged: Boolean;
+	puBlic readonly scrollHeightChanged: Boolean;
+	puBlic readonly scrollTopChanged: Boolean;
 
 	constructor(
-		oldScrollWidth: number, oldScrollLeft: number, oldScrollHeight: number, oldScrollTop: number,
-		scrollWidth: number, scrollLeft: number, scrollHeight: number, scrollTop: number,
+		oldScrollWidth: numBer, oldScrollLeft: numBer, oldScrollHeight: numBer, oldScrollTop: numBer,
+		scrollWidth: numBer, scrollLeft: numBer, scrollHeight: numBer, scrollTop: numBer,
 	) {
 		this._oldScrollWidth = oldScrollWidth;
 		this._oldScrollLeft = oldScrollLeft;
@@ -277,11 +277,11 @@ export class ScrollChangedEvent {
 		this.scrollTopChanged = (this._oldScrollTop !== this.scrollTop);
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return (!this.scrollWidthChanged && !this.scrollLeftChanged && !this.scrollHeightChanged && !this.scrollTopChanged);
 	}
 
-	public merge(other: OutgoingViewModelEvent): ScrollChangedEvent {
+	puBlic merge(other: OutgoingViewModelEvent): ScrollChangedEvent {
 		if (other.kind !== OutgoingViewModelEventKind.ScrollChanged) {
 			return this;
 		}
@@ -294,33 +294,33 @@ export class ScrollChangedEvent {
 
 export class ViewZonesChangedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ViewZonesChanged;
+	puBlic readonly kind = OutgoingViewModelEventKind.ViewZonesChanged;
 
 	constructor() {
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return false;
 	}
 
-	public merge(other: OutgoingViewModelEvent): ViewZonesChangedEvent {
+	puBlic merge(other: OutgoingViewModelEvent): ViewZonesChangedEvent {
 		return this;
 	}
 }
 
 export class CursorStateChangedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.CursorStateChanged;
+	puBlic readonly kind = OutgoingViewModelEventKind.CursorStateChanged;
 
-	public readonly oldSelections: Selection[] | null;
-	public readonly selections: Selection[];
-	public readonly oldModelVersionId: number;
-	public readonly modelVersionId: number;
-	public readonly source: string;
-	public readonly reason: CursorChangeReason;
-	public readonly reachedMaxCursorCount: boolean;
+	puBlic readonly oldSelections: Selection[] | null;
+	puBlic readonly selections: Selection[];
+	puBlic readonly oldModelVersionId: numBer;
+	puBlic readonly modelVersionId: numBer;
+	puBlic readonly source: string;
+	puBlic readonly reason: CursorChangeReason;
+	puBlic readonly reachedMaxCursorCount: Boolean;
 
-	constructor(oldSelections: Selection[] | null, selections: Selection[], oldModelVersionId: number, modelVersionId: number, source: string, reason: CursorChangeReason, reachedMaxCursorCount: boolean) {
+	constructor(oldSelections: Selection[] | null, selections: Selection[], oldModelVersionId: numBer, modelVersionId: numBer, source: string, reason: CursorChangeReason, reachedMaxCursorCount: Boolean) {
 		this.oldSelections = oldSelections;
 		this.selections = selections;
 		this.oldModelVersionId = oldModelVersionId;
@@ -330,34 +330,34 @@ export class CursorStateChangedEvent {
 		this.reachedMaxCursorCount = reachedMaxCursorCount;
 	}
 
-	private static _selectionsAreEqual(a: Selection[] | null, b: Selection[] | null): boolean {
-		if (!a && !b) {
+	private static _selectionsAreEqual(a: Selection[] | null, B: Selection[] | null): Boolean {
+		if (!a && !B) {
 			return true;
 		}
-		if (!a || !b) {
+		if (!a || !B) {
 			return false;
 		}
 		const aLen = a.length;
-		const bLen = b.length;
-		if (aLen !== bLen) {
+		const BLen = B.length;
+		if (aLen !== BLen) {
 			return false;
 		}
 		for (let i = 0; i < aLen; i++) {
-			if (!a[i].equalsSelection(b[i])) {
+			if (!a[i].equalsSelection(B[i])) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return (
 			CursorStateChangedEvent._selectionsAreEqual(this.oldSelections, this.selections)
 			&& this.oldModelVersionId === this.modelVersionId
 		);
 	}
 
-	public merge(other: OutgoingViewModelEvent): CursorStateChangedEvent {
+	puBlic merge(other: OutgoingViewModelEvent): CursorStateChangedEvent {
 		if (other.kind !== OutgoingViewModelEventKind.CursorStateChanged) {
 			return this;
 		}
@@ -369,16 +369,16 @@ export class CursorStateChangedEvent {
 
 export class ReadOnlyEditAttemptEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ReadOnlyEditAttempt;
+	puBlic readonly kind = OutgoingViewModelEventKind.ReadOnlyEditAttempt;
 
 	constructor() {
 	}
 
-	public isNoOp(): boolean {
+	puBlic isNoOp(): Boolean {
 		return false;
 	}
 
-	public merge(other: OutgoingViewModelEvent): ReadOnlyEditAttemptEvent {
+	puBlic merge(other: OutgoingViewModelEvent): ReadOnlyEditAttemptEvent {
 		return this;
 	}
 }

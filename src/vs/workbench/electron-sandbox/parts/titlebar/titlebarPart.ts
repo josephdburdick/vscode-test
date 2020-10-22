@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getZoomFactor } from 'vs/base/browser/browser';
-import * as DOM from 'vs/base/browser/dom';
+import { getZoomFactor } from 'vs/Base/Browser/Browser';
+import * as DOM from 'vs/Base/Browser/dom';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { isMacintosh, isWindows, isLinux } from 'vs/base/common/platform';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { isMacintosh, isWindows, isLinux } from 'vs/Base/common/platform';
 import { IMenuService } from 'vs/platform/actions/common/actions';
-import { TitlebarPart as BrowserTitleBarPart } from 'vs/workbench/browser/parts/titlebar/titlebarPart';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { TitleBarPart as BrowserTitleBarPart } from 'vs/workBench/Browser/parts/titleBar/titleBarPart';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { getTitleBarStyle } from 'vs/platform/windows/common/windows';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Codicon } from 'vs/base/common/codicons';
+import { Codicon } from 'vs/Base/common/codicons';
 
-export class TitlebarPart extends BrowserTitleBarPart {
+export class TitleBarPart extends BrowserTitleBarPart {
 	private appIcon: HTMLElement | undefined;
 	private windowControls: HTMLElement | undefined;
 	private maxRestoreControl: HTMLElement | undefined;
@@ -36,32 +36,32 @@ export class TitlebarPart extends BrowserTitleBarPart {
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IConfigurationService protected readonly configurationService: IConfigurationService,
 		@IEditorService editorService: IEditorService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService protected readonly environmentService: IWorkBenchEnvironmentService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IThemeService themeService: IThemeService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IStorageService storageService: IStorageService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService,
 		@IMenuService menuService: IMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IHostService hostService: IHostService,
 		@IProductService productService: IProductService,
 		@INativeHostService private readonly nativeHostService: INativeHostService
 	) {
-		super(contextMenuService, configurationService, editorService, environmentService, contextService, instantiationService, themeService, labelService, storageService, layoutService, menuService, contextKeyService, hostService, productService);
+		super(contextMenuService, configurationService, editorService, environmentService, contextService, instantiationService, themeService, laBelService, storageService, layoutService, menuService, contextKeyService, hostService, productService);
 	}
 
 	private onUpdateAppIconDragBehavior() {
-		const setting = this.configurationService.getValue('window.doubleClickIconToClose');
+		const setting = this.configurationService.getValue('window.douBleClickIconToClose');
 		if (setting && this.appIcon) {
-			(this.appIcon.style as any)['-webkit-app-region'] = 'no-drag';
+			(this.appIcon.style as any)['-weBkit-app-region'] = 'no-drag';
 		} else if (this.appIcon) {
-			(this.appIcon.style as any)['-webkit-app-region'] = 'drag';
+			(this.appIcon.style as any)['-weBkit-app-region'] = 'drag';
 		}
 	}
 
-	private onDidChangeMaximized(maximized: boolean) {
+	private onDidChangeMaximized(maximized: Boolean) {
 		if (this.maxRestoreControl) {
 			if (maximized) {
 				this.maxRestoreControl.classList.remove(...Codicon.chromeMaximize.classNamesArray);
@@ -83,8 +83,8 @@ export class TitlebarPart extends BrowserTitleBarPart {
 		this.adjustTitleMarginToCenter();
 	}
 
-	private onMenubarFocusChanged(focused: boolean) {
-		if ((isWindows || isLinux) && this.currentMenubarVisibility !== 'compact' && this.dragRegion) {
+	private onMenuBarFocusChanged(focused: Boolean) {
+		if ((isWindows || isLinux) && this.currentMenuBarVisiBility !== 'compact' && this.dragRegion) {
 			if (focused) {
 				DOM.hide(this.dragRegion);
 			} else {
@@ -93,24 +93,24 @@ export class TitlebarPart extends BrowserTitleBarPart {
 		}
 	}
 
-	protected onMenubarVisibilityChanged(visible: boolean) {
-		// Hide title when toggling menu bar
-		if ((isWindows || isLinux) && this.currentMenubarVisibility === 'toggle' && visible) {
-			// Hack to fix issue #52522 with layered webkit-app-region elements appearing under cursor
+	protected onMenuBarVisiBilityChanged(visiBle: Boolean) {
+		// Hide title when toggling menu Bar
+		if ((isWindows || isLinux) && this.currentMenuBarVisiBility === 'toggle' && visiBle) {
+			// Hack to fix issue #52522 with layered weBkit-app-region elements appearing under cursor
 			if (this.dragRegion) {
 				DOM.hide(this.dragRegion);
 				setTimeout(() => DOM.show(this.dragRegion!), 50);
 			}
 		}
 
-		super.onMenubarVisibilityChanged(visible);
+		super.onMenuBarVisiBilityChanged(visiBle);
 	}
 
 	protected onConfigurationChanged(event: IConfigurationChangeEvent): void {
 
 		super.onConfigurationChanged(event);
 
-		if (event.affectsConfiguration('window.doubleClickIconToClose')) {
+		if (event.affectsConfiguration('window.douBleClickIconToClose')) {
 			if (this.appIcon) {
 				this.onUpdateAppIconDragBehavior();
 			}
@@ -118,12 +118,12 @@ export class TitlebarPart extends BrowserTitleBarPart {
 	}
 
 	protected adjustTitleMarginToCenter(): void {
-		if (this.customMenubar && this.menubar) {
-			const leftMarker = (this.appIcon ? this.appIcon.clientWidth : 0) + this.menubar.clientWidth + 10;
+		if (this.customMenuBar && this.menuBar) {
+			const leftMarker = (this.appIcon ? this.appIcon.clientWidth : 0) + this.menuBar.clientWidth + 10;
 			const rightMarker = this.element.clientWidth - (this.windowControls ? this.windowControls.clientWidth : 0) - 10;
 
-			// Not enough space to center the titlebar within window,
-			// Center between menu and window controls
+			// Not enough space to center the titleBar within window,
+			// Center Between menu and window controls
 			if (leftMarker > (this.element.clientWidth - this.title.clientWidth) / 2 ||
 				rightMarker < (this.element.clientWidth + this.title.clientWidth) / 2) {
 				this.title.style.position = '';
@@ -133,20 +133,20 @@ export class TitlebarPart extends BrowserTitleBarPart {
 			}
 		}
 
-		this.title.style.position = 'absolute';
+		this.title.style.position = 'aBsolute';
 		this.title.style.left = '50%';
 		this.title.style.transform = 'translate(-50%, 0)';
 	}
 
-	protected installMenubar(): void {
-		super.installMenubar();
+	protected installMenuBar(): void {
+		super.installMenuBar();
 
-		if (this.menubar) {
+		if (this.menuBar) {
 			return;
 		}
 
-		if (this.customMenubar) {
-			this._register(this.customMenubar.onFocusStateChange(e => this.onMenubarFocusChanged(e)));
+		if (this.customMenuBar) {
+			this._register(this.customMenuBar.onFocusStateChange(e => this.onMenuBarFocusChanged(e)));
 		}
 	}
 
@@ -158,13 +158,13 @@ export class TitlebarPart extends BrowserTitleBarPart {
 			this.appIcon = DOM.prepend(this.element, DOM.$('div.window-appicon'));
 			this.onUpdateAppIconDragBehavior();
 
-			this._register(DOM.addDisposableListener(this.appIcon, DOM.EventType.DBLCLICK, (e => {
+			this._register(DOM.addDisposaBleListener(this.appIcon, DOM.EventType.DBLCLICK, (e => {
 				this.nativeHostService.closeWindow();
 			})));
 		}
 
-		// Draggable region that we can manipulate for #52522
-		this.dragRegion = DOM.prepend(this.element, DOM.$('div.titlebar-drag-region'));
+		// DraggaBle region that we can manipulate for #52522
+		this.dragRegion = DOM.prepend(this.element, DOM.$('div.titleBar-drag-region'));
 
 		// Window Controls (Native Windows/Linux)
 		if (!isMacintosh) {
@@ -172,13 +172,13 @@ export class TitlebarPart extends BrowserTitleBarPart {
 
 			// Minimize
 			const minimizeIcon = DOM.append(this.windowControls, DOM.$('div.window-icon.window-minimize' + Codicon.chromeMinimize.cssSelector));
-			this._register(DOM.addDisposableListener(minimizeIcon, DOM.EventType.CLICK, e => {
+			this._register(DOM.addDisposaBleListener(minimizeIcon, DOM.EventType.CLICK, e => {
 				this.nativeHostService.minimizeWindow();
 			}));
 
 			// Restore
 			this.maxRestoreControl = DOM.append(this.windowControls, DOM.$('div.window-icon.window-max-restore'));
-			this._register(DOM.addDisposableListener(this.maxRestoreControl, DOM.EventType.CLICK, async e => {
+			this._register(DOM.addDisposaBleListener(this.maxRestoreControl, DOM.EventType.CLICK, async e => {
 				const maximized = await this.nativeHostService.isMaximized();
 				if (maximized) {
 					return this.nativeHostService.unmaximizeWindow();
@@ -189,7 +189,7 @@ export class TitlebarPart extends BrowserTitleBarPart {
 
 			// Close
 			const closeIcon = DOM.append(this.windowControls, DOM.$('div.window-icon.window-close' + Codicon.chromeClose.cssSelector));
-			this._register(DOM.addDisposableListener(closeIcon, DOM.EventType.CLICK, e => {
+			this._register(DOM.addDisposaBleListener(closeIcon, DOM.EventType.CLICK, e => {
 				this.nativeHostService.closeWindow();
 			}));
 
@@ -207,8 +207,8 @@ export class TitlebarPart extends BrowserTitleBarPart {
 		this.lastLayoutDimensions = dimension;
 
 		if (getTitleBarStyle(this.configurationService, this.environmentService) === 'custom') {
-			// Only prevent zooming behavior on macOS or when the menubar is not visible
-			if (isMacintosh || this.currentMenubarVisibility === 'hidden') {
+			// Only prevent zooming Behavior on macOS or when the menuBar is not visiBle
+			if (isMacintosh || this.currentMenuBarVisiBility === 'hidden') {
 				this.title.style.zoom = `${1 / getZoomFactor()}`;
 				if (isWindows || isLinux) {
 					if (this.appIcon) {
@@ -234,9 +234,9 @@ export class TitlebarPart extends BrowserTitleBarPart {
 
 			DOM.runAtThisOrScheduleAtNextAnimationFrame(() => this.adjustTitleMarginToCenter());
 
-			if (this.customMenubar) {
-				const menubarDimension = new DOM.Dimension(0, dimension.height);
-				this.customMenubar.layout(menubarDimension);
+			if (this.customMenuBar) {
+				const menuBarDimension = new DOM.Dimension(0, dimension.height);
+				this.customMenuBar.layout(menuBarDimension);
 			}
 		}
 	}

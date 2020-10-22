@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IGrammarContributions, ILanguageIdentifierResolver, EmmetEditorAction } from 'vs/workbench/contrib/emmet/browser/emmetActions';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { IGrammarContriButions, ILanguageIdentifierResolver, EmmetEditorAction } from 'vs/workBench/contriB/emmet/Browser/emmetActions';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 import * as assert from 'assert';
 import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 
@@ -14,7 +14,7 @@ import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 // 	"name": "Stacks Tests",
 // 	"type": "node",
 // 	"request": "launch",
-// 	"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+// 	"program": "${workspaceFolder}/node_modules/mocha/Bin/_mocha",
 // 	"stopOnEntry": false,
 // 	"args": [
 // 		"--timeout",
@@ -26,14 +26,14 @@ import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 // Select the 'Stacks Tests' launch config and F5
 //
 
-class MockGrammarContributions implements IGrammarContributions {
+class MockGrammarContriButions implements IGrammarContriButions {
 	private scopeName: string;
 
 	constructor(scopeName: string) {
 		this.scopeName = scopeName;
 	}
 
-	public getGrammar(mode: string): string {
+	puBlic getGrammar(mode: string): string {
 		return this.scopeName;
 	}
 }
@@ -43,7 +43,7 @@ suite('Emmet', () => {
 	test('Get language mode and parent mode for emmet', () => {
 		withTestCodeEditor([], {}, (editor) => {
 
-			function testIsEnabled(mode: string, scopeName: string, expectedLanguage?: string, expectedParentLanguage?: string) {
+			function testIsEnaBled(mode: string, scopeName: string, expectedLanguage?: string, expectedParentLanguage?: string) {
 				const languageIdentifier = new LanguageIdentifier(mode, 73);
 				const languageIdentifierResolver: ILanguageIdentifierResolver = {
 					getLanguageIdentifier: (languageId: LanguageId) => {
@@ -59,7 +59,7 @@ suite('Emmet', () => {
 				}
 
 				model.setMode(languageIdentifier);
-				let langOutput = EmmetEditorAction.getLanguage(languageIdentifierResolver, editor, new MockGrammarContributions(scopeName));
+				let langOutput = EmmetEditorAction.getLanguage(languageIdentifierResolver, editor, new MockGrammarContriButions(scopeName));
 				if (!langOutput) {
 					assert.fail('langOutput not found');
 				}
@@ -69,14 +69,14 @@ suite('Emmet', () => {
 			}
 
 			// syntaxes mapped using the scope name of the grammar
-			testIsEnabled('markdown', 'text.html.markdown', 'markdown', 'html');
-			testIsEnabled('handlebars', 'text.html.handlebars', 'handlebars', 'html');
-			testIsEnabled('nunjucks', 'text.html.nunjucks', 'nunjucks', 'html');
-			testIsEnabled('laravel-blade', 'text.html.php.laravel-blade', 'laravel-blade', 'html');
+			testIsEnaBled('markdown', 'text.html.markdown', 'markdown', 'html');
+			testIsEnaBled('handleBars', 'text.html.handleBars', 'handleBars', 'html');
+			testIsEnaBled('nunjucks', 'text.html.nunjucks', 'nunjucks', 'html');
+			testIsEnaBled('laravel-Blade', 'text.html.php.laravel-Blade', 'laravel-Blade', 'html');
 
 			// languages that have different Language Id and scopeName
-			// testIsEnabled('razor', 'text.html.cshtml', 'razor', 'html');
-			// testIsEnabled('HTML (Eex)', 'text.html.elixir', 'boo', 'html');
+			// testIsEnaBled('razor', 'text.html.cshtml', 'razor', 'html');
+			// testIsEnaBled('HTML (Eex)', 'text.html.elixir', 'Boo', 'html');
 
 		});
 	});

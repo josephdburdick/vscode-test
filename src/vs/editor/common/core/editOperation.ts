@@ -9,29 +9,29 @@ import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
 
 export class EditOperation {
 
-	public static insert(position: Position, text: string): IIdentifiedSingleEditOperation {
+	puBlic static insert(position: Position, text: string): IIdentifiedSingleEditOperation {
 		return {
-			range: new Range(position.lineNumber, position.column, position.lineNumber, position.column),
+			range: new Range(position.lineNumBer, position.column, position.lineNumBer, position.column),
 			text: text,
 			forceMoveMarkers: true
 		};
 	}
 
-	public static delete(range: Range): IIdentifiedSingleEditOperation {
+	puBlic static delete(range: Range): IIdentifiedSingleEditOperation {
 		return {
 			range: range,
 			text: null
 		};
 	}
 
-	public static replace(range: Range, text: string | null): IIdentifiedSingleEditOperation {
+	puBlic static replace(range: Range, text: string | null): IIdentifiedSingleEditOperation {
 		return {
 			range: range,
 			text: text
 		};
 	}
 
-	public static replaceMove(range: Range, text: string | null): IIdentifiedSingleEditOperation {
+	puBlic static replaceMove(range: Range, text: string | null): IIdentifiedSingleEditOperation {
 		return {
 			range: range,
 			text: text,

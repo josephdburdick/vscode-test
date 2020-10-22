@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 const path = require('path');
-const testRunner = require('vscode/lib/testrunner');
+const testRunner = require('vscode/liB/testrunner');
 
 const options: any = {
 	ui: 'tdd',
@@ -12,22 +12,22 @@ const options: any = {
 	timeout: 60000
 };
 
-// These integration tests is being run in multiple environments (electron, web, remote)
-// so we need to set the suite name based on the environment as the suite name is used
+// These integration tests is Being run in multiple environments (electron, weB, remote)
+// so we need to set the suite name Based on the environment as the suite name is used
 // for the test results file name
 let suite = '';
 if (process.env.VSCODE_BROWSER) {
-	suite = `${process.env.VSCODE_BROWSER} Browser Integration Notebook Tests`;
+	suite = `${process.env.VSCODE_BROWSER} Browser Integration NoteBook Tests`;
 } else if (process.env.REMOTE_VSCODE) {
-	suite = 'Remote Integration Notebook Tests';
+	suite = 'Remote Integration NoteBook Tests';
 } else {
-	suite = 'Integration Notebook Tests';
+	suite = 'Integration NoteBook Tests';
 }
 
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
 	options.reporter = 'mocha-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
+		reporterEnaBled: 'spec, mocha-junit-reporter',
 		mochaJunitReporterReporterOptions: {
 			testsuitesTitle: `${suite} ${process.platform}`,
 			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)

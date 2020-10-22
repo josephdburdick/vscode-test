@@ -6,7 +6,7 @@ declare module "event-stream" {
 	export interface ThroughStream extends _ThroughStream {
 		queue(data: File | null): any;
 		push(data: File | null): any;
-		paused: boolean;
+		paused: Boolean;
 	}
 
 	function merge(streams: Stream[]): ThroughStream;
@@ -15,13 +15,13 @@ declare module "event-stream" {
 	function duplex(istream: Stream, ostream: Stream): ThroughStream;
 
 	function through(write?: (this: ThroughStream, data: any) => void, end?: (this: ThroughStream) => void,
-		opts?: { autoDestroy: boolean; }): ThroughStream;
+		opts?: { autoDestroy: Boolean; }): ThroughStream;
 
 	function readArray<T>(array: T[]): ThroughStream;
-	function writeArray<T>(cb: (err: Error, array: T[]) => void): ThroughStream;
+	function writeArray<T>(cB: (err: Error, array: T[]) => void): ThroughStream;
 
-	function mapSync<I, O>(cb: (data: I) => O): ThroughStream;
-	function map<I, O>(cb: (data: I, cb: (err?: Error, data?: O) => void) => O): ThroughStream;
+	function mapSync<I, O>(cB: (data: I) => O): ThroughStream;
+	function map<I, O>(cB: (data: I, cB: (err?: Error, data?: O) => void) => O): ThroughStream;
 
-	function readable(asyncFunction: (this: ThroughStream, ...args: any[]) => any): any;
+	function readaBle(asyncFunction: (this: ThroughStream, ...args: any[]) => any): any;
 }

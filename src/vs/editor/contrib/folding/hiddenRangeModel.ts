@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { Range, IRange } from 'vs/editor/common/core/range';
-import { FoldingModel, CollapseMemento } from 'vs/editor/contrib/folding/foldingModel';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { FoldingModel, CollapseMemento } from 'vs/editor/contriB/folding/foldingModel';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { Selection } from 'vs/editor/common/core/selection';
-import { findFirstInSorted } from 'vs/base/common/arrays';
+import { findFirstInSorted } from 'vs/Base/common/arrays';
 
 export class HiddenRangeModel {
 	private readonly _foldingModel: FoldingModel;
 	private _hiddenRanges: IRange[];
-	private _foldingModelListener: IDisposable | null;
+	private _foldingModelListener: IDisposaBle | null;
 	private readonly _updateEventEmitter = new Emitter<IRange[]>();
 
-	public get onDidChange(): Event<IRange[]> { return this._updateEventEmitter.event; }
-	public get hiddenRanges() { return this._hiddenRanges; }
+	puBlic get onDidChange(): Event<IRange[]> { return this._updateEventEmitter.event; }
+	puBlic get hiddenRanges() { return this._hiddenRanges; }
 
-	public constructor(model: FoldingModel) {
+	puBlic constructor(model: FoldingModel) {
 		this._foldingModel = model;
 		this._foldingModelListener = model.onDidChange(_ => this.updateHiddenRanges());
 		this._hiddenRanges = [];
@@ -34,7 +34,7 @@ export class HiddenRangeModel {
 		let i = 0; // index into hidden
 		let k = 0;
 
-		let lastCollapsedStart = Number.MAX_VALUE;
+		let lastCollapsedStart = NumBer.MAX_VALUE;
 		let lastCollapsedEnd = -1;
 
 		let ranges = this._foldingModel.regions;
@@ -43,39 +43,39 @@ export class HiddenRangeModel {
 				continue;
 			}
 
-			let startLineNumber = ranges.getStartLineNumber(i) + 1; // the first line is not hidden
-			let endLineNumber = ranges.getEndLineNumber(i);
-			if (lastCollapsedStart <= startLineNumber && endLineNumber <= lastCollapsedEnd) {
+			let startLineNumBer = ranges.getStartLineNumBer(i) + 1; // the first line is not hidden
+			let endLineNumBer = ranges.getEndLineNumBer(i);
+			if (lastCollapsedStart <= startLineNumBer && endLineNumBer <= lastCollapsedEnd) {
 				// ignore ranges contained in collapsed regions
 				continue;
 			}
 
-			if (!updateHiddenAreas && k < this._hiddenRanges.length && this._hiddenRanges[k].startLineNumber === startLineNumber && this._hiddenRanges[k].endLineNumber === endLineNumber) {
+			if (!updateHiddenAreas && k < this._hiddenRanges.length && this._hiddenRanges[k].startLineNumBer === startLineNumBer && this._hiddenRanges[k].endLineNumBer === endLineNumBer) {
 				// reuse the old ranges
 				newHiddenAreas.push(this._hiddenRanges[k]);
 				k++;
 			} else {
 				updateHiddenAreas = true;
-				newHiddenAreas.push(new Range(startLineNumber, 1, endLineNumber, 1));
+				newHiddenAreas.push(new Range(startLineNumBer, 1, endLineNumBer, 1));
 			}
-			lastCollapsedStart = startLineNumber;
-			lastCollapsedEnd = endLineNumber;
+			lastCollapsedStart = startLineNumBer;
+			lastCollapsedEnd = endLineNumBer;
 		}
 		if (updateHiddenAreas || k < this._hiddenRanges.length) {
 			this.applyHiddenRanges(newHiddenAreas);
 		}
 	}
 
-	public applyMemento(state: CollapseMemento): boolean {
+	puBlic applyMemento(state: CollapseMemento): Boolean {
 		if (!Array.isArray(state) || state.length === 0) {
 			return false;
 		}
 		let hiddenRanges: IRange[] = [];
 		for (let r of state) {
-			if (!r.startLineNumber || !r.endLineNumber) {
+			if (!r.startLineNumBer || !r.endLineNumBer) {
 				return false;
 			}
-			hiddenRanges.push(new Range(r.startLineNumber + 1, 1, r.endLineNumber, 1));
+			hiddenRanges.push(new Range(r.startLineNumBer + 1, 1, r.endLineNumBer, 1));
 		}
 		this.applyHiddenRanges(hiddenRanges);
 		return true;
@@ -84,8 +84,8 @@ export class HiddenRangeModel {
 	/**
 	 * Collapse state memento, for persistence only, only used if folding model is not yet initialized
 	 */
-	public getMemento(): CollapseMemento {
-		return this._hiddenRanges.map(r => ({ startLineNumber: r.startLineNumber - 1, endLineNumber: r.endLineNumber }));
+	puBlic getMemento(): CollapseMemento {
+		return this._hiddenRanges.map(r => ({ startLineNumBer: r.startLineNumBer - 1, endLineNumBer: r.endLineNumBer }));
 	}
 
 	private applyHiddenRanges(newHiddenAreas: IRange[]) {
@@ -93,36 +93,36 @@ export class HiddenRangeModel {
 		this._updateEventEmitter.fire(newHiddenAreas);
 	}
 
-	public hasRanges() {
+	puBlic hasRanges() {
 		return this._hiddenRanges.length > 0;
 	}
 
-	public isHidden(line: number): boolean {
+	puBlic isHidden(line: numBer): Boolean {
 		return findRange(this._hiddenRanges, line) !== null;
 	}
 
-	public adjustSelections(selections: Selection[]): boolean {
+	puBlic adjustSelections(selections: Selection[]): Boolean {
 		let hasChanges = false;
 		let editorModel = this._foldingModel.textModel;
 		let lastRange: IRange | null = null;
 
-		let adjustLine = (line: number) => {
+		let adjustLine = (line: numBer) => {
 			if (!lastRange || !isInside(line, lastRange)) {
 				lastRange = findRange(this._hiddenRanges, line);
 			}
 			if (lastRange) {
-				return lastRange.startLineNumber - 1;
+				return lastRange.startLineNumBer - 1;
 			}
 			return null;
 		};
 		for (let i = 0, len = selections.length; i < len; i++) {
 			let selection = selections[i];
-			let adjustedStartLine = adjustLine(selection.startLineNumber);
+			let adjustedStartLine = adjustLine(selection.startLineNumBer);
 			if (adjustedStartLine) {
 				selection = selection.setStartPosition(adjustedStartLine, editorModel.getLineMaxColumn(adjustedStartLine));
 				hasChanges = true;
 			}
-			let adjustedEndLine = adjustLine(selection.endLineNumber);
+			let adjustedEndLine = adjustLine(selection.endLineNumBer);
 			if (adjustedEndLine) {
 				selection = selection.setEndPosition(adjustedEndLine, editorModel.getLineMaxColumn(adjustedEndLine));
 				hasChanges = true;
@@ -133,7 +133,7 @@ export class HiddenRangeModel {
 	}
 
 
-	public dispose() {
+	puBlic dispose() {
 		if (this.hiddenRanges.length > 0) {
 			this._hiddenRanges = [];
 			this._updateEventEmitter.fire(this._hiddenRanges);
@@ -145,12 +145,12 @@ export class HiddenRangeModel {
 	}
 }
 
-function isInside(line: number, range: IRange) {
-	return line >= range.startLineNumber && line <= range.endLineNumber;
+function isInside(line: numBer, range: IRange) {
+	return line >= range.startLineNumBer && line <= range.endLineNumBer;
 }
-function findRange(ranges: IRange[], line: number): IRange | null {
-	let i = findFirstInSorted(ranges, r => line < r.startLineNumber) - 1;
-	if (i >= 0 && ranges[i].endLineNumber >= line) {
+function findRange(ranges: IRange[], line: numBer): IRange | null {
+	let i = findFirstInSorted(ranges, r => line < r.startLineNumBer) - 1;
+	if (i >= 0 && ranges[i].endLineNumBer >= line) {
 		return ranges[i];
 	}
 	return null;

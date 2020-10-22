@@ -4,43 +4,43 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { zoomLevelToZoomFactor } from 'vs/platform/windows/common/windows';
-import { importEntries, mark } from 'vs/base/common/performance';
-import { Workbench } from 'vs/workbench/browser/workbench';
-import { NativeWindow } from 'vs/workbench/electron-sandbox/window';
-import { setZoomLevel, setZoomFactor, setFullscreen } from 'vs/base/browser/browser';
-import { domContentLoaded, addDisposableListener, EventType, scheduleAtNextAnimationFrame } from 'vs/base/browser/dom';
-import { URI } from 'vs/base/common/uri';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { importEntries, mark } from 'vs/Base/common/performance';
+import { WorkBench } from 'vs/workBench/Browser/workBench';
+import { NativeWindow } from 'vs/workBench/electron-sandBox/window';
+import { setZoomLevel, setZoomFactor, setFullscreen } from 'vs/Base/Browser/Browser';
+import { domContentLoaded, addDisposaBleListener, EventType, scheduleAtNextAnimationFrame } from 'vs/Base/Browser/dom';
+import { URI } from 'vs/Base/common/uri';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { reviveWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
 import { ILogService } from 'vs/platform/log/common/log';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IMainProcessService, MainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IMainProcessService, MainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { RemoteFileSystemProvider } from 'vs/workbench/services/remote/common/remoteAgentFileSystemChannel';
+import { RemoteFileSystemProvider } from 'vs/workBench/services/remote/common/remoteAgentFileSystemChannel';
 import { ISignService } from 'vs/platform/sign/common/sign';
-import { FileUserDataProvider } from 'vs/workbench/services/userData/common/fileUserDataProvider';
+import { FileUserDataProvider } from 'vs/workBench/services/userData/common/fileUserDataProvider';
 import { IProductService } from 'vs/platform/product/common/productService';
 import product from 'vs/platform/product/common/product';
-import { IResourceIdentityService } from 'vs/workbench/services/resourceIdentity/common/resourceIdentityService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { NativeHostService } from 'vs/platform/native/electron-sandbox/nativeHostService';
-import { SimpleConfigurationService, simpleFileSystemProvider, SimpleLogService, SimpleRemoteAgentService, SimpleResourceIdentityService, SimpleSignService, SimpleStorageService, SimpleNativeWorkbenchEnvironmentService, SimpleWorkspaceService } from 'vs/workbench/electron-sandbox/sandbox.simpleservices';
-import { INativeWorkbenchConfiguration, INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { RemoteAuthorityResolverService } from 'vs/platform/remote/electron-sandbox/remoteAuthorityResolverService';
+import { IResourceIdentityService } from 'vs/workBench/services/resourceIdentity/common/resourceIdentityService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { NativeHostService } from 'vs/platform/native/electron-sandBox/nativeHostService';
+import { SimpleConfigurationService, simpleFileSystemProvider, SimpleLogService, SimpleRemoteAgentService, SimpleResourceIdentityService, SimpleSignService, SimpleStorageService, SimpleNativeWorkBenchEnvironmentService, SimpleWorkspaceService } from 'vs/workBench/electron-sandBox/sandBox.simpleservices';
+import { INativeWorkBenchConfiguration, INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { RemoteAuthorityResolverService } from 'vs/platform/remote/electron-sandBox/remoteAuthorityResolverService';
 
-class DesktopMain extends Disposable {
+class DesktopMain extends DisposaBle {
 
-	private readonly environmentService = new SimpleNativeWorkbenchEnvironmentService(this.configuration);
+	private readonly environmentService = new SimpleNativeWorkBenchEnvironmentService(this.configuration);
 
-	constructor(private configuration: INativeWorkbenchConfiguration) {
+	constructor(private configuration: INativeWorkBenchConfiguration) {
 		super();
 
 		this.init();
@@ -91,49 +91,49 @@ class DesktopMain extends Disposable {
 		const services = await this.initServices();
 
 		await domContentLoaded();
-		mark('willStartWorkbench');
+		mark('willStartWorkBench');
 
-		// Create Workbench
-		const workbench = new Workbench(document.body, services.serviceCollection, services.logService);
+		// Create WorkBench
+		const workBench = new WorkBench(document.Body, services.serviceCollection, services.logService);
 
 		// Listeners
-		this.registerListeners(workbench, services.storageService);
+		this.registerListeners(workBench, services.storageService);
 
 		// Startup
-		const instantiationService = workbench.startup();
+		const instantiationService = workBench.startup();
 
 		// Window
 		this._register(instantiationService.createInstance(NativeWindow));
 
 		// Logging
-		services.logService.trace('workbench configuration', JSON.stringify(this.configuration));
+		services.logService.trace('workBench configuration', JSON.stringify(this.configuration));
 	}
 
-	private registerListeners(workbench: Workbench, storageService: SimpleStorageService): void {
+	private registerListeners(workBench: WorkBench, storageService: SimpleStorageService): void {
 
 		// Layout
-		this._register(addDisposableListener(window, EventType.RESIZE, e => this.onWindowResize(e, true, workbench)));
+		this._register(addDisposaBleListener(window, EventType.RESIZE, e => this.onWindowResize(e, true, workBench)));
 
-		// Workbench Lifecycle
-		this._register(workbench.onShutdown(() => this.dispose()));
-		this._register(workbench.onWillShutdown(event => event.join(storageService.close())));
+		// WorkBench Lifecycle
+		this._register(workBench.onShutdown(() => this.dispose()));
+		this._register(workBench.onWillShutdown(event => event.join(storageService.close())));
 	}
 
-	private onWindowResize(e: Event, retry: boolean, workbench: Workbench): void {
+	private onWindowResize(e: Event, retry: Boolean, workBench: WorkBench): void {
 		if (e.target === window) {
-			if (window.document && window.document.body && window.document.body.clientWidth === 0) {
-				// TODO@Ben this is an electron issue on macOS when simple fullscreen is enabled
+			if (window.document && window.document.Body && window.document.Body.clientWidth === 0) {
+				// TODO@Ben this is an electron issue on macOS when simple fullscreen is enaBled
 				// where for some reason the window clientWidth is reported as 0 when switching
-				// between simple fullscreen and normal screen. In that case we schedule the layout
+				// Between simple fullscreen and normal screen. In that case we schedule the layout
 				// call at the next animation frame once, in the hope that the dimensions are
 				// proper then.
 				if (retry) {
-					scheduleAtNextAnimationFrame(() => this.onWindowResize(e, false, workbench));
+					scheduleAtNextAnimationFrame(() => this.onWindowResize(e, false, workBench));
 				}
 				return;
 			}
 
-			workbench.layout();
+			workBench.layout();
 		}
 	}
 
@@ -143,12 +143,12 @@ class DesktopMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
 		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		//       from `workBench.common.main.ts` if the service is shared Between
+		//       desktop and weB or `workBench.sandBox.main.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT add services to `workBench.desktop.main.ts`, always add
+		//       to `workBench.sandBox.main.ts` to support our Electron sandBox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -158,8 +158,8 @@ class DesktopMain extends Disposable {
 		serviceCollection.set(IMainProcessService, mainProcessService);
 
 		// Environment
-		serviceCollection.set(IWorkbenchEnvironmentService, this.environmentService);
-		serviceCollection.set(INativeWorkbenchEnvironmentService, this.environmentService);
+		serviceCollection.set(IWorkBenchEnvironmentService, this.environmentService);
+		serviceCollection.set(INativeWorkBenchEnvironmentService, this.environmentService);
 
 		// Product
 		const productService: IProductService = { _serviceBrand: undefined, ...product };
@@ -185,12 +185,12 @@ class DesktopMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
 		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		//       from `workBench.common.main.ts` if the service is shared Between
+		//       desktop and weB or `workBench.sandBox.main.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT add services to `workBench.desktop.main.ts`, always add
+		//       to `workBench.sandBox.main.ts` to support our Electron sandBox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -221,12 +221,12 @@ class DesktopMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
 		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		//       from `workBench.common.main.ts` if the service is shared Between
+		//       desktop and weB or `workBench.sandBox.main.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT add services to `workBench.desktop.main.ts`, always add
+		//       to `workBench.sandBox.main.ts` to support our Electron sandBox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -256,12 +256,12 @@ class DesktopMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
 		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		//       from `workBench.common.main.ts` if the service is shared Between
+		//       desktop and weB or `workBench.sandBox.main.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT add services to `workBench.desktop.main.ts`, always add
+		//       to `workBench.sandBox.main.ts` to support our Electron sandBox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -278,8 +278,8 @@ class DesktopMain extends Disposable {
 	}
 }
 
-export function main(configuration: INativeWorkbenchConfiguration): Promise<void> {
-	const workbench = new DesktopMain(configuration);
+export function main(configuration: INativeWorkBenchConfiguration): Promise<void> {
+	const workBench = new DesktopMain(configuration);
 
-	return workbench.open();
+	return workBench.open();
 }

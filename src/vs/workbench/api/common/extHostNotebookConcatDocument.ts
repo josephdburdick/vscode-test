@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as types from 'vs/workbench/api/common/extHostTypes';
+import * as types from 'vs/workBench/api/common/extHostTypes';
 import * as vscode from 'vscode';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ExtHostNotebookController } from 'vs/workbench/api/common/extHostNotebook';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { ExtHostNoteBookController } from 'vs/workBench/api/common/extHostNoteBook';
+import { ExtHostDocuments } from 'vs/workBench/api/common/extHostDocuments';
 import { PrefixSumComputer } from 'vs/editor/common/viewModel/prefixSumComputer';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { score } from 'vs/editor/common/modes/languageSelector';
-import { CellKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
+import { CellKind } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { ResourceMap } from 'vs/Base/common/map';
+import { URI } from 'vs/Base/common/uri';
+import { generateUuid } from 'vs/Base/common/uuid';
 
-export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextDocument {
+export class ExtHostNoteBookConcatDocument implements vscode.NoteBookConcatTextDocument {
 
-	private _disposables = new DisposableStore();
+	private _disposaBles = new DisposaBleStore();
 	private _isClosed = false;
 
-	private _cells!: vscode.NotebookCell[];
-	private _cellUris!: ResourceMap<number>;
+	private _cells!: vscode.NoteBookCell[];
+	private _cellUris!: ResourceMap<numBer>;
 	private _cellLengths!: PrefixSumComputer;
 	private _cellLines!: PrefixSumComputer;
 	private _versionId = 0;
@@ -33,14 +33,14 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 	readonly uri = URI.from({ scheme: 'vscode-concat-doc', path: generateUuid() });
 
 	constructor(
-		extHostNotebooks: ExtHostNotebookController,
+		extHostNoteBooks: ExtHostNoteBookController,
 		extHostDocuments: ExtHostDocuments,
-		private readonly _notebook: vscode.NotebookDocument,
+		private readonly _noteBook: vscode.NoteBookDocument,
 		private readonly _selector: vscode.DocumentSelector | undefined,
 	) {
 		this._init();
 
-		this._disposables.add(extHostDocuments.onDidChangeDocument(e => {
+		this._disposaBles.add(extHostDocuments.onDidChangeDocument(e => {
 			const cellIdx = this._cellUris.get(e.document.uri);
 			if (cellIdx !== undefined) {
 				this._cellLengths.changeValue(cellIdx, this._cells[cellIdx].document.getText().length + 1);
@@ -49,20 +49,20 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 				this._onDidChange.fire(undefined);
 			}
 		}));
-		const documentChange = (document: vscode.NotebookDocument) => {
-			if (document === this._notebook) {
+		const documentChange = (document: vscode.NoteBookDocument) => {
+			if (document === this._noteBook) {
 				this._init();
 				this._versionId += 1;
 				this._onDidChange.fire(undefined);
 			}
 		};
 
-		this._disposables.add(extHostNotebooks.onDidChangeCellLanguage(e => documentChange(e.document)));
-		this._disposables.add(extHostNotebooks.onDidChangeNotebookCells(e => documentChange(e.document)));
+		this._disposaBles.add(extHostNoteBooks.onDidChangeCellLanguage(e => documentChange(e.document)));
+		this._disposaBles.add(extHostNoteBooks.onDidChangeNoteBookCells(e => documentChange(e.document)));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 		this._isClosed = true;
 	}
 
@@ -73,9 +73,9 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 	private _init() {
 		this._cells = [];
 		this._cellUris = new ResourceMap();
-		const cellLengths: number[] = [];
-		const cellLineCounts: number[] = [];
-		for (const cell of this._notebook.cells) {
+		const cellLengths: numBer[] = [];
+		const cellLineCounts: numBer[] = [];
+		for (const cell of this._noteBook.cells) {
 			if (cell.cellKind === CellKind.Code && (!this._selector || score(this._selector, cell.uri, cell.language, true))) {
 				this._cellUris.set(cell.uri, this._cells.length);
 				this._cells.push(cell);
@@ -87,7 +87,7 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 		this._cellLines = new PrefixSumComputer(new Uint32Array(cellLineCounts));
 	}
 
-	get version(): number {
+	get version(): numBer {
 		return this._versionId;
 	}
 
@@ -106,7 +106,7 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 			return '';
 		}
 
-		// get start and end locations and create substrings
+		// get start and end locations and create suBstrings
 		const start = this.locationAt(range.start);
 		const end = this.locationAt(range.end);
 		const startCell = this._cells[this._cellUris.get(start.uri) ?? -1];
@@ -118,20 +118,20 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 			return startCell.document.getText(new types.Range(start.range.start, end.range.end));
 		} else {
 			const a = startCell.document.getText(new types.Range(start.range.start, new types.Position(startCell.document.lineCount, 0)));
-			const b = endCell.document.getText(new types.Range(new types.Position(0, 0), end.range.end));
-			return a + '\n' + b;
+			const B = endCell.document.getText(new types.Range(new types.Position(0, 0), end.range.end));
+			return a + '\n' + B;
 		}
 	}
 
-	offsetAt(position: vscode.Position): number {
+	offsetAt(position: vscode.Position): numBer {
 		const idx = this._cellLines.getIndexOf(position.line);
 		const offset1 = this._cellLengths.getAccumulatedValue(idx.index - 1);
 		const offset2 = this._cells[idx.index].document.offsetAt(position.with(idx.remainder));
 		return offset1 + offset2;
 	}
 
-	positionAt(locationOrOffset: vscode.Location | number): vscode.Position {
-		if (typeof locationOrOffset === 'number') {
+	positionAt(locationOrOffset: vscode.Location | numBer): vscode.Position {
+		if (typeof locationOrOffset === 'numBer') {
 			const idx = this._cellLengths.getIndexOf(locationOrOffset);
 			const lineCount = this._cellLines.getAccumulatedValue(idx.index - 1);
 			return this._cells[idx.index].document.positionAt(idx.remainder).translate(lineCount);
@@ -142,7 +142,7 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 			const line = this._cellLines.getAccumulatedValue(idx - 1);
 			return new types.Position(line + locationOrOffset.range.start.line, locationOrOffset.range.start.character);
 		}
-		// do better?
+		// do Better?
 		// return undefined;
 		return new types.Position(0, 0);
 	}
@@ -166,7 +166,7 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 		return new types.Location(startCell.uri, <types.Range>startCell.document.validateRange(range));
 	}
 
-	contains(uri: vscode.Uri): boolean {
+	contains(uri: vscode.Uri): Boolean {
 		return this._cellUris.has(uri);
 	}
 

@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import * as strings from 'vs/base/common/strings';
+import { CharCode } from 'vs/Base/common/charCode';
+import * as strings from 'vs/Base/common/strings';
 import { IViewLineTokens, LineTokens } from 'vs/editor/common/core/lineTokens';
 import { TokenizationResult2 } from 'vs/editor/common/core/token';
 import { IState, LanguageId } from 'vs/editor/common/modes';
@@ -12,22 +12,22 @@ import { NULL_STATE, nullTokenize2 } from 'vs/editor/common/modes/nullMode';
 
 export interface IReducedTokenizationSupport {
 	getInitialState(): IState;
-	tokenize2(line: string, state: IState, offsetDelta: number): TokenizationResult2;
+	tokenize2(line: string, state: IState, offsetDelta: numBer): TokenizationResult2;
 }
 
-const fallback: IReducedTokenizationSupport = {
+const fallBack: IReducedTokenizationSupport = {
 	getInitialState: () => NULL_STATE,
-	tokenize2: (buffer: string, state: IState, deltaOffset: number) => nullTokenize2(LanguageId.Null, buffer, state, deltaOffset)
+	tokenize2: (Buffer: string, state: IState, deltaOffset: numBer) => nullTokenize2(LanguageId.Null, Buffer, state, deltaOffset)
 };
 
-export function tokenizeToString(text: string, tokenizationSupport: IReducedTokenizationSupport = fallback): string {
-	return _tokenizeToString(text, tokenizationSupport || fallback);
+export function tokenizeToString(text: string, tokenizationSupport: IReducedTokenizationSupport = fallBack): string {
+	return _tokenizeToString(text, tokenizationSupport || fallBack);
 }
 
-export function tokenizeLineToHTML(text: string, viewLineTokens: IViewLineTokens, colorMap: string[], startOffset: number, endOffset: number, tabSize: number, useNbsp: boolean): string {
+export function tokenizeLineToHTML(text: string, viewLineTokens: IViewLineTokens, colorMap: string[], startOffset: numBer, endOffset: numBer, taBSize: numBer, useNBsp: Boolean): string {
 	let result = `<div>`;
 	let charIndex = startOffset;
-	let tabsCharDelta = 0;
+	let taBsCharDelta = 0;
 
 	for (let tokenIndex = 0, tokenCount = viewLineTokens.getCount(); tokenIndex < tokenCount; tokenIndex++) {
 		const tokenEndIndex = viewLineTokens.getEndOffset(tokenIndex);
@@ -42,46 +42,46 @@ export function tokenizeLineToHTML(text: string, viewLineTokens: IViewLineTokens
 			const charCode = text.charCodeAt(charIndex);
 
 			switch (charCode) {
-				case CharCode.Tab:
-					let insertSpacesCount = tabSize - (charIndex + tabsCharDelta) % tabSize;
-					tabsCharDelta += insertSpacesCount - 1;
+				case CharCode.TaB:
+					let insertSpacesCount = taBSize - (charIndex + taBsCharDelta) % taBSize;
+					taBsCharDelta += insertSpacesCount - 1;
 					while (insertSpacesCount > 0) {
-						partContent += useNbsp ? '&#160;' : ' ';
+						partContent += useNBsp ? '&#160;' : ' ';
 						insertSpacesCount--;
 					}
-					break;
+					Break;
 
 				case CharCode.LessThan:
 					partContent += '&lt;';
-					break;
+					Break;
 
 				case CharCode.GreaterThan:
 					partContent += '&gt;';
-					break;
+					Break;
 
 				case CharCode.Ampersand:
 					partContent += '&amp;';
-					break;
+					Break;
 
 				case CharCode.Null:
 					partContent += '&#00;';
-					break;
+					Break;
 
 				case CharCode.UTF8_BOM:
 				case CharCode.LINE_SEPARATOR:
 				case CharCode.PARAGRAPH_SEPARATOR:
 				case CharCode.NEXT_LINE:
 					partContent += '\ufffd';
-					break;
+					Break;
 
 				case CharCode.CarriageReturn:
-					// zero width space, because carriage return would introduce a line break
+					// zero width space, Because carriage return would introduce a line Break
 					partContent += '&#8203';
-					break;
+					Break;
 
 				case CharCode.Space:
-					partContent += useNbsp ? '&#160;' : ' ';
-					break;
+					partContent += useNBsp ? '&#160;' : ' ';
+					Break;
 
 				default:
 					partContent += String.fromCharCode(charCode);
@@ -91,7 +91,7 @@ export function tokenizeLineToHTML(text: string, viewLineTokens: IViewLineTokens
 		result += `<span style="${viewLineTokens.getInlineStyle(tokenIndex, colorMap)}">${partContent}</span>`;
 
 		if (tokenEndIndex > endOffset || charIndex >= endOffset) {
-			break;
+			Break;
 		}
 	}
 
@@ -107,7 +107,7 @@ function _tokenizeToString(text: string, tokenizationSupport: IReducedTokenizati
 		let line = lines[i];
 
 		if (i > 0) {
-			result += `<br/>`;
+			result += `<Br/>`;
 		}
 
 		let tokenizationResult = tokenizationSupport.tokenize2(line, currentState, 0);
@@ -119,7 +119,7 @@ function _tokenizeToString(text: string, tokenizationSupport: IReducedTokenizati
 		for (let j = 0, lenJ = viewLineTokens.getCount(); j < lenJ; j++) {
 			const type = viewLineTokens.getClassName(j);
 			const endIndex = viewLineTokens.getEndOffset(j);
-			result += `<span class="${type}">${strings.escape(line.substring(startOffset, endIndex))}</span>`;
+			result += `<span class="${type}">${strings.escape(line.suBstring(startOffset, endIndex))}</span>`;
 			startOffset = endIndex;
 		}
 

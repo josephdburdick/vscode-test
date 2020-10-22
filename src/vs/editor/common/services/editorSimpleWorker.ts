@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { mergeSort } from 'vs/base/common/arrays';
-import { stringDiff } from 'vs/base/common/diff/diff';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { globals } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { IRequestHandler } from 'vs/base/common/worker/simpleWorker';
+import { mergeSort } from 'vs/Base/common/arrays';
+import { stringDiff } from 'vs/Base/common/diff/diff';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { gloBals } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import { IRequestHandler } from 'vs/Base/common/worker/simpleWorker';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { DiffComputer } from 'vs/editor/common/diff/diffComputer';
@@ -21,22 +21,22 @@ import { ILinkComputerTarget, computeLinks } from 'vs/editor/common/modes/linkCo
 import { BasicInplaceReplace } from 'vs/editor/common/modes/supports/inplaceReplaceSupport';
 import { IDiffComputationResult } from 'vs/editor/common/services/editorWorkerService';
 import { createMonacoBaseAPI } from 'vs/editor/common/standalone/standaloneBase';
-import * as types from 'vs/base/common/types';
+import * as types from 'vs/Base/common/types';
 import { EditorWorkerHost } from 'vs/editor/common/services/editorWorkerServiceImpl';
 
 export interface IMirrorModel {
 	readonly uri: URI;
-	readonly version: number;
+	readonly version: numBer;
 	getValue(): string;
 }
 
 export interface IWorkerContext<H = undefined> {
 	/**
-	 * A proxy to the main thread host object.
+	 * A proxy to the main thread host oBject.
 	 */
 	host: H;
 	/**
-	 * Get all available mirror models in this worker.
+	 * Get all availaBle mirror models in this worker.
 	 */
 	getMirrorModels(): IMirrorModel[];
 }
@@ -46,7 +46,7 @@ export interface IWorkerContext<H = undefined> {
  */
 export interface IRawModelData {
 	url: string;
-	versionId: number;
+	versionId: numBer;
 	lines: string[];
 	EOL: string;
 }
@@ -56,20 +56,20 @@ export interface IRawModelData {
  */
 export interface ICommonModel extends ILinkComputerTarget, IMirrorModel {
 	uri: URI;
-	version: number;
+	version: numBer;
 	eol: string;
 	getValue(): string;
 
 	getLinesContent(): string[];
-	getLineCount(): number;
-	getLineContent(lineNumber: number): string;
-	getLineWords(lineNumber: number, wordDefinition: RegExp): IWordAtPosition[];
-	words(wordDefinition: RegExp): Iterable<string>;
+	getLineCount(): numBer;
+	getLineContent(lineNumBer: numBer): string;
+	getLineWords(lineNumBer: numBer, wordDefinition: RegExp): IWordAtPosition[];
+	words(wordDefinition: RegExp): IteraBle<string>;
 	getWordUntilPosition(position: IPosition, wordDefinition: RegExp): IWordAtPosition;
 	getValueInRange(range: IRange): string;
 	getWordAtPosition(position: IPosition, wordDefinition: RegExp): Range | null;
-	offsetAt(position: IPosition): number;
-	positionAt(offset: number): IPosition;
+	offsetAt(position: IPosition): numBer;
+	positionAt(offset: numBer): IPosition;
 }
 
 /**
@@ -80,11 +80,11 @@ interface IWordRange {
 	/**
 	 * The index where the word starts.
 	 */
-	readonly start: number;
+	readonly start: numBer;
 	/**
 	 * The index where the word ends.
 	 */
-	readonly end: number;
+	readonly end: numBer;
 }
 
 /**
@@ -92,51 +92,51 @@ interface IWordRange {
  */
 class MirrorModel extends BaseMirrorModel implements ICommonModel {
 
-	public get uri(): URI {
+	puBlic get uri(): URI {
 		return this._uri;
 	}
 
-	public get version(): number {
+	puBlic get version(): numBer {
 		return this._versionId;
 	}
 
-	public get eol(): string {
+	puBlic get eol(): string {
 		return this._eol;
 	}
 
-	public getValue(): string {
+	puBlic getValue(): string {
 		return this.getText();
 	}
 
-	public getLinesContent(): string[] {
+	puBlic getLinesContent(): string[] {
 		return this._lines.slice(0);
 	}
 
-	public getLineCount(): number {
+	puBlic getLineCount(): numBer {
 		return this._lines.length;
 	}
 
-	public getLineContent(lineNumber: number): string {
-		return this._lines[lineNumber - 1];
+	puBlic getLineContent(lineNumBer: numBer): string {
+		return this._lines[lineNumBer - 1];
 	}
 
-	public getWordAtPosition(position: IPosition, wordDefinition: RegExp): Range | null {
+	puBlic getWordAtPosition(position: IPosition, wordDefinition: RegExp): Range | null {
 
 		let wordAtText = getWordAtText(
 			position.column,
 			ensureValidWordDefinition(wordDefinition),
-			this._lines[position.lineNumber - 1],
+			this._lines[position.lineNumBer - 1],
 			0
 		);
 
 		if (wordAtText) {
-			return new Range(position.lineNumber, wordAtText.startColumn, position.lineNumber, wordAtText.endColumn);
+			return new Range(position.lineNumBer, wordAtText.startColumn, position.lineNumBer, wordAtText.endColumn);
 		}
 
 		return null;
 	}
 
-	public getWordUntilPosition(position: IPosition, wordDefinition: RegExp): IWordAtPosition {
+	puBlic getWordUntilPosition(position: IPosition, wordDefinition: RegExp): IWordAtPosition {
 		const wordAtPosition = this.getWordAtPosition(position, wordDefinition);
 		if (!wordAtPosition) {
 			return {
@@ -146,38 +146,38 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 			};
 		}
 		return {
-			word: this._lines[position.lineNumber - 1].substring(wordAtPosition.startColumn - 1, position.column - 1),
+			word: this._lines[position.lineNumBer - 1].suBstring(wordAtPosition.startColumn - 1, position.column - 1),
 			startColumn: wordAtPosition.startColumn,
 			endColumn: position.column
 		};
 	}
 
 
-	public words(wordDefinition: RegExp): Iterable<string> {
+	puBlic words(wordDefinition: RegExp): IteraBle<string> {
 
 		const lines = this._lines;
-		const wordenize = this._wordenize.bind(this);
+		const wordenize = this._wordenize.Bind(this);
 
-		let lineNumber = 0;
+		let lineNumBer = 0;
 		let lineText = '';
 		let wordRangesIdx = 0;
 		let wordRanges: IWordRange[] = [];
 
 		return {
-			*[Symbol.iterator]() {
+			*[SymBol.iterator]() {
 				while (true) {
 					if (wordRangesIdx < wordRanges.length) {
-						const value = lineText.substring(wordRanges[wordRangesIdx].start, wordRanges[wordRangesIdx].end);
+						const value = lineText.suBstring(wordRanges[wordRangesIdx].start, wordRanges[wordRangesIdx].end);
 						wordRangesIdx += 1;
 						yield value;
 					} else {
-						if (lineNumber < lines.length) {
-							lineText = lines[lineNumber];
+						if (lineNumBer < lines.length) {
+							lineText = lines[lineNumBer];
 							wordRanges = wordenize(lineText, wordDefinition);
 							wordRangesIdx = 0;
-							lineNumber += 1;
+							lineNumBer += 1;
 						} else {
-							break;
+							Break;
 						}
 					}
 				}
@@ -185,13 +185,13 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 		};
 	}
 
-	public getLineWords(lineNumber: number, wordDefinition: RegExp): IWordAtPosition[] {
-		let content = this._lines[lineNumber - 1];
+	puBlic getLineWords(lineNumBer: numBer, wordDefinition: RegExp): IWordAtPosition[] {
+		let content = this._lines[lineNumBer - 1];
 		let ranges = this._wordenize(content, wordDefinition);
 		let words: IWordAtPosition[] = [];
 		for (const range of ranges) {
 			words.push({
-				word: content.substring(range.start, range.end),
+				word: content.suBstring(range.start, range.end),
 				startColumn: range.start + 1,
 				endColumn: range.end + 1
 			});
@@ -203,46 +203,46 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 		const result: IWordRange[] = [];
 		let match: RegExpExecArray | null;
 
-		wordDefinition.lastIndex = 0; // reset lastIndex just to be sure
+		wordDefinition.lastIndex = 0; // reset lastIndex just to Be sure
 
 		while (match = wordDefinition.exec(content)) {
 			if (match[0].length === 0) {
 				// it did match the empty string
-				break;
+				Break;
 			}
 			result.push({ start: match.index, end: match.index + match[0].length });
 		}
 		return result;
 	}
 
-	public getValueInRange(range: IRange): string {
+	puBlic getValueInRange(range: IRange): string {
 		range = this._validateRange(range);
 
-		if (range.startLineNumber === range.endLineNumber) {
-			return this._lines[range.startLineNumber - 1].substring(range.startColumn - 1, range.endColumn - 1);
+		if (range.startLineNumBer === range.endLineNumBer) {
+			return this._lines[range.startLineNumBer - 1].suBstring(range.startColumn - 1, range.endColumn - 1);
 		}
 
 		let lineEnding = this._eol;
-		let startLineIndex = range.startLineNumber - 1;
-		let endLineIndex = range.endLineNumber - 1;
+		let startLineIndex = range.startLineNumBer - 1;
+		let endLineIndex = range.endLineNumBer - 1;
 		let resultLines: string[] = [];
 
-		resultLines.push(this._lines[startLineIndex].substring(range.startColumn - 1));
+		resultLines.push(this._lines[startLineIndex].suBstring(range.startColumn - 1));
 		for (let i = startLineIndex + 1; i < endLineIndex; i++) {
 			resultLines.push(this._lines[i]);
 		}
-		resultLines.push(this._lines[endLineIndex].substring(0, range.endColumn - 1));
+		resultLines.push(this._lines[endLineIndex].suBstring(0, range.endColumn - 1));
 
 		return resultLines.join(lineEnding);
 	}
 
-	public offsetAt(position: IPosition): number {
+	puBlic offsetAt(position: IPosition): numBer {
 		position = this._validatePosition(position);
 		this._ensureLineStarts();
-		return this._lineStarts!.getAccumulatedValue(position.lineNumber - 2) + (position.column - 1);
+		return this._lineStarts!.getAccumulatedValue(position.lineNumBer - 2) + (position.column - 1);
 	}
 
-	public positionAt(offset: number): IPosition {
+	puBlic positionAt(offset: numBer): IPosition {
 		offset = Math.floor(offset);
 		offset = Math.max(0, offset);
 
@@ -252,25 +252,25 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 
 		// Ensure we return a valid position
 		return {
-			lineNumber: 1 + out.index,
+			lineNumBer: 1 + out.index,
 			column: 1 + Math.min(out.remainder, lineLength)
 		};
 	}
 
 	private _validateRange(range: IRange): IRange {
 
-		const start = this._validatePosition({ lineNumber: range.startLineNumber, column: range.startColumn });
-		const end = this._validatePosition({ lineNumber: range.endLineNumber, column: range.endColumn });
+		const start = this._validatePosition({ lineNumBer: range.startLineNumBer, column: range.startColumn });
+		const end = this._validatePosition({ lineNumBer: range.endLineNumBer, column: range.endColumn });
 
-		if (start.lineNumber !== range.startLineNumber
+		if (start.lineNumBer !== range.startLineNumBer
 			|| start.column !== range.startColumn
-			|| end.lineNumber !== range.endLineNumber
+			|| end.lineNumBer !== range.endLineNumBer
 			|| end.column !== range.endColumn) {
 
 			return {
-				startLineNumber: start.lineNumber,
+				startLineNumBer: start.lineNumBer,
 				startColumn: start.column,
-				endLineNumber: end.lineNumber,
+				endLineNumBer: end.lineNumBer,
 				endColumn: end.column
 			};
 		}
@@ -280,23 +280,23 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 
 	private _validatePosition(position: IPosition): IPosition {
 		if (!Position.isIPosition(position)) {
-			throw new Error('bad position');
+			throw new Error('Bad position');
 		}
-		let { lineNumber, column } = position;
+		let { lineNumBer, column } = position;
 		let hasChanged = false;
 
-		if (lineNumber < 1) {
-			lineNumber = 1;
+		if (lineNumBer < 1) {
+			lineNumBer = 1;
 			column = 1;
 			hasChanged = true;
 
-		} else if (lineNumber > this._lines.length) {
-			lineNumber = this._lines.length;
-			column = this._lines[lineNumber - 1].length + 1;
+		} else if (lineNumBer > this._lines.length) {
+			lineNumBer = this._lines.length;
+			column = this._lines[lineNumBer - 1].length + 1;
 			hasChanged = true;
 
 		} else {
-			let maxCharacter = this._lines[lineNumber - 1].length + 1;
+			let maxCharacter = this._lines[lineNumBer - 1].length + 1;
 			if (column < 1) {
 				column = 1;
 				hasChanged = true;
@@ -310,7 +310,7 @@ class MirrorModel extends BaseMirrorModel implements ICommonModel {
 		if (!hasChanged) {
 			return position;
 		} else {
-			return { lineNumber, column };
+			return { lineNumBer, column };
 		}
 	}
 }
@@ -327,7 +327,7 @@ declare const require: any;
 /**
  * @internal
  */
-export class EditorSimpleWorker implements IRequestHandler, IDisposable {
+export class EditorSimpleWorker implements IRequestHandler, IDisposaBle {
 	_requestHandlerBrand: any;
 
 	private readonly _host: EditorWorkerHost;
@@ -337,13 +337,13 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	constructor(host: EditorWorkerHost, foreignModuleFactory: IForeignModuleFactory | null) {
 		this._host = host;
-		this._models = Object.create(null);
+		this._models = OBject.create(null);
 		this._foreignModuleFactory = foreignModuleFactory;
 		this._foreignModule = null;
 	}
 
-	public dispose(): void {
-		this._models = Object.create(null);
+	puBlic dispose(): void {
+		this._models = OBject.create(null);
 	}
 
 	protected _getModel(uri: string): ICommonModel {
@@ -352,15 +352,15 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	private _getModels(): ICommonModel[] {
 		let all: MirrorModel[] = [];
-		Object.keys(this._models).forEach((key) => all.push(this._models[key]));
+		OBject.keys(this._models).forEach((key) => all.push(this._models[key]));
 		return all;
 	}
 
-	public acceptNewModel(data: IRawModelData): void {
+	puBlic acceptNewModel(data: IRawModelData): void {
 		this._models[data.url] = new MirrorModel(URI.parse(data.url), data.lines, data.EOL, data.versionId);
 	}
 
-	public acceptModelChanged(strURL: string, e: IModelChangedEvent): void {
+	puBlic acceptModelChanged(strURL: string, e: IModelChangedEvent): void {
 		if (!this._models[strURL]) {
 			return;
 		}
@@ -368,7 +368,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 		model.onEvents(e);
 	}
 
-	public acceptRemovedModel(strURL: string): void {
+	puBlic acceptRemovedModel(strURL: string): void {
 		if (!this._models[strURL]) {
 			return;
 		}
@@ -377,7 +377,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	// ---- BEGIN diff --------------------------------------------------------------------------
 
-	public async computeDiff(originalUrl: string, modifiedUrl: string, ignoreTrimWhitespace: boolean, maxComputationTime: number): Promise<IDiffComputationResult | null> {
+	puBlic async computeDiff(originalUrl: string, modifiedUrl: string, ignoreTrimWhitespace: Boolean, maxComputationTime: numBer): Promise<IDiffComputationResult | null> {
 		const original = this._getModel(originalUrl);
 		const modified = this._getModel(modifiedUrl);
 		if (!original || !modified) {
@@ -403,7 +403,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 		};
 	}
 
-	private _modelsAreIdentical(original: ICommonModel, modified: ICommonModel): boolean {
+	private _modelsAreIdentical(original: ICommonModel, modified: ICommonModel): Boolean {
 		const originalLineCount = original.getLineCount();
 		const modifiedLineCount = modified.getLineCount();
 		if (originalLineCount !== modifiedLineCount) {
@@ -419,7 +419,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 		return true;
 	}
 
-	public async computeDirtyDiff(originalUrl: string, modifiedUrl: string, ignoreTrimWhitespace: boolean): Promise<IChange[] | null> {
+	puBlic async computeDirtyDiff(originalUrl: string, modifiedUrl: string, ignoreTrimWhitespace: Boolean): Promise<IChange[] | null> {
 		let original = this._getModel(originalUrl);
 		let modified = this._getModel(modifiedUrl);
 		if (!original || !modified) {
@@ -445,7 +445,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	private static readonly _diffLimit = 100000;
 
-	public async computeMoreMinimalEdits(modelUrl: string, edits: TextEdit[]): Promise<TextEdit[]> {
+	puBlic async computeMoreMinimalEdits(modelUrl: string, edits: TextEdit[]): Promise<TextEdit[]> {
 		const model = this._getModel(modelUrl);
 		if (!model) {
 			return edits;
@@ -454,19 +454,19 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 		const result: TextEdit[] = [];
 		let lastEol: EndOfLineSequence | undefined = undefined;
 
-		edits = mergeSort(edits, (a, b) => {
-			if (a.range && b.range) {
-				return Range.compareRangesUsingStarts(a.range, b.range);
+		edits = mergeSort(edits, (a, B) => {
+			if (a.range && B.range) {
+				return Range.compareRangesUsingStarts(a.range, B.range);
 			}
 			// eol only changes should go to the end
 			let aRng = a.range ? 0 : 1;
-			let bRng = b.range ? 0 : 1;
-			return aRng - bRng;
+			let BRng = B.range ? 0 : 1;
+			return aRng - BRng;
 		});
 
 		for (let { range, text, eol } of edits) {
 
-			if (typeof eol === 'number') {
+			if (typeof eol === 'numBer') {
 				lastEol = eol;
 			}
 
@@ -489,7 +489,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 				continue;
 			}
 
-			// compute diff between original and edit.text
+			// compute diff Between original and edit.text
 			const changes = stringDiff(original, text, false);
 			const editOffset = model.offsetAt(Range.lift(range).getStartPosition());
 
@@ -497,8 +497,8 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 				const start = model.positionAt(editOffset + change.originalStart);
 				const end = model.positionAt(editOffset + change.originalStart + change.originalLength);
 				const newEdit: TextEdit = {
-					text: text.substr(change.modifiedStart, change.modifiedLength),
-					range: { startLineNumber: start.lineNumber, startColumn: start.column, endLineNumber: end.lineNumber, endColumn: end.column }
+					text: text.suBstr(change.modifiedStart, change.modifiedLength),
+					range: { startLineNumBer: start.lineNumBer, startColumn: start.column, endLineNumBer: end.lineNumBer, endColumn: end.column }
 				};
 
 				if (model.getValueInRange(newEdit.range) !== newEdit.text) {
@@ -507,8 +507,8 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 			}
 		}
 
-		if (typeof lastEol === 'number') {
-			result.push({ eol: lastEol, text: '', range: { startLineNumber: 0, startColumn: 0, endLineNumber: 0, endColumn: 0 } });
+		if (typeof lastEol === 'numBer') {
+			result.push({ eol: lastEol, text: '', range: { startLineNumBer: 0, startColumn: 0, endLineNumBer: 0, endColumn: 0 } });
 		}
 
 		return result;
@@ -516,7 +516,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	// ---- END minimal edits ---------------------------------------------------------------
 
-	public async computeLinks(modelUrl: string): Promise<ILink[] | null> {
+	puBlic async computeLinks(modelUrl: string): Promise<ILink[] | null> {
 		let model = this._getModel(modelUrl);
 		if (!model) {
 			return null;
@@ -529,7 +529,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	private static readonly _suggestionsLimit = 10000;
 
-	public async textualSuggest(modelUrl: string, position: IPosition, wordDef: string, wordDefFlags: string): Promise<string[] | null> {
+	puBlic async textualSuggest(modelUrl: string, position: IPosition, wordDef: string, wordDefFlags: string): Promise<string[] | null> {
 		const model = this._getModel(modelUrl);
 		if (!model) {
 			return null;
@@ -550,12 +550,12 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 				continue;
 			}
 			seen.add(word);
-			if (!isNaN(Number(word))) {
+			if (!isNaN(NumBer(word))) {
 				continue;
 			}
 			words.push(word);
 			if (seen.size > EditorSimpleWorker._suggestionsLimit) {
-				break;
+				Break;
 			}
 		}
 		return words;
@@ -566,17 +566,17 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	//#region -- word ranges --
 
-	public async computeWordRanges(modelUrl: string, range: IRange, wordDef: string, wordDefFlags: string): Promise<{ [word: string]: IRange[] }> {
+	puBlic async computeWordRanges(modelUrl: string, range: IRange, wordDef: string, wordDefFlags: string): Promise<{ [word: string]: IRange[] }> {
 		let model = this._getModel(modelUrl);
 		if (!model) {
-			return Object.create(null);
+			return OBject.create(null);
 		}
 		const wordDefRegExp = new RegExp(wordDef, wordDefFlags);
-		const result: { [word: string]: IRange[] } = Object.create(null);
-		for (let line = range.startLineNumber; line < range.endLineNumber; line++) {
+		const result: { [word: string]: IRange[] } = OBject.create(null);
+		for (let line = range.startLineNumBer; line < range.endLineNumBer; line++) {
 			let words = model.getLineWords(line, wordDefRegExp);
 			for (const word of words) {
-				if (!isNaN(Number(word.word))) {
+				if (!isNaN(NumBer(word.word))) {
 					continue;
 				}
 				let array = result[word.word];
@@ -585,9 +585,9 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 					result[word.word] = array;
 				}
 				array.push({
-					startLineNumber: line,
+					startLineNumBer: line,
 					startColumn: word.startColumn,
-					endLineNumber: line,
+					endLineNumBer: line,
 					endColumn: word.endColumn
 				});
 			}
@@ -597,7 +597,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	//#endregion
 
-	public async navigateValueSet(modelUrl: string, range: IRange, up: boolean, wordDef: string, wordDefFlags: string): Promise<IInplaceReplaceSupportResult | null> {
+	puBlic async navigateValueSet(modelUrl: string, range: IRange, up: Boolean, wordDef: string, wordDefFlags: string): Promise<IInplaceReplaceSupportResult | null> {
 		let model = this._getModel(modelUrl);
 		if (!model) {
 			return null;
@@ -607,16 +607,16 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 		if (range.startColumn === range.endColumn) {
 			range = {
-				startLineNumber: range.startLineNumber,
+				startLineNumBer: range.startLineNumBer,
 				startColumn: range.startColumn,
-				endLineNumber: range.endLineNumber,
+				endLineNumBer: range.endLineNumBer,
 				endColumn: range.endColumn + 1
 			};
 		}
 
 		let selectionText = model.getValueInRange(range);
 
-		let wordRange = model.getWordAtPosition({ lineNumber: range.startLineNumber, column: range.startColumn }, wordDefRegExp);
+		let wordRange = model.getWordAtPosition({ lineNumBer: range.startLineNumBer, column: range.startColumn }, wordDefRegExp);
 		if (!wordRange) {
 			return null;
 		}
@@ -627,12 +627,12 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 
 	// ---- BEGIN foreign module support --------------------------------------------------------------------------
 
-	public loadForeignModule(moduleId: string, createData: any, foreignHostMethods: string[]): Promise<string[]> {
+	puBlic loadForeignModule(moduleId: string, createData: any, foreignHostMethods: string[]): Promise<string[]> {
 		const proxyMethodRequest = (method: string, args: any[]): Promise<any> => {
 			return this._host.fhr(method, args);
 		};
 
-		const foreignHost = types.createProxyObject(foreignHostMethods, proxyMethodRequest);
+		const foreignHost = types.createProxyOBject(foreignHostMethods, proxyMethodRequest);
 
 		let ctx: IWorkerContext<any> = {
 			host: foreignHost,
@@ -646,7 +646,7 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 			// static foreing module
 			return Promise.resolve(types.getAllMethodNames(this._foreignModule));
 		}
-		// ESM-comment-begin
+		// ESM-comment-Begin
 		return new Promise<any>((resolve, reject) => {
 			require([moduleId], (foreignModule: { create: IForeignModuleFactory }) => {
 				this._foreignModule = foreignModule.create(ctx, createData);
@@ -657,13 +657,13 @@ export class EditorSimpleWorker implements IRequestHandler, IDisposable {
 		});
 		// ESM-comment-end
 
-		// ESM-uncomment-begin
+		// ESM-uncomment-Begin
 		// return Promise.reject(new Error(`Unexpected usage`));
 		// ESM-uncomment-end
 	}
 
 	// foreign method request
-	public fmr(method: string, args: any[]): Promise<any> {
+	puBlic fmr(method: string, args: any[]): Promise<any> {
 		if (!this._foreignModule || typeof this._foreignModule[method] !== 'function') {
 			return Promise.reject(new Error('Missing requestHandler or method: ' + method));
 		}
@@ -686,10 +686,10 @@ export function create(host: EditorWorkerHost): IRequestHandler {
 	return new EditorSimpleWorker(host, null);
 }
 
-// This is only available in a Web Worker
+// This is only availaBle in a WeB Worker
 declare function importScripts(...urls: string[]): void;
 
 if (typeof importScripts === 'function') {
-	// Running in a web worker
-	globals.monaco = createMonacoBaseAPI();
+	// Running in a weB worker
+	gloBals.monaco = createMonacoBaseAPI();
 }

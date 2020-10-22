@@ -4,38 +4,38 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface ICommonContextMenuItem {
-	label?: string;
+	laBel?: string;
 
-	type?: 'normal' | 'separator' | 'submenu' | 'checkbox' | 'radio';
+	type?: 'normal' | 'separator' | 'suBmenu' | 'checkBox' | 'radio';
 
 	accelerator?: string;
 
-	enabled?: boolean;
-	visible?: boolean;
-	checked?: boolean;
+	enaBled?: Boolean;
+	visiBle?: Boolean;
+	checked?: Boolean;
 }
 
-export interface ISerializableContextMenuItem extends ICommonContextMenuItem {
-	id: number;
-	submenu?: ISerializableContextMenuItem[];
+export interface ISerializaBleContextMenuItem extends ICommonContextMenuItem {
+	id: numBer;
+	suBmenu?: ISerializaBleContextMenuItem[];
 }
 
 export interface IContextMenuItem extends ICommonContextMenuItem {
 	click?: (event: IContextMenuEvent) => void;
-	submenu?: IContextMenuItem[];
+	suBmenu?: IContextMenuItem[];
 }
 
 export interface IContextMenuEvent {
-	shiftKey?: boolean;
-	ctrlKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
+	shiftKey?: Boolean;
+	ctrlKey?: Boolean;
+	altKey?: Boolean;
+	metaKey?: Boolean;
 }
 
 export interface IPopupOptions {
-	x?: number;
-	y?: number;
-	positioningItem?: number;
+	x?: numBer;
+	y?: numBer;
+	positioningItem?: numBer;
 }
 
 export const CONTEXT_MENU_CHANNEL = 'vscode:contextmenu';

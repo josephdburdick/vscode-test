@@ -11,10 +11,10 @@ export = new class NoNlsInStandaloneEditorRule implements eslint.Rule.RuleModule
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			badImport: 'Not allowed to import standalone editor modules.'
+			BadImport: 'Not allowed to import standalone editor modules.'
 		},
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			url: 'https://githuB.com/microsoft/vscode/wiki/Source-Code-Organization'
 		}
 	};
 
@@ -41,7 +41,7 @@ export = new class NoNlsInStandaloneEditorRule implements eslint.Rule.RuleModule
 			) {
 				context.report({
 					loc: node.loc,
-					messageId: 'badImport'
+					messageId: 'BadImport'
 				});
 			}
 		});

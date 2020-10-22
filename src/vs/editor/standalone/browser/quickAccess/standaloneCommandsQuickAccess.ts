@@ -6,35 +6,35 @@
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
 import { QuickCommandNLS } from 'vs/editor/common/standaloneStrings';
-import { ICommandQuickPick } from 'vs/platform/quickinput/browser/commandsQuickAccess';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { AbstractEditorCommandsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commandsQuickAccess';
+import { ICommandQuickPick } from 'vs/platform/quickinput/Browser/commandsQuickAccess';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { ABstractEditorCommandsQuickAccessProvider } from 'vs/editor/contriB/quickAccess/commandsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { withNullAsUndefined } from 'vs/base/common/types';
+import { withNullAsUndefined } from 'vs/Base/common/types';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { EditorAction, registerEditorAction } from 'vs/editor/browser/editorExtensions';
+import { EditorAction, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 
-export class StandaloneCommandsQuickAccessProvider extends AbstractEditorCommandsQuickAccessProvider {
+export class StandaloneCommandsQuickAccessProvider extends ABstractEditorCommandsQuickAccessProvider {
 
 	protected get activeTextEditorControl(): IEditor | undefined { return withNullAsUndefined(this.codeEditorService.getFocusedCodeEditor()); }
 
 	constructor(
 		@IInstantiationService instantiationService: IInstantiationService,
 		@ICodeEditorService private readonly codeEditorService: ICodeEditorService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@ICommandService commandService: ICommandService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@INotificationService notificationService: INotificationService
 	) {
-		super({ showAlias: false }, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		super({ showAlias: false }, instantiationService, keyBindingService, commandService, telemetryService, notificationService);
 	}
 
 	protected async getCommandPicks(): Promise<Array<ICommandQuickPick>> {
@@ -53,13 +53,13 @@ export class GotoLineAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.quickCommand',
-			label: QuickCommandNLS.quickCommandActionLabel,
+			laBel: QuickCommandNLS.quickCommandActionLaBel,
 			alias: 'Command Palette',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.focus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.focus,
 				primary: KeyCode.F1,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			contextMenuOpts: {
 				group: 'z_commands',

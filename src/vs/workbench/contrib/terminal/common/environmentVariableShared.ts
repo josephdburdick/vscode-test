@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableMutator, ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
+import { IEnvironmentVariaBleMutator, ISerializaBleEnvironmentVariaBleCollection } from 'vs/workBench/contriB/terminal/common/environmentVariaBle';
 
-// This file is shared between the renderer and extension host
+// This file is shared Between the renderer and extension host
 
-export function serializeEnvironmentVariableCollection(collection: ReadonlyMap<string, IEnvironmentVariableMutator>): ISerializableEnvironmentVariableCollection {
+export function serializeEnvironmentVariaBleCollection(collection: ReadonlyMap<string, IEnvironmentVariaBleMutator>): ISerializaBleEnvironmentVariaBleCollection {
 	return [...collection.entries()];
 }
 
-export function deserializeEnvironmentVariableCollection(
-	serializedCollection: ISerializableEnvironmentVariableCollection
-): Map<string, IEnvironmentVariableMutator> {
-	return new Map<string, IEnvironmentVariableMutator>(serializedCollection);
+export function deserializeEnvironmentVariaBleCollection(
+	serializedCollection: ISerializaBleEnvironmentVariaBleCollection
+): Map<string, IEnvironmentVariaBleMutator> {
+	return new Map<string, IEnvironmentVariaBleMutator>(serializedCollection);
 }

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { MainContext, IExtHostContext, ExtHostThemingShape, ExtHostContext, MainThreadThemingShape } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 
 @extHostNamedCustomer(MainContext.MainThreadTheming)
@@ -13,7 +13,7 @@ export class MainThreadTheming implements MainThreadThemingShape {
 
 	private readonly _themeService: IThemeService;
 	private readonly _proxy: ExtHostThemingShape;
-	private readonly _themeChangeListener: IDisposable;
+	private readonly _themeChangeListener: IDisposaBle;
 
 	constructor(
 		extHostContext: IExtHostContext,

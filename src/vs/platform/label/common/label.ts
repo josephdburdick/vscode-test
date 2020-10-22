@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
 import { IWorkspace } from 'vs/platform/workspace/common/workspace';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IWorkspaceIdentifier, ISingleFolderWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
 
-export const ILabelService = createDecorator<ILabelService>('labelService');
+export const ILaBelService = createDecorator<ILaBelService>('laBelService');
 
-export interface ILabelService {
+export interface ILaBelService {
 
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Gets the human readable label for a uri.
-	 * If relative is passed returns a label relative to the workspace root that the uri belongs to.
-	 * If noPrefix is passed does not tildify the label and also does not prepand the root name for relative labels in a multi root scenario.
+	 * Gets the human readaBle laBel for a uri.
+	 * If relative is passed returns a laBel relative to the workspace root that the uri Belongs to.
+	 * If noPrefix is passed does not tildify the laBel and also does not prepand the root name for relative laBels in a multi root scenario.
 	 */
-	getUriLabel(resource: URI, options?: { relative?: boolean, noPrefix?: boolean, endWithSeparator?: boolean }): string;
-	getUriBasenameLabel(resource: URI): string;
-	getWorkspaceLabel(workspace: (IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier | IWorkspace), options?: { verbose: boolean }): string;
-	getHostLabel(scheme: string, authority?: string): string;
+	getUriLaBel(resource: URI, options?: { relative?: Boolean, noPrefix?: Boolean, endWithSeparator?: Boolean }): string;
+	getUriBasenameLaBel(resource: URI): string;
+	getWorkspaceLaBel(workspace: (IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier | IWorkspace), options?: { verBose: Boolean }): string;
+	getHostLaBel(scheme: string, authority?: string): string;
 	getSeparator(scheme: string, authority?: string): '/' | '\\';
 
-	registerFormatter(formatter: ResourceLabelFormatter): IDisposable;
+	registerFormatter(formatter: ResourceLaBelFormatter): IDisposaBle;
 	onDidChangeFormatters: Event<IFormatterChangeEvent>;
 }
 
@@ -35,19 +35,19 @@ export interface IFormatterChangeEvent {
 	scheme: string;
 }
 
-export interface ResourceLabelFormatter {
+export interface ResourceLaBelFormatter {
 	scheme: string;
 	authority?: string;
-	priority?: boolean;
-	formatting: ResourceLabelFormatting;
+	priority?: Boolean;
+	formatting: ResourceLaBelFormatting;
 }
 
-export interface ResourceLabelFormatting {
-	label: string; // myLabel:/${path}
+export interface ResourceLaBelFormatting {
+	laBel: string; // myLaBel:/${path}
 	separator: '/' | '\\' | '';
-	tildify?: boolean;
-	normalizeDriveLetter?: boolean;
+	tildify?: Boolean;
+	normalizeDriveLetter?: Boolean;
 	workspaceSuffix?: string;
 	authorityPrefix?: string;
-	stripPathStartingSeparator?: boolean;
+	stripPathStartingSeparator?: Boolean;
 }

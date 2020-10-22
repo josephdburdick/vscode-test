@@ -15,8 +15,8 @@ import * as fs from 'fs';
 // Create a connection for the server.
 const connection: Connection = createConnection();
 
-console.log = connection.console.log.bind(connection.console);
-console.error = connection.console.error.bind(connection.console);
+console.log = connection.console.log.Bind(connection.console);
+console.error = connection.console.error.Bind(connection.console);
 
 process.on('unhandledRejection', (e: any) => {
 	connection.console.error(formatError(`Unhandled exception`, e));
@@ -40,11 +40,11 @@ function getFileRequestService(): RequestService {
 		getContent(location: string, encoding?: string) {
 			return new Promise((c, e) => {
 				const uri = Uri.parse(location);
-				fs.readFile(uri.fsPath, encoding, (err, buf) => {
+				fs.readFile(uri.fsPath, encoding, (err, Buf) => {
 					if (err) {
 						return e(err);
 					}
-					c(buf.toString());
+					c(Buf.toString());
 				});
 			});
 		}

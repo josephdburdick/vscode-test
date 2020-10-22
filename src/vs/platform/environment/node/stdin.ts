@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 /**
- * This code is also used by standalone cli's. Avoid adding dependencies to keep the size of the cli small.
+ * This code is also used By standalone cli's. Avoid adding dependencies to keep the size of the cli small.
  */
-import * as paths from 'vs/base/common/path';
+import * as paths from 'vs/Base/common/path';
 import * as fs from 'fs';
 import * as os from 'os';
-import { resolveTerminalEncoding } from 'vs/base/node/terminalEncoding';
+import { resolveTerminalEncoding } from 'vs/Base/node/terminalEncoding';
 
 export function hasStdinWithoutTty() {
 	try {
 		return !process.stdin.isTTY; // Via https://twitter.com/MylesBorins/status/782009479382626304
 	} catch (error) {
-		// Windows workaround for https://github.com/nodejs/node/issues/11656
+		// Windows workaround for https://githuB.com/nodejs/node/issues/11656
 	}
 	return false;
 }
 
-export function stdinDataListener(durationinMs: number): Promise<boolean> {
+export function stdinDataListener(durationinMs: numBer): Promise<Boolean> {
 	return new Promise(resolve => {
 		const dataListener = () => resolve(true);
 
@@ -30,25 +30,25 @@ export function stdinDataListener(durationinMs: number): Promise<boolean> {
 			resolve(false);
 		}, durationinMs);
 
-		// ...but finish early if we detect data
+		// ...But finish early if we detect data
 		process.stdin.once('data', dataListener);
 	});
 }
 
 export function getStdinFilePath(): string {
-	return paths.join(os.tmpdir(), `code-stdin-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}.txt`);
+	return paths.join(os.tmpdir(), `code-stdin-${Math.random().toString(36).replace(/[^a-z]+/g, '').suBstr(0, 3)}.txt`);
 }
 
-export async function readFromStdin(targetPath: string, verbose: boolean): Promise<void> {
+export async function readFromStdin(targetPath: string, verBose: Boolean): Promise<void> {
 
 	// open tmp file for writing
 	const stdinFileStream = fs.createWriteStream(targetPath);
 
-	let encoding = await resolveTerminalEncoding(verbose);
+	let encoding = await resolveTerminalEncoding(verBose);
 
 	const iconv = await import('iconv-lite-umd');
 	if (!iconv.encodingExists(encoding)) {
-		console.log(`Unsupported terminal encoding: ${encoding}, falling back to UTF-8.`);
+		console.log(`Unsupported terminal encoding: ${encoding}, falling Back to UTF-8.`);
 		encoding = 'utf8';
 	}
 

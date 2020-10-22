@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IRequestService } from 'vs/platform/request/common/request';
-import { IRequestOptions, IRequestContext, IHeaders } from 'vs/base/parts/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IUserData, IUserDataManifest, ALL_SYNC_RESOURCES, IUserDataSyncLogService, IUserDataSyncStoreService, IUserDataSyncUtilService, IUserDataSyncResourceEnablementService, IUserDataSyncService, getDefaultIgnoredSettings, IUserDataSyncBackupStoreService, SyncResource, ServerResource, IUserDataSyncStoreManagementService, registerConfiguration } from 'vs/platform/userDataSync/common/userDataSync';
-import { bufferToStream, VSBuffer } from 'vs/base/common/buffer';
-import { generateUuid } from 'vs/base/common/uuid';
+import { IRequestOptions, IRequestContext, IHeaders } from 'vs/Base/parts/request/common/request';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IUserData, IUserDataManifest, ALL_SYNC_RESOURCES, IUserDataSyncLogService, IUserDataSyncStoreService, IUserDataSyncUtilService, IUserDataSyncResourceEnaBlementService, IUserDataSyncService, getDefaultIgnoredSettings, IUserDataSyncBackupStoreService, SyncResource, ServerResource, IUserDataSyncStoreManagementService, registerConfiguration } from 'vs/platform/userDataSync/common/userDataSync';
+import { BufferToStream, VSBuffer } from 'vs/Base/common/Buffer';
+import { generateUuid } from 'vs/Base/common/uuid';
 import { UserDataSyncService } from 'vs/platform/userDataSync/common/userDataSyncService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
@@ -18,20 +18,20 @@ import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtil
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IFileService } from 'vs/platform/files/common/files';
 import { FileService } from 'vs/platform/files/common/fileService';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { URI } from 'vs/base/common/uri';
-import { joinPath } from 'vs/base/common/resources';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
-import { UserDataSyncResourceEnablementService } from 'vs/platform/userDataSync/common/userDataSyncResourceEnablementService';
-import { IGlobalExtensionEnablementService, IExtensionManagementService, IExtensionGalleryService, DidInstallExtensionEvent, DidUninstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { GlobalExtensionEnablementService } from 'vs/platform/extensionManagement/common/extensionEnablementService';
+import { URI } from 'vs/Base/common/uri';
+import { joinPath } from 'vs/Base/common/resources';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { FormattingOptions } from 'vs/Base/common/jsonFormatter';
+import { UserDataSyncResourceEnaBlementService } from 'vs/platform/userDataSync/common/userDataSyncResourceEnaBlementService';
+import { IGloBalExtensionEnaBlementService, IExtensionManagementService, IExtensionGalleryService, DidInstallExtensionEvent, DidUninstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { GloBalExtensionEnaBlementService } from 'vs/platform/extensionManagement/common/extensionEnaBlementService';
 import { InMemoryFileSystemProvider } from 'vs/platform/files/common/inMemoryFilesystemProvider';
 import { ConfigurationService } from 'vs/platform/configuration/common/configurationService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter } from 'vs/Base/common/event';
 import { IUserDataSyncAccountService, UserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
 import product from 'vs/platform/product/common/product';
 import { IProductService } from 'vs/platform/product/common/productService';
@@ -39,7 +39,7 @@ import { UserDataSyncBackupStoreService } from 'vs/platform/userDataSync/common/
 import { IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 import { IUserDataSyncMachinesService, UserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
 
-export class UserDataSyncClient extends Disposable {
+export class UserDataSyncClient extends DisposaBle {
 
 	readonly instantiationService: TestInstantiationService;
 
@@ -48,28 +48,28 @@ export class UserDataSyncClient extends Disposable {
 		this.instantiationService = new TestInstantiationService();
 	}
 
-	async setUp(empty: boolean = false): Promise<void> {
+	async setUp(empty: Boolean = false): Promise<void> {
 		registerConfiguration();
 		const userRoamingDataHome = URI.file('userdata').with({ scheme: Schemas.inMemory });
 		const userDataSyncHome = joinPath(userRoamingDataHome, '.sync');
-		const environmentService = this.instantiationService.stub(IEnvironmentService, <Partial<IEnvironmentService>>{
+		const environmentService = this.instantiationService.stuB(IEnvironmentService, <Partial<IEnvironmentService>>{
 			userDataSyncHome,
 			userRoamingDataHome,
 			settingsResource: joinPath(userRoamingDataHome, 'settings.json'),
-			keybindingsResource: joinPath(userRoamingDataHome, 'keybindings.json'),
+			keyBindingsResource: joinPath(userRoamingDataHome, 'keyBindings.json'),
 			snippetsHome: joinPath(userRoamingDataHome, 'snippets'),
 			argvResource: joinPath(userRoamingDataHome, 'argv.json'),
 			sync: 'on',
 		});
 
 		const logService = new NullLogService();
-		this.instantiationService.stub(ILogService, logService);
+		this.instantiationService.stuB(ILogService, logService);
 
-		this.instantiationService.stub(IProductService, {
+		this.instantiationService.stuB(IProductService, {
 			_serviceBrand: undefined, ...product, ...{
 				'configurationSync.store': {
 					url: this.testServer.url,
-					stableUrl: this.testServer.url,
+					staBleUrl: this.testServer.url,
 					insidersUrl: this.testServer.url,
 					canSwitch: false,
 					authenticationProviders: { 'test': { scopes: [] } }
@@ -79,47 +79,47 @@ export class UserDataSyncClient extends Disposable {
 
 		const fileService = this._register(new FileService(logService));
 		fileService.registerProvider(Schemas.inMemory, new InMemoryFileSystemProvider());
-		this.instantiationService.stub(IFileService, fileService);
+		this.instantiationService.stuB(IFileService, fileService);
 
-		this.instantiationService.stub(IStorageService, new InMemoryStorageService());
+		this.instantiationService.stuB(IStorageService, new InMemoryStorageService());
 
 		const configurationService = new ConfigurationService(environmentService.settingsResource, fileService);
 		await configurationService.initialize();
-		this.instantiationService.stub(IConfigurationService, configurationService);
+		this.instantiationService.stuB(IConfigurationService, configurationService);
 
-		this.instantiationService.stub(IRequestService, this.testServer);
+		this.instantiationService.stuB(IRequestService, this.testServer);
 
-		this.instantiationService.stub(IUserDataSyncLogService, logService);
-		this.instantiationService.stub(ITelemetryService, NullTelemetryService);
-		this.instantiationService.stub(IUserDataSyncStoreManagementService, this.instantiationService.createInstance(UserDataSyncStoreManagementService));
-		this.instantiationService.stub(IUserDataSyncStoreService, this.instantiationService.createInstance(UserDataSyncStoreService));
+		this.instantiationService.stuB(IUserDataSyncLogService, logService);
+		this.instantiationService.stuB(ITelemetryService, NullTelemetryService);
+		this.instantiationService.stuB(IUserDataSyncStoreManagementService, this.instantiationService.createInstance(UserDataSyncStoreManagementService));
+		this.instantiationService.stuB(IUserDataSyncStoreService, this.instantiationService.createInstance(UserDataSyncStoreService));
 
 		const userDataSyncAccountService: IUserDataSyncAccountService = this.instantiationService.createInstance(UserDataSyncAccountService);
 		await userDataSyncAccountService.updateAccount({ authenticationProviderId: 'authenticationProviderId', token: 'token' });
-		this.instantiationService.stub(IUserDataSyncAccountService, userDataSyncAccountService);
+		this.instantiationService.stuB(IUserDataSyncAccountService, userDataSyncAccountService);
 
-		this.instantiationService.stub(IUserDataSyncMachinesService, this.instantiationService.createInstance(UserDataSyncMachinesService));
-		this.instantiationService.stub(IUserDataSyncBackupStoreService, this.instantiationService.createInstance(UserDataSyncBackupStoreService));
-		this.instantiationService.stub(IUserDataSyncUtilService, new TestUserDataSyncUtilService());
-		this.instantiationService.stub(IUserDataSyncResourceEnablementService, this.instantiationService.createInstance(UserDataSyncResourceEnablementService));
-		this.instantiationService.stub(IStorageKeysSyncRegistryService, this.instantiationService.createInstance(StorageKeysSyncRegistryService));
+		this.instantiationService.stuB(IUserDataSyncMachinesService, this.instantiationService.createInstance(UserDataSyncMachinesService));
+		this.instantiationService.stuB(IUserDataSyncBackupStoreService, this.instantiationService.createInstance(UserDataSyncBackupStoreService));
+		this.instantiationService.stuB(IUserDataSyncUtilService, new TestUserDataSyncUtilService());
+		this.instantiationService.stuB(IUserDataSyncResourceEnaBlementService, this.instantiationService.createInstance(UserDataSyncResourceEnaBlementService));
+		this.instantiationService.stuB(IStorageKeysSyncRegistryService, this.instantiationService.createInstance(StorageKeysSyncRegistryService));
 
-		this.instantiationService.stub(IGlobalExtensionEnablementService, this.instantiationService.createInstance(GlobalExtensionEnablementService));
-		this.instantiationService.stub(IExtensionManagementService, <Partial<IExtensionManagementService>>{
+		this.instantiationService.stuB(IGloBalExtensionEnaBlementService, this.instantiationService.createInstance(GloBalExtensionEnaBlementService));
+		this.instantiationService.stuB(IExtensionManagementService, <Partial<IExtensionManagementService>>{
 			async getInstalled() { return []; },
 			onDidInstallExtension: new Emitter<DidInstallExtensionEvent>().event,
 			onDidUninstallExtension: new Emitter<DidUninstallExtensionEvent>().event,
 		});
-		this.instantiationService.stub(IExtensionGalleryService, <Partial<IExtensionGalleryService>>{
-			isEnabled() { return true; },
-			async getCompatibleExtension() { return null; }
+		this.instantiationService.stuB(IExtensionGalleryService, <Partial<IExtensionGalleryService>>{
+			isEnaBled() { return true; },
+			async getCompatiBleExtension() { return null; }
 		});
 
-		this.instantiationService.stub(IUserDataSyncService, this.instantiationService.createInstance(UserDataSyncService));
+		this.instantiationService.stuB(IUserDataSyncService, this.instantiationService.createInstance(UserDataSyncService));
 
 		if (!empty) {
 			await fileService.writeFile(environmentService.settingsResource, VSBuffer.fromString(JSON.stringify({})));
-			await fileService.writeFile(environmentService.keybindingsResource, VSBuffer.fromString(JSON.stringify([])));
+			await fileService.writeFile(environmentService.keyBindingsResource, VSBuffer.fromString(JSON.stringify([])));
 			await fileService.writeFile(joinPath(environmentService.snippetsHome, 'c.json'), VSBuffer.fromString(`{}`));
 			await fileService.writeFile(environmentService.argvResource, VSBuffer.fromString(JSON.stringify({ 'locale': 'en' })));
 		}
@@ -156,11 +156,11 @@ export class UserDataSyncTestServer implements IRequestService {
 	private _requestsWithAllHeaders: { url: string, type: string, headers?: IHeaders }[] = [];
 	get requestsWithAllHeaders(): { url: string, type: string, headers?: IHeaders }[] { return this._requestsWithAllHeaders; }
 
-	private _responses: { status: number }[] = [];
-	get responses(): { status: number }[] { return this._responses; }
+	private _responses: { status: numBer }[] = [];
+	get responses(): { status: numBer }[] { return this._responses; }
 	reset(): void { this._requests = []; this._responses = []; this._requestsWithAllHeaders = []; }
 
-	constructor(private readonly rateLimit = Number.MAX_SAFE_INTEGER, private readonly retryAfter?: number) { }
+	constructor(private readonly rateLimit = NumBer.MAX_SAFE_INTEGER, private readonly retryAfter?: numBer) { }
 
 	async resolveProxy(url: string): Promise<string | undefined> { return url; }
 
@@ -186,7 +186,7 @@ export class UserDataSyncTestServer implements IRequestService {
 
 	private async doRequest(options: IRequestOptions): Promise<IRequestContext> {
 		const versionUrl = `${this.url}/v1/`;
-		const relativePath = options.url!.indexOf(versionUrl) === 0 ? options.url!.substring(versionUrl.length) : undefined;
+		const relativePath = options.url!.indexOf(versionUrl) === 0 ? options.url!.suBstring(versionUrl.length) : undefined;
 		const segments = relativePath ? relativePath.split('/') : [];
 		if (options.type === 'GET' && segments.length === 1 && segments[0] === 'manifest') {
 			return this.getManifest(options.headers);
@@ -205,7 +205,7 @@ export class UserDataSyncTestServer implements IRequestService {
 
 	private async getManifest(headers?: IHeaders): Promise<IRequestContext> {
 		if (this.session) {
-			const latest: Record<ServerResource, string> = Object.create({});
+			const latest: Record<ServerResource, string> = OBject.create({});
 			const manifest: IUserDataManifest = { session: this.session, latest };
 			this.data.forEach((value, key) => latest[key] = value.ref);
 			return this.toResponse(200, { 'Content-Type': 'application/json' }, JSON.stringify(manifest));
@@ -251,13 +251,13 @@ export class UserDataSyncTestServer implements IRequestService {
 		return this.toResponse(204);
 	}
 
-	private toResponse(statusCode: number, headers?: IHeaders, data?: string): IRequestContext {
+	private toResponse(statusCode: numBer, headers?: IHeaders, data?: string): IRequestContext {
 		return {
 			res: {
 				headers: headers || {},
 				statusCode
 			},
-			stream: bufferToStream(VSBuffer.fromString(data || ''))
+			stream: BufferToStream(VSBuffer.fromString(data || ''))
 		};
 	}
 }
@@ -270,16 +270,16 @@ export class TestUserDataSyncUtilService implements IUserDataSyncUtilService {
 		return getDefaultIgnoredSettings();
 	}
 
-	async resolveUserBindings(userbindings: string[]): Promise<IStringDictionary<string>> {
+	async resolveUserBindings(userBindings: string[]): Promise<IStringDictionary<string>> {
 		const keys: IStringDictionary<string> = {};
-		for (const keybinding of userbindings) {
-			keys[keybinding] = keybinding;
+		for (const keyBinding of userBindings) {
+			keys[keyBinding] = keyBinding;
 		}
 		return keys;
 	}
 
 	async resolveFormattingOptions(file?: URI): Promise<FormattingOptions> {
-		return { eol: '\n', insertSpaces: false, tabSize: 4 };
+		return { eol: '\n', insertSpaces: false, taBSize: 4 };
 	}
 
 }

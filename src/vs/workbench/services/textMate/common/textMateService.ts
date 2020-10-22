@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { LanguageId } from 'vs/editor/common/modes';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
@@ -16,10 +16,10 @@ export interface ITextMateService {
 
 	createGrammar(modeId: string): Promise<IGrammar | null>;
 
-	startDebugMode(printFn: (str: string) => void, onStop: () => void): void;
+	startDeBugMode(printFn: (str: string) => void, onStop: () => void): void;
 }
 
-// -------------- Types "liberated" from vscode-textmate due to usage in /common/
+// -------------- Types "liBerated" from vscode-textmate due to usage in /common/
 
 export const enum StandardTokenType {
 	Other = 0,
@@ -37,12 +37,12 @@ export interface IGrammar {
 	tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult;
 	/**
 	 * Tokenize `lineText` using previous line state `prevState`.
-	 * The result contains the tokens in binary format, resolved with the following information:
+	 * The result contains the tokens in Binary format, resolved with the following information:
 	 *  - language
 	 *  - token type (regex, string, comment, other)
 	 *  - font style
 	 *  - foreground color
-	 *  - background color
+	 *  - Background color
 	 * e.g. for getting the languageId: `(metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET`
 	 */
 	tokenizeLine2(lineText: string, prevState: StackElement | null): ITokenizeLineResult2;
@@ -50,29 +50,29 @@ export interface IGrammar {
 export interface ITokenizeLineResult {
 	readonly tokens: IToken[];
 	/**
-	 * The `prevState` to be passed on to the next line tokenization.
+	 * The `prevState` to Be passed on to the next line tokenization.
 	 */
 	readonly ruleStack: StackElement;
 }
 /**
  * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
- * The following assumptions have been made:
- *  - languageId < 256 => needs 8 bits
- *  - unique color count < 512 => needs 9 bits
+ * The following assumptions have Been made:
+ *  - languageId < 256 => needs 8 Bits
+ *  - unique color count < 512 => needs 9 Bits
  *
- * The binary format is:
+ * The Binary format is:
  * - -------------------------------------------
  *     3322 2222 2222 1111 1111 1100 0000 0000
  *     1098 7654 3210 9876 5432 1098 7654 3210
  * - -------------------------------------------
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ *     BBBB BBBB Bfff ffff ffFF FTTT LLLL LLLL
  * - -------------------------------------------
- *  - L = LanguageId (8 bits)
- *  - T = StandardTokenType (3 bits)
- *  - F = FontStyle (3 bits)
- *  - f = foreground color (9 bits)
- *  - b = background color (9 bits)
+ *  - L = LanguageId (8 Bits)
+ *  - T = StandardTokenType (3 Bits)
+ *  - F = FontStyle (3 Bits)
+ *  - f = foreground color (9 Bits)
+ *  - B = Background color (9 Bits)
  */
 export const enum MetadataConsts {
 	LANGUAGEID_MASK = 255,
@@ -88,29 +88,29 @@ export const enum MetadataConsts {
 }
 export interface ITokenizeLineResult2 {
 	/**
-	 * The tokens in binary format. Each token occupies two array indices. For token i:
+	 * The tokens in Binary format. Each token occupies two array indices. For token i:
 	 *  - at offset 2*i => startIndex
 	 *  - at offset 2*i + 1 => metadata
 	 *
 	 */
 	readonly tokens: Uint32Array;
 	/**
-	 * The `prevState` to be passed on to the next line tokenization.
+	 * The `prevState` to Be passed on to the next line tokenization.
 	 */
 	readonly ruleStack: StackElement;
 }
 export interface IToken {
-	startIndex: number;
-	readonly endIndex: number;
+	startIndex: numBer;
+	readonly endIndex: numBer;
 	readonly scopes: string[];
 }
 /**
- * **IMPORTANT** - Immutable!
+ * **IMPORTANT** - ImmutaBle!
  */
 export interface StackElement {
 	_stackElementBrand: void;
-	readonly depth: number;
+	readonly depth: numBer;
 	clone(): StackElement;
-	equals(other: StackElement): boolean;
+	equals(other: StackElement): Boolean;
 }
-// -------------- End Types "liberated" from vscode-textmate due to usage in /common/
+// -------------- End Types "liBerated" from vscode-textmate due to usage in /common/

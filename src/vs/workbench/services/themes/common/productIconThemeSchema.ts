@@ -5,37 +5,37 @@
 import * as nls from 'vs/nls';
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as JSONExtensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { Extensions as JSONExtensions, IJSONContriButionRegistry } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { iconsSchemaId } from 'vs/platform/theme/common/iconRegistry';
 
 export const fontIdRegex = '^([\\w-_]+)$';
-export const fontStyleRegex = '^(normal|italic|(oblique[ \\w\\s-]+))$';
-export const fontWeightRegex = '^(normal|bold|lighter|bolder|(\\d{0-1000}))$';
+export const fontStyleRegex = '^(normal|italic|(oBlique[ \\w\\s-]+))$';
+export const fontWeightRegex = '^(normal|Bold|lighter|Bolder|(\\d{0-1000}))$';
 export const fontSizeRegex = '^([\\w .%-_]+)$';
 
 const schemaId = 'vscode://schemas/product-icon-theme';
 const schema: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	allowComments: true,
 	allowTrailingCommas: true,
 	properties: {
 		fonts: {
 			type: 'array',
 			items: {
-				type: 'object',
+				type: 'oBject',
 				properties: {
 					id: {
 						type: 'string',
 						description: nls.localize('schema.id', 'The ID of the font.'),
 						pattern: fontIdRegex,
-						patternErrorMessage: nls.localize('schema.id.formatError', 'The ID must only contain letters, numbers, underscore and minus.')
+						patternErrorMessage: nls.localize('schema.id.formatError', 'The ID must only contain letters, numBers, underscore and minus.')
 					},
 					src: {
 						type: 'array',
 						description: nls.localize('schema.src', 'The location of the font.'),
 						items: {
-							type: 'object',
+							type: 'oBject',
 							properties: {
 								path: {
 									type: 'string',
@@ -44,7 +44,7 @@ const schema: IJSONSchema = {
 								format: {
 									type: 'string',
 									description: nls.localize('schema.font-format', 'The format of the font.'),
-									enum: ['woff', 'woff2', 'truetype', 'opentype', 'embedded-opentype', 'svg']
+									enum: ['woff', 'woff2', 'truetype', 'opentype', 'emBedded-opentype', 'svg']
 								}
 							},
 							required: [
@@ -55,17 +55,17 @@ const schema: IJSONSchema = {
 					},
 					weight: {
 						type: 'string',
-						description: nls.localize('schema.font-weight', 'The weight of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for valid values.'),
+						description: nls.localize('schema.font-weight', 'The weight of the font. See https://developer.mozilla.org/en-US/docs/WeB/CSS/font-weight for valid values.'),
 						anyOf: [
-							{ enum: ['normal', 'bold', 'lighter', 'bolder'] },
+							{ enum: ['normal', 'Bold', 'lighter', 'Bolder'] },
 							{ type: 'string', pattern: fontWeightRegex }
 						]
 					},
 					style: {
 						type: 'string',
-						description: nls.localize('schema.font-style', 'The style of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-style for valid values.'),
+						description: nls.localize('schema.font-style', 'The style of the font. See https://developer.mozilla.org/en-US/docs/WeB/CSS/font-style for valid values.'),
 						anyOf: [
-							{ enum: ['normal', 'italic', 'oblique'] },
+							{ enum: ['normal', 'italic', 'oBlique'] },
 							{ type: 'string', pattern: fontStyleRegex }
 						]
 					}
@@ -85,6 +85,6 @@ const schema: IJSONSchema = {
 };
 
 export function registerProductIconThemeSchemas() {
-	let schemaRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+	let schemaRegistry = Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 	schemaRegistry.registerSchema(schemaId, schema);
 }

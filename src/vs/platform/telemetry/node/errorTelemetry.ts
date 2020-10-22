@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError, setUnexpectedErrorHandler } from 'vs/base/common/errors';
+import { onUnexpectedError, setUnexpectedErrorHandler } from 'vs/Base/common/errors';
 import BaseErrorTelemetry from '../common/errorTelemetry';
 
 export default class ErrorTelemetry extends BaseErrorTelemetry {

@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IPickAndOpenOptions, ISaveDialogOptions, IOpenDialogOptions, IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractFileDialogService } from 'vs/workbench/services/dialogs/browser/abstractFileDialogService';
-import { Schemas } from 'vs/base/common/network';
+import { ABstractFileDialogService } from 'vs/workBench/services/dialogs/Browser/aBstractFileDialogService';
+import { Schemas } from 'vs/Base/common/network';
 
-export class FileDialogService extends AbstractFileDialogService implements IFileDialogService {
+export class FileDialogService extends ABstractFileDialogService implements IFileDialogService {
 
 	async pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<any> {
 		const schema = this.getFileSystemSchema(options);
@@ -51,9 +51,9 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		return this.pickWorkspaceAndOpenSimplified(schema, options);
 	}
 
-	async pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined> {
-		const schema = this.getFileSystemSchema({ defaultUri, availableFileSystems });
-		return this.pickFileToSaveSimplified(schema, this.getPickFileToSaveDialogOptions(defaultUri, availableFileSystems));
+	async pickFileToSave(defaultUri: URI, availaBleFileSystems?: string[]): Promise<URI | undefined> {
+		const schema = this.getFileSystemSchema({ defaultUri, availaBleFileSystems });
+		return this.pickFileToSaveSimplified(schema, this.getPickFileToSaveDialogOptions(defaultUri, availaBleFileSystems));
 	}
 
 	async showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined> {

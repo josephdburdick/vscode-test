@@ -5,7 +5,7 @@
 
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { MainThreadTelemetryShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
 
 @extHostNamedCustomer(MainContext.MainThreadTelemetry)
@@ -24,14 +24,14 @@ export class MainThreadTelemetry implements MainThreadTelemetryShape {
 		//
 	}
 
-	$publicLog(eventName: string, data: any = Object.create(null)): void {
+	$puBlicLog(eventName: string, data: any = OBject.create(null)): void {
 		// __GDPR__COMMON__ "pluginHostTelemetry" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		data[MainThreadTelemetry._name] = true;
-		this._telemetryService.publicLog(eventName, data);
+		this._telemetryService.puBlicLog(eventName, data);
 	}
 
-	$publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data: StrictPropertyCheck<T, E>): void {
-		this.$publicLog(eventName, data as any);
+	$puBlicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data: StrictPropertyCheck<T, E>): void {
+		this.$puBlicLog(eventName, data as any);
 	}
 }
 

@@ -15,7 +15,7 @@ export = new class TranslationRemind implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			missing: 'Please add \'{{resource}}\' to ./build/lib/i18n.resources.json file to use translations here.'
+			missing: 'Please add \'{{resource}}\' to ./Build/liB/i18n.resources.json file to use translations here.'
 		}
 	};
 
@@ -30,8 +30,8 @@ export = new class TranslationRemind implements eslint.Rule.RuleModule {
 		}
 
 		const currentFile = context.getFilename();
-		const matchService = currentFile.match(/vs\/workbench\/services\/\w+/);
-		const matchPart = currentFile.match(/vs\/workbench\/contrib\/\w+/);
+		const matchService = currentFile.match(/vs\/workBench\/services\/\w+/);
+		const matchPart = currentFile.match(/vs\/workBench\/contriB\/\w+/);
 		if (!matchService && !matchPart) {
 			return;
 		}
@@ -41,14 +41,14 @@ export = new class TranslationRemind implements eslint.Rule.RuleModule {
 
 		let json;
 		try {
-			json = readFileSync('./build/lib/i18n.resources.json', 'utf8');
+			json = readFileSync('./Build/liB/i18n.resources.json', 'utf8');
 		} catch (e) {
-			console.error('[translation-remind rule]: File with resources to pull from Transifex was not found. Aborting translation resource check for newly defined workbench part/service.');
+			console.error('[translation-remind rule]: File with resources to pull from Transifex was not found. ABorting translation resource check for newly defined workBench part/service.');
 			return;
 		}
-		const workbenchResources = JSON.parse(json).workbench;
+		const workBenchResources = JSON.parse(json).workBench;
 
-		workbenchResources.forEach((existingResource: any) => {
+		workBenchResources.forEach((existingResource: any) => {
 			if (existingResource.name === resource) {
 				resourceDefined = true;
 				return;

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./marginDecorations';
-import { DecorationToRender, DedupOverlay } from 'vs/editor/browser/viewParts/glyphMargin/glyphMargin';
+import { DecorationToRender, DedupOverlay } from 'vs/editor/Browser/viewParts/glyphMargin/glyphMargin';
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
@@ -20,36 +20,36 @@ export class MarginViewLineDecorationsOverlay extends DedupOverlay {
 		this._context.addEventHandler(this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._context.removeEventHandler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	puBlic onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): Boolean {
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return e.scrollTopChanged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return true;
 	}
 
@@ -62,20 +62,20 @@ export class MarginViewLineDecorationsOverlay extends DedupOverlay {
 			const d = decorations[i];
 			const marginClassName = d.options.marginClassName;
 			if (marginClassName) {
-				r[rLen++] = new DecorationToRender(d.range.startLineNumber, d.range.endLineNumber, marginClassName);
+				r[rLen++] = new DecorationToRender(d.range.startLineNumBer, d.range.endLineNumBer, marginClassName);
 			}
 		}
 		return r;
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
-		const toRender = this._render(visibleStartLineNumber, visibleEndLineNumber, this._getDecorations(ctx));
+	puBlic prepareRender(ctx: RenderingContext): void {
+		const visiBleStartLineNumBer = ctx.visiBleRange.startLineNumBer;
+		const visiBleEndLineNumBer = ctx.visiBleRange.endLineNumBer;
+		const toRender = this._render(visiBleStartLineNumBer, visiBleEndLineNumBer, this._getDecorations(ctx));
 
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let lineNumBer = visiBleStartLineNumBer; lineNumBer <= visiBleEndLineNumBer; lineNumBer++) {
+			const lineIndex = lineNumBer - visiBleStartLineNumBer;
 			const classNames = toRender[lineIndex];
 			let lineOutput = '';
 			for (let i = 0, len = classNames.length; i < len; i++) {
@@ -87,10 +87,10 @@ export class MarginViewLineDecorationsOverlay extends DedupOverlay {
 		this._renderResult = output;
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	puBlic render(startLineNumBer: numBer, lineNumBer: numBer): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		return this._renderResult[lineNumber - startLineNumber];
+		return this._renderResult[lineNumBer - startLineNumBer];
 	}
 }

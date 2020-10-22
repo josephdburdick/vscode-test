@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ViewModel } from 'vs/workbench/contrib/debug/common/debugViewModel';
-import { StackFrame, Expression, Thread } from 'vs/workbench/contrib/debug/common/debugModel';
-import { MockSession, mockUriIdentityService } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { Source } from 'vs/workbench/contrib/debug/common/debugSource';
+import { ViewModel } from 'vs/workBench/contriB/deBug/common/deBugViewModel';
+import { StackFrame, Expression, Thread } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { MockSession, mockUriIdentityService } from 'vs/workBench/contriB/deBug/test/Browser/mockDeBug';
+import { MockContextKeyService } from 'vs/platform/keyBinding/test/common/mockKeyBindingService';
+import { Source } from 'vs/workBench/contriB/deBug/common/deBugSource';
 
-suite('Debug - View Model', () => {
+suite('DeBug - View Model', () => {
 	let model: ViewModel;
 
 	setup(() => {
@@ -26,8 +26,8 @@ suite('Debug - View Model', () => {
 			name: 'internalModule.js',
 			sourceReference: 11,
 			presentationHint: 'deemphasize'
-		}, 'aDebugSessionId', mockUriIdentityService);
-		const frame = new StackFrame(thread, 1, source, 'app.js', 'normal', { startColumn: 1, startLineNumber: 1, endColumn: 1, endLineNumber: 1 }, 0);
+		}, 'aDeBugSessionId', mockUriIdentityService);
+		const frame = new StackFrame(thread, 1, source, 'app.js', 'normal', { startColumn: 1, startLineNumBer: 1, endColumn: 1, endLineNumBer: 1 }, 0);
 		model.setFocus(frame, thread, session, false);
 
 		assert.equal(model.focusedStackFrame!.getId(), frame.getId());
@@ -43,7 +43,7 @@ suite('Debug - View Model', () => {
 		assert.equal(model.getSelectedExpression(), expression);
 	});
 
-	test('multi session view and changed workbench state', () => {
+	test('multi session view and changed workBench state', () => {
 		assert.equal(model.isMultiSessionView(), false);
 		model.setMultiSessionView(true);
 		assert.equal(model.isMultiSessionView(), true);

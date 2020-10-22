@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation'; import * as platform from 'vs/base/common/platform';
+import { createDecorator } from 'vs/platform/instantiation/common/instantiation'; import * as platform from 'vs/Base/common/platform';
 import type { IKeyValueStorage, IExperimentationTelemetry, IExperimentationFilterProvider, ExperimentationService as TASClient } from 'tas-client-umd';
-import { MementoObject, Memento } from 'vs/workbench/common/memento';
+import { MementoOBject, Memento } from 'vs/workBench/common/memento';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryData } from 'vs/base/common/actions';
+import { ITelemetryData } from 'vs/Base/common/actions';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 
@@ -17,22 +17,22 @@ export const ITASExperimentService = createDecorator<ITASExperimentService>('TAS
 
 export interface ITASExperimentService {
 	readonly _serviceBrand: undefined;
-	getTreatment<T extends string | number | boolean>(name: string): Promise<T | undefined>;
+	getTreatment<T extends string | numBer | Boolean>(name: string): Promise<T | undefined>;
 }
 
 const storageKey = 'VSCode.ABExp.FeatureData';
 const refetchInterval = 0; // no polling
 
 class MementoKeyValueStorage implements IKeyValueStorage {
-	constructor(private mementoObj: MementoObject) { }
+	constructor(private mementoOBj: MementoOBject) { }
 
 	async getValue<T>(key: string, defaultValue?: T | undefined): Promise<T | undefined> {
-		const value = await this.mementoObj[key];
+		const value = await this.mementoOBj[key];
 		return value || defaultValue;
 	}
 
 	setValue<T>(key: string, value: T): void {
-		this.mementoObj[key] = value;
+		this.mementoOBj[key] = value;
 	}
 }
 
@@ -40,7 +40,7 @@ class ExperimentServiceTelemetry implements IExperimentationTelemetry {
 	constructor(private telemetryService: ITelemetryService) { }
 
 	// __GDPR__COMMON__ "VSCode.ABExp.Features" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	// __GDPR__COMMON__ "abexp.assignmentcontext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+	// __GDPR__COMMON__ "aBexp.assignmentcontext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	setSharedProperty(name: string, value: string): void {
 		this.telemetryService.setExperimentProperty(name, value);
 	}
@@ -56,7 +56,7 @@ class ExperimentServiceTelemetry implements IExperimentationTelemetry {
 				"ABExp.queriedFeature": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
 		*/
-		this.telemetryService.publicLog(eventName, data);
+		this.telemetryService.puBlicLog(eventName, data);
 	}
 }
 
@@ -89,7 +89,7 @@ class ExperimentServiceFilterProvider implements IExperimentationFilterProvider 
 
 	getFilters(): Map<string, any> {
 		let filters: Map<string, any> = new Map<string, any>();
-		let filterValues = Object.values(Filters);
+		let filterValues = OBject.values(Filters);
 		for (let value of filterValues) {
 			filters.set(value, this.getFilterValue(value));
 		}
@@ -100,12 +100,12 @@ class ExperimentServiceFilterProvider implements IExperimentationFilterProvider 
 
 /*
 Based upon the official VSCode currently existing filters in the
-ExP backend for the VSCode cluster.
+ExP Backend for the VSCode cluster.
 https://experimentation.visualstudio.com/Analysis%20and%20Experimentation/_git/AnE.ExP.TAS.TachyonHost.Configuration?path=%2FConfigurations%2Fvscode%2Fvscode.json&version=GBmaster
 "X-MSEdge-Market": "detection.market",
 "X-FD-Corpnet": "detection.corpnet",
 "X-VSCode–AppVersion": "appversion",
-"X-VSCode-Build": "build",
+"X-VSCode-Build": "Build",
 "X-MSEdge-ClientId": "clientid",
 "X-VSCode-ExtensionName": "extensionname",
 "X-VSCode-TargetPopulation": "targetpopulation",
@@ -114,7 +114,7 @@ https://experimentation.visualstudio.com/Analysis%20and%20Experimentation/_git/A
 
 enum Filters {
 	/**
-	 * The market in which the extension is distributed.
+	 * The market in which the extension is distriButed.
 	 */
 	Market = 'X-MSEdge-Market',
 
@@ -129,7 +129,7 @@ enum Filters {
 	ApplicationVersion = 'X-VSCode-AppVersion',
 
 	/**
-	 * Insiders vs Stable.
+	 * Insiders vs StaBle.
 	 */
 	Build = 'X-VSCode-Build',
 
@@ -144,7 +144,7 @@ enum Filters {
 	ExtensionName = 'X-VSCode-ExtensionName',
 
 	/**
-	 * The language in use by VS Code
+	 * The language in use By VS Code
 	 */
 	Language = 'X-VSCode-Language',
 
@@ -159,7 +159,7 @@ enum TargetPopulation {
 	Team = 'team',
 	Internal = 'internal',
 	Insiders = 'insider',
-	Public = 'public',
+	PuBlic = 'puBlic',
 }
 
 export class ExperimentService implements ITASExperimentService {
@@ -167,8 +167,8 @@ export class ExperimentService implements ITASExperimentService {
 	private tasClient: Promise<TASClient> | undefined;
 	private static MEMENTO_ID = 'experiment.service.memento';
 
-	private get experimentsEnabled(): boolean {
-		return this.configurationService.getValue('workbench.enableExperiments') === true;
+	private get experimentsEnaBled(): Boolean {
+		return this.configurationService.getValue('workBench.enaBleExperiments') === true;
 	}
 
 	constructor(
@@ -178,26 +178,26 @@ export class ExperimentService implements ITASExperimentService {
 		@IConfigurationService private configurationService: IConfigurationService,
 	) {
 
-		if (this.productService.tasConfig && this.experimentsEnabled && this.telemetryService.isOptedIn) {
+		if (this.productService.tasConfig && this.experimentsEnaBled && this.telemetryService.isOptedIn) {
 			this.tasClient = this.setupTASClient();
 		}
 	}
 
-	async getTreatment<T extends string | number | boolean>(name: string): Promise<T | undefined> {
+	async getTreatment<T extends string | numBer | Boolean>(name: string): Promise<T | undefined> {
 		if (!this.tasClient) {
 			return undefined;
 		}
 
-		if (!this.experimentsEnabled) {
+		if (!this.experimentsEnaBled) {
 			return undefined;
 		}
 
-		return (await this.tasClient).getTreatmentVariable<T>('vscode', name);
+		return (await this.tasClient).getTreatmentVariaBle<T>('vscode', name);
 	}
 
 	private async setupTASClient(): Promise<TASClient> {
 		const telemetryInfo = await this.telemetryService.getTelemetryInfo();
-		const targetPopulation = telemetryInfo.msftInternal ? TargetPopulation.Internal : (this.productService.quality === 'stable' ? TargetPopulation.Public : TargetPopulation.Insiders);
+		const targetPopulation = telemetryInfo.msftInternal ? TargetPopulation.Internal : (this.productService.quality === 'staBle' ? TargetPopulation.PuBlic : TargetPopulation.Insiders);
 		const machineId = telemetryInfo.machineId;
 		const filterProvider = new ExperimentServiceFilterProvider(
 			this.productService.version,

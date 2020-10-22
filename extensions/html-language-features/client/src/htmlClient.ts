@@ -8,7 +8,7 @@ const localize = nls.loadMessageBundle();
 
 import {
 	languages, ExtensionContext, IndentAction, Position, TextDocument, Range, CompletionItem, CompletionItemKind, SnippetString, workspace, extensions,
-	Disposable, FormattingOptions, CancellationToken, ProviderResult, TextEdit, CompletionContext, CompletionList, SemanticTokensLegend,
+	DisposaBle, FormattingOptions, CancellationToken, ProviderResult, TextEdit, CompletionContext, CompletionList, SemanticTokensLegend,
 	DocumentSemanticTokensProvider, DocumentRangeSemanticTokensProvider, SemanticTokens, window, commands
 } from 'vscode';
 import {
@@ -37,7 +37,7 @@ interface SemanticTokenParams {
 	ranges?: LspRange[];
 }
 namespace SemanticTokenRequest {
-	export const type: RequestType<SemanticTokenParams, number[] | null, any, any> = new RequestType('html/semanticTokens');
+	export const type: RequestType<SemanticTokenParams, numBer[] | null, any, any> = new RequestType('html/semanticTokens');
 }
 namespace SemanticTokenLegendRequest {
 	export const type: RequestType0<{ types: string[]; modifiers: string[] } | null, any, any> = new RequestType0('html/semanticTokenLegend');
@@ -45,7 +45,7 @@ namespace SemanticTokenLegendRequest {
 
 namespace SettingIds {
 	export const renameOnType = 'editor.renameOnType';
-	export const formatEnable = 'html.format.enable';
+	export const formatEnaBle = 'html.format.enaBle';
 
 }
 
@@ -53,29 +53,29 @@ export interface TelemetryReporter {
 	sendTelemetryEvent(eventName: string, properties?: {
 		[key: string]: string;
 	}, measurements?: {
-		[key: string]: number;
+		[key: string]: numBer;
 	}): void;
 }
 
 export type LanguageClientConstructor = (name: string, description: string, clientOptions: LanguageClientOptions) => CommonLanguageClient;
 
 export interface Runtime {
-	TextDecoder: { new(encoding?: string): { decode(buffer: ArrayBuffer): string; } };
+	TextDecoder: { new(encoding?: string): { decode(Buffer: ArrayBuffer): string; } };
 	fs?: RequestService;
 	telemetry?: TelemetryReporter;
 }
 
 export function startClient(context: ExtensionContext, newLanguageClient: LanguageClientConstructor, runtime: Runtime) {
 
-	let toDispose = context.subscriptions;
+	let toDispose = context.suBscriptions;
 
 
-	let documentSelector = ['html', 'handlebars'];
-	let embeddedLanguages = { css: true, javascript: true };
+	let documentSelector = ['html', 'handleBars'];
+	let emBeddedLanguages = { css: true, javascript: true };
 
-	let rangeFormatting: Disposable | undefined = undefined;
+	let rangeFormatting: DisposaBle | undefined = undefined;
 
-	const customDataSource = getCustomDataSource(context.subscriptions);
+	const customDataSource = getCustomDataSource(context.suBscriptions);
 
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
@@ -84,9 +84,9 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 			configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
 		},
 		initializationOptions: {
-			embeddedLanguages,
+			emBeddedLanguages,
 			handledSchemas: ['file'],
-			provideFormatter: false, // tell the server to not provide formatting capability and ignore the `html.format.enable` setting.
+			provideFormatter: false, // tell the server to not provide formatting capaBility and ignore the `html.format.enaBle` setting.
 		},
 		middleware: {
 			// testing the replace / insert mode
@@ -103,10 +103,10 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 					}
 					return r;
 				}
-				const isThenable = <T>(obj: ProviderResult<T>): obj is Thenable<T> => obj && (<any>obj)['then'];
+				const isThenaBle = <T>(oBj: ProviderResult<T>): oBj is ThenaBle<T> => oBj && (<any>oBj)['then'];
 
 				const r = next(document, position, context, token);
-				if (isThenable<CompletionItem[] | CompletionList | null | undefined>(r)) {
+				if (isThenaBle<CompletionItem[] | CompletionList | null | undefined>(r)) {
 					return r.then(updateProposals);
 				}
 				return updateProposals(r);
@@ -118,8 +118,8 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 	let client = newLanguageClient('html', localize('htmlserver.name', 'HTML Language Server'), clientOptions);
 	client.registerProposedFeatures();
 
-	let disposable = client.start();
-	toDispose.push(disposable);
+	let disposaBle = client.start();
+	toDispose.push(disposaBle);
 	client.onReady().then(() => {
 
 		client.sendNotification(CustomDataChangedNotification.type, customDataSource.uris);
@@ -131,18 +131,18 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 			let param = client.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
 			return client.sendRequest(TagCloseRequest.type, param);
 		};
-		disposable = activateTagClosing(tagRequestor, { html: true, handlebars: true }, 'html.autoClosingTags');
-		toDispose.push(disposable);
+		disposaBle = activateTagClosing(tagRequestor, { html: true, handleBars: true }, 'html.autoClosingTags');
+		toDispose.push(disposaBle);
 
-		disposable = client.onTelemetry(e => {
+		disposaBle = client.onTelemetry(e => {
 			runtime.telemetry?.sendTelemetryEvent(e.key, e.data);
 		});
-		toDispose.push(disposable);
+		toDispose.push(disposaBle);
 
-		// manually register / deregister format provider based on the `html.format.enable` setting avoiding issues with late registration. See #71652.
+		// manually register / deregister format provider Based on the `html.format.enaBle` setting avoiding issues with late registration. See #71652.
 		updateFormatterRegistration();
 		toDispose.push({ dispose: () => rangeFormatting && rangeFormatting.dispose() });
-		toDispose.push(workspace.onDidChangeConfiguration(e => e.affectsConfiguration(SettingIds.formatEnable) && updateFormatterRegistration()));
+		toDispose.push(workspace.onDidChangeConfiguration(e => e.affectsConfiguration(SettingIds.formatEnaBle) && updateFormatterRegistration()));
 
 		client.sendRequest(SemanticTokenLegendRequest.type).then(legend => {
 			if (legend) {
@@ -169,7 +169,7 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 			}
 		});
 
-		disposable = languages.registerOnTypeRenameProvider(documentSelector, {
+		disposaBle = languages.registerOnTypeRenameProvider(documentSelector, {
 			async provideOnTypeRenameRanges(document, position) {
 				const param = client.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
 				return client.sendRequest(OnTypeRenameRequest.type, param).then(response => {
@@ -182,16 +182,16 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				});
 			}
 		});
-		toDispose.push(disposable);
+		toDispose.push(disposaBle);
 
 	});
 
 	function updateFormatterRegistration() {
-		const formatEnabled = workspace.getConfiguration().get(SettingIds.formatEnable);
-		if (!formatEnabled && rangeFormatting) {
+		const formatEnaBled = workspace.getConfiguration().get(SettingIds.formatEnaBle);
+		if (!formatEnaBled && rangeFormatting) {
 			rangeFormatting.dispose();
 			rangeFormatting = undefined;
-		} else if (formatEnabled && !rangeFormatting) {
+		} else if (formatEnaBled && !rangeFormatting) {
 			rangeFormatting = languages.registerDocumentRangeFormattingEditProvider(documentSelector, {
 				provideDocumentRangeFormattingEdits(document: TextDocument, range: Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
 					let params: DocumentRangeFormattingParams = {
@@ -213,33 +213,33 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 
 	languages.setLanguageConfiguration('html', {
 		indentationRules: {
-			increaseIndentPattern: /<(?!\?|(?:area|base|br|col|frame|hr|html|img|input|link|meta|param)\b|[^>]*\/>)([-_\.A-Za-z0-9]+)(?=\s|>)\b[^>]*>(?!.*<\/\1>)|<!--(?!.*-->)|\{[^}"']*$/,
-			decreaseIndentPattern: /^\s*(<\/(?!html)[-_\.A-Za-z0-9]+\b[^>]*>|-->|\})/
+			increaseIndentPattern: /<(?!\?|(?:area|Base|Br|col|frame|hr|html|img|input|link|meta|param)\B|[^>]*\/>)([-_\.A-Za-z0-9]+)(?=\s|>)\B[^>]*>(?!.*<\/\1>)|<!--(?!.*-->)|\{[^}"']*$/,
+			decreaseIndentPattern: /^\s*(<\/(?!html)[-_\.A-Za-z0-9]+\B[^>]*>|-->|\})/
 		},
 		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 		onEnterRules: [
 			{
-				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+				BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 				afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
 				action: { indentAction: IndentAction.IndentOutdent }
 			},
 			{
-				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+				BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 				action: { indentAction: IndentAction.Indent }
 			}
 		],
 	});
 
-	languages.setLanguageConfiguration('handlebars', {
+	languages.setLanguageConfiguration('handleBars', {
 		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 		onEnterRules: [
 			{
-				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+				BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 				afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
 				action: { indentAction: IndentAction.IndentOutdent }
 			},
 			{
-				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+				BeforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
 				action: { indentAction: IndentAction.Indent }
 			}
 		],
@@ -254,19 +254,19 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 			let match = lineUntilPos.match(regionCompletionRegExpr);
 			if (match) {
 				let range = new Range(new Position(pos.line, match[1].length), pos);
-				let beginProposal = new CompletionItem('#region', CompletionItemKind.Snippet);
-				beginProposal.range = range;
-				beginProposal.insertText = new SnippetString('<!-- #region $1-->');
-				beginProposal.documentation = localize('folding.start', 'Folding Region Start');
-				beginProposal.filterText = match[2];
-				beginProposal.sortText = 'za';
-				results.push(beginProposal);
+				let BeginProposal = new CompletionItem('#region', CompletionItemKind.Snippet);
+				BeginProposal.range = range;
+				BeginProposal.insertText = new SnippetString('<!-- #region $1-->');
+				BeginProposal.documentation = localize('folding.start', 'Folding Region Start');
+				BeginProposal.filterText = match[2];
+				BeginProposal.sortText = 'za';
+				results.push(BeginProposal);
 				let endProposal = new CompletionItem('#endregion', CompletionItemKind.Snippet);
 				endProposal.range = range;
 				endProposal.insertText = new SnippetString('<!-- #endregion -->');
 				endProposal.documentation = localize('folding.end', 'Folding Region End');
 				endProposal.filterText = match[2];
-				endProposal.sortText = 'zb';
+				endProposal.sortText = 'zB';
 				results.push(endProposal);
 			}
 			let match2 = lineUntilPos.match(htmlSnippetCompletionRegExpr);
@@ -278,15 +278,15 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 					'<html>',
 					'<head>',
 					'\t<meta charset=\'utf-8\'>',
-					'\t<meta http-equiv=\'X-UA-Compatible\' content=\'IE=edge\'>',
+					'\t<meta http-equiv=\'X-UA-CompatiBle\' content=\'IE=edge\'>',
 					'\t<title>${1:Page Title}</title>',
 					'\t<meta name=\'viewport\' content=\'width=device-width, initial-scale=1\'>',
 					'\t<link rel=\'stylesheet\' type=\'text/css\' media=\'screen\' href=\'${2:main.css}\'>',
 					'\t<script src=\'${3:main.js}\'></script>',
 					'</head>',
-					'<body>',
+					'<Body>',
 					'\t$0',
-					'</body>',
+					'</Body>',
 					'</html>'].join('\n');
 				snippetProposal.insertText = new SnippetString(content);
 				snippetProposal.documentation = localize('folding.html', 'Simple HTML5 starting point');
@@ -300,18 +300,18 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 
 	const promptForTypeOnRenameKey = 'html.promptForTypeOnRename';
 	const promptForTypeOnRename = extensions.getExtension('formulahendry.auto-rename-tag') !== undefined &&
-		(context.globalState.get(promptForTypeOnRenameKey) !== false) &&
+		(context.gloBalState.get(promptForTypeOnRenameKey) !== false) &&
 		!workspace.getConfiguration('editor', { languageId: 'html' }).get('renameOnType');
 
 	if (promptForTypeOnRename) {
 		const activeEditorListener = window.onDidChangeActiveTextEditor(async e => {
 			if (e && documentSelector.indexOf(e.document.languageId) !== -1) {
-				context.globalState.update(promptForTypeOnRenameKey, false);
+				context.gloBalState.update(promptForTypeOnRenameKey, false);
 				activeEditorListener.dispose();
 				const configure = localize('configureButton', 'Configure');
-				const res = await window.showInformationMessage(localize('renameOnTypeQuestion', 'VS Code now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
+				const res = await window.showInformationMessage(localize('renameOnTypeQuestion', 'VS Code now has Built-in support for auto-renaming tags. Do you want to enaBle it?'), configure);
 				if (res === configure) {
-					commands.executeCommand('workbench.action.openSettings', SettingIds.renameOnType);
+					commands.executeCommand('workBench.action.openSettings', SettingIds.renameOnType);
 				}
 			}
 		});

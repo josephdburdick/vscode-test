@@ -4,57 +4,57 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./countBadge';
-import { $, append } from 'vs/base/browser/dom';
-import { format } from 'vs/base/common/strings';
-import { Color } from 'vs/base/common/color';
-import { mixin } from 'vs/base/common/objects';
-import { IThemable } from 'vs/base/common/styler';
+import { $, append } from 'vs/Base/Browser/dom';
+import { format } from 'vs/Base/common/strings';
+import { Color } from 'vs/Base/common/color';
+import { mixin } from 'vs/Base/common/oBjects';
+import { IThemaBle } from 'vs/Base/common/styler';
 
 export interface ICountBadgeOptions extends ICountBadgetyles {
-	count?: number;
+	count?: numBer;
 	countFormat?: string;
 	titleFormat?: string;
 }
 
 export interface ICountBadgetyles {
-	badgeBackground?: Color;
-	badgeForeground?: Color;
-	badgeBorder?: Color;
+	BadgeBackground?: Color;
+	BadgeForeground?: Color;
+	BadgeBorder?: Color;
 }
 
 const defaultOpts = {
-	badgeBackground: Color.fromHex('#4D4D4D'),
-	badgeForeground: Color.fromHex('#FFFFFF')
+	BadgeBackground: Color.fromHex('#4D4D4D'),
+	BadgeForeground: Color.fromHex('#FFFFFF')
 };
 
-export class CountBadge implements IThemable {
+export class CountBadge implements IThemaBle {
 
 	private element: HTMLElement;
-	private count: number = 0;
+	private count: numBer = 0;
 	private countFormat: string;
 	private titleFormat: string;
 
-	private badgeBackground: Color | undefined;
-	private badgeForeground: Color | undefined;
-	private badgeBorder: Color | undefined;
+	private BadgeBackground: Color | undefined;
+	private BadgeForeground: Color | undefined;
+	private BadgeBorder: Color | undefined;
 
 	private options: ICountBadgeOptions;
 
 	constructor(container: HTMLElement, options?: ICountBadgeOptions) {
-		this.options = options || Object.create(null);
+		this.options = options || OBject.create(null);
 		mixin(this.options, defaultOpts, false);
 
-		this.badgeBackground = this.options.badgeBackground;
-		this.badgeForeground = this.options.badgeForeground;
-		this.badgeBorder = this.options.badgeBorder;
+		this.BadgeBackground = this.options.BadgeBackground;
+		this.BadgeForeground = this.options.BadgeForeground;
+		this.BadgeBorder = this.options.BadgeBorder;
 
-		this.element = append(container, $('.monaco-count-badge'));
+		this.element = append(container, $('.monaco-count-Badge'));
 		this.countFormat = this.options.countFormat || '{0}';
 		this.titleFormat = this.options.titleFormat || '';
 		this.setCount(this.options.count || 0);
 	}
 
-	setCount(count: number) {
+	setCount(count: numBer) {
 		this.count = count;
 		this.render();
 	}
@@ -77,25 +77,25 @@ export class CountBadge implements IThemable {
 	}
 
 	style(styles: ICountBadgetyles): void {
-		this.badgeBackground = styles.badgeBackground;
-		this.badgeForeground = styles.badgeForeground;
-		this.badgeBorder = styles.badgeBorder;
+		this.BadgeBackground = styles.BadgeBackground;
+		this.BadgeForeground = styles.BadgeForeground;
+		this.BadgeBorder = styles.BadgeBorder;
 
 		this.applyStyles();
 	}
 
 	private applyStyles(): void {
 		if (this.element) {
-			const background = this.badgeBackground ? this.badgeBackground.toString() : '';
-			const foreground = this.badgeForeground ? this.badgeForeground.toString() : '';
-			const border = this.badgeBorder ? this.badgeBorder.toString() : '';
+			const Background = this.BadgeBackground ? this.BadgeBackground.toString() : '';
+			const foreground = this.BadgeForeground ? this.BadgeForeground.toString() : '';
+			const Border = this.BadgeBorder ? this.BadgeBorder.toString() : '';
 
-			this.element.style.backgroundColor = background;
+			this.element.style.BackgroundColor = Background;
 			this.element.style.color = foreground;
 
-			this.element.style.borderWidth = border ? '1px' : '';
-			this.element.style.borderStyle = border ? 'solid' : '';
-			this.element.style.borderColor = border;
+			this.element.style.BorderWidth = Border ? '1px' : '';
+			this.element.style.BorderStyle = Border ? 'solid' : '';
+			this.element.style.BorderColor = Border;
 		}
 	}
 }

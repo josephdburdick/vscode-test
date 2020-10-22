@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Color } from 'vs/base/common/color';
-import { Event } from 'vs/base/common/event';
-import { IMarkdownString } from 'vs/base/common/htmlContent';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Color } from 'vs/Base/common/color';
+import { Event } from 'vs/Base/common/event';
+import { IMarkdownString } from 'vs/Base/common/htmlContent';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
@@ -18,7 +18,7 @@ import { LanguageFeatureRegistry } from 'vs/editor/common/modes/languageFeatureR
 import { TokenizationRegistryImpl } from 'vs/editor/common/modes/tokenizationRegistry';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { IMarkerData } from 'vs/platform/markers/common/markers';
-import { iconRegistry, Codicon } from 'vs/base/common/codicons';
+import { iconRegistry, Codicon } from 'vs/Base/common/codicons';
 
 /**
  * Open ended enum at runtime
@@ -37,13 +37,13 @@ export class LanguageIdentifier {
 	/**
 	 * A string identifier. Unique across languages. e.g. 'javascript'.
 	 */
-	public readonly language: string;
+	puBlic readonly language: string;
 
 	/**
 	 * A numeric identifier. Unique across languages. e.g. 5
-	 * Will vary at runtime based on registration order, etc.
+	 * Will vary at runtime Based on registration order, etc.
 	 */
-	public readonly id: LanguageId;
+	puBlic readonly id: LanguageId;
 
 	constructor(language: string, id: LanguageId) {
 		this.language = language;
@@ -52,7 +52,7 @@ export class LanguageIdentifier {
 }
 
 /**
- * A mode. Will soon be obsolete.
+ * A mode. Will soon Be oBsolete.
  * @internal
  */
 export interface IMode {
@@ -64,7 +64,7 @@ export interface IMode {
 }
 
 /**
- * A font style. Values are 2^x such that a bit mask can be used.
+ * A font style. Values are 2^x such that a Bit mask can Be used.
  * @internal
  */
 export const enum FontStyle {
@@ -86,7 +86,7 @@ export const enum ColorId {
 }
 
 /**
- * A standard token type. Values are 2^x such that a bit mask can be used.
+ * A standard token type. Values are 2^x such that a Bit mask can Be used.
  * @internal
  */
 export const enum StandardTokenType {
@@ -98,42 +98,42 @@ export const enum StandardTokenType {
 
 /**
  * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
- * The following assumptions have been made:
- *  - languageId < 256 => needs 8 bits
- *  - unique color count < 512 => needs 9 bits
+ * The following assumptions have Been made:
+ *  - languageId < 256 => needs 8 Bits
+ *  - unique color count < 512 => needs 9 Bits
  *
- * The binary format is:
+ * The Binary format is:
  * - -------------------------------------------
  *     3322 2222 2222 1111 1111 1100 0000 0000
  *     1098 7654 3210 9876 5432 1098 7654 3210
  * - -------------------------------------------
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ *     BBBB BBBB Bfff ffff ffFF FTTT LLLL LLLL
  * - -------------------------------------------
- *  - L = LanguageId (8 bits)
- *  - T = StandardTokenType (3 bits)
- *  - F = FontStyle (3 bits)
- *  - f = foreground color (9 bits)
- *  - b = background color (9 bits)
+ *  - L = LanguageId (8 Bits)
+ *  - T = StandardTokenType (3 Bits)
+ *  - F = FontStyle (3 Bits)
+ *  - f = foreground color (9 Bits)
+ *  - B = Background color (9 Bits)
  *
  * @internal
  */
 export const enum MetadataConsts {
-	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
-	TOKEN_TYPE_MASK = 0b00000000000000000000011100000000,
-	FONT_STYLE_MASK = 0b00000000000000000011100000000000,
-	FOREGROUND_MASK = 0b00000000011111111100000000000000,
-	BACKGROUND_MASK = 0b11111111100000000000000000000000,
+	LANGUAGEID_MASK = 0B00000000000000000000000011111111,
+	TOKEN_TYPE_MASK = 0B00000000000000000000011100000000,
+	FONT_STYLE_MASK = 0B00000000000000000011100000000000,
+	FOREGROUND_MASK = 0B00000000011111111100000000000000,
+	BACKGROUND_MASK = 0B11111111100000000000000000000000,
 
-	ITALIC_MASK = 0b00000000000000000000100000000000,
-	BOLD_MASK = 0b00000000000000000001000000000000,
-	UNDERLINE_MASK = 0b00000000000000000010000000000000,
+	ITALIC_MASK = 0B00000000000000000000100000000000,
+	BOLD_MASK = 0B00000000000000000001000000000000,
+	UNDERLINE_MASK = 0B00000000000000000010000000000000,
 
-	SEMANTIC_USE_ITALIC = 0b00000000000000000000000000000001,
-	SEMANTIC_USE_BOLD = 0b00000000000000000000000000000010,
-	SEMANTIC_USE_UNDERLINE = 0b00000000000000000000000000000100,
-	SEMANTIC_USE_FOREGROUND = 0b00000000000000000000000000001000,
-	SEMANTIC_USE_BACKGROUND = 0b00000000000000000000000000010000,
+	SEMANTIC_USE_ITALIC = 0B00000000000000000000000000000001,
+	SEMANTIC_USE_BOLD = 0B00000000000000000000000000000010,
+	SEMANTIC_USE_UNDERLINE = 0B00000000000000000000000000000100,
+	SEMANTIC_USE_FOREGROUND = 0B00000000000000000000000000001000,
+	SEMANTIC_USE_BACKGROUND = 0B00000000000000000000000000010000,
 
 	LANGUAGEID_OFFSET = 0,
 	TOKEN_TYPE_OFFSET = 8,
@@ -147,27 +147,27 @@ export const enum MetadataConsts {
  */
 export class TokenMetadata {
 
-	public static getLanguageId(metadata: number): LanguageId {
+	puBlic static getLanguageId(metadata: numBer): LanguageId {
 		return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
 	}
 
-	public static getTokenType(metadata: number): StandardTokenType {
+	puBlic static getTokenType(metadata: numBer): StandardTokenType {
 		return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
 	}
 
-	public static getFontStyle(metadata: number): FontStyle {
+	puBlic static getFontStyle(metadata: numBer): FontStyle {
 		return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
 	}
 
-	public static getForeground(metadata: number): ColorId {
+	puBlic static getForeground(metadata: numBer): ColorId {
 		return (metadata & MetadataConsts.FOREGROUND_MASK) >>> MetadataConsts.FOREGROUND_OFFSET;
 	}
 
-	public static getBackground(metadata: number): ColorId {
+	puBlic static getBackground(metadata: numBer): ColorId {
 		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
 	}
 
-	public static getClassNameFromMetadata(metadata: number): string {
+	puBlic static getClassNameFromMetadata(metadata: numBer): string {
 		let foreground = this.getForeground(metadata);
 		let className = 'mtk' + foreground;
 
@@ -176,7 +176,7 @@ export class TokenMetadata {
 			className += ' mtki';
 		}
 		if (fontStyle & FontStyle.Bold) {
-			className += ' mtkb';
+			className += ' mtkB';
 		}
 		if (fontStyle & FontStyle.Underline) {
 			className += ' mtku';
@@ -185,7 +185,7 @@ export class TokenMetadata {
 		return className;
 	}
 
-	public static getInlineStyleFromMetadata(metadata: number, colorMap: string[]): string {
+	puBlic static getInlineStyleFromMetadata(metadata: numBer, colorMap: string[]): string {
 		const foreground = this.getForeground(metadata);
 		const fontStyle = this.getFontStyle(metadata);
 
@@ -194,7 +194,7 @@ export class TokenMetadata {
 			result += 'font-style: italic;';
 		}
 		if (fontStyle & FontStyle.Bold) {
-			result += 'font-weight: bold;';
+			result += 'font-weight: Bold;';
 		}
 		if (fontStyle & FontStyle.Underline) {
 			result += 'text-decoration: underline;';
@@ -211,31 +211,31 @@ export interface ITokenizationSupport {
 	getInitialState(): IState;
 
 	// add offsetDelta to each of the returned indices
-	tokenize(line: string, state: IState, offsetDelta: number): TokenizationResult;
+	tokenize(line: string, state: IState, offsetDelta: numBer): TokenizationResult;
 
-	tokenize2(line: string, state: IState, offsetDelta: number): TokenizationResult2;
+	tokenize2(line: string, state: IState, offsetDelta: numBer): TokenizationResult2;
 }
 
 /**
- * The state of the tokenizer between two lines.
+ * The state of the tokenizer Between two lines.
  * It is useful to store flags such as in multiline comment, etc.
  * The model will clone the previous line's state and pass it in to tokenize the next line.
  */
 export interface IState {
 	clone(): IState;
-	equals(other: IState): boolean;
+	equals(other: IState): Boolean;
 }
 
 /**
  * A provider result represents the values a provider, like the [`HoverProvider`](#HoverProvider),
- * may return. For once this is the actual result type `T`, like `Hover`, or a thenable that resolves
- * to that type `T`. In addition, `null` and `undefined` can be returned - either directly or from a
- * thenable.
+ * may return. For once this is the actual result type `T`, like `Hover`, or a thenaBle that resolves
+ * to that type `T`. In addition, `null` and `undefined` can Be returned - either directly or from a
+ * thenaBle.
  */
-export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
+export type ProviderResult<T> = T | undefined | null | ThenaBle<T | undefined | null>;
 
 /**
- * A hover represents additional information for a symbol or word. Hovers are
+ * A hover represents additional information for a symBol or word. Hovers are
  * rendered in a tooltip-like widget.
  */
 export interface Hover {
@@ -253,24 +253,24 @@ export interface Hover {
 }
 
 /**
- * The hover provider interface defines the contract between extensions and
+ * The hover provider interface defines the contract Between extensions and
  * the [hover](https://code.visualstudio.com/docs/editor/intellisense)-feature.
  */
 export interface HoverProvider {
 	/**
 	 * Provide a hover for the given position and document. Multiple hovers at the same
-	 * position will be merged by the editor. A hover can have a range which defaults
+	 * position will Be merged By the editor. A hover can have a range which defaults
 	 * to the word range at the position when omitted.
 	 */
 	provideHover(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<Hover>;
 }
 
 /**
- * An evaluatable expression represents additional information for an expression in a document. Evaluatable expression are
- * evaluated by a debugger or runtime and their result is rendered in a tooltip-like widget.
+ * An evaluataBle expression represents additional information for an expression in a document. EvaluataBle expression are
+ * evaluated By a deBugger or runtime and their result is rendered in a tooltip-like widget.
  * @internal
  */
-export interface EvaluatableExpression {
+export interface EvaluataBleExpression {
 	/**
 	 * The range to which this expression applies.
 	 */
@@ -282,17 +282,17 @@ export interface EvaluatableExpression {
 }
 
 /**
- * The hover provider interface defines the contract between extensions and
+ * The hover provider interface defines the contract Between extensions and
  * the [hover](https://code.visualstudio.com/docs/editor/intellisense)-feature.
  * @internal
  */
-export interface EvaluatableExpressionProvider {
+export interface EvaluataBleExpressionProvider {
 	/**
 	 * Provide a hover for the given position and document. Multiple hovers at the same
-	 * position will be merged by the editor. A hover can have a range which defaults
+	 * position will Be merged By the editor. A hover can have a range which defaults
 	 * to the word range at the position when omitted.
 	 */
-	provideEvaluatableExpression(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<EvaluatableExpression>;
+	provideEvaluataBleExpression(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<EvaluataBleExpression>;
 }
 
 export const enum CompletionItemKind {
@@ -300,7 +300,7 @@ export const enum CompletionItemKind {
 	Function,
 	Constructor,
 	Field,
-	Variable,
+	VariaBle,
 	Class,
 	Struct,
 	Interface,
@@ -312,7 +312,7 @@ export const enum CompletionItemKind {
 	Value,
 	Constant,
 	Enum,
-	EnumMember,
+	EnumMemBer,
 	Keyword,
 	Text,
 	Color,
@@ -330,33 +330,33 @@ export const enum CompletionItemKind {
  * @internal
  */
 export const completionKindToCssClass = (function () {
-	let data = Object.create(null);
-	data[CompletionItemKind.Method] = 'symbol-method';
-	data[CompletionItemKind.Function] = 'symbol-function';
-	data[CompletionItemKind.Constructor] = 'symbol-constructor';
-	data[CompletionItemKind.Field] = 'symbol-field';
-	data[CompletionItemKind.Variable] = 'symbol-variable';
-	data[CompletionItemKind.Class] = 'symbol-class';
-	data[CompletionItemKind.Struct] = 'symbol-struct';
-	data[CompletionItemKind.Interface] = 'symbol-interface';
-	data[CompletionItemKind.Module] = 'symbol-module';
-	data[CompletionItemKind.Property] = 'symbol-property';
-	data[CompletionItemKind.Event] = 'symbol-event';
-	data[CompletionItemKind.Operator] = 'symbol-operator';
-	data[CompletionItemKind.Unit] = 'symbol-unit';
-	data[CompletionItemKind.Value] = 'symbol-value';
-	data[CompletionItemKind.Constant] = 'symbol-constant';
-	data[CompletionItemKind.Enum] = 'symbol-enum';
-	data[CompletionItemKind.EnumMember] = 'symbol-enum-member';
-	data[CompletionItemKind.Keyword] = 'symbol-keyword';
-	data[CompletionItemKind.Snippet] = 'symbol-snippet';
-	data[CompletionItemKind.Text] = 'symbol-text';
-	data[CompletionItemKind.Color] = 'symbol-color';
-	data[CompletionItemKind.File] = 'symbol-file';
-	data[CompletionItemKind.Reference] = 'symbol-reference';
-	data[CompletionItemKind.Customcolor] = 'symbol-customcolor';
-	data[CompletionItemKind.Folder] = 'symbol-folder';
-	data[CompletionItemKind.TypeParameter] = 'symbol-type-parameter';
+	let data = OBject.create(null);
+	data[CompletionItemKind.Method] = 'symBol-method';
+	data[CompletionItemKind.Function] = 'symBol-function';
+	data[CompletionItemKind.Constructor] = 'symBol-constructor';
+	data[CompletionItemKind.Field] = 'symBol-field';
+	data[CompletionItemKind.VariaBle] = 'symBol-variaBle';
+	data[CompletionItemKind.Class] = 'symBol-class';
+	data[CompletionItemKind.Struct] = 'symBol-struct';
+	data[CompletionItemKind.Interface] = 'symBol-interface';
+	data[CompletionItemKind.Module] = 'symBol-module';
+	data[CompletionItemKind.Property] = 'symBol-property';
+	data[CompletionItemKind.Event] = 'symBol-event';
+	data[CompletionItemKind.Operator] = 'symBol-operator';
+	data[CompletionItemKind.Unit] = 'symBol-unit';
+	data[CompletionItemKind.Value] = 'symBol-value';
+	data[CompletionItemKind.Constant] = 'symBol-constant';
+	data[CompletionItemKind.Enum] = 'symBol-enum';
+	data[CompletionItemKind.EnumMemBer] = 'symBol-enum-memBer';
+	data[CompletionItemKind.Keyword] = 'symBol-keyword';
+	data[CompletionItemKind.Snippet] = 'symBol-snippet';
+	data[CompletionItemKind.Text] = 'symBol-text';
+	data[CompletionItemKind.Color] = 'symBol-color';
+	data[CompletionItemKind.File] = 'symBol-file';
+	data[CompletionItemKind.Reference] = 'symBol-reference';
+	data[CompletionItemKind.Customcolor] = 'symBol-customcolor';
+	data[CompletionItemKind.Folder] = 'symBol-folder';
+	data[CompletionItemKind.TypeParameter] = 'symBol-type-parameter';
 	data[CompletionItemKind.User] = 'account';
 	data[CompletionItemKind.Issue] = 'issues';
 
@@ -365,7 +365,7 @@ export const completionKindToCssClass = (function () {
 		let codicon = name && iconRegistry.get(name);
 		if (!codicon) {
 			console.info('No codicon found for CompletionItemKind ' + kind);
-			codicon = Codicon.symbolProperty;
+			codicon = Codicon.symBolProperty;
 		}
 		return codicon.classNames;
 	};
@@ -378,12 +378,12 @@ export let completionKindFromString: {
 	(value: string): CompletionItemKind;
 	(value: string, strict: true): CompletionItemKind | undefined;
 } = (function () {
-	let data: Record<string, CompletionItemKind> = Object.create(null);
+	let data: Record<string, CompletionItemKind> = OBject.create(null);
 	data['method'] = CompletionItemKind.Method;
 	data['function'] = CompletionItemKind.Function;
 	data['constructor'] = <any>CompletionItemKind.Constructor;
 	data['field'] = CompletionItemKind.Field;
-	data['variable'] = CompletionItemKind.Variable;
+	data['variaBle'] = CompletionItemKind.VariaBle;
 	data['class'] = CompletionItemKind.Class;
 	data['struct'] = CompletionItemKind.Struct;
 	data['interface'] = CompletionItemKind.Interface;
@@ -395,8 +395,8 @@ export let completionKindFromString: {
 	data['value'] = CompletionItemKind.Value;
 	data['constant'] = CompletionItemKind.Constant;
 	data['enum'] = CompletionItemKind.Enum;
-	data['enum-member'] = CompletionItemKind.EnumMember;
-	data['enumMember'] = CompletionItemKind.EnumMember;
+	data['enum-memBer'] = CompletionItemKind.EnumMemBer;
+	data['enumMemBer'] = CompletionItemKind.EnumMemBer;
 	data['keyword'] = CompletionItemKind.Keyword;
 	data['snippet'] = CompletionItemKind.Snippet;
 	data['text'] = CompletionItemKind.Text;
@@ -418,9 +418,9 @@ export let completionKindFromString: {
 	};
 })();
 
-export interface CompletionItemLabel {
+export interface CompletionItemLaBel {
 	/**
-	 * The function or variable. Rendered leftmost.
+	 * The function or variaBle. Rendered leftmost.
 	 */
 	name: string;
 
@@ -435,7 +435,7 @@ export interface CompletionItemLabel {
 	qualifier?: string;
 
 	/**
-	 * The return-type of a function or type of a property/variable. Rendered rightmost.
+	 * The return-type of a function or type of a property/variaBle. Rendered rightmost.
 	 */
 	type?: string;
 }
@@ -449,28 +449,28 @@ export const enum CompletionItemInsertTextRule {
 	 * Adjust whitespace/indentation of multiline insert texts to
 	 * match the current line indentation.
 	 */
-	KeepWhitespace = 0b001,
+	KeepWhitespace = 0B001,
 
 	/**
 	 * `insertText` is a snippet.
 	 */
-	InsertAsSnippet = 0b100,
+	InsertAsSnippet = 0B100,
 }
 
 /**
  * A completion item represents a text snippet that is
- * proposed to complete text that is being typed.
+ * proposed to complete text that is Being typed.
  */
 export interface CompletionItem {
 	/**
-	 * The label of this completion item. By default
+	 * The laBel of this completion item. By default
 	 * this is also the text that is inserted when selecting
 	 * this completion.
 	 */
-	label: string | CompletionItemLabel;
+	laBel: string | CompletionItemLaBel;
 	/**
 	 * The kind of this completion item. Based on the kind
-	 * an icon is chosen by the editor.
+	 * an icon is chosen By the editor.
 	 */
 	kind: CompletionItemKind;
 	/**
@@ -479,57 +479,57 @@ export interface CompletionItem {
 	 */
 	tags?: ReadonlyArray<CompletionItemTag>;
 	/**
-	 * A human-readable string with additional information
-	 * about this item, like type or symbol information.
+	 * A human-readaBle string with additional information
+	 * aBout this item, like type or symBol information.
 	 */
 	detail?: string;
 	/**
-	 * A human-readable string that represents a doc-comment.
+	 * A human-readaBle string that represents a doc-comment.
 	 */
 	documentation?: string | IMarkdownString;
 	/**
-	 * A string that should be used when comparing this item
-	 * with other items. When `falsy` the [label](#CompletionItem.label)
+	 * A string that should Be used when comparing this item
+	 * with other items. When `falsy` the [laBel](#CompletionItem.laBel)
 	 * is used.
 	 */
 	sortText?: string;
 	/**
-	 * A string that should be used when filtering a set of
-	 * completion items. When `falsy` the [label](#CompletionItem.label)
+	 * A string that should Be used when filtering a set of
+	 * completion items. When `falsy` the [laBel](#CompletionItem.laBel)
 	 * is used.
 	 */
 	filterText?: string;
 	/**
-	 * Select this item when showing. *Note* that only one completion item can be selected and
+	 * Select this item when showing. *Note* that only one completion item can Be selected and
 	 * that the editor decides which item that is. The rule is that the *first* item of those
-	 * that match best is selected.
+	 * that match Best is selected.
 	 */
-	preselect?: boolean;
+	preselect?: Boolean;
 	/**
-	 * A string or snippet that should be inserted in a document when selecting
+	 * A string or snippet that should Be inserted in a document when selecting
 	 * this completion.
 	 * is used.
 	 */
 	insertText: string;
 	/**
-	 * Addition rules (as bitmask) that should be applied when inserting
+	 * Addition rules (as Bitmask) that should Be applied when inserting
 	 * this completion.
 	 */
 	insertTextRules?: CompletionItemInsertTextRule;
 	/**
-	 * A range of text that should be replaced by this completion item.
+	 * A range of text that should Be replaced By this completion item.
 	 *
 	 * Defaults to a range from the start of the [current word](#TextDocument.getWordRangeAtPosition) to the
 	 * current position.
 	 *
-	 * *Note:* The range must be a [single line](#Range.isSingleLine) and it must
-	 * [contain](#Range.contains) the position at which completion has been [requested](#CompletionItemProvider.provideCompletionItems).
+	 * *Note:* The range must Be a [single line](#Range.isSingleLine) and it must
+	 * [contain](#Range.contains) the position at which completion has Been [requested](#CompletionItemProvider.provideCompletionItems).
 	 */
 	range: IRange | { insert: IRange, replace: IRange };
 	/**
 	 * An optional set of characters that when pressed while this completion is active will accept it first and
 	 * then type that character. *Note* that all commit characters should have `length=1` and that superfluous
-	 * characters will be ignored.
+	 * characters will Be ignored.
 	 */
 	commitCharacters?: string[];
 	/**
@@ -539,19 +539,19 @@ export interface CompletionItem {
 	 */
 	additionalTextEdits?: model.ISingleEditOperation[];
 	/**
-	 * A command that should be run upon acceptance of this item.
+	 * A command that should Be run upon acceptance of this item.
 	 */
 	command?: Command;
 
 	/**
 	 * @internal
 	 */
-	_id?: [number, number];
+	_id?: [numBer, numBer];
 }
 
 export interface CompletionList {
 	suggestions: CompletionItem[];
-	incomplete?: boolean;
+	incomplete?: Boolean;
 	dispose?(): void;
 }
 
@@ -564,7 +564,7 @@ export const enum CompletionTriggerKind {
 	TriggerForIncompleteCompletions = 2
 }
 /**
- * Contains additional information about the context in which
+ * Contains additional information aBout the context in which
  * [completion provider](#CompletionItemProvider.provideCompletionItems) is triggered.
  */
 export interface CompletionContext {
@@ -575,18 +575,18 @@ export interface CompletionContext {
 	/**
 	 * Character that triggered the completion item provider.
 	 *
-	 * `undefined` if provider was not triggered by a character.
+	 * `undefined` if provider was not triggered By a character.
 	 */
 	triggerCharacter?: string;
 }
 /**
- * The completion item provider interface defines the contract between extensions and
+ * The completion item provider interface defines the contract Between extensions and
  * the [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense).
  *
  * When computing *complete* completion items is expensive, providers can optionally implement
  * the `resolveCompletionItem`-function. In that case it is enough to return completion
- * items with a [label](#CompletionItem.label) from the
- * [provideCompletionItems](#CompletionItemProvider.provideCompletionItems)-function. Subsequently,
+ * items with a [laBel](#CompletionItem.laBel) from the
+ * [provideCompletionItems](#CompletionItemProvider.provideCompletionItems)-function. SuBsequently,
  * when a completion item is shown in the UI and gains focus this provider is asked to resolve
  * the item, like adding [doc-comment](#CompletionItem.documentation) or [details](#CompletionItem.detail).
  */
@@ -595,7 +595,7 @@ export interface CompletionItemProvider {
 	/**
 	 * @internal
 	 */
-	_debugDisplayName?: string;
+	_deBugDisplayName?: string;
 
 	triggerCharacters?: string[];
 	/**
@@ -618,8 +618,8 @@ export interface CodeAction {
 	edit?: WorkspaceEdit;
 	diagnostics?: IMarkerData[];
 	kind?: string;
-	isPreferred?: boolean;
-	disabled?: string;
+	isPreferred?: Boolean;
+	disaBled?: string;
 }
 
 /**
@@ -638,13 +638,13 @@ export interface CodeActionContext {
 	trigger: CodeActionTriggerType;
 }
 
-export interface CodeActionList extends IDisposable {
+export interface CodeActionList extends IDisposaBle {
 	readonly actions: ReadonlyArray<CodeAction>;
 }
 
 /**
- * The code action interface defines the contract between extensions and
- * the [light bulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
+ * The code action interface defines the contract Between extensions and
+ * the [light BulB](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
  * @internal
  */
 export interface CodeActionProvider {
@@ -675,35 +675,35 @@ export interface CodeActionProvider {
 }
 
 /**
- * Represents a parameter of a callable-signature. A parameter can
- * have a label and a doc-comment.
+ * Represents a parameter of a callaBle-signature. A parameter can
+ * have a laBel and a doc-comment.
  */
 export interface ParameterInformation {
 	/**
-	 * The label of this signature. Will be shown in
+	 * The laBel of this signature. Will Be shown in
 	 * the UI.
 	 */
-	label: string | [number, number];
+	laBel: string | [numBer, numBer];
 	/**
-	 * The human-readable doc-comment of this signature. Will be shown
-	 * in the UI but can be omitted.
+	 * The human-readaBle doc-comment of this signature. Will Be shown
+	 * in the UI But can Be omitted.
 	 */
 	documentation?: string | IMarkdownString;
 }
 /**
- * Represents the signature of something callable. A signature
- * can have a label, like a function-name, a doc-comment, and
+ * Represents the signature of something callaBle. A signature
+ * can have a laBel, like a function-name, a doc-comment, and
  * a set of parameters.
  */
 export interface SignatureInformation {
 	/**
-	 * The label of this signature. Will be shown in
+	 * The laBel of this signature. Will Be shown in
 	 * the UI.
 	 */
-	label: string;
+	laBel: string;
 	/**
-	 * The human-readable doc-comment of this signature. Will be shown
-	 * in the UI but can be omitted.
+	 * The human-readaBle doc-comment of this signature. Will Be shown
+	 * in the UI But can Be omitted.
 	 */
 	documentation?: string | IMarkdownString;
 	/**
@@ -715,11 +715,11 @@ export interface SignatureInformation {
 	 *
 	 * If provided, this is used in place of `SignatureHelp.activeSignature`.
 	 */
-	activeParameter?: number;
+	activeParameter?: numBer;
 }
 /**
  * Signature help represents the signature of something
- * callable. There can be multiple signatures but only one
+ * callaBle. There can Be multiple signatures But only one
  * active and only one active parameter.
  */
 export interface SignatureHelp {
@@ -730,14 +730,14 @@ export interface SignatureHelp {
 	/**
 	 * The active signature.
 	 */
-	activeSignature: number;
+	activeSignature: numBer;
 	/**
 	 * The active parameter of the active signature.
 	 */
-	activeParameter: number;
+	activeParameter: numBer;
 }
 
-export interface SignatureHelpResult extends IDisposable {
+export interface SignatureHelpResult extends IDisposaBle {
 	value: SignatureHelp;
 }
 
@@ -750,12 +750,12 @@ export enum SignatureHelpTriggerKind {
 export interface SignatureHelpContext {
 	readonly triggerKind: SignatureHelpTriggerKind;
 	readonly triggerCharacter?: string;
-	readonly isRetrigger: boolean;
+	readonly isRetrigger: Boolean;
 	readonly activeSignatureHelp?: SignatureHelp;
 }
 
 /**
- * The signature help provider interface defines the contract between extensions and
+ * The signature help provider interface defines the contract Between extensions and
  * the [parameter hints](https://code.visualstudio.com/docs/editor/intellisense)-feature.
  */
 export interface SignatureHelpProvider {
@@ -778,18 +778,18 @@ export enum DocumentHighlightKind {
 	 */
 	Text,
 	/**
-	 * Read-access of a symbol, like reading a variable.
+	 * Read-access of a symBol, like reading a variaBle.
 	 */
 	Read,
 	/**
-	 * Write-access of a symbol, like writing to a variable.
+	 * Write-access of a symBol, like writing to a variaBle.
 	 */
 	Write
 }
 /**
  * A document highlight is a range inside a text document which deserves
- * special attention. Usually a document highlight is visualized by changing
- * the background color of its range.
+ * special attention. Usually a document highlight is visualized By changing
+ * the Background color of its range.
  */
 export interface DocumentHighlight {
 	/**
@@ -802,19 +802,19 @@ export interface DocumentHighlight {
 	kind?: DocumentHighlightKind;
 }
 /**
- * The document highlight provider interface defines the contract between extensions and
+ * The document highlight provider interface defines the contract Between extensions and
  * the word-highlight-feature.
  */
 export interface DocumentHighlightProvider {
 	/**
-	 * Provide a set of document highlights, like all occurrences of a variable or
+	 * Provide a set of document highlights, like all occurrences of a variaBle or
 	 * all exit-points of a function.
 	 */
 	provideDocumentHighlights(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<DocumentHighlight[]>;
 }
 
 /**
- * The rename provider interface defines the contract between extensions and
+ * The rename provider interface defines the contract Between extensions and
  * the live-rename feature.
  */
 export interface OnTypeRenameProvider {
@@ -822,23 +822,23 @@ export interface OnTypeRenameProvider {
 	wordPattern?: RegExp;
 
 	/**
-	 * Provide a list of ranges that can be live-renamed together.
+	 * Provide a list of ranges that can Be live-renamed together.
 	 */
 	provideOnTypeRenameRanges(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<{ ranges: IRange[]; wordPattern?: RegExp; }>;
 }
 
 /**
- * Value-object that contains additional information when
+ * Value-oBject that contains additional information when
  * requesting references.
  */
 export interface ReferenceContext {
 	/**
-	 * Include the declaration of the current symbol.
+	 * Include the declaration of the current symBol.
 	 */
-	includeDeclaration: boolean;
+	includeDeclaration: Boolean;
 }
 /**
- * The reference provider interface defines the contract between extensions and
+ * The reference provider interface defines the contract Between extensions and
  * the [find references](https://code.visualstudio.com/docs/editor/editingevolved#_peek)-feature.
  */
 export interface ReferenceProvider {
@@ -880,7 +880,7 @@ export interface LocationLink {
 	range: IRange;
 
 	/**
-	 * A range to select this link points to. Must be contained
+	 * A range to select this link points to. Must Be contained
 	 * in `LocationLink.range`.
 	 */
 	targetSelectionRange?: IRange;
@@ -899,55 +899,55 @@ export function isLocationLink(thing: any): thing is LocationLink {
 export type Definition = Location | Location[] | LocationLink[];
 
 /**
- * The definition provider interface defines the contract between extensions and
+ * The definition provider interface defines the contract Between extensions and
  * the [go to definition](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
  * and peek definition features.
  */
 export interface DefinitionProvider {
 	/**
-	 * Provide the definition of the symbol at the given position and document.
+	 * Provide the definition of the symBol at the given position and document.
 	 */
 	provideDefinition(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<Definition | LocationLink[]>;
 }
 
 /**
- * The definition provider interface defines the contract between extensions and
+ * The definition provider interface defines the contract Between extensions and
  * the [go to definition](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
  * and peek definition features.
  */
 export interface DeclarationProvider {
 	/**
-	 * Provide the declaration of the symbol at the given position and document.
+	 * Provide the declaration of the symBol at the given position and document.
 	 */
 	provideDeclaration(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<Definition | LocationLink[]>;
 }
 
 /**
- * The implementation provider interface defines the contract between extensions and
+ * The implementation provider interface defines the contract Between extensions and
  * the go to implementation feature.
  */
 export interface ImplementationProvider {
 	/**
-	 * Provide the implementation of the symbol at the given position and document.
+	 * Provide the implementation of the symBol at the given position and document.
 	 */
 	provideImplementation(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<Definition | LocationLink[]>;
 }
 
 /**
- * The type definition provider interface defines the contract between extensions and
+ * The type definition provider interface defines the contract Between extensions and
  * the go to type definition feature.
  */
 export interface TypeDefinitionProvider {
 	/**
-	 * Provide the type definition of the symbol at the given position and document.
+	 * Provide the type definition of the symBol at the given position and document.
 	 */
 	provideTypeDefinition(model: model.ITextModel, position: Position, token: CancellationToken): ProviderResult<Definition | LocationLink[]>;
 }
 
 /**
- * A symbol kind.
+ * A symBol kind.
  */
-export const enum SymbolKind {
+export const enum SymBolKind {
 	File = 0,
 	Module = 1,
 	Namespace = 2,
@@ -960,135 +960,135 @@ export const enum SymbolKind {
 	Enum = 9,
 	Interface = 10,
 	Function = 11,
-	Variable = 12,
+	VariaBle = 12,
 	Constant = 13,
 	String = 14,
-	Number = 15,
+	NumBer = 15,
 	Boolean = 16,
 	Array = 17,
-	Object = 18,
+	OBject = 18,
 	Key = 19,
 	Null = 20,
-	EnumMember = 21,
+	EnumMemBer = 21,
 	Struct = 22,
 	Event = 23,
 	Operator = 24,
 	TypeParameter = 25
 }
 
-export const enum SymbolTag {
+export const enum SymBolTag {
 	Deprecated = 1,
 }
 
 /**
  * @internal
  */
-export namespace SymbolKinds {
+export namespace SymBolKinds {
 
-	const byName = new Map<string, SymbolKind>();
-	byName.set('file', SymbolKind.File);
-	byName.set('module', SymbolKind.Module);
-	byName.set('namespace', SymbolKind.Namespace);
-	byName.set('package', SymbolKind.Package);
-	byName.set('class', SymbolKind.Class);
-	byName.set('method', SymbolKind.Method);
-	byName.set('property', SymbolKind.Property);
-	byName.set('field', SymbolKind.Field);
-	byName.set('constructor', SymbolKind.Constructor);
-	byName.set('enum', SymbolKind.Enum);
-	byName.set('interface', SymbolKind.Interface);
-	byName.set('function', SymbolKind.Function);
-	byName.set('variable', SymbolKind.Variable);
-	byName.set('constant', SymbolKind.Constant);
-	byName.set('string', SymbolKind.String);
-	byName.set('number', SymbolKind.Number);
-	byName.set('boolean', SymbolKind.Boolean);
-	byName.set('array', SymbolKind.Array);
-	byName.set('object', SymbolKind.Object);
-	byName.set('key', SymbolKind.Key);
-	byName.set('null', SymbolKind.Null);
-	byName.set('enum-member', SymbolKind.EnumMember);
-	byName.set('struct', SymbolKind.Struct);
-	byName.set('event', SymbolKind.Event);
-	byName.set('operator', SymbolKind.Operator);
-	byName.set('type-parameter', SymbolKind.TypeParameter);
+	const ByName = new Map<string, SymBolKind>();
+	ByName.set('file', SymBolKind.File);
+	ByName.set('module', SymBolKind.Module);
+	ByName.set('namespace', SymBolKind.Namespace);
+	ByName.set('package', SymBolKind.Package);
+	ByName.set('class', SymBolKind.Class);
+	ByName.set('method', SymBolKind.Method);
+	ByName.set('property', SymBolKind.Property);
+	ByName.set('field', SymBolKind.Field);
+	ByName.set('constructor', SymBolKind.Constructor);
+	ByName.set('enum', SymBolKind.Enum);
+	ByName.set('interface', SymBolKind.Interface);
+	ByName.set('function', SymBolKind.Function);
+	ByName.set('variaBle', SymBolKind.VariaBle);
+	ByName.set('constant', SymBolKind.Constant);
+	ByName.set('string', SymBolKind.String);
+	ByName.set('numBer', SymBolKind.NumBer);
+	ByName.set('Boolean', SymBolKind.Boolean);
+	ByName.set('array', SymBolKind.Array);
+	ByName.set('oBject', SymBolKind.OBject);
+	ByName.set('key', SymBolKind.Key);
+	ByName.set('null', SymBolKind.Null);
+	ByName.set('enum-memBer', SymBolKind.EnumMemBer);
+	ByName.set('struct', SymBolKind.Struct);
+	ByName.set('event', SymBolKind.Event);
+	ByName.set('operator', SymBolKind.Operator);
+	ByName.set('type-parameter', SymBolKind.TypeParameter);
 
-	const byKind = new Map<SymbolKind, string>();
-	byKind.set(SymbolKind.File, 'file');
-	byKind.set(SymbolKind.Module, 'module');
-	byKind.set(SymbolKind.Namespace, 'namespace');
-	byKind.set(SymbolKind.Package, 'package');
-	byKind.set(SymbolKind.Class, 'class');
-	byKind.set(SymbolKind.Method, 'method');
-	byKind.set(SymbolKind.Property, 'property');
-	byKind.set(SymbolKind.Field, 'field');
-	byKind.set(SymbolKind.Constructor, 'constructor');
-	byKind.set(SymbolKind.Enum, 'enum');
-	byKind.set(SymbolKind.Interface, 'interface');
-	byKind.set(SymbolKind.Function, 'function');
-	byKind.set(SymbolKind.Variable, 'variable');
-	byKind.set(SymbolKind.Constant, 'constant');
-	byKind.set(SymbolKind.String, 'string');
-	byKind.set(SymbolKind.Number, 'number');
-	byKind.set(SymbolKind.Boolean, 'boolean');
-	byKind.set(SymbolKind.Array, 'array');
-	byKind.set(SymbolKind.Object, 'object');
-	byKind.set(SymbolKind.Key, 'key');
-	byKind.set(SymbolKind.Null, 'null');
-	byKind.set(SymbolKind.EnumMember, 'enum-member');
-	byKind.set(SymbolKind.Struct, 'struct');
-	byKind.set(SymbolKind.Event, 'event');
-	byKind.set(SymbolKind.Operator, 'operator');
-	byKind.set(SymbolKind.TypeParameter, 'type-parameter');
+	const ByKind = new Map<SymBolKind, string>();
+	ByKind.set(SymBolKind.File, 'file');
+	ByKind.set(SymBolKind.Module, 'module');
+	ByKind.set(SymBolKind.Namespace, 'namespace');
+	ByKind.set(SymBolKind.Package, 'package');
+	ByKind.set(SymBolKind.Class, 'class');
+	ByKind.set(SymBolKind.Method, 'method');
+	ByKind.set(SymBolKind.Property, 'property');
+	ByKind.set(SymBolKind.Field, 'field');
+	ByKind.set(SymBolKind.Constructor, 'constructor');
+	ByKind.set(SymBolKind.Enum, 'enum');
+	ByKind.set(SymBolKind.Interface, 'interface');
+	ByKind.set(SymBolKind.Function, 'function');
+	ByKind.set(SymBolKind.VariaBle, 'variaBle');
+	ByKind.set(SymBolKind.Constant, 'constant');
+	ByKind.set(SymBolKind.String, 'string');
+	ByKind.set(SymBolKind.NumBer, 'numBer');
+	ByKind.set(SymBolKind.Boolean, 'Boolean');
+	ByKind.set(SymBolKind.Array, 'array');
+	ByKind.set(SymBolKind.OBject, 'oBject');
+	ByKind.set(SymBolKind.Key, 'key');
+	ByKind.set(SymBolKind.Null, 'null');
+	ByKind.set(SymBolKind.EnumMemBer, 'enum-memBer');
+	ByKind.set(SymBolKind.Struct, 'struct');
+	ByKind.set(SymBolKind.Event, 'event');
+	ByKind.set(SymBolKind.Operator, 'operator');
+	ByKind.set(SymBolKind.TypeParameter, 'type-parameter');
 	/**
 	 * @internal
 	 */
-	export function fromString(value: string): SymbolKind | undefined {
-		return byName.get(value);
+	export function fromString(value: string): SymBolKind | undefined {
+		return ByName.get(value);
 	}
 	/**
 	 * @internal
 	 */
-	export function toString(kind: SymbolKind): string | undefined {
-		return byKind.get(kind);
+	export function toString(kind: SymBolKind): string | undefined {
+		return ByKind.get(kind);
 	}
 	/**
 	 * @internal
 	 */
-	export function toCssClassName(kind: SymbolKind, inline?: boolean): string {
-		const symbolName = byKind.get(kind);
-		let codicon = symbolName && iconRegistry.get('symbol-' + symbolName);
+	export function toCssClassName(kind: SymBolKind, inline?: Boolean): string {
+		const symBolName = ByKind.get(kind);
+		let codicon = symBolName && iconRegistry.get('symBol-' + symBolName);
 		if (!codicon) {
-			console.info('No codicon found for SymbolKind ' + kind);
-			codicon = Codicon.symbolProperty;
+			console.info('No codicon found for SymBolKind ' + kind);
+			codicon = Codicon.symBolProperty;
 		}
-		return `${inline ? 'inline' : 'block'} ${codicon.classNames}`;
+		return `${inline ? 'inline' : 'Block'} ${codicon.classNames}`;
 	}
 }
 
-export interface DocumentSymbol {
+export interface DocumentSymBol {
 	name: string;
 	detail: string;
-	kind: SymbolKind;
-	tags: ReadonlyArray<SymbolTag>;
+	kind: SymBolKind;
+	tags: ReadonlyArray<SymBolTag>;
 	containerName?: string;
 	range: IRange;
 	selectionRange: IRange;
-	children?: DocumentSymbol[];
+	children?: DocumentSymBol[];
 }
 
 /**
- * The document symbol provider interface defines the contract between extensions and
- * the [go to symbol](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)-feature.
+ * The document symBol provider interface defines the contract Between extensions and
+ * the [go to symBol](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symBol)-feature.
  */
-export interface DocumentSymbolProvider {
+export interface DocumentSymBolProvider {
 
 	displayName?: string;
 
 	/**
-	 * Provide symbol information for the given document.
+	 * Provide symBol information for the given document.
 	 */
-	provideDocumentSymbols(model: model.ITextModel, token: CancellationToken): ProviderResult<DocumentSymbol[]>;
+	provideDocumentSymBols(model: model.ITextModel, token: CancellationToken): ProviderResult<DocumentSymBol[]>;
 }
 
 export type TextEdit = { range: IRange; text: string; eol?: model.EndOfLineSequence; };
@@ -1098,16 +1098,16 @@ export type TextEdit = { range: IRange; text: string; eol?: model.EndOfLineSeque
  */
 export interface FormattingOptions {
 	/**
-	 * Size of a tab in spaces.
+	 * Size of a taB in spaces.
 	 */
-	tabSize: number;
+	taBSize: numBer;
 	/**
-	 * Prefer spaces over tabs.
+	 * Prefer spaces over taBs.
 	 */
-	insertSpaces: boolean;
+	insertSpaces: Boolean;
 }
 /**
- * The document formatting provider interface defines the contract between extensions and
+ * The document formatting provider interface defines the contract Between extensions and
  * the formatting-feature.
  */
 export interface DocumentFormattingEditProvider {
@@ -1125,7 +1125,7 @@ export interface DocumentFormattingEditProvider {
 	provideDocumentFormattingEdits(model: model.ITextModel, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
 }
 /**
- * The document formatting provider interface defines the contract between extensions and
+ * The document formatting provider interface defines the contract Between extensions and
  * the formatting-feature.
  */
 export interface DocumentRangeFormattingEditProvider {
@@ -1140,13 +1140,13 @@ export interface DocumentRangeFormattingEditProvider {
 	 * Provide formatting edits for a range in a document.
 	 *
 	 * The given range is a hint and providers can decide to format a smaller
-	 * or larger range. Often this is done by adjusting the start and end
+	 * or larger range. Often this is done By adjusting the start and end
 	 * of the range to full syntax nodes.
 	 */
 	provideDocumentRangeFormattingEdits(model: model.ITextModel, range: Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
 }
 /**
- * The document formatting provider interface defines the contract between extensions and
+ * The document formatting provider interface defines the contract Between extensions and
  * the formatting-feature.
  */
 export interface OnTypeFormattingEditProvider {
@@ -1160,11 +1160,11 @@ export interface OnTypeFormattingEditProvider {
 	autoFormatTriggerCharacters: string[];
 
 	/**
-	 * Provide formatting edits after a character has been typed.
+	 * Provide formatting edits after a character has Been typed.
 	 *
 	 * The given position and character should hint to the provider
 	 * what range the position to expand to, like find the matching `{`
-	 * when `}` has been entered.
+	 * when `}` has Been entered.
 	 */
 	provideOnTypeFormattingEdits(model: model.ITextModel, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
 }
@@ -1206,22 +1206,22 @@ export interface IColor {
 	/**
 	 * The red component in the range [0-1].
 	 */
-	readonly red: number;
+	readonly red: numBer;
 
 	/**
 	 * The green component in the range [0-1].
 	 */
-	readonly green: number;
+	readonly green: numBer;
 
 	/**
-	 * The blue component in the range [0-1].
+	 * The Blue component in the range [0-1].
 	 */
-	readonly blue: number;
+	readonly Blue: numBer;
 
 	/**
 	 * The alpha component in the range [0-1].
 	 */
-	readonly alpha: number;
+	readonly alpha: numBer;
 }
 
 /**
@@ -1229,11 +1229,11 @@ export interface IColor {
  */
 export interface IColorPresentation {
 	/**
-	 * The label of this color presentation. It will be shown on the color
+	 * The laBel of this color presentation. It will Be shown on the color
 	 * picker header. By default this is also the text that is inserted when selecting
 	 * this color presentation.
 	 */
-	label: string;
+	laBel: string;
 	/**
 	 * An [edit](#TextEdit) which is applied to a document when selecting
 	 * this presentation for the color.
@@ -1282,7 +1282,7 @@ export interface SelectionRange {
 
 export interface SelectionRangeProvider {
 	/**
-	 * Provide ranges that should be selected from the given position.
+	 * Provide ranges that should Be selected from the given position.
 	 */
 	provideSelectionRanges(model: model.ITextModel, positions: Position[], token: CancellationToken): ProviderResult<SelectionRange[][]>;
 }
@@ -1308,18 +1308,18 @@ export interface FoldingRangeProvider {
 export interface FoldingRange {
 
 	/**
-	 * The one-based start line of the range to fold. The folded area starts after the line's last character.
+	 * The one-Based start line of the range to fold. The folded area starts after the line's last character.
 	 */
-	start: number;
+	start: numBer;
 
 	/**
-	 * The one-based end line of the range to fold. The folded area ends with the line's last character.
+	 * The one-Based end line of the range to fold. The folded area ends with the line's last character.
 	 */
-	end: number;
+	end: numBer;
 
 	/**
-	 * Describes the [Kind](#FoldingRangeKind) of the folding range such as [Comment](#FoldingRangeKind.Comment) or
-	 * [Region](#FoldingRangeKind.Region). The kind is used to categorize folding ranges and used by commands
+	 * DescriBes the [Kind](#FoldingRangeKind) of the folding range such as [Comment](#FoldingRangeKind.Comment) or
+	 * [Region](#FoldingRangeKind.Region). The kind is used to categorize folding ranges and used By commands
 	 * like 'Fold all comments'. See
 	 * [FoldingRangeKind](#FoldingRangeKind) for an enumeration of standardized kinds.
 	 */
@@ -1335,7 +1335,7 @@ export class FoldingRangeKind {
 	 */
 	static readonly Imports = new FoldingRangeKind('imports');
 	/**
-	 * Kind for folding range representing regions (for example marked by `#region`, `#endregion`).
+	 * Kind for folding range representing regions (for example marked By `#region`, `#endregion`).
 	 * The value of the kind is 'region'.
 	 */
 	static readonly Region = new FoldingRangeKind('region');
@@ -1345,23 +1345,23 @@ export class FoldingRangeKind {
 	 *
 	 * @param value of the kind.
 	 */
-	public constructor(public value: string) {
+	puBlic constructor(puBlic value: string) {
 	}
 }
 
 
 export interface WorkspaceEditMetadata {
-	needsConfirmation: boolean;
-	label: string;
+	needsConfirmation: Boolean;
+	laBel: string;
 	description?: string;
 	iconPath?: { id: string } | URI | { light: URI, dark: URI };
 }
 
 export interface WorkspaceFileEditOptions {
-	overwrite?: boolean;
-	ignoreIfNotExists?: boolean;
-	ignoreIfExists?: boolean;
-	recursive?: boolean;
+	overwrite?: Boolean;
+	ignoreIfNotExists?: Boolean;
+	ignoreIfExists?: Boolean;
+	recursive?: Boolean;
 }
 
 export interface WorkspaceFileEdit {
@@ -1374,7 +1374,7 @@ export interface WorkspaceFileEdit {
 export interface WorkspaceTextEdit {
 	resource: URI;
 	edit: TextEdit;
-	modelVersionId?: number;
+	modelVersionId?: numBer;
 	metadata?: WorkspaceEditMetadata;
 }
 
@@ -1402,7 +1402,7 @@ export interface AuthenticationSession {
 	id: string;
 	accessToken: string;
 	account: {
-		label: string;
+		laBel: string;
 		id: string;
 	}
 	scopes: ReadonlyArray<string>;
@@ -1422,7 +1422,7 @@ export interface AuthenticationSessionsChangeEvent {
  */
 export interface AuthenticationProviderInformation {
 	id: string;
-	label: string;
+	laBel: string;
 }
 
 export interface Command {
@@ -1436,8 +1436,8 @@ export interface Command {
  * @internal
  */
 export interface CommentThreadTemplate {
-	controllerHandle: number;
-	label: string;
+	controllerHandle: numBer;
+	laBel: string;
 	acceptInputCommand?: Command;
 	additionalCommands?: Command[];
 	deleteCommand?: Command;
@@ -1455,7 +1455,7 @@ export interface CommentInfo {
 /**
  * @internal
  */
-export enum CommentThreadCollapsibleState {
+export enum CommentThreadCollapsiBleState {
 	/**
 	 * Determines an item is collapsed
 	 */
@@ -1490,25 +1490,25 @@ export interface CommentInput {
  * @internal
  */
 export interface CommentThread {
-	commentThreadHandle: number;
-	controllerHandle: number;
+	commentThreadHandle: numBer;
+	controllerHandle: numBer;
 	extensionId?: string;
 	threadId: string;
 	resource: string | null;
 	range: IRange;
-	label: string | undefined;
+	laBel: string | undefined;
 	contextValue: string | undefined;
 	comments: Comment[] | undefined;
 	onDidChangeComments: Event<Comment[] | undefined>;
-	collapsibleState?: CommentThreadCollapsibleState;
-	canReply: boolean;
+	collapsiBleState?: CommentThreadCollapsiBleState;
+	canReply: Boolean;
 	input?: CommentInput;
 	onDidChangeInput: Event<CommentInput | undefined>;
 	onDidChangeRange: Event<IRange>;
-	onDidChangeLabel: Event<string | undefined>;
-	onDidChangeCollasibleState: Event<CommentThreadCollapsibleState | undefined>;
-	onDidChangeCanReply: Event<boolean>;
-	isDisposed: boolean;
+	onDidChangeLaBel: Event<string | undefined>;
+	onDidChangeCollasiBleState: Event<CommentThreadCollapsiBleState | undefined>;
+	onDidChangeCanReply: Event<Boolean>;
+	isDisposed: Boolean;
 }
 
 /**
@@ -1524,11 +1524,11 @@ export interface CommentingRanges {
  * @internal
  */
 export interface CommentReaction {
-	readonly label?: string;
+	readonly laBel?: string;
 	readonly iconPath?: UriComponents;
-	readonly count?: number;
-	readonly hasReacted?: boolean;
-	readonly canEdit?: boolean;
+	readonly count?: numBer;
+	readonly hasReacted?: Boolean;
+	readonly canEdit?: Boolean;
 }
 
 /**
@@ -1536,12 +1536,12 @@ export interface CommentReaction {
  */
 export interface CommentOptions {
 	/**
-	 * An optional string to show on the comment input box when it's collapsed.
+	 * An optional string to show on the comment input Box when it's collapsed.
 	 */
 	prompt?: string;
 
 	/**
-	 * An optional string to show as placeholder in the comment input box when it's focused.
+	 * An optional string to show as placeholder in the comment input Box when it's focused.
 	 */
 	placeHolder?: string;
 }
@@ -1558,13 +1558,13 @@ export enum CommentMode {
  * @internal
  */
 export interface Comment {
-	readonly uniqueIdInThread: number;
-	readonly body: IMarkdownString;
+	readonly uniqueIdInThread: numBer;
+	readonly Body: IMarkdownString;
 	readonly userName: string;
 	readonly userIconPath?: string;
 	readonly contextValue?: string;
 	readonly commentReactions?: CommentReaction[];
-	readonly label?: string;
+	readonly laBel?: string;
 	readonly mode?: CommentMode;
 }
 
@@ -1591,27 +1591,27 @@ export interface CommentThreadChangedEvent {
 /**
  * @internal
  */
-export interface IWebviewPortMapping {
-	webviewPort: number;
-	extensionHostPort: number;
+export interface IWeBviewPortMapping {
+	weBviewPort: numBer;
+	extensionHostPort: numBer;
 }
 
 /**
  * @internal
  */
-export interface IWebviewOptions {
-	readonly enableScripts?: boolean;
-	readonly enableCommandUris?: boolean;
+export interface IWeBviewOptions {
+	readonly enaBleScripts?: Boolean;
+	readonly enaBleCommandUris?: Boolean;
 	readonly localResourceRoots?: ReadonlyArray<UriComponents>;
-	readonly portMapping?: ReadonlyArray<IWebviewPortMapping>;
+	readonly portMapping?: ReadonlyArray<IWeBviewPortMapping>;
 }
 
 /**
  * @internal
  */
-export interface IWebviewPanelOptions {
-	readonly enableFindWidget?: boolean;
-	readonly retainContextWhenHidden?: boolean;
+export interface IWeBviewPanelOptions {
+	readonly enaBleFindWidget?: Boolean;
+	readonly retainContextWhenHidden?: Boolean;
 }
 
 
@@ -1643,8 +1643,8 @@ export interface SemanticTokens {
 }
 
 export interface SemanticTokensEdit {
-	readonly start: number;
-	readonly deleteCount: number;
+	readonly start: numBer;
+	readonly deleteCount: numBer;
 	readonly data?: Uint32Array;
 }
 
@@ -1695,12 +1695,12 @@ export const HoverProviderRegistry = new LanguageFeatureRegistry<HoverProvider>(
 /**
  * @internal
  */
-export const EvaluatableExpressionProviderRegistry = new LanguageFeatureRegistry<EvaluatableExpressionProvider>();
+export const EvaluataBleExpressionProviderRegistry = new LanguageFeatureRegistry<EvaluataBleExpressionProvider>();
 
 /**
  * @internal
  */
-export const DocumentSymbolProviderRegistry = new LanguageFeatureRegistry<DocumentSymbolProvider>();
+export const DocumentSymBolProviderRegistry = new LanguageFeatureRegistry<DocumentSymBolProvider>();
 
 /**
  * @internal
@@ -1792,7 +1792,7 @@ export const DocumentRangeSemanticTokensProviderRegistry = new LanguageFeatureRe
  */
 export interface ITokenizationSupportChangedEvent {
 	changedLanguages: string[];
-	changedColorMap: boolean;
+	changedColorMap: Boolean;
 }
 
 /**
@@ -1809,19 +1809,19 @@ export interface ITokenizationRegistry {
 
 	/**
 	 * Fire a change event for a language.
-	 * This is useful for languages that embed other languages.
+	 * This is useful for languages that emBed other languages.
 	 */
 	fire(languages: string[]): void;
 
 	/**
 	 * Register a tokenization support.
 	 */
-	register(language: string, support: ITokenizationSupport): IDisposable;
+	register(language: string, support: ITokenizationSupport): IDisposaBle;
 
 	/**
 	 * Register a promise for a tokenization support.
 	 */
-	registerPromise(language: string, promise: Thenable<ITokenizationSupport>): IDisposable;
+	registerPromise(language: string, promise: ThenaBle<ITokenizationSupport>): IDisposaBle;
 
 	/**
 	 * Get the tokenization support for a language.
@@ -1831,12 +1831,12 @@ export interface ITokenizationRegistry {
 
 	/**
 	 * Get the promise of a tokenization support for a language.
-	 * `null` is returned if no support is available and no promise for the support has been registered yet.
+	 * `null` is returned if no support is availaBle and no promise for the support has Been registered yet.
 	 */
-	getPromise(language: string): Thenable<ITokenizationSupport> | null;
+	getPromise(language: string): ThenaBle<ITokenizationSupport> | null;
 
 	/**
-	 * Set the new color map that all tokens will use in their ColorId binary encoded bits for foreground and background.
+	 * Set the new color map that all tokens will use in their ColorId Binary encoded Bits for foreground and Background.
 	 */
 	setColorMap(colorMap: Color[]): void;
 

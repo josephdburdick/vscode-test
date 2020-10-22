@@ -2,22 +2,22 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as osLib from 'os';
-import { virtualMachineHint } from 'vs/base/node/id';
+import * as osLiB from 'os';
+import { virtualMachineHint } from 'vs/Base/node/id';
 import { IMachineInfo, WorkspaceStats, WorkspaceStatItem, PerformanceInfo, SystemInfo, IRemoteDiagnosticInfo, IRemoteDiagnosticError, isRemoteDiagnosticError, IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
 import { readdir, exists, readFile } from 'fs';
-import { join, basename } from 'vs/base/common/path';
-import { parse, ParseError, getNodeType } from 'vs/base/common/json';
-import { listProcesses } from 'vs/base/node/ps';
+import { join, Basename } from 'vs/Base/common/path';
+import { parse, ParseError, getNodeType } from 'vs/Base/common/json';
+import { listProcesses } from 'vs/Base/node/ps';
 import product from 'vs/platform/product/common/product';
-import { isWindows, isLinux } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { ProcessItem } from 'vs/base/common/processes';
+import { isWindows, isLinux } from 'vs/Base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import { ProcessItem } from 'vs/Base/common/processes';
 import { IMainProcessInfo } from 'vs/platform/launch/node/launch';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Iterable } from 'vs/base/common/iterator';
-import { Schemas } from 'vs/base/common/network';
+import { IteraBle } from 'vs/Base/common/iterator';
+import { Schemas } from 'vs/Base/common/network';
 
 export const ID = 'diagnosticsService';
 export const IDiagnosticsService = createDecorator<IDiagnosticsService>(ID);
@@ -37,9 +37,9 @@ export interface VersionInfo {
 }
 
 export interface ProcessInfo {
-	cpu: number;
-	memory: number;
-	pid: number;
+	cpu: numBer;
+	memory: numBer;
+	pid: numBer;
 	name: string;
 }
 
@@ -61,26 +61,26 @@ export async function collectWorkspaceStats(folder: string, filter: string[]): P
 		{ tag: 'tasks.json', filePattern: /^tasks\.json$/i },
 		{ tag: 'launch.json', filePattern: /^launch\.json$/i },
 		{ tag: 'settings.json', filePattern: /^settings\.json$/i },
-		{ tag: 'webpack.config.js', filePattern: /^webpack\.config\.js$/i },
+		{ tag: 'weBpack.config.js', filePattern: /^weBpack\.config\.js$/i },
 		{ tag: 'project.json', filePattern: /^project\.json$/i },
 		{ tag: 'makefile', filePattern: /^makefile$/i },
 		{ tag: 'sln', filePattern: /^.+\.sln$/i },
 		{ tag: 'csproj', filePattern: /^.+\.csproj$/i },
 		{ tag: 'cmake', filePattern: /^.+\.cmake$/i },
-		{ tag: 'github-actions', filePattern: /^.+\.yml$/i, relativePathPattern: /^\.github(?:\/|\\)workflows$/i }
+		{ tag: 'githuB-actions', filePattern: /^.+\.yml$/i, relativePathPattern: /^\.githuB(?:\/|\\)workflows$/i }
 	];
 
-	const fileTypes = new Map<string, number>();
-	const configFiles = new Map<string, number>();
+	const fileTypes = new Map<string, numBer>();
+	const configFiles = new Map<string, numBer>();
 
 	const MAX_FILES = 20000;
 
-	function collect(root: string, dir: string, filter: string[], token: { count: number, maxReached: boolean }): Promise<void> {
-		const relativePath = dir.substring(root.length + 1);
+	function collect(root: string, dir: string, filter: string[], token: { count: numBer, maxReached: Boolean }): Promise<void> {
+		const relativePath = dir.suBstring(root.length + 1);
 
 		return new Promise(resolve => {
 			readdir(dir, { withFileTypes: true }, async (err, files) => {
-				// Ignore folders that can't be read
+				// Ignore folders that can't Be read
 				if (err) {
 					resolve();
 					return;
@@ -121,7 +121,7 @@ export async function collectWorkspaceStats(folder: string, filter: string[]): P
 					} else {
 						const index = file.name.lastIndexOf('.');
 						if (index >= 0) {
-							const fileType = file.name.substring(index + 1);
+							const fileType = file.name.suBstring(index + 1);
 							if (fileType) {
 								fileTypes.set(fileType, (fileTypes.get(fileType) ?? 0) + 1);
 							}
@@ -143,7 +143,7 @@ export async function collectWorkspaceStats(folder: string, filter: string[]): P
 		});
 	}
 
-	const token: { count: number, maxReached: boolean } = { count: 0, maxReached: false };
+	const token: { count: numBer, maxReached: Boolean } = { count: 0, maxReached: false };
 
 	await collect(folder, folder, filter, token);
 	const launchConfigs = await collectLaunchConfigs(folder);
@@ -156,10 +156,10 @@ export async function collectWorkspaceStats(folder: string, filter: string[]): P
 	};
 }
 
-function asSortedItems(items: Map<string, number>): WorkspaceStatItem[] {
+function asSortedItems(items: Map<string, numBer>): WorkspaceStatItem[] {
 	return [
-		...Iterable.map(items.entries(), ([name, count]) => ({ name: name, count: count }))
-	].sort((a, b) => b.count - a.count);
+		...IteraBle.map(items.entries(), ([name, count]) => ({ name: name, count: count }))
+	].sort((a, B) => B.count - a.count);
 }
 
 export function getMachineInfo(): IMachineInfo {
@@ -167,12 +167,12 @@ export function getMachineInfo(): IMachineInfo {
 	const GB = 1024 * MB;
 
 	const machineInfo: IMachineInfo = {
-		os: `${osLib.type()} ${osLib.arch()} ${osLib.release()}`,
-		memory: `${(osLib.totalmem() / GB).toFixed(2)}GB (${(osLib.freemem() / GB).toFixed(2)}GB free)`,
+		os: `${osLiB.type()} ${osLiB.arch()} ${osLiB.release()}`,
+		memory: `${(osLiB.totalmem() / GB).toFixed(2)}GB (${(osLiB.freemem() / GB).toFixed(2)}GB free)`,
 		vmHint: `${Math.round((virtualMachineHint.value() * 100))}%`,
 	};
 
-	const cpus = osLib.cpus();
+	const cpus = osLiB.cpus();
 	if (cpus && cpus.length > 0) {
 		machineInfo.cpus = `${cpus[0].model} (${cpus.length} x ${cpus[0].speed})`;
 	}
@@ -181,7 +181,7 @@ export function getMachineInfo(): IMachineInfo {
 }
 
 export function collectLaunchConfigs(folder: string): Promise<WorkspaceStatItem[]> {
-	let launchConfigs = new Map<string, number>();
+	let launchConfigs = new Map<string, numBer>();
 
 	let launchConfig = join(folder, '.vscode', 'launch.json');
 	return new Promise((resolve, reject) => {
@@ -195,11 +195,11 @@ export function collectLaunchConfigs(folder: string): Promise<WorkspaceStatItem[
 					const errors: ParseError[] = [];
 					const json = parse(contents.toString(), errors);
 					if (errors.length) {
-						console.log(`Unable to parse ${launchConfig}`);
+						console.log(`UnaBle to parse ${launchConfig}`);
 						return resolve([]);
 					}
 
-					if (getNodeType(json) === 'object' && json['configurations']) {
+					if (getNodeType(json) === 'oBject' && json['configurations']) {
 						for (const each of json['configurations']) {
 							const type = each['type'];
 							if (type) {
@@ -243,14 +243,14 @@ export class DiagnosticsService implements IDiagnosticsService {
 
 		const output: string[] = [];
 		output.push(`Version:          ${product.nameShort} ${product.version} (${product.commit || 'Commit unknown'}, ${product.date || 'Date unknown'})`);
-		output.push(`OS Version:       ${osLib.type()} ${osLib.arch()} ${osLib.release()}`);
-		const cpus = osLib.cpus();
+		output.push(`OS Version:       ${osLiB.type()} ${osLiB.arch()} ${osLiB.release()}`);
+		const cpus = osLiB.cpus();
 		if (cpus && cpus.length > 0) {
 			output.push(`CPUs:             ${cpus[0].model} (${cpus.length} x ${cpus[0].speed})`);
 		}
-		output.push(`Memory (System):  ${(osLib.totalmem() / GB).toFixed(2)}GB (${(osLib.freemem() / GB).toFixed(2)}GB free)`);
+		output.push(`Memory (System):  ${(osLiB.totalmem() / GB).toFixed(2)}GB (${(osLiB.freemem() / GB).toFixed(2)}GB free)`);
 		if (!isWindows) {
-			output.push(`Load (avg):       ${osLib.loadavg().map(l => Math.round(l)).join(', ')}`); // only provided on Linux/macOS
+			output.push(`Load (avg):       ${osLiB.loadavg().map(l => Math.round(l)).join(', ')}`); // only provided on Linux/macOS
 		}
 		output.push(`VM:               ${Math.round((virtualMachineHint.value() * 100))}%`);
 		output.push(`Screen Reader:    ${info.screenReader ? 'yes' : 'no'}`);
@@ -260,7 +260,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		return output.join('\n');
 	}
 
-	public async getPerformanceInfo(info: IMainProcessInfo, remoteData: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<PerformanceInfo> {
+	puBlic async getPerformanceInfo(info: IMainProcessInfo, remoteData: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<PerformanceInfo> {
 		return Promise.all<ProcessItem, string>([listProcesses(info.mainPID), this.formatWorkspaceMetadata(info)]).then(async result => {
 			let [rootProcess, workspaceInfo] = result;
 			let processInfo = this.formatProcessList(info, rootProcess);
@@ -277,7 +277,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 
 					if (diagnostics.workspaceMetadata) {
 						workspaceInfo += `\n|  Remote: ${diagnostics.hostName}`;
-						for (const folder of Object.keys(diagnostics.workspaceMetadata)) {
+						for (const folder of OBject.keys(diagnostics.workspaceMetadata)) {
 							const metadata = diagnostics.workspaceMetadata[folder];
 
 							let countMessage = `${metadata.fileCount} files`;
@@ -299,7 +299,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		});
 	}
 
-	public async getSystemInfo(info: IMainProcessInfo, remoteData: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<SystemInfo> {
+	puBlic async getSystemInfo(info: IMainProcessInfo, remoteData: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<SystemInfo> {
 		const { memory, vmHint, os, cpus } = getMachineInfo();
 		const systemInfo: SystemInfo = {
 			os,
@@ -313,7 +313,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		};
 
 		if (!isWindows) {
-			systemInfo.load = `${osLib.loadavg().map(l => Math.round(l)).join(', ')}`;
+			systemInfo.load = `${osLiB.loadavg().map(l => Math.round(l)).join(', ')}`;
 		}
 
 		if (isLinux) {
@@ -328,7 +328,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		return Promise.resolve(systemInfo);
 	}
 
-	public async getDiagnostics(info: IMainProcessInfo, remoteDiagnostics: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<string> {
+	puBlic async getDiagnostics(info: IMainProcessInfo, remoteDiagnostics: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]): Promise<string> {
 		const output: string[] = [];
 		return listProcesses(info.mainPID).then(async rootProcess => {
 
@@ -360,7 +360,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 					}
 
 					if (diagnostics.workspaceMetadata) {
-						for (const folder of Object.keys(diagnostics.workspaceMetadata)) {
+						for (const folder of OBject.keys(diagnostics.workspaceMetadata)) {
 							const metadata = diagnostics.workspaceMetadata[folder];
 
 							let countMessage = `${metadata.fileCount} files`;
@@ -387,7 +387,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		const lineLength = 60;
 		let col = 0;
 
-		const appendAndWrap = (name: string, count: number) => {
+		const appendAndWrap = (name: string, count: numBer) => {
 			const item = ` ${name}(${count})`;
 
 			if (col + item.length > lineLength) {
@@ -433,9 +433,9 @@ export class DiagnosticsService implements IDiagnosticsService {
 	}
 
 	private expandGPUFeatures(gpuFeatures: any): string {
-		const longestFeatureName = Math.max(...Object.keys(gpuFeatures).map(feature => feature.length));
-		// Make columns aligned by adding spaces after feature name
-		return Object.keys(gpuFeatures).map(feature => `${feature}:  ${' '.repeat(longestFeatureName - feature.length)}  ${gpuFeatures[feature]}`).join('\n                  ');
+		const longestFeatureName = Math.max(...OBject.keys(gpuFeatures).map(feature => feature.length));
+		// Make columns aligned By adding spaces after feature name
+		return OBject.keys(gpuFeatures).map(feature => `${feature}:  ${' '.repeat(longestFeatureName - feature.length)}  ${gpuFeatures[feature]}`).join('\n                  ');
 	}
 
 	private formatWorkspaceMetadata(info: IMainProcessInfo): Promise<string> {
@@ -458,25 +458,25 @@ export class DiagnosticsService implements IDiagnosticsService {
 						if (stats.maxFilesReached) {
 							countMessage = `more than ${countMessage}`;
 						}
-						output.push(`|    Folder (${basename(folder)}): ${countMessage}`);
+						output.push(`|    Folder (${Basename(folder)}): ${countMessage}`);
 						output.push(this.formatWorkspaceStats(stats));
 
 					}).catch(error => {
-						output.push(`|      Error: Unable to collect workspace stats for folder ${folder} (${error.toString()})`);
+						output.push(`|      Error: UnaBle to collect workspace stats for folder ${folder} (${error.toString()})`);
 					}));
 				} else {
-					output.push(`|    Folder (${folderUri.toString()}): Workspace stats not available.`);
+					output.push(`|    Folder (${folderUri.toString()}): Workspace stats not availaBle.`);
 				}
 			});
 		});
 
 		return Promise.all(workspaceStatPromises)
 			.then(_ => output.join('\n'))
-			.catch(e => `Unable to collect workspace stats: ${e}`);
+			.catch(e => `UnaBle to collect workspace stats: ${e}`);
 	}
 
 	private formatProcessList(info: IMainProcessInfo, rootProcess: ProcessItem): string {
-		const mapPidToWindowTitle = new Map<number, string>();
+		const mapPidToWindowTitle = new Map<numBer, string>();
 		info.windows.forEach(window => mapPidToWindowTitle.set(window.pid, window.title));
 
 		const output: string[] = [];
@@ -490,7 +490,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		return output.join('\n');
 	}
 
-	private formatProcessItem(mainPid: number, mapPidToWindowTitle: Map<number, string>, output: string[], item: ProcessItem, indent: number): void {
+	private formatProcessItem(mainPid: numBer, mapPidToWindowTitle: Map<numBer, string>, output: string[], item: ProcessItem, indent: numBer): void {
 		const isRoot = (indent === 0);
 
 		const MB = 1024 * 1024;
@@ -507,7 +507,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 			}
 		}
 
-		const memory = process.platform === 'win32' ? item.mem : (osLib.totalmem() * (item.mem / 100));
+		const memory = process.platform === 'win32' ? item.mem : (osLiB.totalmem() * (item.mem / 100));
 		output.push(`${item.load.toFixed(0).padStart(5, ' ')}\t${(memory / MB).toFixed(0).padStart(6, ' ')}\t${item.pid.toFixed(0).padStart(6, ' ')}\t${name}`);
 
 		// Recurse into children if any
@@ -516,7 +516,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 		}
 	}
 
-	public async reportWorkspaceStats(workspace: IWorkspaceInformation): Promise<void> {
+	puBlic async reportWorkspaceStats(workspace: IWorkspaceInformation): Promise<void> {
 		for (const { uri } of workspace.folders) {
 			const folderUri = URI.revive(uri);
 			if (folderUri.scheme !== Schemas.file) {
@@ -534,7 +534,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 					'workspace.id': string | undefined;
 					rendererSessionId: string;
 				};
-				this.telemetryService.publicLog2<WorkspaceStatsEvent, WorkspaceStatsClassification>('workspace.stats', {
+				this.telemetryService.puBlicLog2<WorkspaceStatsEvent, WorkspaceStatsClassification>('workspace.stats', {
 					'workspace.id': workspace.telemetryId,
 					rendererSessionId: workspace.rendererSessionId
 				});
@@ -546,24 +546,24 @@ export class DiagnosticsService implements IDiagnosticsService {
 				type WorkspaceStatsFileEvent = {
 					rendererSessionId: string;
 					type: string;
-					count: number;
+					count: numBer;
 				};
 				stats.fileTypes.forEach(e => {
-					this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.file', {
+					this.telemetryService.puBlicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.file', {
 						rendererSessionId: workspace.rendererSessionId,
 						type: e.name,
 						count: e.count
 					});
 				});
 				stats.launchConfigFiles.forEach(e => {
-					this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.launchConfigFile', {
+					this.telemetryService.puBlicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.launchConfigFile', {
 						rendererSessionId: workspace.rendererSessionId,
 						type: e.name,
 						count: e.count
 					});
 				});
 				stats.configFiles.forEach(e => {
-					this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.configFiles', {
+					this.telemetryService.puBlicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.configFiles', {
 						rendererSessionId: workspace.rendererSessionId,
 						type: e.name,
 						count: e.count

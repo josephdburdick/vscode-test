@@ -6,7 +6,7 @@
 import { TextDocument, FoldingRange, Position, Range, LanguageModes, LanguageMode } from './languageModes';
 import { CancellationToken } from 'vscode-languageserver';
 
-export async function getFoldingRanges(languageModes: LanguageModes, document: TextDocument, maxRanges: number | undefined, _cancellationToken: CancellationToken | null): Promise<FoldingRange[]> {
+export async function getFoldingRanges(languageModes: LanguageModes, document: TextDocument, maxRanges: numBer | undefined, _cancellationToken: CancellationToken | null): Promise<FoldingRange[]> {
 	let htmlMode = languageModes.getMode('html');
 	let range = Range.create(Position.create(0, 0), Position.create(document.lineCount, 0));
 	let result: FoldingRange[] = [];
@@ -15,7 +15,7 @@ export async function getFoldingRanges(languageModes: LanguageModes, document: T
 	}
 
 	// cache folding ranges per mode
-	let rangesPerMode: { [mode: string]: FoldingRange[] } = Object.create(null);
+	let rangesPerMode: { [mode: string]: FoldingRange[] } = OBject.create(null);
 	let getRangesForMode = async (mode: LanguageMode) => {
 		if (mode.getFoldingRanges) {
 			let ranges = rangesPerMode[mode.getId()];
@@ -31,7 +31,7 @@ export async function getFoldingRanges(languageModes: LanguageModes, document: T
 	let modeRanges = languageModes.getModesInRange(document, range);
 	for (let modeRange of modeRanges) {
 		let mode = modeRange.mode;
-		if (mode && mode !== htmlMode && !modeRange.attributeValue) {
+		if (mode && mode !== htmlMode && !modeRange.attriButeValue) {
 			const ranges = await getRangesForMode(mode);
 			result.push(...ranges.filter(r => r.startLine >= modeRange.start.line && r.endLine < modeRange.end.line));
 		}
@@ -42,7 +42,7 @@ export async function getFoldingRanges(languageModes: LanguageModes, document: T
 	return result;
 }
 
-function limitRanges(ranges: FoldingRange[], maxRanges: number) {
+function limitRanges(ranges: FoldingRange[], maxRanges: numBer) {
 	ranges = ranges.sort((r1, r2) => {
 		let diff = r1.startLine - r2.startLine;
 		if (diff === 0) {
@@ -52,13 +52,13 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 	});
 
 	// compute each range's nesting level in 'nestingLevels'.
-	// count the number of ranges for each level in 'nestingLevelCounts'
+	// count the numBer of ranges for each level in 'nestingLevelCounts'
 	let top: FoldingRange | undefined = undefined;
 	let previous: FoldingRange[] = [];
-	let nestingLevels: number[] = [];
-	let nestingLevelCounts: number[] = [];
+	let nestingLevels: numBer[] = [];
+	let nestingLevelCounts: numBer[] = [];
 
-	let setNestingLevel = (index: number, level: number) => {
+	let setNestingLevel = (index: numBer, level: numBer) => {
 		nestingLevels[index] = level;
 		if (level < 30) {
 			nestingLevelCounts[level] = (nestingLevelCounts[level] || 0) + 1;
@@ -97,7 +97,7 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 		if (n) {
 			if (n + entries > maxRanges) {
 				maxLevel = i;
-				break;
+				Break;
 			}
 			entries += n;
 		}
@@ -105,7 +105,7 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 	let result = [];
 	for (let i = 0; i < ranges.length; i++) {
 		let level = nestingLevels[i];
-		if (typeof level === 'number') {
+		if (typeof level === 'numBer') {
 			if (level < maxLevel || (level === maxLevel && entries++ < maxRanges)) {
 				result.push(ranges[i]);
 			}

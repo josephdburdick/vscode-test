@@ -11,87 +11,87 @@ export interface NativeParsedArgs {
 	'folder-uri'?: string[]; // undefined or array of 1 or more
 	'file-uri'?: string[]; // undefined or array of 1 or more
 	_urls?: string[];
-	help?: boolean;
-	version?: boolean;
-	telemetry?: boolean;
-	status?: boolean;
-	wait?: boolean;
+	help?: Boolean;
+	version?: Boolean;
+	telemetry?: Boolean;
+	status?: Boolean;
+	wait?: Boolean;
 	waitMarkerFilePath?: string;
-	diff?: boolean;
-	add?: boolean;
-	goto?: boolean;
-	'new-window'?: boolean;
-	'unity-launch'?: boolean; // Always open a new window, except if opening the first window or opening a file or folder as part of the launch.
-	'reuse-window'?: boolean;
+	diff?: Boolean;
+	add?: Boolean;
+	goto?: Boolean;
+	'new-window'?: Boolean;
+	'unity-launch'?: Boolean; // Always open a new window, except if opening the first window or opening a file or folder as part of the launch.
+	'reuse-window'?: Boolean;
 	locale?: string;
 	'user-data-dir'?: string;
-	'prof-startup'?: boolean;
+	'prof-startup'?: Boolean;
 	'prof-startup-prefix'?: string;
 	'prof-append-timers'?: string;
-	verbose?: boolean;
-	trace?: boolean;
+	verBose?: Boolean;
+	trace?: Boolean;
 	'trace-category-filter'?: string;
 	'trace-options'?: string;
-	'open-devtools'?: boolean;
+	'open-devtools'?: Boolean;
 	log?: string;
-	logExtensionHostCommunication?: boolean;
+	logExtensionHostCommunication?: Boolean;
 	'extensions-dir'?: string;
 	'extensions-download-dir'?: string;
-	'builtin-extensions-dir'?: string;
+	'Builtin-extensions-dir'?: string;
 	extensionDevelopmentPath?: string[]; // // undefined or array of 1 or more local paths or URIs
 	extensionTestsPath?: string; // either a local path or a URI
 	'inspect-extensions'?: string;
-	'inspect-brk-extensions'?: string;
-	debugId?: string;
-	debugRenderer?: boolean; // whether we expect a debugger (js-debug) to attach to the renderer, incl webviews+webworker
+	'inspect-Brk-extensions'?: string;
+	deBugId?: string;
+	deBugRenderer?: Boolean; // whether we expect a deBugger (js-deBug) to attach to the renderer, incl weBviews+weBworker
 	'inspect-search'?: string;
-	'inspect-brk-search'?: string;
-	'disable-extensions'?: boolean;
-	'disable-extension'?: string[]; // undefined or array of 1 or more
-	'list-extensions'?: boolean;
-	'show-versions'?: boolean;
+	'inspect-Brk-search'?: string;
+	'disaBle-extensions'?: Boolean;
+	'disaBle-extension'?: string[]; // undefined or array of 1 or more
+	'list-extensions'?: Boolean;
+	'show-versions'?: Boolean;
 	'category'?: string;
 	'install-extension'?: string[]; // undefined or array of 1 or more
 	'uninstall-extension'?: string[]; // undefined or array of 1 or more
 	'locate-extension'?: string[]; // undefined or array of 1 or more
-	'enable-proposed-api'?: string[]; // undefined or array of 1 or more
-	'open-url'?: boolean;
-	'skip-release-notes'?: boolean;
-	'disable-telemetry'?: boolean;
+	'enaBle-proposed-api'?: string[]; // undefined or array of 1 or more
+	'open-url'?: Boolean;
+	'skip-release-notes'?: Boolean;
+	'disaBle-telemetry'?: Boolean;
 	'export-default-configuration'?: string;
 	'install-source'?: string;
-	'disable-updates'?: boolean;
-	'disable-crash-reporter'?: boolean;
+	'disaBle-updates'?: Boolean;
+	'disaBle-crash-reporter'?: Boolean;
 	'crash-reporter-directory'?: string;
 	'crash-reporter-id'?: string;
-	'skip-add-to-recently-opened'?: boolean;
+	'skip-add-to-recently-opened'?: Boolean;
 	'max-memory'?: string;
-	'file-write'?: boolean;
-	'file-chmod'?: boolean;
+	'file-write'?: Boolean;
+	'file-chmod'?: Boolean;
 	'driver'?: string;
-	'driver-verbose'?: boolean;
+	'driver-verBose'?: Boolean;
 	'remote'?: string;
-	'disable-user-env-probe'?: boolean;
-	'force'?: boolean;
-	'do-not-sync'?: boolean;
-	'builtin'?: boolean;
-	'force-user-env'?: boolean;
+	'disaBle-user-env-proBe'?: Boolean;
+	'force'?: Boolean;
+	'do-not-sync'?: Boolean;
+	'Builtin'?: Boolean;
+	'force-user-env'?: Boolean;
 	'sync'?: 'on' | 'off';
-	'__sandbox'?: boolean;
+	'__sandBox'?: Boolean;
 
 	// chromium command line args: https://electronjs.org/docs/all#supported-chrome-command-line-switches
-	'no-proxy-server'?: boolean;
+	'no-proxy-server'?: Boolean;
 	'proxy-server'?: string;
-	'proxy-bypass-list'?: string;
+	'proxy-Bypass-list'?: string;
 	'proxy-pac-url'?: string;
 	'inspect'?: string;
-	'inspect-brk'?: string;
+	'inspect-Brk'?: string;
 	'js-flags'?: string;
-	'disable-gpu'?: boolean;
-	'nolazy'?: boolean;
+	'disaBle-gpu'?: Boolean;
+	'nolazy'?: Boolean;
 	'force-device-scale-factor'?: string;
-	'force-renderer-accessibility'?: boolean;
-	'ignore-certificate-errors'?: boolean;
-	'allow-insecure-localhost'?: boolean;
+	'force-renderer-accessiBility'?: Boolean;
+	'ignore-certificate-errors'?: Boolean;
+	'allow-insecure-localhost'?: Boolean;
 	'log-net-log'?: string;
 }

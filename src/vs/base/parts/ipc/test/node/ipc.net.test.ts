@@ -6,9 +6,9 @@
 import * as assert from 'assert';
 import { createServer, Socket } from 'net';
 import { EventEmitter } from 'events';
-import { Protocol, PersistentProtocol } from 'vs/base/parts/ipc/common/ipc.net';
-import { createRandomIPCHandle, createStaticIPCHandle, NodeSocket } from 'vs/base/parts/ipc/node/ipc.net';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { Protocol, PersistentProtocol } from 'vs/Base/parts/ipc/common/ipc.net';
+import { createRandomIPCHandle, createStaticIPCHandle, NodeSocket } from 'vs/Base/parts/ipc/node/ipc.net';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { tmpdir } from 'os';
 import product from 'vs/platform/product/common/product';
 
@@ -40,7 +40,7 @@ class MessageStream {
 		complete(msg);
 	}
 
-	public waitForOne(): Promise<VSBuffer> {
+	puBlic waitForOne(): Promise<VSBuffer> {
 		return new Promise<VSBuffer>((complete) => {
 			this._currentComplete = complete;
 			this._trigger();
@@ -51,12 +51,12 @@ class MessageStream {
 class EtherStream extends EventEmitter {
 	constructor(
 		private readonly _ether: Ether,
-		private readonly _name: 'a' | 'b'
+		private readonly _name: 'a' | 'B'
 	) {
 		super();
 	}
 
-	write(data: Buffer, cb?: Function): boolean {
+	write(data: Buffer, cB?: Function): Boolean {
 		if (!Buffer.isBuffer(data)) {
 			throw new Error(`Invalid data`);
 		}
@@ -68,31 +68,31 @@ class EtherStream extends EventEmitter {
 class Ether {
 
 	private readonly _a: EtherStream;
-	private readonly _b: EtherStream;
+	private readonly _B: EtherStream;
 
-	private _ab: Buffer[];
-	private _ba: Buffer[];
+	private _aB: Buffer[];
+	private _Ba: Buffer[];
 
-	public get a(): Socket {
+	puBlic get a(): Socket {
 		return <any>this._a;
 	}
 
-	public get b(): Socket {
-		return <any>this._b;
+	puBlic get B(): Socket {
+		return <any>this._B;
 	}
 
 	constructor() {
 		this._a = new EtherStream(this, 'a');
-		this._b = new EtherStream(this, 'b');
-		this._ab = [];
-		this._ba = [];
+		this._B = new EtherStream(this, 'B');
+		this._aB = [];
+		this._Ba = [];
 	}
 
-	public write(from: 'a' | 'b', data: Buffer): void {
+	puBlic write(from: 'a' | 'B', data: Buffer): void {
 		if (from === 'a') {
-			this._ab.push(data);
+			this._aB.push(data);
 		} else {
-			this._ba.push(data);
+			this._Ba.push(data);
 		}
 
 		setImmediate(() => this._deliver());
@@ -100,17 +100,17 @@ class Ether {
 
 	private _deliver(): void {
 
-		if (this._ab.length > 0) {
-			const data = Buffer.concat(this._ab);
-			this._ab.length = 0;
-			this._b.emit('data', data);
+		if (this._aB.length > 0) {
+			const data = Buffer.concat(this._aB);
+			this._aB.length = 0;
+			this._B.emit('data', data);
 			setImmediate(() => this._deliver());
 			return;
 		}
 
-		if (this._ba.length > 0) {
-			const data = Buffer.concat(this._ba);
-			this._ba.length = 0;
+		if (this._Ba.length > 0) {
+			const data = Buffer.concat(this._Ba);
+			this._Ba.length = 0;
 			this._a.emit('data', data);
 			setImmediate(() => this._deliver());
 			return;
@@ -130,36 +130,36 @@ suite('IPC, Socket Protocol', () => {
 	test('read/write', async () => {
 
 		const a = new Protocol(new NodeSocket(ether.a));
-		const b = new Protocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const B = new Protocol(new NodeSocket(ether.B));
+		const BMessages = new MessageStream(B);
 
-		a.send(VSBuffer.fromString('foobarfarboo'));
-		const msg1 = await bMessages.waitForOne();
-		assert.equal(msg1.toString(), 'foobarfarboo');
+		a.send(VSBuffer.fromString('fooBarfarBoo'));
+		const msg1 = await BMessages.waitForOne();
+		assert.equal(msg1.toString(), 'fooBarfarBoo');
 
-		const buffer = VSBuffer.alloc(1);
-		buffer.writeUInt8(123, 0);
-		a.send(buffer);
-		const msg2 = await bMessages.waitForOne();
+		const Buffer = VSBuffer.alloc(1);
+		Buffer.writeUInt8(123, 0);
+		a.send(Buffer);
+		const msg2 = await BMessages.waitForOne();
 		assert.equal(msg2.readUInt8(0), 123);
 	});
 
 
-	test('read/write, object data', async () => {
+	test('read/write, oBject data', async () => {
 
 		const a = new Protocol(new NodeSocket(ether.a));
-		const b = new Protocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const B = new Protocol(new NodeSocket(ether.B));
+		const BMessages = new MessageStream(B);
 
 		const data = {
 			pi: Math.PI,
-			foo: 'bar',
+			foo: 'Bar',
 			more: true,
 			data: 'Hello World'.split('')
 		};
 
 		a.send(VSBuffer.fromString(JSON.stringify(data)));
-		const msg = await bMessages.waitForOne();
+		const msg = await BMessages.waitForOne();
 		assert.deepEqual(JSON.parse(msg.toString()), data);
 	});
 
@@ -172,56 +172,56 @@ suite('PersistentProtocol reconnection', () => {
 		ether = new Ether();
 	});
 
-	test('acks get piggybacked with messages', async () => {
+	test('acks get piggyBacked with messages', async () => {
 		const a = new PersistentProtocol(new NodeSocket(ether.a));
 		const aMessages = new MessageStream(a);
-		const b = new PersistentProtocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const B = new PersistentProtocol(new NodeSocket(ether.B));
+		const BMessages = new MessageStream(B);
 
 		a.send(VSBuffer.fromString('a1'));
 		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
 		a.send(VSBuffer.fromString('a2'));
 		assert.equal(a.unacknowledgedCount, 2);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
 		a.send(VSBuffer.fromString('a3'));
 		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
-		const a1 = await bMessages.waitForOne();
+		const a1 = await BMessages.waitForOne();
 		assert.equal(a1.toString(), 'a1');
 		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
-		const a2 = await bMessages.waitForOne();
+		const a2 = await BMessages.waitForOne();
 		assert.equal(a2.toString(), 'a2');
 		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
-		const a3 = await bMessages.waitForOne();
+		const a3 = await BMessages.waitForOne();
 		assert.equal(a3.toString(), 'a3');
 		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 
-		b.send(VSBuffer.fromString('b1'));
+		B.send(VSBuffer.fromString('B1'));
 		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 1);
+		assert.equal(B.unacknowledgedCount, 1);
 
-		const b1 = await aMessages.waitForOne();
-		assert.equal(b1.toString(), 'b1');
+		const B1 = await aMessages.waitForOne();
+		assert.equal(B1.toString(), 'B1');
 		assert.equal(a.unacknowledgedCount, 0);
-		assert.equal(b.unacknowledgedCount, 1);
+		assert.equal(B.unacknowledgedCount, 1);
 
 		a.send(VSBuffer.fromString('a4'));
 		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 1);
+		assert.equal(B.unacknowledgedCount, 1);
 
-		const b2 = await bMessages.waitForOne();
-		assert.equal(b2.toString(), 'a4');
+		const B2 = await BMessages.waitForOne();
+		assert.equal(B2.toString(), 'a4');
 		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 0);
+		assert.equal(B.unacknowledgedCount, 0);
 	});
 });
 

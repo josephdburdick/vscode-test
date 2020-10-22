@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IExtensionTipsService, IExecutableBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { IExtensionTipsService, IExecutaBleBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { URI } from 'vs/Base/common/uri';
 import { ExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionTipsService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IRequestService } from 'vs/platform/request/common/request';
 import { ILogService } from 'vs/platform/log/common/log';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 
 class NativeExtensionTipsService extends ExtensionTipsService implements IExtensionTipsService {
 
@@ -39,12 +39,12 @@ class NativeExtensionTipsService extends ExtensionTipsService implements IExtens
 		return super.getConfigBasedTips(folder);
 	}
 
-	getImportantExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
-		return this.channel.call<IExecutableBasedExtensionTip[]>('getImportantExecutableBasedTips');
+	getImportantExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]> {
+		return this.channel.call<IExecutaBleBasedExtensionTip[]>('getImportantExecutaBleBasedTips');
 	}
 
-	getOtherExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
-		return this.channel.call<IExecutableBasedExtensionTip[]>('getOtherExecutableBasedTips');
+	getOtherExecutaBleBasedTips(): Promise<IExecutaBleBasedExtensionTip[]> {
+		return this.channel.call<IExecutaBleBasedExtensionTip[]>('getOtherExecutaBleBasedTips');
 	}
 
 	getAllWorkspacesTips(): Promise<IWorkspaceTips[]> {

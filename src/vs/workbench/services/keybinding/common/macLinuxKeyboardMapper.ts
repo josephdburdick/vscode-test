@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { KeyCode, KeyCodeUtils, Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { IMMUTABLE_CODE_TO_KEY_CODE, IMMUTABLE_KEY_CODE_TO_CODE, ScanCode, ScanCodeBinding, ScanCodeUtils } from 'vs/base/common/scanCode';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
-import { BaseResolvedKeybinding } from 'vs/platform/keybinding/common/baseResolvedKeybinding';
+import { CharCode } from 'vs/Base/common/charCode';
+import { KeyCode, KeyCodeUtils, KeyBinding, ResolvedKeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { IMMUTABLE_CODE_TO_KEY_CODE, IMMUTABLE_KEY_CODE_TO_CODE, ScanCode, ScanCodeBinding, ScanCodeUtils } from 'vs/Base/common/scanCode';
+import { IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
+import { IKeyBoardMapper } from 'vs/workBench/services/keyBinding/common/keyBoardMapper';
+import { BaseResolvedKeyBinding } from 'vs/platform/keyBinding/common/BaseResolvedKeyBinding';
 
 export interface IMacLinuxKeyMapping {
 	value: string;
@@ -18,37 +18,37 @@ export interface IMacLinuxKeyMapping {
 	withShiftAltGr: string;
 }
 
-function macLinuxKeyMappingEquals(a: IMacLinuxKeyMapping, b: IMacLinuxKeyMapping): boolean {
-	if (!a && !b) {
+function macLinuxKeyMappingEquals(a: IMacLinuxKeyMapping, B: IMacLinuxKeyMapping): Boolean {
+	if (!a && !B) {
 		return true;
 	}
-	if (!a || !b) {
+	if (!a || !B) {
 		return false;
 	}
 	return (
-		a.value === b.value
-		&& a.withShift === b.withShift
-		&& a.withAltGr === b.withAltGr
-		&& a.withShiftAltGr === b.withShiftAltGr
+		a.value === B.value
+		&& a.withShift === B.withShift
+		&& a.withAltGr === B.withAltGr
+		&& a.withShiftAltGr === B.withShiftAltGr
 	);
 }
 
-export interface IMacLinuxKeyboardMapping {
+export interface IMacLinuxKeyBoardMapping {
 	[scanCode: string]: IMacLinuxKeyMapping;
 }
 
-export function macLinuxKeyboardMappingEquals(a: IMacLinuxKeyboardMapping | null, b: IMacLinuxKeyboardMapping | null): boolean {
-	if (!a && !b) {
+export function macLinuxKeyBoardMappingEquals(a: IMacLinuxKeyBoardMapping | null, B: IMacLinuxKeyBoardMapping | null): Boolean {
+	if (!a && !B) {
 		return true;
 	}
-	if (!a || !b) {
+	if (!a || !B) {
 		return false;
 	}
 	for (let scanCode = 0; scanCode < ScanCode.MAX_VALUE; scanCode++) {
 		const strScanCode = ScanCodeUtils.toString(scanCode);
 		const aEntry = a[strScanCode];
-		const bEntry = b[strScanCode];
-		if (!macLinuxKeyMappingEquals(aEntry, bEntry)) {
+		const BEntry = B[strScanCode];
+		if (!macLinuxKeyMappingEquals(aEntry, BEntry)) {
 			return false;
 		}
 	}
@@ -61,83 +61,83 @@ export function macLinuxKeyboardMappingEquals(a: IMacLinuxKeyboardMapping | null
  *  - '/' => { keyCode: KeyCode.US_SLASH, shiftKey: false }
  *  - '?' => { keyCode: KeyCode.US_SLASH, shiftKey: true }
  */
-const CHAR_CODE_TO_KEY_CODE: ({ keyCode: KeyCode; shiftKey: boolean } | null)[] = [];
+const CHAR_CODE_TO_KEY_CODE: ({ keyCode: KeyCode; shiftKey: Boolean } | null)[] = [];
 
-export class NativeResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeBinding> {
+export class NativeResolvedKeyBinding extends BaseResolvedKeyBinding<ScanCodeBinding> {
 
-	private readonly _mapper: MacLinuxKeyboardMapper;
+	private readonly _mapper: MacLinuxKeyBoardMapper;
 
-	constructor(mapper: MacLinuxKeyboardMapper, os: OperatingSystem, parts: ScanCodeBinding[]) {
+	constructor(mapper: MacLinuxKeyBoardMapper, os: OperatingSystem, parts: ScanCodeBinding[]) {
 		super(os, parts);
 		this._mapper = mapper;
 	}
 
-	protected _getLabel(keybinding: ScanCodeBinding): string | null {
-		return this._mapper.getUILabelForScanCodeBinding(keybinding);
+	protected _getLaBel(keyBinding: ScanCodeBinding): string | null {
+		return this._mapper.getUILaBelForScanCodeBinding(keyBinding);
 	}
 
-	protected _getAriaLabel(keybinding: ScanCodeBinding): string | null {
-		return this._mapper.getAriaLabelForScanCodeBinding(keybinding);
+	protected _getAriaLaBel(keyBinding: ScanCodeBinding): string | null {
+		return this._mapper.getAriaLaBelForScanCodeBinding(keyBinding);
 	}
 
-	protected _getElectronAccelerator(keybinding: ScanCodeBinding): string | null {
-		return this._mapper.getElectronAcceleratorLabelForScanCodeBinding(keybinding);
+	protected _getElectronAccelerator(keyBinding: ScanCodeBinding): string | null {
+		return this._mapper.getElectronAcceleratorLaBelForScanCodeBinding(keyBinding);
 	}
 
-	protected _getUserSettingsLabel(keybinding: ScanCodeBinding): string | null {
-		return this._mapper.getUserSettingsLabelForScanCodeBinding(keybinding);
+	protected _getUserSettingsLaBel(keyBinding: ScanCodeBinding): string | null {
+		return this._mapper.getUserSettingsLaBelForScanCodeBinding(keyBinding);
 	}
 
-	protected _isWYSIWYG(binding: ScanCodeBinding | null): boolean {
-		if (!binding) {
+	protected _isWYSIWYG(Binding: ScanCodeBinding | null): Boolean {
+		if (!Binding) {
 			return true;
 		}
-		if (IMMUTABLE_CODE_TO_KEY_CODE[binding.scanCode] !== -1) {
+		if (IMMUTABLE_CODE_TO_KEY_CODE[Binding.scanCode] !== -1) {
 			return true;
 		}
-		let a = this._mapper.getAriaLabelForScanCodeBinding(binding);
-		let b = this._mapper.getUserSettingsLabelForScanCodeBinding(binding);
+		let a = this._mapper.getAriaLaBelForScanCodeBinding(Binding);
+		let B = this._mapper.getUserSettingsLaBelForScanCodeBinding(Binding);
 
-		if (!a && !b) {
+		if (!a && !B) {
 			return true;
 		}
-		if (!a || !b) {
+		if (!a || !B) {
 			return false;
 		}
-		return (a.toLowerCase() === b.toLowerCase());
+		return (a.toLowerCase() === B.toLowerCase());
 	}
 
-	protected _getDispatchPart(keybinding: ScanCodeBinding): string | null {
-		return this._mapper.getDispatchStrForScanCodeBinding(keybinding);
+	protected _getDispatchPart(keyBinding: ScanCodeBinding): string | null {
+		return this._mapper.getDispatchStrForScanCodeBinding(keyBinding);
 	}
 }
 
 interface IScanCodeMapping {
 	scanCode: ScanCode;
-	value: number;
-	withShift: number;
-	withAltGr: number;
-	withShiftAltGr: number;
+	value: numBer;
+	withShift: numBer;
+	withAltGr: numBer;
+	withShiftAltGr: numBer;
 }
 
-class ScanCodeCombo {
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly scanCode: ScanCode;
+class ScanCodeComBo {
+	puBlic readonly ctrlKey: Boolean;
+	puBlic readonly shiftKey: Boolean;
+	puBlic readonly altKey: Boolean;
+	puBlic readonly scanCode: ScanCode;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, scanCode: ScanCode) {
+	constructor(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, scanCode: ScanCode) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
 		this.altKey = altKey;
 		this.scanCode = scanCode;
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return `${this.ctrlKey ? 'Ctrl+' : ''}${this.shiftKey ? 'Shift+' : ''}${this.altKey ? 'Alt+' : ''}${ScanCodeUtils.toString(this.scanCode)}`;
 	}
 
-	public equals(other: ScanCodeCombo): boolean {
+	puBlic equals(other: ScanCodeComBo): Boolean {
 		return (
 			this.ctrlKey === other.ctrlKey
 			&& this.shiftKey === other.shiftKey
@@ -162,33 +162,33 @@ class ScanCodeCombo {
 		return mapping.value;
 	}
 
-	public getProducedChar(mapping: IMacLinuxKeyMapping): string {
-		const charCode = MacLinuxKeyboardMapper.getCharCode(this.getProducedCharCode(mapping));
+	puBlic getProducedChar(mapping: IMacLinuxKeyMapping): string {
+		const charCode = MacLinuxKeyBoardMapper.getCharCode(this.getProducedCharCode(mapping));
 		if (charCode === 0) {
 			return ' --- ';
 		}
-		if (charCode >= CharCode.U_Combining_Grave_Accent && charCode <= CharCode.U_Combining_Latin_Small_Letter_X) {
-			// combining
+		if (charCode >= CharCode.U_ComBining_Grave_Accent && charCode <= CharCode.U_ComBining_Latin_Small_Letter_X) {
+			// comBining
 			return 'U+' + charCode.toString(16);
 		}
 		return '  ' + String.fromCharCode(charCode) + '  ';
 	}
 }
 
-class KeyCodeCombo {
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly keyCode: KeyCode;
+class KeyCodeComBo {
+	puBlic readonly ctrlKey: Boolean;
+	puBlic readonly shiftKey: Boolean;
+	puBlic readonly altKey: Boolean;
+	puBlic readonly keyCode: KeyCode;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, keyCode: KeyCode) {
+	constructor(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, keyCode: KeyCode) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
 		this.altKey = altKey;
 		this.keyCode = keyCode;
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return `${this.ctrlKey ? 'Ctrl+' : ''}${this.shiftKey ? 'Shift+' : ''}${this.altKey ? 'Alt+' : ''}${KeyCodeUtils.toString(this.keyCode)}`;
 	}
 }
@@ -196,72 +196,72 @@ class KeyCodeCombo {
 class ScanCodeKeyCodeMapper {
 
 	/**
-	 * ScanCode combination => KeyCode combination.
+	 * ScanCode comBination => KeyCode comBination.
 	 * Only covers relevant modifiers ctrl, shift, alt (since meta does not influence the mappings).
 	 */
-	private readonly _scanCodeToKeyCode: number[][] = [];
+	private readonly _scanCodeToKeyCode: numBer[][] = [];
 	/**
 	 * inverse of `_scanCodeToKeyCode`.
-	 * KeyCode combination => ScanCode combination.
+	 * KeyCode comBination => ScanCode comBination.
 	 * Only covers relevant modifiers ctrl, shift, alt (since meta does not influence the mappings).
 	 */
-	private readonly _keyCodeToScanCode: number[][] = [];
+	private readonly _keyCodeToScanCode: numBer[][] = [];
 
 	constructor() {
 		this._scanCodeToKeyCode = [];
 		this._keyCodeToScanCode = [];
 	}
 
-	public registrationComplete(): void {
-		// IntlHash and IntlBackslash are rare keys, so ensure they don't end up being the preferred...
+	puBlic registrationComplete(): void {
+		// IntlHash and IntlBackslash are rare keys, so ensure they don't end up Being the preferred...
 		this._moveToEnd(ScanCode.IntlHash);
 		this._moveToEnd(ScanCode.IntlBackslash);
 	}
 
 	private _moveToEnd(scanCode: ScanCode): void {
 		for (let mod = 0; mod < 8; mod++) {
-			const encodedKeyCodeCombos = this._scanCodeToKeyCode[(scanCode << 3) + mod];
-			if (!encodedKeyCodeCombos) {
+			const encodedKeyCodeComBos = this._scanCodeToKeyCode[(scanCode << 3) + mod];
+			if (!encodedKeyCodeComBos) {
 				continue;
 			}
-			for (let i = 0, len = encodedKeyCodeCombos.length; i < len; i++) {
-				const encodedScanCodeCombos = this._keyCodeToScanCode[encodedKeyCodeCombos[i]];
-				if (encodedScanCodeCombos.length === 1) {
+			for (let i = 0, len = encodedKeyCodeComBos.length; i < len; i++) {
+				const encodedScanCodeComBos = this._keyCodeToScanCode[encodedKeyCodeComBos[i]];
+				if (encodedScanCodeComBos.length === 1) {
 					continue;
 				}
-				for (let j = 0, len = encodedScanCodeCombos.length; j < len; j++) {
-					const entry = encodedScanCodeCombos[j];
+				for (let j = 0, len = encodedScanCodeComBos.length; j < len; j++) {
+					const entry = encodedScanCodeComBos[j];
 					const entryScanCode = (entry >>> 3);
 					if (entryScanCode === scanCode) {
 						// Move this entry to the end
 						for (let k = j + 1; k < len; k++) {
-							encodedScanCodeCombos[k - 1] = encodedScanCodeCombos[k];
+							encodedScanCodeComBos[k - 1] = encodedScanCodeComBos[k];
 						}
-						encodedScanCodeCombos[len - 1] = entry;
+						encodedScanCodeComBos[len - 1] = entry;
 					}
 				}
 			}
 		}
 	}
 
-	public registerIfUnknown(scanCodeCombo: ScanCodeCombo, keyCodeCombo: KeyCodeCombo): void {
-		if (keyCodeCombo.keyCode === KeyCode.Unknown) {
+	puBlic registerIfUnknown(scanCodeComBo: ScanCodeComBo, keyCodeComBo: KeyCodeComBo): void {
+		if (keyCodeComBo.keyCode === KeyCode.Unknown) {
 			return;
 		}
-		const scanCodeComboEncoded = this._encodeScanCodeCombo(scanCodeCombo);
-		const keyCodeComboEncoded = this._encodeKeyCodeCombo(keyCodeCombo);
+		const scanCodeComBoEncoded = this._encodeScanCodeComBo(scanCodeComBo);
+		const keyCodeComBoEncoded = this._encodeKeyCodeComBo(keyCodeComBo);
 
-		const keyCodeIsDigit = (keyCodeCombo.keyCode >= KeyCode.KEY_0 && keyCodeCombo.keyCode <= KeyCode.KEY_9);
-		const keyCodeIsLetter = (keyCodeCombo.keyCode >= KeyCode.KEY_A && keyCodeCombo.keyCode <= KeyCode.KEY_Z);
+		const keyCodeIsDigit = (keyCodeComBo.keyCode >= KeyCode.KEY_0 && keyCodeComBo.keyCode <= KeyCode.KEY_9);
+		const keyCodeIsLetter = (keyCodeComBo.keyCode >= KeyCode.KEY_A && keyCodeComBo.keyCode <= KeyCode.KEY_Z);
 
-		const existingKeyCodeCombos = this._scanCodeToKeyCode[scanCodeComboEncoded];
+		const existingKeyCodeComBos = this._scanCodeToKeyCode[scanCodeComBoEncoded];
 
 		// Allow a scan code to map to multiple key codes if it is a digit or a letter key code
 		if (keyCodeIsDigit || keyCodeIsLetter) {
 			// Only check that we don't insert the same entry twice
-			if (existingKeyCodeCombos) {
-				for (let i = 0, len = existingKeyCodeCombos.length; i < len; i++) {
-					if (existingKeyCodeCombos[i] === keyCodeComboEncoded) {
+			if (existingKeyCodeComBos) {
+				for (let i = 0, len = existingKeyCodeComBos.length; i < len; i++) {
+					if (existingKeyCodeComBos[i] === keyCodeComBoEncoded) {
 						// avoid duplicates
 						return;
 					}
@@ -269,61 +269,61 @@ class ScanCodeKeyCodeMapper {
 			}
 		} else {
 			// Don't allow multiples
-			if (existingKeyCodeCombos && existingKeyCodeCombos.length !== 0) {
+			if (existingKeyCodeComBos && existingKeyCodeComBos.length !== 0) {
 				return;
 			}
 		}
 
-		this._scanCodeToKeyCode[scanCodeComboEncoded] = this._scanCodeToKeyCode[scanCodeComboEncoded] || [];
-		this._scanCodeToKeyCode[scanCodeComboEncoded].unshift(keyCodeComboEncoded);
+		this._scanCodeToKeyCode[scanCodeComBoEncoded] = this._scanCodeToKeyCode[scanCodeComBoEncoded] || [];
+		this._scanCodeToKeyCode[scanCodeComBoEncoded].unshift(keyCodeComBoEncoded);
 
-		this._keyCodeToScanCode[keyCodeComboEncoded] = this._keyCodeToScanCode[keyCodeComboEncoded] || [];
-		this._keyCodeToScanCode[keyCodeComboEncoded].unshift(scanCodeComboEncoded);
+		this._keyCodeToScanCode[keyCodeComBoEncoded] = this._keyCodeToScanCode[keyCodeComBoEncoded] || [];
+		this._keyCodeToScanCode[keyCodeComBoEncoded].unshift(scanCodeComBoEncoded);
 	}
 
-	public lookupKeyCodeCombo(keyCodeCombo: KeyCodeCombo): ScanCodeCombo[] {
-		const keyCodeComboEncoded = this._encodeKeyCodeCombo(keyCodeCombo);
-		const scanCodeCombosEncoded = this._keyCodeToScanCode[keyCodeComboEncoded];
-		if (!scanCodeCombosEncoded || scanCodeCombosEncoded.length === 0) {
+	puBlic lookupKeyCodeComBo(keyCodeComBo: KeyCodeComBo): ScanCodeComBo[] {
+		const keyCodeComBoEncoded = this._encodeKeyCodeComBo(keyCodeComBo);
+		const scanCodeComBosEncoded = this._keyCodeToScanCode[keyCodeComBoEncoded];
+		if (!scanCodeComBosEncoded || scanCodeComBosEncoded.length === 0) {
 			return [];
 		}
 
-		let result: ScanCodeCombo[] = [];
-		for (let i = 0, len = scanCodeCombosEncoded.length; i < len; i++) {
-			const scanCodeComboEncoded = scanCodeCombosEncoded[i];
+		let result: ScanCodeComBo[] = [];
+		for (let i = 0, len = scanCodeComBosEncoded.length; i < len; i++) {
+			const scanCodeComBoEncoded = scanCodeComBosEncoded[i];
 
-			const ctrlKey = (scanCodeComboEncoded & 0b001) ? true : false;
-			const shiftKey = (scanCodeComboEncoded & 0b010) ? true : false;
-			const altKey = (scanCodeComboEncoded & 0b100) ? true : false;
-			const scanCode: ScanCode = (scanCodeComboEncoded >>> 3);
+			const ctrlKey = (scanCodeComBoEncoded & 0B001) ? true : false;
+			const shiftKey = (scanCodeComBoEncoded & 0B010) ? true : false;
+			const altKey = (scanCodeComBoEncoded & 0B100) ? true : false;
+			const scanCode: ScanCode = (scanCodeComBoEncoded >>> 3);
 
-			result[i] = new ScanCodeCombo(ctrlKey, shiftKey, altKey, scanCode);
+			result[i] = new ScanCodeComBo(ctrlKey, shiftKey, altKey, scanCode);
 		}
 		return result;
 	}
 
-	public lookupScanCodeCombo(scanCodeCombo: ScanCodeCombo): KeyCodeCombo[] {
-		const scanCodeComboEncoded = this._encodeScanCodeCombo(scanCodeCombo);
-		const keyCodeCombosEncoded = this._scanCodeToKeyCode[scanCodeComboEncoded];
-		if (!keyCodeCombosEncoded || keyCodeCombosEncoded.length === 0) {
+	puBlic lookupScanCodeComBo(scanCodeComBo: ScanCodeComBo): KeyCodeComBo[] {
+		const scanCodeComBoEncoded = this._encodeScanCodeComBo(scanCodeComBo);
+		const keyCodeComBosEncoded = this._scanCodeToKeyCode[scanCodeComBoEncoded];
+		if (!keyCodeComBosEncoded || keyCodeComBosEncoded.length === 0) {
 			return [];
 		}
 
-		let result: KeyCodeCombo[] = [];
-		for (let i = 0, len = keyCodeCombosEncoded.length; i < len; i++) {
-			const keyCodeComboEncoded = keyCodeCombosEncoded[i];
+		let result: KeyCodeComBo[] = [];
+		for (let i = 0, len = keyCodeComBosEncoded.length; i < len; i++) {
+			const keyCodeComBoEncoded = keyCodeComBosEncoded[i];
 
-			const ctrlKey = (keyCodeComboEncoded & 0b001) ? true : false;
-			const shiftKey = (keyCodeComboEncoded & 0b010) ? true : false;
-			const altKey = (keyCodeComboEncoded & 0b100) ? true : false;
-			const keyCode: KeyCode = (keyCodeComboEncoded >>> 3);
+			const ctrlKey = (keyCodeComBoEncoded & 0B001) ? true : false;
+			const shiftKey = (keyCodeComBoEncoded & 0B010) ? true : false;
+			const altKey = (keyCodeComBoEncoded & 0B100) ? true : false;
+			const keyCode: KeyCode = (keyCodeComBoEncoded >>> 3);
 
-			result[i] = new KeyCodeCombo(ctrlKey, shiftKey, altKey, keyCode);
+			result[i] = new KeyCodeComBo(ctrlKey, shiftKey, altKey, keyCode);
 		}
 		return result;
 	}
 
-	public guessStableKeyCode(scanCode: ScanCode): KeyCode {
+	puBlic guessStaBleKeyCode(scanCode: ScanCode): KeyCode {
 		if (scanCode >= ScanCode.Digit1 && scanCode <= ScanCode.Digit0) {
 			// digits are ok
 			switch (scanCode) {
@@ -340,16 +340,16 @@ class ScanCodeKeyCodeMapper {
 			}
 		}
 
-		// Lookup the scanCode with and without shift and see if the keyCode is stable
-		const keyCodeCombos1 = this.lookupScanCodeCombo(new ScanCodeCombo(false, false, false, scanCode));
-		const keyCodeCombos2 = this.lookupScanCodeCombo(new ScanCodeCombo(false, true, false, scanCode));
-		if (keyCodeCombos1.length === 1 && keyCodeCombos2.length === 1) {
-			const shiftKey1 = keyCodeCombos1[0].shiftKey;
-			const keyCode1 = keyCodeCombos1[0].keyCode;
-			const shiftKey2 = keyCodeCombos2[0].shiftKey;
-			const keyCode2 = keyCodeCombos2[0].keyCode;
+		// Lookup the scanCode with and without shift and see if the keyCode is staBle
+		const keyCodeComBos1 = this.lookupScanCodeComBo(new ScanCodeComBo(false, false, false, scanCode));
+		const keyCodeComBos2 = this.lookupScanCodeComBo(new ScanCodeComBo(false, true, false, scanCode));
+		if (keyCodeComBos1.length === 1 && keyCodeComBos2.length === 1) {
+			const shiftKey1 = keyCodeComBos1[0].shiftKey;
+			const keyCode1 = keyCodeComBos1[0].keyCode;
+			const shiftKey2 = keyCodeComBos2[0].shiftKey;
+			const keyCode2 = keyCodeComBos2[0].keyCode;
 			if (keyCode1 === keyCode2 && shiftKey1 !== shiftKey2) {
-				// This looks like a stable mapping
+				// This looks like a staBle mapping
 				return keyCode1;
 			}
 		}
@@ -357,15 +357,15 @@ class ScanCodeKeyCodeMapper {
 		return -1;
 	}
 
-	private _encodeScanCodeCombo(scanCodeCombo: ScanCodeCombo): number {
-		return this._encode(scanCodeCombo.ctrlKey, scanCodeCombo.shiftKey, scanCodeCombo.altKey, scanCodeCombo.scanCode);
+	private _encodeScanCodeComBo(scanCodeComBo: ScanCodeComBo): numBer {
+		return this._encode(scanCodeComBo.ctrlKey, scanCodeComBo.shiftKey, scanCodeComBo.altKey, scanCodeComBo.scanCode);
 	}
 
-	private _encodeKeyCodeCombo(keyCodeCombo: KeyCodeCombo): number {
-		return this._encode(keyCodeCombo.ctrlKey, keyCodeCombo.shiftKey, keyCodeCombo.altKey, keyCodeCombo.keyCode);
+	private _encodeKeyCodeComBo(keyCodeComBo: KeyCodeComBo): numBer {
+		return this._encode(keyCodeComBo.ctrlKey, keyCodeComBo.shiftKey, keyCodeComBo.altKey, keyCodeComBo.keyCode);
 	}
 
-	private _encode(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, principal: number): number {
+	private _encode(ctrlKey: Boolean, shiftKey: Boolean, altKey: Boolean, principal: numBer): numBer {
 		return (
 			((ctrlKey ? 1 : 0) << 0)
 			| ((shiftKey ? 1 : 0) << 1)
@@ -375,52 +375,52 @@ class ScanCodeKeyCodeMapper {
 	}
 }
 
-export class MacLinuxKeyboardMapper implements IKeyboardMapper {
+export class MacLinuxKeyBoardMapper implements IKeyBoardMapper {
 
 	/**
-	 * Is this the standard US keyboard layout?
+	 * Is this the standard US keyBoard layout?
 	 */
-	private readonly _isUSStandard: boolean;
+	private readonly _isUSStandard: Boolean;
 	/**
-	 * OS (can be Linux or Macintosh)
+	 * OS (can Be Linux or Macintosh)
 	 */
 	private readonly _OS: OperatingSystem;
 	/**
-	 * used only for debug purposes.
+	 * used only for deBug purposes.
 	 */
 	private readonly _codeInfo: IMacLinuxKeyMapping[];
 	/**
-	 * Maps ScanCode combos <-> KeyCode combos.
+	 * Maps ScanCode comBos <-> KeyCode comBos.
 	 */
 	private readonly _scanCodeKeyCodeMapper: ScanCodeKeyCodeMapper;
 	/**
-	 * UI label for a ScanCode.
+	 * UI laBel for a ScanCode.
 	 */
-	private readonly _scanCodeToLabel: Array<string | null> = [];
+	private readonly _scanCodeToLaBel: Array<string | null> = [];
 	/**
 	 * Dispatching string for a ScanCode.
 	 */
 	private readonly _scanCodeToDispatch: Array<string | null> = [];
 
-	constructor(isUSStandard: boolean, rawMappings: IMacLinuxKeyboardMapping, OS: OperatingSystem) {
+	constructor(isUSStandard: Boolean, rawMappings: IMacLinuxKeyBoardMapping, OS: OperatingSystem) {
 		this._isUSStandard = isUSStandard;
 		this._OS = OS;
 		this._codeInfo = [];
 		this._scanCodeKeyCodeMapper = new ScanCodeKeyCodeMapper();
-		this._scanCodeToLabel = [];
+		this._scanCodeToLaBel = [];
 		this._scanCodeToDispatch = [];
 
 		const _registerIfUnknown = (
 			hwCtrlKey: 0 | 1, hwShiftKey: 0 | 1, hwAltKey: 0 | 1, scanCode: ScanCode,
-			kbCtrlKey: 0 | 1, kbShiftKey: 0 | 1, kbAltKey: 0 | 1, keyCode: KeyCode,
+			kBCtrlKey: 0 | 1, kBShiftKey: 0 | 1, kBAltKey: 0 | 1, keyCode: KeyCode,
 		): void => {
 			this._scanCodeKeyCodeMapper.registerIfUnknown(
-				new ScanCodeCombo(hwCtrlKey ? true : false, hwShiftKey ? true : false, hwAltKey ? true : false, scanCode),
-				new KeyCodeCombo(kbCtrlKey ? true : false, kbShiftKey ? true : false, kbAltKey ? true : false, keyCode)
+				new ScanCodeComBo(hwCtrlKey ? true : false, hwShiftKey ? true : false, hwAltKey ? true : false, scanCode),
+				new KeyCodeComBo(kBCtrlKey ? true : false, kBShiftKey ? true : false, kBAltKey ? true : false, keyCode)
 			);
 		};
 
-		const _registerAllCombos = (_ctrlKey: 0 | 1, _shiftKey: 0 | 1, _altKey: 0 | 1, scanCode: ScanCode, keyCode: KeyCode): void => {
+		const _registerAllComBos = (_ctrlKey: 0 | 1, _shiftKey: 0 | 1, _altKey: 0 | 1, scanCode: ScanCode, keyCode: KeyCode): void => {
 			for (let ctrlKey = _ctrlKey; ctrlKey <= 1; ctrlKey++) {
 				for (let shiftKey = _shiftKey; shiftKey <= 1; shiftKey++) {
 					for (let altKey = _altKey; altKey <= 1; altKey++) {
@@ -433,9 +433,9 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			}
 		};
 
-		// Initialize `_scanCodeToLabel`
+		// Initialize `_scanCodeToLaBel`
 		for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
-			this._scanCodeToLabel[scanCode] = null;
+			this._scanCodeToLaBel[scanCode] = null;
 		}
 
 		// Initialize `_scanCodeToDispatch`
@@ -443,12 +443,12 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			this._scanCodeToDispatch[scanCode] = null;
 		}
 
-		// Handle immutable mappings
+		// Handle immutaBle mappings
 		for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
 			const keyCode = IMMUTABLE_CODE_TO_KEY_CODE[scanCode];
 			if (keyCode !== -1) {
-				_registerAllCombos(0, 0, 0, scanCode, keyCode);
-				this._scanCodeToLabel[scanCode] = KeyCodeUtils.toString(keyCode);
+				_registerAllComBos(0, 0, 0, scanCode, keyCode);
+				this._scanCodeToLaBel[scanCode] = KeyCodeUtils.toString(keyCode);
 
 				if (keyCode === KeyCode.Unknown || keyCode === KeyCode.Ctrl || keyCode === KeyCode.Meta || keyCode === KeyCode.Alt || keyCode === KeyCode.Shift) {
 					this._scanCodeToDispatch[scanCode] = null; // cannot dispatch on this ScanCode
@@ -458,12 +458,12 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			}
 		}
 
-		// Try to identify keyboard layouts where characters A-Z are missing
-		// and forcibly map them to their corresponding scan codes if that is the case
+		// Try to identify keyBoard layouts where characters A-Z are missing
+		// and forciBly map them to their corresponding scan codes if that is the case
 		const missingLatinLettersOverride: { [scanCode: string]: IMacLinuxKeyMapping; } = {};
 
 		{
-			let producesLatinLetter: boolean[] = [];
+			let producesLatinLetter: Boolean[] = [];
 			for (let strScanCode in rawMappings) {
 				if (rawMappings.hasOwnProperty(strScanCode)) {
 					const scanCode = ScanCodeUtils.toEnum(strScanCode);
@@ -475,7 +475,7 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 					}
 
 					const rawMapping = rawMappings[strScanCode];
-					const value = MacLinuxKeyboardMapper.getCharCode(rawMapping.value);
+					const value = MacLinuxKeyBoardMapper.getCharCode(rawMapping.value);
 
 					if (value >= CharCode.a && value <= CharCode.z) {
 						const upperCaseValue = CharCode.A + (value - CharCode.a);
@@ -497,7 +497,7 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 
 			// Ensure letters are mapped
 			_registerLetterIfMissing(CharCode.A, ScanCode.KeyA, 'a', 'A');
-			_registerLetterIfMissing(CharCode.B, ScanCode.KeyB, 'b', 'B');
+			_registerLetterIfMissing(CharCode.B, ScanCode.KeyB, 'B', 'B');
 			_registerLetterIfMissing(CharCode.C, ScanCode.KeyC, 'c', 'C');
 			_registerLetterIfMissing(CharCode.D, ScanCode.KeyD, 'd', 'D');
 			_registerLetterIfMissing(CharCode.E, ScanCode.KeyE, 'e', 'E');
@@ -538,10 +538,10 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 				this._codeInfo[scanCode] = rawMappings[strScanCode];
 
 				const rawMapping = missingLatinLettersOverride[strScanCode] || rawMappings[strScanCode];
-				const value = MacLinuxKeyboardMapper.getCharCode(rawMapping.value);
-				const withShift = MacLinuxKeyboardMapper.getCharCode(rawMapping.withShift);
-				const withAltGr = MacLinuxKeyboardMapper.getCharCode(rawMapping.withAltGr);
-				const withShiftAltGr = MacLinuxKeyboardMapper.getCharCode(rawMapping.withShiftAltGr);
+				const value = MacLinuxKeyBoardMapper.getCharCode(rawMapping.value);
+				const withShift = MacLinuxKeyBoardMapper.getCharCode(rawMapping.withShift);
+				const withAltGr = MacLinuxKeyBoardMapper.getCharCode(rawMapping.withAltGr);
+				const withShiftAltGr = MacLinuxKeyBoardMapper.getCharCode(rawMapping.withShiftAltGr);
 
 				const mapping: IScanCodeMapping = {
 					scanCode: scanCode,
@@ -556,13 +556,13 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 
 				if (value >= CharCode.a && value <= CharCode.z) {
 					const upperCaseValue = CharCode.A + (value - CharCode.a);
-					this._scanCodeToLabel[scanCode] = String.fromCharCode(upperCaseValue);
+					this._scanCodeToLaBel[scanCode] = String.fromCharCode(upperCaseValue);
 				} else if (value >= CharCode.A && value <= CharCode.Z) {
-					this._scanCodeToLabel[scanCode] = String.fromCharCode(value);
+					this._scanCodeToLaBel[scanCode] = String.fromCharCode(value);
 				} else if (value) {
-					this._scanCodeToLabel[scanCode] = String.fromCharCode(value);
+					this._scanCodeToLaBel[scanCode] = String.fromCharCode(value);
 				} else {
-					this._scanCodeToLabel[scanCode] = null;
+					this._scanCodeToLaBel[scanCode] = null;
 				}
 			}
 		}
@@ -573,17 +573,17 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			const scanCode = mapping.scanCode;
 			const withShiftAltGr = mapping.withShiftAltGr;
 			if (withShiftAltGr === mapping.withAltGr || withShiftAltGr === mapping.withShift || withShiftAltGr === mapping.value) {
-				// handled below
+				// handled Below
 				continue;
 			}
-			const kb = MacLinuxKeyboardMapper._charCodeToKb(withShiftAltGr);
-			if (!kb) {
+			const kB = MacLinuxKeyBoardMapper._charCodeToKB(withShiftAltGr);
+			if (!kB) {
 				continue;
 			}
-			const kbShiftKey = kb.shiftKey;
-			const keyCode = kb.keyCode;
+			const kBShiftKey = kB.shiftKey;
+			const keyCode = kB.keyCode;
 
-			if (kbShiftKey) {
+			if (kBShiftKey) {
 				// Ctrl+Shift+Alt+ScanCode => Shift+KeyCode
 				_registerIfUnknown(1, 1, 1, scanCode, 0, 1, 0, keyCode); //       Ctrl+Alt+ScanCode =>          Shift+KeyCode
 			} else {
@@ -597,17 +597,17 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			const scanCode = mapping.scanCode;
 			const withAltGr = mapping.withAltGr;
 			if (withAltGr === mapping.withShift || withAltGr === mapping.value) {
-				// handled below
+				// handled Below
 				continue;
 			}
-			const kb = MacLinuxKeyboardMapper._charCodeToKb(withAltGr);
-			if (!kb) {
+			const kB = MacLinuxKeyBoardMapper._charCodeToKB(withAltGr);
+			if (!kB) {
 				continue;
 			}
-			const kbShiftKey = kb.shiftKey;
-			const keyCode = kb.keyCode;
+			const kBShiftKey = kB.shiftKey;
+			const keyCode = kB.keyCode;
 
-			if (kbShiftKey) {
+			if (kBShiftKey) {
 				// Ctrl+Alt+ScanCode => Shift+KeyCode
 				_registerIfUnknown(1, 0, 1, scanCode, 0, 1, 0, keyCode); //       Ctrl+Alt+ScanCode =>          Shift+KeyCode
 			} else {
@@ -621,17 +621,17 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			const scanCode = mapping.scanCode;
 			const withShift = mapping.withShift;
 			if (withShift === mapping.value) {
-				// handled below
+				// handled Below
 				continue;
 			}
-			const kb = MacLinuxKeyboardMapper._charCodeToKb(withShift);
-			if (!kb) {
+			const kB = MacLinuxKeyBoardMapper._charCodeToKB(withShift);
+			if (!kB) {
 				continue;
 			}
-			const kbShiftKey = kb.shiftKey;
-			const keyCode = kb.keyCode;
+			const kBShiftKey = kB.shiftKey;
+			const keyCode = kB.keyCode;
 
-			if (kbShiftKey) {
+			if (kBShiftKey) {
 				// Shift+ScanCode => Shift+KeyCode
 				_registerIfUnknown(0, 1, 0, scanCode, 0, 1, 0, keyCode); //          Shift+ScanCode =>          Shift+KeyCode
 				_registerIfUnknown(0, 1, 1, scanCode, 0, 1, 1, keyCode); //      Shift+Alt+ScanCode =>      Shift+Alt+KeyCode
@@ -653,14 +653,14 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		for (let i = mappings.length - 1; i >= 0; i--) {
 			const mapping = mappings[i];
 			const scanCode = mapping.scanCode;
-			const kb = MacLinuxKeyboardMapper._charCodeToKb(mapping.value);
-			if (!kb) {
+			const kB = MacLinuxKeyBoardMapper._charCodeToKB(mapping.value);
+			if (!kB) {
 				continue;
 			}
-			const kbShiftKey = kb.shiftKey;
-			const keyCode = kb.keyCode;
+			const kBShiftKey = kB.shiftKey;
+			const keyCode = kB.keyCode;
 
-			if (kbShiftKey) {
+			if (kBShiftKey) {
 				// ScanCode => Shift+KeyCode
 				_registerIfUnknown(0, 0, 0, scanCode, 0, 1, 0, keyCode); //                ScanCode =>          Shift+KeyCode
 				_registerIfUnknown(0, 0, 1, scanCode, 0, 1, 1, keyCode); //            Alt+ScanCode =>      Shift+Alt+KeyCode
@@ -678,25 +678,25 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 				_registerIfUnknown(1, 1, 1, scanCode, 1, 1, 1, keyCode); // Ctrl+Shift+Alt+ScanCode => Ctrl+Shift+Alt+KeyCode
 			}
 		}
-		// Handle all left-over available digits
-		_registerAllCombos(0, 0, 0, ScanCode.Digit1, KeyCode.KEY_1);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit2, KeyCode.KEY_2);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit3, KeyCode.KEY_3);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit4, KeyCode.KEY_4);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit5, KeyCode.KEY_5);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit6, KeyCode.KEY_6);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit7, KeyCode.KEY_7);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit8, KeyCode.KEY_8);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit9, KeyCode.KEY_9);
-		_registerAllCombos(0, 0, 0, ScanCode.Digit0, KeyCode.KEY_0);
+		// Handle all left-over availaBle digits
+		_registerAllComBos(0, 0, 0, ScanCode.Digit1, KeyCode.KEY_1);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit2, KeyCode.KEY_2);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit3, KeyCode.KEY_3);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit4, KeyCode.KEY_4);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit5, KeyCode.KEY_5);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit6, KeyCode.KEY_6);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit7, KeyCode.KEY_7);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit8, KeyCode.KEY_8);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit9, KeyCode.KEY_9);
+		_registerAllComBos(0, 0, 0, ScanCode.Digit0, KeyCode.KEY_0);
 
 		this._scanCodeKeyCodeMapper.registrationComplete();
 	}
 
-	public dumpDebugInfo(): string {
+	puBlic dumpDeBugInfo(): string {
 		let result: string[] = [];
 
-		let immutableSamples = [
+		let immutaBleSamples = [
 			ScanCode.ArrowUp,
 			ScanCode.Numpad0
 		];
@@ -706,13 +706,13 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		result.push(`----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------`);
 		for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
 			if (IMMUTABLE_CODE_TO_KEY_CODE[scanCode] !== -1) {
-				if (immutableSamples.indexOf(scanCode) === -1) {
+				if (immutaBleSamples.indexOf(scanCode) === -1) {
 					continue;
 				}
 			}
 
 			if (cnt % 4 === 0) {
-				result.push(`|       HW Code combination      |  Key  |    KeyCode combination    | Pri |          UI label         |         User settings          |    Electron accelerator   |       Dispatching string       | WYSIWYG |`);
+				result.push(`|       HW Code comBination      |  Key  |    KeyCode comBination    | Pri |          UI laBel         |         User settings          |    Electron accelerator   |       Dispatching string       | WYSIWYG |`);
 				result.push(`----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------`);
 			}
 			cnt++;
@@ -720,61 +720,61 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			const mapping = this._codeInfo[scanCode];
 
 			for (let mod = 0; mod < 8; mod++) {
-				const hwCtrlKey = (mod & 0b001) ? true : false;
-				const hwShiftKey = (mod & 0b010) ? true : false;
-				const hwAltKey = (mod & 0b100) ? true : false;
-				const scanCodeCombo = new ScanCodeCombo(hwCtrlKey, hwShiftKey, hwAltKey, scanCode);
-				const resolvedKb = this.resolveKeyboardEvent({
-					_standardKeyboardEventBrand: true,
-					ctrlKey: scanCodeCombo.ctrlKey,
-					shiftKey: scanCodeCombo.shiftKey,
-					altKey: scanCodeCombo.altKey,
+				const hwCtrlKey = (mod & 0B001) ? true : false;
+				const hwShiftKey = (mod & 0B010) ? true : false;
+				const hwAltKey = (mod & 0B100) ? true : false;
+				const scanCodeComBo = new ScanCodeComBo(hwCtrlKey, hwShiftKey, hwAltKey, scanCode);
+				const resolvedKB = this.resolveKeyBoardEvent({
+					_standardKeyBoardEventBrand: true,
+					ctrlKey: scanCodeComBo.ctrlKey,
+					shiftKey: scanCodeComBo.shiftKey,
+					altKey: scanCodeComBo.altKey,
 					metaKey: false,
 					keyCode: -1,
 					code: ScanCodeUtils.toString(scanCode)
 				});
 
-				const outScanCodeCombo = scanCodeCombo.toString();
-				const outKey = scanCodeCombo.getProducedChar(mapping);
-				const ariaLabel = resolvedKb.getAriaLabel();
-				const outUILabel = (ariaLabel ? ariaLabel.replace(/Control\+/, 'Ctrl+') : null);
-				const outUserSettings = resolvedKb.getUserSettingsLabel();
-				const outElectronAccelerator = resolvedKb.getElectronAccelerator();
-				const outDispatchStr = resolvedKb.getDispatchParts()[0];
+				const outScanCodeComBo = scanCodeComBo.toString();
+				const outKey = scanCodeComBo.getProducedChar(mapping);
+				const ariaLaBel = resolvedKB.getAriaLaBel();
+				const outUILaBel = (ariaLaBel ? ariaLaBel.replace(/Control\+/, 'Ctrl+') : null);
+				const outUserSettings = resolvedKB.getUserSettingsLaBel();
+				const outElectronAccelerator = resolvedKB.getElectronAccelerator();
+				const outDispatchStr = resolvedKB.getDispatchParts()[0];
 
-				const isWYSIWYG = (resolvedKb ? resolvedKb.isWYSIWYG() : false);
+				const isWYSIWYG = (resolvedKB ? resolvedKB.isWYSIWYG() : false);
 				const outWYSIWYG = (isWYSIWYG ? '       ' : '   NO  ');
 
-				const kbCombos = this._scanCodeKeyCodeMapper.lookupScanCodeCombo(scanCodeCombo);
-				if (kbCombos.length === 0) {
-					result.push(`| ${this._leftPad(outScanCodeCombo, 30)} | ${outKey} | ${this._leftPad('', 25)} | ${this._leftPad('', 3)} | ${this._leftPad(outUILabel, 25)} | ${this._leftPad(outUserSettings, 30)} | ${this._leftPad(outElectronAccelerator, 25)} | ${this._leftPad(outDispatchStr, 30)} | ${outWYSIWYG} |`);
+				const kBComBos = this._scanCodeKeyCodeMapper.lookupScanCodeComBo(scanCodeComBo);
+				if (kBComBos.length === 0) {
+					result.push(`| ${this._leftPad(outScanCodeComBo, 30)} | ${outKey} | ${this._leftPad('', 25)} | ${this._leftPad('', 3)} | ${this._leftPad(outUILaBel, 25)} | ${this._leftPad(outUserSettings, 30)} | ${this._leftPad(outElectronAccelerator, 25)} | ${this._leftPad(outDispatchStr, 30)} | ${outWYSIWYG} |`);
 				} else {
-					for (let i = 0, len = kbCombos.length; i < len; i++) {
-						const kbCombo = kbCombos[i];
+					for (let i = 0, len = kBComBos.length; i < len; i++) {
+						const kBComBo = kBComBos[i];
 						// find out the priority of this scan code for this key code
 						let colPriority: string;
 
-						const scanCodeCombos = this._scanCodeKeyCodeMapper.lookupKeyCodeCombo(kbCombo);
-						if (scanCodeCombos.length === 1) {
-							// no need for priority, this key code combo maps to precisely this scan code combo
+						const scanCodeComBos = this._scanCodeKeyCodeMapper.lookupKeyCodeComBo(kBComBo);
+						if (scanCodeComBos.length === 1) {
+							// no need for priority, this key code comBo maps to precisely this scan code comBo
 							colPriority = '';
 						} else {
 							let priority = -1;
-							for (let j = 0; j < scanCodeCombos.length; j++) {
-								if (scanCodeCombos[j].equals(scanCodeCombo)) {
+							for (let j = 0; j < scanCodeComBos.length; j++) {
+								if (scanCodeComBos[j].equals(scanCodeComBo)) {
 									priority = j + 1;
-									break;
+									Break;
 								}
 							}
 							colPriority = String(priority);
 						}
 
-						const outKeybinding = kbCombo.toString();
+						const outKeyBinding = kBComBo.toString();
 						if (i === 0) {
-							result.push(`| ${this._leftPad(outScanCodeCombo, 30)} | ${outKey} | ${this._leftPad(outKeybinding, 25)} | ${this._leftPad(colPriority, 3)} | ${this._leftPad(outUILabel, 25)} | ${this._leftPad(outUserSettings, 30)} | ${this._leftPad(outElectronAccelerator, 25)} | ${this._leftPad(outDispatchStr, 30)} | ${outWYSIWYG} |`);
+							result.push(`| ${this._leftPad(outScanCodeComBo, 30)} | ${outKey} | ${this._leftPad(outKeyBinding, 25)} | ${this._leftPad(colPriority, 3)} | ${this._leftPad(outUILaBel, 25)} | ${this._leftPad(outUserSettings, 30)} | ${this._leftPad(outElectronAccelerator, 25)} | ${this._leftPad(outDispatchStr, 30)} | ${outWYSIWYG} |`);
 						} else {
-							// secondary keybindings
-							result.push(`| ${this._leftPad('', 30)} |       | ${this._leftPad(outKeybinding, 25)} | ${this._leftPad(colPriority, 3)} | ${this._leftPad('', 25)} | ${this._leftPad('', 30)} | ${this._leftPad('', 25)} | ${this._leftPad('', 30)} |         |`);
+							// secondary keyBindings
+							result.push(`| ${this._leftPad('', 30)} |       | ${this._leftPad(outKeyBinding, 25)} | ${this._leftPad(colPriority, 3)} | ${this._leftPad('', 25)} | ${this._leftPad('', 30)} | ${this._leftPad('', 25)} | ${this._leftPad('', 30)} |         |`);
 						}
 					}
 				}
@@ -786,7 +786,7 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		return result.join('\n');
 	}
 
-	private _leftPad(str: string | null, cnt: number): string {
+	private _leftPad(str: string | null, cnt: numBer): string {
 		if (str === null) {
 			str = 'null';
 		}
@@ -796,33 +796,33 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		return str;
 	}
 
-	public simpleKeybindingToScanCodeBinding(keybinding: SimpleKeybinding): ScanCodeBinding[] {
-		// Avoid double Enter bindings (both ScanCode.NumpadEnter and ScanCode.Enter point to KeyCode.Enter)
-		if (keybinding.keyCode === KeyCode.Enter) {
-			return [new ScanCodeBinding(keybinding.ctrlKey, keybinding.shiftKey, keybinding.altKey, keybinding.metaKey, ScanCode.Enter)];
+	puBlic simpleKeyBindingToScanCodeBinding(keyBinding: SimpleKeyBinding): ScanCodeBinding[] {
+		// Avoid douBle Enter Bindings (Both ScanCode.NumpadEnter and ScanCode.Enter point to KeyCode.Enter)
+		if (keyBinding.keyCode === KeyCode.Enter) {
+			return [new ScanCodeBinding(keyBinding.ctrlKey, keyBinding.shiftKey, keyBinding.altKey, keyBinding.metaKey, ScanCode.Enter)];
 		}
 
-		const scanCodeCombos = this._scanCodeKeyCodeMapper.lookupKeyCodeCombo(
-			new KeyCodeCombo(keybinding.ctrlKey, keybinding.shiftKey, keybinding.altKey, keybinding.keyCode)
+		const scanCodeComBos = this._scanCodeKeyCodeMapper.lookupKeyCodeComBo(
+			new KeyCodeComBo(keyBinding.ctrlKey, keyBinding.shiftKey, keyBinding.altKey, keyBinding.keyCode)
 		);
 
 		let result: ScanCodeBinding[] = [];
-		for (let i = 0, len = scanCodeCombos.length; i < len; i++) {
-			const scanCodeCombo = scanCodeCombos[i];
-			result[i] = new ScanCodeBinding(scanCodeCombo.ctrlKey, scanCodeCombo.shiftKey, scanCodeCombo.altKey, keybinding.metaKey, scanCodeCombo.scanCode);
+		for (let i = 0, len = scanCodeComBos.length; i < len; i++) {
+			const scanCodeComBo = scanCodeComBos[i];
+			result[i] = new ScanCodeBinding(scanCodeComBo.ctrlKey, scanCodeComBo.shiftKey, scanCodeComBo.altKey, keyBinding.metaKey, scanCodeComBo.scanCode);
 		}
 		return result;
 	}
 
-	public getUILabelForScanCodeBinding(binding: ScanCodeBinding | null): string | null {
-		if (!binding) {
+	puBlic getUILaBelForScanCodeBinding(Binding: ScanCodeBinding | null): string | null {
+		if (!Binding) {
 			return null;
 		}
-		if (binding.isDuplicateModifierCase()) {
+		if (Binding.isDuplicateModifierCase()) {
 			return '';
 		}
 		if (this._OS === OperatingSystem.Macintosh) {
-			switch (binding.scanCode) {
+			switch (Binding.scanCode) {
 				case ScanCode.ArrowLeft:
 					return '←';
 				case ScanCode.ArrowUp:
@@ -833,20 +833,20 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 					return '↓';
 			}
 		}
-		return this._scanCodeToLabel[binding.scanCode];
+		return this._scanCodeToLaBel[Binding.scanCode];
 	}
 
-	public getAriaLabelForScanCodeBinding(binding: ScanCodeBinding | null): string | null {
-		if (!binding) {
+	puBlic getAriaLaBelForScanCodeBinding(Binding: ScanCodeBinding | null): string | null {
+		if (!Binding) {
 			return null;
 		}
-		if (binding.isDuplicateModifierCase()) {
+		if (Binding.isDuplicateModifierCase()) {
 			return '';
 		}
-		return this._scanCodeToLabel[binding.scanCode];
+		return this._scanCodeToLaBel[Binding.scanCode];
 	}
 
-	public getDispatchStrForScanCodeBinding(keypress: ScanCodeBinding): string | null {
+	puBlic getDispatchStrForScanCodeBinding(keypress: ScanCodeBinding): string | null {
 		const codeDispatch = this._scanCodeToDispatch[keypress.scanCode];
 		if (!codeDispatch) {
 			return null;
@@ -870,36 +870,36 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		return result;
 	}
 
-	public getUserSettingsLabelForScanCodeBinding(binding: ScanCodeBinding | null): string | null {
-		if (!binding) {
+	puBlic getUserSettingsLaBelForScanCodeBinding(Binding: ScanCodeBinding | null): string | null {
+		if (!Binding) {
 			return null;
 		}
-		if (binding.isDuplicateModifierCase()) {
+		if (Binding.isDuplicateModifierCase()) {
 			return '';
 		}
 
-		const immutableKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[binding.scanCode];
-		if (immutableKeyCode !== -1) {
-			return KeyCodeUtils.toUserSettingsUS(immutableKeyCode).toLowerCase();
+		const immutaBleKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[Binding.scanCode];
+		if (immutaBleKeyCode !== -1) {
+			return KeyCodeUtils.toUserSettingsUS(immutaBleKeyCode).toLowerCase();
 		}
 
-		// Check if this scanCode always maps to the same keyCode and back
-		let constantKeyCode: KeyCode = this._scanCodeKeyCodeMapper.guessStableKeyCode(binding.scanCode);
+		// Check if this scanCode always maps to the same keyCode and Back
+		let constantKeyCode: KeyCode = this._scanCodeKeyCodeMapper.guessStaBleKeyCode(Binding.scanCode);
 		if (constantKeyCode !== -1) {
-			// Verify that this is a good key code that can be mapped back to the same scan code
-			let reverseBindings = this.simpleKeybindingToScanCodeBinding(new SimpleKeybinding(binding.ctrlKey, binding.shiftKey, binding.altKey, binding.metaKey, constantKeyCode));
+			// Verify that this is a good key code that can Be mapped Back to the same scan code
+			let reverseBindings = this.simpleKeyBindingToScanCodeBinding(new SimpleKeyBinding(Binding.ctrlKey, Binding.shiftKey, Binding.altKey, Binding.metaKey, constantKeyCode));
 			for (let i = 0, len = reverseBindings.length; i < len; i++) {
 				const reverseBinding = reverseBindings[i];
-				if (reverseBinding.scanCode === binding.scanCode) {
+				if (reverseBinding.scanCode === Binding.scanCode) {
 					return KeyCodeUtils.toUserSettingsUS(constantKeyCode).toLowerCase();
 				}
 			}
 		}
 
-		return this._scanCodeToDispatch[binding.scanCode];
+		return this._scanCodeToDispatch[Binding.scanCode];
 	}
 
-	private _getElectronLabelForKeyCode(keyCode: KeyCode): string | null {
+	private _getElectronLaBelForKeyCode(keyCode: KeyCode): string | null {
 		if (keyCode >= KeyCode.NUMPAD_0 && keyCode <= KeyCode.NUMPAD_DIVIDE) {
 			// Electron cannot handle numpad keys
 			return null;
@@ -920,21 +920,21 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	public getElectronAcceleratorLabelForScanCodeBinding(binding: ScanCodeBinding | null): string | null {
-		if (!binding) {
+	puBlic getElectronAcceleratorLaBelForScanCodeBinding(Binding: ScanCodeBinding | null): string | null {
+		if (!Binding) {
 			return null;
 		}
-		if (binding.isDuplicateModifierCase()) {
+		if (Binding.isDuplicateModifierCase()) {
 			return null;
 		}
 
-		const immutableKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[binding.scanCode];
-		if (immutableKeyCode !== -1) {
-			return this._getElectronLabelForKeyCode(immutableKeyCode);
+		const immutaBleKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[Binding.scanCode];
+		if (immutaBleKeyCode !== -1) {
+			return this._getElectronLaBelForKeyCode(immutaBleKeyCode);
 		}
 
-		// Check if this scanCode always maps to the same keyCode and back
-		const constantKeyCode: KeyCode = this._scanCodeKeyCodeMapper.guessStableKeyCode(binding.scanCode);
+		// Check if this scanCode always maps to the same keyCode and Back
+		const constantKeyCode: KeyCode = this._scanCodeKeyCodeMapper.guessStaBleKeyCode(Binding.scanCode);
 
 		if (!this._isUSStandard) {
 			// Electron cannot handle these key codes on anything else than standard US
@@ -956,58 +956,58 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			}
 		}
 
-		// See https://github.com/microsoft/vscode/issues/108880
-		if (this._OS === OperatingSystem.Macintosh && binding.ctrlKey && !binding.metaKey && !binding.altKey && constantKeyCode === KeyCode.US_MINUS) {
+		// See https://githuB.com/microsoft/vscode/issues/108880
+		if (this._OS === OperatingSystem.Macintosh && Binding.ctrlKey && !Binding.metaKey && !Binding.altKey && constantKeyCode === KeyCode.US_MINUS) {
 			// ctrl+- and ctrl+shift+- render very similarly in native macOS menus, leading to confusion
 			return null;
 		}
 
 		if (constantKeyCode !== -1) {
-			return this._getElectronLabelForKeyCode(constantKeyCode);
+			return this._getElectronLaBelForKeyCode(constantKeyCode);
 		}
 
 		return null;
 	}
 
-	public resolveKeybinding(keybinding: Keybinding): NativeResolvedKeybinding[] {
+	puBlic resolveKeyBinding(keyBinding: KeyBinding): NativeResolvedKeyBinding[] {
 		let chordParts: ScanCodeBinding[][] = [];
-		for (let part of keybinding.parts) {
-			chordParts.push(this.simpleKeybindingToScanCodeBinding(part));
+		for (let part of keyBinding.parts) {
+			chordParts.push(this.simpleKeyBindingToScanCodeBinding(part));
 		}
-		return this._toResolvedKeybinding(chordParts);
+		return this._toResolvedKeyBinding(chordParts);
 	}
 
-	private _toResolvedKeybinding(chordParts: ScanCodeBinding[][]): NativeResolvedKeybinding[] {
+	private _toResolvedKeyBinding(chordParts: ScanCodeBinding[][]): NativeResolvedKeyBinding[] {
 		if (chordParts.length === 0) {
 			return [];
 		}
-		let result: NativeResolvedKeybinding[] = [];
-		this._generateResolvedKeybindings(chordParts, 0, [], result);
+		let result: NativeResolvedKeyBinding[] = [];
+		this._generateResolvedKeyBindings(chordParts, 0, [], result);
 		return result;
 	}
 
-	private _generateResolvedKeybindings(chordParts: ScanCodeBinding[][], currentIndex: number, previousParts: ScanCodeBinding[], result: NativeResolvedKeybinding[]) {
+	private _generateResolvedKeyBindings(chordParts: ScanCodeBinding[][], currentIndex: numBer, previousParts: ScanCodeBinding[], result: NativeResolvedKeyBinding[]) {
 		const chordPart = chordParts[currentIndex];
 		const isFinalIndex = currentIndex === chordParts.length - 1;
 		for (let i = 0, len = chordPart.length; i < len; i++) {
 			let chords = [...previousParts, chordPart[i]];
 			if (isFinalIndex) {
-				result.push(new NativeResolvedKeybinding(this, this._OS, chords));
+				result.push(new NativeResolvedKeyBinding(this, this._OS, chords));
 			} else {
-				this._generateResolvedKeybindings(chordParts, currentIndex + 1, chords, result);
+				this._generateResolvedKeyBindings(chordParts, currentIndex + 1, chords, result);
 			}
 		}
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): NativeResolvedKeybinding {
-		let code = ScanCodeUtils.toEnum(keyboardEvent.code);
+	puBlic resolveKeyBoardEvent(keyBoardEvent: IKeyBoardEvent): NativeResolvedKeyBinding {
+		let code = ScanCodeUtils.toEnum(keyBoardEvent.code);
 
 		// Treat NumpadEnter as Enter
 		if (code === ScanCode.NumpadEnter) {
 			code = ScanCode.Enter;
 		}
 
-		const keyCode = keyboardEvent.keyCode;
+		const keyCode = keyBoardEvent.keyCode;
 
 		if (
 			(keyCode === KeyCode.LeftArrow)
@@ -1022,10 +1022,10 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			|| (keyCode === KeyCode.PageUp)
 		) {
 			// "Dispatch" on keyCode for these key codes to workaround issues with remote desktoping software
-			// where the scan codes appear to be incorrect (see https://github.com/microsoft/vscode/issues/24107)
-			const immutableScanCode = IMMUTABLE_KEY_CODE_TO_CODE[keyCode];
-			if (immutableScanCode !== -1) {
-				code = immutableScanCode;
+			// where the scan codes appear to Be incorrect (see https://githuB.com/microsoft/vscode/issues/24107)
+			const immutaBleScanCode = IMMUTABLE_KEY_CODE_TO_CODE[keyCode];
+			if (immutaBleScanCode !== -1) {
+				code = immutaBleScanCode;
 			}
 
 		} else {
@@ -1045,34 +1045,34 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 			) {
 				// "Dispatch" on keyCode for all numpad keys in order for NumLock to work correctly
 				if (keyCode >= 0) {
-					const immutableScanCode = IMMUTABLE_KEY_CODE_TO_CODE[keyCode];
-					if (immutableScanCode !== -1) {
-						code = immutableScanCode;
+					const immutaBleScanCode = IMMUTABLE_KEY_CODE_TO_CODE[keyCode];
+					if (immutaBleScanCode !== -1) {
+						code = immutaBleScanCode;
 					}
 				}
 			}
 		}
 
-		const keypress = new ScanCodeBinding(keyboardEvent.ctrlKey, keyboardEvent.shiftKey, keyboardEvent.altKey, keyboardEvent.metaKey, code);
-		return new NativeResolvedKeybinding(this, this._OS, [keypress]);
+		const keypress = new ScanCodeBinding(keyBoardEvent.ctrlKey, keyBoardEvent.shiftKey, keyBoardEvent.altKey, keyBoardEvent.metaKey, code);
+		return new NativeResolvedKeyBinding(this, this._OS, [keypress]);
 	}
 
-	private _resolveSimpleUserBinding(binding: SimpleKeybinding | ScanCodeBinding | null): ScanCodeBinding[] {
-		if (!binding) {
+	private _resolveSimpleUserBinding(Binding: SimpleKeyBinding | ScanCodeBinding | null): ScanCodeBinding[] {
+		if (!Binding) {
 			return [];
 		}
-		if (binding instanceof ScanCodeBinding) {
-			return [binding];
+		if (Binding instanceof ScanCodeBinding) {
+			return [Binding];
 		}
-		return this.simpleKeybindingToScanCodeBinding(binding);
+		return this.simpleKeyBindingToScanCodeBinding(Binding);
 	}
 
-	public resolveUserBinding(input: (SimpleKeybinding | ScanCodeBinding)[]): ResolvedKeybinding[] {
-		const parts: ScanCodeBinding[][] = input.map(keybinding => this._resolveSimpleUserBinding(keybinding));
-		return this._toResolvedKeybinding(parts);
+	puBlic resolveUserBinding(input: (SimpleKeyBinding | ScanCodeBinding)[]): ResolvedKeyBinding[] {
+		const parts: ScanCodeBinding[][] = input.map(keyBinding => this._resolveSimpleUserBinding(keyBinding));
+		return this._toResolvedKeyBinding(parts);
 	}
 
-	private static _charCodeToKb(charCode: number): { keyCode: KeyCode; shiftKey: boolean } | null {
+	private static _charCodeToKB(charCode: numBer): { keyCode: KeyCode; shiftKey: Boolean } | null {
 		if (charCode < CHAR_CODE_TO_KEY_CODE.length) {
 			return CHAR_CODE_TO_KEY_CODE[charCode];
 		}
@@ -1080,35 +1080,35 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 	}
 
 	/**
-	 * Attempt to map a combining character to a regular one that renders the same way.
+	 * Attempt to map a comBining character to a regular one that renders the same way.
 	 *
-	 * To the brave person following me: Good Luck!
-	 * https://www.compart.com/en/unicode/bidiclass/NSM
+	 * To the Brave person following me: Good Luck!
+	 * https://www.compart.com/en/unicode/Bidiclass/NSM
 	 */
-	public static getCharCode(char: string): number {
+	puBlic static getCharCode(char: string): numBer {
 		if (char.length === 0) {
 			return 0;
 		}
 		const charCode = char.charCodeAt(0);
 		switch (charCode) {
-			case CharCode.U_Combining_Grave_Accent: return CharCode.U_GRAVE_ACCENT;
-			case CharCode.U_Combining_Acute_Accent: return CharCode.U_ACUTE_ACCENT;
-			case CharCode.U_Combining_Circumflex_Accent: return CharCode.U_CIRCUMFLEX;
-			case CharCode.U_Combining_Tilde: return CharCode.U_SMALL_TILDE;
-			case CharCode.U_Combining_Macron: return CharCode.U_MACRON;
-			case CharCode.U_Combining_Overline: return CharCode.U_OVERLINE;
-			case CharCode.U_Combining_Breve: return CharCode.U_BREVE;
-			case CharCode.U_Combining_Dot_Above: return CharCode.U_DOT_ABOVE;
-			case CharCode.U_Combining_Diaeresis: return CharCode.U_DIAERESIS;
-			case CharCode.U_Combining_Ring_Above: return CharCode.U_RING_ABOVE;
-			case CharCode.U_Combining_Double_Acute_Accent: return CharCode.U_DOUBLE_ACUTE_ACCENT;
+			case CharCode.U_ComBining_Grave_Accent: return CharCode.U_GRAVE_ACCENT;
+			case CharCode.U_ComBining_Acute_Accent: return CharCode.U_ACUTE_ACCENT;
+			case CharCode.U_ComBining_Circumflex_Accent: return CharCode.U_CIRCUMFLEX;
+			case CharCode.U_ComBining_Tilde: return CharCode.U_SMALL_TILDE;
+			case CharCode.U_ComBining_Macron: return CharCode.U_MACRON;
+			case CharCode.U_ComBining_Overline: return CharCode.U_OVERLINE;
+			case CharCode.U_ComBining_Breve: return CharCode.U_BREVE;
+			case CharCode.U_ComBining_Dot_ABove: return CharCode.U_DOT_ABOVE;
+			case CharCode.U_ComBining_Diaeresis: return CharCode.U_DIAERESIS;
+			case CharCode.U_ComBining_Ring_ABove: return CharCode.U_RING_ABOVE;
+			case CharCode.U_ComBining_DouBle_Acute_Accent: return CharCode.U_DOUBLE_ACUTE_ACCENT;
 		}
 		return charCode;
 	}
 }
 
 (function () {
-	function define(charCode: number, keyCode: KeyCode, shiftKey: boolean): void {
+	function define(charCode: numBer, keyCode: KeyCode, shiftKey: Boolean): void {
 		for (let i = CHAR_CODE_TO_KEY_CODE.length; i < charCode; i++) {
 			CHAR_CODE_TO_KEY_CODE[i] = null;
 		}
@@ -1154,5 +1154,5 @@ export class MacLinuxKeyboardMapper implements IKeyboardMapper {
 	define(CharCode.CloseCurlyBrace, KeyCode.US_CLOSE_SQUARE_BRACKET, true);
 
 	define(CharCode.SingleQuote, KeyCode.US_QUOTE, false);
-	define(CharCode.DoubleQuote, KeyCode.US_QUOTE, true);
+	define(CharCode.DouBleQuote, KeyCode.US_QUOTE, true);
 })();

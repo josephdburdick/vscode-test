@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./lineNumbers';
-import * as platform from 'vs/base/common/platform';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
-import { RenderLineNumbersType, EditorOption } from 'vs/editor/common/config/editorOptions';
+import 'vs/css!./lineNumBers';
+import * as platform from 'vs/Base/common/platform';
+import { DynamicViewOverlay } from 'vs/editor/Browser/view/dynamicViewOverlay';
+import { RenderLineNumBersType, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Position } from 'vs/editor/common/core/position';
-import { editorActiveLineNumber, editorLineNumbers } from 'vs/editor/common/view/editorColorRegistry';
+import { editorActiveLineNumBer, editorLineNumBers } from 'vs/editor/common/view/editorColorRegistry';
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 
-export class LineNumbersOverlay extends DynamicViewOverlay {
+export class LineNumBersOverlay extends DynamicViewOverlay {
 
-	public static readonly CLASS_NAME = 'line-numbers';
+	puBlic static readonly CLASS_NAME = 'line-numBers';
 
 	private readonly _context: ViewContext;
 
-	private _lineHeight!: number;
-	private _renderLineNumbers!: RenderLineNumbersType;
-	private _renderCustomLineNumbers!: ((lineNumber: number) => string) | null;
-	private _renderFinalNewline!: boolean;
-	private _lineNumbersLeft!: number;
-	private _lineNumbersWidth!: number;
+	private _lineHeight!: numBer;
+	private _renderLineNumBers!: RenderLineNumBersType;
+	private _renderCustomLineNumBers!: ((lineNumBer: numBer) => string) | null;
+	private _renderFinalNewline!: Boolean;
+	private _lineNumBersLeft!: numBer;
+	private _lineNumBersWidth!: numBer;
 	private _lastCursorModelPosition: Position;
 	private _renderResult: string[] | null;
 
@@ -43,119 +43,119 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
 	private _readConfig(): void {
 		const options = this._context.configuration.options;
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		const lineNumbers = options.get(EditorOption.lineNumbers);
-		this._renderLineNumbers = lineNumbers.renderType;
-		this._renderCustomLineNumbers = lineNumbers.renderFn;
+		const lineNumBers = options.get(EditorOption.lineNumBers);
+		this._renderLineNumBers = lineNumBers.renderType;
+		this._renderCustomLineNumBers = lineNumBers.renderFn;
 		this._renderFinalNewline = options.get(EditorOption.renderFinalNewline);
 		const layoutInfo = options.get(EditorOption.layoutInfo);
-		this._lineNumbersLeft = layoutInfo.lineNumbersLeft;
-		this._lineNumbersWidth = layoutInfo.lineNumbersWidth;
+		this._lineNumBersLeft = layoutInfo.lineNumBersLeft;
+		this._lineNumBersWidth = layoutInfo.lineNumBersWidth;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._context.removeEventHandler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		this._readConfig();
 		return true;
 	}
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
+	puBlic onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): Boolean {
 		const primaryViewPosition = e.selections[0].getPosition();
 		this._lastCursorModelPosition = this._context.model.coordinatesConverter.convertViewPositionToModelPosition(primaryViewPosition);
 
-		if (this._renderLineNumbers === RenderLineNumbersType.Relative || this._renderLineNumbers === RenderLineNumbersType.Interval) {
+		if (this._renderLineNumBers === RenderLineNumBersType.Relative || this._renderLineNumBers === RenderLineNumBersType.Interval) {
 			return true;
 		}
 		return false;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return e.scrollTopChanged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return true;
 	}
 
 	// --- end event handlers
 
-	private _getLineRenderLineNumber(viewLineNumber: number): string {
-		const modelPosition = this._context.model.coordinatesConverter.convertViewPositionToModelPosition(new Position(viewLineNumber, 1));
+	private _getLineRenderLineNumBer(viewLineNumBer: numBer): string {
+		const modelPosition = this._context.model.coordinatesConverter.convertViewPositionToModelPosition(new Position(viewLineNumBer, 1));
 		if (modelPosition.column !== 1) {
 			return '';
 		}
-		const modelLineNumber = modelPosition.lineNumber;
+		const modelLineNumBer = modelPosition.lineNumBer;
 
-		if (this._renderCustomLineNumbers) {
-			return this._renderCustomLineNumbers(modelLineNumber);
+		if (this._renderCustomLineNumBers) {
+			return this._renderCustomLineNumBers(modelLineNumBer);
 		}
 
-		if (this._renderLineNumbers === RenderLineNumbersType.Relative) {
-			const diff = Math.abs(this._lastCursorModelPosition.lineNumber - modelLineNumber);
+		if (this._renderLineNumBers === RenderLineNumBersType.Relative) {
+			const diff = Math.aBs(this._lastCursorModelPosition.lineNumBer - modelLineNumBer);
 			if (diff === 0) {
-				return '<span class="relative-current-line-number">' + modelLineNumber + '</span>';
+				return '<span class="relative-current-line-numBer">' + modelLineNumBer + '</span>';
 			}
 			return String(diff);
 		}
 
-		if (this._renderLineNumbers === RenderLineNumbersType.Interval) {
-			if (this._lastCursorModelPosition.lineNumber === modelLineNumber) {
-				return String(modelLineNumber);
+		if (this._renderLineNumBers === RenderLineNumBersType.Interval) {
+			if (this._lastCursorModelPosition.lineNumBer === modelLineNumBer) {
+				return String(modelLineNumBer);
 			}
-			if (modelLineNumber % 10 === 0) {
-				return String(modelLineNumber);
+			if (modelLineNumBer % 10 === 0) {
+				return String(modelLineNumBer);
 			}
 			return '';
 		}
 
-		return String(modelLineNumber);
+		return String(modelLineNumBer);
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
-		if (this._renderLineNumbers === RenderLineNumbersType.Off) {
+	puBlic prepareRender(ctx: RenderingContext): void {
+		if (this._renderLineNumBers === RenderLineNumBersType.Off) {
 			this._renderResult = null;
 			return;
 		}
 
 		const lineHeightClassName = (platform.isLinux ? (this._lineHeight % 2 === 0 ? ' lh-even' : ' lh-odd') : '');
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
-		const common = '<div class="' + LineNumbersOverlay.CLASS_NAME + lineHeightClassName + '" style="left:' + this._lineNumbersLeft.toString() + 'px;width:' + this._lineNumbersWidth.toString() + 'px;">';
+		const visiBleStartLineNumBer = ctx.visiBleRange.startLineNumBer;
+		const visiBleEndLineNumBer = ctx.visiBleRange.endLineNumBer;
+		const common = '<div class="' + LineNumBersOverlay.CLASS_NAME + lineHeightClassName + '" style="left:' + this._lineNumBersLeft.toString() + 'px;width:' + this._lineNumBersWidth.toString() + 'px;">';
 
 		const lineCount = this._context.model.getLineCount();
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let lineNumBer = visiBleStartLineNumBer; lineNumBer <= visiBleEndLineNumBer; lineNumBer++) {
+			const lineIndex = lineNumBer - visiBleStartLineNumBer;
 
 			if (!this._renderFinalNewline) {
-				if (lineNumber === lineCount && this._context.model.getLineLength(lineNumber) === 0) {
+				if (lineNumBer === lineCount && this._context.model.getLineLength(lineNumBer) === 0) {
 					// Do not render last (empty) line
 					output[lineIndex] = '';
 					continue;
 				}
 			}
 
-			const renderLineNumber = this._getLineRenderLineNumber(lineNumber);
+			const renderLineNumBer = this._getLineRenderLineNumBer(lineNumBer);
 
-			if (renderLineNumber) {
+			if (renderLineNumBer) {
 				output[lineIndex] = (
 					common
-					+ renderLineNumber
+					+ renderLineNumBer
 					+ '</div>'
 				);
 			} else {
@@ -166,11 +166,11 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
 		this._renderResult = output;
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	puBlic render(startLineNumBer: numBer, lineNumBer: numBer): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		const lineIndex = lineNumber - startLineNumber;
+		const lineIndex = lineNumBer - startLineNumBer;
 		if (lineIndex < 0 || lineIndex >= this._renderResult.length) {
 			return '';
 		}
@@ -181,12 +181,12 @@ export class LineNumbersOverlay extends DynamicViewOverlay {
 // theming
 
 registerThemingParticipant((theme, collector) => {
-	const lineNumbers = theme.getColor(editorLineNumbers);
-	if (lineNumbers) {
-		collector.addRule(`.monaco-editor .line-numbers { color: ${lineNumbers}; }`);
+	const lineNumBers = theme.getColor(editorLineNumBers);
+	if (lineNumBers) {
+		collector.addRule(`.monaco-editor .line-numBers { color: ${lineNumBers}; }`);
 	}
-	const activeLineNumber = theme.getColor(editorActiveLineNumber);
-	if (activeLineNumber) {
-		collector.addRule(`.monaco-editor .current-line ~ .line-numbers { color: ${activeLineNumber}; }`);
+	const activeLineNumBer = theme.getColor(editorActiveLineNumBer);
+	if (activeLineNumBer) {
+		collector.addRule(`.monaco-editor .current-line ~ .line-numBers { color: ${activeLineNumBer}; }`);
 	}
 });

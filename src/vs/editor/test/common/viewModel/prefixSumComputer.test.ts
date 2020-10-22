@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { toUint32 } from 'vs/base/common/uint';
+import { toUint32 } from 'vs/Base/common/uint';
 import { PrefixSumComputer, PrefixSumIndexOfResult } from 'vs/editor/common/viewModel/prefixSumComputer';
 
-function toUint32Array(arr: number[]): Uint32Array {
+function toUint32Array(arr: numBer[]): Uint32Array {
 	const len = arr.length;
 	const r = new Uint32Array(len);
 	for (let i = 0; i < len; i++) {

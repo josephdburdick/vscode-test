@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Location, getLocation, createScanner, SyntaxKind, ScanError, JSONScanner } from 'jsonc-parser';
-import { basename } from 'path';
-import { BowerJSONContribution } from './bowerJSONContribution';
-import { PackageJSONContribution } from './packageJSONContribution';
+import { Basename } from 'path';
+import { BowerJSONContriBution } from './BowerJSONContriBution';
+import { PackageJSONContriBution } from './packageJSONContriBution';
 import { XHRRequest } from 'request-light';
 
 import {
 	CompletionItem, CompletionItemProvider, CompletionList, TextDocument, Position, Hover, HoverProvider,
-	CancellationToken, Range, MarkedString, DocumentSelector, languages, Disposable
+	CancellationToken, Range, MarkedString, DocumentSelector, languages, DisposaBle
 } from 'vscode';
 
 export interface ISuggestionsCollector {
@@ -21,33 +21,33 @@ export interface ISuggestionsCollector {
 	setAsIncomplete(): void;
 }
 
-export interface IJSONContribution {
+export interface IJSONContriBution {
 	getDocumentSelector(): DocumentSelector;
-	getInfoContribution(fileName: string, location: Location): Thenable<MarkedString[] | null> | null;
-	collectPropertySuggestions(fileName: string, location: Location, currentWord: string, addValue: boolean, isLast: boolean, result: ISuggestionsCollector): Thenable<any> | null;
-	collectValueSuggestions(fileName: string, location: Location, result: ISuggestionsCollector): Thenable<any> | null;
-	collectDefaultSuggestions(fileName: string, result: ISuggestionsCollector): Thenable<any>;
-	resolveSuggestion?(item: CompletionItem): Thenable<CompletionItem | null> | null;
+	getInfoContriBution(fileName: string, location: Location): ThenaBle<MarkedString[] | null> | null;
+	collectPropertySuggestions(fileName: string, location: Location, currentWord: string, addValue: Boolean, isLast: Boolean, result: ISuggestionsCollector): ThenaBle<any> | null;
+	collectValueSuggestions(fileName: string, location: Location, result: ISuggestionsCollector): ThenaBle<any> | null;
+	collectDefaultSuggestions(fileName: string, result: ISuggestionsCollector): ThenaBle<any>;
+	resolveSuggestion?(item: CompletionItem): ThenaBle<CompletionItem | null> | null;
 }
 
-export function addJSONProviders(xhr: XHRRequest, canRunNPM: boolean): Disposable {
-	const contributions = [new PackageJSONContribution(xhr, canRunNPM), new BowerJSONContribution(xhr)];
-	const subscriptions: Disposable[] = [];
-	contributions.forEach(contribution => {
-		const selector = contribution.getDocumentSelector();
-		subscriptions.push(languages.registerCompletionItemProvider(selector, new JSONCompletionItemProvider(contribution), '"', ':'));
-		subscriptions.push(languages.registerHoverProvider(selector, new JSONHoverProvider(contribution)));
+export function addJSONProviders(xhr: XHRRequest, canRunNPM: Boolean): DisposaBle {
+	const contriButions = [new PackageJSONContriBution(xhr, canRunNPM), new BowerJSONContriBution(xhr)];
+	const suBscriptions: DisposaBle[] = [];
+	contriButions.forEach(contriBution => {
+		const selector = contriBution.getDocumentSelector();
+		suBscriptions.push(languages.registerCompletionItemProvider(selector, new JSONCompletionItemProvider(contriBution), '"', ':'));
+		suBscriptions.push(languages.registerHoverProvider(selector, new JSONHoverProvider(contriBution)));
 	});
-	return Disposable.from(...subscriptions);
+	return DisposaBle.from(...suBscriptions);
 }
 
 export class JSONHoverProvider implements HoverProvider {
 
-	constructor(private jsonContribution: IJSONContribution) {
+	constructor(private jsonContriBution: IJSONContriBution) {
 	}
 
-	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Thenable<Hover> | null {
-		const fileName = basename(document.fileName);
+	puBlic provideHover(document: TextDocument, position: Position, _token: CancellationToken): ThenaBle<Hover> | null {
+		const fileName = Basename(document.fileName);
 		const offset = document.offsetAt(position);
 		const location = getLocation(document.getText(), offset);
 		if (!location.previousNode) {
@@ -55,7 +55,7 @@ export class JSONHoverProvider implements HoverProvider {
 		}
 		const node = location.previousNode;
 		if (node && node.offset <= offset && offset <= node.offset + node.length) {
-			const promise = this.jsonContribution.getInfoContribution(fileName, location);
+			const promise = this.jsonContriBution.getInfoContriBution(fileName, location);
 			if (promise) {
 				return promise.then(htmlContent => {
 					const range = new Range(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
@@ -73,12 +73,12 @@ export class JSONHoverProvider implements HoverProvider {
 
 export class JSONCompletionItemProvider implements CompletionItemProvider {
 
-	constructor(private jsonContribution: IJSONContribution) {
+	constructor(private jsonContriBution: IJSONContriBution) {
 	}
 
-	public resolveCompletionItem(item: CompletionItem, _token: CancellationToken): Thenable<CompletionItem | null> {
-		if (this.jsonContribution.resolveSuggestion) {
-			const resolver = this.jsonContribution.resolveSuggestion(item);
+	puBlic resolveCompletionItem(item: CompletionItem, _token: CancellationToken): ThenaBle<CompletionItem | null> {
+		if (this.jsonContriBution.resolveSuggestion) {
+			const resolver = this.jsonContriBution.resolveSuggestion(item);
 			if (resolver) {
 				return resolver;
 			}
@@ -86,9 +86,9 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		return Promise.resolve(item);
 	}
 
-	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken): Thenable<CompletionList | null> | null {
+	puBlic provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken): ThenaBle<CompletionList | null> | null {
 
-		const fileName = basename(document.fileName);
+		const fileName = Basename(document.fileName);
 
 		const currentWord = this.getCurrentWord(document, position);
 		let overwriteRange: Range;
@@ -100,17 +100,17 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		const location = getLocation(document.getText(), offset);
 
 		const node = location.previousNode;
-		if (node && node.offset <= offset && offset <= node.offset + node.length && (node.type === 'property' || node.type === 'string' || node.type === 'number' || node.type === 'boolean' || node.type === 'null')) {
+		if (node && node.offset <= offset && offset <= node.offset + node.length && (node.type === 'property' || node.type === 'string' || node.type === 'numBer' || node.type === 'Boolean' || node.type === 'null')) {
 			overwriteRange = new Range(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
 		} else {
 			overwriteRange = new Range(document.positionAt(offset - currentWord.length), position);
 		}
 
-		const proposed: { [key: string]: boolean } = {};
+		const proposed: { [key: string]: Boolean } = {};
 		const collector: ISuggestionsCollector = {
 			add: (suggestion: CompletionItem) => {
-				if (!proposed[suggestion.label]) {
-					proposed[suggestion.label] = true;
+				if (!proposed[suggestion.laBel]) {
+					proposed[suggestion.laBel] = true;
 					suggestion.range = { replacing: overwriteRange, inserting: new Range(overwriteRange.start, overwriteRange.start) };
 					items.push(suggestion);
 				}
@@ -120,18 +120,18 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 			log: (message: string) => console.log(message)
 		};
 
-		let collectPromise: Thenable<any> | null = null;
+		let collectPromise: ThenaBle<any> | null = null;
 
 		if (location.isAtPropertyKey) {
 			const scanner = createScanner(document.getText(), true);
 			const addValue = !location.previousNode || !this.hasColonAfter(scanner, location.previousNode.offset + location.previousNode.length);
 			const isLast = this.isLast(scanner, document.offsetAt(position));
-			collectPromise = this.jsonContribution.collectPropertySuggestions(fileName, location, currentWord, addValue, isLast, collector);
+			collectPromise = this.jsonContriBution.collectPropertySuggestions(fileName, location, currentWord, addValue, isLast, collector);
 		} else {
 			if (location.path.length === 0) {
-				collectPromise = this.jsonContribution.collectDefaultSuggestions(fileName, collector);
+				collectPromise = this.jsonContriBution.collectDefaultSuggestions(fileName, collector);
 			} else {
-				collectPromise = this.jsonContribution.collectValueSuggestions(fileName, location, collector);
+				collectPromise = this.jsonContriBution.collectValueSuggestions(fileName, location, collector);
 			}
 		}
 		if (collectPromise) {
@@ -151,10 +151,10 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		while (i >= 0 && ' \t\n\r\v":{[,'.indexOf(text.charAt(i)) === -1) {
 			i--;
 		}
-		return text.substring(i + 1, position.character);
+		return text.suBstring(i + 1, position.character);
 	}
 
-	private isLast(scanner: JSONScanner, offset: number): boolean {
+	private isLast(scanner: JSONScanner, offset: numBer): Boolean {
 		scanner.setPosition(offset);
 		let nextToken = scanner.scan();
 		if (nextToken === SyntaxKind.StringLiteral && scanner.getTokenError() === ScanError.UnexpectedEndOfString) {
@@ -162,11 +162,11 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		}
 		return nextToken === SyntaxKind.CloseBraceToken || nextToken === SyntaxKind.EOF;
 	}
-	private hasColonAfter(scanner: JSONScanner, offset: number): boolean {
+	private hasColonAfter(scanner: JSONScanner, offset: numBer): Boolean {
 		scanner.setPosition(offset);
 		return scanner.scan() === SyntaxKind.ColonToken;
 	}
 
 }
 
-export const xhrDisabled = () => Promise.reject({ responseText: 'Use of online resources is disabled.' });
+export const xhrDisaBled = () => Promise.reject({ responseText: 'Use of online resources is disaBled.' });

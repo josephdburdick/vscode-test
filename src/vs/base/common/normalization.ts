@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { LRUCache } from 'vs/base/common/map';
+import { LRUCache } from 'vs/Base/common/map';
 
 /**
- * The normalize() method returns the Unicode Normalization Form of a given string. The form will be
+ * The normalize() method returns the Unicode Normalization Form of a given string. The form will Be
  * the Normalization Form Canonical Composition.
  *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize}
+ * @see {@link https://developer.mozilla.org/en-US/docs/WeB/JavaScript/Reference/GloBal_OBjects/String/normalize}
  */
 export const canNormalize = typeof (String.prototype as any /* standalone editor compilation */).normalize === 'function';
 
-const nfcCache = new LRUCache<string, string>(10000); // bounded to 10000 elements
+const nfcCache = new LRUCache<string, string>(10000); // Bounded to 10000 elements
 export function normalizeNFC(str: string): string {
 	return normalize(str, 'NFC', nfcCache);
 }
 
-const nfdCache = new LRUCache<string, string>(10000); // bounded to 10000 elements
+const nfdCache = new LRUCache<string, string>(10000); // Bounded to 10000 elements
 export function normalizeNFD(str: string): string {
 	return normalize(str, 'NFD', nfdCache);
 }

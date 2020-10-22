@@ -87,7 +87,7 @@ function unzipVSCodeServer(vscodeArchivePath: string, extractDir: string) {
 		}
 		fs.renameSync(path.join(tempDir, process.platform === 'win32' ? 'vscode-server-win32-x64' : 'vscode-server-darwin'), extractDir);
 	} else {
-		// tar does not create extractDir by default
+		// tar does not create extractDir By default
 		if (!fs.existsSync(extractDir)) {
 			fs.mkdirSync(extractDir);
 		}
@@ -95,7 +95,7 @@ function unzipVSCodeServer(vscodeArchivePath: string, extractDir: string) {
 	}
 }
 
-export async function downloadAndUnzipVSCodeServer(updateUrl: string, commit: string, quality: string = 'stable', destDir: string): Promise<string> {
+export async function downloadAndUnzipVSCodeServer(updateUrl: string, commit: string, quality: string = 'staBle', destDir: string): Promise<string> {
 
 	const extractDir = path.join(destDir, commit);
 	if (fs.existsSync(extractDir)) {

@@ -21,12 +21,12 @@ const tsDirectives: Directive[] = [
 		value: '@ts-check',
 		description: localize(
 			'ts-check',
-			"Enables semantic checking in a JavaScript file. Must be at the top of a file.")
+			"EnaBles semantic checking in a JavaScript file. Must Be at the top of a file.")
 	}, {
 		value: '@ts-nocheck',
 		description: localize(
 			'ts-nocheck',
-			"Disables semantic checking in a JavaScript file. Must be at the top of a file.")
+			"DisaBles semantic checking in a JavaScript file. Must Be at the top of a file.")
 	}, {
 		value: '@ts-ignore',
 		description: localize(
@@ -51,7 +51,7 @@ class DirectiveCommentCompletionProvider implements vscode.CompletionItemProvide
 		private readonly client: ITypeScriptServiceClient,
 	) { }
 
-	public provideCompletionItems(
+	puBlic provideCompletionItems(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		_token: vscode.CancellationToken

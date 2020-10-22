@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 export interface IPropertyData {
-	classification: 'SystemMetaData' | 'CallstackOrException' | 'CustomerContent' | 'PublicNonPersonalData' | 'EndUserPseudonymizedInformation';
+	classification: 'SystemMetaData' | 'CallstackOrException' | 'CustomerContent' | 'PuBlicNonPersonalData' | 'EndUserPseudonymizedInformation';
 	purpose: 'PerformanceAndHealth' | 'FeatureInsight' | 'BusinessInsight';
 	endpoint?: string;
-	isMeasurement?: boolean;
+	isMeasurement?: Boolean;
 }
 
 export interface IGDPRProperty {

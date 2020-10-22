@@ -5,15 +5,15 @@
 
 import * as assert from 'assert';
 import { ITextModel, FindMatch } from 'vs/editor/common/model';
-import { editorMatchesToTextSearchResults, addContextToEditorMatches } from 'vs/workbench/services/search/common/searchHelpers';
+import { editorMatchesToTextSearchResults, addContextToEditorMatches } from 'vs/workBench/services/search/common/searchHelpers';
 import { Range } from 'vs/editor/common/core/range';
-import { ITextQuery, QueryType, ITextSearchContext } from 'vs/workbench/services/search/common/search';
+import { ITextQuery, QueryType, ITextSearchContext } from 'vs/workBench/services/search/common/search';
 
 suite('SearchHelpers', () => {
 	suite('editorMatchesToTextSearchResults', () => {
 		const mockTextModel: ITextModel = <ITextModel>{
-			getLineContent(lineNumber: number): string {
-				return '' + lineNumber;
+			getLineContent(lineNumBer: numBer): string {
+				return '' + lineNumBer;
 			}
 		};
 
@@ -58,25 +58,25 @@ suite('SearchHelpers', () => {
 		const MOCK_LINE_COUNT = 100;
 
 		const mockTextModel: ITextModel = <ITextModel>{
-			getLineContent(lineNumber: number): string {
-				if (lineNumber < 1 || lineNumber > MOCK_LINE_COUNT) {
-					throw new Error(`invalid line count: ${lineNumber}`);
+			getLineContent(lineNumBer: numBer): string {
+				if (lineNumBer < 1 || lineNumBer > MOCK_LINE_COUNT) {
+					throw new Error(`invalid line count: ${lineNumBer}`);
 				}
 
-				return '' + lineNumber;
+				return '' + lineNumBer;
 			},
 
-			getLineCount(): number {
+			getLineCount(): numBer {
 				return MOCK_LINE_COUNT;
 			}
 		};
 
-		function getQuery(beforeContext?: number, afterContext?: number): ITextQuery {
+		function getQuery(BeforeContext?: numBer, afterContext?: numBer): ITextQuery {
 			return {
 				folderQueries: [],
 				type: QueryType.Text,
 				contentPattern: { pattern: 'test' },
-				beforeContext,
+				BeforeContext,
 				afterContext
 			};
 		}
@@ -105,16 +105,16 @@ suite('SearchHelpers', () => {
 			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery(1, 2)), [
 				<ITextSearchContext>{
 					text: '1',
-					lineNumber: 0
+					lineNumBer: 0
 				},
 				...matches,
 				<ITextSearchContext>{
 					text: '3',
-					lineNumber: 2
+					lineNumBer: 2
 				},
 				<ITextSearchContext>{
 					text: '4',
-					lineNumber: 3
+					lineNumBer: 3
 				},
 			]);
 		});
@@ -130,7 +130,7 @@ suite('SearchHelpers', () => {
 				},
 				{
 					preview: {
-						text: 'bar',
+						text: 'Bar',
 						matches: new Range(0, 0, 0, 10)
 					},
 					ranges: new Range(2, 0, 2, 10)
@@ -139,21 +139,21 @@ suite('SearchHelpers', () => {
 			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery(1, 2)), [
 				<ITextSearchContext>{
 					text: '1',
-					lineNumber: 0
+					lineNumBer: 0
 				},
 				...matches,
 				<ITextSearchContext>{
 					text: '4',
-					lineNumber: 3
+					lineNumBer: 3
 				},
 				<ITextSearchContext>{
 					text: '5',
-					lineNumber: 4
+					lineNumBer: 4
 				},
 			]);
 		});
 
-		test('boundaries', () => {
+		test('Boundaries', () => {
 			const matches = [
 				{
 					preview: {
@@ -164,7 +164,7 @@ suite('SearchHelpers', () => {
 				},
 				{
 					preview: {
-						text: 'bar',
+						text: 'Bar',
 						matches: new Range(0, 0, 0, 10)
 					},
 					ranges: new Range(MOCK_LINE_COUNT - 1, 0, MOCK_LINE_COUNT - 1, 10)
@@ -174,15 +174,15 @@ suite('SearchHelpers', () => {
 				matches[0],
 				<ITextSearchContext>{
 					text: '2',
-					lineNumber: 1
+					lineNumBer: 1
 				},
 				<ITextSearchContext>{
 					text: '3',
-					lineNumber: 2
+					lineNumBer: 2
 				},
 				<ITextSearchContext>{
 					text: '' + (MOCK_LINE_COUNT - 1),
-					lineNumber: MOCK_LINE_COUNT - 2
+					lineNumBer: MOCK_LINE_COUNT - 2
 				},
 				matches[1]
 			]);

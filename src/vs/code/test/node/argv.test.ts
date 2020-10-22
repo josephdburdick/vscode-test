@@ -17,51 +17,51 @@ suite('formatOptions', () => {
 	test('Text should display small columns correctly', () => {
 		assert.deepEqual(
 			formatOptions({
-				'add': o('bar')
+				'add': o('Bar')
 			}, 80),
-			['  --add bar']
+			['  --add Bar']
 		);
 		assert.deepEqual(
 			formatOptions({
-				'add': o('bar'),
-				'wait': o('ba'),
-				'trace': o('b')
+				'add': o('Bar'),
+				'wait': o('Ba'),
+				'trace': o('B')
 			}, 80),
 			[
-				'  --add   bar',
-				'  --wait  ba',
-				'  --trace b'
+				'  --add   Bar',
+				'  --wait  Ba',
+				'  --trace B'
 			]);
 	});
 
 	test('Text should wrap', () => {
 		assert.deepEqual(
 			formatOptions({
-				'add': o((<any>'bar ').repeat(9))
+				'add': o((<any>'Bar ').repeat(9))
 			}, 40),
 			[
-				'  --add bar bar bar bar bar bar bar bar',
-				'        bar'
+				'  --add Bar Bar Bar Bar Bar Bar Bar Bar',
+				'        Bar'
 			]);
 	});
 
 	test('Text should revert to the condensed view when the terminal is too narrow', () => {
 		assert.deepEqual(
 			formatOptions({
-				'add': o((<any>'bar ').repeat(9))
+				'add': o((<any>'Bar ').repeat(9))
 			}, 30),
 			[
 				'  --add',
-				'      bar bar bar bar bar bar bar bar bar '
+				'      Bar Bar Bar Bar Bar Bar Bar Bar Bar '
 			]);
 	});
 
 	test('addArg', () => {
 		assert.deepEqual(addArg([], 'foo'), ['foo']);
-		assert.deepEqual(addArg([], 'foo', 'bar'), ['foo', 'bar']);
-		assert.deepEqual(addArg(['foo'], 'bar'), ['foo', 'bar']);
-		assert.deepEqual(addArg(['--wait'], 'bar'), ['--wait', 'bar']);
-		assert.deepEqual(addArg(['--wait', '--', '--foo'], 'bar'), ['--wait', 'bar', '--', '--foo']);
-		assert.deepEqual(addArg(['--', '--foo'], 'bar'), ['bar', '--', '--foo']);
+		assert.deepEqual(addArg([], 'foo', 'Bar'), ['foo', 'Bar']);
+		assert.deepEqual(addArg(['foo'], 'Bar'), ['foo', 'Bar']);
+		assert.deepEqual(addArg(['--wait'], 'Bar'), ['--wait', 'Bar']);
+		assert.deepEqual(addArg(['--wait', '--', '--foo'], 'Bar'), ['--wait', 'Bar', '--', '--foo']);
+		assert.deepEqual(addArg(['--', '--foo'], 'Bar'), ['Bar', '--', '--foo']);
 	});
 });

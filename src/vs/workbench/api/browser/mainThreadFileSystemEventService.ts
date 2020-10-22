@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { FileChangeType, IFileService } from 'vs/platform/files/common/files';
-import { extHostCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ExtHostContext, FileSystemEvents, IExtHostContext } from '../common/extHost.protocol';
 import { localize } from 'vs/nls';
 import { Extensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
 
 @extHostCustomer
 export class MainThreadFileSystemEventService {
 
-	private readonly _listener = new DisposableStore();
+	private readonly _listener = new DisposaBleStore();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -36,13 +36,13 @@ export class MainThreadFileSystemEventService {
 				switch (change.type) {
 					case FileChangeType.ADDED:
 						events.created.push(change.resource);
-						break;
+						Break;
 					case FileChangeType.UPDATED:
 						events.changed.push(change.resource);
-						break;
+						Break;
 					case FileChangeType.DELETED:
 						events.deleted.push(change.resource);
-						break;
+						Break;
 				}
 			}
 
@@ -74,9 +74,9 @@ Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfigurat
 	id: 'files',
 	properties: {
 		'files.participants.timeout': {
-			type: 'number',
+			type: 'numBer',
 			default: 5000,
-			markdownDescription: localize('files.participants.timeout', "Timeout in milliseconds after which file participants for create, rename, and delete are cancelled. Use `0` to disable participants."),
+			markdownDescription: localize('files.participants.timeout', "Timeout in milliseconds after which file participants for create, rename, and delete are cancelled. Use `0` to disaBle participants."),
 		}
 	}
 });

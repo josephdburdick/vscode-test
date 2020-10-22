@@ -25,14 +25,14 @@ class FakeServerProcess implements TsServerProcess {
 	private readonly _out: stream.PassThrough;
 
 	private readonly writeListeners = new Set<(data: Buffer) => void>();
-	public stdout: stream.PassThrough;
+	puBlic stdout: stream.PassThrough;
 
 	constructor() {
 		this._out = new stream.PassThrough();
 		this.stdout = this._out;
 	}
 
-	public write(data: Proto.Request) {
+	puBlic write(data: Proto.Request) {
 		const listeners = Array.from(this.writeListeners);
 		this.writeListeners.clear();
 
@@ -40,8 +40,8 @@ class FakeServerProcess implements TsServerProcess {
 			for (const listener of listeners) {
 				listener(Buffer.from(JSON.stringify(data), 'utf8'));
 			}
-			const body = Buffer.from(JSON.stringify({ 'seq': data.seq, 'type': 'response', 'command': data.command, 'request_seq': data.seq, 'success': true }), 'utf8');
-			this._out.write(Buffer.from(`Content-Length: ${body.length}\r\n\r\n${body}`, 'utf8'));
+			const Body = Buffer.from(JSON.stringify({ 'seq': data.seq, 'type': 'response', 'command': data.command, 'request_seq': data.seq, 'success': true }), 'utf8');
+			this._out.write(Buffer.from(`Content-Length: ${Body.length}\r\n\r\n${Body}`, 'utf8'));
 		});
 	}
 
@@ -51,7 +51,7 @@ class FakeServerProcess implements TsServerProcess {
 
 	kill(): void { /* noop */ }
 
-	public onWrite(): Promise<any> {
+	puBlic onWrite(): Promise<any> {
 		return new Promise<string>((resolve) => {
 			this.writeListeners.add((data) => {
 				resolve(JSON.parse(data.toString()));
@@ -63,7 +63,7 @@ class FakeServerProcess implements TsServerProcess {
 suite('Server', () => {
 	const tracer = new Tracer(new Logger());
 
-	test('should send requests with increasing sequence numbers', async () => {
+	test('should send requests with increasing sequence numBers', async () => {
 		const process = new FakeServerProcess();
 		const server = new ProcessBasedTsServer('semantic', ServerType.Semantic, process, undefined, new NodeRequestCanceller('semantic', tracer), undefined!, NoopTelemetryReporter, tracer);
 

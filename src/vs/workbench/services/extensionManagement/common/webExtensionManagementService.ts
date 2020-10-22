@@ -5,15 +5,15 @@
 
 import { ExtensionType, IExtensionIdentifier, IExtensionManifest, ITranslatedScannedExtension } from 'vs/platform/extensions/common/extensions';
 import { IExtensionManagementService, ILocalExtension, InstallExtensionEvent, DidInstallExtensionEvent, DidUninstallExtensionEvent, IGalleryExtension, IReportedExtension, IGalleryMetadata, InstallOperation, INSTALL_ERROR_NOT_SUPPORTED } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { IWebExtensionsScannerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IWeBExtensionsScannerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
 import { ILogService } from 'vs/platform/log/common/log';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { localize } from 'vs/nls';
 
-export class WebExtensionManagementService extends Disposable implements IExtensionManagementService {
+export class WeBExtensionManagementService extends DisposaBle implements IExtensionManagementService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -30,24 +30,24 @@ export class WebExtensionManagementService extends Disposable implements IExtens
 	onDidUninstallExtension: Event<DidUninstallExtensionEvent> = this._onDidUninstallExtension.event;
 
 	constructor(
-		@IWebExtensionsScannerService private readonly webExtensionsScannerService: IWebExtensionsScannerService,
+		@IWeBExtensionsScannerService private readonly weBExtensionsScannerService: IWeBExtensionsScannerService,
 		@ILogService private readonly logService: ILogService,
 	) {
 		super();
 	}
 
 	async getInstalled(type?: ExtensionType): Promise<ILocalExtension[]> {
-		const extensions = await this.webExtensionsScannerService.scanAndTranslateExtensions(type);
+		const extensions = await this.weBExtensionsScannerService.scanAndTranslateExtensions(type);
 		return Promise.all(extensions.map(e => this.toLocalExtension(e)));
 	}
 
-	async canInstall(gallery: IGalleryExtension): Promise<boolean> {
-		return this.webExtensionsScannerService.canAddExtension(gallery);
+	async canInstall(gallery: IGalleryExtension): Promise<Boolean> {
+		return this.weBExtensionsScannerService.canAddExtension(gallery);
 	}
 
 	async installFromGallery(gallery: IGalleryExtension): Promise<ILocalExtension> {
 		if (!(await this.canInstall(gallery))) {
-			const error = new Error(localize('cannot be installed', "Cannot install '{0}' because this extension is not a web extension.", gallery.displayName || gallery.name));
+			const error = new Error(localize('cannot Be installed', "Cannot install '{0}' Because this extension is not a weB extension.", gallery.displayName || gallery.name));
 			error.name = INSTALL_ERROR_NOT_SUPPORTED;
 			throw error;
 		}
@@ -55,10 +55,10 @@ export class WebExtensionManagementService extends Disposable implements IExtens
 		this._onInstallExtension.fire({ identifier: gallery.identifier, gallery });
 		try {
 			const existingExtension = await this.getUserExtension(gallery.identifier);
-			const scannedExtension = await this.webExtensionsScannerService.addExtension(gallery);
+			const scannedExtension = await this.weBExtensionsScannerService.addExtension(gallery);
 			const local = await this.toLocalExtension(scannedExtension);
 			if (existingExtension && existingExtension.manifest.version !== gallery.version) {
-				await this.webExtensionsScannerService.removeExtension(existingExtension.identifier, existingExtension.manifest.version);
+				await this.weBExtensionsScannerService.removeExtension(existingExtension.identifier, existingExtension.manifest.version);
 			}
 			this._onDidInstallExtension.fire({ local, identifier: gallery.identifier, operation: InstallOperation.Install, gallery });
 			return local;
@@ -71,7 +71,7 @@ export class WebExtensionManagementService extends Disposable implements IExtens
 	async uninstall(extension: ILocalExtension): Promise<void> {
 		this._onUninstallExtension.fire(extension.identifier);
 		try {
-			await this.webExtensionsScannerService.removeExtension(extension.identifier);
+			await this.weBExtensionsScannerService.removeExtension(extension.identifier);
 			this._onDidUninstallExtension.fire({ identifier: extension.identifier });
 		} catch (error) {
 			this.logService.error(error);
@@ -96,8 +96,8 @@ export class WebExtensionManagementService extends Disposable implements IExtens
 			manifest: scannedExtension.packageJSON,
 			location: scannedExtension.location,
 			isMachineScoped: false,
-			publisherId: null,
-			publisherDisplayName: null
+			puBlisherId: null,
+			puBlisherDisplayName: null
 		};
 	}
 

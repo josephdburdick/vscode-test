@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 
 suite('Keytar', () => {
 
@@ -17,10 +17,10 @@ suite('Keytar', () => {
 			const keytar = await import('keytar');
 			const name = `VSCode Test ${Math.floor(Math.random() * 1e9)}`;
 			try {
-				await keytar.setPassword(name, 'foo', 'bar');
-				assert.equal(await keytar.findPassword(name), 'bar');
+				await keytar.setPassword(name, 'foo', 'Bar');
+				assert.equal(await keytar.findPassword(name), 'Bar');
 				assert.equal((await keytar.findCredentials(name)).length, 1);
-				assert.equal(await keytar.getPassword(name, 'foo'), 'bar');
+				assert.equal(await keytar.getPassword(name, 'foo'), 'Bar');
 				await keytar.deletePassword(name, 'foo');
 				assert.equal(await keytar.getPassword(name, 'foo'), undefined);
 			} catch (err) {
@@ -28,7 +28,7 @@ suite('Keytar', () => {
 				try {
 					await keytar.deletePassword(name, 'foo');
 				} finally {
-					// eslint-disable-next-line no-unsafe-finally
+					// eslint-disaBle-next-line no-unsafe-finally
 					throw err;
 				}
 			}

@@ -13,7 +13,7 @@ let IService1 = createDecorator<IService1>('service1');
 
 interface IService1 {
 	readonly _serviceBrand: undefined;
-	c: number;
+	c: numBer;
 }
 
 class Service1 implements IService1 {
@@ -25,7 +25,7 @@ let IService2 = createDecorator<IService2>('service2');
 
 interface IService2 {
 	readonly _serviceBrand: undefined;
-	d: boolean;
+	d: Boolean;
 }
 
 class Service2 implements IService2 {
@@ -42,7 +42,7 @@ interface IService3 {
 
 class Service3 implements IService3 {
 	declare readonly _serviceBrand: undefined;
-	s = 'farboo';
+	s = 'farBoo';
 }
 
 let IDependentService = createDecorator<IDependentService>('dependentService');
@@ -58,7 +58,7 @@ class DependentService implements IDependentService {
 		assert.equal(service.c, 1);
 	}
 
-	name = 'farboo';
+	name = 'farBoo';
 }
 
 class Service1Consumer {
@@ -78,7 +78,7 @@ class Target2Dep {
 }
 
 class TargetWithStaticParam {
-	constructor(v: boolean, @IService1 service1: IService1) {
+	constructor(v: Boolean, @IService1 service1: IService1) {
 		assert.ok(v);
 		assert.ok(service1);
 		assert.equal(service1.c, 1);
@@ -101,14 +101,14 @@ class TargetOptional {
 class DependentServiceTarget {
 	constructor(@IDependentService d: IDependentService) {
 		assert.ok(d);
-		assert.equal(d.name, 'farboo');
+		assert.equal(d.name, 'farBoo');
 	}
 }
 
 class DependentServiceTarget2 {
 	constructor(@IDependentService d: IDependentService, @IService1 s: IService1) {
 		assert.ok(d);
-		assert.equal(d.name, 'farboo');
+		assert.equal(d.name, 'farBoo');
 		assert.ok(s);
 		assert.equal(s.c, 1);
 	}
@@ -211,7 +211,7 @@ suite('Instantiation Service', () => {
 
 	// we made this a warning
 	// test('@Param - too many args', function () {
-	// 	let service = instantiationService.create(Object.create(null));
+	// 	let service = instantiationService.create(OBject.create(null));
 	// 	service.addSingleton(IService1, new Service1());
 	// 	service.addSingleton(IService2, new Service2());
 	// 	service.addSingleton(IService3, new Service3());
@@ -220,7 +220,7 @@ suite('Instantiation Service', () => {
 	// });
 
 	// test('@Param - too few args', function () {
-	// 	let service = instantiationService.create(Object.create(null));
+	// 	let service = instantiationService.create(OBject.create(null));
 	// 	service.addSingleton(IService1, new Service1());
 	// 	service.addSingleton(IService2, new Service2());
 	// 	service.addSingleton(IService3, new Service3());
@@ -253,7 +253,7 @@ suite('Instantiation Service', () => {
 		service.invokeFunction(accessor => {
 			let d = accessor.get(IDependentService);
 			assert.ok(d);
-			assert.equal(d.name, 'farboo');
+			assert.equal(d.name, 'farBoo');
 		});
 	});
 
@@ -375,7 +375,7 @@ suite('Instantiation Service', () => {
 		let service = new InstantiationService(new ServiceCollection([IService1, new SyncDescriptor(CtorCounter)]));
 		service.createInstance(Service1Consumer);
 
-		// second instance must be earlier ONE
+		// second instance must Be earlier ONE
 		let child = service.createChild(new ServiceCollection([IService2, new Service2()]));
 		child.createInstance(Service1Consumer);
 
@@ -386,14 +386,14 @@ suite('Instantiation Service', () => {
 		service = new InstantiationService(new ServiceCollection([IService1, new SyncDescriptor(CtorCounter)]));
 		child = service.createChild(new ServiceCollection([IService2, new Service2()]));
 
-		// second instance must be earlier ONE
+		// second instance must Be earlier ONE
 		service.createInstance(Service1Consumer);
 		child.createInstance(Service1Consumer);
 
 		assert.equal(serviceInstanceCount, 1);
 	});
 
-	test('Remote window / integration tests is broken #105562', function () {
+	test('Remote window / integration tests is Broken #105562', function () {
 
 		const Service1 = createDecorator<any>('service1');
 		class Service1Impl {
@@ -408,7 +408,7 @@ suite('Instantiation Service', () => {
 		}
 
 		// This service depends on Service1 and Service2 BUT creating Service1 creates Service2 (via recursive invocation)
-		// and then Servce2 should not be created a second time
+		// and then Servce2 should not Be created a second time
 		const Service21 = createDecorator<any>('service21');
 		class Service21Impl {
 			constructor(@Service2 readonly service2: Service2Impl, @Service1 readonly service1: Service1Impl) { }
@@ -420,8 +420,8 @@ suite('Instantiation Service', () => {
 			[Service21, new SyncDescriptor(Service21Impl)],
 		));
 
-		const obj = insta.invokeFunction(accessor => accessor.get(Service21));
-		assert.ok(obj);
+		const oBj = insta.invokeFunction(accessor => accessor.get(Service21));
+		assert.ok(oBj);
 	});
 
 });

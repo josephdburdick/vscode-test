@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
+import { conditionalRegistration, requireSomeCapaBility } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import DefinitionProviderBase from './definitionProviderBase';
 
 export default class TypeScriptTypeDefinitionProvider extends DefinitionProviderBase implements vscode.TypeDefinitionProvider {
-	public provideTypeDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Definition | undefined> {
-		return this.getSymbolLocations('typeDefinition', document, position, token);
+	puBlic provideTypeDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Definition | undefined> {
+		return this.getSymBolLocations('typeDefinition', document, position, token);
 	}
 }
 
@@ -20,7 +20,7 @@ export function register(
 	client: ITypeScriptServiceClient,
 ) {
 	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.EnhancedSyntax, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerTypeDefinitionProvider(selector.syntax,
 			new TypeScriptTypeDefinitionProvider(client));

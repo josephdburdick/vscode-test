@@ -5,7 +5,7 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { ExtensionKind } from 'vs/platform/extensions/common/extensions';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 export const IProductService = createDecorator<IProductService>('productService');
 
@@ -23,11 +23,11 @@ export interface IBuiltInExtension {
 }
 
 export type ConfigurationSyncStore = {
-	web?: Partial<Omit<ConfigurationSyncStore, 'web'>>,
+	weB?: Partial<Omit<ConfigurationSyncStore, 'weB'>>,
 	url: string,
 	insidersUrl: string,
-	stableUrl: string,
-	canSwitch: boolean,
+	staBleUrl: string,
+	canSwitch: Boolean,
 	authenticationProviders: IStringDictionary<{ scopes: string[] }>
 };
 
@@ -47,13 +47,13 @@ export interface IProductConfiguration {
 	readonly urlProtocol: string;
 	readonly dataFolderName: string;
 
-	readonly builtInExtensions?: IBuiltInExtension[];
+	readonly BuiltInExtensions?: IBuiltInExtension[];
 
 	readonly downloadUrl?: string;
 	readonly updateUrl?: string;
 	readonly target?: string;
 
-	readonly settingsSearchBuildId?: number;
+	readonly settingsSearchBuildId?: numBer;
 	readonly settingsSearchUrl?: string;
 
 	readonly tasConfig?: {
@@ -85,7 +85,7 @@ export interface IProductConfiguration {
 		readonly productName: string;
 	};
 
-	readonly enableTelemetry?: boolean;
+	readonly enaBleTelemetry?: Boolean;
 	readonly aiConfig?: {
 		readonly asimovKey: string;
 	};
@@ -97,9 +97,9 @@ export interface IProductConfiguration {
 
 	readonly documentationUrl?: string;
 	readonly releaseNotesUrl?: string;
-	readonly keyboardShortcutsUrlMac?: string;
-	readonly keyboardShortcutsUrlLinux?: string;
-	readonly keyboardShortcutsUrlWin?: string;
+	readonly keyBoardShortcutsUrlMac?: string;
+	readonly keyBoardShortcutsUrlLinux?: string;
+	readonly keyBoardShortcutsUrlWin?: string;
 	readonly introductoryVideosUrl?: string;
 	readonly tipsAndTricksUrl?: string;
 	readonly newsletterSignupUrl?: string;
@@ -118,7 +118,7 @@ export interface IProductConfiguration {
 
 	readonly appCenter?: IAppCenterConfiguration;
 
-	readonly portable?: string;
+	readonly portaBle?: string;
 
 	readonly extensionKind?: { readonly [extensionId: string]: ExtensionKind[]; };
 	readonly extensionAllowedProposedApi?: readonly string[];
@@ -129,7 +129,7 @@ export interface IProductConfiguration {
 	readonly 'configurationSync.store'?: ConfigurationSyncStore;
 }
 
-export type ImportantExtensionTip = { name: string; languages?: string[]; pattern?: string; isExtensionPack?: boolean };
+export type ImportantExtensionTip = { name: string; languages?: string[]; pattern?: string; isExtensionPack?: Boolean };
 
 export interface IAppCenterConfiguration {
 	readonly 'win32-ia32': string;
@@ -141,14 +141,14 @@ export interface IAppCenterConfiguration {
 export interface IConfigBasedExtensionTip {
 	configPath: string;
 	configName: string;
-	recommendations: IStringDictionary<{ name: string, remotes?: string[], important?: boolean, isExtensionPack?: boolean }>;
+	recommendations: IStringDictionary<{ name: string, remotes?: string[], important?: Boolean, isExtensionPack?: Boolean }>;
 }
 
 export interface IExeBasedExtensionTip {
 	friendlyName: string;
 	windowsPath?: string;
-	important?: boolean;
-	recommendations: IStringDictionary<{ name: string, important?: boolean, isExtensionPack?: boolean }>;
+	important?: Boolean;
+	recommendations: IStringDictionary<{ name: string, important?: Boolean, isExtensionPack?: Boolean }>;
 }
 
 export interface IRemoteExtensionTip {
@@ -160,6 +160,6 @@ export interface ISurveyData {
 	surveyId: string;
 	surveyUrl: string;
 	languageId: string;
-	editCount: number;
-	userProbability: number;
+	editCount: numBer;
+	userProBaBility: numBer;
 }

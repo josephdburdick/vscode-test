@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Barrier } from 'vs/base/common/async';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { revive } from 'vs/base/common/marshalling';
-import { URI } from 'vs/base/common/uri';
+import { Barrier } from 'vs/Base/common/async';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { revive } from 'vs/Base/common/marshalling';
+import { URI } from 'vs/Base/common/uri';
 import * as nls from 'vs/nls';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IRemoteTerminalService, ITerminalInstanceService, ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { IRemoteTerminalProcessExecCommandEvent, IShellLaunchConfigDto, RemoteTerminalChannelClient, REMOTE_TERMINAL_CHANNEL_NAME } from 'vs/workbench/contrib/terminal/common/remoteTerminalChannel';
-import { IShellLaunchConfig, ITerminalChildProcess, ITerminalConfigHelper, ITerminalLaunchError } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteTerminalService, ITerminalInstanceService, ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { IRemoteTerminalProcessExecCommandEvent, IShellLaunchConfigDto, RemoteTerminalChannelClient, REMOTE_TERMINAL_CHANNEL_NAME } from 'vs/workBench/contriB/terminal/common/remoteTerminalChannel';
+import { IShellLaunchConfig, ITerminalChildProcess, ITerminalConfigHelper, ITerminalLaunchError } from 'vs/workBench/contriB/terminal/common/terminal';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 
-export class RemoteTerminalService extends Disposable implements IRemoteTerminalService {
-	public _serviceBrand: undefined;
+export class RemoteTerminalService extends DisposaBle implements IRemoteTerminalService {
+	puBlic _serviceBrand: undefined;
 
 	private readonly _remoteTerminalChannel: RemoteTerminalChannelClient | null;
 	private _hasConnectedToRemote = false;
@@ -41,7 +41,7 @@ export class RemoteTerminalService extends Disposable implements IRemoteTerminal
 		}
 	}
 
-	public async createRemoteTerminalProcess(terminalId: number, shellLaunchConfig: IShellLaunchConfig, activeWorkspaceRootUri: URI | undefined, cols: number, rows: number, configHelper: ITerminalConfigHelper,): Promise<ITerminalChildProcess> {
+	puBlic async createRemoteTerminalProcess(terminalId: numBer, shellLaunchConfig: IShellLaunchConfig, activeWorkspaceRootUri: URI | undefined, cols: numBer, rows: numBer, configHelper: ITerminalConfigHelper,): Promise<ITerminalChildProcess> {
 		if (!this._remoteTerminalChannel) {
 			throw new Error(`Cannot create remote terminal when there is no remote!`);
 		}
@@ -58,30 +58,30 @@ export class RemoteTerminalService extends Disposable implements IRemoteTerminal
 	}
 }
 
-export class RemoteTerminalProcess extends Disposable implements ITerminalChildProcess {
+export class RemoteTerminalProcess extends DisposaBle implements ITerminalChildProcess {
 
-	public readonly _onProcessData = this._register(new Emitter<string>());
-	public readonly onProcessData: Event<string> = this._onProcessData.event;
-	private readonly _onProcessExit = this._register(new Emitter<number | undefined>());
-	public readonly onProcessExit: Event<number | undefined> = this._onProcessExit.event;
-	public readonly _onProcessReady = this._register(new Emitter<{ pid: number, cwd: string }>());
-	public get onProcessReady(): Event<{ pid: number, cwd: string }> { return this._onProcessReady.event; }
+	puBlic readonly _onProcessData = this._register(new Emitter<string>());
+	puBlic readonly onProcessData: Event<string> = this._onProcessData.event;
+	private readonly _onProcessExit = this._register(new Emitter<numBer | undefined>());
+	puBlic readonly onProcessExit: Event<numBer | undefined> = this._onProcessExit.event;
+	puBlic readonly _onProcessReady = this._register(new Emitter<{ pid: numBer, cwd: string }>());
+	puBlic get onProcessReady(): Event<{ pid: numBer, cwd: string }> { return this._onProcessReady.event; }
 	private readonly _onProcessTitleChanged = this._register(new Emitter<string>());
-	public readonly onProcessTitleChanged: Event<string> = this._onProcessTitleChanged.event;
+	puBlic readonly onProcessTitleChanged: Event<string> = this._onProcessTitleChanged.event;
 	private readonly _onProcessResolvedShellLaunchConfig = this._register(new Emitter<IShellLaunchConfig>());
-	public get onProcessResolvedShellLaunchConfig(): Event<IShellLaunchConfig> { return this._onProcessResolvedShellLaunchConfig.event; }
+	puBlic get onProcessResolvedShellLaunchConfig(): Event<IShellLaunchConfig> { return this._onProcessResolvedShellLaunchConfig.event; }
 
 	private _startBarrier: Barrier;
-	private _remoteTerminalId: number;
+	private _remoteTerminalId: numBer;
 
 	constructor(
-		private readonly _terminalId: number,
+		private readonly _terminalId: numBer,
 		private readonly _shellLaunchConfig: IShellLaunchConfig,
 		private readonly _activeWorkspaceRootUri: URI | undefined,
-		private readonly _cols: number,
-		private readonly _rows: number,
+		private readonly _cols: numBer,
+		private readonly _rows: numBer,
 		private readonly _configHelper: ITerminalConfigHelper,
-		private readonly _isPreconnectionTerminal: boolean,
+		private readonly _isPreconnectionTerminal: Boolean,
 		private readonly _remoteTerminalChannel: RemoteTerminalChannelClient,
 		private readonly _remoteAgentService: IRemoteAgentService,
 		private readonly _logService: ILogService,
@@ -92,9 +92,9 @@ export class RemoteTerminalProcess extends Disposable implements ITerminalChildP
 		this._remoteTerminalId = 0;
 	}
 
-	public async start(): Promise<ITerminalLaunchError | undefined> {
+	puBlic async start(): Promise<ITerminalLaunchError | undefined> {
 
-		// Add a loading title only if this terminal is instantiated before a connection is up and running
+		// Add a loading title only if this terminal is instantiated Before a connection is up and running
 		if (this._isPreconnectionTerminal) {
 			setTimeout(() => this._onProcessTitleChanged.fire(nls.localize('terminal.integrated.starting', "Starting...")), 0);
 		}
@@ -110,7 +110,7 @@ export class RemoteTerminalProcess extends Disposable implements ITerminalChildP
 
 		const shellLaunchConfigDto: IShellLaunchConfigDto = {
 			name: this._shellLaunchConfig.name,
-			executable: this._shellLaunchConfig.executable,
+			executaBle: this._shellLaunchConfig.executaBle,
 			args: this._shellLaunchConfig.args,
 			cwd: this._shellLaunchConfig.cwd,
 			env: this._shellLaunchConfig.env
@@ -155,38 +155,38 @@ export class RemoteTerminalProcess extends Disposable implements ITerminalChildP
 		return undefined;
 	}
 
-	public shutdown(immediate: boolean): void {
+	puBlic shutdown(immediate: Boolean): void {
 		this._startBarrier.wait().then(_ => {
 			this._remoteTerminalChannel.shutdownTerminalProcess(this._remoteTerminalId, immediate);
 		});
 	}
 
-	public input(data: string): void {
+	puBlic input(data: string): void {
 		this._startBarrier.wait().then(_ => {
 			this._remoteTerminalChannel.sendInputToTerminalProcess(this._remoteTerminalId, data);
 		});
 	}
 
-	public resize(cols: number, rows: number): void {
+	puBlic resize(cols: numBer, rows: numBer): void {
 		this._startBarrier.wait().then(_ => {
 			this._remoteTerminalChannel.resizeTerminalProcess(this._remoteTerminalId, cols, rows);
 		});
 	}
 
-	public async getInitialCwd(): Promise<string> {
+	puBlic async getInitialCwd(): Promise<string> {
 		await this._startBarrier.wait();
 		return this._remoteTerminalChannel.getTerminalInitialCwd(this._remoteTerminalId);
 	}
 
-	public async getCwd(): Promise<string> {
+	puBlic async getCwd(): Promise<string> {
 		await this._startBarrier.wait();
 		return this._remoteTerminalChannel.getTerminalCwd(this._remoteTerminalId);
 	}
 
 	/**
-	 * TODO@roblourens I don't think this does anything useful in the EH and the value isn't used
+	 * TODO@roBlourens I don't think this does anything useful in the EH and the value isn't used
 	 */
-	public async getLatency(): Promise<number> {
+	puBlic async getLatency(): Promise<numBer> {
 		return 0;
 	}
 
@@ -205,7 +205,7 @@ export class RemoteTerminalProcess extends Disposable implements ITerminalChildP
 function reviveIShellLaunchConfig(dto: IShellLaunchConfigDto): IShellLaunchConfig {
 	return {
 		name: dto.name,
-		executable: dto.executable,
+		executaBle: dto.executaBle,
 		args: dto.args,
 		cwd: (
 			(typeof dto.cwd === 'string' || typeof dto.cwd === 'undefined')

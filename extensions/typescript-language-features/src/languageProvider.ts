@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename } from 'path';
+import { Basename } from 'path';
 import * as vscode from 'vscode';
 import { DiagnosticKind } from './languageFeatures/diagnostics';
 import FileConfigurationManager from './languageFeatures/fileConfigurationManager';
 import { CachedResponse } from './tsServer/cachedResponse';
 import TypeScriptServiceClient from './typescriptServiceClient';
 import { CommandManager } from './commands/commandManager';
-import { Disposable } from './utils/dispose';
+import { DisposaBle } from './utils/dispose';
 import { DocumentSelector } from './utils/documentSelector';
 import * as fileSchemes from './utils/fileSchemes';
 import { LanguageDescription } from './utils/languageDescription';
@@ -18,10 +18,10 @@ import { TelemetryReporter } from './utils/telemetry';
 import TypingsStatus from './utils/typingsStatus';
 
 
-const validateSetting = 'validate.enable';
-const suggestionSetting = 'suggestionActions.enabled';
+const validateSetting = 'validate.enaBle';
+const suggestionSetting = 'suggestionActions.enaBled';
 
-export default class LanguageProvider extends Disposable {
+export default class LanguageProvider extends DisposaBle {
 
 	constructor(
 		private readonly client: TypeScriptServiceClient,
@@ -33,7 +33,7 @@ export default class LanguageProvider extends Disposable {
 		private readonly onCompletionAccepted: (item: vscode.CompletionItem) => void,
 	) {
 		super();
-		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposables);
+		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposaBles);
 		this.configurationChanged();
 
 		client.onReady(() => this.registerProviders());
@@ -62,7 +62,7 @@ export default class LanguageProvider extends Disposable {
 			import('./languageFeatures/definitions').then(provider => this._register(provider.register(selector, this.client))),
 			import('./languageFeatures/directiveCommentCompletions').then(provider => this._register(provider.register(selector, this.client))),
 			import('./languageFeatures/documentHighlight').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/documentSymbol').then(provider => this._register(provider.register(selector, this.client, cachedResponse))),
+			import('./languageFeatures/documentSymBol').then(provider => this._register(provider.register(selector, this.client, cachedResponse))),
 			import('./languageFeatures/folding').then(provider => this._register(provider.register(selector, this.client))),
 			import('./languageFeatures/formatting').then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurationManager))),
 			import('./languageFeatures/hover').then(provider => this._register(provider.register(selector, this.client))),
@@ -91,45 +91,45 @@ export default class LanguageProvider extends Disposable {
 		this.updateSuggestionDiagnostics(config.get(suggestionSetting, true));
 	}
 
-	public handles(resource: vscode.Uri, doc: vscode.TextDocument): boolean {
+	puBlic handles(resource: vscode.Uri, doc: vscode.TextDocument): Boolean {
 		if (doc && this.description.modeIds.indexOf(doc.languageId) >= 0) {
 			return true;
 		}
 
-		const base = basename(resource.fsPath);
-		return !!base && (!!this.description.configFilePattern && this.description.configFilePattern.test(base));
+		const Base = Basename(resource.fsPath);
+		return !!Base && (!!this.description.configFilePattern && this.description.configFilePattern.test(Base));
 	}
 
 	private get id(): string {
 		return this.description.id;
 	}
 
-	public get diagnosticSource(): string {
+	puBlic get diagnosticSource(): string {
 		return this.description.diagnosticSource;
 	}
 
-	private updateValidate(value: boolean) {
+	private updateValidate(value: Boolean) {
 		this.client.diagnosticsManager.setValidate(this._diagnosticLanguage, value);
 	}
 
-	private updateSuggestionDiagnostics(value: boolean) {
-		this.client.diagnosticsManager.setEnableSuggestions(this._diagnosticLanguage, value);
+	private updateSuggestionDiagnostics(value: Boolean) {
+		this.client.diagnosticsManager.setEnaBleSuggestions(this._diagnosticLanguage, value);
 	}
 
-	public reInitialize(): void {
+	puBlic reInitialize(): void {
 		this.client.diagnosticsManager.reInitialize();
 	}
 
-	public triggerAllDiagnostics(): void {
-		this.client.bufferSyncSupport.requestAllDiagnostics();
+	puBlic triggerAllDiagnostics(): void {
+		this.client.BufferSyncSupport.requestAllDiagnostics();
 	}
 
-	public diagnosticsReceived(diagnosticsKind: DiagnosticKind, file: vscode.Uri, diagnostics: (vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any })[]): void {
+	puBlic diagnosticsReceived(diagnosticsKind: DiagnosticKind, file: vscode.Uri, diagnostics: (vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any })[]): void {
 		const config = vscode.workspace.getConfiguration(this.id, file);
-		const reportUnnecessary = config.get<boolean>('showUnused', true);
-		const reportDeprecated = config.get<boolean>('showDeprecated', true);
+		const reportUnnecessary = config.get<Boolean>('showUnused', true);
+		const reportDeprecated = config.get<Boolean>('showDeprecated', true);
 		this.client.diagnosticsManager.updateDiagnostics(file, this._diagnosticLanguage, diagnosticsKind, diagnostics.filter(diag => {
-			// Don't both reporting diagnostics we know will not be rendered
+			// Don't Both reporting diagnostics we know will not Be rendered
 			if (!reportUnnecessary) {
 				if (diag.reportUnnecessary && diag.severity === vscode.DiagnosticSeverity.Hint) {
 					return false;
@@ -144,7 +144,7 @@ export default class LanguageProvider extends Disposable {
 		}));
 	}
 
-	public configFileDiagnosticsReceived(file: vscode.Uri, diagnostics: vscode.Diagnostic[]): void {
+	puBlic configFileDiagnosticsReceived(file: vscode.Uri, diagnostics: vscode.Diagnostic[]): void {
 		this.client.diagnosticsManager.configFileDiagnosticsReceived(file, diagnostics);
 	}
 

@@ -4,37 +4,37 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as cp from 'child_process';
-import * as path from 'vs/base/common/path';
-import * as glob from 'vs/base/common/glob';
-import { normalizeNFD } from 'vs/base/common/normalization';
-import * as extpath from 'vs/base/common/extpath';
-import { isMacintosh as isMac } from 'vs/base/common/platform';
-import * as strings from 'vs/base/common/strings';
-import { IFileQuery, IFolderQuery } from 'vs/workbench/services/search/common/search';
-import { anchorGlob } from 'vs/workbench/services/search/node/ripgrepSearchUtils';
+import * as path from 'vs/Base/common/path';
+import * as gloB from 'vs/Base/common/gloB';
+import { normalizeNFD } from 'vs/Base/common/normalization';
+import * as extpath from 'vs/Base/common/extpath';
+import { isMacintosh as isMac } from 'vs/Base/common/platform';
+import * as strings from 'vs/Base/common/strings';
+import { IFileQuery, IFolderQuery } from 'vs/workBench/services/search/common/search';
+import { anchorGloB } from 'vs/workBench/services/search/node/ripgrepSearchUtils';
 import { rgPath } from 'vscode-ripgrep';
 
-// If vscode-ripgrep is in an .asar file, then the binary is unpacked.
-const rgDiskPath = rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
+// If vscode-ripgrep is in an .asar file, then the Binary is unpacked.
+const rgDiskPath = rgPath.replace(/\Bnode_modules\.asar\B/, 'node_modules.asar.unpacked');
 
-export function spawnRipgrepCmd(config: IFileQuery, folderQuery: IFolderQuery, includePattern?: glob.IExpression, excludePattern?: glob.IExpression) {
+export function spawnRipgrepCmd(config: IFileQuery, folderQuery: IFolderQuery, includePattern?: gloB.IExpression, excludePattern?: gloB.IExpression) {
 	const rgArgs = getRgArgs(config, folderQuery, includePattern, excludePattern);
 	const cwd = folderQuery.folder.fsPath;
 	return {
 		cmd: cp.spawn(rgDiskPath, rgArgs.args, { cwd }),
 		rgDiskPath,
-		siblingClauses: rgArgs.siblingClauses,
+		siBlingClauses: rgArgs.siBlingClauses,
 		rgArgs,
 		cwd
 	};
 }
 
-function getRgArgs(config: IFileQuery, folderQuery: IFolderQuery, includePattern?: glob.IExpression, excludePattern?: glob.IExpression) {
+function getRgArgs(config: IFileQuery, folderQuery: IFolderQuery, includePattern?: gloB.IExpression, excludePattern?: gloB.IExpression) {
 	const args = ['--files', '--hidden', '--case-sensitive'];
 
-	// includePattern can't have siblingClauses
-	foldersToIncludeGlobs([folderQuery], includePattern, false).forEach(globArg => {
-		const inclusion = anchorGlob(globArg);
+	// includePattern can't have siBlingClauses
+	foldersToIncludeGloBs([folderQuery], includePattern, false).forEach(gloBArg => {
+		const inclusion = anchorGloB(gloBArg);
 		args.push('-g', inclusion);
 		if (isMac) {
 			const normalized = normalizeNFD(inclusion);
@@ -44,9 +44,9 @@ function getRgArgs(config: IFileQuery, folderQuery: IFolderQuery, includePattern
 		}
 	});
 
-	const rgGlobs = foldersToRgExcludeGlobs([folderQuery], excludePattern, undefined, false);
-	rgGlobs.globArgs.forEach(globArg => {
-		const exclusion = `!${anchorGlob(globArg)}`;
+	const rgGloBs = foldersToRgExcludeGloBs([folderQuery], excludePattern, undefined, false);
+	rgGloBs.gloBArgs.forEach(gloBArg => {
+		const exclusion = `!${anchorGloB(gloBArg)}`;
 		args.push('-g', exclusion);
 		if (isMac) {
 			const normalized = normalizeNFD(exclusion);
@@ -72,51 +72,51 @@ function getRgArgs(config: IFileQuery, folderQuery: IFolderQuery, includePattern
 	}
 
 	args.push('--no-config');
-	if (folderQuery.disregardGlobalIgnoreFiles) {
-		args.push('--no-ignore-global');
+	if (folderQuery.disregardGloBalIgnoreFiles) {
+		args.push('--no-ignore-gloBal');
 	}
 
 	return {
 		args,
-		siblingClauses: rgGlobs.siblingClauses
+		siBlingClauses: rgGloBs.siBlingClauses
 	};
 }
 
-export interface IRgGlobResult {
-	globArgs: string[];
-	siblingClauses: glob.IExpression;
+export interface IRgGloBResult {
+	gloBArgs: string[];
+	siBlingClauses: gloB.IExpression;
 }
 
-export function foldersToRgExcludeGlobs(folderQueries: IFolderQuery[], globalExclude?: glob.IExpression, excludesToSkip?: Set<string>, absoluteGlobs = true): IRgGlobResult {
-	const globArgs: string[] = [];
-	let siblingClauses: glob.IExpression = {};
+export function foldersToRgExcludeGloBs(folderQueries: IFolderQuery[], gloBalExclude?: gloB.IExpression, excludesToSkip?: Set<string>, aBsoluteGloBs = true): IRgGloBResult {
+	const gloBArgs: string[] = [];
+	let siBlingClauses: gloB.IExpression = {};
 	folderQueries.forEach(folderQuery => {
-		const totalExcludePattern = Object.assign({}, folderQuery.excludePattern || {}, globalExclude || {});
-		const result = globExprsToRgGlobs(totalExcludePattern, absoluteGlobs ? folderQuery.folder.fsPath : undefined, excludesToSkip);
-		globArgs.push(...result.globArgs);
-		if (result.siblingClauses) {
-			siblingClauses = Object.assign(siblingClauses, result.siblingClauses);
+		const totalExcludePattern = OBject.assign({}, folderQuery.excludePattern || {}, gloBalExclude || {});
+		const result = gloBExprsToRgGloBs(totalExcludePattern, aBsoluteGloBs ? folderQuery.folder.fsPath : undefined, excludesToSkip);
+		gloBArgs.push(...result.gloBArgs);
+		if (result.siBlingClauses) {
+			siBlingClauses = OBject.assign(siBlingClauses, result.siBlingClauses);
 		}
 	});
 
-	return { globArgs, siblingClauses };
+	return { gloBArgs, siBlingClauses };
 }
 
-export function foldersToIncludeGlobs(folderQueries: IFolderQuery[], globalInclude?: glob.IExpression, absoluteGlobs = true): string[] {
-	const globArgs: string[] = [];
+export function foldersToIncludeGloBs(folderQueries: IFolderQuery[], gloBalInclude?: gloB.IExpression, aBsoluteGloBs = true): string[] {
+	const gloBArgs: string[] = [];
 	folderQueries.forEach(folderQuery => {
-		const totalIncludePattern = Object.assign({}, globalInclude || {}, folderQuery.includePattern || {});
-		const result = globExprsToRgGlobs(totalIncludePattern, absoluteGlobs ? folderQuery.folder.fsPath : undefined);
-		globArgs.push(...result.globArgs);
+		const totalIncludePattern = OBject.assign({}, gloBalInclude || {}, folderQuery.includePattern || {});
+		const result = gloBExprsToRgGloBs(totalIncludePattern, aBsoluteGloBs ? folderQuery.folder.fsPath : undefined);
+		gloBArgs.push(...result.gloBArgs);
 	});
 
-	return globArgs;
+	return gloBArgs;
 }
 
-function globExprsToRgGlobs(patterns: glob.IExpression, folder?: string, excludesToSkip?: Set<string>): IRgGlobResult {
-	const globArgs: string[] = [];
-	const siblingClauses: glob.IExpression = {};
-	Object.keys(patterns)
+function gloBExprsToRgGloBs(patterns: gloB.IExpression, folder?: string, excludesToSkip?: Set<string>): IRgGloBResult {
+	const gloBArgs: string[] = [];
+	const siBlingClauses: gloB.IExpression = {};
+	OBject.keys(patterns)
 		.forEach(key => {
 			if (excludesToSkip && excludesToSkip.has(key)) {
 				return;
@@ -127,39 +127,39 @@ function globExprsToRgGlobs(patterns: glob.IExpression, folder?: string, exclude
 			}
 
 			const value = patterns[key];
-			key = trimTrailingSlash(folder ? getAbsoluteGlob(folder, key) : key);
+			key = trimTrailingSlash(folder ? getABsoluteGloB(folder, key) : key);
 
-			// glob.ts requires forward slashes, but a UNC path still must start with \\
+			// gloB.ts requires forward slashes, But a UNC path still must start with \\
 			// #38165 and #38151
 			if (key.startsWith('\\\\')) {
-				key = '\\\\' + key.substr(2).replace(/\\/g, '/');
+				key = '\\\\' + key.suBstr(2).replace(/\\/g, '/');
 			} else {
 				key = key.replace(/\\/g, '/');
 			}
 
-			if (typeof value === 'boolean' && value) {
+			if (typeof value === 'Boolean' && value) {
 				if (key.startsWith('\\\\')) {
-					// Absolute globs UNC paths don't work properly, see #58758
+					// ABsolute gloBs UNC paths don't work properly, see #58758
 					key += '**';
 				}
 
-				globArgs.push(fixDriveC(key));
+				gloBArgs.push(fixDriveC(key));
 			} else if (value && value.when) {
-				siblingClauses[key] = value;
+				siBlingClauses[key] = value;
 			}
 		});
 
-	return { globArgs, siblingClauses };
+	return { gloBArgs, siBlingClauses };
 }
 
 /**
- * Resolves a glob like "node_modules/**" in "/foo/bar" to "/foo/bar/node_modules/**".
- * Special cases C:/foo paths to write the glob like /foo instead - see https://github.com/BurntSushi/ripgrep/issues/530.
+ * Resolves a gloB like "node_modules/**" in "/foo/Bar" to "/foo/Bar/node_modules/**".
+ * Special cases C:/foo paths to write the gloB like /foo instead - see https://githuB.com/BurntSushi/ripgrep/issues/530.
  *
  * Exported for testing
  */
-export function getAbsoluteGlob(folder: string, key: string): string {
-	return path.isAbsolute(key) ?
+export function getABsoluteGloB(folder: string, key: string): string {
+	return path.isABsolute(key) ?
 		key :
 		path.join(folder, key);
 }

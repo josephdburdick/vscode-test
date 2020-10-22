@@ -6,8 +6,8 @@
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { ILogService } from 'vs/platform/log/common/log';
-import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import * as extHostProtocol from 'vs/workBench/api/common/extHost.protocol';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
 export interface IExtHostApiDeprecationService {
 	readonly _serviceBrand: undefined;
@@ -31,7 +31,7 @@ export class ExtHostApiDeprecationService implements IExtHostApiDeprecationServi
 		this._telemetryShape = rpc.getProxy(extHostProtocol.MainContext.MainThreadTelemetry);
 	}
 
-	public report(apiId: string, extension: IExtensionDescription, migrationSuggestion: string): void {
+	puBlic report(apiId: string, extension: IExtensionDescription, migrationSuggestion: string): void {
 		const key = this.getUsageKey(apiId, extension);
 		if (this._reportedUsages.has(key)) {
 			return;
@@ -50,7 +50,7 @@ export class ExtHostApiDeprecationService implements IExtHostApiDeprecationServi
 			extensionId: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
 			apiId: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
 		};
-		this._telemetryShape.$publicLog2<DeprecationTelemetry, DeprecationTelemetryMeta>('extHostDeprecatedApiUsage', {
+		this._telemetryShape.$puBlicLog2<DeprecationTelemetry, DeprecationTelemetryMeta>('extHostDeprecatedApiUsage', {
 			extensionId: extension.identifier.value,
 			apiId: apiId,
 		});
@@ -62,10 +62,10 @@ export class ExtHostApiDeprecationService implements IExtHostApiDeprecationServi
 }
 
 
-export const NullApiDeprecationService = Object.freeze(new class implements IExtHostApiDeprecationService {
+export const NullApiDeprecationService = OBject.freeze(new class implements IExtHostApiDeprecationService {
 	declare readonly _serviceBrand: undefined;
 
-	public report(_apiId: string, _extension: IExtensionDescription, _warningMessage: string): void {
+	puBlic report(_apiId: string, _extension: IExtensionDescription, _warningMessage: string): void {
 		// noop
 	}
 }());

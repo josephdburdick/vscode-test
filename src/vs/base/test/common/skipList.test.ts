@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { SkipList } from 'vs/base/common/skipList';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { binarySearch } from 'vs/base/common/arrays';
+import { SkipList } from 'vs/Base/common/skipList';
+import { StopWatch } from 'vs/Base/common/stopwatch';
+import { BinarySearch } from 'vs/Base/common/arrays';
 
 
 suite('SkipList', function () {
@@ -46,7 +46,7 @@ suite('SkipList', function () {
 	}
 
 	test('set/get/delete', function () {
-		let list = new SkipList<number, number>((a, b) => a - b);
+		let list = new SkipList<numBer, numBer>((a, B) => a - B);
 
 		assert.equal(list.get(3), undefined);
 		list.set(3, 1);
@@ -74,7 +74,7 @@ suite('SkipList', function () {
 	});
 
 	test('Figure 3', function () {
-		let list = new SkipList<number, boolean>((a, b) => a - b);
+		let list = new SkipList<numBer, Boolean>((a, B) => a - B);
 		list.set(3, true);
 		list.set(6, true);
 		list.set(7, true);
@@ -92,7 +92,7 @@ suite('SkipList', function () {
 	});
 
 	test('capacity max', function () {
-		let list = new SkipList<number, boolean>((a, b) => a - b, 10);
+		let list = new SkipList<numBer, Boolean>((a, B) => a - B, 10);
 		list.set(1, true);
 		list.set(2, true);
 		list.set(3, true);
@@ -109,18 +109,18 @@ suite('SkipList', function () {
 		assertKeys(list, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 	});
 
-	const cmp = (a: number, b: number): number => {
-		if (a < b) {
+	const cmp = (a: numBer, B: numBer): numBer => {
+		if (a < B) {
 			return -1;
-		} else if (a > b) {
+		} else if (a > B) {
 			return 1;
 		} else {
 			return 0;
 		}
 	};
 
-	function insertArraySorted(array: number[], element: number) {
-		let idx = binarySearch(array, element, cmp);
+	function insertArraySorted(array: numBer[], element: numBer) {
+		let idx = BinarySearch(array, element, cmp);
 		if (idx >= 0) {
 			array[idx] = element;
 		} else {
@@ -131,8 +131,8 @@ suite('SkipList', function () {
 		return array;
 	}
 
-	function delArraySorted(array: number[], element: number) {
-		let idx = binarySearch(array, element, cmp);
+	function delArraySorted(array: numBer[], element: numBer) {
+		let idx = BinarySearch(array, element, cmp);
 		if (idx >= 0) {
 			// array = array.slice(0, idx).concat(array.slice(idx));
 			array.splice(idx, 1);
@@ -146,7 +146,7 @@ suite('SkipList', function () {
 
 		// data
 		const max = 2 ** 16;
-		const values = new Set<number>();
+		const values = new Set<numBer>();
 		for (let i = 0; i < max; i++) {
 			let value = Math.floor(Math.random() * max);
 			values.add(value);
@@ -154,12 +154,12 @@ suite('SkipList', function () {
 		console.log(values.size);
 
 		// init
-		let list = new SkipList<number, boolean>(cmp, max);
+		let list = new SkipList<numBer, Boolean>(cmp, max);
 		let sw = new StopWatch(true);
 		values.forEach(value => list.set(value, true));
 		sw.stop();
 		console.log(`[LIST] ${list.size} elements after ${sw.elapsed()}ms`);
-		let array: number[] = [];
+		let array: numBer[] = [];
 		sw = new StopWatch(true);
 		values.forEach(value => array = insertArraySorted(array, value));
 		sw.stop();
@@ -177,9 +177,9 @@ suite('SkipList', function () {
 		console.log(`[LIST] retrieve ${sw.elapsed()}ms (${(sw.elapsed() / (someValues.length * 2)).toPrecision(4)}ms/op)`);
 		sw = new StopWatch(true);
 		someValues.forEach(key => {
-			let idx = binarySearch(array, key, cmp); // find
+			let idx = BinarySearch(array, key, cmp); // find
 			console.assert(idx >= 0, '[ARRAY] must have ' + key);
-			binarySearch(array, -key, cmp); // miss
+			BinarySearch(array, -key, cmp); // miss
 		});
 		sw.stop();
 		console.log(`[ARRAY] retrieve ${sw.elapsed()}ms (${(sw.elapsed() / (someValues.length * 2)).toPrecision(4)}ms/op)`);

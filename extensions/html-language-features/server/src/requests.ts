@@ -32,28 +32,28 @@ export enum FileType {
 	 */
 	Directory = 2,
 	/**
-	 * A symbolic link to a file.
+	 * A symBolic link to a file.
 	 */
-	SymbolicLink = 64
+	SymBolicLink = 64
 }
 export interface FileStat {
 	/**
-	 * The type of the file, e.g. is a regular file, a directory, or symbolic link
+	 * The type of the file, e.g. is a regular file, a directory, or symBolic link
 	 * to a file.
 	 */
 	type: FileType;
 	/**
 	 * The creation timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 	 */
-	ctime: number;
+	ctime: numBer;
 	/**
 	 * The modification timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 	 */
-	mtime: number;
+	mtime: numBer;
 	/**
-	 * The size in bytes.
+	 * The size in Bytes.
 	 */
-	size: number;
+	size: numBer;
 }
 
 export interface RequestService {
@@ -65,17 +65,17 @@ export interface RequestService {
 
 
 export function getRequestService(handledSchemas: string[], connection: Connection, runtime: RuntimeEnvironment): RequestService {
-	const builtInHandlers: { [protocol: string]: RequestService | undefined } = {};
+	const BuiltInHandlers: { [protocol: string]: RequestService | undefined } = {};
 	for (let protocol of handledSchemas) {
 		if (protocol === 'file') {
-			builtInHandlers[protocol] = runtime.file;
+			BuiltInHandlers[protocol] = runtime.file;
 		} else if (protocol === 'http' || protocol === 'https') {
-			builtInHandlers[protocol] = runtime.http;
+			BuiltInHandlers[protocol] = runtime.http;
 		}
 	}
 	return {
 		async stat(uri: string): Promise<FileStat> {
-			const handler = builtInHandlers[getScheme(uri)];
+			const handler = BuiltInHandlers[getScheme(uri)];
 			if (handler) {
 				return handler.stat(uri);
 			}
@@ -83,14 +83,14 @@ export function getRequestService(handledSchemas: string[], connection: Connecti
 			return res;
 		},
 		readDirectory(uri: string): Promise<[string, FileType][]> {
-			const handler = builtInHandlers[getScheme(uri)];
+			const handler = BuiltInHandlers[getScheme(uri)];
 			if (handler) {
 				return handler.readDirectory(uri);
 			}
 			return connection.sendRequest(FsReadDirRequest.type, uri.toString());
 		},
 		getContent(uri: string, encoding?: string): Promise<string> {
-			const handler = builtInHandlers[getScheme(uri)];
+			const handler = BuiltInHandlers[getScheme(uri)];
 			if (handler) {
 				return handler.getContent(uri, encoding);
 			}
@@ -100,17 +100,17 @@ export function getRequestService(handledSchemas: string[], connection: Connecti
 }
 
 export function getScheme(uri: string) {
-	return uri.substr(0, uri.indexOf(':'));
+	return uri.suBstr(0, uri.indexOf(':'));
 }
 
 export function dirname(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return lastIndexOfSlash !== -1 ? uri.substr(0, lastIndexOfSlash) : '';
+	return lastIndexOfSlash !== -1 ? uri.suBstr(0, lastIndexOfSlash) : '';
 }
 
-export function basename(uri: string) {
+export function Basename(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return uri.substr(lastIndexOfSlash + 1);
+	return uri.suBstr(lastIndexOfSlash + 1);
 }
 
 
@@ -122,23 +122,23 @@ export function extname(uri: string) {
 		const ch = uri.charCodeAt(i);
 		if (ch === Dot) {
 			if (i > 0 && uri.charCodeAt(i - 1) !== Slash) {
-				return uri.substr(i);
+				return uri.suBstr(i);
 			} else {
-				break;
+				Break;
 			}
 		} else if (ch === Slash) {
-			break;
+			Break;
 		}
 	}
 	return '';
 }
 
-export function isAbsolutePath(path: string) {
+export function isABsolutePath(path: string) {
 	return path.charCodeAt(0) === Slash;
 }
 
 export function resolvePath(uriString: string, path: string): string {
-	if (isAbsolutePath(path)) {
+	if (isABsolutePath(path)) {
 		const uri = URI.parse(uriString);
 		const parts = path.split('/');
 		return uri.with({ path: normalizePath(parts) }).toString();

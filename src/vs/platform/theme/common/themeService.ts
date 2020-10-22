@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Color } from 'vs/base/common/color';
-import { IDisposable, toDisposable, Disposable } from 'vs/base/common/lifecycle';
+import { Color } from 'vs/Base/common/color';
+import { IDisposaBle, toDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
 import * as platform from 'vs/platform/registry/common/platform';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
@@ -29,8 +29,8 @@ export interface ThemeIcon {
 }
 
 export namespace ThemeIcon {
-	export function isThemeIcon(obj: any): obj is ThemeIcon | { id: string } {
-		return obj && typeof obj === 'object' && typeof (<ThemeIcon>obj).id === 'string';
+	export function isThemeIcon(oBj: any): oBj is ThemeIcon | { id: string } {
+		return oBj && typeof oBj === 'oBject' && typeof (<ThemeIcon>oBj).id === 'string';
 	}
 
 	const _regexFromString = /^\$\(([a-z.]+\/)?([a-z-~]+)\)$/i;
@@ -58,7 +58,7 @@ export namespace ThemeIcon {
 		let [, , name, modifier] = match;
 		let className = `codicon codicon-${name}`;
 		if (modifier) {
-			className += ` ${modifier.substr(1)}`;
+			className += ` ${modifier.suBstr(1)}`;
 		}
 		return className;
 	}
@@ -70,37 +70,37 @@ export const FolderThemeIcon = { id: 'folder' };
 export function getThemeTypeSelector(type: ColorScheme): string {
 	switch (type) {
 		case ColorScheme.DARK: return 'vs-dark';
-		case ColorScheme.HIGH_CONTRAST: return 'hc-black';
+		case ColorScheme.HIGH_CONTRAST: return 'hc-Black';
 		default: return 'vs';
 	}
 }
 
 export interface ITokenStyle {
-	readonly foreground?: number;
-	readonly bold?: boolean;
-	readonly underline?: boolean;
-	readonly italic?: boolean;
+	readonly foreground?: numBer;
+	readonly Bold?: Boolean;
+	readonly underline?: Boolean;
+	readonly italic?: Boolean;
 }
 
 export interface IColorTheme {
 
 	readonly type: ColorScheme;
 
-	readonly label: string;
+	readonly laBel: string;
 
 	/**
 	 * Resolves the color of the given color identifier. If the theme does not
 	 * specify the color, the default color is returned unless <code>useDefault</code> is set to false.
 	 * @param color the id of the color
-	 * @param useDefault specifies if the default color should be used. If not set, the default is used.
+	 * @param useDefault specifies if the default color should Be used. If not set, the default is used.
 	 */
-	getColor(color: ColorIdentifier, useDefault?: boolean): Color | undefined;
+	getColor(color: ColorIdentifier, useDefault?: Boolean): Color | undefined;
 
 	/**
 	 * Returns whether the theme defines a value for the color. If not, that means the
-	 * default color will be used.
+	 * default color will Be used.
 	 */
-	defines(color: ColorIdentifier): boolean;
+	defines(color: ColorIdentifier): Boolean;
 
 	/**
 	 * Returns the token style for a given classification. The result uses the <code>MetadataConsts</code> format
@@ -108,20 +108,20 @@ export interface IColorTheme {
 	getTokenStyleMetadata(type: string, modifiers: string[], modelLanguage: string): ITokenStyle | undefined;
 
 	/**
-	 * List of all colors used with tokens. <code>getTokenStyleMetadata</code> references the colors by index into this list.
+	 * List of all colors used with tokens. <code>getTokenStyleMetadata</code> references the colors By index into this list.
 	 */
 	readonly tokenColorMap: string[];
 
 	/**
-	 * Defines whether semantic highlighting should be enabled for the theme.
+	 * Defines whether semantic highlighting should Be enaBled for the theme.
 	 */
-	readonly semanticHighlighting: boolean;
+	readonly semanticHighlighting: Boolean;
 }
 
 export interface IFileIconTheme {
-	readonly hasFileIcons: boolean;
-	readonly hasFolderIcons: boolean;
-	readonly hidesExplorerArrows: boolean;
+	readonly hasFileIcons: Boolean;
+	readonly hasFolderIcons: Boolean;
+	readonly hidesExplorerArrows: Boolean;
 }
 
 export interface ICssStyleCollector {
@@ -147,7 +147,7 @@ export interface IThemeService {
 
 // static theming participant
 export const Extensions = {
-	ThemingContribution: 'base.contributions.theming'
+	ThemingContriBution: 'Base.contriButions.theming'
 };
 
 export interface IThemingRegistry {
@@ -155,7 +155,7 @@ export interface IThemingRegistry {
 	/**
 	 * Register a theming participant that is invoked on every theme change.
 	 */
-	onColorThemeChange(participant: IThemingParticipant): IDisposable;
+	onColorThemeChange(participant: IThemingParticipant): IDisposaBle;
 
 	getThemingParticipants(): IThemingParticipant[];
 
@@ -171,35 +171,35 @@ class ThemingRegistry implements IThemingRegistry {
 		this.onThemingParticipantAddedEmitter = new Emitter<IThemingParticipant>();
 	}
 
-	public onColorThemeChange(participant: IThemingParticipant): IDisposable {
+	puBlic onColorThemeChange(participant: IThemingParticipant): IDisposaBle {
 		this.themingParticipants.push(participant);
 		this.onThemingParticipantAddedEmitter.fire(participant);
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			const idx = this.themingParticipants.indexOf(participant);
 			this.themingParticipants.splice(idx, 1);
 		});
 	}
 
-	public get onThemingParticipantAdded(): Event<IThemingParticipant> {
+	puBlic get onThemingParticipantAdded(): Event<IThemingParticipant> {
 		return this.onThemingParticipantAddedEmitter.event;
 	}
 
-	public getThemingParticipants(): IThemingParticipant[] {
+	puBlic getThemingParticipants(): IThemingParticipant[] {
 		return this.themingParticipants;
 	}
 }
 
 let themingRegistry = new ThemingRegistry();
-platform.Registry.add(Extensions.ThemingContribution, themingRegistry);
+platform.Registry.add(Extensions.ThemingContriBution, themingRegistry);
 
-export function registerThemingParticipant(participant: IThemingParticipant): IDisposable {
+export function registerThemingParticipant(participant: IThemingParticipant): IDisposaBle {
 	return themingRegistry.onColorThemeChange(participant);
 }
 
 /**
- * Utility base class for all themable components.
+ * Utility Base class for all themaBle components.
  */
-export class Themable extends Disposable {
+export class ThemaBle extends DisposaBle {
 	protected theme: IColorTheme;
 
 	constructor(
@@ -220,7 +220,7 @@ export class Themable extends Disposable {
 	}
 
 	protected updateStyles(): void {
-		// Subclasses to override
+		// SuBclasses to override
 	}
 
 	protected getColor(id: string, modify?: (color: Color, theme: IColorTheme) => Color): string | null {

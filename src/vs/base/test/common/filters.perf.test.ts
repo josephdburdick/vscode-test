@@ -2,16 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as filters from 'vs/base/common/filters';
+import * as filters from 'vs/Base/common/filters';
 import { data } from './filters.perf.data';
 
-const patterns = ['cci', 'ida', 'pos', 'CCI', 'enbled', 'callback', 'gGame', 'cons', 'zyx', 'aBc'];
+const patterns = ['cci', 'ida', 'pos', 'CCI', 'enBled', 'callBack', 'gGame', 'cons', 'zyx', 'aBc'];
 
-const _enablePerf = false;
+const _enaBlePerf = false;
 
-function perfSuite(name: string, callback: (this: Mocha.ISuiteCallbackContext) => void) {
-	if (_enablePerf) {
-		suite(name, callback);
+function perfSuite(name: string, callBack: (this: Mocha.ISuiteCallBackContext) => void) {
+	if (_enaBlePerf) {
+		suite(name, callBack);
 	}
 }
 
@@ -67,6 +67,6 @@ perfSuite('Performance - IFilter', function () {
 	perfTest('matchesFuzzy', filters.matchesFuzzy);
 	perfTest('matchesFuzzy2', filters.matchesFuzzy2);
 	perfTest('matchesPrefix', filters.matchesPrefix);
-	perfTest('matchesContiguousSubString', filters.matchesContiguousSubString);
+	perfTest('matchesContiguousSuBString', filters.matchesContiguousSuBString);
 	perfTest('matchesCamelCase', filters.matchesCamelCase);
 });

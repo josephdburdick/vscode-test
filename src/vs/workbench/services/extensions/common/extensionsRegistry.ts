@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import Severity from 'vs/base/common/severity';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import Severity from 'vs/Base/common/severity';
 import { EXTENSION_IDENTIFIER_PATTERN } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { Extensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
+import { Extensions, IJSONContriButionRegistry } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IMessage } from 'vs/workbench/services/extensions/common/extensions';
+import { IMessage } from 'vs/workBench/services/extensions/common/extensions';
 import { ExtensionIdentifier, IExtensionDescription, EXTENSION_CATEGORIES } from 'vs/platform/extensions/common/extensions';
 
-const schemaRegistry = Registry.as<IJSONContributionRegistry>(Extensions.JSONContribution);
+const schemaRegistry = Registry.as<IJSONContriButionRegistry>(Extensions.JSONContriBution);
 export type ExtensionKind = 'workspace' | 'ui' | undefined;
 
 export class ExtensionMessageCollector {
@@ -41,15 +41,15 @@ export class ExtensionMessageCollector {
 		});
 	}
 
-	public error(message: string): void {
+	puBlic error(message: string): void {
 		this._msg(Severity.Error, message);
 	}
 
-	public warn(message: string): void {
+	puBlic warn(message: string): void {
 		this._msg(Severity.Warning, message);
 	}
 
-	public info(message: string): void {
+	puBlic info(message: string): void {
 		this._msg(Severity.Info, message);
 	}
 }
@@ -78,7 +78,7 @@ export class ExtensionPointUserDelta<T> {
 		return result;
 	}
 
-	public static compute<T>(previous: readonly IExtensionPointUser<T>[] | null, current: readonly IExtensionPointUser<T>[]): ExtensionPointUserDelta<T> {
+	puBlic static compute<T>(previous: readonly IExtensionPointUser<T>[] | null, current: readonly IExtensionPointUser<T>[]): ExtensionPointUserDelta<T> {
 		if (!previous || !previous.length) {
 			return new ExtensionPointUserDelta<T>(current, []);
 		}
@@ -96,15 +96,15 @@ export class ExtensionPointUserDelta<T> {
 	}
 
 	constructor(
-		public readonly added: readonly IExtensionPointUser<T>[],
-		public readonly removed: readonly IExtensionPointUser<T>[],
+		puBlic readonly added: readonly IExtensionPointUser<T>[],
+		puBlic readonly removed: readonly IExtensionPointUser<T>[],
 	) { }
 }
 
 export class ExtensionPoint<T> implements IExtensionPoint<T> {
 
-	public readonly name: string;
-	public readonly defaultExtensionKind: ExtensionKind;
+	puBlic readonly name: string;
+	puBlic readonly defaultExtensionKind: ExtensionKind;
 
 	private _handler: IExtensionPointHandler<T> | null;
 	private _users: IExtensionPointUser<T>[] | null;
@@ -150,12 +150,12 @@ const extensionKindSchema: IJSONSchema = {
 	enum: [
 		'ui',
 		'workspace',
-		'web'
+		'weB'
 	],
 	enumDescriptions: [
-		nls.localize('ui', "UI extension kind. In a remote window, such extensions are enabled only when available on the local machine."),
-		nls.localize('workspace', "Workspace extension kind. In a remote window, such extensions are enabled only when available on the remote."),
-		nls.localize('web', "Web worker extension kind. Such an extension can execute in a web worker extension host.")
+		nls.localize('ui', "UI extension kind. In a remote window, such extensions are enaBled only when availaBle on the local machine."),
+		nls.localize('workspace', "Workspace extension kind. In a remote window, such extensions are enaBled only when availaBle on the remote."),
+		nls.localize('weB', "WeB worker extension kind. Such an extension can execute in a weB worker extension host.")
 	],
 };
 
@@ -163,18 +163,18 @@ const schemaId = 'vscode://schemas/vscode-extensions';
 export const schema: IJSONSchema = {
 	properties: {
 		engines: {
-			type: 'object',
-			description: nls.localize('vscode.extension.engines', "Engine compatibility."),
+			type: 'oBject',
+			description: nls.localize('vscode.extension.engines', "Engine compatiBility."),
 			properties: {
 				'vscode': {
 					type: 'string',
-					description: nls.localize('vscode.extension.engines.vscode', 'For VS Code extensions, specifies the VS Code version that the extension is compatible with. Cannot be *. For example: ^0.10.5 indicates compatibility with a minimum VS Code version of 0.10.5.'),
+					description: nls.localize('vscode.extension.engines.vscode', 'For VS Code extensions, specifies the VS Code version that the extension is compatiBle with. Cannot Be *. For example: ^0.10.5 indicates compatiBility with a minimum VS Code version of 0.10.5.'),
 					default: '^1.22.0',
 				}
 			}
 		},
-		publisher: {
-			description: nls.localize('vscode.extension.publisher', 'The publisher of the VS Code extension.'),
+		puBlisher: {
+			description: nls.localize('vscode.extension.puBlisher', 'The puBlisher of the VS Code extension.'),
 			type: 'string'
 		},
 		displayName: {
@@ -182,7 +182,7 @@ export const schema: IJSONSchema = {
 			type: 'string'
 		},
 		categories: {
-			description: nls.localize('vscode.extension.categories', 'The categories used by the VS Code gallery to categorize the extension.'),
+			description: nls.localize('vscode.extension.categories', 'The categories used By the VS Code gallery to categorize the extension.'),
 			type: 'array',
 			uniqueItems: true,
 			items: {
@@ -198,31 +198,31 @@ export const schema: IJSONSchema = {
 			}
 		},
 		galleryBanner: {
-			type: 'object',
+			type: 'oBject',
 			description: nls.localize('vscode.extension.galleryBanner', 'Banner used in the VS Code marketplace.'),
 			properties: {
 				color: {
-					description: nls.localize('vscode.extension.galleryBanner.color', 'The banner color on the VS Code marketplace page header.'),
+					description: nls.localize('vscode.extension.galleryBanner.color', 'The Banner color on the VS Code marketplace page header.'),
 					type: 'string'
 				},
 				theme: {
-					description: nls.localize('vscode.extension.galleryBanner.theme', 'The color theme for the font used in the banner.'),
+					description: nls.localize('vscode.extension.galleryBanner.theme', 'The color theme for the font used in the Banner.'),
 					type: 'string',
 					enum: ['dark', 'light']
 				}
 			}
 		},
-		contributes: {
-			description: nls.localize('vscode.extension.contributes', 'All contributions of the VS Code extension represented by this package.'),
-			type: 'object',
+		contriButes: {
+			description: nls.localize('vscode.extension.contriButes', 'All contriButions of the VS Code extension represented By this package.'),
+			type: 'oBject',
 			properties: {
 				// extensions will fill in
 			} as { [key: string]: any },
 			default: {}
 		},
 		preview: {
-			type: 'boolean',
-			description: nls.localize('vscode.extension.preview', 'Sets the extension to be flagged as a Preview in the Marketplace.'),
+			type: 'Boolean',
+			description: nls.localize('vscode.extension.preview', 'Sets the extension to Be flagged as a Preview in the Marketplace.'),
 		},
 		activationEvents: {
 			description: nls.localize('vscode.extension.activationEvents', 'Activation events for the VS Code extension.'),
@@ -231,122 +231,122 @@ export const schema: IJSONSchema = {
 				type: 'string',
 				defaultSnippets: [
 					{
-						label: 'onLanguage',
+						laBel: 'onLanguage',
 						description: nls.localize('vscode.extension.activationEvents.onLanguage', 'An activation event emitted whenever a file that resolves to the specified language gets opened.'),
-						body: 'onLanguage:${1:languageId}'
+						Body: 'onLanguage:${1:languageId}'
 					},
 					{
-						label: 'onCommand',
+						laBel: 'onCommand',
 						description: nls.localize('vscode.extension.activationEvents.onCommand', 'An activation event emitted whenever the specified command gets invoked.'),
-						body: 'onCommand:${2:commandId}'
+						Body: 'onCommand:${2:commandId}'
 					},
 					{
-						label: 'onDebug',
-						description: nls.localize('vscode.extension.activationEvents.onDebug', 'An activation event emitted whenever a user is about to start debugging or about to setup debug configurations.'),
-						body: 'onDebug'
+						laBel: 'onDeBug',
+						description: nls.localize('vscode.extension.activationEvents.onDeBug', 'An activation event emitted whenever a user is aBout to start deBugging or aBout to setup deBug configurations.'),
+						Body: 'onDeBug'
 					},
 					{
-						label: 'onDebugInitialConfigurations',
-						description: nls.localize('vscode.extension.activationEvents.onDebugInitialConfigurations', 'An activation event emitted whenever a "launch.json" needs to be created (and all provideDebugConfigurations methods need to be called).'),
-						body: 'onDebugInitialConfigurations'
+						laBel: 'onDeBugInitialConfigurations',
+						description: nls.localize('vscode.extension.activationEvents.onDeBugInitialConfigurations', 'An activation event emitted whenever a "launch.json" needs to Be created (and all provideDeBugConfigurations methods need to Be called).'),
+						Body: 'onDeBugInitialConfigurations'
 					},
 					{
-						label: 'onDebugDynamicConfigurations',
-						description: nls.localize('vscode.extension.activationEvents.onDebugDynamicConfigurations', 'An activation event emitted whenever a list of all debug configurations needs to be created (and all provideDebugConfigurations methods for the "dynamic" scope need to be called).'),
-						body: 'onDebugDynamicConfigurations'
+						laBel: 'onDeBugDynamicConfigurations',
+						description: nls.localize('vscode.extension.activationEvents.onDeBugDynamicConfigurations', 'An activation event emitted whenever a list of all deBug configurations needs to Be created (and all provideDeBugConfigurations methods for the "dynamic" scope need to Be called).'),
+						Body: 'onDeBugDynamicConfigurations'
 					},
 					{
-						label: 'onDebugResolve',
-						description: nls.localize('vscode.extension.activationEvents.onDebugResolve', 'An activation event emitted whenever a debug session with the specific type is about to be launched (and a corresponding resolveDebugConfiguration method needs to be called).'),
-						body: 'onDebugResolve:${6:type}'
+						laBel: 'onDeBugResolve',
+						description: nls.localize('vscode.extension.activationEvents.onDeBugResolve', 'An activation event emitted whenever a deBug session with the specific type is aBout to Be launched (and a corresponding resolveDeBugConfiguration method needs to Be called).'),
+						Body: 'onDeBugResolve:${6:type}'
 					},
 					{
-						label: 'onDebugAdapterProtocolTracker',
-						description: nls.localize('vscode.extension.activationEvents.onDebugAdapterProtocolTracker', 'An activation event emitted whenever a debug session with the specific type is about to be launched and a debug protocol tracker might be needed.'),
-						body: 'onDebugAdapterProtocolTracker:${6:type}'
+						laBel: 'onDeBugAdapterProtocolTracker',
+						description: nls.localize('vscode.extension.activationEvents.onDeBugAdapterProtocolTracker', 'An activation event emitted whenever a deBug session with the specific type is aBout to Be launched and a deBug protocol tracker might Be needed.'),
+						Body: 'onDeBugAdapterProtocolTracker:${6:type}'
 					},
 					{
-						label: 'workspaceContains',
-						description: nls.localize('vscode.extension.activationEvents.workspaceContains', 'An activation event emitted whenever a folder is opened that contains at least a file matching the specified glob pattern.'),
-						body: 'workspaceContains:${4:filePattern}'
+						laBel: 'workspaceContains',
+						description: nls.localize('vscode.extension.activationEvents.workspaceContains', 'An activation event emitted whenever a folder is opened that contains at least a file matching the specified gloB pattern.'),
+						Body: 'workspaceContains:${4:filePattern}'
 					},
 					{
-						label: 'onStartupFinished',
+						laBel: 'onStartupFinished',
 						description: nls.localize('vscode.extension.activationEvents.onStartupFinished', 'An activation event emitted after the start-up finished (after all `*` activated extensions have finished activating).'),
-						body: 'onStartupFinished'
+						Body: 'onStartupFinished'
 					},
 					{
-						label: 'onFileSystem',
+						laBel: 'onFileSystem',
 						description: nls.localize('vscode.extension.activationEvents.onFileSystem', 'An activation event emitted whenever a file or folder is accessed with the given scheme.'),
-						body: 'onFileSystem:${1:scheme}'
+						Body: 'onFileSystem:${1:scheme}'
 					},
 					{
-						label: 'onSearch',
+						laBel: 'onSearch',
 						description: nls.localize('vscode.extension.activationEvents.onSearch', 'An activation event emitted whenever a search is started in the folder with the given scheme.'),
-						body: 'onSearch:${7:scheme}'
+						Body: 'onSearch:${7:scheme}'
 					},
 					{
-						label: 'onView',
-						body: 'onView:${5:viewId}',
+						laBel: 'onView',
+						Body: 'onView:${5:viewId}',
 						description: nls.localize('vscode.extension.activationEvents.onView', 'An activation event emitted whenever the specified view is expanded.'),
 					},
 					{
-						label: 'onIdentity',
-						body: 'onIdentity:${8:identity}',
+						laBel: 'onIdentity',
+						Body: 'onIdentity:${8:identity}',
 						description: nls.localize('vscode.extension.activationEvents.onIdentity', 'An activation event emitted whenever the specified user identity.'),
 					},
 					{
-						label: 'onUri',
-						body: 'onUri',
+						laBel: 'onUri',
+						Body: 'onUri',
 						description: nls.localize('vscode.extension.activationEvents.onUri', 'An activation event emitted whenever a system-wide Uri directed towards this extension is open.'),
 					},
 					{
-						label: 'onCustomEditor',
-						body: 'onCustomEditor:${9:viewType}',
-						description: nls.localize('vscode.extension.activationEvents.onCustomEditor', 'An activation event emitted whenever the specified custom editor becomes visible.'),
+						laBel: 'onCustomEditor',
+						Body: 'onCustomEditor:${9:viewType}',
+						description: nls.localize('vscode.extension.activationEvents.onCustomEditor', 'An activation event emitted whenever the specified custom editor Becomes visiBle.'),
 					},
 					{
-						label: '*',
-						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
-						body: '*'
+						laBel: '*',
+						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events comBination works in your use-case.'),
+						Body: '*'
 					}
 				],
 			}
 		},
-		badges: {
+		Badges: {
 			type: 'array',
-			description: nls.localize('vscode.extension.badges', 'Array of badges to display in the sidebar of the Marketplace\'s extension page.'),
+			description: nls.localize('vscode.extension.Badges', 'Array of Badges to display in the sideBar of the Marketplace\'s extension page.'),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				required: ['url', 'href', 'description'],
 				properties: {
 					url: {
 						type: 'string',
-						description: nls.localize('vscode.extension.badges.url', 'Badge image URL.')
+						description: nls.localize('vscode.extension.Badges.url', 'Badge image URL.')
 					},
 					href: {
 						type: 'string',
-						description: nls.localize('vscode.extension.badges.href', 'Badge link.')
+						description: nls.localize('vscode.extension.Badges.href', 'Badge link.')
 					},
 					description: {
 						type: 'string',
-						description: nls.localize('vscode.extension.badges.description', 'Badge description.')
+						description: nls.localize('vscode.extension.Badges.description', 'Badge description.')
 					}
 				}
 			}
 		},
 		markdown: {
 			type: 'string',
-			description: nls.localize('vscode.extension.markdown', "Controls the Markdown rendering engine used in the Marketplace. Either github (default) or standard."),
-			enum: ['github', 'standard'],
-			default: 'github'
+			description: nls.localize('vscode.extension.markdown', "Controls the Markdown rendering engine used in the Marketplace. Either githuB (default) or standard."),
+			enum: ['githuB', 'standard'],
+			default: 'githuB'
 		},
 		qna: {
 			default: 'marketplace',
-			description: nls.localize('vscode.extension.qna', "Controls the Q&A link in the Marketplace. Set to marketplace to enable the default Marketplace Q & A site. Set to a string to provide the URL of a custom Q & A site. Set to false to disable Q & A altogether."),
+			description: nls.localize('vscode.extension.qna', "Controls the Q&A link in the Marketplace. Set to marketplace to enaBle the default Marketplace Q & A site. Set to a string to provide the URL of a custom Q & A site. Set to false to disaBle Q & A altogether."),
 			anyOf: [
 				{
-					type: ['string', 'boolean'],
+					type: ['string', 'Boolean'],
 					enum: ['marketplace', false]
 				},
 				{
@@ -355,7 +355,7 @@ export const schema: IJSONSchema = {
 			]
 		},
 		extensionDependencies: {
-			description: nls.localize('vscode.extension.extensionDependencies', 'Dependencies to other extensions. The identifier of an extension is always ${publisher}.${name}. For example: vscode.csharp.'),
+			description: nls.localize('vscode.extension.extensionDependencies', 'Dependencies to other extensions. The identifier of an extension is always ${puBlisher}.${name}. For example: vscode.csharp.'),
 			type: 'array',
 			uniqueItems: true,
 			items: {
@@ -364,7 +364,7 @@ export const schema: IJSONSchema = {
 			}
 		},
 		extensionPack: {
-			description: nls.localize('vscode.extension.contributes.extensionPack', "A set of extensions that can be installed together. The identifier of an extension is always ${publisher}.${name}. For example: vscode.csharp."),
+			description: nls.localize('vscode.extension.contriButes.extensionPack', "A set of extensions that can Be installed together. The identifier of an extension is always ${puBlisher}.${name}. For example: vscode.csharp."),
 			type: 'array',
 			uniqueItems: true,
 			items: {
@@ -379,32 +379,32 @@ export const schema: IJSONSchema = {
 			default: ['workspace'],
 			defaultSnippets: [
 				{
-					body: ['ui'],
+					Body: ['ui'],
 					description: nls.localize('extensionKind.ui', "Define an extension which can run only on the local machine when connected to remote window.")
 				},
 				{
-					body: ['workspace'],
+					Body: ['workspace'],
 					description: nls.localize('extensionKind.workspace', "Define an extension which can run only on the remote machine when connected remote window.")
 				},
 				{
-					body: ['ui', 'workspace'],
+					Body: ['ui', 'workspace'],
 					description: nls.localize('extensionKind.ui-workspace', "Define an extension which can run on either side, with a preference towards running on the local machine.")
 				},
 				{
-					body: ['workspace', 'ui'],
+					Body: ['workspace', 'ui'],
 					description: nls.localize('extensionKind.workspace-ui', "Define an extension which can run on either side, with a preference towards running on the remote machine.")
 				},
 				{
-					body: [],
+					Body: [],
 					description: nls.localize('extensionKind.empty', "Define an extension which cannot run in a remote context, neither on the local, nor on the remote machine.")
 				}
 			]
 		},
 		scripts: {
-			type: 'object',
+			type: 'oBject',
 			properties: {
-				'vscode:prepublish': {
-					description: nls.localize('vscode.extension.scripts.prepublish', 'Script executed before the package is published as a VS Code extension.'),
+				'vscode:prepuBlish': {
+					description: nls.localize('vscode.extension.scripts.prepuBlish', 'Script executed Before the package is puBlished as a VS Code extension.'),
 					type: 'string'
 				},
 				'vscode:uninstall': {
@@ -431,20 +431,20 @@ export class ExtensionsRegistryImpl {
 
 	private readonly _extensionPoints = new Map<string, ExtensionPoint<any>>();
 
-	public registerExtensionPoint<T>(desc: IExtensionPointDescriptor): IExtensionPoint<T> {
+	puBlic registerExtensionPoint<T>(desc: IExtensionPointDescriptor): IExtensionPoint<T> {
 		if (this._extensionPoints.has(desc.extensionPoint)) {
 			throw new Error('Duplicate extension point: ' + desc.extensionPoint);
 		}
 		const result = new ExtensionPoint<T>(desc.extensionPoint, desc.defaultExtensionKind);
 		this._extensionPoints.set(desc.extensionPoint, result);
 
-		schema.properties!['contributes'].properties![desc.extensionPoint] = desc.jsonSchema;
+		schema.properties!['contriButes'].properties![desc.extensionPoint] = desc.jsonSchema;
 		schemaRegistry.registerSchema(schemaId, schema);
 
 		return result;
 	}
 
-	public getExtensionPoints(): ExtensionPoint<any>[] {
+	puBlic getExtensionPoints(): ExtensionPoint<any>[] {
 		return Array.from(this._extensionPoints.values());
 	}
 }

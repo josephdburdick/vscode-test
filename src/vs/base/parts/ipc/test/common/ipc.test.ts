@@ -4,46 +4,46 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IChannel, IServerChannel, IMessagePassingProtocol, IPCServer, ClientConnectionEvent, IPCClient, createChannelReceiver, createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { Emitter, Event } from 'vs/base/common/event';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { timeout } from 'vs/base/common/async';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/resources';
+import { IChannel, IServerChannel, IMessagePassingProtocol, IPCServer, ClientConnectionEvent, IPCClient, createChannelReceiver, createChannelSender } from 'vs/Base/parts/ipc/common/ipc';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
+import { timeout } from 'vs/Base/common/async';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { URI } from 'vs/Base/common/uri';
+import { isEqual } from 'vs/Base/common/resources';
 
 class QueueProtocol implements IMessagePassingProtocol {
 
-	private buffering = true;
-	private buffers: VSBuffer[] = [];
+	private Buffering = true;
+	private Buffers: VSBuffer[] = [];
 
 	private readonly _onMessage = new Emitter<VSBuffer>({
 		onFirstListenerDidAdd: () => {
-			for (const buffer of this.buffers) {
-				this._onMessage.fire(buffer);
+			for (const Buffer of this.Buffers) {
+				this._onMessage.fire(Buffer);
 			}
 
-			this.buffers = [];
-			this.buffering = false;
+			this.Buffers = [];
+			this.Buffering = false;
 		},
 		onLastListenerRemove: () => {
-			this.buffering = true;
+			this.Buffering = true;
 		}
 	});
 
 	readonly onMessage = this._onMessage.event;
 	other!: QueueProtocol;
 
-	send(buffer: VSBuffer): void {
-		this.other.receive(buffer);
+	send(Buffer: VSBuffer): void {
+		this.other.receive(Buffer);
 	}
 
-	protected receive(buffer: VSBuffer): void {
-		if (this.buffering) {
-			this.buffers.push(buffer);
+	protected receive(Buffer: VSBuffer): void {
+		if (this.Buffering) {
+			this.Buffers.push(Buffer);
 		} else {
-			this._onMessage.fire(buffer);
+			this._onMessage.fire(Buffer);
 		}
 	}
 }
@@ -102,7 +102,7 @@ interface ITestService {
 	error(message: string): Promise<void>;
 	neverComplete(): Promise<void>;
 	neverCompleteCT(cancellationToken: CancellationToken): Promise<void>;
-	buffersLength(buffers: VSBuffer[]): Promise<number>;
+	BuffersLength(Buffers: VSBuffer[]): Promise<numBer>;
 	marshall(uri: URI): Promise<URI>;
 	context(): Promise<unknown>;
 
@@ -134,8 +134,8 @@ class TestService implements ITestService {
 		return new Promise((_, e) => cancellationToken.onCancellationRequested(() => e(canceled())));
 	}
 
-	buffersLength(buffers: VSBuffer[]): Promise<number> {
-		return Promise.resolve(buffers.reduce((r, b) => r + b.buffer.length, 0));
+	BuffersLength(Buffers: VSBuffer[]): Promise<numBer> {
+		return Promise.resolve(Buffers.reduce((r, B) => r + B.Buffer.length, 0));
 	}
 
 	ping(msg: string): void {
@@ -161,7 +161,7 @@ class TestChannel implements IServerChannel {
 			case 'error': return this.service.error(arg);
 			case 'neverComplete': return this.service.neverComplete();
 			case 'neverCompleteCT': return this.service.neverCompleteCT(cancellationToken);
-			case 'buffersLength': return this.service.buffersLength(arg);
+			case 'BuffersLength': return this.service.BuffersLength(arg);
 			default: return Promise.reject(new Error('not implemented'));
 		}
 	}
@@ -198,8 +198,8 @@ class TestChannelClient implements ITestService {
 		return this.channel.call('neverCompleteCT', undefined, cancellationToken);
 	}
 
-	buffersLength(buffers: VSBuffer[]): Promise<number> {
-		return this.channel.call('buffersLength', buffers);
+	BuffersLength(Buffers: VSBuffer[]): Promise<numBer> {
+		return this.channel.call('BuffersLength', Buffers);
 	}
 
 	marshall(uri: URI): Promise<URI> {
@@ -216,17 +216,17 @@ suite('Base IPC', function () {
 	test('createProtocolPair', async function () {
 		const [clientProtocol, serverProtocol] = createProtocolPair();
 
-		const b1 = VSBuffer.alloc(0);
-		clientProtocol.send(b1);
+		const B1 = VSBuffer.alloc(0);
+		clientProtocol.send(B1);
 
-		const b3 = VSBuffer.alloc(0);
-		serverProtocol.send(b3);
+		const B3 = VSBuffer.alloc(0);
+		serverProtocol.send(B3);
 
-		const b2 = await Event.toPromise(serverProtocol.onMessage);
-		const b4 = await Event.toPromise(clientProtocol.onMessage);
+		const B2 = await Event.toPromise(serverProtocol.onMessage);
+		const B4 = await Event.toPromise(clientProtocol.onMessage);
 
-		assert.strictEqual(b1, b2);
-		assert.strictEqual(b3, b4);
+		assert.strictEqual(B1, B2);
+		assert.strictEqual(B3, B4);
 	});
 
 	suite('one to one', function () {
@@ -315,8 +315,8 @@ suite('Base IPC', function () {
 			assert.deepEqual(messages, ['hello', 'world']);
 		});
 
-		test('buffers in arrays', async function () {
-			const r = await ipcService.buffersLength([VSBuffer.alloc(2), VSBuffer.alloc(3)]);
+		test('Buffers in arrays', async function () {
+			const r = await ipcService.BuffersLength([VSBuffer.alloc(2), VSBuffer.alloc(3)]);
 			return assert.equal(r, 5);
 		});
 	});
@@ -375,14 +375,14 @@ suite('Base IPC', function () {
 		});
 
 		test('marshalling uri', async function () {
-			const uri = URI.file('foobar');
+			const uri = URI.file('fooBar');
 			const r = await ipcService.marshall(uri);
 			assert.ok(r instanceof URI);
 			return assert.ok(isEqual(r, uri));
 		});
 
-		test('buffers in arrays', async function () {
-			const r = await ipcService.buffersLength([VSBuffer.alloc(2), VSBuffer.alloc(3)]);
+		test('Buffers in arrays', async function () {
+			const r = await ipcService.BuffersLength([VSBuffer.alloc(2), VSBuffer.alloc(3)]);
 			return assert.equal(r, 5);
 		});
 	});
@@ -444,7 +444,7 @@ suite('Base IPC', function () {
 			server.dispose();
 		});
 
-		test('server gets pings from all clients (broadcast channel)', async function () {
+		test('server gets pings from all clients (Broadcast channel)', async function () {
 			const server = new TestIPCServer();
 
 			const client1 = server.createConnection('client1');

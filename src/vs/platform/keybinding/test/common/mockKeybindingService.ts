@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OS } from 'vs/base/common/platform';
+import { Event } from 'vs/Base/common/event';
+import { KeyBinding, ResolvedKeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OS } from 'vs/Base/common/platform';
 import { IContextKey, IContextKeyChangeEvent, IContextKeyService, IContextKeyServiceTarget, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
-import { IKeybindingEvent, IKeybindingService, IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { IResolveResult } from 'vs/platform/keybinding/common/keybindingResolver';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
+import { IKeyBindingEvent, IKeyBindingService, IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
+import { IResolveResult } from 'vs/platform/keyBinding/common/keyBindingResolver';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
 
-class MockKeybindingContextKey<T> implements IContextKey<T> {
+class MockKeyBindingContextKey<T> implements IContextKey<T> {
 	private _defaultValue: T | undefined;
 	private _value: T | undefined;
 
@@ -21,49 +21,49 @@ class MockKeybindingContextKey<T> implements IContextKey<T> {
 		this._value = this._defaultValue;
 	}
 
-	public set(value: T | undefined): void {
+	puBlic set(value: T | undefined): void {
 		this._value = value;
 	}
 
-	public reset(): void {
+	puBlic reset(): void {
 		this._value = this._defaultValue;
 	}
 
-	public get(): T | undefined {
+	puBlic get(): T | undefined {
 		return this._value;
 	}
 }
 
 export class MockContextKeyService implements IContextKeyService {
 
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 	private _keys = new Map<string, IContextKey<any>>();
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		//
 	}
-	public createKey<T>(key: string, defaultValue: T | undefined): IContextKey<T> {
-		let ret = new MockKeybindingContextKey(defaultValue);
+	puBlic createKey<T>(key: string, defaultValue: T | undefined): IContextKey<T> {
+		let ret = new MockKeyBindingContextKey(defaultValue);
 		this._keys.set(key, ret);
 		return ret;
 	}
-	public contextMatchesRules(rules: ContextKeyExpression): boolean {
+	puBlic contextMatchesRules(rules: ContextKeyExpression): Boolean {
 		return false;
 	}
-	public get onDidChangeContext(): Event<IContextKeyChangeEvent> {
+	puBlic get onDidChangeContext(): Event<IContextKeyChangeEvent> {
 		return Event.None;
 	}
-	public bufferChangeEvents(callback: () => void) { callback(); }
-	public getContextKeyValue(key: string) {
+	puBlic BufferChangeEvents(callBack: () => void) { callBack(); }
+	puBlic getContextKeyValue(key: string) {
 		const value = this._keys.get(key);
 		if (value) {
 			return value.get();
 		}
 	}
-	public getContext(domNode: HTMLElement): any {
+	puBlic getContext(domNode: HTMLElement): any {
 		return null;
 	}
-	public createScoped(domNode: HTMLElement): IContextKeyService {
+	puBlic createScoped(domNode: HTMLElement): IContextKeyService {
 		return this;
 	}
 	updateParent(_parentContextKeyService: IContextKeyService): void {
@@ -71,96 +71,96 @@ export class MockContextKeyService implements IContextKeyService {
 	}
 }
 
-export class MockScopableContextKeyService extends MockContextKeyService {
+export class MockScopaBleContextKeyService extends MockContextKeyService {
 	/**
-	 * Don't implement this for all tests since we rarely depend on this behavior and it isn't implemented fully
+	 * Don't implement this for all tests since we rarely depend on this Behavior and it isn't implemented fully
 	 */
-	public createScoped(domNote: HTMLElement): IContextKeyService {
+	puBlic createScoped(domNote: HTMLElement): IContextKeyService {
 		return new MockContextKeyService();
 	}
 }
 
-export class MockKeybindingService implements IKeybindingService {
-	public _serviceBrand: undefined;
+export class MockKeyBindingService implements IKeyBindingService {
+	puBlic _serviceBrand: undefined;
 
-	public readonly inChordMode: boolean = false;
+	puBlic readonly inChordMode: Boolean = false;
 
-	public get onDidUpdateKeybindings(): Event<IKeybindingEvent> {
+	puBlic get onDidUpdateKeyBindings(): Event<IKeyBindingEvent> {
 		return Event.None;
 	}
 
-	public getDefaultKeybindingsContent(): string {
+	puBlic getDefaultKeyBindingsContent(): string {
 		return '';
 	}
 
-	public getDefaultKeybindings(): ResolvedKeybindingItem[] {
+	puBlic getDefaultKeyBindings(): ResolvedKeyBindingItem[] {
 		return [];
 	}
 
-	public getKeybindings(): ResolvedKeybindingItem[] {
+	puBlic getKeyBindings(): ResolvedKeyBindingItem[] {
 		return [];
 	}
 
-	public resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[] {
-		return [new USLayoutResolvedKeybinding(keybinding, OS)];
+	puBlic resolveKeyBinding(keyBinding: KeyBinding): ResolvedKeyBinding[] {
+		return [new USLayoutResolvedKeyBinding(keyBinding, OS)];
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
-		let keybinding = new SimpleKeybinding(
-			keyboardEvent.ctrlKey,
-			keyboardEvent.shiftKey,
-			keyboardEvent.altKey,
-			keyboardEvent.metaKey,
-			keyboardEvent.keyCode
+	puBlic resolveKeyBoardEvent(keyBoardEvent: IKeyBoardEvent): ResolvedKeyBinding {
+		let keyBinding = new SimpleKeyBinding(
+			keyBoardEvent.ctrlKey,
+			keyBoardEvent.shiftKey,
+			keyBoardEvent.altKey,
+			keyBoardEvent.metaKey,
+			keyBoardEvent.keyCode
 		);
-		return this.resolveKeybinding(keybinding.toChord())[0];
+		return this.resolveKeyBinding(keyBinding.toChord())[0];
 	}
 
-	public resolveUserBinding(userBinding: string): ResolvedKeybinding[] {
+	puBlic resolveUserBinding(userBinding: string): ResolvedKeyBinding[] {
 		return [];
 	}
 
-	public lookupKeybindings(commandId: string): ResolvedKeybinding[] {
+	puBlic lookupKeyBindings(commandId: string): ResolvedKeyBinding[] {
 		return [];
 	}
 
-	public lookupKeybinding(commandId: string): ResolvedKeybinding | undefined {
+	puBlic lookupKeyBinding(commandId: string): ResolvedKeyBinding | undefined {
 		return undefined;
 	}
 
-	public customKeybindingsCount(): number {
+	puBlic customKeyBindingsCount(): numBer {
 		return 0;
 	}
 
-	public softDispatch(keybinding: IKeyboardEvent, target: IContextKeyServiceTarget): IResolveResult | null {
+	puBlic softDispatch(keyBinding: IKeyBoardEvent, target: IContextKeyServiceTarget): IResolveResult | null {
 		return null;
 	}
 
-	public dispatchByUserSettingsLabel(userSettingsLabel: string, target: IContextKeyServiceTarget): void {
+	puBlic dispatchByUserSettingsLaBel(userSettingsLaBel: string, target: IContextKeyServiceTarget): void {
 
 	}
 
-	public dispatchEvent(e: IKeyboardEvent, target: IContextKeyServiceTarget): boolean {
+	puBlic dispatchEvent(e: IKeyBoardEvent, target: IContextKeyServiceTarget): Boolean {
 		return false;
 	}
 
-	public mightProducePrintableCharacter(e: IKeyboardEvent): boolean {
+	puBlic mightProducePrintaBleCharacter(e: IKeyBoardEvent): Boolean {
 		return false;
 	}
 
-	public toggleLogging(): boolean {
+	puBlic toggleLogging(): Boolean {
 		return false;
 	}
 
-	public _dumpDebugInfo(): string {
+	puBlic _dumpDeBugInfo(): string {
 		return '';
 	}
 
-	public _dumpDebugInfoJSON(): string {
+	puBlic _dumpDeBugInfoJSON(): string {
 		return '';
 	}
 
-	public registerSchemaContribution() {
+	puBlic registerSchemaContriBution() {
 		// noop
 	}
 }

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable, DisposableStore, dispose } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/base/common/platform';
-import * as errors from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle, DisposaBleStore, dispose } from 'vs/Base/common/lifecycle';
+import * as platform from 'vs/Base/common/platform';
+import * as errors from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
 import { EDITOR_MODEL_DEFAULTS } from 'vs/editor/common/config/editorOptions';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Range } from 'vs/editor/common/core/range';
@@ -20,18 +20,18 @@ import { ILanguageSelection } from 'vs/editor/common/services/modeService';
 import { IModelService, DocumentTokensProvider } from 'vs/editor/common/services/modelService';
 import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IUndoRedoService, ResourceEditStackSnapshot } from 'vs/platform/undoRedo/common/undoRedo';
-import { StringSHA1 } from 'vs/base/common/hash';
+import { StringSHA1 } from 'vs/Base/common/hash';
 import { EditStackElement, isEditStackElement } from 'vs/editor/common/model/editStack';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { SemanticTokensProviderStyling, toMultilineTokens2 } from 'vs/editor/common/services/semanticTokensProviderStyling';
 
 export interface IEditorSemanticHighlightingOptions {
-	enabled: true | false | 'configuredByTheme';
+	enaBled: true | false | 'configuredByTheme';
 }
 
 function MODEL_ID(resource: URI): string {
@@ -50,13 +50,13 @@ function computeModelSha1(model: ITextModel): string {
 }
 
 
-class ModelData implements IDisposable {
-	public readonly model: TextModel;
+class ModelData implements IDisposaBle {
+	puBlic readonly model: TextModel;
 
 	private _languageSelection: ILanguageSelection | null;
-	private _languageSelectionListener: IDisposable | null;
+	private _languageSelectionListener: IDisposaBle | null;
 
-	private readonly _modelEventListeners = new DisposableStore();
+	private readonly _modelEventListeners = new DisposaBleStore();
 
 	constructor(
 		model: TextModel,
@@ -83,12 +83,12 @@ class ModelData implements IDisposable {
 		}
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._modelEventListeners.dispose();
 		this._disposeLanguageSelection();
 	}
 
-	public setLanguage(languageSelection: ILanguageSelection): void {
+	puBlic setLanguage(languageSelection: ILanguageSelection): void {
 		this._disposeLanguageSelection();
 		this._languageSelection = languageSelection;
 		this._languageSelectionListener = this._languageSelection.onDidChange(() => this.model.setMode(languageSelection.languageIdentifier));
@@ -97,7 +97,7 @@ class ModelData implements IDisposable {
 }
 
 interface IRawEditorConfig {
-	tabSize?: any;
+	taBSize?: any;
 	indentSize?: any;
 	insertSpaces?: any;
 	detectIndentation?: any;
@@ -120,14 +120,14 @@ export interface EditStackPastFutureElements {
 
 class DisposedModelInfo {
 	constructor(
-		public readonly uri: URI,
-		public readonly initialUndoRedoSnapshot: ResourceEditStackSnapshot | null,
-		public readonly time: number,
-		public readonly sharesUndoRedoStack: boolean,
-		public readonly heapSize: number,
-		public readonly sha1: string,
-		public readonly versionId: number,
-		public readonly alternativeVersionId: number,
+		puBlic readonly uri: URI,
+		puBlic readonly initialUndoRedoSnapshot: ResourceEditStackSnapshot | null,
+		puBlic readonly time: numBer,
+		puBlic readonly sharesUndoRedoStack: Boolean,
+		puBlic readonly heapSize: numBer,
+		puBlic readonly sha1: string,
+		puBlic readonly versionId: numBer,
+		puBlic readonly alternativeVersionId: numBer,
 	) { }
 }
 
@@ -140,20 +140,20 @@ function schemaShouldMaintainUndoRedoElements(resource: URI) {
 	);
 }
 
-export class ModelServiceImpl extends Disposable implements IModelService {
+export class ModelServiceImpl extends DisposaBle implements IModelService {
 
-	public static MAX_MEMORY_FOR_CLOSED_FILES_UNDO_STACK = 20 * 1024 * 1024;
+	puBlic static MAX_MEMORY_FOR_CLOSED_FILES_UNDO_STACK = 20 * 1024 * 1024;
 
-	public _serviceBrand: undefined;
+	puBlic _serviceBrand: undefined;
 
 	private readonly _onModelAdded: Emitter<ITextModel> = this._register(new Emitter<ITextModel>());
-	public readonly onModelAdded: Event<ITextModel> = this._onModelAdded.event;
+	puBlic readonly onModelAdded: Event<ITextModel> = this._onModelAdded.event;
 
 	private readonly _onModelRemoved: Emitter<ITextModel> = this._register(new Emitter<ITextModel>());
-	public readonly onModelRemoved: Event<ITextModel> = this._onModelRemoved.event;
+	puBlic readonly onModelRemoved: Event<ITextModel> = this._onModelRemoved.event;
 
 	private readonly _onModelModeChanged: Emitter<{ model: ITextModel; oldModeId: string; }> = this._register(new Emitter<{ model: ITextModel; oldModeId: string; }>());
-	public readonly onModelModeChanged: Event<{ model: ITextModel; oldModeId: string; }> = this._onModelModeChanged.event;
+	puBlic readonly onModelModeChanged: Event<{ model: ITextModel; oldModeId: string; }> = this._onModelModeChanged.event;
 
 	private _modelCreationOptionsByLanguageAndResource: { [languageAndResource: string]: ITextModelCreationOptions; };
 
@@ -162,7 +162,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 	 */
 	private readonly _models: { [modelId: string]: ModelData; };
 	private readonly _disposedModels: Map<string, DisposedModelInfo>;
-	private _disposedModelsHeapSize: number;
+	private _disposedModelsHeapSize: numBer;
 	private readonly _semanticStyling: SemanticStyling;
 
 	constructor(
@@ -173,7 +173,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		@IUndoRedoService private readonly _undoRedoService: IUndoRedoService,
 	) {
 		super();
-		this._modelCreationOptionsByLanguageAndResource = Object.create(null);
+		this._modelCreationOptionsByLanguageAndResource = OBject.create(null);
 		this._models = {};
 		this._disposedModels = new Map<string, DisposedModelInfo>();
 		this._disposedModelsHeapSize = 0;
@@ -185,20 +185,20 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		this._register(new SemanticColoringFeature(this, this._themeService, this._configurationService, this._semanticStyling));
 	}
 
-	private static _readModelOptions(config: IRawConfig, isForSimpleWidget: boolean): ITextModelCreationOptions {
-		let tabSize = EDITOR_MODEL_DEFAULTS.tabSize;
-		if (config.editor && typeof config.editor.tabSize !== 'undefined') {
-			const parsedTabSize = parseInt(config.editor.tabSize, 10);
-			if (!isNaN(parsedTabSize)) {
-				tabSize = parsedTabSize;
+	private static _readModelOptions(config: IRawConfig, isForSimpleWidget: Boolean): ITextModelCreationOptions {
+		let taBSize = EDITOR_MODEL_DEFAULTS.taBSize;
+		if (config.editor && typeof config.editor.taBSize !== 'undefined') {
+			const parsedTaBSize = parseInt(config.editor.taBSize, 10);
+			if (!isNaN(parsedTaBSize)) {
+				taBSize = parsedTaBSize;
 			}
-			if (tabSize < 1) {
-				tabSize = 1;
+			if (taBSize < 1) {
+				taBSize = 1;
 			}
 		}
 
-		let indentSize = tabSize;
-		if (config.editor && typeof config.editor.indentSize !== 'undefined' && config.editor.indentSize !== 'tabSize') {
+		let indentSize = taBSize;
+		if (config.editor && typeof config.editor.indentSize !== 'undefined' && config.editor.indentSize !== 'taBSize') {
 			const parsedIndentSize = parseInt(config.editor.indentSize, 10);
 			if (!isNaN(parsedIndentSize)) {
 				indentSize = parsedIndentSize;
@@ -238,7 +238,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 
 		return {
 			isForSimpleWidget: isForSimpleWidget,
-			tabSize: tabSize,
+			taBSize: taBSize,
 			indentSize: indentSize,
 			insertSpaces: insertSpaces,
 			detectIndentation: detectIndentation,
@@ -259,15 +259,15 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return platform.OS === platform.OperatingSystem.Linux || platform.OS === platform.OperatingSystem.Macintosh ? '\n' : '\r\n';
 	}
 
-	private _shouldRestoreUndoStack(): boolean {
-		const result = this._configurationService.getValue<boolean>('files.restoreUndoStack');
-		if (typeof result === 'boolean') {
+	private _shouldRestoreUndoStack(): Boolean {
+		const result = this._configurationService.getValue<Boolean>('files.restoreUndoStack');
+		if (typeof result === 'Boolean') {
 			return result;
 		}
 		return true;
 	}
 
-	public getCreationOptions(language: string, resource: URI | undefined, isForSimpleWidget: boolean): ITextModelCreationOptions {
+	puBlic getCreationOptions(language: string, resource: URI | undefined, isForSimpleWidget: Boolean): ITextModelCreationOptions {
 		let creationOptions = this._modelCreationOptionsByLanguageAndResource[language + resource];
 		if (!creationOptions) {
 			const editor = this._configurationService.getValue<IRawEditorConfig>('editor', { overrideIdentifier: language, resource });
@@ -280,10 +280,10 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 
 	private _updateModelOptions(): void {
 		const oldOptionsByLanguageAndResource = this._modelCreationOptionsByLanguageAndResource;
-		this._modelCreationOptionsByLanguageAndResource = Object.create(null);
+		this._modelCreationOptionsByLanguageAndResource = OBject.create(null);
 
 		// Update options on all models
-		const keys = Object.keys(this._models);
+		const keys = OBject.keys(this._models);
 		for (let i = 0, len = keys.length; i < len; i++) {
 			const modelId = keys[i];
 			const modelData = this._models[modelId];
@@ -303,7 +303,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		if (currentOptions
 			&& (currentOptions.detectIndentation === newOptions.detectIndentation)
 			&& (currentOptions.insertSpaces === newOptions.insertSpaces)
-			&& (currentOptions.tabSize === newOptions.tabSize)
+			&& (currentOptions.taBSize === newOptions.taBSize)
 			&& (currentOptions.indentSize === newOptions.indentSize)
 			&& (currentOptions.trimAutoWhitespace === newOptions.trimAutoWhitespace)
 		) {
@@ -312,21 +312,21 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		}
 
 		if (newOptions.detectIndentation) {
-			model.detectIndentation(newOptions.insertSpaces, newOptions.tabSize);
+			model.detectIndentation(newOptions.insertSpaces, newOptions.taBSize);
 			model.updateOptions({
 				trimAutoWhitespace: newOptions.trimAutoWhitespace
 			});
 		} else {
 			model.updateOptions({
 				insertSpaces: newOptions.insertSpaces,
-				tabSize: newOptions.tabSize,
+				taBSize: newOptions.taBSize,
 				indentSize: newOptions.indentSize,
 				trimAutoWhitespace: newOptions.trimAutoWhitespace
 			});
 		}
 	}
 
-	// --- begin IModelService
+	// --- Begin IModelService
 
 	private _insertDisposedModel(disposedModelData: DisposedModelInfo): void {
 		this._disposedModels.set(MODEL_ID(disposedModelData.uri), disposedModelData);
@@ -342,7 +342,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return disposedModelData;
 	}
 
-	private _ensureDisposedModelsHeapSize(maxModelsHeapSize: number): void {
+	private _ensureDisposedModelsHeapSize(maxModelsHeapSize: numBer): void {
 		if (this._disposedModelsHeapSize > maxModelsHeapSize) {
 			// we must remove some old undo stack elements to free up some memory
 			const disposedModels: DisposedModelInfo[] = [];
@@ -351,7 +351,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 					disposedModels.push(entry);
 				}
 			});
-			disposedModels.sort((a, b) => a.time - b.time);
+			disposedModels.sort((a, B) => a.time - B.time);
 			while (disposedModels.length > 0 && this._disposedModelsHeapSize > maxModelsHeapSize) {
 				const disposedModel = disposedModels.shift()!;
 				this._removeDisposedModel(disposedModel.uri);
@@ -362,7 +362,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		}
 	}
 
-	private _createModelData(value: string | ITextBufferFactory, languageIdentifier: LanguageIdentifier, resource: URI | undefined, isForSimpleWidget: boolean): ModelData {
+	private _createModelData(value: string | ITextBufferFactory, languageIdentifier: LanguageIdentifier, resource: URI | undefined, isForSimpleWidget: Boolean): ModelData {
 		// create & save the model
 		const options = this.getCreationOptions(languageIdentifier.language, resource, isForSimpleWidget);
 		const model: TextModel = new TextModel(value, options, languageIdentifier, resource, this._undoRedoService);
@@ -397,7 +397,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 
 		if (this._models[modelId]) {
 			// There already exists a model with this id => this is a programmer error
-			throw new Error('ModelService: Cannot add model because it already exists!');
+			throw new Error('ModelService: Cannot add model Because it already exists!');
 		}
 
 		const modelData = new ModelData(
@@ -410,7 +410,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return modelData;
 	}
 
-	public updateModel(model: ITextModel, value: string | ITextBufferFactory): void {
+	puBlic updateModel(model: ITextModel, value: string | ITextBufferFactory): void {
 		const options = this.getCreationOptions(model.getLanguageIdentifier().language, model.uri, model.isForSimpleWidget);
 		const textBuffer = createTextBuffer(value, options.defaultEOL);
 
@@ -419,7 +419,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 			return;
 		}
 
-		// Otherwise find a diff between the values and update model
+		// Otherwise find a diff Between the values and update model
 		model.pushStackElement();
 		model.pushEOL(textBuffer.getEOL() === '\r\n' ? EndOfLineSequence.CRLF : EndOfLineSequence.LF);
 		model.pushEditOperations(
@@ -430,30 +430,30 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		model.pushStackElement();
 	}
 
-	private static _commonPrefix(a: ILineSequence, aLen: number, aDelta: number, b: ILineSequence, bLen: number, bDelta: number): number {
-		const maxResult = Math.min(aLen, bLen);
+	private static _commonPrefix(a: ILineSequence, aLen: numBer, aDelta: numBer, B: ILineSequence, BLen: numBer, BDelta: numBer): numBer {
+		const maxResult = Math.min(aLen, BLen);
 
 		let result = 0;
-		for (let i = 0; i < maxResult && a.getLineContent(aDelta + i) === b.getLineContent(bDelta + i); i++) {
+		for (let i = 0; i < maxResult && a.getLineContent(aDelta + i) === B.getLineContent(BDelta + i); i++) {
 			result++;
 		}
 		return result;
 	}
 
-	private static _commonSuffix(a: ILineSequence, aLen: number, aDelta: number, b: ILineSequence, bLen: number, bDelta: number): number {
-		const maxResult = Math.min(aLen, bLen);
+	private static _commonSuffix(a: ILineSequence, aLen: numBer, aDelta: numBer, B: ILineSequence, BLen: numBer, BDelta: numBer): numBer {
+		const maxResult = Math.min(aLen, BLen);
 
 		let result = 0;
-		for (let i = 0; i < maxResult && a.getLineContent(aDelta + aLen - i) === b.getLineContent(bDelta + bLen - i); i++) {
+		for (let i = 0; i < maxResult && a.getLineContent(aDelta + aLen - i) === B.getLineContent(BDelta + BLen - i); i++) {
 			result++;
 		}
 		return result;
 	}
 
 	/**
-	 * Compute edits to bring `model` to the state of `textSource`.
+	 * Compute edits to Bring `model` to the state of `textSource`.
 	 */
-	public static _computeEdits(model: ITextModel, textBuffer: ITextBuffer): IIdentifiedSingleEditOperation[] {
+	puBlic static _computeEdits(model: ITextModel, textBuffer: ITextBuffer): IIdentifiedSingleEditOperation[] {
 		const modelLineCount = model.getLineCount();
 		const textBufferLineCount = textBuffer.getLineCount();
 		const commonPrefix = this._commonPrefix(model, modelLineCount, 1, textBuffer, textBufferLineCount, 1);
@@ -481,7 +481,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return [EditOperation.replaceMove(oldRange, textBuffer.getValueInRange(newRange, EndOfLinePreference.TextDefined))];
 	}
 
-	public createModel(value: string | ITextBufferFactory, languageSelection: ILanguageSelection | null, resource?: URI, isForSimpleWidget: boolean = false): ITextModel {
+	puBlic createModel(value: string | ITextBufferFactory, languageSelection: ILanguageSelection | null, resource?: URI, isForSimpleWidget: Boolean = false): ITextModel {
 		let modelData: ModelData;
 
 		if (languageSelection) {
@@ -496,7 +496,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return modelData.model;
 	}
 
-	public setMode(model: ITextModel, languageSelection: ILanguageSelection): void {
+	puBlic setMode(model: ITextModel, languageSelection: ILanguageSelection): void {
 		if (!languageSelection) {
 			return;
 		}
@@ -507,7 +507,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		modelData.setLanguage(languageSelection);
 	}
 
-	public destroyModel(resource: URI): void {
+	puBlic destroyModel(resource: URI): void {
 		// We need to support that not all models get disposed through this service (i.e. model.dispose() should work!)
 		const modelData = this._models[MODEL_ID(resource)];
 		if (!modelData) {
@@ -524,14 +524,14 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 					if (isEditStackElement(element) && element.matchesResource(resource)) {
 						maintainUndoRedoStack = true;
 						heapSize += element.heapSize(resource);
-						element.setModel(resource); // remove reference from text buffer instance
+						element.setModel(resource); // remove reference from text Buffer instance
 					}
 				}
 				for (const element of elements.future) {
 					if (isEditStackElement(element) && element.matchesResource(resource)) {
 						maintainUndoRedoStack = true;
 						heapSize += element.heapSize(resource);
-						element.setModel(resource); // remove reference from text buffer instance
+						element.setModel(resource); // remove reference from text Buffer instance
 					}
 				}
 			}
@@ -550,7 +550,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 
 		const maxMemory = ModelServiceImpl.MAX_MEMORY_FOR_CLOSED_FILES_UNDO_STACK;
 		if (!sharesUndoRedoStack && heapSize > maxMemory) {
-			// the undo stack for this file would never fit in the configured memory, so don't bother with it.
+			// the undo stack for this file would never fit in the configured memory, so don't Bother with it.
 			const initialUndoRedoSnapshot = modelData.model.getInitialUndoRedoSnapshot();
 			if (initialUndoRedoSnapshot !== null) {
 				this._undoRedoService.restoreSnapshot(initialUndoRedoSnapshot);
@@ -561,17 +561,17 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 
 		this._ensureDisposedModelsHeapSize(maxMemory - heapSize);
 
-		// We only invalidate the elements, but they remain in the undo-redo service.
+		// We only invalidate the elements, But they remain in the undo-redo service.
 		this._undoRedoService.setElementsValidFlag(resource, false, (element) => (isEditStackElement(element) && element.matchesResource(resource)));
 		this._insertDisposedModel(new DisposedModelInfo(resource, modelData.model.getInitialUndoRedoSnapshot(), Date.now(), sharesUndoRedoStack, heapSize, computeModelSha1(model), model.getVersionId(), model.getAlternativeVersionId()));
 
 		modelData.model.dispose();
 	}
 
-	public getModels(): ITextModel[] {
+	puBlic getModels(): ITextModel[] {
 		const ret: ITextModel[] = [];
 
-		const keys = Object.keys(this._models);
+		const keys = OBject.keys(this._models);
 		for (let i = 0, len = keys.length; i < len; i++) {
 			const modelId = keys[i];
 			ret.push(this._models[modelId].model);
@@ -580,7 +580,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return ret;
 	}
 
-	public getModel(resource: URI): ITextModel | null {
+	puBlic getModel(resource: URI): ITextModel | null {
 		const modelId = MODEL_ID(resource);
 		const modelData = this._models[modelId];
 		if (!modelData) {
@@ -589,7 +589,7 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 		return modelData.model;
 	}
 
-	public getSemanticTokensProviderStyling(provider: DocumentTokensProvider): SemanticTokensProviderStyling {
+	puBlic getSemanticTokensProviderStyling(provider: DocumentTokensProvider): SemanticTokensProviderStyling {
 		return this._semanticStyling.get(provider);
 	}
 
@@ -619,27 +619,27 @@ export class ModelServiceImpl extends Disposable implements IModelService {
 }
 
 export interface ILineSequence {
-	getLineContent(lineNumber: number): string;
+	getLineContent(lineNumBer: numBer): string;
 }
 
 export const SEMANTIC_HIGHLIGHTING_SETTING_ID = 'editor.semanticHighlighting';
 
-export function isSemanticColoringEnabled(model: ITextModel, themeService: IThemeService, configurationService: IConfigurationService): boolean {
-	const setting = configurationService.getValue<IEditorSemanticHighlightingOptions>(SEMANTIC_HIGHLIGHTING_SETTING_ID, { overrideIdentifier: model.getLanguageIdentifier().language, resource: model.uri })?.enabled;
-	if (typeof setting === 'boolean') {
+export function isSemanticColoringEnaBled(model: ITextModel, themeService: IThemeService, configurationService: IConfigurationService): Boolean {
+	const setting = configurationService.getValue<IEditorSemanticHighlightingOptions>(SEMANTIC_HIGHLIGHTING_SETTING_ID, { overrideIdentifier: model.getLanguageIdentifier().language, resource: model.uri })?.enaBled;
+	if (typeof setting === 'Boolean') {
 		return setting;
 	}
 	return themeService.getColorTheme().semanticHighlighting;
 }
 
-class SemanticColoringFeature extends Disposable {
+class SemanticColoringFeature extends DisposaBle {
 
 	private readonly _watchers: Record<string, ModelSemanticColoring>;
 	private readonly _semanticStyling: SemanticStyling;
 
 	constructor(modelService: IModelService, themeService: IThemeService, configurationService: IConfigurationService, semanticStyling: SemanticStyling) {
 		super();
-		this._watchers = Object.create(null);
+		this._watchers = OBject.create(null);
 		this._semanticStyling = semanticStyling;
 
 		const register = (model: ITextModel) => {
@@ -652,7 +652,7 @@ class SemanticColoringFeature extends Disposable {
 		const handleSettingOrThemeChange = () => {
 			for (let model of modelService.getModels()) {
 				const curr = this._watchers[model.uri.toString()];
-				if (isSemanticColoringEnabled(model, themeService, configurationService)) {
+				if (isSemanticColoringEnaBled(model, themeService, configurationService)) {
 					if (!curr) {
 						register(model);
 					}
@@ -664,7 +664,7 @@ class SemanticColoringFeature extends Disposable {
 			}
 		};
 		this._register(modelService.onModelAdded((model) => {
-			if (isSemanticColoringEnabled(model, themeService, configurationService)) {
+			if (isSemanticColoringEnaBled(model, themeService, configurationService)) {
 				register(model);
 			}
 		}));
@@ -683,7 +683,7 @@ class SemanticColoringFeature extends Disposable {
 	}
 }
 
-class SemanticStyling extends Disposable {
+class SemanticStyling extends DisposaBle {
 
 	private _caches: WeakMap<DocumentTokensProvider, SemanticTokensProviderStyling>;
 
@@ -698,7 +698,7 @@ class SemanticStyling extends Disposable {
 		}));
 	}
 
-	public get(provider: DocumentTokensProvider): SemanticTokensProviderStyling {
+	puBlic get(provider: DocumentTokensProvider): SemanticTokensProviderStyling {
 		if (!this._caches.has(provider)) {
 			this._caches.set(provider, new SemanticTokensProviderStyling(provider.getLegend(), this._themeService, this._logService));
 		}
@@ -709,24 +709,24 @@ class SemanticStyling extends Disposable {
 class SemanticTokensResponse {
 	constructor(
 		private readonly _provider: DocumentSemanticTokensProvider,
-		public readonly resultId: string | undefined,
-		public readonly data: Uint32Array
+		puBlic readonly resultId: string | undefined,
+		puBlic readonly data: Uint32Array
 	) { }
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._provider.releaseDocumentSemanticTokens(this.resultId);
 	}
 }
 
-class ModelSemanticColoring extends Disposable {
+class ModelSemanticColoring extends DisposaBle {
 
-	private _isDisposed: boolean;
+	private _isDisposed: Boolean;
 	private readonly _model: ITextModel;
 	private readonly _semanticStyling: SemanticStyling;
 	private readonly _fetchDocumentSemanticTokens: RunOnceScheduler;
 	private _currentDocumentResponse: SemanticTokensResponse | null;
 	private _currentDocumentRequestCancellationTokenSource: CancellationTokenSource | null;
-	private _documentProvidersChangeListeners: IDisposable[];
+	private _documentProvidersChangeListeners: IDisposaBle[];
 
 	constructor(model: ITextModel, themeService: IThemeService, stylingProvider: SemanticStyling) {
 		super();
@@ -744,7 +744,7 @@ class ModelSemanticColoring extends Disposable {
 				this._fetchDocumentSemanticTokens.schedule();
 			}
 		}));
-		const bindDocumentChangeListeners = () => {
+		const BindDocumentChangeListeners = () => {
 			dispose(this._documentProvidersChangeListeners);
 			this._documentProvidersChangeListeners = [];
 			for (const provider of DocumentSemanticTokensProviderRegistry.all(model)) {
@@ -753,9 +753,9 @@ class ModelSemanticColoring extends Disposable {
 				}
 			}
 		};
-		bindDocumentChangeListeners();
+		BindDocumentChangeListeners();
 		this._register(DocumentSemanticTokensProviderRegistry.onDidChange(() => {
-			bindDocumentChangeListeners();
+			BindDocumentChangeListeners();
 			this._fetchDocumentSemanticTokens.schedule();
 		}));
 
@@ -768,7 +768,7 @@ class ModelSemanticColoring extends Disposable {
 		this._fetchDocumentSemanticTokens.schedule(0);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this._currentDocumentResponse) {
 			this._currentDocumentResponse.dispose();
 			this._currentDocumentResponse = null;
@@ -809,11 +809,11 @@ class ModelSemanticColoring extends Disposable {
 			contentChangeListener.dispose();
 			this._setDocumentSemanticTokens(provider, res || null, styling, pendingChanges);
 		}, (err) => {
-			if (!err || typeof err.message !== 'string' || err.message.indexOf('busy') === -1) {
+			if (!err || typeof err.message !== 'string' || err.message.indexOf('Busy') === -1) {
 				errors.onUnexpectedError(err);
 			}
 
-			// Semantic tokens eats up all errors and considers errors to mean that the result is temporarily not available
+			// Semantic tokens eats up all errors and considers errors to mean that the result is temporarily not availaBle
 			// The API does not have a special error kind to express this...
 			this._currentDocumentRequestCancellationTokenSource = null;
 			contentChangeListener.dispose();
@@ -835,7 +835,7 @@ class ModelSemanticColoring extends Disposable {
 		return v && Array.isArray((<SemanticTokensEdits>v).edits);
 	}
 
-	private static _copy(src: Uint32Array, srcOffset: number, dest: Uint32Array, destOffset: number, length: number): void {
+	private static _copy(src: Uint32Array, srcOffset: numBer, dest: Uint32Array, destOffset: numBer, length: numBer): void {
 		for (let i = 0; i < length; i++) {
 			dest[destOffset + i] = src[srcOffset + i];
 		}
@@ -865,7 +865,7 @@ class ModelSemanticColoring extends Disposable {
 
 		if (ModelSemanticColoring._isSemanticTokensEdits(tokens)) {
 			if (!currentResponse) {
-				// not possible!
+				// not possiBle!
 				this._model.setSemanticTokens(null, true);
 				return;
 			}

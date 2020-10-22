@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import * as markerService from 'vs/platform/markers/common/markerService';
 import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
 
@@ -12,9 +12,9 @@ function randomMarkerData(severity = MarkerSeverity.Error): IMarkerData {
 	return {
 		severity,
 		message: Math.random().toString(16),
-		startLineNumber: 1,
+		startLineNumBer: 1,
 		startColumn: 1,
-		endLineNumber: 1,
+		endLineNumBer: 1,
 		endColumn: 1
 	};
 }
@@ -36,14 +36,14 @@ suite('Marker Service', () => {
 		assert.equal(service.read({ owner: 'far', resource: URI.parse('file:///c/test/file.cs') }).length, 1);
 
 
-		service.changeAll('boo', [{
+		service.changeAll('Boo', [{
 			resource: URI.parse('file:///c/test/file.cs'),
 			marker: randomMarkerData(MarkerSeverity.Warning)
 		}]);
 
 		assert.equal(service.read().length, 2);
 		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		assert.equal(service.read({ owner: 'Boo' }).length, 1);
 
 		assert.equal(service.read({ severities: MarkerSeverity.Error }).length, 1);
 		assert.equal(service.read({ severities: MarkerSeverity.Warning }).length, 1);
@@ -60,14 +60,14 @@ suite('Marker Service', () => {
 		assert.equal(service.read().length, 1);
 		assert.equal(service.read({ owner: 'far' }).length, 1);
 
-		service.changeOne('boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
+		service.changeOne('Boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
 		assert.equal(service.read().length, 2);
 		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		assert.equal(service.read({ owner: 'Boo' }).length, 1);
 
 		service.changeOne('far', URI.parse('file:///path/only.cs'), [randomMarkerData(), randomMarkerData()]);
 		assert.equal(service.read({ owner: 'far' }).length, 2);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		assert.equal(service.read({ owner: 'Boo' }).length, 1);
 
 	});
 
@@ -75,19 +75,19 @@ suite('Marker Service', () => {
 
 		let service = new markerService.MarkerService();
 		service.changeOne('far', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
-		service.changeOne('boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
+		service.changeOne('Boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
 		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		assert.equal(service.read({ owner: 'Boo' }).length, 1);
 		assert.equal(service.read().length, 2);
 
 		service.changeOne('far', URI.parse('file:///path/only.cs'), []);
 		assert.equal(service.read({ owner: 'far' }).length, 0);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		assert.equal(service.read({ owner: 'Boo' }).length, 1);
 		assert.equal(service.read().length, 1);
 
-		service.changeAll('boo', []);
+		service.changeAll('Boo', []);
 		assert.equal(service.read({ owner: 'far' }).length, 0);
-		assert.equal(service.read({ owner: 'boo' }).length, 0);
+		assert.equal(service.read({ owner: 'Boo' }).length, 0);
 		assert.equal(service.read().length, 0);
 	});
 
@@ -127,7 +127,7 @@ suite('Marker Service', () => {
 		assert.equal(service.read({ owner: 'far' }).length, 2);
 	});
 
-	test('changeAll must not break integrety, issue #12635', () => {
+	test('changeAll must not Break integrety, issue #12635', () => {
 		let service = new markerService.MarkerService();
 
 		service.changeAll('far', [{
@@ -138,7 +138,7 @@ suite('Marker Service', () => {
 			marker: randomMarkerData()
 		}]);
 
-		service.changeAll('boo', [{
+		service.changeAll('Boo', [{
 			resource: URI.parse('scheme:path1'),
 			marker: randomMarkerData()
 		}]);
@@ -173,7 +173,7 @@ suite('Marker Service', () => {
 		assert.equal(service.read({ owner: 'far' }).length, 1);
 	});
 
-	test('MapMap#remove returns bad values, https://github.com/microsoft/vscode/issues/13548', () => {
+	test('MapMap#remove returns Bad values, https://githuB.com/microsoft/vscode/issues/13548', () => {
 		let service = new markerService.MarkerService();
 
 		service.changeOne('o', URI.parse('some:uri/1'), [randomMarkerData()]);
@@ -184,9 +184,9 @@ suite('Marker Service', () => {
 	test('Error code of zero in markers get removed, #31275', function () {
 		let data = <IMarkerData>{
 			code: '0',
-			startLineNumber: 1,
+			startLineNumBer: 1,
 			startColumn: 2,
-			endLineNumber: 1,
+			endLineNumBer: 1,
 			endColumn: 5,
 			message: 'test',
 			severity: 0,

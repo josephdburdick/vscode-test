@@ -11,13 +11,13 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as cp from 'child_process';
 
-import { IExtHostWorkspaceProvider } from 'vs/workbench/api/common/extHostWorkspace';
-import { ExtHostConfigProvider } from 'vs/workbench/api/common/extHostConfiguration';
+import { IExtHostWorkspaceProvider } from 'vs/workBench/api/common/extHostWorkspace';
+import { ExtHostConfigProvider } from 'vs/workBench/api/common/extHostConfiguration';
 import { ProxyAgent } from 'vscode-proxy-agent';
-import { MainThreadTelemetryShape, IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { ExtHostExtensionService } from 'vs/workbench/api/node/extHostExtensionService';
-import { URI } from 'vs/base/common/uri';
+import { MainThreadTelemetryShape, IInitData } from 'vs/workBench/api/common/extHost.protocol';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { ExtHostExtensionService } from 'vs/workBench/api/node/extHostExtensionService';
+import { URI } from 'vs/Base/common/uri';
 import { promisify } from 'util';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
@@ -26,7 +26,7 @@ interface ConnectionResult {
 	proxy: string;
 	connection: string;
 	code: string;
-	count: number;
+	count: numBer;
 }
 
 export function connectProxyResolver(
@@ -67,7 +67,7 @@ function setupProxyResolution(
 	let oldCache = new Map<string, string>();
 	let cache = new Map<string, string>();
 	function getCacheKey(url: nodeurl.UrlWithStringQuery) {
-		// Expecting proxies to usually be the same per scheme://host:port. Assuming that for performance.
+		// Expecting proxies to usually Be the same per scheme://host:port. Assuming that for performance.
 		return nodeurl.format({ ...url, ...{ pathname: undefined, search: undefined, hash: undefined } });
 	}
 	function getCachedProxy(key: string) {
@@ -118,39 +118,39 @@ function setupProxyResolution(
 			results: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
 		};
 		type ResolveProxyEvent = {
-			count: number;
-			duration: number;
-			errorCount: number;
-			cacheCount: number;
-			cacheSize: number;
-			cacheRolls: number;
-			envCount: number;
-			settingsCount: number;
-			localhostCount: number;
-			envNoProxyCount: number;
+			count: numBer;
+			duration: numBer;
+			errorCount: numBer;
+			cacheCount: numBer;
+			cacheSize: numBer;
+			cacheRolls: numBer;
+			envCount: numBer;
+			settingsCount: numBer;
+			localhostCount: numBer;
+			envNoProxyCount: numBer;
 			results: ConnectionResult[];
 		};
-		mainThreadTelemetry.$publicLog2<ResolveProxyEvent, ResolveProxyClassification>('resolveProxy', { count, duration, errorCount, cacheCount, cacheSize: cache.size, cacheRolls, envCount, settingsCount, localhostCount, envNoProxyCount, results });
+		mainThreadTelemetry.$puBlicLog2<ResolveProxyEvent, ResolveProxyClassification>('resolveProxy', { count, duration, errorCount, cacheCount, cacheSize: cache.size, cacheRolls, envCount, settingsCount, localhostCount, envNoProxyCount, results });
 		count = duration = errorCount = cacheCount = envCount = settingsCount = localhostCount = envNoProxyCount = 0;
 		results = [];
 	}
 
-	function resolveProxy(flags: { useProxySettings: boolean, useSystemCertificates: boolean }, req: http.ClientRequest, opts: http.RequestOptions, url: string, callback: (proxy?: string) => void) {
+	function resolveProxy(flags: { useProxySettings: Boolean, useSystemCertificates: Boolean }, req: http.ClientRequest, opts: http.RequestOptions, url: string, callBack: (proxy?: string) => void) {
 		if (!timeout) {
 			timeout = setTimeout(logEvent, 10 * 60 * 1000);
 		}
 
 		const useHostProxy = initData.environment.useHostProxy;
-		const doUseHostProxy = typeof useHostProxy === 'boolean' ? useHostProxy : !initData.remote.isRemote;
+		const doUseHostProxy = typeof useHostProxy === 'Boolean' ? useHostProxy : !initData.remote.isRemote;
 		useSystemCertificates(extHostLogService, flags.useSystemCertificates, opts, () => {
-			useProxySettings(doUseHostProxy, flags.useProxySettings, req, opts, url, callback);
+			useProxySettings(doUseHostProxy, flags.useProxySettings, req, opts, url, callBack);
 		});
 	}
 
-	function useProxySettings(useHostProxy: boolean, useProxySettings: boolean, req: http.ClientRequest, opts: http.RequestOptions, url: string, callback: (proxy?: string) => void) {
+	function useProxySettings(useHostProxy: Boolean, useProxySettings: Boolean, req: http.ClientRequest, opts: http.RequestOptions, url: string, callBack: (proxy?: string) => void) {
 
 		if (!useProxySettings) {
-			callback('DIRECT');
+			callBack('DIRECT');
 			return;
 		}
 
@@ -159,28 +159,28 @@ function setupProxyResolution(
 		const hostname = parsedUrl.hostname;
 		if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '::ffff:127.0.0.1') {
 			localhostCount++;
-			callback('DIRECT');
+			callBack('DIRECT');
 			extHostLogService.trace('ProxyResolver#resolveProxy localhost', url, 'DIRECT');
 			return;
 		}
 
 		if (typeof hostname === 'string' && envNoProxy(hostname, String(parsedUrl.port || (<any>opts.agent).defaultPort))) {
 			envNoProxyCount++;
-			callback('DIRECT');
+			callBack('DIRECT');
 			extHostLogService.trace('ProxyResolver#resolveProxy envNoProxy', url, 'DIRECT');
 			return;
 		}
 
 		if (settingsProxy) {
 			settingsCount++;
-			callback(settingsProxy);
+			callBack(settingsProxy);
 			extHostLogService.trace('ProxyResolver#resolveProxy settings', url, settingsProxy);
 			return;
 		}
 
 		if (envProxy) {
 			envCount++;
-			callback(envProxy);
+			callBack(envProxy);
 			extHostLogService.trace('ProxyResolver#resolveProxy env', url, envProxy);
 			return;
 		}
@@ -190,13 +190,13 @@ function setupProxyResolution(
 		if (proxy) {
 			cacheCount++;
 			collectResult(results, proxy, parsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
-			callback(proxy);
+			callBack(proxy);
 			extHostLogService.trace('ProxyResolver#resolveProxy cached', url, proxy);
 			return;
 		}
 
 		if (!useHostProxy) {
-			callback('DIRECT');
+			callBack('DIRECT');
 			extHostLogService.trace('ProxyResolver#resolveProxy unconfigured', url, 'DIRECT');
 			return;
 		}
@@ -208,14 +208,14 @@ function setupProxyResolution(
 					cacheProxy(key, proxy);
 					collectResult(results, proxy, parsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
 				}
-				callback(proxy);
-				extHostLogService.debug('ProxyResolver#resolveProxy', url, proxy);
+				callBack(proxy);
+				extHostLogService.deBug('ProxyResolver#resolveProxy', url, proxy);
 			}).then(() => {
 				count++;
 				duration = Date.now() - start + duration;
 			}, err => {
 				errorCount++;
-				callback();
+				callBack();
 				extHostLogService.error('ProxyResolver#resolveProxy', toErrorMessage(err));
 			});
 	}
@@ -254,8 +254,8 @@ function proxyFromConfigURL(configURL: string | undefined) {
 	if (i === -1) {
 		return undefined;
 	}
-	const scheme = url.substr(0, i).toLowerCase();
-	const proxy = url.substr(i + 3);
+	const scheme = url.suBstr(0, i).toLowerCase();
+	const proxy = url.suBstr(i + 3);
 	if (scheme === 'http') {
 		return 'PROXY ' + proxy;
 	} else if (scheme === 'https') {
@@ -303,47 +303,47 @@ function createPatchedModules(configProvider: ExtHostConfigProvider, resolveProx
 	});
 	const certSetting = {
 		config: !!configProvider.getConfiguration('http')
-			.get<boolean>('systemCertificates')
+			.get<Boolean>('systemCertificates')
 	};
 	configProvider.onDidChangeConfiguration(e => {
 		certSetting.config = !!configProvider.getConfiguration('http')
-			.get<boolean>('systemCertificates');
+			.get<Boolean>('systemCertificates');
 	});
 
 	return {
 		http: {
-			off: Object.assign({}, http, patches(http, resolveProxy, { config: 'off' }, certSetting, true)),
-			on: Object.assign({}, http, patches(http, resolveProxy, { config: 'on' }, certSetting, true)),
-			override: Object.assign({}, http, patches(http, resolveProxy, { config: 'override' }, certSetting, true)),
-			onRequest: Object.assign({}, http, patches(http, resolveProxy, proxySetting, certSetting, true)),
-			default: Object.assign(http, patches(http, resolveProxy, proxySetting, certSetting, false)) // run last
+			off: OBject.assign({}, http, patches(http, resolveProxy, { config: 'off' }, certSetting, true)),
+			on: OBject.assign({}, http, patches(http, resolveProxy, { config: 'on' }, certSetting, true)),
+			override: OBject.assign({}, http, patches(http, resolveProxy, { config: 'override' }, certSetting, true)),
+			onRequest: OBject.assign({}, http, patches(http, resolveProxy, proxySetting, certSetting, true)),
+			default: OBject.assign(http, patches(http, resolveProxy, proxySetting, certSetting, false)) // run last
 		} as Record<string, typeof http>,
 		https: {
-			off: Object.assign({}, https, patches(https, resolveProxy, { config: 'off' }, certSetting, true)),
-			on: Object.assign({}, https, patches(https, resolveProxy, { config: 'on' }, certSetting, true)),
-			override: Object.assign({}, https, patches(https, resolveProxy, { config: 'override' }, certSetting, true)),
-			onRequest: Object.assign({}, https, patches(https, resolveProxy, proxySetting, certSetting, true)),
-			default: Object.assign(https, patches(https, resolveProxy, proxySetting, certSetting, false)) // run last
+			off: OBject.assign({}, https, patches(https, resolveProxy, { config: 'off' }, certSetting, true)),
+			on: OBject.assign({}, https, patches(https, resolveProxy, { config: 'on' }, certSetting, true)),
+			override: OBject.assign({}, https, patches(https, resolveProxy, { config: 'override' }, certSetting, true)),
+			onRequest: OBject.assign({}, https, patches(https, resolveProxy, proxySetting, certSetting, true)),
+			default: OBject.assign(https, patches(https, resolveProxy, proxySetting, certSetting, false)) // run last
 		} as Record<string, typeof https>,
-		tls: Object.assign(tls, tlsPatches(tls))
+		tls: OBject.assign(tls, tlsPatches(tls))
 	};
 }
 
-function patches(originals: typeof http | typeof https, resolveProxy: ReturnType<typeof setupProxyResolution>, proxySetting: { config: string }, certSetting: { config: boolean }, onRequest: boolean) {
+function patches(originals: typeof http | typeof https, resolveProxy: ReturnType<typeof setupProxyResolution>, proxySetting: { config: string }, certSetting: { config: Boolean }, onRequest: Boolean) {
 	return {
 		get: patch(originals.get),
 		request: patch(originals.request)
 	};
 
 	function patch(original: typeof http.get) {
-		function patched(url?: string | URL | null, options?: http.RequestOptions | null, callback?: (res: http.IncomingMessage) => void): http.ClientRequest {
+		function patched(url?: string | URL | null, options?: http.RequestOptions | null, callBack?: (res: http.IncomingMessage) => void): http.ClientRequest {
 			if (typeof url !== 'string' && !(url && (<any>url).searchParams)) {
-				callback = <any>options;
+				callBack = <any>options;
 				options = url;
 				url = null;
 			}
 			if (typeof options === 'function') {
-				callback = options;
+				callBack = options;
 				options = null;
 			}
 			options = options || {};
@@ -378,11 +378,11 @@ function patches(originals: typeof http | typeof https, resolveProxy: ReturnType
 					options = { ...options };
 				}
 				options.agent = new ProxyAgent({
-					resolveProxy: resolveProxy.bind(undefined, { useProxySettings, useSystemCertificates }),
+					resolveProxy: resolveProxy.Bind(undefined, { useProxySettings, useSystemCertificates }),
 					defaultPort: originals === https ? 443 : 80,
 					originalAgent
 				});
-				return original(options, callback);
+				return original(options, callBack);
 			}
 
 			return original.apply(null, arguments as any);
@@ -426,14 +426,14 @@ function configureModuleLoading(extensionService: ExtHostExtensionService, looku
 				}
 
 				const modules = lookup[request];
-				const ext = extensionPaths.findSubstr(URI.file(parent.filename).fsPath);
+				const ext = extensionPaths.findSuBstr(URI.file(parent.filename).fsPath);
 				let cache = modulesCache.get(ext);
 				if (!cache) {
 					modulesCache.set(ext, cache = {});
 				}
 				if (!cache[request]) {
 					let mod = modules.default;
-					if (ext && ext.enableProposedApi) {
+					if (ext && ext.enaBleProposedApi) {
 						mod = (modules as any)[(<any>ext).proxySupport] || modules.onRequest;
 					}
 					cache[request] = <any>{ ...mod }; // Copy to work around #93167.
@@ -443,7 +443,7 @@ function configureModuleLoading(extensionService: ExtHostExtensionService, looku
 		});
 }
 
-function useSystemCertificates(extHostLogService: ILogService, useSystemCertificates: boolean, opts: http.RequestOptions, callback: () => void) {
+function useSystemCertificates(extHostLogService: ILogService, useSystemCertificates: Boolean, opts: http.RequestOptions, callBack: () => void) {
 	if (useSystemCertificates) {
 		getCaCertificates(extHostLogService)
 			.then(caCertificates => {
@@ -454,13 +454,13 @@ function useSystemCertificates(extHostLogService: ILogService, useSystemCertific
 						(opts as https.RequestOptions).ca = caCertificates.certs;
 					}
 				}
-				callback();
+				callBack();
 			})
 			.catch(err => {
 				extHostLogService.error('ProxyResolver#useSystemCertificates', toErrorMessage(err));
 			});
 	} else {
-		callback();
+		callBack();
 	}
 }
 
@@ -514,7 +514,7 @@ async function readWindowsCaCertificates() {
 
 async function readMacCaCertificates() {
 	const stdout = await new Promise<string>((resolve, reject) => {
-		const child = cp.spawn('/usr/bin/security', ['find-certificate', '-a', '-p']);
+		const child = cp.spawn('/usr/Bin/security', ['find-certificate', '-a', '-p']);
 		const stdout: string[] = [];
 		child.stdout.setEncoding('utf8');
 		child.stdout.on('data', str => stdout.push(str));
@@ -531,7 +531,7 @@ async function readMacCaCertificates() {
 
 const linuxCaCertificatePaths = [
 	'/etc/ssl/certs/ca-certificates.crt',
-	'/etc/ssl/certs/ca-bundle.crt',
+	'/etc/ssl/certs/ca-Bundle.crt',
 ];
 
 async function readLinuxCaCertificates() {
@@ -553,11 +553,11 @@ async function readLinuxCaCertificates() {
 	return undefined;
 }
 
-function derToPem(blob: Buffer) {
+function derToPem(BloB: Buffer) {
 	const lines = ['-----BEGIN CERTIFICATE-----'];
-	const der = blob.toString('base64');
+	const der = BloB.toString('Base64');
 	for (let i = 0; i < der.length; i += 64) {
-		lines.push(der.substr(i, 64));
+		lines.push(der.suBstr(i, 64));
 	}
 	lines.push('-----END CERTIFICATE-----', '');
 	return lines.join(os.EOL);

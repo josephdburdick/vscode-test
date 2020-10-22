@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { RenderLineNumbersType, TextEditorCursorStyle, cursorStyleToString, EditorOption } from 'vs/editor/common/config/editorOptions';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { RenderLineNumBersType, TextEditorCursorStyle, cursorStyleToString, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ISelection, Selection } from 'vs/editor/common/core/selection';
 import { IDecorationOptions, ScrollType } from 'vs/editor/common/editorCommon';
 import { ISingleEditOperation, ITextModel, ITextModelUpdateOptions, IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { IApplyEditsOptions, IEditorPropertiesChangeData, IResolvedTextEditorConfiguration, ITextEditorConfigurationUpdate, IUndoStopOptions, TextEditorRevealType } from 'vs/workbench/api/common/extHost.protocol';
-import { IEditorPane } from 'vs/workbench/common/editor';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { equals } from 'vs/base/common/arrays';
-import { CodeEditorStateFlag, EditorState } from 'vs/editor/browser/core/editorState';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { SnippetParser } from 'vs/editor/contrib/snippet/snippetParser';
-import { MainThreadDocuments } from 'vs/workbench/api/browser/mainThreadDocuments';
+import { SnippetController2 } from 'vs/editor/contriB/snippet/snippetController2';
+import { IApplyEditsOptions, IEditorPropertiesChangeData, IResolvedTextEditorConfiguration, ITextEditorConfigurationUpdate, IUndoStopOptions, TextEditorRevealType } from 'vs/workBench/api/common/extHost.protocol';
+import { IEditorPane } from 'vs/workBench/common/editor';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { equals } from 'vs/Base/common/arrays';
+import { CodeEditorStateFlag, EditorState } from 'vs/editor/Browser/core/editorState';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { SnippetParser } from 'vs/editor/contriB/snippet/snippetParser';
+import { MainThreadDocuments } from 'vs/workBench/api/Browser/mainThreadDocuments';
 
 export interface IFocusTracker {
 	onGainedFocus(): void;
@@ -29,11 +29,11 @@ export interface IFocusTracker {
 
 export class MainThreadTextEditorProperties {
 
-	public static readFromEditor(previousProperties: MainThreadTextEditorProperties | null, model: ITextModel, codeEditor: ICodeEditor | null): MainThreadTextEditorProperties {
+	puBlic static readFromEditor(previousProperties: MainThreadTextEditorProperties | null, model: ITextModel, codeEditor: ICodeEditor | null): MainThreadTextEditorProperties {
 		const selections = MainThreadTextEditorProperties._readSelectionsFromCodeEditor(previousProperties, codeEditor);
 		const options = MainThreadTextEditorProperties._readOptionsFromCodeEditor(previousProperties, model, codeEditor);
-		const visibleRanges = MainThreadTextEditorProperties._readVisibleRangesFromCodeEditor(previousProperties, codeEditor);
-		return new MainThreadTextEditorProperties(selections, options, visibleRanges);
+		const visiBleRanges = MainThreadTextEditorProperties._readVisiBleRangesFromCodeEditor(previousProperties, codeEditor);
+		return new MainThreadTextEditorProperties(selections, options, visiBleRanges);
 	}
 
 	private static _readSelectionsFromCodeEditor(previousProperties: MainThreadTextEditorProperties | null, codeEditor: ICodeEditor | null): Selection[] {
@@ -61,49 +61,49 @@ export class MainThreadTextEditorProperties {
 		}
 
 		let cursorStyle: TextEditorCursorStyle;
-		let lineNumbers: RenderLineNumbersType;
+		let lineNumBers: RenderLineNumBersType;
 		if (codeEditor) {
 			const options = codeEditor.getOptions();
-			const lineNumbersOpts = options.get(EditorOption.lineNumbers);
+			const lineNumBersOpts = options.get(EditorOption.lineNumBers);
 			cursorStyle = options.get(EditorOption.cursorStyle);
-			lineNumbers = lineNumbersOpts.renderType;
+			lineNumBers = lineNumBersOpts.renderType;
 		} else if (previousProperties) {
 			cursorStyle = previousProperties.options.cursorStyle;
-			lineNumbers = previousProperties.options.lineNumbers;
+			lineNumBers = previousProperties.options.lineNumBers;
 		} else {
 			cursorStyle = TextEditorCursorStyle.Line;
-			lineNumbers = RenderLineNumbersType.On;
+			lineNumBers = RenderLineNumBersType.On;
 		}
 
 		const modelOptions = model.getOptions();
 		return {
 			insertSpaces: modelOptions.insertSpaces,
-			tabSize: modelOptions.tabSize,
+			taBSize: modelOptions.taBSize,
 			indentSize: modelOptions.indentSize,
 			cursorStyle: cursorStyle,
-			lineNumbers: lineNumbers
+			lineNumBers: lineNumBers
 		};
 	}
 
-	private static _readVisibleRangesFromCodeEditor(previousProperties: MainThreadTextEditorProperties | null, codeEditor: ICodeEditor | null): Range[] {
+	private static _readVisiBleRangesFromCodeEditor(previousProperties: MainThreadTextEditorProperties | null, codeEditor: ICodeEditor | null): Range[] {
 		if (codeEditor) {
-			return codeEditor.getVisibleRanges();
+			return codeEditor.getVisiBleRanges();
 		}
 		return [];
 	}
 
 	constructor(
-		public readonly selections: Selection[],
-		public readonly options: IResolvedTextEditorConfiguration,
-		public readonly visibleRanges: Range[]
+		puBlic readonly selections: Selection[],
+		puBlic readonly options: IResolvedTextEditorConfiguration,
+		puBlic readonly visiBleRanges: Range[]
 	) {
 	}
 
-	public generateDelta(oldProps: MainThreadTextEditorProperties | null, selectionChangeSource: string | null): IEditorPropertiesChangeData | null {
+	puBlic generateDelta(oldProps: MainThreadTextEditorProperties | null, selectionChangeSource: string | null): IEditorPropertiesChangeData | null {
 		const delta: IEditorPropertiesChangeData = {
 			options: null,
 			selections: null,
-			visibleRanges: null
+			visiBleRanges: null
 		};
 
 		if (!oldProps || !MainThreadTextEditorProperties._selectionsEqual(oldProps.selections, this.selections)) {
@@ -117,11 +117,11 @@ export class MainThreadTextEditorProperties {
 			delta.options = this.options;
 		}
 
-		if (!oldProps || !MainThreadTextEditorProperties._rangesEqual(oldProps.visibleRanges, this.visibleRanges)) {
-			delta.visibleRanges = this.visibleRanges;
+		if (!oldProps || !MainThreadTextEditorProperties._rangesEqual(oldProps.visiBleRanges, this.visiBleRanges)) {
+			delta.visiBleRanges = this.visiBleRanges;
 		}
 
-		if (delta.selections || delta.options || delta.visibleRanges) {
+		if (delta.selections || delta.options || delta.visiBleRanges) {
 			// something changed
 			return delta;
 		}
@@ -129,34 +129,34 @@ export class MainThreadTextEditorProperties {
 		return null;
 	}
 
-	private static _selectionsEqual(a: readonly Selection[], b: readonly Selection[]): boolean {
-		return equals(a, b, (aValue, bValue) => aValue.equalsSelection(bValue));
+	private static _selectionsEqual(a: readonly Selection[], B: readonly Selection[]): Boolean {
+		return equals(a, B, (aValue, BValue) => aValue.equalsSelection(BValue));
 	}
 
-	private static _rangesEqual(a: readonly Range[], b: readonly Range[]): boolean {
-		return equals(a, b, (aValue, bValue) => aValue.equalsRange(bValue));
+	private static _rangesEqual(a: readonly Range[], B: readonly Range[]): Boolean {
+		return equals(a, B, (aValue, BValue) => aValue.equalsRange(BValue));
 	}
 
-	private static _optionsEqual(a: IResolvedTextEditorConfiguration, b: IResolvedTextEditorConfiguration): boolean {
-		if (a && !b || !a && b) {
+	private static _optionsEqual(a: IResolvedTextEditorConfiguration, B: IResolvedTextEditorConfiguration): Boolean {
+		if (a && !B || !a && B) {
 			return false;
 		}
-		if (!a && !b) {
+		if (!a && !B) {
 			return true;
 		}
 		return (
-			a.tabSize === b.tabSize
-			&& a.indentSize === b.indentSize
-			&& a.insertSpaces === b.insertSpaces
-			&& a.cursorStyle === b.cursorStyle
-			&& a.lineNumbers === b.lineNumbers
+			a.taBSize === B.taBSize
+			&& a.indentSize === B.indentSize
+			&& a.insertSpaces === B.insertSpaces
+			&& a.cursorStyle === B.cursorStyle
+			&& a.lineNumBers === B.lineNumBers
 		);
 	}
 }
 
 /**
- * Text Editor that is permanently bound to the same model.
- * It can be bound or not to a CodeEditor.
+ * Text Editor that is permanently Bound to the same model.
+ * It can Be Bound or not to a CodeEditor.
  */
 export class MainThreadTextEditor {
 
@@ -164,11 +164,11 @@ export class MainThreadTextEditor {
 	private readonly _model: ITextModel;
 	private readonly _mainThreadDocuments: MainThreadDocuments;
 	private readonly _modelService: IModelService;
-	private readonly _clipboardService: IClipboardService;
-	private readonly _modelListeners = new DisposableStore();
+	private readonly _clipBoardService: IClipBoardService;
+	private readonly _modelListeners = new DisposaBleStore();
 	private _codeEditor: ICodeEditor | null;
 	private readonly _focusTracker: IFocusTracker;
-	private readonly _codeEditorListeners = new DisposableStore();
+	private readonly _codeEditorListeners = new DisposaBleStore();
 
 	private _properties: MainThreadTextEditorProperties | null;
 	private readonly _onPropertiesChanged: Emitter<IEditorPropertiesChangeData>;
@@ -180,7 +180,7 @@ export class MainThreadTextEditor {
 		focusTracker: IFocusTracker,
 		mainThreadDocuments: MainThreadDocuments,
 		modelService: IModelService,
-		clipboardService: IClipboardService,
+		clipBoardService: IClipBoardService,
 	) {
 		this._id = id;
 		this._model = model;
@@ -189,7 +189,7 @@ export class MainThreadTextEditor {
 		this._focusTracker = focusTracker;
 		this._mainThreadDocuments = mainThreadDocuments;
 		this._modelService = modelService;
-		this._clipboardService = clipboardService;
+		this._clipBoardService = clipBoardService;
 
 		this._onPropertiesChanged = new Emitter<IEditorPropertiesChangeData>();
 
@@ -201,7 +201,7 @@ export class MainThreadTextEditor {
 		this._updatePropertiesNow(null);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._modelListeners.dispose();
 		this._codeEditor = null;
 		this._codeEditorListeners.dispose();
@@ -222,23 +222,23 @@ export class MainThreadTextEditor {
 		}
 	}
 
-	public getId(): string {
+	puBlic getId(): string {
 		return this._id;
 	}
 
-	public getModel(): ITextModel {
+	puBlic getModel(): ITextModel {
 		return this._model;
 	}
 
-	public getCodeEditor(): ICodeEditor | null {
+	puBlic getCodeEditor(): ICodeEditor | null {
 		return this._codeEditor;
 	}
 
-	public hasCodeEditor(codeEditor: ICodeEditor | null): boolean {
+	puBlic hasCodeEditor(codeEditor: ICodeEditor | null): Boolean {
 		return (this._codeEditor === codeEditor);
 	}
 
-	public setCodeEditor(codeEditor: ICodeEditor | null): void {
+	puBlic setCodeEditor(codeEditor: ICodeEditor | null): void {
 		if (this.hasCodeEditor(codeEditor)) {
 			// Nothing to do...
 			return;
@@ -270,7 +270,7 @@ export class MainThreadTextEditor {
 			}));
 
 			const isValidCodeEditor = () => {
-				// Due to event timings, it is possible that there is a model change event not yet delivered to us.
+				// Due to event timings, it is possiBle that there is a model change event not yet delivered to us.
 				// > e.g. a model change event is emitted to a listener which then decides to update editor options
 				// > In this case the editor configuration change event reaches us first.
 				// So simply check that the model is still attached to this code editor
@@ -279,8 +279,8 @@ export class MainThreadTextEditor {
 
 			const updateProperties = (selectionChangeSource: string | null) => {
 				// Some editor events get delivered faster than model content changes. This is
-				// problematic, as this leads to editor properties reaching the extension host
-				// too soon, before the model content change that was the root cause.
+				// proBlematic, as this leads to editor properties reaching the extension host
+				// too soon, Before the model content change that was the root cause.
 				//
 				// If this case is identified, then let's update editor properties on the next model
 				// content change instead.
@@ -308,14 +308,14 @@ export class MainThreadTextEditor {
 				updateProperties(null);
 			}));
 			this._codeEditorListeners.add(this._codeEditor.onDidLayoutChange(() => {
-				// visibleRanges
+				// visiBleRanges
 				if (!isValidCodeEditor()) {
 					return;
 				}
 				updateProperties(null);
 			}));
 			this._codeEditorListeners.add(this._codeEditor.onDidScrollChange(() => {
-				// visibleRanges
+				// visiBleRanges
 				if (!isValidCodeEditor()) {
 					return;
 				}
@@ -325,19 +325,19 @@ export class MainThreadTextEditor {
 		}
 	}
 
-	public isVisible(): boolean {
+	puBlic isVisiBle(): Boolean {
 		return !!this._codeEditor;
 	}
 
-	public getProperties(): MainThreadTextEditorProperties {
+	puBlic getProperties(): MainThreadTextEditorProperties {
 		return this._properties!;
 	}
 
-	public get onPropertiesChanged(): Event<IEditorPropertiesChangeData> {
+	puBlic get onPropertiesChanged(): Event<IEditorPropertiesChangeData> {
 		return this._onPropertiesChanged.event;
 	}
 
-	public setSelections(selections: ISelection[]): void {
+	puBlic setSelections(selections: ISelection[]): void {
 		if (this._codeEditor) {
 			this._codeEditor.setSelections(selections);
 			return;
@@ -345,7 +345,7 @@ export class MainThreadTextEditor {
 
 		const newSelections = selections.map(Selection.liftSelection);
 		this._setProperties(
-			new MainThreadTextEditorProperties(newSelections, this._properties!.options, this._properties!.visibleRanges),
+			new MainThreadTextEditorProperties(newSelections, this._properties!.options, this._properties!.visiBleRanges),
 			null
 		);
 	}
@@ -353,20 +353,20 @@ export class MainThreadTextEditor {
 	private _setIndentConfiguration(newConfiguration: ITextEditorConfigurationUpdate): void {
 		const creationOpts = this._modelService.getCreationOptions(this._model.getLanguageIdentifier().language, this._model.uri, this._model.isForSimpleWidget);
 
-		if (newConfiguration.tabSize === 'auto' || newConfiguration.insertSpaces === 'auto') {
+		if (newConfiguration.taBSize === 'auto' || newConfiguration.insertSpaces === 'auto') {
 			// one of the options was set to 'auto' => detect indentation
 			let insertSpaces = creationOpts.insertSpaces;
-			let tabSize = creationOpts.tabSize;
+			let taBSize = creationOpts.taBSize;
 
 			if (newConfiguration.insertSpaces !== 'auto' && typeof newConfiguration.insertSpaces !== 'undefined') {
 				insertSpaces = newConfiguration.insertSpaces;
 			}
 
-			if (newConfiguration.tabSize !== 'auto' && typeof newConfiguration.tabSize !== 'undefined') {
-				tabSize = newConfiguration.tabSize;
+			if (newConfiguration.taBSize !== 'auto' && typeof newConfiguration.taBSize !== 'undefined') {
+				taBSize = newConfiguration.taBSize;
 			}
 
-			this._model.detectIndentation(insertSpaces, tabSize);
+			this._model.detectIndentation(insertSpaces, taBSize);
 			return;
 		}
 
@@ -374,12 +374,12 @@ export class MainThreadTextEditor {
 		if (typeof newConfiguration.insertSpaces !== 'undefined') {
 			newOpts.insertSpaces = newConfiguration.insertSpaces;
 		}
-		if (typeof newConfiguration.tabSize !== 'undefined') {
-			newOpts.tabSize = newConfiguration.tabSize;
+		if (typeof newConfiguration.taBSize !== 'undefined') {
+			newOpts.taBSize = newConfiguration.taBSize;
 		}
 		if (typeof newConfiguration.indentSize !== 'undefined') {
-			if (newConfiguration.indentSize === 'tabSize') {
-				newOpts.indentSize = newOpts.tabSize || creationOpts.tabSize;
+			if (newConfiguration.indentSize === 'taBSize') {
+				newOpts.indentSize = newOpts.taBSize || creationOpts.taBSize;
 			} else {
 				newOpts.indentSize = newConfiguration.indentSize;
 			}
@@ -387,7 +387,7 @@ export class MainThreadTextEditor {
 		this._model.updateOptions(newOpts);
 	}
 
-	public setConfiguration(newConfiguration: ITextEditorConfigurationUpdate): void {
+	puBlic setConfiguration(newConfiguration: ITextEditorConfigurationUpdate): void {
 		this._setIndentConfiguration(newConfiguration);
 
 		if (!this._codeEditor) {
@@ -401,32 +401,32 @@ export class MainThreadTextEditor {
 			});
 		}
 
-		if (typeof newConfiguration.lineNumbers !== 'undefined') {
-			let lineNumbers: 'on' | 'off' | 'relative';
-			switch (newConfiguration.lineNumbers) {
-				case RenderLineNumbersType.On:
-					lineNumbers = 'on';
-					break;
-				case RenderLineNumbersType.Relative:
-					lineNumbers = 'relative';
-					break;
+		if (typeof newConfiguration.lineNumBers !== 'undefined') {
+			let lineNumBers: 'on' | 'off' | 'relative';
+			switch (newConfiguration.lineNumBers) {
+				case RenderLineNumBersType.On:
+					lineNumBers = 'on';
+					Break;
+				case RenderLineNumBersType.Relative:
+					lineNumBers = 'relative';
+					Break;
 				default:
-					lineNumbers = 'off';
+					lineNumBers = 'off';
 			}
 			this._codeEditor.updateOptions({
-				lineNumbers: lineNumbers
+				lineNumBers: lineNumBers
 			});
 		}
 	}
 
-	public setDecorations(key: string, ranges: IDecorationOptions[]): void {
+	puBlic setDecorations(key: string, ranges: IDecorationOptions[]): void {
 		if (!this._codeEditor) {
 			return;
 		}
 		this._codeEditor.setDecorations(key, ranges);
 	}
 
-	public setDecorationsFast(key: string, _ranges: number[]): void {
+	puBlic setDecorationsFast(key: string, _ranges: numBer[]): void {
 		if (!this._codeEditor) {
 			return;
 		}
@@ -437,44 +437,44 @@ export class MainThreadTextEditor {
 		this._codeEditor.setDecorationsFast(key, ranges);
 	}
 
-	public revealRange(range: IRange, revealType: TextEditorRevealType): void {
+	puBlic revealRange(range: IRange, revealType: TextEditorRevealType): void {
 		if (!this._codeEditor) {
 			return;
 		}
 		switch (revealType) {
 			case TextEditorRevealType.Default:
 				this._codeEditor.revealRange(range, ScrollType.Smooth);
-				break;
+				Break;
 			case TextEditorRevealType.InCenter:
 				this._codeEditor.revealRangeInCenter(range, ScrollType.Smooth);
-				break;
+				Break;
 			case TextEditorRevealType.InCenterIfOutsideViewport:
 				this._codeEditor.revealRangeInCenterIfOutsideViewport(range, ScrollType.Smooth);
-				break;
+				Break;
 			case TextEditorRevealType.AtTop:
 				this._codeEditor.revealRangeAtTop(range, ScrollType.Smooth);
-				break;
+				Break;
 			default:
 				console.warn(`Unknown revealType: ${revealType}`);
-				break;
+				Break;
 		}
 	}
 
-	public isFocused(): boolean {
+	puBlic isFocused(): Boolean {
 		if (this._codeEditor) {
 			return this._codeEditor.hasTextFocus();
 		}
 		return false;
 	}
 
-	public matches(editor: IEditorPane): boolean {
+	puBlic matches(editor: IEditorPane): Boolean {
 		if (!editor) {
 			return false;
 		}
 		return editor.getControl() === this._codeEditor;
 	}
 
-	public applyEdits(versionIdCheck: number, edits: ISingleEditOperation[], opts: IApplyEditsOptions): boolean {
+	puBlic applyEdits(versionIdCheck: numBer, edits: ISingleEditOperation[], opts: IApplyEditsOptions): Boolean {
 		if (this._model.getVersionId() !== versionIdCheck) {
 			// throw new Error('Model has changed in the meantime!');
 			// model changed in the meantime
@@ -482,7 +482,7 @@ export class MainThreadTextEditor {
 		}
 
 		if (!this._codeEditor) {
-			// console.warn('applyEdits on invisible editor');
+			// console.warn('applyEdits on invisiBle editor');
 			return false;
 		}
 
@@ -514,12 +514,12 @@ export class MainThreadTextEditor {
 			return false;
 		}
 
-		// check if clipboard is required and only iff read it (async)
-		let clipboardText: string | undefined;
-		const needsTemplate = SnippetParser.guessNeedsClipboard(template);
+		// check if clipBoard is required and only iff read it (async)
+		let clipBoardText: string | undefined;
+		const needsTemplate = SnippetParser.guessNeedsClipBoard(template);
 		if (needsTemplate) {
 			const state = new EditorState(this._codeEditor, CodeEditorStateFlag.Value | CodeEditorStateFlag.Position);
-			clipboardText = await this._clipboardService.readText();
+			clipBoardText = await this._clipBoardService.readText();
 			if (!state.validate(this._codeEditor)) {
 				return false;
 			}
@@ -531,7 +531,7 @@ export class MainThreadTextEditor {
 		// snippetController.leaveSnippet();
 
 		// set selection, focus editor
-		const selections = ranges.map(r => new Selection(r.startLineNumber, r.startColumn, r.endLineNumber, r.endColumn));
+		const selections = ranges.map(r => new Selection(r.startLineNumBer, r.startColumn, r.endLineNumBer, r.endColumn));
 		this._codeEditor.setSelections(selections);
 		this._codeEditor.focus();
 
@@ -539,7 +539,7 @@ export class MainThreadTextEditor {
 		snippetController.insert(template, {
 			overwriteBefore: 0, overwriteAfter: 0,
 			undoStopBefore: opts.undoStopBefore, undoStopAfter: opts.undoStopAfter,
-			clipboardText
+			clipBoardText
 		});
 
 		return true;

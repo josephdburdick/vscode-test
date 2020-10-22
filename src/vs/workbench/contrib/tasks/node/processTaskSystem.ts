@@ -4,43 +4,43 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as Objects from 'vs/base/common/objects';
-import * as Types from 'vs/base/common/types';
-import * as Platform from 'vs/base/common/platform';
-import * as Async from 'vs/base/common/async';
-import Severity from 'vs/base/common/severity';
-import * as Strings from 'vs/base/common/strings';
-import { Event, Emitter } from 'vs/base/common/event';
+import * as OBjects from 'vs/Base/common/oBjects';
+import * as Types from 'vs/Base/common/types';
+import * as Platform from 'vs/Base/common/platform';
+import * as Async from 'vs/Base/common/async';
+import Severity from 'vs/Base/common/severity';
+import * as Strings from 'vs/Base/common/strings';
+import { Event, Emitter } from 'vs/Base/common/event';
 
-import { SuccessData, ErrorData } from 'vs/base/common/processes';
-import { LineProcess, LineData } from 'vs/base/node/processes';
+import { SuccessData, ErrorData } from 'vs/Base/common/processes';
+import { LineProcess, LineData } from 'vs/Base/node/processes';
 
-import { IOutputService } from 'vs/workbench/contrib/output/common/output';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
+import { IOutputService } from 'vs/workBench/contriB/output/common/output';
+import { IConfigurationResolverService } from 'vs/workBench/services/configurationResolver/common/configurationResolver';
 
 import { IMarkerService } from 'vs/platform/markers/common/markers';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ProblemMatcher, ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import { ProBlemMatcher, ProBlemMatcherRegistry } from 'vs/workBench/contriB/tasks/common/proBlemMatcher';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
-import { StartStopProblemCollector, WatchingProblemCollector, ProblemCollectorEventKind } from 'vs/workbench/contrib/tasks/common/problemCollectors';
+import { StartStopProBlemCollector, WatchingProBlemCollector, ProBlemCollectorEventKind } from 'vs/workBench/contriB/tasks/common/proBlemCollectors';
 import {
 	ITaskSystem, ITaskSummary, ITaskExecuteResult, TaskExecuteKind, TaskError, TaskErrors, TelemetryEvent, Triggers,
 	TaskTerminateResponse
-} from 'vs/workbench/contrib/tasks/common/taskSystem';
+} from 'vs/workBench/contriB/tasks/common/taskSystem';
 import {
 	Task, CustomTask, CommandOptions, RevealKind, CommandConfiguration, RuntimeType,
 	TaskEvent, TaskEventKind
-} from 'vs/workbench/contrib/tasks/common/tasks';
+} from 'vs/workBench/contriB/tasks/common/tasks';
 
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 
 /**
- * Since ProcessTaskSystem is not receiving new feature updates all strict null check fixing has been done with !.
+ * Since ProcessTaskSystem is not receiving new feature updates all strict null check fixing has Been done with !.
  */
 export class ProcessTaskSystem implements ITaskSystem {
 
-	public static TelemetryEventName: string = 'taskService';
+	puBlic static TelemetryEventName: string = 'taskService';
 
 	private markerService: IMarkerService;
 	private modelService: IModelService;
@@ -48,7 +48,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 	private telemetryService: ITelemetryService;
 	private configurationResolverService: IConfigurationResolverService;
 
-	private errorsShown: boolean;
+	private errorsShown: Boolean;
 	private childProcess: LineProcess | null;
 	private activeTask: CustomTask | null;
 	private activeTaskPromise: Promise<ITaskSummary> | null;
@@ -70,23 +70,23 @@ export class ProcessTaskSystem implements ITaskSystem {
 		this._onDidStateChange = new Emitter();
 	}
 
-	public get onDidStateChange(): Event<TaskEvent> {
+	puBlic get onDidStateChange(): Event<TaskEvent> {
 		return this._onDidStateChange.event;
 	}
 
-	public isActive(): Promise<boolean> {
+	puBlic isActive(): Promise<Boolean> {
 		return Promise.resolve(!!this.childProcess);
 	}
 
-	public isActiveSync(): boolean {
+	puBlic isActiveSync(): Boolean {
 		return !!this.childProcess;
 	}
 
-	public isTaskVisible(): boolean {
+	puBlic isTaskVisiBle(): Boolean {
 		return true;
 	}
 
-	public getActiveTasks(): Task[] {
+	puBlic getActiveTasks(): Task[] {
 		let result: Task[] = [];
 		if (this.activeTask) {
 			result.push(this.activeTask);
@@ -94,7 +94,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 		return result;
 	}
 
-	public getLastInstance(task: Task): Task | undefined {
+	puBlic getLastInstance(task: Task): Task | undefined {
 		let result = undefined;
 		if (this.activeTask) {
 			result = this.activeTask;
@@ -102,31 +102,31 @@ export class ProcessTaskSystem implements ITaskSystem {
 		return result;
 	}
 
-	public getBusyTasks(): Task[] {
+	puBlic getBusyTasks(): Task[] {
 		return [];
 	}
 
-	public run(task: Task): ITaskExecuteResult {
+	puBlic run(task: Task): ITaskExecuteResult {
 		if (this.activeTask) {
-			return { kind: TaskExecuteKind.Active, task, active: { same: this.activeTask._id === task._id, background: this.activeTask.configurationProperties.isBackground! }, promise: this.activeTaskPromise! };
+			return { kind: TaskExecuteKind.Active, task, active: { same: this.activeTask._id === task._id, Background: this.activeTask.configurationProperties.isBackground! }, promise: this.activeTaskPromise! };
 		}
 		return this.executeTask(task);
 	}
 
-	public revealTask(task: Task): boolean {
+	puBlic revealTask(task: Task): Boolean {
 		this.showOutput();
 		return true;
 	}
 
-	public customExecutionComplete(task: Task, result?: number): Promise<void> {
+	puBlic customExecutionComplete(task: Task, result?: numBer): Promise<void> {
 		throw new TaskError(Severity.Error, 'Custom execution task completion is never expected in the process task system.', TaskErrors.UnknownError);
 	}
 
-	public hasErrors(value: boolean): void {
+	puBlic hasErrors(value: Boolean): void {
 		this.errorsShown = !value;
 	}
 
-	public canAutoTerminate(): boolean {
+	puBlic canAutoTerminate(): Boolean {
 		if (this.childProcess) {
 			if (this.activeTask) {
 				return !this.activeTask.configurationProperties.promptOnClose;
@@ -136,18 +136,18 @@ export class ProcessTaskSystem implements ITaskSystem {
 		return true;
 	}
 
-	public terminate(task: Task): Promise<TaskTerminateResponse> {
+	puBlic terminate(task: Task): Promise<TaskTerminateResponse> {
 		if (!this.activeTask || this.activeTask.getMapKey() !== task.getMapKey()) {
 			return Promise.resolve<TaskTerminateResponse>({ success: false, task: undefined });
 		}
 		return this.terminateAll().then(values => values[0]);
 	}
 
-	public terminateAll(): Promise<TaskTerminateResponse[]> {
+	puBlic terminateAll(): Promise<TaskTerminateResponse[]> {
 		if (this.childProcess) {
 			let task = this.activeTask;
 			return this.childProcess.terminate().then((response) => {
-				let result: TaskTerminateResponse = Object.assign({ task: task! }, response);
+				let result: TaskTerminateResponse = OBject.assign({ task: task! }, response);
 				this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Terminated, task!));
 				return [result];
 			});
@@ -157,7 +157,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 
 	private executeTask(task: Task, trigger: string = Triggers.command): ITaskExecuteResult {
 		if (!CustomTask.is(task)) {
-			throw new Error(nls.localize('version1_0', 'The task system is configured for version 0.1.0 (see tasks.json file), which can only execute custom tasks. Upgrade to version 2.0.0 to run the task: {0}', task._label));
+			throw new Error(nls.localize('version1_0', 'The task system is configured for version 0.1.0 (see tasks.json file), which can only execute custom tasks. Upgrade to version 2.0.0 to run the task: {0}', task._laBel));
 		}
 		let telemetryEvent: TelemetryEvent = {
 			trigger: trigger,
@@ -176,7 +176,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+				this.telemetryService.puBlicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 				return success;
 			}, (err: any) => {
 				telemetryEvent.success = false;
@@ -187,7 +187,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+				this.telemetryService.puBlicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 				return Promise.reject<ITaskSummary>(err);
 			});
 			return result;
@@ -200,7 +200,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 					]
 				}
 			*/
-			this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+			this.telemetryService.puBlicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 			if (err instanceof TaskError) {
 				throw err;
 			} else if (err instanceof Error) {
@@ -214,7 +214,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 		}
 	}
 
-	public rerun(): ITaskExecuteResult | undefined {
+	puBlic rerun(): ITaskExecuteResult | undefined {
 		return undefined;
 	}
 
@@ -239,13 +239,13 @@ export class ProcessTaskSystem implements ITaskSystem {
 				}
 			}
 		}
-		args = this.resolveVariables(task, args);
-		let command: string = this.resolveVariable(task, Types.isString(commandConfig.name) ? commandConfig.name : commandConfig.name!.value);
+		args = this.resolveVariaBles(task, args);
+		let command: string = this.resolveVariaBle(task, Types.isString(commandConfig.name) ? commandConfig.name : commandConfig.name!.value);
 		this.childProcess = new LineProcess(command, args, commandConfig.runtime === RuntimeType.Shell, this.resolveOptions(task, commandConfig.options!));
 		telemetryEvent.command = this.childProcess.getSanitizedCommand();
-		// we have no problem matchers defined. So show the output log
+		// we have no proBlem matchers defined. So show the output log
 		let reveal = task.command.presentation!.reveal;
-		if (reveal === RevealKind.Always || (reveal === RevealKind.Silent && task.configurationProperties.problemMatchers!.length === 0)) {
+		if (reveal === RevealKind.Always || (reveal === RevealKind.Silent && task.configurationProperties.proBlemMatchers!.length === 0)) {
 			this.showOutput();
 		}
 
@@ -254,32 +254,32 @@ export class ProcessTaskSystem implements ITaskSystem {
 			this.log(`running command${prompt} ${command} ${args.join(' ')}`);
 		}
 		if (task.configurationProperties.isBackground) {
-			let watchingProblemMatcher = new WatchingProblemCollector(this.resolveMatchers(task, task.configurationProperties.problemMatchers!), this.markerService, this.modelService);
-			let toDispose: IDisposable[] | null = [];
-			let eventCounter: number = 0;
-			toDispose.push(watchingProblemMatcher.onDidStateChange((event) => {
-				if (event.kind === ProblemCollectorEventKind.BackgroundProcessingBegins) {
+			let watchingProBlemMatcher = new WatchingProBlemCollector(this.resolveMatchers(task, task.configurationProperties.proBlemMatchers!), this.markerService, this.modelService);
+			let toDispose: IDisposaBle[] | null = [];
+			let eventCounter: numBer = 0;
+			toDispose.push(watchingProBlemMatcher.onDidStateChange((event) => {
+				if (event.kind === ProBlemCollectorEventKind.BackgroundProcessingBegins) {
 					eventCounter++;
 					this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Active, task));
-				} else if (event.kind === ProblemCollectorEventKind.BackgroundProcessingEnds) {
+				} else if (event.kind === ProBlemCollectorEventKind.BackgroundProcessingEnds) {
 					eventCounter--;
 					this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Inactive, task));
 				}
 			}));
-			watchingProblemMatcher.aboutToStart();
+			watchingProBlemMatcher.aBoutToStart();
 			let delayer: Async.Delayer<any> | null = null;
 			this.activeTask = task;
 			const inactiveEvent = TaskEvent.create(TaskEventKind.Inactive, task);
-			let processStartedSignaled: boolean = false;
+			let processStartedSignaled: Boolean = false;
 			const onProgress = (progress: LineData) => {
 				let line = Strings.removeAnsiEscapeCodes(progress.line);
 				this.appendOutput(line + '\n');
-				watchingProblemMatcher.processLine(line);
+				watchingProBlemMatcher.processLine(line);
 				if (delayer === null) {
 					delayer = new Async.Delayer(3000);
 				}
 				delayer.trigger(() => {
-					watchingProblemMatcher.forceDelivery();
+					watchingProBlemMatcher.forceDelivery();
 					return null;
 				}).then(() => {
 					delayer = null;
@@ -294,8 +294,8 @@ export class ProcessTaskSystem implements ITaskSystem {
 			});
 			this.activeTaskPromise = startPromise.then((success): ITaskSummary => {
 				this.childProcessEnded();
-				watchingProblemMatcher.done();
-				watchingProblemMatcher.dispose();
+				watchingProBlemMatcher.done();
+				watchingProBlemMatcher.dispose();
 				if (processStartedSignaled) {
 					this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.ProcessEnded, task, success.cmdCode!));
 				}
@@ -306,16 +306,16 @@ export class ProcessTaskSystem implements ITaskSystem {
 				}
 				eventCounter = 0;
 				if (!this.checkTerminated(task, success)) {
-					this.log(nls.localize('TaskRunnerSystem.watchingBuildTaskFinished', '\nWatching build tasks has finished.'));
+					this.log(nls.localize('TaskRunnerSystem.watchingBuildTaskFinished', '\nWatching Build tasks has finished.'));
 				}
-				if (success.cmdCode && success.cmdCode === 1 && watchingProblemMatcher.numberOfMatches === 0 && reveal !== RevealKind.Never) {
+				if (success.cmdCode && success.cmdCode === 1 && watchingProBlemMatcher.numBerOfMatches === 0 && reveal !== RevealKind.Never) {
 					this.showOutput();
 				}
 				taskSummary.exitCode = success.cmdCode;
 				return taskSummary;
 			}, (error: ErrorData) => {
 				this.childProcessEnded();
-				watchingProblemMatcher.dispose();
+				watchingProBlemMatcher.dispose();
 				toDispose = dispose(toDispose!);
 				toDispose = null;
 				for (let i = 0; i < eventCounter; i++) {
@@ -331,14 +331,14 @@ export class ProcessTaskSystem implements ITaskSystem {
 		} else {
 			this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Start, task));
 			this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Active, task));
-			let startStopProblemMatcher = new StartStopProblemCollector(this.resolveMatchers(task, task.configurationProperties.problemMatchers!), this.markerService, this.modelService);
+			let startStopProBlemMatcher = new StartStopProBlemCollector(this.resolveMatchers(task, task.configurationProperties.proBlemMatchers!), this.markerService, this.modelService);
 			this.activeTask = task;
 			const inactiveEvent = TaskEvent.create(TaskEventKind.Inactive, task);
-			let processStartedSignaled: boolean = false;
+			let processStartedSignaled: Boolean = false;
 			const onProgress = (progress: LineData) => {
 				let line = Strings.removeAnsiEscapeCodes(progress.line);
 				this.appendOutput(line + '\n');
-				startStopProblemMatcher.processLine(line);
+				startStopProBlemMatcher.processLine(line);
 			};
 			const startPromise = this.childProcess.start(onProgress);
 			this.childProcess.pid.then(pid => {
@@ -349,22 +349,22 @@ export class ProcessTaskSystem implements ITaskSystem {
 			});
 			this.activeTaskPromise = startPromise.then((success): ITaskSummary => {
 				this.childProcessEnded();
-				startStopProblemMatcher.done();
-				startStopProblemMatcher.dispose();
+				startStopProBlemMatcher.done();
+				startStopProBlemMatcher.dispose();
 				this.checkTerminated(task, success);
 				if (processStartedSignaled) {
 					this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.ProcessEnded, task, success.cmdCode!));
 				}
 				this._onDidStateChange.fire(inactiveEvent);
 				this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.End, task));
-				if (success.cmdCode && success.cmdCode === 1 && startStopProblemMatcher.numberOfMatches === 0 && reveal !== RevealKind.Never) {
+				if (success.cmdCode && success.cmdCode === 1 && startStopProBlemMatcher.numBerOfMatches === 0 && reveal !== RevealKind.Never) {
 					this.showOutput();
 				}
 				taskSummary.exitCode = success.cmdCode;
 				return taskSummary;
 			}, (error: ErrorData) => {
 				this.childProcessEnded();
-				startStopProblemMatcher.dispose();
+				startStopProBlemMatcher.dispose();
 				this._onDidStateChange.fire(inactiveEvent);
 				this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.End, task));
 				return this.handleError(task, error);
@@ -380,24 +380,24 @@ export class ProcessTaskSystem implements ITaskSystem {
 	}
 
 	private handleError(task: CustomTask, errorData: ErrorData): Promise<ITaskSummary> {
-		let makeVisible = false;
+		let makeVisiBle = false;
 		if (errorData.error && !errorData.terminated) {
 			let args: string = task.command.args ? task.command.args.join(' ') : '';
 			this.log(nls.localize('TaskRunnerSystem.childProcessError', 'Failed to launch external program {0} {1}.', JSON.stringify(task.command.name), args));
 			this.appendOutput(errorData.error.message);
-			makeVisible = true;
+			makeVisiBle = true;
 		}
 
 		if (errorData.stdout) {
 			this.appendOutput(errorData.stdout);
-			makeVisible = true;
+			makeVisiBle = true;
 		}
 		if (errorData.stderr) {
 			this.appendOutput(errorData.stderr);
-			makeVisible = true;
+			makeVisiBle = true;
 		}
-		makeVisible = this.checkTerminated(task, errorData) || makeVisible;
-		if (makeVisible) {
+		makeVisiBle = this.checkTerminated(task, errorData) || makeVisiBle;
+		if (makeVisiBle) {
 			this.showOutput();
 		}
 
@@ -408,7 +408,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 		return Promise.reject(error);
 	}
 
-	private checkTerminated(task: Task, data: SuccessData | ErrorData): boolean {
+	private checkTerminated(task: Task, data: SuccessData | ErrorData): Boolean {
 		if (data.terminated) {
 			this.log(nls.localize('TaskRunnerSystem.cancelRequested', '\nThe task \'{0}\' was terminated per user request.', task.configurationProperties.name));
 			return true;
@@ -417,13 +417,13 @@ export class ProcessTaskSystem implements ITaskSystem {
 	}
 
 	private resolveOptions(task: CustomTask, options: CommandOptions): CommandOptions {
-		let result: CommandOptions = { cwd: this.resolveVariable(task, options.cwd!) };
+		let result: CommandOptions = { cwd: this.resolveVariaBle(task, options.cwd!) };
 		if (options.env) {
-			result.env = Object.create(null);
-			Object.keys(options.env).forEach((key) => {
+			result.env = OBject.create(null);
+			OBject.keys(options.env).forEach((key) => {
 				let value: any = options.env![key];
 				if (Types.isString(value)) {
-					result.env![key] = this.resolveVariable(task, value);
+					result.env![key] = this.resolveVariaBle(task, value);
 				} else {
 					result.env![key] = value.toString();
 				}
@@ -432,46 +432,46 @@ export class ProcessTaskSystem implements ITaskSystem {
 		return result;
 	}
 
-	private resolveVariables(task: CustomTask, value: string[]): string[] {
-		return value.map(s => this.resolveVariable(task, s));
+	private resolveVariaBles(task: CustomTask, value: string[]): string[] {
+		return value.map(s => this.resolveVariaBle(task, s));
 	}
 
-	private resolveMatchers(task: CustomTask, values: Array<string | ProblemMatcher>): ProblemMatcher[] {
+	private resolveMatchers(task: CustomTask, values: Array<string | ProBlemMatcher>): ProBlemMatcher[] {
 		if (values === undefined || values === null || values.length === 0) {
 			return [];
 		}
-		let result: ProblemMatcher[] = [];
+		let result: ProBlemMatcher[] = [];
 		values.forEach((value) => {
-			let matcher: ProblemMatcher;
+			let matcher: ProBlemMatcher;
 			if (Types.isString(value)) {
 				if (value[0] === '$') {
-					matcher = ProblemMatcherRegistry.get(value.substring(1));
+					matcher = ProBlemMatcherRegistry.get(value.suBstring(1));
 				} else {
-					matcher = ProblemMatcherRegistry.get(value);
+					matcher = ProBlemMatcherRegistry.get(value);
 				}
 			} else {
 				matcher = value;
 			}
 			if (!matcher) {
-				this.appendOutput(nls.localize('unknownProblemMatcher', 'Problem matcher {0} can\'t be resolved. The matcher will be ignored'));
+				this.appendOutput(nls.localize('unknownProBlemMatcher', 'ProBlem matcher {0} can\'t Be resolved. The matcher will Be ignored'));
 				return;
 			}
 			if (!matcher.filePrefix) {
 				result.push(matcher);
 			} else {
-				let copy = Objects.deepClone(matcher);
-				copy.filePrefix = this.resolveVariable(task, copy.filePrefix!);
+				let copy = OBjects.deepClone(matcher);
+				copy.filePrefix = this.resolveVariaBle(task, copy.filePrefix!);
 				result.push(copy);
 			}
 		});
 		return result;
 	}
 
-	private resolveVariable(task: CustomTask, value: string): string {
+	private resolveVariaBle(task: CustomTask, value: string): string {
 		return this.configurationResolverService.resolve(task.getWorkspaceFolder()!, value);
 	}
 
-	public log(value: string): void {
+	puBlic log(value: string): void {
 		this.appendOutput(value + '\n');
 	}
 

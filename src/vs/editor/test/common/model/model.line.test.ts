@@ -12,8 +12,8 @@ import { ViewLineToken, ViewLineTokenFactory } from 'vs/editor/test/common/core/
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
 interface ILineEdit {
-	startColumn: number;
-	endColumn: number;
+	startColumn: numBer;
+	endColumn: numBer;
 	text: string;
 }
 
@@ -23,7 +23,7 @@ function assertLineTokens(__actual: LineTokens, _expected: TestToken[]): void {
 	let expected = ViewLineTokenFactory.inflateArr(tmp);
 	let _actual = __actual.inflate();
 	interface ITestToken {
-		endIndex: number;
+		endIndex: numBer;
 		type: string;
 	}
 	let actual: ITestToken[] = [];
@@ -43,8 +43,8 @@ function assertLineTokens(__actual: LineTokens, _expected: TestToken[]): void {
 }
 
 suite('ModelLine - getIndentLevel', () => {
-	function assertIndentLevel(text: string, expected: number, tabSize: number = 4): void {
-		let actual = TextModel.computeIndentLevel(text, tabSize);
+	function assertIndentLevel(text: string, expected: numBer, taBSize: numBer = 4): void {
+		let actual = TextModel.computeIndentLevel(text, taBSize);
 		assert.equal(actual, expected, text);
 	}
 
@@ -67,16 +67,16 @@ suite('ModelLine - getIndentLevel', () => {
 });
 
 class TestToken {
-	public readonly startOffset: number;
-	public readonly color: number;
+	puBlic readonly startOffset: numBer;
+	puBlic readonly color: numBer;
 
-	constructor(startOffset: number, color: number) {
+	constructor(startOffset: numBer, color: numBer) {
 		this.startOffset = startOffset;
 		this.color = color;
 	}
 
-	public static toTokens(tokens: TestToken[]): Uint32Array;
-	public static toTokens(tokens: TestToken[] | null): Uint32Array | null {
+	puBlic static toTokens(tokens: TestToken[]): Uint32Array;
+	puBlic static toTokens(tokens: TestToken[] | null): Uint32Array | null {
 		if (tokens === null) {
 			return null;
 		}
@@ -466,7 +466,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 1', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -477,7 +477,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 1,
 				text: 'a',
 			}],
-			'aabcd efgh',
+			'aaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(5, 2),
@@ -488,7 +488,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 2', () => {
 		testLineEditTokens(
-			'aabcd efgh',
+			'aaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(5, 2),
@@ -499,7 +499,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 2,
 				text: 'x',
 			}],
-			'axabcd efgh',
+			'axaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(6, 2),
@@ -510,7 +510,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 3', () => {
 		testLineEditTokens(
-			'axabcd efgh',
+			'axaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(6, 2),
@@ -521,7 +521,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 3,
 				text: 'stu',
 			}],
-			'axstuabcd efgh',
+			'axstuaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(9, 2),
@@ -532,7 +532,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 4', () => {
 		testLineEditTokens(
-			'axstuabcd efgh',
+			'axstuaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(9, 2),
@@ -543,7 +543,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 10,
 				text: '\t',
 			}],
-			'axstuabcd\t efgh',
+			'axstuaBcd\t efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -554,7 +554,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 5', () => {
 		testLineEditTokens(
-			'axstuabcd\t efgh',
+			'axstuaBcd\t efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -565,7 +565,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 12,
 				text: 'dd',
 			}],
-			'axstuabcd\t ddefgh',
+			'axstuaBcd\t ddefgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -576,7 +576,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 6', () => {
 		testLineEditTokens(
-			'axstuabcd\t ddefgh',
+			'axstuaBcd\t ddefgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -587,7 +587,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 18,
 				text: 'xyz',
 			}],
-			'axstuabcd\t ddefghxyz',
+			'axstuaBcd\t ddefghxyz',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -598,7 +598,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 7', () => {
 		testLineEditTokens(
-			'axstuabcd\t ddefghxyz',
+			'axstuaBcd\t ddefghxyz',
 			[
 				new TestToken(0, 1),
 				new TestToken(10, 2),
@@ -609,7 +609,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 1,
 				text: 'x',
 			}],
-			'xaxstuabcd\t ddefghxyz',
+			'xaxstuaBcd\t ddefghxyz',
 			[
 				new TestToken(0, 1),
 				new TestToken(11, 2),
@@ -620,7 +620,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 8', () => {
 		testLineEditTokens(
-			'xaxstuabcd\t ddefghxyz',
+			'xaxstuaBcd\t ddefghxyz',
 			[
 				new TestToken(0, 1),
 				new TestToken(11, 2),
@@ -631,7 +631,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 22,
 				text: 'x',
 			}],
-			'xaxstuabcd\t ddefghxyzx',
+			'xaxstuaBcd\t ddefghxyzx',
 			[
 				new TestToken(0, 1),
 				new TestToken(11, 2),
@@ -642,7 +642,7 @@ suite('ModelLinesTokens', () => {
 
 	test('updates tokens on insertion 9', () => {
 		testLineEditTokens(
-			'xaxstuabcd\t ddefghxyzx',
+			'xaxstuaBcd\t ddefghxyzx',
 			[
 				new TestToken(0, 1),
 				new TestToken(11, 2),
@@ -653,7 +653,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 2,
 				text: '',
 			}],
-			'xaxstuabcd\t ddefghxyzx',
+			'xaxstuaBcd\t ddefghxyzx',
 			[
 				new TestToken(0, 1),
 				new TestToken(11, 2),
@@ -680,7 +680,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete second token 2', () => {
 		testLineEditTokens(
-			'abcdefghij',
+			'aBcdefghij',
 			[
 				new TestToken(0, 1),
 				new TestToken(3, 2),
@@ -691,7 +691,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 7,
 				text: '',
 			}],
-			'abcghij',
+			'aBcghij',
 			[
 				new TestToken(0, 1),
 				new TestToken(3, 3)
@@ -699,9 +699,9 @@ suite('ModelLinesTokens', () => {
 		);
 	});
 
-	test('insert right before second token', () => {
+	test('insert right Before second token', () => {
 		testLineEditTokens(
-			'abcdefghij',
+			'aBcdefghij',
 			[
 				new TestToken(0, 1),
 				new TestToken(3, 2),
@@ -712,7 +712,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 4,
 				text: 'hello',
 			}],
-			'abchellodefghij',
+			'aBchellodefghij',
 			[
 				new TestToken(0, 1),
 				new TestToken(8, 2),
@@ -723,7 +723,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete first char', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -734,7 +734,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 2,
 				text: '',
 			}],
-			'bcd efgh',
+			'Bcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(3, 2),
@@ -745,7 +745,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete 2nd and 3rd chars', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -767,7 +767,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete first token', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -788,7 +788,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete second token', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -799,7 +799,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 6,
 				text: '',
 			}],
-			'abcdefgh',
+			'aBcdefgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 3)
@@ -807,9 +807,9 @@ suite('ModelLinesTokens', () => {
 		);
 	});
 
-	test('delete second token + a bit of the third one', () => {
+	test('delete second token + a Bit of the third one', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -820,7 +820,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 7,
 				text: '',
 			}],
-			'abcdfgh',
+			'aBcdfgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 3)
@@ -830,7 +830,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete second and third token', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -841,7 +841,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 10,
 				text: '',
 			}],
-			'abcd',
+			'aBcd',
 			[
 				new TestToken(0, 1)
 			]
@@ -850,7 +850,7 @@ suite('ModelLinesTokens', () => {
 
 	test('delete everything', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -870,7 +870,7 @@ suite('ModelLinesTokens', () => {
 
 	test('noop', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -881,7 +881,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 1,
 				text: '',
 			}],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -892,7 +892,7 @@ suite('ModelLinesTokens', () => {
 
 	test('equivalent to deleting first two chars', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -914,7 +914,7 @@ suite('ModelLinesTokens', () => {
 
 	test('equivalent to deleting from 5 to the end', () => {
 		testLineEditTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -925,7 +925,7 @@ suite('ModelLinesTokens', () => {
 				endColumn: 10,
 				text: '',
 			}],
-			'abcd',
+			'aBcd',
 			[
 				new TestToken(0, 1)
 			]
@@ -986,7 +986,7 @@ suite('ModelLinesTokens', () => {
 		);
 	});
 
-	function testLineSplitTokens(initialText: string, initialTokens: TestToken[], splitColumn: number, expectedText1: string, expectedText2: string, expectedTokens: TestToken[]): void {
+	function testLineSplitTokens(initialText: string, initialTokens: TestToken[], splitColumn: numBer, expectedText1: string, expectedText2: string, expectedTokens: TestToken[]): void {
 		testApplyEdits(
 			[{
 				text: initialText,
@@ -1006,9 +1006,9 @@ suite('ModelLinesTokens', () => {
 		);
 	}
 
-	test('split at the beginning', () => {
+	test('split at the Beginning', () => {
 		testLineSplitTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1016,7 +1016,7 @@ suite('ModelLinesTokens', () => {
 			],
 			1,
 			'',
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 			]
@@ -1025,14 +1025,14 @@ suite('ModelLinesTokens', () => {
 
 	test('split at the end', () => {
 		testLineSplitTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
 				new TestToken(5, 3)
 			],
 			10,
-			'abcd efgh',
+			'aBcd efgh',
 			'',
 			[
 				new TestToken(0, 1),
@@ -1044,14 +1044,14 @@ suite('ModelLinesTokens', () => {
 
 	test('split inthe middle 1', () => {
 		testLineSplitTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
 				new TestToken(5, 3)
 			],
 			5,
-			'abcd',
+			'aBcd',
 			' efgh',
 			[
 				new TestToken(0, 1)
@@ -1061,14 +1061,14 @@ suite('ModelLinesTokens', () => {
 
 	test('split inthe middle 2', () => {
 		testLineSplitTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
 				new TestToken(5, 3)
 			],
 			6,
-			'abcd ',
+			'aBcd ',
 			'efgh',
 			[
 				new TestToken(0, 1),
@@ -1077,14 +1077,14 @@ suite('ModelLinesTokens', () => {
 		);
 	});
 
-	function testLineAppendTokens(aText: string, aTokens: TestToken[], bText: string, bTokens: TestToken[], expectedText: string, expectedTokens: TestToken[]): void {
+	function testLineAppendTokens(aText: string, aTokens: TestToken[], BText: string, BTokens: TestToken[], expectedText: string, expectedTokens: TestToken[]): void {
 		testApplyEdits(
 			[{
 				text: aText,
 				tokens: aTokens
 			}, {
-				text: bText,
-				tokens: bTokens
+				text: BText,
+				tokens: BTokens
 			}],
 			[{
 				range: new Range(1, aText.length + 1, 2, 1),
@@ -1099,7 +1099,7 @@ suite('ModelLinesTokens', () => {
 
 	test('append empty 1', () => {
 		testLineAppendTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1107,7 +1107,7 @@ suite('ModelLinesTokens', () => {
 			],
 			'',
 			[],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1120,13 +1120,13 @@ suite('ModelLinesTokens', () => {
 		testLineAppendTokens(
 			'',
 			[],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
 				new TestToken(5, 3)
 			],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1137,19 +1137,19 @@ suite('ModelLinesTokens', () => {
 
 	test('append 1', () => {
 		testLineAppendTokens(
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
 				new TestToken(5, 3)
 			],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 4),
 				new TestToken(4, 5),
 				new TestToken(5, 6)
 			],
-			'abcd efghabcd efgh',
+			'aBcd efghaBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1163,7 +1163,7 @@ suite('ModelLinesTokens', () => {
 
 	test('append 2', () => {
 		testLineAppendTokens(
-			'abcd ',
+			'aBcd ',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2)
@@ -1172,7 +1172,7 @@ suite('ModelLinesTokens', () => {
 			[
 				new TestToken(0, 3)
 			],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),
@@ -1183,7 +1183,7 @@ suite('ModelLinesTokens', () => {
 
 	test('append 3', () => {
 		testLineAppendTokens(
-			'abcd',
+			'aBcd',
 			[
 				new TestToken(0, 1),
 			],
@@ -1192,7 +1192,7 @@ suite('ModelLinesTokens', () => {
 				new TestToken(0, 2),
 				new TestToken(1, 3)
 			],
-			'abcd efgh',
+			'aBcd efgh',
 			[
 				new TestToken(0, 1),
 				new TestToken(4, 2),

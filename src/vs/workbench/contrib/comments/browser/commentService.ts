@@ -5,14 +5,14 @@
 
 import { CommentThreadChangedEvent, CommentInfo, Comment, CommentReaction, CommentingRanges, CommentThread } from 'vs/editor/common/modes';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { Range, IRange } from 'vs/editor/common/core/range';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { ICommentThreadChangedEvent } from 'vs/workbench/contrib/comments/common/commentModel';
-import { MainThreadCommentController } from 'vs/workbench/api/browser/mainThreadComments';
-import { CommentMenus } from 'vs/workbench/contrib/comments/browser/commentMenus';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { ICommentThreadChangedEvent } from 'vs/workBench/contriB/comments/common/commentModel';
+import { MainThreadCommentController } from 'vs/workBench/api/Browser/mainThreadComments';
+import { CommentMenus } from 'vs/workBench/contriB/comments/Browser/commentMenus';
 
 export const ICommentService = createDecorator<ICommentService>('commentService');
 
@@ -23,7 +23,7 @@ export interface IResourceCommentThreadEvent {
 
 export interface ICommentInfo extends CommentInfo {
 	owner: string;
-	label?: string;
+	laBel?: string;
 }
 
 export interface IWorkspaceCommentThreadsEvent {
@@ -47,18 +47,18 @@ export interface ICommentService {
 	unregisterCommentController(owner: string): void;
 	getCommentController(owner: string): MainThreadCommentController | undefined;
 	createCommentThreadTemplate(owner: string, resource: URI, range: Range): void;
-	updateCommentThreadTemplate(owner: string, threadHandle: number, range: Range): Promise<void>;
+	updateCommentThreadTemplate(owner: string, threadHandle: numBer, range: Range): Promise<void>;
 	getCommentMenus(owner: string): CommentMenus;
 	updateComments(ownerId: string, event: CommentThreadChangedEvent): void;
 	disposeCommentThread(ownerId: string, threadId: string): void;
 	getComments(resource: URI): Promise<(ICommentInfo | null)[]>;
 	getCommentingRanges(resource: URI): Promise<IRange[]>;
-	hasReactionHandler(owner: string): boolean;
+	hasReactionHandler(owner: string): Boolean;
 	toggleReaction(owner: string, resource: URI, thread: CommentThread, comment: Comment, reaction: CommentReaction): Promise<void>;
 	setActiveCommentThread(commentThread: CommentThread | null): void;
 }
 
-export class CommentService extends Disposable implements ICommentService {
+export class CommentService extends DisposaBle implements ICommentService {
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidSetDataProvider: Emitter<void> = this._register(new Emitter<void>());
@@ -137,7 +137,7 @@ export class CommentService extends Disposable implements ICommentService {
 		commentController.createCommentThreadTemplate(resource, range);
 	}
 
-	async updateCommentThreadTemplate(owner: string, threadHandle: number, range: Range) {
+	async updateCommentThreadTemplate(owner: string, threadHandle: numBer, range: Range) {
 		const commentController = this._commentControls.get(owner);
 
 		if (!commentController) {
@@ -165,7 +165,7 @@ export class CommentService extends Disposable implements ICommentService {
 	}
 
 	updateComments(ownerId: string, event: CommentThreadChangedEvent): void {
-		const evt: ICommentThreadChangedEvent = Object.assign({}, event, { owner: ownerId });
+		const evt: ICommentThreadChangedEvent = OBject.assign({}, event, { owner: ownerId });
 		this._onDidUpdateCommentThreads.fire(evt);
 	}
 
@@ -179,7 +179,7 @@ export class CommentService extends Disposable implements ICommentService {
 		}
 	}
 
-	hasReactionHandler(owner: string): boolean {
+	hasReactionHandler(owner: string): Boolean {
 		const commentProvider = this._commentControls.get(owner);
 
 		if (commentProvider) {

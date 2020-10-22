@@ -6,11 +6,11 @@
 import { IFileService } from 'vs/platform/files/common/files';
 import { StorageScope } from 'vs/platform/storage/common/storage';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { isUUID, generateUuid } from 'vs/base/common/uuid';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { isUUID, generateUuid } from 'vs/Base/common/uuid';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 
 export async function getServiceMachineId(environmentService: IEnvironmentService, fileService: IFileService, storageService: {
-	get: (key: string, scope: StorageScope, fallbackValue?: string | undefined) => string | undefined,
+	get: (key: string, scope: StorageScope, fallBackValue?: string | undefined) => string | undefined,
 	store: (key: string, value: string, scope: StorageScope) => void
 } | undefined): Promise<string> {
 	let uuid: string | null = storageService ? storageService.get('storage.serviceMachineId', StorageScope.GLOBAL) || null : null;

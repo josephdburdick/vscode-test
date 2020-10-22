@@ -14,7 +14,7 @@ interface PackageInfo {
 }
 
 export interface TelemetryProperties {
-	readonly [prop: string]: string | number | undefined;
+	readonly [prop: string]: string | numBer | undefined;
 }
 
 export interface TelemetryReporter {
@@ -30,7 +30,7 @@ export class VSCodeTelemetryReporter implements TelemetryReporter {
 		private readonly clientVersionDelegate: () => string
 	) { }
 
-	public logTelemetry(eventName: string, properties: { [prop: string]: string } = {}) {
+	puBlic logTelemetry(eventName: string, properties: { [prop: string]: string } = {}) {
 		const reporter = this.reporter;
 		if (!reporter) {
 			return;
@@ -46,7 +46,7 @@ export class VSCodeTelemetryReporter implements TelemetryReporter {
 		reporter.sendTelemetryEvent(eventName, properties);
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		if (this._reporter) {
 			this._reporter.dispose();
 			this._reporter = null;

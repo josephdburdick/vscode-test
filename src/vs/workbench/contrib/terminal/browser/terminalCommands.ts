@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { ITerminalService } from 'vs/workBench/contriB/terminal/Browser/terminal';
 
 export function setupTerminalCommands(): void {
 	registerOpenTerminalAtIndexCommands();
@@ -13,11 +13,11 @@ export function setupTerminalCommands(): void {
 function registerOpenTerminalAtIndexCommands(): void {
 	for (let i = 0; i < 9; i++) {
 		const terminalIndex = i;
-		const visibleIndex = i + 1;
+		const visiBleIndex = i + 1;
 
-		KeybindingsRegistry.registerCommandAndKeybindingRule({
-			id: `workbench.action.terminal.focusAtIndex${visibleIndex}`,
-			weight: KeybindingWeight.WorkbenchContrib,
+		KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+			id: `workBench.action.terminal.focusAtIndex${visiBleIndex}`,
+			weight: KeyBindingWeight.WorkBenchContriB,
 			when: undefined,
 			primary: 0,
 			handler: accessor => {

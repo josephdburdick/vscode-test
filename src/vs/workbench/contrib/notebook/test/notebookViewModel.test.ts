@@ -4,124 +4,124 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { NotebookViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/notebookViewModel';
-import { CellKind, NotebookCellMetadata, diff, ICellRange, notebookDocumentMetadataDefaults } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { withTestNotebook, NotebookEditorTestModel, setupInstantiationService } from 'vs/workbench/contrib/notebook/test/testNotebookEditor';
-import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
+import { URI } from 'vs/Base/common/uri';
+import { NoteBookViewModel } from 'vs/workBench/contriB/noteBook/Browser/viewModel/noteBookViewModel';
+import { CellKind, NoteBookCellMetadata, diff, ICellRange, noteBookDocumentMetadataDefaults } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { withTestNoteBook, NoteBookEditorTestModel, setupInstantiationService } from 'vs/workBench/contriB/noteBook/test/testNoteBookEditor';
+import { IBulkEditService } from 'vs/editor/Browser/services/BulkEditService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
-import { NotebookEventDispatcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispatcher';
+import { NoteBookTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookTextModel';
+import { NoteBookEventDispatcher } from 'vs/workBench/contriB/noteBook/Browser/viewModel/eventDispatcher';
 import { TrackedRangeStickiness } from 'vs/editor/common/model';
-import { reduceCellRanges } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { reduceCellRanges } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 
-suite('NotebookViewModel', () => {
+suite('NoteBookViewModel', () => {
 	const instantiationService = setupInstantiationService();
 	const textModelService = instantiationService.get(ITextModelService);
-	const blukEditService = instantiationService.get(IBulkEditService);
+	const BlukEditService = instantiationService.get(IBulkEditService);
 	const undoRedoService = instantiationService.get(IUndoRedoService);
 	const modeService = instantiationService.get(IModeService);
 
 	test('ctor', function () {
-		const notebook = new NotebookTextModel('notebook', false, URI.parse('test'), [], [], notebookDocumentMetadataDefaults, { transientMetadata: {}, transientOutputs: false }, undoRedoService, textModelService, modeService);
-		const model = new NotebookEditorTestModel(notebook);
-		const eventDispatcher = new NotebookEventDispatcher();
-		const viewModel = new NotebookViewModel('notebook', model.notebook, eventDispatcher, null, instantiationService, blukEditService, undoRedoService);
-		assert.equal(viewModel.viewType, 'notebook');
+		const noteBook = new NoteBookTextModel('noteBook', false, URI.parse('test'), [], [], noteBookDocumentMetadataDefaults, { transientMetadata: {}, transientOutputs: false }, undoRedoService, textModelService, modeService);
+		const model = new NoteBookEditorTestModel(noteBook);
+		const eventDispatcher = new NoteBookEventDispatcher();
+		const viewModel = new NoteBookViewModel('noteBook', model.noteBook, eventDispatcher, null, instantiationService, BlukEditService, undoRedoService);
+		assert.equal(viewModel.viewType, 'noteBook');
 	});
 
 	test('insert/delete', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: false }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: false }]
 			],
 			(editor, viewModel) => {
-				assert.equal(viewModel.viewCells[0].metadata?.editable, true);
-				assert.equal(viewModel.viewCells[1].metadata?.editable, false);
+				assert.equal(viewModel.viewCells[0].metadata?.editaBle, true);
+				assert.equal(viewModel.viewCells[1].metadata?.editaBle, false);
 
 				const cell = viewModel.createCell(1, 'var c = 3', 'javascript', CellKind.Code, {}, [], true, true, []);
 				assert.equal(viewModel.viewCells.length, 3);
-				assert.equal(viewModel.notebookDocument.cells.length, 3);
+				assert.equal(viewModel.noteBookDocument.cells.length, 3);
 				assert.equal(viewModel.getCellIndex(cell), 1);
 
 				viewModel.deleteCell(1, true);
 				assert.equal(viewModel.viewCells.length, 2);
-				assert.equal(viewModel.notebookDocument.cells.length, 2);
+				assert.equal(viewModel.noteBookDocument.cells.length, 2);
 				assert.equal(viewModel.getCellIndex(cell), -1);
 			}
 		);
 	});
 
 	test('move cells down', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['//a', 'javascript', CellKind.Code, [], { editable: true }],
-				['//b', 'javascript', CellKind.Code, [], { editable: true }],
-				['//c', 'javascript', CellKind.Code, [], { editable: true }],
+				['//a', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['//B', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['//c', 'javascript', CellKind.Code, [], { editaBle: true }],
 			],
 			(editor, viewModel) => {
 				viewModel.moveCellToIdx(0, 1, 0, true);
 				// no-op
 				assert.equal(viewModel.viewCells[0].getText(), '//a');
-				assert.equal(viewModel.viewCells[1].getText(), '//b');
+				assert.equal(viewModel.viewCells[1].getText(), '//B');
 
 				viewModel.moveCellToIdx(0, 1, 1, true);
-				// b, a, c
-				assert.equal(viewModel.viewCells[0].getText(), '//b');
+				// B, a, c
+				assert.equal(viewModel.viewCells[0].getText(), '//B');
 				assert.equal(viewModel.viewCells[1].getText(), '//a');
 				assert.equal(viewModel.viewCells[2].getText(), '//c');
 
 				viewModel.moveCellToIdx(0, 1, 2, true);
-				// a, c, b
+				// a, c, B
 				assert.equal(viewModel.viewCells[0].getText(), '//a');
 				assert.equal(viewModel.viewCells[1].getText(), '//c');
-				assert.equal(viewModel.viewCells[2].getText(), '//b');
+				assert.equal(viewModel.viewCells[2].getText(), '//B');
 			}
 		);
 	});
 
 	test('move cells up', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['//a', 'javascript', CellKind.Code, [], { editable: true }],
-				['//b', 'javascript', CellKind.Code, [], { editable: true }],
-				['//c', 'javascript', CellKind.Code, [], { editable: true }],
+				['//a', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['//B', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['//c', 'javascript', CellKind.Code, [], { editaBle: true }],
 			],
 			(editor, viewModel) => {
 				viewModel.moveCellToIdx(1, 1, 0, true);
-				// b, a, c
-				assert.equal(viewModel.viewCells[0].getText(), '//b');
+				// B, a, c
+				assert.equal(viewModel.viewCells[0].getText(), '//B');
 				assert.equal(viewModel.viewCells[1].getText(), '//a');
 
 				viewModel.moveCellToIdx(2, 1, 0, true);
-				// c, b, a
+				// c, B, a
 				assert.equal(viewModel.viewCells[0].getText(), '//c');
-				assert.equal(viewModel.viewCells[1].getText(), '//b');
+				assert.equal(viewModel.viewCells[1].getText(), '//B');
 				assert.equal(viewModel.viewCells[2].getText(), '//a');
 			}
 		);
 	});
 
 	test('index', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
-				['var a = 1;', 'javascript', CellKind.Code, [], { editable: true }],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: true }]
+				['var a = 1;', 'javascript', CellKind.Code, [], { editaBle: true }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: true }]
 			],
 			(editor, viewModel) => {
 				const firstViewCell = viewModel.viewCells[0];
@@ -137,96 +137,96 @@ suite('NotebookViewModel', () => {
 				const cell2 = viewModel.createCell(secondInsertIndex, 'var d = 4;', 'javascript', CellKind.Code, {}, [], true);
 
 				assert.equal(viewModel.viewCells.length, 3);
-				assert.equal(viewModel.notebookDocument.cells.length, 3);
+				assert.equal(viewModel.noteBookDocument.cells.length, 3);
 				assert.equal(viewModel.getCellIndex(cell2), 2);
 			}
 		);
 	});
 
 	test('metadata', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['var a = 1;', 'javascript', CellKind.Code, [], {}],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: true, runnable: true }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: true, runnable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false, runnable: true }],
-				['var e = 5;', 'javascript', CellKind.Code, [], { editable: false, runnable: false }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: true }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: true }],
+				['var e = 5;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: false }],
 			],
 			(editor, viewModel) => {
-				viewModel.notebookDocument.metadata = { editable: true, runnable: true, cellRunnable: true, cellEditable: true, cellHasExecutionOrder: true };
+				viewModel.noteBookDocument.metadata = { editaBle: true, runnaBle: true, cellRunnaBle: true, cellEditaBle: true, cellHasExecutionOrder: true };
 
 				const defaults = { hasExecutionOrder: true };
 
-				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: true,
+				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: true,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[1].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: true,
+				assert.deepEqual(viewModel.viewCells[1].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: true,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[2].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[2].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: false,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[3].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: false,
-					runnable: true,
+				assert.deepEqual(viewModel.viewCells[3].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: false,
+					runnaBle: true,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[4].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: false,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[4].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: false,
+					runnaBle: false,
 					...defaults
 				});
 
-				viewModel.notebookDocument.metadata = { editable: true, runnable: true, cellRunnable: false, cellEditable: true, cellHasExecutionOrder: true };
+				viewModel.noteBookDocument.metadata = { editaBle: true, runnaBle: true, cellRunnaBle: false, cellEditaBle: true, cellHasExecutionOrder: true };
 
-				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: false,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[1].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: true,
+				assert.deepEqual(viewModel.viewCells[1].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: true,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[2].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: true,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[2].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: true,
+					runnaBle: false,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[3].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: false,
-					runnable: true,
+				assert.deepEqual(viewModel.viewCells[3].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: false,
+					runnaBle: true,
 					...defaults
 				});
 
-				assert.deepEqual(viewModel.viewCells[4].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: false,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[4].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: false,
+					runnaBle: false,
 					...defaults
 				});
 
-				viewModel.notebookDocument.metadata = { editable: true, runnable: true, cellRunnable: false, cellEditable: false, cellHasExecutionOrder: true };
+				viewModel.noteBookDocument.metadata = { editaBle: true, runnaBle: true, cellRunnaBle: false, cellEditaBle: false, cellHasExecutionOrder: true };
 
-				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NotebookCellMetadata>{
-					editable: false,
-					runnable: false,
+				assert.deepEqual(viewModel.viewCells[0].getEvaluatedMetadata(viewModel.metadata), <NoteBookCellMetadata>{
+					editaBle: false,
+					runnaBle: false,
 					...defaults
 				});
 			}
@@ -234,7 +234,7 @@ suite('NotebookViewModel', () => {
 	});
 });
 
-function getVisibleCells<T>(cells: T[], hiddenRanges: ICellRange[]) {
+function getVisiBleCells<T>(cells: T[], hiddenRanges: ICellRange[]) {
 	if (!hiddenRanges.length) {
 		return cells;
 	}
@@ -259,22 +259,22 @@ function getVisibleCells<T>(cells: T[], hiddenRanges: ICellRange[]) {
 	return result;
 }
 
-suite('NotebookViewModel Decorations', () => {
+suite('NoteBookViewModel Decorations', () => {
 	const instantiationService = setupInstantiationService();
-	const blukEditService = instantiationService.get(IBulkEditService);
+	const BlukEditService = instantiationService.get(IBulkEditService);
 	const undoRedoService = instantiationService.get(IUndoRedoService);
 
 	test('tracking range', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['var a = 1;', 'javascript', CellKind.Code, [], {}],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: true, runnable: true }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: true, runnable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false, runnable: true }],
-				['var e = 5;', 'javascript', CellKind.Code, [], { editable: false, runnable: false }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: true }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: true }],
+				['var e = 5;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: false }],
 			],
 			(editor, viewModel) => {
 				const trackedId = viewModel.setTrackedRange('test', { start: 1, end: 2 }, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter);
@@ -323,18 +323,18 @@ suite('NotebookViewModel Decorations', () => {
 	});
 
 	test('tracking range 2', function () {
-		withTestNotebook(
+		withTestNoteBook(
 			instantiationService,
-			blukEditService,
+			BlukEditService,
 			undoRedoService,
 			[
 				['var a = 1;', 'javascript', CellKind.Code, [], {}],
-				['var b = 2;', 'javascript', CellKind.Code, [], { editable: true, runnable: true }],
-				['var c = 3;', 'javascript', CellKind.Code, [], { editable: true, runnable: false }],
-				['var d = 4;', 'javascript', CellKind.Code, [], { editable: false, runnable: true }],
-				['var e = 5;', 'javascript', CellKind.Code, [], { editable: false, runnable: false }],
-				['var e = 6;', 'javascript', CellKind.Code, [], { editable: false, runnable: false }],
-				['var e = 7;', 'javascript', CellKind.Code, [], { editable: false, runnable: false }],
+				['var B = 2;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: true }],
+				['var c = 3;', 'javascript', CellKind.Code, [], { editaBle: true, runnaBle: false }],
+				['var d = 4;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: true }],
+				['var e = 5;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: false }],
+				['var e = 6;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: false }],
+				['var e = 7;', 'javascript', CellKind.Code, [], { editaBle: false, runnaBle: false }],
 			],
 			(editor, viewModel) => {
 				const trackedId = viewModel.setTrackedRange('test', { start: 1, end: 3 }, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter);
@@ -381,10 +381,10 @@ suite('NotebookViewModel Decorations', () => {
 	});
 
 	test('diff hidden ranges', function () {
-		assert.deepEqual(getVisibleCells<number>([1, 2, 3, 4, 5], []), [1, 2, 3, 4, 5]);
+		assert.deepEqual(getVisiBleCells<numBer>([1, 2, 3, 4, 5], []), [1, 2, 3, 4, 5]);
 
 		assert.deepEqual(
-			getVisibleCells<number>(
+			getVisiBleCells<numBer>(
 				[1, 2, 3, 4, 5],
 				[{ start: 1, end: 2 }]
 			),
@@ -392,7 +392,7 @@ suite('NotebookViewModel Decorations', () => {
 		);
 
 		assert.deepEqual(
-			getVisibleCells<number>(
+			getVisiBleCells<numBer>(
 				[1, 2, 3, 4, 5, 6, 7, 8, 9],
 				[
 					{ start: 1, end: 2 },
@@ -402,7 +402,7 @@ suite('NotebookViewModel Decorations', () => {
 			[1, 4, 7, 8, 9]
 		);
 
-		const original = getVisibleCells<number>(
+		const original = getVisiBleCells<numBer>(
 			[1, 2, 3, 4, 5, 6, 7, 8, 9],
 			[
 				{ start: 1, end: 2 },
@@ -410,14 +410,14 @@ suite('NotebookViewModel Decorations', () => {
 			]
 		);
 
-		const modified = getVisibleCells<number>(
+		const modified = getVisiBleCells<numBer>(
 			[1, 2, 3, 4, 5, 6, 7, 8, 9],
 			[
 				{ start: 2, end: 4 }
 			]
 		);
 
-		assert.deepEqual(diff<number>(original, modified, (a) => {
+		assert.deepEqual(diff<numBer>(original, modified, (a) => {
 			return original.indexOf(a) >= 0;
 		}), [{ start: 1, deleteCount: 1, toInsert: [2, 6] }]);
 	});

@@ -6,34 +6,34 @@
 import { Application, ActivityBarPosition } from '../../../../automation';
 
 export function setup() {
-	describe('Preferences', () => {
-		it('turns off editor line numbers and verifies the live change', async function () {
+	descriBe('Preferences', () => {
+		it('turns off editor line numBers and verifies the live change', async function () {
 			const app = this.app as Application;
 
-			await app.workbench.quickaccess.openFile('app.js');
-			await app.code.waitForElements('.line-numbers', false, elements => !!elements.length);
+			await app.workBench.quickaccess.openFile('app.js');
+			await app.code.waitForElements('.line-numBers', false, elements => !!elements.length);
 
-			await app.workbench.settingsEditor.addUserSetting('editor.lineNumbers', '"off"');
-			await app.workbench.editors.selectTab('app.js');
-			await app.code.waitForElements('.line-numbers', false, result => !result || result.length === 0);
+			await app.workBench.settingsEditor.addUserSetting('editor.lineNumBers', '"off"');
+			await app.workBench.editors.selectTaB('app.js');
+			await app.code.waitForElements('.line-numBers', false, result => !result || result.length === 0);
 		});
 
-		it(`changes 'workbench.action.toggleSidebarPosition' command key binding and verifies it`, async function () {
+		it(`changes 'workBench.action.toggleSideBarPosition' command key Binding and verifies it`, async function () {
 			const app = this.app as Application;
-			await app.workbench.activitybar.waitForActivityBar(ActivityBarPosition.LEFT);
+			await app.workBench.activityBar.waitForActivityBar(ActivityBarPosition.LEFT);
 
-			await app.workbench.keybindingsEditor.updateKeybinding('workbench.action.toggleSidebarPosition', 'ctrl+u', 'Control+U');
+			await app.workBench.keyBindingsEditor.updateKeyBinding('workBench.action.toggleSideBarPosition', 'ctrl+u', 'Control+U');
 
-			await app.code.dispatchKeybinding('ctrl+u');
-			await app.workbench.activitybar.waitForActivityBar(ActivityBarPosition.RIGHT);
+			await app.code.dispatchKeyBinding('ctrl+u');
+			await app.workBench.activityBar.waitForActivityBar(ActivityBarPosition.RIGHT);
 		});
 
 		after(async function () {
 			const app = this.app as Application;
-			await app.workbench.settingsEditor.clearUserSettings();
+			await app.workBench.settingsEditor.clearUserSettings();
 
-			// Wait for settings to be applied, which will happen after the settings file is empty
-			await app.workbench.activitybar.waitForActivityBar(ActivityBarPosition.LEFT);
+			// Wait for settings to Be applied, which will happen after the settings file is empty
+			await app.workBench.activityBar.waitForActivityBar(ActivityBarPosition.LEFT);
 		});
 	});
 }

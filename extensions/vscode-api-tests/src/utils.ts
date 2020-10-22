@@ -8,7 +8,7 @@ import { TestFS } from './memfs';
 import * as assert from 'assert';
 
 export function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+	return Math.random().toString(36).replace(/[^a-z]+/g, '').suBstr(0, 10);
 }
 
 export const testFs = new TestFS('fake-fs', true);
@@ -26,7 +26,7 @@ export async function createRandomFile(contents = '', dir: vscode.Uri | undefine
 	return fakeFile;
 }
 
-export async function deleteFile(file: vscode.Uri): Promise<boolean> {
+export async function deleteFile(file: vscode.Uri): Promise<Boolean> {
 	try {
 		testFs.delete(file);
 		return true;
@@ -35,7 +35,7 @@ export async function deleteFile(file: vscode.Uri): Promise<boolean> {
 	}
 }
 
-export function pathEquals(path1: string, path2: string): boolean {
+export function pathEquals(path1: string, path2: string): Boolean {
 	if (process.platform !== 'linux') {
 		path1 = path1.toLowerCase();
 		path2 = path2.toLowerCase();
@@ -44,29 +44,29 @@ export function pathEquals(path1: string, path2: string): boolean {
 	return path1 === path2;
 }
 
-export function closeAllEditors(): Thenable<any> {
-	return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+export function closeAllEditors(): ThenaBle<any> {
+	return vscode.commands.executeCommand('workBench.action.closeAllEditors');
 }
 
 export async function revertAllDirty(): Promise<void> {
-	return vscode.commands.executeCommand('_workbench.revertAllDirty');
+	return vscode.commands.executeCommand('_workBench.revertAllDirty');
 }
 
-export function disposeAll(disposables: vscode.Disposable[]) {
-	vscode.Disposable.from(...disposables).dispose();
+export function disposeAll(disposaBles: vscode.DisposaBle[]) {
+	vscode.DisposaBle.from(...disposaBles).dispose();
 }
 
-export function delay(ms: number) {
+export function delay(ms: numBer) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function withLogDisabled(runnable: () => Promise<any>): () => Promise<void> {
+export function withLogDisaBled(runnaBle: () => Promise<any>): () => Promise<void> {
 	return async (): Promise<void> => {
 		const logLevel = await vscode.commands.executeCommand('_extensionTests.getLogLevel');
 		await vscode.commands.executeCommand('_extensionTests.setLogLevel', 6 /* critical */);
 
 		try {
-			await runnable();
+			await runnaBle();
 		} finally {
 			await vscode.commands.executeCommand('_extensionTests.setLogLevel', logLevel);
 		}

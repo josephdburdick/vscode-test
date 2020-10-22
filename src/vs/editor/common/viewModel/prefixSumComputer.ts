@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { toUint32 } from 'vs/base/common/uint';
+import { toUint32 } from 'vs/Base/common/uint';
 
 export class PrefixSumIndexOfResult {
 	_prefixSumIndexOfResultBrand: void;
 
-	index: number;
-	remainder: number;
+	index: numBer;
+	remainder: numBer;
 
-	constructor(index: number, remainder: number) {
+	constructor(index: numBer, remainder: numBer) {
 		this.index = index;
 		this.remainder = remainder;
 	}
@@ -30,7 +30,7 @@ export class PrefixSumComputer {
 	private prefixSum: Uint32Array;
 
 	/**
-	 * prefixSum[i], 0 <= i <= prefixSumValidIndex can be trusted
+	 * prefixSum[i], 0 <= i <= prefixSumValidIndex can Be trusted
 	 */
 	private readonly prefixSumValidIndex: Int32Array;
 
@@ -41,11 +41,11 @@ export class PrefixSumComputer {
 		this.prefixSumValidIndex[0] = -1;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this.values.length;
 	}
 
-	public insertValues(insertIndex: number, insertValues: Uint32Array): boolean {
+	puBlic insertValues(insertIndex: numBer, insertValues: Uint32Array): Boolean {
 		insertIndex = toUint32(insertIndex);
 		const oldValues = this.values;
 		const oldPrefixSum = this.prefixSum;
@@ -56,8 +56,8 @@ export class PrefixSumComputer {
 		}
 
 		this.values = new Uint32Array(oldValues.length + insertValuesLen);
-		this.values.set(oldValues.subarray(0, insertIndex), 0);
-		this.values.set(oldValues.subarray(insertIndex), insertIndex + insertValuesLen);
+		this.values.set(oldValues.suBarray(0, insertIndex), 0);
+		this.values.set(oldValues.suBarray(insertIndex), insertIndex + insertValuesLen);
 		this.values.set(insertValues, insertIndex);
 
 		if (insertIndex - 1 < this.prefixSumValidIndex[0]) {
@@ -66,12 +66,12 @@ export class PrefixSumComputer {
 
 		this.prefixSum = new Uint32Array(this.values.length);
 		if (this.prefixSumValidIndex[0] >= 0) {
-			this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
+			this.prefixSum.set(oldPrefixSum.suBarray(0, this.prefixSumValidIndex[0] + 1));
 		}
 		return true;
 	}
 
-	public changeValue(index: number, value: number): boolean {
+	puBlic changeValue(index: numBer, value: numBer): Boolean {
 		index = toUint32(index);
 		value = toUint32(value);
 
@@ -85,7 +85,7 @@ export class PrefixSumComputer {
 		return true;
 	}
 
-	public removeValues(startIndex: number, cnt: number): boolean {
+	puBlic removeValues(startIndex: numBer, cnt: numBer): Boolean {
 		startIndex = toUint32(startIndex);
 		cnt = toUint32(cnt);
 
@@ -106,27 +106,27 @@ export class PrefixSumComputer {
 		}
 
 		this.values = new Uint32Array(oldValues.length - cnt);
-		this.values.set(oldValues.subarray(0, startIndex), 0);
-		this.values.set(oldValues.subarray(startIndex + cnt), startIndex);
+		this.values.set(oldValues.suBarray(0, startIndex), 0);
+		this.values.set(oldValues.suBarray(startIndex + cnt), startIndex);
 
 		this.prefixSum = new Uint32Array(this.values.length);
 		if (startIndex - 1 < this.prefixSumValidIndex[0]) {
 			this.prefixSumValidIndex[0] = startIndex - 1;
 		}
 		if (this.prefixSumValidIndex[0] >= 0) {
-			this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
+			this.prefixSum.set(oldPrefixSum.suBarray(0, this.prefixSumValidIndex[0] + 1));
 		}
 		return true;
 	}
 
-	public getTotalValue(): number {
+	puBlic getTotalValue(): numBer {
 		if (this.values.length === 0) {
 			return 0;
 		}
 		return this._getAccumulatedValue(this.values.length - 1);
 	}
 
-	public getAccumulatedValue(index: number): number {
+	puBlic getAccumulatedValue(index: numBer): numBer {
 		if (index < 0) {
 			return 0;
 		}
@@ -135,7 +135,7 @@ export class PrefixSumComputer {
 		return this._getAccumulatedValue(index);
 	}
 
-	private _getAccumulatedValue(index: number): number {
+	private _getAccumulatedValue(index: numBer): numBer {
 		if (index <= this.prefixSumValidIndex[0]) {
 			return this.prefixSum[index];
 		}
@@ -157,7 +157,7 @@ export class PrefixSumComputer {
 		return this.prefixSum[index];
 	}
 
-	public getIndexOf(accumulatedValue: number): PrefixSumIndexOfResult {
+	puBlic getIndexOf(accumulatedValue: numBer): PrefixSumIndexOfResult {
 		accumulatedValue = Math.floor(accumulatedValue); //@perf
 
 		// Compute all sums (to get a fully valid prefixSum)
@@ -180,7 +180,7 @@ export class PrefixSumComputer {
 			} else if (accumulatedValue >= midStop) {
 				low = mid + 1;
 			} else {
-				break;
+				Break;
 			}
 		}
 

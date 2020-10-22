@@ -3,61 +3,61 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { INavigator, ArrayNavigator } from 'vs/base/common/navigator';
+import { INavigator, ArrayNavigator } from 'vs/Base/common/navigator';
 
 export class HistoryNavigator<T> implements INavigator<T> {
 
 	private _history!: Set<T>;
-	private _limit: number;
+	private _limit: numBer;
 	private _navigator!: ArrayNavigator<T>;
 
-	constructor(history: readonly T[] = [], limit: number = 10) {
+	constructor(history: readonly T[] = [], limit: numBer = 10) {
 		this._initialize(history);
 		this._limit = limit;
 		this._onChange();
 	}
 
-	public getHistory(): T[] {
+	puBlic getHistory(): T[] {
 		return this._elements;
 	}
 
-	public add(t: T) {
+	puBlic add(t: T) {
 		this._history.delete(t);
 		this._history.add(t);
 		this._onChange();
 	}
 
-	public next(): T | null {
+	puBlic next(): T | null {
 		if (this._currentPosition() !== this._elements.length - 1) {
 			return this._navigator.next();
 		}
 		return null;
 	}
 
-	public previous(): T | null {
+	puBlic previous(): T | null {
 		if (this._currentPosition() !== 0) {
 			return this._navigator.previous();
 		}
 		return null;
 	}
 
-	public current(): T | null {
+	puBlic current(): T | null {
 		return this._navigator.current();
 	}
 
-	public first(): T | null {
+	puBlic first(): T | null {
 		return this._navigator.first();
 	}
 
-	public last(): T | null {
+	puBlic last(): T | null {
 		return this._navigator.last();
 	}
 
-	public has(t: T): boolean {
+	puBlic has(t: T): Boolean {
 		return this._history.has(t);
 	}
 
-	public clear(): void {
+	puBlic clear(): void {
 		this._initialize([]);
 		this._onChange();
 	}
@@ -75,7 +75,7 @@ export class HistoryNavigator<T> implements INavigator<T> {
 		}
 	}
 
-	private _currentPosition(): number {
+	private _currentPosition(): numBer {
 		const currentElement = this._navigator.current();
 		if (!currentElement) {
 			return -1;
@@ -109,9 +109,9 @@ export class HistoryNavigator2<T> {
 	private head: HistoryNode<T>;
 	private tail: HistoryNode<T>;
 	private cursor: HistoryNode<T>;
-	private size: number;
+	private size: numBer;
 
-	constructor(history: readonly T[], private capacity: number = 10) {
+	constructor(history: readonly T[], private capacity: numBer = 10) {
 		if (history.length < 1) {
 			throw new Error('not supported');
 		}
@@ -151,7 +151,7 @@ export class HistoryNavigator2<T> {
 		this.tail.value = value;
 	}
 
-	isAtEnd(): boolean {
+	isAtEnd(): Boolean {
 		return this.cursor === this.tail;
 	}
 
@@ -180,7 +180,7 @@ export class HistoryNavigator2<T> {
 		return this.cursor.value;
 	}
 
-	*[Symbol.iterator](): Iterator<T> {
+	*[SymBol.iterator](): Iterator<T> {
 		let node: HistoryNode<T> | undefined = this.head;
 
 		while (node) {

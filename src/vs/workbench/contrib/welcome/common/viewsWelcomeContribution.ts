@@ -4,66 +4,66 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IExtensionPoint, IExtensionPointUser } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import { ViewsWelcomeExtensionPoint, ViewWelcome, ViewIdentifierMap } from './viewsWelcomeExtensionPoint';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as ViewContainerExtensions, IViewsRegistry } from 'vs/workbench/common/views';
+import { Extensions as ViewContainerExtensions, IViewsRegistry } from 'vs/workBench/common/views';
 
 const viewsRegistry = Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry);
 
-export class ViewsWelcomeContribution extends Disposable implements IWorkbenchContribution {
+export class ViewsWelcomeContriBution extends DisposaBle implements IWorkBenchContriBution {
 
-	private viewWelcomeContents = new Map<ViewWelcome, IDisposable>();
+	private viewWelcomeContents = new Map<ViewWelcome, IDisposaBle>();
 
 	constructor(extensionPoint: IExtensionPoint<ViewsWelcomeExtensionPoint>) {
 		super();
 
 		extensionPoint.setHandler((_, { added, removed }) => {
-			for (const contribution of removed) {
-				for (const welcome of contribution.value) {
-					const disposable = this.viewWelcomeContents.get(welcome);
+			for (const contriBution of removed) {
+				for (const welcome of contriBution.value) {
+					const disposaBle = this.viewWelcomeContents.get(welcome);
 
-					if (disposable) {
-						disposable.dispose();
+					if (disposaBle) {
+						disposaBle.dispose();
 					}
 				}
 			}
 
-			for (const contribution of added) {
-				for (const welcome of contribution.value) {
+			for (const contriBution of added) {
+				for (const welcome of contriBution.value) {
 					const id = ViewIdentifierMap[welcome.view] ?? welcome.view;
-					const { group, order } = parseGroupAndOrder(welcome, contribution);
-					const disposable = viewsRegistry.registerViewWelcomeContent(id, {
+					const { group, order } = parseGroupAndOrder(welcome, contriBution);
+					const disposaBle = viewsRegistry.registerViewWelcomeContent(id, {
 						content: welcome.contents,
 						when: ContextKeyExpr.deserialize(welcome.when),
 						group,
 						order
 					});
 
-					this.viewWelcomeContents.set(welcome, disposable);
+					this.viewWelcomeContents.set(welcome, disposaBle);
 				}
 			}
 		});
 	}
 }
 
-function parseGroupAndOrder(welcome: ViewWelcome, contribution: IExtensionPointUser<ViewsWelcomeExtensionPoint>): { group: string | undefined, order: number | undefined } {
+function parseGroupAndOrder(welcome: ViewWelcome, contriBution: IExtensionPointUser<ViewsWelcomeExtensionPoint>): { group: string | undefined, order: numBer | undefined } {
 
 	let group: string | undefined;
-	let order: number | undefined;
+	let order: numBer | undefined;
 	if (welcome.group) {
-		if (!contribution.description.enableProposedApi) {
-			contribution.collector.warn(nls.localize('ViewsWelcomeExtensionPoint.proposedAPI', "The viewsWelcome contribution in '{0}' requires 'enableProposedApi' to be enabled.", contribution.description.identifier.value));
+		if (!contriBution.description.enaBleProposedApi) {
+			contriBution.collector.warn(nls.localize('ViewsWelcomeExtensionPoint.proposedAPI', "The viewsWelcome contriBution in '{0}' requires 'enaBleProposedApi' to Be enaBled.", contriBution.description.identifier.value));
 			return { group, order };
 		}
 
 		const idx = welcome.group.lastIndexOf('@');
 		if (idx > 0) {
-			group = welcome.group.substr(0, idx);
-			order = Number(welcome.group.substr(idx + 1)) || undefined;
+			group = welcome.group.suBstr(0, idx);
+			order = NumBer(welcome.group.suBstr(idx + 1)) || undefined;
 		} else {
 			group = welcome.group;
 		}

@@ -5,26 +5,26 @@
 
 import { IWorkspaceIdentifier, hasWorkspaceFileExtension, UNTITLED_WORKSPACE_NAME, IResolvedWorkspace, IStoredWorkspaceFolder, isStoredWorkspaceFolder, IWorkspaceFolderCreationData, IUntitledWorkspaceInfo, getStoredWorkspaceFolder, IEnterWorkspaceResult, isUntitledWorkspace } from 'vs/platform/workspaces/common/workspaces';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { join, dirname } from 'vs/base/common/path';
-import { mkdirp, writeFile, rimrafSync, readdirSync, writeFileSync } from 'vs/base/node/pfs';
+import { join, dirname } from 'vs/Base/common/path';
+import { mkdirp, writeFile, rimrafSync, readdirSync, writeFileSync } from 'vs/Base/node/pfs';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
-import { isLinux } from 'vs/base/common/platform';
-import { Event, Emitter } from 'vs/base/common/event';
+import { isLinux } from 'vs/Base/common/platform';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { ILogService } from 'vs/platform/log/common/log';
 import { createHash } from 'crypto';
-import * as json from 'vs/base/common/json';
+import * as json from 'vs/Base/common/json';
 import { toWorkspaceFolders } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { originalFSPath, joinPath, basename, extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { originalFSPath, joinPath, Basename, extUriBiasedIgnorePathCase } from 'vs/Base/common/resources';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { ICodeWindow } from 'vs/platform/windows/electron-main/windows';
 import { localize } from 'vs/nls';
 import product from 'vs/platform/product/common/product';
 import { MessageBoxOptions, BrowserWindow } from 'electron';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { IBackupMainService } from 'vs/platform/backup/electron-main/backup';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { IBackupMainService } from 'vs/platform/Backup/electron-main/Backup';
 import { IDialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
 import { findWindowOnWorkspace } from 'vs/platform/windows/node/window';
 
@@ -51,7 +51,7 @@ export interface IWorkspacesMainService {
 	deleteUntitledWorkspaceSync(workspace: IWorkspaceIdentifier): void;
 
 	getUntitledWorkspacesSync(): IUntitledWorkspaceInfo[];
-	isUntitledWorkspace(workspace: IWorkspaceIdentifier): boolean;
+	isUntitledWorkspace(workspace: IWorkspaceIdentifier): Boolean;
 
 	resolveLocalWorkspaceSync(path: URI): IResolvedWorkspace | null;
 	getWorkspaceIdentifier(workspacePath: URI): Promise<IWorkspaceIdentifier>;
@@ -62,7 +62,7 @@ export interface IStoredWorkspace {
 	remoteAuthority?: string;
 }
 
-export class WorkspacesMainService extends Disposable implements IWorkspacesMainService {
+export class WorkspacesMainService extends DisposaBle implements IWorkspacesMainService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -77,7 +77,7 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 	constructor(
 		@IEnvironmentMainService private readonly environmentService: IEnvironmentMainService,
 		@ILogService private readonly logService: ILogService,
-		@IBackupMainService private readonly backupMainService: IBackupMainService,
+		@IBackupMainService private readonly BackupMainService: IBackupMainService,
 		@IDialogMainService private readonly dialogMainService: IDialogMainService
 	) {
 		super();
@@ -103,7 +103,7 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 		return this.doResolveWorkspace(uri, contents);
 	}
 
-	private isWorkspacePath(uri: URI): boolean {
+	private isWorkspacePath(uri: URI): Boolean {
 		return isUntitledWorkspace(uri, this.environmentService) || hasWorkspaceFileExtension(uri);
 	}
 
@@ -188,7 +188,7 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 		return getWorkspaceIdentifier(configPath);
 	}
 
-	isUntitledWorkspace(workspace: IWorkspaceIdentifier): boolean {
+	isUntitledWorkspace(workspace: IWorkspaceIdentifier): Boolean {
 		return isUntitledWorkspace(workspace.configPath, this.environmentService);
 	}
 
@@ -215,13 +215,13 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 			// Delete Workspace
 			rimrafSync(dirname(configPath));
 
-			// Mark Workspace Storage to be deleted
+			// Mark Workspace Storage to Be deleted
 			const workspaceStoragePath = join(this.environmentService.workspaceStorageHome.fsPath, workspace.id);
 			if (existsSync(workspaceStoragePath)) {
-				writeFileSync(join(workspaceStoragePath, 'obsolete'), '');
+				writeFileSync(join(workspaceStoragePath, 'oBsolete'), '');
 			}
 		} catch (error) {
-			this.logService.warn(`Unable to delete untitled workspace ${configPath} (${error}).`);
+			this.logService.warn(`UnaBle to delete untitled workspace ${configPath} (${error}).`);
 		}
 	}
 
@@ -240,7 +240,7 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 			}
 		} catch (error) {
 			if (error.code !== 'ENOENT') {
-				this.logService.warn(`Unable to read folders in ${this.untitledWorkspacesHome} (${error}).`);
+				this.logService.warn(`UnaBle to read folders in ${this.untitledWorkspacesHome} (${error}).`);
 			}
 		}
 		return untitledWorkspaces;
@@ -267,7 +267,7 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 		return result;
 	}
 
-	private async isValidTargetWorkspacePath(window: ICodeWindow, windows: ICodeWindow[], path?: URI): Promise<boolean> {
+	private async isValidTargetWorkspacePath(window: ICodeWindow, windows: ICodeWindow[], path?: URI): Promise<Boolean> {
 		if (!path) {
 			return true;
 		}
@@ -281,8 +281,8 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 			const options: MessageBoxOptions = {
 				title: product.nameLong,
 				type: 'info',
-				buttons: [localize('ok', "OK")],
-				message: localize('workspaceOpenedMessage', "Unable to save workspace '{0}'", basename(path)),
+				Buttons: [localize('ok', "OK")],
+				message: localize('workspaceOpenedMessage', "UnaBle to save workspace '{0}'", Basename(path)),
 				detail: localize('workspaceOpenedDetail', "The workspace is already opened in another window. Please close that window first and then try again."),
 				noLink: true
 			};
@@ -302,10 +302,10 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 
 		window.focus();
 
-		// Register window for backups and migrate current backups over
-		let backupPath: string | undefined;
+		// Register window for Backups and migrate current Backups over
+		let BackupPath: string | undefined;
 		if (!window.config.extensionDevelopmentPath) {
-			backupPath = this.backupMainService.registerWorkspaceBackupSync({ workspace, remoteAuthority: window.remoteAuthority }, window.config.backupPath);
+			BackupPath = this.BackupMainService.registerWorkspaceBackupSync({ workspace, remoteAuthority: window.remoteAuthority }, window.config.BackupPath);
 		}
 
 		// if the window was opened on an untitled workspace, delete it.
@@ -313,12 +313,12 @@ export class WorkspacesMainService extends Disposable implements IWorkspacesMain
 			this.deleteUntitledWorkspaceSync(window.openedWorkspace);
 		}
 
-		// Update window configuration properly based on transition to workspace
+		// Update window configuration properly Based on transition to workspace
 		window.config.folderUri = undefined;
 		window.config.workspace = workspace;
-		window.config.backupPath = backupPath;
+		window.config.BackupPath = BackupPath;
 
-		return { workspace, backupPath };
+		return { workspace, BackupPath };
 	}
 }
 

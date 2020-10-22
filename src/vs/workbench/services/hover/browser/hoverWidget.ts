@@ -3,39 +3,39 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as dom from 'vs/base/browser/dom';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IHoverTarget, IHoverOptions } from 'vs/workbench/services/hover/browser/hover';
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import * as dom from 'vs/Base/Browser/dom';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IHoverTarget, IHoverOptions } from 'vs/workBench/services/hover/Browser/hover';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { EDITOR_FONT_DEFAULTS, IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { HoverWidget as BaseHoverWidget, renderHoverAction } from 'vs/base/browser/ui/hover/hoverWidget';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { AnchorPosition } from 'vs/base/browser/ui/contextview/contextview';
+import { HoverWidget as BaseHoverWidget, renderHoverAction } from 'vs/Base/Browser/ui/hover/hoverWidget';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { AnchorPosition } from 'vs/Base/Browser/ui/contextview/contextview';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { MarkdownString } from 'vs/base/common/htmlContent';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
+import { MarkdownRenderer } from 'vs/editor/Browser/core/markdownRenderer';
 
 const $ = dom.$;
 
 export class HoverWidget extends Widget {
-	private readonly _messageListeners = new DisposableStore();
+	private readonly _messageListeners = new DisposaBleStore();
 	private readonly _mouseTracker: CompositeMouseTracker;
 
 	private readonly _hover: BaseHoverWidget;
 	private readonly _target: IHoverTarget;
 	private readonly _linkHandler: (url: string) => any;
 
-	private _isDisposed: boolean = false;
+	private _isDisposed: Boolean = false;
 	private _anchor: AnchorPosition;
-	private _x: number = 0;
-	private _y: number = 0;
+	private _x: numBer = 0;
+	private _y: numBer = 0;
 
-	get isDisposed(): boolean { return this._isDisposed; }
+	get isDisposed(): Boolean { return this._isDisposed; }
 	get domNode(): HTMLElement { return this._hover.containerDomNode; }
 
 	private readonly _onDispose = this._register(new Emitter<void>());
@@ -44,15 +44,15 @@ export class HoverWidget extends Widget {
 	get onRequestLayout(): Event<void> { return this._onRequestLayout.event; }
 
 	get anchor(): AnchorPosition { return this._anchor; }
-	get x(): number { return this._x; }
-	get y(): number { return this._y; }
+	get x(): numBer { return this._x; }
+	get y(): numBer { return this._y; }
 
 	constructor(
 		options: IHoverOptions,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly _keyBindingService: IKeyBindingService,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
 		@IOpenerService private readonly _openerService: IOpenerService,
-		@IWorkbenchLayoutService private readonly _workbenchLayoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService private readonly _workBenchLayoutService: IWorkBenchLayoutService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 	) {
 		super();
@@ -62,7 +62,7 @@ export class HoverWidget extends Widget {
 		this._target = 'targetElements' in options.target ? options.target : new ElementHoverTarget(options.target);
 
 		this._hover = this._register(new BaseHoverWidget());
-		this._hover.containerDomNode.classList.add('workbench-hover', 'fadeIn');
+		this._hover.containerDomNode.classList.add('workBench-hover', 'fadeIn');
 		if (options.additionalClasses) {
 			this._hover.containerDomNode.classList.add(...options.additionalClasses);
 		}
@@ -70,7 +70,7 @@ export class HoverWidget extends Widget {
 		this._anchor = options.anchorPosition ?? AnchorPosition.ABOVE;
 
 		// Don't allow mousedown out of the widget, otherwise preventDefault will call and text will
-		// not be selected.
+		// not Be selected.
 		this.onmousedown(this._hover.containerDomNode, e => e.stopPropagation());
 
 		// Hide hover on escape
@@ -91,10 +91,10 @@ export class HoverWidget extends Widget {
 
 		const { element } = mdRenderer.render(markdown, {
 			actionHandler: {
-				callback: (content) => this._linkHandler(content),
-				disposeables: this._messageListeners
+				callBack: (content) => this._linkHandler(content),
+				disposeaBles: this._messageListeners
 			},
-			codeBlockRenderCallback: () => {
+			codeBlockRenderCallBack: () => {
 				contentsElement.classList.add('code-hover-contents');
 				// This changes the dimensions of the hover so trigger a layout
 				this._onRequestLayout.fire();
@@ -105,30 +105,30 @@ export class HoverWidget extends Widget {
 		this._hover.contentsDomNode.appendChild(rowElement);
 
 		if (options.actions && options.actions.length > 0) {
-			const statusBarElement = $('div.hover-row.status-bar');
+			const statusBarElement = $('div.hover-row.status-Bar');
 			const actionsElement = $('div.actions');
 			options.actions.forEach(action => {
-				const keybinding = this._keybindingService.lookupKeybinding(action.commandId);
-				const keybindingLabel = keybinding ? keybinding.getLabel() : null;
+				const keyBinding = this._keyBindingService.lookupKeyBinding(action.commandId);
+				const keyBindingLaBel = keyBinding ? keyBinding.getLaBel() : null;
 				renderHoverAction(actionsElement, {
-					label: action.label,
+					laBel: action.laBel,
 					commandId: action.commandId,
 					run: e => {
 						action.run(e);
 						this.dispose();
 					},
 					iconClass: action.iconClass
-				}, keybindingLabel);
+				}, keyBindingLaBel);
 			});
 			statusBarElement.appendChild(actionsElement);
 			this._hover.containerDomNode.appendChild(statusBarElement);
 		}
 
 		const mouseTrackerTargets = [...this._target.targetElements];
-		let hideOnHover: boolean;
+		let hideOnHover: Boolean;
 		if (options.hideOnHover === undefined) {
 			if (options.actions && options.actions.length > 0) {
-				// If there are actions, require hover so they can be accessed
+				// If there are actions, require hover so they can Be accessed
 				hideOnHover = false;
 			} else {
 				// Defaults to true when string, false when markdown as it may contain links
@@ -146,7 +146,7 @@ export class HoverWidget extends Widget {
 		this._register(this._mouseTracker);
 	}
 
-	public render(container?: HTMLElement): void {
+	puBlic render(container?: HTMLElement): void {
 		if (this._hover.containerDomNode.parentElement !== container) {
 			container?.appendChild(this._hover.containerDomNode);
 		}
@@ -154,7 +154,7 @@ export class HoverWidget extends Widget {
 		this.layout();
 	}
 
-	public layout() {
+	puBlic layout() {
 		this._hover.containerDomNode.classList.remove('right-aligned');
 		this._hover.contentsDomNode.style.maxHeight = '';
 
@@ -163,7 +163,7 @@ export class HoverWidget extends Widget {
 		// Get horizontal alignment and position
 		let targetLeft = this._target.x !== undefined ? this._target.x : Math.min(...targetBounds.map(e => e.left));
 		if (targetLeft + this._hover.containerDomNode.clientWidth >= document.documentElement.clientWidth) {
-			this._x = document.documentElement.clientWidth - this._workbenchLayoutService.getWindowBorderWidth() - 1;
+			this._x = document.documentElement.clientWidth - this._workBenchLayoutService.getWindowBorderWidth() - 1;
 			this._hover.containerDomNode.classList.add('right-aligned');
 		} else {
 			this._x = targetLeft;
@@ -173,14 +173,14 @@ export class HoverWidget extends Widget {
 		if (this._anchor === AnchorPosition.ABOVE) {
 			const targetTop = Math.min(...targetBounds.map(e => e.top));
 			if (targetTop - this._hover.containerDomNode.clientHeight < 0) {
-				const targetBottom = Math.max(...targetBounds.map(e => e.bottom));
+				const targetBottom = Math.max(...targetBounds.map(e => e.Bottom));
 				this._anchor = AnchorPosition.BELOW;
 				this._y = targetBottom - 2;
 			} else {
 				this._y = targetTop;
 			}
 		} else {
-			const targetBottom = Math.max(...targetBounds.map(e => e.bottom));
+			const targetBottom = Math.max(...targetBounds.map(e => e.Bottom));
 			if (targetBottom + this._hover.containerDomNode.clientHeight > window.innerHeight) {
 				console.log(targetBottom, this._hover.containerDomNode.clientHeight, window.innerHeight);
 				const targetTop = Math.min(...targetBounds.map(e => e.top));
@@ -194,15 +194,15 @@ export class HoverWidget extends Widget {
 		this._hover.onContentsChanged();
 	}
 
-	public focus() {
+	puBlic focus() {
 		this._hover.containerDomNode.focus();
 	}
 
-	public hide(): void {
+	puBlic hide(): void {
 		this.dispose();
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (!this._isDisposed) {
 			this._onDispose.fire();
 			this._hover.containerDomNode.parentElement?.removeChild(this.domNode);
@@ -215,8 +215,8 @@ export class HoverWidget extends Widget {
 }
 
 class CompositeMouseTracker extends Widget {
-	private _isMouseIn: boolean = false;
-	private _mouseTimeout: number | undefined;
+	private _isMouseIn: Boolean = false;
+	private _mouseTimeout: numBer | undefined;
 
 	private readonly _onMouseOut = new Emitter<void>();
 	get onMouseOut(): Event<void> { return this._onMouseOut.event; }
@@ -226,7 +226,7 @@ class CompositeMouseTracker extends Widget {
 	) {
 		super();
 		this._elements.forEach(n => this.onmouseover(n, () => this._onTargetMouseOver()));
-		this._elements.forEach(n => this.onnonbubblingmouseout(n, () => this._onTargetMouseOut()));
+		this._elements.forEach(n => this.onnonBuBBlingmouseout(n, () => this._onTargetMouseOut()));
 	}
 
 	private _onTargetMouseOver(): void {

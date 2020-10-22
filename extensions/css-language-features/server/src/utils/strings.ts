@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export function startsWith(haystack: string, needle: string): boolean {
+export function startsWith(haystack: string, needle: string): Boolean {
 	if (haystack.length < needle.length) {
 		return false;
 	}
@@ -20,7 +20,7 @@ export function startsWith(haystack: string, needle: string): boolean {
 /**
  * Determines if haystack ends with needle.
  */
-export function endsWith(haystack: string, needle: string): boolean {
+export function endsWith(haystack: string, needle: string): Boolean {
 	let diff = haystack.length - needle.length;
 	if (diff > 0) {
 		return haystack.lastIndexOf(needle) === diff;

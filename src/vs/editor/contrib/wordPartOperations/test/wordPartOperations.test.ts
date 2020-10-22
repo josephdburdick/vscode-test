@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorCommand } from 'vs/editor/browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
-import { deserializePipePositions, serializePipePositions, testRepeatedActionAndExtractPositions } from 'vs/editor/contrib/wordOperations/test/wordTestUtils';
-import { CursorWordPartLeft, CursorWordPartLeftSelect, CursorWordPartRight, CursorWordPartRightSelect, DeleteWordPartLeft, DeleteWordPartRight } from 'vs/editor/contrib/wordPartOperations/wordPartOperations';
+import { deserializePipePositions, serializePipePositions, testRepeatedActionAndExtractPositions } from 'vs/editor/contriB/wordOperations/test/wordTestUtils';
+import { CursorWordPartLeft, CursorWordPartLeftSelect, CursorWordPartRight, CursorWordPartRightSelect, DeleteWordPartLeft, DeleteWordPartRight } from 'vs/editor/contriB/wordPartOperations/wordPartOperations';
 
 suite('WordPartOperations', () => {
 	const _deleteWordPartLeft = new DeleteWordPartLeft();
@@ -21,10 +21,10 @@ suite('WordPartOperations', () => {
 	function runEditorCommand(editor: ICodeEditor, command: EditorCommand): void {
 		command.runEditorCommand(null, editor, null);
 	}
-	function cursorWordPartLeft(editor: ICodeEditor, inSelectionmode: boolean = false): void {
+	function cursorWordPartLeft(editor: ICodeEditor, inSelectionmode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionmode ? _cursorWordPartLeftSelect : _cursorWordPartLeft);
 	}
-	function cursorWordPartRight(editor: ICodeEditor, inSelectionmode: boolean = false): void {
+	function cursorWordPartRight(editor: ICodeEditor, inSelectionmode: Boolean = false): void {
 		runEditorCommand(editor, inSelectionmode ? _cursorWordPartRightSelect : _cursorWordPartRight);
 	}
 	function deleteWordPartLeft(editor: ICodeEditor): void {
@@ -34,7 +34,7 @@ suite('WordPartOperations', () => {
 		runEditorCommand(editor, _deleteWordPartRight);
 	}
 
-	test('cursorWordPartLeft - basic', () => {
+	test('cursorWordPartLeft - Basic', () => {
 		const EXPECTED = [
 			'|start| |line|',
 			'|this|Is|A|Camel|Case|Var|  |this_|is_|a_|snake_|case_|var| |THIS_|IS_|CAPS_|SNAKE| |this_|IS|Mixed|Use|',
@@ -80,7 +80,7 @@ suite('WordPartOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('cursorWordPartRight - basic', () => {
+	test('cursorWordPartRight - Basic', () => {
 		const EXPECTED = [
 			'start| |line|',
 			'|this|Is|A|Camel|Case|Var|  |this|_is|_a|_snake|_case|_var| |THIS|_IS|_CAPS|_SNAKE| |this|_IS|Mixed|Use|',
@@ -147,7 +147,7 @@ suite('WordPartOperations', () => {
 
 	test('issue #93239 - cursorWordPartRight', () => {
 		const EXPECTED = [
-			'foo|_bar|',
+			'foo|_Bar|',
 		].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -163,7 +163,7 @@ suite('WordPartOperations', () => {
 
 	test('issue #93239 - cursorWordPartLeft', () => {
 		const EXPECTED = [
-			'|foo_|bar',
+			'|foo_|Bar',
 		].join('\n');
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -177,7 +177,7 @@ suite('WordPartOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('deleteWordPartLeft - basic', () => {
+	test('deleteWordPartLeft - Basic', () => {
 		const EXPECTED = '|   |/*| |Just| |some| |text| |a|+=| |3| |+|5|-|3| |*/|  |this|Is|A|Camel|Case|Var|  |this_|is_|a_|snake_|case_|var| |THIS_|IS_|CAPS_|SNAKE| |this_|IS|Mixed|Use';
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(
@@ -191,7 +191,7 @@ suite('WordPartOperations', () => {
 		assert.deepEqual(actual, EXPECTED);
 	});
 
-	test('deleteWordPartRight - basic', () => {
+	test('deleteWordPartRight - Basic', () => {
 		const EXPECTED = '   |/*| |Just| |some| |text| |a|+=| |3| |+|5|-|3| |*/|  |this|Is|A|Camel|Case|Var|  |this|_is|_a|_snake|_case|_var| |THIS|_IS|_CAPS|_SNAKE| |this|_IS|Mixed|Use|';
 		const [text,] = deserializePipePositions(EXPECTED);
 		const actualStops = testRepeatedActionAndExtractPositions(

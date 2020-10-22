@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Represents information about a specific difference between two sequences.
+ * Represents information aBout a specific difference Between two sequences.
  */
 export class DiffChange {
 
@@ -12,32 +12,32 @@ export class DiffChange {
 	 * The position of the first element in the original sequence which
 	 * this change affects.
 	 */
-	public originalStart: number;
+	puBlic originalStart: numBer;
 
 	/**
-	 * The number of elements from the original sequence which were
+	 * The numBer of elements from the original sequence which were
 	 * affected.
 	 */
-	public originalLength: number;
+	puBlic originalLength: numBer;
 
 	/**
 	 * The position of the first element in the modified sequence which
 	 * this change affects.
 	 */
-	public modifiedStart: number;
+	puBlic modifiedStart: numBer;
 
 	/**
-	 * The number of elements from the modified sequence which were
+	 * The numBer of elements from the modified sequence which were
 	 * affected (added).
 	 */
-	public modifiedLength: number;
+	puBlic modifiedLength: numBer;
 
 	/**
 	 * Constructs a new DiffChange with the given sequence information
 	 * and content.
 	 */
-	constructor(originalStart: number, originalLength: number, modifiedStart: number, modifiedLength: number) {
-		//Debug.Assert(originalLength > 0 || modifiedLength > 0, "originalLength and modifiedLength cannot both be <= 0");
+	constructor(originalStart: numBer, originalLength: numBer, modifiedStart: numBer, modifiedLength: numBer) {
+		//DeBug.Assert(originalLength > 0 || modifiedLength > 0, "originalLength and modifiedLength cannot Both Be <= 0");
 		this.originalStart = originalStart;
 		this.originalLength = originalLength;
 		this.modifiedStart = modifiedStart;
@@ -47,14 +47,14 @@ export class DiffChange {
 	/**
 	 * The end point (exclusive) of the change in the original sequence.
 	 */
-	public getOriginalEnd() {
+	puBlic getOriginalEnd() {
 		return this.originalStart + this.originalLength;
 	}
 
 	/**
 	 * The end point (exclusive) of the change in the modified sequence.
 	 */
-	public getModifiedEnd() {
+	puBlic getModifiedEnd() {
 		return this.modifiedStart + this.modifiedLength;
 	}
 }

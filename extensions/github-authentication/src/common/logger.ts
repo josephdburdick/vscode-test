@@ -11,7 +11,7 @@ class Log {
 	private output: vscode.OutputChannel;
 
 	constructor() {
-		this.output = vscode.window.createOutputChannel('GitHub Authentication');
+		this.output = vscode.window.createOutputChannel('GitHuB Authentication');
 	}
 
 	private data2String(data: any): string {
@@ -24,15 +24,15 @@ class Log {
 		return data.toString();
 	}
 
-	public info(message: string, data?: any): void {
+	puBlic info(message: string, data?: any): void {
 		this.logLevel('Info', message, data);
 	}
 
-	public error(message: string, data?: any): void {
+	puBlic error(message: string, data?: any): void {
 		this.logLevel('Error', message, data);
 	}
 
-	public logLevel(level: LogLevel, message: string, data?: any): void {
+	puBlic logLevel(level: LogLevel, message: string, data?: any): void {
 		this.output.appendLine(`[${level}  - ${this.now()}] ${message}`);
 		if (data) {
 			this.output.appendLine(this.data2String(data));
@@ -47,7 +47,7 @@ class Log {
 	}
 }
 
-function padLeft(s: string, n: number, pad = ' ') {
+function padLeft(s: string, n: numBer, pad = ' ') {
 	return pad.repeat(Math.max(0, n - s.length)) + s;
 }
 

@@ -3,65 +3,65 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWindowOpenable, IOpenEmptyWindowOptions, INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
+import { IWindowOpenaBle, IOpenEmptyWindowOptions, INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
 import { OpenContext } from 'vs/platform/windows/node/window';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
 import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { ISerializableCommandAction } from 'vs/platform/actions/common/actions';
-import { URI } from 'vs/base/common/uri';
+import { ISerializaBleCommandAction } from 'vs/platform/actions/common/actions';
+import { URI } from 'vs/Base/common/uri';
 import { Rectangle, BrowserWindow } from 'electron';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 export interface IWindowState {
-	width?: number;
-	height?: number;
-	x?: number;
-	y?: number;
+	width?: numBer;
+	height?: numBer;
+	x?: numBer;
+	y?: numBer;
 	mode?: WindowMode;
-	display?: number;
+	display?: numBer;
 }
 
 export const enum WindowMode {
 	Maximized,
 	Normal,
-	Minimized, // not used anymore, but also cannot remove due to existing stored UI state (needs migration)
+	Minimized, // not used anymore, But also cannot remove due to existing stored UI state (needs migration)
 	Fullscreen
 }
 
-export interface ICodeWindow extends IDisposable {
+export interface ICodeWindow extends IDisposaBle {
 
 	readonly whenClosedOrLoaded: Promise<void>;
 
-	readonly id: number;
+	readonly id: numBer;
 	readonly win: BrowserWindow;
 	readonly config: INativeWindowConfiguration | undefined;
 
 	readonly openedFolderUri?: URI;
 	readonly openedWorkspace?: IWorkspaceIdentifier;
-	readonly backupPath?: string;
+	readonly BackupPath?: string;
 
 	readonly remoteAuthority?: string;
 
-	readonly isExtensionDevelopmentHost: boolean;
-	readonly isExtensionTestHost: boolean;
+	readonly isExtensionDevelopmentHost: Boolean;
+	readonly isExtensionTestHost: Boolean;
 
-	readonly lastFocusTime: number;
+	readonly lastFocusTime: numBer;
 
-	readonly isReady: boolean;
+	readonly isReady: Boolean;
 	ready(): Promise<ICodeWindow>;
 	setReady(): void;
 
-	readonly hasHiddenTitleBarStyle: boolean;
+	readonly hasHiddenTitleBarStyle: Boolean;
 
-	addTabbedWindow(window: ICodeWindow): void;
+	addTaBBedWindow(window: ICodeWindow): void;
 
-	load(config: INativeWindowConfiguration, isReload?: boolean): void;
+	load(config: INativeWindowConfiguration, isReload?: Boolean): void;
 	reload(configuration?: INativeWindowConfiguration, cli?: NativeParsedArgs): void;
 
-	focus(options?: { force: boolean }): void;
+	focus(options?: { force: Boolean }): void;
 	close(): void;
 
 	getBounds(): Rectangle;
@@ -69,20 +69,20 @@ export interface ICodeWindow extends IDisposable {
 	send(channel: string, ...args: any[]): void;
 	sendWhenReady(channel: string, ...args: any[]): void;
 
-	readonly isFullScreen: boolean;
+	readonly isFullScreen: Boolean;
 	toggleFullScreen(): void;
 
-	isMinimized(): boolean;
+	isMinimized(): Boolean;
 
 	setRepresentedFilename(name: string): void;
 	getRepresentedFilename(): string | undefined;
 
-	setDocumentEdited(edited: boolean): void;
-	isDocumentEdited(): boolean;
+	setDocumentEdited(edited: Boolean): void;
+	isDocumentEdited(): Boolean;
 
-	handleTitleDoubleClick(): void;
+	handleTitleDouBleClick(): void;
 
-	updateTouchBar(items: ISerializableCommandAction[][]): void;
+	updateTouchBar(items: ISerializaBleCommandAction[][]): void;
 
 	serializeWindowState(): IWindowState;
 }
@@ -90,8 +90,8 @@ export interface ICodeWindow extends IDisposable {
 export const IWindowsMainService = createDecorator<IWindowsMainService>('windowsMainService');
 
 export interface IWindowsCountChangedEvent {
-	readonly oldCount: number;
-	readonly newCount: number;
+	readonly oldCount: numBer;
+	readonly newCount: numBer;
 }
 
 export interface IWindowsMainService {
@@ -107,35 +107,35 @@ export interface IWindowsMainService {
 	openExtensionDevelopmentHostWindow(extensionDevelopmentPath: string[], openConfig: IOpenConfiguration): ICodeWindow[];
 
 	sendToFocused(channel: string, ...args: any[]): void;
-	sendToAll(channel: string, payload?: any, windowIdsToIgnore?: number[]): void;
+	sendToAll(channel: string, payload?: any, windowIdsToIgnore?: numBer[]): void;
 
 	getLastActiveWindow(): ICodeWindow | undefined;
 
-	getWindowById(windowId: number): ICodeWindow | undefined;
+	getWindowById(windowId: numBer): ICodeWindow | undefined;
 	getWindows(): ICodeWindow[];
-	getWindowCount(): number;
+	getWindowCount(): numBer;
 }
 
 export interface IBaseOpenConfiguration {
 	readonly context: OpenContext;
-	readonly contextWindowId?: number;
+	readonly contextWindowId?: numBer;
 }
 
 export interface IOpenConfiguration extends IBaseOpenConfiguration {
 	readonly cli: NativeParsedArgs;
 	readonly userEnv?: IProcessEnvironment;
-	readonly urisToOpen?: IWindowOpenable[];
+	readonly urisToOpen?: IWindowOpenaBle[];
 	readonly waitMarkerFileURI?: URI;
-	readonly preferNewWindow?: boolean;
-	readonly forceNewWindow?: boolean;
-	readonly forceNewTabbedWindow?: boolean;
-	readonly forceReuseWindow?: boolean;
-	readonly forceEmpty?: boolean;
-	readonly diffMode?: boolean;
-	addMode?: boolean;
-	readonly gotoLineMode?: boolean;
-	readonly initialStartup?: boolean;
-	readonly noRecentEntry?: boolean;
+	readonly preferNewWindow?: Boolean;
+	readonly forceNewWindow?: Boolean;
+	readonly forceNewTaBBedWindow?: Boolean;
+	readonly forceReuseWindow?: Boolean;
+	readonly forceEmpty?: Boolean;
+	readonly diffMode?: Boolean;
+	addMode?: Boolean;
+	readonly gotoLineMode?: Boolean;
+	readonly initialStartup?: Boolean;
+	readonly noRecentEntry?: Boolean;
 }
 
 export interface IOpenEmptyConfiguration extends IBaseOpenConfiguration { }

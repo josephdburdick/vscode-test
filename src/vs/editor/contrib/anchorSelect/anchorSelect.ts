@@ -4,39 +4,39 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./anchorSelect';
-import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
+import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
 import { localize } from 'vs/nls';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { Selection } from 'vs/editor/common/core/selection';
-import { KeyMod, KeyCode, KeyChord } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { KeyMod, KeyCode, KeyChord } from 'vs/Base/common/keyCodes';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { RawContextKey, IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { TrackedRangeStickiness } from 'vs/editor/common/model';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { alert } from 'vs/base/browser/ui/aria/aria';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { alert } from 'vs/Base/Browser/ui/aria/aria';
 
 export const SelectionAnchorSet = new RawContextKey('selectionAnchorSet', false);
 
-class SelectionAnchorController implements IEditorContribution {
+class SelectionAnchorController implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.selectionAnchorController';
+	puBlic static readonly ID = 'editor.contriB.selectionAnchorController';
 
 	static get(editor: ICodeEditor): SelectionAnchorController {
-		return editor.getContribution<SelectionAnchorController>(SelectionAnchorController.ID);
+		return editor.getContriBution<SelectionAnchorController>(SelectionAnchorController.ID);
 	}
 
 	private decorationId: string | undefined;
-	private selectionAnchorSetContextKey: IContextKey<boolean>;
-	private modelChangeListener: IDisposable;
+	private selectionAnchorSetContextKey: IContextKey<Boolean>;
+	private modelChangeListener: IDisposaBle;
 
 	constructor(
 		private editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		this.selectionAnchorSetContextKey = SelectionAnchorSet.bindTo(contextKeyService);
+		this.selectionAnchorSetContextKey = SelectionAnchorSet.BindTo(contextKeyService);
 		this.modelChangeListener = editor.onDidChangeModel(() => this.selectionAnchorSetContextKey.reset());
 	}
 
@@ -54,7 +54,7 @@ class SelectionAnchorController implements IEditorContribution {
 			}]);
 			this.decorationId = newDecorationId[0];
 			this.selectionAnchorSetContextKey.set(!!this.decorationId);
-			alert(localize('anchorSet', "Anchor set at {0}:{1}", position.lineNumber, position.column));
+			alert(localize('anchorSet', "Anchor set at {0}:{1}", position.lineNumBer, position.column));
 		}
 	}
 
@@ -96,13 +96,13 @@ class SetSelectionAnchor extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.setSelectionAnchor',
-			label: localize('setSelectionAnchor', "Set Selection Anchor"),
+			laBel: localize('setSelectionAnchor', "Set Selection Anchor"),
 			alias: 'Set Selection Anchor',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_B),
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -117,7 +117,7 @@ class GoToSelectionAnchor extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.goToSelectionAnchor',
-			label: localize('goToSelectionAnchor', "Go to Selection Anchor"),
+			laBel: localize('goToSelectionAnchor', "Go to Selection Anchor"),
 			alias: 'Go to Selection Anchor',
 			precondition: SelectionAnchorSet,
 		});
@@ -133,13 +133,13 @@ class SelectFromAnchorToCursor extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.selectFromAnchorToCursor',
-			label: localize('selectFromAnchorToCursor', "Select from Anchor to Cursor"),
+			laBel: localize('selectFromAnchorToCursor', "Select from Anchor to Cursor"),
 			alias: 'Select from Anchor to Cursor',
 			precondition: SelectionAnchorSet,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_K),
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -154,13 +154,13 @@ class CancelSelectionAnchor extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.cancelSelectionAnchor',
-			label: localize('cancelSelectionAnchor', "Cancel Selection Anchor"),
+			laBel: localize('cancelSelectionAnchor', "Cancel Selection Anchor"),
 			alias: 'Cancel Selection Anchor',
 			precondition: SelectionAnchorSet,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyCode.Escape,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -171,7 +171,7 @@ class CancelSelectionAnchor extends EditorAction {
 	}
 }
 
-registerEditorContribution(SelectionAnchorController.ID, SelectionAnchorController);
+registerEditorContriBution(SelectionAnchorController.ID, SelectionAnchorController);
 registerEditorAction(SetSelectionAnchor);
 registerEditorAction(GoToSelectionAnchor);
 registerEditorAction(SelectFromAnchorToCursor);

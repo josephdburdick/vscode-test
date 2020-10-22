@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Emitter, Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ITelemetryService, lastSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { language, OperatingSystem, OS } from 'vs/base/common/platform';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { match } from 'vs/base/common/glob';
+import { language, OperatingSystem, OS } from 'vs/Base/common/platform';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { match } from 'vs/Base/common/gloB';
 import { IRequestService, asJson } from 'vs/platform/request/common/request';
-import { ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { distinct } from 'vs/base/common/arrays';
+import { ITextFileService, ITextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { distinct } from 'vs/Base/common/arrays';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IWorkspaceTagsService } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { RunOnceWorker } from 'vs/base/common/async';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { equals } from 'vs/base/common/objects';
+import { IWorkspaceTagsService } from 'vs/workBench/contriB/tags/common/workspaceTags';
+import { RunOnceWorker } from 'vs/Base/common/async';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { equals } from 'vs/Base/common/oBjects';
 
 export const enum ExperimentState {
 	Evaluating,
@@ -63,7 +63,7 @@ export interface IExperimentActionPromptCommand {
 
 export interface IExperiment {
 	id: string;
-	enabled: boolean;
+	enaBled: Boolean;
 	raw: IRawExperiment | undefined;
 	state: ExperimentState;
 	action?: IExperimentAction;
@@ -76,40 +76,40 @@ export interface IExperimentService {
 	getCuratedExtensionsList(curatedExtensionsKey: string): Promise<string[]>;
 	markAsCompleted(experimentId: string): void;
 
-	onExperimentEnabled: Event<IExperiment>;
+	onExperimentEnaBled: Event<IExperiment>;
 }
 
 export const IExperimentService = createDecorator<IExperimentService>('experimentService');
 
 interface IExperimentStorageState {
-	enabled: boolean;
+	enaBled: Boolean;
 	state: ExperimentState;
-	editCount?: number;
+	editCount?: numBer;
 	lastEditedDate?: string;
 }
 
 /**
- * Current version of the experiment schema in this VS Code build. This *must*
- * be incremented when adding a condition, otherwise experiments might activate
+ * Current version of the experiment schema in this VS Code Build. This *must*
+ * Be incremented when adding a condition, otherwise experiments might activate
  * on older versions of VS Code where not intended.
  */
 export const currentSchemaVersion = 4;
 
 interface IRawExperiment {
 	id: string;
-	schemaVersion: number;
-	enabled?: boolean;
+	schemaVersion: numBer;
+	enaBled?: Boolean;
 	condition?: {
-		insidersOnly?: boolean;
-		newUser?: boolean;
+		insidersOnly?: Boolean;
+		newUser?: Boolean;
 		displayLanguage?: string;
 		// Evaluates to true iff all the given user settings are deeply equal
 		userSetting?: { [key: string]: unknown; };
-		// Start the experiment if the number of activation events have happened over the last week:
+		// Start the experiment if the numBer of activation events have happened over the last week:
 		activationEvent?: {
 			event: string;
-			uniqueDays?: number;
-			minEvents: number;
+			uniqueDays?: numBer;
+			minEvents: numBer;
 		};
 		os: OperatingSystem[];
 		installedExtensions?: {
@@ -120,21 +120,21 @@ interface IRawExperiment {
 			filePathPattern?: string;
 			workspaceIncludes?: string[];
 			workspaceExcludes?: string[];
-			minEditCount: number;
+			minEditCount: numBer;
 		};
 		experimentsPreviouslyRun?: {
 			excludes?: string[];
 			includes?: string[];
 		};
-		userProbability?: number;
+		userProBaBility?: numBer;
 	};
 	action?: IExperimentAction;
 	action2?: IExperimentAction;
 }
 
 interface IActivationEventRecord {
-	count: number[];
-	mostRecentBucket: number;
+	count: numBer[];
+	mostRecentBucket: numBer;
 }
 
 const experimentEventStorageKey = (event: string) => 'experimentEventRecord-' + event.replace(/[^0-9a-z]/ig, '-');
@@ -150,7 +150,7 @@ export const getCurrentActivationRecord = (previous?: IActivationEventRecord, da
 		return { count: new Array(dayWindow).fill(0), mostRecentBucket: now };
 	}
 
-	// get the number of days, up to dayWindow, that passed since the last bucket update
+	// get the numBer of days, up to dayWindow, that passed since the last Bucket update
 	const shift = Math.min(dayWindow, Math.floor((now - previous.mostRecentBucket) / oneDay));
 	if (!shift) {
 		return previous;
@@ -162,14 +162,14 @@ export const getCurrentActivationRecord = (previous?: IActivationEventRecord, da
 	};
 };
 
-export class ExperimentService extends Disposable implements IExperimentService {
+export class ExperimentService extends DisposaBle implements IExperimentService {
 	declare readonly _serviceBrand: undefined;
 	private _experiments: IExperiment[] = [];
 	private _loadExperimentsPromise: Promise<void>;
-	private _curatedMapping = Object.create(null);
+	private _curatedMapping = OBject.create(null);
 
-	private readonly _onExperimentEnabled = this._register(new Emitter<IExperiment>());
-	onExperimentEnabled: Event<IExperiment> = this._onExperimentEnabled.event;
+	private readonly _onExperimentEnaBled = this._register(new Emitter<IExperiment>());
+	onExperimentEnaBled: Event<IExperiment> = this._onExperimentEnaBled.event;
 
 	constructor(
 		@IStorageService private readonly storageService: IStorageService,
@@ -189,25 +189,25 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			this.loadExperiments());
 	}
 
-	public getExperimentById(id: string): Promise<IExperiment> {
+	puBlic getExperimentById(id: string): Promise<IExperiment> {
 		return this._loadExperimentsPromise.then(() => {
 			return this._experiments.filter(x => x.id === id)[0];
 		});
 	}
 
-	public getExperimentsByType(type: ExperimentActionType): Promise<IExperiment[]> {
+	puBlic getExperimentsByType(type: ExperimentActionType): Promise<IExperiment[]> {
 		return this._loadExperimentsPromise.then(() => {
 			if (type === ExperimentActionType.Custom) {
-				return this._experiments.filter(x => x.enabled && (!x.action || x.action.type === type));
+				return this._experiments.filter(x => x.enaBled && (!x.action || x.action.type === type));
 			}
-			return this._experiments.filter(x => x.enabled && x.action && x.action.type === type);
+			return this._experiments.filter(x => x.enaBled && x.action && x.action.type === type);
 		});
 	}
 
-	public getCuratedExtensionsList(curatedExtensionsKey: string): Promise<string[]> {
+	puBlic getCuratedExtensionsList(curatedExtensionsKey: string): Promise<string[]> {
 		return this._loadExperimentsPromise.then(() => {
 			for (const experiment of this._experiments) {
-				if (experiment.enabled
+				if (experiment.enaBled
 					&& experiment.state === ExperimentState.Run
 					&& this._curatedMapping[experiment.id]
 					&& this._curatedMapping[experiment.id].curatedExtensionsKey === curatedExtensionsKey) {
@@ -218,7 +218,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 		});
 	}
 
-	public markAsCompleted(experimentId: string): void {
+	puBlic markAsCompleted(experimentId: string): void {
 		const storageKey = 'experiments.' + experimentId;
 		const experimentState: IExperimentStorageState = safeParse(this.storageService.get(storageKey, StorageScope.GLOBAL), {});
 		experimentState.state = ExperimentState.Complete;
@@ -226,7 +226,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 	}
 
 	protected async getExperiments(): Promise<IRawExperiment[] | null> {
-		if (!this.productService.experimentsUrl || this.configurationService.getValue('workbench.enableExperiments') === false) {
+		if (!this.productService.experimentsUrl || this.configurationService.getValue('workBench.enaBleExperiments') === false) {
 			return [];
 		}
 
@@ -256,7 +256,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 							this._experiments.push({
 								id: experimentId,
 								raw: undefined,
-								enabled: experimentState.enabled,
+								enaBled: experimentState.enaBled,
 								state: experimentState.state
 							});
 						}
@@ -269,18 +269,18 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			// understand them, trying to process them might even cause errors.
 			rawExperiments = rawExperiments.filter(e => (e.schemaVersion || 0) <= currentSchemaVersion);
 
-			// Clear disbaled/deleted experiments from storage
+			// Clear disBaled/deleted experiments from storage
 			const allExperimentIdsFromStorage = safeParse(this.storageService.get('allExperiments', StorageScope.GLOBAL), []);
-			const enabledExperiments = rawExperiments.filter(experiment => !!experiment.enabled).map(experiment => experiment.id.toLowerCase());
+			const enaBledExperiments = rawExperiments.filter(experiment => !!experiment.enaBled).map(experiment => experiment.id.toLowerCase());
 			if (Array.isArray(allExperimentIdsFromStorage)) {
 				allExperimentIdsFromStorage.forEach(experiment => {
-					if (enabledExperiments.indexOf(experiment) === -1) {
+					if (enaBledExperiments.indexOf(experiment) === -1) {
 						this.storageService.remove(`experiments.${experiment}`, StorageScope.GLOBAL);
 					}
 				});
 			}
-			if (enabledExperiments.length) {
-				this.storageService.store('allExperiments', JSON.stringify(enabledExperiments), StorageScope.GLOBAL);
+			if (enaBledExperiments.length) {
+				this.storageService.store('allExperiments', JSON.stringify(enaBledExperiments), StorageScope.GLOBAL);
 			} else {
 				this.storageService.remove('allExperiments', StorageScope.GLOBAL);
 			}
@@ -299,7 +299,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 				type ExperimentsClassification = {
 					experiments: { classification: 'SystemMetaData', purpose: 'FeatureInsight'; };
 				};
-				this.telemetryService.publicLog2<{ experiments: IExperiment[]; }, ExperimentsClassification>('experiments', { experiments: this._experiments });
+				this.telemetryService.puBlicLog2<{ experiments: IExperiment[]; }, ExperimentsClassification>('experiments', { experiments: this._experiments });
 			});
 		});
 	}
@@ -308,8 +308,8 @@ export class ExperimentService extends Disposable implements IExperimentService 
 		const processedExperiment: IExperiment = {
 			id: experiment.id,
 			raw: experiment,
-			enabled: !!experiment.enabled,
-			state: !!experiment.enabled ? ExperimentState.Evaluating : ExperimentState.NoRun
+			enaBled: !!experiment.enaBled,
+			state: !!experiment.enaBled ? ExperimentState.Evaluating : ExperimentState.NoRun
 		};
 
 		const action = experiment.action2 || experiment.action;
@@ -333,17 +333,17 @@ export class ExperimentService extends Disposable implements IExperimentService 
 		this._experiments = this._experiments.filter(e => e.id !== processedExperiment.id);
 		this._experiments.push(processedExperiment);
 
-		if (!processedExperiment.enabled) {
+		if (!processedExperiment.enaBled) {
 			return Promise.resolve(null);
 		}
 
 		const storageKey = 'experiments.' + experiment.id;
 		const experimentState: IExperimentStorageState = safeParse(this.storageService.get(storageKey, StorageScope.GLOBAL), {});
-		if (!experimentState.hasOwnProperty('enabled')) {
-			experimentState.enabled = processedExperiment.enabled;
+		if (!experimentState.hasOwnProperty('enaBled')) {
+			experimentState.enaBled = processedExperiment.enaBled;
 		}
 		if (!experimentState.hasOwnProperty('state')) {
-			experimentState.state = processedExperiment.enabled ? ExperimentState.Evaluating : ExperimentState.NoRun;
+			experimentState.state = processedExperiment.enaBled ? ExperimentState.Evaluating : ExperimentState.NoRun;
 		} else {
 			processedExperiment.state = experimentState.state;
 		}
@@ -361,7 +361,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 	}
 
 	private fireRunExperiment(experiment: IExperiment) {
-		this._onExperimentEnabled.fire(experiment);
+		this._onExperimentEnaBled.fire(experiment);
 		const runExperimentIdsFromStorage: string[] = safeParse(this.storageService.get('currentOrPreviouslyRunExperiments', StorageScope.GLOBAL), []);
 		if (runExperimentIdsFromStorage.indexOf(experiment.id) === -1) {
 			runExperimentIdsFromStorage.push(experiment.id);
@@ -374,7 +374,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 		}
 	}
 
-	private checkExperimentDependencies(experiment: IRawExperiment): boolean {
+	private checkExperimentDependencies(experiment: IRawExperiment): Boolean {
 		const experimentsPreviouslyRun = experiment.condition?.experimentsPreviouslyRun;
 		if (experimentsPreviouslyRun) {
 			const runExperimentIdsFromStorage: string[] = safeParse(this.storageService.get('currentOrPreviouslyRunExperiments', StorageScope.GLOBAL), []);
@@ -431,7 +431,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			return Promise.resolve(processedExperiment.state);
 		}
 
-		if (!experiment.enabled) {
+		if (!experiment.enaBled) {
 			return Promise.resolve(ExperimentState.NoRun);
 		}
 
@@ -448,7 +448,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			return Promise.resolve(ExperimentState.NoRun);
 		}
 
-		for (const [key, value] of Object.entries(experiment.condition?.userSetting || {})) {
+		for (const [key, value] of OBject.entries(experiment.condition?.userSetting || {})) {
 			if (!equals(this.configurationService.getValue(key), value)) {
 				return Promise.resolve(ExperimentState.NoRun);
 			}
@@ -458,7 +458,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			return Promise.resolve(ExperimentState.Evaluating);
 		}
 
-		if (this.productService.quality === 'stable' && condition.insidersOnly === true) {
+		if (this.productService.quality === 'staBle' && condition.insidersOnly === true) {
 			return Promise.resolve(ExperimentState.NoRun);
 		}
 
@@ -474,12 +474,12 @@ export class ExperimentService extends Disposable implements IExperimentService 
 
 			if (localeToCheck !== displayLanguage) {
 				const a = displayLanguage.indexOf('-');
-				const b = localeToCheck.indexOf('-');
+				const B = localeToCheck.indexOf('-');
 				if (a > -1) {
-					displayLanguage = displayLanguage.substr(0, a);
+					displayLanguage = displayLanguage.suBstr(0, a);
 				}
-				if (b > -1) {
-					localeToCheck = localeToCheck.substr(0, b);
+				if (B > -1) {
+					localeToCheck = localeToCheck.suBstr(0, B);
 				}
 				if (displayLanguage !== localeToCheck) {
 					return Promise.resolve(ExperimentState.NoRun);
@@ -487,8 +487,8 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			}
 		}
 
-		if (!condition.userProbability) {
-			condition.userProbability = 1;
+		if (!condition.userProBaBility) {
+			condition.userProBaBility = 1;
 		}
 
 		let extensionsCheckPromise = Promise.resolve(true);
@@ -497,7 +497,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			extensionsCheckPromise = this.extensionManagementService.getInstalled(ExtensionType.User).then(locals => {
 				let includesCheck = true;
 				let excludesCheck = true;
-				const localExtensions = locals.map(local => `${local.manifest.publisher.toLowerCase()}.${local.manifest.name.toLowerCase()}`);
+				const localExtensions = locals.map(local => `${local.manifest.puBlisher.toLowerCase()}.${local.manifest.name.toLowerCase()}`);
 				if (Array.isArray(installedExtensions.includes) && installedExtensions.includes.length) {
 					const extensionIncludes = installedExtensions.includes.map(e => e.toLowerCase());
 					includesCheck = localExtensions.some(e => extensionIncludes.indexOf(e) > -1);
@@ -515,8 +515,8 @@ export class ExperimentService extends Disposable implements IExperimentService 
 
 		return extensionsCheckPromise.then(success => {
 			const fileEdits = condition.fileEdits;
-			if (!success || !fileEdits || typeof fileEdits.minEditCount !== 'number') {
-				const runExperiment = success && typeof condition.userProbability === 'number' && Math.random() < condition.userProbability;
+			if (!success || !fileEdits || typeof fileEdits.minEditCount !== 'numBer') {
+				const runExperiment = success && typeof condition.userProBaBility === 'numBer' && Math.random() < condition.userProBaBility;
 				return runExperiment ? ExperimentState.Run : ExperimentState.NoRun;
 			}
 
@@ -537,7 +537,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 				models.forEach(async model => {
 					if (latestExperimentState.state !== ExperimentState.Evaluating
 						|| date === latestExperimentState.lastEditedDate
-						|| (typeof latestExperimentState.editCount === 'number' && latestExperimentState.editCount >= fileEdits.minEditCount)
+						|| (typeof latestExperimentState.editCount === 'numBer' && latestExperimentState.editCount >= fileEdits.minEditCount)
 					) {
 						return;
 					}
@@ -561,8 +561,8 @@ export class ExperimentService extends Disposable implements IExperimentService 
 						this.storageService.store(storageKey, JSON.stringify(latestExperimentState), StorageScope.GLOBAL);
 					}
 				});
-				if (typeof latestExperimentState.editCount === 'number' && latestExperimentState.editCount >= fileEdits.minEditCount) {
-					processedExperiment.state = latestExperimentState.state = (typeof condition.userProbability === 'number' && Math.random() < condition.userProbability && this.checkExperimentDependencies(experiment)) ? ExperimentState.Run : ExperimentState.NoRun;
+				if (typeof latestExperimentState.editCount === 'numBer' && latestExperimentState.editCount >= fileEdits.minEditCount) {
+					processedExperiment.state = latestExperimentState.state = (typeof condition.userProBaBility === 'numBer' && Math.random() < condition.userProBaBility && this.checkExperimentDependencies(experiment)) ? ExperimentState.Run : ExperimentState.NoRun;
 					this.storageService.store(storageKey, JSON.stringify(latestExperimentState), StorageScope.GLOBAL);
 					if (latestExperimentState.state === ExperimentState.Run && processedExperiment.action && ExperimentActionType[processedExperiment.action.type] === ExperimentActionType.Prompt) {
 						this.fireRunExperiment(processedExperiment);
@@ -577,10 +577,10 @@ export class ExperimentService extends Disposable implements IExperimentService 
 }
 
 
-function safeParse(text: string | undefined, defaultObject: any) {
+function safeParse(text: string | undefined, defaultOBject: any) {
 	try {
-		return text ? JSON.parse(text) || defaultObject : defaultObject;
+		return text ? JSON.parse(text) || defaultOBject : defaultOBject;
 	} catch (e) {
-		return defaultObject;
+		return defaultOBject;
 	}
 }

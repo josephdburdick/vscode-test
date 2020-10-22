@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import * as strings from 'vs/base/common/strings';
-import { Configuration } from 'vs/editor/browser/config/configuration';
+import * as dom from 'vs/Base/Browser/dom';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import * as strings from 'vs/Base/common/strings';
+import { Configuration } from 'vs/editor/Browser/config/configuration';
 import { TextEditorCursorStyle, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/base/browser/ui/mouseCursor/mouseCursor';
+import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/Base/Browser/ui/mouseCursor/mouseCursor';
 
 export interface IViewCursorRenderData {
 	domNode: HTMLElement;
 	position: Position;
-	contentLeft: number;
-	width: number;
-	height: number;
+	contentLeft: numBer;
+	width: numBer;
+	height: numBer;
 }
 
 class ViewCursorRenderData {
 	constructor(
-		public readonly top: number,
-		public readonly left: number,
-		public readonly width: number,
-		public readonly height: number,
-		public readonly textContent: string,
-		public readonly textContentClassName: string
+		puBlic readonly top: numBer,
+		puBlic readonly left: numBer,
+		puBlic readonly width: numBer,
+		puBlic readonly height: numBer,
+		puBlic readonly textContent: string,
+		puBlic readonly textContentClassName: string
 	) { }
 }
 
@@ -39,11 +39,11 @@ export class ViewCursor {
 	private readonly _domNode: FastDomNode<HTMLElement>;
 
 	private _cursorStyle: TextEditorCursorStyle;
-	private _lineCursorWidth: number;
-	private _lineHeight: number;
-	private _typicalHalfwidthCharacterWidth: number;
+	private _lineCursorWidth: numBer;
+	private _lineHeight: numBer;
+	private _typicalHalfwidthCharacterWidth: numBer;
 
-	private _isVisible: boolean;
+	private _isVisiBle: Boolean;
 
 	private _position: Position;
 
@@ -60,7 +60,7 @@ export class ViewCursor {
 		this._typicalHalfwidthCharacterWidth = fontInfo.typicalHalfwidthCharacterWidth;
 		this._lineCursorWidth = Math.min(options.get(EditorOption.cursorWidth), this._typicalHalfwidthCharacterWidth);
 
-		this._isVisible = true;
+		this._isVisiBle = true;
 
 		// Create the dom node
 		this._domNode = createFastDomNode(document.createElement('div'));
@@ -77,29 +77,29 @@ export class ViewCursor {
 		this._renderData = null;
 	}
 
-	public getDomNode(): FastDomNode<HTMLElement> {
+	puBlic getDomNode(): FastDomNode<HTMLElement> {
 		return this._domNode;
 	}
 
-	public getPosition(): Position {
+	puBlic getPosition(): Position {
 		return this._position;
 	}
 
-	public show(): void {
-		if (!this._isVisible) {
-			this._domNode.setVisibility('inherit');
-			this._isVisible = true;
+	puBlic show(): void {
+		if (!this._isVisiBle) {
+			this._domNode.setVisiBility('inherit');
+			this._isVisiBle = true;
 		}
 	}
 
-	public hide(): void {
-		if (this._isVisible) {
-			this._domNode.setVisibility('hidden');
-			this._isVisible = false;
+	puBlic hide(): void {
+		if (this._isVisiBle) {
+			this._domNode.setVisiBility('hidden');
+			this._isVisiBle = false;
 		}
 	}
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		const fontInfo = options.get(EditorOption.fontInfo);
 
@@ -112,7 +112,7 @@ export class ViewCursor {
 		return true;
 	}
 
-	public onCursorPositionChanged(position: Position): boolean {
+	puBlic onCursorPositionChanged(position: Position): Boolean {
 		this._position = position;
 		return true;
 	}
@@ -121,60 +121,60 @@ export class ViewCursor {
 		let textContent = '';
 
 		if (this._cursorStyle === TextEditorCursorStyle.Line || this._cursorStyle === TextEditorCursorStyle.LineThin) {
-			const visibleRange = ctx.visibleRangeForPosition(this._position);
-			if (!visibleRange || visibleRange.outsideRenderedLine) {
+			const visiBleRange = ctx.visiBleRangeForPosition(this._position);
+			if (!visiBleRange || visiBleRange.outsideRenderedLine) {
 				// Outside viewport
 				return null;
 			}
 
-			let width: number;
+			let width: numBer;
 			if (this._cursorStyle === TextEditorCursorStyle.Line) {
 				width = dom.computeScreenAwareSize(this._lineCursorWidth > 0 ? this._lineCursorWidth : 2);
 				if (width > 2) {
-					const lineContent = this._context.model.getLineContent(this._position.lineNumber);
+					const lineContent = this._context.model.getLineContent(this._position.lineNumBer);
 					const nextCharLength = strings.nextCharLength(lineContent, this._position.column - 1);
-					textContent = lineContent.substr(this._position.column - 1, nextCharLength);
+					textContent = lineContent.suBstr(this._position.column - 1, nextCharLength);
 				}
 			} else {
 				width = dom.computeScreenAwareSize(1);
 			}
 
-			let left = visibleRange.left;
+			let left = visiBleRange.left;
 			if (width >= 2 && left >= 1) {
 				// try to center cursor
 				left -= 1;
 			}
 
-			const top = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
+			const top = ctx.getVerticalOffsetForLineNumBer(this._position.lineNumBer) - ctx.BigNumBersDelta;
 			return new ViewCursorRenderData(top, left, width, this._lineHeight, textContent, '');
 		}
 
-		const lineContent = this._context.model.getLineContent(this._position.lineNumber);
+		const lineContent = this._context.model.getLineContent(this._position.lineNumBer);
 		const nextCharLength = strings.nextCharLength(lineContent, this._position.column - 1);
-		const visibleRangeForCharacter = ctx.linesVisibleRangesForRange(new Range(this._position.lineNumber, this._position.column, this._position.lineNumber, this._position.column + nextCharLength), false);
-		if (!visibleRangeForCharacter || visibleRangeForCharacter.length === 0) {
+		const visiBleRangeForCharacter = ctx.linesVisiBleRangesForRange(new Range(this._position.lineNumBer, this._position.column, this._position.lineNumBer, this._position.column + nextCharLength), false);
+		if (!visiBleRangeForCharacter || visiBleRangeForCharacter.length === 0) {
 			// Outside viewport
 			return null;
 		}
 
-		const firstVisibleRangeForCharacter = visibleRangeForCharacter[0];
-		if (firstVisibleRangeForCharacter.outsideRenderedLine || firstVisibleRangeForCharacter.ranges.length === 0) {
+		const firstVisiBleRangeForCharacter = visiBleRangeForCharacter[0];
+		if (firstVisiBleRangeForCharacter.outsideRenderedLine || firstVisiBleRangeForCharacter.ranges.length === 0) {
 			// Outside viewport
 			return null;
 		}
 
-		const range = firstVisibleRangeForCharacter.ranges[0];
+		const range = firstVisiBleRangeForCharacter.ranges[0];
 		const width = range.width < 1 ? this._typicalHalfwidthCharacterWidth : range.width;
 
 		let textContentClassName = '';
 		if (this._cursorStyle === TextEditorCursorStyle.Block) {
-			const lineData = this._context.model.getViewLineData(this._position.lineNumber);
-			textContent = lineContent.substr(this._position.column - 1, nextCharLength);
+			const lineData = this._context.model.getViewLineData(this._position.lineNumBer);
+			textContent = lineContent.suBstr(this._position.column - 1, nextCharLength);
 			const tokenIndex = lineData.tokens.findTokenIndexAtOffset(this._position.column - 1);
 			textContentClassName = lineData.tokens.getClassName(tokenIndex);
 		}
 
-		let top = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
+		let top = ctx.getVerticalOffsetForLineNumBer(this._position.lineNumBer) - ctx.BigNumBersDelta;
 		let height = this._lineHeight;
 
 		// Underline might interfere with clicking
@@ -186,11 +186,11 @@ export class ViewCursor {
 		return new ViewCursorRenderData(top, range.left, width, height, textContent, textContentClassName);
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		this._renderData = this._prepareRender(ctx);
 	}
 
-	public render(ctx: RestrictedRenderingContext): IViewCursorRenderData | null {
+	puBlic render(ctx: RestrictedRenderingContext): IViewCursorRenderData | null {
 		if (!this._renderData) {
 			this._domNode.setDisplay('none');
 			return null;
@@ -203,7 +203,7 @@ export class ViewCursor {
 
 		this._domNode.setClassName(`cursor ${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME} ${this._renderData.textContentClassName}`);
 
-		this._domNode.setDisplay('block');
+		this._domNode.setDisplay('Block');
 		this._domNode.setTop(this._renderData.top);
 		this._domNode.setLeft(this._renderData.left);
 		this._domNode.setWidth(this._renderData.width);

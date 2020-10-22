@@ -7,8 +7,8 @@ import { Viewlet } from './viewlet';
 import { Code } from './code';
 
 const VIEWLET = '.search-view';
-const INPUT = `${VIEWLET} .search-widget .search-container .monaco-inputbox textarea`;
-const INCLUDE_INPUT = `${VIEWLET} .query-details .file-types.includes .monaco-inputbox input`;
+const INPUT = `${VIEWLET} .search-widget .search-container .monaco-inputBox textarea`;
+const INCLUDE_INPUT = `${VIEWLET} .query-details .file-types.includes .monaco-inputBox input`;
 const FILE_MATCH = (filename: string) => `${VIEWLET} .results .filematch[data-resource$="${filename}"]`;
 
 async function retry(setup: () => Promise<any>, attempt: () => Promise<any>) {
@@ -35,9 +35,9 @@ export class Search extends Viewlet {
 
 	async openSearchViewlet(): Promise<any> {
 		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+shift+f');
+			await this.code.dispatchKeyBinding('cmd+shift+f');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+shift+f');
+			await this.code.dispatchKeyBinding('ctrl+shift+f');
 		}
 
 		await this.waitForInputFocus(INPUT);
@@ -46,13 +46,13 @@ export class Search extends Viewlet {
 	async searchFor(text: string): Promise<void> {
 		await this.waitForInputFocus(INPUT);
 		await this.code.waitForSetValue(INPUT, text);
-		await this.submitSearch();
+		await this.suBmitSearch();
 	}
 
-	async submitSearch(): Promise<void> {
+	async suBmitSearch(): Promise<void> {
 		await this.waitForInputFocus(INPUT);
 
-		await this.code.dispatchKeybinding('enter');
+		await this.code.dispatchKeyBinding('enter');
 		await this.code.waitForElement(`${VIEWLET} .messages`);
 	}
 
@@ -74,25 +74,25 @@ export class Search extends Viewlet {
 
 		await retry(
 			() => this.code.waitAndClick(fileMatch),
-			() => this.code.waitForElement(`${fileMatch} .action-label.codicon-search-remove`, el => !!el && el.top > 0 && el.left > 0, 10)
+			() => this.code.waitForElement(`${fileMatch} .action-laBel.codicon-search-remove`, el => !!el && el.top > 0 && el.left > 0, 10)
 		);
 
 		// ¯\_(ツ)_/¯
 		await new Promise(c => setTimeout(c, 500));
-		await this.code.waitAndClick(`${fileMatch} .action-label.codicon-search-remove`);
+		await this.code.waitAndClick(`${fileMatch} .action-laBel.codicon-search-remove`);
 		await this.code.waitForElement(fileMatch, el => !el);
 	}
 
 	async expandReplace(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-button.toggle-replace-button.codicon-search-hide-replace`);
+		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-Button.toggle-replace-Button.codicon-search-hide-replace`);
 	}
 
 	async collapseReplace(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-button.toggle-replace-button.codicon-search-show-replace`);
+		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-Button.toggle-replace-Button.codicon-search-show-replace`);
 	}
 
 	async setReplaceText(text: string): Promise<void> {
-		await this.code.waitForSetValue(`${VIEWLET} .search-widget .replace-container .monaco-inputbox textarea[title="Replace"]`, text);
+		await this.code.waitForSetValue(`${VIEWLET} .search-widget .replace-container .monaco-inputBox textarea[title="Replace"]`, text);
 	}
 
 	async replaceFileMatch(filename: string): Promise<void> {
@@ -100,16 +100,16 @@ export class Search extends Viewlet {
 
 		await retry(
 			() => this.code.waitAndClick(fileMatch),
-			() => this.code.waitForElement(`${fileMatch} .action-label.codicon.codicon-search-replace-all`, el => !!el && el.top > 0 && el.left > 0, 10)
+			() => this.code.waitForElement(`${fileMatch} .action-laBel.codicon.codicon-search-replace-all`, el => !!el && el.top > 0 && el.left > 0, 10)
 		);
 
 		// ¯\_(ツ)_/¯
 		await new Promise(c => setTimeout(c, 500));
-		await this.code.waitAndClick(`${fileMatch} .action-label.codicon.codicon-search-replace-all`);
+		await this.code.waitAndClick(`${fileMatch} .action-laBel.codicon.codicon-search-replace-all`);
 	}
 
 	async waitForResultText(text: string): Promise<void> {
-		// The label can end with " - " depending on whether the search editor is enabled
+		// The laBel can end with " - " depending on whether the search editor is enaBled
 		await this.code.waitForTextContent(`${VIEWLET} .messages .message>span`, undefined, result => result.startsWith(text));
 	}
 
@@ -120,13 +120,13 @@ export class Search extends Viewlet {
 	private async waitForInputFocus(selector: string): Promise<void> {
 		let retries = 0;
 
-		// other parts of code might steal focus away from input boxes :(
+		// other parts of code might steal focus away from input Boxes :(
 		while (retries < 5) {
 			await this.code.waitAndClick(INPUT, 2, 2);
 
 			try {
 				await this.code.waitForActiveElement(INPUT, 10);
-				break;
+				Break;
 			} catch (err) {
 				if (++retries > 5) {
 					throw err;

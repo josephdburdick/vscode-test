@@ -4,45 +4,45 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IssueReporterStyles, IssueReporterData, ProcessExplorerData, IssueReporterExtensionData } from 'vs/platform/issue/common/issue';
-import { IIssueService } from 'vs/platform/issue/electron-sandbox/issue';
+import { IIssueService } from 'vs/platform/issue/electron-sandBox/issue';
 import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
-import { textLinkForeground, inputBackground, inputBorder, inputForeground, buttonBackground, buttonHoverBackground, buttonForeground, inputValidationErrorBorder, foreground, inputActiveOptionBorder, scrollbarSliderActiveBackground, scrollbarSliderBackground, scrollbarSliderHoverBackground, editorBackground, editorForeground, listHoverBackground, listHoverForeground, listHighlightForeground, textLinkActiveForeground, inputValidationErrorBackground, inputValidationErrorForeground } from 'vs/platform/theme/common/colorRegistry';
-import { SIDE_BAR_BACKGROUND } from 'vs/workbench/common/theme';
+import { textLinkForeground, inputBackground, inputBorder, inputForeground, ButtonBackground, ButtonHoverBackground, ButtonForeground, inputValidationErrorBorder, foreground, inputActiveOptionBorder, scrollBarSliderActiveBackground, scrollBarSliderBackground, scrollBarSliderHoverBackground, editorBackground, editorForeground, listHoverBackground, listHoverForeground, listHighlightForeground, textLinkActiveForeground, inputValidationErrorBackground, inputValidationErrorForeground } from 'vs/platform/theme/common/colorRegistry';
+import { SIDE_BAR_BACKGROUND } from 'vs/workBench/common/theme';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { getZoomLevel } from 'vs/base/browser/browser';
-import { IWorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sandbox/issue';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { IWorkBenchExtensionEnaBlementService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { getZoomLevel } from 'vs/Base/Browser/Browser';
+import { IWorkBenchIssueService } from 'vs/workBench/contriB/issue/electron-sandBox/issue';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { process } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 import { IProductService } from 'vs/platform/product/common/productService';
 
-export class WorkbenchIssueService implements IWorkbenchIssueService {
+export class WorkBenchIssueService implements IWorkBenchIssueService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
 		@IIssueService private readonly issueService: IIssueService,
 		@IThemeService private readonly themeService: IThemeService,
 		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService,
+		@IWorkBenchExtensionEnaBlementService private readonly extensionEnaBlementService: IWorkBenchExtensionEnaBlementService,
+		@INativeWorkBenchEnvironmentService private readonly environmentService: INativeWorkBenchEnvironmentService,
 		@IProductService private readonly productService: IProductService
 	) { }
 
 	async openReporter(dataOverrides: Partial<IssueReporterData> = {}): Promise<void> {
 		const extensions = await this.extensionManagementService.getInstalled();
-		const enabledExtensions = extensions.filter(extension => this.extensionEnablementService.isEnabled(extension));
-		const extensionData = enabledExtensions.map((extension): IssueReporterExtensionData => {
+		const enaBledExtensions = extensions.filter(extension => this.extensionEnaBlementService.isEnaBled(extension));
+		const extensionData = enaBledExtensions.map((extension): IssueReporterExtensionData => {
 			const { manifest } = extension;
-			const manifestKeys = manifest.contributes ? Object.keys(manifest.contributes) : [];
+			const manifestKeys = manifest.contriButes ? OBject.keys(manifest.contriButes) : [];
 			const isTheme = !manifest.activationEvents && manifestKeys.length === 1 && manifestKeys[0] === 'themes';
 			const isBuiltin = extension.type === ExtensionType.System;
 			return {
 				name: manifest.name,
-				publisher: manifest.publisher,
+				puBlisher: manifest.puBlisher,
 				version: manifest.version,
 				repositoryUrl: manifest.repository && manifest.repository.url,
-				bugsUrl: manifest.bugs && manifest.bugs.url,
+				BugsUrl: manifest.Bugs && manifest.Bugs.url,
 				displayName: manifest.displayName,
 				id: extension.identifier.id,
 				isTheme,
@@ -50,10 +50,10 @@ export class WorkbenchIssueService implements IWorkbenchIssueService {
 			};
 		});
 		const theme = this.themeService.getColorTheme();
-		const issueReporterData: IssueReporterData = Object.assign({
+		const issueReporterData: IssueReporterData = OBject.assign({
 			styles: getIssueReporterStyles(theme),
 			zoomLevel: getZoomLevel(),
-			enabledExtensions: extensionData,
+			enaBledExtensions: extensionData,
 		}, dataOverrides);
 		return this.issueService.openReporter(issueReporterData);
 	}
@@ -64,7 +64,7 @@ export class WorkbenchIssueService implements IWorkbenchIssueService {
 			pid: this.environmentService.configuration.mainPid,
 			zoomLevel: getZoomLevel(),
 			styles: {
-				backgroundColor: getColor(theme, editorBackground),
+				BackgroundColor: getColor(theme, editorBackground),
 				color: getColor(theme, editorForeground),
 				hoverBackground: getColor(theme, listHoverBackground),
 				hoverForeground: getColor(theme, listHoverForeground),
@@ -79,7 +79,7 @@ export class WorkbenchIssueService implements IWorkbenchIssueService {
 
 export function getIssueReporterStyles(theme: IColorTheme): IssueReporterStyles {
 	return {
-		backgroundColor: getColor(theme, SIDE_BAR_BACKGROUND),
+		BackgroundColor: getColor(theme, SIDE_BAR_BACKGROUND),
 		color: getColor(theme, foreground),
 		textLinkColor: getColor(theme, textLinkForeground),
 		textLinkActiveForeground: getColor(theme, textLinkActiveForeground),
@@ -90,12 +90,12 @@ export function getIssueReporterStyles(theme: IColorTheme): IssueReporterStyles 
 		inputErrorBorder: getColor(theme, inputValidationErrorBorder),
 		inputErrorBackground: getColor(theme, inputValidationErrorBackground),
 		inputErrorForeground: getColor(theme, inputValidationErrorForeground),
-		buttonBackground: getColor(theme, buttonBackground),
-		buttonForeground: getColor(theme, buttonForeground),
-		buttonHoverBackground: getColor(theme, buttonHoverBackground),
-		sliderActiveColor: getColor(theme, scrollbarSliderActiveBackground),
-		sliderBackgroundColor: getColor(theme, scrollbarSliderBackground),
-		sliderHoverColor: getColor(theme, scrollbarSliderHoverBackground),
+		ButtonBackground: getColor(theme, ButtonBackground),
+		ButtonForeground: getColor(theme, ButtonForeground),
+		ButtonHoverBackground: getColor(theme, ButtonHoverBackground),
+		sliderActiveColor: getColor(theme, scrollBarSliderActiveBackground),
+		sliderBackgroundColor: getColor(theme, scrollBarSliderBackground),
+		sliderHoverColor: getColor(theme, scrollBarSliderHoverBackground),
 	};
 }
 

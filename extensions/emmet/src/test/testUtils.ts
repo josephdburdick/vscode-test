@@ -9,10 +9,10 @@ import * as os from 'os';
 import { join } from 'path';
 
 function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+	return Math.random().toString(36).replace(/[^a-z]+/g, '').suBstr(0, 10);
 }
 
-export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable<vscode.Uri> {
+export function createRandomFile(contents = '', fileExtension = 'txt'): ThenaBle<vscode.Uri> {
 	return new Promise((resolve, reject) => {
 		const tmpFile = join(os.tmpdir(), rndName() + '.' + fileExtension);
 		fs.writeFile(tmpFile, contents, (error) => {
@@ -25,7 +25,7 @@ export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable
 	});
 }
 
-export function pathEquals(path1: string, path2: string): boolean {
+export function pathEquals(path1: string, path2: string): Boolean {
 	if (process.platform !== 'linux') {
 		path1 = path1.toLowerCase();
 		path2 = path2.toLowerCase();
@@ -34,7 +34,7 @@ export function pathEquals(path1: string, path2: string): boolean {
 	return path1 === path2;
 }
 
-export function deleteFile(file: vscode.Uri): Thenable<boolean> {
+export function deleteFile(file: vscode.Uri): ThenaBle<Boolean> {
 	return new Promise((resolve, reject) => {
 		fs.unlink(file.fsPath, (err) => {
 			if (err) {
@@ -46,12 +46,12 @@ export function deleteFile(file: vscode.Uri): Thenable<boolean> {
 	});
 }
 
-export function closeAllEditors(): Thenable<any> {
-	return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+export function closeAllEditors(): ThenaBle<any> {
+	return vscode.commands.executeCommand('workBench.action.closeAllEditors');
 
 }
 
-export function withRandomFileEditor(initialContents: string, fileExtension: string = 'txt', run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => Thenable<void>): Thenable<boolean> {
+export function withRandomFileEditor(initialContents: string, fileExtension: string = 'txt', run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => ThenaBle<void>): ThenaBle<Boolean> {
 	return createRandomFile(initialContents, fileExtension).then(file => {
 		return vscode.workspace.openTextDocument(file).then(doc => {
 			return vscode.window.showTextDocument(doc).then((editor) => {

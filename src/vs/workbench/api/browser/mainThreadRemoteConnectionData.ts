@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ExtHostContext, IExtHostContext, ExtHostExtensionServiceShape } from '../common/extHost.protocol';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
 @extHostCustomer
-export class MainThreadRemoteConnectionData extends Disposable {
+export class MainThreadRemoteConnectionData extends DisposaBle {
 
 	private readonly _proxy: ExtHostExtensionServiceShape;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IWorkbenchEnvironmentService protected readonly _environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService protected readonly _environmentService: IWorkBenchEnvironmentService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService
 	) {
 		super();

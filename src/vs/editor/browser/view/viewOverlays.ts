@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { Configuration } from 'vs/editor/browser/config/configuration';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
-import { IVisibleLine, IVisibleLinesHost, VisibleLinesCollection } from 'vs/editor/browser/view/viewLayer';
-import { ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { Configuration } from 'vs/editor/Browser/config/configuration';
+import { DynamicViewOverlay } from 'vs/editor/Browser/view/dynamicViewOverlay';
+import { IVisiBleLine, IVisiBleLinesHost, VisiBleLinesCollection } from 'vs/editor/Browser/view/viewLayer';
+import { ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { IStringBuilder } from 'vs/editor/common/core/stringBuilder';
 import { IConfiguration } from 'vs/editor/common/editorCommon';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
@@ -17,18 +17,18 @@ import { ViewportData } from 'vs/editor/common/viewLayout/viewLinesViewportData'
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 
-export class ViewOverlays extends ViewPart implements IVisibleLinesHost<ViewOverlayLine> {
+export class ViewOverlays extends ViewPart implements IVisiBleLinesHost<ViewOverlayLine> {
 
-	private readonly _visibleLines: VisibleLinesCollection<ViewOverlayLine>;
+	private readonly _visiBleLines: VisiBleLinesCollection<ViewOverlayLine>;
 	protected readonly domNode: FastDomNode<HTMLElement>;
 	private _dynamicOverlays: DynamicViewOverlay[];
-	private _isFocused: boolean;
+	private _isFocused: Boolean;
 
 	constructor(context: ViewContext) {
 		super(context);
 
-		this._visibleLines = new VisibleLinesCollection<ViewOverlayLine>(this);
-		this.domNode = this._visibleLines.domNode;
+		this._visiBleLines = new VisiBleLinesCollection<ViewOverlayLine>(this);
+		this.domNode = this._visiBleLines.domNode;
 
 		this._dynamicOverlays = [];
 		this._isFocused = false;
@@ -36,7 +36,7 @@ export class ViewOverlays extends ViewPart implements IVisibleLinesHost<ViewOver
 		this.domNode.setClassName('view-overlays');
 	}
 
-	public shouldRender(): boolean {
+	puBlic shouldRender(): Boolean {
 		if (super.shouldRender()) {
 			return true;
 		}
@@ -51,7 +51,7 @@ export class ViewOverlays extends ViewPart implements IVisibleLinesHost<ViewOver
 		return false;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 
 		for (let i = 0, len = this._dynamicOverlays.length; i < len; i++) {
@@ -61,63 +61,63 @@ export class ViewOverlays extends ViewPart implements IVisibleLinesHost<ViewOver
 		this._dynamicOverlays = [];
 	}
 
-	public getDomNode(): FastDomNode<HTMLElement> {
+	puBlic getDomNode(): FastDomNode<HTMLElement> {
 		return this.domNode;
 	}
 
-	// ---- begin IVisibleLinesHost
+	// ---- Begin IVisiBleLinesHost
 
-	public createVisibleLine(): ViewOverlayLine {
+	puBlic createVisiBleLine(): ViewOverlayLine {
 		return new ViewOverlayLine(this._context.configuration, this._dynamicOverlays);
 	}
 
-	// ---- end IVisibleLinesHost
+	// ---- end IVisiBleLinesHost
 
-	public addDynamicOverlay(overlay: DynamicViewOverlay): void {
+	puBlic addDynamicOverlay(overlay: DynamicViewOverlay): void {
 		this._dynamicOverlays.push(overlay);
 	}
 
 	// ----- event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		this._visibleLines.onConfigurationChanged(e);
-		const startLineNumber = this._visibleLines.getStartLineNumber();
-		const endLineNumber = this._visibleLines.getEndLineNumber();
-		for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
-			const line = this._visibleLines.getVisibleLine(lineNumber);
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
+		this._visiBleLines.onConfigurationChanged(e);
+		const startLineNumBer = this._visiBleLines.getStartLineNumBer();
+		const endLineNumBer = this._visiBleLines.getEndLineNumBer();
+		for (let lineNumBer = startLineNumBer; lineNumBer <= endLineNumBer; lineNumBer++) {
+			const line = this._visiBleLines.getVisiBleLine(lineNumBer);
 			line.onConfigurationChanged(e);
 		}
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
-		return this._visibleLines.onFlushed(e);
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
+		return this._visiBleLines.onFlushed(e);
 	}
-	public onFocusChanged(e: viewEvents.ViewFocusChangedEvent): boolean {
+	puBlic onFocusChanged(e: viewEvents.ViewFocusChangedEvent): Boolean {
 		this._isFocused = e.isFocused;
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
-		return this._visibleLines.onLinesChanged(e);
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
+		return this._visiBleLines.onLinesChanged(e);
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
-		return this._visibleLines.onLinesDeleted(e);
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
+		return this._visiBleLines.onLinesDeleted(e);
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
-		return this._visibleLines.onLinesInserted(e);
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
+		return this._visiBleLines.onLinesInserted(e);
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return this._visibleLines.onScrollChanged(e) || true;
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
+		return this._visiBleLines.onScrollChanged(e) || true;
 	}
-	public onTokensChanged(e: viewEvents.ViewTokensChangedEvent): boolean {
-		return this._visibleLines.onTokensChanged(e);
+	puBlic onTokensChanged(e: viewEvents.ViewTokensChangedEvent): Boolean {
+		return this._visiBleLines.onTokensChanged(e);
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
-		return this._visibleLines.onZonesChanged(e);
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
+		return this._visiBleLines.onZonesChanged(e);
 	}
 
 	// ----- end event handlers
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		const toRender = this._dynamicOverlays.filter(overlay => overlay.shouldRender());
 
 		for (let i = 0, len = toRender.length; i < len; i++) {
@@ -127,25 +127,25 @@ export class ViewOverlays extends ViewPart implements IVisibleLinesHost<ViewOver
 		}
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
-		// Overwriting to bypass `shouldRender` flag
+	puBlic render(ctx: RestrictedRenderingContext): void {
+		// Overwriting to Bypass `shouldRender` flag
 		this._viewOverlaysRender(ctx);
 
 		this.domNode.toggleClassName('focused', this._isFocused);
 	}
 
 	_viewOverlaysRender(ctx: RestrictedRenderingContext): void {
-		this._visibleLines.renderLines(ctx.viewportData);
+		this._visiBleLines.renderLines(ctx.viewportData);
 	}
 }
 
-export class ViewOverlayLine implements IVisibleLine {
+export class ViewOverlayLine implements IVisiBleLine {
 
 	private readonly _configuration: IConfiguration;
 	private readonly _dynamicOverlays: DynamicViewOverlay[];
 	private _domNode: FastDomNode<HTMLElement> | null;
 	private _renderedContent: string | null;
-	private _lineHeight: number;
+	private _lineHeight: numBer;
 
 	constructor(configuration: IConfiguration, dynamicOverlays: DynamicViewOverlay[]) {
 		this._configuration = configuration;
@@ -156,31 +156,31 @@ export class ViewOverlayLine implements IVisibleLine {
 		this._renderedContent = null;
 	}
 
-	public getDomNode(): HTMLElement | null {
+	puBlic getDomNode(): HTMLElement | null {
 		if (!this._domNode) {
 			return null;
 		}
 		return this._domNode.domNode;
 	}
-	public setDomNode(domNode: HTMLElement): void {
+	puBlic setDomNode(domNode: HTMLElement): void {
 		this._domNode = createFastDomNode(domNode);
 	}
 
-	public onContentChanged(): void {
+	puBlic onContentChanged(): void {
 		// Nothing
 	}
-	public onTokensChanged(): void {
+	puBlic onTokensChanged(): void {
 		// Nothing
 	}
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): void {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): void {
 		this._lineHeight = this._configuration.options.get(EditorOption.lineHeight);
 	}
 
-	public renderLine(lineNumber: number, deltaTop: number, viewportData: ViewportData, sb: IStringBuilder): boolean {
+	puBlic renderLine(lineNumBer: numBer, deltaTop: numBer, viewportData: ViewportData, sB: IStringBuilder): Boolean {
 		let result = '';
 		for (let i = 0, len = this._dynamicOverlays.length; i < len; i++) {
 			const dynamicOverlay = this._dynamicOverlays[i];
-			result += dynamicOverlay.render(viewportData.startLineNumber, lineNumber);
+			result += dynamicOverlay.render(viewportData.startLineNumBer, lineNumBer);
 		}
 
 		if (this._renderedContent === result) {
@@ -190,18 +190,18 @@ export class ViewOverlayLine implements IVisibleLine {
 
 		this._renderedContent = result;
 
-		sb.appendASCIIString('<div style="position:absolute;top:');
-		sb.appendASCIIString(String(deltaTop));
-		sb.appendASCIIString('px;width:100%;height:');
-		sb.appendASCIIString(String(this._lineHeight));
-		sb.appendASCIIString('px;">');
-		sb.appendASCIIString(result);
-		sb.appendASCIIString('</div>');
+		sB.appendASCIIString('<div style="position:aBsolute;top:');
+		sB.appendASCIIString(String(deltaTop));
+		sB.appendASCIIString('px;width:100%;height:');
+		sB.appendASCIIString(String(this._lineHeight));
+		sB.appendASCIIString('px;">');
+		sB.appendASCIIString(result);
+		sB.appendASCIIString('</div>');
 
 		return true;
 	}
 
-	public layoutLine(lineNumber: number, deltaTop: number): void {
+	puBlic layoutLine(lineNumBer: numBer, deltaTop: numBer): void {
 		if (this._domNode) {
 			this._domNode.setTop(deltaTop);
 			this._domNode.setHeight(this._lineHeight);
@@ -211,7 +211,7 @@ export class ViewOverlayLine implements IVisibleLine {
 
 export class ContentViewOverlays extends ViewOverlays {
 
-	private _contentWidth: number;
+	private _contentWidth: numBer;
 
 	constructor(context: ViewContext) {
 		super(context);
@@ -222,15 +222,15 @@ export class ContentViewOverlays extends ViewOverlays {
 		this.domNode.setHeight(0);
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 		this._contentWidth = layoutInfo.contentWidth;
 		return super.onConfigurationChanged(e) || true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return super.onScrollChanged(e) || e.scrollWidthChanged;
 	}
 
@@ -245,7 +245,7 @@ export class ContentViewOverlays extends ViewOverlays {
 
 export class MarginViewOverlays extends ViewOverlays {
 
-	private _contentLeft: number;
+	private _contentLeft: numBer;
 
 	constructor(context: ViewContext) {
 		super(context);
@@ -260,7 +260,7 @@ export class MarginViewOverlays extends ViewOverlays {
 		Configuration.applyFontInfo(this.domNode, options.get(EditorOption.fontInfo));
 	}
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		Configuration.applyFontInfo(this.domNode, options.get(EditorOption.fontInfo));
 		const layoutInfo = options.get(EditorOption.layoutInfo);
@@ -268,7 +268,7 @@ export class MarginViewOverlays extends ViewOverlays {
 		return super.onConfigurationChanged(e) || true;
 	}
 
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return super.onScrollChanged(e) || e.scrollHeightChanged;
 	}
 

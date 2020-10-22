@@ -13,11 +13,11 @@ export class FrankensteinMode implements IMode {
 		this._languageIdentifier = languageIdentifier;
 	}
 
-	public getId(): string {
+	puBlic getId(): string {
 		return this._languageIdentifier.language;
 	}
 
-	public getLanguageIdentifier(): LanguageIdentifier {
+	puBlic getLanguageIdentifier(): LanguageIdentifier {
 		return this._languageIdentifier;
 	}
 }

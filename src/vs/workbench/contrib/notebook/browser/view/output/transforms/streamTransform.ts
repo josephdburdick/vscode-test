@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { IRenderOutput, CellOutputKind, IStreamOutput, RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookRegistry } from 'vs/workbench/contrib/notebook/browser/notebookRegistry';
-import { INotebookEditor, IOutputTransformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import * as DOM from 'vs/Base/Browser/dom';
+import { IRenderOutput, CellOutputKind, IStreamOutput, RenderOutputType } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { NoteBookRegistry } from 'vs/workBench/contriB/noteBook/Browser/noteBookRegistry';
+import { INoteBookEditor, IOutputTransformContriBution } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 
-class StreamRenderer implements IOutputTransformContribution {
+class StreamRenderer implements IOutputTransformContriBution {
 	constructor(
-		editor: INotebookEditor
+		editor: INoteBookEditor
 	) {
 	}
 
@@ -25,4 +25,4 @@ class StreamRenderer implements IOutputTransformContribution {
 	}
 }
 
-NotebookRegistry.registerOutputTransform('notebook.output.stream', CellOutputKind.Text, StreamRenderer);
+NoteBookRegistry.registerOutputTransform('noteBook.output.stream', CellOutputKind.Text, StreamRenderer);

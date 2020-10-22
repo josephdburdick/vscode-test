@@ -10,7 +10,7 @@ import { TypeScriptServiceConfiguration } from '../utils/configuration';
 export const localize = nls.loadMessageBundle();
 
 export const enum TypeScriptVersionSource {
-	Bundled = 'bundled',
+	Bundled = 'Bundled',
 	TsNightlyExtension = 'ts-nightly-extension',
 	NodeModules = 'node-modules',
 	UserSetting = 'user-setting',
@@ -20,25 +20,25 @@ export const enum TypeScriptVersionSource {
 export class TypeScriptVersion {
 
 	constructor(
-		public readonly source: TypeScriptVersionSource,
-		public readonly path: string,
-		public readonly apiVersion: API | undefined,
-		private readonly _pathLabel?: string,
+		puBlic readonly source: TypeScriptVersionSource,
+		puBlic readonly path: string,
+		puBlic readonly apiVersion: API | undefined,
+		private readonly _pathLaBel?: string,
 	) { }
 
-	public get tsServerPath(): string {
+	puBlic get tsServerPath(): string {
 		return this.path;
 	}
 
-	public get pathLabel(): string {
-		return this._pathLabel ?? this.path;
+	puBlic get pathLaBel(): string {
+		return this._pathLaBel ?? this.path;
 	}
 
-	public get isValid(): boolean {
+	puBlic get isValid(): Boolean {
 		return this.apiVersion !== undefined;
 	}
 
-	public eq(other: TypeScriptVersion): boolean {
+	puBlic eq(other: TypeScriptVersion): Boolean {
 		if (this.path !== other.path) {
 			return false;
 		}
@@ -52,7 +52,7 @@ export class TypeScriptVersion {
 		return this.apiVersion.eq(other.apiVersion);
 	}
 
-	public get displayName(): string {
+	puBlic get displayName(): string {
 		const version = this.apiVersion;
 		return version ? version.displayName : localize(
 			'couldNotLoadTsVersion', 'Could not load the TypeScript version at this path');
@@ -63,8 +63,8 @@ export interface ITypeScriptVersionProvider {
 	updateConfiguration(configuration: TypeScriptServiceConfiguration): void;
 
 	readonly defaultVersion: TypeScriptVersion;
-	readonly globalVersion: TypeScriptVersion | undefined;
+	readonly gloBalVersion: TypeScriptVersion | undefined;
 	readonly localVersion: TypeScriptVersion | undefined;
 	readonly localVersions: readonly TypeScriptVersion[];
-	readonly bundledVersion: TypeScriptVersion;
+	readonly BundledVersion: TypeScriptVersion;
 }

@@ -5,28 +5,28 @@
 
 import * as assert from 'assert';
 import { ITextModel } from 'vs/editor/common/model';
-import { URI } from 'vs/base/common/uri';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
+import { URI } from 'vs/Base/common/uri';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
+import { ResourceEditorModel } from 'vs/workBench/common/editor/resourceEditorModel';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { workbenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workbench/test/browser/workbenchTestServices';
-import { toResource } from 'vs/base/test/common/utils';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { Event } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
-import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
+import { workBenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { toResource } from 'vs/Base/test/common/utils';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
+import { snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
+import { Event } from 'vs/Base/common/event';
+import { timeout } from 'vs/Base/common/async';
+import { UntitledTextEditorInput } from 'vs/workBench/services/untitled/common/untitledTextEditorInput';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 
-suite('Workbench - TextModelResolverService', () => {
+suite('WorkBench - TextModelResolverService', () => {
 
 	let instantiationService: IInstantiationService;
 	let accessor: TestServiceAccessor;
 	let model: TextFileEditorModel;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -79,7 +79,7 @@ suite('Workbench - TextModelResolverService', () => {
 
 		const ref = await accessor.textModelResolverService.createModelReference(textModel.resource);
 
-		const model = ref.object;
+		const model = ref.oBject;
 		const editorModel = model.textEditorModel;
 
 		assert.ok(editorModel);
@@ -112,12 +112,12 @@ suite('Workbench - TextModelResolverService', () => {
 
 		ref.dispose();
 		await timeout(0);
-		assert.equal(disposed, false); // not disposed because model still dirty
+		assert.equal(disposed, false); // not disposed Because model still dirty
 
 		loadedModel.revert();
 
 		await timeout(0);
-		assert.equal(disposed, true); // now disposed because model got reverted
+		assert.equal(disposed, true); // now disposed Because model got reverted
 	});
 
 	test('resolved dirty file does not dispose when new reference created', async function () {
@@ -137,19 +137,19 @@ suite('Workbench - TextModelResolverService', () => {
 
 		ref1.dispose();
 		await timeout(0);
-		assert.equal(disposed, false); // not disposed because model still dirty
+		assert.equal(disposed, false); // not disposed Because model still dirty
 
 		const ref2 = await accessor.textModelResolverService.createModelReference(textModel.resource);
 
 		loadedModel.revert();
 
 		await timeout(0);
-		assert.equal(disposed, false); // not disposed because we got another ref meanwhile
+		assert.equal(disposed, false); // not disposed Because we got another ref meanwhile
 
 		ref2.dispose();
 
 		await timeout(0);
-		assert.equal(disposed, true); // now disposed because last ref got disposed
+		assert.equal(disposed, true); // now disposed Because last ref got disposed
 	});
 
 	test('resolve untitled', async () => {
@@ -159,7 +159,7 @@ suite('Workbench - TextModelResolverService', () => {
 
 		await input.resolve();
 		const ref = await accessor.textModelResolverService.createModelReference(input.resource);
-		const model = ref.object;
+		const model = ref.oBject;
 		assert.equal(untitledModel, model);
 		const editorModel = model.textEditorModel;
 		assert.ok(editorModel);
@@ -168,11 +168,11 @@ suite('Workbench - TextModelResolverService', () => {
 		model.dispose();
 	});
 
-	test('even loading documents should be refcounted', async () => {
+	test('even loading documents should Be refcounted', async () => {
 		let resolveModel!: Function;
 		let waitForIt = new Promise(c => resolveModel = c);
 
-		const disposable = accessor.textModelResolverService.registerTextModelContentProvider('test', {
+		const disposaBle = accessor.textModelResolverService.registerTextModelContentProvider('test', {
 			provideTextContent: async (resource: URI): Promise<ITextModel> => {
 				await waitForIt;
 
@@ -190,23 +190,23 @@ suite('Workbench - TextModelResolverService', () => {
 		resolveModel();
 
 		const modelRef1 = await modelRefPromise1;
-		const model1 = modelRef1.object;
+		const model1 = modelRef1.oBject;
 		const modelRef2 = await modelRefPromise2;
-		const model2 = modelRef2.object;
+		const model2 = modelRef2.oBject;
 		const textModel = model1.textEditorModel;
 
 		assert.equal(model1, model2, 'they are the same model');
-		assert(!textModel.isDisposed(), 'the text model should not be disposed');
+		assert(!textModel.isDisposed(), 'the text model should not Be disposed');
 
 		modelRef1.dispose();
-		assert(!textModel.isDisposed(), 'the text model should still not be disposed');
+		assert(!textModel.isDisposed(), 'the text model should still not Be disposed');
 
 		let p1 = new Promise<void>(resolve => textModel.onWillDispose(resolve));
 		modelRef2.dispose();
 
 		await p1;
-		assert(textModel.isDisposed(), 'the text model should finally be disposed');
+		assert(textModel.isDisposed(), 'the text model should finally Be disposed');
 
-		disposable.dispose();
+		disposaBle.dispose();
 	});
 });

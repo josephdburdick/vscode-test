@@ -3,44 +3,44 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import { canceled } from 'vs/base/common/errors';
-import { isWindows } from 'vs/base/common/platform';
+import { join } from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
+import { canceled } from 'vs/Base/common/errors';
+import { isWindows } from 'vs/Base/common/platform';
 
-export type ValueCallback<T = any> = (value: T | Promise<T>) => void;
+export type ValueCallBack<T = any> = (value: T | Promise<T>) => void;
 
 export class DeferredPromise<T> {
 
-	private completeCallback!: ValueCallback<T>;
-	private errorCallback!: (err: any) => void;
+	private completeCallBack!: ValueCallBack<T>;
+	private errorCallBack!: (err: any) => void;
 
-	public p: Promise<any>;
+	puBlic p: Promise<any>;
 
 	constructor() {
 		this.p = new Promise<any>((c, e) => {
-			this.completeCallback = c;
-			this.errorCallback = e;
+			this.completeCallBack = c;
+			this.errorCallBack = e;
 		});
 	}
 
-	public complete(value: T) {
+	puBlic complete(value: T) {
 		return new Promise<void>(resolve => {
-			this.completeCallback(value);
+			this.completeCallBack(value);
 			resolve();
 		});
 	}
 
-	public error(err: any) {
+	puBlic error(err: any) {
 		return new Promise<void>(resolve => {
-			this.errorCallback(err);
+			this.errorCallBack(err);
 			resolve();
 		});
 	}
 
-	public cancel() {
+	puBlic cancel() {
 		new Promise<void>(resolve => {
-			this.errorCallback(canceled());
+			this.errorCallBack(canceled());
 			resolve();
 		});
 	}
@@ -48,20 +48,20 @@ export class DeferredPromise<T> {
 
 export function toResource(this: any, path: string) {
 	if (isWindows) {
-		return URI.file(join('C:\\', btoa(this.test.fullTitle()), path));
+		return URI.file(join('C:\\', Btoa(this.test.fullTitle()), path));
 	}
 
-	return URI.file(join('/', btoa(this.test.fullTitle()), path));
+	return URI.file(join('/', Btoa(this.test.fullTitle()), path));
 }
 
-export function suiteRepeat(n: number, description: string, callback: (this: any) => void): void {
+export function suiteRepeat(n: numBer, description: string, callBack: (this: any) => void): void {
 	for (let i = 0; i < n; i++) {
-		suite(`${description} (iteration ${i})`, callback);
+		suite(`${description} (iteration ${i})`, callBack);
 	}
 }
 
-export function testRepeat(n: number, description: string, callback: (this: any, done: MochaDone) => any): void {
+export function testRepeat(n: numBer, description: string, callBack: (this: any, done: MochaDone) => any): void {
 	for (let i = 0; i < n; i++) {
-		test(`${description} (iteration ${i})`, callback);
+		test(`${description} (iteration ${i})`, callBack);
 	}
 }

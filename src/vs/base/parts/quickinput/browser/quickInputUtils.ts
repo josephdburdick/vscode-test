@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/quickInput';
-import * as dom from 'vs/base/browser/dom';
-import { URI } from 'vs/base/common/uri';
-import { IdGenerator } from 'vs/base/common/idGenerator';
+import * as dom from 'vs/Base/Browser/dom';
+import { URI } from 'vs/Base/common/uri';
+import { IdGenerator } from 'vs/Base/common/idGenerator';
 
 const iconPathToClass: Record<string, string> = {};
-const iconClassGenerator = new IdGenerator('quick-input-button-icon-');
+const iconClassGenerator = new IdGenerator('quick-input-Button-icon-');
 
 export function getIconClass(iconPath: { dark: URI; light?: URI; } | undefined): string | undefined {
 	if (!iconPath) {
@@ -22,8 +22,8 @@ export function getIconClass(iconPath: { dark: URI; light?: URI; } | undefined):
 		iconClass = iconPathToClass[key];
 	} else {
 		iconClass = iconClassGenerator.nextId();
-		dom.createCSSRule(`.${iconClass}`, `background-image: ${dom.asCSSUrl(iconPath.light || iconPath.dark)}`);
-		dom.createCSSRule(`.vs-dark .${iconClass}, .hc-black .${iconClass}`, `background-image: ${dom.asCSSUrl(iconPath.dark)}`);
+		dom.createCSSRule(`.${iconClass}`, `Background-image: ${dom.asCSSUrl(iconPath.light || iconPath.dark)}`);
+		dom.createCSSRule(`.vs-dark .${iconClass}, .hc-Black .${iconClass}`, `Background-image: ${dom.asCSSUrl(iconPath.dark)}`);
 		iconPathToClass[key] = iconClass;
 	}
 

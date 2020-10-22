@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as fs from 'fs';
-import * as path from 'vs/base/common/path';
-import * as pfs from 'vs/base/node/pfs';
-import { memoize } from 'vs/base/common/decorators';
+import * as path from 'vs/Base/common/path';
+import * as pfs from 'vs/Base/node/pfs';
+import { memoize } from 'vs/Base/common/decorators';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 import product from 'vs/platform/product/common/product';
-import { State, IUpdate, StateType, AvailableForDownload, UpdateType } from 'vs/platform/update/common/update';
+import { State, IUpdate, StateType, AvailaBleForDownload, UpdateType } from 'vs/platform/update/common/update';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
 import { ILogService } from 'vs/platform/log/common/log';
-import { createUpdateURL, AbstractUpdateService, UpdateNotAvailableClassification } from 'vs/platform/update/electron-main/abstractUpdateService';
+import { createUpdateURL, ABstractUpdateService, UpdateNotAvailaBleClassification } from 'vs/platform/update/electron-main/aBstractUpdateService';
 import { IRequestService, asJson } from 'vs/platform/request/common/request';
-import { checksum } from 'vs/base/node/crypto';
+import { checksum } from 'vs/Base/node/crypto';
 import { tmpdir } from 'os';
 import { spawn } from 'child_process';
 import { shell } from 'electron';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { timeout } from 'vs/base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { timeout } from 'vs/Base/common/async';
 import { IFileService } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-async function pollUntil(fn: () => boolean, millis = 1000): Promise<void> {
+async function pollUntil(fn: () => Boolean, millis = 1000): Promise<void> {
 	while (!fn()) {
 		await timeout(millis);
 	}
 }
 
-interface IAvailableUpdate {
+interface IAvailaBleUpdate {
 	packagePath: string;
 	updateFilePath?: string;
 }
@@ -47,11 +47,11 @@ function getUpdateType(): UpdateType {
 	return _updateType;
 }
 
-export class Win32UpdateService extends AbstractUpdateService {
+export class Win32UpdateService extends ABstractUpdateService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private availableUpdate: IAvailableUpdate | undefined;
+	private availaBleUpdate: IAvailaBleUpdate | undefined;
 
 	@memoize
 	get cachePath(): Promise<string> {
@@ -85,11 +85,11 @@ export class Win32UpdateService extends AbstractUpdateService {
 					"target" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog('update:win32SetupTarget', { target: product.target });
+			this.telemetryService.puBlicLog('update:win32SetupTarget', { target: product.target });
 		}
 	}
 
-	protected buildUpdateFeedUrl(quality: string): string | undefined {
+	protected BuildUpdateFeedUrl(quality: string): string | undefined {
 		let platform = 'win32';
 
 		if (process.arch !== 'ia32') {
@@ -118,14 +118,14 @@ export class Win32UpdateService extends AbstractUpdateService {
 				const updateType = getUpdateType();
 
 				if (!update || !update.url || !update.version || !update.productVersion) {
-					this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
+					this.telemetryService.puBlicLog2<{ explicit: Boolean }, UpdateNotAvailaBleClassification>('update:notAvailaBle', { explicit: !!context });
 
 					this.setState(State.Idle(updateType));
 					return Promise.resolve(null);
 				}
 
 				if (updateType === UpdateType.Archive) {
-					this.setState(State.AvailableForDownload(update));
+					this.setState(State.AvailaBleForDownload(update));
 					return Promise.resolve(null);
 				}
 
@@ -149,11 +149,11 @@ export class Win32UpdateService extends AbstractUpdateService {
 								.then(() => updatePackagePath);
 						});
 					}).then(packagePath => {
-						const fastUpdatesEnabled = this.configurationService.getValue<boolean>('update.enableWindowsBackgroundUpdates');
+						const fastUpdatesEnaBled = this.configurationService.getValue<Boolean>('update.enaBleWindowsBackgroundUpdates');
 
-						this.availableUpdate = { packagePath };
+						this.availaBleUpdate = { packagePath };
 
-						if (fastUpdatesEnabled && update.supportsFastUpdate) {
+						if (fastUpdatesEnaBled && update.supportsFastUpdate) {
 							if (product.target === 'user') {
 								this.doApplyUpdate();
 							} else {
@@ -167,7 +167,7 @@ export class Win32UpdateService extends AbstractUpdateService {
 			})
 			.then(undefined, err => {
 				this.logService.error(err);
-				this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
+				this.telemetryService.puBlicLog2<{ explicit: Boolean }, UpdateNotAvailaBleClassification>('update:notAvailaBle', { explicit: !!context });
 
 				// only show message when explicitly checking for updates
 				const message: string | undefined = !!context ? (err.message || err) : undefined;
@@ -175,7 +175,7 @@ export class Win32UpdateService extends AbstractUpdateService {
 			});
 	}
 
-	protected async doDownloadUpdate(state: AvailableForDownload): Promise<void> {
+	protected async doDownloadUpdate(state: AvailaBleForDownload): Promise<void> {
 		if (state.update.url) {
 			shell.openExternal(state.update.url);
 		}
@@ -209,7 +209,7 @@ export class Win32UpdateService extends AbstractUpdateService {
 			return Promise.resolve(undefined);
 		}
 
-		if (!this.availableUpdate) {
+		if (!this.availaBleUpdate) {
 			return Promise.resolve(undefined);
 		}
 
@@ -218,17 +218,17 @@ export class Win32UpdateService extends AbstractUpdateService {
 
 		const cachePath = await this.cachePath;
 
-		this.availableUpdate.updateFilePath = path.join(cachePath, `CodeSetup-${product.quality}-${update.version}.flag`);
+		this.availaBleUpdate.updateFilePath = path.join(cachePath, `CodeSetup-${product.quality}-${update.version}.flag`);
 
-		await pfs.writeFile(this.availableUpdate.updateFilePath, 'flag');
-		const child = spawn(this.availableUpdate.packagePath, ['/verysilent', `/update="${this.availableUpdate.updateFilePath}"`, '/nocloseapplications', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
+		await pfs.writeFile(this.availaBleUpdate.updateFilePath, 'flag');
+		const child = spawn(this.availaBleUpdate.packagePath, ['/verysilent', `/update="${this.availaBleUpdate.updateFilePath}"`, '/nocloseapplications', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 			detached: true,
 			stdio: ['ignore', 'ignore', 'ignore'],
-			windowsVerbatimArguments: true
+			windowsVerBatimArguments: true
 		});
 
 		child.once('exit', () => {
-			this.availableUpdate = undefined;
+			this.availaBleUpdate = undefined;
 			this.setState(State.Idle(getUpdateType()));
 		});
 
@@ -241,16 +241,16 @@ export class Win32UpdateService extends AbstractUpdateService {
 	}
 
 	protected doQuitAndInstall(): void {
-		if (this.state.type !== StateType.Ready || !this.availableUpdate) {
+		if (this.state.type !== StateType.Ready || !this.availaBleUpdate) {
 			return;
 		}
 
 		this.logService.trace('update#quitAndInstall(): running raw#quitAndInstall()');
 
-		if (this.state.update.supportsFastUpdate && this.availableUpdate.updateFilePath) {
-			fs.unlinkSync(this.availableUpdate.updateFilePath);
+		if (this.state.update.supportsFastUpdate && this.availaBleUpdate.updateFilePath) {
+			fs.unlinkSync(this.availaBleUpdate.updateFilePath);
 		} else {
-			spawn(this.availableUpdate.packagePath, ['/silent', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
+			spawn(this.availaBleUpdate.packagePath, ['/silent', '/mergetasks=runcode,!desktopicon,!quicklaunchicon'], {
 				detached: true,
 				stdio: ['ignore', 'ignore', 'ignore']
 			});

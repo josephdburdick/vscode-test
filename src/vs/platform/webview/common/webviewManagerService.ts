@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBuffer } from 'vs/base/common/buffer';
-import { UriComponents } from 'vs/base/common/uri';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { UriComponents } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IWebviewPortMapping } from 'vs/platform/webview/common/webviewPortMapping';
+import { IWeBviewPortMapping } from 'vs/platform/weBview/common/weBviewPortMapping';
 
-export const IWebviewManagerService = createDecorator<IWebviewManagerService>('webviewManagerService');
+export const IWeBviewManagerService = createDecorator<IWeBviewManagerService>('weBviewManagerService');
 
-export interface IWebviewManagerService {
+export interface IWeBviewManagerService {
 	_serviceBrand: unknown;
 
-	registerWebview(id: string, windowId: number, metadata: RegisterWebviewMetadata): Promise<void>;
-	unregisterWebview(id: string): Promise<void>;
-	updateWebviewMetadata(id: string, metadataDelta: Partial<RegisterWebviewMetadata>): Promise<void>;
+	registerWeBview(id: string, windowId: numBer, metadata: RegisterWeBviewMetadata): Promise<void>;
+	unregisterWeBview(id: string): Promise<void>;
+	updateWeBviewMetadata(id: string, metadataDelta: Partial<RegisterWeBviewMetadata>): Promise<void>;
 
-	didLoadResource(requestId: number, content: VSBuffer | undefined): void;
+	didLoadResource(requestId: numBer, content: VSBuffer | undefined): void;
 
-	setIgnoreMenuShortcuts(webContentsId: number, enabled: boolean): Promise<void>;
+	setIgnoreMenuShortcuts(weBContentsId: numBer, enaBled: Boolean): Promise<void>;
 }
 
-export interface RegisterWebviewMetadata {
+export interface RegisterWeBviewMetadata {
 	readonly extensionLocation: UriComponents | undefined;
 	readonly localResourceRoots: readonly UriComponents[];
 	readonly remoteConnectionData: IRemoteConnectionData | null;
-	readonly portMappings: readonly IWebviewPortMapping[];
+	readonly portMappings: readonly IWeBviewPortMapping[];
 }

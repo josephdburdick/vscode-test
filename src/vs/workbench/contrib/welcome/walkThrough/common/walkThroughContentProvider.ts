@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModelService, ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ITextModel, DefaultEndOfLine, EndOfLinePreference } from 'vs/editor/common/model';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import * as marked from 'vs/base/common/marked/marked';
-import { Schemas } from 'vs/base/common/network';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import * as marked from 'vs/Base/common/marked/marked';
+import { Schemas } from 'vs/Base/common/network';
 import { Range } from 'vs/editor/common/core/range';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 
@@ -37,7 +37,7 @@ export function requireToContent(resource: URI): Promise<string> {
 	return content;
 }
 
-export class WalkThroughSnippetContentProvider implements ITextModelContentProvider, IWorkbenchContribution {
+export class WalkThroughSnippetContentProvider implements ITextModelContentProvider, IWorkBenchContriBution {
 
 	constructor(
 		@ITextModelService private readonly textModelResolverService: ITextModelService,
@@ -47,7 +47,7 @@ export class WalkThroughSnippetContentProvider implements ITextModelContentProvi
 		this.textModelResolverService.registerTextModelContentProvider(Schemas.walkThroughSnippet, this);
 	}
 
-	public async provideTextContent(resource: URI): Promise<ITextModel> {
+	puBlic async provideTextContent(resource: URI): Promise<ITextModel> {
 		const factory = createTextBufferFactory(await requireToContent(resource));
 
 		let codeEditorModel = this.modelService.getModel(resource);

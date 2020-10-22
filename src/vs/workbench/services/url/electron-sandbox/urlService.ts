@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IURLService, IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
 import { URLHandlerChannel } from 'vs/platform/url/common/urlIpc';
 import { IOpenerService, IOpener, matchesScheme } from 'vs/platform/opener/common/opener';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { createChannelSender } from 'vs/Base/parts/ipc/common/ipc';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { NativeURLService } from 'vs/platform/url/common/urlService';
 
 export interface IRelayOpenURLOptions extends IOpenURLOptions {
-	openToSide?: boolean;
-	openExternal?: boolean;
+	openToSide?: Boolean;
+	openExternal?: Boolean;
 }
 
 export class RelayURLService extends NativeURLService implements IURLHandler, IOpener {
@@ -50,7 +50,7 @@ export class RelayURLService extends NativeURLService implements IURLHandler, IO
 		return uri.with({ query });
 	}
 
-	async open(resource: URI | string, options?: IRelayOpenURLOptions): Promise<boolean> {
+	async open(resource: URI | string, options?: IRelayOpenURLOptions): Promise<Boolean> {
 
 		if (!matchesScheme(resource, this.productService.urlProtocol)) {
 			return false;
@@ -62,11 +62,11 @@ export class RelayURLService extends NativeURLService implements IURLHandler, IO
 		return await this.urlService.open(resource, options);
 	}
 
-	async handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
+	async handleURL(uri: URI, options?: IOpenURLOptions): Promise<Boolean> {
 		const result = await super.open(uri, options);
 
 		if (result) {
-			await this.nativeHostService.focusWindow({ force: true /* Application may not be active */ });
+			await this.nativeHostService.focusWindow({ force: true /* Application may not Be active */ });
 		}
 
 		return result;

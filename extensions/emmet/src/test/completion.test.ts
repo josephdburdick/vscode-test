@@ -11,41 +11,41 @@ import { closeAllEditors, withRandomFileEditor } from './testUtils';
 
 const completionProvider = new DefaultCompletionItemProvider();
 
-suite('Tests for completion in CSS embedded in HTML', () => {
+suite('Tests for completion in CSS emBedded in HTML', () => {
 	teardown(() => {
 		// close all editors
 		return closeAllEditors;
 	});
 
-	test('style attribute & attribute value in html', async () => {
-		await testHtmlCompletionProvider('<div style="|"', [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='|'`, [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='p|'`, [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='color: #0|'`, [{ label: '#000000' }]);
+	test('style attriBute & attriBute value in html', async () => {
+		await testHtmlCompletionProvider('<div style="|"', [{ laBel: 'padding: ;' }]);
+		await testHtmlCompletionProvider(`<div style='|'`, [{ laBel: 'padding: ;' }]);
+		await testHtmlCompletionProvider(`<div style='p|'`, [{ laBel: 'padding: ;' }]);
+		await testHtmlCompletionProvider(`<div style='color: #0|'`, [{ laBel: '#000000' }]);
 	});
 
-	// https://github.com/microsoft/vscode/issues/79766
+	// https://githuB.com/microsoft/vscode/issues/79766
 	test('#79766, correct region determination', async () => {
 		await testHtmlCompletionProvider(`<div style="color: #000">di|</div>`, [
-			{ label: 'div', documentation: `<div>|</div>` }
+			{ laBel: 'div', documentation: `<div>|</div>` }
 		]);
 	});
 
-	// https://github.com/microsoft/vscode/issues/86941
-	test('#86941, widows should not be completed', async () => {
+	// https://githuB.com/microsoft/vscode/issues/86941
+	test('#86941, widows should not Be completed', async () => {
 		await testCssCompletionProvider(`.foo { wi| }`, [
-			{ label: 'widows: ;', documentation: `widows: ;` }
+			{ laBel: 'widows: ;', documentation: `widows: ;` }
 		]);
 	});
 });
 
 interface TestCompletionItem {
-	label: string;
+	laBel: string;
 
 	documentation?: string;
 }
 
-function testHtmlCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): Thenable<any> {
+function testHtmlCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): ThenaBle<any> {
 	const cursorPos = contents.indexOf('|');
 	const htmlContents = contents.slice(0, cursorPos) + contents.slice(cursorPos + 1);
 
@@ -69,12 +69,12 @@ function testHtmlCompletionProvider(contents: string, expectedItems: TestComplet
 		}
 
 		expectedItems.forEach(eItem => {
-			const matches = completionList.items.filter(i => i.label === eItem.label);
+			const matches = completionList.items.filter(i => i.laBel === eItem.laBel);
 			const match = matches && matches.length > 0 ? matches[0] : undefined;
-			assert.ok(match, `Didn't find completion item with label ${eItem.label}`);
+			assert.ok(match, `Didn't find completion item with laBel ${eItem.laBel}`);
 
 			if (match) {
-				assert.equal(match.detail, 'Emmet Abbreviation', `Match needs to come from Emmet`);
+				assert.equal(match.detail, 'Emmet ABBreviation', `Match needs to come from Emmet`);
 
 				if (eItem.documentation) {
 					assert.equal(match.documentation, eItem.documentation, `Emmet completion Documentation doesn't match`);
@@ -86,7 +86,7 @@ function testHtmlCompletionProvider(contents: string, expectedItems: TestComplet
 	});
 }
 
-function testCssCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): Thenable<any> {
+function testCssCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): ThenaBle<any> {
 	const cursorPos = contents.indexOf('|');
 	const cssContents = contents.slice(0, cursorPos) + contents.slice(cursorPos + 1);
 
@@ -110,12 +110,12 @@ function testCssCompletionProvider(contents: string, expectedItems: TestCompleti
 		}
 
 		expectedItems.forEach(eItem => {
-			const matches = completionList.items.filter(i => i.label === eItem.label);
+			const matches = completionList.items.filter(i => i.laBel === eItem.laBel);
 			const match = matches && matches.length > 0 ? matches[0] : undefined;
-			assert.ok(match, `Didn't find completion item with label ${eItem.label}`);
+			assert.ok(match, `Didn't find completion item with laBel ${eItem.laBel}`);
 
 			if (match) {
-				assert.equal(match.detail, 'Emmet Abbreviation', `Match needs to come from Emmet`);
+				assert.equal(match.detail, 'Emmet ABBreviation', `Match needs to come from Emmet`);
 
 				if (eItem.documentation) {
 					assert.equal(match.documentation, eItem.documentation, `Emmet completion Documentation doesn't match`);

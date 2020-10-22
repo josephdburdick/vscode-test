@@ -7,38 +7,38 @@ import 'mocha';
 import * as assert from 'assert';
 import { Selection, CompletionList, CancellationTokenSource, Position, CompletionTriggerKind } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
-import { expandEmmetAbbreviation } from '../abbreviationActions';
+import { expandEmmetABBreviation } from '../aBBreviationActions';
 import { DefaultCompletionItemProvider } from '../defaultCompletionProvider';
 
 const completionProvider = new DefaultCompletionItemProvider();
 const cssContents = `
-.boo {
+.Boo {
 	margin: 20px 10px;
 	pos:f
-	background-image: url('tryme.png');
+	Background-image: url('tryme.png');
 	pos:f
 }
 
-.boo .hoo {
+.Boo .hoo {
 	margin: 10px;
 	ind
 }
 `;
 
 const scssContents = `
-.boo {
+.Boo {
 	margin: 10px;
 	p10
 	.hoo {
 		p20
 	}
 }
-@include b(alert) {
+@include B(alert) {
 
 	margin: 10px;
 	p30
 
-	@include b(alert) {
+	@include B(alert) {
 		p40
 	}
 }
@@ -52,13 +52,13 @@ const scssContents = `
 `;
 
 
-suite('Tests for Expand Abbreviations (CSS)', () => {
+suite('Tests for Expand ABBreviations (CSS)', () => {
 	teardown(closeAllEditors);
 
-	test('Expand abbreviation (CSS)', () => {
+	test('Expand aBBreviation (CSS)', () => {
 		return withRandomFileEditor(cssContents, 'css', (editor, _) => {
 			editor.selections = [new Selection(3, 1, 3, 6), new Selection(5, 1, 5, 6)];
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), cssContents.replace(/pos:f/g, 'position: fixed;'));
 				return Promise.resolve();
 			});
@@ -77,7 +77,7 @@ suite('Tests for Expand Abbreviations (CSS)', () => {
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(3, 4, 3, 4);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(2, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -100,7 +100,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(5, 4, 5, 4);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(2, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -122,7 +122,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(2, 10, 2, 10);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(2, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -139,7 +139,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(0, 30, 0, 30);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(0, 30), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -175,7 +175,7 @@ nav#
 					return;
 				}
 				const emmetCompletionItem = completionList.items[0];
-				assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.laBel, expandedText, `LaBel of completion item doesnt match.`);
 				assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
 			};
 
@@ -183,7 +183,7 @@ nav#
 				callBack(result1, '#121212');
 				callBack(result2, '!important');
 				editor.selections = [new Selection(2, 12, 2, 12), new Selection(2, 14, 2, 14)];
-				return expandEmmetAbbreviation(null).then(() => {
+				return expandEmmetABBreviation(null).then(() => {
 					assert.equal(editor.document.getText(), testContent.replace('#12', '#121212').replace('!', '!important'));
 				});
 			});
@@ -200,7 +200,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(3, 10, 3, 10);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(3, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -236,7 +236,7 @@ nav#
 					return;
 				}
 				const emmetCompletionItem = completionList.items[0];
-				assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.laBel, expandedText, `LaBel of completion item doesnt match.`);
 				assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
 			};
 
@@ -244,7 +244,7 @@ nav#
 				callBack(result1, '#121212');
 				callBack(result2, '!important');
 				editor.selections = [new Selection(3, 12, 3, 12), new Selection(3, 14, 3, 14)];
-				return expandEmmetAbbreviation(null).then(() => {
+				return expandEmmetABBreviation(null).then(() => {
 					assert.equal(editor.document.getText(), testContent.replace('#12', '#121212').replace('!', '!important'));
 				});
 			});
@@ -260,7 +260,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(2, 10, 2, 10);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(2, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -295,7 +295,7 @@ nav#
 					return;
 				}
 				const emmetCompletionItem = completionList.items[0];
-				assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.laBel, expandedText, `LaBel of completion item doesnt match.`);
 				assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
 			};
 
@@ -303,7 +303,7 @@ nav#
 				callBack(result1, '#121212');
 				callBack(result2, '!important');
 				editor.selections = [new Selection(2, 12, 2, 12), new Selection(2, 14, 2, 14)];
-				return expandEmmetAbbreviation(null).then(() => {
+				return expandEmmetABBreviation(null).then(() => {
 					assert.equal(editor.document.getText(), testContent.replace('#12', '#121212').replace('!', '!important'));
 				});
 			});
@@ -319,7 +319,7 @@ nav#
 
 		return withRandomFileEditor(testContent, 'css', (editor, _) => {
 			editor.selection = new Selection(2, 2, 2, 2);
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), testContent);
 				const cancelSrc = new CancellationTokenSource();
 				const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(2, 2), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
@@ -332,8 +332,8 @@ nav#
 	});
 
 
-	test('Expand abbreviation in completion list (CSS)', () => {
-		const abbreviation = 'pos:f';
+	test('Expand aBBreviation in completion list (CSS)', () => {
+		const aBBreviation = 'pos:f';
 		const expandedText = 'position: fixed;';
 
 		return withRandomFileEditor(cssContents, 'css', (editor, _) => {
@@ -342,19 +342,19 @@ nav#
 			const completionPromise1 = completionProvider.provideCompletionItems(editor.document, new Position(3, 6), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
 			const completionPromise2 = completionProvider.provideCompletionItems(editor.document, new Position(5, 6), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
 			if (!completionPromise1 || !completionPromise2) {
-				assert.equal(1, 2, `Problem with expanding pos:f`);
+				assert.equal(1, 2, `ProBlem with expanding pos:f`);
 				return Promise.resolve();
 			}
 
 			const callBack = (completionList: CompletionList) => {
 				if (!completionList.items || !completionList.items.length) {
-					assert.equal(1, 2, `Problem with expanding pos:f`);
+					assert.equal(1, 2, `ProBlem with expanding pos:f`);
 					return;
 				}
 				const emmetCompletionItem = completionList.items[0];
-				assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.laBel, expandedText, `LaBel of completion item doesnt match.`);
 				assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
-				assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.filterText, aBBreviation, `FilterText of completion item doesnt match.`);
 			};
 
 			return Promise.all<CompletionList>([completionPromise1, completionPromise2]).then(([result1, result2]) => {
@@ -365,7 +365,7 @@ nav#
 		});
 	});
 
-	test('Expand abbreviation (SCSS)', () => {
+	test('Expand aBBreviation (SCSS)', () => {
 		return withRandomFileEditor(scssContents, 'scss', (editor, _) => {
 			editor.selections = [
 				new Selection(3, 4, 3, 4),
@@ -373,14 +373,14 @@ nav#
 				new Selection(11, 4, 11, 4),
 				new Selection(14, 5, 14, 5)
 			];
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), scssContents.replace(/p(\d\d)/g, 'padding: $1px;'));
 				return Promise.resolve();
 			});
 		});
 	});
 
-	test('Expand abbreviation in completion list (SCSS)', () => {
+	test('Expand aBBreviation in completion list (SCSS)', () => {
 
 		return withRandomFileEditor(scssContents, 'scss', (editor, _) => {
 			editor.selection = new Selection(3, 4, 3, 4);
@@ -390,31 +390,31 @@ nav#
 			const completionPromise3 = completionProvider.provideCompletionItems(editor.document, new Position(11, 4), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
 			const completionPromise4 = completionProvider.provideCompletionItems(editor.document, new Position(14, 5), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
 			if (!completionPromise1) {
-				assert.equal(1, 2, `Problem with expanding padding abbreviations at line 3 col 4`);
+				assert.equal(1, 2, `ProBlem with expanding padding aBBreviations at line 3 col 4`);
 			}
 			if (!completionPromise2) {
-				assert.equal(1, 2, `Problem with expanding padding abbreviations at line 5 col 5`);
+				assert.equal(1, 2, `ProBlem with expanding padding aBBreviations at line 5 col 5`);
 			}
 			if (!completionPromise3) {
-				assert.equal(1, 2, `Problem with expanding padding abbreviations at line 11 col 4`);
+				assert.equal(1, 2, `ProBlem with expanding padding aBBreviations at line 11 col 4`);
 			}
 			if (!completionPromise4) {
-				assert.equal(1, 2, `Problem with expanding padding abbreviations at line 14 col 5`);
+				assert.equal(1, 2, `ProBlem with expanding padding aBBreviations at line 14 col 5`);
 			}
 
 			if (!completionPromise1 || !completionPromise2 || !completionPromise3 || !completionPromise4) {
 				return Promise.resolve();
 			}
 
-			const callBack = (completionList: CompletionList, abbreviation: string, expandedText: string) => {
+			const callBack = (completionList: CompletionList, aBBreviation: string, expandedText: string) => {
 				if (!completionList.items || !completionList.items.length) {
-					assert.equal(1, 2, `Problem with expanding m10`);
+					assert.equal(1, 2, `ProBlem with expanding m10`);
 					return;
 				}
 				const emmetCompletionItem = completionList.items[0];
-				assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.laBel, expandedText, `LaBel of completion item doesnt match.`);
 				assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
-				assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
+				assert.equal(emmetCompletionItem.filterText, aBBreviation, `FilterText of completion item doesnt match.`);
 			};
 
 			return Promise.all<CompletionList>([completionPromise1, completionPromise2, completionPromise3, completionPromise4]).then(([result1, result2, result3, result4]) => {
@@ -428,13 +428,13 @@ nav#
 	});
 
 
-	test('Invalid locations for abbreviations in scss', () => {
+	test('Invalid locations for aBBreviations in scss', () => {
 		const scssContentsNoExpand = `
 m10
-		.boo {
+		.Boo {
 			margin: 10px;
 			.hoo {
-				background:
+				Background:
 			}
 		}
 		`;
@@ -444,20 +444,20 @@ m10
 				new Selection(1, 3, 1, 3), // outside rule
 				new Selection(5, 15, 5, 15) // in the value part of property value
 			];
-			return expandEmmetAbbreviation(null).then(() => {
+			return expandEmmetABBreviation(null).then(() => {
 				assert.equal(editor.document.getText(), scssContentsNoExpand);
 				return Promise.resolve();
 			});
 		});
 	});
 
-	test('Invalid locations for abbreviations in scss in completion list', () => {
+	test('Invalid locations for aBBreviations in scss in completion list', () => {
 		const scssContentsNoExpand = `
 m10
-		.boo {
+		.Boo {
 			margin: 10px;
 			.hoo {
-				background:
+				Background:
 			}
 		}
 		`;
@@ -489,7 +489,7 @@ m10
 test('Skip when typing property values when there is a nested rule in the next line (SCSS)', () => {
 	return withRandomFileEditor(scssContents, 'scss', (editor, _) => {
 		editor.selection = new Selection(19, 10, 19, 10);
-		return expandEmmetAbbreviation(null).then(() => {
+		return expandEmmetABBreviation(null).then(() => {
 			assert.equal(editor.document.getText(), scssContents);
 			const cancelSrc = new CancellationTokenSource();
 			const completionPromise = completionProvider.provideCompletionItems(editor.document, new Position(19, 10), cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });

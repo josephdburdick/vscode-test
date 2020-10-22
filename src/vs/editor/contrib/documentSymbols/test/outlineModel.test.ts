@@ -5,12 +5,12 @@
 
 import * as assert from 'assert';
 import { OutlineElement, OutlineGroup, OutlineModel } from '../outlineModel';
-import { SymbolKind, DocumentSymbol, DocumentSymbolProviderRegistry } from 'vs/editor/common/modes';
+import { SymBolKind, DocumentSymBol, DocumentSymBolProviderRegistry } from 'vs/editor/common/modes';
 import { Range } from 'vs/editor/common/core/range';
 import { IMarker, MarkerSeverity } from 'vs/platform/markers/common/markers';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { URI } from 'vs/base/common/uri';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
 
 suite('OutlineModel', function () {
 
@@ -18,8 +18,8 @@ suite('OutlineModel', function () {
 
 		let model = createTextModel('foo', undefined, undefined, URI.file('/fome/path.foo'));
 		let count = 0;
-		let reg = DocumentSymbolProviderRegistry.register({ pattern: '**/path.foo' }, {
-			provideDocumentSymbols() {
+		let reg = DocumentSymBolProviderRegistry.register({ pattern: '**/path.foo' }, {
+			provideDocumentSymBols() {
 				count += 1;
 				return [];
 			}
@@ -45,8 +45,8 @@ suite('OutlineModel', function () {
 		let model = createTextModel('foo', undefined, undefined, URI.file('/fome/path.foo'));
 		let isCancelled = false;
 
-		let reg = DocumentSymbolProviderRegistry.register({ pattern: '**/path.foo' }, {
-			provideDocumentSymbols(d, token) {
+		let reg = DocumentSymBolProviderRegistry.register({ pattern: '**/path.foo' }, {
+			provideDocumentSymBols(d, token) {
 				return new Promise(resolve => {
 					token.onCancellationRequested(_ => {
 						isCancelled = true;
@@ -71,11 +71,11 @@ suite('OutlineModel', function () {
 		reg.dispose();
 	});
 
-	function fakeSymbolInformation(range: Range, name: string = 'foo'): DocumentSymbol {
+	function fakeSymBolInformation(range: Range, name: string = 'foo'): DocumentSymBol {
 		return {
 			name,
 			detail: 'fake',
-			kind: SymbolKind.Boolean,
+			kind: SymBolKind.Boolean,
 			tags: [],
 			selectionRange: range,
 			range: range
@@ -88,9 +88,9 @@ suite('OutlineModel', function () {
 
 	test('OutlineElement - updateMarker', function () {
 
-		let e0 = new OutlineElement('foo1', null!, fakeSymbolInformation(new Range(1, 1, 1, 10)));
-		let e1 = new OutlineElement('foo2', null!, fakeSymbolInformation(new Range(2, 1, 5, 1)));
-		let e2 = new OutlineElement('foo3', null!, fakeSymbolInformation(new Range(6, 1, 10, 10)));
+		let e0 = new OutlineElement('foo1', null!, fakeSymBolInformation(new Range(1, 1, 1, 10)));
+		let e1 = new OutlineElement('foo2', null!, fakeSymBolInformation(new Range(2, 1, 5, 1)));
+		let e2 = new OutlineElement('foo3', null!, fakeSymBolInformation(new Range(6, 1, 10, 10)));
 
 		let group = new OutlineGroup('group', null!, null!, 1);
 		group.children.set(e0.id, e0);
@@ -114,9 +114,9 @@ suite('OutlineModel', function () {
 
 	test('OutlineElement - updateMarker, 2', function () {
 
-		let p = new OutlineElement('A', null!, fakeSymbolInformation(new Range(1, 1, 11, 1)));
-		let c1 = new OutlineElement('A/B', null!, fakeSymbolInformation(new Range(2, 4, 5, 4)));
-		let c2 = new OutlineElement('A/C', null!, fakeSymbolInformation(new Range(6, 4, 9, 4)));
+		let p = new OutlineElement('A', null!, fakeSymBolInformation(new Range(1, 1, 11, 1)));
+		let c1 = new OutlineElement('A/B', null!, fakeSymBolInformation(new Range(2, 4, 5, 4)));
+		let c2 = new OutlineElement('A/C', null!, fakeSymBolInformation(new Range(6, 4, 9, 4)));
 
 		let group = new OutlineGroup('group', null!, null!, 1);
 		group.children.set(p.id, p);
@@ -163,12 +163,12 @@ suite('OutlineModel', function () {
 			}
 		};
 		model.children.set('g1', new OutlineGroup('g1', model, null!, 1));
-		model.children.get('g1')!.children.set('c1', new OutlineElement('c1', model.children.get('g1')!, fakeSymbolInformation(new Range(1, 1, 11, 1))));
+		model.children.get('g1')!.children.set('c1', new OutlineElement('c1', model.children.get('g1')!, fakeSymBolInformation(new Range(1, 1, 11, 1))));
 
 		model.children.set('g2', new OutlineGroup('g2', model, null!, 1));
-		model.children.get('g2')!.children.set('c2', new OutlineElement('c2', model.children.get('g2')!, fakeSymbolInformation(new Range(1, 1, 7, 1))));
-		model.children.get('g2')!.children.get('c2')!.children.set('c2.1', new OutlineElement('c2.1', model.children.get('g2')!.children.get('c2')!, fakeSymbolInformation(new Range(1, 3, 2, 19))));
-		model.children.get('g2')!.children.get('c2')!.children.set('c2.2', new OutlineElement('c2.2', model.children.get('g2')!.children.get('c2')!, fakeSymbolInformation(new Range(4, 1, 6, 10))));
+		model.children.get('g2')!.children.set('c2', new OutlineElement('c2', model.children.get('g2')!, fakeSymBolInformation(new Range(1, 1, 7, 1))));
+		model.children.get('g2')!.children.get('c2')!.children.set('c2.1', new OutlineElement('c2.1', model.children.get('g2')!.children.get('c2')!, fakeSymBolInformation(new Range(1, 3, 2, 19))));
+		model.children.get('g2')!.children.get('c2')!.children.set('c2.2', new OutlineElement('c2.2', model.children.get('g2')!.children.get('c2')!, fakeSymBolInformation(new Range(4, 1, 6, 10))));
 
 		model.readyForTesting();
 

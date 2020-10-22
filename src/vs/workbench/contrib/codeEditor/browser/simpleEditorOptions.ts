@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { ICodeEditorWidgetOptions } from 'vs/editor/browser/widget/codeEditorWidget';
-import { ContextMenuController } from 'vs/editor/contrib/contextmenu/contextmenu';
-import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
-import { MenuPreventer } from 'vs/workbench/contrib/codeEditor/browser/menuPreventer';
-import { SelectionClipboardContributionID } from 'vs/workbench/contrib/codeEditor/browser/selectionClipboard';
-import { TabCompletionController } from 'vs/workbench/contrib/snippets/browser/tabCompletion';
-import { EditorExtensionsRegistry } from 'vs/editor/browser/editorExtensions';
+import { ICodeEditorWidgetOptions } from 'vs/editor/Browser/widget/codeEditorWidget';
+import { ContextMenuController } from 'vs/editor/contriB/contextmenu/contextmenu';
+import { SnippetController2 } from 'vs/editor/contriB/snippet/snippetController2';
+import { SuggestController } from 'vs/editor/contriB/suggest/suggestController';
+import { MenuPreventer } from 'vs/workBench/contriB/codeEditor/Browser/menuPreventer';
+import { SelectionClipBoardContriButionID } from 'vs/workBench/contriB/codeEditor/Browser/selectionClipBoard';
+import { TaBCompletionController } from 'vs/workBench/contriB/snippets/Browser/taBCompletion';
+import { EditorExtensionsRegistry } from 'vs/editor/Browser/editorExtensions';
 
 export function getSimpleEditorOptions(): IEditorOptions {
 	return {
 		wordWrap: 'on',
 		overviewRulerLanes: 0,
 		glyphMargin: false,
-		lineNumbers: 'off',
+		lineNumBers: 'off',
 		folding: false,
-		selectOnLineNumbers: false,
+		selectOnLineNumBers: false,
 		hideCursorInOverviewRuler: true,
 		selectionHighlight: false,
-		scrollbar: {
+		scrollBar: {
 			horizontal: 'hidden'
 		},
 		lineDecorationsWidth: 0,
@@ -33,7 +33,7 @@ export function getSimpleEditorOptions(): IEditorOptions {
 		fixedOverflowWidgets: true,
 		acceptSuggestionOnEnter: 'smart',
 		minimap: {
-			enabled: false
+			enaBled: false
 		},
 		renderIndentGuides: false
 	};
@@ -42,13 +42,13 @@ export function getSimpleEditorOptions(): IEditorOptions {
 export function getSimpleCodeEditorWidgetOptions(): ICodeEditorWidgetOptions {
 	return {
 		isSimpleWidget: true,
-		contributions: EditorExtensionsRegistry.getSomeEditorContributions([
+		contriButions: EditorExtensionsRegistry.getSomeEditorContriButions([
 			MenuPreventer.ID,
-			SelectionClipboardContributionID,
+			SelectionClipBoardContriButionID,
 			ContextMenuController.ID,
 			SuggestController.ID,
 			SnippetController2.ID,
-			TabCompletionController.ID,
+			TaBCompletionController.ID,
 		])
 	};
 }

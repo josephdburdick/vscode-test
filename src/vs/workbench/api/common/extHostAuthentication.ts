@@ -5,9 +5,9 @@
 
 import type * as vscode from 'vscode';
 import * as modes from 'vs/editor/common/modes';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IMainContext, MainContext, MainThreadAuthenticationShape, ExtHostAuthenticationShape } from 'vs/workbench/api/common/extHost.protocol';
-import { Disposable } from 'vs/workbench/api/common/extHostTypes';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IMainContext, MainContext, MainThreadAuthenticationShape, ExtHostAuthenticationShape } from 'vs/workBench/api/common/extHost.protocol';
+import { DisposaBle } from 'vs/workBench/api/common/extHostTypes';
 import { IExtensionDescription, ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 export class ExtHostAuthentication implements ExtHostAuthenticationShape {
@@ -45,7 +45,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 	}
 
 	get providers(): ReadonlyArray<vscode.AuthenticationProviderInformation> {
-		return Object.freeze(this._providers.slice());
+		return OBject.freeze(this._providers.slice());
 	}
 
 	async getSession(requestingExtension: IExtensionDescription, providerId: string, scopes: string[], options: vscode.AuthenticationGetSessionOptions & { createIfNone: true }): Promise<vscode.AuthenticationSession>;
@@ -65,7 +65,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		if (sessions.length) {
 			if (!provider.supportsMultipleAccounts) {
 				const session = sessions[0];
-				const allowed = await this._proxy.$getSessionsPrompt(providerId, session.account.label, provider.label, extensionId, extensionName);
+				const allowed = await this._proxy.$getSessionsPrompt(providerId, session.account.laBel, provider.laBel, extensionId, extensionName);
 				if (allowed) {
 					return session;
 				} else {
@@ -73,18 +73,18 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 				}
 			}
 
-			// On renderer side, confirm consent, ask user to choose between accounts if multiple sessions are valid
-			const selected = await this._proxy.$selectSession(providerId, provider.label, extensionId, extensionName, sessions, scopes, !!options.clearSessionPreference);
+			// On renderer side, confirm consent, ask user to choose Between accounts if multiple sessions are valid
+			const selected = await this._proxy.$selectSession(providerId, provider.laBel, extensionId, extensionName, sessions, scopes, !!options.clearSessionPreference);
 			return sessions.find(session => session.id === selected.id);
 		} else {
 			if (options.createIfNone) {
-				const isAllowed = await this._proxy.$loginPrompt(provider.label, extensionName);
+				const isAllowed = await this._proxy.$loginPrompt(provider.laBel, extensionName);
 				if (!isAllowed) {
 					throw new Error('User did not consent to login.');
 				}
 
 				const session = await provider.login(scopes);
-				await this._proxy.$setTrustedExtensionAndAccountPreference(providerId, session.account.label, extensionId, extensionName, session.id);
+				await this._proxy.$setTrustedExtensionAndAccountPreference(providerId, session.account.laBel, extensionId, extensionName, session.id);
 				return session;
 			} else {
 				await this._proxy.$requestNewSession(providerId, scopes, extensionId, extensionName);
@@ -102,7 +102,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		return provider.logout(sessionId);
 	}
 
-	registerAuthenticationProvider(provider: vscode.AuthenticationProvider): vscode.Disposable {
+	registerAuthenticationProvider(provider: vscode.AuthenticationProvider): vscode.DisposaBle {
 		if (this._authenticationProviders.get(provider.id)) {
 			throw new Error(`An authentication provider with id '${provider.id}' is already registered.`);
 		}
@@ -115,7 +115,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		if (!this._providers.find(p => p.id === provider.id)) {
 			this._providers.push({
 				id: provider.id,
-				label: provider.label
+				laBel: provider.laBel
 			});
 		}
 
@@ -123,9 +123,9 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 			this._proxy.$sendDidChangeSessions(provider.id, e);
 		});
 
-		this._proxy.$registerAuthenticationProvider(provider.id, provider.label, provider.supportsMultipleAccounts);
+		this._proxy.$registerAuthenticationProvider(provider.id, provider.laBel, provider.supportsMultipleAccounts);
 
-		return new Disposable(() => {
+		return new DisposaBle(() => {
 			listener.dispose();
 			this._authenticationProviders.delete(provider.id);
 			const index = this._providerIds.findIndex(id => id === provider.id);
@@ -148,7 +148,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 			return Promise.resolve(authProvider.login(scopes));
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnaBle to find authentication provider with handle: ${providerId}`);
 	}
 
 	$logout(providerId: string, sessionId: string): Promise<void> {
@@ -157,7 +157,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 			return Promise.resolve(authProvider.logout(sessionId));
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnaBle to find authentication provider with handle: ${providerId}`);
 	}
 
 	$getSessions(providerId: string): Promise<ReadonlyArray<modes.AuthenticationSession>> {
@@ -166,7 +166,7 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 			return Promise.resolve(authProvider.getSessions());
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnaBle to find authentication provider with handle: ${providerId}`);
 	}
 
 	async $getSessionAccessToken(providerId: string, sessionId: string): Promise<string> {
@@ -178,14 +178,14 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 				return session.accessToken;
 			}
 
-			throw new Error(`Unable to find session with id: ${sessionId}`);
+			throw new Error(`UnaBle to find session with id: ${sessionId}`);
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnaBle to find authentication provider with handle: ${providerId}`);
 	}
 
-	$onDidChangeAuthenticationSessions(id: string, label: string, event: modes.AuthenticationSessionsChangeEvent) {
-		this._onDidChangeSessions.fire({ provider: { id, label }, ...event });
+	$onDidChangeAuthenticationSessions(id: string, laBel: string, event: modes.AuthenticationSessionsChangeEvent) {
+		this._onDidChangeSessions.fire({ provider: { id, laBel }, ...event });
 		return Promise.resolve();
 	}
 

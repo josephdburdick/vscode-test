@@ -5,10 +5,10 @@
 
 import * as assert from 'assert';
 import { Selection } from 'vs/editor/common/core/selection';
-import { CopyLinesCommand } from 'vs/editor/contrib/linesOperations/copyLinesCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { DuplicateSelectionAction } from 'vs/editor/contrib/linesOperations/linesOperations';
+import { CopyLinesCommand } from 'vs/editor/contriB/linesOperations/copyLinesCommand';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
+import { DuplicateSelectionAction } from 'vs/editor/contriB/linesOperations/linesOperations';
 
 function testCopyLinesDownCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 	testCommand(lines, null, selection, (sel) => new CopyLinesCommand(sel, true), expectedLines, expectedSelection);
@@ -18,7 +18,7 @@ function testCopyLinesUpCommand(lines: string[], selection: Selection, expectedL
 	testCommand(lines, null, selection, (sel) => new CopyLinesCommand(sel, false), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Copy Lines Command', () => {
+suite('Editor ContriB - Copy Lines Command', () => {
 
 	test('copy first line down', function () {
 		testCopyLinesDownCommand(
@@ -199,7 +199,7 @@ suite('Editor Contrib - Copy Lines Command', () => {
 	});
 });
 
-suite('Editor Contrib - Duplicate Selection', () => {
+suite('Editor ContriB - Duplicate Selection', () => {
 
 	const duplicateSelectionAction = new DuplicateSelectionAction();
 

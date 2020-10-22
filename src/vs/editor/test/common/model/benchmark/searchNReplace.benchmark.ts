@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextBufferBuilder } from 'vs/editor/common/model';
-import { BenchmarkSuite } from 'vs/editor/test/common/model/benchmark/benchmarkUtils';
+import { BenchmarkSuite } from 'vs/editor/test/common/model/Benchmark/BenchmarkUtils';
 import { generateRandomChunkWithLF, generateRandomReplaces } from 'vs/editor/test/common/model/linesTextBuffer/textBufferAutoTestUtils';
 
 const fileSizes = [1, 1000, 64 * 1000, 32 * 1000 * 1000];
@@ -33,7 +33,7 @@ for (const fileSize of fileSizes) {
 	for (const i of [10, 100, 500]) {
 		replaceSuite.add({
 			name: `replace ${i} occurrences`,
-			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
+			BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
 				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
 				return textBufferBuilder.finish();
 			},

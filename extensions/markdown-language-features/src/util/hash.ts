@@ -4,55 +4,55 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Return a hash value for an object.
+ * Return a hash value for an oBject.
  */
-export function hash(obj: any, hashVal = 0): number {
-	switch (typeof obj) {
-		case 'object':
-			if (obj === null) {
-				return numberHash(349, hashVal);
-			} else if (Array.isArray(obj)) {
-				return arrayHash(obj, hashVal);
+export function hash(oBj: any, hashVal = 0): numBer {
+	switch (typeof oBj) {
+		case 'oBject':
+			if (oBj === null) {
+				return numBerHash(349, hashVal);
+			} else if (Array.isArray(oBj)) {
+				return arrayHash(oBj, hashVal);
 			}
-			return objectHash(obj, hashVal);
+			return oBjectHash(oBj, hashVal);
 		case 'string':
-			return stringHash(obj, hashVal);
-		case 'boolean':
-			return booleanHash(obj, hashVal);
-		case 'number':
-			return numberHash(obj, hashVal);
+			return stringHash(oBj, hashVal);
+		case 'Boolean':
+			return BooleanHash(oBj, hashVal);
+		case 'numBer':
+			return numBerHash(oBj, hashVal);
 		case 'undefined':
 			return 937 * 31;
 		default:
-			return numberHash(obj, 617);
+			return numBerHash(oBj, 617);
 	}
 }
 
-function numberHash(val: number, initialHashVal: number): number {
+function numBerHash(val: numBer, initialHashVal: numBer): numBer {
 	return (((initialHashVal << 5) - initialHashVal) + val) | 0;  // hashVal * 31 + ch, keep as int32
 }
 
-function booleanHash(b: boolean, initialHashVal: number): number {
-	return numberHash(b ? 433 : 863, initialHashVal);
+function BooleanHash(B: Boolean, initialHashVal: numBer): numBer {
+	return numBerHash(B ? 433 : 863, initialHashVal);
 }
 
-function stringHash(s: string, hashVal: number) {
-	hashVal = numberHash(149417, hashVal);
+function stringHash(s: string, hashVal: numBer) {
+	hashVal = numBerHash(149417, hashVal);
 	for (let i = 0, length = s.length; i < length; i++) {
-		hashVal = numberHash(s.charCodeAt(i), hashVal);
+		hashVal = numBerHash(s.charCodeAt(i), hashVal);
 	}
 	return hashVal;
 }
 
-function arrayHash(arr: any[], initialHashVal: number): number {
-	initialHashVal = numberHash(104579, initialHashVal);
+function arrayHash(arr: any[], initialHashVal: numBer): numBer {
+	initialHashVal = numBerHash(104579, initialHashVal);
 	return arr.reduce((hashVal, item) => hash(item, hashVal), initialHashVal);
 }
 
-function objectHash(obj: any, initialHashVal: number): number {
-	initialHashVal = numberHash(181387, initialHashVal);
-	return Object.keys(obj).sort().reduce((hashVal, key) => {
+function oBjectHash(oBj: any, initialHashVal: numBer): numBer {
+	initialHashVal = numBerHash(181387, initialHashVal);
+	return OBject.keys(oBj).sort().reduce((hashVal, key) => {
 		hashVal = stringHash(key, hashVal);
-		return hash(obj[key], hashVal);
+		return hash(oBj[key], hashVal);
 	}, initialHashVal);
 }

@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, MainThreadLabelServiceShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ResourceLabelFormatter, ILabelService } from 'vs/platform/label/common/label';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { MainContext, MainThreadLaBelServiceShape, IExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { ResourceLaBelFormatter, ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 
-@extHostNamedCustomer(MainContext.MainThreadLabelService)
-export class MainThreadLabelService implements MainThreadLabelServiceShape {
+@extHostNamedCustomer(MainContext.MainThreadLaBelService)
+export class MainThreadLaBelService implements MainThreadLaBelServiceShape {
 
-	private readonly _resourceLabelFormatters = new Map<number, IDisposable>();
+	private readonly _resourceLaBelFormatters = new Map<numBer, IDisposaBle>();
 
 	constructor(
 		_: IExtHostContext,
-		@ILabelService private readonly _labelService: ILabelService
+		@ILaBelService private readonly _laBelService: ILaBelService
 	) { }
 
-	$registerResourceLabelFormatter(handle: number, formatter: ResourceLabelFormatter): void {
-		// Dynamicily registered formatters should have priority over those contributed via package.json
+	$registerResourceLaBelFormatter(handle: numBer, formatter: ResourceLaBelFormatter): void {
+		// Dynamicily registered formatters should have priority over those contriButed via package.json
 		formatter.priority = true;
-		const disposable = this._labelService.registerFormatter(formatter);
-		this._resourceLabelFormatters.set(handle, disposable);
+		const disposaBle = this._laBelService.registerFormatter(formatter);
+		this._resourceLaBelFormatters.set(handle, disposaBle);
 	}
 
-	$unregisterResourceLabelFormatter(handle: number): void {
-		dispose(this._resourceLabelFormatters.get(handle));
-		this._resourceLabelFormatters.delete(handle);
+	$unregisterResourceLaBelFormatter(handle: numBer): void {
+		dispose(this._resourceLaBelFormatters.get(handle));
+		this._resourceLaBelFormatters.delete(handle);
 	}
 
 	dispose(): void {

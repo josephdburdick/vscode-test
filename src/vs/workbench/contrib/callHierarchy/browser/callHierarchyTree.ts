@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAsyncDataSource, ITreeRenderer, ITreeNode, ITreeSorter } from 'vs/base/browser/ui/tree/tree';
-import { CallHierarchyItem, CallHierarchyDirection, CallHierarchyModel, } from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IIdentityProvider, IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import { FuzzyScore, createMatches } from 'vs/base/common/filters';
-import { IconLabel } from 'vs/base/browser/ui/iconLabel/iconLabel';
-import { SymbolKinds, Location, SymbolTag } from 'vs/editor/common/modes';
-import { compare } from 'vs/base/common/strings';
+import { IAsyncDataSource, ITreeRenderer, ITreeNode, ITreeSorter } from 'vs/Base/Browser/ui/tree/tree';
+import { CallHierarchyItem, CallHierarchyDirection, CallHierarchyModel, } from 'vs/workBench/contriB/callHierarchy/common/callHierarchy';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IIdentityProvider, IListVirtualDelegate } from 'vs/Base/Browser/ui/list/list';
+import { FuzzyScore, createMatches } from 'vs/Base/common/filters';
+import { IconLaBel } from 'vs/Base/Browser/ui/iconLaBel/iconLaBel';
+import { SymBolKinds, Location, SymBolTag } from 'vs/editor/common/modes';
+import { compare } from 'vs/Base/common/strings';
 import { Range } from 'vs/editor/common/core/range';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
+import { IListAccessiBilityProvider } from 'vs/Base/Browser/ui/list/listWidget';
 import { localize } from 'vs/nls';
 
 export class Call {
@@ -23,10 +23,10 @@ export class Call {
 		readonly parent: Call | undefined
 	) { }
 
-	static compare(a: Call, b: Call): number {
-		let res = compare(a.item.uri.toString(), b.item.uri.toString());
+	static compare(a: Call, B: Call): numBer {
+		let res = compare(a.item.uri.toString(), B.item.uri.toString());
 		if (res === 0) {
-			res = Range.compareRangesUsingStarts(a.item.range, b.item.range);
+			res = Range.compareRangesUsingStarts(a.item.range, B.item.range);
 		}
 		return res;
 	}
@@ -35,10 +35,10 @@ export class Call {
 export class DataSource implements IAsyncDataSource<CallHierarchyModel, Call> {
 
 	constructor(
-		public getDirection: () => CallHierarchyDirection,
+		puBlic getDirection: () => CallHierarchyDirection,
 	) { }
 
-	hasChildren(): boolean {
+	hasChildren(): Boolean {
 		return true;
 	}
 
@@ -74,7 +74,7 @@ export class DataSource implements IAsyncDataSource<CallHierarchyModel, Call> {
 
 export class Sorter implements ITreeSorter<Call> {
 
-	compare(element: Call, otherElement: Call): number {
+	compare(element: Call, otherElement: Call): numBer {
 		return Call.compare(element, otherElement);
 	}
 }
@@ -82,7 +82,7 @@ export class Sorter implements ITreeSorter<Call> {
 export class IdentityProvider implements IIdentityProvider<Call> {
 
 	constructor(
-		public getDirection: () => CallHierarchyDirection
+		puBlic getDirection: () => CallHierarchyDirection
 	) { }
 
 	getId(element: Call): { toString(): string; } {
@@ -97,7 +97,7 @@ export class IdentityProvider implements IIdentityProvider<Call> {
 class CallRenderingTemplate {
 	constructor(
 		readonly icon: HTMLDivElement,
-		readonly label: IconLabel
+		readonly laBel: IconLaBel
 	) { }
 }
 
@@ -111,28 +111,28 @@ export class CallRenderer implements ITreeRenderer<Call, FuzzyScore, CallRenderi
 		container.classList.add('callhierarchy-element');
 		let icon = document.createElement('div');
 		container.appendChild(icon);
-		const label = new IconLabel(container, { supportHighlights: true });
-		return new CallRenderingTemplate(icon, label);
+		const laBel = new IconLaBel(container, { supportHighlights: true });
+		return new CallRenderingTemplate(icon, laBel);
 	}
 
-	renderElement(node: ITreeNode<Call, FuzzyScore>, _index: number, template: CallRenderingTemplate): void {
+	renderElement(node: ITreeNode<Call, FuzzyScore>, _index: numBer, template: CallRenderingTemplate): void {
 		const { element, filterData } = node;
-		const deprecated = element.item.tags?.includes(SymbolTag.Deprecated);
-		template.icon.className = SymbolKinds.toCssClassName(element.item.kind, true);
-		template.label.setLabel(
+		const deprecated = element.item.tags?.includes(SymBolTag.Deprecated);
+		template.icon.className = SymBolKinds.toCssClassName(element.item.kind, true);
+		template.laBel.setLaBel(
 			element.item.name,
 			element.item.detail,
-			{ labelEscapeNewLines: true, matches: createMatches(filterData), strikethrough: deprecated }
+			{ laBelEscapeNewLines: true, matches: createMatches(filterData), strikethrough: deprecated }
 		);
 	}
 	disposeTemplate(template: CallRenderingTemplate): void {
-		template.label.dispose();
+		template.laBel.dispose();
 	}
 }
 
 export class VirtualDelegate implements IListVirtualDelegate<Call> {
 
-	getHeight(_element: Call): number {
+	getHeight(_element: Call): numBer {
 		return 22;
 	}
 
@@ -141,17 +141,17 @@ export class VirtualDelegate implements IListVirtualDelegate<Call> {
 	}
 }
 
-export class AccessibilityProvider implements IListAccessibilityProvider<Call> {
+export class AccessiBilityProvider implements IListAccessiBilityProvider<Call> {
 
 	constructor(
-		public getDirection: () => CallHierarchyDirection
+		puBlic getDirection: () => CallHierarchyDirection
 	) { }
 
-	getWidgetAriaLabel(): string {
+	getWidgetAriaLaBel(): string {
 		return localize('tree.aria', "Call Hierarchy");
 	}
 
-	getAriaLabel(element: Call): string | null {
+	getAriaLaBel(element: Call): string | null {
 		if (this.getDirection() === CallHierarchyDirection.CallsFrom) {
 			return localize('from', "calls from {0}", element.item.name);
 		} else {

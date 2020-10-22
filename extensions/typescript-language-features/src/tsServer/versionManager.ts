@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import { TypeScriptServiceConfiguration } from '../utils/configuration';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import { ITypeScriptVersionProvider, TypeScriptVersion } from './versionProvider';
 
 const localize = nls.loadMessageBundle();
@@ -18,11 +18,11 @@ interface QuickPickItem extends vscode.QuickPickItem {
 	run(): void;
 }
 
-export class TypeScriptVersionManager extends Disposable {
+export class TypeScriptVersionManager extends DisposaBle {
 
 	private _currentVersion: TypeScriptVersion;
 
-	public constructor(
+	puBlic constructor(
 		private configuration: TypeScriptServiceConfiguration,
 		private readonly versionProvider: ITypeScriptVersionProvider,
 		private readonly workspaceState: vscode.Memento
@@ -47,9 +47,9 @@ export class TypeScriptVersionManager extends Disposable {
 	}
 
 	private readonly _onDidPickNewVersion = this._register(new vscode.EventEmitter<void>());
-	public readonly onDidPickNewVersion = this._onDidPickNewVersion.event;
+	puBlic readonly onDidPickNewVersion = this._onDidPickNewVersion.event;
 
-	public updateConfiguration(nextConfiguration: TypeScriptServiceConfiguration) {
+	puBlic updateConfiguration(nextConfiguration: TypeScriptServiceConfiguration) {
 		const lastConfiguration = this.configuration;
 		this.configuration = nextConfiguration;
 
@@ -61,15 +61,15 @@ export class TypeScriptVersionManager extends Disposable {
 		}
 	}
 
-	public get currentVersion(): TypeScriptVersion {
+	puBlic get currentVersion(): TypeScriptVersion {
 		return this._currentVersion;
 	}
 
-	public reset(): void {
-		this._currentVersion = this.versionProvider.bundledVersion;
+	puBlic reset(): void {
+		this._currentVersion = this.versionProvider.BundledVersion;
 	}
 
-	public async promptUserForVersion(): Promise<void> {
+	puBlic async promptUserForVersion(): Promise<void> {
 		const selected = await vscode.window.showQuickPick<QuickPickItem>([
 			this.getBundledPickItem(),
 			...this.getLocalPickItems(),
@@ -84,16 +84,16 @@ export class TypeScriptVersionManager extends Disposable {
 	}
 
 	private getBundledPickItem(): QuickPickItem {
-		const bundledVersion = this.versionProvider.defaultVersion;
+		const BundledVersion = this.versionProvider.defaultVersion;
 		return {
-			label: (!this.useWorkspaceTsdkSetting
+			laBel: (!this.useWorkspaceTsdkSetting
 				? '• '
 				: '') + localize('useVSCodeVersionOption', "Use VS Code's Version"),
-			description: bundledVersion.displayName,
-			detail: bundledVersion.pathLabel,
+			description: BundledVersion.displayName,
+			detail: BundledVersion.pathLaBel,
 			run: async () => {
 				await this.workspaceState.update(useWorkspaceTsdkStorageKey, false);
-				this.updateActiveVersion(bundledVersion);
+				this.updateActiveVersion(BundledVersion);
 			},
 		};
 	}
@@ -101,15 +101,15 @@ export class TypeScriptVersionManager extends Disposable {
 	private getLocalPickItems(): QuickPickItem[] {
 		return this.versionProvider.localVersions.map(version => {
 			return {
-				label: (this.useWorkspaceTsdkSetting && this.currentVersion.eq(version)
+				laBel: (this.useWorkspaceTsdkSetting && this.currentVersion.eq(version)
 					? '• '
 					: '') + localize('useWorkspaceVersionOption', "Use Workspace Version"),
 				description: version.displayName,
-				detail: version.pathLabel,
+				detail: version.pathLaBel,
 				run: async () => {
 					await this.workspaceState.update(useWorkspaceTsdkStorageKey, true);
 					const tsConfig = vscode.workspace.getConfiguration('typescript');
-					await tsConfig.update('tsdk', version.pathLabel, false);
+					await tsConfig.update('tsdk', version.pathLaBel, false);
 					this.updateActiveVersion(version);
 				},
 			};
@@ -120,7 +120,7 @@ export class TypeScriptVersionManager extends Disposable {
 		const workspaceVersion = this.versionProvider.localVersion;
 
 		if (workspaceVersion === undefined) {
-			throw new Error('Could not prompt to use workspace TypeScript version because no workspace version is specified');
+			throw new Error('Could not prompt to use workspace TypeScript version Because no workspace version is specified');
 		}
 
 		const allowIt = localize('allow', 'Allow');
@@ -149,18 +149,18 @@ export class TypeScriptVersionManager extends Disposable {
 		}
 	}
 
-	private get useWorkspaceTsdkSetting(): boolean {
-		return this.workspaceState.get<boolean>(useWorkspaceTsdkStorageKey, false);
+	private get useWorkspaceTsdkSetting(): Boolean {
+		return this.workspaceState.get<Boolean>(useWorkspaceTsdkStorageKey, false);
 	}
 
-	private get suppressPromptWorkspaceTsdkSetting(): boolean {
-		return this.workspaceState.get<boolean>(suppressPromptWorkspaceTsdkStorageKey, false);
+	private get suppressPromptWorkspaceTsdkSetting(): Boolean {
+		return this.workspaceState.get<Boolean>(suppressPromptWorkspaceTsdkStorageKey, false);
 	}
 
 	private isInPromptWorkspaceTsdkState(configuration: TypeScriptServiceConfiguration) {
 		return (
 			configuration.localTsdk !== null
-			&& configuration.enablePromptUseWorkspaceTsdk === true
+			&& configuration.enaBlePromptUseWorkspaceTsdk === true
 			&& this.suppressPromptWorkspaceTsdkSetting === false
 			&& this.useWorkspaceTsdkSetting === false
 		);
@@ -168,7 +168,7 @@ export class TypeScriptVersionManager extends Disposable {
 }
 
 const LearnMorePickItem: QuickPickItem = {
-	label: localize('learnMore', 'Learn more about managing TypeScript versions'),
+	laBel: localize('learnMore', 'Learn more aBout managing TypeScript versions'),
 	description: '',
 	run: () => {
 		vscode.env.openExternal(vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839919'));

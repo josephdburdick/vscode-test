@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as platform from 'vs/base/common/platform';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import * as platform from 'vs/Base/common/platform';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IExtensionDescription, ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
 import { IDiagnosticInfoOptions, IDiagnosticInfo } from 'vs/platform/diagnostics/common/diagnostics';
@@ -25,19 +25,19 @@ export interface IScanExtensionsArguments {
 export interface IScanSingleExtensionArguments {
 	language: string;
 	remoteAuthority: string;
-	isBuiltin: boolean;
+	isBuiltin: Boolean;
 	extensionLocation: UriComponents;
 }
 
 export interface IRemoteAgentEnvironmentDTO {
-	pid: number;
+	pid: numBer;
 	connectionToken: string;
 	appRoot: UriComponents;
 	settingsPath: UriComponents;
 	logsPath: UriComponents;
 	extensionsPath: UriComponents;
 	extensionHostLogsPath: UriComponents;
-	globalStorageHome: UriComponents;
+	gloBalStorageHome: UriComponents;
 	workspaceStorageHome: UriComponents;
 	userHome: UriComponents;
 	os: platform.OperatingSystem;
@@ -60,7 +60,7 @@ export class RemoteExtensionEnvironmentChannelClient {
 			logsPath: URI.revive(data.logsPath),
 			extensionsPath: URI.revive(data.extensionsPath),
 			extensionHostLogsPath: URI.revive(data.extensionHostLogsPath),
-			globalStorageHome: URI.revive(data.globalStorageHome),
+			gloBalStorageHome: URI.revive(data.gloBalStorageHome),
 			workspaceStorageHome: URI.revive(data.workspaceStorageHome),
 			userHome: URI.revive(data.userHome),
 			os: data.os
@@ -81,7 +81,7 @@ export class RemoteExtensionEnvironmentChannelClient {
 		return extensions;
 	}
 
-	static async scanSingleExtension(channel: IChannel, remoteAuthority: string, isBuiltin: boolean, extensionLocation: URI): Promise<IExtensionDescription | null> {
+	static async scanSingleExtension(channel: IChannel, remoteAuthority: string, isBuiltin: Boolean, extensionLocation: URI): Promise<IExtensionDescription | null> {
 		const args: IScanSingleExtensionArguments = {
 			language: platform.language,
 			remoteAuthority,
@@ -100,8 +100,8 @@ export class RemoteExtensionEnvironmentChannelClient {
 		return channel.call<IDiagnosticInfo>('getDiagnosticInfo', options);
 	}
 
-	static disableTelemetry(channel: IChannel): Promise<void> {
-		return channel.call<void>('disableTelemetry');
+	static disaBleTelemetry(channel: IChannel): Promise<void> {
+		return channel.call<void>('disaBleTelemetry');
 	}
 
 	static logTelemetry(channel: IChannel, eventName: string, data: ITelemetryData): Promise<void> {

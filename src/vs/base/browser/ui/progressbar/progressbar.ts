@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./progressbar';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Color } from 'vs/base/common/color';
-import { mixin } from 'vs/base/common/objects';
-import { hide, show } from 'vs/base/browser/dom';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { isNumber } from 'vs/base/common/types';
+import 'vs/css!./progressBar';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Color } from 'vs/Base/common/color';
+import { mixin } from 'vs/Base/common/oBjects';
+import { hide, show } from 'vs/Base/Browser/dom';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import { isNumBer } from 'vs/Base/common/types';
 
 const CSS_DONE = 'done';
 const CSS_ACTIVE = 'active';
@@ -28,21 +28,21 @@ const defaultOpts = {
 };
 
 /**
- * A progress bar with support for infinite or discrete progress.
+ * A progress Bar with support for infinite or discrete progress.
  */
-export class ProgressBar extends Disposable {
+export class ProgressBar extends DisposaBle {
 	private options: IProgressBarOptions;
-	private workedVal: number;
+	private workedVal: numBer;
 	private element!: HTMLElement;
-	private bit!: HTMLElement;
-	private totalWork: number | undefined;
+	private Bit!: HTMLElement;
+	private totalWork: numBer | undefined;
 	private progressBarBackground: Color | undefined;
 	private showDelayedScheduler: RunOnceScheduler;
 
 	constructor(container: HTMLElement, options?: IProgressBarOptions) {
 		super();
 
-		this.options = options || Object.create(null);
+		this.options = options || OBject.create(null);
 		mixin(this.options, defaultOpts, false);
 
 		this.workedVal = 0;
@@ -59,16 +59,16 @@ export class ProgressBar extends Disposable {
 		this.element.classList.add('monaco-progress-container');
 		container.appendChild(this.element);
 
-		this.bit = document.createElement('div');
-		this.bit.classList.add('progress-bit');
-		this.element.appendChild(this.bit);
+		this.Bit = document.createElement('div');
+		this.Bit.classList.add('progress-Bit');
+		this.element.appendChild(this.Bit);
 
 		this.applyStyles();
 	}
 
 	private off(): void {
-		this.bit.style.width = 'inherit';
-		this.bit.style.opacity = '1';
+		this.Bit.style.width = 'inherit';
+		this.Bit.style.opacity = '1';
 		this.element.classList.remove(CSS_ACTIVE, CSS_INFINITE, CSS_DISCRETE);
 
 		this.workedVal = 0;
@@ -76,25 +76,25 @@ export class ProgressBar extends Disposable {
 	}
 
 	/**
-	 * Indicates to the progress bar that all work is done.
+	 * Indicates to the progress Bar that all work is done.
 	 */
 	done(): ProgressBar {
 		return this.doDone(true);
 	}
 
 	/**
-	 * Stops the progressbar from showing any progress instantly without fading out.
+	 * Stops the progressBar from showing any progress instantly without fading out.
 	 */
 	stop(): ProgressBar {
 		return this.doDone(false);
 	}
 
-	private doDone(delayed: boolean): ProgressBar {
+	private doDone(delayed: Boolean): ProgressBar {
 		this.element.classList.add(CSS_DONE);
 
 		// let it grow to 100% width and hide afterwards
 		if (!this.element.classList.contains(CSS_INFINITE)) {
-			this.bit.style.width = 'inherit';
+			this.Bit.style.width = 'inherit';
 
 			if (delayed) {
 				setTimeout(() => this.off(), 200);
@@ -105,7 +105,7 @@ export class ProgressBar extends Disposable {
 
 		// let it fade out and hide afterwards
 		else {
-			this.bit.style.opacity = '0';
+			this.Bit.style.opacity = '0';
 			if (delayed) {
 				setTimeout(() => this.off(), 200);
 			} else {
@@ -117,11 +117,11 @@ export class ProgressBar extends Disposable {
 	}
 
 	/**
-	 * Use this mode to indicate progress that has no total number of work units.
+	 * Use this mode to indicate progress that has no total numBer of work units.
 	 */
 	infinite(): ProgressBar {
-		this.bit.style.width = '2%';
-		this.bit.style.opacity = '1';
+		this.Bit.style.width = '2%';
+		this.Bit.style.opacity = '1';
 
 		this.element.classList.remove(CSS_DISCRETE, CSS_DONE);
 		this.element.classList.add(CSS_ACTIVE, CSS_INFINITE);
@@ -130,10 +130,10 @@ export class ProgressBar extends Disposable {
 	}
 
 	/**
-	 * Tells the progress bar the total number of work. Use in combination with workedVal() to let
-	 * the progress bar show the actual progress based on the work that is done.
+	 * Tells the progress Bar the total numBer of work. Use in comBination with workedVal() to let
+	 * the progress Bar show the actual progress Based on the work that is done.
 	 */
-	total(value: number): ProgressBar {
+	total(value: numBer): ProgressBar {
 		this.workedVal = 0;
 		this.totalWork = value;
 
@@ -141,31 +141,31 @@ export class ProgressBar extends Disposable {
 	}
 
 	/**
-	 * Finds out if this progress bar is configured with total work
+	 * Finds out if this progress Bar is configured with total work
 	 */
-	hasTotal(): boolean {
-		return isNumber(this.totalWork);
+	hasTotal(): Boolean {
+		return isNumBer(this.totalWork);
 	}
 
 	/**
-	 * Tells the progress bar that an increment of work has been completed.
+	 * Tells the progress Bar that an increment of work has Been completed.
 	 */
-	worked(value: number): ProgressBar {
-		value = Math.max(1, Number(value));
+	worked(value: numBer): ProgressBar {
+		value = Math.max(1, NumBer(value));
 
 		return this.doSetWorked(this.workedVal + value);
 	}
 
 	/**
-	 * Tells the progress bar the total amount of work that has been completed.
+	 * Tells the progress Bar the total amount of work that has Been completed.
 	 */
-	setWorked(value: number): ProgressBar {
-		value = Math.max(1, Number(value));
+	setWorked(value: numBer): ProgressBar {
+		value = Math.max(1, NumBer(value));
 
 		return this.doSetWorked(value);
 	}
 
-	private doSetWorked(value: number): ProgressBar {
+	private doSetWorked(value: numBer): ProgressBar {
 		const totalWork = this.totalWork || 100;
 
 		this.workedVal = value;
@@ -174,7 +174,7 @@ export class ProgressBar extends Disposable {
 		this.element.classList.remove(CSS_INFINITE, CSS_DONE);
 		this.element.classList.add(CSS_ACTIVE, CSS_DISCRETE);
 
-		this.bit.style.width = 100 * (this.workedVal / (totalWork)) + '%';
+		this.Bit.style.width = 100 * (this.workedVal / (totalWork)) + '%';
 
 		return this;
 	}
@@ -183,10 +183,10 @@ export class ProgressBar extends Disposable {
 		return this.element;
 	}
 
-	show(delay?: number): void {
+	show(delay?: numBer): void {
 		this.showDelayedScheduler.cancel();
 
-		if (typeof delay === 'number') {
+		if (typeof delay === 'numBer') {
 			this.showDelayedScheduler.schedule(delay);
 		} else {
 			show(this.element);
@@ -205,10 +205,10 @@ export class ProgressBar extends Disposable {
 	}
 
 	protected applyStyles(): void {
-		if (this.bit) {
-			const background = this.progressBarBackground ? this.progressBarBackground.toString() : '';
+		if (this.Bit) {
+			const Background = this.progressBarBackground ? this.progressBarBackground.toString() : '';
 
-			this.bit.style.backgroundColor = background;
+			this.Bit.style.BackgroundColor = Background;
 		}
 	}
 }

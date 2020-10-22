@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { OpenerService } from 'vs/editor/browser/services/openerService';
-import { TestCodeEditorService } from 'vs/editor/test/browser/editorTestServices';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { OpenerService } from 'vs/editor/Browser/services/openerService';
+import { TestCodeEditorService } from 'vs/editor/test/Browser/editorTestServices';
 import { CommandsRegistry, ICommandService, NullCommandService } from 'vs/platform/commands/common/commands';
 import { matchesScheme } from 'vs/platform/opener/common/opener';
 
@@ -17,8 +17,8 @@ suite('OpenerService', function () {
 
 	const commandService = new (class implements ICommandService {
 		declare readonly _serviceBrand: undefined;
-		onWillExecuteCommand = () => Disposable.None;
-		onDidExecuteCommand = () => Disposable.None;
+		onWillExecuteCommand = () => DisposaBle.None;
+		onDidExecuteCommand = () => DisposaBle.None;
 		executeCommand(id: string, ...args: any[]): Promise<any> {
 			lastCommand = { id, args };
 			return Promise.resolve(undefined);
@@ -39,20 +39,20 @@ suite('OpenerService', function () {
 		const openerService = new OpenerService(editorService, NullCommandService);
 
 		await openerService.open(URI.parse('file:///somepath#L23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
+		assert.equal(editorService.lastInput!.options!.selection!.startLineNumBer, 23);
 		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
+		assert.equal(editorService.lastInput!.options!.selection!.endLineNumBer, undefined);
 		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
 		assert.equal(editorService.lastInput!.resource.fragment, '');
 
 		await openerService.open(URI.parse('another:///somepath#L23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
+		assert.equal(editorService.lastInput!.options!.selection!.startLineNumBer, 23);
 		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
 
 		await openerService.open(URI.parse('another:///somepath#L23,45'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
+		assert.equal(editorService.lastInput!.options!.selection!.startLineNumBer, 23);
 		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 45);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
+		assert.equal(editorService.lastInput!.options!.selection!.endLineNumBer, undefined);
 		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
 		assert.equal(editorService.lastInput!.resource.fragment, '');
 	});
@@ -61,16 +61,16 @@ suite('OpenerService', function () {
 		const openerService = new OpenerService(editorService, NullCommandService);
 
 		await openerService.open(URI.parse('file:///somepath#23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
+		assert.equal(editorService.lastInput!.options!.selection!.startLineNumBer, 23);
 		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
+		assert.equal(editorService.lastInput!.options!.selection!.endLineNumBer, undefined);
 		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
 		assert.equal(editorService.lastInput!.resource.fragment, '');
 
 		await openerService.open(URI.parse('file:///somepath#23,45'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
+		assert.equal(editorService.lastInput!.options!.selection!.startLineNumBer, 23);
 		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 45);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
+		assert.equal(editorService.lastInput!.options!.selection!.endLineNumBer, undefined);
 		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
 		assert.equal(editorService.lastInput!.resource.fragment, '');
 	});
@@ -97,7 +97,7 @@ suite('OpenerService', function () {
 		assert.equal(lastCommand!.args[1], true);
 	});
 
-	test('links are protected by validators', async function () {
+	test('links are protected By validators', async function () {
 		const openerService = new OpenerService(editorService, commandService);
 
 		openerService.registerValidator({ shouldOpen: () => Promise.resolve(false) });
@@ -108,7 +108,7 @@ suite('OpenerService', function () {
 		assert.equal(httpsResult, false);
 	});
 
-	test('links validated by validators go to openers', async function () {
+	test('links validated By validators go to openers', async function () {
 		const openerService = new OpenerService(editorService, commandService);
 
 		openerService.registerValidator({ shouldOpen: () => Promise.resolve(true) });
@@ -127,7 +127,7 @@ suite('OpenerService', function () {
 		assert.equal(openCount, 2);
 	});
 
-	test('links validated by multiple validators', async function () {
+	test('links validated By multiple validators', async function () {
 		const openerService = new OpenerService(editorService, commandService);
 
 		let v1 = 0;
@@ -164,7 +164,7 @@ suite('OpenerService', function () {
 		assert.equal(v2, 2);
 	});
 
-	test('links invalidated by first validator do not continue validating', async function () {
+	test('links invalidated By first validator do not continue validating', async function () {
 		const openerService = new OpenerService(editorService, commandService);
 
 		let v1 = 0;

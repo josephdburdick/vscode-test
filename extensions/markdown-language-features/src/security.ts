@@ -18,57 +18,57 @@ export const enum MarkdownPreviewSecurityLevel {
 	AllowInsecureLocalContent = 3
 }
 
-export interface ContentSecurityPolicyArbiter {
+export interface ContentSecurityPolicyArBiter {
 	getSecurityLevelForResource(resource: vscode.Uri): MarkdownPreviewSecurityLevel;
 
-	setSecurityLevelForResource(resource: vscode.Uri, level: MarkdownPreviewSecurityLevel): Thenable<void>;
+	setSecurityLevelForResource(resource: vscode.Uri, level: MarkdownPreviewSecurityLevel): ThenaBle<void>;
 
 	shouldAllowSvgsForResource(resource: vscode.Uri): void;
 
-	shouldDisableSecurityWarnings(): boolean;
+	shouldDisaBleSecurityWarnings(): Boolean;
 
-	setShouldDisableSecurityWarning(shouldShow: boolean): Thenable<void>;
+	setShouldDisaBleSecurityWarning(shouldShow: Boolean): ThenaBle<void>;
 }
 
-export class ExtensionContentSecurityPolicyArbiter implements ContentSecurityPolicyArbiter {
+export class ExtensionContentSecurityPolicyArBiter implements ContentSecurityPolicyArBiter {
 	private readonly old_trusted_workspace_key = 'trusted_preview_workspace:';
 	private readonly security_level_key = 'preview_security_level:';
-	private readonly should_disable_security_warning_key = 'preview_should_show_security_warning:';
+	private readonly should_disaBle_security_warning_key = 'preview_should_show_security_warning:';
 
 	constructor(
-		private readonly globalState: vscode.Memento,
+		private readonly gloBalState: vscode.Memento,
 		private readonly workspaceState: vscode.Memento
 	) { }
 
-	public getSecurityLevelForResource(resource: vscode.Uri): MarkdownPreviewSecurityLevel {
+	puBlic getSecurityLevelForResource(resource: vscode.Uri): MarkdownPreviewSecurityLevel {
 		// Use new security level setting first
-		const level = this.globalState.get<MarkdownPreviewSecurityLevel | undefined>(this.security_level_key + this.getRoot(resource), undefined);
+		const level = this.gloBalState.get<MarkdownPreviewSecurityLevel | undefined>(this.security_level_key + this.getRoot(resource), undefined);
 		if (typeof level !== 'undefined') {
 			return level;
 		}
 
-		// Fallback to old trusted workspace setting
-		if (this.globalState.get<boolean>(this.old_trusted_workspace_key + this.getRoot(resource), false)) {
+		// FallBack to old trusted workspace setting
+		if (this.gloBalState.get<Boolean>(this.old_trusted_workspace_key + this.getRoot(resource), false)) {
 			return MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent;
 		}
 		return MarkdownPreviewSecurityLevel.Strict;
 	}
 
-	public setSecurityLevelForResource(resource: vscode.Uri, level: MarkdownPreviewSecurityLevel): Thenable<void> {
-		return this.globalState.update(this.security_level_key + this.getRoot(resource), level);
+	puBlic setSecurityLevelForResource(resource: vscode.Uri, level: MarkdownPreviewSecurityLevel): ThenaBle<void> {
+		return this.gloBalState.update(this.security_level_key + this.getRoot(resource), level);
 	}
 
-	public shouldAllowSvgsForResource(resource: vscode.Uri) {
+	puBlic shouldAllowSvgsForResource(resource: vscode.Uri) {
 		const securityLevel = this.getSecurityLevelForResource(resource);
 		return securityLevel === MarkdownPreviewSecurityLevel.AllowInsecureContent || securityLevel === MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent;
 	}
 
-	public shouldDisableSecurityWarnings(): boolean {
-		return this.workspaceState.get<boolean>(this.should_disable_security_warning_key, false);
+	puBlic shouldDisaBleSecurityWarnings(): Boolean {
+		return this.workspaceState.get<Boolean>(this.should_disaBle_security_warning_key, false);
 	}
 
-	public setShouldDisableSecurityWarning(disabled: boolean): Thenable<void> {
-		return this.workspaceState.update(this.should_disable_security_warning_key, disabled);
+	puBlic setShouldDisaBleSecurityWarning(disaBled: Boolean): ThenaBle<void> {
+		return this.workspaceState.update(this.should_disaBle_security_warning_key, disaBled);
 	}
 
 	private getRoot(resource: vscode.Uri): vscode.Uri {
@@ -89,48 +89,48 @@ export class ExtensionContentSecurityPolicyArbiter implements ContentSecurityPol
 
 export class PreviewSecuritySelector {
 
-	public constructor(
-		private readonly cspArbiter: ContentSecurityPolicyArbiter,
-		private readonly webviewManager: MarkdownPreviewManager
+	puBlic constructor(
+		private readonly cspArBiter: ContentSecurityPolicyArBiter,
+		private readonly weBviewManager: MarkdownPreviewManager
 	) { }
 
-	public async showSecuritySelectorForResource(resource: vscode.Uri): Promise<void> {
+	puBlic async showSecuritySelectorForResource(resource: vscode.Uri): Promise<void> {
 		interface PreviewSecurityPickItem extends vscode.QuickPickItem {
 			readonly type: 'moreinfo' | 'toggle' | MarkdownPreviewSecurityLevel;
 		}
 
-		function markActiveWhen(when: boolean): string {
+		function markActiveWhen(when: Boolean): string {
 			return when ? '• ' : '';
 		}
 
-		const currentSecurityLevel = this.cspArbiter.getSecurityLevelForResource(resource);
+		const currentSecurityLevel = this.cspArBiter.getSecurityLevelForResource(resource);
 		const selection = await vscode.window.showQuickPick<PreviewSecurityPickItem>(
 			[
 				{
 					type: MarkdownPreviewSecurityLevel.Strict,
-					label: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.Strict) + localize('strict.title', 'Strict'),
+					laBel: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.Strict) + localize('strict.title', 'Strict'),
 					description: localize('strict.description', 'Only load secure content'),
 				}, {
 					type: MarkdownPreviewSecurityLevel.AllowInsecureLocalContent,
-					label: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowInsecureLocalContent) + localize('insecureLocalContent.title', 'Allow insecure local content'),
-					description: localize('insecureLocalContent.description', 'Enable loading content over http served from localhost'),
+					laBel: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowInsecureLocalContent) + localize('insecureLocalContent.title', 'Allow insecure local content'),
+					description: localize('insecureLocalContent.description', 'EnaBle loading content over http served from localhost'),
 				}, {
 					type: MarkdownPreviewSecurityLevel.AllowInsecureContent,
-					label: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowInsecureContent) + localize('insecureContent.title', 'Allow insecure content'),
-					description: localize('insecureContent.description', 'Enable loading content over http'),
+					laBel: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowInsecureContent) + localize('insecureContent.title', 'Allow insecure content'),
+					description: localize('insecureContent.description', 'EnaBle loading content over http'),
 				}, {
 					type: MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent,
-					label: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent) + localize('disable.title', 'Disable'),
-					description: localize('disable.description', 'Allow all content and script execution. Not recommended'),
+					laBel: markActiveWhen(currentSecurityLevel === MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent) + localize('disaBle.title', 'DisaBle'),
+					description: localize('disaBle.description', 'Allow all content and script execution. Not recommended'),
 				}, {
 					type: 'moreinfo',
-					label: localize('moreInfo.title', 'More Information'),
+					laBel: localize('moreInfo.title', 'More Information'),
 					description: ''
 				}, {
 					type: 'toggle',
-					label: this.cspArbiter.shouldDisableSecurityWarnings()
-						? localize('enableSecurityWarning.title', "Enable preview security warnings in this workspace")
-						: localize('disableSecurityWarning.title', "Disable preview security warning in this workspace"),
+					laBel: this.cspArBiter.shouldDisaBleSecurityWarnings()
+						? localize('enaBleSecurityWarning.title', "EnaBle preview security warnings in this workspace")
+						: localize('disaBleSecurityWarning.title', "DisaBle preview security warning in this workspace"),
 					description: localize('toggleSecurityWarning.description', 'Does not affect the content security level')
 				},
 			], {
@@ -148,12 +148,12 @@ export class PreviewSecuritySelector {
 		}
 
 		if (selection.type === 'toggle') {
-			this.cspArbiter.setShouldDisableSecurityWarning(!this.cspArbiter.shouldDisableSecurityWarnings());
-			this.webviewManager.refresh();
+			this.cspArBiter.setShouldDisaBleSecurityWarning(!this.cspArBiter.shouldDisaBleSecurityWarnings());
+			this.weBviewManager.refresh();
 			return;
 		} else {
-			await this.cspArbiter.setSecurityLevelForResource(resource, selection.type);
+			await this.cspArBiter.setSecurityLevelForResource(resource, selection.type);
 		}
-		this.webviewManager.refresh();
+		this.weBviewManager.refresh();
 	}
 }

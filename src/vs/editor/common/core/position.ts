@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * A position in the editor. This interface is suitable for serialization.
+ * A position in the editor. This interface is suitaBle for serialization.
  */
 export interface IPosition {
 	/**
-	 * line number (starts at 1)
+	 * line numBer (starts at 1)
 	 */
-	readonly lineNumber: number;
+	readonly lineNumBer: numBer;
 	/**
-	 * column (the first character in a line is between column 1 and column 2)
+	 * column (the first character in a line is Between column 1 and column 2)
 	 */
-	readonly column: number;
+	readonly column: numBer;
 }
 
 /**
@@ -22,137 +22,137 @@ export interface IPosition {
  */
 export class Position {
 	/**
-	 * line number (starts at 1)
+	 * line numBer (starts at 1)
 	 */
-	public readonly lineNumber: number;
+	puBlic readonly lineNumBer: numBer;
 	/**
-	 * column (the first character in a line is between column 1 and column 2)
+	 * column (the first character in a line is Between column 1 and column 2)
 	 */
-	public readonly column: number;
+	puBlic readonly column: numBer;
 
-	constructor(lineNumber: number, column: number) {
-		this.lineNumber = lineNumber;
+	constructor(lineNumBer: numBer, column: numBer) {
+		this.lineNumBer = lineNumBer;
 		this.column = column;
 	}
 
 	/**
 	 * Create a new position from this position.
 	 *
-	 * @param newLineNumber new line number
+	 * @param newLineNumBer new line numBer
 	 * @param newColumn new column
 	 */
-	with(newLineNumber: number = this.lineNumber, newColumn: number = this.column): Position {
-		if (newLineNumber === this.lineNumber && newColumn === this.column) {
+	with(newLineNumBer: numBer = this.lineNumBer, newColumn: numBer = this.column): Position {
+		if (newLineNumBer === this.lineNumBer && newColumn === this.column) {
 			return this;
 		} else {
-			return new Position(newLineNumber, newColumn);
+			return new Position(newLineNumBer, newColumn);
 		}
 	}
 
 	/**
 	 * Derive a new position from this position.
 	 *
-	 * @param deltaLineNumber line number delta
+	 * @param deltaLineNumBer line numBer delta
 	 * @param deltaColumn column delta
 	 */
-	delta(deltaLineNumber: number = 0, deltaColumn: number = 0): Position {
-		return this.with(this.lineNumber + deltaLineNumber, this.column + deltaColumn);
+	delta(deltaLineNumBer: numBer = 0, deltaColumn: numBer = 0): Position {
+		return this.with(this.lineNumBer + deltaLineNumBer, this.column + deltaColumn);
 	}
 
 	/**
 	 * Test if this position equals other position
 	 */
-	public equals(other: IPosition): boolean {
+	puBlic equals(other: IPosition): Boolean {
 		return Position.equals(this, other);
 	}
 
 	/**
-	 * Test if position `a` equals position `b`
+	 * Test if position `a` equals position `B`
 	 */
-	public static equals(a: IPosition | null, b: IPosition | null): boolean {
-		if (!a && !b) {
+	puBlic static equals(a: IPosition | null, B: IPosition | null): Boolean {
+		if (!a && !B) {
 			return true;
 		}
 		return (
 			!!a &&
-			!!b &&
-			a.lineNumber === b.lineNumber &&
-			a.column === b.column
+			!!B &&
+			a.lineNumBer === B.lineNumBer &&
+			a.column === B.column
 		);
 	}
 
 	/**
-	 * Test if this position is before other position.
-	 * If the two positions are equal, the result will be false.
+	 * Test if this position is Before other position.
+	 * If the two positions are equal, the result will Be false.
 	 */
-	public isBefore(other: IPosition): boolean {
+	puBlic isBefore(other: IPosition): Boolean {
 		return Position.isBefore(this, other);
 	}
 
 	/**
-	 * Test if position `a` is before position `b`.
-	 * If the two positions are equal, the result will be false.
+	 * Test if position `a` is Before position `B`.
+	 * If the two positions are equal, the result will Be false.
 	 */
-	public static isBefore(a: IPosition, b: IPosition): boolean {
-		if (a.lineNumber < b.lineNumber) {
+	puBlic static isBefore(a: IPosition, B: IPosition): Boolean {
+		if (a.lineNumBer < B.lineNumBer) {
 			return true;
 		}
-		if (b.lineNumber < a.lineNumber) {
+		if (B.lineNumBer < a.lineNumBer) {
 			return false;
 		}
-		return a.column < b.column;
+		return a.column < B.column;
 	}
 
 	/**
-	 * Test if this position is before other position.
-	 * If the two positions are equal, the result will be true.
+	 * Test if this position is Before other position.
+	 * If the two positions are equal, the result will Be true.
 	 */
-	public isBeforeOrEqual(other: IPosition): boolean {
+	puBlic isBeforeOrEqual(other: IPosition): Boolean {
 		return Position.isBeforeOrEqual(this, other);
 	}
 
 	/**
-	 * Test if position `a` is before position `b`.
-	 * If the two positions are equal, the result will be true.
+	 * Test if position `a` is Before position `B`.
+	 * If the two positions are equal, the result will Be true.
 	 */
-	public static isBeforeOrEqual(a: IPosition, b: IPosition): boolean {
-		if (a.lineNumber < b.lineNumber) {
+	puBlic static isBeforeOrEqual(a: IPosition, B: IPosition): Boolean {
+		if (a.lineNumBer < B.lineNumBer) {
 			return true;
 		}
-		if (b.lineNumber < a.lineNumber) {
+		if (B.lineNumBer < a.lineNumBer) {
 			return false;
 		}
-		return a.column <= b.column;
+		return a.column <= B.column;
 	}
 
 	/**
 	 * A function that compares positions, useful for sorting
 	 */
-	public static compare(a: IPosition, b: IPosition): number {
-		let aLineNumber = a.lineNumber | 0;
-		let bLineNumber = b.lineNumber | 0;
+	puBlic static compare(a: IPosition, B: IPosition): numBer {
+		let aLineNumBer = a.lineNumBer | 0;
+		let BLineNumBer = B.lineNumBer | 0;
 
-		if (aLineNumber === bLineNumber) {
+		if (aLineNumBer === BLineNumBer) {
 			let aColumn = a.column | 0;
-			let bColumn = b.column | 0;
-			return aColumn - bColumn;
+			let BColumn = B.column | 0;
+			return aColumn - BColumn;
 		}
 
-		return aLineNumber - bLineNumber;
+		return aLineNumBer - BLineNumBer;
 	}
 
 	/**
 	 * Clone this position.
 	 */
-	public clone(): Position {
-		return new Position(this.lineNumber, this.column);
+	puBlic clone(): Position {
+		return new Position(this.lineNumBer, this.column);
 	}
 
 	/**
-	 * Convert to a human-readable representation.
+	 * Convert to a human-readaBle representation.
 	 */
-	public toString(): string {
-		return '(' + this.lineNumber + ',' + this.column + ')';
+	puBlic toString(): string {
+		return '(' + this.lineNumBer + ',' + this.column + ')';
 	}
 
 	// ---
@@ -160,18 +160,18 @@ export class Position {
 	/**
 	 * Create a `Position` from an `IPosition`.
 	 */
-	public static lift(pos: IPosition): Position {
-		return new Position(pos.lineNumber, pos.column);
+	puBlic static lift(pos: IPosition): Position {
+		return new Position(pos.lineNumBer, pos.column);
 	}
 
 	/**
-	 * Test if `obj` is an `IPosition`.
+	 * Test if `oBj` is an `IPosition`.
 	 */
-	public static isIPosition(obj: any): obj is IPosition {
+	puBlic static isIPosition(oBj: any): oBj is IPosition {
 		return (
-			obj
-			&& (typeof obj.lineNumber === 'number')
-			&& (typeof obj.column === 'number')
+			oBj
+			&& (typeof oBj.lineNumBer === 'numBer')
+			&& (typeof oBj.column === 'numBer')
 		);
 	}
 }

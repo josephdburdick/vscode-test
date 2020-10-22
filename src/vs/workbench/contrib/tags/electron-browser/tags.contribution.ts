@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { WorkspaceTags } from 'vs/workbench/contrib/tags/electron-browser/workspaceTags';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { WorkspaceTags } from 'vs/workBench/contriB/tags/electron-Browser/workspaceTags';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
-// Register Workspace Tags Contribution
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(WorkspaceTags, LifecyclePhase.Eventually);
+// Register Workspace Tags ContriBution
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(WorkspaceTags, LifecyclePhase.Eventually);

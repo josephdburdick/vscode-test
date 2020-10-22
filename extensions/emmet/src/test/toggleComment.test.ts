@@ -9,7 +9,7 @@ import { Selection } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
 import { toggleComment as toggleCommentImpl } from '../toggleComment';
 
-function toggleComment(): Thenable<boolean> {
+function toggleComment(): ThenaBle<Boolean> {
 	const result = toggleCommentImpl();
 	assert.ok(result);
 	return result!;
@@ -31,7 +31,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>
 		<span/>
 		<style>
-			.boo {
+			.Boo {
 				margin: 10px;
 				padding: 20px;
 			}
@@ -43,7 +43,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 	</div>
 	`;
 
-	test('toggle comment with multiple cursors, but no selection (HTML)', () => {
+	test('toggle comment with multiple cursors, But no selection (HTML)', () => {
 		const expectedContents = `
 	<div class="hello">
 		<ul>
@@ -57,7 +57,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>-->
 		<span/>
 		<style>
-			.boo {
+			.Boo {
 				/*margin: 10px;*/
 				padding: 20px;
 			}
@@ -99,7 +99,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>-->
 		<span/>
 		<style>
-			.boo {
+			.Boo {
 				/*margin: 10px;*/
 				padding: 20px;
 			}
@@ -140,7 +140,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>
 		<span/>
 		<style>
-			.boo {
+			.Boo {
 				/*margin: 10px;
 				padding: 20px;*/
 			}
@@ -178,7 +178,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>-->
 		<span/>
 		<style>
-			.boo {
+			.Boo {
 				margin: 10px;
 				padding: 20px;
 			}
@@ -216,7 +216,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
 		</ul>-->
 		<span/>
 		<!--<style>
-			.boo {
+			.Boo {
 				margin: 10px;
 				padding: 20px;
 			}
@@ -295,7 +295,7 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
 		width: 42px;
 	}`;
 
-	test('toggle comment with multiple cursors, but no selection (CSS)', () => {
+	test('toggle comment with multiple cursors, But no selection (CSS)', () => {
 		const expectedContents = `
 	.one {
 		/*margin: 10px;*/
@@ -469,7 +469,7 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
 		});
 	});
 
-	test('toggle comment when selection spans properties of separate rules, with both start and end in whitespace (CSS)', () => {
+	test('toggle comment when selection spans properties of separate rules, with Both start and end in whitespace (CSS)', () => {
 		const expectedContents = `
 	.one {
 		margin: 10px;
@@ -608,7 +608,7 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
 		});
 	});
 
-	test('toggle comment with multiple cursors, but no selection (SCSS)', () => {
+	test('toggle comment with multiple cursors, But no selection (SCSS)', () => {
 		const expectedContents = `
 	.one {
 		/*height: 42px;*/

@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/arrays';
-import { streamToBuffer } from 'vs/base/common/buffer';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { equals } from 'vs/Base/common/arrays';
+import { streamToBuffer } from 'vs/Base/common/Buffer';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { createChannelSender } from 'vs/Base/parts/ipc/common/ipc';
+import { ipcRenderer } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 import * as modes from 'vs/editor/common/modes';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { loadLocalResource, WebviewResourceResponse } from 'vs/platform/webview/common/resourceLoader';
-import { IWebviewManagerService } from 'vs/platform/webview/common/webviewManagerService';
-import { WebviewContentOptions, WebviewExtensionDescription } from 'vs/workbench/contrib/webview/browser/webview';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { loadLocalResource, WeBviewResourceResponse } from 'vs/platform/weBview/common/resourceLoader';
+import { IWeBviewManagerService } from 'vs/platform/weBview/common/weBviewManagerService';
+import { WeBviewContentOptions, WeBviewExtensionDescription } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
 /**
  * Try to rewrite `vscode-resource:` urls in html
@@ -32,35 +32,35 @@ export function rewriteVsCodeResourceUrls(
 	return html
 		.replace(/(["'])vscode-resource:(\/\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (_match, startQuote, _1, scheme, path, endQuote) => {
 			if (scheme) {
-				return `${startQuote}${Schemas.vscodeWebviewResource}://${id}/${scheme}${path}${endQuote}`;
+				return `${startQuote}${Schemas.vscodeWeBviewResource}://${id}/${scheme}${path}${endQuote}`;
 			}
 			if (!path.startsWith('//')) {
 				// Add an empty authority if we don't already have one
 				path = '//' + path;
 			}
-			return `${startQuote}${Schemas.vscodeWebviewResource}://${id}/file${path}${endQuote}`;
+			return `${startQuote}${Schemas.vscodeWeBviewResource}://${id}/file${path}${endQuote}`;
 		});
 }
 
 /**
- * Manages the loading of resources inside of a webview.
+ * Manages the loading of resources inside of a weBview.
  */
-export class WebviewResourceRequestManager extends Disposable {
+export class WeBviewResourceRequestManager extends DisposaBle {
 
-	private readonly _webviewManagerService: IWebviewManagerService;
+	private readonly _weBviewManagerService: IWeBviewManagerService;
 
 	private _localResourceRoots: ReadonlyArray<URI>;
-	private _portMappings: ReadonlyArray<modes.IWebviewPortMapping>;
+	private _portMappings: ReadonlyArray<modes.IWeBviewPortMapping>;
 
 	private _ready: Promise<void>;
 
 	constructor(
 		private readonly id: string,
-		private readonly extension: WebviewExtensionDescription | undefined,
-		initialContentOptions: WebviewContentOptions,
+		private readonly extension: WeBviewExtensionDescription | undefined,
+		initialContentOptions: WeBviewContentOptions,
 		@ILogService private readonly _logService: ILogService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IMainProcessService mainProcessService: IMainProcessService,
 		@INativeHostService nativeHostService: INativeHostService,
 		@IFileService fileService: IFileService,
@@ -68,9 +68,9 @@ export class WebviewResourceRequestManager extends Disposable {
 	) {
 		super();
 
-		this._logService.debug(`WebviewResourceRequestManager(${this.id}): init`);
+		this._logService.deBug(`WeBviewResourceRequestManager(${this.id}): init`);
 
-		this._webviewManagerService = createChannelSender<IWebviewManagerService>(mainProcessService.getChannel('webview'));
+		this._weBviewManagerService = createChannelSender<IWeBviewManagerService>(mainProcessService.getChannel('weBview'));
 
 		this._localResourceRoots = initialContentOptions.localResourceRoots || [];
 		this._portMappings = initialContentOptions.portMapping || [];
@@ -78,29 +78,29 @@ export class WebviewResourceRequestManager extends Disposable {
 		const remoteAuthority = environmentService.remoteAuthority;
 		const remoteConnectionData = remoteAuthority ? remoteAuthorityResolverService.getConnectionData(remoteAuthority) : null;
 
-		this._logService.debug(`WebviewResourceRequestManager(${this.id}): did-start-loading`);
-		this._ready = this._webviewManagerService.registerWebview(this.id, nativeHostService.windowId, {
+		this._logService.deBug(`WeBviewResourceRequestManager(${this.id}): did-start-loading`);
+		this._ready = this._weBviewManagerService.registerWeBview(this.id, nativeHostService.windowId, {
 			extensionLocation: this.extension?.location.toJSON(),
 			localResourceRoots: this._localResourceRoots.map(x => x.toJSON()),
 			remoteConnectionData: remoteConnectionData,
 			portMappings: this._portMappings,
 		}).then(() => {
-			this._logService.debug(`WebviewResourceRequestManager(${this.id}): did register`);
+			this._logService.deBug(`WeBviewResourceRequestManager(${this.id}): did register`);
 		});
 
 		if (remoteAuthority) {
 			this._register(remoteAuthorityResolverService.onDidChangeConnectionData(() => {
-				const update = this._webviewManagerService.updateWebviewMetadata(this.id, {
+				const update = this._weBviewManagerService.updateWeBviewMetadata(this.id, {
 					remoteConnectionData: remoteAuthority ? remoteAuthorityResolverService.getConnectionData(remoteAuthority) : null,
 				});
 				this._ready = this._ready.then(() => update);
 			}));
 		}
 
-		this._register(toDisposable(() => this._webviewManagerService.unregisterWebview(this.id)));
+		this._register(toDisposaBle(() => this._weBviewManagerService.unregisterWeBview(this.id)));
 
-		const loadResourceChannel = `vscode:loadWebviewResource-${id}`;
-		const loadResourceListener = async (_event: any, requestId: number, resource: UriComponents) => {
+		const loadResourceChannel = `vscode:loadWeBviewResource-${id}`;
+		const loadResourceListener = async (_event: any, requestId: numBer, resource: UriComponents) => {
 			try {
 				const response = await loadLocalResource(URI.revive(resource), {
 					extensionLocation: this.extension?.location,
@@ -110,21 +110,21 @@ export class WebviewResourceRequestManager extends Disposable {
 					readFileStream: (resource) => fileService.readFileStream(resource).then(x => x.value),
 				}, requestService);
 
-				if (response.type === WebviewResourceResponse.Type.Success) {
-					const buffer = await streamToBuffer(response.stream);
-					return this._webviewManagerService.didLoadResource(requestId, buffer);
+				if (response.type === WeBviewResourceResponse.Type.Success) {
+					const Buffer = await streamToBuffer(response.stream);
+					return this._weBviewManagerService.didLoadResource(requestId, Buffer);
 				}
 			} catch {
 				// Noop
 			}
-			this._webviewManagerService.didLoadResource(requestId, undefined);
+			this._weBviewManagerService.didLoadResource(requestId, undefined);
 		};
 
 		ipcRenderer.on(loadResourceChannel, loadResourceListener);
-		this._register(toDisposable(() => ipcRenderer.removeListener(loadResourceChannel, loadResourceListener)));
+		this._register(toDisposaBle(() => ipcRenderer.removeListener(loadResourceChannel, loadResourceListener)));
 	}
 
-	public update(options: WebviewContentOptions) {
+	puBlic update(options: WeBviewContentOptions) {
 		const localResourceRoots = options.localResourceRoots || [];
 		const portMappings = options.portMapping || [];
 
@@ -135,13 +135,13 @@ export class WebviewResourceRequestManager extends Disposable {
 		this._localResourceRoots = localResourceRoots;
 		this._portMappings = portMappings;
 
-		this._logService.debug(`WebviewResourceRequestManager(${this.id}): will update`);
+		this._logService.deBug(`WeBviewResourceRequestManager(${this.id}): will update`);
 
-		const update = this._webviewManagerService.updateWebviewMetadata(this.id, {
+		const update = this._weBviewManagerService.updateWeBviewMetadata(this.id, {
 			localResourceRoots: localResourceRoots.map(x => x.toJSON()),
 			portMappings: portMappings,
 		}).then(() => {
-			this._logService.debug(`WebviewResourceRequestManager(${this.id}): did update`);
+			this._logService.deBug(`WeBviewResourceRequestManager(${this.id}): did update`);
 		});
 
 		this._ready = this._ready.then(() => update);
@@ -149,15 +149,15 @@ export class WebviewResourceRequestManager extends Disposable {
 
 	private needsUpdate(
 		localResourceRoots: readonly URI[],
-		portMappings: readonly modes.IWebviewPortMapping[],
-	): boolean {
+		portMappings: readonly modes.IWeBviewPortMapping[],
+	): Boolean {
 		return !(
-			equals(this._localResourceRoots, localResourceRoots, (a, b) => a.toString() === b.toString())
-			&& equals(this._portMappings, portMappings, (a, b) => a.extensionHostPort === b.extensionHostPort && a.webviewPort === b.webviewPort)
+			equals(this._localResourceRoots, localResourceRoots, (a, B) => a.toString() === B.toString())
+			&& equals(this._portMappings, portMappings, (a, B) => a.extensionHostPort === B.extensionHostPort && a.weBviewPort === B.weBviewPort)
 		);
 	}
 
-	public ensureReady(): Promise<void> {
+	puBlic ensureReady(): Promise<void> {
 		return this._ready;
 	}
 }

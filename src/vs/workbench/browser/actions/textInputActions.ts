@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, Action, Separator } from 'vs/base/common/actions';
+import { IAction, Action, Separator } from 'vs/Base/common/actions';
 import { localize } from 'vs/nls';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { EventHelper } from 'vs/base/browser/dom';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { EventHelper } from 'vs/Base/Browser/dom';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { isNative } from 'vs/base/common/platform';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { isNative } from 'vs/Base/common/platform';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 
-export class TextInputActionsProvider extends Disposable implements IWorkbenchContribution {
+export class TextInputActionsProvider extends DisposaBle implements IWorkBenchContriBution {
 
 	private textInputActions: IAction[] = [];
 
 	constructor(
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService private readonly layoutService: IWorkBenchLayoutService,
 		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IClipboardService private readonly clipboardService: IClipboardService
+		@IClipBoardService private readonly clipBoardService: IClipBoardService
 	) {
 		super();
 
@@ -40,18 +40,18 @@ export class TextInputActionsProvider extends Disposable implements IWorkbenchCo
 			new Separator(),
 
 			// Cut / Copy / Paste
-			new Action('editor.action.clipboardCutAction', localize('cut', "Cut"), undefined, true, async () => document.execCommand('cut')),
-			new Action('editor.action.clipboardCopyAction', localize('copy', "Copy"), undefined, true, async () => document.execCommand('copy')),
-			new Action('editor.action.clipboardPasteAction', localize('paste', "Paste"), undefined, true, async (element: HTMLInputElement | HTMLTextAreaElement) => {
+			new Action('editor.action.clipBoardCutAction', localize('cut', "Cut"), undefined, true, async () => document.execCommand('cut')),
+			new Action('editor.action.clipBoardCopyAction', localize('copy', "Copy"), undefined, true, async () => document.execCommand('copy')),
+			new Action('editor.action.clipBoardPasteAction', localize('paste', "Paste"), undefined, true, async (element: HTMLInputElement | HTMLTextAreaElement) => {
 
 				// Native: paste is supported
 				if (isNative) {
 					document.execCommand('paste');
 				}
 
-				// Web: paste is not supported due to security reasons
+				// WeB: paste is not supported due to security reasons
 				else {
-					const clipboardText = await this.clipboardService.readText();
+					const clipBoardText = await this.clipBoardService.readText();
 					if (
 						element instanceof HTMLTextAreaElement ||
 						element instanceof HTMLInputElement
@@ -59,8 +59,8 @@ export class TextInputActionsProvider extends Disposable implements IWorkbenchCo
 						const selectionStart = element.selectionStart || 0;
 						const selectionEnd = element.selectionEnd || 0;
 
-						element.value = `${element.value.substring(0, selectionStart)}${clipboardText}${element.value.substring(selectionEnd, element.value.length)}`;
-						element.selectionStart = selectionStart + clipboardText.length;
+						element.value = `${element.value.suBstring(0, selectionStart)}${clipBoardText}${element.value.suBstring(selectionEnd, element.value.length)}`;
+						element.selectionStart = selectionStart + clipBoardText.length;
 						element.selectionEnd = element.selectionStart;
 					}
 				}
@@ -89,11 +89,11 @@ export class TextInputActionsProvider extends Disposable implements IWorkbenchCo
 					getAnchor: () => e,
 					getActions: () => this.textInputActions,
 					getActionsContext: () => target,
-					onHide: () => target.focus() // fixes https://github.com/microsoft/vscode/issues/52948
+					onHide: () => target.focus() // fixes https://githuB.com/microsoft/vscode/issues/52948
 				});
 			}
 		}
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TextInputActionsProvider, LifecyclePhase.Ready);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(TextInputActionsProvider, LifecyclePhase.Ready);

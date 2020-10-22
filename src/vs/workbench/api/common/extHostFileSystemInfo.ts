@@ -3,30 +3,30 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostFileSystemInfoShape } from 'vs/workbench/api/common/extHost.protocol';
+import { ExtHostFileSystemInfoShape } from 'vs/workBench/api/common/extHost.protocol';
 
 export class ExtHostFileSystemInfo implements ExtHostFileSystemInfoShape {
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly _systemSchemes = new Set(Object.keys(Schemas));
-	private readonly _providerInfo = new Map<string, number>();
+	private readonly _systemSchemes = new Set(OBject.keys(Schemas));
+	private readonly _providerInfo = new Map<string, numBer>();
 
-	$acceptProviderInfos(scheme: string, capabilities: number | null): void {
-		if (capabilities === null) {
+	$acceptProviderInfos(scheme: string, capaBilities: numBer | null): void {
+		if (capaBilities === null) {
 			this._providerInfo.delete(scheme);
 		} else {
-			this._providerInfo.set(scheme, capabilities);
+			this._providerInfo.set(scheme, capaBilities);
 		}
 	}
 
-	isFreeScheme(scheme: string): boolean {
+	isFreeScheme(scheme: string): Boolean {
 		return !this._providerInfo.has(scheme) && !this._systemSchemes.has(scheme);
 	}
 
-	getCapabilities(scheme: string): number | undefined {
+	getCapaBilities(scheme: string): numBer | undefined {
 		return this._providerInfo.get(scheme);
 	}
 }

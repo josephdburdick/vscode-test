@@ -5,18 +5,18 @@
 
 import { DriverChannel, WindowDriverChannelClient, IWindowDriverRegistry, WindowDriverRegistryChannel, IDriverOptions } from 'vs/platform/driver/node/driver';
 import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
-import { serve as serveNet } from 'vs/base/parts/ipc/node/ipc.net';
-import { combinedDisposable, IDisposable } from 'vs/base/common/lifecycle';
+import { serve as serveNet } from 'vs/Base/parts/ipc/node/ipc.net';
+import { comBinedDisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IPCServer, StaticRouter } from 'vs/base/parts/ipc/common/ipc';
-import { SimpleKeybinding, KeyCode } from 'vs/base/common/keyCodes';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { OS } from 'vs/base/common/platform';
-import { Emitter, Event } from 'vs/base/common/event';
+import { IPCServer, StaticRouter } from 'vs/Base/parts/ipc/common/ipc';
+import { SimpleKeyBinding, KeyCode } from 'vs/Base/common/keyCodes';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { OS } from 'vs/Base/common/platform';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { timeout } from 'vs/base/common/async';
+import { ScanCodeBinding } from 'vs/Base/common/scanCode';
+import { KeyBindingParser } from 'vs/Base/common/keyBindingParser';
+import { timeout } from 'vs/Base/common/async';
 import { IDriver, IElement, IWindowDriver } from 'vs/platform/driver/common/driver';
 import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 import { INativeHostMainService } from 'vs/platform/native/electron-main/nativeHostMainService';
@@ -29,8 +29,8 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 
 	declare readonly _serviceBrand: undefined;
 
-	private registeredWindowIds = new Set<number>();
-	private reloadingWindowIds = new Set<number>();
+	private registeredWindowIds = new Set<numBer>();
+	private reloadingWindowIds = new Set<numBer>();
 	private readonly onDidReloadingChange = new Emitter<void>();
 
 	constructor(
@@ -41,36 +41,36 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 		@INativeHostMainService private readonly nativeHostMainService: INativeHostMainService
 	) { }
 
-	async registerWindowDriver(windowId: number): Promise<IDriverOptions> {
+	async registerWindowDriver(windowId: numBer): Promise<IDriverOptions> {
 		this.registeredWindowIds.add(windowId);
 		this.reloadingWindowIds.delete(windowId);
 		this.onDidReloadingChange.fire();
 		return this.options;
 	}
 
-	async reloadWindowDriver(windowId: number): Promise<void> {
+	async reloadWindowDriver(windowId: numBer): Promise<void> {
 		this.reloadingWindowIds.add(windowId);
 	}
 
-	async getWindowIds(): Promise<number[]> {
+	async getWindowIds(): Promise<numBer[]> {
 		return this.windowsMainService.getWindows()
 			.map(w => w.id)
 			.filter(id => this.registeredWindowIds.has(id) && !this.reloadingWindowIds.has(id));
 	}
 
-	async capturePage(windowId: number): Promise<string> {
+	async capturePage(windowId: numBer): Promise<string> {
 		await this.whenUnfrozen(windowId);
 
 		const window = this.windowsMainService.getWindowById(windowId);
 		if (!window) {
 			throw new Error('Invalid window');
 		}
-		const webContents = window.win.webContents;
-		const image = await webContents.capturePage();
-		return image.toPNG().toString('base64');
+		const weBContents = window.win.weBContents;
+		const image = await weBContents.capturePage();
+		return image.toPNG().toString('Base64');
 	}
 
-	async reloadWindow(windowId: number): Promise<void> {
+	async reloadWindow(windowId: numBer): Promise<void> {
 		await this.whenUnfrozen(windowId);
 
 		const window = this.windowsMainService.getWindowById(windowId);
@@ -85,18 +85,18 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 		return this.nativeHostMainService.quit(undefined);
 	}
 
-	async dispatchKeybinding(windowId: number, keybinding: string): Promise<void> {
+	async dispatchKeyBinding(windowId: numBer, keyBinding: string): Promise<void> {
 		await this.whenUnfrozen(windowId);
 
-		const parts = KeybindingParser.parseUserBinding(keybinding);
+		const parts = KeyBindingParser.parseUserBinding(keyBinding);
 
 		for (let part of parts) {
-			await this._dispatchKeybinding(windowId, part);
+			await this._dispatchKeyBinding(windowId, part);
 		}
 	}
 
-	private async _dispatchKeybinding(windowId: number, keybinding: SimpleKeybinding | ScanCodeBinding): Promise<void> {
-		if (keybinding instanceof ScanCodeBinding) {
+	private async _dispatchKeyBinding(windowId: numBer, keyBinding: SimpleKeyBinding | ScanCodeBinding): Promise<void> {
+		if (keyBinding instanceof ScanCodeBinding) {
 			throw new Error('ScanCodeBindings not supported');
 		}
 
@@ -104,91 +104,91 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 		if (!window) {
 			throw new Error('Invalid window');
 		}
-		const webContents = window.win.webContents;
-		const noModifiedKeybinding = new SimpleKeybinding(false, false, false, false, keybinding.keyCode);
-		const resolvedKeybinding = new USLayoutResolvedKeybinding(noModifiedKeybinding.toChord(), OS);
-		const keyCode = resolvedKeybinding.getElectronAccelerator();
+		const weBContents = window.win.weBContents;
+		const noModifiedKeyBinding = new SimpleKeyBinding(false, false, false, false, keyBinding.keyCode);
+		const resolvedKeyBinding = new USLayoutResolvedKeyBinding(noModifiedKeyBinding.toChord(), OS);
+		const keyCode = resolvedKeyBinding.getElectronAccelerator();
 
 		const modifiers: string[] = [];
 
-		if (keybinding.ctrlKey) {
+		if (keyBinding.ctrlKey) {
 			modifiers.push('ctrl');
 		}
 
-		if (keybinding.metaKey) {
+		if (keyBinding.metaKey) {
 			modifiers.push('meta');
 		}
 
-		if (keybinding.shiftKey) {
+		if (keyBinding.shiftKey) {
 			modifiers.push('shift');
 		}
 
-		if (keybinding.altKey) {
+		if (keyBinding.altKey) {
 			modifiers.push('alt');
 		}
 
-		webContents.sendInputEvent({ type: 'keyDown', keyCode, modifiers } as any);
+		weBContents.sendInputEvent({ type: 'keyDown', keyCode, modifiers } as any);
 
-		if (!isSilentKeyCode(keybinding.keyCode)) {
-			webContents.sendInputEvent({ type: 'char', keyCode, modifiers } as any);
+		if (!isSilentKeyCode(keyBinding.keyCode)) {
+			weBContents.sendInputEvent({ type: 'char', keyCode, modifiers } as any);
 		}
 
-		webContents.sendInputEvent({ type: 'keyUp', keyCode, modifiers } as any);
+		weBContents.sendInputEvent({ type: 'keyUp', keyCode, modifiers } as any);
 
 		await timeout(100);
 	}
 
-	async click(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<void> {
+	async click(windowId: numBer, selector: string, xoffset?: numBer, yoffset?: numBer): Promise<void> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		await windowDriver.click(selector, xoffset, yoffset);
 	}
 
-	async doubleClick(windowId: number, selector: string): Promise<void> {
+	async douBleClick(windowId: numBer, selector: string): Promise<void> {
 		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.doubleClick(selector);
+		await windowDriver.douBleClick(selector);
 	}
 
-	async setValue(windowId: number, selector: string, text: string): Promise<void> {
+	async setValue(windowId: numBer, selector: string, text: string): Promise<void> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		await windowDriver.setValue(selector, text);
 	}
 
-	async getTitle(windowId: number): Promise<string> {
+	async getTitle(windowId: numBer): Promise<string> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		return await windowDriver.getTitle();
 	}
 
-	async isActiveElement(windowId: number, selector: string): Promise<boolean> {
+	async isActiveElement(windowId: numBer, selector: string): Promise<Boolean> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		return await windowDriver.isActiveElement(selector);
 	}
 
-	async getElements(windowId: number, selector: string, recursive: boolean): Promise<IElement[]> {
+	async getElements(windowId: numBer, selector: string, recursive: Boolean): Promise<IElement[]> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		return await windowDriver.getElements(selector, recursive);
 	}
 
-	async getElementXY(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
+	async getElementXY(windowId: numBer, selector: string, xoffset?: numBer, yoffset?: numBer): Promise<{ x: numBer; y: numBer; }> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		return await windowDriver.getElementXY(selector, xoffset, yoffset);
 	}
 
-	async typeInEditor(windowId: number, selector: string, text: string): Promise<void> {
+	async typeInEditor(windowId: numBer, selector: string, text: string): Promise<void> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		await windowDriver.typeInEditor(selector, text);
 	}
 
-	async getTerminalBuffer(windowId: number, selector: string): Promise<string[]> {
+	async getTerminalBuffer(windowId: numBer, selector: string): Promise<string[]> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		return await windowDriver.getTerminalBuffer(selector);
 	}
 
-	async writeInTerminal(windowId: number, selector: string, text: string): Promise<void> {
+	async writeInTerminal(windowId: numBer, selector: string, text: string): Promise<void> {
 		const windowDriver = await this.getWindowDriver(windowId);
 		await windowDriver.writeInTerminal(selector, text);
 	}
 
-	private async getWindowDriver(windowId: number): Promise<IWindowDriver> {
+	private async getWindowDriver(windowId: numBer): Promise<IWindowDriver> {
 		await this.whenUnfrozen(windowId);
 
 		const id = `window:${windowId}`;
@@ -197,7 +197,7 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 		return new WindowDriverChannelClient(windowDriverChannel);
 	}
 
-	private async whenUnfrozen(windowId: number): Promise<void> {
+	private async whenUnfrozen(windowId: numBer): Promise<void> {
 		while (this.reloadingWindowIds.has(windowId)) {
 			await Event.toPromise(this.onDidReloadingChange.event);
 		}
@@ -209,9 +209,9 @@ export async function serve(
 	handle: string,
 	environmentService: IEnvironmentMainService,
 	instantiationService: IInstantiationService
-): Promise<IDisposable> {
-	const verbose = environmentService.driverVerbose;
-	const driver = instantiationService.createInstance(Driver, windowServer, { verbose });
+): Promise<IDisposaBle> {
+	const verBose = environmentService.driverVerBose;
+	const driver = instantiationService.createInstance(Driver, windowServer, { verBose });
 
 	const windowDriverRegistryChannel = new WindowDriverRegistryChannel(driver);
 	windowServer.registerChannel('windowDriverRegistry', windowDriverRegistryChannel);
@@ -220,5 +220,5 @@ export async function serve(
 	const channel = new DriverChannel(driver);
 	server.registerChannel('driver', channel);
 
-	return combinedDisposable(server, windowServer);
+	return comBinedDisposaBle(server, windowServer);
 }

@@ -5,7 +5,7 @@
 
 import * as nls from 'vs/nls';
 import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import { languagesExtPoint } from 'vs/workBench/services/mode/common/workBenchModeService';
 
 export enum CodeActionExtensionPointFields {
 	languages = 'languages',
@@ -15,7 +15,7 @@ export enum CodeActionExtensionPointFields {
 	description = 'description'
 }
 
-export interface ContributedCodeAction {
+export interface ContriButedCodeAction {
 	readonly [CodeActionExtensionPointFields.kind]: string;
 	readonly [CodeActionExtensionPointFields.title]: string;
 	readonly [CodeActionExtensionPointFields.description]?: string;
@@ -23,36 +23,36 @@ export interface ContributedCodeAction {
 
 export interface CodeActionsExtensionPoint {
 	readonly [CodeActionExtensionPointFields.languages]: readonly string[];
-	readonly [CodeActionExtensionPointFields.actions]: readonly ContributedCodeAction[];
+	readonly [CodeActionExtensionPointFields.actions]: readonly ContriButedCodeAction[];
 }
 
-const codeActionsExtensionPointSchema = Object.freeze<IConfigurationPropertySchema>({
+const codeActionsExtensionPointSchema = OBject.freeze<IConfigurationPropertySchema>({
 	type: 'array',
-	markdownDescription: nls.localize('contributes.codeActions', "Configure which editor to use for a resource."),
+	markdownDescription: nls.localize('contriButes.codeActions', "Configure which editor to use for a resource."),
 	items: {
-		type: 'object',
+		type: 'oBject',
 		required: [CodeActionExtensionPointFields.languages, CodeActionExtensionPointFields.actions],
 		properties: {
 			[CodeActionExtensionPointFields.languages]: {
 				type: 'array',
-				description: nls.localize('contributes.codeActions.languages', "Language modes that the code actions are enabled for."),
+				description: nls.localize('contriButes.codeActions.languages', "Language modes that the code actions are enaBled for."),
 				items: { type: 'string' }
 			},
 			[CodeActionExtensionPointFields.actions]: {
-				type: 'object',
+				type: 'oBject',
 				required: [CodeActionExtensionPointFields.kind, CodeActionExtensionPointFields.title],
 				properties: {
 					[CodeActionExtensionPointFields.kind]: {
 						type: 'string',
-						markdownDescription: nls.localize('contributes.codeActions.kind', "`CodeActionKind` of the contributed code action."),
+						markdownDescription: nls.localize('contriButes.codeActions.kind', "`CodeActionKind` of the contriButed code action."),
 					},
 					[CodeActionExtensionPointFields.title]: {
 						type: 'string',
-						description: nls.localize('contributes.codeActions.title', "Label for the code action used in the UI."),
+						description: nls.localize('contriButes.codeActions.title', "LaBel for the code action used in the UI."),
 					},
 					[CodeActionExtensionPointFields.description]: {
 						type: 'string',
-						description: nls.localize('contributes.codeActions.description', "Description of what the code action does."),
+						description: nls.localize('contriButes.codeActions.description', "Description of what the code action does."),
 					},
 				}
 			}

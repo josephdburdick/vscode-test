@@ -7,9 +7,9 @@ import { IStorageService, StorageScope } from 'vs/platform/storage/common/storag
 import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
 import { instanceStorageKey, firstSessionDateStorageKey, lastSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
 import { cleanRemoteAuthority } from 'vs/platform/telemetry/common/telemetryUtils';
-import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { process } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 
-export async function resolveWorkbenchCommonProperties(
+export async function resolveWorkBenchCommonProperties(
 	storageService: IStorageService,
 	commit: string | undefined,
 	version: string | undefined,
@@ -17,7 +17,7 @@ export async function resolveWorkbenchCommonProperties(
 	msftInternalDomains: string[] | undefined,
 	installSourcePath: string,
 	remoteAuthority?: string
-): Promise<{ [name: string]: string | boolean | undefined }> {
+): Promise<{ [name: string]: string | Boolean | undefined }> {
 	const result = await resolveCommonProperties(commit, version, machineId, msftInternalDomains, installSourcePath, undefined);
 	const instanceId = storageService.get(instanceStorageKey, StorageScope.GLOBAL)!;
 	const firstSessionDate = storageService.get(firstSessionDateStorageKey, StorageScope.GLOBAL)!;

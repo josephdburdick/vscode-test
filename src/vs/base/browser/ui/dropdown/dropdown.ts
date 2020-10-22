@@ -4,63 +4,63 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./dropdown';
-import { Gesture, EventType as GestureEventType } from 'vs/base/browser/touch';
-import { ActionRunner, IAction } from 'vs/base/common/actions';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IContextViewProvider, IAnchor, AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
-import { IMenuOptions } from 'vs/base/browser/ui/menu/menu';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { EventHelper, EventType, append, $, addDisposableListener, DOMEvent } from 'vs/base/browser/dom';
-import { IContextMenuProvider } from 'vs/base/browser/contextmenu';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Emitter } from 'vs/base/common/event';
+import { Gesture, EventType as GestureEventType } from 'vs/Base/Browser/touch';
+import { ActionRunner, IAction } from 'vs/Base/common/actions';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IContextViewProvider, IAnchor, AnchorAlignment } from 'vs/Base/Browser/ui/contextview/contextview';
+import { IMenuOptions } from 'vs/Base/Browser/ui/menu/menu';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { EventHelper, EventType, append, $, addDisposaBleListener, DOMEvent } from 'vs/Base/Browser/dom';
+import { IContextMenuProvider } from 'vs/Base/Browser/contextmenu';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { Emitter } from 'vs/Base/common/event';
 
-export interface ILabelRenderer {
-	(container: HTMLElement): IDisposable | null;
+export interface ILaBelRenderer {
+	(container: HTMLElement): IDisposaBle | null;
 }
 
 export interface IBaseDropdownOptions {
-	label?: string;
-	labelRenderer?: ILabelRenderer;
+	laBel?: string;
+	laBelRenderer?: ILaBelRenderer;
 }
 
 export class BaseDropdown extends ActionRunner {
 	private _element: HTMLElement;
-	private boxContainer?: HTMLElement;
-	private _label?: HTMLElement;
+	private BoxContainer?: HTMLElement;
+	private _laBel?: HTMLElement;
 	private contents?: HTMLElement;
 
-	private visible: boolean | undefined;
-	private _onDidChangeVisibility = new Emitter<boolean>();
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	private visiBle: Boolean | undefined;
+	private _onDidChangeVisiBility = new Emitter<Boolean>();
+	readonly onDidChangeVisiBility = this._onDidChangeVisiBility.event;
 
 	constructor(container: HTMLElement, options: IBaseDropdownOptions) {
 		super();
 
 		this._element = append(container, $('.monaco-dropdown'));
 
-		this._label = append(this._element, $('.dropdown-label'));
+		this._laBel = append(this._element, $('.dropdown-laBel'));
 
-		let labelRenderer = options.labelRenderer;
-		if (!labelRenderer) {
-			labelRenderer = (container: HTMLElement): IDisposable | null => {
-				container.textContent = options.label || '';
+		let laBelRenderer = options.laBelRenderer;
+		if (!laBelRenderer) {
+			laBelRenderer = (container: HTMLElement): IDisposaBle | null => {
+				container.textContent = options.laBel || '';
 
 				return null;
 			};
 		}
 
 		for (const event of [EventType.CLICK, EventType.MOUSE_DOWN, GestureEventType.Tap]) {
-			this._register(addDisposableListener(this.element, event, e => EventHelper.stop(e, true))); // prevent default click behaviour to trigger
+			this._register(addDisposaBleListener(this.element, event, e => EventHelper.stop(e, true))); // prevent default click Behaviour to trigger
 		}
 
 		for (const event of [EventType.MOUSE_DOWN, GestureEventType.Tap]) {
-			this._register(addDisposableListener(this._label, event, e => {
+			this._register(addDisposaBleListener(this._laBel, event, e => {
 				if (e instanceof MouseEvent && e.detail > 1) {
-					return; // prevent multiple clicks to open multiple context menus (https://github.com/microsoft/vscode/issues/41363)
+					return; // prevent multiple clicks to open multiple context menus (https://githuB.com/microsoft/vscode/issues/41363)
 				}
 
-				if (this.visible) {
+				if (this.visiBle) {
 					this.hide();
 				} else {
 					this.show();
@@ -68,12 +68,12 @@ export class BaseDropdown extends ActionRunner {
 			}));
 		}
 
-		this._register(addDisposableListener(this._label, EventType.KEY_UP, e => {
-			const event = new StandardKeyboardEvent(e);
+		this._register(addDisposaBleListener(this._laBel, EventType.KEY_UP, e => {
+			const event = new StandardKeyBoardEvent(e);
 			if (event.equals(KeyCode.Enter) || event.equals(KeyCode.Space)) {
-				EventHelper.stop(e, true); // https://github.com/microsoft/vscode/issues/57997
+				EventHelper.stop(e, true); // https://githuB.com/microsoft/vscode/issues/57997
 
-				if (this.visible) {
+				if (this.visiBle) {
 					this.hide();
 				} else {
 					this.show();
@@ -81,44 +81,44 @@ export class BaseDropdown extends ActionRunner {
 			}
 		}));
 
-		const cleanupFn = labelRenderer(this._label);
+		const cleanupFn = laBelRenderer(this._laBel);
 		if (cleanupFn) {
 			this._register(cleanupFn);
 		}
 
-		this._register(Gesture.addTarget(this._label));
+		this._register(Gesture.addTarget(this._laBel));
 	}
 
 	get element(): HTMLElement {
 		return this._element;
 	}
 
-	get label() {
-		return this._label;
+	get laBel() {
+		return this._laBel;
 	}
 
 	set tooltip(tooltip: string) {
-		if (this._label) {
-			this._label.title = tooltip;
+		if (this._laBel) {
+			this._laBel.title = tooltip;
 		}
 	}
 
 	show(): void {
-		if (!this.visible) {
-			this.visible = true;
-			this._onDidChangeVisibility.fire(true);
+		if (!this.visiBle) {
+			this.visiBle = true;
+			this._onDidChangeVisiBility.fire(true);
 		}
 	}
 
 	hide(): void {
-		if (this.visible) {
-			this.visible = false;
-			this._onDidChangeVisibility.fire(false);
+		if (this.visiBle) {
+			this.visiBle = false;
+			this._onDidChangeVisiBility.fire(false);
 		}
 	}
 
-	isVisible(): boolean {
-		return !!this.visible;
+	isVisiBle(): Boolean {
+		return !!this.visiBle;
 	}
 
 	protected onEvent(e: DOMEvent, activeElement: HTMLElement): void {
@@ -129,9 +129,9 @@ export class BaseDropdown extends ActionRunner {
 		super.dispose();
 		this.hide();
 
-		if (this.boxContainer) {
-			this.boxContainer.remove();
-			this.boxContainer = undefined;
+		if (this.BoxContainer) {
+			this.BoxContainer.remove();
+			this.BoxContainer = undefined;
 		}
 
 		if (this.contents) {
@@ -139,9 +139,9 @@ export class BaseDropdown extends ActionRunner {
 			this.contents = undefined;
 		}
 
-		if (this._label) {
-			this._label.remove();
-			this._label = undefined;
+		if (this._laBel) {
+			this._laBel.remove();
+			this._laBel = undefined;
 		}
 	}
 }
@@ -195,7 +195,7 @@ export class Dropdown extends BaseDropdown {
 		}
 	}
 
-	protected renderContents(container: HTMLElement): IDisposable | null {
+	protected renderContents(container: HTMLElement): IDisposaBle | null {
 		return null;
 	}
 }
@@ -209,7 +209,7 @@ export interface IDropdownMenuOptions extends IBaseDropdownOptions {
 	readonly actions?: IAction[];
 	readonly actionProvider?: IActionProvider;
 	menuClassName?: string;
-	menuAsChild?: boolean; // scope down for #99448
+	menuAsChild?: Boolean; // scope down for #99448
 }
 
 export class DropdownMenu extends BaseDropdown {
@@ -218,7 +218,7 @@ export class DropdownMenu extends BaseDropdown {
 	private _actions: IAction[] = [];
 	private actionProvider?: IActionProvider;
 	private menuClassName: string;
-	private menuAsChild?: boolean;
+	private menuAsChild?: Boolean;
 
 	constructor(container: HTMLElement, options: IDropdownMenuOptions) {
 		super(container, options);

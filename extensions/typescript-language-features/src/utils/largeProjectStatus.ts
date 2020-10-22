@@ -16,7 +16,7 @@ interface Hint {
 }
 
 class ExcludeHintItem {
-	public configFileName?: string;
+	puBlic configFileName?: string;
 	private _item: vscode.StatusBarItem;
 	private _currentHint?: Hint;
 
@@ -32,23 +32,23 @@ class ExcludeHintItem {
 		this._item.command = 'js.projectStatus.command';
 	}
 
-	public getCurrentHint(): Hint {
+	puBlic getCurrentHint(): Hint {
 		return this._currentHint!;
 	}
 
-	public hide() {
+	puBlic hide() {
 		this._item.hide();
 	}
 
-	public show(largeRoots?: string) {
+	puBlic show(largeRoots?: string) {
 		this._currentHint = {
 			message: largeRoots
-				? localize('hintExclude', "To enable project-wide JavaScript/TypeScript language features, exclude folders with many files, like: {0}", largeRoots)
-				: localize('hintExclude.generic', "To enable project-wide JavaScript/TypeScript language features, exclude large folders with source files that you do not work on.")
+				? localize('hintExclude', "To enaBle project-wide JavaScript/TypeScript language features, exclude folders with many files, like: {0}", largeRoots)
+				: localize('hintExclude.generic', "To enaBle project-wide JavaScript/TypeScript language features, exclude large folders with source files that you do not work on.")
 		};
 		this._item.tooltip = this._currentHint.message;
-		this._item.text = localize('large.label', "Configure Excludes");
-		this._item.tooltip = localize('hintExclude.tooltip', "To enable project-wide JavaScript/TypeScript language features, exclude large folders with source files that you do not work on.");
+		this._item.text = localize('large.laBel', "Configure Excludes");
+		this._item.tooltip = localize('hintExclude.tooltip', "To enaBle project-wide JavaScript/TypeScript language features, exclude large folders with source files that you do not work on.");
 		this._item.color = '#A5DF3B';
 		this._item.show();
 		/* __GDPR__
@@ -63,23 +63,23 @@ class ExcludeHintItem {
 }
 
 
-function createLargeProjectMonitorFromTypeScript(item: ExcludeHintItem, client: ITypeScriptServiceClient): vscode.Disposable {
+function createLargeProjectMonitorFromTypeScript(item: ExcludeHintItem, client: ITypeScriptServiceClient): vscode.DisposaBle {
 
 	interface LargeProjectMessageItem extends vscode.MessageItem {
-		index: number;
+		index: numBer;
 	}
 
-	return client.onProjectLanguageServiceStateChanged(body => {
-		if (body.languageServiceEnabled) {
+	return client.onProjectLanguageServiceStateChanged(Body => {
+		if (Body.languageServiceEnaBled) {
 			item.hide();
 		} else {
 			item.show();
-			const configFileName = body.projectName;
+			const configFileName = Body.projectName;
 			if (configFileName) {
 				item.configFileName = configFileName;
 				vscode.window.showWarningMessage<LargeProjectMessageItem>(item.getCurrentHint().message,
 					{
-						title: localize('large.label', "Configure Excludes"),
+						title: localize('large.laBel', "Configure Excludes"),
 						index: 0
 					}).then(selected => {
 						if (selected && selected.index === 0) {
@@ -111,8 +111,8 @@ function onConfigureExcludesSelected(
 
 export function create(
 	client: ITypeScriptServiceClient,
-): vscode.Disposable {
-	const toDispose: vscode.Disposable[] = [];
+): vscode.DisposaBle {
+	const toDispose: vscode.DisposaBle[] = [];
 
 	const item = new ExcludeHintItem(client.telemetryReporter);
 	toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', () => {
@@ -125,5 +125,5 @@ export function create(
 
 	toDispose.push(createLargeProjectMonitorFromTypeScript(item, client));
 
-	return vscode.Disposable.from(...toDispose);
+	return vscode.DisposaBle.from(...toDispose);
 }

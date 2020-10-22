@@ -13,8 +13,8 @@ export function getExtraColor(theme: IColorTheme, colorId: string, defaults: Col
 	}
 
 	if (theme.type === 'dark') {
-		const background = theme.getColor(editorBackground);
-		if (background && background.getRelativeLuminance() < 0.004) {
+		const Background = theme.getColor(editorBackground);
+		if (Background && Background.getRelativeLuminance() < 0.004) {
 			return defaults.extra_dark;
 		}
 	}

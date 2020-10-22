@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { language } from 'vs/base/common/platform';
+import { language } from 'vs/Base/common/platform';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriButionsRegistry, IWorkBenchContriBution, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 import { ISurveyData, IProductService } from 'vs/platform/product/common/productService';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
-import { ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileService, ITextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
-import { RunOnceWorker } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { platform } from 'vs/Base/common/process';
+import { RunOnceWorker } from 'vs/Base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-class LanguageSurvey extends Disposable {
+class LanguageSurvey extends DisposaBle {
 
 	constructor(
 		data: ISurveyData,
@@ -58,13 +58,13 @@ class LanguageSurvey extends Disposable {
 
 		const date = new Date().toDateString();
 
-		if (storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
+		if (storageService.getNumBer(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
 
 			// Process model-save event every 250ms to reduce load
 			const onModelsSavedWorker = this._register(new RunOnceWorker<ITextFileEditorModel>(models => {
 				models.forEach(m => {
 					if (m.getMode() === data.languageId && date !== storageService.get(EDITED_LANGUAGE_DATE_KEY, StorageScope.GLOBAL)) {
-						const editedCount = storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
+						const editedCount = storageService.getNumBer(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
 						storageService.store(EDITED_LANGUAGE_COUNT_KEY, editedCount, StorageScope.GLOBAL);
 						storageService.store(EDITED_LANGUAGE_DATE_KEY, date, StorageScope.GLOBAL);
 					}
@@ -79,7 +79,7 @@ class LanguageSurvey extends Disposable {
 			return;
 		}
 
-		const sessionCount = storageService.getNumber(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
+		const sessionCount = storageService.getNumBer(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
 		storageService.store(LAST_SESSION_DATE_KEY, date, StorageScope.GLOBAL);
 		storageService.store(SESSION_COUNT_KEY, sessionCount, StorageScope.GLOBAL);
 
@@ -87,12 +87,12 @@ class LanguageSurvey extends Disposable {
 			return;
 		}
 
-		if (storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
+		if (storageService.getNumBer(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
 			return;
 		}
 
 		const isCandidate = storageService.getBoolean(IS_CANDIDATE_KEY, StorageScope.GLOBAL, false)
-			|| Math.random() < data.userProbability;
+			|| Math.random() < data.userProBaBility;
 
 		storageService.store(IS_CANDIDATE_KEY, isCandidate, StorageScope.GLOBAL);
 
@@ -101,16 +101,16 @@ class LanguageSurvey extends Disposable {
 			return;
 		}
 
-		// __GDPR__TODO__ Need to move away from dynamic event names as those cannot be registered statically
-		telemetryService.publicLog(`${data.surveyId}.survey/userAsked`);
+		// __GDPR__TODO__ Need to move away from dynamic event names as those cannot Be registered statically
+		telemetryService.puBlicLog(`${data.surveyId}.survey/userAsked`);
 
 		notificationService.prompt(
 			Severity.Info,
 			nls.localize('helpUs', "Help us improve our support for {0}", data.languageId),
 			[{
-				label: nls.localize('takeShortSurvey', "Take Short Survey"),
+				laBel: nls.localize('takeShortSurvey', "Take Short Survey"),
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/takeShortSurvey`);
+					telemetryService.puBlicLog(`${data.surveyId}.survey/takeShortSurvey`);
 					telemetryService.getTelemetryInfo().then(info => {
 						openerService.open(URI.parse(`${data.surveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
 						storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
@@ -118,16 +118,16 @@ class LanguageSurvey extends Disposable {
 					});
 				}
 			}, {
-				label: nls.localize('remindLater', "Remind Me later"),
+				laBel: nls.localize('remindLater', "Remind Me later"),
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/remindMeLater`);
+					telemetryService.puBlicLog(`${data.surveyId}.survey/remindMeLater`);
 					storageService.store(SESSION_COUNT_KEY, sessionCount - 3, StorageScope.GLOBAL);
 				}
 			}, {
-				label: nls.localize('neverAgain', "Don't Show Again"),
+				laBel: nls.localize('neverAgain', "Don't Show Again"),
 				isSecondary: true,
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/dontShowAgain`);
+					telemetryService.puBlicLog(`${data.surveyId}.survey/dontShowAgain`);
 					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
 					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
 				}
@@ -137,7 +137,7 @@ class LanguageSurvey extends Disposable {
 	}
 }
 
-class LanguageSurveysContribution implements IWorkbenchContribution {
+class LanguageSurveysContriBution implements IWorkBenchContriBution {
 
 	constructor(
 		@IStorageService storageService: IStorageService,
@@ -154,12 +154,12 @@ class LanguageSurveysContribution implements IWorkbenchContribution {
 		}
 
 		productService.surveys
-			.filter(surveyData => surveyData.surveyId && surveyData.editCount && surveyData.languageId && surveyData.surveyUrl && surveyData.userProbability)
+			.filter(surveyData => surveyData.surveyId && surveyData.editCount && surveyData.languageId && surveyData.surveyUrl && surveyData.userProBaBility)
 			.map(surveyData => new LanguageSurvey(surveyData, storageService, storageKeysSyncRegistryService, notificationService, telemetryService, modelService, textFileService, openerService, productService));
 	}
 }
 
 if (language === 'en') {
-	const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-	workbenchRegistry.registerWorkbenchContribution(LanguageSurveysContribution, LifecyclePhase.Restored);
+	const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench);
+	workBenchRegistry.registerWorkBenchContriBution(LanguageSurveysContriBution, LifecyclePhase.Restored);
 }

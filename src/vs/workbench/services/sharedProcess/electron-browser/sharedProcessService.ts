@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Client } from 'vs/base/parts/ipc/common/ipc.net';
-import { connect } from 'vs/base/parts/ipc/node/ipc.net';
-import { IChannel, IServerChannel, getDelayedChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+import { Client } from 'vs/Base/parts/ipc/common/ipc.net';
+import { connect } from 'vs/Base/parts/ipc/node/ipc.net';
+import { IChannel, IServerChannel, getDelayedChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
 export class SharedProcessService implements ISharedProcessService {
 
@@ -22,7 +22,7 @@ export class SharedProcessService implements ISharedProcessService {
 	constructor(
 		@IMainProcessService mainProcessService: IMainProcessService,
 		@INativeHostService nativeHostService: INativeHostService,
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService
+		@INativeWorkBenchEnvironmentService environmentService: INativeWorkBenchEnvironmentService
 	) {
 		this.sharedProcessMainChannel = mainProcessService.getChannel('sharedProcess');
 

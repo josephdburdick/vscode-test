@@ -12,12 +12,12 @@ class SimpleLinkComputerTarget implements ILinkComputerTarget {
 		// Intentional Empty
 	}
 
-	public getLineCount(): number {
+	puBlic getLineCount(): numBer {
 		return this._lines.length;
 	}
 
-	public getLineContent(lineNumber: number): string {
-		return this._lines[lineNumber - 1];
+	puBlic getLineContent(lineNumBer: numBer): string {
+		return this._lines[lineNumBer - 1];
 	}
 }
 
@@ -36,7 +36,7 @@ function assertLink(text: string, extractedLink: string): void {
 		chr = extractedLink.charAt(i);
 		if (chr !== ' ' && chr !== '\t') {
 			startColumn = i + 1;
-			break;
+			Break;
 		}
 	}
 
@@ -44,19 +44,19 @@ function assertLink(text: string, extractedLink: string): void {
 		chr = extractedLink.charAt(i);
 		if (chr !== ' ' && chr !== '\t') {
 			endColumn = i + 2;
-			break;
+			Break;
 		}
 	}
 
 	let r = myComputeLinks([text]);
 	assert.deepEqual(r, [{
 		range: {
-			startLineNumber: 1,
+			startLineNumBer: 1,
 			startColumn: startColumn,
-			endLineNumber: 1,
+			endLineNumBer: 1,
 			endColumn: endColumn
 		},
-		url: extractedLink.substring(startColumn - 1, endColumn - 1)
+		url: extractedLink.suBstring(startColumn - 1, endColumn - 1)
 	}]);
 }
 
@@ -70,55 +70,55 @@ suite('Editor Modes - Link Computer', () => {
 	test('Parsing', () => {
 
 		assertLink(
-			'x = "http://foo.bar";',
-			'     http://foo.bar  '
+			'x = "http://foo.Bar";',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x = (http://foo.bar);',
-			'     http://foo.bar  '
+			'x = (http://foo.Bar);',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x = [http://foo.bar];',
-			'     http://foo.bar  '
+			'x = [http://foo.Bar];',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x = \'http://foo.bar\';',
-			'     http://foo.bar  '
+			'x = \'http://foo.Bar\';',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x =  http://foo.bar ;',
-			'     http://foo.bar  '
+			'x =  http://foo.Bar ;',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x = <http://foo.bar>;',
-			'     http://foo.bar  '
+			'x = <http://foo.Bar>;',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'x = {http://foo.bar};',
-			'     http://foo.bar  '
+			'x = {http://foo.Bar};',
+			'     http://foo.Bar  '
 		);
 
 		assertLink(
-			'(see http://foo.bar)',
-			'     http://foo.bar  '
+			'(see http://foo.Bar)',
+			'     http://foo.Bar  '
 		);
 		assertLink(
-			'[see http://foo.bar]',
-			'     http://foo.bar  '
+			'[see http://foo.Bar]',
+			'     http://foo.Bar  '
 		);
 		assertLink(
-			'{see http://foo.bar}',
-			'     http://foo.bar  '
+			'{see http://foo.Bar}',
+			'     http://foo.Bar  '
 		);
 		assertLink(
-			'<see http://foo.bar>',
-			'     http://foo.bar  '
+			'<see http://foo.Bar>',
+			'     http://foo.Bar  '
 		);
 		assertLink(
 			'<url>http://mylink.com</url>',
@@ -129,15 +129,15 @@ suite('Editor Modes - Link Computer', () => {
 			'                             https://go.microsoft.com/fwlink/?LinkID=513275&clcid=0x409'
 		);
 		assertLink(
-			'// Click here to learn more. https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx',
-			'                             https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx'
+			'// Click here to learn more. https://msdn.microsoft.com/en-us/liBrary/windows/desktop/aa365247(v=vs.85).aspx',
+			'                             https://msdn.microsoft.com/en-us/liBrary/windows/desktop/aa365247(v=vs.85).aspx'
 		);
 		assertLink(
-			'// https://github.com/projectkudu/kudu/blob/master/Kudu.Core/Scripts/selectNodeVersion.js',
-			'   https://github.com/projectkudu/kudu/blob/master/Kudu.Core/Scripts/selectNodeVersion.js'
+			'// https://githuB.com/projectkudu/kudu/BloB/master/Kudu.Core/Scripts/selectNodeVersion.js',
+			'   https://githuB.com/projectkudu/kudu/BloB/master/Kudu.Core/Scripts/selectNodeVersion.js'
 		);
 		assertLink(
-			'<!-- !!! Do not remove !!!   WebContentRef(link:https://go.microsoft.com/fwlink/?LinkId=166007, area:Admin, updated:2015, nextUpdate:2016, tags:SqlServer)   !!! Do not remove !!! -->',
+			'<!-- !!! Do not remove !!!   WeBContentRef(link:https://go.microsoft.com/fwlink/?LinkId=166007, area:Admin, updated:2015, nextUpdate:2016, tags:SqlServer)   !!! Do not remove !!! -->',
 			'                                                https://go.microsoft.com/fwlink/?LinkId=166007                                                                                        '
 		);
 		assertLink(
@@ -145,8 +145,8 @@ suite('Editor Modes - Link Computer', () => {
 			'                      https://go.microsoft.com/fwlink/?LinkId=166007         '
 		);
 		assertLink(
-			'For instructions, see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx.</value>',
-			'                      https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx         '
+			'For instructions, see https://msdn.microsoft.com/en-us/liBrary/windows/desktop/aa365247(v=vs.85).aspx.</value>',
+			'                      https://msdn.microsoft.com/en-us/liBrary/windows/desktop/aa365247(v=vs.85).aspx         '
 		);
 		assertLink(
 			'x = "https://en.wikipedia.org/wiki/Zürich";',
@@ -162,37 +162,37 @@ suite('Editor Modes - Link Computer', () => {
 		);
 
 		assertLink(
-			'x = "file:///foo.bar";',
-			'     file:///foo.bar  '
+			'x = "file:///foo.Bar";',
+			'     file:///foo.Bar  '
 		);
 		assertLink(
-			'x = "file://c:/foo.bar";',
-			'     file://c:/foo.bar  '
-		);
-
-		assertLink(
-			'x = "file://shares/foo.bar";',
-			'     file://shares/foo.bar  '
+			'x = "file://c:/foo.Bar";',
+			'     file://c:/foo.Bar  '
 		);
 
 		assertLink(
-			'x = "file://shäres/foo.bar";',
-			'     file://shäres/foo.bar  '
+			'x = "file://shares/foo.Bar";',
+			'     file://shares/foo.Bar  '
+		);
+
+		assertLink(
+			'x = "file://shäres/foo.Bar";',
+			'     file://shäres/foo.Bar  '
 		);
 		assertLink(
-			'Some text, then http://www.bing.com.',
-			'                http://www.bing.com '
+			'Some text, then http://www.Bing.com.',
+			'                http://www.Bing.com '
 		);
 		assertLink(
-			'let url = `http://***/_api/web/lists/GetByTitle(\'Teambuildingaanvragen\')/items`;',
-			'           http://***/_api/web/lists/GetByTitle(\'Teambuildingaanvragen\')/items  '
+			'let url = `http://***/_api/weB/lists/GetByTitle(\'TeamBuildingaanvragen\')/items`;',
+			'           http://***/_api/weB/lists/GetByTitle(\'TeamBuildingaanvragen\')/items  '
 		);
 	});
 
 	test('issue #7855', () => {
 		assertLink(
-			'7. At this point, ServiceMain has been called.  There is no functionality presently in ServiceMain, but you can consult the [MSDN documentation](https://msdn.microsoft.com/en-us/library/windows/desktop/ms687414(v=vs.85).aspx) to add functionality as desired!',
-			'                                                                                                                                                 https://msdn.microsoft.com/en-us/library/windows/desktop/ms687414(v=vs.85).aspx                                  '
+			'7. At this point, ServiceMain has Been called.  There is no functionality presently in ServiceMain, But you can consult the [MSDN documentation](https://msdn.microsoft.com/en-us/liBrary/windows/desktop/ms687414(v=vs.85).aspx) to add functionality as desired!',
+			'                                                                                                                                                 https://msdn.microsoft.com/en-us/liBrary/windows/desktop/ms687414(v=vs.85).aspx                                  '
 		);
 	});
 
@@ -203,7 +203,7 @@ suite('Editor Modes - Link Computer', () => {
 		);
 	});
 
-	test('issue #70254: bold links dont open in markdown file using editor mode with ctrl + click', () => {
+	test('issue #70254: Bold links dont open in markdown file using editor mode with ctrl + click', () => {
 		assertLink(
 			'2. Navigate to **https://portal.azure.com**',
 			'                 https://portal.azure.com  '
@@ -219,12 +219,12 @@ suite('Editor Modes - Link Computer', () => {
 
 	test('issue #67022: Space as end of hyperlink isn\'t always good idea', () => {
 		assertLink(
-			'aa  https://foo.bar/[this is foo site]  aa',
-			'    https://foo.bar/[this is foo site]    '
+			'aa  https://foo.Bar/[this is foo site]  aa',
+			'    https://foo.Bar/[this is foo site]    '
 		);
 	});
 
-	test('issue #100353: Link detection stops at ＆(double-byte)', () => {
+	test('issue #100353: Link detection stops at ＆(douBle-Byte)', () => {
 		assertLink(
 			'aa  http://tree-mark.chips.jp/レーズン＆ベリーミックス  aa',
 			'    http://tree-mark.chips.jp/レーズン＆ベリーミックス    '

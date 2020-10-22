@@ -4,33 +4,33 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { INotebookEditor, INotebookEditorContribution, INotebookEditorContributionCtor, INotebookEditorContributionDescription } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { INoteBookEditor, INoteBookEditorContriBution, INoteBookEditorContriButionCtor, INoteBookEditorContriButionDescription } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 
 
-class EditorContributionRegistry {
-	public static readonly INSTANCE = new EditorContributionRegistry();
-	private readonly editorContributions: INotebookEditorContributionDescription[];
+class EditorContriButionRegistry {
+	puBlic static readonly INSTANCE = new EditorContriButionRegistry();
+	private readonly editorContriButions: INoteBookEditorContriButionDescription[];
 
 	constructor() {
-		this.editorContributions = [];
+		this.editorContriButions = [];
 	}
 
-	public registerEditorContribution<Services extends BrandedService[]>(id: string, ctor: { new(editor: INotebookEditor, ...services: Services): INotebookEditorContribution }): void {
-		this.editorContributions.push({ id, ctor: ctor as INotebookEditorContributionCtor });
+	puBlic registerEditorContriBution<Services extends BrandedService[]>(id: string, ctor: { new(editor: INoteBookEditor, ...services: Services): INoteBookEditorContriBution }): void {
+		this.editorContriButions.push({ id, ctor: ctor as INoteBookEditorContriButionCtor });
 	}
 
-	public getEditorContributions(): INotebookEditorContributionDescription[] {
-		return this.editorContributions.slice(0);
+	puBlic getEditorContriButions(): INoteBookEditorContriButionDescription[] {
+		return this.editorContriButions.slice(0);
 	}
 }
 
-export function registerNotebookContribution<Services extends BrandedService[]>(id: string, ctor: { new(editor: INotebookEditor, ...services: Services): INotebookEditorContribution }): void {
-	EditorContributionRegistry.INSTANCE.registerEditorContribution(id, ctor);
+export function registerNoteBookContriBution<Services extends BrandedService[]>(id: string, ctor: { new(editor: INoteBookEditor, ...services: Services): INoteBookEditorContriBution }): void {
+	EditorContriButionRegistry.INSTANCE.registerEditorContriBution(id, ctor);
 }
 
-export namespace NotebookEditorExtensionsRegistry {
+export namespace NoteBookEditorExtensionsRegistry {
 
-	export function getEditorContributions(): INotebookEditorContributionDescription[] {
-		return EditorContributionRegistry.INSTANCE.getEditorContributions();
+	export function getEditorContriButions(): INoteBookEditorContriButionDescription[] {
+		return EditorContriButionRegistry.INSTANCE.getEditorContriButions();
 	}
 }

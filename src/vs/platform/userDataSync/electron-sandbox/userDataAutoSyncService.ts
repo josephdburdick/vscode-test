@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 //
-import { IUserDataSyncService, IUserDataSyncLogService, IUserDataSyncResourceEnablementService, IUserDataSyncStoreService, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
-import { Event } from 'vs/base/common/event';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IUserDataSyncService, IUserDataSyncLogService, IUserDataSyncResourceEnaBlementService, IUserDataSyncStoreService, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
+import { Event } from 'vs/Base/common/event';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { UserDataAutoSyncService as BaseUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
 import { IUserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
@@ -18,7 +18,7 @@ export class UserDataAutoSyncService extends BaseUserDataAutoSyncService {
 	constructor(
 		@IUserDataSyncStoreManagementService userDataSyncStoreManagementService: IUserDataSyncStoreManagementService,
 		@IUserDataSyncStoreService userDataSyncStoreService: IUserDataSyncStoreService,
-		@IUserDataSyncResourceEnablementService userDataSyncResourceEnablementService: IUserDataSyncResourceEnablementService,
+		@IUserDataSyncResourceEnaBlementService userDataSyncResourceEnaBlementService: IUserDataSyncResourceEnaBlementService,
 		@IUserDataSyncService userDataSyncService: IUserDataSyncService,
 		@INativeHostService nativeHostService: INativeHostService,
 		@IUserDataSyncLogService logService: IUserDataSyncLogService,
@@ -28,9 +28,9 @@ export class UserDataAutoSyncService extends BaseUserDataAutoSyncService {
 		@IStorageService storageService: IStorageService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 	) {
-		super(userDataSyncStoreManagementService, userDataSyncStoreService, userDataSyncResourceEnablementService, userDataSyncService, logService, authTokenService, telemetryService, userDataSyncMachinesService, storageService, environmentService);
+		super(userDataSyncStoreManagementService, userDataSyncStoreService, userDataSyncResourceEnaBlementService, userDataSyncService, logService, authTokenService, telemetryService, userDataSyncMachinesService, storageService, environmentService);
 
-		this._register(Event.debounce<string, string[]>(Event.any<string>(
+		this._register(Event.deBounce<string, string[]>(Event.any<string>(
 			Event.map(nativeHostService.onDidFocusWindow, () => 'windowFocus'),
 			Event.map(nativeHostService.onDidOpenWindow, () => 'windowOpen'),
 		), (last, source) => last ? [...last, source] : [source], 1000)(sources => this.triggerSync(sources, true, false)));

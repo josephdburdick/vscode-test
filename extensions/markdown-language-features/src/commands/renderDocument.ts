@@ -5,16 +5,16 @@
 
 import { Command } from '../commandManager';
 import { MarkdownEngine } from '../markdownEngine';
-import { SkinnyTextDocument } from '../tableOfContentsProvider';
+import { SkinnyTextDocument } from '../taBleOfContentsProvider';
 
 export class RenderDocument implements Command {
-	public readonly id = 'markdown.api.render';
+	puBlic readonly id = 'markdown.api.render';
 
-	public constructor(
+	puBlic constructor(
 		private readonly engine: MarkdownEngine
 	) { }
 
-	public async execute(document: SkinnyTextDocument | string): Promise<string> {
+	puBlic async execute(document: SkinnyTextDocument | string): Promise<string> {
 		return this.engine.render(document);
 	}
 }

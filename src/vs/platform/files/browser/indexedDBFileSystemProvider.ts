@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IFileSystemProvider, IFileSystemProviderWithFileReadWriteCapability, FileSystemProviderCapabilities, IFileChange, IWatchOptions, IStat, FileOverwriteOptions, FileType, FileDeleteOptions, FileWriteOptions, FileChangeType, createFileSystemProviderError, FileSystemProviderErrorCode } from 'vs/platform/files/common/files';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { joinPath, extUri, dirname } from 'vs/base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { IFileSystemProvider, IFileSystemProviderWithFileReadWriteCapaBility, FileSystemProviderCapaBilities, IFileChange, IWatchOptions, IStat, FileOverwriteOptions, FileType, FileDeleteOptions, FileWriteOptions, FileChangeType, createFileSystemProviderError, FileSystemProviderErrorCode } from 'vs/platform/files/common/files';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { joinPath, extUri, dirname } from 'vs/Base/common/resources';
 import { localize } from 'vs/nls';
-import * as browser from 'vs/base/browser/browser';
+import * as Browser from 'vs/Base/Browser/Browser';
 
-const INDEXEDDB_VSCODE_DB = 'vscode-web-db';
+const INDEXEDDB_VSCODE_DB = 'vscode-weB-dB';
 export const INDEXEDDB_USERDATA_OBJECT_STORE = 'vscode-userdata-store';
 export const INDEXEDDB_LOGS_OBJECT_STORE = 'vscode-logs-store';
 
 export class IndexedDB {
 
-	private indexedDBPromise: Promise<IDBDatabase | null>;
+	private indexedDBPromise: Promise<IDBDataBase | null>;
 
 	constructor() {
 		this.indexedDBPromise = this.openIndexedDB(INDEXEDDB_VSCODE_DB, 2, [INDEXEDDB_USERDATA_OBJECT_STORE, INDEXEDDB_LOGS_OBJECT_STORE]);
@@ -28,38 +28,38 @@ export class IndexedDB {
 		let fsp: IFileSystemProvider | null = null;
 		const indexedDB = await this.indexedDBPromise;
 		if (indexedDB) {
-			if (indexedDB.objectStoreNames.contains(store)) {
+			if (indexedDB.oBjectStoreNames.contains(store)) {
 				fsp = new IndexedDBFileSystemProvider(scheme, indexedDB, store);
 			} else {
-				console.error(`Error while creating indexedDB filesystem provider. Could not find ${store} object store`);
+				console.error(`Error while creating indexedDB filesystem provider. Could not find ${store} oBject store`);
 			}
 		}
 		return fsp;
 	}
 
-	private openIndexedDB(name: string, version: number, stores: string[]): Promise<IDBDatabase | null> {
-		if (browser.isEdge) {
+	private openIndexedDB(name: string, version: numBer, stores: string[]): Promise<IDBDataBase | null> {
+		if (Browser.isEdge) {
 			return Promise.resolve(null);
 		}
 		return new Promise((c, e) => {
 			const request = window.indexedDB.open(name, version);
 			request.onerror = (err) => e(request.error);
 			request.onsuccess = () => {
-				const db = request.result;
+				const dB = request.result;
 				for (const store of stores) {
-					if (!db.objectStoreNames.contains(store)) {
-						console.error(`Error while creating indexedDB. Could not create ${store} object store`);
+					if (!dB.oBjectStoreNames.contains(store)) {
+						console.error(`Error while creating indexedDB. Could not create ${store} oBject store`);
 						c(null);
 						return;
 					}
 				}
-				c(db);
+				c(dB);
 			};
 			request.onupgradeneeded = () => {
-				const db = request.result;
+				const dB = request.result;
 				for (const store of stores) {
-					if (!db.objectStoreNames.contains(store)) {
-						db.createObjectStore(store);
+					if (!dB.oBjectStoreNames.contains(store)) {
+						dB.createOBjectStore(store);
 					}
 				}
 			};
@@ -68,26 +68,26 @@ export class IndexedDB {
 
 }
 
-class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProviderWithFileReadWriteCapability {
+class IndexedDBFileSystemProvider extends DisposaBle implements IFileSystemProviderWithFileReadWriteCapaBility {
 
-	readonly capabilities: FileSystemProviderCapabilities =
-		FileSystemProviderCapabilities.FileReadWrite
-		| FileSystemProviderCapabilities.PathCaseSensitive;
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	readonly capaBilities: FileSystemProviderCapaBilities =
+		FileSystemProviderCapaBilities.FileReadWrite
+		| FileSystemProviderCapaBilities.PathCaseSensitive;
+	readonly onDidChangeCapaBilities: Event<void> = Event.None;
 
 	private readonly _onDidChangeFile = this._register(new Emitter<readonly IFileChange[]>());
 	readonly onDidChangeFile: Event<readonly IFileChange[]> = this._onDidChangeFile.event;
 
-	private readonly versions: Map<string, number> = new Map<string, number>();
+	private readonly versions: Map<string, numBer> = new Map<string, numBer>();
 	private readonly dirs: Set<string> = new Set<string>();
 
-	constructor(private readonly scheme: string, private readonly database: IDBDatabase, private readonly store: string) {
+	constructor(private readonly scheme: string, private readonly dataBase: IDBDataBase, private readonly store: string) {
 		super();
 		this.dirs.add('/');
 	}
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
-		return Disposable.None;
+	watch(resource: URI, opts: IWatchOptions): IDisposaBle {
+		return DisposaBle.None;
 	}
 
 	async mkdir(resource: URI): Promise<void> {
@@ -111,7 +111,7 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 				type: FileType.File,
 				ctime: 0,
 				mtime: this.versions.get(resource.toString()) || 0,
-				size: content.byteLength
+				size: content.ByteLength
 			};
 		} catch (e) {
 		}
@@ -162,7 +162,7 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 		}
 		const value = await this.getValue(resource.path);
 		if (typeof value === 'string') {
-			return VSBuffer.fromString(value).buffer;
+			return VSBuffer.fromString(value).Buffer;
 		} else {
 			return value;
 		}
@@ -206,19 +206,19 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 
 	async getAllKeys(): Promise<string[]> {
 		return new Promise(async (c, e) => {
-			const transaction = this.database.transaction([this.store]);
-			const objectStore = transaction.objectStore(this.store);
-			const request = objectStore.getAllKeys();
+			const transaction = this.dataBase.transaction([this.store]);
+			const oBjectStore = transaction.oBjectStore(this.store);
+			const request = oBjectStore.getAllKeys();
 			request.onerror = () => e(request.error);
 			request.onsuccess = () => c(<string[]>request.result);
 		});
 	}
 
-	hasKey(key: string): Promise<boolean> {
-		return new Promise<boolean>(async (c, e) => {
-			const transaction = this.database.transaction([this.store]);
-			const objectStore = transaction.objectStore(this.store);
-			const request = objectStore.getKey(key);
+	hasKey(key: string): Promise<Boolean> {
+		return new Promise<Boolean>(async (c, e) => {
+			const transaction = this.dataBase.transaction([this.store]);
+			const oBjectStore = transaction.oBjectStore(this.store);
+			const request = oBjectStore.getKey(key);
 			request.onerror = () => e(request.error);
 			request.onsuccess = () => {
 				c(!!request.result);
@@ -228,9 +228,9 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 
 	getValue(key: string): Promise<Uint8Array | string> {
 		return new Promise(async (c, e) => {
-			const transaction = this.database.transaction([this.store]);
-			const objectStore = transaction.objectStore(this.store);
-			const request = objectStore.get(key);
+			const transaction = this.dataBase.transaction([this.store]);
+			const oBjectStore = transaction.oBjectStore(this.store);
+			const request = oBjectStore.get(key);
 			request.onerror = () => e(request.error);
 			request.onsuccess = () => c(request.result || '');
 		});
@@ -238,9 +238,9 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 
 	setValue(key: string, value: Uint8Array): Promise<void> {
 		return new Promise(async (c, e) => {
-			const transaction = this.database.transaction([this.store], 'readwrite');
-			const objectStore = transaction.objectStore(this.store);
-			const request = objectStore.put(value, key);
+			const transaction = this.dataBase.transaction([this.store], 'readwrite');
+			const oBjectStore = transaction.oBjectStore(this.store);
+			const request = oBjectStore.put(value, key);
 			request.onerror = () => e(request.error);
 			request.onsuccess = () => c();
 		});
@@ -248,9 +248,9 @@ class IndexedDBFileSystemProvider extends Disposable implements IFileSystemProvi
 
 	deleteKey(key: string): Promise<void> {
 		return new Promise(async (c, e) => {
-			const transaction = this.database.transaction([this.store], 'readwrite');
-			const objectStore = transaction.objectStore(this.store);
-			const request = objectStore.delete(key);
+			const transaction = this.dataBase.transaction([this.store], 'readwrite');
+			const oBjectStore = transaction.oBjectStore(this.store);
+			const request = oBjectStore.delete(key);
 			request.onerror = () => e(request.error);
 			request.onsuccess = () => c();
 		});

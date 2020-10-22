@@ -4,49 +4,49 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { KeyCode, KeyMod, KeyChord, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
+import { KeyCode, KeyMod, KeyChord, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { Range } from 'vs/editor/common/core/range';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { registerEditorContribution, ServicesAccessor, registerEditorCommand, EditorCommand } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { SmartSnippetInserter } from 'vs/workbench/contrib/preferences/common/smartSnippetInserter';
-import { DefineKeybindingOverlayWidget } from 'vs/workbench/contrib/preferences/browser/keybindingWidgets';
-import { FloatingClickWidget } from 'vs/workbench/browser/parts/editor/editorWidgets';
-import { parseTree, Node } from 'vs/base/common/json';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
+import { registerEditorContriBution, ServicesAccessor, registerEditorCommand, EditorCommand } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { SnippetController2 } from 'vs/editor/contriB/snippet/snippetController2';
+import { SmartSnippetInserter } from 'vs/workBench/contriB/preferences/common/smartSnippetInserter';
+import { DefineKeyBindingOverlayWidget } from 'vs/workBench/contriB/preferences/Browser/keyBindingWidgets';
+import { FloatingClickWidget } from 'vs/workBench/Browser/parts/editor/editorWidgets';
+import { parseTree, Node } from 'vs/Base/common/json';
+import { ScanCodeBinding } from 'vs/Base/common/scanCode';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { WindowsNativeResolvedKeybinding } from 'vs/workbench/services/keybinding/common/windowsKeyboardMapper';
+import { WindowsNativeResolvedKeyBinding } from 'vs/workBench/services/keyBinding/common/windowsKeyBoardMapper';
 import { themeColorFromId, ThemeColor } from 'vs/platform/theme/common/themeService';
 import { overviewRulerInfo, overviewRulerError } from 'vs/editor/common/view/editorColorRegistry';
 import { IModelDeltaDecoration, ITextModel, TrackedRangeStickiness, OverviewRulerLane } from 'vs/editor/common/model';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyBindingParser } from 'vs/Base/common/keyBindingParser';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { equals } from 'vs/base/common/arrays';
-import { assertIsDefined } from 'vs/base/common/types';
+import { equals } from 'vs/Base/common/arrays';
+import { assertIsDefined } from 'vs/Base/common/types';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { isEqual } from 'vs/base/common/resources';
+import { isEqual } from 'vs/Base/common/resources';
 
-const NLS_LAUNCH_MESSAGE = nls.localize('defineKeybinding.start', "Define Keybinding");
-const NLS_KB_LAYOUT_ERROR_MESSAGE = nls.localize('defineKeybinding.kbLayoutErrorMessage', "You won't be able to produce this key combination under your current keyboard layout.");
+const NLS_LAUNCH_MESSAGE = nls.localize('defineKeyBinding.start', "Define KeyBinding");
+const NLS_KB_LAYOUT_ERROR_MESSAGE = nls.localize('defineKeyBinding.kBLayoutErrorMessage', "You won't Be aBle to produce this key comBination under your current keyBoard layout.");
 
-export class DefineKeybindingController extends Disposable implements IEditorContribution {
+export class DefineKeyBindingController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.defineKeybinding';
+	puBlic static readonly ID = 'editor.contriB.defineKeyBinding';
 
-	static get(editor: ICodeEditor): DefineKeybindingController {
-		return editor.getContribution<DefineKeybindingController>(DefineKeybindingController.ID);
+	static get(editor: ICodeEditor): DefineKeyBindingController {
+		return editor.getContriBution<DefineKeyBindingController>(DefineKeyBindingController.ID);
 	}
 
-	private _keybindingWidgetRenderer?: KeybindingWidgetRenderer;
-	private _keybindingDecorationRenderer?: KeybindingEditorDecorationsRenderer;
+	private _keyBindingWidgetRenderer?: KeyBindingWidgetRenderer;
+	private _keyBindingDecorationRenderer?: KeyBindingEditorDecorationsRenderer;
 
 	constructor(
 		private _editor: ICodeEditor,
@@ -59,93 +59,93 @@ export class DefineKeybindingController extends Disposable implements IEditorCon
 		this._update();
 	}
 
-	get keybindingWidgetRenderer(): KeybindingWidgetRenderer | undefined {
-		return this._keybindingWidgetRenderer;
+	get keyBindingWidgetRenderer(): KeyBindingWidgetRenderer | undefined {
+		return this._keyBindingWidgetRenderer;
 	}
 
 	dispose(): void {
-		this._disposeKeybindingWidgetRenderer();
-		this._disposeKeybindingDecorationRenderer();
+		this._disposeKeyBindingWidgetRenderer();
+		this._disposeKeyBindingDecorationRenderer();
 		super.dispose();
 	}
 
 	private _update(): void {
 		if (!isInterestingEditorModel(this._editor, this._environmentService)) {
-			this._disposeKeybindingWidgetRenderer();
-			this._disposeKeybindingDecorationRenderer();
+			this._disposeKeyBindingWidgetRenderer();
+			this._disposeKeyBindingDecorationRenderer();
 			return;
 		}
 
-		// Decorations are shown for the default keybindings.json **and** for the user keybindings.json
-		this._createKeybindingDecorationRenderer();
+		// Decorations are shown for the default keyBindings.json **and** for the user keyBindings.json
+		this._createKeyBindingDecorationRenderer();
 
-		// The button to define keybindings is shown only for the user keybindings.json
+		// The Button to define keyBindings is shown only for the user keyBindings.json
 		if (!this._editor.getOption(EditorOption.readOnly)) {
-			this._createKeybindingWidgetRenderer();
+			this._createKeyBindingWidgetRenderer();
 		} else {
-			this._disposeKeybindingWidgetRenderer();
+			this._disposeKeyBindingWidgetRenderer();
 		}
 	}
 
-	private _createKeybindingWidgetRenderer(): void {
-		if (!this._keybindingWidgetRenderer) {
-			this._keybindingWidgetRenderer = this._instantiationService.createInstance(KeybindingWidgetRenderer, this._editor);
+	private _createKeyBindingWidgetRenderer(): void {
+		if (!this._keyBindingWidgetRenderer) {
+			this._keyBindingWidgetRenderer = this._instantiationService.createInstance(KeyBindingWidgetRenderer, this._editor);
 		}
 	}
 
-	private _disposeKeybindingWidgetRenderer(): void {
-		if (this._keybindingWidgetRenderer) {
-			this._keybindingWidgetRenderer.dispose();
-			this._keybindingWidgetRenderer = undefined;
+	private _disposeKeyBindingWidgetRenderer(): void {
+		if (this._keyBindingWidgetRenderer) {
+			this._keyBindingWidgetRenderer.dispose();
+			this._keyBindingWidgetRenderer = undefined;
 		}
 	}
 
-	private _createKeybindingDecorationRenderer(): void {
-		if (!this._keybindingDecorationRenderer) {
-			this._keybindingDecorationRenderer = this._instantiationService.createInstance(KeybindingEditorDecorationsRenderer, this._editor);
+	private _createKeyBindingDecorationRenderer(): void {
+		if (!this._keyBindingDecorationRenderer) {
+			this._keyBindingDecorationRenderer = this._instantiationService.createInstance(KeyBindingEditorDecorationsRenderer, this._editor);
 		}
 	}
 
-	private _disposeKeybindingDecorationRenderer(): void {
-		if (this._keybindingDecorationRenderer) {
-			this._keybindingDecorationRenderer.dispose();
-			this._keybindingDecorationRenderer = undefined;
+	private _disposeKeyBindingDecorationRenderer(): void {
+		if (this._keyBindingDecorationRenderer) {
+			this._keyBindingDecorationRenderer.dispose();
+			this._keyBindingDecorationRenderer = undefined;
 		}
 	}
 }
 
-export class KeybindingWidgetRenderer extends Disposable {
+export class KeyBindingWidgetRenderer extends DisposaBle {
 
 	private _launchWidget: FloatingClickWidget;
-	private _defineWidget: DefineKeybindingOverlayWidget;
+	private _defineWidget: DefineKeyBindingOverlayWidget;
 
 	constructor(
 		private _editor: ICodeEditor,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService
 	) {
 		super();
-		this._launchWidget = this._register(this._instantiationService.createInstance(FloatingClickWidget, this._editor, NLS_LAUNCH_MESSAGE, DefineKeybindingCommand.ID));
-		this._register(this._launchWidget.onClick(() => this.showDefineKeybindingWidget()));
-		this._defineWidget = this._register(this._instantiationService.createInstance(DefineKeybindingOverlayWidget, this._editor));
+		this._launchWidget = this._register(this._instantiationService.createInstance(FloatingClickWidget, this._editor, NLS_LAUNCH_MESSAGE, DefineKeyBindingCommand.ID));
+		this._register(this._launchWidget.onClick(() => this.showDefineKeyBindingWidget()));
+		this._defineWidget = this._register(this._instantiationService.createInstance(DefineKeyBindingOverlayWidget, this._editor));
 
 		this._launchWidget.render();
 	}
 
-	showDefineKeybindingWidget(): void {
-		this._defineWidget.start().then(keybinding => this._onAccepted(keybinding));
+	showDefineKeyBindingWidget(): void {
+		this._defineWidget.start().then(keyBinding => this._onAccepted(keyBinding));
 	}
 
-	private _onAccepted(keybinding: string | null): void {
+	private _onAccepted(keyBinding: string | null): void {
 		this._editor.focus();
-		if (keybinding && this._editor.hasModel()) {
+		if (keyBinding && this._editor.hasModel()) {
 			const regexp = new RegExp(/\\/g);
-			const backslash = regexp.test(keybinding);
-			if (backslash) {
-				keybinding = keybinding.slice(0, -1) + '\\\\';
+			const Backslash = regexp.test(keyBinding);
+			if (Backslash) {
+				keyBinding = keyBinding.slice(0, -1) + '\\\\';
 			}
 			let snippetText = [
 				'{',
-				'\t"key": ' + JSON.stringify(keybinding) + ',',
+				'\t"key": ' + JSON.stringify(keyBinding) + ',',
 				'\t"command": "${1:commandId}",',
 				'\t"when": "${2:editorTextFocus}"',
 				'}$0'
@@ -160,14 +160,14 @@ export class KeybindingWidgetRenderer extends Disposable {
 	}
 }
 
-export class KeybindingEditorDecorationsRenderer extends Disposable {
+export class KeyBindingEditorDecorationsRenderer extends DisposaBle {
 
 	private _updateDecorations: RunOnceScheduler;
 	private _dec: string[] = [];
 
 	constructor(
 		private _editor: ICodeEditor,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly _keyBindingService: IKeyBindingService,
 	) {
 		super();
 
@@ -175,7 +175,7 @@ export class KeybindingEditorDecorationsRenderer extends Disposable {
 
 		const model = assertIsDefined(this._editor.getModel());
 		this._register(model.onDidChangeContent(() => this._updateDecorations.schedule()));
-		this._register(this._keybindingService.onDidUpdateKeybindings((e) => this._updateDecorations.schedule()));
+		this._register(this._keyBindingService.onDidUpdateKeyBindings((e) => this._updateDecorations.schedule()));
 		this._register({
 			dispose: () => {
 				this._dec = this._editor.deltaDecorations(this._dec, []);
@@ -225,68 +225,68 @@ export class KeybindingEditorDecorationsRenderer extends Disposable {
 				continue;
 			}
 
-			const resolvedKeybindings = this._keybindingService.resolveUserBinding(value.value);
-			if (resolvedKeybindings.length === 0) {
+			const resolvedKeyBindings = this._keyBindingService.resolveUserBinding(value.value);
+			if (resolvedKeyBindings.length === 0) {
 				return this._createDecoration(true, null, null, model, value);
 			}
-			const resolvedKeybinding = resolvedKeybindings[0];
-			let usLabel: string | null = null;
-			if (resolvedKeybinding instanceof WindowsNativeResolvedKeybinding) {
-				usLabel = resolvedKeybinding.getUSLabel();
+			const resolvedKeyBinding = resolvedKeyBindings[0];
+			let usLaBel: string | null = null;
+			if (resolvedKeyBinding instanceof WindowsNativeResolvedKeyBinding) {
+				usLaBel = resolvedKeyBinding.getUSLaBel();
 			}
-			if (!resolvedKeybinding.isWYSIWYG()) {
-				const uiLabel = resolvedKeybinding.getLabel();
-				if (typeof uiLabel === 'string' && value.value.toLowerCase() === uiLabel.toLowerCase()) {
+			if (!resolvedKeyBinding.isWYSIWYG()) {
+				const uiLaBel = resolvedKeyBinding.getLaBel();
+				if (typeof uiLaBel === 'string' && value.value.toLowerCase() === uiLaBel.toLowerCase()) {
 					// coincidentally, this is actually WYSIWYG
 					return null;
 				}
-				return this._createDecoration(false, resolvedKeybinding.getLabel(), usLabel, model, value);
+				return this._createDecoration(false, resolvedKeyBinding.getLaBel(), usLaBel, model, value);
 			}
-			if (/abnt_|oem_/.test(value.value)) {
-				return this._createDecoration(false, resolvedKeybinding.getLabel(), usLabel, model, value);
+			if (/aBnt_|oem_/.test(value.value)) {
+				return this._createDecoration(false, resolvedKeyBinding.getLaBel(), usLaBel, model, value);
 			}
-			const expectedUserSettingsLabel = resolvedKeybinding.getUserSettingsLabel();
-			if (typeof expectedUserSettingsLabel === 'string' && !KeybindingEditorDecorationsRenderer._userSettingsFuzzyEquals(value.value, expectedUserSettingsLabel)) {
-				return this._createDecoration(false, resolvedKeybinding.getLabel(), usLabel, model, value);
+			const expectedUserSettingsLaBel = resolvedKeyBinding.getUserSettingsLaBel();
+			if (typeof expectedUserSettingsLaBel === 'string' && !KeyBindingEditorDecorationsRenderer._userSettingsFuzzyEquals(value.value, expectedUserSettingsLaBel)) {
+				return this._createDecoration(false, resolvedKeyBinding.getLaBel(), usLaBel, model, value);
 			}
 			return null;
 		}
 		return null;
 	}
 
-	static _userSettingsFuzzyEquals(a: string, b: string): boolean {
+	static _userSettingsFuzzyEquals(a: string, B: string): Boolean {
 		a = a.trim().toLowerCase();
-		b = b.trim().toLowerCase();
+		B = B.trim().toLowerCase();
 
-		if (a === b) {
+		if (a === B) {
 			return true;
 		}
 
-		const aParts = KeybindingParser.parseUserBinding(a);
-		const bParts = KeybindingParser.parseUserBinding(b);
-		return equals(aParts, bParts, (a, b) => this._userBindingEquals(a, b));
+		const aParts = KeyBindingParser.parseUserBinding(a);
+		const BParts = KeyBindingParser.parseUserBinding(B);
+		return equals(aParts, BParts, (a, B) => this._userBindingEquals(a, B));
 	}
 
-	private static _userBindingEquals(a: SimpleKeybinding | ScanCodeBinding, b: SimpleKeybinding | ScanCodeBinding): boolean {
-		if (a === null && b === null) {
+	private static _userBindingEquals(a: SimpleKeyBinding | ScanCodeBinding, B: SimpleKeyBinding | ScanCodeBinding): Boolean {
+		if (a === null && B === null) {
 			return true;
 		}
-		if (!a || !b) {
+		if (!a || !B) {
 			return false;
 		}
 
-		if (a instanceof SimpleKeybinding && b instanceof SimpleKeybinding) {
-			return a.equals(b);
+		if (a instanceof SimpleKeyBinding && B instanceof SimpleKeyBinding) {
+			return a.equals(B);
 		}
 
-		if (a instanceof ScanCodeBinding && b instanceof ScanCodeBinding) {
-			return a.equals(b);
+		if (a instanceof ScanCodeBinding && B instanceof ScanCodeBinding) {
+			return a.equals(B);
 		}
 
 		return false;
 	}
 
-	private _createDecoration(isError: boolean, uiLabel: string | null, usLabel: string | null, model: ITextModel, keyNode: Node): IModelDeltaDecoration {
+	private _createDecoration(isError: Boolean, uiLaBel: string | null, usLaBel: string | null, model: ITextModel, keyNode: Node): IModelDeltaDecoration {
 		let msg: MarkdownString;
 		let className: string;
 		let overviewRulerColor: ThemeColor;
@@ -294,40 +294,40 @@ export class KeybindingEditorDecorationsRenderer extends Disposable {
 		if (isError) {
 			// this is the error case
 			msg = new MarkdownString().appendText(NLS_KB_LAYOUT_ERROR_MESSAGE);
-			className = 'keybindingError';
+			className = 'keyBindingError';
 			overviewRulerColor = themeColorFromId(overviewRulerError);
 		} else {
 			// this is the info case
-			if (usLabel && uiLabel !== usLabel) {
+			if (usLaBel && uiLaBel !== usLaBel) {
 				msg = new MarkdownString(
 					nls.localize({
-						key: 'defineKeybinding.kbLayoutLocalAndUSMessage',
+						key: 'defineKeyBinding.kBLayoutLocalAndUSMessage',
 						comment: [
-							'Please translate maintaining the stars (*) around the placeholders such that they will be rendered in bold.',
-							'The placeholders will contain a keyboard combination e.g. Ctrl+Shift+/'
+							'Please translate maintaining the stars (*) around the placeholders such that they will Be rendered in Bold.',
+							'The placeholders will contain a keyBoard comBination e.g. Ctrl+Shift+/'
 						]
-					}, "**{0}** for your current keyboard layout (**{1}** for US standard).", uiLabel, usLabel)
+					}, "**{0}** for your current keyBoard layout (**{1}** for US standard).", uiLaBel, usLaBel)
 				);
 			} else {
 				msg = new MarkdownString(
 					nls.localize({
-						key: 'defineKeybinding.kbLayoutLocalMessage',
+						key: 'defineKeyBinding.kBLayoutLocalMessage',
 						comment: [
-							'Please translate maintaining the stars (*) around the placeholder such that it will be rendered in bold.',
-							'The placeholder will contain a keyboard combination e.g. Ctrl+Shift+/'
+							'Please translate maintaining the stars (*) around the placeholder such that it will Be rendered in Bold.',
+							'The placeholder will contain a keyBoard comBination e.g. Ctrl+Shift+/'
 						]
-					}, "**{0}** for your current keyboard layout.", uiLabel)
+					}, "**{0}** for your current keyBoard layout.", uiLaBel)
 				);
 			}
-			className = 'keybindingInfo';
+			className = 'keyBindingInfo';
 			overviewRulerColor = themeColorFromId(overviewRulerInfo);
 		}
 
 		const startPosition = model.getPositionAt(keyNode.offset);
 		const endPosition = model.getPositionAt(keyNode.offset + keyNode.length);
 		const range = new Range(
-			startPosition.lineNumber, startPosition.column,
-			endPosition.lineNumber, endPosition.column
+			startPosition.lineNumBer, startPosition.column,
+			endPosition.lineNumBer, endPosition.column
 		);
 
 		// icon + highlight + message decoration
@@ -347,18 +347,18 @@ export class KeybindingEditorDecorationsRenderer extends Disposable {
 
 }
 
-class DefineKeybindingCommand extends EditorCommand {
+class DefineKeyBindingCommand extends EditorCommand {
 
-	static readonly ID = 'editor.action.defineKeybinding';
+	static readonly ID = 'editor.action.defineKeyBinding';
 
 	constructor() {
 		super({
-			id: DefineKeybindingCommand.ID,
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.languageId.isEqualTo('jsonc')),
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			id: DefineKeyBindingCommand.ID,
+			precondition: ContextKeyExpr.and(EditorContextKeys.writaBle, EditorContextKeys.languageId.isEqualTo('jsonc')),
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_K),
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
@@ -367,20 +367,20 @@ class DefineKeybindingCommand extends EditorCommand {
 		if (!isInterestingEditorModel(editor, accessor.get(IEnvironmentService)) || editor.getOption(EditorOption.readOnly)) {
 			return;
 		}
-		const controller = DefineKeybindingController.get(editor);
-		if (controller && controller.keybindingWidgetRenderer) {
-			controller.keybindingWidgetRenderer.showDefineKeybindingWidget();
+		const controller = DefineKeyBindingController.get(editor);
+		if (controller && controller.keyBindingWidgetRenderer) {
+			controller.keyBindingWidgetRenderer.showDefineKeyBindingWidget();
 		}
 	}
 }
 
-function isInterestingEditorModel(editor: ICodeEditor, environmentService: IEnvironmentService): boolean {
+function isInterestingEditorModel(editor: ICodeEditor, environmentService: IEnvironmentService): Boolean {
 	const model = editor.getModel();
 	if (!model) {
 		return false;
 	}
-	return isEqual(model.uri, environmentService.keybindingsResource);
+	return isEqual(model.uri, environmentService.keyBindingsResource);
 }
 
-registerEditorContribution(DefineKeybindingController.ID, DefineKeybindingController);
-registerEditorCommand(new DefineKeybindingCommand());
+registerEditorContriBution(DefineKeyBindingController.ID, DefineKeyBindingController);
+registerEditorCommand(new DefineKeyBindingCommand());

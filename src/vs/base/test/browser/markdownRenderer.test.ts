@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as marked from 'vs/base/common/marked/marked';
-import { renderMarkdown } from 'vs/base/browser/markdownRenderer';
-import { MarkdownString, IMarkdownString } from 'vs/base/common/htmlContent';
-import { URI } from 'vs/base/common/uri';
-import { parse } from 'vs/base/common/marshalling';
+import * as marked from 'vs/Base/common/marked/marked';
+import { renderMarkdown } from 'vs/Base/Browser/markdownRenderer';
+import { MarkdownString, IMarkdownString } from 'vs/Base/common/htmlContent';
+import { URI } from 'vs/Base/common/uri';
+import { parse } from 'vs/Base/common/marshalling';
 
 suite('MarkdownRenderer', () => {
 	suite('Images', () => {

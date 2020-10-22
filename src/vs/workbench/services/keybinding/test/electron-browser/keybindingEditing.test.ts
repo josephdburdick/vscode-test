@@ -6,12 +6,12 @@
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as json from 'vs/base/common/json';
-import { ChordKeybinding, KeyCode, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OS } from 'vs/base/common/platform';
-import * as uuid from 'vs/base/common/uuid';
-import { mkdirp, rimraf, RimRafMode } from 'vs/base/node/pfs';
+import * as path from 'vs/Base/common/path';
+import * as json from 'vs/Base/common/json';
+import { ChordKeyBinding, KeyCode, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OS } from 'vs/Base/common/platform';
+import * as uuid from 'vs/Base/common/uuid';
+import { mkdirp, rimraf, RimRafMode } from 'vs/Base/node/pfs';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
@@ -23,110 +23,110 @@ import { ContextKeyExpr, IContextKeyService } from 'vs/platform/contextkey/commo
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IFileService } from 'vs/platform/files/common/files';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IUserFriendlyKeyBinding } from 'vs/platform/keyBinding/common/keyBinding';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { MockContextKeyService } from 'vs/platform/keyBinding/test/common/mockKeyBindingService';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { ILogService, NullLogService } from 'vs/platform/log/common/log';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { KeybindingsEditingService } from 'vs/workbench/services/keybinding/common/keybindingEditing';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { TextModelResolverService } from 'vs/workbench/services/textmodelResolver/common/textModelResolverService';
-import { TestBackupFileService, TestEditorGroupsService, TestEditorService, TestLifecycleService, TestPathService, TestProductService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { IBackupFileService } from 'vs/workBench/services/Backup/common/Backup';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { KeyBindingsEditingService } from 'vs/workBench/services/keyBinding/common/keyBindingEditing';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { TextModelResolverService } from 'vs/workBench/services/textmodelResolver/common/textModelResolverService';
+import { TestBackupFileService, TestEditorGroupsService, TestEditorService, TestLifecycleService, TestPathService, TestProductService } from 'vs/workBench/test/Browser/workBenchTestServices';
 import { FileService } from 'vs/platform/files/common/fileService';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { URI } from 'vs/base/common/uri';
-import { FileUserDataProvider } from 'vs/workbench/services/userData/common/fileUserDataProvider';
-import { NativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-browser/environmentService';
+import { URI } from 'vs/Base/common/uri';
+import { FileUserDataProvider } from 'vs/workBench/services/userData/common/fileUserDataProvider';
+import { NativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-Browser/environmentService';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IWorkingCopyService } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { TestWorkbenchConfiguration, TestTextFileService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { LabelService } from 'vs/workbench/services/label/common/labelService';
-import { IFilesConfigurationService, FilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { WorkingCopyFileService, IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { IWorkingCopyService } from 'vs/workBench/services/workingCopy/common/workingCopyService';
+import { TestWorkBenchConfiguration, TestTextFileService } from 'vs/workBench/test/electron-Browser/workBenchTestServices';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { LaBelService } from 'vs/workBench/services/laBel/common/laBelService';
+import { IFilesConfigurationService, FilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
+import { WorkingCopyFileService, IWorkingCopyFileService } from 'vs/workBench/services/workingCopy/common/workingCopyFileService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestTextResourcePropertiesService, TestContextService, TestWorkingCopyService } from 'vs/workbench/test/common/workbenchTestServices';
+import { TestTextResourcePropertiesService, TestContextService, TestWorkingCopyService } from 'vs/workBench/test/common/workBenchTestServices';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { UriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentityService';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
+import { UriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentityService';
 
-class TestWorkbenchEnvironmentService extends NativeWorkbenchEnvironmentService {
+class TestWorkBenchEnvironmentService extends NativeWorkBenchEnvironmentService {
 
 	constructor(private _appSettingsHome: URI) {
-		super(TestWorkbenchConfiguration, TestProductService);
+		super(TestWorkBenchConfiguration, TestProductService);
 	}
 
 	get appSettingsHome() { return this._appSettingsHome; }
 }
 
 interface Modifiers {
-	metaKey?: boolean;
-	ctrlKey?: boolean;
-	altKey?: boolean;
-	shiftKey?: boolean;
+	metaKey?: Boolean;
+	ctrlKey?: Boolean;
+	altKey?: Boolean;
+	shiftKey?: Boolean;
 }
 
-suite('KeybindingsEditing', () => {
+suite('KeyBindingsEditing', () => {
 
 	let instantiationService: TestInstantiationService;
-	let testObject: KeybindingsEditingService;
+	let testOBject: KeyBindingsEditingService;
 	let testDir: string;
-	let keybindingsFile: string;
+	let keyBindingsFile: string;
 
 	setup(() => {
 		return setUpWorkspace().then(() => {
-			keybindingsFile = path.join(testDir, 'keybindings.json');
+			keyBindingsFile = path.join(testDir, 'keyBindings.json');
 
 			instantiationService = new TestInstantiationService();
 
-			const environmentService = new TestWorkbenchEnvironmentService(URI.file(testDir));
+			const environmentService = new TestWorkBenchEnvironmentService(URI.file(testDir));
 
 			const configService = new TestConfigurationService();
 			configService.setUserConfiguration('files', { 'eol': '\n' });
 
-			instantiationService.stub(IEnvironmentService, environmentService);
-			instantiationService.stub(IPathService, new TestPathService());
-			instantiationService.stub(IConfigurationService, configService);
-			instantiationService.stub(IWorkspaceContextService, new TestContextService());
+			instantiationService.stuB(IEnvironmentService, environmentService);
+			instantiationService.stuB(IPathService, new TestPathService());
+			instantiationService.stuB(IConfigurationService, configService);
+			instantiationService.stuB(IWorkspaceContextService, new TestContextService());
 			const lifecycleService = new TestLifecycleService();
-			instantiationService.stub(ILifecycleService, lifecycleService);
-			instantiationService.stub(IContextKeyService, <IContextKeyService>instantiationService.createInstance(MockContextKeyService));
-			instantiationService.stub(IEditorGroupsService, new TestEditorGroupsService());
-			instantiationService.stub(IEditorService, new TestEditorService());
-			instantiationService.stub(IWorkingCopyService, new TestWorkingCopyService());
-			instantiationService.stub(ITelemetryService, NullTelemetryService);
-			instantiationService.stub(IModeService, ModeServiceImpl);
-			instantiationService.stub(ILogService, new NullLogService());
-			instantiationService.stub(ILabelService, instantiationService.createInstance(LabelService));
-			instantiationService.stub(IFilesConfigurationService, instantiationService.createInstance(FilesConfigurationService));
-			instantiationService.stub(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instantiationService.get(IConfigurationService)));
-			instantiationService.stub(IUndoRedoService, instantiationService.createInstance(UndoRedoService));
-			instantiationService.stub(IThemeService, new TestThemeService());
-			instantiationService.stub(IModelService, instantiationService.createInstance(ModelServiceImpl));
+			instantiationService.stuB(ILifecycleService, lifecycleService);
+			instantiationService.stuB(IContextKeyService, <IContextKeyService>instantiationService.createInstance(MockContextKeyService));
+			instantiationService.stuB(IEditorGroupsService, new TestEditorGroupsService());
+			instantiationService.stuB(IEditorService, new TestEditorService());
+			instantiationService.stuB(IWorkingCopyService, new TestWorkingCopyService());
+			instantiationService.stuB(ITelemetryService, NullTelemetryService);
+			instantiationService.stuB(IModeService, ModeServiceImpl);
+			instantiationService.stuB(ILogService, new NullLogService());
+			instantiationService.stuB(ILaBelService, instantiationService.createInstance(LaBelService));
+			instantiationService.stuB(IFilesConfigurationService, instantiationService.createInstance(FilesConfigurationService));
+			instantiationService.stuB(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instantiationService.get(IConfigurationService)));
+			instantiationService.stuB(IUndoRedoService, instantiationService.createInstance(UndoRedoService));
+			instantiationService.stuB(IThemeService, new TestThemeService());
+			instantiationService.stuB(IModelService, instantiationService.createInstance(ModelServiceImpl));
 			const fileService = new FileService(new NullLogService());
 			const diskFileSystemProvider = new DiskFileSystemProvider(new NullLogService());
 			fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 			fileService.registerProvider(Schemas.userData, new FileUserDataProvider(environmentService.appSettingsHome, undefined, diskFileSystemProvider, environmentService, new NullLogService()));
-			instantiationService.stub(IFileService, fileService);
-			instantiationService.stub(IUriIdentityService, new UriIdentityService(fileService));
-			instantiationService.stub(IWorkingCopyService, new TestWorkingCopyService());
-			instantiationService.stub(IWorkingCopyFileService, instantiationService.createInstance(WorkingCopyFileService));
-			instantiationService.stub(ITextFileService, instantiationService.createInstance(TestTextFileService));
-			instantiationService.stub(ITextModelService, <ITextModelService>instantiationService.createInstance(TextModelResolverService));
-			instantiationService.stub(IBackupFileService, new TestBackupFileService());
+			instantiationService.stuB(IFileService, fileService);
+			instantiationService.stuB(IUriIdentityService, new UriIdentityService(fileService));
+			instantiationService.stuB(IWorkingCopyService, new TestWorkingCopyService());
+			instantiationService.stuB(IWorkingCopyFileService, instantiationService.createInstance(WorkingCopyFileService));
+			instantiationService.stuB(ITextFileService, instantiationService.createInstance(TestTextFileService));
+			instantiationService.stuB(ITextModelService, <ITextModelService>instantiationService.createInstance(TextModelResolverService));
+			instantiationService.stuB(IBackupFileService, new TestBackupFileService());
 
-			testObject = instantiationService.createInstance(KeybindingsEditingService);
+			testOBject = instantiationService.createInstance(KeyBindingsEditingService);
 		});
 	});
 
@@ -146,173 +146,173 @@ suite('KeybindingsEditing', () => {
 	});
 
 	test('errors cases - parse errors', () => {
-		fs.writeFileSync(keybindingsFile, ',,,,,,,,,,,,,,');
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
+		fs.writeFileSync(keyBindingsFile, ',,,,,,,,,,,,,,');
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
 			.then(() => assert.fail('Should fail with parse errors'),
-				error => assert.equal(error.message, 'Unable to write to the keybindings configuration file. Please open it to correct errors/warnings in the file and try again.'));
+				error => assert.equal(error.message, 'UnaBle to write to the keyBindings configuration file. Please open it to correct errors/warnings in the file and try again.'));
 	});
 
 	test('errors cases - parse errors 2', () => {
-		fs.writeFileSync(keybindingsFile, '[{"key": }]');
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
+		fs.writeFileSync(keyBindingsFile, '[{"key": }]');
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
 			.then(() => assert.fail('Should fail with parse errors'),
-				error => assert.equal(error.message, 'Unable to write to the keybindings configuration file. Please open it to correct errors/warnings in the file and try again.'));
+				error => assert.equal(error.message, 'UnaBle to write to the keyBindings configuration file. Please open it to correct errors/warnings in the file and try again.'));
 	});
 
 	test('errors cases - dirty', () => {
-		instantiationService.stub(ITextFileService, 'isDirty', true);
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
+		instantiationService.stuB(ITextFileService, 'isDirty', true);
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
 			.then(() => assert.fail('Should fail with dirty error'),
-				error => assert.equal(error.message, 'Unable to write because the keybindings configuration file is dirty. Please save it first and then try again.'));
+				error => assert.equal(error.message, 'UnaBle to write Because the keyBindings configuration file is dirty. Please save it first and then try again.'));
 	});
 
 	test('errors cases - did not find an array', () => {
-		fs.writeFileSync(keybindingsFile, '{"key": "alt+c", "command": "hello"}');
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
+		fs.writeFileSync(keyBindingsFile, '{"key": "alt+c", "command": "hello"}');
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape } }), 'alt+c', undefined)
 			.then(() => assert.fail('Should fail with dirty error'),
-				error => assert.equal(error.message, 'Unable to write to the keybindings configuration file. It has an object which is not of type Array. Please open the file to clean up and try again.'));
+				error => assert.equal(error.message, 'UnaBle to write to the keyBindings configuration file. It has an oBject which is not of type Array. Please open the file to clean up and try again.'));
 	});
 
-	test('edit a default keybinding to an empty file', () => {
-		fs.writeFileSync(keybindingsFile, '');
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('edit a default keyBinding to an empty file', () => {
+		fs.writeFileSync(keyBindingsFile, '');
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('edit a default keybinding to an empty array', () => {
-		writeToKeybindingsFile();
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('edit a default keyBinding to an empty array', () => {
+		writeToKeyBindingsFile();
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('edit a default keybinding in an existing array', () => {
-		writeToKeybindingsFile({ command: 'b', key: 'shift+c' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'shift+c', command: 'b' }, { key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('edit a default keyBinding in an existing array', () => {
+		writeToKeyBindingsFile({ command: 'B', key: 'shift+c' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'shift+c', command: 'B' }, { key: 'alt+c', command: 'a' }, { key: 'escape', command: '-a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'a' }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('add a new default keybinding', () => {
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: 'a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a' }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('add a new default keyBinding', () => {
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: 'a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a' }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('edit an user keybinding', () => {
-		writeToKeybindingsFile({ key: 'escape', command: 'b' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: 'b' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'b', isDefault: false }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('edit an user keyBinding', () => {
+		writeToKeyBindingsFile({ key: 'escape', command: 'B' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: 'B' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'B', isDefault: false }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('edit an user keybinding with more than one element', () => {
-		writeToKeybindingsFile({ key: 'escape', command: 'b' }, { key: 'alt+shift+g', command: 'c' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: 'b' }, { key: 'alt+shift+g', command: 'c' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'b', isDefault: false }), 'alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('edit an user keyBinding with more than one element', () => {
+		writeToKeyBindingsFile({ key: 'escape', command: 'B' }, { key: 'alt+shift+g', command: 'c' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: 'B' }, { key: 'alt+shift+g', command: 'c' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ firstPart: { keyCode: KeyCode.Escape }, command: 'B', isDefault: false }), 'alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('remove a default keybinding', () => {
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a' }];
-		return testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }))
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('remove a default keyBinding', () => {
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a' }];
+		return testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }))
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	test('remove a default keybinding should not ad duplicate entries', async () => {
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a' }];
-		await testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
-		await testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
-		await testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
-		await testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
-		await testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
-		assert.deepEqual(getUserKeybindings(), expected);
+	test('remove a default keyBinding should not ad duplicate entries', async () => {
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a' }];
+		await testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
+		await testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
+		await testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
+		await testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
+		await testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'a', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } } }));
+		assert.deepEqual(getUserKeyBindings(), expected);
 	});
 
-	test('remove a user keybinding', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: 'b' });
-		return testObject.removeKeybinding(aResolvedKeybindingItem({ command: 'b', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } }, isDefault: false }))
-			.then(() => assert.deepEqual(getUserKeybindings(), []));
+	test('remove a user keyBinding', () => {
+		writeToKeyBindingsFile({ key: 'alt+c', command: 'B' });
+		return testOBject.removeKeyBinding(aResolvedKeyBindingItem({ command: 'B', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } }, isDefault: false }))
+			.then(() => assert.deepEqual(getUserKeyBindings(), []));
 	});
 
-	test('reset an edited keybinding', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: 'b' });
-		return testObject.resetKeybinding(aResolvedKeybindingItem({ command: 'b', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } }, isDefault: false }))
-			.then(() => assert.deepEqual(getUserKeybindings(), []));
+	test('reset an edited keyBinding', () => {
+		writeToKeyBindingsFile({ key: 'alt+c', command: 'B' });
+		return testOBject.resetKeyBinding(aResolvedKeyBindingItem({ command: 'B', firstPart: { keyCode: KeyCode.KEY_C, modifiers: { altKey: true } }, isDefault: false }))
+			.then(() => assert.deepEqual(getUserKeyBindings(), []));
 	});
 
-	test('reset a removed keybinding', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-b' });
-		return testObject.resetKeybinding(aResolvedKeybindingItem({ command: 'b', isDefault: false }))
-			.then(() => assert.deepEqual(getUserKeybindings(), []));
+	test('reset a removed keyBinding', () => {
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-B' });
+		return testOBject.resetKeyBinding(aResolvedKeyBindingItem({ command: 'B', isDefault: false }))
+			.then(() => assert.deepEqual(getUserKeyBindings(), []));
 	});
 
-	test('reset multiple removed keybindings', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-b' });
-		writeToKeybindingsFile({ key: 'alt+shift+c', command: '-b' });
-		writeToKeybindingsFile({ key: 'escape', command: '-b' });
-		return testObject.resetKeybinding(aResolvedKeybindingItem({ command: 'b', isDefault: false }))
-			.then(() => assert.deepEqual(getUserKeybindings(), []));
+	test('reset multiple removed keyBindings', () => {
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-B' });
+		writeToKeyBindingsFile({ key: 'alt+shift+c', command: '-B' });
+		writeToKeyBindingsFile({ key: 'escape', command: '-B' });
+		return testOBject.resetKeyBinding(aResolvedKeyBindingItem({ command: 'B', isDefault: false }))
+			.then(() => assert.deepEqual(getUserKeyBindings(), []));
 	});
 
-	test('add a new keybinding to unassigned keybinding', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-a' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a' }, { key: 'shift+alt+c', command: 'a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+	test('add a new keyBinding to unassigned keyBinding', () => {
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-a' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a' }, { key: 'shift+alt+c', command: 'a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
 	test('add when expression', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-a' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', 'editorTextFocus')
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-a' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', 'editorTextFocus')
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
 	test('update command and when expression', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', 'editorTextFocus')
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', 'editorTextFocus')
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
 	test('update when expression', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus && !editorReadonly' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a', isDefault: false, when: 'editorTextFocus && !editorReadonly' }), 'shift+alt+c', 'editorTextFocus')
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus && !editorReadonly' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a', when: 'editorTextFocus' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a', isDefault: false, when: 'editorTextFocus && !editorReadonly' }), 'shift+alt+c', 'editorTextFocus')
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
 	test('remove when expression', () => {
-		writeToKeybindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' });
-		const expected: IUserFriendlyKeybinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a' }];
-		return testObject.editKeybinding(aResolvedKeybindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', undefined)
-			.then(() => assert.deepEqual(getUserKeybindings(), expected));
+		writeToKeyBindingsFile({ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' });
+		const expected: IUserFriendlyKeyBinding[] = [{ key: 'alt+c', command: '-a', when: 'editorTextFocus && !editorReadonly' }, { key: 'shift+alt+c', command: 'a' }];
+		return testOBject.editKeyBinding(aResolvedKeyBindingItem({ command: 'a', isDefault: false }), 'shift+alt+c', undefined)
+			.then(() => assert.deepEqual(getUserKeyBindings(), expected));
 	});
 
-	function writeToKeybindingsFile(...keybindings: IUserFriendlyKeybinding[]) {
-		fs.writeFileSync(keybindingsFile, JSON.stringify(keybindings || []));
+	function writeToKeyBindingsFile(...keyBindings: IUserFriendlyKeyBinding[]) {
+		fs.writeFileSync(keyBindingsFile, JSON.stringify(keyBindings || []));
 	}
 
-	function getUserKeybindings(): IUserFriendlyKeybinding[] {
-		return json.parse(fs.readFileSync(keybindingsFile).toString('utf8'));
+	function getUserKeyBindings(): IUserFriendlyKeyBinding[] {
+		return json.parse(fs.readFileSync(keyBindingsFile).toString('utf8'));
 	}
 
-	function aResolvedKeybindingItem({ command, when, isDefault, firstPart, chordPart }: { command?: string, when?: string, isDefault?: boolean, firstPart?: { keyCode: KeyCode, modifiers?: Modifiers }, chordPart?: { keyCode: KeyCode, modifiers?: Modifiers } }): ResolvedKeybindingItem {
-		const aSimpleKeybinding = function (part: { keyCode: KeyCode, modifiers?: Modifiers }): SimpleKeybinding {
+	function aResolvedKeyBindingItem({ command, when, isDefault, firstPart, chordPart }: { command?: string, when?: string, isDefault?: Boolean, firstPart?: { keyCode: KeyCode, modifiers?: Modifiers }, chordPart?: { keyCode: KeyCode, modifiers?: Modifiers } }): ResolvedKeyBindingItem {
+		const aSimpleKeyBinding = function (part: { keyCode: KeyCode, modifiers?: Modifiers }): SimpleKeyBinding {
 			const { ctrlKey, shiftKey, altKey, metaKey } = part.modifiers || { ctrlKey: false, shiftKey: false, altKey: false, metaKey: false };
-			return new SimpleKeybinding(ctrlKey!, shiftKey!, altKey!, metaKey!, part.keyCode);
+			return new SimpleKeyBinding(ctrlKey!, shiftKey!, altKey!, metaKey!, part.keyCode);
 		};
-		let parts: SimpleKeybinding[] = [];
+		let parts: SimpleKeyBinding[] = [];
 		if (firstPart) {
-			parts.push(aSimpleKeybinding(firstPart));
+			parts.push(aSimpleKeyBinding(firstPart));
 			if (chordPart) {
-				parts.push(aSimpleKeybinding(chordPart));
+				parts.push(aSimpleKeyBinding(chordPart));
 			}
 		}
-		const keybinding = parts.length > 0 ? new USLayoutResolvedKeybinding(new ChordKeybinding(parts), OS) : undefined;
-		return new ResolvedKeybindingItem(keybinding, command || 'some command', null, when ? ContextKeyExpr.deserialize(when) : undefined, isDefault === undefined ? true : isDefault, null);
+		const keyBinding = parts.length > 0 ? new USLayoutResolvedKeyBinding(new ChordKeyBinding(parts), OS) : undefined;
+		return new ResolvedKeyBindingItem(keyBinding, command || 'some command', null, when ? ContextKeyExpr.deserialize(when) : undefined, isDefault === undefined ? true : isDefault, null);
 	}
 
 });

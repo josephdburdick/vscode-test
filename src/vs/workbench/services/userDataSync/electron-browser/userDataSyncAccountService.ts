@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IUserDataSyncAccountService, IUserDataSyncAccount } from 'vs/platform/userDataSync/common/userDataSyncAccount';
 
-export class UserDataSyncAccountService extends Disposable implements IUserDataSyncAccountService {
+export class UserDataSyncAccountService extends DisposaBle implements IUserDataSyncAccountService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -19,7 +19,7 @@ export class UserDataSyncAccountService extends Disposable implements IUserDataS
 	private _account: IUserDataSyncAccount | undefined;
 	get account(): IUserDataSyncAccount | undefined { return this._account; }
 
-	get onTokenFailed(): Event<boolean> { return this.channel.listen<boolean>('onTokenFailed'); }
+	get onTokenFailed(): Event<Boolean> { return this.channel.listen<Boolean>('onTokenFailed'); }
 
 	private _onDidChangeAccount: Emitter<IUserDataSyncAccount | undefined> = this._register(new Emitter<IUserDataSyncAccount | undefined>());
 	readonly onDidChangeAccount: Event<IUserDataSyncAccount | undefined> = this._onDidChangeAccount.event;

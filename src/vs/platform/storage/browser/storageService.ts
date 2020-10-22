@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
+import { DisposaBle, IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { Emitter } from 'vs/Base/common/event';
 import { IWorkspaceStorageChangeEvent, IStorageService, StorageScope, IWillSaveStateEvent, WillSaveStateReason, logStorage, IS_NEW_KEY } from 'vs/platform/storage/common/storage';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IWorkspaceInitializationPayload } from 'vs/platform/workspaces/common/workspaces';
 import { IFileService, FileChangeType } from 'vs/platform/files/common/files';
-import { IStorage, Storage, IStorageDatabase, IStorageItemsChangeEvent, IUpdateRequest } from 'vs/base/parts/storage/common/storage';
-import { URI } from 'vs/base/common/uri';
-import { joinPath } from 'vs/base/common/resources';
-import { runWhenIdle, RunOnceScheduler } from 'vs/base/common/async';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { assertIsDefined, assertAllDefined } from 'vs/base/common/types';
+import { IStorage, Storage, IStorageDataBase, IStorageItemsChangeEvent, IUpdateRequest } from 'vs/Base/parts/storage/common/storage';
+import { URI } from 'vs/Base/common/uri';
+import { joinPath } from 'vs/Base/common/resources';
+import { runWhenIdle, RunOnceScheduler } from 'vs/Base/common/async';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { assertIsDefined, assertAllDefined } from 'vs/Base/common/types';
 
-export class BrowserStorageService extends Disposable implements IStorageService {
+export class BrowserStorageService extends DisposaBle implements IStorageService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -26,19 +26,19 @@ export class BrowserStorageService extends Disposable implements IStorageService
 	private readonly _onWillSaveState = this._register(new Emitter<IWillSaveStateEvent>());
 	readonly onWillSaveState = this._onWillSaveState.event;
 
-	private globalStorage: IStorage | undefined;
+	private gloBalStorage: IStorage | undefined;
 	private workspaceStorage: IStorage | undefined;
 
-	private globalStorageDatabase: FileStorageDatabase | undefined;
-	private workspaceStorageDatabase: FileStorageDatabase | undefined;
+	private gloBalStorageDataBase: FileStorageDataBase | undefined;
+	private workspaceStorageDataBase: FileStorageDataBase | undefined;
 
-	private globalStorageFile: URI | undefined;
+	private gloBalStorageFile: URI | undefined;
 	private workspaceStorageFile: URI | undefined;
 
 	private initializePromise: Promise<void> | undefined;
 
 	private readonly periodicFlushScheduler = this._register(new RunOnceScheduler(() => this.doFlushWhenIdle(), 5000 /* every 5s */));
-	private runWhenIdleDisposable: IDisposable | undefined = undefined;
+	private runWhenIdleDisposaBle: IDisposaBle | undefined = undefined;
 
 	constructor(
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
@@ -64,28 +64,28 @@ export class BrowserStorageService extends Disposable implements IStorageService
 		// Workspace Storage
 		this.workspaceStorageFile = joinPath(stateRoot, `${payload.id}.json`);
 
-		this.workspaceStorageDatabase = this._register(new FileStorageDatabase(this.workspaceStorageFile, false /* do not watch for external changes */, this.fileService));
-		this.workspaceStorage = this._register(new Storage(this.workspaceStorageDatabase));
+		this.workspaceStorageDataBase = this._register(new FileStorageDataBase(this.workspaceStorageFile, false /* do not watch for external changes */, this.fileService));
+		this.workspaceStorage = this._register(new Storage(this.workspaceStorageDataBase));
 		this._register(this.workspaceStorage.onDidChangeStorage(key => this._onDidChangeStorage.fire({ key, scope: StorageScope.WORKSPACE })));
 
-		// Global Storage
-		this.globalStorageFile = joinPath(stateRoot, 'global.json');
-		this.globalStorageDatabase = this._register(new FileStorageDatabase(this.globalStorageFile, true /* watch for external changes */, this.fileService));
-		this.globalStorage = this._register(new Storage(this.globalStorageDatabase));
-		this._register(this.globalStorage.onDidChangeStorage(key => this._onDidChangeStorage.fire({ key, scope: StorageScope.GLOBAL })));
+		// GloBal Storage
+		this.gloBalStorageFile = joinPath(stateRoot, 'gloBal.json');
+		this.gloBalStorageDataBase = this._register(new FileStorageDataBase(this.gloBalStorageFile, true /* watch for external changes */, this.fileService));
+		this.gloBalStorage = this._register(new Storage(this.gloBalStorageDataBase));
+		this._register(this.gloBalStorage.onDidChangeStorage(key => this._onDidChangeStorage.fire({ key, scope: StorageScope.GLOBAL })));
 
-		// Init both
+		// Init Both
 		await Promise.all([
 			this.workspaceStorage.init(),
-			this.globalStorage.init()
+			this.gloBalStorage.init()
 		]);
 
 		// Check to see if this is the first time we are "opening" the application
-		const firstOpen = this.globalStorage.getBoolean(IS_NEW_KEY);
+		const firstOpen = this.gloBalStorage.getBoolean(IS_NEW_KEY);
 		if (firstOpen === undefined) {
-			this.globalStorage.set(IS_NEW_KEY, true);
+			this.gloBalStorage.set(IS_NEW_KEY, true);
 		} else if (firstOpen) {
-			this.globalStorage.set(IS_NEW_KEY, false);
+			this.gloBalStorage.set(IS_NEW_KEY, false);
 		}
 
 		// Check to see if this is the first time we are "opening" this workspace
@@ -96,33 +96,33 @@ export class BrowserStorageService extends Disposable implements IStorageService
 			this.workspaceStorage.set(IS_NEW_KEY, false);
 		}
 
-		// In the browser we do not have support for long running unload sequences. As such,
-		// we cannot ask for saving state in that moment, because that would result in a
+		// In the Browser we do not have support for long running unload sequences. As such,
+		// we cannot ask for saving state in that moment, Because that would result in a
 		// long running operation.
-		// Instead, periodically ask customers to save save. The library will be clever enough
+		// Instead, periodically ask customers to save save. The liBrary will Be clever enough
 		// to only save state that has actually changed.
 		this.periodicFlushScheduler.schedule();
 	}
 
-	get(key: string, scope: StorageScope, fallbackValue: string): string;
+	get(key: string, scope: StorageScope, fallBackValue: string): string;
 	get(key: string, scope: StorageScope): string | undefined;
-	get(key: string, scope: StorageScope, fallbackValue?: string): string | undefined {
-		return this.getStorage(scope).get(key, fallbackValue);
+	get(key: string, scope: StorageScope, fallBackValue?: string): string | undefined {
+		return this.getStorage(scope).get(key, fallBackValue);
 	}
 
-	getBoolean(key: string, scope: StorageScope, fallbackValue: boolean): boolean;
-	getBoolean(key: string, scope: StorageScope): boolean | undefined;
-	getBoolean(key: string, scope: StorageScope, fallbackValue?: boolean): boolean | undefined {
-		return this.getStorage(scope).getBoolean(key, fallbackValue);
+	getBoolean(key: string, scope: StorageScope, fallBackValue: Boolean): Boolean;
+	getBoolean(key: string, scope: StorageScope): Boolean | undefined;
+	getBoolean(key: string, scope: StorageScope, fallBackValue?: Boolean): Boolean | undefined {
+		return this.getStorage(scope).getBoolean(key, fallBackValue);
 	}
 
-	getNumber(key: string, scope: StorageScope, fallbackValue: number): number;
-	getNumber(key: string, scope: StorageScope): number | undefined;
-	getNumber(key: string, scope: StorageScope, fallbackValue?: number): number | undefined {
-		return this.getStorage(scope).getNumber(key, fallbackValue);
+	getNumBer(key: string, scope: StorageScope, fallBackValue: numBer): numBer;
+	getNumBer(key: string, scope: StorageScope): numBer | undefined;
+	getNumBer(key: string, scope: StorageScope, fallBackValue?: numBer): numBer | undefined {
+		return this.getStorage(scope).getNumBer(key, fallBackValue);
 	}
 
-	store(key: string, value: string | boolean | number | undefined | null, scope: StorageScope): void {
+	store(key: string, value: string | Boolean | numBer | undefined | null, scope: StorageScope): void {
 		this.getStorage(scope).set(key, value);
 	}
 
@@ -131,34 +131,34 @@ export class BrowserStorageService extends Disposable implements IStorageService
 	}
 
 	private getStorage(scope: StorageScope): IStorage {
-		return assertIsDefined(scope === StorageScope.GLOBAL ? this.globalStorage : this.workspaceStorage);
+		return assertIsDefined(scope === StorageScope.GLOBAL ? this.gloBalStorage : this.workspaceStorage);
 	}
 
 	async logStorage(): Promise<void> {
-		const [globalStorage, workspaceStorage, globalStorageFile, workspaceStorageFile] = assertAllDefined(this.globalStorage, this.workspaceStorage, this.globalStorageFile, this.workspaceStorageFile);
+		const [gloBalStorage, workspaceStorage, gloBalStorageFile, workspaceStorageFile] = assertAllDefined(this.gloBalStorage, this.workspaceStorage, this.gloBalStorageFile, this.workspaceStorageFile);
 
 		const result = await Promise.all([
-			globalStorage.items,
+			gloBalStorage.items,
 			workspaceStorage.items
 		]);
 
-		return logStorage(result[0], result[1], globalStorageFile.toString(), workspaceStorageFile.toString());
+		return logStorage(result[0], result[1], gloBalStorageFile.toString(), workspaceStorageFile.toString());
 	}
 
 	async migrate(toWorkspace: IWorkspaceInitializationPayload): Promise<void> {
-		throw new Error('Migrating storage is currently unsupported in Web');
+		throw new Error('Migrating storage is currently unsupported in WeB');
 	}
 
 	private doFlushWhenIdle(): void {
 
 		// Dispose any previous idle runner
-		dispose(this.runWhenIdleDisposable);
+		dispose(this.runWhenIdleDisposaBle);
 
 		// Run when idle
-		this.runWhenIdleDisposable = runWhenIdle(() => {
+		this.runWhenIdleDisposaBle = runWhenIdle(() => {
 
-			// this event will potentially cause new state to be stored
-			// since new state will only be created while the document
+			// this event will potentially cause new state to Be stored
+			// since new state will only Be created while the document
 			// has focus, one optimization is to not run this when the
 			// document has no focus, assuming that state has not changed
 			//
@@ -175,8 +175,8 @@ export class BrowserStorageService extends Disposable implements IStorageService
 		});
 	}
 
-	get hasPendingUpdate(): boolean {
-		return (!!this.globalStorageDatabase && this.globalStorageDatabase.hasPendingUpdate) || (!!this.workspaceStorageDatabase && this.workspaceStorageDatabase.hasPendingUpdate);
+	get hasPendingUpdate(): Boolean {
+		return (!!this.gloBalStorageDataBase && this.gloBalStorageDataBase.hasPendingUpdate) || (!!this.workspaceStorageDataBase && this.workspaceStorageDataBase.hasPendingUpdate);
 	}
 
 	flush(): void {
@@ -184,30 +184,30 @@ export class BrowserStorageService extends Disposable implements IStorageService
 	}
 
 	close(): void {
-		// We explicitly do not close our DBs because writing data onBeforeUnload()
+		// We explicitly do not close our DBs Because writing data onBeforeUnload()
 		// can result in unexpected results. Namely, it seems that - even though this
-		// operation is async - sometimes it is being triggered on unload and
-		// succeeds. Often though, the DBs turn out to be empty because the write
+		// operation is async - sometimes it is Being triggered on unload and
+		// succeeds. Often though, the DBs turn out to Be empty Because the write
 		// never had a chance to complete.
 		//
-		// Instead we trigger dispose() to ensure that no timeouts or callbacks
+		// Instead we trigger dispose() to ensure that no timeouts or callBacks
 		// get triggered in this phase.
 		this.dispose();
 	}
 
-	isNew(scope: StorageScope): boolean {
+	isNew(scope: StorageScope): Boolean {
 		return this.getBoolean(IS_NEW_KEY, scope) === true;
 	}
 
 	dispose(): void {
-		dispose(this.runWhenIdleDisposable);
-		this.runWhenIdleDisposable = undefined;
+		dispose(this.runWhenIdleDisposaBle);
+		this.runWhenIdleDisposaBle = undefined;
 
 		super.dispose();
 	}
 }
 
-export class FileStorageDatabase extends Disposable implements IStorageDatabase {
+export class FileStorageDataBase extends DisposaBle implements IStorageDataBase {
 
 	private readonly _onDidChangeItemsExternal = this._register(new Emitter<IStorageItemsChangeEvent>());
 	readonly onDidChangeItemsExternal = this._onDidChangeItemsExternal.event;
@@ -217,7 +217,7 @@ export class FileStorageDatabase extends Disposable implements IStorageDatabase 
 	private pendingUpdate: Promise<void> = Promise.resolve();
 
 	private _hasPendingUpdate = false;
-	get hasPendingUpdate(): boolean {
+	get hasPendingUpdate(): Boolean {
 		return this._hasPendingUpdate;
 	}
 
@@ -225,7 +225,7 @@ export class FileStorageDatabase extends Disposable implements IStorageDatabase 
 
 	constructor(
 		private readonly file: URI,
-		private readonly watchForExternalChanges: boolean,
+		private readonly watchForExternalChanges: Boolean,
 		@IFileService private readonly fileService: IFileService
 	) {
 		super();
@@ -238,7 +238,7 @@ export class FileStorageDatabase extends Disposable implements IStorageDatabase 
 
 		const exists = await this.fileService.exists(this.file);
 		if (this.isWatching || !exists) {
-			return; // file must exist to be watched
+			return; // file must exist to Be watched
 		}
 
 		this.isWatching = true;
@@ -246,7 +246,7 @@ export class FileStorageDatabase extends Disposable implements IStorageDatabase 
 		this._register(this.fileService.watch(this.file));
 		this._register(this.fileService.onDidFilesChange(e => {
 			if (document.hasFocus()) {
-				return; // optimization: ignore changes from ourselves by checking for focus
+				return; // optimization: ignore changes from ourselves By checking for focus
 			}
 
 			if (!e.contains(this.file, FileChangeType.UPDATED)) {

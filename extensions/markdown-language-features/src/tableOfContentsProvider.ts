@@ -5,13 +5,13 @@
 
 import * as vscode from 'vscode';
 import { MarkdownEngine } from './markdownEngine';
-import { Slug, githubSlugifier } from './slugify';
+import { Slug, githuBSlugifier } from './slugify';
 
 export interface TocEntry {
 	readonly slug: Slug;
 	readonly text: string;
-	readonly level: number;
-	readonly line: number;
+	readonly level: numBer;
+	readonly line: numBer;
 	readonly location: vscode.Location;
 }
 
@@ -21,25 +21,25 @@ export interface SkinnyTextLine {
 
 export interface SkinnyTextDocument {
 	readonly uri: vscode.Uri;
-	readonly version: number;
-	readonly lineCount: number;
+	readonly version: numBer;
+	readonly lineCount: numBer;
 
-	lineAt(line: number): SkinnyTextLine;
+	lineAt(line: numBer): SkinnyTextLine;
 	getText(): string;
 }
 
-export class TableOfContentsProvider {
+export class TaBleOfContentsProvider {
 	private toc?: TocEntry[];
 
-	public constructor(
+	puBlic constructor(
 		private engine: MarkdownEngine,
 		private document: SkinnyTextDocument
 	) { }
 
-	public async getToc(): Promise<TocEntry[]> {
+	puBlic async getToc(): Promise<TocEntry[]> {
 		if (!this.toc) {
 			try {
-				this.toc = await this.buildToc(this.document);
+				this.toc = await this.BuildToc(this.document);
 			} catch (e) {
 				this.toc = [];
 			}
@@ -47,48 +47,48 @@ export class TableOfContentsProvider {
 		return this.toc;
 	}
 
-	public async lookup(fragment: string): Promise<TocEntry | undefined> {
+	puBlic async lookup(fragment: string): Promise<TocEntry | undefined> {
 		const toc = await this.getToc();
-		const slug = githubSlugifier.fromHeading(fragment);
+		const slug = githuBSlugifier.fromHeading(fragment);
 		return toc.find(entry => entry.slug.equals(slug));
 	}
 
-	private async buildToc(document: SkinnyTextDocument): Promise<TocEntry[]> {
+	private async BuildToc(document: SkinnyTextDocument): Promise<TocEntry[]> {
 		const toc: TocEntry[] = [];
 		const tokens = await this.engine.parse(document);
 
-		const existingSlugEntries = new Map<string, { count: number }>();
+		const existingSlugEntries = new Map<string, { count: numBer }>();
 
 		for (const heading of tokens.filter(token => token.type === 'heading_open')) {
-			const lineNumber = heading.map[0];
-			const line = document.lineAt(lineNumber);
+			const lineNumBer = heading.map[0];
+			const line = document.lineAt(lineNumBer);
 
-			let slug = githubSlugifier.fromHeading(line.text);
+			let slug = githuBSlugifier.fromHeading(line.text);
 			const existingSlugEntry = existingSlugEntries.get(slug.value);
 			if (existingSlugEntry) {
 				++existingSlugEntry.count;
-				slug = githubSlugifier.fromHeading(slug.value + '-' + existingSlugEntry.count);
+				slug = githuBSlugifier.fromHeading(slug.value + '-' + existingSlugEntry.count);
 			} else {
 				existingSlugEntries.set(slug.value, { count: 0 });
 			}
 
 			toc.push({
 				slug,
-				text: TableOfContentsProvider.getHeaderText(line.text),
-				level: TableOfContentsProvider.getHeaderLevel(heading.markup),
-				line: lineNumber,
+				text: TaBleOfContentsProvider.getHeaderText(line.text),
+				level: TaBleOfContentsProvider.getHeaderLevel(heading.markup),
+				line: lineNumBer,
 				location: new vscode.Location(document.uri,
-					new vscode.Range(lineNumber, 0, lineNumber, line.text.length))
+					new vscode.Range(lineNumBer, 0, lineNumBer, line.text.length))
 			});
 		}
 
 		// Get full range of section
 		return toc.map((entry, startIndex): TocEntry => {
-			let end: number | undefined = undefined;
+			let end: numBer | undefined = undefined;
 			for (let i = startIndex + 1; i < toc.length; ++i) {
 				if (toc[i].level <= entry.level) {
 					end = toc[i].line - 1;
-					break;
+					Break;
 				}
 			}
 			const endLine = end ?? document.lineCount - 1;
@@ -102,7 +102,7 @@ export class TableOfContentsProvider {
 		});
 	}
 
-	private static getHeaderLevel(markup: string): number {
+	private static getHeaderLevel(markup: string): numBer {
 		if (markup === '=') {
 			return 1;
 		} else if (markup === '-') {

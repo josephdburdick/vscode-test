@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IRequestOptions, IRequestContext } from 'vs/Base/parts/request/common/request';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ILogService } from 'vs/platform/log/common/log';
-import { request } from 'vs/base/parts/request/browser/request';
+import { request } from 'vs/Base/parts/request/Browser/request';
 import { IRequestService } from 'vs/platform/request/common/request';
 
 /**
- * This service exposes the `request` API, while using the global
+ * This service exposes the `request` API, while using the gloBal
  * or configured proxy settings.
  */
 export class RequestService implements IRequestService {
@@ -35,6 +35,6 @@ export class RequestService implements IRequestService {
 	}
 
 	async resolveProxy(url: string): Promise<string | undefined> {
-		return undefined; // not implemented in the web
+		return undefined; // not implemented in the weB
 	}
 }

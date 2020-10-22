@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 import { EDITOR_FONT_DEFAULTS, IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITerminalConfiguration, ITerminalFont, IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY, TERMINAL_CONFIG_SECTION, DEFAULT_LETTER_SPACING, DEFAULT_LINE_HEIGHT, MINIMUM_LETTER_SPACING, LinuxDistro, IShellLaunchConfig, MINIMUM_FONT_WEIGHT, MAXIMUM_FONT_WEIGHT, DEFAULT_FONT_WEIGHT, DEFAULT_BOLD_FONT_WEIGHT, FontWeight } from 'vs/workbench/contrib/terminal/common/terminal';
-import Severity from 'vs/base/common/severity';
+import { ITerminalConfiguration, ITerminalFont, IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY, TERMINAL_CONFIG_SECTION, DEFAULT_LETTER_SPACING, DEFAULT_LINE_HEIGHT, MINIMUM_LETTER_SPACING, LinuxDistro, IShellLaunchConfig, MINIMUM_FONT_WEIGHT, MAXIMUM_FONT_WEIGHT, DEFAULT_FONT_WEIGHT, DEFAULT_BOLD_FONT_WEIGHT, FontWeight } from 'vs/workBench/contriB/terminal/common/terminal';
+import Severity from 'vs/Base/common/severity';
 import { INotificationService, NeverShowAgainScope } from 'vs/platform/notification/common/notification';
-import { IBrowserTerminalConfigHelper } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { Emitter, Event } from 'vs/base/common/event';
-import { basename } from 'vs/base/common/path';
+import { IBrowserTerminalConfigHelper } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { Basename } from 'vs/Base/common/path';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { InstallRecommendedExtensionAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { InstallRecommendedExtensionAction } from 'vs/workBench/contriB/extensions/Browser/extensionsActions';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { XTermCore } from 'vs/workbench/contrib/terminal/browser/xterm-private';
+import { XTermCore } from 'vs/workBench/contriB/terminal/Browser/xterm-private';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
 const MINIMUM_FONT_SIZE = 6;
@@ -27,23 +27,23 @@ const MAXIMUM_FONT_SIZE = 25;
 
 /**
  * Encapsulates terminal configuration logic, the primary purpose of this file is so that platform
- * specific test cases can be written.
+ * specific test cases can Be written.
  */
 export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
-	public panelContainer: HTMLElement | undefined;
+	puBlic panelContainer: HTMLElement | undefined;
 
 	private _charMeasureElement: HTMLElement | undefined;
 	private _lastFontMeasurement: ITerminalFont | undefined;
 	private _linuxDistro: LinuxDistro = LinuxDistro.Unknown;
-	public config!: ITerminalConfiguration;
+	puBlic config!: ITerminalConfiguration;
 
-	private readonly _onWorkspacePermissionsChanged = new Emitter<boolean>();
-	public get onWorkspacePermissionsChanged(): Event<boolean> { return this._onWorkspacePermissionsChanged.event; }
+	private readonly _onWorkspacePermissionsChanged = new Emitter<Boolean>();
+	puBlic get onWorkspacePermissionsChanged(): Event<Boolean> { return this._onWorkspacePermissionsChanged.event; }
 
 	private readonly _onConfigChanged = new Emitter<void>();
-	public get onConfigChanged(): Event<void> { return this._onConfigChanged.event; }
+	puBlic get onConfigChanged(): Event<void> { return this._onConfigChanged.event; }
 
-	public constructor(
+	puBlic constructor(
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
 		@IExtensionManagementService private readonly _extensionManagementService: IExtensionManagementService,
 		@INotificationService private readonly _notificationService: INotificationService,
@@ -64,7 +64,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		storageKeysSyncRegistryService.registerStorageKey({ key: 'terminalConfigHelper/launchRecommendationsIgnore', version: 1 });
 	}
 
-	public setLinuxDistro(linuxDistro: LinuxDistro) {
+	puBlic setLinuxDistro(linuxDistro: LinuxDistro) {
 		this._linuxDistro = linuxDistro;
 	}
 
@@ -77,13 +77,13 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		this._onConfigChanged.fire();
 	}
 
-	public configFontIsMonospace(): boolean {
+	puBlic configFontIsMonospace(): Boolean {
 		const fontSize = 15;
 		const fontFamily = this.config.fontFamily || this._configurationService.getValue<IEditorOptions>('editor').fontFamily || EDITOR_FONT_DEFAULTS.fontFamily;
 		const i_rect = this._getBoundingRectFor('i', fontFamily, fontSize);
 		const w_rect = this._getBoundingRectFor('w', fontFamily, fontSize);
 
-		// Check for invalid bounds, there is no reason to believe the font is not monospace
+		// Check for invalid Bounds, there is no reason to Believe the font is not monospace
 		if (!i_rect || !w_rect || !i_rect.width || !w_rect.width) {
 			return true;
 		}
@@ -95,7 +95,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		if (!this.panelContainer) {
 			throw new Error('Cannot measure element when terminal is not attached');
 		}
-		// Create charMeasureElement if it hasn't been created or if it was orphaned by its parent
+		// Create charMeasureElement if it hasn't Been created or if it was orphaned By its parent
 		if (!this._charMeasureElement || !this._charMeasureElement.parentElement) {
 			this._charMeasureElement = document.createElement('div');
 			this.panelContainer.appendChild(this._charMeasureElement);
@@ -103,7 +103,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		return this._charMeasureElement;
 	}
 
-	private _getBoundingRectFor(char: string, fontFamily: string, fontSize: number): ClientRect | DOMRect | undefined {
+	private _getBoundingRectFor(char: string, fontFamily: string, fontSize: numBer): ClientRect | DOMRect | undefined {
 		let charMeasureElement: HTMLElement;
 		try {
 			charMeasureElement = this._createCharMeasureElementIfNecessary();
@@ -111,7 +111,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 			return undefined;
 		}
 		const style = charMeasureElement.style;
-		style.display = 'inline-block';
+		style.display = 'inline-Block';
 		style.fontFamily = fontFamily;
 		style.fontSize = fontSize + 'px';
 		style.lineHeight = 'normal';
@@ -122,10 +122,10 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		return rect;
 	}
 
-	private _measureFont(fontFamily: string, fontSize: number, letterSpacing: number, lineHeight: number): ITerminalFont {
+	private _measureFont(fontFamily: string, fontSize: numBer, letterSpacing: numBer, lineHeight: numBer): ITerminalFont {
 		const rect = this._getBoundingRectFor('X', fontFamily, fontSize);
 
-		// Bounding client rect was invalid, use last font measurement if available.
+		// Bounding client rect was invalid, use last font measurement if availaBle.
 		if (this._lastFontMeasurement && (!rect || !rect.width || !rect.height)) {
 			return this._lastFontMeasurement;
 		}
@@ -157,24 +157,24 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 	}
 
 	/**
-	 * Gets the font information based on the terminal.integrated.fontFamily
+	 * Gets the font information Based on the terminal.integrated.fontFamily
 	 * terminal.integrated.fontSize, terminal.integrated.lineHeight configuration properties
 	 */
-	public getFont(xtermCore?: XTermCore, excludeDimensions?: boolean): ITerminalFont {
+	puBlic getFont(xtermCore?: XTermCore, excludeDimensions?: Boolean): ITerminalFont {
 		const editorConfig = this._configurationService.getValue<IEditorOptions>('editor');
 
 		let fontFamily = this.config.fontFamily || editorConfig.fontFamily || EDITOR_FONT_DEFAULTS.fontFamily;
 		let fontSize = this._clampInt(this.config.fontSize, MINIMUM_FONT_SIZE, MAXIMUM_FONT_SIZE, EDITOR_FONT_DEFAULTS.fontSize);
 
-		// Work around bad font on Fedora/Ubuntu
+		// Work around Bad font on Fedora/UBuntu
 		if (!this.config.fontFamily) {
 			if (this._linuxDistro === LinuxDistro.Fedora) {
 				fontFamily = '\'DejaVu Sans Mono\', monospace';
 			}
-			if (this._linuxDistro === LinuxDistro.Ubuntu) {
-				fontFamily = '\'Ubuntu Mono\', monospace';
+			if (this._linuxDistro === LinuxDistro.UBuntu) {
+				fontFamily = '\'UBuntu Mono\', monospace';
 
-				// Ubuntu mono is somehow smaller, so set fontSize a bit larger to get the same perceived size.
+				// UBuntu mono is somehow smaller, so set fontSize a Bit larger to get the same perceived size.
 				fontSize = this._clampInt(fontSize + 2, MINIMUM_FONT_SIZE, MAXIMUM_FONT_SIZE, EDITOR_FONT_DEFAULTS.fontSize);
 			}
 		}
@@ -191,7 +191,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 			};
 		}
 
-		// Get the character dimensions from xterm if it's available
+		// Get the character dimensions from xterm if it's availaBle
 		if (xtermCore) {
 			if (xtermCore._renderService && xtermCore._renderService.dimensions?.actualCellWidth && xtermCore._renderService.dimensions?.actualCellHeight) {
 				return {
@@ -205,20 +205,20 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 			}
 		}
 
-		// Fall back to measuring the font ourselves
+		// Fall Back to measuring the font ourselves
 		return this._measureFont(fontFamily, fontSize, letterSpacing, lineHeight);
 	}
 
-	public setWorkspaceShellAllowed(isAllowed: boolean): void {
+	puBlic setWorkspaceShellAllowed(isAllowed: Boolean): void {
 		this._onWorkspacePermissionsChanged.fire(isAllowed);
 		this._storageService.store(IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY, isAllowed, StorageScope.WORKSPACE);
 	}
 
-	public isWorkspaceShellAllowed(defaultValue: boolean | undefined = undefined): boolean | undefined {
+	puBlic isWorkspaceShellAllowed(defaultValue: Boolean | undefined = undefined): Boolean | undefined {
 		return this._storageService.getBoolean(IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY, StorageScope.WORKSPACE, defaultValue);
 	}
 
-	public checkWorkspaceShellPermissions(osOverride: platform.OperatingSystem = platform.OS): boolean {
+	puBlic checkWorkspaceShellPermissions(osOverride: platform.OperatingSystem = platform.OS): Boolean {
 		// Check whether there is a workspace setting
 		const platformKey = osOverride === platform.OperatingSystem.Windows ? 'windows' : osOverride === platform.OperatingSystem.Macintosh ? 'osx' : 'linux';
 		const shellConfigValue = this._configurationService.inspect<string>(`terminal.integrated.shell.${platformKey}`);
@@ -226,18 +226,18 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		const envConfigValue = this._configurationService.inspect<{ [key: string]: string }>(`terminal.integrated.env.${platformKey}`);
 
 		// Check if workspace setting exists and whether it's allowed
-		let isWorkspaceShellAllowed: boolean | undefined = false;
+		let isWorkspaceShellAllowed: Boolean | undefined = false;
 		if (shellConfigValue.workspaceValue !== undefined || shellArgsConfigValue.workspaceValue !== undefined || envConfigValue.workspaceValue !== undefined) {
 			isWorkspaceShellAllowed = this.isWorkspaceShellAllowed(undefined);
 		}
 
-		// Always allow [] args as it would lead to an odd error message and should not be dangerous
+		// Always allow [] args as it would lead to an odd error message and should not Be dangerous
 		if (shellConfigValue.workspaceValue === undefined && envConfigValue.workspaceValue === undefined &&
 			shellArgsConfigValue.workspaceValue && shellArgsConfigValue.workspaceValue.length === 0) {
 			isWorkspaceShellAllowed = true;
 		}
 
-		// Check if the value is neither on the blocklist (false) or allowlist (true) and ask for
+		// Check if the value is neither on the Blocklist (false) or allowlist (true) and ask for
 		// permission
 		if (isWorkspaceShellAllowed === undefined) {
 			let shellString: string | undefined;
@@ -250,9 +250,9 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 			}
 			let envString: string | undefined;
 			if (envConfigValue.workspaceValue) {
-				envString = `env: {${Object.keys(envConfigValue.workspaceValue).map(k => `${k}:${envConfigValue.workspaceValue![k]}`).join(', ')}}`;
+				envString = `env: {${OBject.keys(envConfigValue.workspaceValue).map(k => `${k}:${envConfigValue.workspaceValue![k]}`).join(', ')}}`;
 			}
-			// Should not be localized as it's json-like syntax referencing settings keys
+			// Should not Be localized as it's json-like syntax referencing settings keys
 			const workspaceConfigStrings: string[] = [];
 			if (shellString) {
 				workspaceConfigStrings.push(shellString);
@@ -266,11 +266,11 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 			const workspaceConfigString = workspaceConfigStrings.join(', ');
 			this._notificationService.prompt(Severity.Info, nls.localize('terminal.integrated.allowWorkspaceShell', "Do you allow this workspace to modify your terminal shell? {0}", workspaceConfigString),
 				[{
-					label: nls.localize('allow', "Allow"),
+					laBel: nls.localize('allow', "Allow"),
 					run: () => this.setWorkspaceShellAllowed(true)
 				},
 				{
-					label: nls.localize('disallow', "Disallow"),
+					laBel: nls.localize('disallow', "Disallow"),
 					run: () => this.setWorkspaceShellAllowed(false)
 				}]
 			);
@@ -278,15 +278,15 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		return !!isWorkspaceShellAllowed;
 	}
 
-	private _clampInt<T>(source: any, minimum: number, maximum: number, fallback: T): number | T {
+	private _clampInt<T>(source: any, minimum: numBer, maximum: numBer, fallBack: T): numBer | T {
 		let r = parseInt(source, 10);
 		if (isNaN(r)) {
-			return fallback;
+			return fallBack;
 		}
-		if (typeof minimum === 'number') {
+		if (typeof minimum === 'numBer') {
 			r = Math.max(minimum, r);
 		}
-		if (typeof maximum === 'number') {
+		if (typeof maximum === 'numBer') {
 			r = Math.min(maximum, r);
 		}
 		return r;
@@ -294,18 +294,18 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 
 	private recommendationsShown = false;
 
-	public async showRecommendations(shellLaunchConfig: IShellLaunchConfig): Promise<void> {
+	puBlic async showRecommendations(shellLaunchConfig: IShellLaunchConfig): Promise<void> {
 		if (this.recommendationsShown) {
 			return;
 		}
 		this.recommendationsShown = true;
 
-		if (platform.isWindows && shellLaunchConfig.executable && basename(shellLaunchConfig.executable).toLowerCase() === 'wsl.exe') {
+		if (platform.isWindows && shellLaunchConfig.executaBle && Basename(shellLaunchConfig.executaBle).toLowerCase() === 'wsl.exe') {
 			const exeBasedExtensionTips = this.productService.exeBasedExtensionTips;
 			if (!exeBasedExtensionTips || !exeBasedExtensionTips.wsl) {
 				return;
 			}
-			const extId = Object.keys(exeBasedExtensionTips.wsl.recommendations).find(extId => exeBasedExtensionTips.wsl.recommendations[extId].important);
+			const extId = OBject.keys(exeBasedExtensionTips.wsl.recommendations).find(extId => exeBasedExtensionTips.wsl.recommendations[extId].important);
 			if (extId && ! await this.isExtensionInstalled(extId)) {
 				this._notificationService.prompt(
 					Severity.Info,
@@ -313,15 +313,15 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 						'useWslExtension.title', "The '{0}' extension is recommended for opening a terminal in WSL.", exeBasedExtensionTips.wsl.friendlyName),
 					[
 						{
-							label: nls.localize('install', 'Install'),
+							laBel: nls.localize('install', 'Install'),
 							run: () => {
 								/* __GDPR__
 								"terminalLaunchRecommendation:popup" : {
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
+									"extensionId": { "classification": "PuBlicNonPersonalData", "purpose": "FeatureInsight" }
 								}
 								*/
-								this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'install', extId });
+								this.telemetryService.puBlicLog('terminalLaunchRecommendation:popup', { userReaction: 'install', extId });
 								this.instantiationService.createInstance(InstallRecommendedExtensionAction, extId).run();
 							}
 						}
@@ -335,7 +335,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 								}
 							*/
-							this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'cancelled' });
+							this.telemetryService.puBlicLog('terminalLaunchRecommendation:popup', { userReaction: 'cancelled' });
 						}
 					}
 				);
@@ -343,13 +343,13 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		}
 	}
 
-	private async isExtensionInstalled(id: string): Promise<boolean> {
+	private async isExtensionInstalled(id: string): Promise<Boolean> {
 		const extensions = await this._extensionManagementService.getInstalled();
 		return extensions.some(e => e.identifier.id === id);
 	}
 
 	private _normalizeFontWeight(input: any, defaultWeight: FontWeight): FontWeight {
-		if (input === 'normal' || input === 'bold') {
+		if (input === 'normal' || input === 'Bold') {
 			return input;
 		}
 		return this._clampInt(input, MINIMUM_FONT_WEIGHT, MAXIMUM_FONT_WEIGHT, defaultWeight);

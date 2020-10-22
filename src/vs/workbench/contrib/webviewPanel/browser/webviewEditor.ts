@@ -3,52 +3,52 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore, IDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { isWeb } from 'vs/base/common/platform';
+import * as DOM from 'vs/Base/Browser/dom';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBleStore, IDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { isWeB } from 'vs/Base/common/platform';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { IEditorDropService } from 'vs/workbench/services/editor/browser/editorDropService';
-import { EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
-import { WebviewInput } from 'vs/workbench/contrib/webviewPanel/browser/webviewEditorInput';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
+import { IEditorDropService } from 'vs/workBench/services/editor/Browser/editorDropService';
+import { EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import { IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { IWorkBenchLayoutService, Parts } from 'vs/workBench/services/layout/Browser/layoutService';
+import { WeBviewInput } from 'vs/workBench/contriB/weBviewPanel/Browser/weBviewEditorInput';
 
-export class WebviewEditor extends EditorPane {
+export class WeBviewEditor extends EditorPane {
 
-	public static readonly ID = 'WebviewEditor';
+	puBlic static readonly ID = 'WeBviewEditor';
 
 	private _element?: HTMLElement;
 	private _dimension?: DOM.Dimension;
-	private _visible = false;
+	private _visiBle = false;
 
-	private readonly _webviewVisibleDisposables = this._register(new DisposableStore());
-	private readonly _onFocusWindowHandler = this._register(new MutableDisposable());
+	private readonly _weBviewVisiBleDisposaBles = this._register(new DisposaBleStore());
+	private readonly _onFocusWindowHandler = this._register(new MutaBleDisposaBle());
 
-	private readonly _onDidFocusWebview = this._register(new Emitter<void>());
-	public get onDidFocus(): Event<any> { return this._onDidFocusWebview.event; }
+	private readonly _onDidFocusWeBview = this._register(new Emitter<void>());
+	puBlic get onDidFocus(): Event<any> { return this._onDidFocusWeBview.event; }
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService,
 		@IEditorService private readonly _editorService: IEditorService,
-		@IWorkbenchLayoutService private readonly _workbenchLayoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService private readonly _workBenchLayoutService: IWorkBenchLayoutService,
 		@IEditorDropService private readonly _editorDropService: IEditorDropService,
 		@IHostService private readonly _hostService: IHostService,
 	) {
-		super(WebviewEditor.ID, telemetryService, themeService, storageService);
+		super(WeBviewEditor.ID, telemetryService, themeService, storageService);
 	}
 
-	private get webview(): WebviewOverlay | undefined {
-		return this.input instanceof WebviewInput ? this.input.webview : undefined;
+	private get weBview(): WeBviewOverlay | undefined {
+		return this.input instanceof WeBviewInput ? this.input.weBview : undefined;
 	}
 
 	protected createEditor(parent: HTMLElement): void {
@@ -57,7 +57,7 @@ export class WebviewEditor extends EditorPane {
 		parent.appendChild(element);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this._element) {
 			this._element.remove();
 			this._element = undefined;
@@ -66,55 +66,55 @@ export class WebviewEditor extends EditorPane {
 		super.dispose();
 	}
 
-	public layout(dimension: DOM.Dimension): void {
+	puBlic layout(dimension: DOM.Dimension): void {
 		this._dimension = dimension;
-		if (this.webview && this._visible) {
-			this.synchronizeWebviewContainerDimensions(this.webview, dimension);
+		if (this.weBview && this._visiBle) {
+			this.synchronizeWeBviewContainerDimensions(this.weBview, dimension);
 		}
 	}
 
-	public focus(): void {
+	puBlic focus(): void {
 		super.focus();
-		if (!this._onFocusWindowHandler.value && !isWeb) {
-			// Make sure we restore focus when switching back to a VS Code window
+		if (!this._onFocusWindowHandler.value && !isWeB) {
+			// Make sure we restore focus when switching Back to a VS Code window
 			this._onFocusWindowHandler.value = this._hostService.onDidChangeFocus(focused => {
-				if (focused && this._editorService.activeEditorPane === this && this._workbenchLayoutService.hasFocus(Parts.EDITOR_PART)) {
+				if (focused && this._editorService.activeEditorPane === this && this._workBenchLayoutService.hasFocus(Parts.EDITOR_PART)) {
 					this.focus();
 				}
 			});
 		}
-		this.webview?.focus();
+		this.weBview?.focus();
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
-		this._visible = visible;
-		if (this.input instanceof WebviewInput && this.webview) {
-			if (visible) {
-				this.claimWebview(this.input);
+	protected setEditorVisiBle(visiBle: Boolean, group: IEditorGroup | undefined): void {
+		this._visiBle = visiBle;
+		if (this.input instanceof WeBviewInput && this.weBview) {
+			if (visiBle) {
+				this.claimWeBview(this.input);
 			} else {
-				this.webview.release(this);
+				this.weBview.release(this);
 			}
 		}
-		super.setEditorVisible(visible, group);
+		super.setEditorVisiBle(visiBle, group);
 	}
 
-	public clearInput() {
-		if (this.webview) {
-			this.webview.release(this);
-			this._webviewVisibleDisposables.clear();
+	puBlic clearInput() {
+		if (this.weBview) {
+			this.weBview.release(this);
+			this._weBviewVisiBleDisposaBles.clear();
 		}
 
 		super.clearInput();
 	}
 
-	public async setInput(input: EditorInput, options: EditorOptions, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
+	puBlic async setInput(input: EditorInput, options: EditorOptions, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
 		if (input.matches(this.input)) {
 			return;
 		}
 
-		const alreadyOwnsWebview = input instanceof WebviewInput && input.webview === this.webview;
-		if (this.webview && !alreadyOwnsWebview) {
-			this.webview.release(this);
+		const alreadyOwnsWeBview = input instanceof WeBviewInput && input.weBview === this.weBview;
+		if (this.weBview && !alreadyOwnsWeBview) {
+			this.weBview.release(this);
 		}
 
 		await super.setInput(input, options, context, token);
@@ -124,13 +124,13 @@ export class WebviewEditor extends EditorPane {
 			return;
 		}
 
-		if (input instanceof WebviewInput) {
+		if (input instanceof WeBviewInput) {
 			if (this.group) {
 				input.updateGroup(this.group.id);
 			}
 
-			if (!alreadyOwnsWebview) {
-				this.claimWebview(input);
+			if (!alreadyOwnsWeBview) {
+				this.claimWeBview(input);
 			}
 			if (this._dimension) {
 				this.layout(this._dimension);
@@ -138,54 +138,54 @@ export class WebviewEditor extends EditorPane {
 		}
 	}
 
-	private claimWebview(input: WebviewInput): void {
-		input.webview.claim(this);
+	private claimWeBview(input: WeBviewInput): void {
+		input.weBview.claim(this);
 
 		if (this._element) {
-			this._element.setAttribute('aria-flowto', input.webview.container.id);
+			this._element.setAttriBute('aria-flowto', input.weBview.container.id);
 		}
 
-		this._webviewVisibleDisposables.clear();
+		this._weBviewVisiBleDisposaBles.clear();
 
-		// Webviews are not part of the normal editor dom, so we have to register our own drag and drop handler on them.
-		this._webviewVisibleDisposables.add(this._editorDropService.createEditorDropTarget(input.webview.container, {
+		// WeBviews are not part of the normal editor dom, so we have to register our own drag and drop handler on them.
+		this._weBviewVisiBleDisposaBles.add(this._editorDropService.createEditorDropTarget(input.weBview.container, {
 			containsGroup: (group) => this.group?.id === group.group.id
 		}));
 
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.DRAG_START, () => {
-			this.webview?.windowDidDragStart();
+		this._weBviewVisiBleDisposaBles.add(DOM.addDisposaBleListener(window, DOM.EventType.DRAG_START, () => {
+			this.weBview?.windowDidDragStart();
 		}));
 
 		const onDragEnd = () => {
-			this.webview?.windowDidDragEnd();
+			this.weBview?.windowDidDragEnd();
 		};
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.DRAG_END, onDragEnd));
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.MOUSE_MOVE, currentEvent => {
-			if (currentEvent.buttons === 0) {
+		this._weBviewVisiBleDisposaBles.add(DOM.addDisposaBleListener(window, DOM.EventType.DRAG_END, onDragEnd));
+		this._weBviewVisiBleDisposaBles.add(DOM.addDisposaBleListener(window, DOM.EventType.MOUSE_MOVE, currentEvent => {
+			if (currentEvent.Buttons === 0) {
 				onDragEnd();
 			}
 		}));
 
-		this.synchronizeWebviewContainerDimensions(input.webview);
-		this._webviewVisibleDisposables.add(this.trackFocus(input.webview));
+		this.synchronizeWeBviewContainerDimensions(input.weBview);
+		this._weBviewVisiBleDisposaBles.add(this.trackFocus(input.weBview));
 	}
 
-	private synchronizeWebviewContainerDimensions(webview: WebviewOverlay, dimension?: DOM.Dimension) {
+	private synchronizeWeBviewContainerDimensions(weBview: WeBviewOverlay, dimension?: DOM.Dimension) {
 		if (this._element) {
-			webview.layoutWebviewOverElement(this._element.parentElement!, dimension);
+			weBview.layoutWeBviewOverElement(this._element.parentElement!, dimension);
 		}
 	}
 
-	private trackFocus(webview: WebviewOverlay): IDisposable {
-		const store = new DisposableStore();
+	private trackFocus(weBview: WeBviewOverlay): IDisposaBle {
+		const store = new DisposaBleStore();
 
-		// Track focus in webview content
-		const webviewContentFocusTracker = DOM.trackFocus(webview.container);
-		store.add(webviewContentFocusTracker);
-		store.add(webviewContentFocusTracker.onDidFocus(() => this._onDidFocusWebview.fire()));
+		// Track focus in weBview content
+		const weBviewContentFocusTracker = DOM.trackFocus(weBview.container);
+		store.add(weBviewContentFocusTracker);
+		store.add(weBviewContentFocusTracker.onDidFocus(() => this._onDidFocusWeBview.fire()));
 
-		// Track focus in webview element
-		store.add(webview.onDidFocus(() => this._onDidFocusWebview.fire()));
+		// Track focus in weBview element
+		store.add(weBview.onDidFocus(() => this._onDidFocusWeBview.fire()));
 
 		return store;
 	}

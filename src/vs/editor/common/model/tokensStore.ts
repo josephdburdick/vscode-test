@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
+import * as arrays from 'vs/Base/common/arrays';
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ColorId, FontStyle, LanguageId, MetadataConsts, StandardTokenType, TokenMetadata } from 'vs/editor/common/modes';
-import { writeUInt32BE, readUInt32BE } from 'vs/base/common/buffer';
-import { CharCode } from 'vs/base/common/charCode';
+import { writeUInt32BE, readUInt32BE } from 'vs/Base/common/Buffer';
+import { CharCode } from 'vs/Base/common/charCode';
 
 export const enum StringEOL {
 	Unknown = 0,
@@ -18,7 +18,7 @@ export const enum StringEOL {
 	CRLF = 2
 }
 
-export function countEOL(text: string): [number, number, number, StringEOL] {
+export function countEOL(text: string): [numBer, numBer, numBer, StringEOL] {
 	let eolCount = 0;
 	let firstLineLength = 0;
 	let lastLineStart = 0;
@@ -56,7 +56,7 @@ export function countEOL(text: string): [number, number, number, StringEOL] {
 	return [eolCount, firstLineLength, text.length - lastLineStart, eol];
 }
 
-function getDefaultMetadata(topLevelLanguageId: LanguageId): number {
+function getDefaultMetadata(topLevelLanguageId: LanguageId): numBer {
 	return (
 		(topLevelLanguageId << MetadataConsts.LANGUAGEID_OFFSET)
 		| (StandardTokenType.Other << MetadataConsts.TOKEN_TYPE_OFFSET)
@@ -66,49 +66,49 @@ function getDefaultMetadata(topLevelLanguageId: LanguageId): number {
 	) >>> 0;
 }
 
-const EMPTY_LINE_TOKENS = (new Uint32Array(0)).buffer;
+const EMPTY_LINE_TOKENS = (new Uint32Array(0)).Buffer;
 
 export class MultilineTokensBuilder {
 
-	public readonly tokens: MultilineTokens[];
+	puBlic readonly tokens: MultilineTokens[];
 
 	constructor() {
 		this.tokens = [];
 	}
 
-	public add(lineNumber: number, lineTokens: Uint32Array): void {
+	puBlic add(lineNumBer: numBer, lineTokens: Uint32Array): void {
 		if (this.tokens.length > 0) {
 			const last = this.tokens[this.tokens.length - 1];
-			const lastLineNumber = last.startLineNumber + last.tokens.length - 1;
-			if (lastLineNumber + 1 === lineNumber) {
+			const lastLineNumBer = last.startLineNumBer + last.tokens.length - 1;
+			if (lastLineNumBer + 1 === lineNumBer) {
 				// append
 				last.tokens.push(lineTokens);
 				return;
 			}
 		}
-		this.tokens.push(new MultilineTokens(lineNumber, [lineTokens]));
+		this.tokens.push(new MultilineTokens(lineNumBer, [lineTokens]));
 	}
 
-	public static deserialize(buff: Uint8Array): MultilineTokens[] {
+	puBlic static deserialize(Buff: Uint8Array): MultilineTokens[] {
 		let offset = 0;
-		const count = readUInt32BE(buff, offset); offset += 4;
+		const count = readUInt32BE(Buff, offset); offset += 4;
 		let result: MultilineTokens[] = [];
 		for (let i = 0; i < count; i++) {
-			offset = MultilineTokens.deserialize(buff, offset, result);
+			offset = MultilineTokens.deserialize(Buff, offset, result);
 		}
 		return result;
 	}
 
-	public serialize(): Uint8Array {
+	puBlic serialize(): Uint8Array {
 		const size = this._serializeSize();
 		const result = new Uint8Array(size);
 		this._serialize(result);
 		return result;
 	}
 
-	private _serializeSize(): number {
+	private _serializeSize(): numBer {
 		let result = 0;
-		result += 4; // 4 bytes for the count
+		result += 4; // 4 Bytes for the count
 		for (let i = 0; i < this.tokens.length; i++) {
 			result += this.tokens[i].serializeSize();
 		}
@@ -127,28 +127,28 @@ export class MultilineTokensBuilder {
 export class SparseEncodedTokens {
 	/**
 	 * The encoding of tokens is:
-	 *  4*i    deltaLine (from `startLineNumber`)
+	 *  4*i    deltaLine (from `startLineNumBer`)
 	 *  4*i+1  startCharacter (from the line start)
 	 *  4*i+2  endCharacter (from the line start)
 	 *  4*i+3  metadata
 	 */
 	private readonly _tokens: Uint32Array;
-	private _tokenCount: number;
+	private _tokenCount: numBer;
 
 	constructor(tokens: Uint32Array) {
 		this._tokens = tokens;
 		this._tokenCount = tokens.length / 4;
 	}
 
-	public toString(startLineNumber: number): string {
+	puBlic toString(startLineNumBer: numBer): string {
 		let pieces: string[] = [];
 		for (let i = 0; i < this._tokenCount; i++) {
-			pieces.push(`(${this._getDeltaLine(i) + startLineNumber},${this._getStartCharacter(i)}-${this._getEndCharacter(i)})`);
+			pieces.push(`(${this._getDeltaLine(i) + startLineNumBer},${this._getStartCharacter(i)}-${this._getEndCharacter(i)})`);
 		}
 		return `[${pieces.join(',')}]`;
 	}
 
-	public getMaxDeltaLine(): number {
+	puBlic getMaxDeltaLine(): numBer {
 		const tokenCount = this._getTokenCount();
 		if (tokenCount === 0) {
 			return -1;
@@ -156,7 +156,7 @@ export class SparseEncodedTokens {
 		return this._getDeltaLine(tokenCount - 1);
 	}
 
-	public getRange(): Range | null {
+	puBlic getRange(): Range | null {
 		const tokenCount = this._getTokenCount();
 		if (tokenCount === 0) {
 			return null;
@@ -167,27 +167,27 @@ export class SparseEncodedTokens {
 		return new Range(0, startChar + 1, maxDeltaLine, endChar + 1);
 	}
 
-	private _getTokenCount(): number {
+	private _getTokenCount(): numBer {
 		return this._tokenCount;
 	}
 
-	private _getDeltaLine(tokenIndex: number): number {
+	private _getDeltaLine(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex];
 	}
 
-	private _getStartCharacter(tokenIndex: number): number {
+	private _getStartCharacter(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex + 1];
 	}
 
-	private _getEndCharacter(tokenIndex: number): number {
+	private _getEndCharacter(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex + 2];
 	}
 
-	public isEmpty(): boolean {
+	puBlic isEmpty(): Boolean {
 		return (this._getTokenCount() === 0);
 	}
 
-	public getLineTokens(deltaLine: number): LineTokens2 | null {
+	puBlic getLineTokens(deltaLine: numBer): LineTokens2 | null {
 		let low = 0;
 		let high = this._getTokenCount() - 1;
 
@@ -208,22 +208,22 @@ export class SparseEncodedTokens {
 				while (max < high && this._getDeltaLine(max + 1) === deltaLine) {
 					max++;
 				}
-				return new LineTokens2(this._tokens.subarray(4 * min, 4 * max + 4));
+				return new LineTokens2(this._tokens.suBarray(4 * min, 4 * max + 4));
 			}
 		}
 
 		if (this._getDeltaLine(low) === deltaLine) {
-			return new LineTokens2(this._tokens.subarray(4 * low, 4 * low + 4));
+			return new LineTokens2(this._tokens.suBarray(4 * low, 4 * low + 4));
 		}
 
 		return null;
 	}
 
-	public clear(): void {
+	puBlic clear(): void {
 		this._tokenCount = 0;
 	}
 
-	public removeTokens(startDeltaLine: number, startChar: number, endDeltaLine: number, endChar: number): number {
+	puBlic removeTokens(startDeltaLine: numBer, startChar: numBer, endDeltaLine: numBer, endChar: numBer): numBer {
 		const tokens = this._tokens;
 		const tokenCount = this._tokenCount;
 		let newTokenCount = 0;
@@ -262,14 +262,14 @@ export class SparseEncodedTokens {
 		return firstDeltaLine;
 	}
 
-	public split(startDeltaLine: number, startChar: number, endDeltaLine: number, endChar: number): [SparseEncodedTokens, SparseEncodedTokens, number] {
+	puBlic split(startDeltaLine: numBer, startChar: numBer, endDeltaLine: numBer, endChar: numBer): [SparseEncodedTokens, SparseEncodedTokens, numBer] {
 		const tokens = this._tokens;
 		const tokenCount = this._tokenCount;
-		let aTokens: number[] = [];
-		let bTokens: number[] = [];
-		let destTokens: number[] = aTokens;
+		let aTokens: numBer[] = [];
+		let BTokens: numBer[] = [];
+		let destTokens: numBer[] = aTokens;
 		let destOffset = 0;
-		let destFirstDeltaLine: number = 0;
+		let destFirstDeltaLine: numBer = 0;
 		for (let i = 0; i < tokenCount; i++) {
 			const srcOffset = 4 * i;
 			const tokenDeltaLine = tokens[srcOffset];
@@ -283,9 +283,9 @@ export class SparseEncodedTokens {
 					continue;
 				} else {
 					// this token is after the range
-					if (destTokens !== bTokens) {
+					if (destTokens !== BTokens) {
 						// this token is the first token after the range
-						destTokens = bTokens;
+						destTokens = BTokens;
 						destOffset = 0;
 						destFirstDeltaLine = tokenDeltaLine;
 					}
@@ -298,23 +298,23 @@ export class SparseEncodedTokens {
 			destTokens[destOffset++] = tokenMetadata;
 		}
 
-		return [new SparseEncodedTokens(new Uint32Array(aTokens)), new SparseEncodedTokens(new Uint32Array(bTokens)), destFirstDeltaLine];
+		return [new SparseEncodedTokens(new Uint32Array(aTokens)), new SparseEncodedTokens(new Uint32Array(BTokens)), destFirstDeltaLine];
 	}
 
-	public acceptDeleteRange(horizontalShiftForFirstLineTokens: number, startDeltaLine: number, startCharacter: number, endDeltaLine: number, endCharacter: number): void {
-		// This is a bit complex, here are the cases I used to think about this:
+	puBlic acceptDeleteRange(horizontalShiftForFirstLineTokens: numBer, startDeltaLine: numBer, startCharacter: numBer, endDeltaLine: numBer, endCharacter: numBer): void {
+		// This is a Bit complex, here are the cases I used to think aBout this:
 		//
-		// 1. The token starts before the deletion range
-		// 1a. The token is completely before the deletion range
+		// 1. The token starts Before the deletion range
+		// 1a. The token is completely Before the deletion range
 		//               -----------
 		//                          xxxxxxxxxxx
-		// 1b. The token starts before, the deletion range ends after the token
+		// 1B. The token starts Before, the deletion range ends after the token
 		//               -----------
 		//                      xxxxxxxxxxx
-		// 1c. The token starts before, the deletion range ends precisely with the token
+		// 1c. The token starts Before, the deletion range ends precisely with the token
 		//               ---------------
 		//                      xxxxxxxx
-		// 1d. The token starts before, the deletion range is inside the token
+		// 1d. The token starts Before, the deletion range is inside the token
 		//               ---------------
 		//                    xxxxx
 		//
@@ -322,7 +322,7 @@ export class SparseEncodedTokens {
 		// 2a. The token starts at the same position, and ends inside the deletion range
 		//               -------
 		//               xxxxxxxxxxx
-		// 2b. The token starts at the same position, and ends at the same position as the deletion range
+		// 2B. The token starts at the same position, and ends at the same position as the deletion range
 		//               ----------
 		//               xxxxxxxxxx
 		// 2c. The token starts at the same position, and ends after the deletion range
@@ -333,7 +333,7 @@ export class SparseEncodedTokens {
 		// 3a. The token is inside the deletion range
 		//                -------
 		//             xxxxxxxxxxxxx
-		// 3b. The token starts inside the deletion range, and ends at the same position as the deletion range
+		// 3B. The token starts inside the deletion range, and ends at the same position as the deletion range
 		//                ----------
 		//             xxxxxxxxxxxxx
 		// 3c. The token starts inside the deletion range, and ends after the deletion range
@@ -357,38 +357,38 @@ export class SparseEncodedTokens {
 			const tokenMetadata = tokens[srcOffset + 3];
 
 			if (tokenDeltaLine < startDeltaLine || (tokenDeltaLine === startDeltaLine && tokenEndCharacter <= startCharacter)) {
-				// 1a. The token is completely before the deletion range
+				// 1a. The token is completely Before the deletion range
 				// => nothing to do
 				newTokenCount++;
 				continue;
 			} else if (tokenDeltaLine === startDeltaLine && tokenStartCharacter < startCharacter) {
-				// 1b, 1c, 1d
-				// => the token survives, but it needs to shrink
+				// 1B, 1c, 1d
+				// => the token survives, But it needs to shrink
 				if (tokenDeltaLine === endDeltaLine && tokenEndCharacter > endCharacter) {
-					// 1d. The token starts before, the deletion range is inside the token
-					// => the token shrinks by the deletion character count
+					// 1d. The token starts Before, the deletion range is inside the token
+					// => the token shrinks By the deletion character count
 					tokenEndCharacter -= (endCharacter - startCharacter);
 				} else {
-					// 1b. The token starts before, the deletion range ends after the token
-					// 1c. The token starts before, the deletion range ends precisely with the token
+					// 1B. The token starts Before, the deletion range ends after the token
+					// 1c. The token starts Before, the deletion range ends precisely with the token
 					// => the token shrinks its ending to the deletion start
 					tokenEndCharacter = startCharacter;
 				}
 			} else if (tokenDeltaLine === startDeltaLine && tokenStartCharacter === startCharacter) {
-				// 2a, 2b, 2c
+				// 2a, 2B, 2c
 				if (tokenDeltaLine === endDeltaLine && tokenEndCharacter > endCharacter) {
 					// 2c. The token starts at the same position, and ends after the deletion range
-					// => the token shrinks by the deletion character count
+					// => the token shrinks By the deletion character count
 					tokenEndCharacter -= (endCharacter - startCharacter);
 				} else {
 					// 2a. The token starts at the same position, and ends inside the deletion range
-					// 2b. The token starts at the same position, and ends at the same position as the deletion range
+					// 2B. The token starts at the same position, and ends at the same position as the deletion range
 					// => the token is deleted
 					hasDeletedTokens = true;
 					continue;
 				}
 			} else if (tokenDeltaLine < endDeltaLine || (tokenDeltaLine === endDeltaLine && tokenStartCharacter < endCharacter)) {
-				// 3a, 3b, 3c
+				// 3a, 3B, 3c
 				if (tokenDeltaLine === endDeltaLine && tokenEndCharacter > endCharacter) {
 					// 3c. The token starts inside the deletion range, and ends after the deletion range
 					// => the token moves left and shrinks
@@ -398,24 +398,24 @@ export class SparseEncodedTokens {
 						tokenStartCharacter = startCharacter;
 						tokenEndCharacter = tokenStartCharacter + (tokenEndCharacter - endCharacter);
 					} else {
-						// the deletion started on a line above the token
-						// => the token moves to the beginning of the line
+						// the deletion started on a line aBove the token
+						// => the token moves to the Beginning of the line
 						tokenStartCharacter = 0;
 						tokenEndCharacter = tokenStartCharacter + (tokenEndCharacter - endCharacter);
 					}
 				} else {
 					// 3a. The token is inside the deletion range
-					// 3b. The token starts inside the deletion range, and ends at the same position as the deletion range
+					// 3B. The token starts inside the deletion range, and ends at the same position as the deletion range
 					// => the token is deleted
 					hasDeletedTokens = true;
 					continue;
 				}
 			} else if (tokenDeltaLine > endDeltaLine) {
-				// 4. (partial) The token starts after the deletion range, on a line below...
+				// 4. (partial) The token starts after the deletion range, on a line Below...
 				if (deletedLineCount === 0 && !hasDeletedTokens) {
 					// early stop, there is no need to walk all the tokens and do nothing...
 					newTokenCount = tokenCount;
-					break;
+					Break;
 				}
 				tokenDeltaLine -= deletedLineCount;
 			} else if (tokenDeltaLine === endDeltaLine && tokenStartCharacter >= endCharacter) {
@@ -428,7 +428,7 @@ export class SparseEncodedTokens {
 				tokenStartCharacter -= (endCharacter - startCharacter);
 				tokenEndCharacter -= (endCharacter - startCharacter);
 			} else {
-				throw new Error(`Not possible!`);
+				throw new Error(`Not possiBle!`);
 			}
 
 			const destOffset = 4 * newTokenCount;
@@ -442,10 +442,10 @@ export class SparseEncodedTokens {
 		this._tokenCount = newTokenCount;
 	}
 
-	public acceptInsertText(deltaLine: number, character: number, eolCount: number, firstLineLength: number, lastLineLength: number, firstCharCode: number): void {
-		// Here are the cases I used to think about this:
+	puBlic acceptInsertText(deltaLine: numBer, character: numBer, eolCount: numBer, firstLineLength: numBer, lastLineLength: numBer, firstCharCode: numBer): void {
+		// Here are the cases I used to think aBout this:
 		//
-		// 1. The token is completely before the insertion point
+		// 1. The token is completely Before the insertion point
 		//            -----------   |
 		// 2. The token ends precisely at the insertion point
 		//            -----------|
@@ -474,7 +474,7 @@ export class SparseEncodedTokens {
 			let tokenEndCharacter = tokens[offset + 2];
 
 			if (tokenDeltaLine < deltaLine || (tokenDeltaLine === deltaLine && tokenEndCharacter < character)) {
-				// 1. The token is completely before the insertion point
+				// 1. The token is completely Before the insertion point
 				// => nothing to do
 				continue;
 			} else if (tokenDeltaLine === deltaLine && tokenEndCharacter === character) {
@@ -498,8 +498,8 @@ export class SparseEncodedTokens {
 				// 4. or 5.
 				if (tokenDeltaLine === deltaLine && tokenStartCharacter === character) {
 					// 4. The token starts precisely at the insertion point
-					// => grow the token (by keeping its start constant) only if inserting precisely one character that is a word character
-					// => otherwise behave as in case 5.
+					// => grow the token (By keeping its start constant) only if inserting precisely one character that is a word character
+					// => otherwise Behave as in case 5.
 					if (isInsertingPreciselyOneWordCharacter) {
 						continue;
 					}
@@ -536,125 +536,125 @@ export class LineTokens2 {
 		this._tokens = tokens;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this._tokens.length / 4;
 	}
 
-	public getStartCharacter(tokenIndex: number): number {
+	puBlic getStartCharacter(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex + 1];
 	}
 
-	public getEndCharacter(tokenIndex: number): number {
+	puBlic getEndCharacter(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex + 2];
 	}
 
-	public getMetadata(tokenIndex: number): number {
+	puBlic getMetadata(tokenIndex: numBer): numBer {
 		return this._tokens[4 * tokenIndex + 3];
 	}
 }
 
 export class MultilineTokens2 {
 
-	public startLineNumber: number;
-	public endLineNumber: number;
-	public tokens: SparseEncodedTokens;
+	puBlic startLineNumBer: numBer;
+	puBlic endLineNumBer: numBer;
+	puBlic tokens: SparseEncodedTokens;
 
-	constructor(startLineNumber: number, tokens: SparseEncodedTokens) {
-		this.startLineNumber = startLineNumber;
+	constructor(startLineNumBer: numBer, tokens: SparseEncodedTokens) {
+		this.startLineNumBer = startLineNumBer;
 		this.tokens = tokens;
-		this.endLineNumber = this.startLineNumber + this.tokens.getMaxDeltaLine();
+		this.endLineNumBer = this.startLineNumBer + this.tokens.getMaxDeltaLine();
 	}
 
-	public toString(): string {
-		return this.tokens.toString(this.startLineNumber);
+	puBlic toString(): string {
+		return this.tokens.toString(this.startLineNumBer);
 	}
 
-	private _updateEndLineNumber(): void {
-		this.endLineNumber = this.startLineNumber + this.tokens.getMaxDeltaLine();
+	private _updateEndLineNumBer(): void {
+		this.endLineNumBer = this.startLineNumBer + this.tokens.getMaxDeltaLine();
 	}
 
-	public isEmpty(): boolean {
+	puBlic isEmpty(): Boolean {
 		return this.tokens.isEmpty();
 	}
 
-	public getLineTokens(lineNumber: number): LineTokens2 | null {
-		if (this.startLineNumber <= lineNumber && lineNumber <= this.endLineNumber) {
-			return this.tokens.getLineTokens(lineNumber - this.startLineNumber);
+	puBlic getLineTokens(lineNumBer: numBer): LineTokens2 | null {
+		if (this.startLineNumBer <= lineNumBer && lineNumBer <= this.endLineNumBer) {
+			return this.tokens.getLineTokens(lineNumBer - this.startLineNumBer);
 		}
 		return null;
 	}
 
-	public getRange(): Range | null {
+	puBlic getRange(): Range | null {
 		const deltaRange = this.tokens.getRange();
 		if (!deltaRange) {
 			return deltaRange;
 		}
-		return new Range(this.startLineNumber + deltaRange.startLineNumber, deltaRange.startColumn, this.startLineNumber + deltaRange.endLineNumber, deltaRange.endColumn);
+		return new Range(this.startLineNumBer + deltaRange.startLineNumBer, deltaRange.startColumn, this.startLineNumBer + deltaRange.endLineNumBer, deltaRange.endColumn);
 	}
 
-	public removeTokens(range: Range): void {
-		const startLineIndex = range.startLineNumber - this.startLineNumber;
-		const endLineIndex = range.endLineNumber - this.startLineNumber;
+	puBlic removeTokens(range: Range): void {
+		const startLineIndex = range.startLineNumBer - this.startLineNumBer;
+		const endLineIndex = range.endLineNumBer - this.startLineNumBer;
 
-		this.startLineNumber += this.tokens.removeTokens(startLineIndex, range.startColumn - 1, endLineIndex, range.endColumn - 1);
-		this._updateEndLineNumber();
+		this.startLineNumBer += this.tokens.removeTokens(startLineIndex, range.startColumn - 1, endLineIndex, range.endColumn - 1);
+		this._updateEndLineNumBer();
 	}
 
-	public split(range: Range): [MultilineTokens2, MultilineTokens2] {
+	puBlic split(range: Range): [MultilineTokens2, MultilineTokens2] {
 		// split tokens to two:
-		// a) all the tokens before `range`
-		// b) all the tokens after `range`
-		const startLineIndex = range.startLineNumber - this.startLineNumber;
-		const endLineIndex = range.endLineNumber - this.startLineNumber;
+		// a) all the tokens Before `range`
+		// B) all the tokens after `range`
+		const startLineIndex = range.startLineNumBer - this.startLineNumBer;
+		const endLineIndex = range.endLineNumBer - this.startLineNumBer;
 
-		const [a, b, bDeltaLine] = this.tokens.split(startLineIndex, range.startColumn - 1, endLineIndex, range.endColumn - 1);
-		return [new MultilineTokens2(this.startLineNumber, a), new MultilineTokens2(this.startLineNumber + bDeltaLine, b)];
+		const [a, B, BDeltaLine] = this.tokens.split(startLineIndex, range.startColumn - 1, endLineIndex, range.endColumn - 1);
+		return [new MultilineTokens2(this.startLineNumBer, a), new MultilineTokens2(this.startLineNumBer + BDeltaLine, B)];
 	}
 
-	public applyEdit(range: IRange, text: string): void {
+	puBlic applyEdit(range: IRange, text: string): void {
 		const [eolCount, firstLineLength, lastLineLength] = countEOL(text);
 		this.acceptEdit(range, eolCount, firstLineLength, lastLineLength, text.length > 0 ? text.charCodeAt(0) : CharCode.Null);
 	}
 
-	public acceptEdit(range: IRange, eolCount: number, firstLineLength: number, lastLineLength: number, firstCharCode: number): void {
+	puBlic acceptEdit(range: IRange, eolCount: numBer, firstLineLength: numBer, lastLineLength: numBer, firstCharCode: numBer): void {
 		this._acceptDeleteRange(range);
-		this._acceptInsertText(new Position(range.startLineNumber, range.startColumn), eolCount, firstLineLength, lastLineLength, firstCharCode);
-		this._updateEndLineNumber();
+		this._acceptInsertText(new Position(range.startLineNumBer, range.startColumn), eolCount, firstLineLength, lastLineLength, firstCharCode);
+		this._updateEndLineNumBer();
 	}
 
 	private _acceptDeleteRange(range: IRange): void {
-		if (range.startLineNumber === range.endLineNumber && range.startColumn === range.endColumn) {
+		if (range.startLineNumBer === range.endLineNumBer && range.startColumn === range.endColumn) {
 			// Nothing to delete
 			return;
 		}
 
-		const firstLineIndex = range.startLineNumber - this.startLineNumber;
-		const lastLineIndex = range.endLineNumber - this.startLineNumber;
+		const firstLineIndex = range.startLineNumBer - this.startLineNumBer;
+		const lastLineIndex = range.endLineNumBer - this.startLineNumBer;
 
 		if (lastLineIndex < 0) {
-			// this deletion occurs entirely before this block, so we only need to adjust line numbers
+			// this deletion occurs entirely Before this Block, so we only need to adjust line numBers
 			const deletedLinesCount = lastLineIndex - firstLineIndex;
-			this.startLineNumber -= deletedLinesCount;
+			this.startLineNumBer -= deletedLinesCount;
 			return;
 		}
 
 		const tokenMaxDeltaLine = this.tokens.getMaxDeltaLine();
 
 		if (firstLineIndex >= tokenMaxDeltaLine + 1) {
-			// this deletion occurs entirely after this block, so there is nothing to do
+			// this deletion occurs entirely after this Block, so there is nothing to do
 			return;
 		}
 
 		if (firstLineIndex < 0 && lastLineIndex >= tokenMaxDeltaLine + 1) {
-			// this deletion completely encompasses this block
-			this.startLineNumber = 0;
+			// this deletion completely encompasses this Block
+			this.startLineNumBer = 0;
 			this.tokens.clear();
 			return;
 		}
 
 		if (firstLineIndex < 0) {
 			const deletedBefore = -firstLineIndex;
-			this.startLineNumber -= deletedBefore;
+			this.startLineNumBer -= deletedBefore;
 
 			this.tokens.acceptDeleteRange(range.startColumn - 1, 0, 0, lastLineIndex, range.endColumn - 1);
 		} else {
@@ -662,25 +662,25 @@ export class MultilineTokens2 {
 		}
 	}
 
-	private _acceptInsertText(position: Position, eolCount: number, firstLineLength: number, lastLineLength: number, firstCharCode: number): void {
+	private _acceptInsertText(position: Position, eolCount: numBer, firstLineLength: numBer, lastLineLength: numBer, firstCharCode: numBer): void {
 
 		if (eolCount === 0 && firstLineLength === 0) {
 			// Nothing to insert
 			return;
 		}
 
-		const lineIndex = position.lineNumber - this.startLineNumber;
+		const lineIndex = position.lineNumBer - this.startLineNumBer;
 
 		if (lineIndex < 0) {
-			// this insertion occurs before this block, so we only need to adjust line numbers
-			this.startLineNumber += eolCount;
+			// this insertion occurs Before this Block, so we only need to adjust line numBers
+			this.startLineNumBer += eolCount;
 			return;
 		}
 
 		const tokenMaxDeltaLine = this.tokens.getMaxDeltaLine();
 
 		if (lineIndex >= tokenMaxDeltaLine + 1) {
-			// this insertion occurs after this block, so there is nothing to do
+			// this insertion occurs after this Block, so there is nothing to do
 			return;
 		}
 
@@ -690,87 +690,87 @@ export class MultilineTokens2 {
 
 export class MultilineTokens {
 
-	public startLineNumber: number;
-	public tokens: (Uint32Array | ArrayBuffer | null)[];
+	puBlic startLineNumBer: numBer;
+	puBlic tokens: (Uint32Array | ArrayBuffer | null)[];
 
-	constructor(startLineNumber: number, tokens: Uint32Array[]) {
-		this.startLineNumber = startLineNumber;
+	constructor(startLineNumBer: numBer, tokens: Uint32Array[]) {
+		this.startLineNumBer = startLineNumBer;
 		this.tokens = tokens;
 	}
 
-	public static deserialize(buff: Uint8Array, offset: number, result: MultilineTokens[]): number {
-		const view32 = new Uint32Array(buff.buffer);
-		const startLineNumber = readUInt32BE(buff, offset); offset += 4;
-		const count = readUInt32BE(buff, offset); offset += 4;
+	puBlic static deserialize(Buff: Uint8Array, offset: numBer, result: MultilineTokens[]): numBer {
+		const view32 = new Uint32Array(Buff.Buffer);
+		const startLineNumBer = readUInt32BE(Buff, offset); offset += 4;
+		const count = readUInt32BE(Buff, offset); offset += 4;
 		let tokens: Uint32Array[] = [];
 		for (let i = 0; i < count; i++) {
-			const byteCount = readUInt32BE(buff, offset); offset += 4;
-			tokens.push(view32.subarray(offset / 4, offset / 4 + byteCount / 4));
-			offset += byteCount;
+			const ByteCount = readUInt32BE(Buff, offset); offset += 4;
+			tokens.push(view32.suBarray(offset / 4, offset / 4 + ByteCount / 4));
+			offset += ByteCount;
 		}
-		result.push(new MultilineTokens(startLineNumber, tokens));
+		result.push(new MultilineTokens(startLineNumBer, tokens));
 		return offset;
 	}
 
-	public serializeSize(): number {
+	puBlic serializeSize(): numBer {
 		let result = 0;
-		result += 4; // 4 bytes for the start line number
-		result += 4; // 4 bytes for the line count
+		result += 4; // 4 Bytes for the start line numBer
+		result += 4; // 4 Bytes for the line count
 		for (let i = 0; i < this.tokens.length; i++) {
 			const lineTokens = this.tokens[i];
 			if (!(lineTokens instanceof Uint32Array)) {
 				throw new Error(`Not supported!`);
 			}
-			result += 4; // 4 bytes for the byte count
-			result += lineTokens.byteLength;
+			result += 4; // 4 Bytes for the Byte count
+			result += lineTokens.ByteLength;
 		}
 		return result;
 	}
 
-	public serialize(destination: Uint8Array, offset: number): number {
-		writeUInt32BE(destination, this.startLineNumber, offset); offset += 4;
+	puBlic serialize(destination: Uint8Array, offset: numBer): numBer {
+		writeUInt32BE(destination, this.startLineNumBer, offset); offset += 4;
 		writeUInt32BE(destination, this.tokens.length, offset); offset += 4;
 		for (let i = 0; i < this.tokens.length; i++) {
 			const lineTokens = this.tokens[i];
 			if (!(lineTokens instanceof Uint32Array)) {
 				throw new Error(`Not supported!`);
 			}
-			writeUInt32BE(destination, lineTokens.byteLength, offset); offset += 4;
-			destination.set(new Uint8Array(lineTokens.buffer), offset); offset += lineTokens.byteLength;
+			writeUInt32BE(destination, lineTokens.ByteLength, offset); offset += 4;
+			destination.set(new Uint8Array(lineTokens.Buffer), offset); offset += lineTokens.ByteLength;
 		}
 		return offset;
 	}
 
-	public applyEdit(range: IRange, text: string): void {
+	puBlic applyEdit(range: IRange, text: string): void {
 		const [eolCount, firstLineLength] = countEOL(text);
 		this._acceptDeleteRange(range);
-		this._acceptInsertText(new Position(range.startLineNumber, range.startColumn), eolCount, firstLineLength);
+		this._acceptInsertText(new Position(range.startLineNumBer, range.startColumn), eolCount, firstLineLength);
 	}
 
 	private _acceptDeleteRange(range: IRange): void {
-		if (range.startLineNumber === range.endLineNumber && range.startColumn === range.endColumn) {
+		if (range.startLineNumBer === range.endLineNumBer && range.startColumn === range.endColumn) {
 			// Nothing to delete
 			return;
 		}
 
-		const firstLineIndex = range.startLineNumber - this.startLineNumber;
-		const lastLineIndex = range.endLineNumber - this.startLineNumber;
+		const firstLineIndex = range.startLineNumBer - this.startLineNumBer;
+		const lastLineIndex = range.endLineNumBer - this.startLineNumBer;
 
 		if (lastLineIndex < 0) {
-			// this deletion occurs entirely before this block, so we only need to adjust line numbers
+			// this deletion occurs entirely Before this Block, so we only need to adjust line numBers
 			const deletedLinesCount = lastLineIndex - firstLineIndex;
-			this.startLineNumber -= deletedLinesCount;
+			this.startLineNumBer -= deletedLinesCount;
 			return;
 		}
 
 		if (firstLineIndex >= this.tokens.length) {
-			// this deletion occurs entirely after this block, so there is nothing to do
+			// this deletion occurs entirely after this Block, so there is nothing to do
 			return;
 		}
 
 		if (firstLineIndex < 0 && lastLineIndex >= this.tokens.length) {
-			// this deletion completely encompasses this block
-			this.startLineNumber = 0;
+			// this deletion completely encompasses this Block
+			this.startLineNumBer = 0;
 			this.tokens = [];
 			return;
 		}
@@ -807,9 +807,9 @@ export class MultilineTokens {
 			// The first line does not survive
 
 			const deletedBefore = -firstLineIndex;
-			this.startLineNumber -= deletedBefore;
+			this.startLineNumBer -= deletedBefore;
 
-			// Remove beginning from last line
+			// Remove Beginning from last line
 			this.tokens[lastLineIndex] = TokensStore._deleteBeginning(this.tokens[lastLineIndex], range.endColumn - 1);
 
 			// Delete lines
@@ -817,23 +817,23 @@ export class MultilineTokens {
 		}
 	}
 
-	private _acceptInsertText(position: Position, eolCount: number, firstLineLength: number): void {
+	private _acceptInsertText(position: Position, eolCount: numBer, firstLineLength: numBer): void {
 
 		if (eolCount === 0 && firstLineLength === 0) {
 			// Nothing to insert
 			return;
 		}
 
-		const lineIndex = position.lineNumber - this.startLineNumber;
+		const lineIndex = position.lineNumBer - this.startLineNumBer;
 
 		if (lineIndex < 0) {
-			// this insertion occurs before this block, so we only need to adjust line numbers
-			this.startLineNumber += eolCount;
+			// this insertion occurs Before this Block, so we only need to adjust line numBers
+			this.startLineNumBer += eolCount;
 			return;
 		}
 
 		if (lineIndex >= this.tokens.length) {
-			// this insertion occurs after this block, so there is nothing to do
+			// this insertion occurs after this Block, so there is nothing to do
 			return;
 		}
 
@@ -846,10 +846,10 @@ export class MultilineTokens {
 		this.tokens[lineIndex] = TokensStore._deleteEnding(this.tokens[lineIndex], position.column - 1);
 		this.tokens[lineIndex] = TokensStore._insert(this.tokens[lineIndex], position.column - 1, firstLineLength);
 
-		this._insertLines(position.lineNumber, eolCount);
+		this._insertLines(position.lineNumBer, eolCount);
 	}
 
-	private _insertLines(insertIndex: number, insertCount: number): void {
+	private _insertLines(insertIndex: numBer, insertCount: numBer): void {
 		if (insertCount === 0) {
 			return;
 		}
@@ -872,24 +872,24 @@ function toUint32Array(arr: Uint32Array | ArrayBuffer): Uint32Array {
 export class TokensStore2 {
 
 	private _pieces: MultilineTokens2[];
-	private _isComplete: boolean;
+	private _isComplete: Boolean;
 
 	constructor() {
 		this._pieces = [];
 		this._isComplete = false;
 	}
 
-	public flush(): void {
+	puBlic flush(): void {
 		this._pieces = [];
 		this._isComplete = false;
 	}
 
-	public set(pieces: MultilineTokens2[] | null, isComplete: boolean): void {
+	puBlic set(pieces: MultilineTokens2[] | null, isComplete: Boolean): void {
 		this._pieces = pieces || [];
 		this._isComplete = isComplete;
 	}
 
-	public setPartial(_range: Range, pieces: MultilineTokens2[]): Range {
+	puBlic setPartial(_range: Range, pieces: MultilineTokens2[]): Range {
 		// console.log(`setPartial ${_range} ${pieces.map(p => p.toString()).join(', ')}`);
 
 		let range = _range;
@@ -902,55 +902,55 @@ export class TokensStore2 {
 			range = _range.plusRange(_firstRange).plusRange(_lastRange);
 		}
 
-		let insertPosition: { index: number; } | null = null;
+		let insertPosition: { index: numBer; } | null = null;
 		for (let i = 0, len = this._pieces.length; i < len; i++) {
 			const piece = this._pieces[i];
-			if (piece.endLineNumber < range.startLineNumber) {
-				// this piece is before the range
+			if (piece.endLineNumBer < range.startLineNumBer) {
+				// this piece is Before the range
 				continue;
 			}
 
-			if (piece.startLineNumber > range.endLineNumber) {
-				// this piece is after the range, so mark the spot before this piece
+			if (piece.startLineNumBer > range.endLineNumBer) {
+				// this piece is after the range, so mark the spot Before this piece
 				// as a good insertion position and stop looping
 				insertPosition = insertPosition || { index: i };
-				break;
+				Break;
 			}
 
 			// this piece might intersect with the range
 			piece.removeTokens(range);
 
 			if (piece.isEmpty()) {
-				// remove the piece if it became empty
+				// remove the piece if it Became empty
 				this._pieces.splice(i, 1);
 				i--;
 				len--;
 				continue;
 			}
 
-			if (piece.endLineNumber < range.startLineNumber) {
-				// after removal, this piece is before the range
+			if (piece.endLineNumBer < range.startLineNumBer) {
+				// after removal, this piece is Before the range
 				continue;
 			}
 
-			if (piece.startLineNumber > range.endLineNumber) {
+			if (piece.startLineNumBer > range.endLineNumBer) {
 				// after removal, this piece is after the range
 				insertPosition = insertPosition || { index: i };
 				continue;
 			}
 
 			// after removal, this piece contains the range
-			const [a, b] = piece.split(range);
+			const [a, B] = piece.split(range);
 			if (a.isEmpty()) {
 				// this piece is actually after the range
 				insertPosition = insertPosition || { index: i };
 				continue;
 			}
-			if (b.isEmpty()) {
-				// this piece is actually before the range
+			if (B.isEmpty()) {
+				// this piece is actually Before the range
 				continue;
 			}
-			this._pieces.splice(i, 1, a, b);
+			this._pieces.splice(i, 1, a, B);
 			i++;
 			len++;
 
@@ -969,32 +969,32 @@ export class TokensStore2 {
 		return range;
 	}
 
-	public isComplete(): boolean {
+	puBlic isComplete(): Boolean {
 		return this._isComplete;
 	}
 
-	public addSemanticTokens(lineNumber: number, aTokens: LineTokens): LineTokens {
+	puBlic addSemanticTokens(lineNumBer: numBer, aTokens: LineTokens): LineTokens {
 		const pieces = this._pieces;
 
 		if (pieces.length === 0) {
 			return aTokens;
 		}
 
-		const pieceIndex = TokensStore2._findFirstPieceWithLine(pieces, lineNumber);
-		const bTokens = pieces[pieceIndex].getLineTokens(lineNumber);
+		const pieceIndex = TokensStore2._findFirstPieceWithLine(pieces, lineNumBer);
+		const BTokens = pieces[pieceIndex].getLineTokens(lineNumBer);
 
-		if (!bTokens) {
+		if (!BTokens) {
 			return aTokens;
 		}
 
 		const aLen = aTokens.getCount();
-		const bLen = bTokens.getCount();
+		const BLen = BTokens.getCount();
 
 		let aIndex = 0;
-		let result: number[] = [], resultLen = 0;
+		let result: numBer[] = [], resultLen = 0;
 		let lastEndOffset = 0;
 
-		const emitToken = (endOffset: number, metadata: number) => {
+		const emitToken = (endOffset: numBer, metadata: numBer) => {
 			if (endOffset === lastEndOffset) {
 				return;
 			}
@@ -1003,48 +1003,48 @@ export class TokensStore2 {
 			result[resultLen++] = metadata;
 		};
 
-		for (let bIndex = 0; bIndex < bLen; bIndex++) {
-			const bStartCharacter = bTokens.getStartCharacter(bIndex);
-			const bEndCharacter = bTokens.getEndCharacter(bIndex);
-			const bMetadata = bTokens.getMetadata(bIndex);
+		for (let BIndex = 0; BIndex < BLen; BIndex++) {
+			const BStartCharacter = BTokens.getStartCharacter(BIndex);
+			const BEndCharacter = BTokens.getEndCharacter(BIndex);
+			const BMetadata = BTokens.getMetadata(BIndex);
 
-			const bMask = (
-				((bMetadata & MetadataConsts.SEMANTIC_USE_ITALIC) ? MetadataConsts.ITALIC_MASK : 0)
-				| ((bMetadata & MetadataConsts.SEMANTIC_USE_BOLD) ? MetadataConsts.BOLD_MASK : 0)
-				| ((bMetadata & MetadataConsts.SEMANTIC_USE_UNDERLINE) ? MetadataConsts.UNDERLINE_MASK : 0)
-				| ((bMetadata & MetadataConsts.SEMANTIC_USE_FOREGROUND) ? MetadataConsts.FOREGROUND_MASK : 0)
-				| ((bMetadata & MetadataConsts.SEMANTIC_USE_BACKGROUND) ? MetadataConsts.BACKGROUND_MASK : 0)
+			const BMask = (
+				((BMetadata & MetadataConsts.SEMANTIC_USE_ITALIC) ? MetadataConsts.ITALIC_MASK : 0)
+				| ((BMetadata & MetadataConsts.SEMANTIC_USE_BOLD) ? MetadataConsts.BOLD_MASK : 0)
+				| ((BMetadata & MetadataConsts.SEMANTIC_USE_UNDERLINE) ? MetadataConsts.UNDERLINE_MASK : 0)
+				| ((BMetadata & MetadataConsts.SEMANTIC_USE_FOREGROUND) ? MetadataConsts.FOREGROUND_MASK : 0)
+				| ((BMetadata & MetadataConsts.SEMANTIC_USE_BACKGROUND) ? MetadataConsts.BACKGROUND_MASK : 0)
 			) >>> 0;
-			const aMask = (~bMask) >>> 0;
+			const aMask = (~BMask) >>> 0;
 
-			// push any token from `a` that is before `b`
-			while (aIndex < aLen && aTokens.getEndOffset(aIndex) <= bStartCharacter) {
+			// push any token from `a` that is Before `B`
+			while (aIndex < aLen && aTokens.getEndOffset(aIndex) <= BStartCharacter) {
 				emitToken(aTokens.getEndOffset(aIndex), aTokens.getMetadata(aIndex));
 				aIndex++;
 			}
 
-			// push the token from `a` if it intersects the token from `b`
-			if (aIndex < aLen && aTokens.getStartOffset(aIndex) < bStartCharacter) {
-				emitToken(bStartCharacter, aTokens.getMetadata(aIndex));
+			// push the token from `a` if it intersects the token from `B`
+			if (aIndex < aLen && aTokens.getStartOffset(aIndex) < BStartCharacter) {
+				emitToken(BStartCharacter, aTokens.getMetadata(aIndex));
 			}
 
-			// skip any tokens from `a` that are contained inside `b`
-			while (aIndex < aLen && aTokens.getEndOffset(aIndex) < bEndCharacter) {
-				emitToken(aTokens.getEndOffset(aIndex), (aTokens.getMetadata(aIndex) & aMask) | (bMetadata & bMask));
+			// skip any tokens from `a` that are contained inside `B`
+			while (aIndex < aLen && aTokens.getEndOffset(aIndex) < BEndCharacter) {
+				emitToken(aTokens.getEndOffset(aIndex), (aTokens.getMetadata(aIndex) & aMask) | (BMetadata & BMask));
 				aIndex++;
 			}
 
 			if (aIndex < aLen) {
-				emitToken(bEndCharacter, (aTokens.getMetadata(aIndex) & aMask) | (bMetadata & bMask));
-				if (aTokens.getEndOffset(aIndex) === bEndCharacter) {
-					// `a` ends exactly at the same spot as `b`!
+				emitToken(BEndCharacter, (aTokens.getMetadata(aIndex) & aMask) | (BMetadata & BMask));
+				if (aTokens.getEndOffset(aIndex) === BEndCharacter) {
+					// `a` ends exactly at the same spot as `B`!
 					aIndex++;
 				}
 			} else {
 				const aMergeIndex = Math.min(Math.max(0, aIndex - 1), aLen - 1);
 
-				// push the token from `b`
-				emitToken(bEndCharacter, (aTokens.getMetadata(aMergeIndex) & aMask) | (bMetadata & bMask));
+				// push the token from `B`
+				emitToken(BEndCharacter, (aTokens.getMetadata(aMergeIndex) & aMask) | (BMetadata & BMask));
 			}
 		}
 
@@ -1057,19 +1057,19 @@ export class TokensStore2 {
 		return new LineTokens(new Uint32Array(result), aTokens.getLineContent());
 	}
 
-	private static _findFirstPieceWithLine(pieces: MultilineTokens2[], lineNumber: number): number {
+	private static _findFirstPieceWithLine(pieces: MultilineTokens2[], lineNumBer: numBer): numBer {
 		let low = 0;
 		let high = pieces.length - 1;
 
 		while (low < high) {
 			let mid = low + Math.floor((high - low) / 2);
 
-			if (pieces[mid].endLineNumber < lineNumber) {
+			if (pieces[mid].endLineNumBer < lineNumBer) {
 				low = mid + 1;
-			} else if (pieces[mid].startLineNumber > lineNumber) {
+			} else if (pieces[mid].startLineNumBer > lineNumBer) {
 				high = mid - 1;
 			} else {
-				while (mid > low && pieces[mid - 1].startLineNumber <= lineNumber && lineNumber <= pieces[mid - 1].endLineNumber) {
+				while (mid > low && pieces[mid - 1].startLineNumBer <= lineNumBer && lineNumBer <= pieces[mid - 1].endLineNumBer) {
 					mid--;
 				}
 				return mid;
@@ -1081,7 +1081,7 @@ export class TokensStore2 {
 
 	//#region Editing
 
-	public acceptEdit(range: IRange, eolCount: number, firstLineLength: number, lastLineLength: number, firstCharCode: number): void {
+	puBlic acceptEdit(range: IRange, eolCount: numBer, firstLineLength: numBer, lastLineLength: numBer, firstCharCode: numBer): void {
 		for (const piece of this._pieces) {
 			piece.acceptEdit(range, eolCount, firstLineLength, lastLineLength, firstCharCode);
 		}
@@ -1092,19 +1092,19 @@ export class TokensStore2 {
 
 export class TokensStore {
 	private _lineTokens: (Uint32Array | ArrayBuffer | null)[];
-	private _len: number;
+	private _len: numBer;
 
 	constructor() {
 		this._lineTokens = [];
 		this._len = 0;
 	}
 
-	public flush(): void {
+	puBlic flush(): void {
 		this._lineTokens = [];
 		this._len = 0;
 	}
 
-	public getTokens(topLevelLanguageId: LanguageId, lineIndex: number, lineText: string): LineTokens {
+	puBlic getTokens(topLevelLanguageId: LanguageId, lineIndex: numBer, lineText: string): LineTokens {
 		let rawLineTokens: Uint32Array | ArrayBuffer | null = null;
 		if (lineIndex < this._len) {
 			rawLineTokens = this._lineTokens[lineIndex];
@@ -1120,7 +1120,7 @@ export class TokensStore {
 		return new LineTokens(lineTokens, lineText);
 	}
 
-	private static _massageTokens(topLevelLanguageId: LanguageId, lineTextLength: number, _tokens: Uint32Array | ArrayBuffer | null): Uint32Array | ArrayBuffer {
+	private static _massageTokens(topLevelLanguageId: LanguageId, lineTextLength: numBer, _tokens: Uint32Array | ArrayBuffer | null): Uint32Array | ArrayBuffer {
 
 		const tokens = _tokens ? toUint32Array(_tokens) : null;
 
@@ -1139,27 +1139,27 @@ export class TokensStore {
 			const tokens = new Uint32Array(2);
 			tokens[0] = lineTextLength;
 			tokens[1] = getDefaultMetadata(topLevelLanguageId);
-			return tokens.buffer;
+			return tokens.Buffer;
 		}
 
 		// Ensure the last token covers the end of the text
 		tokens[tokens.length - 2] = lineTextLength;
 
-		if (tokens.byteOffset === 0 && tokens.byteLength === tokens.buffer.byteLength) {
-			// Store directly the ArrayBuffer pointer to save an object
-			return tokens.buffer;
+		if (tokens.ByteOffset === 0 && tokens.ByteLength === tokens.Buffer.ByteLength) {
+			// Store directly the ArrayBuffer pointer to save an oBject
+			return tokens.Buffer;
 		}
 		return tokens;
 	}
 
-	private _ensureLine(lineIndex: number): void {
+	private _ensureLine(lineIndex: numBer): void {
 		while (lineIndex >= this._len) {
 			this._lineTokens[this._len] = null;
 			this._len++;
 		}
 	}
 
-	private _deleteLines(start: number, deleteCount: number): void {
+	private _deleteLines(start: numBer, deleteCount: numBer): void {
 		if (deleteCount === 0) {
 			return;
 		}
@@ -1170,7 +1170,7 @@ export class TokensStore {
 		this._len -= deleteCount;
 	}
 
-	private _insertLines(insertIndex: number, insertCount: number): void {
+	private _insertLines(insertIndex: numBer, insertCount: numBer): void {
 		if (insertCount === 0) {
 			return;
 		}
@@ -1182,7 +1182,7 @@ export class TokensStore {
 		this._len += insertCount;
 	}
 
-	public setTokens(topLevelLanguageId: LanguageId, lineIndex: number, lineTextLength: number, _tokens: Uint32Array | ArrayBuffer | null, checkEquality: boolean): boolean {
+	puBlic setTokens(topLevelLanguageId: LanguageId, lineIndex: numBer, lineTextLength: numBer, _tokens: Uint32Array | ArrayBuffer | null, checkEquality: Boolean): Boolean {
 		const tokens = TokensStore._massageTokens(topLevelLanguageId, lineTextLength, _tokens);
 		this._ensureLine(lineIndex);
 		const oldTokens = this._lineTokens[lineIndex];
@@ -1194,19 +1194,19 @@ export class TokensStore {
 		return false;
 	}
 
-	private static _equals(_a: Uint32Array | ArrayBuffer | null, _b: Uint32Array | ArrayBuffer | null) {
-		if (!_a || !_b) {
-			return !_a && !_b;
+	private static _equals(_a: Uint32Array | ArrayBuffer | null, _B: Uint32Array | ArrayBuffer | null) {
+		if (!_a || !_B) {
+			return !_a && !_B;
 		}
 
 		const a = toUint32Array(_a);
-		const b = toUint32Array(_b);
+		const B = toUint32Array(_B);
 
-		if (a.length !== b.length) {
+		if (a.length !== B.length) {
 			return false;
 		}
 		for (let i = 0, len = a.length; i < len; i++) {
-			if (a[i] !== b[i]) {
+			if (a[i] !== B[i]) {
 				return false;
 			}
 		}
@@ -1215,19 +1215,19 @@ export class TokensStore {
 
 	//#region Editing
 
-	public acceptEdit(range: IRange, eolCount: number, firstLineLength: number): void {
+	puBlic acceptEdit(range: IRange, eolCount: numBer, firstLineLength: numBer): void {
 		this._acceptDeleteRange(range);
-		this._acceptInsertText(new Position(range.startLineNumber, range.startColumn), eolCount, firstLineLength);
+		this._acceptInsertText(new Position(range.startLineNumBer, range.startColumn), eolCount, firstLineLength);
 	}
 
 	private _acceptDeleteRange(range: IRange): void {
 
-		const firstLineIndex = range.startLineNumber - 1;
+		const firstLineIndex = range.startLineNumBer - 1;
 		if (firstLineIndex >= this._len) {
 			return;
 		}
 
-		if (range.startLineNumber === range.endLineNumber) {
+		if (range.startLineNumBer === range.endLineNumBer) {
 			if (range.startColumn === range.endColumn) {
 				// Nothing to delete
 				return;
@@ -1239,7 +1239,7 @@ export class TokensStore {
 
 		this._lineTokens[firstLineIndex] = TokensStore._deleteEnding(this._lineTokens[firstLineIndex], range.startColumn - 1);
 
-		const lastLineIndex = range.endLineNumber - 1;
+		const lastLineIndex = range.endLineNumBer - 1;
 		let lastLineTokens: Uint32Array | ArrayBuffer | null = null;
 		if (lastLineIndex < this._len) {
 			lastLineTokens = TokensStore._deleteBeginning(this._lineTokens[lastLineIndex], range.endColumn - 1);
@@ -1249,17 +1249,17 @@ export class TokensStore {
 		this._lineTokens[firstLineIndex] = TokensStore._append(this._lineTokens[firstLineIndex], lastLineTokens);
 
 		// Delete middle lines
-		this._deleteLines(range.startLineNumber, range.endLineNumber - range.startLineNumber);
+		this._deleteLines(range.startLineNumBer, range.endLineNumBer - range.startLineNumBer);
 	}
 
-	private _acceptInsertText(position: Position, eolCount: number, firstLineLength: number): void {
+	private _acceptInsertText(position: Position, eolCount: numBer, firstLineLength: numBer): void {
 
 		if (eolCount === 0 && firstLineLength === 0) {
 			// Nothing to insert
 			return;
 		}
 
-		const lineIndex = position.lineNumber - 1;
+		const lineIndex = position.lineNumBer - 1;
 		if (lineIndex >= this._len) {
 			return;
 		}
@@ -1273,17 +1273,17 @@ export class TokensStore {
 		this._lineTokens[lineIndex] = TokensStore._deleteEnding(this._lineTokens[lineIndex], position.column - 1);
 		this._lineTokens[lineIndex] = TokensStore._insert(this._lineTokens[lineIndex], position.column - 1, firstLineLength);
 
-		this._insertLines(position.lineNumber, eolCount);
+		this._insertLines(position.lineNumBer, eolCount);
 	}
 
-	public static _deleteBeginning(lineTokens: Uint32Array | ArrayBuffer | null, toChIndex: number): Uint32Array | ArrayBuffer | null {
+	puBlic static _deleteBeginning(lineTokens: Uint32Array | ArrayBuffer | null, toChIndex: numBer): Uint32Array | ArrayBuffer | null {
 		if (lineTokens === null || lineTokens === EMPTY_LINE_TOKENS) {
 			return lineTokens;
 		}
 		return TokensStore._delete(lineTokens, 0, toChIndex);
 	}
 
-	public static _deleteEnding(lineTokens: Uint32Array | ArrayBuffer | null, fromChIndex: number): Uint32Array | ArrayBuffer | null {
+	puBlic static _deleteEnding(lineTokens: Uint32Array | ArrayBuffer | null, fromChIndex: numBer): Uint32Array | ArrayBuffer | null {
 		if (lineTokens === null || lineTokens === EMPTY_LINE_TOKENS) {
 			return lineTokens;
 		}
@@ -1293,7 +1293,7 @@ export class TokensStore {
 		return TokensStore._delete(lineTokens, fromChIndex, lineTextLength);
 	}
 
-	public static _delete(lineTokens: Uint32Array | ArrayBuffer | null, fromChIndex: number, toChIndex: number): Uint32Array | ArrayBuffer | null {
+	puBlic static _delete(lineTokens: Uint32Array | ArrayBuffer | null, fromChIndex: numBer, toChIndex: numBer): Uint32Array | ArrayBuffer | null {
 		if (lineTokens === null || lineTokens === EMPTY_LINE_TOKENS || fromChIndex === toChIndex) {
 			return lineTokens;
 		}
@@ -1319,8 +1319,8 @@ export class TokensStore {
 			return lineTokens;
 		}
 
-		let dest: number;
-		let lastEnd: number;
+		let dest: numBer;
+		let lastEnd: numBer;
 		if (fromTokenStartOffset !== fromChIndex) {
 			tokens[fromTokenIndex << 1] = fromChIndex;
 			dest = ((fromTokenIndex + 1) << 1);
@@ -1346,11 +1346,11 @@ export class TokensStore {
 		}
 
 		let tmp = new Uint32Array(dest);
-		tmp.set(tokens.subarray(0, dest), 0);
-		return tmp.buffer;
+		tmp.set(tokens.suBarray(0, dest), 0);
+		return tmp.Buffer;
 	}
 
-	public static _append(lineTokens: Uint32Array | ArrayBuffer | null, _otherTokens: Uint32Array | ArrayBuffer | null): Uint32Array | ArrayBuffer | null {
+	puBlic static _append(lineTokens: Uint32Array | ArrayBuffer | null, _otherTokens: Uint32Array | ArrayBuffer | null): Uint32Array | ArrayBuffer | null {
 		if (_otherTokens === EMPTY_LINE_TOKENS) {
 			return lineTokens;
 		}
@@ -1361,7 +1361,7 @@ export class TokensStore {
 			return lineTokens;
 		}
 		if (_otherTokens === null) {
-			// cannot determine combined line length...
+			// cannot determine comBined line length...
 			return null;
 		}
 		const myTokens = toUint32Array(lineTokens);
@@ -1376,10 +1376,10 @@ export class TokensStore {
 			result[dest++] = otherTokens[(i << 1)] + delta;
 			result[dest++] = otherTokens[(i << 1) + 1];
 		}
-		return result.buffer;
+		return result.Buffer;
 	}
 
-	public static _insert(lineTokens: Uint32Array | ArrayBuffer | null, chIndex: number, textLength: number): Uint32Array | ArrayBuffer | null {
+	puBlic static _insert(lineTokens: Uint32Array | ArrayBuffer | null, chIndex: numBer, textLength: numBer): Uint32Array | ArrayBuffer | null {
 		if (lineTokens === null || lineTokens === EMPTY_LINE_TOKENS) {
 			// nothing to do
 			return lineTokens;

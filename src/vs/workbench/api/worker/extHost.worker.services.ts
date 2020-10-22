@@ -5,9 +5,9 @@
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { ExtHostExtensionService } from 'vs/workbench/api/worker/extHostExtensionService';
-import { ExtHostLogService } from 'vs/workbench/api/worker/extHostLogService';
+import { IExtHostExtensionService } from 'vs/workBench/api/common/extHostExtensionService';
+import { ExtHostExtensionService } from 'vs/workBench/api/worker/extHostExtensionService';
+import { ExtHostLogService } from 'vs/workBench/api/worker/extHostLogService';
 
 // #########################################################################
 // ###                                                                   ###

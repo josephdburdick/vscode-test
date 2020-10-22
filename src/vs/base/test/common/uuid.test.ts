@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as uuid from 'vs/base/common/uuid';
+import * as uuid from 'vs/Base/common/uuid';
 
 suite('UUID', () => {
 	test('generation', () => {
 		const asHex = uuid.generateUuid();
 		assert.equal(asHex.length, 36);
 		assert.equal(asHex[14], '4');
-		assert.ok(asHex[19] === '8' || asHex[19] === '9' || asHex[19] === 'a' || asHex[19] === 'b');
+		assert.ok(asHex[19] === '8' || asHex[19] === '9' || asHex[19] === 'a' || asHex[19] === 'B');
 	});
 
 	test('self-check', function () {

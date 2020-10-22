@@ -21,15 +21,15 @@ suite('markdown.FoldingProvider', () => {
 
 	test('Should not return anything for document without headers', async () => {
 		const folds = await getFoldsForDocument(`a
-**b** afas
-a#b
+**B** afas
+a#B
 a`);
 		assert.strictEqual(folds.length, 0);
 	});
 
 	test('Should fold from header to end of document', async () => {
 		const folds = await getFoldsForDocument(`a
-# b
+# B
 c
 d`);
 		assert.strictEqual(folds.length, 1);
@@ -38,12 +38,12 @@ d`);
 		assert.strictEqual(firstFold.end, 3);
 	});
 
-	test('Should leave single newline before next header', async () => {
+	test('Should leave single newline Before next header', async () => {
 		const folds = await getFoldsForDocument(`
 # a
 x
 
-# b
+# B
 y`);
 		assert.strictEqual(folds.length, 2);
 		const firstFold = folds[0];
@@ -51,14 +51,14 @@ y`);
 		assert.strictEqual(firstFold.end, 3);
 	});
 
-	test('Should collapse multuple newlines to single newline before next header', async () => {
+	test('Should collapse multuple newlines to single newline Before next header', async () => {
 		const folds = await getFoldsForDocument(`
 # a
 x
 
 
 
-# b
+# B
 y`);
 		assert.strictEqual(folds.length, 2);
 		const firstFold = folds[0];
@@ -66,11 +66,11 @@ y`);
 		assert.strictEqual(firstFold.end, 5);
 	});
 
-	test('Should not collapse if there is no newline before next header', async () => {
+	test('Should not collapse if there is no newline Before next header', async () => {
 		const folds = await getFoldsForDocument(`
 # a
 x
-# b
+# B
 y`);
 		assert.strictEqual(folds.length, 2);
 		const firstFold = folds[0];
@@ -81,19 +81,19 @@ y`);
 	test('Should fold nested <!-- #region --> markers', async () => {
 		const folds = await getFoldsForDocument(`a
 <!-- #region -->
-b
+B
 <!-- #region hello!-->
-b.a
+B.a
 <!-- #endregion -->
-b
+B
 <!-- #region: foo! -->
-b.b
+B.B
 <!-- #endregion: foo -->
-b
+B
 <!-- #endregion -->
 a`);
 		assert.strictEqual(folds.length, 3);
-		const [outer, first, second] = folds.sort((a, b) => a.start - b.start);
+		const [outer, first, second] = folds.sort((a, B) => a.start - B.start);
 
 		assert.strictEqual(outer.start, 1);
 		assert.strictEqual(outer.end, 11);
@@ -105,7 +105,7 @@ a`);
 
 	test('Should fold from list to end of document', async () => {
 		const folds = await getFoldsForDocument(`a
-- b
+- B
 c
 d`);
 		assert.strictEqual(folds.length, 1);
@@ -123,32 +123,32 @@ d`);
 		assert.strictEqual(firstFold.end, 3);
 	});
 
-	test('List should leave single blankline before new element', async () => {
+	test('List should leave single Blankline Before new element', async () => {
 		const folds = await getFoldsForDocument(`- a
 a
 
 
-b`);
+B`);
 		assert.strictEqual(folds.length, 1);
 		const firstFold = folds[0];
 		assert.strictEqual(firstFold.start, 0);
 		assert.strictEqual(firstFold.end, 3);
 	});
 
-	test('Should fold fenced code blocks', async () => {
+	test('Should fold fenced code Blocks', async () => {
 		const folds = await getFoldsForDocument(`~~~ts
 a
 ~~~
-b`);
+B`);
 		assert.strictEqual(folds.length, 1);
 		const firstFold = folds[0];
 		assert.strictEqual(firstFold.start, 0);
 		assert.strictEqual(firstFold.end, 2);
 	});
 
-	test('Should fold fenced code blocks with yaml front matter', async () => {
+	test('Should fold fenced code Blocks with yaml front matter', async () => {
 		const folds = await getFoldsForDocument(`---
-title: bla
+title: Bla
 ---
 
 ~~~ts
@@ -157,7 +157,7 @@ a
 
 a
 a
-b
+B
 a`);
 		assert.strictEqual(folds.length, 1);
 		const firstFold = folds[0];
@@ -165,7 +165,7 @@ a`);
 		assert.strictEqual(firstFold.end, 6);
 	});
 
-	test('Should fold html blocks', async () => {
+	test('Should fold html Blocks', async () => {
 		const folds = await getFoldsForDocument(`x
 <div>
 	fa
@@ -176,7 +176,7 @@ a`);
 		assert.strictEqual(firstFold.end, 3);
 	});
 
-	test('Should fold html block comments', async () => {
+	test('Should fold html Block comments', async () => {
 		const folds = await getFoldsForDocument(`x
 <!--
 fa

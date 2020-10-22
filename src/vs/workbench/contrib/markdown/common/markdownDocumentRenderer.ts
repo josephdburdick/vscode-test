@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as marked from 'vs/base/common/marked/marked';
+import * as marked from 'vs/Base/common/marked/marked';
 import { tokenizeToString } from 'vs/editor/common/modes/textToHtmlTokenizer';
 import { ITokenizationSupport, TokenizationRegistry } from 'vs/editor/common/modes';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IModeService } from 'vs/editor/common/services/modeService';
 
 /**
  * Renders a string of markdown as a document.
  *
- * Uses VS Code's syntax highlighting code blocks.
+ * Uses VS Code's syntax highlighting code Blocks.
  */
 export async function renderMarkdownDocument(
 	text: string,
@@ -20,8 +20,8 @@ export async function renderMarkdownDocument(
 	modeService: IModeService,
 ): Promise<string> {
 
-	const highlight = (code: string, lang: string, callback: ((error: any, code: string) => void) | undefined): any => {
-		if (!callback) {
+	const highlight = (code: string, lang: string, callBack: ((error: any, code: string) => void) | undefined): any => {
+		if (!callBack) {
 			return code;
 		}
 		extensionService.whenInstalledExtensionsRegistered().then(async () => {
@@ -31,7 +31,7 @@ export async function renderMarkdownDocument(
 				modeService.triggerMode(modeId);
 				support = await TokenizationRegistry.getPromise(modeId) ?? undefined;
 			}
-			callback(null, `<code>${tokenizeToString(code, support)}</code>`);
+			callBack(null, `<code>${tokenizeToString(code, support)}</code>`);
 		});
 		return '';
 	};

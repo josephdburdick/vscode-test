@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { smokeTestActivate } from './notebookSmokeTestMain';
+import { smokeTestActivate } from './noteBookSmokeTestMain';
 
 export function activate(context: vscode.ExtensionContext): any {
 	smokeTestActivate(context);
 
-	const _onDidChangeNotebook = new vscode.EventEmitter<vscode.NotebookDocumentEditEvent | vscode.NotebookDocumentContentChangeEvent>();
-	context.subscriptions.push(_onDidChangeNotebook);
-	context.subscriptions.push(vscode.notebook.registerNotebookContentProvider('notebookCoreTest', {
-		onDidChangeNotebook: _onDidChangeNotebook.event,
-		openNotebook: async (_resource: vscode.Uri) => {
-			if (/.*empty\-.*\.vsctestnb$/.test(_resource.path)) {
+	const _onDidChangeNoteBook = new vscode.EventEmitter<vscode.NoteBookDocumentEditEvent | vscode.NoteBookDocumentContentChangeEvent>();
+	context.suBscriptions.push(_onDidChangeNoteBook);
+	context.suBscriptions.push(vscode.noteBook.registerNoteBookContentProvider('noteBookCoreTest', {
+		onDidChangeNoteBook: _onDidChangeNoteBook.event,
+		openNoteBook: async (_resource: vscode.Uri) => {
+			if (/.*empty\-.*\.vsctestnB$/.test(_resource.path)) {
 				return {
 					languages: ['typescript'],
 					metadata: {},
@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext): any {
 				};
 			}
 
-			const dto: vscode.NotebookData = {
+			const dto: vscode.NoteBookData = {
 				languages: ['typescript'],
 				metadata: {
 					custom: { testMetadata: false }
@@ -42,16 +42,16 @@ export function activate(context: vscode.ExtensionContext): any {
 
 			return dto;
 		},
-		resolveNotebook: async (_document: vscode.NotebookDocument) => {
+		resolveNoteBook: async (_document: vscode.NoteBookDocument) => {
 			return;
 		},
-		saveNotebook: async (_document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		saveNoteBook: async (_document: vscode.NoteBookDocument, _cancellation: vscode.CancellationToken) => {
 			return;
 		},
-		saveNotebookAs: async (_targetResource: vscode.Uri, _document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		saveNoteBookAs: async (_targetResource: vscode.Uri, _document: vscode.NoteBookDocument, _cancellation: vscode.CancellationToken) => {
 			return;
 		},
-		backupNotebook: async (_document: vscode.NotebookDocument, _context: vscode.NotebookDocumentBackupContext, _cancellation: vscode.CancellationToken) => {
+		BackupNoteBook: async (_document: vscode.NoteBookDocument, _context: vscode.NoteBookDocumentBackupContext, _cancellation: vscode.CancellationToken) => {
 			return {
 				id: '1',
 				delete: () => { }
@@ -59,10 +59,10 @@ export function activate(context: vscode.ExtensionContext): any {
 		}
 	}));
 
-	const kernel: vscode.NotebookKernel = {
-		label: 'Notebook Test Kernel',
+	const kernel: vscode.NoteBookKernel = {
+		laBel: 'NoteBook Test Kernel',
 		isPreferred: true,
-		executeAllCells: async (_document: vscode.NotebookDocument) => {
+		executeAllCells: async (_document: vscode.NoteBookDocument) => {
 			const cell = _document.cells[0];
 
 			cell.outputs = [{
@@ -73,13 +73,13 @@ export function activate(context: vscode.ExtensionContext): any {
 			}];
 			return;
 		},
-		cancelAllCellsExecution: async (_document: vscode.NotebookDocument) => { },
-		executeCell: async (document: vscode.NotebookDocument, cell: vscode.NotebookCell | undefined) => {
+		cancelAllCellsExecution: async (_document: vscode.NoteBookDocument) => { },
+		executeCell: async (document: vscode.NoteBookDocument, cell: vscode.NoteBookCell | undefined) => {
 			if (!cell) {
 				cell = document.cells[0];
 			}
 
-			if (document.uri.path.endsWith('customRenderer.vsctestnb')) {
+			if (document.uri.path.endsWith('customRenderer.vsctestnB')) {
 				cell.outputs = [{
 					outputKind: vscode.CellOutputKind.Rich,
 					data: {
@@ -100,7 +100,7 @@ export function activate(context: vscode.ExtensionContext): any {
 
 			cell.outputs = newOutputs;
 
-			_onDidChangeNotebook.fire({
+			_onDidChangeNoteBook.fire({
 				document: document,
 				undo: () => {
 					if (cell) {
@@ -115,10 +115,10 @@ export function activate(context: vscode.ExtensionContext): any {
 			});
 			return;
 		},
-		cancelCellExecution: async (_document: vscode.NotebookDocument, _cell: vscode.NotebookCell) => { }
+		cancelCellExecution: async (_document: vscode.NoteBookDocument, _cell: vscode.NoteBookCell) => { }
 	};
 
-	context.subscriptions.push(vscode.notebook.registerNotebookKernelProvider({ filenamePattern: '*.vsctestnb' }, {
+	context.suBscriptions.push(vscode.noteBook.registerNoteBookKernelProvider({ filenamePattern: '*.vsctestnB' }, {
 		provideKernels: async () => {
 			return [kernel];
 		}

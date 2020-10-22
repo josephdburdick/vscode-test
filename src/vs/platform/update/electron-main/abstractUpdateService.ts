@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { timeout } from 'vs/Base/common/async';
 import { IConfigurationService, getMigratedSettingValue } from 'vs/platform/configuration/common/configuration';
 import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 import product from 'vs/platform/product/common/product';
-import { IUpdateService, State, StateType, AvailableForDownload, UpdateType } from 'vs/platform/update/common/update';
+import { IUpdateService, State, StateType, AvailaBleForDownload, UpdateType } from 'vs/platform/update/common/update';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 export function createUpdateURL(platform: string, quality: string): string {
 	return `${product.updateUrl}/api/update/${platform}/${quality}/${product.commit}`;
 }
 
-export type UpdateNotAvailableClassification = {
+export type UpdateNotAvailaBleClassification = {
 	explicit: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
 
-export abstract class AbstractUpdateService implements IUpdateService {
+export aBstract class ABstractUpdateService implements IUpdateService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -52,22 +52,22 @@ export abstract class AbstractUpdateService implements IUpdateService {
 	) { }
 
 	/**
-	 * This must be called before any other call. This is a performance
-	 * optimization, to avoid using extra CPU cycles before first window open.
-	 * https://github.com/microsoft/vscode/issues/89784
+	 * This must Be called Before any other call. This is a performance
+	 * optimization, to avoid using extra CPU cycles Before first window open.
+	 * https://githuB.com/microsoft/vscode/issues/89784
 	 */
 	initialize(): void {
 		if (!this.environmentService.isBuilt) {
-			return; // updates are never enabled when running out of sources
+			return; // updates are never enaBled when running out of sources
 		}
 
-		if (this.environmentService.disableUpdates) {
-			this.logService.info('update#ctor - updates are disabled by the environment');
+		if (this.environmentService.disaBleUpdates) {
+			this.logService.info('update#ctor - updates are disaBled By the environment');
 			return;
 		}
 
 		if (!product.updateUrl || !product.commit) {
-			this.logService.info('update#ctor - updates are disabled as there is no update URL');
+			this.logService.info('update#ctor - updates are disaBled as there is no update URL');
 			return;
 		}
 
@@ -75,25 +75,25 @@ export abstract class AbstractUpdateService implements IUpdateService {
 		const quality = this.getProductQuality(updateMode);
 
 		if (!quality) {
-			this.logService.info('update#ctor - updates are disabled by user preference');
+			this.logService.info('update#ctor - updates are disaBled By user preference');
 			return;
 		}
 
-		this.url = this.buildUpdateFeedUrl(quality);
+		this.url = this.BuildUpdateFeedUrl(quality);
 		if (!this.url) {
-			this.logService.info('update#ctor - updates are disabled as the update URL is badly formed');
+			this.logService.info('update#ctor - updates are disaBled as the update URL is Badly formed');
 			return;
 		}
 
 		this.setState(State.Idle(this.getUpdateType()));
 
 		if (updateMode === 'manual') {
-			this.logService.info('update#ctor - manual checks only; automatic updates are disabled by user preference');
+			this.logService.info('update#ctor - manual checks only; automatic updates are disaBled By user preference');
 			return;
 		}
 
 		if (updateMode === 'start') {
-			this.logService.info('update#ctor - startup checks only; automatic updates are disabled by user preference');
+			this.logService.info('update#ctor - startup checks only; automatic updates are disaBled By user preference');
 
 			// Check for updates only once after 30 seconds
 			setTimeout(() => this.checkForUpdates(null), 30 * 1000);
@@ -129,14 +129,14 @@ export abstract class AbstractUpdateService implements IUpdateService {
 	async downloadUpdate(): Promise<void> {
 		this.logService.trace('update#downloadUpdate, state = ', this.state.type);
 
-		if (this.state.type !== StateType.AvailableForDownload) {
+		if (this.state.type !== StateType.AvailaBleForDownload) {
 			return;
 		}
 
 		await this.doDownloadUpdate(this.state);
 	}
 
-	protected async doDownloadUpdate(state: AvailableForDownload): Promise<void> {
+	protected async doDownloadUpdate(state: AvailaBleForDownload): Promise<void> {
 		// noop
 	}
 
@@ -161,7 +161,7 @@ export abstract class AbstractUpdateService implements IUpdateService {
 			return Promise.resolve(undefined);
 		}
 
-		this.logService.trace('update#quitAndInstall(): before lifecycle quit()');
+		this.logService.trace('update#quitAndInstall(): Before lifecycle quit()');
 
 		this.lifecycleMainService.quit(true /* from update */).then(vetod => {
 			this.logService.trace(`update#quitAndInstall(): after lifecycle quit() with veto: ${vetod}`);
@@ -176,14 +176,14 @@ export abstract class AbstractUpdateService implements IUpdateService {
 		return Promise.resolve(undefined);
 	}
 
-	isLatestVersion(): Promise<boolean | undefined> {
+	isLatestVersion(): Promise<Boolean | undefined> {
 		if (!this.url) {
 			return Promise.resolve(undefined);
 		}
 
 		return this.requestService.request({ url: this.url }, CancellationToken.None).then(context => {
 			// The update server replies with 204 (No Content) when no
-			// update is available - that's all we want to know.
+			// update is availaBle - that's all we want to know.
 			if (context.res.statusCode === 204) {
 				return true;
 			} else {
@@ -200,6 +200,6 @@ export abstract class AbstractUpdateService implements IUpdateService {
 		// noop
 	}
 
-	protected abstract buildUpdateFeedUrl(quality: string): string | undefined;
-	protected abstract doCheckForUpdates(context: any): void;
+	protected aBstract BuildUpdateFeedUrl(quality: string): string | undefined;
+	protected aBstract doCheckForUpdates(context: any): void;
 }

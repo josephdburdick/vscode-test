@@ -6,13 +6,13 @@
 import * as cp from 'child_process';
 import { Application } from '../../../../automation';
 
-// function wait(ms: number): Promise<void> {
+// function wait(ms: numBer): Promise<void> {
 // 	return new Promise(r => setTimeout(r, ms));
 // }
 
 
 export function setup() {
-	describe('Notebooks', () => {
+	descriBe('NoteBooks', () => {
 		after(async function () {
 			const app = this.app as Application;
 			cp.execSync('git checkout . --quiet', { cwd: app.workspacePathOrFolder });
@@ -21,54 +21,54 @@ export function setup() {
 
 		afterEach(async function () {
 			const app = this.app as Application;
-			await app.workbench.quickaccess.runCommand('workbench.action.files.save');
-			await app.workbench.quickaccess.runCommand('workbench.action.closeActiveEditor');
+			await app.workBench.quickaccess.runCommand('workBench.action.files.save');
+			await app.workBench.quickaccess.runCommand('workBench.action.closeActiveEditor');
 		});
 
 		it('inserts/edits code cell', async function () {
 			const app = this.app as Application;
-			await app.workbench.notebook.openNotebook();
-			await app.workbench.notebook.focusNextCell();
-			await app.workbench.notebook.insertNotebookCell('code');
-			await app.workbench.notebook.waitForTypeInEditor('// some code');
-			await app.workbench.notebook.stopEditingCell();
+			await app.workBench.noteBook.openNoteBook();
+			await app.workBench.noteBook.focusNextCell();
+			await app.workBench.noteBook.insertNoteBookCell('code');
+			await app.workBench.noteBook.waitForTypeInEditor('// some code');
+			await app.workBench.noteBook.stopEditingCell();
 		});
 
 		it('inserts/edits markdown cell', async function () {
 			const app = this.app as Application;
-			await app.workbench.notebook.openNotebook();
-			await app.workbench.notebook.focusNextCell();
-			await app.workbench.notebook.insertNotebookCell('markdown');
-			await app.workbench.notebook.waitForTypeInEditor('## hello2! ');
-			await app.workbench.notebook.stopEditingCell();
-			await app.workbench.notebook.waitForMarkdownContents('h2', 'hello2!');
+			await app.workBench.noteBook.openNoteBook();
+			await app.workBench.noteBook.focusNextCell();
+			await app.workBench.noteBook.insertNoteBookCell('markdown');
+			await app.workBench.noteBook.waitForTypeInEditor('## hello2! ');
+			await app.workBench.noteBook.stopEditingCell();
+			await app.workBench.noteBook.waitForMarkdownContents('h2', 'hello2!');
 		});
 
 		it('moves focus as it inserts/deletes a cell', async function () {
 			const app = this.app as Application;
-			await app.workbench.notebook.openNotebook();
-			await app.workbench.notebook.insertNotebookCell('code');
-			await app.workbench.notebook.waitForActiveCellEditorContents('');
-			await app.workbench.notebook.stopEditingCell();
-			await app.workbench.notebook.deleteActiveCell();
-			await app.workbench.notebook.waitForMarkdownContents('p', 'Markdown Cell');
+			await app.workBench.noteBook.openNoteBook();
+			await app.workBench.noteBook.insertNoteBookCell('code');
+			await app.workBench.noteBook.waitForActiveCellEditorContents('');
+			await app.workBench.noteBook.stopEditingCell();
+			await app.workBench.noteBook.deleteActiveCell();
+			await app.workBench.noteBook.waitForMarkdownContents('p', 'Markdown Cell');
 		});
 
 		it.skip('moves focus in and out of output', async function () {
 			const app = this.app as Application;
-			await app.workbench.notebook.openNotebook();
-			await app.workbench.notebook.executeActiveCell();
-			await app.workbench.notebook.focusInCellOutput();
-			await app.workbench.notebook.focusOutCellOutput();
-			await app.workbench.notebook.waitForActiveCellEditorContents('code()');
+			await app.workBench.noteBook.openNoteBook();
+			await app.workBench.noteBook.executeActiveCell();
+			await app.workBench.noteBook.focusInCellOutput();
+			await app.workBench.noteBook.focusOutCellOutput();
+			await app.workBench.noteBook.waitForActiveCellEditorContents('code()');
 		});
 
 		it.skip('cell action execution', async function () {
 			const app = this.app as Application;
-			await app.workbench.notebook.openNotebook();
-			await app.workbench.notebook.insertNotebookCell('code');
-			await app.workbench.notebook.executeCellAction('.notebook-editor .monaco-list-row.focused div.monaco-toolbar .codicon-debug');
-			await app.workbench.notebook.waitForActiveCellEditorContents('test');
+			await app.workBench.noteBook.openNoteBook();
+			await app.workBench.noteBook.insertNoteBookCell('code');
+			await app.workBench.noteBook.executeCellAction('.noteBook-editor .monaco-list-row.focused div.monaco-toolBar .codicon-deBug');
+			await app.workBench.noteBook.waitForActiveCellEditorContents('test');
 		});
 	});
 }

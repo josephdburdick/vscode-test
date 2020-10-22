@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { URI } from 'vs/Base/common/uri';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
 import { ILink, LinkProvider, LinkProviderRegistry, ILinksList } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { isDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { coalesce } from 'vs/base/common/arrays';
-import { assertType } from 'vs/base/common/types';
+import { isDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { coalesce } from 'vs/Base/common/arrays';
+import { assertType } from 'vs/Base/common/types';
 
 export class Link implements ILink {
 
@@ -70,7 +70,7 @@ export class LinksList {
 
 	readonly links: Link[];
 
-	private readonly _disposables = new DisposableStore();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	constructor(tuples: [ILinksList, LinkProvider][]) {
 
@@ -79,26 +79,26 @@ export class LinksList {
 			// merge all links
 			const newLinks = list.links.map(link => new Link(link, provider));
 			links = LinksList._union(links, newLinks);
-			// register disposables
-			if (isDisposable(list)) {
-				this._disposables.add(list);
+			// register disposaBles
+			if (isDisposaBle(list)) {
+				this._disposaBles.add(list);
 			}
 		}
 		this.links = links;
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 		this.links.length = 0;
 	}
 
 	private static _union(oldLinks: Link[], newLinks: Link[]): Link[] {
 		// reunite oldLinks with newLinks and remove duplicates
 		let result: Link[] = [];
-		let oldIndex: number;
-		let oldLen: number;
-		let newIndex: number;
-		let newLen: number;
+		let oldIndex: numBer;
+		let oldLen: numBer;
+		let newIndex: numBer;
+		let newLen: numBer;
 
 		for (oldIndex = 0, newIndex = 0, oldLen = oldLinks.length, newLen = newLinks.length; oldIndex < oldLen && newIndex < newLen;) {
 			const oldLink = oldLinks[oldIndex];
@@ -113,11 +113,11 @@ export class LinksList {
 			const comparisonResult = Range.compareRangesUsingStarts(oldLink.range, newLink.range);
 
 			if (comparisonResult < 0) {
-				// oldLink is before
+				// oldLink is Before
 				result.push(oldLink);
 				oldIndex++;
 			} else {
-				// newLink is before
+				// newLink is Before
 				result.push(newLink);
 				newIndex++;
 			}
@@ -163,7 +163,7 @@ CommandsRegistry.registerCommand('_executeLinkProvider', async (accessor, ...arg
 	let [uri, resolveCount] = args;
 	assertType(uri instanceof URI);
 
-	if (typeof resolveCount !== 'number') {
+	if (typeof resolveCount !== 'numBer') {
 		resolveCount = 0;
 	}
 

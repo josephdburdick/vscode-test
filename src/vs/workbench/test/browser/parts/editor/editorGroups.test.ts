@@ -4,35 +4,35 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorGroup, ISerializedEditorGroup, EditorCloseEvent } from 'vs/workbench/common/editor/editorGroup';
-import { Extensions as EditorExtensions, IEditorInputFactoryRegistry, EditorInput, IFileEditorInput, IEditorInputFactory, CloseDirection, EditorsOrder } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { TestLifecycleService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { EditorGroup, ISerializedEditorGroup, EditorCloseEvent } from 'vs/workBench/common/editor/editorGroup';
+import { Extensions as EditorExtensions, IEditorInputFactoryRegistry, EditorInput, IFileEditorInput, IEditorInputFactory, CloseDirection, EditorsOrder } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { TestLifecycleService } from 'vs/workBench/test/Browser/workBenchTestServices';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IEditorModel } from 'vs/platform/editor/common/editor';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { TestContextService, TestStorageService } from 'vs/workbench/test/common/workbenchTestServices';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { TestContextService, TestStorageService } from 'vs/workBench/test/common/workBenchTestServices';
 
 function inst(): IInstantiationService {
 	let inst = new TestInstantiationService();
-	inst.stub(IStorageService, new TestStorageService());
-	inst.stub(ILifecycleService, new TestLifecycleService());
-	inst.stub(IWorkspaceContextService, new TestContextService());
-	inst.stub(ITelemetryService, NullTelemetryService);
+	inst.stuB(IStorageService, new TestStorageService());
+	inst.stuB(ILifecycleService, new TestLifecycleService());
+	inst.stuB(IWorkspaceContextService, new TestContextService());
+	inst.stuB(ITelemetryService, NullTelemetryService);
 
 	const config = new TestConfigurationService();
-	config.setUserConfiguration('workbench', { editor: { openPositioning: 'right', focusRecentEditorAfterClose: true } });
-	inst.stub(IConfigurationService, config);
+	config.setUserConfiguration('workBench', { editor: { openPositioning: 'right', focusRecentEditorAfterClose: true } });
+	inst.stuB(IConfigurationService, config);
 
 	return inst;
 }
@@ -114,13 +114,13 @@ class TestEditorInput extends EditorInput {
 
 	readonly resource = undefined;
 
-	constructor(public id: string) {
+	constructor(puBlic id: string) {
 		super();
 	}
 	getTypeId() { return 'testEditorInputForGroups'; }
 	resolve(): Promise<IEditorModel> { return Promise.resolve(null!); }
 
-	matches(other: TestEditorInput): boolean {
+	matches(other: TestEditorInput): Boolean {
 		return other && this.id === other.id && other instanceof TestEditorInput;
 	}
 
@@ -128,23 +128,23 @@ class TestEditorInput extends EditorInput {
 		this._onDidChangeDirty.fire();
 	}
 
-	setLabel(): void {
-		this._onDidChangeLabel.fire();
+	setLaBel(): void {
+		this._onDidChangeLaBel.fire();
 	}
 }
 
-class NonSerializableTestEditorInput extends EditorInput {
+class NonSerializaBleTestEditorInput extends EditorInput {
 
 	readonly resource = undefined;
 
-	constructor(public id: string) {
+	constructor(puBlic id: string) {
 		super();
 	}
-	getTypeId() { return 'testEditorInputForGroups-nonSerializable'; }
+	getTypeId() { return 'testEditorInputForGroups-nonSerializaBle'; }
 	resolve(): Promise<IEditorModel> { return Promise.resolve(null!); }
 
-	matches(other: NonSerializableTestEditorInput): boolean {
-		return other && this.id === other.id && other instanceof NonSerializableTestEditorInput;
+	matches(other: NonSerializaBleTestEditorInput): Boolean {
+		return other && this.id === other.id && other instanceof NonSerializaBleTestEditorInput;
 	}
 }
 
@@ -152,7 +152,7 @@ class TestFileEditorInput extends EditorInput implements IFileEditorInput {
 
 	readonly preferredResource = this.resource;
 
-	constructor(public id: string, public resource: URI) {
+	constructor(puBlic id: string, puBlic resource: URI) {
 		super();
 	}
 	getTypeId() { return 'testFileEditorInputForGroups'; }
@@ -164,19 +164,19 @@ class TestFileEditorInput extends EditorInput implements IFileEditorInput {
 	setForceOpenAsBinary(): void { }
 	setMode(mode: string) { }
 	setPreferredMode(mode: string) { }
-	isResolved(): boolean { return false; }
+	isResolved(): Boolean { return false; }
 
-	matches(other: TestFileEditorInput): boolean {
+	matches(other: TestFileEditorInput): Boolean {
 		return other && this.id === other.id && other instanceof TestFileEditorInput;
 	}
 }
 
-function input(id = String(index++), nonSerializable?: boolean, resource?: URI): EditorInput {
+function input(id = String(index++), nonSerializaBle?: Boolean, resource?: URI): EditorInput {
 	if (resource) {
 		return new TestFileEditorInput(id, resource);
 	}
 
-	return nonSerializable ? new NonSerializableTestEditorInput(id) : new TestEditorInput(id);
+	return nonSerializaBle ? new NonSerializaBleTestEditorInput(id) : new TestEditorInput(id);
 }
 
 interface ISerializedTestInput {
@@ -185,15 +185,15 @@ interface ISerializedTestInput {
 
 class TestEditorInputFactory implements IEditorInputFactory {
 
-	static disableSerialize = false;
-	static disableDeserialize = false;
+	static disaBleSerialize = false;
+	static disaBleDeserialize = false;
 
-	canSerialize(editorInput: EditorInput): boolean {
+	canSerialize(editorInput: EditorInput): Boolean {
 		return true;
 	}
 
 	serialize(editorInput: EditorInput): string | undefined {
-		if (TestEditorInputFactory.disableSerialize) {
+		if (TestEditorInputFactory.disaBleSerialize) {
 			return undefined;
 		}
 
@@ -206,7 +206,7 @@ class TestEditorInputFactory implements IEditorInputFactory {
 	}
 
 	deserialize(instantiationService: IInstantiationService, serializedEditorInput: string): EditorInput | undefined {
-		if (TestEditorInputFactory.disableDeserialize) {
+		if (TestEditorInputFactory.disaBleDeserialize) {
 			return undefined;
 		}
 
@@ -216,20 +216,20 @@ class TestEditorInputFactory implements IEditorInputFactory {
 	}
 }
 
-suite('Workbench editor groups', () => {
+suite('WorkBench editor groups', () => {
 
-	let disposables: IDisposable[] = [];
+	let disposaBles: IDisposaBle[] = [];
 
 	setup(() => {
-		TestEditorInputFactory.disableSerialize = false;
-		TestEditorInputFactory.disableDeserialize = false;
+		TestEditorInputFactory.disaBleSerialize = false;
+		TestEditorInputFactory.disaBleDeserialize = false;
 
-		disposables.push(Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).registerEditorInputFactory('testEditorInputForGroups', TestEditorInputFactory));
+		disposaBles.push(Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).registerEditorInputFactory('testEditorInputForGroups', TestEditorInputFactory));
 	});
 
 	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+		dispose(disposaBles);
+		disposaBles = [];
 
 		index = 1;
 	});
@@ -343,9 +343,9 @@ suite('Workbench editor groups', () => {
 		assert.equal(group.contains(diffInput1), false);
 		assert.equal(group.contains(diffInput2), false);
 
-		const input3 = input(undefined, true, URI.parse('foo://bar'));
+		const input3 = input(undefined, true, URI.parse('foo://Bar'));
 
-		const input4 = input(undefined, true, URI.parse('foo://barsomething'));
+		const input4 = input(undefined, true, URI.parse('foo://Barsomething'));
 
 		group.openEditor(input3, { pinned: true, active: true });
 		assert.equal(group.contains(input4), false);
@@ -364,7 +364,7 @@ suite('Workbench editor groups', () => {
 		const input2 = input();
 		const input3 = input();
 
-		// Case 1: inputs can be serialized and deserialized
+		// Case 1: inputs can Be serialized and deserialized
 
 		group.openEditor(input1, { pinned: true, active: true });
 		group.openEditor(input2, { pinned: true, active: true });
@@ -380,8 +380,8 @@ suite('Workbench editor groups', () => {
 		assert.equal(deserialized.isPinned(input3), false);
 		assert.equal(deserialized.isActive(input3), true);
 
-		// Case 2: inputs cannot be serialized
-		TestEditorInputFactory.disableSerialize = true;
+		// Case 2: inputs cannot Be serialized
+		TestEditorInputFactory.disaBleSerialize = true;
 
 		deserialized = createGroup(group.serialize());
 		assert.equal(group.id, deserialized.id);
@@ -389,9 +389,9 @@ suite('Workbench editor groups', () => {
 		assert.equal(deserialized.getEditors(EditorsOrder.SEQUENTIAL).length, 0);
 		assert.equal(deserialized.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 0);
 
-		// Case 3: inputs cannot be deserialized
-		TestEditorInputFactory.disableSerialize = false;
-		TestEditorInputFactory.disableDeserialize = true;
+		// Case 3: inputs cannot Be deserialized
+		TestEditorInputFactory.disaBleSerialize = false;
+		TestEditorInputFactory.disaBleDeserialize = true;
 
 		deserialized = createGroup(group.serialize());
 		assert.equal(group.id, deserialized.id);
@@ -408,7 +408,7 @@ suite('Workbench editor groups', () => {
 		const input2 = input();
 		const input3 = input();
 
-		// Case 1: inputs can be serialized and deserialized
+		// Case 1: inputs can Be serialized and deserialized
 
 		group.openEditor(input1, { pinned: true, active: true });
 		group.openEditor(input2, { pinned: true, active: true });
@@ -433,8 +433,8 @@ suite('Workbench editor groups', () => {
 		assert.equal(deserialized.isActive(input3), true);
 		assert.equal(deserialized.isSticky(input3), false);
 
-		// Case 2: inputs cannot be serialized
-		TestEditorInputFactory.disableSerialize = true;
+		// Case 2: inputs cannot Be serialized
+		TestEditorInputFactory.disaBleSerialize = true;
 
 		deserialized = createGroup(group.serialize());
 		assert.equal(group.id, deserialized.id);
@@ -443,9 +443,9 @@ suite('Workbench editor groups', () => {
 		assert.equal(deserialized.getEditors(EditorsOrder.SEQUENTIAL).length, 0);
 		assert.equal(deserialized.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 0);
 
-		// Case 3: inputs cannot be deserialized
-		TestEditorInputFactory.disableSerialize = false;
-		TestEditorInputFactory.disableDeserialize = true;
+		// Case 3: inputs cannot Be deserialized
+		TestEditorInputFactory.disaBleSerialize = false;
+		TestEditorInputFactory.disaBleDeserialize = true;
 
 		deserialized = createGroup(group.serialize());
 		assert.equal(group.id, deserialized.id);
@@ -516,7 +516,7 @@ suite('Workbench editor groups', () => {
 		assert.equal(group.activeEditor, undefined);
 		assert.equal(events.closed[1].editor, input2);
 
-		// Nonactive && Pinned => gets active because its first editor
+		// Nonactive && Pinned => gets active Because its first editor
 		const input3 = input();
 		group.openEditor(input3, { active: false, pinned: true });
 
@@ -545,7 +545,7 @@ suite('Workbench editor groups', () => {
 		assert.equal(group.activeEditor, undefined);
 		assert.equal(events.closed[2].editor, input3);
 
-		// Nonactive && Preview => gets active because its first editor
+		// Nonactive && Preview => gets active Because its first editor
 		const input4 = input();
 		group.openEditor(input4);
 
@@ -661,14 +661,14 @@ suite('Workbench editor groups', () => {
 
 	test('Multiple Editors - Pinned and Active (DEFAULT_OPEN_EDITOR_DIRECTION = Direction.LEFT)', function () {
 		let inst = new TestInstantiationService();
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(ILifecycleService, new TestLifecycleService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(ILifecycleService, new TestLifecycleService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		inst.stub(IConfigurationService, config);
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'left' } });
+		inst.stuB(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'left' } });
 
 		const group: EditorGroup = inst.createInstance(EditorGroup, undefined);
 
@@ -734,7 +734,7 @@ suite('Workbench editor groups', () => {
 		const input3 = input();
 
 		// Non active, preview
-		group.openEditor(input1); // becomes active, preview
+		group.openEditor(input1); // Becomes active, preview
 		group.openEditor(input2); // overwrites preview
 		group.openEditor(input3); // overwrites preview
 
@@ -893,14 +893,14 @@ suite('Workbench editor groups', () => {
 
 	test('Multiple Editors - closing picks next to the right', function () {
 		let inst = new TestInstantiationService();
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(ILifecycleService, new TestLifecycleService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(ILifecycleService, new TestLifecycleService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { focusRecentEditorAfterClose: false } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { focusRecentEditorAfterClose: false } });
+		inst.stuB(IConfigurationService, config);
 
 		const group = inst.createInstance(EditorGroup, undefined);
 		const events = groupListener(group);
@@ -1266,15 +1266,15 @@ suite('Workbench editor groups', () => {
 	test('Single Group, Single Editor - persist', function () {
 		let inst = new TestInstantiationService();
 
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
 		const lifecycle = new TestLifecycleService();
-		inst.stub(ILifecycleService, lifecycle);
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(ILifecycleService, lifecycle);
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'right' } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'right' } });
+		inst.stuB(IConfigurationService, config);
 
 		inst.invokeFunction(accessor => Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor));
 
@@ -1300,15 +1300,15 @@ suite('Workbench editor groups', () => {
 	test('Multiple Groups, Multiple editors - persist', function () {
 		let inst = new TestInstantiationService();
 
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
 		const lifecycle = new TestLifecycleService();
-		inst.stub(ILifecycleService, lifecycle);
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(ILifecycleService, lifecycle);
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'right' } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'right' } });
+		inst.stuB(IConfigurationService, config);
 
 		inst.invokeFunction(accessor => Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor));
 
@@ -1367,74 +1367,74 @@ suite('Workbench editor groups', () => {
 		assert.equal(group2.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[2].matches(g2_input2), true);
 	});
 
-	test('Single group, multiple editors - persist (some not persistable)', function () {
+	test('Single group, multiple editors - persist (some not persistaBle)', function () {
 		let inst = new TestInstantiationService();
 
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
 		const lifecycle = new TestLifecycleService();
-		inst.stub(ILifecycleService, lifecycle);
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(ILifecycleService, lifecycle);
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'right' } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'right' } });
+		inst.stuB(IConfigurationService, config);
 
 		inst.invokeFunction(accessor => Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor));
 
 		let group = createGroup();
 
-		const serializableInput1 = input();
-		const nonSerializableInput2 = input('3', true);
-		const serializableInput2 = input();
+		const serializaBleInput1 = input();
+		const nonSerializaBleInput2 = input('3', true);
+		const serializaBleInput2 = input();
 
-		group.openEditor(serializableInput1, { active: true, pinned: true });
-		group.openEditor(nonSerializableInput2, { active: true, pinned: false });
-		group.openEditor(serializableInput2, { active: false, pinned: true });
+		group.openEditor(serializaBleInput1, { active: true, pinned: true });
+		group.openEditor(nonSerializaBleInput2, { active: true, pinned: false });
+		group.openEditor(serializaBleInput2, { active: false, pinned: true });
 
 		assert.equal(group.count, 3);
-		assert.equal(group.activeEditor!.matches(nonSerializableInput2), true);
-		assert.equal(group.previewEditor!.matches(nonSerializableInput2), true);
+		assert.equal(group.activeEditor!.matches(nonSerializaBleInput2), true);
+		assert.equal(group.previewEditor!.matches(nonSerializaBleInput2), true);
 
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[0].matches(nonSerializableInput2), true);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[1].matches(serializableInput2), true);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[2].matches(serializableInput1), true);
+		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[0].matches(nonSerializaBleInput2), true);
+		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[1].matches(serializaBleInput2), true);
+		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[2].matches(serializaBleInput1), true);
 
 		// Create model again - should load from storage
 		group = inst.createInstance(EditorGroup, group.serialize());
 
 		assert.equal(group.count, 2);
-		assert.equal(group.activeEditor!.matches(serializableInput2), true);
+		assert.equal(group.activeEditor!.matches(serializaBleInput2), true);
 		assert.equal(group.previewEditor, null);
 
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[0].matches(serializableInput2), true);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[1].matches(serializableInput1), true);
+		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[0].matches(serializaBleInput2), true);
+		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE)[1].matches(serializaBleInput1), true);
 	});
 
-	test('Single group, multiple editors - persist (some not persistable, sticky editors)', function () {
+	test('Single group, multiple editors - persist (some not persistaBle, sticky editors)', function () {
 		let inst = new TestInstantiationService();
 
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
 		const lifecycle = new TestLifecycleService();
-		inst.stub(ILifecycleService, lifecycle);
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(ILifecycleService, lifecycle);
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'right' } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'right' } });
+		inst.stuB(IConfigurationService, config);
 
 		inst.invokeFunction(accessor => Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor));
 
 		let group = createGroup();
 
-		const serializableInput1 = input();
-		const nonSerializableInput2 = input('3', true);
-		const serializableInput2 = input();
+		const serializaBleInput1 = input();
+		const nonSerializaBleInput2 = input('3', true);
+		const serializaBleInput2 = input();
 
-		group.openEditor(serializableInput1, { active: true, pinned: true });
-		group.openEditor(nonSerializableInput2, { active: true, pinned: true, sticky: true });
-		group.openEditor(serializableInput2, { active: false, pinned: true });
+		group.openEditor(serializaBleInput1, { active: true, pinned: true });
+		group.openEditor(nonSerializaBleInput2, { active: true, pinned: true, sticky: true });
+		group.openEditor(serializaBleInput2, { active: false, pinned: true });
 
 		assert.equal(group.count, 3);
 		assert.equal(group.stickyCount, 1);
@@ -1446,40 +1446,40 @@ suite('Workbench editor groups', () => {
 		assert.equal(group.stickyCount, 0);
 	});
 
-	test('Multiple groups, multiple editors - persist (some not persistable, causes empty group)', function () {
+	test('Multiple groups, multiple editors - persist (some not persistaBle, causes empty group)', function () {
 		let inst = new TestInstantiationService();
 
-		inst.stub(IStorageService, new TestStorageService());
-		inst.stub(IWorkspaceContextService, new TestContextService());
+		inst.stuB(IStorageService, new TestStorageService());
+		inst.stuB(IWorkspaceContextService, new TestContextService());
 		const lifecycle = new TestLifecycleService();
-		inst.stub(ILifecycleService, lifecycle);
-		inst.stub(ITelemetryService, NullTelemetryService);
+		inst.stuB(ILifecycleService, lifecycle);
+		inst.stuB(ITelemetryService, NullTelemetryService);
 
 		const config = new TestConfigurationService();
-		config.setUserConfiguration('workbench', { editor: { openPositioning: 'right' } });
-		inst.stub(IConfigurationService, config);
+		config.setUserConfiguration('workBench', { editor: { openPositioning: 'right' } });
+		inst.stuB(IConfigurationService, config);
 
 		inst.invokeFunction(accessor => Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor));
 
 		let group1 = createGroup();
 		let group2 = createGroup();
 
-		const serializableInput1 = input();
-		const serializableInput2 = input();
-		const nonSerializableInput = input('2', true);
+		const serializaBleInput1 = input();
+		const serializaBleInput2 = input();
+		const nonSerializaBleInput = input('2', true);
 
-		group1.openEditor(serializableInput1, { pinned: true });
-		group1.openEditor(serializableInput2);
+		group1.openEditor(serializaBleInput1, { pinned: true });
+		group1.openEditor(serializaBleInput2);
 
-		group2.openEditor(nonSerializableInput);
+		group2.openEditor(nonSerializaBleInput);
 
 		// Create model again - should load from storage
 		group1 = inst.createInstance(EditorGroup, group1.serialize());
 		group2 = inst.createInstance(EditorGroup, group2.serialize());
 
 		assert.equal(group1.count, 2);
-		assert.equal(group1.getEditors(EditorsOrder.SEQUENTIAL)[0].matches(serializableInput1), true);
-		assert.equal(group1.getEditors(EditorsOrder.SEQUENTIAL)[1].matches(serializableInput2), true);
+		assert.equal(group1.getEditors(EditorsOrder.SEQUENTIAL)[0].matches(serializaBleInput1), true);
+		assert.equal(group1.getEditors(EditorsOrder.SEQUENTIAL)[1].matches(serializaBleInput2), true);
 	});
 
 	test('Multiple Editors - Editor Dispose', function () {
@@ -1513,7 +1513,7 @@ suite('Workbench editor groups', () => {
 		assert.ok(group1Listener.disposed[1].matches(input3));
 	});
 
-	test('Preview tab does not have a stable position (https://github.com/microsoft/vscode/issues/8245)', function () {
+	test('Preview taB does not have a staBle position (https://githuB.com/microsoft/vscode/issues/8245)', function () {
 		const group1 = createGroup();
 
 		const input1 = input();
@@ -1528,7 +1528,7 @@ suite('Workbench editor groups', () => {
 		assert.equal(group1.indexOf(input3), 1);
 	});
 
-	test('Multiple Editors - Editor Emits Dirty and Label Changed', function () {
+	test('Multiple Editors - Editor Emits Dirty and LaBel Changed', function () {
 		const group1 = createGroup();
 		const group2 = createGroup();
 
@@ -1548,37 +1548,37 @@ suite('Workbench editor groups', () => {
 			dirty2Counter++;
 		});
 
-		let label1ChangeCounter = 0;
-		group1.onDidEditorLabelChange(() => {
-			label1ChangeCounter++;
+		let laBel1ChangeCounter = 0;
+		group1.onDidEditorLaBelChange(() => {
+			laBel1ChangeCounter++;
 		});
 
-		let label2ChangeCounter = 0;
-		group2.onDidEditorLabelChange(() => {
-			label2ChangeCounter++;
+		let laBel2ChangeCounter = 0;
+		group2.onDidEditorLaBelChange(() => {
+			laBel2ChangeCounter++;
 		});
 
 		(<TestEditorInput>input1).setDirty();
-		(<TestEditorInput>input1).setLabel();
+		(<TestEditorInput>input1).setLaBel();
 
 		assert.equal(dirty1Counter, 1);
-		assert.equal(label1ChangeCounter, 1);
+		assert.equal(laBel1ChangeCounter, 1);
 
 		(<TestEditorInput>input2).setDirty();
-		(<TestEditorInput>input2).setLabel();
+		(<TestEditorInput>input2).setLaBel();
 
 		assert.equal(dirty2Counter, 1);
-		assert.equal(label2ChangeCounter, 1);
+		assert.equal(laBel2ChangeCounter, 1);
 
 		closeAllEditors(group2);
 
 		(<TestEditorInput>input2).setDirty();
-		(<TestEditorInput>input2).setLabel();
+		(<TestEditorInput>input2).setLaBel();
 
 		assert.equal(dirty2Counter, 1);
-		assert.equal(label2ChangeCounter, 1);
+		assert.equal(laBel2ChangeCounter, 1);
 		assert.equal(dirty1Counter, 1);
-		assert.equal(label1ChangeCounter, 1);
+		assert.equal(laBel1ChangeCounter, 1);
 	});
 
 	test('Sticky Editors', function () {

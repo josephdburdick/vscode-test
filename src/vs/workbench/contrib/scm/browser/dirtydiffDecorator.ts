@@ -6,48 +6,48 @@
 import * as nls from 'vs/nls';
 
 import 'vs/css!./media/dirtydiffDecorator';
-import { ThrottledDelayer, first } from 'vs/base/common/async';
-import { IDisposable, dispose, toDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as ext from 'vs/workbench/common/contributions';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
+import { ThrottledDelayer, first } from 'vs/Base/common/async';
+import { IDisposaBle, dispose, toDisposaBle, DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import * as ext from 'vs/workBench/common/contriButions';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IResolvedTextEditorModel, ITextModelService } from 'vs/editor/common/services/resolverService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
-import { ISCMService, ISCMRepository, ISCMProvider } from 'vs/workbench/contrib/scm/common/scm';
+import { URI } from 'vs/Base/common/uri';
+import { ISCMService, ISCMRepository, ISCMProvider } from 'vs/workBench/contriB/scm/common/scm';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import { registerThemingParticipant, IColorTheme, ICssStyleCollector, themeColorFromId, IThemeService } from 'vs/platform/theme/common/themeService';
 import { registerColor, transparent } from 'vs/platform/theme/common/colorRegistry';
-import { Color, RGBA } from 'vs/base/common/color';
-import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
-import { registerEditorAction, registerEditorContribution, ServicesAccessor, EditorAction } from 'vs/editor/browser/editorExtensions';
-import { PeekViewWidget, getOuterEditor, peekViewBorder, peekViewTitleBackground, peekViewTitleForeground, peekViewTitleInfoForeground } from 'vs/editor/contrib/peekView/peekView';
+import { Color, RGBA } from 'vs/Base/common/color';
+import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorAction, registerEditorContriBution, ServicesAccessor, EditorAction } from 'vs/editor/Browser/editorExtensions';
+import { PeekViewWidget, getOuterEditor, peekViewBorder, peekViewTitleBackground, peekViewTitleForeground, peekViewTitleInfoForeground } from 'vs/editor/contriB/peekView/peekView';
 import { IContextKeyService, IContextKey, ContextKeyExpr, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
 import { Position } from 'vs/editor/common/core/position';
-import { rot } from 'vs/base/common/numbers';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { EmbeddedDiffEditorWidget } from 'vs/editor/browser/widget/embeddedCodeEditorWidget';
+import { rot } from 'vs/Base/common/numBers';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { EmBeddedDiffEditorWidget } from 'vs/editor/Browser/widget/emBeddedCodeEditorWidget';
 import { IDiffEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
-import { Action, IAction, ActionRunner } from 'vs/base/common/actions';
-import { IActionBarOptions, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { basename, isEqualOrParent } from 'vs/base/common/resources';
+import { Action, IAction, ActionRunner } from 'vs/Base/common/actions';
+import { IActionBarOptions, ActionsOrientation } from 'vs/Base/Browser/ui/actionBar/actionBar';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { Basename, isEqualOrParent } from 'vs/Base/common/resources';
 import { MenuId, IMenuService, IMenu, MenuItemAction, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { createAndFillInActionBarActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IChange, IEditorModel, ScrollType, IEditorContribution, IDiffEditorModel } from 'vs/editor/common/editorCommon';
+import { createAndFillInActionBarActions } from 'vs/platform/actions/Browser/menuEntryActionViewItem';
+import { IChange, IEditorModel, ScrollType, IEditorContriBution, IDiffEditorModel } from 'vs/editor/common/editorCommon';
 import { OverviewRulerLane, ITextModel, IModelDecorationOptions, MinimapPosition } from 'vs/editor/common/model';
-import { sortedDiff } from 'vs/base/common/arrays';
-import { IMarginData } from 'vs/editor/browser/controller/mouseTarget';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { ISplice } from 'vs/base/common/sequence';
-import { createStyleSheet } from 'vs/base/browser/dom';
-import { ITextFileEditorModel, IResolvedTextFileEditorModel, ITextFileService, isTextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { EncodingMode } from 'vs/workbench/common/editor';
+import { sortedDiff } from 'vs/Base/common/arrays';
+import { IMarginData } from 'vs/editor/Browser/controller/mouseTarget';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { ISplice } from 'vs/Base/common/sequence';
+import { createStyleSheet } from 'vs/Base/Browser/dom';
+import { ITextFileEditorModel, IResolvedTextFileEditorModel, ITextFileService, isTextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
+import { EncodingMode } from 'vs/workBench/common/editor';
 
 class DiffActionRunner extends ActionRunner {
 
@@ -64,36 +64,36 @@ export interface IModelRegistry {
 	getModel(editorModel: IEditorModel): DirtyDiffModel | null;
 }
 
-export const isDirtyDiffVisible = new RawContextKey<boolean>('dirtyDiffVisible', false);
+export const isDirtyDiffVisiBle = new RawContextKey<Boolean>('dirtyDiffVisiBle', false);
 
-function getChangeHeight(change: IChange): number {
-	const modified = change.modifiedEndLineNumber - change.modifiedStartLineNumber + 1;
-	const original = change.originalEndLineNumber - change.originalStartLineNumber + 1;
+function getChangeHeight(change: IChange): numBer {
+	const modified = change.modifiedEndLineNumBer - change.modifiedStartLineNumBer + 1;
+	const original = change.originalEndLineNumBer - change.originalStartLineNumBer + 1;
 
-	if (change.originalEndLineNumber === 0) {
+	if (change.originalEndLineNumBer === 0) {
 		return modified;
-	} else if (change.modifiedEndLineNumber === 0) {
+	} else if (change.modifiedEndLineNumBer === 0) {
 		return original;
 	} else {
 		return modified + original;
 	}
 }
 
-function getModifiedEndLineNumber(change: IChange): number {
-	if (change.modifiedEndLineNumber === 0) {
-		return change.modifiedStartLineNumber === 0 ? 1 : change.modifiedStartLineNumber;
+function getModifiedEndLineNumBer(change: IChange): numBer {
+	if (change.modifiedEndLineNumBer === 0) {
+		return change.modifiedStartLineNumBer === 0 ? 1 : change.modifiedStartLineNumBer;
 	} else {
-		return change.modifiedEndLineNumber;
+		return change.modifiedEndLineNumBer;
 	}
 }
 
-function lineIntersectsChange(lineNumber: number, change: IChange): boolean {
-	// deletion at the beginning of the file
-	if (lineNumber === 1 && change.modifiedStartLineNumber === 0 && change.modifiedEndLineNumber === 0) {
+function lineIntersectsChange(lineNumBer: numBer, change: IChange): Boolean {
+	// deletion at the Beginning of the file
+	if (lineNumBer === 1 && change.modifiedStartLineNumBer === 0 && change.modifiedEndLineNumBer === 0) {
 		return true;
 	}
 
-	return lineNumber >= change.modifiedStartLineNumber && lineNumber <= (change.modifiedEndLineNumber || change.modifiedStartLineNumber);
+	return lineNumBer >= change.modifiedStartLineNumBer && lineNumBer <= (change.modifiedEndLineNumBer || change.modifiedStartLineNumBer);
 }
 
 class UIEditorAction extends Action {
@@ -106,13 +106,13 @@ class UIEditorAction extends Action {
 		editor: ICodeEditor,
 		action: EditorAction,
 		cssClass: string,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@IInstantiationService instantiationService: IInstantiationService
 	) {
-		const keybinding = keybindingService.lookupKeybinding(action.id);
-		const label = action.label + (keybinding ? ` (${keybinding.getLabel()})` : '');
+		const keyBinding = keyBindingService.lookupKeyBinding(action.id);
+		const laBel = action.laBel + (keyBinding ? ` (${keyBinding.getLaBel()})` : '');
 
-		super(action.id, label, cssClass);
+		super(action.id, laBel, cssClass);
 
 		this.instantiationService = instantiationService;
 		this.action = action;
@@ -131,9 +131,9 @@ enum ChangeType {
 }
 
 function getChangeType(change: IChange): ChangeType {
-	if (change.originalEndLineNumber === 0) {
+	if (change.originalEndLineNumBer === 0) {
 		return ChangeType.Add;
-	} else if (change.modifiedEndLineNumber === 0) {
+	} else if (change.modifiedEndLineNumBer === 0) {
 		return ChangeType.Delete;
 	} else {
 		return ChangeType.Modify;
@@ -152,7 +152,7 @@ function getOuterEditorFromDiffEditor(accessor: ServicesAccessor): ICodeEditor |
 	const diffEditors = accessor.get(ICodeEditorService).listDiffEditors();
 
 	for (const diffEditor of diffEditors) {
-		if (diffEditor.hasTextFocus() && diffEditor instanceof EmbeddedDiffEditorWidget) {
+		if (diffEditor.hasTextFocus() && diffEditor instanceof EmBeddedDiffEditorWidget) {
 			return diffEditor.getParentEditor();
 		}
 	}
@@ -162,12 +162,12 @@ function getOuterEditorFromDiffEditor(accessor: ServicesAccessor): ICodeEditor |
 
 class DirtyDiffWidget extends PeekViewWidget {
 
-	private diffEditor!: EmbeddedDiffEditorWidget;
+	private diffEditor!: EmBeddedDiffEditorWidget;
 	private title: string;
 	private menu: IMenu;
-	private index: number = 0;
+	private index: numBer = 0;
 	private change: IChange | undefined;
-	private height: number | undefined = undefined;
+	private height: numBer | undefined = undefined;
 	private contextKeyService: IContextKeyService;
 
 	constructor(
@@ -178,9 +178,9 @@ class DirtyDiffWidget extends PeekViewWidget {
 		@IMenuService menuService: IMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		super(editor, { isResizeable: true, frameWidth: 1, keepEditorSelection: true }, instantiationService);
+		super(editor, { isResizeaBle: true, frameWidth: 1, keepEditorSelection: true }, instantiationService);
 
-		this._disposables.add(themeService.onDidColorThemeChange(this._applyTheme, this));
+		this._disposaBles.add(themeService.onDidColorThemeChange(this._applyTheme, this));
 		this._applyTheme(themeService.getColorTheme());
 
 		this.contextKeyService = contextKeyService.createScoped();
@@ -189,16 +189,16 @@ class DirtyDiffWidget extends PeekViewWidget {
 
 		this.create();
 		if (editor.hasModel()) {
-			this.title = basename(editor.getModel().uri);
+			this.title = Basename(editor.getModel().uri);
 		} else {
 			this.title = '';
 		}
 		this.setTitle(this.title);
 
-		this._disposables.add(model.onDidChange(this.renderTitle, this));
+		this._disposaBles.add(model.onDidChange(this.renderTitle, this));
 	}
 
-	showChange(index: number): void {
+	showChange(index: numBer): void {
 		const change = this.model.changes[index];
 		this.index = index;
 		this.change = change;
@@ -211,13 +211,13 @@ class DirtyDiffWidget extends PeekViewWidget {
 
 		const onFirstDiffUpdate = Event.once(this.diffEditor.onDidUpdateDiff);
 
-		// TODO@joao TODO@alex need this setTimeout probably because the
-		// non-side-by-side diff still hasn't created the view zones
+		// TODO@joao TODO@alex need this setTimeout proBaBly Because the
+		// non-side-By-side diff still hasn't created the view zones
 		onFirstDiffUpdate(() => setTimeout(() => this.revealChange(change), 0));
 
 		this.diffEditor.setModel(this.model as IDiffEditorModel);
 
-		const position = new Position(getModifiedEndLineNumber(change), 1);
+		const position = new Position(getModifiedEndLineNumBer(change), 1);
 
 		const lineHeight = this.editor.getOption(EditorOption.lineHeight);
 		const editorHeight = this.editor.getLayoutInfo().height;
@@ -230,7 +230,7 @@ class DirtyDiffWidget extends PeekViewWidget {
 		const changeTypeColor = getChangeTypeColor(this.themeService.getColorTheme(), changeType);
 		this.style({ frameColor: changeTypeColor, arrowColor: changeTypeColor });
 
-		this._actionbarWidget!.context = [this.model.modified!.uri, this.model.changes, index];
+		this._actionBarWidget!.context = [this.model.modified!.uri, this.model.changes, index];
 		this.show(position, height);
 		this.editor.focus();
 	}
@@ -249,13 +249,13 @@ class DirtyDiffWidget extends PeekViewWidget {
 		const previous = this.instantiationService.createInstance(UIEditorAction, this.editor, new ShowPreviousChangeAction(), 'codicon-arrow-up');
 		const next = this.instantiationService.createInstance(UIEditorAction, this.editor, new ShowNextChangeAction(), 'codicon-arrow-down');
 
-		this._disposables.add(previous);
-		this._disposables.add(next);
-		this._actionbarWidget!.push([previous, next], { label: false, icon: true });
+		this._disposaBles.add(previous);
+		this._disposaBles.add(next);
+		this._actionBarWidget!.push([previous, next], { laBel: false, icon: true });
 
 		const actions: IAction[] = [];
-		this._disposables.add(createAndFillInActionBarActions(this.menu, { shouldForwardArgs: true }, actions));
-		this._actionbarWidget!.push(actions, { label: false, icon: true });
+		this._disposaBles.add(createAndFillInActionBarActions(this.menu, { shouldForwardArgs: true }, actions));
+		this._actionBarWidget!.push(actions, { laBel: false, icon: true });
 	}
 
 	protected _getActionBarOptions(): IActionBarOptions {
@@ -278,8 +278,8 @@ class DirtyDiffWidget extends PeekViewWidget {
 	protected _fillBody(container: HTMLElement): void {
 		const options: IDiffEditorOptions = {
 			scrollBeyondLastLine: true,
-			scrollbar: {
-				verticalScrollbarSize: 14,
+			scrollBar: {
+				verticalScrollBarSize: 14,
 				horizontal: 'auto',
 				useShadows: true,
 				verticalHasArrows: false,
@@ -287,16 +287,16 @@ class DirtyDiffWidget extends PeekViewWidget {
 			},
 			overviewRulerLanes: 2,
 			fixedOverflowWidgets: true,
-			minimap: { enabled: false },
+			minimap: { enaBled: false },
 			renderSideBySide: false,
 			readOnly: false,
 			ignoreTrimWhitespace: false
 		};
 
-		this.diffEditor = this.instantiationService.createInstance(EmbeddedDiffEditorWidget, container, options, this.editor);
+		this.diffEditor = this.instantiationService.createInstance(EmBeddedDiffEditorWidget, container, options, this.editor);
 	}
 
-	_onWidth(width: number): void {
+	_onWidth(width: numBer): void {
 		if (typeof this.height === 'undefined') {
 			return;
 		}
@@ -304,7 +304,7 @@ class DirtyDiffWidget extends PeekViewWidget {
 		this.diffEditor.layout({ height: this.height, width });
 	}
 
-	protected _doLayoutBody(height: number, width: number): void {
+	protected _doLayoutBody(height: numBer, width: numBer): void {
 		super._doLayoutBody(height, width);
 		this.diffEditor.layout({ height, width });
 
@@ -316,38 +316,38 @@ class DirtyDiffWidget extends PeekViewWidget {
 	}
 
 	private revealChange(change: IChange): void {
-		let start: number, end: number;
+		let start: numBer, end: numBer;
 
-		if (change.modifiedEndLineNumber === 0) { // deletion
-			start = change.modifiedStartLineNumber;
-			end = change.modifiedStartLineNumber + 1;
-		} else if (change.originalEndLineNumber > 0) { // modification
-			start = change.modifiedStartLineNumber - 1;
-			end = change.modifiedEndLineNumber + 1;
+		if (change.modifiedEndLineNumBer === 0) { // deletion
+			start = change.modifiedStartLineNumBer;
+			end = change.modifiedStartLineNumBer + 1;
+		} else if (change.originalEndLineNumBer > 0) { // modification
+			start = change.modifiedStartLineNumBer - 1;
+			end = change.modifiedEndLineNumBer + 1;
 		} else { // insertion
-			start = change.modifiedStartLineNumber;
-			end = change.modifiedEndLineNumber;
+			start = change.modifiedStartLineNumBer;
+			end = change.modifiedEndLineNumBer;
 		}
 
 		this.diffEditor.revealLinesInCenter(start, end, ScrollType.Immediate);
 	}
 
 	private _applyTheme(theme: IColorTheme) {
-		const borderColor = theme.getColor(peekViewBorder) || Color.transparent;
+		const BorderColor = theme.getColor(peekViewBorder) || Color.transparent;
 		this.style({
-			arrowColor: borderColor,
-			frameColor: borderColor,
+			arrowColor: BorderColor,
+			frameColor: BorderColor,
 			headerBackgroundColor: theme.getColor(peekViewTitleBackground) || Color.transparent,
 			primaryHeadingColor: theme.getColor(peekViewTitleForeground),
 			secondaryHeadingColor: theme.getColor(peekViewTitleInfoForeground)
 		});
 	}
 
-	protected revealLine(lineNumber: number) {
-		this.editor.revealLineInCenterIfOutsideViewport(lineNumber, ScrollType.Smooth);
+	protected revealLine(lineNumBer: numBer) {
+		this.editor.revealLineInCenterIfOutsideViewport(lineNumBer, ScrollType.Smooth);
 	}
 
-	hasFocus(): boolean {
+	hasFocus(): Boolean {
 		return this.diffEditor.hasTextFocus();
 	}
 }
@@ -357,10 +357,10 @@ export class ShowPreviousChangeAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.dirtydiff.previous',
-			label: nls.localize('show previous change', "Show Previous Change"),
+			laBel: nls.localize('show previous change', "Show Previous Change"),
 			alias: 'Show Previous Change',
 			precondition: undefined,
-			kbOpts: { kbExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Shift | KeyMod.Alt | KeyCode.F3, weight: KeybindingWeight.EditorContrib }
+			kBOpts: { kBExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Shift | KeyMod.Alt | KeyCode.F3, weight: KeyBindingWeight.EditorContriB }
 		});
 	}
 
@@ -391,10 +391,10 @@ export class ShowNextChangeAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.dirtydiff.next',
-			label: nls.localize('show next change', "Show Next Change"),
+			laBel: nls.localize('show next change', "Show Next Change"),
 			alias: 'Show Next Change',
 			precondition: undefined,
-			kbOpts: { kbExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Alt | KeyCode.F3, weight: KeybindingWeight.EditorContrib }
+			kBOpts: { kBExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Alt | KeyCode.F3, weight: KeyBindingWeight.EditorContriB }
 		});
 	}
 
@@ -421,7 +421,7 @@ export class ShowNextChangeAction extends EditorAction {
 registerEditorAction(ShowNextChangeAction);
 
 // Go to menu
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarGoMenu, {
 	group: '7_change_nav',
 	command: {
 		id: 'editor.action.dirtydiff.next',
@@ -430,7 +430,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarGoMenu, {
 	group: '7_change_nav',
 	command: {
 		id: 'editor.action.dirtydiff.previous',
@@ -443,11 +443,11 @@ export class MoveToPreviousChangeAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'workbench.action.editor.previousChange',
-			label: nls.localize('move to previous change', "Move to Previous Change"),
+			id: 'workBench.action.editor.previousChange',
+			laBel: nls.localize('move to previous change', "Move to Previous Change"),
 			alias: 'Move to Previous Change',
 			precondition: undefined,
-			kbOpts: { kbExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Shift | KeyMod.Alt | KeyCode.F5, weight: KeybindingWeight.EditorContrib }
+			kBOpts: { kBExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Shift | KeyMod.Alt | KeyCode.F5, weight: KeyBindingWeight.EditorContriB }
 		});
 	}
 
@@ -464,17 +464,17 @@ export class MoveToPreviousChangeAction extends EditorAction {
 			return;
 		}
 
-		const lineNumber = outerEditor.getPosition().lineNumber;
+		const lineNumBer = outerEditor.getPosition().lineNumBer;
 		const model = controller.modelRegistry.getModel(outerEditor.getModel());
 
 		if (!model || model.changes.length === 0) {
 			return;
 		}
 
-		const index = model.findPreviousClosestChange(lineNumber, false);
+		const index = model.findPreviousClosestChange(lineNumBer, false);
 		const change = model.changes[index];
 
-		const position = new Position(change.modifiedStartLineNumber, 1);
+		const position = new Position(change.modifiedStartLineNumBer, 1);
 		outerEditor.setPosition(position);
 		outerEditor.revealPositionInCenter(position);
 	}
@@ -485,11 +485,11 @@ export class MoveToNextChangeAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'workbench.action.editor.nextChange',
-			label: nls.localize('move to next change', "Move to Next Change"),
+			id: 'workBench.action.editor.nextChange',
+			laBel: nls.localize('move to next change', "Move to Next Change"),
 			alias: 'Move to Next Change',
 			precondition: undefined,
-			kbOpts: { kbExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Alt | KeyCode.F5, weight: KeybindingWeight.EditorContrib }
+			kBOpts: { kBExpr: EditorContextKeys.editorTextFocus, primary: KeyMod.Alt | KeyCode.F5, weight: KeyBindingWeight.EditorContriB }
 		});
 	}
 
@@ -506,29 +506,29 @@ export class MoveToNextChangeAction extends EditorAction {
 			return;
 		}
 
-		const lineNumber = outerEditor.getPosition().lineNumber;
+		const lineNumBer = outerEditor.getPosition().lineNumBer;
 		const model = controller.modelRegistry.getModel(outerEditor.getModel());
 
 		if (!model || model.changes.length === 0) {
 			return;
 		}
 
-		const index = model.findNextClosestChange(lineNumber, false);
+		const index = model.findNextClosestChange(lineNumBer, false);
 		const change = model.changes[index];
 
-		const position = new Position(change.modifiedStartLineNumber, 1);
+		const position = new Position(change.modifiedStartLineNumBer, 1);
 		outerEditor.setPosition(position);
 		outerEditor.revealPositionInCenter(position);
 	}
 }
 registerEditorAction(MoveToNextChangeAction);
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'closeDirtyDiff',
-	weight: KeybindingWeight.EditorContrib + 50,
+	weight: KeyBindingWeight.EditorContriB + 50,
 	primary: KeyCode.Escape,
 	secondary: [KeyMod.Shift | KeyCode.Escape],
-	when: ContextKeyExpr.and(isDirtyDiffVisible),
+	when: ContextKeyExpr.and(isDirtyDiffVisiBle),
 	handler: (accessor: ServicesAccessor) => {
 		const outerEditor = getOuterEditorFromDiffEditor(accessor);
 
@@ -546,23 +546,23 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-export class DirtyDiffController extends Disposable implements IEditorContribution {
+export class DirtyDiffController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.dirtydiff';
+	puBlic static readonly ID = 'editor.contriB.dirtydiff';
 
 	static get(editor: ICodeEditor): DirtyDiffController {
-		return editor.getContribution<DirtyDiffController>(DirtyDiffController.ID);
+		return editor.getContriBution<DirtyDiffController>(DirtyDiffController.ID);
 	}
 
 	modelRegistry: IModelRegistry | null = null;
 
 	private model: DirtyDiffModel | null = null;
 	private widget: DirtyDiffWidget | null = null;
-	private currentIndex: number = -1;
-	private readonly isDirtyDiffVisible!: IContextKey<boolean>;
-	private session: IDisposable = Disposable.None;
-	private mouseDownInfo: { lineNumber: number } | null = null;
-	private enabled = false;
+	private currentIndex: numBer = -1;
+	private readonly isDirtyDiffVisiBle!: IContextKey<Boolean>;
+	private session: IDisposaBle = DisposaBle.None;
+	private mouseDownInfo: { lineNumBer: numBer } | null = null;
+	private enaBled = false;
 
 	constructor(
 		private editor: ICodeEditor,
@@ -570,21 +570,21 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
 		super();
-		this.enabled = !contextKeyService.getContextKeyValue('isInDiffEditor');
+		this.enaBled = !contextKeyService.getContextKeyValue('isInDiffEditor');
 
-		if (this.enabled) {
-			this.isDirtyDiffVisible = isDirtyDiffVisible.bindTo(contextKeyService);
+		if (this.enaBled) {
+			this.isDirtyDiffVisiBle = isDirtyDiffVisiBle.BindTo(contextKeyService);
 			this._register(editor.onMouseDown(e => this.onEditorMouseDown(e)));
 			this._register(editor.onMouseUp(e => this.onEditorMouseUp(e)));
 			this._register(editor.onDidChangeModel(() => this.close()));
 		}
 	}
 
-	canNavigate(): boolean {
+	canNavigate(): Boolean {
 		return this.currentIndex === -1 || (!!this.model && this.model.changes.length > 1);
 	}
 
-	next(lineNumber?: number): void {
+	next(lineNumBer?: numBer): void {
 		if (!this.assertWidget()) {
 			return;
 		}
@@ -592,8 +592,8 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 			return;
 		}
 
-		if (this.editor.hasModel() && (typeof lineNumber === 'number' || this.currentIndex === -1)) {
-			this.currentIndex = this.model.findNextClosestChange(typeof lineNumber === 'number' ? lineNumber : this.editor.getPosition().lineNumber);
+		if (this.editor.hasModel() && (typeof lineNumBer === 'numBer' || this.currentIndex === -1)) {
+			this.currentIndex = this.model.findNextClosestChange(typeof lineNumBer === 'numBer' ? lineNumBer : this.editor.getPosition().lineNumBer);
 		} else {
 			this.currentIndex = rot(this.currentIndex + 1, this.model.changes.length);
 		}
@@ -601,7 +601,7 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 		this.widget.showChange(this.currentIndex);
 	}
 
-	previous(lineNumber?: number): void {
+	previous(lineNumBer?: numBer): void {
 		if (!this.assertWidget()) {
 			return;
 		}
@@ -609,8 +609,8 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 			return;
 		}
 
-		if (this.editor.hasModel() && (typeof lineNumber === 'number' || this.currentIndex === -1)) {
-			this.currentIndex = this.model.findPreviousClosestChange(typeof lineNumber === 'number' ? lineNumber : this.editor.getPosition().lineNumber);
+		if (this.editor.hasModel() && (typeof lineNumBer === 'numBer' || this.currentIndex === -1)) {
+			this.currentIndex = this.model.findPreviousClosestChange(typeof lineNumBer === 'numBer' ? lineNumBer : this.editor.getPosition().lineNumBer);
 		} else {
 			this.currentIndex = rot(this.currentIndex - 1, this.model.changes.length);
 		}
@@ -620,11 +620,11 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 
 	close(): void {
 		this.session.dispose();
-		this.session = Disposable.None;
+		this.session = DisposaBle.None;
 	}
 
-	private assertWidget(): boolean {
-		if (!this.enabled) {
+	private assertWidget(): Boolean {
+		if (!this.enaBled) {
 			return false;
 		}
 
@@ -660,25 +660,25 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 		this.currentIndex = -1;
 		this.model = model;
 		this.widget = this.instantiationService.createInstance(DirtyDiffWidget, this.editor, model);
-		this.isDirtyDiffVisible.set(true);
+		this.isDirtyDiffVisiBle.set(true);
 
-		const disposables = new DisposableStore();
-		disposables.add(Event.once(this.widget.onDidClose)(this.close, this));
+		const disposaBles = new DisposaBleStore();
+		disposaBles.add(Event.once(this.widget.onDidClose)(this.close, this));
 		Event.chain(model.onDidChange)
 			.filter(e => e.diff.length > 0)
 			.map(e => e.diff)
-			.event(this.onDidModelChange, this, disposables);
+			.event(this.onDidModelChange, this, disposaBles);
 
-		disposables.add(this.widget);
-		disposables.add(toDisposable(() => {
+		disposaBles.add(this.widget);
+		disposaBles.add(toDisposaBle(() => {
 			this.model = null;
 			this.widget = null;
 			this.currentIndex = -1;
-			this.isDirtyDiffVisible.set(false);
+			this.isDirtyDiffVisiBle.set(false);
 			this.editor.focus();
 		}));
 
-		this.session = disposables;
+		this.session = disposaBles;
 		return true;
 	}
 
@@ -732,7 +732,7 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 			return;
 		}
 
-		this.mouseDownInfo = { lineNumber: range.startLineNumber };
+		this.mouseDownInfo = { lineNumBer: range.startLineNumBer };
 	}
 
 	private onEditorMouseUp(e: IEditorMouseEvent): void {
@@ -740,12 +740,12 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 			return;
 		}
 
-		const { lineNumber } = this.mouseDownInfo;
+		const { lineNumBer } = this.mouseDownInfo;
 		this.mouseDownInfo = null;
 
 		const range = e.target.range;
 
-		if (!range || range.startLineNumber !== lineNumber) {
+		if (!range || range.startLineNumBer !== lineNumBer) {
 			return;
 		}
 
@@ -769,7 +769,7 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 			return;
 		}
 
-		const index = model.changes.findIndex(change => lineIntersectsChange(lineNumber, change));
+		const index = model.changes.findIndex(change => lineIntersectsChange(lineNumBer, change));
 
 		if (index < 0) {
 			return;
@@ -778,7 +778,7 @@ export class DirtyDiffController extends Disposable implements IEditorContributi
 		if (index === this.currentIndex) {
 			this.close();
 		} else {
-			this.next(lineNumber);
+			this.next(lineNumBer);
 		}
 	}
 
@@ -804,45 +804,45 @@ export const editorGutterModifiedBackground = registerColor('editorGutter.modifi
 	dark: new Color(new RGBA(12, 125, 157)),
 	light: new Color(new RGBA(102, 175, 224)),
 	hc: new Color(new RGBA(0, 155, 249))
-}, nls.localize('editorGutterModifiedBackground', "Editor gutter background color for lines that are modified."));
+}, nls.localize('editorGutterModifiedBackground', "Editor gutter Background color for lines that are modified."));
 
 export const editorGutterAddedBackground = registerColor('editorGutter.addedBackground', {
 	dark: new Color(new RGBA(88, 124, 12)),
 	light: new Color(new RGBA(129, 184, 139)),
 	hc: new Color(new RGBA(51, 171, 78))
-}, nls.localize('editorGutterAddedBackground', "Editor gutter background color for lines that are added."));
+}, nls.localize('editorGutterAddedBackground', "Editor gutter Background color for lines that are added."));
 
 export const editorGutterDeletedBackground = registerColor('editorGutter.deletedBackground', {
 	dark: new Color(new RGBA(148, 21, 27)),
 	light: new Color(new RGBA(202, 75, 81)),
 	hc: new Color(new RGBA(252, 93, 109))
-}, nls.localize('editorGutterDeletedBackground', "Editor gutter background color for lines that are deleted."));
+}, nls.localize('editorGutterDeletedBackground', "Editor gutter Background color for lines that are deleted."));
 
 export const minimapGutterModifiedBackground = registerColor('minimapGutter.modifiedBackground', {
 	dark: new Color(new RGBA(12, 125, 157)),
 	light: new Color(new RGBA(102, 175, 224)),
 	hc: new Color(new RGBA(0, 155, 249))
-}, nls.localize('minimapGutterModifiedBackground', "Minimap gutter background color for lines that are modified."));
+}, nls.localize('minimapGutterModifiedBackground', "Minimap gutter Background color for lines that are modified."));
 
 export const minimapGutterAddedBackground = registerColor('minimapGutter.addedBackground', {
 	dark: new Color(new RGBA(88, 124, 12)),
 	light: new Color(new RGBA(129, 184, 139)),
 	hc: new Color(new RGBA(51, 171, 78))
-}, nls.localize('minimapGutterAddedBackground', "Minimap gutter background color for lines that are added."));
+}, nls.localize('minimapGutterAddedBackground', "Minimap gutter Background color for lines that are added."));
 
 export const minimapGutterDeletedBackground = registerColor('minimapGutter.deletedBackground', {
 	dark: new Color(new RGBA(148, 21, 27)),
 	light: new Color(new RGBA(202, 75, 81)),
 	hc: new Color(new RGBA(252, 93, 109))
-}, nls.localize('minimapGutterDeletedBackground', "Minimap gutter background color for lines that are deleted."));
+}, nls.localize('minimapGutterDeletedBackground', "Minimap gutter Background color for lines that are deleted."));
 
 export const overviewRulerModifiedForeground = registerColor('editorOverviewRuler.modifiedForeground', { dark: transparent(editorGutterModifiedBackground, 0.6), light: transparent(editorGutterModifiedBackground, 0.6), hc: transparent(editorGutterModifiedBackground, 0.6) }, nls.localize('overviewRulerModifiedForeground', 'Overview ruler marker color for modified content.'));
 export const overviewRulerAddedForeground = registerColor('editorOverviewRuler.addedForeground', { dark: transparent(editorGutterAddedBackground, 0.6), light: transparent(editorGutterAddedBackground, 0.6), hc: transparent(editorGutterAddedBackground, 0.6) }, nls.localize('overviewRulerAddedForeground', 'Overview ruler marker color for added content.'));
 export const overviewRulerDeletedForeground = registerColor('editorOverviewRuler.deletedForeground', { dark: transparent(editorGutterDeletedBackground, 0.6), light: transparent(editorGutterDeletedBackground, 0.6), hc: transparent(editorGutterDeletedBackground, 0.6) }, nls.localize('overviewRulerDeletedForeground', 'Overview ruler marker color for deleted content.'));
 
-class DirtyDiffDecorator extends Disposable {
+class DirtyDiffDecorator extends DisposaBle {
 
-	static createDecoration(className: string, options: { gutter: boolean, overview: { active: boolean, color: string }, minimap: { active: boolean, color: string }, isWholeLine: boolean }): ModelDecorationOptions {
+	static createDecoration(className: string, options: { gutter: Boolean, overview: { active: Boolean, color: string }, minimap: { active: Boolean, color: string }, isWholeLine: Boolean }): ModelDecorationOptions {
 		const decorationOptions: IModelDecorationOptions = {
 			isWholeLine: options.isWholeLine,
 		};
@@ -914,31 +914,31 @@ class DirtyDiffDecorator extends Disposable {
 		}
 		const decorations = this.model.changes.map((change) => {
 			const changeType = getChangeType(change);
-			const startLineNumber = change.modifiedStartLineNumber;
-			const endLineNumber = change.modifiedEndLineNumber || startLineNumber;
+			const startLineNumBer = change.modifiedStartLineNumBer;
+			const endLineNumBer = change.modifiedEndLineNumBer || startLineNumBer;
 
 			switch (changeType) {
 				case ChangeType.Add:
 					return {
 						range: {
-							startLineNumber: startLineNumber, startColumn: 1,
-							endLineNumber: endLineNumber, endColumn: 1
+							startLineNumBer: startLineNumBer, startColumn: 1,
+							endLineNumBer: endLineNumBer, endColumn: 1
 						},
 						options: this.addedOptions
 					};
 				case ChangeType.Delete:
 					return {
 						range: {
-							startLineNumber: startLineNumber, startColumn: Number.MAX_VALUE,
-							endLineNumber: startLineNumber, endColumn: Number.MAX_VALUE
+							startLineNumBer: startLineNumBer, startColumn: NumBer.MAX_VALUE,
+							endLineNumBer: startLineNumBer, endColumn: NumBer.MAX_VALUE
 						},
 						options: this.deletedOptions
 					};
 				case ChangeType.Modify:
 					return {
 						range: {
-							startLineNumber: startLineNumber, startColumn: 1,
-							endLineNumber: endLineNumber, endColumn: 1
+							startLineNumBer: startLineNumBer, startColumn: 1,
+							endLineNumBer: endLineNumBer, endColumn: 1
 						},
 						options: this.modifiedOptions
 					};
@@ -960,38 +960,38 @@ class DirtyDiffDecorator extends Disposable {
 	}
 }
 
-function compareChanges(a: IChange, b: IChange): number {
-	let result = a.modifiedStartLineNumber - b.modifiedStartLineNumber;
+function compareChanges(a: IChange, B: IChange): numBer {
+	let result = a.modifiedStartLineNumBer - B.modifiedStartLineNumBer;
 
 	if (result !== 0) {
 		return result;
 	}
 
-	result = a.modifiedEndLineNumber - b.modifiedEndLineNumber;
+	result = a.modifiedEndLineNumBer - B.modifiedEndLineNumBer;
 
 	if (result !== 0) {
 		return result;
 	}
 
-	result = a.originalStartLineNumber - b.originalStartLineNumber;
+	result = a.originalStartLineNumBer - B.originalStartLineNumBer;
 
 	if (result !== 0) {
 		return result;
 	}
 
-	return a.originalEndLineNumber - b.originalEndLineNumber;
+	return a.originalEndLineNumBer - B.originalEndLineNumBer;
 }
 
-export function createProviderComparer(uri: URI): (a: ISCMProvider, b: ISCMProvider) => number {
-	return (a, b) => {
+export function createProviderComparer(uri: URI): (a: ISCMProvider, B: ISCMProvider) => numBer {
+	return (a, B) => {
 		const aIsParent = isEqualOrParent(uri, a.rootUri!);
-		const bIsParent = isEqualOrParent(uri, b.rootUri!);
+		const BIsParent = isEqualOrParent(uri, B.rootUri!);
 
-		if (aIsParent && bIsParent) {
-			return a.rootUri!.fsPath.length - b.rootUri!.fsPath.length;
+		if (aIsParent && BIsParent) {
+			return a.rootUri!.fsPath.length - B.rootUri!.fsPath.length;
 		} else if (aIsParent) {
 			return -1;
-		} else if (bIsParent) {
+		} else if (BIsParent) {
 			return 1;
 		} else {
 			return 0;
@@ -1015,7 +1015,7 @@ export async function getOriginalResource(scmService: ISCMService, uri: URI): Pr
 	return first(nonRootedProviders.map(p => () => p.getOriginalResource(uri)));
 }
 
-export class DirtyDiffModel extends Disposable {
+export class DirtyDiffModel extends DisposaBle {
 
 	private _originalResource: URI | null = null;
 	private _originalModel: IResolvedTextEditorModel | null = null;
@@ -1025,8 +1025,8 @@ export class DirtyDiffModel extends Disposable {
 
 	private diffDelayer = new ThrottledDelayer<IChange[] | null>(200);
 	private _originalURIPromise?: Promise<URI | null>;
-	private repositoryDisposables = new Set<IDisposable>();
-	private readonly originalModelDisposables = this._register(new DisposableStore());
+	private repositoryDisposaBles = new Set<IDisposaBle>();
+	private readonly originalModelDisposaBles = this._register(new DisposaBleStore());
 	private _disposed = false;
 
 	private readonly _onDidChange = new Emitter<{ changes: IChange[], diff: ISplice<IChange>[] }>();
@@ -1061,16 +1061,16 @@ export class DirtyDiffModel extends Disposable {
 	}
 
 	private onDidAddRepository(repository: ISCMRepository): void {
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 
-		this.repositoryDisposables.add(disposables);
-		disposables.add(toDisposable(() => this.repositoryDisposables.delete(disposables)));
+		this.repositoryDisposaBles.add(disposaBles);
+		disposaBles.add(toDisposaBle(() => this.repositoryDisposaBles.delete(disposaBles)));
 
 		const onDidChange = Event.any(repository.provider.onDidChange, repository.provider.onDidChangeResources);
-		disposables.add(onDidChange(this.triggerDiff, this));
+		disposaBles.add(onDidChange(this.triggerDiff, this));
 
 		const onDidRemoveThis = Event.filter(this.scmService.onDidRemoveRepository, r => r === repository);
-		disposables.add(onDidRemoveThis(() => dispose(disposables), null));
+		disposaBles.add(onDidRemoveThis(() => dispose(disposaBles), null));
 
 		this.triggerDiff();
 	}
@@ -1146,7 +1146,7 @@ export class DirtyDiffModel extends Disposable {
 				}
 
 				this._originalResource = originalUri;
-				this._originalModel = ref.object;
+				this._originalModel = ref.oBject;
 
 				if (isTextFileEditorModel(this._originalModel)) {
 					const encoding = this._model.getEncoding();
@@ -1156,13 +1156,13 @@ export class DirtyDiffModel extends Disposable {
 					}
 				}
 
-				this.originalModelDisposables.clear();
-				this.originalModelDisposables.add(ref);
-				this.originalModelDisposables.add(ref.object.textEditorModel.onDidChangeContent(() => this.triggerDiff()));
+				this.originalModelDisposaBles.clear();
+				this.originalModelDisposaBles.add(ref);
+				this.originalModelDisposaBles.add(ref.oBject.textEditorModel.onDidChangeContent(() => this.triggerDiff()));
 
 				return originalUri;
 			}).catch(error => {
-				return null; // possibly invalid reference
+				return null; // possiBly invalid reference
 			});
 		});
 
@@ -1180,16 +1180,16 @@ export class DirtyDiffModel extends Disposable {
 		return getOriginalResource(this.scmService, uri);
 	}
 
-	findNextClosestChange(lineNumber: number, inclusive = true): number {
+	findNextClosestChange(lineNumBer: numBer, inclusive = true): numBer {
 		for (let i = 0; i < this.changes.length; i++) {
 			const change = this.changes[i];
 
 			if (inclusive) {
-				if (getModifiedEndLineNumber(change) >= lineNumber) {
+				if (getModifiedEndLineNumBer(change) >= lineNumBer) {
 					return i;
 				}
 			} else {
-				if (change.modifiedStartLineNumber > lineNumber) {
+				if (change.modifiedStartLineNumBer > lineNumBer) {
 					return i;
 				}
 			}
@@ -1198,16 +1198,16 @@ export class DirtyDiffModel extends Disposable {
 		return 0;
 	}
 
-	findPreviousClosestChange(lineNumber: number, inclusive = true): number {
+	findPreviousClosestChange(lineNumBer: numBer, inclusive = true): numBer {
 		for (let i = this.changes.length - 1; i >= 0; i--) {
 			const change = this.changes[i];
 
 			if (inclusive) {
-				if (change.modifiedStartLineNumber <= lineNumber) {
+				if (change.modifiedStartLineNumBer <= lineNumBer) {
 					return i;
 				}
 			} else {
-				if (getModifiedEndLineNumber(change) < lineNumber) {
+				if (getModifiedEndLineNumBer(change) < lineNumBer) {
 					return i;
 				}
 			}
@@ -1223,8 +1223,8 @@ export class DirtyDiffModel extends Disposable {
 		this._originalResource = null;
 		this._originalModel = null;
 		this.diffDelayer.cancel();
-		this.repositoryDisposables.forEach(d => dispose(d));
-		this.repositoryDisposables.clear();
+		this.repositoryDisposaBles.forEach(d => dispose(d));
+		this.repositoryDisposaBles.clear();
 	}
 }
 
@@ -1239,16 +1239,16 @@ class DirtyDiffItem {
 }
 
 interface IViewState {
-	readonly width: number;
-	readonly visibility: 'always' | 'hover';
+	readonly width: numBer;
+	readonly visiBility: 'always' | 'hover';
 }
 
-export class DirtyDiffWorkbenchController extends Disposable implements ext.IWorkbenchContribution, IModelRegistry {
+export class DirtyDiffWorkBenchController extends DisposaBle implements ext.IWorkBenchContriBution, IModelRegistry {
 
-	private enabled = false;
-	private viewState: IViewState = { width: 3, visibility: 'always' };
+	private enaBled = false;
+	private viewState: IViewState = { width: 3, visiBility: 'always' };
 	private items = new Map<IResolvedTextFileEditorModel, DirtyDiffItem>();
-	private readonly transientDisposables = this._register(new DisposableStore());
+	private readonly transientDisposaBles = this._register(new DisposaBleStore());
 	private stylesheet: HTMLStyleElement;
 
 	constructor(
@@ -1259,7 +1259,7 @@ export class DirtyDiffWorkbenchController extends Disposable implements ext.IWor
 	) {
 		super();
 		this.stylesheet = createStyleSheet();
-		this._register(toDisposable(() => this.stylesheet.parentElement!.removeChild(this.stylesheet)));
+		this._register(toDisposaBle(() => this.stylesheet.parentElement!.removeChild(this.stylesheet)));
 
 		const onDidChangeConfiguration = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration('scm.diffDecorations'));
 		this._register(onDidChangeConfiguration(this.onDidChangeConfiguration, this));
@@ -1269,23 +1269,23 @@ export class DirtyDiffWorkbenchController extends Disposable implements ext.IWor
 		onDidChangeDiffWidthConfiguration(this.onDidChangeDiffWidthConfiguration, this);
 		this.onDidChangeDiffWidthConfiguration();
 
-		const onDidChangeDiffVisibilityConfiguration = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration('scm.diffDecorationsGutterVisibility'));
-		onDidChangeDiffVisibilityConfiguration(this.onDidChangeDiffVisibiltiyConfiguration, this);
-		this.onDidChangeDiffVisibiltiyConfiguration();
+		const onDidChangeDiffVisiBilityConfiguration = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration('scm.diffDecorationsGutterVisiBility'));
+		onDidChangeDiffVisiBilityConfiguration(this.onDidChangeDiffVisiBiltiyConfiguration, this);
+		this.onDidChangeDiffVisiBiltiyConfiguration();
 	}
 
 	private onDidChangeConfiguration(): void {
-		const enabled = this.configurationService.getValue<string>('scm.diffDecorations') !== 'none';
+		const enaBled = this.configurationService.getValue<string>('scm.diffDecorations') !== 'none';
 
-		if (enabled) {
-			this.enable();
+		if (enaBled) {
+			this.enaBle();
 		} else {
-			this.disable();
+			this.disaBle();
 		}
 	}
 
 	private onDidChangeDiffWidthConfiguration(): void {
-		let width = this.configurationService.getValue<number>('scm.diffDecorationsGutterWidth');
+		let width = this.configurationService.getValue<numBer>('scm.diffDecorationsGutterWidth');
 
 		if (isNaN(width) || width <= 0 || width > 5) {
 			width = 3;
@@ -1294,51 +1294,51 @@ export class DirtyDiffWorkbenchController extends Disposable implements ext.IWor
 		this.setViewState({ ...this.viewState, width });
 	}
 
-	private onDidChangeDiffVisibiltiyConfiguration(): void {
-		const visibility = this.configurationService.getValue<'always' | 'hover'>('scm.diffDecorationsGutterVisibility');
-		this.setViewState({ ...this.viewState, visibility });
+	private onDidChangeDiffVisiBiltiyConfiguration(): void {
+		const visiBility = this.configurationService.getValue<'always' | 'hover'>('scm.diffDecorationsGutterVisiBility');
+		this.setViewState({ ...this.viewState, visiBility });
 	}
 
 	private setViewState(state: IViewState): void {
 		this.viewState = state;
 		this.stylesheet.textContent = `
-			.monaco-editor .dirty-diff-modified,.monaco-editor .dirty-diff-added{border-left-width:${state.width}px;}
+			.monaco-editor .dirty-diff-modified,.monaco-editor .dirty-diff-added{Border-left-width:${state.width}px;}
 			.monaco-editor .dirty-diff-modified, .monaco-editor .dirty-diff-added, .monaco-editor .dirty-diff-deleted {
-				opacity: ${state.visibility === 'always' ? 1 : 0};
+				opacity: ${state.visiBility === 'always' ? 1 : 0};
 			}
 		`;
 	}
 
-	private enable(): void {
-		if (this.enabled) {
-			this.disable();
+	private enaBle(): void {
+		if (this.enaBled) {
+			this.disaBle();
 		}
 
-		this.transientDisposables.add(this.editorService.onDidVisibleEditorsChange(() => this.onEditorsChanged()));
+		this.transientDisposaBles.add(this.editorService.onDidVisiBleEditorsChange(() => this.onEditorsChanged()));
 		this.onEditorsChanged();
-		this.enabled = true;
+		this.enaBled = true;
 	}
 
-	private disable(): void {
-		if (!this.enabled) {
+	private disaBle(): void {
+		if (!this.enaBled) {
 			return;
 		}
 
-		this.transientDisposables.clear();
+		this.transientDisposaBles.clear();
 
 		for (const [, dirtyDiff] of this.items) {
 			dirtyDiff.dispose();
 		}
 
 		this.items.clear();
-		this.enabled = false;
+		this.enaBled = false;
 	}
 
-	// HACK: This is the best current way of figuring out whether to draw these decorations
+	// HACK: This is the Best current way of figuring out whether to draw these decorations
 	// or not. Needs context from the editor, to know whether it is a diff editor, in place editor
 	// etc.
 	private onEditorsChanged(): void {
-		const models = this.editorService.visibleTextEditorControls
+		const models = this.editorService.visiBleTextEditorControls
 
 			// only interested in code editor widgets
 			.filter(c => c instanceof CodeEditorWidget)
@@ -1362,17 +1362,17 @@ export class DirtyDiffWorkbenchController extends Disposable implements ext.IWor
 		const newModels = models.filter(o => !this.items.has(o));
 		const oldModels = [...this.items.keys()].filter(m => !set.has(m));
 
-		oldModels.forEach(m => this.onModelInvisible(m));
-		newModels.forEach(m => this.onModelVisible(m));
+		oldModels.forEach(m => this.onModelInvisiBle(m));
+		newModels.forEach(m => this.onModelVisiBle(m));
 	}
 
-	private onModelVisible(textFileModel: IResolvedTextFileEditorModel): void {
+	private onModelVisiBle(textFileModel: IResolvedTextFileEditorModel): void {
 		const model = this.instantiationService.createInstance(DirtyDiffModel, textFileModel);
 		const decorator = new DirtyDiffDecorator(textFileModel.textEditorModel, model, this.configurationService);
 		this.items.set(textFileModel, new DirtyDiffItem(model, decorator));
 	}
 
-	private onModelInvisible(textFileModel: IResolvedTextFileEditorModel): void {
+	private onModelInvisiBle(textFileModel: IResolvedTextFileEditorModel): void {
 		this.items.get(textFileModel)!.dispose();
 		this.items.delete(textFileModel);
 	}
@@ -1388,23 +1388,23 @@ export class DirtyDiffWorkbenchController extends Disposable implements ext.IWor
 	}
 
 	dispose(): void {
-		this.disable();
+		this.disaBle();
 		super.dispose();
 	}
 }
 
-registerEditorContribution(DirtyDiffController.ID, DirtyDiffController);
+registerEditorContriBution(DirtyDiffController.ID, DirtyDiffController);
 
 registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
 	const editorGutterModifiedBackgroundColor = theme.getColor(editorGutterModifiedBackground);
 	if (editorGutterModifiedBackgroundColor) {
 		collector.addRule(`
 			.monaco-editor .dirty-diff-modified {
-				border-left: 3px solid ${editorGutterModifiedBackgroundColor};
+				Border-left: 3px solid ${editorGutterModifiedBackgroundColor};
 				transition: opacity 0.5s;
 			}
-			.monaco-editor .dirty-diff-modified:before {
-				background: ${editorGutterModifiedBackgroundColor};
+			.monaco-editor .dirty-diff-modified:Before {
+				Background: ${editorGutterModifiedBackgroundColor};
 			}
 			.monaco-editor .margin:hover .dirty-diff-modified {
 				opacity: 1;
@@ -1416,11 +1416,11 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	if (editorGutterAddedBackgroundColor) {
 		collector.addRule(`
 			.monaco-editor .dirty-diff-added {
-				border-left: 3px solid ${editorGutterAddedBackgroundColor};
+				Border-left: 3px solid ${editorGutterAddedBackgroundColor};
 				transition: opacity 0.5s;
 			}
-			.monaco-editor .dirty-diff-added:before {
-				background: ${editorGutterAddedBackgroundColor};
+			.monaco-editor .dirty-diff-added:Before {
+				Background: ${editorGutterAddedBackgroundColor};
 			}
 			.monaco-editor .margin:hover .dirty-diff-added {
 				opacity: 1;
@@ -1432,11 +1432,11 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	if (editorGutteDeletedBackgroundColor) {
 		collector.addRule(`
 			.monaco-editor .dirty-diff-deleted:after {
-				border-left: 4px solid ${editorGutteDeletedBackgroundColor};
+				Border-left: 4px solid ${editorGutteDeletedBackgroundColor};
 				transition: opacity 0.5s;
 			}
-			.monaco-editor .dirty-diff-deleted:before {
-				background: ${editorGutteDeletedBackgroundColor};
+			.monaco-editor .dirty-diff-deleted:Before {
+				Background: ${editorGutteDeletedBackgroundColor};
 			}
 			.monaco-editor .margin:hover .dirty-diff-added {
 				opacity: 1;

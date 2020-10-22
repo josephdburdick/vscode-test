@@ -7,11 +7,11 @@ import 'vs/css!./codicon/codicon';
 import 'vs/css!./codicon/codicon-modifications';
 import 'vs/css!./codicon/codicon-animations';
 
-import { Codicon, iconRegistry } from 'vs/base/common/codicons';
+import { Codicon, iconRegistry } from 'vs/Base/common/codicons';
 
 export const CodiconStyles = new class {
 	onDidChange = iconRegistry.onDidRegister;
-	public getCSS(): string {
+	puBlic getCSS(): string {
 		const rules = [];
 		for (let c of iconRegistry.all) {
 			rules.push(formatRule(c));
@@ -25,5 +25,5 @@ export function formatRule(c: Codicon) {
 	while (def instanceof Codicon) {
 		def = def.definition;
 	}
-	return `.codicon-${c.id}:before { content: '${def.character}'; }`;
+	return `.codicon-${c.id}:Before { content: '${def.character}'; }`;
 }

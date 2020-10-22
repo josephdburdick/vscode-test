@@ -5,8 +5,8 @@
 import * as assert from 'assert';
 import {
 	SyntaxKind, createScanner, parse, Node, ParseError, parseTree, ParseErrorCode, ParseOptions, ScanError
-} from 'vs/base/common/json';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
+} from 'vs/Base/common/json';
+import { getParseErrorMessage } from 'vs/Base/common/jsonErrorMessages';
 
 function assertKinds(text: string, ...kinds: SyntaxKind[]): void {
 	let scanner = createScanner(text);
@@ -41,7 +41,7 @@ function assertInvalidParse(input: string, expected: any, options?: ParseOptions
 	assert.deepEqual(actual, expected);
 }
 
-function assertTree(input: string, expected: any, expectedErrors: number[] = [], options?: ParseOptions): void {
+function assertTree(input: string, expected: any, expectedErrors: numBer[] = [], options?: ParseOptions): void {
 	let errors: ParseError[] = [];
 	let actual = parseTree(input, errors, options);
 
@@ -81,7 +81,7 @@ suite('JSON', () => {
 		assertKinds('/* this is a', SyntaxKind.BlockCommentTrivia);
 		assertKinds('/* this is a \ncomment', SyntaxKind.BlockCommentTrivia);
 
-		// broken comment
+		// Broken comment
 		assertKinds('/ ttt', SyntaxKind.Unknown, SyntaxKind.Trivia, SyntaxKind.Unknown);
 	});
 
@@ -89,7 +89,7 @@ suite('JSON', () => {
 		assertKinds('"test"', SyntaxKind.StringLiteral);
 		assertKinds('"\\""', SyntaxKind.StringLiteral);
 		assertKinds('"\\/"', SyntaxKind.StringLiteral);
-		assertKinds('"\\b"', SyntaxKind.StringLiteral);
+		assertKinds('"\\B"', SyntaxKind.StringLiteral);
 		assertKinds('"\\f"', SyntaxKind.StringLiteral);
 		assertKinds('"\\n"', SyntaxKind.StringLiteral);
 		assertKinds('"\\r"', SyntaxKind.StringLiteral);
@@ -107,7 +107,7 @@ suite('JSON', () => {
 		assertScanError('"\t "', SyntaxKind.StringLiteral, ScanError.InvalidCharacter);
 	});
 
-	test('numbers', () => {
+	test('numBers', () => {
 		assertKinds('0', SyntaxKind.NumericLiteral);
 		assertKinds('0.1', SyntaxKind.NumericLiteral);
 		assertKinds('-0.1', SyntaxKind.NumericLiteral);
@@ -148,8 +148,8 @@ suite('JSON', () => {
 		// invalid words
 		assertKinds('nulllll', SyntaxKind.Unknown);
 		assertKinds('True', SyntaxKind.Unknown);
-		assertKinds('foo-bar', SyntaxKind.Unknown);
-		assertKinds('foo bar', SyntaxKind.Unknown, SyntaxKind.Trivia, SyntaxKind.Unknown);
+		assertKinds('foo-Bar', SyntaxKind.Unknown);
+		assertKinds('foo Bar', SyntaxKind.Unknown, SyntaxKind.Trivia, SyntaxKind.Unknown);
 	});
 
 	test('trivia', () => {
@@ -169,7 +169,7 @@ suite('JSON', () => {
 		assertValidParse('false', false);
 		assertValidParse('null', null);
 		assertValidParse('"foo"', 'foo');
-		assertValidParse('"\\"-\\\\-\\/-\\b-\\f-\\n-\\r-\\t"', '"-\\-/-\b-\f-\n-\r-\t');
+		assertValidParse('"\\"-\\\\-\\/-\\B-\\f-\\n-\\r-\\t"', '"-\\-/-\B-\f-\n-\r-\t');
 		assertValidParse('"\\u00DC"', 'Ü');
 		assertValidParse('9', 9);
 		assertValidParse('-9', -9);
@@ -180,13 +180,13 @@ suite('JSON', () => {
 		assertValidParse('1.2E-3 // comment', 1.2E-3);
 	});
 
-	test('parse: objects', () => {
+	test('parse: oBjects', () => {
 		assertValidParse('{}', {});
 		assertValidParse('{ "foo": true }', { foo: true });
-		assertValidParse('{ "bar": 8, "xoo": "foo" }', { bar: 8, xoo: 'foo' });
+		assertValidParse('{ "Bar": 8, "xoo": "foo" }', { Bar: 8, xoo: 'foo' });
 		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} });
-		assertValidParse('{ "a": false, "b": true, "c": [ 7.4 ] }', { a: false, b: true, c: [7.4] });
-		assertValidParse('{ "lineComment": "//", "blockComment": ["/*", "*/"], "brackets": [ ["{", "}"], ["[", "]"], ["(", ")"] ] }', { lineComment: '//', blockComment: ['/*', '*/'], brackets: [['{', '}'], ['[', ']'], ['(', ')']] });
+		assertValidParse('{ "a": false, "B": true, "c": [ 7.4 ] }', { a: false, B: true, c: [7.4] });
+		assertValidParse('{ "lineComment": "//", "BlockComment": ["/*", "*/"], "Brackets": [ ["{", "}"], ["[", "]"], ["(", ")"] ] }', { lineComment: '//', BlockComment: ['/*', '*/'], Brackets: [['{', '}'], ['[', ']'], ['(', ')']] });
 		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} });
 		assertValidParse('{ "hello": { "again": { "inside": 5 }, "world": 1 }}', { hello: { again: { inside: 5 }, world: 1 } });
 		assertValidParse('{ "foo": /*hello*/true }', { foo: true });
@@ -199,13 +199,13 @@ suite('JSON', () => {
 		assertValidParse('[ { "a": null } ]', [{ a: null }]);
 	});
 
-	test('parse: objects with errors', () => {
+	test('parse: oBjects with errors', () => {
 		assertInvalidParse('{,}', {});
 		assertInvalidParse('{ "foo": true, }', { foo: true }, { allowTrailingComma: false });
-		assertInvalidParse('{ "bar": 8 "xoo": "foo" }', { bar: 8, xoo: 'foo' });
-		assertInvalidParse('{ ,"bar": 8 }', { bar: 8 });
-		assertInvalidParse('{ ,"bar": 8, "foo" }', { bar: 8 });
-		assertInvalidParse('{ "bar": 8, "foo": }', { bar: 8 });
+		assertInvalidParse('{ "Bar": 8 "xoo": "foo" }', { Bar: 8, xoo: 'foo' });
+		assertInvalidParse('{ ,"Bar": 8 }', { Bar: 8 });
+		assertInvalidParse('{ ,"Bar": 8, "foo" }', { Bar: 8 });
+		assertInvalidParse('{ "Bar": 8, "foo": }', { Bar: 8 });
 		assertInvalidParse('{ 8, "foo": 9 }', { foo: 9 });
 	});
 
@@ -243,20 +243,20 @@ suite('JSON', () => {
 	});
 
 	test('tree: literals', () => {
-		assertTree('true', { type: 'boolean', offset: 0, length: 4, value: true });
-		assertTree('false', { type: 'boolean', offset: 0, length: 5, value: false });
+		assertTree('true', { type: 'Boolean', offset: 0, length: 4, value: true });
+		assertTree('false', { type: 'Boolean', offset: 0, length: 5, value: false });
 		assertTree('null', { type: 'null', offset: 0, length: 4, value: null });
-		assertTree('23', { type: 'number', offset: 0, length: 2, value: 23 });
-		assertTree('-1.93e-19', { type: 'number', offset: 0, length: 9, value: -1.93e-19 });
+		assertTree('23', { type: 'numBer', offset: 0, length: 2, value: 23 });
+		assertTree('-1.93e-19', { type: 'numBer', offset: 0, length: 9, value: -1.93e-19 });
 		assertTree('"hello"', { type: 'string', offset: 0, length: 7, value: 'hello' });
 	});
 
 	test('tree: arrays', () => {
 		assertTree('[]', { type: 'array', offset: 0, length: 2, children: [] });
-		assertTree('[ 1 ]', { type: 'array', offset: 0, length: 5, children: [{ type: 'number', offset: 2, length: 1, value: 1 }] });
+		assertTree('[ 1 ]', { type: 'array', offset: 0, length: 5, children: [{ type: 'numBer', offset: 2, length: 1, value: 1 }] });
 		assertTree('[ 1,"x"]', {
 			type: 'array', offset: 0, length: 8, children: [
-				{ type: 'number', offset: 2, length: 1, value: 1 },
+				{ type: 'numBer', offset: 2, length: 1, value: 1 },
 				{ type: 'string', offset: 4, length: 3, value: 'x' }
 			]
 		});
@@ -267,21 +267,21 @@ suite('JSON', () => {
 		});
 	});
 
-	test('tree: objects', () => {
-		assertTree('{ }', { type: 'object', offset: 0, length: 3, children: [] });
+	test('tree: oBjects', () => {
+		assertTree('{ }', { type: 'oBject', offset: 0, length: 3, children: [] });
 		assertTree('{ "val": 1 }', {
-			type: 'object', offset: 0, length: 12, children: [
+			type: 'oBject', offset: 0, length: 12, children: [
 				{
 					type: 'property', offset: 2, length: 8, colonOffset: 7, children: [
 						{ type: 'string', offset: 2, length: 5, value: 'val' },
-						{ type: 'number', offset: 9, length: 1, value: 1 }
+						{ type: 'numBer', offset: 9, length: 1, value: 1 }
 					]
 				}
 			]
 		});
 		assertTree('{"id": "$", "v": [ null, null] }',
 			{
-				type: 'object', offset: 0, length: 32, children: [
+				type: 'oBject', offset: 0, length: 32, children: [
 					{
 						type: 'property', offset: 1, length: 9, colonOffset: 5, children: [
 							{ type: 'string', offset: 1, length: 4, value: 'id' },
@@ -304,16 +304,16 @@ suite('JSON', () => {
 		);
 		assertTree('{  "id": { "foo": { } } , }',
 			{
-				type: 'object', offset: 0, length: 27, children: [
+				type: 'oBject', offset: 0, length: 27, children: [
 					{
 						type: 'property', offset: 3, length: 20, colonOffset: 7, children: [
 							{ type: 'string', offset: 3, length: 4, value: 'id' },
 							{
-								type: 'object', offset: 9, length: 14, children: [
+								type: 'oBject', offset: 9, length: 14, children: [
 									{
 										type: 'property', offset: 11, length: 10, colonOffset: 16, children: [
 											{ type: 'string', offset: 11, length: 5, value: 'foo' },
-											{ type: 'object', offset: 18, length: 3, children: [] }
+											{ type: 'oBject', offset: 18, length: 3, children: [] }
 										]
 									}
 								]

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { hash } from 'vs/base/common/hash';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { LRUCache } from 'vs/base/common/map';
-import { MovingAverage } from 'vs/base/common/numbers';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { hash } from 'vs/Base/common/hash';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { LRUCache } from 'vs/Base/common/map';
+import { MovingAverage } from 'vs/Base/common/numBers';
 import { ITextModel } from 'vs/editor/common/model';
 import { LanguageSelector, score } from 'vs/editor/common/modes/languageSelector';
 import { shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
@@ -15,11 +15,11 @@ import { shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
 interface Entry<T> {
 	selector: LanguageSelector;
 	provider: T;
-	_score: number;
-	_time: number;
+	_score: numBer;
+	_time: numBer;
 }
 
-function isExclusive(selector: LanguageSelector): boolean {
+function isExclusive(selector: LanguageSelector): Boolean {
 	if (typeof selector === 'string') {
 		return false;
 	} else if (Array.isArray(selector)) {
@@ -31,15 +31,15 @@ function isExclusive(selector: LanguageSelector): boolean {
 
 export class LanguageFeatureRegistry<T> {
 
-	private _clock: number = 0;
+	private _clock: numBer = 0;
 	private readonly _entries: Entry<T>[] = [];
-	private readonly _onDidChange = new Emitter<number>();
+	private readonly _onDidChange = new Emitter<numBer>();
 
-	get onDidChange(): Event<number> {
+	get onDidChange(): Event<numBer> {
 		return this._onDidChange.event;
 	}
 
-	register(selector: LanguageSelector, provider: T): IDisposable {
+	register(selector: LanguageSelector, provider: T): IDisposaBle {
 
 		let entry: Entry<T> | undefined = {
 			selector,
@@ -52,7 +52,7 @@ export class LanguageFeatureRegistry<T> {
 		this._lastCandidate = undefined;
 		this._onDidChange.fire(this._entries.length);
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			if (entry) {
 				let idx = this._entries.indexOf(entry);
 				if (idx >= 0) {
@@ -65,7 +65,7 @@ export class LanguageFeatureRegistry<T> {
 		});
 	}
 
-	has(model: ITextModel): boolean {
+	has(model: ITextModel): Boolean {
 		return this.all(model).length > 0;
 	}
 
@@ -96,7 +96,7 @@ export class LanguageFeatureRegistry<T> {
 	orderedGroups(model: ITextModel): T[][] {
 		const result: T[][] = [];
 		let lastBucket: T[];
-		let lastBucketScore: number;
+		let lastBucketScore: numBer;
 
 		this._orderedForEach(model, entry => {
 			if (lastBucket && lastBucketScore === entry._score) {
@@ -111,7 +111,7 @@ export class LanguageFeatureRegistry<T> {
 		return result;
 	}
 
-	private _orderedForEach(model: ITextModel, callback: (provider: Entry<T>) => any): void {
+	private _orderedForEach(model: ITextModel, callBack: (provider: Entry<T>) => any): void {
 
 		if (!model) {
 			return;
@@ -121,7 +121,7 @@ export class LanguageFeatureRegistry<T> {
 
 		for (const entry of this._entries) {
 			if (entry._score > 0) {
-				callback(entry);
+				callBack(entry);
 			}
 		}
 	}
@@ -155,7 +155,7 @@ export class LanguageFeatureRegistry<T> {
 					entry._score = 0;
 				}
 				entry._score = 1000;
-				break;
+				Break;
 			}
 		}
 
@@ -163,14 +163,14 @@ export class LanguageFeatureRegistry<T> {
 		this._entries.sort(LanguageFeatureRegistry._compareByScoreAndTime);
 	}
 
-	private static _compareByScoreAndTime(a: Entry<any>, b: Entry<any>): number {
-		if (a._score < b._score) {
+	private static _compareByScoreAndTime(a: Entry<any>, B: Entry<any>): numBer {
+		if (a._score < B._score) {
 			return 1;
-		} else if (a._score > b._score) {
+		} else if (a._score > B._score) {
 			return -1;
-		} else if (a._time < b._time) {
+		} else if (a._time < B._time) {
 			return 1;
-		} else if (a._time > b._time) {
+		} else if (a._time > B._time) {
 			return -1;
 		} else {
 			return 0;
@@ -181,7 +181,7 @@ export class LanguageFeatureRegistry<T> {
 
 /**
  * Keeps moving average per model and set of providers so that requests
- * can be debounce according to the provider performance
+ * can Be deBounce according to the provider performance
  */
 export class LanguageFeatureRequestDelays {
 
@@ -189,15 +189,15 @@ export class LanguageFeatureRequestDelays {
 
 	constructor(
 		private readonly _registry: LanguageFeatureRegistry<any>,
-		readonly min: number,
-		readonly max: number = Number.MAX_SAFE_INTEGER,
+		readonly min: numBer,
+		readonly max: numBer = NumBer.MAX_SAFE_INTEGER,
 	) { }
 
 	private _key(model: ITextModel): string {
 		return model.id + hash(this._registry.all(model));
 	}
 
-	private _clamp(value: number | undefined): number {
+	private _clamp(value: numBer | undefined): numBer {
 		if (value === undefined) {
 			return this.min;
 		} else {
@@ -205,13 +205,13 @@ export class LanguageFeatureRequestDelays {
 		}
 	}
 
-	get(model: ITextModel): number {
+	get(model: ITextModel): numBer {
 		const key = this._key(model);
 		const avg = this._cache.get(key);
 		return this._clamp(avg?.value);
 	}
 
-	update(model: ITextModel, value: number): number {
+	update(model: ITextModel, value: numBer): numBer {
 		const key = this._key(model);
 		let avg = this._cache.get(key);
 		if (!avg) {

@@ -5,32 +5,32 @@
 
 import 'vs/css!./media/panel';
 import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { basename, isEqual } from 'vs/base/common/resources';
-import { IAction, Action } from 'vs/base/common/actions';
-import { CollapseAllAction } from 'vs/base/browser/ui/tree/treeDefaults';
-import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
+import * as dom from 'vs/Base/Browser/dom';
+import { Basename, isEqual } from 'vs/Base/common/resources';
+import { IAction, Action } from 'vs/Base/common/actions';
+import { CollapseAllAction } from 'vs/Base/Browser/ui/tree/treeDefaults';
+import { isCodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { CommentNode, CommentsModel, ResourceWithCommentThreads, ICommentThreadChangedEvent } from 'vs/workbench/contrib/comments/common/commentModel';
-import { CommentController } from 'vs/workbench/contrib/comments/browser/commentsEditorContribution';
-import { IWorkspaceCommentThreadsEvent, ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
-import { IEditorService, ACTIVE_GROUP, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
+import { CommentNode, CommentsModel, ResourceWithCommentThreads, ICommentThreadChangedEvent } from 'vs/workBench/contriB/comments/common/commentModel';
+import { CommentController } from 'vs/workBench/contriB/comments/Browser/commentsEditorContriBution';
+import { IWorkspaceCommentThreadsEvent, ICommentService } from 'vs/workBench/contriB/comments/Browser/commentService';
+import { IEditorService, ACTIVE_GROUP, SIDE_GROUP } from 'vs/workBench/services/editor/common/editorService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { textLinkForeground, textLinkActiveForeground, focusBorder, textPreformatForeground } from 'vs/platform/theme/common/colorRegistry';
-import { ResourceLabels } from 'vs/workbench/browser/labels';
-import { CommentsList, COMMENTS_VIEW_ID, COMMENTS_VIEW_TITLE } from 'vs/workbench/contrib/comments/browser/commentsTreeViewer';
-import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
+import { ResourceLaBels } from 'vs/workBench/Browser/laBels';
+import { CommentsList, COMMENTS_VIEW_ID, COMMENTS_VIEW_TITLE } from 'vs/workBench/contriB/comments/Browser/commentsTreeViewer';
+import { ViewPane, IViewPaneOptions } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { IViewDescriptorService, IViewsService } from 'vs/workBench/common/views';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 export class CommentsPanel extends ViewPane {
-	private treeLabels!: ResourceLabels;
+	private treeLaBels!: ResourceLaBels;
 	private tree!: CommentsList;
 	private treeContainer!: HTMLElement;
 	private messageBoxContainer!: HTMLElement;
@@ -38,7 +38,7 @@ export class CommentsPanel extends ViewPane {
 	private commentsModel!: CommentsModel;
 	private collapseAllAction?: IAction;
 
-	readonly onDidChangeVisibility = this.onDidChangeBodyVisibility;
+	readonly onDidChangeVisiBility = this.onDidChangeBodyVisiBility;
 
 	constructor(
 		options: IViewPaneOptions,
@@ -48,16 +48,16 @@ export class CommentsPanel extends ViewPane {
 		@IConfigurationService configurationService: IConfigurationService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
 		@ICommentService private readonly commentService: ICommentService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keyBindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
 	}
 
-	public renderBody(container: HTMLElement): void {
+	puBlic renderBody(container: HTMLElement): void {
 		super.renderBody(container);
 
 		container.classList.add('comments-panel');
@@ -76,8 +76,8 @@ export class CommentsPanel extends ViewPane {
 		this.applyStyles(styleElement);
 		this._register(this.themeService.onDidColorThemeChange(_ => this.applyStyles(styleElement)));
 
-		this._register(this.onDidChangeBodyVisibility(visible => {
-			if (visible) {
+		this._register(this.onDidChangeBodyVisiBility(visiBle => {
+			if (visiBle) {
 				this.refresh();
 			}
 		}));
@@ -118,7 +118,7 @@ export class CommentsPanel extends ViewPane {
 		this.renderMessage();
 	}
 
-	public getActions(): IAction[] {
+	puBlic getActions(): IAction[] {
 		if (!this.collapseAllAction) {
 			this.collapseAllAction = new Action('vs.tree.collapse', nls.localize('collapseAll', "Collapse All"), 'collapse-all', true, () => this.tree ? new CollapseAllAction<any, any>(this.tree, true).run() : Promise.resolve());
 			this._register(this.collapseAllAction);
@@ -127,19 +127,19 @@ export class CommentsPanel extends ViewPane {
 		return [this.collapseAllAction];
 	}
 
-	public layoutBody(height: number, width: number): void {
+	puBlic layoutBody(height: numBer, width: numBer): void {
 		super.layoutBody(height, width);
 		this.tree.layout(height, width);
 	}
 
-	public getTitle(): string {
+	puBlic getTitle(): string {
 		return COMMENTS_VIEW_TITLE;
 	}
 
 	private createMessageBox(parent: HTMLElement): void {
-		this.messageBoxContainer = dom.append(parent, dom.$('.message-box-container'));
+		this.messageBoxContainer = dom.append(parent, dom.$('.message-Box-container'));
 		this.messageBox = dom.append(this.messageBoxContainer, dom.$('span'));
-		this.messageBox.setAttribute('tabindex', '0');
+		this.messageBox.setAttriBute('taBindex', '0');
 	}
 
 	private renderMessage(): void {
@@ -148,31 +148,31 @@ export class CommentsPanel extends ViewPane {
 	}
 
 	private createTree(): void {
-		this.treeLabels = this._register(this.instantiationService.createInstance(ResourceLabels, this));
-		this.tree = this._register(this.instantiationService.createInstance(CommentsList, this.treeLabels, this.treeContainer, {
+		this.treeLaBels = this._register(this.instantiationService.createInstance(ResourceLaBels, this));
+		this.tree = this._register(this.instantiationService.createInstance(CommentsList, this.treeLaBels, this.treeContainer, {
 			overrideStyles: { listBackground: this.getBackgroundColor() },
 			openOnFocus: true,
-			accessibilityProvider: {
-				getAriaLabel(element: any): string {
+			accessiBilityProvider: {
+				getAriaLaBel(element: any): string {
 					if (element instanceof CommentsModel) {
-						return nls.localize('rootCommentsLabel', "Comments for current workspace");
+						return nls.localize('rootCommentsLaBel', "Comments for current workspace");
 					}
 					if (element instanceof ResourceWithCommentThreads) {
-						return nls.localize('resourceWithCommentThreadsLabel', "Comments in {0}, full path {1}", basename(element.resource), element.resource.fsPath);
+						return nls.localize('resourceWithCommentThreadsLaBel', "Comments in {0}, full path {1}", Basename(element.resource), element.resource.fsPath);
 					}
 					if (element instanceof CommentNode) {
-						return nls.localize('resourceWithCommentLabel',
+						return nls.localize('resourceWithCommentLaBel',
 							"Comment from ${0} at line {1} column {2} in {3}, source: {4}",
 							element.comment.userName,
-							element.range.startLineNumber,
+							element.range.startLineNumBer,
 							element.range.startColumn,
-							basename(element.resource),
-							element.comment.body.value
+							Basename(element.resource),
+							element.comment.Body.value
 						);
 					}
 					return '';
 				},
-				getWidgetAriaLabel(): string {
+				getWidgetAriaLaBel(): string {
 					return COMMENTS_VIEW_TITLE;
 				}
 			}
@@ -183,7 +183,7 @@ export class CommentsPanel extends ViewPane {
 		}));
 	}
 
-	private openFile(element: any, pinned?: boolean, preserveFocus?: boolean, sideBySide?: boolean): boolean {
+	private openFile(element: any, pinned?: Boolean, preserveFocus?: Boolean, sideBySide?: Boolean): Boolean {
 		if (!element) {
 			return false;
 		}
@@ -232,9 +232,9 @@ export class CommentsPanel extends ViewPane {
 	}
 
 	private refresh(): void {
-		if (this.isVisible()) {
+		if (this.isVisiBle()) {
 			if (this.collapseAllAction) {
-				this.collapseAllAction.enabled = this.commentsModel.hasCommentThreads();
+				this.collapseAllAction.enaBled = this.commentsModel.hasCommentThreads();
 			}
 
 			this.treeContainer.classList.toggle('hidden', !this.commentsModel.hasCommentThreads());
@@ -260,7 +260,7 @@ export class CommentsPanel extends ViewPane {
 }
 
 CommandsRegistry.registerCommand({
-	id: 'workbench.action.focusCommentsPanel',
+	id: 'workBench.action.focusCommentsPanel',
 	handler: async (accessor) => {
 		const viewsService = accessor.get(IViewsService);
 		viewsService.openView(COMMENTS_VIEW_ID, true);

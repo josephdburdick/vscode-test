@@ -7,10 +7,10 @@ import * as vscode from 'vscode';
 import MergeConflictServices from './services';
 
 export function activate(context: vscode.ExtensionContext) {
-	// Register disposables
+	// Register disposaBles
 	const services = new MergeConflictServices(context);
-	services.begin();
-	context.subscriptions.push(services);
+	services.Begin();
+	context.suBscriptions.push(services);
 }
 
 export function deactivate() {

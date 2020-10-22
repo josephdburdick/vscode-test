@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { getMachineId } from 'vs/base/node/id';
-import { getMac } from 'vs/base/node/macAddress';
+import { getMachineId } from 'vs/Base/node/id';
+import { getMac } from 'vs/Base/node/macAddress';
 
 suite('ID', () => {
 

@@ -5,22 +5,22 @@
 
 import * as assert from 'assert';
 import { EditorSimpleWorker } from 'vs/editor/common/services/editorSimpleWorker';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/Base/test/common/mock';
 import { EditorWorkerHost, EditorWorkerServiceImpl } from 'vs/editor/common/services/editorWorkerServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { NullLogService } from 'vs/platform/log/common/log';
-import { WordDistance } from 'vs/editor/contrib/suggest/wordDistance';
-import { createTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { WordDistance } from 'vs/editor/contriB/suggest/wordDistance';
+import { createTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 import { IRange } from 'vs/editor/common/core/range';
 import { DEFAULT_WORD_REGEXP } from 'vs/editor/common/model/wordHelper';
-import { Event } from 'vs/base/common/event';
-import { CompletionItem } from 'vs/editor/contrib/suggest/suggest';
+import { Event } from 'vs/Base/common/event';
+import { CompletionItem } from 'vs/editor/contriB/suggest/suggest';
 import { IPosition } from 'vs/editor/common/core/position';
 import * as modes from 'vs/editor/common/modes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
 import { MockMode } from 'vs/editor/test/common/mocks/mockMode';
 
@@ -28,12 +28,12 @@ suite('suggest, word distance', function () {
 
 	class BracketMode extends MockMode {
 
-		private static readonly _id = new modes.LanguageIdentifier('bracketMode', 3);
+		private static readonly _id = new modes.LanguageIdentifier('BracketMode', 3);
 
 		constructor() {
 			super(BracketMode._id);
 			this._register(LanguageConfigurationRegistry.register(this.getLanguageIdentifier(), {
-				brackets: [
+				Brackets: [
 					['{', '}'],
 					['[', ']'],
 					['(', ')'],
@@ -42,16 +42,16 @@ suite('suggest, word distance', function () {
 		}
 	}
 	let distance: WordDistance;
-	let disposables = new DisposableStore();
+	let disposaBles = new DisposaBleStore();
 
 	setup(async function () {
 
-		disposables.clear();
+		disposaBles.clear();
 		let mode = new BracketMode();
-		let model = createTextModel('function abc(aa, ab){\na\n}', undefined, mode.getLanguageIdentifier(), URI.parse('test:///some.path'));
+		let model = createTextModel('function aBc(aa, aB){\na\n}', undefined, mode.getLanguageIdentifier(), URI.parse('test:///some.path'));
 		let editor = createTestCodeEditor({ model: model });
 		editor.updateOptions({ suggest: { localityBonus: true } });
-		editor.setPosition({ lineNumber: 2, column: 2 });
+		editor.setPosition({ lineNumBer: 2, column: 2 });
 
 		let modelService = new class extends mock<IModelService>() {
 			onModelRemoved = Event.None;
@@ -81,21 +81,21 @@ suite('suggest, word distance', function () {
 
 		distance = await WordDistance.create(service, editor);
 
-		disposables.add(service);
-		disposables.add(mode);
-		disposables.add(model);
-		disposables.add(editor);
+		disposaBles.add(service);
+		disposaBles.add(mode);
+		disposaBles.add(model);
+		disposaBles.add(editor);
 	});
 
 	teardown(function () {
-		disposables.clear();
+		disposaBles.clear();
 	});
 
-	function createSuggestItem(label: string, overwriteBefore: number, position: IPosition): CompletionItem {
+	function createSuggestItem(laBel: string, overwriteBefore: numBer, position: IPosition): CompletionItem {
 		const suggestion: modes.CompletionItem = {
-			label,
-			range: { startLineNumber: position.lineNumber, startColumn: position.column - overwriteBefore, endLineNumber: position.lineNumber, endColumn: position.column },
-			insertText: label,
+			laBel,
+			range: { startLineNumBer: position.lineNumBer, startColumn: position.column - overwriteBefore, endLineNumBer: position.lineNumBer, endColumn: position.column },
+			insertText: laBel,
 			kind: 0
 		};
 		const container: modes.CompletionList = {
@@ -109,11 +109,11 @@ suite('suggest, word distance', function () {
 		return new CompletionItem(position, suggestion, container, provider);
 	}
 
-	test('Suggest locality bonus can boost current word #90515', function () {
-		const pos = { lineNumber: 2, column: 2 };
+	test('Suggest locality Bonus can Boost current word #90515', function () {
+		const pos = { lineNumBer: 2, column: 2 };
 		const d1 = distance.distance(pos, createSuggestItem('a', 1, pos).completion);
 		const d2 = distance.distance(pos, createSuggestItem('aa', 1, pos).completion);
-		const d3 = distance.distance(pos, createSuggestItem('ab', 1, pos).completion);
+		const d3 = distance.distance(pos, createSuggestItem('aB', 1, pos).completion);
 
 		assert.ok(d1 > d2);
 		assert.ok(d2 === d3);

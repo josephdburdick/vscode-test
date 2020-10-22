@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { IViewLineTokens } from 'vs/editor/common/core/lineTokens';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
@@ -62,9 +62,9 @@ suite('Editor ViewModel - SplitLinesCollection', () => {
 		assert.equal(line1.getViewLineMaxColumn(model1, 1, 1), 19);
 		assert.equal(line1.getViewLineMaxColumn(model1, 1, 2), 20);
 
-		let actualViewColumnMapping: number[][] = [];
+		let actualViewColumnMapping: numBer[][] = [];
 		for (let lineIndex = 0; lineIndex < line1.getViewLineCount(); lineIndex++) {
-			let actualLineViewColumnMapping: number[] = [];
+			let actualLineViewColumnMapping: numBer[] = [];
 			for (let col = 1; col <= line1.getViewLineMaxColumn(model1, 1, lineIndex); col++) {
 				actualLineViewColumnMapping.push(line1.getModelColumnOfViewPosition(lineIndex, col));
 			}
@@ -87,7 +87,7 @@ suite('Editor ViewModel - SplitLinesCollection', () => {
 		}
 	});
 
-	function withSplitLinesCollection(text: string, callback: (model: TextModel, linesCollection: SplitLinesCollection) => void): void {
+	function withSplitLinesCollection(text: string, callBack: (model: TextModel, linesCollection: SplitLinesCollection) => void): void {
 		const config = new TestConfiguration({});
 		const wrappingInfo = config.options.get(EditorOption.wrappingInfo);
 		const fontInfo = config.options.get(EditorOption.fontInfo);
@@ -111,20 +111,20 @@ suite('Editor ViewModel - SplitLinesCollection', () => {
 			lineBreaksComputerFactory,
 			lineBreaksComputerFactory,
 			fontInfo,
-			model.getOptions().tabSize,
+			model.getOptions().taBSize,
 			'simple',
 			wrappingInfo.wrappingColumn,
 			wrappingIndent
 		);
 
-		callback(model, linesCollection);
+		callBack(model, linesCollection);
 
 		linesCollection.dispose();
 		model.dispose();
 		config.dispose();
 	}
 
-	test('Invalid line numbers', () => {
+	test('Invalid line numBers', () => {
 
 		const text = [
 			'int main() {',
@@ -219,42 +219,42 @@ suite('Editor ViewModel - SplitLinesCollection', () => {
 			assert.equal(viewLineCount, 1, 'getOutputLineCount()');
 
 			let modelLineCount = model.getLineCount();
-			for (let lineNumber = 0; lineNumber <= modelLineCount + 1; lineNumber++) {
-				let lineMinColumn = (lineNumber >= 1 && lineNumber <= modelLineCount) ? model.getLineMinColumn(lineNumber) : 1;
-				let lineMaxColumn = (lineNumber >= 1 && lineNumber <= modelLineCount) ? model.getLineMaxColumn(lineNumber) : 1;
+			for (let lineNumBer = 0; lineNumBer <= modelLineCount + 1; lineNumBer++) {
+				let lineMinColumn = (lineNumBer >= 1 && lineNumBer <= modelLineCount) ? model.getLineMinColumn(lineNumBer) : 1;
+				let lineMaxColumn = (lineNumBer >= 1 && lineNumBer <= modelLineCount) ? model.getLineMaxColumn(lineNumBer) : 1;
 				for (let column = lineMinColumn - 1; column <= lineMaxColumn + 1; column++) {
-					let viewPosition = linesCollection.convertModelPositionToViewPosition(lineNumber, column);
+					let viewPosition = linesCollection.convertModelPositionToViewPosition(lineNumBer, column);
 
 					// validate view position
-					let viewLineNumber = viewPosition.lineNumber;
+					let viewLineNumBer = viewPosition.lineNumBer;
 					let viewColumn = viewPosition.column;
-					if (viewLineNumber < 1) {
-						viewLineNumber = 1;
+					if (viewLineNumBer < 1) {
+						viewLineNumBer = 1;
 					}
 					let lineCount = linesCollection.getViewLineCount();
-					if (viewLineNumber > lineCount) {
-						viewLineNumber = lineCount;
+					if (viewLineNumBer > lineCount) {
+						viewLineNumBer = lineCount;
 					}
-					let viewMinColumn = linesCollection.getViewLineMinColumn(viewLineNumber);
-					let viewMaxColumn = linesCollection.getViewLineMaxColumn(viewLineNumber);
+					let viewMinColumn = linesCollection.getViewLineMinColumn(viewLineNumBer);
+					let viewMaxColumn = linesCollection.getViewLineMaxColumn(viewLineNumBer);
 					if (viewColumn < viewMinColumn) {
 						viewColumn = viewMinColumn;
 					}
 					if (viewColumn > viewMaxColumn) {
 						viewColumn = viewMaxColumn;
 					}
-					let validViewPosition = new Position(viewLineNumber, viewColumn);
-					assert.equal(viewPosition.toString(), validViewPosition.toString(), 'model->view for ' + lineNumber + ', ' + column);
+					let validViewPosition = new Position(viewLineNumBer, viewColumn);
+					assert.equal(viewPosition.toString(), validViewPosition.toString(), 'model->view for ' + lineNumBer + ', ' + column);
 				}
 			}
 
-			for (let lineNumber = 0; lineNumber <= viewLineCount + 1; lineNumber++) {
-				let lineMinColumn = linesCollection.getViewLineMinColumn(lineNumber);
-				let lineMaxColumn = linesCollection.getViewLineMaxColumn(lineNumber);
+			for (let lineNumBer = 0; lineNumBer <= viewLineCount + 1; lineNumBer++) {
+				let lineMinColumn = linesCollection.getViewLineMinColumn(lineNumBer);
+				let lineMaxColumn = linesCollection.getViewLineMaxColumn(lineNumBer);
 				for (let column = lineMinColumn - 1; column <= lineMaxColumn + 1; column++) {
-					let modelPosition = linesCollection.convertViewPositionToModelPosition(lineNumber, column);
+					let modelPosition = linesCollection.convertViewPositionToModelPosition(lineNumBer, column);
 					let validModelPosition = model.validatePosition(modelPosition);
-					assert.equal(modelPosition.toString(), validModelPosition.toString(), 'view->model for ' + lineNumber + ', ' + column);
+					assert.equal(modelPosition.toString(), validModelPosition.toString(), 'view->model for ' + lineNumBer + ', ' + column);
 				}
 			}
 		});
@@ -326,7 +326,7 @@ suite('SplitLinesCollection', () => {
 	];
 
 	let model: TextModel | null = null;
-	let languageRegistration: IDisposable | null = null;
+	let languageRegistration: IDisposaBle | null = null;
 
 	setup(() => {
 		let _lineIndex = 0;
@@ -362,8 +362,8 @@ suite('SplitLinesCollection', () => {
 
 
 	interface ITestViewLineToken {
-		endIndex: number;
-		value: number;
+		endIndex: numBer;
+		value: numBer;
 	}
 
 	function assertViewLineTokens(_actual: IViewLineTokens, expected: ITestViewLineToken[]): void {
@@ -379,8 +379,8 @@ suite('SplitLinesCollection', () => {
 
 	interface ITestMinimapLineRenderingData {
 		content: string;
-		minColumn: number;
-		maxColumn: number;
+		minColumn: numBer;
+		maxColumn: numBer;
 		tokens: ITestViewLineToken[];
 	}
 
@@ -412,7 +412,7 @@ suite('SplitLinesCollection', () => {
 			for (let end = start; end <= lineCount; end++) {
 				let count = end - start + 1;
 				for (let desired = Math.pow(2, count) - 1; desired >= 0; desired--) {
-					let needed: boolean[] = [];
+					let needed: Boolean[] = [];
 					let expected: Array<ITestMinimapLineRenderingData | null> = [];
 					for (let i = 0; i < count; i++) {
 						needed[i] = (desired & (1 << i)) ? true : false;
@@ -420,8 +420,8 @@ suite('SplitLinesCollection', () => {
 					}
 					let actual = splitLinesCollection.getViewLinesData(start, end, needed);
 					assertMinimapLinesRenderingData(actual, expected);
-					// Comment out next line to test all possible combinations
-					break;
+					// Comment out next line to test all possiBle comBinations
+					Break;
 				}
 			}
 		}
@@ -430,14 +430,14 @@ suite('SplitLinesCollection', () => {
 	test('getViewLinesData - no wrapping', () => {
 		withSplitLinesCollection(model!, 'off', 0, (splitLinesCollection) => {
 			assert.equal(splitLinesCollection.getViewLineCount(), 8);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(1, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(2, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(3, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(4, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(5, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(6, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(7, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(8, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(1, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(2, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(3, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(4, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(5, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(6, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(7, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(8, 1), true);
 
 			let _expected: ITestMinimapLineRenderingData[] = [
 				{
@@ -542,14 +542,14 @@ suite('SplitLinesCollection', () => {
 
 			splitLinesCollection.setHiddenAreas([new Range(2, 1, 4, 1)]);
 			assert.equal(splitLinesCollection.getViewLineCount(), 5);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(1, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(2, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(3, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(4, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(5, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(6, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(7, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(8, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(1, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(2, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(3, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(4, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(5, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(6, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(7, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(8, 1), true);
 
 			assertAllMinimapLinesRenderingData(splitLinesCollection, [
 				_expected[0],
@@ -564,14 +564,14 @@ suite('SplitLinesCollection', () => {
 	test('getViewLinesData - with wrapping', () => {
 		withSplitLinesCollection(model!, 'wordWrapColumn', 30, (splitLinesCollection) => {
 			assert.equal(splitLinesCollection.getViewLineCount(), 12);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(1, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(2, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(3, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(4, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(5, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(6, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(7, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(8, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(1, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(2, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(3, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(4, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(5, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(6, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(7, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(8, 1), true);
 
 			let _expected: ITestMinimapLineRenderingData[] = [
 				{
@@ -712,14 +712,14 @@ suite('SplitLinesCollection', () => {
 
 			splitLinesCollection.setHiddenAreas([new Range(2, 1, 4, 1)]);
 			assert.equal(splitLinesCollection.getViewLineCount(), 8);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(1, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(2, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(3, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(4, 1), false);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(5, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(6, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(7, 1), true);
-			assert.equal(splitLinesCollection.modelPositionIsVisible(8, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(1, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(2, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(3, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(4, 1), false);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(5, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(6, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(7, 1), true);
+			assert.equal(splitLinesCollection.modelPositionIsVisiBle(8, 1), true);
 
 			assertAllMinimapLinesRenderingData(splitLinesCollection, [
 				_expected[0],
@@ -734,7 +734,7 @@ suite('SplitLinesCollection', () => {
 		});
 	});
 
-	function withSplitLinesCollection(model: TextModel, wordWrap: 'on' | 'off' | 'wordWrapColumn' | 'bounded', wordWrapColumn: number, callback: (splitLinesCollection: SplitLinesCollection) => void): void {
+	function withSplitLinesCollection(model: TextModel, wordWrap: 'on' | 'off' | 'wordWrapColumn' | 'Bounded', wordWrapColumn: numBer, callBack: (splitLinesCollection: SplitLinesCollection) => void): void {
 		const configuration = new TestConfiguration({
 			wordWrap: wordWrap,
 			wordWrapColumn: wordWrapColumn,
@@ -753,54 +753,54 @@ suite('SplitLinesCollection', () => {
 			lineBreaksComputerFactory,
 			lineBreaksComputerFactory,
 			fontInfo,
-			model.getOptions().tabSize,
+			model.getOptions().taBSize,
 			'simple',
 			wrappingInfo.wrappingColumn,
 			wrappingIndent
 		);
 
-		callback(linesCollection);
+		callBack(linesCollection);
 
 		configuration.dispose();
 	}
 });
 
 
-function pos(lineNumber: number, column: number): Position {
-	return new Position(lineNumber, column);
+function pos(lineNumBer: numBer, column: numBer): Position {
+	return new Position(lineNumBer, column);
 }
 
-function createSplitLine(splitLengths: number[], breakingOffsetsVisibleColumn: number[], wrappedTextIndentWidth: number, isVisible: boolean = true): SplitLine {
-	return new SplitLine(createLineBreakData(splitLengths, breakingOffsetsVisibleColumn, wrappedTextIndentWidth), isVisible);
+function createSplitLine(splitLengths: numBer[], BreakingOffsetsVisiBleColumn: numBer[], wrappedTextIndentWidth: numBer, isVisiBle: Boolean = true): SplitLine {
+	return new SplitLine(createLineBreakData(splitLengths, BreakingOffsetsVisiBleColumn, wrappedTextIndentWidth), isVisiBle);
 }
 
-function createLineBreakData(breakingLengths: number[], breakingOffsetsVisibleColumn: number[], wrappedTextIndentWidth: number): LineBreakData {
-	let sums: number[] = [];
-	for (let i = 0; i < breakingLengths.length; i++) {
-		sums[i] = (i > 0 ? sums[i - 1] : 0) + breakingLengths[i];
+function createLineBreakData(BreakingLengths: numBer[], BreakingOffsetsVisiBleColumn: numBer[], wrappedTextIndentWidth: numBer): LineBreakData {
+	let sums: numBer[] = [];
+	for (let i = 0; i < BreakingLengths.length; i++) {
+		sums[i] = (i > 0 ? sums[i - 1] : 0) + BreakingLengths[i];
 	}
-	return new LineBreakData(sums, breakingOffsetsVisibleColumn, wrappedTextIndentWidth);
+	return new LineBreakData(sums, BreakingOffsetsVisiBleColumn, wrappedTextIndentWidth);
 }
 
 function createModel(text: string): ISimpleModel {
 	return {
-		getLineTokens: (lineNumber: number) => {
+		getLineTokens: (lineNumBer: numBer) => {
 			return null!;
 		},
-		getLineContent: (lineNumber: number) => {
+		getLineContent: (lineNumBer: numBer) => {
 			return text;
 		},
-		getLineLength: (lineNumber: number) => {
+		getLineLength: (lineNumBer: numBer) => {
 			return text.length;
 		},
-		getLineMinColumn: (lineNumber: number) => {
+		getLineMinColumn: (lineNumBer: numBer) => {
 			return 1;
 		},
-		getLineMaxColumn: (lineNumber: number) => {
+		getLineMaxColumn: (lineNumBer: numBer) => {
 			return text.length + 1;
 		},
 		getValueInRange: (range: IRange, eol?: EndOfLinePreference) => {
-			return text.substring(range.startColumn - 1, range.endColumn - 1);
+			return text.suBstring(range.startColumn - 1, range.endColumn - 1);
 		}
 	};
 }

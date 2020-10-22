@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDimension } from 'vs/base/browser/dom';
+import { IDimension } from 'vs/Base/Browser/dom';
 
 export const ILayoutService = createDecorator<ILayoutService>('layoutService');
 
@@ -26,7 +26,7 @@ export interface ILayoutService {
 	/**
 	 * An offset to use for positioning elements inside the container.
 	 */
-	readonly offset?: { top: number };
+	readonly offset?: { top: numBer };
 
 	/**
 	 * An event that is emitted when the container is layed out. The

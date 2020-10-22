@@ -1,1 +1,1 @@
-rowData.push(callback(new Cell(row, col, false)));
+rowData.push(callBack(new Cell(row, col, false)));

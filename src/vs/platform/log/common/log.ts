@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator as createServiceDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { isWindows } from 'vs/base/common/platform';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { isWindows } from 'vs/Base/common/platform';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { LoggerChannelClient } from 'vs/platform/log/common/logIpc';
-import { URI } from 'vs/base/common/uri';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import { URI } from 'vs/Base/common/uri';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
 
 export const ILogService = createServiceDecorator<ILogService>('logService');
 export const ILoggerService = createServiceDecorator<ILoggerService>('loggerService');
@@ -21,7 +21,7 @@ function now(): string {
 
 export enum LogLevel {
 	Trace,
-	Debug,
+	DeBug,
 	Info,
 	Warning,
 	Error,
@@ -31,20 +31,20 @@ export enum LogLevel {
 
 export const DEFAULT_LOG_LEVEL: LogLevel = LogLevel.Info;
 
-export interface ILogger extends IDisposable {
+export interface ILogger extends IDisposaBle {
 	onDidChangeLogLevel: Event<LogLevel>;
 	getLevel(): LogLevel;
 	setLevel(level: LogLevel): void;
 
 	trace(message: string, ...args: any[]): void;
-	debug(message: string, ...args: any[]): void;
+	deBug(message: string, ...args: any[]): void;
 	info(message: string, ...args: any[]): void;
 	warn(message: string, ...args: any[]): void;
 	error(message: string | Error, ...args: any[]): void;
 	critical(message: string | Error, ...args: any[]): void;
 
 	/**
-	 * An operation to flush the contents. Can be synchronous.
+	 * An operation to flush the contents. Can Be synchronous.
 	 */
 	flush(): void;
 }
@@ -59,7 +59,7 @@ export interface ILoggerService {
 	getLogger(file: URI): ILogger;
 }
 
-export abstract class AbstractLogService extends Disposable {
+export aBstract class ABstractLogService extends DisposaBle {
 
 	private level: LogLevel = DEFAULT_LOG_LEVEL;
 	private readonly _onDidChangeLogLevel: Emitter<LogLevel> = this._register(new Emitter<LogLevel>());
@@ -78,10 +78,10 @@ export abstract class AbstractLogService extends Disposable {
 
 }
 
-export class ConsoleLogMainService extends AbstractLogService implements ILogService {
+export class ConsoleLogMainService extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
-	private useColors: boolean;
+	private useColors: Boolean;
 
 	constructor(logLevel: LogLevel = DEFAULT_LOG_LEVEL) {
 		super();
@@ -92,17 +92,17 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 	trace(message: string, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Trace) {
 			if (this.useColors) {
-				console.log(`\x1b[90m[main ${now()}]\x1b[0m`, message, ...args);
+				console.log(`\x1B[90m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.log(`[main ${now()}]`, message, ...args);
 			}
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
+	deBug(message: string, ...args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
 			if (this.useColors) {
-				console.log(`\x1b[90m[main ${now()}]\x1b[0m`, message, ...args);
+				console.log(`\x1B[90m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.log(`[main ${now()}]`, message, ...args);
 			}
@@ -112,7 +112,7 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 	info(message: string, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Info) {
 			if (this.useColors) {
-				console.log(`\x1b[90m[main ${now()}]\x1b[0m`, message, ...args);
+				console.log(`\x1B[90m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.log(`[main ${now()}]`, message, ...args);
 			}
@@ -122,7 +122,7 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 	warn(message: string | Error, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Warning) {
 			if (this.useColors) {
-				console.warn(`\x1b[93m[main ${now()}]\x1b[0m`, message, ...args);
+				console.warn(`\x1B[93m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.warn(`[main ${now()}]`, message, ...args);
 			}
@@ -132,7 +132,7 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 	error(message: string, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Error) {
 			if (this.useColors) {
-				console.error(`\x1b[91m[main ${now()}]\x1b[0m`, message, ...args);
+				console.error(`\x1B[91m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.error(`[main ${now()}]`, message, ...args);
 			}
@@ -142,7 +142,7 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 	critical(message: string, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Critical) {
 			if (this.useColors) {
-				console.error(`\x1b[90m[main ${now()}]\x1b[0m`, message, ...args);
+				console.error(`\x1B[90m[main ${now()}]\x1B[0m`, message, ...args);
 			} else {
 				console.error(`[main ${now()}]`, message, ...args);
 			}
@@ -159,7 +159,7 @@ export class ConsoleLogMainService extends AbstractLogService implements ILogSer
 
 }
 
-export class ConsoleLogService extends AbstractLogService implements ILogService {
+export class ConsoleLogService extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -174,9 +174,9 @@ export class ConsoleLogService extends AbstractLogService implements ILogService
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
-			console.log('%cDEBUG', 'background: #eee; color: #888', message, ...args);
+	deBug(message: string, ...args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
+			console.log('%cDEBUG', 'Background: #eee; color: #888', message, ...args);
 		}
 	}
 
@@ -200,7 +200,7 @@ export class ConsoleLogService extends AbstractLogService implements ILogService
 
 	critical(message: string, ...args: any[]): void {
 		if (this.getLevel() <= LogLevel.Critical) {
-			console.log('%cCRITI', 'background: #f33; color: white', message, ...args);
+			console.log('%cCRITI', 'Background: #f33; color: white', message, ...args);
 		}
 	}
 
@@ -213,7 +213,7 @@ export class ConsoleLogService extends AbstractLogService implements ILogService
 	}
 }
 
-export class LogServiceAdapter extends AbstractLogService implements ILogService {
+export class LogServiceAdapter extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -228,9 +228,9 @@ export class LogServiceAdapter extends AbstractLogService implements ILogService
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
-			this.adapter.consoleLog('debug', [this.extractMessage(message), ...args]);
+	deBug(message: string, ...args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
+			this.adapter.consoleLog('deBug', [this.extractMessage(message), ...args]);
 		}
 	}
 
@@ -284,7 +284,7 @@ export class ConsoleLogInMainService extends LogServiceAdapter implements ILogSe
 	}
 }
 
-export class MultiplexLogService extends AbstractLogService implements ILogService {
+export class MultiplexLogService extends ABstractLogService implements ILogService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(private readonly logServices: ReadonlyArray<ILogService>) {
@@ -307,9 +307,9 @@ export class MultiplexLogService extends AbstractLogService implements ILogServi
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
+	deBug(message: string, ...args: any[]): void {
 		for (const logService of this.logServices) {
-			logService.debug(message, ...args);
+			logService.deBug(message, ...args);
 		}
 	}
 
@@ -350,7 +350,7 @@ export class MultiplexLogService extends AbstractLogService implements ILogServi
 	}
 }
 
-export class DelegatedLogService extends Disposable implements ILogService {
+export class DelegatedLogService extends DisposaBle implements ILogService {
 	declare readonly _serviceBrand: undefined;
 
 	constructor(private logService: ILogService) {
@@ -374,8 +374,8 @@ export class DelegatedLogService extends Disposable implements ILogService {
 		this.logService.trace(message, ...args);
 	}
 
-	debug(message: string, ...args: any[]): void {
-		this.logService.debug(message, ...args);
+	deBug(message: string, ...args: any[]): void {
+		this.logService.deBug(message, ...args);
 	}
 
 	info(message: string, ...args: any[]): void {
@@ -405,7 +405,7 @@ export class NullLogService implements ILogService {
 	setLevel(level: LogLevel): void { }
 	getLevel(): LogLevel { return LogLevel.Info; }
 	trace(message: string, ...args: any[]): void { }
-	debug(message: string, ...args: any[]): void { }
+	deBug(message: string, ...args: any[]): void { }
 	info(message: string, ...args: any[]): void { }
 	warn(message: string, ...args: any[]): void { }
 	error(message: string | Error, ...args: any[]): void { }
@@ -415,7 +415,7 @@ export class NullLogService implements ILogService {
 }
 
 export function getLogLevel(environmentService: IEnvironmentService): LogLevel {
-	if (environmentService.verbose) {
+	if (environmentService.verBose) {
 		return LogLevel.Trace;
 	}
 	if (typeof environmentService.logLevel === 'string') {
@@ -423,8 +423,8 @@ export function getLogLevel(environmentService: IEnvironmentService): LogLevel {
 		switch (logLevel) {
 			case 'trace':
 				return LogLevel.Trace;
-			case 'debug':
-				return LogLevel.Debug;
+			case 'deBug':
+				return LogLevel.DeBug;
 			case 'info':
 				return LogLevel.Info;
 			case 'warn':

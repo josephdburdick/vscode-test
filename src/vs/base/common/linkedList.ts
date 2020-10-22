@@ -22,13 +22,13 @@ export class LinkedList<E> {
 
 	private _first: Node<E> = Node.Undefined;
 	private _last: Node<E> = Node.Undefined;
-	private _size: number = 0;
+	private _size: numBer = 0;
 
-	get size(): number {
+	get size(): numBer {
 		return this._size;
 	}
 
-	isEmpty(): boolean {
+	isEmpty(): Boolean {
 		return this._first === Node.Undefined;
 	}
 
@@ -46,7 +46,7 @@ export class LinkedList<E> {
 		return this._insert(element, true);
 	}
 
-	private _insert(element: E, atTheEnd: boolean): () => void {
+	private _insert(element: E, atTheEnd: Boolean): () => void {
 		const newNode = new Node(element);
 		if (this._first === Node.Undefined) {
 			this._first = newNode;
@@ -124,7 +124,7 @@ export class LinkedList<E> {
 		this._size -= 1;
 	}
 
-	*[Symbol.iterator](): Iterator<E> {
+	*[SymBol.iterator](): Iterator<E> {
 		let node = this._first;
 		while (node !== Node.Undefined) {
 			yield node.element;

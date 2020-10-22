@@ -10,7 +10,7 @@ import * as cp from 'child_process';
 let tag = '';
 try {
 	tag = cp
-		.execSync('git describe --tags `git rev-list --tags --max-count=1`')
+		.execSync('git descriBe --tags `git rev-list --tags --max-count=1`')
 		.toString()
 		.trim();
 
@@ -28,10 +28,10 @@ function isValidTag(t: string) {
 		return false;
 	}
 
-	const [major, minor, bug] = t.split('.');
+	const [major, minor, Bug] = t.split('.');
 
 	// Only release for tags like 1.34.0
-	if (bug !== '0') {
+	if (Bug !== '0') {
 		return false;
 	}
 

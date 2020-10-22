@@ -8,21 +8,21 @@ import { joinPath, normalizePath, resolvePath, extname } from '../requests';
 
 suite('requests', () => {
 	test('join', async function () {
-		assert.equal(joinPath('foo://a/foo/bar', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', '/x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/'), 'foo://a/foo/bar/x/');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x', 'y'), 'foo://a/foo/bar/x/y');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/', '/y'), 'foo://a/foo/bar/x/y');
-		assert.equal(joinPath('foo://a/foo/bar/', '.', '/y'), 'foo://a/foo/bar/y');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/y/z', '..'), 'foo://a/foo/bar/x/y');
+		assert.equal(joinPath('foo://a/foo/Bar', 'x'), 'foo://a/foo/Bar/x');
+		assert.equal(joinPath('foo://a/foo/Bar/', 'x'), 'foo://a/foo/Bar/x');
+		assert.equal(joinPath('foo://a/foo/Bar/', '/x'), 'foo://a/foo/Bar/x');
+		assert.equal(joinPath('foo://a/foo/Bar/', 'x/'), 'foo://a/foo/Bar/x/');
+		assert.equal(joinPath('foo://a/foo/Bar/', 'x', 'y'), 'foo://a/foo/Bar/x/y');
+		assert.equal(joinPath('foo://a/foo/Bar/', 'x/', '/y'), 'foo://a/foo/Bar/x/y');
+		assert.equal(joinPath('foo://a/foo/Bar/', '.', '/y'), 'foo://a/foo/Bar/y');
+		assert.equal(joinPath('foo://a/foo/Bar/', 'x/y/z', '..'), 'foo://a/foo/Bar/x/y');
 	});
 
 	test('resolve', async function () {
-		assert.equal(resolvePath('foo://a/foo/bar', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', '/x'), 'foo://a/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', 'x/'), 'foo://a/foo/bar/x/');
+		assert.equal(resolvePath('foo://a/foo/Bar', 'x'), 'foo://a/foo/Bar/x');
+		assert.equal(resolvePath('foo://a/foo/Bar/', 'x'), 'foo://a/foo/Bar/x');
+		assert.equal(resolvePath('foo://a/foo/Bar/', '/x'), 'foo://a/x');
+		assert.equal(resolvePath('foo://a/foo/Bar/', 'x/'), 'foo://a/foo/Bar/x/');
 	});
 
 	test('normalize', async function () {
@@ -32,18 +32,18 @@ suite('requests', () => {
 		assertNormalize('a', 'a');
 		assertNormalize('/a', '/a');
 		assertNormalize('a/', 'a/');
-		assertNormalize('a/b', 'a/b');
-		assertNormalize('/a/foo/bar/x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar//x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar///x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar/x/', '/a/foo/bar/x/');
-		assertNormalize('a/foo/bar/x/', 'a/foo/bar/x/');
-		assertNormalize('a/foo/bar/x//', 'a/foo/bar/x/');
-		assertNormalize('//a/foo/bar/x//', '/a/foo/bar/x/');
+		assertNormalize('a/B', 'a/B');
+		assertNormalize('/a/foo/Bar/x', '/a/foo/Bar/x');
+		assertNormalize('/a/foo/Bar//x', '/a/foo/Bar/x');
+		assertNormalize('/a/foo/Bar///x', '/a/foo/Bar/x');
+		assertNormalize('/a/foo/Bar/x/', '/a/foo/Bar/x/');
+		assertNormalize('a/foo/Bar/x/', 'a/foo/Bar/x/');
+		assertNormalize('a/foo/Bar/x//', 'a/foo/Bar/x/');
+		assertNormalize('//a/foo/Bar/x//', '/a/foo/Bar/x/');
 		assertNormalize('a/.', 'a');
-		assertNormalize('a/./b', 'a/b');
-		assertNormalize('a/././b', 'a/b');
-		assertNormalize('a/n/../b', 'a/b');
+		assertNormalize('a/./B', 'a/B');
+		assertNormalize('a/././B', 'a/B');
+		assertNormalize('a/n/../B', 'a/B');
 		assertNormalize('a/n/../', 'a/');
 		assertNormalize('a/n/../', 'a/');
 		assertNormalize('/a/n/../..', '/');
@@ -55,8 +55,8 @@ suite('requests', () => {
 		function assertExtName(input: string, expected: string) {
 			assert.equal(extname(input), expected, input);
 		}
-		assertExtName('foo://a/foo/bar', '');
-		assertExtName('foo://a/foo/bar.foo', '.foo');
+		assertExtName('foo://a/foo/Bar', '');
+		assertExtName('foo://a/foo/Bar.foo', '.foo');
 		assertExtName('foo://a/foo/.foo', '');
 	});
 });

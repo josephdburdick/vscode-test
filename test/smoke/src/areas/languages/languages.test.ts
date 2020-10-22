@@ -3,41 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, ProblemSeverity, Problems } from '../../../../automation/out';
+import { Application, ProBlemSeverity, ProBlems } from '../../../../automation/out';
 
 export function setup() {
-	describe('Language Features', () => {
+	descriBe('Language Features', () => {
 		it('verifies quick outline', async function () {
 			const app = this.app as Application;
-			await app.workbench.quickaccess.openFile('style.css');
+			await app.workBench.quickaccess.openFile('style.css');
 
-			await app.workbench.quickaccess.openQuickOutline();
-			await app.workbench.quickinput.waitForQuickInputElements(names => names.length === 2);
+			await app.workBench.quickaccess.openQuickOutline();
+			await app.workBench.quickinput.waitForQuickInputElements(names => names.length === 2);
 		});
 
-		it('verifies problems view', async function () {
+		it('verifies proBlems view', async function () {
 			const app = this.app as Application;
-			await app.workbench.quickaccess.openFile('style.css');
-			await app.workbench.editor.waitForTypeInEditor('style.css', '.foo{}');
+			await app.workBench.quickaccess.openFile('style.css');
+			await app.workBench.editor.waitForTypeInEditor('style.css', '.foo{}');
 
-			await app.code.waitForElement(Problems.getSelectorInEditor(ProblemSeverity.WARNING));
+			await app.code.waitForElement(ProBlems.getSelectorInEditor(ProBlemSeverity.WARNING));
 
-			await app.workbench.problems.showProblemsView();
-			await app.code.waitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.WARNING));
-			await app.workbench.problems.hideProblemsView();
+			await app.workBench.proBlems.showProBlemsView();
+			await app.code.waitForElement(ProBlems.getSelectorInProBlemsView(ProBlemSeverity.WARNING));
+			await app.workBench.proBlems.hideProBlemsView();
 		});
 
 		it('verifies settings', async function () {
 			const app = this.app as Application;
-			await app.workbench.settingsEditor.addUserSetting('css.lint.emptyRules', '"error"');
-			await app.workbench.quickaccess.openFile('style.css');
+			await app.workBench.settingsEditor.addUserSetting('css.lint.emptyRules', '"error"');
+			await app.workBench.quickaccess.openFile('style.css');
 
-			await app.code.waitForElement(Problems.getSelectorInEditor(ProblemSeverity.ERROR));
+			await app.code.waitForElement(ProBlems.getSelectorInEditor(ProBlemSeverity.ERROR));
 
-			const problems = new Problems(app.code);
-			await problems.showProblemsView();
-			await app.code.waitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.ERROR));
-			await problems.hideProblemsView();
+			const proBlems = new ProBlems(app.code);
+			await proBlems.showProBlemsView();
+			await app.code.waitForElement(ProBlems.getSelectorInProBlemsView(ProBlemSeverity.ERROR));
+			await proBlems.hideProBlemsView();
 		});
 	});
 }

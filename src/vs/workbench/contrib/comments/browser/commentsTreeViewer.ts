@@ -3,30 +3,30 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
+import * as dom from 'vs/Base/Browser/dom';
 import * as nls from 'vs/nls';
-import { renderMarkdown } from 'vs/base/browser/markdownRenderer';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { renderMarkdown } from 'vs/Base/Browser/markdownRenderer';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IResourceLabel, ResourceLabels } from 'vs/workbench/browser/labels';
-import { CommentNode, CommentsModel, ResourceWithCommentThreads } from 'vs/workbench/contrib/comments/common/commentModel';
-import { IAsyncDataSource, ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IResourceLaBel, ResourceLaBels } from 'vs/workBench/Browser/laBels';
+import { CommentNode, CommentsModel, ResourceWithCommentThreads } from 'vs/workBench/contriB/comments/common/commentModel';
+import { IAsyncDataSource, ITreeNode } from 'vs/Base/Browser/ui/tree/tree';
+import { IListVirtualDelegate, IListRenderer } from 'vs/Base/Browser/ui/list/list';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { WorkbenchAsyncDataTree, IListService, IWorkbenchAsyncDataTreeOptions } from 'vs/platform/list/browser/listService';
+import { WorkBenchAsyncDataTree, IListService, IWorkBenchAsyncDataTreeOptions } from 'vs/platform/list/Browser/listService';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IColorMapping } from 'vs/platform/theme/common/styler';
 
-export const COMMENTS_VIEW_ID = 'workbench.panel.comments';
+export const COMMENTS_VIEW_ID = 'workBench.panel.comments';
 export const COMMENTS_VIEW_TITLE = 'Comments';
 
 export class CommentsAsyncDataSource implements IAsyncDataSource<any, any> {
-	hasChildren(element: any): boolean {
+	hasChildren(element: any): Boolean {
 		return element instanceof CommentsModel || element instanceof ResourceWithCommentThreads || (element instanceof CommentNode && !!element.replies.length);
 	}
 
@@ -45,14 +45,14 @@ export class CommentsAsyncDataSource implements IAsyncDataSource<any, any> {
 }
 
 interface IResourceTemplateData {
-	resourceLabel: IResourceLabel;
+	resourceLaBel: IResourceLaBel;
 }
 
 interface ICommentThreadTemplateData {
 	icon: HTMLImageElement;
 	userName: HTMLSpanElement;
 	commentText: HTMLElement;
-	disposables: IDisposable[];
+	disposaBles: IDisposaBle[];
 }
 
 export class CommentsModelVirualDelegate implements IListVirtualDelegate<any> {
@@ -60,11 +60,11 @@ export class CommentsModelVirualDelegate implements IListVirtualDelegate<any> {
 	private static readonly COMMENT_ID = 'comment-node';
 
 
-	getHeight(element: any): number {
+	getHeight(element: any): numBer {
 		return 22;
 	}
 
-	public getTemplateId(element: any): string {
+	puBlic getTemplateId(element: any): string {
 		if (element instanceof ResourceWithCommentThreads) {
 			return CommentsModelVirualDelegate.RESOURCE_ID;
 		}
@@ -80,24 +80,24 @@ export class ResourceWithCommentsRenderer implements IListRenderer<ITreeNode<Res
 	templateId: string = 'resource-with-comments';
 
 	constructor(
-		private labels: ResourceLabels
+		private laBels: ResourceLaBels
 	) {
 	}
 
 	renderTemplate(container: HTMLElement) {
-		const data = <IResourceTemplateData>Object.create(null);
-		const labelContainer = dom.append(container, dom.$('.resource-container'));
-		data.resourceLabel = this.labels.create(labelContainer);
+		const data = <IResourceTemplateData>OBject.create(null);
+		const laBelContainer = dom.append(container, dom.$('.resource-container'));
+		data.resourceLaBel = this.laBels.create(laBelContainer);
 
 		return data;
 	}
 
-	renderElement(node: ITreeNode<ResourceWithCommentThreads>, index: number, templateData: IResourceTemplateData, height: number | undefined): void {
-		templateData.resourceLabel.setFile(node.element.resource);
+	renderElement(node: ITreeNode<ResourceWithCommentThreads>, index: numBer, templateData: IResourceTemplateData, height: numBer | undefined): void {
+		templateData.resourceLaBel.setFile(node.element.resource);
 	}
 
 	disposeTemplate(templateData: IResourceTemplateData): void {
-		templateData.resourceLabel.dispose();
+		templateData.resourceLaBel.dispose();
 	}
 }
 
@@ -109,27 +109,27 @@ export class CommentNodeRenderer implements IListRenderer<ITreeNode<CommentNode>
 	) { }
 
 	renderTemplate(container: HTMLElement) {
-		const data = <ICommentThreadTemplateData>Object.create(null);
-		const labelContainer = dom.append(container, dom.$('.comment-container'));
-		data.userName = dom.append(labelContainer, dom.$('.user'));
-		data.commentText = dom.append(labelContainer, dom.$('.text'));
-		data.disposables = [];
+		const data = <ICommentThreadTemplateData>OBject.create(null);
+		const laBelContainer = dom.append(container, dom.$('.comment-container'));
+		data.userName = dom.append(laBelContainer, dom.$('.user'));
+		data.commentText = dom.append(laBelContainer, dom.$('.text'));
+		data.disposaBles = [];
 
 		return data;
 	}
 
-	renderElement(node: ITreeNode<CommentNode>, index: number, templateData: ICommentThreadTemplateData, height: number | undefined): void {
+	renderElement(node: ITreeNode<CommentNode>, index: numBer, templateData: ICommentThreadTemplateData, height: numBer | undefined): void {
 		templateData.userName.textContent = node.element.comment.userName;
 		templateData.commentText.innerText = '';
-		const disposables = new DisposableStore();
-		templateData.disposables.push(disposables);
-		const renderedComment = renderMarkdown(node.element.comment.body, {
+		const disposaBles = new DisposaBleStore();
+		templateData.disposaBles.push(disposaBles);
+		const renderedComment = renderMarkdown(node.element.comment.Body, {
 			inline: true,
 			actionHandler: {
-				callback: (content) => {
+				callBack: (content) => {
 					this.openerService.open(content).catch(onUnexpectedError);
 				},
-				disposeables: disposables
+				disposeaBles: disposaBles
 			}
 		});
 
@@ -137,7 +137,7 @@ export class CommentNodeRenderer implements IListRenderer<ITreeNode<CommentNode>
 		for (let i = 0; i < images.length; i++) {
 			const image = images[i];
 			const textDescription = dom.$('');
-			textDescription.textContent = image.alt ? nls.localize('imageWithLabel', "Image: {0}", image.alt) : nls.localize('image', "Image");
+			textDescription.textContent = image.alt ? nls.localize('imageWithLaBel', "Image: {0}", image.alt) : nls.localize('image', "Image");
 			image.parentNode!.replaceChild(textDescription, image);
 		}
 
@@ -145,17 +145,17 @@ export class CommentNodeRenderer implements IListRenderer<ITreeNode<CommentNode>
 	}
 
 	disposeTemplate(templateData: ICommentThreadTemplateData): void {
-		templateData.disposables.forEach(disposeable => disposeable.dispose());
+		templateData.disposaBles.forEach(disposeaBle => disposeaBle.dispose());
 	}
 }
 
-export interface ICommentsListOptions extends IWorkbenchAsyncDataTreeOptions<any, any> {
+export interface ICommentsListOptions extends IWorkBenchAsyncDataTreeOptions<any, any> {
 	overrideStyles?: IColorMapping;
 }
 
-export class CommentsList extends WorkbenchAsyncDataTree<any, any> {
+export class CommentsList extends WorkBenchAsyncDataTree<any, any> {
 	constructor(
-		labels: ResourceLabels,
+		laBels: ResourceLaBels,
 		container: HTMLElement,
 		options: ICommentsListOptions,
 		@IContextKeyService contextKeyService: IContextKeyService,
@@ -163,14 +163,14 @@ export class CommentsList extends WorkbenchAsyncDataTree<any, any> {
 		@IThemeService themeService: IThemeService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@IKeybindingService keybindingService: IKeybindingService,
-		@IAccessibilityService accessibilityService: IAccessibilityService
+		@IKeyBindingService keyBindingService: IKeyBindingService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService
 	) {
 		const delegate = new CommentsModelVirualDelegate();
 		const dataSource = new CommentsAsyncDataSource();
 
 		const renderers = [
-			instantiationService.createInstance(ResourceWithCommentsRenderer, labels),
+			instantiationService.createInstance(ResourceWithCommentsRenderer, laBels),
 			instantiationService.createInstance(CommentNodeRenderer)
 		];
 
@@ -181,7 +181,7 @@ export class CommentsList extends WorkbenchAsyncDataTree<any, any> {
 			renderers,
 			dataSource,
 			{
-				accessibilityProvider: options.accessibilityProvider,
+				accessiBilityProvider: options.accessiBilityProvider,
 				identityProvider: {
 					getId: (element: any) => {
 						if (element instanceof CommentsModel) {
@@ -212,8 +212,8 @@ export class CommentsList extends WorkbenchAsyncDataTree<any, any> {
 			listService,
 			themeService,
 			configurationService,
-			keybindingService,
-			accessibilityService
+			keyBindingService,
+			accessiBilityService
 		);
 	}
 }

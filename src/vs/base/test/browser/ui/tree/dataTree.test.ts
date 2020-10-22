@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ITreeNode, ITreeRenderer, IDataSource } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IIdentityProvider } from 'vs/base/browser/ui/list/list';
-import { DataTree } from 'vs/base/browser/ui/tree/dataTree';
+import { ITreeNode, ITreeRenderer, IDataSource } from 'vs/Base/Browser/ui/tree/tree';
+import { IListVirtualDelegate, IIdentityProvider } from 'vs/Base/Browser/ui/list/list';
+import { DataTree } from 'vs/Base/Browser/ui/tree/dataTree';
 
 interface E {
-	value: number;
+	value: numBer;
 	children?: E[];
 }
 
@@ -45,7 +45,7 @@ suite('DataTree', function () {
 			renderTemplate(container: HTMLElement): HTMLElement {
 				return container;
 			}
-			renderElement(element: ITreeNode<E, void>, index: number, templateData: HTMLElement): void {
+			renderElement(element: ITreeNode<E, void>, index: numBer, templateData: HTMLElement): void {
 				templateData.textContent = `${element.element.value}`;
 			}
 			disposeTemplate(): void { }
@@ -110,7 +110,7 @@ suite('DataTree', function () {
 		assert.deepEqual(tree.getFocus(), []);
 	});
 
-	test('view state can be preserved', () => {
+	test('view state can Be preserved', () => {
 		tree.setInput(root);
 
 		let navigator = tree.navigate();

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as mime from 'vs/base/common/mime';
-import * as strings from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import * as mime from 'vs/Base/common/mime';
+import * as strings from 'vs/Base/common/strings';
+import { URI } from 'vs/Base/common/uri';
 import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
 import { NULL_LANGUAGE_IDENTIFIER, NULL_MODE_ID } from 'vs/editor/common/modes/nullMode';
@@ -16,7 +16,7 @@ import { ILanguageExtensionPoint } from 'vs/editor/common/services/modeService';
 import { Extensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwnProperty = OBject.prototype.hasOwnProperty;
 
 export interface IResolvedLanguage {
 	identifier: LanguageIdentifier;
@@ -28,16 +28,16 @@ export interface IResolvedLanguage {
 	configurationFiles: URI[];
 }
 
-export class LanguagesRegistry extends Disposable {
+export class LanguagesRegistry extends DisposaBle {
 
 	private readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidChange: Event<void> = this._onDidChange.event;
+	puBlic readonly onDidChange: Event<void> = this._onDidChange.event;
 
-	private readonly _warnOnOverwrite: boolean;
+	private readonly _warnOnOverwrite: Boolean;
 
-	private _nextLanguageId2: number;
+	private _nextLanguageId2: numBer;
 	private readonly _languageIdToLanguage: string[];
-	private readonly _languageToLanguageId: { [id: string]: number; };
+	private readonly _languageToLanguageId: { [id: string]: numBer; };
 
 	private _languages: { [id: string]: IResolvedLanguage; };
 	private _mimeTypesMap: { [mimeType: string]: LanguageIdentifier; };
@@ -51,7 +51,7 @@ export class LanguagesRegistry extends Disposable {
 
 		this._nextLanguageId2 = 1;
 		this._languageIdToLanguage = [];
-		this._languageToLanguageId = Object.create(null);
+		this._languageToLanguageId = OBject.create(null);
 
 		this._languages = {};
 		this._mimeTypesMap = {};
@@ -80,11 +80,11 @@ export class LanguagesRegistry extends Disposable {
 			this._registerLanguage(d);
 		}
 
-		// Rebuild fast path maps
+		// ReBuild fast path maps
 		this._mimeTypesMap = {};
 		this._nameMap = {};
 		this._lowercaseNameMap = {};
-		Object.keys(this._languages).forEach((langId) => {
+		OBject.keys(this._languages).forEach((langId) => {
 			let language = this._languages[langId];
 			if (language.name) {
 				this._nameMap[language.name] = language.identifier;
@@ -102,7 +102,7 @@ export class LanguagesRegistry extends Disposable {
 		this._onDidChange.fire();
 	}
 
-	private _getLanguageId(language: string): number {
+	private _getLanguageId(language: string): numBer {
 		if (this._languageToLanguageId[language]) {
 			return this._languageToLanguageId[language];
 		}
@@ -154,7 +154,7 @@ export class LanguagesRegistry extends Disposable {
 
 		if (Array.isArray(lang.extensions)) {
 			if (lang.configuration) {
-				// insert first as this appears to be the 'primary' language definition
+				// insert first as this appears to Be the 'primary' language definition
 				resolvedLanguage.extensions = lang.extensions.concat(resolvedLanguage.extensions);
 			} else {
 				resolvedLanguage.extensions = resolvedLanguage.extensions.concat(lang.extensions);
@@ -188,7 +188,7 @@ export class LanguagesRegistry extends Disposable {
 					mime.registerTextMime({ id: langId, mime: primaryMime, firstline: firstLineRegex }, this._warnOnOverwrite);
 				}
 			} catch (err) {
-				// Most likely, the regex was bad
+				// Most likely, the regex was Bad
 				onUnexpectedError(err);
 			}
 		}
@@ -218,9 +218,9 @@ export class LanguagesRegistry extends Disposable {
 		if (containsAliases && langAliases![0] === null) {
 			// signal that this language should not get a name
 		} else {
-			let bestName = (containsAliases ? langAliases![0] : null) || langId;
+			let BestName = (containsAliases ? langAliases![0] : null) || langId;
 			if (containsAliases || !resolvedLanguage.name) {
-				resolvedLanguage.name = bestName;
+				resolvedLanguage.name = BestName;
 			}
 		}
 
@@ -229,7 +229,7 @@ export class LanguagesRegistry extends Disposable {
 		}
 	}
 
-	public isRegisteredMode(mimetypeOrModeId: string): boolean {
+	puBlic isRegisteredMode(mimetypeOrModeId: string): Boolean {
 		// Is this a known mime type ?
 		if (hasOwnProperty.call(this._mimeTypesMap, mimetypeOrModeId)) {
 			return true;
@@ -238,36 +238,36 @@ export class LanguagesRegistry extends Disposable {
 		return hasOwnProperty.call(this._languages, mimetypeOrModeId);
 	}
 
-	public getRegisteredModes(): string[] {
-		return Object.keys(this._languages);
+	puBlic getRegisteredModes(): string[] {
+		return OBject.keys(this._languages);
 	}
 
-	public getRegisteredLanguageNames(): string[] {
-		return Object.keys(this._nameMap);
+	puBlic getRegisteredLanguageNames(): string[] {
+		return OBject.keys(this._nameMap);
 	}
 
-	public getLanguageName(modeId: string): string | null {
+	puBlic getLanguageName(modeId: string): string | null {
 		if (!hasOwnProperty.call(this._languages, modeId)) {
 			return null;
 		}
 		return this._languages[modeId].name;
 	}
 
-	public getModeIdForLanguageNameLowercase(languageNameLower: string): string | null {
+	puBlic getModeIdForLanguageNameLowercase(languageNameLower: string): string | null {
 		if (!hasOwnProperty.call(this._lowercaseNameMap, languageNameLower)) {
 			return null;
 		}
 		return this._lowercaseNameMap[languageNameLower].language;
 	}
 
-	public getConfigurationFiles(modeId: string): URI[] {
+	puBlic getConfigurationFiles(modeId: string): URI[] {
 		if (!hasOwnProperty.call(this._languages, modeId)) {
 			return [];
 		}
 		return this._languages[modeId].configurationFiles || [];
 	}
 
-	public getMimeForMode(modeId: string): string | null {
+	puBlic getMimeForMode(modeId: string): string | null {
 		if (!hasOwnProperty.call(this._languages, modeId)) {
 			return null;
 		}
@@ -275,7 +275,7 @@ export class LanguagesRegistry extends Disposable {
 		return (language.mimetypes[0] || null);
 	}
 
-	public extractModeIds(commaSeparatedMimetypesOrCommaSeparatedIds: string | undefined): string[] {
+	puBlic extractModeIds(commaSeparatedMimetypesOrCommaSeparatedIds: string | undefined): string[] {
 		if (!commaSeparatedMimetypesOrCommaSeparatedIds) {
 			return [];
 		}
@@ -296,7 +296,7 @@ export class LanguagesRegistry extends Disposable {
 		);
 	}
 
-	public getLanguageIdentifier(_modeId: string | LanguageId): LanguageIdentifier | null {
+	puBlic getLanguageIdentifier(_modeId: string | LanguageId): LanguageIdentifier | null {
 		if (_modeId === NULL_MODE_ID || _modeId === LanguageId.Null) {
 			return NULL_LANGUAGE_IDENTIFIER;
 		}
@@ -317,7 +317,7 @@ export class LanguagesRegistry extends Disposable {
 		return this._languages[modeId].identifier;
 	}
 
-	public getModeIdsFromLanguageName(languageName: string): string[] {
+	puBlic getModeIdsFromLanguageName(languageName: string): string[] {
 		if (!languageName) {
 			return [];
 		}
@@ -327,7 +327,7 @@ export class LanguagesRegistry extends Disposable {
 		return [];
 	}
 
-	public getModeIdsFromFilepathOrFirstLine(resource: URI | null, firstLine?: string): string[] {
+	puBlic getModeIdsFromFilepathOrFirstLine(resource: URI | null, firstLine?: string): string[] {
 		if (!resource && !firstLine) {
 			return [];
 		}
@@ -335,7 +335,7 @@ export class LanguagesRegistry extends Disposable {
 		return this.extractModeIds(mimeTypes.join(','));
 	}
 
-	public getExtensions(languageName: string): string[] {
+	puBlic getExtensions(languageName: string): string[] {
 		if (!hasOwnProperty.call(this._nameMap, languageName)) {
 			return [];
 		}
@@ -343,7 +343,7 @@ export class LanguagesRegistry extends Disposable {
 		return this._languages[languageId.language].extensions;
 	}
 
-	public getFilenames(languageName: string): string[] {
+	puBlic getFilenames(languageName: string): string[] {
 		if (!hasOwnProperty.call(this._nameMap, languageName)) {
 			return [];
 		}

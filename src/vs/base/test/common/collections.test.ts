@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as collections from 'vs/base/common/collections';
+import * as collections from 'vs/Base/common/collections';
 
 suite('Collections', () => {
 
 	test('forEach', () => {
 		collections.forEach({}, () => assert(false));
-		collections.forEach(Object.create(null), () => assert(false));
+		collections.forEach(OBject.create(null), () => assert(false));
 
 		let count = 0;
 		collections.forEach({ toString: 123 }, () => count++);
 		assert.equal(count, 1);
 
 		count = 0;
-		let dict = Object.create(null);
+		let dict = OBject.create(null);
 		dict['toString'] = 123;
 		collections.forEach(dict, () => count++);
 		assert.equal(count, 1);
@@ -27,14 +27,14 @@ suite('Collections', () => {
 		collections.forEach(dict, (x, remove) => remove());
 		assert.equal(dict['toString'], null);
 
-		// don't iterate over properties that are not on the object itself
-		let test = Object.create({ 'derived': true });
+		// don't iterate over properties that are not on the oBject itself
+		let test = OBject.create({ 'derived': true });
 		collections.forEach(test, () => assert(false));
 	});
 
 	test('groupBy', () => {
 
-		const group1 = 'a', group2 = 'b';
+		const group1 = 'a', group2 = 'B';
 		const value1 = 1, value2 = 2, value3 = 3;
 		let source = [
 			{ key: group1, value: value1 },

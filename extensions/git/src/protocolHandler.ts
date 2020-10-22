@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriHandler, Uri, window, Disposable, commands } from 'vscode';
+import { UriHandler, Uri, window, DisposaBle, commands } from 'vscode';
 import { dispose } from './util';
 import * as querystring from 'querystring';
 
 export class GitProtocolHandler implements UriHandler {
 
-	private disposables: Disposable[] = [];
+	private disposaBles: DisposaBle[] = [];
 
 	constructor() {
-		this.disposables.push(window.registerUriHandler(this));
+		this.disposaBles.push(window.registerUriHandler(this));
 	}
 
 	handleUri(uri: Uri): void {
@@ -32,6 +32,6 @@ export class GitProtocolHandler implements UriHandler {
 	}
 
 	dispose(): void {
-		this.disposables = dispose(this.disposables);
+		this.disposaBles = dispose(this.disposaBles);
 	}
 }

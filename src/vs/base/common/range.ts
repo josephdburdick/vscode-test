@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface IRange {
-	start: number;
-	end: number;
+	start: numBer;
+	end: numBer;
 }
 
 export interface IRangedGroup {
 	range: IRange;
-	size: number;
+	size: numBer;
 }
 
 export namespace Range {
 
 	/**
-	 * Returns the intersection between two ranges as a range itself.
+	 * Returns the intersection Between two ranges as a range itself.
 	 * Returns `{ start: 0, end: 0 }` if the intersection is empty.
 	 */
 	export function intersect(one: IRange, other: IRange): IRange {
@@ -34,11 +34,11 @@ export namespace Range {
 		return { start, end };
 	}
 
-	export function isEmpty(range: IRange): boolean {
+	export function isEmpty(range: IRange): Boolean {
 		return range.end - range.start <= 0;
 	}
 
-	export function intersects(one: IRange, other: IRange): boolean {
+	export function intersects(one: IRange, other: IRange): Boolean {
 		return !isEmpty(intersect(one, other));
 	}
 

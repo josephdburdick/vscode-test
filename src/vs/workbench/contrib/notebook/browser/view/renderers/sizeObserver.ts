@@ -3,43 +3,43 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * as DOM from 'vs/Base/Browser/dom';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IDimension } from 'vs/editor/common/editorCommon';
-import { ElementSizeObserver } from 'vs/editor/browser/config/elementSizeObserver';
+import { ElementSizeOBserver } from 'vs/editor/Browser/config/elementSizeOBserver';
 
-declare const ResizeObserver: any;
+declare const ResizeOBserver: any;
 
-export interface IResizeObserver {
-	startObserving: () => void;
-	stopObserving: () => void;
-	getWidth(): number;
-	getHeight(): number;
+export interface IResizeOBserver {
+	startOBserving: () => void;
+	stopOBserving: () => void;
+	getWidth(): numBer;
+	getHeight(): numBer;
 	dispose(): void;
 }
 
-export class BrowserResizeObserver extends Disposable implements IResizeObserver {
+export class BrowserResizeOBserver extends DisposaBle implements IResizeOBserver {
 	private readonly referenceDomElement: HTMLElement | null;
 
-	private readonly observer: any;
-	private width: number;
-	private height: number;
+	private readonly oBserver: any;
+	private width: numBer;
+	private height: numBer;
 
-	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallback: () => void) {
+	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallBack: () => void) {
 		super();
 
 		this.referenceDomElement = referenceDomElement;
 		this.width = -1;
 		this.height = -1;
 
-		this.observer = new ResizeObserver((entries: any) => {
+		this.oBserver = new ResizeOBserver((entries: any) => {
 			for (const entry of entries) {
 				if (entry.target === referenceDomElement && entry.contentRect) {
 					if (this.width !== entry.contentRect.width || this.height !== entry.contentRect.height) {
 						this.width = entry.contentRect.width;
 						this.height = entry.contentRect.height;
 						DOM.scheduleAtNextAnimationFrame(() => {
-							changeCallback();
+							changeCallBack();
 						});
 					}
 				}
@@ -47,32 +47,32 @@ export class BrowserResizeObserver extends Disposable implements IResizeObserver
 		});
 	}
 
-	getWidth(): number {
+	getWidth(): numBer {
 		return this.width;
 	}
 
-	getHeight(): number {
+	getHeight(): numBer {
 		return this.height;
 	}
 
-	startObserving(): void {
-		this.observer.observe(this.referenceDomElement!);
+	startOBserving(): void {
+		this.oBserver.oBserve(this.referenceDomElement!);
 	}
 
-	stopObserving(): void {
-		this.observer.unobserve(this.referenceDomElement!);
+	stopOBserving(): void {
+		this.oBserver.unoBserve(this.referenceDomElement!);
 	}
 
 	dispose(): void {
-		this.observer.disconnect();
+		this.oBserver.disconnect();
 		super.dispose();
 	}
 }
 
-export function getResizesObserver(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallback: () => void): IResizeObserver {
-	if (ResizeObserver) {
-		return new BrowserResizeObserver(referenceDomElement, dimension, changeCallback);
+export function getResizesOBserver(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallBack: () => void): IResizeOBserver {
+	if (ResizeOBserver) {
+		return new BrowserResizeOBserver(referenceDomElement, dimension, changeCallBack);
 	} else {
-		return new ElementSizeObserver(referenceDomElement, dimension, changeCallback);
+		return new ElementSizeOBserver(referenceDomElement, dimension, changeCallBack);
 	}
 }

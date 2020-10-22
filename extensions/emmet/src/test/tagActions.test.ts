@@ -142,7 +142,7 @@ suite('Tests for Emmet actions on html tags', () => {
 		});
 	});
 
-	test('remove tag with boundary conditions', () => {
+	test('remove tag with Boundary conditions', () => {
 		const expectedContents = `
 	<div class="hello">
 		<ul>
@@ -217,7 +217,7 @@ suite('Tests for Emmet actions on html tags', () => {
 		});
 	});
 
-	test('split/join tag with boundary selection', () => {
+	test('split/join tag with Boundary selection', () => {
 		const expectedContents = `
 	<div class="hello">
 		<ul>
@@ -277,7 +277,7 @@ suite('Tests for Emmet actions on html tags', () => {
 	</div>
 	`;
 		const oldValueForSyntaxProfiles = workspace.getConfiguration('emmet').inspect('syntaxProfiles');
-		return workspace.getConfiguration('emmet').update('syntaxProfiles', { jsx: { selfClosingStyle: 'xhtml' } }, ConfigurationTarget.Global).then(() => {
+		return workspace.getConfiguration('emmet').update('syntaxProfiles', { jsx: { selfClosingStyle: 'xhtml' } }, ConfigurationTarget.GloBal).then(() => {
 			return withRandomFileEditor(contents, 'jsx', (editor, doc) => {
 				editor.selections = [
 					new Selection(3, 17, 3, 17), // join tag
@@ -286,7 +286,7 @@ suite('Tests for Emmet actions on html tags', () => {
 
 				return splitJoinTag()!.then(() => {
 					assert.equal(doc.getText(), expectedContents);
-					return workspace.getConfiguration('emmet').update('syntaxProfiles', oldValueForSyntaxProfiles ? oldValueForSyntaxProfiles.globalValue : undefined, ConfigurationTarget.Global);
+					return workspace.getConfiguration('emmet').update('syntaxProfiles', oldValueForSyntaxProfiles ? oldValueForSyntaxProfiles.gloBalValue : undefined, ConfigurationTarget.GloBal);
 				});
 			});
 		});
@@ -297,11 +297,11 @@ suite('Tests for Emmet actions on html tags', () => {
 	test('match tag with mutliple cursors', () => {
 		return withRandomFileEditor(contents, 'html', (editor, _) => {
 			editor.selections = [
-				new Selection(1, 0, 1, 0), // just before tag starts, i.e before <
-				new Selection(1, 1, 1, 1), // just before tag name starts
+				new Selection(1, 0, 1, 0), // just Before tag starts, i.e Before <
+				new Selection(1, 1, 1, 1), // just Before tag name starts
 				new Selection(1, 2, 1, 2), // inside tag name
-				new Selection(1, 6, 1, 6), // after tag name but before opening tag ends
-				new Selection(1, 18, 1, 18), // just before opening tag ends
+				new Selection(1, 6, 1, 6), // after tag name But Before opening tag ends
+				new Selection(1, 18, 1, 18), // just Before opening tag ends
 				new Selection(1, 19, 1, 19), // just after opening tag ends
 			];
 
@@ -328,7 +328,7 @@ suite('Tests for Emmet actions on html tags', () => {
 
 		return withRandomFileEditor(templateScript, 'html', (editor, _) => {
 			editor.selections = [
-				new Selection(2, 2, 2, 2), // just before div tag starts, i.e before <
+				new Selection(2, 2, 2, 2), // just Before div tag starts, i.e Before <
 			];
 
 			matchTag();

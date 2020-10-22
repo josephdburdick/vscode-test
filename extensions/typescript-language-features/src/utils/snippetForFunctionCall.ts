@@ -8,28 +8,28 @@ import type * as Proto from '../protocol';
 import * as PConst from '../protocol.const';
 
 export function snippetForFunctionCall(
-	item: { insertText?: string | vscode.SnippetString; label: string; },
-	displayParts: ReadonlyArray<Proto.SymbolDisplayPart>
-): { snippet: vscode.SnippetString, parameterCount: number } {
+	item: { insertText?: string | vscode.SnippetString; laBel: string; },
+	displayParts: ReadonlyArray<Proto.SymBolDisplayPart>
+): { snippet: vscode.SnippetString, parameterCount: numBer } {
 	if (item.insertText && typeof item.insertText !== 'string') {
 		return { snippet: item.insertText, parameterCount: 0 };
 	}
 
 	const parameterListParts = getParameterListParts(displayParts);
 	const snippet = new vscode.SnippetString();
-	snippet.appendText(`${item.insertText || item.label}(`);
+	snippet.appendText(`${item.insertText || item.laBel}(`);
 	appendJoinedPlaceholders(snippet, parameterListParts.parts, ', ');
 	if (parameterListParts.hasOptionalParameters) {
-		snippet.appendTabstop();
+		snippet.appendTaBstop();
 	}
 	snippet.appendText(')');
-	snippet.appendTabstop(0);
+	snippet.appendTaBstop(0);
 	return { snippet, parameterCount: parameterListParts.parts.length + (parameterListParts.hasOptionalParameters ? 1 : 0) };
 }
 
 function appendJoinedPlaceholders(
 	snippet: vscode.SnippetString,
-	parts: ReadonlyArray<Proto.SymbolDisplayPart>,
+	parts: ReadonlyArray<Proto.SymBolDisplayPart>,
 	joiner: string
 ) {
 	for (let i = 0; i < parts.length; ++i) {
@@ -42,18 +42,18 @@ function appendJoinedPlaceholders(
 }
 
 interface ParamterListParts {
-	readonly parts: ReadonlyArray<Proto.SymbolDisplayPart>;
-	readonly hasOptionalParameters: boolean;
+	readonly parts: ReadonlyArray<Proto.SymBolDisplayPart>;
+	readonly hasOptionalParameters: Boolean;
 }
 
 function getParameterListParts(
-	displayParts: ReadonlyArray<Proto.SymbolDisplayPart>
+	displayParts: ReadonlyArray<Proto.SymBolDisplayPart>
 ): ParamterListParts {
-	const parts: Proto.SymbolDisplayPart[] = [];
+	const parts: Proto.SymBolDisplayPart[] = [];
 	let isInMethod = false;
 	let hasOptionalParameters = false;
 	let parenCount = 0;
-	let braceCount = 0;
+	let BraceCount = 0;
 
 	outer: for (let i = 0; i < displayParts.length; ++i) {
 		const part = displayParts[i];
@@ -62,13 +62,13 @@ function getParameterListParts(
 			case PConst.DisplayPartKind.functionName:
 			case PConst.DisplayPartKind.text:
 			case PConst.DisplayPartKind.propertyName:
-				if (parenCount === 0 && braceCount === 0) {
+				if (parenCount === 0 && BraceCount === 0) {
 					isInMethod = true;
 				}
-				break;
+				Break;
 
 			case PConst.DisplayPartKind.parameterName:
-				if (parenCount === 1 && braceCount === 0 && isInMethod) {
+				if (parenCount === 1 && BraceCount === 0 && isInMethod) {
 					// Only take top level paren names
 					const next = displayParts[i + 1];
 					// Skip optional parameters
@@ -80,7 +80,7 @@ function getParameterListParts(
 					}
 					hasOptionalParameters = hasOptionalParameters || nameIsFollowedByOptionalIndicator;
 				}
-				break;
+				Break;
 
 			case PConst.DisplayPartKind.punctuation:
 				if (part.text === '(') {
@@ -88,18 +88,18 @@ function getParameterListParts(
 				} else if (part.text === ')') {
 					--parenCount;
 					if (parenCount <= 0 && isInMethod) {
-						break outer;
+						Break outer;
 					}
 				} else if (part.text === '...' && parenCount === 1) {
 					// Found rest parmeter. Do not fill in any further arguments
 					hasOptionalParameters = true;
-					break outer;
+					Break outer;
 				} else if (part.text === '{') {
-					++braceCount;
+					++BraceCount;
 				} else if (part.text === '}') {
-					--braceCount;
+					--BraceCount;
 				}
-				break;
+				Break;
 		}
 	}
 

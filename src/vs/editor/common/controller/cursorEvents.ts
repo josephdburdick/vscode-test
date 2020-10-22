@@ -7,7 +7,7 @@ import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 
 /**
- * Describes the reason the cursor has changed its position.
+ * DescriBes the reason the cursor has changed its position.
  */
 export const enum CursorChangeReason {
 	/**
@@ -19,7 +19,7 @@ export const enum CursorChangeReason {
 	 */
 	ContentFlush = 1,
 	/**
-	 * The `model` has been changed outside of this cursor and the cursor recovers its position from associated markers.
+	 * The `model` has Been changed outside of this cursor and the cursor recovers its position from associated markers.
 	 */
 	RecoverFromMarkers = 2,
 	/**
@@ -40,7 +40,7 @@ export const enum CursorChangeReason {
 	Redo = 6,
 }
 /**
- * An event describing that the cursor position has changed.
+ * An event descriBing that the cursor position has changed.
  */
 export interface ICursorPositionChangedEvent {
 	/**
@@ -61,7 +61,7 @@ export interface ICursorPositionChangedEvent {
 	readonly source: string;
 }
 /**
- * An event describing that the cursor selection has changed.
+ * An event descriBing that the cursor selection has changed.
  */
 export interface ICursorSelectionChangedEvent {
 	/**
@@ -75,7 +75,7 @@ export interface ICursorSelectionChangedEvent {
 	/**
 	 * The model version id.
 	 */
-	readonly modelVersionId: number;
+	readonly modelVersionId: numBer;
 	/**
 	 * The old selections.
 	 */
@@ -83,7 +83,7 @@ export interface ICursorSelectionChangedEvent {
 	/**
 	 * The model version id the that `oldSelections` refer to.
 	 */
-	readonly oldModelVersionId: number;
+	readonly oldModelVersionId: numBer;
 	/**
 	 * Source of the call that caused the event.
 	 */

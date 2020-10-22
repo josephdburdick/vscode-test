@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMarkdownString } from 'vs/base/common/htmlContent';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { IMarkdownString } from 'vs/Base/common/htmlContent';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { ConfigurationChangedEvent, IComputedEditorOptions, IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
@@ -15,34 +15,34 @@ import { IModelDecorationsChangeAccessor, ITextModel, OverviewRulerLane, Tracked
 import { ThemeColor } from 'vs/platform/theme/common/themeService';
 
 /**
- * A builder and helper for edit operations for a command.
+ * A Builder and helper for edit operations for a command.
  */
 export interface IEditOperationBuilder {
 	/**
 	 * Add a new edit operation (a replace operation).
-	 * @param range The range to replace (delete). May be empty to represent a simple insert.
-	 * @param text The text to replace with. May be null to represent a simple delete.
+	 * @param range The range to replace (delete). May Be empty to represent a simple insert.
+	 * @param text The text to replace with. May Be null to represent a simple delete.
 	 */
-	addEditOperation(range: IRange, text: string | null, forceMoveMarkers?: boolean): void;
+	addEditOperation(range: IRange, text: string | null, forceMoveMarkers?: Boolean): void;
 
 	/**
 	 * Add a new edit operation (a replace operation).
-	 * The inverse edits will be accessible in `ICursorStateComputerData.getInverseEditOperations()`
-	 * @param range The range to replace (delete). May be empty to represent a simple insert.
-	 * @param text The text to replace with. May be null to represent a simple delete.
+	 * The inverse edits will Be accessiBle in `ICursorStateComputerData.getInverseEditOperations()`
+	 * @param range The range to replace (delete). May Be empty to represent a simple insert.
+	 * @param text The text to replace with. May Be null to represent a simple delete.
 	 */
-	addTrackedEditOperation(range: IRange, text: string | null, forceMoveMarkers?: boolean): void;
+	addTrackedEditOperation(range: IRange, text: string | null, forceMoveMarkers?: Boolean): void;
 
 	/**
 	 * Track `selection` when applying edit operations.
-	 * A best effort will be made to not grow/expand the selection.
-	 * An empty selection will clamp to a nearby character.
+	 * A Best effort will Be made to not grow/expand the selection.
+	 * An empty selection will clamp to a nearBy character.
 	 * @param selection The selection to track.
 	 * @param trackPreviousOnEmpty If set, and the selection is empty, indicates whether the selection
 	 *           should clamp to the previous or the next character.
 	 * @return A unique identifier.
 	 */
-	trackSelection(selection: Selection, trackPreviousOnEmpty?: boolean): string;
+	trackSelection(selection: Selection, trackPreviousOnEmpty?: Boolean): string;
 }
 
 /**
@@ -55,7 +55,7 @@ export interface ICursorStateComputerData {
 	getInverseEditOperations(): IValidEditOperation[];
 	/**
 	 * Get a previously tracked selection.
-	 * @param id The unique identifier returned by `trackSelection`.
+	 * @param id The unique identifier returned By `trackSelection`.
 	 * @return The selection.
 	 */
 	getTrackedSelection(id: string): Selection;
@@ -67,17 +67,17 @@ export interface ICursorStateComputerData {
 export interface ICommand {
 
 	/**
-	 * Signal that this command is inserting automatic whitespace that should be trimmed if possible.
+	 * Signal that this command is inserting automatic whitespace that should Be trimmed if possiBle.
 	 * @internal
 	 */
-	readonly insertsAutoWhitespace?: boolean;
+	readonly insertsAutoWhitespace?: Boolean;
 
 	/**
 	 * Get the edit operations needed to execute this command.
 	 * @param model The model the command will execute on.
-	 * @param builder A helper to collect the needed edit operations and to track selections.
+	 * @param Builder A helper to collect the needed edit operations and to track selections.
 	 */
-	getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void;
+	getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void;
 
 	/**
 	 * Compute the cursor state after the edit operations were applied.
@@ -103,7 +103,7 @@ export interface IDiffEditorModel {
 }
 
 /**
- * An event describing that an editor has had its model reset (i.e. `editor.setModel()`).
+ * An event descriBing that an editor has had its model reset (i.e. `editor.setModel()`).
  */
 export interface IModelChangedEvent {
 	/**
@@ -117,27 +117,27 @@ export interface IModelChangedEvent {
 }
 
 export interface IDimension {
-	width: number;
-	height: number;
+	width: numBer;
+	height: numBer;
 }
 
 /**
  * A change
  */
 export interface IChange {
-	readonly originalStartLineNumber: number;
-	readonly originalEndLineNumber: number;
-	readonly modifiedStartLineNumber: number;
-	readonly modifiedEndLineNumber: number;
+	readonly originalStartLineNumBer: numBer;
+	readonly originalEndLineNumBer: numBer;
+	readonly modifiedStartLineNumBer: numBer;
+	readonly modifiedEndLineNumBer: numBer;
 }
 /**
  * A character level change.
  */
 export interface ICharChange extends IChange {
-	readonly originalStartColumn: number;
-	readonly originalEndColumn: number;
-	readonly modifiedStartColumn: number;
-	readonly modifiedEndColumn: number;
+	readonly originalStartColumn: numBer;
+	readonly originalEndColumn: numBer;
+	readonly modifiedStartColumn: numBer;
+	readonly modifiedEndColumn: numBer;
 }
 /**
  * A line change
@@ -149,87 +149,87 @@ export interface ILineChange extends IChange {
 /**
  * @internal
  */
-export interface IConfiguration extends IDisposable {
-	onDidChangeFast(listener: (e: ConfigurationChangedEvent) => void): IDisposable;
-	onDidChange(listener: (e: ConfigurationChangedEvent) => void): IDisposable;
+export interface IConfiguration extends IDisposaBle {
+	onDidChangeFast(listener: (e: ConfigurationChangedEvent) => void): IDisposaBle;
+	onDidChange(listener: (e: ConfigurationChangedEvent) => void): IDisposaBle;
 
 	readonly options: IComputedEditorOptions;
 
-	setMaxLineNumber(maxLineNumber: number): void;
-	setViewLineCount(viewLineCount: number): void;
+	setMaxLineNumBer(maxLineNumBer: numBer): void;
+	setViewLineCount(viewLineCount: numBer): void;
 	updateOptions(newOptions: IEditorOptions): void;
 	getRawOptions(): IEditorOptions;
-	observeReferenceElement(dimension?: IDimension): void;
-	setIsDominatedByLongLines(isDominatedByLongLines: boolean): void;
+	oBserveReferenceElement(dimension?: IDimension): void;
+	setIsDominatedByLongLines(isDominatedByLongLines: Boolean): void;
 }
 
 // --- view
 
 export interface IScrollEvent {
-	readonly scrollTop: number;
-	readonly scrollLeft: number;
-	readonly scrollWidth: number;
-	readonly scrollHeight: number;
+	readonly scrollTop: numBer;
+	readonly scrollLeft: numBer;
+	readonly scrollWidth: numBer;
+	readonly scrollHeight: numBer;
 
-	readonly scrollTopChanged: boolean;
-	readonly scrollLeftChanged: boolean;
-	readonly scrollWidthChanged: boolean;
-	readonly scrollHeightChanged: boolean;
+	readonly scrollTopChanged: Boolean;
+	readonly scrollLeftChanged: Boolean;
+	readonly scrollWidthChanged: Boolean;
+	readonly scrollHeightChanged: Boolean;
 }
 
 export interface IContentSizeChangedEvent {
-	readonly contentWidth: number;
-	readonly contentHeight: number;
+	readonly contentWidth: numBer;
+	readonly contentHeight: numBer;
 
-	readonly contentWidthChanged: boolean;
-	readonly contentHeightChanged: boolean;
+	readonly contentWidthChanged: Boolean;
+	readonly contentHeightChanged: Boolean;
 }
 
 export interface INewScrollPosition {
-	scrollLeft?: number;
-	scrollTop?: number;
+	scrollLeft?: numBer;
+	scrollTop?: numBer;
 }
 
 export interface IEditorAction {
 	readonly id: string;
-	readonly label: string;
+	readonly laBel: string;
 	readonly alias: string;
-	isSupported(): boolean;
+	isSupported(): Boolean;
 	run(): Promise<void>;
 }
 
 export type IEditorModel = ITextModel | IDiffEditorModel;
 
 /**
- * A (serializable) state of the cursors.
+ * A (serializaBle) state of the cursors.
  */
 export interface ICursorState {
-	inSelectionMode: boolean;
+	inSelectionMode: Boolean;
 	selectionStart: IPosition;
 	position: IPosition;
 }
 /**
- * A (serializable) state of the view.
+ * A (serializaBle) state of the view.
  */
 export interface IViewState {
-	/** written by previous versions */
-	scrollTop?: number;
-	/** written by previous versions */
-	scrollTopWithoutViewZones?: number;
-	scrollLeft: number;
+	/** written By previous versions */
+	scrollTop?: numBer;
+	/** written By previous versions */
+	scrollTopWithoutViewZones?: numBer;
+	scrollLeft: numBer;
 	firstPosition: IPosition;
-	firstPositionDeltaTop: number;
+	firstPositionDeltaTop: numBer;
 }
 /**
- * A (serializable) state of the code editor.
+ * A (serializaBle) state of the code editor.
  */
 export interface ICodeEditorViewState {
 	cursorState: ICursorState[];
 	viewState: IViewState;
-	contributionsState: { [id: string]: any };
+	contriButionsState: { [id: string]: any };
 }
 /**
- * (Serializable) View state for the diff editor.
+ * (SerializaBle) View state for the diff editor.
  */
 export interface IDiffEditorViewState {
 	original: ICodeEditorViewState | null;
@@ -250,10 +250,10 @@ export const enum ScrollType {
  */
 export interface IEditor {
 	/**
-	 * An event emitted when the editor has been disposed.
+	 * An event emitted when the editor has Been disposed.
 	 * @event
 	 */
-	onDidDispose(listener: () => void): IDisposable;
+	onDidDispose(listener: () => void): IDisposaBle;
 
 	/**
 	 * Dispose the editor.
@@ -272,39 +272,39 @@ export interface IEditor {
 	getEditorType(): string;
 
 	/**
-	 * Update the editor's options after the editor has been created.
+	 * Update the editor's options after the editor has Been created.
 	 */
 	updateOptions(newOptions: IEditorOptions): void;
 
 	/**
-	 * Indicates that the editor becomes visible.
+	 * Indicates that the editor Becomes visiBle.
 	 * @internal
 	 */
-	onVisible(): void;
+	onVisiBle(): void;
 
 	/**
-	 * Indicates that the editor becomes hidden.
+	 * Indicates that the editor Becomes hidden.
 	 * @internal
 	 */
 	onHide(): void;
 
 	/**
 	 * Instructs the editor to remeasure its container. This method should
-	 * be called when the container of the editor gets resized.
+	 * Be called when the container of the editor gets resized.
 	 *
-	 * If a dimension is passed in, the passed in value will be used.
+	 * If a dimension is passed in, the passed in value will Be used.
 	 */
 	layout(dimension?: IDimension): void;
 
 	/**
-	 * Brings browser focus to the editor text
+	 * Brings Browser focus to the editor text
 	 */
 	focus(): void;
 
 	/**
-	 * Returns true if the text inside this editor is focused (i.e. cursor is blinking).
+	 * Returns true if the text inside this editor is focused (i.e. cursor is Blinking).
 	 */
-	hasTextFocus(): boolean;
+	hasTextFocus(): Boolean;
 
 	/**
 	 * Returns all actions associated with this editor.
@@ -312,25 +312,25 @@ export interface IEditor {
 	getSupportedActions(): IEditorAction[];
 
 	/**
-	 * Saves current view state of the editor in a serializable object.
+	 * Saves current view state of the editor in a serializaBle oBject.
 	 */
 	saveViewState(): IEditorViewState | null;
 
 	/**
-	 * Restores the view state of the editor from a serializable object generated by `saveViewState`.
+	 * Restores the view state of the editor from a serializaBle oBject generated By `saveViewState`.
 	 */
 	restoreViewState(state: IEditorViewState): void;
 
 	/**
-	 * Given a position, returns a column number that takes tab-widths into account.
+	 * Given a position, returns a column numBer that takes taB-widths into account.
 	 */
-	getVisibleColumnFromPosition(position: IPosition): number;
+	getVisiBleColumnFromPosition(position: IPosition): numBer;
 
 	/**
-	 * Given a position, returns a column number that takes tab-widths into account.
+	 * Given a position, returns a column numBer that takes taB-widths into account.
 	 * @internal
 	 */
-	getStatusbarColumn(position: IPosition): number;
+	getStatusBarColumn(position: IPosition): numBer;
 
 	/**
 	 * Returns the primary position of the cursor.
@@ -346,23 +346,23 @@ export interface IEditor {
 	/**
 	 * Scroll vertically as necessary and reveal a line.
 	 */
-	revealLine(lineNumber: number, scrollType?: ScrollType): void;
+	revealLine(lineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal a line centered vertically.
 	 */
-	revealLineInCenter(lineNumber: number, scrollType?: ScrollType): void;
+	revealLineInCenter(lineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport.
 	 */
-	revealLineInCenterIfOutsideViewport(lineNumber: number, scrollType?: ScrollType): void;
+	revealLineInCenterIfOutsideViewport(lineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal a line close to the top of the viewport,
 	 * optimized for viewing a code definition.
 	 */
-	revealLineNearTop(lineNumber: number, scrollType?: ScrollType): void;
+	revealLineNearTop(lineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically or horizontally as necessary and reveal a position.
@@ -418,30 +418,30 @@ export interface IEditor {
 
 	/**
 	 * Set the selections for all the cursors of the editor.
-	 * Cursors will be removed or added, as necessary.
+	 * Cursors will Be removed or added, as necessary.
 	 */
 	setSelections(selections: readonly ISelection[]): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal lines.
 	 */
-	revealLines(startLineNumber: number, endLineNumber: number, scrollType?: ScrollType): void;
+	revealLines(startLineNumBer: numBer, endLineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal lines centered vertically.
 	 */
-	revealLinesInCenter(lineNumber: number, endLineNumber: number, scrollType?: ScrollType): void;
+	revealLinesInCenter(lineNumBer: numBer, endLineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal lines centered vertically only if it lies outside the viewport.
 	 */
-	revealLinesInCenterIfOutsideViewport(lineNumber: number, endLineNumber: number, scrollType?: ScrollType): void;
+	revealLinesInCenterIfOutsideViewport(lineNumBer: numBer, endLineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically as necessary and reveal lines close to the top of the viewport,
 	 * optimized for viewing a code definition.
 	 */
-	revealLinesNearTop(lineNumber: number, endLineNumber: number, scrollType?: ScrollType): void;
+	revealLinesNearTop(lineNumBer: numBer, endLineNumBer: numBer, scrollType?: ScrollType): void;
 
 	/**
 	 * Scroll vertically or horizontally as necessary and reveal a range.
@@ -478,8 +478,8 @@ export interface IEditor {
 	/**
 	 * Directly trigger a handler or an editor action.
 	 * @param source The source of the call.
-	 * @param handlerId The id of the handler or the id of a contribution.
-	 * @param payload Extra data to be sent to the handler.
+	 * @param handlerId The id of the handler or the id of a contriBution.
+	 * @param payload Extra data to Be sent to the handler.
 	 */
 	trigger(source: string | null | undefined, handlerId: string, payload: any): void;
 
@@ -490,10 +490,10 @@ export interface IEditor {
 
 	/**
 	 * Sets the current model attached to this editor.
-	 * If the previous model was created by the editor via the value key in the options
-	 * literal object, it will be destroyed. Otherwise, if the previous model was set
-	 * via setModel, or the model key in the options literal object, the previous model
-	 * will not be destroyed.
+	 * If the previous model was created By the editor via the value key in the options
+	 * literal oBject, it will Be destroyed. Otherwise, if the previous model was set
+	 * via setModel, or the model key in the options literal oBject, the previous model
+	 * will not Be destroyed.
 	 * It is safe to call setModel(null) to simply detach the current model from the editor.
 	 */
 	setModel(model: IEditorModel | null): void;
@@ -505,7 +505,7 @@ export interface IEditor {
 	 * @see `ITextModel.changeDecorations`
 	 * @internal
 	 */
-	changeDecorations(callback: (changeAccessor: IModelDecorationsChangeAccessor) => any): any;
+	changeDecorations(callBack: (changeAccessor: IModelDecorationsChangeAccessor) => any): any;
 }
 
 /**
@@ -545,16 +545,16 @@ export interface ICompositeCodeEditor {
 	 * The active code editor iff any
 	 */
 	readonly activeCodeEditor: IEditor | undefined;
-	// readonly editors: readonly ICodeEditor[] maybe supported with uris
+	// readonly editors: readonly ICodeEditor[] mayBe supported with uris
 }
 
 
 /**
- * An editor contribution that gets created every time a new editor gets created and gets disposed when the editor gets disposed.
+ * An editor contriBution that gets created every time a new editor gets created and gets disposed when the editor gets disposed.
  */
-export interface IEditorContribution {
+export interface IEditorContriBution {
 	/**
-	 * Dispose this contribution.
+	 * Dispose this contriBution.
 	 */
 	dispose(): void;
 	/**
@@ -568,12 +568,12 @@ export interface IEditorContribution {
 }
 
 /**
- * A diff editor contribution that gets created every time a new  diffeditor gets created and gets disposed when the diff editor gets disposed.
+ * A diff editor contriBution that gets created every time a new  diffeditor gets created and gets disposed when the diff editor gets disposed.
  * @internal
  */
-export interface IDiffEditorContribution {
+export interface IDiffEditorContriBution {
 	/**
-	 * Dispose this contribution.
+	 * Dispose this contriBution.
 	 */
 	dispose(): void;
 }
@@ -589,19 +589,19 @@ export function isThemeColor(o: any): o is ThemeColor {
  * @internal
  */
 export interface IThemeDecorationRenderOptions {
-	backgroundColor?: string | ThemeColor;
+	BackgroundColor?: string | ThemeColor;
 
 	outline?: string;
 	outlineColor?: string | ThemeColor;
 	outlineStyle?: string;
 	outlineWidth?: string;
 
-	border?: string;
-	borderColor?: string | ThemeColor;
-	borderRadius?: string;
-	borderSpacing?: string;
-	borderStyle?: string;
-	borderWidth?: string;
+	Border?: string;
+	BorderColor?: string | ThemeColor;
+	BorderRadius?: string;
+	BorderSpacing?: string;
+	BorderStyle?: string;
+	BorderWidth?: string;
 
 	fontStyle?: string;
 	fontWeight?: string;
@@ -616,7 +616,7 @@ export interface IThemeDecorationRenderOptions {
 
 	overviewRulerColor?: string | ThemeColor;
 
-	before?: IContentDecorationRenderOptions;
+	Before?: IContentDecorationRenderOptions;
 	after?: IContentDecorationRenderOptions;
 }
 
@@ -627,13 +627,13 @@ export interface IContentDecorationRenderOptions {
 	contentText?: string;
 	contentIconPath?: UriComponents;
 
-	border?: string;
-	borderColor?: string | ThemeColor;
+	Border?: string;
+	BorderColor?: string | ThemeColor;
 	fontStyle?: string;
 	fontWeight?: string;
 	textDecoration?: string;
 	color?: string | ThemeColor;
-	backgroundColor?: string | ThemeColor;
+	BackgroundColor?: string | ThemeColor;
 
 	margin?: string;
 	width?: string;
@@ -644,7 +644,7 @@ export interface IContentDecorationRenderOptions {
  * @internal
  */
 export interface IDecorationRenderOptions extends IThemeDecorationRenderOptions {
-	isWholeLine?: boolean;
+	isWholeLine?: Boolean;
 	rangeBehavior?: TrackedRangeStickiness;
 	overviewRulerLane?: OverviewRulerLane;
 
@@ -656,7 +656,7 @@ export interface IDecorationRenderOptions extends IThemeDecorationRenderOptions 
  * @internal
  */
 export interface IThemeDecorationInstanceRenderOptions {
-	before?: IContentDecorationRenderOptions;
+	Before?: IContentDecorationRenderOptions;
 	after?: IContentDecorationRenderOptions;
 }
 
@@ -710,7 +710,7 @@ export interface TypePayload {
  */
 export interface ReplacePreviousCharPayload {
 	text: string;
-	replaceCharCnt: number;
+	replaceCharCnt: numBer;
 }
 
 /**
@@ -718,7 +718,7 @@ export interface ReplacePreviousCharPayload {
  */
 export interface PastePayload {
 	text: string;
-	pasteOnNewLine: boolean;
+	pasteOnNewLine: Boolean;
 	multicursorText: string[] | null;
 	mode: string | null;
 }

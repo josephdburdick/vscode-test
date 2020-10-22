@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { raceCancellation } from 'vs/base/common/async';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
+import { raceCancellation } from 'vs/Base/common/async';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { ITextFileSaveParticipant, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { insert } from 'vs/base/common/arrays';
+import { ITextFileSaveParticipant, ITextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
+import { SaveReason } from 'vs/workBench/common/editor';
+import { IDisposaBle, DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { insert } from 'vs/Base/common/arrays';
 
-export class TextFileSaveParticipant extends Disposable {
+export class TextFileSaveParticipant extends DisposaBle {
 
 	private readonly saveParticipants: ITextFileSaveParticipant[] = [];
 
@@ -24,10 +24,10 @@ export class TextFileSaveParticipant extends Disposable {
 		super();
 	}
 
-	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposable {
+	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposaBle {
 		const remove = insert(this.saveParticipants, participant);
 
-		return toDisposable(() => remove());
+		return toDisposaBle(() => remove());
 	}
 
 	participate(model: ITextFileEditorModel, context: { reason: SaveReason; }, token: CancellationToken): Promise<void> {
@@ -36,16 +36,16 @@ export class TextFileSaveParticipant extends Disposable {
 		return this.progressService.withProgress({
 			title: localize('saveParticipants', "Saving '{0}'", model.name),
 			location: ProgressLocation.Notification,
-			cancellable: true,
+			cancellaBle: true,
 			delay: model.isDirty() ? 3000 : 5000
 		}, async progress => {
 
-			// undoStop before participation
+			// undoStop Before participation
 			model.textEditorModel?.pushStackElement();
 
 			for (const saveParticipant of this.saveParticipants) {
 				if (cts.token.isCancellationRequested || !model.textEditorModel /* disposed */) {
-					break;
+					Break;
 				}
 
 				try {

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriComponents } from 'vs/base/common/uri';
+import { UriComponents } from 'vs/Base/common/uri';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 
 export interface TaskDefinitionDTO {
@@ -12,17 +12,17 @@ export interface TaskDefinitionDTO {
 }
 
 export interface TaskPresentationOptionsDTO {
-	reveal?: number;
-	echo?: boolean;
-	focus?: boolean;
-	panel?: number;
-	showReuseMessage?: boolean;
-	clear?: boolean;
+	reveal?: numBer;
+	echo?: Boolean;
+	focus?: Boolean;
+	panel?: numBer;
+	showReuseMessage?: Boolean;
+	clear?: Boolean;
 	group?: string;
 }
 
 export interface RunOptionsDTO {
-	reevaluateOnRerun?: boolean;
+	reevaluateOnRerun?: Boolean;
 }
 
 export interface ExecutionOptionsDTO {
@@ -49,14 +49,14 @@ export interface ShellQuotingOptionsDTO {
 }
 
 export interface ShellExecutionOptionsDTO extends ExecutionOptionsDTO {
-	executable?: string;
+	executaBle?: string;
 	shellArgs?: string[];
 	shellQuoting?: ShellQuotingOptionsDTO;
 }
 
 export interface ShellQuotedStringDTO {
 	value: string;
-	quoting: number;
+	quoting: numBer;
 }
 
 export interface ShellExecutionDTO {
@@ -71,9 +71,9 @@ export interface CustomExecutionDTO {
 }
 
 export interface TaskSourceDTO {
-	label: string;
+	laBel: string;
 	extensionId?: string;
-	scope?: number | UriComponents;
+	scope?: numBer | UriComponents;
 }
 
 export interface TaskHandleDTO {
@@ -86,13 +86,13 @@ export interface TaskDTO {
 	name?: string;
 	execution: ProcessExecutionDTO | ShellExecutionDTO | CustomExecutionDTO | undefined;
 	definition: TaskDefinitionDTO;
-	isBackground?: boolean;
+	isBackground?: Boolean;
 	source: TaskSourceDTO;
 	group?: string;
 	detail?: string;
 	presentationOptions?: TaskPresentationOptionsDTO;
-	problemMatchers: string[];
-	hasDefinedMatchers: boolean;
+	proBlemMatchers: string[];
+	hasDefinedMatchers: Boolean;
 	runOptions?: RunOptionsDTO;
 }
 
@@ -108,12 +108,12 @@ export interface TaskExecutionDTO {
 
 export interface TaskProcessStartedDTO {
 	id: string;
-	processId: number;
+	processId: numBer;
 }
 
 export interface TaskProcessEndedDTO {
 	id: string;
-	exitCode: number;
+	exitCode: numBer;
 }
 
 

@@ -6,32 +6,32 @@
 import * as nativeWatchdog from 'native-watchdog';
 import * as net from 'net';
 import * as minimist from 'minimist';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Event } from 'vs/base/common/event';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { PersistentProtocol, ProtocolConstants, BufferedEmitter } from 'vs/base/parts/ipc/common/ipc.net';
-import { NodeSocket, WebSocketNodeSocket } from 'vs/base/parts/ipc/node/ipc.net';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { Event } from 'vs/Base/common/event';
+import { IMessagePassingProtocol } from 'vs/Base/parts/ipc/common/ipc';
+import { PersistentProtocol, ProtocolConstants, BufferedEmitter } from 'vs/Base/parts/ipc/common/ipc.net';
+import { NodeSocket, WeBSocketNodeSocket } from 'vs/Base/parts/ipc/node/ipc.net';
 import product from 'vs/platform/product/common/product';
-import { IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { MessageType, createMessageOfType, isMessageOfType, IExtHostSocketMessage, IExtHostReadyMessage, IExtHostReduceGraceTimeMessage } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
-import { ExtensionHostMain, IExitFn } from 'vs/workbench/services/extensions/common/extensionHostMain';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IURITransformer, URITransformer, IRawURITransformer } from 'vs/base/common/uriIpc';
-import { exists } from 'vs/base/node/pfs';
-import { realpath } from 'vs/base/node/extpath';
-import { IHostUtils } from 'vs/workbench/api/common/extHostExtensionService';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { IInitData } from 'vs/workBench/api/common/extHost.protocol';
+import { MessageType, createMessageOfType, isMessageOfType, IExtHostSocketMessage, IExtHostReadyMessage, IExtHostReduceGraceTimeMessage } from 'vs/workBench/services/extensions/common/extensionHostProtocol';
+import { ExtensionHostMain, IExitFn } from 'vs/workBench/services/extensions/common/extensionHostMain';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { IURITransformer, URITransformer, IRawURITransformer } from 'vs/Base/common/uriIpc';
+import { exists } from 'vs/Base/node/pfs';
+import { realpath } from 'vs/Base/node/extpath';
+import { IHostUtils } from 'vs/workBench/api/common/extHostExtensionService';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 
-import 'vs/workbench/api/common/extHost.common.services';
-import 'vs/workbench/api/node/extHost.node.services';
+import 'vs/workBench/api/common/extHost.common.services';
+import 'vs/workBench/api/node/extHost.node.services';
 
 interface ParsedExtHostArgs {
 	uriTransformerPath?: string;
 	useHostProxy?: string;
 }
 
-// workaround for https://github.com/microsoft/vscode/issues/85490
-// remove --inspect-port=0 after start so that it doesn't trigger LSP debugging
+// workaround for https://githuB.com/microsoft/vscode/issues/85490
+// remove --inspect-port=0 after start so that it doesn't trigger LSP deBugging
 (function removeInspectPort() {
 	for (let i = 0; i < process.execArgv.length; i++) {
 		if (process.execArgv[i] === '--inspect-port=0') {
@@ -49,10 +49,10 @@ const args = minimist(process.argv.slice(2), {
 }) as ParsedExtHostArgs;
 
 // With Electron 2.x and node.js 8.x the "natives" module
-// can cause a native crash (see https://github.com/nodejs/node/issues/19891 and
-// https://github.com/electron/electron/issues/10905). To prevent this from
-// happening we essentially blocklist this module from getting loaded in any
-// extension by patching the node require() function.
+// can cause a native crash (see https://githuB.com/nodejs/node/issues/19891 and
+// https://githuB.com/electron/electron/issues/10905). To prevent this from
+// happening we essentially Blocklist this module from getting loaded in any
+// extension By patching the node require() function.
 (function () {
 	const Module = require.__$__nodeRequire('module') as any;
 	const originalLoad = Module._load;
@@ -67,16 +67,16 @@ const args = minimist(process.argv.slice(2), {
 })();
 
 // custom process.exit logic...
-const nativeExit: IExitFn = process.exit.bind(process);
-function patchProcess(allowExit: boolean) {
-	process.exit = function (code?: number) {
+const nativeExit: IExitFn = process.exit.Bind(process);
+function patchProcess(allowExit: Boolean) {
+	process.exit = function (code?: numBer) {
 		if (allowExit) {
 			nativeExit(code);
 		} else {
 			const err = new Error('An extension called process.exit() and this was prevented.');
 			console.warn(err.stack);
 		}
-	} as (code?: number) => never;
+	} as (code?: numBer) => never;
 
 	// override Electron's process.crash() method
 	process.crash = function () {
@@ -114,18 +114,18 @@ function _createExtHostProtocol(): Promise<PersistentProtocol> {
 
 			process.on('message', (msg: IExtHostSocketMessage | IExtHostReduceGraceTimeMessage, handle: net.Socket) => {
 				if (msg && msg.type === 'VSCODE_EXTHOST_IPC_SOCKET') {
-					const initialDataChunk = VSBuffer.wrap(Buffer.from(msg.initialDataChunk, 'base64'));
-					let socket: NodeSocket | WebSocketNodeSocket;
-					if (msg.skipWebSocketFrames) {
+					const initialDataChunk = VSBuffer.wrap(Buffer.from(msg.initialDataChunk, 'Base64'));
+					let socket: NodeSocket | WeBSocketNodeSocket;
+					if (msg.skipWeBSocketFrames) {
 						socket = new NodeSocket(handle);
 					} else {
-						socket = new WebSocketNodeSocket(new NodeSocket(handle));
+						socket = new WeBSocketNodeSocket(new NodeSocket(handle));
 					}
 					if (protocol) {
 						// reconnection case
 						disconnectRunner1.cancel();
 						disconnectRunner2.cancel();
-						protocol.beginAcceptReconnection(socket, initialDataChunk);
+						protocol.BeginAcceptReconnection(socket, initialDataChunk);
 						protocol.endAcceptReconnection();
 					} else {
 						clearTimeout(timer);
@@ -184,7 +184,7 @@ async function createExtHostProtocol(): Promise<IMessagePassingProtocol> {
 		private readonly _onMessage = new BufferedEmitter<VSBuffer>();
 		readonly onMessage: Event<VSBuffer> = this._onMessage.event;
 
-		private _terminating: boolean;
+		private _terminating: Boolean;
 
 		constructor() {
 			this._terminating = false;
@@ -223,7 +223,7 @@ function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRenderer
 			const myCommit = product.commit;
 
 			if (rendererCommit && myCommit) {
-				// Running in the built version where commits are defined
+				// Running in the Built version where commits are defined
 				if (rendererCommit !== myCommit) {
 					nativeExit(55);
 				}
@@ -271,7 +271,7 @@ function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRenderer
 				}
 			}, 1000);
 
-			// In certain cases, the event loop can become busy and never yield
+			// In certain cases, the event loop can Become Busy and never yield
 			// e.g. while-true or process.nextTick endless loops
 			// So also use the native node module to do it from a separate thread
 			let watchdog: typeof nativeWatchdog;
@@ -279,7 +279,7 @@ function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRenderer
 				watchdog = require.__$__nodeRequire('native-watchdog');
 				watchdog.start(initData.parentPid);
 			} catch (err) {
-				// no problem...
+				// no proBlem...
 				onUnexpectedError(err);
 			}
 
@@ -300,13 +300,13 @@ export async function startExtensionHostProcess(): Promise<void> {
 	const renderer = await connectToRenderer(protocol);
 	const { initData } = renderer;
 	// setup things
-	patchProcess(!!initData.environment.extensionTestsLocationURI); // to support other test frameworks like Jasmin that use process.exit (https://github.com/microsoft/vscode/issues/37708)
+	patchProcess(!!initData.environment.extensionTestsLocationURI); // to support other test frameworks like Jasmin that use process.exit (https://githuB.com/microsoft/vscode/issues/37708)
 	initData.environment.useHostProxy = args.useHostProxy !== undefined ? args.useHostProxy !== 'false' : undefined;
 
-	// host abstraction
+	// host aBstraction
 	const hostUtils = new class NodeHost implements IHostUtils {
 		declare readonly _serviceBrand: undefined;
-		exit(code: number) { nativeExit(code); }
+		exit(code: numBer) { nativeExit(code); }
 		exists(path: string) { return exists(path); }
 		realpath(path: string) { return realpath(path); }
 	};
@@ -330,6 +330,6 @@ export async function startExtensionHostProcess(): Promise<void> {
 		uriTransformer
 	);
 
-	// rewrite onTerminate-function to be a proper shutdown
+	// rewrite onTerminate-function to Be a proper shutdown
 	onTerminate = () => extensionHostMain.terminate();
 }

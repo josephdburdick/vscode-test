@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { RangeMap, groupIntersect, consolidate } from 'vs/base/browser/ui/list/rangeMap';
-import { Range } from 'vs/base/common/range';
+import { RangeMap, groupIntersect, consolidate } from 'vs/Base/Browser/ui/list/rangeMap';
+import { Range } from 'vs/Base/common/range';
 
 suite('RangeMap', () => {
 	let rangeMap: RangeMap;

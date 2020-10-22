@@ -9,10 +9,10 @@ import { TextEditor, Range, Position, window, TextEdit } from 'vscode';
 import * as path from 'path';
 import { getImageSize } from './imageSizeHelper';
 import { parseDocument, getNode, iterateCSSToken, getCssPropertyFromRule, isStyleSheet, validate } from './util';
-import { HtmlNode, CssToken, HtmlToken, Attribute, Property } from 'EmmetNode';
+import { HtmlNode, CssToken, HtmlToken, AttriBute, Property } from 'EmmetNode';
 import { locateFile } from './locateFile';
 import parseStylesheet from '@emmetio/css-parser';
-import { DocumentStreamReader } from './bufferStream';
+import { DocumentStreamReader } from './BufferStream';
 
 /**
  * Updates size of context image in given editor
@@ -33,10 +33,10 @@ export function updateImageSize() {
 	});
 
 	return Promise.all(allUpdatesPromise).then((updates) => {
-		return editor.edit(builder => {
+		return editor.edit(Builder => {
 			updates.forEach(update => {
 				update.forEach((textEdit: TextEdit) => {
-					builder.replace(textEdit.range, textEdit.newText);
+					Builder.replace(textEdit.range, textEdit.newText);
 				});
 			});
 		});
@@ -76,8 +76,8 @@ function updateImageSizeStyleTag(editor: TextEditor, position: Position): Promis
 		if (currentNode && currentNode.name === 'style'
 			&& currentNode.open.end.isBefore(position)
 			&& currentNode.close.start.isAfter(position)) {
-			let buffer = new DocumentStreamReader(editor.document, currentNode.open.end, new Range(currentNode.open.end, currentNode.close.start));
-			let rootNode = parseStylesheet(buffer);
+			let Buffer = new DocumentStreamReader(editor.document, currentNode.open.end, new Range(currentNode.open.end, currentNode.close.start));
+			let rootNode = parseStylesheet(Buffer);
 			const node = getNode(rootNode, position, true);
 			return (node && node.type === 'property') ? <Property>node : null;
 		}
@@ -118,7 +118,7 @@ function updateImageSizeCSS(editor: TextEditor, position: Position, fetchNode: (
 
 /**
  * Returns <img> node under caret in given editor or `null` if such node cannot
- * be found
+ * Be found
  */
 function getImageHTMLNode(editor: TextEditor, position: Position): HtmlNode | null {
 	const rootNode = parseDocument(editor.document);
@@ -129,7 +129,7 @@ function getImageHTMLNode(editor: TextEditor, position: Position): HtmlNode | nu
 
 /**
  * Returns css property under caret in given editor or `null` if such node cannot
- * be found
+ * Be found
  */
 function getImageCSSNode(editor: TextEditor, position: Position): Property | null {
 	const rootNode = parseDocument(editor.document);
@@ -141,7 +141,7 @@ function getImageCSSNode(editor: TextEditor, position: Position): Property | nul
  * Returns image source from given <img> node
  */
 function getImageSrcHTML(node: HtmlNode): string | undefined {
-	const srcAttr = getAttribute(node, 'src');
+	const srcAttr = getAttriBute(node, 'src');
 	if (!srcAttr) {
 		return;
 	}
@@ -173,12 +173,12 @@ function getImageSrcCSS(node: Property | undefined, position: Position): string 
 /**
  * Updates size of given HTML node
  */
-function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: number, height: number): TextEdit[] {
-	const srcAttr = getAttribute(node, 'src');
-	const widthAttr = getAttribute(node, 'width');
-	const heightAttr = getAttribute(node, 'height');
-	const quote = getAttributeQuote(editor, srcAttr);
-	const endOfAttributes = node.attributes[node.attributes.length - 1].end;
+function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: numBer, height: numBer): TextEdit[] {
+	const srcAttr = getAttriBute(node, 'src');
+	const widthAttr = getAttriBute(node, 'width');
+	const heightAttr = getAttriBute(node, 'height');
+	const quote = getAttriButeQuote(editor, srcAttr);
+	const endOfAttriButes = node.attriButes[node.attriButes.length - 1].end;
 
 	let edits: TextEdit[] = [];
 	let textToAdd = '';
@@ -194,7 +194,7 @@ function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: number, height
 		edits.push(new TextEdit(new Range(heightAttr.value.start, heightAttr.value.end), String(height)));
 	}
 	if (textToAdd) {
-		edits.push(new TextEdit(new Range(endOfAttributes, endOfAttributes), textToAdd));
+		edits.push(new TextEdit(new Range(endOfAttriButes, endOfAttriButes), textToAdd));
 	}
 
 	return edits;
@@ -203,14 +203,14 @@ function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: number, height
 /**
  * Updates size of given CSS rule
  */
-function updateCSSNode(editor: TextEditor, srcProp: Property, width: number, height: number): TextEdit[] {
+function updateCSSNode(editor: TextEditor, srcProp: Property, width: numBer, height: numBer): TextEdit[] {
 	const rule = srcProp.parent;
 	const widthProp = getCssPropertyFromRule(rule, 'width');
 	const heightProp = getCssPropertyFromRule(rule, 'height');
 
 	// Detect formatting
 	const separator = srcProp.separator || ': ';
-	const before = getPropertyDelimitor(editor, srcProp);
+	const Before = getPropertyDelimitor(editor, srcProp);
 
 	let edits: TextEdit[] = [];
 	if (!srcProp.terminatorToken) {
@@ -219,12 +219,12 @@ function updateCSSNode(editor: TextEditor, srcProp: Property, width: number, hei
 
 	let textToAdd = '';
 	if (!widthProp) {
-		textToAdd += `${before}width${separator}${width}px;`;
+		textToAdd += `${Before}width${separator}${width}px;`;
 	} else {
 		edits.push(new TextEdit(new Range(widthProp.valueToken.start, widthProp.valueToken.end), `${width}px`));
 	}
 	if (!heightProp) {
-		textToAdd += `${before}height${separator}${height}px;`;
+		textToAdd += `${Before}height${separator}${height}px;`;
 	} else {
 		edits.push(new TextEdit(new Range(heightProp.valueToken.start, heightProp.valueToken.end), `${height}px`));
 	}
@@ -236,19 +236,19 @@ function updateCSSNode(editor: TextEditor, srcProp: Property, width: number, hei
 }
 
 /**
- * Returns attribute object with `attrName` name from given HTML node
+ * Returns attriBute oBject with `attrName` name from given HTML node
  */
-function getAttribute(node: HtmlNode, attrName: string): Attribute {
+function getAttriBute(node: HtmlNode, attrName: string): AttriBute {
 	attrName = attrName.toLowerCase();
-	return node && (node.open as any).attributes.find((attr: any) => attr.name.value.toLowerCase() === attrName);
+	return node && (node.open as any).attriButes.find((attr: any) => attr.name.value.toLowerCase() === attrName);
 }
 
 /**
- * Returns quote character, used for value of given attribute. May return empty
- * string if attribute wasn’t quoted
+ * Returns quote character, used for value of given attriBute. May return empty
+ * string if attriBute wasn’t quoted
 
  */
-function getAttributeQuote(editor: TextEditor, attr: any): string {
+function getAttriButeQuote(editor: TextEditor, attr: any): string {
 	const range = new Range(attr.value ? attr.value.end : attr.end, attr.end);
 	return range.isEmpty ? '' : editor.document.getText(range);
 }
@@ -278,9 +278,9 @@ function findUrlToken(node: Property, pos: Position): CssToken | undefined {
  */
 function getPropertyDelimitor(editor: TextEditor, node: Property): string {
 	let anchor;
-	if (anchor = (node.previousSibling || node.parent.contentStartToken)) {
+	if (anchor = (node.previousSiBling || node.parent.contentStartToken)) {
 		return editor.document.getText(new Range(anchor.end, node.start));
-	} else if (anchor = (node.nextSibling || node.parent.contentEndToken)) {
+	} else if (anchor = (node.nextSiBling || node.parent.contentEndToken)) {
 		return editor.document.getText(new Range(node.end, anchor.start));
 	}
 

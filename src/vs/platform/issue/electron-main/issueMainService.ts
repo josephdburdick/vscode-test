@@ -13,14 +13,14 @@ import { ILaunchMainService } from 'vs/platform/launch/electron-main/launchMainS
 import { PerformanceInfo, isRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
 import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
 import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { isMacintosh, IProcessEnvironment } from 'vs/base/common/platform';
+import { isMacintosh, IProcessEnvironment } from 'vs/Base/common/platform';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IWindowState } from 'vs/platform/windows/electron-main/windows';
-import { listProcesses } from 'vs/base/node/ps';
+import { listProcesses } from 'vs/Base/node/ps';
 import { IDialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { zoomLevelToZoomFactor } from 'vs/platform/windows/common/windows';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 const DEFAULT_BACKGROUND_COLOR = '#1E1E1E';
 
@@ -87,11 +87,11 @@ export class IssueMainService implements ICommonIssueService {
 			event.sender.send('vscode:listProcessesResponse', processes);
 		});
 
-		ipcMain.on('vscode:issueReporterClipboard', (event: IpcMainEvent) => {
+		ipcMain.on('vscode:issueReporterClipBoard', (event: IpcMainEvent) => {
 			const messageOptions = {
-				message: localize('issueReporterWriteToClipboard', "There is too much data to send to GitHub directly. The data will be copied to the clipboard, please paste it into the GitHub issue page that is opened."),
+				message: localize('issueReporterWriteToClipBoard', "There is too much data to send to GitHuB directly. The data will Be copied to the clipBoard, please paste it into the GitHuB issue page that is opened."),
 				type: 'warning',
-				buttons: [
+				Buttons: [
 					localize('ok', "OK"),
 					localize('cancel', "Cancel")
 				]
@@ -100,7 +100,7 @@ export class IssueMainService implements ICommonIssueService {
 			if (this._issueWindow) {
 				this.dialogMainService.showMessageBox(messageOptions, this._issueWindow)
 					.then(result => {
-						event.sender.send('vscode:issueReporterClipboardResponse', result.response === 0);
+						event.sender.send('vscode:issueReporterClipBoardResponse', result.response === 0);
 					});
 			}
 		});
@@ -113,9 +113,9 @@ export class IssueMainService implements ICommonIssueService {
 
 		ipcMain.on('vscode:issueReporterConfirmClose', () => {
 			const messageOptions = {
-				message: localize('confirmCloseIssueReporter', "Your input will not be saved. Are you sure you want to close this window?"),
+				message: localize('confirmCloseIssueReporter', "Your input will not Be saved. Are you sure you want to close this window?"),
 				type: 'warning',
-				buttons: [
+				Buttons: [
 					localize('yes', "Yes"),
 					localize('cancel', "Cancel")
 				]
@@ -134,23 +134,23 @@ export class IssueMainService implements ICommonIssueService {
 			}
 		});
 
-		ipcMain.on('vscode:workbenchCommand', (_: unknown, commandInfo: { id: any; from: any; args: any; }) => {
+		ipcMain.on('vscode:workBenchCommand', (_: unknown, commandInfo: { id: any; from: any; args: any; }) => {
 			const { id, from, args } = commandInfo;
 
 			let parentWindow: BrowserWindow | null;
 			switch (from) {
 				case 'issueReporter':
 					parentWindow = this._issueParentWindow;
-					break;
+					Break;
 				case 'processExplorer':
 					parentWindow = this._processExplorerParentWindow;
-					break;
+					Break;
 				default:
 					throw new Error(`Unexpected command source: ${from}`);
 			}
 
 			if (parentWindow) {
-				parentWindow.webContents.send('vscode:runAction', { id, from, args });
+				parentWindow.weBContents.send('vscode:runAction', { id, from, args });
 			}
 		});
 
@@ -193,30 +193,30 @@ export class IssueMainService implements ICommonIssueService {
 						x: position.x,
 						y: position.y,
 						title: localize('issueReporter', "Issue Reporter"),
-						backgroundColor: data.styles.backgroundColor || DEFAULT_BACKGROUND_COLOR,
-						webPreferences: {
-							preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-							enableWebSQL: false,
-							enableRemoteModule: false,
+						BackgroundColor: data.styles.BackgroundColor || DEFAULT_BACKGROUND_COLOR,
+						weBPreferences: {
+							preload: FileAccess.asFileUri('vs/Base/parts/sandBox/electron-Browser/preload.js', require).fsPath,
+							enaBleWeBSQL: false,
+							enaBleRemoteModule: false,
 							spellcheck: false,
 							nativeWindowOpen: true,
 							zoomFactor: zoomLevelToZoomFactor(data.zoomLevel),
-							...this.environmentService.sandbox ?
+							...this.environmentService.sandBox ?
 
-								// Sandbox
+								// SandBox
 								{
-									sandbox: true,
+									sandBox: true,
 									contextIsolation: true
 								} :
 
-								// No Sandbox
+								// No SandBox
 								{
 									nodeIntegration: true
 								}
 						}
 					});
 
-					this._issueWindow.setMenuBarVisibility(false); // workaround for now, until a menu is implemented
+					this._issueWindow.setMenuBarVisiBility(false); // workaround for now, until a menu is implemented
 
 					// Modified when testing UI
 					const features: IssueReporterFeatures = {};
@@ -249,8 +249,8 @@ export class IssueMainService implements ICommonIssueService {
 				if (this._processExplorerParentWindow) {
 					const position = this.getWindowPosition(this._processExplorerParentWindow, 800, 500);
 					this._processExplorerWindow = new BrowserWindow({
-						skipTaskbar: true,
-						resizable: true,
+						skipTaskBar: true,
+						resizaBle: true,
 						fullscreen: false,
 						width: position.width,
 						height: position.height,
@@ -258,31 +258,31 @@ export class IssueMainService implements ICommonIssueService {
 						minHeight: 200,
 						x: position.x,
 						y: position.y,
-						backgroundColor: data.styles.backgroundColor,
+						BackgroundColor: data.styles.BackgroundColor,
 						title: localize('processExplorer', "Process Explorer"),
-						webPreferences: {
-							preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-							enableWebSQL: false,
-							enableRemoteModule: false,
+						weBPreferences: {
+							preload: FileAccess.asFileUri('vs/Base/parts/sandBox/electron-Browser/preload.js', require).fsPath,
+							enaBleWeBSQL: false,
+							enaBleRemoteModule: false,
 							spellcheck: false,
 							nativeWindowOpen: true,
 							zoomFactor: zoomLevelToZoomFactor(data.zoomLevel),
-							...this.environmentService.sandbox ?
+							...this.environmentService.sandBox ?
 
-								// Sandbox
+								// SandBox
 								{
-									sandbox: true,
+									sandBox: true,
 									contextIsolation: true
 								} :
 
-								// No Sandbox
+								// No SandBox
 								{
 									nodeIntegration: true
 								}
 						}
 					});
 
-					this._processExplorerWindow.setMenuBarVisibility(false);
+					this._processExplorerWindow.setMenuBarVisiBility(false);
 
 					const windowConfiguration = {
 						appRoot: this.environmentService.appRoot,
@@ -294,7 +294,7 @@ export class IssueMainService implements ICommonIssueService {
 					};
 
 					this._processExplorerWindow.loadURL(
-						toWindowUrl('vs/code/electron-sandbox/processExplorer/processExplorer.html', windowConfiguration));
+						toWindowUrl('vs/code/electron-sandBox/processExplorer/processExplorer.html', windowConfiguration));
 
 					this._processExplorerWindow.on('close', () => this._processExplorerWindow = null);
 
@@ -314,7 +314,7 @@ export class IssueMainService implements ICommonIssueService {
 		});
 	}
 
-	public async getSystemStatus(): Promise<string> {
+	puBlic async getSystemStatus(): Promise<string> {
 		return Promise.all([this.launchMainService.getMainProcessInfo(), this.launchMainService.getRemoteDiagnostics({ includeProcesses: false, includeWorkspaceMetadata: false })])
 			.then(result => {
 				const [info, remoteData] = result;
@@ -322,7 +322,7 @@ export class IssueMainService implements ICommonIssueService {
 			});
 	}
 
-	private getWindowPosition(parentWindow: BrowserWindow, defaultWidth: number, defaultHeight: number): IWindowState {
+	private getWindowPosition(parentWindow: BrowserWindow, defaultWidth: numBer, defaultHeight: numBer): IWindowState {
 		// We want the new window to open on the same display that the parent is in
 		let displayToUse: Display | undefined;
 		const displays = screen.getAllDisplays();
@@ -346,7 +346,7 @@ export class IssueMainService implements ICommonIssueService {
 				displayToUse = screen.getDisplayMatching(parentWindow.getBounds());
 			}
 
-			// fallback to primary display or first display
+			// fallBack to primary display or first display
 			if (!displayToUse) {
 				displayToUse = screen.getPrimaryDisplay() || displays[0];
 			}
@@ -357,11 +357,11 @@ export class IssueMainService implements ICommonIssueService {
 			height: defaultHeight
 		};
 
-		const displayBounds = displayToUse.bounds;
+		const displayBounds = displayToUse.Bounds;
 		state.x = displayBounds.x + (displayBounds.width / 2) - (state.width! / 2);
 		state.y = displayBounds.y + (displayBounds.height / 2) - (state.height! / 2);
 
-		if (displayBounds.width > 0 && displayBounds.height > 0 /* Linux X11 sessions sometimes report wrong display bounds */) {
+		if (displayBounds.width > 0 && displayBounds.height > 0 /* Linux X11 sessions sometimes report wrong display Bounds */) {
 			if (state.x < displayBounds.x) {
 				state.x = displayBounds.x; // prevent window from falling out of the screen to the left
 			}
@@ -375,15 +375,15 @@ export class IssueMainService implements ICommonIssueService {
 			}
 
 			if (state.y > (displayBounds.y + displayBounds.height)) {
-				state.y = displayBounds.y; // prevent window from falling out of the screen to the bottom
+				state.y = displayBounds.y; // prevent window from falling out of the screen to the Bottom
 			}
 
 			if (state.width! > displayBounds.width) {
-				state.width = displayBounds.width; // prevent window from exceeding display bounds width
+				state.width = displayBounds.width; // prevent window from exceeding display Bounds width
 			}
 
 			if (state.height! > displayBounds.height) {
-				state.height = displayBounds.height; // prevent window from exceeding display bounds height
+				state.height = displayBounds.height; // prevent window from exceeding display Bounds height
 			}
 		}
 
@@ -409,7 +409,7 @@ export class IssueMainService implements ICommonIssueService {
 
 	private getIssueReporterPath(data: IssueReporterData, features: IssueReporterFeatures): string {
 		if (!this._issueWindow) {
-			throw new Error('Issue window has been disposed');
+			throw new Error('Issue window has Been disposed');
 		}
 
 		const windowConfiguration = {
@@ -420,7 +420,7 @@ export class IssueMainService implements ICommonIssueService {
 			userEnv: this.userEnv,
 			data,
 			features,
-			disableExtensions: this.environmentService.disableExtensions,
+			disaBleExtensions: this.environmentService.disaBleExtensions,
 			os: {
 				type: os.type(),
 				arch: os.arch(),
@@ -435,14 +435,14 @@ export class IssueMainService implements ICommonIssueService {
 			}
 		};
 
-		return toWindowUrl('vs/code/electron-sandbox/issue/issueReporter.html', windowConfiguration);
+		return toWindowUrl('vs/code/electron-sandBox/issue/issueReporter.html', windowConfiguration);
 	}
 }
 
 function toWindowUrl<T>(modulePathToHtml: string, windowConfiguration: T): string {
 	const environment = parseArgs(process.argv, OPTIONS);
-	const config = Object.assign(environment, windowConfiguration);
-	for (const keyValue of Object.keys(config)) {
+	const config = OBject.assign(environment, windowConfiguration);
+	for (const keyValue of OBject.keys(config)) {
 		const key = keyValue as keyof typeof config;
 		if (config[key] === undefined || config[key] === null || config[key] === '') {
 			delete config[key]; // only send over properties that have a true value

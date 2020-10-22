@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorModel } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
+import { EditorModel } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
 import { IFileService } from 'vs/platform/files/common/files';
-import { MIME_BINARY } from 'vs/base/common/mime';
+import { MIME_BINARY } from 'vs/Base/common/mime';
 
 /**
- * An editor model that just represents a resource that can be loaded.
+ * An editor model that just represents a resource that can Be loaded.
  */
 export class BinaryEditorModel extends EditorModel {
-	private size: number | undefined;
+	private size: numBer | undefined;
 	private etag: string | undefined;
 	private readonly mime: string;
 
 	constructor(
-		public readonly resource: URI,
+		puBlic readonly resource: URI,
 		private readonly name: string,
 		@IFileService private readonly fileService: IFileService
 	) {
@@ -29,28 +29,28 @@ export class BinaryEditorModel extends EditorModel {
 	}
 
 	/**
-	 * The name of the binary resource.
+	 * The name of the Binary resource.
 	 */
 	getName(): string {
 		return this.name;
 	}
 
 	/**
-	 * The size of the binary resource if known.
+	 * The size of the Binary resource if known.
 	 */
-	getSize(): number | undefined {
+	getSize(): numBer | undefined {
 		return this.size;
 	}
 
 	/**
-	 * The mime of the binary resource if known.
+	 * The mime of the Binary resource if known.
 	 */
 	getMime(): string {
 		return this.mime;
 	}
 
 	/**
-	 * The etag of the binary resource if known.
+	 * The etag of the Binary resource if known.
 	 */
 	getETag(): string | undefined {
 		return this.etag;
@@ -62,7 +62,7 @@ export class BinaryEditorModel extends EditorModel {
 		if (this.fileService.canHandleResource(this.resource)) {
 			const stat = await this.fileService.resolve(this.resource, { resolveMetadata: true });
 			this.etag = stat.etag;
-			if (typeof stat.size === 'number') {
+			if (typeof stat.size === 'numBer') {
 				this.size = stat.size;
 			}
 		}

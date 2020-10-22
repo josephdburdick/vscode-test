@@ -8,10 +8,10 @@ import { Uri } from 'vscode';
 export interface GitUriParams {
 	path: string;
 	ref: string;
-	submoduleOf?: string;
+	suBmoduleOf?: string;
 }
 
-export function isGitUri(uri: Uri): boolean {
+export function isGitUri(uri: Uri): Boolean {
 	return /^git$/.test(uri.scheme);
 }
 
@@ -20,8 +20,8 @@ export function fromGitUri(uri: Uri): GitUriParams {
 }
 
 export interface GitUriOptions {
-	replaceFileExtension?: boolean;
-	submoduleOf?: string;
+	replaceFileExtension?: Boolean;
+	suBmoduleOf?: string;
 }
 
 // As a mitigation for extensions like ESLint showing warnings and errors
@@ -33,15 +33,15 @@ export function toGitUri(uri: Uri, ref: string, options: GitUriOptions = {}): Ur
 		ref
 	};
 
-	if (options.submoduleOf) {
-		params.submoduleOf = options.submoduleOf;
+	if (options.suBmoduleOf) {
+		params.suBmoduleOf = options.suBmoduleOf;
 	}
 
 	let path = uri.path;
 
 	if (options.replaceFileExtension) {
 		path = `${path}.git`;
-	} else if (options.submoduleOf) {
+	} else if (options.suBmoduleOf) {
 		path = `${path}.diff`;
 	}
 

@@ -5,14 +5,14 @@
 
 import { IContextKey } from 'vs/platform/contextkey/common/contextkey';
 import type { Terminal, ITerminalAddon } from 'xterm';
-import { addDisposableListener } from 'vs/base/browser/dom';
-import { INavigationMode } from 'vs/workbench/contrib/terminal/common/terminal';
+import { addDisposaBleListener } from 'vs/Base/Browser/dom';
+import { INavigationMode } from 'vs/workBench/contriB/terminal/common/terminal';
 
 export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 	private _terminal: Terminal | undefined;
 
 	constructor(
-		private _navigationModeContextKey: IContextKey<boolean>
+		private _navigationModeContextKey: IContextKey<Boolean>
 	) { }
 
 	activate(terminal: Terminal): void {
@@ -35,13 +35,13 @@ export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 		}
 
 		// Focus previous row if a row is already focused
-		if (document.activeElement && document.activeElement.parentElement && document.activeElement.parentElement.classList.contains('xterm-accessibility-tree')) {
-			const element = <HTMLElement | null>document.activeElement.previousElementSibling;
+		if (document.activeElement && document.activeElement.parentElement && document.activeElement.parentElement.classList.contains('xterm-accessiBility-tree')) {
+			const element = <HTMLElement | null>document.activeElement.previousElementSiBling;
 			if (element) {
 				element.focus();
-				const disposable = addDisposableListener(element, 'blur', () => {
+				const disposaBle = addDisposaBleListener(element, 'Blur', () => {
 					this._navigationModeContextKey.set(false);
-					disposable.dispose();
+					disposaBle.dispose();
 				});
 				this._navigationModeContextKey.set(true);
 			}
@@ -49,15 +49,15 @@ export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 		}
 
 		// Ensure a11y tree exists
-		const treeContainer = this._terminal.element.querySelector('.xterm-accessibility-tree');
+		const treeContainer = this._terminal.element.querySelector('.xterm-accessiBility-tree');
 		if (!treeContainer) {
 			return;
 		}
 
-		// Target is row before the cursor
-		const targetRow = Math.max(this._terminal.buffer.active.cursorY - 1, 0);
+		// Target is row Before the cursor
+		const targetRow = Math.max(this._terminal.Buffer.active.cursorY - 1, 0);
 
-		// Check bounds
+		// Check Bounds
 		if (treeContainer.childElementCount < targetRow) {
 			return;
 		}
@@ -65,9 +65,9 @@ export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 		// Focus
 		const element = <HTMLElement>treeContainer.childNodes.item(targetRow);
 		element.focus();
-		const disposable = addDisposableListener(element, 'blur', () => {
+		const disposaBle = addDisposaBleListener(element, 'Blur', () => {
 			this._navigationModeContextKey.set(false);
-			disposable.dispose();
+			disposaBle.dispose();
 		});
 		this._navigationModeContextKey.set(true);
 	}
@@ -78,13 +78,13 @@ export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 		}
 
 		// Focus previous row if a row is already focused
-		if (document.activeElement && document.activeElement.parentElement && document.activeElement.parentElement.classList.contains('xterm-accessibility-tree')) {
-			const element = <HTMLElement | null>document.activeElement.nextElementSibling;
+		if (document.activeElement && document.activeElement.parentElement && document.activeElement.parentElement.classList.contains('xterm-accessiBility-tree')) {
+			const element = <HTMLElement | null>document.activeElement.nextElementSiBling;
 			if (element) {
 				element.focus();
-				const disposable = addDisposableListener(element, 'blur', () => {
+				const disposaBle = addDisposaBleListener(element, 'Blur', () => {
 					this._navigationModeContextKey.set(false);
-					disposable.dispose();
+					disposaBle.dispose();
 				});
 				this._navigationModeContextKey.set(true);
 			}
@@ -92,25 +92,25 @@ export class NavigationModeAddon implements INavigationMode, ITerminalAddon {
 		}
 
 		// Ensure a11y tree exists
-		const treeContainer = this._terminal.element.querySelector('.xterm-accessibility-tree');
+		const treeContainer = this._terminal.element.querySelector('.xterm-accessiBility-tree');
 		if (!treeContainer) {
 			return;
 		}
 
 		// Target is cursor row
-		const targetRow = this._terminal.buffer.active.cursorY;
+		const targetRow = this._terminal.Buffer.active.cursorY;
 
-		// Check bounds
+		// Check Bounds
 		if (treeContainer.childElementCount < targetRow) {
 			return;
 		}
 
-		// Focus row before cursor
+		// Focus row Before cursor
 		const element = <HTMLElement>treeContainer.childNodes.item(targetRow);
 		element.focus();
-		const disposable = addDisposableListener(element, 'blur', () => {
+		const disposaBle = addDisposaBleListener(element, 'Blur', () => {
 			this._navigationModeContextKey.set(false);
-			disposable.dispose();
+			disposaBle.dispose();
 		});
 		this._navigationModeContextKey.set(true);
 	}

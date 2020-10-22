@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractGotoSymbolQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoSymbolQuickAccess';
+import { ABstractGotoSymBolQuickAccessProvider } from 'vs/editor/contriB/quickAccess/gotoSymBolQuickAccess';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { withNullAsUndefined } from 'vs/base/common/types';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { withNullAsUndefined } from 'vs/Base/common/types';
 import { QuickOutlineNLS } from 'vs/editor/common/standaloneStrings';
-import { Event } from 'vs/base/common/event';
-import { EditorAction, registerEditorAction } from 'vs/editor/browser/editorExtensions';
+import { Event } from 'vs/Base/common/event';
+import { EditorAction, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 
-export class StandaloneGotoSymbolQuickAccessProvider extends AbstractGotoSymbolQuickAccessProvider {
+export class StandaloneGotoSymBolQuickAccessProvider extends ABstractGotoSymBolQuickAccessProvider {
 
 	protected readonly onDidActiveTextEditorControlChange = Event.None;
 
@@ -31,11 +31,11 @@ export class StandaloneGotoSymbolQuickAccessProvider extends AbstractGotoSymbolQ
 }
 
 Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
-	ctor: StandaloneGotoSymbolQuickAccessProvider,
-	prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX,
+	ctor: StandaloneGotoSymBolQuickAccessProvider,
+	prefix: ABstractGotoSymBolQuickAccessProvider.PREFIX,
 	helpEntries: [
-		{ description: QuickOutlineNLS.quickOutlineActionLabel, prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX, needsEditor: true },
-		{ description: QuickOutlineNLS.quickOutlineByCategoryActionLabel, prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
+		{ description: QuickOutlineNLS.quickOutlineActionLaBel, prefix: ABstractGotoSymBolQuickAccessProvider.PREFIX, needsEditor: true },
+		{ description: QuickOutlineNLS.quickOutlineByCategoryActionLaBel, prefix: ABstractGotoSymBolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
 	]
 });
 
@@ -44,13 +44,13 @@ export class GotoLineAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.quickOutline',
-			label: QuickOutlineNLS.quickOutlineActionLabel,
-			alias: 'Go to Symbol...',
-			precondition: EditorContextKeys.hasDocumentSymbolProvider,
-			kbOpts: {
-				kbExpr: EditorContextKeys.focus,
+			laBel: QuickOutlineNLS.quickOutlineActionLaBel,
+			alias: 'Go to SymBol...',
+			precondition: EditorContextKeys.hasDocumentSymBolProvider,
+			kBOpts: {
+				kBExpr: EditorContextKeys.focus,
 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_O,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			},
 			contextMenuOpts: {
 				group: 'navigation',
@@ -60,7 +60,7 @@ export class GotoLineAction extends EditorAction {
 	}
 
 	run(accessor: ServicesAccessor): void {
-		accessor.get(IQuickInputService).quickAccess.show(AbstractGotoSymbolQuickAccessProvider.PREFIX);
+		accessor.get(IQuickInputService).quickAccess.show(ABstractGotoSymBolQuickAccessProvider.PREFIX);
 	}
 }
 

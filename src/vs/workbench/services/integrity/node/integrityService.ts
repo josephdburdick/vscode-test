@@ -6,19 +6,19 @@
 import * as nls from 'vs/nls';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
-import Severity from 'vs/base/common/severity';
-import { URI } from 'vs/base/common/uri';
-import { ChecksumPair, IIntegrityService, IntegrityTestResult } from 'vs/workbench/services/integrity/common/integrity';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import Severity from 'vs/Base/common/severity';
+import { URI } from 'vs/Base/common/uri';
+import { ChecksumPair, IIntegrityService, IntegrityTestResult } from 'vs/workBench/services/integrity/common/integrity';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 interface IStorageData {
-	dontShowPrompt: boolean;
+	dontShowPrompt: Boolean;
 	commit: string | undefined;
 }
 
@@ -89,18 +89,18 @@ export class IntegrityServiceImpl implements IIntegrityService {
 		}
 
 		const checksumFailMoreInfoUrl = this.productService.checksumFailMoreInfoUrl;
-		const message = nls.localize('integrity.prompt', "Your {0} installation appears to be corrupt. Please reinstall.", this.productService.nameShort);
+		const message = nls.localize('integrity.prompt', "Your {0} installation appears to Be corrupt. Please reinstall.", this.productService.nameShort);
 		if (checksumFailMoreInfoUrl) {
 			this.notificationService.prompt(
 				Severity.Warning,
 				message,
 				[
 					{
-						label: nls.localize('integrity.moreInformation', "More Information"),
+						laBel: nls.localize('integrity.moreInformation', "More Information"),
 						run: () => this.openerService.open(URI.parse(checksumFailMoreInfoUrl))
 					},
 					{
-						label: nls.localize('integrity.dontShowAgain', "Don't Show Again"),
+						laBel: nls.localize('integrity.dontShowAgain', "Don't Show Again"),
 						isSecondary: true,
 						run: () => this._storage.set({ dontShowPrompt: true, commit: this.productService.commit })
 					}
@@ -125,13 +125,13 @@ export class IntegrityServiceImpl implements IIntegrityService {
 
 		await this.lifecycleService.when(LifecyclePhase.Eventually);
 
-		const allResults = await Promise.all(Object.keys(expectedChecksums).map(filename => this._resolve(filename, expectedChecksums[filename])));
+		const allResults = await Promise.all(OBject.keys(expectedChecksums).map(filename => this._resolve(filename, expectedChecksums[filename])));
 
 		let isPure = true;
 		for (let i = 0, len = allResults.length; i < len; i++) {
 			if (!allResults[i].isPure) {
 				isPure = false;
-				break;
+				Break;
 			}
 		}
 
@@ -144,20 +144,20 @@ export class IntegrityServiceImpl implements IIntegrityService {
 	private _resolve(filename: string, expected: string): Promise<ChecksumPair> {
 		const fileUri = FileAccess.asFileUri(filename, require);
 		return new Promise<ChecksumPair>((resolve, reject) => {
-			fs.readFile(fileUri.fsPath, (err, buff) => {
+			fs.readFile(fileUri.fsPath, (err, Buff) => {
 				if (err) {
 					return resolve(IntegrityServiceImpl._createChecksumPair(fileUri, '', expected));
 				}
-				resolve(IntegrityServiceImpl._createChecksumPair(fileUri, this._computeChecksum(buff), expected));
+				resolve(IntegrityServiceImpl._createChecksumPair(fileUri, this._computeChecksum(Buff), expected));
 			});
 		});
 	}
 
-	private _computeChecksum(buff: Buffer): string {
+	private _computeChecksum(Buff: Buffer): string {
 		let hash = crypto
 			.createHash('md5')
-			.update(buff)
-			.digest('base64')
+			.update(Buff)
+			.digest('Base64')
 			.replace(/=+$/, '');
 
 		return hash;

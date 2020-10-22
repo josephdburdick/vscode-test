@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CharCode } from 'vs/base/common/charCode';
-import * as strings from 'vs/base/common/strings';
+import { CharCode } from 'vs/Base/common/charCode';
+import * as strings from 'vs/Base/common/strings';
 import { IViewLineTokens } from 'vs/editor/common/core/lineTokens';
 import { MetadataConsts } from 'vs/editor/common/modes';
 import { LineDecoration } from 'vs/editor/common/viewLayout/lineDecorations';
@@ -17,7 +17,7 @@ function createViewLineTokens(viewLineTokens: ViewLineToken[]): IViewLineTokens 
 	return new ViewLineTokens(viewLineTokens);
 }
 
-function createPart(endIndex: number, foreground: number): ViewLineToken {
+function createPart(endIndex: numBer, foreground: numBer): ViewLineToken {
 	return new ViewLineToken(endIndex, (
 		foreground << MetadataConsts.FOREGROUND_OFFSET
 	) >>> 0);
@@ -25,7 +25,7 @@ function createPart(endIndex: number, foreground: number): ViewLineToken {
 
 suite('viewLineRenderer.renderLine', () => {
 
-	function assertCharacterReplacement(lineContent: string, tabSize: number, expected: string, expectedCharOffsetInPart: number[][], expectedPartLengts: number[]): void {
+	function assertCharacterReplacement(lineContent: string, taBSize: numBer, expected: string, expectedCharOffsetInPart: numBer[][], expectedPartLengts: numBer[]): void {
 		let _actual = renderViewLine(new RenderLineInput(
 			false,
 			true,
@@ -36,7 +36,7 @@ suite('viewLineRenderer.renderLine', () => {
 			0,
 			createViewLineTokens([new ViewLineToken(lineContent.length, 0)]),
 			[],
-			tabSize,
+			taBSize,
 			0,
 			0,
 			0,
@@ -55,22 +55,22 @@ suite('viewLineRenderer.renderLine', () => {
 	test('replaces spaces', () => {
 		assertCharacterReplacement(' ', 4, '\u00a0', [[0, 1]], [1]);
 		assertCharacterReplacement('  ', 4, '\u00a0\u00a0', [[0, 1, 2]], [2]);
-		assertCharacterReplacement('a  b', 4, 'a\u00a0\u00a0b', [[0, 1, 2, 3, 4]], [4]);
+		assertCharacterReplacement('a  B', 4, 'a\u00a0\u00a0B', [[0, 1, 2, 3, 4]], [4]);
 	});
 
 	test('escapes HTML markup', () => {
-		assertCharacterReplacement('a<b', 4, 'a&lt;b', [[0, 1, 2, 3]], [3]);
-		assertCharacterReplacement('a>b', 4, 'a&gt;b', [[0, 1, 2, 3]], [3]);
-		assertCharacterReplacement('a&b', 4, 'a&amp;b', [[0, 1, 2, 3]], [3]);
+		assertCharacterReplacement('a<B', 4, 'a&lt;B', [[0, 1, 2, 3]], [3]);
+		assertCharacterReplacement('a>B', 4, 'a&gt;B', [[0, 1, 2, 3]], [3]);
+		assertCharacterReplacement('a&B', 4, 'a&amp;B', [[0, 1, 2, 3]], [3]);
 	});
 
-	test('replaces some bad characters', () => {
-		assertCharacterReplacement('a\0b', 4, 'a&#00;b', [[0, 1, 2, 3]], [3]);
-		assertCharacterReplacement('a' + String.fromCharCode(CharCode.UTF8_BOM) + 'b', 4, 'a\ufffdb', [[0, 1, 2, 3]], [3]);
-		assertCharacterReplacement('a\u2028b', 4, 'a\ufffdb', [[0, 1, 2, 3]], [3]);
+	test('replaces some Bad characters', () => {
+		assertCharacterReplacement('a\0B', 4, 'a&#00;B', [[0, 1, 2, 3]], [3]);
+		assertCharacterReplacement('a' + String.fromCharCode(CharCode.UTF8_BOM) + 'B', 4, 'a\ufffdB', [[0, 1, 2, 3]], [3]);
+		assertCharacterReplacement('a\u2028B', 4, 'a\ufffdB', [[0, 1, 2, 3]], [3]);
 	});
 
-	test('handles tabs', () => {
+	test('handles taBs', () => {
 		assertCharacterReplacement('\t', 4, '\u00a0\u00a0\u00a0\u00a0', [[0, 4]], [4]);
 		assertCharacterReplacement('x\t', 4, 'x\u00a0\u00a0\u00a0', [[0, 1, 4]], [4]);
 		assertCharacterReplacement('xx\t', 4, 'xx\u00a0\u00a0', [[0, 1, 2, 4]], [4]);
@@ -78,7 +78,7 @@ suite('viewLineRenderer.renderLine', () => {
 		assertCharacterReplacement('xxxx\t', 4, 'xxxx\u00a0\u00a0\u00a0\u00a0', [[0, 1, 2, 3, 4, 8]], [8]);
 	});
 
-	function assertParts(lineContent: string, tabSize: number, parts: ViewLineToken[], expected: string, expectedCharOffsetInPart: number[][], expectedPartLengts: number[]): void {
+	function assertParts(lineContent: string, taBSize: numBer, parts: ViewLineToken[], expected: string, expectedCharOffsetInPart: numBer[][], expectedPartLengts: numBer[]): void {
 		let _actual = renderViewLine(new RenderLineInput(
 			false,
 			true,
@@ -89,7 +89,7 @@ suite('viewLineRenderer.renderLine', () => {
 			0,
 			createViewLineTokens(parts),
 			[],
-			tabSize,
+			taBSize,
 			0,
 			0,
 			0,
@@ -151,7 +151,7 @@ suite('viewLineRenderer.renderLine', () => {
 			10,
 			10,
 			6,
-			'boundary',
+			'Boundary',
 			false,
 			false,
 			null
@@ -199,7 +199,7 @@ suite('viewLineRenderer.renderLine', () => {
 		]);
 		let expectedOutput = [
 			'<span class="mtkz" style="width:40px">\u2192\u00a0\u00a0\u00a0</span>',
-			'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+			'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 			'<span class="mtk2">export</span>',
 			'<span class="mtk3">\u00a0</span>',
 			'<span class="mtk4">class</span>',
@@ -210,8 +210,8 @@ suite('viewLineRenderer.renderLine', () => {
 			'<span class="mtk9">\u00a0</span>',
 			'<span class="mtk10">//\u00a0</span>',
 			'<span class="mtk11">http://test.com</span>',
-			'<span class="mtkz" style="width:20px">\u00b7\u00b7</span>',
-			'<span class="mtkz" style="width:30px">\u00b7\u00b7\u00b7</span>'
+			'<span class="mtkz" style="width:20px">\u00B7\u00B7</span>',
+			'<span class="mtkz" style="width:30px">\u00B7\u00B7\u00B7</span>'
 		].join('');
 		let expectedOffsetsArr = [
 			[0],
@@ -246,7 +246,7 @@ suite('viewLineRenderer.renderLine', () => {
 			10,
 			10,
 			-1,
-			'boundary',
+			'Boundary',
 			false,
 			false,
 			null
@@ -388,7 +388,7 @@ suite('viewLineRenderer.renderLine', () => {
 		assertCharacterMapping(_actual.characterMapping, expectedOffsetsArr, [12, 12, 24, 1, 21, 2, 1, 20, 1, 1]);
 	});
 
-	test('issue #91178: after decoration type shown before cursor', () => {
+	test('issue #91178: after decoration type shown Before cursor', () => {
 		const lineText = '//just a comment';
 		const lineParts = createViewLineTokens([
 			createPart(16, 1)
@@ -527,7 +527,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'49 chars',
-				_lineText.substr(0, 49),
+				_lineText.suBstr(0, 49),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0inter</span>',
 				]
@@ -538,7 +538,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'50 chars',
-				_lineText.substr(0, 50),
+				_lineText.suBstr(0, 50),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0intere</span>',
 				]
@@ -549,7 +549,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'51 chars',
-				_lineText.substr(0, 51),
+				_lineText.suBstr(0, 51),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0intere</span>',
 					'<span class="mtk1">s</span>',
@@ -561,7 +561,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'99 chars',
-				_lineText.substr(0, 99),
+				_lineText.suBstr(0, 99),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0intere</span>',
 					'<span class="mtk1">sting\u00a0text.\u00a0This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contain</span>',
@@ -573,7 +573,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'100 chars',
-				_lineText.substr(0, 100),
+				_lineText.suBstr(0, 100),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0intere</span>',
 					'<span class="mtk1">sting\u00a0text.\u00a0This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains</span>',
@@ -585,7 +585,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'101 chars',
-				_lineText.substr(0, 101),
+				_lineText.suBstr(0, 101),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0intere</span>',
 					'<span class="mtk1">sting\u00a0text.\u00a0This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains</span>',
@@ -631,7 +631,7 @@ suite('viewLineRenderer.renderLine', () => {
 		{
 			assertSplitsTokens(
 				'101 chars',
-				_lineText.substr(0, 101),
+				_lineText.suBstr(0, 101),
 				[
 					'<span class="mtk1">This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0contains\u00a0very\u00a0</span>',
 					'<span class="mtk1">interesting\u00a0text.\u00a0This\u00a0is\u00a0just\u00a0a\u00a0long\u00a0line\u00a0that\u00a0</span>',
@@ -733,8 +733,8 @@ suite('viewLineRenderer.renderLine', () => {
 		assert.equal(actual.html, '<span>' + expectedOutput.join('') + '</span>');
 	});
 
-	test('issue #19673: Monokai Theme bad-highlighting in line wrap', () => {
-		let lineText = '    MongoCallback<string>): void {';
+	test('issue #19673: Monokai Theme Bad-highlighting in line wrap', () => {
+		let lineText = '    MongoCallBack<string>): void {';
 
 		let lineParts = createViewLineTokens([
 			createPart(17, 1),
@@ -748,7 +748,7 @@ suite('viewLineRenderer.renderLine', () => {
 		]);
 		let expectedOutput = [
 			'<span class="">\u00a0\u00a0\u00a0\u00a0</span>',
-			'<span class="mtk1">MongoCallback</span>',
+			'<span class="mtk1">MongoCallBack</span>',
 			'<span class="mtk2">&lt;</span>',
 			'<span class="mtk3">string</span>',
 			'<span class="mtk4">&gt;)</span>',
@@ -784,9 +784,9 @@ suite('viewLineRenderer.renderLine', () => {
 	});
 
 	interface ICharMappingData {
-		charOffset: number;
-		partIndex: number;
-		charIndex: number;
+		charOffset: numBer;
+		partIndex: numBer;
+		charIndex: numBer;
 	}
 
 	function decodeCharacterMapping(source: CharacterMapping) {
@@ -797,11 +797,11 @@ suite('viewLineRenderer.renderLine', () => {
 			const charIndex = CharacterMapping.getCharIndex(partData);
 			mapping.push({ charOffset, partIndex, charIndex });
 		}
-		const absoluteOffsets: number[] = [];
-		for (const absoluteOffset of source.getAbsoluteOffsets()) {
-			absoluteOffsets.push(absoluteOffset);
+		const aBsoluteOffsets: numBer[] = [];
+		for (const aBsoluteOffset of source.getABsoluteOffsets()) {
+			aBsoluteOffsets.push(aBsoluteOffset);
 		}
-		return { mapping, absoluteOffsets };
+		return { mapping, aBsoluteOffsets };
 	}
 
 	function assertCharacterMapping2(actual: CharacterMapping, expected: CharacterMapping): void {
@@ -810,30 +810,30 @@ suite('viewLineRenderer.renderLine', () => {
 		assert.deepEqual(_actual, _expected);
 	}
 
-	function assertCharacterMapping(actual: CharacterMapping, expectedCharPartOffsets: number[][], expectedPartLengths: number[]): void {
+	function assertCharacterMapping(actual: CharacterMapping, expectedCharPartOffsets: numBer[][], expectedPartLengths: numBer[]): void {
 
 		assertCharPartOffsets(actual, expectedCharPartOffsets);
 
-		let expectedCharAbsoluteOffset: number[] = [], currentPartAbsoluteOffset = 0;
+		let expectedCharABsoluteOffset: numBer[] = [], currentPartABsoluteOffset = 0;
 		for (let partIndex = 0; partIndex < expectedCharPartOffsets.length; partIndex++) {
 			const part = expectedCharPartOffsets[partIndex];
 
 			for (const charIndex of part) {
-				expectedCharAbsoluteOffset.push(currentPartAbsoluteOffset + charIndex);
+				expectedCharABsoluteOffset.push(currentPartABsoluteOffset + charIndex);
 			}
 
-			currentPartAbsoluteOffset += expectedPartLengths[partIndex];
+			currentPartABsoluteOffset += expectedPartLengths[partIndex];
 		}
 
-		let actualCharOffset: number[] = [];
-		let tmp = actual.getAbsoluteOffsets();
+		let actualCharOffset: numBer[] = [];
+		let tmp = actual.getABsoluteOffsets();
 		for (let i = 0; i < tmp.length; i++) {
 			actualCharOffset[i] = tmp[i];
 		}
-		assert.deepEqual(actualCharOffset, expectedCharAbsoluteOffset);
+		assert.deepEqual(actualCharOffset, expectedCharABsoluteOffset);
 	}
 
-	function assertCharPartOffsets(actual: CharacterMapping, expected: number[][]): void {
+	function assertCharPartOffsets(actual: CharacterMapping, expected: numBer[][]): void {
 
 		let charOffset = 0;
 		for (let partIndex = 0; partIndex < expected.length; partIndex++) {
@@ -869,7 +869,7 @@ suite('viewLineRenderer.renderLine', () => {
 
 suite('viewLineRenderer.renderLine 2', () => {
 
-	function testCreateLineParts(fontIsMonospace: boolean, lineContent: string, tokens: ViewLineToken[], fauxIndentLength: number, renderWhitespace: 'none' | 'boundary' | 'selection' | 'trailing' | 'all', selections: LineRange[] | null, expected: string): void {
+	function testCreateLineParts(fontIsMonospace: Boolean, lineContent: string, tokens: ViewLineToken[], fauxIndentLength: numBer, renderWhitespace: 'none' | 'Boundary' | 'selection' | 'trailing' | 'all', selections: LineRange[] | null, expected: string): void {
 		let actual = renderViewLine(new RenderLineInput(
 			fontIsMonospace,
 			true,
@@ -932,7 +932,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 	test('issue #19207: Link in Monokai is not rendered correctly', () => {
 
-		let lineContent = '\'let url = `http://***/_api/web/lists/GetByTitle(\\\'Teambuildingaanvragen\\\')/items`;\'';
+		let lineContent = '\'let url = `http://***/_api/weB/lists/GetByTitle(\\\'TeamBuildingaanvragen\\\')/items`;\'';
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -967,10 +967,10 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let expected = [
 			'<span>',
 			'<span class="mtk6">\'let\u00a0url\u00a0=\u00a0`</span>',
-			'<span class="mtk6 detected-link">http://***/_api/web/lists/GetByTitle(</span>',
+			'<span class="mtk6 detected-link">http://***/_api/weB/lists/GetByTitle(</span>',
 			'<span class="mtk4 detected-link">\\</span>',
 			'<span class="mtk4">\'</span>',
-			'<span class="mtk6">Teambuildingaanvragen</span>',
+			'<span class="mtk6">TeamBuildingaanvragen</span>',
 			'<span class="mtk4">\\\'</span>',
 			'<span class="mtk6">)/items`;\'</span>',
 			'</span>'
@@ -1025,14 +1025,14 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(20, 3)
 			],
 			0,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
@@ -1047,21 +1047,21 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(28, 3)
 			],
 			0,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
 	});
-	test('createLineParts render whitespace - 2 leading tabs', () => {
+	test('createLineParts render whitespace - 2 leading taBs', () => {
 		testCreateLineParts(
 			false,
 			'\t\tHello world!\t',
@@ -1071,7 +1071,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(15, 3)
 			],
 			0,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
@@ -1084,7 +1084,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			].join('')
 		);
 	});
-	test('createLineParts render whitespace - mixed leading spaces and tabs', () => {
+	test('createLineParts render whitespace - mixed leading spaces and taBs', () => {
 		testCreateLineParts(
 			false,
 			'  \t\t  Hello world! \t  \t   \t    ',
@@ -1094,19 +1094,19 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(31, 3)
 			],
 			0,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u2192\u00a0</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u2192\u00a0</span>',
 				'<span class="mtkz" style="width:40px">\u2192\u00a0\u00a0\u00a0</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\u00B7</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\uffeb</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u2192\u00a0</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\uffeb</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\uffeB</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u2192\u00a0</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\uffeB</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
@@ -1122,18 +1122,18 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(29, 3)
 			],
 			2,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
 				'<span class="">\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\u00B7</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\uffeb</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u2192\u00a0</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\uffeb</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\uffeB</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u2192\u00a0</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\uffeB</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
@@ -1149,21 +1149,21 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(29, 3)
 			],
 			2,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
 				'<span class="">\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>',
-				'<span class="mtkw">\u00b7\u00b7</span>',
+				'<span class="mtkw">\u00B7\u00B7</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkw">\u00b7\uffeb\u00b7\u00b7\u2192\u00a0\u00b7\u00b7\u00b7\uffeb\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkw">\u00B7\uffeB\u00B7\u00B7\u2192\u00a0\u00B7\u00B7\u00B7\uffeB\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
 	});
 
-	test('createLineParts render whitespace in middle but not for one space', () => {
+	test('createLineParts render whitespace in middle But not for one space', () => {
 		testCreateLineParts(
 			false,
 			'it  it it  it',
@@ -1173,16 +1173,16 @@ suite('viewLineRenderer.renderLine 2', () => {
 				createPart(13, 3)
 			],
 			0,
-			'boundary',
+			'Boundary',
 			null,
 			[
 				'<span>',
 				'<span class="mtk1">it</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\u00B7</span>',
 				'<span class="mtk1">it</span>',
 				'<span class="mtk2">\u00a0</span>',
 				'<span class="mtk3">it</span>',
-				'<span class="mtkz" style="width:20px">\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:20px">\u00B7\u00B7</span>',
 				'<span class="mtk3">it</span>',
 				'</span>',
 			].join('')
@@ -1203,10 +1203,10 @@ suite('viewLineRenderer.renderLine 2', () => {
 			null,
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">Hel</span>',
 				'<span class="mtk1">lo</span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk2">world!</span>',
 				'<span class="mtkz" style="width:30px">\u2192\u00a0\u00a0</span>',
 				'</span>',
@@ -1250,10 +1250,10 @@ suite('viewLineRenderer.renderLine 2', () => {
 			[new LineRange(0, 14)],
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">Hel</span>',
 				'<span class="mtk1">lo</span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk2">world!</span>',
 				'<span class="mtkz" style="width:30px">\u2192\u00a0\u00a0</span>',
 				'</span>',
@@ -1275,7 +1275,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			[new LineRange(0, 5)],
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">Hel</span>',
 				'<span class="mtk1">lo</span>',
 				'<span class="mtk2">\u00a0world!\u00a0\u00a0\u00a0</span>',
@@ -1299,7 +1299,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			[new LineRange(0, 5), new LineRange(9, 14)],
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">Hel</span>',
 				'<span class="mtk1">lo</span>',
 				'<span class="mtk2">\u00a0world!</span>',
@@ -1324,7 +1324,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			[new LineRange(9, 14), new LineRange(0, 5)],
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">Hel</span>',
 				'<span class="mtk1">lo</span>',
 				'<span class="mtk2">\u00a0world!</span>',
@@ -1346,9 +1346,9 @@ suite('viewLineRenderer.renderLine 2', () => {
 			[new LineRange(0, 1), new LineRange(1, 2), new LineRange(2, 3)],
 			[
 				'<span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">*</span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'<span class="mtk0">S</span>',
 				'</span>',
 			].join('')
@@ -1394,7 +1394,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 				'<span class="mtk0">\u00a0Hel</span>',
 				'<span class="mtk1">lo</span>',
 				'<span class="mtk2">\u00a0world!</span>',
-				'<span class="mtkz" style="width:30px">\u00b7\u2192\u00a0</span>',
+				'<span class="mtkz" style="width:30px">\u00B7\u2192\u00a0</span>',
 				'</span>',
 			].join('')
 		);
@@ -1417,8 +1417,8 @@ suite('viewLineRenderer.renderLine 2', () => {
 				'<span class="mtk1">\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</span>',
 				'<span class="mtk2">He</span>',
 				'<span class="mtk3">llo\u00a0world!</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u00b7\u00b7\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u00B7\u00B7\u00B7</span>',
 				'</span>',
 			].join('')
 		);
@@ -1437,8 +1437,8 @@ suite('viewLineRenderer.renderLine 2', () => {
 			null,
 			[
 				'<span>',
-				'<span class="mtkz" style="width:40px">\u00b7\u2192\u00a0\u00a0</span>',
-				'<span class="mtkz" style="width:10px">\u00b7</span>',
+				'<span class="mtkz" style="width:40px">\u00B7\u2192\u00a0\u00a0</span>',
+				'<span class="mtkz" style="width:10px">\u00B7</span>',
 				'</span>',
 			].join('')
 		);
@@ -1456,7 +1456,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			createViewLineTokens([createPart(11, 0)]),
 			[
 				new LineDecoration(5, 7, 'a', InlineDecorationType.Regular),
-				new LineDecoration(1, 3, 'b', InlineDecorationType.Regular),
+				new LineDecoration(1, 3, 'B', InlineDecorationType.Regular),
 				new LineDecoration(2, 8, 'c', InlineDecorationType.Regular),
 			],
 			4,
@@ -1474,13 +1474,13 @@ suite('viewLineRenderer.renderLine 2', () => {
 		// 01234567890
 		// Hello world
 		// ----aa-----
-		// bb---------
+		// BB---------
 		// -cccccc----
 
 		assert.deepEqual(actual.html, [
 			'<span>',
-			'<span class="mtk0 b">H</span>',
-			'<span class="mtk0 b c">e</span>',
+			'<span class="mtk0 B">H</span>',
+			'<span class="mtk0 B c">e</span>',
 			'<span class="mtk0 c">ll</span>',
 			'<span class="mtk0 a c">o\u00a0</span>',
 			'<span class="mtk0 c">w</span>',
@@ -1489,9 +1489,9 @@ suite('viewLineRenderer.renderLine 2', () => {
 		].join(''));
 	});
 
-	test('issue #11485: Visible whitespace conflicts with before decorator attachment', () => {
+	test('issue #11485: VisiBle whitespace conflicts with Before decorator attachment', () => {
 
-		let lineContent = '\tbla';
+		let lineContent = '\tBla';
 
 		let actual = renderViewLine(new RenderLineInput(
 			false,
@@ -1502,7 +1502,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			false,
 			0,
 			createViewLineTokens([createPart(4, 3)]),
-			[new LineDecoration(1, 2, 'before', InlineDecorationType.Before)],
+			[new LineDecoration(1, 2, 'Before', InlineDecorationType.Before)],
 			4,
 			0,
 			10,
@@ -1517,17 +1517,17 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 		let expected = [
 			'<span>',
-			'<span class="mtkw before">\u2192\u00a0\u00a0\u00a0</span>',
-			'<span class="mtk3">bla</span>',
+			'<span class="mtkw Before">\u2192\u00a0\u00a0\u00a0</span>',
+			'<span class="mtk3">Bla</span>',
 			'</span>'
 		].join('');
 
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #32436: Non-monospace font + visible whitespace + After decorator causes line to "jump"', () => {
+	test('issue #32436: Non-monospace font + visiBle whitespace + After decorator causes line to "jump"', () => {
 
-		let lineContent = '\tbla';
+		let lineContent = '\tBla';
 
 		let actual = renderViewLine(new RenderLineInput(
 			false,
@@ -1538,7 +1538,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			false,
 			0,
 			createViewLineTokens([createPart(4, 3)]),
-			[new LineDecoration(2, 3, 'before', InlineDecorationType.Before)],
+			[new LineDecoration(2, 3, 'Before', InlineDecorationType.Before)],
 			4,
 			0,
 			10,
@@ -1554,7 +1554,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let expected = [
 			'<span>',
 			'<span class="mtkz" style="width:40px">\u2192\u00a0\u00a0\u00a0</span>',
-			'<span class="mtk3 before">b</span>',
+			'<span class="mtk3 Before">B</span>',
 			'<span class="mtk3">la</span>',
 			'</span>'
 		].join('');
@@ -1575,7 +1575,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			false,
 			0,
 			createViewLineTokens([createPart(0, 3)]),
-			[new LineDecoration(1, 2, 'before', InlineDecorationType.Before)],
+			[new LineDecoration(1, 2, 'Before', InlineDecorationType.Before)],
 			4,
 			0,
 			10,
@@ -1590,14 +1590,14 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 		let expected = [
 			'<span>',
-			'<span class="before"></span>',
+			'<span class="Before"></span>',
 			'</span>'
 		].join('');
 
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #37208: Collapsing bullet point containing emoji in Markdown document results in [??] character', () => {
+	test('issue #37208: Collapsing Bullet point containing emoji in Markdown document results in [??] character', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1631,7 +1631,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #37401 #40127: Allow both before and after decorations on empty line', () => {
+	test('issue #37401 #40127: Allow Both Before and after decorations on empty line', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1643,7 +1643,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			0,
 			createViewLineTokens([createPart(0, 3)]),
 			[
-				new LineDecoration(1, 2, 'before', InlineDecorationType.Before),
+				new LineDecoration(1, 2, 'Before', InlineDecorationType.Before),
 				new LineDecoration(0, 1, 'after', InlineDecorationType.After),
 			],
 			2,
@@ -1660,7 +1660,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 		let expected = [
 			'<span>',
-			'<span class="before"></span>',
+			'<span class="Before"></span>',
 			'<span class="after"></span>',
 			'</span>'
 		].join('');
@@ -1668,7 +1668,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #38935: GitLens end-of-line blame no longer rendering', () => {
+	test('issue #38935: GitLens end-of-line Blame no longer rendering', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1680,8 +1680,8 @@ suite('viewLineRenderer.renderLine 2', () => {
 			0,
 			createViewLineTokens([createPart(2, 3)]),
 			[
-				new LineDecoration(3, 3, 'ced-TextEditorDecorationType2-5e9b9b3f-3 ced-TextEditorDecorationType2-3', InlineDecorationType.Before),
-				new LineDecoration(3, 3, 'ced-TextEditorDecorationType2-5e9b9b3f-4 ced-TextEditorDecorationType2-4', InlineDecorationType.After),
+				new LineDecoration(3, 3, 'ced-TextEditorDecorationType2-5e9B9B3f-3 ced-TextEditorDecorationType2-3', InlineDecorationType.Before),
+				new LineDecoration(3, 3, 'ced-TextEditorDecorationType2-5e9B9B3f-4 ced-TextEditorDecorationType2-4', InlineDecorationType.After),
 			],
 			4,
 			0,
@@ -1698,14 +1698,14 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let expected = [
 			'<span>',
 			'<span class="mtk3">\u00a0\u00a0\u00a0\u00a0}</span>',
-			'<span class="ced-TextEditorDecorationType2-5e9b9b3f-3 ced-TextEditorDecorationType2-3 ced-TextEditorDecorationType2-5e9b9b3f-4 ced-TextEditorDecorationType2-4"></span>',
+			'<span class="ced-TextEditorDecorationType2-5e9B9B3f-3 ced-TextEditorDecorationType2-3 ced-TextEditorDecorationType2-5e9B9B3f-4 ced-TextEditorDecorationType2-4"></span>',
 			'</span>'
 		].join('');
 
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #22832: Consider fullwidth characters when rendering tabs', () => {
+	test('issue #22832: Consider fullwidth characters when rendering taBs', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1738,7 +1738,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #22832: Consider fullwidth characters when rendering tabs (render whitespace)', () => {
+	test('issue #22832: Consider fullwidth characters when rendering taBs (render whitespace)', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1765,9 +1765,9 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let expected = [
 			'<span>',
 			'<span class="mtk3">asd</span>',
-			'<span class="mtkw">\u00b7</span>',
+			'<span class="mtkw">\u00B7</span>',
 			'<span class="mtk3">=</span>',
-			'<span class="mtkw">\u00b7</span>',
+			'<span class="mtkw">\u00B7</span>',
 			'<span class="mtk3">"擦"</span>',
 			'<span class="mtkw">\u2192\u00a0\u2192\u00a0\u00a0\u00a0</span>',
 			'<span class="mtk3">#asd</span>',
@@ -1782,7 +1782,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let actual = renderViewLine(new RenderLineInput(
 			true,
 			true,
-			'12345689012345678901234568901234567890123456890abába',
+			'12345689012345678901234568901234567890123456890aBáBa',
 			false,
 			false,
 			false,
@@ -1803,7 +1803,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 		let expected = [
 			'<span>',
-			'<span class="mtk3">12345689012345678901234568901234567890123456890abába</span>',
+			'<span class="mtk3">12345689012345678901234568901234567890123456890aBáBa</span>',
 			'</span>'
 		].join('');
 
@@ -1845,7 +1845,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #42700: Hindi characters are not being rendered properly', () => {
+	test('issue #42700: Hindi characters are not Being rendered properly', () => {
 
 		let actual = renderViewLine(new RenderLineInput(
 			true,
@@ -1880,7 +1880,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #38123: editor.renderWhitespace: "boundary" renders whitespace at line wrap point when line is wrapped', () => {
+	test('issue #38123: editor.renderWhitespace: "Boundary" renders whitespace at line wrap point when line is wrapped', () => {
 		let actual = renderViewLine(new RenderLineInput(
 			true,
 			true,
@@ -1897,7 +1897,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			10,
 			10,
 			10000,
-			'boundary',
+			'Boundary',
 			false,
 			false,
 			null
@@ -1948,7 +1948,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		assert.deepEqual(actual.html, expected);
 	});
 
-	test('issue #33525: Long line with ligatures takes a long time to paint decorations - not possible', () => {
+	test('issue #33525: Long line with ligatures takes a long time to paint decorations - not possiBle', () => {
 		let actual = renderViewLine(new RenderLineInput(
 			false,
 			false,
@@ -1984,7 +1984,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		let actual = renderViewLine(new RenderLineInput(
 			false,
 			true,
-			'                    else if ($s = 08) then \'\\b\'',
+			'                    else if ($s = 08) then \'\\B\'',
 			false,
 			true,
 			false,
@@ -2024,41 +2024,41 @@ suite('viewLineRenderer.renderLine 2', () => {
 
 		let expected = [
 			'<span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk15">else</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk15">if</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk1">(</span>',
 			'<span class="mtk16">$s</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk1">=</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk6">08</span>',
 			'<span class="mtk1">)</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
 			'<span class="mtk15">then</span>',
-			'<span class="mtkz" style="width:10px">\u00b7</span>',
-			'<span class="mtk11">\'\\b\'</span>',
+			'<span class="mtkz" style="width:10px">\u00B7</span>',
+			'<span class="mtk11">\'\\B\'</span>',
 			'</span>'
 		].join('');
 
@@ -2066,7 +2066,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 	});
 
 
-	function createTestGetColumnOfLinePartOffset(lineContent: string, tabSize: number, parts: ViewLineToken[], expectedPartLengths: number[]): (partIndex: number, partLength: number, offset: number, expected: number) => void {
+	function createTestGetColumnOfLinePartOffset(lineContent: string, taBSize: numBer, parts: ViewLineToken[], expectedPartLengths: numBer[]): (partIndex: numBer, partLength: numBer, offset: numBer, expected: numBer) => void {
 		let renderLineOutput = renderViewLine(new RenderLineInput(
 			false,
 			true,
@@ -2077,7 +2077,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			0,
 			createViewLineTokens(parts),
 			[],
-			tabSize,
+			taBSize,
 			0,
 			10,
 			10,
@@ -2089,7 +2089,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 			null
 		));
 
-		return (partIndex: number, partLength: number, offset: number, expected: number) => {
+		return (partIndex: numBer, partLength: numBer, offset: numBer, expected: numBer) => {
 			let charOffset = renderLineOutput.characterMapping.partDataToCharOffset(partIndex, partLength, offset);
 			let actual = charOffset + 1;
 			assert.equal(actual, expected, 'getColumnOfLinePartOffset for ' + partIndex + ' @ ' + offset);
@@ -2151,7 +2151,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		testGetColumnOfLinePartOffset(5, 1, 1, 11);
 	});
 
-	test('getColumnOfLinePartOffset 3 - tab with tab size 6', () => {
+	test('getColumnOfLinePartOffset 3 - taB with taB size 6', () => {
 		let testGetColumnOfLinePartOffset = createTestGetColumnOfLinePartOffset(
 			'\t',
 			6,
@@ -2169,7 +2169,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		testGetColumnOfLinePartOffset(0, 6, 6, 2);
 	});
 
-	test('getColumnOfLinePartOffset 4 - once indented line, tab size 4', () => {
+	test('getColumnOfLinePartOffset 4 - once indented line, taB size 4', () => {
 		let testGetColumnOfLinePartOffset = createTestGetColumnOfLinePartOffset(
 			'\tfunction',
 			4,
@@ -2195,7 +2195,7 @@ suite('viewLineRenderer.renderLine 2', () => {
 		testGetColumnOfLinePartOffset(1, 8, 8, 10);
 	});
 
-	test('getColumnOfLinePartOffset 5 - twice indented line, tab size 4', () => {
+	test('getColumnOfLinePartOffset 5 - twice indented line, taB size 4', () => {
 		let testGetColumnOfLinePartOffset = createTestGetColumnOfLinePartOffset(
 			'\t\tfunction',
 			4,

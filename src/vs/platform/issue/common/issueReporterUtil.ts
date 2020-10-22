@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { rtrim } from 'vs/base/common/strings';
+import { rtrim } from 'vs/Base/common/strings';
 
-export function normalizeGitHubUrl(url: string): string {
+export function normalizeGitHuBUrl(url: string): string {
 	// If the url has a .git suffix, remove it
 	if (url.endsWith('.git')) {
-		url = url.substr(0, url.length - 4);
+		url = url.suBstr(0, url.length - 4);
 	}
 
 	// Remove trailing slash

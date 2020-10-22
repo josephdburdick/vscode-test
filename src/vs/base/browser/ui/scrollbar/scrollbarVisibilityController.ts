@@ -3,78 +3,78 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode } from 'vs/base/browser/fastDomNode';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
+import { FastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { TimeoutTimer } from 'vs/Base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ScrollBarVisiBility } from 'vs/Base/common/scrollaBle';
 
-export class ScrollbarVisibilityController extends Disposable {
-	private _visibility: ScrollbarVisibility;
-	private _visibleClassName: string;
-	private _invisibleClassName: string;
+export class ScrollBarVisiBilityController extends DisposaBle {
+	private _visiBility: ScrollBarVisiBility;
+	private _visiBleClassName: string;
+	private _invisiBleClassName: string;
 	private _domNode: FastDomNode<HTMLElement> | null;
-	private _shouldBeVisible: boolean;
-	private _isNeeded: boolean;
-	private _isVisible: boolean;
+	private _shouldBeVisiBle: Boolean;
+	private _isNeeded: Boolean;
+	private _isVisiBle: Boolean;
 	private _revealTimer: TimeoutTimer;
 
-	constructor(visibility: ScrollbarVisibility, visibleClassName: string, invisibleClassName: string) {
+	constructor(visiBility: ScrollBarVisiBility, visiBleClassName: string, invisiBleClassName: string) {
 		super();
-		this._visibility = visibility;
-		this._visibleClassName = visibleClassName;
-		this._invisibleClassName = invisibleClassName;
+		this._visiBility = visiBility;
+		this._visiBleClassName = visiBleClassName;
+		this._invisiBleClassName = invisiBleClassName;
 		this._domNode = null;
-		this._isVisible = false;
+		this._isVisiBle = false;
 		this._isNeeded = false;
-		this._shouldBeVisible = false;
+		this._shouldBeVisiBle = false;
 		this._revealTimer = this._register(new TimeoutTimer());
 	}
 
 	// ----------------- Hide / Reveal
 
-	private applyVisibilitySetting(shouldBeVisible: boolean): boolean {
-		if (this._visibility === ScrollbarVisibility.Hidden) {
+	private applyVisiBilitySetting(shouldBeVisiBle: Boolean): Boolean {
+		if (this._visiBility === ScrollBarVisiBility.Hidden) {
 			return false;
 		}
-		if (this._visibility === ScrollbarVisibility.Visible) {
+		if (this._visiBility === ScrollBarVisiBility.VisiBle) {
 			return true;
 		}
-		return shouldBeVisible;
+		return shouldBeVisiBle;
 	}
 
-	public setShouldBeVisible(rawShouldBeVisible: boolean): void {
-		let shouldBeVisible = this.applyVisibilitySetting(rawShouldBeVisible);
+	puBlic setShouldBeVisiBle(rawShouldBeVisiBle: Boolean): void {
+		let shouldBeVisiBle = this.applyVisiBilitySetting(rawShouldBeVisiBle);
 
-		if (this._shouldBeVisible !== shouldBeVisible) {
-			this._shouldBeVisible = shouldBeVisible;
-			this.ensureVisibility();
+		if (this._shouldBeVisiBle !== shouldBeVisiBle) {
+			this._shouldBeVisiBle = shouldBeVisiBle;
+			this.ensureVisiBility();
 		}
 	}
 
-	public setIsNeeded(isNeeded: boolean): void {
+	puBlic setIsNeeded(isNeeded: Boolean): void {
 		if (this._isNeeded !== isNeeded) {
 			this._isNeeded = isNeeded;
-			this.ensureVisibility();
+			this.ensureVisiBility();
 		}
 	}
 
-	public setDomNode(domNode: FastDomNode<HTMLElement>): void {
+	puBlic setDomNode(domNode: FastDomNode<HTMLElement>): void {
 		this._domNode = domNode;
-		this._domNode.setClassName(this._invisibleClassName);
+		this._domNode.setClassName(this._invisiBleClassName);
 
-		// Now that the flags & the dom node are in a consistent state, ensure the Hidden/Visible configuration
-		this.setShouldBeVisible(false);
+		// Now that the flags & the dom node are in a consistent state, ensure the Hidden/VisiBle configuration
+		this.setShouldBeVisiBle(false);
 	}
 
-	public ensureVisibility(): void {
+	puBlic ensureVisiBility(): void {
 
 		if (!this._isNeeded) {
-			// Nothing to be rendered
+			// Nothing to Be rendered
 			this._hide(false);
 			return;
 		}
 
-		if (this._shouldBeVisible) {
+		if (this._shouldBeVisiBle) {
 			this._reveal();
 		} else {
 			this._hide(true);
@@ -82,27 +82,27 @@ export class ScrollbarVisibilityController extends Disposable {
 	}
 
 	private _reveal(): void {
-		if (this._isVisible) {
+		if (this._isVisiBle) {
 			return;
 		}
-		this._isVisible = true;
+		this._isVisiBle = true;
 
 		// The CSS animation doesn't play otherwise
 		this._revealTimer.setIfNotSet(() => {
 			if (this._domNode) {
-				this._domNode.setClassName(this._visibleClassName);
+				this._domNode.setClassName(this._visiBleClassName);
 			}
 		}, 0);
 	}
 
-	private _hide(withFadeAway: boolean): void {
+	private _hide(withFadeAway: Boolean): void {
 		this._revealTimer.cancel();
-		if (!this._isVisible) {
+		if (!this._isVisiBle) {
 			return;
 		}
-		this._isVisible = false;
+		this._isVisiBle = false;
 		if (this._domNode) {
-			this._domNode.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
+			this._domNode.setClassName(this._invisiBleClassName + (withFadeAway ? ' fade' : ''));
 		}
 	}
 }

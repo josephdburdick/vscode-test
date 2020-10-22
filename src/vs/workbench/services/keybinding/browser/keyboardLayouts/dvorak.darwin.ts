@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { id: 'com.apple.keylayout.Dvorak', localizedName: 'Dvorak', lang: 'en' },
 	secondaryLayouts: [],
 	mapping: {
@@ -22,7 +22,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		KeyK: ['t', 'T', '†', 'ˇ', 0],
 		KeyL: ['n', 'N', '˜', '˜', 4],
 		KeyM: ['m', 'M', 'µ', 'Â', 0],
-		KeyN: ['b', 'B', '∫', 'ı', 0],
+		KeyN: ['B', 'B', '∫', 'ı', 0],
 		KeyO: ['r', 'R', '®', '‰', 0],
 		KeyP: ['l', 'L', '¬', 'Ò', 0],
 		KeyQ: ['\'', '"', 'æ', 'Æ', 0],
@@ -48,7 +48,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Enter: [],
 		Escape: [],
 		Backspace: [],
-		Tab: [],
+		TaB: [],
 		Space: [' ', ' ', ' ', ' ', 0],
 		Minus: ['[', '{', '“', '”', 0],
 		Equal: [']', '}', '‘', '’', 0],
@@ -87,7 +87,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '/', '/', 0],
 		NumpadMultiply: ['*', '*', '*', '*', 0],
-		NumpadSubtract: ['-', '-', '-', '-', 0],
+		NumpadSuBtract: ['-', '-', '-', '-', 0],
 		NumpadAdd: ['+', '+', '+', '+', 0],
 		NumpadEnter: [],
 		Numpad1: ['1', '1', '1', '1', 0],

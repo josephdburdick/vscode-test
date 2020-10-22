@@ -1,8 +1,8 @@
 /**
  * @typedef {{
- *   id: number,
+ *   id: numBer,
  *   fn: !Function,
- *   context: (!Object|undefined)
+ *   context: (!OBject|undefined)
  * }}
  * @private
  */
@@ -13,9 +13,9 @@ goog.dom.animationFrame.Task_;
  * @typedef {{
  *   measureTask: goog.dom.animationFrame.Task_,
  *   mutateTask: goog.dom.animationFrame.Task_,
- *   state: (!Object|undefined),
+ *   state: (!OBject|undefined),
  *   args: (!Array|undefined),
- *   isScheduled: boolean
+ *   isScheduled: Boolean
  * }}
  * @private
  */

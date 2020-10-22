@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { Event } from 'vs/base/common/event';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as strings from 'vs/base/common/strings';
+import { Color } from 'vs/Base/common/color';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import * as strings from 'vs/Base/common/strings';
 import { ConfigurationChangedEvent, EDITOR_FONT_DEFAULTS, EditorOption, filterValidationDecorations } from 'vs/editor/common/config/editorOptions';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { ISelection, Selection } from 'vs/editor/common/core/selection';
@@ -23,8 +23,8 @@ import { ViewLayout } from 'vs/editor/common/viewLayout/viewLayout';
 import { IViewModelLinesCollection, IdentityLinesCollection, SplitLinesCollection, ILineBreaksComputerFactory } from 'vs/editor/common/viewModel/splitLinesCollection';
 import { ICoordinatesConverter, IOverviewRulerDecorations, IViewModel, MinimapLinesRenderingData, ViewLineData, ViewLineRenderingData, ViewModelDecoration } from 'vs/editor/common/viewModel/viewModel';
 import { ViewModelDecorations } from 'vs/editor/common/viewModel/viewModelDecorations';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import * as platform from 'vs/base/common/platform';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import * as platform from 'vs/Base/common/platform';
 import { EditorTheme } from 'vs/editor/common/view/viewContext';
 import { Cursor } from 'vs/editor/common/controller/cursor';
 import { PartialCursorState, CursorState, IColumnSelectData, EditOperationType, CursorConfiguration } from 'vs/editor/common/controller/cursorCommon';
@@ -35,33 +35,33 @@ import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 
 const USE_IDENTITY_LINES_COLLECTION = true;
 
-export class ViewModel extends Disposable implements IViewModel {
+export class ViewModel extends DisposaBle implements IViewModel {
 
-	private readonly _editorId: number;
+	private readonly _editorId: numBer;
 	private readonly _configuration: IConfiguration;
-	public readonly model: ITextModel;
+	puBlic readonly model: ITextModel;
 	private readonly _eventDispatcher: ViewModelEventDispatcher;
-	public readonly onEvent: Event<OutgoingViewModelEvent>;
-	public cursorConfig: CursorConfiguration;
+	puBlic readonly onEvent: Event<OutgoingViewModelEvent>;
+	puBlic cursorConfig: CursorConfiguration;
 	private readonly _tokenizeViewportSoon: RunOnceScheduler;
 	private readonly _updateConfigurationViewLineCount: RunOnceScheduler;
-	private _hasFocus: boolean;
-	private _viewportStartLine: number;
+	private _hasFocus: Boolean;
+	private _viewportStartLine: numBer;
 	private _viewportStartLineTrackedRange: string | null;
-	private _viewportStartLineDelta: number;
+	private _viewportStartLineDelta: numBer;
 	private readonly _lines: IViewModelLinesCollection;
-	public readonly coordinatesConverter: ICoordinatesConverter;
-	public readonly viewLayout: ViewLayout;
+	puBlic readonly coordinatesConverter: ICoordinatesConverter;
+	puBlic readonly viewLayout: ViewLayout;
 	private readonly _cursor: Cursor;
 	private readonly _decorations: ViewModelDecorations;
 
 	constructor(
-		editorId: number,
+		editorId: numBer,
 		configuration: IConfiguration,
 		model: ITextModel,
 		domLineBreaksComputerFactory: ILineBreaksComputerFactory,
 		monospaceLineBreaksComputerFactory: ILineBreaksComputerFactory,
-		scheduleAtNextAnimationFrame: (callback: () => void) => IDisposable
+		scheduleAtNextAnimationFrame: (callBack: () => void) => IDisposaBle
 	) {
 		super();
 
@@ -94,7 +94,7 @@ export class ViewModel extends Disposable implements IViewModel {
 				domLineBreaksComputerFactory,
 				monospaceLineBreaksComputerFactory,
 				fontInfo,
-				this.model.getOptions().tabSize,
+				this.model.getOptions().taBSize,
 				wrappingStrategy,
 				wrappingInfo.wrappingColumn,
 				wrappingIndent
@@ -128,7 +128,7 @@ export class ViewModel extends Disposable implements IViewModel {
 
 		this._register(this._configuration.onDidChangeFast((e) => {
 			try {
-				const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
+				const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
 				this._onConfigurationChanged(eventsCollector, e);
 			} finally {
 				this._eventDispatcher.endEmitViewEvents();
@@ -142,9 +142,9 @@ export class ViewModel extends Disposable implements IViewModel {
 		this._updateConfigurationViewLineCountNow();
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		// First remove listeners, as disposing the lines might end up sending
-		// model decoration changed events ... and we no longer care about them ...
+		// model decoration changed events ... and we no longer care aBout them ...
 		super.dispose();
 		this._decorations.dispose();
 		this._lines.dispose();
@@ -153,11 +153,11 @@ export class ViewModel extends Disposable implements IViewModel {
 		this._eventDispatcher.dispose();
 	}
 
-	public addViewEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic addViewEventHandler(eventHandler: ViewEventHandler): void {
 		this._eventDispatcher.addViewEventHandler(eventHandler);
 	}
 
-	public removeViewEventHandler(eventHandler: ViewEventHandler): void {
+	puBlic removeViewEventHandler(eventHandler: ViewEventHandler): void {
 		this._eventDispatcher.removeViewEventHandler(eventHandler);
 	}
 
@@ -165,27 +165,27 @@ export class ViewModel extends Disposable implements IViewModel {
 		this._configuration.setViewLineCount(this._lines.getViewLineCount());
 	}
 
-	public tokenizeViewport(): void {
+	puBlic tokenizeViewport(): void {
 		const linesViewportData = this.viewLayout.getLinesViewportData();
-		const startPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.startLineNumber, 1));
-		const endPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.endLineNumber, 1));
-		this.model.tokenizeViewport(startPosition.lineNumber, endPosition.lineNumber);
+		const startPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.startLineNumBer, 1));
+		const endPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.endLineNumBer, 1));
+		this.model.tokenizeViewport(startPosition.lineNumBer, endPosition.lineNumBer);
 	}
 
-	public setHasFocus(hasFocus: boolean): void {
+	puBlic setHasFocus(hasFocus: Boolean): void {
 		this._hasFocus = hasFocus;
 		this._cursor.setHasFocus(hasFocus);
 		this._eventDispatcher.emitSingleViewEvent(new viewEvents.ViewFocusChangedEvent(hasFocus));
 		this._eventDispatcher.emitOutgoingEvent(new FocusChangedEvent(!hasFocus, hasFocus));
 	}
 
-	public onDidColorThemeChange(): void {
+	puBlic onDidColorThemeChange(): void {
 		this._eventDispatcher.emitSingleViewEvent(new viewEvents.ViewThemeChangedEvent());
 	}
 
 	private _onConfigurationChanged(eventsCollector: ViewModelEventsCollector, e: ConfigurationChangedEvent): void {
 
-		// We might need to restore the current centered view range, so save it (if available)
+		// We might need to restore the current centered view range, so save it (if availaBle)
 		let previousViewportStartModelPosition: Position | null = null;
 		if (this._viewportStartLine !== -1) {
 			let previousViewportStartViewPosition = new Position(this._viewportStartLine, this.getLineMinColumn(this._viewportStartLine));
@@ -226,7 +226,7 @@ export class ViewModel extends Disposable implements IViewModel {
 
 		if (restorePreviousViewportStart && previousViewportStartModelPosition) {
 			const viewPosition = this.coordinatesConverter.convertModelPositionToViewPosition(previousViewportStartModelPosition);
-			const viewPositionTop = this.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
+			const viewPositionTop = this.viewLayout.getVerticalOffsetForLineNumBer(viewPosition.lineNumBer);
 			this.viewLayout.setScrollPosition({ scrollTop: viewPositionTop + this._viewportStartLineDelta }, ScrollType.Immediate);
 		}
 
@@ -240,7 +240,7 @@ export class ViewModel extends Disposable implements IViewModel {
 
 		this._register(this.model.onDidChangeRawContentFast((e) => {
 			try {
-				const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
+				const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
 
 				let hadOtherModelChange = false;
 				let hadModelLineChangeThatChangedLineMapping = false;
@@ -256,11 +256,11 @@ export class ViewModel extends Disposable implements IViewModel {
 							for (const line of change.detail) {
 								lineBreaksComputer.addRequest(line, null);
 							}
-							break;
+							Break;
 						}
 						case textModelEvents.RawContentChangedType.LineChanged: {
 							lineBreaksComputer.addRequest(change.detail, null);
-							break;
+							Break;
 						}
 					}
 				}
@@ -276,56 +276,56 @@ export class ViewModel extends Disposable implements IViewModel {
 							this._decorations.reset();
 							this.viewLayout.onFlushed(this.getLineCount());
 							hadOtherModelChange = true;
-							break;
+							Break;
 						}
 						case textModelEvents.RawContentChangedType.LinesDeleted: {
-							const linesDeletedEvent = this._lines.onModelLinesDeleted(versionId, change.fromLineNumber, change.toLineNumber);
+							const linesDeletedEvent = this._lines.onModelLinesDeleted(versionId, change.fromLineNumBer, change.toLineNumBer);
 							if (linesDeletedEvent !== null) {
 								eventsCollector.emitViewEvent(linesDeletedEvent);
-								this.viewLayout.onLinesDeleted(linesDeletedEvent.fromLineNumber, linesDeletedEvent.toLineNumber);
+								this.viewLayout.onLinesDeleted(linesDeletedEvent.fromLineNumBer, linesDeletedEvent.toLineNumBer);
 							}
 							hadOtherModelChange = true;
-							break;
+							Break;
 						}
 						case textModelEvents.RawContentChangedType.LinesInserted: {
 							const insertedLineBreaks = lineBreaks.slice(lineBreaksOffset, lineBreaksOffset + change.detail.length);
 							lineBreaksOffset += change.detail.length;
 
-							const linesInsertedEvent = this._lines.onModelLinesInserted(versionId, change.fromLineNumber, change.toLineNumber, insertedLineBreaks);
+							const linesInsertedEvent = this._lines.onModelLinesInserted(versionId, change.fromLineNumBer, change.toLineNumBer, insertedLineBreaks);
 							if (linesInsertedEvent !== null) {
 								eventsCollector.emitViewEvent(linesInsertedEvent);
-								this.viewLayout.onLinesInserted(linesInsertedEvent.fromLineNumber, linesInsertedEvent.toLineNumber);
+								this.viewLayout.onLinesInserted(linesInsertedEvent.fromLineNumBer, linesInsertedEvent.toLineNumBer);
 							}
 							hadOtherModelChange = true;
-							break;
+							Break;
 						}
 						case textModelEvents.RawContentChangedType.LineChanged: {
 							const changedLineBreakData = lineBreaks[lineBreaksOffset];
 							lineBreaksOffset++;
 
-							const [lineMappingChanged, linesChangedEvent, linesInsertedEvent, linesDeletedEvent] = this._lines.onModelLineChanged(versionId, change.lineNumber, changedLineBreakData);
+							const [lineMappingChanged, linesChangedEvent, linesInsertedEvent, linesDeletedEvent] = this._lines.onModelLineChanged(versionId, change.lineNumBer, changedLineBreakData);
 							hadModelLineChangeThatChangedLineMapping = lineMappingChanged;
 							if (linesChangedEvent) {
 								eventsCollector.emitViewEvent(linesChangedEvent);
 							}
 							if (linesInsertedEvent) {
 								eventsCollector.emitViewEvent(linesInsertedEvent);
-								this.viewLayout.onLinesInserted(linesInsertedEvent.fromLineNumber, linesInsertedEvent.toLineNumber);
+								this.viewLayout.onLinesInserted(linesInsertedEvent.fromLineNumBer, linesInsertedEvent.toLineNumBer);
 							}
 							if (linesDeletedEvent) {
 								eventsCollector.emitViewEvent(linesDeletedEvent);
-								this.viewLayout.onLinesDeleted(linesDeletedEvent.fromLineNumber, linesDeletedEvent.toLineNumber);
+								this.viewLayout.onLinesDeleted(linesDeletedEvent.fromLineNumBer, linesDeletedEvent.toLineNumBer);
 							}
-							break;
+							Break;
 						}
 						case textModelEvents.RawContentChangedType.EOLChanged: {
-							// Nothing to do. The new version will be accepted below
-							break;
+							// Nothing to do. The new version will Be accepted Below
+							Break;
 						}
 					}
 				}
 				this._lines.acceptVersionId(versionId);
-				this.viewLayout.onHeightMaybeChanged();
+				this.viewLayout.onHeightMayBeChanged();
 
 				if (!hadOtherModelChange && hadModelLineChangeThatChangedLineMapping) {
 					eventsCollector.emitViewEvent(new viewEvents.ViewLineMappingChangedEvent());
@@ -339,7 +339,7 @@ export class ViewModel extends Disposable implements IViewModel {
 
 			// Update the configuration and reset the centered view line
 			this._viewportStartLine = -1;
-			this._configuration.setMaxLineNumber(this.model.getLineCount());
+			this._configuration.setMaxLineNumBer(this.model.getLineCount());
 			this._updateConfigurationViewLineCountNow();
 
 			// Recover viewport
@@ -347,13 +347,13 @@ export class ViewModel extends Disposable implements IViewModel {
 				const modelRange = this.model._getTrackedRange(this._viewportStartLineTrackedRange);
 				if (modelRange) {
 					const viewPosition = this.coordinatesConverter.convertModelPositionToViewPosition(modelRange.getStartPosition());
-					const viewPositionTop = this.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
+					const viewPositionTop = this.viewLayout.getVerticalOffsetForLineNumBer(viewPosition.lineNumBer);
 					this.viewLayout.setScrollPosition({ scrollTop: viewPositionTop + this._viewportStartLineDelta }, ScrollType.Immediate);
 				}
 			}
 
 			try {
-				const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
+				const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
 				this._cursor.onModelContentChanged(eventsCollector, e);
 			} finally {
 				this._eventDispatcher.endEmitViewEvents();
@@ -361,14 +361,14 @@ export class ViewModel extends Disposable implements IViewModel {
 		}));
 
 		this._register(this.model.onDidChangeTokens((e) => {
-			let viewRanges: { fromLineNumber: number; toLineNumber: number; }[] = [];
+			let viewRanges: { fromLineNumBer: numBer; toLineNumBer: numBer; }[] = [];
 			for (let j = 0, lenJ = e.ranges.length; j < lenJ; j++) {
 				const modelRange = e.ranges[j];
-				const viewStartLineNumber = this.coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.fromLineNumber, 1)).lineNumber;
-				const viewEndLineNumber = this.coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.toLineNumber, this.model.getLineMaxColumn(modelRange.toLineNumber))).lineNumber;
+				const viewStartLineNumBer = this.coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.fromLineNumBer, 1)).lineNumBer;
+				const viewEndLineNumBer = this.coordinatesConverter.convertModelPositionToViewPosition(new Position(modelRange.toLineNumBer, this.model.getLineMaxColumn(modelRange.toLineNumBer))).lineNumBer;
 				viewRanges[j] = {
-					fromLineNumber: viewStartLineNumber,
-					toLineNumber: viewEndLineNumber
+					fromLineNumBer: viewStartLineNumBer,
+					toLineNumBer: viewEndLineNumBer
 				};
 			}
 			this._eventDispatcher.emitSingleViewEvent(new viewEvents.ViewTokensChangedEvent(viewRanges));
@@ -390,10 +390,10 @@ export class ViewModel extends Disposable implements IViewModel {
 		}));
 
 		this._register(this.model.onDidChangeOptions((e) => {
-			// A tab size change causes a line mapping changed event => all view parts will repaint OK, no further event needed here
-			if (this._lines.setTabSize(this.model.getOptions().tabSize)) {
+			// A taB size change causes a line mapping changed event => all view parts will repaint OK, no further event needed here
+			if (this._lines.setTaBSize(this.model.getOptions().taBSize)) {
 				try {
-					const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
+					const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
 					eventsCollector.emitViewEvent(new viewEvents.ViewFlushedEvent());
 					eventsCollector.emitViewEvent(new viewEvents.ViewLineMappingChangedEvent());
 					eventsCollector.emitViewEvent(new viewEvents.ViewDecorationsChangedEvent(null));
@@ -416,9 +416,9 @@ export class ViewModel extends Disposable implements IViewModel {
 		}));
 	}
 
-	public setHiddenAreas(ranges: Range[]): void {
+	puBlic setHiddenAreas(ranges: Range[]): void {
 		try {
-			const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
+			const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
 			let lineMappingChanged = this._lines.setHiddenAreas(ranges);
 			if (lineMappingChanged) {
 				eventsCollector.emitViewEvent(new viewEvents.ViewFlushedEvent());
@@ -427,7 +427,7 @@ export class ViewModel extends Disposable implements IViewModel {
 				this._cursor.onLineMappingChanged(eventsCollector);
 				this._decorations.onLineMappingChanged();
 				this.viewLayout.onFlushed(this.getLineCount());
-				this.viewLayout.onHeightMaybeChanged();
+				this.viewLayout.onHeightMayBeChanged();
 			}
 		} finally {
 			this._eventDispatcher.endEmitViewEvents();
@@ -435,98 +435,98 @@ export class ViewModel extends Disposable implements IViewModel {
 		this._updateConfigurationViewLineCount.schedule();
 	}
 
-	public getVisibleRangesPlusViewportAboveBelow(): Range[] {
+	puBlic getVisiBleRangesPlusViewportABoveBelow(): Range[] {
 		const layoutInfo = this._configuration.options.get(EditorOption.layoutInfo);
 		const lineHeight = this._configuration.options.get(EditorOption.lineHeight);
 		const linesAround = Math.max(20, Math.round(layoutInfo.height / lineHeight));
 		const partialData = this.viewLayout.getLinesViewportData();
-		const startViewLineNumber = Math.max(1, partialData.completelyVisibleStartLineNumber - linesAround);
-		const endViewLineNumber = Math.min(this.getLineCount(), partialData.completelyVisibleEndLineNumber + linesAround);
+		const startViewLineNumBer = Math.max(1, partialData.completelyVisiBleStartLineNumBer - linesAround);
+		const endViewLineNumBer = Math.min(this.getLineCount(), partialData.completelyVisiBleEndLineNumBer + linesAround);
 
-		return this._toModelVisibleRanges(new Range(
-			startViewLineNumber, this.getLineMinColumn(startViewLineNumber),
-			endViewLineNumber, this.getLineMaxColumn(endViewLineNumber)
+		return this._toModelVisiBleRanges(new Range(
+			startViewLineNumBer, this.getLineMinColumn(startViewLineNumBer),
+			endViewLineNumBer, this.getLineMaxColumn(endViewLineNumBer)
 		));
 	}
 
-	public getVisibleRanges(): Range[] {
-		const visibleViewRange = this.getCompletelyVisibleViewRange();
-		return this._toModelVisibleRanges(visibleViewRange);
+	puBlic getVisiBleRanges(): Range[] {
+		const visiBleViewRange = this.getCompletelyVisiBleViewRange();
+		return this._toModelVisiBleRanges(visiBleViewRange);
 	}
 
-	private _toModelVisibleRanges(visibleViewRange: Range): Range[] {
-		const visibleRange = this.coordinatesConverter.convertViewRangeToModelRange(visibleViewRange);
+	private _toModelVisiBleRanges(visiBleViewRange: Range): Range[] {
+		const visiBleRange = this.coordinatesConverter.convertViewRangeToModelRange(visiBleViewRange);
 		const hiddenAreas = this._lines.getHiddenAreas();
 
 		if (hiddenAreas.length === 0) {
-			return [visibleRange];
+			return [visiBleRange];
 		}
 
 		let result: Range[] = [], resultLen = 0;
-		let startLineNumber = visibleRange.startLineNumber;
-		let startColumn = visibleRange.startColumn;
-		let endLineNumber = visibleRange.endLineNumber;
-		let endColumn = visibleRange.endColumn;
+		let startLineNumBer = visiBleRange.startLineNumBer;
+		let startColumn = visiBleRange.startColumn;
+		let endLineNumBer = visiBleRange.endLineNumBer;
+		let endColumn = visiBleRange.endColumn;
 		for (let i = 0, len = hiddenAreas.length; i < len; i++) {
-			const hiddenStartLineNumber = hiddenAreas[i].startLineNumber;
-			const hiddenEndLineNumber = hiddenAreas[i].endLineNumber;
+			const hiddenStartLineNumBer = hiddenAreas[i].startLineNumBer;
+			const hiddenEndLineNumBer = hiddenAreas[i].endLineNumBer;
 
-			if (hiddenEndLineNumber < startLineNumber) {
+			if (hiddenEndLineNumBer < startLineNumBer) {
 				continue;
 			}
-			if (hiddenStartLineNumber > endLineNumber) {
+			if (hiddenStartLineNumBer > endLineNumBer) {
 				continue;
 			}
 
-			if (startLineNumber < hiddenStartLineNumber) {
+			if (startLineNumBer < hiddenStartLineNumBer) {
 				result[resultLen++] = new Range(
-					startLineNumber, startColumn,
-					hiddenStartLineNumber - 1, this.model.getLineMaxColumn(hiddenStartLineNumber - 1)
+					startLineNumBer, startColumn,
+					hiddenStartLineNumBer - 1, this.model.getLineMaxColumn(hiddenStartLineNumBer - 1)
 				);
 			}
-			startLineNumber = hiddenEndLineNumber + 1;
+			startLineNumBer = hiddenEndLineNumBer + 1;
 			startColumn = 1;
 		}
 
-		if (startLineNumber < endLineNumber || (startLineNumber === endLineNumber && startColumn < endColumn)) {
+		if (startLineNumBer < endLineNumBer || (startLineNumBer === endLineNumBer && startColumn < endColumn)) {
 			result[resultLen++] = new Range(
-				startLineNumber, startColumn,
-				endLineNumber, endColumn
+				startLineNumBer, startColumn,
+				endLineNumBer, endColumn
 			);
 		}
 
 		return result;
 	}
 
-	public getCompletelyVisibleViewRange(): Range {
+	puBlic getCompletelyVisiBleViewRange(): Range {
 		const partialData = this.viewLayout.getLinesViewportData();
-		const startViewLineNumber = partialData.completelyVisibleStartLineNumber;
-		const endViewLineNumber = partialData.completelyVisibleEndLineNumber;
+		const startViewLineNumBer = partialData.completelyVisiBleStartLineNumBer;
+		const endViewLineNumBer = partialData.completelyVisiBleEndLineNumBer;
 
 		return new Range(
-			startViewLineNumber, this.getLineMinColumn(startViewLineNumber),
-			endViewLineNumber, this.getLineMaxColumn(endViewLineNumber)
+			startViewLineNumBer, this.getLineMinColumn(startViewLineNumBer),
+			endViewLineNumBer, this.getLineMaxColumn(endViewLineNumBer)
 		);
 	}
 
-	public getCompletelyVisibleViewRangeAtScrollTop(scrollTop: number): Range {
+	puBlic getCompletelyVisiBleViewRangeAtScrollTop(scrollTop: numBer): Range {
 		const partialData = this.viewLayout.getLinesViewportDataAtScrollTop(scrollTop);
-		const startViewLineNumber = partialData.completelyVisibleStartLineNumber;
-		const endViewLineNumber = partialData.completelyVisibleEndLineNumber;
+		const startViewLineNumBer = partialData.completelyVisiBleStartLineNumBer;
+		const endViewLineNumBer = partialData.completelyVisiBleEndLineNumBer;
 
 		return new Range(
-			startViewLineNumber, this.getLineMinColumn(startViewLineNumber),
-			endViewLineNumber, this.getLineMaxColumn(endViewLineNumber)
+			startViewLineNumBer, this.getLineMinColumn(startViewLineNumBer),
+			endViewLineNumBer, this.getLineMaxColumn(endViewLineNumBer)
 		);
 	}
 
-	public saveState(): IViewState {
+	puBlic saveState(): IViewState {
 		const compatViewState = this.viewLayout.saveState();
 
 		const scrollTop = compatViewState.scrollTop;
-		const firstViewLineNumber = this.viewLayout.getLineNumberAtVerticalOffset(scrollTop);
-		const firstPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(firstViewLineNumber, this.getLineMinColumn(firstViewLineNumber)));
-		const firstPositionDeltaTop = this.viewLayout.getVerticalOffsetForLineNumber(firstViewLineNumber) - scrollTop;
+		const firstViewLineNumBer = this.viewLayout.getLineNumBerAtVerticalOffset(scrollTop);
+		const firstPosition = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(firstViewLineNumBer, this.getLineMinColumn(firstViewLineNumBer)));
+		const firstPositionDeltaTop = this.viewLayout.getVerticalOffsetForLineNumBer(firstViewLineNumBer) - scrollTop;
 
 		return {
 			scrollLeft: compatViewState.scrollLeft,
@@ -535,103 +535,103 @@ export class ViewModel extends Disposable implements IViewModel {
 		};
 	}
 
-	public reduceRestoreState(state: IViewState): { scrollLeft: number; scrollTop: number; } {
+	puBlic reduceRestoreState(state: IViewState): { scrollLeft: numBer; scrollTop: numBer; } {
 		if (typeof state.firstPosition === 'undefined') {
-			// This is a view state serialized by an older version
-			return this._reduceRestoreStateCompatibility(state);
+			// This is a view state serialized By an older version
+			return this._reduceRestoreStateCompatiBility(state);
 		}
 
 		const modelPosition = this.model.validatePosition(state.firstPosition);
 		const viewPosition = this.coordinatesConverter.convertModelPositionToViewPosition(modelPosition);
-		const scrollTop = this.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber) - state.firstPositionDeltaTop;
+		const scrollTop = this.viewLayout.getVerticalOffsetForLineNumBer(viewPosition.lineNumBer) - state.firstPositionDeltaTop;
 		return {
 			scrollLeft: state.scrollLeft,
 			scrollTop: scrollTop
 		};
 	}
 
-	private _reduceRestoreStateCompatibility(state: IViewState): { scrollLeft: number; scrollTop: number; } {
+	private _reduceRestoreStateCompatiBility(state: IViewState): { scrollLeft: numBer; scrollTop: numBer; } {
 		return {
 			scrollLeft: state.scrollLeft,
 			scrollTop: state.scrollTopWithoutViewZones!
 		};
 	}
 
-	private getTabSize(): number {
-		return this.model.getOptions().tabSize;
+	private getTaBSize(): numBer {
+		return this.model.getOptions().taBSize;
 	}
 
-	public getTextModelOptions(): TextModelResolvedOptions {
+	puBlic getTextModelOptions(): TextModelResolvedOptions {
 		return this.model.getOptions();
 	}
 
-	public getLineCount(): number {
+	puBlic getLineCount(): numBer {
 		return this._lines.getViewLineCount();
 	}
 
 	/**
-	 * Gives a hint that a lot of requests are about to come in for these line numbers.
+	 * Gives a hint that a lot of requests are aBout to come in for these line numBers.
 	 */
-	public setViewport(startLineNumber: number, endLineNumber: number, centeredLineNumber: number): void {
-		this._viewportStartLine = startLineNumber;
-		let position = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(startLineNumber, this.getLineMinColumn(startLineNumber)));
-		this._viewportStartLineTrackedRange = this.model._setTrackedRange(this._viewportStartLineTrackedRange, new Range(position.lineNumber, position.column, position.lineNumber, position.column), TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges);
-		const viewportStartLineTop = this.viewLayout.getVerticalOffsetForLineNumber(startLineNumber);
+	puBlic setViewport(startLineNumBer: numBer, endLineNumBer: numBer, centeredLineNumBer: numBer): void {
+		this._viewportStartLine = startLineNumBer;
+		let position = this.coordinatesConverter.convertViewPositionToModelPosition(new Position(startLineNumBer, this.getLineMinColumn(startLineNumBer)));
+		this._viewportStartLineTrackedRange = this.model._setTrackedRange(this._viewportStartLineTrackedRange, new Range(position.lineNumBer, position.column, position.lineNumBer, position.column), TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges);
+		const viewportStartLineTop = this.viewLayout.getVerticalOffsetForLineNumBer(startLineNumBer);
 		const scrollTop = this.viewLayout.getCurrentScrollTop();
 		this._viewportStartLineDelta = scrollTop - viewportStartLineTop;
 	}
 
-	public getActiveIndentGuide(lineNumber: number, minLineNumber: number, maxLineNumber: number): IActiveIndentGuideInfo {
-		return this._lines.getActiveIndentGuide(lineNumber, minLineNumber, maxLineNumber);
+	puBlic getActiveIndentGuide(lineNumBer: numBer, minLineNumBer: numBer, maxLineNumBer: numBer): IActiveIndentGuideInfo {
+		return this._lines.getActiveIndentGuide(lineNumBer, minLineNumBer, maxLineNumBer);
 	}
 
-	public getLinesIndentGuides(startLineNumber: number, endLineNumber: number): number[] {
-		return this._lines.getViewLinesIndentGuides(startLineNumber, endLineNumber);
+	puBlic getLinesIndentGuides(startLineNumBer: numBer, endLineNumBer: numBer): numBer[] {
+		return this._lines.getViewLinesIndentGuides(startLineNumBer, endLineNumBer);
 	}
 
-	public getLineContent(lineNumber: number): string {
-		return this._lines.getViewLineContent(lineNumber);
+	puBlic getLineContent(lineNumBer: numBer): string {
+		return this._lines.getViewLineContent(lineNumBer);
 	}
 
-	public getLineLength(lineNumber: number): number {
-		return this._lines.getViewLineLength(lineNumber);
+	puBlic getLineLength(lineNumBer: numBer): numBer {
+		return this._lines.getViewLineLength(lineNumBer);
 	}
 
-	public getLineMinColumn(lineNumber: number): number {
-		return this._lines.getViewLineMinColumn(lineNumber);
+	puBlic getLineMinColumn(lineNumBer: numBer): numBer {
+		return this._lines.getViewLineMinColumn(lineNumBer);
 	}
 
-	public getLineMaxColumn(lineNumber: number): number {
-		return this._lines.getViewLineMaxColumn(lineNumber);
+	puBlic getLineMaxColumn(lineNumBer: numBer): numBer {
+		return this._lines.getViewLineMaxColumn(lineNumBer);
 	}
 
-	public getLineFirstNonWhitespaceColumn(lineNumber: number): number {
-		const result = strings.firstNonWhitespaceIndex(this.getLineContent(lineNumber));
+	puBlic getLineFirstNonWhitespaceColumn(lineNumBer: numBer): numBer {
+		const result = strings.firstNonWhitespaceIndex(this.getLineContent(lineNumBer));
 		if (result === -1) {
 			return 0;
 		}
 		return result + 1;
 	}
 
-	public getLineLastNonWhitespaceColumn(lineNumber: number): number {
-		const result = strings.lastNonWhitespaceIndex(this.getLineContent(lineNumber));
+	puBlic getLineLastNonWhitespaceColumn(lineNumBer: numBer): numBer {
+		const result = strings.lastNonWhitespaceIndex(this.getLineContent(lineNumBer));
 		if (result === -1) {
 			return 0;
 		}
 		return result + 2;
 	}
 
-	public getDecorationsInViewport(visibleRange: Range): ViewModelDecoration[] {
-		return this._decorations.getDecorationsViewportData(visibleRange).decorations;
+	puBlic getDecorationsInViewport(visiBleRange: Range): ViewModelDecoration[] {
+		return this._decorations.getDecorationsViewportData(visiBleRange).decorations;
 	}
 
-	public getViewLineRenderingData(visibleRange: Range, lineNumber: number): ViewLineRenderingData {
+	puBlic getViewLineRenderingData(visiBleRange: Range, lineNumBer: numBer): ViewLineRenderingData {
 		let mightContainRTL = this.model.mightContainRTL();
 		let mightContainNonBasicASCII = this.model.mightContainNonBasicASCII();
-		let tabSize = this.getTabSize();
-		let lineData = this._lines.getViewLineData(lineNumber);
-		let allInlineDecorations = this._decorations.getDecorationsViewportData(visibleRange).inlineDecorations;
-		let inlineDecorations = allInlineDecorations[lineNumber - visibleRange.startLineNumber];
+		let taBSize = this.getTaBSize();
+		let lineData = this._lines.getViewLineData(lineNumBer);
+		let allInlineDecorations = this._decorations.getDecorationsViewportData(visiBleRange).inlineDecorations;
+		let inlineDecorations = allInlineDecorations[lineNumBer - visiBleRange.startLineNumBer];
 
 		return new ViewLineRenderingData(
 			lineData.minColumn,
@@ -642,28 +642,28 @@ export class ViewModel extends Disposable implements IViewModel {
 			mightContainNonBasicASCII,
 			lineData.tokens,
 			inlineDecorations,
-			tabSize,
-			lineData.startVisibleColumn
+			taBSize,
+			lineData.startVisiBleColumn
 		);
 	}
 
-	public getViewLineData(lineNumber: number): ViewLineData {
-		return this._lines.getViewLineData(lineNumber);
+	puBlic getViewLineData(lineNumBer: numBer): ViewLineData {
+		return this._lines.getViewLineData(lineNumBer);
 	}
 
-	public getMinimapLinesRenderingData(startLineNumber: number, endLineNumber: number, needed: boolean[]): MinimapLinesRenderingData {
-		let result = this._lines.getViewLinesData(startLineNumber, endLineNumber, needed);
+	puBlic getMinimapLinesRenderingData(startLineNumBer: numBer, endLineNumBer: numBer, needed: Boolean[]): MinimapLinesRenderingData {
+		let result = this._lines.getViewLinesData(startLineNumBer, endLineNumBer, needed);
 		return new MinimapLinesRenderingData(
-			this.getTabSize(),
+			this.getTaBSize(),
 			result
 		);
 	}
 
-	public getAllOverviewRulerDecorations(theme: EditorTheme): IOverviewRulerDecorations {
+	puBlic getAllOverviewRulerDecorations(theme: EditorTheme): IOverviewRulerDecorations {
 		return this._lines.getAllOverviewRulerDecorations(this._editorId, filterValidationDecorations(this._configuration.options), theme);
 	}
 
-	public invalidateOverviewRulerColorCache(): void {
+	puBlic invalidateOverviewRulerColorCache(): void {
 		const decorations = this.model.getOverviewRulerDecorations();
 		for (const decoration of decorations) {
 			const opts = <ModelDecorationOverviewRulerOptions>decoration.options.overviewRuler;
@@ -673,7 +673,7 @@ export class ViewModel extends Disposable implements IViewModel {
 		}
 	}
 
-	public invalidateMinimapColorCache(): void {
+	puBlic invalidateMinimapColorCache(): void {
 		const decorations = this.model.getAllDecorations();
 		for (const decoration of decorations) {
 			const opts = <ModelDecorationMinimapOptions>decoration.options.minimap;
@@ -683,24 +683,24 @@ export class ViewModel extends Disposable implements IViewModel {
 		}
 	}
 
-	public getValueInRange(range: Range, eol: EndOfLinePreference): string {
+	puBlic getValueInRange(range: Range, eol: EndOfLinePreference): string {
 		const modelRange = this.coordinatesConverter.convertViewRangeToModelRange(range);
 		return this.model.getValueInRange(modelRange, eol);
 	}
 
-	public getModelLineMaxColumn(modelLineNumber: number): number {
-		return this.model.getLineMaxColumn(modelLineNumber);
+	puBlic getModelLineMaxColumn(modelLineNumBer: numBer): numBer {
+		return this.model.getLineMaxColumn(modelLineNumBer);
 	}
 
-	public validateModelPosition(position: IPosition): Position {
+	puBlic validateModelPosition(position: IPosition): Position {
 		return this.model.validatePosition(position);
 	}
 
-	public validateModelRange(range: IRange): Range {
+	puBlic validateModelRange(range: IRange): Range {
 		return this.model.validateRange(range);
 	}
 
-	public deduceModelPositionRelativeToViewPosition(viewAnchorPosition: Position, deltaOffset: number, lineFeedCnt: number): Position {
+	puBlic deduceModelPositionRelativeToViewPosition(viewAnchorPosition: Position, deltaOffset: numBer, lineFeedCnt: numBer): Position {
 		const modelAnchor = this.coordinatesConverter.convertViewPositionToModelPosition(viewAnchorPosition);
 		if (this.model.getEOL().length === 2) {
 			// This model uses CRLF, so the delta must take that into account
@@ -716,11 +716,11 @@ export class ViewModel extends Disposable implements IViewModel {
 		return this.model.getPositionAt(resultOffset);
 	}
 
-	public getEOL(): string {
+	puBlic getEOL(): string {
 		return this.model.getEOL();
 	}
 
-	public getPlainTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean, forceCRLF: boolean): string | string[] {
+	puBlic getPlainTextToCopy(modelRanges: Range[], emptySelectionClipBoard: Boolean, forceCRLF: Boolean): string | string[] {
 		const newLineCharacter = forceCRLF ? '\r\n' : this.model.getEOL();
 
 		modelRanges = modelRanges.slice(0);
@@ -738,36 +738,36 @@ export class ViewModel extends Disposable implements IViewModel {
 
 		if (!hasNonEmptyRange) {
 			// all ranges are empty
-			if (!emptySelectionClipboard) {
+			if (!emptySelectionClipBoard) {
 				return '';
 			}
 
-			const modelLineNumbers = modelRanges.map((r) => r.startLineNumber);
+			const modelLineNumBers = modelRanges.map((r) => r.startLineNumBer);
 
 			let result = '';
-			for (let i = 0; i < modelLineNumbers.length; i++) {
-				if (i > 0 && modelLineNumbers[i - 1] === modelLineNumbers[i]) {
+			for (let i = 0; i < modelLineNumBers.length; i++) {
+				if (i > 0 && modelLineNumBers[i - 1] === modelLineNumBers[i]) {
 					continue;
 				}
-				result += this.model.getLineContent(modelLineNumbers[i]) + newLineCharacter;
+				result += this.model.getLineContent(modelLineNumBers[i]) + newLineCharacter;
 			}
 			return result;
 		}
 
-		if (hasEmptyRange && emptySelectionClipboard) {
+		if (hasEmptyRange && emptySelectionClipBoard) {
 			// mixed empty selections and non-empty selections
 			let result: string[] = [];
-			let prevModelLineNumber = 0;
+			let prevModelLineNumBer = 0;
 			for (const modelRange of modelRanges) {
-				const modelLineNumber = modelRange.startLineNumber;
+				const modelLineNumBer = modelRange.startLineNumBer;
 				if (modelRange.isEmpty()) {
-					if (modelLineNumber !== prevModelLineNumber) {
-						result.push(this.model.getLineContent(modelLineNumber));
+					if (modelLineNumBer !== prevModelLineNumBer) {
+						result.push(this.model.getLineContent(modelLineNumBer));
 					}
 				} else {
 					result.push(this.model.getValueInRange(modelRange, forceCRLF ? EndOfLinePreference.CRLF : EndOfLinePreference.TextDefined));
 				}
-				prevModelLineNumber = modelLineNumber;
+				prevModelLineNumBer = modelLineNumBer;
 			}
 			return result.length === 1 ? result[0] : result;
 		}
@@ -781,7 +781,7 @@ export class ViewModel extends Disposable implements IViewModel {
 		return result.length === 1 ? result[0] : result;
 	}
 
-	public getRichTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean): { html: string, mode: string } | null {
+	puBlic getRichTextToCopy(modelRanges: Range[], emptySelectionClipBoard: Boolean): { html: string, mode: string } | null {
 		const languageId = this.model.getLanguageIdentifier();
 		if (languageId.id === LanguageId.PlainText) {
 			return null;
@@ -794,12 +794,12 @@ export class ViewModel extends Disposable implements IViewModel {
 
 		let range = modelRanges[0];
 		if (range.isEmpty()) {
-			if (!emptySelectionClipboard) {
+			if (!emptySelectionClipBoard) {
 				// nothing to copy
 				return null;
 			}
-			const lineNumber = range.startLineNumber;
-			range = new Range(lineNumber, this.model.getLineMinColumn(lineNumber), lineNumber, this.model.getLineMaxColumn(lineNumber));
+			const lineNumBer = range.startLineNumBer;
+			range = new Range(lineNumBer, this.model.getLineMinColumn(lineNumBer), lineNumBer, this.model.getLineMaxColumn(lineNumBer));
 		}
 
 		const fontInfo = this._configuration.options.get(EditorOption.fontInfo);
@@ -811,7 +811,7 @@ export class ViewModel extends Disposable implements IViewModel {
 			html: (
 				`<div style="`
 				+ `color: ${colorMap[ColorId.DefaultForeground]};`
-				+ `background-color: ${colorMap[ColorId.DefaultBackground]};`
+				+ `Background-color: ${colorMap[ColorId.DefaultBackground]};`
 				+ `font-family: ${fontFamily};`
 				+ `font-weight: ${fontInfo.fontWeight};`
 				+ `font-size: ${fontInfo.fontSize}px;`
@@ -825,25 +825,25 @@ export class ViewModel extends Disposable implements IViewModel {
 	}
 
 	private _getHTMLToCopy(modelRange: Range, colorMap: string[]): string {
-		const startLineNumber = modelRange.startLineNumber;
+		const startLineNumBer = modelRange.startLineNumBer;
 		const startColumn = modelRange.startColumn;
-		const endLineNumber = modelRange.endLineNumber;
+		const endLineNumBer = modelRange.endLineNumBer;
 		const endColumn = modelRange.endColumn;
 
-		const tabSize = this.getTabSize();
+		const taBSize = this.getTaBSize();
 
 		let result = '';
 
-		for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
-			const lineTokens = this.model.getLineTokens(lineNumber);
+		for (let lineNumBer = startLineNumBer; lineNumBer <= endLineNumBer; lineNumBer++) {
+			const lineTokens = this.model.getLineTokens(lineNumBer);
 			const lineContent = lineTokens.getLineContent();
-			const startOffset = (lineNumber === startLineNumber ? startColumn - 1 : 0);
-			const endOffset = (lineNumber === endLineNumber ? endColumn - 1 : lineContent.length);
+			const startOffset = (lineNumBer === startLineNumBer ? startColumn - 1 : 0);
+			const endOffset = (lineNumBer === endLineNumBer ? endColumn - 1 : lineContent.length);
 
 			if (lineContent === '') {
-				result += '<br>';
+				result += '<Br>';
 			} else {
-				result += tokenizeLineToHTML(lineContent, lineTokens.inflate(), colorMap, startOffset, endOffset, tabSize, platform.isWindows);
+				result += tokenizeLineToHTML(lineContent, lineTokens.inflate(), colorMap, startOffset, endOffset, taBSize, platform.isWindows);
 			}
 		}
 
@@ -863,7 +863,7 @@ export class ViewModel extends Disposable implements IViewModel {
 
 	//#region model
 
-	public pushStackElement(): void {
+	puBlic pushStackElement(): void {
 		this.model.pushStackElement();
 	}
 
@@ -871,137 +871,137 @@ export class ViewModel extends Disposable implements IViewModel {
 
 	//#region cursor operations
 
-	public getPrimaryCursorState(): CursorState {
+	puBlic getPrimaryCursorState(): CursorState {
 		return this._cursor.getPrimaryCursorState();
 	}
-	public getLastAddedCursorIndex(): number {
+	puBlic getLastAddedCursorIndex(): numBer {
 		return this._cursor.getLastAddedCursorIndex();
 	}
-	public getCursorStates(): CursorState[] {
+	puBlic getCursorStates(): CursorState[] {
 		return this._cursor.getCursorStates();
 	}
-	public setCursorStates(source: string | null | undefined, reason: CursorChangeReason, states: PartialCursorState[] | null): void {
+	puBlic setCursorStates(source: string | null | undefined, reason: CursorChangeReason, states: PartialCursorState[] | null): void {
 		this._withViewEventsCollector(eventsCollector => this._cursor.setStates(eventsCollector, source, reason, states));
 	}
-	public getCursorColumnSelectData(): IColumnSelectData {
+	puBlic getCursorColumnSelectData(): IColumnSelectData {
 		return this._cursor.getCursorColumnSelectData();
 	}
-	public setCursorColumnSelectData(columnSelectData: IColumnSelectData): void {
+	puBlic setCursorColumnSelectData(columnSelectData: IColumnSelectData): void {
 		this._cursor.setCursorColumnSelectData(columnSelectData);
 	}
-	public getPrevEditOperationType(): EditOperationType {
+	puBlic getPrevEditOperationType(): EditOperationType {
 		return this._cursor.getPrevEditOperationType();
 	}
-	public setPrevEditOperationType(type: EditOperationType): void {
+	puBlic setPrevEditOperationType(type: EditOperationType): void {
 		this._cursor.setPrevEditOperationType(type);
 	}
-	public getSelection(): Selection {
+	puBlic getSelection(): Selection {
 		return this._cursor.getSelection();
 	}
-	public getSelections(): Selection[] {
+	puBlic getSelections(): Selection[] {
 		return this._cursor.getSelections();
 	}
-	public getPosition(): Position {
+	puBlic getPosition(): Position {
 		return this._cursor.getPrimaryCursorState().modelState.position;
 	}
-	public setSelections(source: string | null | undefined, selections: readonly ISelection[]): void {
+	puBlic setSelections(source: string | null | undefined, selections: readonly ISelection[]): void {
 		this._withViewEventsCollector(eventsCollector => this._cursor.setSelections(eventsCollector, source, selections));
 	}
-	public saveCursorState(): ICursorState[] {
+	puBlic saveCursorState(): ICursorState[] {
 		return this._cursor.saveState();
 	}
-	public restoreCursorState(states: ICursorState[]): void {
+	puBlic restoreCursorState(states: ICursorState[]): void {
 		this._withViewEventsCollector(eventsCollector => this._cursor.restoreState(eventsCollector, states));
 	}
 
-	private _executeCursorEdit(callback: (eventsCollector: ViewModelEventsCollector) => void): void {
+	private _executeCursorEdit(callBack: (eventsCollector: ViewModelEventsCollector) => void): void {
 		if (this._cursor.context.cursorConfig.readOnly) {
 			// we cannot edit when read only...
 			this._eventDispatcher.emitOutgoingEvent(new ReadOnlyEditAttemptEvent());
 			return;
 		}
-		this._withViewEventsCollector(callback);
+		this._withViewEventsCollector(callBack);
 	}
-	public executeEdits(source: string | null | undefined, edits: IIdentifiedSingleEditOperation[], cursorStateComputer: ICursorStateComputer): void {
+	puBlic executeEdits(source: string | null | undefined, edits: IIdentifiedSingleEditOperation[], cursorStateComputer: ICursorStateComputer): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.executeEdits(eventsCollector, source, edits, cursorStateComputer));
 	}
-	public startComposition(): void {
+	puBlic startComposition(): void {
 		this._cursor.setIsDoingComposition(true);
 		this._executeCursorEdit(eventsCollector => this._cursor.startComposition(eventsCollector));
 	}
-	public endComposition(source?: string | null | undefined): void {
+	puBlic endComposition(source?: string | null | undefined): void {
 		this._cursor.setIsDoingComposition(false);
 		this._executeCursorEdit(eventsCollector => this._cursor.endComposition(eventsCollector, source));
 	}
-	public type(text: string, source?: string | null | undefined): void {
+	puBlic type(text: string, source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.type(eventsCollector, text, source));
 	}
-	public replacePreviousChar(text: string, replaceCharCnt: number, source?: string | null | undefined): void {
+	puBlic replacePreviousChar(text: string, replaceCharCnt: numBer, source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.replacePreviousChar(eventsCollector, text, replaceCharCnt, source));
 	}
-	public paste(text: string, pasteOnNewLine: boolean, multicursorText?: string[] | null | undefined, source?: string | null | undefined): void {
+	puBlic paste(text: string, pasteOnNewLine: Boolean, multicursorText?: string[] | null | undefined, source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.paste(eventsCollector, text, pasteOnNewLine, multicursorText, source));
 	}
-	public cut(source?: string | null | undefined): void {
+	puBlic cut(source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.cut(eventsCollector, source));
 	}
-	public executeCommand(command: ICommand, source?: string | null | undefined): void {
+	puBlic executeCommand(command: ICommand, source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.executeCommand(eventsCollector, command, source));
 	}
-	public executeCommands(commands: ICommand[], source?: string | null | undefined): void {
+	puBlic executeCommands(commands: ICommand[], source?: string | null | undefined): void {
 		this._executeCursorEdit(eventsCollector => this._cursor.executeCommands(eventsCollector, commands, source));
 	}
-	public revealPrimaryCursor(source: string | null | undefined, revealHorizontal: boolean): void {
+	puBlic revealPrimaryCursor(source: string | null | undefined, revealHorizontal: Boolean): void {
 		this._withViewEventsCollector(eventsCollector => this._cursor.revealPrimary(eventsCollector, source, revealHorizontal, ScrollType.Smooth));
 	}
-	public revealTopMostCursor(source: string | null | undefined): void {
+	puBlic revealTopMostCursor(source: string | null | undefined): void {
 		const viewPosition = this._cursor.getTopMostViewPosition();
-		const viewRange = new Range(viewPosition.lineNumber, viewPosition.column, viewPosition.lineNumber, viewPosition.column);
+		const viewRange = new Range(viewPosition.lineNumBer, viewPosition.column, viewPosition.lineNumBer, viewPosition.column);
 		this._withViewEventsCollector(eventsCollector => eventsCollector.emitViewEvent(new viewEvents.ViewRevealRangeRequestEvent(source, viewRange, null, viewEvents.VerticalRevealType.Simple, true, ScrollType.Smooth)));
 	}
-	public revealBottomMostCursor(source: string | null | undefined): void {
+	puBlic revealBottomMostCursor(source: string | null | undefined): void {
 		const viewPosition = this._cursor.getBottomMostViewPosition();
-		const viewRange = new Range(viewPosition.lineNumber, viewPosition.column, viewPosition.lineNumber, viewPosition.column);
+		const viewRange = new Range(viewPosition.lineNumBer, viewPosition.column, viewPosition.lineNumBer, viewPosition.column);
 		this._withViewEventsCollector(eventsCollector => eventsCollector.emitViewEvent(new viewEvents.ViewRevealRangeRequestEvent(source, viewRange, null, viewEvents.VerticalRevealType.Simple, true, ScrollType.Smooth)));
 	}
-	public revealRange(source: string | null | undefined, revealHorizontal: boolean, viewRange: Range, verticalType: viewEvents.VerticalRevealType, scrollType: ScrollType): void {
+	puBlic revealRange(source: string | null | undefined, revealHorizontal: Boolean, viewRange: Range, verticalType: viewEvents.VerticalRevealType, scrollType: ScrollType): void {
 		this._withViewEventsCollector(eventsCollector => eventsCollector.emitViewEvent(new viewEvents.ViewRevealRangeRequestEvent(source, viewRange, null, verticalType, revealHorizontal, scrollType)));
 	}
 
 	//#endregion
 
 	//#region viewLayout
-	public getVerticalOffsetForLineNumber(viewLineNumber: number): number {
-		return this.viewLayout.getVerticalOffsetForLineNumber(viewLineNumber);
+	puBlic getVerticalOffsetForLineNumBer(viewLineNumBer: numBer): numBer {
+		return this.viewLayout.getVerticalOffsetForLineNumBer(viewLineNumBer);
 	}
-	public getScrollTop(): number {
+	puBlic getScrollTop(): numBer {
 		return this.viewLayout.getCurrentScrollTop();
 	}
-	public setScrollTop(newScrollTop: number, scrollType: ScrollType): void {
+	puBlic setScrollTop(newScrollTop: numBer, scrollType: ScrollType): void {
 		this.viewLayout.setScrollPosition({ scrollTop: newScrollTop }, scrollType);
 	}
-	public setScrollPosition(position: INewScrollPosition, type: ScrollType): void {
+	puBlic setScrollPosition(position: INewScrollPosition, type: ScrollType): void {
 		this.viewLayout.setScrollPosition(position, type);
 	}
-	public deltaScrollNow(deltaScrollLeft: number, deltaScrollTop: number): void {
+	puBlic deltaScrollNow(deltaScrollLeft: numBer, deltaScrollTop: numBer): void {
 		this.viewLayout.deltaScrollNow(deltaScrollLeft, deltaScrollTop);
 	}
-	public changeWhitespace(callback: (accessor: IWhitespaceChangeAccessor) => void): void {
-		const hadAChange = this.viewLayout.changeWhitespace(callback);
+	puBlic changeWhitespace(callBack: (accessor: IWhitespaceChangeAccessor) => void): void {
+		const hadAChange = this.viewLayout.changeWhitespace(callBack);
 		if (hadAChange) {
 			this._eventDispatcher.emitSingleViewEvent(new viewEvents.ViewZonesChangedEvent());
 			this._eventDispatcher.emitOutgoingEvent(new ViewZonesChangedEvent());
 		}
 	}
-	public setMaxLineWidth(maxLineWidth: number): void {
+	puBlic setMaxLineWidth(maxLineWidth: numBer): void {
 		this.viewLayout.setMaxLineWidth(maxLineWidth);
 	}
 	//#endregion
 
-	private _withViewEventsCollector(callback: (eventsCollector: ViewModelEventsCollector) => void): void {
+	private _withViewEventsCollector(callBack: (eventsCollector: ViewModelEventsCollector) => void): void {
 		try {
-			const eventsCollector = this._eventDispatcher.beginEmitViewEvents();
-			callback(eventsCollector);
+			const eventsCollector = this._eventDispatcher.BeginEmitViewEvents();
+			callBack(eventsCollector);
 		} finally {
 			this._eventDispatcher.endEmitViewEvents();
 		}

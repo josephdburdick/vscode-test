@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import * as resources from 'vs/base/common/resources';
-import { FileChangeType, FileType, IWatchOptions, IStat, FileSystemProviderErrorCode, FileSystemProviderError, FileWriteOptions, IFileChange, FileDeleteOptions, FileSystemProviderCapabilities, FileOverwriteOptions, IFileSystemProviderWithFileReadWriteCapability } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import * as resources from 'vs/Base/common/resources';
+import { FileChangeType, FileType, IWatchOptions, IStat, FileSystemProviderErrorCode, FileSystemProviderError, FileWriteOptions, IFileChange, FileDeleteOptions, FileSystemProviderCapaBilities, FileOverwriteOptions, IFileSystemProviderWithFileReadWriteCapaBility } from 'vs/platform/files/common/files';
+import { URI } from 'vs/Base/common/uri';
 
 class File implements IStat {
 
 	type: FileType.File;
-	ctime: number;
-	mtime: number;
-	size: number;
+	ctime: numBer;
+	mtime: numBer;
+	size: numBer;
 
 	name: string;
 	data?: Uint8Array;
@@ -31,9 +31,9 @@ class File implements IStat {
 class Directory implements IStat {
 
 	type: FileType.Directory;
-	ctime: number;
-	mtime: number;
-	size: number;
+	ctime: numBer;
+	mtime: numBer;
+	size: numBer;
 
 	name: string;
 	entries: Map<string, File | Directory>;
@@ -50,12 +50,12 @@ class Directory implements IStat {
 
 export type Entry = File | Directory;
 
-export class InMemoryFileSystemProvider extends Disposable implements IFileSystemProviderWithFileReadWriteCapability {
+export class InMemoryFileSystemProvider extends DisposaBle implements IFileSystemProviderWithFileReadWriteCapaBility {
 
-	readonly capabilities: FileSystemProviderCapabilities =
-		FileSystemProviderCapabilities.FileReadWrite
-		| FileSystemProviderCapabilities.PathCaseSensitive;
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	readonly capaBilities: FileSystemProviderCapaBilities =
+		FileSystemProviderCapaBilities.FileReadWrite
+		| FileSystemProviderCapaBilities.PathCaseSensitive;
+	readonly onDidChangeCapaBilities: Event<void> = Event.None;
 
 	root = new Directory('');
 
@@ -83,9 +83,9 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 	}
 
 	async writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
-		let basename = resources.basename(resource);
+		let Basename = resources.Basename(resource);
 		let parent = this._lookupParentDirectory(resource);
-		let entry = parent.entries.get(basename);
+		let entry = parent.entries.get(Basename);
 		if (entry instanceof Directory) {
 			throw new FileSystemProviderError('file is directory', FileSystemProviderErrorCode.FileIsADirectory);
 		}
@@ -96,12 +96,12 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 			throw new FileSystemProviderError('file exists already', FileSystemProviderErrorCode.FileExists);
 		}
 		if (!entry) {
-			entry = new File(basename);
-			parent.entries.set(basename, entry);
+			entry = new File(Basename);
+			parent.entries.set(Basename, entry);
 			this._fireSoon({ type: FileChangeType.ADDED, resource });
 		}
 		entry.mtime = Date.now();
-		entry.size = content.byteLength;
+		entry.size = content.ByteLength;
 		entry.data = content;
 
 		this._fireSoon({ type: FileChangeType.UPDATED, resource });
@@ -118,7 +118,7 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 		let oldParent = this._lookupParentDirectory(from);
 
 		let newParent = this._lookupParentDirectory(to);
-		let newName = resources.basename(to);
+		let newName = resources.Basename(to);
 
 		oldParent.entries.delete(entry.name);
 		entry.name = newName;
@@ -132,10 +132,10 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 
 	async delete(resource: URI, opts: FileDeleteOptions): Promise<void> {
 		let dirname = resources.dirname(resource);
-		let basename = resources.basename(resource);
+		let Basename = resources.Basename(resource);
 		let parent = this._lookupAsDirectory(dirname, false);
-		if (parent.entries.has(basename)) {
-			parent.entries.delete(basename);
+		if (parent.entries.has(Basename)) {
+			parent.entries.delete(Basename);
 			parent.mtime = Date.now();
 			parent.size -= 1;
 			this._fireSoon({ type: FileChangeType.UPDATED, resource: dirname }, { resource, type: FileChangeType.DELETED });
@@ -143,11 +143,11 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 	}
 
 	async mkdir(resource: URI): Promise<void> {
-		let basename = resources.basename(resource);
+		let Basename = resources.Basename(resource);
 		let dirname = resources.dirname(resource);
 		let parent = this._lookupAsDirectory(dirname, false);
 
-		let entry = new Directory(basename);
+		let entry = new Directory(Basename);
 		parent.entries.set(entry.name, entry);
 		parent.mtime = Date.now();
 		parent.size += 1;
@@ -157,8 +157,8 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 	// --- lookup
 
 	private _lookup(uri: URI, silent: false): Entry;
-	private _lookup(uri: URI, silent: boolean): Entry | undefined;
-	private _lookup(uri: URI, silent: boolean): Entry | undefined {
+	private _lookup(uri: URI, silent: Boolean): Entry | undefined;
+	private _lookup(uri: URI, silent: Boolean): Entry | undefined {
 		let parts = uri.path.split('/');
 		let entry: Entry = this.root;
 		for (const part of parts) {
@@ -181,7 +181,7 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 		return entry;
 	}
 
-	private _lookupAsDirectory(uri: URI, silent: boolean): Directory {
+	private _lookupAsDirectory(uri: URI, silent: Boolean): Directory {
 		let entry = this._lookup(uri, silent);
 		if (entry instanceof Directory) {
 			return entry;
@@ -189,7 +189,7 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 		throw new FileSystemProviderError('file not a directory', FileSystemProviderErrorCode.FileNotADirectory);
 	}
 
-	private _lookupAsFile(uri: URI, silent: boolean): File {
+	private _lookupAsFile(uri: URI, silent: Boolean): File {
 		let entry = this._lookup(uri, silent);
 		if (entry instanceof File) {
 			return entry;
@@ -207,24 +207,24 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 	private readonly _onDidChangeFile = this._register(new Emitter<readonly IFileChange[]>());
 	readonly onDidChangeFile: Event<readonly IFileChange[]> = this._onDidChangeFile.event;
 
-	private _bufferedChanges: IFileChange[] = [];
+	private _BufferedChanges: IFileChange[] = [];
 	private _fireSoonHandle?: any;
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
+	watch(resource: URI, opts: IWatchOptions): IDisposaBle {
 		// ignore, fires for all changes...
-		return Disposable.None;
+		return DisposaBle.None;
 	}
 
 	private _fireSoon(...changes: IFileChange[]): void {
-		this._bufferedChanges.push(...changes);
+		this._BufferedChanges.push(...changes);
 
 		if (this._fireSoonHandle) {
 			clearTimeout(this._fireSoonHandle);
 		}
 
 		this._fireSoonHandle = setTimeout(() => {
-			this._onDidChangeFile.fire(this._bufferedChanges);
-			this._bufferedChanges.length = 0;
+			this._onDidChangeFile.fire(this._BufferedChanges);
+			this._BufferedChanges.length = 0;
 		}, 5);
 	}
 }

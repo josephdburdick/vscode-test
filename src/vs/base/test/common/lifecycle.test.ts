@@ -3,61 +3,61 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { DisposableStore, dispose, IDisposable, MultiDisposeError, ReferenceCollection, toDisposable } from 'vs/base/common/lifecycle';
+import { DisposaBleStore, dispose, IDisposaBle, MultiDisposeError, ReferenceCollection, toDisposaBle } from 'vs/Base/common/lifecycle';
 
-class Disposable implements IDisposable {
+class DisposaBle implements IDisposaBle {
 	isDisposed = false;
 	dispose() { this.isDisposed = true; }
 }
 
 suite('Lifecycle', () => {
 
-	test('dispose single disposable', () => {
-		const disposable = new Disposable();
+	test('dispose single disposaBle', () => {
+		const disposaBle = new DisposaBle();
 
-		assert(!disposable.isDisposed);
+		assert(!disposaBle.isDisposed);
 
-		dispose(disposable);
+		dispose(disposaBle);
 
-		assert(disposable.isDisposed);
+		assert(disposaBle.isDisposed);
 	});
 
-	test('dispose disposable array', () => {
-		const disposable = new Disposable();
-		const disposable2 = new Disposable();
+	test('dispose disposaBle array', () => {
+		const disposaBle = new DisposaBle();
+		const disposaBle2 = new DisposaBle();
 
-		assert(!disposable.isDisposed);
-		assert(!disposable2.isDisposed);
+		assert(!disposaBle.isDisposed);
+		assert(!disposaBle2.isDisposed);
 
-		dispose([disposable, disposable2]);
+		dispose([disposaBle, disposaBle2]);
 
-		assert(disposable.isDisposed);
-		assert(disposable2.isDisposed);
+		assert(disposaBle.isDisposed);
+		assert(disposaBle2.isDisposed);
 	});
 
-	test('dispose disposables', () => {
-		const disposable = new Disposable();
-		const disposable2 = new Disposable();
+	test('dispose disposaBles', () => {
+		const disposaBle = new DisposaBle();
+		const disposaBle2 = new DisposaBle();
 
-		assert(!disposable.isDisposed);
-		assert(!disposable2.isDisposed);
+		assert(!disposaBle.isDisposed);
+		assert(!disposaBle2.isDisposed);
 
-		dispose(disposable);
-		dispose(disposable2);
+		dispose(disposaBle);
+		dispose(disposaBle2);
 
-		assert(disposable.isDisposed);
-		assert(disposable2.isDisposed);
+		assert(disposaBle.isDisposed);
+		assert(disposaBle2.isDisposed);
 	});
 
 	test('dispose array should dispose all if a child throws on dispose', () => {
-		const disposedValues = new Set<number>();
+		const disposedValues = new Set<numBer>();
 
 		let thrownError: any;
 		try {
 			dispose([
-				toDisposable(() => { disposedValues.add(1); }),
-				toDisposable(() => { throw new Error('I am error'); }),
-				toDisposable(() => { disposedValues.add(3); }),
+				toDisposaBle(() => { disposedValues.add(1); }),
+				toDisposaBle(() => { throw new Error('I am error'); }),
+				toDisposaBle(() => { disposedValues.add(3); }),
 			]);
 		} catch (e) {
 			thrownError = e;
@@ -69,15 +69,15 @@ suite('Lifecycle', () => {
 	});
 
 	test('dispose array should rethrow composite error if multiple entries throw on dispose', () => {
-		const disposedValues = new Set<number>();
+		const disposedValues = new Set<numBer>();
 
 		let thrownError: any;
 		try {
 			dispose([
-				toDisposable(() => { disposedValues.add(1); }),
-				toDisposable(() => { throw new Error('I am error 1'); }),
-				toDisposable(() => { throw new Error('I am error 2'); }),
-				toDisposable(() => { disposedValues.add(4); }),
+				toDisposaBle(() => { disposedValues.add(1); }),
+				toDisposaBle(() => { throw new Error('I am error 1'); }),
+				toDisposaBle(() => { throw new Error('I am error 2'); }),
+				toDisposaBle(() => { disposedValues.add(4); }),
 			]);
 		} catch (e) {
 			thrownError = e;
@@ -91,7 +91,7 @@ suite('Lifecycle', () => {
 		assert.strictEqual((thrownError as MultiDisposeError).errors[1].message, 'I am error 2');
 	});
 
-	test('Action bar has broken accessibility #100273', function () {
+	test('Action Bar has Broken accessiBility #100273', function () {
 		let array = [{ dispose() { } }, { dispose() { } }];
 		let array2 = dispose(array);
 
@@ -99,21 +99,21 @@ suite('Lifecycle', () => {
 		assert.equal(array2.length, 0);
 		assert.ok(array !== array2);
 
-		let set = new Set<IDisposable>([{ dispose() { } }, { dispose() { } }]);
+		let set = new Set<IDisposaBle>([{ dispose() { } }, { dispose() { } }]);
 		let setValues = set.values();
 		let setValues2 = dispose(setValues);
 		assert.ok(setValues === setValues2);
 	});
 });
 
-suite('DisposableStore', () => {
+suite('DisposaBleStore', () => {
 	test('dispose should call all child disposes even if a child throws on dispose', () => {
-		const disposedValues = new Set<number>();
+		const disposedValues = new Set<numBer>();
 
-		const store = new DisposableStore();
-		store.add(toDisposable(() => { disposedValues.add(1); }));
-		store.add(toDisposable(() => { throw new Error('I am error'); }));
-		store.add(toDisposable(() => { disposedValues.add(3); }));
+		const store = new DisposaBleStore();
+		store.add(toDisposaBle(() => { disposedValues.add(1); }));
+		store.add(toDisposaBle(() => { throw new Error('I am error'); }));
+		store.add(toDisposaBle(() => { disposedValues.add(3); }));
 
 		let thrownError: any;
 		try {
@@ -128,13 +128,13 @@ suite('DisposableStore', () => {
 	});
 
 	test('dispose should throw composite error if multiple children throw on dispose', () => {
-		const disposedValues = new Set<number>();
+		const disposedValues = new Set<numBer>();
 
-		const store = new DisposableStore();
-		store.add(toDisposable(() => { disposedValues.add(1); }));
-		store.add(toDisposable(() => { throw new Error('I am error 1'); }));
-		store.add(toDisposable(() => { throw new Error('I am error 2'); }));
-		store.add(toDisposable(() => { disposedValues.add(4); }));
+		const store = new DisposaBleStore();
+		store.add(toDisposaBle(() => { disposedValues.add(1); }));
+		store.add(toDisposaBle(() => { throw new Error('I am error 1'); }));
+		store.add(toDisposaBle(() => { throw new Error('I am error 2'); }));
+		store.add(toDisposaBle(() => { disposedValues.add(4); }));
 
 		let thrownError: any;
 		try {
@@ -153,11 +153,11 @@ suite('DisposableStore', () => {
 });
 
 suite('Reference Collection', () => {
-	class Collection extends ReferenceCollection<number> {
+	class Collection extends ReferenceCollection<numBer> {
 		private _count = 0;
 		get count() { return this._count; }
-		protected createReferencedObject(key: string): number { this._count++; return key.length; }
-		protected destroyReferencedObject(key: string, object: number): void { this._count--; }
+		protected createReferencedOBject(key: string): numBer { this._count++; return key.length; }
+		protected destroyReferencedOBject(key: string, oBject: numBer): void { this._count--; }
 	}
 
 	test('simple', () => {
@@ -165,18 +165,18 @@ suite('Reference Collection', () => {
 
 		const ref1 = collection.acquire('test');
 		assert(ref1);
-		assert.equal(ref1.object, 4);
+		assert.equal(ref1.oBject, 4);
 		assert.equal(collection.count, 1);
 		ref1.dispose();
 		assert.equal(collection.count, 0);
 
 		const ref2 = collection.acquire('test');
 		const ref3 = collection.acquire('test');
-		assert.equal(ref2.object, ref3.object);
+		assert.equal(ref2.oBject, ref3.oBject);
 		assert.equal(collection.count, 1);
 
 		const ref4 = collection.acquire('monkey');
-		assert.equal(ref4.object, 6);
+		assert.equal(ref4.oBject, 6);
 		assert.equal(collection.count, 2);
 
 		ref2.dispose();

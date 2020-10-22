@@ -8,17 +8,17 @@ import * as nls from 'vscode-nls';
 import type * as Proto from '../../protocol';
 import * as PConst from '../../protocol.const';
 import { CachedResponse } from '../../tsServer/cachedResponse';
-import { ClientCapability, ITypeScriptServiceClient } from '../../typescriptService';
-import { conditionalRegistration, requireSomeCapability, requireConfiguration } from '../../utils/dependentRegistration';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../../typescriptService';
+import { conditionalRegistration, requireSomeCapaBility, requireConfiguration } from '../../utils/dependentRegistration';
 import { DocumentSelector } from '../../utils/documentSelector';
 import * as typeConverters from '../../utils/typeConverters';
-import { getSymbolRange, ReferencesCodeLens, TypeScriptBaseCodeLensProvider } from './baseCodeLensProvider';
+import { getSymBolRange, ReferencesCodeLens, TypeScriptBaseCodeLensProvider } from './BaseCodeLensProvider';
 
 const localize = nls.loadMessageBundle();
 
 export default class TypeScriptImplementationsCodeLensProvider extends TypeScriptBaseCodeLensProvider {
 
-	public async resolveCodeLens(
+	puBlic async resolveCodeLens(
 		inputCodeLens: vscode.CodeLens,
 		token: vscode.CancellationToken,
 	): Promise<vscode.CodeLens> {
@@ -26,16 +26,16 @@ export default class TypeScriptImplementationsCodeLensProvider extends TypeScrip
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(codeLens.file, codeLens.range.start);
 		const response = await this.client.execute('implementation', args, token, { lowPriority: true, cancelOnResourceChange: codeLens.document });
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			codeLens.command = response.type === 'cancelled'
 				? TypeScriptBaseCodeLensProvider.cancelledCommand
 				: TypeScriptBaseCodeLensProvider.errorCommand;
 			return codeLens;
 		}
 
-		const locations = response.body
+		const locations = response.Body
 			.map(reference =>
-				// Only take first line on implementation: https://github.com/microsoft/vscode/issues/23924
+				// Only take first line on implementation: https://githuB.com/microsoft/vscode/issues/23924
 				new vscode.Location(this.client.toResource(reference.file),
 					reference.start.line === reference.end.line
 						? typeConverters.Range.fromTextSpan(reference)
@@ -62,28 +62,28 @@ export default class TypeScriptImplementationsCodeLensProvider extends TypeScrip
 
 	private getTitle(locations: vscode.Location[]): string {
 		return locations.length === 1
-			? localize('oneImplementationLabel', '1 implementation')
-			: localize('manyImplementationLabel', '{0} implementations', locations.length);
+			? localize('oneImplementationLaBel', '1 implementation')
+			: localize('manyImplementationLaBel', '{0} implementations', locations.length);
 	}
 
-	protected extractSymbol(
+	protected extractSymBol(
 		document: vscode.TextDocument,
 		item: Proto.NavigationTree,
 		_parent: Proto.NavigationTree | null
 	): vscode.Range | null {
 		switch (item.kind) {
 			case PConst.Kind.interface:
-				return getSymbolRange(document, item);
+				return getSymBolRange(document, item);
 
 			case PConst.Kind.class:
 			case PConst.Kind.method:
-			case PConst.Kind.memberVariable:
-			case PConst.Kind.memberGetAccessor:
-			case PConst.Kind.memberSetAccessor:
-				if (item.kindModifiers.match(/\babstract\b/g)) {
-					return getSymbolRange(document, item);
+			case PConst.Kind.memBerVariaBle:
+			case PConst.Kind.memBerGetAccessor:
+			case PConst.Kind.memBerSetAccessor:
+				if (item.kindModifiers.match(/\BaBstract\B/g)) {
+					return getSymBolRange(document, item);
 				}
-				break;
+				Break;
 		}
 		return null;
 	}
@@ -96,8 +96,8 @@ export function register(
 	cachedResponse: CachedResponse<Proto.NavTreeResponse>,
 ) {
 	return conditionalRegistration([
-		requireConfiguration(modeId, 'implementationsCodeLens.enabled'),
-		requireSomeCapability(client, ClientCapability.Semantic),
+		requireConfiguration(modeId, 'implementationsCodeLens.enaBled'),
+		requireSomeCapaBility(client, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerCodeLensProvider(selector.semantic,
 			new TypeScriptImplementationsCodeLensProvider(client, cachedResponse));

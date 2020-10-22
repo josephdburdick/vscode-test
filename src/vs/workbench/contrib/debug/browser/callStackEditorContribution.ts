@@ -3,51 +3,51 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Constants } from 'vs/base/common/uint';
+import { Constants } from 'vs/Base/common/uint';
 import { Range, IRange } from 'vs/editor/common/core/range';
 import { TrackedRangeStickiness, IModelDeltaDecoration, IModelDecorationOptions } from 'vs/editor/common/model';
-import { IDebugService, IStackFrame } from 'vs/workbench/contrib/debug/common/debug';
+import { IDeBugService, IStackFrame } from 'vs/workBench/contriB/deBug/common/deBug';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { registerColor } from 'vs/platform/theme/common/colorRegistry';
 import { localize } from 'vs/nls';
-import { Event } from 'vs/base/common/event';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 
 const stickiness = TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges;
 
 // we need a separate decoration for glyph margin, since we do not want it on each line of a multi line statement.
 const TOP_STACK_FRAME_MARGIN: IModelDecorationOptions = {
-	glyphMarginClassName: 'codicon-debug-stackframe',
+	glyphMarginClassName: 'codicon-deBug-stackframe',
 	stickiness
 };
 const FOCUSED_STACK_FRAME_MARGIN: IModelDecorationOptions = {
-	glyphMarginClassName: 'codicon-debug-stackframe-focused',
+	glyphMarginClassName: 'codicon-deBug-stackframe-focused',
 	stickiness
 };
 const TOP_STACK_FRAME_DECORATION: IModelDecorationOptions = {
 	isWholeLine: true,
-	className: 'debug-top-stack-frame-line',
+	className: 'deBug-top-stack-frame-line',
 	stickiness
 };
 const TOP_STACK_FRAME_INLINE_DECORATION: IModelDecorationOptions = {
-	beforeContentClassName: 'debug-top-stack-frame-column'
+	BeforeContentClassName: 'deBug-top-stack-frame-column'
 };
 const FOCUSED_STACK_FRAME_DECORATION: IModelDecorationOptions = {
 	isWholeLine: true,
-	className: 'debug-focused-stack-frame-line',
+	className: 'deBug-focused-stack-frame-line',
 	stickiness
 };
 
-export function createDecorationsForStackFrame(stackFrame: IStackFrame, topStackFrameRange: IRange | undefined, isFocusedSession: boolean): IModelDeltaDecoration[] {
+export function createDecorationsForStackFrame(stackFrame: IStackFrame, topStackFrameRange: IRange | undefined, isFocusedSession: Boolean): IModelDeltaDecoration[] {
 	// only show decorations for the currently focused thread.
 	const result: IModelDeltaDecoration[] = [];
-	const columnUntilEOLRange = new Range(stackFrame.range.startLineNumber, stackFrame.range.startColumn, stackFrame.range.startLineNumber, Constants.MAX_SAFE_SMALL_INTEGER);
-	const range = new Range(stackFrame.range.startLineNumber, stackFrame.range.startColumn, stackFrame.range.startLineNumber, stackFrame.range.startColumn + 1);
+	const columnUntilEOLRange = new Range(stackFrame.range.startLineNumBer, stackFrame.range.startColumn, stackFrame.range.startLineNumBer, Constants.MAX_SAFE_SMALL_INTEGER);
+	const range = new Range(stackFrame.range.startLineNumBer, stackFrame.range.startColumn, stackFrame.range.startLineNumBer, stackFrame.range.startColumn + 1);
 
 	// compute how to decorate the editor. Different decorations are used if this is a top stack frame, focused stack frame,
-	// an exception or a stack frame that did not change the line number (we only decorate the columns, not the whole line).
+	// an exception or a stack frame that did not change the line numBer (we only decorate the columns, not the whole line).
 	const topStackFrame = stackFrame.thread.getTopStackFrame();
 	if (stackFrame.getId() === topStackFrame?.getId()) {
 		if (isFocusedSession) {
@@ -62,7 +62,7 @@ export function createDecorationsForStackFrame(stackFrame: IStackFrame, topStack
 			range: columnUntilEOLRange
 		});
 
-		if (topStackFrameRange && topStackFrameRange.startLineNumber === stackFrame.range.startLineNumber && topStackFrameRange.startColumn !== stackFrame.range.startColumn) {
+		if (topStackFrameRange && topStackFrameRange.startLineNumBer === stackFrame.range.startLineNumBer && topStackFrameRange.startColumn !== stackFrame.range.startColumn) {
 			result.push({
 				options: TOP_STACK_FRAME_INLINE_DECORATION,
 				range: columnUntilEOLRange
@@ -86,17 +86,17 @@ export function createDecorationsForStackFrame(stackFrame: IStackFrame, topStack
 	return result;
 }
 
-export class CallStackEditorContribution implements IEditorContribution {
-	private toDispose: IDisposable[] = [];
+export class CallStackEditorContriBution implements IEditorContriBution {
+	private toDispose: IDisposaBle[] = [];
 	private decorationIds: string[] = [];
 	private topStackFrameRange: Range | undefined;
 
 	constructor(
 		private readonly editor: ICodeEditor,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDeBugService private readonly deBugService: IDeBugService,
 	) {
 		const setDecorations = () => this.decorationIds = this.editor.deltaDecorations(this.decorationIds, this.createCallStackDecorations());
-		this.toDispose.push(Event.any(this.debugService.getViewModel().onDidFocusStackFrame, this.debugService.getModel().onDidChangeCallStack)(() => {
+		this.toDispose.push(Event.any(this.deBugService.getViewModel().onDidFocusStackFrame, this.deBugService.getModel().onDidChangeCallStack)(() => {
 			setDecorations();
 		}));
 		this.toDispose.push(this.editor.onDidChangeModel(e => {
@@ -107,9 +107,9 @@ export class CallStackEditorContribution implements IEditorContribution {
 	}
 
 	private createCallStackDecorations(): IModelDeltaDecoration[] {
-		const focusedStackFrame = this.debugService.getViewModel().focusedStackFrame;
+		const focusedStackFrame = this.deBugService.getViewModel().focusedStackFrame;
 		const decorations: IModelDeltaDecoration[] = [];
-		this.debugService.getModel().getSessions().forEach(s => {
+		this.deBugService.getModel().getSessions().forEach(s => {
 			const isSessionFocused = s === focusedStackFrame?.thread.session;
 			s.getAllThreads().forEach(t => {
 				if (t.stopped) {
@@ -140,15 +140,15 @@ export class CallStackEditorContribution implements IEditorContribution {
 registerThemingParticipant((theme, collector) => {
 	const topStackFrame = theme.getColor(topStackFrameColor);
 	if (topStackFrame) {
-		collector.addRule(`.monaco-editor .view-overlays .debug-top-stack-frame-line { background: ${topStackFrame}; }`);
-		collector.addRule(`.monaco-editor .view-overlays .debug-top-stack-frame-line { background: ${topStackFrame}; }`);
+		collector.addRule(`.monaco-editor .view-overlays .deBug-top-stack-frame-line { Background: ${topStackFrame}; }`);
+		collector.addRule(`.monaco-editor .view-overlays .deBug-top-stack-frame-line { Background: ${topStackFrame}; }`);
 	}
 
 	const focusedStackFrame = theme.getColor(focusedStackFrameColor);
 	if (focusedStackFrame) {
-		collector.addRule(`.monaco-editor .view-overlays .debug-focused-stack-frame-line { background: ${focusedStackFrame}; }`);
+		collector.addRule(`.monaco-editor .view-overlays .deBug-focused-stack-frame-line { Background: ${focusedStackFrame}; }`);
 	}
 });
 
 const topStackFrameColor = registerColor('editor.stackFrameHighlightBackground', { dark: '#ffff0033', light: '#ffff6673', hc: '#ffff0033' }, localize('topStackFrameLineHighlight', 'Background color for the highlight of line at the top stack frame position.'));
-const focusedStackFrameColor = registerColor('editor.focusedStackFrameHighlightBackground', { dark: '#7abd7a4d', light: '#cee7ce73', hc: '#7abd7a4d' }, localize('focusedStackFrameLineHighlight', 'Background color for the highlight of line at focused stack frame position.'));
+const focusedStackFrameColor = registerColor('editor.focusedStackFrameHighlightBackground', { dark: '#7aBd7a4d', light: '#cee7ce73', hc: '#7aBd7a4d' }, localize('focusedStackFrameLineHighlight', 'Background color for the highlight of line at focused stack frame position.'));

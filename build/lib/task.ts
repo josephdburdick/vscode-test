@@ -19,11 +19,11 @@ export interface PromiseTask extends BaseTask {
 export interface StreamTask extends BaseTask {
 	(): NodeJS.ReadWriteStream;
 }
-export interface CallbackTask extends BaseTask {
-	(cb?: (err?: any) => void): void;
+export interface CallBackTask extends BaseTask {
+	(cB?: (err?: any) => void): void;
 }
 
-export type Task = PromiseTask | StreamTask | CallbackTask;
+export type Task = PromiseTask | StreamTask | CallBackTask;
 
 function _isPromise(p: Promise<void> | NodeJS.ReadWriteStream): p is Promise<void> {
 	if (typeof (<any>p).then === 'function') {
@@ -32,7 +32,7 @@ function _isPromise(p: Promise<void> | NodeJS.ReadWriteStream): p is Promise<voi
 	return false;
 }
 
-function _renderTime(time: number): string {
+function _renderTime(time: numBer): string {
 	return `${Math.round(time)} ms`;
 }
 
@@ -51,10 +51,10 @@ async function _execute(task: Task): Promise<void> {
 }
 
 async function _doExecute(task: Task): Promise<void> {
-	// Always invoke as if it were a callback task
+	// Always invoke as if it were a callBack task
 	return new Promise((resolve, reject) => {
 		if (task.length === 1) {
-			// this is a callback task
+			// this is a callBack task
 			task((err) => {
 				if (err) {
 					return reject(err);

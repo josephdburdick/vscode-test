@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { toResource } from 'vs/base/test/common/utils';
-import { TestFileService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { getContext } from 'vs/workbench/contrib/files/browser/views/explorerView';
+import { Emitter } from 'vs/Base/common/event';
+import { toResource } from 'vs/Base/test/common/utils';
+import { TestFileService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { ExplorerItem } from 'vs/workBench/contriB/files/common/explorerModel';
+import { getContext } from 'vs/workBench/contriB/files/Browser/views/explorerView';
 import { listInvalidItemForeground } from 'vs/platform/theme/common/colorRegistry';
-import { CompressedNavigationController } from 'vs/workbench/contrib/files/browser/views/explorerViewer';
-import * as dom from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { provideDecorations } from 'vs/workbench/contrib/files/browser/views/explorerDecorationsProvider';
+import { CompressedNavigationController } from 'vs/workBench/contriB/files/Browser/views/explorerViewer';
+import * as dom from 'vs/Base/Browser/dom';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { provideDecorations } from 'vs/workBench/contriB/files/Browser/views/explorerDecorationsProvider';
 const $ = dom.$;
 
 const fileService = new TestFileService();
 
-function createStat(this: any, path: string, name: string, isFolder: boolean, hasChildren: boolean, size: number, mtime: number, isSymLink = false, isUnknown = false): ExplorerItem {
+function createStat(this: any, path: string, name: string, isFolder: Boolean, hasChildren: Boolean, size: numBer, mtime: numBer, isSymLink = false, isUnknown = false): ExplorerItem {
 	return new ExplorerItem(toResource.call(this, path), fileService, undefined, isFolder, isSymLink, name, mtime, isUnknown);
 }
 
@@ -47,11 +47,11 @@ suite('Files - ExplorerView', () => {
 		const s3 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
 		assert.equal(provideDecorations(s3), undefined);
 		assert.deepEqual(provideDecorations(s2), {
-			tooltip: 'Symbolic Link',
+			tooltip: 'SymBolic Link',
 			letter: '\u2937'
 		});
 		assert.deepEqual(provideDecorations(s1), {
-			tooltip: 'Unable to resolve workspace folder',
+			tooltip: 'UnaBle to resolve workspace folder',
 			letter: '!',
 			color: listInvalidItemForeground
 		});
@@ -65,26 +65,26 @@ suite('Files - ExplorerView', () => {
 
 	test('compressed navigation controller', async function () {
 		const container = $('.file');
-		const label = $('.label');
-		const labelName1 = $('.label-name');
-		const labelName2 = $('.label-name');
-		const labelName3 = $('.label-name');
+		const laBel = $('.laBel');
+		const laBelName1 = $('.laBel-name');
+		const laBelName2 = $('.laBel-name');
+		const laBelName3 = $('.laBel-name');
 		const d = new Date().getTime();
 		const s1 = createStat.call(this, '/path', 'path', true, false, 8096, d);
 		const s2 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
 		const s3 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
 
-		dom.append(container, label);
-		dom.append(label, labelName1);
-		dom.append(label, labelName2);
-		dom.append(label, labelName3);
+		dom.append(container, laBel);
+		dom.append(laBel, laBelName1);
+		dom.append(laBel, laBelName2);
+		dom.append(laBel, laBelName3);
 		const emitter = new Emitter<void>();
 
 		const navigationController = new CompressedNavigationController('id', [s1, s2, s3], {
 			container,
-			elementDisposable: Disposable.None,
-			label: <any>{
-				container: label,
+			elementDisposaBle: DisposaBle.None,
+			laBel: <any>{
+				container: laBel,
 				onDidRender: emitter.event
 			}
 		}, 1, false);

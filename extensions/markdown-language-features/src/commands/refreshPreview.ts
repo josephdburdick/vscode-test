@@ -8,15 +8,15 @@ import { MarkdownPreviewManager } from '../features/previewManager';
 import { MarkdownEngine } from '../markdownEngine';
 
 export class RefreshPreviewCommand implements Command {
-	public readonly id = 'markdown.preview.refresh';
+	puBlic readonly id = 'markdown.preview.refresh';
 
-	public constructor(
-		private readonly webviewManager: MarkdownPreviewManager,
+	puBlic constructor(
+		private readonly weBviewManager: MarkdownPreviewManager,
 		private readonly engine: MarkdownEngine
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		this.engine.cleanCache();
-		this.webviewManager.refresh();
+		this.weBviewManager.refresh();
 	}
 }

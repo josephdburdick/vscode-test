@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMenubarService } from 'vs/platform/menubar/electron-sandbox/menubar';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
+import { IMenuBarService } from 'vs/platform/menuBar/electron-sandBox/menuBar';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
+import { createChannelSender } from 'vs/Base/parts/ipc/common/ipc';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
 // @ts-ignore: interface is implemented via proxy
-export class MenubarService implements IMenubarService {
+export class MenuBarService implements IMenuBarService {
 
 	declare readonly _serviceBrand: undefined;
 
 	constructor(@IMainProcessService mainProcessService: IMainProcessService) {
-		return createChannelSender<IMenubarService>(mainProcessService.getChannel('menubar'));
+		return createChannelSender<IMenuBarService>(mainProcessService.getChannel('menuBar'));
 	}
 }
 
-registerSingleton(IMenubarService, MenubarService, true);
+registerSingleton(IMenuBarService, MenuBarService, true);

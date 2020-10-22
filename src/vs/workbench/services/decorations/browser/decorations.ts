@@ -4,36 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 export const IDecorationsService = createDecorator<IDecorationsService>('IFileDecorationsService');
 
 export interface IDecorationData {
-	readonly weight?: number;
+	readonly weight?: numBer;
 	readonly color?: ColorIdentifier;
 	readonly letter?: string;
 	readonly tooltip?: string;
-	readonly bubble?: boolean;
+	readonly BuBBle?: Boolean;
 }
 
-export interface IDecoration extends IDisposable {
+export interface IDecoration extends IDisposaBle {
 	readonly tooltip: string;
-	readonly labelClassName: string;
-	readonly badgeClassName: string;
+	readonly laBelClassName: string;
+	readonly BadgeClassName: string;
 }
 
 export interface IDecorationsProvider {
-	readonly label: string;
+	readonly laBel: string;
 	readonly onDidChange: Event<readonly URI[]>;
 	provideDecorations(uri: URI, token: CancellationToken): IDecorationData | Promise<IDecorationData | undefined> | undefined;
 }
 
 export interface IResourceDecorationChangeEvent {
-	affectsResource(uri: URI): boolean;
+	affectsResource(uri: URI): Boolean;
 }
 
 export interface IDecorationsService {
@@ -42,7 +42,7 @@ export interface IDecorationsService {
 
 	readonly onDidChangeDecorations: Event<IResourceDecorationChangeEvent>;
 
-	registerDecorationsProvider(provider: IDecorationsProvider): IDisposable;
+	registerDecorationsProvider(provider: IDecorationsProvider): IDisposaBle;
 
-	getDecoration(uri: URI, includeChildren: boolean): IDecoration | undefined;
+	getDecoration(uri: URI, includeChildren: Boolean): IDecoration | undefined;
 }

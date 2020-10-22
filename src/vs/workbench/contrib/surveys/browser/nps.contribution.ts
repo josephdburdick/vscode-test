@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { language } from 'vs/base/common/platform';
-import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { language } from 'vs/Base/common/platform';
+import { IWorkBenchContriButionsRegistry, IWorkBenchContriBution, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
+import { URI } from 'vs/Base/common/uri';
+import { platform } from 'vs/Base/common/process';
 
 const PROBABILITY = 0.15;
 const SESSION_COUNT_KEY = 'nps/sessionCount';
@@ -23,7 +23,7 @@ const LAST_SESSION_DATE_KEY = 'nps/lastSessionDate';
 const SKIP_VERSION_KEY = 'nps/skipVersion';
 const IS_CANDIDATE_KEY = 'nps/isCandidate';
 
-class NPSContribution implements IWorkbenchContribution {
+class NPSContriBution implements IWorkBenchContriBution {
 
 	constructor(
 		@IStorageService storageService: IStorageService,
@@ -55,7 +55,7 @@ class NPSContribution implements IWorkbenchContribution {
 			return;
 		}
 
-		const sessionCount = (storageService.getNumber(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) || 0) + 1;
+		const sessionCount = (storageService.getNumBer(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) || 0) + 1;
 		storageService.store(LAST_SESSION_DATE_KEY, date, StorageScope.GLOBAL);
 		storageService.store(SESSION_COUNT_KEY, sessionCount, StorageScope.GLOBAL);
 
@@ -75,9 +75,9 @@ class NPSContribution implements IWorkbenchContribution {
 
 		notificationService.prompt(
 			Severity.Info,
-			nls.localize('surveyQuestion', "Do you mind taking a quick feedback survey?"),
+			nls.localize('surveyQuestion', "Do you mind taking a quick feedBack survey?"),
 			[{
-				label: nls.localize('takeSurvey', "Take Survey"),
+				laBel: nls.localize('takeSurvey', "Take Survey"),
 				run: () => {
 					telemetryService.getTelemetryInfo().then(info => {
 						openerService.open(URI.parse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
@@ -86,10 +86,10 @@ class NPSContribution implements IWorkbenchContribution {
 					});
 				}
 			}, {
-				label: nls.localize('remindLater', "Remind Me later"),
+				laBel: nls.localize('remindLater', "Remind Me later"),
 				run: () => storageService.store(SESSION_COUNT_KEY, sessionCount - 3, StorageScope.GLOBAL)
 			}, {
-				label: nls.localize('neverAgain', "Don't Show Again"),
+				laBel: nls.localize('neverAgain', "Don't Show Again"),
 				run: () => {
 					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
 					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
@@ -101,6 +101,6 @@ class NPSContribution implements IWorkbenchContribution {
 }
 
 if (language === 'en') {
-	const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-	workbenchRegistry.registerWorkbenchContribution(NPSContribution, LifecyclePhase.Restored);
+	const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench);
+	workBenchRegistry.registerWorkBenchContriBution(NPSContriBution, LifecyclePhase.Restored);
 }

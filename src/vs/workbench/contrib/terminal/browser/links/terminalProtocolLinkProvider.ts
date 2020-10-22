@@ -5,40 +5,40 @@
 
 import type { Terminal, IViewportRange, IBufferLine } from 'xterm';
 import { ILinkComputerTarget, LinkComputer } from 'vs/editor/common/modes/linkComputer';
-import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { TerminalLink, OPEN_FILE_LABEL } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
+import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workBench/contriB/terminal/Browser/links/terminalLinkHelpers';
+import { TerminalLink, OPEN_FILE_LABEL } from 'vs/workBench/contriB/terminal/Browser/links/terminalLink';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
-import { Schemas } from 'vs/base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { TerminalBaseLinkProvider } from 'vs/workBench/contriB/terminal/Browser/links/terminalBaseLinkProvider';
+import { Schemas } from 'vs/Base/common/network';
 
 export class TerminalProtocolLinkProvider extends TerminalBaseLinkProvider {
 	private _linkComputerTarget: ILinkComputerTarget | undefined;
 
 	constructor(
 		private readonly _xterm: Terminal,
-		private readonly _activateCallback: (event: MouseEvent | undefined, uri: string) => void,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
+		private readonly _activateCallBack: (event: MouseEvent | undefined, uri: string) => void,
+		private readonly _tooltipCallBack: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallBack?: () => void, modifierUpCallBack?: () => void) => void,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService
 	) {
 		super();
 	}
 
-	protected _provideLinks(y: number): TerminalLink[] {
+	protected _provideLinks(y: numBer): TerminalLink[] {
 		let startLine = y - 1;
 		let endLine = startLine;
 
 		const lines: IBufferLine[] = [
-			this._xterm.buffer.active.getLine(startLine)!
+			this._xterm.Buffer.active.getLine(startLine)!
 		];
 
-		while (this._xterm.buffer.active.getLine(startLine)?.isWrapped) {
-			lines.unshift(this._xterm.buffer.active.getLine(startLine - 1)!);
+		while (this._xterm.Buffer.active.getLine(startLine)?.isWrapped) {
+			lines.unshift(this._xterm.Buffer.active.getLine(startLine - 1)!);
 			startLine--;
 		}
 
-		while (this._xterm.buffer.active.getLine(endLine + 1)?.isWrapped) {
-			lines.push(this._xterm.buffer.active.getLine(endLine + 1)!);
+		while (this._xterm.Buffer.active.getLine(endLine + 1)?.isWrapped) {
+			lines.push(this._xterm.Buffer.active.getLine(endLine + 1)!);
 			endLine++;
 		}
 
@@ -52,8 +52,8 @@ export class TerminalProtocolLinkProvider extends TerminalBaseLinkProvider {
 			const uri = link.url
 				? (typeof link.url === 'string' ? URI.parse(link.url) : link.url)
 				: undefined;
-			const label = (uri?.scheme === Schemas.file) ? OPEN_FILE_LABEL : undefined;
-			return this._instantiationService.createInstance(TerminalLink, this._xterm, range, link.url?.toString() || '', this._xterm.buffer.active.viewportY, this._activateCallback, this._tooltipCallback, true, label);
+			const laBel = (uri?.scheme === Schemas.file) ? OPEN_FILE_LABEL : undefined;
+			return this._instantiationService.createInstance(TerminalLink, this._xterm, range, link.url?.toString() || '', this._xterm.Buffer.active.viewportY, this._activateCallBack, this._tooltipCallBack, true, laBel);
 		});
 	}
 }
@@ -61,15 +61,15 @@ export class TerminalProtocolLinkProvider extends TerminalBaseLinkProvider {
 class TerminalLinkAdapter implements ILinkComputerTarget {
 	constructor(
 		private _xterm: Terminal,
-		private _lineStart: number,
-		private _lineEnd: number
+		private _lineStart: numBer,
+		private _lineEnd: numBer
 	) { }
 
-	getLineCount(): number {
+	getLineCount(): numBer {
 		return 1;
 	}
 
 	getLineContent(): string {
-		return getXtermLineContent(this._xterm.buffer.active, this._lineStart, this._lineEnd, this._xterm.cols);
+		return getXtermLineContent(this._xterm.Buffer.active, this._lineStart, this._lineEnd, this._xterm.cols);
 	}
 }

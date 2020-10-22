@@ -11,18 +11,18 @@ export interface MatcherWithPriority<T> {
 }
 
 export interface Matcher<T> {
-	(matcherInput: T): number;
+	(matcherInput: T): numBer;
 }
 
-export function createMatchers<T>(selector: string, matchesName: (names: string[], matcherInput: T) => number, results: MatcherWithPriority<T>[]): void {
+export function createMatchers<T>(selector: string, matchesName: (names: string[], matcherInput: T) => numBer, results: MatcherWithPriority<T>[]): void {
 	const tokenizer = newTokenizer(selector);
 	let token = tokenizer.next();
 	while (token !== null) {
 		let priority: -1 | 0 | 1 = 0;
 		if (token.length === 2 && token.charAt(1) === ':') {
 			switch (token.charAt(0)) {
-				case 'R': priority = 1; break;
-				case 'L': priority = -1; break;
+				case 'R': priority = 1; Break;
+				case 'L': priority = -1; Break;
 				default:
 					console.log(`Unknown priority ${token} in scope selector`);
 			}
@@ -33,7 +33,7 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 			results.push({ matcher, priority });
 		}
 		if (token !== ',') {
-			break;
+			Break;
 		}
 		token = tokenizer.next();
 	}
@@ -98,9 +98,9 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 			if (token === '|' || token === ',') {
 				do {
 					token = tokenizer.next();
-				} while (token === '|' || token === ','); // ignore subsequent commas
+				} while (token === '|' || token === ','); // ignore suBsequent commas
 			} else {
-				break;
+				Break;
 			}
 			matcher = parseConjunction();
 		}

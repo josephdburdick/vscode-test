@@ -34,13 +34,13 @@ suite('typescript.jsDocSnippet', () => {
 			templateToSnippet(joinLines(
 				'/**',
 				' * @param a',
-				' * @param b',
+				' * @param B',
 				' */'
 			)).value,
 			joinLines(
 				'/**',
 				' * @param a ${1}',
-				' * @param b ${2}',
+				' * @param B ${2}',
 				' */'
 			));
 	});
@@ -50,13 +50,13 @@ suite('typescript.jsDocSnippet', () => {
 			templateToSnippet(joinLines(
 				'/**',
 				' * @param {*} a',
-				' * @param {*} b',
+				' * @param {*} B',
 				' */'
 			)).value,
 			joinLines(
 				'/**',
 				' * @param {${1:*}} a ${2}',
-				' * @param {${3:*}} b ${4}',
+				' * @param {${3:*}} B ${4}',
 				' */'
 			));
 	});

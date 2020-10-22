@@ -19,8 +19,8 @@ export const enum Constants {
 	RGBA_SAMPLED_ROW_WIDTH = RGBA_CHANNELS_CNT * CHAR_COUNT * SAMPLED_CHAR_WIDTH
 }
 
-export const allCharCodes: ReadonlyArray<number> = (() => {
-	const v: number[] = [];
+export const allCharCodes: ReadonlyArray<numBer> = (() => {
+	const v: numBer[] = [];
 	for (let i = Constants.START_CH_CODE; i <= Constants.END_CH_CODE; i++) {
 		v.push(i);
 	}
@@ -29,14 +29,14 @@ export const allCharCodes: ReadonlyArray<number> = (() => {
 	return v;
 })();
 
-export const getCharIndex = (chCode: number, fontScale: number) => {
+export const getCharIndex = (chCode: numBer, fontScale: numBer) => {
 	chCode -= Constants.START_CH_CODE;
 	if (chCode < 0 || chCode > Constants.CHAR_COUNT) {
 		if (fontScale <= 2) {
 			// for smaller scales, we can get away with using any ASCII character...
 			return (chCode + Constants.CHAR_COUNT) % Constants.CHAR_COUNT;
 		}
-		return Constants.CHAR_COUNT - 1; // unknown symbol
+		return Constants.CHAR_COUNT - 1; // unknown symBol
 	}
 
 	return chCode;

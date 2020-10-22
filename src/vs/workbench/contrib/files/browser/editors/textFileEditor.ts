@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { isFunction, assertIsDefined } from 'vs/base/common/types';
-import { isValidBasename } from 'vs/base/common/extpath';
-import { basename } from 'vs/base/common/resources';
-import { Action } from 'vs/base/common/actions';
-import { VIEWLET_ID, TEXT_FILE_EDITOR_ID, IExplorerService } from 'vs/workbench/contrib/files/common/files';
-import { ITextFileService, TextFileOperationError, TextFileOperationResult } from 'vs/workbench/services/textfile/common/textfiles';
-import { BaseTextEditor } from 'vs/workbench/browser/parts/editor/textEditor';
-import { EditorOptions, TextEditorOptions, IEditorInput, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { BinaryEditorModel } from 'vs/workbench/common/editor/binaryEditorModel';
-import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { isFunction, assertIsDefined } from 'vs/Base/common/types';
+import { isValidBasename } from 'vs/Base/common/extpath';
+import { Basename } from 'vs/Base/common/resources';
+import { Action } from 'vs/Base/common/actions';
+import { VIEWLET_ID, TEXT_FILE_EDITOR_ID, IExplorerService } from 'vs/workBench/contriB/files/common/files';
+import { ITextFileService, TextFileOperationError, TextFileOperationResult } from 'vs/workBench/services/textfile/common/textfiles';
+import { BaseTextEditor } from 'vs/workBench/Browser/parts/editor/textEditor';
+import { EditorOptions, TextEditorOptions, IEditorInput, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { BinaryEditorModel } from 'vs/workBench/common/editor/BinaryEditorModel';
+import { FileEditorInput } from 'vs/workBench/contriB/files/common/editors/fileEditorInput';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
 import { FileOperationError, FileOperationResult, FileChangesEvent, IFileService, FileOperationEvent, FileOperation } from 'vs/platform/files/common/files';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
@@ -24,12 +24,12 @@ import { ITextResourceConfigurationService } from 'vs/editor/common/services/tex
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { ScrollType } from 'vs/editor/common/editorCommon';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { createErrorWithActions } from 'vs/Base/common/errorsWithActions';
 import { EditorActivation, IEditorOptions } from 'vs/platform/editor/common/editor';
-import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
+import { IUriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentity';
 
 /**
  * An implementation of editor for file system resources.
@@ -78,8 +78,8 @@ export class TextFileEditor extends BaseTextEditor {
 	protected onWillCloseEditorInGroup(editor: IEditorInput): void {
 
 		// React to editors closing to preserve or clear view state. This needs to happen
-		// in the onWillCloseEditor because at that time the editor has not yet
-		// been disposed and we can safely persist the view state still as needed.
+		// in the onWillCloseEditor Because at that time the editor has not yet
+		// Been disposed and we can safely persist the view state still as needed.
 		this.doSaveOrClearTextEditorViewState(editor);
 	}
 
@@ -106,9 +106,9 @@ export class TextFileEditor extends BaseTextEditor {
 				return;
 			}
 
-			// There is a special case where the text editor has to handle binary file editor input: if a binary file
-			// has been resolved and cached before, it maybe an actual instance of BinaryEditorModel. In this case our text
-			// editor has to open this model using the binary editor. We return early in this case.
+			// There is a special case where the text editor has to handle Binary file editor input: if a Binary file
+			// has Been resolved and cached Before, it mayBe an actual instance of BinaryEditorModel. In this case our text
+			// editor has to open this model using the Binary editor. We return early in this case.
 			if (resolvedModel instanceof BinaryEditorModel) {
 				return this.openAsBinary(input, options);
 			}
@@ -119,7 +119,7 @@ export class TextFileEditor extends BaseTextEditor {
 			const textEditor = assertIsDefined(this.getControl());
 			textEditor.setModel(textFileModel.textEditorModel);
 
-			// Always restore View State if any associated and not disabled via settings
+			// Always restore View State if any associated and not disaBled via settings
 			if (this.shouldRestoreTextEditorViewState(input, context)) {
 				const editorViewState = this.loadTextEditorViewState(input.resource);
 				if (editorViewState) {
@@ -132,10 +132,10 @@ export class TextFileEditor extends BaseTextEditor {
 				(<TextEditorOptions>options).apply(textEditor, ScrollType.Immediate);
 			}
 
-			// Since the resolved model provides information about being readonly
+			// Since the resolved model provides information aBout Being readonly
 			// or not, we apply it here to the editor even though the editor input
-			// was already asked for being readonly or not. The rationale is that
-			// a resolved model might have more specific information about being
+			// was already asked for Being readonly or not. The rationale is that
+			// a resolved model might have more specific information aBout Being
 			// readonly or not that the input did not have.
 			textEditor.updateOptions({ readOnly: textFileModel.isReadonly() });
 		} catch (error) {
@@ -146,7 +146,7 @@ export class TextFileEditor extends BaseTextEditor {
 	protected handleSetInputError(error: Error, input: FileEditorInput, options: EditorOptions | undefined): void {
 
 		// In case we tried to open a file inside the text editor and the response
-		// indicates that this is not a text file, reopen the file through the binary
+		// indicates that this is not a text file, reopen the file through the Binary
 		// editor.
 		if ((<TextFileOperationError>error).textFileOperationResult === TextFileOperationResult.FILE_IS_BINARY) {
 			return this.openAsBinary(input, options);
@@ -160,16 +160,16 @@ export class TextFileEditor extends BaseTextEditor {
 		}
 
 		// Offer to create a file from the error if we have a file not found and the name is valid
-		if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_NOT_FOUND && isValidBasename(basename(input.preferredResource))) {
+		if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_NOT_FOUND && isValidBasename(Basename(input.preferredResource))) {
 			throw createErrorWithActions(toErrorMessage(error), {
 				actions: [
-					new Action('workbench.files.action.createMissingFile', nls.localize('createFile', "Create File"), undefined, true, async () => {
+					new Action('workBench.files.action.createMissingFile', nls.localize('createFile', "Create File"), undefined, true, async () => {
 						await this.textFileService.create(input.preferredResource);
 
 						return this.editorService.openEditor({
 							resource: input.preferredResource,
 							options: {
-								pinned: true // new file gets pinned by default
+								pinned: true // new file gets pinned By default
 							}
 						});
 					})
@@ -177,7 +177,7 @@ export class TextFileEditor extends BaseTextEditor {
 			});
 		}
 
-		// Otherwise make sure the error bubbles up
+		// Otherwise make sure the error BuBBles up
 		throw error;
 	}
 
@@ -185,9 +185,9 @@ export class TextFileEditor extends BaseTextEditor {
 		input.setForceOpenAsBinary();
 
 		// Make sure to not steal away the currently active group
-		// because we are triggering another openEditor() call
+		// Because we are triggering another openEditor() call
 		// and do not control the initial intent that resulted
-		// in us now opening as binary.
+		// in us now opening as Binary.
 		const preservingOptions: IEditorOptions = { activation: EditorActivation.PRESERVE };
 		if (options) {
 			options.overwrite(preservingOptions);

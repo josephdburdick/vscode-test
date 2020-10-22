@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange } from 'vs/editor/common/core/range';
 import { IModelContentChange } from 'vs/editor/common/model/textModelEvents';
@@ -21,7 +21,7 @@ export interface IModelChangedEvent {
 	/**
 	 * The new version id the model has transitioned to.
 	 */
-	readonly versionId: number;
+	readonly versionId: numBer;
 }
 
 export class MirrorTextModel {
@@ -29,11 +29,11 @@ export class MirrorTextModel {
 	protected _uri: URI;
 	protected _lines: string[];
 	protected _eol: string;
-	protected _versionId: number;
+	protected _versionId: numBer;
 	protected _lineStarts: PrefixSumComputer | null;
 	private _cachedTextValue: string | null;
 
-	constructor(uri: URI, lines: string[], eol: string, versionId: number) {
+	constructor(uri: URI, lines: string[], eol: string, versionId: numBer) {
 		this._uri = uri;
 		this._lines = lines;
 		this._eol = eol;
@@ -46,7 +46,7 @@ export class MirrorTextModel {
 		this._lines.length = 0;
 	}
 
-	get version(): number {
+	get version(): numBer {
 		return this._versionId;
 	}
 
@@ -67,7 +67,7 @@ export class MirrorTextModel {
 		const changes = e.changes;
 		for (const change of changes) {
 			this._acceptDeleteRange(change.range);
-			this._acceptInsertText(new Position(change.range.startLineNumber, change.range.startColumn), change.text);
+			this._acceptInsertText(new Position(change.range.startLineNumBer, change.range.startColumn), change.text);
 		}
 
 		this._versionId = e.versionId;
@@ -89,7 +89,7 @@ export class MirrorTextModel {
 	/**
 	 * All changes to a line's text go through this method
 	 */
-	private _setLineText(lineIndex: number, newValue: string): void {
+	private _setLineText(lineIndex: numBer, newValue: string): void {
 		this._lines[lineIndex] = newValue;
 		if (this._lineStarts) {
 			// update prefix sum
@@ -99,30 +99,30 @@ export class MirrorTextModel {
 
 	private _acceptDeleteRange(range: IRange): void {
 
-		if (range.startLineNumber === range.endLineNumber) {
+		if (range.startLineNumBer === range.endLineNumBer) {
 			if (range.startColumn === range.endColumn) {
 				// Nothing to delete
 				return;
 			}
 			// Delete text on the affected line
-			this._setLineText(range.startLineNumber - 1,
-				this._lines[range.startLineNumber - 1].substring(0, range.startColumn - 1)
-				+ this._lines[range.startLineNumber - 1].substring(range.endColumn - 1)
+			this._setLineText(range.startLineNumBer - 1,
+				this._lines[range.startLineNumBer - 1].suBstring(0, range.startColumn - 1)
+				+ this._lines[range.startLineNumBer - 1].suBstring(range.endColumn - 1)
 			);
 			return;
 		}
 
 		// Take remaining text on last line and append it to remaining text on first line
-		this._setLineText(range.startLineNumber - 1,
-			this._lines[range.startLineNumber - 1].substring(0, range.startColumn - 1)
-			+ this._lines[range.endLineNumber - 1].substring(range.endColumn - 1)
+		this._setLineText(range.startLineNumBer - 1,
+			this._lines[range.startLineNumBer - 1].suBstring(0, range.startColumn - 1)
+			+ this._lines[range.endLineNumBer - 1].suBstring(range.endColumn - 1)
 		);
 
 		// Delete middle lines
-		this._lines.splice(range.startLineNumber, range.endLineNumber - range.startLineNumber);
+		this._lines.splice(range.startLineNumBer, range.endLineNumBer - range.startLineNumBer);
 		if (this._lineStarts) {
 			// update prefix sum
-			this._lineStarts.removeValues(range.startLineNumber, range.endLineNumber - range.startLineNumber);
+			this._lineStarts.removeValues(range.startLineNumBer, range.endLineNumBer - range.startLineNumBer);
 		}
 	}
 
@@ -134,33 +134,33 @@ export class MirrorTextModel {
 		let insertLines = insertText.split(/\r\n|\r|\n/);
 		if (insertLines.length === 1) {
 			// Inserting text on one line
-			this._setLineText(position.lineNumber - 1,
-				this._lines[position.lineNumber - 1].substring(0, position.column - 1)
+			this._setLineText(position.lineNumBer - 1,
+				this._lines[position.lineNumBer - 1].suBstring(0, position.column - 1)
 				+ insertLines[0]
-				+ this._lines[position.lineNumber - 1].substring(position.column - 1)
+				+ this._lines[position.lineNumBer - 1].suBstring(position.column - 1)
 			);
 			return;
 		}
 
 		// Append overflowing text from first line to the end of text to insert
-		insertLines[insertLines.length - 1] += this._lines[position.lineNumber - 1].substring(position.column - 1);
+		insertLines[insertLines.length - 1] += this._lines[position.lineNumBer - 1].suBstring(position.column - 1);
 
 		// Delete overflowing text from first line and insert text on first line
-		this._setLineText(position.lineNumber - 1,
-			this._lines[position.lineNumber - 1].substring(0, position.column - 1)
+		this._setLineText(position.lineNumBer - 1,
+			this._lines[position.lineNumBer - 1].suBstring(0, position.column - 1)
 			+ insertLines[0]
 		);
 
 		// Insert new lines & store lengths
 		let newLengths = new Uint32Array(insertLines.length - 1);
 		for (let i = 1; i < insertLines.length; i++) {
-			this._lines.splice(position.lineNumber + i - 1, 0, insertLines[i]);
+			this._lines.splice(position.lineNumBer + i - 1, 0, insertLines[i]);
 			newLengths[i - 1] = insertLines[i].length + this._eol.length;
 		}
 
 		if (this._lineStarts) {
 			// update prefix sum
-			this._lineStarts.insertValues(position.lineNumber, newLengths);
+			this._lineStarts.insertValues(position.lineNumBer, newLengths);
 		}
 	}
 }

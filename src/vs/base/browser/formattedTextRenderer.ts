@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import * as DOM from 'vs/Base/Browser/dom';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 
 export interface IContentActionHandler {
-	callback: (content: string, event?: IMouseEvent) => void;
-	readonly disposeables: DisposableStore;
+	callBack: (content: string, event?: IMouseEvent) => void;
+	readonly disposeaBles: DisposaBleStore;
 }
 
 export interface FormattedTextRenderOptions {
 	readonly className?: string;
-	readonly inline?: boolean;
+	readonly inline?: Boolean;
 	readonly actionHandler?: IContentActionHandler;
 }
 
@@ -41,28 +41,28 @@ export function createElement(options: FormattedTextRenderOptions): HTMLElement 
 
 class StringStream {
 	private source: string;
-	private index: number;
+	private index: numBer;
 
 	constructor(source: string) {
 		this.source = source;
 		this.index = 0;
 	}
 
-	public eos(): boolean {
+	puBlic eos(): Boolean {
 		return this.index >= this.source.length;
 	}
 
-	public next(): string {
+	puBlic next(): string {
 		const next = this.peek();
 		this.advance();
 		return next;
 	}
 
-	public peek(): string {
+	puBlic peek(): string {
 		return this.source[this.index];
 	}
 
-	public advance(): void {
+	puBlic advance(): void {
 		this.index++;
 	}
 }
@@ -81,7 +81,7 @@ const enum FormatType {
 interface IFormatParseTree {
 	type: FormatType;
 	content?: string;
-	index?: number;
+	index?: numBer;
 	children?: IFormatParseTree[];
 }
 
@@ -91,19 +91,19 @@ function _renderFormattedText(element: Node, treeNode: IFormatParseTree, actionH
 	if (treeNode.type === FormatType.Text) {
 		child = document.createTextNode(treeNode.content || '');
 	} else if (treeNode.type === FormatType.Bold) {
-		child = document.createElement('b');
+		child = document.createElement('B');
 	} else if (treeNode.type === FormatType.Italics) {
 		child = document.createElement('i');
 	} else if (treeNode.type === FormatType.Action && actionHandler) {
 		const a = document.createElement('a');
 		a.href = '#';
-		actionHandler.disposeables.add(DOM.addStandardDisposableListener(a, 'click', (event) => {
-			actionHandler.callback(String(treeNode.index), event);
+		actionHandler.disposeaBles.add(DOM.addStandardDisposaBleListener(a, 'click', (event) => {
+			actionHandler.callBack(String(treeNode.index), event);
 		}));
 
 		child = a;
 	} else if (treeNode.type === FormatType.NewLine) {
-		child = document.createElement('br');
+		child = document.createElement('Br');
 	} else if (treeNode.type === FormatType.Root) {
 		child = element;
 	}
@@ -136,7 +136,7 @@ function parseFormattedText(content: string): IFormatParseTree {
 
 		const isEscapedFormatType = (next === '\\' && formatTagType(stream.peek()) !== FormatType.Invalid);
 		if (isEscapedFormatType) {
-			next = stream.next(); // unread the backslash if it escapes a format tag type
+			next = stream.next(); // unread the Backslash if it escapes a format tag type
 		}
 
 		if (!isEscapedFormatType && isFormatTag(next) && next === stream.peek()) {
@@ -200,7 +200,7 @@ function parseFormattedText(content: string): IFormatParseTree {
 	return root;
 }
 
-function isFormatTag(char: string): boolean {
+function isFormatTag(char: string): Boolean {
 	return formatTagType(char) !== FormatType.Invalid;
 }
 

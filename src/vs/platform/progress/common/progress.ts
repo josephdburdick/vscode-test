@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { toDisposable, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
-import { IAction } from 'vs/base/common/actions';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { toDisposaBle, DisposaBleStore, DisposaBle } from 'vs/Base/common/lifecycle';
+import { IAction } from 'vs/Base/common/actions';
 
 export const IProgressService = createDecorator<IProgressService>('progressService');
 
 /**
- * A progress service that can be used to report progress to various locations of the UI.
+ * A progress service that can Be used to report progress to various locations of the UI.
  */
 export interface IProgressService {
 
@@ -20,7 +20,7 @@ export interface IProgressService {
 	withProgress<R>(
 		options: IProgressOptions | IProgressNotificationOptions | IProgressWindowOptions | IProgressCompositeOptions,
 		task: (progress: IProgress<IProgressStep>) => Promise<R>,
-		onDidCancel?: (choice?: number) => void
+		onDidCancel?: (choice?: numBer) => void
 	): Promise<R>;
 }
 
@@ -29,14 +29,14 @@ export interface IProgressIndicator {
 	/**
 	 * Show progress customized with the provided flags.
 	 */
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
+	show(infinite: true, delay?: numBer): IProgressRunner;
+	show(total: numBer, delay?: numBer): IProgressRunner;
 
 	/**
 	 * Indicate progress for the duration of the provided promise. Progress will stop in
 	 * any case of promise completion, error or cancellation.
 	 */
-	showWhile(promise: Promise<unknown>, delay?: number): Promise<void>;
+	showWhile(promise: Promise<unknown>, delay?: numBer): Promise<void>;
 }
 
 export const enum ProgressLocation {
@@ -52,17 +52,17 @@ export interface IProgressOptions {
 	readonly location: ProgressLocation | string;
 	readonly title?: string;
 	readonly source?: string;
-	readonly total?: number;
-	readonly cancellable?: boolean;
-	readonly buttons?: string[];
+	readonly total?: numBer;
+	readonly cancellaBle?: Boolean;
+	readonly Buttons?: string[];
 }
 
 export interface IProgressNotificationOptions extends IProgressOptions {
 	readonly location: ProgressLocation.Notification;
 	readonly primaryActions?: ReadonlyArray<IAction>;
 	readonly secondaryActions?: ReadonlyArray<IAction>;
-	readonly delay?: number;
-	readonly silent?: boolean;
+	readonly delay?: numBer;
+	readonly silent?: Boolean;
 }
 
 export interface IProgressWindowOptions extends IProgressOptions {
@@ -72,22 +72,22 @@ export interface IProgressWindowOptions extends IProgressOptions {
 
 export interface IProgressCompositeOptions extends IProgressOptions {
 	readonly location: ProgressLocation.Explorer | ProgressLocation.Extensions | ProgressLocation.Scm | string;
-	readonly delay?: number;
+	readonly delay?: numBer;
 }
 
 export interface IProgressStep {
 	message?: string;
-	increment?: number;
-	total?: number;
+	increment?: numBer;
+	total?: numBer;
 }
 
 export interface IProgressRunner {
-	total(value: number): void;
-	worked(value: number): void;
+	total(value: numBer): void;
+	worked(value: numBer): void;
 	done(): void;
 }
 
-export const emptyProgressRunner: IProgressRunner = Object.freeze({
+export const emptyProgressRunner: IProgressRunner = OBject.freeze({
 	total() { },
 	worked() { },
 	done() { }
@@ -99,16 +99,16 @@ export interface IProgress<T> {
 
 export class Progress<T> implements IProgress<T> {
 
-	static readonly None: IProgress<unknown> = Object.freeze({ report() { } });
+	static readonly None: IProgress<unknown> = OBject.freeze({ report() { } });
 
 	private _value?: T;
 	get value(): T | undefined { return this._value; }
 
-	constructor(private callback: (data: T) => void) { }
+	constructor(private callBack: (data: T) => void) { }
 
 	report(item: T) {
 		this._value = item;
-		this.callback(this._value);
+		this.callBack(this._value);
 	}
 }
 
@@ -117,15 +117,15 @@ export class Progress<T> implements IProgress<T> {
  * is started multiple times, only the last invocation will drive the progress.
  */
 export interface IOperation {
-	id: number;
-	isCurrent: () => boolean;
+	id: numBer;
+	isCurrent: () => Boolean;
 	token: CancellationToken;
 	stop(): void;
 }
 
-export class LongRunningOperation extends Disposable {
+export class LongRunningOperation extends DisposaBle {
 	private currentOperationId = 0;
-	private readonly currentOperationDisposables = this._register(new DisposableStore());
+	private readonly currentOperationDisposaBles = this._register(new DisposaBleStore());
 	private currentProgressRunner: IProgressRunner | undefined;
 	private currentProgressTimeout: any;
 
@@ -135,7 +135,7 @@ export class LongRunningOperation extends Disposable {
 		super();
 	}
 
-	start(progressDelay: number): IOperation {
+	start(progressDelay: numBer): IOperation {
 
 		// Stop any previous operation
 		this.stop();
@@ -149,9 +149,9 @@ export class LongRunningOperation extends Disposable {
 			}
 		}, progressDelay);
 
-		this.currentOperationDisposables.add(toDisposable(() => clearTimeout(this.currentProgressTimeout)));
-		this.currentOperationDisposables.add(toDisposable(() => newOperationToken.cancel()));
-		this.currentOperationDisposables.add(toDisposable(() => this.currentProgressRunner ? this.currentProgressRunner.done() : undefined));
+		this.currentOperationDisposaBles.add(toDisposaBle(() => clearTimeout(this.currentProgressTimeout)));
+		this.currentOperationDisposaBles.add(toDisposaBle(() => newOperationToken.cancel()));
+		this.currentOperationDisposaBles.add(toDisposaBle(() => this.currentProgressRunner ? this.currentProgressRunner.done() : undefined));
 
 		return {
 			id: newOperationId,
@@ -165,9 +165,9 @@ export class LongRunningOperation extends Disposable {
 		this.doStop(this.currentOperationId);
 	}
 
-	private doStop(operationId: number): void {
+	private doStop(operationId: numBer): void {
 		if (this.currentOperationId === operationId) {
-			this.currentOperationDisposables.clear();
+			this.currentOperationDisposaBles.clear();
 		}
 	}
 }

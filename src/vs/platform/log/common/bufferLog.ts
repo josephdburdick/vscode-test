@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, LogLevel, AbstractLogService, DEFAULT_LOG_LEVEL } from 'vs/platform/log/common/log';
+import { ILogService, LogLevel, ABstractLogService, DEFAULT_LOG_LEVEL } from 'vs/platform/log/common/log';
 
 interface ILog {
 	level: LogLevel;
@@ -13,7 +13,7 @@ interface ILog {
 function getLogFunction(logger: ILogService, level: LogLevel): Function {
 	switch (level) {
 		case LogLevel.Trace: return logger.trace;
-		case LogLevel.Debug: return logger.debug;
+		case LogLevel.DeBug: return logger.deBug;
 		case LogLevel.Info: return logger.info;
 		case LogLevel.Warning: return logger.warn;
 		case LogLevel.Error: return logger.error;
@@ -22,10 +22,10 @@ function getLogFunction(logger: ILogService, level: LogLevel): Function {
 	}
 }
 
-export class BufferLogService extends AbstractLogService implements ILogService {
+export class BufferLogService extends ABstractLogService implements ILogService {
 
 	declare readonly _serviceBrand: undefined;
-	private buffer: ILog[] = [];
+	private Buffer: ILog[] = [];
 	private _logger: ILogService | undefined = undefined;
 
 	constructor(logLevel: LogLevel = DEFAULT_LOG_LEVEL) {
@@ -41,12 +41,12 @@ export class BufferLogService extends AbstractLogService implements ILogService 
 	set logger(logger: ILogService) {
 		this._logger = logger;
 
-		for (const { level, args } of this.buffer) {
+		for (const { level, args } of this.Buffer) {
 			const fn = getLogFunction(logger, level);
 			fn.apply(logger, args);
 		}
 
-		this.buffer = [];
+		this.Buffer = [];
 	}
 
 	private _log(level: LogLevel, ...args: any[]): void {
@@ -54,7 +54,7 @@ export class BufferLogService extends AbstractLogService implements ILogService 
 			const fn = getLogFunction(this._logger, level);
 			fn.apply(this._logger, args);
 		} else if (this.getLevel() <= level) {
-			this.buffer.push({ level, args });
+			this.Buffer.push({ level, args });
 		}
 	}
 
@@ -62,8 +62,8 @@ export class BufferLogService extends AbstractLogService implements ILogService 
 		this._log(LogLevel.Trace, message, ...args);
 	}
 
-	debug(message: string, ...args: any[]): void {
-		this._log(LogLevel.Debug, message, ...args);
+	deBug(message: string, ...args: any[]): void {
+		this._log(LogLevel.DeBug, message, ...args);
 	}
 
 	info(message: string, ...args: any[]): void {

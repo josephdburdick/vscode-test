@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { IExplorerService, IFilesConfiguration, SortOrder, IExplorerView } from 'vs/workbench/contrib/files/common/files';
-import { ExplorerItem, ExplorerModel } from 'vs/workbench/contrib/files/common/explorerModel';
-import { URI } from 'vs/base/common/uri';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { IExplorerService, IFilesConfiguration, SortOrder, IExplorerView } from 'vs/workBench/contriB/files/common/files';
+import { ExplorerItem, ExplorerModel } from 'vs/workBench/contriB/files/common/explorerModel';
+import { URI } from 'vs/Base/common/uri';
 import { FileOperationEvent, FileOperation, IFileService, FileChangesEvent, FILES_EXCLUDE_CONFIG, FileChangeType, IResolveFileOptions } from 'vs/platform/files/common/files';
-import { dirname } from 'vs/base/common/resources';
-import { memoize } from 'vs/base/common/decorators';
-import { ResourceGlobMatcher } from 'vs/workbench/common/resources';
+import { dirname } from 'vs/Base/common/resources';
+import { memoize } from 'vs/Base/common/decorators';
+import { ResourceGloBMatcher } from 'vs/workBench/common/resources';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { IExpression } from 'vs/base/common/glob';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditableData } from 'vs/workbench/common/views';
-import { EditorResourceAccessor } from 'vs/workbench/common/editor';
+import { IExpression } from 'vs/Base/common/gloB';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditaBleData } from 'vs/workBench/common/views';
+import { EditorResourceAccessor } from 'vs/workBench/common/editor';
 
 function getFileEventsExcludes(configurationService: IConfigurationService, root?: URI): IExpression {
 	const scope = root ? { resource: root } : undefined;
 	const configuration = scope ? configurationService.getValue<IFilesConfiguration>(scope) : configurationService.getValue<IFilesConfiguration>();
 
-	return configuration?.files?.exclude || Object.create(null);
+	return configuration?.files?.exclude || OBject.create(null);
 }
 
 export class ExplorerService implements IExplorerService {
@@ -33,8 +33,8 @@ export class ExplorerService implements IExplorerService {
 
 	private static readonly EXPLORER_FILE_CHANGES_REACT_DELAY = 500; // delay in ms to react to file changes to give our internal events a chance to react first
 
-	private readonly disposables = new DisposableStore();
-	private editable: { stat: ExplorerItem, data: IEditableData } | undefined;
+	private readonly disposaBles = new DisposaBleStore();
+	private editaBle: { stat: ExplorerItem, data: IEditaBleData } | undefined;
 	private _sortOrder: SortOrder;
 	private cutItems: ExplorerItem[] | undefined;
 	private view: IExplorerView | undefined;
@@ -45,17 +45,17 @@ export class ExplorerService implements IExplorerService {
 		@IInstantiationService private instantiationService: IInstantiationService,
 		@IConfigurationService private configurationService: IConfigurationService,
 		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IClipboardService private clipboardService: IClipboardService,
+		@IClipBoardService private clipBoardService: IClipBoardService,
 		@IEditorService private editorService: IEditorService,
 	) {
 		this._sortOrder = this.configurationService.getValue('explorer.sortOrder');
 
 		this.model = new ExplorerModel(this.contextService, this.fileService);
-		this.disposables.add(this.model);
-		this.disposables.add(this.fileService.onDidRunOperation(e => this.onDidRunOperation(e)));
-		this.disposables.add(this.fileService.onDidFilesChange(e => this.onDidFilesChange(e)));
-		this.disposables.add(this.configurationService.onDidChangeConfiguration(e => this.onConfigurationUpdated(this.configurationService.getValue<IFilesConfiguration>())));
-		this.disposables.add(Event.any<{ scheme: string }>(this.fileService.onDidChangeFileSystemProviderRegistrations, this.fileService.onDidChangeFileSystemProviderCapabilities)(async e => {
+		this.disposaBles.add(this.model);
+		this.disposaBles.add(this.fileService.onDidRunOperation(e => this.onDidRunOperation(e)));
+		this.disposaBles.add(this.fileService.onDidFilesChange(e => this.onDidFilesChange(e)));
+		this.disposaBles.add(this.configurationService.onDidChangeConfiguration(e => this.onConfigurationUpdated(this.configurationService.getValue<IFilesConfiguration>())));
+		this.disposaBles.add(Event.any<{ scheme: string }>(this.fileService.onDidChangeFileSystemProviderRegistrations, this.fileService.onDidChangeFileSystemProviderCapaBilities)(async e => {
 			let affected = false;
 			this.model.roots.forEach(r => {
 				if (r.resource.scheme === e.scheme) {
@@ -69,7 +69,7 @@ export class ExplorerService implements IExplorerService {
 				}
 			}
 		}));
-		this.disposables.add(this.model.onDidChangeRoots(() => {
+		this.disposaBles.add(this.model.onDidChangeRoots(() => {
 			if (this.view) {
 				this.view.setTreeInput();
 			}
@@ -88,7 +88,7 @@ export class ExplorerService implements IExplorerService {
 		this.view = contextProvider;
 	}
 
-	getContext(respectMultiSelection: boolean): ExplorerItem[] {
+	getContext(respectMultiSelection: Boolean): ExplorerItem[] {
 		if (!this.view) {
 			return [];
 		}
@@ -96,13 +96,13 @@ export class ExplorerService implements IExplorerService {
 	}
 
 	// Memoized locals
-	@memoize private get fileEventsFilter(): ResourceGlobMatcher {
+	@memoize private get fileEventsFilter(): ResourceGloBMatcher {
 		const fileEventsFilter = this.instantiationService.createInstance(
-			ResourceGlobMatcher,
+			ResourceGloBMatcher,
 			(root?: URI) => getFileEventsExcludes(this.configurationService, root),
 			(event: IConfigurationChangeEvent) => event.affectsConfiguration(FILES_EXCLUDE_CONFIG)
 		);
-		this.disposables.add(fileEventsFilter);
+		this.disposaBles.add(fileEventsFilter);
 
 		return fileEventsFilter;
 	}
@@ -113,45 +113,45 @@ export class ExplorerService implements IExplorerService {
 		return this.model.findClosest(resource);
 	}
 
-	async setEditable(stat: ExplorerItem, data: IEditableData | null): Promise<void> {
+	async setEditaBle(stat: ExplorerItem, data: IEditaBleData | null): Promise<void> {
 		if (!this.view) {
 			return;
 		}
 
 		if (!data) {
-			this.editable = undefined;
+			this.editaBle = undefined;
 		} else {
-			this.editable = { stat, data };
+			this.editaBle = { stat, data };
 		}
-		const isEditing = this.isEditable(stat);
-		await this.view.setEditable(stat, isEditing);
+		const isEditing = this.isEditaBle(stat);
+		await this.view.setEditaBle(stat, isEditing);
 	}
 
-	async setToCopy(items: ExplorerItem[], cut: boolean): Promise<void> {
+	async setToCopy(items: ExplorerItem[], cut: Boolean): Promise<void> {
 		const previouslyCutItems = this.cutItems;
 		this.cutItems = cut ? items : undefined;
-		await this.clipboardService.writeResources(items.map(s => s.resource));
+		await this.clipBoardService.writeResources(items.map(s => s.resource));
 
 		this.view?.itemsCopied(items, cut, previouslyCutItems);
 	}
 
-	isCut(item: ExplorerItem): boolean {
+	isCut(item: ExplorerItem): Boolean {
 		return !!this.cutItems && this.cutItems.indexOf(item) >= 0;
 	}
 
-	getEditable(): { stat: ExplorerItem, data: IEditableData } | undefined {
-		return this.editable;
+	getEditaBle(): { stat: ExplorerItem, data: IEditaBleData } | undefined {
+		return this.editaBle;
 	}
 
-	getEditableData(stat: ExplorerItem): IEditableData | undefined {
-		return this.editable && this.editable.stat === stat ? this.editable.data : undefined;
+	getEditaBleData(stat: ExplorerItem): IEditaBleData | undefined {
+		return this.editaBle && this.editaBle.stat === stat ? this.editaBle.data : undefined;
 	}
 
-	isEditable(stat: ExplorerItem | undefined): boolean {
-		return !!this.editable && (this.editable.stat === stat || !stat);
+	isEditaBle(stat: ExplorerItem | undefined): Boolean {
+		return !!this.editaBle && (this.editaBle.stat === stat || !stat);
 	}
 
-	async select(resource: URI, reveal?: boolean | string): Promise<void> {
+	async select(resource: URI, reveal?: Boolean | string): Promise<void> {
 		if (!this.view) {
 			return;
 		}
@@ -162,7 +162,7 @@ export class ExplorerService implements IExplorerService {
 			return Promise.resolve(undefined);
 		}
 
-		// Stat needs to be resolved first and then revealed
+		// Stat needs to Be resolved first and then revealed
 		const options: IResolveFileOptions = { resolveTo: [resource], resolveMetadata: this.sortOrder === SortOrder.Modified };
 		const workspaceFolder = this.contextService.getWorkspaceFolder(resource);
 		if (workspaceFolder === null) {
@@ -279,7 +279,7 @@ export class ExplorerService implements IExplorerService {
 					const parent = element.parent;
 					// Remove Element from Parent (Model)
 					parent.removeChild(element);
-					this.view?.focusNeighbourIfItemFocused(element);
+					this.view?.focusNeighBourIfItemFocused(element);
 					// Refresh Parent (View)
 					await this.view?.refresh(false, parent);
 				}
@@ -290,7 +290,7 @@ export class ExplorerService implements IExplorerService {
 	private onDidFilesChange(e: FileChangesEvent): void {
 		// Check if an explorer refresh is necessary (delayed to give internal events a chance to react first)
 		// Note: there is no guarantee when the internal events are fired vs real ones. Code has to deal with the fact that one might
-		// be fired first over the other or not at all.
+		// Be fired first over the other or not at all.
 		setTimeout(async () => {
 			// Filter to the ones we care
 			const shouldRefresh = () => {
@@ -307,18 +307,18 @@ export class ExplorerService implements IExplorerService {
 						// Find parent
 						const parent = dirname(change.resource);
 
-						// Continue if parent was already determined as to be ignored
+						// Continue if parent was already determined as to Be ignored
 						if (ignoredPaths.has(parent.toString())) {
 							continue;
 						}
 
-						// Compute if parent is visible and added file not yet part of it
+						// Compute if parent is visiBle and added file not yet part of it
 						const parentStat = this.model.findClosest(parent);
 						if (parentStat && parentStat.isDirectoryResolved && !this.model.findClosest(change.resource)) {
 							return true;
 						}
 
-						// Keep track of path that can be ignored for faster lookup
+						// Keep track of path that can Be ignored for faster lookup
 						if (!parentStat || !parentStat.isDirectoryResolved) {
 							ignoredPaths.add(parent.toString());
 						}
@@ -339,7 +339,7 @@ export class ExplorerService implements IExplorerService {
 					}
 				}
 
-				// Handle updated files/folders if we sort by modified
+				// Handle updated files/folders if we sort By modified
 				if (this._sortOrder === SortOrder.Modified) {
 					const updated = e.getUpdated();
 
@@ -366,7 +366,7 @@ export class ExplorerService implements IExplorerService {
 	private filterToViewRelevantEvents(e: FileChangesEvent): FileChangesEvent {
 		return e.filter(change => {
 			if (change.type === FileChangeType.UPDATED && this._sortOrder !== SortOrder.Modified) {
-				return false; // we only are about updated if we sort by modified time
+				return false; // we only are aBout updated if we sort By modified time
 			}
 
 			if (!this.contextService.isInsideWorkspace(change.resource)) {
@@ -393,6 +393,6 @@ export class ExplorerService implements IExplorerService {
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposaBles.dispose();
 	}
 }

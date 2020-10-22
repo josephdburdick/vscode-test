@@ -4,35 +4,35 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/extensionsWidgets';
-import { Disposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IExtension, IExtensionsWorkbenchService, IExtensionContainer } from 'vs/workbench/contrib/extensions/common/extensions';
-import { append, $ } from 'vs/base/browser/dom';
-import * as platform from 'vs/base/common/platform';
+import { DisposaBle, toDisposaBle, DisposaBleStore, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtension, IExtensionsWorkBenchService, IExtensionContainer } from 'vs/workBench/contriB/extensions/common/extensions';
+import { append, $ } from 'vs/Base/Browser/dom';
+import * as platform from 'vs/Base/common/platform';
 import { localize } from 'vs/nls';
-import { IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { extensionButtonProminentBackground, extensionButtonProminentForeground, ExtensionToolTipAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { IExtensionRecommendationsService } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { extensionButtonProminentBackground, extensionButtonProminentForeground, ExtensionToolTipAction } from 'vs/workBench/contriB/extensions/Browser/extensionsActions';
 import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { EXTENSION_BADGE_REMOTE_BACKGROUND, EXTENSION_BADGE_REMOTE_FOREGROUND } from 'vs/workbench/common/theme';
-import { Emitter, Event } from 'vs/base/common/event';
+import { EXTENSION_BADGE_REMOTE_BACKGROUND, EXTENSION_BADGE_REMOTE_FOREGROUND } from 'vs/workBench/common/theme';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
+import { CountBadge } from 'vs/Base/Browser/ui/countBadge/countBadge';
 
-export abstract class ExtensionWidget extends Disposable implements IExtensionContainer {
+export aBstract class ExtensionWidget extends DisposaBle implements IExtensionContainer {
 	private _extension: IExtension | null = null;
 	get extension(): IExtension | null { return this._extension; }
 	set extension(extension: IExtension | null) { this._extension = extension; this.update(); }
 	update(): void { this.render(); }
-	abstract render(): void;
+	aBstract render(): void;
 }
 
-export class Label extends ExtensionWidget {
+export class LaBel extends ExtensionWidget {
 
 	constructor(
 		private element: HTMLElement,
 		private fn: (extension: IExtension) => string,
-		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
+		@IExtensionsWorkBenchService extensionsWorkBenchService: IExtensionsWorkBenchService
 	) {
 		super();
 		this.render();
@@ -47,8 +47,8 @@ export class InstallCountWidget extends ExtensionWidget {
 
 	constructor(
 		private container: HTMLElement,
-		private small: boolean,
-		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
+		private small: Boolean,
+		@IExtensionsWorkBenchService extensionsWorkBenchService: IExtensionsWorkBenchService
 	) {
 		super();
 		container.classList.add('extension-install-count');
@@ -68,24 +68,24 @@ export class InstallCountWidget extends ExtensionWidget {
 			return;
 		}
 
-		let installLabel: string;
+		let installLaBel: string;
 
 		if (this.small) {
 			if (installCount > 1000000) {
-				installLabel = `${Math.floor(installCount / 100000) / 10}M`;
+				installLaBel = `${Math.floor(installCount / 100000) / 10}M`;
 			} else if (installCount > 1000) {
-				installLabel = `${Math.floor(installCount / 1000)}K`;
+				installLaBel = `${Math.floor(installCount / 1000)}K`;
 			} else {
-				installLabel = String(installCount);
+				installLaBel = String(installCount);
 			}
 		}
 		else {
-			installLabel = installCount.toLocaleString(platform.locale);
+			installLaBel = installCount.toLocaleString(platform.locale);
 		}
 
 		append(this.container, $('span.codicon.codicon-cloud-download'));
 		const count = append(this.container, $('span.count'));
-		count.textContent = installLabel;
+		count.textContent = installLaBel;
 	}
 }
 
@@ -93,7 +93,7 @@ export class RatingsWidget extends ExtensionWidget {
 
 	constructor(
 		private container: HTMLElement,
-		private small: boolean
+		private small: Boolean
 	) {
 		super();
 		container.classList.add('extension-ratings');
@@ -138,8 +138,8 @@ export class RatingsWidget extends ExtensionWidget {
 				}
 			}
 		}
-		this.container.title = this.extension.ratingCount === 1 ? localize('ratedBySingleUser', "Rated by 1 user")
-			: typeof this.extension.ratingCount === 'number' && this.extension.ratingCount > 1 ? localize('ratedByUsers', "Rated by {0} users", this.extension.ratingCount) : localize('noRating', "No rating");
+		this.container.title = this.extension.ratingCount === 1 ? localize('ratedBySingleUser', "Rated By 1 user")
+			: typeof this.extension.ratingCount === 'numBer' && this.extension.ratingCount > 1 ? localize('ratedByUsers', "Rated By {0} users", this.extension.ratingCount) : localize('noRating', "No rating");
 	}
 }
 
@@ -149,13 +149,13 @@ export class TooltipWidget extends ExtensionWidget {
 		private readonly parent: HTMLElement,
 		private readonly tooltipAction: ExtensionToolTipAction,
 		private readonly recommendationWidget: RecommendationWidget,
-		@ILabelService private readonly labelService: ILabelService
+		@ILaBelService private readonly laBelService: ILaBelService
 	) {
 		super();
 		this._register(Event.any<any>(
 			this.tooltipAction.onDidChange,
 			this.recommendationWidget.onDidChangeTooltip,
-			this.labelService.onDidChangeFormatters
+			this.laBelService.onDidChangeFormatters
 		)(() => this.render()));
 	}
 
@@ -167,8 +167,8 @@ export class TooltipWidget extends ExtensionWidget {
 		if (!this.extension) {
 			return '';
 		}
-		if (this.tooltipAction.label) {
-			return this.tooltipAction.label;
+		if (this.tooltipAction.laBel) {
+			return this.tooltipAction.laBel;
 		}
 		return this.recommendationWidget.tooltip;
 	}
@@ -178,7 +178,7 @@ export class TooltipWidget extends ExtensionWidget {
 export class RecommendationWidget extends ExtensionWidget {
 
 	private element?: HTMLElement;
-	private readonly disposables = this._register(new DisposableStore());
+	private readonly disposaBles = this._register(new DisposaBleStore());
 
 	private _tooltip: string = '';
 	get tooltip(): string { return this._tooltip; }
@@ -198,7 +198,7 @@ export class RecommendationWidget extends ExtensionWidget {
 	) {
 		super();
 		this.render();
-		this._register(toDisposable(() => this.clear()));
+		this._register(toDisposaBle(() => this.clear()));
 		this._register(this.extensionRecommendationsService.onDidChangeRecommendations(() => this.render()));
 	}
 
@@ -208,7 +208,7 @@ export class RecommendationWidget extends ExtensionWidget {
 			this.parent.removeChild(this.element);
 		}
 		this.element = undefined;
-		this.disposables.clear();
+		this.disposaBles.clear();
 	}
 
 	render(): void {
@@ -218,17 +218,17 @@ export class RecommendationWidget extends ExtensionWidget {
 		}
 		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
 		if (extRecommendations[this.extension.identifier.id.toLowerCase()]) {
-			this.element = append(this.parent, $('div.extension-bookmark'));
+			this.element = append(this.parent, $('div.extension-Bookmark'));
 			const recommendation = append(this.element, $('.recommendation'));
 			append(recommendation, $('span.codicon.codicon-star'));
 			const applyBookmarkStyle = (theme: IColorTheme) => {
-				const bgColor = theme.getColor(extensionButtonProminentBackground);
+				const BgColor = theme.getColor(extensionButtonProminentBackground);
 				const fgColor = theme.getColor(extensionButtonProminentForeground);
-				recommendation.style.borderTopColor = bgColor ? bgColor.toString() : 'transparent';
+				recommendation.style.BorderTopColor = BgColor ? BgColor.toString() : 'transparent';
 				recommendation.style.color = fgColor ? fgColor.toString() : 'white';
 			};
 			applyBookmarkStyle(this.themeService.getColorTheme());
-			this.themeService.onDidColorThemeChange(applyBookmarkStyle, this, this.disposables);
+			this.themeService.onDidColorThemeChange(applyBookmarkStyle, this, this.disposaBles);
 			this.tooltip = extRecommendations[this.extension.identifier.id.toLowerCase()].reasonText;
 		}
 	}
@@ -237,20 +237,20 @@ export class RecommendationWidget extends ExtensionWidget {
 
 export class RemoteBadgeWidget extends ExtensionWidget {
 
-	private readonly remoteBadge = this._register(new MutableDisposable<RemoteBadge>());
+	private readonly remoteBadge = this._register(new MutaBleDisposaBle<RemoteBadge>());
 
 	private element: HTMLElement;
 
 	constructor(
 		parent: HTMLElement,
-		private readonly tooltip: boolean,
+		private readonly tooltip: Boolean,
 		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
 		super();
-		this.element = append(parent, $('.extension-remote-badge-container'));
+		this.element = append(parent, $('.extension-remote-Badge-container'));
 		this.render();
-		this._register(toDisposable(() => this.clear()));
+		this._register(toDisposaBle(() => this.clear()));
 	}
 
 	private clear(): void {
@@ -270,18 +270,18 @@ export class RemoteBadgeWidget extends ExtensionWidget {
 	}
 }
 
-class RemoteBadge extends Disposable {
+class RemoteBadge extends DisposaBle {
 
 	readonly element: HTMLElement;
 
 	constructor(
-		private readonly tooltip: boolean,
-		@ILabelService private readonly labelService: ILabelService,
+		private readonly tooltip: Boolean,
+		@ILaBelService private readonly laBelService: ILaBelService,
 		@IThemeService private readonly themeService: IThemeService,
 		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService
 	) {
 		super();
-		this.element = $('div.extension-badge.extension-remote-badge');
+		this.element = $('div.extension-Badge.extension-remote-Badge');
 		this.render();
 	}
 
@@ -292,9 +292,9 @@ class RemoteBadge extends Disposable {
 			if (!this.element) {
 				return;
 			}
-			const bgColor = this.themeService.getColorTheme().getColor(EXTENSION_BADGE_REMOTE_BACKGROUND);
+			const BgColor = this.themeService.getColorTheme().getColor(EXTENSION_BADGE_REMOTE_BACKGROUND);
 			const fgColor = this.themeService.getColorTheme().getColor(EXTENSION_BADGE_REMOTE_FOREGROUND);
-			this.element.style.backgroundColor = bgColor ? bgColor.toString() : '';
+			this.element.style.BackgroundColor = BgColor ? BgColor.toString() : '';
 			this.element.style.color = fgColor ? fgColor.toString() : '';
 		};
 		applyBadgeStyle();
@@ -303,10 +303,10 @@ class RemoteBadge extends Disposable {
 		if (this.tooltip) {
 			const updateTitle = () => {
 				if (this.element && this.extensionManagementServerService.remoteExtensionManagementServer) {
-					this.element.title = localize('remote extension title', "Extension in {0}", this.extensionManagementServerService.remoteExtensionManagementServer.label);
+					this.element.title = localize('remote extension title', "Extension in {0}", this.extensionManagementServerService.remoteExtensionManagementServer.laBel);
 				}
 			};
-			this._register(this.labelService.onDidChangeFormatters(() => updateTitle()));
+			this._register(this.laBelService.onDidChangeFormatters(() => updateTitle()));
 			updateTitle();
 		}
 	}
@@ -321,7 +321,7 @@ export class ExtensionPackCountWidget extends ExtensionWidget {
 	) {
 		super();
 		this.render();
-		this._register(toDisposable(() => this.clear()));
+		this._register(toDisposaBle(() => this.clear()));
 	}
 
 	private clear(): void {
@@ -335,7 +335,7 @@ export class ExtensionPackCountWidget extends ExtensionWidget {
 		if (!this.extension || !this.extension.extensionPack.length) {
 			return;
 		}
-		this.element = append(this.parent, $('.extension-badge.extension-pack-badge'));
+		this.element = append(this.parent, $('.extension-Badge.extension-pack-Badge'));
 		const countBadge = new CountBadge(this.element);
 		countBadge.setCount(this.extension.extensionPack.length);
 	}

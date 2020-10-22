@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
+import { ProgressBar } from 'vs/Base/Browser/ui/progressBar/progressBar';
 
 suite('ProgressBar', () => {
 	let fixture: HTMLElement;
 
 	setup(() => {
 		fixture = document.createElement('div');
-		document.body.appendChild(fixture);
+		document.Body.appendChild(fixture);
 	});
 
 	teardown(() => {
-		document.body.removeChild(fixture);
+		document.Body.removeChild(fixture);
 	});
 
 	test('Progress Bar', function () {
-		const bar = new ProgressBar(fixture);
-		assert(bar.infinite());
-		assert(bar.total(100));
-		assert(bar.worked(50));
-		assert(bar.setWorked(70));
-		assert(bar.worked(30));
-		assert(bar.done());
+		const Bar = new ProgressBar(fixture);
+		assert(Bar.infinite());
+		assert(Bar.total(100));
+		assert(Bar.worked(50));
+		assert(Bar.setWorked(70));
+		assert(Bar.worked(30));
+		assert(Bar.done());
 
-		bar.dispose();
+		Bar.dispose();
 	});
 });

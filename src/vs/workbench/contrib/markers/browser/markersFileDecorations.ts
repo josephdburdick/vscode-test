@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
 import { IMarkerService, IMarker, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { IDecorationsService, IDecorationsProvider, IDecorationData } from 'vs/workbench/services/decorations/browser/decorations';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
+import { IDecorationsService, IDecorationsProvider, IDecorationData } from 'vs/workBench/services/decorations/Browser/decorations';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
 import { localize } from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { listErrorForeground, listWarningForeground } from 'vs/platform/theme/common/colorRegistry';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
 class MarkersDecorationsProvider implements IDecorationsProvider {
 
-	readonly label: string = localize('label', "Problems");
+	readonly laBel: string = localize('laBel', "ProBlems");
 	readonly onDidChange: Event<readonly URI[]>;
 
 	constructor(
@@ -45,19 +45,19 @@ class MarkersDecorationsProvider implements IDecorationsProvider {
 
 		return {
 			weight: 100 * first.severity,
-			bubble: true,
-			tooltip: markers.length === 1 ? localize('tooltip.1', "1 problem in this file") : localize('tooltip.N', "{0} problems in this file", markers.length),
+			BuBBle: true,
+			tooltip: markers.length === 1 ? localize('tooltip.1', "1 proBlem in this file") : localize('tooltip.N', "{0} proBlems in this file", markers.length),
 			letter: markers.length < 10 ? markers.length.toString() : '9+',
 			color: first.severity === MarkerSeverity.Error ? listErrorForeground : listWarningForeground,
 		};
 	}
 }
 
-class MarkersFileDecorations implements IWorkbenchContribution {
+class MarkersFileDecorations implements IWorkBenchContriBution {
 
-	private readonly _disposables: IDisposable[];
-	private _provider?: IDisposable;
-	private _enabled?: boolean;
+	private readonly _disposaBles: IDisposaBle[];
+	private _provider?: IDisposaBle;
+	private _enaBled?: Boolean;
 
 	constructor(
 		@IMarkerService private readonly _markerService: IMarkerService,
@@ -65,46 +65,46 @@ class MarkersFileDecorations implements IWorkbenchContribution {
 		@IConfigurationService private readonly _configurationService: IConfigurationService
 	) {
 		//
-		this._disposables = [
-			this._configurationService.onDidChangeConfiguration(this._updateEnablement, this),
+		this._disposaBles = [
+			this._configurationService.onDidChangeConfiguration(this._updateEnaBlement, this),
 		];
-		this._updateEnablement();
+		this._updateEnaBlement();
 	}
 
 	dispose(): void {
 		dispose(this._provider);
-		dispose(this._disposables);
+		dispose(this._disposaBles);
 	}
 
-	private _updateEnablement(): void {
-		let value = this._configurationService.getValue<{ decorations: { enabled: boolean } }>('problems');
-		if (value.decorations.enabled === this._enabled) {
+	private _updateEnaBlement(): void {
+		let value = this._configurationService.getValue<{ decorations: { enaBled: Boolean } }>('proBlems');
+		if (value.decorations.enaBled === this._enaBled) {
 			return;
 		}
-		this._enabled = value.decorations.enabled;
-		if (this._enabled) {
+		this._enaBled = value.decorations.enaBled;
+		if (this._enaBled) {
 			const provider = new MarkersDecorationsProvider(this._markerService);
 			this._provider = this._decorationsService.registerDecorationsProvider(provider);
 		} else if (this._provider) {
-			this._enabled = value.decorations.enabled;
+			this._enaBled = value.decorations.enaBled;
 			this._provider.dispose();
 		}
 	}
 }
 
 Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
-	'id': 'problems',
+	'id': 'proBlems',
 	'order': 101,
-	'type': 'object',
+	'type': 'oBject',
 	'properties': {
-		'problems.decorations.enabled': {
+		'proBlems.decorations.enaBled': {
 			'description': localize('markers.showOnFile', "Show Errors & Warnings on files and folder."),
-			'type': 'boolean',
+			'type': 'Boolean',
 			'default': true
 		}
 	}
 });
 
 // register file decorations
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(MarkersFileDecorations, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(MarkersFileDecorations, LifecyclePhase.Restored);

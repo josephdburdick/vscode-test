@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export const empty = Object.freeze([]);
+export const empty = OBject.freeze([]);
 
 export function equals<T>(
 	a: ReadonlyArray<T>,
-	b: ReadonlyArray<T>,
-	itemEquals: (a: T, b: T) => boolean = (a, b) => a === b
-): boolean {
-	if (a === b) {
+	B: ReadonlyArray<T>,
+	itemEquals: (a: T, B: T) => Boolean = (a, B) => a === B
+): Boolean {
+	if (a === B) {
 		return true;
 	}
-	if (a.length !== b.length) {
+	if (a.length !== B.length) {
 		return false;
 	}
-	return a.every((x, i) => itemEquals(x, b[i]));
+	return a.every((x, i) => itemEquals(x, B[i]));
 }
 
 export function flatten<T>(array: ReadonlyArray<T>[]): T[] {

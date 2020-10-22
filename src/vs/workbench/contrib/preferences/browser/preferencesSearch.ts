@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISettingsEditorModel, ISetting, ISettingsGroup, IFilterMetadata, ISearchResult, IGroupFilter, ISettingMatcher, IScoredResults, ISettingMatch, IRemoteSetting, IExtensionSetting } from 'vs/workbench/services/preferences/common/preferences';
+import { ISettingsEditorModel, ISetting, ISettingsGroup, IFilterMetadata, ISearchResult, IGroupFilter, ISettingMatcher, IScoredResults, ISettingMatch, IRemoteSetting, IExtensionSetting } from 'vs/workBench/services/preferences/common/preferences';
 import { IRange } from 'vs/editor/common/core/range';
-import { distinct, top } from 'vs/base/common/arrays';
-import * as strings from 'vs/base/common/strings';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { distinct, top } from 'vs/Base/common/arrays';
+import * as strings from 'vs/Base/common/strings';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { IMatch, or, matchesContiguousSubString, matchesPrefix, matchesCamelCase, matchesWords } from 'vs/base/common/filters';
+import { IMatch, or, matchesContiguousSuBString, matchesPrefix, matchesCamelCase, matchesWords } from 'vs/Base/common/filters';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IPreferencesSearchService, ISearchProvider, IWorkbenchSettingsConfiguration } from 'vs/workbench/contrib/preferences/common/preferences';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IPreferencesSearchService, ISearchProvider, IWorkBenchSettingsConfiguration } from 'vs/workBench/contriB/preferences/common/preferences';
 import { IRequestService, asJson } from 'vs/platform/request/common/request';
 import { IExtensionManagementService, ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IWorkBenchExtensionEnaBlementService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
 import { ILogService } from 'vs/platform/log/common/log';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { nullRange } from 'vs/workbench/services/preferences/common/preferencesModels';
+import { nullRange } from 'vs/workBench/services/preferences/common/preferencesModels';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/Base/common/collections';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
@@ -32,7 +32,7 @@ export interface IEndpointDetails {
 	key?: string;
 }
 
-export class PreferencesSearchService extends Disposable implements IPreferencesSearchService {
+export class PreferencesSearchService extends DisposaBle implements IPreferencesSearchService {
 	declare readonly _serviceBrand: undefined;
 
 	private _installedExtensions: Promise<ILocalExtension[]>;
@@ -42,23 +42,23 @@ export class PreferencesSearchService extends Disposable implements IPreferences
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IProductService private readonly productService: IProductService,
 		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService
+		@IWorkBenchExtensionEnaBlementService private readonly extensionEnaBlementService: IWorkBenchExtensionEnaBlementService
 	) {
 		super();
 
-		// This request goes to the shared process but results won't change during a window's lifetime, so cache the results.
+		// This request goes to the shared process But results won't change during a window's lifetime, so cache the results.
 		this._installedExtensions = this.extensionManagementService.getInstalled(ExtensionType.User).then(exts => {
-			// Filter to enabled extensions that have settings
+			// Filter to enaBled extensions that have settings
 			return exts
-				.filter(ext => this.extensionEnablementService.isEnabled(ext))
-				.filter(ext => ext.manifest && ext.manifest.contributes && ext.manifest.contributes.configuration)
+				.filter(ext => this.extensionEnaBlementService.isEnaBled(ext))
+				.filter(ext => ext.manifest && ext.manifest.contriButes && ext.manifest.contriButes.configuration)
 				.filter(ext => !!ext.identifier.uuid);
 		});
 	}
 
-	private get remoteSearchAllowed(): boolean {
-		const workbenchSettings = this.configurationService.getValue<IWorkbenchSettingsConfiguration>().workbench.settings;
-		if (!workbenchSettings.enableNaturalLanguageSearch) {
+	private get remoteSearchAllowed(): Boolean {
+		const workBenchSettings = this.configurationService.getValue<IWorkBenchSettingsConfiguration>().workBench.settings;
+		if (!workBenchSettings.enaBleNaturalLanguageSearch) {
 			return false;
 		}
 
@@ -66,11 +66,11 @@ export class PreferencesSearchService extends Disposable implements IPreferences
 	}
 
 	private get _endpoint(): IEndpointDetails {
-		const workbenchSettings = this.configurationService.getValue<IWorkbenchSettingsConfiguration>().workbench.settings;
-		if (workbenchSettings.naturalLanguageSearchEndpoint) {
+		const workBenchSettings = this.configurationService.getValue<IWorkBenchSettingsConfiguration>().workBench.settings;
+		if (workBenchSettings.naturalLanguageSearchEndpoint) {
 			return {
-				urlBase: workbenchSettings.naturalLanguageSearchEndpoint,
-				key: workbenchSettings.naturalLanguageSearchKey
+				urlBase: workBenchSettings.naturalLanguageSearchEndpoint,
+				key: workBenchSettings.naturalLanguageSearchKey
 			};
 		} else {
 			return {
@@ -99,7 +99,7 @@ export class LocalSearchProvider implements ISearchProvider {
 	static readonly START_SCORE = 1000;
 
 	constructor(private _filter: string) {
-		// Remove " and : which are likely to be copypasted as part of a setting name.
+		// Remove " and : which are likely to Be copypasted as part of a setting name.
 		// Leave other special characters which the user might want to search for.
 		this._filter = this._filter
 			.replace(/[":]/g, ' ')
@@ -112,7 +112,7 @@ export class LocalSearchProvider implements ISearchProvider {
 			return Promise.resolve(null);
 		}
 
-		let orderedScore = LocalSearchProvider.START_SCORE; // Sort is not stable
+		let orderedScore = LocalSearchProvider.START_SCORE; // Sort is not staBle
 		const settingMatcher = (setting: ISetting) => {
 			const matches = new SettingMatches(this._filter, setting, true, true, (filter, setting) => preferencesModel.findValueMatches(filter, setting)).matches;
 			const score = this._filter === setting.key ?
@@ -141,7 +141,7 @@ export class LocalSearchProvider implements ISearchProvider {
 	}
 
 	private getGroupFilter(filter: string): IGroupFilter {
-		const regex = strings.createRegExp(filter, false, { global: true });
+		const regex = strings.createRegExp(filter, false, { gloBal: true });
 		return (group: ISettingsGroup) => {
 			return regex.test(group.title);
 		};
@@ -151,18 +151,18 @@ export class LocalSearchProvider implements ISearchProvider {
 interface IRemoteSearchProviderOptions {
 	filter: string;
 	endpoint: IEndpointDetails;
-	newExtensionsOnly: boolean;
+	newExtensionsOnly: Boolean;
 }
 
 interface IBingRequestDetails {
 	url: string;
-	body?: string;
-	hasMoreFilters?: boolean;
+	Body?: string;
+	hasMoreFilters?: Boolean;
 	extensions?: ILocalExtension[];
 }
 
 class RemoteSearchProvider implements ISearchProvider {
-	// Must keep extension filter size under 8kb. 42 filters puts us there.
+	// Must keep extension filter size under 8kB. 42 filters puts us there.
 	private static readonly MAX_REQUEST_FILTERS = 42;
 	private static readonly MAX_REQUESTS = 10;
 	private static readonly NEW_EXTENSIONS_MIN_SCORE = 1;
@@ -189,8 +189,8 @@ class RemoteSearchProvider implements ISearchProvider {
 				throw canceled();
 			}
 
-			const resultKeys = Object.keys(remoteResult.scoredResults);
-			const highScoreKey = top(resultKeys, (a, b) => remoteResult.scoredResults[b].score - remoteResult.scoredResults[a].score, 1)[0];
+			const resultKeys = OBject.keys(remoteResult.scoredResults);
+			const highScoreKey = top(resultKeys, (a, B) => remoteResult.scoredResults[B].score - remoteResult.scoredResults[a].score, 1)[0];
 			const highScore = highScoreKey ? remoteResult.scoredResults[highScoreKey].score : 0;
 			const minScore = highScore / 5;
 			if (this.options.newExtensionsOnly) {
@@ -199,7 +199,7 @@ class RemoteSearchProvider implements ISearchProvider {
 					const passingScoreKeys = resultKeys
 						.filter(k => {
 							const result = remoteResult.scoredResults[k];
-							const resultExtId = (result.extensionPublisher + '.' + result.extensionName).toLowerCase();
+							const resultExtId = (result.extensionPuBlisher + '.' + result.extensionName).toLowerCase();
 							return !installedExtensions.some(ext => ext.identifier.id.toLowerCase() === resultExtId);
 						})
 						.filter(k => remoteResult.scoredResults[k].score >= newExtsMinScore);
@@ -238,7 +238,7 @@ class RemoteSearchProvider implements ISearchProvider {
 			const details = await this.prepareRequest(filter, i);
 			allRequestDetails.push(details);
 			if (!details.hasMoreFilters) {
-				break;
+				Break;
 			}
 		}
 
@@ -257,12 +257,12 @@ class RemoteSearchProvider implements ISearchProvider {
 	}
 
 	private getSettingsFromBing(details: IBingRequestDetails): Promise<IFilterMetadata> {
-		this.logService.debug(`Searching settings via ${details.url}`);
-		if (details.body) {
-			this.logService.debug(`Body: ${details.body}`);
+		this.logService.deBug(`Searching settings via ${details.url}`);
+		if (details.Body) {
+			this.logService.deBug(`Body: ${details.Body}`);
 		}
 
-		const requestType = details.body ? 'post' : 'get';
+		const requestType = details.Body ? 'post' : 'get';
 		const headers: IStringDictionary<string> = {
 			'User-Agent': 'request',
 			'Content-Type': 'application/json; charset=utf-8',
@@ -276,11 +276,11 @@ class RemoteSearchProvider implements ISearchProvider {
 		return this.requestService.request({
 			type: requestType,
 			url: details.url,
-			data: details.body,
+			data: details.Body,
 			headers,
 			timeout: 5000
 		}, CancellationToken.None).then(context => {
-			if (typeof context.res.statusCode === 'number' && context.res.statusCode >= 300) {
+			if (typeof context.res.statusCode === 'numBer' && context.res.statusCode >= 300) {
 				throw new Error(`${JSON.stringify(details)} returned status code: ${context.res.statusCode}`);
 			}
 
@@ -299,9 +299,9 @@ class RemoteSearchProvider implements ISearchProvider {
 
 					const packageName = r['packagename'];
 					let extensionName: string | undefined;
-					let extensionPublisher: string | undefined;
+					let extensionPuBlisher: string | undefined;
 					if (packageName && packageName.indexOf('##') >= 0) {
-						[extensionPublisher, extensionName] = packageName.split('##');
+						[extensionPuBlisher, extensionName] = packageName.split('##');
 					}
 
 					return <IRemoteSetting>{
@@ -312,18 +312,18 @@ class RemoteSearchProvider implements ISearchProvider {
 						description: JSON.parse(r['details']),
 						packageId,
 						extensionName,
-						extensionPublisher
+						extensionPuBlisher
 					};
 				});
 
-			const scoredResults = Object.create(null);
+			const scoredResults = OBject.create(null);
 			remoteSettings.forEach(s => {
 				scoredResults[s.id] = s;
 			});
 
 			return <IFilterMetadata>{
 				requestUrl: details.url,
-				requestBody: details.body,
+				requestBody: details.Body,
 				duration,
 				timestamp,
 				scoredResults,
@@ -332,7 +332,7 @@ class RemoteSearchProvider implements ISearchProvider {
 		});
 	}
 
-	private getRemoteSettingMatcher(scoredResults: IScoredResults, minScore: number, preferencesModel: ISettingsEditorModel): ISettingMatcher {
+	private getRemoteSettingMatcher(scoredResults: IScoredResults, minScore: numBer, preferencesModel: ISettingsEditorModel): ISettingMatcher {
 		return (setting: ISetting, group: ISettingsGroup) => {
 			const remoteSetting = scoredResults[getSettingKey(setting.key, group.id)] || // extension setting
 				scoredResults[getSettingKey(setting.key, 'core')] || // core setting
@@ -347,15 +347,15 @@ class RemoteSearchProvider implements ISearchProvider {
 	}
 
 	private async prepareRequest(query: string, filterPage = 0): Promise<IBingRequestDetails> {
-		const verbatimQuery = query;
+		const verBatimQuery = query;
 		query = escapeSpecialChars(query);
-		const boost = 10;
-		const boostedQuery = `(${query})^${boost}`;
+		const Boost = 10;
+		const BoostedQuery = `(${query})^${Boost}`;
 
 		// Appending Fuzzy after each word.
 		query = query.replace(/\ +/g, '~ ') + '~';
 
-		const encodedQuery = encodeURIComponent(boostedQuery + ' || ' + query);
+		const encodedQuery = encodeURIComponent(BoostedQuery + ' || ' + query);
 		let url = `${this.options.endpoint.urlBase}`;
 
 		if (this.options.endpoint.key) {
@@ -372,27 +372,27 @@ class RemoteSearchProvider implements ISearchProvider {
 			.join(' or ');
 		const hasMoreFilters = filters.length > (filterPage + 1) * RemoteSearchProvider.MAX_REQUEST_FILTERS;
 
-		const body = JSON.stringify({
+		const Body = JSON.stringify({
 			query: encodedQuery,
 			filters: encodeURIComponent(filterStr),
-			rawQuery: encodeURIComponent(verbatimQuery)
+			rawQuery: encodeURIComponent(verBatimQuery)
 		});
 
 		return {
 			url,
-			body,
+			Body,
 			hasMoreFilters
 		};
 	}
 
-	private getVersionFilters(exts: ILocalExtension[], buildNumber?: number): string[] {
-		// Only search extensions that contribute settings
+	private getVersionFilters(exts: ILocalExtension[], BuildNumBer?: numBer): string[] {
+		// Only search extensions that contriBute settings
 		const filters = exts
-			.filter(ext => ext.manifest.contributes && ext.manifest.contributes.configuration)
+			.filter(ext => ext.manifest.contriButes && ext.manifest.contriButes.configuration)
 			.map(ext => this.getExtensionFilter(ext));
 
-		if (buildNumber) {
-			filters.push(`(packageid eq 'core' and startbuildno le '${buildNumber}' and endbuildno ge '${buildNumber}')`);
+		if (BuildNumBer) {
+			filters.push(`(packageid eq 'core' and startBuildno le '${BuildNumBer}' and endBuildno ge '${BuildNumBer}')`);
 		}
 
 		return filters;
@@ -405,7 +405,7 @@ class RemoteSearchProvider implements ISearchProvider {
 			.map(versionPart => String(versionPart).padStart(10), '0')
 			.join('');
 
-		return `(packageid eq '${uuid}' and startbuildno le '${versionString}' and endbuildno ge '${versionString}')`;
+		return `(packageid eq '${uuid}' and startBuildno le '${versionString}' and endBuildno ge '${versionString}')`;
 	}
 }
 
@@ -437,7 +437,7 @@ function remoteSettingToISetting(remoteSetting: IRemoteSetting): IExtensionSetti
 		valueRange: nullRange,
 		overrides: [],
 		extensionName: remoteSetting.extensionName,
-		extensionPublisher: remoteSetting.extensionPublisher
+		extensionPuBlisher: remoteSetting.extensionPuBlisher
 	};
 }
 
@@ -449,22 +449,22 @@ export class SettingMatches {
 
 	readonly matches: IRange[];
 
-	constructor(searchString: string, setting: ISetting, private requireFullQueryMatch: boolean, private searchDescription: boolean, private valuesMatcher: (filter: string, setting: ISetting) => IRange[]) {
-		this.matches = distinct(this._findMatchesInSetting(searchString, setting), (match) => `${match.startLineNumber}_${match.startColumn}_${match.endLineNumber}_${match.endColumn}_`);
+	constructor(searchString: string, setting: ISetting, private requireFullQueryMatch: Boolean, private searchDescription: Boolean, private valuesMatcher: (filter: string, setting: ISetting) => IRange[]) {
+		this.matches = distinct(this._findMatchesInSetting(searchString, setting), (match) => `${match.startLineNumBer}_${match.startColumn}_${match.endLineNumBer}_${match.endColumn}_`);
 	}
 
 	private _findMatchesInSetting(searchString: string, setting: ISetting): IRange[] {
 		const result = this._doFindMatchesInSetting(searchString, setting);
 		if (setting.overrides && setting.overrides.length) {
-			for (const subSetting of setting.overrides) {
-				const subSettingMatches = new SettingMatches(searchString, subSetting, this.requireFullQueryMatch, this.searchDescription, this.valuesMatcher);
+			for (const suBSetting of setting.overrides) {
+				const suBSettingMatches = new SettingMatches(searchString, suBSetting, this.requireFullQueryMatch, this.searchDescription, this.valuesMatcher);
 				const words = searchString.split(' ');
-				const descriptionRanges: IRange[] = this.getRangesForWords(words, this.descriptionMatchingWords, [subSettingMatches.descriptionMatchingWords, subSettingMatches.keyMatchingWords, subSettingMatches.valueMatchingWords]);
-				const keyRanges: IRange[] = this.getRangesForWords(words, this.keyMatchingWords, [subSettingMatches.descriptionMatchingWords, subSettingMatches.keyMatchingWords, subSettingMatches.valueMatchingWords]);
-				const subSettingKeyRanges: IRange[] = this.getRangesForWords(words, subSettingMatches.keyMatchingWords, [this.descriptionMatchingWords, this.keyMatchingWords, subSettingMatches.valueMatchingWords]);
-				const subSettingValueRanges: IRange[] = this.getRangesForWords(words, subSettingMatches.valueMatchingWords, [this.descriptionMatchingWords, this.keyMatchingWords, subSettingMatches.keyMatchingWords]);
-				result.push(...descriptionRanges, ...keyRanges, ...subSettingKeyRanges, ...subSettingValueRanges);
-				result.push(...subSettingMatches.matches);
+				const descriptionRanges: IRange[] = this.getRangesForWords(words, this.descriptionMatchingWords, [suBSettingMatches.descriptionMatchingWords, suBSettingMatches.keyMatchingWords, suBSettingMatches.valueMatchingWords]);
+				const keyRanges: IRange[] = this.getRangesForWords(words, this.keyMatchingWords, [suBSettingMatches.descriptionMatchingWords, suBSettingMatches.keyMatchingWords, suBSettingMatches.valueMatchingWords]);
+				const suBSettingKeyRanges: IRange[] = this.getRangesForWords(words, suBSettingMatches.keyMatchingWords, [this.descriptionMatchingWords, this.keyMatchingWords, suBSettingMatches.valueMatchingWords]);
+				const suBSettingValueRanges: IRange[] = this.getRangesForWords(words, suBSettingMatches.valueMatchingWords, [this.descriptionMatchingWords, this.keyMatchingWords, suBSettingMatches.keyMatchingWords]);
+				result.push(...descriptionRanges, ...keyRanges, ...suBSettingKeyRanges, ...suBSettingValueRanges);
+				result.push(...suBSettingMatches.matches);
 			}
 		}
 		return result;
@@ -492,10 +492,10 @@ export class SettingMatches {
 				this.keyMatchingWords.set(word, keyMatches.map(match => this.toKeyRange(setting, match)));
 			}
 
-			const valueMatches = typeof setting.value === 'string' ? matchesContiguousSubString(word, setting.value) : null;
+			const valueMatches = typeof setting.value === 'string' ? matchesContiguousSuBString(word, setting.value) : null;
 			if (valueMatches) {
 				this.valueMatchingWords.set(word, valueMatches.map(match => this.toValueRange(setting, match)));
-			} else if (schema && schema.enum && schema.enum.some(enumValue => typeof enumValue === 'string' && !!matchesContiguousSubString(word, enumValue))) {
+			} else if (schema && schema.enum && schema.enum.some(enumValue => typeof enumValue === 'string' && !!matchesContiguousSuBString(word, enumValue))) {
 				this.valueMatchingWords.set(word, []);
 			}
 		}
@@ -503,7 +503,7 @@ export class SettingMatches {
 		const descriptionRanges: IRange[] = [];
 		if (this.searchDescription) {
 			for (let lineIndex = 0; lineIndex < setting.description.length; lineIndex++) {
-				const matches = or(matchesContiguousSubString)(searchString, setting.description[lineIndex] || '') || [];
+				const matches = or(matchesContiguousSuBString)(searchString, setting.description[lineIndex] || '') || [];
 				descriptionRanges.push(...matches.map(match => this.toDescriptionRange(setting, match, lineIndex)));
 			}
 			if (descriptionRanges.length === 0) {
@@ -511,12 +511,12 @@ export class SettingMatches {
 			}
 		}
 
-		const keyMatches = or(matchesPrefix, matchesContiguousSubString)(searchString, setting.key);
+		const keyMatches = or(matchesPrefix, matchesContiguousSuBString)(searchString, setting.key);
 		const keyRanges: IRange[] = keyMatches ? keyMatches.map(match => this.toKeyRange(setting, match)) : this.getRangesForWords(words, this.keyMatchingWords, [this.descriptionMatchingWords, this.valueMatchingWords]);
 
 		let valueRanges: IRange[] = [];
 		if (setting.value && typeof setting.value === 'string') {
-			const valueMatches = or(matchesPrefix, matchesContiguousSubString)(searchString, setting.value);
+			const valueMatches = or(matchesPrefix, matchesContiguousSuBString)(searchString, setting.value);
 			valueRanges = valueMatches ? valueMatches.map(match => this.toValueRange(setting, match)) : this.getRangesForWords(words, this.valueMatchingWords, [this.keyMatchingWords, this.descriptionMatchingWords]);
 		} else {
 			valueRanges = this.valuesMatcher(searchString, setting);
@@ -540,27 +540,27 @@ export class SettingMatches {
 
 	private toKeyRange(setting: ISetting, match: IMatch): IRange {
 		return {
-			startLineNumber: setting.keyRange.startLineNumber,
+			startLineNumBer: setting.keyRange.startLineNumBer,
 			startColumn: setting.keyRange.startColumn + match.start,
-			endLineNumber: setting.keyRange.startLineNumber,
+			endLineNumBer: setting.keyRange.startLineNumBer,
 			endColumn: setting.keyRange.startColumn + match.end
 		};
 	}
 
-	private toDescriptionRange(setting: ISetting, match: IMatch, lineIndex: number): IRange {
+	private toDescriptionRange(setting: ISetting, match: IMatch, lineIndex: numBer): IRange {
 		return {
-			startLineNumber: setting.descriptionRanges[lineIndex].startLineNumber,
+			startLineNumBer: setting.descriptionRanges[lineIndex].startLineNumBer,
 			startColumn: setting.descriptionRanges[lineIndex].startColumn + match.start,
-			endLineNumber: setting.descriptionRanges[lineIndex].endLineNumber,
+			endLineNumBer: setting.descriptionRanges[lineIndex].endLineNumBer,
 			endColumn: setting.descriptionRanges[lineIndex].startColumn + match.end
 		};
 	}
 
 	private toValueRange(setting: ISetting, match: IMatch): IRange {
 		return {
-			startLineNumber: setting.valueRange.startLineNumber,
+			startLineNumBer: setting.valueRange.startLineNumBer,
 			startColumn: setting.valueRange.startColumn + match.start + 1,
-			endLineNumber: setting.valueRange.startLineNumber,
+			endLineNumBer: setting.valueRange.startLineNumBer,
 			endColumn: setting.valueRange.startColumn + match.end + 1
 		};
 	}

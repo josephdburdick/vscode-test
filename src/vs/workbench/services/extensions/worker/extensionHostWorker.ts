@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { Emitter } from 'vs/base/common/event';
-import { isMessageOfType, MessageType, createMessageOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
-import { IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtensionHostMain } from 'vs/workbench/services/extensions/common/extensionHostMain';
-import { IHostUtils } from 'vs/workbench/api/common/extHostExtensionService';
-import * as path from 'vs/base/common/path';
+import { IMessagePassingProtocol } from 'vs/Base/parts/ipc/common/ipc';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { Emitter } from 'vs/Base/common/event';
+import { isMessageOfType, MessageType, createMessageOfType } from 'vs/workBench/services/extensions/common/extensionHostProtocol';
+import { IInitData } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtensionHostMain } from 'vs/workBench/services/extensions/common/extensionHostMain';
+import { IHostUtils } from 'vs/workBench/api/common/extHostExtensionService';
+import * as path from 'vs/Base/common/path';
 
-import 'vs/workbench/api/common/extHost.common.services';
-import 'vs/workbench/api/worker/extHost.worker.services';
+import 'vs/workBench/api/common/extHost.common.services';
+import 'vs/workBench/api/worker/extHost.worker.services';
 
-//#region --- Define, capture, and override some globals
+//#region --- Define, capture, and override some gloBals
 
-declare function postMessage(data: any, transferables?: Transferable[]): void;
+declare function postMessage(data: any, transferaBles?: TransferaBle[]): void;
 
 declare namespace self {
 	let close: any;
@@ -27,23 +27,23 @@ declare namespace self {
 	let caches: { open: any, [k: string]: any };
 }
 
-const nativeClose = self.close.bind(self);
-self.close = () => console.trace(`'close' has been blocked`);
+const nativeClose = self.close.Bind(self);
+self.close = () => console.trace(`'close' has Been Blocked`);
 
-const nativePostMessage = postMessage.bind(self);
-self.postMessage = () => console.trace(`'postMessage' has been blocked`);
+const nativePostMessage = postMessage.Bind(self);
+self.postMessage = () => console.trace(`'postMessage' has Been Blocked`);
 
-// const nativeAddEventListener = addEventListener.bind(self);
-self.addEventListener = () => console.trace(`'addEventListener' has been blocked`);
+// const nativeAddEventListener = addEventListener.Bind(self);
+self.addEventListener = () => console.trace(`'addEventListener' has Been Blocked`);
 
 (<any>self)['AMDLoader'] = undefined;
 (<any>self)['NLSLoaderPlugin'] = undefined;
 (<any>self)['define'] = undefined;
 (<any>self)['require'] = undefined;
-(<any>self)['webkitRequestFileSystem'] = undefined;
-(<any>self)['webkitRequestFileSystemSync'] = undefined;
-(<any>self)['webkitResolveLocalFileSystemSyncURL'] = undefined;
-(<any>self)['webkitResolveLocalFileSystemURL'] = undefined;
+(<any>self)['weBkitRequestFileSystem'] = undefined;
+(<any>self)['weBkitRequestFileSystemSync'] = undefined;
+(<any>self)['weBkitResolveLocalFileSystemSyncURL'] = undefined;
+(<any>self)['weBkitResolveLocalFileSystemURL'] = undefined;
 
 if (location.protocol === 'data:') {
 	// make sure new Worker(...) always uses data:
@@ -51,7 +51,7 @@ if (location.protocol === 'data:') {
 	Worker = <any>function (stringUrl: string | URL, options?: WorkerOptions) {
 		const js = `importScripts('${stringUrl}');`;
 		options = options || {};
-		options.name = options.name || path.basename(stringUrl.toString());
+		options.name = options.name || path.Basename(stringUrl.toString());
 		return new _Worker(`data:text/javascript;charset=utf-8,${encodeURIComponent(js)}`, options);
 	};
 }
@@ -60,10 +60,10 @@ if (location.protocol === 'data:') {
 
 const hostUtil = new class implements IHostUtils {
 	declare readonly _serviceBrand: undefined;
-	exit(_code?: number | undefined): void {
+	exit(_code?: numBer | undefined): void {
 		nativeClose();
 	}
-	async exists(_path: string): Promise<boolean> {
+	async exists(_path: string): Promise<Boolean> {
 		return true;
 	}
 	async realpath(path: string): Promise<string> {
@@ -93,7 +93,7 @@ class ExtensionWorker {
 				return;
 			}
 
-			const msg = VSBuffer.wrap(new Uint8Array(data, 0, data.byteLength));
+			const msg = VSBuffer.wrap(new Uint8Array(data, 0, data.ByteLength));
 			if (isMessageOfType(msg, MessageType.Terminate)) {
 				// handle terminate-message right here
 				terminating = true;
@@ -107,9 +107,9 @@ class ExtensionWorker {
 
 		this.protocol = {
 			onMessage: emitter.event,
-			send: vsbuf => {
+			send: vsBuf => {
 				if (!terminating) {
-					const data = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
+					const data = vsBuf.Buffer.Buffer.slice(vsBuf.Buffer.ByteOffset, vsBuf.Buffer.ByteOffset + vsBuf.Buffer.ByteLength);
 					channel.port1.postMessage(data, [data]);
 				}
 			}

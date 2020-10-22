@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { DisposaBleStore, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ExtHostContext, ExtHostWindowShape, IExtHostContext, IOpenUriOptions, MainContext, MainThreadWindowShape } from '../common/extHost.protocol';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 
 @extHostNamedCustomer(MainContext.MainThreadWindow)
 export class MainThreadWindow implements MainThreadWindowShape {
 
 	private readonly proxy: ExtHostWindowShape;
-	private readonly disposables = new DisposableStore();
-	private readonly resolved = new Map<number, IDisposable>();
+	private readonly disposaBles = new DisposaBleStore();
+	private readonly resolved = new Map<numBer, IDisposaBle>();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -26,11 +26,11 @@ export class MainThreadWindow implements MainThreadWindowShape {
 		this.proxy = extHostContext.getProxy(ExtHostContext.ExtHostWindow);
 
 		Event.latch(hostService.onDidChangeFocus)
-			(this.proxy.$onDidChangeWindowFocus, this.proxy, this.disposables);
+			(this.proxy.$onDidChangeWindowFocus, this.proxy, this.disposaBles);
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposaBles.dispose();
 
 		for (const value of this.resolved.values()) {
 			value.dispose();
@@ -38,11 +38,11 @@ export class MainThreadWindow implements MainThreadWindowShape {
 		this.resolved.clear();
 	}
 
-	$getWindowVisibility(): Promise<boolean> {
+	$getWindowVisiBility(): Promise<Boolean> {
 		return Promise.resolve(this.hostService.hasFocus);
 	}
 
-	async $openUri(uriComponents: UriComponents, uriString: string | undefined, options: IOpenUriOptions): Promise<boolean> {
+	async $openUri(uriComponents: UriComponents, uriString: string | undefined, options: IOpenUriOptions): Promise<Boolean> {
 		const uri = URI.from(uriComponents);
 		let target: URI | string;
 		if (uriString && URI.parse(uriString).toString() === uri.toString()) {

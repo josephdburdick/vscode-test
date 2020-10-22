@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/Browser/editorExtensions';
 import { Range } from 'vs/editor/common/core/range';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ITextModel } from 'vs/editor/common/model';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { formatDocumentRangesWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
+import { formatDocumentRangesWithSelectedProvider, FormattingMode } from 'vs/editor/contriB/format/format';
 import * as nls from 'vs/nls';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { Progress } from 'vs/platform/progress/common/progress';
-import { getOriginalResource } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorator';
-import { ISCMService } from 'vs/workbench/contrib/scm/common/scm';
+import { getOriginalResource } from 'vs/workBench/contriB/scm/Browser/dirtydiffDecorator';
+import { ISCMService } from 'vs/workBench/contriB/scm/common/scm';
 
 registerEditorAction(class FormatModifiedAction extends EditorAction {
 
 	constructor() {
 		super({
 			id: 'editor.action.formatChanges',
-			label: nls.localize('formatChanges', "Format Modified Lines"),
+			laBel: nls.localize('formatChanges', "Format Modified Lines"),
 			alias: 'Format Modified Lines',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
+			precondition: ContextKeyExpr.and(EditorContextKeys.writaBle, EditorContextKeys.hasDocumentSelectionFormattingProvider),
 		});
 	}
 
@@ -71,8 +71,8 @@ export async function getModifiedRanges(accessor: ServicesAccessor, modified: IT
 		}
 		for (let change of changes) {
 			ranges.push(modified.validateRange(new Range(
-				change.modifiedStartLineNumber, 1,
-				change.modifiedEndLineNumber || change.modifiedStartLineNumber /*endLineNumber is 0 when things got deleted*/, Number.MAX_SAFE_INTEGER)
+				change.modifiedStartLineNumBer, 1,
+				change.modifiedEndLineNumBer || change.modifiedStartLineNumBer /*endLineNumBer is 0 when things got deleted*/, NumBer.MAX_SAFE_INTEGER)
 			));
 		}
 	} finally {

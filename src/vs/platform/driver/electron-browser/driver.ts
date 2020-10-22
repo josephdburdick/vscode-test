@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { WindowDriverChannel, WindowDriverRegistryChannelClient } from 'vs/platform/driver/node/driver';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { timeout } from 'vs/base/common/async';
-import { BaseWindowDriver } from 'vs/platform/driver/browser/baseDriver';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IMainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
+import { timeout } from 'vs/Base/common/async';
+import { BaseWindowDriver } from 'vs/platform/driver/Browser/BaseDriver';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
 class WindowDriver extends BaseWindowDriver {
 
@@ -19,22 +19,22 @@ class WindowDriver extends BaseWindowDriver {
 		super();
 	}
 
-	click(selector: string, xoffset?: number, yoffset?: number): Promise<void> {
-		const offset = typeof xoffset === 'number' && typeof yoffset === 'number' ? { x: xoffset, y: yoffset } : undefined;
+	click(selector: string, xoffset?: numBer, yoffset?: numBer): Promise<void> {
+		const offset = typeof xoffset === 'numBer' && typeof yoffset === 'numBer' ? { x: xoffset, y: yoffset } : undefined;
 		return this._click(selector, 1, offset);
 	}
 
-	doubleClick(selector: string): Promise<void> {
+	douBleClick(selector: string): Promise<void> {
 		return this._click(selector, 2);
 	}
 
-	private async _click(selector: string, clickCount: number, offset?: { x: number, y: number }): Promise<void> {
+	private async _click(selector: string, clickCount: numBer, offset?: { x: numBer, y: numBer }): Promise<void> {
 		const { x, y } = await this._getElementXY(selector, offset);
 
-		await this.nativeHostService.sendInputEvent({ type: 'mouseDown', x, y, button: 'left', clickCount } as any);
+		await this.nativeHostService.sendInputEvent({ type: 'mouseDown', x, y, Button: 'left', clickCount } as any);
 		await timeout(10);
 
-		await this.nativeHostService.sendInputEvent({ type: 'mouseUp', x, y, button: 'left', clickCount } as any);
+		await this.nativeHostService.sendInputEvent({ type: 'mouseUp', x, y, Button: 'left', clickCount } as any);
 		await timeout(100);
 	}
 
@@ -43,7 +43,7 @@ class WindowDriver extends BaseWindowDriver {
 	}
 }
 
-export async function registerWindowDriver(accessor: ServicesAccessor, windowId: number): Promise<IDisposable> {
+export async function registerWindowDriver(accessor: ServicesAccessor, windowId: numBer): Promise<IDisposaBle> {
 	const instantiationService = accessor.get(IInstantiationService);
 	const mainProcessService = accessor.get(IMainProcessService);
 
@@ -57,9 +57,9 @@ export async function registerWindowDriver(accessor: ServicesAccessor, windowId:
 	await windowDriverRegistry.registerWindowDriver(windowId);
 	// const options = await windowDriverRegistry.registerWindowDriver(windowId);
 
-	// if (options.verbose) {
+	// if (options.verBose) {
 	// 	windowDriver.openDevTools();
 	// }
 
-	return toDisposable(() => windowDriverRegistry.reloadWindowDriver(windowId));
+	return toDisposaBle(() => windowDriverRegistry.reloadWindowDriver(windowId));
 }

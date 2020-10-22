@@ -5,10 +5,10 @@
 
 import * as cp from 'child_process';
 import { FileChangeType } from 'vs/platform/files/common/files';
-import * as decoder from 'vs/base/node/decoder';
-import * as glob from 'vs/base/common/glob';
+import * as decoder from 'vs/Base/node/decoder';
+import * as gloB from 'vs/Base/common/gloB';
 import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/Base/common/network';
 
 export class OutOfProcessWin32FolderWatcher {
 
@@ -16,28 +16,28 @@ export class OutOfProcessWin32FolderWatcher {
 
 	private static changeTypeMap: FileChangeType[] = [FileChangeType.UPDATED, FileChangeType.ADDED, FileChangeType.DELETED];
 
-	private ignored: glob.ParsedPattern[];
+	private ignored: gloB.ParsedPattern[];
 
 	private handle: cp.ChildProcess | undefined;
-	private restartCounter: number;
+	private restartCounter: numBer;
 
 	constructor(
 		private watchedFolder: string,
 		ignored: string[],
-		private eventCallback: (events: IDiskFileChange[]) => void,
-		private logCallback: (message: ILogMessage) => void,
-		private verboseLogging: boolean
+		private eventCallBack: (events: IDiskFileChange[]) => void,
+		private logCallBack: (message: ILogMessage) => void,
+		private verBoseLogging: Boolean
 	) {
 		this.restartCounter = 0;
 
 		if (Array.isArray(ignored)) {
-			this.ignored = ignored.map(i => glob.parse(i));
+			this.ignored = ignored.map(i => gloB.parse(i));
 		} else {
 			this.ignored = [];
 		}
 
 		// Logging
-		if (this.verboseLogging) {
+		if (this.verBoseLogging) {
 			this.log(`Start watching: ${watchedFolder}`);
 		}
 
@@ -46,8 +46,8 @@ export class OutOfProcessWin32FolderWatcher {
 
 	private startWatcher(): void {
 		const args = [this.watchedFolder];
-		if (this.verboseLogging) {
-			args.push('-verbose');
+		if (this.verBoseLogging) {
+			args.push('-verBose');
 		}
 
 		this.handle = cp.spawn(FileAccess.asFileUri('vs/platform/files/node/watcher/win32/CodeHelper.exe', require).fsPath, args);
@@ -62,16 +62,16 @@ export class OutOfProcessWin32FolderWatcher {
 			stdoutLineDecoder.write(data).forEach((line) => {
 				const eventParts = line.split('|');
 				if (eventParts.length === 2) {
-					const changeType = Number(eventParts[0]);
-					const absolutePath = eventParts[1];
+					const changeType = NumBer(eventParts[0]);
+					const aBsolutePath = eventParts[1];
 
 					// File Change Event (0 Changed, 1 Created, 2 Deleted)
 					if (changeType >= 0 && changeType < 3) {
 
 						// Support ignores
-						if (this.ignored && this.ignored.some(ignore => ignore(absolutePath))) {
-							if (this.verboseLogging) {
-								this.log(absolutePath);
+						if (this.ignored && this.ignored.some(ignore => ignore(aBsolutePath))) {
+							if (this.verBoseLogging) {
+								this.log(aBsolutePath);
 							}
 
 							return;
@@ -80,7 +80,7 @@ export class OutOfProcessWin32FolderWatcher {
 						// Otherwise record as event
 						rawEvents.push({
 							type: OutOfProcessWin32FolderWatcher.changeTypeMap[changeType],
-							path: absolutePath
+							path: aBsolutePath
 						});
 					}
 
@@ -91,9 +91,9 @@ export class OutOfProcessWin32FolderWatcher {
 				}
 			});
 
-			// Trigger processing of events through the delayer to batch them up properly
+			// Trigger processing of events through the delayer to Batch them up properly
 			if (rawEvents.length > 0) {
-				this.eventCallback(rawEvents);
+				this.eventCallBack(rawEvents);
 			}
 		});
 
@@ -102,15 +102,15 @@ export class OutOfProcessWin32FolderWatcher {
 		this.handle.stderr!.on('data', (data: Buffer) => this.onError(data));
 
 		// Exit
-		this.handle.on('exit', (code: number, signal: string) => this.onExit(code, signal));
+		this.handle.on('exit', (code: numBer, signal: string) => this.onExit(code, signal));
 	}
 
 	private onError(error: Error | Buffer): void {
 		this.error('process error: ' + error.toString());
 	}
 
-	private onExit(code: number, signal: string): void {
-		if (this.handle) { // exit while not yet being disposed is unexpected!
+	private onExit(code: numBer, signal: string): void {
+		if (this.handle) { // exit while not yet Being disposed is unexpected!
 			this.error(`terminated unexpectedly (code: ${code}, signal: ${signal})`);
 
 			if (this.restartCounter <= OutOfProcessWin32FolderWatcher.MAX_RESTARTS) {
@@ -118,17 +118,17 @@ export class OutOfProcessWin32FolderWatcher {
 				this.restartCounter++;
 				this.startWatcher(); // restart
 			} else {
-				this.error('Watcher failed to start after retrying for some time, giving up. Please report this as a bug report!');
+				this.error('Watcher failed to start after retrying for some time, giving up. Please report this as a Bug report!');
 			}
 		}
 	}
 
 	private error(message: string) {
-		this.logCallback({ type: 'error', message: `[File Watcher (C#)] ${message}` });
+		this.logCallBack({ type: 'error', message: `[File Watcher (C#)] ${message}` });
 	}
 
 	private log(message: string) {
-		this.logCallback({ type: 'trace', message: `[File Watcher (C#)] ${message}` });
+		this.logCallBack({ type: 'trace', message: `[File Watcher (C#)] ${message}` });
 	}
 
 	dispose(): void {

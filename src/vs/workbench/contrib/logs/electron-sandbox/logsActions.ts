@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { join } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
+import { Action } from 'vs/Base/common/actions';
+import { join } from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
 import * as nls from 'vs/nls';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { IFileService } from 'vs/platform/files/common/files';
 
 export class OpenLogsFolderAction extends Action {
 
-	static readonly ID = 'workbench.action.openLogsFolder';
+	static readonly ID = 'workBench.action.openLogsFolder';
 	static readonly LABEL = nls.localize('openLogsFolder', "Open Logs Folder");
 
-	constructor(id: string, label: string,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService,
+	constructor(id: string, laBel: string,
+		@INativeWorkBenchEnvironmentService private readonly environmentService: INativeWorkBenchEnvironmentService,
 		@INativeHostService private readonly nativeHostService: INativeHostService,
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	run(): Promise<void> {
@@ -30,15 +30,15 @@ export class OpenLogsFolderAction extends Action {
 
 export class OpenExtensionLogsFolderAction extends Action {
 
-	static readonly ID = 'workbench.action.openExtensionLogsFolder';
+	static readonly ID = 'workBench.action.openExtensionLogsFolder';
 	static readonly LABEL = nls.localize('openExtensionLogsFolder', "Open Extension Logs Folder");
 
-	constructor(id: string, label: string,
-		@INativeWorkbenchEnvironmentService private readonly environmentSerice: INativeWorkbenchEnvironmentService,
+	constructor(id: string, laBel: string,
+		@INativeWorkBenchEnvironmentService private readonly environmentSerice: INativeWorkBenchEnvironmentService,
 		@IFileService private readonly fileService: IFileService,
 		@INativeHostService private readonly nativeHostService: INativeHostService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
 	async run(): Promise<void> {

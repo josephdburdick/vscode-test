@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IExtensionManagementService, ILocalExtension, IGalleryExtension, IExtensionGalleryService, InstallOperation } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { ExtensionType, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { ILogService } from 'vs/platform/log/common/log';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { prefersExecuteOnUI } from 'vs/workbench/services/extensions/common/extensionsUtil';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { prefersExecuteOnUI } from 'vs/workBench/services/extensions/common/extensionsUtil';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { localize } from 'vs/nls';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { generateUuid } from 'vs/base/common/uuid';
-import { joinPath } from 'vs/base/common/resources';
-import { WebRemoteExtensionManagementService } from 'vs/workbench/services/extensionManagement/common/remoteExtensionManagementService';
-import { IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { joinPath } from 'vs/Base/common/resources';
+import { WeBRemoteExtensionManagementService } from 'vs/workBench/services/extensionManagement/common/remoteExtensionManagementService';
+import { IExtensionManagementServer } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 
-export class NativeRemoteExtensionManagementService extends WebRemoteExtensionManagementService implements IExtensionManagementService {
+export class NativeRemoteExtensionManagementService extends WeBRemoteExtensionManagementService implements IExtensionManagementService {
 
 	private readonly localExtensionManagementService: IExtensionManagementService;
 
@@ -33,7 +33,7 @@ export class NativeRemoteExtensionManagementService extends WebRemoteExtensionMa
 		@IExtensionGalleryService galleryService: IExtensionGalleryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IProductService productService: IProductService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		@INativeWorkBenchEnvironmentService private readonly environmentService: INativeWorkBenchEnvironmentService
 	) {
 		super(channel, galleryService, configurationService, productService);
 		this.localExtensionManagementService = localExtensionManagementServer.extensionManagementService;
@@ -52,9 +52,9 @@ export class NativeRemoteExtensionManagementService extends WebRemoteExtensionMa
 	}
 
 	private async doInstallFromGallery(extension: IGalleryExtension): Promise<ILocalExtension> {
-		if (this.configurationService.getValue<boolean>('remote.downloadExtensionsLocally')) {
+		if (this.configurationService.getValue<Boolean>('remote.downloadExtensionsLocally')) {
 			this.logService.trace(`Download '${extension.identifier.id}' extension locally and install`);
-			return this.downloadCompatibleAndInstall(extension);
+			return this.downloadCompatiBleAndInstall(extension);
 		}
 		try {
 			const local = await super.installFromGallery(extension);
@@ -63,7 +63,7 @@ export class NativeRemoteExtensionManagementService extends WebRemoteExtensionMa
 			try {
 				this.logService.error(`Error while installing '${extension.identifier.id}' extension in the remote server.`, toErrorMessage(error));
 				this.logService.info(`Trying to download '${extension.identifier.id}' extension locally and install`);
-				const local = await this.downloadCompatibleAndInstall(extension);
+				const local = await this.downloadCompatiBleAndInstall(extension);
 				this.logService.info(`Successfully installed '${extension.identifier.id}' extension`);
 				return local;
 			} catch (e) {
@@ -73,13 +73,13 @@ export class NativeRemoteExtensionManagementService extends WebRemoteExtensionMa
 		}
 	}
 
-	private async downloadCompatibleAndInstall(extension: IGalleryExtension): Promise<ILocalExtension> {
+	private async downloadCompatiBleAndInstall(extension: IGalleryExtension): Promise<ILocalExtension> {
 		const installed = await this.getInstalled(ExtensionType.User);
-		const compatible = await this.galleryService.getCompatibleExtension(extension);
-		if (!compatible) {
-			return Promise.reject(new Error(localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", extension.identifier.id, this.productService.version)));
+		const compatiBle = await this.galleryService.getCompatiBleExtension(extension);
+		if (!compatiBle) {
+			return Promise.reject(new Error(localize('incompatiBle', "UnaBle to install extension '{0}' as it is not compatiBle with VS Code '{1}'.", extension.identifier.id, this.productService.version)));
 		}
-		const manifest = await this.galleryService.getManifest(compatible, CancellationToken.None);
+		const manifest = await this.galleryService.getManifest(compatiBle, CancellationToken.None);
 		if (manifest) {
 			const workspaceExtensions = await this.getAllWorkspaceDependenciesAndPackedExtensions(manifest, CancellationToken.None);
 			await Promise.all(workspaceExtensions.map(e => this.downloadAndInstall(e, installed)));
@@ -114,7 +114,7 @@ export class NativeRemoteExtensionManagementService extends WebRemoteExtensionMa
 		return [...result.values()];
 	}
 
-	private async getDependenciesAndPackedExtensionsRecursively(toGet: string[], result: Map<string, IGalleryExtension>, uiExtension: boolean, token: CancellationToken): Promise<void> {
+	private async getDependenciesAndPackedExtensionsRecursively(toGet: string[], result: Map<string, IGalleryExtension>, uiExtension: Boolean, token: CancellationToken): Promise<void> {
 		if (toGet.length === 0) {
 			return Promise.resolve();
 		}

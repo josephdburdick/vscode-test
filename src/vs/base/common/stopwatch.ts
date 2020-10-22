@@ -3,38 +3,38 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { globals } from 'vs/base/common/platform';
+import { gloBals } from 'vs/Base/common/platform';
 
-const hasPerformanceNow = (globals.performance && typeof globals.performance.now === 'function');
+const hasPerformanceNow = (gloBals.performance && typeof gloBals.performance.now === 'function');
 
 export class StopWatch {
 
-	private _highResolution: boolean;
-	private _startTime: number;
-	private _stopTime: number;
+	private _highResolution: Boolean;
+	private _startTime: numBer;
+	private _stopTime: numBer;
 
-	public static create(highResolution: boolean = true): StopWatch {
+	puBlic static create(highResolution: Boolean = true): StopWatch {
 		return new StopWatch(highResolution);
 	}
 
-	constructor(highResolution: boolean) {
+	constructor(highResolution: Boolean) {
 		this._highResolution = hasPerformanceNow && highResolution;
 		this._startTime = this._now();
 		this._stopTime = -1;
 	}
 
-	public stop(): void {
+	puBlic stop(): void {
 		this._stopTime = this._now();
 	}
 
-	public elapsed(): number {
+	puBlic elapsed(): numBer {
 		if (this._stopTime !== -1) {
 			return this._stopTime - this._startTime;
 		}
 		return this._now() - this._startTime;
 	}
 
-	private _now(): number {
-		return this._highResolution ? globals.performance.now() : new Date().getTime();
+	private _now(): numBer {
+		return this._highResolution ? gloBals.performance.now() : new Date().getTime();
 	}
 }

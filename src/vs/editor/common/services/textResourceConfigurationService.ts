@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { IPosition } from 'vs/editor/common/core/position';
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
@@ -23,10 +23,10 @@ export interface ITextResourceConfigurationChangeEvent {
 	 *
 	 * Example: To check if the configuration section has changed for a given resource use `e.affectsConfiguration(resource, section)`.
 	 *
-	 * @param resource Resource for which the configuration has to be checked.
+	 * @param resource Resource for which the configuration has to Be checked.
 	 * @param section Section of the configuration
 	 */
-	affectsConfiguration(resource: URI, section: string): boolean;
+	affectsConfiguration(resource: URI, section: string): Boolean;
 }
 
 export interface ITextResourceConfigurationService {
@@ -39,11 +39,11 @@ export interface ITextResourceConfigurationService {
 	onDidChangeConfiguration: Event<ITextResourceConfigurationChangeEvent>;
 
 	/**
-	 * Fetches the value of the section for the given resource by applying language overrides.
-	 * Value can be of native type or an object keyed off the section name.
+	 * Fetches the value of the section for the given resource By applying language overrides.
+	 * Value can Be of native type or an oBject keyed off the section name.
 	 *
-	 * @param resource - Resource for which the configuration has to be fetched.
-	 * @param position - Position in the resource for which configuration has to be fetched.
+	 * @param resource - Resource for which the configuration has to Be fetched.
+	 * @param position - Position in the resource for which configuration has to Be fetched.
 	 * @param section - Section of the configuraion.
 	 *
 	 */
@@ -53,14 +53,14 @@ export interface ITextResourceConfigurationService {
 	/**
 	 * Update the configuration value for the given resource at the effective location.
 	 *
-	 * - If configurationTarget is not specified, target will be derived by checking where the configuration is defined.
+	 * - If configurationTarget is not specified, target will Be derived By checking where the configuration is defined.
 	 * - If the language overrides for the give resource contains the configuration, then it is updated.
 	 *
-	 * @param resource Resource for which the configuration has to be updated
+	 * @param resource Resource for which the configuration has to Be updated
 	 * @param key Configuration key
 	 * @param value Configuration value
-	 * @param configurationTarget Optional target into which the configuration has to be updated.
-	 * If not specified, target will be derived by checking where the configuration is defined.
+	 * @param configurationTarget Optional target into which the configuration has to Be updated.
+	 * If not specified, target will Be derived By checking where the configuration is defined.
 	 */
 	updateValue(resource: URI, key: string, value: any, configurationTarget?: ConfigurationTarget): Promise<void>;
 

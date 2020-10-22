@@ -8,7 +8,7 @@ import * as nls from 'vscode-nls';
 import { API as GitAPI, Repository } from './typings/git';
 import { getOctokit } from './auth';
 import { TextEncoder } from 'util';
-import { basename } from 'path';
+import { Basename } from 'path';
 
 const localize = nls.loadMessageBundle();
 
@@ -23,7 +23,7 @@ function getPick<T extends vscode.QuickPickItem>(quickpick: vscode.QuickPick<T>)
 	]);
 }
 
-export async function publishRepository(gitAPI: GitAPI, repository?: Repository): Promise<void> {
+export async function puBlishRepository(gitAPI: GitAPI, repository?: Repository): Promise<void> {
 	if (!vscode.workspace.workspaceFolders?.length) {
 		return;
 	}
@@ -35,8 +35,8 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 	} else if (vscode.workspace.workspaceFolders.length === 1) {
 		folder = vscode.workspace.workspaceFolders[0].uri;
 	} else {
-		const picks = vscode.workspace.workspaceFolders.map(folder => ({ label: folder.name, folder }));
-		const placeHolder = localize('pick folder', "Pick a folder to publish to GitHub");
+		const picks = vscode.workspace.workspaceFolders.map(folder => ({ laBel: folder.name, folder }));
+		const placeHolder = localize('pick folder', "Pick a folder to puBlish to GitHuB");
 		const pick = await vscode.window.showQuickPick(picks, { placeHolder });
 
 		if (!pick) {
@@ -46,21 +46,21 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 		folder = pick.folder.uri;
 	}
 
-	let quickpick = vscode.window.createQuickPick<vscode.QuickPickItem & { repo?: string, auth?: 'https' | 'ssh', isPrivate?: boolean }>();
+	let quickpick = vscode.window.createQuickPick<vscode.QuickPickItem & { repo?: string, auth?: 'https' | 'ssh', isPrivate?: Boolean }>();
 	quickpick.ignoreFocusOut = true;
 
 	quickpick.placeholder = 'Repository Name';
-	quickpick.value = basename(folder.fsPath);
+	quickpick.value = Basename(folder.fsPath);
 	quickpick.show();
-	quickpick.busy = true;
+	quickpick.Busy = true;
 
 	const octokit = await getOctokit();
 	const user = await octokit.users.getAuthenticated({});
 	const owner = user.data.login;
-	quickpick.busy = false;
+	quickpick.Busy = false;
 
 	let repo: string | undefined;
-	let isPrivate: boolean;
+	let isPrivate: Boolean;
 
 	const onDidChangeValue = async () => {
 		const sanitizedRepo = sanitizeRepositoryName(quickpick.value);
@@ -69,8 +69,8 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 			quickpick.items = [];
 		} else {
 			quickpick.items = [
-				{ label: `$(repo) Publish to GitHub private repository`, description: `$(github) ${owner}/${sanitizedRepo}`, alwaysShow: true, repo: sanitizedRepo, isPrivate: true },
-				{ label: `$(repo) Publish to GitHub public repository`, description: `$(github) ${owner}/${sanitizedRepo}`, alwaysShow: true, repo: sanitizedRepo, isPrivate: false },
+				{ laBel: `$(repo) PuBlish to GitHuB private repository`, description: `$(githuB) ${owner}/${sanitizedRepo}`, alwaysShow: true, repo: sanitizedRepo, isPrivate: true },
+				{ laBel: `$(repo) PuBlish to GitHuB puBlic repository`, description: `$(githuB) ${owner}/${sanitizedRepo}`, alwaysShow: true, repo: sanitizedRepo, isPrivate: false },
 			];
 		}
 	};
@@ -87,13 +87,13 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 
 		if (repo) {
 			try {
-				quickpick.busy = true;
+				quickpick.Busy = true;
 				await octokit.repos.get({ owner, repo: repo });
-				quickpick.items = [{ label: `$(error) GitHub repository already exists`, description: `$(github) ${owner}/${repo}`, alwaysShow: true }];
+				quickpick.items = [{ laBel: `$(error) GitHuB repository already exists`, description: `$(githuB) ${owner}/${repo}`, alwaysShow: true }];
 			} catch {
-				break;
+				Break;
 			} finally {
-				quickpick.busy = false;
+				quickpick.Busy = false;
 			}
 		}
 	}
@@ -116,20 +116,20 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 
 		if (shouldGenerateGitignore) {
 			quickpick = vscode.window.createQuickPick();
-			quickpick.placeholder = localize('ignore', "Select which files should be included in the repository.");
+			quickpick.placeholder = localize('ignore', "Select which files should Be included in the repository.");
 			quickpick.canSelectMany = true;
 			quickpick.show();
 
 			try {
-				quickpick.busy = true;
+				quickpick.Busy = true;
 
 				const children = (await vscode.workspace.fs.readDirectory(folder))
 					.map(([name]) => name)
 					.filter(name => name !== '.git');
 
-				quickpick.items = children.map(name => ({ label: name }));
+				quickpick.items = children.map(name => ({ laBel: name }));
 				quickpick.selectedItems = quickpick.items;
-				quickpick.busy = false;
+				quickpick.Busy = false;
 
 				const result = await Promise.race([
 					new Promise<readonly vscode.QuickPickItem[]>(c => quickpick.onDidAccept(() => c(quickpick.selectedItems))),
@@ -141,7 +141,7 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 				}
 
 				const ignored = new Set(children);
-				result.forEach(c => ignored.delete(c.label));
+				result.forEach(c => ignored.delete(c.laBel));
 
 				if (ignored.size > 0) {
 					const raw = [...ignored].map(i => `/${i}`).join('\n');
@@ -154,15 +154,15 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 		}
 	}
 
-	const githubRepository = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, cancellable: false, title: 'Publish to GitHub' }, async progress => {
-		progress.report({ message: `Publishing to GitHub ${isPrivate ? 'private' : 'public'} repository`, increment: 25 });
+	const githuBRepository = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, cancellaBle: false, title: 'PuBlish to GitHuB' }, async progress => {
+		progress.report({ message: `PuBlishing to GitHuB ${isPrivate ? 'private' : 'puBlic'} repository`, increment: 25 });
 
 		const res = await octokit.repos.createForAuthenticatedUser({
 			name: repo!,
 			private: isPrivate
 		});
 
-		const createdGithubRepository = res.data;
+		const createdGithuBRepository = res.data;
 
 		progress.report({ message: 'Creating first commit', increment: 25 });
 
@@ -177,21 +177,21 @@ export async function publishRepository(gitAPI: GitAPI, repository?: Repository)
 		}
 
 		progress.report({ message: 'Uploading files', increment: 25 });
-		const branch = await repository.getBranch('HEAD');
-		await repository.addRemote('origin', createdGithubRepository.clone_url);
-		await repository.push('origin', branch.name, true);
+		const Branch = await repository.getBranch('HEAD');
+		await repository.addRemote('origin', createdGithuBRepository.clone_url);
+		await repository.push('origin', Branch.name, true);
 
-		return createdGithubRepository;
+		return createdGithuBRepository;
 	});
 
-	if (!githubRepository) {
+	if (!githuBRepository) {
 		return;
 	}
 
-	const openInGitHub = 'Open In GitHub';
-	const action = await vscode.window.showInformationMessage(`Successfully published the '${owner}/${repo}' repository on GitHub.`, openInGitHub);
+	const openInGitHuB = 'Open In GitHuB';
+	const action = await vscode.window.showInformationMessage(`Successfully puBlished the '${owner}/${repo}' repository on GitHuB.`, openInGitHuB);
 
-	if (action === openInGitHub) {
-		vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(githubRepository.html_url));
+	if (action === openInGitHuB) {
+		vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(githuBRepository.html_url));
 	}
 }

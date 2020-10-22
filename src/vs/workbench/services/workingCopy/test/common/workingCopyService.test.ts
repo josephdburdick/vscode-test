@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { URI } from 'vs/base/common/uri';
-import { TestWorkingCopy, TestWorkingCopyService } from 'vs/workbench/test/common/workbenchTestServices';
+import { IWorkingCopy } from 'vs/workBench/services/workingCopy/common/workingCopyService';
+import { URI } from 'vs/Base/common/uri';
+import { TestWorkingCopy, TestWorkingCopyService } from 'vs/workBench/test/common/workBenchTestServices';
 
 suite('WorkingCopyService', () => {
 
-	test('registry - basics', () => {
+	test('registry - Basics', () => {
 		const service = new TestWorkingCopyService();
 
 		const onDidChangeDirty: IWorkingCopy[] = [];

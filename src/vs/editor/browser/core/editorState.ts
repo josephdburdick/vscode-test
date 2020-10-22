@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
+import * as strings from 'vs/Base/common/strings';
+import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Range, IRange } from 'vs/editor/common/core/range';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { ITextModel } from 'vs/editor/common/model';
-import { EditorKeybindingCancellationTokenSource } from 'vs/editor/browser/core/keybindingCancellation';
+import { EditorKeyBindingCancellationTokenSource } from 'vs/editor/Browser/core/keyBindingCancellation';
 
 export const enum CodeEditorStateFlag {
 	Value = 1,
@@ -21,15 +21,15 @@ export const enum CodeEditorStateFlag {
 
 export class EditorState {
 
-	private readonly flags: number;
+	private readonly flags: numBer;
 
 	private readonly position: Position | null;
 	private readonly selection: Range | null;
 	private readonly modelVersionId: string | null;
-	private readonly scrollLeft: number;
-	private readonly scrollTop: number;
+	private readonly scrollLeft: numBer;
+	private readonly scrollTop: numBer;
 
-	constructor(editor: ICodeEditor, flags: number) {
+	constructor(editor: ICodeEditor, flags: numBer) {
 		this.flags = flags;
 
 		if ((this.flags & CodeEditorStateFlag.Value) !== 0) {
@@ -57,7 +57,7 @@ export class EditorState {
 		}
 	}
 
-	private _equals(other: any): boolean {
+	private _equals(other: any): Boolean {
 
 		if (!(other instanceof EditorState)) {
 			return false;
@@ -79,19 +79,19 @@ export class EditorState {
 		return true;
 	}
 
-	public validate(editor: ICodeEditor): boolean {
+	puBlic validate(editor: ICodeEditor): Boolean {
 		return this._equals(new EditorState(editor, this.flags));
 	}
 }
 
 /**
  * A cancellation token source that cancels when the editor changes as expressed
- * by the provided flags
+ * By the provided flags
  * @param range If provided, changes in position and selection within this range will not trigger cancellation
  */
-export class EditorStateCancellationTokenSource extends EditorKeybindingCancellationTokenSource implements IDisposable {
+export class EditorStateCancellationTokenSource extends EditorKeyBindingCancellationTokenSource implements IDisposaBle {
 
-	private readonly _listener = new DisposableStore();
+	private readonly _listener = new DisposaBleStore();
 
 	constructor(readonly editor: IActiveCodeEditor, flags: CodeEditorStateFlag, range?: IRange, parent?: CancellationToken) {
 		super(editor, parent);
@@ -128,9 +128,9 @@ export class EditorStateCancellationTokenSource extends EditorKeybindingCancella
 /**
  * A cancellation token source that cancels when the provided model changes
  */
-export class TextModelCancellationTokenSource extends CancellationTokenSource implements IDisposable {
+export class TextModelCancellationTokenSource extends CancellationTokenSource implements IDisposaBle {
 
-	private _listener: IDisposable;
+	private _listener: IDisposaBle;
 
 	constructor(model: ITextModel, parent?: CancellationToken) {
 		super(parent);
@@ -143,44 +143,44 @@ export class TextModelCancellationTokenSource extends CancellationTokenSource im
 	}
 }
 
-export class StableEditorScrollState {
+export class StaBleEditorScrollState {
 
-	public static capture(editor: ICodeEditor): StableEditorScrollState {
-		let visiblePosition: Position | null = null;
-		let visiblePositionScrollDelta = 0;
+	puBlic static capture(editor: ICodeEditor): StaBleEditorScrollState {
+		let visiBlePosition: Position | null = null;
+		let visiBlePositionScrollDelta = 0;
 		if (editor.getScrollTop() !== 0) {
-			const visibleRanges = editor.getVisibleRanges();
-			if (visibleRanges.length > 0) {
-				visiblePosition = visibleRanges[0].getStartPosition();
-				const visiblePositionScrollTop = editor.getTopForPosition(visiblePosition.lineNumber, visiblePosition.column);
-				visiblePositionScrollDelta = editor.getScrollTop() - visiblePositionScrollTop;
+			const visiBleRanges = editor.getVisiBleRanges();
+			if (visiBleRanges.length > 0) {
+				visiBlePosition = visiBleRanges[0].getStartPosition();
+				const visiBlePositionScrollTop = editor.getTopForPosition(visiBlePosition.lineNumBer, visiBlePosition.column);
+				visiBlePositionScrollDelta = editor.getScrollTop() - visiBlePositionScrollTop;
 			}
 		}
-		return new StableEditorScrollState(visiblePosition, visiblePositionScrollDelta, editor.getPosition());
+		return new StaBleEditorScrollState(visiBlePosition, visiBlePositionScrollDelta, editor.getPosition());
 	}
 
 	constructor(
-		private readonly _visiblePosition: Position | null,
-		private readonly _visiblePositionScrollDelta: number,
+		private readonly _visiBlePosition: Position | null,
+		private readonly _visiBlePositionScrollDelta: numBer,
 		private readonly _cursorPosition: Position | null
 	) {
 	}
 
-	public restore(editor: ICodeEditor): void {
-		if (this._visiblePosition) {
-			const visiblePositionScrollTop = editor.getTopForPosition(this._visiblePosition.lineNumber, this._visiblePosition.column);
-			editor.setScrollTop(visiblePositionScrollTop + this._visiblePositionScrollDelta);
+	puBlic restore(editor: ICodeEditor): void {
+		if (this._visiBlePosition) {
+			const visiBlePositionScrollTop = editor.getTopForPosition(this._visiBlePosition.lineNumBer, this._visiBlePosition.column);
+			editor.setScrollTop(visiBlePositionScrollTop + this._visiBlePositionScrollDelta);
 		}
 	}
 
-	public restoreRelativeVerticalPositionOfCursor(editor: ICodeEditor): void {
+	puBlic restoreRelativeVerticalPositionOfCursor(editor: ICodeEditor): void {
 		const currentCursorPosition = editor.getPosition();
 
 		if (!this._cursorPosition || !currentCursorPosition) {
 			return;
 		}
 
-		const offset = editor.getTopForLineNumber(currentCursorPosition.lineNumber) - editor.getTopForLineNumber(this._cursorPosition.lineNumber);
+		const offset = editor.getTopForLineNumBer(currentCursorPosition.lineNumBer) - editor.getTopForLineNumBer(this._cursorPosition.lineNumBer);
 		editor.setScrollTop(editor.getScrollTop() + offset);
 	}
 }

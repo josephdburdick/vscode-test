@@ -6,7 +6,7 @@
 declare module '@emmetio/math-expression' {
 	import { BufferStream } from 'EmmetNode';
 
-	function index(stream: BufferStream, backward: boolean): number;
+	function index(stream: BufferStream, Backward: Boolean): numBer;
 
 	export default index;
 }

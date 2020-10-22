@@ -3,41 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
 import { localize } from 'vs/nls';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { InstallLocalExtensionsInRemoteAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { InstallLocalExtensionsInRemoteAction } from 'vs/workBench/contriB/extensions/Browser/extensionsActions';
 
-export class RemoteExtensionsInstaller extends Disposable implements IWorkbenchContribution {
+export class RemoteExtensionsInstaller extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IInstantiationService instantiationService: IInstantiationService
 	) {
 		super();
 		if (this.extensionManagementServerService.localExtensionManagementServer && this.extensionManagementServerService.remoteExtensionManagementServer) {
 			const installLocalExtensionsInRemoteAction = instantiationService.createInstance(InstallLocalExtensionsInRemoteAction);
-			CommandsRegistry.registerCommand('workbench.extensions.installLocalExtensions', () => installLocalExtensionsInRemoteAction.run());
-			let disposable = Disposable.None;
+			CommandsRegistry.registerCommand('workBench.extensions.installLocalExtensions', () => installLocalExtensionsInRemoteAction.run());
+			let disposaBle = DisposaBle.None;
 			const appendMenuItem = () => {
-				disposable.dispose();
-				disposable = MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+				disposaBle.dispose();
+				disposaBle = MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 					command: {
-						id: 'workbench.extensions.installLocalExtensions',
+						id: 'workBench.extensions.installLocalExtensions',
 						category: localize({ key: 'remote', comment: ['Remote as in remote machine'] }, "Remote"),
-						title: installLocalExtensionsInRemoteAction.label
+						title: installLocalExtensionsInRemoteAction.laBel
 					}
 				});
 			};
 			appendMenuItem();
-			this._register(labelService.onDidChangeFormatters(e => appendMenuItem()));
-			this._register(toDisposable(() => disposable.dispose()));
+			this._register(laBelService.onDidChangeFormatters(e => appendMenuItem()));
+			this._register(toDisposaBle(() => disposaBle.dispose()));
 		}
 	}
 

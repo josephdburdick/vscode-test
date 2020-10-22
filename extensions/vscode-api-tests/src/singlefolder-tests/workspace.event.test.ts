@@ -5,29 +5,29 @@
 
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { createRandomFile, withLogDisabled } from '../utils';
+import { createRandomFile, withLogDisaBled } from '../utils';
 
 suite('vscode API - workspace events', () => {
 
-	const disposables: vscode.Disposable[] = [];
+	const disposaBles: vscode.DisposaBle[] = [];
 
 	teardown(() => {
-		for (const dispo of disposables) {
+		for (const dispo of disposaBles) {
 			dispo.dispose();
 		}
-		disposables.length = 0;
+		disposaBles.length = 0;
 	});
 
 	test('onWillCreate/onDidCreate', async function () {
 
-		const base = await createRandomFile();
-		const newUri = base.with({ path: base.path + '-foo' });
+		const Base = await createRandomFile();
+		const newUri = Base.with({ path: Base.path + '-foo' });
 
 		let onWillCreate: vscode.FileWillCreateEvent | undefined;
 		let onDidCreate: vscode.FileCreateEvent | undefined;
 
-		disposables.push(vscode.workspace.onWillCreateFiles(e => onWillCreate = e));
-		disposables.push(vscode.workspace.onDidCreateFiles(e => onDidCreate = e));
+		disposaBles.push(vscode.workspace.onWillCreateFiles(e => onWillCreate = e));
+		disposaBles.push(vscode.workspace.onDidCreateFiles(e => onDidCreate = e));
 
 		const edit = new vscode.WorkspaceEdit();
 		edit.createFile(newUri);
@@ -46,14 +46,14 @@ suite('vscode API - workspace events', () => {
 
 	test('onWillCreate/onDidCreate, make changes, edit another file', async function () {
 
-		const base = await createRandomFile();
-		const baseDoc = await vscode.workspace.openTextDocument(base);
+		const Base = await createRandomFile();
+		const BaseDoc = await vscode.workspace.openTextDocument(Base);
 
-		const newUri = base.with({ path: base.path + '-foo' });
+		const newUri = Base.with({ path: Base.path + '-foo' });
 
-		disposables.push(vscode.workspace.onWillCreateFiles(e => {
+		disposaBles.push(vscode.workspace.onWillCreateFiles(e => {
 			const ws = new vscode.WorkspaceEdit();
-			ws.insert(base, new vscode.Position(0, 0), 'HALLO_NEW');
+			ws.insert(Base, new vscode.Position(0, 0), 'HALLO_NEW');
 			e.waitUntil(Promise.resolve(ws));
 		}));
 
@@ -63,16 +63,16 @@ suite('vscode API - workspace events', () => {
 		const success = await vscode.workspace.applyEdit(edit);
 		assert.ok(success);
 
-		assert.equal(baseDoc.getText(), 'HALLO_NEW');
+		assert.equal(BaseDoc.getText(), 'HALLO_NEW');
 	});
 
-	test('onWillCreate/onDidCreate, make changes, edit new file fails', withLogDisabled(async function () {
+	test('onWillCreate/onDidCreate, make changes, edit new file fails', withLogDisaBled(async function () {
 
-		const base = await createRandomFile();
+		const Base = await createRandomFile();
 
-		const newUri = base.with({ path: base.path + '-foo' });
+		const newUri = Base.with({ path: Base.path + '-foo' });
 
-		disposables.push(vscode.workspace.onWillCreateFiles(e => {
+		disposaBles.push(vscode.workspace.onWillCreateFiles(e => {
 			const ws = new vscode.WorkspaceEdit();
 			ws.insert(e.files[0], new vscode.Position(0, 0), 'nope');
 			e.waitUntil(Promise.resolve(ws));
@@ -90,35 +90,35 @@ suite('vscode API - workspace events', () => {
 
 	test('onWillDelete/onDidDelete', async function () {
 
-		const base = await createRandomFile();
+		const Base = await createRandomFile();
 
 		let onWilldelete: vscode.FileWillDeleteEvent | undefined;
 		let onDiddelete: vscode.FileDeleteEvent | undefined;
 
-		disposables.push(vscode.workspace.onWillDeleteFiles(e => onWilldelete = e));
-		disposables.push(vscode.workspace.onDidDeleteFiles(e => onDiddelete = e));
+		disposaBles.push(vscode.workspace.onWillDeleteFiles(e => onWilldelete = e));
+		disposaBles.push(vscode.workspace.onDidDeleteFiles(e => onDiddelete = e));
 
 		const edit = new vscode.WorkspaceEdit();
-		edit.deleteFile(base);
+		edit.deleteFile(Base);
 
 		const success = await vscode.workspace.applyEdit(edit);
 		assert.ok(success);
 
 		assert.ok(onWilldelete);
 		assert.equal(onWilldelete?.files.length, 1);
-		assert.equal(onWilldelete?.files[0].toString(), base.toString());
+		assert.equal(onWilldelete?.files[0].toString(), Base.toString());
 
 		assert.ok(onDiddelete);
 		assert.equal(onDiddelete?.files.length, 1);
-		assert.equal(onDiddelete?.files[0].toString(), base.toString());
+		assert.equal(onDiddelete?.files[0].toString(), Base.toString());
 	});
 
 	test('onWillDelete/onDidDelete, make changes', async function () {
 
-		const base = await createRandomFile();
-		const newUri = base.with({ path: base.path + '-NEW' });
+		const Base = await createRandomFile();
+		const newUri = Base.with({ path: Base.path + '-NEW' });
 
-		disposables.push(vscode.workspace.onWillDeleteFiles(e => {
+		disposaBles.push(vscode.workspace.onWillDeleteFiles(e => {
 
 			const edit = new vscode.WorkspaceEdit();
 			edit.createFile(newUri);
@@ -127,7 +127,7 @@ suite('vscode API - workspace events', () => {
 		}));
 
 		const edit = new vscode.WorkspaceEdit();
-		edit.deleteFile(base);
+		edit.deleteFile(Base);
 
 		const success = await vscode.workspace.applyEdit(edit);
 		assert.ok(success);
@@ -135,18 +135,18 @@ suite('vscode API - workspace events', () => {
 
 	test('onWillDelete/onDidDelete, make changes, del another file', async function () {
 
-		const base = await createRandomFile();
-		const base2 = await createRandomFile();
-		disposables.push(vscode.workspace.onWillDeleteFiles(e => {
-			if (e.files[0].toString() === base.toString()) {
+		const Base = await createRandomFile();
+		const Base2 = await createRandomFile();
+		disposaBles.push(vscode.workspace.onWillDeleteFiles(e => {
+			if (e.files[0].toString() === Base.toString()) {
 				const edit = new vscode.WorkspaceEdit();
-				edit.deleteFile(base2);
+				edit.deleteFile(Base2);
 				e.waitUntil(Promise.resolve(edit));
 			}
 		}));
 
 		const edit = new vscode.WorkspaceEdit();
-		edit.deleteFile(base);
+		edit.deleteFile(Base);
 
 		const success = await vscode.workspace.applyEdit(edit);
 		assert.ok(success);
@@ -154,11 +154,11 @@ suite('vscode API - workspace events', () => {
 
 	});
 
-	test('onWillDelete/onDidDelete, make changes, double delete', async function () {
+	test('onWillDelete/onDidDelete, make changes, douBle delete', async function () {
 
-		const base = await createRandomFile();
+		const Base = await createRandomFile();
 		let cnt = 0;
-		disposables.push(vscode.workspace.onWillDeleteFiles(e => {
+		disposaBles.push(vscode.workspace.onWillDeleteFiles(e => {
 			if (++cnt === 0) {
 				const edit = new vscode.WorkspaceEdit();
 				edit.deleteFile(e.files[0]);
@@ -167,7 +167,7 @@ suite('vscode API - workspace events', () => {
 		}));
 
 		const edit = new vscode.WorkspaceEdit();
-		edit.deleteFile(base);
+		edit.deleteFile(Base);
 
 		const success = await vscode.workspace.applyEdit(edit);
 		assert.ok(success);
@@ -181,8 +181,8 @@ suite('vscode API - workspace events', () => {
 		let onWillRename: vscode.FileWillRenameEvent | undefined;
 		let onDidRename: vscode.FileRenameEvent | undefined;
 
-		disposables.push(vscode.workspace.onWillRenameFiles(e => onWillRename = e));
-		disposables.push(vscode.workspace.onDidRenameFiles(e => onDidRename = e));
+		disposaBles.push(vscode.workspace.onWillRenameFiles(e => onWillRename = e));
+		disposaBles.push(vscode.workspace.onDidRenameFiles(e => onDidRename = e));
 
 		const edit = new vscode.WorkspaceEdit();
 		edit.renameFile(oldUri, newUri);
@@ -209,7 +209,7 @@ suite('vscode API - workspace events', () => {
 		return testOnWillRename(true);
 	});
 
-	async function testOnWillRename(withDirtyFile: boolean): Promise<void> {
+	async function testOnWillRename(withDirtyFile: Boolean): Promise<void> {
 
 		const oldUri = await createRandomFile('BAR');
 
@@ -230,7 +230,7 @@ suite('vscode API - workspace events', () => {
 
 		let onWillRename: vscode.FileWillRenameEvent | undefined;
 
-		disposables.push(vscode.workspace.onWillRenameFiles(e => {
+		disposaBles.push(vscode.workspace.onWillRenameFiles(e => {
 			onWillRename = e;
 			const edit = new vscode.WorkspaceEdit();
 			edit.insert(e.files[0].oldUri, new vscode.Position(0, 0), 'FOO');

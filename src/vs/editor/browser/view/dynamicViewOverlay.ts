@@ -6,10 +6,10 @@
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 
-export abstract class DynamicViewOverlay extends ViewEventHandler {
+export aBstract class DynamicViewOverlay extends ViewEventHandler {
 
-	public abstract prepareRender(ctx: RenderingContext): void;
+	puBlic aBstract prepareRender(ctx: RenderingContext): void;
 
-	public abstract render(startLineNumber: number, lineNumber: number): string;
+	puBlic aBstract render(startLineNumBer: numBer, lineNumBer: numBer): string;
 
 }

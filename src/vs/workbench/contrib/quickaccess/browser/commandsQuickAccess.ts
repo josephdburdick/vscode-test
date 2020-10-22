@@ -4,36 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { ICommandQuickPick, CommandsHistory } from 'vs/platform/quickinput/browser/commandsQuickAccess';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IMenuService, MenuId, MenuItemAction, SubmenuItemAction, Action2 } from 'vs/platform/actions/common/actions';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { timeout } from 'vs/base/common/async';
-import { DisposableStore, toDisposable, dispose } from 'vs/base/common/lifecycle';
-import { AbstractEditorCommandsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commandsQuickAccess';
+import { ICommandQuickPick, CommandsHistory } from 'vs/platform/quickinput/Browser/commandsQuickAccess';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IMenuService, MenuId, MenuItemAction, SuBmenuItemAction, Action2 } from 'vs/platform/actions/common/actions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { timeout } from 'vs/Base/common/async';
+import { DisposaBleStore, toDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { ABstractEditorCommandsQuickAccessProvider } from 'vs/editor/contriB/quickAccess/commandsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { Language } from 'vs/base/common/platform';
+import { Language } from 'vs/Base/common/platform';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { DefaultQuickAccessFilterValue } from 'vs/platform/quickinput/common/quickAccess';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchQuickAccessConfiguration } from 'vs/workbench/browser/quickaccess';
-import { stripCodicons } from 'vs/base/common/codicons';
+import { IWorkBenchQuickAccessConfiguration } from 'vs/workBench/Browser/quickaccess';
+import { stripCodicons } from 'vs/Base/common/codicons';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 
-export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAccessProvider {
+export class CommandsQuickAccessProvider extends ABstractEditorCommandsQuickAccessProvider {
 
 	// If extensions are not yet registered, we wait for a little moment to give them
 	// a chance to register so that the complete set of commands shows up as result
-	// We do not want to delay functionality beyond that time though to keep the commands
+	// We do not want to delay functionality Beyond that time though to keep the commands
 	// functional.
 	private readonly extensionRegistrationRace = Promise.race([
 		timeout(800),
@@ -55,7 +55,7 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 		@IMenuService private readonly menuService: IMenuService,
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@IInstantiationService instantiationService: IInstantiationService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 		@ICommandService commandService: ICommandService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@INotificationService notificationService: INotificationService,
@@ -65,21 +65,21 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 		super({
 			showAlias: !Language.isDefaultVariant(),
 			noResultsPick: {
-				label: localize('noCommandResults', "No matching commands"),
+				laBel: localize('noCommandResults', "No matching commands"),
 				commandId: ''
 			}
-		}, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		}, instantiationService, keyBindingService, commandService, telemetryService, notificationService);
 	}
 
 	private get configuration() {
-		const commandPaletteConfig = this.configurationService.getValue<IWorkbenchQuickAccessConfiguration>().workbench.commandPalette;
+		const commandPaletteConfig = this.configurationService.getValue<IWorkBenchQuickAccessConfiguration>().workBench.commandPalette;
 
 		return {
 			preserveInput: commandPaletteConfig.preserveInput
 		};
 	}
 
-	protected async getCommandPicks(disposables: DisposableStore, token: CancellationToken): Promise<Array<ICommandQuickPick>> {
+	protected async getCommandPicks(disposaBles: DisposaBleStore, token: CancellationToken): Promise<Array<ICommandQuickPick>> {
 
 		// wait for extensions registration or 800ms once
 		await this.extensionRegistrationRace;
@@ -90,48 +90,48 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 
 		return [
 			...this.getCodeEditorCommandPicks(),
-			...this.getGlobalCommandPicks(disposables)
+			...this.getGloBalCommandPicks(disposaBles)
 		];
 	}
 
-	private getGlobalCommandPicks(disposables: DisposableStore): ICommandQuickPick[] {
-		const globalCommandPicks: ICommandQuickPick[] = [];
+	private getGloBalCommandPicks(disposaBles: DisposaBleStore): ICommandQuickPick[] {
+		const gloBalCommandPicks: ICommandQuickPick[] = [];
 		const scopedContextKeyService = this.editorService.activeEditorPane?.scopedContextKeyService || this.editorGroupService.activeGroup.scopedContextKeyService;
-		const globalCommandsMenu = this.menuService.createMenu(MenuId.CommandPalette, scopedContextKeyService);
-		const globalCommandsMenuActions = globalCommandsMenu.getActions()
-			.reduce((r, [, actions]) => [...r, ...actions], <Array<MenuItemAction | SubmenuItemAction | string>>[])
+		const gloBalCommandsMenu = this.menuService.createMenu(MenuId.CommandPalette, scopedContextKeyService);
+		const gloBalCommandsMenuActions = gloBalCommandsMenu.getActions()
+			.reduce((r, [, actions]) => [...r, ...actions], <Array<MenuItemAction | SuBmenuItemAction | string>>[])
 			.filter(action => action instanceof MenuItemAction) as MenuItemAction[];
 
-		for (const action of globalCommandsMenuActions) {
+		for (const action of gloBalCommandsMenuActions) {
 
-			// Label
-			let label = (typeof action.item.title === 'string' ? action.item.title : action.item.title.value) || action.item.id;
+			// LaBel
+			let laBel = (typeof action.item.title === 'string' ? action.item.title : action.item.title.value) || action.item.id;
 
 			// Category
 			const category = typeof action.item.category === 'string' ? action.item.category : action.item.category?.value;
 			if (category) {
-				label = localize('commandWithCategory', "{0}: {1}", category, label);
+				laBel = localize('commandWithCategory', "{0}: {1}", category, laBel);
 			}
 
 			// Alias
-			const aliasLabel = typeof action.item.title !== 'string' ? action.item.title.original : undefined;
+			const aliasLaBel = typeof action.item.title !== 'string' ? action.item.title.original : undefined;
 			const aliasCategory = (category && action.item.category && typeof action.item.category !== 'string') ? action.item.category.original : undefined;
-			const commandAlias = (aliasLabel && category) ?
-				aliasCategory ? `${aliasCategory}: ${aliasLabel}` : `${category}: ${aliasLabel}` :
-				aliasLabel;
+			const commandAlias = (aliasLaBel && category) ?
+				aliasCategory ? `${aliasCategory}: ${aliasLaBel}` : `${category}: ${aliasLaBel}` :
+				aliasLaBel;
 
-			globalCommandPicks.push({
+			gloBalCommandPicks.push({
 				commandId: action.item.id,
 				commandAlias,
-				label: stripCodicons(label)
+				laBel: stripCodicons(laBel)
 			});
 		}
 
 		// Cleanup
-		globalCommandsMenu.dispose();
-		disposables.add(toDisposable(() => dispose(globalCommandsMenuActions)));
+		gloBalCommandsMenu.dispose();
+		disposaBles.add(toDisposaBle(() => dispose(gloBalCommandsMenuActions)));
 
-		return globalCommandPicks;
+		return gloBalCommandPicks;
 	}
 }
 
@@ -139,15 +139,15 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 
 export class ShowAllCommandsAction extends Action2 {
 
-	static readonly ID = 'workbench.action.showCommands';
+	static readonly ID = 'workBench.action.showCommands';
 
 	constructor() {
 		super({
 			id: ShowAllCommandsAction.ID,
 			title: { value: localize('showTriggerActions', "Show All Commands"), original: 'Show All Commands' },
 			f1: true,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
 				when: undefined,
 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_P,
 				secondary: [KeyCode.F1]
@@ -164,7 +164,7 @@ export class ClearCommandHistoryAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.clearCommandHistory',
+			id: 'workBench.action.clearCommandHistory',
 			title: { value: localize('clearCommandHistory', "Clear Command History"), original: 'Clear Command History' },
 			f1: true
 		});

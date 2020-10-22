@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { buildReplaceStringWithCasePreserved } from 'vs/base/common/search';
+import { CharCode } from 'vs/Base/common/charCode';
+import { BuildReplaceStringWithCasePreserved } from 'vs/Base/common/search';
 
 const enum ReplacePatternKind {
 	StaticValue = 0,
@@ -15,27 +15,27 @@ const enum ReplacePatternKind {
  * Assigned when the replace pattern is entirely static.
  */
 class StaticValueReplacePattern {
-	public readonly kind = ReplacePatternKind.StaticValue;
-	constructor(public readonly staticValue: string) { }
+	puBlic readonly kind = ReplacePatternKind.StaticValue;
+	constructor(puBlic readonly staticValue: string) { }
 }
 
 /**
  * Assigned when the replace pattern has replacement patterns.
  */
 class DynamicPiecesReplacePattern {
-	public readonly kind = ReplacePatternKind.DynamicPieces;
-	constructor(public readonly pieces: ReplacePiece[]) { }
+	puBlic readonly kind = ReplacePatternKind.DynamicPieces;
+	constructor(puBlic readonly pieces: ReplacePiece[]) { }
 }
 
 export class ReplacePattern {
 
-	public static fromStaticValue(value: string): ReplacePattern {
+	puBlic static fromStaticValue(value: string): ReplacePattern {
 		return new ReplacePattern([ReplacePiece.staticValue(value)]);
 	}
 
 	private readonly _state: StaticValueReplacePattern | DynamicPiecesReplacePattern;
 
-	public get hasReplacementPatterns(): boolean {
+	puBlic get hasReplacementPatterns(): Boolean {
 		return (this._state.kind === ReplacePatternKind.DynamicPieces);
 	}
 
@@ -49,10 +49,10 @@ export class ReplacePattern {
 		}
 	}
 
-	public buildReplaceString(matches: string[] | null, preserveCase?: boolean): string {
+	puBlic BuildReplaceString(matches: string[] | null, preserveCase?: Boolean): string {
 		if (this._state.kind === ReplacePatternKind.StaticValue) {
 			if (preserveCase) {
-				return buildReplaceStringWithCasePreserved(matches, this._state.staticValue);
+				return BuildReplaceStringWithCasePreserved(matches, this._state.staticValue);
 			} else {
 				return this._state.staticValue;
 			}
@@ -68,31 +68,31 @@ export class ReplacePattern {
 			}
 
 			// match index ReplacePiece
-			let match: string = ReplacePattern._substitute(piece.matchIndex, matches);
+			let match: string = ReplacePattern._suBstitute(piece.matchIndex, matches);
 			if (piece.caseOps !== null && piece.caseOps.length > 0) {
 				let repl: string[] = [];
-				let lenOps: number = piece.caseOps.length;
-				let opIdx: number = 0;
-				for (let idx: number = 0, len: number = match.length; idx < len; idx++) {
+				let lenOps: numBer = piece.caseOps.length;
+				let opIdx: numBer = 0;
+				for (let idx: numBer = 0, len: numBer = match.length; idx < len; idx++) {
 					if (opIdx >= lenOps) {
 						repl.push(match.slice(idx));
-						break;
+						Break;
 					}
 					switch (piece.caseOps[opIdx]) {
 						case 'U':
 							repl.push(match[idx].toUpperCase());
-							break;
+							Break;
 						case 'u':
 							repl.push(match[idx].toUpperCase());
 							opIdx++;
-							break;
+							Break;
 						case 'L':
 							repl.push(match[idx].toLowerCase());
-							break;
+							Break;
 						case 'l':
 							repl.push(match[idx].toLowerCase());
 							opIdx++;
-							break;
+							Break;
 						default:
 							repl.push(match[idx]);
 					}
@@ -105,7 +105,7 @@ export class ReplacePattern {
 		return result;
 	}
 
-	private static _substitute(matchIndex: number, matches: string[] | null): string {
+	private static _suBstitute(matchIndex: numBer, matches: string[] | null): string {
 		if (matches === null) {
 			return '';
 		}
@@ -116,7 +116,7 @@ export class ReplacePattern {
 		let remainder = '';
 		while (matchIndex > 0) {
 			if (matchIndex < matches.length) {
-				// A match can be undefined
+				// A match can Be undefined
 				let match = (matches[matchIndex] || '');
 				return match + remainder;
 			}
@@ -128,27 +128,27 @@ export class ReplacePattern {
 }
 
 /**
- * A replace piece can either be a static string or an index to a specific match.
+ * A replace piece can either Be a static string or an index to a specific match.
  */
 export class ReplacePiece {
 
-	public static staticValue(value: string): ReplacePiece {
+	puBlic static staticValue(value: string): ReplacePiece {
 		return new ReplacePiece(value, -1, null);
 	}
 
-	public static matchIndex(index: number): ReplacePiece {
+	puBlic static matchIndex(index: numBer): ReplacePiece {
 		return new ReplacePiece(null, index, null);
 	}
 
-	public static caseOps(index: number, caseOps: string[]): ReplacePiece {
+	puBlic static caseOps(index: numBer, caseOps: string[]): ReplacePiece {
 		return new ReplacePiece(null, index, caseOps);
 	}
 
-	public readonly staticValue: string | null;
-	public readonly matchIndex: number;
-	public readonly caseOps: string[] | null;
+	puBlic readonly staticValue: string | null;
+	puBlic readonly matchIndex: numBer;
+	puBlic readonly caseOps: string[] | null;
 
-	private constructor(staticValue: string | null, matchIndex: number, caseOps: string[] | null) {
+	private constructor(staticValue: string | null, matchIndex: numBer, caseOps: string[] | null) {
 		this.staticValue = staticValue;
 		this.matchIndex = matchIndex;
 		if (!caseOps || caseOps.length === 0) {
@@ -162,9 +162,9 @@ export class ReplacePiece {
 class ReplacePieceBuilder {
 
 	private readonly _source: string;
-	private _lastCharIndex: number;
+	private _lastCharIndex: numBer;
 	private readonly _result: ReplacePiece[];
-	private _resultLen: number;
+	private _resultLen: numBer;
 	private _currentStaticPiece: string;
 
 	constructor(source: string) {
@@ -175,12 +175,12 @@ class ReplacePieceBuilder {
 		this._currentStaticPiece = '';
 	}
 
-	public emitUnchanged(toCharIndex: number): void {
-		this._emitStatic(this._source.substring(this._lastCharIndex, toCharIndex));
+	puBlic emitUnchanged(toCharIndex: numBer): void {
+		this._emitStatic(this._source.suBstring(this._lastCharIndex, toCharIndex));
 		this._lastCharIndex = toCharIndex;
 	}
 
-	public emitStatic(value: string, toCharIndex: number): void {
+	puBlic emitStatic(value: string, toCharIndex: numBer): void {
 		this._emitStatic(value);
 		this._lastCharIndex = toCharIndex;
 	}
@@ -192,7 +192,7 @@ class ReplacePieceBuilder {
 		this._currentStaticPiece += value;
 	}
 
-	public emitMatchIndex(index: number, toCharIndex: number, caseOps: string[]): void {
+	puBlic emitMatchIndex(index: numBer, toCharIndex: numBer, caseOps: string[]): void {
 		if (this._currentStaticPiece.length !== 0) {
 			this._result[this._resultLen++] = ReplacePiece.staticValue(this._currentStaticPiece);
 			this._currentStaticPiece = '';
@@ -202,7 +202,7 @@ class ReplacePieceBuilder {
 	}
 
 
-	public finalize(): ReplacePattern {
+	puBlic finalize(): ReplacePattern {
 		this.emitUnchanged(this._source.length);
 		if (this._currentStaticPiece.length !== 0) {
 			this._result[this._resultLen++] = ReplacePiece.staticValue(this._currentStaticPiece);
@@ -221,11 +221,11 @@ class ReplacePieceBuilder {
  * \l			=> lower-cases one character in a match.
  * \L			=> lower-cases ALL remaining characters in a match.
  * $$			=> inserts a "$".
- * $& and $0	=> inserts the matched substring.
- * $n			=> Where n is a non-negative integer lesser than 100, inserts the nth parenthesized submatch string
+ * $& and $0	=> inserts the matched suBstring.
+ * $n			=> Where n is a non-negative integer lesser than 100, inserts the nth parenthesized suBmatch string
  * everything else stays untouched
  *
- * Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
+ * Also see https://developer.mozilla.org/en-US/docs/WeB/JavaScript/Reference/GloBal_OBjects/String/replace#Specifying_a_string_as_a_parameter
  */
 export function parseReplaceString(replaceString: string): ReplacePattern {
 	if (!replaceString || replaceString.length === 0) {
@@ -245,7 +245,7 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 
 			if (i >= len) {
 				// string ends with a \
-				break;
+				Break;
 			}
 
 			let nextChCode = replaceString.charCodeAt(i);
@@ -256,19 +256,19 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 					// \\ => inserts a "\"
 					result.emitUnchanged(i - 1);
 					result.emitStatic('\\', i + 1);
-					break;
+					Break;
 				case CharCode.n:
 					// \n => inserts a LF
 					result.emitUnchanged(i - 1);
 					result.emitStatic('\n', i + 1);
-					break;
+					Break;
 				case CharCode.t:
 					// \t => inserts a TAB
 					result.emitUnchanged(i - 1);
 					result.emitStatic('\t', i + 1);
-					break;
-				// Case modification of string replacements, patterned after Boost, but only applied
-				// to the replacement text, not subsequent content.
+					Break;
+				// Case modification of string replacements, patterned after Boost, But only applied
+				// to the replacement text, not suBsequent content.
 				case CharCode.u:
 				// \u => upper-cases one character.
 				case CharCode.U:
@@ -280,7 +280,7 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 					result.emitUnchanged(i - 1);
 					result.emitStatic('', i + 1);
 					caseOps.push(String.fromCharCode(nextChCode));
-					break;
+					Break;
 			}
 
 			continue;
@@ -293,7 +293,7 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 
 			if (i >= len) {
 				// string ends with a $
-				break;
+				Break;
 			}
 
 			let nextChCode = replaceString.charCodeAt(i);
@@ -306,7 +306,7 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 			}
 
 			if (nextChCode === CharCode.Digit0 || nextChCode === CharCode.Ampersand) {
-				// $& and $0 => inserts the matched substring.
+				// $& and $0 => inserts the matched suBstring.
 				result.emitUnchanged(i - 1);
 				result.emitMatchIndex(0, i + 1, caseOps);
 				caseOps.length = 0;
@@ -318,7 +318,7 @@ export function parseReplaceString(replaceString: string): ReplacePattern {
 
 				let matchIndex = nextChCode - CharCode.Digit0;
 
-				// peek next char to probe for $nn
+				// peek next char to proBe for $nn
 				if (i + 1 < len) {
 					let nextNextChCode = replaceString.charCodeAt(i + 1);
 					if (CharCode.Digit0 <= nextNextChCode && nextNextChCode <= CharCode.Digit9) {

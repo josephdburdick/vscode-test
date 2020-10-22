@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { MultiCommand, RedoCommand, SelectAllCommand, UndoCommand } from 'vs/editor/browser/editorExtensions';
-import { CopyAction, CutAction, PasteAction } from 'vs/editor/contrib/clipboard/clipboard';
-import { IWebviewService, Webview } from 'vs/workbench/contrib/webview/browser/webview';
+import { MultiCommand, RedoCommand, SelectAllCommand, UndoCommand } from 'vs/editor/Browser/editorExtensions';
+import { CopyAction, CutAction, PasteAction } from 'vs/editor/contriB/clipBoard/clipBoard';
+import { IWeBviewService, WeBview } from 'vs/workBench/contriB/weBview/Browser/weBview';
 
 
 const PRIORITY = 100;
 
-function overrideCommandForWebview(command: MultiCommand | undefined, f: (webview: Webview) => void) {
+function overrideCommandForWeBview(command: MultiCommand | undefined, f: (weBview: WeBview) => void) {
 	command?.addImplementation(PRIORITY, accessor => {
-		const webviewService = accessor.get(IWebviewService);
-		const webview = webviewService.activeWebview;
-		if (webview?.isFocused) {
-			f(webview);
+		const weBviewService = accessor.get(IWeBviewService);
+		const weBview = weBviewService.activeWeBview;
+		if (weBview?.isFocused) {
+			f(weBview);
 			return true;
 		}
 		return false;
 	});
 }
 
-overrideCommandForWebview(UndoCommand, webview => webview.undo());
-overrideCommandForWebview(RedoCommand, webview => webview.redo());
-overrideCommandForWebview(SelectAllCommand, webview => webview.selectAll());
-overrideCommandForWebview(CopyAction, webview => webview.copy());
-overrideCommandForWebview(PasteAction, webview => webview.paste());
-overrideCommandForWebview(CutAction, webview => webview.cut());
+overrideCommandForWeBview(UndoCommand, weBview => weBview.undo());
+overrideCommandForWeBview(RedoCommand, weBview => weBview.redo());
+overrideCommandForWeBview(SelectAllCommand, weBview => weBview.selectAll());
+overrideCommandForWeBview(CopyAction, weBview => weBview.copy());
+overrideCommandForWeBview(PasteAction, weBview => weBview.paste());
+overrideCommandForWeBview(CutAction, weBview => weBview.cut());

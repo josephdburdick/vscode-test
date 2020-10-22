@@ -5,19 +5,19 @@
 
 import * as assert from 'assert';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import * as fs from 'fs';
-import * as uuid from 'vs/base/common/uuid';
-import * as pfs from 'vs/base/node/pfs';
-import { timeout } from 'vs/base/common/async';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { isWindows } from 'vs/base/common/platform';
-import { canNormalize } from 'vs/base/common/normalization';
-import { VSBuffer } from 'vs/base/common/buffer';
+import * as uuid from 'vs/Base/common/uuid';
+import * as pfs from 'vs/Base/node/pfs';
+import { timeout } from 'vs/Base/common/async';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
+import { isWindows } from 'vs/Base/common/platform';
+import { canNormalize } from 'vs/Base/common/normalization';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 
 suite('PFS', function () {
 
-	// Given issues such as https://github.com/microsoft/vscode/issues/84066
+	// Given issues such as https://githuB.com/microsoft/vscode/issues/84066
 	// we see random test failures when accessing the native file system. To
 	// diagnose further, we retry node.js file access tests up to 3 times to
 	// rule out any random disk issue.
@@ -157,7 +157,7 @@ suite('PFS', function () {
 		assert.ok(!fs.existsSync(newDir));
 	});
 
-	test('rimraf - simple ends with dot slash/backslash - move', async () => {
+	test('rimraf - simple ends with dot slash/Backslash - move', async () => {
 		const id = `${uuid.generateUuid()}.`;
 		const parentDir = path.join(os.tmpdir(), 'vsctests', id);
 		const newDir = path.join(parentDir, 'pfs', id);
@@ -219,7 +219,7 @@ suite('PFS', function () {
 
 		await pfs.mkdirp(newDir, 493);
 		try {
-			await pfs.renameIgnoreError(path.join(newDir, 'foo'), path.join(newDir, 'bar'));
+			await pfs.renameIgnoreError(path.join(newDir, 'foo'), path.join(newDir, 'Bar'));
 			return pfs.rimraf(parentDir, pfs.RimRafMode.MOVE);
 		}
 		catch (error) {
@@ -308,18 +308,18 @@ suite('PFS', function () {
 		const directory = path.join(parentDir, 'pfs', id1);
 
 		const id2 = uuid.generateUuid();
-		const symbolicLink = path.join(parentDir, 'pfs', id2);
+		const symBolicLink = path.join(parentDir, 'pfs', id2);
 
 		await pfs.mkdirp(directory, 493);
 
-		fs.symlinkSync(directory, symbolicLink);
+		fs.symlinkSync(directory, symBolicLink);
 
 		let statAndIsLink = await pfs.statLink(directory);
-		assert.ok(!statAndIsLink?.symbolicLink);
+		assert.ok(!statAndIsLink?.symBolicLink);
 
-		statAndIsLink = await pfs.statLink(symbolicLink);
-		assert.ok(statAndIsLink?.symbolicLink);
-		assert.ok(!statAndIsLink?.symbolicLink?.dangling);
+		statAndIsLink = await pfs.statLink(symBolicLink);
+		assert.ok(statAndIsLink?.symBolicLink);
+		assert.ok(!statAndIsLink?.symBolicLink?.dangling);
 
 		pfs.rimrafSync(directory);
 	});
@@ -334,17 +334,17 @@ suite('PFS', function () {
 		const directory = path.join(parentDir, 'pfs', id1);
 
 		const id2 = uuid.generateUuid();
-		const symbolicLink = path.join(parentDir, 'pfs', id2);
+		const symBolicLink = path.join(parentDir, 'pfs', id2);
 
 		await pfs.mkdirp(directory, 493);
 
-		fs.symlinkSync(directory, symbolicLink);
+		fs.symlinkSync(directory, symBolicLink);
 
 		pfs.rimrafSync(directory);
 
-		const statAndIsLink = await pfs.statLink(symbolicLink);
-		assert.ok(statAndIsLink?.symbolicLink);
-		assert.ok(statAndIsLink?.symbolicLink?.dangling);
+		const statAndIsLink = await pfs.statLink(symBolicLink);
+		assert.ok(statAndIsLink?.symBolicLink);
+		assert.ok(statAndIsLink?.symBolicLink?.dangling);
 	});
 
 	test('readdir', async () => {
@@ -391,30 +391,30 @@ suite('PFS', function () {
 
 	test('writeFile (string)', async () => {
 		const smallData = 'Hello World';
-		const bigData = (new Array(100 * 1024)).join('Large String\n');
+		const BigData = (new Array(100 * 1024)).join('Large String\n');
 
-		return testWriteFileAndFlush(smallData, smallData, bigData, bigData);
+		return testWriteFileAndFlush(smallData, smallData, BigData, BigData);
 	});
 
 	test('writeFile (Buffer)', async () => {
 		const smallData = 'Hello World';
-		const bigData = (new Array(100 * 1024)).join('Large String\n');
+		const BigData = (new Array(100 * 1024)).join('Large String\n');
 
-		return testWriteFileAndFlush(Buffer.from(smallData), smallData, Buffer.from(bigData), bigData);
+		return testWriteFileAndFlush(Buffer.from(smallData), smallData, Buffer.from(BigData), BigData);
 	});
 
 	test('writeFile (UInt8Array)', async () => {
 		const smallData = 'Hello World';
-		const bigData = (new Array(100 * 1024)).join('Large String\n');
+		const BigData = (new Array(100 * 1024)).join('Large String\n');
 
-		return testWriteFileAndFlush(VSBuffer.fromString(smallData).buffer, smallData, VSBuffer.fromString(bigData).buffer, bigData);
+		return testWriteFileAndFlush(VSBuffer.fromString(smallData).Buffer, smallData, VSBuffer.fromString(BigData).Buffer, BigData);
 	});
 
 	async function testWriteFileAndFlush(
 		smallData: string | Buffer | Uint8Array,
 		smallDataValue: string,
-		bigData: string | Buffer | Uint8Array,
-		bigDataValue: string
+		BigData: string | Buffer | Uint8Array,
+		BigDataValue: string
 	): Promise<void> {
 		const id = uuid.generateUuid();
 		const parentDir = path.join(os.tmpdir(), 'vsctests', id);
@@ -427,8 +427,8 @@ suite('PFS', function () {
 		await pfs.writeFile(testFile, smallData);
 		assert.equal(fs.readFileSync(testFile), smallDataValue);
 
-		await pfs.writeFile(testFile, bigData);
-		assert.equal(fs.readFileSync(testFile), bigDataValue);
+		await pfs.writeFile(testFile, BigData);
+		assert.equal(fs.readFileSync(testFile), BigDataValue);
 
 		await pfs.rimraf(parentDir);
 	}
@@ -443,7 +443,7 @@ suite('PFS', function () {
 
 		assert.ok(fs.existsSync(newDir));
 
-		fs.mkdirSync(testFile); // this will trigger an error because testFile is now a directory!
+		fs.mkdirSync(testFile); // this will trigger an error Because testFile is now a directory!
 
 		let expectedError: Error | undefined;
 		try {

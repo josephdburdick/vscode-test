@@ -4,37 +4,37 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Delayer } from 'vs/base/common/async';
-import { Event } from 'vs/base/common/event';
-import * as platform from 'vs/base/common/platform';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { Delayer } from 'vs/Base/common/async';
+import { Event } from 'vs/Base/common/event';
+import * as platform from 'vs/Base/common/platform';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
-import { CommonFindController, FindStartFocusAction, IFindStartOptions, NextMatchFindAction, NextSelectionMatchFindAction, StartFindAction, StartFindReplaceAction } from 'vs/editor/contrib/find/findController';
-import { CONTEXT_FIND_INPUT_FOCUSED } from 'vs/editor/contrib/find/findModel';
-import { withAsyncTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { CommonFindController, FindStartFocusAction, IFindStartOptions, NextMatchFindAction, NextSelectionMatchFindAction, StartFindAction, StartFindReplaceAction } from 'vs/editor/contriB/find/findController';
+import { CONTEXT_FIND_INPUT_FOCUSED } from 'vs/editor/contriB/find/findModel';
+import { withAsyncTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 
 export class TestFindController extends CommonFindController {
 
-	public hasFocus: boolean;
-	public delayUpdateHistory: boolean = false;
+	puBlic hasFocus: Boolean;
+	puBlic delayUpdateHistory: Boolean = false;
 
-	private _findInputFocused: IContextKey<boolean>;
+	private _findInputFocused: IContextKey<Boolean>;
 
 	constructor(
 		editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IStorageService storageService: IStorageService,
-		@IClipboardService clipboardService: IClipboardService
+		@IClipBoardService clipBoardService: IClipBoardService
 	) {
-		super(editor, contextKeyService, storageService, clipboardService);
-		this._findInputFocused = CONTEXT_FIND_INPUT_FOCUSED.bindTo(contextKeyService);
+		super(editor, contextKeyService, storageService, clipBoardService);
+		this._findInputFocused = CONTEXT_FIND_INPUT_FOCUSED.BindTo(contextKeyService);
 		this._updateHistoryDelayer = new Delayer<void>(50);
 		this.hasFocus = false;
 	}
@@ -51,13 +51,13 @@ export class TestFindController extends CommonFindController {
 	}
 }
 
-function fromSelection(slc: Selection): number[] {
-	return [slc.startLineNumber, slc.startColumn, slc.endLineNumber, slc.endColumn];
+function fromSelection(slc: Selection): numBer[] {
+	return [slc.startLineNumBer, slc.startColumn, slc.endLineNumBer, slc.endColumn];
 }
 
 suite('FindController', async () => {
 	let queryState: { [key: string]: any; } = {};
-	let clipboardState = '';
+	let clipBoardState = '';
 	let serviceCollection = new ServiceCollection();
 	serviceCollection.set(IStorageService, {
 		_serviceBrand: undefined,
@@ -65,57 +65,57 @@ suite('FindController', async () => {
 		onWillSaveState: Event.None,
 		get: (key: string) => queryState[key],
 		getBoolean: (key: string) => !!queryState[key],
-		getNumber: (key: string) => undefined,
+		getNumBer: (key: string) => undefined,
 		store: (key: string, value: any) => { queryState[key] = value; return Promise.resolve(); },
 		remove: () => undefined
 	} as any);
 
 	if (platform.isMacintosh) {
-		serviceCollection.set(IClipboardService, <any>{
-			readFindText: () => clipboardState,
-			writeFindText: (value: any) => { clipboardState = value; }
+		serviceCollection.set(IClipBoardService, <any>{
+			readFindText: () => clipBoardState,
+			writeFindText: (value: any) => { clipBoardState = value; }
 		});
 	}
 
-	/* test('stores to the global clipboard buffer on start find action', async () => {
+	/* test('stores to the gloBal clipBoard Buffer on start find action', async () => {
 		await withAsyncTestCodeEditor([
 			'ABC',
 			'ABC',
 			'XYZ',
 			'ABC'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
+			clipBoardState = '';
 			if (!platform.isMacintosh) {
 				assert.ok(true);
 				return;
 			}
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let startFindAction = new StartFindAction();
 			// I select ABC on the first line
 			editor.setSelection(new Selection(1, 1, 1, 4));
 			// I hit Ctrl+F to show the Find dialog
 			startFindAction.run(null, editor);
 
-			assert.deepEqual(findController.getGlobalBufferTerm(), findController.getState().searchString);
+			assert.deepEqual(findController.getGloBalBufferTerm(), findController.getState().searchString);
 			findController.dispose();
 		});
 	});
 
-	test('reads from the global clipboard buffer on next find action if buffer exists', async () => {
+	test('reads from the gloBal clipBoard Buffer on next find action if Buffer exists', async () => {
 		await withAsyncTestCodeEditor([
 			'ABC',
 			'ABC',
 			'XYZ',
 			'ABC'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = 'ABC';
+			clipBoardState = 'ABC';
 
 			if (!platform.isMacintosh) {
 				assert.ok(true);
 				return;
 			}
 
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let findState = findController.getState();
 			let nextMatchFindAction = new NextMatchFindAction();
 
@@ -128,25 +128,25 @@ suite('FindController', async () => {
 		});
 	});
 
-	test('writes to the global clipboard buffer when text changes', async () => {
+	test('writes to the gloBal clipBoard Buffer when text changes', async () => {
 		await withAsyncTestCodeEditor([
 			'ABC',
 			'ABC',
 			'XYZ',
 			'ABC'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
+			clipBoardState = '';
 			if (!platform.isMacintosh) {
 				assert.ok(true);
 				return;
 			}
 
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let findState = findController.getState();
 
 			findState.change({ searchString: 'ABC' }, true);
 
-			assert.deepEqual(findController.getGlobalBufferTerm(), 'ABC');
+			assert.deepEqual(findController.getGloBalBufferTerm(), 'ABC');
 
 			findController.dispose();
 		});
@@ -159,9 +159,9 @@ suite('FindController', async () => {
 			'XYZ',
 			'ABC'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
+			clipBoardState = '';
 			// The cursor is at the very top, of the file, at the first ABC
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let findState = findController.getState();
 			let startFindAction = new StartFindAction();
 			let nextMatchFindAction = new NextMatchFindAction();
@@ -200,7 +200,7 @@ suite('FindController', async () => {
 			// The cursor is at end of the first line.
 			assert.deepEqual(fromSelection(editor.getSelection()!), [1, 4, 1, 4]);
 
-			// I hit F3 to "Find Next" to find the next occurrence of ABC, but instead it searches for XYZ.
+			// I hit F3 to "Find Next" to find the next occurrence of ABC, But instead it searches for XYZ.
 			await nextMatchFindAction.run(null, editor);
 
 			assert.equal(findState.searchString, 'ABC');
@@ -214,12 +214,12 @@ suite('FindController', async () => {
 		await withAsyncTestCodeEditor([
 			'import nls = require(\'vs/nls\');'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let nextMatchFindAction = new NextMatchFindAction();
 
 			editor.setPosition({
-				lineNumber: 1,
+				lineNumBer: 1,
 				column: 9
 			});
 
@@ -239,8 +239,8 @@ suite('FindController', async () => {
 			'var y = (3 * 5)',
 			'var z = (3  * 5)',
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let startFindAction = new StartFindAction();
 			let nextMatchFindAction = new NextMatchFindAction();
 
@@ -264,7 +264,7 @@ suite('FindController', async () => {
 			'test',
 		], { serviceCollection: serviceCollection }, async (editor) => {
 			let testRegexString = 'tes.';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let nextMatchFindAction = new NextMatchFindAction();
 			let startFindReplaceAction = new StartFindReplaceAction();
 
@@ -273,7 +273,7 @@ suite('FindController', async () => {
 			await findController.start({
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.FocusFindInput,
 				shouldAnimate: false,
 				updateSearchScope: false,
@@ -294,12 +294,12 @@ suite('FindController', async () => {
 			'var y = (3 * 5)',
 			'var z = (3 * 5)',
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			await findController.start({
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.NoFocusChange,
 				shouldAnimate: false,
 				updateSearchScope: false,
@@ -321,15 +321,15 @@ suite('FindController', async () => {
 
 	test('issue #18111: Regex replace with single space replaces with no space', async () => {
 		await withAsyncTestCodeEditor([
-			'HRESULT OnAmbientPropertyChange(DISPID   dispid);'
+			'HRESULT OnAmBientPropertyChange(DISPID   dispid);'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 
 			let startFindAction = new StartFindAction();
 			await startFindAction.run(null, editor);
 
-			findController.getState().change({ searchString: '\\b\\s{3}\\b', replaceString: ' ', isRegex: true }, false);
+			findController.getState().change({ searchString: '\\B\\s{3}\\B', replaceString: ' ', isRegex: true }, false);
 			findController.moveToNextMatch();
 
 			assert.deepEqual(editor.getSelections()!.map(fromSelection), [
@@ -338,7 +338,7 @@ suite('FindController', async () => {
 
 			findController.replace();
 
-			assert.deepEqual(editor.getValue(), 'HRESULT OnAmbientPropertyChange(DISPID dispid);');
+			assert.deepEqual(editor.getValue(), 'HRESULT OnAmBientPropertyChange(DISPID dispid);');
 
 			findController.dispose();
 		});
@@ -350,8 +350,8 @@ suite('FindController', async () => {
 			'line2',
 			'line3'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 
 			let startFindAction = new StartFindAction();
 			await startFindAction.run(null, editor);
@@ -371,14 +371,14 @@ suite('FindController', async () => {
 		});
 	});
 
-	test('issue #38232: Find Next Selection, regex enabled', async () => {
+	test('issue #38232: Find Next Selection, regex enaBled', async () => {
 		await withAsyncTestCodeEditor([
 			'([funny]',
 			'',
 			'([funny]'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let nextSelectionMatchFindAction = new NextSelectionMatchFindAction();
 
 			// toggle regex
@@ -398,14 +398,14 @@ suite('FindController', async () => {
 		});
 	});
 
-	test('issue #38232: Find Next Selection, regex enabled, find widget open', async () => {
+	test('issue #38232: Find Next Selection, regex enaBled, find widget open', async () => {
 		await withAsyncTestCodeEditor([
 			'([funny]',
 			'',
 			'([funny]'
 		], { serviceCollection: serviceCollection }, async (editor) => {
-			clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let startFindAction = new StartFindAction();
 			let nextSelectionMatchFindAction = new NextSelectionMatchFindAction();
 
@@ -442,21 +442,21 @@ suite('FindController query options persistence', async () => {
 		onWillSaveState: Event.None,
 		get: (key: string) => queryState[key],
 		getBoolean: (key: string) => !!queryState[key],
-		getNumber: (key: string) => undefined,
+		getNumBer: (key: string) => undefined,
 		store: (key: string, value: any) => { queryState[key] = value; return Promise.resolve(); },
 		remove: () => undefined
 	} as any);
 
 	test('matchCase', async () => {
 		await withAsyncTestCodeEditor([
-			'abc',
+			'aBc',
 			'ABC',
 			'XYZ',
 			'ABC'
 		], { serviceCollection: serviceCollection }, async (editor) => {
 			queryState = { 'editor.isRegex': false, 'editor.matchCase': true, 'editor.wholeWord': false };
 			// The cursor is at the very top, of the file, at the first ABC
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let findState = findController.getState();
 			let startFindAction = new StartFindAction();
 
@@ -483,7 +483,7 @@ suite('FindController query options persistence', async () => {
 		], { serviceCollection: serviceCollection }, async (editor) => {
 			queryState = { 'editor.isRegex': false, 'editor.matchCase': false, 'editor.wholeWord': true };
 			// The cursor is at the very top, of the file, at the first ABC
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			let findState = findController.getState();
 			let startFindAction = new StartFindAction();
 
@@ -508,7 +508,7 @@ suite('FindController query options persistence', async () => {
 		], { serviceCollection: serviceCollection }, async (editor) => {
 			queryState = { 'editor.isRegex': false, 'editor.matchCase': false, 'editor.wholeWord': true };
 			// The cursor is at the very top, of the file, at the first ABC
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			findController.toggleRegex();
 			assert.equal(queryState['editor.isRegex'], true);
 
@@ -516,18 +516,18 @@ suite('FindController query options persistence', async () => {
 		});
 	});
 
-	test('issue #27083: Update search scope once find widget becomes visible', async () => {
+	test('issue #27083: Update search scope once find widget Becomes visiBle', async () => {
 		await withAsyncTestCodeEditor([
 			'var x = (3 * 5)',
 			'var y = (3 * 5)',
 			'var z = (3 * 5)',
-		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', globalFindClipboard: false } }, async (editor) => {
-			// clipboardState = '';
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', gloBalFindClipBoard: false } }, async (editor) => {
+			// clipBoardState = '';
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 			const findConfig = {
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.NoFocusChange,
 				shouldAnimate: false,
 				updateSearchScope: true,
@@ -551,15 +551,15 @@ suite('FindController query options persistence', async () => {
 			'var x = (3 * 5)',
 			'var y = (3 * 5)',
 			'var z = (3 * 5)',
-		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', globalFindClipboard: false } }, async (editor) => {
-			// clipboardState = '';
+		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', gloBalFindClipBoard: false } }, async (editor) => {
+			// clipBoardState = '';
 			editor.setSelection(new Range(1, 2, 1, 2));
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 
 			await findController.start({
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.NoFocusChange,
 				shouldAnimate: false,
 				updateSearchScope: true,
@@ -575,15 +575,15 @@ suite('FindController query options persistence', async () => {
 			'var x = (3 * 5)',
 			'var y = (3 * 5)',
 			'var z = (3 * 5)',
-		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', globalFindClipboard: false } }, async (editor) => {
-			// clipboardState = '';
+		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'always', gloBalFindClipBoard: false } }, async (editor) => {
+			// clipBoardState = '';
 			editor.setSelection(new Range(1, 2, 1, 3));
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 
 			await findController.start({
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.NoFocusChange,
 				shouldAnimate: false,
 				updateSearchScope: true,
@@ -600,15 +600,15 @@ suite('FindController query options persistence', async () => {
 			'var x = (3 * 5)',
 			'var y = (3 * 5)',
 			'var z = (3 * 5)',
-		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'multiline', globalFindClipboard: false } }, async (editor) => {
-			// clipboardState = '';
+		], { serviceCollection: serviceCollection, find: { autoFindInSelection: 'multiline', gloBalFindClipBoard: false } }, async (editor) => {
+			// clipBoardState = '';
 			editor.setSelection(new Range(1, 6, 2, 1));
-			let findController = editor.registerAndInstantiateContribution(TestFindController.ID, TestFindController);
+			let findController = editor.registerAndInstantiateContriBution(TestFindController.ID, TestFindController);
 
 			await findController.start({
 				forceRevealReplace: false,
 				seedSearchStringFromSelection: false,
-				seedSearchStringFromGlobalClipboard: false,
+				seedSearchStringFromGloBalClipBoard: false,
 				shouldFocus: FindStartFocusAction.NoFocusChange,
 				shouldAnimate: false,
 				updateSearchScope: true,

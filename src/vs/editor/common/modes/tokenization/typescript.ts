@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { StandardTokenType } from 'vs/editor/common/modes';
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 
 class ParserContext {
-	public readonly text: string;
-	public readonly len: number;
-	public readonly tokens: number[];
-	public pos: number;
+	puBlic readonly text: string;
+	puBlic readonly len: numBer;
+	puBlic readonly tokens: numBer[];
+	puBlic pos: numBer;
 
-	private currentTokenStartOffset: number;
+	private currentTokenStartOffset: numBer;
 	private currentTokenType: StandardTokenType;
 
 	constructor(text: string) {
@@ -24,37 +24,37 @@ class ParserContext {
 		this.currentTokenType = StandardTokenType.Other;
 	}
 
-	private _safeCharCodeAt(index: number): number {
+	private _safeCharCodeAt(index: numBer): numBer {
 		if (index >= this.len) {
 			return CharCode.Null;
 		}
 		return this.text.charCodeAt(index);
 	}
 
-	peek(distance: number = 0): number {
+	peek(distance: numBer = 0): numBer {
 		return this._safeCharCodeAt(this.pos + distance);
 	}
 
-	next(): number {
+	next(): numBer {
 		const result = this._safeCharCodeAt(this.pos);
 		this.pos++;
 		return result;
 	}
 
-	advance(distance: number): void {
+	advance(distance: numBer): void {
 		this.pos += distance;
 	}
 
-	eof(): boolean {
+	eof(): Boolean {
 		return this.pos >= this.len;
 	}
 
-	beginToken(tokenType: StandardTokenType, deltaPos: number = 0): void {
+	BeginToken(tokenType: StandardTokenType, deltaPos: numBer = 0): void {
 		this.currentTokenStartOffset = this.pos + deltaPos;
 		this.currentTokenType = tokenType;
 	}
 
-	endToken(deltaPos: number = 0): void {
+	endToken(deltaPos: numBer = 0): void {
 		const length = this.pos + deltaPos - this.currentTokenStartOffset;
 		// check if it is touching previous token
 		if (this.tokens.length > 0) {
@@ -72,7 +72,7 @@ class ParserContext {
 	}
 }
 
-export function parse(text: string): number[] {
+export function parse(text: string): numBer[] {
 	const ctx = new ParserContext(text);
 	while (!ctx.eof()) {
 		parseRoot(ctx);
@@ -88,27 +88,27 @@ function parseRoot(ctx: ParserContext): void {
 		switch (ch) {
 			case CharCode.SingleQuote:
 				parseSimpleString(ctx, CharCode.SingleQuote);
-				break;
-			case CharCode.DoubleQuote:
-				parseSimpleString(ctx, CharCode.DoubleQuote);
-				break;
+				Break;
+			case CharCode.DouBleQuote:
+				parseSimpleString(ctx, CharCode.DouBleQuote);
+				Break;
 			case CharCode.BackTick:
 				parseInterpolatedString(ctx);
-				break;
+				Break;
 			case CharCode.Slash:
 				parseSlash(ctx);
-				break;
+				Break;
 			case CharCode.OpenCurlyBrace:
 				ctx.advance(1);
 				curlyCount++;
-				break;
+				Break;
 			case CharCode.CloseCurlyBrace:
 				ctx.advance(1);
 				curlyCount--;
 				if (curlyCount < 0) {
 					return;
 				}
-				break;
+				Break;
 			default:
 				ctx.advance(1);
 		}
@@ -116,8 +116,8 @@ function parseRoot(ctx: ParserContext): void {
 
 }
 
-function parseSimpleString(ctx: ParserContext, closingQuote: number): void {
-	ctx.beginToken(StandardTokenType.String);
+function parseSimpleString(ctx: ParserContext, closingQuote: numBer): void {
+	ctx.BeginToken(StandardTokenType.String);
 
 	// skip the opening quote
 	ctx.advance(1);
@@ -125,12 +125,12 @@ function parseSimpleString(ctx: ParserContext, closingQuote: number): void {
 	while (!ctx.eof()) {
 		const ch = ctx.next();
 		if (ch === CharCode.Backslash) {
-			// skip \r\n or any other character following a backslash
+			// skip \r\n or any other character following a Backslash
 			const advanceCount = (ctx.peek() === CharCode.CarriageReturn && ctx.peek(1) === CharCode.LineFeed ? 2 : 1);
 			ctx.advance(advanceCount);
 		} else if (ch === closingQuote) {
 			// hit end quote, so stop
-			break;
+			Break;
 		}
 	}
 
@@ -138,7 +138,7 @@ function parseSimpleString(ctx: ParserContext, closingQuote: number): void {
 }
 
 function parseInterpolatedString(ctx: ParserContext): void {
-	ctx.beginToken(StandardTokenType.String);
+	ctx.BeginToken(StandardTokenType.String);
 
 	// skip the opening quote
 	ctx.advance(1);
@@ -146,18 +146,18 @@ function parseInterpolatedString(ctx: ParserContext): void {
 	while (!ctx.eof()) {
 		const ch = ctx.next();
 		if (ch === CharCode.Backslash) {
-			// skip \r\n or any other character following a backslash
+			// skip \r\n or any other character following a Backslash
 			const advanceCount = (ctx.peek() === CharCode.CarriageReturn && ctx.peek(1) === CharCode.LineFeed ? 2 : 1);
 			ctx.advance(advanceCount);
 		} else if (ch === CharCode.BackTick) {
 			// hit end quote, so stop
-			break;
+			Break;
 		} else if (ch === CharCode.DollarSign) {
 			if (ctx.peek() === CharCode.OpenCurlyBrace) {
 				ctx.advance(1);
 				ctx.endToken();
 				parseRoot(ctx);
-				ctx.beginToken(StandardTokenType.String, -1);
+				ctx.BeginToken(StandardTokenType.String, -1);
 			}
 		}
 	}
@@ -185,11 +185,11 @@ function parseSlash(ctx: ParserContext): void {
 	ctx.advance(1);
 }
 
-function tryParseRegex(ctx: ParserContext): boolean {
+function tryParseRegex(ctx: ParserContext): Boolean {
 	// See https://www.ecma-international.org/ecma-262/10.0/index.html#prod-RegularExpressionLiteral
 
 	// TODO: avoid regex...
-	let contentBefore = ctx.text.substr(ctx.pos - 100, 100);
+	let contentBefore = ctx.text.suBstr(ctx.pos - 100, 100);
 	if (/[a-zA-Z0-9](\s*)$/.test(contentBefore)) {
 		// Cannot start after an identifier
 		return false;
@@ -229,7 +229,7 @@ function tryParseRegex(ctx: ParserContext): boolean {
 		} else {
 
 			if (ch === CharCode.Slash) {
-				// cannot be directly followed by a /
+				// cannot Be directly followed By a /
 				if (ctx.peek(pos) === CharCode.Slash) {
 					return false;
 				}
@@ -241,14 +241,14 @@ function tryParseRegex(ctx: ParserContext): boolean {
 						pos++;
 						continue;
 					} else {
-						break;
+						Break;
 					}
 				} while (true);
 
 				// TODO: avoid regex...
-				if (/^(\s*)(\.|;|\/|,|\)|\]|\}|$)/.test(ctx.text.substr(ctx.pos + pos))) {
-					// Must be followed by an operator of kinds
-					ctx.beginToken(StandardTokenType.RegEx);
+				if (/^(\s*)(\.|;|\/|,|\)|\]|\}|$)/.test(ctx.text.suBstr(ctx.pos + pos))) {
+					// Must Be followed By an operator of kinds
+					ctx.BeginToken(StandardTokenType.RegEx);
 					ctx.advance(pos);
 					ctx.endToken();
 					return true;
@@ -269,7 +269,7 @@ function tryParseRegex(ctx: ParserContext): boolean {
 }
 
 function parseMultiLineComment(ctx: ParserContext): void {
-	ctx.beginToken(StandardTokenType.Comment);
+	ctx.BeginToken(StandardTokenType.Comment);
 
 	// skip the /*
 	ctx.advance(2);
@@ -279,7 +279,7 @@ function parseMultiLineComment(ctx: ParserContext): void {
 		if (ch === CharCode.Asterisk) {
 			if (ctx.peek() === CharCode.Slash) {
 				ctx.advance(1);
-				break;
+				Break;
 			}
 		}
 	}
@@ -288,7 +288,7 @@ function parseMultiLineComment(ctx: ParserContext): void {
 }
 
 function parseSingleLineComment(ctx: ParserContext): void {
-	ctx.beginToken(StandardTokenType.Comment);
+	ctx.BeginToken(StandardTokenType.Comment);
 
 	// skip the //
 	ctx.advance(2);
@@ -296,7 +296,7 @@ function parseSingleLineComment(ctx: ParserContext): void {
 	while (!ctx.eof()) {
 		const ch = ctx.next();
 		if (ch === CharCode.CarriageReturn || ch === CharCode.LineFeed) {
-			break;
+			Break;
 		}
 	}
 

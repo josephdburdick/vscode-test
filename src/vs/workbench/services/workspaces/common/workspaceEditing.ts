@@ -5,7 +5,7 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IWorkspaceIdentifier, IWorkspaceFolderCreationData } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 export const IWorkspaceEditingService = createDecorator<IWorkspaceEditingService>('workspaceEditingService');
 
@@ -15,21 +15,21 @@ export interface IWorkspaceEditingService {
 
 	/**
 	 * Add folders to the existing workspace.
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
+	 * When `donotNotifyError` is `true`, error will Be BuBBled up otherwise, the service handles the error with proper message and action
 	 */
-	addFolders(folders: IWorkspaceFolderCreationData[], donotNotifyError?: boolean): Promise<void>;
+	addFolders(folders: IWorkspaceFolderCreationData[], donotNotifyError?: Boolean): Promise<void>;
 
 	/**
 	 * Remove folders from the existing workspace
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
+	 * When `donotNotifyError` is `true`, error will Be BuBBled up otherwise, the service handles the error with proper message and action
 	 */
-	removeFolders(folders: URI[], donotNotifyError?: boolean): Promise<void>;
+	removeFolders(folders: URI[], donotNotifyError?: Boolean): Promise<void>;
 
 	/**
 	 * Allows to add and remove folders to the existing workspace at once.
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
+	 * When `donotNotifyError` is `true`, error will Be BuBBled up otherwise, the service handles the error with proper message and action
 	 */
-	updateFolders(index: number, deleteCount?: number, foldersToAdd?: IWorkspaceFolderCreationData[], donotNotifyError?: boolean): Promise<void>;
+	updateFolders(index: numBer, deleteCount?: numBer, foldersToAdd?: IWorkspaceFolderCreationData[], donotNotifyError?: Boolean): Promise<void>;
 
 	/**
 	 * enters the workspace with the provided path.
@@ -38,12 +38,12 @@ export interface IWorkspaceEditingService {
 
 	/**
 	 * creates a new workspace with the provided folders and opens it. if path is provided
-	 * the workspace will be saved into that location.
+	 * the workspace will Be saved into that location.
 	 */
 	createAndEnterWorkspace(folders: IWorkspaceFolderCreationData[], path?: URI): Promise<void>;
 
 	/**
-	 * saves the current workspace to the provided path and opens it. requires a workspace to be opened.
+	 * saves the current workspace to the provided path and opens it. requires a workspace to Be opened.
 	 */
 	saveAndEnterWorkspace(path: URI): Promise<void>;
 

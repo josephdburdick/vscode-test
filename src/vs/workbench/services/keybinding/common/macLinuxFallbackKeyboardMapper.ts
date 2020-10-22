@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ChordKeybinding, KeyCode, Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { IMMUTABLE_CODE_TO_KEY_CODE, ScanCode, ScanCodeBinding } from 'vs/base/common/scanCode';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
-import { removeElementsAfterNulls } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { ChordKeyBinding, KeyCode, KeyBinding, ResolvedKeyBinding, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { IMMUTABLE_CODE_TO_KEY_CODE, ScanCode, ScanCodeBinding } from 'vs/Base/common/scanCode';
+import { IKeyBoardEvent } from 'vs/platform/keyBinding/common/keyBinding';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { IKeyBoardMapper } from 'vs/workBench/services/keyBinding/common/keyBoardMapper';
+import { removeElementsAfterNulls } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
 
 /**
- * A keyboard mapper to be used when reading the keymap from the OS fails.
+ * A keyBoard mapper to Be used when reading the keymap from the OS fails.
  */
-export class MacLinuxFallbackKeyboardMapper implements IKeyboardMapper {
+export class MacLinuxFallBackKeyBoardMapper implements IKeyBoardMapper {
 
 	/**
-	 * OS (can be Linux or Macintosh)
+	 * OS (can Be Linux or Macintosh)
 	 */
 	private readonly _OS: OperatingSystem;
 
@@ -25,29 +25,29 @@ export class MacLinuxFallbackKeyboardMapper implements IKeyboardMapper {
 		this._OS = OS;
 	}
 
-	public dumpDebugInfo(): string {
-		return 'FallbackKeyboardMapper dispatching on keyCode';
+	puBlic dumpDeBugInfo(): string {
+		return 'FallBackKeyBoardMapper dispatching on keyCode';
 	}
 
-	public resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[] {
-		return [new USLayoutResolvedKeybinding(keybinding, this._OS)];
+	puBlic resolveKeyBinding(keyBinding: KeyBinding): ResolvedKeyBinding[] {
+		return [new USLayoutResolvedKeyBinding(keyBinding, this._OS)];
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
-		let keybinding = new SimpleKeybinding(
-			keyboardEvent.ctrlKey,
-			keyboardEvent.shiftKey,
-			keyboardEvent.altKey,
-			keyboardEvent.metaKey,
-			keyboardEvent.keyCode
+	puBlic resolveKeyBoardEvent(keyBoardEvent: IKeyBoardEvent): ResolvedKeyBinding {
+		let keyBinding = new SimpleKeyBinding(
+			keyBoardEvent.ctrlKey,
+			keyBoardEvent.shiftKey,
+			keyBoardEvent.altKey,
+			keyBoardEvent.metaKey,
+			keyBoardEvent.keyCode
 		);
-		return new USLayoutResolvedKeybinding(keybinding.toChord(), this._OS);
+		return new USLayoutResolvedKeyBinding(keyBinding.toChord(), this._OS);
 	}
 
 	private _scanCodeToKeyCode(scanCode: ScanCode): KeyCode {
-		const immutableKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scanCode];
-		if (immutableKeyCode !== -1) {
-			return immutableKeyCode;
+		const immutaBleKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scanCode];
+		if (immutaBleKeyCode !== -1) {
+			return immutaBleKeyCode;
 		}
 
 		switch (scanCode) {
@@ -104,24 +104,24 @@ export class MacLinuxFallbackKeyboardMapper implements IKeyboardMapper {
 		return KeyCode.Unknown;
 	}
 
-	private _resolveSimpleUserBinding(binding: SimpleKeybinding | ScanCodeBinding | null): SimpleKeybinding | null {
-		if (!binding) {
+	private _resolveSimpleUserBinding(Binding: SimpleKeyBinding | ScanCodeBinding | null): SimpleKeyBinding | null {
+		if (!Binding) {
 			return null;
 		}
-		if (binding instanceof SimpleKeybinding) {
-			return binding;
+		if (Binding instanceof SimpleKeyBinding) {
+			return Binding;
 		}
-		const keyCode = this._scanCodeToKeyCode(binding.scanCode);
+		const keyCode = this._scanCodeToKeyCode(Binding.scanCode);
 		if (keyCode === KeyCode.Unknown) {
 			return null;
 		}
-		return new SimpleKeybinding(binding.ctrlKey, binding.shiftKey, binding.altKey, binding.metaKey, keyCode);
+		return new SimpleKeyBinding(Binding.ctrlKey, Binding.shiftKey, Binding.altKey, Binding.metaKey, keyCode);
 	}
 
-	public resolveUserBinding(input: (SimpleKeybinding | ScanCodeBinding)[]): ResolvedKeybinding[] {
-		const parts: SimpleKeybinding[] = removeElementsAfterNulls(input.map(keybinding => this._resolveSimpleUserBinding(keybinding)));
+	puBlic resolveUserBinding(input: (SimpleKeyBinding | ScanCodeBinding)[]): ResolvedKeyBinding[] {
+		const parts: SimpleKeyBinding[] = removeElementsAfterNulls(input.map(keyBinding => this._resolveSimpleUserBinding(keyBinding)));
 		if (parts.length > 0) {
-			return [new USLayoutResolvedKeybinding(new ChordKeybinding(parts), this._OS)];
+			return [new USLayoutResolvedKeyBinding(new ChordKeyBinding(parts), this._OS)];
 		}
 		return [];
 	}

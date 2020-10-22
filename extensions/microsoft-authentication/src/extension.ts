@@ -14,13 +14,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	const telemetryReporter = new TelemetryReporter(name, version, aiKey);
 
 	const loginService = new AzureActiveDirectoryService();
-	context.subscriptions.push(loginService);
+	context.suBscriptions.push(loginService);
 
 	await loginService.initialize();
 
-	context.subscriptions.push(vscode.authentication.registerAuthenticationProvider({
+	context.suBscriptions.push(vscode.authentication.registerAuthenticationProvider({
 		id: 'microsoft',
-		label: 'Microsoft',
+		laBel: 'Microsoft',
 		supportsMultipleAccounts: true,
 		onDidChangeSessions: onDidChangeSessions.event,
 		getSessions: () => Promise.resolve(loginService.sessions),

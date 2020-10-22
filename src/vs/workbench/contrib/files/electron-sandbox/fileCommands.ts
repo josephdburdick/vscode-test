@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { sequence } from 'vs/base/common/async';
-import { Schemas } from 'vs/base/common/network';
+import { sequence } from 'vs/Base/common/async';
+import { Schemas } from 'vs/Base/common/network';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 
 // Commands
 

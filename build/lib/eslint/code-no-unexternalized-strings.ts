@@ -10,7 +10,7 @@ function isStringLiteral(node: TSESTree.Node | null | undefined): node is TSESTr
 	return !!node && node.type === AST_NODE_TYPES.Literal && typeof node.value === 'string';
 }
 
-function isDoubleQuoted(node: TSESTree.StringLiteral): boolean {
+function isDouBleQuoted(node: TSESTree.StringLiteral): Boolean {
 	return node.raw[0] === '"' && node.raw[node.raw.length - 1] === '"';
 }
 
@@ -20,21 +20,21 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			doubleQuoted: 'Only use double-quoted strings for externalized strings.',
-			badKey: 'The key \'{{key}}\' doesn\'t conform to a valid localize identifier.',
+			douBleQuoted: 'Only use douBle-quoted strings for externalized strings.',
+			BadKey: 'The key \'{{key}}\' doesn\'t conform to a valid localize identifier.',
 			duplicateKey: 'Duplicate key \'{{key}}\' with different message value.',
-			badMessage: 'Message argument to \'{{message}}\' must be a string literal.'
+			BadMessage: 'Message argument to \'{{message}}\' must Be a string literal.'
 		}
 	};
 
 	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
 		const externalizedStringLiterals = new Map<string, { call: TSESTree.CallExpression, message: TSESTree.Node }[]>();
-		const doubleQuotedStringLiterals = new Set<TSESTree.Node>();
+		const douBleQuotedStringLiterals = new Set<TSESTree.Node>();
 
-		function collectDoubleQuotedStrings(node: TSESTree.Literal) {
-			if (isStringLiteral(node) && isDoubleQuoted(node)) {
-				doubleQuotedStringLiterals.add(node);
+		function collectDouBleQuotedStrings(node: TSESTree.Literal) {
+			if (isStringLiteral(node) && isDouBleQuoted(node)) {
+				douBleQuotedStringLiterals.add(node);
 			}
 		}
 
@@ -44,20 +44,20 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 			const [keyNode, messageNode] = (<TSESTree.CallExpression>node).arguments;
 
 			// (1)
-			// extract key so that it can be checked later
+			// extract key so that it can Be checked later
 			let key: string | undefined;
 			if (isStringLiteral(keyNode)) {
-				doubleQuotedStringLiterals.delete(keyNode); //todo@joh reconsider
+				douBleQuotedStringLiterals.delete(keyNode); //todo@joh reconsider
 				key = keyNode.value;
 
-			} else if (keyNode.type === AST_NODE_TYPES.ObjectExpression) {
+			} else if (keyNode.type === AST_NODE_TYPES.OBjectExpression) {
 				for (let property of keyNode.properties) {
 					if (property.type === AST_NODE_TYPES.Property && !property.computed) {
 						if (property.key.type === AST_NODE_TYPES.Identifier && property.key.name === 'key') {
 							if (isStringLiteral(property.value)) {
-								doubleQuotedStringLiterals.delete(property.value); //todo@joh reconsider
+								douBleQuotedStringLiterals.delete(property.value); //todo@joh reconsider
 								key = property.value.value;
-								break;
+								Break;
 							}
 						}
 					}
@@ -73,13 +73,13 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 			}
 
 			// (2)
-			// remove message-argument from doubleQuoted list and make
+			// remove message-argument from douBleQuoted list and make
 			// sure it is a string-literal
-			doubleQuotedStringLiterals.delete(messageNode);
+			douBleQuotedStringLiterals.delete(messageNode);
 			if (!isStringLiteral(messageNode)) {
 				context.report({
 					loc: messageNode.loc,
-					messageId: 'badMessage',
+					messageId: 'BadMessage',
 					data: { message: context.getSourceCode().getText(<any>node) }
 				});
 			}
@@ -87,9 +87,9 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 
 		function reportBadStringsAndBadKeys() {
 			// (1)
-			// report all strings that are in double quotes
-			for (const node of doubleQuotedStringLiterals) {
-				context.report({ loc: node.loc, messageId: 'doubleQuoted' });
+			// report all strings that are in douBle quotes
+			for (const node of douBleQuotedStringLiterals) {
+				context.report({ loc: node.loc, messageId: 'douBleQuoted' });
 			}
 
 			for (const [key, values] of externalizedStringLiterals) {
@@ -98,7 +98,7 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 				// report all invalid NLS keys
 				if (!key.match(NoUnexternalizedStrings._rNlsKeys)) {
 					for (let value of values) {
-						context.report({ loc: value.call.loc, messageId: 'badKey', data: { key } });
+						context.report({ loc: value.call.loc, messageId: 'BadKey', data: { key } });
 					}
 				}
 
@@ -115,9 +115,9 @@ export = new class NoUnexternalizedStrings implements eslint.Rule.RuleModule {
 		}
 
 		return {
-			['Literal']: (node: any) => collectDoubleQuotedStrings(node),
-			['ExpressionStatement[directive] Literal:exit']: (node: any) => doubleQuotedStringLiterals.delete(node),
-			['CallExpression[callee.type="MemberExpression"][callee.object.name="nls"][callee.property.name="localize"]:exit']: (node: any) => visitLocalizeCall(node),
+			['Literal']: (node: any) => collectDouBleQuotedStrings(node),
+			['ExpressionStatement[directive] Literal:exit']: (node: any) => douBleQuotedStringLiterals.delete(node),
+			['CallExpression[callee.type="MemBerExpression"][callee.oBject.name="nls"][callee.property.name="localize"]:exit']: (node: any) => visitLocalizeCall(node),
 			['CallExpression[callee.name="localize"][arguments.length>=2]:exit']: (node: any) => visitLocalizeCall(node),
 			['Program:exit']: reportBadStringsAndBadKeys,
 		};

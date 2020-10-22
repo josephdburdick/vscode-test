@@ -9,15 +9,15 @@ import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { getEditOperation } from 'vs/editor/test/browser/testCommand';
+import { getEditOperation } from 'vs/editor/test/Browser/testCommand';
 import { withEditorModel } from 'vs/editor/test/common/editorTestUtils';
 
 /**
  * Create single edit operation
  */
-function createInsertDeleteSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+function createInsertDeleteSingleEditOp(text: string | null, positionLineNumBer: numBer, positionColumn: numBer, selectionLineNumBer: numBer = positionLineNumBer, selectionColumn: numBer = positionColumn): IIdentifiedSingleEditOperation {
 	return {
-		range: new Range(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
+		range: new Range(selectionLineNumBer, selectionColumn, positionLineNumBer, positionColumn),
 		text: text
 	};
 }
@@ -25,9 +25,9 @@ function createInsertDeleteSingleEditOp(text: string | null, positionLineNumber:
 /**
  * Create single edit operation
  */
-export function createSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+export function createSingleEditOp(text: string | null, positionLineNumBer: numBer, positionColumn: numBer, selectionLineNumBer: numBer = positionLineNumBer, selectionColumn: numBer = positionColumn): IIdentifiedSingleEditOperation {
 	return {
-		range: new Range(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
+		range: new Range(selectionLineNumBer, selectionColumn, positionLineNumBer, positionColumn),
 		text: text,
 		forceMoveMarkers: false
 	};

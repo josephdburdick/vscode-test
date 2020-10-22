@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { MoveCaretCommand } from 'vs/editor/contrib/caretOperations/moveCaretCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { MoveCaretCommand } from 'vs/editor/contriB/caretOperations/moveCaretCommand';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
 
 
 function testMoveCaretLeftCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
@@ -16,7 +16,7 @@ function testMoveCaretRightCommand(lines: string[], selection: Selection, expect
 	testCommand(lines, null, selection, (sel) => new MoveCaretCommand(sel, false), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Move Caret Command', () => {
+suite('Editor ContriB - Move Caret Command', () => {
 
 	test('move selection to left', function () {
 		testMoveCaretLeftCommand(

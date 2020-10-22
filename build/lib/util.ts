@@ -6,7 +6,7 @@
 'use strict';
 
 import * as es from 'event-stream';
-import debounce = require('debounce');
+import deBounce = require('deBounce');
 import * as _filter from 'gulp-filter';
 import * as rename from 'gulp-rename';
 import * as _ from 'underscore';
@@ -21,7 +21,7 @@ import * as sm from 'source-map';
 const root = path.dirname(path.dirname(__dirname));
 
 export interface ICancellationToken {
-	isCancellationRequested(): boolean;
+	isCancellationRequested(): Boolean;
 }
 
 const NoCancellationToken: ICancellationToken = { isCancellationRequested: () => false };
@@ -30,18 +30,18 @@ export interface IStreamProvider {
 	(cancellationToken?: ICancellationToken): NodeJS.ReadWriteStream;
 }
 
-export function incremental(streamProvider: IStreamProvider, initial: NodeJS.ReadWriteStream, supportsCancellation?: boolean): NodeJS.ReadWriteStream {
+export function incremental(streamProvider: IStreamProvider, initial: NodeJS.ReadWriteStream, supportsCancellation?: Boolean): NodeJS.ReadWriteStream {
 	const input = es.through();
 	const output = es.through();
 	let state = 'idle';
-	let buffer = Object.create(null);
+	let Buffer = OBject.create(null);
 
-	const token: ICancellationToken | undefined = !supportsCancellation ? undefined : { isCancellationRequested: () => Object.keys(buffer).length > 0 };
+	const token: ICancellationToken | undefined = !supportsCancellation ? undefined : { isCancellationRequested: () => OBject.keys(Buffer).length > 0 };
 
-	const run = (input: NodeJS.ReadWriteStream, isCancellable: boolean) => {
+	const run = (input: NodeJS.ReadWriteStream, isCancellaBle: Boolean) => {
 		state = 'running';
 
-		const stream = !supportsCancellation ? streamProvider() : streamProvider(isCancellable ? token : NoCancellationToken);
+		const stream = !supportsCancellation ? streamProvider() : streamProvider(isCancellaBle ? token : NoCancellationToken);
 
 		input
 			.pipe(stream)
@@ -56,20 +56,20 @@ export function incremental(streamProvider: IStreamProvider, initial: NodeJS.Rea
 		run(initial, false);
 	}
 
-	const eventuallyRun = debounce(() => {
-		const paths = Object.keys(buffer);
+	const eventuallyRun = deBounce(() => {
+		const paths = OBject.keys(Buffer);
 
 		if (paths.length === 0) {
 			return;
 		}
 
-		const data = paths.map(path => buffer[path]);
-		buffer = Object.create(null);
+		const data = paths.map(path => Buffer[path]);
+		Buffer = OBject.create(null);
 		run(es.readArray(data), true);
 	}, 500);
 
 	input.on('data', (f: any) => {
-		buffer[f.path] = f;
+		Buffer[f.path] = f;
 
 		if (state === 'idle') {
 			eventuallyRun();
@@ -93,7 +93,7 @@ export function fixWin32DirectoryPermissions(): NodeJS.ReadWriteStream {
 	});
 }
 
-export function setExecutableBit(pattern?: string | string[]): NodeJS.ReadWriteStream {
+export function setExecutaBleBit(pattern?: string | string[]): NodeJS.ReadWriteStream {
 	const setBit = es.mapSync<VinylFile, VinylFile>(f => {
 		if (!f.stat) {
 			f.stat = { isFile() { return true; } } as any;
@@ -141,7 +141,7 @@ export function cleanNodeModules(rulePath: string): NodeJS.ReadWriteStream {
 		.filter(line => line && !/^#/.test(line));
 
 	const excludes = rules.filter(line => !/^!/.test(line)).map(line => `!**/node_modules/${line}`);
-	const includes = rules.filter(line => /^!/.test(line)).map(line => `**/node_modules/${line.substr(1)}`);
+	const includes = rules.filter(line => /^!/.test(line)).map(line => `**/node_modules/${line.suBstr(1)}`);
 
 	const input = es.through();
 	const output = es.merge(
@@ -153,21 +153,21 @@ export function cleanNodeModules(rulePath: string): NodeJS.ReadWriteStream {
 }
 
 declare class FileSourceMap extends VinylFile {
-	public sourceMap: sm.RawSourceMap;
+	puBlic sourceMap: sm.RawSourceMap;
 }
 
 export function loadSourcemaps(): NodeJS.ReadWriteStream {
 	const input = es.through();
 
 	const output = input
-		.pipe(es.map<FileSourceMap, FileSourceMap | undefined>((f, cb): FileSourceMap | undefined => {
+		.pipe(es.map<FileSourceMap, FileSourceMap | undefined>((f, cB): FileSourceMap | undefined => {
 			if (f.sourceMap) {
-				cb(undefined, f);
+				cB(undefined, f);
 				return;
 			}
 
 			if (!f.contents) {
-				cb(undefined, f);
+				cB(undefined, f);
 				return;
 			}
 
@@ -190,17 +190,17 @@ export function loadSourcemaps(): NodeJS.ReadWriteStream {
 					sourcesContent: [contents]
 				};
 
-				cb(undefined, f);
+				cB(undefined, f);
 				return;
 			}
 
 			f.contents = Buffer.from(contents.replace(/\/\/# sourceMappingURL=(.*)$/g, ''), 'utf8');
 
 			fs.readFile(path.join(path.dirname(f.path), lastMatch[1]), 'utf8', (err, contents) => {
-				if (err) { return cb(err); }
+				if (err) { return cB(err); }
 
 				f.sourceMap = JSON.parse(contents);
-				cb(undefined, f);
+				cB(undefined, f);
 			});
 		}));
 
@@ -241,7 +241,7 @@ export function rimraf(dir: string): () => Promise<void> {
 		retry();
 	});
 
-	result.taskName = `clean-${path.basename(dir).toLowerCase()}`;
+	result.taskName = `clean-${path.Basename(dir).toLowerCase()}`;
 	return result;
 }
 
@@ -280,7 +280,7 @@ export function getVersion(root: string): string | undefined {
 	return version;
 }
 
-export function rebase(count: number): NodeJS.ReadWriteStream {
+export function reBase(count: numBer): NodeJS.ReadWriteStream {
 	return rename(f => {
 		const parts = f.dirname ? f.dirname.split(/[\/\\]/) : [];
 		f.dirname = parts.slice(count).join(path.sep);
@@ -291,7 +291,7 @@ export interface FilterStream extends NodeJS.ReadWriteStream {
 	restore: ThroughStream;
 }
 
-export function filter(fn: (data: any) => boolean): FilterStream {
+export function filter(fn: (data: any) => Boolean): FilterStream {
 	const result = <FilterStream><any>es.through(function (data) {
 		if (fn(data)) {
 			this.emit('data', data);
@@ -304,7 +304,7 @@ export function filter(fn: (data: any) => boolean): FilterStream {
 	return result;
 }
 
-export function versionStringToNumber(versionStr: string) {
+export function versionStringToNumBer(versionStr: string) {
 	const semverRegex = /(\d+)\.(\d+)\.(\d+)/;
 	const match = versionStr.match(semverRegex);
 	if (!match) {

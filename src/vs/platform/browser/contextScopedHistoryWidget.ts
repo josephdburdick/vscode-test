@@ -4,19 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IContextKeyService, ContextKeyExpr, RawContextKey, IContextKey, IContextKeyServiceTarget } from 'vs/platform/contextkey/common/contextkey';
-import { HistoryInputBox, IHistoryInputOptions } from 'vs/base/browser/ui/inputbox/inputBox';
-import { FindInput, IFindInputOptions } from 'vs/base/browser/ui/findinput/findInput';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { IHistoryNavigationWidget } from 'vs/base/browser/history';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { ReplaceInput, IReplaceInputOptions } from 'vs/base/browser/ui/findinput/replaceInput';
+import { HistoryInputBox, IHistoryInputOptions } from 'vs/Base/Browser/ui/inputBox/inputBox';
+import { FindInput, IFindInputOptions } from 'vs/Base/Browser/ui/findinput/findInput';
+import { IContextViewProvider } from 'vs/Base/Browser/ui/contextview/contextview';
+import { IHistoryNavigationWidget } from 'vs/Base/Browser/history';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { ReplaceInput, IReplaceInputOptions } from 'vs/Base/Browser/ui/findinput/replaceInput';
 
 export const HistoryNavigationWidgetContext = 'historyNavigationWidget';
-export const HistoryNavigationEnablementContext = 'historyNavigationEnabled';
+export const HistoryNavigationEnaBlementContext = 'historyNavigationEnaBled';
 
-function bindContextScopedWidget(contextKeyService: IContextKeyService, widget: IContextScopedWidget, contextKey: string): void {
-	new RawContextKey<IContextScopedWidget>(contextKey, widget).bindTo(contextKeyService);
+function BindContextScopedWidget(contextKeyService: IContextKeyService, widget: IContextScopedWidget, contextKey: string): void {
+	new RawContextKey<IContextScopedWidget>(contextKey, widget).BindTo(contextKeyService);
 }
 
 function createWidgetScopedContextKeyService(contextKeyService: IContextKeyService, widget: IContextScopedWidget): IContextKeyService {
@@ -35,11 +35,11 @@ interface IContextScopedHistoryNavigationWidget extends IContextScopedWidget {
 	historyNavigator: IHistoryNavigationWidget;
 }
 
-export function createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService: IContextKeyService, widget: IContextScopedHistoryNavigationWidget): { scopedContextKeyService: IContextKeyService, historyNavigationEnablement: IContextKey<boolean> } {
+export function createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService: IContextKeyService, widget: IContextScopedHistoryNavigationWidget): { scopedContextKeyService: IContextKeyService, historyNavigationEnaBlement: IContextKey<Boolean> } {
 	const scopedContextKeyService = createWidgetScopedContextKeyService(contextKeyService, widget);
-	bindContextScopedWidget(scopedContextKeyService, widget, HistoryNavigationWidgetContext);
-	const historyNavigationEnablement = new RawContextKey<boolean>(HistoryNavigationEnablementContext, true).bindTo(scopedContextKeyService);
-	return { scopedContextKeyService, historyNavigationEnablement };
+	BindContextScopedWidget(scopedContextKeyService, widget, HistoryNavigationWidgetContext);
+	const historyNavigationEnaBlement = new RawContextKey<Boolean>(HistoryNavigationEnaBlementContext, true).BindTo(scopedContextKeyService);
+	return { scopedContextKeyService, historyNavigationEnaBlement };
 }
 
 export class ContextScopedHistoryInputBox extends HistoryInputBox {
@@ -56,7 +56,7 @@ export class ContextScopedHistoryInputBox extends HistoryInputBox {
 export class ContextScopedFindInput extends FindInput {
 
 	constructor(container: HTMLElement | null, contextViewProvider: IContextViewProvider, options: IFindInputOptions,
-		@IContextKeyService contextKeyService: IContextKeyService, showFindOptions: boolean = false
+		@IContextKeyService contextKeyService: IContextKeyService, showFindOptions: Boolean = false
 	) {
 		super(container, contextViewProvider, showFindOptions, options);
 		this._register(createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService, <IContextScopedHistoryNavigationWidget>{ target: this.inputBox.element, historyNavigator: this.inputBox }).scopedContextKeyService);
@@ -66,7 +66,7 @@ export class ContextScopedFindInput extends FindInput {
 export class ContextScopedReplaceInput extends ReplaceInput {
 
 	constructor(container: HTMLElement | null, contextViewProvider: IContextViewProvider | undefined, options: IReplaceInputOptions,
-		@IContextKeyService contextKeyService: IContextKeyService, showReplaceOptions: boolean = false
+		@IContextKeyService contextKeyService: IContextKeyService, showReplaceOptions: Boolean = false
 	) {
 		super(container, contextViewProvider, showReplaceOptions, options);
 		this._register(createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService, <IContextScopedHistoryNavigationWidget>{ target: this.inputBox.element, historyNavigator: this.inputBox }).scopedContextKeyService);
@@ -74,10 +74,10 @@ export class ContextScopedReplaceInput extends ReplaceInput {
 
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'history.showPrevious',
-	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(ContextKeyExpr.has(HistoryNavigationWidgetContext), ContextKeyExpr.equals(HistoryNavigationEnablementContext, true)),
+	weight: KeyBindingWeight.WorkBenchContriB,
+	when: ContextKeyExpr.and(ContextKeyExpr.has(HistoryNavigationWidgetContext), ContextKeyExpr.equals(HistoryNavigationEnaBlementContext, true)),
 	primary: KeyCode.UpArrow,
 	secondary: [KeyMod.Alt | KeyCode.UpArrow],
 	handler: (accessor, arg2) => {
@@ -89,10 +89,10 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'history.showNext',
-	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(ContextKeyExpr.has(HistoryNavigationWidgetContext), ContextKeyExpr.equals(HistoryNavigationEnablementContext, true)),
+	weight: KeyBindingWeight.WorkBenchContriB,
+	when: ContextKeyExpr.and(ContextKeyExpr.has(HistoryNavigationWidgetContext), ContextKeyExpr.equals(HistoryNavigationEnaBlementContext, true)),
 	primary: KeyCode.DownArrow,
 	secondary: [KeyMod.Alt | KeyCode.DownArrow],
 	handler: (accessor, arg2) => {

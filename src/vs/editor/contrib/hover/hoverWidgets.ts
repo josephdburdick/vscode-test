@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IContentWidget, ICodeEditor, IContentWidgetPosition, ContentWidgetPositionPreference, IOverlayWidget, IOverlayWidgetPosition } from 'vs/editor/browser/editorBrowser';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { IContentWidget, ICodeEditor, IContentWidgetPosition, ContentWidgetPositionPreference, IOverlayWidget, IOverlayWidgetPosition } from 'vs/editor/Browser/editorBrowser';
 import { ConfigurationChangedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
-import { renderHoverAction, HoverWidget } from 'vs/base/browser/ui/hover/hoverWidget';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { renderHoverAction, HoverWidget } from 'vs/Base/Browser/ui/hover/hoverWidget';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { IContextKey } from 'vs/platform/contextkey/common/contextkey';
 
 export class ContentHoverWidget extends Widget implements IContentWidget {
@@ -20,38 +20,38 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 	protected readonly _hover: HoverWidget;
 	private readonly _id: string;
 	protected _editor: ICodeEditor;
-	private _isVisible: boolean;
+	private _isVisiBle: Boolean;
 	protected _showAtPosition: Position | null;
 	protected _showAtRange: Range | null;
-	private _stoleFocus: boolean;
+	private _stoleFocus: Boolean;
 
 	// Editor.IContentWidget.allowEditorOverflow
-	public allowEditorOverflow = true;
+	puBlic allowEditorOverflow = true;
 
-	protected get isVisible(): boolean {
-		return this._isVisible;
+	protected get isVisiBle(): Boolean {
+		return this._isVisiBle;
 	}
 
-	protected set isVisible(value: boolean) {
-		this._isVisible = value;
-		this._hover.containerDomNode.classList.toggle('hidden', !this._isVisible);
+	protected set isVisiBle(value: Boolean) {
+		this._isVisiBle = value;
+		this._hover.containerDomNode.classList.toggle('hidden', !this._isVisiBle);
 	}
 
 	constructor(
 		id: string,
 		editor: ICodeEditor,
-		private readonly _hoverVisibleKey: IContextKey<boolean>,
-		private readonly _keybindingService: IKeybindingService
+		private readonly _hoverVisiBleKey: IContextKey<Boolean>,
+		private readonly _keyBindingService: IKeyBindingService
 	) {
 		super();
 
 		this._hover = this._register(new HoverWidget());
 		this._id = id;
 		this._editor = editor;
-		this._isVisible = false;
+		this._isVisiBle = false;
 		this._stoleFocus = false;
 
-		this.onkeydown(this._hover.containerDomNode, (e: IKeyboardEvent) => {
+		this.onkeydown(this._hover.containerDomNode, (e: IKeyBoardEvent) => {
 			if (e.equals(KeyCode.Escape)) {
 				this.hide();
 			}
@@ -72,20 +72,20 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		this._stoleFocus = false;
 	}
 
-	public getId(): string {
+	puBlic getId(): string {
 		return this._id;
 	}
 
-	public getDomNode(): HTMLElement {
+	puBlic getDomNode(): HTMLElement {
 		return this._hover.containerDomNode;
 	}
 
-	public showAt(position: Position, range: Range | null, focus: boolean): void {
+	puBlic showAt(position: Position, range: Range | null, focus: Boolean): void {
 		// Position has changed
 		this._showAtPosition = position;
 		this._showAtRange = range;
-		this._hoverVisibleKey.set(true);
-		this.isVisible = true;
+		this._hoverVisiBleKey.set(true);
+		this.isVisiBle = true;
 
 		this._editor.layoutContentWidget(this);
 		// Simply force a synchronous render on the editor
@@ -97,18 +97,18 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		}
 	}
 
-	public hide(): void {
-		if (!this.isVisible) {
+	puBlic hide(): void {
+		if (!this.isVisiBle) {
 			return;
 		}
 
 		setTimeout(() => {
 			// Give commands a chance to see the key
-			if (!this.isVisible) {
-				this._hoverVisibleKey.set(false);
+			if (!this.isVisiBle) {
+				this._hoverVisiBleKey.set(false);
 			}
 		}, 0);
-		this.isVisible = false;
+		this.isVisiBle = false;
 
 		this._editor.layoutContentWidget(this);
 		if (this._stoleFocus) {
@@ -116,8 +116,8 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		}
 	}
 
-	public getPosition(): IContentWidgetPosition | null {
-		if (this.isVisible) {
+	puBlic getPosition(): IContentWidgetPosition | null {
+		if (this.isVisiBle) {
 			return {
 				position: this._showAtPosition,
 				range: this._showAtRange,
@@ -130,7 +130,7 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		return null;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._editor.removeContentWidget(this);
 		super.dispose();
 	}
@@ -149,10 +149,10 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		this._hover.onContentsChanged();
 	}
 
-	protected _renderAction(parent: HTMLElement, actionOptions: { label: string, iconClass?: string, run: (target: HTMLElement) => void, commandId: string }): IDisposable {
-		const keybinding = this._keybindingService.lookupKeybinding(actionOptions.commandId);
-		const keybindingLabel = keybinding ? keybinding.getLabel() : null;
-		return renderHoverAction(parent, actionOptions, keybindingLabel);
+	protected _renderAction(parent: HTMLElement, actionOptions: { laBel: string, iconClass?: string, run: (target: HTMLElement) => void, commandId: string }): IDisposaBle {
+		const keyBinding = this._keyBindingService.lookupKeyBinding(actionOptions.commandId);
+		const keyBindingLaBel = keyBinding ? keyBinding.getLaBel() : null;
+		return renderHoverAction(parent, actionOptions, keyBindingLaBel);
 	}
 
 	private layout(): void {
@@ -170,22 +170,22 @@ export class GlyphHoverWidget extends Widget implements IOverlayWidget {
 
 	private readonly _id: string;
 	protected _editor: ICodeEditor;
-	private _isVisible: boolean;
+	private _isVisiBle: Boolean;
 	private readonly _domNode: HTMLElement;
-	protected _showAtLineNumber: number;
+	protected _showAtLineNumBer: numBer;
 
 	constructor(id: string, editor: ICodeEditor) {
 		super();
 		this._id = id;
 		this._editor = editor;
-		this._isVisible = false;
+		this._isVisiBle = false;
 
 		this._domNode = document.createElement('div');
 		this._domNode.className = 'monaco-hover hidden';
-		this._domNode.setAttribute('aria-hidden', 'true');
-		this._domNode.setAttribute('role', 'tooltip');
+		this._domNode.setAttriBute('aria-hidden', 'true');
+		this._domNode.setAttriBute('role', 'tooltip');
 
-		this._showAtLineNumber = -1;
+		this._showAtLineNumBer = -1;
 
 		this._register(this._editor.onDidChangeConfiguration((e: ConfigurationChangedEvent) => {
 			if (e.hasChanged(EditorOption.fontInfo)) {
@@ -196,53 +196,53 @@ export class GlyphHoverWidget extends Widget implements IOverlayWidget {
 		this._editor.addOverlayWidget(this);
 	}
 
-	protected get isVisible(): boolean {
-		return this._isVisible;
+	protected get isVisiBle(): Boolean {
+		return this._isVisiBle;
 	}
 
-	protected set isVisible(value: boolean) {
-		this._isVisible = value;
-		this._domNode.classList.toggle('hidden', !this._isVisible);
+	protected set isVisiBle(value: Boolean) {
+		this._isVisiBle = value;
+		this._domNode.classList.toggle('hidden', !this._isVisiBle);
 	}
 
-	public getId(): string {
+	puBlic getId(): string {
 		return this._id;
 	}
 
-	public getDomNode(): HTMLElement {
+	puBlic getDomNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	public showAt(lineNumber: number): void {
-		this._showAtLineNumber = lineNumber;
+	puBlic showAt(lineNumBer: numBer): void {
+		this._showAtLineNumBer = lineNumBer;
 
-		if (!this.isVisible) {
-			this.isVisible = true;
+		if (!this.isVisiBle) {
+			this.isVisiBle = true;
 		}
 
 		const editorLayout = this._editor.getLayoutInfo();
-		const topForLineNumber = this._editor.getTopForLineNumber(this._showAtLineNumber);
+		const topForLineNumBer = this._editor.getTopForLineNumBer(this._showAtLineNumBer);
 		const editorScrollTop = this._editor.getScrollTop();
 		const lineHeight = this._editor.getOption(EditorOption.lineHeight);
 		const nodeHeight = this._domNode.clientHeight;
-		const top = topForLineNumber - editorScrollTop - ((nodeHeight - lineHeight) / 2);
+		const top = topForLineNumBer - editorScrollTop - ((nodeHeight - lineHeight) / 2);
 
 		this._domNode.style.left = `${editorLayout.glyphMarginLeft + editorLayout.glyphMarginWidth}px`;
 		this._domNode.style.top = `${Math.max(Math.round(top), 0)}px`;
 	}
 
-	public hide(): void {
-		if (!this.isVisible) {
+	puBlic hide(): void {
+		if (!this.isVisiBle) {
 			return;
 		}
-		this.isVisible = false;
+		this.isVisiBle = false;
 	}
 
-	public getPosition(): IOverlayWidgetPosition | null {
+	puBlic getPosition(): IOverlayWidgetPosition | null {
 		return null;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._editor.removeOverlayWidget(this);
 		super.dispose();
 	}

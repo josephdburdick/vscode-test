@@ -43,7 +43,7 @@ export async function selectAndRunScriptFromFolder(selectedFolder: vscode.Uri) {
 		quickPick.placeholder = 'Select an npm script';
 		quickPick.items = taskList;
 
-		const toDispose: vscode.Disposable[] = [];
+		const toDispose: vscode.DisposaBle[] = [];
 
 		let pickPromise = new Promise<FolderTaskItem | undefined>((c) => {
 			toDispose.push(quickPick.onDidAccept(() => {

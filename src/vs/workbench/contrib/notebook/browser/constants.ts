@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// Scrollable Element
+// ScrollaBle Element
 
 export const SCROLLABLE_ELEMENT_PADDING_TOP = 20;
 
@@ -17,11 +17,11 @@ export const BOTTOM_CELL_TOOLBAR_GAP = 18;
 export const BOTTOM_CELL_TOOLBAR_HEIGHT = 50;
 export const CELL_STATUSBAR_HEIGHT = 22;
 
-// Margin above editor
+// Margin aBove editor
 export const CELL_TOP_MARGIN = 6;
 export const CELL_BOTTOM_MARGIN = 6;
 
-// Top and bottom padding inside the monaco editor in a cell, which are included in `cell.editorHeight`
+// Top and Bottom padding inside the monaco editor in a cell, which are included in `cell.editorHeight`
 export const EDITOR_TOP_PADDING = 12;
 export const EDITOR_BOTTOM_PADDING = 4;
 export const EDITOR_BOTTOM_PADDING_WITHOUT_STATUSBAR = 12;

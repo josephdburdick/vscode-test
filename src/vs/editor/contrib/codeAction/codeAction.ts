@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals, flatten, isNonEmptyArray, mergeSort, coalesce } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { illegalArgument, isPromiseCanceledError, onUnexpectedExternalError } from 'vs/base/common/errors';
-import { Disposable, DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { TextModelCancellationTokenSource } from 'vs/editor/browser/core/editorState';
-import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
+import { equals, flatten, isNonEmptyArray, mergeSort, coalesce } from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { illegalArgument, isPromiseCanceledError, onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { DisposaBle, DisposaBleStore, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { TextModelCancellationTokenSource } from 'vs/editor/Browser/core/editorState';
+import { registerLanguageCommand } from 'vs/editor/Browser/editorExtensions';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
@@ -47,51 +47,51 @@ export class CodeActionItem {
 	}
 }
 
-export interface CodeActionSet extends IDisposable {
+export interface CodeActionSet extends IDisposaBle {
 	readonly validActions: readonly CodeActionItem[];
 	readonly allActions: readonly CodeActionItem[];
-	readonly hasAutoFix: boolean;
+	readonly hasAutoFix: Boolean;
 
 	readonly documentation: readonly modes.Command[];
 }
 
-class ManagedCodeActionSet extends Disposable implements CodeActionSet {
+class ManagedCodeActionSet extends DisposaBle implements CodeActionSet {
 
-	private static codeActionsComparator({ action: a }: CodeActionItem, { action: b }: CodeActionItem): number {
-		if (a.isPreferred && !b.isPreferred) {
+	private static codeActionsComparator({ action: a }: CodeActionItem, { action: B }: CodeActionItem): numBer {
+		if (a.isPreferred && !B.isPreferred) {
 			return -1;
-		} else if (!a.isPreferred && b.isPreferred) {
+		} else if (!a.isPreferred && B.isPreferred) {
 			return 1;
 		}
 
 		if (isNonEmptyArray(a.diagnostics)) {
-			if (isNonEmptyArray(b.diagnostics)) {
-				return a.diagnostics[0].message.localeCompare(b.diagnostics[0].message);
+			if (isNonEmptyArray(B.diagnostics)) {
+				return a.diagnostics[0].message.localeCompare(B.diagnostics[0].message);
 			} else {
 				return -1;
 			}
-		} else if (isNonEmptyArray(b.diagnostics)) {
+		} else if (isNonEmptyArray(B.diagnostics)) {
 			return 1;
 		} else {
-			return 0;	// both have no diagnostics
+			return 0;	// Both have no diagnostics
 		}
 	}
 
-	public readonly validActions: readonly CodeActionItem[];
-	public readonly allActions: readonly CodeActionItem[];
+	puBlic readonly validActions: readonly CodeActionItem[];
+	puBlic readonly allActions: readonly CodeActionItem[];
 
-	public constructor(
+	puBlic constructor(
 		actions: readonly CodeActionItem[],
-		public readonly documentation: readonly modes.Command[],
-		disposables: DisposableStore,
+		puBlic readonly documentation: readonly modes.Command[],
+		disposaBles: DisposaBleStore,
 	) {
 		super();
-		this._register(disposables);
+		this._register(disposaBles);
 		this.allActions = mergeSort([...actions], ManagedCodeActionSet.codeActionsComparator);
-		this.validActions = this.allActions.filter(({ action }) => !action.disabled);
+		this.validActions = this.allActions.filter(({ action }) => !action.disaBled);
 	}
 
-	public get hasAutoFix() {
+	puBlic get hasAutoFix() {
 		return this.validActions.some(({ action: fix }) => !!fix.kind && CodeActionKind.QuickFix.contains(new CodeActionKind(fix.kind)) && !!fix.isPreferred);
 	}
 }
@@ -116,13 +116,13 @@ export function getCodeActions(
 	const cts = new TextModelCancellationTokenSource(model, token);
 	const providers = getCodeActionProviders(model, filter);
 
-	const disposables = new DisposableStore();
+	const disposaBles = new DisposaBleStore();
 	const promises = providers.map(async provider => {
 		try {
 			progress.report(provider);
 			const providedCodeActions = await provider.provideCodeActions(model, rangeOrSelection, codeActionContext, cts.token);
 			if (providedCodeActions) {
-				disposables.add(providedCodeActions);
+				disposaBles.add(providedCodeActions);
 			}
 
 			if (cts.token.isCancellationRequested) {
@@ -154,7 +154,7 @@ export function getCodeActions(
 	return Promise.all(promises).then(actions => {
 		const allActions = flatten(actions.map(x => x.actions));
 		const allDocumentation = coalesce(actions.map(x => x.documentation));
-		return new ManagedCodeActionSet(allActions, allDocumentation, disposables);
+		return new ManagedCodeActionSet(allActions, allDocumentation, disposaBles);
 	})
 		.finally(() => {
 			listener.dispose();
@@ -195,7 +195,7 @@ function getDocumentation(
 				if (!currentBest) {
 					currentBest = entry;
 				} else {
-					// Take best match
+					// Take Best match
 					if (currentBest.kind.contains(entry.kind)) {
 						currentBest = entry;
 					}
@@ -253,7 +253,7 @@ registerLanguageCommand('_executeCodeActionProvider', async function (accessor, 
 
 
 	const resolving: Promise<any>[] = [];
-	const resolveCount = Math.min(codeActionSet.validActions.length, typeof itemResolveCount === 'number' ? itemResolveCount : 0);
+	const resolveCount = Math.min(codeActionSet.validActions.length, typeof itemResolveCount === 'numBer' ? itemResolveCount : 0);
 	for (let i = 0; i < resolveCount; i++) {
 		resolving.push(codeActionSet.validActions[i].resolve(CancellationToken.None));
 	}

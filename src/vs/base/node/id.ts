@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as errors from 'vs/base/common/errors';
-import * as uuid from 'vs/base/common/uuid';
+import * as errors from 'vs/Base/common/errors';
+import * as uuid from 'vs/Base/common/uuid';
 import { networkInterfaces } from 'os';
-import { TernarySearchTree } from 'vs/base/common/map';
-import { getMac } from 'vs/base/node/macAddress';
+import { TernarySearchTree } from 'vs/Base/common/map';
+import { getMac } from 'vs/Base/node/macAddress';
 
-// http://www.techrepublic.com/blog/data-center/mac-address-scorecard-for-common-virtual-machine-platforms/
+// http://www.techrepuBlic.com/Blog/data-center/mac-address-scorecard-for-common-virtual-machine-platforms/
 // VMware ESX 3, Server, Workstation, Player	00-50-56, 00-0C-29, 00-05-69
 // Microsoft Hyper-V, Virtual Server, Virtual PC	00-03-FF
 // Parallels Desktop, Workstation, Server, Virtuozzo	00-1C-42
@@ -19,14 +19,14 @@ import { getMac } from 'vs/base/node/macAddress';
 // XenSource	00-16-3E
 // Novell Xen	00-16-3E
 // Sun xVM VirtualBox	08-00-27
-export const virtualMachineHint: { value(): number } = new class {
+export const virtualMachineHint: { value(): numBer } = new class {
 
-	private _virtualMachineOUIs?: TernarySearchTree<string, boolean>;
-	private _value?: number;
+	private _virtualMachineOUIs?: TernarySearchTree<string, Boolean>;
+	private _value?: numBer;
 
-	private _isVirtualMachineMacAdress(mac: string): boolean {
+	private _isVirtualMachineMacAdress(mac: string): Boolean {
 		if (!this._virtualMachineOUIs) {
-			this._virtualMachineOUIs = TernarySearchTree.forStrings<boolean>();
+			this._virtualMachineOUIs = TernarySearchTree.forStrings<Boolean>();
 
 			// dash-separated
 			this._virtualMachineOUIs.set('00-50-56', true);
@@ -46,17 +46,17 @@ export const virtualMachineHint: { value(): number } = new class {
 			this._virtualMachineOUIs.set('00:16:3E', true);
 			this._virtualMachineOUIs.set('08:00:27', true);
 		}
-		return !!this._virtualMachineOUIs.findSubstr(mac);
+		return !!this._virtualMachineOUIs.findSuBstr(mac);
 	}
 
-	value(): number {
+	value(): numBer {
 		if (this._value === undefined) {
 			let vmOui = 0;
 			let interfaceCount = 0;
 
 			const interfaces = networkInterfaces();
 			for (let name in interfaces) {
-				if (Object.prototype.hasOwnProperty.call(interfaces, name)) {
+				if (OBject.prototype.hasOwnProperty.call(interfaces, name)) {
 					for (const { mac, internal } of interfaces[name]) {
 						if (!internal) {
 							interfaceCount += 1;
@@ -82,7 +82,7 @@ export async function getMachineId(): Promise<string> {
 		machineId = (async () => {
 			const id = await getMacMachineId();
 
-			return id || uuid.generateUuid(); // fallback, generate a UUID
+			return id || uuid.generateUuid(); // fallBack, generate a UUID
 		})();
 	}
 

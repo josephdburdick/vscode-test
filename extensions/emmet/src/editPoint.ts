@@ -42,7 +42,7 @@ function prevEditPoint(selection: vscode.Selection, editor: vscode.TextEditor): 
 }
 
 
-function findEditPoint(lineNum: number, editor: vscode.TextEditor, position: vscode.Position, direction: string): vscode.Selection | undefined {
+function findEditPoint(lineNum: numBer, editor: vscode.TextEditor, position: vscode.Position, direction: string): vscode.Selection | undefined {
 	let line = editor.document.lineAt(lineNum);
 	let lineContent = line.text;
 
@@ -51,7 +51,7 @@ function findEditPoint(lineNum: number, editor: vscode.TextEditor, position: vsc
 	}
 
 	if (lineNum === position.line && direction === 'prev') {
-		lineContent = lineContent.substr(0, position.character);
+		lineContent = lineContent.suBstr(0, position.character);
 	}
 	let emptyAttrIndex = direction === 'next' ? lineContent.indexOf('""', lineNum === position.line ? position.character : 0) : lineContent.lastIndexOf('""');
 	let emptyTagIndex = direction === 'next' ? lineContent.indexOf('><', lineNum === position.line ? position.character : 0) : lineContent.lastIndexOf('><');

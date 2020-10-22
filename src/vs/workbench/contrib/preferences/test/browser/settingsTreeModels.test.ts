@@ -4,108 +4,108 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { settingKeyToDisplayFormat, parseQuery, IParsedQuery } from 'vs/workbench/contrib/preferences/browser/settingsTreeModels';
+import { settingKeyToDisplayFormat, parseQuery, IParsedQuery } from 'vs/workBench/contriB/preferences/Browser/settingsTreeModels';
 
 suite('SettingsTree', () => {
 	test('settingKeyToDisplayFormat', () => {
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar'),
+			settingKeyToDisplayFormat('foo.Bar'),
 			{
 				category: 'Foo',
-				label: 'Bar'
+				laBel: 'Bar'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc'),
+			settingKeyToDisplayFormat('foo.Bar.etc'),
 			{
 				category: 'Foo › Bar',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 		assert.deepEqual(
 			settingKeyToDisplayFormat('fooBar.etcSomething'),
 			{
 				category: 'Foo Bar',
-				label: 'Etc Something'
+				laBel: 'Etc Something'
 			});
 
 		assert.deepEqual(
 			settingKeyToDisplayFormat('foo'),
 			{
 				category: '',
-				label: 'Foo'
+				laBel: 'Foo'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.1leading.number'),
+			settingKeyToDisplayFormat('foo.1leading.numBer'),
 			{
 				category: 'Foo › 1leading',
-				label: 'Number'
+				laBel: 'NumBer'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.1Leading.number'),
+			settingKeyToDisplayFormat('foo.1Leading.numBer'),
 			{
 				category: 'Foo › 1 Leading',
-				label: 'Number'
+				laBel: 'NumBer'
 			});
 	});
 
 	test('settingKeyToDisplayFormat - with category', () => {
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar', 'foo'),
+			settingKeyToDisplayFormat('foo.Bar', 'foo'),
 			{
 				category: '',
-				label: 'Bar'
+				laBel: 'Bar'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('disableligatures.ligatures', 'disableligatures'),
+			settingKeyToDisplayFormat('disaBleligatures.ligatures', 'disaBleligatures'),
 			{
 				category: '',
-				label: 'Ligatures'
+				laBel: 'Ligatures'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'foo'),
+			settingKeyToDisplayFormat('foo.Bar.etc', 'foo'),
 			{
 				category: 'Bar',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 		assert.deepEqual(
 			settingKeyToDisplayFormat('fooBar.etcSomething', 'foo'),
 			{
 				category: 'Foo Bar',
-				label: 'Etc Something'
+				laBel: 'Etc Something'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'foo/bar'),
+			settingKeyToDisplayFormat('foo.Bar.etc', 'foo/Bar'),
 			{
 				category: '',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'something/foo'),
+			settingKeyToDisplayFormat('foo.Bar.etc', 'something/foo'),
 			{
 				category: 'Bar',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 		assert.deepEqual(
-			settingKeyToDisplayFormat('bar.etc', 'something.bar'),
+			settingKeyToDisplayFormat('Bar.etc', 'something.Bar'),
 			{
 				category: '',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 		assert.deepEqual(
 			settingKeyToDisplayFormat('fooBar.etc', 'fooBar'),
 			{
 				category: '',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 
 
@@ -113,7 +113,7 @@ suite('SettingsTree', () => {
 			settingKeyToDisplayFormat('fooBar.somethingElse.etc', 'fooBar'),
 			{
 				category: 'Something Else',
-				label: 'Etc'
+				laBel: 'Etc'
 			});
 	});
 
@@ -122,14 +122,14 @@ suite('SettingsTree', () => {
 			settingKeyToDisplayFormat('css.someCssSetting'),
 			{
 				category: 'CSS',
-				label: 'Some CSS Setting'
+				laBel: 'Some CSS Setting'
 			});
 
 		assert.deepEqual(
 			settingKeyToDisplayFormat('powershell.somePowerShellSetting'),
 			{
 				category: 'PowerShell',
-				label: 'Some PowerShell Setting'
+				laBel: 'Some PowerShell Setting'
 			});
 	});
 
@@ -215,18 +215,18 @@ suite('SettingsTree', () => {
 			});
 
 		testParseQuery(
-			'@ext:github.vscode-pull-request-github',
+			'@ext:githuB.vscode-pull-request-githuB',
 			<IParsedQuery>{
 				tags: [],
-				extensionFilters: ['github.vscode-pull-request-github'],
+				extensionFilters: ['githuB.vscode-pull-request-githuB'],
 				query: ''
 			});
 
 		testParseQuery(
-			'@ext:github.vscode-pull-request-github,vscode.git',
+			'@ext:githuB.vscode-pull-request-githuB,vscode.git',
 			<IParsedQuery>{
 				tags: [],
-				extensionFilters: ['github.vscode-pull-request-github', 'vscode.git'],
+				extensionFilters: ['githuB.vscode-pull-request-githuB', 'vscode.git'],
 				query: ''
 			});
 	});

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { deepEqual, equal } from 'assert';
-import { WindowsExternalTerminalService, LinuxExternalTerminalService, MacExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/node/externalTerminalService';
-import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externalTerminal/node/externalTerminal';
+import { WindowsExternalTerminalService, LinuxExternalTerminalService, MacExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/node/externalTerminalService';
+import { DEFAULT_TERMINAL_OSX } from 'vs/workBench/contriB/externalTerminal/node/externalTerminal';
 
 suite('ExternalTerminalService', () => {
 	let mockOnExit: Function;
@@ -84,7 +84,7 @@ suite('ExternalTerminalService', () => {
 		let mockSpawner = {
 			spawn: (command: any, args: any, opts: any) => {
 				// assert
-				equal(opts.cwd, 'C:/foo', 'cwd should be uppercase regardless of the case that\'s passed in');
+				equal(opts.cwd, 'C:/foo', 'cwd should Be uppercase regardless of the case that\'s passed in');
 				done();
 				return {
 					on: (evt: any) => evt
@@ -102,7 +102,7 @@ suite('ExternalTerminalService', () => {
 		);
 	});
 
-	test(`WinTerminalService - cmder should be spawned differently`, done => {
+	test(`WinTerminalService - cmder should Be spawned differently`, done => {
 		let testShell = 'cmd';
 		mockConfig.terminal.external.windowsExec = 'cmder';
 		let testCwd = 'c:/foo';

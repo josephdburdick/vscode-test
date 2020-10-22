@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { BackupRestorer } from 'vs/workbench/contrib/backup/common/backupRestorer';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { BackupRestorer } from 'vs/workBench/contriB/Backup/common/BackupRestorer';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
 // Register Backup Restorer
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(BackupRestorer, LifecyclePhase.Starting);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(BackupRestorer, LifecyclePhase.Starting);

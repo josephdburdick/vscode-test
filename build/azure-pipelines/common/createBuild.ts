@@ -28,14 +28,14 @@ async function main(): Promise<void> {
 	const commit = getEnv('BUILD_SOURCEVERSION');
 	const queuedBy = getEnv('BUILD_QUEUEDBY');
 	const sourceBranch = getEnv('BUILD_SOURCEBRANCH');
-	const version = _version + (quality === 'stable' ? '' : `-${quality}`);
+	const version = _version + (quality === 'staBle' ? '' : `-${quality}`);
 
-	console.log('Creating build...');
+	console.log('Creating Build...');
 	console.log('Quality:', quality);
 	console.log('Version:', version);
 	console.log('Commit:', commit);
 
-	const build = {
+	const Build = {
 		id: commit,
 		timestamp: (new Date()).getTime(),
 		version,
@@ -47,8 +47,8 @@ async function main(): Promise<void> {
 	};
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const scripts = client.database('builds').container(quality).scripts;
-	await scripts.storedProcedure('createBuild').execute('', [{ ...build, _partitionKey: '' }]);
+	const scripts = client.dataBase('Builds').container(quality).scripts;
+	await scripts.storedProcedure('createBuild').execute('', [{ ...Build, _partitionKey: '' }]);
 }
 
 main().then(() => {

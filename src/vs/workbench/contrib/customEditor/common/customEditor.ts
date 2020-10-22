@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { distinct, mergeSort } from 'vs/base/common/arrays';
-import { Event } from 'vs/base/common/event';
-import * as glob from 'vs/base/common/glob';
-import { IDisposable, IReference } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { posix } from 'vs/base/common/path';
-import { basename } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { distinct, mergeSort } from 'vs/Base/common/arrays';
+import { Event } from 'vs/Base/common/event';
+import * as gloB from 'vs/Base/common/gloB';
+import { IDisposaBle, IReference } from 'vs/Base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { posix } from 'vs/Base/common/path';
+import { Basename } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { ITextEditorOptions } from 'vs/platform/editor/common/editor';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { GroupIdentifier, IEditorInput, IEditorPane, IRevertOptions, ISaveOptions } from 'vs/workbench/common/editor';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { GroupIdentifier, IEditorInput, IEditorPane, IRevertOptions, ISaveOptions } from 'vs/workBench/common/editor';
+import { IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
 
 export const ICustomEditorService = createDecorator<ICustomEditorService>('customEditorService');
 
 export const CONTEXT_CUSTOM_EDITORS = new RawContextKey<string>('customEditors', '');
-export const CONTEXT_FOCUSED_CUSTOM_EDITOR_IS_EDITABLE = new RawContextKey<boolean>('focusedCustomEditorIsEditable', false);
+export const CONTEXT_FOCUSED_CUSTOM_EDITOR_IS_EDITABLE = new RawContextKey<Boolean>('focusedCustomEditorIsEditaBle', false);
 
-export interface CustomEditorCapabilities {
-	readonly supportsMultipleEditorsPerDocument?: boolean;
+export interface CustomEditorCapaBilities {
+	readonly supportsMultipleEditorsPerDocument?: Boolean;
 }
 
 export interface ICustomEditorService {
@@ -33,7 +33,7 @@ export interface ICustomEditorService {
 
 	getCustomEditor(viewType: string): CustomEditorInfo | undefined;
 	getAllCustomEditors(resource: URI): CustomEditorInfoCollection;
-	getContributedCustomEditors(resource: URI): CustomEditorInfoCollection;
+	getContriButedCustomEditors(resource: URI): CustomEditorInfoCollection;
 	getUserConfiguredCustomEditors(resource: URI): CustomEditorInfoCollection;
 
 	createInput(resource: URI, viewType: string, group: GroupIdentifier | undefined, options?: { readonly customClasses: string }): IEditorInput;
@@ -41,7 +41,7 @@ export interface ICustomEditorService {
 	openWith(resource: URI, customEditorViewType: string, options?: ITextEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
 	promptOpenWith(resource: URI, options?: ITextEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
 
-	registerCustomEditorCapabilities(viewType: string, options: CustomEditorCapabilities): IDisposable;
+	registerCustomEditorCapaBilities(viewType: string, options: CustomEditorCapaBilities): IDisposaBle;
 }
 
 export interface ICustomEditorModelManager {
@@ -54,25 +54,25 @@ export interface ICustomEditorModelManager {
 	disposeAllModelsForView(viewType: string): void;
 }
 
-export interface ICustomEditorModel extends IDisposable {
+export interface ICustomEditorModel extends IDisposaBle {
 	readonly viewType: string;
 	readonly resource: URI;
-	readonly backupId: string | undefined;
+	readonly BackupId: string | undefined;
 
-	isReadonly(): boolean;
+	isReadonly(): Boolean;
 
-	isDirty(): boolean;
+	isDirty(): Boolean;
 	readonly onDidChangeDirty: Event<void>;
 
 	revert(options?: IRevertOptions): Promise<void>;
 
 	saveCustomEditor(options?: ISaveOptions): Promise<URI | undefined>;
-	saveCustomEditorAs(resource: URI, targetResource: URI, currentOptions?: ISaveOptions): Promise<boolean>;
+	saveCustomEditorAs(resource: URI, targetResource: URI, currentOptions?: ISaveOptions): Promise<Boolean>;
 }
 
 export const enum CustomEditorPriority {
 	default = 'default',
-	builtin = 'builtin',
+	Builtin = 'Builtin',
 	option = 'option',
 }
 
@@ -92,14 +92,14 @@ export class CustomEditorInfo implements CustomEditorDescriptor {
 
 	private static readonly excludedSchemes = new Set([
 		Schemas.extension,
-		Schemas.webviewPanel,
+		Schemas.weBviewPanel,
 	]);
 
-	public readonly id: string;
-	public readonly displayName: string;
-	public readonly providerDisplayName: string;
-	public readonly priority: CustomEditorPriority;
-	public readonly selector: readonly CustomEditorSelector[];
+	puBlic readonly id: string;
+	puBlic readonly displayName: string;
+	puBlic readonly providerDisplayName: string;
+	puBlic readonly priority: CustomEditorPriority;
+	puBlic readonly selector: readonly CustomEditorSelector[];
 
 	constructor(descriptor: CustomEditorDescriptor) {
 		this.id = descriptor.id;
@@ -109,19 +109,19 @@ export class CustomEditorInfo implements CustomEditorDescriptor {
 		this.selector = descriptor.selector;
 	}
 
-	matches(resource: URI): boolean {
+	matches(resource: URI): Boolean {
 		return this.selector.some(selector => CustomEditorInfo.selectorMatches(selector, resource));
 	}
 
-	static selectorMatches(selector: CustomEditorSelector, resource: URI): boolean {
+	static selectorMatches(selector: CustomEditorSelector, resource: URI): Boolean {
 		if (CustomEditorInfo.excludedSchemes.has(resource.scheme)) {
 			return false;
 		}
 
 		if (selector.filenamePattern) {
 			const matchOnPath = selector.filenamePattern.indexOf(posix.sep) >= 0;
-			const target = matchOnPath ? resource.path : basename(resource);
-			if (glob.match(selector.filenamePattern.toLowerCase(), target.toLowerCase())) {
+			const target = matchOnPath ? resource.path : Basename(resource);
+			if (gloB.match(selector.filenamePattern.toLowerCase(), target.toLowerCase())) {
 				return true;
 			}
 		}
@@ -131,7 +131,7 @@ export class CustomEditorInfo implements CustomEditorDescriptor {
 
 export class CustomEditorInfoCollection {
 
-	public readonly allEditors: readonly CustomEditorInfo[];
+	puBlic readonly allEditors: readonly CustomEditorInfo[];
 
 	constructor(
 		editors: readonly CustomEditorInfo[],
@@ -139,18 +139,18 @@ export class CustomEditorInfoCollection {
 		this.allEditors = distinct(editors, editor => editor.id);
 	}
 
-	public get length(): number { return this.allEditors.length; }
+	puBlic get length(): numBer { return this.allEditors.length; }
 
 	/**
-	 * Find the single default editor to use (if any) by looking at the editor's priority and the
-	 * other contributed editors.
+	 * Find the single default editor to use (if any) By looking at the editor's priority and the
+	 * other contriButed editors.
 	 */
-	public get defaultEditor(): CustomEditorInfo | undefined {
+	puBlic get defaultEditor(): CustomEditorInfo | undefined {
 		return this.allEditors.find(editor => {
 			switch (editor.priority) {
 				case CustomEditorPriority.default:
-				case CustomEditorPriority.builtin:
-					// A default editor must have higher priority than all other contributed editors.
+				case CustomEditorPriority.Builtin:
+					// A default editor must have higher priority than all other contriButed editors.
 					return this.allEditors.every(otherEditor =>
 						otherEditor === editor || isLowerPriority(otherEditor, editor));
 
@@ -161,14 +161,14 @@ export class CustomEditorInfoCollection {
 	}
 
 	/**
-	 * Find the best available editor to use.
+	 * Find the Best availaBle editor to use.
 	 *
-	 * Unlike the `defaultEditor`, a bestAvailableEditor can exist even if there are other editors with
+	 * Unlike the `defaultEditor`, a BestAvailaBleEditor can exist even if there are other editors with
 	 * the same priority.
 	 */
-	public get bestAvailableEditor(): CustomEditorInfo | undefined {
-		const editors = mergeSort(Array.from(this.allEditors), (a, b) => {
-			return priorityToRank(a.priority) - priorityToRank(b.priority);
+	puBlic get BestAvailaBleEditor(): CustomEditorInfo | undefined {
+		const editors = mergeSort(Array.from(this.allEditors), (a, B) => {
+			return priorityToRank(a.priority) - priorityToRank(B.priority);
 		});
 		return editors[0];
 	}
@@ -178,10 +178,10 @@ function isLowerPriority(otherEditor: CustomEditorInfo, editor: CustomEditorInfo
 	return priorityToRank(otherEditor.priority) < priorityToRank(editor.priority);
 }
 
-function priorityToRank(priority: CustomEditorPriority): number {
+function priorityToRank(priority: CustomEditorPriority): numBer {
 	switch (priority) {
 		case CustomEditorPriority.default: return 3;
-		case CustomEditorPriority.builtin: return 2;
+		case CustomEditorPriority.Builtin: return 2;
 		case CustomEditorPriority.option: return 1;
 	}
 }

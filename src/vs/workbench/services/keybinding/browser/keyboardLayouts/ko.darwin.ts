@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { id: 'com.apple.inputmethod.Korean.2SetKorean', lang: 'ko', localizedName: '2-Set Korean' },
 	secondaryLayouts: [],
 	mapping: {
 		KeyA: ['ㅁ', 'ㅁ', 'a', 'A', 0],
-		KeyB: ['ㅠ', 'ㅠ', 'b', 'B', 0],
+		KeyB: ['ㅠ', 'ㅠ', 'B', 'B', 0],
 		KeyC: ['ㅊ', 'ㅊ', 'c', 'C', 0],
 		KeyD: ['ㅇ', 'ㅇ', 'd', 'D', 0],
 		KeyE: ['ㄷ', 'ㄸ', 'e', 'E', 0],
@@ -49,7 +49,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Enter: [],
 		Escape: ['', '', '', '‌', 0],
 		Backspace: [],
-		Tab: [],
+		TaB: [],
 		Space: [' ', ' ', ' ', ' ', 0],
 		Minus: ['-', '_', '-', '_', 0],
 		Equal: ['=', '+', '=', '+', 0],
@@ -88,7 +88,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '/', '/', 0],
 		NumpadMultiply: ['*', '*', '*', '*', 0],
-		NumpadSubtract: ['-', '-', '-', '-', 0],
+		NumpadSuBtract: ['-', '-', '-', '-', 0],
 		NumpadAdd: ['+', '+', '+', '+', 0],
 		NumpadEnter: [],
 		Numpad1: ['1', '1', '1', '1', 0],

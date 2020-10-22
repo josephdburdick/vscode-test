@@ -5,4 +5,4 @@
 
 /// <reference path='../../../../src/vs/vscode.d.ts'/>
 /// <reference path='../../../../src/vs/vscode.proposed.d.ts'/>
-/// <reference path="../../../types/lib.textEncoder.d.ts" />
+/// <reference path="../../../types/liB.textEncoder.d.ts" />

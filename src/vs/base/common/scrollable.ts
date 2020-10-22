@@ -3,61 +3,61 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
 
-export const enum ScrollbarVisibility {
+export const enum ScrollBarVisiBility {
 	Auto = 1,
 	Hidden = 2,
-	Visible = 3
+	VisiBle = 3
 }
 
 export interface ScrollEvent {
-	oldWidth: number;
-	oldScrollWidth: number;
-	oldScrollLeft: number;
+	oldWidth: numBer;
+	oldScrollWidth: numBer;
+	oldScrollLeft: numBer;
 
-	width: number;
-	scrollWidth: number;
-	scrollLeft: number;
+	width: numBer;
+	scrollWidth: numBer;
+	scrollLeft: numBer;
 
-	oldHeight: number;
-	oldScrollHeight: number;
-	oldScrollTop: number;
+	oldHeight: numBer;
+	oldScrollHeight: numBer;
+	oldScrollTop: numBer;
 
-	height: number;
-	scrollHeight: number;
-	scrollTop: number;
+	height: numBer;
+	scrollHeight: numBer;
+	scrollTop: numBer;
 
-	widthChanged: boolean;
-	scrollWidthChanged: boolean;
-	scrollLeftChanged: boolean;
+	widthChanged: Boolean;
+	scrollWidthChanged: Boolean;
+	scrollLeftChanged: Boolean;
 
-	heightChanged: boolean;
-	scrollHeightChanged: boolean;
-	scrollTopChanged: boolean;
+	heightChanged: Boolean;
+	scrollHeightChanged: Boolean;
+	scrollTopChanged: Boolean;
 }
 
 export class ScrollState implements IScrollDimensions, IScrollPosition {
 	_scrollStateBrand: void;
 
-	public readonly rawScrollLeft: number;
-	public readonly rawScrollTop: number;
+	puBlic readonly rawScrollLeft: numBer;
+	puBlic readonly rawScrollTop: numBer;
 
-	public readonly width: number;
-	public readonly scrollWidth: number;
-	public readonly scrollLeft: number;
-	public readonly height: number;
-	public readonly scrollHeight: number;
-	public readonly scrollTop: number;
+	puBlic readonly width: numBer;
+	puBlic readonly scrollWidth: numBer;
+	puBlic readonly scrollLeft: numBer;
+	puBlic readonly height: numBer;
+	puBlic readonly scrollHeight: numBer;
+	puBlic readonly scrollTop: numBer;
 
 	constructor(
-		width: number,
-		scrollWidth: number,
-		scrollLeft: number,
-		height: number,
-		scrollHeight: number,
-		scrollTop: number
+		width: numBer,
+		scrollWidth: numBer,
+		scrollLeft: numBer,
+		height: numBer,
+		scrollHeight: numBer,
+		scrollTop: numBer
 	) {
 		width = width | 0;
 		scrollWidth = scrollWidth | 0;
@@ -66,8 +66,8 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 		scrollHeight = scrollHeight | 0;
 		scrollTop = scrollTop | 0;
 
-		this.rawScrollLeft = scrollLeft; // before validation
-		this.rawScrollTop = scrollTop; // before validation
+		this.rawScrollLeft = scrollLeft; // Before validation
+		this.rawScrollTop = scrollTop; // Before validation
 
 		if (width < 0) {
 			width = 0;
@@ -97,7 +97,7 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 		this.scrollTop = scrollTop;
 	}
 
-	public equals(other: ScrollState): boolean {
+	puBlic equals(other: ScrollState): Boolean {
 		return (
 			this.rawScrollLeft === other.rawScrollLeft
 			&& this.rawScrollTop === other.rawScrollTop
@@ -110,7 +110,7 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 		);
 	}
 
-	public withScrollDimensions(update: INewScrollDimensions, useRawScrollPositions: boolean): ScrollState {
+	puBlic withScrollDimensions(update: INewScrollDimensions, useRawScrollPositions: Boolean): ScrollState {
 		return new ScrollState(
 			(typeof update.width !== 'undefined' ? update.width : this.width),
 			(typeof update.scrollWidth !== 'undefined' ? update.scrollWidth : this.scrollWidth),
@@ -121,7 +121,7 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 		);
 	}
 
-	public withScrollPosition(update: INewScrollPosition): ScrollState {
+	puBlic withScrollPosition(update: INewScrollPosition): ScrollState {
 		return new ScrollState(
 			this.width,
 			this.scrollWidth,
@@ -132,7 +132,7 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 		);
 	}
 
-	public createScrollEvent(previous: ScrollState): ScrollEvent {
+	puBlic createScrollEvent(previous: ScrollState): ScrollEvent {
 		const widthChanged = (this.width !== previous.width);
 		const scrollWidthChanged = (this.scrollWidth !== previous.scrollWidth);
 		const scrollLeftChanged = (this.scrollLeft !== previous.scrollLeft);
@@ -171,47 +171,47 @@ export class ScrollState implements IScrollDimensions, IScrollPosition {
 }
 
 export interface IScrollDimensions {
-	readonly width: number;
-	readonly scrollWidth: number;
-	readonly height: number;
-	readonly scrollHeight: number;
+	readonly width: numBer;
+	readonly scrollWidth: numBer;
+	readonly height: numBer;
+	readonly scrollHeight: numBer;
 }
 export interface INewScrollDimensions {
-	width?: number;
-	scrollWidth?: number;
-	height?: number;
-	scrollHeight?: number;
+	width?: numBer;
+	scrollWidth?: numBer;
+	height?: numBer;
+	scrollHeight?: numBer;
 }
 
 export interface IScrollPosition {
-	readonly scrollLeft: number;
-	readonly scrollTop: number;
+	readonly scrollLeft: numBer;
+	readonly scrollTop: numBer;
 }
 export interface ISmoothScrollPosition {
-	readonly scrollLeft: number;
-	readonly scrollTop: number;
+	readonly scrollLeft: numBer;
+	readonly scrollTop: numBer;
 
-	readonly width: number;
-	readonly height: number;
+	readonly width: numBer;
+	readonly height: numBer;
 }
 export interface INewScrollPosition {
-	scrollLeft?: number;
-	scrollTop?: number;
+	scrollLeft?: numBer;
+	scrollTop?: numBer;
 }
 
-export class Scrollable extends Disposable {
+export class ScrollaBle extends DisposaBle {
 
-	_scrollableBrand: void;
+	_scrollaBleBrand: void;
 
-	private _smoothScrollDuration: number;
-	private readonly _scheduleAtNextAnimationFrame: (callback: () => void) => IDisposable;
+	private _smoothScrollDuration: numBer;
+	private readonly _scheduleAtNextAnimationFrame: (callBack: () => void) => IDisposaBle;
 	private _state: ScrollState;
 	private _smoothScrolling: SmoothScrollingOperation | null;
 
 	private _onScroll = this._register(new Emitter<ScrollEvent>());
-	public readonly onScroll: Event<ScrollEvent> = this._onScroll.event;
+	puBlic readonly onScroll: Event<ScrollEvent> = this._onScroll.event;
 
-	constructor(smoothScrollDuration: number, scheduleAtNextAnimationFrame: (callback: () => void) => IDisposable) {
+	constructor(smoothScrollDuration: numBer, scheduleAtNextAnimationFrame: (callBack: () => void) => IDisposaBle) {
 		super();
 
 		this._smoothScrollDuration = smoothScrollDuration;
@@ -220,7 +220,7 @@ export class Scrollable extends Disposable {
 		this._smoothScrolling = null;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this._smoothScrolling) {
 			this._smoothScrolling.dispose();
 			this._smoothScrolling = null;
@@ -228,19 +228,19 @@ export class Scrollable extends Disposable {
 		super.dispose();
 	}
 
-	public setSmoothScrollDuration(smoothScrollDuration: number): void {
+	puBlic setSmoothScrollDuration(smoothScrollDuration: numBer): void {
 		this._smoothScrollDuration = smoothScrollDuration;
 	}
 
-	public validateScrollPosition(scrollPosition: INewScrollPosition): IScrollPosition {
+	puBlic validateScrollPosition(scrollPosition: INewScrollPosition): IScrollPosition {
 		return this._state.withScrollPosition(scrollPosition);
 	}
 
-	public getScrollDimensions(): IScrollDimensions {
+	puBlic getScrollDimensions(): IScrollDimensions {
 		return this._state;
 	}
 
-	public setScrollDimensions(dimensions: INewScrollDimensions, useRawScrollPositions: boolean): void {
+	puBlic setScrollDimensions(dimensions: INewScrollDimensions, useRawScrollPositions: Boolean): void {
 		const newState = this._state.withScrollDimensions(dimensions, useRawScrollPositions);
 		this._setState(newState);
 
@@ -254,7 +254,7 @@ export class Scrollable extends Disposable {
 	 * Returns the final scroll position that the instance will have once the smooth scroll animation concludes.
 	 * If no scroll animation is occurring, it will return the current scroll position instead.
 	 */
-	public getFutureScrollPosition(): IScrollPosition {
+	puBlic getFutureScrollPosition(): IScrollPosition {
 		if (this._smoothScrolling) {
 			return this._smoothScrolling.to;
 		}
@@ -263,13 +263,13 @@ export class Scrollable extends Disposable {
 
 	/**
 	 * Returns the current scroll position.
-	 * Note: This result might be an intermediate scroll position, as there might be an ongoing smooth scroll animation.
+	 * Note: This result might Be an intermediate scroll position, as there might Be an ongoing smooth scroll animation.
 	 */
-	public getCurrentScrollPosition(): IScrollPosition {
+	puBlic getCurrentScrollPosition(): IScrollPosition {
 		return this._state;
 	}
 
-	public setScrollPositionNow(update: INewScrollPosition): void {
+	puBlic setScrollPositionNow(update: INewScrollPosition): void {
 		// no smooth scrolling requested
 		const newState = this._state.withScrollPosition(update);
 
@@ -282,14 +282,14 @@ export class Scrollable extends Disposable {
 		this._setState(newState);
 	}
 
-	public setScrollPositionSmooth(update: INewScrollPosition): void {
+	puBlic setScrollPositionSmooth(update: INewScrollPosition): void {
 		if (this._smoothScrollDuration === 0) {
 			// Smooth scrolling not supported.
 			return this.setScrollPositionNow(update);
 		}
 
 		if (this._smoothScrolling) {
-			// Combine our pending scrollLeft/scrollTop with incoming scrollLeft/scrollTop
+			// ComBine our pending scrollLeft/scrollTop with incoming scrollLeft/scrollTop
 			update = {
 				scrollLeft: (typeof update.scrollLeft === 'undefined' ? this._smoothScrolling.to.scrollLeft : update.scrollLeft),
 				scrollTop: (typeof update.scrollTop === 'undefined' ? this._smoothScrolling.to.scrollTop : update.scrollTop)
@@ -303,7 +303,7 @@ export class Scrollable extends Disposable {
 				return;
 			}
 
-			const newSmoothScrolling = this._smoothScrolling.combine(this._state, validTarget, this._smoothScrollDuration);
+			const newSmoothScrolling = this._smoothScrolling.comBine(this._state, validTarget, this._smoothScrollDuration);
 			this._smoothScrolling.dispose();
 			this._smoothScrolling = newSmoothScrolling;
 		} else {
@@ -314,11 +314,11 @@ export class Scrollable extends Disposable {
 		}
 
 		// Begin smooth scrolling animation
-		this._smoothScrolling.animationFrameDisposable = this._scheduleAtNextAnimationFrame(() => {
+		this._smoothScrolling.animationFrameDisposaBle = this._scheduleAtNextAnimationFrame(() => {
 			if (!this._smoothScrolling) {
 				return;
 			}
-			this._smoothScrolling.animationFrameDisposable = null;
+			this._smoothScrolling.animationFrameDisposaBle = null;
 			this._performSmoothScrolling();
 		});
 	}
@@ -345,11 +345,11 @@ export class Scrollable extends Disposable {
 		}
 
 		// Continue smooth scrolling animation
-		this._smoothScrolling.animationFrameDisposable = this._scheduleAtNextAnimationFrame(() => {
+		this._smoothScrolling.animationFrameDisposaBle = this._scheduleAtNextAnimationFrame(() => {
 			if (!this._smoothScrolling) {
 				return;
 			}
-			this._smoothScrolling.animationFrameDisposable = null;
+			this._smoothScrolling.animationFrameDisposaBle = null;
 			this._performSmoothScrolling();
 		});
 	}
@@ -367,11 +367,11 @@ export class Scrollable extends Disposable {
 
 export class SmoothScrollingUpdate {
 
-	public readonly scrollLeft: number;
-	public readonly scrollTop: number;
-	public readonly isDone: boolean;
+	puBlic readonly scrollLeft: numBer;
+	puBlic readonly scrollTop: numBer;
+	puBlic readonly isDone: Boolean;
 
-	constructor(scrollLeft: number, scrollTop: number, isDone: boolean) {
+	constructor(scrollLeft: numBer, scrollTop: numBer, isDone: Boolean) {
 		this.scrollLeft = scrollLeft;
 		this.scrollTop = scrollTop;
 		this.isDone = isDone;
@@ -380,43 +380,43 @@ export class SmoothScrollingUpdate {
 }
 
 export interface IAnimation {
-	(completion: number): number;
+	(completion: numBer): numBer;
 }
 
-function createEaseOutCubic(from: number, to: number): IAnimation {
+function createEaseOutCuBic(from: numBer, to: numBer): IAnimation {
 	const delta = to - from;
-	return function (completion: number): number {
-		return from + delta * easeOutCubic(completion);
+	return function (completion: numBer): numBer {
+		return from + delta * easeOutCuBic(completion);
 	};
 }
 
-function createComposed(a: IAnimation, b: IAnimation, cut: number): IAnimation {
-	return function (completion: number): number {
+function createComposed(a: IAnimation, B: IAnimation, cut: numBer): IAnimation {
+	return function (completion: numBer): numBer {
 		if (completion < cut) {
 			return a(completion / cut);
 		}
-		return b((completion - cut) / (1 - cut));
+		return B((completion - cut) / (1 - cut));
 	};
 }
 
 export class SmoothScrollingOperation {
 
-	public readonly from: ISmoothScrollPosition;
-	public to: ISmoothScrollPosition;
-	public readonly duration: number;
-	private readonly _startTime: number;
-	public animationFrameDisposable: IDisposable | null;
+	puBlic readonly from: ISmoothScrollPosition;
+	puBlic to: ISmoothScrollPosition;
+	puBlic readonly duration: numBer;
+	private readonly _startTime: numBer;
+	puBlic animationFrameDisposaBle: IDisposaBle | null;
 
 	private scrollLeft!: IAnimation;
 	private scrollTop!: IAnimation;
 
-	protected constructor(from: ISmoothScrollPosition, to: ISmoothScrollPosition, startTime: number, duration: number) {
+	protected constructor(from: ISmoothScrollPosition, to: ISmoothScrollPosition, startTime: numBer, duration: numBer) {
 		this.from = from;
 		this.to = to;
 		this.duration = duration;
 		this._startTime = startTime;
 
-		this.animationFrameDisposable = null;
+		this.animationFrameDisposaBle = null;
 
 		this._initAnimations();
 	}
@@ -426,10 +426,10 @@ export class SmoothScrollingOperation {
 		this.scrollTop = this._initAnimation(this.from.scrollTop, this.to.scrollTop, this.to.height);
 	}
 
-	private _initAnimation(from: number, to: number, viewportSize: number): IAnimation {
-		const delta = Math.abs(from - to);
+	private _initAnimation(from: numBer, to: numBer, viewportSize: numBer): IAnimation {
+		const delta = Math.aBs(from - to);
 		if (delta > 2.5 * viewportSize) {
-			let stop1: number, stop2: number;
+			let stop1: numBer, stop2: numBer;
 			if (from < to) {
 				// scroll to 75% of the viewportSize
 				stop1 = from + 0.75 * viewportSize;
@@ -438,28 +438,28 @@ export class SmoothScrollingOperation {
 				stop1 = from - 0.75 * viewportSize;
 				stop2 = to + 0.75 * viewportSize;
 			}
-			return createComposed(createEaseOutCubic(from, stop1), createEaseOutCubic(stop2, to), 0.33);
+			return createComposed(createEaseOutCuBic(from, stop1), createEaseOutCuBic(stop2, to), 0.33);
 		}
-		return createEaseOutCubic(from, to);
+		return createEaseOutCuBic(from, to);
 	}
 
-	public dispose(): void {
-		if (this.animationFrameDisposable !== null) {
-			this.animationFrameDisposable.dispose();
-			this.animationFrameDisposable = null;
+	puBlic dispose(): void {
+		if (this.animationFrameDisposaBle !== null) {
+			this.animationFrameDisposaBle.dispose();
+			this.animationFrameDisposaBle = null;
 		}
 	}
 
-	public acceptScrollDimensions(state: ScrollState): void {
+	puBlic acceptScrollDimensions(state: ScrollState): void {
 		this.to = state.withScrollPosition(this.to);
 		this._initAnimations();
 	}
 
-	public tick(): SmoothScrollingUpdate {
+	puBlic tick(): SmoothScrollingUpdate {
 		return this._tick(Date.now());
 	}
 
-	protected _tick(now: number): SmoothScrollingUpdate {
+	protected _tick(now: numBer): SmoothScrollingUpdate {
 		const completion = (now - this._startTime) / this.duration;
 
 		if (completion < 1) {
@@ -471,11 +471,11 @@ export class SmoothScrollingOperation {
 		return new SmoothScrollingUpdate(this.to.scrollLeft, this.to.scrollTop, true);
 	}
 
-	public combine(from: ISmoothScrollPosition, to: ISmoothScrollPosition, duration: number): SmoothScrollingOperation {
+	puBlic comBine(from: ISmoothScrollPosition, to: ISmoothScrollPosition, duration: numBer): SmoothScrollingOperation {
 		return SmoothScrollingOperation.start(from, to, duration);
 	}
 
-	public static start(from: ISmoothScrollPosition, to: ISmoothScrollPosition, duration: number): SmoothScrollingOperation {
+	puBlic static start(from: ISmoothScrollPosition, to: ISmoothScrollPosition, duration: numBer): SmoothScrollingOperation {
 		// +10 / -10 : pretend the animation already started for a quicker response to a scroll request
 		duration = duration + 10;
 		const startTime = Date.now() - 10;
@@ -484,10 +484,10 @@ export class SmoothScrollingOperation {
 	}
 }
 
-function easeInCubic(t: number) {
+function easeInCuBic(t: numBer) {
 	return Math.pow(t, 3);
 }
 
-function easeOutCubic(t: number) {
-	return 1 - easeInCubic(1 - t);
+function easeOutCuBic(t: numBer) {
+	return 1 - easeInCuBic(1 - t);
 }

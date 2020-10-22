@@ -5,14 +5,14 @@
 
 import * as nls from 'vs/nls';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED, TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
+import { KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED, TERMINAL_COMMAND_ID } from 'vs/workBench/contriB/terminal/common/terminal';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 
 export function setupTerminalMenu() {
 
 	// View menu
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 		group: '4_panels',
 		command: {
 			id: TERMINAL_COMMAND_ID.TOGGLE,
@@ -23,7 +23,7 @@ export function setupTerminalMenu() {
 
 	// Manage
 	const createGroup = '1_create';
-	MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarTerminalMenu, {
 		group: createGroup,
 		command: {
 			id: TERMINAL_COMMAND_ID.NEW,
@@ -31,7 +31,7 @@ export function setupTerminalMenu() {
 		},
 		order: 1
 	});
-	MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarTerminalMenu, {
 		group: createGroup,
 		command: {
 			id: TERMINAL_COMMAND_ID.SPLIT,
@@ -44,7 +44,7 @@ export function setupTerminalMenu() {
 
 	// Run
 	const runGroup = '2_run';
-	MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarTerminalMenu, {
 		group: runGroup,
 		command: {
 			id: TERMINAL_COMMAND_ID.RUN_ACTIVE_FILE,
@@ -53,7 +53,7 @@ export function setupTerminalMenu() {
 		order: 3,
 		when: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 	});
-	MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarTerminalMenu, {
 		group: runGroup,
 		command: {
 			id: TERMINAL_COMMAND_ID.RUN_SELECTED_TEXT,

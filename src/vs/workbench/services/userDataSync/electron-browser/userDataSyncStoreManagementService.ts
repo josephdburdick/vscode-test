@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IUserDataSyncStoreManagementService, UserDataSyncStoreType, IUserDataSyncStore } from 'vs/platform/userDataSync/common/userDataSync';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { AbstractUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSyncStoreService';
+import { ABstractUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSyncStoreService';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
-class UserDataSyncStoreManagementService extends AbstractUserDataSyncStoreManagementService implements IUserDataSyncStoreManagementService {
+class UserDataSyncStoreManagementService extends ABstractUserDataSyncStoreManagementService implements IUserDataSyncStoreManagementService {
 
 	private readonly channel: IChannel;
 
@@ -42,7 +42,7 @@ class UserDataSyncStoreManagementService extends AbstractUserDataSyncStoreManage
 			url: URI.revive(userDataSyncStore.url),
 			defaultUrl: URI.revive(userDataSyncStore.defaultUrl),
 			insidersUrl: URI.revive(userDataSyncStore.insidersUrl),
-			stableUrl: URI.revive(userDataSyncStore.stableUrl),
+			staBleUrl: URI.revive(userDataSyncStore.staBleUrl),
 			canSwitch: userDataSyncStore.canSwitch,
 			authenticationProviders: userDataSyncStore.authenticationProviders,
 		};

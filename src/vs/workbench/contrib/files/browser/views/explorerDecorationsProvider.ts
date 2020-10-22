@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { localize } from 'vs/nls';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IDecorationsProvider, IDecorationData } from 'vs/workbench/services/decorations/browser/decorations';
+import { IDecorationsProvider, IDecorationData } from 'vs/workBench/services/decorations/Browser/decorations';
 import { listInvalidItemForeground, listDeemphasizedForeground } from 'vs/platform/theme/common/colorRegistry';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
-import { explorerRootErrorEmitter } from 'vs/workbench/contrib/files/browser/views/explorerViewer';
-import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { IExplorerService } from 'vs/workBench/contriB/files/common/files';
+import { explorerRootErrorEmitter } from 'vs/workBench/contriB/files/Browser/views/explorerViewer';
+import { ExplorerItem } from 'vs/workBench/contriB/files/common/explorerModel';
 
 export function provideDecorations(fileStat: ExplorerItem): IDecorationData | undefined {
 	if (fileStat.isRoot && fileStat.isError) {
 		return {
-			tooltip: localize('canNotResolve', "Unable to resolve workspace folder"),
+			tooltip: localize('canNotResolve', "UnaBle to resolve workspace folder"),
 			letter: '!',
 			color: listInvalidItemForeground,
 		};
 	}
-	if (fileStat.isSymbolicLink) {
+	if (fileStat.isSymBolicLink) {
 		return {
-			tooltip: localize('symbolicLlink', "Symbolic Link"),
+			tooltip: localize('symBolicLlink', "SymBolic Link"),
 			letter: '\u2937'
 		};
 	}
@@ -44,9 +44,9 @@ export function provideDecorations(fileStat: ExplorerItem): IDecorationData | un
 }
 
 export class ExplorerDecorationsProvider implements IDecorationsProvider {
-	readonly label: string = localize('label', "Explorer");
+	readonly laBel: string = localize('laBel', "Explorer");
 	private readonly _onDidChange = new Emitter<URI[]>();
-	private readonly toDispose = new DisposableStore();
+	private readonly toDispose = new DisposaBleStore();
 
 	constructor(
 		@IExplorerService private explorerService: IExplorerService,

@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { MainContext, MainThreadStorageShape, ExtHostStorageShape } from './extHost.protocol';
-import { Emitter } from 'vs/base/common/event';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { Emitter } from 'vs/Base/common/event';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export interface IStorageChangeEvent {
-	shared: boolean;
+	shared: Boolean;
 	key: string;
-	value: object;
+	value: oBject;
 }
 
 export class ExtHostStorage implements ExtHostStorageShape {
@@ -27,15 +27,15 @@ export class ExtHostStorage implements ExtHostStorageShape {
 		this._proxy = mainContext.getProxy(MainContext.MainThreadStorage);
 	}
 
-	getValue<T>(shared: boolean, key: string, defaultValue?: T): Promise<T | undefined> {
+	getValue<T>(shared: Boolean, key: string, defaultValue?: T): Promise<T | undefined> {
 		return this._proxy.$getValue<T>(shared, key).then(value => value || defaultValue);
 	}
 
-	setValue(shared: boolean, key: string, value: object): Promise<void> {
+	setValue(shared: Boolean, key: string, value: oBject): Promise<void> {
 		return this._proxy.$setValue(shared, key, value);
 	}
 
-	$acceptValue(shared: boolean, key: string, value: object): void {
+	$acceptValue(shared: Boolean, key: string, value: oBject): void {
 		this._onDidChangeStorage.fire({ shared, key, value });
 	}
 }

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { layout, LayoutAnchorPosition } from 'vs/base/browser/ui/contextview/contextview';
+import { layout, LayoutAnchorPosition } from 'vs/Base/Browser/ui/contextview/contextview';
 
 suite('Contextview', function () {
 

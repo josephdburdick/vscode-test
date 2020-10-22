@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 
-export function isWeb(): boolean {
+export function isWeB(): Boolean {
 	// @ts-expect-error
-	return typeof navigator !== 'undefined' && vscode.env.uiKind === vscode.UIKind.Web;
+	return typeof navigator !== 'undefined' && vscode.env.uiKind === vscode.UIKind.WeB;
 }

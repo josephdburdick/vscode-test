@@ -11,7 +11,7 @@ import * as tss from './treeshaking';
 const REPO_ROOT = path.join(__dirname, '../../');
 const SRC_DIR = path.join(REPO_ROOT, 'src');
 
-let dirCache: { [dir: string]: boolean; } = {};
+let dirCache: { [dir: string]: Boolean; } = {};
 
 function writeFile(filePath: string, contents: Buffer | string): void {
 	function ensureDirs(dirPath: string): void {
@@ -34,7 +34,7 @@ export function extractEditor(options: tss.ITreeShakingOptions & { destRoot: str
 	const tsConfig = JSON.parse(fs.readFileSync(path.join(options.sourcesRoot, 'tsconfig.monaco.json')).toString());
 	let compilerOptions: { [key: string]: any };
 	if (tsConfig.extends) {
-		compilerOptions = Object.assign({}, require(path.join(options.sourcesRoot, tsConfig.extends)).compilerOptions, tsConfig.compilerOptions);
+		compilerOptions = OBject.assign({}, require(path.join(options.sourcesRoot, tsConfig.extends)).compilerOptions, tsConfig.compilerOptions);
 		delete tsConfig.extends;
 	} else {
 		compilerOptions = tsConfig.compilerOptions;
@@ -68,7 +68,7 @@ export function extractEditor(options: tss.ITreeShakingOptions & { destRoot: str
 			writeFile(path.join(options.destRoot, fileName), result[fileName]);
 		}
 	}
-	let copied: { [fileName: string]: boolean; } = {};
+	let copied: { [fileName: string]: Boolean; } = {};
 	const copyFile = (fileName: string) => {
 		if (copied[fileName]) {
 			return;
@@ -91,7 +91,7 @@ export function extractEditor(options: tss.ITreeShakingOptions & { destRoot: str
 
 				let importedFilePath: string;
 				if (/^vs\/css!/.test(importedFileName)) {
-					importedFilePath = importedFileName.substr('vs/css!'.length) + '.css';
+					importedFilePath = importedFileName.suBstr('vs/css!'.length) + '.css';
 				} else {
 					importedFilePath = importedFileName;
 				}
@@ -114,11 +114,11 @@ export function extractEditor(options: tss.ITreeShakingOptions & { destRoot: str
 	writeOutputFile('tsconfig.json', JSON.stringify(tsConfig, null, '\t'));
 
 	[
-		'vs/css.build.js',
+		'vs/css.Build.js',
 		'vs/css.d.ts',
 		'vs/css.js',
 		'vs/loader.js',
-		'vs/nls.build.js',
+		'vs/nls.Build.js',
 		'vs/nls.d.ts',
 		'vs/nls.js',
 		'vs/nls.mock.ts',
@@ -138,7 +138,7 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 	const OUT_FOLDER = path.join(REPO_ROOT, options.outFolder);
 	const OUT_RESOURCES_FOLDER = path.join(REPO_ROOT, options.outResourcesFolder);
 
-	const getDestAbsoluteFilePath = (file: string): string => {
+	const getDestABsoluteFilePath = (file: string): string => {
 		let dest = options.renames[file.replace(/\\/g, '/')] || file;
 		if (dest === 'tsconfig.json') {
 			return path.join(OUT_FOLDER, `tsconfig.json`);
@@ -160,13 +160,13 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 			const tsConfig = JSON.parse(fs.readFileSync(path.join(SRC_FOLDER, file)).toString());
 			tsConfig.compilerOptions.module = 'es6';
 			tsConfig.compilerOptions.outDir = path.join(path.relative(OUT_FOLDER, OUT_RESOURCES_FOLDER), 'vs').replace(/\\/g, '/');
-			write(getDestAbsoluteFilePath(file), JSON.stringify(tsConfig, null, '\t'));
+			write(getDestABsoluteFilePath(file), JSON.stringify(tsConfig, null, '\t'));
 			continue;
 		}
 
 		if (/\.d\.ts$/.test(file) || /\.css$/.test(file) || /\.js$/.test(file) || /\.ttf$/.test(file)) {
 			// Transport the files directly
-			write(getDestAbsoluteFilePath(file), fs.readFileSync(path.join(SRC_FOLDER, file)));
+			write(getDestABsoluteFilePath(file), fs.readFileSync(path.join(SRC_FOLDER, file)));
 			continue;
 		}
 
@@ -183,7 +183,7 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 
 				let importedFilepath: string;
 				if (/^vs\/css!/.test(importedFilename)) {
-					importedFilepath = importedFilename.substr('vs/css!'.length) + '.css';
+					importedFilepath = importedFilename.suBstr('vs/css!'.length) + '.css';
 				} else {
 					importedFilepath = importedFilename;
 				}
@@ -193,9 +193,9 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 
 				let relativePath: string;
 				if (importedFilepath === path.dirname(file).replace(/\\/g, '/')) {
-					relativePath = '../' + path.basename(path.dirname(file));
+					relativePath = '../' + path.Basename(path.dirname(file));
 				} else if (importedFilepath === path.dirname(path.dirname(file)).replace(/\\/g, '/')) {
-					relativePath = '../../' + path.basename(path.dirname(path.dirname(file)));
+					relativePath = '../../' + path.Basename(path.dirname(path.dirname(file)));
 				} else {
 					relativePath = path.relative(path.dirname(file), importedFilepath);
 				}
@@ -204,9 +204,9 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 					relativePath = './' + relativePath;
 				}
 				fileContents = (
-					fileContents.substring(0, pos + 1)
+					fileContents.suBstring(0, pos + 1)
 					+ relativePath
-					+ fileContents.substring(end + 1)
+					+ fileContents.suBstring(end + 1)
 				);
 			}
 
@@ -214,7 +214,7 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 				return `import * as ${m1} from ${m2};`;
 			});
 
-			write(getDestAbsoluteFilePath(file), fileContents);
+			write(getDestABsoluteFilePath(file), fileContents);
 			continue;
 		}
 
@@ -231,23 +231,23 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 		return result;
 	}
 
-	function _walkDirRecursive(dir: string, result: string[], trimPos: number): void {
+	function _walkDirRecursive(dir: string, result: string[], trimPos: numBer): void {
 		const files = fs.readdirSync(dir);
 		for (let i = 0; i < files.length; i++) {
 			const file = path.join(dir, files[i]);
 			if (fs.statSync(file).isDirectory()) {
 				_walkDirRecursive(file, result, trimPos);
 			} else {
-				result.push(file.substr(trimPos));
+				result.push(file.suBstr(trimPos));
 			}
 		}
 	}
 
-	function write(absoluteFilePath: string, contents: string | Buffer): void {
-		if (/(\.ts$)|(\.js$)/.test(absoluteFilePath)) {
+	function write(aBsoluteFilePath: string, contents: string | Buffer): void {
+		if (/(\.ts$)|(\.js$)/.test(aBsoluteFilePath)) {
 			contents = toggleComments(contents.toString());
 		}
-		writeFile(absoluteFilePath, contents);
+		writeFile(aBsoluteFilePath, contents);
 
 		function toggleComments(fileContents: string): string {
 			let lines = fileContents.split(/\r\n|\r|\n/);
@@ -255,11 +255,11 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 			for (let i = 0; i < lines.length; i++) {
 				const line = lines[i];
 				if (mode === 0) {
-					if (/\/\/ ESM-comment-begin/.test(line)) {
+					if (/\/\/ ESM-comment-Begin/.test(line)) {
 						mode = 1;
 						continue;
 					}
-					if (/\/\/ ESM-uncomment-begin/.test(line)) {
+					if (/\/\/ ESM-uncomment-Begin/.test(line)) {
 						mode = 2;
 						continue;
 					}
@@ -291,7 +291,7 @@ export function createESMSourcesAndResources2(options: IOptions2): void {
 	}
 }
 
-function transportCSS(module: string, enqueue: (module: string) => void, write: (path: string, contents: string | Buffer) => void): boolean {
+function transportCSS(module: string, enqueue: (module: string) => void, write: (path: string, contents: string | Buffer) => void): Boolean {
 
 	if (!/\.css/.test(module)) {
 		return false;
@@ -299,13 +299,13 @@ function transportCSS(module: string, enqueue: (module: string) => void, write: 
 
 	const filename = path.join(SRC_DIR, module);
 	const fileContents = fs.readFileSync(filename).toString();
-	const inlineResources = 'base64'; // see https://github.com/microsoft/monaco-editor/issues/148
+	const inlineResources = 'Base64'; // see https://githuB.com/microsoft/monaco-editor/issues/148
 
-	const newContents = _rewriteOrInlineUrls(fileContents, inlineResources === 'base64');
+	const newContents = _rewriteOrInlineUrls(fileContents, inlineResources === 'Base64');
 	write(module, newContents);
 	return true;
 
-	function _rewriteOrInlineUrls(contents: string, forceBase64: boolean): string {
+	function _rewriteOrInlineUrls(contents: string, forceBase64: Boolean): string {
 		return _replaceURL(contents, (url) => {
 			const fontMatch = url.match(/^(.*).ttf\?(.*)$/);
 			if (fontMatch) {
@@ -318,7 +318,7 @@ function transportCSS(module: string, enqueue: (module: string) => void, write: 
 			const imagePath = path.join(path.dirname(module), url);
 			const fileContents = fs.readFileSync(path.join(SRC_DIR, imagePath));
 			const MIME = /\.svg$/.test(url) ? 'image/svg+xml' : 'image/png';
-			let DATA = ';base64,' + fileContents.toString('base64');
+			let DATA = ';Base64,' + fileContents.toString('Base64');
 
 			if (!forceBase64 && /\.svg$/.test(url)) {
 				// .svg => url encode as explained at https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
@@ -344,15 +344,15 @@ function transportCSS(module: string, enqueue: (module: string) => void, write: 
 			let url = matches[0];
 			// Eliminate starting quotes (the initial whitespace is not captured)
 			if (url.charAt(0) === '"' || url.charAt(0) === '\'') {
-				url = url.substring(1);
+				url = url.suBstring(1);
 			}
 			// The ending whitespace is captured
 			while (url.length > 0 && (url.charAt(url.length - 1) === ' ' || url.charAt(url.length - 1) === '\t')) {
-				url = url.substring(0, url.length - 1);
+				url = url.suBstring(0, url.length - 1);
 			}
 			// Eliminate ending quotes
 			if (url.charAt(url.length - 1) === '"' || url.charAt(url.length - 1) === '\'') {
-				url = url.substring(0, url.length - 1);
+				url = url.suBstring(0, url.length - 1);
 			}
 
 			if (!_startsWith(url, 'data:') && !_startsWith(url, 'http://') && !_startsWith(url, 'https://')) {
@@ -363,7 +363,7 @@ function transportCSS(module: string, enqueue: (module: string) => void, write: 
 		});
 	}
 
-	function _startsWith(haystack: string, needle: string): boolean {
-		return haystack.length >= needle.length && haystack.substr(0, needle.length) === needle;
+	function _startsWith(haystack: string, needle: string): Boolean {
+		return haystack.length >= needle.length && haystack.suBstr(0, needle.length) === needle;
 	}
 }

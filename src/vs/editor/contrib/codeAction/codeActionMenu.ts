@@ -3,97 +3,97 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getDomNodePagePosition } from 'vs/base/browser/dom';
-import { IAnchor } from 'vs/base/browser/ui/contextview/contextview';
-import { Action, IAction, Separator } from 'vs/base/common/actions';
-import { canceled } from 'vs/base/common/errors';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { Lazy } from 'vs/base/common/lazy';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { getDomNodePagePosition } from 'vs/Base/Browser/dom';
+import { IAnchor } from 'vs/Base/Browser/ui/contextview/contextview';
+import { Action, IAction, Separator } from 'vs/Base/common/actions';
+import { canceled } from 'vs/Base/common/errors';
+import { ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
+import { Lazy } from 'vs/Base/common/lazy';
+import { DisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IPosition, Position } from 'vs/editor/common/core/position';
 import { ScrollType } from 'vs/editor/common/editorCommon';
 import { CodeAction, CodeActionProviderRegistry, Command } from 'vs/editor/common/modes';
-import { codeActionCommandId, CodeActionItem, CodeActionSet, fixAllCommandId, organizeImportsCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contrib/codeAction/codeAction';
-import { CodeActionAutoApply, CodeActionCommandArgs, CodeActionTrigger, CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { codeActionCommandId, CodeActionItem, CodeActionSet, fixAllCommandId, organizeImportsCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contriB/codeAction/codeAction';
+import { CodeActionAutoApply, CodeActionCommandArgs, CodeActionTrigger, CodeActionKind } from 'vs/editor/contriB/codeAction/types';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
 
 interface CodeActionWidgetDelegate {
 	onSelectCodeAction: (action: CodeActionItem) => Promise<any>;
 }
 
-interface ResolveCodeActionKeybinding {
+interface ResolveCodeActionKeyBinding {
 	readonly kind: CodeActionKind;
-	readonly preferred: boolean;
-	readonly resolvedKeybinding: ResolvedKeybinding;
+	readonly preferred: Boolean;
+	readonly resolvedKeyBinding: ResolvedKeyBinding;
 }
 
 class CodeActionAction extends Action {
 	constructor(
-		public readonly action: CodeAction,
-		callback: () => Promise<void>,
+		puBlic readonly action: CodeAction,
+		callBack: () => Promise<void>,
 	) {
-		super(action.command ? action.command.id : action.title, action.title, undefined, !action.disabled, callback);
+		super(action.command ? action.command.id : action.title, action.title, undefined, !action.disaBled, callBack);
 	}
 }
 
 export interface CodeActionShowOptions {
-	readonly includeDisabledActions: boolean;
+	readonly includeDisaBledActions: Boolean;
 }
 
-export class CodeActionMenu extends Disposable {
+export class CodeActionMenu extends DisposaBle {
 
-	private _visible: boolean = false;
-	private readonly _showingActions = this._register(new MutableDisposable<CodeActionSet>());
+	private _visiBle: Boolean = false;
+	private readonly _showingActions = this._register(new MutaBleDisposaBle<CodeActionSet>());
 
-	private readonly _keybindingResolver: CodeActionKeybindingResolver;
+	private readonly _keyBindingResolver: CodeActionKeyBindingResolver;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
 		private readonly _delegate: CodeActionWidgetDelegate,
 		@IContextMenuService private readonly _contextMenuService: IContextMenuService,
-		@IKeybindingService keybindingService: IKeybindingService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
 	) {
 		super();
 
-		this._keybindingResolver = new CodeActionKeybindingResolver({
-			getKeybindings: () => keybindingService.getKeybindings()
+		this._keyBindingResolver = new CodeActionKeyBindingResolver({
+			getKeyBindings: () => keyBindingService.getKeyBindings()
 		});
 	}
 
-	get isVisible(): boolean {
-		return this._visible;
+	get isVisiBle(): Boolean {
+		return this._visiBle;
 	}
 
-	public async show(trigger: CodeActionTrigger, codeActions: CodeActionSet, at: IAnchor | IPosition, options: CodeActionShowOptions): Promise<void> {
-		const actionsToShow = options.includeDisabledActions ? codeActions.allActions : codeActions.validActions;
+	puBlic async show(trigger: CodeActionTrigger, codeActions: CodeActionSet, at: IAnchor | IPosition, options: CodeActionShowOptions): Promise<void> {
+		const actionsToShow = options.includeDisaBledActions ? codeActions.allActions : codeActions.validActions;
 		if (!actionsToShow.length) {
-			this._visible = false;
+			this._visiBle = false;
 			return;
 		}
 
 		if (!this._editor.getDomNode()) {
 			// cancel when editor went off-dom
-			this._visible = false;
+			this._visiBle = false;
 			throw canceled();
 		}
 
-		this._visible = true;
+		this._visiBle = true;
 		this._showingActions.value = codeActions;
 
 		const menuActions = this.getMenuActions(trigger, actionsToShow, codeActions.documentation);
 
 		const anchor = Position.isIPosition(at) ? this._toCoords(at) : at || { x: 0, y: 0 };
-		const resolver = this._keybindingResolver.getResolver();
+		const resolver = this._keyBindingResolver.getResolver();
 
 		this._contextMenuService.showContextMenu({
 			domForShadowRoot: this._editor.getDomNode()!,
 			getAnchor: () => anchor,
 			getActions: () => menuActions,
 			onHide: () => {
-				this._visible = false;
+				this._visiBle = false;
 				this._editor.focus();
 			},
 			autoSelectFirstItem: true,
@@ -132,15 +132,15 @@ export class CodeActionMenu extends Disposable {
 		return result;
 	}
 
-	private _toCoords(position: IPosition): { x: number, y: number } {
+	private _toCoords(position: IPosition): { x: numBer, y: numBer } {
 		if (!this._editor.hasModel()) {
 			return { x: 0, y: 0 };
 		}
 		this._editor.revealPosition(position, ScrollType.Immediate);
 		this._editor.render();
 
-		// Translate to absolute editor position
-		const cursorCoords = this._editor.getScrolledVisiblePosition(position);
+		// Translate to aBsolute editor position
+		const cursorCoords = this._editor.getScrolledVisiBlePosition(position);
 		const editorCoords = getDomNodePagePosition(this._editor.getDomNode());
 		const x = editorCoords.left + cursorCoords.left;
 		const y = editorCoords.top + cursorCoords.top + cursorCoords.height;
@@ -149,7 +149,7 @@ export class CodeActionMenu extends Disposable {
 	}
 }
 
-export class CodeActionKeybindingResolver {
+export class CodeActionKeyBindingResolver {
 	private static readonly codeActionCommands: readonly string[] = [
 		refactorCommandId,
 		codeActionCommandId,
@@ -159,19 +159,19 @@ export class CodeActionKeybindingResolver {
 	];
 
 	constructor(
-		private readonly _keybindingProvider: {
-			getKeybindings(): readonly ResolvedKeybindingItem[],
+		private readonly _keyBindingProvider: {
+			getKeyBindings(): readonly ResolvedKeyBindingItem[],
 		},
 	) { }
 
-	public getResolver(): (action: CodeAction) => ResolvedKeybinding | undefined {
+	puBlic getResolver(): (action: CodeAction) => ResolvedKeyBinding | undefined {
 		// Lazy since we may not actually ever read the value
-		const allCodeActionBindings = new Lazy<readonly ResolveCodeActionKeybinding[]>(() =>
-			this._keybindingProvider.getKeybindings()
-				.filter(item => CodeActionKeybindingResolver.codeActionCommands.indexOf(item.command!) >= 0)
-				.filter(item => item.resolvedKeybinding)
-				.map((item): ResolveCodeActionKeybinding => {
-					// Special case these commands since they come built-in with VS Code and don't use 'commandArgs'
+		const allCodeActionBindings = new Lazy<readonly ResolveCodeActionKeyBinding[]>(() =>
+			this._keyBindingProvider.getKeyBindings()
+				.filter(item => CodeActionKeyBindingResolver.codeActionCommands.indexOf(item.command!) >= 0)
+				.filter(item => item.resolvedKeyBinding)
+				.map((item): ResolveCodeActionKeyBinding => {
+					// Special case these commands since they come Built-in with VS Code and don't use 'commandArgs'
 					let commandArgs = item.commandArgs;
 					if (item.command === organizeImportsCommandId) {
 						commandArgs = { kind: CodeActionKind.SourceOrganizeImports.value };
@@ -180,7 +180,7 @@ export class CodeActionKeybindingResolver {
 					}
 
 					return {
-						resolvedKeybinding: item.resolvedKeybinding!,
+						resolvedKeyBinding: item.resolvedKeyBinding!,
 						...CodeActionCommandArgs.fromUser(commandArgs, {
 							kind: CodeActionKind.None,
 							apply: CodeActionAutoApply.Never
@@ -190,17 +190,17 @@ export class CodeActionKeybindingResolver {
 
 		return (action) => {
 			if (action.kind) {
-				const binding = this.bestKeybindingForCodeAction(action, allCodeActionBindings.getValue());
-				return binding?.resolvedKeybinding;
+				const Binding = this.BestKeyBindingForCodeAction(action, allCodeActionBindings.getValue());
+				return Binding?.resolvedKeyBinding;
 			}
 			return undefined;
 		};
 	}
 
-	private bestKeybindingForCodeAction(
+	private BestKeyBindingForCodeAction(
 		action: CodeAction,
-		candidates: readonly ResolveCodeActionKeybinding[],
-	): ResolveCodeActionKeybinding | undefined {
+		candidates: readonly ResolveCodeActionKeyBinding[],
+	): ResolveCodeActionKeyBinding | undefined {
 		if (!action.kind) {
 			return undefined;
 		}
@@ -210,7 +210,7 @@ export class CodeActionKeybindingResolver {
 			.filter(candidate => candidate.kind.contains(kind))
 			.filter(candidate => {
 				if (candidate.preferred) {
-					// If the candidate keybinding only applies to preferred actions, the this action must also be preferred
+					// If the candidate keyBinding only applies to preferred actions, the this action must also Be preferred
 					return action.isPreferred;
 				}
 				return true;
@@ -219,8 +219,8 @@ export class CodeActionKeybindingResolver {
 				if (!currentBest) {
 					return candidate;
 				}
-				// Select the more specific binding
+				// Select the more specific Binding
 				return currentBest.kind.contains(candidate.kind) ? candidate : currentBest;
-			}, undefined as ResolveCodeActionKeybinding | undefined);
+			}, undefined as ResolveCodeActionKeyBinding | undefined);
 	}
 }

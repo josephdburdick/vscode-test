@@ -5,9 +5,9 @@
 
 import { MainContext, MainThreadLanguagesShape, IMainContext } from './extHost.protocol';
 import type * as vscode from 'vscode';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import * as typeConvert from 'vs/workbench/api/common/extHostTypeConverters';
-import { StandardTokenType, Range, Position } from 'vs/workbench/api/common/extHostTypes';
+import { ExtHostDocuments } from 'vs/workBench/api/common/extHostDocuments';
+import * as typeConvert from 'vs/workBench/api/common/extHostTypeConverters';
+import { StandardTokenType, Range, Position } from 'vs/workBench/api/common/extHostTypes';
 
 export class ExtHostLanguages {
 
@@ -52,7 +52,7 @@ export class ExtHostLanguages {
 			type: typeConvert.TokenType.to(info.type)
 		};
 		if (!result.range.contains(<Position>position)) {
-			// bogous result
+			// Bogous result
 			return defaultRange;
 		}
 		if (versionNow !== document.version) {

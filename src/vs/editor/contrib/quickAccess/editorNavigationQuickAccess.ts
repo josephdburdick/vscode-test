@@ -10,12 +10,12 @@ import { IRange } from 'vs/editor/common/core/range';
 import { themeColorFromId } from 'vs/platform/theme/common/themeService';
 import { overviewRulerRangeHighlight } from 'vs/editor/common/view/editorColorRegistry';
 import { IQuickPick, IQuickPickItem, IKeyMods } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable, DisposableStore, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { isDiffEditor, getCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { once } from 'vs/base/common/functional';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IDisposaBle, DisposaBleStore, toDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { isDiffEditor, getCodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { once } from 'vs/Base/common/functional';
 
 interface IEditorLineDecoration {
 	rangeHighlightId: string;
@@ -23,48 +23,48 @@ interface IEditorLineDecoration {
 }
 
 export interface IEditorNavigationQuickAccessOptions {
-	canAcceptInBackground?: boolean;
+	canAcceptInBackground?: Boolean;
 }
 
 /**
- * A reusable quick access provider for the editor with support
+ * A reusaBle quick access provider for the editor with support
  * for adding decorations for navigating in the currently active file
- * (for example "Go to line", "Go to symbol").
+ * (for example "Go to line", "Go to symBol").
  */
-export abstract class AbstractEditorNavigationQuickAccessProvider implements IQuickAccessProvider {
+export aBstract class ABstractEditorNavigationQuickAccessProvider implements IQuickAccessProvider {
 
 	constructor(protected options?: IEditorNavigationQuickAccessOptions) { }
 
 	//#region Provider methods
 
-	provide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	provide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposaBle {
+		const disposaBles = new DisposaBleStore();
 
 		// Apply options if any
 		picker.canAcceptInBackground = !!this.options?.canAcceptInBackground;
 
-		// Disable filtering & sorting, we control the results
-		picker.matchOnLabel = picker.matchOnDescription = picker.matchOnDetail = picker.sortByLabel = false;
+		// DisaBle filtering & sorting, we control the results
+		picker.matchOnLaBel = picker.matchOnDescription = picker.matchOnDetail = picker.sortByLaBel = false;
 
-		// Provide based on current active editor
-		const pickerDisposable = disposables.add(new MutableDisposable());
-		pickerDisposable.value = this.doProvide(picker, token);
+		// Provide Based on current active editor
+		const pickerDisposaBle = disposaBles.add(new MutaBleDisposaBle());
+		pickerDisposaBle.value = this.doProvide(picker, token);
 
 		// Re-create whenever the active editor changes
-		disposables.add(this.onDidActiveTextEditorControlChange(() => {
+		disposaBles.add(this.onDidActiveTextEditorControlChange(() => {
 
 			// Clear old
-			pickerDisposable.value = undefined;
+			pickerDisposaBle.value = undefined;
 
 			// Add new
-			pickerDisposable.value = this.doProvide(picker, token);
+			pickerDisposaBle.value = this.doProvide(picker, token);
 		}));
 
-		return disposables;
+		return disposaBles;
 	}
 
-	private doProvide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	private doProvide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposaBle {
+		const disposaBles = new DisposaBleStore();
 
 		// With text control
 		const editor = this.activeTextEditorControl;
@@ -75,16 +75,16 @@ export abstract class AbstractEditorNavigationQuickAccessProvider implements IQu
 			const codeEditor = getCodeEditor(editor);
 			if (codeEditor) {
 
-				// Remember view state and update it when the cursor position
-				// changes even later because it could be that the user has
+				// RememBer view state and update it when the cursor position
+				// changes even later Because it could Be that the user has
 				// configured quick access to remain open when focus is lost and
 				// we always want to restore the current location.
 				let lastKnownEditorViewState = withNullAsUndefined(editor.saveViewState());
-				disposables.add(codeEditor.onDidChangeCursorPosition(() => {
+				disposaBles.add(codeEditor.onDidChangeCursorPosition(() => {
 					lastKnownEditorViewState = withNullAsUndefined(editor.saveViewState());
 				}));
 
-				disposables.add(once(token.onCancellationRequested)(() => {
+				disposaBles.add(once(token.onCancellationRequested)(() => {
 					if (lastKnownEditorViewState && editor === this.activeTextEditorControl) {
 						editor.restoreViewState(lastKnownEditorViewState);
 					}
@@ -92,38 +92,38 @@ export abstract class AbstractEditorNavigationQuickAccessProvider implements IQu
 			}
 
 			// Clean up decorations on dispose
-			disposables.add(toDisposable(() => this.clearDecorations(editor)));
+			disposaBles.add(toDisposaBle(() => this.clearDecorations(editor)));
 
-			// Ask subclass for entries
-			disposables.add(this.provideWithTextEditor(editor, picker, token));
+			// Ask suBclass for entries
+			disposaBles.add(this.provideWithTextEditor(editor, picker, token));
 		}
 
 		// Without text control
 		else {
-			disposables.add(this.provideWithoutTextEditor(picker, token));
+			disposaBles.add(this.provideWithoutTextEditor(picker, token));
 		}
 
-		return disposables;
+		return disposaBles;
 	}
 
 	/**
-	 * Subclasses to implement if they can operate on the text editor.
+	 * SuBclasses to implement if they can operate on the text editor.
 	 */
-	protected canProvideWithTextEditor(editor: IEditor): boolean {
+	protected canProvideWithTextEditor(editor: IEditor): Boolean {
 		return true;
 	}
 
 	/**
-	 * Subclasses to implement to provide picks for the picker when an editor is active.
+	 * SuBclasses to implement to provide picks for the picker when an editor is active.
 	 */
-	protected abstract provideWithTextEditor(editor: IEditor, picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable;
+	protected aBstract provideWithTextEditor(editor: IEditor, picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposaBle;
 
 	/**
-	 * Subclasses to implement to provide picks for the picker when no editor is active.
+	 * SuBclasses to implement to provide picks for the picker when no editor is active.
 	 */
-	protected abstract provideWithoutTextEditor(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable;
+	protected aBstract provideWithoutTextEditor(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposaBle;
 
-	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: boolean, preserveFocus?: boolean }): void {
+	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: Boolean, preserveFocus?: Boolean }): void {
 		editor.setSelection(options.range);
 		editor.revealRangeInCenter(options.range, ScrollType.Smooth);
 		if (!options.preserveFocus) {
@@ -143,14 +143,14 @@ export abstract class AbstractEditorNavigationQuickAccessProvider implements IQu
 	//#region Editor access
 
 	/**
-	 * Subclasses to provide an event when the active editor control changes.
+	 * SuBclasses to provide an event when the active editor control changes.
 	 */
-	protected abstract readonly onDidActiveTextEditorControlChange: Event<void>;
+	protected aBstract readonly onDidActiveTextEditorControlChange: Event<void>;
 
 	/**
-	 * Subclasses to provide the current active editor control.
+	 * SuBclasses to provide the current active editor control.
 	 */
-	protected abstract activeTextEditorControl: IEditor | undefined;
+	protected aBstract activeTextEditorControl: IEditor | undefined;
 
 	//#endregion
 

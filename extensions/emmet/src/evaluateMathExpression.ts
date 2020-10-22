@@ -7,7 +7,7 @@
 
 import * as vscode from 'vscode';
 import evaluate from '@emmetio/math-expression';
-import { DocumentStreamReader } from './bufferStream';
+import { DocumentStreamReader } from './BufferStream';
 
 export function evaluateMathExpression() {
 	if (!vscode.window.activeTextEditor) {
@@ -26,7 +26,7 @@ export function evaluateMathExpression() {
 				editBuilder.replace(new vscode.Range(stream.pos, pos), result);
 			} catch (err) {
 				vscode.window.showErrorMessage('Could not evaluate expression');
-				// Ignore error since most likely it’s because of non-math expression
+				// Ignore error since most likely it’s Because of non-math expression
 				console.warn('Math evaluation error', err);
 			}
 		});

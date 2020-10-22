@@ -11,21 +11,21 @@ import { DefaultEndOfLine, ITextSnapshot } from 'vs/editor/common/model';
 import { PieceTreeBase } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBase';
 import { PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
-import { NodeColor, SENTINEL, TreeNode } from 'vs/editor/common/model/pieceTreeTextBuffer/rbTreeBase';
+import { NodeColor, SENTINEL, TreeNode } from 'vs/editor/common/model/pieceTreeTextBuffer/rBTreeBase';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 import { SearchData } from 'vs/editor/common/model/textModelSearch';
 
-const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n';
+const alphaBet = 'aBcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n';
 
 function randomChar() {
-	return alphabet[randomInt(alphabet.length)];
+	return alphaBet[randomInt(alphaBet.length)];
 }
 
-function randomInt(bound: number) {
-	return Math.floor(Math.random() * bound);
+function randomInt(Bound: numBer) {
+	return Math.floor(Math.random() * Bound);
 }
 
-function randomStr(len: number) {
+function randomStr(len: numBer) {
 	if (len === null) {
 		len = 10;
 	}
@@ -74,15 +74,15 @@ function trimLineFeed(text: string): string {
 
 //#region Assertion
 
-function testLinesContent(str: string, pieceTable: PieceTreeBase) {
+function testLinesContent(str: string, pieceTaBle: PieceTreeBase) {
 	let lines = str.split(/\r\n|\r|\n/);
-	assert.equal(pieceTable.getLineCount(), lines.length);
-	assert.equal(pieceTable.getLinesRawContent(), str);
+	assert.equal(pieceTaBle.getLineCount(), lines.length);
+	assert.equal(pieceTaBle.getLinesRawContent(), str);
 	for (let i = 0; i < lines.length; i++) {
-		assert.equal(pieceTable.getLineContent(i + 1), lines[i]);
+		assert.equal(pieceTaBle.getLineContent(i + 1), lines[i]);
 		assert.equal(
 			trimLineFeed(
-				pieceTable.getValueInRange(
+				pieceTaBle.getValueInRange(
 					new Range(
 						i + 1,
 						1,
@@ -96,10 +96,10 @@ function testLinesContent(str: string, pieceTable: PieceTreeBase) {
 	}
 }
 
-function testLineStarts(str: string, pieceTable: PieceTreeBase) {
+function testLineStarts(str: string, pieceTaBle: PieceTreeBase) {
 	let lineStarts = [0];
 
-	// Reset regex to search from the beginning
+	// Reset regex to search from the Beginning
 	let _regex = new RegExp(/\r\n|\r|\n/g);
 	_regex.lastIndex = 0;
 	let prevMatchStartIndex = -1;
@@ -109,12 +109,12 @@ function testLineStarts(str: string, pieceTable: PieceTreeBase) {
 	do {
 		if (prevMatchStartIndex + prevMatchLength === str.length) {
 			// Reached the end of the line
-			break;
+			Break;
 		}
 
 		m = _regex.exec(str);
 		if (!m) {
-			break;
+			Break;
 		}
 
 		const matchStartIndex = m.index;
@@ -125,7 +125,7 @@ function testLineStarts(str: string, pieceTable: PieceTreeBase) {
 			matchLength === prevMatchLength
 		) {
 			// Exit early if the regex matches the same range twice
-			break;
+			Break;
 		}
 
 		prevMatchStartIndex = matchStartIndex;
@@ -136,27 +136,27 @@ function testLineStarts(str: string, pieceTable: PieceTreeBase) {
 
 	for (let i = 0; i < lineStarts.length; i++) {
 		assert.deepEqual(
-			pieceTable.getPositionAt(lineStarts[i]),
+			pieceTaBle.getPositionAt(lineStarts[i]),
 			new Position(i + 1, 1)
 		);
-		assert.equal(pieceTable.getOffsetAt(i + 1, 1), lineStarts[i]);
+		assert.equal(pieceTaBle.getOffsetAt(i + 1, 1), lineStarts[i]);
 	}
 
 	for (let i = 1; i < lineStarts.length; i++) {
-		let pos = pieceTable.getPositionAt(lineStarts[i] - 1);
+		let pos = pieceTaBle.getPositionAt(lineStarts[i] - 1);
 		assert.equal(
-			pieceTable.getOffsetAt(pos.lineNumber, pos.column),
+			pieceTaBle.getOffsetAt(pos.lineNumBer, pos.column),
 			lineStarts[i] - 1
 		);
 	}
 }
 
-function createTextBuffer(val: string[], normalizeEOL: boolean = true): PieceTreeBase {
-	let bufferBuilder = new PieceTreeTextBufferBuilder();
+function createTextBuffer(val: string[], normalizeEOL: Boolean = true): PieceTreeBase {
+	let BufferBuilder = new PieceTreeTextBufferBuilder();
 	for (const chunk of val) {
-		bufferBuilder.acceptChunk(chunk);
+		BufferBuilder.acceptChunk(chunk);
 	}
-	let factory = bufferBuilder.finish(normalizeEOL);
+	let factory = BufferBuilder.finish(normalizeEOL);
 	return (<PieceTreeTextBuffer>factory.create(DefaultEndOfLine.LF)).getPieceTree();
 }
 
@@ -170,16 +170,16 @@ function assertTreeInvariants(T: PieceTreeBase): void {
 	assertValidTree(T);
 }
 
-function depth(n: TreeNode): number {
+function depth(n: TreeNode): numBer {
 	if (n === SENTINEL) {
-		// The leafs are black
+		// The leafs are Black
 		return 1;
 	}
 	assert(depth(n.left) === depth(n.right));
 	return (n.color === NodeColor.Black ? 1 : 0) + depth(n.left);
 }
 
-function assertValidNode(n: TreeNode): { size: number, lf_cnt: number } {
+function assertValidNode(n: TreeNode): { size: numBer, lf_cnt: numBer } {
 	if (n === SENTINEL) {
 		return { size: 0, lf_cnt: 0 };
 	}
@@ -212,22 +212,22 @@ function assertValidTree(T: PieceTreeBase): void {
 //#endregion
 
 suite('inserts and deletes', () => {
-	test('basic insert/delete', () => {
-		let pieceTable = createTextBuffer([
+	test('Basic insert/delete', () => {
+		let pieceTaBle = createTextBuffer([
 			'This is a document with some text.'
 		]);
 
-		pieceTable.insert(34, 'This is some more text to insert at offset 34.');
+		pieceTaBle.insert(34, 'This is some more text to insert at offset 34.');
 		assert.equal(
-			pieceTable.getLinesRawContent(),
+			pieceTaBle.getLinesRawContent(),
 			'This is a document with some text.This is some more text to insert at offset 34.'
 		);
-		pieceTable.delete(42, 5);
+		pieceTaBle.delete(42, 5);
 		assert.equal(
-			pieceTable.getLinesRawContent(),
+			pieceTaBle.getLinesRawContent(),
 			'This is a document with some text.This is more text to insert at offset 34.'
 		);
-		assertTreeInvariants(pieceTable);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('more inserts', () => {
@@ -261,1224 +261,1224 @@ suite('inserts and deletes', () => {
 
 	test('random test 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'ceLPHmFzvCtFeHkCBej ');
-		str = str.substring(0, 0) + 'ceLPHmFzvCtFeHkCBej ' + str.substring(0);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		pieceTable.insert(8, 'gDCEfNYiBUNkSwtvB K ');
-		str = str.substring(0, 8) + 'gDCEfNYiBUNkSwtvB K ' + str.substring(8);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		pieceTable.insert(38, 'cyNcHxjNPPoehBJldLS ');
-		str = str.substring(0, 38) + 'cyNcHxjNPPoehBJldLS ' + str.substring(38);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		pieceTable.insert(59, 'ejMx\nOTgWlbpeDExjOk ');
-		str = str.substring(0, 59) + 'ejMx\nOTgWlbpeDExjOk ' + str.substring(59);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'ceLPHmFzvCtFeHkCBej ');
+		str = str.suBstring(0, 0) + 'ceLPHmFzvCtFeHkCBej ' + str.suBstring(0);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		pieceTaBle.insert(8, 'gDCEfNYiBUNkSwtvB K ');
+		str = str.suBstring(0, 8) + 'gDCEfNYiBUNkSwtvB K ' + str.suBstring(8);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		pieceTaBle.insert(38, 'cyNcHxjNPPoehBJldLS ');
+		str = str.suBstring(0, 38) + 'cyNcHxjNPPoehBJldLS ' + str.suBstring(38);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		pieceTaBle.insert(59, 'ejMx\nOTgWlBpeDExjOk ');
+		str = str.suBstring(0, 59) + 'ejMx\nOTgWlBpeDExjOk ' + str.suBstring(59);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random test 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'VgPG ');
-		str = str.substring(0, 0) + 'VgPG ' + str.substring(0);
-		pieceTable.insert(2, 'DdWF ');
-		str = str.substring(0, 2) + 'DdWF ' + str.substring(2);
-		pieceTable.insert(0, 'hUJc ');
-		str = str.substring(0, 0) + 'hUJc ' + str.substring(0);
-		pieceTable.insert(8, 'lQEq ');
-		str = str.substring(0, 8) + 'lQEq ' + str.substring(8);
-		pieceTable.insert(10, 'Gbtp ');
-		str = str.substring(0, 10) + 'Gbtp ' + str.substring(10);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'VgPG ');
+		str = str.suBstring(0, 0) + 'VgPG ' + str.suBstring(0);
+		pieceTaBle.insert(2, 'DdWF ');
+		str = str.suBstring(0, 2) + 'DdWF ' + str.suBstring(2);
+		pieceTaBle.insert(0, 'hUJc ');
+		str = str.suBstring(0, 0) + 'hUJc ' + str.suBstring(0);
+		pieceTaBle.insert(8, 'lQEq ');
+		str = str.suBstring(0, 8) + 'lQEq ' + str.suBstring(8);
+		pieceTaBle.insert(10, 'GBtp ');
+		str = str.suBstring(0, 10) + 'GBtp ' + str.suBstring(10);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random test 3', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'gYSz');
-		str = str.substring(0, 0) + 'gYSz' + str.substring(0);
-		pieceTable.insert(1, 'mDQe');
-		str = str.substring(0, 1) + 'mDQe' + str.substring(1);
-		pieceTable.insert(1, 'DTMQ');
-		str = str.substring(0, 1) + 'DTMQ' + str.substring(1);
-		pieceTable.insert(2, 'GGZB');
-		str = str.substring(0, 2) + 'GGZB' + str.substring(2);
-		pieceTable.insert(12, 'wXpq');
-		str = str.substring(0, 12) + 'wXpq' + str.substring(12);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'gYSz');
+		str = str.suBstring(0, 0) + 'gYSz' + str.suBstring(0);
+		pieceTaBle.insert(1, 'mDQe');
+		str = str.suBstring(0, 1) + 'mDQe' + str.suBstring(1);
+		pieceTaBle.insert(1, 'DTMQ');
+		str = str.suBstring(0, 1) + 'DTMQ' + str.suBstring(1);
+		pieceTaBle.insert(2, 'GGZB');
+		str = str.suBstring(0, 2) + 'GGZB' + str.suBstring(2);
+		pieceTaBle.insert(12, 'wXpq');
+		str = str.suBstring(0, 12) + 'wXpq' + str.suBstring(12);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 	});
 
 	test('random delete 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
+		let pieceTaBle = createTextBuffer(['']);
 
-		pieceTable.insert(0, 'vfb');
-		str = str.substring(0, 0) + 'vfb' + str.substring(0);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		pieceTable.insert(0, 'zRq');
-		str = str.substring(0, 0) + 'zRq' + str.substring(0);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		pieceTaBle.insert(0, 'vfB');
+		str = str.suBstring(0, 0) + 'vfB' + str.suBstring(0);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		pieceTaBle.insert(0, 'zRq');
+		str = str.suBstring(0, 0) + 'zRq' + str.suBstring(0);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		pieceTable.delete(5, 1);
-		str = str.substring(0, 5) + str.substring(5 + 1);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		pieceTaBle.delete(5, 1);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 1);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		pieceTable.insert(1, 'UNw');
-		str = str.substring(0, 1) + 'UNw' + str.substring(1);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		pieceTaBle.insert(1, 'UNw');
+		str = str.suBstring(0, 1) + 'UNw' + str.suBstring(1);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		pieceTable.delete(4, 3);
-		str = str.substring(0, 4) + str.substring(4 + 3);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		pieceTaBle.delete(4, 3);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 3);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		pieceTable.delete(1, 4);
-		str = str.substring(0, 1) + str.substring(1 + 4);
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		pieceTaBle.delete(1, 4);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 4);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		pieceTable.delete(0, 1);
-		str = str.substring(0, 0) + str.substring(0 + 1);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		pieceTaBle.delete(0, 1);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 1);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random delete 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
+		let pieceTaBle = createTextBuffer(['']);
 
-		pieceTable.insert(0, 'IDT');
-		str = str.substring(0, 0) + 'IDT' + str.substring(0);
-		pieceTable.insert(3, 'wwA');
-		str = str.substring(0, 3) + 'wwA' + str.substring(3);
-		pieceTable.insert(3, 'Gnr');
-		str = str.substring(0, 3) + 'Gnr' + str.substring(3);
-		pieceTable.delete(6, 3);
-		str = str.substring(0, 6) + str.substring(6 + 3);
-		pieceTable.insert(4, 'eHp');
-		str = str.substring(0, 4) + 'eHp' + str.substring(4);
-		pieceTable.insert(1, 'UAi');
-		str = str.substring(0, 1) + 'UAi' + str.substring(1);
-		pieceTable.insert(2, 'FrR');
-		str = str.substring(0, 2) + 'FrR' + str.substring(2);
-		pieceTable.delete(6, 7);
-		str = str.substring(0, 6) + str.substring(6 + 7);
-		pieceTable.delete(3, 5);
-		str = str.substring(0, 3) + str.substring(3 + 5);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		pieceTaBle.insert(0, 'IDT');
+		str = str.suBstring(0, 0) + 'IDT' + str.suBstring(0);
+		pieceTaBle.insert(3, 'wwA');
+		str = str.suBstring(0, 3) + 'wwA' + str.suBstring(3);
+		pieceTaBle.insert(3, 'Gnr');
+		str = str.suBstring(0, 3) + 'Gnr' + str.suBstring(3);
+		pieceTaBle.delete(6, 3);
+		str = str.suBstring(0, 6) + str.suBstring(6 + 3);
+		pieceTaBle.insert(4, 'eHp');
+		str = str.suBstring(0, 4) + 'eHp' + str.suBstring(4);
+		pieceTaBle.insert(1, 'UAi');
+		str = str.suBstring(0, 1) + 'UAi' + str.suBstring(1);
+		pieceTaBle.insert(2, 'FrR');
+		str = str.suBstring(0, 2) + 'FrR' + str.suBstring(2);
+		pieceTaBle.delete(6, 7);
+		str = str.suBstring(0, 6) + str.suBstring(6 + 7);
+		pieceTaBle.delete(3, 5);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 5);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random delete 3', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'PqM');
-		str = str.substring(0, 0) + 'PqM' + str.substring(0);
-		pieceTable.delete(1, 2);
-		str = str.substring(0, 1) + str.substring(1 + 2);
-		pieceTable.insert(1, 'zLc');
-		str = str.substring(0, 1) + 'zLc' + str.substring(1);
-		pieceTable.insert(0, 'MEX');
-		str = str.substring(0, 0) + 'MEX' + str.substring(0);
-		pieceTable.insert(0, 'jZh');
-		str = str.substring(0, 0) + 'jZh' + str.substring(0);
-		pieceTable.insert(8, 'GwQ');
-		str = str.substring(0, 8) + 'GwQ' + str.substring(8);
-		pieceTable.delete(5, 6);
-		str = str.substring(0, 5) + str.substring(5 + 6);
-		pieceTable.insert(4, 'ktw');
-		str = str.substring(0, 4) + 'ktw' + str.substring(4);
-		pieceTable.insert(5, 'GVu');
-		str = str.substring(0, 5) + 'GVu' + str.substring(5);
-		pieceTable.insert(9, 'jdm');
-		str = str.substring(0, 9) + 'jdm' + str.substring(9);
-		pieceTable.insert(15, 'na\n');
-		str = str.substring(0, 15) + 'na\n' + str.substring(15);
-		pieceTable.delete(5, 8);
-		str = str.substring(0, 5) + str.substring(5 + 8);
-		pieceTable.delete(3, 4);
-		str = str.substring(0, 3) + str.substring(3 + 4);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'PqM');
+		str = str.suBstring(0, 0) + 'PqM' + str.suBstring(0);
+		pieceTaBle.delete(1, 2);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 2);
+		pieceTaBle.insert(1, 'zLc');
+		str = str.suBstring(0, 1) + 'zLc' + str.suBstring(1);
+		pieceTaBle.insert(0, 'MEX');
+		str = str.suBstring(0, 0) + 'MEX' + str.suBstring(0);
+		pieceTaBle.insert(0, 'jZh');
+		str = str.suBstring(0, 0) + 'jZh' + str.suBstring(0);
+		pieceTaBle.insert(8, 'GwQ');
+		str = str.suBstring(0, 8) + 'GwQ' + str.suBstring(8);
+		pieceTaBle.delete(5, 6);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 6);
+		pieceTaBle.insert(4, 'ktw');
+		str = str.suBstring(0, 4) + 'ktw' + str.suBstring(4);
+		pieceTaBle.insert(5, 'GVu');
+		str = str.suBstring(0, 5) + 'GVu' + str.suBstring(5);
+		pieceTaBle.insert(9, 'jdm');
+		str = str.suBstring(0, 9) + 'jdm' + str.suBstring(9);
+		pieceTaBle.insert(15, 'na\n');
+		str = str.suBstring(0, 15) + 'na\n' + str.suBstring(15);
+		pieceTaBle.delete(5, 8);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 8);
+		pieceTaBle.delete(3, 4);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 4);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random insert/delete \\r bug 1', () => {
+	test('random insert/delete \\r Bug 1', () => {
 		let str = 'a';
-		let pieceTable = createTextBuffer(['a']);
-		pieceTable.delete(0, 1);
-		str = str.substring(0, 0) + str.substring(0 + 1);
-		pieceTable.insert(0, '\r\r\n\n');
-		str = str.substring(0, 0) + '\r\r\n\n' + str.substring(0);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.insert(2, '\n\n\ra');
-		str = str.substring(0, 2) + '\n\n\ra' + str.substring(2);
-		pieceTable.delete(4, 3);
-		str = str.substring(0, 4) + str.substring(4 + 3);
-		pieceTable.insert(2, '\na\r\r');
-		str = str.substring(0, 2) + '\na\r\r' + str.substring(2);
-		pieceTable.insert(6, '\ra\n\n');
-		str = str.substring(0, 6) + '\ra\n\n' + str.substring(6);
-		pieceTable.insert(0, 'aa\n\n');
-		str = str.substring(0, 0) + 'aa\n\n' + str.substring(0);
-		pieceTable.insert(5, '\n\na\r');
-		str = str.substring(0, 5) + '\n\na\r' + str.substring(5);
+		let pieceTaBle = createTextBuffer(['a']);
+		pieceTaBle.delete(0, 1);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 1);
+		pieceTaBle.insert(0, '\r\r\n\n');
+		str = str.suBstring(0, 0) + '\r\r\n\n' + str.suBstring(0);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.insert(2, '\n\n\ra');
+		str = str.suBstring(0, 2) + '\n\n\ra' + str.suBstring(2);
+		pieceTaBle.delete(4, 3);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 3);
+		pieceTaBle.insert(2, '\na\r\r');
+		str = str.suBstring(0, 2) + '\na\r\r' + str.suBstring(2);
+		pieceTaBle.insert(6, '\ra\n\n');
+		str = str.suBstring(0, 6) + '\ra\n\n' + str.suBstring(6);
+		pieceTaBle.insert(0, 'aa\n\n');
+		str = str.suBstring(0, 0) + 'aa\n\n' + str.suBstring(0);
+		pieceTaBle.insert(5, '\n\na\r');
+		str = str.suBstring(0, 5) + '\n\na\r' + str.suBstring(5);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random insert/delete \\r bug 2', () => {
+	test('random insert/delete \\r Bug 2', () => {
 		let str = 'a';
-		let pieceTable = createTextBuffer(['a']);
-		pieceTable.insert(1, '\naa\r');
-		str = str.substring(0, 1) + '\naa\r' + str.substring(1);
-		pieceTable.delete(0, 4);
-		str = str.substring(0, 0) + str.substring(0 + 4);
-		pieceTable.insert(1, '\r\r\na');
-		str = str.substring(0, 1) + '\r\r\na' + str.substring(1);
-		pieceTable.insert(2, '\n\r\ra');
-		str = str.substring(0, 2) + '\n\r\ra' + str.substring(2);
-		pieceTable.delete(4, 1);
-		str = str.substring(0, 4) + str.substring(4 + 1);
-		pieceTable.insert(8, '\r\n\r\r');
-		str = str.substring(0, 8) + '\r\n\r\r' + str.substring(8);
-		pieceTable.insert(7, '\n\n\na');
-		str = str.substring(0, 7) + '\n\n\na' + str.substring(7);
-		pieceTable.insert(13, 'a\n\na');
-		str = str.substring(0, 13) + 'a\n\na' + str.substring(13);
-		pieceTable.delete(17, 3);
-		str = str.substring(0, 17) + str.substring(17 + 3);
-		pieceTable.insert(2, 'a\ra\n');
-		str = str.substring(0, 2) + 'a\ra\n' + str.substring(2);
+		let pieceTaBle = createTextBuffer(['a']);
+		pieceTaBle.insert(1, '\naa\r');
+		str = str.suBstring(0, 1) + '\naa\r' + str.suBstring(1);
+		pieceTaBle.delete(0, 4);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 4);
+		pieceTaBle.insert(1, '\r\r\na');
+		str = str.suBstring(0, 1) + '\r\r\na' + str.suBstring(1);
+		pieceTaBle.insert(2, '\n\r\ra');
+		str = str.suBstring(0, 2) + '\n\r\ra' + str.suBstring(2);
+		pieceTaBle.delete(4, 1);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 1);
+		pieceTaBle.insert(8, '\r\n\r\r');
+		str = str.suBstring(0, 8) + '\r\n\r\r' + str.suBstring(8);
+		pieceTaBle.insert(7, '\n\n\na');
+		str = str.suBstring(0, 7) + '\n\n\na' + str.suBstring(7);
+		pieceTaBle.insert(13, 'a\n\na');
+		str = str.suBstring(0, 13) + 'a\n\na' + str.suBstring(13);
+		pieceTaBle.delete(17, 3);
+		str = str.suBstring(0, 17) + str.suBstring(17 + 3);
+		pieceTaBle.insert(2, 'a\ra\n');
+		str = str.suBstring(0, 2) + 'a\ra\n' + str.suBstring(2);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random insert/delete \\r bug 3', () => {
+	test('random insert/delete \\r Bug 3', () => {
 		let str = 'a';
-		let pieceTable = createTextBuffer(['a']);
-		pieceTable.insert(0, '\r\na\r');
-		str = str.substring(0, 0) + '\r\na\r' + str.substring(0);
-		pieceTable.delete(2, 3);
-		str = str.substring(0, 2) + str.substring(2 + 3);
-		pieceTable.insert(2, 'a\r\n\r');
-		str = str.substring(0, 2) + 'a\r\n\r' + str.substring(2);
-		pieceTable.delete(4, 2);
-		str = str.substring(0, 4) + str.substring(4 + 2);
-		pieceTable.insert(4, 'a\n\r\n');
-		str = str.substring(0, 4) + 'a\n\r\n' + str.substring(4);
-		pieceTable.insert(1, 'aa\n\r');
-		str = str.substring(0, 1) + 'aa\n\r' + str.substring(1);
-		pieceTable.insert(7, '\na\r\n');
-		str = str.substring(0, 7) + '\na\r\n' + str.substring(7);
-		pieceTable.insert(5, '\n\na\r');
-		str = str.substring(0, 5) + '\n\na\r' + str.substring(5);
-		pieceTable.insert(10, '\r\r\n\r');
-		str = str.substring(0, 10) + '\r\r\n\r' + str.substring(10);
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		pieceTable.delete(21, 3);
-		str = str.substring(0, 21) + str.substring(21 + 3);
+		let pieceTaBle = createTextBuffer(['a']);
+		pieceTaBle.insert(0, '\r\na\r');
+		str = str.suBstring(0, 0) + '\r\na\r' + str.suBstring(0);
+		pieceTaBle.delete(2, 3);
+		str = str.suBstring(0, 2) + str.suBstring(2 + 3);
+		pieceTaBle.insert(2, 'a\r\n\r');
+		str = str.suBstring(0, 2) + 'a\r\n\r' + str.suBstring(2);
+		pieceTaBle.delete(4, 2);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 2);
+		pieceTaBle.insert(4, 'a\n\r\n');
+		str = str.suBstring(0, 4) + 'a\n\r\n' + str.suBstring(4);
+		pieceTaBle.insert(1, 'aa\n\r');
+		str = str.suBstring(0, 1) + 'aa\n\r' + str.suBstring(1);
+		pieceTaBle.insert(7, '\na\r\n');
+		str = str.suBstring(0, 7) + '\na\r\n' + str.suBstring(7);
+		pieceTaBle.insert(5, '\n\na\r');
+		str = str.suBstring(0, 5) + '\n\na\r' + str.suBstring(5);
+		pieceTaBle.insert(10, '\r\r\n\r');
+		str = str.suBstring(0, 10) + '\r\r\n\r' + str.suBstring(10);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		pieceTaBle.delete(21, 3);
+		str = str.suBstring(0, 21) + str.suBstring(21 + 3);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random insert/delete \\r bug 4s', () => {
+	test('random insert/delete \\r Bug 4s', () => {
 		let str = 'a';
-		let pieceTable = createTextBuffer(['a']);
-		pieceTable.delete(0, 1);
-		str = str.substring(0, 0) + str.substring(0 + 1);
-		pieceTable.insert(0, '\naaa');
-		str = str.substring(0, 0) + '\naaa' + str.substring(0);
-		pieceTable.insert(2, '\n\naa');
-		str = str.substring(0, 2) + '\n\naa' + str.substring(2);
-		pieceTable.delete(1, 4);
-		str = str.substring(0, 1) + str.substring(1 + 4);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.delete(1, 2);
-		str = str.substring(0, 1) + str.substring(1 + 2);
-		pieceTable.delete(0, 1);
-		str = str.substring(0, 0) + str.substring(0 + 1);
-		pieceTable.insert(0, 'a\n\n\r');
-		str = str.substring(0, 0) + 'a\n\n\r' + str.substring(0);
-		pieceTable.insert(2, 'aa\r\n');
-		str = str.substring(0, 2) + 'aa\r\n' + str.substring(2);
-		pieceTable.insert(3, 'a\naa');
-		str = str.substring(0, 3) + 'a\naa' + str.substring(3);
+		let pieceTaBle = createTextBuffer(['a']);
+		pieceTaBle.delete(0, 1);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 1);
+		pieceTaBle.insert(0, '\naaa');
+		str = str.suBstring(0, 0) + '\naaa' + str.suBstring(0);
+		pieceTaBle.insert(2, '\n\naa');
+		str = str.suBstring(0, 2) + '\n\naa' + str.suBstring(2);
+		pieceTaBle.delete(1, 4);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 4);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.delete(1, 2);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 2);
+		pieceTaBle.delete(0, 1);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 1);
+		pieceTaBle.insert(0, 'a\n\n\r');
+		str = str.suBstring(0, 0) + 'a\n\n\r' + str.suBstring(0);
+		pieceTaBle.insert(2, 'aa\r\n');
+		str = str.suBstring(0, 2) + 'aa\r\n' + str.suBstring(2);
+		pieceTaBle.insert(3, 'a\naa');
+		str = str.suBstring(0, 3) + 'a\naa' + str.suBstring(3);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random insert/delete \\r bug 5', () => {
+	test('random insert/delete \\r Bug 5', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, '\n\n\n\r');
-		str = str.substring(0, 0) + '\n\n\n\r' + str.substring(0);
-		pieceTable.insert(1, '\n\n\n\r');
-		str = str.substring(0, 1) + '\n\n\n\r' + str.substring(1);
-		pieceTable.insert(2, '\n\r\r\r');
-		str = str.substring(0, 2) + '\n\r\r\r' + str.substring(2);
-		pieceTable.insert(8, '\n\r\n\r');
-		str = str.substring(0, 8) + '\n\r\n\r' + str.substring(8);
-		pieceTable.delete(5, 2);
-		str = str.substring(0, 5) + str.substring(5 + 2);
-		pieceTable.insert(4, '\n\r\r\r');
-		str = str.substring(0, 4) + '\n\r\r\r' + str.substring(4);
-		pieceTable.insert(8, '\n\n\n\r');
-		str = str.substring(0, 8) + '\n\n\n\r' + str.substring(8);
-		pieceTable.delete(0, 7);
-		str = str.substring(0, 0) + str.substring(0 + 7);
-		pieceTable.insert(1, '\r\n\r\r');
-		str = str.substring(0, 1) + '\r\n\r\r' + str.substring(1);
-		pieceTable.insert(15, '\n\r\r\r');
-		str = str.substring(0, 15) + '\n\r\r\r' + str.substring(15);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, '\n\n\n\r');
+		str = str.suBstring(0, 0) + '\n\n\n\r' + str.suBstring(0);
+		pieceTaBle.insert(1, '\n\n\n\r');
+		str = str.suBstring(0, 1) + '\n\n\n\r' + str.suBstring(1);
+		pieceTaBle.insert(2, '\n\r\r\r');
+		str = str.suBstring(0, 2) + '\n\r\r\r' + str.suBstring(2);
+		pieceTaBle.insert(8, '\n\r\n\r');
+		str = str.suBstring(0, 8) + '\n\r\n\r' + str.suBstring(8);
+		pieceTaBle.delete(5, 2);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 2);
+		pieceTaBle.insert(4, '\n\r\r\r');
+		str = str.suBstring(0, 4) + '\n\r\r\r' + str.suBstring(4);
+		pieceTaBle.insert(8, '\n\n\n\r');
+		str = str.suBstring(0, 8) + '\n\n\n\r' + str.suBstring(8);
+		pieceTaBle.delete(0, 7);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 7);
+		pieceTaBle.insert(1, '\r\n\r\r');
+		str = str.suBstring(0, 1) + '\r\n\r\r' + str.suBstring(1);
+		pieceTaBle.insert(15, '\n\r\r\r');
+		str = str.suBstring(0, 15) + '\n\r\r\r' + str.suBstring(15);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('prefix sum for line feed', () => {
-	test('basic', () => {
-		let pieceTable = createTextBuffer(['1\n2\n3\n4']);
+	test('Basic', () => {
+		let pieceTaBle = createTextBuffer(['1\n2\n3\n4']);
 
-		assert.equal(pieceTable.getLineCount(), 4);
-		assert.deepEqual(pieceTable.getPositionAt(0), new Position(1, 1));
-		assert.deepEqual(pieceTable.getPositionAt(1), new Position(1, 2));
-		assert.deepEqual(pieceTable.getPositionAt(2), new Position(2, 1));
-		assert.deepEqual(pieceTable.getPositionAt(3), new Position(2, 2));
-		assert.deepEqual(pieceTable.getPositionAt(4), new Position(3, 1));
-		assert.deepEqual(pieceTable.getPositionAt(5), new Position(3, 2));
-		assert.deepEqual(pieceTable.getPositionAt(6), new Position(4, 1));
+		assert.equal(pieceTaBle.getLineCount(), 4);
+		assert.deepEqual(pieceTaBle.getPositionAt(0), new Position(1, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(1), new Position(1, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(2), new Position(2, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(3), new Position(2, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(4), new Position(3, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(5), new Position(3, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(6), new Position(4, 1));
 
-		assert.equal(pieceTable.getOffsetAt(1, 1), 0);
-		assert.equal(pieceTable.getOffsetAt(1, 2), 1);
-		assert.equal(pieceTable.getOffsetAt(2, 1), 2);
-		assert.equal(pieceTable.getOffsetAt(2, 2), 3);
-		assert.equal(pieceTable.getOffsetAt(3, 1), 4);
-		assert.equal(pieceTable.getOffsetAt(3, 2), 5);
-		assert.equal(pieceTable.getOffsetAt(4, 1), 6);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getOffsetAt(1, 1), 0);
+		assert.equal(pieceTaBle.getOffsetAt(1, 2), 1);
+		assert.equal(pieceTaBle.getOffsetAt(2, 1), 2);
+		assert.equal(pieceTaBle.getOffsetAt(2, 2), 3);
+		assert.equal(pieceTaBle.getOffsetAt(3, 1), 4);
+		assert.equal(pieceTaBle.getOffsetAt(3, 2), 5);
+		assert.equal(pieceTaBle.getOffsetAt(4, 1), 6);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('append', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\nde']);
-		pieceTable.insert(8, 'fh\ni\njk');
+		let pieceTaBle = createTextBuffer(['a\nB\nc\nde']);
+		pieceTaBle.insert(8, 'fh\ni\njk');
 
-		assert.equal(pieceTable.getLineCount(), 6);
-		assert.deepEqual(pieceTable.getPositionAt(9), new Position(4, 4));
-		assert.equal(pieceTable.getOffsetAt(1, 1), 0);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), 6);
+		assert.deepEqual(pieceTaBle.getPositionAt(9), new Position(4, 4));
+		assert.equal(pieceTaBle.getOffsetAt(1, 1), 0);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('insert', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\nde']);
-		pieceTable.insert(7, 'fh\ni\njk');
+		let pieceTaBle = createTextBuffer(['a\nB\nc\nde']);
+		pieceTaBle.insert(7, 'fh\ni\njk');
 
-		assert.equal(pieceTable.getLineCount(), 6);
-		assert.deepEqual(pieceTable.getPositionAt(6), new Position(4, 1));
-		assert.deepEqual(pieceTable.getPositionAt(7), new Position(4, 2));
-		assert.deepEqual(pieceTable.getPositionAt(8), new Position(4, 3));
-		assert.deepEqual(pieceTable.getPositionAt(9), new Position(4, 4));
-		assert.deepEqual(pieceTable.getPositionAt(12), new Position(6, 1));
-		assert.deepEqual(pieceTable.getPositionAt(13), new Position(6, 2));
-		assert.deepEqual(pieceTable.getPositionAt(14), new Position(6, 3));
+		assert.equal(pieceTaBle.getLineCount(), 6);
+		assert.deepEqual(pieceTaBle.getPositionAt(6), new Position(4, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(7), new Position(4, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(8), new Position(4, 3));
+		assert.deepEqual(pieceTaBle.getPositionAt(9), new Position(4, 4));
+		assert.deepEqual(pieceTaBle.getPositionAt(12), new Position(6, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(13), new Position(6, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(14), new Position(6, 3));
 
-		assert.equal(pieceTable.getOffsetAt(4, 1), 6);
-		assert.equal(pieceTable.getOffsetAt(4, 2), 7);
-		assert.equal(pieceTable.getOffsetAt(4, 3), 8);
-		assert.equal(pieceTable.getOffsetAt(4, 4), 9);
-		assert.equal(pieceTable.getOffsetAt(6, 1), 12);
-		assert.equal(pieceTable.getOffsetAt(6, 2), 13);
-		assert.equal(pieceTable.getOffsetAt(6, 3), 14);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getOffsetAt(4, 1), 6);
+		assert.equal(pieceTaBle.getOffsetAt(4, 2), 7);
+		assert.equal(pieceTaBle.getOffsetAt(4, 3), 8);
+		assert.equal(pieceTaBle.getOffsetAt(4, 4), 9);
+		assert.equal(pieceTaBle.getOffsetAt(6, 1), 12);
+		assert.equal(pieceTaBle.getOffsetAt(6, 2), 13);
+		assert.equal(pieceTaBle.getOffsetAt(6, 3), 14);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('delete', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\ndefh\ni\njk']);
-		pieceTable.delete(7, 2);
+		let pieceTaBle = createTextBuffer(['a\nB\nc\ndefh\ni\njk']);
+		pieceTaBle.delete(7, 2);
 
-		assert.equal(pieceTable.getLinesRawContent(), 'a\nb\nc\ndh\ni\njk');
-		assert.equal(pieceTable.getLineCount(), 6);
-		assert.deepEqual(pieceTable.getPositionAt(6), new Position(4, 1));
-		assert.deepEqual(pieceTable.getPositionAt(7), new Position(4, 2));
-		assert.deepEqual(pieceTable.getPositionAt(8), new Position(4, 3));
-		assert.deepEqual(pieceTable.getPositionAt(9), new Position(5, 1));
-		assert.deepEqual(pieceTable.getPositionAt(11), new Position(6, 1));
-		assert.deepEqual(pieceTable.getPositionAt(12), new Position(6, 2));
-		assert.deepEqual(pieceTable.getPositionAt(13), new Position(6, 3));
+		assert.equal(pieceTaBle.getLinesRawContent(), 'a\nB\nc\ndh\ni\njk');
+		assert.equal(pieceTaBle.getLineCount(), 6);
+		assert.deepEqual(pieceTaBle.getPositionAt(6), new Position(4, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(7), new Position(4, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(8), new Position(4, 3));
+		assert.deepEqual(pieceTaBle.getPositionAt(9), new Position(5, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(11), new Position(6, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(12), new Position(6, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(13), new Position(6, 3));
 
-		assert.equal(pieceTable.getOffsetAt(4, 1), 6);
-		assert.equal(pieceTable.getOffsetAt(4, 2), 7);
-		assert.equal(pieceTable.getOffsetAt(4, 3), 8);
-		assert.equal(pieceTable.getOffsetAt(5, 1), 9);
-		assert.equal(pieceTable.getOffsetAt(6, 1), 11);
-		assert.equal(pieceTable.getOffsetAt(6, 2), 12);
-		assert.equal(pieceTable.getOffsetAt(6, 3), 13);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getOffsetAt(4, 1), 6);
+		assert.equal(pieceTaBle.getOffsetAt(4, 2), 7);
+		assert.equal(pieceTaBle.getOffsetAt(4, 3), 8);
+		assert.equal(pieceTaBle.getOffsetAt(5, 1), 9);
+		assert.equal(pieceTaBle.getOffsetAt(6, 1), 11);
+		assert.equal(pieceTaBle.getOffsetAt(6, 2), 12);
+		assert.equal(pieceTaBle.getOffsetAt(6, 3), 13);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('add+delete 1', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\nde']);
-		pieceTable.insert(8, 'fh\ni\njk');
-		pieceTable.delete(7, 2);
+		let pieceTaBle = createTextBuffer(['a\nB\nc\nde']);
+		pieceTaBle.insert(8, 'fh\ni\njk');
+		pieceTaBle.delete(7, 2);
 
-		assert.equal(pieceTable.getLinesRawContent(), 'a\nb\nc\ndh\ni\njk');
-		assert.equal(pieceTable.getLineCount(), 6);
-		assert.deepEqual(pieceTable.getPositionAt(6), new Position(4, 1));
-		assert.deepEqual(pieceTable.getPositionAt(7), new Position(4, 2));
-		assert.deepEqual(pieceTable.getPositionAt(8), new Position(4, 3));
-		assert.deepEqual(pieceTable.getPositionAt(9), new Position(5, 1));
-		assert.deepEqual(pieceTable.getPositionAt(11), new Position(6, 1));
-		assert.deepEqual(pieceTable.getPositionAt(12), new Position(6, 2));
-		assert.deepEqual(pieceTable.getPositionAt(13), new Position(6, 3));
+		assert.equal(pieceTaBle.getLinesRawContent(), 'a\nB\nc\ndh\ni\njk');
+		assert.equal(pieceTaBle.getLineCount(), 6);
+		assert.deepEqual(pieceTaBle.getPositionAt(6), new Position(4, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(7), new Position(4, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(8), new Position(4, 3));
+		assert.deepEqual(pieceTaBle.getPositionAt(9), new Position(5, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(11), new Position(6, 1));
+		assert.deepEqual(pieceTaBle.getPositionAt(12), new Position(6, 2));
+		assert.deepEqual(pieceTaBle.getPositionAt(13), new Position(6, 3));
 
-		assert.equal(pieceTable.getOffsetAt(4, 1), 6);
-		assert.equal(pieceTable.getOffsetAt(4, 2), 7);
-		assert.equal(pieceTable.getOffsetAt(4, 3), 8);
-		assert.equal(pieceTable.getOffsetAt(5, 1), 9);
-		assert.equal(pieceTable.getOffsetAt(6, 1), 11);
-		assert.equal(pieceTable.getOffsetAt(6, 2), 12);
-		assert.equal(pieceTable.getOffsetAt(6, 3), 13);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getOffsetAt(4, 1), 6);
+		assert.equal(pieceTaBle.getOffsetAt(4, 2), 7);
+		assert.equal(pieceTaBle.getOffsetAt(4, 3), 8);
+		assert.equal(pieceTaBle.getOffsetAt(5, 1), 9);
+		assert.equal(pieceTaBle.getOffsetAt(6, 1), 11);
+		assert.equal(pieceTaBle.getOffsetAt(6, 2), 12);
+		assert.equal(pieceTaBle.getOffsetAt(6, 3), 13);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('insert random bug 1: prefixSumComputer.removeValues(start, cnt) cnt is 1 based.', () => {
+	test('insert random Bug 1: prefixSumComputer.removeValues(start, cnt) cnt is 1 Based.', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, ' ZX \n Z\nZ\n YZ\nY\nZXX ');
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, ' ZX \n Z\nZ\n YZ\nY\nZXX ');
 		str =
-			str.substring(0, 0) +
+			str.suBstring(0, 0) +
 			' ZX \n Z\nZ\n YZ\nY\nZXX ' +
-			str.substring(0);
-		pieceTable.insert(14, 'X ZZ\nYZZYZXXY Y XY\n ');
+			str.suBstring(0);
+		pieceTaBle.insert(14, 'X ZZ\nYZZYZXXY Y XY\n ');
 		str =
-			str.substring(0, 14) + 'X ZZ\nYZZYZXXY Y XY\n ' + str.substring(14);
+			str.suBstring(0, 14) + 'X ZZ\nYZZYZXXY Y XY\n ' + str.suBstring(14);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('insert random bug 2: prefixSumComputer initialize does not do deep copy of UInt32Array.', () => {
+	test('insert random Bug 2: prefixSumComputer initialize does not do deep copy of UInt32Array.', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'ZYZ\nYY XY\nX \nZ Y \nZ ');
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'ZYZ\nYY XY\nX \nZ Y \nZ ');
 		str =
-			str.substring(0, 0) + 'ZYZ\nYY XY\nX \nZ Y \nZ ' + str.substring(0);
-		pieceTable.insert(3, 'XXY \n\nY Y YYY  ZYXY ');
-		str = str.substring(0, 3) + 'XXY \n\nY Y YYY  ZYXY ' + str.substring(3);
+			str.suBstring(0, 0) + 'ZYZ\nYY XY\nX \nZ Y \nZ ' + str.suBstring(0);
+		pieceTaBle.insert(3, 'XXY \n\nY Y YYY  ZYXY ');
+		str = str.suBstring(0, 3) + 'XXY \n\nY Y YYY  ZYXY ' + str.suBstring(3);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('delete random bug 1: I forgot to update the lineFeedCnt when deletion is on one single piece.', () => {
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'ba\na\nca\nba\ncbab\ncaa ');
-		pieceTable.insert(13, 'cca\naabb\ncac\nccc\nab ');
-		pieceTable.delete(5, 8);
-		pieceTable.delete(30, 2);
-		pieceTable.insert(24, 'cbbacccbac\nbaaab\n\nc ');
-		pieceTable.delete(29, 3);
-		pieceTable.delete(23, 9);
-		pieceTable.delete(21, 5);
-		pieceTable.delete(30, 3);
-		pieceTable.insert(3, 'cb\nac\nc\n\nacc\nbb\nb\nc ');
-		pieceTable.delete(19, 5);
-		pieceTable.insert(18, '\nbb\n\nacbc\ncbb\nc\nbb\n ');
-		pieceTable.insert(65, 'cbccbac\nbc\n\nccabba\n ');
-		pieceTable.insert(77, 'a\ncacb\n\nac\n\n\n\n\nabab ');
-		pieceTable.delete(30, 9);
-		pieceTable.insert(45, 'b\n\nc\nba\n\nbbbba\n\naa\n ');
-		pieceTable.insert(82, 'ab\nbb\ncabacab\ncbc\na ');
-		pieceTable.delete(123, 9);
-		pieceTable.delete(71, 2);
-		pieceTable.insert(33, 'acaa\nacb\n\naa\n\nc\n\n\n\n ');
+	test('delete random Bug 1: I forgot to update the lineFeedCnt when deletion is on one single piece.', () => {
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'Ba\na\nca\nBa\ncBaB\ncaa ');
+		pieceTaBle.insert(13, 'cca\naaBB\ncac\nccc\naB ');
+		pieceTaBle.delete(5, 8);
+		pieceTaBle.delete(30, 2);
+		pieceTaBle.insert(24, 'cBBacccBac\nBaaaB\n\nc ');
+		pieceTaBle.delete(29, 3);
+		pieceTaBle.delete(23, 9);
+		pieceTaBle.delete(21, 5);
+		pieceTaBle.delete(30, 3);
+		pieceTaBle.insert(3, 'cB\nac\nc\n\nacc\nBB\nB\nc ');
+		pieceTaBle.delete(19, 5);
+		pieceTaBle.insert(18, '\nBB\n\nacBc\ncBB\nc\nBB\n ');
+		pieceTaBle.insert(65, 'cBccBac\nBc\n\nccaBBa\n ');
+		pieceTaBle.insert(77, 'a\ncacB\n\nac\n\n\n\n\naBaB ');
+		pieceTaBle.delete(30, 9);
+		pieceTaBle.insert(45, 'B\n\nc\nBa\n\nBBBBa\n\naa\n ');
+		pieceTaBle.insert(82, 'aB\nBB\ncaBacaB\ncBc\na ');
+		pieceTaBle.delete(123, 9);
+		pieceTaBle.delete(71, 2);
+		pieceTaBle.insert(33, 'acaa\nacB\n\naa\n\nc\n\n\n\n ');
 
-		let str = pieceTable.getLinesRawContent();
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		let str = pieceTaBle.getLinesRawContent();
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('delete random bug rb tree 1', () => {
+	test('delete random Bug rB tree 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([str]);
-		pieceTable.insert(0, 'YXXZ\n\nYY\n');
-		str = str.substring(0, 0) + 'YXXZ\n\nYY\n' + str.substring(0);
-		pieceTable.delete(0, 5);
-		str = str.substring(0, 0) + str.substring(0 + 5);
-		pieceTable.insert(0, 'ZXYY\nX\nZ\n');
-		str = str.substring(0, 0) + 'ZXYY\nX\nZ\n' + str.substring(0);
-		pieceTable.insert(10, '\nXY\nYXYXY');
-		str = str.substring(0, 10) + '\nXY\nYXYXY' + str.substring(10);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		let pieceTaBle = createTextBuffer([str]);
+		pieceTaBle.insert(0, 'YXXZ\n\nYY\n');
+		str = str.suBstring(0, 0) + 'YXXZ\n\nYY\n' + str.suBstring(0);
+		pieceTaBle.delete(0, 5);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 5);
+		pieceTaBle.insert(0, 'ZXYY\nX\nZ\n');
+		str = str.suBstring(0, 0) + 'ZXYY\nX\nZ\n' + str.suBstring(0);
+		pieceTaBle.insert(10, '\nXY\nYXYXY');
+		str = str.suBstring(0, 10) + '\nXY\nYXYXY' + str.suBstring(10);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('delete random bug rb tree 2', () => {
+	test('delete random Bug rB tree 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([str]);
-		pieceTable.insert(0, 'YXXZ\n\nYY\n');
-		str = str.substring(0, 0) + 'YXXZ\n\nYY\n' + str.substring(0);
-		pieceTable.insert(0, 'ZXYY\nX\nZ\n');
-		str = str.substring(0, 0) + 'ZXYY\nX\nZ\n' + str.substring(0);
-		pieceTable.insert(10, '\nXY\nYXYXY');
-		str = str.substring(0, 10) + '\nXY\nYXYXY' + str.substring(10);
-		pieceTable.insert(8, 'YZXY\nZ\nYX');
-		str = str.substring(0, 8) + 'YZXY\nZ\nYX' + str.substring(8);
-		pieceTable.insert(12, 'XX\nXXYXYZ');
-		str = str.substring(0, 12) + 'XX\nXXYXYZ' + str.substring(12);
-		pieceTable.delete(0, 4);
-		str = str.substring(0, 0) + str.substring(0 + 4);
+		let pieceTaBle = createTextBuffer([str]);
+		pieceTaBle.insert(0, 'YXXZ\n\nYY\n');
+		str = str.suBstring(0, 0) + 'YXXZ\n\nYY\n' + str.suBstring(0);
+		pieceTaBle.insert(0, 'ZXYY\nX\nZ\n');
+		str = str.suBstring(0, 0) + 'ZXYY\nX\nZ\n' + str.suBstring(0);
+		pieceTaBle.insert(10, '\nXY\nYXYXY');
+		str = str.suBstring(0, 10) + '\nXY\nYXYXY' + str.suBstring(10);
+		pieceTaBle.insert(8, 'YZXY\nZ\nYX');
+		str = str.suBstring(0, 8) + 'YZXY\nZ\nYX' + str.suBstring(8);
+		pieceTaBle.insert(12, 'XX\nXXYXYZ');
+		str = str.suBstring(0, 12) + 'XX\nXXYXYZ' + str.suBstring(12);
+		pieceTaBle.delete(0, 4);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 4);
 
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('delete random bug rb tree 3', () => {
+	test('delete random Bug rB tree 3', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([str]);
-		pieceTable.insert(0, 'YXXZ\n\nYY\n');
-		str = str.substring(0, 0) + 'YXXZ\n\nYY\n' + str.substring(0);
-		pieceTable.delete(7, 2);
-		str = str.substring(0, 7) + str.substring(7 + 2);
-		pieceTable.delete(6, 1);
-		str = str.substring(0, 6) + str.substring(6 + 1);
-		pieceTable.delete(0, 5);
-		str = str.substring(0, 0) + str.substring(0 + 5);
-		pieceTable.insert(0, 'ZXYY\nX\nZ\n');
-		str = str.substring(0, 0) + 'ZXYY\nX\nZ\n' + str.substring(0);
-		pieceTable.insert(10, '\nXY\nYXYXY');
-		str = str.substring(0, 10) + '\nXY\nYXYXY' + str.substring(10);
-		pieceTable.insert(8, 'YZXY\nZ\nYX');
-		str = str.substring(0, 8) + 'YZXY\nZ\nYX' + str.substring(8);
-		pieceTable.insert(12, 'XX\nXXYXYZ');
-		str = str.substring(0, 12) + 'XX\nXXYXYZ' + str.substring(12);
-		pieceTable.delete(0, 4);
-		str = str.substring(0, 0) + str.substring(0 + 4);
-		pieceTable.delete(30, 3);
-		str = str.substring(0, 30) + str.substring(30 + 3);
+		let pieceTaBle = createTextBuffer([str]);
+		pieceTaBle.insert(0, 'YXXZ\n\nYY\n');
+		str = str.suBstring(0, 0) + 'YXXZ\n\nYY\n' + str.suBstring(0);
+		pieceTaBle.delete(7, 2);
+		str = str.suBstring(0, 7) + str.suBstring(7 + 2);
+		pieceTaBle.delete(6, 1);
+		str = str.suBstring(0, 6) + str.suBstring(6 + 1);
+		pieceTaBle.delete(0, 5);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 5);
+		pieceTaBle.insert(0, 'ZXYY\nX\nZ\n');
+		str = str.suBstring(0, 0) + 'ZXYY\nX\nZ\n' + str.suBstring(0);
+		pieceTaBle.insert(10, '\nXY\nYXYXY');
+		str = str.suBstring(0, 10) + '\nXY\nYXYXY' + str.suBstring(10);
+		pieceTaBle.insert(8, 'YZXY\nZ\nYX');
+		str = str.suBstring(0, 8) + 'YZXY\nZ\nYX' + str.suBstring(8);
+		pieceTaBle.insert(12, 'XX\nXXYXYZ');
+		str = str.suBstring(0, 12) + 'XX\nXXYXYZ' + str.suBstring(12);
+		pieceTaBle.delete(0, 4);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 4);
+		pieceTaBle.delete(30, 3);
+		str = str.suBstring(0, 30) + str.suBstring(30 + 3);
 
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('offset 2 position', () => {
-	test('random tests bug 1', () => {
+	test('random tests Bug 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'huuyYzUfKOENwGgZLqn ');
-		str = str.substring(0, 0) + 'huuyYzUfKOENwGgZLqn ' + str.substring(0);
-		pieceTable.delete(18, 2);
-		str = str.substring(0, 18) + str.substring(18 + 2);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.delete(12, 4);
-		str = str.substring(0, 12) + str.substring(12 + 4);
-		pieceTable.insert(3, 'hMbnVEdTSdhLlPevXKF ');
-		str = str.substring(0, 3) + 'hMbnVEdTSdhLlPevXKF ' + str.substring(3);
-		pieceTable.delete(22, 8);
-		str = str.substring(0, 22) + str.substring(22 + 8);
-		pieceTable.insert(4, 'S umSnYrqOmOAV\nEbZJ ');
-		str = str.substring(0, 4) + 'S umSnYrqOmOAV\nEbZJ ' + str.substring(4);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'huuyYzUfKOENwGgZLqn ');
+		str = str.suBstring(0, 0) + 'huuyYzUfKOENwGgZLqn ' + str.suBstring(0);
+		pieceTaBle.delete(18, 2);
+		str = str.suBstring(0, 18) + str.suBstring(18 + 2);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.delete(12, 4);
+		str = str.suBstring(0, 12) + str.suBstring(12 + 4);
+		pieceTaBle.insert(3, 'hMBnVEdTSdhLlPevXKF ');
+		str = str.suBstring(0, 3) + 'hMBnVEdTSdhLlPevXKF ' + str.suBstring(3);
+		pieceTaBle.delete(22, 8);
+		str = str.suBstring(0, 22) + str.suBstring(22 + 8);
+		pieceTaBle.insert(4, 'S umSnYrqOmOAV\nEBZJ ');
+		str = str.suBstring(0, 4) + 'S umSnYrqOmOAV\nEBZJ ' + str.suBstring(4);
 
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('get text in range', () => {
 	test('getContentInRange', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\nde']);
-		pieceTable.insert(8, 'fh\ni\njk');
-		pieceTable.delete(7, 2);
-		// 'a\nb\nc\ndh\ni\njk'
+		let pieceTaBle = createTextBuffer(['a\nB\nc\nde']);
+		pieceTaBle.insert(8, 'fh\ni\njk');
+		pieceTaBle.delete(7, 2);
+		// 'a\nB\nc\ndh\ni\njk'
 
-		assert.equal(pieceTable.getValueInRange(new Range(1, 1, 1, 3)), 'a\n');
-		assert.equal(pieceTable.getValueInRange(new Range(2, 1, 2, 3)), 'b\n');
-		assert.equal(pieceTable.getValueInRange(new Range(3, 1, 3, 3)), 'c\n');
-		assert.equal(pieceTable.getValueInRange(new Range(4, 1, 4, 4)), 'dh\n');
-		assert.equal(pieceTable.getValueInRange(new Range(5, 1, 5, 3)), 'i\n');
-		assert.equal(pieceTable.getValueInRange(new Range(6, 1, 6, 3)), 'jk');
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getValueInRange(new Range(1, 1, 1, 3)), 'a\n');
+		assert.equal(pieceTaBle.getValueInRange(new Range(2, 1, 2, 3)), 'B\n');
+		assert.equal(pieceTaBle.getValueInRange(new Range(3, 1, 3, 3)), 'c\n');
+		assert.equal(pieceTaBle.getValueInRange(new Range(4, 1, 4, 4)), 'dh\n');
+		assert.equal(pieceTaBle.getValueInRange(new Range(5, 1, 5, 3)), 'i\n');
+		assert.equal(pieceTaBle.getValueInRange(new Range(6, 1, 6, 3)), 'jk');
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random test value in range', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([str]);
+		let pieceTaBle = createTextBuffer([str]);
 
-		pieceTable.insert(0, 'ZXXY');
-		str = str.substring(0, 0) + 'ZXXY' + str.substring(0);
-		pieceTable.insert(1, 'XZZY');
-		str = str.substring(0, 1) + 'XZZY' + str.substring(1);
-		pieceTable.insert(5, '\nX\n\n');
-		str = str.substring(0, 5) + '\nX\n\n' + str.substring(5);
-		pieceTable.insert(3, '\nXX\n');
-		str = str.substring(0, 3) + '\nXX\n' + str.substring(3);
-		pieceTable.insert(12, 'YYYX');
-		str = str.substring(0, 12) + 'YYYX' + str.substring(12);
+		pieceTaBle.insert(0, 'ZXXY');
+		str = str.suBstring(0, 0) + 'ZXXY' + str.suBstring(0);
+		pieceTaBle.insert(1, 'XZZY');
+		str = str.suBstring(0, 1) + 'XZZY' + str.suBstring(1);
+		pieceTaBle.insert(5, '\nX\n\n');
+		str = str.suBstring(0, 5) + '\nX\n\n' + str.suBstring(5);
+		pieceTaBle.insert(3, '\nXX\n');
+		str = str.suBstring(0, 3) + '\nXX\n' + str.suBstring(3);
+		pieceTaBle.insert(12, 'YYYX');
+		str = str.suBstring(0, 12) + 'YYYX' + str.suBstring(12);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 	test('random test value in range exception', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([str]);
+		let pieceTaBle = createTextBuffer([str]);
 
-		pieceTable.insert(0, 'XZ\nZ');
-		str = str.substring(0, 0) + 'XZ\nZ' + str.substring(0);
-		pieceTable.delete(0, 3);
-		str = str.substring(0, 0) + str.substring(0 + 3);
-		pieceTable.delete(0, 1);
-		str = str.substring(0, 0) + str.substring(0 + 1);
-		pieceTable.insert(0, 'ZYX\n');
-		str = str.substring(0, 0) + 'ZYX\n' + str.substring(0);
-		pieceTable.delete(0, 4);
-		str = str.substring(0, 0) + str.substring(0 + 4);
+		pieceTaBle.insert(0, 'XZ\nZ');
+		str = str.suBstring(0, 0) + 'XZ\nZ' + str.suBstring(0);
+		pieceTaBle.delete(0, 3);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 3);
+		pieceTaBle.delete(0, 1);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 1);
+		pieceTaBle.insert(0, 'ZYX\n');
+		str = str.suBstring(0, 0) + 'ZYX\n' + str.suBstring(0);
+		pieceTaBle.delete(0, 4);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 4);
 
-		pieceTable.getValueInRange(new Range(1, 1, 1, 1));
-		assertTreeInvariants(pieceTable);
+		pieceTaBle.getValueInRange(new Range(1, 1, 1, 1));
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random tests bug 1', () => {
+	test('random tests Bug 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'huuyYzUfKOENwGgZLqn ');
-		str = str.substring(0, 0) + 'huuyYzUfKOENwGgZLqn ' + str.substring(0);
-		pieceTable.delete(18, 2);
-		str = str.substring(0, 18) + str.substring(18 + 2);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.delete(12, 4);
-		str = str.substring(0, 12) + str.substring(12 + 4);
-		pieceTable.insert(3, 'hMbnVEdTSdhLlPevXKF ');
-		str = str.substring(0, 3) + 'hMbnVEdTSdhLlPevXKF ' + str.substring(3);
-		pieceTable.delete(22, 8);
-		str = str.substring(0, 22) + str.substring(22 + 8);
-		pieceTable.insert(4, 'S umSnYrqOmOAV\nEbZJ ');
-		str = str.substring(0, 4) + 'S umSnYrqOmOAV\nEbZJ ' + str.substring(4);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'huuyYzUfKOENwGgZLqn ');
+		str = str.suBstring(0, 0) + 'huuyYzUfKOENwGgZLqn ' + str.suBstring(0);
+		pieceTaBle.delete(18, 2);
+		str = str.suBstring(0, 18) + str.suBstring(18 + 2);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.delete(12, 4);
+		str = str.suBstring(0, 12) + str.suBstring(12 + 4);
+		pieceTaBle.insert(3, 'hMBnVEdTSdhLlPevXKF ');
+		str = str.suBstring(0, 3) + 'hMBnVEdTSdhLlPevXKF ' + str.suBstring(3);
+		pieceTaBle.delete(22, 8);
+		str = str.suBstring(0, 22) + str.suBstring(22 + 8);
+		pieceTaBle.insert(4, 'S umSnYrqOmOAV\nEBZJ ');
+		str = str.suBstring(0, 4) + 'S umSnYrqOmOAV\nEBZJ ' + str.suBstring(4);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random tests bug 2', () => {
+	test('random tests Bug 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'xfouRDZwdAHjVXJAMV\n ');
-		str = str.substring(0, 0) + 'xfouRDZwdAHjVXJAMV\n ' + str.substring(0);
-		pieceTable.insert(16, 'dBGndxpFZBEAIKykYYx ');
-		str = str.substring(0, 16) + 'dBGndxpFZBEAIKykYYx ' + str.substring(16);
-		pieceTable.delete(7, 6);
-		str = str.substring(0, 7) + str.substring(7 + 6);
-		pieceTable.delete(9, 7);
-		str = str.substring(0, 9) + str.substring(9 + 7);
-		pieceTable.delete(17, 6);
-		str = str.substring(0, 17) + str.substring(17 + 6);
-		pieceTable.delete(0, 4);
-		str = str.substring(0, 0) + str.substring(0 + 4);
-		pieceTable.insert(9, 'qvEFXCNvVkWgvykahYt ');
-		str = str.substring(0, 9) + 'qvEFXCNvVkWgvykahYt ' + str.substring(9);
-		pieceTable.delete(4, 6);
-		str = str.substring(0, 4) + str.substring(4 + 6);
-		pieceTable.insert(11, 'OcSChUYT\nzPEBOpsGmR ');
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'xfouRDZwdAHjVXJAMV\n ');
+		str = str.suBstring(0, 0) + 'xfouRDZwdAHjVXJAMV\n ' + str.suBstring(0);
+		pieceTaBle.insert(16, 'dBGndxpFZBEAIKykYYx ');
+		str = str.suBstring(0, 16) + 'dBGndxpFZBEAIKykYYx ' + str.suBstring(16);
+		pieceTaBle.delete(7, 6);
+		str = str.suBstring(0, 7) + str.suBstring(7 + 6);
+		pieceTaBle.delete(9, 7);
+		str = str.suBstring(0, 9) + str.suBstring(9 + 7);
+		pieceTaBle.delete(17, 6);
+		str = str.suBstring(0, 17) + str.suBstring(17 + 6);
+		pieceTaBle.delete(0, 4);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 4);
+		pieceTaBle.insert(9, 'qvEFXCNvVkWgvykahYt ');
+		str = str.suBstring(0, 9) + 'qvEFXCNvVkWgvykahYt ' + str.suBstring(9);
+		pieceTaBle.delete(4, 6);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 6);
+		pieceTaBle.insert(11, 'OcSChUYT\nzPEBOpsGmR ');
 		str =
-			str.substring(0, 11) + 'OcSChUYT\nzPEBOpsGmR ' + str.substring(11);
-		pieceTable.insert(15, 'KJCozaXTvkE\nxnqAeTz ');
+			str.suBstring(0, 11) + 'OcSChUYT\nzPEBOpsGmR ' + str.suBstring(11);
+		pieceTaBle.insert(15, 'KJCozaXTvkE\nxnqAeTz ');
 		str =
-			str.substring(0, 15) + 'KJCozaXTvkE\nxnqAeTz ' + str.substring(15);
+			str.suBstring(0, 15) + 'KJCozaXTvkE\nxnqAeTz ' + str.suBstring(15);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('get line content', () => {
-		let pieceTable = createTextBuffer(['1']);
-		assert.equal(pieceTable.getLineRawContent(1), '1');
-		pieceTable.insert(1, '2');
-		assert.equal(pieceTable.getLineRawContent(1), '12');
-		assertTreeInvariants(pieceTable);
+		let pieceTaBle = createTextBuffer(['1']);
+		assert.equal(pieceTaBle.getLineRawContent(1), '1');
+		pieceTaBle.insert(1, '2');
+		assert.equal(pieceTaBle.getLineRawContent(1), '12');
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('get line content basic', () => {
-		let pieceTable = createTextBuffer(['1\n2\n3\n4']);
-		assert.equal(pieceTable.getLineRawContent(1), '1\n');
-		assert.equal(pieceTable.getLineRawContent(2), '2\n');
-		assert.equal(pieceTable.getLineRawContent(3), '3\n');
-		assert.equal(pieceTable.getLineRawContent(4), '4');
-		assertTreeInvariants(pieceTable);
+	test('get line content Basic', () => {
+		let pieceTaBle = createTextBuffer(['1\n2\n3\n4']);
+		assert.equal(pieceTaBle.getLineRawContent(1), '1\n');
+		assert.equal(pieceTaBle.getLineRawContent(2), '2\n');
+		assert.equal(pieceTaBle.getLineRawContent(3), '3\n');
+		assert.equal(pieceTaBle.getLineRawContent(4), '4');
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('get line content after inserts/deletes', () => {
-		let pieceTable = createTextBuffer(['a\nb\nc\nde']);
-		pieceTable.insert(8, 'fh\ni\njk');
-		pieceTable.delete(7, 2);
-		// 'a\nb\nc\ndh\ni\njk'
+		let pieceTaBle = createTextBuffer(['a\nB\nc\nde']);
+		pieceTaBle.insert(8, 'fh\ni\njk');
+		pieceTaBle.delete(7, 2);
+		// 'a\nB\nc\ndh\ni\njk'
 
-		assert.equal(pieceTable.getLineRawContent(1), 'a\n');
-		assert.equal(pieceTable.getLineRawContent(2), 'b\n');
-		assert.equal(pieceTable.getLineRawContent(3), 'c\n');
-		assert.equal(pieceTable.getLineRawContent(4), 'dh\n');
-		assert.equal(pieceTable.getLineRawContent(5), 'i\n');
-		assert.equal(pieceTable.getLineRawContent(6), 'jk');
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineRawContent(1), 'a\n');
+		assert.equal(pieceTaBle.getLineRawContent(2), 'B\n');
+		assert.equal(pieceTaBle.getLineRawContent(3), 'c\n');
+		assert.equal(pieceTaBle.getLineRawContent(4), 'dh\n');
+		assert.equal(pieceTaBle.getLineRawContent(5), 'i\n');
+		assert.equal(pieceTaBle.getLineRawContent(6), 'jk');
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
+		let pieceTaBle = createTextBuffer(['']);
 
-		pieceTable.insert(0, 'J eNnDzQpnlWyjmUu\ny ');
-		str = str.substring(0, 0) + 'J eNnDzQpnlWyjmUu\ny ' + str.substring(0);
-		pieceTable.insert(0, 'QPEeRAQmRwlJqtZSWhQ ');
-		str = str.substring(0, 0) + 'QPEeRAQmRwlJqtZSWhQ ' + str.substring(0);
-		pieceTable.delete(5, 1);
-		str = str.substring(0, 5) + str.substring(5 + 1);
+		pieceTaBle.insert(0, 'J eNnDzQpnlWyjmUu\ny ');
+		str = str.suBstring(0, 0) + 'J eNnDzQpnlWyjmUu\ny ' + str.suBstring(0);
+		pieceTaBle.insert(0, 'QPEeRAQmRwlJqtZSWhQ ');
+		str = str.suBstring(0, 0) + 'QPEeRAQmRwlJqtZSWhQ ' + str.suBstring(0);
+		pieceTaBle.delete(5, 1);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 1);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer(['']);
-		pieceTable.insert(0, 'DZoQ tglPCRHMltejRI ');
-		str = str.substring(0, 0) + 'DZoQ tglPCRHMltejRI ' + str.substring(0);
-		pieceTable.insert(10, 'JRXiyYqJ qqdcmbfkKX ');
-		str = str.substring(0, 10) + 'JRXiyYqJ qqdcmbfkKX ' + str.substring(10);
-		pieceTable.delete(16, 3);
-		str = str.substring(0, 16) + str.substring(16 + 3);
-		pieceTable.delete(25, 1);
-		str = str.substring(0, 25) + str.substring(25 + 1);
-		pieceTable.insert(18, 'vH\nNlvfqQJPm\nSFkhMc ');
+		let pieceTaBle = createTextBuffer(['']);
+		pieceTaBle.insert(0, 'DZoQ tglPCRHMltejRI ');
+		str = str.suBstring(0, 0) + 'DZoQ tglPCRHMltejRI ' + str.suBstring(0);
+		pieceTaBle.insert(10, 'JRXiyYqJ qqdcmBfkKX ');
+		str = str.suBstring(0, 10) + 'JRXiyYqJ qqdcmBfkKX ' + str.suBstring(10);
+		pieceTaBle.delete(16, 3);
+		str = str.suBstring(0, 16) + str.suBstring(16 + 3);
+		pieceTaBle.delete(25, 1);
+		str = str.suBstring(0, 25) + str.suBstring(25 + 1);
+		pieceTaBle.insert(18, 'vH\nNlvfqQJPm\nSFkhMc ');
 		str =
-			str.substring(0, 18) + 'vH\nNlvfqQJPm\nSFkhMc ' + str.substring(18);
+			str.suBstring(0, 18) + 'vH\nNlvfqQJPm\nSFkhMc ' + str.suBstring(18);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('CRLF', () => {
 	test('delete CR in CRLF 1', () => {
-		let pieceTable = createTextBuffer([''], false);
-		pieceTable.insert(0, 'a\r\nb');
-		pieceTable.delete(0, 2);
+		let pieceTaBle = createTextBuffer([''], false);
+		pieceTaBle.insert(0, 'a\r\nB');
+		pieceTaBle.delete(0, 2);
 
-		assert.equal(pieceTable.getLineCount(), 2);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), 2);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('delete CR in CRLF 2', () => {
-		let pieceTable = createTextBuffer([''], false);
-		pieceTable.insert(0, 'a\r\nb');
-		pieceTable.delete(2, 2);
+		let pieceTaBle = createTextBuffer([''], false);
+		pieceTaBle.insert(0, 'a\r\nB');
+		pieceTaBle.delete(2, 2);
 
-		assert.equal(pieceTable.getLineCount(), 2);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), 2);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 1', () => {
+	test('random Bug 1', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
-		pieceTable.insert(0, '\n\n\r\r');
-		str = str.substring(0, 0) + '\n\n\r\r' + str.substring(0);
-		pieceTable.insert(1, '\r\n\r\n');
-		str = str.substring(0, 1) + '\r\n\r\n' + str.substring(1);
-		pieceTable.delete(5, 3);
-		str = str.substring(0, 5) + str.substring(5 + 3);
-		pieceTable.delete(2, 3);
-		str = str.substring(0, 2) + str.substring(2 + 3);
+		let pieceTaBle = createTextBuffer([''], false);
+		pieceTaBle.insert(0, '\n\n\r\r');
+		str = str.suBstring(0, 0) + '\n\n\r\r' + str.suBstring(0);
+		pieceTaBle.insert(1, '\r\n\r\n');
+		str = str.suBstring(0, 1) + '\r\n\r\n' + str.suBstring(1);
+		pieceTaBle.delete(5, 3);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 3);
+		pieceTaBle.delete(2, 3);
+		str = str.suBstring(0, 2) + str.suBstring(2 + 3);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 2', () => {
+	test('random Bug 2', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\r\n\r');
-		str = str.substring(0, 0) + '\n\r\n\r' + str.substring(0);
-		pieceTable.insert(2, '\n\r\r\r');
-		str = str.substring(0, 2) + '\n\r\r\r' + str.substring(2);
-		pieceTable.delete(4, 1);
-		str = str.substring(0, 4) + str.substring(4 + 1);
+		pieceTaBle.insert(0, '\n\r\n\r');
+		str = str.suBstring(0, 0) + '\n\r\n\r' + str.suBstring(0);
+		pieceTaBle.insert(2, '\n\r\r\r');
+		str = str.suBstring(0, 2) + '\n\r\r\r' + str.suBstring(2);
+		pieceTaBle.delete(4, 1);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 1);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 3', () => {
+	test('random Bug 3', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\n\n\r');
-		str = str.substring(0, 0) + '\n\n\n\r' + str.substring(0);
-		pieceTable.delete(2, 2);
-		str = str.substring(0, 2) + str.substring(2 + 2);
-		pieceTable.delete(0, 2);
-		str = str.substring(0, 0) + str.substring(0 + 2);
-		pieceTable.insert(0, '\r\r\r\r');
-		str = str.substring(0, 0) + '\r\r\r\r' + str.substring(0);
-		pieceTable.insert(2, '\r\n\r\r');
-		str = str.substring(0, 2) + '\r\n\r\r' + str.substring(2);
-		pieceTable.insert(3, '\r\r\r\n');
-		str = str.substring(0, 3) + '\r\r\r\n' + str.substring(3);
+		pieceTaBle.insert(0, '\n\n\n\r');
+		str = str.suBstring(0, 0) + '\n\n\n\r' + str.suBstring(0);
+		pieceTaBle.delete(2, 2);
+		str = str.suBstring(0, 2) + str.suBstring(2 + 2);
+		pieceTaBle.delete(0, 2);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 2);
+		pieceTaBle.insert(0, '\r\r\r\r');
+		str = str.suBstring(0, 0) + '\r\r\r\r' + str.suBstring(0);
+		pieceTaBle.insert(2, '\r\n\r\r');
+		str = str.suBstring(0, 2) + '\r\n\r\r' + str.suBstring(2);
+		pieceTaBle.insert(3, '\r\r\r\n');
+		str = str.suBstring(0, 3) + '\r\r\r\n' + str.suBstring(3);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 4', () => {
+	test('random Bug 4', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\n\n\n');
-		str = str.substring(0, 0) + '\n\n\n\n' + str.substring(0);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.insert(1, '\r\r\r\r');
-		str = str.substring(0, 1) + '\r\r\r\r' + str.substring(1);
-		pieceTable.insert(6, '\r\n\n\r');
-		str = str.substring(0, 6) + '\r\n\n\r' + str.substring(6);
-		pieceTable.delete(5, 3);
-		str = str.substring(0, 5) + str.substring(5 + 3);
+		pieceTaBle.insert(0, '\n\n\n\n');
+		str = str.suBstring(0, 0) + '\n\n\n\n' + str.suBstring(0);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.insert(1, '\r\r\r\r');
+		str = str.suBstring(0, 1) + '\r\r\r\r' + str.suBstring(1);
+		pieceTaBle.insert(6, '\r\n\n\r');
+		str = str.suBstring(0, 6) + '\r\n\n\r' + str.suBstring(6);
+		pieceTaBle.delete(5, 3);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 3);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 5', () => {
+	test('random Bug 5', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\n\n\n');
-		str = str.substring(0, 0) + '\n\n\n\n' + str.substring(0);
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.insert(0, '\n\r\r\n');
-		str = str.substring(0, 0) + '\n\r\r\n' + str.substring(0);
-		pieceTable.insert(4, '\n\r\r\n');
-		str = str.substring(0, 4) + '\n\r\r\n' + str.substring(4);
-		pieceTable.delete(4, 3);
-		str = str.substring(0, 4) + str.substring(4 + 3);
-		pieceTable.insert(5, '\r\r\n\r');
-		str = str.substring(0, 5) + '\r\r\n\r' + str.substring(5);
-		pieceTable.insert(12, '\n\n\n\r');
-		str = str.substring(0, 12) + '\n\n\n\r' + str.substring(12);
-		pieceTable.insert(5, '\r\r\r\n');
-		str = str.substring(0, 5) + '\r\r\r\n' + str.substring(5);
-		pieceTable.insert(20, '\n\n\r\n');
-		str = str.substring(0, 20) + '\n\n\r\n' + str.substring(20);
+		pieceTaBle.insert(0, '\n\n\n\n');
+		str = str.suBstring(0, 0) + '\n\n\n\n' + str.suBstring(0);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.insert(0, '\n\r\r\n');
+		str = str.suBstring(0, 0) + '\n\r\r\n' + str.suBstring(0);
+		pieceTaBle.insert(4, '\n\r\r\n');
+		str = str.suBstring(0, 4) + '\n\r\r\n' + str.suBstring(4);
+		pieceTaBle.delete(4, 3);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 3);
+		pieceTaBle.insert(5, '\r\r\n\r');
+		str = str.suBstring(0, 5) + '\r\r\n\r' + str.suBstring(5);
+		pieceTaBle.insert(12, '\n\n\n\r');
+		str = str.suBstring(0, 12) + '\n\n\n\r' + str.suBstring(12);
+		pieceTaBle.insert(5, '\r\r\r\n');
+		str = str.suBstring(0, 5) + '\r\r\r\n' + str.suBstring(5);
+		pieceTaBle.insert(20, '\n\n\r\n');
+		str = str.suBstring(0, 20) + '\n\n\r\n' + str.suBstring(20);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 6', () => {
+	test('random Bug 6', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\r\r\n');
-		str = str.substring(0, 0) + '\n\r\r\n' + str.substring(0);
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(3, '\r\n\n\n');
-		str = str.substring(0, 3) + '\r\n\n\n' + str.substring(3);
-		pieceTable.delete(4, 8);
-		str = str.substring(0, 4) + str.substring(4 + 8);
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(0, '\r\n\n\r');
-		str = str.substring(0, 0) + '\r\n\n\r' + str.substring(0);
-		pieceTable.delete(4, 0);
-		str = str.substring(0, 4) + str.substring(4 + 0);
-		pieceTable.delete(8, 4);
-		str = str.substring(0, 8) + str.substring(8 + 4);
+		pieceTaBle.insert(0, '\n\r\r\n');
+		str = str.suBstring(0, 0) + '\n\r\r\n' + str.suBstring(0);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(3, '\r\n\n\n');
+		str = str.suBstring(0, 3) + '\r\n\n\n' + str.suBstring(3);
+		pieceTaBle.delete(4, 8);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 8);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(0, '\r\n\n\r');
+		str = str.suBstring(0, 0) + '\r\n\n\r' + str.suBstring(0);
+		pieceTaBle.delete(4, 0);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 0);
+		pieceTaBle.delete(8, 4);
+		str = str.suBstring(0, 8) + str.suBstring(8 + 4);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 8', () => {
+	test('random Bug 8', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\r\n\n\r');
-		str = str.substring(0, 0) + '\r\n\n\r' + str.substring(0);
-		pieceTable.delete(1, 0);
-		str = str.substring(0, 1) + str.substring(1 + 0);
-		pieceTable.insert(3, '\n\n\n\r');
-		str = str.substring(0, 3) + '\n\n\n\r' + str.substring(3);
-		pieceTable.insert(7, '\n\n\r\n');
-		str = str.substring(0, 7) + '\n\n\r\n' + str.substring(7);
+		pieceTaBle.insert(0, '\r\n\n\r');
+		str = str.suBstring(0, 0) + '\r\n\n\r' + str.suBstring(0);
+		pieceTaBle.delete(1, 0);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 0);
+		pieceTaBle.insert(3, '\n\n\n\r');
+		str = str.suBstring(0, 3) + '\n\n\n\r' + str.suBstring(3);
+		pieceTaBle.insert(7, '\n\n\r\n');
+		str = str.suBstring(0, 7) + '\n\n\r\n' + str.suBstring(7);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 7', () => {
+	test('random Bug 7', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\r\r\n\n');
-		str = str.substring(0, 0) + '\r\r\n\n' + str.substring(0);
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(7, '\n\r\r\r');
-		str = str.substring(0, 7) + '\n\r\r\r' + str.substring(7);
-		pieceTable.insert(11, '\n\n\r\n');
-		str = str.substring(0, 11) + '\n\n\r\n' + str.substring(11);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
-	});
-
-	test('random bug 10', () => {
-		let str = '';
-		let pieceTable = createTextBuffer([''], false);
-
-		pieceTable.insert(0, 'qneW');
-		str = str.substring(0, 0) + 'qneW' + str.substring(0);
-		pieceTable.insert(0, 'YhIl');
-		str = str.substring(0, 0) + 'YhIl' + str.substring(0);
-		pieceTable.insert(0, 'qdsm');
-		str = str.substring(0, 0) + 'qdsm' + str.substring(0);
-		pieceTable.delete(7, 0);
-		str = str.substring(0, 7) + str.substring(7 + 0);
-		pieceTable.insert(12, 'iiPv');
-		str = str.substring(0, 12) + 'iiPv' + str.substring(12);
-		pieceTable.insert(9, 'V\rSA');
-		str = str.substring(0, 9) + 'V\rSA' + str.substring(9);
-
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		pieceTaBle.insert(0, '\r\r\n\n');
+		str = str.suBstring(0, 0) + '\r\r\n\n' + str.suBstring(0);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(7, '\n\r\r\r');
+		str = str.suBstring(0, 7) + '\n\r\r\r' + str.suBstring(7);
+		pieceTaBle.insert(11, '\n\n\r\n');
+		str = str.suBstring(0, 11) + '\n\n\r\n' + str.suBstring(11);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 9', () => {
+	test('random Bug 10', () => {
 		let str = '';
-		let pieceTable = createTextBuffer([''], false);
+		let pieceTaBle = createTextBuffer([''], false);
 
-		pieceTable.insert(0, '\n\n\n\n');
-		str = str.substring(0, 0) + '\n\n\n\n' + str.substring(0);
-		pieceTable.insert(3, '\n\r\n\r');
-		str = str.substring(0, 3) + '\n\r\n\r' + str.substring(3);
-		pieceTable.insert(2, '\n\r\n\n');
-		str = str.substring(0, 2) + '\n\r\n\n' + str.substring(2);
-		pieceTable.insert(0, '\n\n\r\r');
-		str = str.substring(0, 0) + '\n\n\r\r' + str.substring(0);
-		pieceTable.insert(3, '\r\r\r\r');
-		str = str.substring(0, 3) + '\r\r\r\r' + str.substring(3);
-		pieceTable.insert(3, '\n\n\r\r');
-		str = str.substring(0, 3) + '\n\n\r\r' + str.substring(3);
+		pieceTaBle.insert(0, 'qneW');
+		str = str.suBstring(0, 0) + 'qneW' + str.suBstring(0);
+		pieceTaBle.insert(0, 'YhIl');
+		str = str.suBstring(0, 0) + 'YhIl' + str.suBstring(0);
+		pieceTaBle.insert(0, 'qdsm');
+		str = str.suBstring(0, 0) + 'qdsm' + str.suBstring(0);
+		pieceTaBle.delete(7, 0);
+		str = str.suBstring(0, 7) + str.suBstring(7 + 0);
+		pieceTaBle.insert(12, 'iiPv');
+		str = str.suBstring(0, 12) + 'iiPv' + str.suBstring(12);
+		pieceTaBle.insert(9, 'V\rSA');
+		str = str.suBstring(0, 9) + 'V\rSA' + str.suBstring(9);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
+	});
+
+	test('random Bug 9', () => {
+		let str = '';
+		let pieceTaBle = createTextBuffer([''], false);
+
+		pieceTaBle.insert(0, '\n\n\n\n');
+		str = str.suBstring(0, 0) + '\n\n\n\n' + str.suBstring(0);
+		pieceTaBle.insert(3, '\n\r\n\r');
+		str = str.suBstring(0, 3) + '\n\r\n\r' + str.suBstring(3);
+		pieceTaBle.insert(2, '\n\r\n\n');
+		str = str.suBstring(0, 2) + '\n\r\n\n' + str.suBstring(2);
+		pieceTaBle.insert(0, '\n\n\r\r');
+		str = str.suBstring(0, 0) + '\n\n\r\r' + str.suBstring(0);
+		pieceTaBle.insert(3, '\r\r\r\r');
+		str = str.suBstring(0, 3) + '\r\r\r\r' + str.suBstring(3);
+		pieceTaBle.insert(3, '\n\n\r\r');
+		str = str.suBstring(0, 3) + '\n\n\r\r' + str.suBstring(3);
+
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('centralized lineStarts with CRLF', () => {
 	test('delete CR in CRLF 1', () => {
-		let pieceTable = createTextBuffer(['a\r\nb'], false);
-		pieceTable.delete(2, 2);
-		assert.equal(pieceTable.getLineCount(), 2);
-		assertTreeInvariants(pieceTable);
+		let pieceTaBle = createTextBuffer(['a\r\nB'], false);
+		pieceTaBle.delete(2, 2);
+		assert.equal(pieceTaBle.getLineCount(), 2);
+		assertTreeInvariants(pieceTaBle);
 	});
 	test('delete CR in CRLF 2', () => {
-		let pieceTable = createTextBuffer(['a\r\nb']);
-		pieceTable.delete(0, 2);
+		let pieceTaBle = createTextBuffer(['a\r\nB']);
+		pieceTaBle.delete(0, 2);
 
-		assert.equal(pieceTable.getLineCount(), 2);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), 2);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 1', () => {
+	test('random Bug 1', () => {
 		let str = '\n\n\r\r';
-		let pieceTable = createTextBuffer(['\n\n\r\r'], false);
-		pieceTable.insert(1, '\r\n\r\n');
-		str = str.substring(0, 1) + '\r\n\r\n' + str.substring(1);
-		pieceTable.delete(5, 3);
-		str = str.substring(0, 5) + str.substring(5 + 3);
-		pieceTable.delete(2, 3);
-		str = str.substring(0, 2) + str.substring(2 + 3);
+		let pieceTaBle = createTextBuffer(['\n\n\r\r'], false);
+		pieceTaBle.insert(1, '\r\n\r\n');
+		str = str.suBstring(0, 1) + '\r\n\r\n' + str.suBstring(1);
+		pieceTaBle.delete(5, 3);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 3);
+		pieceTaBle.delete(2, 3);
+		str = str.suBstring(0, 2) + str.suBstring(2 + 3);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
-	test('random bug 2', () => {
+	test('random Bug 2', () => {
 		let str = '\n\r\n\r';
-		let pieceTable = createTextBuffer(['\n\r\n\r'], false);
+		let pieceTaBle = createTextBuffer(['\n\r\n\r'], false);
 
-		pieceTable.insert(2, '\n\r\r\r');
-		str = str.substring(0, 2) + '\n\r\r\r' + str.substring(2);
-		pieceTable.delete(4, 1);
-		str = str.substring(0, 4) + str.substring(4 + 1);
+		pieceTaBle.insert(2, '\n\r\r\r');
+		str = str.suBstring(0, 2) + '\n\r\r\r' + str.suBstring(2);
+		pieceTaBle.delete(4, 1);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 1);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 3', () => {
+	test('random Bug 3', () => {
 		let str = '\n\n\n\r';
-		let pieceTable = createTextBuffer(['\n\n\n\r'], false);
+		let pieceTaBle = createTextBuffer(['\n\n\n\r'], false);
 
-		pieceTable.delete(2, 2);
-		str = str.substring(0, 2) + str.substring(2 + 2);
-		pieceTable.delete(0, 2);
-		str = str.substring(0, 0) + str.substring(0 + 2);
-		pieceTable.insert(0, '\r\r\r\r');
-		str = str.substring(0, 0) + '\r\r\r\r' + str.substring(0);
-		pieceTable.insert(2, '\r\n\r\r');
-		str = str.substring(0, 2) + '\r\n\r\r' + str.substring(2);
-		pieceTable.insert(3, '\r\r\r\n');
-		str = str.substring(0, 3) + '\r\r\r\n' + str.substring(3);
+		pieceTaBle.delete(2, 2);
+		str = str.suBstring(0, 2) + str.suBstring(2 + 2);
+		pieceTaBle.delete(0, 2);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 2);
+		pieceTaBle.insert(0, '\r\r\r\r');
+		str = str.suBstring(0, 0) + '\r\r\r\r' + str.suBstring(0);
+		pieceTaBle.insert(2, '\r\n\r\r');
+		str = str.suBstring(0, 2) + '\r\n\r\r' + str.suBstring(2);
+		pieceTaBle.insert(3, '\r\r\r\n');
+		str = str.suBstring(0, 3) + '\r\r\r\n' + str.suBstring(3);
 
 		let lines = str.split(/\r\n|\r|\n/);
-		assert.equal(pieceTable.getLineCount(), lines.length);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLineCount(), lines.length);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 4', () => {
+	test('random Bug 4', () => {
 		let str = '\n\n\n\n';
-		let pieceTable = createTextBuffer(['\n\n\n\n'], false);
+		let pieceTaBle = createTextBuffer(['\n\n\n\n'], false);
 
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.insert(1, '\r\r\r\r');
-		str = str.substring(0, 1) + '\r\r\r\r' + str.substring(1);
-		pieceTable.insert(6, '\r\n\n\r');
-		str = str.substring(0, 6) + '\r\n\n\r' + str.substring(6);
-		pieceTable.delete(5, 3);
-		str = str.substring(0, 5) + str.substring(5 + 3);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.insert(1, '\r\r\r\r');
+		str = str.suBstring(0, 1) + '\r\r\r\r' + str.suBstring(1);
+		pieceTaBle.insert(6, '\r\n\n\r');
+		str = str.suBstring(0, 6) + '\r\n\n\r' + str.suBstring(6);
+		pieceTaBle.delete(5, 3);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 3);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 5', () => {
+	test('random Bug 5', () => {
 		let str = '\n\n\n\n';
-		let pieceTable = createTextBuffer(['\n\n\n\n'], false);
+		let pieceTaBle = createTextBuffer(['\n\n\n\n'], false);
 
-		pieceTable.delete(3, 1);
-		str = str.substring(0, 3) + str.substring(3 + 1);
-		pieceTable.insert(0, '\n\r\r\n');
-		str = str.substring(0, 0) + '\n\r\r\n' + str.substring(0);
-		pieceTable.insert(4, '\n\r\r\n');
-		str = str.substring(0, 4) + '\n\r\r\n' + str.substring(4);
-		pieceTable.delete(4, 3);
-		str = str.substring(0, 4) + str.substring(4 + 3);
-		pieceTable.insert(5, '\r\r\n\r');
-		str = str.substring(0, 5) + '\r\r\n\r' + str.substring(5);
-		pieceTable.insert(12, '\n\n\n\r');
-		str = str.substring(0, 12) + '\n\n\n\r' + str.substring(12);
-		pieceTable.insert(5, '\r\r\r\n');
-		str = str.substring(0, 5) + '\r\r\r\n' + str.substring(5);
-		pieceTable.insert(20, '\n\n\r\n');
-		str = str.substring(0, 20) + '\n\n\r\n' + str.substring(20);
+		pieceTaBle.delete(3, 1);
+		str = str.suBstring(0, 3) + str.suBstring(3 + 1);
+		pieceTaBle.insert(0, '\n\r\r\n');
+		str = str.suBstring(0, 0) + '\n\r\r\n' + str.suBstring(0);
+		pieceTaBle.insert(4, '\n\r\r\n');
+		str = str.suBstring(0, 4) + '\n\r\r\n' + str.suBstring(4);
+		pieceTaBle.delete(4, 3);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 3);
+		pieceTaBle.insert(5, '\r\r\n\r');
+		str = str.suBstring(0, 5) + '\r\r\n\r' + str.suBstring(5);
+		pieceTaBle.insert(12, '\n\n\n\r');
+		str = str.suBstring(0, 12) + '\n\n\n\r' + str.suBstring(12);
+		pieceTaBle.insert(5, '\r\r\r\n');
+		str = str.suBstring(0, 5) + '\r\r\r\n' + str.suBstring(5);
+		pieceTaBle.insert(20, '\n\n\r\n');
+		str = str.suBstring(0, 20) + '\n\n\r\n' + str.suBstring(20);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 6', () => {
+	test('random Bug 6', () => {
 		let str = '\n\r\r\n';
-		let pieceTable = createTextBuffer(['\n\r\r\n'], false);
+		let pieceTaBle = createTextBuffer(['\n\r\r\n'], false);
 
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(3, '\r\n\n\n');
-		str = str.substring(0, 3) + '\r\n\n\n' + str.substring(3);
-		pieceTable.delete(4, 8);
-		str = str.substring(0, 4) + str.substring(4 + 8);
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(0, '\r\n\n\r');
-		str = str.substring(0, 0) + '\r\n\n\r' + str.substring(0);
-		pieceTable.delete(4, 0);
-		str = str.substring(0, 4) + str.substring(4 + 0);
-		pieceTable.delete(8, 4);
-		str = str.substring(0, 8) + str.substring(8 + 4);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(3, '\r\n\n\n');
+		str = str.suBstring(0, 3) + '\r\n\n\n' + str.suBstring(3);
+		pieceTaBle.delete(4, 8);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 8);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(0, '\r\n\n\r');
+		str = str.suBstring(0, 0) + '\r\n\n\r' + str.suBstring(0);
+		pieceTaBle.delete(4, 0);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 0);
+		pieceTaBle.delete(8, 4);
+		str = str.suBstring(0, 8) + str.suBstring(8 + 4);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 7', () => {
+	test('random Bug 7', () => {
 		let str = '\r\n\n\r';
-		let pieceTable = createTextBuffer(['\r\n\n\r'], false);
+		let pieceTaBle = createTextBuffer(['\r\n\n\r'], false);
 
-		pieceTable.delete(1, 0);
-		str = str.substring(0, 1) + str.substring(1 + 0);
-		pieceTable.insert(3, '\n\n\n\r');
-		str = str.substring(0, 3) + '\n\n\n\r' + str.substring(3);
-		pieceTable.insert(7, '\n\n\r\n');
-		str = str.substring(0, 7) + '\n\n\r\n' + str.substring(7);
+		pieceTaBle.delete(1, 0);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 0);
+		pieceTaBle.insert(3, '\n\n\n\r');
+		str = str.suBstring(0, 3) + '\n\n\n\r' + str.suBstring(3);
+		pieceTaBle.insert(7, '\n\n\r\n');
+		str = str.suBstring(0, 7) + '\n\n\r\n' + str.suBstring(7);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 8', () => {
+	test('random Bug 8', () => {
 		let str = '\r\r\n\n';
-		let pieceTable = createTextBuffer(['\r\r\n\n'], false);
+		let pieceTaBle = createTextBuffer(['\r\r\n\n'], false);
 
-		pieceTable.insert(4, '\r\n\n\r');
-		str = str.substring(0, 4) + '\r\n\n\r' + str.substring(4);
-		pieceTable.insert(7, '\n\r\r\r');
-		str = str.substring(0, 7) + '\n\r\r\r' + str.substring(7);
-		pieceTable.insert(11, '\n\n\r\n');
-		str = str.substring(0, 11) + '\n\n\r\n' + str.substring(11);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		pieceTaBle.insert(4, '\r\n\n\r');
+		str = str.suBstring(0, 4) + '\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.insert(7, '\n\r\r\r');
+		str = str.suBstring(0, 7) + '\n\r\r\r' + str.suBstring(7);
+		pieceTaBle.insert(11, '\n\n\r\n');
+		str = str.suBstring(0, 11) + '\n\n\r\n' + str.suBstring(11);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 9', () => {
+	test('random Bug 9', () => {
 		let str = 'qneW';
-		let pieceTable = createTextBuffer(['qneW'], false);
+		let pieceTaBle = createTextBuffer(['qneW'], false);
 
-		pieceTable.insert(0, 'YhIl');
-		str = str.substring(0, 0) + 'YhIl' + str.substring(0);
-		pieceTable.insert(0, 'qdsm');
-		str = str.substring(0, 0) + 'qdsm' + str.substring(0);
-		pieceTable.delete(7, 0);
-		str = str.substring(0, 7) + str.substring(7 + 0);
-		pieceTable.insert(12, 'iiPv');
-		str = str.substring(0, 12) + 'iiPv' + str.substring(12);
-		pieceTable.insert(9, 'V\rSA');
-		str = str.substring(0, 9) + 'V\rSA' + str.substring(9);
+		pieceTaBle.insert(0, 'YhIl');
+		str = str.suBstring(0, 0) + 'YhIl' + str.suBstring(0);
+		pieceTaBle.insert(0, 'qdsm');
+		str = str.suBstring(0, 0) + 'qdsm' + str.suBstring(0);
+		pieceTaBle.delete(7, 0);
+		str = str.suBstring(0, 7) + str.suBstring(7 + 0);
+		pieceTaBle.insert(12, 'iiPv');
+		str = str.suBstring(0, 12) + 'iiPv' + str.suBstring(12);
+		pieceTaBle.insert(9, 'V\rSA');
+		str = str.suBstring(0, 9) + 'V\rSA' + str.suBstring(9);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random bug 10', () => {
+	test('random Bug 10', () => {
 		let str = '\n\n\n\n';
-		let pieceTable = createTextBuffer(['\n\n\n\n'], false);
+		let pieceTaBle = createTextBuffer(['\n\n\n\n'], false);
 
-		pieceTable.insert(3, '\n\r\n\r');
-		str = str.substring(0, 3) + '\n\r\n\r' + str.substring(3);
-		pieceTable.insert(2, '\n\r\n\n');
-		str = str.substring(0, 2) + '\n\r\n\n' + str.substring(2);
-		pieceTable.insert(0, '\n\n\r\r');
-		str = str.substring(0, 0) + '\n\n\r\r' + str.substring(0);
-		pieceTable.insert(3, '\r\r\r\r');
-		str = str.substring(0, 3) + '\r\r\r\r' + str.substring(3);
-		pieceTable.insert(3, '\n\n\r\r');
-		str = str.substring(0, 3) + '\n\n\r\r' + str.substring(3);
+		pieceTaBle.insert(3, '\n\r\n\r');
+		str = str.suBstring(0, 3) + '\n\r\n\r' + str.suBstring(3);
+		pieceTaBle.insert(2, '\n\r\n\n');
+		str = str.suBstring(0, 2) + '\n\r\n\n' + str.suBstring(2);
+		pieceTaBle.insert(0, '\n\n\r\r');
+		str = str.suBstring(0, 0) + '\n\n\r\r' + str.suBstring(0);
+		pieceTaBle.insert(3, '\r\r\r\r');
+		str = str.suBstring(0, 3) + '\r\r\r\r' + str.suBstring(3);
+		pieceTaBle.insert(3, '\n\n\r\r');
+		str = str.suBstring(0, 3) + '\n\n\r\r' + str.suBstring(3);
 
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random chunk bug 1', () => {
-		let pieceTable = createTextBuffer(['\n\r\r\n\n\n\r\n\r'], false);
+	test('random chunk Bug 1', () => {
+		let pieceTaBle = createTextBuffer(['\n\r\r\n\n\n\r\n\r'], false);
 		let str = '\n\r\r\n\n\n\r\n\r';
-		pieceTable.delete(0, 2);
-		str = str.substring(0, 0) + str.substring(0 + 2);
-		pieceTable.insert(1, '\r\r\n\n');
-		str = str.substring(0, 1) + '\r\r\n\n' + str.substring(1);
-		pieceTable.insert(7, '\r\r\r\r');
-		str = str.substring(0, 7) + '\r\r\r\r' + str.substring(7);
+		pieceTaBle.delete(0, 2);
+		str = str.suBstring(0, 0) + str.suBstring(0 + 2);
+		pieceTaBle.insert(1, '\r\r\n\n');
+		str = str.suBstring(0, 1) + '\r\r\n\n' + str.suBstring(1);
+		pieceTaBle.insert(7, '\r\r\r\r');
+		str = str.suBstring(0, 7) + '\r\r\r\r' + str.suBstring(7);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random chunk bug 2', () => {
-		let pieceTable = createTextBuffer([
+	test('random chunk Bug 2', () => {
+		let pieceTaBle = createTextBuffer([
 			'\n\r\n\n\n\r\n\r\n\r\r\n\n\n\r\r\n\r\n'
 		], false);
 		let str = '\n\r\n\n\n\r\n\r\n\r\r\n\n\n\r\r\n\r\n';
-		pieceTable.insert(16, '\r\n\r\r');
-		str = str.substring(0, 16) + '\r\n\r\r' + str.substring(16);
-		pieceTable.insert(13, '\n\n\r\r');
-		str = str.substring(0, 13) + '\n\n\r\r' + str.substring(13);
-		pieceTable.insert(19, '\n\n\r\n');
-		str = str.substring(0, 19) + '\n\n\r\n' + str.substring(19);
-		pieceTable.delete(5, 0);
-		str = str.substring(0, 5) + str.substring(5 + 0);
-		pieceTable.delete(11, 2);
-		str = str.substring(0, 11) + str.substring(11 + 2);
+		pieceTaBle.insert(16, '\r\n\r\r');
+		str = str.suBstring(0, 16) + '\r\n\r\r' + str.suBstring(16);
+		pieceTaBle.insert(13, '\n\n\r\r');
+		str = str.suBstring(0, 13) + '\n\n\r\r' + str.suBstring(13);
+		pieceTaBle.insert(19, '\n\n\r\n');
+		str = str.suBstring(0, 19) + '\n\n\r\n' + str.suBstring(19);
+		pieceTaBle.delete(5, 0);
+		str = str.suBstring(0, 5) + str.suBstring(5 + 0);
+		pieceTaBle.delete(11, 2);
+		str = str.suBstring(0, 11) + str.suBstring(11 + 2);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random chunk bug 3', () => {
-		let pieceTable = createTextBuffer(['\r\n\n\n\n\n\n\r\n'], false);
+	test('random chunk Bug 3', () => {
+		let pieceTaBle = createTextBuffer(['\r\n\n\n\n\n\n\r\n'], false);
 		let str = '\r\n\n\n\n\n\n\r\n';
-		pieceTable.insert(4, '\n\n\r\n\r\r\n\n\r');
-		str = str.substring(0, 4) + '\n\n\r\n\r\r\n\n\r' + str.substring(4);
-		pieceTable.delete(4, 4);
-		str = str.substring(0, 4) + str.substring(4 + 4);
-		pieceTable.insert(11, '\r\n\r\n\n\r\r\n\n');
-		str = str.substring(0, 11) + '\r\n\r\n\n\r\r\n\n' + str.substring(11);
-		pieceTable.delete(1, 2);
-		str = str.substring(0, 1) + str.substring(1 + 2);
+		pieceTaBle.insert(4, '\n\n\r\n\r\r\n\n\r');
+		str = str.suBstring(0, 4) + '\n\n\r\n\r\r\n\n\r' + str.suBstring(4);
+		pieceTaBle.delete(4, 4);
+		str = str.suBstring(0, 4) + str.suBstring(4 + 4);
+		pieceTaBle.insert(11, '\r\n\r\n\n\r\r\n\n');
+		str = str.suBstring(0, 11) + '\r\n\r\n\n\r\r\n\n' + str.suBstring(11);
+		pieceTaBle.delete(1, 2);
+		str = str.suBstring(0, 1) + str.suBstring(1 + 2);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('random chunk bug 4', () => {
-		let pieceTable = createTextBuffer(['\n\r\n\r'], false);
+	test('random chunk Bug 4', () => {
+		let pieceTaBle = createTextBuffer(['\n\r\n\r'], false);
 		let str = '\n\r\n\r';
-		pieceTable.insert(4, '\n\n\r\n');
-		str = str.substring(0, 4) + '\n\n\r\n' + str.substring(4);
-		pieceTable.insert(3, '\r\n\n\n');
-		str = str.substring(0, 3) + '\r\n\n\n' + str.substring(3);
+		pieceTaBle.insert(4, '\n\n\r\n');
+		str = str.suBstring(0, 4) + '\n\n\r\n' + str.suBstring(4);
+		pieceTaBle.insert(3, '\r\n\n\n');
+		str = str.suBstring(0, 3) + '\r\n\n\n' + str.suBstring(3);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
 suite('random is unsupervised', () => {
-	test('splitting large change buffer', function () {
-		let pieceTable = createTextBuffer([''], false);
+	test('splitting large change Buffer', function () {
+		let pieceTaBle = createTextBuffer([''], false);
 		let str = '';
 
-		pieceTable.insert(0, 'WUZ\nXVZY\n');
-		str = str.substring(0, 0) + 'WUZ\nXVZY\n' + str.substring(0);
-		pieceTable.insert(8, '\r\r\nZXUWVW');
-		str = str.substring(0, 8) + '\r\r\nZXUWVW' + str.substring(8);
-		pieceTable.delete(10, 7);
-		str = str.substring(0, 10) + str.substring(10 + 7);
-		pieceTable.delete(10, 1);
-		str = str.substring(0, 10) + str.substring(10 + 1);
-		pieceTable.insert(4, 'VX\r\r\nWZVZ');
-		str = str.substring(0, 4) + 'VX\r\r\nWZVZ' + str.substring(4);
-		pieceTable.delete(11, 3);
-		str = str.substring(0, 11) + str.substring(11 + 3);
-		pieceTable.delete(12, 4);
-		str = str.substring(0, 12) + str.substring(12 + 4);
-		pieceTable.delete(8, 0);
-		str = str.substring(0, 8) + str.substring(8 + 0);
-		pieceTable.delete(10, 2);
-		str = str.substring(0, 10) + str.substring(10 + 2);
-		pieceTable.insert(0, 'VZXXZYZX\r');
-		str = str.substring(0, 0) + 'VZXXZYZX\r' + str.substring(0);
+		pieceTaBle.insert(0, 'WUZ\nXVZY\n');
+		str = str.suBstring(0, 0) + 'WUZ\nXVZY\n' + str.suBstring(0);
+		pieceTaBle.insert(8, '\r\r\nZXUWVW');
+		str = str.suBstring(0, 8) + '\r\r\nZXUWVW' + str.suBstring(8);
+		pieceTaBle.delete(10, 7);
+		str = str.suBstring(0, 10) + str.suBstring(10 + 7);
+		pieceTaBle.delete(10, 1);
+		str = str.suBstring(0, 10) + str.suBstring(10 + 1);
+		pieceTaBle.insert(4, 'VX\r\r\nWZVZ');
+		str = str.suBstring(0, 4) + 'VX\r\r\nWZVZ' + str.suBstring(4);
+		pieceTaBle.delete(11, 3);
+		str = str.suBstring(0, 11) + str.suBstring(11 + 3);
+		pieceTaBle.delete(12, 4);
+		str = str.suBstring(0, 12) + str.suBstring(12 + 4);
+		pieceTaBle.delete(8, 0);
+		str = str.suBstring(0, 8) + str.suBstring(8 + 0);
+		pieceTaBle.delete(10, 2);
+		str = str.suBstring(0, 10) + str.suBstring(10 + 2);
+		pieceTaBle.insert(0, 'VZXXZYZX\r');
+		str = str.suBstring(0, 0) + 'VZXXZYZX\r' + str.suBstring(0);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random insert delete', function () {
 		this.timeout(500000);
 		let str = '';
-		let pieceTable = createTextBuffer([str], false);
+		let pieceTaBle = createTextBuffer([str], false);
 
 		// let output = '';
 		for (let i = 0; i < 1000; i++) {
@@ -1486,10 +1486,10 @@ suite('random is unsupervised', () => {
 				// insert
 				let text = randomStr(100);
 				let pos = randomInt(str.length + 1);
-				pieceTable.insert(pos, text);
-				str = str.substring(0, pos) + text + str.substring(pos);
-				// output += `pieceTable.insert(${pos}, '${text.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}');\n`;
-				// output += `str = str.substring(0, ${pos}) + '${text.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}' + str.substring(${pos});\n`;
+				pieceTaBle.insert(pos, text);
+				str = str.suBstring(0, pos) + text + str.suBstring(pos);
+				// output += `pieceTaBle.insert(${pos}, '${text.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}');\n`;
+				// output += `str = str.suBstring(0, ${pos}) + '${text.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}' + str.suBstring(${pos});\n`;
 			} else {
 				// delete
 				let pos = randomInt(str.length);
@@ -1497,20 +1497,20 @@ suite('random is unsupervised', () => {
 					str.length - pos,
 					Math.floor(Math.random() * 10)
 				);
-				pieceTable.delete(pos, length);
-				str = str.substring(0, pos) + str.substring(pos + length);
-				// output += `pieceTable.delete(${pos}, ${length});\n`;
-				// output += `str = str.substring(0, ${pos}) + str.substring(${pos} + ${length});\n`
+				pieceTaBle.delete(pos, length);
+				str = str.suBstring(0, pos) + str.suBstring(pos + length);
+				// output += `pieceTaBle.delete(${pos}, ${length});\n`;
+				// output += `str = str.suBstring(0, ${pos}) + str.suBstring(${pos} + ${length});\n`
 
 			}
 		}
 		// console.log(output);
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random chunks', function () {
@@ -1520,7 +1520,7 @@ suite('random is unsupervised', () => {
 			chunks.push(randomStr(1000));
 		}
 
-		let pieceTable = createTextBuffer(chunks, false);
+		let pieceTaBle = createTextBuffer(chunks, false);
 		let str = chunks.join('');
 
 		for (let i = 0; i < 1000; i++) {
@@ -1528,8 +1528,8 @@ suite('random is unsupervised', () => {
 				// insert
 				let text = randomStr(100);
 				let pos = randomInt(str.length + 1);
-				pieceTable.insert(pos, text);
-				str = str.substring(0, pos) + text + str.substring(pos);
+				pieceTaBle.insert(pos, text);
+				str = str.suBstring(0, pos) + text + str.suBstring(pos);
 			} else {
 				// delete
 				let pos = randomInt(str.length);
@@ -1537,15 +1537,15 @@ suite('random is unsupervised', () => {
 					str.length - pos,
 					Math.floor(Math.random() * 10)
 				);
-				pieceTable.delete(pos, length);
-				str = str.substring(0, pos) + str.substring(pos + length);
+				pieceTaBle.delete(pos, length);
+				str = str.suBstring(0, pos) + str.suBstring(pos + length);
 			}
 		}
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 	test('random chunks 2', function () {
@@ -1553,7 +1553,7 @@ suite('random is unsupervised', () => {
 		let chunks: string[] = [];
 		chunks.push(randomStr(1000));
 
-		let pieceTable = createTextBuffer(chunks, false);
+		let pieceTaBle = createTextBuffer(chunks, false);
 		let str = chunks.join('');
 
 		for (let i = 0; i < 50; i++) {
@@ -1561,8 +1561,8 @@ suite('random is unsupervised', () => {
 				// insert
 				let text = randomStr(30);
 				let pos = randomInt(str.length + 1);
-				pieceTable.insert(pos, text);
-				str = str.substring(0, pos) + text + str.substring(pos);
+				pieceTaBle.insert(pos, text);
+				str = str.suBstring(0, pos) + text + str.suBstring(pos);
 			} else {
 				// delete
 				let pos = randomInt(str.length);
@@ -1570,180 +1570,180 @@ suite('random is unsupervised', () => {
 					str.length - pos,
 					Math.floor(Math.random() * 10)
 				);
-				pieceTable.delete(pos, length);
-				str = str.substring(0, pos) + str.substring(pos + length);
+				pieceTaBle.delete(pos, length);
+				str = str.suBstring(0, pos) + str.suBstring(pos + length);
 			}
-			testLinesContent(str, pieceTable);
+			testLinesContent(str, pieceTaBle);
 		}
 
-		assert.equal(pieceTable.getLinesRawContent(), str);
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		assert.equal(pieceTaBle.getLinesRawContent(), str);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 });
 
-suite('buffer api', () => {
+suite('Buffer api', () => {
 	test('equal', () => {
-		let a = createTextBuffer(['abc']);
-		let b = createTextBuffer(['ab', 'c']);
-		let c = createTextBuffer(['abd']);
-		let d = createTextBuffer(['abcd']);
+		let a = createTextBuffer(['aBc']);
+		let B = createTextBuffer(['aB', 'c']);
+		let c = createTextBuffer(['aBd']);
+		let d = createTextBuffer(['aBcd']);
 
-		assert(a.equal(b));
+		assert(a.equal(B));
 		assert(!a.equal(c));
 		assert(!a.equal(d));
 	});
 
-	test('equal 2, empty buffer', () => {
+	test('equal 2, empty Buffer', () => {
 		let a = createTextBuffer(['']);
-		let b = createTextBuffer(['']);
+		let B = createTextBuffer(['']);
 
-		assert(a.equal(b));
+		assert(a.equal(B));
 	});
 
-	test('equal 3, empty buffer', () => {
+	test('equal 3, empty Buffer', () => {
 		let a = createTextBuffer(['a']);
-		let b = createTextBuffer(['']);
+		let B = createTextBuffer(['']);
 
-		assert(!a.equal(b));
+		assert(!a.equal(B));
 	});
 
 	test('getLineCharCode - issue #45735', () => {
-		let pieceTable = createTextBuffer(['LINE1\nline2']);
-		assert.equal(pieceTable.getLineCharCode(1, 0), 'L'.charCodeAt(0), 'L');
-		assert.equal(pieceTable.getLineCharCode(1, 1), 'I'.charCodeAt(0), 'I');
-		assert.equal(pieceTable.getLineCharCode(1, 2), 'N'.charCodeAt(0), 'N');
-		assert.equal(pieceTable.getLineCharCode(1, 3), 'E'.charCodeAt(0), 'E');
-		assert.equal(pieceTable.getLineCharCode(1, 4), '1'.charCodeAt(0), '1');
-		assert.equal(pieceTable.getLineCharCode(1, 5), '\n'.charCodeAt(0), '\\n');
-		assert.equal(pieceTable.getLineCharCode(2, 0), 'l'.charCodeAt(0), 'l');
-		assert.equal(pieceTable.getLineCharCode(2, 1), 'i'.charCodeAt(0), 'i');
-		assert.equal(pieceTable.getLineCharCode(2, 2), 'n'.charCodeAt(0), 'n');
-		assert.equal(pieceTable.getLineCharCode(2, 3), 'e'.charCodeAt(0), 'e');
-		assert.equal(pieceTable.getLineCharCode(2, 4), '2'.charCodeAt(0), '2');
+		let pieceTaBle = createTextBuffer(['LINE1\nline2']);
+		assert.equal(pieceTaBle.getLineCharCode(1, 0), 'L'.charCodeAt(0), 'L');
+		assert.equal(pieceTaBle.getLineCharCode(1, 1), 'I'.charCodeAt(0), 'I');
+		assert.equal(pieceTaBle.getLineCharCode(1, 2), 'N'.charCodeAt(0), 'N');
+		assert.equal(pieceTaBle.getLineCharCode(1, 3), 'E'.charCodeAt(0), 'E');
+		assert.equal(pieceTaBle.getLineCharCode(1, 4), '1'.charCodeAt(0), '1');
+		assert.equal(pieceTaBle.getLineCharCode(1, 5), '\n'.charCodeAt(0), '\\n');
+		assert.equal(pieceTaBle.getLineCharCode(2, 0), 'l'.charCodeAt(0), 'l');
+		assert.equal(pieceTaBle.getLineCharCode(2, 1), 'i'.charCodeAt(0), 'i');
+		assert.equal(pieceTaBle.getLineCharCode(2, 2), 'n'.charCodeAt(0), 'n');
+		assert.equal(pieceTaBle.getLineCharCode(2, 3), 'e'.charCodeAt(0), 'e');
+		assert.equal(pieceTaBle.getLineCharCode(2, 4), '2'.charCodeAt(0), '2');
 	});
 
 
 	test('getLineCharCode - issue #47733', () => {
-		let pieceTable = createTextBuffer(['', 'LINE1\n', 'line2']);
-		assert.equal(pieceTable.getLineCharCode(1, 0), 'L'.charCodeAt(0), 'L');
-		assert.equal(pieceTable.getLineCharCode(1, 1), 'I'.charCodeAt(0), 'I');
-		assert.equal(pieceTable.getLineCharCode(1, 2), 'N'.charCodeAt(0), 'N');
-		assert.equal(pieceTable.getLineCharCode(1, 3), 'E'.charCodeAt(0), 'E');
-		assert.equal(pieceTable.getLineCharCode(1, 4), '1'.charCodeAt(0), '1');
-		assert.equal(pieceTable.getLineCharCode(1, 5), '\n'.charCodeAt(0), '\\n');
-		assert.equal(pieceTable.getLineCharCode(2, 0), 'l'.charCodeAt(0), 'l');
-		assert.equal(pieceTable.getLineCharCode(2, 1), 'i'.charCodeAt(0), 'i');
-		assert.equal(pieceTable.getLineCharCode(2, 2), 'n'.charCodeAt(0), 'n');
-		assert.equal(pieceTable.getLineCharCode(2, 3), 'e'.charCodeAt(0), 'e');
-		assert.equal(pieceTable.getLineCharCode(2, 4), '2'.charCodeAt(0), '2');
+		let pieceTaBle = createTextBuffer(['', 'LINE1\n', 'line2']);
+		assert.equal(pieceTaBle.getLineCharCode(1, 0), 'L'.charCodeAt(0), 'L');
+		assert.equal(pieceTaBle.getLineCharCode(1, 1), 'I'.charCodeAt(0), 'I');
+		assert.equal(pieceTaBle.getLineCharCode(1, 2), 'N'.charCodeAt(0), 'N');
+		assert.equal(pieceTaBle.getLineCharCode(1, 3), 'E'.charCodeAt(0), 'E');
+		assert.equal(pieceTaBle.getLineCharCode(1, 4), '1'.charCodeAt(0), '1');
+		assert.equal(pieceTaBle.getLineCharCode(1, 5), '\n'.charCodeAt(0), '\\n');
+		assert.equal(pieceTaBle.getLineCharCode(2, 0), 'l'.charCodeAt(0), 'l');
+		assert.equal(pieceTaBle.getLineCharCode(2, 1), 'i'.charCodeAt(0), 'i');
+		assert.equal(pieceTaBle.getLineCharCode(2, 2), 'n'.charCodeAt(0), 'n');
+		assert.equal(pieceTaBle.getLineCharCode(2, 3), 'e'.charCodeAt(0), 'e');
+		assert.equal(pieceTaBle.getLineCharCode(2, 4), '2'.charCodeAt(0), '2');
 	});
 });
 
 suite('search offset cache', () => {
 	test('render white space exception', () => {
-		let pieceTable = createTextBuffer(['class Name{\n\t\n\t\t\tget() {\n\n\t\t\t}\n\t\t}']);
+		let pieceTaBle = createTextBuffer(['class Name{\n\t\n\t\t\tget() {\n\n\t\t\t}\n\t\t}']);
 		let str = 'class Name{\n\t\n\t\t\tget() {\n\n\t\t\t}\n\t\t}';
 
-		pieceTable.insert(12, 's');
-		str = str.substring(0, 12) + 's' + str.substring(12);
+		pieceTaBle.insert(12, 's');
+		str = str.suBstring(0, 12) + 's' + str.suBstring(12);
 
-		pieceTable.insert(13, 'e');
-		str = str.substring(0, 13) + 'e' + str.substring(13);
+		pieceTaBle.insert(13, 'e');
+		str = str.suBstring(0, 13) + 'e' + str.suBstring(13);
 
-		pieceTable.insert(14, 't');
-		str = str.substring(0, 14) + 't' + str.substring(14);
+		pieceTaBle.insert(14, 't');
+		str = str.suBstring(0, 14) + 't' + str.suBstring(14);
 
-		pieceTable.insert(15, '()');
-		str = str.substring(0, 15) + '()' + str.substring(15);
+		pieceTaBle.insert(15, '()');
+		str = str.suBstring(0, 15) + '()' + str.suBstring(15);
 
-		pieceTable.delete(16, 1);
-		str = str.substring(0, 16) + str.substring(16 + 1);
+		pieceTaBle.delete(16, 1);
+		str = str.suBstring(0, 16) + str.suBstring(16 + 1);
 
-		pieceTable.insert(17, '()');
-		str = str.substring(0, 17) + '()' + str.substring(17);
+		pieceTaBle.insert(17, '()');
+		str = str.suBstring(0, 17) + '()' + str.suBstring(17);
 
-		pieceTable.delete(18, 1);
-		str = str.substring(0, 18) + str.substring(18 + 1);
+		pieceTaBle.delete(18, 1);
+		str = str.suBstring(0, 18) + str.suBstring(18 + 1);
 
-		pieceTable.insert(18, '}');
-		str = str.substring(0, 18) + '}' + str.substring(18);
+		pieceTaBle.insert(18, '}');
+		str = str.suBstring(0, 18) + '}' + str.suBstring(18);
 
-		pieceTable.insert(12, '\n');
-		str = str.substring(0, 12) + '\n' + str.substring(12);
+		pieceTaBle.insert(12, '\n');
+		str = str.suBstring(0, 12) + '\n' + str.suBstring(12);
 
-		pieceTable.delete(12, 1);
-		str = str.substring(0, 12) + str.substring(12 + 1);
+		pieceTaBle.delete(12, 1);
+		str = str.suBstring(0, 12) + str.suBstring(12 + 1);
 
-		pieceTable.delete(18, 1);
-		str = str.substring(0, 18) + str.substring(18 + 1);
+		pieceTaBle.delete(18, 1);
+		str = str.suBstring(0, 18) + str.suBstring(18 + 1);
 
-		pieceTable.insert(18, '}');
-		str = str.substring(0, 18) + '}' + str.substring(18);
+		pieceTaBle.insert(18, '}');
+		str = str.suBstring(0, 18) + '}' + str.suBstring(18);
 
-		pieceTable.delete(17, 2);
-		str = str.substring(0, 17) + str.substring(17 + 2);
+		pieceTaBle.delete(17, 2);
+		str = str.suBstring(0, 17) + str.suBstring(17 + 2);
 
-		pieceTable.delete(16, 1);
-		str = str.substring(0, 16) + str.substring(16 + 1);
+		pieceTaBle.delete(16, 1);
+		str = str.suBstring(0, 16) + str.suBstring(16 + 1);
 
-		pieceTable.insert(16, ')');
-		str = str.substring(0, 16) + ')' + str.substring(16);
+		pieceTaBle.insert(16, ')');
+		str = str.suBstring(0, 16) + ')' + str.suBstring(16);
 
-		pieceTable.delete(15, 2);
-		str = str.substring(0, 15) + str.substring(15 + 2);
+		pieceTaBle.delete(15, 2);
+		str = str.suBstring(0, 15) + str.suBstring(15 + 2);
 
-		let content = pieceTable.getLinesRawContent();
+		let content = pieceTaBle.getLinesRawContent();
 		assert(content === str);
 	});
 
-	test('Line breaks replacement is not necessary when EOL is normalized', () => {
-		let pieceTable = createTextBuffer(['abc']);
-		let str = 'abc';
+	test('Line Breaks replacement is not necessary when EOL is normalized', () => {
+		let pieceTaBle = createTextBuffer(['aBc']);
+		let str = 'aBc';
 
-		pieceTable.insert(3, 'def\nabc');
-		str = str + 'def\nabc';
+		pieceTaBle.insert(3, 'def\naBc');
+		str = str + 'def\naBc';
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('Line breaks replacement is not necessary when EOL is normalized 2', () => {
-		let pieceTable = createTextBuffer(['abc\n']);
-		let str = 'abc\n';
+	test('Line Breaks replacement is not necessary when EOL is normalized 2', () => {
+		let pieceTaBle = createTextBuffer(['aBc\n']);
+		let str = 'aBc\n';
 
-		pieceTable.insert(4, 'def\nabc');
-		str = str + 'def\nabc';
+		pieceTaBle.insert(4, 'def\naBc');
+		str = str + 'def\naBc';
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('Line breaks replacement is not necessary when EOL is normalized 3', () => {
-		let pieceTable = createTextBuffer(['abc\n']);
-		let str = 'abc\n';
+	test('Line Breaks replacement is not necessary when EOL is normalized 3', () => {
+		let pieceTaBle = createTextBuffer(['aBc\n']);
+		let str = 'aBc\n';
 
-		pieceTable.insert(2, 'def\nabc');
-		str = str.substring(0, 2) + 'def\nabc' + str.substring(2);
+		pieceTaBle.insert(2, 'def\naBc');
+		str = str.suBstring(0, 2) + 'def\naBc' + str.suBstring(2);
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
-	test('Line breaks replacement is not necessary when EOL is normalized 4', () => {
-		let pieceTable = createTextBuffer(['abc\n']);
-		let str = 'abc\n';
+	test('Line Breaks replacement is not necessary when EOL is normalized 4', () => {
+		let pieceTaBle = createTextBuffer(['aBc\n']);
+		let str = 'aBc\n';
 
-		pieceTable.insert(3, 'def\nabc');
-		str = str.substring(0, 3) + 'def\nabc' + str.substring(3);
+		pieceTaBle.insert(3, 'def\naBc');
+		str = str.suBstring(0, 3) + 'def\naBc' + str.suBstring(3);
 
-		testLineStarts(str, pieceTable);
-		testLinesContent(str, pieceTable);
-		assertTreeInvariants(pieceTable);
+		testLineStarts(str, pieceTaBle);
+		testLinesContent(str, pieceTaBle);
+		assertTreeInvariants(pieceTaBle);
 	});
 
 });
@@ -1760,7 +1760,7 @@ function getValueInSnapshot(snapshot: ITextSnapshot) {
 	return ret;
 }
 suite('snapshot', () => {
-	test('bug #45564, piece tree pieces should be immutable', () => {
+	test('Bug #45564, piece tree pieces should Be immutaBle', () => {
 		const model = createTextModel('\n');
 		model.applyEdits([
 			{
@@ -1788,8 +1788,8 @@ suite('snapshot', () => {
 		assert.equal(model.getLinesContent().join('\n'), getValueInSnapshot(snapshot1));
 	});
 
-	test('immutable snapshot 1', () => {
-		const model = createTextModel('abc\ndef');
+	test('immutaBle snapshot 1', () => {
+		const model = createTextModel('aBc\ndef');
 		const snapshot = model.createSnapshot();
 		model.applyEdits([
 			{
@@ -1801,15 +1801,15 @@ suite('snapshot', () => {
 		model.applyEdits([
 			{
 				range: new Range(1, 1, 2, 1),
-				text: 'abc\ndef'
+				text: 'aBc\ndef'
 			}
 		]);
 
 		assert.equal(model.getLinesContent().join('\n'), getValueInSnapshot(snapshot));
 	});
 
-	test('immutable snapshot 2', () => {
-		const model = createTextModel('abc\ndef');
+	test('immutaBle snapshot 2', () => {
+		const model = createTextModel('aBc\ndef');
 		const snapshot = model.createSnapshot();
 		model.applyEdits([
 			{
@@ -1828,8 +1828,8 @@ suite('snapshot', () => {
 		assert.equal(model.getLinesContent().join('\n'), getValueInSnapshot(snapshot));
 	});
 
-	test('immutable snapshot 3', () => {
-		const model = createTextModel('abc\ndef');
+	test('immutaBle snapshot 3', () => {
+		const model = createTextModel('aBc\ndef');
 		model.applyEdits([
 			{
 				range: new Range(2, 4, 2, 4),
@@ -1848,22 +1848,22 @@ suite('snapshot', () => {
 	});
 });
 
-suite('chunk based search', () => {
-	test('#45892. For some cases, the buffer is empty but we still try to search', () => {
+suite('chunk Based search', () => {
+	test('#45892. For some cases, the Buffer is empty But we still try to search', () => {
 		let pieceTree = createTextBuffer(['']);
 		pieceTree.delete(0, 1);
-		let ret = pieceTree.findMatchesLineByLine(new Range(1, 1, 1, 1), new SearchData(/abc/, new WordCharacterClassifier(',./'), 'abc'), true, 1000);
+		let ret = pieceTree.findMatchesLineByLine(new Range(1, 1, 1, 1), new SearchData(/aBc/, new WordCharacterClassifier(',./'), 'aBc'), true, 1000);
 		assert.equal(ret.length, 0);
 	});
 
-	test('#45770. FindInNode should not cross node boundary.', () => {
+	test('#45770. FindInNode should not cross node Boundary.', () => {
 		let pieceTree = createTextBuffer([
 			[
-				'balabalababalabalababalabalaba',
-				'balabalababalabalababalabalaba',
+				'BalaBalaBaBalaBalaBaBalaBalaBa',
+				'BalaBalaBaBalaBalaBaBalaBalaBa',
 				'',
 				'* [ ] task1',
-				'* [x] task2 balabalaba',
+				'* [x] task2 BalaBalaBa',
 				'* [ ] task 3'
 			].join('\n')
 		]);
@@ -1883,7 +1883,7 @@ suite('chunk based search', () => {
 		let pieceTree = createTextBuffer([
 			[
 				'def',
-				'dbcabc'
+				'dBcaBc'
 			].join('\n')
 		]);
 		pieceTree.delete(4, 1);

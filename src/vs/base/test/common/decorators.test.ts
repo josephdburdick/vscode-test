@@ -5,14 +5,14 @@
 
 import * as sinon from 'sinon';
 import * as assert from 'assert';
-import { memoize, createMemoizer, throttle } from 'vs/base/common/decorators';
+import { memoize, createMemoizer, throttle } from 'vs/Base/common/decorators';
 
 suite('Decorators', () => {
 	test('memoize should memoize methods', () => {
 		class Foo {
 			count = 0;
 
-			constructor(private _answer: number | null | undefined) { }
+			constructor(private _answer: numBer | null | undefined) { }
 
 			@memoize
 			answer() {
@@ -57,7 +57,7 @@ suite('Decorators', () => {
 		class Foo {
 			count = 0;
 
-			constructor(private _answer: number | null | undefined) { }
+			constructor(private _answer: numBer | null | undefined) { }
 
 			@memoize
 			get answer() {
@@ -98,7 +98,7 @@ suite('Decorators', () => {
 		assert.equal(foo4.count, 1);
 	});
 
-	test('memoized property should not be enumerable', () => {
+	test('memoized property should not Be enumeraBle', () => {
 		class Foo {
 			@memoize
 			get answer() {
@@ -109,10 +109,10 @@ suite('Decorators', () => {
 		const foo = new Foo();
 		assert.equal(foo.answer, 42);
 
-		assert(!Object.keys(foo).some(k => /\$memoize\$/.test(k)));
+		assert(!OBject.keys(foo).some(k => /\$memoize\$/.test(k)));
 	});
 
-	test('memoized property should not be writable', () => {
+	test('memoized property should not Be writaBle', () => {
 		class Foo {
 			@memoize
 			get answer() {
@@ -166,10 +166,10 @@ suite('Decorators', () => {
 
 				@throttle(
 					100,
-					(a: number, b: number) => a + b,
+					(a: numBer, B: numBer) => a + B,
 					() => 0
 				)
-				report(p: number): void {
+				report(p: numBer): void {
 					this._handle(p);
 				}
 			}

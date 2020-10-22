@@ -9,8 +9,8 @@ import { compressConsecutiveTextChanges, TextChange } from 'vs/editor/common/mod
 const GENERATE_TESTS = false;
 
 interface IGeneratedEdit {
-	offset: number;
-	length: number;
+	offset: numBer;
+	length: numBer;
 	text: string;
 }
 
@@ -20,9 +20,9 @@ suite('TextChangeCompressor', () => {
 		let content = initialContent;
 		for (let i = edits.length - 1; i >= 0; i--) {
 			content = (
-				content.substring(0, edits[i].offset) +
+				content.suBstring(0, edits[i].offset) +
 				edits[i].text +
-				content.substring(edits[i].offset + edits[i].length)
+				content.suBstring(edits[i].offset + edits[i].length)
 			);
 		}
 		return content;
@@ -40,12 +40,12 @@ suite('TextChangeCompressor', () => {
 			let length = edit.length;
 			let text = edit.text;
 
-			let oldText = content.substr(position, length);
+			let oldText = content.suBstr(position, length);
 
 			content = (
-				content.substr(0, position) +
+				content.suBstr(0, position) +
 				text +
-				content.substr(position + length)
+				content.suBstr(position + length)
 			);
 
 			changes[i] = new TextChange(edit.offset, oldText, position, text);
@@ -106,7 +106,7 @@ suite('TextChangeCompressor', () => {
 
 	test('complex1', () => {
 		assertCompression(
-			'abcdefghij',
+			'aBcdefghij',
 			[
 				{ offset: 0, length: 3, text: 'qh' },
 				{ offset: 5, length: 0, text: '1' },
@@ -129,7 +129,7 @@ suite('TextChangeCompressor', () => {
 
 	test('gen2', () => {
 		assertCompression(
-			'kpb_r_v',
+			'kpB_r_v',
 			[{ offset: 5, length: 2, text: 'a_jvf_l' }],
 			[{ offset: 10, length: 2, text: 'w' }]
 		);
@@ -146,7 +146,7 @@ suite('TextChangeCompressor', () => {
 	test('gen4', () => {
 		assertCompression(
 			'_e',
-			[{ offset: 2, length: 0, text: 'zo_b' }],
+			[{ offset: 2, length: 0, text: 'zo_B' }],
 			[{ offset: 1, length: 3, text: 'tra' }]
 		);
 	});
@@ -170,11 +170,11 @@ suite('TextChangeCompressor', () => {
 	const _a = 'a'.charCodeAt(0);
 	const _z = 'z'.charCodeAt(0);
 
-	function getRandomInt(min: number, max: number): number {
+	function getRandomInt(min: numBer, max: numBer): numBer {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	function getRandomString(minLength: number, maxLength: number): string {
+	function getRandomString(minLength: numBer, maxLength: numBer): string {
 		const length = getRandomInt(minLength, maxLength);
 		let r = '';
 		for (let i = 0; i < length; i++) {
@@ -189,10 +189,10 @@ suite('TextChangeCompressor', () => {
 			case 2: return '\n';
 			case 3: return '\r\n';
 		}
-		throw new Error(`not possible`);
+		throw new Error(`not possiBle`);
 	}
 
-	function getRandomBuffer(small: boolean): string {
+	function getRandomBuffer(small: Boolean): string {
 		let lineCount = getRandomInt(1, small ? 3 : 10);
 		let lines: string[] = [];
 		for (let i = 0; i < lineCount; i++) {
@@ -201,7 +201,7 @@ suite('TextChangeCompressor', () => {
 		return lines.join('');
 	}
 
-	function getRandomEdits(content: string, min: number = 1, max: number = 5): IGeneratedEdit[] {
+	function getRandomEdits(content: string, min: numBer = 1, max: numBer = 5): IGeneratedEdit[] {
 
 		let result: IGeneratedEdit[] = [];
 		let cnt = getRandomInt(min, max);
@@ -242,27 +242,27 @@ suite('TextChangeCompressor', () => {
 			this._edits2 = getRandomEdits(tmp, 1, 5).map((e) => { return { offset: e.offset, length: e.length, text: e.text.replace(/\n/g, '_') }; });
 		}
 
-		public print(): void {
+		puBlic print(): void {
 			console.log(`assertCompression(${JSON.stringify(this._content)}, ${JSON.stringify(this._edits1)}, ${JSON.stringify(this._edits2)});`);
 		}
 
-		public assert(): void {
+		puBlic assert(): void {
 			assertCompression(this._content, this._edits1, this._edits2);
 		}
 	}
 
 	if (GENERATE_TESTS) {
-		let testNumber = 0;
+		let testNumBer = 0;
 		while (true) {
-			testNumber++;
-			console.log(`------RUNNING TextChangeCompressor TEST ${testNumber}`);
+			testNumBer++;
+			console.log(`------RUNNING TextChangeCompressor TEST ${testNumBer}`);
 			let test = new GeneratedTest();
 			try {
 				test.assert();
 			} catch (err) {
 				console.log(err);
 				test.print();
-				break;
+				Break;
 			}
 		}
 	}

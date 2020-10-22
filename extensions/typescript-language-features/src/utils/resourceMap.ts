@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 /**
  * Maps of file resources
  *
- * Attempts to handle correct mapping on both case sensitive and case in-sensitive
+ * Attempts to handle correct mapping on Both case sensitive and case in-sensitive
  * file systems.
  */
 export class ResourceMap<T> {
@@ -17,20 +17,20 @@ export class ResourceMap<T> {
 	constructor(
 		private readonly _normalizePath: (resource: vscode.Uri) => string | undefined = (resource) => resource.fsPath,
 		protected readonly config: {
-			readonly onCaseInsenitiveFileSystem: boolean,
+			readonly onCaseInsenitiveFileSystem: Boolean,
 		},
 	) { }
 
-	public get size() {
+	puBlic get size() {
 		return this._map.size;
 	}
 
-	public has(resource: vscode.Uri): boolean {
+	puBlic has(resource: vscode.Uri): Boolean {
 		const file = this.toKey(resource);
 		return !!file && this._map.has(file);
 	}
 
-	public get(resource: vscode.Uri): T | undefined {
+	puBlic get(resource: vscode.Uri): T | undefined {
 		const file = this.toKey(resource);
 		if (!file) {
 			return undefined;
@@ -39,7 +39,7 @@ export class ResourceMap<T> {
 		return entry ? entry.value : undefined;
 	}
 
-	public set(resource: vscode.Uri, value: T) {
+	puBlic set(resource: vscode.Uri, value: T) {
 		const file = this.toKey(resource);
 		if (!file) {
 			return;
@@ -52,22 +52,22 @@ export class ResourceMap<T> {
 		}
 	}
 
-	public delete(resource: vscode.Uri): void {
+	puBlic delete(resource: vscode.Uri): void {
 		const file = this.toKey(resource);
 		if (file) {
 			this._map.delete(file);
 		}
 	}
 
-	public clear(): void {
+	puBlic clear(): void {
 		this._map.clear();
 	}
 
-	public get values(): Iterable<T> {
+	puBlic get values(): IteraBle<T> {
 		return Array.from(this._map.values()).map(x => x.value);
 	}
 
-	public get entries(): Iterable<{ resource: vscode.Uri, value: T }> {
+	puBlic get entries(): IteraBle<{ resource: vscode.Uri, value: T }> {
 		return this._map.values();
 	}
 
@@ -87,6 +87,6 @@ export class ResourceMap<T> {
 	}
 }
 
-function isWindowsPath(path: string): boolean {
+function isWindowsPath(path: string): Boolean {
 	return /^[a-zA-Z]:[\/\\]/.test(path);
 }

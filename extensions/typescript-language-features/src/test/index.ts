@@ -7,20 +7,20 @@
 // PLEASE DO NOT MODIFY / DELETE UNLESS YOU KNOW WHAT YOU ARE DOING
 //
 // This file is providing the test runner to use when running extension tests.
-// By default the test runner in use is Mocha based.
+// By default the test runner in use is Mocha Based.
 //
-// You can provide your own test runner if you want to override it by exporting
-// a function run(testRoot: string, clb: (error:Error) => void) that the extension
+// You can provide your own test runner if you want to override it By exporting
+// a function run(testRoot: string, clB: (error:Error) => void) that the extension
 // host can call to run the tests. The test runner is expected to use console.log
-// to report the results back to the caller. When the tests are finished, return
-// a possible error to the callback or null if none.
+// to report the results Back to the caller. When the tests are finished, return
+// a possiBle error to the callBack or null if none.
 
-const testRunner = require('vscode/lib/testrunner');
+const testRunner = require('vscode/liB/testrunner');
 
-// You can directly control Mocha options by uncommenting the following lines
-// See https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically#set-options for more info
+// You can directly control Mocha options By uncommenting the following lines
+// See https://githuB.com/mochajs/mocha/wiki/Using-mocha-programmatically#set-options for more info
 testRunner.configure({
-	ui: 'tdd', 		// the TDD UI is being used in extension.test.ts (suite, test, etc.)
+	ui: 'tdd', 		// the TDD UI is Being used in extension.test.ts (suite, test, etc.)
 	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.platform !== 'win32'), // colored output from test results (only windows cannot handle)
 	timeout: 60000,
 });

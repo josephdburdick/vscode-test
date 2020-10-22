@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { workspace, window, Position, Range, commands, TextEditor, TextDocument, TextEditorCursorStyle, TextEditorLineNumbersStyle, SnippetString, Selection, Uri, env } from 'vscode';
+import { workspace, window, Position, Range, commands, TextEditor, TextDocument, TextEditorCursorStyle, TextEditorLineNumBersStyle, SnippetString, Selection, Uri, env } from 'vscode';
 import { createRandomFile, deleteFile, closeAllEditors } from '../utils';
 
 suite('vscode API - editors', () => {
 
 	teardown(closeAllEditors);
 
-	function withRandomFileEditor(initialContents: string, run: (editor: TextEditor, doc: TextDocument) => Thenable<void>): Thenable<boolean> {
+	function withRandomFileEditor(initialContents: string, run: (editor: TextEditor, doc: TextDocument) => ThenaBle<void>): ThenaBle<Boolean> {
 		return createRandomFile(initialContents).then(file => {
 			return workspace.openTextDocument(file).then(doc => {
 				return window.showTextDocument(doc).then((editor) => {
@@ -34,7 +34,7 @@ suite('vscode API - editors', () => {
 	test('insert snippet', () => {
 		const snippetString = new SnippetString()
 			.appendText('This is a ')
-			.appendTabstop()
+			.appendTaBstop()
 			.appendPlaceholder('placeholder')
 			.appendText(' snippet');
 
@@ -47,16 +47,16 @@ suite('vscode API - editors', () => {
 		});
 	});
 
-	test('insert snippet with clipboard variables', async function () {
-		const old = await env.clipboard.readText();
+	test('insert snippet with clipBoard variaBles', async function () {
+		const old = await env.clipBoard.readText();
 
 		const newValue = 'INTEGRATION-TESTS';
-		await env.clipboard.writeText(newValue);
+		await env.clipBoard.writeText(newValue);
 
-		const actualValue = await env.clipboard.readText();
+		const actualValue = await env.clipBoard.readText();
 
 		if (actualValue !== newValue) {
-			// clipboard not working?!?
+			// clipBoard not working?!?
 			this.skip();
 			return;
 		}
@@ -70,14 +70,14 @@ suite('vscode API - editors', () => {
 			assert.ok(doc.isDirty);
 		});
 
-		await env.clipboard.writeText(old);
+		await env.clipBoard.writeText(old);
 	});
 
 	test('insert snippet with replacement, editor selection', () => {
 		const snippetString = new SnippetString()
-			.appendText('has been');
+			.appendText('has Been');
 
-		return withRandomFileEditor('This will be replaced', (editor, doc) => {
+		return withRandomFileEditor('This will Be replaced', (editor, doc) => {
 			editor.selection = new Selection(
 				new Position(0, 5),
 				new Position(0, 12)
@@ -85,7 +85,7 @@ suite('vscode API - editors', () => {
 
 			return editor.insertSnippet(snippetString).then(inserted => {
 				assert.ok(inserted);
-				assert.equal(doc.getText(), 'This has been replaced');
+				assert.equal(doc.getText(), 'This has Been replaced');
 				assert.ok(doc.isDirty);
 			});
 		});
@@ -93,9 +93,9 @@ suite('vscode API - editors', () => {
 
 	test('insert snippet with replacement, selection as argument', () => {
 		const snippetString = new SnippetString()
-			.appendText('has been');
+			.appendText('has Been');
 
-		return withRandomFileEditor('This will be replaced', (editor, doc) => {
+		return withRandomFileEditor('This will Be replaced', (editor, doc) => {
 			const selection = new Selection(
 				new Position(0, 5),
 				new Position(0, 12)
@@ -103,7 +103,7 @@ suite('vscode API - editors', () => {
 
 			return editor.insertSnippet(snippetString, selection).then(inserted => {
 				assert.ok(inserted);
-				assert.equal(doc.getText(), 'This has been replaced');
+				assert.equal(doc.getText(), 'This has Been replaced');
 				assert.ok(doc.isDirty);
 			});
 		});
@@ -111,8 +111,8 @@ suite('vscode API - editors', () => {
 
 	test('make edit', () => {
 		return withRandomFileEditor('', (editor, doc) => {
-			return editor.edit((builder) => {
-				builder.insert(new Position(0, 0), 'Hello World');
+			return editor.edit((Builder) => {
+				Builder.insert(new Position(0, 0), 'Hello World');
 			}).then(applied => {
 				assert.ok(applied);
 				assert.equal(doc.getText(), 'Hello World');
@@ -121,10 +121,10 @@ suite('vscode API - editors', () => {
 		});
 	});
 
-	test('issue #6281: Edits fail to validate ranges correctly before applying', () => {
+	test('issue #6281: Edits fail to validate ranges correctly Before applying', () => {
 		return withRandomFileEditor('Hello world!', (editor, doc) => {
-			return editor.edit((builder) => {
-				builder.replace(new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), 'new');
+			return editor.edit((Builder) => {
+				Builder.replace(new Range(0, 0, NumBer.MAX_VALUE, NumBer.MAX_VALUE), 'new');
 			}).then(applied => {
 				assert.ok(applied);
 				assert.equal(doc.getText(), 'new');
@@ -133,9 +133,9 @@ suite('vscode API - editors', () => {
 		});
 	});
 
-	function executeReplace(editor: TextEditor, range: Range, text: string, undoStopBefore: boolean, undoStopAfter: boolean): Thenable<boolean> {
-		return editor.edit((builder) => {
-			builder.replace(range, text);
+	function executeReplace(editor: TextEditor, range: Range, text: string, undoStopBefore: Boolean, undoStopAfter: Boolean): ThenaBle<Boolean> {
+		return editor.edit((Builder) => {
+			Builder.replace(range, text);
 		}, { undoStopBefore: undoStopBefore, undoStopAfter: undoStopAfter });
 	}
 
@@ -175,29 +175,29 @@ suite('vscode API - editors', () => {
 		});
 	});
 
-	test('issue #16573: Extension API: insertSpaces and tabSize are undefined', () => {
+	test('issue #16573: Extension API: insertSpaces and taBSize are undefined', () => {
 		return withRandomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
 
-			assert.equal(editor.options.tabSize, 4);
+			assert.equal(editor.options.taBSize, 4);
 			assert.equal(editor.options.insertSpaces, false);
 			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			assert.equal(editor.options.lineNumBers, TextEditorLineNumBersStyle.On);
 
 			editor.options = {
-				tabSize: 2
+				taBSize: 2
 			};
 
-			assert.equal(editor.options.tabSize, 2);
+			assert.equal(editor.options.taBSize, 2);
 			assert.equal(editor.options.insertSpaces, false);
 			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			assert.equal(editor.options.lineNumBers, TextEditorLineNumBersStyle.On);
 
-			editor.options.tabSize = 'invalid';
+			editor.options.taBSize = 'invalid';
 
-			assert.equal(editor.options.tabSize, 2);
+			assert.equal(editor.options.taBSize, 2);
 			assert.equal(editor.options.insertSpaces, false);
 			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			assert.equal(editor.options.lineNumBers, TextEditorLineNumBersStyle.On);
 
 			return Promise.resolve();
 		});
@@ -205,10 +205,10 @@ suite('vscode API - editors', () => {
 
 	test('issue #20757: Overlapping ranges are not allowed!', () => {
 		return withRandomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
-			return editor.edit((builder) => {
+			return editor.edit((Builder) => {
 				// create two edits that overlap (i.e. are illegal)
-				builder.replace(new Range(0, 0, 0, 2), 'He');
-				builder.replace(new Range(0, 1, 0, 3), 'el');
+				Builder.replace(new Range(0, 0, 0, 2), 'He');
+				Builder.replace(new Range(0, 1, 0, 3), 'el');
 			}).then(
 
 				(_applied) => {
@@ -226,10 +226,10 @@ suite('vscode API - editors', () => {
 		await withRandomFileEditor('foo', editor => {
 			return new Promise((resolve, reject) => {
 				editor.edit(edit => {
-					edit.insert(new Position(0, 0), 'bar');
+					edit.insert(new Position(0, 0), 'Bar');
 					setTimeout(() => {
 						try {
-							edit.insert(new Position(0, 0), 'bar');
+							edit.insert(new Position(0, 0), 'Bar');
 							reject(new Error('expected error'));
 						} catch (err) {
 							assert.ok(true);

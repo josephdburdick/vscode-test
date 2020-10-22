@@ -5,14 +5,14 @@
 
 import { HoverProvider, Hover, MarkedString, TextDocument, CancellationToken, Position, workspace } from 'vscode';
 import { textToMarkedString } from './utils/markedTextUtil';
-import phpGlobals = require('./phpGlobals');
-import phpGlobalFunctions = require('./phpGlobalFunctions');
+import phpGloBals = require('./phpGloBals');
+import phpGloBalFunctions = require('./phpGloBalFunctions');
 
 export default class PHPHoverProvider implements HoverProvider {
 
-	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Hover | undefined {
-		let enable = workspace.getConfiguration('php').get<boolean>('suggest.basic', true);
-		if (!enable) {
+	puBlic provideHover(document: TextDocument, position: Position, _token: CancellationToken): Hover | undefined {
+		let enaBle = workspace.getConfiguration('php').get<Boolean>('suggest.Basic', true);
+		if (!enaBle) {
 			return undefined;
 		}
 
@@ -23,7 +23,7 @@ export default class PHPHoverProvider implements HoverProvider {
 
 		let name = document.getText(wordRange);
 
-		let entry = phpGlobalFunctions.globalfunctions[name] || phpGlobals.compiletimeconstants[name] || phpGlobals.globalvariables[name] || phpGlobals.keywords[name];
+		let entry = phpGloBalFunctions.gloBalfunctions[name] || phpGloBals.compiletimeconstants[name] || phpGloBals.gloBalvariaBles[name] || phpGloBals.keywords[name];
 		if (entry && entry.description) {
 			let signature = name + (entry.signature || '');
 			let contents: MarkedString[] = [textToMarkedString(entry.description), { language: 'php', value: signature }];

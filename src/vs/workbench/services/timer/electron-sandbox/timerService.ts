@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IUpdateService } from 'vs/platform/update/common/update';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { IStartupMetrics, AbstractTimerService, Writeable } from 'vs/workbench/services/timer/browser/timerService';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { IStartupMetrics, ABstractTimerService, WriteaBle } from 'vs/workBench/services/timer/Browser/timerService';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { context, process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { context, process } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 
-export class TimerService extends AbstractTimerService {
+export class TimerService extends ABstractTimerService {
 
 	constructor(
 		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService,
+		@INativeWorkBenchEnvironmentService private readonly _environmentService: INativeWorkBenchEnvironmentService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IExtensionService extensionService: IExtensionService,
@@ -29,23 +29,23 @@ export class TimerService extends AbstractTimerService {
 		@IViewletService viewletService: IViewletService,
 		@IPanelService panelService: IPanelService,
 		@IEditorService editorService: IEditorService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(lifecycleService, contextService, extensionService, updateService, viewletService, panelService, editorService, accessibilityService, telemetryService);
+		super(lifecycleService, contextService, extensionService, updateService, viewletService, panelService, editorService, accessiBilityService, telemetryService);
 	}
 
-	protected _isInitialStartup(): boolean {
+	protected _isInitialStartup(): Boolean {
 		return Boolean(this._environmentService.configuration.isInitialStartup);
 	}
-	protected _didUseCachedData(): boolean {
+	protected _didUseCachedData(): Boolean {
 		return didUseCachedData();
 	}
-	protected _getWindowCount(): Promise<number> {
+	protected _getWindowCount(): Promise<numBer> {
 		return this._nativeHostService.getWindowCount();
 	}
 
-	protected async _extendStartupInfo(info: Writeable<IStartupMetrics>): Promise<void> {
+	protected async _extendStartupInfo(info: WriteaBle<IStartupMetrics>): Promise<void> {
 		try {
 			const [osProperties, osStatistics, virtualMachineHint] = await Promise.all([
 				this._nativeHostService.getOSProperties(),
@@ -74,16 +74,16 @@ export class TimerService extends AbstractTimerService {
 				info.cpus = { count: rawCpus.length, speed: rawCpus[0].speed, model: rawCpus[0].model };
 			}
 		} catch (error) {
-			// ignore, be on the safe side with these hardware method calls
+			// ignore, Be on the safe side with these hardware method calls
 		}
 	}
 }
 
 //#region cached data logic
 
-export function didUseCachedData(): boolean {
+export function didUseCachedData(): Boolean {
 	// TODO@Ben TODO@Jo need a different way to figure out if cached data was used
-	if (context.sandbox) {
+	if (context.sandBox) {
 		return true;
 	}
 	// We surely don't use cached data when we don't tell the loader to do so
@@ -99,7 +99,7 @@ export function didUseCachedData(): boolean {
 				return false;
 			case LoaderEventType.CachedDataFound:
 				cachedDataFound += 1;
-				break;
+				Break;
 		}
 	}
 	return cachedDataFound > 0;

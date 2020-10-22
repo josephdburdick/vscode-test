@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import { DefaultStyleController, IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { ITreeElement, ITreeNode, ITreeRenderer } from 'vs/base/browser/ui/tree/tree';
-import { Iterable } from 'vs/base/common/iterator';
+import * as DOM from 'vs/Base/Browser/dom';
+import { IListVirtualDelegate } from 'vs/Base/Browser/ui/list/list';
+import { DefaultStyleController, IListAccessiBilityProvider } from 'vs/Base/Browser/ui/list/listWidget';
+import { ITreeElement, ITreeNode, ITreeRenderer } from 'vs/Base/Browser/ui/tree/tree';
+import { IteraBle } from 'vs/Base/common/iterator';
 import { localize } from 'vs/nls';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IListService, IWorkbenchObjectTreeOptions, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { IListService, IWorkBenchOBjectTreeOptions, WorkBenchOBjectTree } from 'vs/platform/list/Browser/listService';
 import { editorBackground, focusBorder, foreground, transparent } from 'vs/platform/theme/common/colorRegistry';
 import { attachStyler } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { SettingsTreeFilter } from 'vs/workbench/contrib/preferences/browser/settingsTree';
-import { ISettingsEditorViewState, SearchResultModel, SettingsTreeElement, SettingsTreeGroupElement, SettingsTreeSettingElement } from 'vs/workbench/contrib/preferences/browser/settingsTreeModels';
-import { settingsHeaderForeground } from 'vs/workbench/contrib/preferences/browser/settingsWidgets';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { SettingsTreeFilter } from 'vs/workBench/contriB/preferences/Browser/settingsTree';
+import { ISettingsEditorViewState, SearchResultModel, SettingsTreeElement, SettingsTreeGroupElement, SettingsTreeSettingElement } from 'vs/workBench/contriB/preferences/Browser/settingsTreeModels';
+import { settingsHeaderForeground } from 'vs/workBench/contriB/preferences/Browser/settingsWidgets';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 
 const $ = DOM.$;
 
@@ -32,7 +32,7 @@ export class TOCTreeModel {
 
 	constructor(
 		private _viewState: ISettingsEditorViewState,
-		@IWorkbenchEnvironmentService private environmentService: IWorkbenchEnvironmentService
+		@IWorkBenchEnvironmentService private environmentService: IWorkBenchEnvironmentService
 	) {
 	}
 
@@ -78,7 +78,7 @@ export class TOCTreeModel {
 		group.count = childCount + this.getGroupCount(group);
 	}
 
-	private getGroupCount(group: SettingsTreeGroupElement): number {
+	private getGroupCount(group: SettingsTreeGroupElement): numBer {
 		return group.children.filter(child => {
 			if (!(child instanceof SettingsTreeSettingElement)) {
 				return false;
@@ -88,7 +88,7 @@ export class TOCTreeModel {
 				return false;
 			}
 
-			// Check everything that the SettingsFilter checks except whether it's filtered by a category
+			// Check everything that the SettingsFilter checks except whether it's filtered By a category
 			const isRemote = !!this.environmentService.remoteAuthority;
 			return child.matchesScope(this._viewState.settingsTarget, isRemote) && child.matchesAllTags(this._viewState.tagFilters) && child.matchesAnyExtension(this._viewState.extensionFilters);
 		}).length;
@@ -98,7 +98,7 @@ export class TOCTreeModel {
 const TOC_ENTRY_TEMPLATE_ID = 'settings.toc.entry';
 
 interface ITOCEntryTemplate {
-	labelElement: HTMLElement;
+	laBelElement: HTMLElement;
 	countElement: HTMLElement;
 }
 
@@ -108,18 +108,18 @@ export class TOCRenderer implements ITreeRenderer<SettingsTreeGroupElement, neve
 
 	renderTemplate(container: HTMLElement): ITOCEntryTemplate {
 		return {
-			labelElement: DOM.append(container, $('.settings-toc-entry')),
+			laBelElement: DOM.append(container, $('.settings-toc-entry')),
 			countElement: DOM.append(container, $('.settings-toc-count'))
 		};
 	}
 
-	renderElement(node: ITreeNode<SettingsTreeGroupElement>, index: number, template: ITOCEntryTemplate): void {
+	renderElement(node: ITreeNode<SettingsTreeGroupElement>, index: numBer, template: ITOCEntryTemplate): void {
 		const element = node.element;
 		const count = element.count;
-		const label = element.label;
+		const laBel = element.laBel;
 
-		template.labelElement.textContent = label;
-		template.labelElement.title = label;
+		template.laBelElement.textContent = laBel;
+		template.laBelElement.title = laBel;
 
 		if (count) {
 			template.countElement.textContent = ` (${count})`;
@@ -137,21 +137,21 @@ class TOCTreeDelegate implements IListVirtualDelegate<SettingsTreeElement> {
 		return TOC_ENTRY_TEMPLATE_ID;
 	}
 
-	getHeight(element: SettingsTreeElement): number {
+	getHeight(element: SettingsTreeElement): numBer {
 		return 22;
 	}
 }
 
-export function createTOCIterator(model: TOCTreeModel | SettingsTreeGroupElement, tree: TOCTree): Iterable<ITreeElement<SettingsTreeGroupElement>> {
+export function createTOCIterator(model: TOCTreeModel | SettingsTreeGroupElement, tree: TOCTree): IteraBle<ITreeElement<SettingsTreeGroupElement>> {
 	const groupChildren = <SettingsTreeGroupElement[]>model.children.filter(c => c instanceof SettingsTreeGroupElement);
 
-	return Iterable.map(groupChildren, g => {
+	return IteraBle.map(groupChildren, g => {
 		const hasGroupChildren = g.children.some(c => c instanceof SettingsTreeGroupElement);
 
 		return {
 			element: g,
 			collapsed: undefined,
-			collapsible: hasGroupChildren,
+			collapsiBle: hasGroupChildren,
 			children: g instanceof SettingsTreeGroupElement ?
 				createTOCIterator(g, tree) :
 				undefined
@@ -159,28 +159,28 @@ export function createTOCIterator(model: TOCTreeModel | SettingsTreeGroupElement
 	});
 }
 
-class SettingsAccessibilityProvider implements IListAccessibilityProvider<SettingsTreeGroupElement> {
-	getWidgetAriaLabel(): string {
+class SettingsAccessiBilityProvider implements IListAccessiBilityProvider<SettingsTreeGroupElement> {
+	getWidgetAriaLaBel(): string {
 		return localize({
 			key: 'settingsTOC',
-			comment: ['A label for the table of contents for the full settings list']
+			comment: ['A laBel for the taBle of contents for the full settings list']
 		},
-			"Settings Table of Contents");
+			"Settings TaBle of Contents");
 	}
 
-	getAriaLabel(element: SettingsTreeElement): string {
+	getAriaLaBel(element: SettingsTreeElement): string {
 		if (!element) {
 			return '';
 		}
 
 		if (element instanceof SettingsTreeGroupElement) {
-			return localize('groupRowAriaLabel', "{0}, group", element.label);
+			return localize('groupRowAriaLaBel', "{0}, group", element.laBel);
 		}
 
 		return '';
 	}
 
-	getAriaLevel(element: SettingsTreeGroupElement): number {
+	getAriaLevel(element: SettingsTreeGroupElement): numBer {
 		let i = 1;
 		while (element instanceof SettingsTreeGroupElement && element.parent) {
 			i++;
@@ -191,7 +191,7 @@ class SettingsAccessibilityProvider implements IListAccessibilityProvider<Settin
 	}
 }
 
-export class TOCTree extends WorkbenchObjectTree<SettingsTreeGroupElement> {
+export class TOCTree extends WorkBenchOBjectTree<SettingsTreeGroupElement> {
 	constructor(
 		container: HTMLElement,
 		viewState: ISettingsEditorViewState,
@@ -199,14 +199,14 @@ export class TOCTree extends WorkbenchObjectTree<SettingsTreeGroupElement> {
 		@IListService listService: IListService,
 		@IThemeService themeService: IThemeService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@IKeybindingService keybindingService: IKeybindingService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
+		@IKeyBindingService keyBindingService: IKeyBindingService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService,
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
 		// test open mode
 
 		const filter = instantiationService.createInstance(SettingsTreeFilter, viewState);
-		const options: IWorkbenchObjectTreeOptions<SettingsTreeGroupElement, void> = {
+		const options: IWorkBenchOBjectTreeOptions<SettingsTreeGroupElement, void> = {
 			filter,
 			multipleSelectionSupport: false,
 			identityProvider: {
@@ -215,7 +215,7 @@ export class TOCTree extends WorkbenchObjectTree<SettingsTreeGroupElement> {
 				}
 			},
 			styleController: id => new DefaultStyleController(DOM.createStyleSheet(container), id),
-			accessibilityProvider: instantiationService.createInstance(SettingsAccessibilityProvider),
+			accessiBilityProvider: instantiationService.createInstance(SettingsAccessiBilityProvider),
 			collapseByDefault: true,
 			horizontalScrolling: false
 		};
@@ -230,11 +230,11 @@ export class TOCTree extends WorkbenchObjectTree<SettingsTreeGroupElement> {
 			listService,
 			themeService,
 			configurationService,
-			keybindingService,
-			accessibilityService,
+			keyBindingService,
+			accessiBilityService,
 		);
 
-		this.disposables.add(attachStyler(themeService, {
+		this.disposaBles.add(attachStyler(themeService, {
 			listBackground: editorBackground,
 			listFocusOutline: focusBorder,
 			listActiveSelectionBackground: editorBackground,

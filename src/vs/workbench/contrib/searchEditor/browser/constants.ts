@@ -5,13 +5,13 @@
 
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 
-export const InSearchEditor = new RawContextKey<boolean>('inSearchEditor', false);
+export const InSearchEditor = new RawContextKey<Boolean>('inSearchEditor', false);
 
 export const SearchEditorScheme = 'search-editor';
 
 export const SearchEditorFindMatchClass = 'seaarchEditorFindMatch';
 
-export const SearchEditorID = 'workbench.editor.searchEditor';
+export const SearchEditorID = 'workBench.editor.searchEditor';
 
 export const OpenNewEditorCommandId = 'search.action.openNewEditor';
 export const OpenEditorCommandId = 'search.action.openEditor';

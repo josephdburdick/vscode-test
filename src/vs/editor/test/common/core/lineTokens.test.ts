@@ -10,21 +10,21 @@ import { MetadataConsts } from 'vs/editor/common/modes';
 suite('LineTokens', () => {
 
 	interface ILineToken {
-		startIndex: number;
-		foreground: number;
+		startIndex: numBer;
+		foreground: numBer;
 	}
 
 	function createLineTokens(text: string, tokens: ILineToken[]): LineTokens {
-		let binTokens = new Uint32Array(tokens.length << 1);
+		let BinTokens = new Uint32Array(tokens.length << 1);
 
 		for (let i = 0, len = tokens.length; i < len; i++) {
-			binTokens[(i << 1)] = (i + 1 < len ? tokens[i + 1].startIndex : text.length);
-			binTokens[(i << 1) + 1] = (
+			BinTokens[(i << 1)] = (i + 1 < len ? tokens[i + 1].startIndex : text.length);
+			BinTokens[(i << 1) + 1] = (
 				tokens[i].foreground << MetadataConsts.FOREGROUND_OFFSET
 			) >>> 0;
 		}
 
-		return new LineTokens(binTokens, text);
+		return new LineTokens(BinTokens, text);
 	}
 
 	function createTestLineTokens(): LineTokens {
@@ -42,7 +42,7 @@ suite('LineTokens', () => {
 		);
 	}
 
-	test('basics', () => {
+	test('Basics', () => {
 		const lineTokens = createTestLineTokens();
 
 		assert.equal(lineTokens.getLineContent(), 'Hello world, this is a lovely day');
@@ -106,8 +106,8 @@ suite('LineTokens', () => {
 	});
 
 	interface ITestViewLineToken {
-		endIndex: number;
-		foreground: number;
+		endIndex: numBer;
+		foreground: numBer;
 	}
 
 	function assertViewLineTokens(_actual: IViewLineTokens, expected: ITestViewLineToken[]): void {

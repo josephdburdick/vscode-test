@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtHostContext, IExtHostContext, MainContext, MainThreadUrlsShape, ExtHostUrlsShape } from 'vs/workbench/api/common/extHost.protocol';
+import { ExtHostContext, IExtHostContext, MainContext, MainThreadUrlsShape, ExtHostUrlsShape } from 'vs/workBench/api/common/extHost.protocol';
 import { extHostNamedCustomer } from '../common/extHostCustomers';
 import { IURLService, IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IExtensionUrlHandler } from 'vs/workbench/services/extensions/browser/extensionUrlHandler';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtensionUrlHandler } from 'vs/workBench/services/extensions/Browser/extensionUrlHandler';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 class ExtensionUrlHandler implements IURLHandler {
 
 	constructor(
 		private readonly proxy: ExtHostUrlsShape,
-		private readonly handle: number,
+		private readonly handle: numBer,
 		readonly extensionId: ExtensionIdentifier
 	) { }
 
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
+	handleURL(uri: URI, options?: IOpenURLOptions): Promise<Boolean> {
 		if (!ExtensionIdentifier.equals(this.extensionId, uri.authority)) {
 			return Promise.resolve(false);
 		}
@@ -32,7 +32,7 @@ class ExtensionUrlHandler implements IURLHandler {
 export class MainThreadUrls implements MainThreadUrlsShape {
 
 	private readonly proxy: ExtHostUrlsShape;
-	private handlers = new Map<number, { extensionId: ExtensionIdentifier, disposable: IDisposable }>();
+	private handlers = new Map<numBer, { extensionId: ExtensionIdentifier, disposaBle: IDisposaBle }>();
 
 	constructor(
 		context: IExtHostContext,
@@ -42,28 +42,28 @@ export class MainThreadUrls implements MainThreadUrlsShape {
 		this.proxy = context.getProxy(ExtHostContext.ExtHostUrls);
 	}
 
-	$registerUriHandler(handle: number, extensionId: ExtensionIdentifier): Promise<void> {
+	$registerUriHandler(handle: numBer, extensionId: ExtensionIdentifier): Promise<void> {
 		const handler = new ExtensionUrlHandler(this.proxy, handle, extensionId);
-		const disposable = this.urlService.registerHandler(handler);
+		const disposaBle = this.urlService.registerHandler(handler);
 
-		this.handlers.set(handle, { extensionId, disposable });
+		this.handlers.set(handle, { extensionId, disposaBle });
 		this.extensionUrlHandler.registerExtensionHandler(extensionId, handler);
 
 		return Promise.resolve(undefined);
 	}
 
-	$unregisterUriHandler(handle: number): Promise<void> {
+	$unregisterUriHandler(handle: numBer): Promise<void> {
 		const tuple = this.handlers.get(handle);
 
 		if (!tuple) {
 			return Promise.resolve(undefined);
 		}
 
-		const { extensionId, disposable } = tuple;
+		const { extensionId, disposaBle } = tuple;
 
 		this.extensionUrlHandler.unregisterExtensionHandler(extensionId);
 		this.handlers.delete(handle);
-		disposable.dispose();
+		disposaBle.dispose();
 
 		return Promise.resolve(undefined);
 	}
@@ -73,7 +73,7 @@ export class MainThreadUrls implements MainThreadUrlsShape {
 	}
 
 	dispose(): void {
-		this.handlers.forEach(({ disposable }) => disposable.dispose());
+		this.handlers.forEach(({ disposaBle }) => disposaBle.dispose());
 		this.handlers.clear();
 	}
 }

@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { alert } from 'vs/base/browser/ui/aria/aria';
+import { alert } from 'vs/Base/Browser/ui/aria/aria';
 import { localize } from 'vs/nls';
-import { INotificationViewItem, INotificationsModel, NotificationChangeType, INotificationChangeEvent, NotificationViewItemContentChangeKind } from 'vs/workbench/common/notifications';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import { INotificationViewItem, INotificationsModel, NotificationChangeType, INotificationChangeEvent, NotificationViewItemContentChangeKind } from 'vs/workBench/common/notifications';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
 import { Severity } from 'vs/platform/notification/common/notification';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 
-export class NotificationsAlerts extends Disposable {
+export class NotificationsAlerts extends DisposaBle {
 
 	constructor(private readonly model: INotificationsModel) {
 		super();

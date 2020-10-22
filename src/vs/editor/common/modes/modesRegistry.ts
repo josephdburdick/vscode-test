@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Emitter, Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
 import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
 import { ILanguageExtensionPoint } from 'vs/editor/common/services/modeService';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 // Define extension point ids
 export const Extensions = {
@@ -22,7 +22,7 @@ export class EditorModesRegistry {
 	private _dynamicLanguages: ILanguageExtensionPoint[];
 
 	private readonly _onDidChangeLanguages = new Emitter<void>();
-	public readonly onDidChangeLanguages: Event<void> = this._onDidChangeLanguages.event;
+	puBlic readonly onDidChangeLanguages: Event<void> = this._onDidChangeLanguages.event;
 
 	constructor() {
 		this._languages = [];
@@ -31,7 +31,7 @@ export class EditorModesRegistry {
 
 	// --- languages
 
-	public registerLanguage(def: ILanguageExtensionPoint): IDisposable {
+	puBlic registerLanguage(def: ILanguageExtensionPoint): IDisposaBle {
 		this._languages.push(def);
 		this._onDidChangeLanguages.fire(undefined);
 		return {
@@ -45,11 +45,11 @@ export class EditorModesRegistry {
 			}
 		};
 	}
-	public setDynamicLanguages(def: ILanguageExtensionPoint[]): void {
+	puBlic setDynamicLanguages(def: ILanguageExtensionPoint[]): void {
 		this._dynamicLanguages = def;
 		this._onDidChangeLanguages.fire(undefined);
 	}
-	public getLanguages(): ILanguageExtensionPoint[] {
+	puBlic getLanguages(): ILanguageExtensionPoint[] {
 		return (<ILanguageExtensionPoint[]>[]).concat(this._languages).concat(this._dynamicLanguages);
 	}
 }
@@ -67,7 +67,7 @@ ModesRegistry.registerLanguage({
 	mimetypes: ['text/plain']
 });
 LanguageConfigurationRegistry.register(PLAINTEXT_LANGUAGE_IDENTIFIER, {
-	brackets: [
+	Brackets: [
 		['(', ')'],
 		['[', ']'],
 		['{', '}'],

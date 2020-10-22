@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
 import { localize } from 'vs/nls';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IProgressStep, IProgress } from 'vs/platform/progress/common/progress';
-import { extHostCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ITextFileSaveParticipant, ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
+import { extHostCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { ITextFileSaveParticipant, ITextFileService, ITextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
+import { SaveReason } from 'vs/workBench/common/editor';
 import { ExtHostContext, ExtHostDocumentSaveParticipantShape, IExtHostContext } from '../common/extHost.protocol';
-import { canceled } from 'vs/base/common/errors';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { canceled } from 'vs/Base/common/errors';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 class ExtHostSaveParticipant implements ITextFileSaveParticipant {
 
@@ -36,7 +36,7 @@ class ExtHostSaveParticipant implements ITextFileSaveParticipant {
 			token.onCancellationRequested(() => reject(canceled()));
 
 			setTimeout(
-				() => reject(new Error(localize('timeout.onWillSave', "Aborted onWillSaveTextDocument-event after 1750ms"))),
+				() => reject(new Error(localize('timeout.onWillSave', "ABorted onWillSaveTextDocument-event after 1750ms"))),
 				1750
 			);
 			this._proxy.$participateInSave(editorModel.resource, env.reason).then(values => {
@@ -49,21 +49,21 @@ class ExtHostSaveParticipant implements ITextFileSaveParticipant {
 	}
 }
 
-// The save participant can change a model before its saved to support various scenarios like trimming trailing whitespace
+// The save participant can change a model Before its saved to support various scenarios like trimming trailing whitespace
 @extHostCustomer
 export class SaveParticipant {
 
-	private _saveParticipantDisposable: IDisposable;
+	private _saveParticipantDisposaBle: IDisposaBle;
 
 	constructor(
 		extHostContext: IExtHostContext,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@ITextFileService private readonly _textFileService: ITextFileService
 	) {
-		this._saveParticipantDisposable = this._textFileService.files.addSaveParticipant(instantiationService.createInstance(ExtHostSaveParticipant, extHostContext));
+		this._saveParticipantDisposaBle = this._textFileService.files.addSaveParticipant(instantiationService.createInstance(ExtHostSaveParticipant, extHostContext));
 	}
 
 	dispose(): void {
-		this._saveParticipantDisposable.dispose();
+		this._saveParticipantDisposaBle.dispose();
 	}
 }

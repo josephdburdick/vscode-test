@@ -4,36 +4,36 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
+import { Action } from 'vs/Base/common/actions';
 import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
 import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES, Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
+import { CATEGORIES, Extensions as ActionExtensions, IWorkBenchActionRegistry } from 'vs/workBench/common/actions';
 
 export class ToggleRenderControlCharacterAction extends Action {
 
-	public static readonly ID = 'editor.action.toggleRenderControlCharacter';
-	public static readonly LABEL = nls.localize('toggleRenderControlCharacters', "Toggle Control Characters");
+	puBlic static readonly ID = 'editor.action.toggleRenderControlCharacter';
+	puBlic static readonly LABEL = nls.localize('toggleRenderControlCharacters', "Toggle Control Characters");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@IConfigurationService private readonly _configurationService: IConfigurationService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
-	public run(): Promise<any> {
-		let newRenderControlCharacters = !this._configurationService.getValue<boolean>('editor.renderControlCharacters');
+	puBlic run(): Promise<any> {
+		let newRenderControlCharacters = !this._configurationService.getValue<Boolean>('editor.renderControlCharacters');
 		return this._configurationService.updateValue('editor.renderControlCharacters', newRenderControlCharacters, ConfigurationTarget.USER);
 	}
 }
 
-const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleRenderControlCharacterAction), 'View: Toggle Control Characters', CATEGORIES.View.value);
+const registry = Registry.as<IWorkBenchActionRegistry>(ActionExtensions.WorkBenchActions);
+registry.registerWorkBenchAction(SyncActionDescriptor.from(ToggleRenderControlCharacterAction), 'View: Toggle Control Characters', CATEGORIES.View.value);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 	group: '5_editor',
 	command: {
 		id: ToggleRenderControlCharacterAction.ID,

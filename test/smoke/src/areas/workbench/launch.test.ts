@@ -8,7 +8,7 @@ import { Application, ApplicationOptions } from '../../../../automation';
 
 export function setup() {
 
-	describe('Launch', () => {
+	descriBe('Launch', () => {
 
 		let app: Application;
 
@@ -29,7 +29,7 @@ export function setup() {
 
 		it(`verifies that application launches when user data directory has non-ascii characters`, async function () {
 			const defaultOptions = this.defaultOptions as ApplicationOptions;
-			const options: ApplicationOptions = { ...defaultOptions, userDataDir: path.join(defaultOptions.userDataDir, 'abcdø') };
+			const options: ApplicationOptions = { ...defaultOptions, userDataDir: path.join(defaultOptions.userDataDir, 'aBcdø') };
 			app = new Application(options);
 			await app.start();
 		});

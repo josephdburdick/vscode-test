@@ -6,34 +6,34 @@
 import * as nls from 'vs/nls';
 
 import { registerColor, ColorIdentifier, ColorDefaults } from 'vs/platform/theme/common/colorRegistry';
-import { PANEL_BORDER } from 'vs/workbench/common/theme';
+import { PANEL_BORDER } from 'vs/workBench/common/theme';
 
 /**
  * The color identifiers for the terminal's ansi colors. The index in the array corresponds to the index
- * of the color in the terminal color table.
+ * of the color in the terminal color taBle.
  */
 export const ansiColorIdentifiers: ColorIdentifier[] = [];
 
-export const TERMINAL_BACKGROUND_COLOR = registerColor('terminal.background', null, nls.localize('terminal.background', 'The background color of the terminal, this allows coloring the terminal differently to the panel.'));
+export const TERMINAL_BACKGROUND_COLOR = registerColor('terminal.Background', null, nls.localize('terminal.Background', 'The Background color of the terminal, this allows coloring the terminal differently to the panel.'));
 export const TERMINAL_FOREGROUND_COLOR = registerColor('terminal.foreground', {
 	light: '#333333',
 	dark: '#CCCCCC',
 	hc: '#FFFFFF'
 }, nls.localize('terminal.foreground', 'The foreground color of the terminal.'));
 export const TERMINAL_CURSOR_FOREGROUND_COLOR = registerColor('terminalCursor.foreground', null, nls.localize('terminalCursor.foreground', 'The foreground color of the terminal cursor.'));
-export const TERMINAL_CURSOR_BACKGROUND_COLOR = registerColor('terminalCursor.background', null, nls.localize('terminalCursor.background', 'The background color of the terminal cursor. Allows customizing the color of a character overlapped by a block cursor.'));
+export const TERMINAL_CURSOR_BACKGROUND_COLOR = registerColor('terminalCursor.Background', null, nls.localize('terminalCursor.Background', 'The Background color of the terminal cursor. Allows customizing the color of a character overlapped By a Block cursor.'));
 export const TERMINAL_SELECTION_BACKGROUND_COLOR = registerColor('terminal.selectionBackground', {
 	light: '#00000040',
 	dark: '#FFFFFF40',
 	hc: '#FFFFFF80'
-}, nls.localize('terminal.selectionBackground', 'The selection background color of the terminal.'));
-export const TERMINAL_BORDER_COLOR = registerColor('terminal.border', {
+}, nls.localize('terminal.selectionBackground', 'The selection Background color of the terminal.'));
+export const TERMINAL_BORDER_COLOR = registerColor('terminal.Border', {
 	dark: PANEL_BORDER,
 	light: PANEL_BORDER,
 	hc: PANEL_BORDER
-}, nls.localize('terminal.border', 'The color of the border that separates split panes within the terminal. This defaults to panel.border.'));
+}, nls.localize('terminal.Border', 'The color of the Border that separates split panes within the terminal. This defaults to panel.Border.'));
 
-export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefaults } } = {
+export const ansiColorMap: { [key: string]: { index: numBer, defaults: ColorDefaults } } = {
 	'terminal.ansiBlack': {
 		index: 0,
 		defaults: {
@@ -77,15 +77,15 @@ export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefa
 	'terminal.ansiMagenta': {
 		index: 5,
 		defaults: {
-			light: '#bc05bc',
-			dark: '#bc3fbc',
+			light: '#Bc05Bc',
+			dark: '#Bc3fBc',
 			hc: '#cd00cd'
 		}
 	},
 	'terminal.ansiCyan': {
 		index: 6,
 		defaults: {
-			light: '#0598bc',
+			light: '#0598Bc',
 			dark: '#11a8cd',
 			hc: '#00cdcd'
 		}
@@ -118,14 +118,14 @@ export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefa
 		index: 10,
 		defaults: {
 			light: '#14CE14',
-			dark: '#23d18b',
+			dark: '#23d18B',
 			hc: '#00ff00'
 		}
 	},
 	'terminal.ansiBrightYellow': {
 		index: 11,
 		defaults: {
-			light: '#b5ba00',
+			light: '#B5Ba00',
 			dark: '#f5f543',
 			hc: '#ffff00'
 		}
@@ -134,14 +134,14 @@ export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefa
 		index: 12,
 		defaults: {
 			light: '#0451a5',
-			dark: '#3b8eea',
+			dark: '#3B8eea',
 			hc: '#5c5cff'
 		}
 	},
 	'terminal.ansiBrightMagenta': {
 		index: 13,
 		defaults: {
-			light: '#bc05bc',
+			light: '#Bc05Bc',
 			dark: '#d670d6',
 			hc: '#ff00ff'
 		}
@@ -149,8 +149,8 @@ export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefa
 	'terminal.ansiBrightCyan': {
 		index: 14,
 		defaults: {
-			light: '#0598bc',
-			dark: '#29b8db',
+			light: '#0598Bc',
+			dark: '#29B8dB',
 			hc: '#00ffff'
 		}
 	},
@@ -167,7 +167,7 @@ export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefa
 export function registerColors(): void {
 	for (const id in ansiColorMap) {
 		const entry = ansiColorMap[id];
-		const colorName = id.substring(13);
+		const colorName = id.suBstring(13);
 		ansiColorIdentifiers[entry.index] = registerColor(id, entry.defaults, nls.localize('terminal.ansiColor', '\'{0}\' ANSI color in the terminal.', colorName));
 	}
 }

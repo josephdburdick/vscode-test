@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { distinct } from 'vs/base/common/arrays';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { distinct } from 'vs/Base/common/arrays';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IStorageService, IWorkspaceStorageChangeEvent, StorageScope } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { IExtensionIgnoredRecommendationsService, IgnoredRecommendationChangeNotification } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IWorkpsaceExtensionsConfigService } from 'vs/workbench/services/extensionRecommendations/common/workspaceExtensionsConfig';
+import { IExtensionIgnoredRecommendationsService, IgnoredRecommendationChangeNotification } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
+import { IWorkpsaceExtensionsConfigService } from 'vs/workBench/services/extensionRecommendations/common/workspaceExtensionsConfig';
 
 const ignoredRecommendationsStorageKey = 'extensionsAssistant/ignored_recommendations';
 
-export class ExtensionIgnoredRecommendationsService extends Disposable implements IExtensionIgnoredRecommendationsService {
+export class ExtensionIgnoredRecommendationsService extends DisposaBle implements IExtensionIgnoredRecommendationsService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private _onDidChangeIgnoredRecommendations = this._register(new Emitter<void>());
 	readonly onDidChangeIgnoredRecommendations = this._onDidChangeIgnoredRecommendations.event;
 
-	// Global Ignored Recommendations
-	private _globalIgnoredRecommendations: string[] = [];
-	get globalIgnoredRecommendations(): string[] { return [...this._globalIgnoredRecommendations]; }
-	private _onDidChangeGlobalIgnoredRecommendation = this._register(new Emitter<IgnoredRecommendationChangeNotification>());
-	readonly onDidChangeGlobalIgnoredRecommendation = this._onDidChangeGlobalIgnoredRecommendation.event;
+	// GloBal Ignored Recommendations
+	private _gloBalIgnoredRecommendations: string[] = [];
+	get gloBalIgnoredRecommendations(): string[] { return [...this._gloBalIgnoredRecommendations]; }
+	private _onDidChangeGloBalIgnoredRecommendation = this._register(new Emitter<IgnoredRecommendationChangeNotification>());
+	readonly onDidChangeGloBalIgnoredRecommendation = this._onDidChangeGloBalIgnoredRecommendation.event;
 
 	// Ignored Workspace Recommendations
 	private ignoredWorkspaceRecommendations: string[] = [];
 
-	get ignoredRecommendations(): string[] { return distinct([...this.globalIgnoredRecommendations, ...this.ignoredWorkspaceRecommendations]); }
+	get ignoredRecommendations(): string[] { return distinct([...this.gloBalIgnoredRecommendations, ...this.ignoredWorkspaceRecommendations]); }
 
 	constructor(
 		@IWorkpsaceExtensionsConfigService private readonly workpsaceExtensionsConfigService: IWorkpsaceExtensionsConfigService,
@@ -39,7 +39,7 @@ export class ExtensionIgnoredRecommendationsService extends Disposable implement
 	) {
 		super();
 		storageKeysSyncRegistryService.registerStorageKey({ key: ignoredRecommendationsStorageKey, version: 1 });
-		this._globalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
+		this._gloBalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
 		this._register(this.storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
 
 		this.initIgnoredWorkspaceRecommendations();
@@ -54,16 +54,16 @@ export class ExtensionIgnoredRecommendationsService extends Disposable implement
 		}));
 	}
 
-	toggleGlobalIgnoredRecommendation(extensionId: string, shouldIgnore: boolean): void {
+	toggleGloBalIgnoredRecommendation(extensionId: string, shouldIgnore: Boolean): void {
 		extensionId = extensionId.toLowerCase();
-		const ignored = this._globalIgnoredRecommendations.indexOf(extensionId) !== -1;
+		const ignored = this._gloBalIgnoredRecommendations.indexOf(extensionId) !== -1;
 		if (ignored === shouldIgnore) {
 			return;
 		}
 
-		this._globalIgnoredRecommendations = shouldIgnore ? [...this._globalIgnoredRecommendations, extensionId] : this._globalIgnoredRecommendations.filter(id => id !== extensionId);
-		this.storeCachedIgnoredRecommendations(this._globalIgnoredRecommendations);
-		this._onDidChangeGlobalIgnoredRecommendation.fire({ extensionId, isRecommended: !shouldIgnore });
+		this._gloBalIgnoredRecommendations = shouldIgnore ? [...this._gloBalIgnoredRecommendations, extensionId] : this._gloBalIgnoredRecommendations.filter(id => id !== extensionId);
+		this.storeCachedIgnoredRecommendations(this._gloBalIgnoredRecommendations);
+		this._onDidChangeGloBalIgnoredRecommendation.fire({ extensionId, isRecommended: !shouldIgnore });
 		this._onDidChangeIgnoredRecommendations.fire();
 	}
 
@@ -76,7 +76,7 @@ export class ExtensionIgnoredRecommendationsService extends Disposable implement
 		if (e.key === ignoredRecommendationsStorageKey && e.scope === StorageScope.GLOBAL
 			&& this.ignoredRecommendationsValue !== this.getStoredIgnoredRecommendationsValue() /* This checks if current window changed the value or not */) {
 			this._ignoredRecommendationsValue = undefined;
-			this._globalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
+			this._gloBalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
 			this._onDidChangeIgnoredRecommendations.fire();
 		}
 	}

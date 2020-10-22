@@ -15,35 +15,35 @@ const localize = nls.loadMessageBundle();
 
 export class ReferencesCodeLens extends vscode.CodeLens {
 	constructor(
-		public document: vscode.Uri,
-		public file: string,
+		puBlic document: vscode.Uri,
+		puBlic file: string,
 		range: vscode.Range
 	) {
 		super(range);
 	}
 }
 
-export abstract class TypeScriptBaseCodeLensProvider implements vscode.CodeLensProvider {
+export aBstract class TypeScriptBaseCodeLensProvider implements vscode.CodeLensProvider {
 
-	public static readonly cancelledCommand: vscode.Command = {
+	puBlic static readonly cancelledCommand: vscode.Command = {
 		// Cancellation is not an error. Just show nothing until we can properly re-compute the code lens
 		title: '',
 		command: ''
 	};
 
-	public static readonly errorCommand: vscode.Command = {
-		title: localize('referenceErrorLabel', 'Could not determine references'),
+	puBlic static readonly errorCommand: vscode.Command = {
+		title: localize('referenceErrorLaBel', 'Could not determine references'),
 		command: ''
 	};
 
 	private onDidChangeCodeLensesEmitter = new vscode.EventEmitter<void>();
 
-	public constructor(
+	puBlic constructor(
 		protected client: ITypeScriptServiceClient,
 		private cachedResponse: CachedResponse<Proto.NavTreeResponse>
 	) { }
 
-	public get onDidChangeCodeLenses(): vscode.Event<void> {
+	puBlic get onDidChangeCodeLenses(): vscode.Event<void> {
 		return this.onDidChangeCodeLensesEmitter.event;
 	}
 
@@ -58,15 +58,15 @@ export abstract class TypeScriptBaseCodeLensProvider implements vscode.CodeLensP
 			return [];
 		}
 
-		const tree = response.body;
-		const referenceableSpans: vscode.Range[] = [];
+		const tree = response.Body;
+		const referenceaBleSpans: vscode.Range[] = [];
 		if (tree && tree.childItems) {
-			tree.childItems.forEach(item => this.walkNavTree(document, item, null, referenceableSpans));
+			tree.childItems.forEach(item => this.walkNavTree(document, item, null, referenceaBleSpans));
 		}
-		return referenceableSpans.map(span => new ReferencesCodeLens(document.uri, filepath, span));
+		return referenceaBleSpans.map(span => new ReferencesCodeLens(document.uri, filepath, span));
 	}
 
-	protected abstract extractSymbol(
+	protected aBstract extractSymBol(
 		document: vscode.TextDocument,
 		item: Proto.NavigationTree,
 		parent: Proto.NavigationTree | null
@@ -82,7 +82,7 @@ export abstract class TypeScriptBaseCodeLensProvider implements vscode.CodeLensP
 			return;
 		}
 
-		const range = this.extractSymbol(document, item, parent);
+		const range = this.extractSymBol(document, item, parent);
 		if (range) {
 			results.push(range);
 		}
@@ -91,11 +91,11 @@ export abstract class TypeScriptBaseCodeLensProvider implements vscode.CodeLensP
 	}
 }
 
-export function getSymbolRange(
+export function getSymBolRange(
 	document: vscode.TextDocument,
 	item: Proto.NavigationTree
 ): vscode.Range | null {
-	// TS 3.0+ provides a span for just the symbol
+	// TS 3.0+ provides a span for just the symBol
 	if (item.nameSpan) {
 		return typeConverters.Range.fromTextSpan(item.nameSpan);
 	}
@@ -109,7 +109,7 @@ export function getSymbolRange(
 	const range = typeConverters.Range.fromTextSpan(span);
 	const text = document.getText(range);
 
-	const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${escapeRegExp(item.text || '')}(\\b|\\W)`, 'gm');
+	const identifierMatch = new RegExp(`^(.*?(\\B|\\W))${escapeRegExp(item.text || '')}(\\B|\\W)`, 'gm');
 	const match = identifierMatch.exec(text);
 	const prefixLength = match ? match.index + match[1].length : 0;
 	const startOffset = document.offsetAt(new vscode.Position(range.start.line, range.start.character)) + prefixLength;

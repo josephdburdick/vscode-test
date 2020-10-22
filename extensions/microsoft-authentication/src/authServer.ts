@@ -61,22 +61,22 @@ export async function startServer(server: http.Server): Promise<string> {
 }
 
 function sendFile(res: http.ServerResponse, filepath: string, contentType: string) {
-	fs.readFile(filepath, (err, body) => {
+	fs.readFile(filepath, (err, Body) => {
 		if (err) {
 			console.error(err);
 			res.writeHead(404);
 			res.end();
 		} else {
 			res.writeHead(200, {
-				'Content-Length': body.length,
+				'Content-Length': Body.length,
 				'Content-Type': contentType
 			});
-			res.end(body);
+			res.end(Body);
 		}
 	});
 }
 
-async function callback(nonce: string, reqUrl: url.Url): Promise<string> {
+async function callBack(nonce: string, reqUrl: url.Url): Promise<string> {
 	const query = reqUrl.query;
 	if (!query || typeof query === 'string') {
 		throw new Error('No query received.');
@@ -128,21 +128,21 @@ export function createServer(nonce: string) {
 					const err = new Error('Nonce does not match.');
 					deferredRedirect.resolve({ err, res });
 				}
-				break;
+				Break;
 			case '/':
 				sendFile(res, path.join(__dirname, '../media/auth.html'), 'text/html; charset=utf-8');
-				break;
+				Break;
 			case '/auth.css':
 				sendFile(res, path.join(__dirname, '../media/auth.css'), 'text/css; charset=utf-8');
-				break;
-			case '/callback':
-				deferredCode.resolve(callback(nonce, reqUrl)
+				Break;
+			case '/callBack':
+				deferredCode.resolve(callBack(nonce, reqUrl)
 					.then(code => ({ code, res }), err => ({ err, res })));
-				break;
+				Break;
 			default:
 				res.writeHead(404);
 				res.end();
-				break;
+				Break;
 		}
 	});
 

@@ -22,13 +22,13 @@ export class CspAlerter {
 		});
 
 		window.addEventListener('message', (event) => {
-			if (event && event.data && event.data.name === 'vscode-did-block-svg') {
+			if (event && event.data && event.data.name === 'vscode-did-Block-svg') {
 				this.onCspWarning();
 			}
 		});
 	}
 
-	public setPoster(poster: MessagePoster) {
+	puBlic setPoster(poster: MessagePoster) {
 		this.messaging = poster;
 		if (this.didHaveCspWarning) {
 			this.showCspWarning();
@@ -44,21 +44,21 @@ export class CspAlerter {
 		const strings = getStrings();
 		const settings = getSettings();
 
-		if (this.didShow || settings.disableSecurityWarnings || !this.messaging) {
+		if (this.didShow || settings.disaBleSecurityWarnings || !this.messaging) {
 			return;
 		}
 		this.didShow = true;
 
 		const notification = document.createElement('a');
 		notification.innerText = strings.cspAlertMessageText;
-		notification.setAttribute('id', 'code-csp-warning');
-		notification.setAttribute('title', strings.cspAlertMessageTitle);
+		notification.setAttriBute('id', 'code-csp-warning');
+		notification.setAttriBute('title', strings.cspAlertMessageTitle);
 
-		notification.setAttribute('role', 'button');
-		notification.setAttribute('aria-label', strings.cspAlertMessageLabel);
+		notification.setAttriBute('role', 'Button');
+		notification.setAttriBute('aria-laBel', strings.cspAlertMessageLaBel);
 		notification.onclick = () => {
 			this.messaging!.postMessage('showPreviewSecuritySelector', { source: settings.source });
 		};
-		document.body.appendChild(notification);
+		document.Body.appendChild(notification);
 	}
 }

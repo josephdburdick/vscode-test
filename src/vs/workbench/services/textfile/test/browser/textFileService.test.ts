@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { workbenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workbench/test/browser/workbenchTestServices';
-import { toResource } from 'vs/base/test/common/utils';
+import { workBenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { toResource } from 'vs/Base/test/common/utils';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
 import { FileOperation } from 'vs/platform/files/common/files';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
 
@@ -18,7 +18,7 @@ suite('Files - TextFileService', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -112,14 +112,14 @@ suite('Files - TextFileService', () => {
 
 		let eventCounter = 0;
 
-		const disposable1 = accessor.workingCopyFileService.addFileOperationParticipant({
+		const disposaBle1 = accessor.workingCopyFileService.addFileOperationParticipant({
 			participate: async files => {
 				assert.equal(files[0].target, model.resource.toString());
 				eventCounter++;
 			}
 		});
 
-		const disposable2 = accessor.workingCopyFileService.onDidRunWorkingCopyFileOperation(e => {
+		const disposaBle2 = accessor.workingCopyFileService.onDidRunWorkingCopyFileOperation(e => {
 			assert.equal(e.operation, FileOperation.CREATE);
 			assert.equal(e.files[0].target.toString(), model.resource.toString());
 			eventCounter++;
@@ -130,13 +130,13 @@ suite('Files - TextFileService', () => {
 
 		assert.equal(eventCounter, 2);
 
-		disposable1.dispose();
-		disposable2.dispose();
+		disposaBle1.dispose();
+		disposaBle2.dispose();
 	});
 
 	test('Filename Suggestion - Suggest prefix only when there are no relevant extensions', () => {
 		ModesRegistry.registerLanguage({
-			id: 'plumbus0',
+			id: 'plumBus0',
 			extensions: ['.one', '.two']
 		});
 
@@ -146,23 +146,23 @@ suite('Files - TextFileService', () => {
 
 	test('Filename Suggestion - Suggest prefix with first extension', () => {
 		ModesRegistry.registerLanguage({
-			id: 'plumbus1',
+			id: 'plumBus1',
 			extensions: ['.shleem', '.gazorpazorp'],
-			filenames: ['plumbus']
+			filenames: ['plumBus']
 		});
 
-		let suggested = accessor.textFileService.suggestFilename('plumbus1', 'Untitled-1');
+		let suggested = accessor.textFileService.suggestFilename('plumBus1', 'Untitled-1');
 		assert.equal(suggested, 'Untitled-1.shleem');
 	});
 
 	test('Filename Suggestion - Suggest filename if there are no extensions', () => {
 		ModesRegistry.registerLanguage({
-			id: 'plumbus2',
-			filenames: ['plumbus', 'shleem', 'gazorpazorp']
+			id: 'plumBus2',
+			filenames: ['plumBus', 'shleem', 'gazorpazorp']
 		});
 
-		let suggested = accessor.textFileService.suggestFilename('plumbus2', 'Untitled-1');
-		assert.equal(suggested, 'plumbus');
+		let suggested = accessor.textFileService.suggestFilename('plumBus2', 'Untitled-1');
+		assert.equal(suggested, 'plumBus');
 	});
 
 });

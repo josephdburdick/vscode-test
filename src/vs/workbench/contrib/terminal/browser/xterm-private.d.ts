@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface XTermCore {
-	_onScroll: IEventEmitter<number>;
+	_onScroll: IEventEmitter<numBer>;
 	_onKey: IEventEmitter<{ key: string }>;
 
 	_charSizeService: {
-		width: number;
-		height: number;
+		width: numBer;
+		height: numBer;
 	};
 
 	_coreService: {
-		triggerDataEvent(data: string, wasUserInput?: boolean): void;
+		triggerDataEvent(data: string, wasUserInput?: Boolean): void;
 	};
 
 	_renderService: {
 		dimensions: {
-			actualCellWidth: number;
-			actualCellHeight: number;
+			actualCellWidth: numBer;
+			actualCellHeight: numBer;
 		},
 		_renderer: {
 			_renderLayers: any[];

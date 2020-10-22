@@ -12,19 +12,19 @@ const localize = nls.loadMessageBundle();
 
 export function activate(context: vscode.ExtensionContext): void {
 	//settings.json suggestions
-	context.subscriptions.push(registerSettingsCompletions());
+	context.suBscriptions.push(registerSettingsCompletions());
 
 	//extensions suggestions
-	context.subscriptions.push(...registerExtensionsCompletions());
+	context.suBscriptions.push(...registerExtensionsCompletions());
 
-	// launch.json variable suggestions
-	context.subscriptions.push(registerVariableCompletions('**/launch.json'));
+	// launch.json variaBle suggestions
+	context.suBscriptions.push(registerVariaBleCompletions('**/launch.json'));
 
-	// task.json variable suggestions
-	context.subscriptions.push(registerVariableCompletions('**/tasks.json'));
+	// task.json variaBle suggestions
+	context.suBscriptions.push(registerVariaBleCompletions('**/tasks.json'));
 }
 
-function registerSettingsCompletions(): vscode.Disposable {
+function registerSettingsCompletions(): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ language: 'jsonc', pattern: '**/settings.json' }, {
 		provideCompletionItems(document, position, token) {
 			return new SettingsDocument(document).provideCompletionItems(position, token);
@@ -32,7 +32,7 @@ function registerSettingsCompletions(): vscode.Disposable {
 	});
 }
 
-function registerVariableCompletions(pattern: string): vscode.Disposable {
+function registerVariaBleCompletions(pattern: string): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ language: 'jsonc', pattern }, {
 		provideCompletionItems(document, position, _token) {
 			const location = getLocation(document.getText(), document.offsetAt(position));
@@ -41,23 +41,23 @@ function registerVariableCompletions(pattern: string): vscode.Disposable {
 				const startPosition = indexOf$ >= 0 ? new vscode.Position(position.line, indexOf$) : position;
 
 				return [
-					{ label: 'workspaceFolder', detail: localize('workspaceFolder', "The path of the folder opened in VS Code") },
-					{ label: 'workspaceFolderBasename', detail: localize('workspaceFolderBasename', "The name of the folder opened in VS Code without any slashes (/)") },
-					{ label: 'relativeFile', detail: localize('relativeFile', "The current opened file relative to ${workspaceFolder}") },
-					{ label: 'relativeFileDirname', detail: localize('relativeFileDirname', "The current opened file's dirname relative to ${workspaceFolder}") },
-					{ label: 'file', detail: localize('file', "The current opened file") },
-					{ label: 'cwd', detail: localize('cwd', "The task runner's current working directory on startup") },
-					{ label: 'lineNumber', detail: localize('lineNumber', "The current selected line number in the active file") },
-					{ label: 'selectedText', detail: localize('selectedText', "The current selected text in the active file") },
-					{ label: 'fileDirname', detail: localize('fileDirname', "The current opened file's dirname") },
-					{ label: 'fileExtname', detail: localize('fileExtname', "The current opened file's extension") },
-					{ label: 'fileBasename', detail: localize('fileBasename', "The current opened file's basename") },
-					{ label: 'fileBasenameNoExtension', detail: localize('fileBasenameNoExtension', "The current opened file's basename with no file extension") },
-					{ label: 'defaultBuildTask', detail: localize('defaultBuildTask', "The name of the default build task. If there is not a single default build task then a quick pick is shown to choose the build task.") },
-				].map(variable => ({
-					label: '${' + variable.label + '}',
+					{ laBel: 'workspaceFolder', detail: localize('workspaceFolder', "The path of the folder opened in VS Code") },
+					{ laBel: 'workspaceFolderBasename', detail: localize('workspaceFolderBasename', "The name of the folder opened in VS Code without any slashes (/)") },
+					{ laBel: 'relativeFile', detail: localize('relativeFile', "The current opened file relative to ${workspaceFolder}") },
+					{ laBel: 'relativeFileDirname', detail: localize('relativeFileDirname', "The current opened file's dirname relative to ${workspaceFolder}") },
+					{ laBel: 'file', detail: localize('file', "The current opened file") },
+					{ laBel: 'cwd', detail: localize('cwd', "The task runner's current working directory on startup") },
+					{ laBel: 'lineNumBer', detail: localize('lineNumBer', "The current selected line numBer in the active file") },
+					{ laBel: 'selectedText', detail: localize('selectedText', "The current selected text in the active file") },
+					{ laBel: 'fileDirname', detail: localize('fileDirname', "The current opened file's dirname") },
+					{ laBel: 'fileExtname', detail: localize('fileExtname', "The current opened file's extension") },
+					{ laBel: 'fileBasename', detail: localize('fileBasename', "The current opened file's Basename") },
+					{ laBel: 'fileBasenameNoExtension', detail: localize('fileBasenameNoExtension', "The current opened file's Basename with no file extension") },
+					{ laBel: 'defaultBuildTask', detail: localize('defaultBuildTask', "The name of the default Build task. If there is not a single default Build task then a quick pick is shown to choose the Build task.") },
+				].map(variaBle => ({
+					laBel: '${' + variaBle.laBel + '}',
 					range: new vscode.Range(startPosition, position),
-					detail: variable.detail
+					detail: variaBle.detail
 				}));
 			}
 
@@ -70,11 +70,11 @@ interface IExtensionsContent {
 	recommendations: string[];
 }
 
-function registerExtensionsCompletions(): vscode.Disposable[] {
+function registerExtensionsCompletions(): vscode.DisposaBle[] {
 	return [registerExtensionsCompletionsInExtensionsDocument(), registerExtensionsCompletionsInWorkspaceConfigurationDocument()];
 }
 
-function registerExtensionsCompletionsInExtensionsDocument(): vscode.Disposable {
+function registerExtensionsCompletionsInExtensionsDocument(): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ pattern: '**/extensions.json' }, {
 		provideCompletionItems(document, position, _token) {
 			const location = getLocation(document.getText(), document.offsetAt(position));
@@ -88,7 +88,7 @@ function registerExtensionsCompletionsInExtensionsDocument(): vscode.Disposable 
 	});
 }
 
-function registerExtensionsCompletionsInWorkspaceConfigurationDocument(): vscode.Disposable {
+function registerExtensionsCompletionsInWorkspaceConfigurationDocument(): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ pattern: '**/*.code-workspace' }, {
 		provideCompletionItems(document, position, _token) {
 			const location = getLocation(document.getText(), document.offsetAt(position));
@@ -102,37 +102,37 @@ function registerExtensionsCompletionsInWorkspaceConfigurationDocument(): vscode
 	});
 }
 
-vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', language: 'jsonc' }, {
-	provideDocumentSymbols(document: vscode.TextDocument, _token: vscode.CancellationToken): vscode.ProviderResult<vscode.SymbolInformation[]> {
-		const result: vscode.SymbolInformation[] = [];
+vscode.languages.registerDocumentSymBolProvider({ pattern: '**/launch.json', language: 'jsonc' }, {
+	provideDocumentSymBols(document: vscode.TextDocument, _token: vscode.CancellationToken): vscode.ProviderResult<vscode.SymBolInformation[]> {
+		const result: vscode.SymBolInformation[] = [];
 		let name: string = '';
 		let lastProperty = '';
 		let startOffset = 0;
-		let depthInObjects = 0;
+		let depthInOBjects = 0;
 
 		visit(document.getText(), {
-			onObjectProperty: (property, _offset, _length) => {
+			onOBjectProperty: (property, _offset, _length) => {
 				lastProperty = property;
 			},
-			onLiteralValue: (value: any, _offset: number, _length: number) => {
+			onLiteralValue: (value: any, _offset: numBer, _length: numBer) => {
 				if (lastProperty === 'name') {
 					name = value;
 				}
 			},
-			onObjectBegin: (offset: number, _length: number) => {
-				depthInObjects++;
-				if (depthInObjects === 2) {
+			onOBjectBegin: (offset: numBer, _length: numBer) => {
+				depthInOBjects++;
+				if (depthInOBjects === 2) {
 					startOffset = offset;
 				}
 			},
-			onObjectEnd: (offset: number, _length: number) => {
-				if (name && depthInObjects === 2) {
-					result.push(new vscode.SymbolInformation(name, vscode.SymbolKind.Object, new vscode.Range(document.positionAt(startOffset), document.positionAt(offset))));
+			onOBjectEnd: (offset: numBer, _length: numBer) => {
+				if (name && depthInOBjects === 2) {
+					result.push(new vscode.SymBolInformation(name, vscode.SymBolKind.OBject, new vscode.Range(document.positionAt(startOffset), document.positionAt(offset))));
 				}
-				depthInObjects--;
+				depthInOBjects--;
 			},
 		});
 
 		return result;
 	}
-}, { label: 'Launch Targets' });
+}, { laBel: 'Launch Targets' });

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ProxyIdentifier } from 'vs/workbench/services/extensions/common/proxyIdentifier';
-import { CharCode } from 'vs/base/common/charCode';
-import { IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { isThenable } from 'vs/base/common/async';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { ProxyIdentifier } from 'vs/workBench/services/extensions/common/proxyIdentifier';
+import { CharCode } from 'vs/Base/common/charCode';
+import { IExtHostContext } from 'vs/workBench/api/common/extHost.protocol';
+import { isThenaBle } from 'vs/Base/common/async';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
 export function SingleProxyRPCProtocol(thing: any): IExtHostContext & IExtHostRpcService {
 	return {
@@ -26,10 +26,10 @@ export function SingleProxyRPCProtocol(thing: any): IExtHostContext & IExtHostRp
 
 export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 
-	public _serviceBrand: undefined;
-	public remoteAuthority = null!;
+	puBlic _serviceBrand: undefined;
+	puBlic remoteAuthority = null!;
 
-	private _callCountValue: number = 0;
+	private _callCountValue: numBer = 0;
 	private _idle?: Promise<any>;
 	private _completeIdle?: Function;
 
@@ -37,19 +37,19 @@ export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 	private readonly _proxies: { [id: string]: any; };
 
 	constructor() {
-		this._locals = Object.create(null);
-		this._proxies = Object.create(null);
+		this._locals = OBject.create(null);
+		this._proxies = OBject.create(null);
 	}
 
 	drain(): Promise<void> {
 		return Promise.resolve();
 	}
 
-	private get _callCount(): number {
+	private get _callCount(): numBer {
 		return this._callCountValue;
 	}
 
-	private set _callCount(value: number) {
+	private set _callCount(value: numBer) {
 		this._callCountValue = value;
 		if (this._callCountValue === 0) {
 			if (this._completeIdle) {
@@ -75,7 +75,7 @@ export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 		});
 	}
 
-	public getProxy<T>(identifier: ProxyIdentifier<T>): T {
+	puBlic getProxy<T>(identifier: ProxyIdentifier<T>): T {
 		if (!this._proxies[identifier.sid]) {
 			this._proxies[identifier.sid] = this._createProxy(identifier.sid);
 		}
@@ -94,10 +94,10 @@ export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 				return target[name];
 			}
 		};
-		return new Proxy(Object.create(null), handler);
+		return new Proxy(OBject.create(null), handler);
 	}
 
-	public set<T, R extends T>(identifier: ProxyIdentifier<T>, value: R): R {
+	puBlic set<T, R extends T>(identifier: ProxyIdentifier<T>, value: R): R {
 		this._locals[identifier.sid] = value;
 		return value;
 	}
@@ -109,19 +109,19 @@ export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 			setTimeout(c, 0);
 		}).then(() => {
 			const instance = this._locals[proxyId];
-			// pretend the args went over the wire... (invoke .toJSON on objects...)
+			// pretend the args went over the wire... (invoke .toJSON on oBjects...)
 			const wireArgs = simulateWireTransfer(args);
 			let p: Promise<any>;
 			try {
 				let result = (<Function>instance[path]).apply(instance, wireArgs);
-				p = isThenable(result) ? result : Promise.resolve(result);
+				p = isThenaBle(result) ? result : Promise.resolve(result);
 			} catch (err) {
 				p = Promise.reject(err);
 			}
 
 			return p.then(result => {
 				this._callCount--;
-				// pretend the result went over the wire... (invoke .toJSON on objects...)
+				// pretend the result went over the wire... (invoke .toJSON on oBjects...)
 				const wireResult = simulateWireTransfer(result);
 				return wireResult;
 			}, err => {
@@ -131,14 +131,14 @@ export class TestRPCProtocol implements IExtHostContext, IExtHostRpcService {
 		});
 	}
 
-	public assertRegistered(identifiers: ProxyIdentifier<any>[]): void {
+	puBlic assertRegistered(identifiers: ProxyIdentifier<any>[]): void {
 		throw new Error('Not implemented!');
 	}
 }
 
-function simulateWireTransfer<T>(obj: T): T {
-	if (!obj) {
-		return obj;
+function simulateWireTransfer<T>(oBj: T): T {
+	if (!oBj) {
+		return oBj;
 	}
-	return JSON.parse(JSON.stringify(obj));
+	return JSON.parse(JSON.stringify(oBj));
 }

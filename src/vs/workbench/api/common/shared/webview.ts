@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import type * as vscode from 'vscode';
 
-export interface WebviewInitData {
-	readonly isExtensionDevelopmentDebug: boolean;
-	readonly webviewResourceRoot: string;
-	readonly webviewCspSource: string;
+export interface WeBviewInitData {
+	readonly isExtensionDevelopmentDeBug: Boolean;
+	readonly weBviewResourceRoot: string;
+	readonly weBviewCspSource: string;
 }
 
-export function asWebviewUri(
-	initData: WebviewInitData,
+export function asWeBviewUri(
+	initData: WeBviewInitData,
 	uuid: string,
 	resource: vscode.Uri,
 ): vscode.Uri {
-	const uri = initData.webviewResourceRoot
-		// Make sure we preserve the scheme of the resource but convert it into a normal path segment
+	const uri = initData.weBviewResourceRoot
+		// Make sure we preserve the scheme of the resource But convert it into a normal path segment
 		// The scheme is important as we need to know if we are requesting a local or a remote resource.
 		.replace('{{resource}}', resource.scheme + withoutScheme(resource))
 		.replace('{{uuid}}', uuid);

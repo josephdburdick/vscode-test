@@ -10,13 +10,13 @@ import { openProjectConfigForFile, ProjectType } from '../utils/tsconfig';
 import { Command } from './commandManager';
 
 export class TypeScriptGoToProjectConfigCommand implements Command {
-	public readonly id = 'typescript.goToProjectConfig';
+	puBlic readonly id = 'typescript.goToProjectConfig';
 
-	public constructor(
+	puBlic constructor(
 		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>,
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			openProjectConfigForFile(ProjectType.TypeScript, this.lazyClientHost.value.serviceClient, editor.document.uri);
@@ -25,13 +25,13 @@ export class TypeScriptGoToProjectConfigCommand implements Command {
 }
 
 export class JavaScriptGoToProjectConfigCommand implements Command {
-	public readonly id = 'javascript.goToProjectConfig';
+	puBlic readonly id = 'javascript.goToProjectConfig';
 
-	public constructor(
+	puBlic constructor(
 		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>,
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			openProjectConfigForFile(ProjectType.JavaScript, this.lazyClientHost.value.serviceClient, editor.document.uri);

@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IExtension, IScannedExtension, ExtensionType, ITranslatedScannedExtension } from 'vs/platform/extensions/common/extensions';
 import { IExtensionManagementService, IGalleryExtension, IExtensionIdentifier } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 export const IExtensionManagementServerService = createDecorator<IExtensionManagementServerService>('extensionManagementServerService');
 
 export interface IExtensionManagementServer {
 	id: string;
-	label: string;
+	laBel: string;
 	extensionManagementService: IExtensionManagementService;
 }
 
@@ -21,76 +21,76 @@ export interface IExtensionManagementServerService {
 	readonly _serviceBrand: undefined;
 	readonly localExtensionManagementServer: IExtensionManagementServer | null;
 	readonly remoteExtensionManagementServer: IExtensionManagementServer | null;
-	readonly webExtensionManagementServer: IExtensionManagementServer | null;
+	readonly weBExtensionManagementServer: IExtensionManagementServer | null;
 	getExtensionManagementServer(extension: IExtension): IExtensionManagementServer | null;
 }
 
-export const enum EnablementState {
-	DisabledByExtensionKind,
-	DisabledByEnvironemt,
-	DisabledGlobally,
-	DisabledWorkspace,
-	EnabledGlobally,
-	EnabledWorkspace
+export const enum EnaBlementState {
+	DisaBledByExtensionKind,
+	DisaBledByEnvironemt,
+	DisaBledGloBally,
+	DisaBledWorkspace,
+	EnaBledGloBally,
+	EnaBledWorkspace
 }
 
-export const IWorkbenchExtensionEnablementService = createDecorator<IWorkbenchExtensionEnablementService>('extensionEnablementService');
+export const IWorkBenchExtensionEnaBlementService = createDecorator<IWorkBenchExtensionEnaBlementService>('extensionEnaBlementService');
 
-export interface IWorkbenchExtensionEnablementService {
+export interface IWorkBenchExtensionEnaBlementService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Event to listen on for extension enablement changes
+	 * Event to listen on for extension enaBlement changes
 	 */
-	readonly onEnablementChanged: Event<readonly IExtension[]>;
+	readonly onEnaBlementChanged: Event<readonly IExtension[]>;
 
 	/**
-	 * Returns the enablement state for the given extension
+	 * Returns the enaBlement state for the given extension
 	 */
-	getEnablementState(extension: IExtension): EnablementState;
+	getEnaBlementState(extension: IExtension): EnaBlementState;
 
 	/**
-	 * Returns `true` if the enablement can be changed.
+	 * Returns `true` if the enaBlement can Be changed.
 	 */
-	canChangeEnablement(extension: IExtension): boolean;
+	canChangeEnaBlement(extension: IExtension): Boolean;
 
 	/**
-	 * Returns `true` if the enablement can be changed.
+	 * Returns `true` if the enaBlement can Be changed.
 	 */
-	canChangeWorkspaceEnablement(extension: IExtension): boolean;
+	canChangeWorkspaceEnaBlement(extension: IExtension): Boolean;
 
 	/**
-	 * Returns `true` if the given extension identifier is enabled.
+	 * Returns `true` if the given extension identifier is enaBled.
 	 */
-	isEnabled(extension: IExtension): boolean;
+	isEnaBled(extension: IExtension): Boolean;
 
 	/**
-	 * Returns `true` if the given extension identifier is disabled globally.
-	 * Extensions can be disabled globally or in workspace or both.
-	 * If an extension is disabled in both then enablement state shows only workspace.
+	 * Returns `true` if the given extension identifier is disaBled gloBally.
+	 * Extensions can Be disaBled gloBally or in workspace or Both.
+	 * If an extension is disaBled in Both then enaBlement state shows only workspace.
 	 * This will
 	 */
-	isDisabledGlobally(extension: IExtension): boolean;
+	isDisaBledGloBally(extension: IExtension): Boolean;
 
 	/**
-	 * Enable or disable the given extension.
-	 * if `workspace` is `true` then enablement is done for workspace, otherwise globally.
+	 * EnaBle or disaBle the given extension.
+	 * if `workspace` is `true` then enaBlement is done for workspace, otherwise gloBally.
 	 *
-	 * Returns a promise that resolves to boolean value.
+	 * Returns a promise that resolves to Boolean value.
 	 * if resolves to `true` then requires restart for the change to take effect.
 	 *
-	 * Throws error if enablement is requested for workspace and there is no workspace
+	 * Throws error if enaBlement is requested for workspace and there is no workspace
 	 */
-	setEnablement(extensions: IExtension[], state: EnablementState): Promise<boolean[]>;
+	setEnaBlement(extensions: IExtension[], state: EnaBlementState): Promise<Boolean[]>;
 }
 
-export const IWebExtensionsScannerService = createDecorator<IWebExtensionsScannerService>('IWebExtensionsScannerService');
-export interface IWebExtensionsScannerService {
+export const IWeBExtensionsScannerService = createDecorator<IWeBExtensionsScannerService>('IWeBExtensionsScannerService');
+export interface IWeBExtensionsScannerService {
 	readonly _serviceBrand: undefined;
 	scanExtensions(type?: ExtensionType): Promise<IScannedExtension[]>;
 	scanAndTranslateExtensions(type?: ExtensionType): Promise<ITranslatedScannedExtension[]>;
 	scanAndTranslateSingleExtension(extensionLocation: URI, extensionType: ExtensionType): Promise<ITranslatedScannedExtension | null>;
-	canAddExtension(galleryExtension: IGalleryExtension): Promise<boolean>;
+	canAddExtension(galleryExtension: IGalleryExtension): Promise<Boolean>;
 	addExtension(galleryExtension: IGalleryExtension): Promise<IScannedExtension>;
 	removeExtension(identifier: IExtensionIdentifier, version?: string): Promise<void>;
 }

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICredentialsService, ICredentialsProvider } from 'vs/workbench/services/credentials/common/credentials';
+import { ICredentialsService, ICredentialsProvider } from 'vs/workBench/services/credentials/common/credentials';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-export class BrowserCredentialsService extends Disposable implements ICredentialsService {
+export class BrowserCredentialsService extends DisposaBle implements ICredentialsService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -18,7 +18,7 @@ export class BrowserCredentialsService extends Disposable implements ICredential
 
 	private credentialsProvider: ICredentialsProvider;
 
-	constructor(@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService) {
+	constructor(@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService) {
 		super();
 
 		if (environmentService.options && environmentService.options.credentialsProvider) {
@@ -38,7 +38,7 @@ export class BrowserCredentialsService extends Disposable implements ICredential
 		this._onDidChangePassword.fire();
 	}
 
-	deletePassword(service: string, account: string): Promise<boolean> {
+	deletePassword(service: string, account: string): Promise<Boolean> {
 		const didDelete = this.credentialsProvider.deletePassword(service, account);
 		if (didDelete) {
 			this._onDidChangePassword.fire();
@@ -77,7 +77,7 @@ class InMemoryCredentialsProvider implements ICredentialsProvider {
 		this.credentials.push({ service, account, password });
 	}
 
-	async deletePassword(service: string, account: string): Promise<boolean> {
+	async deletePassword(service: string, account: string): Promise<Boolean> {
 		const credential = this.doFindPassword(service, account);
 		if (credential) {
 			this.credentials = this.credentials.splice(this.credentials.indexOf(credential), 1);

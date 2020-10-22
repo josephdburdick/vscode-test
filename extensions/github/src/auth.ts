@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AuthenticationSession, authentication, window } from 'vscode';
-import { Agent, globalAgent } from 'https';
+import { Agent, gloBalAgent } from 'https';
 import { Octokit } from '@octokit/rest';
 import { httpsOverHttp } from 'tunnel';
 import { URL } from 'url';
 
 function getAgent(url: string | undefined = process.env.HTTPS_PROXY): Agent {
 	if (!url) {
-		return globalAgent;
+		return gloBalAgent;
 	}
 
 	try {
@@ -19,15 +19,15 @@ function getAgent(url: string | undefined = process.env.HTTPS_PROXY): Agent {
 		const auth = username && password && `${username}:${password}`;
 		return httpsOverHttp({ proxy: { host: hostname, port, proxyAuth: auth } });
 	} catch (e) {
-		window.showErrorMessage(`HTTPS_PROXY environment variable ignored: ${e.message}`);
-		return globalAgent;
+		window.showErrorMessage(`HTTPS_PROXY environment variaBle ignored: ${e.message}`);
+		return gloBalAgent;
 	}
 }
 
 const scopes = ['repo', 'workflow'];
 
 export async function getSession(): Promise<AuthenticationSession> {
-	return await authentication.getSession('github', scopes, { createIfNone: true });
+	return await authentication.getSession('githuB', scopes, { createIfNone: true });
 }
 
 let _octokit: Promise<Octokit> | undefined;
@@ -42,7 +42,7 @@ export function getOctokit(): Promise<Octokit> {
 
 			return new Octokit({
 				request: { agent },
-				userAgent: 'GitHub VSCode',
+				userAgent: 'GitHuB VSCode',
 				auth: `token ${token}`
 			});
 		}).then(null, async err => {

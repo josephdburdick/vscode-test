@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./standaloneQuickInput';
-import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IQuickInputService, IQuickInputButton, IQuickPickItem, IQuickPick, IInputBox, IQuickNavigateConfiguration, IPickOptions, QuickPickInput, IInputOptions } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { QuickInputController } from 'vs/base/parts/quickinput/browser/quickInput';
-import { QuickInputService, IQuickInputControllerHost } from 'vs/platform/quickinput/browser/quickInput';
-import { once } from 'vs/base/common/functional';
+import { IAccessiBilityService } from 'vs/platform/accessiBility/common/accessiBility';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
+import { QuickInputController } from 'vs/Base/parts/quickinput/Browser/quickInput';
+import { QuickInputService, IQuickInputControllerHost } from 'vs/platform/quickinput/Browser/quickInput';
+import { once } from 'vs/Base/common/functional';
 import { IQuickAccessController } from 'vs/platform/quickinput/common/quickAccess';
 
 export class EditorScopedQuickInputServiceImpl extends QuickInputService {
@@ -29,16 +29,16 @@ export class EditorScopedQuickInputServiceImpl extends QuickInputService {
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
+		@IAccessiBilityService accessiBilityService: IAccessiBilityService,
 		@ILayoutService layoutService: ILayoutService
 	) {
-		super(instantiationService, contextKeyService, themeService, accessibilityService, layoutService);
+		super(instantiationService, contextKeyService, themeService, accessiBilityService, layoutService);
 
 		// Use the passed in code editor as host for the quick input widget
-		const contribution = QuickInputEditorContribution.get(editor);
+		const contriBution = QuickInputEditorContriBution.get(editor);
 		this.host = {
 			_serviceBrand: undefined,
-			get container() { return contribution.widget.getDomNode(); },
+			get container() { return contriBution.widget.getDomNode(); },
 			get dimension() { return editor.getLayoutInfo(); },
 			get onLayout() { return editor.onDidLayoutChange; },
 			focus: () => editor.focus()
@@ -79,7 +79,7 @@ export class StandaloneQuickInputServiceImpl implements IQuickInputService {
 
 	get quickAccess(): IQuickAccessController { return this.activeService.quickAccess; }
 
-	get backButton(): IQuickInputButton { return this.activeService.backButton; }
+	get BackButton(): IQuickInputButton { return this.activeService.BackButton; }
 
 	get onShow() { return this.activeService.onShow; }
 	get onHide() { return this.activeService.onHide; }
@@ -114,7 +114,7 @@ export class StandaloneQuickInputServiceImpl implements IQuickInputService {
 		return this.activeService.toggle();
 	}
 
-	navigate(next: boolean, quickNavigate?: IQuickNavigateConfiguration | undefined): void {
+	navigate(next: Boolean, quickNavigate?: IQuickNavigateConfiguration | undefined): void {
 		return this.activeService.navigate(next, quickNavigate);
 	}
 
@@ -122,8 +122,8 @@ export class StandaloneQuickInputServiceImpl implements IQuickInputService {
 		return this.activeService.accept();
 	}
 
-	back(): Promise<void> {
-		return this.activeService.back();
+	Back(): Promise<void> {
+		return this.activeService.Back();
 	}
 
 	cancel(): Promise<void> {
@@ -131,12 +131,12 @@ export class StandaloneQuickInputServiceImpl implements IQuickInputService {
 	}
 }
 
-export class QuickInputEditorContribution implements IEditorContribution {
+export class QuickInputEditorContriBution implements IEditorContriBution {
 
 	static readonly ID = 'editor.controller.quickInput';
 
-	static get(editor: ICodeEditor): QuickInputEditorContribution {
-		return editor.getContribution<QuickInputEditorContribution>(QuickInputEditorContribution.ID);
+	static get(editor: ICodeEditor): QuickInputEditorContriBution {
+		return editor.getContriBution<QuickInputEditorContriBution>(QuickInputEditorContriBution.ID);
 	}
 
 	readonly widget = new QuickInputEditorWidget(this.editor);
@@ -150,7 +150,7 @@ export class QuickInputEditorContribution implements IEditorContribution {
 
 export class QuickInputEditorWidget implements IOverlayWidget {
 
-	private static readonly ID = 'editor.contrib.quickInputWidget';
+	private static readonly ID = 'editor.contriB.quickInputWidget';
 
 	private domNode: HTMLElement;
 
@@ -177,4 +177,4 @@ export class QuickInputEditorWidget implements IOverlayWidget {
 	}
 }
 
-registerEditorContribution(QuickInputEditorContribution.ID, QuickInputEditorContribution);
+registerEditorContriBution(QuickInputEditorContriBution.ID, QuickInputEditorContriBution);

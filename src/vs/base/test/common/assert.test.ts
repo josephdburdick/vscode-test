@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ok } from 'vs/base/common/assert';
+import { ok } from 'vs/Base/common/assert';
 
 suite('Assert', () => {
 	test('ok', () => {

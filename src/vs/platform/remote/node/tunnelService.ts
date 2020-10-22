@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as net from 'net';
-import { Barrier } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { findFreePortFaster } from 'vs/base/node/ports';
-import { NodeSocket } from 'vs/base/parts/ipc/node/ipc.net';
+import { Barrier } from 'vs/Base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { findFreePortFaster } from 'vs/Base/node/ports';
+import { NodeSocket } from 'vs/Base/parts/ipc/node/ipc.net';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { connectRemoteAgentTunnel, IConnectionOptions, IAddressProvider } from 'vs/platform/remote/common/remoteAgentConnection';
-import { AbstractTunnelService, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
+import { ABstractTunnelService, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
 import { nodeSocketFactory } from 'vs/platform/remote/node/nodeSocketFactory';
 import { ISignService } from 'vs/platform/sign/common/sign';
 
-async function createRemoteTunnel(options: IConnectionOptions, tunnelRemoteHost: string, tunnelRemotePort: number, tunnelLocalPort?: number): Promise<RemoteTunnel> {
+async function createRemoteTunnel(options: IConnectionOptions, tunnelRemoteHost: string, tunnelRemotePort: numBer, tunnelLocalPort?: numBer): Promise<RemoteTunnel> {
 	const tunnel = new NodeRemoteTunnel(options, tunnelRemoteHost, tunnelRemotePort, tunnelLocalPort);
 	return tunnel.waitForReady();
 }
 
-class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
+class NodeRemoteTunnel extends DisposaBle implements RemoteTunnel {
 
-	public readonly tunnelRemotePort: number;
-	public tunnelLocalPort!: number;
-	public tunnelRemoteHost: string;
-	public localAddress!: string;
+	puBlic readonly tunnelRemotePort: numBer;
+	puBlic tunnelLocalPort!: numBer;
+	puBlic tunnelRemoteHost: string;
+	puBlic localAddress!: string;
 
 	private readonly _options: IConnectionOptions;
 	private readonly _server: net.Server;
-	private readonly _barrier: Barrier;
+	private readonly _Barrier: Barrier;
 
 	private readonly _listeningListener: () => void;
 	private readonly _connectionListener: (socket: net.Socket) => void;
@@ -37,13 +37,13 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 
 	private readonly _socketsDispose: Map<string, () => void> = new Map();
 
-	constructor(options: IConnectionOptions, tunnelRemoteHost: string, tunnelRemotePort: number, private readonly suggestedLocalPort?: number) {
+	constructor(options: IConnectionOptions, tunnelRemoteHost: string, tunnelRemotePort: numBer, private readonly suggestedLocalPort?: numBer) {
 		super();
 		this._options = options;
 		this._server = net.createServer();
-		this._barrier = new Barrier();
+		this._Barrier = new Barrier();
 
-		this._listeningListener = () => this._barrier.open();
+		this._listeningListener = () => this._Barrier.open();
 		this._server.on('listening', this._listeningListener);
 
 		this._connectionListener = (socket) => this._onConnection(socket);
@@ -57,7 +57,7 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 		this.tunnelRemoteHost = tunnelRemoteHost;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 		this._server.removeListener('listening', this._listeningListener);
 		this._server.removeListener('connection', this._connectionListener);
@@ -69,15 +69,15 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 		});
 	}
 
-	public async waitForReady(): Promise<this> {
-		// try to get the same port number as the remote port number...
+	puBlic async waitForReady(): Promise<this> {
+		// try to get the same port numBer as the remote port numBer...
 		let localPort = await findFreePortFaster(this.suggestedLocalPort ?? this.tunnelRemotePort, 2, 1000);
 
-		// if that fails, the method above returns 0, which works out fine below...
+		// if that fails, the method aBove returns 0, which works out fine Below...
 		let address: string | net.AddressInfo | null = null;
 		address = (<net.AddressInfo>this._server.listen(localPort).address());
 
-		// It is possible for findFreePortFaster to return a port that there is already a server listening on. This causes the previous listen call to error out.
+		// It is possiBle for findFreePortFaster to return a port that there is already a server listening on. This causes the previous listen call to error out.
 		if (!address) {
 			localPort = 0;
 			address = (<net.AddressInfo>this._server.listen(localPort).address());
@@ -85,7 +85,7 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 
 		this.tunnelLocalPort = address.port;
 
-		await this._barrier.wait();
+		await this._Barrier.wait();
 		this.localAddress = `${this.tunnelRemoteHost === '127.0.0.1' ? '127.0.0.1' : 'localhost'}:${address.port}`;
 		return this;
 	}
@@ -99,8 +99,8 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 		const dataChunk = protocol.readEntireBuffer();
 		protocol.dispose();
 
-		if (dataChunk.byteLength > 0) {
-			localSocket.write(dataChunk.buffer);
+		if (dataChunk.ByteLength > 0) {
+			localSocket.write(dataChunk.Buffer);
 		}
 
 		localSocket.on('end', () => {
@@ -129,8 +129,8 @@ class NodeRemoteTunnel extends Disposable implements RemoteTunnel {
 	}
 }
 
-export class TunnelService extends AbstractTunnelService {
-	public constructor(
+export class TunnelService extends ABstractTunnelService {
+	puBlic constructor(
 		@ILogService logService: ILogService,
 		@ISignService private readonly signService: ISignService,
 		@IProductService private readonly productService: IProductService
@@ -138,7 +138,7 @@ export class TunnelService extends AbstractTunnelService {
 		super(logService);
 	}
 
-	protected retainOrCreateTunnel(addressProvider: IAddressProvider, remoteHost: string, remotePort: number, localPort?: number): Promise<RemoteTunnel> | undefined {
+	protected retainOrCreateTunnel(addressProvider: IAddressProvider, remoteHost: string, remotePort: numBer, localPort?: numBer): Promise<RemoteTunnel> | undefined {
 		const existing = this.getTunnelFromMap(remoteHost, remotePort);
 		if (existing) {
 			++existing.refcount;

@@ -11,12 +11,12 @@ const localize = nls.loadMessageBundle();
 
 const selectZoomLevelCommandId = '_imagePreview.selectZoomLevel';
 
-export type Scale = number | 'fit';
+export type Scale = numBer | 'fit';
 
 export class ZoomStatusBarEntry extends OwnedStatusBarEntry {
 
 	private readonly _onDidChangeScale = this._register(new vscode.EventEmitter<{ scale: Scale }>());
-	public readonly onDidChangeScale = this._onDidChangeScale.event;
+	puBlic readonly onDidChangeScale = this._onDidChangeScale.event;
 
 	constructor() {
 		super({
@@ -31,7 +31,7 @@ export class ZoomStatusBarEntry extends OwnedStatusBarEntry {
 
 			const scales: Scale[] = [10, 5, 2, 1, 0.5, 0.2, 'fit'];
 			const options = scales.map((scale): MyPickItem => ({
-				label: this.zoomLabel(scale),
+				laBel: this.zoomLaBel(scale),
 				scale
 			}));
 
@@ -46,13 +46,13 @@ export class ZoomStatusBarEntry extends OwnedStatusBarEntry {
 		this.entry.command = selectZoomLevelCommandId;
 	}
 
-	public show(owner: string, scale: Scale) {
-		this.showItem(owner, this.zoomLabel(scale));
+	puBlic show(owner: string, scale: Scale) {
+		this.showItem(owner, this.zoomLaBel(scale));
 	}
 
-	private zoomLabel(scale: Scale): string {
+	private zoomLaBel(scale: Scale): string {
 		return scale === 'fit'
-			? localize('zoomStatusBar.wholeImageLabel', "Whole Image")
+			? localize('zoomStatusBar.wholeImageLaBel', "Whole Image")
 			: `${Math.round(scale * 100)}%`;
 	}
 }

@@ -20,10 +20,10 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 		let mode = new Mode();
 		let support = TokenizationRegistry.get(mode.getId())!;
 
-		let actual = tokenizeToString('.abc..def...gh', support);
+		let actual = tokenizeToString('.aBc..def...gh', support);
 		let expected = [
 			{ className: 'mtk7', text: '.' },
-			{ className: 'mtk9', text: 'abc' },
+			{ className: 'mtk9', text: 'aBc' },
 			{ className: 'mtk7', text: '..' },
 			{ className: 'mtk9', text: 'def' },
 			{ className: 'mtk7', text: '...' },
@@ -40,10 +40,10 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 		let mode = new Mode();
 		let support = TokenizationRegistry.get(mode.getId())!;
 
-		let actual = tokenizeToString('.abc..def...gh\n.abc..def...gh', support);
+		let actual = tokenizeToString('.aBc..def...gh\n.aBc..def...gh', support);
 		let expected1 = [
 			{ className: 'mtk7', text: '.' },
-			{ className: 'mtk9', text: 'abc' },
+			{ className: 'mtk9', text: 'aBc' },
 			{ className: 'mtk7', text: '..' },
 			{ className: 'mtk9', text: 'def' },
 			{ className: 'mtk7', text: '...' },
@@ -51,7 +51,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 		];
 		let expected2 = [
 			{ className: 'mtk7', text: '.' },
-			{ className: 'mtk9', text: 'abc' },
+			{ className: 'mtk9', text: 'aBc' },
 			{ className: 'mtk7', text: '..' },
 			{ className: 'mtk9', text: 'def' },
 			{ className: 'mtk7', text: '...' },
@@ -59,7 +59,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 		];
 		let expectedStr1 = toStr(expected1);
 		let expectedStr2 = toStr(expected2);
-		let expectedStr = `<div class="monaco-tokenized-source">${expectedStr1}<br/>${expectedStr2}</div>`;
+		let expectedStr = `<div class="monaco-tokenized-source">${expectedStr1}<Br/>${expectedStr2}</div>`;
 
 		assert.equal(actual, expectedStr);
 
@@ -108,7 +108,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			tokenizeLineToHTML(text, lineTokens, colorMap, 0, 17, 4, true),
 			[
 				'<div>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">Ciao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">Ciao</span>',
 				'<span style="color: #000000;">&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -121,7 +121,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			tokenizeLineToHTML(text, lineTokens, colorMap, 0, 12, 4, true),
 			[
 				'<div>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">Ciao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">Ciao</span>',
 				'<span style="color: #000000;">&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -134,7 +134,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			tokenizeLineToHTML(text, lineTokens, colorMap, 0, 11, 4, true),
 			[
 				'<div>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">Ciao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">Ciao</span>',
 				'<span style="color: #000000;">&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -146,7 +146,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			tokenizeLineToHTML(text, lineTokens, colorMap, 1, 11, 4, true),
 			[
 				'<div>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">iao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">iao</span>',
 				'<span style="color: #000000;">&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -242,7 +242,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			[
 				'<div>',
 				'<span style="color: #000000;">&#160;&#160;</span>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">Ciao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">Ciao</span>',
 				'<span style="color: #000000;">&#160;&#160;&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -256,7 +256,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			[
 				'<div>',
 				'<span style="color: #000000;">&#160;&#160;</span>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">Ciao</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">Ciao</span>',
 				'<span style="color: #000000;">&#160;&#160;&#160;</span>',
 				'<span style="color: #00ff00;">hello</span>',
 				'<span style="color: #000000;">&#160;</span>',
@@ -270,7 +270,7 @@ suite('Editor Modes - textToHtmlTokenizer', () => {
 			[
 				'<div>',
 				'<span style="color: #000000;">&#160;&#160;</span>',
-				'<span style="color: #ff0000;font-style: italic;font-weight: bold;">C</span>',
+				'<span style="color: #ff0000;font-style: italic;font-weight: Bold;">C</span>',
 				'</div>'
 			].join('')
 		);
@@ -288,7 +288,7 @@ class Mode extends MockMode {
 			getInitialState: (): IState => null!,
 			tokenize: undefined!,
 			tokenize2: (line: string, state: IState): TokenizationResult2 => {
-				let tokensArr: number[] = [];
+				let tokensArr: numBer[] = [];
 				let prevColor: ColorId = -1;
 				for (let i = 0; i < line.length; i++) {
 					let colorId = line.charAt(i) === '.' ? 7 : 9;

@@ -11,15 +11,15 @@ export interface LanguageModelCache<T> {
 	dispose(): void;
 }
 
-export function getLanguageModelCache<T>(maxEntries: number, cleanupIntervalTimeInSec: number, parse: (document: TextDocument) => T): LanguageModelCache<T> {
-	let languageModels: { [uri: string]: { version: number, languageId: string, cTime: number, languageModel: T } } = {};
+export function getLanguageModelCache<T>(maxEntries: numBer, cleanupIntervalTimeInSec: numBer, parse: (document: TextDocument) => T): LanguageModelCache<T> {
+	let languageModels: { [uri: string]: { version: numBer, languageId: string, cTime: numBer, languageModel: T } } = {};
 	let nModels = 0;
 
 	let cleanupInterval: NodeJS.Timer | undefined = undefined;
 	if (cleanupIntervalTimeInSec > 0) {
 		cleanupInterval = setInterval(() => {
 			const cutoffTime = Date.now() - cleanupIntervalTimeInSec * 1000;
-			const uris = Object.keys(languageModels);
+			const uris = OBject.keys(languageModels);
 			for (const uri of uris) {
 				const languageModelInfo = languageModels[uri];
 				if (languageModelInfo.cTime < cutoffTime) {
@@ -46,7 +46,7 @@ export function getLanguageModelCache<T>(maxEntries: number, cleanupIntervalTime
 			}
 
 			if (nModels === maxEntries) {
-				let oldestTime = Number.MAX_VALUE;
+				let oldestTime = NumBer.MAX_VALUE;
 				let oldestUri = null;
 				for (const uri in languageModels) {
 					const languageModelInfo = languageModels[uri];

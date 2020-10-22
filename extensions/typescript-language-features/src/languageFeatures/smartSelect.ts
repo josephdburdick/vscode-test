@@ -12,13 +12,13 @@ import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 
 class SmartSelection implements vscode.SelectionRangeProvider {
-	public static readonly minVersion = API.v350;
+	puBlic static readonly minVersion = API.v350;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideSelectionRanges(
+	puBlic async provideSelectionRanges(
 		document: vscode.TextDocument,
 		positions: vscode.Position[],
 		token: vscode.CancellationToken,
@@ -33,10 +33,10 @@ class SmartSelection implements vscode.SelectionRangeProvider {
 			locations: positions.map(typeConverters.Position.toLocation)
 		};
 		const response = await this.client.execute('selectionRange', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
-		return response.body.map(SmartSelection.convertSelectionRange);
+		return response.Body.map(SmartSelection.convertSelectionRange);
 	}
 
 	private static convertSelectionRange(

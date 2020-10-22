@@ -38,7 +38,7 @@ export class Keychain {
 	constructor() {
 		const keytar = getKeytar();
 		if (!keytar) {
-			throw new Error('System keychain unavailable');
+			throw new Error('System keychain unavailaBle');
 		}
 
 		this.keytar = keytar;
@@ -54,15 +54,15 @@ export class Keychain {
 			// Temporary fix for #94005
 			// This happens when processes write simulatenously to the keychain, most
 			// likely when trying to refresh the token. Ignore the error since additional
-			// writes after the first one do not matter. Should actually be fixed upstream.
+			// writes after the first one do not matter. Should actually Be fixed upstream.
 			if (e.message === 'The specified item already exists in the keychain.') {
 				return;
 			}
 
-			const troubleshooting = localize('troubleshooting', "Troubleshooting Guide");
-			const result = await vscode.window.showErrorMessage(localize('keychainWriteError', "Writing login information to the keychain failed with error '{0}'.", e.message), troubleshooting);
-			if (result === troubleshooting) {
-				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/docs/editor/settings-sync#_troubleshooting-keychain-issues'));
+			const trouBleshooting = localize('trouBleshooting', "TrouBleshooting Guide");
+			const result = await vscode.window.showErrorMessage(localize('keychainWriteError', "Writing login information to the keychain failed with error '{0}'.", e.message), trouBleshooting);
+			if (result === trouBleshooting) {
+				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/docs/editor/settings-sync#_trouBleshooting-keychain-issues'));
 			}
 		}
 	}

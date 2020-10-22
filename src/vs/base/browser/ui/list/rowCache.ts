@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IListRenderer } from './list';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { $ } from 'vs/base/browser/dom';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { $ } from 'vs/Base/Browser/dom';
 
 export interface IRow {
 	domNode: HTMLElement | null;
@@ -19,18 +19,18 @@ function removeFromParent(element: HTMLElement): void {
 			element.parentElement.removeChild(element);
 		}
 	} catch (e) {
-		// this will throw if this happens due to a blur event, nasty business
+		// this will throw if this happens due to a Blur event, nasty Business
 	}
 }
 
-export class RowCache<T> implements IDisposable {
+export class RowCache<T> implements IDisposaBle {
 
 	private cache = new Map<string, IRow[]>();
 
 	constructor(private renderers: Map<string, IListRenderer<T, any>>) { }
 
 	/**
-	 * Returns a row either by creating a new one or reusing
+	 * Returns a row either By creating a new one or reusing
 	 * a previously released row which shares the same templateId.
 	 */
 	alloc(templateId: string): IRow {

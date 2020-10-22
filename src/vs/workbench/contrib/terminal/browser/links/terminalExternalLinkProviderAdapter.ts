@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type { Terminal, IViewportRange, IBufferLine } from 'xterm';
-import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { TerminalLink } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
+import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workBench/contriB/terminal/Browser/links/terminalLinkHelpers';
+import { TerminalLink } from 'vs/workBench/contriB/terminal/Browser/links/terminalLink';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
-import { ITerminalExternalLinkProvider, ITerminalInstance } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { XtermLinkMatcherHandler } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkManager';
+import { TerminalBaseLinkProvider } from 'vs/workBench/contriB/terminal/Browser/links/terminalBaseLinkProvider';
+import { ITerminalExternalLinkProvider, ITerminalInstance } from 'vs/workBench/contriB/terminal/Browser/terminal';
+import { XtermLinkMatcherHandler } from 'vs/workBench/contriB/terminal/Browser/links/terminalLinkManager';
 
 /**
  * An adapter to convert a simple external link provider into an internal link provider that
@@ -22,31 +22,31 @@ export class TerminalExternalLinkProviderAdapter extends TerminalBaseLinkProvide
 		private readonly _instance: ITerminalInstance,
 		private readonly _externalLinkProvider: ITerminalExternalLinkProvider,
 		private readonly _wrapLinkHandler: (handler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMatcherHandler,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
+		private readonly _tooltipCallBack: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallBack?: () => void, modifierUpCallBack?: () => void) => void,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService
 	) {
 		super();
 	}
 
-	protected async _provideLinks(y: number): Promise<TerminalLink[]> {
+	protected async _provideLinks(y: numBer): Promise<TerminalLink[]> {
 		let startLine = y - 1;
 		let endLine = startLine;
 
 		const lines: IBufferLine[] = [
-			this._xterm.buffer.active.getLine(startLine)!
+			this._xterm.Buffer.active.getLine(startLine)!
 		];
 
-		while (this._xterm.buffer.active.getLine(startLine)?.isWrapped) {
-			lines.unshift(this._xterm.buffer.active.getLine(startLine - 1)!);
+		while (this._xterm.Buffer.active.getLine(startLine)?.isWrapped) {
+			lines.unshift(this._xterm.Buffer.active.getLine(startLine - 1)!);
 			startLine--;
 		}
 
-		while (this._xterm.buffer.active.getLine(endLine + 1)?.isWrapped) {
-			lines.push(this._xterm.buffer.active.getLine(endLine + 1)!);
+		while (this._xterm.Buffer.active.getLine(endLine + 1)?.isWrapped) {
+			lines.push(this._xterm.Buffer.active.getLine(endLine + 1)!);
 			endLine++;
 		}
 
-		const lineContent = getXtermLineContent(this._xterm.buffer.active, startLine, endLine, this._xterm.cols);
+		const lineContent = getXtermLineContent(this._xterm.Buffer.active, startLine, endLine, this._xterm.cols);
 		if (lineContent.trim().length === 0) {
 			return [];
 		}
@@ -57,15 +57,15 @@ export class TerminalExternalLinkProviderAdapter extends TerminalBaseLinkProvide
 		}
 
 		return externalLinks.map(link => {
-			const bufferRange = convertLinkRangeToBuffer(lines, this._xterm.cols, {
+			const BufferRange = convertLinkRangeToBuffer(lines, this._xterm.cols, {
 				startColumn: link.startIndex + 1,
-				startLineNumber: 1,
+				startLineNumBer: 1,
 				endColumn: link.startIndex + link.length + 1,
-				endLineNumber: 1
+				endLineNumBer: 1
 			}, startLine);
-			const matchingText = lineContent.substr(link.startIndex, link.length) || '';
+			const matchingText = lineContent.suBstr(link.startIndex, link.length) || '';
 			const activateLink = this._wrapLinkHandler((_, text) => link.activate(text));
-			return this._instantiationService.createInstance(TerminalLink, this._xterm, bufferRange, matchingText, this._xterm.buffer.active.viewportY, activateLink, this._tooltipCallback, true, link.label);
+			return this._instantiationService.createInstance(TerminalLink, this._xterm, BufferRange, matchingText, this._xterm.Buffer.active.viewportY, activateLink, this._tooltipCallBack, true, link.laBel);
 		});
 	}
 }

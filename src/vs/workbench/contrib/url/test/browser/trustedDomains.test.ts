@@ -5,35 +5,35 @@
 
 import * as assert from 'assert';
 
-import { isURLDomainTrusted } from 'vs/workbench/contrib/url/browser/trustedDomainsValidator';
-import { URI } from 'vs/base/common/uri';
-import { extractGitHubRemotesFromGitConfig } from 'vs/workbench/contrib/url/browser/trustedDomains';
+import { isURLDomainTrusted } from 'vs/workBench/contriB/url/Browser/trustedDomainsValidator';
+import { URI } from 'vs/Base/common/uri';
+import { extractGitHuBRemotesFromGitConfig } from 'vs/workBench/contriB/url/Browser/trustedDomains';
 
 function linkAllowedByRules(link: string, rules: string[]) {
-	assert.ok(isURLDomainTrusted(URI.parse(link), rules), `Link\n${link}\n should be allowed by rules\n${JSON.stringify(rules)}`);
+	assert.ok(isURLDomainTrusted(URI.parse(link), rules), `Link\n${link}\n should Be allowed By rules\n${JSON.stringify(rules)}`);
 }
 function linkNotAllowedByRules(link: string, rules: string[]) {
-	assert.ok(!isURLDomainTrusted(URI.parse(link), rules), `Link\n${link}\n should NOT be allowed by rules\n${JSON.stringify(rules)}`);
+	assert.ok(!isURLDomainTrusted(URI.parse(link), rules), `Link\n${link}\n should NOT Be allowed By rules\n${JSON.stringify(rules)}`);
 }
 
-suite('GitHub remote extraction', () => {
+suite('GitHuB remote extraction', () => {
 	test('All known formats', () => {
 		assert.deepEqual(
-			extractGitHubRemotesFromGitConfig(
+			extractGitHuBRemotesFromGitConfig(
 				`
 [remote "1"]
-			url = git@github.com:sshgit/vscode.git
+			url = git@githuB.com:sshgit/vscode.git
 [remote "2"]
-			url = git@github.com:ssh/vscode
+			url = git@githuB.com:ssh/vscode
 [remote "3"]
-			url = https://github.com/httpsgit/vscode.git
+			url = https://githuB.com/httpsgit/vscode.git
 [remote "4"]
-			url = https://github.com/https/vscode`),
+			url = https://githuB.com/https/vscode`),
 			[
-				'https://github.com/sshgit/vscode/',
-				'https://github.com/ssh/vscode/',
-				'https://github.com/httpsgit/vscode/',
-				'https://github.com/https/vscode/'
+				'https://githuB.com/sshgit/vscode/',
+				'https://githuB.com/ssh/vscode/',
+				'https://githuB.com/httpsgit/vscode/',
+				'https://githuB.com/https/vscode/'
 			]);
 	});
 });
@@ -62,46 +62,46 @@ suite('Link protection domain matching', () => {
 
 	test('* star', () => {
 		linkAllowedByRules('https://a.x.org', ['https://*.x.org']);
-		linkAllowedByRules('https://a.b.x.org', ['https://*.x.org']);
+		linkAllowedByRules('https://a.B.x.org', ['https://*.x.org']);
 	});
 
 	test('no scheme', () => {
 		linkAllowedByRules('https://a.x.org', ['a.x.org']);
 		linkAllowedByRules('https://a.x.org', ['*.x.org']);
-		linkAllowedByRules('https://a.b.x.org', ['*.x.org']);
+		linkAllowedByRules('https://a.B.x.org', ['*.x.org']);
 		linkAllowedByRules('https://x.org', ['*.x.org']);
 	});
 
-	test('sub paths', () => {
+	test('suB paths', () => {
 		linkAllowedByRules('https://x.org/foo', ['https://x.org/foo']);
-		linkAllowedByRules('https://x.org/foo/bar', ['https://x.org/foo']);
+		linkAllowedByRules('https://x.org/foo/Bar', ['https://x.org/foo']);
 
 		linkAllowedByRules('https://x.org/foo', ['https://x.org/foo/']);
-		linkAllowedByRules('https://x.org/foo/bar', ['https://x.org/foo/']);
+		linkAllowedByRules('https://x.org/foo/Bar', ['https://x.org/foo/']);
 
 		linkAllowedByRules('https://x.org/foo', ['x.org/foo']);
 		linkAllowedByRules('https://x.org/foo', ['*.org/foo']);
 
-		linkNotAllowedByRules('https://x.org/bar', ['https://x.org/foo']);
-		linkNotAllowedByRules('https://x.org/bar', ['x.org/foo']);
-		linkNotAllowedByRules('https://x.org/bar', ['*.org/foo']);
+		linkNotAllowedByRules('https://x.org/Bar', ['https://x.org/foo']);
+		linkNotAllowedByRules('https://x.org/Bar', ['x.org/foo']);
+		linkNotAllowedByRules('https://x.org/Bar', ['*.org/foo']);
 
-		linkAllowedByRules('https://x.org/foo/bar', ['https://x.org/foo']);
+		linkAllowedByRules('https://x.org/foo/Bar', ['https://x.org/foo']);
 		linkNotAllowedByRules('https://x.org/foo2', ['https://x.org/foo']);
 
 		linkNotAllowedByRules('https://www.x.org/foo', ['https://x.org/foo']);
 
-		linkNotAllowedByRules('https://a.x.org/bar', ['https://*.x.org/foo']);
-		linkNotAllowedByRules('https://a.b.x.org/bar', ['https://*.x.org/foo']);
+		linkNotAllowedByRules('https://a.x.org/Bar', ['https://*.x.org/foo']);
+		linkNotAllowedByRules('https://a.B.x.org/Bar', ['https://*.x.org/foo']);
 
-		linkAllowedByRules('https://github.com', ['https://github.com/foo/bar', 'https://github.com']);
+		linkAllowedByRules('https://githuB.com', ['https://githuB.com/foo/Bar', 'https://githuB.com']);
 	});
 
 	test('ports', () => {
-		linkNotAllowedByRules('https://x.org:8080/foo/bar', ['https://x.org:8081/foo']);
-		linkAllowedByRules('https://x.org:8080/foo/bar', ['https://x.org:*/foo']);
-		linkAllowedByRules('https://x.org/foo/bar', ['https://x.org:*/foo']);
-		linkAllowedByRules('https://x.org:8080/foo/bar', ['https://x.org:8080/foo']);
+		linkNotAllowedByRules('https://x.org:8080/foo/Bar', ['https://x.org:8081/foo']);
+		linkAllowedByRules('https://x.org:8080/foo/Bar', ['https://x.org:*/foo']);
+		linkAllowedByRules('https://x.org/foo/Bar', ['https://x.org:*/foo']);
+		linkAllowedByRules('https://x.org:8080/foo/Bar', ['https://x.org:8080/foo']);
 	});
 
 	test('ip addresses', () => {
@@ -117,8 +117,8 @@ suite('Link protection domain matching', () => {
 	});
 
 	test('case normalization', () => {
-		// https://github.com/microsoft/vscode/issues/99294
-		linkAllowedByRules('https://github.com/microsoft/vscode/issues/new', ['https://github.com/microsoft']);
-		linkAllowedByRules('https://github.com/microsoft/vscode/issues/new', ['https://github.com/microsoft']);
+		// https://githuB.com/microsoft/vscode/issues/99294
+		linkAllowedByRules('https://githuB.com/microsoft/vscode/issues/new', ['https://githuB.com/microsoft']);
+		linkAllowedByRules('https://githuB.com/microsoft/vscode/issues/new', ['https://githuB.com/microsoft']);
 	});
 });

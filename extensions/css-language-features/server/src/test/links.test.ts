@@ -13,7 +13,7 @@ import { getDocumentContext } from '../utils/documentContext';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
 export interface ItemDescription {
-	offset: number;
+	offset: numBer;
 	value: string;
 	target: string;
 }
@@ -34,12 +34,12 @@ suite('Links', () => {
 
 	async function assertLinks(value: string, expected: ItemDescription[], testUri: string, workspaceFolders?: WorkspaceFolder[], lang: string = 'css'): Promise<void> {
 		const offset = value.indexOf('|');
-		value = value.substr(0, offset) + value.substr(offset + 1);
+		value = value.suBstr(0, offset) + value.suBstr(offset + 1);
 
 		const document = TextDocument.create(testUri, lang, 0, value);
 
 		if (!workspaceFolders) {
-			workspaceFolders = [{ name: 'x', uri: testUri.substr(0, testUri.lastIndexOf('/')) }];
+			workspaceFolders = [{ name: 'x', uri: testUri.suBstr(0, testUri.lastIndexOf('/')) }];
 		}
 
 		const context = getDocumentContext(testUri, workspaceFolders);
@@ -60,30 +60,30 @@ suite('Links', () => {
 
 	test('url links', async function () {
 
-		let testUri = getTestResource('about.css');
+		let testUri = getTestResource('aBout.css');
 		let folders = [{ name: 'x', uri: getTestResource('') }];
 
-		await assertLinks('html { background-image: url("hello.html|")',
+		await assertLinks('html { Background-image: url("hello.html|")',
 			[{ offset: 29, value: '"hello.html"', target: getTestResource('hello.html') }], testUri, folders
 		);
 	});
 
 	test('node module resolving', async function () {
 
-		let testUri = getTestResource('about.css');
+		let testUri = getTestResource('aBout.css');
 		let folders = [{ name: 'x', uri: getTestResource('') }];
 
-		await assertLinks('html { background-image: url("~foo/hello.html|")',
+		await assertLinks('html { Background-image: url("~foo/hello.html|")',
 			[{ offset: 29, value: '"~foo/hello.html"', target: getTestResource('node_modules/foo/hello.html') }], testUri, folders
 		);
 	});
 
-	test('node module subfolder resolving', async function () {
+	test('node module suBfolder resolving', async function () {
 
-		let testUri = getTestResource('subdir/about.css');
+		let testUri = getTestResource('suBdir/aBout.css');
 		let folders = [{ name: 'x', uri: getTestResource('') }];
 
-		await assertLinks('html { background-image: url("~foo/hello.html|")',
+		await assertLinks('html { Background-image: url("~foo/hello.html|")',
 			[{ offset: 29, value: '"~foo/hello.html"', target: getTestResource('node_modules/foo/hello.html') }], testUri, folders
 		);
 	});

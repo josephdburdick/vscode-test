@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { toResource } from 'vs/base/test/common/utils';
-import { workbenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workbench/test/browser/workbenchTestServices';
-import { URI } from 'vs/base/common/uri';
+import { toResource } from 'vs/Base/test/common/utils';
+import { workBenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { URI } from 'vs/Base/common/uri';
 import { FileOperation } from 'vs/platform/files/common/files';
-import { TestWorkingCopy } from 'vs/workbench/test/common/workbenchTestServices';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { TestWorkingCopy } from 'vs/workBench/test/common/workBenchTestServices';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 
 suite('WorkingCopyFileService', () => {
 
@@ -20,7 +20,7 @@ suite('WorkingCopyFileService', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -155,7 +155,7 @@ suite('WorkingCopyFileService', () => {
 		assert.equal(dirty[0], model1);
 
 		await model2.load();
-		model2.textEditorModel!.setValue('bar');
+		model2.textEditorModel!.setValue('Bar');
 
 		dirty = accessor.workingCopyFileService.getDirty(toResource.call(this, '/path'));
 		assert.equal(dirty.length, 2);
@@ -189,7 +189,7 @@ suite('WorkingCopyFileService', () => {
 		model1.dispose();
 	});
 
-	async function testEventsMoveOrCopy(files: { source: URI, target: URI }[], move?: boolean): Promise<number> {
+	async function testEventsMoveOrCopy(files: { source: URI, target: URI }[], move?: Boolean): Promise<numBer> {
 		let eventCounter = 0;
 
 		const participant = accessor.workingCopyFileService.addFileOperationParticipant({
@@ -218,7 +218,7 @@ suite('WorkingCopyFileService', () => {
 		return eventCounter;
 	}
 
-	async function testMoveOrCopy(files: { source: URI, target: URI }[], move: boolean, targetDirty?: boolean): Promise<void> {
+	async function testMoveOrCopy(files: { source: URI, target: URI }[], move: Boolean, targetDirty?: Boolean): Promise<void> {
 
 		let eventCounter = 0;
 		const models = await Promise.all(files.map(async ({ source, target }, i) => {
@@ -232,7 +232,7 @@ suite('WorkingCopyFileService', () => {
 			assert.ok(accessor.textFileService.isDirty(sourceModel.resource));
 			if (targetDirty) {
 				await targetModel.load();
-				targetModel.textEditorModel!.setValue('bar' + i);
+				targetModel.textEditorModel!.setValue('Bar' + i);
 				assert.ok(accessor.textFileService.isDirty(targetModel.resource));
 			}
 
@@ -255,7 +255,7 @@ suite('WorkingCopyFileService', () => {
 			}
 		});
 
-		let correlationId: number;
+		let correlationId: numBer;
 
 		const listener1 = accessor.workingCopyFileService.onWillRunWorkingCopyFileOperation(e => {
 			for (let i = 0; i < e.files.length; i++) {
@@ -327,7 +327,7 @@ suite('WorkingCopyFileService', () => {
 		}));
 
 		let eventCounter = 0;
-		let correlationId: number | undefined = undefined;
+		let correlationId: numBer | undefined = undefined;
 
 		const participant = accessor.workingCopyFileService.addFileOperationParticipant({
 			participate: async (files, operation) => {
@@ -385,7 +385,7 @@ suite('WorkingCopyFileService', () => {
 		assert.ok(accessor.workingCopyService.isDirty(model.resource));
 
 		let eventCounter = 0;
-		let correlationId: number | undefined = undefined;
+		let correlationId: numBer | undefined = undefined;
 
 		const participant = accessor.workingCopyFileService.addFileOperationParticipant({
 			participate: async (files, operation) => {

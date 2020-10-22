@@ -5,10 +5,10 @@
 
 import { registerAction2 } from 'vs/platform/actions/common/actions';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWebviewService } from 'vs/workbench/contrib/webview/browser/webview';
-import * as webviewCommands from 'vs/workbench/contrib/webview/electron-browser/webviewCommands';
-import { ElectronWebviewService } from 'vs/workbench/contrib/webview/electron-browser/webviewService';
+import { IWeBviewService } from 'vs/workBench/contriB/weBview/Browser/weBview';
+import * as weBviewCommands from 'vs/workBench/contriB/weBview/electron-Browser/weBviewCommands';
+import { ElectronWeBviewService } from 'vs/workBench/contriB/weBview/electron-Browser/weBviewService';
 
-registerSingleton(IWebviewService, ElectronWebviewService, true);
+registerSingleton(IWeBviewService, ElectronWeBviewService, true);
 
-registerAction2(webviewCommands.OpenWebviewDeveloperToolsAction);
+registerAction2(weBviewCommands.OpenWeBviewDeveloperToolsAction);

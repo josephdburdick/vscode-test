@@ -12,8 +12,8 @@ const localize = nls.loadMessageBundle();
 
 type AutoDetect = 'on' | 'off';
 
-function exists(file: string): Promise<boolean> {
-	return new Promise<boolean>((resolve, _reject) => {
+function exists(file: string): Promise<Boolean> {
+	return new Promise<Boolean>((resolve, _reject) => {
 		fs.exists(file, (value) => {
 			resolve(value);
 		});
@@ -31,10 +31,10 @@ function exec(command: string, options: cp.ExecOptions): Promise<{ stdout: strin
 	});
 }
 
-const buildNames: string[] = ['build', 'compile', 'watch'];
-function isBuildTask(name: string): boolean {
-	for (let buildName of buildNames) {
-		if (name.indexOf(buildName) !== -1) {
+const BuildNames: string[] = ['Build', 'compile', 'watch'];
+function isBuildTask(name: string): Boolean {
+	for (let BuildName of BuildNames) {
+		if (name.indexOf(BuildName) !== -1) {
 			return true;
 		}
 	}
@@ -42,7 +42,7 @@ function isBuildTask(name: string): boolean {
 }
 
 const testNames: string[] = ['test'];
-function isTestTask(name: string): boolean {
+function isTestTask(name: string): Boolean {
 	for (let testName of testNames) {
 		if (name.indexOf(testName) !== -1) {
 			return true;
@@ -60,7 +60,7 @@ function getOutputChannel(): vscode.OutputChannel {
 }
 
 function showError() {
-	vscode.window.showWarningMessage(localize('gruntTaskDetectError', 'Problem finding grunt tasks. See the output for more information.'),
+	vscode.window.showWarningMessage(localize('gruntTaskDetectError', 'ProBlem finding grunt tasks. See the output for more information.'),
 		localize('gruntShowOutput', 'Go to output')).then(() => {
 			getOutputChannel().show(true);
 		});
@@ -74,10 +74,10 @@ interface GruntTaskDefinition extends vscode.TaskDefinition {
 async function findGruntCommand(rootPath: string): Promise<string> {
 	let command: string;
 	let platform = process.platform;
-	if (platform === 'win32' && await exists(path.join(rootPath!, 'node_modules', '.bin', 'grunt.cmd'))) {
-		command = path.join('.', 'node_modules', '.bin', 'grunt.cmd');
-	} else if ((platform === 'linux' || platform === 'darwin') && await exists(path.join(rootPath!, 'node_modules', '.bin', 'grunt'))) {
-		command = path.join('.', 'node_modules', '.bin', 'grunt');
+	if (platform === 'win32' && await exists(path.join(rootPath!, 'node_modules', '.Bin', 'grunt.cmd'))) {
+		command = path.join('.', 'node_modules', '.Bin', 'grunt.cmd');
+	} else if ((platform === 'linux' || platform === 'darwin') && await exists(path.join(rootPath!, 'node_modules', '.Bin', 'grunt'))) {
+		command = path.join('.', 'node_modules', '.Bin', 'grunt');
 	} else {
 		command = 'grunt';
 	}
@@ -87,22 +87,22 @@ async function findGruntCommand(rootPath: string): Promise<string> {
 class FolderDetector {
 
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
-	private promise: Thenable<vscode.Task[]> | undefined;
+	private promise: ThenaBle<vscode.Task[]> | undefined;
 
 	constructor(
 		private _workspaceFolder: vscode.WorkspaceFolder,
 		private _gruntCommand: Promise<string>) {
 	}
 
-	public get workspaceFolder(): vscode.WorkspaceFolder {
+	puBlic get workspaceFolder(): vscode.WorkspaceFolder {
 		return this._workspaceFolder;
 	}
 
-	public isEnabled(): boolean {
+	puBlic isEnaBled(): Boolean {
 		return vscode.workspace.getConfiguration('grunt', this._workspaceFolder.uri).get<AutoDetect>('autoDetect') === 'on';
 	}
 
-	public start(): void {
+	puBlic start(): void {
 		let pattern = path.join(this._workspaceFolder.uri.fsPath, '{node_modules,[Gg]runtfile.js}');
 		this.fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
 		this.fileWatcher.onDidChange(() => this.promise = undefined);
@@ -110,8 +110,8 @@ class FolderDetector {
 		this.fileWatcher.onDidDelete(() => this.promise = undefined);
 	}
 
-	public async getTasks(): Promise<vscode.Task[]> {
-		if (this.isEnabled()) {
+	puBlic async getTasks(): Promise<vscode.Task[]> {
+		if (this.isEnaBled()) {
 			if (!this.promise) {
 				this.promise = this.computeTasks();
 			}
@@ -121,7 +121,7 @@ class FolderDetector {
 		}
 	}
 
-	public async getTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
+	puBlic async getTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
 		const taskDefinition = <any>_task.definition;
 		const gruntTask = taskDefinition.task;
 		if (gruntTask) {
@@ -156,12 +156,12 @@ class FolderDetector {
 			if (stdout) {
 				// grunt lists tasks as follows (description is wrapped into a new line if too long):
 				// ...
-				// Available tasks
+				// AvailaBle tasks
 				//         uglify  Minify files with UglifyJS. *
 				//         jshint  Validate files with JSHint. *
 				//           test  Alias for "jshint", "qunit" tasks.
 				//        default  Alias for "jshint", "qunit", "concat", "uglify" tasks.
-				//           long  Alias for "eslint", "qunit", "browserify", "sass",
+				//           long  Alias for "eslint", "qunit", "Browserify", "sass",
 				//                 "autoprefixer", "uglify", tasks.
 				//
 				// Tasks run in the order specified
@@ -174,7 +174,7 @@ class FolderDetector {
 						continue;
 					}
 					if (!tasksStart && !tasksEnd) {
-						if (line.indexOf('Available tasks') === 0) {
+						if (line.indexOf('AvailaBle tasks') === 0) {
 							tasksStart = true;
 						}
 					} else if (tasksStart && !tasksEnd) {
@@ -221,7 +221,7 @@ class FolderDetector {
 		}
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		this.promise = undefined;
 		if (this.fileWatcher) {
 			this.fileWatcher.dispose();
@@ -231,13 +231,13 @@ class FolderDetector {
 
 class TaskDetector {
 
-	private taskProvider: vscode.Disposable | undefined;
+	private taskProvider: vscode.DisposaBle | undefined;
 	private detectors: Map<string, FolderDetector> = new Map();
 
 	constructor() {
 	}
 
-	public start(): void {
+	puBlic start(): void {
 		let folders = vscode.workspace.workspaceFolders;
 		if (folders) {
 			this.updateWorkspaceFolders(folders, []);
@@ -246,7 +246,7 @@ class TaskDetector {
 		vscode.workspace.onDidChangeConfiguration(this.updateConfiguration, this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		if (this.taskProvider) {
 			this.taskProvider.dispose();
 			this.taskProvider = undefined;
@@ -265,7 +265,7 @@ class TaskDetector {
 		for (let add of added) {
 			let detector = new FolderDetector(add, findGruntCommand(add.uri.fsPath));
 			this.detectors.set(add.uri.toString(), detector);
-			if (detector.isEnabled()) {
+			if (detector.isEnaBled()) {
 				detector.start();
 			}
 		}
@@ -283,7 +283,7 @@ class TaskDetector {
 				if (!this.detectors.has(folder.uri.toString())) {
 					let detector = new FolderDetector(folder, findGruntCommand(folder.uri.fsPath));
 					this.detectors.set(folder.uri.toString(), detector);
-					if (detector.isEnabled()) {
+					if (detector.isEnaBled()) {
 						detector.start();
 					}
 				}
@@ -310,7 +310,7 @@ class TaskDetector {
 		}
 	}
 
-	public getTasks(): Promise<vscode.Task[]> {
+	puBlic getTasks(): Promise<vscode.Task[]> {
 		return this.computeTasks();
 	}
 
@@ -336,13 +336,13 @@ class TaskDetector {
 		}
 	}
 
-	public async getTask(task: vscode.Task): Promise<vscode.Task | undefined> {
+	puBlic async getTask(task: vscode.Task): Promise<vscode.Task | undefined> {
 		if (this.detectors.size === 0) {
 			return undefined;
 		} else if (this.detectors.size === 1) {
 			return this.detectors.values().next().value.getTask(task);
 		} else {
-			if ((task.scope === vscode.TaskScope.Workspace) || (task.scope === vscode.TaskScope.Global)) {
+			if ((task.scope === vscode.TaskScope.Workspace) || (task.scope === vscode.TaskScope.GloBal)) {
 				return undefined;
 			} else if (task.scope) {
 				const detector = this.detectors.get(task.scope.uri.toString());

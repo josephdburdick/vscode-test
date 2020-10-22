@@ -74,7 +74,7 @@ export namespace TextEdit {
 export namespace WorkspaceEdit {
 	export function fromFileCodeEdits(
 		client: ITypeScriptServiceClient,
-		edits: Iterable<Proto.FileCodeEdits>
+		edits: IteraBle<Proto.FileCodeEdits>
 	): vscode.WorkspaceEdit {
 		return withFileCodeEdits(new vscode.WorkspaceEdit(), client, edits);
 	}
@@ -82,7 +82,7 @@ export namespace WorkspaceEdit {
 	export function withFileCodeEdits(
 		workspaceEdit: vscode.WorkspaceEdit,
 		client: ITypeScriptServiceClient,
-		edits: Iterable<Proto.FileCodeEdits>
+		edits: IteraBle<Proto.FileCodeEdits>
 	): vscode.WorkspaceEdit {
 		for (const edit of edits) {
 			const resource = client.toResource(edit.fileName);
@@ -97,32 +97,32 @@ export namespace WorkspaceEdit {
 	}
 }
 
-export namespace SymbolKind {
+export namespace SymBolKind {
 	export function fromProtocolScriptElementKind(kind: Proto.ScriptElementKind) {
 		switch (kind) {
-			case PConst.Kind.module: return vscode.SymbolKind.Module;
-			case PConst.Kind.class: return vscode.SymbolKind.Class;
-			case PConst.Kind.enum: return vscode.SymbolKind.Enum;
-			case PConst.Kind.enumMember: return vscode.SymbolKind.EnumMember;
-			case PConst.Kind.interface: return vscode.SymbolKind.Interface;
-			case PConst.Kind.indexSignature: return vscode.SymbolKind.Method;
-			case PConst.Kind.callSignature: return vscode.SymbolKind.Method;
-			case PConst.Kind.method: return vscode.SymbolKind.Method;
-			case PConst.Kind.memberVariable: return vscode.SymbolKind.Property;
-			case PConst.Kind.memberGetAccessor: return vscode.SymbolKind.Property;
-			case PConst.Kind.memberSetAccessor: return vscode.SymbolKind.Property;
-			case PConst.Kind.variable: return vscode.SymbolKind.Variable;
-			case PConst.Kind.let: return vscode.SymbolKind.Variable;
-			case PConst.Kind.const: return vscode.SymbolKind.Variable;
-			case PConst.Kind.localVariable: return vscode.SymbolKind.Variable;
-			case PConst.Kind.alias: return vscode.SymbolKind.Variable;
-			case PConst.Kind.function: return vscode.SymbolKind.Function;
-			case PConst.Kind.localFunction: return vscode.SymbolKind.Function;
-			case PConst.Kind.constructSignature: return vscode.SymbolKind.Constructor;
-			case PConst.Kind.constructorImplementation: return vscode.SymbolKind.Constructor;
-			case PConst.Kind.typeParameter: return vscode.SymbolKind.TypeParameter;
-			case PConst.Kind.string: return vscode.SymbolKind.String;
-			default: return vscode.SymbolKind.Variable;
+			case PConst.Kind.module: return vscode.SymBolKind.Module;
+			case PConst.Kind.class: return vscode.SymBolKind.Class;
+			case PConst.Kind.enum: return vscode.SymBolKind.Enum;
+			case PConst.Kind.enumMemBer: return vscode.SymBolKind.EnumMemBer;
+			case PConst.Kind.interface: return vscode.SymBolKind.Interface;
+			case PConst.Kind.indexSignature: return vscode.SymBolKind.Method;
+			case PConst.Kind.callSignature: return vscode.SymBolKind.Method;
+			case PConst.Kind.method: return vscode.SymBolKind.Method;
+			case PConst.Kind.memBerVariaBle: return vscode.SymBolKind.Property;
+			case PConst.Kind.memBerGetAccessor: return vscode.SymBolKind.Property;
+			case PConst.Kind.memBerSetAccessor: return vscode.SymBolKind.Property;
+			case PConst.Kind.variaBle: return vscode.SymBolKind.VariaBle;
+			case PConst.Kind.let: return vscode.SymBolKind.VariaBle;
+			case PConst.Kind.const: return vscode.SymBolKind.VariaBle;
+			case PConst.Kind.localVariaBle: return vscode.SymBolKind.VariaBle;
+			case PConst.Kind.alias: return vscode.SymBolKind.VariaBle;
+			case PConst.Kind.function: return vscode.SymBolKind.Function;
+			case PConst.Kind.localFunction: return vscode.SymBolKind.Function;
+			case PConst.Kind.constructSignature: return vscode.SymBolKind.Constructor;
+			case PConst.Kind.constructorImplementation: return vscode.SymBolKind.Constructor;
+			case PConst.Kind.typeParameter: return vscode.SymBolKind.TypeParameter;
+			case PConst.Kind.string: return vscode.SymBolKind.String;
+			default: return vscode.SymBolKind.VariaBle;
 		}
 	}
 }

@@ -24,7 +24,7 @@ export interface IExtensionRecommendationNotificationService {
 	readonly _serviceBrand: undefined;
 
 	readonly ignoredRecommendations: string[];
-	hasToIgnoreRecommendationNotifications(): boolean;
+	hasToIgnoreRecommendationNotifications(): Boolean;
 
 	promptImportantExtensionsInstallNotification(extensionIds: string[], message: string, searchValue: string, source: RecommendationSource): Promise<RecommendationsNotificationResult>;
 	promptWorkspaceRecommendations(recommendations: string[]): Promise<void>;

@@ -4,47 +4,47 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ITreeNode, ITreeRenderer } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IIdentityProvider } from 'vs/base/browser/ui/list/list';
-import { ObjectTree, CompressibleObjectTree, ICompressibleTreeRenderer } from 'vs/base/browser/ui/tree/objectTree';
-import { ICompressedTreeNode } from 'vs/base/browser/ui/tree/compressedObjectTreeModel';
+import { ITreeNode, ITreeRenderer } from 'vs/Base/Browser/ui/tree/tree';
+import { IListVirtualDelegate, IIdentityProvider } from 'vs/Base/Browser/ui/list/list';
+import { OBjectTree, CompressiBleOBjectTree, ICompressiBleTreeRenderer } from 'vs/Base/Browser/ui/tree/oBjectTree';
+import { ICompressedTreeNode } from 'vs/Base/Browser/ui/tree/compressedOBjectTreeModel';
 
-suite('ObjectTree', function () {
+suite('OBjectTree', function () {
 	suite('TreeNavigator', function () {
-		let tree: ObjectTree<number>;
-		let filter = (_: number) => true;
+		let tree: OBjectTree<numBer>;
+		let filter = (_: numBer) => true;
 
 		setup(() => {
 			const container = document.createElement('div');
 			container.style.width = '200px';
 			container.style.height = '200px';
 
-			const delegate = new class implements IListVirtualDelegate<number> {
+			const delegate = new class implements IListVirtualDelegate<numBer> {
 				getHeight() { return 20; }
 				getTemplateId(): string { return 'default'; }
 			};
 
-			const renderer = new class implements ITreeRenderer<number, void, HTMLElement> {
+			const renderer = new class implements ITreeRenderer<numBer, void, HTMLElement> {
 				readonly templateId = 'default';
 				renderTemplate(container: HTMLElement): HTMLElement {
 					return container;
 				}
-				renderElement(element: ITreeNode<number, void>, index: number, templateData: HTMLElement): void {
+				renderElement(element: ITreeNode<numBer, void>, index: numBer, templateData: HTMLElement): void {
 					templateData.textContent = `${element.element}`;
 				}
 				disposeTemplate(): void { }
 			};
 
-			tree = new ObjectTree<number>('test', container, delegate, [renderer], { filter: { filter: (el) => filter(el) } });
+			tree = new OBjectTree<numBer>('test', container, delegate, [renderer], { filter: { filter: (el) => filter(el) } });
 			tree.layout(200);
 		});
 
 		teardown(() => {
 			tree.dispose();
-			filter = (_: number) => true;
+			filter = (_: numBer) => true;
 		});
 
-		test('should be able to navigate', () => {
+		test('should Be aBle to navigate', () => {
 			tree.setChildren(null, [
 				{
 					element: 0, children: [
@@ -148,7 +148,7 @@ suite('ObjectTree', function () {
 			assert.equal(navigator.last(), 2);
 		});
 
-		test('should be able to start from node', () => {
+		test('should Be aBle to start from node', () => {
 			tree.setChildren(null, [
 				{
 					element: 0, children: [
@@ -185,29 +185,29 @@ suite('ObjectTree', function () {
 		container.style.width = '200px';
 		container.style.height = '200px';
 
-		const delegate = new class implements IListVirtualDelegate<number> {
+		const delegate = new class implements IListVirtualDelegate<numBer> {
 			getHeight() { return 20; }
 			getTemplateId(): string { return 'default'; }
 		};
 
-		const renderer = new class implements ITreeRenderer<number, void, HTMLElement> {
+		const renderer = new class implements ITreeRenderer<numBer, void, HTMLElement> {
 			readonly templateId = 'default';
 			renderTemplate(container: HTMLElement): HTMLElement {
 				return container;
 			}
-			renderElement(element: ITreeNode<number, void>, index: number, templateData: HTMLElement): void {
+			renderElement(element: ITreeNode<numBer, void>, index: numBer, templateData: HTMLElement): void {
 				templateData.textContent = `${element.element}`;
 			}
 			disposeTemplate(): void { }
 		};
 
-		const identityProvider = new class implements IIdentityProvider<number> {
-			getId(element: number): { toString(): string; } {
+		const identityProvider = new class implements IIdentityProvider<numBer> {
+			getId(element: numBer): { toString(): string; } {
 				return `${element % 100}`;
 			}
 		};
 
-		const tree = new ObjectTree<number>('test', container, delegate, [renderer], { identityProvider });
+		const tree = new OBjectTree<numBer>('test', container, delegate, [renderer], { identityProvider });
 		tree.layout(200);
 
 		tree.setChildren(null, [{ element: 0 }, { element: 1 }, { element: 2 }, { element: 3 }]);
@@ -225,22 +225,22 @@ function toArray(list: NodeList): Node[] {
 	return result;
 }
 
-suite('CompressibleObjectTree', function () {
+suite('CompressiBleOBjectTree', function () {
 
-	class Delegate implements IListVirtualDelegate<number> {
+	class Delegate implements IListVirtualDelegate<numBer> {
 		getHeight() { return 20; }
 		getTemplateId(): string { return 'default'; }
 	}
 
-	class Renderer implements ICompressibleTreeRenderer<number, void, HTMLElement> {
+	class Renderer implements ICompressiBleTreeRenderer<numBer, void, HTMLElement> {
 		readonly templateId = 'default';
 		renderTemplate(container: HTMLElement): HTMLElement {
 			return container;
 		}
-		renderElement(node: ITreeNode<number, void>, _: number, templateData: HTMLElement): void {
+		renderElement(node: ITreeNode<numBer, void>, _: numBer, templateData: HTMLElement): void {
 			templateData.textContent = `${node.element}`;
 		}
-		renderCompressedElements(node: ITreeNode<ICompressedTreeNode<number>, void>, _: number, templateData: HTMLElement): void {
+		renderCompressedElements(node: ITreeNode<ICompressedTreeNode<numBer>, void>, _: numBer, templateData: HTMLElement): void {
 			templateData.textContent = `${node.element.elements.join('/')}`;
 		}
 		disposeTemplate(): void { }
@@ -251,7 +251,7 @@ suite('CompressibleObjectTree', function () {
 		container.style.width = '200px';
 		container.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
+		const tree = new CompressiBleOBjectTree<numBer>('test', container, new Delegate(), [new Renderer()]);
 		tree.layout(200);
 
 		const rows = toArray(container.querySelectorAll('.monaco-tl-contents'));
@@ -263,7 +263,7 @@ suite('CompressibleObjectTree', function () {
 		container.style.width = '200px';
 		container.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
+		const tree = new CompressiBleOBjectTree<numBer>('test', container, new Delegate(), [new Renderer()]);
 		tree.layout(200);
 
 		tree.setChildren(null, [
@@ -287,7 +287,7 @@ suite('CompressibleObjectTree', function () {
 		container.style.width = '200px';
 		container.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
+		const tree = new CompressiBleOBjectTree<numBer>('test', container, new Delegate(), [new Renderer()]);
 		tree.layout(200);
 
 		tree.setChildren(null, [
@@ -339,12 +339,12 @@ suite('CompressibleObjectTree', function () {
 		assert.deepEqual(rows, ['1/11', '111', '112', '113/1131', '1132', '1133']);
 	});
 
-	test('enableCompression', () => {
+	test('enaBleCompression', () => {
 		const container = document.createElement('div');
 		container.style.width = '200px';
 		container.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
+		const tree = new CompressiBleOBjectTree<numBer>('test', container, new Delegate(), [new Renderer()]);
 		tree.layout(200);
 
 		tree.setChildren(null, [
@@ -364,11 +364,11 @@ suite('CompressibleObjectTree', function () {
 		let rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
 		assert.deepEqual(rows, ['1/11/111', '1111', '1112', '1113']);
 
-		tree.updateOptions({ compressionEnabled: false });
+		tree.updateOptions({ compressionEnaBled: false });
 		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
 		assert.deepEqual(rows, ['1', '11', '111', '1111', '1112', '1113']);
 
-		tree.updateOptions({ compressionEnabled: true });
+		tree.updateOptions({ compressionEnaBled: true });
 		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
 		assert.deepEqual(rows, ['1/11/111', '1111', '1112', '1113']);
 	});

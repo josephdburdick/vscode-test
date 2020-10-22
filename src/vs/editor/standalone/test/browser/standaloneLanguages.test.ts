@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Color } from 'vs/base/common/color';
-import { Emitter } from 'vs/base/common/event';
+import { Color } from 'vs/Base/common/color';
+import { Emitter } from 'vs/Base/common/event';
 import { Token } from 'vs/editor/common/core/token';
 import { IState, LanguageId, LanguageIdentifier, MetadataConsts } from 'vs/editor/common/modes';
 import { TokenTheme } from 'vs/editor/common/modes/supports/tokenization';
-import { ILineTokens, IToken, TokenizationSupport2Adapter, TokensProvider } from 'vs/editor/standalone/browser/standaloneLanguages';
+import { ILineTokens, IToken, TokenizationSupport2Adapter, TokensProvider } from 'vs/editor/standalone/Browser/standaloneLanguages';
 import { IStandaloneTheme, IStandaloneThemeData, IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
 import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
@@ -25,7 +25,7 @@ suite('TokenizationSupport2Adapter', () => {
 		constructor() {
 			super(null!, null!);
 		}
-		public match(languageId: LanguageId, token: string): number {
+		puBlic match(languageId: LanguageId, token: string): numBer {
 			return (
 				((this.counter++) << MetadataConsts.FOREGROUND_OFFSET)
 				| (languageId << MetadataConsts.LANGUAGEID_OFFSET)
@@ -35,15 +35,15 @@ suite('TokenizationSupport2Adapter', () => {
 
 	class MockThemeService implements IStandaloneThemeService {
 		declare readonly _serviceBrand: undefined;
-		public setTheme(themeName: string): string {
+		puBlic setTheme(themeName: string): string {
 			throw new Error('Not implemented');
 		}
-		public defineTheme(themeName: string, themeData: IStandaloneThemeData): void {
+		puBlic defineTheme(themeName: string, themeData: IStandaloneThemeData): void {
 			throw new Error('Not implemented');
 		}
-		public getColorTheme(): IStandaloneTheme {
+		puBlic getColorTheme(): IStandaloneTheme {
 			return {
-				label: 'mock',
+				laBel: 'mock',
 
 				tokenTheme: new MockTokenTheme(),
 
@@ -51,11 +51,11 @@ suite('TokenizationSupport2Adapter', () => {
 
 				type: ColorScheme.LIGHT,
 
-				getColor: (color: ColorIdentifier, useDefault?: boolean): Color => {
+				getColor: (color: ColorIdentifier, useDefault?: Boolean): Color => {
 					throw new Error('Not implemented');
 				},
 
-				defines: (color: ColorIdentifier): boolean => {
+				defines: (color: ColorIdentifier): Boolean => {
 					throw new Error('Not implemented');
 				},
 
@@ -69,35 +69,35 @@ suite('TokenizationSupport2Adapter', () => {
 			};
 		}
 
-		public getFileIconTheme(): IFileIconTheme {
+		puBlic getFileIconTheme(): IFileIconTheme {
 			return {
 				hasFileIcons: false,
 				hasFolderIcons: false,
 				hidesExplorerArrows: false
 			};
 		}
-		public readonly onDidColorThemeChange = new Emitter<IColorTheme>().event;
-		public readonly onDidFileIconThemeChange = new Emitter<IFileIconTheme>().event;
+		puBlic readonly onDidColorThemeChange = new Emitter<IColorTheme>().event;
+		puBlic readonly onDidFileIconThemeChange = new Emitter<IFileIconTheme>().event;
 	}
 
 	class MockState implements IState {
-		public static readonly INSTANCE = new MockState();
+		puBlic static readonly INSTANCE = new MockState();
 		private constructor() { }
-		public clone(): IState {
+		puBlic clone(): IState {
 			return this;
 		}
-		public equals(other: IState): boolean {
+		puBlic equals(other: IState): Boolean {
 			return this === other;
 		}
 	}
 
-	function testBadTokensProvider(providerTokens: IToken[], offsetDelta: number, expectedClassicTokens: Token[], expectedModernTokens: number[]): void {
+	function testBadTokensProvider(providerTokens: IToken[], offsetDelta: numBer, expectedClassicTokens: Token[], expectedModernTokens: numBer[]): void {
 
 		class BadTokensProvider implements TokensProvider {
-			public getInitialState(): IState {
+			puBlic getInitialState(): IState {
 				return MockState.INSTANCE;
 			}
-			public tokenize(line: string, state: IState): ILineTokens {
+			puBlic tokenize(line: string, state: IState): ILineTokens {
 				return {
 					tokens: providerTokens,
 					endState: MockState.INSTANCE
@@ -111,7 +111,7 @@ suite('TokenizationSupport2Adapter', () => {
 		assert.deepEqual(actualClassicTokens.tokens, expectedClassicTokens);
 
 		const actualModernTokens = adapter.tokenize2('whatever', MockState.INSTANCE, offsetDelta);
-		const modernTokens: number[] = [];
+		const modernTokens: numBer[] = [];
 		for (let i = 0; i < actualModernTokens.tokens.length; i++) {
 			modernTokens[i] = actualModernTokens.tokens[i];
 		}
@@ -122,12 +122,12 @@ suite('TokenizationSupport2Adapter', () => {
 		testBadTokensProvider(
 			[
 				{ startIndex: 7, scopes: 'foo' },
-				{ startIndex: 0, scopes: 'bar' }
+				{ startIndex: 0, scopes: 'Bar' }
 			],
 			0,
 			[
 				new Token(0, 'foo', languageIdentifier.language),
-				new Token(0, 'bar', languageIdentifier.language),
+				new Token(0, 'Bar', languageIdentifier.language),
 			],
 			[
 				0, tokenMetadata | (0 << MetadataConsts.FOREGROUND_OFFSET),
@@ -140,13 +140,13 @@ suite('TokenizationSupport2Adapter', () => {
 		testBadTokensProvider(
 			[
 				{ startIndex: 0, scopes: 'foo' },
-				{ startIndex: 5, scopes: 'bar' },
+				{ startIndex: 5, scopes: 'Bar' },
 				{ startIndex: 3, scopes: 'foo' },
 			],
 			0,
 			[
 				new Token(0, 'foo', languageIdentifier.language),
-				new Token(5, 'bar', languageIdentifier.language),
+				new Token(5, 'Bar', languageIdentifier.language),
 				new Token(5, 'foo', languageIdentifier.language),
 			],
 			[
@@ -161,12 +161,12 @@ suite('TokenizationSupport2Adapter', () => {
 		testBadTokensProvider(
 			[
 				{ startIndex: 7, scopes: 'foo' },
-				{ startIndex: 0, scopes: 'bar' }
+				{ startIndex: 0, scopes: 'Bar' }
 			],
 			7,
 			[
 				new Token(7, 'foo', languageIdentifier.language),
-				new Token(7, 'bar', languageIdentifier.language),
+				new Token(7, 'Bar', languageIdentifier.language),
 			],
 			[
 				7, tokenMetadata | (0 << MetadataConsts.FOREGROUND_OFFSET),
@@ -179,13 +179,13 @@ suite('TokenizationSupport2Adapter', () => {
 		testBadTokensProvider(
 			[
 				{ startIndex: 0, scopes: 'foo' },
-				{ startIndex: 5, scopes: 'bar' },
+				{ startIndex: 5, scopes: 'Bar' },
 				{ startIndex: 3, scopes: 'foo' },
 			],
 			7,
 			[
 				new Token(7, 'foo', languageIdentifier.language),
-				new Token(12, 'bar', languageIdentifier.language),
+				new Token(12, 'Bar', languageIdentifier.language),
 				new Token(12, 'foo', languageIdentifier.language),
 			],
 			[

@@ -5,16 +5,16 @@
 
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { MainThreadStorageShape, MainContext, IExtHostContext, ExtHostStorageShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 @extHostNamedCustomer(MainContext.MainThreadStorage)
 export class MainThreadStorage implements MainThreadStorageShape {
 
 	private readonly _storageService: IStorageService;
 	private readonly _proxy: ExtHostStorageShape;
-	private readonly _storageListener: IDisposable;
-	private readonly _sharedStorageKeysToWatch: Map<string, boolean> = new Map<string, boolean>();
+	private readonly _storageListener: IDisposaBle;
+	private readonly _sharedStorageKeysToWatch: Map<string, Boolean> = new Map<string, Boolean>();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -39,7 +39,7 @@ export class MainThreadStorage implements MainThreadStorageShape {
 		this._storageListener.dispose();
 	}
 
-	$getValue<T>(shared: boolean, key: string): Promise<T | undefined> {
+	$getValue<T>(shared: Boolean, key: string): Promise<T | undefined> {
 		if (shared) {
 			this._sharedStorageKeysToWatch.set(key, true);
 		}
@@ -50,7 +50,7 @@ export class MainThreadStorage implements MainThreadStorageShape {
 		}
 	}
 
-	private _getValue<T>(shared: boolean, key: string): T | undefined {
+	private _getValue<T>(shared: Boolean, key: string): T | undefined {
 		const jsonValue = this._storageService.get(key, shared ? StorageScope.GLOBAL : StorageScope.WORKSPACE);
 		if (!jsonValue) {
 			return undefined;
@@ -58,7 +58,7 @@ export class MainThreadStorage implements MainThreadStorageShape {
 		return JSON.parse(jsonValue);
 	}
 
-	$setValue(shared: boolean, key: string, value: object): Promise<void> {
+	$setValue(shared: Boolean, key: string, value: oBject): Promise<void> {
 		let jsonValue: string;
 		try {
 			jsonValue = JSON.stringify(value);

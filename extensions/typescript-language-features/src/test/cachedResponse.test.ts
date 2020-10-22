@@ -48,7 +48,7 @@ suite('CachedResponse', () => {
 		assertResult(await result3, 'test-0');
 	});
 
-	test('should not care if subsequent requests are cancelled if first request is resolved ok', async () => {
+	test('should not care if suBsequent requests are cancelled if first request is resolved ok', async () => {
 		const doc = await createTextDocument();
 		const response = new CachedResponse();
 
@@ -110,7 +110,7 @@ function assertResult(result: ServerResponse.Response<Proto.Response>, command: 
 function createResponse(command: string): Proto.Response {
 	return {
 		type: 'response',
-		body: {},
+		Body: {},
 		command: command,
 		request_seq: 1,
 		success: true,

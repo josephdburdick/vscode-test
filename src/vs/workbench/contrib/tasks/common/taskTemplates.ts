@@ -9,73 +9,73 @@ import { IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
 
 export interface TaskEntry extends IQuickPickItem {
 	sort?: string;
-	autoDetect: boolean;
+	autoDetect: Boolean;
 	content: string;
 }
 
 const dotnetBuild: TaskEntry = {
 	id: 'dotnetCore',
-	label: '.NET Core',
+	laBel: '.NET Core',
 	sort: 'NET Core',
 	autoDetect: false,
-	description: nls.localize('dotnetCore', 'Executes .NET Core build command'),
+	description: nls.localize('dotnetCore', 'Executes .NET Core Build command'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "2.0.0",',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"label": "build",',
+		'\t\t\t"laBel": "Build",',
 		'\t\t\t"command": "dotnet",',
 		'\t\t\t"type": "shell",',
 		'\t\t\t"args": [',
-		'\t\t\t\t"build",',
-		'\t\t\t\t// Ask dotnet build to generate full paths for file names.',
+		'\t\t\t\t"Build",',
+		'\t\t\t\t// Ask dotnet Build to generate full paths for file names.',
 		'\t\t\t\t"/property:GenerateFullPaths=true",',
-		'\t\t\t\t// Do not generate summary otherwise it leads to duplicate errors in Problems panel',
+		'\t\t\t\t// Do not generate summary otherwise it leads to duplicate errors in ProBlems panel',
 		'\t\t\t\t"/consoleloggerparameters:NoSummary"',
 		'\t\t\t],',
-		'\t\t\t"group": "build",',
+		'\t\t\t"group": "Build",',
 		'\t\t\t"presentation": {',
 		'\t\t\t\t"reveal": "silent"',
 		'\t\t\t},',
-		'\t\t\t"problemMatcher": "$msCompile"',
+		'\t\t\t"proBlemMatcher": "$msCompile"',
 		'\t\t}',
 		'\t]',
 		'}'
 	].join('\n')
 };
 
-const msbuild: TaskEntry = {
-	id: 'msbuild',
-	label: 'MSBuild',
+const msBuild: TaskEntry = {
+	id: 'msBuild',
+	laBel: 'MSBuild',
 	autoDetect: false,
-	description: nls.localize('msbuild', 'Executes the build target'),
+	description: nls.localize('msBuild', 'Executes the Build target'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "2.0.0",',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"label": "build",',
+		'\t\t\t"laBel": "Build",',
 		'\t\t\t"type": "shell",',
-		'\t\t\t"command": "msbuild",',
+		'\t\t\t"command": "msBuild",',
 		'\t\t\t"args": [',
-		'\t\t\t\t// Ask msbuild to generate full paths for file names.',
+		'\t\t\t\t// Ask msBuild to generate full paths for file names.',
 		'\t\t\t\t"/property:GenerateFullPaths=true",',
-		'\t\t\t\t"/t:build",',
-		'\t\t\t\t// Do not generate summary otherwise it leads to duplicate errors in Problems panel',
+		'\t\t\t\t"/t:Build",',
+		'\t\t\t\t// Do not generate summary otherwise it leads to duplicate errors in ProBlems panel',
 		'\t\t\t\t"/consoleloggerparameters:NoSummary"',
 		'\t\t\t],',
-		'\t\t\t"group": "build",',
+		'\t\t\t"group": "Build",',
 		'\t\t\t"presentation": {',
 		'\t\t\t\t// Reveal the output only if unrecognized errors occur.',
 		'\t\t\t\t"reveal": "silent"',
 		'\t\t\t},',
 		'\t\t\t// Use the standard MS compiler pattern to detect errors, warnings and infos',
-		'\t\t\t"problemMatcher": "$msCompile"',
+		'\t\t\t"proBlemMatcher": "$msCompile"',
 		'\t\t}',
 		'\t]',
 		'}'
@@ -84,17 +84,17 @@ const msbuild: TaskEntry = {
 
 const command: TaskEntry = {
 	id: 'externalCommand',
-	label: 'Others',
+	laBel: 'Others',
 	autoDetect: false,
-	description: nls.localize('externalCommand', 'Example to run an arbitrary external command'),
+	description: nls.localize('externalCommand', 'Example to run an arBitrary external command'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "2.0.0",',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"label": "echo",',
+		'\t\t\t"laBel": "echo",',
 		'\t\t\t"type": "shell",',
 		'\t\t\t"command": "echo Hello"',
 		'\t\t}',
@@ -105,24 +105,24 @@ const command: TaskEntry = {
 
 const maven: TaskEntry = {
 	id: 'maven',
-	label: 'maven',
+	laBel: 'maven',
 	sort: 'MVN',
 	autoDetect: false,
 	description: nls.localize('Maven', 'Executes common maven commands'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "2.0.0",',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"label": "verify",',
+		'\t\t\t"laBel": "verify",',
 		'\t\t\t"type": "shell",',
 		'\t\t\t"command": "mvn -B verify",',
-		'\t\t\t"group": "build"',
+		'\t\t\t"group": "Build"',
 		'\t\t},',
 		'\t\t{',
-		'\t\t\t"label": "test",',
+		'\t\t\t"laBel": "test",',
 		'\t\t\t"type": "shell",',
 		'\t\t\t"command": "mvn -B test",',
 		'\t\t\t"group": "test"',
@@ -135,8 +135,8 @@ const maven: TaskEntry = {
 let _templates: TaskEntry[] | null = null;
 export function getTemplates(): TaskEntry[] {
 	if (!_templates) {
-		_templates = [dotnetBuild, msbuild, maven].sort((a, b) => {
-			return (a.sort || a.label).localeCompare(b.sort || b.label);
+		_templates = [dotnetBuild, msBuild, maven].sort((a, B) => {
+			return (a.sort || a.laBel).localeCompare(B.sort || B.laBel);
 		});
 		_templates.push(command);
 	}
@@ -148,12 +148,12 @@ export function getTemplates(): TaskEntry[] {
  *
 const gulp: TaskEntry = {
 	id: 'gulp',
-	label: 'Gulp',
+	laBel: 'Gulp',
 	autoDetect: true,
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "gulp",',
 		'\t"isShellCommand": true,',
@@ -165,12 +165,12 @@ const gulp: TaskEntry = {
 
 const grunt: TaskEntry = {
 	id: 'grunt',
-	label: 'Grunt',
+	laBel: 'Grunt',
 	autoDetect: true,
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "grunt",',
 		'\t"isShellCommand": true,',
@@ -182,13 +182,13 @@ const grunt: TaskEntry = {
 
 const npm: TaskEntry = {
 	id: 'npm',
-	label: 'npm',
+	laBel: 'npm',
 	sort: 'NPM',
 	autoDetect: false,
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "npm",',
 		'\t"isShellCommand": true,',
@@ -214,94 +214,94 @@ const npm: TaskEntry = {
 
 const tscConfig: TaskEntry = {
 	id: 'tsc.config',
-	label: 'TypeScript - tsconfig.json',
+	laBel: 'TypeScript - tsconfig.json',
 	autoDetect: false,
 	description: nls.localize('tsc.config', 'Compiles a TypeScript project'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "tsc",',
 		'\t"isShellCommand": true,',
 		'\t"args": ["-p", "."],',
 		'\t"showOutput": "silent",',
-		'\t"problemMatcher": "$tsc"',
+		'\t"proBlemMatcher": "$tsc"',
 		'}'
 	].join('\n')
 };
 
 const tscWatch: TaskEntry = {
 	id: 'tsc.watch',
-	label: 'TypeScript - Watch Mode',
+	laBel: 'TypeScript - Watch Mode',
 	autoDetect: false,
 	description: nls.localize('tsc.watch', 'Compiles a TypeScript project in watch mode'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "tsc",',
 		'\t"isShellCommand": true,',
 		'\t"args": ["-w", "-p", "."],',
 		'\t"showOutput": "silent",',
 		'\t"isBackground": true,',
-		'\t"problemMatcher": "$tsc-watch"',
+		'\t"proBlemMatcher": "$tsc-watch"',
 		'}'
 	].join('\n')
 };
 
 const dotnetBuild: TaskEntry = {
 	id: 'dotnetCore',
-	label: '.NET Core',
+	laBel: '.NET Core',
 	sort: 'NET Core',
 	autoDetect: false,
-	description: nls.localize('dotnetCore', 'Executes .NET Core build command'),
+	description: nls.localize('dotnetCore', 'Executes .NET Core Build command'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "dotnet",',
 		'\t"isShellCommand": true,',
 		'\t"args": [],',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"taskName": "build",',
+		'\t\t\t"taskName": "Build",',
 		'\t\t\t"args": [ ],',
 		'\t\t\t"isBuildCommand": true,',
 		'\t\t\t"showOutput": "silent",',
-		'\t\t\t"problemMatcher": "$msCompile"',
+		'\t\t\t"proBlemMatcher": "$msCompile"',
 		'\t\t}',
 		'\t]',
 		'}'
 	].join('\n')
 };
 
-const msbuild: TaskEntry = {
-	id: 'msbuild',
-	label: 'MSBuild',
+const msBuild: TaskEntry = {
+	id: 'msBuild',
+	laBel: 'MSBuild',
 	autoDetect: false,
-	description: nls.localize('msbuild', 'Executes the build target'),
+	description: nls.localize('msBuild', 'Executes the Build target'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
-		'\t"command": "msbuild",',
+		'\t"command": "msBuild",',
 		'\t"args": [',
-		'\t\t// Ask msbuild to generate full paths for file names.',
+		'\t\t// Ask msBuild to generate full paths for file names.',
 		'\t\t"/property:GenerateFullPaths=true"',
 		'\t],',
 		'\t"taskSelector": "/t:",',
 		'\t"showOutput": "silent",',
 		'\t"tasks": [',
 		'\t\t{',
-		'\t\t\t"taskName": "build",',
+		'\t\t\t"taskName": "Build",',
 		'\t\t\t// Show the output window only if unrecognized errors occur.',
 		'\t\t\t"showOutput": "silent",',
 		'\t\t\t// Use the standard MS compiler pattern to detect errors, warnings and infos',
-		'\t\t\t"problemMatcher": "$msCompile"',
+		'\t\t\t"proBlemMatcher": "$msCompile"',
 		'\t\t}',
 		'\t]',
 		'}'
@@ -310,13 +310,13 @@ const msbuild: TaskEntry = {
 
 const command: TaskEntry = {
 	id: 'externalCommand',
-	label: 'Others',
+	laBel: 'Others',
 	autoDetect: false,
-	description: nls.localize('externalCommand', 'Example to run an arbitrary external command'),
+	description: nls.localize('externalCommand', 'Example to run an arBitrary external command'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "echo",',
 		'\t"isShellCommand": true,',
@@ -328,14 +328,14 @@ const command: TaskEntry = {
 
 const maven: TaskEntry = {
 	id: 'maven',
-	label: 'maven',
+	laBel: 'maven',
 	sort: 'MVN',
 	autoDetect: false,
 	description: nls.localize('Maven', 'Executes common maven commands'),
 	content: [
 		'{',
 		'\t// See https://go.microsoft.com/fwlink/?LinkId=733558',
-		'\t// for the documentation about the tasks.json format',
+		'\t// for the documentation aBout the tasks.json format',
 		'\t"version": "0.1.0",',
 		'\t"command": "mvn",',
 		'\t"isShellCommand": true,',
@@ -357,8 +357,8 @@ const maven: TaskEntry = {
 	].join('\n')
 };
 
-export let templates: TaskEntry[] = [gulp, grunt, tscConfig, tscWatch, dotnetBuild, msbuild, npm, maven].sort((a, b) => {
-	return (a.sort || a.label).localeCompare(b.sort || b.label);
+export let templates: TaskEntry[] = [gulp, grunt, tscConfig, tscWatch, dotnetBuild, msBuild, npm, maven].sort((a, B) => {
+	return (a.sort || a.laBel).localeCompare(B.sort || B.laBel);
 });
 templates.push(command);
 */

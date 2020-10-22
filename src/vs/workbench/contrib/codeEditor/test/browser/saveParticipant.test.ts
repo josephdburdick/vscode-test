@@ -5,16 +5,16 @@
 
 import * as assert from 'assert';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { FinalNewLineParticipant, TrimFinalNewLinesParticipant, TrimWhitespaceParticipant } from 'vs/workbench/contrib/codeEditor/browser/saveParticipants';
+import { FinalNewLineParticipant, TrimFinalNewLinesParticipant, TrimWhitespaceParticipant } from 'vs/workBench/contriB/codeEditor/Browser/saveParticipants';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { toResource } from 'vs/base/test/common/utils';
+import { workBenchInstantiationService, TestServiceAccessor } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { toResource } from 'vs/Base/test/common/utils';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
-import { IResolvedTextFileEditorModel, snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
+import { IResolvedTextFileEditorModel, snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
+import { SaveReason } from 'vs/workBench/common/editor';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
 
 suite('Save Participants', function () {
 
@@ -22,7 +22,7 @@ suite('Save Participants', function () {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -98,7 +98,7 @@ suite('Save Participants', function () {
 		assert.equal(snapshotToString(model.createSnapshot()!), `${textContent}${eol}${textContent}${eol}`);
 	});
 
-	test('trim final new lines bug#39750', async function () {
+	test('trim final new lines Bug#39750', async function () {
 		const model = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/trim_final_new_line.txt'), 'utf8', undefined) as IResolvedTextFileEditorModel;
 
 		await model.load();
@@ -125,7 +125,7 @@ suite('Save Participants', function () {
 		assert.equal(snapshotToString(model.createSnapshot()!), `${textContent}.`);
 	});
 
-	test('trim final new lines bug#46075', async function () {
+	test('trim final new lines Bug#46075', async function () {
 		const model = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/trim_final_new_line.txt'), 'utf8', undefined) as IResolvedTextFileEditorModel;
 
 		await model.load();
@@ -145,7 +145,7 @@ suite('Save Participants', function () {
 		// confirm trimming
 		assert.equal(snapshotToString(model.createSnapshot()!), `${textContent}${eol}`);
 
-		// undo should go back to previous content immediately
+		// undo should go Back to previous content immediately
 		await model.textEditorModel.undo();
 		assert.equal(snapshotToString(model.createSnapshot()!), `${textContent}${eol}${eol}`);
 		await model.textEditorModel.redo();

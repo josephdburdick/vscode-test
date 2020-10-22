@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
 import { localize } from 'vs/nls';
-import { EditorInput } from 'vs/workbench/common/editor';
-import { IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
+import { EditorInput } from 'vs/workBench/common/editor';
+import { IExtension } from 'vs/workBench/contriB/extensions/common/extensions';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 
 export class ExtensionsInput extends EditorInput {
 
-	static readonly ID = 'workbench.extensions.input2';
+	static readonly ID = 'workBench.extensions.input2';
 
 	get resource() {
 		return URI.from({
@@ -22,7 +22,7 @@ export class ExtensionsInput extends EditorInput {
 	}
 
 	constructor(
-		public readonly extension: IExtension
+		puBlic readonly extension: IExtension
 	) {
 		super();
 	}
@@ -35,11 +35,11 @@ export class ExtensionsInput extends EditorInput {
 		return localize('extensionsInputName', "Extension: {0}", this.extension.displayName);
 	}
 
-	supportsSplitEditor(): boolean {
+	supportsSplitEditor(): Boolean {
 		return false;
 	}
 
-	matches(other: unknown): boolean {
+	matches(other: unknown): Boolean {
 		if (super.matches(other)) {
 			return true;
 		}

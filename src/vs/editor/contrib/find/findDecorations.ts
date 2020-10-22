@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IActiveCodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { FindMatch, IModelDecorationsChangeAccessor, IModelDeltaDecoration, OverviewRulerLane, TrackedRangeStickiness, MinimapPosition } from 'vs/editor/common/model';
@@ -12,7 +12,7 @@ import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import { overviewRulerFindMatchForeground, minimapFindMatch } from 'vs/platform/theme/common/colorRegistry';
 import { themeColorFromId } from 'vs/platform/theme/common/themeService';
 
-export class FindDecorations implements IDisposable {
+export class FindDecorations implements IDisposaBle {
 
 	private readonly _editor: IActiveCodeEditor;
 	private _decorations: string[];
@@ -32,7 +32,7 @@ export class FindDecorations implements IDisposable {
 		this._startPosition = this._editor.getPosition();
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._editor.deltaDecorations(this._allDecorations(), []);
 
 		this._decorations = [];
@@ -42,7 +42,7 @@ export class FindDecorations implements IDisposable {
 		this._highlightedDecorationId = null;
 	}
 
-	public reset(): void {
+	puBlic reset(): void {
 		this._decorations = [];
 		this._overviewRulerApproximateDecorations = [];
 		this._findScopeDecorationIds = [];
@@ -50,19 +50,19 @@ export class FindDecorations implements IDisposable {
 		this._highlightedDecorationId = null;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this._decorations.length;
 	}
 
 	/** @deprecated use getFindScopes to support multiple selections */
-	public getFindScope(): Range | null {
+	puBlic getFindScope(): Range | null {
 		if (this._findScopeDecorationIds[0]) {
 			return this._editor.getModel().getDecorationRange(this._findScopeDecorationIds[0]);
 		}
 		return null;
 	}
 
-	public getFindScopes(): Range[] | null {
+	puBlic getFindScopes(): Range[] | null {
 		if (this._findScopeDecorationIds.length) {
 			const scopes = this._findScopeDecorationIds.map(findScopeDecorationId =>
 				this._editor.getModel().getDecorationRange(findScopeDecorationId)
@@ -74,16 +74,16 @@ export class FindDecorations implements IDisposable {
 		return null;
 	}
 
-	public getStartPosition(): Position {
+	puBlic getStartPosition(): Position {
 		return this._startPosition;
 	}
 
-	public setStartPosition(newStartPosition: Position): void {
+	puBlic setStartPosition(newStartPosition: Position): void {
 		this._startPosition = newStartPosition;
 		this.setCurrentFindMatch(null);
 	}
 
-	private _getDecorationIndex(decorationId: string): number {
+	private _getDecorationIndex(decorationId: string): numBer {
 		const index = this._decorations.indexOf(decorationId);
 		if (index >= 0) {
 			return index + 1;
@@ -91,7 +91,7 @@ export class FindDecorations implements IDisposable {
 		return 1;
 	}
 
-	public getCurrentMatchesPosition(desiredRange: Range): number {
+	puBlic getCurrentMatchesPosition(desiredRange: Range): numBer {
 		let candidates = this._editor.getModel().getDecorationsInRange(desiredRange);
 		for (const candidate of candidates) {
 			const candidateOpts = candidate.options;
@@ -103,7 +103,7 @@ export class FindDecorations implements IDisposable {
 		return 0;
 	}
 
-	public setCurrentFindMatch(nextMatch: Range | null): number {
+	puBlic setCurrentFindMatch(nextMatch: Range | null): numBer {
 		let newCurrentDecorationId: string | null = null;
 		let matchPosition = 0;
 		if (nextMatch) {
@@ -112,7 +112,7 @@ export class FindDecorations implements IDisposable {
 				if (nextMatch.equalsRange(range)) {
 					newCurrentDecorationId = this._decorations[i];
 					matchPosition = (i + 1);
-					break;
+					Break;
 				}
 			}
 		}
@@ -133,10 +133,10 @@ export class FindDecorations implements IDisposable {
 				}
 				if (newCurrentDecorationId !== null) {
 					let rng = this._editor.getModel().getDecorationRange(newCurrentDecorationId)!;
-					if (rng.startLineNumber !== rng.endLineNumber && rng.endColumn === 1) {
-						let lineBeforeEnd = rng.endLineNumber - 1;
+					if (rng.startLineNumBer !== rng.endLineNumBer && rng.endColumn === 1) {
+						let lineBeforeEnd = rng.endLineNumBer - 1;
 						let lineBeforeEndMaxColumn = this._editor.getModel().getLineMaxColumn(lineBeforeEnd);
-						rng = new Range(rng.startLineNumber, rng.startColumn, lineBeforeEnd, lineBeforeEndMaxColumn);
+						rng = new Range(rng.startLineNumBer, rng.startColumn, lineBeforeEnd, lineBeforeEndMaxColumn);
 					}
 					this._rangeHighlightDecorationId = changeAccessor.addDecoration(rng, FindDecorations._RANGE_HIGHLIGHT_DECORATION);
 				}
@@ -146,7 +146,7 @@ export class FindDecorations implements IDisposable {
 		return matchPosition;
 	}
 
-	public set(findMatches: FindMatch[], findScopes: Range[] | null): void {
+	puBlic set(findMatches: FindMatch[], findScopes: Range[] | null): void {
 		this._editor.changeDecorations((accessor) => {
 
 			let findMatchesOptions: ModelDecorationOptions = FindDecorations._FIND_MATCH_DECORATION;
@@ -157,33 +157,33 @@ export class FindDecorations implements IDisposable {
 				// the reason is that the overview ruler paints all the decorations in the file and we don't want to cause freezes
 				findMatchesOptions = FindDecorations._FIND_MATCH_NO_OVERVIEW_DECORATION;
 
-				// approximate a distance in lines where matches should be merged
+				// approximate a distance in lines where matches should Be merged
 				const lineCount = this._editor.getModel().getLineCount();
 				const height = this._editor.getLayoutInfo().height;
 				const approxPixelsPerLine = height / lineCount;
 				const mergeLinesDelta = Math.max(2, Math.ceil(3 / approxPixelsPerLine));
 
-				// merge decorations as much as possible
-				let prevStartLineNumber = findMatches[0].range.startLineNumber;
-				let prevEndLineNumber = findMatches[0].range.endLineNumber;
+				// merge decorations as much as possiBle
+				let prevStartLineNumBer = findMatches[0].range.startLineNumBer;
+				let prevEndLineNumBer = findMatches[0].range.endLineNumBer;
 				for (let i = 1, len = findMatches.length; i < len; i++) {
 					const range = findMatches[i].range;
-					if (prevEndLineNumber + mergeLinesDelta >= range.startLineNumber) {
-						if (range.endLineNumber > prevEndLineNumber) {
-							prevEndLineNumber = range.endLineNumber;
+					if (prevEndLineNumBer + mergeLinesDelta >= range.startLineNumBer) {
+						if (range.endLineNumBer > prevEndLineNumBer) {
+							prevEndLineNumBer = range.endLineNumBer;
 						}
 					} else {
 						newOverviewRulerApproximateDecorations.push({
-							range: new Range(prevStartLineNumber, 1, prevEndLineNumber, 1),
+							range: new Range(prevStartLineNumBer, 1, prevEndLineNumBer, 1),
 							options: FindDecorations._FIND_MATCH_ONLY_OVERVIEW_DECORATION
 						});
-						prevStartLineNumber = range.startLineNumber;
-						prevEndLineNumber = range.endLineNumber;
+						prevStartLineNumBer = range.startLineNumBer;
+						prevEndLineNumBer = range.endLineNumBer;
 					}
 				}
 
 				newOverviewRulerApproximateDecorations.push({
-					range: new Range(prevStartLineNumber, 1, prevEndLineNumber, 1),
+					range: new Range(prevStartLineNumBer, 1, prevEndLineNumBer, 1),
 					options: FindDecorations._FIND_MATCH_ONLY_OVERVIEW_DECORATION
 				});
 			}
@@ -218,17 +218,17 @@ export class FindDecorations implements IDisposable {
 		});
 	}
 
-	public matchBeforePosition(position: Position): Range | null {
+	puBlic matchBeforePosition(position: Position): Range | null {
 		if (this._decorations.length === 0) {
 			return null;
 		}
 		for (let i = this._decorations.length - 1; i >= 0; i--) {
 			let decorationId = this._decorations[i];
 			let r = this._editor.getModel().getDecorationRange(decorationId);
-			if (!r || r.endLineNumber > position.lineNumber) {
+			if (!r || r.endLineNumBer > position.lineNumBer) {
 				continue;
 			}
-			if (r.endLineNumber < position.lineNumber) {
+			if (r.endLineNumBer < position.lineNumBer) {
 				return r;
 			}
 			if (r.endColumn > position.column) {
@@ -240,17 +240,17 @@ export class FindDecorations implements IDisposable {
 		return this._editor.getModel().getDecorationRange(this._decorations[this._decorations.length - 1]);
 	}
 
-	public matchAfterPosition(position: Position): Range | null {
+	puBlic matchAfterPosition(position: Position): Range | null {
 		if (this._decorations.length === 0) {
 			return null;
 		}
 		for (let i = 0, len = this._decorations.length; i < len; i++) {
 			let decorationId = this._decorations[i];
 			let r = this._editor.getModel().getDecorationRange(decorationId);
-			if (!r || r.startLineNumber < position.lineNumber) {
+			if (!r || r.startLineNumBer < position.lineNumBer) {
 				continue;
 			}
-			if (r.startLineNumber > position.lineNumber) {
+			if (r.startLineNumBer > position.lineNumBer) {
 				return r;
 			}
 			if (r.startColumn < position.column) {
@@ -275,7 +275,7 @@ export class FindDecorations implements IDisposable {
 		return result;
 	}
 
-	public static readonly _CURRENT_FIND_MATCH_DECORATION = ModelDecorationOptions.register({
+	puBlic static readonly _CURRENT_FIND_MATCH_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
 		zIndex: 13,
 		className: 'currentFindMatch',
@@ -290,7 +290,7 @@ export class FindDecorations implements IDisposable {
 		}
 	});
 
-	public static readonly _FIND_MATCH_DECORATION = ModelDecorationOptions.register({
+	puBlic static readonly _FIND_MATCH_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
 		className: 'findMatch',
 		showIfCollapsed: true,
@@ -304,7 +304,7 @@ export class FindDecorations implements IDisposable {
 		}
 	});
 
-	public static readonly _FIND_MATCH_NO_OVERVIEW_DECORATION = ModelDecorationOptions.register({
+	puBlic static readonly _FIND_MATCH_NO_OVERVIEW_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
 		className: 'findMatch',
 		showIfCollapsed: true

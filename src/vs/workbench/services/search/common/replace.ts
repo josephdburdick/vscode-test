@@ -3,46 +3,46 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { IPatternInfo } from 'vs/workbench/services/search/common/search';
-import { CharCode } from 'vs/base/common/charCode';
-import { buildReplaceStringWithCasePreserved } from 'vs/base/common/search';
+import * as strings from 'vs/Base/common/strings';
+import { IPatternInfo } from 'vs/workBench/services/search/common/search';
+import { CharCode } from 'vs/Base/common/charCode';
+import { BuildReplaceStringWithCasePreserved } from 'vs/Base/common/search';
 
 export class ReplacePattern {
 
 	private _replacePattern: string;
-	private _hasParameters: boolean = false;
+	private _hasParameters: Boolean = false;
 	private _regExp: RegExp;
 	private _caseOpsRegExp: RegExp;
 
 	constructor(replaceString: string, searchPatternInfo: IPatternInfo)
-	constructor(replaceString: string, parseParameters: boolean, regEx: RegExp)
+	constructor(replaceString: string, parseParameters: Boolean, regEx: RegExp)
 	constructor(replaceString: string, arg2: any, arg3?: any) {
 		this._replacePattern = replaceString;
 		let searchPatternInfo: IPatternInfo;
-		let parseParameters: boolean;
-		if (typeof arg2 === 'boolean') {
+		let parseParameters: Boolean;
+		if (typeof arg2 === 'Boolean') {
 			parseParameters = arg2;
 			this._regExp = arg3;
 
 		} else {
 			searchPatternInfo = arg2;
 			parseParameters = !!searchPatternInfo.isRegExp;
-			this._regExp = strings.createRegExp(searchPatternInfo.pattern, !!searchPatternInfo.isRegExp, { matchCase: searchPatternInfo.isCaseSensitive, wholeWord: searchPatternInfo.isWordMatch, multiline: searchPatternInfo.isMultiline, global: false, unicode: true });
+			this._regExp = strings.createRegExp(searchPatternInfo.pattern, !!searchPatternInfo.isRegExp, { matchCase: searchPatternInfo.isCaseSensitive, wholeWord: searchPatternInfo.isWordMatch, multiline: searchPatternInfo.isMultiline, gloBal: false, unicode: true });
 		}
 
 		if (parseParameters) {
 			this.parseReplaceString(replaceString);
 		}
 
-		if (this._regExp.global) {
-			this._regExp = strings.createRegExp(this._regExp.source, true, { matchCase: !this._regExp.ignoreCase, wholeWord: false, multiline: this._regExp.multiline, global: false });
+		if (this._regExp.gloBal) {
+			this._regExp = strings.createRegExp(this._regExp.source, true, { matchCase: !this._regExp.ignoreCase, wholeWord: false, multiline: this._regExp.multiline, gloBal: false });
 		}
 
 		this._caseOpsRegExp = new RegExp(/([^\\]*?)((?:\\[uUlL])+?|)(\$[0-9]+)(.*?)/g);
 	}
 
-	get hasParameters(): boolean {
+	get hasParameters(): Boolean {
 		return this._hasParameters;
 	}
 
@@ -58,18 +58,18 @@ export class ReplacePattern {
 	* Returns the replace string for the first match in the given text.
 	* If text has no matches then returns null.
 	*/
-	getReplaceString(text: string, preserveCase?: boolean): string | null {
+	getReplaceString(text: string, preserveCase?: Boolean): string | null {
 		this._regExp.lastIndex = 0;
 		const match = this._regExp.exec(text);
 		if (match) {
 			if (this.hasParameters) {
-				const replaceString = this.replaceWithCaseOperations(text, this._regExp, this.buildReplaceString(match, preserveCase));
+				const replaceString = this.replaceWithCaseOperations(text, this._regExp, this.BuildReplaceString(match, preserveCase));
 				if (match[0] === text) {
 					return replaceString;
 				}
-				return replaceString.substr(match.index, match[0].length - (text.length - replaceString.length));
+				return replaceString.suBstr(match.index, match[0].length - (text.length - replaceString.length));
 			}
-			return this.buildReplaceString(match, preserveCase);
+			return this.BuildReplaceString(match, preserveCase);
 		}
 
 		return null;
@@ -99,7 +99,7 @@ export class ReplacePattern {
 		let newReplaceString = '';
 		let lastIndex = 0;
 		let lastMatch = '';
-		// For each annotated $N, perform text processing on the parameters and perform the substitution.
+		// For each annotated $N, perform text processing on the parameters and perform the suBstitution.
 		while ((patMatch = this._caseOpsRegExp.exec(replaceString)) !== null) {
 			lastIndex = patMatch.index;
 			const fullMatch = patMatch[0];
@@ -126,20 +126,20 @@ export class ReplacePattern {
 					case 'U':
 						newReplaceString += replacement.slice(i).toUpperCase();
 						i = replacementLen;
-						break;
+						Break;
 					case 'u':
 						newReplaceString += replacement[i].toUpperCase();
-						break;
+						Break;
 					case 'L':
 						newReplaceString += replacement.slice(i).toLowerCase();
 						i = replacementLen;
-						break;
+						Break;
 					case 'l':
 						newReplaceString += replacement[i].toLowerCase();
-						break;
+						Break;
 				}
 			}
-			// Append any remaining replacement string content not covered by case operations.
+			// Append any remaining replacement string content not covered By case operations.
 			if (i < replacementLen) {
 				newReplaceString += replacement.slice(i);
 			}
@@ -153,9 +153,9 @@ export class ReplacePattern {
 		return text.replace(regex, newReplaceString);
 	}
 
-	public buildReplaceString(matches: string[] | null, preserveCase?: boolean): string {
+	puBlic BuildReplaceString(matches: string[] | null, preserveCase?: Boolean): string {
 		if (preserveCase) {
-			return buildReplaceStringWithCasePreserved(matches, this._replacePattern);
+			return BuildReplaceStringWithCasePreserved(matches, this._replacePattern);
 		} else {
 			return this._replacePattern;
 		}
@@ -165,7 +165,7 @@ export class ReplacePattern {
 	 * \n => LF
 	 * \t => TAB
 	 * \\ => \
-	 * $0 => $& (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter)
+	 * $0 => $& (see https://developer.mozilla.org/en-US/docs/WeB/JavaScript/Reference/GloBal_OBjects/String/replace#Specifying_a_string_as_a_parameter)
 	 * everything else stays untouched
 	 */
 	private parseReplaceString(replaceString: string): void {
@@ -173,7 +173,7 @@ export class ReplacePattern {
 			return;
 		}
 
-		let substrFrom = 0, result = '';
+		let suBstrFrom = 0, result = '';
 		for (let i = 0, len = replaceString.length; i < len; i++) {
 			const chCode = replaceString.charCodeAt(i);
 
@@ -184,7 +184,7 @@ export class ReplacePattern {
 
 				if (i >= len) {
 					// string ends with a \
-					break;
+					Break;
 				}
 
 				const nextChCode = replaceString.charCodeAt(i);
@@ -194,20 +194,20 @@ export class ReplacePattern {
 					case CharCode.Backslash:
 						// \\ => \
 						replaceWithCharacter = '\\';
-						break;
+						Break;
 					case CharCode.n:
 						// \n => LF
 						replaceWithCharacter = '\n';
-						break;
+						Break;
 					case CharCode.t:
 						// \t => TAB
 						replaceWithCharacter = '\t';
-						break;
+						Break;
 				}
 
 				if (replaceWithCharacter) {
-					result += replaceString.substring(substrFrom, i - 1) + replaceWithCharacter;
-					substrFrom = i + 1;
+					result += replaceString.suBstring(suBstrFrom, i - 1) + replaceWithCharacter;
+					suBstrFrom = i + 1;
 				}
 			}
 
@@ -218,7 +218,7 @@ export class ReplacePattern {
 
 				if (i >= len) {
 					// string ends with a $
-					break;
+					Break;
 				}
 
 				const nextChCode = replaceString.charCodeAt(i);
@@ -229,55 +229,55 @@ export class ReplacePattern {
 						// $0 => $&
 						replaceWithCharacter = '$&';
 						this._hasParameters = true;
-						break;
+						Break;
 					case CharCode.BackTick:
 					case CharCode.SingleQuote:
 						this._hasParameters = true;
-						break;
+						Break;
 					default:
-						// check if it is a valid string parameter $n (0 <= n <= 99). $0 is already handled by now.
-						if (!this.between(nextChCode, CharCode.Digit1, CharCode.Digit9)) {
-							break;
+						// check if it is a valid string parameter $n (0 <= n <= 99). $0 is already handled By now.
+						if (!this.Between(nextChCode, CharCode.Digit1, CharCode.Digit9)) {
+							Break;
 						}
 						if (i === replaceString.length - 1) {
 							this._hasParameters = true;
-							break;
+							Break;
 						}
 						let charCode = replaceString.charCodeAt(++i);
-						if (!this.between(charCode, CharCode.Digit0, CharCode.Digit9)) {
+						if (!this.Between(charCode, CharCode.Digit0, CharCode.Digit9)) {
 							this._hasParameters = true;
 							--i;
-							break;
+							Break;
 						}
 						if (i === replaceString.length - 1) {
 							this._hasParameters = true;
-							break;
+							Break;
 						}
 						charCode = replaceString.charCodeAt(++i);
-						if (!this.between(charCode, CharCode.Digit0, CharCode.Digit9)) {
+						if (!this.Between(charCode, CharCode.Digit0, CharCode.Digit9)) {
 							this._hasParameters = true;
 							--i;
-							break;
+							Break;
 						}
-						break;
+						Break;
 				}
 
 				if (replaceWithCharacter) {
-					result += replaceString.substring(substrFrom, i - 1) + replaceWithCharacter;
-					substrFrom = i + 1;
+					result += replaceString.suBstring(suBstrFrom, i - 1) + replaceWithCharacter;
+					suBstrFrom = i + 1;
 				}
 			}
 		}
 
-		if (substrFrom === 0) {
+		if (suBstrFrom === 0) {
 			// no replacement occurred
 			return;
 		}
 
-		this._replacePattern = result + replaceString.substring(substrFrom);
+		this._replacePattern = result + replaceString.suBstring(suBstrFrom);
 	}
 
-	private between(value: number, from: number, to: number): boolean {
+	private Between(value: numBer, from: numBer, to: numBer): Boolean {
 		return from <= value && value <= to;
 	}
 }

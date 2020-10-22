@@ -9,9 +9,9 @@ export namespace CommentContextKeys {
 	/**
 	 * A context key that is set when the comment thread has no comments.
 	 */
-	export const commentThreadIsEmpty = new RawContextKey<boolean>('commentThreadIsEmpty', false);
+	export const commentThreadIsEmpty = new RawContextKey<Boolean>('commentThreadIsEmpty', false);
 	/**
 	 * A context key that is set when the comment has no input.
 	 */
-	export const commentIsEmpty = new RawContextKey<boolean>('commentIsEmpty', false);
+	export const commentIsEmpty = new RawContextKey<Boolean>('commentIsEmpty', false);
 }

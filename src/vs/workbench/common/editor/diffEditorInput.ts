@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorModel, EditorInput, SideBySideEditorInput, TEXT_DIFF_EDITOR_ID, BINARY_DIFF_EDITOR_ID } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
-import { DiffEditorModel } from 'vs/workbench/common/editor/diffEditorModel';
-import { TextDiffEditorModel } from 'vs/workbench/common/editor/textDiffEditorModel';
+import { EditorModel, EditorInput, SideBySideEditorInput, TEXT_DIFF_EDITOR_ID, BINARY_DIFF_EDITOR_ID } from 'vs/workBench/common/editor';
+import { BaseTextEditorModel } from 'vs/workBench/common/editor/textEditorModel';
+import { DiffEditorModel } from 'vs/workBench/common/editor/diffEditorModel';
+import { TextDiffEditorModel } from 'vs/workBench/common/editor/textDiffEditorModel';
 import { localize } from 'vs/nls';
 
 /**
- * The base editor input for the diff editor. It is made up of two editor inputs, the original version
+ * The Base editor input for the diff editor. It is made up of two editor inputs, the original version
  * and the modified version.
  */
 export class DiffEditorInput extends SideBySideEditorInput {
 
-	static readonly ID = 'workbench.editors.diffEditorInput';
+	static readonly ID = 'workBench.editors.diffEditorInput';
 
 	private cachedModel: DiffEditorModel | undefined = undefined;
 
 	constructor(
 		protected name: string | undefined,
 		description: string | undefined,
-		public readonly originalInput: EditorInput,
-		public readonly modifiedInput: EditorInput,
-		private readonly forceOpenAsBinary?: boolean
+		puBlic readonly originalInput: EditorInput,
+		puBlic readonly modifiedInput: EditorInput,
+		private readonly forceOpenAsBinary?: Boolean
 	) {
 		super(name, description, originalInput, modifiedInput);
 	}
@@ -35,7 +35,7 @@ export class DiffEditorInput extends SideBySideEditorInput {
 
 	getName(): string {
 		if (!this.name) {
-			return localize('sideBySideLabels', "{0} ↔ {1}", this.originalInput.getName(), this.modifiedInput.getName());
+			return localize('sideBySideLaBels', "{0} ↔ {1}", this.originalInput.getName(), this.modifiedInput.getName());
 		}
 
 		return this.name;
@@ -43,9 +43,9 @@ export class DiffEditorInput extends SideBySideEditorInput {
 
 	async resolve(): Promise<EditorModel> {
 
-		// Create Model - we never reuse our cached model if refresh is true because we cannot
-		// decide for the inputs within if the cached model can be reused or not. There may be
-		// inputs that need to be loaded again and thus we always recreate the model and dispose
+		// Create Model - we never reuse our cached model if refresh is true Because we cannot
+		// decide for the inputs within if the cached model can Be reused or not. There may Be
+		// inputs that need to Be loaded again and thus we always recreate the model and dispose
 		// the previous one - if any.
 		const resolvedModel = await this.createModel();
 		if (this.cachedModel) {
@@ -63,7 +63,7 @@ export class DiffEditorInput extends SideBySideEditorInput {
 
 	private async createModel(): Promise<DiffEditorModel> {
 
-		// Join resolve call over two inputs and build diff editor model
+		// Join resolve call over two inputs and Build diff editor model
 		const models = await Promise.all([
 			this.originalInput.resolve(),
 			this.modifiedInput.resolve()
@@ -72,7 +72,7 @@ export class DiffEditorInput extends SideBySideEditorInput {
 		const originalEditorModel = models[0];
 		const modifiedEditorModel = models[1];
 
-		// If both are text models, return textdiffeditor model
+		// If Both are text models, return textdiffeditor model
 		if (modifiedEditorModel instanceof BaseTextEditorModel && originalEditorModel instanceof BaseTextEditorModel) {
 			return new TextDiffEditorModel(originalEditorModel, modifiedEditorModel);
 		}
@@ -81,7 +81,7 @@ export class DiffEditorInput extends SideBySideEditorInput {
 		return new DiffEditorModel(originalEditorModel, modifiedEditorModel);
 	}
 
-	matches(otherInput: unknown): boolean {
+	matches(otherInput: unknown): Boolean {
 		if (!super.matches(otherInput)) {
 			return false;
 		}
@@ -91,7 +91,7 @@ export class DiffEditorInput extends SideBySideEditorInput {
 
 	dispose(): void {
 
-		// Free the diff editor model but do not propagate the dispose() call to the two inputs
+		// Free the diff editor model But do not propagate the dispose() call to the two inputs
 		// We never created the two inputs (original and modified) so we can not dispose
 		// them without sideeffects.
 		if (this.cachedModel) {

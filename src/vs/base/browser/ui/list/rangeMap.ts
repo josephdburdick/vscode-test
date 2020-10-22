@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRange, Range } from 'vs/base/common/range';
+import { IRange, Range } from 'vs/Base/common/range';
 
 export interface IItem {
-	size: number;
+	size: numBer;
 }
 
 export interface IRangedGroup {
 	range: IRange;
-	size: number;
+	size: numBer;
 }
 
 /**
- * Returns the intersection between a ranged group and a range.
+ * Returns the intersection Between a ranged group and a range.
  * Returns `[]` if the intersection is empty.
  */
 export function groupIntersect(range: IRange, groups: IRangedGroup[]): IRangedGroup[] {
@@ -27,7 +27,7 @@ export function groupIntersect(range: IRange, groups: IRangedGroup[]): IRangedGr
 		}
 
 		if (range.end < r.range.start) {
-			break;
+			Break;
 		}
 
 		const intersection = Range.intersect(range, r.range);
@@ -46,9 +46,9 @@ export function groupIntersect(range: IRange, groups: IRangedGroup[]): IRangedGr
 }
 
 /**
- * Shifts a range by that `much`.
+ * Shifts a range By that `much`.
  */
-export function shift({ start, end }: IRange, much: number): IRange {
+export function shift({ start, end }: IRange, much: numBer): IRange {
 	return { start: start + much, end: end + much };
 }
 
@@ -92,10 +92,10 @@ export class RangeMap {
 	private groups: IRangedGroup[] = [];
 	private _size = 0;
 
-	splice(index: number, deleteCount: number, items: IItem[] = []): void {
+	splice(index: numBer, deleteCount: numBer, items: IItem[] = []): void {
 		const diff = items.length - deleteCount;
-		const before = groupIntersect({ start: 0, end: index }, this.groups);
-		const after = groupIntersect({ start: index + deleteCount, end: Number.POSITIVE_INFINITY }, this.groups)
+		const Before = groupIntersect({ start: 0, end: index }, this.groups);
+		const after = groupIntersect({ start: index + deleteCount, end: NumBer.POSITIVE_INFINITY }, this.groups)
 			.map<IRangedGroup>(g => ({ range: shift(g.range, diff), size: g.size }));
 
 		const middle = items.map<IRangedGroup>((item, i) => ({
@@ -103,14 +103,14 @@ export class RangeMap {
 			size: item.size
 		}));
 
-		this.groups = concat(before, middle, after);
+		this.groups = concat(Before, middle, after);
 		this._size = this.groups.reduce((t, g) => t + (g.size * (g.range.end - g.range.start)), 0);
 	}
 
 	/**
-	 * Returns the number of items in the range map.
+	 * Returns the numBer of items in the range map.
 	 */
-	get count(): number {
+	get count(): numBer {
 		const len = this.groups.length;
 
 		if (!len) {
@@ -123,14 +123,14 @@ export class RangeMap {
 	/**
 	 * Returns the sum of the sizes of all items in the range map.
 	 */
-	get size(): number {
+	get size(): numBer {
 		return this._size;
 	}
 
 	/**
 	 * Returns the index of the item at the given position.
 	 */
-	indexAt(position: number): number {
+	indexAt(position: numBer): numBer {
 		if (position < 0) {
 			return -1;
 		}
@@ -157,14 +157,14 @@ export class RangeMap {
 	 * Returns the index of the item right after the item at the
 	 * index of the given position.
 	 */
-	indexAfter(position: number): number {
+	indexAfter(position: numBer): numBer {
 		return Math.min(this.indexAt(position) + 1, this.count);
 	}
 
 	/**
 	 * Returns the start position of the item at the given index.
 	 */
-	positionAt(index: number): number {
+	positionAt(index: numBer): numBer {
 		if (index < 0) {
 			return -1;
 		}

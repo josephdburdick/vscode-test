@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as types from 'vs/base/common/types';
+import * as types from 'vs/Base/common/types';
 
 suite('Types', () => {
 
@@ -17,7 +17,7 @@ suite('Types', () => {
 		assert(!types.isFunction([]));
 		assert(!types.isFunction([1, 2, '3']));
 		assert(!types.isFunction({}));
-		assert(!types.isFunction({ foo: 'bar' }));
+		assert(!types.isFunction({ foo: 'Bar' }));
 		assert(!types.isFunction(/test/));
 		assert(!types.isFunction(new RegExp('')));
 		assert(!types.isFunction(new Date()));
@@ -35,7 +35,7 @@ suite('Types', () => {
 		assert(!types.areFunctions([]));
 		assert(!types.areFunctions([1, 2, '3']));
 		assert(!types.areFunctions({}));
-		assert(!types.areFunctions({ foo: 'bar' }));
+		assert(!types.areFunctions({ foo: 'Bar' }));
 		assert(!types.areFunctions(/test/));
 		assert(!types.areFunctions(new RegExp('')));
 		assert(!types.areFunctions(new Date()));
@@ -46,40 +46,40 @@ suite('Types', () => {
 		assert(types.areFunctions(function foo() { /**/ }));
 	});
 
-	test('isObject', () => {
-		assert(!types.isObject(undefined));
-		assert(!types.isObject(null));
-		assert(!types.isObject('foo'));
-		assert(!types.isObject(5));
-		assert(!types.isObject(true));
-		assert(!types.isObject([]));
-		assert(!types.isObject([1, 2, '3']));
-		assert(!types.isObject(/test/));
-		assert(!types.isObject(new RegExp('')));
+	test('isOBject', () => {
+		assert(!types.isOBject(undefined));
+		assert(!types.isOBject(null));
+		assert(!types.isOBject('foo'));
+		assert(!types.isOBject(5));
+		assert(!types.isOBject(true));
+		assert(!types.isOBject([]));
+		assert(!types.isOBject([1, 2, '3']));
+		assert(!types.isOBject(/test/));
+		assert(!types.isOBject(new RegExp('')));
 		assert(!types.isFunction(new Date()));
-		assert(!types.isObject(assert));
-		assert(!types.isObject(function foo() { }));
+		assert(!types.isOBject(assert));
+		assert(!types.isOBject(function foo() { }));
 
-		assert(types.isObject({}));
-		assert(types.isObject({ foo: 'bar' }));
+		assert(types.isOBject({}));
+		assert(types.isOBject({ foo: 'Bar' }));
 	});
 
-	test('isEmptyObject', () => {
-		assert(!types.isEmptyObject(undefined));
-		assert(!types.isEmptyObject(null));
-		assert(!types.isEmptyObject('foo'));
-		assert(!types.isEmptyObject(5));
-		assert(!types.isEmptyObject(true));
-		assert(!types.isEmptyObject([]));
-		assert(!types.isEmptyObject([1, 2, '3']));
-		assert(!types.isEmptyObject(/test/));
-		assert(!types.isEmptyObject(new RegExp('')));
-		assert(!types.isEmptyObject(new Date()));
-		assert(!types.isEmptyObject(assert));
-		assert(!types.isEmptyObject(function foo() { /**/ }));
-		assert(!types.isEmptyObject({ foo: 'bar' }));
+	test('isEmptyOBject', () => {
+		assert(!types.isEmptyOBject(undefined));
+		assert(!types.isEmptyOBject(null));
+		assert(!types.isEmptyOBject('foo'));
+		assert(!types.isEmptyOBject(5));
+		assert(!types.isEmptyOBject(true));
+		assert(!types.isEmptyOBject([]));
+		assert(!types.isEmptyOBject([1, 2, '3']));
+		assert(!types.isEmptyOBject(/test/));
+		assert(!types.isEmptyOBject(new RegExp('')));
+		assert(!types.isEmptyOBject(new Date()));
+		assert(!types.isEmptyOBject(assert));
+		assert(!types.isEmptyOBject(function foo() { /**/ }));
+		assert(!types.isEmptyOBject({ foo: 'Bar' }));
 
-		assert(types.isEmptyObject({}));
+		assert(types.isEmptyOBject({}));
 	});
 
 	test('isArray', () => {
@@ -94,7 +94,7 @@ suite('Types', () => {
 		assert(!types.isArray(new Date()));
 		assert(!types.isArray(assert));
 		assert(!types.isArray(function foo() { /**/ }));
-		assert(!types.isArray({ foo: 'bar' }));
+		assert(!types.isArray({ foo: 'Bar' }));
 
 		assert(types.isArray([]));
 		assert(types.isArray([1, 2, '3']));
@@ -113,28 +113,28 @@ suite('Types', () => {
 		assert(!types.isString(new Date()));
 		assert(!types.isString(assert));
 		assert(!types.isString(function foo() { /**/ }));
-		assert(!types.isString({ foo: 'bar' }));
+		assert(!types.isString({ foo: 'Bar' }));
 
 		assert(types.isString('foo'));
 	});
 
-	test('isNumber', () => {
-		assert(!types.isNumber(undefined));
-		assert(!types.isNumber(null));
-		assert(!types.isNumber('foo'));
-		assert(!types.isNumber([]));
-		assert(!types.isNumber([1, 2, '3']));
-		assert(!types.isNumber(true));
-		assert(!types.isNumber({}));
-		assert(!types.isNumber(/test/));
-		assert(!types.isNumber(new RegExp('')));
-		assert(!types.isNumber(new Date()));
-		assert(!types.isNumber(assert));
-		assert(!types.isNumber(function foo() { /**/ }));
-		assert(!types.isNumber({ foo: 'bar' }));
-		assert(!types.isNumber(parseInt('A', 10)));
+	test('isNumBer', () => {
+		assert(!types.isNumBer(undefined));
+		assert(!types.isNumBer(null));
+		assert(!types.isNumBer('foo'));
+		assert(!types.isNumBer([]));
+		assert(!types.isNumBer([1, 2, '3']));
+		assert(!types.isNumBer(true));
+		assert(!types.isNumBer({}));
+		assert(!types.isNumBer(/test/));
+		assert(!types.isNumBer(new RegExp('')));
+		assert(!types.isNumBer(new Date()));
+		assert(!types.isNumBer(assert));
+		assert(!types.isNumBer(function foo() { /**/ }));
+		assert(!types.isNumBer({ foo: 'Bar' }));
+		assert(!types.isNumBer(parseInt('A', 10)));
 
-		assert(types.isNumber(5));
+		assert(types.isNumBer(5));
 	});
 
 	test('isUndefined', () => {
@@ -149,7 +149,7 @@ suite('Types', () => {
 		assert(!types.isUndefined(new Date()));
 		assert(!types.isUndefined(assert));
 		assert(!types.isUndefined(function foo() { /**/ }));
-		assert(!types.isUndefined({ foo: 'bar' }));
+		assert(!types.isUndefined({ foo: 'Bar' }));
 
 		assert(types.isUndefined(undefined));
 	});
@@ -165,7 +165,7 @@ suite('Types', () => {
 		assert(!types.isUndefinedOrNull(new Date()));
 		assert(!types.isUndefinedOrNull(assert));
 		assert(!types.isUndefinedOrNull(function foo() { /**/ }));
-		assert(!types.isUndefinedOrNull({ foo: 'bar' }));
+		assert(!types.isUndefinedOrNull({ foo: 'Bar' }));
 
 		assert(types.isUndefinedOrNull(undefined));
 		assert(types.isUndefinedOrNull(null));
@@ -190,11 +190,11 @@ suite('Types', () => {
 	});
 
 	test('validateConstraints', () => {
-		types.validateConstraints([1, 'test', true], [Number, String, Boolean]);
-		types.validateConstraints([1, 'test', true], ['number', 'string', 'boolean']);
+		types.validateConstraints([1, 'test', true], [NumBer, String, Boolean]);
+		types.validateConstraints([1, 'test', true], ['numBer', 'string', 'Boolean']);
 		types.validateConstraints([console.log], [Function]);
 		types.validateConstraints([undefined], [types.isUndefined]);
-		types.validateConstraints([1], [types.isNumber]);
+		types.validateConstraints([1], [types.isNumBer]);
 
 		class Foo { }
 		types.validateConstraints([new Foo()], [Foo]);
@@ -205,8 +205,8 @@ suite('Types', () => {
 		function isFoo2(f: any) { return true; }
 		types.validateConstraints([new Foo()], [isFoo2]);
 
-		assert.throws(() => types.validateConstraints([1, true], [types.isNumber, types.isString]));
-		assert.throws(() => types.validateConstraints(['2'], [types.isNumber]));
-		assert.throws(() => types.validateConstraints([1, 'test', true], [Number, String, Number]));
+		assert.throws(() => types.validateConstraints([1, true], [types.isNumBer, types.isString]));
+		assert.throws(() => types.validateConstraints(['2'], [types.isNumBer]));
+		assert.throws(() => types.validateConstraints([1, 'test', true], [NumBer, String, NumBer]));
 	});
 });

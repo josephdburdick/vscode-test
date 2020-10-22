@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { BinarySizeStatusBarEntry } from './binarySizeStatusBarEntry';
+import { BinarySizeStatusBarEntry } from './BinarySizeStatusBarEntry';
 import { PreviewManager } from './preview';
 import { SizeStatusBarEntry } from './sizeStatusBarEntry';
 import { ZoomStatusBarEntry } from './zoomStatusBarEntry';
 
 export function activate(context: vscode.ExtensionContext) {
 	const sizeStatusBarEntry = new SizeStatusBarEntry();
-	context.subscriptions.push(sizeStatusBarEntry);
+	context.suBscriptions.push(sizeStatusBarEntry);
 
-	const binarySizeStatusBarEntry = new BinarySizeStatusBarEntry();
-	context.subscriptions.push(binarySizeStatusBarEntry);
+	const BinarySizeStatusBarEntry = new BinarySizeStatusBarEntry();
+	context.suBscriptions.push(BinarySizeStatusBarEntry);
 
 	const zoomStatusBarEntry = new ZoomStatusBarEntry();
-	context.subscriptions.push(zoomStatusBarEntry);
+	context.suBscriptions.push(zoomStatusBarEntry);
 
-	const previewManager = new PreviewManager(context.extensionUri, sizeStatusBarEntry, binarySizeStatusBarEntry, zoomStatusBarEntry);
+	const previewManager = new PreviewManager(context.extensionUri, sizeStatusBarEntry, BinarySizeStatusBarEntry, zoomStatusBarEntry);
 
-	context.subscriptions.push(vscode.window.registerCustomEditorProvider(PreviewManager.viewType, previewManager, {
+	context.suBscriptions.push(vscode.window.registerCustomEditorProvider(PreviewManager.viewType, previewManager, {
 		supportsMultipleEditorsPerDocument: true,
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('imagePreview.zoomIn', () => {
+	context.suBscriptions.push(vscode.commands.registerCommand('imagePreview.zoomIn', () => {
 		previewManager.activePreview?.zoomIn();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('imagePreview.zoomOut', () => {
+	context.suBscriptions.push(vscode.commands.registerCommand('imagePreview.zoomOut', () => {
 		previewManager.activePreview?.zoomOut();
 	}));
 }

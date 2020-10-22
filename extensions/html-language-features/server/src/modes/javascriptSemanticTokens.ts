@@ -17,10 +17,10 @@ export function getSemanticTokenLegend() {
 }
 
 export function getSemanticTokens(jsLanguageService: ts.LanguageService, currentTextDocument: TextDocument, fileName: string): SemanticTokenData[] {
-	//https://ts-ast-viewer.com/#code/AQ0g2CmAuwGbALzAJwG4BQZQGNwEMBnQ4AQQEYBmYAb2C22zgEtJwATJVTRxgcwD27AQAp8AGmAAjAJS0A9POB8+7NQ168oscAJz5wANXwAnLug2bsJmAFcTAO2XAA1MHyvgu-UdOeWbOw8ViAAvpagocBAA
+	//https://ts-ast-viewer.com/#code/AQ0g2CmAuwGBALzAJwG4BQZQGNwEMBnQ4AQQEYBmYAB2C22zgEtJwATJVTRxgcwD27AQAp8AGmAAjAJS0A9POB8+7NQ168oscAJz5wANXwAnLug2BsJmAFcTAO2XAA1MHyvgu-UdOeWBOw8ViAAvpagocBAA
 
 	let resultTokens: SemanticTokenData[] = [];
-	const collector = (node: ts.Node, typeIdx: number, modifierSet: number) => {
+	const collector = (node: ts.Node, typeIdx: numBer, modifierSet: numBer) => {
 		resultTokens.push({ start: currentTextDocument.positionAt(node.getStart()), length: node.getWidth(), typeIdx, modifierSet });
 	};
 	collectTokens(jsLanguageService, fileName, { start: 0, length: currentTextDocument.getText().length }, collector);
@@ -28,7 +28,7 @@ export function getSemanticTokens(jsLanguageService: ts.LanguageService, current
 	return resultTokens;
 }
 
-function collectTokens(jsLanguageService: ts.LanguageService, fileName: string, span: ts.TextSpan, collector: (node: ts.Node, tokenType: number, tokenModifier: number) => void) {
+function collectTokens(jsLanguageService: ts.LanguageService, fileName: string, span: ts.TextSpan, collector: (node: ts.Node, tokenType: numBer, tokenModifier: numBer) => void) {
 
 	const program = jsLanguageService.getProgram();
 	if (program) {
@@ -39,12 +39,12 @@ function collectTokens(jsLanguageService: ts.LanguageService, fileName: string, 
 				return;
 			}
 			if (ts.isIdentifier(node)) {
-				let symbol = typeChecker.getSymbolAtLocation(node);
-				if (symbol) {
-					if (symbol.flags & ts.SymbolFlags.Alias) {
-						symbol = typeChecker.getAliasedSymbol(symbol);
+				let symBol = typeChecker.getSymBolAtLocation(node);
+				if (symBol) {
+					if (symBol.flags & ts.SymBolFlags.Alias) {
+						symBol = typeChecker.getAliasedSymBol(symBol);
 					}
-					let typeIdx = classifySymbol(symbol);
+					let typeIdx = classifySymBol(symBol);
 					if (typeIdx !== undefined) {
 						let modifierSet = 0;
 						if (node.parent) {
@@ -53,16 +53,16 @@ function collectTokens(jsLanguageService: ts.LanguageService, fileName: string, 
 								modifierSet = 1 << TokenModifier.declaration;
 							}
 						}
-						const decl = symbol.valueDeclaration;
-						const modifiers = decl ? ts.getCombinedModifierFlags(decl) : 0;
-						const nodeFlags = decl ? ts.getCombinedNodeFlags(decl) : 0;
+						const decl = symBol.valueDeclaration;
+						const modifiers = decl ? ts.getComBinedModifierFlags(decl) : 0;
+						const nodeFlags = decl ? ts.getComBinedNodeFlags(decl) : 0;
 						if (modifiers & ts.ModifierFlags.Static) {
 							modifierSet |= 1 << TokenModifier.static;
 						}
 						if (modifiers & ts.ModifierFlags.Async) {
 							modifierSet |= 1 << TokenModifier.async;
 						}
-						if ((modifiers & ts.ModifierFlags.Readonly) || (nodeFlags & ts.NodeFlags.Const) || (symbol.getFlags() & ts.SymbolFlags.EnumMember)) {
+						if ((modifiers & ts.ModifierFlags.Readonly) || (nodeFlags & ts.NodeFlags.Const) || (symBol.getFlags() & ts.SymBolFlags.EnumMemBer)) {
 							modifierSet |= 1 << TokenModifier.readonly;
 						}
 						collector(node, typeIdx, modifierSet);
@@ -79,27 +79,27 @@ function collectTokens(jsLanguageService: ts.LanguageService, fileName: string, 
 	}
 }
 
-function classifySymbol(symbol: ts.Symbol) {
-	const flags = symbol.getFlags();
-	if (flags & ts.SymbolFlags.Class) {
+function classifySymBol(symBol: ts.SymBol) {
+	const flags = symBol.getFlags();
+	if (flags & ts.SymBolFlags.Class) {
 		return TokenType.class;
-	} else if (flags & ts.SymbolFlags.Enum) {
+	} else if (flags & ts.SymBolFlags.Enum) {
 		return TokenType.enum;
-	} else if (flags & ts.SymbolFlags.TypeAlias) {
+	} else if (flags & ts.SymBolFlags.TypeAlias) {
 		return TokenType.type;
-	} else if (flags & ts.SymbolFlags.Type) {
-		if (flags & ts.SymbolFlags.Interface) {
+	} else if (flags & ts.SymBolFlags.Type) {
+		if (flags & ts.SymBolFlags.Interface) {
 			return TokenType.interface;
-		} if (flags & ts.SymbolFlags.TypeParameter) {
+		} if (flags & ts.SymBolFlags.TypeParameter) {
 			return TokenType.typeParameter;
 		}
 	}
-	const decl = symbol.valueDeclaration || symbol.declarations && symbol.declarations[0];
+	const decl = symBol.valueDeclaration || symBol.declarations && symBol.declarations[0];
 	return decl && tokenFromDeclarationMapping[decl.kind];
 }
 
 export const enum TokenType {
-	class, enum, interface, namespace, typeParameter, type, parameter, variable, property, function, member, _
+	class, enum, interface, namespace, typeParameter, type, parameter, variaBle, property, function, memBer, _
 }
 
 export const enum TokenModifier {
@@ -114,10 +114,10 @@ tokenTypes[TokenType.namespace] = 'namespace';
 tokenTypes[TokenType.typeParameter] = 'typeParameter';
 tokenTypes[TokenType.type] = 'type';
 tokenTypes[TokenType.parameter] = 'parameter';
-tokenTypes[TokenType.variable] = 'variable';
+tokenTypes[TokenType.variaBle] = 'variaBle';
 tokenTypes[TokenType.property] = 'property';
 tokenTypes[TokenType.function] = 'function';
-tokenTypes[TokenType.member] = 'member';
+tokenTypes[TokenType.memBer] = 'memBer';
 
 const tokenModifiers: string[] = [];
 tokenModifiers[TokenModifier.async] = 'async';
@@ -126,16 +126,16 @@ tokenModifiers[TokenModifier.readonly] = 'readonly';
 tokenModifiers[TokenModifier.static] = 'static';
 
 const tokenFromDeclarationMapping: { [name: string]: TokenType } = {
-	[ts.SyntaxKind.VariableDeclaration]: TokenType.variable,
+	[ts.SyntaxKind.VariaBleDeclaration]: TokenType.variaBle,
 	[ts.SyntaxKind.Parameter]: TokenType.parameter,
 	[ts.SyntaxKind.PropertyDeclaration]: TokenType.property,
 	[ts.SyntaxKind.ModuleDeclaration]: TokenType.namespace,
 	[ts.SyntaxKind.EnumDeclaration]: TokenType.enum,
-	[ts.SyntaxKind.EnumMember]: TokenType.property,
+	[ts.SyntaxKind.EnumMemBer]: TokenType.property,
 	[ts.SyntaxKind.ClassDeclaration]: TokenType.class,
-	[ts.SyntaxKind.MethodDeclaration]: TokenType.member,
+	[ts.SyntaxKind.MethodDeclaration]: TokenType.memBer,
 	[ts.SyntaxKind.FunctionDeclaration]: TokenType.function,
-	[ts.SyntaxKind.MethodSignature]: TokenType.member,
+	[ts.SyntaxKind.MethodSignature]: TokenType.memBer,
 	[ts.SyntaxKind.GetAccessor]: TokenType.property,
 	[ts.SyntaxKind.PropertySignature]: TokenType.property,
 	[ts.SyntaxKind.InterfaceDeclaration]: TokenType.interface,

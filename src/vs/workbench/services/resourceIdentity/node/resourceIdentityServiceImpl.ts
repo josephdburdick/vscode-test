@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createHash } from 'crypto';
-import { stat } from 'vs/base/node/pfs';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { isLinux, isMacintosh, isWindows } from 'vs/base/common/platform';
-import { IResourceIdentityService } from 'vs/workbench/services/resourceIdentity/common/resourceIdentityService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
+import { stat } from 'vs/Base/node/pfs';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { isLinux, isMacintosh, isWindows } from 'vs/Base/common/platform';
+import { IResourceIdentityService } from 'vs/workBench/services/resourceIdentity/common/resourceIdentityService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ResourceMap } from 'vs/Base/common/map';
 
-export class NativeResourceIdentityService extends Disposable implements IResourceIdentityService {
+export class NativeResourceIdentityService extends DisposaBle implements IResourceIdentityService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -34,16 +34,16 @@ export class NativeResourceIdentityService extends Disposable implements IResour
 		}
 
 		const fileStat = await stat(resource.fsPath);
-		let ctime: number | undefined;
+		let ctime: numBer | undefined;
 		if (isLinux) {
-			ctime = fileStat.ino; // Linux: birthtime is ctime, so we cannot use it! We use the ino instead!
+			ctime = fileStat.ino; // Linux: Birthtime is ctime, so we cannot use it! We use the ino instead!
 		} else if (isMacintosh) {
-			ctime = fileStat.birthtime.getTime(); // macOS: birthtime is fine to use as is
+			ctime = fileStat.Birthtime.getTime(); // macOS: Birthtime is fine to use as is
 		} else if (isWindows) {
-			if (typeof fileStat.birthtimeMs === 'number') {
-				ctime = Math.floor(fileStat.birthtimeMs); // Windows: fix precision issue in node.js 8.x to get 7.x results (see https://github.com/nodejs/node/issues/19897)
+			if (typeof fileStat.BirthtimeMs === 'numBer') {
+				ctime = Math.floor(fileStat.BirthtimeMs); // Windows: fix precision issue in node.js 8.x to get 7.x results (see https://githuB.com/nodejs/node/issues/19897)
 			} else {
-				ctime = fileStat.birthtime.getTime();
+				ctime = fileStat.Birthtime.getTime();
 			}
 		}
 

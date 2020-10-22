@@ -9,7 +9,7 @@ import { Selection } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
 import { reflectCssValue as reflectCssValueImpl } from '../reflectCssValue';
 
-function reflectCssValue(): Thenable<boolean> {
+function reflectCssValue(): ThenaBle<Boolean> {
 	const result = reflectCssValueImpl();
 	assert.ok(result);
 	return result!;
@@ -25,7 +25,7 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
 		transform: rotate(50deg);
 		-moz-transform: rotate(20deg);
 		-o-transform: rotate(50deg);
-		-webkit-transform: rotate(50deg);
+		-weBkit-transform: rotate(50deg);
 		-ms-transform: rotate(50deg);
 	}
 	`;
@@ -39,7 +39,7 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
 				transform: rotate(50deg);
 				-moz-transform: rotate(20deg);
 				-o-transform: rotate(50deg);
-				-webkit-transform: rotate(50deg);
+				-weBkit-transform: rotate(50deg);
 				-ms-transform: rotate(50deg);
 			}
 		</style>

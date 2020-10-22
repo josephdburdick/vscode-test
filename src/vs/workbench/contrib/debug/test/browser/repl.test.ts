@@ -5,22 +5,22 @@
 
 
 import * as assert from 'assert';
-import severity from 'vs/base/common/severity';
-import { DebugModel, StackFrame, Thread } from 'vs/workbench/contrib/debug/common/debugModel';
-import { MockRawSession, MockDebugAdapter, createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
-import { SimpleReplElement, RawObjectReplElement, ReplEvaluationInput, ReplModel, ReplEvaluationResult, ReplGroup } from 'vs/workbench/contrib/debug/common/replModel';
-import { RawDebugSession } from 'vs/workbench/contrib/debug/browser/rawDebugSession';
-import { timeout } from 'vs/base/common/async';
-import { createMockSession } from 'vs/workbench/contrib/debug/test/browser/callStack.test';
-import { ReplFilter } from 'vs/workbench/contrib/debug/browser/replFilter';
-import { TreeVisibility } from 'vs/base/browser/ui/tree/tree';
+import severity from 'vs/Base/common/severity';
+import { DeBugModel, StackFrame, Thread } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { MockRawSession, MockDeBugAdapter, createMockDeBugModel } from 'vs/workBench/contriB/deBug/test/Browser/mockDeBug';
+import { SimpleReplElement, RawOBjectReplElement, ReplEvaluationInput, ReplModel, ReplEvaluationResult, ReplGroup } from 'vs/workBench/contriB/deBug/common/replModel';
+import { RawDeBugSession } from 'vs/workBench/contriB/deBug/Browser/rawDeBugSession';
+import { timeout } from 'vs/Base/common/async';
+import { createMockSession } from 'vs/workBench/contriB/deBug/test/Browser/callStack.test';
+import { ReplFilter } from 'vs/workBench/contriB/deBug/Browser/replFilter';
+import { TreeVisiBility } from 'vs/Base/Browser/ui/tree/tree';
 
-suite('Debug - REPL', () => {
-	let model: DebugModel;
+suite('DeBug - REPL', () => {
+	let model: DeBugModel;
 	let rawSession: MockRawSession;
 
 	setup(() => {
-		model = createMockDebugModel();
+		model = createMockDeBugModel();
 		rawSession = new MockRawSession();
 	});
 
@@ -45,11 +45,11 @@ suite('Debug - REPL', () => {
 		assert.equal(elements[2].value, '1');
 		assert.equal(elements[2].severity, severity.Warning);
 
-		const keyValueObject = { 'key1': 2, 'key2': 'value' };
-		repl.appendToRepl(session, new RawObjectReplElement('fakeid', 'fake', keyValueObject), severity.Info);
-		const element = <RawObjectReplElement>repl.getReplElements()[3];
-		assert.equal(element.value, 'Object');
-		assert.deepEqual(element.valueObj, keyValueObject);
+		const keyValueOBject = { 'key1': 2, 'key2': 'value' };
+		repl.appendToRepl(session, new RawOBjectReplElement('fakeid', 'fake', keyValueOBject), severity.Info);
+		const element = <RawOBjectReplElement>repl.getReplElements()[3];
+		assert.equal(element.value, 'OBject');
+		assert.deepEqual(element.valueOBj, keyValueOBject);
 
 		repl.removeReplExpressions();
 		assert.equal(repl.getReplElements().length, 0);
@@ -67,7 +67,7 @@ suite('Debug - REPL', () => {
 	});
 
 	test('repl merging', () => {
-		// 'mergeWithParent' should be ignored when there is no parent.
+		// 'mergeWithParent' should Be ignored when there is no parent.
 		const parent = createMockSession(model, 'parent', { repl: 'mergeWithParent' });
 		const child1 = createMockSession(model, 'child1', { parentSession: parent, repl: 'separate' });
 		const child2 = createMockSession(model, 'child2', { parentSession: parent, repl: 'mergeWithParent' });
@@ -117,15 +117,15 @@ suite('Debug - REPL', () => {
 
 		session['raw'] = <any>rawSession;
 		const thread = new Thread(session, 'mockthread', 1);
-		const stackFrame = new StackFrame(thread, 1, <any>undefined, 'app.js', 'normal', { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 10 }, 1);
+		const stackFrame = new StackFrame(thread, 1, <any>undefined, 'app.js', 'normal', { startLineNumBer: 1, startColumn: 1, endLineNumBer: 1, endColumn: 10 }, 1);
 		const replModel = new ReplModel();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
+		replModel.addReplExpression(session, stackFrame, 'myVariaBle').then();
+		replModel.addReplExpression(session, stackFrame, 'myVariaBle').then();
+		replModel.addReplExpression(session, stackFrame, 'myVariaBle').then();
 
 		assert.equal(replModel.getReplElements().length, 3);
 		replModel.getReplElements().forEach(re => {
-			assert.equal((<ReplEvaluationInput>re).value, 'myVariable');
+			assert.equal((<ReplEvaluationInput>re).value, 'myVariaBle');
 		});
 
 		replModel.removeReplExpressions();
@@ -136,15 +136,15 @@ suite('Debug - REPL', () => {
 		const session = createMockSession(model);
 		model.addSession(session);
 
-		const adapter = new MockDebugAdapter();
-		const raw = new RawDebugSession(adapter, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!);
+		const adapter = new MockDeBugAdapter();
+		const raw = new RawDeBugSession(adapter, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!);
 		session.initializeForTest(raw);
 
-		await session.addReplExpression(undefined, 'before.1');
+		await session.addReplExpression(undefined, 'Before.1');
 		assert.equal(session.getReplElements().length, 3);
-		assert.equal((<ReplEvaluationInput>session.getReplElements()[0]).value, 'before.1');
-		assert.equal((<SimpleReplElement>session.getReplElements()[1]).value, 'before.1');
-		assert.equal((<ReplEvaluationResult>session.getReplElements()[2]).value, '=before.1');
+		assert.equal((<ReplEvaluationInput>session.getReplElements()[0]).value, 'Before.1');
+		assert.equal((<SimpleReplElement>session.getReplElements()[1]).value, 'Before.1');
+		assert.equal((<ReplEvaluationResult>session.getReplElements()[2]).value, '=Before.1');
 
 		await session.addReplExpression(undefined, 'after.2');
 		await timeout(0);
@@ -158,7 +158,7 @@ suite('Debug - REPL', () => {
 		const session = createMockSession(model);
 		const repl = new ReplModel();
 
-		repl.appendToRepl(session, 'first global line', severity.Info);
+		repl.appendToRepl(session, 'first gloBal line', severity.Info);
 		repl.startGroup('group_1', true);
 		repl.appendToRepl(session, 'first line in group', severity.Info);
 		repl.appendToRepl(session, 'second line in group', severity.Info);
@@ -171,8 +171,8 @@ suite('Debug - REPL', () => {
 		assert.equal(group.hasEnded, false);
 
 		repl.startGroup('group_2', false);
-		repl.appendToRepl(session, 'first line in subgroup', severity.Info);
-		repl.appendToRepl(session, 'second line in subgroup', severity.Info);
+		repl.appendToRepl(session, 'first line in suBgroup', severity.Info);
+		repl.appendToRepl(session, 'second line in suBgroup', severity.Info);
 		const children = group.getChildren();
 		assert.equal(children.length, 3);
 		assert.equal((<SimpleReplElement>children[0]).value, 'first line in group');
@@ -187,9 +187,9 @@ suite('Debug - REPL', () => {
 		assert.equal(group.hasEnded, false);
 		repl.endGroup();
 		assert.equal(group.hasEnded, true);
-		repl.appendToRepl(session, 'second global line', severity.Info);
+		repl.appendToRepl(session, 'second gloBal line', severity.Info);
 		assert.equal(repl.getReplElements().length, 3);
-		assert.equal((<SimpleReplElement>repl.getReplElements()[2]).value, 'second global line');
+		assert.equal((<SimpleReplElement>repl.getReplElements()[2]).value, 'second gloBal line');
 	});
 
 	test('repl filter', async () => {
@@ -200,8 +200,8 @@ suite('Debug - REPL', () => {
 		const getFilteredElements = () => {
 			const elements = repl.getReplElements();
 			return elements.filter(e => {
-				const filterResult = replFilter.filter(e, TreeVisibility.Visible);
-				return filterResult === true || filterResult === TreeVisibility.Visible;
+				const filterResult = replFilter.filter(e, TreeVisiBility.VisiBle);
+				return filterResult === true || filterResult === TreeVisiBility.VisiBle;
 			});
 		};
 

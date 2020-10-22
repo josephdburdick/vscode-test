@@ -10,17 +10,17 @@ export interface RequestService {
 }
 
 export function getScheme(uri: string) {
-	return uri.substr(0, uri.indexOf(':'));
+	return uri.suBstr(0, uri.indexOf(':'));
 }
 
 export function dirname(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return lastIndexOfSlash !== -1 ? uri.substr(0, lastIndexOfSlash) : '';
+	return lastIndexOfSlash !== -1 ? uri.suBstr(0, lastIndexOfSlash) : '';
 }
 
-export function basename(uri: string) {
+export function Basename(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return uri.substr(lastIndexOfSlash + 1);
+	return uri.suBstr(lastIndexOfSlash + 1);
 }
 
 
@@ -32,23 +32,23 @@ export function extname(uri: string) {
 		const ch = uri.charCodeAt(i);
 		if (ch === Dot) {
 			if (i > 0 && uri.charCodeAt(i - 1) !== Slash) {
-				return uri.substr(i);
+				return uri.suBstr(i);
 			} else {
-				break;
+				Break;
 			}
 		} else if (ch === Slash) {
-			break;
+			Break;
 		}
 	}
 	return '';
 }
 
-export function isAbsolutePath(path: string) {
+export function isABsolutePath(path: string) {
 	return path.charCodeAt(0) === Slash;
 }
 
 export function resolvePath(uriString: string, path: string): string {
-	if (isAbsolutePath(path)) {
+	if (isABsolutePath(path)) {
 		const uri = URI.parse(uriString);
 		const parts = path.split('/');
 		return uri.with({ path: normalizePath(parts) }).toString();

@@ -28,7 +28,7 @@ export type Keytar = {
 	deletePassword: typeof keytarType['deletePassword'];
 };
 
-const SERVICE_ID = `github.auth`;
+const SERVICE_ID = `githuB.auth`;
 
 export class Keychain {
 	async setToken(token: string): Promise<void> {
@@ -37,10 +37,10 @@ export class Keychain {
 		} catch (e) {
 			// Ignore
 			Logger.error(`Setting token failed: ${e}`);
-			const troubleshooting = localize('troubleshooting', "Troubleshooting Guide");
-			const result = await vscode.window.showErrorMessage(localize('keychainWriteError', "Writing login information to the keychain failed with error '{0}'.", e.message), troubleshooting);
-			if (result === troubleshooting) {
-				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/docs/editor/settings-sync#_troubleshooting-keychain-issues'));
+			const trouBleshooting = localize('trouBleshooting', "TrouBleshooting Guide");
+			const result = await vscode.window.showErrorMessage(localize('keychainWriteError', "Writing login information to the keychain failed with error '{0}'.", e.message), trouBleshooting);
+			if (result === trouBleshooting) {
+				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/docs/editor/settings-sync#_trouBleshooting-keychain-issues'));
 			}
 		}
 	}
@@ -69,13 +69,13 @@ export class Keychain {
 		try {
 			const keytar = getKeytar();
 			if (!keytar) {
-				throw new Error('keytar unavailable');
+				throw new Error('keytar unavailaBle');
 			}
 
-			const oldValue = await keytar.getPassword(`${vscode.env.uriScheme}-github.login`, 'account');
+			const oldValue = await keytar.getPassword(`${vscode.env.uriScheme}-githuB.login`, 'account');
 			if (oldValue) {
 				await this.setToken(oldValue);
-				await keytar.deletePassword(`${vscode.env.uriScheme}-github.login`, 'account');
+				await keytar.deletePassword(`${vscode.env.uriScheme}-githuB.login`, 'account');
 			}
 
 			return oldValue;

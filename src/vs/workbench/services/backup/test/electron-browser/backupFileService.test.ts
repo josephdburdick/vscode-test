@@ -4,52 +4,52 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 import * as crypto from 'crypto';
 import * as os from 'os';
 import * as fs from 'fs';
-import * as path from 'vs/base/common/path';
-import * as pfs from 'vs/base/node/pfs';
-import { URI } from 'vs/base/common/uri';
-import { BackupFilesModel } from 'vs/workbench/services/backup/common/backupFileService';
+import * as path from 'vs/Base/common/path';
+import * as pfs from 'vs/Base/node/pfs';
+import { URI } from 'vs/Base/common/uri';
+import { BackupFilesModel } from 'vs/workBench/services/Backup/common/BackupFileService';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
+import { getRandomTestPath } from 'vs/Base/test/node/testUtils';
 import { DefaultEndOfLine, ITextSnapshot } from 'vs/editor/common/model';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { NativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-browser/environmentService';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { NativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-Browser/environmentService';
+import { snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
 import { IFileService } from 'vs/platform/files/common/files';
-import { hashPath, BackupFileService } from 'vs/workbench/services/backup/node/backupFileService';
-import { FileUserDataProvider } from 'vs/workbench/services/userData/common/fileUserDataProvider';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { TestWorkbenchConfiguration } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { TestProductService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
+import { hashPath, BackupFileService } from 'vs/workBench/services/Backup/node/BackupFileService';
+import { FileUserDataProvider } from 'vs/workBench/services/userData/common/fileUserDataProvider';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { TestWorkBenchConfiguration } from 'vs/workBench/test/electron-Browser/workBenchTestServices';
+import { TestProductService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
 
-const userdataDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'backupfileservice');
-const backupHome = path.join(userdataDir, 'Backups');
-const workspacesJsonPath = path.join(backupHome, 'workspaces.json');
+const userdataDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'Backupfileservice');
+const BackupHome = path.join(userdataDir, 'Backups');
+const workspacesJsonPath = path.join(BackupHome, 'workspaces.json');
 
 const workspaceResource = URI.file(platform.isWindows ? 'c:\\workspace' : '/workspace');
-const workspaceBackupPath = path.join(backupHome, hashPath(workspaceResource));
+const workspaceBackupPath = path.join(BackupHome, hashPath(workspaceResource));
 const fooFile = URI.file(platform.isWindows ? 'c:\\Foo' : '/Foo');
 const customFile = URI.parse('customScheme://some/path');
 const customFileWithFragment = URI.parse('customScheme2://some/path#fragment');
-const barFile = URI.file(platform.isWindows ? 'c:\\Bar' : '/Bar');
+const BarFile = URI.file(platform.isWindows ? 'c:\\Bar' : '/Bar');
 const fooBarFile = URI.file(platform.isWindows ? 'c:\\Foo Bar' : '/Foo Bar');
 const untitledFile = URI.from({ scheme: Schemas.untitled, path: 'Untitled-1' });
 const fooBackupPath = path.join(workspaceBackupPath, 'file', hashPath(fooFile));
-const barBackupPath = path.join(workspaceBackupPath, 'file', hashPath(barFile));
+const BarBackupPath = path.join(workspaceBackupPath, 'file', hashPath(BarFile));
 const untitledBackupPath = path.join(workspaceBackupPath, 'untitled', hashPath(untitledFile));
 
-class TestWorkbenchEnvironmentService extends NativeWorkbenchEnvironmentService {
+class TestWorkBenchEnvironmentService extends NativeWorkBenchEnvironmentService {
 
-	constructor(backupPath: string) {
-		super({ ...TestWorkbenchConfiguration, backupPath, 'user-data-dir': userdataDir }, TestProductService);
+	constructor(BackupPath: string) {
+		super({ ...TestWorkBenchConfiguration, BackupPath, 'user-data-dir': userdataDir }, TestProductService);
 	}
 }
 
@@ -57,12 +57,12 @@ export class NodeTestBackupFileService extends BackupFileService {
 
 	readonly fileService: IFileService;
 
-	private backupResourceJoiners: Function[];
+	private BackupResourceJoiners: Function[];
 	private discardBackupJoiners: Function[];
 	discardedBackups: URI[];
 
 	constructor(workspaceBackupPath: string) {
-		const environmentService = new TestWorkbenchEnvironmentService(workspaceBackupPath);
+		const environmentService = new TestWorkBenchEnvironmentService(workspaceBackupPath);
 		const logService = new NullLogService();
 		const fileService = new FileService(logService);
 		const diskFileSystemProvider = new DiskFileSystemProvider(logService);
@@ -72,20 +72,20 @@ export class NodeTestBackupFileService extends BackupFileService {
 		super(environmentService, fileService, logService);
 
 		this.fileService = fileService;
-		this.backupResourceJoiners = [];
+		this.BackupResourceJoiners = [];
 		this.discardBackupJoiners = [];
 		this.discardedBackups = [];
 	}
 
 	joinBackupResource(): Promise<void> {
-		return new Promise(resolve => this.backupResourceJoiners.push(resolve));
+		return new Promise(resolve => this.BackupResourceJoiners.push(resolve));
 	}
 
-	async backup(resource: URI, content?: ITextSnapshot, versionId?: number, meta?: any, token?: CancellationToken): Promise<void> {
-		await super.backup(resource, content, versionId, meta, token);
+	async Backup(resource: URI, content?: ITextSnapshot, versionId?: numBer, meta?: any, token?: CancellationToken): Promise<void> {
+		await super.Backup(resource, content, versionId, meta, token);
 
-		while (this.backupResourceJoiners.length) {
-			this.backupResourceJoiners.pop()!();
+		while (this.BackupResourceJoiners.length) {
+			this.BackupResourceJoiners.pop()!();
 		}
 	}
 
@@ -103,9 +103,9 @@ export class NodeTestBackupFileService extends BackupFileService {
 	}
 
 	async getBackupContents(resource: URI): Promise<string> {
-		const backupResource = this.toBackupResource(resource);
+		const BackupResource = this.toBackupResource(resource);
 
-		const fileContents = await this.fileService.readFile(backupResource);
+		const fileContents = await this.fileService.readFile(BackupResource);
 
 		return fileContents.value.toString();
 	}
@@ -117,15 +117,15 @@ suite('BackupFileService', () => {
 	setup(async () => {
 		service = new NodeTestBackupFileService(workspaceBackupPath);
 
-		// Delete any existing backups completely and then re-create it.
-		await pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
-		await pfs.mkdirp(backupHome);
+		// Delete any existing Backups completely and then re-create it.
+		await pfs.rimraf(BackupHome, pfs.RimRafMode.MOVE);
+		await pfs.mkdirp(BackupHome);
 
 		return pfs.writeFile(workspacesJsonPath, '');
 	});
 
 	teardown(() => {
-		return pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
+		return pfs.rimraf(BackupHome, pfs.RimRafMode.MOVE);
 	});
 
 	suite('hashPath', () => {
@@ -135,47 +135,47 @@ suite('BackupFileService', () => {
 				path: 'Untitled-1'
 			});
 			const actual = hashPath(uri);
-			// If these hashes change people will lose their backed up files!
-			assert.equal(actual, '13264068d108c6901b3592ea654fcd57');
+			// If these hashes change people will lose their Backed up files!
+			assert.equal(actual, '13264068d108c6901B3592ea654fcd57');
 			assert.equal(actual, crypto.createHash('md5').update(uri.fsPath).digest('hex'));
 		});
 
 		test('should correctly hash the path for file scheme URIs', () => {
 			const uri = URI.file('/foo');
 			const actual = hashPath(uri);
-			// If these hashes change people will lose their backed up files!
+			// If these hashes change people will lose their Backed up files!
 			if (platform.isWindows) {
-				assert.equal(actual, 'dec1a583f52468a020bd120c3f01d812');
+				assert.equal(actual, 'dec1a583f52468a020Bd120c3f01d812');
 			} else {
-				assert.equal(actual, '1effb2475fcfba4f9e8b8a1dbc8f3caf');
+				assert.equal(actual, '1effB2475fcfBa4f9e8B8a1dBc8f3caf');
 			}
 			assert.equal(actual, crypto.createHash('md5').update(uri.fsPath).digest('hex'));
 		});
 	});
 
 	suite('getBackupResource', () => {
-		test('should get the correct backup path for text files', () => {
-			// Format should be: <backupHome>/<workspaceHash>/<scheme>/<filePathHash>
-			const backupResource = fooFile;
+		test('should get the correct Backup path for text files', () => {
+			// Format should Be: <BackupHome>/<workspaceHash>/<scheme>/<filePathHash>
+			const BackupResource = fooFile;
 			const workspaceHash = hashPath(workspaceResource);
-			const filePathHash = hashPath(backupResource);
-			const expectedPath = URI.file(path.join(backupHome, workspaceHash, Schemas.file, filePathHash)).with({ scheme: Schemas.userData }).toString();
-			assert.equal(service.toBackupResource(backupResource).toString(), expectedPath);
+			const filePathHash = hashPath(BackupResource);
+			const expectedPath = URI.file(path.join(BackupHome, workspaceHash, Schemas.file, filePathHash)).with({ scheme: Schemas.userData }).toString();
+			assert.equal(service.toBackupResource(BackupResource).toString(), expectedPath);
 		});
 
-		test('should get the correct backup path for untitled files', () => {
-			// Format should be: <backupHome>/<workspaceHash>/<scheme>/<filePath>
-			const backupResource = URI.from({ scheme: Schemas.untitled, path: 'Untitled-1' });
+		test('should get the correct Backup path for untitled files', () => {
+			// Format should Be: <BackupHome>/<workspaceHash>/<scheme>/<filePath>
+			const BackupResource = URI.from({ scheme: Schemas.untitled, path: 'Untitled-1' });
 			const workspaceHash = hashPath(workspaceResource);
-			const filePathHash = hashPath(backupResource);
-			const expectedPath = URI.file(path.join(backupHome, workspaceHash, Schemas.untitled, filePathHash)).with({ scheme: Schemas.userData }).toString();
-			assert.equal(service.toBackupResource(backupResource).toString(), expectedPath);
+			const filePathHash = hashPath(BackupResource);
+			const expectedPath = URI.file(path.join(BackupHome, workspaceHash, Schemas.untitled, filePathHash)).with({ scheme: Schemas.userData }).toString();
+			assert.equal(service.toBackupResource(BackupResource).toString(), expectedPath);
 		});
 	});
 
-	suite('backup', () => {
+	suite('Backup', () => {
 		test('no text', async () => {
-			await service.backup(fooFile);
+			await service.Backup(fooFile);
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath), `${fooFile.toString()}\n`);
@@ -183,7 +183,7 @@ suite('BackupFileService', () => {
 		});
 
 		test('text file', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath), `${fooFile.toString()}\ntest`);
@@ -191,7 +191,7 @@ suite('BackupFileService', () => {
 		});
 
 		test('text file (with version)', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false), 666);
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false), 666);
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath), `${fooFile.toString()}\ntest`);
@@ -200,7 +200,7 @@ suite('BackupFileService', () => {
 		});
 
 		test('text file (with meta)', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false), undefined, { etag: '678', orphaned: true });
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false), undefined, { etag: '678', orphaned: true });
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath).toString(), `${fooFile.toString()} {"etag":"678","orphaned":true}\ntest`);
@@ -208,7 +208,7 @@ suite('BackupFileService', () => {
 		});
 
 		test('untitled file', async () => {
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'untitled')).length, 1);
 			assert.equal(fs.existsSync(untitledBackupPath), true);
 			assert.equal(fs.readFileSync(untitledBackupPath), `${untitledFile.toString()}\ntest`);
@@ -218,7 +218,7 @@ suite('BackupFileService', () => {
 		test('text file (ITextSnapshot)', async () => {
 			const model = createTextModel('test');
 
-			await service.backup(fooFile, model.createSnapshot());
+			await service.Backup(fooFile, model.createSnapshot());
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath), `${fooFile.toString()}\ntest`);
@@ -230,7 +230,7 @@ suite('BackupFileService', () => {
 		test('untitled file (ITextSnapshot)', async () => {
 			const model = createTextModel('test');
 
-			await service.backup(untitledFile, model.createSnapshot());
+			await service.Backup(untitledFile, model.createSnapshot());
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'untitled')).length, 1);
 			assert.equal(fs.existsSync(untitledBackupPath), true);
 			assert.equal(fs.readFileSync(untitledBackupPath), `${untitledFile.toString()}\ntest`);
@@ -242,7 +242,7 @@ suite('BackupFileService', () => {
 			const largeString = (new Array(10 * 1024)).join('Large String\n');
 			const model = createTextModel(largeString);
 
-			await service.backup(fooFile, model.createSnapshot());
+			await service.Backup(fooFile, model.createSnapshot());
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.equal(fs.existsSync(fooBackupPath), true);
 			assert.equal(fs.readFileSync(fooBackupPath), `${fooFile.toString()}\n${largeString}`);
@@ -255,7 +255,7 @@ suite('BackupFileService', () => {
 			const largeString = (new Array(10 * 1024)).join('Large String\n');
 			const model = createTextModel(largeString);
 
-			await service.backup(untitledFile, model.createSnapshot());
+			await service.Backup(untitledFile, model.createSnapshot());
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'untitled')).length, 1);
 			assert.equal(fs.existsSync(untitledBackupPath), true);
 			assert.equal(fs.readFileSync(untitledBackupPath), `${untitledFile.toString()}\n${largeString}`);
@@ -266,7 +266,7 @@ suite('BackupFileService', () => {
 
 		test('cancellation', async () => {
 			const cts = new CancellationTokenSource();
-			const promise = service.backup(fooFile, undefined, undefined, undefined, cts.token);
+			const promise = service.Backup(fooFile, undefined, undefined, undefined, cts.token);
 			cts.cancel();
 			await promise;
 
@@ -277,7 +277,7 @@ suite('BackupFileService', () => {
 
 	suite('discardBackup', () => {
 		test('text file', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
 			assert.ok(service.hasBackupSync(fooFile));
 
@@ -288,7 +288,7 @@ suite('BackupFileService', () => {
 		});
 
 		test('untitled file', async () => {
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'untitled')).length, 1);
 			await service.discardBackup(untitledFile);
 			assert.equal(fs.existsSync(untitledBackupPath), false);
@@ -298,49 +298,49 @@ suite('BackupFileService', () => {
 
 	suite('discardBackups', () => {
 		test('text file', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 1);
-			await service.backup(barFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(BarFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'file')).length, 2);
 			await service.discardBackups();
 			assert.equal(fs.existsSync(fooBackupPath), false);
-			assert.equal(fs.existsSync(barBackupPath), false);
+			assert.equal(fs.existsSync(BarBackupPath), false);
 			assert.equal(fs.existsSync(path.join(workspaceBackupPath, 'file')), false);
 		});
 
 		test('untitled file', async () => {
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.readdirSync(path.join(workspaceBackupPath, 'untitled')).length, 1);
 			await service.discardBackups();
 			assert.equal(fs.existsSync(untitledBackupPath), false);
 			assert.equal(fs.existsSync(path.join(workspaceBackupPath, 'untitled')), false);
 		});
 
-		test('can backup after discarding all', async () => {
+		test('can Backup after discarding all', async () => {
 			await service.discardBackups();
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			assert.equal(fs.existsSync(workspaceBackupPath), true);
 		});
 	});
 
 	suite('getBackups', () => {
 		test('("file") - text file', async () => {
-			await service.backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(fooFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			const textFiles = await service.getBackups();
 			assert.deepEqual(textFiles.map(f => f.fsPath), [fooFile.fsPath]);
-			await service.backup(barFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(BarFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			const textFiles_1 = await service.getBackups();
-			assert.deepEqual(textFiles_1.map(f => f.fsPath), [fooFile.fsPath, barFile.fsPath]);
+			assert.deepEqual(textFiles_1.map(f => f.fsPath), [fooFile.fsPath, BarFile.fsPath]);
 		});
 
 		test('("file") - untitled file', async () => {
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			const textFiles = await service.getBackups();
 			assert.deepEqual(textFiles.map(f => f.fsPath), [untitledFile.fsPath]);
 		});
 
 		test('("untitled") - untitled file', async () => {
-			await service.backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
+			await service.Backup(untitledFile, createTextBufferFactory('test').create(DefaultEndOfLine.LF).createSnapshot(false));
 			const textFiles = await service.getBackups();
 			assert.deepEqual(textFiles.map(f => f.fsPath), ['Untitled-1']);
 		});
@@ -349,10 +349,10 @@ suite('BackupFileService', () => {
 	suite('resolve', () => {
 
 		interface IBackupTestMetaData {
-			mtime?: number;
-			size?: number;
+			mtime?: numBer;
+			size?: numBer;
 			etag?: string;
-			orphaned?: boolean;
+			orphaned?: Boolean;
 		}
 
 		test('should restore the original contents (untitled file)', async () => {
@@ -436,7 +436,7 @@ suite('BackupFileService', () => {
 			await testResolveBackup(fooFile, contents, meta);
 		});
 
-		test('should restore the original contents (text file with broken metadata)', async () => {
+		test('should restore the original contents (text file with Broken metadata)', async () => {
 			const contents = [
 				'Lorem ipsum ',
 				'dolor öäü sit amet ',
@@ -451,19 +451,19 @@ suite('BackupFileService', () => {
 				orphaned: false
 			};
 
-			await service.backup(fooFile, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1, meta);
+			await service.Backup(fooFile, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1, meta);
 
 			const fileContents = fs.readFileSync(fooBackupPath).toString();
 			assert.equal(fileContents.indexOf(fooFile.toString()), 0);
 
 			const metaIndex = fileContents.indexOf('{');
-			const newFileContents = fileContents.substring(0, metaIndex) + '{{' + fileContents.substr(metaIndex);
+			const newFileContents = fileContents.suBstring(0, metaIndex) + '{{' + fileContents.suBstr(metaIndex);
 			fs.writeFileSync(fooBackupPath, newFileContents);
 
-			const backup = await service.resolve(fooFile);
-			assert.ok(backup);
-			assert.equal(contents, snapshotToString(backup!.value.create(platform.isWindows ? DefaultEndOfLine.CRLF : DefaultEndOfLine.LF).createSnapshot(true)));
-			assert.ok(!backup!.meta);
+			const Backup = await service.resolve(fooFile);
+			assert.ok(Backup);
+			assert.equal(contents, snapshotToString(Backup!.value.create(platform.isWindows ? DefaultEndOfLine.CRLF : DefaultEndOfLine.LF).createSnapshot(true)));
+			assert.ok(!Backup!.meta);
 		});
 
 		test('should restore the original contents (text file with metadata and fragment URI)', async () => {
@@ -520,14 +520,14 @@ suite('BackupFileService', () => {
 			await testResolveBackup(fooBarFile, contents, meta, null);
 		});
 
-		test('should ignore invalid backups', async () => {
+		test('should ignore invalid Backups', async () => {
 			const contents = 'test\nand more stuff';
 
-			await service.backup(fooBarFile, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1);
+			await service.Backup(fooBarFile, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1);
 
-			const backup = await service.resolve(fooBarFile);
-			if (!backup) {
-				throw new Error('Unexpected missing backup');
+			const Backup = await service.resolve(fooBarFile);
+			if (!Backup) {
+				throw new Error('Unexpected missing Backup');
 			}
 
 			await service.fileService.writeFile(service.toBackupResource(fooBarFile), VSBuffer.fromString(''));
@@ -547,19 +547,19 @@ suite('BackupFileService', () => {
 				expectedMeta = meta;
 			}
 
-			await service.backup(resource, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1, meta);
+			await service.Backup(resource, createTextBufferFactory(contents).create(DefaultEndOfLine.LF).createSnapshot(false), 1, meta);
 
-			const backup = await service.resolve<IBackupTestMetaData>(resource);
-			assert.ok(backup);
-			assert.equal(contents, snapshotToString(backup!.value.create(platform.isWindows ? DefaultEndOfLine.CRLF : DefaultEndOfLine.LF).createSnapshot(true)));
+			const Backup = await service.resolve<IBackupTestMetaData>(resource);
+			assert.ok(Backup);
+			assert.equal(contents, snapshotToString(Backup!.value.create(platform.isWindows ? DefaultEndOfLine.CRLF : DefaultEndOfLine.LF).createSnapshot(true)));
 
 			if (expectedMeta) {
-				assert.equal(backup!.meta!.etag, expectedMeta.etag);
-				assert.equal(backup!.meta!.size, expectedMeta.size);
-				assert.equal(backup!.meta!.mtime, expectedMeta.mtime);
-				assert.equal(backup!.meta!.orphaned, expectedMeta.orphaned);
+				assert.equal(Backup!.meta!.etag, expectedMeta.etag);
+				assert.equal(Backup!.meta!.size, expectedMeta.size);
+				assert.equal(Backup!.meta!.mtime, expectedMeta.mtime);
+				assert.equal(Backup!.meta!.orphaned, expectedMeta.orphaned);
 			} else {
-				assert.ok(!backup!.meta);
+				assert.ok(!Backup!.meta);
 			}
 		}
 	});
@@ -572,15 +572,15 @@ suite('BackupFilesModel', () => {
 	setup(async () => {
 		service = new NodeTestBackupFileService(workspaceBackupPath);
 
-		// Delete any existing backups completely and then re-create it.
-		await pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
-		await pfs.mkdirp(backupHome);
+		// Delete any existing Backups completely and then re-create it.
+		await pfs.rimraf(BackupHome, pfs.RimRafMode.MOVE);
+		await pfs.mkdirp(BackupHome);
 
 		return pfs.writeFile(workspacesJsonPath, '');
 	});
 
 	teardown(() => {
-		return pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
+		return pfs.rimraf(BackupHome, pfs.RimRafMode.MOVE);
 	});
 
 	test('simple', () => {
@@ -595,7 +595,7 @@ suite('BackupFilesModel', () => {
 		assert.equal(model.has(resource1), true);
 		assert.equal(model.has(resource1, 0), true);
 		assert.equal(model.has(resource1, 1), false);
-		assert.equal(model.has(resource1, 1, { foo: 'bar' }), false);
+		assert.equal(model.has(resource1, 1, { foo: 'Bar' }), false);
 
 		model.remove(resource1);
 
@@ -623,15 +623,15 @@ suite('BackupFilesModel', () => {
 
 		model.add(resource2);
 		model.add(resource3);
-		model.add(resource4, undefined, { foo: 'bar' });
+		model.add(resource4, undefined, { foo: 'Bar' });
 
 		assert.equal(model.has(resource1), true);
 		assert.equal(model.has(resource2), true);
 		assert.equal(model.has(resource3), true);
 
 		assert.equal(model.has(resource4), true);
-		assert.equal(model.has(resource4, undefined, { foo: 'bar' }), true);
-		assert.equal(model.has(resource4, undefined, { bar: 'foo' }), false);
+		assert.equal(model.has(resource4, undefined, { foo: 'Bar' }), true);
+		assert.equal(model.has(resource4, undefined, { Bar: 'foo' }), false);
 	});
 
 	test('resolve', async () => {
@@ -649,8 +649,8 @@ suite('BackupFilesModel', () => {
 		assert.deepEqual(model.get(), []);
 
 		const file1 = URI.file('/root/file/foo.html');
-		const file2 = URI.file('/root/file/bar.html');
-		const untitled = URI.file('/root/untitled/bar.html');
+		const file2 = URI.file('/root/file/Bar.html');
+		const untitled = URI.file('/root/untitled/Bar.html');
 
 		model.add(file1);
 		model.add(file2);

@@ -4,34 +4,34 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { ChordKeybinding, KeyCode, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { refactorCommandId, organizeImportsCommandId } from 'vs/editor/contrib/codeAction/codeAction';
-import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import { CodeActionKeybindingResolver } from 'vs/editor/contrib/codeAction/codeActionMenu';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
+import { ChordKeyBinding, KeyCode, SimpleKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { refactorCommandId, organizeImportsCommandId } from 'vs/editor/contriB/codeAction/codeAction';
+import { CodeActionKind } from 'vs/editor/contriB/codeAction/types';
+import { CodeActionKeyBindingResolver } from 'vs/editor/contriB/codeAction/codeActionMenu';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
 
-suite('CodeActionKeybindingResolver', () => {
-	const refactorKeybinding = createCodeActionKeybinding(
+suite('CodeActionKeyBindingResolver', () => {
+	const refactorKeyBinding = createCodeActionKeyBinding(
 		KeyCode.KEY_A,
 		refactorCommandId,
 		{ kind: CodeActionKind.Refactor.value });
 
-	const refactorExtractKeybinding = createCodeActionKeybinding(
+	const refactorExtractKeyBinding = createCodeActionKeyBinding(
 		KeyCode.KEY_B,
 		refactorCommandId,
 		{ kind: CodeActionKind.Refactor.append('extract').value });
 
-	const organizeImportsKeybinding = createCodeActionKeybinding(
+	const organizeImportsKeyBinding = createCodeActionKeyBinding(
 		KeyCode.KEY_C,
 		organizeImportsCommandId,
 		undefined);
 
-	test('Should match refactor keybindings', async function () {
-		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding];
+	test('Should match refactor keyBindings', async function () {
+		const resolver = new CodeActionKeyBindingResolver({
+			getKeyBindings: (): readonly ResolvedKeyBindingItem[] => {
+				return [refactorKeyBinding];
 			},
 		}).getResolver();
 
@@ -41,50 +41,50 @@ suite('CodeActionKeybindingResolver', () => {
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.Refactor.value }),
-			refactorKeybinding.resolvedKeybinding);
+			refactorKeyBinding.resolvedKeyBinding);
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.Refactor.append('extract').value }),
-			refactorKeybinding.resolvedKeybinding);
+			refactorKeyBinding.resolvedKeyBinding);
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.QuickFix.value }),
 			undefined);
 	});
 
-	test('Should prefer most specific keybinding', async function () {
-		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding, refactorExtractKeybinding, organizeImportsKeybinding];
+	test('Should prefer most specific keyBinding', async function () {
+		const resolver = new CodeActionKeyBindingResolver({
+			getKeyBindings: (): readonly ResolvedKeyBindingItem[] => {
+				return [refactorKeyBinding, refactorExtractKeyBinding, organizeImportsKeyBinding];
 			},
 		}).getResolver();
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.Refactor.value }),
-			refactorKeybinding.resolvedKeybinding);
+			refactorKeyBinding.resolvedKeyBinding);
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.Refactor.append('extract').value }),
-			refactorExtractKeybinding.resolvedKeybinding);
+			refactorExtractKeyBinding.resolvedKeyBinding);
 	});
 
-	test('Organize imports should still return a keybinding even though it does not have args', async function () {
-		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding, refactorExtractKeybinding, organizeImportsKeybinding];
+	test('Organize imports should still return a keyBinding even though it does not have args', async function () {
+		const resolver = new CodeActionKeyBindingResolver({
+			getKeyBindings: (): readonly ResolvedKeyBindingItem[] => {
+				return [refactorKeyBinding, refactorExtractKeyBinding, organizeImportsKeyBinding];
 			},
 		}).getResolver();
 
 		assert.equal(
 			resolver({ title: '', kind: CodeActionKind.SourceOrganizeImports.value }),
-			organizeImportsKeybinding.resolvedKeybinding);
+			organizeImportsKeyBinding.resolvedKeyBinding);
 	});
 });
 
-function createCodeActionKeybinding(keycode: KeyCode, command: string, commandArgs: any) {
-	return new ResolvedKeybindingItem(
-		new USLayoutResolvedKeybinding(
-			new ChordKeybinding([new SimpleKeybinding(false, true, false, false, keycode)]),
+function createCodeActionKeyBinding(keycode: KeyCode, command: string, commandArgs: any) {
+	return new ResolvedKeyBindingItem(
+		new USLayoutResolvedKeyBinding(
+			new ChordKeyBinding([new SimpleKeyBinding(false, true, false, false, keycode)]),
 			OperatingSystem.Linux),
 		command,
 		commandArgs,

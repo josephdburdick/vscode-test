@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { MainContext, MainThreadDiaglogsShape, IMainContext } from 'vs/workbench/api/common/extHost.protocol';
+import { URI } from 'vs/Base/common/uri';
+import { MainContext, MainThreadDiaglogsShape, IMainContext } from 'vs/workBench/api/common/extHost.protocol';
 
 export class ExtHostDialogs {
 

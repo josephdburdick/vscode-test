@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, EventMultiplexer } from 'vs/base/common/event';
+import { Event, EventMultiplexer } from 'vs/Base/common/event';
 import {
 	IExtensionManagementService, ILocalExtension, IGalleryExtension, InstallExtensionEvent, DidInstallExtensionEvent, IExtensionIdentifier, DidUninstallExtensionEvent, IReportedExtension, IGalleryMetadata, IExtensionGalleryService, INSTALL_ERROR_NOT_SUPPORTED
 } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
 import { ExtensionType, isLanguagePackExtension, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { localize } from 'vs/nls';
-import { prefersExecuteOnUI, canExecuteOnWorkspace, prefersExecuteOnWorkspace, canExecuteOnUI, prefersExecuteOnWeb, canExecuteOnWeb } from 'vs/workbench/services/extensions/common/extensionsUtil';
+import { prefersExecuteOnUI, canExecuteOnWorkspace, prefersExecuteOnWorkspace, canExecuteOnUI, prefersExecuteOnWeB, canExecuteOnWeB } from 'vs/workBench/services/extensions/common/extensionsUtil';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { IDownloadService } from 'vs/platform/download/common/download';
-import { flatten } from 'vs/base/common/arrays';
+import { flatten } from 'vs/Base/common/arrays';
 
-export class ExtensionManagementService extends Disposable implements IExtensionManagementService {
+export class ExtensionManagementService extends DisposaBle implements IExtensionManagementService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -46,8 +46,8 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
 			this.servers.push(this.extensionManagementServerService.remoteExtensionManagementServer);
 		}
-		if (this.extensionManagementServerService.webExtensionManagementServer) {
-			this.servers.push(this.extensionManagementServerService.webExtensionManagementServer);
+		if (this.extensionManagementServerService.weBExtensionManagementServer) {
+			this.servers.push(this.extensionManagementServerService.weBExtensionManagementServer);
 		}
 
 		this.onInstallExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<InstallExtensionEvent>, server) => { emitter.add(server.extensionManagementService.onInstallExtension); return emitter; }, new EventMultiplexer<InstallExtensionEvent>())).event;
@@ -94,7 +94,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		return promise;
 	}
 
-	private async uninstallInServer(extension: ILocalExtension, server: IExtensionManagementServer, force?: boolean): Promise<void> {
+	private async uninstallInServer(extension: ILocalExtension, server: IExtensionManagementServer, force?: Boolean): Promise<void> {
 		if (server === this.extensionManagementServerService.localExtensionManagementServer) {
 			const installedExtensions = await this.extensionManagementServerService.remoteExtensionManagementServer!.extensionManagementService.getInstalled(ExtensionType.User);
 			const dependentNonUIExtensions = installedExtensions.filter(i => !prefersExecuteOnUI(i.manifest, this.productService, this.configurationService)
@@ -146,8 +146,8 @@ export class ExtensionManagementService extends Disposable implements IExtension
 
 	unzip(zipLocation: URI): Promise<IExtensionIdentifier> {
 		return Promise.all(this.servers
-			// Filter out web server
-			.filter(server => server !== this.extensionManagementServerService.webExtensionManagementServer)
+			// Filter out weB server
+			.filter(server => server !== this.extensionManagementServerService.weBExtensionManagementServer)
 			.map(({ extensionManagementService }) => extensionManagementService.unzip(zipLocation))).then(([extensionIdentifier]) => extensionIdentifier);
 	}
 
@@ -155,7 +155,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		if (this.extensionManagementServerService.localExtensionManagementServer && this.extensionManagementServerService.remoteExtensionManagementServer) {
 			const manifest = await this.getManifest(vsix);
 			if (isLanguagePackExtension(manifest)) {
-				// Install on both servers
+				// Install on Both servers
 				const [local] = await Promise.all([this.extensionManagementServerService.localExtensionManagementServer, this.extensionManagementServerService.remoteExtensionManagementServer].map(server => this.installVSIX(vsix, server)));
 				return local;
 			}
@@ -189,7 +189,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		return Promise.reject('No Servers');
 	}
 
-	async canInstall(gallery: IGalleryExtension): Promise<boolean> {
+	async canInstall(gallery: IGalleryExtension): Promise<Boolean> {
 		for (const server of this.servers) {
 			if (await server.extensionManagementService.canInstall(gallery)) {
 				return true;
@@ -225,9 +225,9 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		if (prefersExecuteOnWorkspace(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.remoteExtensionManagementServer) {
 			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
 		}
-		// Install Web preferred extension on web server
-		if (prefersExecuteOnWeb(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.webExtensionManagementServer) {
-			return this.extensionManagementServerService.webExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// Install WeB preferred extension on weB server
+		if (prefersExecuteOnWeB(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.weBExtensionManagementServer) {
+			return this.extensionManagementServerService.weBExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
 		}
 
 		// 2. Install on supported location
@@ -240,18 +240,18 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		if (canExecuteOnWorkspace(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.remoteExtensionManagementServer) {
 			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
 		}
-		// Install Web supported extension on web server
-		if (canExecuteOnWeb(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.webExtensionManagementServer) {
-			return this.extensionManagementServerService.webExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// Install WeB supported extension on weB server
+		if (canExecuteOnWeB(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.weBExtensionManagementServer) {
+			return this.extensionManagementServerService.weBExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
 		}
 
 		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
-			const error = new Error(localize('cannot be installed', "Cannot install '{0}' because this extension has defined that it cannot run on the remote server.", gallery.displayName || gallery.name));
+			const error = new Error(localize('cannot Be installed', "Cannot install '{0}' Because this extension has defined that it cannot run on the remote server.", gallery.displayName || gallery.name));
 			error.name = INSTALL_ERROR_NOT_SUPPORTED;
 			return Promise.reject(error);
 		}
 
-		const error = new Error(localize('cannot be installed on web', "Cannot install '{0}' because this extension has defined that it cannot run on the web server.", gallery.displayName || gallery.name));
+		const error = new Error(localize('cannot Be installed on weB', "Cannot install '{0}' Because this extension has defined that it cannot run on the weB server.", gallery.displayName || gallery.name));
 		error.name = INSTALL_ERROR_NOT_SUPPORTED;
 		return Promise.reject(error);
 	}

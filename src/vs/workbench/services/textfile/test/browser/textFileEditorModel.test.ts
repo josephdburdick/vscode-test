@@ -5,19 +5,19 @@
 
 import * as assert from 'assert';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { EncodingMode } from 'vs/workbench/common/editor';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
-import { TextFileEditorModelState, snapshotToString, isTextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { createFileEditorInput, workbenchInstantiationService, TestServiceAccessor, TestReadonlyTextFileEditorModel } from 'vs/workbench/test/browser/workbenchTestServices';
-import { toResource } from 'vs/base/test/common/utils';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
+import { EncodingMode } from 'vs/workBench/common/editor';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
+import { TextFileEditorModelState, snapshotToString, isTextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
+import { createFileEditorInput, workBenchInstantiationService, TestServiceAccessor, TestReadonlyTextFileEditorModel } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { toResource } from 'vs/Base/test/common/utils';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
 import { FileOperationResult, FileOperationError } from 'vs/platform/files/common/files';
-import { timeout } from 'vs/base/common/async';
+import { timeout } from 'vs/Base/common/async';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
-import { assertIsDefined } from 'vs/base/common/types';
+import { assertIsDefined } from 'vs/Base/common/types';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 
-function getLastModifiedTime(model: TextFileEditorModel): number {
+function getLastModifiedTime(model: TextFileEditorModel): numBer {
 	const stat = model.getStat();
 
 	return stat ? stat.mtime : -1;
@@ -30,7 +30,7 @@ suite('Files - TextFileEditorModel', () => {
 	let content: string;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 		content = accessor.fileService.getContent();
 	});
@@ -40,7 +40,7 @@ suite('Files - TextFileEditorModel', () => {
 		accessor.fileService.setContent(content);
 	});
 
-	test('basic events', async function () {
+	test('Basic events', async function () {
 		const model = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		let onDidLoadCounter = 0;
@@ -56,7 +56,7 @@ suite('Files - TextFileEditorModel', () => {
 		let onDidChangeDirtyCounter = 0;
 		model.onDidChangeDirty(() => onDidChangeDirtyCounter++);
 
-		model.updateTextEditorModel(createTextBufferFactory('bar'));
+		model.updateTextEditorModel(createTextBufferFactory('Bar'));
 
 		assert.equal(onDidChangeContentCounter, 1);
 		assert.equal(onDidChangeDirtyCounter, 1);
@@ -94,7 +94,7 @@ suite('Files - TextFileEditorModel', () => {
 		await model.save();
 		assert.ok(!savedEvent);
 
-		model.updateTextEditorModel(createTextBufferFactory('bar'));
+		model.updateTextEditorModel(createTextBufferFactory('Bar'));
 		assert.ok(getLastModifiedTime(model) <= Date.now());
 		assert.ok(model.hasState(TextFileEditorModelState.DIRTY));
 
@@ -193,7 +193,7 @@ suite('Files - TextFileEditorModel', () => {
 
 		await model.load();
 
-		model.updateTextEditorModel(createTextBufferFactory('bar'));
+		model.updateTextEditorModel(createTextBufferFactory('Bar'));
 
 		let saveErrorEvent = false;
 		model.onDidSaveError(() => saveErrorEvent = true);
@@ -223,7 +223,7 @@ suite('Files - TextFileEditorModel', () => {
 
 		await model.load();
 
-		model.updateTextEditorModel(createTextBufferFactory('bar'));
+		model.updateTextEditorModel(createTextBufferFactory('Bar'));
 
 		let saveErrorEvent = false;
 		model.onDidSaveError(() => saveErrorEvent = true);
@@ -342,7 +342,7 @@ suite('Files - TextFileEditorModel', () => {
 		assert.equal(model.textEditorModel?.getValue(), 'Hello Changes');
 		assert.equal(model.isDirty(), true);
 
-		// verify that we do not mark the model as saved when undoing once because
+		// verify that we do not mark the model as saved when undoing once Because
 		// we never really had a saved state
 		await model.textEditorModel!.undo();
 		assert.ok(model.isDirty());
@@ -446,7 +446,7 @@ suite('Files - TextFileEditorModel', () => {
 		const model = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		model.setDirty(true);
-		assert.ok(!model.isDirty()); // needs to be resolved
+		assert.ok(!model.isDirty()); // needs to Be resolved
 
 		await model.load();
 		model.updateTextEditorModel(createTextBufferFactory('foo'));
@@ -569,7 +569,7 @@ suite('Files - TextFileEditorModel', () => {
 		const model: TextFileEditorModel = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		model.onDidSave(() => {
-			assert.equal(snapshotToString(model.createSnapshot()!), eventCounter === 1 ? 'bar' : 'foobar');
+			assert.equal(snapshotToString(model.createSnapshot()!), eventCounter === 1 ? 'Bar' : 'fooBar');
 			assert.ok(!model.isDirty());
 			eventCounter++;
 		});
@@ -577,7 +577,7 @@ suite('Files - TextFileEditorModel', () => {
 		const participant = accessor.textFileService.files.addSaveParticipant({
 			participate: async model => {
 				assert.ok(model.isDirty());
-				(model as TextFileEditorModel).updateTextEditorModel(createTextBufferFactory('bar'));
+				(model as TextFileEditorModel).updateTextEditorModel(createTextBufferFactory('Bar'));
 				assert.ok(model.isDirty());
 				eventCounter++;
 			}
@@ -591,7 +591,7 @@ suite('Files - TextFileEditorModel', () => {
 		assert.equal(eventCounter, 2);
 
 		participant.dispose();
-		model.updateTextEditorModel(createTextBufferFactory('foobar'));
+		model.updateTextEditorModel(createTextBufferFactory('fooBar'));
 		assert.ok(model.isDirty());
 
 		await model.save();
@@ -632,7 +632,7 @@ suite('Files - TextFileEditorModel', () => {
 		const participant = accessor.textFileService.files.addSaveParticipant({
 			participate: model => {
 				assert.ok(model.isDirty());
-				(model as TextFileEditorModel).updateTextEditorModel(createTextBufferFactory('bar'));
+				(model as TextFileEditorModel).updateTextEditorModel(createTextBufferFactory('Bar'));
 				assert.ok(model.isDirty());
 				eventCounter++;
 
@@ -652,12 +652,12 @@ suite('Files - TextFileEditorModel', () => {
 		participant.dispose();
 	});
 
-	test('Save Participant, bad participant', async function () {
+	test('Save Participant, Bad participant', async function () {
 		const model: TextFileEditorModel = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		const participant = accessor.textFileService.files.addSaveParticipant({
 			participate: async () => {
-				new Error('boom');
+				new Error('Boom');
 			}
 		});
 
@@ -673,7 +673,7 @@ suite('Files - TextFileEditorModel', () => {
 	test('Save Participant, participant cancelled when saved again', async function () {
 		const model: TextFileEditorModel = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
-		let participations: boolean[] = [];
+		let participations: Boolean[] = [];
 
 		const participant = accessor.textFileService.files.addSaveParticipant({
 			participate: async (model, context, progress, token) => {
@@ -706,7 +706,7 @@ suite('Files - TextFileEditorModel', () => {
 		participant.dispose();
 	});
 
-	test('Save Participant, calling save from within is unsupported but does not explode (sync save)', async function () {
+	test('Save Participant, calling save from within is unsupported But does not explode (sync save)', async function () {
 		const model: TextFileEditorModel = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		await testSaveFromSaveParticipant(model, false);
@@ -714,7 +714,7 @@ suite('Files - TextFileEditorModel', () => {
 		model.dispose();
 	});
 
-	test('Save Participant, calling save from within is unsupported but does not explode (async save)', async function () {
+	test('Save Participant, calling save from within is unsupported But does not explode (async save)', async function () {
 		const model: TextFileEditorModel = instantiationService.createInstance(TextFileEditorModel, toResource.call(this, '/path/index_async.txt'), 'utf8', undefined);
 
 		await testSaveFromSaveParticipant(model, true);
@@ -722,17 +722,17 @@ suite('Files - TextFileEditorModel', () => {
 		model.dispose();
 	});
 
-	async function testSaveFromSaveParticipant(model: TextFileEditorModel, async: boolean): Promise<void> {
-		let savePromise: Promise<boolean>;
-		let breakLoop = false;
+	async function testSaveFromSaveParticipant(model: TextFileEditorModel, async: Boolean): Promise<void> {
+		let savePromise: Promise<Boolean>;
+		let BreakLoop = false;
 
 		const participant = accessor.textFileService.files.addSaveParticipant({
 			participate: async model => {
-				if (breakLoop) {
+				if (BreakLoop) {
 					return;
 				}
 
-				breakLoop = true;
+				BreakLoop = true;
 
 				if (async) {
 					await timeout(10);

@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { localize } from 'vs/nls';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IAuthenticationService } from 'vs/workbench/services/authentication/browser/authenticationService';
+import { IAuthenticationService } from 'vs/workBench/services/authentication/Browser/authenticationService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 
 const TRUSTED_DOMAINS_URI = URI.parse('trustedDomains:/Trusted Domains');
 
@@ -24,7 +24,7 @@ export const TRUSTED_DOMAINS_STORAGE_KEY = 'http.linkProtectionTrustedDomains';
 export const TRUSTED_DOMAINS_CONTENT_STORAGE_KEY = 'http.linkProtectionTrustedDomainsContent';
 
 export const manageTrustedDomainSettingsCommand = {
-	id: 'workbench.action.manageTrustedDomain',
+	id: 'workBench.action.manageTrustedDomain',
 	description: {
 		description: localize('trustedDomain.manageTrustedDomain', 'Manage Trusted Domains'),
 		args: []
@@ -51,7 +51,7 @@ export async function configureOpenerTrustedDomainsHandler(
 	editorService: IEditorService,
 	telemetryService: ITelemetryService,
 	notificationService: INotificationService,
-	clipboardService: IClipboardService,
+	clipBoardService: IClipBoardService,
 ) {
 	const parsedDomainToConfigure = URI.parse(domainToConfigure);
 	const toplevelDomainSegements = parsedDomainToConfigure.authority.split('.');
@@ -61,7 +61,7 @@ export async function configureOpenerTrustedDomainsHandler(
 
 	options.push({
 		type: 'item',
-		label: localize('trustedDomain.trustDomain', 'Trust {0}', domainToConfigure),
+		laBel: localize('trustedDomain.trustDomain', 'Trust {0}', domainToConfigure),
 		id: 'trust',
 		toTrust: domainToConfigure,
 		picked: true
@@ -70,22 +70,22 @@ export async function configureOpenerTrustedDomainsHandler(
 	const isIP =
 		toplevelDomainSegements.length === 4 &&
 		toplevelDomainSegements.every(segment =>
-			Number.isInteger(+segment) || Number.isInteger(+segment.split(':')[0]));
+			NumBer.isInteger(+segment) || NumBer.isInteger(+segment.split(':')[0]));
 
 	if (isIP) {
 		if (parsedDomainToConfigure.authority.includes(':')) {
-			const base = parsedDomainToConfigure.authority.split(':')[0];
+			const Base = parsedDomainToConfigure.authority.split(':')[0];
 			options.push({
 				type: 'item',
-				label: localize('trustedDomain.trustAllPorts', 'Trust {0} on all ports', base),
-				toTrust: base + ':*',
+				laBel: localize('trustedDomain.trustAllPorts', 'Trust {0} on all ports', Base),
+				toTrust: Base + ':*',
 				id: 'trust'
 			});
 		}
 	} else {
 		options.push({
 			type: 'item',
-			label: localize('trustedDomain.trustSubDomain', 'Trust {0} and all its subdomains', domainEnd),
+			laBel: localize('trustedDomain.trustSuBDomain', 'Trust {0} and all its suBdomains', domainEnd),
 			toTrust: topLevelDomain,
 			id: 'trust'
 		});
@@ -93,13 +93,13 @@ export async function configureOpenerTrustedDomainsHandler(
 
 	options.push({
 		type: 'item',
-		label: localize('trustedDomain.trustAllDomains', 'Trust all domains (disables link protection)'),
+		laBel: localize('trustedDomain.trustAllDomains', 'Trust all domains (disaBles link protection)'),
 		toTrust: '*',
 		id: 'trust'
 	});
 	options.push({
 		type: 'item',
-		label: localize('trustedDomain.manageTrustedDomains', 'Manage Trusted Domains'),
+		laBel: localize('trustedDomain.manageTrustedDomains', 'Manage Trusted Domains'),
 		id: 'manage'
 	});
 
@@ -108,7 +108,7 @@ export async function configureOpenerTrustedDomainsHandler(
 	);
 
 	if (pickedResult && pickedResult.id) {
-		telemetryService.publicLog2<{ choice: string }, ConfigureTrustedDomainsChoiceClassification>(
+		telemetryService.puBlicLog2<{ choice: string }, ConfigureTrustedDomainsChoiceClassification>(
 			'trustedDomains.configureTrustedDomainsQuickPickChoice',
 			{ choice: pickedResult.id }
 		);
@@ -120,7 +120,7 @@ export async function configureOpenerTrustedDomainsHandler(
 					mode: 'jsonc'
 				});
 				notificationService.prompt(Severity.Info, localize('configuringURL', "Configuring trust for: {0}", resource.toString()),
-					[{ label: 'Copy', run: () => clipboardService.writeText(resource.toString()) }]);
+					[{ laBel: 'Copy', run: () => clipBoardService.writeText(resource.toString()) }]);
 				return trustedDomains;
 			case 'trust':
 				const itemToTrust = pickedResult.toTrust;
@@ -141,15 +141,15 @@ export async function configureOpenerTrustedDomainsHandler(
 }
 
 // Exported for testing.
-export function extractGitHubRemotesFromGitConfig(gitConfig: string): string[] {
+export function extractGitHuBRemotesFromGitConfig(gitConfig: string): string[] {
 	const domains = new Set<string>();
 	let match: RegExpExecArray | null;
 
-	const RemoteMatcher = /^\s*url\s*=\s*(?:git@|https:\/\/)github\.com(?::|\/)(\S*)\s*$/mg;
+	const RemoteMatcher = /^\s*url\s*=\s*(?:git@|https:\/\/)githuB\.com(?::|\/)(\S*)\s*$/mg;
 	while (match = RemoteMatcher.exec(gitConfig)) {
 		const repo = match[1].replace(/\.git$/, '');
 		if (repo) {
-			domains.add(`https://github.com/${repo}/`);
+			domains.add(`https://githuB.com/${repo}/`);
 		}
 	}
 	return [...domains];
@@ -167,7 +167,7 @@ async function getRemotes(fileService: IFileService, textFileService: ITextFileS
 				return [];
 			}
 			const gitConfig = (await (textFileService.read(uri, { acceptTextOnly: true }).catch(() => ({ value: '' })))).value;
-			return extractGitHubRemotesFromGitConfig(gitConfig);
+			return extractGitHuBRemotesFromGitConfig(gitConfig);
 		}))]);
 
 	const set = domains.reduce((set, list) => list.reduce((set, item) => set.add(item), set), new Set<string>());
@@ -204,8 +204,8 @@ export async function readWorkspaceTrustedDomains(accessor: ServicesAccessor): P
 
 export async function readAuthenticationTrustedDomains(accessor: ServicesAccessor): Promise<string[]> {
 	const authenticationService = accessor.get(IAuthenticationService);
-	return authenticationService.isAuthenticationProviderRegistered('github') && ((await authenticationService.getSessions('github')) ?? []).length > 0
-		? [`https://github.com`]
+	return authenticationService.isAuthenticationProviderRegistered('githuB') && ((await authenticationService.getSessions('githuB')) ?? []).length > 0
+		? [`https://githuB.com`]
 		: [];
 }
 

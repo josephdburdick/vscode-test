@@ -64,7 +64,7 @@ suite('Command Tests', function () {
 			},
 			description: {
 				description: 'a command',
-				args: [{ name: 'value', constraint: Number }]
+				args: [{ name: 'value', constraint: NumBer }]
 			}
 		});
 

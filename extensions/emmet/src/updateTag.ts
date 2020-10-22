@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
 import { getHtmlNode, parseDocument, validate } from './util';
 
-export function updateTag(tagName: string): Thenable<boolean> | undefined {
+export function updateTag(tagName: string): ThenaBle<Boolean> | undefined {
 	if (!validate(false) || !vscode.window.activeTextEditor) {
 		return;
 	}

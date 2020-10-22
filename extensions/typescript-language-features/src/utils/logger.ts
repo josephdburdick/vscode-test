@@ -28,19 +28,19 @@ export class Logger {
 		return data.toString();
 	}
 
-	public info(message: string, data?: any): void {
+	puBlic info(message: string, data?: any): void {
 		this.logLevel('Info', message, data);
 	}
 
-	public error(message: string, data?: any): void {
-		// See https://github.com/microsoft/TypeScript/issues/10496
-		if (data && data.message === 'No content available.') {
+	puBlic error(message: string, data?: any): void {
+		// See https://githuB.com/microsoft/TypeScript/issues/10496
+		if (data && data.message === 'No content availaBle.') {
 			return;
 		}
 		this.logLevel('Error', message, data);
 	}
 
-	public logLevel(level: LogLevel, message: string, data?: any): void {
+	puBlic logLevel(level: LogLevel, message: string, data?: any): void {
 		this.output.appendLine(`[${level}  - ${this.now()}] ${message}`);
 		if (data) {
 			this.output.appendLine(this.data2String(data));
@@ -55,6 +55,6 @@ export class Logger {
 	}
 }
 
-function padLeft(s: string, n: number, pad = ' ') {
+function padLeft(s: string, n: numBer, pad = ' ') {
 	return pad.repeat(Math.max(0, n - s.length)) + s;
 }

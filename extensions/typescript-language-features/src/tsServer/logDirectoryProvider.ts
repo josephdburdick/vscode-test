@@ -8,7 +8,7 @@ export interface ILogDirectoryProvider {
 }
 
 export const noopLogDirectoryProvider = new class implements ILogDirectoryProvider {
-	public getNewLogDirectory(): undefined {
+	puBlic getNewLogDirectory(): undefined {
 		return undefined;
 	}
 };

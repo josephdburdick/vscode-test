@@ -5,35 +5,35 @@
 
 import * as assert from 'assert';
 import * as sinon from 'sinon';
-import { ExperimentActionType, ExperimentState, IExperiment, ExperimentService, getCurrentActivationRecord, currentSchemaVersion } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { ExperimentActionType, ExperimentState, IExperiment, ExperimentService, getCurrentActivationRecord, currentSchemaVersion } from 'vs/workBench/contriB/experiments/common/experimentService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { TestLifecycleService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { TestLifecycleService } from 'vs/workBench/test/Browser/workBenchTestServices';
 import {
 	IExtensionManagementService, DidInstallExtensionEvent, DidUninstallExtensionEvent, InstallExtensionEvent, IExtensionIdentifier, ILocalExtension
 } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IWorkBenchExtensionEnaBlementService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
 import { ExtensionManagementService } from 'vs/platform/extensionManagement/node/extensionManagementService';
-import { Emitter } from 'vs/base/common/event';
-import { TestExtensionEnablementService } from 'vs/workbench/services/extensionManagement/test/browser/extensionEnablementService.test';
+import { Emitter } from 'vs/Base/common/event';
+import { TestExtensionEnaBlementService } from 'vs/workBench/services/extensionManagement/test/Browser/extensionEnaBlementService.test';
 import { NativeURLService } from 'vs/platform/url/common/urlService';
 import { IURLService } from 'vs/platform/url/common/url';
 import { ITelemetryService, lastSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { getGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IWillActivateEvent, IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { timeout } from 'vs/base/common/async';
-import { TestExtensionService } from 'vs/workbench/test/common/workbenchTestServices';
-import { OS } from 'vs/base/common/platform';
+import { IWillActivateEvent, IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { timeout } from 'vs/Base/common/async';
+import { TestExtensionService } from 'vs/workBench/test/common/workBenchTestServices';
+import { OS } from 'vs/Base/common/platform';
 
 interface ExperimentSettings {
-	enabled?: boolean;
+	enaBled?: Boolean;
 	id?: string;
 	state?: ExperimentState;
 }
@@ -45,18 +45,18 @@ let experimentData: { [i: string]: any; } = {
 const local = aLocalExtension('installedExtension1', { version: '1.0.0' });
 
 function aLocalExtension(name: string = 'someext', manifest: any = {}, properties: any = {}): ILocalExtension {
-	manifest = Object.assign({ name, publisher: 'pub', version: '1.0.0' }, manifest);
-	properties = Object.assign({
+	manifest = OBject.assign({ name, puBlisher: 'puB', version: '1.0.0' }, manifest);
+	properties = OBject.assign({
 		type: ExtensionType.User,
-		location: URI.file(`pub.${name}`),
-		identifier: { id: getGalleryExtensionId(manifest.publisher, manifest.name), uuid: undefined },
-		metadata: { id: getGalleryExtensionId(manifest.publisher, manifest.name), publisherId: manifest.publisher, publisherDisplayName: 'somename' }
+		location: URI.file(`puB.${name}`),
+		identifier: { id: getGalleryExtensionId(manifest.puBlisher, manifest.name), uuid: undefined },
+		metadata: { id: getGalleryExtensionId(manifest.puBlisher, manifest.name), puBlisherId: manifest.puBlisher, puBlisherDisplayName: 'somename' }
 	}, properties);
-	return <ILocalExtension>Object.create({ manifest, ...properties });
+	return <ILocalExtension>OBject.create({ manifest, ...properties });
 }
 
 export class TestExperimentService extends ExperimentService {
-	public getExperiments(): Promise<any[]> {
+	puBlic getExperiments(): Promise<any[]> {
 		return Promise.resolve(experimentData.experiments);
 	}
 }
@@ -64,7 +64,7 @@ export class TestExperimentService extends ExperimentService {
 suite('Experiment Service', () => {
 	let instantiationService: TestInstantiationService;
 	let testConfigurationService: TestConfigurationService;
-	let testObject: ExperimentService;
+	let testOBject: ExperimentService;
 	let activationEvent: Emitter<IWillActivateEvent>;
 	let installEvent: Emitter<InstallExtensionEvent>,
 		didInstallEvent: Emitter<DidInstallExtensionEvent>,
@@ -79,30 +79,30 @@ suite('Experiment Service', () => {
 		didUninstallEvent = new Emitter<DidUninstallExtensionEvent>();
 		activationEvent = new Emitter<IWillActivateEvent>();
 
-		instantiationService.stub(IExtensionService, TestExtensionService);
-		instantiationService.stub(IExtensionService, 'onWillActivateByEvent', activationEvent.event);
-		instantiationService.stub(IExtensionManagementService, ExtensionManagementService);
-		instantiationService.stub(IExtensionManagementService, 'onInstallExtension', installEvent.event);
-		instantiationService.stub(IExtensionManagementService, 'onDidInstallExtension', didInstallEvent.event);
-		instantiationService.stub(IExtensionManagementService, 'onUninstallExtension', uninstallEvent.event);
-		instantiationService.stub(IExtensionManagementService, 'onDidUninstallExtension', didUninstallEvent.event);
-		instantiationService.stub(IWorkbenchExtensionEnablementService, new TestExtensionEnablementService(instantiationService));
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
-		instantiationService.stub(IURLService, NativeURLService);
-		instantiationService.stubPromise(IExtensionManagementService, 'getInstalled', [local]);
+		instantiationService.stuB(IExtensionService, TestExtensionService);
+		instantiationService.stuB(IExtensionService, 'onWillActivateByEvent', activationEvent.event);
+		instantiationService.stuB(IExtensionManagementService, ExtensionManagementService);
+		instantiationService.stuB(IExtensionManagementService, 'onInstallExtension', installEvent.event);
+		instantiationService.stuB(IExtensionManagementService, 'onDidInstallExtension', didInstallEvent.event);
+		instantiationService.stuB(IExtensionManagementService, 'onUninstallExtension', uninstallEvent.event);
+		instantiationService.stuB(IExtensionManagementService, 'onDidUninstallExtension', didUninstallEvent.event);
+		instantiationService.stuB(IWorkBenchExtensionEnaBlementService, new TestExtensionEnaBlementService(instantiationService));
+		instantiationService.stuB(ITelemetryService, NullTelemetryService);
+		instantiationService.stuB(IURLService, NativeURLService);
+		instantiationService.stuBPromise(IExtensionManagementService, 'getInstalled', [local]);
 		testConfigurationService = new TestConfigurationService();
-		instantiationService.stub(IConfigurationService, testConfigurationService);
-		instantiationService.stub(ILifecycleService, new TestLifecycleService());
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{ get: (a: string, b: StorageScope, c?: string) => c, getBoolean: (a: string, b: StorageScope, c?: boolean) => c, store: () => { }, remove: () => { } });
+		instantiationService.stuB(IConfigurationService, testConfigurationService);
+		instantiationService.stuB(ILifecycleService, new TestLifecycleService());
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{ get: (a: string, B: StorageScope, c?: string) => c, getBoolean: (a: string, B: StorageScope, c?: Boolean) => c, store: () => { }, remove: () => { } });
 
 		setup(() => {
-			instantiationService.stub(IProductService, {});
-			instantiationService.stub(IStorageService, <Partial<IStorageService>>{ get: (a: string, b: StorageScope, c?: string) => c, getBoolean: (a: string, b: StorageScope, c?: boolean) => c, store: () => { }, remove: () => { } });
+			instantiationService.stuB(IProductService, {});
+			instantiationService.stuB(IStorageService, <Partial<IStorageService>>{ get: (a: string, B: StorageScope, c?: string) => c, getBoolean: (a: string, B: StorageScope, c?: Boolean) => c, store: () => { }, remove: () => { } });
 		});
 
 		teardown(() => {
-			if (testObject) {
-				testObject.dispose();
+			if (testOBject) {
+				testOBject.dispose();
 			}
 		});
 	});
@@ -115,22 +115,22 @@ suite('Experiment Service', () => {
 				},
 				{
 					id: 'experiment2',
-					enabled: false
+					enaBled: false
 				},
 				{
 					id: 'experiment3',
-					enabled: true
+					enaBled: true
 				},
 				{
 					id: 'experiment4',
-					enabled: true,
+					enaBled: true,
 					condition: {
 
 					}
 				},
 				{
 					id: 'experiment5',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						insidersOnly: true
 					}
@@ -138,33 +138,33 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
+		testOBject = instantiationService.createInstance(TestExperimentService);
 		const tests: Promise<IExperiment>[] = [];
-		tests.push(testObject.getExperimentById('experiment1'));
-		tests.push(testObject.getExperimentById('experiment2'));
-		tests.push(testObject.getExperimentById('experiment3'));
-		tests.push(testObject.getExperimentById('experiment4'));
-		tests.push(testObject.getExperimentById('experiment5'));
+		tests.push(testOBject.getExperimentById('experiment1'));
+		tests.push(testOBject.getExperimentById('experiment2'));
+		tests.push(testOBject.getExperimentById('experiment3'));
+		tests.push(testOBject.getExperimentById('experiment4'));
+		tests.push(testOBject.getExperimentById('experiment5'));
 
 		return Promise.all(tests).then(results => {
 			assert.equal(results[0].id, 'experiment1');
-			assert.equal(results[0].enabled, false);
+			assert.equal(results[0].enaBled, false);
 			assert.equal(results[0].state, ExperimentState.NoRun);
 
 			assert.equal(results[1].id, 'experiment2');
-			assert.equal(results[1].enabled, false);
+			assert.equal(results[1].enaBled, false);
 			assert.equal(results[1].state, ExperimentState.NoRun);
 
 			assert.equal(results[2].id, 'experiment3');
-			assert.equal(results[2].enabled, true);
+			assert.equal(results[2].enaBled, true);
 			assert.equal(results[2].state, ExperimentState.Run);
 
 			assert.equal(results[3].id, 'experiment4');
-			assert.equal(results[3].enabled, true);
+			assert.equal(results[3].enaBled, true);
 			assert.equal(results[3].state, ExperimentState.Run);
 
 			assert.equal(results[4].id, 'experiment5');
-			assert.equal(results[4].enabled, true);
+			assert.equal(results[4].enaBled, true);
 			assert.equal(results[4].state, ExperimentState.Run);
 		});
 	});
@@ -187,11 +187,11 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
+		testOBject = instantiationService.createInstance(TestExperimentService);
 		const actual = await Promise.all([
-			testObject.getExperimentById('experiment1'),
-			testObject.getExperimentById('experiment2'),
-			testObject.getExperimentById('experiment3'),
+			testOBject.getExperimentById('experiment1'),
+			testOBject.getExperimentById('experiment2'),
+			testOBject.getExperimentById('experiment3'),
 		]);
 
 		assert.equal(actual[0]?.id, 'experiment1');
@@ -199,12 +199,12 @@ suite('Experiment Service', () => {
 		assert.equal(actual[2], undefined);
 	});
 
-	test('Insiders only experiment shouldnt be enabled in stable', () => {
+	test('Insiders only experiment shouldnt Be enaBled in staBle', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						insidersOnly: true
 					}
@@ -212,20 +212,20 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IProductService, { quality: 'stable' });
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		instantiationService.stuB(IProductService, { quality: 'staBle' });
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('NewUsers experiment shouldnt be enabled for old users', () => {
+	test('NewUsers experiment shouldnt Be enaBled for old users', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						newUser: true
 					}
@@ -233,25 +233,25 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => {
 				return a === lastSessionDateStorageKey ? 'some-date' : undefined;
 			},
-			getBoolean: (a: string, b: StorageScope, c?: boolean) => c, store: () => { }, remove: () => { }
+			getBoolean: (a: string, B: StorageScope, c?: Boolean) => c, store: () => { }, remove: () => { }
 		});
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('OldUsers experiment shouldnt be enabled for new users', () => {
+	test('OldUsers experiment shouldnt Be enaBled for new users', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						newUser: false
 					}
@@ -259,61 +259,61 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Experiment without NewUser condition should be enabled for old users', () => {
+	test('Experiment without NewUser condition should Be enaBled for old users', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {}
 				}
 			]
 		};
 
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c: string | undefined) => {
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c: string | undefined) => {
 				return a === lastSessionDateStorageKey ? 'some-date' : undefined;
 			},
-			getBoolean: (a: string, b: StorageScope, c?: boolean) => c, store: () => { }, remove: () => { }
+			getBoolean: (a: string, B: StorageScope, c?: Boolean) => c, store: () => { }, remove: () => { }
 		});
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Experiment without NewUser condition should be enabled for new users', () => {
+	test('Experiment without NewUser condition should Be enaBled for new users', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {}
 				}
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Experiment with OS should be enabled on current OS', () => {
+	test('Experiment with OS should Be enaBled on current OS', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						os: [OS],
 					}
@@ -321,18 +321,18 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Experiment with OS should be disabled on other OS', () => {
+	test('Experiment with OS should Be disaBled on other OS', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						os: [OS - 1],
 					}
@@ -340,18 +340,18 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Activation event experiment with not enough events should be evaluating', () => {
+	test('Activation event experiment with not enough events should Be evaluating', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						activationEvent: {
 							event: 'my:event',
@@ -362,15 +362,15 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, 'get', (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, 'get', (a: string, B: StorageScope, c?: string) => {
 			return a === 'experimentEventRecord-my-event'
 				? JSON.stringify({ count: [2], mostRecentBucket: Date.now() })
 				: undefined;
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Evaluating);
 		});
 	});
@@ -380,7 +380,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						activationEvent: {
 							event: 'my:event',
@@ -391,15 +391,15 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, 'get', (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, 'get', (a: string, B: StorageScope, c?: string) => {
 			return a === 'experimentEventRecord-my-event'
 				? JSON.stringify({ count: [10], mostRecentBucket: Date.now() })
 				: undefined;
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
@@ -409,7 +409,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						activationEvent: {
 							event: 'my:event',
@@ -420,21 +420,21 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, 'get', (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, 'get', (a: string, B: StorageScope, c?: string) => {
 			return a === 'experimentEventRecord-my-event'
 				? JSON.stringify({ count: [10], mostRecentBucket: Date.now() - (1000 * 60 * 60 * 24 * 10) })
 				: undefined;
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Evaluating);
 		});
 	});
 
 	test('Parses activation records correctly', () => {
-		const timers = sinon.useFakeTimers(); // so Date.now() is stable
+		const timers = sinon.useFakeTimers(); // so Date.now() is staBle
 		const oneDay = 1000 * 60 * 60 * 24;
 		teardown(() => timers.restore());
 
@@ -479,7 +479,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						activationEvent: {
 							event: 'my:event',
@@ -490,14 +490,14 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, 'get', (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, 'get', (a: string, B: StorageScope, c?: string) => {
 			return a === 'experimentEventRecord-my-event'
 				? JSON.stringify({ count: [10, 0, 0, 0, 0, 0, 0], mostRecentBucket: Date.now() - (1000 * 60 * 60 * 24 * 2) })
 				: undefined;
 		});
 
 		let didGetCall = false;
-		instantiationService.stub(IStorageService, 'store', (key: string, value: string, scope: StorageScope) => {
+		instantiationService.stuB(IStorageService, 'store', (key: string, value: string, scope: StorageScope) => {
 			if (key.includes('experimentEventRecord')) {
 				didGetCall = true;
 				assert.equal(key, 'experimentEventRecord-my-event');
@@ -506,8 +506,8 @@ suite('Experiment Service', () => {
 			}
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		await testObject.getExperimentById('experiment1');
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		await testOBject.getExperimentById('experiment1');
 		activationEvent.fire({ event: 'not our event', activation: Promise.resolve() });
 		activationEvent.fire({ event: 'my:event', activation: Promise.resolve() });
 		assert(didGetCall);
@@ -518,7 +518,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						activationEvent: {
 							event: 'my:event',
@@ -530,32 +530,32 @@ suite('Experiment Service', () => {
 		};
 
 		let calls = 0;
-		instantiationService.stub(IStorageService, 'get', (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, 'get', (a: string, B: StorageScope, c?: string) => {
 			return a === 'experimentEventRecord-my-event'
 				? JSON.stringify({ count: [++calls, 0, 0, 0, 0, 0, 0], mostRecentBucket: Date.now() })
 				: undefined;
 		});
 
-		const enabledListener = sinon.stub();
-		testObject = instantiationService.createInstance(TestExperimentService);
-		testObject.onExperimentEnabled(enabledListener);
+		const enaBledListener = sinon.stuB();
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		testOBject.onExperimentEnaBled(enaBledListener);
 
-		assert.equal((await testObject.getExperimentById('experiment1')).state, ExperimentState.Evaluating);
-		assert.equal((await testObject.getExperimentById('experiment1')).state, ExperimentState.Evaluating);
-		assert.equal(enabledListener.callCount, 0);
+		assert.equal((await testOBject.getExperimentById('experiment1')).state, ExperimentState.Evaluating);
+		assert.equal((await testOBject.getExperimentById('experiment1')).state, ExperimentState.Evaluating);
+		assert.equal(enaBledListener.callCount, 0);
 
 		activationEvent.fire({ event: 'my:event', activation: Promise.resolve() });
 		await timeout(1);
-		assert.equal(enabledListener.callCount, 1);
-		assert.equal((await testObject.getExperimentById('experiment1')).state, ExperimentState.Run);
+		assert.equal(enaBledListener.callCount, 1);
+		assert.equal((await testOBject.getExperimentById('experiment1')).state, ExperimentState.Run);
 	});
 
-	test('Experiment not matching user setting should be disabled', () => {
+	test('Experiment not matching user setting should Be disaBled', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						userSetting: { neat: true }
 					}
@@ -563,21 +563,21 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IConfigurationService, 'getValue',
+		instantiationService.stuB(IConfigurationService, 'getValue',
 			(key: string) => key === 'neat' ? false : undefined);
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Experiment matching user setting should be enabled', () => {
+	test('Experiment matching user setting should Be enaBled', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						userSetting: { neat: true }
 					}
@@ -585,21 +585,21 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IConfigurationService, 'getValue',
+		instantiationService.stuB(IConfigurationService, 'getValue',
 			(key: string) => key === 'neat' ? true : undefined);
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Experiment with no matching display language should be disabled', () => {
+	test('Experiment with no matching display language should Be disaBled', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						displayLanguage: 'somethingthat-nooneknows'
 					}
@@ -607,41 +607,41 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Experiment with condition type InstalledExtensions is enabled when one of the expected extensions is installed', () => {
+	test('Experiment with condition type InstalledExtensions is enaBled when one of the expected extensions is installed', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						installedExtensions: {
-							inlcudes: ['pub.installedExtension1', 'uninstalled-extention-id']
+							inlcudes: ['puB.installedExtension1', 'uninstalled-extention-id']
 						}
 					}
 				}
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Experiment with condition type InstalledExtensions is disabled when none of the expected extensions is installed', () => {
+	test('Experiment with condition type InstalledExtensions is disaBled when none of the expected extensions is installed', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						installedExtensions: {
 							includes: ['uninstalled-extention-id1', 'uninstalled-extention-id2']
@@ -651,71 +651,71 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Experiment with condition type InstalledExtensions is disabled when one of the exlcuded extensions is installed', () => {
+	test('Experiment with condition type InstalledExtensions is disaBled when one of the exlcuded extensions is installed', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						installedExtensions: {
-							excludes: ['pub.installedExtension1', 'uninstalled-extention-id2']
+							excludes: ['puB.installedExtension1', 'uninstalled-extention-id2']
 						}
 					}
 				}
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.NoRun);
 		});
 	});
 
-	test('Experiment that is marked as complete should be disabled regardless of the conditions', () => {
+	test('Experiment that is marked as complete should Be disaBled regardless of the conditions', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						installedExtensions: {
-							includes: ['pub.installedExtension1', 'uninstalled-extention-id2']
+							includes: ['puB.installedExtension1', 'uninstalled-extention-id2']
 						}
 					}
 				}
 			]
 		};
 
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => a === 'experiments.experiment1' ? JSON.stringify({ state: ExperimentState.Complete }) : c,
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => a === 'experiments.experiment1' ? JSON.stringify({ state: ExperimentState.Complete }) : c,
 			store: () => { }
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Complete);
 		});
 	});
 
-	test('Experiment with evaluate only once should read enablement from storage service', () => {
+	test('Experiment with evaluate only once should read enaBlement from storage service', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						installedExtensions: {
-							excludes: ['pub.installedExtension1', 'uninstalled-extention-id2']
+							excludes: ['puB.installedExtension1', 'uninstalled-extention-id2']
 						},
 						evaluateOnlyOnce: true
 					}
@@ -723,18 +723,18 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => a === 'experiments.experiment1' ? JSON.stringify({ enabled: true, state: ExperimentState.Run }) : c,
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => a === 'experiments.experiment1' ? JSON.stringify({ enaBled: true, state: ExperimentState.Run }) : c,
 			store: () => { }
 		});
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
 		});
 	});
 
-	test('Curated list should be available if experiment is enabled.', () => {
+	test('Curated list should Be availaBle if experiment is enaBled.', () => {
 		const promptText = 'Hello there! Can you see this?';
 		const curatedExtensionsKey = 'AzureDeploy';
 		const curatedExtensionsList = ['uninstalled-extention-id1', 'uninstalled-extention-id2'];
@@ -742,7 +742,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: true,
+					enaBled: true,
 					action: {
 						type: 'Prompt',
 						properties: {
@@ -764,17 +764,17 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, true);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, true);
 			assert.equal(result.state, ExperimentState.Run);
-			return testObject.getCuratedExtensionsList(curatedExtensionsKey).then(curatedList => {
+			return testOBject.getCuratedExtensionsList(curatedExtensionsKey).then(curatedList => {
 				assert.equal(curatedList, curatedExtensionsList);
 			});
 		});
 	});
 
-	test('Curated list shouldnt be available if experiment is disabled.', () => {
+	test('Curated list shouldnt Be availaBle if experiment is disaBled.', () => {
 		const promptText = 'Hello there! Can you see this?';
 		const curatedExtensionsKey = 'AzureDeploy';
 		const curatedExtensionsList = ['uninstalled-extention-id1', 'uninstalled-extention-id2'];
@@ -782,7 +782,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: false,
+					enaBled: false,
 					action: {
 						type: 'Prompt',
 						properties: {
@@ -804,12 +804,12 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, false);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, false);
 			assert.equal(result.action?.type, 'Prompt');
 			assert.equal(result.state, ExperimentState.NoRun);
-			return testObject.getCuratedExtensionsList(curatedExtensionsKey).then(curatedList => {
+			return testOBject.getCuratedExtensionsList(curatedExtensionsKey).then(curatedList => {
 				assert.equal(curatedList.length, 0);
 			});
 		});
@@ -820,7 +820,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: false,
+					enaBled: false,
 					action2: {
 						type: 'Prompt',
 						properties: {
@@ -832,31 +832,31 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentById('experiment1').then(result => {
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentById('experiment1').then(result => {
 			assert.equal(result.action?.type, 'Prompt');
 		});
 	});
 
-	test('Experiment that is disabled or deleted should be removed from storage', () => {
+	test('Experiment that is disaBled or deleted should Be removed from storage', () => {
 		experimentData = {
 			experiments: [
 				{
 					id: 'experiment1',
-					enabled: false
+					enaBled: false
 				},
 				{
 					id: 'experiment3',
-					enabled: true
+					enaBled: true
 				}
 			]
 		};
 
-		let storageDataExperiment1: ExperimentSettings | null = { enabled: false };
-		let storageDataExperiment2: ExperimentSettings | null = { enabled: false };
+		let storageDataExperiment1: ExperimentSettings | null = { enaBled: false };
+		let storageDataExperiment2: ExperimentSettings | null = { enaBled: false };
 		let storageDataAllExperiments: string[] | null = ['experiment1', 'experiment2', 'experiment3'];
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => {
 				switch (a) {
 					case 'experiments.experiment1':
 						return JSON.stringify(storageDataExperiment1);
@@ -865,52 +865,52 @@ suite('Experiment Service', () => {
 					case 'allExperiments':
 						return JSON.stringify(storageDataAllExperiments);
 					default:
-						break;
+						Break;
 				}
 				return c;
 			},
-			store: (a: string, b: any, c: StorageScope) => {
+			store: (a: string, B: any, c: StorageScope) => {
 				switch (a) {
 					case 'experiments.experiment1':
-						storageDataExperiment1 = JSON.parse(b);
-						break;
+						storageDataExperiment1 = JSON.parse(B);
+						Break;
 					case 'experiments.experiment2':
-						storageDataExperiment2 = JSON.parse(b);
-						break;
+						storageDataExperiment2 = JSON.parse(B);
+						Break;
 					case 'allExperiments':
-						storageDataAllExperiments = JSON.parse(b);
-						break;
+						storageDataAllExperiments = JSON.parse(B);
+						Break;
 					default:
-						break;
+						Break;
 				}
 			},
 			remove: (a: string) => {
 				switch (a) {
 					case 'experiments.experiment1':
 						storageDataExperiment1 = null;
-						break;
+						Break;
 					case 'experiments.experiment2':
 						storageDataExperiment2 = null;
-						break;
+						Break;
 					case 'allExperiments':
 						storageDataAllExperiments = null;
-						break;
+						Break;
 					default:
-						break;
+						Break;
 				}
 			}
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		const disabledExperiment = testObject.getExperimentById('experiment1').then(result => {
-			assert.equal(result.enabled, false);
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		const disaBledExperiment = testOBject.getExperimentById('experiment1').then(result => {
+			assert.equal(result.enaBled, false);
 			assert.equal(!!storageDataExperiment1, false);
 		});
-		const deletedExperiment = testObject.getExperimentById('experiment2').then(result => {
+		const deletedExperiment = testOBject.getExperimentById('experiment2').then(result => {
 			assert.equal(!!result, false);
 			assert.equal(!!storageDataExperiment2, false);
 		});
-		return Promise.all([disabledExperiment, deletedExperiment]).then(() => {
+		return Promise.all([disaBledExperiment, deletedExperiment]).then(() => {
 			assert.equal(storageDataAllExperiments!.length, 1);
 			assert.equal(storageDataAllExperiments![0], 'experiment3');
 		});
@@ -922,13 +922,13 @@ suite('Experiment Service', () => {
 			experiments: null
 		};
 
-		let storageDataExperiment1: ExperimentSettings | null = { enabled: true, state: ExperimentState.Run };
-		let storageDataExperiment2: ExperimentSettings | null = { enabled: true, state: ExperimentState.NoRun };
-		let storageDataExperiment3: ExperimentSettings | null = { enabled: true, state: ExperimentState.Evaluating };
-		let storageDataExperiment4: ExperimentSettings | null = { enabled: true, state: ExperimentState.Complete };
+		let storageDataExperiment1: ExperimentSettings | null = { enaBled: true, state: ExperimentState.Run };
+		let storageDataExperiment2: ExperimentSettings | null = { enaBled: true, state: ExperimentState.NoRun };
+		let storageDataExperiment3: ExperimentSettings | null = { enaBled: true, state: ExperimentState.Evaluating };
+		let storageDataExperiment4: ExperimentSettings | null = { enaBled: true, state: ExperimentState.Complete };
 		let storageDataAllExperiments: string[] | null = ['experiment1', 'experiment2', 'experiment3', 'experiment4'];
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => {
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => {
 				switch (a) {
 					case 'experiments.experiment1':
 						return JSON.stringify(storageDataExperiment1);
@@ -941,77 +941,77 @@ suite('Experiment Service', () => {
 					case 'allExperiments':
 						return JSON.stringify(storageDataAllExperiments);
 					default:
-						break;
+						Break;
 				}
 				return c;
 			},
-			store: (a, b, c) => {
+			store: (a, B, c) => {
 				switch (a) {
 					case 'experiments.experiment1':
-						storageDataExperiment1 = JSON.parse(b + '');
-						break;
+						storageDataExperiment1 = JSON.parse(B + '');
+						Break;
 					case 'experiments.experiment2':
-						storageDataExperiment2 = JSON.parse(b + '');
-						break;
+						storageDataExperiment2 = JSON.parse(B + '');
+						Break;
 					case 'experiments.experiment3':
-						storageDataExperiment3 = JSON.parse(b + '');
-						break;
+						storageDataExperiment3 = JSON.parse(B + '');
+						Break;
 					case 'experiments.experiment4':
-						storageDataExperiment4 = JSON.parse(b + '');
-						break;
+						storageDataExperiment4 = JSON.parse(B + '');
+						Break;
 					case 'allExperiments':
-						storageDataAllExperiments = JSON.parse(b + '');
-						break;
+						storageDataAllExperiments = JSON.parse(B + '');
+						Break;
 					default:
-						break;
+						Break;
 				}
 			},
 			remove: a => {
 				switch (a) {
 					case 'experiments.experiment1':
 						storageDataExperiment1 = null;
-						break;
+						Break;
 					case 'experiments.experiment2':
 						storageDataExperiment2 = null;
-						break;
+						Break;
 					case 'experiments.experiment3':
 						storageDataExperiment3 = null;
-						break;
+						Break;
 					case 'experiments.experiment4':
 						storageDataExperiment4 = null;
-						break;
+						Break;
 					case 'allExperiments':
 						storageDataAllExperiments = null;
-						break;
+						Break;
 					default:
-						break;
+						Break;
 				}
 			}
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
+		testOBject = instantiationService.createInstance(TestExperimentService);
 
 		const tests: Promise<IExperiment>[] = [];
-		tests.push(testObject.getExperimentById('experiment1'));
-		tests.push(testObject.getExperimentById('experiment2'));
-		tests.push(testObject.getExperimentById('experiment3'));
-		tests.push(testObject.getExperimentById('experiment4'));
+		tests.push(testOBject.getExperimentById('experiment1'));
+		tests.push(testOBject.getExperimentById('experiment2'));
+		tests.push(testOBject.getExperimentById('experiment3'));
+		tests.push(testOBject.getExperimentById('experiment4'));
 
 		return Promise.all(tests).then(results => {
 			assert.equal(results[0].id, 'experiment1');
-			assert.equal(results[0].enabled, true);
+			assert.equal(results[0].enaBled, true);
 			assert.equal(results[0].state, ExperimentState.Run);
 
 			assert.equal(results[1].id, 'experiment2');
-			assert.equal(results[1].enabled, true);
+			assert.equal(results[1].enaBled, true);
 			assert.equal(results[1].state, ExperimentState.NoRun);
 
 			assert.equal(results[2].id, 'experiment3');
-			assert.equal(results[2].enabled, true);
+			assert.equal(results[2].enaBled, true);
 			assert.equal(results[2].state, ExperimentState.Evaluating);
 
 			assert.equal(results[3].id, 'experiment4');
-			assert.equal(results[3].enabled, true);
+			assert.equal(results[3].enaBled, true);
 			assert.equal(results[3].state, ExperimentState.Complete);
 		});
 
@@ -1025,11 +1025,11 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'simple-experiment',
-					enabled: true
+					enaBled: true
 				},
 				{
 					id: 'custom-experiment',
-					enabled: true,
+					enaBled: true,
 					action: {
 						type: 'Custom',
 						properties: customProperties
@@ -1037,14 +1037,14 @@ suite('Experiment Service', () => {
 				},
 				{
 					id: 'custom-experiment-no-properties',
-					enabled: true,
+					enaBled: true,
 					action: {
 						type: 'Custom'
 					}
 				},
 				{
 					id: 'prompt-with-no-commands',
-					enabled: true,
+					enaBled: true,
 					action: {
 						type: 'Prompt',
 						properties: {
@@ -1054,7 +1054,7 @@ suite('Experiment Service', () => {
 				},
 				{
 					id: 'prompt-with-commands',
-					enabled: true,
+					enaBled: true,
 					action: {
 						type: 'Prompt',
 						properties: {
@@ -1070,8 +1070,8 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		const custom = testObject.getExperimentsByType(ExperimentActionType.Custom).then(result => {
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		const custom = testOBject.getExperimentsByType(ExperimentActionType.Custom).then(result => {
 			assert.equal(result.length, 3);
 			assert.equal(result[0].id, 'simple-experiment');
 			assert.equal(result[1].id, 'custom-experiment');
@@ -1079,7 +1079,7 @@ suite('Experiment Service', () => {
 			assert.equal(result[2].id, 'custom-experiment-no-properties');
 			assert.equal(!!result[2].action!.properties, true);
 		});
-		const prompt = testObject.getExperimentsByType(ExperimentActionType.Prompt).then(result => {
+		const prompt = testOBject.getExperimentsByType(ExperimentActionType.Prompt).then(result => {
 			assert.equal(result.length, 2);
 			assert.equal(result[0].id, 'prompt-with-no-commands');
 			assert.equal(result[1].id, 'prompt-with-commands');
@@ -1092,7 +1092,7 @@ suite('Experiment Service', () => {
 			experiments: [
 				{
 					id: 'experiment3',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						experimentsPreviouslyRun: {
 							includes: ['experiment1'],
@@ -1102,7 +1102,7 @@ suite('Experiment Service', () => {
 				},
 				{
 					id: 'experiment4',
-					enabled: true,
+					enaBled: true,
 					condition: {
 						experimentsPreviouslyRun: {
 							includes: ['experiment1'],
@@ -1113,34 +1113,34 @@ suite('Experiment Service', () => {
 			]
 		};
 
-		let storageDataExperiment3 = { enabled: true, state: ExperimentState.Evaluating };
-		let storageDataExperiment4 = { enabled: true, state: ExperimentState.Evaluating };
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => {
+		let storageDataExperiment3 = { enaBled: true, state: ExperimentState.Evaluating };
+		let storageDataExperiment4 = { enaBled: true, state: ExperimentState.Evaluating };
+		instantiationService.stuB(IStorageService, <Partial<IStorageService>>{
+			get: (a: string, B: StorageScope, c?: string) => {
 				switch (a) {
 					case 'currentOrPreviouslyRunExperiments':
 						return JSON.stringify(['experiment1', 'experiment2']);
 					default:
-						break;
+						Break;
 				}
 				return c;
 			},
-			store: (a, b, c) => {
+			store: (a, B, c) => {
 				switch (a) {
 					case 'experiments.experiment3':
-						storageDataExperiment3 = JSON.parse(b + '');
-						break;
+						storageDataExperiment3 = JSON.parse(B + '');
+						Break;
 					case 'experiments.experiment4':
-						storageDataExperiment4 = JSON.parse(b + '');
-						break;
+						storageDataExperiment4 = JSON.parse(B + '');
+						Break;
 					default:
-						break;
+						Break;
 				}
 			}
 		});
 
-		testObject = instantiationService.createInstance(TestExperimentService);
-		return testObject.getExperimentsByType(ExperimentActionType.Custom).then(result => {
+		testOBject = instantiationService.createInstance(TestExperimentService);
+		return testOBject.getExperimentsByType(ExperimentActionType.Custom).then(result => {
 			assert.equal(result.length, 2);
 			assert.equal(result[0].id, 'experiment3');
 			assert.equal(result[0].state, ExperimentState.NoRun);

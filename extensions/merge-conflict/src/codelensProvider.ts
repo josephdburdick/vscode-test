@@ -8,8 +8,8 @@ import * as interfaces from './interfaces';
 import { loadMessageBundle } from 'vscode-nls';
 const localize = loadMessageBundle();
 
-export default class MergeConflictCodeLensProvider implements vscode.CodeLensProvider, vscode.Disposable {
-	private codeLensRegistrationHandle?: vscode.Disposable | null;
+export default class MergeConflictCodeLensProvider implements vscode.CodeLensProvider, vscode.DisposaBle {
+	private codeLensRegistrationHandle?: vscode.DisposaBle | null;
 	private config?: interfaces.IExtensionConfiguration;
 	private tracker: interfaces.IDocumentMergeConflictTracker;
 
@@ -17,21 +17,21 @@ export default class MergeConflictCodeLensProvider implements vscode.CodeLensPro
 		this.tracker = trackerService.createTracker('codelens');
 	}
 
-	begin(config: interfaces.IExtensionConfiguration) {
+	Begin(config: interfaces.IExtensionConfiguration) {
 		this.config = config;
 
-		if (this.config.enableCodeLens) {
+		if (this.config.enaBleCodeLens) {
 			this.registerCodeLensProvider();
 		}
 	}
 
 	configurationUpdated(updatedConfig: interfaces.IExtensionConfiguration) {
 
-		if (updatedConfig.enableCodeLens === false && this.codeLensRegistrationHandle) {
+		if (updatedConfig.enaBleCodeLens === false && this.codeLensRegistrationHandle) {
 			this.codeLensRegistrationHandle.dispose();
 			this.codeLensRegistrationHandle = null;
 		}
-		else if (updatedConfig.enableCodeLens === true && !this.codeLensRegistrationHandle) {
+		else if (updatedConfig.enaBleCodeLens === true && !this.codeLensRegistrationHandle) {
 			this.registerCodeLensProvider();
 		}
 
@@ -48,7 +48,7 @@ export default class MergeConflictCodeLensProvider implements vscode.CodeLensPro
 
 	async provideCodeLenses(document: vscode.TextDocument, _token: vscode.CancellationToken): Promise<vscode.CodeLens[] | null> {
 
-		if (!this.config || !this.config.enableCodeLens) {
+		if (!this.config || !this.config.enaBleCodeLens) {
 			return null;
 		}
 
@@ -74,7 +74,7 @@ export default class MergeConflictCodeLensProvider implements vscode.CodeLensPro
 			};
 
 			let acceptBothCommand: vscode.Command = {
-				command: 'merge-conflict.accept.both',
+				command: 'merge-conflict.accept.Both',
 				title: localize('acceptBothChanges', 'Accept Both Changes'),
 				arguments: ['known-conflict', conflict]
 			};

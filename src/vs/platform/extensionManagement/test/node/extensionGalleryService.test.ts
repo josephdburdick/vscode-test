@@ -7,38 +7,38 @@ import * as assert from 'assert';
 import * as os from 'os';
 import { NativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
 import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { join } from 'vs/base/common/path';
-import { mkdirp, RimRafMode, rimraf } from 'vs/base/node/pfs';
+import { getRandomTestPath } from 'vs/Base/test/node/testUtils';
+import { join } from 'vs/Base/common/path';
+import { mkdirp, RimRafMode, rimraf } from 'vs/Base/node/pfs';
 import { resolveMarketplaceHeaders } from 'vs/platform/extensionManagement/common/extensionGalleryService';
-import { isUUID } from 'vs/base/common/uuid';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { isUUID } from 'vs/Base/common/uuid';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { IFileService } from 'vs/platform/files/common/files';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import product from 'vs/platform/product/common/product';
-import { TestStorageService } from 'vs/workbench/test/common/workbenchTestServices';
+import { TestStorageService } from 'vs/workBench/test/common/workBenchTestServices';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 
 suite('Extension Gallery Service', () => {
 	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'extensiongalleryservice');
 	const marketplaceHome = join(parentDir, 'Marketplace');
 	let fileService: IFileService;
-	let disposables: DisposableStore;
+	let disposaBles: DisposaBleStore;
 
 	setup(done => {
 
-		disposables = new DisposableStore();
+		disposaBles = new DisposaBleStore();
 		fileService = new FileService(new NullLogService());
-		disposables.add(fileService);
+		disposaBles.add(fileService);
 
 		const diskFileSystemProvider = new DiskFileSystemProvider(new NullLogService());
-		disposables.add(diskFileSystemProvider);
+		disposaBles.add(diskFileSystemProvider);
 		fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
-		// Delete any existing backups completely and then re-create it.
+		// Delete any existing Backups completely and then re-create it.
 		rimraf(marketplaceHome, RimRafMode.MOVE).then(() => {
 			mkdirp(marketplaceHome).then(() => {
 				done();
@@ -47,7 +47,7 @@ suite('Extension Gallery Service', () => {
 	});
 
 	teardown(done => {
-		disposables.clear();
+		disposaBles.clear();
 		rimraf(marketplaceHome, RimRafMode.MOVE).then(done, done);
 	});
 

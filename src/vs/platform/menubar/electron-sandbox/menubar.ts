@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICommonMenubarService } from 'vs/platform/menubar/common/menubar';
+import { ICommonMenuBarService } from 'vs/platform/menuBar/common/menuBar';
 
-export const IMenubarService = createDecorator<IMenubarService>('menubarService');
+export const IMenuBarService = createDecorator<IMenuBarService>('menuBarService');
 
-export interface IMenubarService extends ICommonMenubarService {
+export interface IMenuBarService extends ICommonMenuBarService {
 	readonly _serviceBrand: undefined;
 }

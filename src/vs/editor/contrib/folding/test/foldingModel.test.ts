@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { FoldingModel, setCollapseStateAtLevel, setCollapseStateLevelsDown, setCollapseStateLevelsUp, setCollapseStateForMatchingLines, setCollapseStateUp } from 'vs/editor/contrib/folding/foldingModel';
+import { FoldingModel, setCollapseStateAtLevel, setCollapseStateLevelsDown, setCollapseStateLevelsUp, setCollapseStateForMatchingLines, setCollapseStateUp } from 'vs/editor/contriB/folding/foldingModel';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
+import { computeRanges } from 'vs/editor/contriB/folding/indentRangeProvider';
 import { TrackedRangeStickiness, IModelDeltaDecoration, ITextModel, IModelDecorationsChangeAccessor } from 'vs/editor/common/model';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
-import { FoldingRegion } from 'vs/editor/contrib/folding/foldingRanges';
-import { escapeRegExpCharacters } from 'vs/base/common/strings';
+import { FoldingRegion } from 'vs/editor/contriB/folding/foldingRanges';
+import { escapeRegExpCharacters } from 'vs/Base/common/strings';
 
 
 interface ExpectedRegion {
-	startLineNumber: number;
-	endLineNumber: number;
-	isCollapsed: boolean;
+	startLineNumBer: numBer;
+	endLineNumBer: numBer;
+	isCollapsed: Boolean;
 }
 
 interface ExpectedDecoration {
-	line: number;
+	line: numBer;
 	type: 'hidden' | 'collapsed' | 'expanded';
 }
 
@@ -46,7 +46,7 @@ export class TestDecorationProvider {
 	constructor(private model: ITextModel) {
 	}
 
-	getDecorationOption(isCollapsed: boolean, isHidden: boolean): ModelDecorationOptions {
+	getDecorationOption(isCollapsed: Boolean, isHidden: Boolean): ModelDecorationOptions {
 		if (isHidden) {
 			return TestDecorationProvider.hiddenDecoration;
 		}
@@ -60,8 +60,8 @@ export class TestDecorationProvider {
 		return this.model.deltaDecorations(oldDecorations, newDecorations);
 	}
 
-	changeDecorations<T>(callback: (changeAccessor: IModelDecorationsChangeAccessor) => T): (T | null) {
-		return this.model.changeDecorations(callback);
+	changeDecorations<T>(callBack: (changeAccessor: IModelDecorationsChangeAccessor) => T): (T | null) {
+		return this.model.changeDecorations(callBack);
 	}
 
 	getDecorations(): ExpectedDecoration[] {
@@ -69,11 +69,11 @@ export class TestDecorationProvider {
 		const res: ExpectedDecoration[] = [];
 		for (let decoration of decorations) {
 			if (decoration.options === TestDecorationProvider.hiddenDecoration) {
-				res.push({ line: decoration.range.startLineNumber, type: 'hidden' });
+				res.push({ line: decoration.range.startLineNumBer, type: 'hidden' });
 			} else if (decoration.options === TestDecorationProvider.collapsedDecoration) {
-				res.push({ line: decoration.range.startLineNumber, type: 'collapsed' });
+				res.push({ line: decoration.range.startLineNumBer, type: 'collapsed' });
 			} else if (decoration.options === TestDecorationProvider.expandedDecoration) {
-				res.push({ line: decoration.range.startLineNumber, type: 'expanded' });
+				res.push({ line: decoration.range.startLineNumBer, type: 'expanded' });
 			}
 		}
 		return res;
@@ -81,19 +81,19 @@ export class TestDecorationProvider {
 }
 
 suite('Folding Model', () => {
-	function r(startLineNumber: number, endLineNumber: number, isCollapsed: boolean = false): ExpectedRegion {
-		return { startLineNumber, endLineNumber, isCollapsed };
+	function r(startLineNumBer: numBer, endLineNumBer: numBer, isCollapsed: Boolean = false): ExpectedRegion {
+		return { startLineNumBer, endLineNumBer, isCollapsed };
 	}
 
-	function d(line: number, type: 'hidden' | 'collapsed' | 'expanded'): ExpectedDecoration {
+	function d(line: numBer, type: 'hidden' | 'collapsed' | 'expanded'): ExpectedDecoration {
 		return { line, type };
 	}
 
 	function assertRegion(actual: FoldingRegion | null, expected: ExpectedRegion | null, message?: string) {
 		assert.equal(!!actual, !!expected, message);
 		if (actual && expected) {
-			assert.equal(actual.startLineNumber, expected.startLineNumber, message);
-			assert.equal(actual.endLineNumber, expected.endLineNumber, message);
+			assert.equal(actual.startLineNumBer, expected.startLineNumBer, message);
+			assert.equal(actual.endLineNumBer, expected.endLineNumBer, message);
 			assert.equal(actual.isCollapsed, expected.isCollapsed, message);
 		}
 	}
@@ -103,7 +103,7 @@ suite('Folding Model', () => {
 		let actual = foldingModel.regions;
 		for (let i = 0; i < actual.length; i++) {
 			if (actual.isCollapsed(i)) {
-				actualRanges.push(r(actual.getStartLineNumber(i), actual.getEndLineNumber(i)));
+				actualRanges.push(r(actual.getStartLineNumBer(i), actual.getEndLineNumBer(i)));
 			}
 		}
 		assert.deepEqual(actualRanges, expectedRegions, message);
@@ -113,7 +113,7 @@ suite('Folding Model', () => {
 		let actualRanges: ExpectedRegion[] = [];
 		let actual = foldingModel.regions;
 		for (let i = 0; i < actual.length; i++) {
-			actualRanges.push(r(actual.getStartLineNumber(i), actual.getEndLineNumber(i), actual.isCollapsed(i)));
+			actualRanges.push(r(actual.getStartLineNumBer(i), actual.getEndLineNumBer(i), actual.isCollapsed(i)));
 		}
 		assert.deepEqual(actualRanges, expectedRegions, message);
 	}
@@ -124,7 +124,7 @@ suite('Folding Model', () => {
 	}
 
 	function assertRegions(actual: FoldingRegion[], expectedRegions: ExpectedRegion[], message?: string) {
-		assert.deepEqual(actual.map(r => ({ startLineNumber: r.startLineNumber, endLineNumber: r.endLineNumber, isCollapsed: r.isCollapsed })), expectedRegions, message);
+		assert.deepEqual(actual.map(r => ({ startLineNumBer: r.startLineNumBer, endLineNumBer: r.endLineNumBer, isCollapsed: r.isCollapsed })), expectedRegions, message);
 	}
 
 	test('getRegionAtLine', () => {
@@ -253,13 +253,13 @@ suite('Folding Model', () => {
 		/* 2*/	'  switch (x) {',
 		/* 3*/	'    case 1:',
 		/* 4*/	'      //hello1',
-		/* 5*/	'      break;',
+		/* 5*/	'      Break;',
 		/* 6*/	'    case 2:',
 		/* 7*/	'      //hello2',
-		/* 8*/	'      break;',
+		/* 8*/	'      Break;',
 		/* 9*/	'    case 3:',
 		/* 10*/	'      //hello3',
-		/* 11*/	'      break;',
+		/* 11*/	'      Break;',
 		/* 12*/	'  }',
 		/* 13*/	'}'];
 
@@ -312,9 +312,9 @@ suite('Folding Model', () => {
 			let r3 = r(5, 6, false);
 
 			assertRanges(foldingModel, [r1, r2, r3]);
-			let region1 = foldingModel.getRegionAtLine(r1.startLineNumber);
-			let region2 = foldingModel.getRegionAtLine(r2.startLineNumber);
-			let region3 = foldingModel.getRegionAtLine(r3.startLineNumber);
+			let region1 = foldingModel.getRegionAtLine(r1.startLineNumBer);
+			let region2 = foldingModel.getRegionAtLine(r2.startLineNumBer);
+			let region3 = foldingModel.getRegionAtLine(r3.startLineNumBer);
 
 			assertRegions(foldingModel.getRegionsInside(null), [r1, r2, r3], '1');
 			assertRegions(foldingModel.getRegionsInside(region1), [], '2');
@@ -355,9 +355,9 @@ suite('Folding Model', () => {
 			let r4 = r(5, 6, false);
 			let r5 = r(8, 9, false);
 
-			let region1 = foldingModel.getRegionAtLine(r1.startLineNumber);
-			let region2 = foldingModel.getRegionAtLine(r2.startLineNumber);
-			let region3 = foldingModel.getRegionAtLine(r3.startLineNumber);
+			let region1 = foldingModel.getRegionAtLine(r1.startLineNumBer);
+			let region2 = foldingModel.getRegionAtLine(r2.startLineNumBer);
+			let region3 = foldingModel.getRegionAtLine(r3.startLineNumBer);
 
 			assertRanges(foldingModel, [r1, r2, r3, r4, r5]);
 
@@ -452,16 +452,16 @@ suite('Folding Model', () => {
 			let r5 = r(9, 10, false);
 			assertRanges(foldingModel, [r1, r2, r3, r4, r5]);
 
-			setCollapseStateLevelsDown(foldingModel, true, Number.MAX_VALUE, [4]);
+			setCollapseStateLevelsDown(foldingModel, true, NumBer.MAX_VALUE, [4]);
 			assertFoldedRanges(foldingModel, [r3, r4, r5], '1');
 
-			setCollapseStateLevelsDown(foldingModel, false, Number.MAX_VALUE, [8]);
+			setCollapseStateLevelsDown(foldingModel, false, NumBer.MAX_VALUE, [8]);
 			assertFoldedRanges(foldingModel, [], '2');
 
-			setCollapseStateLevelsDown(foldingModel, true, Number.MAX_VALUE, [12]);
+			setCollapseStateLevelsDown(foldingModel, true, NumBer.MAX_VALUE, [12]);
 			assertFoldedRanges(foldingModel, [r2, r3, r4, r5], '1');
 
-			setCollapseStateLevelsDown(foldingModel, false, Number.MAX_VALUE, [7]);
+			setCollapseStateLevelsDown(foldingModel, false, NumBer.MAX_VALUE, [7]);
 			assertFoldedRanges(foldingModel, [r2], '1');
 
 			setCollapseStateLevelsDown(foldingModel, false);
@@ -490,7 +490,7 @@ suite('Folding Model', () => {
 		/* 11*/	'    }',
 		/* 12*/	'  }',
 		/* 13*/	'  //#region',
-		/* 14*/	'  const bar = 9;',
+		/* 14*/	'  const Bar = 9;',
 		/* 15*/	'  //#endregion',
 		/* 16*/	'}'];
 

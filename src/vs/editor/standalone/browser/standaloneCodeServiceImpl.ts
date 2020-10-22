@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { windowOpenNoOpener } from 'vs/base/browser/dom';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { CodeEditorServiceImpl } from 'vs/editor/browser/services/codeEditorServiceImpl';
+import { windowOpenNoOpener } from 'vs/Base/Browser/dom';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { CodeEditorServiceImpl } from 'vs/editor/Browser/services/codeEditorServiceImpl';
 import { IRange } from 'vs/editor/common/core/range';
 import { ScrollType } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
@@ -15,11 +15,11 @@ import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
 
 export class StandaloneCodeEditorServiceImpl extends CodeEditorServiceImpl {
 
-	public getActiveCodeEditor(): ICodeEditor | null {
+	puBlic getActiveCodeEditor(): ICodeEditor | null {
 		return null; // not supported in the standalone case
 	}
 
-	public openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null> {
+	puBlic openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: Boolean): Promise<ICodeEditor | null> {
 		if (!source) {
 			return Promise.resolve(null);
 		}
@@ -44,12 +44,12 @@ export class StandaloneCodeEditorServiceImpl extends CodeEditorServiceImpl {
 
 		const selection = <IRange>(input.options ? input.options.selection : null);
 		if (selection) {
-			if (typeof selection.endLineNumber === 'number' && typeof selection.endColumn === 'number') {
+			if (typeof selection.endLineNumBer === 'numBer' && typeof selection.endColumn === 'numBer') {
 				editor.setSelection(selection);
 				editor.revealRangeInCenter(selection, ScrollType.Immediate);
 			} else {
 				const pos = {
-					lineNumber: selection.startLineNumber,
+					lineNumBer: selection.startLineNumBer,
 					column: selection.startColumn
 				};
 				editor.setPosition(pos);

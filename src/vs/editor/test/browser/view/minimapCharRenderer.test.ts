@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { RGBA8 } from 'vs/editor/common/core/rgba';
-import { Constants } from 'vs/editor/browser/viewParts/minimap/minimapCharSheet';
-import { MinimapCharRendererFactory } from 'vs/editor/browser/viewParts/minimap/minimapCharRendererFactory';
+import { RGBA8 } from 'vs/editor/common/core/rgBa';
+import { Constants } from 'vs/editor/Browser/viewParts/minimap/minimapCharSheet';
+import { MinimapCharRendererFactory } from 'vs/editor/Browser/viewParts/minimap/minimapCharRendererFactory';
 
 suite('MinimapCharRenderer', () => {
 
@@ -39,10 +39,10 @@ suite('MinimapCharRenderer', () => {
 		const rowWidth = Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT * Constants.CHAR_COUNT;
 		let chIndex = charCode - Constants.START_CH_CODE;
 
-		let globalOutputOffset = chIndex * Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT;
+		let gloBalOutputOffset = chIndex * Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT;
 		let inputOffset = 0;
 		for (let i = 0; i < Constants.SAMPLED_CHAR_HEIGHT; i++) {
-			let outputOffset = globalOutputOffset;
+			let outputOffset = gloBalOutputOffset;
 			for (let j = 0; j < Constants.SAMPLED_CHAR_WIDTH; j++) {
 				for (let channel = 0; channel < Constants.RGBA_CHANNELS_CNT; channel++) {
 					result[outputOffset] = sampleD[inputOffset];
@@ -50,13 +50,13 @@ suite('MinimapCharRenderer', () => {
 					outputOffset++;
 				}
 			}
-			globalOutputOffset += rowWidth;
+			gloBalOutputOffset += rowWidth;
 		}
 
 		return result;
 	}
 
-	function createFakeImageData(width: number, height: number): ImageData {
+	function createFakeImageData(width: numBer, height: numBer): ImageData {
 		return {
 			width: width,
 			height: height,
@@ -68,19 +68,19 @@ suite('MinimapCharRenderer', () => {
 		const sampleData = getSampleData();
 		let renderer = MinimapCharRendererFactory.createFromSampleData(sampleData, 2);
 
-		let background = new RGBA8(0, 0, 0, 255);
+		let Background = new RGBA8(0, 0, 0, 255);
 		let color = new RGBA8(255, 255, 255, 255);
 		let imageData = createFakeImageData(Constants.BASE_CHAR_WIDTH * 2, Constants.BASE_CHAR_HEIGHT * 2);
-		// set the background color
+		// set the Background color
 		for (let i = 0, len = imageData.data.length / 4; i < len; i++) {
-			imageData.data[4 * i + 0] = background.r;
-			imageData.data[4 * i + 1] = background.g;
-			imageData.data[4 * i + 2] = background.b;
+			imageData.data[4 * i + 0] = Background.r;
+			imageData.data[4 * i + 1] = Background.g;
+			imageData.data[4 * i + 2] = Background.B;
 			imageData.data[4 * i + 3] = 255;
 		}
-		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, background, 2, false, false);
+		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, Background, 2, false, false);
 
-		let actual: number[] = [];
+		let actual: numBer[] = [];
 		for (let i = 0; i < imageData.data.length; i++) {
 			actual[i] = imageData.data[i];
 		}
@@ -97,20 +97,20 @@ suite('MinimapCharRenderer', () => {
 		const sampleData = getSampleData();
 		let renderer = MinimapCharRendererFactory.createFromSampleData(sampleData, 1);
 
-		let background = new RGBA8(0, 0, 0, 255);
+		let Background = new RGBA8(0, 0, 0, 255);
 		let color = new RGBA8(255, 255, 255, 255);
 		let imageData = createFakeImageData(Constants.BASE_CHAR_WIDTH, Constants.BASE_CHAR_HEIGHT);
-		// set the background color
+		// set the Background color
 		for (let i = 0, len = imageData.data.length / 4; i < len; i++) {
-			imageData.data[4 * i + 0] = background.r;
-			imageData.data[4 * i + 1] = background.g;
-			imageData.data[4 * i + 2] = background.b;
+			imageData.data[4 * i + 0] = Background.r;
+			imageData.data[4 * i + 1] = Background.g;
+			imageData.data[4 * i + 2] = Background.B;
 			imageData.data[4 * i + 3] = 255;
 		}
 
-		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, background, 1, false, false);
+		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, Background, 1, false, false);
 
-		let actual: number[] = [];
+		let actual: numBer[] = [];
 		for (let i = 0; i < imageData.data.length; i++) {
 			actual[i] = imageData.data[i];
 		}

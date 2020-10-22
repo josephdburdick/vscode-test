@@ -5,48 +5,48 @@
 
 import 'vs/css!./media/exceptionWidget';
 import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { ZoneWidget } from 'vs/editor/contrib/zoneWidget/zoneWidget';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IExceptionInfo, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import * as dom from 'vs/Base/Browser/dom';
+import { ZoneWidget } from 'vs/editor/contriB/zoneWidget/zoneWidget';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { IExceptionInfo, IDeBugSession } from 'vs/workBench/contriB/deBug/common/deBug';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 import { registerColor } from 'vs/platform/theme/common/colorRegistry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
+import { LinkDetector } from 'vs/workBench/contriB/deBug/Browser/linkDetector';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 const $ = dom.$;
 
 // theming
 
-export const debugExceptionWidgetBorder = registerColor('debugExceptionWidget.border', { dark: '#a31515', light: '#a31515', hc: '#a31515' }, nls.localize('debugExceptionWidgetBorder', 'Exception widget border color.'));
-export const debugExceptionWidgetBackground = registerColor('debugExceptionWidget.background', { dark: '#420b0d', light: '#f1dfde', hc: '#420b0d' }, nls.localize('debugExceptionWidgetBackground', 'Exception widget background color.'));
+export const deBugExceptionWidgetBorder = registerColor('deBugExceptionWidget.Border', { dark: '#a31515', light: '#a31515', hc: '#a31515' }, nls.localize('deBugExceptionWidgetBorder', 'Exception widget Border color.'));
+export const deBugExceptionWidgetBackground = registerColor('deBugExceptionWidget.Background', { dark: '#420B0d', light: '#f1dfde', hc: '#420B0d' }, nls.localize('deBugExceptionWidgetBackground', 'Exception widget Background color.'));
 
 export class ExceptionWidget extends ZoneWidget {
 
-	private _backgroundColor?: Color;
+	private _BackgroundColor?: Color;
 
-	constructor(editor: ICodeEditor, private exceptionInfo: IExceptionInfo, private debugSession: IDebugSession | undefined,
+	constructor(editor: ICodeEditor, private exceptionInfo: IExceptionInfo, private deBugSession: IDeBugSession | undefined,
 		@IThemeService themeService: IThemeService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
 		super(editor, { showFrame: true, showArrow: true, frameWidth: 1, className: 'exception-widget-container' });
 
-		this._backgroundColor = Color.white;
+		this._BackgroundColor = Color.white;
 
 		this._applyTheme(themeService.getColorTheme());
-		this._disposables.add(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
+		this._disposaBles.add(themeService.onDidColorThemeChange(this._applyTheme.Bind(this)));
 
 		this.create();
 		const onDidLayoutChangeScheduler = new RunOnceScheduler(() => this._doLayout(undefined, undefined), 50);
-		this._disposables.add(this.editor.onDidLayoutChange(() => onDidLayoutChangeScheduler.schedule()));
-		this._disposables.add(onDidLayoutChangeScheduler);
+		this._disposaBles.add(this.editor.onDidLayoutChange(() => onDidLayoutChangeScheduler.schedule()));
+		this._disposaBles.add(onDidLayoutChangeScheduler);
 	}
 
 	private _applyTheme(theme: IColorTheme): void {
-		this._backgroundColor = theme.getColor(debugExceptionWidgetBackground);
-		const frameColor = theme.getColor(debugExceptionWidgetBorder);
+		this._BackgroundColor = theme.getColor(deBugExceptionWidgetBackground);
+		const frameColor = theme.getColor(deBugExceptionWidgetBorder);
 		this.style({
 			arrowColor: frameColor,
 			frameColor: frameColor
@@ -55,7 +55,7 @@ export class ExceptionWidget extends ZoneWidget {
 
 	protected _applyStyles(): void {
 		if (this.container) {
-			this.container.style.backgroundColor = this._backgroundColor ? this._backgroundColor.toString() : '';
+			this.container.style.BackgroundColor = this._BackgroundColor ? this._BackgroundColor.toString() : '';
 		}
 		super._applyStyles();
 	}
@@ -80,20 +80,20 @@ export class ExceptionWidget extends ZoneWidget {
 		if (this.exceptionInfo.details && this.exceptionInfo.details.stackTrace) {
 			let stackTrace = $('.stack-trace');
 			const linkDetector = this.instantiationService.createInstance(LinkDetector);
-			const linkedStackTrace = linkDetector.linkify(this.exceptionInfo.details.stackTrace, true, this.debugSession ? this.debugSession.root : undefined);
+			const linkedStackTrace = linkDetector.linkify(this.exceptionInfo.details.stackTrace, true, this.deBugSession ? this.deBugSession.root : undefined);
 			stackTrace.appendChild(linkedStackTrace);
 			dom.append(container, stackTrace);
 		}
 	}
 
-	protected _doLayout(_heightInPixel: number | undefined, _widthInPixel: number | undefined): void {
+	protected _doLayout(_heightInPixel: numBer | undefined, _widthInPixel: numBer | undefined): void {
 		// Reload the height with respect to the exception text content and relayout it to match the line count.
 		this.container!.style.height = 'initial';
 
 		const lineHeight = this.editor.getOption(EditorOption.lineHeight);
 		const arrowHeight = Math.round(lineHeight / 3);
-		const computedLinesNumber = Math.ceil((this.container!.offsetHeight + arrowHeight) / lineHeight);
+		const computedLinesNumBer = Math.ceil((this.container!.offsetHeight + arrowHeight) / lineHeight);
 
-		this._relayout(computedLinesNumber);
+		this._relayout(computedLinesNumBer);
 	}
 }

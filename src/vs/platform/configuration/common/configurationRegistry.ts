@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import { Registry } from 'vs/platform/registry/common/platform';
-import * as types from 'vs/base/common/types';
-import { IJSONContributionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IStringDictionary } from 'vs/base/common/collections';
+import * as types from 'vs/Base/common/types';
+import { IJSONContriButionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
+import { IStringDictionary } from 'vs/Base/common/collections';
 
 export const Extensions = {
-	Configuration: 'base.contributions.configuration'
+	Configuration: 'Base.contriButions.configuration'
 };
 
 export interface IConfigurationRegistry {
@@ -25,7 +25,7 @@ export interface IConfigurationRegistry {
 	/**
 	 * Register multiple configurations to the registry.
 	 */
-	registerConfigurations(configurations: IConfigurationNode[], validate?: boolean): void;
+	registerConfigurations(configurations: IConfigurationNode[], validate?: Boolean): void;
 
 	/**
 	 * Deregister multiple configurations from the registry.
@@ -49,29 +49,29 @@ export interface IConfigurationRegistry {
 	notifyConfigurationSchemaUpdated(...configurations: IConfigurationNode[]): void;
 
 	/**
-	 * Event that fires whenver a configuration has been
+	 * Event that fires whenver a configuration has Been
 	 * registered.
 	 */
 	onDidSchemaChange: Event<void>;
 
 	/**
-	 * Event that fires whenver a configuration has been
+	 * Event that fires whenver a configuration has Been
 	 * registered.
 	 */
 	onDidUpdateConfiguration: Event<string[]>;
 
 	/**
-	 * Returns all configuration nodes contributed to this registry.
+	 * Returns all configuration nodes contriButed to this registry.
 	 */
 	getConfigurations(): IConfigurationNode[];
 
 	/**
-	 * Returns all configurations settings of all configuration nodes contributed to this registry.
+	 * Returns all configurations settings of all configuration nodes contriButed to this registry.
 	 */
 	getConfigurationProperties(): { [qualifiedKey: string]: IConfigurationPropertySchema };
 
 	/**
-	 * Returns all excluded configurations settings of all configuration nodes contributed to this registry.
+	 * Returns all excluded configurations settings of all configuration nodes contriButed to this registry.
 	 */
 	getExcludedConfigurationProperties(): { [qualifiedKey: string]: IConfigurationPropertySchema };
 
@@ -83,36 +83,36 @@ export interface IConfigurationRegistry {
 
 export const enum ConfigurationScope {
 	/**
-	 * Application specific configuration, which can be configured only in local user settings.
+	 * Application specific configuration, which can Be configured only in local user settings.
 	 */
 	APPLICATION = 1,
 	/**
-	 * Machine specific configuration, which can be configured only in local and remote user settings.
+	 * Machine specific configuration, which can Be configured only in local and remote user settings.
 	 */
 	MACHINE,
 	/**
-	 * Window specific configuration, which can be configured in the user or workspace settings.
+	 * Window specific configuration, which can Be configured in the user or workspace settings.
 	 */
 	WINDOW,
 	/**
-	 * Resource specific configuration, which can be configured in the user, workspace or folder settings.
+	 * Resource specific configuration, which can Be configured in the user, workspace or folder settings.
 	 */
 	RESOURCE,
 	/**
-	 * Resource specific configuration that can be configured in language specific settings
+	 * Resource specific configuration that can Be configured in language specific settings
 	 */
 	LANGUAGE_OVERRIDABLE,
 	/**
-	 * Machine specific configuration that can also be configured in workspace or folder settings.
+	 * Machine specific configuration that can also Be configured in workspace or folder settings.
 	 */
 	MACHINE_OVERRIDABLE,
 }
 
 export interface IConfigurationPropertySchema extends IJSONSchema {
 	scope?: ConfigurationScope;
-	included?: boolean;
+	included?: Boolean;
 	tags?: string[];
-	disallowSyncIgnore?: boolean;
+	disallowSyncIgnore?: Boolean;
 }
 
 export interface IConfigurationExtensionInfo {
@@ -121,7 +121,7 @@ export interface IConfigurationExtensionInfo {
 
 export interface IConfigurationNode {
 	id?: string;
-	order?: number;
+	order?: numBer;
 	type?: string | string[];
 	title?: string;
 	description?: string;
@@ -136,19 +136,19 @@ type SettingProperties = { [key: string]: any };
 export const allSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
 export const applicationSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
 export const machineSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
-export const machineOverridableSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
+export const machineOverridaBleSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
 export const windowSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
 export const resourceSettings: { properties: SettingProperties, patternProperties: SettingProperties } = { properties: {}, patternProperties: {} };
 
 export const resourceLanguageSettingsSchemaId = 'vscode://schemas/settings/resourceLanguage';
 
-const contributionRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+const contriButionRegistry = Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 
 class ConfigurationRegistry implements IConfigurationRegistry {
 
 	private readonly defaultValues: IStringDictionary<any>;
 	private readonly defaultLanguageConfigurationOverridesNode: IConfigurationNode;
-	private readonly configurationContributors: IConfigurationNode[];
+	private readonly configurationContriButors: IConfigurationNode[];
 	private readonly configurationProperties: { [qualifiedKey: string]: IJSONSchema };
 	private readonly excludedConfigurationProperties: { [qualifiedKey: string]: IJSONSchema };
 	private readonly resourceLanguageSettingsSchema: IJSONSchema;
@@ -167,32 +167,32 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 			title: nls.localize('defaultLanguageConfigurationOverrides.title', "Default Language Configuration Overrides"),
 			properties: {}
 		};
-		this.configurationContributors = [this.defaultLanguageConfigurationOverridesNode];
+		this.configurationContriButors = [this.defaultLanguageConfigurationOverridesNode];
 		this.resourceLanguageSettingsSchema = { properties: {}, patternProperties: {}, additionalProperties: false, errorMessage: 'Unknown editor configuration setting', allowTrailingCommas: true, allowComments: true };
 		this.configurationProperties = {};
 		this.excludedConfigurationProperties = {};
 
-		contributionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
+		contriButionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
 	}
 
-	public registerConfiguration(configuration: IConfigurationNode, validate: boolean = true): void {
+	puBlic registerConfiguration(configuration: IConfigurationNode, validate: Boolean = true): void {
 		this.registerConfigurations([configuration], validate);
 	}
 
-	public registerConfigurations(configurations: IConfigurationNode[], validate: boolean = true): void {
+	puBlic registerConfigurations(configurations: IConfigurationNode[], validate: Boolean = true): void {
 		const properties: string[] = [];
 		configurations.forEach(configuration => {
 			properties.push(...this.validateAndRegisterProperties(configuration, validate)); // fills in defaults
-			this.configurationContributors.push(configuration);
+			this.configurationContriButors.push(configuration);
 			this.registerJSONConfiguration(configuration);
 		});
 
-		contributionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
+		contriButionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
 		this._onDidSchemaChange.fire();
 		this._onDidUpdateConfiguration.fire(properties);
 	}
 
-	public deregisterConfigurations(configurations: IConfigurationNode[]): void {
+	puBlic deregisterConfigurations(configurations: IConfigurationNode[]): void {
 		const properties: string[] = [];
 		const deregisterConfiguration = (configuration: IConfigurationNode) => {
 			if (configuration.properties) {
@@ -208,18 +208,18 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		};
 		for (const configuration of configurations) {
 			deregisterConfiguration(configuration);
-			const index = this.configurationContributors.indexOf(configuration);
+			const index = this.configurationContriButors.indexOf(configuration);
 			if (index !== -1) {
-				this.configurationContributors.splice(index, 1);
+				this.configurationContriButors.splice(index, 1);
 			}
 		}
 
-		contributionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
+		contriButionRegistry.registerSchema(resourceLanguageSettingsSchemaId, this.resourceLanguageSettingsSchema);
 		this._onDidSchemaChange.fire();
 		this._onDidUpdateConfiguration.fire(properties);
 	}
 
-	public registerDefaultConfigurations(defaultConfigurations: IStringDictionary<any>[]): void {
+	puBlic registerDefaultConfigurations(defaultConfigurations: IStringDictionary<any>[]): void {
 		const properties: string[] = [];
 		const overrideIdentifiers: string[] = [];
 
@@ -230,9 +230,9 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 
 				if (OVERRIDE_PROPERTY_PATTERN.test(key)) {
 					const property: IConfigurationPropertySchema = {
-						type: 'object',
+						type: 'oBject',
 						default: this.defaultValues[key],
-						description: nls.localize('defaultLanguageConfiguration.description', "Configure settings to be overridden for {0} language.", key),
+						description: nls.localize('defaultLanguageConfiguration.description', "Configure settings to Be overridden for {0} language.", key),
 						$ref: resourceLanguageSettingsSchemaId
 					};
 					overrideIdentifiers.push(overrideIdentifierFromKey(key));
@@ -253,7 +253,7 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		this._onDidUpdateConfiguration.fire(properties);
 	}
 
-	public deregisterDefaultConfigurations(defaultConfigurations: IStringDictionary<any>[]): void {
+	puBlic deregisterDefaultConfigurations(defaultConfigurations: IStringDictionary<any>[]): void {
 		const properties: string[] = [];
 		for (const defaultConfiguration of defaultConfigurations) {
 			for (const key in defaultConfiguration) {
@@ -277,18 +277,18 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		this._onDidUpdateConfiguration.fire(properties);
 	}
 
-	public notifyConfigurationSchemaUpdated(...configurations: IConfigurationNode[]) {
+	puBlic notifyConfigurationSchemaUpdated(...configurations: IConfigurationNode[]) {
 		this._onDidSchemaChange.fire();
 	}
 
-	public registerOverrideIdentifiers(overrideIdentifiers: string[]): void {
+	puBlic registerOverrideIdentifiers(overrideIdentifiers: string[]): void {
 		for (const overrideIdentifier of overrideIdentifiers) {
 			this.overrideIdentifiers.add(overrideIdentifier);
 		}
 		this.updateOverridePropertyPatternKey();
 	}
 
-	private validateAndRegisterProperties(configuration: IConfigurationNode, validate: boolean = true, scope: ConfigurationScope = ConfigurationScope.WINDOW): string[] {
+	private validateAndRegisterProperties(configuration: IConfigurationNode, validate: Boolean = true, scope: ConfigurationScope = ConfigurationScope.WINDOW): string[] {
 		scope = types.isUndefinedOrNull(configuration.scope) ? scope : configuration.scope;
 		let propertyKeys: string[] = [];
 		let properties = configuration.properties;
@@ -306,13 +306,13 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 
 				// update scope
 				if (OVERRIDE_PROPERTY_PATTERN.test(key)) {
-					property.scope = undefined; // No scope for overridable properties `[${identifier}]`
+					property.scope = undefined; // No scope for overridaBle properties `[${identifier}]`
 				} else {
 					property.scope = types.isUndefinedOrNull(property.scope) ? scope : property.scope;
 				}
 
 				// Add to properties maps
-				// Property is included by default if 'included' is unspecified
+				// Property is included By default if 'included' is unspecified
 				if (properties[key].hasOwnProperty('included') && !properties[key].included) {
 					this.excludedConfigurationProperties[key] = properties[key];
 					delete properties[key];
@@ -329,9 +329,9 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 				propertyKeys.push(key);
 			}
 		}
-		let subNodes = configuration.allOf;
-		if (subNodes) {
-			for (let node of subNodes) {
+		let suBNodes = configuration.allOf;
+		if (suBNodes) {
+			for (let node of suBNodes) {
 				propertyKeys.push(...this.validateAndRegisterProperties(node, validate, scope));
 			}
 		}
@@ -339,7 +339,7 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 	}
 
 	getConfigurations(): IConfigurationNode[] {
-		return this.configurationContributors;
+		return this.configurationContriButors;
 	}
 
 	getConfigurationProperties(): { [qualifiedKey: string]: IConfigurationPropertySchema } {
@@ -358,9 +358,9 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 					this.updateSchema(key, properties[key]);
 				}
 			}
-			let subNodes = configuration.allOf;
-			if (subNodes) {
-				subNodes.forEach(register);
+			let suBNodes = configuration.allOf;
+			if (suBNodes) {
+				suBNodes.forEach(register);
 			}
 		};
 		register(configuration);
@@ -371,23 +371,23 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		switch (property.scope) {
 			case ConfigurationScope.APPLICATION:
 				applicationSettings.properties[key] = property;
-				break;
+				Break;
 			case ConfigurationScope.MACHINE:
 				machineSettings.properties[key] = property;
-				break;
+				Break;
 			case ConfigurationScope.MACHINE_OVERRIDABLE:
-				machineOverridableSettings.properties[key] = property;
-				break;
+				machineOverridaBleSettings.properties[key] = property;
+				Break;
 			case ConfigurationScope.WINDOW:
 				windowSettings.properties[key] = property;
-				break;
+				Break;
 			case ConfigurationScope.RESOURCE:
 				resourceSettings.properties[key] = property;
-				break;
+				Break;
 			case ConfigurationScope.LANGUAGE_OVERRIDABLE:
 				resourceSettings.properties[key] = property;
 				this.resourceLanguageSettingsSchema.properties![key] = property;
-				break;
+				Break;
 		}
 	}
 
@@ -396,20 +396,20 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		switch (property.scope) {
 			case ConfigurationScope.APPLICATION:
 				delete applicationSettings.properties[key];
-				break;
+				Break;
 			case ConfigurationScope.MACHINE:
 				delete machineSettings.properties[key];
-				break;
+				Break;
 			case ConfigurationScope.MACHINE_OVERRIDABLE:
-				delete machineOverridableSettings.properties[key];
-				break;
+				delete machineOverridaBleSettings.properties[key];
+				Break;
 			case ConfigurationScope.WINDOW:
 				delete windowSettings.properties[key];
-				break;
+				Break;
 			case ConfigurationScope.RESOURCE:
 			case ConfigurationScope.LANGUAGE_OVERRIDABLE:
 				delete resourceSettings.properties[key];
-				break;
+				Break;
 		}
 	}
 
@@ -417,8 +417,8 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 		for (const overrideIdentifier of this.overrideIdentifiers.values()) {
 			const overrideIdentifierProperty = `[${overrideIdentifier}]`;
 			const resourceLanguagePropertiesSchema: IJSONSchema = {
-				type: 'object',
-				description: nls.localize('overrideSettings.defaultDescription', "Configure editor settings to be overridden for a language."),
+				type: 'oBject',
+				description: nls.localize('overrideSettings.defaultDescription', "Configure editor settings to Be overridden for a language."),
 				errorMessage: nls.localize('overrideSettings.errorMessage', "This setting does not support per-language configuration."),
 				$ref: resourceLanguageSettingsSchemaId,
 			};
@@ -426,7 +426,7 @@ class ConfigurationRegistry implements IConfigurationRegistry {
 			allSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
 			applicationSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
 			machineSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
-			machineOverridableSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
+			machineOverridaBleSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
 			windowSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
 			resourceSettings.properties[overrideIdentifierProperty] = resourceLanguagePropertiesSchema;
 		}
@@ -449,22 +449,22 @@ const OVERRIDE_PROPERTY = '\\[.*\\]$';
 export const OVERRIDE_PROPERTY_PATTERN = new RegExp(OVERRIDE_PROPERTY);
 
 export function overrideIdentifierFromKey(key: string): string {
-	return key.substring(1, key.length - 1);
+	return key.suBstring(1, key.length - 1);
 }
 
 export function getDefaultValue(type: string | string[] | undefined): any {
 	const t = Array.isArray(type) ? (<string[]>type)[0] : <string>type;
 	switch (t) {
-		case 'boolean':
+		case 'Boolean':
 			return false;
 		case 'integer':
-		case 'number':
+		case 'numBer':
 			return 0;
 		case 'string':
 			return '';
 		case 'array':
 			return [];
-		case 'object':
+		case 'oBject':
 			return {};
 		default:
 			return null;
@@ -477,7 +477,7 @@ Registry.add(Extensions.Configuration, configurationRegistry);
 
 export function validateProperty(property: string): string | null {
 	if (OVERRIDE_PROPERTY_PATTERN.test(property)) {
-		return nls.localize('config.property.languageDefault', "Cannot register '{0}'. This matches property pattern '\\\\[.*\\\\]$' for describing language specific editor settings. Use 'configurationDefaults' contribution.", property);
+		return nls.localize('config.property.languageDefault', "Cannot register '{0}'. This matches property pattern '\\\\[.*\\\\]$' for descriBing language specific editor settings. Use 'configurationDefaults' contriBution.", property);
 	}
 	if (configurationRegistry.getConfigurationProperties()[property] !== undefined) {
 		return nls.localize('config.property.duplicate', "Cannot register '{0}'. This property is already registered.", property);
@@ -488,7 +488,7 @@ export function validateProperty(property: string): string | null {
 export function getScopes(): [string, ConfigurationScope | undefined][] {
 	const scopes: [string, ConfigurationScope | undefined][] = [];
 	const configurationProperties = configurationRegistry.getConfigurationProperties();
-	for (const key of Object.keys(configurationProperties)) {
+	for (const key of OBject.keys(configurationProperties)) {
 		scopes.push([key, configurationProperties[key].scope]);
 	}
 	scopes.push(['launch', ConfigurationScope.RESOURCE]);

@@ -11,7 +11,7 @@ import { createLazyClientHost, lazilyActivateClient } from './lazyClientHost';
 import { noopRequestCancellerFactory } from './tsServer/cancellation';
 import { noopLogDirectoryProvider } from './tsServer/logDirectoryProvider';
 import { ITypeScriptVersionProvider, TypeScriptVersion, TypeScriptVersionSource } from './tsServer/versionProvider';
-import { WorkerServerProcess } from './tsServer/serverProcess.browser';
+import { WorkerServerProcess } from './tsServer/serverProcess.Browser';
 import API from './utils/api';
 import { CommandManager } from './commands/commandManager';
 import { TypeScriptServiceConfiguration } from './utils/configuration';
@@ -28,9 +28,9 @@ class StaticVersionProvider implements ITypeScriptVersionProvider {
 	}
 
 	get defaultVersion() { return this._version; }
-	get bundledVersion() { return this._version; }
+	get BundledVersion() { return this._version; }
 
-	readonly globalVersion = undefined;
+	readonly gloBalVersion = undefined;
 	readonly localVersion = undefined;
 	readonly localVersions = [];
 }
@@ -39,20 +39,20 @@ export function activate(
 	context: vscode.ExtensionContext
 ): Api {
 	const pluginManager = new PluginManager();
-	context.subscriptions.push(pluginManager);
+	context.suBscriptions.push(pluginManager);
 
 	const commandManager = new CommandManager();
-	context.subscriptions.push(commandManager);
+	context.suBscriptions.push(commandManager);
 
-	context.subscriptions.push(new LanguageConfigurationManager());
+	context.suBscriptions.push(new LanguageConfigurationManager());
 
 	const onCompletionAccepted = new vscode.EventEmitter<vscode.CompletionItem>();
-	context.subscriptions.push(onCompletionAccepted);
+	context.suBscriptions.push(onCompletionAccepted);
 
 	const versionProvider = new StaticVersionProvider(
 		new TypeScriptVersion(
 			TypeScriptVersionSource.Bundled,
-			vscode.Uri.joinPath(context.extensionUri, 'dist/browser/typescript-web/tsserver.web.js').toString(),
+			vscode.Uri.joinPath(context.extensionUri, 'dist/Browser/typescript-weB/tsserver.weB.js').toString(),
 			API.fromSimpleString('4.0.3')));
 
 	const lazyClientHost = createLazyClientHost(context, false, {
@@ -68,13 +68,13 @@ export function activate(
 
 	registerBaseCommands(commandManager, lazyClientHost, pluginManager);
 
-	// context.subscriptions.push(task.register(lazyClientHost.map(x => x.serviceClient)));
+	// context.suBscriptions.push(task.register(lazyClientHost.map(x => x.serviceClient)));
 
 	import('./languageFeatures/tsconfig').then(module => {
-		context.subscriptions.push(module.register());
+		context.suBscriptions.push(module.register());
 	});
 
-	context.subscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
+	context.suBscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
 
 	return getExtensionApi(onCompletionAccepted.event, pluginManager);
 }

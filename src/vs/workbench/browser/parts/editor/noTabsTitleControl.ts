@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/notabstitlecontrol';
-import { EditorResourceAccessor, Verbosity, IEditorInput, IEditorPartOptions, SideBySideEditor } from 'vs/workbench/common/editor';
-import { TitleControl, IToolbarActions } from 'vs/workbench/browser/parts/editor/titleControl';
-import { ResourceLabel, IResourceLabel } from 'vs/workbench/browser/labels';
-import { TAB_ACTIVE_FOREGROUND, TAB_UNFOCUSED_ACTIVE_FOREGROUND } from 'vs/workbench/common/theme';
-import { EventType as TouchEventType, GestureEvent, Gesture } from 'vs/base/browser/touch';
-import { addDisposableListener, EventType, EventHelper, Dimension, isAncestor } from 'vs/base/browser/dom';
-import { IAction } from 'vs/base/common/actions';
-import { CLOSE_EDITOR_COMMAND_ID } from 'vs/workbench/browser/parts/editor/editorCommands';
-import { Color } from 'vs/base/common/color';
-import { withNullAsUndefined, assertIsDefined, assertAllDefined } from 'vs/base/common/types';
-import { IEditorGroupTitleDimensions } from 'vs/workbench/browser/parts/editor/editor';
+import 'vs/css!./media/notaBstitlecontrol';
+import { EditorResourceAccessor, VerBosity, IEditorInput, IEditorPartOptions, SideBySideEditor } from 'vs/workBench/common/editor';
+import { TitleControl, IToolBarActions } from 'vs/workBench/Browser/parts/editor/titleControl';
+import { ResourceLaBel, IResourceLaBel } from 'vs/workBench/Browser/laBels';
+import { TAB_ACTIVE_FOREGROUND, TAB_UNFOCUSED_ACTIVE_FOREGROUND } from 'vs/workBench/common/theme';
+import { EventType as TouchEventType, GestureEvent, Gesture } from 'vs/Base/Browser/touch';
+import { addDisposaBleListener, EventType, EventHelper, Dimension, isAncestor } from 'vs/Base/Browser/dom';
+import { IAction } from 'vs/Base/common/actions';
+import { CLOSE_EDITOR_COMMAND_ID } from 'vs/workBench/Browser/parts/editor/editorCommands';
+import { Color } from 'vs/Base/common/color';
+import { withNullAsUndefined, assertIsDefined, assertAllDefined } from 'vs/Base/common/types';
+import { IEditorGroupTitleDimensions } from 'vs/workBench/Browser/parts/editor/editor';
 
-interface IRenderedEditorLabel {
+interface IRenderedEditorLaBel {
 	editor?: IEditorInput;
-	pinned: boolean;
+	pinned: Boolean;
 }
 
-export class NoTabsTitleControl extends TitleControl {
+export class NoTaBsTitleControl extends TitleControl {
 
 	private static readonly HEIGHT = 35;
 
 	private titleContainer: HTMLElement | undefined;
-	private editorLabel: IResourceLabel | undefined;
-	private activeLabel: IRenderedEditorLabel = Object.create(null);
+	private editorLaBel: IResourceLaBel | undefined;
+	private activeLaBel: IRenderedEditorLaBel = OBject.create(null);
 
 	protected create(parent: HTMLElement): void {
 		const titleContainer = this.titleContainer = parent;
-		titleContainer.draggable = true;
+		titleContainer.draggaBle = true;
 
 		//Container listeners
 		this.registerContainerListeners(titleContainer);
@@ -39,71 +39,71 @@ export class NoTabsTitleControl extends TitleControl {
 		// Gesture Support
 		this._register(Gesture.addTarget(titleContainer));
 
-		const labelContainer = document.createElement('div');
-		labelContainer.classList.add('label-container');
-		titleContainer.appendChild(labelContainer);
+		const laBelContainer = document.createElement('div');
+		laBelContainer.classList.add('laBel-container');
+		titleContainer.appendChild(laBelContainer);
 
-		// Editor Label
-		this.editorLabel = this._register(this.instantiationService.createInstance(ResourceLabel, labelContainer, undefined)).element;
-		this._register(addDisposableListener(this.editorLabel.element, EventType.CLICK, e => this.onTitleLabelClick(e)));
+		// Editor LaBel
+		this.editorLaBel = this._register(this.instantiationService.createInstance(ResourceLaBel, laBelContainer, undefined)).element;
+		this._register(addDisposaBleListener(this.editorLaBel.element, EventType.CLICK, e => this.onTitleLaBelClick(e)));
 
-		// Breadcrumbs
-		this.createBreadcrumbsControl(labelContainer, { showFileIcons: false, showSymbolIcons: true, showDecorationColors: false, breadcrumbsBackground: () => Color.transparent });
-		titleContainer.classList.toggle('breadcrumbs', Boolean(this.breadcrumbsControl));
-		this._register({ dispose: () => titleContainer.classList.remove('breadcrumbs') }); // import to remove because the container is a shared dom node
+		// BreadcrumBs
+		this.createBreadcrumBsControl(laBelContainer, { showFileIcons: false, showSymBolIcons: true, showDecorationColors: false, BreadcrumBsBackground: () => Color.transparent });
+		titleContainer.classList.toggle('BreadcrumBs', Boolean(this.BreadcrumBsControl));
+		this._register({ dispose: () => titleContainer.classList.remove('BreadcrumBs') }); // import to remove Because the container is a shared dom node
 
 		// Right Actions Container
 		const actionsContainer = document.createElement('div');
 		actionsContainer.classList.add('title-actions');
 		titleContainer.appendChild(actionsContainer);
 
-		// Editor actions toolbar
+		// Editor actions toolBar
 		this.createEditorActionsToolBar(actionsContainer);
 	}
 
 	private registerContainerListeners(titleContainer: HTMLElement): void {
 
 		// Group dragging
-		this.enableGroupDragging(titleContainer);
+		this.enaBleGroupDragging(titleContainer);
 
-		// Pin on double click
-		this._register(addDisposableListener(titleContainer, EventType.DBLCLICK, (e: MouseEvent) => this.onTitleDoubleClick(e)));
+		// Pin on douBle click
+		this._register(addDisposaBleListener(titleContainer, EventType.DBLCLICK, (e: MouseEvent) => this.onTitleDouBleClick(e)));
 
 		// Detect mouse click
-		this._register(addDisposableListener(titleContainer, EventType.AUXCLICK, (e: MouseEvent) => this.onTitleAuxClick(e)));
+		this._register(addDisposaBleListener(titleContainer, EventType.AUXCLICK, (e: MouseEvent) => this.onTitleAuxClick(e)));
 
 		// Detect touch
-		this._register(addDisposableListener(titleContainer, TouchEventType.Tap, (e: GestureEvent) => this.onTitleTap(e)));
+		this._register(addDisposaBleListener(titleContainer, TouchEventType.Tap, (e: GestureEvent) => this.onTitleTap(e)));
 
 		// Context Menu
-		this._register(addDisposableListener(titleContainer, EventType.CONTEXT_MENU, (e: Event) => {
+		this._register(addDisposaBleListener(titleContainer, EventType.CONTEXT_MENU, (e: Event) => {
 			if (this.group.activeEditor) {
 				this.onContextMenu(this.group.activeEditor, e, titleContainer);
 			}
 		}));
-		this._register(addDisposableListener(titleContainer, TouchEventType.Contextmenu, (e: Event) => {
+		this._register(addDisposaBleListener(titleContainer, TouchEventType.Contextmenu, (e: Event) => {
 			if (this.group.activeEditor) {
 				this.onContextMenu(this.group.activeEditor, e, titleContainer);
 			}
 		}));
 	}
 
-	private onTitleLabelClick(e: MouseEvent): void {
+	private onTitleLaBelClick(e: MouseEvent): void {
 		EventHelper.stop(e, false);
 
 		// delayed to let the onTitleClick() come first which can cause a focus change which can close quick access
 		setTimeout(() => this.quickInputService.quickAccess.show());
 	}
 
-	private onTitleDoubleClick(e: MouseEvent): void {
+	private onTitleDouBleClick(e: MouseEvent): void {
 		EventHelper.stop(e);
 
 		this.group.pinEditor();
 	}
 
 	private onTitleAuxClick(e: MouseEvent): void {
-		if (e.button === 1 /* Middle Button */ && this.group.activeEditor) {
-			EventHelper.stop(e, true /* for https://github.com/microsoft/vscode/issues/56715 */);
+		if (e.Button === 1 /* Middle Button */ && this.group.activeEditor) {
+			EventHelper.stop(e, true /* for https://githuB.com/microsoft/vscode/issues/56715 */);
 
 			this.group.closeEditor(this.group.activeEditor);
 		}
@@ -112,17 +112,17 @@ export class NoTabsTitleControl extends TitleControl {
 	private onTitleTap(e: GestureEvent): void {
 
 		// We only want to open the quick access picker when
-		// the tap occured over the editor label, so we need
+		// the tap occured over the editor laBel, so we need
 		// to check on the target
-		// (https://github.com/microsoft/vscode/issues/107543)
+		// (https://githuB.com/microsoft/vscode/issues/107543)
 		const target = e.initialTarget;
-		if (!(target instanceof HTMLElement) || !this.editorLabel || !isAncestor(target, this.editorLabel.element)) {
+		if (!(target instanceof HTMLElement) || !this.editorLaBel || !isAncestor(target, this.editorLaBel.element)) {
 			return;
 		}
 
-		// TODO@rebornix gesture tap should open the quick access
+		// TODO@reBornix gesture tap should open the quick access
 		// editorGroupView will focus on the editor again when there are mouse/pointer/touch down events
-		// we need to wait a bit as `GesureEvent.Tap` is generated from `touchstart` and then `touchend` evnets, which are not an atom event.
+		// we need to wait a Bit as `GesureEvent.Tap` is generated from `touchstart` and then `touchend` evnets, which are not an atom event.
 		setTimeout(() => this.quickInputService.quickAccess.show(), 50);
 	}
 
@@ -141,7 +141,7 @@ export class NoTabsTitleControl extends TitleControl {
 		this.ifActiveEditorChanged(() => this.redraw());
 	}
 
-	moveEditor(editor: IEditorInput, fromIndex: number, targetIndex: number): void {
+	moveEditor(editor: IEditorInput, fromIndex: numBer, targetIndex: numBer): void {
 		this.ifActiveEditorChanged(() => this.redraw());
 	}
 
@@ -150,24 +150,24 @@ export class NoTabsTitleControl extends TitleControl {
 	}
 
 	stickEditor(editor: IEditorInput): void {
-		// Sticky editors are not presented any different with tabs disabled
+		// Sticky editors are not presented any different with taBs disaBled
 	}
 
 	unstickEditor(editor: IEditorInput): void {
-		// Sticky editors are not presented any different with tabs disabled
+		// Sticky editors are not presented any different with taBs disaBled
 	}
 
-	setActive(isActive: boolean): void {
+	setActive(isActive: Boolean): void {
 		this.redraw();
 	}
 
-	updateEditorLabel(editor: IEditorInput): void {
+	updateEditorLaBel(editor: IEditorInput): void {
 		this.ifEditorIsActive(editor, () => this.redraw());
 	}
 
-	updateEditorLabels(): void {
+	updateEditorLaBels(): void {
 		if (this.group.activeEditor) {
-			this.updateEditorLabel(this.group.activeEditor); // we only have the active one to update
+			this.updateEditorLaBel(this.group.activeEditor); // we only have the active one to update
 		}
 	}
 
@@ -188,7 +188,7 @@ export class NoTabsTitleControl extends TitleControl {
 	}
 
 	updateOptions(oldOptions: IEditorPartOptions, newOptions: IEditorPartOptions): void {
-		if (oldOptions.labelFormat !== newOptions.labelFormat) {
+		if (oldOptions.laBelFormat !== newOptions.laBelFormat) {
 			this.redraw();
 		}
 	}
@@ -197,18 +197,18 @@ export class NoTabsTitleControl extends TitleControl {
 		this.redraw();
 	}
 
-	protected handleBreadcrumbsEnablementChange(): void {
+	protected handleBreadcrumBsEnaBlementChange(): void {
 		const titleContainer = assertIsDefined(this.titleContainer);
 
-		titleContainer.classList.toggle('breadcrumbs', Boolean(this.breadcrumbsControl));
+		titleContainer.classList.toggle('BreadcrumBs', Boolean(this.BreadcrumBsControl));
 		this.redraw();
 	}
 
-	private ifActiveEditorChanged(fn: () => void): boolean {
+	private ifActiveEditorChanged(fn: () => void): Boolean {
 		if (
-			!this.activeLabel.editor && this.group.activeEditor || 	// active editor changed from null => editor
-			this.activeLabel.editor && !this.group.activeEditor || 	// active editor changed from editor => null
-			(!this.activeLabel.editor || !this.group.isActive(this.activeLabel.editor))			// active editor changed from editorA => editorB
+			!this.activeLaBel.editor && this.group.activeEditor || 	// active editor changed from null => editor
+			this.activeLaBel.editor && !this.group.activeEditor || 	// active editor changed from editor => null
+			(!this.activeLaBel.editor || !this.group.isActive(this.activeLaBel.editor))			// active editor changed from editorA => editorB
 		) {
 			fn();
 
@@ -219,11 +219,11 @@ export class NoTabsTitleControl extends TitleControl {
 	}
 
 	private ifActiveEditorPropertiesChanged(fn: () => void): void {
-		if (!this.activeLabel.editor || !this.group.activeEditor) {
+		if (!this.activeLaBel.editor || !this.group.activeEditor) {
 			return; // need an active editor to check for properties changed
 		}
 
-		if (this.activeLabel.pinned !== this.group.isPinned(this.group.activeEditor)) {
+		if (this.activeLaBel.pinned !== this.group.isPinned(this.group.activeEditor)) {
 			fn(); // only run if pinned state has changed
 		}
 	}
@@ -240,24 +240,24 @@ export class NoTabsTitleControl extends TitleControl {
 		const isEditorPinned = editor ? this.group.isPinned(editor) : false;
 		const isGroupActive = this.accessor.activeGroup === this.group;
 
-		this.activeLabel = { editor, pinned: isEditorPinned };
+		this.activeLaBel = { editor, pinned: isEditorPinned };
 
-		// Update Breadcrumbs
-		if (this.breadcrumbsControl) {
+		// Update BreadcrumBs
+		if (this.BreadcrumBsControl) {
 			if (isGroupActive) {
-				this.breadcrumbsControl.update();
-				this.breadcrumbsControl.domNode.classList.toggle('preview', !isEditorPinned);
+				this.BreadcrumBsControl.update();
+				this.BreadcrumBsControl.domNode.classList.toggle('preview', !isEditorPinned);
 			} else {
-				this.breadcrumbsControl.hide();
+				this.BreadcrumBsControl.hide();
 			}
 		}
 
 		// Clear if there is no editor
-		const [titleContainer, editorLabel] = assertAllDefined(this.titleContainer, this.editorLabel);
+		const [titleContainer, editorLaBel] = assertAllDefined(this.titleContainer, this.editorLaBel);
 		if (!editor) {
 			titleContainer.classList.remove('dirty');
-			editorLabel.clear();
-			this.clearEditorActionsToolbar();
+			editorLaBel.clear();
+			this.clearEditorActionsToolBar();
 		}
 
 		// Otherwise render it
@@ -266,23 +266,23 @@ export class NoTabsTitleControl extends TitleControl {
 			// Dirty state
 			this.updateEditorDirty(editor);
 
-			// Editor Label
-			const { labelFormat } = this.accessor.partOptions;
+			// Editor LaBel
+			const { laBelFormat } = this.accessor.partOptions;
 			let description: string;
-			if (this.breadcrumbsControl && !this.breadcrumbsControl.isHidden()) {
-				description = ''; // hide description when showing breadcrumbs
-			} else if (labelFormat === 'default' && !isGroupActive) {
+			if (this.BreadcrumBsControl && !this.BreadcrumBsControl.isHidden()) {
+				description = ''; // hide description when showing BreadcrumBs
+			} else if (laBelFormat === 'default' && !isGroupActive) {
 				description = ''; // hide description when group is not active and style is 'default'
 			} else {
-				description = editor.getDescription(this.getVerbosity(labelFormat)) || '';
+				description = editor.getDescription(this.getVerBosity(laBelFormat)) || '';
 			}
 
-			let title = editor.getTitle(Verbosity.LONG);
+			let title = editor.getTitle(VerBosity.LONG);
 			if (description === title) {
 				title = ''; // dont repeat what is already shown
 			}
 
-			editorLabel.setResource(
+			editorLaBel.setResource(
 				{
 					resource: EditorResourceAccessor.getOriginalUri(editor, { supportSideBySide: SideBySideEditor.BOTH }),
 					name: editor.getName(),
@@ -291,30 +291,30 @@ export class NoTabsTitleControl extends TitleControl {
 				{
 					title,
 					italic: !isEditorPinned,
-					extraClasses: ['no-tabs', 'title-label']
+					extraClasses: ['no-taBs', 'title-laBel']
 				}
 			);
 
 			if (isGroupActive) {
-				editorLabel.element.style.color = this.getColor(TAB_ACTIVE_FOREGROUND) || '';
+				editorLaBel.element.style.color = this.getColor(TAB_ACTIVE_FOREGROUND) || '';
 			} else {
-				editorLabel.element.style.color = this.getColor(TAB_UNFOCUSED_ACTIVE_FOREGROUND) || '';
+				editorLaBel.element.style.color = this.getColor(TAB_UNFOCUSED_ACTIVE_FOREGROUND) || '';
 			}
 
-			// Update Editor Actions Toolbar
-			this.updateEditorActionsToolbar();
+			// Update Editor Actions ToolBar
+			this.updateEditorActionsToolBar();
 		}
 	}
 
-	private getVerbosity(style: string | undefined): Verbosity {
+	private getVerBosity(style: string | undefined): VerBosity {
 		switch (style) {
-			case 'short': return Verbosity.SHORT;
-			case 'long': return Verbosity.LONG;
-			default: return Verbosity.MEDIUM;
+			case 'short': return VerBosity.SHORT;
+			case 'long': return VerBosity.LONG;
+			default: return VerBosity.MEDIUM;
 		}
 	}
 
-	protected prepareEditorActions(editorActions: IToolbarActions): { primaryEditorActions: IAction[], secondaryEditorActions: IAction[] } {
+	protected prepareEditorActions(editorActions: IToolBarActions): { primaryEditorActions: IAction[], secondaryEditorActions: IAction[] } {
 		const isGroupActive = this.accessor.activeGroup === this.group;
 
 		// Group active: show all actions
@@ -328,14 +328,14 @@ export class NoTabsTitleControl extends TitleControl {
 
 	getDimensions(): IEditorGroupTitleDimensions {
 		return {
-			height: NoTabsTitleControl.HEIGHT,
+			height: NoTaBsTitleControl.HEIGHT,
 			offset: 0
 		};
 	}
 
 	layout(dimension: Dimension): void {
-		if (this.breadcrumbsControl) {
-			this.breadcrumbsControl.layout(undefined);
+		if (this.BreadcrumBsControl) {
+			this.BreadcrumBsControl.layout(undefined);
 		}
 	}
 }

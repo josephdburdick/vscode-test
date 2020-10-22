@@ -5,24 +5,24 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { TextDocument, getLanguageModes, ClientCapabilities, Range, Position } from '../modes/languageModes';
+import { TextDocument, getLanguageModes, ClientCapaBilities, Range, Position } from '../modes/languageModes';
 import { newSemanticTokenProvider } from '../modes/semanticTokens';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
 interface ExpectedToken {
-	startLine: number;
-	character: number;
-	length: number;
+	startLine: numBer;
+	character: numBer;
+	length: numBer;
 	tokenClassifiction: string;
 }
 
 async function assertTokens(lines: string[], expected: ExpectedToken[], ranges?: Range[], message?: string): Promise<void> {
-	const document = TextDocument.create('test://foo/bar.html', 'html', 1, lines.join('\n'));
+	const document = TextDocument.create('test://foo/Bar.html', 'html', 1, lines.join('\n'));
 	const workspace = {
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapabilities.LATEST, getNodeFSRequestService());
+	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapaBilities.LATEST, getNodeFSRequestService());
 	const semanticTokensProvider = newSemanticTokenProvider(languageModes);
 
 	const legend = semanticTokensProvider.legend;
@@ -43,13 +43,13 @@ async function assertTokens(lines: string[], expected: ExpectedToken[], ranges?:
 	assert.deepEqual(actualRanges, expected, message);
 }
 
-function t(startLine: number, character: number, length: number, tokenClassifiction: string): ExpectedToken {
+function t(startLine: numBer, character: numBer, length: numBer, tokenClassifiction: string): ExpectedToken {
 	return { startLine, character, length, tokenClassifiction };
 }
 
 suite('HTML Semantic Tokens', () => {
 
-	test('Variables', async () => {
+	test('VariaBles', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
@@ -65,10 +65,10 @@ suite('HTML Semantic Tokens', () => {
 			/*11*/'</html>',
 		];
 		await assertTokens(input, [
-			t(3, 6, 1, 'variable.declaration'), t(3, 13, 2, 'variable.declaration'), t(3, 19, 1, 'variable'),
-			t(5, 15, 1, 'variable.declaration.readonly'), t(5, 20, 2, 'variable'), t(5, 26, 1, 'variable'), t(5, 30, 1, 'variable.readonly'),
-			t(6, 11, 1, 'variable.declaration'),
-			t(7, 10, 2, 'variable')
+			t(3, 6, 1, 'variaBle.declaration'), t(3, 13, 2, 'variaBle.declaration'), t(3, 19, 1, 'variaBle'),
+			t(5, 15, 1, 'variaBle.declaration.readonly'), t(5, 20, 2, 'variaBle'), t(5, 26, 1, 'variaBle'), t(5, 30, 1, 'variaBle.readonly'),
+			t(6, 11, 1, 'variaBle.declaration'),
+			t(7, 10, 2, 'variaBle')
 		]);
 	});
 
@@ -78,7 +78,7 @@ suite('HTML Semantic Tokens', () => {
 			/*1*/'<head>',
 			/*2*/'<script>',
 			/*3*/'  function foo(p1) {',
-			/*4*/'    return foo(Math.abs(p1))',
+			/*4*/'    return foo(Math.aBs(p1))',
 			/*5*/'  }',
 			/*6*/'  `/${window.location}`.split("/").forEach(s => foo(s));',
 			/*7*/'</script>',
@@ -87,12 +87,12 @@ suite('HTML Semantic Tokens', () => {
 		];
 		await assertTokens(input, [
 			t(3, 11, 3, 'function.declaration'), t(3, 15, 2, 'parameter.declaration'),
-			t(4, 11, 3, 'function'), t(4, 15, 4, 'interface'), t(4, 20, 3, 'member'), t(4, 24, 2, 'parameter'),
-			t(6, 6, 6, 'variable'), t(6, 13, 8, 'property'), t(6, 24, 5, 'member'), t(6, 35, 7, 'member'), t(6, 43, 1, 'parameter.declaration'), t(6, 48, 3, 'function'), t(6, 52, 1, 'parameter')
+			t(4, 11, 3, 'function'), t(4, 15, 4, 'interface'), t(4, 20, 3, 'memBer'), t(4, 24, 2, 'parameter'),
+			t(6, 6, 6, 'variaBle'), t(6, 13, 8, 'property'), t(6, 24, 5, 'memBer'), t(6, 35, 7, 'memBer'), t(6, 43, 1, 'parameter.declaration'), t(6, 48, 3, 'function'), t(6, 52, 1, 'parameter')
 		]);
 	});
 
-	test('Members', async () => {
+	test('MemBers', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
@@ -115,9 +115,9 @@ suite('HTML Semantic Tokens', () => {
 			t(3, 8, 1, 'class.declaration'),
 			t(4, 11, 1, 'property.declaration.static'),
 			t(5, 4, 1, 'property.declaration'),
-			t(6, 10, 1, 'member.declaration.async'), t(6, 23, 1, 'class'), t(6, 25, 1, 'property.static'), t(6, 40, 1, 'member.async'),
+			t(6, 10, 1, 'memBer.declaration.async'), t(6, 23, 1, 'class'), t(6, 25, 1, 'property.static'), t(6, 40, 1, 'memBer.async'),
 			t(7, 8, 1, 'property.declaration'), t(7, 26, 1, 'property'),
-			t(8, 11, 1, 'member.declaration.static'), t(8, 28, 1, 'class'), t(8, 32, 1, 'property'),
+			t(8, 11, 1, 'memBer.declaration.static'), t(8, 28, 1, 'class'), t(8, 32, 1, 'property'),
 		]);
 	});
 
@@ -126,7 +126,7 @@ suite('HTML Semantic Tokens', () => {
 			/*0*/'<html>',
 			/*1*/'<head>',
 			/*2*/'<script type="text/typescript">',
-			/*3*/'  interface Position { x: number, y: number };',
+			/*3*/'  interface Position { x: numBer, y: numBer };',
 			/*4*/'  const p = { x: 1, y: 2 } as Position;',
 			/*5*/'  const foo = (o: Position) => o.x + o.y;',
 			/*6*/'</script>',
@@ -135,8 +135,8 @@ suite('HTML Semantic Tokens', () => {
 		];
 		await assertTokens(input, [
 			t(3, 12, 8, 'interface.declaration'), t(3, 23, 1, 'property.declaration'), t(3, 34, 1, 'property.declaration'),
-			t(4, 8, 1, 'variable.declaration.readonly'), t(4, 30, 8, 'interface'),
-			t(5, 8, 3, 'variable.declaration.readonly'), t(5, 15, 1, 'parameter.declaration'), t(5, 18, 8, 'interface'), t(5, 31, 1, 'parameter'), t(5, 33, 1, 'property'), t(5, 37, 1, 'parameter'), t(5, 39, 1, 'property')
+			t(4, 8, 1, 'variaBle.declaration.readonly'), t(4, 30, 8, 'interface'),
+			t(5, 8, 3, 'variaBle.declaration.readonly'), t(5, 15, 1, 'parameter.declaration'), t(5, 18, 8, 'interface'), t(5, 31, 1, 'parameter'), t(5, 33, 1, 'property'), t(5, 37, 1, 'parameter'), t(5, 39, 1, 'property')
 		]);
 	});
 
@@ -154,10 +154,10 @@ suite('HTML Semantic Tokens', () => {
 			/*9*/'</html>',
 		];
 		await assertTokens(input, [
-			t(3, 8, 1, 'variable.declaration.readonly'),
+			t(3, 8, 1, 'variaBle.declaration.readonly'),
 			t(4, 8, 1, 'class.declaration'), t(4, 28, 1, 'property.declaration.static.readonly'), t(4, 42, 3, 'property.declaration.static'), t(4, 47, 3, 'interface'),
 			t(5, 13, 1, 'enum.declaration'), t(5, 17, 1, 'property.declaration.readonly'), t(5, 24, 1, 'property.declaration.readonly'), t(5, 28, 1, 'property.readonly'),
-			t(6, 2, 7, 'variable'), t(6, 10, 3, 'member'), t(6, 14, 1, 'variable.readonly'), t(6, 18, 1, 'class'), t(6, 20, 1, 'property.static.readonly'), t(6, 24, 1, 'class'), t(6, 26, 3, 'property.static'), t(6, 30, 6, 'property.readonly'),
+			t(6, 2, 7, 'variaBle'), t(6, 10, 3, 'memBer'), t(6, 14, 1, 'variaBle.readonly'), t(6, 18, 1, 'class'), t(6, 20, 1, 'property.static.readonly'), t(6, 24, 1, 'class'), t(6, 26, 3, 'property.static'), t(6, 30, 6, 'property.readonly'),
 		]);
 	});
 
@@ -167,8 +167,8 @@ suite('HTML Semantic Tokens', () => {
 			/*0*/'<html>',
 			/*1*/'<head>',
 			/*2*/'<script type="text/typescript">',
-			/*3*/'  type MyMap = Map<string, number>;',
-			/*4*/'  function f<T extends MyMap>(t: T | number) : T { ',
+			/*3*/'  type MyMap = Map<string, numBer>;',
+			/*4*/'  function f<T extends MyMap>(t: T | numBer) : T { ',
 			/*5*/'    return <T> <unknown> new Map<string, MyMap>();',
 			/*6*/'  }',
 			/*7*/'</script>',
@@ -197,7 +197,7 @@ suite('HTML Semantic Tokens', () => {
 		];
 		await assertTokens(input, [
 			t(3, 11, 1, 'function.declaration'), t(3, 13, 1, 'typeParameter.declaration'), t(3, 16, 2, 'parameter.declaration'), t(3, 20, 1, 'typeParameter'), t(3, 24, 1, 'typeParameter'), t(3, 39, 2, 'parameter'),
-			t(6, 2, 6, 'variable'), t(6, 9, 5, 'member')
+			t(6, 2, 6, 'variaBle'), t(6, 9, 5, 'memBer')
 		]);
 	});
 
@@ -215,11 +215,11 @@ suite('HTML Semantic Tokens', () => {
 			/*9*/'</html>',
 		];
 		await assertTokens(input, [
-			t(3, 2, 6, 'variable'), t(3, 9, 5, 'member')
+			t(3, 2, 6, 'variaBle'), t(3, 9, 5, 'memBer')
 		], [Range.create(Position.create(2, 0), Position.create(4, 0))]);
 
 		await assertTokens(input, [
-			t(6, 2, 6, 'variable'),
+			t(6, 2, 6, 'variaBle'),
 		], [Range.create(Position.create(6, 2), Position.create(6, 8))]);
 	});
 

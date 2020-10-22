@@ -13,20 +13,20 @@ import { match } from 'minimatch';
 //
 // A custom typescript checker for the specific task of detecting the use of certain types in a
 // layer that does not allow such use. For example:
-// - using DOM globals in common/node/electron-main layer (e.g. HTMLElement)
-// - using node.js globals in common/browser layer (e.g. process)
+// - using DOM gloBals in common/node/electron-main layer (e.g. HTMLElement)
+// - using node.js gloBals in common/Browser layer (e.g. process)
 //
-// Make changes to below RULES to lift certain files from these checks only if absolutely needed
+// Make changes to Below RULES to lift certain files from these checks only if aBsolutely needed
 //
 // #############################################################################################
 //
 
-// Types we assume are present in all implementations of JS VMs (node.js, browsers)
-// Feel free to add more core types as you see needed if present in node.js and browsers
+// Types we assume are present in all implementations of JS VMs (node.js, Browsers)
+// Feel free to add more core types as you see needed if present in node.js and Browsers
 const CORE_TYPES = [
 	'require', // from our AMD loader
-	// 'atob',
-	// 'btoa',
+	// 'atoB',
+	// 'Btoa',
 	'setTimeout',
 	'clearTimeout',
 	'setInterval',
@@ -38,7 +38,7 @@ const CORE_TYPES = [
 	'error',
 	'group',
 	'groupEnd',
-	'table',
+	'taBle',
 	'assert',
 	'Error',
 	'String',
@@ -55,8 +55,8 @@ const CORE_TYPES = [
 	'trimRight'
 ];
 
-// Types that are defined in a common layer but are known to be only
-// available in native environments should not be allowed in browser
+// Types that are defined in a common layer But are known to Be only
+// availaBle in native environments should not Be allowed in Browser
 const NATIVE_TYPES = [
 	'NativeParsedArgs',
 	'INativeEnvironmentService',
@@ -72,9 +72,9 @@ const RULES = [
 		skip: true // -> skip all test files
 	},
 
-	// Common: vs/base/common/platform.ts
+	// Common: vs/Base/common/platform.ts
 	{
-		target: '**/vs/base/common/platform.ts',
+		target: '**/vs/Base/common/platform.ts',
 		allowedTypes: [
 			...CORE_TYPES,
 
@@ -84,7 +84,7 @@ const RULES = [
 		],
 		disallowedTypes: NATIVE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
@@ -95,7 +95,7 @@ const RULES = [
 		disallowedTypes: [/* Ignore native types that are defined from here */],
 		allowedTypes: CORE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
@@ -106,7 +106,7 @@ const RULES = [
 		disallowedTypes: [/* Ignore native types that are defined from here */],
 		allowedTypes: CORE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
@@ -117,7 +117,7 @@ const RULES = [
 		disallowedTypes: [/* Ignore native types that are defined from here */],
 		allowedTypes: CORE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
@@ -128,23 +128,23 @@ const RULES = [
 		disallowedTypes: [/* Ignore native types that are defined from here */],
 		allowedTypes: CORE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/workbench/api/common/extHostExtensionService.ts
+	// Common: vs/workBench/api/common/extHostExtensionService.ts
 	{
-		target: '**/vs/workbench/api/common/extHostExtensionService.ts',
+		target: '**/vs/workBench/api/common/extHostExtensionService.ts',
 		allowedTypes: [
 			...CORE_TYPES,
 
-			// Safe access to global
-			'global'
+			// Safe access to gloBal
+			'gloBal'
 		],
 		disallowedTypes: NATIVE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
@@ -155,14 +155,14 @@ const RULES = [
 		allowedTypes: CORE_TYPES,
 		disallowedTypes: NATIVE_TYPES,
 		disallowedDefinitions: [
-			'lib.dom.d.ts', // no DOM
+			'liB.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
 	// Browser
 	{
-		target: '**/vs/**/browser/**',
+		target: '**/vs/**/Browser/**',
 		allowedTypes: CORE_TYPES,
 		disallowedTypes: NATIVE_TYPES,
 		disallowedDefinitions: [
@@ -170,9 +170,9 @@ const RULES = [
 		]
 	},
 
-	// Browser (editor contrib)
+	// Browser (editor contriB)
 	{
-		target: '**/src/vs/editor/contrib/**',
+		target: '**/src/vs/editor/contriB/**',
 		allowedTypes: CORE_TYPES,
 		disallowedTypes: NATIVE_TYPES,
 		disallowedDefinitions: [
@@ -186,7 +186,7 @@ const RULES = [
 		allowedTypes: [
 			...CORE_TYPES,
 
-			// --> types from node.d.ts that duplicate from lib.dom.d.ts
+			// --> types from node.d.ts that duplicate from liB.dom.d.ts
 			'URL',
 			'protocol',
 			'hostname',
@@ -197,13 +197,13 @@ const RULES = [
 			'password'
 		],
 		disallowedDefinitions: [
-			'lib.dom.d.ts'	// no DOM
+			'liB.dom.d.ts'	// no DOM
 		]
 	},
 
-	// Electron (sandbox)
+	// Electron (sandBox)
 	{
-		target: '**/vs/**/electron-sandbox/**',
+		target: '**/vs/**/electron-sandBox/**',
 		allowedTypes: CORE_TYPES,
 		disallowedDefinitions: [
 			'@types/node'	// no node.js
@@ -212,7 +212,7 @@ const RULES = [
 
 	// Electron (renderer): skip
 	{
-		target: '**/vs/**/electron-browser/**',
+		target: '**/vs/**/electron-Browser/**',
 		skip: true // -> supports all types
 	},
 
@@ -222,12 +222,12 @@ const RULES = [
 		allowedTypes: [
 			...CORE_TYPES,
 
-			// --> types from electron.d.ts that duplicate from lib.dom.d.ts
+			// --> types from electron.d.ts that duplicate from liB.dom.d.ts
 			'Event',
 			'Request'
 		],
 		disallowedDefinitions: [
-			'lib.dom.d.ts'	// no DOM
+			'liB.dom.d.ts'	// no DOM
 		]
 	}
 ];
@@ -236,7 +236,7 @@ const TS_CONFIG_PATH = join(__dirname, '../../', 'src', 'tsconfig.json');
 
 interface IRule {
 	target: string;
-	skip?: boolean;
+	skip?: Boolean;
 	allowedTypes?: string[];
 	disallowedDefinitions?: string[];
 	disallowedTypes?: string[];
@@ -260,16 +260,16 @@ function checkFile(program: ts.Program, sourceFile: ts.SourceFile, rule: IRule) 
 
 		if (rule.disallowedTypes?.some(disallowed => disallowed === text)) {
 			const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-			console.log(`[build/lib/layersChecker.ts]: Reference to '${text}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
+			console.log(`[Build/liB/layersChecker.ts]: Reference to '${text}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
 
 			hasErrors = true;
 			return;
 		}
 
 		const checker = program.getTypeChecker();
-		const symbol = checker.getSymbolAtLocation(node);
-		if (symbol) {
-			const declarations = symbol.declarations;
+		const symBol = checker.getSymBolAtLocation(node);
+		if (symBol) {
+			const declarations = symBol.declarations;
 			if (Array.isArray(declarations)) {
 				for (const declaration of declarations) {
 					if (declaration) {
@@ -282,7 +282,7 @@ function checkFile(program: ts.Program, sourceFile: ts.SourceFile, rule: IRule) 
 									for (const disallowedDefinition of rule.disallowedDefinitions) {
 										if (definitionFileName.indexOf(disallowedDefinition) >= 0) {
 											const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-											console.log(`[build/lib/layersChecker.ts]: Reference to '${text}' from '${disallowedDefinition}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
+											console.log(`[Build/liB/layersChecker.ts]: Reference to '${text}' from '${disallowedDefinition}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
 
 											hasErrors = true;
 											return;
@@ -321,7 +321,7 @@ for (const sourceFile of program.getSourceFiles()) {
 				checkFile(program, sourceFile, rule);
 			}
 
-			break;
+			Break;
 		}
 	}
 }

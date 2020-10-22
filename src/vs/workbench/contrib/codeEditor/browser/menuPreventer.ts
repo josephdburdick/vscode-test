@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyMod } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { KeyMod } from 'vs/Base/common/keyCodes';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 
 /**
  * Prevents the top-level menu from showing up when doing Alt + Click in the editor
  */
-export class MenuPreventer extends Disposable implements IEditorContribution {
+export class MenuPreventer extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.menuPreventer';
+	puBlic static readonly ID = 'editor.contriB.menuPreventer';
 
 	private _editor: ICodeEditor;
-	private _altListeningMouse: boolean;
-	private _altMouseTriggered: boolean;
+	private _altListeningMouse: Boolean;
+	private _altMouseTriggered: Boolean;
 
 	constructor(editor: ICodeEditor) {
 		super();
@@ -26,7 +26,7 @@ export class MenuPreventer extends Disposable implements IEditorContribution {
 		this._altListeningMouse = false;
 		this._altMouseTriggered = false;
 
-		// A global crossover handler to prevent menu bar from showing up
+		// A gloBal crossover handler to prevent menu Bar from showing up
 		// When <alt> is hold, we will listen to mouse events and prevent
 		// the release event up <alt> if the mouse is triggered.
 
@@ -57,4 +57,4 @@ export class MenuPreventer extends Disposable implements IEditorContribution {
 	}
 }
 
-registerEditorContribution(MenuPreventer.ID, MenuPreventer);
+registerEditorContriBution(MenuPreventer.ID, MenuPreventer);

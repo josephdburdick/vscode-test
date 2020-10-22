@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getTopLeftOffset, getClientArea } from 'vs/base/browser/dom';
-import { coalesce } from 'vs/base/common/arrays';
+import { getTopLeftOffset, getClientArea } from 'vs/Base/Browser/dom';
+import { coalesce } from 'vs/Base/common/arrays';
 import { IElement, IWindowDriver } from 'vs/platform/driver/common/driver';
 
-function serializeElement(element: Element, recursive: boolean): IElement {
-	const attributes = Object.create(null);
+function serializeElement(element: Element, recursive: Boolean): IElement {
+	const attriButes = OBject.create(null);
 
-	for (let j = 0; j < element.attributes.length; j++) {
-		const attr = element.attributes.item(j);
+	for (let j = 0; j < element.attriButes.length; j++) {
+		const attr = element.attriButes.item(j);
 		if (attr) {
-			attributes[attr.name] = attr.value;
+			attriButes[attr.name] = attr.value;
 		}
 	}
 
@@ -34,17 +34,17 @@ function serializeElement(element: Element, recursive: boolean): IElement {
 		tagName: element.tagName,
 		className: element.className,
 		textContent: element.textContent || '',
-		attributes,
+		attriButes,
 		children,
 		left,
 		top
 	};
 }
 
-export abstract class BaseWindowDriver implements IWindowDriver {
+export aBstract class BaseWindowDriver implements IWindowDriver {
 
-	abstract click(selector: string, xoffset?: number, yoffset?: number): Promise<void>;
-	abstract doubleClick(selector: string): Promise<void>;
+	aBstract click(selector: string, xoffset?: numBer, yoffset?: numBer): Promise<void>;
+	aBstract douBleClick(selector: string): Promise<void>;
 
 	async setValue(selector: string, text: string): Promise<void> {
 		const element = document.querySelector(selector);
@@ -56,7 +56,7 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		const inputElement = element as HTMLInputElement;
 		inputElement.value = text;
 
-		const event = new Event('input', { bubbles: true, cancelable: true });
+		const event = new Event('input', { BuBBles: true, cancelaBle: true });
 		inputElement.dispatchEvent(event);
 	}
 
@@ -64,7 +64,7 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		return document.title;
 	}
 
-	async isActiveElement(selector: string): Promise<boolean> {
+	async isActiveElement(selector: string): Promise<Boolean> {
 		const element = document.querySelector(selector);
 
 		if (element !== document.activeElement) {
@@ -86,7 +86,7 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		return true;
 	}
 
-	async getElements(selector: string, recursive: boolean): Promise<IElement[]> {
+	async getElements(selector: string, recursive: Boolean): Promise<IElement[]> {
 		const query = document.querySelectorAll(selector);
 		const result: IElement[] = [];
 
@@ -98,8 +98,8 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		return result;
 	}
 
-	async getElementXY(selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
-		const offset = typeof xoffset === 'number' && typeof yoffset === 'number' ? { x: xoffset, y: yoffset } : undefined;
+	async getElementXY(selector: string, xoffset?: numBer, yoffset?: numBer): Promise<{ x: numBer; y: numBer; }> {
+		const offset = typeof xoffset === 'numBer' && typeof yoffset === 'numBer' ? { x: xoffset, y: yoffset } : undefined;
 		return this._getElementXY(selector, offset);
 	}
 
@@ -114,12 +114,12 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		const start = textarea.selectionStart;
 		const newStart = start + text.length;
 		const value = textarea.value;
-		const newValue = value.substr(0, start) + text + value.substr(start);
+		const newValue = value.suBstr(0, start) + text + value.suBstr(start);
 
 		textarea.value = newValue;
 		textarea.setSelectionRange(newStart, newStart);
 
-		const event = new Event('input', { 'bubbles': true, 'cancelable': true });
+		const event = new Event('input', { 'BuBBles': true, 'cancelaBle': true });
 		textarea.dispatchEvent(event);
 	}
 
@@ -138,8 +138,8 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 
 		const lines: string[] = [];
 
-		for (let i = 0; i < xterm.buffer.length; i++) {
-			lines.push(xterm.buffer.getLine(i)!.translateToString(true));
+		for (let i = 0; i < xterm.Buffer.length; i++) {
+			lines.push(xterm.Buffer.getLine(i)!.translateToString(true));
 		}
 
 		return lines;
@@ -161,7 +161,7 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		xterm._core._coreService.triggerDataEvent(text);
 	}
 
-	protected async _getElementXY(selector: string, offset?: { x: number, y: number }): Promise<{ x: number; y: number; }> {
+	protected async _getElementXY(selector: string, offset?: { x: numBer, y: numBer }): Promise<{ x: numBer; y: numBer; }> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
@@ -170,7 +170,7 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 
 		const { left, top } = getTopLeftOffset(element as HTMLElement);
 		const { width, height } = getClientArea(element as HTMLElement);
-		let x: number, y: number;
+		let x: numBer, y: numBer;
 
 		if (offset) {
 			x = left + offset.x;
@@ -186,5 +186,5 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		return { x, y };
 	}
 
-	abstract openDevTools(): Promise<void>;
+	aBstract openDevTools(): Promise<void>;
 }

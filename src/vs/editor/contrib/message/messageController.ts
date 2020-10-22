@@ -5,35 +5,35 @@
 
 import 'vs/css!./messageController';
 import * as nls from 'vs/nls';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IDisposable, Disposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { alert } from 'vs/base/browser/ui/aria/aria';
+import { TimeoutTimer } from 'vs/Base/common/async';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { IDisposaBle, DisposaBle, DisposaBleStore, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { alert } from 'vs/Base/Browser/ui/aria/aria';
 import { Range } from 'vs/editor/common/core/range';
-import { IEditorContribution, ScrollType } from 'vs/editor/common/editorCommon';
-import { registerEditorContribution, EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditor, IContentWidget, IContentWidgetPosition, ContentWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
+import { IEditorContriBution, ScrollType } from 'vs/editor/common/editorCommon';
+import { registerEditorContriBution, EditorCommand, registerEditorCommand } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditor, IContentWidget, IContentWidgetPosition, ContentWidgetPositionPreference } from 'vs/editor/Browser/editorBrowser';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { IPosition } from 'vs/editor/common/core/position';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { inputValidationInfoBorder, inputValidationInfoBackground, inputValidationInfoForeground } from 'vs/platform/theme/common/colorRegistry';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
-export class MessageController extends Disposable implements IEditorContribution {
+export class MessageController extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.messageController';
+	puBlic static readonly ID = 'editor.contriB.messageController';
 
-	static readonly MESSAGE_VISIBLE = new RawContextKey<boolean>('messageVisible', false);
+	static readonly MESSAGE_VISIBLE = new RawContextKey<Boolean>('messageVisiBle', false);
 
 	static get(editor: ICodeEditor): MessageController {
-		return editor.getContribution<MessageController>(MessageController.ID);
+		return editor.getContriBution<MessageController>(MessageController.ID);
 	}
 
 	private readonly _editor: ICodeEditor;
-	private readonly _visible: IContextKey<boolean>;
-	private readonly _messageWidget = this._register(new MutableDisposable<MessageWidget>());
-	private readonly _messageListeners = this._register(new DisposableStore());
+	private readonly _visiBle: IContextKey<Boolean>;
+	private readonly _messageWidget = this._register(new MutaBleDisposaBle<MessageWidget>());
+	private readonly _messageListeners = this._register(new DisposaBleStore());
 
 	constructor(
 		editor: ICodeEditor,
@@ -41,29 +41,29 @@ export class MessageController extends Disposable implements IEditorContribution
 	) {
 		super();
 		this._editor = editor;
-		this._visible = MessageController.MESSAGE_VISIBLE.bindTo(contextKeyService);
+		this._visiBle = MessageController.MESSAGE_VISIBLE.BindTo(contextKeyService);
 		this._register(this._editor.onDidAttemptReadOnlyEdit(() => this._onDidAttemptReadOnlyEdit()));
 	}
 
 	dispose(): void {
 		super.dispose();
-		this._visible.reset();
+		this._visiBle.reset();
 	}
 
-	isVisible() {
-		return this._visible.get();
+	isVisiBle() {
+		return this._visiBle.get();
 	}
 
 	showMessage(message: string, position: IPosition): void {
 
 		alert(message);
 
-		this._visible.set(true);
+		this._visiBle.set(true);
 		this._messageWidget.clear();
 		this._messageListeners.clear();
 		this._messageWidget.value = new MessageWidget(this._editor, position, message);
 
-		// close on blur, cursor, model change, dispose
+		// close on Blur, cursor, model change, dispose
 		this._messageListeners.add(this._editor.onDidBlurEditorText(() => this.closeMessage()));
 		this._messageListeners.add(this._editor.onDidChangeCursorPosition(() => this.closeMessage()));
 		this._messageListeners.add(this._editor.onDidDispose(() => this.closeMessage()));
@@ -73,25 +73,25 @@ export class MessageController extends Disposable implements IEditorContribution
 		this._messageListeners.add(new TimeoutTimer(() => this.closeMessage(), 3000));
 
 		// close on mouse move
-		let bounds: Range;
+		let Bounds: Range;
 		this._messageListeners.add(this._editor.onMouseMove(e => {
 			// outside the text area
 			if (!e.target.position) {
 				return;
 			}
 
-			if (!bounds) {
-				// define bounding box around position and first mouse occurance
-				bounds = new Range(position.lineNumber - 3, 1, e.target.position.lineNumber + 3, 1);
-			} else if (!bounds.containsPosition(e.target.position)) {
-				// check if position is still in bounds
+			if (!Bounds) {
+				// define Bounding Box around position and first mouse occurance
+				Bounds = new Range(position.lineNumBer - 3, 1, e.target.position.lineNumBer + 3, 1);
+			} else if (!Bounds.containsPosition(e.target.position)) {
+				// check if position is still in Bounds
 				this.closeMessage();
 			}
 		}));
 	}
 
 	closeMessage(): void {
-		this._visible.reset();
+		this._visiBle.reset();
 		this._messageListeners.clear();
 		if (this._messageWidget.value) {
 			this._messageListeners.add(MessageWidget.fadeOut(this._messageWidget.value));
@@ -105,15 +105,15 @@ export class MessageController extends Disposable implements IEditorContribution
 	}
 }
 
-const MessageCommand = EditorCommand.bindToContribution<MessageController>(MessageController.get);
+const MessageCommand = EditorCommand.BindToContriBution<MessageController>(MessageController.get);
 
 
 registerEditorCommand(new MessageCommand({
 	id: 'leaveEditorMessage',
 	precondition: MessageController.MESSAGE_VISIBLE,
 	handler: c => c.closeMessage(),
-	kbOpts: {
-		weight: KeybindingWeight.EditorContrib + 30,
+	kBOpts: {
+		weight: KeyBindingWeight.EditorContriB + 30,
 		primary: KeyCode.Escape
 	}
 }));
@@ -128,7 +128,7 @@ class MessageWidget implements IContentWidget {
 	private readonly _position: IPosition;
 	private readonly _domNode: HTMLDivElement;
 
-	static fadeOut(messageWidget: MessageWidget): IDisposable {
+	static fadeOut(messageWidget: MessageWidget): IDisposaBle {
 		let handle: any;
 		const dispose = () => {
 			messageWidget.dispose();
@@ -141,11 +141,11 @@ class MessageWidget implements IContentWidget {
 		return { dispose };
 	}
 
-	constructor(editor: ICodeEditor, { lineNumber, column }: IPosition, text: string) {
+	constructor(editor: ICodeEditor, { lineNumBer, column }: IPosition, text: string) {
 
 		this._editor = editor;
-		this._editor.revealLinesInCenterIfOutsideViewport(lineNumber, lineNumber, ScrollType.Smooth);
-		this._position = { lineNumber, column: column - 1 };
+		this._editor.revealLinesInCenterIfOutsideViewport(lineNumBer, lineNumBer, ScrollType.Smooth);
+		this._position = { lineNumBer, column: column - 1 };
 
 		this._domNode = document.createElement('div');
 		this._domNode.classList.add('monaco-editor-overlaymessage');
@@ -180,18 +180,18 @@ class MessageWidget implements IContentWidget {
 	}
 }
 
-registerEditorContribution(MessageController.ID, MessageController);
+registerEditorContriBution(MessageController.ID, MessageController);
 
 registerThemingParticipant((theme, collector) => {
-	const border = theme.getColor(inputValidationInfoBorder);
-	if (border) {
-		let borderWidth = theme.type === ColorScheme.HIGH_CONTRAST ? 2 : 1;
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .anchor { border-top-color: ${border}; }`);
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { border: ${borderWidth}px solid ${border}; }`);
+	const Border = theme.getColor(inputValidationInfoBorder);
+	if (Border) {
+		let BorderWidth = theme.type === ColorScheme.HIGH_CONTRAST ? 2 : 1;
+		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .anchor { Border-top-color: ${Border}; }`);
+		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { Border: ${BorderWidth}px solid ${Border}; }`);
 	}
-	const background = theme.getColor(inputValidationInfoBackground);
-	if (background) {
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { background-color: ${background}; }`);
+	const Background = theme.getColor(inputValidationInfoBackground);
+	if (Background) {
+		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { Background-color: ${Background}; }`);
 	}
 	const foreground = theme.getColor(inputValidationInfoForeground);
 	if (foreground) {

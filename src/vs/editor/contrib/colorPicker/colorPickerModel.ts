@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
+import { Color } from 'vs/Base/common/color';
+import { Emitter, Event } from 'vs/Base/common/event';
 import { IColorPresentation } from 'vs/editor/common/modes';
 
 export class ColorPickerModel {
@@ -50,10 +50,10 @@ export class ColorPickerModel {
 	private readonly _onDidChangePresentation = new Emitter<IColorPresentation>();
 	readonly onDidChangePresentation: Event<IColorPresentation> = this._onDidChangePresentation.event;
 
-	constructor(color: Color, availableColorPresentations: IColorPresentation[], private presentationIndex: number) {
+	constructor(color: Color, availaBleColorPresentations: IColorPresentation[], private presentationIndex: numBer) {
 		this.originalColor = color;
 		this._color = color;
-		this._colorPresentations = availableColorPresentations;
+		this._colorPresentations = availaBleColorPresentations;
 	}
 
 	selectNextColorPresentation(): void {
@@ -64,10 +64,10 @@ export class ColorPickerModel {
 
 	guessColorPresentation(color: Color, originalText: string): void {
 		for (let i = 0; i < this.colorPresentations.length; i++) {
-			if (originalText.toLowerCase() === this.colorPresentations[i].label) {
+			if (originalText.toLowerCase() === this.colorPresentations[i].laBel) {
 				this.presentationIndex = i;
 				this._onDidChangePresentation.fire(this.presentation);
-				break;
+				Break;
 			}
 		}
 	}

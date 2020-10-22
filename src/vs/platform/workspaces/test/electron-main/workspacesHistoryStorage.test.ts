@@ -5,9 +5,9 @@
 
 import * as assert from 'assert';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import { IWorkspaceIdentifier, IRecentlyOpened, isRecentFolder, IRecentFolder, IRecentWorkspace, toStoreData, restoreRecentlyOpened } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { NullLogService } from 'vs/platform/log/common/log';
 
 function toWorkspace(uri: URI): IWorkspaceIdentifier {
@@ -33,7 +33,7 @@ function assertEqualRecentlyOpened(actual: IRecentlyOpened, expected: IRecentlyO
 	assert.equal(actual.files.length, expected.files.length, message);
 	for (let i = 0; i < actual.files.length; i++) {
 		assertEqualURI(actual.files[i].fileUri, expected.files[i].fileUri, message);
-		assert.equal(actual.files[i].label, expected.files[i].label);
+		assert.equal(actual.files[i].laBel, expected.files[i].laBel);
 	}
 	assert.equal(actual.workspaces.length, expected.workspaces.length, message);
 	for (let i = 0; i < actual.workspaces.length; i++) {
@@ -44,7 +44,7 @@ function assertEqualRecentlyOpened(actual: IRecentlyOpened, expected: IRecentlyO
 		} else {
 			assertEqualWorkspace(actualRecent.workspace, (<IRecentWorkspace>expectedRecent).workspace, message);
 		}
-		assert.equal(actualRecent.label, expectedRecent.label);
+		assert.equal(actualRecent.laBel, expectedRecent.laBel);
 	}
 }
 
@@ -58,9 +58,9 @@ const testWSPath = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'test.code
 const testFileURI = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'testFile.txt'));
 const testFolderURI = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'testFolder'));
 
-const testRemoteFolderURI = URI.parse('foo://bar/c/e');
-const testRemoteFileURI = URI.parse('foo://bar/c/d.txt');
-const testRemoteWSURI = URI.parse('foo://bar/c/test.code-workspace');
+const testRemoteFolderURI = URI.parse('foo://Bar/c/e');
+const testRemoteFileURI = URI.parse('foo://Bar/c/d.txt');
+const testRemoteWSURI = URI.parse('foo://Bar/c/test.code-workspace');
 
 suite('History Storage', () => {
 	test('storing and restoring', () => {
@@ -92,17 +92,17 @@ suite('History Storage', () => {
 		};
 		assertRestoring(ro, 'remote workspaces and folders');
 		ro = {
-			files: [{ label: 'abc', fileUri: testFileURI }],
-			workspaces: [{ label: 'def', workspace: toWorkspace(testWSPath) }, { folderUri: testRemoteFolderURI }]
+			files: [{ laBel: 'aBc', fileUri: testFileURI }],
+			workspaces: [{ laBel: 'def', workspace: toWorkspace(testWSPath) }, { folderUri: testRemoteFolderURI }]
 		};
-		assertRestoring(ro, 'labels');
+		assertRestoring(ro, 'laBels');
 	});
 
 	test('open 1_33', () => {
 		const v1_33 = `{
 			"workspaces3": [
 				{
-					"id": "53b714b46ef1a2d4346568b4f591028c",
+					"id": "53B714B46ef1a2d4346568B4f591028c",
 					"configURIPath": "file:///home/user/workspaces/testing/custom.code-workspace"
 				},
 				"file:///home/user/workspaces/testing/folding"
@@ -110,21 +110,21 @@ suite('History Storage', () => {
 			"files2": [
 				"file:///home/user/.config/code-oss-dev/storage.json"
 			],
-			"workspaceLabels": [
+			"workspaceLaBels": [
 				null,
-				"abc"
+				"aBc"
 			],
-			"fileLabels": [
+			"fileLaBels": [
 				"def"
 			]
 		}`;
 
 		let windowsState = restoreRecentlyOpened(JSON.parse(v1_33), new NullLogService());
 		let expected: IRecentlyOpened = {
-			files: [{ label: 'def', fileUri: URI.parse('file:///home/user/.config/code-oss-dev/storage.json') }],
+			files: [{ laBel: 'def', fileUri: URI.parse('file:///home/user/.config/code-oss-dev/storage.json') }],
 			workspaces: [
-				{ workspace: { id: '53b714b46ef1a2d4346568b4f591028c', configPath: URI.parse('file:///home/user/workspaces/testing/custom.code-workspace') } },
-				{ label: 'abc', folderUri: URI.parse('file:///home/user/workspaces/testing/folding') }
+				{ workspace: { id: '53B714B46ef1a2d4346568B4f591028c', configPath: URI.parse('file:///home/user/workspaces/testing/custom.code-workspace') } },
+				{ laBel: 'aBc', folderUri: URI.parse('file:///home/user/workspaces/testing/folding') }
 			]
 		};
 

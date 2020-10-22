@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import { conditionalRegistration, requireSomeCapaBility } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 import DefinitionProviderBase from './definitionProviderBase';
@@ -18,7 +18,7 @@ export default class TypeScriptDefinitionProvider extends DefinitionProviderBase
 		super(client);
 	}
 
-	public async provideDefinition(
+	puBlic async provideDefinition(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		token: vscode.CancellationToken
@@ -31,12 +31,12 @@ export default class TypeScriptDefinitionProvider extends DefinitionProviderBase
 
 			const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
 			const response = await this.client.execute('definitionAndBoundSpan', args, token);
-			if (response.type !== 'response' || !response.body) {
+			if (response.type !== 'response' || !response.Body) {
 				return undefined;
 			}
 
-			const span = response.body.textSpan ? typeConverters.Range.fromTextSpan(response.body.textSpan) : undefined;
-			return response.body.definitions
+			const span = response.Body.textSpan ? typeConverters.Range.fromTextSpan(response.Body.textSpan) : undefined;
+			return response.Body.definitions
 				.map((location): vscode.DefinitionLink => {
 					const target = typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location);
 					if (location.contextStart && location.contextEnd) {
@@ -55,7 +55,7 @@ export default class TypeScriptDefinitionProvider extends DefinitionProviderBase
 				});
 		}
 
-		return this.getSymbolLocations('definition', document, position, token);
+		return this.getSymBolLocations('definition', document, position, token);
 	}
 }
 
@@ -64,7 +64,7 @@ export function register(
 	client: ITypeScriptServiceClient,
 ) {
 	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.EnhancedSyntax, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerDefinitionProvider(selector.syntax,
 			new TypeScriptDefinitionProvider(client));

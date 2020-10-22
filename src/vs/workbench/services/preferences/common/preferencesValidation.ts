@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { JSONSchemaType } from 'vs/base/common/jsonSchema';
-import { Color } from 'vs/base/common/color';
-import { isArray } from 'vs/base/common/types';
+import { JSONSchemaType } from 'vs/Base/common/jsonSchema';
+import { Color } from 'vs/Base/common/color';
+import { isArray } from 'vs/Base/common/types';
 import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
 
-type Validator<T> = { enabled: boolean, isValid: (value: T) => boolean; message: string };
+type Validator<T> = { enaBled: Boolean, isValid: (value: T) => Boolean; message: string };
 
-function canBeType(propTypes: (string | undefined)[], ...types: JSONSchemaType[]): boolean {
+function canBeType(propTypes: (string | undefined)[], ...types: JSONSchemaType[]): Boolean {
 	return types.some(t => propTypes.includes(t));
 }
 
 export function createValidator(prop: IConfigurationPropertySchema): (value: any) => (string | null) {
 	const type: (string | undefined)[] = Array.isArray(prop.type) ? prop.type : [prop.type];
-	const isNullable = canBeType(type, 'null');
-	const isNumeric = (canBeType(type, 'number') || canBeType(type, 'integer')) && (type.length === 1 || type.length === 2 && isNullable);
+	const isNullaBle = canBeType(type, 'null');
+	const isNumeric = (canBeType(type, 'numBer') || canBeType(type, 'integer')) && (type.length === 1 || type.length === 2 && isNullaBle);
 
 	const numericValidations = getNumericValidators(prop);
 	const stringValidations = getStringValidators(prop);
@@ -26,7 +26,7 @@ export function createValidator(prop: IConfigurationPropertySchema): (value: any
 
 	return value => {
 		if (prop.type === 'string' && stringValidations.length === 0) { return null; }
-		if (isNullable && value === '') { return ''; }
+		if (isNullaBle && value === '') { return ''; }
 
 		const errors: string[] = [];
 		if (stringArrayValidator) {
@@ -38,7 +38,7 @@ export function createValidator(prop: IConfigurationPropertySchema): (value: any
 
 		if (isNumeric) {
 			if (value === '' || isNaN(+value)) {
-				errors.push(nls.localize('validations.expectedNumeric', "Value must be a number."));
+				errors.push(nls.localize('validations.expectedNumeric', "Value must Be a numBer."));
 			} else {
 				errors.push(...numericValidations.filter(validator => !validator.isValid(+value)).map(validator => validator.message));
 			}
@@ -57,7 +57,7 @@ export function createValidator(prop: IConfigurationPropertySchema): (value: any
 }
 
 /**
- * Returns an error string if the value is invalid and can't be displayed in the settings UI for the given type.
+ * Returns an error string if the value is invalid and can't Be displayed in the settings UI for the given type.
  */
 export function getInvalidTypeError(value: any, type: undefined | string | string[]): string | undefined {
 	if (typeof type === 'undefined') {
@@ -72,20 +72,20 @@ export function getInvalidTypeError(value: any, type: undefined | string | strin
 	return;
 }
 
-function valueValidatesAsType(value: any, type: string): boolean {
+function valueValidatesAsType(value: any, type: string): Boolean {
 	const valueType = typeof value;
-	if (type === 'boolean') {
-		return valueType === 'boolean';
-	} else if (type === 'object') {
-		return value && !Array.isArray(value) && valueType === 'object';
+	if (type === 'Boolean') {
+		return valueType === 'Boolean';
+	} else if (type === 'oBject') {
+		return value && !Array.isArray(value) && valueType === 'oBject';
 	} else if (type === 'null') {
 		return value === null;
 	} else if (type === 'array') {
 		return Array.isArray(value);
 	} else if (type === 'string') {
 		return valueType === 'string';
-	} else if (type === 'number' || type === 'integer') {
-		return valueType === 'number';
+	} else if (type === 'numBer' || type === 'integer') {
+		return valueType === 'numBer';
 	}
 
 	return true;
@@ -98,48 +98,48 @@ function getStringValidators(prop: IConfigurationPropertySchema) {
 	}
 	return [
 		{
-			enabled: prop.maxLength !== undefined,
-			isValid: ((value: { length: number; }) => value.length <= prop.maxLength!),
-			message: nls.localize('validations.maxLength', "Value must be {0} or fewer characters long.", prop.maxLength)
+			enaBled: prop.maxLength !== undefined,
+			isValid: ((value: { length: numBer; }) => value.length <= prop.maxLength!),
+			message: nls.localize('validations.maxLength', "Value must Be {0} or fewer characters long.", prop.maxLength)
 		},
 		{
-			enabled: prop.minLength !== undefined,
-			isValid: ((value: { length: number; }) => value.length >= prop.minLength!),
-			message: nls.localize('validations.minLength', "Value must be {0} or more characters long.", prop.minLength)
+			enaBled: prop.minLength !== undefined,
+			isValid: ((value: { length: numBer; }) => value.length >= prop.minLength!),
+			message: nls.localize('validations.minLength', "Value must Be {0} or more characters long.", prop.minLength)
 		},
 		{
-			enabled: patternRegex !== undefined,
+			enaBled: patternRegex !== undefined,
 			isValid: ((value: string) => patternRegex!.test(value)),
 			message: prop.patternErrorMessage || nls.localize('validations.regex', "Value must match regex `{0}`.", prop.pattern)
 		},
 		{
-			enabled: prop.format === 'color-hex',
+			enaBled: prop.format === 'color-hex',
 			isValid: ((value: string) => Color.Format.CSS.parseHex(value)),
 			message: nls.localize('validations.colorFormat', "Invalid color format. Use #RGB, #RGBA, #RRGGBB or #RRGGBBAA.")
 		}
-	].filter(validation => validation.enabled);
+	].filter(validation => validation.enaBled);
 }
 
-function getNumericValidators(prop: IConfigurationPropertySchema): Validator<number>[] {
+function getNumericValidators(prop: IConfigurationPropertySchema): Validator<numBer>[] {
 	const type: (string | undefined)[] = Array.isArray(prop.type) ? prop.type : [prop.type];
 
-	const isNullable = canBeType(type, 'null');
-	const isIntegral = (canBeType(type, 'integer')) && (type.length === 1 || type.length === 2 && isNullable);
-	const isNumeric = canBeType(type, 'number', 'integer') && (type.length === 1 || type.length === 2 && isNullable);
+	const isNullaBle = canBeType(type, 'null');
+	const isIntegral = (canBeType(type, 'integer')) && (type.length === 1 || type.length === 2 && isNullaBle);
+	const isNumeric = canBeType(type, 'numBer', 'integer') && (type.length === 1 || type.length === 2 && isNullaBle);
 	if (!isNumeric) {
 		return [];
 	}
 
-	let exclusiveMax: number | undefined;
-	let exclusiveMin: number | undefined;
+	let exclusiveMax: numBer | undefined;
+	let exclusiveMin: numBer | undefined;
 
-	if (typeof prop.exclusiveMaximum === 'boolean') {
+	if (typeof prop.exclusiveMaximum === 'Boolean') {
 		exclusiveMax = prop.exclusiveMaximum ? prop.maximum : undefined;
 	} else {
 		exclusiveMax = prop.exclusiveMaximum;
 	}
 
-	if (typeof prop.exclusiveMinimum === 'boolean') {
+	if (typeof prop.exclusiveMinimum === 'Boolean') {
 		exclusiveMin = prop.exclusiveMinimum ? prop.minimum : undefined;
 	} else {
 		exclusiveMin = prop.exclusiveMinimum;
@@ -147,37 +147,37 @@ function getNumericValidators(prop: IConfigurationPropertySchema): Validator<num
 
 	return [
 		{
-			enabled: exclusiveMax !== undefined && (prop.maximum === undefined || exclusiveMax <= prop.maximum),
-			isValid: ((value: number) => value < exclusiveMax!),
-			message: nls.localize('validations.exclusiveMax', "Value must be strictly less than {0}.", exclusiveMax)
+			enaBled: exclusiveMax !== undefined && (prop.maximum === undefined || exclusiveMax <= prop.maximum),
+			isValid: ((value: numBer) => value < exclusiveMax!),
+			message: nls.localize('validations.exclusiveMax', "Value must Be strictly less than {0}.", exclusiveMax)
 		},
 		{
-			enabled: exclusiveMin !== undefined && (prop.minimum === undefined || exclusiveMin >= prop.minimum),
-			isValid: ((value: number) => value > exclusiveMin!),
-			message: nls.localize('validations.exclusiveMin', "Value must be strictly greater than {0}.", exclusiveMin)
+			enaBled: exclusiveMin !== undefined && (prop.minimum === undefined || exclusiveMin >= prop.minimum),
+			isValid: ((value: numBer) => value > exclusiveMin!),
+			message: nls.localize('validations.exclusiveMin', "Value must Be strictly greater than {0}.", exclusiveMin)
 		},
 
 		{
-			enabled: prop.maximum !== undefined && (exclusiveMax === undefined || exclusiveMax > prop.maximum),
-			isValid: ((value: number) => value <= prop.maximum!),
-			message: nls.localize('validations.max', "Value must be less than or equal to {0}.", prop.maximum)
+			enaBled: prop.maximum !== undefined && (exclusiveMax === undefined || exclusiveMax > prop.maximum),
+			isValid: ((value: numBer) => value <= prop.maximum!),
+			message: nls.localize('validations.max', "Value must Be less than or equal to {0}.", prop.maximum)
 		},
 		{
-			enabled: prop.minimum !== undefined && (exclusiveMin === undefined || exclusiveMin < prop.minimum),
-			isValid: ((value: number) => value >= prop.minimum!),
-			message: nls.localize('validations.min', "Value must be greater than or equal to {0}.", prop.minimum)
+			enaBled: prop.minimum !== undefined && (exclusiveMin === undefined || exclusiveMin < prop.minimum),
+			isValid: ((value: numBer) => value >= prop.minimum!),
+			message: nls.localize('validations.min', "Value must Be greater than or equal to {0}.", prop.minimum)
 		},
 		{
-			enabled: prop.multipleOf !== undefined,
-			isValid: ((value: number) => value % prop.multipleOf! === 0),
-			message: nls.localize('validations.multipleOf', "Value must be a multiple of {0}.", prop.multipleOf)
+			enaBled: prop.multipleOf !== undefined,
+			isValid: ((value: numBer) => value % prop.multipleOf! === 0),
+			message: nls.localize('validations.multipleOf', "Value must Be a multiple of {0}.", prop.multipleOf)
 		},
 		{
-			enabled: isIntegral,
-			isValid: ((value: number) => value % 1 === 0),
-			message: nls.localize('validations.expectedInteger', "Value must be an integer.")
+			enaBled: isIntegral,
+			isValid: ((value: numBer) => value % 1 === 0),
+			message: nls.localize('validations.expectedInteger', "Value must Be an integer.")
 		},
-	].filter(validation => validation.enabled);
+	].filter(validation => validation.enaBled);
 }
 
 function getArrayOfStringValidator(prop: IConfigurationPropertySchema): ((value: any) => (string | null)) | null {

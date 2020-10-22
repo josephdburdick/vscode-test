@@ -3,109 +3,109 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { Keybinding, KeyCode, ResolvedKeybinding } from 'vs/base/common/keyCodes';
+import { Event } from 'vs/Base/common/event';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { KeyBinding, KeyCode, ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
 import { IContextKeyServiceTarget } from 'vs/platform/contextkey/common/contextkey';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IResolveResult } from 'vs/platform/keybinding/common/keybindingResolver';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { IResolveResult } from 'vs/platform/keyBinding/common/keyBindingResolver';
+import { ResolvedKeyBindingItem } from 'vs/platform/keyBinding/common/resolvedKeyBindingItem';
 
-export interface IUserFriendlyKeybinding {
+export interface IUserFriendlyKeyBinding {
 	key: string;
 	command: string;
 	args?: any;
 	when?: string;
 }
 
-export const enum KeybindingSource {
+export const enum KeyBindingSource {
 	Default = 1,
 	User
 }
 
-export interface IKeybindingEvent {
-	source: KeybindingSource;
-	keybindings?: IUserFriendlyKeybinding[];
+export interface IKeyBindingEvent {
+	source: KeyBindingSource;
+	keyBindings?: IUserFriendlyKeyBinding[];
 }
 
-export interface IKeyboardEvent {
-	readonly _standardKeyboardEventBrand: true;
+export interface IKeyBoardEvent {
+	readonly _standardKeyBoardEventBrand: true;
 
-	readonly ctrlKey: boolean;
-	readonly shiftKey: boolean;
-	readonly altKey: boolean;
-	readonly metaKey: boolean;
+	readonly ctrlKey: Boolean;
+	readonly shiftKey: Boolean;
+	readonly altKey: Boolean;
+	readonly metaKey: Boolean;
 	readonly keyCode: KeyCode;
 	readonly code: string;
 }
 
-export interface KeybindingsSchemaContribution {
+export interface KeyBindingsSchemaContriBution {
 	readonly onDidChange?: Event<void>;
 
 	getSchemaAdditions(): IJSONSchema[];
 }
 
-export const IKeybindingService = createDecorator<IKeybindingService>('keybindingService');
+export const IKeyBindingService = createDecorator<IKeyBindingService>('keyBindingService');
 
-export interface IKeybindingService {
+export interface IKeyBindingService {
 	readonly _serviceBrand: undefined;
 
-	readonly inChordMode: boolean;
+	readonly inChordMode: Boolean;
 
-	onDidUpdateKeybindings: Event<IKeybindingEvent>;
-
-	/**
-	 * Returns none, one or many (depending on keyboard layout)!
-	 */
-	resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[];
-
-	resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding;
-
-	resolveUserBinding(userBinding: string): ResolvedKeybinding[];
+	onDidUpdateKeyBindings: Event<IKeyBindingEvent>;
 
 	/**
-	 * Resolve and dispatch `keyboardEvent` and invoke the command.
+	 * Returns none, one or many (depending on keyBoard layout)!
 	 */
-	dispatchEvent(e: IKeyboardEvent, target: IContextKeyServiceTarget): boolean;
+	resolveKeyBinding(keyBinding: KeyBinding): ResolvedKeyBinding[];
+
+	resolveKeyBoardEvent(keyBoardEvent: IKeyBoardEvent): ResolvedKeyBinding;
+
+	resolveUserBinding(userBinding: string): ResolvedKeyBinding[];
 
 	/**
-	 * Resolve and dispatch `keyboardEvent`, but do not invoke the command or change inner state.
+	 * Resolve and dispatch `keyBoardEvent` and invoke the command.
 	 */
-	softDispatch(keyboardEvent: IKeyboardEvent, target: IContextKeyServiceTarget): IResolveResult | null;
-
-	dispatchByUserSettingsLabel(userSettingsLabel: string, target: IContextKeyServiceTarget): void;
+	dispatchEvent(e: IKeyBoardEvent, target: IContextKeyServiceTarget): Boolean;
 
 	/**
-	 * Look up keybindings for a command.
-	 * Use `lookupKeybinding` if you are interested in the preferred keybinding.
+	 * Resolve and dispatch `keyBoardEvent`, But do not invoke the command or change inner state.
 	 */
-	lookupKeybindings(commandId: string): ResolvedKeybinding[];
+	softDispatch(keyBoardEvent: IKeyBoardEvent, target: IContextKeyServiceTarget): IResolveResult | null;
+
+	dispatchByUserSettingsLaBel(userSettingsLaBel: string, target: IContextKeyServiceTarget): void;
 
 	/**
-	 * Look up the preferred (last defined) keybinding for a command.
-	 * @returns The preferred keybinding or null if the command is not bound.
+	 * Look up keyBindings for a command.
+	 * Use `lookupKeyBinding` if you are interested in the preferred keyBinding.
 	 */
-	lookupKeybinding(commandId: string): ResolvedKeybinding | undefined;
+	lookupKeyBindings(commandId: string): ResolvedKeyBinding[];
 
-	getDefaultKeybindingsContent(): string;
+	/**
+	 * Look up the preferred (last defined) keyBinding for a command.
+	 * @returns The preferred keyBinding or null if the command is not Bound.
+	 */
+	lookupKeyBinding(commandId: string): ResolvedKeyBinding | undefined;
 
-	getDefaultKeybindings(): readonly ResolvedKeybindingItem[];
+	getDefaultKeyBindingsContent(): string;
 
-	getKeybindings(): readonly ResolvedKeybindingItem[];
+	getDefaultKeyBindings(): readonly ResolvedKeyBindingItem[];
 
-	customKeybindingsCount(): number;
+	getKeyBindings(): readonly ResolvedKeyBindingItem[];
+
+	customKeyBindingsCount(): numBer;
 
 	/**
 	 * Will the given key event produce a character that's rendered on screen, e.g. in a
-	 * text box. *Note* that the results of this function can be incorrect.
+	 * text Box. *Note* that the results of this function can Be incorrect.
 	 */
-	mightProducePrintableCharacter(event: IKeyboardEvent): boolean;
+	mightProducePrintaBleCharacter(event: IKeyBoardEvent): Boolean;
 
-	registerSchemaContribution(contribution: KeybindingsSchemaContribution): void;
+	registerSchemaContriBution(contriBution: KeyBindingsSchemaContriBution): void;
 
-	toggleLogging(): boolean;
+	toggleLogging(): Boolean;
 
-	_dumpDebugInfo(): string;
-	_dumpDebugInfoJSON(): string;
+	_dumpDeBugInfo(): string;
+	_dumpDeBugInfoJSON(): string;
 }
 

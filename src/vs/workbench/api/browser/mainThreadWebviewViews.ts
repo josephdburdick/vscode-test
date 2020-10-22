@@ -3,125 +3,125 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Disposable, dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { MainThreadWebviews, reviveWebviewExtension } from 'vs/workbench/api/browser/mainThreadWebviews';
-import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
-import { IWebviewViewService, WebviewView } from 'vs/workbench/contrib/webviewView/browser/webviewViewService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { DisposaBle, dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { MainThreadWeBviews, reviveWeBviewExtension } from 'vs/workBench/api/Browser/mainThreadWeBviews';
+import * as extHostProtocol from 'vs/workBench/api/common/extHost.protocol';
+import { IWeBviewViewService, WeBviewView } from 'vs/workBench/contriB/weBviewView/Browser/weBviewViewService';
 
 
-export class MainThreadWebviewsViews extends Disposable implements extHostProtocol.MainThreadWebviewViewsShape {
+export class MainThreadWeBviewsViews extends DisposaBle implements extHostProtocol.MainThreadWeBviewViewsShape {
 
-	private readonly _proxy: extHostProtocol.ExtHostWebviewViewsShape;
+	private readonly _proxy: extHostProtocol.ExtHostWeBviewViewsShape;
 
-	private readonly _webviewViews = new Map<string, WebviewView>();
-	private readonly _webviewViewProviders = new Map<string, IDisposable>();
+	private readonly _weBviewViews = new Map<string, WeBviewView>();
+	private readonly _weBviewViewProviders = new Map<string, IDisposaBle>();
 
 	constructor(
 		context: extHostProtocol.IExtHostContext,
-		private readonly mainThreadWebviews: MainThreadWebviews,
-		@IWebviewViewService private readonly _webviewViewService: IWebviewViewService,
+		private readonly mainThreadWeBviews: MainThreadWeBviews,
+		@IWeBviewViewService private readonly _weBviewViewService: IWeBviewViewService,
 	) {
 		super();
 
-		this._proxy = context.getProxy(extHostProtocol.ExtHostContext.ExtHostWebviewViews);
+		this._proxy = context.getProxy(extHostProtocol.ExtHostContext.ExtHostWeBviewViews);
 	}
 
 	dispose() {
 		super.dispose();
 
-		dispose(this._webviewViewProviders.values());
-		this._webviewViewProviders.clear();
+		dispose(this._weBviewViewProviders.values());
+		this._weBviewViewProviders.clear();
 
-		dispose(this._webviewViews.values());
+		dispose(this._weBviewViews.values());
 	}
 
-	public $setWebviewViewTitle(handle: extHostProtocol.WebviewHandle, value: string | undefined): void {
-		const webviewView = this.getWebviewView(handle);
-		webviewView.title = value;
+	puBlic $setWeBviewViewTitle(handle: extHostProtocol.WeBviewHandle, value: string | undefined): void {
+		const weBviewView = this.getWeBviewView(handle);
+		weBviewView.title = value;
 	}
 
-	public $setWebviewViewDescription(handle: extHostProtocol.WebviewHandle, value: string | undefined): void {
-		const webviewView = this.getWebviewView(handle);
-		webviewView.description = value;
+	puBlic $setWeBviewViewDescription(handle: extHostProtocol.WeBviewHandle, value: string | undefined): void {
+		const weBviewView = this.getWeBviewView(handle);
+		weBviewView.description = value;
 	}
 
-	public $show(handle: extHostProtocol.WebviewHandle, preserveFocus: boolean): void {
-		const webviewView = this.getWebviewView(handle);
-		webviewView.show(preserveFocus);
+	puBlic $show(handle: extHostProtocol.WeBviewHandle, preserveFocus: Boolean): void {
+		const weBviewView = this.getWeBviewView(handle);
+		weBviewView.show(preserveFocus);
 	}
 
-	public $registerWebviewViewProvider(
-		extensionData: extHostProtocol.WebviewExtensionDescription,
+	puBlic $registerWeBviewViewProvider(
+		extensionData: extHostProtocol.WeBviewExtensionDescription,
 		viewType: string,
-		options?: { retainContextWhenHidden?: boolean }
+		options?: { retainContextWhenHidden?: Boolean }
 	): void {
-		if (this._webviewViewProviders.has(viewType)) {
+		if (this._weBviewViewProviders.has(viewType)) {
 			throw new Error(`View provider for ${viewType} already registered`);
 		}
 
-		const extension = reviveWebviewExtension(extensionData);
+		const extension = reviveWeBviewExtension(extensionData);
 
-		const registration = this._webviewViewService.register(viewType, {
-			resolve: async (webviewView: WebviewView, cancellation: CancellationToken) => {
-				const handle = webviewView.webview.id;
+		const registration = this._weBviewViewService.register(viewType, {
+			resolve: async (weBviewView: WeBviewView, cancellation: CancellationToken) => {
+				const handle = weBviewView.weBview.id;
 
-				this._webviewViews.set(handle, webviewView);
-				this.mainThreadWebviews.addWebview(handle, webviewView.webview);
+				this._weBviewViews.set(handle, weBviewView);
+				this.mainThreadWeBviews.addWeBview(handle, weBviewView.weBview);
 
 				let state = undefined;
-				if (webviewView.webview.state) {
+				if (weBviewView.weBview.state) {
 					try {
-						state = JSON.parse(webviewView.webview.state);
+						state = JSON.parse(weBviewView.weBview.state);
 					} catch (e) {
-						console.error('Could not load webview state', e, webviewView.webview.state);
+						console.error('Could not load weBview state', e, weBviewView.weBview.state);
 					}
 				}
 
-				webviewView.webview.extension = extension;
+				weBviewView.weBview.extension = extension;
 
 				if (options) {
-					webviewView.webview.options = options;
+					weBviewView.weBview.options = options;
 				}
 
-				webviewView.onDidChangeVisibility(visible => {
-					this._proxy.$onDidChangeWebviewViewVisibility(handle, visible);
+				weBviewView.onDidChangeVisiBility(visiBle => {
+					this._proxy.$onDidChangeWeBviewViewVisiBility(handle, visiBle);
 				});
 
-				webviewView.onDispose(() => {
-					this._proxy.$disposeWebviewView(handle);
-					this._webviewViews.delete(handle);
+				weBviewView.onDispose(() => {
+					this._proxy.$disposeWeBviewView(handle);
+					this._weBviewViews.delete(handle);
 				});
 
 				try {
-					await this._proxy.$resolveWebviewView(handle, viewType, webviewView.title, state, cancellation);
+					await this._proxy.$resolveWeBviewView(handle, viewType, weBviewView.title, state, cancellation);
 				} catch (error) {
 					onUnexpectedError(error);
-					webviewView.webview.html = this.mainThreadWebviews.getWebviewResolvedFailedContent(viewType);
+					weBviewView.weBview.html = this.mainThreadWeBviews.getWeBviewResolvedFailedContent(viewType);
 				}
 			}
 		});
 
-		this._webviewViewProviders.set(viewType, registration);
+		this._weBviewViewProviders.set(viewType, registration);
 	}
 
-	public $unregisterWebviewViewProvider(viewType: string): void {
-		const provider = this._webviewViewProviders.get(viewType);
+	puBlic $unregisterWeBviewViewProvider(viewType: string): void {
+		const provider = this._weBviewViewProviders.get(viewType);
 		if (!provider) {
 			throw new Error(`No view provider for ${viewType} registered`);
 		}
 
 		provider.dispose();
-		this._webviewViewProviders.delete(viewType);
+		this._weBviewViewProviders.delete(viewType);
 	}
 
-	private getWebviewView(handle: string): WebviewView {
-		const webviewView = this._webviewViews.get(handle);
-		if (!webviewView) {
-			throw new Error('unknown webview view');
+	private getWeBviewView(handle: string): WeBviewView {
+		const weBviewView = this._weBviewViews.get(handle);
+		if (!weBviewView) {
+			throw new Error('unknown weBview view');
 		}
-		return webviewView;
+		return weBviewView;
 	}
 }
 

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
+import { ContextKeyService } from 'vs/platform/contextkey/Browser/contextKeyService';
 import * as assert from 'assert';
 
 suite('ContextKeyService', () => {

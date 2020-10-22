@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 import { EditOperation } from 'vs/editor/common/core/editOperation';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
@@ -23,18 +23,18 @@ export class TrimTrailingWhitespaceCommand implements ICommand {
 		this._selectionId = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
 		let ops = trimTrailingWhitespace(model, this._cursors);
 		for (let i = 0, len = ops.length; i < len; i++) {
 			let op = ops[i];
 
-			builder.addEditOperation(op.range, op.text);
+			Builder.addEditOperation(op.range, op.text);
 		}
 
-		this._selectionId = builder.trackSelection(this._selection);
+		this._selectionId = Builder.trackSelection(this._selection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		return helper.getTrackedSelection(this._selectionId!);
 	}
 }
@@ -44,16 +44,16 @@ export class TrimTrailingWhitespaceCommand implements ICommand {
  */
 export function trimTrailingWhitespace(model: ITextModel, cursors: Position[]): IIdentifiedSingleEditOperation[] {
 	// Sort cursors ascending
-	cursors.sort((a, b) => {
-		if (a.lineNumber === b.lineNumber) {
-			return a.column - b.column;
+	cursors.sort((a, B) => {
+		if (a.lineNumBer === B.lineNumBer) {
+			return a.column - B.column;
 		}
-		return a.lineNumber - b.lineNumber;
+		return a.lineNumBer - B.lineNumBer;
 	});
 
 	// Reduce multiple cursors on the same line and only keep the last one on the line
 	for (let i = cursors.length - 2; i >= 0; i--) {
-		if (cursors[i].lineNumber === cursors[i + 1].lineNumber) {
+		if (cursors[i].lineNumBer === cursors[i + 1].lineNumBer) {
 			// Remove cursor at `i`
 			cursors.splice(i, 1);
 		}
@@ -64,12 +64,12 @@ export function trimTrailingWhitespace(model: ITextModel, cursors: Position[]): 
 	let cursorIndex = 0;
 	let cursorLen = cursors.length;
 
-	for (let lineNumber = 1, lineCount = model.getLineCount(); lineNumber <= lineCount; lineNumber++) {
-		let lineContent = model.getLineContent(lineNumber);
+	for (let lineNumBer = 1, lineCount = model.getLineCount(); lineNumBer <= lineCount; lineNumBer++) {
+		let lineContent = model.getLineContent(lineNumBer);
 		let maxLineColumn = lineContent.length + 1;
 		let minEditColumn = 0;
 
-		if (cursorIndex < cursorLen && cursors[cursorIndex].lineNumber === lineNumber) {
+		if (cursorIndex < cursorLen && cursors[cursorIndex].lineNumBer === lineNumBer) {
 			minEditColumn = cursors[cursorIndex].column;
 			cursorIndex++;
 			if (minEditColumn === maxLineColumn) {
@@ -98,8 +98,8 @@ export function trimTrailingWhitespace(model: ITextModel, cursors: Position[]): 
 
 		fromColumn = Math.max(minEditColumn, fromColumn);
 		r[rLen++] = EditOperation.delete(new Range(
-			lineNumber, fromColumn,
-			lineNumber, maxLineColumn
+			lineNumBer, fromColumn,
+			lineNumBer, maxLineColumn
 		));
 	}
 

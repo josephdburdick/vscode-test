@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IRange } from 'vs/editor/common/core/range';
-import { SymbolKind, ProviderResult, SymbolTag } from 'vs/editor/common/modes';
+import { SymBolKind, ProviderResult, SymBolTag } from 'vs/editor/common/modes';
 import { ITextModel } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { LanguageFeatureRegistry } from 'vs/editor/common/modes/languageFeatureRegistry';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IPosition, Position } from 'vs/editor/common/core/position';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { assertType } from 'vs/base/common/types';
+import { assertType } from 'vs/Base/common/types';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 
@@ -26,13 +26,13 @@ export const enum CallHierarchyDirection {
 export interface CallHierarchyItem {
 	_sessionId: string;
 	_itemId: string;
-	kind: SymbolKind;
+	kind: SymBolKind;
 	name: string;
 	detail?: string;
 	uri: URI;
 	range: IRange;
 	selectionRange: IRange;
-	tags?: SymbolTag[]
+	tags?: SymBolTag[]
 }
 
 export interface IncomingCall {
@@ -62,10 +62,10 @@ export interface CallHierarchyProvider {
 export const CallHierarchyProviderRegistry = new LanguageFeatureRegistry<CallHierarchyProvider>();
 
 
-class RefCountedDisposabled {
+class RefCountedDisposaBled {
 
 	constructor(
-		private readonly _disposable: IDisposable,
+		private readonly _disposaBle: IDisposaBle,
 		private _counter = 1
 	) { }
 
@@ -76,7 +76,7 @@ class RefCountedDisposabled {
 
 	release() {
 		if (--this._counter === 0) {
-			this._disposable.dispose();
+			this._disposaBle.dispose();
 		}
 		return this;
 	}
@@ -93,7 +93,7 @@ export class CallHierarchyModel {
 		if (!session) {
 			return undefined;
 		}
-		return new CallHierarchyModel(session.roots.reduce((p, c) => p + c._sessionId, ''), provider, session.roots, new RefCountedDisposabled(session));
+		return new CallHierarchyModel(session.roots.reduce((p, c) => p + c._sessionId, ''), provider, session.roots, new RefCountedDisposaBled(session));
 	}
 
 	readonly root: CallHierarchyItem;
@@ -102,7 +102,7 @@ export class CallHierarchyModel {
 		readonly id: string,
 		readonly provider: CallHierarchyProvider,
 		readonly roots: CallHierarchyItem[],
-		readonly ref: RefCountedDisposabled,
+		readonly ref: RefCountedDisposaBled,
 	) {
 		this.root = roots[0];
 	}
@@ -156,11 +156,11 @@ CommandsRegistry.registerCommand('_executePrepareCallHierarchy', async (accessor
 
 	const modelService = accessor.get(IModelService);
 	let textModel = modelService.getModel(resource);
-	let textModelReference: IDisposable | undefined;
+	let textModelReference: IDisposaBle | undefined;
 	if (!textModel) {
 		const textModelService = accessor.get(ITextModelService);
 		const result = await textModelService.createModelReference(resource);
-		textModel = result.object.textEditorModel;
+		textModel = result.oBject.textEditorModel;
 		textModelReference = result;
 	}
 
@@ -184,7 +184,7 @@ CommandsRegistry.registerCommand('_executePrepareCallHierarchy', async (accessor
 	}
 });
 
-function isCallHierarchyItemDto(obj: any): obj is CallHierarchyItem {
+function isCallHierarchyItemDto(oBj: any): oBj is CallHierarchyItem {
 	return true;
 }
 

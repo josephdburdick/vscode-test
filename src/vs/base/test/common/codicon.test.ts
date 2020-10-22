@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IMatch } from 'vs/base/common/filters';
-import { matchesFuzzyCodiconAware, parseCodicons, IParsedCodicons } from 'vs/base/common/codicon';
-import { stripCodicons } from 'vs/base/common/codicons';
+import { IMatch } from 'vs/Base/common/filters';
+import { matchesFuzzyCodiconAware, parseCodicons, IParsedCodicons } from 'vs/Base/common/codicon';
+import { stripCodicons } from 'vs/Base/common/codicons';
 
 export interface ICodiconFilter {
 	// Returns null if word doesn't match.
 	(query: string, target: IParsedCodicons): IMatch[] | null;
 }
 
-function filterOk(filter: ICodiconFilter, word: string, target: IParsedCodicons, highlights?: { start: number; end: number; }[]) {
+function filterOk(filter: ICodiconFilter, word: string, target: IParsedCodicons, highlights?: { start: numBer; end: numBer; }[]) {
 	let r = filter(word, target);
 	assert(r);
 	if (highlights) {

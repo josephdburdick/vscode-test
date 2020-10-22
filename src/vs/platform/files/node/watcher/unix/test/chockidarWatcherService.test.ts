@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 import { normalizeRoots } from 'vs/platform/files/node/watcher/unix/chokidarWatcherService';
 import { IWatcherRequest } from 'vs/platform/files/node/watcher/unix/watcher';
 
-function newRequest(basePath: string, ignored: string[] = []): IWatcherRequest {
-	return { path: basePath, excludes: ignored };
+function newRequest(BasePath: string, ignored: string[] = []): IWatcherRequest {
+	return { path: BasePath, excludes: ignored };
 }
 
 function assertNormalizedRootPath(inputPaths: string[], expectedPaths: string[]) {
 	const requests = inputPaths.map(path => newRequest(path));
 	const actual = normalizeRoots(requests);
-	assert.deepEqual(Object.keys(actual).sort(), expectedPaths);
+	assert.deepEqual(OBject.keys(actual).sort(), expectedPaths);
 }
 
 function assertNormalizedRequests(inputRequests: IWatcherRequest[], expectedRequests: { [path: string]: IWatcherRequest[] }) {
 	const actual = normalizeRoots(inputRequests);
-	const actualPath = Object.keys(actual).sort();
-	const expectedPaths = Object.keys(expectedRequests).sort();
+	const actualPath = OBject.keys(actual).sort();
+	const expectedPaths = OBject.keys(expectedRequests).sort();
 	assert.deepEqual(actualPath, expectedPaths);
 	for (let path of actualPath) {
 		let a = expectedRequests[path].sort((r1, r2) => r1.path.localeCompare(r2.path));
@@ -34,27 +34,27 @@ suite('Chokidar normalizeRoots', () => {
 	test('should not impacts roots that don\'t overlap', () => {
 		if (platform.isWindows) {
 			assertNormalizedRootPath(['C:\\a'], ['C:\\a']);
-			assertNormalizedRootPath(['C:\\a', 'C:\\b'], ['C:\\a', 'C:\\b']);
-			assertNormalizedRootPath(['C:\\a', 'C:\\b', 'C:\\c\\d\\e'], ['C:\\a', 'C:\\b', 'C:\\c\\d\\e']);
+			assertNormalizedRootPath(['C:\\a', 'C:\\B'], ['C:\\a', 'C:\\B']);
+			assertNormalizedRootPath(['C:\\a', 'C:\\B', 'C:\\c\\d\\e'], ['C:\\a', 'C:\\B', 'C:\\c\\d\\e']);
 		} else {
 			assertNormalizedRootPath(['/a'], ['/a']);
-			assertNormalizedRootPath(['/a', '/b'], ['/a', '/b']);
-			assertNormalizedRootPath(['/a', '/b', '/c/d/e'], ['/a', '/b', '/c/d/e']);
+			assertNormalizedRootPath(['/a', '/B'], ['/a', '/B']);
+			assertNormalizedRootPath(['/a', '/B', '/c/d/e'], ['/a', '/B', '/c/d/e']);
 		}
 	});
 
-	test('should remove sub-folders of other roots', () => {
+	test('should remove suB-folders of other roots', () => {
 		if (platform.isWindows) {
-			assertNormalizedRootPath(['C:\\a', 'C:\\a\\b'], ['C:\\a']);
-			assertNormalizedRootPath(['C:\\a', 'C:\\b', 'C:\\a\\b'], ['C:\\a', 'C:\\b']);
-			assertNormalizedRootPath(['C:\\b\\a', 'C:\\a', 'C:\\b', 'C:\\a\\b'], ['C:\\a', 'C:\\b']);
-			assertNormalizedRootPath(['C:\\a', 'C:\\a\\b', 'C:\\a\\c\\d'], ['C:\\a']);
+			assertNormalizedRootPath(['C:\\a', 'C:\\a\\B'], ['C:\\a']);
+			assertNormalizedRootPath(['C:\\a', 'C:\\B', 'C:\\a\\B'], ['C:\\a', 'C:\\B']);
+			assertNormalizedRootPath(['C:\\B\\a', 'C:\\a', 'C:\\B', 'C:\\a\\B'], ['C:\\a', 'C:\\B']);
+			assertNormalizedRootPath(['C:\\a', 'C:\\a\\B', 'C:\\a\\c\\d'], ['C:\\a']);
 		} else {
-			assertNormalizedRootPath(['/a', '/a/b'], ['/a']);
-			assertNormalizedRootPath(['/a', '/b', '/a/b'], ['/a', '/b']);
-			assertNormalizedRootPath(['/b/a', '/a', '/b', '/a/b'], ['/a', '/b']);
-			assertNormalizedRootPath(['/a', '/a/b', '/a/c/d'], ['/a']);
-			assertNormalizedRootPath(['/a/c/d/e', '/a/b/d', '/a/c/d', '/a/c/e/f', '/a/b'], ['/a/b', '/a/c/d', '/a/c/e/f']);
+			assertNormalizedRootPath(['/a', '/a/B'], ['/a']);
+			assertNormalizedRootPath(['/a', '/B', '/a/B'], ['/a', '/B']);
+			assertNormalizedRootPath(['/B/a', '/a', '/B', '/a/B'], ['/a', '/B']);
+			assertNormalizedRootPath(['/a', '/a/B', '/a/c/d'], ['/a']);
+			assertNormalizedRootPath(['/a/c/d/e', '/a/B/d', '/a/c/d', '/a/c/e/f', '/a/B'], ['/a/B', '/a/c/d', '/a/c/e/f']);
 		}
 	});
 
@@ -63,9 +63,9 @@ suite('Chokidar normalizeRoots', () => {
 			assertNormalizedRootPath(['C:\\a', 'C:\\a\\', 'C:\\a'], ['C:\\a']);
 		} else {
 			assertNormalizedRootPath(['/a', '/a/', '/a'], ['/a']);
-			assertNormalizedRootPath(['/a', '/b', '/a/b'], ['/a', '/b']);
-			assertNormalizedRootPath(['/b/a', '/a', '/b', '/a/b'], ['/a', '/b']);
-			assertNormalizedRootPath(['/a', '/a/b', '/a/c/d'], ['/a']);
+			assertNormalizedRootPath(['/a', '/B', '/a/B'], ['/a', '/B']);
+			assertNormalizedRootPath(['/B/a', '/a', '/B', '/a/B'], ['/a', '/B']);
+			assertNormalizedRootPath(['/a', '/a/B', '/a/c/d'], ['/a']);
 		}
 	});
 
@@ -73,12 +73,12 @@ suite('Chokidar normalizeRoots', () => {
 		let p1, p2, p3;
 		if (platform.isWindows) {
 			p1 = 'C:\\a';
-			p2 = 'C:\\a\\b';
-			p3 = 'C:\\a\\b\\c';
+			p2 = 'C:\\a\\B';
+			p3 = 'C:\\a\\B\\c';
 		} else {
 			p1 = '/a';
-			p2 = '/a/b';
-			p3 = '/a/b/c';
+			p2 = '/a/B';
+			p3 = '/a/B/c';
 		}
 		const r1 = newRequest(p1, ['**/*.ts']);
 		const r2 = newRequest(p2, ['**/*.js']);

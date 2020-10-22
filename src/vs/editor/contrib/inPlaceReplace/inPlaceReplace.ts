@@ -4,30 +4,30 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { registerEditorAction, ServicesAccessor, EditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
+import { registerEditorAction, ServicesAccessor, EditorAction, registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
 import { IInplaceReplaceSupportResult } from 'vs/editor/common/modes';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { InPlaceReplaceCommand } from './inPlaceReplaceCommand';
-import { EditorState, CodeEditorStateFlag } from 'vs/editor/browser/core/editorState';
+import { EditorState, CodeEditorStateFlag } from 'vs/editor/Browser/core/editorState';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { editorBracketMatchBorder } from 'vs/editor/common/view/editorColorRegistry';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { CancelablePromise, createCancelablePromise, timeout } from 'vs/base/common/async';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { CancelaBlePromise, createCancelaBlePromise, timeout } from 'vs/Base/common/async';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 
-class InPlaceReplaceController implements IEditorContribution {
+class InPlaceReplaceController implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.inPlaceReplaceController';
+	puBlic static readonly ID = 'editor.contriB.inPlaceReplaceController';
 
 	static get(editor: ICodeEditor): InPlaceReplaceController {
-		return editor.getContribution<InPlaceReplaceController>(InPlaceReplaceController.ID);
+		return editor.getContriBution<InPlaceReplaceController>(InPlaceReplaceController.ID);
 	}
 
 	private static readonly DECORATION = ModelDecorationOptions.register({
@@ -37,8 +37,8 @@ class InPlaceReplaceController implements IEditorContribution {
 	private readonly editor: ICodeEditor;
 	private readonly editorWorkerService: IEditorWorkerService;
 	private decorationIds: string[] = [];
-	private currentRequest?: CancelablePromise<IInplaceReplaceSupportResult | null>;
-	private decorationRemover?: CancelablePromise<void>;
+	private currentRequest?: CancelaBlePromise<IInplaceReplaceSupportResult | null>;
+	private decorationRemover?: CancelaBlePromise<void>;
 
 	constructor(
 		editor: ICodeEditor,
@@ -48,10 +48,10 @@ class InPlaceReplaceController implements IEditorContribution {
 		this.editorWorkerService = editorWorkerService;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 	}
 
-	public run(source: string, up: boolean): Promise<void> | undefined {
+	puBlic run(source: string, up: Boolean): Promise<void> | undefined {
 
 		// cancel any pending request
 		if (this.currentRequest) {
@@ -64,7 +64,7 @@ class InPlaceReplaceController implements IEditorContribution {
 			return undefined;
 		}
 		let selection = editorSelection;
-		if (selection.startLineNumber !== selection.endLineNumber) {
+		if (selection.startLineNumBer !== selection.endLineNumBer) {
 			// Can't accept multiline selection
 			return undefined;
 		}
@@ -75,7 +75,7 @@ class InPlaceReplaceController implements IEditorContribution {
 			return Promise.resolve(undefined);
 		}
 
-		this.currentRequest = createCancelablePromise(token => this.editorWorkerService.navigateValueSet(modelURI, selection!, up));
+		this.currentRequest = createCancelaBlePromise(token => this.editorWorkerService.navigateValueSet(modelURI, selection!, up));
 
 		return this.currentRequest.then(result => {
 
@@ -96,13 +96,13 @@ class InPlaceReplaceController implements IEditorContribution {
 
 			// highlight
 			highlightRange = {
-				startLineNumber: highlightRange.startLineNumber,
+				startLineNumBer: highlightRange.startLineNumBer,
 				startColumn: highlightRange.startColumn,
-				endLineNumber: highlightRange.endLineNumber,
+				endLineNumBer: highlightRange.endLineNumBer,
 				endColumn: highlightRange.startColumn + result.value.length
 			};
 			if (diff > 1) {
-				selection = new Selection(selection!.startLineNumber, selection!.startColumn, selection!.endLineNumber, selection!.endColumn + diff - 1);
+				selection = new Selection(selection!.startLineNumBer, selection!.startColumn, selection!.endLineNumBer, selection!.endColumn + diff - 1);
 			}
 
 			// Insert new text
@@ -134,18 +134,18 @@ class InPlaceReplaceUp extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.inPlaceReplace.up',
-			label: nls.localize('InPlaceReplaceAction.previous.label', "Replace with Previous Value"),
+			laBel: nls.localize('InPlaceReplaceAction.previous.laBel', "Replace with Previous Value"),
 			alias: 'Replace with Previous Value',
-			precondition: EditorContextKeys.writable,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			precondition: EditorContextKeys.writaBle,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_COMMA,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
 		const controller = InPlaceReplaceController.get(editor);
 		if (!controller) {
 			return Promise.resolve(undefined);
@@ -159,18 +159,18 @@ class InPlaceReplaceDown extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.inPlaceReplace.down',
-			label: nls.localize('InPlaceReplaceAction.next.label', "Replace with Next Value"),
+			laBel: nls.localize('InPlaceReplaceAction.next.laBel', "Replace with Next Value"),
 			alias: 'Replace with Next Value',
-			precondition: EditorContextKeys.writable,
-			kbOpts: {
-				kbExpr: EditorContextKeys.editorTextFocus,
+			precondition: EditorContextKeys.writaBle,
+			kBOpts: {
+				kBExpr: EditorContextKeys.editorTextFocus,
 				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_DOT,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
 		const controller = InPlaceReplaceController.get(editor);
 		if (!controller) {
 			return Promise.resolve(undefined);
@@ -179,13 +179,13 @@ class InPlaceReplaceDown extends EditorAction {
 	}
 }
 
-registerEditorContribution(InPlaceReplaceController.ID, InPlaceReplaceController);
+registerEditorContriBution(InPlaceReplaceController.ID, InPlaceReplaceController);
 registerEditorAction(InPlaceReplaceUp);
 registerEditorAction(InPlaceReplaceDown);
 
 registerThemingParticipant((theme, collector) => {
-	const border = theme.getColor(editorBracketMatchBorder);
-	if (border) {
-		collector.addRule(`.monaco-editor.vs .valueSetReplacement { outline: solid 2px ${border}; }`);
+	const Border = theme.getColor(editorBracketMatchBorder);
+	if (Border) {
+		collector.addRule(`.monaco-editor.vs .valueSetReplacement { outline: solid 2px ${Border}; }`);
 	}
 });

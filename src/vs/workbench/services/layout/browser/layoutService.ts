@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { MenuBarVisibility } from 'vs/platform/windows/common/windows';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
-import { Part } from 'vs/workbench/browser/part';
-import { Dimension } from 'vs/base/browser/dom';
-import { Direction } from 'vs/base/browser/ui/grid/grid';
+import { Event } from 'vs/Base/common/event';
+import { MenuBarVisiBility } from 'vs/platform/windows/common/windows';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
+import { Part } from 'vs/workBench/Browser/part';
+import { Dimension } from 'vs/Base/Browser/dom';
+import { Direction } from 'vs/Base/Browser/ui/grid/grid';
 
-export const IWorkbenchLayoutService = createDecorator<IWorkbenchLayoutService>('layoutService');
+export const IWorkBenchLayoutService = createDecorator<IWorkBenchLayoutService>('layoutService');
 
 export const enum Parts {
-	TITLEBAR_PART = 'workbench.parts.titlebar',
-	ACTIVITYBAR_PART = 'workbench.parts.activitybar',
-	SIDEBAR_PART = 'workbench.parts.sidebar',
-	PANEL_PART = 'workbench.parts.panel',
-	EDITOR_PART = 'workbench.parts.editor',
-	STATUSBAR_PART = 'workbench.parts.statusbar'
+	TITLEBAR_PART = 'workBench.parts.titleBar',
+	ACTIVITYBAR_PART = 'workBench.parts.activityBar',
+	SIDEBAR_PART = 'workBench.parts.sideBar',
+	PANEL_PART = 'workBench.parts.panel',
+	EDITOR_PART = 'workBench.parts.editor',
+	STATUSBAR_PART = 'workBench.parts.statusBar'
 }
 
 export const enum Position {
@@ -38,8 +38,8 @@ export function positionToString(position: Position): string {
 	switch (position) {
 		case Position.LEFT: return 'left';
 		case Position.RIGHT: return 'right';
-		case Position.BOTTOM: return 'bottom';
-		default: return 'bottom';
+		case Position.BOTTOM: return 'Bottom';
+		default: return 'Bottom';
 	}
 }
 
@@ -72,29 +72,29 @@ export function panelOpensMaximizedFromString(str: string): PanelOpensMaximizedO
 	return panelOpensMaximizedByString[str];
 }
 
-export interface IWorkbenchLayoutService extends ILayoutService {
+export interface IWorkBenchLayoutService extends ILayoutService {
 
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Emits when the zen mode is enabled or disabled.
+	 * Emits when the zen mode is enaBled or disaBled.
 	 */
-	readonly onZenModeChange: Event<boolean>;
+	readonly onZenModeChange: Event<Boolean>;
 
 	/**
-	 * Emits when fullscreen is enabled or disabled.
+	 * Emits when fullscreen is enaBled or disaBled.
 	 */
-	readonly onFullscreenChange: Event<boolean>;
+	readonly onFullscreenChange: Event<Boolean>;
 
 	/**
 	 * Emits when the window is maximized or unmaximized.
 	 */
-	readonly onMaximizeChange: Event<boolean>;
+	readonly onMaximizeChange: Event<Boolean>;
 
 	/**
-	 * Emits when centered layout is enabled or disabled.
+	 * Emits when centered layout is enaBled or disaBled.
 	 */
-	readonly onCenteredLayoutChange: Event<boolean>;
+	readonly onCenteredLayoutChange: Event<Boolean>;
 
 	/**
 	 * Emit when panel position changes.
@@ -102,23 +102,23 @@ export interface IWorkbenchLayoutService extends ILayoutService {
 	readonly onPanelPositionChange: Event<string>;
 
 	/**
-	 * Emit when part visibility changes
+	 * Emit when part visiBility changes
 	 */
-	readonly onPartVisibilityChange: Event<void>;
+	readonly onPartVisiBilityChange: Event<void>;
 
 	/**
-	 * Asks the part service if all parts have been fully restored. For editor part
+	 * Asks the part service if all parts have Been fully restored. For editor part
 	 * this means that the contents of editors have loaded.
 	 */
-	isRestored(): boolean;
+	isRestored(): Boolean;
 
 	/**
-	 * Returns whether the given part has the keyboard focus or not.
+	 * Returns whether the given part has the keyBoard focus or not.
 	 */
-	hasFocus(part: Parts): boolean;
+	hasFocus(part: Parts): Boolean;
 
 	/**
-	 * Focuses the part. If the part is not visible this is a noop.
+	 * Focuses the part. If the part is not visiBle this is a noop.
 	 */
 	focusPart(part: Parts): void;
 
@@ -128,35 +128,35 @@ export interface IWorkbenchLayoutService extends ILayoutService {
 	getContainer(part: Parts): HTMLElement | undefined;
 
 	/**
-	 * Returns if the part is visible.
+	 * Returns if the part is visiBle.
 	 */
-	isVisible(part: Parts): boolean;
+	isVisiBle(part: Parts): Boolean;
 
 	/**
-	 * Returns if the part is visible.
+	 * Returns if the part is visiBle.
 	 */
 	getDimension(part: Parts): Dimension | undefined;
 
 	/**
-	 * Set activity bar hidden or not
+	 * Set activity Bar hidden or not
 	 */
-	setActivityBarHidden(hidden: boolean): void;
+	setActivityBarHidden(hidden: Boolean): void;
 
 	/**
 	 *
 	 * Set editor area hidden or not
 	 */
-	setEditorHidden(hidden: boolean): void;
+	setEditorHidden(hidden: Boolean): void;
 
 	/**
-	 * Set sidebar hidden or not
+	 * Set sideBar hidden or not
 	 */
-	setSideBarHidden(hidden: boolean): void;
+	setSideBarHidden(hidden: Boolean): void;
 
 	/**
 	 * Set panel part hidden or not
 	 */
-	setPanelHidden(hidden: boolean): void;
+	setPanelHidden(hidden: Boolean): void;
 
 	/**
 	 * Maximizes the panel height if the panel is not already maximized.
@@ -165,37 +165,37 @@ export interface IWorkbenchLayoutService extends ILayoutService {
 	toggleMaximizedPanel(): void;
 
 	/**
-	 * Returns true if the window has a border.
+	 * Returns true if the window has a Border.
 	 */
-	hasWindowBorder(): boolean;
+	hasWindowBorder(): Boolean;
 
 	/**
-	 * Returns the window border width.
+	 * Returns the window Border width.
 	 */
-	getWindowBorderWidth(): number;
+	getWindowBorderWidth(): numBer;
 
 	/**
-	 * Returns the window border radius if any.
+	 * Returns the window Border radius if any.
 	 */
 	getWindowBorderRadius(): string | undefined;
 
 	/**
 	 * Returns true if the panel is maximized.
 	 */
-	isPanelMaximized(): boolean;
+	isPanelMaximized(): Boolean;
 
 	/**
-	 * Gets the current side bar position. Note that the sidebar can be hidden too.
+	 * Gets the current side Bar position. Note that the sideBar can Be hidden too.
 	 */
 	getSideBarPosition(): Position;
 
 	/**
-	 * Gets the current menubar visibility.
+	 * Gets the current menuBar visiBility.
 	 */
-	getMenubarVisibility(): MenuBarVisibility;
+	getMenuBarVisiBility(): MenuBarVisiBility;
 
 	/**
-	 * Gets the current panel position. Note that the panel can be hidden too.
+	 * Gets the current panel position. Note that the panel can Be hidden too.
 	 */
 	getPanelPosition(): Position;
 
@@ -205,34 +205,34 @@ export interface IWorkbenchLayoutService extends ILayoutService {
 	setPanelPosition(position: Position): void;
 
 	/**
-	 * Gets the maximum possible size for editor.
+	 * Gets the maximum possiBle size for editor.
 	 */
 	getMaximumEditorDimensions(): Dimension;
 
 	/**
-	 * Returns the element that is parent of the workbench element.
+	 * Returns the element that is parent of the workBench element.
 	 */
-	getWorkbenchContainer(): HTMLElement;
+	getWorkBenchContainer(): HTMLElement;
 
 	/**
-	 * Toggles the workbench in and out of zen mode - parts get hidden and window goes fullscreen.
+	 * Toggles the workBench in and out of zen mode - parts get hidden and window goes fullscreen.
 	 */
 	toggleZenMode(): void;
 
 	/**
 	 * Returns whether the centered editor layout is active.
 	 */
-	isEditorLayoutCentered(): boolean;
+	isEditorLayoutCentered(): Boolean;
 
 	/**
-	 * Sets the workbench in and out of centered editor layout.
+	 * Sets the workBench in and out of centered editor layout.
 	 */
-	centerEditorLayout(active: boolean): void;
+	centerEditorLayout(active: Boolean): void;
 
 	/**
 	 * Resizes currently focused part on main access
 	 */
-	resizePart(part: Parts, sizeChange: number): void;
+	resizePart(part: Parts, sizeChange: numBer): void;
 
 	/**
 	 * Register a part to participate in the layout.
@@ -242,20 +242,20 @@ export interface IWorkbenchLayoutService extends ILayoutService {
 	/**
 	 * Returns whether the window is maximized.
 	 */
-	isWindowMaximized(): boolean;
+	isWindowMaximized(): Boolean;
 
 	/**
 	 * Updates the maximized state of the window.
 	 */
-	updateWindowMaximizedState(maximized: boolean): void;
+	updateWindowMaximizedState(maximized: Boolean): void;
 
 	/**
-	 * Returns the next visible view part in a given direction
+	 * Returns the next visiBle view part in a given direction
 	 */
-	getVisibleNeighborPart(part: Parts, direction: Direction): Parts | undefined;
+	getVisiBleNeighBorPart(part: Parts, direction: Direction): Parts | undefined;
 
 	/**
 	 * True if a default layout with default editors was applied at startup
 	 */
-	readonly openedDefaultEditors: boolean;
+	readonly openedDefaultEditors: Boolean;
 }

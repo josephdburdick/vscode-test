@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { isWindows } from 'vs/base/common/platform';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { isWindows } from 'vs/Base/common/platform';
 
 
 suite('URI', () => {
@@ -88,7 +88,7 @@ suite('URI', () => {
 	});
 
 	test('with, identity', () => {
-		let uri = URI.parse('foo:bar/path');
+		let uri = URI.parse('foo:Bar/path');
 
 		let uri2 = uri.with(null!);
 		assert.ok(uri === uri2);
@@ -96,18 +96,18 @@ suite('URI', () => {
 		assert.ok(uri === uri2);
 		uri2 = uri.with({});
 		assert.ok(uri === uri2);
-		uri2 = uri.with({ scheme: 'foo', path: 'bar/path' });
+		uri2 = uri.with({ scheme: 'foo', path: 'Bar/path' });
 		assert.ok(uri === uri2);
 	});
 
 	test('with, changes', () => {
-		assert.equal(URI.parse('before:some/file/path').with({ scheme: 'after' }).toString(), 'after:some/file/path');
+		assert.equal(URI.parse('Before:some/file/path').with({ scheme: 'after' }).toString(), 'after:some/file/path');
 		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'http', path: '/api/files/test.me', query: 't=1234' }).toString(), 'http:/api/files/test.me?t%3D1234');
 		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'http', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'http:/api/files/test.me?t%3D1234');
 		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'https', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'https:/api/files/test.me?t%3D1234');
 		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'HTTP', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'HTTP:/api/files/test.me?t%3D1234');
 		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'HTTPS', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'HTTPS:/api/files/test.me?t%3D1234');
-		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'boo', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'boo:/api/files/test.me?t%3D1234');
+		assert.equal(URI.from({ scheme: 's' }).with({ scheme: 'Boo', authority: '', path: '/api/files/test.me', query: 't=1234', fragment: '' }).toString(), 'Boo:/api/files/test.me?t%3D1234');
 	});
 
 	test('with, remove components #8465', () => {
@@ -121,7 +121,7 @@ suite('URI', () => {
 	});
 
 	test('with, validation', () => {
-		let uri = URI.parse('foo:bar/path');
+		let uri = URI.parse('foo:Bar/path');
 		assert.throws(() => uri.with({ scheme: 'fai:l' }));
 		assert.throws(() => uri.with({ scheme: 'fäil' }));
 		assert.throws(() => uri.with({ authority: 'fail' }));
@@ -208,22 +208,22 @@ suite('URI', () => {
 		assert.equal(value.query, '');
 		assert.equal(value.fragment, 'd');
 
-		value = URI.parse('foo+bar:path');
-		assert.equal(value.scheme, 'foo+bar');
+		value = URI.parse('foo+Bar:path');
+		assert.equal(value.scheme, 'foo+Bar');
 		assert.equal(value.authority, '');
 		assert.equal(value.path, 'path');
 		assert.equal(value.query, '');
 		assert.equal(value.fragment, '');
 
-		value = URI.parse('foo-bar:path');
-		assert.equal(value.scheme, 'foo-bar');
+		value = URI.parse('foo-Bar:path');
+		assert.equal(value.scheme, 'foo-Bar');
 		assert.equal(value.authority, '');
 		assert.equal(value.path, 'path');
 		assert.equal(value.query, '');
 		assert.equal(value.fragment, '');
 
-		value = URI.parse('foo.bar:path');
-		assert.equal(value.scheme, 'foo.bar');
+		value = URI.parse('foo.Bar:path');
+		assert.equal(value.scheme, 'foo.Bar');
 		assert.equal(value.authority, '');
 		assert.equal(value.path, 'path');
 		assert.equal(value.query, '');
@@ -320,11 +320,11 @@ suite('URI', () => {
 	});
 
 	test('URI#toString, lower-case windows drive letter', () => {
-		assert.equal(URI.parse('untitled:c:/Users/jrieken/Code/abc.txt').toString(), 'untitled:c%3A/Users/jrieken/Code/abc.txt');
-		assert.equal(URI.parse('untitled:C:/Users/jrieken/Code/abc.txt').toString(), 'untitled:c%3A/Users/jrieken/Code/abc.txt');
+		assert.equal(URI.parse('untitled:c:/Users/jrieken/Code/aBc.txt').toString(), 'untitled:c%3A/Users/jrieken/Code/aBc.txt');
+		assert.equal(URI.parse('untitled:C:/Users/jrieken/Code/aBc.txt').toString(), 'untitled:c%3A/Users/jrieken/Code/aBc.txt');
 	});
 
-	test('URI#toString, escape all the bits', () => {
+	test('URI#toString, escape all the Bits', () => {
 
 		const value = URI.file('/Users/jrieken/Code/_samples/18500/Mödel + Other Thîngß/model.js');
 		assert.equal(value.toString(), 'file:///Users/jrieken/Code/_samples/18500/M%C3%B6del%20%2B%20Other%20Th%C3%AEng%C3%9F/model.js');
@@ -339,20 +339,20 @@ suite('URI', () => {
 	});
 
 	test('URI#toString, user information in authority', () => {
-		let value = URI.parse('http://foo:bar@localhost/far');
-		assert.equal(value.toString(), 'http://foo:bar@localhost/far');
+		let value = URI.parse('http://foo:Bar@localhost/far');
+		assert.equal(value.toString(), 'http://foo:Bar@localhost/far');
 
 		value = URI.parse('http://foo@localhost/far');
 		assert.equal(value.toString(), 'http://foo@localhost/far');
 
-		value = URI.parse('http://foo:bAr@localhost:8080/far');
-		assert.equal(value.toString(), 'http://foo:bAr@localhost:8080/far');
+		value = URI.parse('http://foo:BAr@localhost:8080/far');
+		assert.equal(value.toString(), 'http://foo:BAr@localhost:8080/far');
 
 		value = URI.parse('http://foo@localhost:8080/far');
 		assert.equal(value.toString(), 'http://foo@localhost:8080/far');
 
-		value = URI.from({ scheme: 'http', authority: 'föö:bör@löcalhost:8080', path: '/far', query: undefined, fragment: undefined });
-		assert.equal(value.toString(), 'http://f%C3%B6%C3%B6:b%C3%B6r@l%C3%B6calhost:8080/far');
+		value = URI.from({ scheme: 'http', authority: 'föö:Bör@löcalhost:8080', path: '/far', query: undefined, fragment: undefined });
+		assert.equal(value.toString(), 'http://f%C3%B6%C3%B6:B%C3%B6r@l%C3%B6calhost:8080/far');
 	});
 
 	test('correctFileUriToFilePath2', () => {
@@ -399,34 +399,34 @@ suite('URI', () => {
 
 	test('class URI cannot represent relative file paths #34449', function () {
 
-		let path = '/foo/bar';
+		let path = '/foo/Bar';
 		assert.equal(URI.file(path).path, path);
-		path = 'foo/bar';
-		assert.equal(URI.file(path).path, '/foo/bar');
-		path = './foo/bar';
-		assert.equal(URI.file(path).path, '/./foo/bar'); // missing normalization
+		path = 'foo/Bar';
+		assert.equal(URI.file(path).path, '/foo/Bar');
+		path = './foo/Bar';
+		assert.equal(URI.file(path).path, '/./foo/Bar'); // missing normalization
 
-		const fileUri1 = URI.parse(`file:foo/bar`);
-		assert.equal(fileUri1.path, '/foo/bar');
+		const fileUri1 = URI.parse(`file:foo/Bar`);
+		assert.equal(fileUri1.path, '/foo/Bar');
 		assert.equal(fileUri1.authority, '');
 		const uri = fileUri1.toString();
-		assert.equal(uri, 'file:///foo/bar');
+		assert.equal(uri, 'file:///foo/Bar');
 		const fileUri2 = URI.parse(uri);
-		assert.equal(fileUri2.path, '/foo/bar');
+		assert.equal(fileUri2.path, '/foo/Bar');
 		assert.equal(fileUri2.authority, '');
 	});
 
 	test('Ctrl click to follow hash query param url gets urlencoded #49628', function () {
-		let input = 'http://localhost:3000/#/foo?bar=baz';
+		let input = 'http://localhost:3000/#/foo?Bar=Baz';
 		let uri = URI.parse(input);
 		assert.equal(uri.toString(true), input);
 
-		input = 'http://localhost:3000/foo?bar=baz';
+		input = 'http://localhost:3000/foo?Bar=Baz';
 		uri = URI.parse(input);
 		assert.equal(uri.toString(true), input);
 	});
 
-	test('Unable to open \'%A0.txt\': URI malformed #76506', function () {
+	test('UnaBle to open \'%A0.txt\': URI malformed #76506', function () {
 
 		let uri = URI.file('/foo/%A0.txt');
 		let uri2 = URI.parse(uri.toString());
@@ -439,14 +439,14 @@ suite('URI', () => {
 		assert.equal(uri.path, uri2.path);
 	});
 
-	test('Unable to open \'%A0.txt\': URI malformed #76506', function () {
+	test('UnaBle to open \'%A0.txt\': URI malformed #76506', function () {
 		assert.equal(URI.parse('file://some/%.txt'), 'file://some/%25.txt');
 		assert.equal(URI.parse('file://some/%A0.txt'), 'file://some/%25A0.txt');
 	});
 
-	test('Links in markdown are broken if url contains encoded parameters #79474', function () {
+	test('Links in markdown are Broken if url contains encoded parameters #79474', function () {
 		this.skip();
-		let strIn = 'https://myhost.com/Redirect?url=http%3A%2F%2Fwww.bing.com%3Fsearch%3Dtom';
+		let strIn = 'https://myhost.com/Redirect?url=http%3A%2F%2Fwww.Bing.com%3Fsearch%3Dtom';
 		let uri1 = URI.parse(strIn);
 		let strOut = uri1.toString();
 		let uri2 = URI.parse(strOut);
@@ -459,9 +459,9 @@ suite('URI', () => {
 		assert.equal(strIn, strOut); // fails here!!
 	});
 
-	test('Uri#parse can break path-component #45515', function () {
+	test('Uri#parse can Break path-component #45515', function () {
 		this.skip();
-		let strIn = 'https://firebasestorage.googleapis.com/v0/b/brewlangerie.appspot.com/o/products%2FzVNZkudXJyq8bPGTXUxx%2FBetterave-Sesame.jpg?alt=media&token=0b2310c4-3ea6-4207-bbde-9c3710ba0437';
+		let strIn = 'https://fireBasestorage.googleapis.com/v0/B/Brewlangerie.appspot.com/o/products%2FzVNZkudXJyq8BPGTXUxx%2FBetterave-Sesame.jpg?alt=media&token=0B2310c4-3ea6-4207-BBde-9c3710Ba0437';
 		let uri1 = URI.parse(strIn);
 		let strOut = uri1.toString();
 		let uri2 = URI.parse(strOut);
@@ -503,68 +503,68 @@ suite('URI', () => {
 		// }
 		// console.profileEnd();
 	});
-	function assertJoined(base: string, fragment: string, expected: string, checkWithUrl: boolean = true) {
-		const baseUri = URI.parse(base);
-		const newUri = URI.joinPath(baseUri, fragment);
+	function assertJoined(Base: string, fragment: string, expected: string, checkWithUrl: Boolean = true) {
+		const BaseUri = URI.parse(Base);
+		const newUri = URI.joinPath(BaseUri, fragment);
 		const actual = newUri.toString(true);
 		assert.equal(actual, expected);
 
 		if (checkWithUrl) {
-			const actualUrl = new URL(fragment, base).href;
+			const actualUrl = new URL(fragment, Base).href;
 			assert.equal(actualUrl, expected, 'DIFFERENT from URL');
 		}
 	}
 	test('URI#joinPath', function () {
 
-		assertJoined(('file:///foo/'), '../../bazz', 'file:///bazz');
-		assertJoined(('file:///foo'), '../../bazz', 'file:///bazz');
-		assertJoined(('file:///foo'), '../../bazz', 'file:///bazz');
-		assertJoined(('file:///foo/bar/'), './bazz', 'file:///foo/bar/bazz');
-		assertJoined(('file:///foo/bar'), './bazz', 'file:///foo/bar/bazz', false);
-		assertJoined(('file:///foo/bar'), 'bazz', 'file:///foo/bar/bazz', false);
+		assertJoined(('file:///foo/'), '../../Bazz', 'file:///Bazz');
+		assertJoined(('file:///foo'), '../../Bazz', 'file:///Bazz');
+		assertJoined(('file:///foo'), '../../Bazz', 'file:///Bazz');
+		assertJoined(('file:///foo/Bar/'), './Bazz', 'file:///foo/Bar/Bazz');
+		assertJoined(('file:///foo/Bar'), './Bazz', 'file:///foo/Bar/Bazz', false);
+		assertJoined(('file:///foo/Bar'), 'Bazz', 'file:///foo/Bar/Bazz', false);
 
 		// "auto-path" scheme
-		assertJoined(('file:'), 'bazz', 'file:///bazz');
-		assertJoined(('http://domain'), 'bazz', 'http://domain/bazz');
-		assertJoined(('https://domain'), 'bazz', 'https://domain/bazz');
-		assertJoined(('http:'), 'bazz', 'http:/bazz', false);
-		assertJoined(('https:'), 'bazz', 'https:/bazz', false);
+		assertJoined(('file:'), 'Bazz', 'file:///Bazz');
+		assertJoined(('http://domain'), 'Bazz', 'http://domain/Bazz');
+		assertJoined(('https://domain'), 'Bazz', 'https://domain/Bazz');
+		assertJoined(('http:'), 'Bazz', 'http:/Bazz', false);
+		assertJoined(('https:'), 'Bazz', 'https:/Bazz', false);
 
 		// no "auto-path" scheme with and w/o paths
-		assertJoined(('foo:/'), 'bazz', 'foo:/bazz');
-		assertJoined(('foo://bar/'), 'bazz', 'foo://bar/bazz');
+		assertJoined(('foo:/'), 'Bazz', 'foo:/Bazz');
+		assertJoined(('foo://Bar/'), 'Bazz', 'foo://Bar/Bazz');
 
 		// no "auto-path" + no path -> error
-		assert.throws(() => assertJoined(('foo:'), 'bazz', ''));
-		assert.throws(() => new URL('bazz', 'foo:'));
-		assert.throws(() => assertJoined(('foo://bar'), 'bazz', ''));
-		// assert.throws(() => new URL('bazz', 'foo://bar')); Edge, Chrome => THROW, Firefox, Safari => foo://bar/bazz
+		assert.throws(() => assertJoined(('foo:'), 'Bazz', ''));
+		assert.throws(() => new URL('Bazz', 'foo:'));
+		assert.throws(() => assertJoined(('foo://Bar'), 'Bazz', ''));
+		// assert.throws(() => new URL('Bazz', 'foo://Bar')); Edge, Chrome => THROW, Firefox, Safari => foo://Bar/Bazz
 	});
 
 	test('URI#joinPath (posix)', function () {
 		if (isWindows) {
 			this.skip();
 		}
-		assertJoined(('file:///c:/foo/'), '../../bazz', 'file:///bazz', false);
-		assertJoined(('file://server/share/c:/'), '../../bazz', 'file://server/bazz', false);
-		assertJoined(('file://server/share/c:'), '../../bazz', 'file://server/bazz', false);
+		assertJoined(('file:///c:/foo/'), '../../Bazz', 'file:///Bazz', false);
+		assertJoined(('file://server/share/c:/'), '../../Bazz', 'file://server/Bazz', false);
+		assertJoined(('file://server/share/c:'), '../../Bazz', 'file://server/Bazz', false);
 
-		assertJoined(('file://ser/foo/'), '../../bazz', 'file://ser/bazz', false); // Firefox -> Different, Edge, Chrome, Safar -> OK
-		assertJoined(('file://ser/foo'), '../../bazz', 'file://ser/bazz', false); // Firefox -> Different, Edge, Chrome, Safar -> OK
+		assertJoined(('file://ser/foo/'), '../../Bazz', 'file://ser/Bazz', false); // Firefox -> Different, Edge, Chrome, Safar -> OK
+		assertJoined(('file://ser/foo'), '../../Bazz', 'file://ser/Bazz', false); // Firefox -> Different, Edge, Chrome, Safar -> OK
 	});
 
 	test('URI#joinPath (windows)', function () {
 		if (!isWindows) {
 			this.skip();
 		}
-		assertJoined(('file:///c:/foo/'), '../../bazz', 'file:///c:/bazz', false);
-		assertJoined(('file://server/share/c:/'), '../../bazz', 'file://server/share/bazz', false);
-		assertJoined(('file://server/share/c:'), '../../bazz', 'file://server/share/bazz', false);
+		assertJoined(('file:///c:/foo/'), '../../Bazz', 'file:///c:/Bazz', false);
+		assertJoined(('file://server/share/c:/'), '../../Bazz', 'file://server/share/Bazz', false);
+		assertJoined(('file://server/share/c:'), '../../Bazz', 'file://server/share/Bazz', false);
 
-		assertJoined(('file://ser/foo/'), '../../bazz', 'file://ser/foo/bazz', false);
-		assertJoined(('file://ser/foo'), '../../bazz', 'file://ser/foo/bazz', false);
+		assertJoined(('file://ser/foo/'), '../../Bazz', 'file://ser/foo/Bazz', false);
+		assertJoined(('file://ser/foo'), '../../Bazz', 'file://ser/foo/Bazz', false);
 
-		//https://github.com/microsoft/vscode/issues/93831
-		assertJoined('file:///c:/foo/bar', './other/foo.img', 'file:///c:/foo/bar/other/foo.img', false);
+		//https://githuB.com/microsoft/vscode/issues/93831
+		assertJoined('file:///c:/foo/Bar', './other/foo.img', 'file:///c:/foo/Bar/other/foo.img', false);
 	});
 });

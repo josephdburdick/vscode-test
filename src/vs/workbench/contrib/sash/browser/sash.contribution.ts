@@ -5,28 +5,28 @@
 
 import { localize } from 'vs/nls';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { SashSizeController, minSize, maxSize } from 'vs/workbench/contrib/sash/browser/sash';
-import { isIPad } from 'vs/base/browser/browser';
+import { workBenchConfigurationNodeBase } from 'vs/workBench/common/configuration';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { SashSizeController, minSize, maxSize } from 'vs/workBench/contriB/sash/Browser/sash';
+import { isIPad } from 'vs/Base/Browser/Browser';
 
-// Sash size contribution
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(SashSizeController, LifecyclePhase.Restored);
+// Sash size contriBution
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(SashSizeController, LifecyclePhase.Restored);
 
-// Sash size configuration contribution
+// Sash size configuration contriBution
 Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
 	.registerConfiguration({
-		...workbenchConfigurationNodeBase,
+		...workBenchConfigurationNodeBase,
 		'properties': {
-			'workbench.sash.size': {
-				'type': 'number',
+			'workBench.sash.size': {
+				'type': 'numBer',
 				'default': isIPad ? maxSize : minSize,
 				'minimum': minSize,
 				'maximum': maxSize,
-				'description': localize('sashSize', "Controls the feedback area size in pixels of the dragging area in between views/editors. Set it to a larger value if you feel it's hard to resize views using the mouse.")
+				'description': localize('sashSize', "Controls the feedBack area size in pixels of the dragging area in Between views/editors. Set it to a larger value if you feel it's hard to resize views using the mouse.")
 			},
 		}
 	});

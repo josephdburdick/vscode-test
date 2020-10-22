@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 import { Command } from 'vs/editor/common/modes';
-import { ISequence } from 'vs/base/common/sequence';
-import { IAction } from 'vs/base/common/actions';
+import { ISequence } from 'vs/Base/common/sequence';
+import { IAction } from 'vs/Base/common/actions';
 import { IMenu } from 'vs/platform/actions/common/actions';
 
-export const VIEWLET_ID = 'workbench.view.scm';
-export const VIEW_PANE_ID = 'workbench.scm';
-export const REPOSITORIES_VIEW_PANE_ID = 'workbench.scm.repositories';
+export const VIEWLET_ID = 'workBench.view.scm';
+export const VIEW_PANE_ID = 'workBench.scm';
+export const REPOSITORIES_VIEW_PANE_ID = 'workBench.scm.repositories';
 
 export interface IBaselineResourceProvider {
 	getBaselineResource(resource: URI): Promise<URI>;
@@ -26,8 +26,8 @@ export interface ISCMResourceDecorations {
 	icon?: URI;
 	iconDark?: URI;
 	tooltip?: string;
-	strikeThrough?: boolean;
-	faded?: boolean;
+	strikeThrough?: Boolean;
+	faded?: Boolean;
 }
 
 export interface ISCMResource {
@@ -35,19 +35,19 @@ export interface ISCMResource {
 	readonly sourceUri: URI;
 	readonly decorations: ISCMResourceDecorations;
 	readonly contextValue?: string;
-	open(preserveFocus: boolean): Promise<void>;
+	open(preserveFocus: Boolean): Promise<void>;
 }
 
 export interface ISCMResourceGroup extends ISequence<ISCMResource> {
 	readonly provider: ISCMProvider;
-	readonly label: string;
+	readonly laBel: string;
 	readonly id: string;
-	readonly hideWhenEmpty: boolean;
+	readonly hideWhenEmpty: Boolean;
 	readonly onDidChange: Event<void>;
 }
 
-export interface ISCMProvider extends IDisposable {
-	readonly label: string;
+export interface ISCMProvider extends IDisposaBle {
+	readonly laBel: string;
 	readonly id: string;
 	readonly contextValue: string;
 
@@ -57,7 +57,7 @@ export interface ISCMProvider extends IDisposable {
 	readonly onDidChangeResources: Event<void>;
 
 	readonly rootUri?: URI;
-	readonly count?: number;
+	readonly count?: numBer;
 	readonly commitTemplate: string;
 	readonly onDidChangeCommitTemplate: Event<string>;
 	readonly onDidChangeStatusBarCommands?: Event<Command[]>;
@@ -80,14 +80,14 @@ export interface IInputValidation {
 }
 
 export interface IInputValidator {
-	(value: string, cursorPosition: number): Promise<IInputValidation | undefined>;
+	(value: string, cursorPosition: numBer): Promise<IInputValidation | undefined>;
 }
 
 export interface ISCMInput {
 	readonly repository: ISCMRepository;
 
 	readonly value: string;
-	setValue(value: string, fromKeyboard: boolean): void;
+	setValue(value: string, fromKeyBoard: Boolean): void;
 	readonly onDidChange: Event<string>;
 
 	placeholder: string;
@@ -96,19 +96,19 @@ export interface ISCMInput {
 	validateInput: IInputValidator;
 	readonly onDidChangeValidateInput: Event<void>;
 
-	visible: boolean;
-	readonly onDidChangeVisibility: Event<boolean>;
+	visiBle: Boolean;
+	readonly onDidChangeVisiBility: Event<Boolean>;
 
 	showNextHistoryValue(): void;
 	showPreviousHistoryValue(): void;
 }
 
-export interface ISCMRepository extends IDisposable {
-	readonly selected: boolean;
-	readonly onDidChangeSelection: Event<boolean>;
+export interface ISCMRepository extends IDisposaBle {
+	readonly selected: Boolean;
+	readonly onDidChangeSelection: Event<Boolean>;
 	readonly provider: ISCMProvider;
 	readonly input: ISCMInput;
-	setSelected(selected: boolean): void;
+	setSelected(selected: Boolean): void;
 }
 
 export interface ISCMService {
@@ -143,9 +143,9 @@ export interface ISCMMenus {
 
 export const ISCMViewService = createDecorator<ISCMViewService>('scmView');
 
-export interface ISCMViewVisibleRepositoryChangeEvent {
-	readonly added: Iterable<ISCMRepository>;
-	readonly removed: Iterable<ISCMRepository>;
+export interface ISCMViewVisiBleRepositoryChangeEvent {
+	readonly added: IteraBle<ISCMRepository>;
+	readonly removed: IteraBle<ISCMRepository>;
 }
 
 export interface ISCMViewService {
@@ -153,9 +153,9 @@ export interface ISCMViewService {
 
 	readonly menus: ISCMMenus;
 
-	visibleRepositories: ISCMRepository[];
-	readonly onDidChangeVisibleRepositories: Event<ISCMViewVisibleRepositoryChangeEvent>;
+	visiBleRepositories: ISCMRepository[];
+	readonly onDidChangeVisiBleRepositories: Event<ISCMViewVisiBleRepositoryChangeEvent>;
 
-	isVisible(repository: ISCMRepository): boolean;
-	toggleVisibility(repository: ISCMRepository, visible?: boolean): void;
+	isVisiBle(repository: ISCMRepository): Boolean;
+	toggleVisiBility(repository: ISCMRepository, visiBle?: Boolean): void;
 }

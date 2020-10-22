@@ -16,7 +16,7 @@ export interface IExternalTerminalSettings {
 export interface IExternalTerminalService {
 	readonly _serviceBrand: undefined;
 	openTerminal(path: string): void;
-	runInTerminal(title: string, cwd: string, args: string[], env: { [key: string]: string | null; }, settings: IExternalTerminalSettings): Promise<number | undefined>;
+	runInTerminal(title: string, cwd: string, args: string[], env: { [key: string]: string | null; }, settings: IExternalTerminalSettings): Promise<numBer | undefined>;
 }
 
 export interface IExternalTerminalConfiguration {

@@ -5,7 +5,7 @@
 
 import {
 	TaskDefinition, Task, TaskGroup, WorkspaceFolder, RelativePattern, ShellExecution, Uri, workspace,
-	DebugConfiguration, debug, TaskProvider, TextDocument, tasks, TaskScope, QuickPickItem, window
+	DeBugConfiguration, deBug, TaskProvider, TextDocument, tasks, TaskScope, QuickPickItem, window
 } from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -22,7 +22,7 @@ export interface NpmTaskDefinition extends TaskDefinition {
 }
 
 export interface FolderTaskItem extends QuickPickItem {
-	label: string;
+	laBel: string;
 	task: Task;
 }
 
@@ -37,17 +37,17 @@ export class NpmTaskProvider implements TaskProvider {
 	constructor() {
 	}
 
-	public provideTasks() {
+	puBlic provideTasks() {
 		return provideNpmScripts();
 	}
 
-	public resolveTask(_task: Task): Promise<Task> | undefined {
+	puBlic resolveTask(_task: Task): Promise<Task> | undefined {
 		const npmTask = (<any>_task.definition).script;
 		if (npmTask) {
 			const kind: NpmTaskDefinition = (<any>_task.definition);
 			let packageJsonUri: Uri;
-			if (_task.scope === undefined || _task.scope === TaskScope.Global || _task.scope === TaskScope.Workspace) {
-				// scope is required to be a WorkspaceFolder for resolveTask
+			if (_task.scope === undefined || _task.scope === TaskScope.GloBal || _task.scope === TaskScope.Workspace) {
+				// scope is required to Be a WorkspaceFolder for resolveTask
 				return undefined;
 			}
 			if (kind.path) {
@@ -65,10 +65,10 @@ export function invalidateTasksCache() {
 	cachedTasks = undefined;
 }
 
-const buildNames: string[] = ['build', 'compile', 'watch'];
-function isBuildTask(name: string): boolean {
-	for (let buildName of buildNames) {
-		if (name.indexOf(buildName) !== -1) {
+const BuildNames: string[] = ['Build', 'compile', 'watch'];
+function isBuildTask(name: string): Boolean {
+	for (let BuildName of BuildNames) {
+		if (name.indexOf(BuildName) !== -1) {
 			return true;
 		}
 	}
@@ -76,7 +76,7 @@ function isBuildTask(name: string): boolean {
 }
 
 const testNames: string[] = ['test'];
-function isTestTask(name: string): boolean {
+function isTestTask(name: string): Boolean {
 	for (let testName of testNames) {
 		if (name === testName) {
 			return true;
@@ -88,11 +88,11 @@ function isTestTask(name: string): boolean {
 function getPrePostScripts(scripts: any): Set<string> {
 	const prePostScripts: Set<string> = new Set([
 		'preuninstall', 'postuninstall', 'prepack', 'postpack', 'preinstall', 'postinstall',
-		'prepack', 'postpack', 'prepublish', 'postpublish', 'preversion', 'postversion',
+		'prepack', 'postpack', 'prepuBlish', 'postpuBlish', 'preversion', 'postversion',
 		'prestop', 'poststop', 'prerestart', 'postrestart', 'preshrinkwrap', 'postshrinkwrap',
-		'pretest', 'postest', 'prepublishOnly'
+		'pretest', 'postest', 'prepuBlishOnly'
 	]);
-	let keys = Object.keys(scripts);
+	let keys = OBject.keys(scripts);
 	for (const script of keys) {
 		const prepost = ['pre' + script, 'post' + script];
 		prepost.forEach(each => {
@@ -105,7 +105,7 @@ function getPrePostScripts(scripts: any): Set<string> {
 }
 
 export function isWorkspaceFolder(value: any): value is WorkspaceFolder {
-	return value && typeof value !== 'number';
+	return value && typeof value !== 'numBer';
 }
 
 export async function getPackageManager(folder: WorkspaceFolder): Promise<string> {
@@ -124,14 +124,14 @@ export async function getPackageManager(folder: WorkspaceFolder): Promise<string
 	return packageManagerName;
 }
 
-export async function hasNpmScripts(): Promise<boolean> {
+export async function hasNpmScripts(): Promise<Boolean> {
 	let folders = workspace.workspaceFolders;
 	if (!folders) {
 		return false;
 	}
 	try {
 		for (const folder of folders) {
-			if (isAutoDetectionEnabled(folder)) {
+			if (isAutoDetectionEnaBled(folder)) {
 				let relativePattern = new RelativePattern(folder, '**/package.json');
 				let paths = await workspace.findFiles(relativePattern, '**/node_modules/**');
 				if (paths.length > 0) {
@@ -157,7 +157,7 @@ async function detectNpmScripts(): Promise<Task[]> {
 	}
 	try {
 		for (const folder of folders) {
-			if (isAutoDetectionEnabled(folder)) {
+			if (isAutoDetectionEnaBled(folder)) {
 				let relativePattern = new RelativePattern(folder, '**/package.json');
 				let paths = await workspace.findFiles(relativePattern, '**/{node_modules,.vscode-test}/**');
 				for (const path of paths) {
@@ -189,7 +189,7 @@ export async function detectNpmScriptsForFolder(folder: Uri): Promise<FolderTask
 			if (!visitedPackageJsonFiles.has(path.fsPath)) {
 				let tasks = await provideNpmScriptsForFolder(path);
 				visitedPackageJsonFiles.add(path.fsPath);
-				folderTasks.push(...tasks.map(t => ({ label: t.name, task: t })));
+				folderTasks.push(...tasks.map(t => ({ laBel: t.name, task: t })));
 			}
 		}
 		return folderTasks;
@@ -205,12 +205,12 @@ export async function provideNpmScripts(): Promise<Task[]> {
 	return cachedTasks;
 }
 
-export function isAutoDetectionEnabled(folder?: WorkspaceFolder): boolean {
+export function isAutoDetectionEnaBled(folder?: WorkspaceFolder): Boolean {
 	return workspace.getConfiguration('npm', folder?.uri).get<AutoDetect>('autoDetect') === 'on';
 }
 
 function isExcluded(folder: WorkspaceFolder, packageJsonUri: Uri) {
-	function testForExclusionPattern(path: string, pattern: string): boolean {
+	function testForExclusionPattern(path: string, pattern: string): Boolean {
 		return minimatch(path, pattern, { dot: true });
 	}
 
@@ -231,8 +231,8 @@ function isExcluded(folder: WorkspaceFolder, packageJsonUri: Uri) {
 	return false;
 }
 
-function isDebugScript(script: string): boolean {
-	let match = script.match(/--(inspect|debug)(-brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/);
+function isDeBugScript(script: string): Boolean {
+	let match = script.match(/--(inspect|deBug)(-Brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/);
 	return match !== null;
 }
 
@@ -252,7 +252,7 @@ async function provideNpmScriptsForFolder(packageJsonUri: Uri): Promise<Task[]> 
 
 	const prePostScripts = getPrePostScripts(scripts);
 
-	for (const each of Object.keys(scripts)) {
+	for (const each of OBject.keys(scripts)) {
 		const task = await createTask(each, `run ${each}`, folder!, packageJsonUri, scripts![each]);
 		const lowerCaseTaskName = each.toLowerCase();
 		if (isBuildTask(lowerCaseTaskName)) {
@@ -264,21 +264,21 @@ async function provideNpmScriptsForFolder(packageJsonUri: Uri): Promise<Task[]> 
 			task.group = TaskGroup.Clean; // hack: use Clean group to tag pre/post scripts
 		}
 
-		// todo@connor4312: all scripts are now debuggable, what is a 'debug script'?
-		if (isDebugScript(scripts![each])) {
-			task.group = TaskGroup.Rebuild; // hack: use Rebuild group to tag debug scripts
+		// todo@connor4312: all scripts are now deBuggaBle, what is a 'deBug script'?
+		if (isDeBugScript(scripts![each])) {
+			task.group = TaskGroup.ReBuild; // hack: use ReBuild group to tag deBug scripts
 		}
 		result.push(task);
 	}
 
-	// always add npm install (without a problem matcher)
+	// always add npm install (without a proBlem matcher)
 	result.push(await createTask(INSTALL_SCRIPT, INSTALL_SCRIPT, folder, packageJsonUri, 'install dependencies from package', []));
 	return result;
 }
 
 export function getTaskName(script: string, relativePath: string | undefined) {
 	if (relativePath && relativePath.length) {
-		return `${script} - ${relativePath.substring(0, relativePath.length - 1)}`;
+		return `${script} - ${relativePath.suBstring(0, relativePath.length - 1)}`;
 	}
 	return script;
 }
@@ -293,7 +293,7 @@ export async function createTask(script: NpmTaskDefinition | string, cmd: string
 
 	const packageManager = await getPackageManager(folder);
 	async function getCommandLine(cmd: string): Promise<string> {
-		if (workspace.getConfiguration('npm', folder.uri).get<boolean>('runSilent')) {
+		if (workspace.getConfiguration('npm', folder.uri).get<Boolean>('runSilent')) {
 			return `${packageManager} --silent ${cmd}`;
 		}
 		return `${packageManager} ${cmd}`;
@@ -301,8 +301,8 @@ export async function createTask(script: NpmTaskDefinition | string, cmd: string
 
 	function getRelativePath(packageJsonUri: Uri): string {
 		let rootUri = folder.uri;
-		let absolutePath = packageJsonUri.path.substring(0, packageJsonUri.path.length - 'package.json'.length);
-		return absolutePath.substring(rootUri.path.length + 1);
+		let aBsolutePath = packageJsonUri.path.suBstring(0, packageJsonUri.path.length - 'package.json'.length);
+		return aBsolutePath.suBstring(rootUri.path.length + 1);
 	}
 
 	let relativePackageJson = getRelativePath(packageJsonUri);
@@ -328,7 +328,7 @@ export function getPackageJsonUriFromTask(task: Task): Uri | null {
 	return null;
 }
 
-export async function hasPackageJson(): Promise<boolean> {
+export async function hasPackageJson(): Promise<Boolean> {
 	let folders = workspace.workspaceFolders;
 	if (!folders) {
 		return false;
@@ -344,8 +344,8 @@ export async function hasPackageJson(): Promise<boolean> {
 	return false;
 }
 
-async function exists(file: string): Promise<boolean> {
-	return new Promise<boolean>((resolve, _reject) => {
+async function exists(file: string): Promise<Boolean> {
+	return new Promise<Boolean>((resolve, _reject) => {
 		fs.exists(file, (value) => {
 			resolve(value);
 		});
@@ -372,13 +372,13 @@ export async function runScript(script: string, document: TextDocument) {
 	}
 }
 
-export async function startDebugging(scriptName: string, cwd: string, folder: WorkspaceFolder) {
-	const config: DebugConfiguration = {
+export async function startDeBugging(scriptName: string, cwd: string, folder: WorkspaceFolder) {
+	const config: DeBugConfiguration = {
 		type: 'pwa-node',
 		request: 'launch',
-		name: `Debug ${scriptName}`,
+		name: `DeBug ${scriptName}`,
 		cwd,
-		runtimeExecutable: await getPackageManager(folder),
+		runtimeExecutaBle: await getPackageManager(folder),
 		runtimeArgs: [
 			'run',
 			scriptName,
@@ -386,28 +386,28 @@ export async function startDebugging(scriptName: string, cwd: string, folder: Wo
 	};
 
 	if (folder) {
-		debug.startDebugging(folder, config);
+		deBug.startDeBugging(folder, config);
 	}
 }
 
 
 export type StringMap = { [s: string]: string; };
 
-async function findAllScripts(buffer: string): Promise<StringMap> {
+async function findAllScripts(Buffer: string): Promise<StringMap> {
 	let scripts: StringMap = {};
 	let script: string | undefined = undefined;
 	let inScripts = false;
 
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: ParseErrorCode, _offset: numBer, _length: numBer) {
 			console.log(_error);
 		},
-		onObjectEnd() {
+		onOBjectEnd() {
 			if (inScripts) {
 				inScripts = false;
 			}
 		},
-		onLiteralValue(value: any, _offset: number, _length: number) {
+		onLiteralValue(value: any, _offset: numBer, _length: numBer) {
 			if (script) {
 				if (typeof value === 'string') {
 					scripts[script] = value;
@@ -415,44 +415,44 @@ async function findAllScripts(buffer: string): Promise<StringMap> {
 				script = undefined;
 			}
 		},
-		onObjectProperty(property: string, _offset: number, _length: number) {
+		onOBjectProperty(property: string, _offset: numBer, _length: numBer) {
 			if (property === 'scripts') {
 				inScripts = true;
 			}
 			else if (inScripts && !script) {
 				script = property;
-			} else { // nested object which is invalid, ignore the script
+			} else { // nested oBject which is invalid, ignore the script
 				script = undefined;
 			}
 		}
 	};
-	visit(buffer, visitor);
+	visit(Buffer, visitor);
 	return scripts;
 }
 
-export function findAllScriptRanges(buffer: string): Map<string, [number, number, string]> {
-	let scripts: Map<string, [number, number, string]> = new Map();
+export function findAllScriptRanges(Buffer: string): Map<string, [numBer, numBer, string]> {
+	let scripts: Map<string, [numBer, numBer, string]> = new Map();
 	let script: string | undefined = undefined;
-	let offset: number;
-	let length: number;
+	let offset: numBer;
+	let length: numBer;
 
 	let inScripts = false;
 
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: ParseErrorCode, _offset: numBer, _length: numBer) {
 		},
-		onObjectEnd() {
+		onOBjectEnd() {
 			if (inScripts) {
 				inScripts = false;
 			}
 		},
-		onLiteralValue(value: any, _offset: number, _length: number) {
+		onLiteralValue(value: any, _offset: numBer, _length: numBer) {
 			if (script) {
 				scripts.set(script, [offset, length, value]);
 				script = undefined;
 			}
 		},
-		onObjectProperty(property: string, off: number, len: number) {
+		onOBjectProperty(property: string, off: numBer, len: numBer) {
 			if (property === 'scripts') {
 				inScripts = true;
 			}
@@ -463,25 +463,25 @@ export function findAllScriptRanges(buffer: string): Map<string, [number, number
 			}
 		}
 	};
-	visit(buffer, visitor);
+	visit(Buffer, visitor);
 	return scripts;
 }
 
-export function findScriptAtPosition(buffer: string, offset: number): string | undefined {
+export function findScriptAtPosition(Buffer: string, offset: numBer): string | undefined {
 	let script: string | undefined = undefined;
 	let foundScript: string | undefined = undefined;
 	let inScripts = false;
-	let scriptStart: number | undefined;
+	let scriptStart: numBer | undefined;
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: ParseErrorCode, _offset: numBer, _length: numBer) {
 		},
-		onObjectEnd() {
+		onOBjectEnd() {
 			if (inScripts) {
 				inScripts = false;
 				scriptStart = undefined;
 			}
 		},
-		onLiteralValue(value: any, nodeOffset: number, nodeLength: number) {
+		onLiteralValue(value: any, nodeOffset: numBer, nodeLength: numBer) {
 			if (inScripts && scriptStart) {
 				if (typeof value === 'string' && offset >= scriptStart && offset < nodeOffset + nodeLength) {
 					// found the script
@@ -492,19 +492,19 @@ export function findScriptAtPosition(buffer: string, offset: number): string | u
 				}
 			}
 		},
-		onObjectProperty(property: string, nodeOffset: number) {
+		onOBjectProperty(property: string, nodeOffset: numBer) {
 			if (property === 'scripts') {
 				inScripts = true;
 			}
 			else if (inScripts) {
 				scriptStart = nodeOffset;
 				script = property;
-			} else { // nested object which is invalid, ignore the script
+			} else { // nested oBject which is invalid, ignore the script
 				script = undefined;
 			}
 		}
 	};
-	visit(buffer, visitor);
+	visit(Buffer, visitor);
 	return foundScript;
 }
 

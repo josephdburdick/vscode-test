@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createConnection, BrowserMessageReader, BrowserMessageWriter } from 'vscode-languageserver/browser';
+import { createConnection, BrowserMessageReader, BrowserMessageWriter } from 'vscode-languageserver/Browser';
 import { startServer } from '../jsonServer';
 
 declare let self: any;

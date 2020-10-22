@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { Emitter } from 'vs/Base/common/event';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
 import { ExtHostContext, MainContext, IExtHostContext, MainThreadDecorationsShape, ExtHostDecorationsShape, DecorationData, DecorationRequest } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDecorationsService, IDecorationData } from 'vs/workbench/services/decorations/browser/decorations';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { IDecorationsService, IDecorationData } from 'vs/workBench/services/decorations/Browser/decorations';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 class DecorationRequestsQueue {
 
 	private _idPool = 0;
-	private _requests = new Map<number, DecorationRequest>();
-	private _resolver = new Map<number, (data: DecorationData) => any>();
+	private _requests = new Map<numBer, DecorationRequest>();
+	private _resolver = new Map<numBer, (data: DecorationData) => any>();
 
 	private _timer: any;
 
 	constructor(
 		private readonly _proxy: ExtHostDecorationsShape,
-		private readonly _handle: number
+		private readonly _handle: numBer
 	) {
 		//
 	}
@@ -41,7 +41,7 @@ class DecorationRequestsQueue {
 	}
 
 	private _processQueue(): void {
-		if (typeof this._timer === 'number') {
+		if (typeof this._timer === 'numBer') {
 			// already queued
 			return;
 		}
@@ -66,7 +66,7 @@ class DecorationRequestsQueue {
 @extHostNamedCustomer(MainContext.MainThreadDecorations)
 export class MainThreadDecorations implements MainThreadDecorationsShape {
 
-	private readonly _provider = new Map<number, [Emitter<URI[]>, IDisposable]>();
+	private readonly _provider = new Map<numBer, [Emitter<URI[]>, IDisposaBle]>();
 	private readonly _proxy: ExtHostDecorationsShape;
 
 	constructor(
@@ -81,21 +81,21 @@ export class MainThreadDecorations implements MainThreadDecorationsShape {
 		this._provider.clear();
 	}
 
-	$registerDecorationProvider(handle: number, label: string): void {
+	$registerDecorationProvider(handle: numBer, laBel: string): void {
 		const emitter = new Emitter<URI[]>();
 		const queue = new DecorationRequestsQueue(this._proxy, handle);
 		const registration = this._decorationsService.registerDecorationsProvider({
-			label,
+			laBel,
 			onDidChange: emitter.event,
 			provideDecorations: async (uri, token) => {
 				const data = await queue.enqueue(uri, token);
 				if (!data) {
 					return undefined;
 				}
-				const [bubble, tooltip, letter, themeColor] = data;
+				const [BuBBle, tooltip, letter, themeColor] = data;
 				return <IDecorationData>{
 					weight: 10,
-					bubble: bubble ?? false,
+					BuBBle: BuBBle ?? false,
 					color: themeColor?.id,
 					tooltip,
 					letter
@@ -105,7 +105,7 @@ export class MainThreadDecorations implements MainThreadDecorationsShape {
 		this._provider.set(handle, [emitter, registration]);
 	}
 
-	$onDidChange(handle: number, resources: UriComponents[]): void {
+	$onDidChange(handle: numBer, resources: UriComponents[]): void {
 		const provider = this._provider.get(handle);
 		if (provider) {
 			const [emitter] = provider;
@@ -113,7 +113,7 @@ export class MainThreadDecorations implements MainThreadDecorationsShape {
 		}
 	}
 
-	$unregisterDecorationProvider(handle: number): void {
+	$unregisterDecorationProvider(handle: numBer): void {
 		const provider = this._provider.get(handle);
 		if (provider) {
 			dispose(provider);

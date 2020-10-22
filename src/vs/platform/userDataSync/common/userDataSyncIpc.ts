@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IServerChannel, IChannel, IPCServer } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IServerChannel, IChannel, IPCServer } from 'vs/Base/parts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IUserDataSyncService, IUserDataSyncUtilService, IUserDataAutoSyncService, IManualSyncTask, IUserDataManifest, IUserDataSyncStoreManagementService, SyncStatus } from 'vs/platform/userDataSync/common/userDataSync';
-import { URI } from 'vs/base/common/uri';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
+import { URI } from 'vs/Base/common/uri';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { FormattingOptions } from 'vs/Base/common/jsonFormatter';
 import { IStorageKeysSyncRegistryService, IStorageKey } from 'vs/platform/userDataSync/common/storageKeys';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IUserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
 import { IUserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
@@ -147,7 +147,7 @@ export class UserDataSycnUtilServiceChannel implements IServerChannel {
 	call(context: any, command: string, args?: any): Promise<any> {
 		switch (command) {
 			case 'resolveDefaultIgnoredSettings': return this.service.resolveDefaultIgnoredSettings();
-			case 'resolveUserKeybindings': return this.service.resolveUserBindings(args[0]);
+			case 'resolveUserKeyBindings': return this.service.resolveUserBindings(args[0]);
 			case 'resolveFormattingOptions': return this.service.resolveFormattingOptions(URI.revive(args[0]));
 		}
 		throw new Error('Invalid call');
@@ -165,8 +165,8 @@ export class UserDataSyncUtilServiceClient implements IUserDataSyncUtilService {
 		return this.channel.call('resolveDefaultIgnoredSettings');
 	}
 
-	async resolveUserBindings(userbindings: string[]): Promise<IStringDictionary<string>> {
-		return this.channel.call('resolveUserKeybindings', [userbindings]);
+	async resolveUserBindings(userBindings: string[]): Promise<IStringDictionary<string>> {
+		return this.channel.call('resolveUserKeyBindings', [userBindings]);
 	}
 
 	async resolveFormattingOptions(file: URI): Promise<FormattingOptions> {
@@ -195,7 +195,7 @@ export class StorageKeysSyncRegistryChannel implements IServerChannel {
 	}
 }
 
-export class StorageKeysSyncRegistryChannelClient extends Disposable implements IStorageKeysSyncRegistryService {
+export class StorageKeysSyncRegistryChannelClient extends DisposaBle implements IStorageKeysSyncRegistryService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -240,7 +240,7 @@ export class UserDataSyncMachinesServiceChannel implements IServerChannel {
 			case 'addCurrentMachine': return this.service.addCurrentMachine();
 			case 'removeCurrentMachine': return this.service.removeCurrentMachine();
 			case 'renameMachine': return this.service.renameMachine(args[0], args[1]);
-			case 'setEnablement': return this.service.setEnablement(args[0], args[1]);
+			case 'setEnaBlement': return this.service.setEnaBlement(args[0], args[1]);
 		}
 		throw new Error('Invalid call');
 	}

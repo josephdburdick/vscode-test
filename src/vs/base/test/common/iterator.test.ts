@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Iterable } from 'vs/base/common/iterator';
+import { IteraBle } from 'vs/Base/common/iterator';
 
-suite('Iterable', function () {
+suite('IteraBle', function () {
 
-	const customIterable = new class {
+	const customIteraBle = new class {
 
-		*[Symbol.iterator]() {
+		*[SymBol.iterator]() {
 			yield 'one';
 			yield 'two';
 			yield 'three';
@@ -19,10 +19,10 @@ suite('Iterable', function () {
 
 	test('first', function () {
 
-		assert.equal(Iterable.first([]), undefined);
-		assert.equal(Iterable.first([1]), 1);
-		assert.equal(Iterable.first(customIterable), 'one');
-		assert.equal(Iterable.first(customIterable), 'one'); // fresh
+		assert.equal(IteraBle.first([]), undefined);
+		assert.equal(IteraBle.first([1]), 1);
+		assert.equal(IteraBle.first(customIteraBle), 'one');
+		assert.equal(IteraBle.first(customIteraBle), 'one'); // fresh
 	});
 
 });

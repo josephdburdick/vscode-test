@@ -5,10 +5,10 @@
 
 import * as assert from 'assert';
 import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
+import * as path from 'vs/Base/common/path';
+import { getRandomTestPath } from 'vs/Base/test/node/testUtils';
 import { FileStorage } from 'vs/platform/state/node/stateService';
-import { mkdirp, rimraf, RimRafMode, writeFileSync } from 'vs/base/node/pfs';
+import { mkdirp, rimraf, RimRafMode, writeFileSync } from 'vs/Base/node/pfs';
 
 suite('StateService', () => {
 	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'stateservice');

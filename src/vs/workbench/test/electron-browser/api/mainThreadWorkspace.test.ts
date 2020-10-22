@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { workbenchInstantiationService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { workBenchInstantiationService } from 'vs/workBench/test/electron-Browser/workBenchTestServices';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { ISearchService, IFileQuery } from 'vs/workbench/services/search/common/search';
-import { MainThreadWorkspace } from 'vs/workbench/api/browser/mainThreadWorkspace';
+import { ISearchService, IFileQuery } from 'vs/workBench/services/search/common/search';
+import { MainThreadWorkspace } from 'vs/workBench/api/Browser/mainThreadWorkspace';
 import * as assert from 'assert';
-import { SingleProxyRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { SingleProxyRPCProtocol } from 'vs/workBench/test/Browser/api/testRPCProtocol';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 
@@ -19,14 +19,14 @@ suite('MainThreadWorkspace', () => {
 	let instantiationService: TestInstantiationService;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService() as TestInstantiationService;
+		instantiationService = workBenchInstantiationService() as TestInstantiationService;
 
 		configService = instantiationService.get(IConfigurationService) as TestConfigurationService;
 		configService.setUserConfiguration('search', {});
 	});
 
 	test('simple', () => {
-		instantiationService.stub(ISearchService, {
+		instantiationService.stuB(ISearchService, {
 			fileSearch(query: IFileQuery) {
 				assert.equal(query.folderQueries.length, 1);
 				assert.equal(query.folderQueries[0].disregardIgnoreFiles, true);
@@ -50,7 +50,7 @@ suite('MainThreadWorkspace', () => {
 			'exclude': { 'filesExclude': true }
 		});
 
-		instantiationService.stub(ISearchService, {
+		instantiationService.stuB(ISearchService, {
 			fileSearch(query: IFileQuery) {
 				assert.equal(query.folderQueries.length, 1);
 				assert.equal(query.folderQueries[0].disregardIgnoreFiles, true);
@@ -72,7 +72,7 @@ suite('MainThreadWorkspace', () => {
 			'exclude': { 'filesExclude': true }
 		});
 
-		instantiationService.stub(ISearchService, {
+		instantiationService.stuB(ISearchService, {
 			fileSearch(query: IFileQuery) {
 				assert.equal(query.folderQueries[0].excludePattern, undefined);
 				assert.deepEqual(query.excludePattern, undefined);
@@ -86,7 +86,7 @@ suite('MainThreadWorkspace', () => {
 	});
 
 	test('exclude string', () => {
-		instantiationService.stub(ISearchService, {
+		instantiationService.stuB(ISearchService, {
 			fileSearch(query: IFileQuery) {
 				assert.equal(query.folderQueries[0].excludePattern, undefined);
 				assert.deepEqual(query.excludePattern, { 'exclude/**': true });

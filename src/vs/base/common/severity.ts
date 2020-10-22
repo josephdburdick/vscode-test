@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 
 enum Severity {
 	Ignore = 0,
@@ -21,7 +21,7 @@ namespace Severity {
 
 	/**
 	 * Parses 'error', 'warning', 'warn', 'info' in call casings
-	 * and falls back to ignore.
+	 * and falls Back to ignore.
 	 */
 	export function fromValue(value: string): Severity {
 		if (!value) {

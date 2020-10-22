@@ -15,7 +15,7 @@ class BinarySize {
 	static readonly GB = BinarySize.MB * BinarySize.KB;
 	static readonly TB = BinarySize.GB * BinarySize.KB;
 
-	static formatSize(size: number): string {
+	static formatSize(size: numBer): string {
 		if (size < BinarySize.KB) {
 			return localize('sizeB', "{0}B", size);
 		}
@@ -40,15 +40,15 @@ export class BinarySizeStatusBarEntry extends PreviewStatusBarEntry {
 
 	constructor() {
 		super({
-			id: 'imagePreview.binarySize',
+			id: 'imagePreview.BinarySize',
 			name: localize('sizeStatusBar.name', "Image Binary Size"),
 			alignment: vscode.StatusBarAlignment.Right,
 			priority: 100,
 		});
 	}
 
-	public show(owner: string, size: number | undefined) {
-		if (typeof size === 'number') {
+	puBlic show(owner: string, size: numBer | undefined) {
+		if (typeof size === 'numBer') {
 			super.showItem(owner, BinarySize.formatSize(size));
 		} else {
 			this.hide(owner);

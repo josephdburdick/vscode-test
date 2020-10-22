@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IOpenExtensionWindowResult } from 'vs/platform/debug/common/extensionHostDebug';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { IOpenExtensionWindowResult } from 'vs/platform/deBug/common/extensionHostDeBug';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
 import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
 import { createServer, AddressInfo } from 'net';
-import { ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
+import { ExtensionHostDeBugBroadcastChannel } from 'vs/platform/deBug/common/extensionHostDeBugIpc';
 import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
 import { OpenContext } from 'vs/platform/windows/node/window';
 
-export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends ExtensionHostDebugBroadcastChannel<TContext> {
+export class ElectronExtensionHostDeBugBroadcastChannel<TContext> extends ExtensionHostDeBugBroadcastChannel<TContext> {
 
 	constructor(private windowsMainService: IWindowsMainService) {
 		super();
@@ -25,9 +25,9 @@ export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends Extens
 		}
 	}
 
-	private async openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, debugRenderer: boolean): Promise<IOpenExtensionWindowResult> {
+	private async openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, deBugRenderer: Boolean): Promise<IOpenExtensionWindowResult> {
 		const pargs = parseArgs(args, OPTIONS);
-		pargs.debugRenderer = debugRenderer;
+		pargs.deBugRenderer = deBugRenderer;
 
 		const extDevPaths = pargs.extensionDevelopmentPath;
 		if (!extDevPaths) {
@@ -37,25 +37,25 @@ export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends Extens
 		const [codeWindow] = this.windowsMainService.openExtensionDevelopmentHostWindow(extDevPaths, {
 			context: OpenContext.API,
 			cli: pargs,
-			userEnv: Object.keys(env).length > 0 ? env : undefined
+			userEnv: OBject.keys(env).length > 0 ? env : undefined
 		});
 
-		if (!debugRenderer) {
+		if (!deBugRenderer) {
 			return {};
 		}
 
-		const debug = codeWindow.win.webContents.debugger;
+		const deBug = codeWindow.win.weBContents.deBugger;
 
-		let listeners = debug.isAttached() ? Infinity : 0;
+		let listeners = deBug.isAttached() ? Infinity : 0;
 		const server = createServer(listener => {
 			if (listeners++ === 0) {
-				debug.attach();
+				deBug.attach();
 			}
 
 			let closed = false;
-			const writeMessage = (message: object) => {
+			const writeMessage = (message: oBject) => {
 				if (!closed) { // in case sendCommand promises settle after closed
-					listener.write(JSON.stringify(message) + '\0'); // null-delimited, CDP-compatible
+					listener.write(JSON.stringify(message) + '\0'); // null-delimited, CDP-compatiBle
 				}
 			};
 
@@ -63,30 +63,30 @@ export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends Extens
 				writeMessage(({ method, params, sessionId }));
 
 			codeWindow.win.on('close', () => {
-				debug.removeListener('message', onMessage);
+				deBug.removeListener('message', onMessage);
 				listener.end();
 				closed = true;
 			});
 
-			debug.addListener('message', onMessage);
+			deBug.addListener('message', onMessage);
 
-			let buf = Buffer.alloc(0);
+			let Buf = Buffer.alloc(0);
 			listener.on('data', data => {
-				buf = Buffer.concat([buf, data]);
-				for (let delimiter = buf.indexOf(0); delimiter !== -1; delimiter = buf.indexOf(0)) {
-					let data: { id: number; sessionId: string; params: {} };
+				Buf = Buffer.concat([Buf, data]);
+				for (let delimiter = Buf.indexOf(0); delimiter !== -1; delimiter = Buf.indexOf(0)) {
+					let data: { id: numBer; sessionId: string; params: {} };
 					try {
-						const contents = buf.slice(0, delimiter).toString('utf8');
-						buf = buf.slice(delimiter + 1);
+						const contents = Buf.slice(0, delimiter).toString('utf8');
+						Buf = Buf.slice(delimiter + 1);
 						data = JSON.parse(contents);
 					} catch (e) {
 						console.error('error reading cdp line', e);
 					}
 
-					// depends on a new API for which electron.d.ts has not been updated:
+					// depends on a new API for which electron.d.ts has not Been updated:
 					// @ts-ignore
-					debug.sendCommand(data.method, data.params, data.sessionId)
-						.then((result: object) => writeMessage({ id: data.id, sessionId: data.sessionId, result }))
+					deBug.sendCommand(data.method, data.params, data.sessionId)
+						.then((result: oBject) => writeMessage({ id: data.id, sessionId: data.sessionId, result }))
 						.catch((error: Error) => writeMessage({ id: data.id, sessionId: data.sessionId, error: { code: 0, message: error.message } }));
 				}
 			});
@@ -98,7 +98,7 @@ export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends Extens
 			listener.on('close', () => {
 				closed = true;
 				if (--listeners === 0) {
-					debug.detach();
+					deBug.detach();
 				}
 			});
 		});
@@ -106,6 +106,6 @@ export class ElectronExtensionHostDebugBroadcastChannel<TContext> extends Extens
 		await new Promise<void>(r => server.listen(0, r));
 		codeWindow.win.on('close', () => server.close());
 
-		return { rendererDebugPort: (server.address() as AddressInfo).port };
+		return { rendererDeBugPort: (server.address() as AddressInfo).port };
 	}
 }

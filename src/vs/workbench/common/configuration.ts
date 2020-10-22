@@ -6,9 +6,9 @@
 import { localize } from 'vs/nls';
 import { IConfigurationNode } from 'vs/platform/configuration/common/configurationRegistry';
 
-export const workbenchConfigurationNodeBase = Object.freeze<IConfigurationNode>({
-	'id': 'workbench',
+export const workBenchConfigurationNodeBase = OBject.freeze<IConfigurationNode>({
+	'id': 'workBench',
 	'order': 7,
-	'title': localize('workbenchConfigurationTitle', "Workbench"),
-	'type': 'object',
+	'title': localize('workBenchConfigurationTitle', "WorkBench"),
+	'type': 'oBject',
 });

@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
-import { Event } from 'vs/base/common/event';
+import { IAction, IActionViewItem } from 'vs/Base/common/actions';
+import { Event } from 'vs/Base/common/event';
 
 export interface IComposite {
 

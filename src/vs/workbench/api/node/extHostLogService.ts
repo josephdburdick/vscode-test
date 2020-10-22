@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ILogService, DelegatedLogService, LogLevel } from 'vs/platform/log/common/log';
-import { ExtHostLogServiceShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtensionHostLogFileName } from 'vs/workbench/services/extensions/common/extensions';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { Schemas } from 'vs/base/common/network';
+import { ExtHostLogServiceShape } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtensionHostLogFileName } from 'vs/workBench/services/extensions/common/extensions';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
+import { Schemas } from 'vs/Base/common/network';
 import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { dirname } from 'vs/base/common/resources';
+import { dirname } from 'vs/Base/common/resources';
 
 export class ExtHostLogService extends DelegatedLogService implements ILogService, ExtHostLogServiceShape {
 

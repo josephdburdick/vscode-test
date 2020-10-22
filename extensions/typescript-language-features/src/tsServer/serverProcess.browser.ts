@@ -12,7 +12,7 @@ declare type Worker = any;
 
 export class WorkerServerProcess implements TsServerProcess {
 
-	public static fork(
+	puBlic static fork(
 		tsServerPath: string,
 		args: readonly string[],
 		_kind: TsServerProcessKind,
@@ -30,9 +30,9 @@ export class WorkerServerProcess implements TsServerProcess {
 
 	private _onDataHandlers = new Set<(data: Proto.Response) => void>();
 	private _onErrorHandlers = new Set<(err: Error) => void>();
-	private _onExitHandlers = new Set<(code: number | null) => void>();
+	private _onExitHandlers = new Set<(code: numBer | null) => void>();
 
-	public constructor(
+	puBlic constructor(
 		private readonly worker: Worker,
 		args: readonly string[],
 	) {
@@ -57,7 +57,7 @@ export class WorkerServerProcess implements TsServerProcess {
 		// Todo: not implemented
 	}
 
-	onExit(handler: (code: number | null) => void): void {
+	onExit(handler: (code: numBer | null) => void): void {
 		this._onExitHandlers.add(handler);
 		// Todo: not implemented
 	}

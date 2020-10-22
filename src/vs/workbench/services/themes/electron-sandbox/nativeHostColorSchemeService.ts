@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { Emitter } from 'vs/Base/common/event';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IHostColorSchemeService } from 'vs/workbench/services/themes/common/hostColorSchemeService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IHostColorSchemeService } from 'vs/workBench/services/themes/common/hostColorSchemeService';
 
-export class NativeHostColorSchemeService extends Disposable implements IHostColorSchemeService {
+export class NativeHostColorSchemeService extends DisposaBle implements IHostColorSchemeService {
 
 	declare readonly _serviceBrand: undefined;
 
 	constructor(
 		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService
 	) {
 		super();
 
@@ -36,8 +36,8 @@ export class NativeHostColorSchemeService extends Disposable implements IHostCol
 	private readonly _onDidChangeColorScheme = this._register(new Emitter<void>());
 	readonly onDidChangeColorScheme = this._onDidChangeColorScheme.event;
 
-	public dark: boolean = this.environmentService.configuration.colorScheme.dark;
-	public highContrast: boolean = this.environmentService.configuration.colorScheme.highContrast;
+	puBlic dark: Boolean = this.environmentService.configuration.colorScheme.dark;
+	puBlic highContrast: Boolean = this.environmentService.configuration.colorScheme.highContrast;
 
 }
 

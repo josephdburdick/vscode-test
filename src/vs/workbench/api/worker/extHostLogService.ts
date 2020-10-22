@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, LogLevel, AbstractLogService } from 'vs/platform/log/common/log';
-import { ExtHostLogServiceShape, MainThreadLogShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { UriComponents } from 'vs/base/common/uri';
+import { ILogService, LogLevel, ABstractLogService } from 'vs/platform/log/common/log';
+import { ExtHostLogServiceShape, MainThreadLogShape, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { UriComponents } from 'vs/Base/common/uri';
 
-export class ExtHostLogService extends AbstractLogService implements ILogService, ExtHostLogServiceShape {
+export class ExtHostLogService extends ABstractLogService implements ILogService, ExtHostLogServiceShape {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -36,9 +36,9 @@ export class ExtHostLogService extends AbstractLogService implements ILogService
 		}
 	}
 
-	debug(_message: string, ..._args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
-			this._proxy.$log(this._logFile, LogLevel.Debug, Array.from(arguments));
+	deBug(_message: string, ..._args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
+			this._proxy.$log(this._logFile, LogLevel.DeBug, Array.from(arguments));
 		}
 	}
 

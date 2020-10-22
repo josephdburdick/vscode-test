@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 import { CharacterClassifier } from 'vs/editor/common/core/characterClassifier';
 
 export const enum WordCharacterClass {
@@ -22,13 +22,13 @@ export class WordCharacterClassifier extends CharacterClassifier<WordCharacterCl
 		}
 
 		this.set(CharCode.Space, WordCharacterClass.Whitespace);
-		this.set(CharCode.Tab, WordCharacterClass.Whitespace);
+		this.set(CharCode.TaB, WordCharacterClass.Whitespace);
 	}
 
 }
 
 function once<R>(computeFn: (input: string) => R): (input: string) => R {
-	let cache: { [key: string]: R; } = {}; // TODO@Alex unbounded cache
+	let cache: { [key: string]: R; } = {}; // TODO@Alex unBounded cache
 	return (input: string): R => {
 		if (!cache.hasOwnProperty(input)) {
 			cache[input] = computeFn(input);

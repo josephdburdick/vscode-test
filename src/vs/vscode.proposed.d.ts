@@ -5,30 +5,30 @@
 
 /**
  * This is the place for API experiments and proposals.
- * These API are NOT stable and subject to change. They are only available in the Insiders
- * distribution and CANNOT be used in published extensions.
+ * These API are NOT staBle and suBject to change. They are only availaBle in the Insiders
+ * distriBution and CANNOT Be used in puBlished extensions.
  *
  * To test these API in local environment:
  * - Use Insiders release of VS Code.
- * - Add `"enableProposedApi": true` to your package.json.
+ * - Add `"enaBleProposedApi": true` to your package.json.
  * - Copy this file to your project.
  */
 
 declare module 'vscode' {
 
-	// #region auth provider: https://github.com/microsoft/vscode/issues/88309
+	// #region auth provider: https://githuB.com/microsoft/vscode/issues/88309
 
 	/**
 	 * An [event](#Event) which fires when an [AuthenticationProvider](#AuthenticationProvider) is added or removed.
 	 */
 	export interface AuthenticationProvidersChangeEvent {
 		/**
-		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have been added.
+		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have Been added.
 		 */
 		readonly added: ReadonlyArray<AuthenticationProviderInformation>;
 
 		/**
-		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have been removed.
+		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have Been removed.
 		 */
 		readonly removed: ReadonlyArray<AuthenticationProviderInformation>;
 	}
@@ -38,43 +38,43 @@ declare module 'vscode' {
 	*/
 	export interface AuthenticationProviderAuthenticationSessionsChangeEvent {
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been added.
+		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have Been added.
 		*/
 		readonly added: ReadonlyArray<string>;
 
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been removed.
+		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have Been removed.
 		 */
 		readonly removed: ReadonlyArray<string>;
 
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been changed.
+		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have Been changed.
 		 */
 		readonly changed: ReadonlyArray<string>;
 	}
 
 	/**
-	 * **WARNING** When writing an AuthenticationProvider, `id` should be treated as part of your extension's
-	 * API, changing it is a breaking change for all extensions relying on the provider. The id is
+	 * **WARNING** When writing an AuthenticationProvider, `id` should Be treated as part of your extension's
+	 * API, changing it is a Breaking change for all extensions relying on the provider. The id is
 	 * treated case-sensitively.
 	 */
 	export interface AuthenticationProvider {
 		/**
 		 * Used as an identifier for extensions trying to work with a particular
-		 * provider: 'microsoft', 'github', etc. id must be unique, registering
+		 * provider: 'microsoft', 'githuB', etc. id must Be unique, registering
 		 * another provider with the same id will fail.
 		 */
 		readonly id: string;
 
 		/**
-		 * The human-readable name of the provider.
+		 * The human-readaBle name of the provider.
 		 */
-		readonly label: string;
+		readonly laBel: string;
 
 		/**
-		 * Whether it is possible to be signed into multiple accounts at once with this provider
+		 * Whether it is possiBle to Be signed into multiple accounts at once with this provider
 		*/
-		readonly supportsMultipleAccounts: boolean;
+		readonly supportsMultipleAccounts: Boolean;
 
 		/**
 		 * An [event](#Event) which fires when the array of sessions has changed, or data
@@ -85,31 +85,31 @@ declare module 'vscode' {
 		/**
 		 * Returns an array of current sessions.
 		 */
-		getSessions(): Thenable<ReadonlyArray<AuthenticationSession>>;
+		getSessions(): ThenaBle<ReadonlyArray<AuthenticationSession>>;
 
 		/**
 		 * Prompts a user to login.
 		 */
-		login(scopes: string[]): Thenable<AuthenticationSession>;
+		login(scopes: string[]): ThenaBle<AuthenticationSession>;
 
 		/**
 		 * Removes the session corresponding to session id.
 		 * @param sessionId The session id to log out of
 		 */
-		logout(sessionId: string): Thenable<void>;
+		logout(sessionId: string): ThenaBle<void>;
 	}
 
 	export namespace authentication {
 		/**
 		 * Register an authentication provider.
 		 *
-		 * There can only be one provider per id and an error is being thrown when an id
-		 * has already been used by another provider.
+		 * There can only Be one provider per id and an error is Being thrown when an id
+		 * has already Been used By another provider.
 		 *
 		 * @param provider The authentication provider provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @return A [disposaBle](#DisposaBle) that unregisters this provider when Being disposed.
 		 */
-		export function registerAuthenticationProvider(provider: AuthenticationProvider): Disposable;
+		export function registerAuthenticationProvider(provider: AuthenticationProvider): DisposaBle;
 
 		/**
 		 * @deprecated - getSession should now trigger extension activation.
@@ -122,7 +122,7 @@ declare module 'vscode' {
 		 * The ids of the currently registered authentication providers.
 		 * @returns An array of the ids of authentication providers that are currently registered.
 		 */
-		export function getProviderIds(): Thenable<ReadonlyArray<string>>;
+		export function getProviderIds(): ThenaBle<ReadonlyArray<string>>;
 
 		/**
 		 * @deprecated
@@ -142,27 +142,27 @@ declare module 'vscode' {
 		* @param sessionId The session id to remove
 		* provider
 		*/
-		export function logout(providerId: string, sessionId: string): Thenable<void>;
+		export function logout(providerId: string, sessionId: string): ThenaBle<void>;
 
 		/**
 		 * Retrieve a password that was stored with key. Returns undefined if there
 		 * is no password matching that key.
 		 * @param key The key the password was stored under.
 		 */
-		export function getPassword(key: string): Thenable<string | undefined>;
+		export function getPassword(key: string): ThenaBle<string | undefined>;
 
 		/**
 		 * Store a password under a given key.
 		 * @param key The key to store the password under
 		 * @param value The password
 		 */
-		export function setPassword(key: string, value: string): Thenable<void>;
+		export function setPassword(key: string, value: string): ThenaBle<void>;
 
 		/**
 		 * Remove a password from storage.
 		 * @param key The key the password was stored under.
 		 */
-		export function deletePassword(key: string): Thenable<void>;
+		export function deletePassword(key: string): ThenaBle<void>;
 
 		/**
 		 * Fires when a password is set or deleted.
@@ -175,14 +175,14 @@ declare module 'vscode' {
 	//#region @alexdima - resolvers
 
 	export interface RemoteAuthorityResolverContext {
-		resolveAttempt: number;
+		resolveAttempt: numBer;
 	}
 
 	export class ResolvedAuthority {
 		readonly host: string;
-		readonly port: number;
+		readonly port: numBer;
 
-		constructor(host: string, port: number);
+		constructor(host: string, port: numBer);
 	}
 
 	export interface ResolvedOptions {
@@ -190,16 +190,16 @@ declare module 'vscode' {
 	}
 
 	export interface TunnelOptions {
-		remoteAddress: { port: number, host: string; };
-		// The desired local port. If this port can't be used, then another will be chosen.
-		localAddressPort?: number;
-		label?: string;
+		remoteAddress: { port: numBer, host: string; };
+		// The desired local port. If this port can't Be used, then another will Be chosen.
+		localAddressPort?: numBer;
+		laBel?: string;
 	}
 
 	export interface TunnelDescription {
-		remoteAddress: { port: number, host: string; };
+		remoteAddress: { port: numBer, host: string; };
 		//The complete local address(ex. localhost:1234)
-		localAddress: { port: number, host: string; } | string;
+		localAddress: { port: numBer, host: string; } | string;
 	}
 
 	export interface Tunnel extends TunnelDescription {
@@ -210,12 +210,12 @@ declare module 'vscode' {
 
 	/**
 	 * Used as part of the ResolverResult if the extension has any candidate,
-	 * published, or forwarded ports.
+	 * puBlished, or forwarded ports.
 	 */
 	export interface TunnelInformation {
 		/**
-		 * Tunnels that are detected by the extension. The remotePort is used for display purposes.
-		 * The localAddress should be the complete local address (ex. localhost:1234) for connecting to the port. Tunnels provided through
+		 * Tunnels that are detected By the extension. The remotePort is used for display purposes.
+		 * The localAddress should Be the complete local address (ex. localhost:1234) for connecting to the port. Tunnels provided through
 		 * detected are read-only from the forwarded ports UI.
 		 */
 		environmentTunnels?: TunnelDescription[];
@@ -225,43 +225,43 @@ declare module 'vscode' {
 	export type ResolverResult = ResolvedAuthority & ResolvedOptions & TunnelInformation;
 
 	export class RemoteAuthorityResolverError extends Error {
-		static NotAvailable(message?: string, handled?: boolean): RemoteAuthorityResolverError;
-		static TemporarilyNotAvailable(message?: string): RemoteAuthorityResolverError;
+		static NotAvailaBle(message?: string, handled?: Boolean): RemoteAuthorityResolverError;
+		static TemporarilyNotAvailaBle(message?: string): RemoteAuthorityResolverError;
 
 		constructor(message?: string);
 	}
 
 	export interface RemoteAuthorityResolver {
-		resolve(authority: string, context: RemoteAuthorityResolverContext): ResolverResult | Thenable<ResolverResult>;
+		resolve(authority: string, context: RemoteAuthorityResolverContext): ResolverResult | ThenaBle<ResolverResult>;
 		/**
-		 * Can be optionally implemented if the extension can forward ports better than the core.
+		 * Can Be optionally implemented if the extension can forward ports Better than the core.
 		 * When not implemented, the core will use its default forwarding logic.
 		 * When implemented, the core will use this to forward ports.
 		 */
-		tunnelFactory?: (tunnelOptions: TunnelOptions) => Thenable<Tunnel> | undefined;
+		tunnelFactory?: (tunnelOptions: TunnelOptions) => ThenaBle<Tunnel> | undefined;
 
 		/**
 		 * Provides filtering for candidate ports.
 		 */
-		showCandidatePort?: (host: string, port: number, detail: string) => Thenable<boolean>;
+		showCandidatePort?: (host: string, port: numBer, detail: string) => ThenaBle<Boolean>;
 	}
 
 	export namespace workspace {
 		/**
-		 * Forwards a port. If the current resolver implements RemoteAuthorityResolver:forwardPort then that will be used to make the tunnel.
-		 * By default, openTunnel only support localhost; however, RemoteAuthorityResolver:tunnelFactory can be used to support other ips.
+		 * Forwards a port. If the current resolver implements RemoteAuthorityResolver:forwardPort then that will Be used to make the tunnel.
+		 * By default, openTunnel only support localhost; however, RemoteAuthorityResolver:tunnelFactory can Be used to support other ips.
 		 *
 		 * @throws When run in an environment without a remote.
 		 *
-		 * @param tunnelOptions The `localPort` is a suggestion only. If that port is not available another will be chosen.
+		 * @param tunnelOptions The `localPort` is a suggestion only. If that port is not availaBle another will Be chosen.
 		 */
-		export function openTunnel(tunnelOptions: TunnelOptions): Thenable<Tunnel>;
+		export function openTunnel(tunnelOptions: TunnelOptions): ThenaBle<Tunnel>;
 
 		/**
-		 * Gets an array of the currently available tunnels. This does not include environment tunnels, only tunnels that have been created by the user.
-		 * Note that these are of type TunnelDescription and cannot be disposed.
+		 * Gets an array of the currently availaBle tunnels. This does not include environment tunnels, only tunnels that have Been created By the user.
+		 * Note that these are of type TunnelDescription and cannot Be disposed.
 		 */
-		export let tunnels: Thenable<TunnelDescription[]>;
+		export let tunnels: ThenaBle<TunnelDescription[]>;
 
 		/**
 		 * Fired when the list of tunnels has changed.
@@ -269,60 +269,60 @@ declare module 'vscode' {
 		export const onDidChangeTunnels: Event<void>;
 	}
 
-	export interface ResourceLabelFormatter {
+	export interface ResourceLaBelFormatter {
 		scheme: string;
 		authority?: string;
-		formatting: ResourceLabelFormatting;
+		formatting: ResourceLaBelFormatting;
 	}
 
-	export interface ResourceLabelFormatting {
-		label: string; // myLabel:/${path}
+	export interface ResourceLaBelFormatting {
+		laBel: string; // myLaBel:/${path}
 		// For historic reasons we use an or string here. Once we finalize this API we should start using enums instead and adopt it in extensions.
-		// eslint-disable-next-line vscode-dts-literal-or-types
+		// eslint-disaBle-next-line vscode-dts-literal-or-types
 		separator: '/' | '\\' | '';
-		tildify?: boolean;
-		normalizeDriveLetter?: boolean;
+		tildify?: Boolean;
+		normalizeDriveLetter?: Boolean;
 		workspaceSuffix?: string;
 		authorityPrefix?: string;
-		stripPathStartingSeparator?: boolean;
+		stripPathStartingSeparator?: Boolean;
 	}
 
 	export namespace workspace {
-		export function registerRemoteAuthorityResolver(authorityPrefix: string, resolver: RemoteAuthorityResolver): Disposable;
-		export function registerResourceLabelFormatter(formatter: ResourceLabelFormatter): Disposable;
+		export function registerRemoteAuthorityResolver(authorityPrefix: string, resolver: RemoteAuthorityResolver): DisposaBle;
+		export function registerResourceLaBelFormatter(formatter: ResourceLaBelFormatter): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region editor insets: https://github.com/microsoft/vscode/issues/85682
+	//#region editor insets: https://githuB.com/microsoft/vscode/issues/85682
 
-	export interface WebviewEditorInset {
+	export interface WeBviewEditorInset {
 		readonly editor: TextEditor;
-		readonly line: number;
-		readonly height: number;
-		readonly webview: Webview;
+		readonly line: numBer;
+		readonly height: numBer;
+		readonly weBview: WeBview;
 		readonly onDidDispose: Event<void>;
 		dispose(): void;
 	}
 
 	export namespace window {
-		export function createWebviewTextEditorInset(editor: TextEditor, line: number, height: number, options?: WebviewOptions): WebviewEditorInset;
+		export function createWeBviewTextEditorInset(editor: TextEditor, line: numBer, height: numBer, options?: WeBviewOptions): WeBviewEditorInset;
 	}
 
 	//#endregion
 
-	//#region read/write in chunks: https://github.com/microsoft/vscode/issues/84515
+	//#region read/write in chunks: https://githuB.com/microsoft/vscode/issues/84515
 
 	export interface FileSystemProvider {
-		open?(resource: Uri, options: { create: boolean; }): number | Thenable<number>;
-		close?(fd: number): void | Thenable<void>;
-		read?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): number | Thenable<number>;
-		write?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): number | Thenable<number>;
+		open?(resource: Uri, options: { create: Boolean; }): numBer | ThenaBle<numBer>;
+		close?(fd: numBer): void | ThenaBle<void>;
+		read?(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): numBer | ThenaBle<numBer>;
+		write?(fd: numBer, pos: numBer, data: Uint8Array, offset: numBer, length: numBer): numBer | ThenaBle<numBer>;
 	}
 
 	//#endregion
 
-	//#region TextSearchProvider: https://github.com/microsoft/vscode/issues/59921
+	//#region TextSearchProvider: https://githuB.com/microsoft/vscode/issues/59921
 
 	/**
 	 * The parameters of a query for text search.
@@ -336,30 +336,30 @@ declare module 'vscode' {
 		/**
 		 * Whether or not `pattern` should match multiple lines of text.
 		 */
-		isMultiline?: boolean;
+		isMultiline?: Boolean;
 
 		/**
-		 * Whether or not `pattern` should be interpreted as a regular expression.
+		 * Whether or not `pattern` should Be interpreted as a regular expression.
 		 */
-		isRegExp?: boolean;
+		isRegExp?: Boolean;
 
 		/**
-		 * Whether or not the search should be case-sensitive.
+		 * Whether or not the search should Be case-sensitive.
 		 */
-		isCaseSensitive?: boolean;
+		isCaseSensitive?: Boolean;
 
 		/**
 		 * Whether or not to search for whole word matches only.
 		 */
-		isWordMatch?: boolean;
+		isWordMatch?: Boolean;
 	}
 
 	/**
-	 * A file glob pattern to match file paths against.
-	 * TODO@roblourens merge this with the GlobPattern docs/definition in vscode.d.ts.
-	 * @see [GlobPattern](#GlobPattern)
+	 * A file gloB pattern to match file paths against.
+	 * TODO@roBlourens merge this with the GloBPattern docs/definition in vscode.d.ts.
+	 * @see [GloBPattern](#GloBPattern)
 	 */
-	export type GlobString = string;
+	export type GloBString = string;
 
 	/**
 	 * Options common to file and text search
@@ -371,32 +371,32 @@ declare module 'vscode' {
 		folder: Uri;
 
 		/**
-		 * Files that match an `includes` glob pattern should be included in the search.
+		 * Files that match an `includes` gloB pattern should Be included in the search.
 		 */
-		includes: GlobString[];
+		includes: GloBString[];
 
 		/**
-		 * Files that match an `excludes` glob pattern should be excluded from the search.
+		 * Files that match an `excludes` gloB pattern should Be excluded from the search.
 		 */
-		excludes: GlobString[];
+		excludes: GloBString[];
 
 		/**
-		 * Whether external files that exclude files, like .gitignore, should be respected.
+		 * Whether external files that exclude files, like .gitignore, should Be respected.
 		 * See the vscode setting `"search.useIgnoreFiles"`.
 		 */
-		useIgnoreFiles: boolean;
+		useIgnoreFiles: Boolean;
 
 		/**
-		 * Whether symlinks should be followed while searching.
+		 * Whether symlinks should Be followed while searching.
 		 * See the vscode setting `"search.followSymlinks"`.
 		 */
-		followSymlinks: boolean;
+		followSymlinks: Boolean;
 
 		/**
-		 * Whether global files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+		 * Whether gloBal files that exclude files, like .gitignore, should Be respected.
+		 * See the vscode setting `"search.useGloBalIgnoreFiles"`.
 		 */
-		useGlobalIgnoreFiles: boolean;
+		useGloBalIgnoreFiles: Boolean;
 	}
 
 	/**
@@ -405,15 +405,15 @@ declare module 'vscode' {
 	 */
 	export interface TextSearchPreviewOptions {
 		/**
-		 * The maximum number of lines in the preview.
+		 * The maximum numBer of lines in the preview.
 		 * Only search providers that support multiline search will ever return more than one line in the match.
 		 */
-		matchLines: number;
+		matchLines: numBer;
 
 		/**
-		 * The maximum number of characters included per line.
+		 * The maximum numBer of characters included per line.
 		 */
-		charsPerLine: number;
+		charsPerLine: numBer;
 	}
 
 	/**
@@ -421,9 +421,9 @@ declare module 'vscode' {
 	 */
 	export interface TextSearchOptions extends SearchOptions {
 		/**
-		 * The maximum number of results to be returned.
+		 * The maximum numBer of results to Be returned.
 		 */
-		maxResults: number;
+		maxResults: numBer;
 
 		/**
 		 * Options to specify the size of the result text preview.
@@ -431,9 +431,9 @@ declare module 'vscode' {
 		previewOptions?: TextSearchPreviewOptions;
 
 		/**
-		 * Exclude files larger than `maxFileSize` in bytes.
+		 * Exclude files larger than `maxFileSize` in Bytes.
 		 */
-		maxFileSize?: number;
+		maxFileSize?: numBer;
 
 		/**
 		 * Interpret files using this encoding.
@@ -442,14 +442,14 @@ declare module 'vscode' {
 		encoding?: string;
 
 		/**
-		 * Number of lines of context to include before each match.
+		 * NumBer of lines of context to include Before each match.
 		 */
-		beforeContext?: number;
+		BeforeContext?: numBer;
 
 		/**
-		 * Number of lines of context to include after each match.
+		 * NumBer of lines of context to include after each match.
 		 */
-		afterContext?: number;
+		afterContext?: numBer;
 	}
 
 	/**
@@ -457,13 +457,13 @@ declare module 'vscode' {
 	 */
 	export interface TextSearchComplete {
 		/**
-		 * Whether the search hit the limit on the maximum number of search results.
-		 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max number of results.
-		 * - If exactly that number of matches exist, this should be false.
-		 * - If `maxResults` matches are returned and more exist, this should be true.
-		 * - If search hits an internal limit which is less than `maxResults`, this should be true.
+		 * Whether the search hit the limit on the maximum numBer of search results.
+		 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max numBer of results.
+		 * - If exactly that numBer of matches exist, this should Be false.
+		 * - If `maxResults` matches are returned and more exist, this should Be true.
+		 * - If search hits an internal limit which is less than `maxResults`, this should Be true.
 		 */
-		limitHit?: boolean;
+		limitHit?: Boolean;
 	}
 
 	/**
@@ -477,7 +477,7 @@ declare module 'vscode' {
 
 		/**
 		 * The Range within `text` corresponding to the text of the match.
-		 * The number of matches must match the TextSearchMatch's range property.
+		 * The numBer of matches must match the TextSearchMatch's range property.
 		 */
 		matches: Range | Range[];
 	}
@@ -518,9 +518,9 @@ declare module 'vscode' {
 		text: string;
 
 		/**
-		 * The line number of this line of context.
+		 * The line numBer of this line of context.
 		 */
-		lineNumber: number;
+		lineNumBer: numBer;
 	}
 
 	export type TextSearchResult = TextSearchMatch | TextSearchContext;
@@ -533,7 +533,7 @@ declare module 'vscode' {
 		 * Provide results that match the given text pattern.
 		 * @param query The parameters for this query.
 		 * @param options A set of options to consider while searching.
-		 * @param progress A progress callback that must be invoked for all results.
+		 * @param progress A progress callBack that must Be invoked for all results.
 		 * @param token A cancellation token.
 		 */
 		provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: Progress<TextSearchResult>, token: CancellationToken): ProviderResult<TextSearchComplete>;
@@ -541,7 +541,7 @@ declare module 'vscode' {
 
 	//#endregion
 
-	//#region FileSearchProvider: https://github.com/microsoft/vscode/issues/73524
+	//#region FileSearchProvider: https://githuB.com/microsoft/vscode/issues/73524
 
 	/**
 	 * The parameters of a query for file search.
@@ -558,25 +558,25 @@ declare module 'vscode' {
 	 */
 	export interface FileSearchOptions extends SearchOptions {
 		/**
-		 * The maximum number of results to be returned.
+		 * The maximum numBer of results to Be returned.
 		 */
-		maxResults?: number;
+		maxResults?: numBer;
 
 		/**
-		 * A CancellationToken that represents the session for this search query. If the provider chooses to, this object can be used as the key for a cache,
-		 * and searches with the same session object can search the same cache. When the token is cancelled, the session is complete and the cache can be cleared.
+		 * A CancellationToken that represents the session for this search query. If the provider chooses to, this oBject can Be used as the key for a cache,
+		 * and searches with the same session oBject can search the same cache. When the token is cancelled, the session is complete and the cache can Be cleared.
 		 */
 		session?: CancellationToken;
 	}
 
 	/**
-	 * A FileSearchProvider provides search results for files in the given folder that match a query string. It can be invoked by quickopen or other extensions.
+	 * A FileSearchProvider provides search results for files in the given folder that match a query string. It can Be invoked By quickopen or other extensions.
 	 *
 	 * A FileSearchProvider is the more powerful of two ways to implement file search in VS Code. Use a FileSearchProvider if you wish to search within a folder for
 	 * all files that match the user's query.
 	 *
-	 * The FileSearchProvider will be invoked on every keypress in quickopen. When `workspace.findFiles` is called, it will be invoked with an empty query string,
-	 * and in that case, every file in the folder should be returned.
+	 * The FileSearchProvider will Be invoked on every keypress in quickopen. When `workspace.findFiles` is called, it will Be invoked with an empty query string,
+	 * and in that case, every file in the folder should Be returned.
 	 */
 	export interface FileSearchProvider {
 		/**
@@ -592,75 +592,75 @@ declare module 'vscode' {
 		/**
 		 * Register a search provider.
 		 *
-		 * Only one provider can be registered per scheme.
+		 * Only one provider can Be registered per scheme.
 		 *
-		 * @param scheme The provider will be invoked for workspace folders that have this file scheme.
+		 * @param scheme The provider will Be invoked for workspace folders that have this file scheme.
 		 * @param provider The provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @return A [disposaBle](#DisposaBle) that unregisters this provider when Being disposed.
 		 */
-		export function registerFileSearchProvider(scheme: string, provider: FileSearchProvider): Disposable;
+		export function registerFileSearchProvider(scheme: string, provider: FileSearchProvider): DisposaBle;
 
 		/**
 		 * Register a text search provider.
 		 *
-		 * Only one provider can be registered per scheme.
+		 * Only one provider can Be registered per scheme.
 		 *
-		 * @param scheme The provider will be invoked for workspace folders that have this file scheme.
+		 * @param scheme The provider will Be invoked for workspace folders that have this file scheme.
 		 * @param provider The provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @return A [disposaBle](#DisposaBle) that unregisters this provider when Being disposed.
 		 */
-		export function registerTextSearchProvider(scheme: string, provider: TextSearchProvider): Disposable;
+		export function registerTextSearchProvider(scheme: string, provider: TextSearchProvider): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region findTextInFiles: https://github.com/microsoft/vscode/issues/59924
+	//#region findTextInFiles: https://githuB.com/microsoft/vscode/issues/59924
 
 	/**
-	 * Options that can be set on a findTextInFiles search.
+	 * Options that can Be set on a findTextInFiles search.
 	 */
 	export interface FindTextInFilesOptions {
 		/**
-		 * A [glob pattern](#GlobPattern) that defines the files to search for. The glob pattern
-		 * will be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
+		 * A [gloB pattern](#GloBPattern) that defines the files to search for. The gloB pattern
+		 * will Be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
 		 * to restrict the search results to a [workspace folder](#WorkspaceFolder).
 		 */
-		include?: GlobPattern;
+		include?: GloBPattern;
 
 		/**
-		 * A [glob pattern](#GlobPattern) that defines files and folders to exclude. The glob pattern
-		 * will be matched against the file paths of resulting matches relative to their workspace. When `undefined`, default excludes will
+		 * A [gloB pattern](#GloBPattern) that defines files and folders to exclude. The gloB pattern
+		 * will Be matched against the file paths of resulting matches relative to their workspace. When `undefined`, default excludes will
 		 * apply.
 		 */
-		exclude?: GlobPattern;
+		exclude?: GloBPattern;
 
 		/**
 		 * Whether to use the default and user-configured excludes. Defaults to true.
 		 */
-		useDefaultExcludes?: boolean;
+		useDefaultExcludes?: Boolean;
 
 		/**
-		 * The maximum number of results to search for
+		 * The maximum numBer of results to search for
 		 */
-		maxResults?: number;
+		maxResults?: numBer;
 
 		/**
-		 * Whether external files that exclude files, like .gitignore, should be respected.
+		 * Whether external files that exclude files, like .gitignore, should Be respected.
 		 * See the vscode setting `"search.useIgnoreFiles"`.
 		 */
-		useIgnoreFiles?: boolean;
+		useIgnoreFiles?: Boolean;
 
 		/**
-		 * Whether global files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+		 * Whether gloBal files that exclude files, like .gitignore, should Be respected.
+		 * See the vscode setting `"search.useGloBalIgnoreFiles"`.
 		 */
-		useGlobalIgnoreFiles?: boolean;
+		useGloBalIgnoreFiles?: Boolean;
 
 		/**
-		 * Whether symlinks should be followed while searching.
+		 * Whether symlinks should Be followed while searching.
 		 * See the vscode setting `"search.followSymlinks"`.
 		 */
-		followSymlinks?: boolean;
+		followSymlinks?: Boolean;
 
 		/**
 		 * Interpret files using this encoding.
@@ -674,73 +674,73 @@ declare module 'vscode' {
 		previewOptions?: TextSearchPreviewOptions;
 
 		/**
-		 * Number of lines of context to include before each match.
+		 * NumBer of lines of context to include Before each match.
 		 */
-		beforeContext?: number;
+		BeforeContext?: numBer;
 
 		/**
-		 * Number of lines of context to include after each match.
+		 * NumBer of lines of context to include after each match.
 		 */
-		afterContext?: number;
+		afterContext?: numBer;
 	}
 
 	export namespace workspace {
 		/**
 		 * Search text in files across all [workspace folders](#workspace.workspaceFolders) in the workspace.
 		 * @param query The query parameters for the search - the search string, whether it's case-sensitive, or a regex, or matches whole words.
-		 * @param callback A callback, called for each result
-		 * @param token A token that can be used to signal cancellation to the underlying search engine.
-		 * @return A thenable that resolves when the search is complete.
+		 * @param callBack A callBack, called for each result
+		 * @param token A token that can Be used to signal cancellation to the underlying search engine.
+		 * @return A thenaBle that resolves when the search is complete.
 		 */
-		export function findTextInFiles(query: TextSearchQuery, callback: (result: TextSearchResult) => void, token?: CancellationToken): Thenable<TextSearchComplete>;
+		export function findTextInFiles(query: TextSearchQuery, callBack: (result: TextSearchResult) => void, token?: CancellationToken): ThenaBle<TextSearchComplete>;
 
 		/**
 		 * Search text in files across all [workspace folders](#workspace.workspaceFolders) in the workspace.
 		 * @param query The query parameters for the search - the search string, whether it's case-sensitive, or a regex, or matches whole words.
 		 * @param options An optional set of query options. Include and exclude patterns, maxResults, etc.
-		 * @param callback A callback, called for each result
-		 * @param token A token that can be used to signal cancellation to the underlying search engine.
-		 * @return A thenable that resolves when the search is complete.
+		 * @param callBack A callBack, called for each result
+		 * @param token A token that can Be used to signal cancellation to the underlying search engine.
+		 * @return A thenaBle that resolves when the search is complete.
 		 */
-		export function findTextInFiles(query: TextSearchQuery, options: FindTextInFilesOptions, callback: (result: TextSearchResult) => void, token?: CancellationToken): Thenable<TextSearchComplete>;
+		export function findTextInFiles(query: TextSearchQuery, options: FindTextInFilesOptions, callBack: (result: TextSearchResult) => void, token?: CancellationToken): ThenaBle<TextSearchComplete>;
 	}
 
 	//#endregion
 
-	//#region diff command: https://github.com/microsoft/vscode/issues/84899
+	//#region diff command: https://githuB.com/microsoft/vscode/issues/84899
 
 	/**
 	 * The contiguous set of modified lines in a diff.
 	 */
 	export interface LineChange {
-		readonly originalStartLineNumber: number;
-		readonly originalEndLineNumber: number;
-		readonly modifiedStartLineNumber: number;
-		readonly modifiedEndLineNumber: number;
+		readonly originalStartLineNumBer: numBer;
+		readonly originalEndLineNumBer: numBer;
+		readonly modifiedStartLineNumBer: numBer;
+		readonly modifiedEndLineNumBer: numBer;
 	}
 
 	export namespace commands {
 
 		/**
-		 * Registers a diff information command that can be invoked via a keyboard shortcut,
+		 * Registers a diff information command that can Be invoked via a keyBoard shortcut,
 		 * a menu item, an action, or directly.
 		 *
 		 * Diff information commands are different from ordinary [commands](#commands.registerCommand) as
 		 * they only execute when there is an active diff editor when the command is called, and the diff
-		 * information has been computed. Also, the command handler of an editor command has access to
+		 * information has Been computed. Also, the command handler of an editor command has access to
 		 * the diff information.
 		 *
 		 * @param command A unique identifier for the command.
-		 * @param callback A command handler function with access to the [diff information](#LineChange).
+		 * @param callBack A command handler function with access to the [diff information](#LineChange).
 		 * @param thisArg The `this` context used when invoking the handler function.
-		 * @return Disposable which unregisters this command on disposal.
+		 * @return DisposaBle which unregisters this command on disposal.
 		 */
-		export function registerDiffInformationCommand(command: string, callback: (diff: LineChange[], ...args: any[]) => any, thisArg?: any): Disposable;
+		export function registerDiffInformationCommand(command: string, callBack: (diff: LineChange[], ...args: any[]) => any, thisArg?: any): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region file-decorations: https://github.com/microsoft/vscode/issues/54938
+	//#region file-decorations: https://githuB.com/microsoft/vscode/issues/54938
 
 
 	export class FileDecoration {
@@ -748,10 +748,10 @@ declare module 'vscode' {
 		/**
 		 * A very short string that represents this decoration.
 		 */
-		badge?: string;
+		Badge?: string;
 
 		/**
-		 * A human-readable tooltip for this decoration.
+		 * A human-readaBle tooltip for this decoration.
 		 */
 		tooltip?: string;
 
@@ -761,23 +761,23 @@ declare module 'vscode' {
 		color?: ThemeColor;
 
 		/**
-		 * A flag expressing that this decoration should be
+		 * A flag expressing that this decoration should Be
 		 * propagated to its parents.
 		 */
-		propagate?: boolean;
+		propagate?: Boolean;
 
 		/**
 		 * Creates a new decoration.
 		 *
-		 * @param badge A letter that represents the decoration.
+		 * @param Badge A letter that represents the decoration.
 		 * @param tooltip The tooltip of the decoration.
 		 * @param color The color of the decoration.
 		 */
-		constructor(badge?: string, tooltip?: string, color?: ThemeColor);
+		constructor(Badge?: string, tooltip?: string, color?: ThemeColor);
 	}
 
 	/**
-	 * The decoration provider interfaces defines the contract between extensions and
+	 * The decoration provider interfaces defines the contract Between extensions and
 	 * file decorations.
 	 */
 	export interface FileDecorationProvider {
@@ -794,55 +794,55 @@ declare module 'vscode' {
 		 *
 		 * @param uri The uri of the file to provide a decoration for.
 		 * @param token A cancellation token.
-		 * @returns A decoration or a thenable that resolves to such.
+		 * @returns A decoration or a thenaBle that resolves to such.
 		 */
 		provideFileDecoration(uri: Uri, token: CancellationToken): ProviderResult<FileDecoration>;
 	}
 
 	export namespace window {
-		export function registerDecorationProvider(provider: FileDecorationProvider): Disposable;
+		export function registerDecorationProvider(provider: FileDecorationProvider): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region debug
+	//#region deBug
 
 	/**
-	 * A DebugProtocolVariableContainer is an opaque stand-in type for the intersection of the Scope and Variable types defined in the Debug Adapter Protocol.
-	 * See https://microsoft.github.io/debug-adapter-protocol/specification#Types_Scope and https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable.
+	 * A DeBugProtocolVariaBleContainer is an opaque stand-in type for the intersection of the Scope and VariaBle types defined in the DeBug Adapter Protocol.
+	 * See https://microsoft.githuB.io/deBug-adapter-protocol/specification#Types_Scope and https://microsoft.githuB.io/deBug-adapter-protocol/specification#Types_VariaBle.
 	 */
-	export interface DebugProtocolVariableContainer {
-		// Properties: the intersection of DAP's Scope and Variable types.
+	export interface DeBugProtocolVariaBleContainer {
+		// Properties: the intersection of DAP's Scope and VariaBle types.
 	}
 
 	/**
-	 * A DebugProtocolVariable is an opaque stand-in type for the Variable type defined in the Debug Adapter Protocol.
-	 * See https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable.
+	 * A DeBugProtocolVariaBle is an opaque stand-in type for the VariaBle type defined in the DeBug Adapter Protocol.
+	 * See https://microsoft.githuB.io/deBug-adapter-protocol/specification#Types_VariaBle.
 	 */
-	export interface DebugProtocolVariable {
-		// Properties: see details [here](https://microsoft.github.io/debug-adapter-protocol/specification#Base_Protocol_Variable).
+	export interface DeBugProtocolVariaBle {
+		// Properties: see details [here](https://microsoft.githuB.io/deBug-adapter-protocol/specification#Base_Protocol_VariaBle).
 	}
 
-	// deprecated debug API
+	// deprecated deBug API
 
-	export interface DebugConfigurationProvider {
+	export interface DeBugConfigurationProvider {
 		/**
-		 * Deprecated, use DebugAdapterDescriptorFactory.provideDebugAdapter instead.
-		 * @deprecated Use DebugAdapterDescriptorFactory.createDebugAdapterDescriptor instead
+		 * Deprecated, use DeBugAdapterDescriptorFactory.provideDeBugAdapter instead.
+		 * @deprecated Use DeBugAdapterDescriptorFactory.createDeBugAdapterDescriptor instead
 		 */
-		debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>;
+		deBugAdapterExecutaBle?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DeBugAdapterExecutaBle>;
 	}
 
 	//#endregion
 
-	//#region LogLevel: https://github.com/microsoft/vscode/issues/85992
+	//#region LogLevel: https://githuB.com/microsoft/vscode/issues/85992
 
 	/**
-	 * @deprecated DO NOT USE, will be removed
+	 * @deprecated DO NOT USE, will Be removed
 	 */
 	export enum LogLevel {
 		Trace = 1,
-		Debug = 2,
+		DeBug = 2,
 		Info = 3,
 		Warning = 4,
 		Error = 5,
@@ -852,12 +852,12 @@ declare module 'vscode' {
 
 	export namespace env {
 		/**
-		 * @deprecated DO NOT USE, will be removed
+		 * @deprecated DO NOT USE, will Be removed
 		 */
 		export const logLevel: LogLevel;
 
 		/**
-		 * @deprecated DO NOT USE, will be removed
+		 * @deprecated DO NOT USE, will Be removed
 		 */
 		export const onDidChangeLogLevel: Event<LogLevel>;
 	}
@@ -872,17 +872,17 @@ declare module 'vscode' {
 	export enum SourceControlInputBoxValidationType {
 
 		/**
-		 * Something not allowed by the rules of a language or other means.
+		 * Something not allowed By the rules of a language or other means.
 		 */
 		Error = 0,
 
 		/**
-		 * Something suspicious but allowed.
+		 * Something suspicious But allowed.
 		 */
 		Warning = 1,
 
 		/**
-		 * Something to inform about but not a problem.
+		 * Something to inform aBout But not a proBlem.
 		 */
 		Information = 2
 	}
@@ -901,15 +901,15 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * Represents the input box in the Source Control viewlet.
+	 * Represents the input Box in the Source Control viewlet.
 	 */
 	export interface SourceControlInputBox {
 
 		/**
-		 * A validation function for the input box. It's possible to change
-		 * the validation provider simply by setting this property to a different function.
+		 * A validation function for the input Box. It's possiBle to change
+		 * the validation provider simply By setting this property to a different function.
 		 */
-		validateInput?(value: string, cursorPosition: number): ProviderResult<SourceControlInputBoxValidation | undefined | null>;
+		validateInput?(value: string, cursorPosition: numBer): ProviderResult<SourceControlInputBoxValidation | undefined | null>;
 	}
 
 	//#endregion
@@ -921,17 +921,17 @@ declare module 'vscode' {
 		/**
 		 * Whether the source control is selected.
 		 */
-		readonly selected: boolean;
+		readonly selected: Boolean;
 
 		/**
 		 * An event signaling when the selection state changes.
 		 */
-		readonly onDidChangeSelection: Event<boolean>;
+		readonly onDidChangeSelection: Event<Boolean>;
 	}
 
 	//#endregion
 
-	//#region Terminal data write event https://github.com/microsoft/vscode/issues/78502
+	//#region Terminal data write event https://githuB.com/microsoft/vscode/issues/78502
 
 	export interface TerminalDataWriteEvent {
 		/**
@@ -939,7 +939,7 @@ declare module 'vscode' {
 		 */
 		readonly terminal: Terminal;
 		/**
-		 * The data being written.
+		 * The data Being written.
 		 */
 		readonly data: string;
 	}
@@ -955,7 +955,7 @@ declare module 'vscode' {
 
 	//#endregion
 
-	//#region Terminal dimensions property and change event https://github.com/microsoft/vscode/issues/55718
+	//#region Terminal dimensions property and change event https://githuB.com/microsoft/vscode/issues/55718
 
 	/**
 	 * An [event](#Event) which fires when a [Terminal](#Terminal)'s dimensions change.
@@ -980,7 +980,7 @@ declare module 'vscode' {
 
 	export interface Terminal {
 		/**
-		 * The current dimensions of the terminal. This will be `undefined` immediately after the
+		 * The current dimensions of the terminal. This will Be `undefined` immediately after the
 		 * terminal is created as the dimensions are not known until shortly after the terminal is
 		 * created.
 		 */
@@ -992,7 +992,7 @@ declare module 'vscode' {
 	//#region @jrieken -> exclusive document filters
 
 	export interface DocumentFilter {
-		exclusive?: boolean;
+		exclusive?: Boolean;
 	}
 
 	//#endregion
@@ -1000,56 +1000,56 @@ declare module 'vscode' {
 	//#region @alexdima - OnEnter enhancement
 	export interface OnEnterRule {
 		/**
-		 * This rule will only execute if the text above the this line matches this regular expression.
+		 * This rule will only execute if the text aBove the this line matches this regular expression.
 		 */
-		oneLineAboveText?: RegExp;
+		oneLineABoveText?: RegExp;
 	}
 	//#endregion
 
-	//#region Tree View: https://github.com/microsoft/vscode/issues/61313
+	//#region Tree View: https://githuB.com/microsoft/vscode/issues/61313
 	/**
-	 * Label describing the [Tree item](#TreeItem)
+	 * LaBel descriBing the [Tree item](#TreeItem)
 	 */
-	export interface TreeItemLabel {
+	export interface TreeItemLaBel {
 
 		/**
-		 * A human-readable string describing the [Tree item](#TreeItem).
+		 * A human-readaBle string descriBing the [Tree item](#TreeItem).
 		 */
-		label: string;
+		laBel: string;
 
 		/**
-		 * Ranges in the label to highlight. A range is defined as a tuple of two number where the
+		 * Ranges in the laBel to highlight. A range is defined as a tuple of two numBer where the
 		 * first is the inclusive start index and the second the exclusive end index
 		 */
-		highlights?: [number, number][];
+		highlights?: [numBer, numBer][];
 
 	}
 
-	// https://github.com/microsoft/vscode/issues/100741
+	// https://githuB.com/microsoft/vscode/issues/100741
 	export interface TreeDataProvider<T> {
-		resolveTreeItem?(element: T, item: TreeItem2): TreeItem2 | Thenable<TreeItem2>;
+		resolveTreeItem?(element: T, item: TreeItem2): TreeItem2 | ThenaBle<TreeItem2>;
 	}
 
 	export class TreeItem2 extends TreeItem {
 		/**
-		 * Label describing this item. When `falsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
+		 * LaBel descriBing this item. When `falsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
 		 */
-		label?: string | TreeItemLabel | /* for compilation */ any;
+		laBel?: string | TreeItemLaBel | /* for compilation */ any;
 
 		/**
-		 * Content to be shown when you hover over the tree item.
+		 * Content to Be shown when you hover over the tree item.
 		 */
 		tooltip?: string | MarkdownString | /* for compilation */ any;
 
 		/**
-		 * @param label Label describing this item
-		 * @param collapsibleState [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item. Default is [TreeItemCollapsibleState.None](#TreeItemCollapsibleState.None)
+		 * @param laBel LaBel descriBing this item
+		 * @param collapsiBleState [TreeItemCollapsiBleState](#TreeItemCollapsiBleState) of the tree item. Default is [TreeItemCollapsiBleState.None](#TreeItemCollapsiBleState.None)
 		 */
-		constructor(label: TreeItemLabel, collapsibleState?: TreeItemCollapsibleState);
+		constructor(laBel: TreeItemLaBel, collapsiBleState?: TreeItemCollapsiBleState);
 	}
 	//#endregion
 
-	//#region Task presentation group: https://github.com/microsoft/vscode/issues/47265
+	//#region Task presentation group: https://githuB.com/microsoft/vscode/issues/47265
 	export interface TaskPresentationOptions {
 		/**
 		 * Controls whether the task is executed in a specific terminal group using split panes.
@@ -1058,73 +1058,73 @@ declare module 'vscode' {
 	}
 	//#endregion
 
-	//#region Status bar item with ID and Name: https://github.com/microsoft/vscode/issues/74972
+	//#region Status Bar item with ID and Name: https://githuB.com/microsoft/vscode/issues/74972
 
 	export namespace window {
 
 		/**
-		 * Options to configure the status bar item.
+		 * Options to configure the status Bar item.
 		 */
 		export interface StatusBarItemOptions {
 
 			/**
-			 * A unique identifier of the status bar item. The identifier
+			 * A unique identifier of the status Bar item. The identifier
 			 * is for example used to allow a user to show or hide the
-			 * status bar item in the UI.
+			 * status Bar item in the UI.
 			 */
 			id: string;
 
 			/**
-			 * A human readable name of the status bar item. The name is
-			 * for example used as a label in the UI to show or hide the
-			 * status bar item.
+			 * A human readaBle name of the status Bar item. The name is
+			 * for example used as a laBel in the UI to show or hide the
+			 * status Bar item.
 			 */
 			name: string;
 
 			/**
-			 * Accessibility information used when screen reader interacts with this status bar item.
+			 * AccessiBility information used when screen reader interacts with this status Bar item.
 			 */
-			accessibilityInformation?: AccessibilityInformation;
+			accessiBilityInformation?: AccessiBilityInformation;
 
 			/**
-			 * The alignment of the status bar item.
+			 * The alignment of the status Bar item.
 			 */
 			alignment?: StatusBarAlignment;
 
 			/**
-			 * The priority of the status bar item. Higher value means the item should
-			 * be shown more to the left.
+			 * The priority of the status Bar item. Higher value means the item should
+			 * Be shown more to the left.
 			 */
-			priority?: number;
+			priority?: numBer;
 		}
 
 		/**
-		 * Creates a status bar [item](#StatusBarItem).
+		 * Creates a status Bar [item](#StatusBarItem).
 		 *
 		 * @param options The options of the item. If not provided, some default values
-		 * will be assumed. For example, the `StatusBarItemOptions.id` will be the id
-		 * of the extension and the `StatusBarItemOptions.name` will be the extension name.
-		 * @return A new status bar item.
+		 * will Be assumed. For example, the `StatusBarItemOptions.id` will Be the id
+		 * of the extension and the `StatusBarItemOptions.name` will Be the extension name.
+		 * @return A new status Bar item.
 		 */
 		export function createStatusBarItem(options?: StatusBarItemOptions): StatusBarItem;
 	}
 
 	//#endregion
 
-	//#region OnTypeRename: https://github.com/microsoft/vscode/issues/88424
+	//#region OnTypeRename: https://githuB.com/microsoft/vscode/issues/88424
 
 	/**
-	 * The rename provider interface defines the contract between extensions and
+	 * The rename provider interface defines the contract Between extensions and
 	 * the live-rename feature.
 	 */
 	export interface OnTypeRenameProvider {
 		/**
-		 * Provide a list of ranges that can be live renamed together.
+		 * Provide a list of ranges that can Be live renamed together.
 		 *
 		 * @param document The document in which the command was invoked.
 		 * @param position The position at which the command was invoked.
 		 * @param token A cancellation token.
-		 * @return A list of ranges that can be live-renamed togehter. The ranges must have
+		 * @return A list of ranges that can Be live-renamed togehter. The ranges must have
 		 * identical length and contain identical text content. The ranges cannot overlap. Optional a word pattern
 		 * that overrides the word pattern defined when registering the provider. Live rename stops as soon as the renamed content
 		 * no longer matches the word pattern.
@@ -1136,21 +1136,21 @@ declare module 'vscode' {
 		/**
 		 * Register a rename provider that works on type.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
+		 * Multiple providers can Be registered for a language. In that case providers are sorted
+		 * By their [score](#languages.match) and the Best-matching provider is used. Failure
 		 * of the selected provider will cause a failure of the whole operation.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
+		 * @param selector A selector that defines the documents this provider is applicaBle to.
 		 * @param provider An on type rename provider.
 		 * @param wordPattern Word pattern for this provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @return A [disposaBle](#DisposaBle) that unregisters this provider when Being disposed.
 		 */
-		export function registerOnTypeRenameProvider(selector: DocumentSelector, provider: OnTypeRenameProvider, wordPattern?: RegExp): Disposable;
+		export function registerOnTypeRenameProvider(selector: DocumentSelector, provider: OnTypeRenameProvider, wordPattern?: RegExp): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region Custom editor move https://github.com/microsoft/vscode/issues/86146
+	//#region Custom editor move https://githuB.com/microsoft/vscode/issues/86146
 
 	// TODO: Also for custom editor
 
@@ -1159,32 +1159,32 @@ declare module 'vscode' {
 		/**
 		 * Handle when the underlying resource for a custom editor is renamed.
 		 *
-		 * This allows the webview for the editor be preserved throughout the rename. If this method is not implemented,
+		 * This allows the weBview for the editor Be preserved throughout the rename. If this method is not implemented,
 		 * VS Code will destory the previous custom editor and create a replacement one.
 		 *
 		 * @param newDocument New text document to use for the custom editor.
-		 * @param existingWebviewPanel Webview panel for the custom editor.
+		 * @param existingWeBviewPanel WeBview panel for the custom editor.
 		 * @param token A cancellation token that indicates the result is no longer needed.
 		 *
-		 * @return Thenable indicating that the webview editor has been moved.
+		 * @return ThenaBle indicating that the weBview editor has Been moved.
 		 */
-		moveCustomTextEditor?(newDocument: TextDocument, existingWebviewPanel: WebviewPanel, token: CancellationToken): Thenable<void>;
+		moveCustomTextEditor?(newDocument: TextDocument, existingWeBviewPanel: WeBviewPanel, token: CancellationToken): ThenaBle<void>;
 	}
 
 	//#endregion
 
-	//#region allow QuickPicks to skip sorting: https://github.com/microsoft/vscode/issues/73904
+	//#region allow QuickPicks to skip sorting: https://githuB.com/microsoft/vscode/issues/73904
 
 	export interface QuickPick<T extends QuickPickItem> extends QuickInput {
 		/**
-		 * An optional flag to sort the final results by index of first query match in label. Defaults to true.
+		 * An optional flag to sort the final results By index of first query match in laBel. Defaults to true.
 		 */
-		sortByLabel: boolean;
+		sortByLaBel: Boolean;
 	}
 
 	//#endregion
 
-	//#region @rebornix: Notebook
+	//#region @reBornix: NoteBook
 
 	export enum CellKind {
 		Markdown = 1,
@@ -1215,12 +1215,12 @@ declare module 'vscode' {
 		/**
 		 * Exception call stack
 		 */
-		traceback: string[];
+		traceBack: string[];
 	}
 
-	export interface NotebookCellOutputMetadata {
+	export interface NoteBookCellOutputMetadata {
 		/**
-		 * Additional attributes of a cell metadata.
+		 * Additional attriButes of a cell metadata.
 		 */
 		custom?: { [key: string]: any };
 	}
@@ -1239,271 +1239,271 @@ declare module 'vscode' {
 		 *          "<h1>Hello</h1>"
 		 *       ],
 		 *      "text/plain": [
-		 *        "<IPython.lib.display.IFrame at 0x11dee3e80>"
+		 *        "<IPython.liB.display.IFrame at 0x11dee3e80>"
 		 *      ]
 		 *   }
 		 * }
 		 */
 		data: { [key: string]: any; };
 
-		readonly metadata?: NotebookCellOutputMetadata;
+		readonly metadata?: NoteBookCellOutputMetadata;
 	}
 
 	export type CellOutput = CellStreamOutput | CellErrorOutput | CellDisplayOutput;
 
-	export class NotebookCellOutputItem {
+	export class NoteBookCellOutputItem {
 
 		readonly mime: string;
 		readonly value: unknown;
-		readonly metadata?: Record<string, string | number | boolean>;
+		readonly metadata?: Record<string, string | numBer | Boolean>;
 
-		constructor(mime: string, value: unknown, metadata?: Record<string, string | number | boolean>);
+		constructor(mime: string, value: unknown, metadata?: Record<string, string | numBer | Boolean>);
 	}
 
 	//TODO@jrieken add id?
-	export class NotebookCellOutput {
+	export class NoteBookCellOutput {
 
-		readonly outputs: NotebookCellOutputItem[];
-		readonly metadata?: Record<string, string | number | boolean>;
+		readonly outputs: NoteBookCellOutputItem[];
+		readonly metadata?: Record<string, string | numBer | Boolean>;
 
-		constructor(outputs: NotebookCellOutputItem[], metadata?: Record<string, string | number | boolean>);
+		constructor(outputs: NoteBookCellOutputItem[], metadata?: Record<string, string | numBer | Boolean>);
 
 		//TODO@jrieken HACK to workaround dependency issues...
 		toJSON(): any;
 	}
 
-	export enum NotebookCellRunState {
+	export enum NoteBookCellRunState {
 		Running = 1,
 		Idle = 2,
 		Success = 3,
 		Error = 4
 	}
 
-	export enum NotebookRunState {
+	export enum NoteBookRunState {
 		Running = 1,
 		Idle = 2
 	}
 
-	export interface NotebookCellMetadata {
+	export interface NoteBookCellMetadata {
 		/**
-		 * Controls whether a cell's editor is editable/readonly.
+		 * Controls whether a cell's editor is editaBle/readonly.
 		 */
-		editable?: boolean;
+		editaBle?: Boolean;
 
 		/**
-		 * Controls if the cell is executable.
+		 * Controls if the cell is executaBle.
 		 * This metadata is ignored for markdown cell.
 		 */
-		runnable?: boolean;
+		runnaBle?: Boolean;
 
 		/**
-		 * Controls if the cell has a margin to support the breakpoint UI.
+		 * Controls if the cell has a margin to support the Breakpoint UI.
 		 * This metadata is ignored for markdown cell.
 		 */
-		breakpointMargin?: boolean;
+		BreakpointMargin?: Boolean;
 
 		/**
-		 * Whether the [execution order](#NotebookCellMetadata.executionOrder) indicator will be displayed.
+		 * Whether the [execution order](#NoteBookCellMetadata.executionOrder) indicator will Be displayed.
 		 * Defaults to true.
 		 */
-		hasExecutionOrder?: boolean;
+		hasExecutionOrder?: Boolean;
 
 		/**
 		 * The order in which this cell was executed.
 		 */
-		executionOrder?: number;
+		executionOrder?: numBer;
 
 		/**
-		 * A status message to be shown in the cell's status bar
+		 * A status message to Be shown in the cell's status Bar
 		 */
 		statusMessage?: string;
 
 		/**
 		 * The cell's current run state
 		 */
-		runState?: NotebookCellRunState;
+		runState?: NoteBookCellRunState;
 
 		/**
 		 * If the cell is running, the time at which the cell started running
 		 */
-		runStartTime?: number;
+		runStartTime?: numBer;
 
 		/**
 		 * The total duration of the cell's last run
 		 */
-		lastRunDuration?: number;
+		lastRunDuration?: numBer;
 
 		/**
 		 * Whether a code cell's editor is collapsed
 		 */
-		inputCollapsed?: boolean;
+		inputCollapsed?: Boolean;
 
 		/**
 		 * Whether a code cell's outputs are collapsed
 		 */
-		outputCollapsed?: boolean;
+		outputCollapsed?: Boolean;
 
 		/**
-		 * Additional attributes of a cell metadata.
+		 * Additional attriButes of a cell metadata.
 		 */
 		custom?: { [key: string]: any };
 	}
 
-	export interface NotebookCell {
-		readonly index: number;
-		readonly notebook: NotebookDocument;
+	export interface NoteBookCell {
+		readonly index: numBer;
+		readonly noteBook: NoteBookDocument;
 		readonly uri: Uri;
 		readonly cellKind: CellKind;
 		readonly document: TextDocument;
 		readonly language: string;
 		outputs: CellOutput[];
-		metadata: NotebookCellMetadata;
+		metadata: NoteBookCellMetadata;
 	}
 
-	export interface NotebookDocumentMetadata {
+	export interface NoteBookDocumentMetadata {
 		/**
 		 * Controls if users can add or delete cells
 		 * Defaults to true
 		 */
-		editable?: boolean;
+		editaBle?: Boolean;
 
 		/**
-		 * Controls whether the full notebook can be run at once.
+		 * Controls whether the full noteBook can Be run at once.
 		 * Defaults to true
 		 */
-		runnable?: boolean;
+		runnaBle?: Boolean;
 
 		/**
-		 * Default value for [cell editable metadata](#NotebookCellMetadata.editable).
+		 * Default value for [cell editaBle metadata](#NoteBookCellMetadata.editaBle).
 		 * Defaults to true.
 		 */
-		cellEditable?: boolean;
+		cellEditaBle?: Boolean;
 
 		/**
-		 * Default value for [cell runnable metadata](#NotebookCellMetadata.runnable).
+		 * Default value for [cell runnaBle metadata](#NoteBookCellMetadata.runnaBle).
 		 * Defaults to true.
 		 */
-		cellRunnable?: boolean;
+		cellRunnaBle?: Boolean;
 
 		/**
-		 * Default value for [cell hasExecutionOrder metadata](#NotebookCellMetadata.hasExecutionOrder).
+		 * Default value for [cell hasExecutionOrder metadata](#NoteBookCellMetadata.hasExecutionOrder).
 		 * Defaults to true.
 		 */
-		cellHasExecutionOrder?: boolean;
+		cellHasExecutionOrder?: Boolean;
 
-		displayOrder?: GlobPattern[];
+		displayOrder?: GloBPattern[];
 
 		/**
-		 * Additional attributes of the document metadata.
+		 * Additional attriButes of the document metadata.
 		 */
 		custom?: { [key: string]: any };
 
 		/**
 		 * The document's current run state
 		 */
-		runState?: NotebookRunState;
+		runState?: NoteBookRunState;
 	}
 
-	export interface NotebookDocumentContentOptions {
+	export interface NoteBookDocumentContentOptions {
 		/**
-		 * Controls if outputs change will trigger notebook document content change and if it will be used in the diff editor
-		 * Default to false. If the content provider doesn't persisit the outputs in the file document, this should be set to true.
+		 * Controls if outputs change will trigger noteBook document content change and if it will Be used in the diff editor
+		 * Default to false. If the content provider doesn't persisit the outputs in the file document, this should Be set to true.
 		 */
-		transientOutputs: boolean;
+		transientOutputs: Boolean;
 
 		/**
-		 * Controls if a meetadata property change will trigger notebook document content change and if it will be used in the diff editor
-		 * Default to false. If the content provider doesn't persisit a metadata property in the file document, it should be set to true.
+		 * Controls if a meetadata property change will trigger noteBook document content change and if it will Be used in the diff editor
+		 * Default to false. If the content provider doesn't persisit a metadata property in the file document, it should Be set to true.
 		 */
-		transientMetadata: { [K in keyof NotebookCellMetadata]?: boolean };
+		transientMetadata: { [K in keyof NoteBookCellMetadata]?: Boolean };
 	}
 
-	export interface NotebookDocument {
+	export interface NoteBookDocument {
 		readonly uri: Uri;
-		readonly version: number;
+		readonly version: numBer;
 		readonly fileName: string;
 		readonly viewType: string;
-		readonly isDirty: boolean;
-		readonly isUntitled: boolean;
-		readonly cells: ReadonlyArray<NotebookCell>;
-		readonly contentOptions: NotebookDocumentContentOptions;
+		readonly isDirty: Boolean;
+		readonly isUntitled: Boolean;
+		readonly cells: ReadonlyArray<NoteBookCell>;
+		readonly contentOptions: NoteBookDocumentContentOptions;
 		languages: string[];
-		metadata: NotebookDocumentMetadata;
+		metadata: NoteBookDocumentMetadata;
 	}
 
-	export interface NotebookConcatTextDocument {
+	export interface NoteBookConcatTextDocument {
 		uri: Uri;
-		isClosed: boolean;
+		isClosed: Boolean;
 		dispose(): void;
 		onDidChange: Event<void>;
-		version: number;
+		version: numBer;
 		getText(): string;
 		getText(range: Range): string;
 
-		offsetAt(position: Position): number;
-		positionAt(offset: number): Position;
+		offsetAt(position: Position): numBer;
+		positionAt(offset: numBer): Position;
 		validateRange(range: Range): Range;
 		validatePosition(position: Position): Position;
 
 		locationAt(positionOrRange: Position | Range): Location;
 		positionAt(location: Location): Position;
-		contains(uri: Uri): boolean
+		contains(uri: Uri): Boolean
 	}
 
 	export interface WorkspaceEdit {
-		replaceNotebookMetadata(uri: Uri, value: NotebookDocumentMetadata): void;
-		replaceNotebookCells(uri: Uri, start: number, end: number, cells: NotebookCellData[], metadata?: WorkspaceEditEntryMetadata): void;
-		replaceNotebookCellOutput(uri: Uri, index: number, outputs: (NotebookCellOutput | CellOutput)[], metadata?: WorkspaceEditEntryMetadata): void;
-		replaceNotebookCellMetadata(uri: Uri, index: number, cellMetadata: NotebookCellMetadata, metadata?: WorkspaceEditEntryMetadata): void;
+		replaceNoteBookMetadata(uri: Uri, value: NoteBookDocumentMetadata): void;
+		replaceNoteBookCells(uri: Uri, start: numBer, end: numBer, cells: NoteBookCellData[], metadata?: WorkspaceEditEntryMetadata): void;
+		replaceNoteBookCellOutput(uri: Uri, index: numBer, outputs: (NoteBookCellOutput | CellOutput)[], metadata?: WorkspaceEditEntryMetadata): void;
+		replaceNoteBookCellMetadata(uri: Uri, index: numBer, cellMetadata: NoteBookCellMetadata, metadata?: WorkspaceEditEntryMetadata): void;
 	}
 
-	export interface NotebookEditorEdit {
-		replaceMetadata(value: NotebookDocumentMetadata): void;
-		replaceCells(start: number, end: number, cells: NotebookCellData[]): void;
-		replaceCellOutput(index: number, outputs: (NotebookCellOutput | CellOutput)[]): void;
-		replaceCellMetadata(index: number, metadata: NotebookCellMetadata): void;
+	export interface NoteBookEditorEdit {
+		replaceMetadata(value: NoteBookDocumentMetadata): void;
+		replaceCells(start: numBer, end: numBer, cells: NoteBookCellData[]): void;
+		replaceCellOutput(index: numBer, outputs: (NoteBookCellOutput | CellOutput)[]): void;
+		replaceCellMetadata(index: numBer, metadata: NoteBookCellMetadata): void;
 	}
 
-	export interface NotebookCellRange {
-		readonly start: number;
+	export interface NoteBookCellRange {
+		readonly start: numBer;
 		/**
 		 * exclusive
 		 */
-		readonly end: number;
+		readonly end: numBer;
 	}
 
-	export enum NotebookEditorRevealType {
+	export enum NoteBookEditorRevealType {
 		/**
-		 * The range will be revealed with as little scrolling as possible.
+		 * The range will Be revealed with as little scrolling as possiBle.
 		 */
 		Default = 0,
 		/**
-		 * The range will always be revealed in the center of the viewport.
+		 * The range will always Be revealed in the center of the viewport.
 		 */
 		InCenter = 1,
 		/**
-		 * If the range is outside the viewport, it will be revealed in the center of the viewport.
-		 * Otherwise, it will be revealed with as little scrolling as possible.
+		 * If the range is outside the viewport, it will Be revealed in the center of the viewport.
+		 * Otherwise, it will Be revealed with as little scrolling as possiBle.
 		 */
 		InCenterIfOutsideViewport = 2,
 	}
 
-	export interface NotebookEditor {
+	export interface NoteBookEditor {
 		/**
-		 * The document associated with this notebook editor.
+		 * The document associated with this noteBook editor.
 		 */
-		readonly document: NotebookDocument;
+		readonly document: NoteBookDocument;
 
 		/**
-		 * The primary selected cell on this notebook editor.
+		 * The primary selected cell on this noteBook editor.
 		 */
-		readonly selection?: NotebookCell;
+		readonly selection?: NoteBookCell;
 
 
 		/**
-		 * The current visible ranges in the editor (vertically).
+		 * The current visiBle ranges in the editor (vertically).
 		 */
-		readonly visibleRanges: NotebookCellRange[];
+		readonly visiBleRanges: NoteBookCellRange[];
 
 		/**
 		 * The column in which this editor shows.
@@ -1518,275 +1518,275 @@ declare module 'vscode' {
 		/**
 		 * Active kernel used in the editor
 		 */
-		readonly kernel?: NotebookKernel;
+		readonly kernel?: NoteBookKernel;
 
 		/**
-		 * Fired when the output hosting webview posts a message.
+		 * Fired when the output hosting weBview posts a message.
 		 */
 		readonly onDidReceiveMessage: Event<any>;
 		/**
-		 * Post a message to the output hosting webview.
+		 * Post a message to the output hosting weBview.
 		 *
 		 * Messages are only delivered if the editor is live.
 		 *
-		 * @param message Body of the message. This must be a string or other json serilizable object.
+		 * @param message Body of the message. This must Be a string or other json serilizaBle oBject.
 		 */
-		postMessage(message: any): Thenable<boolean>;
+		postMessage(message: any): ThenaBle<Boolean>;
 
 		/**
-		 * Convert a uri for the local file system to one that can be used inside outputs webview.
+		 * Convert a uri for the local file system to one that can Be used inside outputs weBview.
 		 */
-		asWebviewUri(localResource: Uri): Uri;
+		asWeBviewUri(localResource: Uri): Uri;
 
 		/**
-		 * Perform an edit on the notebook associated with this notebook editor.
+		 * Perform an edit on the noteBook associated with this noteBook editor.
 		 *
-		 * The given callback-function is invoked with an [edit-builder](#NotebookEditorEdit) which must
-		 * be used to make edits. Note that the edit-builder is only valid while the
-		 * callback executes.
+		 * The given callBack-function is invoked with an [edit-Builder](#NoteBookEditorEdit) which must
+		 * Be used to make edits. Note that the edit-Builder is only valid while the
+		 * callBack executes.
 		 *
-		 * @param callback A function which can create edits using an [edit-builder](#NotebookEditorEdit).
-		 * @return A promise that resolves with a value indicating if the edits could be applied.
+		 * @param callBack A function which can create edits using an [edit-Builder](#NoteBookEditorEdit).
+		 * @return A promise that resolves with a value indicating if the edits could Be applied.
 		 */
-		edit(callback: (editBuilder: NotebookEditorEdit) => void): Thenable<boolean>;
+		edit(callBack: (editBuilder: NoteBookEditorEdit) => void): ThenaBle<Boolean>;
 
-		setDecorations(decorationType: NotebookEditorDecorationType, range: NotebookCellRange): void;
+		setDecorations(decorationType: NoteBookEditorDecorationType, range: NoteBookCellRange): void;
 
-		revealRange(range: NotebookCellRange, revealType?: NotebookEditorRevealType): void;
+		revealRange(range: NoteBookCellRange, revealType?: NoteBookEditorRevealType): void;
 	}
 
-	export interface NotebookOutputSelector {
+	export interface NoteBookOutputSelector {
 		mimeTypes?: string[];
 	}
 
-	export interface NotebookRenderRequest {
+	export interface NoteBookRenderRequest {
 		output: CellDisplayOutput;
 		mimeType: string;
 		outputId: string;
 	}
 
-	export interface NotebookDocumentMetadataChangeEvent {
-		readonly document: NotebookDocument;
+	export interface NoteBookDocumentMetadataChangeEvent {
+		readonly document: NoteBookDocument;
 	}
 
-	export interface NotebookCellsChangeData {
-		readonly start: number;
-		readonly deletedCount: number;
-		readonly deletedItems: NotebookCell[];
-		readonly items: NotebookCell[];
+	export interface NoteBookCellsChangeData {
+		readonly start: numBer;
+		readonly deletedCount: numBer;
+		readonly deletedItems: NoteBookCell[];
+		readonly items: NoteBookCell[];
 	}
 
-	export interface NotebookCellsChangeEvent {
+	export interface NoteBookCellsChangeEvent {
 
 		/**
 		 * The affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly changes: ReadonlyArray<NotebookCellsChangeData>;
+		readonly document: NoteBookDocument;
+		readonly changes: ReadonlyArray<NoteBookCellsChangeData>;
 	}
 
-	export interface NotebookCellMoveEvent {
+	export interface NoteBookCellMoveEvent {
 
 		/**
 		 * The affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly index: number;
-		readonly newIndex: number;
+		readonly document: NoteBookDocument;
+		readonly index: numBer;
+		readonly newIndex: numBer;
 	}
 
-	export interface NotebookCellOutputsChangeEvent {
+	export interface NoteBookCellOutputsChangeEvent {
 
 		/**
 		 * The affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly cells: NotebookCell[];
+		readonly document: NoteBookDocument;
+		readonly cells: NoteBookCell[];
 	}
 
-	export interface NotebookCellLanguageChangeEvent {
+	export interface NoteBookCellLanguageChangeEvent {
 
 		/**
 		 * The affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly cell: NotebookCell;
+		readonly document: NoteBookDocument;
+		readonly cell: NoteBookCell;
 		readonly language: string;
 	}
 
-	export interface NotebookCellMetadataChangeEvent {
-		readonly document: NotebookDocument;
-		readonly cell: NotebookCell;
+	export interface NoteBookCellMetadataChangeEvent {
+		readonly document: NoteBookDocument;
+		readonly cell: NoteBookCell;
 	}
 
-	export interface NotebookEditorSelectionChangeEvent {
-		readonly notebookEditor: NotebookEditor;
-		readonly selection?: NotebookCell;
+	export interface NoteBookEditorSelectionChangeEvent {
+		readonly noteBookEditor: NoteBookEditor;
+		readonly selection?: NoteBookCell;
 	}
 
-	export interface NotebookEditorVisibleRangesChangeEvent {
-		readonly notebookEditor: NotebookEditor;
-		readonly visibleRanges: ReadonlyArray<NotebookCellRange>;
+	export interface NoteBookEditorVisiBleRangesChangeEvent {
+		readonly noteBookEditor: NoteBookEditor;
+		readonly visiBleRanges: ReadonlyArray<NoteBookCellRange>;
 	}
 
-	export interface NotebookCellData {
+	export interface NoteBookCellData {
 		readonly cellKind: CellKind;
 		readonly source: string;
 		readonly language: string;
 		readonly outputs: CellOutput[];
-		readonly metadata: NotebookCellMetadata | undefined;
+		readonly metadata: NoteBookCellMetadata | undefined;
 	}
 
-	export interface NotebookData {
-		readonly cells: NotebookCellData[];
+	export interface NoteBookData {
+		readonly cells: NoteBookCellData[];
 		readonly languages: string[];
-		readonly metadata: NotebookDocumentMetadata;
+		readonly metadata: NoteBookDocumentMetadata;
 	}
 
-	interface NotebookDocumentContentChangeEvent {
+	interface NoteBookDocumentContentChangeEvent {
 
 		/**
 		 * The document that the edit is for.
 		 */
-		readonly document: NotebookDocument;
+		readonly document: NoteBookDocument;
 	}
 
-	interface NotebookDocumentEditEvent {
+	interface NoteBookDocumentEditEvent {
 
 		/**
 		 * The document that the edit is for.
 		 */
-		readonly document: NotebookDocument;
+		readonly document: NoteBookDocument;
 
 		/**
 		 * Undo the edit operation.
 		 *
-		 * This is invoked by VS Code when the user undoes this edit. To implement `undo`, your
-		 * extension should restore the document and editor to the state they were in just before this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * This is invoked By VS Code when the user undoes this edit. To implement `undo`, your
+		 * extension should restore the document and editor to the state they were in just Before this
+		 * edit was added to VS Code's internal edit stack By `onDidChangeCustomDocument`.
 		 */
-		undo(): Thenable<void> | void;
+		undo(): ThenaBle<void> | void;
 
 		/**
 		 * Redo the edit operation.
 		 *
-		 * This is invoked by VS Code when the user redoes this edit. To implement `redo`, your
+		 * This is invoked By VS Code when the user redoes this edit. To implement `redo`, your
 		 * extension should restore the document and editor to the state they were in just after this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * edit was added to VS Code's internal edit stack By `onDidChangeCustomDocument`.
 		 */
-		redo(): Thenable<void> | void;
+		redo(): ThenaBle<void> | void;
 
 		/**
-		 * Display name describing the edit.
+		 * Display name descriBing the edit.
 		 *
-		 * This will be shown to users in the UI for undo/redo operations.
+		 * This will Be shown to users in the UI for undo/redo operations.
 		 */
-		readonly label?: string;
+		readonly laBel?: string;
 	}
 
-	interface NotebookDocumentBackup {
+	interface NoteBookDocumentBackup {
 		/**
-		 * Unique identifier for the backup.
+		 * Unique identifier for the Backup.
 		 *
-		 * This id is passed back to your extension in `openNotebook` when opening a notebook editor from a backup.
+		 * This id is passed Back to your extension in `openNoteBook` when opening a noteBook editor from a Backup.
 		 */
 		readonly id: string;
 
 		/**
-		 * Delete the current backup.
+		 * Delete the current Backup.
 		 *
-		 * This is called by VS Code when it is clear the current backup is no longer needed, such as when a new backup
+		 * This is called By VS Code when it is clear the current Backup is no longer needed, such as when a new Backup
 		 * is made or when the file is saved.
 		 */
 		delete(): void;
 	}
 
-	interface NotebookDocumentBackupContext {
+	interface NoteBookDocumentBackupContext {
 		readonly destination: Uri;
 	}
 
-	interface NotebookDocumentOpenContext {
-		readonly backupId?: string;
+	interface NoteBookDocumentOpenContext {
+		readonly BackupId?: string;
 	}
 
 	/**
-	 * Communication object passed to the {@link NotebookContentProvider} and
-	 * {@link NotebookOutputRenderer} to communicate with the webview.
+	 * Communication oBject passed to the {@link NoteBookContentProvider} and
+	 * {@link NoteBookOutputRenderer} to communicate with the weBview.
 	 */
-	export interface NotebookCommunication {
+	export interface NoteBookCommunication {
 		/**
-		 * ID of the editor this object communicates with. A single notebook
-		 * document can have multiple attached webviews and editors, when the
-		 * notebook is split for instance. The editor ID lets you differentiate
-		 * between them.
+		 * ID of the editor this oBject communicates with. A single noteBook
+		 * document can have multiple attached weBviews and editors, when the
+		 * noteBook is split for instance. The editor ID lets you differentiate
+		 * Between them.
 		 */
 		readonly editorId: string;
 
 		/**
-		 * Fired when the output hosting webview posts a message.
+		 * Fired when the output hosting weBview posts a message.
 		 */
 		readonly onDidReceiveMessage: Event<any>;
 		/**
-		 * Post a message to the output hosting webview.
+		 * Post a message to the output hosting weBview.
 		 *
 		 * Messages are only delivered if the editor is live.
 		 *
-		 * @param message Body of the message. This must be a string or other json serilizable object.
+		 * @param message Body of the message. This must Be a string or other json serilizaBle oBject.
 		 */
-		postMessage(message: any): Thenable<boolean>;
+		postMessage(message: any): ThenaBle<Boolean>;
 
 		/**
-		 * Convert a uri for the local file system to one that can be used inside outputs webview.
+		 * Convert a uri for the local file system to one that can Be used inside outputs weBview.
 		 */
-		asWebviewUri(localResource: Uri): Uri;
+		asWeBviewUri(localResource: Uri): Uri;
 	}
 
-	export interface NotebookContentProvider {
-		readonly options?: NotebookDocumentContentOptions;
-		readonly onDidChangeNotebookContentOptions?: Event<NotebookDocumentContentOptions>;
-		readonly onDidChangeNotebook: Event<NotebookDocumentContentChangeEvent | NotebookDocumentEditEvent>;
+	export interface NoteBookContentProvider {
+		readonly options?: NoteBookDocumentContentOptions;
+		readonly onDidChangeNoteBookContentOptions?: Event<NoteBookDocumentContentOptions>;
+		readonly onDidChangeNoteBook: Event<NoteBookDocumentContentChangeEvent | NoteBookDocumentEditEvent>;
 
 		/**
 		 * Content providers should always use [file system providers](#FileSystemProvider) to
 		 * resolve the raw content for `uri` as the resouce is not necessarily a file on disk.
 		 */
-		openNotebook(uri: Uri, openContext: NotebookDocumentOpenContext): NotebookData | Promise<NotebookData>;
-		resolveNotebook(document: NotebookDocument, webview: NotebookCommunication): Promise<void>;
-		saveNotebook(document: NotebookDocument, cancellation: CancellationToken): Promise<void>;
-		saveNotebookAs(targetResource: Uri, document: NotebookDocument, cancellation: CancellationToken): Promise<void>;
-		backupNotebook(document: NotebookDocument, context: NotebookDocumentBackupContext, cancellation: CancellationToken): Promise<NotebookDocumentBackup>;
+		openNoteBook(uri: Uri, openContext: NoteBookDocumentOpenContext): NoteBookData | Promise<NoteBookData>;
+		resolveNoteBook(document: NoteBookDocument, weBview: NoteBookCommunication): Promise<void>;
+		saveNoteBook(document: NoteBookDocument, cancellation: CancellationToken): Promise<void>;
+		saveNoteBookAs(targetResource: Uri, document: NoteBookDocument, cancellation: CancellationToken): Promise<void>;
+		BackupNoteBook(document: NoteBookDocument, context: NoteBookDocumentBackupContext, cancellation: CancellationToken): Promise<NoteBookDocumentBackup>;
 	}
 
-	export interface NotebookKernel {
+	export interface NoteBookKernel {
 		readonly id?: string;
-		label: string;
+		laBel: string;
 		description?: string;
 		detail?: string;
-		isPreferred?: boolean;
+		isPreferred?: Boolean;
 		preloads?: Uri[];
-		executeCell(document: NotebookDocument, cell: NotebookCell): void;
-		cancelCellExecution(document: NotebookDocument, cell: NotebookCell): void;
-		executeAllCells(document: NotebookDocument): void;
-		cancelAllCellsExecution(document: NotebookDocument): void;
+		executeCell(document: NoteBookDocument, cell: NoteBookCell): void;
+		cancelCellExecution(document: NoteBookDocument, cell: NoteBookCell): void;
+		executeAllCells(document: NoteBookDocument): void;
+		cancelAllCellsExecution(document: NoteBookDocument): void;
 	}
 
-	export type NotebookFilenamePattern = GlobPattern | { include: GlobPattern; exclude: GlobPattern };
+	export type NoteBookFilenamePattern = GloBPattern | { include: GloBPattern; exclude: GloBPattern };
 
-	export interface NotebookDocumentFilter {
+	export interface NoteBookDocumentFilter {
 		viewType?: string | string[];
-		filenamePattern?: NotebookFilenamePattern;
+		filenamePattern?: NoteBookFilenamePattern;
 	}
 
-	export interface NotebookKernelProvider<T extends NotebookKernel = NotebookKernel> {
-		onDidChangeKernels?: Event<NotebookDocument | undefined>;
-		provideKernels(document: NotebookDocument, token: CancellationToken): ProviderResult<T[]>;
-		resolveKernel?(kernel: T, document: NotebookDocument, webview: NotebookCommunication, token: CancellationToken): ProviderResult<void>;
+	export interface NoteBookKernelProvider<T extends NoteBookKernel = NoteBookKernel> {
+		onDidChangeKernels?: Event<NoteBookDocument | undefined>;
+		provideKernels(document: NoteBookDocument, token: CancellationToken): ProviderResult<T[]>;
+		resolveKernel?(kernel: T, document: NoteBookDocument, weBview: NoteBookCommunication, token: CancellationToken): ProviderResult<void>;
 	}
 
 	/**
-	 * Represents the alignment of status bar items.
+	 * Represents the alignment of status Bar items.
 	 */
-	export enum NotebookCellStatusBarAlignment {
+	export enum NoteBookCellStatusBarAlignment {
 
 		/**
 		 * Aligned to the left side.
@@ -1799,113 +1799,113 @@ declare module 'vscode' {
 		Right = 2
 	}
 
-	export interface NotebookCellStatusBarItem {
-		readonly cell: NotebookCell;
-		readonly alignment: NotebookCellStatusBarAlignment;
-		readonly priority?: number;
+	export interface NoteBookCellStatusBarItem {
+		readonly cell: NoteBookCell;
+		readonly alignment: NoteBookCellStatusBarAlignment;
+		readonly priority?: numBer;
 		text: string;
 		tooltip: string | undefined;
 		command: string | Command | undefined;
-		accessibilityInformation?: AccessibilityInformation;
+		accessiBilityInformation?: AccessiBilityInformation;
 		show(): void;
 		hide(): void;
 		dispose(): void;
 	}
 
-	export interface NotebookDecorationRenderOptions {
-		backgroundColor?: string | ThemeColor;
-		borderColor?: string | ThemeColor;
-		top: ThemableDecorationAttachmentRenderOptions;
+	export interface NoteBookDecorationRenderOptions {
+		BackgroundColor?: string | ThemeColor;
+		BorderColor?: string | ThemeColor;
+		top: ThemaBleDecorationAttachmentRenderOptions;
 	}
 
-	export interface NotebookEditorDecorationType {
+	export interface NoteBookEditorDecorationType {
 		readonly key: string;
 		dispose(): void;
 	}
 
 
-	export namespace notebook {
-		export function registerNotebookContentProvider(
-			notebookType: string,
-			provider: NotebookContentProvider,
-			options?: NotebookDocumentContentOptions & {
+	export namespace noteBook {
+		export function registerNoteBookContentProvider(
+			noteBookType: string,
+			provider: NoteBookContentProvider,
+			options?: NoteBookDocumentContentOptions & {
 				/**
 				 * Not ready for production or development use yet.
 				 */
 				viewOptions?: {
 					displayName: string;
-					filenamePattern: NotebookFilenamePattern[];
-					exclusive?: boolean;
+					filenamePattern: NoteBookFilenamePattern[];
+					exclusive?: Boolean;
 				};
 			}
-		): Disposable;
+		): DisposaBle;
 
-		export function registerNotebookKernelProvider(
-			selector: NotebookDocumentFilter,
-			provider: NotebookKernelProvider
-		): Disposable;
+		export function registerNoteBookKernelProvider(
+			selector: NoteBookDocumentFilter,
+			provider: NoteBookKernelProvider
+		): DisposaBle;
 
-		export function createNotebookEditorDecorationType(options: NotebookDecorationRenderOptions): NotebookEditorDecorationType;
-		export function openNotebookDocument(uri: Uri, viewType?: string): Promise<NotebookDocument>;
-		export const onDidOpenNotebookDocument: Event<NotebookDocument>;
-		export const onDidCloseNotebookDocument: Event<NotebookDocument>;
-		export const onDidSaveNotebookDocument: Event<NotebookDocument>;
+		export function createNoteBookEditorDecorationType(options: NoteBookDecorationRenderOptions): NoteBookEditorDecorationType;
+		export function openNoteBookDocument(uri: Uri, viewType?: string): Promise<NoteBookDocument>;
+		export const onDidOpenNoteBookDocument: Event<NoteBookDocument>;
+		export const onDidCloseNoteBookDocument: Event<NoteBookDocument>;
+		export const onDidSaveNoteBookDocument: Event<NoteBookDocument>;
 
 		/**
-		 * All currently known notebook documents.
+		 * All currently known noteBook documents.
 		 */
-		export const notebookDocuments: ReadonlyArray<NotebookDocument>;
-		export const onDidChangeNotebookDocumentMetadata: Event<NotebookDocumentMetadataChangeEvent>;
-		export const onDidChangeNotebookCells: Event<NotebookCellsChangeEvent>;
-		export const onDidChangeCellOutputs: Event<NotebookCellOutputsChangeEvent>;
-		export const onDidChangeCellLanguage: Event<NotebookCellLanguageChangeEvent>;
-		export const onDidChangeCellMetadata: Event<NotebookCellMetadataChangeEvent>;
+		export const noteBookDocuments: ReadonlyArray<NoteBookDocument>;
+		export const onDidChangeNoteBookDocumentMetadata: Event<NoteBookDocumentMetadataChangeEvent>;
+		export const onDidChangeNoteBookCells: Event<NoteBookCellsChangeEvent>;
+		export const onDidChangeCellOutputs: Event<NoteBookCellOutputsChangeEvent>;
+		export const onDidChangeCellLanguage: Event<NoteBookCellLanguageChangeEvent>;
+		export const onDidChangeCellMetadata: Event<NoteBookCellMetadataChangeEvent>;
 		/**
-		 * Create a document that is the concatenation of all  notebook cells. By default all code-cells are included
-		 * but a selector can be provided to narrow to down the set of cells.
+		 * Create a document that is the concatenation of all  noteBook cells. By default all code-cells are included
+		 * But a selector can Be provided to narrow to down the set of cells.
 		 *
-		 * @param notebook
+		 * @param noteBook
 		 * @param selector
 		 */
-		export function createConcatTextDocument(notebook: NotebookDocument, selector?: DocumentSelector): NotebookConcatTextDocument;
+		export function createConcatTextDocument(noteBook: NoteBookDocument, selector?: DocumentSelector): NoteBookConcatTextDocument;
 
-		export const onDidChangeActiveNotebookKernel: Event<{ document: NotebookDocument, kernel: NotebookKernel | undefined }>;
+		export const onDidChangeActiveNoteBookKernel: Event<{ document: NoteBookDocument, kernel: NoteBookKernel | undefined }>;
 
 		/**
-		 * Creates a notebook cell status bar [item](#NotebookCellStatusBarItem).
-		 * It will be disposed automatically when the notebook document is closed or the cell is deleted.
+		 * Creates a noteBook cell status Bar [item](#NoteBookCellStatusBarItem).
+		 * It will Be disposed automatically when the noteBook document is closed or the cell is deleted.
 		 *
-		 * @param cell The cell on which this item should be shown.
+		 * @param cell The cell on which this item should Be shown.
 		 * @param alignment The alignment of the item.
-		 * @param priority The priority of the item. Higher values mean the item should be shown more to the left.
-		 * @return A new status bar item.
+		 * @param priority The priority of the item. Higher values mean the item should Be shown more to the left.
+		 * @return A new status Bar item.
 		 */
-		export function createCellStatusBarItem(cell: NotebookCell, alignment?: NotebookCellStatusBarAlignment, priority?: number): NotebookCellStatusBarItem;
+		export function createCellStatusBarItem(cell: NoteBookCell, alignment?: NoteBookCellStatusBarAlignment, priority?: numBer): NoteBookCellStatusBarItem;
 	}
 
 	export namespace window {
-		export const visibleNotebookEditors: NotebookEditor[];
-		export const onDidChangeVisibleNotebookEditors: Event<NotebookEditor[]>;
-		export const activeNotebookEditor: NotebookEditor | undefined;
-		export const onDidChangeActiveNotebookEditor: Event<NotebookEditor | undefined>;
-		export const onDidChangeNotebookEditorSelection: Event<NotebookEditorSelectionChangeEvent>;
-		export const onDidChangeNotebookEditorVisibleRanges: Event<NotebookEditorVisibleRangesChangeEvent>;
+		export const visiBleNoteBookEditors: NoteBookEditor[];
+		export const onDidChangeVisiBleNoteBookEditors: Event<NoteBookEditor[]>;
+		export const activeNoteBookEditor: NoteBookEditor | undefined;
+		export const onDidChangeActiveNoteBookEditor: Event<NoteBookEditor | undefined>;
+		export const onDidChangeNoteBookEditorSelection: Event<NoteBookEditorSelectionChangeEvent>;
+		export const onDidChangeNoteBookEditorVisiBleRanges: Event<NoteBookEditorVisiBleRangesChangeEvent>;
 	}
 
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/39441
+	//#region https://githuB.com/microsoft/vscode/issues/39441
 
 	export interface CompletionItem {
 		/**
-		 * Will be merged into CompletionItem#label
+		 * Will Be merged into CompletionItem#laBel
 		 */
-		label2?: CompletionItemLabel;
+		laBel2?: CompletionItemLaBel;
 	}
 
-	export interface CompletionItemLabel {
+	export interface CompletionItemLaBel {
 		/**
-		 * The function or variable. Rendered leftmost.
+		 * The function or variaBle. Rendered leftmost.
 		 */
 		name: string;
 
@@ -1920,28 +1920,28 @@ declare module 'vscode' {
 		qualifier?: string;
 
 		/**
-		 * The return-type of a function or type of a property/variable. Rendered rightmost.
+		 * The return-type of a function or type of a property/variaBle. Rendered rightmost.
 		 */
 		type?: string;
 	}
 
 	//#endregion
 
-	//#region @eamodio - timeline: https://github.com/microsoft/vscode/issues/84297
+	//#region @eamodio - timeline: https://githuB.com/microsoft/vscode/issues/84297
 
 	export class TimelineItem {
 		/**
 		 * A timestamp (in milliseconds since 1 January 1970 00:00:00) for when the timeline item occurred.
 		 */
-		timestamp: number;
+		timestamp: numBer;
 
 		/**
-		 * A human-readable string describing the timeline item.
+		 * A human-readaBle string descriBing the timeline item.
 		 */
-		label: string;
+		laBel: string;
 
 		/**
-		 * Optional id for the timeline item. It must be unique across all the timeline items provided by this source.
+		 * Optional id for the timeline item. It must Be unique across all the timeline items provided By this source.
 		 *
 		 * If not provided, an id is generated using the timeline item's timestamp.
 		 */
@@ -1953,7 +1953,7 @@ declare module 'vscode' {
 		iconPath?: Uri | { light: Uri; dark: Uri; } | ThemeIcon;
 
 		/**
-		 * A human readable string describing less prominent details of the timeline item.
+		 * A human readaBle string descriBing less prominent details of the timeline item.
 		 */
 		description?: string;
 
@@ -1963,16 +1963,16 @@ declare module 'vscode' {
 		detail?: string;
 
 		/**
-		 * The [command](#Command) that should be executed when the timeline item is selected.
+		 * The [command](#Command) that should Be executed when the timeline item is selected.
 		 */
 		command?: Command;
 
 		/**
-		 * Context value of the timeline item. This can be used to contribute specific actions to the item.
-		 * For example, a timeline item is given a context value as `commit`. When contributing actions to `timeline/item/context`
+		 * Context value of the timeline item. This can Be used to contriBute specific actions to the item.
+		 * For example, a timeline item is given a context value as `commit`. When contriButing actions to `timeline/item/context`
 		 * using `menus` extension point, you can specify context value for key `timelineItem` in `when` expression like `timelineItem == commit`.
 		 * ```
-		 *	"contributes": {
+		 *	"contriButes": {
 		 *		"menus": {
 		 *			"timeline/item/context": [
 		 *				{
@@ -1988,15 +1988,15 @@ declare module 'vscode' {
 		contextValue?: string;
 
 		/**
-		 * Accessibility information used when screen reader interacts with this timeline item.
+		 * AccessiBility information used when screen reader interacts with this timeline item.
 		 */
-		accessibilityInformation?: AccessibilityInformation;
+		accessiBilityInformation?: AccessiBilityInformation;
 
 		/**
-		 * @param label A human-readable string describing the timeline item
+		 * @param laBel A human-readaBle string descriBing the timeline item
 		 * @param timestamp A timestamp (in milliseconds since 1 January 1970 00:00:00) for when the timeline item occurred
 		 */
-		constructor(label: string, timestamp: number);
+		constructor(laBel: string, timestamp: numBer);
 	}
 
 	export interface TimelineChangeEvent {
@@ -2006,16 +2006,16 @@ declare module 'vscode' {
 		uri: Uri;
 
 		/**
-		 * A flag which indicates whether the entire timeline should be reset.
+		 * A flag which indicates whether the entire timeline should Be reset.
 		 */
-		reset?: boolean;
+		reset?: Boolean;
 	}
 
 	export interface Timeline {
 		readonly paging?: {
 			/**
 			 * A provider-defined cursor specifying the starting point of timeline items which are after the ones returned.
-			 * Use `undefined` to signal that there are no more items to be returned.
+			 * Use `undefined` to signal that there are no more items to Be returned.
 			 */
 			readonly cursor: string | undefined;
 		};
@@ -2028,15 +2028,15 @@ declare module 'vscode' {
 
 	export interface TimelineOptions {
 		/**
-		 * A provider-defined cursor specifying the starting point of the timeline items that should be returned.
+		 * A provider-defined cursor specifying the starting point of the timeline items that should Be returned.
 		 */
 		cursor?: string;
 
 		/**
-		 * An optional maximum number timeline items or the all timeline items newer (inclusive) than the timestamp or id that should be returned.
-		 * If `undefined` all timeline items should be returned.
+		 * An optional maximum numBer timeline items or the all timeline items newer (inclusive) than the timestamp or id that should Be returned.
+		 * If `undefined` all timeline items should Be returned.
 		 */
-		limit?: number | { timestamp: number; id?: string; };
+		limit?: numBer | { timestamp: numBer; id?: string; };
 	}
 
 	export interface TimelineProvider {
@@ -2047,23 +2047,23 @@ declare module 'vscode' {
 		onDidChange?: Event<TimelineChangeEvent | undefined>;
 
 		/**
-		 * An identifier of the source of the timeline items. This can be used to filter sources.
+		 * An identifier of the source of the timeline items. This can Be used to filter sources.
 		 */
 		readonly id: string;
 
 		/**
-		 * A human-readable string describing the source of the timeline items. This can be used as the display label when filtering sources.
+		 * A human-readaBle string descriBing the source of the timeline items. This can Be used as the display laBel when filtering sources.
 		 */
-		readonly label: string;
+		readonly laBel: string;
 
 		/**
 		 * Provide [timeline items](#TimelineItem) for a [Uri](#Uri).
 		 *
 		 * @param uri The [uri](#Uri) of the file to provide the timeline for.
-		 * @param options A set of options to determine how results should be returned.
+		 * @param options A set of options to determine how results should Be returned.
 		 * @param token A cancellation token.
-		 * @return The [timeline result](#TimelineResult) or a thenable that resolves to such. The lack of a result
-		 * can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @return The [timeline result](#TimelineResult) or a thenaBle that resolves to such. The lack of a result
+		 * can Be signaled By returning `undefined`, `null`, or an empty array.
 		 */
 		provideTimeline(uri: Uri, options: TimelineOptions, token: CancellationToken): ProviderResult<Timeline>;
 	}
@@ -2072,20 +2072,20 @@ declare module 'vscode' {
 		/**
 		 * Register a timeline provider.
 		 *
-		 * Multiple providers can be registered. In that case, providers are asked in
+		 * Multiple providers can Be registered. In that case, providers are asked in
 		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
 		 * not cause a failure of the whole operation.
 		 *
-		 * @param scheme A scheme or schemes that defines which documents this provider is applicable to. Can be `*` to target all documents.
+		 * @param scheme A scheme or schemes that defines which documents this provider is applicaBle to. Can Be `*` to target all documents.
 		 * @param provider A timeline provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @return A [disposaBle](#DisposaBle) that unregisters this provider when Being disposed.
 		*/
-		export function registerTimelineProvider(scheme: string | string[], provider: TimelineProvider): Disposable;
+		export function registerTimelineProvider(scheme: string | string[], provider: TimelineProvider): DisposaBle;
 	}
 
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/91555
+	//#region https://githuB.com/microsoft/vscode/issues/91555
 
 	export enum StandardTokenType {
 		Other = 0,
@@ -2105,17 +2105,17 @@ declare module 'vscode' {
 
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/104436
+	//#region https://githuB.com/microsoft/vscode/issues/104436
 
 	export enum ExtensionRuntime {
 		/**
-		 * The extension is running in a NodeJS extension host. Runtime access to NodeJS APIs is available.
+		 * The extension is running in a NodeJS extension host. Runtime access to NodeJS APIs is availaBle.
 		 */
 		Node = 1,
 		/**
-		 * The extension is running in a Webworker extension host. Runtime access is limited to Webworker APIs.
+		 * The extension is running in a WeBworker extension host. Runtime access is limited to WeBworker APIs.
 		 */
-		Webworker = 2
+		WeBworker = 2
 	}
 
 	export interface ExtensionContext {
@@ -2125,51 +2125,51 @@ declare module 'vscode' {
 	//#endregion
 
 
-	//#region https://github.com/microsoft/vscode/issues/102091
+	//#region https://githuB.com/microsoft/vscode/issues/102091
 
 	export interface TextDocument {
 
 		/**
-		 * The [notebook](#NotebookDocument) that contains this document as a notebook cell or `undefined` when
-		 * the document is not contained by a notebook (this should be the more frequent case).
+		 * The [noteBook](#NoteBookDocument) that contains this document as a noteBook cell or `undefined` when
+		 * the document is not contained By a noteBook (this should Be the more frequent case).
 		 */
-		notebook: NotebookDocument | undefined;
+		noteBook: NoteBookDocument | undefined;
 	}
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/91697
+	//#region https://githuB.com/microsoft/vscode/issues/91697
 
 	export interface FileSystem {
 		/**
 		 * Check if a given file system supports writing files.
 		 *
-		 * Keep in mind that just because a file system supports writing, that does
-		 * not mean that writes will always succeed. There may be permissions issues
+		 * Keep in mind that just Because a file system supports writing, that does
+		 * not mean that writes will always succeed. There may Be permissions issues
 		 * or other errors that prevent writing a file.
 		 *
 		 * @param scheme The scheme of the filesystem, for example `file` or `git`.
 		 *
 		 * @return `true` if the file system supports writing, `false` if it does not
 		 * support writing (i.e. it is readonly), and `undefined` if VS Code does not
-		 * know about the filesystem.
+		 * know aBout the filesystem.
 		 */
-		isWritableFileSystem(scheme: string): boolean | undefined;
+		isWritaBleFileSystem(scheme: string): Boolean | undefined;
 	}
 
 
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/102665 Comment API @rebornix
+	//#region https://githuB.com/microsoft/vscode/issues/102665 Comment API @reBornix
 	export interface CommentThread {
 		/**
 		 * Whether the thread supports reply.
 		 * Defaults to true.
 		 */
-		canReply: boolean;
+		canReply: Boolean;
 	}
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/108929 FoldingRangeProvider.onDidChangeFoldingRanges @aeschli
+	//#region https://githuB.com/microsoft/vscode/issues/108929 FoldingRangeProvider.onDidChangeFoldingRanges @aeschli
 	export interface FoldingRangeProvider2 extends FoldingRangeProvider {
 
 		/**

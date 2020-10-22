@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorOptions } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { workbenchInstantiationService, TestFileEditorInput, registerTestEditor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
+import { EditorOptions } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { workBenchInstantiationService, TestFileEditorInput, registerTestEditor } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { EditorPart } from 'vs/workBench/Browser/parts/editor/editorPart';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IEditorGroupsService, GroupDirection } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { HistoryService } from 'vs/workbench/services/history/browser/history';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { EditorService } from 'vs/workbench/services/editor/browser/editorService';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { timeout } from 'vs/base/common/async';
+import { IEditorGroupsService, GroupDirection } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { HistoryService } from 'vs/workBench/services/history/Browser/history';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { EditorService } from 'vs/workBench/services/editor/Browser/editorService';
+import { IDisposaBle, dispose } from 'vs/Base/common/lifecycle';
+import { IHistoryService } from 'vs/workBench/services/history/common/history';
+import { timeout } from 'vs/Base/common/async';
 
 const TEST_EDITOR_ID = 'MyTestEditorForEditorHistory';
 const TEST_EDITOR_INPUT_ID = 'testEditorInputForHistoyService';
 
 async function createServices(): Promise<[EditorPart, HistoryService, EditorService]> {
-	const instantiationService = workbenchInstantiationService();
+	const instantiationService = workBenchInstantiationService();
 
 	const part = instantiationService.createInstance(EditorPart);
 	part.create(document.createElement('div'));
@@ -29,42 +29,42 @@ async function createServices(): Promise<[EditorPart, HistoryService, EditorServ
 
 	await part.whenRestored;
 
-	instantiationService.stub(IEditorGroupsService, part);
+	instantiationService.stuB(IEditorGroupsService, part);
 
 	const editorService = instantiationService.createInstance(EditorService);
-	instantiationService.stub(IEditorService, editorService);
+	instantiationService.stuB(IEditorService, editorService);
 
 	const historyService = instantiationService.createInstance(HistoryService);
-	instantiationService.stub(IHistoryService, historyService);
+	instantiationService.stuB(IHistoryService, historyService);
 
 	return [part, historyService, editorService];
 }
 
 suite('HistoryService', function () {
 
-	let disposables: IDisposable[] = [];
+	let disposaBles: IDisposaBle[] = [];
 
 	setup(() => {
-		disposables.push(registerTestEditor(TEST_EDITOR_ID, [new SyncDescriptor(TestFileEditorInput)]));
+		disposaBles.push(registerTestEditor(TEST_EDITOR_ID, [new SyncDescriptor(TestFileEditorInput)]));
 	});
 
 	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+		dispose(disposaBles);
+		disposaBles = [];
 	});
 
-	test('back / forward', async () => {
+	test('Back / forward', async () => {
 		const [part, historyService] = await createServices();
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
 		await part.activeGroup.openEditor(input1, EditorOptions.create({ pinned: true }));
 		assert.equal(part.activeGroup.activeEditor, input1);
 
-		const input2 = new TestFileEditorInput(URI.parse('foo://bar2'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.parse('foo://Bar2'), TEST_EDITOR_INPUT_ID);
 		await part.activeGroup.openEditor(input2, EditorOptions.create({ pinned: true }));
 		assert.equal(part.activeGroup.activeEditor, input2);
 
-		historyService.back();
+		historyService.Back();
 		assert.equal(part.activeGroup.activeEditor, input1);
 
 		historyService.forward();
@@ -79,10 +79,10 @@ suite('HistoryService', function () {
 		let history = historyService.getHistory();
 		assert.equal(history.length, 0);
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
 		await part.activeGroup.openEditor(input1, EditorOptions.create({ pinned: true }));
 
-		const input2 = new TestFileEditorInput(URI.parse('foo://bar2'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.parse('foo://Bar2'), TEST_EDITOR_INPUT_ID);
 		await part.activeGroup.openEditor(input2, EditorOptions.create({ pinned: true }));
 
 		history = historyService.getHistory();
@@ -101,7 +101,7 @@ suite('HistoryService', function () {
 
 		assert.ok(!historyService.getLastActiveFile('foo'));
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
 		await part.activeGroup.openEditor(input1, EditorOptions.create({ pinned: true }));
 
 		assert.equal(historyService.getLastActiveFile('foo')?.toString(), input1.resource.toString());
@@ -112,8 +112,8 @@ suite('HistoryService', function () {
 	test('open next/previous recently used editor (single group)', async () => {
 		const [part, historyService] = await createServices();
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.parse('foo://bar2'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.parse('foo://Bar2'), TEST_EDITOR_INPUT_ID);
 
 		await part.activeGroup.openEditor(input1, EditorOptions.create({ pinned: true }));
 		assert.equal(part.activeGroup.activeEditor, input1);
@@ -140,8 +140,8 @@ suite('HistoryService', function () {
 		const [part, historyService] = await createServices();
 		const rootGroup = part.activeGroup;
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.parse('foo://bar2'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.parse('foo://Bar2'), TEST_EDITOR_INPUT_ID);
 
 		const sideGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
 
@@ -162,10 +162,10 @@ suite('HistoryService', function () {
 	test('open next/previous recently is reset when other input opens', async () => {
 		const [part, historyService] = await createServices();
 
-		const input1 = new TestFileEditorInput(URI.parse('foo://bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.parse('foo://bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.parse('foo://bar3'), TEST_EDITOR_INPUT_ID);
-		const input4 = new TestFileEditorInput(URI.parse('foo://bar4'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.parse('foo://Bar1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.parse('foo://Bar2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.parse('foo://Bar3'), TEST_EDITOR_INPUT_ID);
+		const input4 = new TestFileEditorInput(URI.parse('foo://Bar4'), TEST_EDITOR_INPUT_ID);
 
 		await part.activeGroup.openEditor(input1, EditorOptions.create({ pinned: true }));
 		await part.activeGroup.openEditor(input2, EditorOptions.create({ pinned: true }));

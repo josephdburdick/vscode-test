@@ -20,28 +20,28 @@ export class InPlaceReplaceCommand implements ICommand {
 		this._text = text;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._editRange, this._text);
+	puBlic getEditOperations(model: ITextModel, Builder: IEditOperationBuilder): void {
+		Builder.addTrackedEditOperation(this._editRange, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	puBlic computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
 		const inverseEditOperations = helper.getInverseEditOperations();
 		const srcRange = inverseEditOperations[0].range;
 
 		if (!this._originalSelection.isEmpty()) {
 			// Preserve selection and extends to typed text
 			return new Selection(
-				srcRange.endLineNumber,
+				srcRange.endLineNumBer,
 				srcRange.endColumn - this._text.length,
-				srcRange.endLineNumber,
+				srcRange.endLineNumBer,
 				srcRange.endColumn
 			);
 		}
 
 		return new Selection(
-			srcRange.endLineNumber,
+			srcRange.endLineNumBer,
 			Math.min(this._originalSelection.positionColumn, srcRange.endColumn),
-			srcRange.endLineNumber,
+			srcRange.endLineNumBer,
 			Math.min(this._originalSelection.positionColumn, srcRange.endColumn)
 		);
 	}

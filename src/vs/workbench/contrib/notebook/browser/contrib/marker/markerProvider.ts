@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { IMarkerListProvider, MarkerList, IMarkerNavigationService } from 'vs/editor/contrib/gotoError/markerNavigationService';
-import { CellUri } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { IMarkerListProvider, MarkerList, IMarkerNavigationService } from 'vs/editor/contriB/gotoError/markerNavigationService';
+import { CellUri } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 import { IMarkerService } from 'vs/platform/markers/common/markers';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 class MarkerListProvider implements IMarkerListProvider {
 
-	private readonly _dispoables: IDisposable;
+	private readonly _dispoaBles: IDisposaBle;
 
 	constructor(
 		@IMarkerService private readonly _markerService: IMarkerService,
 		@IMarkerNavigationService markerNavigation: IMarkerNavigationService,
 	) {
-		this._dispoables = markerNavigation.registerProvider(this);
+		this._dispoaBles = markerNavigation.registerProvider(this);
 	}
 
 	dispose() {
-		this._dispoables.dispose();
+		this._dispoaBles.dispose();
 	}
 
 	getMarkerList(resource: URI | undefined): MarkerList | undefined {
@@ -37,11 +37,11 @@ class MarkerListProvider implements IMarkerListProvider {
 		}
 		return new MarkerList(uri => {
 			const otherData = CellUri.parse(uri);
-			return otherData?.notebook.toString() === data.notebook.toString();
+			return otherData?.noteBook.toString() === data.noteBook.toString();
 		}, this._markerService);
 	}
 }
 
 Registry
-	.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(MarkerListProvider, LifecyclePhase.Ready);
+	.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(MarkerListProvider, LifecyclePhase.Ready);

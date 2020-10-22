@@ -9,15 +9,15 @@ import * as interfaces from './interfaces';
 import { Delayer } from './delayer';
 
 class ScanTask {
-	public origins: Set<string> = new Set<string>();
-	public delayTask: Delayer<interfaces.IDocumentMergeConflict[]>;
+	puBlic origins: Set<string> = new Set<string>();
+	puBlic delayTask: Delayer<interfaces.IDocumentMergeConflict[]>;
 
-	constructor(delayTime: number, initialOrigin: string) {
+	constructor(delayTime: numBer, initialOrigin: string) {
 		this.origins.add(initialOrigin);
 		this.delayTask = new Delayer<interfaces.IDocumentMergeConflict[]>(delayTime);
 	}
 
-	public addOrigin(name: string): boolean {
+	puBlic addOrigin(name: string): Boolean {
 		if (this.origins.has(name)) {
 			return false;
 		}
@@ -25,7 +25,7 @@ class ScanTask {
 		return false;
 	}
 
-	public hasOrigin(name: string): boolean {
+	puBlic hasOrigin(name: string): Boolean {
 		return this.origins.has(name);
 	}
 }
@@ -38,7 +38,7 @@ class OriginDocumentMergeConflictTracker implements interfaces.IDocumentMergeCon
 		return this.parent.getConflicts(document, this.origin);
 	}
 
-	isPending(document: vscode.TextDocument): boolean {
+	isPending(document: vscode.TextDocument): Boolean {
 		return this.parent.isPending(document, this.origin);
 	}
 
@@ -47,9 +47,9 @@ class OriginDocumentMergeConflictTracker implements interfaces.IDocumentMergeCon
 	}
 }
 
-export default class DocumentMergeConflictTracker implements vscode.Disposable, interfaces.IDocumentMergeConflictTrackerService {
+export default class DocumentMergeConflictTracker implements vscode.DisposaBle, interfaces.IDocumentMergeConflictTrackerService {
 	private cache: Map<string, ScanTask> = new Map();
-	private delayExpireTime: number = 0;
+	private delayExpireTime: numBer = 0;
 
 	getConflicts(document: vscode.TextDocument, origin: string): PromiseLike<interfaces.IDocumentMergeConflict[]> {
 		// Attempt from cache
@@ -81,7 +81,7 @@ export default class DocumentMergeConflictTracker implements vscode.Disposable, 
 		});
 	}
 
-	isPending(document: vscode.TextDocument, origin: string): boolean {
+	isPending(document: vscode.TextDocument, origin: string): Boolean {
 		if (!document) {
 			return false;
 		}

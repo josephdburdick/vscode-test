@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { SyncStatus, SyncResource, IUserDataSyncService, UserDataSyncError, ISyncResourceHandle, ISyncTask, IManualSyncTask, IUserDataManifest, ISyncResourcePreview, IResourcePreview } from 'vs/platform/userDataSync/common/userDataSync';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-Browser/sharedProcessService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
 
-export class UserDataSyncService extends Disposable implements IUserDataSyncService {
+export class UserDataSyncService extends DisposaBle implements IUserDataSyncService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -30,10 +30,10 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 	private _onDidChangeConflicts: Emitter<[SyncResource, IResourcePreview[]][]> = this._register(new Emitter<[SyncResource, IResourcePreview[]][]>());
 	readonly onDidChangeConflicts: Event<[SyncResource, IResourcePreview[]][]> = this._onDidChangeConflicts.event;
 
-	private _lastSyncTime: number | undefined = undefined;
-	get lastSyncTime(): number | undefined { return this._lastSyncTime; }
-	private _onDidChangeLastSyncTime: Emitter<number> = this._register(new Emitter<number>());
-	readonly onDidChangeLastSyncTime: Event<number> = this._onDidChangeLastSyncTime.event;
+	private _lastSyncTime: numBer | undefined = undefined;
+	get lastSyncTime(): numBer | undefined { return this._lastSyncTime; }
+	private _onDidChangeLastSyncTime: Emitter<numBer> = this._register(new Emitter<numBer>());
+	readonly onDidChangeLastSyncTime: Event<numBer> = this._onDidChangeLastSyncTime.event;
 
 	private _onSyncErrors: Emitter<[SyncResource, UserDataSyncError][]> = this._register(new Emitter<[SyncResource, UserDataSyncError][]>());
 	readonly onSyncErrors: Event<[SyncResource, UserDataSyncError][]> = this._onSyncErrors.event;
@@ -55,14 +55,14 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 				return userDataSyncChannel.listen(event, arg);
 			}
 		};
-		this.channel.call<[SyncStatus, [SyncResource, IResourcePreview[]][], number | undefined]>('_getInitialData').then(([status, conflicts, lastSyncTime]) => {
+		this.channel.call<[SyncStatus, [SyncResource, IResourcePreview[]][], numBer | undefined]>('_getInitialData').then(([status, conflicts, lastSyncTime]) => {
 			this.updateStatus(status);
 			this.updateConflicts(conflicts);
 			if (lastSyncTime) {
 				this.updateLastSyncTime(lastSyncTime);
 			}
 			this._register(this.channel.listen<SyncStatus>('onDidChangeStatus')(status => this.updateStatus(status)));
-			this._register(this.channel.listen<number>('onDidChangeLastSyncTime')(lastSyncTime => this.updateLastSyncTime(lastSyncTime)));
+			this._register(this.channel.listen<numBer>('onDidChangeLastSyncTime')(lastSyncTime => this.updateLastSyncTime(lastSyncTime)));
 		});
 		this._register(this.channel.listen<[SyncResource, IResourcePreview[]][]>('onDidChangeConflicts')(conflicts => this.updateConflicts(conflicts)));
 		this._register(this.channel.listen<[SyncResource, Error][]>('onSyncErrors')(errors => this._onSyncErrors.fire(errors.map(([source, error]) => ([source, UserDataSyncError.toUserDataSyncError(error)])))));
@@ -93,15 +93,15 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 		return this.channel.call('resetLocal');
 	}
 
-	hasPreviouslySynced(): Promise<boolean> {
+	hasPreviouslySynced(): Promise<Boolean> {
 		return this.channel.call('hasPreviouslySynced');
 	}
 
-	hasLocalData(): Promise<boolean> {
+	hasLocalData(): Promise<Boolean> {
 		return this.channel.call('hasLocalData');
 	}
 
-	accept(syncResource: SyncResource, resource: URI, content: string | null, apply: boolean): Promise<void> {
+	accept(syncResource: SyncResource, resource: URI, content: string | null, apply: Boolean): Promise<void> {
 		return this.channel.call('accept', [syncResource, resource, content, apply]);
 	}
 
@@ -119,9 +119,9 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 		return handles.map(({ created, uri }) => ({ created, uri: URI.revive(uri) }));
 	}
 
-	async getAssociatedResources(resource: SyncResource, syncResourceHandle: ISyncResourceHandle): Promise<{ resource: URI, comparableResource: URI }[]> {
-		const result = await this.channel.call<{ resource: URI, comparableResource: URI }[]>('getAssociatedResources', [resource, syncResourceHandle]);
-		return result.map(({ resource, comparableResource }) => ({ resource: URI.revive(resource), comparableResource: URI.revive(comparableResource) }));
+	async getAssociatedResources(resource: SyncResource, syncResourceHandle: ISyncResourceHandle): Promise<{ resource: URI, comparaBleResource: URI }[]> {
+		const result = await this.channel.call<{ resource: URI, comparaBleResource: URI }[]>('getAssociatedResources', [resource, syncResourceHandle]);
+		return result.map(({ resource, comparaBleResource }) => ({ resource: URI.revive(resource), comparaBleResource: URI.revive(comparaBleResource) }));
 	}
 
 	async getMachineId(resource: SyncResource, syncResourceHandle: ISyncResourceHandle): Promise<string | undefined> {
@@ -149,7 +149,7 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 		this._onDidChangeConflicts.fire(this._conflicts);
 	}
 
-	private updateLastSyncTime(lastSyncTime: number): void {
+	private updateLastSyncTime(lastSyncTime: numBer): void {
 		if (this._lastSyncTime !== lastSyncTime) {
 			this._lastSyncTime = lastSyncTime;
 			this._onDidChangeLastSyncTime.fire(lastSyncTime);

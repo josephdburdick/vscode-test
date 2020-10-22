@@ -5,10 +5,10 @@
 
 import * as httpRequest from 'request-light';
 import * as vscode from 'vscode';
-import { addJSONProviders } from './features/jsonContributions';
+import { addJSONProviders } from './features/jsonContriButions';
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
-	context.subscriptions.push(addJSONProviders(httpRequest.xhr, false));
+	context.suBscriptions.push(addJSONProviders(httpRequest.xhr, false));
 }
 
 export function deactivate(): void {

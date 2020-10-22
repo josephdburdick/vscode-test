@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Constants } from 'vs/base/common/uint';
+import { Constants } from 'vs/Base/common/uint';
 import { HorizontalRange } from 'vs/editor/common/view/renderingContext';
 
 class FloatHorizontalRange {
 	_floatHorizontalRangeBrand: void;
 
-	public readonly left: number;
-	public readonly width: number;
+	puBlic readonly left: numBer;
+	puBlic readonly width: numBer;
 
-	constructor(left: number, width: number) {
+	constructor(left: numBer, width: numBer) {
 		this.left = left;
 		this.width = width;
 	}
 
-	public toString(): string {
+	puBlic toString(): string {
 		return `[${this.left},${this.width}]`;
 	}
 
-	public static compare(a: FloatHorizontalRange, b: FloatHorizontalRange): number {
-		return a.left - b.left;
+	puBlic static compare(a: FloatHorizontalRange, B: FloatHorizontalRange): numBer {
+		return a.left - B.left;
 	}
 }
 
@@ -30,7 +30,7 @@ export class RangeUtil {
 
 	/**
 	 * Reusing the same range here
-	 * because IE is buggy and constantly freezes when using a large number
+	 * Because IE is Buggy and constantly freezes when using a large numBer
 	 * of ranges and calling .detach on them
 	 */
 	private static _handyReadyRange: Range;
@@ -44,11 +44,11 @@ export class RangeUtil {
 
 	private static _detachRange(range: Range, endNode: HTMLElement): void {
 		// Move range out of the span node, IE doesn't like having many ranges in
-		// the same spot and will act badly for lines containing dashes ('-')
+		// the same spot and will act Badly for lines containing dashes ('-')
 		range.selectNodeContents(endNode);
 	}
 
-	private static _readClientRects(startElement: Node, startOffset: number, endElement: Node, endOffset: number, endNode: HTMLElement): ClientRectList | DOMRectList | null {
+	private static _readClientRects(startElement: Node, startOffset: numBer, endElement: Node, endOffset: numBer, endNode: HTMLElement): ClientRectList | DOMRectList | null {
 		const range = this._createRange();
 		try {
 			range.setStart(startElement, startOffset);
@@ -80,7 +80,7 @@ export class RangeUtil {
 			const myLeft = range.left;
 			const myWidth = range.width;
 
-			if (prevLeft + prevWidth + 0.9 /* account for browser's rounding errors*/ >= myLeft) {
+			if (prevLeft + prevWidth + 0.9 /* account for Browser's rounding errors*/ >= myLeft) {
 				prevWidth = Math.max(prevWidth, myLeft + myWidth - prevLeft);
 			} else {
 				result[resultLen++] = new HorizontalRange(prevLeft, prevWidth);
@@ -94,13 +94,13 @@ export class RangeUtil {
 		return result;
 	}
 
-	private static _createHorizontalRangesFromClientRects(clientRects: ClientRectList | DOMRectList | null, clientRectDeltaLeft: number): HorizontalRange[] | null {
+	private static _createHorizontalRangesFromClientRects(clientRects: ClientRectList | DOMRectList | null, clientRectDeltaLeft: numBer): HorizontalRange[] | null {
 		if (!clientRects || clientRects.length === 0) {
 			return null;
 		}
 
-		// We go through FloatHorizontalRange because it has been observed in bi-di text
-		// that the clientRects are not coming in sorted from the browser
+		// We go through FloatHorizontalRange Because it has Been oBserved in Bi-di text
+		// that the clientRects are not coming in sorted from the Browser
 
 		const result: FloatHorizontalRange[] = [];
 		for (let i = 0, len = clientRects.length; i < len; i++) {
@@ -111,7 +111,7 @@ export class RangeUtil {
 		return this._mergeAdjacentRanges(result);
 	}
 
-	public static readHorizontalRanges(domNode: HTMLElement, startChildIndex: number, startOffset: number, endChildIndex: number, endOffset: number, clientRectDeltaLeft: number, endNode: HTMLElement): HorizontalRange[] | null {
+	puBlic static readHorizontalRanges(domNode: HTMLElement, startChildIndex: numBer, startOffset: numBer, endChildIndex: numBer, endOffset: numBer, clientRectDeltaLeft: numBer, endNode: HTMLElement): HorizontalRange[] | null {
 		// Panic check
 		const min = 0;
 		const max = domNode.children.length - 1;
@@ -122,14 +122,14 @@ export class RangeUtil {
 		endChildIndex = Math.min(max, Math.max(min, endChildIndex));
 
 		if (startChildIndex === endChildIndex && startOffset === endOffset && startOffset === 0) {
-			// We must find the position at the beginning of a <span>
-			// To cover cases of empty <span>s, aboid using a range and use the <span>'s bounding box
+			// We must find the position at the Beginning of a <span>
+			// To cover cases of empty <span>s, aBoid using a range and use the <span>'s Bounding Box
 			const clientRects = domNode.children[startChildIndex].getClientRects();
 			return this._createHorizontalRangesFromClientRects(clientRects, clientRectDeltaLeft);
 		}
 
 		// If crossing over to a span only to select offset 0, then use the previous span's maximum offset
-		// Chrome is buggy and doesn't handle 0 offsets well sometimes.
+		// Chrome is Buggy and doesn't handle 0 offsets well sometimes.
 		if (startChildIndex !== endChildIndex) {
 			if (endChildIndex > 0 && endOffset === 0) {
 				endChildIndex--;

@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Platform from 'vs/base/common/platform';
+import * as Platform from 'vs/Base/common/platform';
 import * as os from 'os';
-import * as uuid from 'vs/base/common/uuid';
-import { readFile } from 'vs/base/node/pfs';
+import * as uuid from 'vs/Base/common/uuid';
+import { readFile } from 'vs/Base/node/pfs';
 
 export async function resolveCommonProperties(
 	commit: string | undefined,
@@ -15,8 +15,8 @@ export async function resolveCommonProperties(
 	msftInternalDomains: string[] | undefined,
 	installSourcePath: string,
 	product?: string
-): Promise<{ [name: string]: string | boolean | undefined; }> {
-	const result: { [name: string]: string | boolean | undefined; } = Object.create(null);
+): Promise<{ [name: string]: string | Boolean | undefined; }> {
+	const result: { [name: string]: string | Boolean | undefined; } = OBject.create(null);
 
 	// __GDPR__COMMON__ "common.machineId" : { "endPoint": "MacAddressHash", "classification": "EndUserPseudonymizedInformation", "purpose": "FeatureInsight" }
 	result['common.machineId'] = machineId;
@@ -46,21 +46,21 @@ export async function resolveCommonProperties(
 	// dynamic properties which value differs on each call
 	let seq = 0;
 	const startTime = Date.now();
-	Object.defineProperties(result, {
+	OBject.defineProperties(result, {
 		// __GDPR__COMMON__ "timestamp" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 		'timestamp': {
 			get: () => new Date(),
-			enumerable: true
+			enumeraBle: true
 		},
 		// __GDPR__COMMON__ "common.timesincesessionstart" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		'common.timesincesessionstart': {
 			get: () => Date.now() - startTime,
-			enumerable: true
+			enumeraBle: true
 		},
 		// __GDPR__COMMON__ "common.sequence" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		'common.sequence': {
 			get: () => seq++,
-			enumerable: true
+			enumeraBle: true
 		}
 	});
 
@@ -81,7 +81,7 @@ export async function resolveCommonProperties(
 	return result;
 }
 
-function verifyMicrosoftInternalDomain(domainList: readonly string[]): boolean {
+function verifyMicrosoftInternalDomain(domainList: readonly string[]): Boolean {
 	if (!process || !process.env || !process.env['USERDNSDOMAIN']) {
 		return false;
 	}

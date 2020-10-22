@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IViewDescriptor, IViewDescriptorService, IAddedViewDescriptorRef } from 'vs/workbench/common/views';
+import { IAction } from 'vs/Base/common/actions';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IViewDescriptor, IViewDescriptorService, IAddedViewDescriptorRef } from 'vs/workBench/common/views';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ViewPaneContainer, ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { Event } from 'vs/base/common/event';
+import { ViewPaneContainer, ViewPane, IViewPaneOptions } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { Event } from 'vs/Base/common/event';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
 
 export interface IViewletViewOptions extends IViewPaneOptions {
 }
 
-export abstract class FilterViewPaneContainer extends ViewPaneContainer {
+export aBstract class FilterViewPaneContainer extends ViewPaneContainer {
 	private constantViewDescriptors: Map<string, IViewDescriptor> = new Map();
 	private allViews: Map<string, Map<string, IViewDescriptor>> = new Map();
 	private filterValue: string[] | undefined;
@@ -29,7 +29,7 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 		viewletId: string,
 		onDidChangeFilterValue: Event<string[]>,
 		@IConfigurationService configurationService: IConfigurationService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService layoutService: IWorkBenchLayoutService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IStorageService storageService: IStorageService,
 		@IInstantiationService instantiationService: IInstantiationService,
@@ -62,7 +62,7 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 			}
 			this.allViews.get(filterOnValue)!.set(descriptor.id, descriptor);
 			if (this.filterValue && !this.filterValue.includes(filterOnValue)) {
-				this.viewContainerModel.setVisible(descriptor.id, false);
+				this.viewContainerModel.setVisiBle(descriptor.id, false);
 			}
 		});
 	}
@@ -71,23 +71,23 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 		constantViewDescriptors.forEach(viewDescriptor => this.constantViewDescriptors.set(viewDescriptor.id, viewDescriptor));
 	}
 
-	protected abstract getFilterOn(viewDescriptor: IViewDescriptor): string | undefined;
+	protected aBstract getFilterOn(viewDescriptor: IViewDescriptor): string | undefined;
 
 	private onFilterChanged(newFilterValue: string[]) {
 		if (this.allViews.size === 0) {
 			this.updateAllViews(this.viewContainerModel.activeViewDescriptors);
 		}
-		this.getViewsNotForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisible(item.id, false));
-		this.getViewsForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisible(item.id, true));
+		this.getViewsNotForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisiBle(item.id, false));
+		this.getViewsForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisiBle(item.id, true));
 	}
 
 	getContextMenuActions(): IAction[] {
 		const result: IAction[] = Array.from(this.constantViewDescriptors.values()).map(viewDescriptor => (<IAction>{
-			id: `${viewDescriptor.id}.toggleVisibility`,
-			label: viewDescriptor.name,
-			checked: this.viewContainerModel.isVisible(viewDescriptor.id),
-			enabled: viewDescriptor.canToggleVisibility,
-			run: () => this.toggleViewVisibility(viewDescriptor.id)
+			id: `${viewDescriptor.id}.toggleVisiBility`,
+			laBel: viewDescriptor.name,
+			checked: this.viewContainerModel.isVisiBle(viewDescriptor.id),
+			enaBled: viewDescriptor.canToggleVisiBility,
+			run: () => this.toggleViewVisiBility(viewDescriptor.id)
 		}));
 
 		return result;
@@ -105,11 +105,11 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 	}
 
 	private getViewsNotForTarget(target: string[]): IViewDescriptor[] {
-		const iterable = this.allViews.keys();
-		let key = iterable.next();
+		const iteraBle = this.allViews.keys();
+		let key = iteraBle.next();
 		let views: IViewDescriptor[] = [];
 		while (!key.done) {
-			let isForTarget: boolean = false;
+			let isForTarget: Boolean = false;
 			target.forEach(value => {
 				if (key.value === value) {
 					isForTarget = true;
@@ -119,7 +119,7 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 				views = views.concat(this.getViewsForTarget([key.value]));
 			}
 
-			key = iterable.next();
+			key = iteraBle.next();
 		}
 		return views;
 	}
@@ -138,9 +138,9 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 		return panes;
 	}
 
-	abstract getTitle(): string;
+	aBstract getTitle(): string;
 
-	getViewsVisibilityActions(): IAction[] {
+	getViewsVisiBilityActions(): IAction[] {
 		return [];
 	}
 }

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { SortLinesCommand } from 'vs/editor/contrib/linesOperations/sortLinesCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { SortLinesCommand } from 'vs/editor/contriB/linesOperations/sortLinesCommand';
+import { testCommand } from 'vs/editor/test/Browser/testCommand';
 
 function testSortLinesAscendingCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 	testCommand(lines, null, selection, (sel) => new SortLinesCommand(sel, false), expectedLines, expectedSelection);
@@ -15,7 +15,7 @@ function testSortLinesDescendingCommand(lines: string[], selection: Selection, e
 	testCommand(lines, null, selection, (sel) => new SortLinesCommand(sel, true), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Sort Lines Command', () => {
+suite('Editor ContriB - Sort Lines Command', () => {
 
 	test('no op unless at least two lines selected 1', function () {
 		testSortLinesAscendingCommand(

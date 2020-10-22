@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { ITypeScriptServiceClient, ClientCapability } from '../typescriptService';
+import { ITypeScriptServiceClient, ClientCapaBility } from '../typescriptService';
 import API from './api';
-import { Disposable } from './dispose';
+import { DisposaBle } from './dispose';
 
-export class Condition extends Disposable {
-	private _value: boolean;
+export class Condition extends DisposaBle {
+	private _value: Boolean;
 
 	constructor(
-		private readonly getValue: () => boolean,
+		private readonly getValue: () => Boolean,
 		onUpdate: (handler: () => void) => void,
 	) {
 		super();
@@ -27,18 +27,18 @@ export class Condition extends Disposable {
 		});
 	}
 
-	public get value(): boolean { return this._value; }
+	puBlic get value(): Boolean { return this._value; }
 
 	private readonly _onDidChange = this._register(new vscode.EventEmitter<void>());
-	public readonly onDidChange = this._onDidChange.event;
+	puBlic readonly onDidChange = this._onDidChange.event;
 }
 
 class ConditionalRegistration {
-	private registration: vscode.Disposable | undefined = undefined;
+	private registration: vscode.DisposaBle | undefined = undefined;
 
-	public constructor(
+	puBlic constructor(
 		private readonly conditions: readonly Condition[],
-		private readonly doRegister: () => vscode.Disposable
+		private readonly doRegister: () => vscode.DisposaBle
 	) {
 		for (const condition of conditions) {
 			condition.onDidChange(() => this.update());
@@ -46,14 +46,14 @@ class ConditionalRegistration {
 		this.update();
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		this.registration?.dispose();
 		this.registration = undefined;
 	}
 
 	private update() {
-		const enabled = this.conditions.every(condition => condition.value);
-		if (enabled) {
+		const enaBled = this.conditions.every(condition => condition.value);
+		if (enaBled) {
 			if (!this.registration) {
 				this.registration = this.doRegister();
 			}
@@ -68,8 +68,8 @@ class ConditionalRegistration {
 
 export function conditionalRegistration(
 	conditions: readonly Condition[],
-	doRegister: () => vscode.Disposable,
-): vscode.Disposable {
+	doRegister: () => vscode.DisposaBle,
+): vscode.DisposaBle {
 	return new ConditionalRegistration(conditions, doRegister);
 }
 
@@ -90,18 +90,18 @@ export function requireConfiguration(
 	return new Condition(
 		() => {
 			const config = vscode.workspace.getConfiguration(language, null);
-			return !!config.get<boolean>(configValue);
+			return !!config.get<Boolean>(configValue);
 		},
 		vscode.workspace.onDidChangeConfiguration
 	);
 }
 
-export function requireSomeCapability(
+export function requireSomeCapaBility(
 	client: ITypeScriptServiceClient,
-	...capabilities: readonly ClientCapability[]
+	...capaBilities: readonly ClientCapaBility[]
 ) {
 	return new Condition(
-		() => capabilities.some(requiredCapability => client.capabilities.has(requiredCapability)),
-		client.onDidChangeCapabilities
+		() => capaBilities.some(requiredCapaBility => client.capaBilities.has(requiredCapaBility)),
+		client.onDidChangeCapaBilities
 	);
 }

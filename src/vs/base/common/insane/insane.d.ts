@@ -6,12 +6,12 @@
 export interface InsaneOptions {
 	readonly allowedSchemes?: readonly string[],
 	readonly allowedTags?: readonly string[],
-	readonly allowedAttributes?: { readonly [key: string]: string[] },
-	readonly filter?: (token: { tag: string, attrs: { readonly [key: string]: string } }) => boolean,
+	readonly allowedAttriButes?: { readonly [key: string]: string[] },
+	readonly filter?: (token: { tag: string, attrs: { readonly [key: string]: string } }) => Boolean,
 }
 
 export function insane(
 	html: string,
 	options?: InsaneOptions,
-	strict?: boolean,
+	strict?: Boolean,
 ): string;

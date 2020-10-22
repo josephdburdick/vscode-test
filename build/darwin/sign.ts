@@ -7,14 +7,14 @@
 
 import * as codesign from 'electron-osx-sign';
 import * as path from 'path';
-import * as util from '../lib/util';
+import * as util from '../liB/util';
 import * as product from '../../product.json';
 
 async function main(): Promise<void> {
-	const buildDir = process.env['AGENT_BUILDDIRECTORY'];
+	const BuildDir = process.env['AGENT_BUILDDIRECTORY'];
 	const tempDir = process.env['AGENT_TEMPDIRECTORY'];
 
-	if (!buildDir) {
+	if (!BuildDir) {
 		throw new Error('$AGENT_BUILDDIRECTORY not set');
 	}
 
@@ -22,8 +22,8 @@ async function main(): Promise<void> {
 		throw new Error('$AGENT_TEMPDIRECTORY not set');
 	}
 
-	const baseDir = path.dirname(__dirname);
-	const appRoot = path.join(buildDir, 'VSCode-darwin');
+	const BaseDir = path.dirname(__dirname);
+	const appRoot = path.join(BuildDir, 'VSCode-darwin');
 	const appName = product.nameLong + '.app';
 	const appFrameworkPath = path.join(appRoot, appName, 'Contents', 'Frameworks');
 	const helperAppBaseName = product.nameShort;
@@ -34,12 +34,12 @@ async function main(): Promise<void> {
 	const defaultOpts: codesign.SignOptions = {
 		app: path.join(appRoot, appName),
 		platform: 'darwin',
-		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'app-entitlements.plist'),
-		'entitlements-inherit': path.join(baseDir, 'azure-pipelines', 'darwin', 'app-entitlements.plist'),
+		entitlements: path.join(BaseDir, 'azure-pipelines', 'darwin', 'app-entitlements.plist'),
+		'entitlements-inherit': path.join(BaseDir, 'azure-pipelines', 'darwin', 'app-entitlements.plist'),
 		hardenedRuntime: true,
 		'pre-auto-entitlements': false,
-		'pre-embed-provisioning-profile': false,
-		keychain: path.join(tempDir, 'buildagent.keychain'),
+		'pre-emBed-provisioning-profile': false,
+		keychain: path.join(tempDir, 'Buildagent.keychain'),
 		version: util.getElectronVersion(),
 		identity: '99FM488X57',
 		'gatekeeper-assess': false
@@ -58,22 +58,22 @@ async function main(): Promise<void> {
 	const gpuHelperOpts: codesign.SignOptions = {
 		...defaultOpts,
 		app: path.join(appFrameworkPath, gpuHelperAppName),
-		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
-		'entitlements-inherit': path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
+		entitlements: path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
+		'entitlements-inherit': path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-gpu-entitlements.plist'),
 	};
 
 	const pluginHelperOpts: codesign.SignOptions = {
 		...defaultOpts,
 		app: path.join(appFrameworkPath, pluginHelperAppName),
-		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
-		'entitlements-inherit': path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
+		entitlements: path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
+		'entitlements-inherit': path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-plugin-entitlements.plist'),
 	};
 
 	const rendererHelperOpts: codesign.SignOptions = {
 		...defaultOpts,
 		app: path.join(appFrameworkPath, rendererHelperAppName),
-		entitlements: path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
-		'entitlements-inherit': path.join(baseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
+		entitlements: path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
+		'entitlements-inherit': path.join(BaseDir, 'azure-pipelines', 'darwin', 'helper-renderer-entitlements.plist'),
 	};
 
 	await codesign.signAsync(gpuHelperOpts);

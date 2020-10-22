@@ -3,51 +3,51 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./button';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Color } from 'vs/base/common/color';
-import { mixin } from 'vs/base/common/objects';
-import { Event as BaseEvent, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Gesture, EventType as TouchEventType } from 'vs/base/browser/touch';
-import { renderCodicons } from 'vs/base/browser/codicons';
-import { addDisposableListener, IFocusTracker, EventType, EventHelper, trackFocus, reset, removeTabIndexAndUpdateFocus } from 'vs/base/browser/dom';
+import 'vs/css!./Button';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { Color } from 'vs/Base/common/color';
+import { mixin } from 'vs/Base/common/oBjects';
+import { Event as BaseEvent, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { Gesture, EventType as TouchEventType } from 'vs/Base/Browser/touch';
+import { renderCodicons } from 'vs/Base/Browser/codicons';
+import { addDisposaBleListener, IFocusTracker, EventType, EventHelper, trackFocus, reset, removeTaBIndexAndUpdateFocus } from 'vs/Base/Browser/dom';
 
 export interface IButtonOptions extends IButtonStyles {
-	readonly title?: boolean | string;
-	readonly supportCodicons?: boolean;
-	readonly secondary?: boolean;
+	readonly title?: Boolean | string;
+	readonly supportCodicons?: Boolean;
+	readonly secondary?: Boolean;
 }
 
 export interface IButtonStyles {
-	buttonBackground?: Color;
-	buttonHoverBackground?: Color;
-	buttonForeground?: Color;
-	buttonSecondaryBackground?: Color;
-	buttonSecondaryHoverBackground?: Color;
-	buttonSecondaryForeground?: Color;
-	buttonBorder?: Color;
+	ButtonBackground?: Color;
+	ButtonHoverBackground?: Color;
+	ButtonForeground?: Color;
+	ButtonSecondaryBackground?: Color;
+	ButtonSecondaryHoverBackground?: Color;
+	ButtonSecondaryForeground?: Color;
+	ButtonBorder?: Color;
 }
 
 const defaultOptions: IButtonStyles = {
-	buttonBackground: Color.fromHex('#0E639C'),
-	buttonHoverBackground: Color.fromHex('#006BB3'),
-	buttonForeground: Color.white
+	ButtonBackground: Color.fromHex('#0E639C'),
+	ButtonHoverBackground: Color.fromHex('#006BB3'),
+	ButtonForeground: Color.white
 };
 
-export class Button extends Disposable {
+export class Button extends DisposaBle {
 
 	private _element: HTMLElement;
 	private options: IButtonOptions;
 
-	private buttonBackground: Color | undefined;
-	private buttonHoverBackground: Color | undefined;
-	private buttonForeground: Color | undefined;
-	private buttonSecondaryBackground: Color | undefined;
-	private buttonSecondaryHoverBackground: Color | undefined;
-	private buttonSecondaryForeground: Color | undefined;
-	private buttonBorder: Color | undefined;
+	private ButtonBackground: Color | undefined;
+	private ButtonHoverBackground: Color | undefined;
+	private ButtonForeground: Color | undefined;
+	private ButtonSecondaryBackground: Color | undefined;
+	private ButtonSecondaryHoverBackground: Color | undefined;
+	private ButtonSecondaryForeground: Color | undefined;
+	private ButtonBorder: Color | undefined;
 
 	private _onDidClick = this._register(new Emitter<Event>());
 	get onDidClick(): BaseEvent<Event> { return this._onDidClick.event; }
@@ -57,31 +57,31 @@ export class Button extends Disposable {
 	constructor(container: HTMLElement, options?: IButtonOptions) {
 		super();
 
-		this.options = options || Object.create(null);
+		this.options = options || OBject.create(null);
 		mixin(this.options, defaultOptions, false);
 
-		this.buttonForeground = this.options.buttonForeground;
-		this.buttonBackground = this.options.buttonBackground;
-		this.buttonHoverBackground = this.options.buttonHoverBackground;
+		this.ButtonForeground = this.options.ButtonForeground;
+		this.ButtonBackground = this.options.ButtonBackground;
+		this.ButtonHoverBackground = this.options.ButtonHoverBackground;
 
-		this.buttonSecondaryForeground = this.options.buttonSecondaryForeground;
-		this.buttonSecondaryBackground = this.options.buttonSecondaryBackground;
-		this.buttonSecondaryHoverBackground = this.options.buttonSecondaryHoverBackground;
+		this.ButtonSecondaryForeground = this.options.ButtonSecondaryForeground;
+		this.ButtonSecondaryBackground = this.options.ButtonSecondaryBackground;
+		this.ButtonSecondaryHoverBackground = this.options.ButtonSecondaryHoverBackground;
 
-		this.buttonBorder = this.options.buttonBorder;
+		this.ButtonBorder = this.options.ButtonBorder;
 
 		this._element = document.createElement('a');
-		this._element.classList.add('monaco-button');
-		this._element.tabIndex = 0;
-		this._element.setAttribute('role', 'button');
+		this._element.classList.add('monaco-Button');
+		this._element.taBIndex = 0;
+		this._element.setAttriBute('role', 'Button');
 
 		container.appendChild(this._element);
 
 		this._register(Gesture.addTarget(this._element));
 
 		[EventType.CLICK, TouchEventType.Tap].forEach(eventType => {
-			this._register(addDisposableListener(this._element, eventType, e => {
-				if (!this.enabled) {
+			this._register(addDisposaBleListener(this._element, eventType, e => {
+				if (!this.enaBled) {
 					EventHelper.stop(e);
 					return;
 				}
@@ -90,14 +90,14 @@ export class Button extends Disposable {
 			}));
 		});
 
-		this._register(addDisposableListener(this._element, EventType.KEY_DOWN, e => {
-			const event = new StandardKeyboardEvent(e);
+		this._register(addDisposaBleListener(this._element, EventType.KEY_DOWN, e => {
+			const event = new StandardKeyBoardEvent(e);
 			let eventHandled = false;
-			if (this.enabled && (event.equals(KeyCode.Enter) || event.equals(KeyCode.Space))) {
+			if (this.enaBled && (event.equals(KeyCode.Enter) || event.equals(KeyCode.Space))) {
 				this._onDidClick.fire(e);
 				eventHandled = true;
 			} else if (event.equals(KeyCode.Escape)) {
-				this._element.blur();
+				this._element.Blur();
 				eventHandled = true;
 			}
 
@@ -106,17 +106,17 @@ export class Button extends Disposable {
 			}
 		}));
 
-		this._register(addDisposableListener(this._element, EventType.MOUSE_OVER, e => {
-			if (!this._element.classList.contains('disabled')) {
+		this._register(addDisposaBleListener(this._element, EventType.MOUSE_OVER, e => {
+			if (!this._element.classList.contains('disaBled')) {
 				this.setHoverBackground();
 			}
 		}));
 
-		this._register(addDisposableListener(this._element, EventType.MOUSE_OUT, e => {
+		this._register(addDisposaBleListener(this._element, EventType.MOUSE_OUT, e => {
 			this.applyStyles(); // restore standard styles
 		}));
 
-		// Also set hover background when button is focused for feedback
+		// Also set hover Background when Button is focused for feedBack
 		this.focusTracker = this._register(trackFocus(this._element));
 		this._register(this.focusTracker.onDidFocus(() => this.setHoverBackground()));
 		this._register(this.focusTracker.onDidBlur(() => this.applyStyles())); // restore standard styles
@@ -127,46 +127,46 @@ export class Button extends Disposable {
 	private setHoverBackground(): void {
 		let hoverBackground;
 		if (this.options.secondary) {
-			hoverBackground = this.buttonSecondaryHoverBackground ? this.buttonSecondaryHoverBackground.toString() : null;
+			hoverBackground = this.ButtonSecondaryHoverBackground ? this.ButtonSecondaryHoverBackground.toString() : null;
 		} else {
-			hoverBackground = this.buttonHoverBackground ? this.buttonHoverBackground.toString() : null;
+			hoverBackground = this.ButtonHoverBackground ? this.ButtonHoverBackground.toString() : null;
 		}
 		if (hoverBackground) {
-			this._element.style.backgroundColor = hoverBackground;
+			this._element.style.BackgroundColor = hoverBackground;
 		}
 	}
 
 	style(styles: IButtonStyles): void {
-		this.buttonForeground = styles.buttonForeground;
-		this.buttonBackground = styles.buttonBackground;
-		this.buttonHoverBackground = styles.buttonHoverBackground;
-		this.buttonSecondaryForeground = styles.buttonSecondaryForeground;
-		this.buttonSecondaryBackground = styles.buttonSecondaryBackground;
-		this.buttonSecondaryHoverBackground = styles.buttonSecondaryHoverBackground;
-		this.buttonBorder = styles.buttonBorder;
+		this.ButtonForeground = styles.ButtonForeground;
+		this.ButtonBackground = styles.ButtonBackground;
+		this.ButtonHoverBackground = styles.ButtonHoverBackground;
+		this.ButtonSecondaryForeground = styles.ButtonSecondaryForeground;
+		this.ButtonSecondaryBackground = styles.ButtonSecondaryBackground;
+		this.ButtonSecondaryHoverBackground = styles.ButtonSecondaryHoverBackground;
+		this.ButtonBorder = styles.ButtonBorder;
 
 		this.applyStyles();
 	}
 
 	private applyStyles(): void {
 		if (this._element) {
-			let background, foreground;
+			let Background, foreground;
 			if (this.options.secondary) {
-				foreground = this.buttonSecondaryForeground ? this.buttonSecondaryForeground.toString() : '';
-				background = this.buttonSecondaryBackground ? this.buttonSecondaryBackground.toString() : '';
+				foreground = this.ButtonSecondaryForeground ? this.ButtonSecondaryForeground.toString() : '';
+				Background = this.ButtonSecondaryBackground ? this.ButtonSecondaryBackground.toString() : '';
 			} else {
-				foreground = this.buttonForeground ? this.buttonForeground.toString() : '';
-				background = this.buttonBackground ? this.buttonBackground.toString() : '';
+				foreground = this.ButtonForeground ? this.ButtonForeground.toString() : '';
+				Background = this.ButtonBackground ? this.ButtonBackground.toString() : '';
 			}
 
-			const border = this.buttonBorder ? this.buttonBorder.toString() : '';
+			const Border = this.ButtonBorder ? this.ButtonBorder.toString() : '';
 
 			this._element.style.color = foreground;
-			this._element.style.backgroundColor = background;
+			this._element.style.BackgroundColor = Background;
 
-			this._element.style.borderWidth = border ? '1px' : '';
-			this._element.style.borderStyle = border ? 'solid' : '';
-			this._element.style.borderColor = border;
+			this._element.style.BorderWidth = Border ? '1px' : '';
+			this._element.style.BorderStyle = Border ? 'solid' : '';
+			this._element.style.BorderColor = Border;
 		}
 	}
 
@@ -174,8 +174,8 @@ export class Button extends Disposable {
 		return this._element;
 	}
 
-	set label(value: string) {
-		this._element.classList.add('monaco-text-button');
+	set laBel(value: string) {
+		this._element.classList.add('monaco-text-Button');
 		if (this.options.supportCodicons) {
 			reset(this._element, ...renderCodicons(value));
 		} else {
@@ -192,20 +192,20 @@ export class Button extends Disposable {
 		this._element.classList.add(iconClassName);
 	}
 
-	set enabled(value: boolean) {
+	set enaBled(value: Boolean) {
 		if (value) {
-			this._element.classList.remove('disabled');
-			this._element.setAttribute('aria-disabled', String(false));
-			this._element.tabIndex = 0;
+			this._element.classList.remove('disaBled');
+			this._element.setAttriBute('aria-disaBled', String(false));
+			this._element.taBIndex = 0;
 		} else {
-			this._element.classList.add('disabled');
-			this._element.setAttribute('aria-disabled', String(true));
-			removeTabIndexAndUpdateFocus(this._element);
+			this._element.classList.add('disaBled');
+			this._element.setAttriBute('aria-disaBled', String(true));
+			removeTaBIndexAndUpdateFocus(this._element);
 		}
 	}
 
-	get enabled() {
-		return !this._element.classList.contains('disabled');
+	get enaBled() {
+		return !this._element.classList.contains('disaBled');
 	}
 
 	focus(): void {
@@ -213,42 +213,42 @@ export class Button extends Disposable {
 	}
 }
 
-export class ButtonGroup extends Disposable {
-	private _buttons: Button[] = [];
+export class ButtonGroup extends DisposaBle {
+	private _Buttons: Button[] = [];
 
-	constructor(container: HTMLElement, count: number, options?: IButtonOptions) {
+	constructor(container: HTMLElement, count: numBer, options?: IButtonOptions) {
 		super();
 
 		this.create(container, count, options);
 	}
 
-	get buttons(): Button[] {
-		return this._buttons;
+	get Buttons(): Button[] {
+		return this._Buttons;
 	}
 
-	private create(container: HTMLElement, count: number, options?: IButtonOptions): void {
+	private create(container: HTMLElement, count: numBer, options?: IButtonOptions): void {
 		for (let index = 0; index < count; index++) {
-			const button = this._register(new Button(container, options));
-			this._buttons.push(button);
+			const Button = this._register(new Button(container, options));
+			this._Buttons.push(Button);
 
-			// Implement keyboard access in buttons if there are multiple
+			// Implement keyBoard access in Buttons if there are multiple
 			if (count > 1) {
-				this._register(addDisposableListener(button.element, EventType.KEY_DOWN, e => {
-					const event = new StandardKeyboardEvent(e);
+				this._register(addDisposaBleListener(Button.element, EventType.KEY_DOWN, e => {
+					const event = new StandardKeyBoardEvent(e);
 					let eventHandled = true;
 
 					// Next / Previous Button
-					let buttonIndexToFocus: number | undefined;
+					let ButtonIndexToFocus: numBer | undefined;
 					if (event.equals(KeyCode.LeftArrow)) {
-						buttonIndexToFocus = index > 0 ? index - 1 : this._buttons.length - 1;
+						ButtonIndexToFocus = index > 0 ? index - 1 : this._Buttons.length - 1;
 					} else if (event.equals(KeyCode.RightArrow)) {
-						buttonIndexToFocus = index === this._buttons.length - 1 ? 0 : index + 1;
+						ButtonIndexToFocus = index === this._Buttons.length - 1 ? 0 : index + 1;
 					} else {
 						eventHandled = false;
 					}
 
-					if (eventHandled && typeof buttonIndexToFocus === 'number') {
-						this._buttons[buttonIndexToFocus].focus();
+					if (eventHandled && typeof ButtonIndexToFocus === 'numBer') {
+						this._Buttons[ButtonIndexToFocus].focus();
 						EventHelper.stop(e, true);
 					}
 

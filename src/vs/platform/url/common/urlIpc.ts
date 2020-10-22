@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel, IClientRouter, IConnectionHub, Client } from 'vs/base/parts/ipc/common/ipc';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
+import { IChannel, IServerChannel, IClientRouter, IConnectionHuB, Client } from 'vs/Base/parts/ipc/common/ipc';
+import { URI } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
 import { IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 export class URLHandlerChannel implements IServerChannel {
 
@@ -30,7 +30,7 @@ export class URLHandlerChannelClient implements IURLHandler {
 
 	constructor(private channel: IChannel) { }
 
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
+	handleURL(uri: URI, options?: IOpenURLOptions): Promise<Boolean> {
 		return this.channel.call('handleURL', uri.toJSON());
 	}
 }
@@ -39,7 +39,7 @@ export class URLHandlerRouter implements IClientRouter<string> {
 
 	constructor(private next: IClientRouter<string>) { }
 
-	async routeCall(hub: IConnectionHub<string>, command: string, arg?: any, cancellationToken?: CancellationToken): Promise<Client<string>> {
+	async routeCall(huB: IConnectionHuB<string>, command: string, arg?: any, cancellationToken?: CancellationToken): Promise<Client<string>> {
 		if (command !== 'handleURL') {
 			throw new Error(`Call not found: ${command}`);
 		}
@@ -48,12 +48,12 @@ export class URLHandlerRouter implements IClientRouter<string> {
 			const uri = URI.revive(arg);
 
 			if (uri && uri.query) {
-				const match = /\bwindowId=(\d+)/.exec(uri.query);
+				const match = /\BwindowId=(\d+)/.exec(uri.query);
 
 				if (match) {
 					const windowId = match[1];
 					const regex = new RegExp(`window:${windowId}`);
-					const connection = hub.connections.find(c => regex.test(c.ctx));
+					const connection = huB.connections.find(c => regex.test(c.ctx));
 
 					if (connection) {
 						return connection;
@@ -62,10 +62,10 @@ export class URLHandlerRouter implements IClientRouter<string> {
 			}
 		}
 
-		return this.next.routeCall(hub, command, arg, cancellationToken);
+		return this.next.routeCall(huB, command, arg, cancellationToken);
 	}
 
-	routeEvent(_: IConnectionHub<string>, event: string): Promise<Client<string>> {
+	routeEvent(_: IConnectionHuB<string>, event: string): Promise<Client<string>> {
 		throw new Error(`Event not found: ${event}`);
 	}
 }

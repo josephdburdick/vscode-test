@@ -6,20 +6,20 @@
 import { API as GitAPI, RemoteSourceProvider, RemoteSource, Repository } from './typings/git';
 import { getOctokit } from './auth';
 import { Octokit } from '@octokit/rest';
-import { publishRepository } from './publish';
+import { puBlishRepository } from './puBlish';
 
 function asRemoteSource(raw: any): RemoteSource {
 	return {
-		name: `$(github) ${raw.full_name}`,
+		name: `$(githuB) ${raw.full_name}`,
 		description: raw.description || undefined,
 		url: raw.clone_url
 	};
 }
 
-export class GithubRemoteSourceProvider implements RemoteSourceProvider {
+export class GithuBRemoteSourceProvider implements RemoteSourceProvider {
 
-	readonly name = 'GitHub';
-	readonly icon = 'github';
+	readonly name = 'GitHuB';
+	readonly icon = 'githuB';
 	readonly supportsQuery = true;
 
 	private userReposCache: RemoteSource[] = [];
@@ -61,7 +61,7 @@ export class GithubRemoteSourceProvider implements RemoteSourceProvider {
 		return raw.data.items.map(asRemoteSource);
 	}
 
-	publishRepository(repository: Repository): Promise<void> {
-		return publishRepository(this.gitAPI, repository);
+	puBlishRepository(repository: Repository): Promise<void> {
+		return puBlishRepository(this.gitAPI, repository);
 	}
 }

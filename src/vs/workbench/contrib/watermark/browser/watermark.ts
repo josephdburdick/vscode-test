@@ -4,49 +4,49 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./watermark';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { isMacintosh, OS } from 'vs/base/common/platform';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { isMacintosh, OS } from 'vs/Base/common/platform';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import * as nls from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { ILifecycleService, LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickaccess/browser/commandsQuickAccess';
-import { Parts, IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { StartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { FindInFilesActionId } from 'vs/workbench/contrib/search/common/constants';
-import * as dom from 'vs/base/browser/dom';
-import { KeybindingLabel } from 'vs/base/browser/ui/keybindingLabel/keybindingLabel';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workBench/Browser/actions/workspaceActions';
+import { ShowAllCommandsAction } from 'vs/workBench/contriB/quickaccess/Browser/commandsQuickAccess';
+import { Parts, IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { StartAction } from 'vs/workBench/contriB/deBug/Browser/deBugActions';
+import { FindInFilesActionId } from 'vs/workBench/contriB/search/common/constants';
+import * as dom from 'vs/Base/Browser/dom';
+import { KeyBindingLaBel } from 'vs/Base/Browser/ui/keyBindingLaBel/keyBindingLaBel';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
-import { assertIsDefined } from 'vs/base/common/types';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { NEW_UNTITLED_FILE_COMMAND_ID } from 'vs/workbench/contrib/files/browser/fileCommands';
+import { TERMINAL_COMMAND_ID } from 'vs/workBench/contriB/terminal/common/terminal';
+import { assertIsDefined } from 'vs/Base/common/types';
+import { workBenchConfigurationNodeBase } from 'vs/workBench/common/configuration';
+import { NEW_UNTITLED_FILE_COMMAND_ID } from 'vs/workBench/contriB/files/Browser/fileCommands';
 
 const $ = dom.$;
 
 interface WatermarkEntry {
 	text: string;
 	id: string;
-	mac?: boolean;
+	mac?: Boolean;
 }
 
 const showCommands: WatermarkEntry = { text: nls.localize('watermark.showCommands', "Show All Commands"), id: ShowAllCommandsAction.ID };
-const quickAccess: WatermarkEntry = { text: nls.localize('watermark.quickAccess', "Go to File"), id: 'workbench.action.quickOpen' };
+const quickAccess: WatermarkEntry = { text: nls.localize('watermark.quickAccess', "Go to File"), id: 'workBench.action.quickOpen' };
 const openFileNonMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFile', "Open File"), id: OpenFileAction.ID, mac: false };
 const openFolderNonMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFolder', "Open Folder"), id: OpenFolderAction.ID, mac: false };
 const openFileOrFolderMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFileFolder', "Open File or Folder"), id: OpenFileFolderAction.ID, mac: true };
-const openRecent: WatermarkEntry = { text: nls.localize('watermark.openRecent', "Open Recent"), id: 'workbench.action.openRecent' };
+const openRecent: WatermarkEntry = { text: nls.localize('watermark.openRecent', "Open Recent"), id: 'workBench.action.openRecent' };
 const newUntitledFile: WatermarkEntry = { text: nls.localize('watermark.newUntitledFile', "New Untitled File"), id: NEW_UNTITLED_FILE_COMMAND_ID };
-const newUntitledFileMacOnly: WatermarkEntry = Object.assign({ mac: true }, newUntitledFile);
-const toggleTerminal: WatermarkEntry = { text: nls.localize({ key: 'watermark.toggleTerminal', comment: ['toggle is a verb here'] }, "Toggle Terminal"), id: TERMINAL_COMMAND_ID.TOGGLE };
+const newUntitledFileMacOnly: WatermarkEntry = OBject.assign({ mac: true }, newUntitledFile);
+const toggleTerminal: WatermarkEntry = { text: nls.localize({ key: 'watermark.toggleTerminal', comment: ['toggle is a verB here'] }, "Toggle Terminal"), id: TERMINAL_COMMAND_ID.TOGGLE };
 const findInFiles: WatermarkEntry = { text: nls.localize('watermark.findInFiles', "Find in Files"), id: FindInFilesActionId };
-const startDebugging: WatermarkEntry = { text: nls.localize('watermark.startDebugging', "Start Debugging"), id: StartAction.ID };
+const startDeBugging: WatermarkEntry = { text: nls.localize('watermark.startDeBugging', "Start DeBugging"), id: StartAction.ID };
 
 const noFolderEntries = [
 	showCommands,
@@ -61,34 +61,34 @@ const folderEntries = [
 	showCommands,
 	quickAccess,
 	findInFiles,
-	startDebugging,
+	startDeBugging,
 	toggleTerminal
 ];
 
-const WORKBENCH_TIPS_ENABLED_KEY = 'workbench.tips.enabled';
+const WORKBENCH_TIPS_ENABLED_KEY = 'workBench.tips.enaBled';
 
-export class WatermarkContribution extends Disposable implements IWorkbenchContribution {
+export class WatermarkContriBution extends DisposaBle implements IWorkBenchContriBution {
 	private watermark: HTMLElement | undefined;
-	private watermarkDisposable = this._register(new DisposableStore());
-	private enabled: boolean;
-	private workbenchState: WorkbenchState;
+	private watermarkDisposaBle = this._register(new DisposaBleStore());
+	private enaBled: Boolean;
+	private workBenchState: WorkBenchState;
 
 	constructor(
 		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@IWorkBenchLayoutService private readonly layoutService: IWorkBenchLayoutService,
+		@IKeyBindingService private readonly keyBindingService: IKeyBindingService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IEditorGroupsService private readonly editorGroupsService: IEditorGroupsService
 	) {
 		super();
 
-		this.workbenchState = contextService.getWorkbenchState();
-		this.enabled = this.configurationService.getValue<boolean>(WORKBENCH_TIPS_ENABLED_KEY);
+		this.workBenchState = contextService.getWorkBenchState();
+		this.enaBled = this.configurationService.getValue<Boolean>(WORKBENCH_TIPS_ENABLED_KEY);
 
 		this.registerListeners();
 
-		if (this.enabled) {
+		if (this.enaBled) {
 			this.create();
 		}
 	}
@@ -98,10 +98,10 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 
 		this._register(this.configurationService.onDidChangeConfiguration(e => {
 			if (e.affectsConfiguration(WORKBENCH_TIPS_ENABLED_KEY)) {
-				const enabled = this.configurationService.getValue<boolean>(WORKBENCH_TIPS_ENABLED_KEY);
-				if (enabled !== this.enabled) {
-					this.enabled = enabled;
-					if (this.enabled) {
+				const enaBled = this.configurationService.getValue<Boolean>(WORKBENCH_TIPS_ENABLED_KEY);
+				if (enaBled !== this.enaBled) {
+					this.enaBled = enaBled;
+					if (this.enaBled) {
 						this.create();
 					} else {
 						this.destroy();
@@ -110,11 +110,11 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 			}
 		}));
 
-		this._register(this.contextService.onDidChangeWorkbenchState(e => {
-			const previousWorkbenchState = this.workbenchState;
-			this.workbenchState = this.contextService.getWorkbenchState();
+		this._register(this.contextService.onDidChangeWorkBenchState(e => {
+			const previousWorkBenchState = this.workBenchState;
+			this.workBenchState = this.contextService.getWorkBenchState();
 
-			if (this.enabled && this.workbenchState !== previousWorkbenchState) {
+			if (this.enaBled && this.workBenchState !== previousWorkBenchState) {
 				this.recreate();
 			}
 		}));
@@ -125,21 +125,21 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 		container.classList.add('has-watermark');
 
 		this.watermark = $('.watermark');
-		const box = dom.append(this.watermark, $('.watermark-box'));
-		const folder = this.workbenchState !== WorkbenchState.EMPTY;
+		const Box = dom.append(this.watermark, $('.watermark-Box'));
+		const folder = this.workBenchState !== WorkBenchState.EMPTY;
 		const selected = folder ? folderEntries : noFolderEntries
 			.filter(entry => !('mac' in entry) || entry.mac === isMacintosh)
 			.filter(entry => !!CommandsRegistry.getCommand(entry.id));
 
 		const update = () => {
-			dom.clearNode(box);
+			dom.clearNode(Box);
 			selected.map(entry => {
-				const dl = dom.append(box, $('dl'));
+				const dl = dom.append(Box, $('dl'));
 				const dt = dom.append(dl, $('dt'));
 				dt.textContent = entry.text;
 				const dd = dom.append(dl, $('dd'));
-				const keybinding = new KeybindingLabel(dd, OS, { renderUnboundKeybindings: true });
-				keybinding.set(this.keybindingService.lookupKeybinding(entry.id));
+				const keyBinding = new KeyBindingLaBel(dd, OS, { renderUnBoundKeyBindings: true });
+				keyBinding.set(this.keyBindingService.lookupKeyBinding(entry.id));
 			});
 		};
 
@@ -147,8 +147,8 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 
 		dom.prepend(container.firstElementChild as HTMLElement, this.watermark);
 
-		this.watermarkDisposable.add(this.keybindingService.onDidUpdateKeybindings(update));
-		this.watermarkDisposable.add(this.editorGroupsService.onDidLayout(dimension => this.handleEditorPartSize(container, dimension)));
+		this.watermarkDisposaBle.add(this.keyBindingService.onDidUpdateKeyBindings(update));
+		this.watermarkDisposaBle.add(this.editorGroupsService.onDidLayout(dimension => this.handleEditorPartSize(container, dimension)));
 
 		this.handleEditorPartSize(container, this.editorGroupsService.contentDimension);
 	}
@@ -166,7 +166,7 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 				container.classList.remove('has-watermark');
 			}
 
-			this.watermarkDisposable.clear();
+			this.watermarkDisposaBle.clear();
 		}
 	}
 
@@ -176,17 +176,17 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WatermarkContribution, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(WatermarkContriBution, LifecyclePhase.Restored);
 
 Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
 	.registerConfiguration({
-		...workbenchConfigurationNodeBase,
+		...workBenchConfigurationNodeBase,
 		'properties': {
-			'workbench.tips.enabled': {
-				'type': 'boolean',
+			'workBench.tips.enaBled': {
+				'type': 'Boolean',
 				'default': true,
-				'description': nls.localize('tips.enabled', "When enabled, will show the watermark tips when no editor is open.")
+				'description': nls.localize('tips.enaBled', "When enaBled, will show the watermark tips when no editor is open.")
 			},
 		}
 	});

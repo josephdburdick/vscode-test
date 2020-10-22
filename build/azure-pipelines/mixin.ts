@@ -6,7 +6,7 @@
 'use strict';
 
 import * as json from 'gulp-json-editor';
-const buffer = require('gulp-buffer');
+const Buffer = require('gulp-Buffer');
 import * as filter from 'gulp-filter';
 import * as es from 'event-stream';
 import * as Vinyl from 'vinyl';
@@ -24,13 +24,13 @@ interface IBuiltInExtension {
 }
 
 interface OSSProduct {
-	readonly builtInExtensions: IBuiltInExtension[];
-	readonly webBuiltInExtensions?: IBuiltInExtension[];
+	readonly BuiltInExtensions: IBuiltInExtension[];
+	readonly weBBuiltInExtensions?: IBuiltInExtension[];
 }
 
 interface Product {
-	readonly builtInExtensions?: IBuiltInExtension[] | { 'include'?: IBuiltInExtension[], 'exclude'?: string[] };
-	readonly webBuiltInExtensions?: IBuiltInExtension[];
+	readonly BuiltInExtensions?: IBuiltInExtension[] | { 'include'?: IBuiltInExtension[], 'exclude'?: string[] };
+	readonly weBBuiltInExtensions?: IBuiltInExtension[];
 }
 
 function main() {
@@ -43,41 +43,41 @@ function main() {
 
 	const productJsonFilter = filter(f => f.relative === 'product.json', { restore: true });
 
-	fancyLog(ansiColors.blue('[mixin]'), `Mixing in sources:`);
+	fancyLog(ansiColors.Blue('[mixin]'), `Mixing in sources:`);
 	return vfs
-		.src(`quality/${quality}/**`, { base: `quality/${quality}` })
+		.src(`quality/${quality}/**`, { Base: `quality/${quality}` })
 		.pipe(filter(f => !f.isDirectory()))
 		.pipe(productJsonFilter)
-		.pipe(buffer())
+		.pipe(Buffer())
 		.pipe(json((o: Product) => {
 			const ossProduct = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'product.json'), 'utf8')) as OSSProduct;
-			let builtInExtensions = ossProduct.builtInExtensions;
+			let BuiltInExtensions = ossProduct.BuiltInExtensions;
 
-			if (Array.isArray(o.builtInExtensions)) {
-				fancyLog(ansiColors.blue('[mixin]'), 'Overwriting built-in extensions:', o.builtInExtensions.map(e => e.name));
+			if (Array.isArray(o.BuiltInExtensions)) {
+				fancyLog(ansiColors.Blue('[mixin]'), 'Overwriting Built-in extensions:', o.BuiltInExtensions.map(e => e.name));
 
-				builtInExtensions = o.builtInExtensions;
-			} else if (o.builtInExtensions) {
-				const include = o.builtInExtensions['include'] || [];
-				const exclude = o.builtInExtensions['exclude'] || [];
+				BuiltInExtensions = o.BuiltInExtensions;
+			} else if (o.BuiltInExtensions) {
+				const include = o.BuiltInExtensions['include'] || [];
+				const exclude = o.BuiltInExtensions['exclude'] || [];
 
-				fancyLog(ansiColors.blue('[mixin]'), 'OSS built-in extensions:', builtInExtensions.map(e => e.name));
-				fancyLog(ansiColors.blue('[mixin]'), 'Including built-in extensions:', include.map(e => e.name));
-				fancyLog(ansiColors.blue('[mixin]'), 'Excluding built-in extensions:', exclude);
+				fancyLog(ansiColors.Blue('[mixin]'), 'OSS Built-in extensions:', BuiltInExtensions.map(e => e.name));
+				fancyLog(ansiColors.Blue('[mixin]'), 'Including Built-in extensions:', include.map(e => e.name));
+				fancyLog(ansiColors.Blue('[mixin]'), 'Excluding Built-in extensions:', exclude);
 
-				builtInExtensions = builtInExtensions.filter(ext => !include.find(e => e.name === ext.name) && !exclude.find(name => name === ext.name));
-				builtInExtensions = [...builtInExtensions, ...include];
+				BuiltInExtensions = BuiltInExtensions.filter(ext => !include.find(e => e.name === ext.name) && !exclude.find(name => name === ext.name));
+				BuiltInExtensions = [...BuiltInExtensions, ...include];
 
-				fancyLog(ansiColors.blue('[mixin]'), 'Final built-in extensions:', builtInExtensions.map(e => e.name));
+				fancyLog(ansiColors.Blue('[mixin]'), 'Final Built-in extensions:', BuiltInExtensions.map(e => e.name));
 			} else {
-				fancyLog(ansiColors.blue('[mixin]'), 'Inheriting OSS built-in extensions', builtInExtensions.map(e => e.name));
+				fancyLog(ansiColors.Blue('[mixin]'), 'Inheriting OSS Built-in extensions', BuiltInExtensions.map(e => e.name));
 			}
 
-			return { webBuiltInExtensions: ossProduct.webBuiltInExtensions, ...o, builtInExtensions };
+			return { weBBuiltInExtensions: ossProduct.weBBuiltInExtensions, ...o, BuiltInExtensions };
 		}))
 		.pipe(productJsonFilter.restore)
 		.pipe(es.mapSync(function (f: Vinyl) {
-			fancyLog(ansiColors.blue('[mixin]'), f.relative, ansiColors.green('✔︎'));
+			fancyLog(ansiColors.Blue('[mixin]'), f.relative, ansiColors.green('✔︎'));
 			return f;
 		}))
 		.pipe(vfs.dest('.'));

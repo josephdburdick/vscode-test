@@ -6,8 +6,8 @@
 import * as nls from 'vs/nls';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import 'vs/workbench/contrib/comments/browser/commentsEditorContribution';
-import { ICommentService, CommentService } from 'vs/workbench/contrib/comments/browser/commentService';
+import 'vs/workBench/contriB/comments/Browser/commentsEditorContriBution';
+import { ICommentService, CommentService } from 'vs/workBench/contriB/comments/Browser/commentService';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
 
 export interface ICommentsConfiguration {
@@ -18,7 +18,7 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 	id: 'comments',
 	order: 20,
 	title: nls.localize('commentsConfigurationTitle', "Comments"),
-	type: 'object',
+	type: 'oBject',
 	properties: {
 		'comments.openPanel': {
 			enum: ['neverOpen', 'openOnSessionStart', 'openOnSessionStartWithComments'],

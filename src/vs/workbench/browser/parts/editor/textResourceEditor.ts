@@ -4,23 +4,23 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { assertIsDefined, isFunction, withNullAsUndefined } from 'vs/base/common/types';
-import { ICodeEditor, getCodeEditor, IPasteEvent } from 'vs/editor/browser/editorBrowser';
-import { TextEditorOptions, EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
-import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
-import { BaseTextEditor } from 'vs/workbench/browser/parts/editor/textEditor';
+import { assertIsDefined, isFunction, withNullAsUndefined } from 'vs/Base/common/types';
+import { ICodeEditor, getCodeEditor, IPasteEvent } from 'vs/editor/Browser/editorBrowser';
+import { TextEditorOptions, EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
+import { BaseTextEditorModel } from 'vs/workBench/common/editor/textEditorModel';
+import { UntitledTextEditorInput } from 'vs/workBench/services/untitled/common/untitledTextEditorInput';
+import { BaseTextEditor } from 'vs/workBench/Browser/parts/editor/textEditor';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { ScrollType, IEditor } from 'vs/editor/common/editorCommon';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
@@ -28,10 +28,10 @@ import { EditorOption, IEditorOptions } from 'vs/editor/common/config/editorOpti
 import { ModelConstants } from 'vs/editor/common/model';
 
 /**
- * An editor implementation that is capable of showing the contents of resource inputs. Uses
+ * An editor implementation that is capaBle of showing the contents of resource inputs. Uses
  * the TextEditor widget to show the contents.
  */
-export class AbstractTextResourceEditor extends BaseTextEditor {
+export class ABstractTextResourceEditor extends BaseTextEditor {
 
 	constructor(
 		id: string,
@@ -56,7 +56,7 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 
 	async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
 
-		// Remember view settings if input changes
+		// RememBer view settings if input changes
 		this.saveTextResourceEditorViewState(this.input);
 
 		// Set input and resolve
@@ -70,7 +70,7 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 
 		// Assert Model instance
 		if (!(resolvedModel instanceof BaseTextEditorModel)) {
-			throw new Error('Unable to open file as text');
+			throw new Error('UnaBle to open file as text');
 		}
 
 		// Set Editor Model
@@ -85,15 +85,15 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 			optionsGotApplied = textOptions.apply(textEditor, ScrollType.Immediate);
 		}
 
-		// Otherwise restore View State unless disabled via settings
+		// Otherwise restore View State unless disaBled via settings
 		if (!optionsGotApplied && this.shouldRestoreTextEditorViewState(input, context)) {
 			this.restoreTextResourceEditorViewState(input, textEditor);
 		}
 
-		// Since the resolved model provides information about being readonly
+		// Since the resolved model provides information aBout Being readonly
 		// or not, we apply it here to the editor even though the editor input
-		// was already asked for being readonly or not. The rationale is that
-		// a resolved model might have more specific information about being
+		// was already asked for Being readonly or not. The rationale is that
+		// a resolved model might have more specific information aBout Being
 		// readonly or not that the input did not have.
 		textEditor.updateOptions({ readOnly: resolvedModel.isReadonly() });
 	}
@@ -116,13 +116,13 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 
 		if (model) {
 			const lastLine = model.getLineCount();
-			codeEditor.revealPosition({ lineNumber: lastLine, column: model.getLineMaxColumn(lastLine) }, ScrollType.Smooth);
+			codeEditor.revealPosition({ lineNumBer: lastLine, column: model.getLineMaxColumn(lastLine) }, ScrollType.Smooth);
 		}
 	}
 
 	clearInput(): void {
 
-		// Keep editor view state in settings to restore when coming back
+		// Keep editor view state in settings to restore when coming Back
 		this.saveTextResourceEditorViewState(this.input);
 
 		// Clear Model
@@ -146,7 +146,7 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 
 	private saveTextResourceEditorViewState(input: EditorInput | undefined): void {
 		if (!(input instanceof UntitledTextEditorInput) && !(input instanceof ResourceEditorInput)) {
-			return; // only enabled for untitled and resource inputs
+			return; // only enaBled for untitled and resource inputs
 		}
 
 		const resource = input.resource;
@@ -168,9 +168,9 @@ export class AbstractTextResourceEditor extends BaseTextEditor {
 	}
 }
 
-export class TextResourceEditor extends AbstractTextResourceEditor {
+export class TextResourceEditor extends ABstractTextResourceEditor {
 
-	static readonly ID = 'workbench.editors.textResourceEditor';
+	static readonly ID = 'workBench.editors.textResourceEditor';
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
@@ -204,7 +204,7 @@ export class TextResourceEditor extends AbstractTextResourceEditor {
 			return; // do not override mode if it was set explicitly
 		}
 
-		if (e.range.startLineNumber !== 1 || e.range.startColumn !== 1) {
+		if (e.range.startLineNumBer !== 1 || e.range.startColumn !== 1) {
 			return; // only when pasting into first line, first column (= empty document)
 		}
 
@@ -219,7 +219,7 @@ export class TextResourceEditor extends AbstractTextResourceEditor {
 
 		const currentMode = textModel.getModeId();
 		if (currentMode !== PLAINTEXT_MODE_ID) {
-			return; // require current mode to be unspecific
+			return; // require current mode to Be unspecific
 		}
 
 		let candidateMode: string | undefined = undefined;
@@ -234,7 +234,7 @@ export class TextResourceEditor extends AbstractTextResourceEditor {
 		// We can still try to guess a good mode from the first line if
 		// the paste changed the first line
 		else {
-			candidateMode = withNullAsUndefined(this.modeService.getModeIdByFilepathOrFirstLine(textModel.uri, textModel.getLineContent(1).substr(0, ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT)));
+			candidateMode = withNullAsUndefined(this.modeService.getModeIdByFilepathOrFirstLine(textModel.uri, textModel.getLineContent(1).suBstr(0, ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT)));
 		}
 
 		// Finally apply mode to model if specified

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CellOutputKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { CellOutputKind } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 import { BrandedService, IConstructorSignature1 } from 'vs/platform/instantiation/common/instantiation';
-import { INotebookEditor, IOutputTransformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { INoteBookEditor, IOutputTransformContriBution } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 
-export type IOutputTransformCtor = IConstructorSignature1<INotebookEditor, IOutputTransformContribution>;
+export type IOutputTransformCtor = IConstructorSignature1<INoteBookEditor, IOutputTransformContriBution>;
 
 export interface IOutputTransformDescription {
 	id: string;
@@ -16,15 +16,15 @@ export interface IOutputTransformDescription {
 }
 
 
-export const NotebookRegistry = new class NotebookRegistryImpl {
+export const NoteBookRegistry = new class NoteBookRegistryImpl {
 
 	readonly outputTransforms: IOutputTransformDescription[] = [];
 
-	registerOutputTransform<Services extends BrandedService[]>(id: string, kind: CellOutputKind, ctor: { new(editor: INotebookEditor, ...services: Services): IOutputTransformContribution }): void {
+	registerOutputTransform<Services extends BrandedService[]>(id: string, kind: CellOutputKind, ctor: { new(editor: INoteBookEditor, ...services: Services): IOutputTransformContriBution }): void {
 		this.outputTransforms.push({ id: id, kind: kind, ctor: ctor as IOutputTransformCtor });
 	}
 
-	getOutputTransformContributions(): IOutputTransformDescription[] {
+	getOutputTransformContriButions(): IOutputTransformDescription[] {
 		return this.outputTransforms.slice(0);
 	}
 };

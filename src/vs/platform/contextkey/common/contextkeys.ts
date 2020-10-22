@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { isMacintosh, isLinux, isWindows, isWeb } from 'vs/base/common/platform';
+import { isMacintosh, isLinux, isWindows, isWeB } from 'vs/Base/common/platform';
 
-export const IsMacContext = new RawContextKey<boolean>('isMac', isMacintosh);
-export const IsLinuxContext = new RawContextKey<boolean>('isLinux', isLinux);
-export const IsWindowsContext = new RawContextKey<boolean>('isWindows', isWindows);
+export const IsMacContext = new RawContextKey<Boolean>('isMac', isMacintosh);
+export const IsLinuxContext = new RawContextKey<Boolean>('isLinux', isLinux);
+export const IsWindowsContext = new RawContextKey<Boolean>('isWindows', isWindows);
 
-export const IsWebContext = new RawContextKey<boolean>('isWeb', isWeb);
-export const IsMacNativeContext = new RawContextKey<boolean>('isMacNative', isMacintosh && !isWeb);
+export const IsWeBContext = new RawContextKey<Boolean>('isWeB', isWeB);
+export const IsMacNativeContext = new RawContextKey<Boolean>('isMacNative', isMacintosh && !isWeB);
 
-export const IsDevelopmentContext = new RawContextKey<boolean>('isDevelopment', false);
+export const IsDevelopmentContext = new RawContextKey<Boolean>('isDevelopment', false);
 
 export const InputFocusedContextKey = 'inputFocus';
-export const InputFocusedContext = new RawContextKey<boolean>(InputFocusedContextKey, false);
+export const InputFocusedContext = new RawContextKey<Boolean>(InputFocusedContextKey, false);

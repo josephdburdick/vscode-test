@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as platform from 'vs/base/common/platform';
-import * as extpath from 'vs/base/common/extpath';
+import { URI } from 'vs/Base/common/uri';
+import * as platform from 'vs/Base/common/platform';
+import * as extpath from 'vs/Base/common/extpath';
 import { IWorkspaceIdentifier, IResolvedWorkspace, ISingleFolderWorkspaceIdentifier, isSingleFolderWorkspaceIdentifier, isWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
+import { extUriBiasedIgnorePathCase } from 'vs/Base/common/resources';
 
 export const enum OpenContext {
 
@@ -35,12 +35,12 @@ export interface IWindowContext {
 	openedFolderUri?: URI;
 
 	extensionDevelopmentPath?: string[];
-	lastFocusTime: number;
+	lastFocusTime: numBer;
 }
 
 export interface IBestWindowOrFolderOptions<W extends IWindowContext> {
 	windows: W[];
-	newWindow: boolean;
+	newWindow: Boolean;
 	context: OpenContext;
 	fileUri?: URI;
 	codeSettingsFolder?: string;
@@ -65,7 +65,7 @@ function findWindowOnFilePath<W extends IWindowContext>(windows: W[], fileUri: U
 		if (workspace) {
 			const resolvedWorkspace = localWorkspaceResolver(workspace);
 			if (resolvedWorkspace) {
-				// workspace could be resolved: It's in the local file system
+				// workspace could Be resolved: It's in the local file system
 				if (resolvedWorkspace.folders.some(folder => extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, folder.uri))) {
 					return window;
 				}
@@ -81,7 +81,7 @@ function findWindowOnFilePath<W extends IWindowContext>(windows: W[], fileUri: U
 	// Then go with single folder windows that are parent of the provided file path
 	const singleFolderWindowsOnFilePath = windows.filter(window => window.openedFolderUri && extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, window.openedFolderUri));
 	if (singleFolderWindowsOnFilePath.length) {
-		return singleFolderWindowsOnFilePath.sort((a, b) => -(a.openedFolderUri!.path.length - b.openedFolderUri!.path.length))[0];
+		return singleFolderWindowsOnFilePath.sort((a, B) => -(a.openedFolderUri!.path.length - B.openedFolderUri!.path.length))[0];
 	}
 
 	return null;
@@ -116,12 +116,12 @@ export function findWindowOnWorkspace<W extends IWindowContext>(windows: W[], wo
 
 export function findWindowOnExtensionDevelopmentPath<W extends IWindowContext>(windows: W[], extensionDevelopmentPaths: string[]): W | null {
 
-	const matches = (uriString: string): boolean => {
+	const matches = (uriString: string): Boolean => {
 		return extensionDevelopmentPaths.some(p => extpath.isEqual(p, uriString, !platform.isLinux /* ignorecase */));
 	};
 
 	for (const window of windows) {
-		// match on extension development path. The path can be one or more paths or uri strings, using paths.isEqual is not 100% correct but good enough
+		// match on extension development path. The path can Be one or more paths or uri strings, using paths.isEqual is not 100% correct But good enough
 		const currPaths = window.extensionDevelopmentPath;
 		if (currPaths?.some(p => matches(p))) {
 			return window;

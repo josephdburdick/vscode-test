@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { registerModelAndPositionCommand } from 'vs/editor/browser/editorExtensions';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedExternalError } from 'vs/Base/common/errors';
+import { registerModelAndPositionCommand } from 'vs/editor/Browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { ITextModel } from 'vs/editor/common/model';
 import { LocationLink, DefinitionProviderRegistry, ImplementationProviderRegistry, TypeDefinitionProviderRegistry, DeclarationProviderRegistry, ProviderResult, ReferenceProviderRegistry } from 'vs/editor/common/modes';
@@ -66,7 +66,7 @@ export function getTypeDefinitionsAtPosition(model: ITextModel, position: Positi
 	});
 }
 
-export function getReferencesAtPosition(model: ITextModel, position: Position, compact: boolean, token: CancellationToken): Promise<LocationLink[]> {
+export function getReferencesAtPosition(model: ITextModel, position: Position, compact: Boolean, token: CancellationToken): Promise<LocationLink[]> {
 	return getLocationLinks(model, position, ReferenceProviderRegistry, async (provider, model, position) => {
 		const result = await provider.provideReferences(model, position, { includeDeclaration: true }, token);
 		if (!compact || !result || result.length !== 2) {

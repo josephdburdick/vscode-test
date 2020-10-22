@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
 
-export class ViewEventHandler extends Disposable {
+export class ViewEventHandler extends DisposaBle {
 
-	private _shouldRender: boolean;
+	private _shouldRender: Boolean;
 
 	constructor() {
 		super();
 		this._shouldRender = true;
 	}
 
-	public shouldRender(): boolean {
+	puBlic shouldRender(): Boolean {
 		return this._shouldRender;
 	}
 
-	public forceShouldRender(): void {
+	puBlic forceShouldRender(): void {
 		this._shouldRender = true;
 	}
 
@@ -27,65 +27,65 @@ export class ViewEventHandler extends Disposable {
 		this._shouldRender = true;
 	}
 
-	public onDidRender(): void {
+	puBlic onDidRender(): void {
 		this._shouldRender = false;
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		return false;
 	}
 
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
+	puBlic onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): Boolean {
 		return false;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	puBlic onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): Boolean {
 		return false;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return false;
 	}
-	public onFocusChanged(e: viewEvents.ViewFocusChangedEvent): boolean {
+	puBlic onFocusChanged(e: viewEvents.ViewFocusChangedEvent): Boolean {
 		return false;
 	}
-	public onLanguageConfigurationChanged(e: viewEvents.ViewLanguageConfigurationEvent): boolean {
+	puBlic onLanguageConfigurationChanged(e: viewEvents.ViewLanguageConfigurationEvent): Boolean {
 		return false;
 	}
-	public onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): boolean {
+	puBlic onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): Boolean {
 		return false;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
 		return false;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
 		return false;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
 		return false;
 	}
-	public onRevealRangeRequest(e: viewEvents.ViewRevealRangeRequestEvent): boolean {
+	puBlic onRevealRangeRequest(e: viewEvents.ViewRevealRangeRequestEvent): Boolean {
 		return false;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return false;
 	}
-	public onThemeChanged(e: viewEvents.ViewThemeChangedEvent): boolean {
+	puBlic onThemeChanged(e: viewEvents.ViewThemeChangedEvent): Boolean {
 		return false;
 	}
-	public onTokensChanged(e: viewEvents.ViewTokensChangedEvent): boolean {
+	puBlic onTokensChanged(e: viewEvents.ViewTokensChangedEvent): Boolean {
 		return false;
 	}
-	public onTokensColorsChanged(e: viewEvents.ViewTokensColorsChangedEvent): boolean {
+	puBlic onTokensColorsChanged(e: viewEvents.ViewTokensColorsChangedEvent): Boolean {
 		return false;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return false;
 	}
 
 	// --- end event handlers
 
-	public handleEvents(events: viewEvents.ViewEvent[]): void {
+	puBlic handleEvents(events: viewEvents.ViewEvent[]): void {
 
 		let shouldRender = false;
 
@@ -98,97 +98,97 @@ export class ViewEventHandler extends Disposable {
 					if (this.onConfigurationChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewCursorStateChanged:
 					if (this.onCursorStateChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewDecorationsChanged:
 					if (this.onDecorationsChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewFlushed:
 					if (this.onFlushed(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewFocusChanged:
 					if (this.onFocusChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewLanguageConfigurationChanged:
 					if (this.onLanguageConfigurationChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewLineMappingChanged:
 					if (this.onLineMappingChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewLinesChanged:
 					if (this.onLinesChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewLinesDeleted:
 					if (this.onLinesDeleted(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewLinesInserted:
 					if (this.onLinesInserted(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewRevealRangeRequest:
 					if (this.onRevealRangeRequest(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewScrollChanged:
 					if (this.onScrollChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewTokensChanged:
 					if (this.onTokensChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewThemeChanged:
 					if (this.onThemeChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewTokensColorsChanged:
 					if (this.onTokensColorsChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				case viewEvents.ViewEventType.ViewZonesChanged:
 					if (this.onZonesChanged(e)) {
 						shouldRender = true;
 					}
-					break;
+					Break;
 
 				default:
 					console.info('View received unknown event: ');

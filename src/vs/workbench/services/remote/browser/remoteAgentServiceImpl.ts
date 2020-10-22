@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { AbstractRemoteAgentService } from 'vs/workbench/services/remote/common/abstractRemoteAgentService';
+import { ABstractRemoteAgentService } from 'vs/workBench/services/remote/common/aBstractRemoteAgentService';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IWebSocketFactory, BrowserSocketFactory } from 'vs/platform/remote/browser/browserSocketFactory';
+import { IWeBSocketFactory, BrowserSocketFactory } from 'vs/platform/remote/Browser/BrowserSocketFactory';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { ILogService } from 'vs/platform/log/common/log';
 
-export class RemoteAgentService extends AbstractRemoteAgentService implements IRemoteAgentService {
+export class RemoteAgentService extends ABstractRemoteAgentService implements IRemoteAgentService {
 
 	constructor(
-		webSocketFactory: IWebSocketFactory | null | undefined,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		weBSocketFactory: IWeBSocketFactory | null | undefined,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IProductService productService: IProductService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ISignService signService: ISignService,
 		@ILogService logService: ILogService
 	) {
-		super(new BrowserSocketFactory(webSocketFactory), environmentService, productService, remoteAuthorityResolverService, signService, logService);
+		super(new BrowserSocketFactory(weBSocketFactory), environmentService, productService, remoteAuthorityResolverService, signService, logService);
 	}
 }

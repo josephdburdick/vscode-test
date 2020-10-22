@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStatusbarService, StatusbarAlignment as MainThreadStatusBarAlignment, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
+import { IStatusBarService, StatusBarAlignment as MainThreadStatusBarAlignment, IStatusBarEntryAccessor, IStatusBarEntry } from 'vs/workBench/services/statusBar/common/statusBar';
 import { MainThreadStatusBarShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
 import { ThemeColor } from 'vs/platform/theme/common/themeService';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { dispose } from 'vs/base/common/lifecycle';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { dispose } from 'vs/Base/common/lifecycle';
 import { Command } from 'vs/editor/common/modes';
-import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
+import { IAccessiBilityInformation } from 'vs/platform/accessiBility/common/accessiBility';
 
 @extHostNamedCustomer(MainContext.MainThreadStatusBar)
 export class MainThreadStatusBar implements MainThreadStatusBarShape {
 
-	private readonly entries: Map<number, { accessor: IStatusbarEntryAccessor, alignment: MainThreadStatusBarAlignment, priority: number }> = new Map();
+	private readonly entries: Map<numBer, { accessor: IStatusBarEntryAccessor, alignment: MainThreadStatusBarAlignment, priority: numBer }> = new Map();
 	static readonly CODICON_REGEXP = /\$\((.*?)\)/g;
 
 	constructor(
 		_extHostContext: IExtHostContext,
-		@IStatusbarService private readonly statusbarService: IStatusbarService
+		@IStatusBarService private readonly statusBarService: IStatusBarService
 	) { }
 
 	dispose(): void {
@@ -27,17 +27,17 @@ export class MainThreadStatusBar implements MainThreadStatusBarShape {
 		this.entries.clear();
 	}
 
-	$setEntry(id: number, statusId: string, statusName: string, text: string, tooltip: string | undefined, command: Command | undefined, color: string | ThemeColor | undefined, alignment: MainThreadStatusBarAlignment, priority: number | undefined, accessibilityInformation: IAccessibilityInformation): void {
-		// if there are icons in the text use the tooltip for the aria label
-		let ariaLabel: string;
+	$setEntry(id: numBer, statusId: string, statusName: string, text: string, tooltip: string | undefined, command: Command | undefined, color: string | ThemeColor | undefined, alignment: MainThreadStatusBarAlignment, priority: numBer | undefined, accessiBilityInformation: IAccessiBilityInformation): void {
+		// if there are icons in the text use the tooltip for the aria laBel
+		let ariaLaBel: string;
 		let role: string | undefined = undefined;
-		if (accessibilityInformation) {
-			ariaLabel = accessibilityInformation.label;
-			role = accessibilityInformation.role;
+		if (accessiBilityInformation) {
+			ariaLaBel = accessiBilityInformation.laBel;
+			role = accessiBilityInformation.role;
 		} else {
-			ariaLabel = text ? text.replace(MainThreadStatusBar.CODICON_REGEXP, (_match, codiconName) => codiconName) : '';
+			ariaLaBel = text ? text.replace(MainThreadStatusBar.CODICON_REGEXP, (_match, codiconName) => codiconName) : '';
 		}
-		const entry: IStatusbarEntry = { text, tooltip, command, color, ariaLabel, role };
+		const entry: IStatusBarEntry = { text, tooltip, command, color, ariaLaBel, role };
 
 		if (typeof priority === 'undefined') {
 			priority = 0;
@@ -53,7 +53,7 @@ export class MainThreadStatusBar implements MainThreadStatusBarShape {
 
 		// Create new entry if not existing
 		if (!existingEntry) {
-			this.entries.set(id, { accessor: this.statusbarService.addEntry(entry, statusId, statusName, alignment, priority), alignment, priority });
+			this.entries.set(id, { accessor: this.statusBarService.addEntry(entry, statusId, statusName, alignment, priority), alignment, priority });
 		}
 
 		// Otherwise update
@@ -62,7 +62,7 @@ export class MainThreadStatusBar implements MainThreadStatusBarShape {
 		}
 	}
 
-	$dispose(id: number) {
+	$dispose(id: numBer) {
 		const entry = this.entries.get(id);
 		if (entry) {
 			dispose(entry.accessor);

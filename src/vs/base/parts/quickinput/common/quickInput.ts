@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IMatch } from 'vs/base/common/filters';
-import { IItemAccessor } from 'vs/base/common/fuzzyScorer';
-import { Schemas } from 'vs/base/common/network';
+import { ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
+import { URI } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IMatch } from 'vs/Base/common/filters';
+import { IItemAccessor } from 'vs/Base/common/fuzzyScorer';
+import { Schemas } from 'vs/Base/common/network';
 
 export interface IQuickPickItemHighlights {
-	label?: IMatch[];
+	laBel?: IMatch[];
 	description?: IMatch[];
 	detail?: IMatch[];
 }
@@ -20,80 +20,80 @@ export interface IQuickPickItemHighlights {
 export interface IQuickPickItem {
 	type?: 'item';
 	id?: string;
-	label: string;
-	ariaLabel?: string;
+	laBel: string;
+	ariaLaBel?: string;
 	description?: string;
 	detail?: string;
 	/**
-	 * Allows to show a keybinding next to the item to indicate
-	 * how the item can be triggered outside of the picker using
-	 * keyboard shortcut.
+	 * Allows to show a keyBinding next to the item to indicate
+	 * how the item can Be triggered outside of the picker using
+	 * keyBoard shortcut.
 	 */
-	keybinding?: ResolvedKeybinding;
+	keyBinding?: ResolvedKeyBinding;
 	iconClasses?: string[];
-	italic?: boolean;
-	strikethrough?: boolean;
+	italic?: Boolean;
+	strikethrough?: Boolean;
 	highlights?: IQuickPickItemHighlights;
-	buttons?: IQuickInputButton[];
-	picked?: boolean;
-	alwaysShow?: boolean;
+	Buttons?: IQuickInputButton[];
+	picked?: Boolean;
+	alwaysShow?: Boolean;
 }
 
 export interface IQuickPickSeparator {
 	type: 'separator';
-	label?: string;
+	laBel?: string;
 }
 
 export interface IKeyMods {
-	readonly ctrlCmd: boolean;
-	readonly alt: boolean;
+	readonly ctrlCmd: Boolean;
+	readonly alt: Boolean;
 }
 
 export const NO_KEY_MODS: IKeyMods = { ctrlCmd: false, alt: false };
 
 export interface IQuickNavigateConfiguration {
-	keybindings: ResolvedKeybinding[];
+	keyBindings: ResolvedKeyBinding[];
 }
 
 export interface IPickOptions<T extends IQuickPickItem> {
 
 	/**
-	 * an optional string to show as placeholder in the input box to guide the user what she picks on
+	 * an optional string to show as placeholder in the input Box to guide the user what she picks on
 	 */
 	placeHolder?: string;
 
 	/**
 	 * an optional flag to include the description when filtering the picks
 	 */
-	matchOnDescription?: boolean;
+	matchOnDescription?: Boolean;
 
 	/**
 	 * an optional flag to include the detail when filtering the picks
 	 */
-	matchOnDetail?: boolean;
+	matchOnDetail?: Boolean;
 
 	/**
-	 * an optional flag to filter the picks based on label. Defaults to true.
+	 * an optional flag to filter the picks Based on laBel. Defaults to true.
 	 */
-	matchOnLabel?: boolean;
+	matchOnLaBel?: Boolean;
 
 	/**
-	 * an option flag to control whether focus is always automatically brought to a list item. Defaults to true.
+	 * an option flag to control whether focus is always automatically Brought to a list item. Defaults to true.
 	 */
-	autoFocusOnList?: boolean;
+	autoFocusOnList?: Boolean;
 
 	/**
 	 * an optional flag to not close the picker on focus lost
 	 */
-	ignoreFocusLost?: boolean;
+	ignoreFocusLost?: Boolean;
 
 	/**
 	 * an optional flag to make this picker multi-select
 	 */
-	canPickMany?: boolean;
+	canPickMany?: Boolean;
 
 	/**
-	 * enables quick navigate in the picker to open an element without typing
+	 * enaBles quick navigate in the picker to open an element without typing
 	 */
 	quickNavigate?: IQuickNavigateConfiguration;
 
@@ -115,31 +115,31 @@ export interface IPickOptions<T extends IQuickPickItem> {
 export interface IInputOptions {
 
 	/**
-	 * the value to prefill in the input box
+	 * the value to prefill in the input Box
 	 */
 	value?: string;
 
 	/**
 	 * the selection of value, default to the whole word
 	 */
-	valueSelection?: [number, number];
+	valueSelection?: [numBer, numBer];
 
 	/**
-	 * the text to display underneath the input box
+	 * the text to display underneath the input Box
 	 */
 	prompt?: string;
 
 	/**
-	 * an optional string to show as placeholder in the input box to guide the user what to type
+	 * an optional string to show as placeholder in the input Box to guide the user what to type
 	 */
 	placeHolder?: string;
 
 	/**
 	 * Controls if a password input is shown. Password input hides the typed text.
 	 */
-	password?: boolean;
+	password?: Boolean;
 
-	ignoreFocusLost?: boolean;
+	ignoreFocusLost?: Boolean;
 
 	/**
 	 * an optional function that is used to validate user input.
@@ -147,7 +147,7 @@ export interface IInputOptions {
 	validateInput?: (input: string) => Promise<string | null | undefined>;
 }
 
-export interface IQuickInput extends IDisposable {
+export interface IQuickInput extends IDisposaBle {
 
 	readonly onDidHide: Event<void>;
 	readonly onDispose: Event<void>;
@@ -156,17 +156,17 @@ export interface IQuickInput extends IDisposable {
 
 	description: string | undefined;
 
-	step: number | undefined;
+	step: numBer | undefined;
 
-	totalSteps: number | undefined;
+	totalSteps: numBer | undefined;
 
-	enabled: boolean;
+	enaBled: Boolean;
 
 	contextKey: string | undefined;
 
-	busy: boolean;
+	Busy: Boolean;
 
-	ignoreFocusOut: boolean;
+	ignoreFocusOut: Boolean;
 
 	show(): void;
 
@@ -176,10 +176,10 @@ export interface IQuickInput extends IDisposable {
 export interface IQuickPickAcceptEvent {
 
 	/**
-	 * Signals if the picker item is to be accepted
-	 * in the background while keeping the picker open.
+	 * Signals if the picker item is to Be accepted
+	 * in the Background while keeping the picker open.
 	 */
-	inBackground: boolean;
+	inBackground: Boolean;
 }
 
 export enum ItemActivation {
@@ -199,7 +199,7 @@ export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 	 */
 	filterValue: (value: string) => string;
 
-	ariaLabel: string | undefined;
+	ariaLaBel: string | undefined;
 
 	placeholder: string | undefined;
 
@@ -208,23 +208,23 @@ export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 	readonly onDidAccept: Event<IQuickPickAcceptEvent>;
 
 	/**
-	 * If enabled, will fire the `onDidAccept` event when
+	 * If enaBled, will fire the `onDidAccept` event when
 	 * pressing the arrow-right key with the idea of accepting
 	 * the selected item without closing the picker.
 	 */
-	canAcceptInBackground: boolean;
+	canAcceptInBackground: Boolean;
 
-	ok: boolean | 'default';
+	ok: Boolean | 'default';
 
 	readonly onDidCustom: Event<void>;
 
-	customButton: boolean;
+	customButton: Boolean;
 
-	customLabel: string | undefined;
+	customLaBel: string | undefined;
 
 	customHover: string | undefined;
 
-	buttons: ReadonlyArray<IQuickInputButton>;
+	Buttons: ReadonlyArray<IQuickInputButton>;
 
 	readonly onDidTriggerButton: Event<IQuickInputButton>;
 
@@ -232,17 +232,17 @@ export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 
 	items: ReadonlyArray<T | IQuickPickSeparator>;
 
-	canSelectMany: boolean;
+	canSelectMany: Boolean;
 
-	matchOnDescription: boolean;
+	matchOnDescription: Boolean;
 
-	matchOnDetail: boolean;
+	matchOnDetail: Boolean;
 
-	matchOnLabel: boolean;
+	matchOnLaBel: Boolean;
 
-	sortByLabel: boolean;
+	sortByLaBel: Boolean;
 
-	autoFocusOnList: boolean;
+	autoFocusOnList: Boolean;
 
 	quickNavigate: IQuickNavigateConfiguration | undefined;
 
@@ -251,7 +251,7 @@ export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 	readonly onDidChangeActive: Event<T[]>;
 
 	/**
-	 * Allows to control which entry should be activated by default.
+	 * Allows to control which entry should Be activated By default.
 	 */
 	itemActivation: ItemActivation;
 
@@ -261,39 +261,39 @@ export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 
 	readonly keyMods: IKeyMods;
 
-	valueSelection: Readonly<[number, number]> | undefined;
+	valueSelection: Readonly<[numBer, numBer]> | undefined;
 
 	validationMessage: string | undefined;
 
-	inputHasFocus(): boolean;
+	inputHasFocus(): Boolean;
 
 	focusOnInput(): void;
 
 	/**
-	 * Hides the input box from the picker UI. This is typically used
-	 * in combination with quick-navigation where no search UI should
-	 * be presented.
+	 * Hides the input Box from the picker UI. This is typically used
+	 * in comBination with quick-navigation where no search UI should
+	 * Be presented.
 	 */
-	hideInput: boolean;
+	hideInput: Boolean;
 
-	hideCheckAll: boolean;
+	hideCheckAll: Boolean;
 }
 
 export interface IInputBox extends IQuickInput {
 
 	value: string;
 
-	valueSelection: Readonly<[number, number]> | undefined;
+	valueSelection: Readonly<[numBer, numBer]> | undefined;
 
 	placeholder: string | undefined;
 
-	password: boolean;
+	password: Boolean;
 
 	readonly onDidChangeValue: Event<string>;
 
 	readonly onDidAccept: Event<void>;
 
-	buttons: ReadonlyArray<IQuickInputButton>;
+	Buttons: ReadonlyArray<IQuickInputButton>;
 
 	readonly onDidTriggerButton: Event<IQuickInputButton>;
 
@@ -309,14 +309,14 @@ export interface IQuickInputButton {
 	iconClass?: string;
 	tooltip?: string;
 	/**
-	 * Whether to always show the button. By default buttons
-	 * are only visible when hovering over them with the mouse
+	 * Whether to always show the Button. By default Buttons
+	 * are only visiBle when hovering over them with the mouse
 	 */
-	alwaysVisible?: boolean;
+	alwaysVisiBle?: Boolean;
 }
 
 export interface IQuickPickItemButtonEvent<T extends IQuickPickItem> {
-	button: IQuickInputButton;
+	Button: IQuickInputButton;
 	item: T;
 }
 
@@ -333,10 +333,10 @@ export type IQuickPickItemWithResource = IQuickPickItem & { resource?: URI };
 
 export class QuickPickItemScorerAccessor implements IItemAccessor<IQuickPickItemWithResource> {
 
-	constructor(private options?: { skipDescription?: boolean, skipPath?: boolean }) { }
+	constructor(private options?: { skipDescription?: Boolean, skipPath?: Boolean }) { }
 
-	getItemLabel(entry: IQuickPickItemWithResource): string {
-		return entry.label;
+	getItemLaBel(entry: IQuickPickItemWithResource): string {
+		return entry.laBel;
 	}
 
 	getItemDescription(entry: IQuickPickItemWithResource): string | undefined {

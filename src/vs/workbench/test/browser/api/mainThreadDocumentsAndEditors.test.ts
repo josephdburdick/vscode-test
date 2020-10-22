@@ -4,30 +4,30 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MainThreadDocumentsAndEditors } from 'vs/workbench/api/browser/mainThreadDocumentsAndEditors';
+import { MainThreadDocumentsAndEditors } from 'vs/workBench/api/Browser/mainThreadDocumentsAndEditors';
 import { SingleProxyRPCProtocol } from './testRPCProtocol';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
-import { TestCodeEditorService } from 'vs/editor/test/browser/editorTestServices';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { ExtHostDocumentsAndEditorsShape, IDocumentsAndEditorsDelta } from 'vs/workbench/api/common/extHost.protocol';
-import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { mock } from 'vs/base/test/common/mock';
-import { TestEditorService, TestEditorGroupsService, TestEnvironmentService, TestPathService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { Event } from 'vs/base/common/event';
+import { TestCodeEditorService } from 'vs/editor/test/Browser/editorTestServices';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { ExtHostDocumentsAndEditorsShape, IDocumentsAndEditorsDelta } from 'vs/workBench/api/common/extHost.protocol';
+import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
+import { mock } from 'vs/Base/test/common/mock';
+import { TestEditorService, TestEditorGroupsService, TestEnvironmentService, TestPathService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { Event } from 'vs/Base/common/event';
 import { ITextModel } from 'vs/editor/common/model';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 import { NullLogService } from 'vs/platform/log/common/log';
 import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
 import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { TestTextResourcePropertiesService, TestWorkingCopyFileService } from 'vs/workbench/test/common/workbenchTestServices';
-import { UriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentityService';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { TestTextResourcePropertiesService, TestWorkingCopyFileService } from 'vs/workBench/test/common/workBenchTestServices';
+import { UriIdentityService } from 'vs/workBench/services/uriIdentity/common/uriIdentityService';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 
 suite('MainThreadDocumentsAndEditors', () => {
 
@@ -63,12 +63,12 @@ suite('MainThreadDocumentsAndEditors', () => {
 				onDidChangeDirty: Event.None
 			};
 		};
-		const workbenchEditorService = new TestEditorService();
+		const workBenchEditorService = new TestEditorService();
 		const editorGroupService = new TestEditorGroupsService();
 
 		const fileService = new class extends mock<IFileService>() {
 			onDidRunOperation = Event.None;
-			onDidChangeFileSystemProviderCapabilities = Event.None;
+			onDidChangeFileSystemProviderCapaBilities = Event.None;
 			onDidChangeFileSystemProviderRegistrations = Event.None;
 		};
 
@@ -78,7 +78,7 @@ suite('MainThreadDocumentsAndEditors', () => {
 			}),
 			modelService,
 			textFileService,
-			workbenchEditorService,
+			workBenchEditorService,
 			codeEditorService,
 			fileService,
 			null!,
@@ -95,9 +95,9 @@ suite('MainThreadDocumentsAndEditors', () => {
 			TestEnvironmentService,
 			new TestWorkingCopyFileService(),
 			new UriIdentityService(fileService),
-			new class extends mock<IClipboardService>() {
+			new class extends mock<IClipBoardService>() {
 				readText() {
-					return Promise.resolve('clipboard_contents');
+					return Promise.resolve('clipBoard_contents');
 				}
 			},
 			new TestPathService()
@@ -108,7 +108,7 @@ suite('MainThreadDocumentsAndEditors', () => {
 	test('Model#add', () => {
 		deltas.length = 0;
 
-		modelService.createModel('farboo', null);
+		modelService.createModel('farBoo', null);
 
 		assert.equal(deltas.length, 1);
 		const [delta] = deltas;
@@ -179,7 +179,7 @@ suite('MainThreadDocumentsAndEditors', () => {
 	test('editor with model', () => {
 		deltas.length = 0;
 
-		const model = modelService.createModel('farboo', null);
+		const model = modelService.createModel('farBoo', null);
 		const editor = myCreateTestCodeEditor(model);
 
 		assert.equal(deltas.length, 2);
@@ -200,8 +200,8 @@ suite('MainThreadDocumentsAndEditors', () => {
 	});
 
 	test('editor with dispos-ed/-ing model', () => {
-		modelService.createModel('foobar', null);
-		const model = modelService.createModel('farboo', null);
+		modelService.createModel('fooBar', null);
+		const model = modelService.createModel('farBoo', null);
 		const editor = myCreateTestCodeEditor(model);
 
 		// ignore things until now

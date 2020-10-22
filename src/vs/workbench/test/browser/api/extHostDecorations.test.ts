@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { timeout } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { mock } from 'vs/base/test/common/mock';
+import { timeout } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { mock } from 'vs/Base/test/common/mock';
 import { NullLogService } from 'vs/platform/log/common/log';
-import { MainThreadDecorationsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDecorations } from 'vs/workbench/api/common/extHostDecorations';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { nullExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
+import { MainThreadDecorationsShape } from 'vs/workBench/api/common/extHost.protocol';
+import { ExtHostDecorations } from 'vs/workBench/api/common/extHostDecorations';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { nullExtensionDescription } from 'vs/workBench/services/extensions/common/extensions';
 
 suite('ExtHostDecorations', function () {
 
 	let mainThreadShape: MainThreadDecorationsShape;
 	let extHostDecorations: ExtHostDecorations;
-	let providers = new Set<number>();
+	let providers = new Set<numBer>();
 
 	setup(function () {
 
 		providers.clear();
 
 		mainThreadShape = new class extends mock<MainThreadDecorationsShape>() {
-			$registerDecorationProvider(handle: number) {
+			$registerDecorationProvider(handle: numBer) {
 				providers.add(handle);
 			}
 		};
@@ -60,7 +60,7 @@ suite('ExtHostDecorations', function () {
 			onDidChange: Event.None,
 			provideFileDecoration() {
 				calledB = true;
-				return new Promise(resolve => resolve({ badge: 'H', tooltip: 'Hello' }));
+				return new Promise(resolve => resolve({ Badge: 'H', tooltip: 'Hello' }));
 			}
 		}, nullExtensionDescription.identifier);
 
@@ -76,10 +76,10 @@ suite('ExtHostDecorations', function () {
 		const [first, second] = requests;
 
 		const firstResult = await Promise.race([first, timeout(30).then(() => false)]);
-		assert.equal(typeof firstResult, 'boolean'); // never finishes...
+		assert.equal(typeof firstResult, 'Boolean'); // never finishes...
 
 		const secondResult = await Promise.race([second, timeout(30).then(() => false)]);
-		assert.equal(typeof secondResult, 'object');
+		assert.equal(typeof secondResult, 'oBject');
 	});
 
 });

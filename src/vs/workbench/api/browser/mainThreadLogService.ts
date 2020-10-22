@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
 import { ILogService, LogLevel } from 'vs/platform/log/common/log';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IExtHostContext, ExtHostContext, MainThreadLogShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { UriComponents, URI } from 'vs/base/common/uri';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IExtHostContext, ExtHostContext, MainThreadLogShape, MainContext } from 'vs/workBench/api/common/extHost.protocol';
+import { UriComponents, URI } from 'vs/Base/common/uri';
 import { FileLogService } from 'vs/platform/log/common/fileLogService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { basename } from 'vs/base/common/path';
+import { Basename } from 'vs/Base/common/path';
 
 @extHostNamedCustomer(MainContext.MainThreadLog)
 export class MainThreadLogService implements MainThreadLogShape {
 
 	private readonly _loggers = new Map<string, FileLogService>();
-	private readonly _logListener: IDisposable;
+	private readonly _logListener: IDisposaBle;
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -40,7 +40,7 @@ export class MainThreadLogService implements MainThreadLogShape {
 		const uri = URI.revive(file);
 		let logger = this._loggers.get(uri.toString());
 		if (!logger) {
-			logger = this._instaService.createInstance(FileLogService, basename(file.path), URI.revive(file), this._logService.getLevel());
+			logger = this._instaService.createInstance(FileLogService, Basename(file.path), URI.revive(file), this._logService.getLevel());
 			this._loggers.set(uri.toString(), logger);
 		}
 		logger.log(level, message);

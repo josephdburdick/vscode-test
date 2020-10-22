@@ -5,8 +5,8 @@
 
 import * as assert from 'assert';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { EditorModel } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { EditorModel } from 'vs/workBench/common/editor';
+import { BaseTextEditorModel } from 'vs/workBench/common/editor/textEditorModel';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
@@ -14,7 +14,7 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { ITextBufferFactory } from 'vs/editor/common/model';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
@@ -23,7 +23,7 @@ import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogSer
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { TestTextResourcePropertiesService } from 'vs/workbench/test/common/workbenchTestServices';
+import { TestTextResourcePropertiesService } from 'vs/workBench/test/common/workBenchTestServices';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 
@@ -33,19 +33,19 @@ class MyTextEditorModel extends BaseTextEditorModel {
 		return super.createTextEditorModel(value, resource, preferredMode);
 	}
 
-	isReadonly(): boolean {
+	isReadonly(): Boolean {
 		return false;
 	}
 }
 
-suite('Workbench editor model', () => {
+suite('WorkBench editor model', () => {
 
 	let instantiationService: TestInstantiationService;
 	let modeService: IModeService;
 
 	setup(() => {
 		instantiationService = new TestInstantiationService();
-		modeService = instantiationService.stub(IModeService, ModeServiceImpl);
+		modeService = instantiationService.stuB(IModeService, ModeServiceImpl);
 	});
 
 	test('EditorModel', async () => {
@@ -68,7 +68,7 @@ suite('Workbench editor model', () => {
 	});
 
 	test('BaseTextEditorModel', async () => {
-		let modelService = stubModelService(instantiationService);
+		let modelService = stuBModelService(instantiationService);
 
 		let m = new MyTextEditorModel(modelService, modeService);
 		const model = await m.load() as MyTextEditorModel;
@@ -79,16 +79,16 @@ suite('Workbench editor model', () => {
 		m.dispose();
 	});
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
+	function stuBModelService(instantiationService: TestInstantiationService): IModelService {
 		const dialogService = new TestDialogService();
 		const notificationService = new TestNotificationService();
 		const undoRedoService = new UndoRedoService(dialogService, notificationService);
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instantiationService.get(IConfigurationService)));
-		instantiationService.stub(IDialogService, dialogService);
-		instantiationService.stub(INotificationService, notificationService);
-		instantiationService.stub(IUndoRedoService, undoRedoService);
-		instantiationService.stub(IThemeService, new TestThemeService());
+		instantiationService.stuB(IConfigurationService, new TestConfigurationService());
+		instantiationService.stuB(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instantiationService.get(IConfigurationService)));
+		instantiationService.stuB(IDialogService, dialogService);
+		instantiationService.stuB(INotificationService, notificationService);
+		instantiationService.stuB(IUndoRedoService, undoRedoService);
+		instantiationService.stuB(IThemeService, new TestThemeService());
 		return instantiationService.createInstance(ModelServiceImpl);
 	}
 });

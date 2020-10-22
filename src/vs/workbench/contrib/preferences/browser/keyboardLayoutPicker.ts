@@ -4,101 +4,101 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { StatusbarAlignment, IStatusbarService, IStatusbarEntryAccessor } from 'vs/workbench/services/statusbar/common/statusbar';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IKeymapService, areKeyboardLayoutsEqual, parseKeyboardLayoutDescription, getKeyboardLayoutId, IKeyboardLayoutInfo } from 'vs/workbench/services/keybinding/common/keymapInfo';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { StatusBarAlignment, IStatusBarService, IStatusBarEntryAccessor } from 'vs/workBench/services/statusBar/common/statusBar';
+import { DisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { IKeymapService, areKeyBoardLayoutsEqual, parseKeyBoardLayoutDescription, getKeyBoardLayoutId, IKeyBoardLayoutInfo } from 'vs/workBench/services/keyBinding/common/keymapInfo';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/workbench/common/actions';
-import { KEYBOARD_LAYOUT_OPEN_PICKER } from 'vs/workbench/contrib/preferences/common/preferences';
-import { Action } from 'vs/base/common/actions';
-import { isMacintosh, isWindows } from 'vs/base/common/platform';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriBution, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { IWorkBenchActionRegistry, Extensions as ActionExtensions } from 'vs/workBench/common/actions';
+import { KEYBOARD_LAYOUT_OPEN_PICKER } from 'vs/workBench/contriB/preferences/common/preferences';
+import { Action } from 'vs/Base/common/actions';
+import { isMacintosh, isWindows } from 'vs/Base/common/platform';
 import { QuickPickInput, IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
 import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IFileService } from 'vs/platform/files/common/files';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IEditorPane } from 'vs/workbench/common/editor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { VSBuffer } from 'vs/Base/common/Buffer';
+import { IEditorPane } from 'vs/workBench/common/editor';
 
-export class KeyboardLayoutPickerContribution extends Disposable implements IWorkbenchContribution {
-	private readonly pickerElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+export class KeyBoardLayoutPickerContriBution extends DisposaBle implements IWorkBenchContriBution {
+	private readonly pickerElement = this._register(new MutaBleDisposaBle<IStatusBarEntryAccessor>());
 
 	constructor(
 		@IKeymapService private readonly keymapService: IKeymapService,
-		@IStatusbarService private readonly statusbarService: IStatusbarService,
+		@IStatusBarService private readonly statusBarService: IStatusBarService,
 	) {
 		super();
 
-		let layout = this.keymapService.getCurrentKeyboardLayout();
+		let layout = this.keymapService.getCurrentKeyBoardLayout();
 		if (layout) {
-			let layoutInfo = parseKeyboardLayoutDescription(layout);
-			const text = nls.localize('keyboardLayout', "Layout: {0}", layoutInfo.label);
+			let layoutInfo = parseKeyBoardLayoutDescription(layout);
+			const text = nls.localize('keyBoardLayout', "Layout: {0}", layoutInfo.laBel);
 
-			this.pickerElement.value = this.statusbarService.addEntry(
+			this.pickerElement.value = this.statusBarService.addEntry(
 				{
 					text,
-					ariaLabel: text,
+					ariaLaBel: text,
 					command: KEYBOARD_LAYOUT_OPEN_PICKER
 				},
-				'status.workbench.keyboardLayout',
-				nls.localize('status.workbench.keyboardLayout', "Keyboard Layout"),
-				StatusbarAlignment.RIGHT
+				'status.workBench.keyBoardLayout',
+				nls.localize('status.workBench.keyBoardLayout', "KeyBoard Layout"),
+				StatusBarAlignment.RIGHT
 			);
 		}
 
-		this._register(keymapService.onDidChangeKeyboardMapper(() => {
-			let layout = this.keymapService.getCurrentKeyboardLayout();
-			let layoutInfo = parseKeyboardLayoutDescription(layout);
+		this._register(keymapService.onDidChangeKeyBoardMapper(() => {
+			let layout = this.keymapService.getCurrentKeyBoardLayout();
+			let layoutInfo = parseKeyBoardLayoutDescription(layout);
 
 			if (this.pickerElement.value) {
-				const text = nls.localize('keyboardLayout', "Layout: {0}", layoutInfo.label);
+				const text = nls.localize('keyBoardLayout', "Layout: {0}", layoutInfo.laBel);
 				this.pickerElement.value.update({
 					text,
-					ariaLabel: text,
+					ariaLaBel: text,
 					command: KEYBOARD_LAYOUT_OPEN_PICKER
 				});
 			} else {
-				const text = nls.localize('keyboardLayout', "Layout: {0}", layoutInfo.label);
-				this.pickerElement.value = this.statusbarService.addEntry(
+				const text = nls.localize('keyBoardLayout', "Layout: {0}", layoutInfo.laBel);
+				this.pickerElement.value = this.statusBarService.addEntry(
 					{
 						text,
-						ariaLabel: text,
+						ariaLaBel: text,
 						command: KEYBOARD_LAYOUT_OPEN_PICKER
 					},
-					'status.workbench.keyboardLayout',
-					nls.localize('status.workbench.keyboardLayout', "Keyboard Layout"),
-					StatusbarAlignment.RIGHT
+					'status.workBench.keyBoardLayout',
+					nls.localize('status.workBench.keyBoardLayout', "KeyBoard Layout"),
+					StatusBarAlignment.RIGHT
 				);
 			}
 		}));
 	}
 }
 
-const workbenchContributionsRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchContributionsRegistry.registerWorkbenchContribution(KeyboardLayoutPickerContribution, LifecyclePhase.Starting);
+const workBenchContriButionsRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench);
+workBenchContriButionsRegistry.registerWorkBenchContriBution(KeyBoardLayoutPickerContriBution, LifecyclePhase.Starting);
 
 interface LayoutQuickPickItem extends IQuickPickItem {
-	layout: IKeyboardLayoutInfo;
+	layout: IKeyBoardLayoutInfo;
 }
 
-export class KeyboardLayoutPickerAction extends Action {
+export class KeyBoardLayoutPickerAction extends Action {
 	static readonly ID = KEYBOARD_LAYOUT_OPEN_PICKER;
-	static readonly LABEL = nls.localize('keyboard.chooseLayout', "Change Keyboard Layout");
+	static readonly LABEL = nls.localize('keyBoard.chooseLayout', "Change KeyBoard Layout");
 
 	private static DEFAULT_CONTENT: string = [
-		`// ${nls.localize('displayLanguage', 'Defines the keyboard layout used in VS Code in the browser environment.')}`,
+		`// ${nls.localize('displayLanguage', 'Defines the keyBoard layout used in VS Code in the Browser environment.')}`,
 		`// ${nls.localize('doc', 'Open VS Code and run "Developer: Inspect Key Mappings (JSON)" from Command Palette.')}`,
 		``,
-		`// Once you have the keyboard layout info, please paste it below.`,
+		`// Once you have the keyBoard layout info, please paste it Below.`,
 		'\n'
 	].join('\n');
 
 	constructor(
 		actionId: string,
-		actionLabel: string,
+		actionLaBel: string,
 		@IFileService private readonly fileService: IFileService,
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
 		@IKeymapService private readonly keymapService: IKeymapService,
@@ -106,63 +106,63 @@ export class KeyboardLayoutPickerAction extends Action {
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
 		@IEditorService private readonly editorService: IEditorService
 	) {
-		super(actionId, actionLabel, undefined, true);
+		super(actionId, actionLaBel, undefined, true);
 	}
 
 	async run(): Promise<void> {
-		let layouts = this.keymapService.getAllKeyboardLayouts();
-		let currentLayout = this.keymapService.getCurrentKeyboardLayout();
-		let layoutConfig = this.configurationService.getValue('keyboard.layout');
+		let layouts = this.keymapService.getAllKeyBoardLayouts();
+		let currentLayout = this.keymapService.getCurrentKeyBoardLayout();
+		let layoutConfig = this.configurationService.getValue('keyBoard.layout');
 		let isAutoDetect = layoutConfig === 'autodetect';
 
 		const picks: QuickPickInput[] = layouts.map(layout => {
-			const picked = !isAutoDetect && areKeyboardLayoutsEqual(currentLayout, layout);
-			const layoutInfo = parseKeyboardLayoutDescription(layout);
+			const picked = !isAutoDetect && areKeyBoardLayoutsEqual(currentLayout, layout);
+			const layoutInfo = parseKeyBoardLayoutDescription(layout);
 			return {
 				layout: layout,
-				label: [layoutInfo.label, (layout && layout.isUserKeyboardLayout) ? '(User configured layout)' : ''].join(' '),
+				laBel: [layoutInfo.laBel, (layout && layout.isUserKeyBoardLayout) ? '(User configured layout)' : ''].join(' '),
 				id: (<any>layout).text || (<any>layout).lang || (<any>layout).layout,
 				description: layoutInfo.description + (picked ? ' (Current layout)' : ''),
-				picked: !isAutoDetect && areKeyboardLayoutsEqual(currentLayout, layout)
+				picked: !isAutoDetect && areKeyBoardLayoutsEqual(currentLayout, layout)
 			};
-		}).sort((a: IQuickPickItem, b: IQuickPickItem) => {
-			return a.label < b.label ? -1 : (a.label > b.label ? 1 : 0);
+		}).sort((a: IQuickPickItem, B: IQuickPickItem) => {
+			return a.laBel < B.laBel ? -1 : (a.laBel > B.laBel ? 1 : 0);
 		});
 
 		if (picks.length > 0) {
 			const platform = isMacintosh ? 'Mac' : isWindows ? 'Win' : 'Linux';
-			picks.unshift({ type: 'separator', label: nls.localize('layoutPicks', "Keyboard Layouts ({0})", platform) });
+			picks.unshift({ type: 'separator', laBel: nls.localize('layoutPicks', "KeyBoard Layouts ({0})", platform) });
 		}
 
-		let configureKeyboardLayout: IQuickPickItem = { label: nls.localize('configureKeyboardLayout', "Configure Keyboard Layout") };
+		let configureKeyBoardLayout: IQuickPickItem = { laBel: nls.localize('configureKeyBoardLayout', "Configure KeyBoard Layout") };
 
-		picks.unshift(configureKeyboardLayout);
+		picks.unshift(configureKeyBoardLayout);
 
 		// Offer to "Auto Detect"
 		const autoDetectMode: IQuickPickItem = {
-			label: nls.localize('autoDetect', "Auto Detect"),
-			description: isAutoDetect ? `Current: ${parseKeyboardLayoutDescription(currentLayout).label}` : undefined,
+			laBel: nls.localize('autoDetect', "Auto Detect"),
+			description: isAutoDetect ? `Current: ${parseKeyBoardLayoutDescription(currentLayout).laBel}` : undefined,
 			picked: isAutoDetect ? true : undefined
 		};
 
 		picks.unshift(autoDetectMode);
 
-		const pick = await this.quickInputService.pick(picks, { placeHolder: nls.localize('pickKeyboardLayout', "Select Keyboard Layout"), matchOnDescription: true });
+		const pick = await this.quickInputService.pick(picks, { placeHolder: nls.localize('pickKeyBoardLayout', "Select KeyBoard Layout"), matchOnDescription: true });
 		if (!pick) {
 			return;
 		}
 
 		if (pick === autoDetectMode) {
 			// set keymap service to auto mode
-			this.configurationService.updateValue('keyboard.layout', 'autodetect');
+			this.configurationService.updateValue('keyBoard.layout', 'autodetect');
 			return;
 		}
 
-		if (pick === configureKeyboardLayout) {
-			const file = this.environmentService.keyboardLayoutResource;
+		if (pick === configureKeyBoardLayout) {
+			const file = this.environmentService.keyBoardLayoutResource;
 
 			await this.fileService.resolve(file).then(undefined, (error) => {
-				return this.fileService.createFile(file, VSBuffer.fromString(KeyboardLayoutPickerAction.DEFAULT_CONTENT));
+				return this.fileService.createFile(file, VSBuffer.fromString(KeyBoardLayoutPickerAction.DEFAULT_CONTENT));
 			}).then((stat): Promise<IEditorPane | undefined> | undefined => {
 				if (!stat) {
 					return undefined;
@@ -172,15 +172,15 @@ export class KeyboardLayoutPickerAction extends Action {
 					mode: 'jsonc'
 				});
 			}, (error) => {
-				throw new Error(nls.localize('fail.createSettings', "Unable to create '{0}' ({1}).", file.toString(), error));
+				throw new Error(nls.localize('fail.createSettings', "UnaBle to create '{0}' ({1}).", file.toString(), error));
 			});
 
 			return Promise.resolve();
 		}
 
-		this.configurationService.updateValue('keyboard.layout', getKeyboardLayoutId((<LayoutQuickPickItem>pick).layout));
+		this.configurationService.updateValue('keyBoard.layout', getKeyBoardLayoutId((<LayoutQuickPickItem>pick).layout));
 	}
 }
 
-const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(KeyboardLayoutPickerAction, {}), 'Preferences: Change Keyboard Layout', nls.localize('preferences', "Preferences"));
+const registry = Registry.as<IWorkBenchActionRegistry>(ActionExtensions.WorkBenchActions);
+registry.registerWorkBenchAction(SyncActionDescriptor.from(KeyBoardLayoutPickerAction, {}), 'Preferences: Change KeyBoard Layout', nls.localize('preferences', "Preferences"));

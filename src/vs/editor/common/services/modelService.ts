@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import { ITextBufferFactory, ITextModel, ITextModelCreationOptions } from 'vs/editor/common/model';
 import { ILanguageSelection } from 'vs/editor/common/services/modeService';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
@@ -18,7 +18,7 @@ export type DocumentTokensProvider = DocumentSemanticTokensProvider | DocumentRa
 export interface IModelService {
 	readonly _serviceBrand: undefined;
 
-	createModel(value: string | ITextBufferFactory, languageSelection: ILanguageSelection | null, resource?: URI, isForSimpleWidget?: boolean): ITextModel;
+	createModel(value: string | ITextBufferFactory, languageSelection: ILanguageSelection | null, resource?: URI, isForSimpleWidget?: Boolean): ITextModel;
 
 	updateModel(model: ITextModel, value: string | ITextBufferFactory): void;
 
@@ -28,7 +28,7 @@ export interface IModelService {
 
 	getModels(): ITextModel[];
 
-	getCreationOptions(language: string, resource: URI, isForSimpleWidget: boolean): ITextModelCreationOptions;
+	getCreationOptions(language: string, resource: URI, isForSimpleWidget: Boolean): ITextModelCreationOptions;
 
 	getModel(resource: URI): ITextModel | null;
 
@@ -41,7 +41,7 @@ export interface IModelService {
 	onModelModeChanged: Event<{ model: ITextModel; oldModeId: string; }>;
 }
 
-export function shouldSynchronizeModel(model: ITextModel): boolean {
+export function shouldSynchronizeModel(model: ITextModel): Boolean {
 	return (
 		!model.isTooLargeForSyncing() && !model.isForSimpleWidget
 	);

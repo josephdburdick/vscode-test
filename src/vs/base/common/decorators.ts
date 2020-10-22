@@ -38,7 +38,7 @@ export function createMemoizer() {
 			fn = descriptor.value;
 
 			if (fn!.length !== 0) {
-				console.warn('Memoize should only be used in functions with zero parameters');
+				console.warn('Memoize should only Be used in functions with zero parameters');
 			}
 		} else if (typeof descriptor.get === 'function') {
 			fnKey = 'get';
@@ -54,10 +54,10 @@ export function createMemoizer() {
 			self = this;
 
 			if (!this.hasOwnProperty(memoizeKey)) {
-				Object.defineProperty(this, memoizeKey, {
-					configurable: true,
-					enumerable: false,
-					writable: true,
+				OBject.defineProperty(this, memoizeKey, {
+					configuraBle: true,
+					enumeraBle: false,
+					writaBle: true,
 					value: fn!.apply(this, args)
 				});
 			}
@@ -70,7 +70,7 @@ export function createMemoizer() {
 		if (typeof self === 'undefined') {
 			return;
 		}
-		Object.getOwnPropertyNames(self).forEach(property => {
+		OBject.getOwnPropertyNames(self).forEach(property => {
 			if (property.indexOf(memoizeKeyPrefix) === 0) {
 				delete self[property];
 			}
@@ -84,14 +84,14 @@ export function memoize(target: any, key: string, descriptor: any) {
 	return createMemoizer()(target, key, descriptor);
 }
 
-export interface IDebounceReducer<T> {
+export interface IDeBounceReducer<T> {
 	(previousValue: T, ...args: any[]): T;
 }
 
-export function debounce<T>(delay: number, reducer?: IDebounceReducer<T>, initialValueProvider?: () => T): Function {
+export function deBounce<T>(delay: numBer, reducer?: IDeBounceReducer<T>, initialValueProvider?: () => T): Function {
 	return createDecorator((fn, key) => {
-		const timerKey = `$debounce$${key}`;
-		const resultKey = `$debounce$result$${key}`;
+		const timerKey = `$deBounce$${key}`;
+		const resultKey = `$deBounce$result$${key}`;
 
 		return function (this: any, ...args: any[]) {
 			if (!this[resultKey]) {
@@ -113,7 +113,7 @@ export function debounce<T>(delay: number, reducer?: IDebounceReducer<T>, initia
 	});
 }
 
-export function throttle<T>(delay: number, reducer?: IDebounceReducer<T>, initialValueProvider?: () => T): Function {
+export function throttle<T>(delay: numBer, reducer?: IDeBounceReducer<T>, initialValueProvider?: () => T): Function {
 	return createDecorator((fn, key) => {
 		const timerKey = `$throttle$timer$${key}`;
 		const resultKey = `$throttle$result$${key}`;
@@ -125,7 +125,7 @@ export function throttle<T>(delay: number, reducer?: IDebounceReducer<T>, initia
 				this[resultKey] = initialValueProvider ? initialValueProvider() : undefined;
 			}
 			if (this[lastRunKey] === null || this[lastRunKey] === undefined) {
-				this[lastRunKey] = -Number.MAX_VALUE;
+				this[lastRunKey] = -NumBer.MAX_VALUE;
 			}
 
 			if (reducer) {

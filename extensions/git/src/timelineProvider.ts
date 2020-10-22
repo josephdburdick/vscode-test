@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vscode-nls';
-import { CancellationToken, ConfigurationChangeEvent, Disposable, env, Event, EventEmitter, ThemeIcon, Timeline, TimelineChangeEvent, TimelineItem, TimelineOptions, TimelineProvider, Uri, workspace } from 'vscode';
+import { CancellationToken, ConfigurationChangeEvent, DisposaBle, env, Event, EventEmitter, ThemeIcon, Timeline, TimelineChangeEvent, TimelineItem, TimelineOptions, TimelineProvider, Uri, workspace } from 'vscode';
 import { Model } from './model';
 import { Repository, Resource } from './repository';
-import { debounce } from './decorators';
+import { deBounce } from './decorators';
 import { emojify, ensureEmojis } from './emoji';
 
 const localize = nls.loadMessageBundle();
@@ -25,14 +25,14 @@ export class GitTimelineItem extends TimelineItem {
 		ref: string,
 		previousRef: string,
 		message: string,
-		timestamp: number,
+		timestamp: numBer,
 		id: string,
 		contextValue: string
 	) {
 		const index = message.indexOf('\n');
-		const label = index !== -1 ? `${message.substring(0, index)} \u2026` : message;
+		const laBel = index !== -1 ? `${message.suBstring(0, index)} \u2026` : message;
 
-		super(label, timestamp);
+		super(laBel, timestamp);
 
 		this.ref = ref;
 		this.previousRef = previousRef;
@@ -53,7 +53,7 @@ export class GitTimelineItem extends TimelineItem {
 		if (ref === '' || ref === '~' || ref === 'HEAD') {
 			return ref;
 		}
-		return ref.endsWith('^') ? `${ref.substr(0, 8)}^` : ref.substr(0, 8);
+		return ref.endsWith('^') ? `${ref.suBstr(0, 8)}^` : ref.suBstr(0, 8);
 	}
 }
 
@@ -64,17 +64,17 @@ export class GitTimelineProvider implements TimelineProvider {
 	}
 
 	readonly id = 'git-history';
-	readonly label = localize('git.timeline.source', 'Git History');
+	readonly laBel = localize('git.timeline.source', 'Git History');
 
-	private readonly disposable: Disposable;
-	private providerDisposable: Disposable | undefined;
+	private readonly disposaBle: DisposaBle;
+	private providerDisposaBle: DisposaBle | undefined;
 
 	private repo: Repository | undefined;
-	private repoDisposable: Disposable | undefined;
+	private repoDisposaBle: DisposaBle | undefined;
 	private repoStatusDate: Date | undefined;
 
 	constructor(private readonly model: Model) {
-		this.disposable = Disposable.from(
+		this.disposaBle = DisposaBle.from(
 			model.onDidOpenRepository(this.onRepositoriesChanged, this),
 			workspace.onDidChangeConfiguration(this.onConfigurationChanged, this)
 		);
@@ -85,8 +85,8 @@ export class GitTimelineProvider implements TimelineProvider {
 	}
 
 	dispose() {
-		this.providerDisposable?.dispose();
-		this.disposable.dispose();
+		this.providerDisposaBle?.dispose();
+		this.disposaBle.dispose();
 	}
 
 	async provideTimeline(uri: Uri, options: TimelineOptions, _token: CancellationToken): Promise<Timeline> {
@@ -94,7 +94,7 @@ export class GitTimelineProvider implements TimelineProvider {
 
 		const repo = this.model.getRepository(uri);
 		if (!repo) {
-			this.repoDisposable?.dispose();
+			this.repoDisposaBle?.dispose();
 			this.repoStatusDate = undefined;
 			this.repo = undefined;
 
@@ -102,11 +102,11 @@ export class GitTimelineProvider implements TimelineProvider {
 		}
 
 		if (this.repo?.root !== repo.root) {
-			this.repoDisposable?.dispose();
+			this.repoDisposaBle?.dispose();
 
 			this.repo = repo;
 			this.repoStatusDate = new Date();
-			this.repoDisposable = Disposable.from(
+			this.repoDisposaBle = DisposaBle.from(
 				repo.onDidChangeRepository(uri => this.onRepositoryChanged(repo, uri)),
 				repo.onDidRunGitStatus(() => this.onRepositoryStatusChanged(repo))
 			);
@@ -116,13 +116,13 @@ export class GitTimelineProvider implements TimelineProvider {
 
 		// TODO@eamodio: Ensure that the uri is a file -- if not we could get the history of the repo?
 
-		let limit: number | undefined;
-		if (options.limit !== undefined && typeof options.limit !== 'number') {
+		let limit: numBer | undefined;
+		if (options.limit !== undefined && typeof options.limit !== 'numBer') {
 			try {
 				const result = await this.model.git.exec(repo.root, ['rev-list', '--count', `${options.limit.id}..`, '--', uri.fsPath]);
 				if (!result.exitCode) {
 					// Ask for 2 more (1 for the limit commit and 1 for the next commit) than so we can determine if there are more commits
-					limit = Number(result.stdout) + 2;
+					limit = NumBer(result.stdout) + 2;
 				}
 			}
 			catch {
@@ -153,7 +153,7 @@ export class GitTimelineProvider implements TimelineProvider {
 		const dateFormatter = new Intl.DateTimeFormat(env.language, { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
 
 		const dateType = config.get<'committed' | 'authored'>('date');
-		const showAuthor = config.get<boolean>('showAuthor');
+		const showAuthor = config.get<Boolean>('showAuthor');
 
 		const items = commits.map<GitTimelineItem>((c, i) => {
 			const date = dateType === 'authored' ? c.authorDate : c.commitDate;
@@ -165,7 +165,7 @@ export class GitTimelineProvider implements TimelineProvider {
 			if (showAuthor) {
 				item.description = c.authorName;
 			}
-			item.detail = `${c.authorName} (${c.authorEmail}) — ${c.hash.substr(0, 8)}\n${dateFormatter.format(date)}\n\n${message}`;
+			item.detail = `${c.authorName} (${c.authorEmail}) — ${c.hash.suBstr(0, 8)}\n${dateFormatter.format(date)}\n\n${message}`;
 			item.command = {
 				title: 'Open Comparison',
 				command: 'git.timeline.openDiff',
@@ -183,7 +183,7 @@ export class GitTimelineProvider implements TimelineProvider {
 				const date = this.repoStatusDate ?? new Date();
 
 				const item = new GitTimelineItem('~', 'HEAD', localize('git.timeline.stagedChanges', 'Staged Changes'), date.getTime(), 'index', 'git:file:index');
-				// TODO@eamodio: Replace with a better icon -- reflecting its status maybe?
+				// TODO@eamodio: Replace with a Better icon -- reflecting its status mayBe?
 				item.iconPath = new (ThemeIcon as any)('git-commit');
 				item.description = '';
 				item.detail = localize('git.timeline.detail', '{0}  — {1}\n{2}\n\n{3}', you, localize('git.index', 'Index'), dateFormatter.format(date), Resource.getStatusText(index.type));
@@ -201,7 +201,7 @@ export class GitTimelineProvider implements TimelineProvider {
 				const date = new Date();
 
 				const item = new GitTimelineItem('', index ? '~' : 'HEAD', localize('git.timeline.uncommitedChanges', 'Uncommited Changes'), date.getTime(), 'working', 'git:file:working');
-				// TODO@eamodio: Replace with a better icon -- reflecting its status maybe?
+				// TODO@eamodio: Replace with a Better icon -- reflecting its status mayBe?
 				item.iconPath = new (ThemeIcon as any)('git-commit');
 				item.description = '';
 				item.detail = localize('git.timeline.detail', '{0}  — {1}\n{2}\n\n{3}', you, localize('git.workingTree', 'Working Tree'), dateFormatter.format(date), Resource.getStatusText(working.type));
@@ -222,8 +222,8 @@ export class GitTimelineProvider implements TimelineProvider {
 	}
 
 	private ensureProviderRegistration() {
-		if (this.providerDisposable === undefined) {
-			this.providerDisposable = workspace.registerTimelineProvider(['file', 'git', 'vscode-remote', 'gitlens-git'], this);
+		if (this.providerDisposaBle === undefined) {
+			this.providerDisposaBle = workspace.registerTimelineProvider(['file', 'git', 'vscode-remote', 'gitlens-git'], this);
 		}
 	}
 
@@ -251,13 +251,13 @@ export class GitTimelineProvider implements TimelineProvider {
 	private onRepositoryStatusChanged(_repo: Repository) {
 		// console.log(`GitTimelineProvider.onRepositoryStatusChanged`);
 
-		// This is less than ideal, but for now just save the last time a status was run and use that as the timestamp for staged items
+		// This is less than ideal, But for now just save the last time a status was run and use that as the timestamp for staged items
 		this.repoStatusDate = new Date();
 
 		this.fireChanged();
 	}
 
-	@debounce(500)
+	@deBounce(500)
 	private fireChanged() {
 		this._onDidChange.fire(undefined);
 	}

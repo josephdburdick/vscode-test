@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { coalesce, distinct, flatten } from 'vs/base/common/arrays';
-import { Emitter, Event } from 'vs/base/common/event';
-import { parse } from 'vs/base/common/json';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { coalesce, distinct, flatten } from 'vs/Base/common/arrays';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { parse } from 'vs/Base/common/json';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { IFileService } from 'vs/platform/files/common/files';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
@@ -30,7 +30,7 @@ export interface IWorkpsaceExtensionsConfigService {
 
 }
 
-export class WorkspaceExtensionsConfigService extends Disposable implements IWorkpsaceExtensionsConfigService {
+export class WorkspaceExtensionsConfigService extends DisposaBle implements IWorkpsaceExtensionsConfigService {
 
 	declare readonly _serviceBrand: undefined;
 

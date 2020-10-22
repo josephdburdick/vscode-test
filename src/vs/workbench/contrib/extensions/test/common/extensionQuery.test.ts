@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Query } from 'vs/workbench/contrib/extensions/common/extensionQuery';
+import { Query } from 'vs/workBench/contriB/extensions/common/extensionQuery';
 
 suite('Extension query', () => {
 	test('parse', () => {
@@ -143,7 +143,7 @@ suite('Extension query', () => {
 		Query.suggestions('@sort:in').some(x => x === '@sort:installs ');
 		Query.suggestions('@sort:installs').every(x => x !== '@sort:rating ');
 
-		Query.suggestions('@category:blah').some(x => x === '@category:"extension packs" ');
+		Query.suggestions('@category:Blah').some(x => x === '@category:"extension packs" ');
 		Query.suggestions('@category:"extension packs"').every(x => x !== '@category:formatters ');
 	});
 });

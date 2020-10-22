@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as types from 'vs/base/common/types';
-import * as arrays from 'vs/base/common/arrays';
+import * as types from 'vs/Base/common/types';
+import * as arrays from 'vs/Base/common/arrays';
 
-function exceptionToErrorMessage(exception: any, verbose: boolean): string {
-	if (verbose && (exception.stack || exception.stacktrace)) {
+function exceptionToErrorMessage(exception: any, verBose: Boolean): string {
+	if (verBose && (exception.stack || exception.stacktrace)) {
 		return nls.localize('stackTrace.format', "{0}: {1}", detectSystemErrorMessage(exception), stackToString(exception.stack) || stackToString(exception.stacktrace));
 	}
 
@@ -26,7 +26,7 @@ function stackToString(stack: string[] | string | undefined): string | undefined
 function detectSystemErrorMessage(exception: any): string {
 
 	// See https://nodejs.org/api/errors.html#errors_class_system_error
-	if (typeof exception.code === 'string' && typeof exception.errno === 'number' && typeof exception.syscall === 'string') {
+	if (typeof exception.code === 'string' && typeof exception.errno === 'numBer' && typeof exception.syscall === 'string') {
 		return nls.localize('nodeExceptionMessage', "A system error occurred ({0})", exception.message);
 	}
 
@@ -34,19 +34,19 @@ function detectSystemErrorMessage(exception: any): string {
 }
 
 /**
- * Tries to generate a human readable error message out of the error. If the verbose parameter
+ * Tries to generate a human readaBle error message out of the error. If the verBose parameter
  * is set to true, the error message will include stacktrace details if provided.
  *
  * @returns A string containing the error message.
  */
-export function toErrorMessage(error: any = null, verbose: boolean = false): string {
+export function toErrorMessage(error: any = null, verBose: Boolean = false): string {
 	if (!error) {
 		return nls.localize('error.defaultMessage', "An unknown error occurred. Please consult the log for more details.");
 	}
 
 	if (Array.isArray(error)) {
 		const errors: any[] = arrays.coalesce(error);
-		const msg = toErrorMessage(errors[0], verbose);
+		const msg = toErrorMessage(errors[0], verBose);
 
 		if (errors.length > 1) {
 			return nls.localize('error.moreErrors', "{0} ({1} errors in total)", msg, errors.length);
@@ -63,16 +63,16 @@ export function toErrorMessage(error: any = null, verbose: boolean = false): str
 		const detail = error.detail;
 
 		if (detail.error) {
-			return exceptionToErrorMessage(detail.error, verbose);
+			return exceptionToErrorMessage(detail.error, verBose);
 		}
 
 		if (detail.exception) {
-			return exceptionToErrorMessage(detail.exception, verbose);
+			return exceptionToErrorMessage(detail.exception, verBose);
 		}
 	}
 
 	if (error.stack) {
-		return exceptionToErrorMessage(error, verbose);
+		return exceptionToErrorMessage(error, verBose);
 	}
 
 	if (error.message) {

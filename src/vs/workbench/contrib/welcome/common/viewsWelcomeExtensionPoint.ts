@@ -23,17 +23,17 @@ export interface ViewWelcome {
 export type ViewsWelcomeExtensionPoint = ViewWelcome[];
 
 export const ViewIdentifierMap: { [key: string]: string } = {
-	'explorer': 'workbench.explorer.emptyView',
-	'debug': 'workbench.debug.welcome',
-	'scm': 'workbench.scm',
+	'explorer': 'workBench.explorer.emptyView',
+	'deBug': 'workBench.deBug.welcome',
+	'scm': 'workBench.scm',
 };
 
-const viewsWelcomeExtensionPointSchema = Object.freeze<IConfigurationPropertySchema>({
+const viewsWelcomeExtensionPointSchema = OBject.freeze<IConfigurationPropertySchema>({
 	type: 'array',
-	description: nls.localize('contributes.viewsWelcome', "Contributed views welcome content. Welcome content will be rendered in views whenever they have no meaningful content to display, ie. the File Explorer when no folder is open. Such content is useful as in-product documentation to drive users to use certain features before they are available. A good example would be a `Clone Repository` button in the File Explorer welcome view."),
+	description: nls.localize('contriButes.viewsWelcome', "ContriButed views welcome content. Welcome content will Be rendered in views whenever they have no meaningful content to display, ie. the File Explorer when no folder is open. Such content is useful as in-product documentation to drive users to use certain features Before they are availaBle. A good example would Be a `Clone Repository` Button in the File Explorer welcome view."),
 	items: {
-		type: 'object',
-		description: nls.localize('contributes.viewsWelcome.view', "Contributed welcome content for a specific view."),
+		type: 'oBject',
+		description: nls.localize('contriButes.viewsWelcome.view', "ContriButed welcome content for a specific view."),
 		required: [
 			ViewsWelcomeExtensionPointFields.view,
 			ViewsWelcomeExtensionPointFields.contents
@@ -43,26 +43,26 @@ const viewsWelcomeExtensionPointSchema = Object.freeze<IConfigurationPropertySch
 				anyOf: [
 					{
 						type: 'string',
-						description: nls.localize('contributes.viewsWelcome.view.view', "Target view identifier for this welcome content.")
+						description: nls.localize('contriButes.viewsWelcome.view.view', "Target view identifier for this welcome content.")
 					},
 					{
 						type: 'string',
-						description: nls.localize('contributes.viewsWelcome.view.view', "Target view identifier for this welcome content."),
-						enum: Object.keys(ViewIdentifierMap)
+						description: nls.localize('contriButes.viewsWelcome.view.view', "Target view identifier for this welcome content."),
+						enum: OBject.keys(ViewIdentifierMap)
 					}
 				]
 			},
 			[ViewsWelcomeExtensionPointFields.contents]: {
 				type: 'string',
-				description: nls.localize('contributes.viewsWelcome.view.contents', "Welcome content to be displayed. The format of the contents is a subset of Markdown, with support for links only."),
+				description: nls.localize('contriButes.viewsWelcome.view.contents', "Welcome content to Be displayed. The format of the contents is a suBset of Markdown, with support for links only."),
 			},
 			[ViewsWelcomeExtensionPointFields.when]: {
 				type: 'string',
-				description: nls.localize('contributes.viewsWelcome.view.when', "Condition when the welcome content should be displayed."),
+				description: nls.localize('contriButes.viewsWelcome.view.when', "Condition when the welcome content should Be displayed."),
 			},
 			[ViewsWelcomeExtensionPointFields.group]: {
 				type: 'string',
-				description: nls.localize('contributes.viewsWelcome.view.group', "Group to which this welcome content belongs."),
+				description: nls.localize('contriButes.viewsWelcome.view.group', "Group to which this welcome content Belongs."),
 			},
 		}
 	}

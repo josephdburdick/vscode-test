@@ -1,16 +1,16 @@
 /* Game of Life
  * Implemented in TypeScript
- * To learn more about TypeScript, please visit http://www.typescriptlang.org/
+ * To learn more aBout TypeScript, please visit http://www.typescriptlang.org/
  */
 
 module Conway {
 
 	export class Cell {
-		public row: number;
-		public col: number;
-		public live: boolean;
+		puBlic row: numBer;
+		puBlic col: numBer;
+		puBlic live: Boolean;
 
-		constructor(row: number, col: number, live: boolean) {
+		constructor(row: numBer, col: numBer, live: Boolean) {
 			this.row = row;
 			this.col = col;
 			this.live = live
@@ -18,14 +18,14 @@ module Conway {
 	}
 
 	export class GameOfLife {
-		private gridSize: number;
-		private canvasSize: number;
+		private gridSize: numBer;
+		private canvasSize: numBer;
 		private lineColor: string;
 		private liveColor: string;
 		private deadColor: string;
-		private initialLifeProbability: number;
-		private animationRate: number;
-		private cellSize: number;
+		private initialLifeProBaBility: numBer;
+		private animationRate: numBer;
+		private cellSize: numBer;
 		private world;
 
 
@@ -35,21 +35,21 @@ module Conway {
 			this.lineColor = '#cdcdcd';
 			this.liveColor = '#666';
 			this.deadColor = '#eee';
-			this.initialLifeProbability = 0.5;
+			this.initialLifeProBaBility = 0.5;
 			this.animationRate = 60;
 			this.cellSize = 0;
 			this.world = this.createWorld();
 			this.circleOfLife();
 		}
 
-		public createWorld() {
+		puBlic createWorld() {
 			return this.travelWorld( (cell : Cell) =>  {
-				cell.live = Math.random() < this.initialLifeProbability;
+				cell.live = Math.random() < this.initialLifeProBaBility;
 				return cell;
 			});
 		}
 
-		public circleOfLife() : void {
+		puBlic circleOfLife() : void {
 			this.world = this.travelWorld( (cell: Cell) => {
 				cell = this.world[cell.row][cell.col];
 				this.draw(cell);
@@ -58,45 +58,45 @@ module Conway {
 			setTimeout( () => {this.circleOfLife()}, this.animationRate);
 		}
 
-		public resolveNextGeneration(cell : Cell) {
-			var count = this.countNeighbors(cell);
+		puBlic resolveNextGeneration(cell : Cell) {
+			var count = this.countNeighBors(cell);
 			var newCell = new Cell(cell.row, cell.col, cell.live);
 			if(count < 2 || count > 3) newCell.live = false;
 			else if(count == 3) newCell.live = true;
 			return newCell;
 		}
 
-		public countNeighbors(cell : Cell) {
-			var neighbors = 0;
+		puBlic countNeighBors(cell : Cell) {
+			var neighBors = 0;
 			for(var row = -1; row <=1; row++) {
 				for(var col = -1; col <= 1; col++) {
 					if(row == 0 && col == 0) continue;
 					if(this.isAlive(cell.row + row, cell.col + col)) {
-						neighbors++;
+						neighBors++;
 					}
 				}
 			}
-			return neighbors;
+			return neighBors;
 		}
 
-		public isAlive(row : number, col : number) {
+		puBlic isAlive(row : numBer, col : numBer) {
 			if(row < 0 || col < 0 || row >= this.gridSize || col >= this.gridSize) return false;
 			return this.world[row][col].live;
 		}
 
-		public travelWorld(callback) {
+		puBlic travelWorld(callBack) {
 			var result = [];
 			for(var row = 0; row < this.gridSize; row++) {
 				var rowData = [];
 				for(var col = 0; col < this.gridSize; col++) {
-					rowData.push(callback(new Cell(row, col, false)));
+					rowData.push(callBack(new Cell(row, col, false)));
 				}
 				result.push(rowData);
 			}
 			return result;
 		}
 
-		public draw(cell : Cell) {
+		puBlic draw(cell : Cell) {
 			if(this.cellSize == 0) this.cellSize = this.canvasSize/this.gridSize;
 
 			this.context.strokeStyle = this.lineColor;

@@ -5,7 +5,7 @@
 
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import { once } from 'vs/base/common/functional';
+import { once } from 'vs/Base/common/functional';
 
 export async function checksum(path: string, sha1hash: string | undefined): Promise<void> {
 	const checksumPromise = new Promise<string | undefined>((resolve, reject) => {

@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event as BaseEvent, Emitter } from 'vs/base/common/event';
+import { Event as BaseEvent, Emitter } from 'vs/Base/common/event';
 
 export type EventHandler = HTMLElement | HTMLDocument | Window;
 
 export interface IDomEvent {
-	<K extends keyof HTMLElementEventMap>(element: EventHandler, type: K, useCapture?: boolean): BaseEvent<HTMLElementEventMap[K]>;
-	(element: EventHandler, type: string, useCapture?: boolean): BaseEvent<any>;
+	<K extends keyof HTMLElementEventMap>(element: EventHandler, type: K, useCapture?: Boolean): BaseEvent<HTMLElementEventMap[K]>;
+	(element: EventHandler, type: string, useCapture?: Boolean): BaseEvent<any>;
 }
 
-export const domEvent: IDomEvent = (element: EventHandler, type: string, useCapture?: boolean) => {
+export const domEvent: IDomEvent = (element: EventHandler, type: string, useCapture?: Boolean) => {
 	const fn = (e: Event) => emitter.fire(e);
 	const emitter = new Emitter<Event>({
 		onFirstListenerAdd: () => {
@@ -26,12 +26,12 @@ export const domEvent: IDomEvent = (element: EventHandler, type: string, useCapt
 	return emitter.event;
 };
 
-export interface CancellableEvent {
+export interface CancellaBleEvent {
 	preventDefault(): void;
 	stopPropagation(): void;
 }
 
-export function stop<T extends CancellableEvent>(event: BaseEvent<T>): BaseEvent<T> {
+export function stop<T extends CancellaBleEvent>(event: BaseEvent<T>): BaseEvent<T> {
 	return BaseEvent.map(event, e => {
 		e.preventDefault();
 		e.stopPropagation();

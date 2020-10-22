@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { ICodeEditor, IDiffEditor } from 'vs/editor/browser/editorBrowser';
+import { Event } from 'vs/Base/common/event';
+import { ICodeEditor, IDiffEditor } from 'vs/editor/Browser/editorBrowser';
 import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
 import { IModelDecorationOptions, ITextModel } from 'vs/editor/common/model';
 import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 export const ICodeEditorService = createDecorator<ICodeEditorService>('codeEditorService');
 
@@ -40,7 +40,7 @@ export interface ICodeEditorService {
 
 	registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void;
 	removeDecorationType(key: string): void;
-	resolveDecorationOptions(typeKey: string, writable: boolean): IModelDecorationOptions;
+	resolveDecorationOptions(typeKey: string, writaBle: Boolean): IModelDecorationOptions;
 
 	setModelProperty(resource: URI, key: string, value: any): void;
 	getModelProperty(resource: URI, key: string): any;
@@ -50,5 +50,5 @@ export interface ICodeEditorService {
 	getTransientModelProperties(model: ITextModel): [string, any][] | undefined;
 
 	getActiveCodeEditor(): ICodeEditor | null;
-	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null>;
+	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: Boolean): Promise<ICodeEditor | null>;
 }

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { defaultGenerator } from 'vs/base/common/idGenerator';
-import { IFileQuery } from 'vs/workbench/services/search/common/search';
-import { equals } from 'vs/base/common/objects';
+import { defaultGenerator } from 'vs/Base/common/idGenerator';
+import { IFileQuery } from 'vs/workBench/services/search/common/search';
+import { equals } from 'vs/Base/common/oBjects';
 
 enum LoadingPhase {
 	Created = 1,
@@ -26,13 +26,13 @@ export class FileQueryCacheState {
 		return this.previousCacheState.cacheKey;
 	}
 
-	get isLoaded(): boolean {
+	get isLoaded(): Boolean {
 		const isLoaded = this.loadingPhase === LoadingPhase.Loaded;
 
 		return isLoaded || !this.previousCacheState ? isLoaded : this.previousCacheState.isLoaded;
 	}
 
-	get isUpdating(): boolean {
+	get isUpdating(): Boolean {
 		const isUpdating = this.loadingPhase === LoadingPhase.Loading;
 
 		return isUpdating || !this.previousCacheState ? isUpdating : this.previousCacheState.isUpdating;
@@ -50,8 +50,8 @@ export class FileQueryCacheState {
 		private previousCacheState: FileQueryCacheState | undefined
 	) {
 		if (this.previousCacheState) {
-			const current = Object.assign({}, this.query, { cacheKey: null });
-			const previous = Object.assign({}, this.previousCacheState.query, { cacheKey: null });
+			const current = OBject.assign({}, this.query, { cacheKey: null });
+			const previous = OBject.assign({}, this.previousCacheState.query, { cacheKey: null });
 			if (!equals(current, previous)) {
 				this.previousCacheState.dispose();
 				this.previousCacheState = undefined;

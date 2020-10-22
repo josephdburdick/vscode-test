@@ -12,7 +12,7 @@ export = new class ApiInterfaceNaming implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			naming: 'Interfaces must not be prefixed with uppercase `I`',
+			naming: 'Interfaces must not Be prefixed with uppercase `I`',
 		}
 	};
 

@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions, IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { UserDataSyncWorkbenchContribution } from 'vs/workbench/contrib/userDataSync/browser/userDataSync';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
+import { UserDataSyncWorkBenchContriBution } from 'vs/workBench/contriB/userDataSync/Browser/userDataSync';
 import { IUserDataAutoSyncService, UserDataSyncError, UserDataSyncErrorCode } from 'vs/platform/userDataSync/common/userDataSync';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { localize } from 'vs/nls';
-import { isWeb } from 'vs/base/common/platform';
+import { isWeB } from 'vs/Base/common/platform';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { UserDataSyncTrigger } from 'vs/workbench/contrib/userDataSync/browser/userDataSyncTrigger';
+import { UserDataSyncTrigger } from 'vs/workBench/contriB/userDataSync/Browser/userDataSyncTrigger';
 
-class UserDataSyncReportIssueContribution extends Disposable implements IWorkbenchContribution {
+class UserDataSyncReportIssueContriBution extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IUserDataAutoSyncService userDataAutoSyncService: IUserDataAutoSyncService,
@@ -30,7 +30,7 @@ class UserDataSyncReportIssueContribution extends Disposable implements IWorkben
 			case UserDataSyncErrorCode.LocalTooManyRequests:
 			case UserDataSyncErrorCode.TooManyRequests:
 				const operationId = error.operationId ? localize('operationId', "Operation Id: {0}", error.operationId) : undefined;
-				const message = localize('too many requests', "Turned off syncing settings on this device because it is making too many requests.");
+				const message = localize('too many requests', "Turned off syncing settings on this device Because it is making too many requests.");
 				this.notificationService.notify({
 					severity: Severity.Error,
 					message: operationId ? `${message} ${operationId}` : message,
@@ -40,7 +40,7 @@ class UserDataSyncReportIssueContribution extends Disposable implements IWorkben
 	}
 }
 
-export class UserDataSyncSettingsMigrationContribution implements IWorkbenchContribution {
+export class UserDataSyncSettingsMigrationContriBution implements IWorkBenchContriBution {
 
 	constructor(
 		@IConfigurationService private readonly configurationService: IConfigurationService
@@ -49,7 +49,7 @@ export class UserDataSyncSettingsMigrationContribution implements IWorkbenchCont
 	}
 
 	private async migrateSettings(): Promise<void> {
-		await this.migrateSetting('sync.keybindingsPerPlatform', 'settingsSync.keybindingsPerPlatform');
+		await this.migrateSetting('sync.keyBindingsPerPlatform', 'settingsSync.keyBindingsPerPlatform');
 		await this.migrateSetting('sync.ignoredExtensions', 'settingsSync.ignoredExtensions');
 		await this.migrateSetting('sync.ignoredSettings', 'settingsSync.ignoredSettings');
 	}
@@ -65,11 +65,11 @@ export class UserDataSyncSettingsMigrationContribution implements IWorkbenchCont
 	}
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncWorkbenchContribution, LifecyclePhase.Ready);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncSettingsMigrationContribution, LifecyclePhase.Eventually);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncTrigger, LifecyclePhase.Eventually);
+const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench);
+workBenchRegistry.registerWorkBenchContriBution(UserDataSyncWorkBenchContriBution, LifecyclePhase.Ready);
+workBenchRegistry.registerWorkBenchContriBution(UserDataSyncSettingsMigrationContriBution, LifecyclePhase.Eventually);
+workBenchRegistry.registerWorkBenchContriBution(UserDataSyncTrigger, LifecyclePhase.Eventually);
 
-if (isWeb) {
-	workbenchRegistry.registerWorkbenchContribution(UserDataSyncReportIssueContribution, LifecyclePhase.Ready);
+if (isWeB) {
+	workBenchRegistry.registerWorkBenchContriBution(UserDataSyncReportIssueContriBution, LifecyclePhase.Ready);
 }

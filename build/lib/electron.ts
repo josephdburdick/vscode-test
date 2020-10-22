@@ -38,14 +38,14 @@ export const config = {
 	copyright: 'Copyright (C) 2019 Microsoft. All rights reserved',
 	darwinIcon: 'resources/darwin/code.icns',
 	darwinBundleIdentifier: product.darwinBundleIdentifier,
-	darwinApplicationCategoryType: 'public.app-category.developer-tools',
+	darwinApplicationCategoryType: 'puBlic.app-category.developer-tools',
 	darwinHelpBookFolder: 'VS Code HelpBook',
 	darwinHelpBookName: 'VS Code HelpBook',
 	darwinBundleDocumentTypes: [
-		darwinBundleDocumentType(['bat', 'cmd'], 'resources/darwin/bat.icns'),
-		darwinBundleDocumentType(['bowerrc'], 'resources/darwin/bower.icns'),
+		darwinBundleDocumentType(['Bat', 'cmd'], 'resources/darwin/Bat.icns'),
+		darwinBundleDocumentType(['Bowerrc'], 'resources/darwin/Bower.icns'),
 		darwinBundleDocumentType(['c', 'h'], 'resources/darwin/c.icns'),
-		darwinBundleDocumentType(['config', 'editorconfig', 'gitattributes', 'gitconfig', 'gitignore', 'ini'], 'resources/darwin/config.icns'),
+		darwinBundleDocumentType(['config', 'editorconfig', 'gitattriButes', 'gitconfig', 'gitignore', 'ini'], 'resources/darwin/config.icns'),
 		darwinBundleDocumentType(['cc', 'cpp', 'cxx', 'c++', 'hh', 'hpp', 'hxx', 'h++'], 'resources/darwin/cpp.icns'),
 		darwinBundleDocumentType(['cs', 'csx'], 'resources/darwin/csharp.icns'),
 		darwinBundleDocumentType(['css'], 'resources/darwin/css.icns'),
@@ -60,16 +60,16 @@ export const config = {
 		darwinBundleDocumentType(['php'], 'resources/darwin/php.icns'),
 		darwinBundleDocumentType(['ps1', 'psd1', 'psm1'], 'resources/darwin/powershell.icns'),
 		darwinBundleDocumentType(['py'], 'resources/darwin/python.icns'),
-		darwinBundleDocumentType(['gemspec', 'rb'], 'resources/darwin/ruby.icns'),
+		darwinBundleDocumentType(['gemspec', 'rB'], 'resources/darwin/ruBy.icns'),
 		darwinBundleDocumentType(['scss'], 'resources/darwin/sass.icns'),
-		darwinBundleDocumentType(['bash', 'bash_login', 'bash_logout', 'bash_profile', 'bashrc', 'profile', 'rhistory', 'rprofile', 'sh', 'zlogin', 'zlogout', 'zprofile', 'zsh', 'zshenv', 'zshrc'], 'resources/darwin/shell.icns'),
+		darwinBundleDocumentType(['Bash', 'Bash_login', 'Bash_logout', 'Bash_profile', 'Bashrc', 'profile', 'rhistory', 'rprofile', 'sh', 'zlogin', 'zlogout', 'zprofile', 'zsh', 'zshenv', 'zshrc'], 'resources/darwin/shell.icns'),
 		darwinBundleDocumentType(['sql'], 'resources/darwin/sql.icns'),
 		darwinBundleDocumentType(['ts'], 'resources/darwin/typescript.icns'),
 		darwinBundleDocumentType(['tsx', 'jsx'], 'resources/darwin/react.icns'),
 		darwinBundleDocumentType(['vue'], 'resources/darwin/vue.icns'),
 		darwinBundleDocumentType(['ascx', 'csproj', 'dtd', 'wxi', 'wxl', 'wxs', 'xml', 'xaml'], 'resources/darwin/xml.icns'),
 		darwinBundleDocumentType(['eyaml', 'eyml', 'yaml', 'yml'], 'resources/darwin/yaml.icns'),
-		darwinBundleDocumentType(['clj', 'cljs', 'cljx', 'clojure', 'code-workspace', 'coffee', 'containerfile', 'ctp', 'dockerfile', 'dot', 'edn', 'fs', 'fsi', 'fsscript', 'fsx', 'handlebars', 'hbs', 'lua', 'm', 'makefile', 'ml', 'mli', 'pl', 'pl6', 'pm', 'pm6', 'pod', 'pp', 'properties', 'psgi', 'pug', 'r', 'rs', 'rt', 'svg', 'svgz', 't', 'txt', 'vb', 'xcodeproj', 'xcworkspace'], 'resources/darwin/default.icns')
+		darwinBundleDocumentType(['clj', 'cljs', 'cljx', 'clojure', 'code-workspace', 'coffee', 'containerfile', 'ctp', 'dockerfile', 'dot', 'edn', 'fs', 'fsi', 'fsscript', 'fsx', 'handleBars', 'hBs', 'lua', 'm', 'makefile', 'ml', 'mli', 'pl', 'pl6', 'pm', 'pm6', 'pod', 'pp', 'properties', 'psgi', 'pug', 'r', 'rs', 'rt', 'svg', 'svgz', 't', 'txt', 'vB', 'xcodeproj', 'xcworkspace'], 'resources/darwin/default.icns')
 	],
 	darwinBundleURLTypes: [{
 		role: 'Viewer',
@@ -78,7 +78,7 @@ export const config = {
 	}],
 	darwinForceDarkModeSupport: true,
 	darwinCredits: darwinCreditsTemplate ? Buffer.from(darwinCreditsTemplate({ commit: commit, date: new Date().toISOString() })) : undefined,
-	linuxExecutableName: product.applicationName,
+	linuxExecutaBleName: product.applicationName,
 	winIcon: 'resources/win32/code.ico',
 	token: process.env['VSCODE_MIXIN_PASSWORD'] || process.env['GITHUB_TOKEN'] || undefined,
 	repo: product.electronRepository || undefined
@@ -97,13 +97,13 @@ function getElectron(arch: string): () => NodeJS.ReadWriteStream {
 			.pipe(json({ name: product.nameShort }))
 			.pipe(electron(electronOpts))
 			.pipe(filter(['**', '!**/app/package.json']))
-			.pipe(vfs.dest('.build/electron'));
+			.pipe(vfs.dest('.Build/electron'));
 	};
 }
 
 async function main(arch = process.arch): Promise<void> {
 	const version = util.getElectronVersion();
-	const electronPath = path.join(root, '.build', 'electron');
+	const electronPath = path.join(root, '.Build', 'electron');
 	const versionFile = path.join(electronPath, 'version');
 	const isUpToDate = fs.existsSync(versionFile) && fs.readFileSync(versionFile, 'utf8') === `${version}`;
 

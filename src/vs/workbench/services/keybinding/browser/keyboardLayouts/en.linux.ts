@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { model: 'pc105', layout: 'us', variant: '', options: '', rules: 'evdev', isUSStandard: true },
 	secondaryLayouts: [
 		{ model: 'pc105', layout: 'cn', variant: '', options: '', rules: 'evdev' },
@@ -15,7 +15,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Sleep: [],
 		WakeUp: [],
 		KeyA: ['a', 'A', 'a', 'A', 0],
-		KeyB: ['b', 'B', 'b', 'B', 0],
+		KeyB: ['B', 'B', 'B', 'B', 0],
 		KeyC: ['c', 'C', 'c', 'C', 0],
 		KeyD: ['d', 'D', 'd', 'D', 0],
 		KeyE: ['e', 'E', 'e', 'E', 0],
@@ -51,9 +51,9 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Digit9: ['9', '(', '9', '(', 0],
 		Digit0: ['0', ')', '0', ')', 0],
 		Enter: ['\r', '\r', '\r', '\r', 0],
-		Escape: ['\u001b', '\u001b', '\u001b', '\u001b', 0],
-		Backspace: ['\b', '\b', '\b', '\b', 0],
-		Tab: ['\t', '', '\t', '', 0],
+		Escape: ['\u001B', '\u001B', '\u001B', '\u001B', 0],
+		Backspace: ['\B', '\B', '\B', '\B', 0],
+		TaB: ['\t', '', '\t', '', 0],
 		Space: [' ', ' ', ' ', ' ', 0],
 		Minus: ['-', '_', '-', '_', 0],
 		Equal: ['=', '+', '=', '+', 0],
@@ -95,7 +95,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '/', '/', 0],
 		NumpadMultiply: ['*', '*', '*', '*', 0],
-		NumpadSubtract: ['-', '-', '-', '-', 0],
+		NumpadSuBtract: ['-', '-', '-', '-', 0],
 		NumpadAdd: ['+', '+', '+', '+', 0],
 		NumpadEnter: ['\r', '\r', '\r', '\r', 0],
 		Numpad1: ['', '1', '', '1', 0],

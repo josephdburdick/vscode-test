@@ -5,11 +5,11 @@
 
 export interface NLSConfiguration {
 	locale: string;
-	availableLanguages: {
+	availaBleLanguages: {
 		[key: string]: string;
 	};
-	pseudo?: boolean;
-	_languagePackSupport?: boolean;
+	pseudo?: Boolean;
+	_languagePackSupport?: Boolean;
 }
 
 export interface InternalNLSConfiguration extends NLSConfiguration {
@@ -18,7 +18,7 @@ export interface InternalNLSConfiguration extends NLSConfiguration {
 	_cacheRoot: string;
 	_resolvedLanguagePackCoreLocation: string;
 	_corruptedFile: string;
-	_languagePackSupport?: boolean;
+	_languagePackSupport?: Boolean;
 }
 
 export function getNLSConfiguration(commit: string, userDataPath: string, metaDataFile: string, locale: string): Promise<NLSConfiguration>;

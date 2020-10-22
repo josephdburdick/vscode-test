@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { SplitView, IView, Sizing, LayoutPriority } from 'vs/base/browser/ui/splitview/splitview';
-import { Sash, SashState } from 'vs/base/browser/ui/sash/sash';
+import { Emitter } from 'vs/Base/common/event';
+import { SplitView, IView, Sizing, LayoutPriority } from 'vs/Base/Browser/ui/splitview/splitview';
+import { Sash, SashState } from 'vs/Base/Browser/ui/sash/sash';
 
-class TestView implements IView<number> {
+class TestView implements IView<numBer> {
 
-	private readonly _onDidChange = new Emitter<number | undefined>();
+	private readonly _onDidChange = new Emitter<numBer | undefined>();
 	readonly onDidChange = this._onDidChange.event;
 
-	get minimumSize(): number { return this._minimumSize; }
-	set minimumSize(size: number) { this._minimumSize = size; this._onDidChange.fire(undefined); }
+	get minimumSize(): numBer { return this._minimumSize; }
+	set minimumSize(size: numBer) { this._minimumSize = size; this._onDidChange.fire(undefined); }
 
-	get maximumSize(): number { return this._maximumSize; }
-	set maximumSize(size: number) { this._maximumSize = size; this._onDidChange.fire(undefined); }
+	get maximumSize(): numBer { return this._maximumSize; }
+	set maximumSize(size: numBer) { this._maximumSize = size; this._onDidChange.fire(undefined); }
 
 	private _element: HTMLElement = document.createElement('div');
 	get element(): HTMLElement { this._onDidGetElement.fire(); return this._element; }
@@ -26,24 +26,24 @@ class TestView implements IView<number> {
 	readonly onDidGetElement = this._onDidGetElement.event;
 
 	private _size = 0;
-	get size(): number { return this._size; }
-	private _orthogonalSize: number | undefined = 0;
-	get orthogonalSize(): number | undefined { return this._orthogonalSize; }
-	private readonly _onDidLayout = new Emitter<{ size: number; orthogonalSize: number | undefined }>();
+	get size(): numBer { return this._size; }
+	private _orthogonalSize: numBer | undefined = 0;
+	get orthogonalSize(): numBer | undefined { return this._orthogonalSize; }
+	private readonly _onDidLayout = new Emitter<{ size: numBer; orthogonalSize: numBer | undefined }>();
 	readonly onDidLayout = this._onDidLayout.event;
 
 	private readonly _onDidFocus = new Emitter<void>();
 	readonly onDidFocus = this._onDidFocus.event;
 
 	constructor(
-		private _minimumSize: number,
-		private _maximumSize: number,
+		private _minimumSize: numBer,
+		private _maximumSize: numBer,
 		readonly priority: LayoutPriority = LayoutPriority.Normal
 	) {
-		assert(_minimumSize <= _maximumSize, 'splitview view minimum size must be <= maximum size');
+		assert(_minimumSize <= _maximumSize, 'splitview view minimum size must Be <= maximum size');
 	}
 
-	layout(size: number, _offset: number, orthogonalSize: number | undefined): void {
+	layout(size: numBer, _offset: numBer, orthogonalSize: numBer | undefined): void {
 		this._size = size;
 		this._orthogonalSize = orthogonalSize;
 		this._onDidLayout.fire({ size, orthogonalSize });
@@ -70,14 +70,14 @@ suite('Splitview', () => {
 
 	setup(() => {
 		container = document.createElement('div');
-		container.style.position = 'absolute';
+		container.style.position = 'aBsolute';
 		container.style.width = `${200}px`;
 		container.style.height = `${200}px`;
 	});
 
 	test('empty splitview has empty DOM', () => {
 		const splitview = new SplitView(container);
-		assert.equal(container.firstElementChild!.firstElementChild!.childElementCount, 0, 'split view should be empty');
+		assert.equal(container.firstElementChild!.firstElementChild!.childElementCount, 0, 'split view should Be empty');
 		splitview.dispose();
 	});
 
@@ -132,9 +132,9 @@ suite('Splitview', () => {
 		const splitview = new SplitView(container);
 
 		let didLayout = false;
-		const layoutDisposable = view.onDidLayout(() => didLayout = true);
+		const layoutDisposaBle = view.onDidLayout(() => didLayout = true);
 
-		const renderDisposable = view.onDidGetElement(() => undefined);
+		const renderDisposaBle = view.onDidGetElement(() => undefined);
 
 		splitview.addView(view, 20);
 
@@ -143,13 +143,13 @@ suite('Splitview', () => {
 		assert(didLayout, 'render is called');
 
 		splitview.dispose();
-		layoutDisposable.dispose();
-		renderDisposable.dispose();
+		layoutDisposaBle.dispose();
+		renderDisposaBle.dispose();
 		view.dispose();
 	});
 
 	test('stretches view to viewport', () => {
-		const view = new TestView(20, Number.POSITIVE_INFINITY);
+		const view = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
@@ -176,9 +176,9 @@ suite('Splitview', () => {
 	});
 
 	test('can resize views', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
@@ -215,9 +215,9 @@ suite('Splitview', () => {
 	});
 
 	test('reacts to view changes', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
@@ -247,7 +247,7 @@ suite('Splitview', () => {
 		assert.equal(view2.size, 140, 'view2 stays the same');
 		assert.equal(view3.size, 40, 'view3 stays the same');
 
-		view3.maximumSize = Number.POSITIVE_INFINITY;
+		view3.maximumSize = NumBer.POSITIVE_INFINITY;
 		view3.minimumSize = 100;
 
 		assert.equal(view1.size, 20, 'view1 is collapsed');
@@ -260,53 +260,53 @@ suite('Splitview', () => {
 		view1.dispose();
 	});
 
-	test('sashes are properly enabled/disabled', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+	test('sashes are properly enaBled/disaBled', () => {
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
-		splitview.addView(view3, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
+		splitview.addView(view3, Sizing.DistriBute);
 
 		let sashes = getSashes(splitview);
 		assert.equal(sashes.length, 2, 'there are two sashes');
-		assert.equal(sashes[0].state, SashState.Enabled, 'first sash is enabled');
-		assert.equal(sashes[1].state, SashState.Enabled, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.EnaBled, 'first sash is enaBled');
+		assert.equal(sashes[1].state, SashState.EnaBled, 'second sash is enaBled');
 
 		splitview.layout(60);
-		assert.equal(sashes[0].state, SashState.Disabled, 'first sash is disabled');
-		assert.equal(sashes[1].state, SashState.Disabled, 'second sash is disabled');
+		assert.equal(sashes[0].state, SashState.DisaBled, 'first sash is disaBled');
+		assert.equal(sashes[1].state, SashState.DisaBled, 'second sash is disaBled');
 
 		splitview.layout(20);
-		assert.equal(sashes[0].state, SashState.Disabled, 'first sash is disabled');
-		assert.equal(sashes[1].state, SashState.Disabled, 'second sash is disabled');
+		assert.equal(sashes[0].state, SashState.DisaBled, 'first sash is disaBled');
+		assert.equal(sashes[1].state, SashState.DisaBled, 'second sash is disaBled');
 
 		splitview.layout(200);
-		assert.equal(sashes[0].state, SashState.Enabled, 'first sash is enabled');
-		assert.equal(sashes[1].state, SashState.Enabled, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.EnaBled, 'first sash is enaBled');
+		assert.equal(sashes[1].state, SashState.EnaBled, 'second sash is enaBled');
 
 		view1.maximumSize = 20;
-		assert.equal(sashes[0].state, SashState.Disabled, 'first sash is disabled');
-		assert.equal(sashes[1].state, SashState.Enabled, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.DisaBled, 'first sash is disaBled');
+		assert.equal(sashes[1].state, SashState.EnaBled, 'second sash is enaBled');
 
 		view2.maximumSize = 20;
-		assert.equal(sashes[0].state, SashState.Disabled, 'first sash is disabled');
-		assert.equal(sashes[1].state, SashState.Disabled, 'second sash is disabled');
+		assert.equal(sashes[0].state, SashState.DisaBled, 'first sash is disaBled');
+		assert.equal(sashes[1].state, SashState.DisaBled, 'second sash is disaBled');
 
 		view1.maximumSize = 300;
-		assert.equal(sashes[0].state, SashState.Minimum, 'first sash is enabled');
-		assert.equal(sashes[1].state, SashState.Minimum, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.Minimum, 'first sash is enaBled');
+		assert.equal(sashes[1].state, SashState.Minimum, 'second sash is enaBled');
 
 		view2.maximumSize = 200;
-		assert.equal(sashes[0].state, SashState.Minimum, 'first sash is enabled');
-		assert.equal(sashes[1].state, SashState.Minimum, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.Minimum, 'first sash is enaBled');
+		assert.equal(sashes[1].state, SashState.Minimum, 'second sash is enaBled');
 
 		splitview.resizeView(0, 40);
-		assert.equal(sashes[0].state, SashState.Enabled, 'first sash is enabled');
-		assert.equal(sashes[1].state, SashState.Enabled, 'second sash is enabled');
+		assert.equal(sashes[0].state, SashState.EnaBled, 'first sash is enaBled');
+		assert.equal(sashes[1].state, SashState.EnaBled, 'second sash is enaBled');
 
 		splitview.dispose();
 		view3.dispose();
@@ -315,7 +315,7 @@ suite('Splitview', () => {
 	});
 
 	test('issue #35497', () => {
-		const view1 = new TestView(160, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(160, NumBer.POSITIVE_INFINITY);
 		const view2 = new TestView(66, 66);
 
 		const splitview = new SplitView(container);
@@ -343,23 +343,23 @@ suite('Splitview', () => {
 		view1.dispose();
 	});
 
-	test('automatic size distribution', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+	test('automatic size distriBution', () => {
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
 		assert.equal(view1.size, 200);
 
 		splitview.addView(view2, 50);
 		assert.deepEqual([view1.size, view2.size], [150, 50]);
 
-		splitview.addView(view3, Sizing.Distribute);
+		splitview.addView(view3, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view2.size, view3.size], [66, 66, 68]);
 
-		splitview.removeView(1, Sizing.Distribute);
+		splitview.removeView(1, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view3.size], [100, 100]);
 
 		splitview.dispose();
@@ -368,10 +368,10 @@ suite('Splitview', () => {
 		view1.dispose();
 	});
 
-	test('add views before layout', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+	test('add views Before layout', () => {
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 
 		splitview.addView(view1, 100);
@@ -388,13 +388,13 @@ suite('Splitview', () => {
 	});
 
 	test('split sizing', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
 		assert.equal(view1.size, 200);
 
 		splitview.addView(view2, Sizing.Split(0));
@@ -410,13 +410,13 @@ suite('Splitview', () => {
 	});
 
 	test('split sizing 2', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
 		assert.equal(view1.size, 200);
 
 		splitview.addView(view2, Sizing.Split(0));
@@ -432,13 +432,13 @@ suite('Splitview', () => {
 	});
 
 	test('proportional layout', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container);
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view2.size], [100, 100]);
 
 		splitview.layout(100);
@@ -449,14 +449,14 @@ suite('Splitview', () => {
 		view1.dispose();
 	});
 
-	test('disable proportional layout', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
+	test('disaBle proportional layout', () => {
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container, { proportionalLayout: false });
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view2.size], [100, 100]);
 
 		splitview.layout(100);
@@ -468,15 +468,15 @@ suite('Splitview', () => {
 	});
 
 	test('high layout priority', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY, LayoutPriority.High);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY, LayoutPriority.High);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY);
 		const splitview = new SplitView(container, { proportionalLayout: false });
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
-		splitview.addView(view3, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
+		splitview.addView(view3, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view2.size, view3.size], [66, 68, 66]);
 
 		splitview.layout(180);
@@ -498,15 +498,15 @@ suite('Splitview', () => {
 	});
 
 	test('low layout priority', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY, LayoutPriority.Low);
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY, LayoutPriority.Low);
 		const splitview = new SplitView(container, { proportionalLayout: false });
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
-		splitview.addView(view3, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
+		splitview.addView(view3, Sizing.DistriBute);
 		assert.deepEqual([view1.size, view2.size, view3.size], [66, 68, 66]);
 
 		splitview.layout(180);
@@ -528,15 +528,15 @@ suite('Splitview', () => {
 	});
 
 	test('context propagates to views', () => {
-		const view1 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view2 = new TestView(20, Number.POSITIVE_INFINITY);
-		const view3 = new TestView(20, Number.POSITIVE_INFINITY, LayoutPriority.Low);
-		const splitview = new SplitView<number>(container, { proportionalLayout: false });
+		const view1 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view2 = new TestView(20, NumBer.POSITIVE_INFINITY);
+		const view3 = new TestView(20, NumBer.POSITIVE_INFINITY, LayoutPriority.Low);
+		const splitview = new SplitView<numBer>(container, { proportionalLayout: false });
 		splitview.layout(200);
 
-		splitview.addView(view1, Sizing.Distribute);
-		splitview.addView(view2, Sizing.Distribute);
-		splitview.addView(view3, Sizing.Distribute);
+		splitview.addView(view1, Sizing.DistriBute);
+		splitview.addView(view2, Sizing.DistriBute);
+		splitview.addView(view3, Sizing.DistriBute);
 
 		splitview.layout(200, 100);
 		assert.deepEqual([view1.orthogonalSize, view2.orthogonalSize, view3.orthogonalSize], [100, 100, 100]);

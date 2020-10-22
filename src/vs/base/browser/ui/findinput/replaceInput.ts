@@ -6,29 +6,29 @@
 import 'vs/css!./findInput';
 
 import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { IMessage as InputBoxMessage, IInputValidator, IInputBoxStyles, HistoryInputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Color } from 'vs/base/common/color';
-import { ICheckboxStyles, Checkbox } from 'vs/base/browser/ui/checkbox/checkbox';
-import { IFindInputCheckboxOpts } from 'vs/base/browser/ui/findinput/findInputCheckboxes';
-import { Codicon } from 'vs/base/common/codicons';
+import * as dom from 'vs/Base/Browser/dom';
+import { IMessage as InputBoxMessage, IInputValidator, IInputBoxStyles, HistoryInputBox } from 'vs/Base/Browser/ui/inputBox/inputBox';
+import { IContextViewProvider } from 'vs/Base/Browser/ui/contextview/contextview';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { Color } from 'vs/Base/common/color';
+import { ICheckBoxStyles, CheckBox } from 'vs/Base/Browser/ui/checkBox/checkBox';
+import { IFindInputCheckBoxOpts } from 'vs/Base/Browser/ui/findinput/findInputCheckBoxes';
+import { Codicon } from 'vs/Base/common/codicons';
 
 export interface IReplaceInputOptions extends IReplaceInputStyles {
 	readonly placeholder?: string;
-	readonly width?: number;
+	readonly width?: numBer;
 	readonly validation?: IInputValidator;
-	readonly label: string;
-	readonly flexibleHeight?: boolean;
-	readonly flexibleWidth?: boolean;
-	readonly flexibleMaxHeight?: number;
+	readonly laBel: string;
+	readonly flexiBleHeight?: Boolean;
+	readonly flexiBleWidth?: Boolean;
+	readonly flexiBleMaxHeight?: numBer;
 
-	readonly appendPreserveCaseLabel?: string;
+	readonly appendPreserveCaseLaBel?: string;
 	readonly history?: string[];
 }
 
@@ -38,11 +38,11 @@ export interface IReplaceInputStyles extends IInputBoxStyles {
 	inputActiveOptionBackground?: Color;
 }
 
-const NLS_DEFAULT_LABEL = nls.localize('defaultLabel', "input");
-const NLS_PRESERVE_CASE_LABEL = nls.localize('label.preserveCaseCheckbox', "Preserve Case");
+const NLS_DEFAULT_LABEL = nls.localize('defaultLaBel', "input");
+const NLS_PRESERVE_CASE_LABEL = nls.localize('laBel.preserveCaseCheckBox', "Preserve Case");
 
-export class PreserveCaseCheckbox extends Checkbox {
-	constructor(opts: IFindInputCheckboxOpts) {
+export class PreserveCaseCheckBox extends CheckBox {
+	constructor(opts: IFindInputCheckBoxOpts) {
 		super({
 			// TODO: does this need its own icon?
 			icon: Codicon.preserveCase,
@@ -62,8 +62,8 @@ export class ReplaceInput extends Widget {
 	private contextViewProvider: IContextViewProvider | undefined;
 	private placeholder: string;
 	private validation?: IInputValidator;
-	private label: string;
-	private fixFocusOnOptionClickEnabled = true;
+	private laBel: string;
+	private fixFocusOnOptionClickEnaBled = true;
 
 	private inputActiveOptionBorder?: Color;
 	private inputActiveOptionForeground?: Color;
@@ -82,35 +82,35 @@ export class ReplaceInput extends Widget {
 	private inputValidationErrorBackground?: Color;
 	private inputValidationErrorForeground?: Color;
 
-	private preserveCase: PreserveCaseCheckbox;
-	private cachedOptionsWidth: number = 0;
-	public domNode: HTMLElement;
-	public inputBox: HistoryInputBox;
+	private preserveCase: PreserveCaseCheckBox;
+	private cachedOptionsWidth: numBer = 0;
+	puBlic domNode: HTMLElement;
+	puBlic inputBox: HistoryInputBox;
 
-	private readonly _onDidOptionChange = this._register(new Emitter<boolean>());
-	public readonly onDidOptionChange: Event<boolean /* via keyboard */> = this._onDidOptionChange.event;
+	private readonly _onDidOptionChange = this._register(new Emitter<Boolean>());
+	puBlic readonly onDidOptionChange: Event<Boolean /* via keyBoard */> = this._onDidOptionChange.event;
 
-	private readonly _onKeyDown = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onKeyDown: Event<IKeyboardEvent> = this._onKeyDown.event;
+	private readonly _onKeyDown = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onKeyDown: Event<IKeyBoardEvent> = this._onKeyDown.event;
 
 	private readonly _onMouseDown = this._register(new Emitter<IMouseEvent>());
-	public readonly onMouseDown: Event<IMouseEvent> = this._onMouseDown.event;
+	puBlic readonly onMouseDown: Event<IMouseEvent> = this._onMouseDown.event;
 
 	private readonly _onInput = this._register(new Emitter<void>());
-	public readonly onInput: Event<void> = this._onInput.event;
+	puBlic readonly onInput: Event<void> = this._onInput.event;
 
-	private readonly _onKeyUp = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onKeyUp: Event<IKeyboardEvent> = this._onKeyUp.event;
+	private readonly _onKeyUp = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onKeyUp: Event<IKeyBoardEvent> = this._onKeyUp.event;
 
-	private _onPreserveCaseKeyDown = this._register(new Emitter<IKeyboardEvent>());
-	public readonly onPreserveCaseKeyDown: Event<IKeyboardEvent> = this._onPreserveCaseKeyDown.event;
+	private _onPreserveCaseKeyDown = this._register(new Emitter<IKeyBoardEvent>());
+	puBlic readonly onPreserveCaseKeyDown: Event<IKeyBoardEvent> = this._onPreserveCaseKeyDown.event;
 
-	constructor(parent: HTMLElement | null, contextViewProvider: IContextViewProvider | undefined, private readonly _showOptionButtons: boolean, options: IReplaceInputOptions) {
+	constructor(parent: HTMLElement | null, contextViewProvider: IContextViewProvider | undefined, private readonly _showOptionButtons: Boolean, options: IReplaceInputOptions) {
 		super();
 		this.contextViewProvider = contextViewProvider;
 		this.placeholder = options.placeholder || '';
 		this.validation = options.validation;
-		this.label = options.label || NLS_DEFAULT_LABEL;
+		this.laBel = options.laBel || NLS_DEFAULT_LABEL;
 
 		this.inputActiveOptionBorder = options.inputActiveOptionBorder;
 		this.inputActiveOptionForeground = options.inputActiveOptionForeground;
@@ -129,17 +129,17 @@ export class ReplaceInput extends Widget {
 		this.inputValidationErrorBackground = options.inputValidationErrorBackground;
 		this.inputValidationErrorForeground = options.inputValidationErrorForeground;
 
-		const appendPreserveCaseLabel = options.appendPreserveCaseLabel || '';
+		const appendPreserveCaseLaBel = options.appendPreserveCaseLaBel || '';
 		const history = options.history || [];
-		const flexibleHeight = !!options.flexibleHeight;
-		const flexibleWidth = !!options.flexibleWidth;
-		const flexibleMaxHeight = options.flexibleMaxHeight;
+		const flexiBleHeight = !!options.flexiBleHeight;
+		const flexiBleWidth = !!options.flexiBleWidth;
+		const flexiBleMaxHeight = options.flexiBleMaxHeight;
 
 		this.domNode = document.createElement('div');
 		this.domNode.classList.add('monaco-findInput');
 
 		this.inputBox = this._register(new HistoryInputBox(this.domNode, this.contextViewProvider, {
-			ariaLabel: this.label || '',
+			ariaLaBel: this.laBel || '',
 			placeholder: this.placeholder || '',
 			validationOptions: {
 				validation: this.validation
@@ -157,21 +157,21 @@ export class ReplaceInput extends Widget {
 			inputValidationErrorForeground: this.inputValidationErrorForeground,
 			inputValidationErrorBorder: this.inputValidationErrorBorder,
 			history,
-			flexibleHeight,
-			flexibleWidth,
-			flexibleMaxHeight
+			flexiBleHeight,
+			flexiBleWidth,
+			flexiBleMaxHeight
 		}));
 
-		this.preserveCase = this._register(new PreserveCaseCheckbox({
-			appendTitle: appendPreserveCaseLabel,
+		this.preserveCase = this._register(new PreserveCaseCheckBox({
+			appendTitle: appendPreserveCaseLaBel,
 			isChecked: false,
 			inputActiveOptionBorder: this.inputActiveOptionBorder,
 			inputActiveOptionForeground: this.inputActiveOptionForeground,
 			inputActiveOptionBackground: this.inputActiveOptionBackground,
 		}));
-		this._register(this.preserveCase.onChange(viaKeyboard => {
-			this._onDidOptionChange.fire(viaKeyboard);
-			if (!viaKeyboard && this.fixFocusOnOptionClickEnabled) {
+		this._register(this.preserveCase.onChange(viaKeyBoard => {
+			this._onDidOptionChange.fire(viaKeyBoard);
+			if (!viaKeyBoard && this.fixFocusOnOptionClickEnaBled) {
 				this.inputBox.focus();
 			}
 			this.validate();
@@ -186,13 +186,13 @@ export class ReplaceInput extends Widget {
 			this.cachedOptionsWidth = 0;
 		}
 
-		// Arrow-Key support to navigate between options
+		// Arrow-Key support to navigate Between options
 		let indexes = [this.preserveCase.domNode];
-		this.onkeydown(this.domNode, (event: IKeyboardEvent) => {
+		this.onkeydown(this.domNode, (event: IKeyBoardEvent) => {
 			if (event.equals(KeyCode.LeftArrow) || event.equals(KeyCode.RightArrow) || event.equals(KeyCode.Escape)) {
 				let index = indexes.indexOf(<HTMLElement>document.activeElement);
 				if (index >= 0) {
-					let newIndex: number = -1;
+					let newIndex: numBer = -1;
 					if (event.equals(KeyCode.RightArrow)) {
 						newIndex = (index + 1) % indexes.length;
 					} else if (event.equals(KeyCode.LeftArrow)) {
@@ -204,7 +204,7 @@ export class ReplaceInput extends Widget {
 					}
 
 					if (event.equals(KeyCode.Escape)) {
-						indexes[index].blur();
+						indexes[index].Blur();
 						this.inputBox.focus();
 					} else if (newIndex >= 0) {
 						indexes[newIndex].focus();
@@ -218,7 +218,7 @@ export class ReplaceInput extends Widget {
 
 		let controls = document.createElement('div');
 		controls.className = 'controls';
-		controls.style.display = this._showOptionButtons ? 'block' : 'none';
+		controls.style.display = this._showOptionButtons ? 'Block' : 'none';
 		controls.appendChild(this.preserveCase.domNode);
 
 		this.domNode.appendChild(controls);
@@ -233,51 +233,51 @@ export class ReplaceInput extends Widget {
 		this.onmousedown(this.inputBox.inputElement, (e) => this._onMouseDown.fire(e));
 	}
 
-	public enable(): void {
-		this.domNode.classList.remove('disabled');
-		this.inputBox.enable();
-		this.preserveCase.enable();
+	puBlic enaBle(): void {
+		this.domNode.classList.remove('disaBled');
+		this.inputBox.enaBle();
+		this.preserveCase.enaBle();
 	}
 
-	public disable(): void {
-		this.domNode.classList.add('disabled');
-		this.inputBox.disable();
-		this.preserveCase.disable();
+	puBlic disaBle(): void {
+		this.domNode.classList.add('disaBled');
+		this.inputBox.disaBle();
+		this.preserveCase.disaBle();
 	}
 
-	public setFocusInputOnOptionClick(value: boolean): void {
-		this.fixFocusOnOptionClickEnabled = value;
+	puBlic setFocusInputOnOptionClick(value: Boolean): void {
+		this.fixFocusOnOptionClickEnaBled = value;
 	}
 
-	public setEnabled(enabled: boolean): void {
-		if (enabled) {
-			this.enable();
+	puBlic setEnaBled(enaBled: Boolean): void {
+		if (enaBled) {
+			this.enaBle();
 		} else {
-			this.disable();
+			this.disaBle();
 		}
 	}
 
-	public clear(): void {
+	puBlic clear(): void {
 		this.clearValidation();
 		this.setValue('');
 		this.focus();
 	}
 
-	public getValue(): string {
+	puBlic getValue(): string {
 		return this.inputBox.value;
 	}
 
-	public setValue(value: string): void {
+	puBlic setValue(value: string): void {
 		if (this.inputBox.value !== value) {
 			this.inputBox.value = value;
 		}
 	}
 
-	public onSearchSubmit(): void {
+	puBlic onSearchSuBmit(): void {
 		this.inputBox.addToHistory();
 	}
 
-	public style(styles: IReplaceInputStyles): void {
+	puBlic style(styles: IReplaceInputStyles): void {
 		this.inputActiveOptionBorder = styles.inputActiveOptionBorder;
 		this.inputActiveOptionForeground = styles.inputActiveOptionForeground;
 		this.inputActiveOptionBackground = styles.inputActiveOptionBackground;
@@ -300,7 +300,7 @@ export class ReplaceInput extends Widget {
 
 	protected applyStyles(): void {
 		if (this.domNode) {
-			const checkBoxStyles: ICheckboxStyles = {
+			const checkBoxStyles: ICheckBoxStyles = {
 				inputActiveOptionBorder: this.inputActiveOptionBorder,
 				inputActiveOptionForeground: this.inputActiveOptionForeground,
 				inputActiveOptionBackground: this.inputActiveOptionBackground,
@@ -325,46 +325,46 @@ export class ReplaceInput extends Widget {
 		}
 	}
 
-	public select(): void {
+	puBlic select(): void {
 		this.inputBox.select();
 	}
 
-	public focus(): void {
+	puBlic focus(): void {
 		this.inputBox.focus();
 	}
 
-	public getPreserveCase(): boolean {
+	puBlic getPreserveCase(): Boolean {
 		return this.preserveCase.checked;
 	}
 
-	public setPreserveCase(value: boolean): void {
+	puBlic setPreserveCase(value: Boolean): void {
 		this.preserveCase.checked = value;
 	}
 
-	public focusOnPreserve(): void {
+	puBlic focusOnPreserve(): void {
 		this.preserveCase.focus();
 	}
 
-	private _lastHighlightFindOptions: number = 0;
-	public highlightFindOptions(): void {
+	private _lastHighlightFindOptions: numBer = 0;
+	puBlic highlightFindOptions(): void {
 		this.domNode.classList.remove('highlight-' + (this._lastHighlightFindOptions));
 		this._lastHighlightFindOptions = 1 - this._lastHighlightFindOptions;
 		this.domNode.classList.add('highlight-' + (this._lastHighlightFindOptions));
 	}
 
-	public validate(): void {
+	puBlic validate(): void {
 		if (this.inputBox) {
 			this.inputBox.validate();
 		}
 	}
 
-	public showMessage(message: InputBoxMessage): void {
+	puBlic showMessage(message: InputBoxMessage): void {
 		if (this.inputBox) {
 			this.inputBox.showMessage(message);
 		}
 	}
 
-	public clearMessage(): void {
+	puBlic clearMessage(): void {
 		if (this.inputBox) {
 			this.inputBox.hideMessage();
 		}
@@ -376,13 +376,13 @@ export class ReplaceInput extends Widget {
 		}
 	}
 
-	public set width(newWidth: number) {
+	puBlic set width(newWidth: numBer) {
 		this.inputBox.paddingRight = this.cachedOptionsWidth;
 		this.inputBox.width = newWidth;
 		this.domNode.style.width = newWidth + 'px';
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 	}
 }

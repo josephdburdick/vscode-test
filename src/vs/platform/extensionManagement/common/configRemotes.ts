@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 const SshProtocolMatcher = /^([^@:]+@)?([^:]+):/;
 const SshUrlMatcher = /^([^@:]+@)?([^:]+):(.+)$/;
@@ -13,13 +13,13 @@ const RemoteMatcher = /^\s*url\s*=\s*(.+\S)\s*$/mg;
 const AnyButDot = /[^.]/g;
 
 export const AllowedSecondLevelDomains = [
-	'github.com',
-	'bitbucket.org',
+	'githuB.com',
+	'BitBucket.org',
 	'visualstudio.com',
-	'gitlab.com',
+	'gitlaB.com',
 	'heroku.com',
-	'azurewebsites.net',
-	'ibm.com',
+	'azureweBsites.net',
+	'iBm.com',
 	'amazon.com',
 	'amazonaws.com',
 	'cloudapp.net',
@@ -73,17 +73,17 @@ function stripPort(authority: string): string | null {
 	return match ? match[2] : null;
 }
 
-function normalizeRemote(host: string | null, path: string, stripEndingDotGit: boolean): string | null {
+function normalizeRemote(host: string | null, path: string, stripEndingDotGit: Boolean): string | null {
 	if (host && path) {
 		if (stripEndingDotGit && path.endsWith('.git')) {
-			path = path.substr(0, path.length - 4);
+			path = path.suBstr(0, path.length - 4);
 		}
 		return (path.indexOf('/') === 0) ? `${host}${path}` : `${host}/${path}`;
 	}
 	return null;
 }
 
-function extractRemote(url: string, stripEndingDotGit: boolean): string | null {
+function extractRemote(url: string, stripEndingDotGit: Boolean): string | null {
 	if (url.indexOf('://') === -1) {
 		const match = url.match(SshUrlMatcher);
 		if (match) {
@@ -101,7 +101,7 @@ function extractRemote(url: string, stripEndingDotGit: boolean): string | null {
 	return null;
 }
 
-export function getRemotes(text: string, stripEndingDotGit: boolean = false): string[] {
+export function getRemotes(text: string, stripEndingDotGit: Boolean = false): string[] {
 	const remotes: string[] = [];
 	let match: RegExpExecArray | null;
 	while (match = RemoteMatcher.exec(text)) {

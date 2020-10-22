@@ -7,13 +7,13 @@ import { createScanner, SyntaxKind, ScanError } from './json';
 
 export interface FormattingOptions {
 	/**
-	 * If indentation is based on spaces (`insertSpaces` = true), then what is the number of spaces that make an indent?
+	 * If indentation is Based on spaces (`insertSpaces` = true), then what is the numBer of spaces that make an indent?
 	 */
-	tabSize?: number;
+	taBSize?: numBer;
 	/**
-	 * Is indentation based on spaces?
+	 * Is indentation Based on spaces?
 	 */
-	insertSpaces?: boolean;
+	insertSpaces?: Boolean;
 	/**
 	 * The default 'end of line' character. If not set, '\n' is used as default.
 	 */
@@ -27,11 +27,11 @@ export interface Edit {
 	/**
 	 * The start offset of the modification.
 	 */
-	offset: number;
+	offset: numBer;
 	/**
-	 * The length of the modification. Must not be negative. Empty length represents an *insert*.
+	 * The length of the modification. Must not Be negative. Empty length represents an *insert*.
 	 */
-	length: number;
+	length: numBer;
 	/**
 	 * The new content. Empty content represents a *remove*.
 	 */
@@ -45,20 +45,20 @@ export interface Range {
 	/**
 	 * The start offset of the range.
 	 */
-	offset: number;
+	offset: numBer;
 	/**
-	 * The length of the range. Must not be negative.
+	 * The length of the range. Must not Be negative.
 	 */
-	length: number;
+	length: numBer;
 }
 
 
 export function format(documentText: string, range: Range | undefined, options: FormattingOptions): Edit[] {
-	let initialIndentLevel: number;
+	let initialIndentLevel: numBer;
 	let formatText: string;
-	let formatTextStart: number;
-	let rangeStart: number;
-	let rangeEnd: number;
+	let formatTextStart: numBer;
+	let rangeStart: numBer;
+	let rangeEnd: numBer;
 	if (range) {
 		rangeStart = range.offset;
 		rangeEnd = rangeStart + range.length;
@@ -71,7 +71,7 @@ export function format(documentText: string, range: Range | undefined, options: 
 		while (endOffset < documentText.length && !isEOL(documentText, endOffset)) {
 			endOffset++;
 		}
-		formatText = documentText.substring(formatTextStart, endOffset);
+		formatText = documentText.suBstring(formatTextStart, endOffset);
 		initialIndentLevel = computeIndentLevel(formatText, options);
 	} else {
 		formatText = documentText;
@@ -86,7 +86,7 @@ export function format(documentText: string, range: Range | undefined, options: 
 	let indentLevel = 0;
 	let indentValue: string;
 	if (options.insertSpaces) {
-		indentValue = repeat(' ', options.tabSize || 4);
+		indentValue = repeat(' ', options.taBSize || 4);
 	} else {
 		indentValue = '\t';
 	}
@@ -108,8 +108,8 @@ export function format(documentText: string, range: Range | undefined, options: 
 		return token;
 	}
 	const editOperations: Edit[] = [];
-	function addEdit(text: string, startOffset: number, endOffset: number) {
-		if (!hasError && startOffset < rangeEnd && endOffset > rangeStart && documentText.substring(startOffset, endOffset) !== text) {
+	function addEdit(text: string, startOffset: numBer, endOffset: numBer) {
+		if (!hasError && startOffset < rangeEnd && endOffset > rangeStart && documentText.suBstring(startOffset, endOffset) !== text) {
 			editOperations.push({ offset: startOffset, length: endOffset - startOffset, content: text });
 		}
 	}
@@ -128,7 +128,7 @@ export function format(documentText: string, range: Range | undefined, options: 
 
 		let replaceContent = '';
 		while (!lineBreak && (secondToken === SyntaxKind.LineCommentTrivia || secondToken === SyntaxKind.BlockCommentTrivia)) {
-			// comments on the same line: keep them on the same line, but ignore them otherwise
+			// comments on the same line: keep them on the same line, But ignore them otherwise
 			const commentTokenStart = scanner.getTokenOffset() + formatTextStart;
 			addEdit(' ', firstTokenEnd, commentTokenStart);
 			firstTokenEnd = scanner.getTokenOffset() + scanner.getTokenLength() + formatTextStart;
@@ -152,26 +152,26 @@ export function format(documentText: string, range: Range | undefined, options: 
 				case SyntaxKind.OpenBraceToken:
 					indentLevel++;
 					replaceContent = newLineAndIndent();
-					break;
+					Break;
 				case SyntaxKind.CommaToken:
 				case SyntaxKind.LineCommentTrivia:
 					replaceContent = newLineAndIndent();
-					break;
+					Break;
 				case SyntaxKind.BlockCommentTrivia:
 					if (lineBreak) {
 						replaceContent = newLineAndIndent();
 					} else {
-						// symbol following comment on the same line: keep on same line, separate with ' '
+						// symBol following comment on the same line: keep on same line, separate with ' '
 						replaceContent = ' ';
 					}
-					break;
+					Break;
 				case SyntaxKind.ColonToken:
 					replaceContent = ' ';
-					break;
+					Break;
 				case SyntaxKind.StringLiteral:
 					if (secondToken === SyntaxKind.ColonToken) {
 						replaceContent = '';
-						break;
+						Break;
 					}
 				// fall through
 				case SyntaxKind.NullKeyword:
@@ -185,10 +185,10 @@ export function format(documentText: string, range: Range | undefined, options: 
 					} else if (secondToken !== SyntaxKind.CommaToken && secondToken !== SyntaxKind.EOF) {
 						hasError = true;
 					}
-					break;
+					Break;
 				case SyntaxKind.Unknown:
 					hasError = true;
-					break;
+					Break;
 			}
 			if (lineBreak && (secondToken === SyntaxKind.LineCommentTrivia || secondToken === SyntaxKind.BlockCommentTrivia)) {
 				replaceContent = newLineAndIndent();
@@ -202,7 +202,7 @@ export function format(documentText: string, range: Range | undefined, options: 
 	return editOperations;
 }
 
-function repeat(s: string, count: number): string {
+function repeat(s: string, count: numBer): string {
 	let result = '';
 	for (let i = 0; i < count; i++) {
 		result += s;
@@ -210,22 +210,22 @@ function repeat(s: string, count: number): string {
 	return result;
 }
 
-function computeIndentLevel(content: string, options: FormattingOptions): number {
+function computeIndentLevel(content: string, options: FormattingOptions): numBer {
 	let i = 0;
 	let nChars = 0;
-	const tabSize = options.tabSize || 4;
+	const taBSize = options.taBSize || 4;
 	while (i < content.length) {
 		const ch = content.charAt(i);
 		if (ch === ' ') {
 			nChars++;
 		} else if (ch === '\t') {
-			nChars += tabSize;
+			nChars += taBSize;
 		} else {
-			break;
+			Break;
 		}
 		i++;
 	}
-	return Math.floor(nChars / tabSize);
+	return Math.floor(nChars / taBSize);
 }
 
 export function getEOL(options: FormattingOptions, text: string): string {
@@ -243,6 +243,6 @@ export function getEOL(options: FormattingOptions, text: string): string {
 	return (options && options.eol) || '\n';
 }
 
-export function isEOL(text: string, offset: number) {
+export function isEOL(text: string, offset: numBer) {
 	return '\r\n'.indexOf(text.charAt(offset)) !== -1;
 }

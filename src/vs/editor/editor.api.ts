@@ -5,10 +5,10 @@
 
 import { EditorOptions, WrappingIndent, EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions';
 import { createMonacoBaseAPI } from 'vs/editor/common/standalone/standaloneBase';
-import { createMonacoEditorAPI } from 'vs/editor/standalone/browser/standaloneEditor';
-import { createMonacoLanguagesAPI } from 'vs/editor/standalone/browser/standaloneLanguages';
+import { createMonacoEditorAPI } from 'vs/editor/standalone/Browser/standaloneEditor';
+import { createMonacoLanguagesAPI } from 'vs/editor/standalone/Browser/standaloneLanguages';
 
-const global: any = self;
+const gloBal: any = self;
 
 // Set defaults for standalone editor
 EditorOptions.wrappingIndent.defaultValue = WrappingIndent.None;
@@ -34,10 +34,10 @@ export const Token = api.Token;
 export const editor = api.editor;
 export const languages = api.languages;
 
-global.monaco = api;
+gloBal.monaco = api;
 
-if (typeof global.require !== 'undefined' && typeof global.require.config === 'function') {
-	global.require.config({
+if (typeof gloBal.require !== 'undefined' && typeof gloBal.require.config === 'function') {
+	gloBal.require.config({
 		ignoreDuplicateModules: [
 			'vscode-languageserver-types',
 			'vscode-languageserver-types/main',
@@ -49,7 +49,7 @@ if (typeof global.require !== 'undefined' && typeof global.require.config === 'f
 			'jsonc-parser/main',
 			'vscode-uri',
 			'vscode-uri/index',
-			'vs/basic-languages/typescript/typescript'
+			'vs/Basic-languages/typescript/typescript'
 		]
 	});
 }

@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IBulkEditService, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
+import { IBulkEditService, ResourceTextEdit } from 'vs/editor/Browser/services/BulkEditService';
 import { localize } from 'vs/nls';
 import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { viewColumnToEditorGroup } from 'vs/workbench/api/common/shared/editor';
-import { ActiveEditorContext } from 'vs/workbench/common/editor';
-import { CellDiffViewModel } from 'vs/workbench/contrib/notebook/browser/diff/celllDiffViewModel';
-import { NotebookTextDiffEditor } from 'vs/workbench/contrib/notebook/browser/diff/notebookTextDiffEditor';
-import { NotebookDiffEditorInput } from 'vs/workbench/contrib/notebook/browser/notebookDiffEditorInput';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { viewColumnToEditorGroup } from 'vs/workBench/api/common/shared/editor';
+import { ActiveEditorContext } from 'vs/workBench/common/editor';
+import { CellDiffViewModel } from 'vs/workBench/contriB/noteBook/Browser/diff/celllDiffViewModel';
+import { NoteBookTextDiffEditor } from 'vs/workBench/contriB/noteBook/Browser/diff/noteBookTextDiffEditor';
+import { NoteBookDiffEditorInput } from 'vs/workBench/contriB/noteBook/Browser/noteBookDiffEditorInput';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 
 // ActiveEditorContext.isEqualTo(SearchEditorConstants.SearchEditorID)
 
 registerAction2(class extends Action2 {
 	constructor() {
 		super({
-			id: 'notebook.diff.switchToText',
+			id: 'noteBook.diff.switchToText',
 			icon: { id: 'codicon/file-code' },
-			title: { value: localize('notebook.diff.switchToText', "Open Text Diff Editor"), original: 'Open Text Diff Editor' },
-			precondition: ActiveEditorContext.isEqualTo(NotebookTextDiffEditor.ID),
+			title: { value: localize('noteBook.diff.switchToText', "Open Text Diff Editor"), original: 'Open Text Diff Editor' },
+			precondition: ActiveEditorContext.isEqualTo(NoteBookTextDiffEditor.ID),
 			menu: [{
 				id: MenuId.EditorTitle,
 				group: 'navigation',
-				when: ActiveEditorContext.isEqualTo(NotebookTextDiffEditor.ID)
+				when: ActiveEditorContext.isEqualTo(NoteBookTextDiffEditor.ID)
 			}]
 		});
 	}
@@ -37,16 +37,16 @@ registerAction2(class extends Action2 {
 		const editorGroupService = accessor.get(IEditorGroupsService);
 
 		const activeEditor = editorService.activeEditorPane;
-		if (activeEditor && activeEditor instanceof NotebookTextDiffEditor) {
-			const diffEditorInput = activeEditor.input as NotebookDiffEditorInput;
+		if (activeEditor && activeEditor instanceof NoteBookTextDiffEditor) {
+			const diffEditorInput = activeEditor.input as NoteBookDiffEditorInput;
 			const leftResource = diffEditorInput.originalResource;
 			const rightResource = diffEditorInput.resource;
 			const options = {
 				preserveFocus: false
 			};
 
-			const label = diffEditorInput.textDiffName;
-			await editorService.openEditor({ leftResource, rightResource, label, options }, viewColumnToEditorGroup(editorGroupService, undefined));
+			const laBel = diffEditorInput.textDiffName;
+			await editorService.openEditor({ leftResource, rightResource, laBel, options }, viewColumnToEditorGroup(editorGroupService, undefined));
 		}
 	}
 });
@@ -55,12 +55,12 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super(
 			{
-				id: 'notebook.diff.cell.revertMetadata',
-				title: localize('notebook.diff.cell.revertMetadata', "Revert Metadata"),
+				id: 'noteBook.diff.cell.revertMetadata',
+				title: localize('noteBook.diff.cell.revertMetadata', "Revert Metadata"),
 				icon: { id: 'codicon/discard' },
 				f1: false,
 				menu: {
-					id: MenuId.NotebookDiffCellMetadataTitle
+					id: MenuId.NoteBookDiffCellMetadataTitle
 				}
 			}
 		);
@@ -85,12 +85,12 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super(
 			{
-				id: 'notebook.diff.cell.revertOutputs',
-				title: localize('notebook.diff.cell.revertOutputs', "Revert Outputs"),
+				id: 'noteBook.diff.cell.revertOutputs',
+				title: localize('noteBook.diff.cell.revertOutputs', "Revert Outputs"),
 				icon: { id: 'codicon/discard' },
 				f1: false,
 				menu: {
-					id: MenuId.NotebookDiffCellOutputsTitle
+					id: MenuId.NoteBookDiffCellOutputsTitle
 				}
 			}
 		);
@@ -107,7 +107,7 @@ registerAction2(class extends Action2 {
 			return;
 		}
 
-		modified.spliceNotebookCellOutputs([[0, modified.outputs.length, original.outputs]]);
+		modified.spliceNoteBookCellOutputs([[0, modified.outputs.length, original.outputs]]);
 	}
 });
 
@@ -115,12 +115,12 @@ registerAction2(class extends Action2 {
 	constructor() {
 		super(
 			{
-				id: 'notebook.diff.cell.revertInput',
-				title: localize('notebook.diff.cell.revertInput', "Revert Input"),
+				id: 'noteBook.diff.cell.revertInput',
+				title: localize('noteBook.diff.cell.revertInput', "Revert Input"),
 				icon: { id: 'codicon/discard' },
 				f1: false,
 				menu: {
-					id: MenuId.NotebookDiffCellInputTitle
+					id: MenuId.NoteBookDiffCellInputTitle
 				}
 			}
 		);
@@ -137,9 +137,9 @@ registerAction2(class extends Action2 {
 			return;
 		}
 
-		const bulkEditService = accessor.get(IBulkEditService);
-		return bulkEditService.apply([
+		const BulkEditService = accessor.get(IBulkEditService);
+		return BulkEditService.apply([
 			new ResourceTextEdit(modified.uri, { range: modified.getFullModelRange(), text: original.getValue() }),
-		], { quotableLabel: 'Split Notebook Cell' });
+		], { quotaBleLaBel: 'Split NoteBook Cell' });
 	}
 });

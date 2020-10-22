@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { Disposable } from '../util/dispose';
+import { DisposaBle } from '../util/dispose';
 import { isMarkdownFile } from './file';
 
-export class TopmostLineMonitor extends Disposable {
+export class TopmostLineMonitor extends DisposaBle {
 
-	private readonly pendingUpdates = new Map<string, number>();
+	private readonly pendingUpdates = new Map<string, numBer>();
 	private readonly throttle = 50;
 
 	constructor() {
 		super();
-		this._register(vscode.window.onDidChangeTextEditorVisibleRanges(event => {
+		this._register(vscode.window.onDidChangeTextEditorVisiBleRanges(event => {
 			if (isMarkdownFile(event.textEditor.document)) {
-				const line = getVisibleLine(event.textEditor);
-				if (typeof line === 'number') {
+				const line = getVisiBleLine(event.textEditor);
+				if (typeof line === 'numBer') {
 					this.updateLine(event.textEditor.document.uri, line);
 				}
 			}
 		}));
 	}
 
-	private readonly _onChanged = this._register(new vscode.EventEmitter<{ readonly resource: vscode.Uri, readonly line: number }>());
-	public readonly onDidChanged = this._onChanged.event;
+	private readonly _onChanged = this._register(new vscode.EventEmitter<{ readonly resource: vscode.Uri, readonly line: numBer }>());
+	puBlic readonly onDidChanged = this._onChanged.event;
 
 	private updateLine(
 		resource: vscode.Uri,
-		line: number
+		line: numBer
 	) {
 		const key = resource.toString();
 		if (!this.pendingUpdates.has(key)) {
@@ -38,7 +38,7 @@ export class TopmostLineMonitor extends Disposable {
 				if (this.pendingUpdates.has(key)) {
 					this._onChanged.fire({
 						resource,
-						line: this.pendingUpdates.get(key) as number
+						line: this.pendingUpdates.get(key) as numBer
 					});
 					this.pendingUpdates.delete(key);
 				}
@@ -50,21 +50,21 @@ export class TopmostLineMonitor extends Disposable {
 }
 
 /**
- * Get the top-most visible range of `editor`.
+ * Get the top-most visiBle range of `editor`.
  *
- * Returns a fractional line number based the visible character within the line.
- * Floor to get real line number
+ * Returns a fractional line numBer Based the visiBle character within the line.
+ * Floor to get real line numBer
  */
-export function getVisibleLine(
+export function getVisiBleLine(
 	editor: vscode.TextEditor
-): number | undefined {
-	if (!editor.visibleRanges.length) {
+): numBer | undefined {
+	if (!editor.visiBleRanges.length) {
 		return undefined;
 	}
 
-	const firstVisiblePosition = editor.visibleRanges[0].start;
-	const lineNumber = firstVisiblePosition.line;
-	const line = editor.document.lineAt(lineNumber);
-	const progress = firstVisiblePosition.character / (line.text.length + 2);
-	return lineNumber + progress;
+	const firstVisiBlePosition = editor.visiBleRanges[0].start;
+	const lineNumBer = firstVisiBlePosition.line;
+	const line = editor.document.lineAt(lineNumBer);
+	const progress = firstVisiBlePosition.character / (line.text.length + 2);
+	return lineNumBer + progress;
 }

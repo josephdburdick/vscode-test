@@ -11,8 +11,8 @@ suite('Token theme matching', () => {
 
 	test('gives higher priority to deeper matches', () => {
 		let theme = TokenTheme.createFromRawTokenTheme([
-			{ token: '', foreground: '100000', background: '200000' },
-			{ token: 'punctuation.definition.string.begin.html', foreground: '300000' },
+			{ token: '', foreground: '100000', Background: '200000' },
+			{ token: 'punctuation.definition.string.Begin.html', foreground: '300000' },
 			{ token: 'punctuation.definition.string', foreground: '400000' },
 		], []);
 
@@ -22,25 +22,25 @@ suite('Token theme matching', () => {
 		colorMap.getId('400000');
 		const _D = colorMap.getId('300000');
 
-		let actual = theme._match('punctuation.definition.string.begin.html');
+		let actual = theme._match('punctuation.definition.string.Begin.html');
 
 		assert.deepEqual(actual, new ThemeTrieElementRule(FontStyle.None, _D, _B));
 	});
 
 	test('can match', () => {
 		let theme = TokenTheme.createFromRawTokenTheme([
-			{ token: '', foreground: 'F8F8F2', background: '272822' },
-			{ token: 'source', background: '100000' },
-			{ token: 'something', background: '100000' },
-			{ token: 'bar', background: '200000' },
-			{ token: 'baz', background: '200000' },
-			{ token: 'bar', fontStyle: 'bold' },
+			{ token: '', foreground: 'F8F8F2', Background: '272822' },
+			{ token: 'source', Background: '100000' },
+			{ token: 'something', Background: '100000' },
+			{ token: 'Bar', Background: '200000' },
+			{ token: 'Baz', Background: '200000' },
+			{ token: 'Bar', fontStyle: 'Bold' },
 			{ token: 'constant', fontStyle: 'italic', foreground: '300000' },
 			{ token: 'constant.numeric', foreground: '400000' },
-			{ token: 'constant.numeric.hex', fontStyle: 'bold' },
-			{ token: 'constant.numeric.oct', fontStyle: 'bold italic underline' },
+			{ token: 'constant.numeric.hex', fontStyle: 'Bold' },
+			{ token: 'constant.numeric.oct', fontStyle: 'Bold italic underline' },
 			{ token: 'constant.numeric.dec', fontStyle: '', foreground: '500000' },
-			{ token: 'storage.object.bar', fontStyle: '', foreground: '600000' },
+			{ token: 'storage.oBject.Bar', fontStyle: '', foreground: '600000' },
 		], []);
 
 		let colorMap = new ColorMap();
@@ -58,8 +58,8 @@ suite('Token theme matching', () => {
 			assert.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
 		}
 
-		function assertSimpleMatch(scopeName: string, fontStyle: FontStyle, foreground: number, background: number): void {
-			assertMatch(scopeName, new ThemeTrieElementRule(fontStyle, foreground, background));
+		function assertSimpleMatch(scopeName: string, fontStyle: FontStyle, foreground: numBer, Background: numBer): void {
+			assertMatch(scopeName, new ThemeTrieElementRule(fontStyle, foreground, Background));
 		}
 
 		function assertNoMatch(scopeName: string): void {
@@ -68,7 +68,7 @@ suite('Token theme matching', () => {
 
 		// matches defaults
 		assertNoMatch('');
-		assertNoMatch('bazz');
+		assertNoMatch('Bazz');
 		assertNoMatch('asdfg');
 
 		// matches source
@@ -81,10 +81,10 @@ suite('Token theme matching', () => {
 		assertSimpleMatch('something.ts', FontStyle.None, _A, _G);
 		assertSimpleMatch('something.tss', FontStyle.None, _A, _G);
 
-		// matches baz
-		assertSimpleMatch('baz', FontStyle.None, _A, _C);
-		assertSimpleMatch('baz.ts', FontStyle.None, _A, _C);
-		assertSimpleMatch('baz.tss', FontStyle.None, _A, _C);
+		// matches Baz
+		assertSimpleMatch('Baz', FontStyle.None, _A, _C);
+		assertSimpleMatch('Baz.ts', FontStyle.None, _A, _C);
+		assertSimpleMatch('Baz.tss', FontStyle.None, _A, _C);
 
 		// matches constant
 		assertSimpleMatch('constant', FontStyle.Italic, _D, _B);
@@ -93,30 +93,30 @@ suite('Token theme matching', () => {
 
 		// matches constant.numeric
 		assertSimpleMatch('constant.numeric', FontStyle.Italic, _E, _B);
-		assertSimpleMatch('constant.numeric.baz', FontStyle.Italic, _E, _B);
+		assertSimpleMatch('constant.numeric.Baz', FontStyle.Italic, _E, _B);
 
 		// matches constant.numeric.hex
 		assertSimpleMatch('constant.numeric.hex', FontStyle.Bold, _E, _B);
-		assertSimpleMatch('constant.numeric.hex.baz', FontStyle.Bold, _E, _B);
+		assertSimpleMatch('constant.numeric.hex.Baz', FontStyle.Bold, _E, _B);
 
 		// matches constant.numeric.oct
 		assertSimpleMatch('constant.numeric.oct', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _B);
-		assertSimpleMatch('constant.numeric.oct.baz', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _B);
+		assertSimpleMatch('constant.numeric.oct.Baz', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _B);
 
 		// matches constant.numeric.dec
 		assertSimpleMatch('constant.numeric.dec', FontStyle.None, _F, _B);
-		assertSimpleMatch('constant.numeric.dec.baz', FontStyle.None, _F, _B);
+		assertSimpleMatch('constant.numeric.dec.Baz', FontStyle.None, _F, _B);
 
-		// matches storage.object.bar
-		assertSimpleMatch('storage.object.bar', FontStyle.None, _H, _B);
-		assertSimpleMatch('storage.object.bar.baz', FontStyle.None, _H, _B);
+		// matches storage.oBject.Bar
+		assertSimpleMatch('storage.oBject.Bar', FontStyle.None, _H, _B);
+		assertSimpleMatch('storage.oBject.Bar.Baz', FontStyle.None, _H, _B);
 
-		// does not match storage.object.bar
-		assertSimpleMatch('storage.object.bart', FontStyle.None, _A, _B);
-		assertSimpleMatch('storage.object', FontStyle.None, _A, _B);
+		// does not match storage.oBject.Bar
+		assertSimpleMatch('storage.oBject.Bart', FontStyle.None, _A, _B);
+		assertSimpleMatch('storage.oBject', FontStyle.None, _A, _B);
 		assertSimpleMatch('storage', FontStyle.None, _A, _B);
 
-		assertSimpleMatch('bar', FontStyle.Bold, _A, _C);
+		assertSimpleMatch('Bar', FontStyle.Bold, _A, _C);
 	});
 });
 
@@ -125,16 +125,16 @@ suite('Token theme parsing', () => {
 	test('can parse', () => {
 
 		let actual = parseTokenTheme([
-			{ token: '', foreground: 'F8F8F2', background: '272822' },
-			{ token: 'source', background: '100000' },
-			{ token: 'something', background: '100000' },
-			{ token: 'bar', background: '010000' },
-			{ token: 'baz', background: '010000' },
-			{ token: 'bar', fontStyle: 'bold' },
+			{ token: '', foreground: 'F8F8F2', Background: '272822' },
+			{ token: 'source', Background: '100000' },
+			{ token: 'something', Background: '100000' },
+			{ token: 'Bar', Background: '010000' },
+			{ token: 'Baz', Background: '010000' },
+			{ token: 'Bar', fontStyle: 'Bold' },
 			{ token: 'constant', fontStyle: 'italic', foreground: 'ff0000' },
 			{ token: 'constant.numeric', foreground: '00ff00' },
-			{ token: 'constant.numeric.hex', fontStyle: 'bold' },
-			{ token: 'constant.numeric.oct', fontStyle: 'bold italic underline' },
+			{ token: 'constant.numeric.hex', fontStyle: 'Bold' },
+			{ token: 'constant.numeric.oct', fontStyle: 'Bold italic underline' },
 			{ token: 'constant.numeric.dec', fontStyle: '', foreground: '0000ff' },
 		]);
 
@@ -142,9 +142,9 @@ suite('Token theme parsing', () => {
 			new ParsedTokenThemeRule('', 0, FontStyle.NotSet, 'F8F8F2', '272822'),
 			new ParsedTokenThemeRule('source', 1, FontStyle.NotSet, null, '100000'),
 			new ParsedTokenThemeRule('something', 2, FontStyle.NotSet, null, '100000'),
-			new ParsedTokenThemeRule('bar', 3, FontStyle.NotSet, null, '010000'),
-			new ParsedTokenThemeRule('baz', 4, FontStyle.NotSet, null, '010000'),
-			new ParsedTokenThemeRule('bar', 5, FontStyle.Bold, null, null),
+			new ParsedTokenThemeRule('Bar', 3, FontStyle.NotSet, null, '010000'),
+			new ParsedTokenThemeRule('Baz', 4, FontStyle.NotSet, null, '010000'),
+			new ParsedTokenThemeRule('Bar', 5, FontStyle.Bold, null, null),
 			new ParsedTokenThemeRule('constant', 6, FontStyle.Italic, 'ff0000', null),
 			new ParsedTokenThemeRule('constant.numeric', 7, FontStyle.NotSet, '00ff00', null),
 			new ParsedTokenThemeRule('constant.numeric.hex', 8, FontStyle.Bold, null, null),
@@ -159,9 +159,9 @@ suite('Token theme parsing', () => {
 suite('Token theme resolving', () => {
 
 	test('strcmp works', () => {
-		let actual = ['bar', 'z', 'zu', 'a', 'ab', ''].sort(strcmp);
+		let actual = ['Bar', 'z', 'zu', 'a', 'aB', ''].sort(strcmp);
 
-		let expected = ['', 'a', 'ab', 'bar', 'z', 'zu'];
+		let expected = ['', 'a', 'aB', 'Bar', 'z', 'zu'];
 		assert.deepEqual(actual, expected);
 	});
 

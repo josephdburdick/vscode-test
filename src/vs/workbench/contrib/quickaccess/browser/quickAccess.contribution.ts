@@ -6,14 +6,14 @@
 import { localize } from 'vs/nls';
 import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { HelpQuickAccessProvider } from 'vs/platform/quickinput/browser/helpQuickAccess';
-import { ViewQuickAccessProvider, OpenViewPickerAction, QuickAccessViewPickerAction } from 'vs/workbench/contrib/quickaccess/browser/viewQuickAccess';
-import { CommandsQuickAccessProvider, ShowAllCommandsAction, ClearCommandHistoryAction } from 'vs/workbench/contrib/quickaccess/browser/commandsQuickAccess';
+import { HelpQuickAccessProvider } from 'vs/platform/quickinput/Browser/helpQuickAccess';
+import { ViewQuickAccessProvider, OpenViewPickerAction, QuickAccessViewPickerAction } from 'vs/workBench/contriB/quickaccess/Browser/viewQuickAccess';
+import { CommandsQuickAccessProvider, ShowAllCommandsAction, ClearCommandHistoryAction } from 'vs/workBench/contriB/quickaccess/Browser/commandsQuickAccess';
 import { MenuRegistry, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { KeyMod } from 'vs/base/common/keyCodes';
+import { KeyMod } from 'vs/Base/common/keyCodes';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { inQuickPickContext, getQuickNavigateHandler } from 'vs/workbench/browser/quickaccess';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { inQuickPickContext, getQuickNavigateHandler } from 'vs/workBench/Browser/quickaccess';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 
 //#region Quick Access Proviers
@@ -46,9 +46,9 @@ quickAccessRegistry.registerQuickAccessProvider({
 //#endregion
 
 
-//#region Menu contributions
+//#region Menu contriButions
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 	group: '1_open',
 	command: {
 		id: ShowAllCommandsAction.ID,
@@ -57,7 +57,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 	group: '1_open',
 	command: {
 		id: OpenViewPickerAction.ID,
@@ -66,25 +66,25 @@ MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
 	order: 2
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-	group: '4_symbol_nav',
+MenuRegistry.appendMenuItem(MenuId.MenuBarGoMenu, {
+	group: '4_symBol_nav',
 	command: {
-		id: 'workbench.action.gotoSymbol',
-		title: localize({ key: 'miGotoSymbolInEditor', comment: ['&& denotes a mnemonic'] }, "Go to &&Symbol in Editor...")
+		id: 'workBench.action.gotoSymBol',
+		title: localize({ key: 'miGotoSymBolInEditor', comment: ['&& denotes a mnemonic'] }, "Go to &&SymBol in Editor...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarGoMenu, {
 	group: '5_infile_nav',
 	command: {
-		id: 'workbench.action.gotoLine',
+		id: 'workBench.action.gotoLine',
 		title: localize({ key: 'miGotoLine', comment: ['&& denotes a mnemonic'] }, "Go to &&Line/Column...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
+MenuRegistry.appendMenuItem(MenuId.GloBalActivity, {
 	group: '1_command',
 	command: {
 		id: ShowAllCommandsAction.ID,
@@ -106,7 +106,7 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
 //#endregion
 
 
-//#region Workbench actions and commands
+//#region WorkBench actions and commands
 
 registerAction2(ClearCommandHistoryAction);
 registerAction2(ShowAllCommandsAction);
@@ -115,29 +115,29 @@ registerAction2(QuickAccessViewPickerAction);
 
 const inViewsPickerContextKey = 'inViewsPicker';
 const inViewsPickerContext = ContextKeyExpr.and(inQuickPickContext, ContextKeyExpr.has(inViewsPickerContextKey));
-const viewPickerKeybinding = QuickAccessViewPickerAction.KEYBINDING;
+const viewPickerKeyBinding = QuickAccessViewPickerAction.KEYBINDING;
 
-const quickAccessNavigateNextInViewPickerId = 'workbench.action.quickOpenNavigateNextInViewPicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const quickAccessNavigateNextInViewPickerId = 'workBench.action.quickOpenNavigateNextInViewPicker';
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: quickAccessNavigateNextInViewPickerId,
-	weight: KeybindingWeight.WorkbenchContrib + 50,
+	weight: KeyBindingWeight.WorkBenchContriB + 50,
 	handler: getQuickNavigateHandler(quickAccessNavigateNextInViewPickerId, true),
 	when: inViewsPickerContext,
-	primary: viewPickerKeybinding.primary,
-	linux: viewPickerKeybinding.linux,
-	mac: viewPickerKeybinding.mac
+	primary: viewPickerKeyBinding.primary,
+	linux: viewPickerKeyBinding.linux,
+	mac: viewPickerKeyBinding.mac
 });
 
-const quickAccessNavigatePreviousInViewPickerId = 'workbench.action.quickOpenNavigatePreviousInViewPicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const quickAccessNavigatePreviousInViewPickerId = 'workBench.action.quickOpenNavigatePreviousInViewPicker';
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: quickAccessNavigatePreviousInViewPickerId,
-	weight: KeybindingWeight.WorkbenchContrib + 50,
+	weight: KeyBindingWeight.WorkBenchContriB + 50,
 	handler: getQuickNavigateHandler(quickAccessNavigatePreviousInViewPickerId, false),
 	when: inViewsPickerContext,
-	primary: viewPickerKeybinding.primary | KeyMod.Shift,
-	linux: viewPickerKeybinding.linux,
+	primary: viewPickerKeyBinding.primary | KeyMod.Shift,
+	linux: viewPickerKeyBinding.linux,
 	mac: {
-		primary: viewPickerKeybinding.mac.primary | KeyMod.Shift
+		primary: viewPickerKeyBinding.mac.primary | KeyMod.Shift
 	}
 });
 

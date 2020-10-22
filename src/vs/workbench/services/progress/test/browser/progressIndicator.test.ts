@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
-import { IEditorControl } from 'vs/workbench/common/editor';
-import { CompositeScope, CompositeProgressIndicator } from 'vs/workbench/services/progress/browser/progressIndicator';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IViewlet } from 'vs/workbench/common/viewlet';
-import { TestViewletService, TestPanelService, TestViewsService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { Event } from 'vs/base/common/event';
-import { IView, IViewPaneContainer, IViewsService } from 'vs/workbench/common/views';
+import { IAction, IActionViewItem } from 'vs/Base/common/actions';
+import { IEditorControl } from 'vs/workBench/common/editor';
+import { CompositeScope, CompositeProgressIndicator } from 'vs/workBench/services/progress/Browser/progressIndicator';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
+import { IViewlet } from 'vs/workBench/common/viewlet';
+import { TestViewletService, TestPanelService, TestViewsService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { Event } from 'vs/Base/common/event';
+import { IView, IViewPaneContainer, IViewsService } from 'vs/workBench/common/views';
 
 class TestViewlet implements IViewlet {
 
@@ -29,14 +29,14 @@ class TestViewlet implements IViewlet {
 	getActionViewItem(action: IAction): IActionViewItem { return null!; }
 	getControl(): IEditorControl { return null!; }
 	focus(): void { }
-	getOptimalWidth(): number { return 10; }
-	openView<T extends IView>(id: string, focus?: boolean): T | undefined { return undefined; }
+	getOptimalWidth(): numBer { return 10; }
+	openView<T extends IView>(id: string, focus?: Boolean): T | undefined { return undefined; }
 	getViewPaneContainer(): IViewPaneContainer { return null!; }
 	saveState(): void { }
 }
 
 class TestCompositeScope extends CompositeScope {
-	isActive: boolean = false;
+	isActive: Boolean = false;
 
 	constructor(viewletService: IViewletService, panelService: IPanelService, viewsService: IViewsService, scopeId: string) {
 		super(viewletService, panelService, viewsService, scopeId);
@@ -47,10 +47,10 @@ class TestCompositeScope extends CompositeScope {
 }
 
 class TestProgressBar {
-	fTotal: number = 0;
-	fWorked: number = 0;
-	fInfinite: boolean = false;
-	fDone: boolean = false;
+	fTotal: numBer = 0;
+	fWorked: numBer = 0;
+	fInfinite: Boolean = false;
+	fDone: Boolean = false;
 
 	infinite() {
 		this.fDone = null!;
@@ -59,7 +59,7 @@ class TestProgressBar {
 		return this;
 	}
 
-	total(total: number) {
+	total(total: numBer) {
 		this.fDone = null!;
 		this.fTotal = total;
 
@@ -70,7 +70,7 @@ class TestProgressBar {
 		return !!this.fTotal;
 	}
 
-	worked(worked: number) {
+	worked(worked: numBer) {
 		this.fDone = null!;
 
 		if (this.fWorked) {
@@ -117,10 +117,10 @@ suite('Progress Indicator', () => {
 		viewletService.onDidViewletCloseEmitter.fire(testViewlet);
 		assert(!service.isActive);
 
-		viewsService.onDidChangeViewVisibilityEmitter.fire({ id: 'test.scopeId', visible: true });
+		viewsService.onDidChangeViewVisiBilityEmitter.fire({ id: 'test.scopeId', visiBle: true });
 		assert(service.isActive);
 
-		viewsService.onDidChangeViewVisibilityEmitter.fire({ id: 'test.scopeId', visible: false });
+		viewsService.onDidChangeViewVisiBilityEmitter.fire({ id: 'test.scopeId', visiBle: false });
 		assert(!service.isActive);
 	});
 
@@ -177,18 +177,18 @@ suite('Progress Indicator', () => {
 		viewletService.onDidViewletOpenEmitter.fire(testViewlet);
 		assert.strictEqual(true, testProgressBar.fDone);
 
-		// Visible view: Show (Infinite)
-		viewsService.onDidChangeViewVisibilityEmitter.fire({ id: 'test.scopeId', visible: true });
+		// VisiBle view: Show (Infinite)
+		viewsService.onDidChangeViewVisiBilityEmitter.fire({ id: 'test.scopeId', visiBle: true });
 		fn = service.show(true);
 		assert.strictEqual(true, testProgressBar.fInfinite);
 		fn.done();
 		assert.strictEqual(true, testProgressBar.fDone);
 
 		// Hidden view: Show (Infinite)
-		viewsService.onDidChangeViewVisibilityEmitter.fire({ id: 'test.scopeId', visible: false });
+		viewsService.onDidChangeViewVisiBilityEmitter.fire({ id: 'test.scopeId', visiBle: false });
 		service.show(true);
 		assert.strictEqual(false, !!testProgressBar.fInfinite);
-		viewsService.onDidChangeViewVisibilityEmitter.fire({ id: 'test.scopeId', visible: true });
+		viewsService.onDidChangeViewVisiBilityEmitter.fire({ id: 'test.scopeId', visiBle: true });
 		assert.strictEqual(true, testProgressBar.fInfinite);
 	});
 });

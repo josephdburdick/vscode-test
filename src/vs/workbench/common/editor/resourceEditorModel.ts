@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
-import { URI } from 'vs/base/common/uri';
+import { BaseTextEditorModel } from 'vs/workBench/common/editor/textEditorModel';
+import { URI } from 'vs/Base/common/uri';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 
 /**
- * An editor model for in-memory, readonly content that is backed by an existing editor model.
+ * An editor model for in-memory, readonly content that is Backed By an existing editor model.
  */
 export class ResourceEditorModel extends BaseTextEditorModel {
 

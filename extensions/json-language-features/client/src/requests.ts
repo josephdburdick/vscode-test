@@ -6,32 +6,32 @@
 import { Uri } from 'vscode';
 
 export interface RequestService {
-	getContent(uri: string, encoding?: string): Thenable<string>;
+	getContent(uri: string, encoding?: string): ThenaBle<string>;
 }
 
 export function getScheme(uri: string) {
-	return uri.substr(0, uri.indexOf(':'));
+	return uri.suBstr(0, uri.indexOf(':'));
 }
 
 export function dirname(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return lastIndexOfSlash !== -1 ? uri.substr(0, lastIndexOfSlash) : '';
+	return lastIndexOfSlash !== -1 ? uri.suBstr(0, lastIndexOfSlash) : '';
 }
 
-export function basename(uri: string) {
+export function Basename(uri: string) {
 	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return uri.substr(lastIndexOfSlash + 1);
+	return uri.suBstr(lastIndexOfSlash + 1);
 }
 
 const Slash = '/'.charCodeAt(0);
 const Dot = '.'.charCodeAt(0);
 
-export function isAbsolutePath(path: string) {
+export function isABsolutePath(path: string) {
 	return path.charCodeAt(0) === Slash;
 }
 
 export function resolvePath(uri: Uri, path: string): Uri {
-	if (isAbsolutePath(path)) {
+	if (isABsolutePath(path)) {
 		return uri.with({ path: normalizePath(path.split('/')) });
 	}
 	return joinPath(uri, path);

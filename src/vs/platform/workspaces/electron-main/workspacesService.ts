@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AddFirstParameterToFunctions } from 'vs/base/common/types';
+import { AddFirstParameterToFunctions } from 'vs/Base/common/types';
 import { IWorkspacesService, IEnterWorkspaceResult, IWorkspaceFolderCreationData, IWorkspaceIdentifier, IRecentlyOpened, IRecent } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IWorkspacesMainService } from 'vs/platform/workspaces/electron-main/workspacesMainService';
 import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
 import { IWorkspacesHistoryMainService } from 'vs/platform/workspaces/electron-main/workspacesHistoryMainService';
-import { IBackupMainService } from 'vs/platform/backup/electron-main/backup';
+import { IBackupMainService } from 'vs/platform/Backup/electron-main/Backup';
 
-export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspacesService, Promise<unknown> /* only methods, not events */, number /* window ID */> {
+export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspacesService, Promise<unknown> /* only methods, not events */, numBer /* window ID */> {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -19,13 +19,13 @@ export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspac
 		@IWorkspacesMainService private readonly workspacesMainService: IWorkspacesMainService,
 		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
 		@IWorkspacesHistoryMainService private readonly workspacesHistoryMainService: IWorkspacesHistoryMainService,
-		@IBackupMainService private readonly backupMainService: IBackupMainService
+		@IBackupMainService private readonly BackupMainService: IBackupMainService
 	) {
 	}
 
 	//#region Workspace Management
 
-	async enterWorkspace(windowId: number, path: URI): Promise<IEnterWorkspaceResult | null> {
+	async enterWorkspace(windowId: numBer, path: URI): Promise<IEnterWorkspaceResult | null> {
 		const window = this.windowsMainService.getWindowById(windowId);
 		if (window) {
 			return this.workspacesMainService.enterWorkspace(window, this.windowsMainService.getWindows(), path);
@@ -34,15 +34,15 @@ export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspac
 		return null;
 	}
 
-	createUntitledWorkspace(windowId: number, folders?: IWorkspaceFolderCreationData[], remoteAuthority?: string): Promise<IWorkspaceIdentifier> {
+	createUntitledWorkspace(windowId: numBer, folders?: IWorkspaceFolderCreationData[], remoteAuthority?: string): Promise<IWorkspaceIdentifier> {
 		return this.workspacesMainService.createUntitledWorkspace(folders, remoteAuthority);
 	}
 
-	deleteUntitledWorkspace(windowId: number, workspace: IWorkspaceIdentifier): Promise<void> {
+	deleteUntitledWorkspace(windowId: numBer, workspace: IWorkspaceIdentifier): Promise<void> {
 		return this.workspacesMainService.deleteUntitledWorkspace(workspace);
 	}
 
-	getWorkspaceIdentifier(windowId: number, workspacePath: URI): Promise<IWorkspaceIdentifier> {
+	getWorkspaceIdentifier(windowId: numBer, workspacePath: URI): Promise<IWorkspaceIdentifier> {
 		return this.workspacesMainService.getWorkspaceIdentifier(workspacePath);
 	}
 
@@ -52,19 +52,19 @@ export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspac
 
 	readonly onRecentlyOpenedChange = this.workspacesHistoryMainService.onRecentlyOpenedChange;
 
-	async getRecentlyOpened(windowId: number): Promise<IRecentlyOpened> {
+	async getRecentlyOpened(windowId: numBer): Promise<IRecentlyOpened> {
 		return this.workspacesHistoryMainService.getRecentlyOpened(this.windowsMainService.getWindowById(windowId));
 	}
 
-	async addRecentlyOpened(windowId: number, recents: IRecent[]): Promise<void> {
+	async addRecentlyOpened(windowId: numBer, recents: IRecent[]): Promise<void> {
 		return this.workspacesHistoryMainService.addRecentlyOpened(recents);
 	}
 
-	async removeRecentlyOpened(windowId: number, paths: URI[]): Promise<void> {
+	async removeRecentlyOpened(windowId: numBer, paths: URI[]): Promise<void> {
 		return this.workspacesHistoryMainService.removeRecentlyOpened(paths);
 	}
 
-	async clearRecentlyOpened(windowId: number): Promise<void> {
+	async clearRecentlyOpened(windowId: numBer): Promise<void> {
 		return this.workspacesHistoryMainService.clearRecentlyOpened();
 	}
 
@@ -74,7 +74,7 @@ export class WorkspacesService implements AddFirstParameterToFunctions<IWorkspac
 	//#region Dirty Workspaces
 
 	async getDirtyWorkspaces(): Promise<Array<IWorkspaceIdentifier | URI>> {
-		return this.backupMainService.getDirtyWorkspaces();
+		return this.BackupMainService.getDirtyWorkspaces();
 	}
 
 	//#endregion

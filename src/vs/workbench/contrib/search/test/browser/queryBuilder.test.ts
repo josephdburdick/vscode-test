@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { IExpression } from 'vs/base/common/glob';
-import { join } from 'vs/base/common/path';
-import { isWindows } from 'vs/base/common/platform';
-import { URI as uri } from 'vs/base/common/uri';
+import { IExpression } from 'vs/Base/common/gloB';
+import { join } from 'vs/Base/common/path';
+import { isWindows } from 'vs/Base/common/platform';
+import { URI as uri } from 'vs/Base/common/uri';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
 import { IWorkspaceContextService, toWorkspaceFolder, toWorkspaceFolders, Workspace } from 'vs/platform/workspace/common/workspace';
-import { ISearchPathsInfo, QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { IFileQuery, IFolderQuery, IPatternInfo, ITextQuery, QueryType } from 'vs/workbench/services/search/common/search';
-import { TestPathService, TestEnvironmentService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
+import { ISearchPathsInfo, QueryBuilder } from 'vs/workBench/contriB/search/common/queryBuilder';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
+import { IFileQuery, IFolderQuery, IPatternInfo, ITextQuery, QueryType } from 'vs/workBench/services/search/common/search';
+import { TestPathService, TestEnvironmentService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { TestContextService } from 'vs/workBench/test/common/workBenchTestServices';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
 const DEFAULT_EDITOR_CONFIG = {};
-const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGlobalIgnoreFiles: true };
+const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGloBalIgnoreFiles: true };
 const DEFAULT_QUERY_PROPS = {};
 const DEFAULT_TEXT_QUERY_PROPS = { usePCRE2: false };
 
@@ -28,7 +28,7 @@ suite('QueryBuilder', () => {
 	const ROOT_1 = fixPath('/foo/root1');
 	const ROOT_1_URI = getUri(ROOT_1);
 	const ROOT_1_NAMED_FOLDER = toWorkspaceFolder(ROOT_1_URI);
-	const WS_CONFIG_PATH = getUri('/bar/test.code-workspace'); // location of the workspace file (not important except that it is a file URI)
+	const WS_CONFIG_PATH = getUri('/Bar/test.code-workspace'); // location of the workspace file (not important except that it is a file URI)
 
 	let instantiationService: TestInstantiationService;
 	let queryBuilder: QueryBuilder;
@@ -42,15 +42,15 @@ suite('QueryBuilder', () => {
 		mockConfigService = new TestConfigurationService();
 		mockConfigService.setUserConfiguration('search', DEFAULT_USER_CONFIG);
 		mockConfigService.setUserConfiguration('editor', DEFAULT_EDITOR_CONFIG);
-		instantiationService.stub(IConfigurationService, mockConfigService);
+		instantiationService.stuB(IConfigurationService, mockConfigService);
 
 		mockContextService = new TestContextService();
 		mockWorkspace = new Workspace('workspace', [toWorkspaceFolder(ROOT_1_URI)]);
 		mockContextService.setWorkspace(mockWorkspace);
 
-		instantiationService.stub(IWorkspaceContextService, mockContextService);
-		instantiationService.stub(IEnvironmentService, TestEnvironmentService);
-		instantiationService.stub(IPathService, new TestPathService());
+		instantiationService.stuB(IWorkspaceContextService, mockContextService);
+		instantiationService.stuB(IEnvironmentService, TestEnvironmentService);
+		instantiationService.stuB(IPathService, new TestPathService());
 
 		queryBuilder = instantiationService.createInstance(QueryBuilder);
 	});
@@ -67,11 +67,11 @@ suite('QueryBuilder', () => {
 
 	test('normalize literal newlines', () => {
 		assertEqualTextQueries(
-			queryBuilder.text({ pattern: 'foo\nbar', isRegExp: true }),
+			queryBuilder.text({ pattern: 'foo\nBar', isRegExp: true }),
 			{
 				folderQueries: [],
 				contentPattern: {
-					pattern: 'foo\\nbar',
+					pattern: 'foo\\nBar',
 					isRegExp: true,
 					isMultiline: true
 				},
@@ -79,11 +79,11 @@ suite('QueryBuilder', () => {
 			});
 
 		assertEqualTextQueries(
-			queryBuilder.text({ pattern: 'foo\nbar', isRegExp: false }),
+			queryBuilder.text({ pattern: 'foo\nBar', isRegExp: false }),
 			{
 				folderQueries: [],
 				contentPattern: {
-					pattern: 'foo\nbar',
+					pattern: 'foo\nBar',
 					isRegExp: false,
 					isMultiline: true
 				},
@@ -91,11 +91,11 @@ suite('QueryBuilder', () => {
 			});
 	});
 
-	test('does not split glob pattern when expandPatterns disabled', () => {
+	test('does not split gloB pattern when expandPatterns disaBled', () => {
 		assertEqualQueries(
 			queryBuilder.file(
 				[ROOT_1_NAMED_FOLDER],
-				{ includePattern: '**/foo, **/bar' },
+				{ includePattern: '**/foo, **/Bar' },
 			),
 			{
 				folderQueries: [{
@@ -103,7 +103,7 @@ suite('QueryBuilder', () => {
 				}],
 				type: QueryType.File,
 				includePattern: {
-					'**/foo, **/bar': true
+					'**/foo, **/Bar': true
 				}
 			});
 	});
@@ -125,9 +125,9 @@ suite('QueryBuilder', () => {
 		mockConfigService.setUserConfiguration('search', {
 			...DEFAULT_USER_CONFIG,
 			exclude: {
-				'bar/**': true,
+				'Bar/**': true,
 				'foo/**': {
-					'when': '$(basename).ts'
+					'when': '$(Basename).ts'
 				}
 			}
 		});
@@ -145,9 +145,9 @@ suite('QueryBuilder', () => {
 				folderQueries: [{
 					folder: ROOT_1_URI,
 					excludePattern: {
-						'bar/**': true,
+						'Bar/**': true,
 						'foo/**': {
-							'when': '$(basename).ts'
+							'when': '$(Basename).ts'
 						}
 					}
 				}],
@@ -161,7 +161,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: 'bar',
+					includePattern: 'Bar',
 					expandPatterns: true
 				}
 			),
@@ -171,8 +171,8 @@ suite('QueryBuilder', () => {
 					folder: ROOT_1_URI
 				}],
 				includePattern: {
-					'**/bar': true,
-					'**/bar/**': true
+					'**/Bar': true,
+					'**/Bar/**': true
 				},
 				type: QueryType.Text
 			});
@@ -182,7 +182,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: 'bar'
+					includePattern: 'Bar'
 				}
 			),
 			{
@@ -191,7 +191,7 @@ suite('QueryBuilder', () => {
 					folder: ROOT_1_URI
 				}],
 				includePattern: {
-					'bar': true
+					'Bar': true
 				},
 				type: QueryType.Text
 			});
@@ -204,7 +204,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: './bar',
+					includePattern: './Bar',
 					expandPatterns: true
 				}
 			),
@@ -213,8 +213,8 @@ suite('QueryBuilder', () => {
 				folderQueries: [{
 					folder: ROOT_1_URI,
 					includePattern: {
-						'bar': true,
-						'bar/**': true
+						'Bar': true,
+						'Bar/**': true
 					}
 				}],
 				type: QueryType.Text
@@ -225,7 +225,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: '.\\bar',
+					includePattern: '.\\Bar',
 					expandPatterns: true
 				}
 			),
@@ -234,8 +234,8 @@ suite('QueryBuilder', () => {
 				folderQueries: [{
 					folder: ROOT_1_URI,
 					includePattern: {
-						'bar': true,
-						'bar/**': true
+						'Bar': true,
+						'Bar/**': true
 					}
 				}],
 				type: QueryType.Text
@@ -247,8 +247,8 @@ suite('QueryBuilder', () => {
 			...DEFAULT_USER_CONFIG,
 			exclude: {
 				'foo/**/*.js': true,
-				'bar/**': {
-					'when': '$(basename).ts'
+				'Bar/**': {
+					'when': '$(Basename).ts'
 				}
 			}
 		});
@@ -272,8 +272,8 @@ suite('QueryBuilder', () => {
 					},
 					excludePattern: {
 						'foo/**/*.js': true,
-						'bar/**': {
-							'when': '$(basename).ts'
+						'Bar/**': {
+							'when': '$(Basename).ts'
 						}
 					}
 				}],
@@ -296,10 +296,10 @@ suite('QueryBuilder', () => {
 
 		mockConfigService.setUserConfiguration('search', {
 			...DEFAULT_USER_CONFIG,
-			exclude: { 'bar': true }
+			exclude: { 'Bar': true }
 		}, ROOT_2_URI);
 
-		// There are 3 roots, the first two have search.exclude settings, test that the correct basic query is returned
+		// There are 3 roots, the first two have search.exclude settings, test that the correct Basic query is returned
 		assertEqualTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
@@ -309,7 +309,7 @@ suite('QueryBuilder', () => {
 				contentPattern: PATTERN_INFO,
 				folderQueries: [
 					{ folder: ROOT_1_URI, excludePattern: patternsToIExpression('foo/**/*.js') },
-					{ folder: ROOT_2_URI, excludePattern: patternsToIExpression('bar') },
+					{ folder: ROOT_2_URI, excludePattern: patternsToIExpression('Bar') },
 					{ folder: ROOT_3_URI }
 				],
 				type: QueryType.Text
@@ -336,7 +336,7 @@ suite('QueryBuilder', () => {
 							'src/**': true
 						},
 						excludePattern: {
-							'bar': true
+							'Bar': true
 						},
 					}
 				],
@@ -361,7 +361,7 @@ suite('QueryBuilder', () => {
 					folder: ROOT_1_URI
 				}],
 				type: QueryType.Text,
-				excludePattern: patternsToIExpression(...globalGlob('foo'))
+				excludePattern: patternsToIExpression(...gloBalGloB('foo'))
 			});
 	});
 
@@ -385,7 +385,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: './bar',
+					excludePattern: './Bar',
 					expandPatterns: true
 				}
 			),
@@ -393,7 +393,7 @@ suite('QueryBuilder', () => {
 				contentPattern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar', 'bar/**'),
+					excludePattern: patternsToIExpression('Bar', 'Bar/**'),
 				}],
 				type: QueryType.Text
 			});
@@ -403,7 +403,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: './bar/**/*.ts',
+					excludePattern: './Bar/**/*.ts',
 					expandPatterns: true
 				}
 			),
@@ -411,7 +411,7 @@ suite('QueryBuilder', () => {
 				contentPattern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar/**/*.ts', 'bar/**/*.ts/**'),
+					excludePattern: patternsToIExpression('Bar/**/*.ts', 'Bar/**/*.ts/**'),
 				}],
 				type: QueryType.Text
 			});
@@ -421,7 +421,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: '.\\bar\\**\\*.ts',
+					excludePattern: '.\\Bar\\**\\*.ts',
 					expandPatterns: true
 				}
 			),
@@ -429,7 +429,7 @@ suite('QueryBuilder', () => {
 				contentPattern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar/**/*.ts', 'bar/**/*.ts/**'),
+					excludePattern: patternsToIExpression('Bar/**/*.ts', 'Bar/**/*.ts/**'),
 				}],
 				type: QueryType.Text
 			});
@@ -440,14 +440,14 @@ suite('QueryBuilder', () => {
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
-				{ extraFileResources: [getUri('/foo/bar.js')] }
+				{ extraFileResources: [getUri('/foo/Bar.js')] }
 			),
 			{
 				contentPattern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				extraFileResources: [getUri('/foo/bar.js')],
+				extraFileResources: [getUri('/foo/Bar.js')],
 				type: QueryType.Text
 			});
 
@@ -456,7 +456,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					extraFileResources: [getUri('/foo/bar.js')],
+					extraFileResources: [getUri('/foo/Bar.js')],
 					excludePattern: '*.js',
 					expandPatterns: true
 				}
@@ -466,7 +466,7 @@ suite('QueryBuilder', () => {
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				excludePattern: patternsToIExpression(...globalGlob('*.js')),
+				excludePattern: patternsToIExpression(...gloBalGloB('*.js')),
 				type: QueryType.Text
 			});
 
@@ -475,7 +475,7 @@ suite('QueryBuilder', () => {
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					extraFileResources: [getUri('/foo/bar.js')],
+					extraFileResources: [getUri('/foo/Bar.js')],
 					includePattern: '*.txt',
 					expandPatterns: true
 				}
@@ -485,7 +485,7 @@ suite('QueryBuilder', () => {
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				includePattern: patternsToIExpression(...globalGlob('*.txt')),
+				includePattern: patternsToIExpression(...gloBalGloB('*.txt')),
 				type: QueryType.Text
 			});
 	});
@@ -503,11 +503,11 @@ suite('QueryBuilder', () => {
 
 			[
 				['a', ['**/a/**', '**/a']],
-				['a/b', ['**/a/b', '**/a/b/**']],
-				['a/b,  c', ['**/a/b', '**/c', '**/a/b/**', '**/c/**']],
+				['a/B', ['**/a/B', '**/a/B/**']],
+				['a/B,  c', ['**/a/B', '**/c', '**/a/B/**', '**/c/**']],
 				['a,.txt', ['**/a', '**/a/**', '**/*.txt', '**/*.txt/**']],
-				['a,,,b', ['**/a', '**/a/**', '**/b', '**/b/**']],
-				['**/a,b/**', ['**/a', '**/a/**', '**/b/**']]
+				['a,,,B', ['**/a', '**/a/**', '**/B', '**/B/**']],
+				['**/a,B/**', ['**/a', '**/a/**', '**/B/**']]
 			].forEach(([includePattern, expectedPatterns]) => testSimpleIncludes(<string>includePattern, <string[]>expectedPatterns));
 		});
 
@@ -522,68 +522,68 @@ suite('QueryBuilder', () => {
 			testIncludes(includePattern, expectedResult);
 		}
 
-		test('absolute includes', () => {
+		test('aBsolute includes', () => {
 			const cases: [string, ISearchPathsInfo][] = [
 				[
-					fixPath('/foo/bar'),
+					fixPath('/foo/Bar'),
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }]
+						searchPaths: [{ searchPath: getUri('/foo/Bar') }]
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + 'a',
+					fixPath('/foo/Bar') + ',' + 'a',
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }],
-						pattern: patternsToIExpression(...globalGlob('a'))
+						searchPaths: [{ searchPath: getUri('/foo/Bar') }],
+						pattern: patternsToIExpression(...gloBalGloB('a'))
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + fixPath('/1/2'),
+					fixPath('/foo/Bar') + ',' + fixPath('/1/2'),
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }, { searchPath: getUri('/1/2') }]
+						searchPaths: [{ searchPath: getUri('/foo/Bar') }, { searchPath: getUri('/1/2') }]
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + fixPath('/foo/../foo/bar/fooar/..'),
+					fixPath('/foo/Bar') + ',' + fixPath('/foo/../foo/Bar/fooar/..'),
 					{
 						searchPaths: [{
-							searchPath: getUri('/foo/bar')
+							searchPath: getUri('/foo/Bar')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/bar/**/*.ts'),
+					fixPath('/foo/Bar/**/*.ts'),
 					{
 						searchPaths: [{
-							searchPath: getUri('/foo/bar'),
+							searchPath: getUri('/foo/Bar'),
 							pattern: patternsToIExpression('**/*.ts', '**/*.ts/**')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/bar/*a/b/c'),
+					fixPath('/foo/Bar/*a/B/c'),
 					{
 						searchPaths: [{
-							searchPath: getUri('/foo/bar'),
-							pattern: patternsToIExpression('*a/b/c', '*a/b/c/**')
+							searchPath: getUri('/foo/Bar'),
+							pattern: patternsToIExpression('*a/B/c', '*a/B/c/**')
 						}]
 					}
 				],
 				[
-					fixPath('/*a/b/c'),
+					fixPath('/*a/B/c'),
 					{
 						searchPaths: [{
 							searchPath: getUri('/'),
-							pattern: patternsToIExpression('*a/b/c', '*a/b/c/**')
+							pattern: patternsToIExpression('*a/B/c', '*a/B/c/**')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/{b,c}ar'),
+					fixPath('/foo/{B,c}ar'),
 					{
 						searchPaths: [{
 							searchPath: getUri('/foo'),
-							pattern: patternsToIExpression('{b,c}ar', '{b,c}ar/**')
+							pattern: patternsToIExpression('{B,c}ar', '{B,c}ar/**')
 						}]
 					}
 				]
@@ -612,21 +612,21 @@ suite('QueryBuilder', () => {
 					}
 				],
 				[
-					'./a/*b/c',
+					'./a/*B/c',
 					{
 						searchPaths: [{
 							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a/*b/c', 'a/*b/c/**')
+							pattern: patternsToIExpression('a/*B/c', 'a/*B/c/**')
 						}]
 					}
 				],
 				[
-					'./a/*b/c, ' + fixPath('/project/foo'),
+					'./a/*B/c, ' + fixPath('/project/foo'),
 					{
 						searchPaths: [
 							{
 								searchPath: ROOT_1_URI,
-								pattern: patternsToIExpression('a/*b/c', 'a/*b/c/**')
+								pattern: patternsToIExpression('a/*B/c', 'a/*B/c/**')
 							},
 							{
 								searchPath: getUri('/project/foo')
@@ -634,11 +634,11 @@ suite('QueryBuilder', () => {
 					}
 				],
 				[
-					'./a/b/,./c/d',
+					'./a/B/,./c/d',
 					{
 						searchPaths: [{
 							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a/b', 'a/b/**', 'c/d', 'c/d/**')
+							pattern: patternsToIExpression('a/B', 'a/B/**', 'c/d', 'c/d/**')
 						}]
 					}
 				],
@@ -659,10 +659,10 @@ suite('QueryBuilder', () => {
 					}
 				],
 				[
-					'..\\bar',
+					'..\\Bar',
 					{
 						searchPaths: [{
-							searchPath: getUri('/foo/bar')
+							searchPath: getUri('/foo/Bar')
 						}]
 					}
 				]
@@ -693,12 +693,12 @@ suite('QueryBuilder', () => {
 					}
 				],
 				[
-					'./root1/a/**/b, ./root2/**/*.txt',
+					'./root1/a/**/B, ./root2/**/*.txt',
 					{
 						searchPaths: [
 							{
 								searchPath: ROOT_1_URI,
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**')
+								pattern: patternsToIExpression('a/**/B', 'a/**/B/**')
 							},
 							{
 								searchPath: getUri(ROOT_2),
@@ -738,7 +738,7 @@ suite('QueryBuilder', () => {
 			cases.forEach(testIncludesDataItem);
 		});
 
-		test('relative includes w/multiple ambiguous root folders', () => {
+		test('relative includes w/multiple amBiguous root folders', () => {
 			const ROOT_2 = '/project/rootB';
 			const ROOT_3 = '/otherproject/rootB';
 			mockWorkspace.folders = toWorkspaceFolders([{ path: ROOT_1_URI.fsPath }, { path: getUri(ROOT_2).fsPath }, { path: getUri(ROOT_3).fsPath }], WS_CONFIG_PATH);
@@ -786,23 +786,23 @@ suite('QueryBuilder', () => {
 					}
 				],
 				[
-					'./rootB/a/**/b, ./rootB/b/**/*.txt',
+					'./rootB/a/**/B, ./rootB/B/**/*.txt',
 					{
 						searchPaths: [
 							{
 								searchPath: getUri(ROOT_2),
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
+								pattern: patternsToIExpression('a/**/B', 'a/**/B/**', 'B/**/*.txt', 'B/**/*.txt/**')
 							},
 							{
 								searchPath: getUri(ROOT_3),
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
+								pattern: patternsToIExpression('a/**/B', 'a/**/B/**', 'B/**/*.txt', 'B/**/*.txt/**')
 							}]
 					}
 				],
 				[
-					'./root1/**/foo/, bar/',
+					'./root1/**/foo/, Bar/',
 					{
-						pattern: patternsToIExpression('**/bar', '**/bar/**'),
+						pattern: patternsToIExpression('**/Bar', '**/Bar/**'),
 						searchPaths: [
 							{
 								searchPath: ROOT_1_URI,
@@ -854,7 +854,7 @@ suite('QueryBuilder', () => {
 		test('smartCase determines not case sensitive', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'abcd'
+					pattern: 'aBcd'
 				},
 				[],
 				{
@@ -867,7 +867,7 @@ suite('QueryBuilder', () => {
 		test('smartCase determines case sensitive', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'abCd'
+					pattern: 'aBCd'
 				},
 				[],
 				{
@@ -880,7 +880,7 @@ suite('QueryBuilder', () => {
 		test('smartCase determines not case sensitive (regex)', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'ab\\Sd',
+					pattern: 'aB\\Sd',
 					isRegExp: true
 				},
 				[],
@@ -894,7 +894,7 @@ suite('QueryBuilder', () => {
 		test('smartCase determines case sensitive (regex)', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'ab[A-Z]d',
+					pattern: 'aB[A-Z]d',
 					isRegExp: true
 				},
 				[],
@@ -939,7 +939,7 @@ export function assertEqualQueries(actual: ITextQuery | IFileQuery, expected: IT
 		...expected
 	};
 
-	const folderQueryToCompareObject = (fq: IFolderQuery) => {
+	const folderQueryToCompareOBject = (fq: IFolderQuery) => {
 		return {
 			path: fq.folder.fsPath,
 			excludePattern: normalizeExpression(fq.excludePattern),
@@ -948,9 +948,9 @@ export function assertEqualQueries(actual: ITextQuery | IFileQuery, expected: IT
 		};
 	};
 
-	// Avoid comparing URI objects, not a good idea
+	// Avoid comparing URI oBjects, not a good idea
 	if (expected.folderQueries) {
-		assert.deepEqual(actual.folderQueries.map(folderQueryToCompareObject), expected.folderQueries.map(folderQueryToCompareObject));
+		assert.deepEqual(actual.folderQueries.map(folderQueryToCompareOBject), expected.folderQueries.map(folderQueryToCompareOBject));
 		actual.folderQueries = [];
 		expected.folderQueries = [];
 	}
@@ -985,13 +985,13 @@ export function assertEqualSearchPathResults(actual: ISearchPathsInfo, expected:
 
 /**
  * Recursively delete all undefined property values from the search query, to make it easier to
- * assert.deepEqual with some expected object.
+ * assert.deepEqual with some expected oBject.
  */
 export function cleanUndefinedQueryValues(q: any): void {
 	for (const key in q) {
 		if (q[key] === undefined) {
 			delete q[key];
-		} else if (typeof q[key] === 'object') {
+		} else if (typeof q[key] === 'oBject') {
 			cleanUndefinedQueryValues(q[key]);
 		}
 	}
@@ -999,7 +999,7 @@ export function cleanUndefinedQueryValues(q: any): void {
 	return q;
 }
 
-export function globalGlob(pattern: string): string[] {
+export function gloBalGloB(pattern: string): string[] {
 	return [
 		`**/${pattern}/**`,
 		`**/${pattern}`
@@ -1008,7 +1008,7 @@ export function globalGlob(pattern: string): string[] {
 
 export function patternsToIExpression(...patterns: string[]): IExpression {
 	return patterns.length ?
-		patterns.reduce((glob, cur) => { glob[cur] = true; return glob; }, Object.create(null)) :
+		patterns.reduce((gloB, cur) => { gloB[cur] = true; return gloB; }, OBject.create(null)) :
 		undefined;
 }
 
@@ -1029,8 +1029,8 @@ export function normalizeExpression(expression: IExpression | undefined): IExpre
 		return expression;
 	}
 
-	const normalized = Object.create(null);
-	Object.keys(expression).forEach(key => {
+	const normalized = OBject.create(null);
+	OBject.keys(expression).forEach(key => {
 		normalized[key.replace(/\\/g, '/')] = expression[key];
 	});
 

@@ -3,64 +3,64 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename } from 'vs/base/common/path';
-import * as Json from 'vs/base/common/json';
-import { Color } from 'vs/base/common/color';
-import { ExtensionData, ITokenColorCustomizations, ITextMateThemingRule, IWorkbenchColorTheme, IColorMap, IThemeExtensionPoint, VS_LIGHT_THEME, VS_HC_THEME, IColorCustomizations, ISemanticTokenRules, ISemanticTokenColorizationSetting, ISemanticTokenColorCustomizations, IExperimentalSemanticTokenColorCustomizations } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { convertSettings } from 'vs/workbench/services/themes/common/themeCompatibility';
+import { Basename } from 'vs/Base/common/path';
+import * as Json from 'vs/Base/common/json';
+import { Color } from 'vs/Base/common/color';
+import { ExtensionData, ITokenColorCustomizations, ITextMateThemingRule, IWorkBenchColorTheme, IColorMap, IThemeExtensionPoint, VS_LIGHT_THEME, VS_HC_THEME, IColorCustomizations, ISemanticTokenRules, ISemanticTokenColorizationSetting, ISemanticTokenColorCustomizations, IExperimentalSemanticTokenColorCustomizations } from 'vs/workBench/services/themes/common/workBenchThemeService';
+import { convertSettings } from 'vs/workBench/services/themes/common/themeCompatiBility';
 import * as nls from 'vs/nls';
-import * as types from 'vs/base/common/types';
-import * as resources from 'vs/base/common/resources';
+import * as types from 'vs/Base/common/types';
+import * as resources from 'vs/Base/common/resources';
 import { Extensions as ColorRegistryExtensions, IColorRegistry, ColorIdentifier, editorBackground, editorForeground } from 'vs/platform/theme/common/colorRegistry';
 import { ITokenStyle, getThemeTypeSelector } from 'vs/platform/theme/common/themeService';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
-import { URI } from 'vs/base/common/uri';
-import { parse as parsePList } from 'vs/workbench/services/themes/common/plistParser';
-import { TokenStyle, SemanticTokenRule, ProbeScope, getTokenClassificationRegistry, TokenStyleValue, TokenStyleData, parseClassifierString } from 'vs/platform/theme/common/tokenClassificationRegistry';
-import { MatcherWithPriority, Matcher, createMatchers } from 'vs/workbench/services/themes/common/textMateScopeMatcher';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
-import { CharCode } from 'vs/base/common/charCode';
+import { getParseErrorMessage } from 'vs/Base/common/jsonErrorMessages';
+import { URI } from 'vs/Base/common/uri';
+import { parse as parsePList } from 'vs/workBench/services/themes/common/plistParser';
+import { TokenStyle, SemanticTokenRule, ProBeScope, getTokenClassificationRegistry, TokenStyleValue, TokenStyleData, parseClassifierString } from 'vs/platform/theme/common/tokenClassificationRegistry';
+import { MatcherWithPriority, Matcher, createMatchers } from 'vs/workBench/services/themes/common/textMateScopeMatcher';
+import { IExtensionResourceLoaderService } from 'vs/workBench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { CharCode } from 'vs/Base/common/charCode';
 import { StorageScope, IStorageService } from 'vs/platform/storage/common/storage';
-import { ThemeConfiguration } from 'vs/workbench/services/themes/common/themeConfiguration';
+import { ThemeConfiguration } from 'vs/workBench/services/themes/common/themeConfiguration';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
-let colorRegistry = Registry.as<IColorRegistry>(ColorRegistryExtensions.ColorContribution);
+let colorRegistry = Registry.as<IColorRegistry>(ColorRegistryExtensions.ColorContriBution);
 
 let tokenClassificationRegistry = getTokenClassificationRegistry();
 
 const tokenGroupToScopesMap = {
 	comments: ['comment', 'punctuation.definition.comment'],
-	strings: ['string', 'meta.embedded.assembly'],
+	strings: ['string', 'meta.emBedded.assemBly'],
 	keywords: ['keyword - keyword.operator', 'keyword.control', 'storage', 'storage.type'],
-	numbers: ['constant.numeric'],
+	numBers: ['constant.numeric'],
 	types: ['entity.name.type', 'entity.name.class', 'support.type', 'support.class'],
 	functions: ['entity.name.function', 'support.function'],
-	variables: ['variable', 'entity.name.variable']
+	variaBles: ['variaBle', 'entity.name.variaBle']
 };
 
 
-export type TokenStyleDefinition = SemanticTokenRule | ProbeScope[] | TokenStyleValue;
+export type TokenStyleDefinition = SemanticTokenRule | ProBeScope[] | TokenStyleValue;
 export type TokenStyleDefinitions = { [P in keyof TokenStyleData]?: TokenStyleDefinition | undefined };
 
-export type TextMateThemingRuleDefinitions = { [P in keyof TokenStyleData]?: ITextMateThemingRule | undefined; } & { scope?: ProbeScope; };
+export type TextMateThemingRuleDefinitions = { [P in keyof TokenStyleData]?: ITextMateThemingRule | undefined; } & { scope?: ProBeScope; };
 
 const PERSISTED_THEME_STORAGE_KEY = 'colorThemeData';
 
-export class ColorThemeData implements IWorkbenchColorTheme {
+export class ColorThemeData implements IWorkBenchColorTheme {
 
 	id: string;
-	label: string;
+	laBel: string;
 	settingsId: string;
 	description?: string;
-	isLoaded: boolean;
+	isLoaded: Boolean;
 	location?: URI; // only set for extension from the registry, not for themes restored from the storage
-	watch?: boolean;
+	watch?: Boolean;
 	extensionData?: ExtensionData;
 
-	private themeSemanticHighlighting: boolean | undefined;
-	private customSemanticHighlighting: boolean | undefined;
-	private customSemanticHighlightingDeprecated: boolean | undefined;
+	private themeSemanticHighlighting: Boolean | undefined;
+	private customSemanticHighlighting: Boolean | undefined;
+	private customSemanticHighlightingDeprecated: Boolean | undefined;
 
 	private themeTokenColors: ITextMateThemingRule[] = [];
 	private customTokenColors: ITextMateThemingRule[] = [];
@@ -70,20 +70,20 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 	private semanticTokenRules: SemanticTokenRule[] = [];
 	private customSemanticTokenRules: SemanticTokenRule[] = [];
 
-	private themeTokenScopeMatchers: Matcher<ProbeScope>[] | undefined;
-	private customTokenScopeMatchers: Matcher<ProbeScope>[] | undefined;
+	private themeTokenScopeMatchers: Matcher<ProBeScope>[] | undefined;
+	private customTokenScopeMatchers: Matcher<ProBeScope>[] | undefined;
 
 	private textMateThemingRules: ITextMateThemingRule[] | undefined = undefined; // created on demand
 	private tokenColorIndex: TokenColorIndex | undefined = undefined; // created on demand
 
-	private constructor(id: string, label: string, settingsId: string) {
+	private constructor(id: string, laBel: string, settingsId: string) {
 		this.id = id;
-		this.label = label;
+		this.laBel = laBel;
 		this.settingsId = settingsId;
 		this.isLoaded = false;
 	}
 
-	get semanticHighlighting(): boolean {
+	get semanticHighlighting(): Boolean {
 		if (this.customSemanticHighlighting !== undefined) {
 			return this.customSemanticHighlighting;
 		}
@@ -99,11 +99,11 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 
 			// the default rule (scope empty) is always the first rule. Ignore all other default rules.
 			const foreground = this.getColor(editorForeground) || this.getDefault(editorForeground)!;
-			const background = this.getColor(editorBackground) || this.getDefault(editorBackground)!;
+			const Background = this.getColor(editorBackground) || this.getDefault(editorBackground)!;
 			result.push({
 				settings: {
 					foreground: normalizeColor(foreground),
-					background: normalizeColor(background)
+					Background: normalizeColor(Background)
 				}
 			});
 
@@ -114,7 +114,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 					if (rule.scope === 'token.info-token') {
 						hasDefaultTokens = true;
 					}
-					result.push({ scope: rule.scope, settings: { foreground: normalizeColor(rule.settings.foreground), background: normalizeColor(rule.settings.background), fontStyle: rule.settings.fontStyle } });
+					result.push({ scope: rule.scope, settings: { foreground: normalizeColor(rule.settings.foreground), Background: normalizeColor(rule.settings.Background), fontStyle: rule.settings.fontStyle } });
 				}
 			}
 
@@ -131,7 +131,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		return this.textMateThemingRules;
 	}
 
-	public getColor(colorId: ColorIdentifier, useDefault?: boolean): Color | undefined {
+	puBlic getColor(colorId: ColorIdentifier, useDefault?: Boolean): Color | undefined {
 		let color: Color | undefined = this.customColorMap[colorId];
 		if (color) {
 			return color;
@@ -146,24 +146,24 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 	private getTokenStyle(type: string, modifiers: string[], language: string, useDefault = true, definitions: TokenStyleDefinitions = {}): TokenStyle | undefined {
 		let result: any = {
 			foreground: undefined,
-			bold: undefined,
+			Bold: undefined,
 			underline: undefined,
 			italic: undefined
 		};
 		let score = {
 			foreground: -1,
-			bold: -1,
+			Bold: -1,
 			underline: -1,
 			italic: -1
 		};
 
-		function _processStyle(matchScore: number, style: TokenStyle, definition: TokenStyleDefinition) {
+		function _processStyle(matchScore: numBer, style: TokenStyle, definition: TokenStyleDefinition) {
 			if (style.foreground && score.foreground <= matchScore) {
 				score.foreground = matchScore;
 				result.foreground = style.foreground;
 				definitions.foreground = definition;
 			}
-			for (let p of ['bold', 'underline', 'italic']) {
+			for (let p of ['Bold', 'underline', 'italic']) {
 				const property = p as keyof TokenStyle;
 				const info = style[property];
 				if (info !== undefined) {
@@ -191,7 +191,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 			if (score[key] === -1) {
 				hasUndefinedStyleProperty = true;
 			} else {
-				score[key] = Number.MAX_VALUE; // set it to the max, so it won't be replaced by a default
+				score[key] = NumBer.MAX_VALUE; // set it to the max, so it won't Be replaced By a default
 			}
 		}
 		if (hasUndefinedStyleProperty) {
@@ -199,10 +199,10 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 				const matchScore = rule.selector.match(type, modifiers, language);
 				if (matchScore >= 0) {
 					let style: TokenStyle | undefined;
-					if (rule.defaults.scopesToProbe) {
-						style = this.resolveScopes(rule.defaults.scopesToProbe);
+					if (rule.defaults.scopesToProBe) {
+						style = this.resolveScopes(rule.defaults.scopesToProBe);
 						if (style) {
-							_processStyle(matchScore, style, rule.defaults.scopesToProbe);
+							_processStyle(matchScore, style, rule.defaults.scopesToProBe);
 						}
 					}
 					if (!style && useDefault !== false) {
@@ -222,13 +222,13 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 	/**
 	 * @param tokenStyleValue Resolve a tokenStyleValue in the context of a theme
 	 */
-	public resolveTokenStyleValue(tokenStyleValue: TokenStyleValue | undefined): TokenStyle | undefined {
+	puBlic resolveTokenStyleValue(tokenStyleValue: TokenStyleValue | undefined): TokenStyle | undefined {
 		if (tokenStyleValue === undefined) {
 			return undefined;
 		} else if (typeof tokenStyleValue === 'string') {
 			const { type, modifiers, language } = parseClassifierString(tokenStyleValue, '');
 			return this.getTokenStyle(type, modifiers, language);
-		} else if (typeof tokenStyleValue === 'object') {
+		} else if (typeof tokenStyleValue === 'oBject') {
 			return tokenStyleValue;
 		}
 		return undefined;
@@ -240,13 +240,13 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 			const index = new TokenColorIndex();
 			this.tokenColors.forEach(rule => {
 				index.add(rule.settings.foreground);
-				index.add(rule.settings.background);
+				index.add(rule.settings.Background);
 			});
 
 			this.semanticTokenRules.forEach(r => index.add(r.style.foreground));
 			tokenClassificationRegistry.getTokenStylingDefaultRules().forEach(r => {
 				const defaultColor = r.defaults[this.type];
-				if (defaultColor && typeof defaultColor === 'object') {
+				if (defaultColor && typeof defaultColor === 'oBject') {
 					index.add(defaultColor.foreground);
 				}
 			});
@@ -257,11 +257,11 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		return this.tokenColorIndex;
 	}
 
-	public get tokenColorMap(): string[] {
+	puBlic get tokenColorMap(): string[] {
 		return this.getTokenColorIndex().asArray();
 	}
 
-	public getTokenStyleMetadata(typeWithLanguage: string, modifiers: string[], defaultLanguage: string, useDefault = true, definitions: TokenStyleDefinitions = {}): ITokenStyle | undefined {
+	puBlic getTokenStyleMetadata(typeWithLanguage: string, modifiers: string[], defaultLanguage: string, useDefault = true, definitions: TokenStyleDefinitions = {}): ITokenStyle | undefined {
 		const { type, language } = parseClassifierString(typeWithLanguage, defaultLanguage);
 		let style = this.getTokenStyle(type, modifiers, language, useDefault, definitions);
 		if (!style) {
@@ -270,13 +270,13 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 
 		return {
 			foreground: this.getTokenColorIndex().get(style.foreground),
-			bold: style.bold,
+			Bold: style.Bold,
 			underline: style.underline,
 			italic: style.italic
 		};
 	}
 
-	public getTokenStylingRuleScope(rule: SemanticTokenRule): 'setting' | 'theme' | undefined {
+	puBlic getTokenStylingRuleScope(rule: SemanticTokenRule): 'setting' | 'theme' | undefined {
 		if (this.customSemanticTokenRules.indexOf(rule) !== -1) {
 			return 'setting';
 		}
@@ -286,12 +286,12 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		return undefined;
 	}
 
-	public getDefault(colorId: ColorIdentifier): Color | undefined {
+	puBlic getDefault(colorId: ColorIdentifier): Color | undefined {
 		return colorRegistry.resolveDefaultColor(colorId, this);
 	}
 
 
-	public resolveScopes(scopes: ProbeScope[], definitions?: TextMateThemingRuleDefinitions): TokenStyle | undefined {
+	puBlic resolveScopes(scopes: ProBeScope[], definitions?: TextMateThemingRuleDefinitions): TokenStyle | undefined {
 
 		if (!this.themeTokenScopeMatchers) {
 			this.themeTokenScopeMatchers = this.themeTokenColors.map(getScopeMatcher);
@@ -308,7 +308,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 			let fontStyleThemingRule: ITextMateThemingRule | undefined = undefined;
 			let foregroundThemingRule: ITextMateThemingRule | undefined = undefined;
 
-			function findTokenStyleForScopeInScopes(scopeMatchers: Matcher<ProbeScope>[], themingRules: ITextMateThemingRule[]) {
+			function findTokenStyleForScopeInScopes(scopeMatchers: Matcher<ProBeScope>[], themingRules: ITextMateThemingRule[]) {
 				for (let i = 0; i < scopeMatchers.length; i++) {
 					const score = scopeMatchers[i](scope);
 					if (score >= 0) {
@@ -332,7 +332,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 			if (foreground !== undefined || fontStyle !== undefined) {
 				if (definitions) {
 					definitions.foreground = foregroundThemingRule;
-					definitions.bold = definitions.italic = definitions.underline = fontStyleThemingRule;
+					definitions.Bold = definitions.italic = definitions.underline = fontStyleThemingRule;
 					definitions.scope = scope;
 				}
 
@@ -342,22 +342,22 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		return undefined;
 	}
 
-	public defines(colorId: ColorIdentifier): boolean {
+	puBlic defines(colorId: ColorIdentifier): Boolean {
 		return this.customColorMap.hasOwnProperty(colorId) || this.colorMap.hasOwnProperty(colorId);
 	}
 
-	public setCustomizations(settings: ThemeConfiguration) {
+	puBlic setCustomizations(settings: ThemeConfiguration) {
 		this.setCustomColors(settings.colorCustomizations);
 		this.setCustomTokenColors(settings.tokenColorCustomizations);
 		this.setCustomSemanticTokenColors(settings.semanticTokenColorCustomizations, settings.experimentalSemanticTokenColorCustomizations);
 	}
 
-	public setCustomColors(colors: IColorCustomizations) {
+	puBlic setCustomColors(colors: IColorCustomizations) {
 		this.customColorMap = {};
 		this.overwriteCustomColors(colors);
 
 		const themeSpecificColors = colors[`[${this.settingsId}]`] as IColorCustomizations;
-		if (types.isObject(themeSpecificColors)) {
+		if (types.isOBject(themeSpecificColors)) {
 			this.overwriteCustomColors(themeSpecificColors);
 		}
 
@@ -375,7 +375,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		}
 	}
 
-	public setCustomTokenColors(customTokenColors: ITokenColorCustomizations) {
+	puBlic setCustomTokenColors(customTokenColors: ITokenColorCustomizations) {
 		this.customTokenColors = [];
 		this.customSemanticHighlightingDeprecated = undefined;
 
@@ -384,7 +384,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 
 		// append theme specific settings. Last rules will win.
 		const themeSpecificTokenColors = customTokenColors[`[${this.settingsId}]`] as ITokenColorCustomizations;
-		if (types.isObject(themeSpecificTokenColors)) {
+		if (types.isOBject(themeSpecificTokenColors)) {
 			this.addCustomTokenColors(themeSpecificTokenColors);
 		}
 
@@ -393,26 +393,26 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		this.customTokenScopeMatchers = undefined;
 	}
 
-	public setCustomSemanticTokenColors(semanticTokenColors: ISemanticTokenColorCustomizations | undefined, experimental?: IExperimentalSemanticTokenColorCustomizations) {
+	puBlic setCustomSemanticTokenColors(semanticTokenColors: ISemanticTokenColorCustomizations | undefined, experimental?: IExperimentalSemanticTokenColorCustomizations) {
 		this.customSemanticTokenRules = [];
 		this.customSemanticHighlighting = undefined;
 
 		if (experimental) { // apply deprecated settings first
 			this.readSemanticTokenRules(experimental);
 			const themeSpecificColors = experimental[`[${this.settingsId}]`] as IExperimentalSemanticTokenColorCustomizations;
-			if (types.isObject(themeSpecificColors)) {
+			if (types.isOBject(themeSpecificColors)) {
 				this.readSemanticTokenRules(themeSpecificColors);
 			}
 		}
 		if (semanticTokenColors) {
-			this.customSemanticHighlighting = semanticTokenColors.enabled;
+			this.customSemanticHighlighting = semanticTokenColors.enaBled;
 			if (semanticTokenColors.rules) {
 				this.readSemanticTokenRules(semanticTokenColors.rules);
 			}
 			const themeSpecificColors = semanticTokenColors[`[${this.settingsId}]`] as ISemanticTokenColorCustomizations;
-			if (types.isObject(themeSpecificColors)) {
-				if (themeSpecificColors.enabled !== undefined) {
-					this.customSemanticHighlighting = themeSpecificColors.enabled;
+			if (types.isOBject(themeSpecificColors)) {
+				if (themeSpecificColors.enaBled !== undefined) {
+					this.customSemanticHighlighting = themeSpecificColors.enaBled;
 				}
 				if (themeSpecificColors.rules) {
 					this.readSemanticTokenRules(themeSpecificColors.rules);
@@ -442,7 +442,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 
 	private addCustomTokenColors(customTokenColors: ITokenColorCustomizations) {
 		// Put the general customizations such as comments, strings, etc. first so that
-		// they can be overridden by specific customizations like "string.interpolated"
+		// they can Be overridden By specific customizations like "string.interpolated"
 		for (let tokenGroup in tokenGroupToScopesMap) {
 			const group = <keyof typeof tokenGroupToScopesMap>tokenGroup; // TS doesn't type 'tokenGroup' properly
 			let value = customTokenColors[group];
@@ -468,11 +468,11 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		}
 	}
 
-	public ensureLoaded(extensionResourceLoaderService: IExtensionResourceLoaderService): Promise<void> {
+	puBlic ensureLoaded(extensionResourceLoaderService: IExtensionResourceLoaderService): Promise<void> {
 		return !this.isLoaded ? this.load(extensionResourceLoaderService) : Promise.resolve(undefined);
 	}
 
-	public reload(extensionResourceLoaderService: IExtensionResourceLoaderService): Promise<void> {
+	puBlic reload(extensionResourceLoaderService: IExtensionResourceLoaderService): Promise<void> {
 		return this.load(extensionResourceLoaderService);
 	}
 
@@ -498,7 +498,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		});
 	}
 
-	public clearCaches() {
+	puBlic clearCaches() {
 		this.tokenColorIndex = undefined;
 		this.textMateThemingRules = undefined;
 		this.themeTokenScopeMatchers = undefined;
@@ -510,14 +510,14 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		for (let key in this.colorMap) {
 			colorMapData[key] = Color.Format.CSS.formatHexA(this.colorMap[key], true);
 		}
-		// no need to persist custom colors, they will be taken from the settings
+		// no need to persist custom colors, they will Be taken from the settings
 		const value = JSON.stringify({
 			id: this.id,
-			label: this.label,
+			laBel: this.laBel,
 			settingsId: this.settingsId,
 			themeTokenColors: this.themeTokenColors,
-			semanticTokenRules: this.semanticTokenRules.map(SemanticTokenRule.toJSONObject),
-			extensionData: ExtensionData.toJSONObject(this.extensionData),
+			semanticTokenRules: this.semanticTokenRules.map(SemanticTokenRule.toJSONOBject),
+			extensionData: ExtensionData.toJSONOBject(this.extensionData),
 			themeSemanticHighlighting: this.themeSemanticHighlighting,
 			colorMap: colorMapData,
 			watch: this.watch
@@ -525,7 +525,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 		storageService.store(PERSISTED_THEME_STORAGE_KEY, value, StorageScope.GLOBAL);
 	}
 
-	get baseTheme(): string {
+	get BaseTheme(): string {
 		return this.classNames[0];
 	}
 
@@ -534,7 +534,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 	}
 
 	get type(): ColorScheme {
-		switch (this.baseTheme) {
+		switch (this.BaseTheme) {
 			case VS_LIGHT_THEME: return ColorScheme.LIGHT;
 			case VS_HC_THEME: return ColorScheme.HIGH_CONTRAST;
 			default: return ColorScheme.DARK;
@@ -583,28 +583,28 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 						for (let id in colorMapData) {
 							theme.colorMap[id] = Color.fromHex(colorMapData[id]);
 						}
-						break;
+						Break;
 					case 'themeTokenColors':
-					case 'id': case 'label': case 'settingsId': case 'watch': case 'themeSemanticHighlighting':
+					case 'id': case 'laBel': case 'settingsId': case 'watch': case 'themeSemanticHighlighting':
 						(theme as any)[key] = data[key];
-						break;
+						Break;
 					case 'semanticTokenRules':
 						const rulesData = data[key];
 						if (Array.isArray(rulesData)) {
 							for (let d of rulesData) {
-								const rule = SemanticTokenRule.fromJSONObject(tokenClassificationRegistry, d);
+								const rule = SemanticTokenRule.fromJSONOBject(tokenClassificationRegistry, d);
 								if (rule) {
 									theme.semanticTokenRules.push(rule);
 								}
 							}
 						}
-						break;
+						Break;
 					case 'location':
 						// ignore, no longer restore
-						break;
+						Break;
 					case 'extensionData':
-						theme.extensionData = ExtensionData.fromJSONObject(data.extensionData);
-						break;
+						theme.extensionData = ExtensionData.fromJSONOBject(data.extensionData);
+						Break;
 				}
 			}
 			if (!theme.id || !theme.settingsId) {
@@ -617,12 +617,12 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 	}
 
 	static fromExtensionTheme(theme: IThemeExtensionPoint, colorThemeLocation: URI, extensionData: ExtensionData): ColorThemeData {
-		const baseTheme: string = theme['uiTheme'] || 'vs-dark';
+		const BaseTheme: string = theme['uiTheme'] || 'vs-dark';
 		const themeSelector = toCSSSelector(extensionData.extensionId, theme.path);
-		const id = `${baseTheme} ${themeSelector}`;
-		const label = theme.label || basename(theme.path);
-		const settingsId = theme.id || label;
-		const themeData = new ColorThemeData(id, label, settingsId);
+		const id = `${BaseTheme} ${themeSelector}`;
+		const laBel = theme.laBel || Basename(theme.path);
+		const settingsId = theme.id || laBel;
+		const themeData = new ColorThemeData(id, laBel, settingsId);
 		themeData.description = theme.description;
 		themeData.watch = theme._watch === true;
 		themeData.location = colorThemeLocation;
@@ -634,7 +634,7 @@ export class ColorThemeData implements IWorkbenchColorTheme {
 
 function toCSSSelector(extensionId: string, path: string) {
 	if (path.startsWith('./')) {
-		path = path.substr(2);
+		path = path.suBstr(2);
 	}
 	let str = `${extensionId}-${path}`;
 
@@ -646,15 +646,15 @@ function toCSSSelector(extensionId: string, path: string) {
 	return str;
 }
 
-async function _loadColorTheme(extensionResourceLoaderService: IExtensionResourceLoaderService, themeLocation: URI, result: { textMateRules: ITextMateThemingRule[], colors: IColorMap, semanticTokenRules: SemanticTokenRule[], semanticHighlighting: boolean }): Promise<any> {
+async function _loadColorTheme(extensionResourceLoaderService: IExtensionResourceLoaderService, themeLocation: URI, result: { textMateRules: ITextMateThemingRule[], colors: IColorMap, semanticTokenRules: SemanticTokenRule[], semanticHighlighting: Boolean }): Promise<any> {
 	if (resources.extname(themeLocation) === '.json') {
 		const content = await extensionResourceLoaderService.readExtensionResource(themeLocation);
 		let errors: Json.ParseError[] = [];
 		let contentValue = Json.parse(content, errors);
 		if (errors.length > 0) {
-			return Promise.reject(new Error(nls.localize('error.cannotparsejson', "Problems parsing JSON theme file: {0}", errors.map(e => getParseErrorMessage(e.error)).join(', '))));
-		} else if (Json.getNodeType(contentValue) !== 'object') {
-			return Promise.reject(new Error(nls.localize('error.invalidformat', "Invalid format for JSON theme file: Object expected.")));
+			return Promise.reject(new Error(nls.localize('error.cannotparsejson', "ProBlems parsing JSON theme file: {0}", errors.map(e => getParseErrorMessage(e.error)).join(', '))));
+		} else if (Json.getNodeType(contentValue) !== 'oBject') {
+			return Promise.reject(new Error(nls.localize('error.invalidformat', "Invalid format for JSON theme file: OBject expected.")));
 		}
 		if (contentValue.include) {
 			await _loadColorTheme(extensionResourceLoaderService, resources.joinPath(resources.dirname(themeLocation), contentValue.include), result);
@@ -666,8 +666,8 @@ async function _loadColorTheme(extensionResourceLoaderService: IExtensionResourc
 		result.semanticHighlighting = result.semanticHighlighting || contentValue.semanticHighlighting;
 		let colors = contentValue.colors;
 		if (colors) {
-			if (typeof colors !== 'object') {
-				return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.colors', comment: ['{0} will be replaced by a path. Values in quotes should not be translated.'] }, "Problem parsing color theme file: {0}. Property 'colors' is not of type 'object'.", themeLocation.toString())));
+			if (typeof colors !== 'oBject') {
+				return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.colors', comment: ['{0} will Be replaced By a path. Values in quotes should not Be translated.'] }, "ProBlem parsing color theme file: {0}. Property 'colors' is not of type 'oBject'.", themeLocation.toString())));
 			}
 			// new JSON color themes format
 			for (let colorId in colors) {
@@ -684,11 +684,11 @@ async function _loadColorTheme(extensionResourceLoaderService: IExtensionResourc
 			} else if (typeof tokenColors === 'string') {
 				await _loadSyntaxTokens(extensionResourceLoaderService, resources.joinPath(resources.dirname(themeLocation), tokenColors), result);
 			} else {
-				return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.tokenColors', comment: ['{0} will be replaced by a path. Values in quotes should not be translated.'] }, "Problem parsing color theme file: {0}. Property 'tokenColors' should be either an array specifying colors or a path to a TextMate theme file", themeLocation.toString())));
+				return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.tokenColors', comment: ['{0} will Be replaced By a path. Values in quotes should not Be translated.'] }, "ProBlem parsing color theme file: {0}. Property 'tokenColors' should Be either an array specifying colors or a path to a TextMate theme file", themeLocation.toString())));
 			}
 		}
 		let semanticTokenColors = contentValue.semanticTokenColors;
-		if (semanticTokenColors && typeof semanticTokenColors === 'object') {
+		if (semanticTokenColors && typeof semanticTokenColors === 'oBject') {
 			for (let key in semanticTokenColors) {
 				try {
 					const rule = readSemanticTokenRule(key, semanticTokenColors[key]);
@@ -696,7 +696,7 @@ async function _loadColorTheme(extensionResourceLoaderService: IExtensionResourc
 						result.semanticTokenRules.push(rule);
 					}
 				} catch (e) {
-					return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.semanticTokenColors', comment: ['{0} will be replaced by a path. Values in quotes should not be translated.'] }, "Problem parsing color theme file: {0}. Property 'semanticTokenColors' conatains a invalid selector", themeLocation.toString())));
+					return Promise.reject(new Error(nls.localize({ key: 'error.invalidformat.semanticTokenColors', comment: ['{0} will Be replaced By a path. Values in quotes should not Be translated.'] }, "ProBlem parsing color theme file: {0}. Property 'semanticTokenColors' conatains a invalid selector", themeLocation.toString())));
 				}
 			}
 		}
@@ -711,43 +711,43 @@ function _loadSyntaxTokens(extensionResourceLoaderService: IExtensionResourceLoa
 			let contentValue = parsePList(content);
 			let settings: ITextMateThemingRule[] = contentValue.settings;
 			if (!Array.isArray(settings)) {
-				return Promise.reject(new Error(nls.localize('error.plist.invalidformat', "Problem parsing tmTheme file: {0}. 'settings' is not array.")));
+				return Promise.reject(new Error(nls.localize('error.plist.invalidformat', "ProBlem parsing tmTheme file: {0}. 'settings' is not array.")));
 			}
 			convertSettings(settings, result);
 			return Promise.resolve(null);
 		} catch (e) {
-			return Promise.reject(new Error(nls.localize('error.cannotparse', "Problems parsing tmTheme file: {0}", e.message)));
+			return Promise.reject(new Error(nls.localize('error.cannotparse', "ProBlems parsing tmTheme file: {0}", e.message)));
 		}
 	}, error => {
-		return Promise.reject(new Error(nls.localize('error.cannotload', "Problems loading tmTheme file {0}: {1}", themeLocation.toString(), error.message)));
+		return Promise.reject(new Error(nls.localize('error.cannotload', "ProBlems loading tmTheme file {0}: {1}", themeLocation.toString(), error.message)));
 	});
 }
 
-let defaultThemeColors: { [baseTheme: string]: ITextMateThemingRule[] } = {
+let defaultThemeColors: { [BaseTheme: string]: ITextMateThemingRule[] } = {
 	'light': [
-		{ scope: 'token.info-token', settings: { foreground: '#316bcd' } },
+		{ scope: 'token.info-token', settings: { foreground: '#316Bcd' } },
 		{ scope: 'token.warn-token', settings: { foreground: '#cd9731' } },
 		{ scope: 'token.error-token', settings: { foreground: '#cd3131' } },
-		{ scope: 'token.debug-token', settings: { foreground: '#800080' } }
+		{ scope: 'token.deBug-token', settings: { foreground: '#800080' } }
 	],
 	'dark': [
 		{ scope: 'token.info-token', settings: { foreground: '#6796e6' } },
 		{ scope: 'token.warn-token', settings: { foreground: '#cd9731' } },
 		{ scope: 'token.error-token', settings: { foreground: '#f44747' } },
-		{ scope: 'token.debug-token', settings: { foreground: '#b267e6' } }
+		{ scope: 'token.deBug-token', settings: { foreground: '#B267e6' } }
 	],
 	'hc': [
 		{ scope: 'token.info-token', settings: { foreground: '#6796e6' } },
 		{ scope: 'token.warn-token', settings: { foreground: '#008000' } },
 		{ scope: 'token.error-token', settings: { foreground: '#FF0000' } },
-		{ scope: 'token.debug-token', settings: { foreground: '#b267e6' } }
+		{ scope: 'token.deBug-token', settings: { foreground: '#B267e6' } }
 	],
 };
 
-const noMatch = (_scope: ProbeScope) => -1;
+const noMatch = (_scope: ProBeScope) => -1;
 
-function nameMatcher(identifers: string[], scope: ProbeScope): number {
-	function findInIdents(s: string, lastIndent: number): number {
+function nameMatcher(identifers: string[], scope: ProBeScope): numBer {
+	function findInIdents(s: string, lastIndent: numBer): numBer {
 		for (let i = lastIndent - 1; i >= 0; i--) {
 			if (scopesAreMatching(s, identifers[i])) {
 				return i;
@@ -774,7 +774,7 @@ function nameMatcher(identifers: string[], scope: ProbeScope): number {
 }
 
 
-function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
+function scopesAreMatching(thisScopeName: string, scopeName: string): Boolean {
 	if (!thisScopeName) {
 		return false;
 	}
@@ -782,15 +782,15 @@ function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
 		return true;
 	}
 	const len = scopeName.length;
-	return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
+	return thisScopeName.length > len && thisScopeName.suBstr(0, len) === scopeName && thisScopeName[len] === '.';
 }
 
-function getScopeMatcher(rule: ITextMateThemingRule): Matcher<ProbeScope> {
+function getScopeMatcher(rule: ITextMateThemingRule): Matcher<ProBeScope> {
 	const ruleScope = rule.scope;
 	if (!ruleScope || !rule.settings) {
 		return noMatch;
 	}
-	const matchers: MatcherWithPriority<ProbeScope>[] = [];
+	const matchers: MatcherWithPriority<ProBeScope>[] = [];
 	if (Array.isArray(ruleScope)) {
 		for (let rs of ruleScope) {
 			createMatchers(rs, nameMatcher, matchers);
@@ -802,7 +802,7 @@ function getScopeMatcher(rule: ITextMateThemingRule): Matcher<ProbeScope> {
 	if (matchers.length === 0) {
 		return noMatch;
 	}
-	return (scope: ProbeScope) => {
+	return (scope: ProBeScope) => {
 		let max = matchers[0].matcher(scope);
 		for (let i = 1; i < matchers.length; i++) {
 			max = Math.max(max, matchers[i].matcher(scope));
@@ -811,13 +811,13 @@ function getScopeMatcher(rule: ITextMateThemingRule): Matcher<ProbeScope> {
 	};
 }
 
-function readSemanticTokenRule(selectorString: string, settings: ISemanticTokenColorizationSetting | string | boolean | undefined): SemanticTokenRule | undefined {
+function readSemanticTokenRule(selectorString: string, settings: ISemanticTokenColorizationSetting | string | Boolean | undefined): SemanticTokenRule | undefined {
 	const selector = tokenClassificationRegistry.parseTokenSelector(selectorString);
 	let style: TokenStyle | undefined;
 	if (typeof settings === 'string') {
 		style = TokenStyle.fromSettings(settings, undefined);
 	} else if (isSemanticTokenColorizationSetting(settings)) {
-		style = TokenStyle.fromSettings(settings.foreground, settings.fontStyle, settings.bold, settings.underline, settings.italic);
+		style = TokenStyle.fromSettings(settings.foreground, settings.fontStyle, settings.Bold, settings.underline, settings.italic);
 	}
 	if (style) {
 		return { selector, style };
@@ -827,23 +827,23 @@ function readSemanticTokenRule(selectorString: string, settings: ISemanticTokenC
 
 function isSemanticTokenColorizationSetting(style: any): style is ISemanticTokenColorizationSetting {
 	return style && (types.isString(style.foreground) || types.isString(style.fontStyle) || types.isBoolean(style.italic)
-		|| types.isBoolean(style.underline) || types.isBoolean(style.bold));
+		|| types.isBoolean(style.underline) || types.isBoolean(style.Bold));
 }
 
 
 class TokenColorIndex {
 
-	private _lastColorId: number;
+	private _lastColorId: numBer;
 	private _id2color: string[];
-	private _color2id: { [color: string]: number; };
+	private _color2id: { [color: string]: numBer; };
 
 	constructor() {
 		this._lastColorId = 0;
 		this._id2color = [];
-		this._color2id = Object.create(null);
+		this._color2id = OBject.create(null);
 	}
 
-	public add(color: string | Color | undefined): number {
+	puBlic add(color: string | Color | undefined): numBer {
 		color = normalizeColor(color);
 		if (color === undefined) {
 			return 0;
@@ -859,7 +859,7 @@ class TokenColorIndex {
 		return value;
 	}
 
-	public get(color: string | Color | undefined): number {
+	puBlic get(color: string | Color | undefined): numBer {
 		color = normalizeColor(color);
 		if (color === undefined) {
 			return 0;
@@ -872,7 +872,7 @@ class TokenColorIndex {
 		return 0;
 	}
 
-	public asArray(): string[] {
+	puBlic asArray(): string[] {
 		return this._id2color.slice(0);
 	}
 
@@ -908,7 +908,7 @@ function normalizeColor(color: string | Color | undefined | null): string | unde
 	return String.fromCharCode(...result);
 }
 
-function hexUpper(charCode: CharCode): number {
+function hexUpper(charCode: CharCode): numBer {
 	if (charCode >= CharCode.Digit0 && charCode <= CharCode.Digit9 || charCode >= CharCode.A && charCode <= CharCode.F) {
 		return charCode;
 	} else if (charCode >= CharCode.a && charCode <= CharCode.f) {

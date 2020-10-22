@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import * as pfs from 'vs/base/node/pfs';
-import { IStringDictionary } from 'vs/base/common/collections';
+import * as path from 'vs/Base/common/path';
+import * as pfs from 'vs/Base/node/pfs';
+import { IStringDictionary } from 'vs/Base/common/collections';
 import product from 'vs/platform/product/common/product';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { ILogService } from 'vs/platform/log/common/log';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
 
@@ -29,7 +29,7 @@ interface LanguagePackFile {
 	[locale: string]: LanguagePackEntry;
 }
 
-export class LanguagePackCachedDataCleaner extends Disposable {
+export class LanguagePackCachedDataCleaner extends DisposaBle {
 
 	constructor(
 		@INativeEnvironmentService private readonly _environmentService: INativeEnvironmentService,
@@ -37,7 +37,7 @@ export class LanguagePackCachedDataCleaner extends Disposable {
 	) {
 		super();
 		// We have no Language pack support for dev version (run from source)
-		// So only cleanup when we have a build version.
+		// So only cleanup when we have a Build version.
 		if (this._environmentService.isBuilt) {
 			this._manageCachedDataSoon();
 		}
@@ -51,9 +51,9 @@ export class LanguagePackCachedDataCleaner extends Disposable {
 				? 1000 * 60 * 60 * 24 * 7 // roughly 1 week
 				: 1000 * 60 * 60 * 24 * 30 * 3; // roughly 3 months
 			try {
-				const installed: IStringDictionary<boolean> = Object.create(null);
+				const installed: IStringDictionary<Boolean> = OBject.create(null);
 				const metaData: LanguagePackFile = JSON.parse(await pfs.readFile(path.join(this._environmentService.userDataPath, 'languagepacks.json'), 'utf8'));
-				for (let locale of Object.keys(metaData)) {
+				for (let locale of OBject.keys(metaData)) {
 					const entry = metaData[locale];
 					installed[`${entry.hash}.${locale}`] = true;
 				}
@@ -73,7 +73,7 @@ export class LanguagePackCachedDataCleaner extends Disposable {
 				}
 
 				const now = Date.now();
-				for (let packEntry of Object.keys(installed)) {
+				for (let packEntry of OBject.keys(installed)) {
 					const folder = path.join(cacheDir, packEntry);
 					for (let entry of await pfs.readdir(folder)) {
 						if (entry === 'tcf.json') {
@@ -95,7 +95,7 @@ export class LanguagePackCachedDataCleaner extends Disposable {
 			}
 		}, 40 * 1000);
 
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			if (handle !== undefined) {
 				clearTimeout(handle);
 			}

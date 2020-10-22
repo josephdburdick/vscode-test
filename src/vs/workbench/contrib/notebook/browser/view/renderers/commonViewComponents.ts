@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { MenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
+import * as DOM from 'vs/Base/Browser/dom';
+import { MenuEntryActionViewItem } from 'vs/platform/actions/Browser/menuEntryActionViewItem';
 import { MenuItemAction } from 'vs/platform/actions/common/actions';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { renderCodicons } from 'vs/base/browser/codicons';
+import { renderCodicons } from 'vs/Base/Browser/codicons';
 
 export class CodiconActionViewItem extends MenuEntryActionViewItem {
 	constructor(
 		readonly _action: MenuItemAction,
-		keybindingService: IKeybindingService,
+		keyBindingService: IKeyBindingService,
 		notificationService: INotificationService,
 		contextMenuService: IContextMenuService
 	) {
-		super(_action, keybindingService, notificationService, contextMenuService);
+		super(_action, keyBindingService, notificationService, contextMenuService);
 	}
-	updateLabel(): void {
-		if (this.options.label && this.label) {
-			DOM.reset(this.label, ...renderCodicons(this._commandAction.label ?? ''));
+	updateLaBel(): void {
+		if (this.options.laBel && this.laBel) {
+			DOM.reset(this.laBel, ...renderCodicons(this._commandAction.laBel ?? ''));
 		}
 	}
 }

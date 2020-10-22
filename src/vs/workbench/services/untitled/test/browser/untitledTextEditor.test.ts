@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import * as assert from 'assert';
-import { join } from 'vs/base/common/path';
+import { join } from 'vs/Base/common/path';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IUntitledTextEditorService, UntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { IUntitledTextEditorService, UntitledTextEditorService } from 'vs/workBench/services/untitled/common/untitledTextEditorService';
+import { workBenchInstantiationService, TestServiceAccessor } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
 import { ModesRegistry, PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
 import { Range } from 'vs/editor/common/core/range';
-import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
-import { IUntitledTextEditorModel } from 'vs/workbench/services/untitled/common/untitledTextEditorModel';
+import { UntitledTextEditorInput } from 'vs/workBench/services/untitled/common/untitledTextEditorInput';
+import { IUntitledTextEditorModel } from 'vs/workBench/services/untitled/common/untitledTextEditorModel';
 
 suite('Untitled text editors', () => {
 
@@ -22,7 +22,7 @@ suite('Untitled text editors', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -30,7 +30,7 @@ suite('Untitled text editors', () => {
 		(accessor.untitledTextEditorService as UntitledTextEditorService).dispose();
 	});
 
-	test('basics', async () => {
+	test('Basics', async () => {
 		const service = accessor.untitledTextEditorService;
 		const workingCopyService = accessor.workingCopyService;
 
@@ -62,7 +62,7 @@ suite('Untitled text editors', () => {
 
 		const resourcePromise = awaitDidChangeDirty(accessor.untitledTextEditorService);
 
-		model.textEditorModel.setValue('foo bar');
+		model.textEditorModel.setValue('foo Bar');
 
 		const resource = await resourcePromise;
 
@@ -147,7 +147,7 @@ suite('Untitled text editors', () => {
 
 		// dirty
 		const model = await input.resolve();
-		model.textEditorModel.setValue('foo bar');
+		model.textEditorModel.setValue('foo Bar');
 		assert.ok(model.isDirty());
 		assert.ok(workingCopyService.isDirty(model.resource));
 		model.textEditorModel.setValue('');
@@ -162,7 +162,7 @@ suite('Untitled text editors', () => {
 
 		const model1 = await instantiationService.createInstance(UntitledTextEditorInput, service.create()).resolve();
 
-		model1.textEditorModel!.setValue('foo bar');
+		model1.textEditorModel!.setValue('foo Bar');
 		assert.ok(model1.isDirty());
 
 		model1.textEditorModel!.setValue('');
@@ -196,7 +196,7 @@ suite('Untitled text editors', () => {
 
 		// dirty
 		const model = await input.resolve();
-		model.textEditorModel.setValue('foo bar');
+		model.textEditorModel.setValue('foo Bar');
 		assert.ok(model.isDirty());
 		model.textEditorModel.setValue('');
 		assert.ok(model.isDirty());
@@ -292,7 +292,7 @@ suite('Untitled text editors', () => {
 		model.dispose();
 	});
 
-	test('remembers that mode was set explicitly', async () => {
+	test('rememBers that mode was set explicitly', async () => {
 		const mode = 'untitled-input-test';
 
 		ModesRegistry.registerLanguage({
@@ -332,18 +332,18 @@ suite('Untitled text editors', () => {
 		model.dispose();
 	});
 
-	test('service#onDidChangeLabel', async () => {
+	test('service#onDidChangeLaBel', async () => {
 		const service = accessor.untitledTextEditorService;
 		const input = instantiationService.createInstance(UntitledTextEditorInput, service.create());
 
 		let counter = 0;
 
-		service.onDidChangeLabel(model => {
+		service.onDidChangeLaBel(model => {
 			counter++;
 			assert.equal(model.resource.toString(), input.resource.toString());
 		});
 
-		// label
+		// laBel
 		const model = await input.resolve();
 		model.textEditorModel.setValue('Foo Bar');
 		assert.equal(counter, 1);
@@ -380,7 +380,7 @@ suite('Untitled text editors', () => {
 		model.textEditorModel.setValue('foo');
 
 		assert.equal(counter, 1, 'Dirty model should trigger event');
-		model.textEditorModel.setValue('bar');
+		model.textEditorModel.setValue('Bar');
 
 		assert.equal(counter, 2, 'Content change when dirty should trigger event');
 		model.textEditorModel.setValue('');
@@ -425,9 +425,9 @@ suite('Untitled text editors', () => {
 		assert.equal(model.name, 'foo');
 
 		assert.equal(counter, 1);
-		model.textEditorModel.setValue('bar');
-		assert.equal(input.getName(), 'bar');
-		assert.equal(model.name, 'bar');
+		model.textEditorModel.setValue('Bar');
+		assert.equal(input.getName(), 'Bar');
+		assert.equal(model.name, 'Bar');
 
 		assert.equal(counter, 2);
 		model.textEditorModel.setValue('');
@@ -451,11 +451,11 @@ suite('Untitled text editors', () => {
 		model.textEditorModel.setValue('Hello\nWorld');
 		assert.equal(counter, 5);
 
-		function createSingleEditOp(text: string, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+		function createSingleEditOp(text: string, positionLineNumBer: numBer, positionColumn: numBer, selectionLineNumBer: numBer = positionLineNumBer, selectionColumn: numBer = positionColumn): IIdentifiedSingleEditOperation {
 			let range = new Range(
-				selectionLineNumber,
+				selectionLineNumBer,
 				selectionColumn,
-				positionLineNumber,
+				positionLineNumBer,
 				positionColumn
 			);
 
@@ -494,7 +494,7 @@ suite('Untitled text editors', () => {
 		model.textEditorModel.setValue('foo');
 
 		assert.equal(counter, 1, 'Dirty model should trigger event');
-		model.textEditorModel.setValue('bar');
+		model.textEditorModel.setValue('Bar');
 
 		assert.equal(counter, 1, 'Another change does not fire event');
 

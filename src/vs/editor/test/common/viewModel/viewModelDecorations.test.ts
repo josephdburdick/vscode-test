@@ -12,7 +12,7 @@ import { testViewModel } from 'vs/editor/test/common/viewModel/testViewModel';
 suite('ViewModelDecorations', () => {
 	test('getDecorationsViewportData', () => {
 		const text = [
-			'hello world, this is a buffer that will be wrapped'
+			'hello world, this is a Buffer that will Be wrapped'
 		];
 		const opts: IEditorOptions = {
 			wordWrap: 'wordWrapColumn',
@@ -21,8 +21,8 @@ suite('ViewModelDecorations', () => {
 		testViewModel(text, opts, (viewModel, model) => {
 			assert.equal(viewModel.getLineContent(1), 'hello world, ');
 			assert.equal(viewModel.getLineContent(2), 'this is a ');
-			assert.equal(viewModel.getLineContent(3), 'buffer that ');
-			assert.equal(viewModel.getLineContent(4), 'will be ');
+			assert.equal(viewModel.getLineContent(3), 'Buffer that ');
+			assert.equal(viewModel.getLineContent(4), 'will Be ');
 			assert.equal(viewModel.getLineContent(5), 'wrapped');
 
 			model.changeDecorations((accessor) => {
@@ -30,22 +30,22 @@ suite('ViewModelDecorations', () => {
 					return {
 						className: id,
 						inlineClassName: 'i-' + id,
-						beforeContentClassName: 'b-' + id,
+						BeforeContentClassName: 'B-' + id,
 						afterContentClassName: 'a-' + id
 					};
 				};
 
-				// VIEWPORT will be (1,14) -> (1,36)
+				// VIEWPORT will Be (1,14) -> (1,36)
 
-				// completely before viewport
+				// completely Before viewport
 				accessor.addDecoration(new Range(1, 2, 1, 3), createOpts('dec1'));
-				// starts before viewport, ends at viewport start
+				// starts Before viewport, ends at viewport start
 				accessor.addDecoration(new Range(1, 2, 1, 14), createOpts('dec2'));
-				// starts before viewport, ends inside viewport
+				// starts Before viewport, ends inside viewport
 				accessor.addDecoration(new Range(1, 2, 1, 15), createOpts('dec3'));
-				// starts before viewport, ends at viewport end
+				// starts Before viewport, ends at viewport end
 				accessor.addDecoration(new Range(1, 2, 1, 36), createOpts('dec4'));
-				// starts before viewport, ends after viewport
+				// starts Before viewport, ends after viewport
 				accessor.addDecoration(new Range(1, 2, 1, 51), createOpts('dec5'));
 
 				// starts at viewport start, ends at viewport start
@@ -130,7 +130,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 1, 2, 1),
-					inlineClassName: 'b-dec6',
+					inlineClassName: 'B-dec6',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -145,7 +145,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 1, 2, 1),
-					inlineClassName: 'b-dec7',
+					inlineClassName: 'B-dec7',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -160,7 +160,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 1, 2, 1),
-					inlineClassName: 'b-dec8',
+					inlineClassName: 'B-dec8',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -170,7 +170,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 1, 2, 1),
-					inlineClassName: 'b-dec9',
+					inlineClassName: 'B-dec9',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -180,7 +180,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 3, 2, 3),
-					inlineClassName: 'b-dec10',
+					inlineClassName: 'B-dec10',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -195,7 +195,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 3, 2, 3),
-					inlineClassName: 'b-dec11',
+					inlineClassName: 'B-dec11',
 					type: InlineDecorationType.Before
 				},
 				{
@@ -205,7 +205,7 @@ suite('ViewModelDecorations', () => {
 				},
 				{
 					range: new Range(2, 3, 2, 3),
-					inlineClassName: 'b-dec12',
+					inlineClassName: 'B-dec12',
 					type: InlineDecorationType.Before
 				},
 			]);
@@ -266,9 +266,9 @@ suite('ViewModelDecorations', () => {
 		});
 	});
 
-	test('issue #17208: Problem scrolling in 1.8.0', () => {
+	test('issue #17208: ProBlem scrolling in 1.8.0', () => {
 		const text = [
-			'hello world, this is a buffer that will be wrapped'
+			'hello world, this is a Buffer that will Be wrapped'
 		];
 		const opts: IEditorOptions = {
 			wordWrap: 'wordWrapColumn',
@@ -277,22 +277,22 @@ suite('ViewModelDecorations', () => {
 		testViewModel(text, opts, (viewModel, model) => {
 			assert.equal(viewModel.getLineContent(1), 'hello world, ');
 			assert.equal(viewModel.getLineContent(2), 'this is a ');
-			assert.equal(viewModel.getLineContent(3), 'buffer that ');
-			assert.equal(viewModel.getLineContent(4), 'will be ');
+			assert.equal(viewModel.getLineContent(3), 'Buffer that ');
+			assert.equal(viewModel.getLineContent(4), 'will Be ');
 			assert.equal(viewModel.getLineContent(5), 'wrapped');
 
 			model.changeDecorations((accessor) => {
 				accessor.addDecoration(
 					new Range(1, 50, 1, 51),
 					{
-						beforeContentClassName: 'dec1'
+						BeforeContentClassName: 'dec1'
 					}
 				);
 			});
 
 			let decorations = viewModel.getDecorationsInViewport(
 				new Range(2, viewModel.getLineMinColumn(2), 3, viewModel.getLineMaxColumn(3))
-			).filter(x => Boolean(x.options.beforeContentClassName));
+			).filter(x => Boolean(x.options.BeforeContentClassName));
 			assert.deepEqual(decorations, []);
 
 			let inlineDecorations1 = viewModel.getViewLineRenderingData(
@@ -309,7 +309,7 @@ suite('ViewModelDecorations', () => {
 		});
 	});
 
-	test('issue #37401: Allow both before and after decorations on empty line', () => {
+	test('issue #37401: Allow Both Before and after decorations on empty line', () => {
 		const text = [
 			''
 		];
@@ -319,7 +319,7 @@ suite('ViewModelDecorations', () => {
 				accessor.addDecoration(
 					new Range(1, 1, 1, 1),
 					{
-						beforeContentClassName: 'before1',
+						BeforeContentClassName: 'Before1',
 						afterContentClassName: 'after1'
 					}
 				);
@@ -332,7 +332,7 @@ suite('ViewModelDecorations', () => {
 			assert.deepEqual(inlineDecorations, [
 				{
 					range: new Range(1, 1, 1, 1),
-					inlineClassName: 'before1',
+					inlineClassName: 'Before1',
 					type: InlineDecorationType.Before
 				},
 				{

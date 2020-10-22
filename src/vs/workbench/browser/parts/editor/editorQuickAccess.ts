@@ -6,34 +6,34 @@
 import 'vs/css!./media/editorquickaccess';
 import { localize } from 'vs/nls';
 import { IQuickPickSeparator, quickPickItemScorerAccessor, IQuickPickItemWithResource, IQuickPick } from 'vs/platform/quickinput/common/quickInput';
-import { PickerQuickAccessProvider, IPickerQuickAccessItem, TriggerAction } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { IEditorGroupsService, GroupsOrder } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { EditorsOrder, IEditorIdentifier, EditorResourceAccessor, SideBySideEditor, GroupIdentifier } from 'vs/workbench/common/editor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { PickerQuickAccessProvider, IPickerQuickAccessItem, TriggerAction } from 'vs/platform/quickinput/Browser/pickerQuickAccess';
+import { IEditorGroupsService, GroupsOrder } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { EditorsOrder, IEditorIdentifier, EditorResourceAccessor, SideBySideEditor, GroupIdentifier } from 'vs/workBench/common/editor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
-import { prepareQuery, scoreItemFuzzy, compareItemsByFuzzyScore, FuzzyScorerCache } from 'vs/base/common/fuzzyScorer';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Codicon } from 'vs/base/common/codicons';
+import { prepareQuery, scoreItemFuzzy, compareItemsByFuzzyScore, FuzzyScorerCache } from 'vs/Base/common/fuzzyScorer';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Codicon } from 'vs/Base/common/codicons';
 
 interface IEditorQuickPickItem extends IQuickPickItemWithResource, IPickerQuickAccessItem {
 	groupId: GroupIdentifier;
 }
 
-export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessProvider<IEditorQuickPickItem> {
+export aBstract class BaseEditorQuickAccessProvider extends PickerQuickAccessProvider<IEditorQuickPickItem> {
 
 	private readonly pickState = new class {
 
-		scorerCache: FuzzyScorerCache = Object.create(null);
-		isQuickNavigating: boolean | undefined = undefined;
+		scorerCache: FuzzyScorerCache = OBject.create(null);
+		isQuickNavigating: Boolean | undefined = undefined;
 
-		reset(isQuickNavigating: boolean): void {
+		reset(isQuickNavigating: Boolean): void {
 
 			// Caches
 			if (!isQuickNavigating) {
-				this.scorerCache = Object.create(null);
+				this.scorerCache = OBject.create(null);
 			}
 
 			// Other
@@ -52,14 +52,14 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 			{
 				canAcceptInBackground: true,
 				noResultsPick: {
-					label: localize('noViewResults', "No matching editors"),
+					laBel: localize('noViewResults', "No matching editors"),
 					groupId: -1
 				}
 			}
 		);
 	}
 
-	provide(picker: IQuickPick<IEditorQuickPickItem>, token: CancellationToken): IDisposable {
+	provide(picker: IQuickPick<IEditorQuickPickItem>, token: CancellationToken): IDisposaBle {
 
 		// Reset the pick state for this run
 		this.pickState.reset(!!picker.quickNavigate);
@@ -77,14 +77,14 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 				return true;
 			}
 
-			// Score on label and description
+			// Score on laBel and description
 			const itemScore = scoreItemFuzzy(entry, query, true, quickPickItemScorerAccessor, this.pickState.scorerCache);
 			if (!itemScore.score) {
 				return false;
 			}
 
 			// Apply highlights
-			entry.highlights = { label: itemScore.labelMatch, description: itemScore.descriptionMatch };
+			entry.highlights = { laBel: itemScore.laBelMatch, description: itemScore.descriptionMatch };
 
 			return true;
 		});
@@ -104,12 +104,12 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 		// Grouping (for more than one group)
 		const filteredEditorEntriesWithSeparators: Array<IEditorQuickPickItem | IQuickPickSeparator> = [];
 		if (this.editorGroupService.count > 1) {
-			let lastGroupId: number | undefined = undefined;
+			let lastGroupId: numBer | undefined = undefined;
 			for (const entry of filteredEditorEntries) {
-				if (typeof lastGroupId !== 'number' || lastGroupId !== entry.groupId) {
+				if (typeof lastGroupId !== 'numBer' || lastGroupId !== entry.groupId) {
 					const group = this.editorGroupService.getGroup(entry.groupId);
 					if (group) {
-						filteredEditorEntriesWithSeparators.push({ type: 'separator', label: group.label });
+						filteredEditorEntriesWithSeparators.push({ type: 'separator', laBel: group.laBel });
 					}
 					lastGroupId = entry.groupId;
 				}
@@ -126,12 +126,12 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 	private doGetEditorPickItems(): Array<IEditorQuickPickItem> {
 		const editors = this.doGetEditors();
 
-		const mapGroupIdToGroupAriaLabel = new Map<GroupIdentifier, string>();
+		const mapGroupIdToGroupAriaLaBel = new Map<GroupIdentifier, string>();
 		for (const { groupId } of editors) {
-			if (!mapGroupIdToGroupAriaLabel.has(groupId)) {
+			if (!mapGroupIdToGroupAriaLaBel.has(groupId)) {
 				const group = this.editorGroupService.getGroup(groupId);
 				if (group) {
-					mapGroupIdToGroupAriaLabel.set(groupId, group.ariaLabel);
+					mapGroupIdToGroupAriaLaBel.set(groupId, group.ariaLaBel);
 				}
 			}
 		}
@@ -145,25 +145,25 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 			return {
 				groupId,
 				resource,
-				label: editor.getName(),
-				ariaLabel: (() => {
-					if (mapGroupIdToGroupAriaLabel.size > 1) {
+				laBel: editor.getName(),
+				ariaLaBel: (() => {
+					if (mapGroupIdToGroupAriaLaBel.size > 1) {
 						return isDirty ?
-							localize('entryAriaLabelWithGroupDirty', "{0}, dirty, {1}", nameAndDescription, mapGroupIdToGroupAriaLabel.get(groupId)) :
-							localize('entryAriaLabelWithGroup', "{0}, {1}", nameAndDescription, mapGroupIdToGroupAriaLabel.get(groupId));
+							localize('entryAriaLaBelWithGroupDirty', "{0}, dirty, {1}", nameAndDescription, mapGroupIdToGroupAriaLaBel.get(groupId)) :
+							localize('entryAriaLaBelWithGroup', "{0}, {1}", nameAndDescription, mapGroupIdToGroupAriaLaBel.get(groupId));
 					}
 
-					return isDirty ? localize('entryAriaLabelDirty', "{0}, dirty", nameAndDescription) : nameAndDescription;
+					return isDirty ? localize('entryAriaLaBelDirty', "{0}, dirty", nameAndDescription) : nameAndDescription;
 				})(),
 				description: editor.getDescription(),
 				iconClasses: getIconClasses(this.modelService, this.modeService, resource),
 				italic: !this.editorGroupService.getGroup(groupId)?.isPinned(editor),
-				buttons: (() => {
+				Buttons: (() => {
 					return [
 						{
 							iconClass: isDirty ? ('dirty-editor ' + Codicon.closeDirty.classNames) : Codicon.close.classNames,
 							tooltip: localize('closeEditor', "Close Editor"),
-							alwaysVisible: isDirty
+							alwaysVisiBle: isDirty
 						}
 					];
 				})(),
@@ -184,10 +184,10 @@ export abstract class BaseEditorQuickAccessProvider extends PickerQuickAccessPro
 		});
 	}
 
-	protected abstract doGetEditors(): IEditorIdentifier[];
+	protected aBstract doGetEditors(): IEditorIdentifier[];
 }
 
-//#region Active Editor Group Editors by Most Recently Used
+//#region Active Editor Group Editors By Most Recently Used
 
 export class ActiveGroupEditorsByMostRecentlyUsedQuickAccess extends BaseEditorQuickAccessProvider {
 
@@ -212,7 +212,7 @@ export class ActiveGroupEditorsByMostRecentlyUsedQuickAccess extends BaseEditorQ
 //#endregion
 
 
-//#region All Editors by Appearance
+//#region All Editors By Appearance
 
 export class AllEditorsByAppearanceQuickAccess extends BaseEditorQuickAccessProvider {
 
@@ -243,7 +243,7 @@ export class AllEditorsByAppearanceQuickAccess extends BaseEditorQuickAccessProv
 //#endregion
 
 
-//#region All Editors by Most Recently Used
+//#region All Editors By Most Recently Used
 
 export class AllEditorsByMostRecentlyUsedQuickAccess extends BaseEditorQuickAccessProvider {
 

@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ColorTheme, ColorThemeKind } from './extHostTypes';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostThemingShape } from 'vs/workbench/api/common/extHost.protocol';
-import { Emitter, Event } from 'vs/base/common/event';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { ExtHostThemingShape } from 'vs/workBench/api/common/extHost.protocol';
+import { Emitter, Event } from 'vs/Base/common/event';
 
 export class ExtHostTheming implements ExtHostThemingShape {
 
@@ -22,7 +22,7 @@ export class ExtHostTheming implements ExtHostThemingShape {
 		this._onDidChangeActiveColorTheme = new Emitter<ColorTheme>();
 	}
 
-	public get activeColorTheme(): ColorTheme {
+	puBlic get activeColorTheme(): ColorTheme {
 		return this._actual;
 	}
 
@@ -32,7 +32,7 @@ export class ExtHostTheming implements ExtHostThemingShape {
 		this._onDidChangeActiveColorTheme.fire(this._actual);
 	}
 
-	public get onDidChangeActiveColorTheme(): Event<ColorTheme> {
+	puBlic get onDidChangeActiveColorTheme(): Event<ColorTheme> {
 		return this._onDidChangeActiveColorTheme.event;
 	}
 }

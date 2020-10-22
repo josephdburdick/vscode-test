@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createMemoizer } from 'vs/base/common/decorators';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { createMemoizer } from 'vs/Base/common/decorators';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { EDITOR_FONT_DEFAULTS, IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import * as colorRegistry from 'vs/platform/theme/common/colorRegistry';
 import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
-import { Emitter } from 'vs/base/common/event';
-import { DEFAULT_FONT_FAMILY } from 'vs/workbench/browser/style';
+import { Emitter } from 'vs/Base/common/event';
+import { DEFAULT_FONT_FAMILY } from 'vs/workBench/Browser/style';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
-interface WebviewThemeData {
+interface WeBviewThemeData {
 	readonly activeTheme: string;
-	readonly themeLabel: string;
-	readonly styles: { readonly [key: string]: string | number; };
+	readonly themeLaBel: string;
+	readonly styles: { readonly [key: string]: string | numBer; };
 }
 
-export class WebviewThemeDataProvider extends Disposable {
+export class WeBviewThemeDataProvider extends DisposaBle {
 
 
 	private static readonly MEMOIZER = createMemoizer();
 
 	private readonly _onThemeDataChanged = this._register(new Emitter<void>());
-	public readonly onThemeDataChanged = this._onThemeDataChanged.event;
+	puBlic readonly onThemeDataChanged = this._onThemeDataChanged.event;
 
 	constructor(
 		@IThemeService private readonly _themeService: IThemeService,
@@ -37,20 +37,20 @@ export class WebviewThemeDataProvider extends Disposable {
 			this.reset();
 		}));
 
-		const webviewConfigurationKeys = ['editor.fontFamily', 'editor.fontWeight', 'editor.fontSize'];
+		const weBviewConfigurationKeys = ['editor.fontFamily', 'editor.fontWeight', 'editor.fontSize'];
 		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (webviewConfigurationKeys.some(key => e.affectsConfiguration(key))) {
+			if (weBviewConfigurationKeys.some(key => e.affectsConfiguration(key))) {
 				this.reset();
 			}
 		}));
 	}
 
-	public getTheme(): IColorTheme {
+	puBlic getTheme(): IColorTheme {
 		return this._themeService.getColorTheme();
 	}
 
-	@WebviewThemeDataProvider.MEMOIZER
-	public getWebviewThemeData(): WebviewThemeData {
+	@WeBviewThemeDataProvider.MEMOIZER
+	puBlic getWeBviewThemeData(): WeBviewThemeData {
 		const configuration = this._configurationService.getValue<IEditorOptions>('editor');
 		const editorFontFamily = configuration.fontFamily || EDITOR_FONT_DEFAULTS.fontFamily;
 		const editorFontWeight = configuration.fontWeight || EDITOR_FONT_DEFAULTS.fontWeight;
@@ -76,11 +76,11 @@ export class WebviewThemeDataProvider extends Disposable {
 		};
 
 		const activeTheme = ApiThemeClassName.fromTheme(theme);
-		return { styles, activeTheme, themeLabel: theme.label, };
+		return { styles, activeTheme, themeLaBel: theme.laBel, };
 	}
 
 	private reset() {
-		WebviewThemeDataProvider.MEMOIZER.clear();
+		WeBviewThemeDataProvider.MEMOIZER.clear();
 		this._onThemeDataChanged.fire();
 	}
 }

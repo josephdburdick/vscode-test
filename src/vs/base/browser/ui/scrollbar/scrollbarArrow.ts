@@ -3,67 +3,67 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { GlobalMouseMoveMonitor, IStandardMouseMoveEventData, standardMouseMoveMerger } from 'vs/base/browser/globalMouseMoveMonitor';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { IntervalTimer, TimeoutTimer } from 'vs/base/common/async';
-import { Codicon } from 'vs/base/common/codicons';
+import { GloBalMouseMoveMonitor, IStandardMouseMoveEventData, standardMouseMoveMerger } from 'vs/Base/Browser/gloBalMouseMoveMonitor';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { IntervalTimer, TimeoutTimer } from 'vs/Base/common/async';
+import { Codicon } from 'vs/Base/common/codicons';
 
 /**
  * The arrow image size.
  */
 export const ARROW_IMG_SIZE = 11;
 
-export interface ScrollbarArrowOptions {
+export interface ScrollBarArrowOptions {
 	onActivate: () => void;
 	className: string;
 	icon: Codicon;
 
-	bgWidth: number;
-	bgHeight: number;
+	BgWidth: numBer;
+	BgHeight: numBer;
 
-	top?: number;
-	left?: number;
-	bottom?: number;
-	right?: number;
+	top?: numBer;
+	left?: numBer;
+	Bottom?: numBer;
+	right?: numBer;
 }
 
-export class ScrollbarArrow extends Widget {
+export class ScrollBarArrow extends Widget {
 
 	private _onActivate: () => void;
-	public bgDomNode: HTMLElement;
-	public domNode: HTMLElement;
+	puBlic BgDomNode: HTMLElement;
+	puBlic domNode: HTMLElement;
 	private _mousedownRepeatTimer: IntervalTimer;
 	private _mousedownScheduleRepeatTimer: TimeoutTimer;
-	private _mouseMoveMonitor: GlobalMouseMoveMonitor<IStandardMouseMoveEventData>;
+	private _mouseMoveMonitor: GloBalMouseMoveMonitor<IStandardMouseMoveEventData>;
 
-	constructor(opts: ScrollbarArrowOptions) {
+	constructor(opts: ScrollBarArrowOptions) {
 		super();
 		this._onActivate = opts.onActivate;
 
-		this.bgDomNode = document.createElement('div');
-		this.bgDomNode.className = 'arrow-background';
-		this.bgDomNode.style.position = 'absolute';
-		this.bgDomNode.style.width = opts.bgWidth + 'px';
-		this.bgDomNode.style.height = opts.bgHeight + 'px';
+		this.BgDomNode = document.createElement('div');
+		this.BgDomNode.className = 'arrow-Background';
+		this.BgDomNode.style.position = 'aBsolute';
+		this.BgDomNode.style.width = opts.BgWidth + 'px';
+		this.BgDomNode.style.height = opts.BgHeight + 'px';
 		if (typeof opts.top !== 'undefined') {
-			this.bgDomNode.style.top = '0px';
+			this.BgDomNode.style.top = '0px';
 		}
 		if (typeof opts.left !== 'undefined') {
-			this.bgDomNode.style.left = '0px';
+			this.BgDomNode.style.left = '0px';
 		}
-		if (typeof opts.bottom !== 'undefined') {
-			this.bgDomNode.style.bottom = '0px';
+		if (typeof opts.Bottom !== 'undefined') {
+			this.BgDomNode.style.Bottom = '0px';
 		}
 		if (typeof opts.right !== 'undefined') {
-			this.bgDomNode.style.right = '0px';
+			this.BgDomNode.style.right = '0px';
 		}
 
 		this.domNode = document.createElement('div');
 		this.domNode.className = opts.className;
 		this.domNode.classList.add(...opts.icon.classNamesArray);
 
-		this.domNode.style.position = 'absolute';
+		this.domNode.style.position = 'aBsolute';
 		this.domNode.style.width = ARROW_IMG_SIZE + 'px';
 		this.domNode.style.height = ARROW_IMG_SIZE + 'px';
 		if (typeof opts.top !== 'undefined') {
@@ -72,15 +72,15 @@ export class ScrollbarArrow extends Widget {
 		if (typeof opts.left !== 'undefined') {
 			this.domNode.style.left = opts.left + 'px';
 		}
-		if (typeof opts.bottom !== 'undefined') {
-			this.domNode.style.bottom = opts.bottom + 'px';
+		if (typeof opts.Bottom !== 'undefined') {
+			this.domNode.style.Bottom = opts.Bottom + 'px';
 		}
 		if (typeof opts.right !== 'undefined') {
 			this.domNode.style.right = opts.right + 'px';
 		}
 
-		this._mouseMoveMonitor = this._register(new GlobalMouseMoveMonitor<IStandardMouseMoveEventData>());
-		this.onmousedown(this.bgDomNode, (e) => this._arrowMouseDown(e));
+		this._mouseMoveMonitor = this._register(new GloBalMouseMoveMonitor<IStandardMouseMoveEventData>());
+		this.onmousedown(this.BgDomNode, (e) => this._arrowMouseDown(e));
 		this.onmousedown(this.domNode, (e) => this._arrowMouseDown(e));
 
 		this._mousedownRepeatTimer = this._register(new IntervalTimer());
@@ -98,7 +98,7 @@ export class ScrollbarArrow extends Widget {
 
 		this._mouseMoveMonitor.startMonitoring(
 			e.target,
-			e.buttons,
+			e.Buttons,
 			standardMouseMoveMerger,
 			(mouseMoveData: IStandardMouseMoveEventData) => {
 				/* Intentional empty */

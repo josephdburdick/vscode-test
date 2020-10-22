@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { localize } from 'vs/nls';
 import { MenuId, MenuRegistry, Action2, registerAction2 } from 'vs/platform/actions/common/actions';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IURLService } from 'vs/platform/url/common/url';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { ExternalUriResolverContribution } from 'vs/workbench/contrib/url/browser/externalUriResolver';
-import { manageTrustedDomainSettingsCommand } from 'vs/workbench/contrib/url/browser/trustedDomains';
-import { TrustedDomainsFileSystemProvider } from 'vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider';
-import { OpenerValidatorContributions } from 'vs/workbench/contrib/url/browser/trustedDomainsValidator';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { ExternalUriResolverContriBution } from 'vs/workBench/contriB/url/Browser/externalUriResolver';
+import { manageTrustedDomainSettingsCommand } from 'vs/workBench/contriB/url/Browser/trustedDomains';
+import { TrustedDomainsFileSystemProvider } from 'vs/workBench/contriB/url/Browser/trustedDomainsFileSystemProvider';
+import { OpenerValidatorContriButions } from 'vs/workBench/contriB/url/Browser/trustedDomainsValidator';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
 class OpenUrlAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.url.openUrl',
+			id: 'workBench.action.url.openUrl',
 			title: { value: localize('openUrl', "Open URL"), original: 'Open URL' },
 			category: CATEGORIES.Developer,
 			f1: true
@@ -46,7 +46,7 @@ class OpenUrlAction extends Action2 {
 registerAction2(OpenUrlAction);
 
 /**
- * Trusted Domains Contribution
+ * Trusted Domains ContriBution
  */
 
 CommandsRegistry.registerCommand(manageTrustedDomainSettingsCommand);
@@ -60,15 +60,15 @@ MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 	}
 });
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	OpenerValidatorContributions,
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(
+	OpenerValidatorContriButions,
 	LifecyclePhase.Restored
 );
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(
 	TrustedDomainsFileSystemProvider,
 	LifecyclePhase.Ready
 );
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	ExternalUriResolverContribution,
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(
+	ExternalUriResolverContriBution,
 	LifecyclePhase.Ready
 );

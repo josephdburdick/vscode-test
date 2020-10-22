@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 import * as platform from 'vs/platform/registry/common/platform';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 
 export const Extensions = {
-	JSONContribution: 'base.contributions.json'
+	JSONContriBution: 'Base.contriButions.json'
 };
 
-export interface ISchemaContributions {
+export interface ISchemaContriButions {
 	schemas: { [id: string]: IJSONSchema };
 }
 
-export interface IJSONContributionRegistry {
+export interface IJSONContriButionRegistry {
 
 	readonly onDidChangeSchema: Event<string>;
 
@@ -34,21 +34,21 @@ export interface IJSONContributionRegistry {
 	/**
 	 * Get all schemas
 	 */
-	getSchemaContributions(): ISchemaContributions;
+	getSchemaContriButions(): ISchemaContriButions;
 }
 
 
 
 function normalizeId(id: string) {
 	if (id.length > 0 && id.charAt(id.length - 1) === '#') {
-		return id.substring(0, id.length - 1);
+		return id.suBstring(0, id.length - 1);
 	}
 	return id;
 }
 
 
 
-class JSONContributionRegistry implements IJSONContributionRegistry {
+class JSONContriButionRegistry implements IJSONContriButionRegistry {
 
 	private schemasById: { [id: string]: IJSONSchema };
 
@@ -59,16 +59,16 @@ class JSONContributionRegistry implements IJSONContributionRegistry {
 		this.schemasById = {};
 	}
 
-	public registerSchema(uri: string, unresolvedSchemaContent: IJSONSchema): void {
+	puBlic registerSchema(uri: string, unresolvedSchemaContent: IJSONSchema): void {
 		this.schemasById[normalizeId(uri)] = unresolvedSchemaContent;
 		this._onDidChangeSchema.fire(uri);
 	}
 
-	public notifySchemaChanged(uri: string): void {
+	puBlic notifySchemaChanged(uri: string): void {
 		this._onDidChangeSchema.fire(uri);
 	}
 
-	public getSchemaContributions(): ISchemaContributions {
+	puBlic getSchemaContriButions(): ISchemaContriButions {
 		return {
 			schemas: this.schemasById,
 		};
@@ -76,5 +76,5 @@ class JSONContributionRegistry implements IJSONContributionRegistry {
 
 }
 
-const jsonContributionRegistry = new JSONContributionRegistry();
-platform.Registry.add(Extensions.JSONContribution, jsonContributionRegistry);
+const jsonContriButionRegistry = new JSONContriButionRegistry();
+platform.Registry.add(Extensions.JSONContriBution, jsonContriButionRegistry);

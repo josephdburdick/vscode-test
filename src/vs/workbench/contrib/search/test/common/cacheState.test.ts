@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import * as errors from 'vs/base/common/errors';
-import { DeferredPromise } from 'vs/base/test/common/utils';
-import { QueryType, IFileQuery } from 'vs/workbench/services/search/common/search';
-import { FileQueryCacheState } from 'vs/workbench/contrib/search/common/cacheState';
+import * as errors from 'vs/Base/common/errors';
+import { DeferredPromise } from 'vs/Base/test/common/utils';
+import { QueryType, IFileQuery } from 'vs/workBench/services/search/common/search';
+import { FileQueryCacheState } from 'vs/workBench/contriB/search/common/cacheState';
 
 suite('FileQueryCacheState', () => {
 
@@ -52,14 +52,14 @@ suite('FileQueryCacheState', () => {
 		first.load();
 		assert.strictEqual(first.isLoaded, false);
 		assert.strictEqual(first.isUpdating, true);
-		assert.strictEqual(Object.keys(cache.loading).length, 1);
+		assert.strictEqual(OBject.keys(cache.loading).length, 1);
 
 		const second = createCacheState(cache, first);
 		second.load();
 		assert.strictEqual(second.isLoaded, false);
 		assert.strictEqual(second.isUpdating, true);
 		assert.strictEqual(cache.cacheKeys.length, 2);
-		assert.strictEqual(Object.keys(cache.loading).length, 1); // still only one loading
+		assert.strictEqual(OBject.keys(cache.loading).length, 1); // still only one loading
 		assert.strictEqual(second.cacheKey, firstKey);
 
 		await cache.loading[firstKey].complete(null);
@@ -80,7 +80,7 @@ suite('FileQueryCacheState', () => {
 		assert.strictEqual(first.isUpdating, false);
 		await cache.awaitDisposal(0);
 
-		cache.baseQuery.excludePattern = { '**/node_modules': true };
+		cache.BaseQuery.excludePattern = { '**/node_modules': true };
 		const second = createCacheState(cache, first);
 		assert.strictEqual(second.isLoaded, false);
 		assert.strictEqual(second.isUpdating, false);
@@ -140,7 +140,7 @@ suite('FileQueryCacheState', () => {
 		}
 		assert.strictEqual(second.isLoaded, true);
 		assert.strictEqual(second.isUpdating, false);
-		assert.strictEqual(Object.keys(cache.loading).length, 2);
+		assert.strictEqual(OBject.keys(cache.loading).length, 2);
 		await cache.awaitDisposal(0);
 		assert.strictEqual(second.cacheKey, firstKey); // keep using old cacheKey
 
@@ -148,7 +148,7 @@ suite('FileQueryCacheState', () => {
 		third.load();
 		assert.strictEqual(third.isLoaded, true);
 		assert.strictEqual(third.isUpdating, true);
-		assert.strictEqual(Object.keys(cache.loading).length, 3);
+		assert.strictEqual(OBject.keys(cache.loading).length, 3);
 		await cache.awaitDisposal(0);
 		assert.strictEqual(third.cacheKey, firstKey);
 
@@ -156,7 +156,7 @@ suite('FileQueryCacheState', () => {
 		await cache.loading[thirdKey].complete(null);
 		assert.strictEqual(third.isLoaded, true);
 		assert.strictEqual(third.isUpdating, false);
-		assert.strictEqual(Object.keys(cache.loading).length, 3);
+		assert.strictEqual(OBject.keys(cache.loading).length, 3);
 		await cache.awaitDisposal(2);
 		assert.strictEqual(third.cacheKey, thirdKey); // recover with next successful load
 	});
@@ -172,32 +172,32 @@ suite('FileQueryCacheState', () => {
 
 	class MockCache {
 
-		public cacheKeys: string[] = [];
-		public loading: { [cacheKey: string]: DeferredPromise<any> } = {};
-		public disposing: { [cacheKey: string]: DeferredPromise<void> } = {};
+		puBlic cacheKeys: string[] = [];
+		puBlic loading: { [cacheKey: string]: DeferredPromise<any> } = {};
+		puBlic disposing: { [cacheKey: string]: DeferredPromise<void> } = {};
 
 		private _awaitDisposal: (() => void)[][] = [];
 
-		public baseQuery: IFileQuery = {
+		puBlic BaseQuery: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: []
 		};
 
-		public query(cacheKey: string): IFileQuery {
+		puBlic query(cacheKey: string): IFileQuery {
 			this.cacheKeys.push(cacheKey);
-			return Object.assign({ cacheKey: cacheKey }, this.baseQuery);
+			return OBject.assign({ cacheKey: cacheKey }, this.BaseQuery);
 		}
 
-		public load(query: IFileQuery): Promise<any> {
+		puBlic load(query: IFileQuery): Promise<any> {
 			const promise = new DeferredPromise<any>();
 			this.loading[query.cacheKey!] = promise;
 			return promise.p;
 		}
 
-		public dispose(cacheKey: string): Promise<void> {
+		puBlic dispose(cacheKey: string): Promise<void> {
 			const promise = new DeferredPromise<void>();
 			this.disposing[cacheKey] = promise;
-			const n = Object.keys(this.disposing).length;
+			const n = OBject.keys(this.disposing).length;
 			for (const done of this._awaitDisposal[n] || []) {
 				done();
 			}
@@ -205,9 +205,9 @@ suite('FileQueryCacheState', () => {
 			return promise.p;
 		}
 
-		public awaitDisposal(n: number) {
+		puBlic awaitDisposal(n: numBer) {
 			return new Promise<void>(resolve => {
-				if (n === Object.keys(this.disposing).length) {
+				if (n === OBject.keys(this.disposing).length) {
 					resolve();
 				} else {
 					(this._awaitDisposal[n] || (this._awaitDisposal[n] = [])).push(resolve);

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { toCanonicalName } from 'vs/workbench/services/textfile/common/encoding';
-import * as pfs from 'vs/base/node/pfs';
-import { ITextQuery } from 'vs/workbench/services/search/common/search';
-import { TextSearchProvider } from 'vs/workbench/services/search/common/searchExtTypes';
-import { TextSearchManager } from 'vs/workbench/services/search/common/textSearchManager';
+import { toCanonicalName } from 'vs/workBench/services/textfile/common/encoding';
+import * as pfs from 'vs/Base/node/pfs';
+import { ITextQuery } from 'vs/workBench/services/search/common/search';
+import { TextSearchProvider } from 'vs/workBench/services/search/common/searchExtTypes';
+import { TextSearchManager } from 'vs/workBench/services/search/common/textSearchManager';
 
 export class NativeTextSearchManager extends TextSearchManager {
 

@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/Browser/editorExtensions';
 import { ReplaceCommand } from 'vs/editor/common/commands/replaceCommand';
 import { Range } from 'vs/editor/common/core/range';
 import { ICommand } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { MoveOperations } from 'vs/editor/common/controller/cursorMoveOperations';
 
 class TransposeLettersAction extends EditorAction {
@@ -19,21 +19,21 @@ class TransposeLettersAction extends EditorAction {
 	constructor() {
 		super({
 			id: 'editor.action.transposeLetters',
-			label: nls.localize('transposeLetters.label', "Transpose Letters"),
+			laBel: nls.localize('transposeLetters.laBel', "Transpose Letters"),
 			alias: 'Transpose Letters',
-			precondition: EditorContextKeys.writable,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			precondition: EditorContextKeys.writaBle,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
 				mac: {
 					primary: KeyMod.WinCtrl | KeyCode.KEY_T
 				},
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
 		if (!editor.hasModel()) {
 			return;
 		}
@@ -47,13 +47,13 @@ class TransposeLettersAction extends EditorAction {
 				continue;
 			}
 
-			let lineNumber = selection.startLineNumber;
+			let lineNumBer = selection.startLineNumBer;
 			let column = selection.startColumn;
 
-			let lastColumn = model.getLineMaxColumn(lineNumber);
+			let lastColumn = model.getLineMaxColumn(lineNumBer);
 
-			if (lineNumber === 1 && (column === 1 || (column === 2 && lastColumn === 2))) {
-				// at beginning of file, nothing to do
+			if (lineNumBer === 1 && (column === 1 || (column === 2 && lastColumn === 2))) {
+				// at Beginning of file, nothing to do
 				continue;
 			}
 
@@ -61,15 +61,15 @@ class TransposeLettersAction extends EditorAction {
 			// otherwise, transpose left and right chars
 			let endPosition = (column === lastColumn) ?
 				selection.getPosition() :
-				MoveOperations.rightPosition(model, selection.getPosition().lineNumber, selection.getPosition().column);
+				MoveOperations.rightPosition(model, selection.getPosition().lineNumBer, selection.getPosition().column);
 
-			let middlePosition = MoveOperations.leftPosition(model, endPosition.lineNumber, endPosition.column);
-			let beginPosition = MoveOperations.leftPosition(model, middlePosition.lineNumber, middlePosition.column);
+			let middlePosition = MoveOperations.leftPosition(model, endPosition.lineNumBer, endPosition.column);
+			let BeginPosition = MoveOperations.leftPosition(model, middlePosition.lineNumBer, middlePosition.column);
 
-			let leftChar = model.getValueInRange(Range.fromPositions(beginPosition, middlePosition));
+			let leftChar = model.getValueInRange(Range.fromPositions(BeginPosition, middlePosition));
 			let rightChar = model.getValueInRange(Range.fromPositions(middlePosition, endPosition));
 
-			let replaceRange = Range.fromPositions(beginPosition, endPosition);
+			let replaceRange = Range.fromPositions(BeginPosition, endPosition);
 			commands.push(new ReplaceCommand(replaceRange, rightChar + leftChar));
 		}
 

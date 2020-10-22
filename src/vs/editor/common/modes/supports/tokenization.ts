@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 import { ColorId, FontStyle, LanguageId, MetadataConsts, StandardTokenType } from 'vs/editor/common/modes';
 
 export interface ITokenThemeRule {
 	token: string;
 	foreground?: string;
-	background?: string;
+	Background?: string;
 	fontStyle?: string;
 }
 
@@ -17,27 +17,27 @@ export class ParsedTokenThemeRule {
 	_parsedThemeRuleBrand: void;
 
 	readonly token: string;
-	readonly index: number;
+	readonly index: numBer;
 
 	/**
 	 * -1 if not set. An or mask of `FontStyle` otherwise.
 	 */
 	readonly fontStyle: FontStyle;
 	readonly foreground: string | null;
-	readonly background: string | null;
+	readonly Background: string | null;
 
 	constructor(
 		token: string,
-		index: number,
-		fontStyle: number,
+		index: numBer,
+		fontStyle: numBer,
 		foreground: string | null,
-		background: string | null,
+		Background: string | null,
 	) {
 		this.token = token;
 		this.index = index;
 		this.fontStyle = fontStyle;
 		this.foreground = foreground;
-		this.background = background;
+		this.Background = Background;
 	}
 }
 
@@ -52,7 +52,7 @@ export function parseTokenTheme(source: ITokenThemeRule[]): ParsedTokenThemeRule
 	for (let i = 0, len = source.length; i < len; i++) {
 		let entry = source[i];
 
-		let fontStyle: number = FontStyle.NotSet;
+		let fontStyle: numBer = FontStyle.NotSet;
 		if (typeof entry.fontStyle === 'string') {
 			fontStyle = FontStyle.None;
 
@@ -62,13 +62,13 @@ export function parseTokenTheme(source: ITokenThemeRule[]): ParsedTokenThemeRule
 				switch (segment) {
 					case 'italic':
 						fontStyle = fontStyle | FontStyle.Italic;
-						break;
-					case 'bold':
+						Break;
+					case 'Bold':
 						fontStyle = fontStyle | FontStyle.Bold;
-						break;
+						Break;
 					case 'underline':
 						fontStyle = fontStyle | FontStyle.Underline;
-						break;
+						Break;
 				}
 			}
 		}
@@ -78,9 +78,9 @@ export function parseTokenTheme(source: ITokenThemeRule[]): ParsedTokenThemeRule
 			foreground = entry.foreground;
 		}
 
-		let background: string | null = null;
-		if (typeof entry.background === 'string') {
-			background = entry.background;
+		let Background: string | null = null;
+		if (typeof entry.Background === 'string') {
+			Background = entry.Background;
 		}
 
 		result[resultLen++] = new ParsedTokenThemeRule(
@@ -88,7 +88,7 @@ export function parseTokenTheme(source: ITokenThemeRule[]): ParsedTokenThemeRule
 			i,
 			fontStyle,
 			foreground,
-			background
+			Background
 		);
 	}
 
@@ -100,13 +100,13 @@ export function parseTokenTheme(source: ITokenThemeRule[]): ParsedTokenThemeRule
  */
 function resolveParsedTokenThemeRules(parsedThemeRules: ParsedTokenThemeRule[], customTokenColors: string[]): TokenTheme {
 
-	// Sort rules lexicographically, and then by index if necessary
-	parsedThemeRules.sort((a, b) => {
-		let r = strcmp(a.token, b.token);
+	// Sort rules lexicographically, and then By index if necessary
+	parsedThemeRules.sort((a, B) => {
+		let r = strcmp(a.token, B.token);
 		if (r !== 0) {
 			return r;
 		}
-		return a.index - b.index;
+		return a.index - B.index;
 	});
 
 	// Determine defaults
@@ -121,8 +121,8 @@ function resolveParsedTokenThemeRules(parsedThemeRules: ParsedTokenThemeRule[], 
 		if (incomingDefaults.foreground !== null) {
 			defaultForeground = incomingDefaults.foreground;
 		}
-		if (incomingDefaults.background !== null) {
-			defaultBackground = incomingDefaults.background;
+		if (incomingDefaults.Background !== null) {
+			defaultBackground = incomingDefaults.Background;
 		}
 	}
 	let colorMap = new ColorMap();
@@ -134,13 +134,13 @@ function resolveParsedTokenThemeRules(parsedThemeRules: ParsedTokenThemeRule[], 
 
 
 	let foregroundColorId = colorMap.getId(defaultForeground);
-	let backgroundColorId = colorMap.getId(defaultBackground);
+	let BackgroundColorId = colorMap.getId(defaultBackground);
 
-	let defaults = new ThemeTrieElementRule(defaultFontStyle, foregroundColorId, backgroundColorId);
+	let defaults = new ThemeTrieElementRule(defaultFontStyle, foregroundColorId, BackgroundColorId);
 	let root = new ThemeTrieElement(defaults);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
-		root.insert(rule.token, rule.fontStyle, colorMap.getId(rule.foreground), colorMap.getId(rule.background));
+		root.insert(rule.token, rule.fontStyle, colorMap.getId(rule.foreground), colorMap.getId(rule.Background));
 	}
 
 	return new TokenTheme(colorMap, root);
@@ -150,7 +150,7 @@ const colorRegExp = /^#?([0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
 
 export class ColorMap {
 
-	private _lastColorId: number;
+	private _lastColorId: numBer;
 	private readonly _id2color: Color[];
 	private readonly _color2id: Map<string, ColorId>;
 
@@ -160,7 +160,7 @@ export class ColorMap {
 		this._color2id = new Map<string, ColorId>();
 	}
 
-	public getId(color: string | null): ColorId {
+	puBlic getId(color: string | null): ColorId {
 		if (color === null) {
 			return 0;
 		}
@@ -179,7 +179,7 @@ export class ColorMap {
 		return value;
 	}
 
-	public getColorMap(): Color[] {
+	puBlic getColorMap(): Color[] {
 		return this._id2color.slice(0);
 	}
 
@@ -187,41 +187,41 @@ export class ColorMap {
 
 export class TokenTheme {
 
-	public static createFromRawTokenTheme(source: ITokenThemeRule[], customTokenColors: string[]): TokenTheme {
+	puBlic static createFromRawTokenTheme(source: ITokenThemeRule[], customTokenColors: string[]): TokenTheme {
 		return this.createFromParsedTokenTheme(parseTokenTheme(source), customTokenColors);
 	}
 
-	public static createFromParsedTokenTheme(source: ParsedTokenThemeRule[], customTokenColors: string[]): TokenTheme {
+	puBlic static createFromParsedTokenTheme(source: ParsedTokenThemeRule[], customTokenColors: string[]): TokenTheme {
 		return resolveParsedTokenThemeRules(source, customTokenColors);
 	}
 
 	private readonly _colorMap: ColorMap;
 	private readonly _root: ThemeTrieElement;
-	private readonly _cache: Map<string, number>;
+	private readonly _cache: Map<string, numBer>;
 
 	constructor(colorMap: ColorMap, root: ThemeTrieElement) {
 		this._colorMap = colorMap;
 		this._root = root;
-		this._cache = new Map<string, number>();
+		this._cache = new Map<string, numBer>();
 	}
 
-	public getColorMap(): Color[] {
+	puBlic getColorMap(): Color[] {
 		return this._colorMap.getColorMap();
 	}
 
 	/**
 	 * used for testing purposes
 	 */
-	public getThemeTrieElement(): ExternalThemeTrieElement {
+	puBlic getThemeTrieElement(): ExternalThemeTrieElement {
 		return this._root.toExternalThemeTrieElement();
 	}
 
-	public _match(token: string): ThemeTrieElementRule {
+	puBlic _match(token: string): ThemeTrieElementRule {
 		return this._root.match(token);
 	}
 
-	public match(languageId: LanguageId, token: string): number {
-		// The cache contains the metadata without the language bits set.
+	puBlic match(languageId: LanguageId, token: string): numBer {
+		// The cache contains the metadata without the language Bits set.
 		let result = this._cache.get(token);
 		if (typeof result === 'undefined') {
 			let rule = this._match(token);
@@ -240,7 +240,7 @@ export class TokenTheme {
 	}
 }
 
-const STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|regexp)\b/;
+const STANDARD_TOKEN_TYPE_REGEXP = /\B(comment|string|regex|regexp)\B/;
 export function toStandardTokenType(tokenType: string): StandardTokenType {
 	let m = tokenType.match(STANDARD_TOKEN_TYPE_REGEXP);
 	if (!m) {
@@ -259,11 +259,11 @@ export function toStandardTokenType(tokenType: string): StandardTokenType {
 	throw new Error('Unexpected match for standard token type!');
 }
 
-export function strcmp(a: string, b: string): number {
-	if (a < b) {
+export function strcmp(a: string, B: string): numBer {
+	if (a < B) {
 		return -1;
 	}
-	if (a > b) {
+	if (a > B) {
 		return 1;
 	}
 	return 0;
@@ -274,50 +274,50 @@ export class ThemeTrieElementRule {
 
 	private _fontStyle: FontStyle;
 	private _foreground: ColorId;
-	private _background: ColorId;
-	public metadata: number;
+	private _Background: ColorId;
+	puBlic metadata: numBer;
 
-	constructor(fontStyle: FontStyle, foreground: ColorId, background: ColorId) {
+	constructor(fontStyle: FontStyle, foreground: ColorId, Background: ColorId) {
 		this._fontStyle = fontStyle;
 		this._foreground = foreground;
-		this._background = background;
+		this._Background = Background;
 		this.metadata = (
 			(this._fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
 			| (this._foreground << MetadataConsts.FOREGROUND_OFFSET)
-			| (this._background << MetadataConsts.BACKGROUND_OFFSET)
+			| (this._Background << MetadataConsts.BACKGROUND_OFFSET)
 		) >>> 0;
 	}
 
-	public clone(): ThemeTrieElementRule {
-		return new ThemeTrieElementRule(this._fontStyle, this._foreground, this._background);
+	puBlic clone(): ThemeTrieElementRule {
+		return new ThemeTrieElementRule(this._fontStyle, this._foreground, this._Background);
 	}
 
-	public acceptOverwrite(fontStyle: FontStyle, foreground: ColorId, background: ColorId): void {
+	puBlic acceptOverwrite(fontStyle: FontStyle, foreground: ColorId, Background: ColorId): void {
 		if (fontStyle !== FontStyle.NotSet) {
 			this._fontStyle = fontStyle;
 		}
 		if (foreground !== ColorId.None) {
 			this._foreground = foreground;
 		}
-		if (background !== ColorId.None) {
-			this._background = background;
+		if (Background !== ColorId.None) {
+			this._Background = Background;
 		}
 		this.metadata = (
 			(this._fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
 			| (this._foreground << MetadataConsts.FOREGROUND_OFFSET)
-			| (this._background << MetadataConsts.BACKGROUND_OFFSET)
+			| (this._Background << MetadataConsts.BACKGROUND_OFFSET)
 		) >>> 0;
 	}
 }
 
 export class ExternalThemeTrieElement {
 
-	public readonly mainRule: ThemeTrieElementRule;
-	public readonly children: { [segment: string]: ExternalThemeTrieElement };
+	puBlic readonly mainRule: ThemeTrieElementRule;
+	puBlic readonly children: { [segment: string]: ExternalThemeTrieElement };
 
 	constructor(mainRule: ThemeTrieElementRule, children?: { [segment: string]: ExternalThemeTrieElement }) {
 		this.mainRule = mainRule;
-		this.children = children || Object.create(null);
+		this.children = children || OBject.create(null);
 	}
 }
 
@@ -335,15 +335,15 @@ export class ThemeTrieElement {
 	/**
 	 * used for testing purposes
 	 */
-	public toExternalThemeTrieElement(): ExternalThemeTrieElement {
-		let children: { [segment: string]: ExternalThemeTrieElement } = Object.create(null);
+	puBlic toExternalThemeTrieElement(): ExternalThemeTrieElement {
+		let children: { [segment: string]: ExternalThemeTrieElement } = OBject.create(null);
 		this._children.forEach((element, index) => {
 			children[index] = element.toExternalThemeTrieElement();
 		});
 		return new ExternalThemeTrieElement(this._mainRule, children);
 	}
 
-	public match(token: string): ThemeTrieElementRule {
+	puBlic match(token: string): ThemeTrieElementRule {
 		if (token === '') {
 			return this._mainRule;
 		}
@@ -355,8 +355,8 @@ export class ThemeTrieElement {
 			head = token;
 			tail = '';
 		} else {
-			head = token.substring(0, dotIndex);
-			tail = token.substring(dotIndex + 1);
+			head = token.suBstring(0, dotIndex);
+			tail = token.suBstring(dotIndex + 1);
 		}
 
 		let child = this._children.get(head);
@@ -367,10 +367,10 @@ export class ThemeTrieElement {
 		return this._mainRule;
 	}
 
-	public insert(token: string, fontStyle: FontStyle, foreground: ColorId, background: ColorId): void {
+	puBlic insert(token: string, fontStyle: FontStyle, foreground: ColorId, Background: ColorId): void {
 		if (token === '') {
 			// Merge into the main rule
-			this._mainRule.acceptOverwrite(fontStyle, foreground, background);
+			this._mainRule.acceptOverwrite(fontStyle, foreground, Background);
 			return;
 		}
 
@@ -381,8 +381,8 @@ export class ThemeTrieElement {
 			head = token;
 			tail = '';
 		} else {
-			head = token.substring(0, dotIndex);
-			tail = token.substring(dotIndex + 1);
+			head = token.suBstring(0, dotIndex);
+			tail = token.suBstring(dotIndex + 1);
 		}
 
 		let child = this._children.get(head);
@@ -391,7 +391,7 @@ export class ThemeTrieElement {
 			this._children.set(head, child);
 		}
 
-		child.insert(tail, fontStyle, foreground, background);
+		child.insert(tail, fontStyle, foreground, Background);
 	}
 }
 
@@ -402,7 +402,7 @@ export function generateTokensCSSForColorMap(colorMap: readonly Color[]): string
 		rules[i] = `.mtk${i} { color: ${color}; }`;
 	}
 	rules.push('.mtki { font-style: italic; }');
-	rules.push('.mtkb { font-weight: bold; }');
+	rules.push('.mtkB { font-weight: Bold; }');
 	rules.push('.mtku { text-decoration: underline; text-underline-position: under; }');
 	return rules.join('\n');
 }

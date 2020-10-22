@@ -11,11 +11,11 @@ import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
 
 suite('PieceTreeTextBuffer._getInverseEdits', () => {
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[] | null): IValidatedEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, text: string[] | null): IValidatedEditOperation {
 		return {
 			sortIndex: 0,
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			rangeOffset: 0,
 			rangeLength: 0,
 			text: text ? text.join('\n') : '',
@@ -27,8 +27,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		};
 	}
 
-	function inverseEditOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number): Range {
-		return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
+	function inverseEditOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer): Range {
+		return new Range(startLineNumBer, startColumn, endLineNumBer, endColumn);
 	}
 
 	function assertInverseEdits(ops: IValidatedEditOperation[], expected: Range[]): void {
@@ -265,11 +265,11 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 
 suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, rangeOffset: number, rangeLength: number, text: string[] | null): IValidatedEditOperation {
+	function editOp(startLineNumBer: numBer, startColumn: numBer, endLineNumBer: numBer, endColumn: numBer, rangeOffset: numBer, rangeLength: numBer, text: string[] | null): IValidatedEditOperation {
 		return {
 			sortIndex: 0,
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			range: new Range(startLineNumBer, startColumn, endLineNumBer, endColumn),
 			rangeOffset: rangeOffset,
 			rangeLength: rangeLength,
 			text: text ? text.join('\n') : '',
@@ -333,7 +333,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 			],
 			[
 				editOp(1, 3, 1, 3, 2, 0, ['', '', '', '', '']),
-				editOp(3, 15, 3, 15, 45, 0, ['a', 'b'])
+				editOp(3, 15, 3, 15, 45, 0, ['a', 'B'])
 			],
 			editOp(1, 3, 3, 15, 2, 43, [
 				'',
@@ -343,7 +343,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				' First Line',
 				'\t\tMy Second Line',
 				'    Third Linea',
-				'b'
+				'B'
 			])
 		);
 	});
@@ -421,7 +421,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				'{',
 				'"a": true,',
 				'',
-				'"b": true',
+				'"B": true',
 				'}'
 			],
 			[
@@ -502,7 +502,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 	test('advanced simplified', () => {
 		testToSingleEditOperation(
 			[
-				'   abc',
+				'   aBc',
 				' ,def'
 			],
 			[
@@ -511,7 +511,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				editOp(2, 3, 2, 3, 9, 0, ['', ''])
 			],
 			editOp(1, 1, 2, 3, 0, 9, [
-				'abc,',
+				'aBc,',
 				''
 			])
 		);

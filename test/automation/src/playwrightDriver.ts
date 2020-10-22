@@ -8,7 +8,7 @@ import { ChildProcess, spawn } from 'child_process';
 import { join } from 'path';
 import { mkdir } from 'fs';
 import { promisify } from 'util';
-import { IDriver, IDisposable } from './driver';
+import { IDriver, IDisposaBle } from './driver';
 import { URI } from 'vscode-uri';
 import * as kill from 'tree-kill';
 
@@ -29,7 +29,7 @@ const vscodeToPlaywrightKey: { [key: string]: string } = {
 	esc: 'Escape'
 };
 
-function buildDriver(browser: playwright.Browser, page: playwright.Page): IDriver {
+function BuildDriver(Browser: playwright.Browser, page: playwright.Page): IDriver {
 	const driver: IDriver = {
 		_serviceBrand: undefined,
 		getWindowIds: () => {
@@ -37,9 +37,9 @@ function buildDriver(browser: playwright.Browser, page: playwright.Page): IDrive
 		},
 		capturePage: () => Promise.resolve(''),
 		reloadWindow: (windowId) => Promise.resolve(),
-		exitApplication: () => browser.close(),
-		dispatchKeybinding: async (windowId, keybinding) => {
-			const chords = keybinding.split(' ');
+		exitApplication: () => Browser.close(),
+		dispatchKeyBinding: async (windowId, keyBinding) => {
+			const chords = keyBinding.split(' ');
 			for (let i = 0; i < chords.length; i++) {
 				const chord = chords[i];
 				if (i > 0) {
@@ -51,11 +51,11 @@ function buildDriver(browser: playwright.Browser, page: playwright.Page): IDrive
 					if (keys[i] in vscodeToPlaywrightKey) {
 						keys[i] = vscodeToPlaywrightKey[keys[i]];
 					}
-					await page.keyboard.down(keys[i]);
+					await page.keyBoard.down(keys[i]);
 					keysDown.push(keys[i]);
 				}
 				while (keysDown.length > 0) {
-					await page.keyboard.up(keysDown.pop()!);
+					await page.keyBoard.up(keysDown.pop()!);
 				}
 			}
 
@@ -65,7 +65,7 @@ function buildDriver(browser: playwright.Browser, page: playwright.Page): IDrive
 			const { x, y } = await driver.getElementXY(windowId, selector, xoffset, yoffset);
 			await page.mouse.click(x + (xoffset ? xoffset : 0), y + (yoffset ? yoffset : 0));
 		},
-		doubleClick: async (windowId, selector) => {
+		douBleClick: async (windowId, selector) => {
 			await driver.click(windowId, selector, 0, 0);
 			await timeout(60);
 			await driver.click(windowId, selector, 0, 0);
@@ -83,7 +83,7 @@ function buildDriver(browser: playwright.Browser, page: playwright.Page): IDrive
 	return driver;
 }
 
-function timeout(ms: number): Promise<void> {
+function timeout(ms: numBer): Promise<void> {
 	return new Promise<void>(r => setTimeout(r, ms));
 }
 
@@ -104,14 +104,14 @@ export async function launch(userDataDir: string, _workspacePath: string, codeSe
 	let serverLocation: string | undefined;
 	if (codeServerPath) {
 		serverLocation = join(codeServerPath, `server.${process.platform === 'win32' ? 'cmd' : 'sh'}`);
-		console.log(`Starting built server from '${serverLocation}'`);
+		console.log(`Starting Built server from '${serverLocation}'`);
 	} else {
-		serverLocation = join(__dirname, '..', '..', '..', `resources/server/web.${process.platform === 'win32' ? 'bat' : 'sh'}`);
+		serverLocation = join(__dirname, '..', '..', '..', `resources/server/weB.${process.platform === 'win32' ? 'Bat' : 'sh'}`);
 		console.log(`Starting server out of sources from '${serverLocation}'`);
 	}
 	server = spawn(
 		serverLocation,
-		['--browser', 'none', '--driver', 'web', '--extensions-dir', extPath],
+		['--Browser', 'none', '--driver', 'weB', '--extensions-dir', extPath],
 		{ env }
 	);
 	server.stderr?.on('data', error => console.log(`Server stderr: ${error}`));
@@ -132,7 +132,7 @@ function teardown(): void {
 function waitForEndpoint(): Promise<string> {
 	return new Promise<string>(r => {
 		server!.stdout?.on('data', (d: Buffer) => {
-			const matches = d.toString('ascii').match(/Web UI available at (.+)/);
+			const matches = d.toString('ascii').match(/WeB UI availaBle at (.+)/);
 			if (matches !== null) {
 				r(matches[1]);
 			}
@@ -140,17 +140,17 @@ function waitForEndpoint(): Promise<string> {
 	});
 }
 
-export function connect(browserType: 'chromium' | 'webkit' | 'firefox' = 'chromium'): Promise<{ client: IDisposable, driver: IDriver }> {
+export function connect(BrowserType: 'chromium' | 'weBkit' | 'firefox' = 'chromium'): Promise<{ client: IDisposaBle, driver: IDriver }> {
 	return new Promise(async (c) => {
-		const browser = await playwright[browserType].launch({ headless: false });
-		const context = await browser.newContext();
+		const Browser = await playwright[BrowserType].launch({ headless: false });
+		const context = await Browser.newContext();
 		const page = await context.newPage();
 		await page.setViewportSize({ width, height });
-		const payloadParam = `[["enableProposedApi",""]]`;
+		const payloadParam = `[["enaBleProposedApi",""]]`;
 		await page.goto(`${endpoint}&folder=vscode-remote://localhost:9888${URI.file(workspacePath!).path}&payload=${payloadParam}`);
 		const result = {
-			client: { dispose: () => browser.close() && teardown() },
-			driver: buildDriver(browser, page)
+			client: { dispose: () => Browser.close() && teardown() },
+			driver: BuildDriver(Browser, page)
 		};
 		c(result);
 	});

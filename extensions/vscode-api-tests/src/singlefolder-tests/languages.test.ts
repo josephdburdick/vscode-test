@@ -25,14 +25,14 @@ suite('vscode API - languages', () => {
 	}
 
 	test('setTextDocumentLanguage -> close/open event', async function () {
-		const file = await createRandomFile('foo\nbar\nbar');
+		const file = await createRandomFile('foo\nBar\nBar');
 		const doc = await vscode.workspace.openTextDocument(file);
 		const langIdNow = doc.languageId;
 		let clock = 0;
-		const disposables: vscode.Disposable[] = [];
+		const disposaBles: vscode.DisposaBle[] = [];
 
 		let close = new Promise<void>(resolve => {
-			disposables.push(vscode.workspace.onDidCloseTextDocument(e => {
+			disposaBles.push(vscode.workspace.onDidCloseTextDocument(e => {
 				if (e === doc) {
 					assert.equal(doc.languageId, langIdNow);
 					assert.equal(clock, 0);
@@ -42,7 +42,7 @@ suite('vscode API - languages', () => {
 			}));
 		});
 		let open = new Promise<void>(resolve => {
-			disposables.push(vscode.workspace.onDidOpenTextDocument(e => {
+			disposaBles.push(vscode.workspace.onDidOpenTextDocument(e => {
 				if (e === doc) { // same instance!
 					assert.equal(doc.languageId, 'json');
 					assert.equal(clock, 1);
@@ -55,12 +55,12 @@ suite('vscode API - languages', () => {
 		await Promise.all([change, close, open]);
 		assert.equal(clock, 2);
 		assert.equal(doc.languageId, 'json');
-		disposables.forEach(disposable => disposable.dispose());
-		disposables.length = 0;
+		disposaBles.forEach(disposaBle => disposaBle.dispose());
+		disposaBles.length = 0;
 	});
 
 	test('setTextDocumentLanguage -> error when language does not exist', async function () {
-		const file = await createRandomFile('foo\nbar\nbar');
+		const file = await createRandomFile('foo\nBar\nBar');
 		const doc = await vscode.workspace.openTextDocument(file);
 
 		try {
@@ -72,7 +72,7 @@ suite('vscode API - languages', () => {
 	});
 
 	test('diagnostics, read & event', function () {
-		let uri = vscode.Uri.file('/foo/bar.txt');
+		let uri = vscode.Uri.file('/foo/Bar.txt');
 		let col1 = vscode.languages.createDiagnosticCollection('foo1');
 		col1.set(uri, [new vscode.Diagnostic(new vscode.Range(0, 0, 0, 12), 'error1')]);
 
@@ -87,7 +87,7 @@ suite('vscode API - languages', () => {
 		for (let [thisUri,] of tuples) {
 			if (thisUri.toString() === uri.toString()) {
 				found = true;
-				break;
+				Break;
 			}
 		}
 		assert.ok(tuples.length >= 1);
@@ -98,7 +98,7 @@ suite('vscode API - languages', () => {
 		const uri = await createRandomFile('class A { // http://a.com }', undefined, '.java');
 		const doc = await vscode.workspace.openTextDocument(uri);
 
-		const target = vscode.Uri.file(isWindows ? 'c:\\foo\\bar' : '/foo/bar');
+		const target = vscode.Uri.file(isWindows ? 'c:\\foo\\Bar' : '/foo/Bar');
 		const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 5));
 
 		const linkProvider: vscode.DocumentLinkProvider = {
@@ -162,14 +162,14 @@ suite('vscode API - languages', () => {
 		await vscode.workspace.openTextDocument(uri);
 		await vscode.commands.executeCommand('vscode.executeCodeActionProvider', uri, new vscode.Range(0, 0, 0, 10));
 		assert.ok(ran);
-		vscode.Disposable.from(r1, r2, r3, r4).dispose();
+		vscode.DisposaBle.from(r1, r2, r3, r4).dispose();
 	});
 
 	test('completions with document filters', async function () {
 		let ran = false;
-		let uri = vscode.Uri.file(join(vscode.workspace.rootPath || '', './bower.json'));
+		let uri = vscode.Uri.file(join(vscode.workspace.rootPath || '', './Bower.json'));
 
-		let jsonDocumentFilter = [{ language: 'json', pattern: '**/package.json' }, { language: 'json', pattern: '**/bower.json' }, { language: 'json', pattern: '**/.bower.json' }];
+		let jsonDocumentFilter = [{ language: 'json', pattern: '**/package.json' }, { language: 'json', pattern: '**/Bower.json' }, { language: 'json', pattern: '**/.Bower.json' }];
 
 		let r1 = vscode.languages.registerCompletionItemProvider(jsonDocumentFilter, {
 			provideCompletionItems: (_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CancellationToken): vscode.CompletionItem[] => {
@@ -183,8 +183,8 @@ suite('vscode API - languages', () => {
 		await vscode.workspace.openTextDocument(uri);
 		const result = await vscode.commands.executeCommand<vscode.CompletionList>('vscode.executeCompletionItemProvider', uri, new vscode.Position(1, 0));
 		r1.dispose();
-		assert.ok(ran, 'Provider has not been invoked');
-		assert.ok(result!.items.some(i => i.label === 'foo'), 'Results do not include "foo"');
+		assert.ok(ran, 'Provider has not Been invoked');
+		assert.ok(result!.items.some(i => i.laBel === 'foo'), 'Results do not include "foo"');
 	});
 
 });

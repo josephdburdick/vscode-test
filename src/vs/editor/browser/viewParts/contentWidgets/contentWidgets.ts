@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { ContentWidgetPositionPreference, IContentWidget } from 'vs/editor/browser/editorBrowser';
-import { PartFingerprint, PartFingerprints, ViewPart } from 'vs/editor/browser/view/viewPart';
+import * as dom from 'vs/Base/Browser/dom';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { ContentWidgetPositionPreference, IContentWidget } from 'vs/editor/Browser/editorBrowser';
+import { PartFingerprint, PartFingerprints, ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { IRange, Range } from 'vs/editor/common/core/range';
-import { Constants } from 'vs/base/common/uint';
+import { Constants } from 'vs/Base/common/uint';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
@@ -19,10 +19,10 @@ import { EditorOption } from 'vs/editor/common/config/editorOptions';
 class Coordinate {
 	_coordinateBrand: void;
 
-	public readonly top: number;
-	public readonly left: number;
+	puBlic readonly top: numBer;
+	puBlic readonly left: numBer;
 
-	constructor(top: number, left: number) {
+	constructor(top: numBer, left: numBer) {
 		this.top = top;
 		this.left = left;
 	}
@@ -33,8 +33,8 @@ export class ViewContentWidgets extends ViewPart {
 	private readonly _viewDomNode: FastDomNode<HTMLElement>;
 	private _widgets: { [key: string]: Widget; };
 
-	public domNode: FastDomNode<HTMLElement>;
-	public overflowingContentWidgetsDomNode: FastDomNode<HTMLElement>;
+	puBlic domNode: FastDomNode<HTMLElement>;
+	puBlic overflowingContentWidgetsDomNode: FastDomNode<HTMLElement>;
 
 	constructor(context: ViewContext, viewDomNode: FastDomNode<HTMLElement>) {
 		super(context);
@@ -44,7 +44,7 @@ export class ViewContentWidgets extends ViewPart {
 		this.domNode = createFastDomNode(document.createElement('div'));
 		PartFingerprints.write(this.domNode, PartFingerprint.ContentWidgets);
 		this.domNode.setClassName('contentWidgets');
-		this.domNode.setPosition('absolute');
+		this.domNode.setPosition('aBsolute');
 		this.domNode.setTop(0);
 
 		this.overflowingContentWidgetsDomNode = createFastDomNode(document.createElement('div'));
@@ -52,53 +52,53 @@ export class ViewContentWidgets extends ViewPart {
 		this.overflowingContentWidgetsDomNode.setClassName('overflowingContentWidgets');
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 		this._widgets = {};
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const keys = Object.keys(this._widgets);
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
+		const keys = OBject.keys(this._widgets);
 		for (const widgetId of keys) {
 			this._widgets[widgetId].onConfigurationChanged(e);
 		}
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	puBlic onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): Boolean {
 		// true for inline decorations that can end up relayouting text
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return true;
 	}
-	public onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): boolean {
-		const keys = Object.keys(this._widgets);
+	puBlic onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): Boolean {
+		const keys = OBject.keys(this._widgets);
 		for (const widgetId of keys) {
 			this._widgets[widgetId].onLineMappingChanged(e);
 		}
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return true;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return true;
 	}
 
 	// ---- end view event handlers
 
-	public addWidget(_widget: IContentWidget): void {
+	puBlic addWidget(_widget: IContentWidget): void {
 		const myWidget = new Widget(this._context, this._viewDomNode, _widget);
 		this._widgets[myWidget.id] = myWidget;
 
@@ -111,14 +111,14 @@ export class ViewContentWidgets extends ViewPart {
 		this.setShouldRender();
 	}
 
-	public setWidgetPosition(widget: IContentWidget, range: IRange | null, preference: ContentWidgetPositionPreference[] | null): void {
+	puBlic setWidgetPosition(widget: IContentWidget, range: IRange | null, preference: ContentWidgetPositionPreference[] | null): void {
 		const myWidget = this._widgets[widget.getId()];
 		myWidget.setPosition(range, preference);
 
 		this.setShouldRender();
 	}
 
-	public removeWidget(widget: IContentWidget): void {
+	puBlic removeWidget(widget: IContentWidget): void {
 		const widgetId = widget.getId();
 		if (this._widgets.hasOwnProperty(widgetId)) {
 			const myWidget = this._widgets[widgetId];
@@ -126,35 +126,35 @@ export class ViewContentWidgets extends ViewPart {
 
 			const domNode = myWidget.domNode.domNode;
 			domNode.parentNode!.removeChild(domNode);
-			domNode.removeAttribute('monaco-visible-content-widget');
+			domNode.removeAttriBute('monaco-visiBle-content-widget');
 
 			this.setShouldRender();
 		}
 	}
 
-	public shouldSuppressMouseDownOnWidget(widgetId: string): boolean {
+	puBlic shouldSuppressMouseDownOnWidget(widgetId: string): Boolean {
 		if (this._widgets.hasOwnProperty(widgetId)) {
 			return this._widgets[widgetId].suppressMouseDown;
 		}
 		return false;
 	}
 
-	public onBeforeRender(viewportData: ViewportData): void {
-		const keys = Object.keys(this._widgets);
+	puBlic onBeforeRender(viewportData: ViewportData): void {
+		const keys = OBject.keys(this._widgets);
 		for (const widgetId of keys) {
 			this._widgets[widgetId].onBeforeRender(viewportData);
 		}
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
-		const keys = Object.keys(this._widgets);
+	puBlic prepareRender(ctx: RenderingContext): void {
+		const keys = OBject.keys(this._widgets);
 		for (const widgetId of keys) {
 			this._widgets[widgetId].prepareRender(ctx);
 		}
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
-		const keys = Object.keys(this._widgets);
+	puBlic render(ctx: RestrictedRenderingContext): void {
+		const keys = OBject.keys(this._widgets);
 		for (const widgetId of keys) {
 			this._widgets[widgetId].render(ctx);
 		}
@@ -162,13 +162,13 @@ export class ViewContentWidgets extends ViewPart {
 }
 
 interface IBoxLayoutResult {
-	fitsAbove: boolean;
-	aboveTop: number;
-	aboveLeft: number;
+	fitsABove: Boolean;
+	aBoveTop: numBer;
+	aBoveLeft: numBer;
 
-	fitsBelow: boolean;
-	belowTop: number;
-	belowLeft: number;
+	fitsBelow: Boolean;
+	BelowTop: numBer;
+	BelowLeft: numBer;
 }
 
 class Widget {
@@ -176,23 +176,23 @@ class Widget {
 	private readonly _viewDomNode: FastDomNode<HTMLElement>;
 	private readonly _actual: IContentWidget;
 
-	public readonly domNode: FastDomNode<HTMLElement>;
-	public readonly id: string;
-	public readonly allowEditorOverflow: boolean;
-	public readonly suppressMouseDown: boolean;
+	puBlic readonly domNode: FastDomNode<HTMLElement>;
+	puBlic readonly id: string;
+	puBlic readonly allowEditorOverflow: Boolean;
+	puBlic readonly suppressMouseDown: Boolean;
 
-	private readonly _fixedOverflowWidgets: boolean;
-	private _contentWidth: number;
-	private _contentLeft: number;
-	private _lineHeight: number;
+	private readonly _fixedOverflowWidgets: Boolean;
+	private _contentWidth: numBer;
+	private _contentLeft: numBer;
+	private _lineHeight: numBer;
 
 	private _range: IRange | null;
 	private _viewRange: Range | null;
 	private _preference: ContentWidgetPositionPreference[] | null;
-	private _cachedDomNodeClientWidth: number;
-	private _cachedDomNodeClientHeight: number;
-	private _maxWidth: number;
-	private _isVisible: boolean;
+	private _cachedDomNodeClientWidth: numBer;
+	private _cachedDomNodeClientHeight: numBer;
+	private _maxWidth: numBer;
+	private _isVisiBle: Boolean;
 
 	private _renderData: Coordinate | null;
 
@@ -220,16 +220,16 @@ class Widget {
 		this._cachedDomNodeClientWidth = -1;
 		this._cachedDomNodeClientHeight = -1;
 		this._maxWidth = this._getMaxWidth();
-		this._isVisible = false;
+		this._isVisiBle = false;
 		this._renderData = null;
 
-		this.domNode.setPosition((this._fixedOverflowWidgets && this.allowEditorOverflow) ? 'fixed' : 'absolute');
-		this.domNode.setVisibility('hidden');
-		this.domNode.setAttribute('widgetId', this.id);
+		this.domNode.setPosition((this._fixedOverflowWidgets && this.allowEditorOverflow) ? 'fixed' : 'aBsolute');
+		this.domNode.setVisiBility('hidden');
+		this.domNode.setAttriBute('widgetId', this.id);
 		this.domNode.setMaxWidth(this._maxWidth);
 	}
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): void {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): void {
 		const options = this._context.configuration.options;
 		this._lineHeight = options.get(EditorOption.lineHeight);
 		if (e.hasChanged(EditorOption.layoutInfo)) {
@@ -240,7 +240,7 @@ class Widget {
 		}
 	}
 
-	public onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): void {
+	puBlic onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): void {
 		this._setPosition(this._range);
 	}
 
@@ -251,129 +251,129 @@ class Widget {
 		if (this._range) {
 			// Do not trust that widgets give a valid position
 			const validModelRange = this._context.model.validateModelRange(this._range);
-			if (this._context.model.coordinatesConverter.modelPositionIsVisible(validModelRange.getStartPosition()) || this._context.model.coordinatesConverter.modelPositionIsVisible(validModelRange.getEndPosition())) {
+			if (this._context.model.coordinatesConverter.modelPositionIsVisiBle(validModelRange.getStartPosition()) || this._context.model.coordinatesConverter.modelPositionIsVisiBle(validModelRange.getEndPosition())) {
 				this._viewRange = this._context.model.coordinatesConverter.convertModelRangeToViewRange(validModelRange);
 			}
 		}
 	}
 
-	private _getMaxWidth(): number {
+	private _getMaxWidth(): numBer {
 		return (
 			this.allowEditorOverflow
-				? window.innerWidth || document.documentElement!.clientWidth || document.body.clientWidth
+				? window.innerWidth || document.documentElement!.clientWidth || document.Body.clientWidth
 				: this._contentWidth
 		);
 	}
 
-	public setPosition(range: IRange | null, preference: ContentWidgetPositionPreference[] | null): void {
+	puBlic setPosition(range: IRange | null, preference: ContentWidgetPositionPreference[] | null): void {
 		this._setPosition(range);
 		this._preference = preference;
 		this._cachedDomNodeClientWidth = -1;
 		this._cachedDomNodeClientHeight = -1;
 	}
 
-	private _layoutBoxInViewport(topLeft: Coordinate, bottomLeft: Coordinate, width: number, height: number, ctx: RenderingContext): IBoxLayoutResult {
-		// Our visible box is split horizontally by the current line => 2 boxes
+	private _layoutBoxInViewport(topLeft: Coordinate, BottomLeft: Coordinate, width: numBer, height: numBer, ctx: RenderingContext): IBoxLayoutResult {
+		// Our visiBle Box is split horizontally By the current line => 2 Boxes
 
-		// a) the box above the line
-		const aboveLineTop = topLeft.top;
-		const heightAboveLine = aboveLineTop;
+		// a) the Box aBove the line
+		const aBoveLineTop = topLeft.top;
+		const heightABoveLine = aBoveLineTop;
 
-		// b) the box under the line
-		const underLineTop = bottomLeft.top + this._lineHeight;
+		// B) the Box under the line
+		const underLineTop = BottomLeft.top + this._lineHeight;
 		const heightUnderLine = ctx.viewportHeight - underLineTop;
 
-		const aboveTop = aboveLineTop - height;
-		const fitsAbove = (heightAboveLine >= height);
-		const belowTop = underLineTop;
+		const aBoveTop = aBoveLineTop - height;
+		const fitsABove = (heightABoveLine >= height);
+		const BelowTop = underLineTop;
 		const fitsBelow = (heightUnderLine >= height);
 
 		// And its left
-		let actualAboveLeft = topLeft.left;
-		let actualBelowLeft = bottomLeft.left;
-		if (actualAboveLeft + width > ctx.scrollLeft + ctx.viewportWidth) {
-			actualAboveLeft = ctx.scrollLeft + ctx.viewportWidth - width;
+		let actualABoveLeft = topLeft.left;
+		let actualBelowLeft = BottomLeft.left;
+		if (actualABoveLeft + width > ctx.scrollLeft + ctx.viewportWidth) {
+			actualABoveLeft = ctx.scrollLeft + ctx.viewportWidth - width;
 		}
 		if (actualBelowLeft + width > ctx.scrollLeft + ctx.viewportWidth) {
 			actualBelowLeft = ctx.scrollLeft + ctx.viewportWidth - width;
 		}
-		if (actualAboveLeft < ctx.scrollLeft) {
-			actualAboveLeft = ctx.scrollLeft;
+		if (actualABoveLeft < ctx.scrollLeft) {
+			actualABoveLeft = ctx.scrollLeft;
 		}
 		if (actualBelowLeft < ctx.scrollLeft) {
 			actualBelowLeft = ctx.scrollLeft;
 		}
 
 		return {
-			fitsAbove: fitsAbove,
-			aboveTop: aboveTop,
-			aboveLeft: actualAboveLeft,
+			fitsABove: fitsABove,
+			aBoveTop: aBoveTop,
+			aBoveLeft: actualABoveLeft,
 
 			fitsBelow: fitsBelow,
-			belowTop: belowTop,
-			belowLeft: actualBelowLeft,
+			BelowTop: BelowTop,
+			BelowLeft: actualBelowLeft,
 		};
 	}
 
-	private _layoutHorizontalSegmentInPage(windowSize: dom.Dimension, domNodePosition: dom.IDomNodePagePosition, left: number, width: number): [number, number] {
+	private _layoutHorizontalSegmentInPage(windowSize: dom.Dimension, domNodePosition: dom.IDomNodePagePosition, left: numBer, width: numBer): [numBer, numBer] {
 		// Initially, the limits are defined as the dom node limits
 		const MIN_LIMIT = Math.max(0, domNodePosition.left - width);
 		const MAX_LIMIT = Math.min(domNodePosition.left + domNodePosition.width + width, windowSize.width);
 
-		let absoluteLeft = domNodePosition.left + left - dom.StandardWindow.scrollX;
+		let aBsoluteLeft = domNodePosition.left + left - dom.StandardWindow.scrollX;
 
-		if (absoluteLeft + width > MAX_LIMIT) {
-			const delta = absoluteLeft - (MAX_LIMIT - width);
-			absoluteLeft -= delta;
+		if (aBsoluteLeft + width > MAX_LIMIT) {
+			const delta = aBsoluteLeft - (MAX_LIMIT - width);
+			aBsoluteLeft -= delta;
 			left -= delta;
 		}
 
-		if (absoluteLeft < MIN_LIMIT) {
-			const delta = absoluteLeft - MIN_LIMIT;
-			absoluteLeft -= delta;
+		if (aBsoluteLeft < MIN_LIMIT) {
+			const delta = aBsoluteLeft - MIN_LIMIT;
+			aBsoluteLeft -= delta;
 			left -= delta;
 		}
 
-		return [left, absoluteLeft];
+		return [left, aBsoluteLeft];
 	}
 
-	private _layoutBoxInPage(topLeft: Coordinate, bottomLeft: Coordinate, width: number, height: number, ctx: RenderingContext): IBoxLayoutResult | null {
-		const aboveTop = topLeft.top - height;
-		const belowTop = bottomLeft.top + this._lineHeight;
+	private _layoutBoxInPage(topLeft: Coordinate, BottomLeft: Coordinate, width: numBer, height: numBer, ctx: RenderingContext): IBoxLayoutResult | null {
+		const aBoveTop = topLeft.top - height;
+		const BelowTop = BottomLeft.top + this._lineHeight;
 
 		const domNodePosition = dom.getDomNodePagePosition(this._viewDomNode.domNode);
-		const absoluteAboveTop = domNodePosition.top + aboveTop - dom.StandardWindow.scrollY;
-		const absoluteBelowTop = domNodePosition.top + belowTop - dom.StandardWindow.scrollY;
+		const aBsoluteABoveTop = domNodePosition.top + aBoveTop - dom.StandardWindow.scrollY;
+		const aBsoluteBelowTop = domNodePosition.top + BelowTop - dom.StandardWindow.scrollY;
 
-		const windowSize = dom.getClientArea(document.body);
-		const [aboveLeft, absoluteAboveLeft] = this._layoutHorizontalSegmentInPage(windowSize, domNodePosition, topLeft.left - ctx.scrollLeft + this._contentLeft, width);
-		const [belowLeft, absoluteBelowLeft] = this._layoutHorizontalSegmentInPage(windowSize, domNodePosition, bottomLeft.left - ctx.scrollLeft + this._contentLeft, width);
+		const windowSize = dom.getClientArea(document.Body);
+		const [aBoveLeft, aBsoluteABoveLeft] = this._layoutHorizontalSegmentInPage(windowSize, domNodePosition, topLeft.left - ctx.scrollLeft + this._contentLeft, width);
+		const [BelowLeft, aBsoluteBelowLeft] = this._layoutHorizontalSegmentInPage(windowSize, domNodePosition, BottomLeft.left - ctx.scrollLeft + this._contentLeft, width);
 
-		// Leave some clearance to the top/bottom
+		// Leave some clearance to the top/Bottom
 		const TOP_PADDING = 22;
 		const BOTTOM_PADDING = 22;
 
-		const fitsAbove = (absoluteAboveTop >= TOP_PADDING);
-		const fitsBelow = (absoluteBelowTop + height <= windowSize.height - BOTTOM_PADDING);
+		const fitsABove = (aBsoluteABoveTop >= TOP_PADDING);
+		const fitsBelow = (aBsoluteBelowTop + height <= windowSize.height - BOTTOM_PADDING);
 
 		if (this._fixedOverflowWidgets) {
 			return {
-				fitsAbove,
-				aboveTop: Math.max(absoluteAboveTop, TOP_PADDING),
-				aboveLeft: absoluteAboveLeft,
+				fitsABove,
+				aBoveTop: Math.max(aBsoluteABoveTop, TOP_PADDING),
+				aBoveLeft: aBsoluteABoveLeft,
 				fitsBelow,
-				belowTop: absoluteBelowTop,
-				belowLeft: absoluteBelowLeft
+				BelowTop: aBsoluteBelowTop,
+				BelowLeft: aBsoluteBelowLeft
 			};
 		}
 
 		return {
-			fitsAbove,
-			aboveTop: aboveTop,
-			aboveLeft,
+			fitsABove,
+			aBoveTop: aBoveTop,
+			aBoveLeft,
 			fitsBelow,
-			belowTop,
-			belowLeft
+			BelowTop,
+			BelowLeft
 		};
 	}
 
@@ -389,48 +389,48 @@ class Widget {
 			return [null, null];
 		}
 
-		const visibleRangesForRange = ctx.linesVisibleRangesForRange(this._viewRange, false);
-		if (!visibleRangesForRange || visibleRangesForRange.length === 0) {
+		const visiBleRangesForRange = ctx.linesVisiBleRangesForRange(this._viewRange, false);
+		if (!visiBleRangesForRange || visiBleRangesForRange.length === 0) {
 			return [null, null];
 		}
 
-		let firstLine = visibleRangesForRange[0];
-		let lastLine = visibleRangesForRange[0];
-		for (const visibleRangesForLine of visibleRangesForRange) {
-			if (visibleRangesForLine.lineNumber < firstLine.lineNumber) {
-				firstLine = visibleRangesForLine;
+		let firstLine = visiBleRangesForRange[0];
+		let lastLine = visiBleRangesForRange[0];
+		for (const visiBleRangesForLine of visiBleRangesForRange) {
+			if (visiBleRangesForLine.lineNumBer < firstLine.lineNumBer) {
+				firstLine = visiBleRangesForLine;
 			}
-			if (visibleRangesForLine.lineNumber > lastLine.lineNumber) {
-				lastLine = visibleRangesForLine;
+			if (visiBleRangesForLine.lineNumBer > lastLine.lineNumBer) {
+				lastLine = visiBleRangesForLine;
 			}
 		}
 
 		let firstLineMinLeft = Constants.MAX_SAFE_SMALL_INTEGER;//firstLine.Constants.MAX_SAFE_SMALL_INTEGER;
-		for (const visibleRange of firstLine.ranges) {
-			if (visibleRange.left < firstLineMinLeft) {
-				firstLineMinLeft = visibleRange.left;
+		for (const visiBleRange of firstLine.ranges) {
+			if (visiBleRange.left < firstLineMinLeft) {
+				firstLineMinLeft = visiBleRange.left;
 			}
 		}
 
 		let lastLineMinLeft = Constants.MAX_SAFE_SMALL_INTEGER;//lastLine.Constants.MAX_SAFE_SMALL_INTEGER;
-		for (const visibleRange of lastLine.ranges) {
-			if (visibleRange.left < lastLineMinLeft) {
-				lastLineMinLeft = visibleRange.left;
+		for (const visiBleRange of lastLine.ranges) {
+			if (visiBleRange.left < lastLineMinLeft) {
+				lastLineMinLeft = visiBleRange.left;
 			}
 		}
 
-		const topForPosition = ctx.getVerticalOffsetForLineNumber(firstLine.lineNumber) - ctx.scrollTop;
+		const topForPosition = ctx.getVerticalOffsetForLineNumBer(firstLine.lineNumBer) - ctx.scrollTop;
 		const topLeft = new Coordinate(topForPosition, firstLineMinLeft);
 
-		const topForBottomLine = ctx.getVerticalOffsetForLineNumber(lastLine.lineNumber) - ctx.scrollTop;
-		const bottomLeft = new Coordinate(topForBottomLine, lastLineMinLeft);
+		const topForBottomLine = ctx.getVerticalOffsetForLineNumBer(lastLine.lineNumBer) - ctx.scrollTop;
+		const BottomLeft = new Coordinate(topForBottomLine, lastLineMinLeft);
 
-		return [topLeft, bottomLeft];
+		return [topLeft, BottomLeft];
 	}
 
 	private _prepareRenderWidget(ctx: RenderingContext): Coordinate | null {
-		const [topLeft, bottomLeft] = this._getTopAndBottomLeft(ctx);
-		if (!topLeft || !bottomLeft) {
+		const [topLeft, BottomLeft] = this._getTopAndBottomLeft(ctx);
+		if (!topLeft || !BottomLeft) {
 			return null;
 		}
 
@@ -442,9 +442,9 @@ class Widget {
 
 		let placement: IBoxLayoutResult | null;
 		if (this.allowEditorOverflow) {
-			placement = this._layoutBoxInPage(topLeft, bottomLeft, this._cachedDomNodeClientWidth, this._cachedDomNodeClientHeight, ctx);
+			placement = this._layoutBoxInPage(topLeft, BottomLeft, this._cachedDomNodeClientWidth, this._cachedDomNodeClientHeight, ctx);
 		} else {
-			placement = this._layoutBoxInViewport(topLeft, bottomLeft, this._cachedDomNodeClientWidth, this._cachedDomNodeClientHeight, ctx);
+			placement = this._layoutBoxInViewport(topLeft, BottomLeft, this._cachedDomNodeClientWidth, this._cachedDomNodeClientHeight, ctx);
 		}
 
 		// Do two passes, first for perfect fit, second picks first option
@@ -457,8 +457,8 @@ class Widget {
 							// Widget outside of viewport
 							return null;
 						}
-						if (pass === 2 || placement.fitsAbove) {
-							return new Coordinate(placement.aboveTop, placement.aboveLeft);
+						if (pass === 2 || placement.fitsABove) {
+							return new Coordinate(placement.aBoveTop, placement.aBoveLeft);
 						}
 					} else if (pref === ContentWidgetPositionPreference.BELOW) {
 						if (!placement) {
@@ -466,7 +466,7 @@ class Widget {
 							return null;
 						}
 						if (pass === 2 || placement.fitsBelow) {
-							return new Coordinate(placement.belowTop, placement.belowLeft);
+							return new Coordinate(placement.BelowTop, placement.BelowLeft);
 						}
 					} else {
 						if (this.allowEditorOverflow) {
@@ -484,12 +484,12 @@ class Widget {
 	/**
 	 * On this first pass, we ensure that the content widget (if it is in the viewport) has the max width set correctly.
 	 */
-	public onBeforeRender(viewportData: ViewportData): void {
+	puBlic onBeforeRender(viewportData: ViewportData): void {
 		if (!this._viewRange || !this._preference) {
 			return;
 		}
 
-		if (this._viewRange.endLineNumber < viewportData.startLineNumber || this._viewRange.startLineNumber > viewportData.endLineNumber) {
+		if (this._viewRange.endLineNumBer < viewportData.startLineNumBer || this._viewRange.startLineNumBer > viewportData.endLineNumBer) {
 			// Outside of viewport
 			return;
 		}
@@ -497,34 +497,34 @@ class Widget {
 		this.domNode.setMaxWidth(this._maxWidth);
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		this._renderData = this._prepareRenderWidget(ctx);
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
+	puBlic render(ctx: RestrictedRenderingContext): void {
 		if (!this._renderData) {
-			// This widget should be invisible
-			if (this._isVisible) {
-				this.domNode.removeAttribute('monaco-visible-content-widget');
-				this._isVisible = false;
-				this.domNode.setVisibility('hidden');
+			// This widget should Be invisiBle
+			if (this._isVisiBle) {
+				this.domNode.removeAttriBute('monaco-visiBle-content-widget');
+				this._isVisiBle = false;
+				this.domNode.setVisiBility('hidden');
 			}
 			return;
 		}
 
-		// This widget should be visible
+		// This widget should Be visiBle
 		if (this.allowEditorOverflow) {
 			this.domNode.setTop(this._renderData.top);
 			this.domNode.setLeft(this._renderData.left);
 		} else {
-			this.domNode.setTop(this._renderData.top + ctx.scrollTop - ctx.bigNumbersDelta);
+			this.domNode.setTop(this._renderData.top + ctx.scrollTop - ctx.BigNumBersDelta);
 			this.domNode.setLeft(this._renderData.left);
 		}
 
-		if (!this._isVisible) {
-			this.domNode.setVisibility('inherit');
-			this.domNode.setAttribute('monaco-visible-content-widget', 'true');
-			this._isVisible = true;
+		if (!this._isVisiBle) {
+			this.domNode.setVisiBility('inherit');
+			this.domNode.setAttriBute('monaco-visiBle-content-widget', 'true');
+			this._isVisiBle = true;
 		}
 	}
 }

@@ -10,9 +10,9 @@ interface IAutomatedWindow {
 }
 
 /**
- * A logger that is used when VSCode is running in the web with
- * an automation such as playwright. We expect a global codeAutomationLog
- * to be defined that we can use to log to.
+ * A logger that is used when VSCode is running in the weB with
+ * an automation such as playwright. We expect a gloBal codeAutomationLog
+ * to Be defined that we can use to log to.
  */
 export class ConsoleLogInAutomationService extends LogServiceAdapter implements ILogService {
 

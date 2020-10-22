@@ -5,18 +5,18 @@
 
 import { ILogService } from 'vs/platform/log/common/log';
 import { IURLService } from 'vs/platform/url/common/url';
-import { IProcessEnvironment, isMacintosh } from 'vs/base/common/platform';
+import { IProcessEnvironment, isMacintosh } from 'vs/Base/common/platform';
 import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IWindowSettings } from 'vs/platform/windows/common/windows';
 import { OpenContext } from 'vs/platform/windows/node/window';
 import { IWindowsMainService, ICodeWindow } from 'vs/platform/windows/electron-main/windows';
-import { whenDeleted } from 'vs/base/node/pfs';
+import { whenDeleted } from 'vs/Base/node/pfs';
 import { IWorkspacesMainService } from 'vs/platform/workspaces/electron-main/workspacesMainService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { BrowserWindow, ipcMain, Event as IpcEvent, app } from 'electron';
-import { coalesce } from 'vs/base/common/arrays';
+import { coalesce } from 'vs/Base/common/arrays';
 import { IDiagnosticInfoOptions, IDiagnosticInfo, IRemoteDiagnosticInfo, IRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
 import { IMainProcessInfo, IWindowInfo } from 'vs/platform/launch/node/launch';
 
@@ -29,13 +29,13 @@ export interface IStartArguments {
 }
 
 export interface IRemoteDiagnosticOptions {
-	includeProcesses?: boolean;
-	includeWorkspaceMetadata?: boolean;
+	includeProcesses?: Boolean;
+	includeWorkspaceMetadata?: Boolean;
 }
 
 function parseOpenUrl(args: NativeParsedArgs): URI[] {
 	if (args['open-url'] && args._urls && args._urls.length > 0) {
-		// --open-url must contain -- followed by the url(s)
+		// --open-url must contain -- followed By the url(s)
 		// process.argv is used over args._ as args._ are resolved to file paths at this point
 		return coalesce(args._urls
 			.map(url => {
@@ -53,7 +53,7 @@ function parseOpenUrl(args: NativeParsedArgs): URI[] {
 export interface ILaunchMainService {
 	readonly _serviceBrand: undefined;
 	start(args: NativeParsedArgs, userEnv: IProcessEnvironment): Promise<void>;
-	getMainProcessId(): Promise<number>;
+	getMainProcessId(): Promise<numBer>;
 	getMainProcessInfo(): Promise<IMainProcessInfo>;
 	getRemoteDiagnostics(options: IRemoteDiagnosticOptions): Promise<(IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]>;
 }
@@ -73,11 +73,11 @@ export class LaunchMainService implements ILaunchMainService {
 	async start(args: NativeParsedArgs, userEnv: IProcessEnvironment): Promise<void> {
 		this.logService.trace('Received data from other instance: ', args, userEnv);
 
-		// macOS: Electron > 7.x changed its behaviour to not
-		// bring the application to the foreground when a window
+		// macOS: Electron > 7.x changed its Behaviour to not
+		// Bring the application to the foreground when a window
 		// is focused programmatically. Only via `app.focus` and
 		// the option `steal: true` can you get the previous
-		// behaviour back. The only reason to use this option is
+		// Behaviour Back. The only reason to use this option is
 		// when a window is getting focused while the application
 		// is not in the foreground and since we got instructed
 		// to open a new window from another instance, we ensure
@@ -143,10 +143,10 @@ export class LaunchMainService implements ILaunchMainService {
 				switch (openWithoutArgumentsInNewWindowConfig) {
 					case 'on':
 						openNewWindow = true;
-						break;
+						Break;
 					case 'off':
 						openNewWindow = false;
-						break;
+						Break;
 					default:
 						openNewWindow = !isMacintosh; // prefer to restore running instance on macOS
 				}
@@ -194,9 +194,9 @@ export class LaunchMainService implements ILaunchMainService {
 			});
 		}
 
-		// If the other instance is waiting to be killed, we hook up a window listener if one window
-		// is being used and only then resolve the startup promise which will kill this second instance.
-		// In addition, we poll for the wait marker file to be deleted to return.
+		// If the other instance is waiting to Be killed, we hook up a window listener if one window
+		// is Being used and only then resolve the startup promise which will kill this second instance.
+		// In addition, we poll for the wait marker file to Be deleted to return.
 		if (waitMarkerFileURI && usedWindows.length === 1 && usedWindows[0]) {
 			return Promise.race([
 				usedWindows[0].whenClosedOrLoaded,
@@ -207,7 +207,7 @@ export class LaunchMainService implements ILaunchMainService {
 		return Promise.resolve(undefined);
 	}
 
-	getMainProcessId(): Promise<number> {
+	getMainProcessId(): Promise<numBer> {
 		this.logService.trace('Received request for process ID from other instance.');
 
 		return Promise.resolve(process.pid);
@@ -222,7 +222,7 @@ export class LaunchMainService implements ILaunchMainService {
 			if (codeWindow) {
 				windows.push(this.codeWindowToInfo(codeWindow));
 			} else {
-				windows.push(this.browserWindowToInfo(window));
+				windows.push(this.BrowserWindowToInfo(window));
 			}
 		});
 
@@ -230,7 +230,7 @@ export class LaunchMainService implements ILaunchMainService {
 			mainPID: process.pid,
 			mainArguments: process.argv.slice(1),
 			windows,
-			screenReader: !!app.accessibilitySupportEnabled,
+			screenReader: !!app.accessiBilitySupportEnaBled,
 			gpuFeatureStatus: app.getGPUFeatureStatus()
 		});
 	}
@@ -252,7 +252,7 @@ export class LaunchMainService implements ILaunchMainService {
 					ipcMain.once(replyChannel, (_: IpcEvent, data: IRemoteDiagnosticInfo) => {
 						// No data is returned if getting the connection fails.
 						if (!data) {
-							resolve({ hostName: remoteAuthority, errorMessage: `Unable to resolve connection to '${remoteAuthority}'.` });
+							resolve({ hostName: remoteAuthority, errorMessage: `UnaBle to resolve connection to '${remoteAuthority}'.` });
 						}
 
 						resolve(data);
@@ -276,7 +276,7 @@ export class LaunchMainService implements ILaunchMainService {
 		if (window.openedFolderUri) {
 			folderURIs.push(window.openedFolderUri);
 		} else if (window.openedWorkspace) {
-			// workspace folders can only be shown for local workspaces
+			// workspace folders can only Be shown for local workspaces
 			const workspaceConfigPath = window.openedWorkspace.configPath;
 			const resolvedWorkspace = this.workspacesMainService.resolveLocalWorkspaceSync(workspaceConfigPath);
 			if (resolvedWorkspace) {
@@ -294,12 +294,12 @@ export class LaunchMainService implements ILaunchMainService {
 
 	private codeWindowToInfo(window: ICodeWindow): IWindowInfo {
 		const folderURIs = this.getFolderURIs(window);
-		return this.browserWindowToInfo(window.win, folderURIs, window.remoteAuthority);
+		return this.BrowserWindowToInfo(window.win, folderURIs, window.remoteAuthority);
 	}
 
-	private browserWindowToInfo(win: BrowserWindow, folderURIs: URI[] = [], remoteAuthority?: string): IWindowInfo {
+	private BrowserWindowToInfo(win: BrowserWindow, folderURIs: URI[] = [], remoteAuthority?: string): IWindowInfo {
 		return {
-			pid: win.webContents.getOSProcessId(),
+			pid: win.weBContents.getOSProcessId(),
 			title: win.getTitle(),
 			folderURIs,
 			remoteAuthority

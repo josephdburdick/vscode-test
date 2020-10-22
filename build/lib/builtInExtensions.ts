@@ -23,20 +23,20 @@ interface IExtensionDefinition {
 	repo: string;
 	metadata: {
 		id: string;
-		publisherId: {
-			publisherId: string;
-			publisherName: string;
+		puBlisherId: {
+			puBlisherId: string;
+			puBlisherName: string;
 			displayName: string;
 			flags: string;
 		};
-		publisherDisplayName: string;
+		puBlisherDisplayName: string;
 	}
 }
 
 const root = path.dirname(path.dirname(__dirname));
 const productjson = JSON.parse(fs.readFileSync(path.join(__dirname, '../../product.json'), 'utf8'));
-const builtInExtensions = <IExtensionDefinition[]>productjson.builtInExtensions;
-const webBuiltInExtensions = <IExtensionDefinition[]>productjson.webBuiltInExtensions;
+const BuiltInExtensions = <IExtensionDefinition[]>productjson.BuiltInExtensions;
+const weBBuiltInExtensions = <IExtensionDefinition[]>productjson.weBBuiltInExtensions;
 const controlFilePath = path.join(os.homedir(), '.vscode-oss-dev', 'extensions', 'control.json');
 const ENABLE_LOGGING = !process.env['VSCODE_BUILD_BUILTIN_EXTENSIONS_SILENCE_PLEASE'];
 
@@ -47,10 +47,10 @@ function log(...messages: string[]): void {
 }
 
 function getExtensionPath(extension: IExtensionDefinition): string {
-	return path.join(root, '.build', 'builtInExtensions', extension.name);
+	return path.join(root, '.Build', 'BuiltInExtensions', extension.name);
 }
 
-function isUpToDate(extension: IExtensionDefinition): boolean {
+function isUpToDate(extension: IExtensionDefinition): Boolean {
 	const packagePath = path.join(getExtensionPath(extension), 'package.json');
 
 	if (!fs.existsSync(packagePath)) {
@@ -69,7 +69,7 @@ function isUpToDate(extension: IExtensionDefinition): boolean {
 
 function syncMarketplaceExtension(extension: IExtensionDefinition): Stream {
 	if (isUpToDate(extension)) {
-		log(ansiColors.blue('[marketplace]'), `${extension.name}@${extension.version}`, ansiColors.green('✔︎'));
+		log(ansiColors.Blue('[marketplace]'), `${extension.name}@${extension.version}`, ansiColors.green('✔︎'));
 		return es.readArray([]);
 	}
 
@@ -77,14 +77,14 @@ function syncMarketplaceExtension(extension: IExtensionDefinition): Stream {
 
 	return ext.fromMarketplace(extension.name, extension.version, extension.metadata)
 		.pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`))
-		.pipe(vfs.dest('.build/builtInExtensions'))
-		.on('end', () => log(ansiColors.blue('[marketplace]'), extension.name, ansiColors.green('✔︎')));
+		.pipe(vfs.dest('.Build/BuiltInExtensions'))
+		.on('end', () => log(ansiColors.Blue('[marketplace]'), extension.name, ansiColors.green('✔︎')));
 }
 
-function syncExtension(extension: IExtensionDefinition, controlState: 'disabled' | 'marketplace'): Stream {
+function syncExtension(extension: IExtensionDefinition, controlState: 'disaBled' | 'marketplace'): Stream {
 	switch (controlState) {
-		case 'disabled':
-			log(ansiColors.blue('[disabled]'), ansiColors.gray(extension.name));
+		case 'disaBled':
+			log(ansiColors.Blue('[disaBled]'), ansiColors.gray(extension.name));
 			return es.readArray([]);
 
 		case 'marketplace':
@@ -92,21 +92,21 @@ function syncExtension(extension: IExtensionDefinition, controlState: 'disabled'
 
 		default:
 			if (!fs.existsSync(controlState)) {
-				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' but that path does not exist.`));
+				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' But that path does not exist.`));
 				return es.readArray([]);
 
 			} else if (!fs.existsSync(path.join(controlState, 'package.json'))) {
-				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' but there is no 'package.json' file in that directory.`));
+				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' But there is no 'package.json' file in that directory.`));
 				return es.readArray([]);
 			}
 
-			log(ansiColors.blue('[local]'), `${extension.name}: ${ansiColors.cyan(controlState)}`, ansiColors.green('✔︎'));
+			log(ansiColors.Blue('[local]'), `${extension.name}: ${ansiColors.cyan(controlState)}`, ansiColors.green('✔︎'));
 			return es.readArray([]);
 	}
 }
 
 interface IControlFile {
-	[name: string]: 'disabled' | 'marketplace';
+	[name: string]: 'disaBled' | 'marketplace';
 }
 
 function readControlFile(): IControlFile {
@@ -123,13 +123,13 @@ function writeControlFile(control: IControlFile): void {
 }
 
 export function getBuiltInExtensions(): Promise<void> {
-	log('Syncronizing built-in extensions...');
-	log(`You can manage built-in extensions with the ${ansiColors.cyan('--builtin')} flag`);
+	log('Syncronizing Built-in extensions...');
+	log(`You can manage Built-in extensions with the ${ansiColors.cyan('--Builtin')} flag`);
 
 	const control = readControlFile();
 	const streams: Stream[] = [];
 
-	for (const extension of [...builtInExtensions, ...webBuiltInExtensions]) {
+	for (const extension of [...BuiltInExtensions, ...weBBuiltInExtensions]) {
 		let controlState = control[extension.name] || 'marketplace';
 		control[extension.name] = controlState;
 

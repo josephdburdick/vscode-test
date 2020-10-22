@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { ISCMService, ISCMProvider, ISCMInput, ISCMRepository, IInputValidator } from './scm';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IStorageService, StorageScope, WillSaveStateReason } from 'vs/platform/storage/common/storage';
-import { HistoryNavigator2 } from 'vs/base/common/history';
+import { HistoryNavigator2 } from 'vs/Base/common/history';
 
 class SCMInput implements ISCMInput {
 
@@ -36,19 +36,19 @@ class SCMInput implements ISCMInput {
 	private readonly _onDidChangePlaceholder = new Emitter<string>();
 	readonly onDidChangePlaceholder: Event<string> = this._onDidChangePlaceholder.event;
 
-	private _visible = true;
+	private _visiBle = true;
 
-	get visible(): boolean {
-		return this._visible;
+	get visiBle(): Boolean {
+		return this._visiBle;
 	}
 
-	set visible(visible: boolean) {
-		this._visible = visible;
-		this._onDidChangeVisibility.fire(visible);
+	set visiBle(visiBle: Boolean) {
+		this._visiBle = visiBle;
+		this._onDidChangeVisiBility.fire(visiBle);
 	}
 
-	private readonly _onDidChangeVisibility = new Emitter<boolean>();
-	readonly onDidChangeVisibility: Event<boolean> = this._onDidChangeVisibility
+	private readonly _onDidChangeVisiBility = new Emitter<Boolean>();
+	readonly onDidChangeVisiBility: Event<Boolean> = this._onDidChangeVisiBility
 		.event;
 
 	private _validateInput: IInputValidator = () => Promise.resolve(undefined);
@@ -71,7 +71,7 @@ class SCMInput implements ISCMInput {
 		readonly repository: ISCMRepository,
 		@IStorageService private storageService: IStorageService
 	) {
-		const historyKey = `scm/input:${this.repository.provider.label}:${this.repository.provider.rootUri?.path}`;
+		const historyKey = `scm/input:${this.repository.provider.laBel}:${this.repository.provider.rootUri?.path}`;
 		let history: string[] | undefined;
 		let rawHistory = this.storageService.get(historyKey, StorageScope.WORKSPACE, '');
 
@@ -104,7 +104,7 @@ class SCMInput implements ISCMInput {
 		});
 	}
 
-	setValue(value: string, transient: boolean) {
+	setValue(value: string, transient: Boolean) {
 		if (value === this._value) {
 			return;
 		}
@@ -136,22 +136,22 @@ class SCMInput implements ISCMInput {
 class SCMRepository implements ISCMRepository {
 
 	private _selected = false;
-	get selected(): boolean {
+	get selected(): Boolean {
 		return this._selected;
 	}
 
-	private readonly _onDidChangeSelection = new Emitter<boolean>();
-	readonly onDidChangeSelection: Event<boolean> = this._onDidChangeSelection.event;
+	private readonly _onDidChangeSelection = new Emitter<Boolean>();
+	readonly onDidChangeSelection: Event<Boolean> = this._onDidChangeSelection.event;
 
 	readonly input: ISCMInput = new SCMInput(this, this.storageService);
 
 	constructor(
-		public readonly provider: ISCMProvider,
-		private disposable: IDisposable,
+		puBlic readonly provider: ISCMProvider,
+		private disposaBle: IDisposaBle,
 		@IStorageService private storageService: IStorageService
 	) { }
 
-	setSelected(selected: boolean): void {
+	setSelected(selected: Boolean): void {
 		if (this._selected === selected) {
 			return;
 		}
@@ -161,7 +161,7 @@ class SCMRepository implements ISCMRepository {
 	}
 
 	dispose(): void {
-		this.disposable.dispose();
+		this.disposaBle.dispose();
 		this.provider.dispose();
 	}
 }
@@ -174,7 +174,7 @@ export class SCMService implements ISCMService {
 	private _repositories: ISCMRepository[] = [];
 	get repositories(): ISCMRepository[] { return [...this._repositories]; }
 
-	private providerCount: IContextKey<number>;
+	private providerCount: IContextKey<numBer>;
 	private _selectedRepository: ISCMRepository | undefined;
 
 	private readonly _onDidSelectRepository = new Emitter<ISCMRepository | undefined>();
@@ -203,14 +203,14 @@ export class SCMService implements ISCMService {
 
 		this._providerIds.add(provider.id);
 
-		const disposable = toDisposable(() => {
+		const disposaBle = toDisposaBle(() => {
 			const index = this._repositories.indexOf(repository);
 
 			if (index < 0) {
 				return;
 			}
 
-			selectedDisposable.dispose();
+			selectedDisposaBle.dispose();
 			this._providerIds.delete(provider.id);
 			this._repositories.splice(index, 1);
 			this._onDidRemoveProvider.fire(repository);
@@ -222,8 +222,8 @@ export class SCMService implements ISCMService {
 			this.providerCount.set(this._repositories.length);
 		});
 
-		const repository = new SCMRepository(provider, disposable, this.storageService);
-		const selectedDisposable = Event.map(Event.filter(repository.onDidChangeSelection, selected => selected), _ => repository)(this.select, this);
+		const repository = new SCMRepository(provider, disposaBle, this.storageService);
+		const selectedDisposaBle = Event.map(Event.filter(repository.onDidChangeSelection, selected => selected), _ => repository)(this.select, this);
 
 		this._repositories.push(repository);
 		this._onDidAddProvider.fire(repository);

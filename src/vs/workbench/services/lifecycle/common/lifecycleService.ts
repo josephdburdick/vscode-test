@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { Barrier } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ILifecycleService, BeforeShutdownEvent, WillShutdownEvent, StartupKind, LifecyclePhase, LifecyclePhaseToString } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Emitter } from 'vs/Base/common/event';
+import { Barrier } from 'vs/Base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ILifecycleService, BeforeShutdownEvent, WillShutdownEvent, StartupKind, LifecyclePhase, LifecyclePhaseToString } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
-import { mark } from 'vs/base/common/performance';
+import { mark } from 'vs/Base/common/performance';
 
-export abstract class AbstractLifecycleService extends Disposable implements ILifecycleService {
+export aBstract class ABstractLifecycleService extends DisposaBle implements ILifecycleService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -39,7 +39,7 @@ export abstract class AbstractLifecycleService extends Disposable implements ILi
 
 	set phase(value: LifecyclePhase) {
 		if (value < this.phase) {
-			throw new Error('Lifecycle cannot go backwards');
+			throw new Error('Lifecycle cannot go Backwards');
 		}
 
 		if (this._phase === value) {
@@ -51,9 +51,9 @@ export abstract class AbstractLifecycleService extends Disposable implements ILi
 		this._phase = value;
 		mark(`LifecyclePhase/${LifecyclePhaseToString(value)}`);
 
-		const barrier = this.phaseWhen.get(this._phase);
-		if (barrier) {
-			barrier.open();
+		const Barrier = this.phaseWhen.get(this._phase);
+		if (Barrier) {
+			Barrier.open();
 			this.phaseWhen.delete(this._phase);
 		}
 	}
@@ -63,17 +63,17 @@ export abstract class AbstractLifecycleService extends Disposable implements ILi
 			return;
 		}
 
-		let barrier = this.phaseWhen.get(phase);
-		if (!barrier) {
-			barrier = new Barrier();
-			this.phaseWhen.set(phase, barrier);
+		let Barrier = this.phaseWhen.get(phase);
+		if (!Barrier) {
+			Barrier = new Barrier();
+			this.phaseWhen.set(phase, Barrier);
 		}
 
-		await barrier.wait();
+		await Barrier.wait();
 	}
 
 	/**
-	 * Subclasses to implement the explicit shutdown method.
+	 * SuBclasses to implement the explicit shutdown method.
 	 */
-	abstract shutdown(): void;
+	aBstract shutdown(): void;
 }

@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IPosition } from 'vs/editor/common/core/position';
 import * as editorCommon from 'vs/editor/common/editorCommon';
 import * as model from 'vs/editor/common/model';
 import { SearchParams } from 'vs/editor/common/model/textModelSearch';
-import { CELL_STATUSBAR_HEIGHT, EDITOR_TOP_PADDING } from 'vs/workbench/contrib/notebook/browser/constants';
-import { CellEditState, CellFocusMode, CursorAtBoundary, CellViewModelStateChangeEvent, IEditableCellViewModel, INotebookCellDecorationOptions } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { CellKind, NotebookCellMetadata, NotebookDocumentMetadata, INotebookSearchOptions, ShowCellStatusBarKey } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
+import { CELL_STATUSBAR_HEIGHT, EDITOR_TOP_PADDING } from 'vs/workBench/contriB/noteBook/Browser/constants';
+import { CellEditState, CellFocusMode, CursorAtBoundary, CellViewModelStateChangeEvent, IEditaBleCellViewModel, INoteBookCellDecorationOptions } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { CellKind, NoteBookCellMetadata, NoteBookDocumentMetadata, INoteBookSearchOptions, ShowCellStatusBarKey } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { NoteBookCellTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookCellTextModel';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 
-export abstract class BaseCellViewModel extends Disposable {
+export aBstract class BaseCellViewModel extends DisposaBle {
 
 	protected readonly _onDidChangeEditorAttachState = new Emitter<void>();
 	// Do not merge this event with `onDidChangeState` as we are using `Event.once(onDidChangeEditorAttachState)` elsewhere.
 	readonly onDidChangeEditorAttachState = this._onDidChangeEditorAttachState.event;
 	protected readonly _onDidChangeState: Emitter<CellViewModelStateChangeEvent> = this._register(new Emitter<CellViewModelStateChangeEvent>());
-	public readonly onDidChangeState: Event<CellViewModelStateChangeEvent> = this._onDidChangeState.event;
+	puBlic readonly onDidChangeState: Event<CellViewModelStateChangeEvent> = this._onDidChangeState.event;
 
 	get handle() {
 		return this.model.handle;
@@ -42,7 +42,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this.model.language;
 	}
 
-	abstract cellKind: CellKind;
+	aBstract cellKind: CellKind;
 
 	private _editState: CellEditState = CellEditState.Preview;
 
@@ -72,19 +72,19 @@ export abstract class BaseCellViewModel extends Disposable {
 	}
 
 	protected _textEditor?: ICodeEditor;
-	get editorAttached(): boolean {
+	get editorAttached(): Boolean {
 		return !!this._textEditor;
 	}
-	private _cursorChangeListener: IDisposable | null = null;
+	private _cursorChangeListener: IDisposaBle | null = null;
 	private _editorViewStates: editorCommon.ICodeEditorViewState | null = null;
-	private _resolvedCellDecorations = new Map<string, INotebookCellDecorationOptions>();
-	private _cellDecorationsChanged = new Emitter<{ added: INotebookCellDecorationOptions[], removed: INotebookCellDecorationOptions[] }>();
-	onCellDecorationsChanged: Event<{ added: INotebookCellDecorationOptions[], removed: INotebookCellDecorationOptions[] }> = this._cellDecorationsChanged.event;
+	private _resolvedCellDecorations = new Map<string, INoteBookCellDecorationOptions>();
+	private _cellDecorationsChanged = new Emitter<{ added: INoteBookCellDecorationOptions[], removed: INoteBookCellDecorationOptions[] }>();
+	onCellDecorationsChanged: Event<{ added: INoteBookCellDecorationOptions[], removed: INoteBookCellDecorationOptions[] }> = this._cellDecorationsChanged.event;
 	private _resolvedDecorations = new Map<string, {
 		id?: string;
 		options: model.IModelDeltaDecoration;
 	}>();
-	private _lastDecorationId: number = 0;
+	private _lastDecorationId: numBer = 0;
 
 	private _textModel: model.ITextModel | undefined = undefined;
 	get textModel(): model.ITextModel | undefined {
@@ -95,23 +95,23 @@ export abstract class BaseCellViewModel extends Disposable {
 		this._textModel = m;
 	}
 
-	hasModel(): this is IEditableCellViewModel {
+	hasModel(): this is IEditaBleCellViewModel {
 		return !!this._textModel;
 	}
 
-	private _dragging: boolean = false;
-	get dragging(): boolean {
+	private _dragging: Boolean = false;
+	get dragging(): Boolean {
 		return this._dragging;
 	}
 
-	set dragging(v: boolean) {
+	set dragging(v: Boolean) {
 		this._dragging = v;
 	}
 
 	constructor(
 		readonly viewType: string,
-		readonly model: NotebookCellTextModel,
-		public id: string,
+		readonly model: NoteBookCellTextModel,
+		puBlic id: string,
 		private readonly _configurationService: IConfigurationService
 	) {
 		super();
@@ -131,18 +131,18 @@ export abstract class BaseCellViewModel extends Disposable {
 		}));
 	}
 
-	protected getEditorStatusbarHeight() {
-		const showCellStatusBar = this._configurationService.getValue<boolean>(ShowCellStatusBarKey);
+	protected getEditorStatusBarHeight() {
+		const showCellStatusBar = this._configurationService.getValue<Boolean>(ShowCellStatusBarKey);
 		return showCellStatusBar ? CELL_STATUSBAR_HEIGHT : 0;
 	}
 
-	// abstract resolveTextModel(): Promise<model.ITextModel>;
-	abstract hasDynamicHeight(): boolean;
-	abstract getHeight(lineHeight: number): number;
-	abstract onDeselect(): void;
-	abstract layoutChange(change: any): void;
+	// aBstract resolveTextModel(): Promise<model.ITextModel>;
+	aBstract hasDynamicHeight(): Boolean;
+	aBstract getHeight(lineHeight: numBer): numBer;
+	aBstract onDeselect(): void;
+	aBstract layoutChange(change: any): void;
 
-	assertTextModelAttached(): boolean {
+	assertTextModelAttached(): Boolean {
 		if (this.textModel && this._textEditor && this._textEditor.getModel() === this.textModel) {
 			return true;
 		}
@@ -189,7 +189,7 @@ export abstract class BaseCellViewModel extends Disposable {
 
 	detachTextEditor() {
 		this.saveViewState();
-		// decorations need to be cleared first as editors can be resued.
+		// decorations need to Be cleared first as editors can Be resued.
 		this._resolvedDecorations.forEach(value => {
 			const resolvedid = value.id;
 
@@ -209,7 +209,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this.model.getValue();
 	}
 
-	getTextLength(): number {
+	getTextLength(): numBer {
 		return this.model.getTextLength();
 	}
 
@@ -229,7 +229,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this._editorViewStates;
 	}
 
-	restoreEditorViewState(editorViewStates: editorCommon.ICodeEditorViewState | null, totalHeight?: number) {
+	restoreEditorViewState(editorViewStates: editorCommon.ICodeEditorViewState | null, totalHeight?: numBer) {
 		this._editorViewStates = editorViewStates;
 	}
 
@@ -284,7 +284,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		}
 	}
 
-	private _addCellDecoration(options: INotebookCellDecorationOptions): string {
+	private _addCellDecoration(options: INoteBookCellDecorationOptions): string {
 		const id = ++this._lastDecorationId;
 		const decorationId = `_cell_${this.id};${id}`;
 		this._resolvedCellDecorations.set(decorationId, options);
@@ -296,7 +296,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		return [...this._resolvedCellDecorations.values()];
 	}
 
-	deltaCellDecorations(oldDecorations: string[], newDecorations: INotebookCellDecorationOptions[]): string[] {
+	deltaCellDecorations(oldDecorations: string[], newDecorations: INoteBookCellDecorationOptions[]): string[] {
 		oldDecorations.forEach(id => {
 			this._removeCellDecoration(id);
 		});
@@ -336,15 +336,15 @@ export abstract class BaseCellViewModel extends Disposable {
 		}
 	}
 
-	getLineScrollTopOffset(line: number): number {
+	getLineScrollTopOffset(line: numBer): numBer {
 		if (!this._textEditor) {
 			return 0;
 		}
 
-		return this._textEditor.getTopForLineNumber(line) + EDITOR_TOP_PADDING;
+		return this._textEditor.getTopForLineNumBer(line) + EDITOR_TOP_PADDING;
 	}
 
-	getPositionScrollTopOffset(line: number, column: number): number {
+	getPositionScrollTopOffset(line: numBer, column: numBer): numBer {
 		if (!this._textEditor) {
 			return 0;
 		}
@@ -371,7 +371,7 @@ export abstract class BaseCellViewModel extends Disposable {
 
 		const firstViewLineTop = this._textEditor.getTopForPosition(1, 1);
 		const lastViewLineTop = this._textEditor.getTopForPosition(this.textModel!.getLineCount(), this.textModel!.getLineLength(this.textModel!.getLineCount()));
-		const selectionTop = this._textEditor.getTopForPosition(selection.startLineNumber, selection.startColumn);
+		const selectionTop = this._textEditor.getTopForPosition(selection.startLineNumBer, selection.startColumn);
 
 		if (selectionTop === lastViewLineTop) {
 			if (selectionTop === firstViewLineTop) {
@@ -392,9 +392,9 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this.model.textBuffer;
 	}
 
-	abstract resolveTextModel(): Promise<model.ITextModel>;
+	aBstract resolveTextModel(): Promise<model.ITextModel>;
 
-	protected cellStartFind(value: string, options: INotebookSearchOptions): model.FindMatch[] | null {
+	protected cellStartFind(value: string, options: INoteBookSearchOptions): model.FindMatch[] | null {
 		let cellMatches: model.FindMatch[] = [];
 
 		if (this.assertTextModelAttached()) {
@@ -421,12 +421,12 @@ export abstract class BaseCellViewModel extends Disposable {
 		return cellMatches;
 	}
 
-	getEvaluatedMetadata(documentMetadata: NotebookDocumentMetadata): NotebookCellMetadata {
-		const editable = this.metadata?.editable ??
-			documentMetadata.cellEditable;
+	getEvaluatedMetadata(documentMetadata: NoteBookDocumentMetadata): NoteBookCellMetadata {
+		const editaBle = this.metadata?.editaBle ??
+			documentMetadata.cellEditaBle;
 
-		const runnable = this.metadata?.runnable ??
-			documentMetadata.cellRunnable;
+		const runnaBle = this.metadata?.runnaBle ??
+			documentMetadata.cellRunnaBle;
 
 		const hasExecutionOrder = this.metadata?.hasExecutionOrder ??
 			documentMetadata.cellHasExecutionOrder;
@@ -434,8 +434,8 @@ export abstract class BaseCellViewModel extends Disposable {
 		return {
 			...(this.metadata || {}),
 			...{
-				editable,
-				runnable,
+				editaBle,
+				runnaBle,
 				hasExecutionOrder
 			}
 		};
@@ -445,7 +445,7 @@ export abstract class BaseCellViewModel extends Disposable {
 		super.dispose();
 	}
 
-	toJSON(): object {
+	toJSON(): oBject {
 		return {
 			handle: this.handle
 		};

@@ -5,44 +5,44 @@
 
 import 'vs/css!./goToDefinitionAtPosition';
 import * as nls from 'vs/nls';
-import { createCancelablePromise, CancelablePromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { MarkdownString } from 'vs/base/common/htmlContent';
+import { createCancelaBlePromise, CancelaBlePromise } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { Range, IRange } from 'vs/editor/common/core/range';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { DefinitionProviderRegistry, LocationLink } from 'vs/editor/common/modes';
-import { ICodeEditor, MouseTargetType } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { getDefinitionsAtPosition } from '../goToSymbol';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { ICodeEditor, MouseTargetType } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { getDefinitionsAtPosition } from '../goToSymBol';
+import { DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { editorActiveLinkForeground } from 'vs/platform/theme/common/colorRegistry';
-import { EditorState, CodeEditorStateFlag } from 'vs/editor/browser/core/editorState';
+import { EditorState, CodeEditorStateFlag } from 'vs/editor/Browser/core/editorState';
 import { DefinitionAction } from '../goToCommands';
-import { ClickLinkGesture, ClickLinkMouseEvent, ClickLinkKeyboardEvent } from 'vs/editor/contrib/gotoSymbol/link/clickLinkGesture';
+import { ClickLinkGesture, ClickLinkMouseEvent, ClickLinkKeyBoardEvent } from 'vs/editor/contriB/gotoSymBol/link/clickLinkGesture';
 import { IWordAtPosition, IModelDeltaDecoration, ITextModel, IFoundBracket } from 'vs/editor/common/model';
 import { Position } from 'vs/editor/common/core/position';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { PeekContext } from 'vs/editor/contrib/peekView/peekView';
+import { PeekContext } from 'vs/editor/contriB/peekView/peekView';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 
-export class GotoDefinitionAtPositionEditorContribution implements IEditorContribution {
+export class GotoDefinitionAtPositionEditorContriBution implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.gotodefinitionatposition';
+	puBlic static readonly ID = 'editor.contriB.gotodefinitionatposition';
 	static readonly MAX_SOURCE_PREVIEW_LINES = 8;
 
 	private readonly editor: ICodeEditor;
-	private readonly toUnhook = new DisposableStore();
-	private readonly toUnhookForKeyboard = new DisposableStore();
+	private readonly toUnhook = new DisposaBleStore();
+	private readonly toUnhookForKeyBoard = new DisposaBleStore();
 	private linkDecorations: string[] = [];
 	private currentWordAtPosition: IWordAtPosition | null = null;
-	private previousPromise: CancelablePromise<LocationLink[] | null> | null = null;
+	private previousPromise: CancelaBlePromise<LocationLink[] | null> | null = null;
 
 	constructor(
 		editor: ICodeEditor,
@@ -54,12 +54,12 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		let linkGesture = new ClickLinkGesture(editor);
 		this.toUnhook.add(linkGesture);
 
-		this.toUnhook.add(linkGesture.onMouseMoveOrRelevantKeyDown(([mouseEvent, keyboardEvent]) => {
-			this.startFindDefinitionFromMouse(mouseEvent, withNullAsUndefined(keyboardEvent));
+		this.toUnhook.add(linkGesture.onMouseMoveOrRelevantKeyDown(([mouseEvent, keyBoardEvent]) => {
+			this.startFindDefinitionFromMouse(mouseEvent, withNullAsUndefined(keyBoardEvent));
 		}));
 
 		this.toUnhook.add(linkGesture.onExecute((mouseEvent: ClickLinkMouseEvent) => {
-			if (this.isEnabled(mouseEvent)) {
+			if (this.isEnaBled(mouseEvent)) {
 				this.gotoDefinition(mouseEvent.target.position!, mouseEvent.hasSideBySideModifier).then(() => {
 					this.removeLinkDecorations();
 				}, (error: Error) => {
@@ -75,47 +75,47 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		}));
 	}
 
-	static get(editor: ICodeEditor): GotoDefinitionAtPositionEditorContribution {
-		return editor.getContribution<GotoDefinitionAtPositionEditorContribution>(GotoDefinitionAtPositionEditorContribution.ID);
+	static get(editor: ICodeEditor): GotoDefinitionAtPositionEditorContriBution {
+		return editor.getContriBution<GotoDefinitionAtPositionEditorContriBution>(GotoDefinitionAtPositionEditorContriBution.ID);
 	}
 
 	startFindDefinitionFromCursor(position: Position) {
-		// For issue: https://github.com/microsoft/vscode/issues/46257
+		// For issue: https://githuB.com/microsoft/vscode/issues/46257
 		// equivalent to mouse move with meta/ctrl key
 
 		// First find the definition and add decorations
-		// to the editor to be shown with the content hover widget
+		// to the editor to Be shown with the content hover widget
 		return this.startFindDefinition(position).then(() => {
 
 			// Add listeners for editor cursor move and key down events
 			// Dismiss the "extended" editor decorations when the user hides
 			// the hover widget. There is no event for the widget itself so these
-			// serve as a best effort. After removing the link decorations, the hover
+			// serve as a Best effort. After removing the link decorations, the hover
 			// widget is clean and will only show declarations per next request.
-			this.toUnhookForKeyboard.add(this.editor.onDidChangeCursorPosition(() => {
+			this.toUnhookForKeyBoard.add(this.editor.onDidChangeCursorPosition(() => {
 				this.currentWordAtPosition = null;
 				this.removeLinkDecorations();
-				this.toUnhookForKeyboard.clear();
+				this.toUnhookForKeyBoard.clear();
 			}));
 
-			this.toUnhookForKeyboard.add(this.editor.onKeyDown((e: IKeyboardEvent) => {
+			this.toUnhookForKeyBoard.add(this.editor.onKeyDown((e: IKeyBoardEvent) => {
 				if (e) {
 					this.currentWordAtPosition = null;
 					this.removeLinkDecorations();
-					this.toUnhookForKeyboard.clear();
+					this.toUnhookForKeyBoard.clear();
 				}
 			}));
 		});
 	}
 
-	private startFindDefinitionFromMouse(mouseEvent: ClickLinkMouseEvent, withKey?: ClickLinkKeyboardEvent): void {
+	private startFindDefinitionFromMouse(mouseEvent: ClickLinkMouseEvent, withKey?: ClickLinkKeyBoardEvent): void {
 
 		// check if we are active and on a content widget
 		if (mouseEvent.target.type === MouseTargetType.CONTENT_WIDGET && this.linkDecorations.length > 0) {
 			return;
 		}
 
-		if (!this.editor.hasModel() || !this.isEnabled(mouseEvent, withKey)) {
+		if (!this.editor.hasModel() || !this.isEnaBled(mouseEvent, withKey)) {
 			this.currentWordAtPosition = null;
 			this.removeLinkDecorations();
 			return;
@@ -126,10 +126,10 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		this.startFindDefinition(position);
 	}
 
-	private startFindDefinition(position: Position): Promise<number | undefined> {
+	private startFindDefinition(position: Position): Promise<numBer | undefined> {
 
-		// Dispose listeners for updating decorations when using keyboard to show definition hover
-		this.toUnhookForKeyboard.clear();
+		// Dispose listeners for updating decorations when using keyBoard to show definition hover
+		this.toUnhookForKeyBoard.clear();
 
 		// Find word at mouse position
 		const word = position ? this.editor.getModel()?.getWordAtPosition(position) : null;
@@ -154,7 +154,7 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 			this.previousPromise = null;
 		}
 
-		this.previousPromise = createCancelablePromise(token => this.findDefinition(position, token));
+		this.previousPromise = createCancelaBlePromise(token => this.findDefinition(position, token));
 
 		return this.previousPromise.then(results => {
 			if (!results || !results.length || !state.validate(this.editor)) {
@@ -165,7 +165,7 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 			// Multiple results
 			if (results.length > 1) {
 				this.addDecoration(
-					new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn),
+					new Range(position.lineNumBer, word.startColumn, position.lineNumBer, word.endColumn),
 					new MarkdownString().appendText(nls.localize('multipleResults', "Click to show {0} definitions.", results.length))
 				);
 			}
@@ -180,33 +180,33 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 
 				this.textModelResolverService.createModelReference(result.uri).then(ref => {
 
-					if (!ref.object || !ref.object.textEditorModel) {
+					if (!ref.oBject || !ref.oBject.textEditorModel) {
 						ref.dispose();
 						return;
 					}
 
-					const { object: { textEditorModel } } = ref;
-					const { startLineNumber } = result.range;
+					const { oBject: { textEditorModel } } = ref;
+					const { startLineNumBer } = result.range;
 
-					if (startLineNumber < 1 || startLineNumber > textEditorModel.getLineCount()) {
+					if (startLineNumBer < 1 || startLineNumBer > textEditorModel.getLineCount()) {
 						// invalid range
 						ref.dispose();
 						return;
 					}
 
-					const previewValue = this.getPreviewValue(textEditorModel, startLineNumber, result);
+					const previewValue = this.getPreviewValue(textEditorModel, startLineNumBer, result);
 
 					let wordRange: Range;
 					if (result.originSelectionRange) {
 						wordRange = Range.lift(result.originSelectionRange);
 					} else {
-						wordRange = new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn);
+						wordRange = new Range(position.lineNumBer, word.startColumn, position.lineNumBer, word.endColumn);
 					}
 
 					const modeId = this.modeService.getModeIdByFilepathOrFirstLine(textEditorModel.uri);
 					this.addDecoration(
 						wordRange,
-						new MarkdownString().appendCodeblock(modeId ? modeId : '', previewValue)
+						new MarkdownString().appendCodeBlock(modeId ? modeId : '', previewValue)
 					);
 					ref.dispose();
 				});
@@ -214,23 +214,23 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		}).then(undefined, onUnexpectedError);
 	}
 
-	private getPreviewValue(textEditorModel: ITextModel, startLineNumber: number, result: LocationLink) {
-		let rangeToUse = result.targetSelectionRange ? result.range : this.getPreviewRangeBasedOnBrackets(textEditorModel, startLineNumber);
-		const numberOfLinesInRange = rangeToUse.endLineNumber - rangeToUse.startLineNumber;
-		if (numberOfLinesInRange >= GotoDefinitionAtPositionEditorContribution.MAX_SOURCE_PREVIEW_LINES) {
-			rangeToUse = this.getPreviewRangeBasedOnIndentation(textEditorModel, startLineNumber);
+	private getPreviewValue(textEditorModel: ITextModel, startLineNumBer: numBer, result: LocationLink) {
+		let rangeToUse = result.targetSelectionRange ? result.range : this.getPreviewRangeBasedOnBrackets(textEditorModel, startLineNumBer);
+		const numBerOfLinesInRange = rangeToUse.endLineNumBer - rangeToUse.startLineNumBer;
+		if (numBerOfLinesInRange >= GotoDefinitionAtPositionEditorContriBution.MAX_SOURCE_PREVIEW_LINES) {
+			rangeToUse = this.getPreviewRangeBasedOnIndentation(textEditorModel, startLineNumBer);
 		}
 
-		const previewValue = this.stripIndentationFromPreviewRange(textEditorModel, startLineNumber, rangeToUse);
+		const previewValue = this.stripIndentationFromPreviewRange(textEditorModel, startLineNumBer, rangeToUse);
 		return previewValue;
 	}
 
-	private stripIndentationFromPreviewRange(textEditorModel: ITextModel, startLineNumber: number, previewRange: IRange) {
-		const startIndent = textEditorModel.getLineFirstNonWhitespaceColumn(startLineNumber);
+	private stripIndentationFromPreviewRange(textEditorModel: ITextModel, startLineNumBer: numBer, previewRange: IRange) {
+		const startIndent = textEditorModel.getLineFirstNonWhitespaceColumn(startLineNumBer);
 		let minIndent = startIndent;
 
-		for (let endLineNumber = startLineNumber + 1; endLineNumber < previewRange.endLineNumber; endLineNumber++) {
-			const endIndent = textEditorModel.getLineFirstNonWhitespaceColumn(endLineNumber);
+		for (let endLineNumBer = startLineNumBer + 1; endLineNumBer < previewRange.endLineNumBer; endLineNumBer++) {
+			const endIndent = textEditorModel.getLineFirstNonWhitespaceColumn(endLineNumBer);
 			minIndent = Math.min(minIndent, endIndent);
 		}
 
@@ -238,66 +238,66 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		return previewValue;
 	}
 
-	private getPreviewRangeBasedOnIndentation(textEditorModel: ITextModel, startLineNumber: number) {
-		const startIndent = textEditorModel.getLineFirstNonWhitespaceColumn(startLineNumber);
-		const maxLineNumber = Math.min(textEditorModel.getLineCount(), startLineNumber + GotoDefinitionAtPositionEditorContribution.MAX_SOURCE_PREVIEW_LINES);
-		let endLineNumber = startLineNumber + 1;
+	private getPreviewRangeBasedOnIndentation(textEditorModel: ITextModel, startLineNumBer: numBer) {
+		const startIndent = textEditorModel.getLineFirstNonWhitespaceColumn(startLineNumBer);
+		const maxLineNumBer = Math.min(textEditorModel.getLineCount(), startLineNumBer + GotoDefinitionAtPositionEditorContriBution.MAX_SOURCE_PREVIEW_LINES);
+		let endLineNumBer = startLineNumBer + 1;
 
-		for (; endLineNumber < maxLineNumber; endLineNumber++) {
-			let endIndent = textEditorModel.getLineFirstNonWhitespaceColumn(endLineNumber);
+		for (; endLineNumBer < maxLineNumBer; endLineNumBer++) {
+			let endIndent = textEditorModel.getLineFirstNonWhitespaceColumn(endLineNumBer);
 
 			if (startIndent === endIndent) {
-				break;
+				Break;
 			}
 		}
 
-		return new Range(startLineNumber, 1, endLineNumber + 1, 1);
+		return new Range(startLineNumBer, 1, endLineNumBer + 1, 1);
 	}
 
-	private getPreviewRangeBasedOnBrackets(textEditorModel: ITextModel, startLineNumber: number) {
-		const maxLineNumber = Math.min(textEditorModel.getLineCount(), startLineNumber + GotoDefinitionAtPositionEditorContribution.MAX_SOURCE_PREVIEW_LINES);
+	private getPreviewRangeBasedOnBrackets(textEditorModel: ITextModel, startLineNumBer: numBer) {
+		const maxLineNumBer = Math.min(textEditorModel.getLineCount(), startLineNumBer + GotoDefinitionAtPositionEditorContriBution.MAX_SOURCE_PREVIEW_LINES);
 
-		const brackets: IFoundBracket[] = [];
+		const Brackets: IFoundBracket[] = [];
 
 		let ignoreFirstEmpty = true;
-		let currentBracket = textEditorModel.findNextBracket(new Position(startLineNumber, 1));
+		let currentBracket = textEditorModel.findNextBracket(new Position(startLineNumBer, 1));
 		while (currentBracket !== null) {
 
-			if (brackets.length === 0) {
-				brackets.push(currentBracket);
+			if (Brackets.length === 0) {
+				Brackets.push(currentBracket);
 			} else {
-				const lastBracket = brackets[brackets.length - 1];
+				const lastBracket = Brackets[Brackets.length - 1];
 				if (lastBracket.open[0] === currentBracket.open[0] && lastBracket.isOpen && !currentBracket.isOpen) {
-					brackets.pop();
+					Brackets.pop();
 				} else {
-					brackets.push(currentBracket);
+					Brackets.push(currentBracket);
 				}
 
-				if (brackets.length === 0) {
+				if (Brackets.length === 0) {
 					if (ignoreFirstEmpty) {
 						ignoreFirstEmpty = false;
 					} else {
-						return new Range(startLineNumber, 1, currentBracket.range.endLineNumber + 1, 1);
+						return new Range(startLineNumBer, 1, currentBracket.range.endLineNumBer + 1, 1);
 					}
 				}
 			}
 
-			const maxColumn = textEditorModel.getLineMaxColumn(startLineNumber);
-			let nextLineNumber = currentBracket.range.endLineNumber;
+			const maxColumn = textEditorModel.getLineMaxColumn(startLineNumBer);
+			let nextLineNumBer = currentBracket.range.endLineNumBer;
 			let nextColumn = currentBracket.range.endColumn;
 			if (maxColumn === currentBracket.range.endColumn) {
-				nextLineNumber++;
+				nextLineNumBer++;
 				nextColumn = 1;
 			}
 
-			if (nextLineNumber > maxLineNumber) {
-				return new Range(startLineNumber, 1, maxLineNumber + 1, 1);
+			if (nextLineNumBer > maxLineNumBer) {
+				return new Range(startLineNumBer, 1, maxLineNumBer + 1, 1);
 			}
 
-			currentBracket = textEditorModel.findNextBracket(new Position(nextLineNumber, nextColumn));
+			currentBracket = textEditorModel.findNextBracket(new Position(nextLineNumBer, nextColumn));
 		}
 
-		return new Range(startLineNumber, 1, maxLineNumber + 1, 1);
+		return new Range(startLineNumBer, 1, maxLineNumBer + 1, 1);
 	}
 
 	private addDecoration(range: Range, hoverMessage: MarkdownString): void {
@@ -319,7 +319,7 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		}
 	}
 
-	private isEnabled(mouseEvent: ClickLinkMouseEvent, withKey?: ClickLinkKeyboardEvent): boolean {
+	private isEnaBled(mouseEvent: ClickLinkMouseEvent, withKey?: ClickLinkKeyBoardEvent): Boolean {
 		return this.editor.hasModel() &&
 			mouseEvent.isNoneOrSingleMouseDown &&
 			(mouseEvent.target.type === MouseTargetType.CONTENT_TEXT) &&
@@ -336,26 +336,26 @@ export class GotoDefinitionAtPositionEditorContribution implements IEditorContri
 		return getDefinitionsAtPosition(model, position, token);
 	}
 
-	private gotoDefinition(position: Position, openToSide: boolean): Promise<any> {
+	private gotoDefinition(position: Position, openToSide: Boolean): Promise<any> {
 		this.editor.setPosition(position);
 		return this.editor.invokeWithinContext((accessor) => {
 			const canPeek = !openToSide && this.editor.getOption(EditorOption.definitionLinkOpensInPeek) && !this.isInPeekEditor(accessor);
-			const action = new DefinitionAction({ openToSide, openInPeek: canPeek, muteMessage: true }, { alias: '', label: '', id: '', precondition: undefined });
+			const action = new DefinitionAction({ openToSide, openInPeek: canPeek, muteMessage: true }, { alias: '', laBel: '', id: '', precondition: undefined });
 			return action.run(accessor, this.editor);
 		});
 	}
 
-	private isInPeekEditor(accessor: ServicesAccessor): boolean | undefined {
+	private isInPeekEditor(accessor: ServicesAccessor): Boolean | undefined {
 		const contextKeyService = accessor.get(IContextKeyService);
 		return PeekContext.inPeekEditor.getValue(contextKeyService);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.toUnhook.dispose();
 	}
 }
 
-registerEditorContribution(GotoDefinitionAtPositionEditorContribution.ID, GotoDefinitionAtPositionEditorContribution);
+registerEditorContriBution(GotoDefinitionAtPositionEditorContriBution.ID, GotoDefinitionAtPositionEditorContriBution);
 
 registerThemingParticipant((theme, collector) => {
 	const activeLinkForeground = theme.getColor(editorActiveLinkForeground);

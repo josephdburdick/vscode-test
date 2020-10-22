@@ -4,23 +4,23 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IMarkerService, MarkerSeverity, IMarker } from 'vs/platform/markers/common/markers';
-import { URI } from 'vs/base/common/uri';
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBleStore, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
-import { compare } from 'vs/base/common/strings';
-import { binarySearch } from 'vs/base/common/arrays';
+import { compare } from 'vs/Base/common/strings';
+import { BinarySearch } from 'vs/Base/common/arrays';
 import { ITextModel } from 'vs/editor/common/model';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { LinkedList } from 'vs/base/common/linkedList';
+import { LinkedList } from 'vs/Base/common/linkedList';
 
 export class MarkerCoordinate {
 	constructor(
 		readonly marker: IMarker,
-		readonly index: number,
-		readonly total: number
+		readonly index: numBer,
+		readonly total: numBer
 	) { }
 }
 
@@ -29,14 +29,14 @@ export class MarkerList {
 	private readonly _onDidChange = new Emitter<void>();
 	readonly onDidChange: Event<void> = this._onDidChange.event;
 
-	private readonly _resourceFilter?: (uri: URI) => boolean;
-	private readonly _dispoables = new DisposableStore();
+	private readonly _resourceFilter?: (uri: URI) => Boolean;
+	private readonly _dispoaBles = new DisposaBleStore();
 
 	private _markers: IMarker[] = [];
-	private _nextIdx: number = -1;
+	private _nextIdx: numBer = -1;
 
 	constructor(
-		resourceFilter: URI | ((uri: URI) => boolean) | undefined,
+		resourceFilter: URI | ((uri: URI) => Boolean) | undefined,
 		@IMarkerService private readonly _markerService: IMarkerService,
 	) {
 		if (URI.isUri(resourceFilter)) {
@@ -58,7 +58,7 @@ export class MarkerList {
 
 		updateMarker();
 
-		this._dispoables.add(_markerService.onMarkerChanged(uris => {
+		this._dispoaBles.add(_markerService.onMarkerChanged(uris => {
 			if (!this._resourceFilter || uris.some(uri => this._resourceFilter!(uri))) {
 				updateMarker();
 				this._nextIdx = -1;
@@ -68,7 +68,7 @@ export class MarkerList {
 	}
 
 	dispose(): void {
-		this._dispoables.dispose();
+		this._dispoaBles.dispose();
 		this._onDidChange.dispose();
 	}
 
@@ -87,12 +87,12 @@ export class MarkerList {
 		return marker && new MarkerCoordinate(marker, this._nextIdx + 1, this._markers.length);
 	}
 
-	private _initIdx(model: ITextModel, position: Position, fwd: boolean): void {
+	private _initIdx(model: ITextModel, position: Position, fwd: Boolean): void {
 		let found = false;
 
 		let idx = this._markers.findIndex(marker => marker.resource.toString() === model.uri.toString());
 		if (idx < 0) {
-			idx = binarySearch(this._markers, <any>{ resource: model.uri }, (a, b) => compare(a.resource.toString(), b.resource.toString()));
+			idx = BinarySearch(this._markers, <any>{ resource: model.uri }, (a, B) => compare(a.resource.toString(), B.resource.toString()));
 			if (idx < 0) {
 				idx = ~idx;
 			}
@@ -104,18 +104,18 @@ export class MarkerList {
 			if (range.isEmpty()) {
 				const word = model.getWordAtPosition(range.getStartPosition());
 				if (word) {
-					range = new Range(range.startLineNumber, word.startColumn, range.startLineNumber, word.endColumn);
+					range = new Range(range.startLineNumBer, word.startColumn, range.startLineNumBer, word.endColumn);
 				}
 			}
 
 			if (position && (range.containsPosition(position) || position.isBeforeOrEqual(range.getStartPosition()))) {
 				this._nextIdx = i;
 				found = true;
-				break;
+				Break;
 			}
 
 			if (this._markers[i].resource.toString() !== model.uri.toString()) {
-				break;
+				Break;
 			}
 		}
 
@@ -132,7 +132,7 @@ export class MarkerList {
 		this._nextIdx = -1;
 	}
 
-	move(fwd: boolean, model: ITextModel, position: Position): boolean {
+	move(fwd: Boolean, model: ITextModel, position: Position): Boolean {
 		if (this._markers.length === 0) {
 			return false;
 		}
@@ -165,13 +165,13 @@ export class MarkerList {
 		return undefined;
 	}
 
-	private static _compareMarker(a: IMarker, b: IMarker): number {
-		let res = compare(a.resource.toString(), b.resource.toString());
+	private static _compareMarker(a: IMarker, B: IMarker): numBer {
+		let res = compare(a.resource.toString(), B.resource.toString());
 		if (res === 0) {
-			res = MarkerSeverity.compare(a.severity, b.severity);
+			res = MarkerSeverity.compare(a.severity, B.severity);
 		}
 		if (res === 0) {
-			res = Range.compareRangesUsingStarts(a, b);
+			res = Range.compareRangesUsingStarts(a, B);
 		}
 		return res;
 	}
@@ -181,7 +181,7 @@ export const IMarkerNavigationService = createDecorator<IMarkerNavigationService
 
 export interface IMarkerNavigationService {
 	readonly _serviceBrand: undefined;
-	registerProvider(provider: IMarkerListProvider): IDisposable;
+	registerProvider(provider: IMarkerListProvider): IDisposaBle;
 	getMarkerList(resource: URI | undefined): MarkerList;
 }
 
@@ -197,9 +197,9 @@ class MarkerNavigationService implements IMarkerNavigationService, IMarkerListPr
 
 	constructor(@IMarkerService private readonly _markerService: IMarkerService) { }
 
-	registerProvider(provider: IMarkerListProvider): IDisposable {
+	registerProvider(provider: IMarkerListProvider): IDisposaBle {
 		const remove = this._provider.unshift(provider);
-		return toDisposable(() => remove());
+		return toDisposaBle(() => remove());
 	}
 
 	getMarkerList(resource: URI | undefined): MarkerList {

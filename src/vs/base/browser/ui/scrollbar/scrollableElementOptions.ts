@@ -3,147 +3,147 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
+import { ScrollBarVisiBility } from 'vs/Base/common/scrollaBle';
 
-export interface ScrollableElementCreationOptions {
+export interface ScrollaBleElementCreationOptions {
 	/**
-	 * The scrollable element should not do any DOM mutations until renderNow() is called.
+	 * The scrollaBle element should not do any DOM mutations until renderNow() is called.
 	 * Defaults to false.
 	 */
-	lazyRender?: boolean;
+	lazyRender?: Boolean;
 	/**
-	 * CSS Class name for the scrollable element.
+	 * CSS Class name for the scrollaBle element.
 	 */
 	className?: string;
 	/**
-	 * Drop subtle horizontal and vertical shadows.
+	 * Drop suBtle horizontal and vertical shadows.
 	 * Defaults to false.
 	 */
-	useShadows?: boolean;
+	useShadows?: Boolean;
 	/**
 	 * Handle mouse wheel (listen to mouse wheel scrolling).
 	 * Defaults to true
 	 */
-	handleMouseWheel?: boolean;
+	handleMouseWheel?: Boolean;
 	/**
 	 * If mouse wheel is handled, make mouse wheel scrolling smooth.
 	 * Defaults to true.
 	 */
-	mouseWheelSmoothScroll?: boolean;
+	mouseWheelSmoothScroll?: Boolean;
 	/**
 	 * Flip axes. Treat vertical scrolling like horizontal and vice-versa.
 	 * Defaults to false.
 	 */
-	flipAxes?: boolean;
+	flipAxes?: Boolean;
 	/**
-	 * If enabled, will scroll horizontally when scrolling vertical.
+	 * If enaBled, will scroll horizontally when scrolling vertical.
 	 * Defaults to false.
 	 */
-	scrollYToX?: boolean;
+	scrollYToX?: Boolean;
 	/**
-	 * Always consume mouse wheel events, even when scrolling is no longer possible.
+	 * Always consume mouse wheel events, even when scrolling is no longer possiBle.
 	 * Defaults to false.
 	 */
-	alwaysConsumeMouseWheel?: boolean;
+	alwaysConsumeMouseWheel?: Boolean;
 	/**
-	 * A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events.
+	 * A multiplier to Be used on the `deltaX` and `deltaY` of mouse wheel scroll events.
 	 * Defaults to 1.
 	 */
-	mouseWheelScrollSensitivity?: number;
+	mouseWheelScrollSensitivity?: numBer;
 	/**
 	 * FastScrolling mulitplier speed when pressing `Alt`
 	 * Defaults to 5.
 	 */
-	fastScrollSensitivity?: number;
+	fastScrollSensitivity?: numBer;
 	/**
-	 * Whether the scrollable will only scroll along the predominant axis when scrolling both
+	 * Whether the scrollaBle will only scroll along the predominant axis when scrolling Both
 	 * vertically and horizontally at the same time.
 	 * Prevents horizontal drift when scrolling vertically on a trackpad.
 	 * Defaults to true.
 	 */
-	scrollPredominantAxis?: boolean;
+	scrollPredominantAxis?: Boolean;
 	/**
-	 * Height for vertical arrows (top/bottom) and width for horizontal arrows (left/right).
+	 * Height for vertical arrows (top/Bottom) and width for horizontal arrows (left/right).
 	 * Defaults to 11.
 	 */
-	arrowSize?: number;
+	arrowSize?: numBer;
 	/**
-	 * The dom node events should be bound to.
-	 * If no listenOnDomNode is provided, the dom node passed to the constructor will be used for event listening.
+	 * The dom node events should Be Bound to.
+	 * If no listenOnDomNode is provided, the dom node passed to the constructor will Be used for event listening.
 	 */
 	listenOnDomNode?: HTMLElement;
 	/**
-	 * Control the visibility of the horizontal scrollbar.
-	 * Accepted values: 'auto' (on mouse over), 'visible' (always visible), 'hidden' (never visible)
+	 * Control the visiBility of the horizontal scrollBar.
+	 * Accepted values: 'auto' (on mouse over), 'visiBle' (always visiBle), 'hidden' (never visiBle)
 	 * Defaults to 'auto'.
 	 */
-	horizontal?: ScrollbarVisibility;
+	horizontal?: ScrollBarVisiBility;
 	/**
-	 * Height (in px) of the horizontal scrollbar.
+	 * Height (in px) of the horizontal scrollBar.
 	 * Defaults to 10.
 	 */
-	horizontalScrollbarSize?: number;
+	horizontalScrollBarSize?: numBer;
 	/**
-	 * Height (in px) of the horizontal scrollbar slider.
-	 * Defaults to `horizontalScrollbarSize`
+	 * Height (in px) of the horizontal scrollBar slider.
+	 * Defaults to `horizontalScrollBarSize`
 	 */
-	horizontalSliderSize?: number;
+	horizontalSliderSize?: numBer;
 	/**
-	 * Render arrows (left/right) for the horizontal scrollbar.
+	 * Render arrows (left/right) for the horizontal scrollBar.
 	 * Defaults to false.
 	 */
-	horizontalHasArrows?: boolean;
+	horizontalHasArrows?: Boolean;
 	/**
-	 * Control the visibility of the vertical scrollbar.
-	 * Accepted values: 'auto' (on mouse over), 'visible' (always visible), 'hidden' (never visible)
+	 * Control the visiBility of the vertical scrollBar.
+	 * Accepted values: 'auto' (on mouse over), 'visiBle' (always visiBle), 'hidden' (never visiBle)
 	 * Defaults to 'auto'.
 	 */
-	vertical?: ScrollbarVisibility;
+	vertical?: ScrollBarVisiBility;
 	/**
-	 * Width (in px) of the vertical scrollbar.
+	 * Width (in px) of the vertical scrollBar.
 	 * Defaults to 10.
 	 */
-	verticalScrollbarSize?: number;
+	verticalScrollBarSize?: numBer;
 	/**
-	 * Width (in px) of the vertical scrollbar slider.
-	 * Defaults to `verticalScrollbarSize`
+	 * Width (in px) of the vertical scrollBar slider.
+	 * Defaults to `verticalScrollBarSize`
 	 */
-	verticalSliderSize?: number;
+	verticalSliderSize?: numBer;
 	/**
-	 * Render arrows (top/bottom) for the vertical scrollbar.
+	 * Render arrows (top/Bottom) for the vertical scrollBar.
 	 * Defaults to false.
 	 */
-	verticalHasArrows?: boolean;
+	verticalHasArrows?: Boolean;
 }
 
-export interface ScrollableElementChangeOptions {
-	handleMouseWheel?: boolean;
-	mouseWheelScrollSensitivity?: number;
-	fastScrollSensitivity?: number;
-	scrollPredominantAxis?: boolean;
-	horizontalScrollbarSize?: number;
+export interface ScrollaBleElementChangeOptions {
+	handleMouseWheel?: Boolean;
+	mouseWheelScrollSensitivity?: numBer;
+	fastScrollSensitivity?: numBer;
+	scrollPredominantAxis?: Boolean;
+	horizontalScrollBarSize?: numBer;
 }
 
-export interface ScrollableElementResolvedOptions {
-	lazyRender: boolean;
+export interface ScrollaBleElementResolvedOptions {
+	lazyRender: Boolean;
 	className: string;
-	useShadows: boolean;
-	handleMouseWheel: boolean;
-	flipAxes: boolean;
-	scrollYToX: boolean;
-	alwaysConsumeMouseWheel: boolean;
-	mouseWheelScrollSensitivity: number;
-	fastScrollSensitivity: number;
-	scrollPredominantAxis: boolean;
-	mouseWheelSmoothScroll: boolean;
-	arrowSize: number;
+	useShadows: Boolean;
+	handleMouseWheel: Boolean;
+	flipAxes: Boolean;
+	scrollYToX: Boolean;
+	alwaysConsumeMouseWheel: Boolean;
+	mouseWheelScrollSensitivity: numBer;
+	fastScrollSensitivity: numBer;
+	scrollPredominantAxis: Boolean;
+	mouseWheelSmoothScroll: Boolean;
+	arrowSize: numBer;
 	listenOnDomNode: HTMLElement | null;
-	horizontal: ScrollbarVisibility;
-	horizontalScrollbarSize: number;
-	horizontalSliderSize: number;
-	horizontalHasArrows: boolean;
-	vertical: ScrollbarVisibility;
-	verticalScrollbarSize: number;
-	verticalSliderSize: number;
-	verticalHasArrows: boolean;
+	horizontal: ScrollBarVisiBility;
+	horizontalScrollBarSize: numBer;
+	horizontalSliderSize: numBer;
+	horizontalHasArrows: Boolean;
+	vertical: ScrollBarVisiBility;
+	verticalScrollBarSize: numBer;
+	verticalSliderSize: numBer;
+	verticalHasArrows: Boolean;
 }

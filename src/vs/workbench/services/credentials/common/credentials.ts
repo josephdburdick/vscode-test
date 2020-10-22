@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export const ICredentialsService = createDecorator<ICredentialsService>('credentialsService');
@@ -11,7 +11,7 @@ export const ICredentialsService = createDecorator<ICredentialsService>('credent
 export interface ICredentialsProvider {
 	getPassword(service: string, account: string): Promise<string | null>;
 	setPassword(service: string, account: string, password: string): Promise<void>;
-	deletePassword(service: string, account: string): Promise<boolean>;
+	deletePassword(service: string, account: string): Promise<Boolean>;
 	findPassword(service: string): Promise<string | null>;
 	findCredentials(service: string): Promise<Array<{ account: string, password: string }>>;
 }

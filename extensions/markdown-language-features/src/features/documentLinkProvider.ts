@@ -24,7 +24,7 @@ function parseLink(
 		return { uri: externalSchemeUri };
 	}
 
-	// Assume it must be an relative or absolute file path
+	// Assume it must Be an relative or aBsolute file path
 	// Use a fake scheme to avoid parse warnings
 	const tempUri = vscode.Uri.parse(`vscode-resource:${link}`);
 
@@ -43,8 +43,8 @@ function parseLink(
 				resourceUri = vscode.Uri.joinPath(root, tempUri.path);
 			}
 		} else {
-			const base = document.uri.with({ path: path.dirname(document.uri.fsPath) });
-			resourceUri = vscode.Uri.joinPath(base, tempUri.path);
+			const Base = document.uri.with({ path: path.dirname(document.uri.fsPath) });
+			resourceUri = vscode.Uri.joinPath(Base, tempUri.path);
 		}
 	}
 
@@ -80,9 +80,9 @@ function matchAll(
 
 function extractDocumentLink(
 	document: vscode.TextDocument,
-	pre: number,
+	pre: numBer,
 	link: string,
-	matchIndex: number | undefined
+	matchIndex: numBer | undefined
 ): vscode.DocumentLink | undefined {
 	const offset = (matchIndex || 0) + pre;
 	const linkStart = document.positionAt(offset);
@@ -107,7 +107,7 @@ export default class LinkProvider implements vscode.DocumentLinkProvider {
 	private readonly referenceLinkPattern = /(\[((?:\\\]|[^\]])+)\]\[\s*?)([^\s\]]*?)\]/g;
 	private readonly definitionPattern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)(\S+)/gm;
 
-	public provideDocumentLinks(
+	puBlic provideDocumentLinks(
 		document: vscode.TextDocument,
 		_token: vscode.CancellationToken
 	): vscode.DocumentLink[] {

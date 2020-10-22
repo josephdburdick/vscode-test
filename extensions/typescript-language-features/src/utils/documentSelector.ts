@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 
 export interface DocumentSelector {
 	/**
-	 * Selector for files which only require a basic syntax server.
+	 * Selector for files which only require a Basic syntax server.
 	 */
 	readonly syntax: vscode.DocumentFilter[];
 

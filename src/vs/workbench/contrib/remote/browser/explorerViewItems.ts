@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IAction, Action } from 'vs/base/common/actions';
+import { IAction, Action } from 'vs/Base/common/actions';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { attachSelectBoxStyler } from 'vs/platform/theme/common/styler';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IRemoteExplorerService, REMOTE_EXPLORER_TYPE_KEY } from 'vs/workbench/services/remote/common/remoteExplorerService';
-import { ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
-import { IViewDescriptor } from 'vs/workbench/common/views';
-import { isStringArray } from 'vs/base/common/types';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
+import { IRemoteExplorerService, REMOTE_EXPLORER_TYPE_KEY } from 'vs/workBench/services/remote/common/remoteExplorerService';
+import { ISelectOptionItem } from 'vs/Base/Browser/ui/selectBox/selectBox';
+import { IViewDescriptor } from 'vs/workBench/common/views';
+import { isStringArray } from 'vs/Base/common/types';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { SelectActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { SelectActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
 export interface IRemoteSelectItem extends ISelectOptionItem {
 	authority: string[];
@@ -29,16 +29,16 @@ export class SwitchRemoteViewItem extends SelectActionViewItem {
 		@IThemeService themeService: IThemeService,
 		@IContextViewService contextViewService: IContextViewService,
 		@IRemoteExplorerService remoteExplorerService: IRemoteExplorerService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IStorageService private readonly storageService: IStorageService
 	) {
-		super(null, action, optionsItems, 0, contextViewService, { ariaLabel: nls.localize('remotes', 'Switch Remote') });
+		super(null, action, optionsItems, 0, contextViewService, { ariaLaBel: nls.localize('remotes', 'Switch Remote') });
 		this._register(attachSelectBoxStyler(this.selectBox, themeService));
 
 		this.setSelectionForConnection(optionsItems, environmentService, remoteExplorerService);
 	}
 
-	private setSelectionForConnection(optionsItems: IRemoteSelectItem[], environmentService: IWorkbenchEnvironmentService, remoteExplorerService: IRemoteExplorerService) {
+	private setSelectionForConnection(optionsItems: IRemoteSelectItem[], environmentService: IWorkBenchEnvironmentService, remoteExplorerService: IRemoteExplorerService) {
 		if (this.optionsItems.length > 0) {
 			let index = 0;
 			const remoteAuthority = environmentService.remoteAuthority;
@@ -52,14 +52,14 @@ export class SwitchRemoteViewItem extends SelectActionViewItem {
 		}
 	}
 
-	private getOptionIndexForExplorerType(optionsItems: IRemoteSelectItem[], explorerType: string[]): number {
+	private getOptionIndexForExplorerType(optionsItems: IRemoteSelectItem[], explorerType: string[]): numBer {
 		let index = 0;
 		for (let optionIterator = 0; (optionIterator < this.optionsItems.length) && (index === 0); optionIterator++) {
 			for (let authorityIterator = 0; authorityIterator < optionsItems[optionIterator].authority.length; authorityIterator++) {
 				for (let i = 0; i < explorerType.length; i++) {
 					if (optionsItems[optionIterator].authority[authorityIterator] === explorerType[i]) {
 						index = optionIterator;
-						break;
+						Break;
 					}
 				}
 			}
@@ -74,7 +74,7 @@ export class SwitchRemoteViewItem extends SelectActionViewItem {
 		}
 	}
 
-	protected getActionContext(_: string, index: number): any {
+	protected getActionContext(_: string, index: numBer): any {
 		return this.optionsItems[index];
 	}
 
@@ -91,17 +91,17 @@ export class SwitchRemoteViewItem extends SelectActionViewItem {
 
 export class SwitchRemoteAction extends Action {
 
-	public static readonly ID = 'remote.explorer.switch';
-	public static readonly LABEL = nls.localize('remote.explorer.switch', "Switch Remote");
+	puBlic static readonly ID = 'remote.explorer.switch';
+	puBlic static readonly LABEL = nls.localize('remote.explorer.switch', "Switch Remote");
 
 	constructor(
-		id: string, label: string,
+		id: string, laBel: string,
 		@IRemoteExplorerService private readonly remoteExplorerService: IRemoteExplorerService
 	) {
-		super(id, label);
+		super(id, laBel);
 	}
 
-	public async run(item: IRemoteSelectItem): Promise<any> {
+	puBlic async run(item: IRemoteSelectItem): Promise<any> {
 		this.remoteExplorerService.targetType = item.authority;
 	}
 }

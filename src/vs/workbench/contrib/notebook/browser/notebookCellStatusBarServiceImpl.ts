@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { INotebookCellStatusBarService } from 'vs/workbench/contrib/notebook/common/notebookCellStatusBarService';
-import { INotebookCellStatusBarEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ResourceMap } from 'vs/Base/common/map';
+import { URI } from 'vs/Base/common/uri';
+import { INoteBookCellStatusBarService } from 'vs/workBench/contriB/noteBook/common/noteBookCellStatusBarService';
+import { INoteBookCellStatusBarEntry } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
-export class NotebookCellStatusBarService extends Disposable implements INotebookCellStatusBarService {
+export class NoteBookCellStatusBarService extends DisposaBle implements INoteBookCellStatusBarService {
 
 	private _onDidChangeEntriesForCell = new Emitter<URI>();
 	readonly onDidChangeEntriesForCell: Event<URI> = this._onDidChangeEntriesForCell.event;
 
-	private _entries = new ResourceMap<Set<INotebookCellStatusBarEntry>>();
+	private _entries = new ResourceMap<Set<INoteBookCellStatusBarEntry>>();
 
-	private removeEntry(entry: INotebookCellStatusBarEntry) {
+	private removeEntry(entry: INoteBookCellStatusBarEntry) {
 		const existingEntries = this._entries.get(entry.cellResource);
 		if (existingEntries) {
 			existingEntries.delete(entry);
@@ -29,7 +29,7 @@ export class NotebookCellStatusBarService extends Disposable implements INoteboo
 		this._onDidChangeEntriesForCell.fire(entry.cellResource);
 	}
 
-	addEntry(entry: INotebookCellStatusBarEntry): IDisposable {
+	addEntry(entry: INoteBookCellStatusBarEntry): IDisposaBle {
 		const existingEntries = this._entries.get(entry.cellResource) ?? new Set();
 		existingEntries.add(entry);
 		this._entries.set(entry.cellResource, existingEntries);
@@ -43,7 +43,7 @@ export class NotebookCellStatusBarService extends Disposable implements INoteboo
 		};
 	}
 
-	getEntries(cell: URI): INotebookCellStatusBarEntry[] {
+	getEntries(cell: URI): INoteBookCellStatusBarEntry[] {
 		const existingEntries = this._entries.get(cell);
 		return existingEntries ?
 			Array.from(existingEntries.values()) :

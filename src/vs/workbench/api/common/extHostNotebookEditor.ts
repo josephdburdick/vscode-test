@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { readonly } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { MainThreadNotebookShape } from 'vs/workbench/api/common/extHost.protocol';
-import * as extHostTypes from 'vs/workbench/api/common/extHostTypes';
-import { addIdToOutput, CellEditType, ICellEditOperation, ICellReplaceEdit, INotebookEditData, notebookDocumentMetadataDefaults } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { readonly } from 'vs/Base/common/errors';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { MainThreadNoteBookShape } from 'vs/workBench/api/common/extHost.protocol';
+import * as extHostTypes from 'vs/workBench/api/common/extHostTypes';
+import { addIdToOutput, CellEditType, ICellEditOperation, ICellReplaceEdit, INoteBookEditData, noteBookDocumentMetadataDefaults } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 import * as vscode from 'vscode';
-import { ExtHostNotebookDocument } from './extHostNotebookDocument';
+import { ExtHostNoteBookDocument } from './extHostNoteBookDocument';
 
-class NotebookEditorCellEditBuilder implements vscode.NotebookEditorEdit {
+class NoteBookEditorCellEditBuilder implements vscode.NoteBookEditorEdit {
 
-	private readonly _documentVersionId: number;
+	private readonly _documentVersionId: numBer;
 
-	private _finalized: boolean = false;
+	private _finalized: Boolean = false;
 	private _collectedEdits: ICellEditOperation[] = [];
 
-	constructor(documentVersionId: number) {
+	constructor(documentVersionId: numBer) {
 		this._documentVersionId = documentVersionId;
 	}
 
-	finalize(): INotebookEditData {
+	finalize(): INoteBookEditData {
 		this._finalized = true;
 		return {
 			documentVersionId: this._documentVersionId,
@@ -33,19 +33,19 @@ class NotebookEditorCellEditBuilder implements vscode.NotebookEditorEdit {
 
 	private _throwIfFinalized() {
 		if (this._finalized) {
-			throw new Error('Edit is only valid while callback runs');
+			throw new Error('Edit is only valid while callBack runs');
 		}
 	}
 
-	replaceMetadata(value: vscode.NotebookDocumentMetadata): void {
+	replaceMetadata(value: vscode.NoteBookDocumentMetadata): void {
 		this._throwIfFinalized();
 		this._collectedEdits.push({
 			editType: CellEditType.DocumentMetadata,
-			metadata: { ...notebookDocumentMetadataDefaults, ...value }
+			metadata: { ...noteBookDocumentMetadataDefaults, ...value }
 		});
 	}
 
-	replaceCellMetadata(index: number, metadata: vscode.NotebookCellMetadata): void {
+	replaceCellMetadata(index: numBer, metadata: vscode.NoteBookCellMetadata): void {
 		this._throwIfFinalized();
 		this._collectedEdits.push({
 			editType: CellEditType.Metadata,
@@ -54,13 +54,13 @@ class NotebookEditorCellEditBuilder implements vscode.NotebookEditorEdit {
 		});
 	}
 
-	replaceCellOutput(index: number, outputs: (vscode.NotebookCellOutput | vscode.CellOutput)[]): void {
+	replaceCellOutput(index: numBer, outputs: (vscode.NoteBookCellOutput | vscode.CellOutput)[]): void {
 		this._throwIfFinalized();
 		this._collectedEdits.push({
 			editType: CellEditType.Output,
 			index,
 			outputs: outputs.map(output => {
-				if (extHostTypes.NotebookCellOutput.isNotebookCellOutput(output)) {
+				if (extHostTypes.NoteBookCellOutput.isNoteBookCellOutput(output)) {
 					return addIdToOutput(output.toJSON());
 				} else {
 					return addIdToOutput(output);
@@ -69,7 +69,7 @@ class NotebookEditorCellEditBuilder implements vscode.NotebookEditorEdit {
 		});
 	}
 
-	replaceCells(from: number, to: number, cells: vscode.NotebookCellData[]): void {
+	replaceCells(from: numBer, to: numBer, cells: vscode.NoteBookCellData[]): void {
 		this._throwIfFinalized();
 		if (from === to && cells.length === 0) {
 			return;
@@ -88,16 +88,16 @@ class NotebookEditorCellEditBuilder implements vscode.NotebookEditorEdit {
 	}
 }
 
-export class ExtHostNotebookEditor extends Disposable implements vscode.NotebookEditor {
+export class ExtHostNoteBookEditor extends DisposaBle implements vscode.NoteBookEditor {
 
-	//TODO@rebornix noop setter?
-	selection?: vscode.NotebookCell;
+	//TODO@reBornix noop setter?
+	selection?: vscode.NoteBookCell;
 
-	private _visibleRanges: vscode.NotebookCellRange[] = [];
+	private _visiBleRanges: vscode.NoteBookCellRange[] = [];
 	private _viewColumn?: vscode.ViewColumn;
-	private _active: boolean = false;
-	private _visible: boolean = false;
-	private _kernel?: vscode.NotebookKernel;
+	private _active: Boolean = false;
+	private _visiBle: Boolean = false;
+	private _kernel?: vscode.NoteBookKernel;
 
 	private _onDidDispose = new Emitter<void>();
 	private _onDidReceiveMessage = new Emitter<any>();
@@ -105,17 +105,17 @@ export class ExtHostNotebookEditor extends Disposable implements vscode.Notebook
 	readonly onDidDispose: Event<void> = this._onDidDispose.event;
 	readonly onDidReceiveMessage: vscode.Event<any> = this._onDidReceiveMessage.event;
 
-	private _hasDecorationsForKey: { [key: string]: boolean; } = Object.create(null);
+	private _hasDecorationsForKey: { [key: string]: Boolean; } = OBject.create(null);
 
 	constructor(
 		readonly id: string,
 		private readonly _viewType: string,
-		private readonly _proxy: MainThreadNotebookShape,
-		private readonly _webComm: vscode.NotebookCommunication,
-		readonly notebookData: ExtHostNotebookDocument,
+		private readonly _proxy: MainThreadNoteBookShape,
+		private readonly _weBComm: vscode.NoteBookCommunication,
+		readonly noteBookData: ExtHostNoteBookDocument,
 	) {
 		super();
-		this._register(this._webComm.onDidReceiveMessage(e => {
+		this._register(this._weBComm.onDidReceiveMessage(e => {
 			this._onDidReceiveMessage.fire(e);
 		}));
 	}
@@ -132,61 +132,61 @@ export class ExtHostNotebookEditor extends Disposable implements vscode.Notebook
 		return this._kernel;
 	}
 
-	set kernel(_kernel: vscode.NotebookKernel | undefined) {
+	set kernel(_kernel: vscode.NoteBookKernel | undefined) {
 		throw readonly('kernel');
 	}
 
-	_acceptKernel(kernel?: vscode.NotebookKernel) {
+	_acceptKernel(kernel?: vscode.NoteBookKernel) {
 		this._kernel = kernel;
 	}
 
-	get visible(): boolean {
-		return this._visible;
+	get visiBle(): Boolean {
+		return this._visiBle;
 	}
 
-	set visible(_state: boolean) {
-		throw readonly('visible');
+	set visiBle(_state: Boolean) {
+		throw readonly('visiBle');
 	}
 
-	_acceptVisibility(value: boolean) {
-		this._visible = value;
+	_acceptVisiBility(value: Boolean) {
+		this._visiBle = value;
 	}
 
-	get visibleRanges() {
-		return this._visibleRanges;
+	get visiBleRanges() {
+		return this._visiBleRanges;
 	}
 
-	set visibleRanges(_range: vscode.NotebookCellRange[]) {
-		throw readonly('visibleRanges');
+	set visiBleRanges(_range: vscode.NoteBookCellRange[]) {
+		throw readonly('visiBleRanges');
 	}
 
-	_acceptVisibleRanges(value: vscode.NotebookCellRange[]): void {
-		this._visibleRanges = value;
+	_acceptVisiBleRanges(value: vscode.NoteBookCellRange[]): void {
+		this._visiBleRanges = value;
 	}
 
-	get active(): boolean {
+	get active(): Boolean {
 		return this._active;
 	}
 
-	set active(_state: boolean) {
+	set active(_state: Boolean) {
 		throw readonly('active');
 	}
 
-	_acceptActive(value: boolean) {
+	_acceptActive(value: Boolean) {
 		this._active = value;
 	}
 
-	get document(): vscode.NotebookDocument {
-		return this.notebookData.notebookDocument;
+	get document(): vscode.NoteBookDocument {
+		return this.noteBookData.noteBookDocument;
 	}
 
-	edit(callback: (editBuilder: NotebookEditorCellEditBuilder) => void): Thenable<boolean> {
-		const edit = new NotebookEditorCellEditBuilder(this.document.version);
-		callback(edit);
+	edit(callBack: (editBuilder: NoteBookEditorCellEditBuilder) => void): ThenaBle<Boolean> {
+		const edit = new NoteBookEditorCellEditBuilder(this.document.version);
+		callBack(edit);
 		return this._applyEdit(edit.finalize());
 	}
 
-	private _applyEdit(editData: INotebookEditData): Promise<boolean> {
+	private _applyEdit(editData: INoteBookEditData): Promise<Boolean> {
 
 		// return when there is nothing to do
 		if (editData.cellEdits.length === 0) {
@@ -222,7 +222,7 @@ export class ExtHostNotebookEditor extends Disposable implements vscode.Notebook
 		return this._proxy.$tryApplyEdits(this._viewType, this.document.uri, editData.documentVersionId, compressedEdits);
 	}
 
-	setDecorations(decorationType: vscode.NotebookEditorDecorationType, range: vscode.NotebookCellRange): void {
+	setDecorations(decorationType: vscode.NoteBookEditorDecorationType, range: vscode.NoteBookCellRange): void {
 		const willBeEmpty = (range.start === range.end);
 		if (willBeEmpty && !this._hasDecorationsForKey[decorationType.key]) {
 			// avoid no-op call to the renderer
@@ -241,16 +241,16 @@ export class ExtHostNotebookEditor extends Disposable implements vscode.Notebook
 		);
 	}
 
-	revealRange(range: vscode.NotebookCellRange, revealType?: extHostTypes.NotebookEditorRevealType) {
-		this._proxy.$tryRevealRange(this.id, range, revealType || extHostTypes.NotebookEditorRevealType.Default);
+	revealRange(range: vscode.NoteBookCellRange, revealType?: extHostTypes.NoteBookEditorRevealType) {
+		this._proxy.$tryRevealRange(this.id, range, revealType || extHostTypes.NoteBookEditorRevealType.Default);
 	}
 
-	async postMessage(message: any): Promise<boolean> {
-		return this._webComm.postMessage(message);
+	async postMessage(message: any): Promise<Boolean> {
+		return this._weBComm.postMessage(message);
 	}
 
-	asWebviewUri(localResource: vscode.Uri): vscode.Uri {
-		return this._webComm.asWebviewUri(localResource);
+	asWeBviewUri(localResource: vscode.Uri): vscode.Uri {
+		return this._weBComm.asWeBviewUri(localResource);
 	}
 
 	dispose() {

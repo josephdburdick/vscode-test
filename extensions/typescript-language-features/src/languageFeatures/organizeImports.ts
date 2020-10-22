@@ -6,11 +6,11 @@
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
 import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
 import { nulToken } from '../utils/cancellation';
 import { Command, CommandManager } from '../commands/commandManager';
-import { conditionalRegistration, requireMinVersion, requireSomeCapability } from '../utils/dependentRegistration';
+import { conditionalRegistration, requireMinVersion, requireSomeCapaBility } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import { TelemetryReporter } from '../utils/telemetry';
 import * as typeconverts from '../utils/typeConverters';
@@ -20,16 +20,16 @@ const localize = nls.loadMessageBundle();
 
 
 class OrganizeImportsCommand implements Command {
-	public static readonly Id = '_typescript.organizeImports';
+	puBlic static readonly Id = '_typescript.organizeImports';
 
-	public readonly id = OrganizeImportsCommand.Id;
+	puBlic readonly id = OrganizeImportsCommand.Id;
 
 	constructor(
 		private readonly client: ITypeScriptServiceClient,
 		private readonly telemetryReporter: TelemetryReporter,
 	) { }
 
-	public async execute(file: string): Promise<boolean> {
+	puBlic async execute(file: string): Promise<Boolean> {
 		/* __GDPR__
 			"organizeImports.execute" : {
 				"${include}": [
@@ -48,19 +48,19 @@ class OrganizeImportsCommand implements Command {
 			}
 		};
 		const response = await this.client.interruptGetErr(() => this.client.execute('organizeImports', args, nulToken));
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return false;
 		}
 
-		const edits = typeconverts.WorkspaceEdit.fromFileCodeEdits(this.client, response.body);
+		const edits = typeconverts.WorkspaceEdit.fromFileCodeEdits(this.client, response.Body);
 		return vscode.workspace.applyEdit(edits);
 	}
 }
 
 export class OrganizeImportsCodeActionProvider implements vscode.CodeActionProvider {
-	public static readonly minVersion = API.v280;
+	puBlic static readonly minVersion = API.v280;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient,
 		commandManager: CommandManager,
 		private readonly fileConfigManager: FileConfigurationManager,
@@ -70,11 +70,11 @@ export class OrganizeImportsCodeActionProvider implements vscode.CodeActionProvi
 		commandManager.register(new OrganizeImportsCommand(client, telemetryReporter));
 	}
 
-	public readonly metadata: vscode.CodeActionProviderMetadata = {
+	puBlic readonly metadata: vscode.CodeActionProviderMetadata = {
 		providedCodeActionKinds: [vscode.CodeActionKind.SourceOrganizeImports]
 	};
 
-	public provideCodeActions(
+	puBlic provideCodeActions(
 		document: vscode.TextDocument,
 		_range: vscode.Range,
 		context: vscode.CodeActionContext,
@@ -108,7 +108,7 @@ export function register(
 ) {
 	return conditionalRegistration([
 		requireMinVersion(client, OrganizeImportsCodeActionProvider.minVersion),
-		requireSomeCapability(client, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.Semantic),
 	], () => {
 		const organizeImportsProvider = new OrganizeImportsCodeActionProvider(client, commandManager, fileConfigurationManager, telemetryReporter);
 		return vscode.languages.registerCodeActionsProvider(selector.semantic,

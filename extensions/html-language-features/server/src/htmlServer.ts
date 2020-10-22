@@ -5,13 +5,13 @@
 
 import {
 	Connection, TextDocuments, InitializeParams, InitializeResult, RequestType,
-	DocumentRangeFormattingRequest, Disposable, DocumentSelector, TextDocumentPositionParams, ServerCapabilities,
+	DocumentRangeFormattingRequest, DisposaBle, DocumentSelector, TextDocumentPositionParams, ServerCapaBilities,
 	ConfigurationRequest, ConfigurationParams, DidChangeWorkspaceFoldersNotification,
 	DocumentColorRequest, ColorPresentationRequest, TextDocumentSyncKind, NotificationType
 } from 'vscode-languageserver';
 import {
 	getLanguageModes, LanguageModes, Settings, TextDocument, Position, Diagnostic, WorkspaceFolder, ColorInformation,
-	Range, DocumentLink, SymbolInformation, TextDocumentIdentifier
+	Range, DocumentLink, SymBolInformation, TextDocumentIdentifier
 } from './modes/languageModes';
 
 import { format } from './modes/formatting';
@@ -43,7 +43,7 @@ interface SemanticTokenParams {
 	ranges?: Range[];
 }
 namespace SemanticTokenRequest {
-	export const type: RequestType<SemanticTokenParams, number[] | null, any, any> = new RequestType('html/semanticTokens');
+	export const type: RequestType<SemanticTokenParams, numBer[] | null, any, any> = new RequestType('html/semanticTokens');
 }
 namespace SemanticTokenLegendRequest {
 	export const type: RequestType<void, { types: string[]; modifiers: string[] } | null, any, any> = new RequestType('html/semanticTokenLegend');
@@ -52,7 +52,7 @@ namespace SemanticTokenLegendRequest {
 export interface RuntimeEnvironment {
 	file?: RequestService;
 	http?: RequestService
-	configureHttpRequests?(proxy: string, strictSSL: boolean): void;
+	configureHttpRequests?(proxy: string, strictSSL: Boolean): void;
 }
 
 export function startServer(connection: Connection, runtime: RuntimeEnvironment) {
@@ -71,21 +71,21 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 	let dynamicFormatterRegistration = false;
 	let scopedSettingsSupport = false;
 	let workspaceFoldersSupport = false;
-	let foldingRangeLimit = Number.MAX_VALUE;
+	let foldingRangeLimit = NumBer.MAX_VALUE;
 
 	const notReady = () => Promise.reject('Not Ready');
 	let requestService: RequestService = { getContent: notReady, stat: notReady, readDirectory: notReady };
 
 
 
-	let globalSettings: Settings = {};
-	let documentSettings: { [key: string]: Thenable<Settings> } = {};
+	let gloBalSettings: Settings = {};
+	let documentSettings: { [key: string]: ThenaBle<Settings> } = {};
 	// remove document settings on close
 	documents.onDidClose(e => {
 		delete documentSettings[e.document.uri];
 	});
 
-	function getDocumentSettings(textDocument: TextDocument, needsDocumentSettings: () => boolean): Thenable<Settings | undefined> {
+	function getDocumentSettings(textDocument: TextDocument, needsDocumentSettings: () => Boolean): ThenaBle<Settings | undefined> {
 		if (scopedSettingsSupport && needsDocumentSettings()) {
 			let promise = documentSettings[textDocument.uri];
 			if (!promise) {
@@ -100,7 +100,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 	}
 
 	// After the server has started the client sends an initialize request. The server receives
-	// in the passed params the rootPath of the workspace plus the client capabilities
+	// in the passed params the rootPath of the workspace plus the client capaBilities
 	connection.onInitialize((params: InitializeParams): InitializeResult => {
 		const initializationOptions = params.initializationOptions;
 
@@ -115,11 +115,11 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		requestService = getRequestService(initializationOptions?.handledSchemas || ['file'], connection, runtime);
 
 		const workspace = {
-			get settings() { return globalSettings; },
+			get settings() { return gloBalSettings; },
 			get folders() { return workspaceFolders; }
 		};
 
-		languageModes = getLanguageModes(initializationOptions?.embeddedLanguages || { css: true, javascript: true }, workspace, params.capabilities, requestService);
+		languageModes = getLanguageModes(initializationOptions?.emBeddedLanguages || { css: true, javascript: true }, workspace, params.capaBilities, requestService);
 
 		const dataPaths: string[] = initializationOptions?.dataPaths || [];
 		fetchHTMLDataProviders(dataPaths, requestService).then(dataProviders => {
@@ -133,9 +133,9 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			languageModes.dispose();
 		});
 
-		function getClientCapability<T>(name: string, def: T) {
+		function getClientCapaBility<T>(name: string, def: T) {
 			const keys = name.split('.');
-			let c: any = params.capabilities;
+			let c: any = params.capaBilities;
 			for (let i = 0; c && i < keys.length; i++) {
 				if (!c.hasOwnProperty(keys[i])) {
 					return def;
@@ -145,19 +145,19 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			return c;
 		}
 
-		clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-		dynamicFormatterRegistration = getClientCapability('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof initializationOptions?.provideFormatter !== 'boolean');
-		scopedSettingsSupport = getClientCapability('workspace.configuration', false);
-		workspaceFoldersSupport = getClientCapability('workspace.workspaceFolders', false);
-		foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
-		const capabilities: ServerCapabilities = {
+		clientSnippetSupport = getClientCapaBility('textDocument.completion.completionItem.snippetSupport', false);
+		dynamicFormatterRegistration = getClientCapaBility('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof initializationOptions?.provideFormatter !== 'Boolean');
+		scopedSettingsSupport = getClientCapaBility('workspace.configuration', false);
+		workspaceFoldersSupport = getClientCapaBility('workspace.workspaceFolders', false);
+		foldingRangeLimit = getClientCapaBility('textDocument.foldingRange.rangeLimit', NumBer.MAX_VALUE);
+		const capaBilities: ServerCapaBilities = {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : undefined,
 			hoverProvider: true,
 			documentHighlightProvider: true,
 			documentRangeFormattingProvider: initializationOptions?.provideFormatter === true,
 			documentLinkProvider: { resolveProvider: false },
-			documentSymbolProvider: true,
+			documentSymBolProvider: true,
 			definitionProvider: true,
 			signatureHelpProvider: { triggerCharacters: ['('] },
 			referencesProvider: true,
@@ -166,7 +166,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			selectionRangeProvider: true,
 			renameProvider: true
 		};
-		return { capabilities };
+		return { capaBilities };
 	});
 
 	connection.onInitialized(() => {
@@ -190,20 +190,20 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}
 	});
 
-	let formatterRegistration: Thenable<Disposable> | null = null;
+	let formatterRegistration: ThenaBle<DisposaBle> | null = null;
 
 	// The settings have changed. Is send on server activation as well.
 	connection.onDidChangeConfiguration((change) => {
-		globalSettings = change.settings;
+		gloBalSettings = change.settings;
 		documentSettings = {}; // reset all document settings
 		documents.all().forEach(triggerValidation);
 
-		// dynamically enable & disable the formatter
+		// dynamically enaBle & disaBle the formatter
 		if (dynamicFormatterRegistration) {
-			const enableFormatter = globalSettings && globalSettings.html && globalSettings.html.format && globalSettings.html.format.enable;
-			if (enableFormatter) {
+			const enaBleFormatter = gloBalSettings && gloBalSettings.html && gloBalSettings.html.format && gloBalSettings.html.format.enaBle;
+			if (enaBleFormatter) {
 				if (!formatterRegistration) {
-					const documentSelector: DocumentSelector = [{ language: 'html' }, { language: 'handlebars' }];
+					const documentSelector: DocumentSelector = [{ language: 'html' }, { language: 'handleBars' }];
 					formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
 				}
 			} else if (formatterRegistration) {
@@ -244,7 +244,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, validationDelayMs);
 	}
 
-	function isValidationEnabled(languageId: string, settings: Settings = globalSettings) {
+	function isValidationEnaBled(languageId: string, settings: Settings = gloBalSettings) {
 		const validationSettings = settings && settings.html && settings.html.validate;
 		if (validationSettings) {
 			return languageId === 'css' && validationSettings.styles !== false || languageId === 'javascript' && validationSettings.scripts !== false;
@@ -262,7 +262,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 				const latestTextDocument = documents.get(textDocument.uri);
 				if (latestTextDocument && latestTextDocument.version === version) { // check no new version has come in after in after the async op
 					for (const mode of modes) {
-						if (mode.doValidation && isValidationEnabled(mode.getId(), settings)) {
+						if (mode.doValidation && isValidationEnaBled(mode.getId(), settings)) {
 							pushAll(diagnostics, await mode.doValidation(latestTextDocument, settings));
 						}
 					}
@@ -288,11 +288,11 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 
 			if (mode.getId() !== 'html') {
 				/* __GDPR__
-					"html.embbedded.complete" : {
+					"html.emBBedded.complete" : {
 						"languageId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 					}
 				 */
-				connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
+				connection.telemetry.logEvent({ key: 'html.emBBedded.complete', value: { languageId: mode.getId() } });
 			}
 
 			const settings = await getDocumentSettings(document, () => doComplete.length > 2);
@@ -387,12 +387,12 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			if (document) {
 				let settings = await getDocumentSettings(document, () => true);
 				if (!settings) {
-					settings = globalSettings;
+					settings = gloBalSettings;
 				}
 				const unformattedTags: string = settings && settings.html && settings.html.format && settings.html.format.unformatted || '';
-				const enabledModes = { css: !unformattedTags.match(/\bstyle\b/), javascript: !unformattedTags.match(/\bscript\b/) };
+				const enaBledModes = { css: !unformattedTags.match(/\Bstyle\B/), javascript: !unformattedTags.match(/\Bscript\B/) };
 
-				return format(languageModes, document, formatParams.range, formatParams.options, settings, enabledModes);
+				return format(languageModes, document, formatParams.range, formatParams.options, settings, enaBledModes);
 			}
 			return [];
 		}, [], `Error while formatting range for ${formatParams.textDocument.uri}`, token);
@@ -414,19 +414,19 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, [], `Error while document links for ${documentLinkParam.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentSymbol((documentSymbolParms, token) => {
+	connection.onDocumentSymBol((documentSymBolParms, token) => {
 		return runSafe(async () => {
-			const document = documents.get(documentSymbolParms.textDocument.uri);
-			const symbols: SymbolInformation[] = [];
+			const document = documents.get(documentSymBolParms.textDocument.uri);
+			const symBols: SymBolInformation[] = [];
 			if (document) {
 				for (const m of languageModes.getAllModesInDocument(document)) {
-					if (m.findDocumentSymbols) {
-						pushAll(symbols, await m.findDocumentSymbols(document));
+					if (m.findDocumentSymBols) {
+						pushAll(symBols, await m.findDocumentSymBols(document));
 					}
 				}
 			}
-			return symbols;
-		}, [], `Error while computing document symbols for ${documentSymbolParms.textDocument.uri}`, token);
+			return symBols;
+		}, [], `Error while computing document symBols for ${documentSymBolParms.textDocument.uri}`, token);
 	});
 
 	connection.onRequest(DocumentColorRequest.type, (params, token) => {

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import * as glob from 'vs/base/common/glob';
-import { isWindows } from 'vs/base/common/platform';
+import * as path from 'vs/Base/common/path';
+import * as gloB from 'vs/Base/common/gloB';
+import { isWindows } from 'vs/Base/common/platform';
 
-suite('Glob', () => {
+suite('GloB', () => {
 
 	// test('perf', () => {
 
@@ -28,7 +28,7 @@ suite('Glob', () => {
 	// 		'{**/*.py}',
 	// 		'{**/*.py}',
 	// 		'{**/*.py}',
-	// 		'{**/*.rs,**/*.rslib}',
+	// 		'{**/*.rs,**/*.rsliB}',
 	// 		'{**/*.cpp,**/*.cc,**/*.h}',
 	// 		'{**/*.md}',
 	// 		'{**/*.md}',
@@ -47,11 +47,11 @@ suite('Glob', () => {
 
 	// 	let results = 0;
 	// 	let c = 1000;
-	// 	console.profile('glob.match');
+	// 	console.profile('gloB.match');
 	// 	while (c-- > 0) {
 	// 		for (let path of paths) {
 	// 			for (let pattern of patterns) {
-	// 				let r = glob.match(pattern, path);
+	// 				let r = gloB.match(pattern, path);
 	// 				if (r) {
 	// 					results += 42;
 	// 				}
@@ -61,386 +61,386 @@ suite('Glob', () => {
 	// 	console.profileEnd();
 	// });
 
-	function assertGlobMatch(pattern: string | glob.IRelativePattern, input: string) {
-		assert(glob.match(pattern, input), `${pattern} should match ${input}`);
+	function assertGloBMatch(pattern: string | gloB.IRelativePattern, input: string) {
+		assert(gloB.match(pattern, input), `${pattern} should match ${input}`);
 	}
 
-	function assertNoGlobMatch(pattern: string | glob.IRelativePattern, input: string) {
-		assert(!glob.match(pattern, input), `${pattern} should not match ${input}`);
+	function assertNoGloBMatch(pattern: string | gloB.IRelativePattern, input: string) {
+		assert(!gloB.match(pattern, input), `${pattern} should not match ${input}`);
 	}
 
 	test('simple', () => {
 		let p = 'node_modules';
 
-		assertGlobMatch(p, 'node_modules');
-		assertNoGlobMatch(p, 'node_module');
-		assertNoGlobMatch(p, '/node_modules');
-		assertNoGlobMatch(p, 'test/node_modules');
+		assertGloBMatch(p, 'node_modules');
+		assertNoGloBMatch(p, 'node_module');
+		assertNoGloBMatch(p, '/node_modules');
+		assertNoGloBMatch(p, 'test/node_modules');
 
 		p = 'test.txt';
-		assertGlobMatch(p, 'test.txt');
-		assertNoGlobMatch(p, 'test?txt');
-		assertNoGlobMatch(p, '/text.txt');
-		assertNoGlobMatch(p, 'test/test.txt');
+		assertGloBMatch(p, 'test.txt');
+		assertNoGloBMatch(p, 'test?txt');
+		assertNoGloBMatch(p, '/text.txt');
+		assertNoGloBMatch(p, 'test/test.txt');
 
 		p = 'test(.txt';
-		assertGlobMatch(p, 'test(.txt');
-		assertNoGlobMatch(p, 'test?txt');
+		assertGloBMatch(p, 'test(.txt');
+		assertNoGloBMatch(p, 'test?txt');
 
 		p = 'qunit';
 
-		assertGlobMatch(p, 'qunit');
-		assertNoGlobMatch(p, 'qunit.css');
-		assertNoGlobMatch(p, 'test/qunit');
+		assertGloBMatch(p, 'qunit');
+		assertNoGloBMatch(p, 'qunit.css');
+		assertNoGloBMatch(p, 'test/qunit');
 
-		// Absolute
+		// ABsolute
 
 		p = '/DNXConsoleApp/**/*.cs';
-		assertGlobMatch(p, '/DNXConsoleApp/Program.cs');
-		assertGlobMatch(p, '/DNXConsoleApp/foo/Program.cs');
+		assertGloBMatch(p, '/DNXConsoleApp/Program.cs');
+		assertGloBMatch(p, '/DNXConsoleApp/foo/Program.cs');
 
 		p = 'C:/DNXConsoleApp/**/*.cs';
-		assertGlobMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
-		assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
+		assertGloBMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
+		assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
 
 		p = '*';
-		assertGlobMatch(p, '');
+		assertGloBMatch(p, '');
 	});
 
 	test('dot hidden', function () {
 		let p = '.*';
 
-		assertGlobMatch(p, '.git');
-		assertGlobMatch(p, '.hidden.txt');
-		assertNoGlobMatch(p, 'git');
-		assertNoGlobMatch(p, 'hidden.txt');
-		assertNoGlobMatch(p, 'path/.git');
-		assertNoGlobMatch(p, 'path/.hidden.txt');
+		assertGloBMatch(p, '.git');
+		assertGloBMatch(p, '.hidden.txt');
+		assertNoGloBMatch(p, 'git');
+		assertNoGloBMatch(p, 'hidden.txt');
+		assertNoGloBMatch(p, 'path/.git');
+		assertNoGloBMatch(p, 'path/.hidden.txt');
 
 		p = '**/.*';
-		assertGlobMatch(p, '.git');
-		assertGlobMatch(p, '.hidden.txt');
-		assertNoGlobMatch(p, 'git');
-		assertNoGlobMatch(p, 'hidden.txt');
-		assertGlobMatch(p, 'path/.git');
-		assertGlobMatch(p, 'path/.hidden.txt');
-		assertNoGlobMatch(p, 'path/git');
-		assertNoGlobMatch(p, 'pat.h/hidden.txt');
+		assertGloBMatch(p, '.git');
+		assertGloBMatch(p, '.hidden.txt');
+		assertNoGloBMatch(p, 'git');
+		assertNoGloBMatch(p, 'hidden.txt');
+		assertGloBMatch(p, 'path/.git');
+		assertGloBMatch(p, 'path/.hidden.txt');
+		assertNoGloBMatch(p, 'path/git');
+		assertNoGloBMatch(p, 'pat.h/hidden.txt');
 
 		p = '._*';
 
-		assertGlobMatch(p, '._git');
-		assertGlobMatch(p, '._hidden.txt');
-		assertNoGlobMatch(p, 'git');
-		assertNoGlobMatch(p, 'hidden.txt');
-		assertNoGlobMatch(p, 'path/._git');
-		assertNoGlobMatch(p, 'path/._hidden.txt');
+		assertGloBMatch(p, '._git');
+		assertGloBMatch(p, '._hidden.txt');
+		assertNoGloBMatch(p, 'git');
+		assertNoGloBMatch(p, 'hidden.txt');
+		assertNoGloBMatch(p, 'path/._git');
+		assertNoGloBMatch(p, 'path/._hidden.txt');
 
 		p = '**/._*';
-		assertGlobMatch(p, '._git');
-		assertGlobMatch(p, '._hidden.txt');
-		assertNoGlobMatch(p, 'git');
-		assertNoGlobMatch(p, 'hidden._txt');
-		assertGlobMatch(p, 'path/._git');
-		assertGlobMatch(p, 'path/._hidden.txt');
-		assertNoGlobMatch(p, 'path/git');
-		assertNoGlobMatch(p, 'pat.h/hidden._txt');
+		assertGloBMatch(p, '._git');
+		assertGloBMatch(p, '._hidden.txt');
+		assertNoGloBMatch(p, 'git');
+		assertNoGloBMatch(p, 'hidden._txt');
+		assertGloBMatch(p, 'path/._git');
+		assertGloBMatch(p, 'path/._hidden.txt');
+		assertNoGloBMatch(p, 'path/git');
+		assertNoGloBMatch(p, 'pat.h/hidden._txt');
 	});
 
 	test('file pattern', function () {
 		let p = '*.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'foo.js');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 
 		p = 'html.*';
-		assertGlobMatch(p, 'html.js');
-		assertGlobMatch(p, 'html.txt');
-		assertNoGlobMatch(p, 'htm.txt');
+		assertGloBMatch(p, 'html.js');
+		assertGloBMatch(p, 'html.txt');
+		assertNoGloBMatch(p, 'htm.txt');
 
 		p = '*.*';
-		assertGlobMatch(p, 'html.js');
-		assertGlobMatch(p, 'html.txt');
-		assertGlobMatch(p, 'htm.txt');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
+		assertGloBMatch(p, 'html.js');
+		assertGloBMatch(p, 'html.txt');
+		assertGloBMatch(p, 'htm.txt');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
 
 		p = 'node_modules/test/*.js';
-		assertGlobMatch(p, 'node_modules/test/foo.js');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_module/test/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'node_modules/test/foo.js');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_module/test/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 	});
 
 	test('star', () => {
 		let p = 'node*modules';
 
-		assertGlobMatch(p, 'node_modules');
-		assertGlobMatch(p, 'node_super_modules');
-		assertNoGlobMatch(p, 'node_module');
-		assertNoGlobMatch(p, '/node_modules');
-		assertNoGlobMatch(p, 'test/node_modules');
+		assertGloBMatch(p, 'node_modules');
+		assertGloBMatch(p, 'node_super_modules');
+		assertNoGloBMatch(p, 'node_module');
+		assertNoGloBMatch(p, '/node_modules');
+		assertNoGloBMatch(p, 'test/node_modules');
 
 		p = '*';
-		assertGlobMatch(p, 'html.js');
-		assertGlobMatch(p, 'html.txt');
-		assertGlobMatch(p, 'htm.txt');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
+		assertGloBMatch(p, 'html.js');
+		assertGloBMatch(p, 'html.txt');
+		assertGloBMatch(p, 'htm.txt');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
 	});
 
 	test('file / folder match', function () {
 		let p = '**/node_modules/**';
 
-		assertGlobMatch(p, 'node_modules');
-		assertGlobMatch(p, 'node_modules/');
-		assertGlobMatch(p, 'a/node_modules');
-		assertGlobMatch(p, 'a/node_modules/');
-		assertGlobMatch(p, 'node_modules/foo');
-		assertGlobMatch(p, 'foo/node_modules/foo/bar');
+		assertGloBMatch(p, 'node_modules');
+		assertGloBMatch(p, 'node_modules/');
+		assertGloBMatch(p, 'a/node_modules');
+		assertGloBMatch(p, 'a/node_modules/');
+		assertGloBMatch(p, 'node_modules/foo');
+		assertGloBMatch(p, 'foo/node_modules/foo/Bar');
 	});
 
 	test('questionmark', () => {
 		let p = 'node?modules';
 
-		assertGlobMatch(p, 'node_modules');
-		assertNoGlobMatch(p, 'node_super_modules');
-		assertNoGlobMatch(p, 'node_module');
-		assertNoGlobMatch(p, '/node_modules');
-		assertNoGlobMatch(p, 'test/node_modules');
+		assertGloBMatch(p, 'node_modules');
+		assertNoGloBMatch(p, 'node_super_modules');
+		assertNoGloBMatch(p, 'node_module');
+		assertNoGloBMatch(p, '/node_modules');
+		assertNoGloBMatch(p, 'test/node_modules');
 
 		p = '?';
-		assertGlobMatch(p, 'h');
-		assertNoGlobMatch(p, 'html.txt');
-		assertNoGlobMatch(p, 'htm.txt');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
+		assertGloBMatch(p, 'h');
+		assertNoGloBMatch(p, 'html.txt');
+		assertNoGloBMatch(p, 'htm.txt');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
 	});
 
-	test('globstar', () => {
+	test('gloBstar', () => {
 		let p = '**/*.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'folder/foo.js');
-		assertGlobMatch(p, '/node_modules/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
-		assertNoGlobMatch(p, '/some.js/test');
-		assertNoGlobMatch(p, '\\some.js\\test');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'folder/foo.js');
+		assertGloBMatch(p, '/node_modules/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
+		assertNoGloBMatch(p, '/some.js/test');
+		assertNoGloBMatch(p, '\\some.js\\test');
 
 		p = '**/project.json';
 
-		assertGlobMatch(p, 'project.json');
-		assertGlobMatch(p, '/project.json');
-		assertGlobMatch(p, 'some/folder/project.json');
-		assertNoGlobMatch(p, 'some/folder/file_project.json');
-		assertNoGlobMatch(p, 'some/folder/fileproject.json');
-		assertNoGlobMatch(p, 'some/rrproject.json');
-		assertNoGlobMatch(p, 'some\\rrproject.json');
+		assertGloBMatch(p, 'project.json');
+		assertGloBMatch(p, '/project.json');
+		assertGloBMatch(p, 'some/folder/project.json');
+		assertNoGloBMatch(p, 'some/folder/file_project.json');
+		assertNoGloBMatch(p, 'some/folder/fileproject.json');
+		assertNoGloBMatch(p, 'some/rrproject.json');
+		assertNoGloBMatch(p, 'some\\rrproject.json');
 
 		p = 'test/**';
-		assertGlobMatch(p, 'test');
-		assertGlobMatch(p, 'test/foo.js');
-		assertGlobMatch(p, 'test/other/foo.js');
-		assertNoGlobMatch(p, 'est/other/foo.js');
+		assertGloBMatch(p, 'test');
+		assertGloBMatch(p, 'test/foo.js');
+		assertGloBMatch(p, 'test/other/foo.js');
+		assertNoGloBMatch(p, 'est/other/foo.js');
 
 		p = '**';
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'folder/foo.js');
-		assertGlobMatch(p, '/node_modules/foo.js');
-		assertGlobMatch(p, 'foo.jss');
-		assertGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'folder/foo.js');
+		assertGloBMatch(p, '/node_modules/foo.js');
+		assertGloBMatch(p, 'foo.jss');
+		assertGloBMatch(p, 'some.js/test');
 
 		p = 'test/**/*.js';
-		assertGlobMatch(p, 'test/foo.js');
-		assertGlobMatch(p, 'test/other/foo.js');
-		assertGlobMatch(p, 'test/other/more/foo.js');
-		assertNoGlobMatch(p, 'test/foo.ts');
-		assertNoGlobMatch(p, 'test/other/foo.ts');
-		assertNoGlobMatch(p, 'test/other/more/foo.ts');
+		assertGloBMatch(p, 'test/foo.js');
+		assertGloBMatch(p, 'test/other/foo.js');
+		assertGloBMatch(p, 'test/other/more/foo.js');
+		assertNoGloBMatch(p, 'test/foo.ts');
+		assertNoGloBMatch(p, 'test/other/foo.ts');
+		assertNoGloBMatch(p, 'test/other/more/foo.ts');
 
 		p = '**/**/*.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'folder/foo.js');
-		assertGlobMatch(p, '/node_modules/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'folder/foo.js');
+		assertGloBMatch(p, '/node_modules/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 
 		p = '**/node_modules/**/*.js';
 
-		assertNoGlobMatch(p, 'foo.js');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertGlobMatch(p, 'node_modules/foo.js');
-		assertGlobMatch(p, 'node_modules/some/folder/foo.js');
-		assertNoGlobMatch(p, 'node_modules/some/folder/foo.ts');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertNoGloBMatch(p, 'foo.js');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertGloBMatch(p, 'node_modules/foo.js');
+		assertGloBMatch(p, 'node_modules/some/folder/foo.js');
+		assertNoGloBMatch(p, 'node_modules/some/folder/foo.ts');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 
-		p = '{**/node_modules/**,**/.git/**,**/bower_components/**}';
+		p = '{**/node_modules/**,**/.git/**,**/Bower_components/**}';
 
-		assertGlobMatch(p, 'node_modules');
-		assertGlobMatch(p, '/node_modules');
-		assertGlobMatch(p, '/node_modules/more');
-		assertGlobMatch(p, 'some/test/node_modules');
-		assertGlobMatch(p, 'some\\test\\node_modules');
-		assertGlobMatch(p, 'C:\\\\some\\test\\node_modules');
-		assertGlobMatch(p, 'C:\\\\some\\test\\node_modules\\more');
+		assertGloBMatch(p, 'node_modules');
+		assertGloBMatch(p, '/node_modules');
+		assertGloBMatch(p, '/node_modules/more');
+		assertGloBMatch(p, 'some/test/node_modules');
+		assertGloBMatch(p, 'some\\test\\node_modules');
+		assertGloBMatch(p, 'C:\\\\some\\test\\node_modules');
+		assertGloBMatch(p, 'C:\\\\some\\test\\node_modules\\more');
 
-		assertGlobMatch(p, 'bower_components');
-		assertGlobMatch(p, 'bower_components/more');
-		assertGlobMatch(p, '/bower_components');
-		assertGlobMatch(p, 'some/test/bower_components');
-		assertGlobMatch(p, 'some\\test\\bower_components');
-		assertGlobMatch(p, 'C:\\\\some\\test\\bower_components');
-		assertGlobMatch(p, 'C:\\\\some\\test\\bower_components\\more');
+		assertGloBMatch(p, 'Bower_components');
+		assertGloBMatch(p, 'Bower_components/more');
+		assertGloBMatch(p, '/Bower_components');
+		assertGloBMatch(p, 'some/test/Bower_components');
+		assertGloBMatch(p, 'some\\test\\Bower_components');
+		assertGloBMatch(p, 'C:\\\\some\\test\\Bower_components');
+		assertGloBMatch(p, 'C:\\\\some\\test\\Bower_components\\more');
 
-		assertGlobMatch(p, '.git');
-		assertGlobMatch(p, '/.git');
-		assertGlobMatch(p, 'some/test/.git');
-		assertGlobMatch(p, 'some\\test\\.git');
-		assertGlobMatch(p, 'C:\\\\some\\test\\.git');
+		assertGloBMatch(p, '.git');
+		assertGloBMatch(p, '/.git');
+		assertGloBMatch(p, 'some/test/.git');
+		assertGloBMatch(p, 'some\\test\\.git');
+		assertGloBMatch(p, 'C:\\\\some\\test\\.git');
 
-		assertNoGlobMatch(p, 'tempting');
-		assertNoGlobMatch(p, '/tempting');
-		assertNoGlobMatch(p, 'some/test/tempting');
-		assertNoGlobMatch(p, 'some\\test\\tempting');
-		assertNoGlobMatch(p, 'C:\\\\some\\test\\tempting');
+		assertNoGloBMatch(p, 'tempting');
+		assertNoGloBMatch(p, '/tempting');
+		assertNoGloBMatch(p, 'some/test/tempting');
+		assertNoGloBMatch(p, 'some\\test\\tempting');
+		assertNoGloBMatch(p, 'C:\\\\some\\test\\tempting');
 
 		p = '{**/package.json,**/project.json}';
-		assertGlobMatch(p, 'package.json');
-		assertGlobMatch(p, '/package.json');
-		assertNoGlobMatch(p, 'xpackage.json');
-		assertNoGlobMatch(p, '/xpackage.json');
+		assertGloBMatch(p, 'package.json');
+		assertGloBMatch(p, '/package.json');
+		assertNoGloBMatch(p, 'xpackage.json');
+		assertNoGloBMatch(p, '/xpackage.json');
 	});
 
 	test('issue 41724', function () {
 		let p = 'some/**/*.js';
 
-		assertGlobMatch(p, 'some/foo.js');
-		assertGlobMatch(p, 'some/folder/foo.js');
-		assertNoGlobMatch(p, 'something/foo.js');
-		assertNoGlobMatch(p, 'something/folder/foo.js');
+		assertGloBMatch(p, 'some/foo.js');
+		assertGloBMatch(p, 'some/folder/foo.js');
+		assertNoGloBMatch(p, 'something/foo.js');
+		assertNoGloBMatch(p, 'something/folder/foo.js');
 
 		p = 'some/**/*';
 
-		assertGlobMatch(p, 'some/foo.js');
-		assertGlobMatch(p, 'some/folder/foo.js');
-		assertNoGlobMatch(p, 'something/foo.js');
-		assertNoGlobMatch(p, 'something/folder/foo.js');
+		assertGloBMatch(p, 'some/foo.js');
+		assertGloBMatch(p, 'some/folder/foo.js');
+		assertNoGloBMatch(p, 'something/foo.js');
+		assertNoGloBMatch(p, 'something/folder/foo.js');
 	});
 
-	test('brace expansion', function () {
+	test('Brace expansion', function () {
 		let p = '*.{html,js}';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'foo.html');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'foo.html');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 
 		p = '*.{html}';
 
-		assertGlobMatch(p, 'foo.html');
-		assertNoGlobMatch(p, 'foo.js');
-		assertNoGlobMatch(p, 'folder/foo.js');
-		assertNoGlobMatch(p, '/node_modules/foo.js');
-		assertNoGlobMatch(p, 'foo.jss');
-		assertNoGlobMatch(p, 'some.js/test');
+		assertGloBMatch(p, 'foo.html');
+		assertNoGloBMatch(p, 'foo.js');
+		assertNoGloBMatch(p, 'folder/foo.js');
+		assertNoGloBMatch(p, '/node_modules/foo.js');
+		assertNoGloBMatch(p, 'foo.jss');
+		assertNoGloBMatch(p, 'some.js/test');
 
 		p = '{node_modules,testing}';
-		assertGlobMatch(p, 'node_modules');
-		assertGlobMatch(p, 'testing');
-		assertNoGlobMatch(p, 'node_module');
-		assertNoGlobMatch(p, 'dtesting');
+		assertGloBMatch(p, 'node_modules');
+		assertGloBMatch(p, 'testing');
+		assertNoGloBMatch(p, 'node_module');
+		assertNoGloBMatch(p, 'dtesting');
 
-		p = '**/{foo,bar}';
-		assertGlobMatch(p, 'foo');
-		assertGlobMatch(p, 'bar');
-		assertGlobMatch(p, 'test/foo');
-		assertGlobMatch(p, 'test/bar');
-		assertGlobMatch(p, 'other/more/foo');
-		assertGlobMatch(p, 'other/more/bar');
+		p = '**/{foo,Bar}';
+		assertGloBMatch(p, 'foo');
+		assertGloBMatch(p, 'Bar');
+		assertGloBMatch(p, 'test/foo');
+		assertGloBMatch(p, 'test/Bar');
+		assertGloBMatch(p, 'other/more/foo');
+		assertGloBMatch(p, 'other/more/Bar');
 
-		p = '{foo,bar}/**';
-		assertGlobMatch(p, 'foo');
-		assertGlobMatch(p, 'bar');
-		assertGlobMatch(p, 'foo/test');
-		assertGlobMatch(p, 'bar/test');
-		assertGlobMatch(p, 'foo/other/more');
-		assertGlobMatch(p, 'bar/other/more');
+		p = '{foo,Bar}/**';
+		assertGloBMatch(p, 'foo');
+		assertGloBMatch(p, 'Bar');
+		assertGloBMatch(p, 'foo/test');
+		assertGloBMatch(p, 'Bar/test');
+		assertGloBMatch(p, 'foo/other/more');
+		assertGloBMatch(p, 'Bar/other/more');
 
 		p = '{**/*.d.ts,**/*.js}';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 
-		assertGlobMatch(p, 'foo.d.ts');
-		assertGlobMatch(p, 'testing/foo.d.ts');
-		assertGlobMatch(p, 'testing\\foo.d.ts');
-		assertGlobMatch(p, '/testing/foo.d.ts');
-		assertGlobMatch(p, '\\testing\\foo.d.ts');
-		assertGlobMatch(p, 'C:\\testing\\foo.d.ts');
+		assertGloBMatch(p, 'foo.d.ts');
+		assertGloBMatch(p, 'testing/foo.d.ts');
+		assertGloBMatch(p, 'testing\\foo.d.ts');
+		assertGloBMatch(p, '/testing/foo.d.ts');
+		assertGloBMatch(p, '\\testing\\foo.d.ts');
+		assertGloBMatch(p, 'C:\\testing\\foo.d.ts');
 
-		assertNoGlobMatch(p, 'foo.d');
-		assertNoGlobMatch(p, 'testing/foo.d');
-		assertNoGlobMatch(p, 'testing\\foo.d');
-		assertNoGlobMatch(p, '/testing/foo.d');
-		assertNoGlobMatch(p, '\\testing\\foo.d');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.d');
+		assertNoGloBMatch(p, 'foo.d');
+		assertNoGloBMatch(p, 'testing/foo.d');
+		assertNoGloBMatch(p, 'testing\\foo.d');
+		assertNoGloBMatch(p, '/testing/foo.d');
+		assertNoGloBMatch(p, '\\testing\\foo.d');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.d');
 
 		p = '{**/*.d.ts,**/*.js,path/simple.jgs}';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, 'path/simple.jgs');
-		assertNoGlobMatch(p, '/path/simple.jgs');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, 'path/simple.jgs');
+		assertNoGloBMatch(p, '/path/simple.jgs');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 
 		p = '{**/*.d.ts,**/*.js,foo.[0-9]}';
 
-		assertGlobMatch(p, 'foo.5');
-		assertGlobMatch(p, 'foo.8');
-		assertNoGlobMatch(p, 'bar.5');
-		assertNoGlobMatch(p, 'foo.f');
-		assertGlobMatch(p, 'foo.js');
+		assertGloBMatch(p, 'foo.5');
+		assertGloBMatch(p, 'foo.8');
+		assertNoGloBMatch(p, 'Bar.5');
+		assertNoGloBMatch(p, 'foo.f');
+		assertGloBMatch(p, 'foo.js');
 
 		p = 'prefix/{**/*.d.ts,**/*.js,foo.[0-9]}';
 
-		assertGlobMatch(p, 'prefix/foo.5');
-		assertGlobMatch(p, 'prefix/foo.8');
-		assertNoGlobMatch(p, 'prefix/bar.5');
-		assertNoGlobMatch(p, 'prefix/foo.f');
-		assertGlobMatch(p, 'prefix/foo.js');
+		assertGloBMatch(p, 'prefix/foo.5');
+		assertGloBMatch(p, 'prefix/foo.8');
+		assertNoGloBMatch(p, 'prefix/Bar.5');
+		assertNoGloBMatch(p, 'prefix/foo.f');
+		assertGloBMatch(p, 'prefix/foo.js');
 	});
 
 	test('expression support (single)', function () {
-		let siblings = ['test.html', 'test.txt', 'test.ts', 'test.js'];
-		let hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		let siBlings = ['test.html', 'test.txt', 'test.ts', 'test.js'];
+		let hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 
-		// { "**/*.js": { "when": "$(basename).ts" } }
-		let expression: glob.IExpression = {
+		// { "**/*.js": { "when": "$(Basename).ts" } }
+		let expression: gloB.IExpression = {
 			'**/*.js': {
-				when: '$(basename).ts'
+				when: '$(Basename).ts'
 			}
 		};
 
-		assert.strictEqual('**/*.js', glob.match(expression, 'test.js', hasSibling));
-		assert.strictEqual(glob.match(expression, 'test.js', () => false), null);
-		assert.strictEqual(glob.match(expression, 'test.js', name => name === 'te.ts'), null);
-		assert.strictEqual(glob.match(expression, 'test.js'), null);
+		assert.strictEqual('**/*.js', gloB.match(expression, 'test.js', hasSiBling));
+		assert.strictEqual(gloB.match(expression, 'test.js', () => false), null);
+		assert.strictEqual(gloB.match(expression, 'test.js', name => name === 'te.ts'), null);
+		assert.strictEqual(gloB.match(expression, 'test.js'), null);
 
 		expression = {
 			'**/*.js': {
@@ -448,500 +448,500 @@ suite('Glob', () => {
 			}
 		};
 
-		assert.strictEqual(glob.match(expression, 'test.js', hasSibling), null);
+		assert.strictEqual(gloB.match(expression, 'test.js', hasSiBling), null);
 
 		expression = {
 			'**/*.js': {
 			} as any
 		};
 
-		assert.strictEqual('**/*.js', glob.match(expression, 'test.js', hasSibling));
+		assert.strictEqual('**/*.js', gloB.match(expression, 'test.js', hasSiBling));
 
 		expression = {};
 
-		assert.strictEqual(glob.match(expression, 'test.js', hasSibling), null);
+		assert.strictEqual(gloB.match(expression, 'test.js', hasSiBling), null);
 	});
 
 	test('expression support (multiple)', function () {
-		let siblings = ['test.html', 'test.txt', 'test.ts', 'test.js'];
-		let hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		let siBlings = ['test.html', 'test.txt', 'test.ts', 'test.js'];
+		let hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 
-		// { "**/*.js": { "when": "$(basename).ts" } }
-		let expression: glob.IExpression = {
-			'**/*.js': { when: '$(basename).ts' },
+		// { "**/*.js": { "when": "$(Basename).ts" } }
+		let expression: gloB.IExpression = {
+			'**/*.js': { when: '$(Basename).ts' },
 			'**/*.as': true,
 			'**/*.foo': false,
-			'**/*.bananas': { bananas: true } as any
+			'**/*.Bananas': { Bananas: true } as any
 		};
 
-		assert.strictEqual('**/*.js', glob.match(expression, 'test.js', hasSibling));
-		assert.strictEqual('**/*.as', glob.match(expression, 'test.as', hasSibling));
-		assert.strictEqual('**/*.bananas', glob.match(expression, 'test.bananas', hasSibling));
-		assert.strictEqual('**/*.bananas', glob.match(expression, 'test.bananas'));
-		assert.strictEqual(glob.match(expression, 'test.foo', hasSibling), null);
+		assert.strictEqual('**/*.js', gloB.match(expression, 'test.js', hasSiBling));
+		assert.strictEqual('**/*.as', gloB.match(expression, 'test.as', hasSiBling));
+		assert.strictEqual('**/*.Bananas', gloB.match(expression, 'test.Bananas', hasSiBling));
+		assert.strictEqual('**/*.Bananas', gloB.match(expression, 'test.Bananas'));
+		assert.strictEqual(gloB.match(expression, 'test.foo', hasSiBling), null);
 	});
 
-	test('brackets', () => {
+	test('Brackets', () => {
 		let p = 'foo.[0-9]';
 
-		assertGlobMatch(p, 'foo.5');
-		assertGlobMatch(p, 'foo.8');
-		assertNoGlobMatch(p, 'bar.5');
-		assertNoGlobMatch(p, 'foo.f');
+		assertGloBMatch(p, 'foo.5');
+		assertGloBMatch(p, 'foo.8');
+		assertNoGloBMatch(p, 'Bar.5');
+		assertNoGloBMatch(p, 'foo.f');
 
 		p = 'foo.[^0-9]';
 
-		assertNoGlobMatch(p, 'foo.5');
-		assertNoGlobMatch(p, 'foo.8');
-		assertNoGlobMatch(p, 'bar.5');
-		assertGlobMatch(p, 'foo.f');
+		assertNoGloBMatch(p, 'foo.5');
+		assertNoGloBMatch(p, 'foo.8');
+		assertNoGloBMatch(p, 'Bar.5');
+		assertGloBMatch(p, 'foo.f');
 
 		p = 'foo.[!0-9]';
 
-		assertNoGlobMatch(p, 'foo.5');
-		assertNoGlobMatch(p, 'foo.8');
-		assertNoGlobMatch(p, 'bar.5');
-		assertGlobMatch(p, 'foo.f');
+		assertNoGloBMatch(p, 'foo.5');
+		assertNoGloBMatch(p, 'foo.8');
+		assertNoGloBMatch(p, 'Bar.5');
+		assertGloBMatch(p, 'foo.f');
 
 		p = 'foo.[0!^*?]';
 
-		assertNoGlobMatch(p, 'foo.5');
-		assertNoGlobMatch(p, 'foo.8');
-		assertGlobMatch(p, 'foo.0');
-		assertGlobMatch(p, 'foo.!');
-		assertGlobMatch(p, 'foo.^');
-		assertGlobMatch(p, 'foo.*');
-		assertGlobMatch(p, 'foo.?');
+		assertNoGloBMatch(p, 'foo.5');
+		assertNoGloBMatch(p, 'foo.8');
+		assertGloBMatch(p, 'foo.0');
+		assertGloBMatch(p, 'foo.!');
+		assertGloBMatch(p, 'foo.^');
+		assertGloBMatch(p, 'foo.*');
+		assertGloBMatch(p, 'foo.?');
 
-		p = 'foo[/]bar';
+		p = 'foo[/]Bar';
 
-		assertNoGlobMatch(p, 'foo/bar');
+		assertNoGloBMatch(p, 'foo/Bar');
 
 		p = 'foo.[[]';
 
-		assertGlobMatch(p, 'foo.[');
+		assertGloBMatch(p, 'foo.[');
 
 		p = 'foo.[]]';
 
-		assertGlobMatch(p, 'foo.]');
+		assertGloBMatch(p, 'foo.]');
 
 		p = 'foo.[][!]';
 
-		assertGlobMatch(p, 'foo.]');
-		assertGlobMatch(p, 'foo.[');
-		assertGlobMatch(p, 'foo.!');
+		assertGloBMatch(p, 'foo.]');
+		assertGloBMatch(p, 'foo.[');
+		assertGloBMatch(p, 'foo.!');
 
 		p = 'foo.[]-]';
 
-		assertGlobMatch(p, 'foo.]');
-		assertGlobMatch(p, 'foo.-');
+		assertGloBMatch(p, 'foo.]');
+		assertGloBMatch(p, 'foo.-');
 	});
 
 	test('full path', function () {
 		let p = 'testing/this/foo.txt';
 
-		assert(glob.match(p, nativeSep('testing/this/foo.txt')));
+		assert(gloB.match(p, nativeSep('testing/this/foo.txt')));
 	});
 
 	test('prefix agnostic', function () {
 		let p = '**/*.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, '/foo.js');
-		assertGlobMatch(p, '\\foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, '/foo.js');
+		assertGloBMatch(p, '\\foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 
-		assertNoGlobMatch(p, 'foo.ts');
-		assertNoGlobMatch(p, 'testing/foo.ts');
-		assertNoGlobMatch(p, 'testing\\foo.ts');
-		assertNoGlobMatch(p, '/testing/foo.ts');
-		assertNoGlobMatch(p, '\\testing\\foo.ts');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'foo.ts');
+		assertNoGloBMatch(p, 'testing/foo.ts');
+		assertNoGloBMatch(p, 'testing\\foo.ts');
+		assertNoGloBMatch(p, '/testing/foo.ts');
+		assertNoGloBMatch(p, '\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.ts');
 
-		assertNoGlobMatch(p, 'foo.js.txt');
-		assertNoGlobMatch(p, 'testing/foo.js.txt');
-		assertNoGlobMatch(p, 'testing\\foo.js.txt');
-		assertNoGlobMatch(p, '/testing/foo.js.txt');
-		assertNoGlobMatch(p, '\\testing\\foo.js.txt');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'foo.js.txt');
+		assertNoGloBMatch(p, 'testing/foo.js.txt');
+		assertNoGloBMatch(p, 'testing\\foo.js.txt');
+		assertNoGloBMatch(p, '/testing/foo.js.txt');
+		assertNoGloBMatch(p, '\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.js.txt');
 
-		assertNoGlobMatch(p, 'testing.js/foo');
-		assertNoGlobMatch(p, 'testing.js\\foo');
-		assertNoGlobMatch(p, '/testing.js/foo');
-		assertNoGlobMatch(p, '\\testing.js\\foo');
-		assertNoGlobMatch(p, 'C:\\testing.js\\foo');
+		assertNoGloBMatch(p, 'testing.js/foo');
+		assertNoGloBMatch(p, 'testing.js\\foo');
+		assertNoGloBMatch(p, '/testing.js/foo');
+		assertNoGloBMatch(p, '\\testing.js\\foo');
+		assertNoGloBMatch(p, 'C:\\testing.js\\foo');
 
 		p = '**/foo.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, '/foo.js');
-		assertGlobMatch(p, '\\foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, '/foo.js');
+		assertGloBMatch(p, '\\foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 	});
 
 	test('cached properly', function () {
 		let p = '**/*.js';
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 
-		assertNoGlobMatch(p, 'foo.ts');
-		assertNoGlobMatch(p, 'testing/foo.ts');
-		assertNoGlobMatch(p, 'testing\\foo.ts');
-		assertNoGlobMatch(p, '/testing/foo.ts');
-		assertNoGlobMatch(p, '\\testing\\foo.ts');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'foo.ts');
+		assertNoGloBMatch(p, 'testing/foo.ts');
+		assertNoGloBMatch(p, 'testing\\foo.ts');
+		assertNoGloBMatch(p, '/testing/foo.ts');
+		assertNoGloBMatch(p, '\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.ts');
 
-		assertNoGlobMatch(p, 'foo.js.txt');
-		assertNoGlobMatch(p, 'testing/foo.js.txt');
-		assertNoGlobMatch(p, 'testing\\foo.js.txt');
-		assertNoGlobMatch(p, '/testing/foo.js.txt');
-		assertNoGlobMatch(p, '\\testing\\foo.js.txt');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'foo.js.txt');
+		assertNoGloBMatch(p, 'testing/foo.js.txt');
+		assertNoGloBMatch(p, 'testing\\foo.js.txt');
+		assertNoGloBMatch(p, '/testing/foo.js.txt');
+		assertNoGloBMatch(p, '\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.js.txt');
 
-		assertNoGlobMatch(p, 'testing.js/foo');
-		assertNoGlobMatch(p, 'testing.js\\foo');
-		assertNoGlobMatch(p, '/testing.js/foo');
-		assertNoGlobMatch(p, '\\testing.js\\foo');
-		assertNoGlobMatch(p, 'C:\\testing.js\\foo');
+		assertNoGloBMatch(p, 'testing.js/foo');
+		assertNoGloBMatch(p, 'testing.js\\foo');
+		assertNoGloBMatch(p, '/testing.js/foo');
+		assertNoGloBMatch(p, '\\testing.js\\foo');
+		assertNoGloBMatch(p, 'C:\\testing.js\\foo');
 
 		// Run again and make sure the regex are properly reused
 
-		assertGlobMatch(p, 'foo.js');
-		assertGlobMatch(p, 'testing/foo.js');
-		assertGlobMatch(p, 'testing\\foo.js');
-		assertGlobMatch(p, '/testing/foo.js');
-		assertGlobMatch(p, '\\testing\\foo.js');
-		assertGlobMatch(p, 'C:\\testing\\foo.js');
+		assertGloBMatch(p, 'foo.js');
+		assertGloBMatch(p, 'testing/foo.js');
+		assertGloBMatch(p, 'testing\\foo.js');
+		assertGloBMatch(p, '/testing/foo.js');
+		assertGloBMatch(p, '\\testing\\foo.js');
+		assertGloBMatch(p, 'C:\\testing\\foo.js');
 
-		assertNoGlobMatch(p, 'foo.ts');
-		assertNoGlobMatch(p, 'testing/foo.ts');
-		assertNoGlobMatch(p, 'testing\\foo.ts');
-		assertNoGlobMatch(p, '/testing/foo.ts');
-		assertNoGlobMatch(p, '\\testing\\foo.ts');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'foo.ts');
+		assertNoGloBMatch(p, 'testing/foo.ts');
+		assertNoGloBMatch(p, 'testing\\foo.ts');
+		assertNoGloBMatch(p, '/testing/foo.ts');
+		assertNoGloBMatch(p, '\\testing\\foo.ts');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.ts');
 
-		assertNoGlobMatch(p, 'foo.js.txt');
-		assertNoGlobMatch(p, 'testing/foo.js.txt');
-		assertNoGlobMatch(p, 'testing\\foo.js.txt');
-		assertNoGlobMatch(p, '/testing/foo.js.txt');
-		assertNoGlobMatch(p, '\\testing\\foo.js.txt');
-		assertNoGlobMatch(p, 'C:\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'foo.js.txt');
+		assertNoGloBMatch(p, 'testing/foo.js.txt');
+		assertNoGloBMatch(p, 'testing\\foo.js.txt');
+		assertNoGloBMatch(p, '/testing/foo.js.txt');
+		assertNoGloBMatch(p, '\\testing\\foo.js.txt');
+		assertNoGloBMatch(p, 'C:\\testing\\foo.js.txt');
 
-		assertNoGlobMatch(p, 'testing.js/foo');
-		assertNoGlobMatch(p, 'testing.js\\foo');
-		assertNoGlobMatch(p, '/testing.js/foo');
-		assertNoGlobMatch(p, '\\testing.js\\foo');
-		assertNoGlobMatch(p, 'C:\\testing.js\\foo');
+		assertNoGloBMatch(p, 'testing.js/foo');
+		assertNoGloBMatch(p, 'testing.js\\foo');
+		assertNoGloBMatch(p, '/testing.js/foo');
+		assertNoGloBMatch(p, '\\testing.js\\foo');
+		assertNoGloBMatch(p, 'C:\\testing.js\\foo');
 	});
 
-	test('invalid glob', function () {
+	test('invalid gloB', function () {
 		let p = '**/*(.js';
 
-		assertNoGlobMatch(p, 'foo.js');
+		assertNoGloBMatch(p, 'foo.js');
 	});
 
-	test('split glob aware', function () {
-		assert.deepEqual(glob.splitGlobAware('foo,bar', ','), ['foo', 'bar']);
-		assert.deepEqual(glob.splitGlobAware('foo', ','), ['foo']);
-		assert.deepEqual(glob.splitGlobAware('{foo,bar}', ','), ['{foo,bar}']);
-		assert.deepEqual(glob.splitGlobAware('foo,bar,{foo,bar}', ','), ['foo', 'bar', '{foo,bar}']);
-		assert.deepEqual(glob.splitGlobAware('{foo,bar},foo,bar,{foo,bar}', ','), ['{foo,bar}', 'foo', 'bar', '{foo,bar}']);
+	test('split gloB aware', function () {
+		assert.deepEqual(gloB.splitGloBAware('foo,Bar', ','), ['foo', 'Bar']);
+		assert.deepEqual(gloB.splitGloBAware('foo', ','), ['foo']);
+		assert.deepEqual(gloB.splitGloBAware('{foo,Bar}', ','), ['{foo,Bar}']);
+		assert.deepEqual(gloB.splitGloBAware('foo,Bar,{foo,Bar}', ','), ['foo', 'Bar', '{foo,Bar}']);
+		assert.deepEqual(gloB.splitGloBAware('{foo,Bar},foo,Bar,{foo,Bar}', ','), ['{foo,Bar}', 'foo', 'Bar', '{foo,Bar}']);
 
-		assert.deepEqual(glob.splitGlobAware('[foo,bar]', ','), ['[foo,bar]']);
-		assert.deepEqual(glob.splitGlobAware('foo,bar,[foo,bar]', ','), ['foo', 'bar', '[foo,bar]']);
-		assert.deepEqual(glob.splitGlobAware('[foo,bar],foo,bar,[foo,bar]', ','), ['[foo,bar]', 'foo', 'bar', '[foo,bar]']);
+		assert.deepEqual(gloB.splitGloBAware('[foo,Bar]', ','), ['[foo,Bar]']);
+		assert.deepEqual(gloB.splitGloBAware('foo,Bar,[foo,Bar]', ','), ['foo', 'Bar', '[foo,Bar]']);
+		assert.deepEqual(gloB.splitGloBAware('[foo,Bar],foo,Bar,[foo,Bar]', ','), ['[foo,Bar]', 'foo', 'Bar', '[foo,Bar]']);
 	});
 
-	test('expression with disabled glob', function () {
+	test('expression with disaBled gloB', function () {
 		let expr = { '**/*.js': false };
 
-		assert.strictEqual(glob.match(expr, 'foo.js'), null);
+		assert.strictEqual(gloB.match(expr, 'foo.js'), null);
 	});
 
-	test('expression with two non-trivia globs', function () {
+	test('expression with two non-trivia gloBs', function () {
 		let expr = {
 			'**/*.j?': true,
 			'**/*.t?': true
 		};
 
-		assert.strictEqual(glob.match(expr, 'foo.js'), '**/*.j?');
-		assert.strictEqual(glob.match(expr, 'foo.as'), null);
+		assert.strictEqual(gloB.match(expr, 'foo.js'), '**/*.j?');
+		assert.strictEqual(gloB.match(expr, 'foo.as'), null);
 	});
 
-	test('expression with empty glob', function () {
+	test('expression with empty gloB', function () {
 		let expr = { '': true };
 
-		assert.strictEqual(glob.match(expr, 'foo.js'), null);
+		assert.strictEqual(gloB.match(expr, 'foo.js'), null);
 	});
 
 	test('expression with other falsy value', function () {
 		let expr = { '**/*.js': 0 } as any;
 
-		assert.strictEqual(glob.match(expr, 'foo.js'), '**/*.js');
+		assert.strictEqual(gloB.match(expr, 'foo.js'), '**/*.js');
 	});
 
-	test('expression with two basename globs', function () {
+	test('expression with two Basename gloBs', function () {
 		let expr = {
-			'**/bar': true,
-			'**/baz': true
+			'**/Bar': true,
+			'**/Baz': true
 		};
 
-		assert.strictEqual(glob.match(expr, 'bar'), '**/bar');
-		assert.strictEqual(glob.match(expr, 'foo'), null);
-		assert.strictEqual(glob.match(expr, 'foo/bar'), '**/bar');
-		assert.strictEqual(glob.match(expr, 'foo\\bar'), '**/bar');
-		assert.strictEqual(glob.match(expr, 'foo/foo'), null);
+		assert.strictEqual(gloB.match(expr, 'Bar'), '**/Bar');
+		assert.strictEqual(gloB.match(expr, 'foo'), null);
+		assert.strictEqual(gloB.match(expr, 'foo/Bar'), '**/Bar');
+		assert.strictEqual(gloB.match(expr, 'foo\\Bar'), '**/Bar');
+		assert.strictEqual(gloB.match(expr, 'foo/foo'), null);
 	});
 
-	test('expression with two basename globs and a siblings expression', function () {
+	test('expression with two Basename gloBs and a siBlings expression', function () {
 		let expr = {
-			'**/bar': true,
-			'**/baz': true,
-			'**/*.js': { when: '$(basename).ts' }
+			'**/Bar': true,
+			'**/Baz': true,
+			'**/*.js': { when: '$(Basename).ts' }
 		};
 
-		let siblings = ['foo.ts', 'foo.js', 'foo', 'bar'];
-		let hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		let siBlings = ['foo.ts', 'foo.js', 'foo', 'Bar'];
+		let hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 
-		assert.strictEqual(glob.match(expr, 'bar', hasSibling), '**/bar');
-		assert.strictEqual(glob.match(expr, 'foo', hasSibling), null);
-		assert.strictEqual(glob.match(expr, 'foo/bar', hasSibling), '**/bar');
+		assert.strictEqual(gloB.match(expr, 'Bar', hasSiBling), '**/Bar');
+		assert.strictEqual(gloB.match(expr, 'foo', hasSiBling), null);
+		assert.strictEqual(gloB.match(expr, 'foo/Bar', hasSiBling), '**/Bar');
 		if (isWindows) {
-			// backslash is a valid file name character on posix
-			assert.strictEqual(glob.match(expr, 'foo\\bar', hasSibling), '**/bar');
+			// Backslash is a valid file name character on posix
+			assert.strictEqual(gloB.match(expr, 'foo\\Bar', hasSiBling), '**/Bar');
 		}
-		assert.strictEqual(glob.match(expr, 'foo/foo', hasSibling), null);
-		assert.strictEqual(glob.match(expr, 'foo.js', hasSibling), '**/*.js');
-		assert.strictEqual(glob.match(expr, 'bar.js', hasSibling), null);
+		assert.strictEqual(gloB.match(expr, 'foo/foo', hasSiBling), null);
+		assert.strictEqual(gloB.match(expr, 'foo.js', hasSiBling), '**/*.js');
+		assert.strictEqual(gloB.match(expr, 'Bar.js', hasSiBling), null);
 	});
 
-	test('expression with multipe basename globs', function () {
+	test('expression with multipe Basename gloBs', function () {
 		let expr = {
-			'**/bar': true,
-			'{**/baz,**/foo}': true
+			'**/Bar': true,
+			'{**/Baz,**/foo}': true
 		};
 
-		assert.strictEqual(glob.match(expr, 'bar'), '**/bar');
-		assert.strictEqual(glob.match(expr, 'foo'), '{**/baz,**/foo}');
-		assert.strictEqual(glob.match(expr, 'baz'), '{**/baz,**/foo}');
-		assert.strictEqual(glob.match(expr, 'abc'), null);
+		assert.strictEqual(gloB.match(expr, 'Bar'), '**/Bar');
+		assert.strictEqual(gloB.match(expr, 'foo'), '{**/Baz,**/foo}');
+		assert.strictEqual(gloB.match(expr, 'Baz'), '{**/Baz,**/foo}');
+		assert.strictEqual(gloB.match(expr, 'aBc'), null);
 	});
 
 	test('falsy expression/pattern', function () {
-		assert.strictEqual(glob.match(null!, 'foo'), false);
-		assert.strictEqual(glob.match('', 'foo'), false);
-		assert.strictEqual(glob.parse(null!)('foo'), false);
-		assert.strictEqual(glob.parse('')('foo'), false);
+		assert.strictEqual(gloB.match(null!, 'foo'), false);
+		assert.strictEqual(gloB.match('', 'foo'), false);
+		assert.strictEqual(gloB.parse(null!)('foo'), false);
+		assert.strictEqual(gloB.parse('')('foo'), false);
 	});
 
 	test('falsy path', function () {
-		assert.strictEqual(glob.parse('foo')(null!), false);
-		assert.strictEqual(glob.parse('foo')(''), false);
-		assert.strictEqual(glob.parse('**/*.j?')(null!), false);
-		assert.strictEqual(glob.parse('**/*.j?')(''), false);
-		assert.strictEqual(glob.parse('**/*.foo')(null!), false);
-		assert.strictEqual(glob.parse('**/*.foo')(''), false);
-		assert.strictEqual(glob.parse('**/foo')(null!), false);
-		assert.strictEqual(glob.parse('**/foo')(''), false);
-		assert.strictEqual(glob.parse('{**/baz,**/foo}')(null!), false);
-		assert.strictEqual(glob.parse('{**/baz,**/foo}')(''), false);
-		assert.strictEqual(glob.parse('{**/*.baz,**/*.foo}')(null!), false);
-		assert.strictEqual(glob.parse('{**/*.baz,**/*.foo}')(''), false);
+		assert.strictEqual(gloB.parse('foo')(null!), false);
+		assert.strictEqual(gloB.parse('foo')(''), false);
+		assert.strictEqual(gloB.parse('**/*.j?')(null!), false);
+		assert.strictEqual(gloB.parse('**/*.j?')(''), false);
+		assert.strictEqual(gloB.parse('**/*.foo')(null!), false);
+		assert.strictEqual(gloB.parse('**/*.foo')(''), false);
+		assert.strictEqual(gloB.parse('**/foo')(null!), false);
+		assert.strictEqual(gloB.parse('**/foo')(''), false);
+		assert.strictEqual(gloB.parse('{**/Baz,**/foo}')(null!), false);
+		assert.strictEqual(gloB.parse('{**/Baz,**/foo}')(''), false);
+		assert.strictEqual(gloB.parse('{**/*.Baz,**/*.foo}')(null!), false);
+		assert.strictEqual(gloB.parse('{**/*.Baz,**/*.foo}')(''), false);
 	});
 
-	test('expression/pattern basename', function () {
-		assert.strictEqual(glob.parse('**/foo')('bar/baz', 'baz'), false);
-		assert.strictEqual(glob.parse('**/foo')('bar/foo', 'foo'), true);
+	test('expression/pattern Basename', function () {
+		assert.strictEqual(gloB.parse('**/foo')('Bar/Baz', 'Baz'), false);
+		assert.strictEqual(gloB.parse('**/foo')('Bar/foo', 'foo'), true);
 
-		assert.strictEqual(glob.parse('{**/baz,**/foo}')('baz/bar', 'bar'), false);
-		assert.strictEqual(glob.parse('{**/baz,**/foo}')('baz/foo', 'foo'), true);
+		assert.strictEqual(gloB.parse('{**/Baz,**/foo}')('Baz/Bar', 'Bar'), false);
+		assert.strictEqual(gloB.parse('{**/Baz,**/foo}')('Baz/foo', 'foo'), true);
 
-		let expr = { '**/*.js': { when: '$(basename).ts' } };
-		let siblings = ['foo.ts', 'foo.js'];
-		let hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		let expr = { '**/*.js': { when: '$(Basename).ts' } };
+		let siBlings = ['foo.ts', 'foo.js'];
+		let hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 
-		assert.strictEqual(glob.parse(expr)('bar/baz.js', 'baz.js', hasSibling), null);
-		assert.strictEqual(glob.parse(expr)('bar/foo.js', 'foo.js', hasSibling), '**/*.js');
+		assert.strictEqual(gloB.parse(expr)('Bar/Baz.js', 'Baz.js', hasSiBling), null);
+		assert.strictEqual(gloB.parse(expr)('Bar/foo.js', 'foo.js', hasSiBling), '**/*.js');
 	});
 
-	test('expression/pattern basename terms', function () {
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('**/*.foo')), []);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('**/foo')), ['foo']);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('**/foo/')), ['foo']);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('{**/baz,**/foo}')), ['baz', 'foo']);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('{**/baz/,**/foo/}')), ['baz', 'foo']);
+	test('expression/pattern Basename terms', function () {
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('**/*.foo')), []);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('**/foo')), ['foo']);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('**/foo/')), ['foo']);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('{**/Baz,**/foo}')), ['Baz', 'foo']);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('{**/Baz/,**/foo/}')), ['Baz', 'foo']);
 
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse({
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse({
 			'**/foo': true,
-			'{**/bar,**/baz}': true,
-			'{**/bar2/,**/baz2/}': true,
-			'**/bulb': false
-		})), ['foo', 'bar', 'baz', 'bar2', 'baz2']);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse({
-			'**/foo': { when: '$(basename).zip' },
-			'**/bar': true
-		})), ['bar']);
+			'{**/Bar,**/Baz}': true,
+			'{**/Bar2/,**/Baz2/}': true,
+			'**/BulB': false
+		})), ['foo', 'Bar', 'Baz', 'Bar2', 'Baz2']);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse({
+			'**/foo': { when: '$(Basename).zip' },
+			'**/Bar': true
+		})), ['Bar']);
 	});
 
-	test('expression/pattern optimization for basenames', function () {
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('**/foo/**')), []);
-		assert.deepStrictEqual(glob.getBasenameTerms(glob.parse('**/foo/**', { trimForExclusions: true })), ['foo']);
+	test('expression/pattern optimization for Basenames', function () {
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('**/foo/**')), []);
+		assert.deepStrictEqual(gloB.getBasenameTerms(gloB.parse('**/foo/**', { trimForExclusions: true })), ['foo']);
 
-		testOptimizationForBasenames('**/*.foo/**', [], [['baz/bar.foo/bar/baz', true]]);
-		testOptimizationForBasenames('**/foo/**', ['foo'], [['bar/foo', true], ['bar/foo/baz', false]]);
-		testOptimizationForBasenames('{**/baz/**,**/foo/**}', ['baz', 'foo'], [['bar/baz', true], ['bar/foo', true]]);
+		testOptimizationForBasenames('**/*.foo/**', [], [['Baz/Bar.foo/Bar/Baz', true]]);
+		testOptimizationForBasenames('**/foo/**', ['foo'], [['Bar/foo', true], ['Bar/foo/Baz', false]]);
+		testOptimizationForBasenames('{**/Baz/**,**/foo/**}', ['Baz', 'foo'], [['Bar/Baz', true], ['Bar/foo', true]]);
 
 		testOptimizationForBasenames({
 			'**/foo/**': true,
-			'{**/bar/**,**/baz/**}': true,
-			'**/bulb/**': false
-		}, ['foo', 'bar', 'baz'], [
-			['bar/foo', '**/foo/**'],
-			['foo/bar', '{**/bar/**,**/baz/**}'],
-			['bar/nope', null!]
+			'{**/Bar/**,**/Baz/**}': true,
+			'**/BulB/**': false
+		}, ['foo', 'Bar', 'Baz'], [
+			['Bar/foo', '**/foo/**'],
+			['foo/Bar', '{**/Bar/**,**/Baz/**}'],
+			['Bar/nope', null!]
 		]);
 
-		const siblings = ['baz', 'baz.zip', 'nope'];
-		const hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		const siBlings = ['Baz', 'Baz.zip', 'nope'];
+		const hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 		testOptimizationForBasenames({
-			'**/foo/**': { when: '$(basename).zip' },
-			'**/bar/**': true
-		}, ['bar'], [
-			['bar/foo', null!],
-			['bar/foo/baz', null!],
-			['bar/foo/nope', null!],
-			['foo/bar', '**/bar/**'],
+			'**/foo/**': { when: '$(Basename).zip' },
+			'**/Bar/**': true
+		}, ['Bar'], [
+			['Bar/foo', null!],
+			['Bar/foo/Baz', null!],
+			['Bar/foo/nope', null!],
+			['foo/Bar', '**/Bar/**'],
 		], [
 			null!,
-			hasSibling,
-			hasSibling
+			hasSiBling,
+			hasSiBling
 		]);
 	});
 
-	function testOptimizationForBasenames(pattern: string | glob.IExpression, basenameTerms: string[], matches: [string, string | boolean][], siblingsFns: ((name: string) => boolean)[] = []) {
-		const parsed = glob.parse(<glob.IExpression>pattern, { trimForExclusions: true });
-		assert.deepStrictEqual(glob.getBasenameTerms(parsed), basenameTerms);
+	function testOptimizationForBasenames(pattern: string | gloB.IExpression, BasenameTerms: string[], matches: [string, string | Boolean][], siBlingsFns: ((name: string) => Boolean)[] = []) {
+		const parsed = gloB.parse(<gloB.IExpression>pattern, { trimForExclusions: true });
+		assert.deepStrictEqual(gloB.getBasenameTerms(parsed), BasenameTerms);
 		matches.forEach(([text, result], i) => {
-			assert.strictEqual(parsed(text, null!, siblingsFns[i]), result);
+			assert.strictEqual(parsed(text, null!, siBlingsFns[i]), result);
 		});
 	}
 
 	test('trailing slash', function () {
-		// Testing existing (more or less intuitive) behavior
-		assert.strictEqual(glob.parse('**/foo/')('bar/baz', 'baz'), false);
-		assert.strictEqual(glob.parse('**/foo/')('bar/foo', 'foo'), true);
-		assert.strictEqual(glob.parse('**/*.foo/')('bar/file.baz', 'file.baz'), false);
-		assert.strictEqual(glob.parse('**/*.foo/')('bar/file.foo', 'file.foo'), true);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}')('bar/baz', 'baz'), false);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}')('bar/foo', 'foo'), true);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}')('bar/abc', 'abc'), true);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}', { trimForExclusions: true })('bar/baz', 'baz'), false);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}', { trimForExclusions: true })('bar/foo', 'foo'), true);
-		assert.strictEqual(glob.parse('{**/foo/,**/abc/}', { trimForExclusions: true })('bar/abc', 'abc'), true);
+		// Testing existing (more or less intuitive) Behavior
+		assert.strictEqual(gloB.parse('**/foo/')('Bar/Baz', 'Baz'), false);
+		assert.strictEqual(gloB.parse('**/foo/')('Bar/foo', 'foo'), true);
+		assert.strictEqual(gloB.parse('**/*.foo/')('Bar/file.Baz', 'file.Baz'), false);
+		assert.strictEqual(gloB.parse('**/*.foo/')('Bar/file.foo', 'file.foo'), true);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}')('Bar/Baz', 'Baz'), false);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}')('Bar/foo', 'foo'), true);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}')('Bar/aBc', 'aBc'), true);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}', { trimForExclusions: true })('Bar/Baz', 'Baz'), false);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}', { trimForExclusions: true })('Bar/foo', 'foo'), true);
+		assert.strictEqual(gloB.parse('{**/foo/,**/aBc/}', { trimForExclusions: true })('Bar/aBc', 'aBc'), true);
 	});
 
 	test('expression/pattern path', function () {
-		assert.strictEqual(glob.parse('**/foo/bar')(nativeSep('foo/baz'), 'baz'), false);
-		assert.strictEqual(glob.parse('**/foo/bar')(nativeSep('foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('**/foo/bar')(nativeSep('bar/foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('**/foo/bar/**')(nativeSep('bar/foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('**/foo/bar/**')(nativeSep('bar/foo/bar/baz'), 'baz'), true);
-		assert.strictEqual(glob.parse('**/foo/bar/**', { trimForExclusions: true })(nativeSep('bar/foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('**/foo/bar/**', { trimForExclusions: true })(nativeSep('bar/foo/bar/baz'), 'baz'), false);
+		assert.strictEqual(gloB.parse('**/foo/Bar')(nativeSep('foo/Baz'), 'Baz'), false);
+		assert.strictEqual(gloB.parse('**/foo/Bar')(nativeSep('foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('**/foo/Bar')(nativeSep('Bar/foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('**/foo/Bar/**')(nativeSep('Bar/foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('**/foo/Bar/**')(nativeSep('Bar/foo/Bar/Baz'), 'Baz'), true);
+		assert.strictEqual(gloB.parse('**/foo/Bar/**', { trimForExclusions: true })(nativeSep('Bar/foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('**/foo/Bar/**', { trimForExclusions: true })(nativeSep('Bar/foo/Bar/Baz'), 'Baz'), false);
 
-		assert.strictEqual(glob.parse('foo/bar')(nativeSep('foo/baz'), 'baz'), false);
-		assert.strictEqual(glob.parse('foo/bar')(nativeSep('foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('foo/bar/baz')(nativeSep('foo/bar/baz'), 'baz'), true); // #15424
-		assert.strictEqual(glob.parse('foo/bar')(nativeSep('bar/foo/bar'), 'bar'), false);
-		assert.strictEqual(glob.parse('foo/bar/**')(nativeSep('foo/bar/baz'), 'baz'), true);
-		assert.strictEqual(glob.parse('foo/bar/**', { trimForExclusions: true })(nativeSep('foo/bar'), 'bar'), true);
-		assert.strictEqual(glob.parse('foo/bar/**', { trimForExclusions: true })(nativeSep('foo/bar/baz'), 'baz'), false);
+		assert.strictEqual(gloB.parse('foo/Bar')(nativeSep('foo/Baz'), 'Baz'), false);
+		assert.strictEqual(gloB.parse('foo/Bar')(nativeSep('foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('foo/Bar/Baz')(nativeSep('foo/Bar/Baz'), 'Baz'), true); // #15424
+		assert.strictEqual(gloB.parse('foo/Bar')(nativeSep('Bar/foo/Bar'), 'Bar'), false);
+		assert.strictEqual(gloB.parse('foo/Bar/**')(nativeSep('foo/Bar/Baz'), 'Baz'), true);
+		assert.strictEqual(gloB.parse('foo/Bar/**', { trimForExclusions: true })(nativeSep('foo/Bar'), 'Bar'), true);
+		assert.strictEqual(gloB.parse('foo/Bar/**', { trimForExclusions: true })(nativeSep('foo/Bar/Baz'), 'Baz'), false);
 	});
 
 	test('expression/pattern paths', function () {
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/*.foo')), []);
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/foo')), []);
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/foo/bar')), ['*/foo/bar']);
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/foo/bar/')), ['*/foo/bar']);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/*.foo')), []);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/foo')), []);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/foo/Bar')), ['*/foo/Bar']);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/foo/Bar/')), ['*/foo/Bar']);
 		// Not supported
-		// assert.deepStrictEqual(glob.getPathTerms(glob.parse('{**/baz/bar,**/foo/bar,**/bar}')), ['*/baz/bar', '*/foo/bar']);
-		// assert.deepStrictEqual(glob.getPathTerms(glob.parse('{**/baz/bar/,**/foo/bar/,**/bar/}')), ['*/baz/bar', '*/foo/bar']);
+		// assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('{**/Baz/Bar,**/foo/Bar,**/Bar}')), ['*/Baz/Bar', '*/foo/Bar']);
+		// assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('{**/Baz/Bar/,**/foo/Bar/,**/Bar/}')), ['*/Baz/Bar', '*/foo/Bar']);
 
-		const parsed = glob.parse({
-			'**/foo/bar': true,
-			'**/foo2/bar2': true,
+		const parsed = gloB.parse({
+			'**/foo/Bar': true,
+			'**/foo2/Bar2': true,
 			// Not supported
-			// '{**/bar/foo,**/baz/foo}': true,
-			// '{**/bar2/foo/,**/baz2/foo/}': true,
-			'**/bulb': true,
-			'**/bulb2': true,
-			'**/bulb/foo': false
+			// '{**/Bar/foo,**/Baz/foo}': true,
+			// '{**/Bar2/foo/,**/Baz2/foo/}': true,
+			'**/BulB': true,
+			'**/BulB2': true,
+			'**/BulB/foo': false
 		});
-		assert.deepStrictEqual(glob.getPathTerms(parsed), ['*/foo/bar', '*/foo2/bar2']);
-		assert.deepStrictEqual(glob.getBasenameTerms(parsed), ['bulb', 'bulb2']);
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse({
-			'**/foo/bar': { when: '$(basename).zip' },
-			'**/bar/foo': true,
-			'**/bar2/foo2': true
-		})), ['*/bar/foo', '*/bar2/foo2']);
+		assert.deepStrictEqual(gloB.getPathTerms(parsed), ['*/foo/Bar', '*/foo2/Bar2']);
+		assert.deepStrictEqual(gloB.getBasenameTerms(parsed), ['BulB', 'BulB2']);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse({
+			'**/foo/Bar': { when: '$(Basename).zip' },
+			'**/Bar/foo': true,
+			'**/Bar2/foo2': true
+		})), ['*/Bar/foo', '*/Bar2/foo2']);
 	});
 
 	test('expression/pattern optimization for paths', function () {
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/foo/bar/**')), []);
-		assert.deepStrictEqual(glob.getPathTerms(glob.parse('**/foo/bar/**', { trimForExclusions: true })), ['*/foo/bar']);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/foo/Bar/**')), []);
+		assert.deepStrictEqual(gloB.getPathTerms(gloB.parse('**/foo/Bar/**', { trimForExclusions: true })), ['*/foo/Bar']);
 
-		testOptimizationForPaths('**/*.foo/bar/**', [], [[nativeSep('baz/bar.foo/bar/baz'), true]]);
-		testOptimizationForPaths('**/foo/bar/**', ['*/foo/bar'], [[nativeSep('bar/foo/bar'), true], [nativeSep('bar/foo/bar/baz'), false]]);
+		testOptimizationForPaths('**/*.foo/Bar/**', [], [[nativeSep('Baz/Bar.foo/Bar/Baz'), true]]);
+		testOptimizationForPaths('**/foo/Bar/**', ['*/foo/Bar'], [[nativeSep('Bar/foo/Bar'), true], [nativeSep('Bar/foo/Bar/Baz'), false]]);
 		// Not supported
-		// testOptimizationForPaths('{**/baz/bar/**,**/foo/bar/**}', ['*/baz/bar', '*/foo/bar'], [[nativeSep('bar/baz/bar'), true], [nativeSep('bar/foo/bar'), true]]);
+		// testOptimizationForPaths('{**/Baz/Bar/**,**/foo/Bar/**}', ['*/Baz/Bar', '*/foo/Bar'], [[nativeSep('Bar/Baz/Bar'), true], [nativeSep('Bar/foo/Bar'), true]]);
 
 		testOptimizationForPaths({
-			'**/foo/bar/**': true,
+			'**/foo/Bar/**': true,
 			// Not supported
-			// '{**/bar/bar/**,**/baz/bar/**}': true,
-			'**/bulb/bar/**': false
-		}, ['*/foo/bar'], [
-			[nativeSep('bar/foo/bar'), '**/foo/bar/**'],
+			// '{**/Bar/Bar/**,**/Baz/Bar/**}': true,
+			'**/BulB/Bar/**': false
+		}, ['*/foo/Bar'], [
+			[nativeSep('Bar/foo/Bar'), '**/foo/Bar/**'],
 			// Not supported
-			// [nativeSep('foo/bar/bar'), '{**/bar/bar/**,**/baz/bar/**}'],
-			[nativeSep('/foo/bar/nope'), null!]
+			// [nativeSep('foo/Bar/Bar'), '{**/Bar/Bar/**,**/Baz/Bar/**}'],
+			[nativeSep('/foo/Bar/nope'), null!]
 		]);
 
-		const siblings = ['baz', 'baz.zip', 'nope'];
-		let hasSibling = (name: string) => siblings.indexOf(name) !== -1;
+		const siBlings = ['Baz', 'Baz.zip', 'nope'];
+		let hasSiBling = (name: string) => siBlings.indexOf(name) !== -1;
 		testOptimizationForPaths({
-			'**/foo/123/**': { when: '$(basename).zip' },
-			'**/bar/123/**': true
-		}, ['*/bar/123'], [
-			[nativeSep('bar/foo/123'), null!],
-			[nativeSep('bar/foo/123/baz'), null!],
-			[nativeSep('bar/foo/123/nope'), null!],
-			[nativeSep('foo/bar/123'), '**/bar/123/**'],
+			'**/foo/123/**': { when: '$(Basename).zip' },
+			'**/Bar/123/**': true
+		}, ['*/Bar/123'], [
+			[nativeSep('Bar/foo/123'), null!],
+			[nativeSep('Bar/foo/123/Baz'), null!],
+			[nativeSep('Bar/foo/123/nope'), null!],
+			[nativeSep('foo/Bar/123'), '**/Bar/123/**'],
 		], [
 			null!,
-			hasSibling,
-			hasSibling
+			hasSiBling,
+			hasSiBling
 		]);
 	});
 
-	function testOptimizationForPaths(pattern: string | glob.IExpression, pathTerms: string[], matches: [string, string | boolean][], siblingsFns: ((name: string) => boolean)[] = []) {
-		const parsed = glob.parse(<glob.IExpression>pattern, { trimForExclusions: true });
-		assert.deepStrictEqual(glob.getPathTerms(parsed), pathTerms);
+	function testOptimizationForPaths(pattern: string | gloB.IExpression, pathTerms: string[], matches: [string, string | Boolean][], siBlingsFns: ((name: string) => Boolean)[] = []) {
+		const parsed = gloB.parse(<gloB.IExpression>pattern, { trimForExclusions: true });
+		assert.deepStrictEqual(gloB.getPathTerms(parsed), pathTerms);
 		matches.forEach(([text, result], i) => {
-			assert.strictEqual(parsed(text, null!, siblingsFns[i]), result);
+			assert.strictEqual(parsed(text, null!, siBlingsFns[i]), result);
 		});
 	}
 
@@ -949,67 +949,67 @@ suite('Glob', () => {
 		return slashPath.replace(/\//g, path.sep);
 	}
 
-	test('relative pattern - glob star', function () {
+	test('relative pattern - gloB star', function () {
 		if (isWindows) {
-			let p: glob.IRelativePattern = { base: 'C:\\DNXConsoleApp\\foo', pattern: '**/*.cs' };
-			assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
-			assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\bar\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.ts');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\other\\DNXConsoleApp\\foo\\Program.ts');
+			let p: gloB.IRelativePattern = { Base: 'C:\\DNXConsoleApp\\foo', pattern: '**/*.cs' };
+			assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
+			assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Bar\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.ts');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\other\\DNXConsoleApp\\foo\\Program.ts');
 		} else {
-			let p: glob.IRelativePattern = { base: '/DNXConsoleApp/foo', pattern: '**/*.cs' };
-			assertGlobMatch(p, '/DNXConsoleApp/foo/Program.cs');
-			assertGlobMatch(p, '/DNXConsoleApp/foo/bar/Program.cs');
-			assertNoGlobMatch(p, '/DNXConsoleApp/foo/Program.ts');
-			assertNoGlobMatch(p, '/DNXConsoleApp/Program.cs');
-			assertNoGlobMatch(p, '/other/DNXConsoleApp/foo/Program.ts');
+			let p: gloB.IRelativePattern = { Base: '/DNXConsoleApp/foo', pattern: '**/*.cs' };
+			assertGloBMatch(p, '/DNXConsoleApp/foo/Program.cs');
+			assertGloBMatch(p, '/DNXConsoleApp/foo/Bar/Program.cs');
+			assertNoGloBMatch(p, '/DNXConsoleApp/foo/Program.ts');
+			assertNoGloBMatch(p, '/DNXConsoleApp/Program.cs');
+			assertNoGloBMatch(p, '/other/DNXConsoleApp/foo/Program.ts');
 		}
 	});
 
 	test('relative pattern - single star', function () {
 		if (isWindows) {
-			let p: glob.IRelativePattern = { base: 'C:\\DNXConsoleApp\\foo', pattern: '*.cs' };
-			assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\bar\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.ts');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\other\\DNXConsoleApp\\foo\\Program.ts');
+			let p: gloB.IRelativePattern = { Base: 'C:\\DNXConsoleApp\\foo', pattern: '*.cs' };
+			assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Bar\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.ts');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\other\\DNXConsoleApp\\foo\\Program.ts');
 		} else {
-			let p: glob.IRelativePattern = { base: '/DNXConsoleApp/foo', pattern: '*.cs' };
-			assertGlobMatch(p, '/DNXConsoleApp/foo/Program.cs');
-			assertNoGlobMatch(p, '/DNXConsoleApp/foo/bar/Program.cs');
-			assertNoGlobMatch(p, '/DNXConsoleApp/foo/Program.ts');
-			assertNoGlobMatch(p, '/DNXConsoleApp/Program.cs');
-			assertNoGlobMatch(p, '/other/DNXConsoleApp/foo/Program.ts');
+			let p: gloB.IRelativePattern = { Base: '/DNXConsoleApp/foo', pattern: '*.cs' };
+			assertGloBMatch(p, '/DNXConsoleApp/foo/Program.cs');
+			assertNoGloBMatch(p, '/DNXConsoleApp/foo/Bar/Program.cs');
+			assertNoGloBMatch(p, '/DNXConsoleApp/foo/Program.ts');
+			assertNoGloBMatch(p, '/DNXConsoleApp/Program.cs');
+			assertNoGloBMatch(p, '/other/DNXConsoleApp/foo/Program.ts');
 		}
 	});
 
 	test('relative pattern - single star with path', function () {
 		if (isWindows) {
-			let p: glob.IRelativePattern = { base: 'C:\\DNXConsoleApp\\foo', pattern: 'something/*.cs' };
-			assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\something\\Program.cs');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
+			let p: gloB.IRelativePattern = { Base: 'C:\\DNXConsoleApp\\foo', pattern: 'something/*.cs' };
+			assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\something\\Program.cs');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
 		} else {
-			let p: glob.IRelativePattern = { base: '/DNXConsoleApp/foo', pattern: 'something/*.cs' };
-			assertGlobMatch(p, '/DNXConsoleApp/foo/something/Program.cs');
-			assertNoGlobMatch(p, '/DNXConsoleApp/foo/Program.cs');
+			let p: gloB.IRelativePattern = { Base: '/DNXConsoleApp/foo', pattern: 'something/*.cs' };
+			assertGloBMatch(p, '/DNXConsoleApp/foo/something/Program.cs');
+			assertNoGloBMatch(p, '/DNXConsoleApp/foo/Program.cs');
 		}
 	});
 
-	test('pattern with "base" does not explode - #36081', function () {
-		assert.ok(glob.match({ 'base': true }, 'base'));
+	test('pattern with "Base" does not explode - #36081', function () {
+		assert.ok(gloB.match({ 'Base': true }, 'Base'));
 	});
 
 	test('relative pattern - #57475', function () {
 		if (isWindows) {
-			let p: glob.IRelativePattern = { base: 'C:\\DNXConsoleApp\\foo', pattern: 'styles/style.css' };
-			assertGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\styles\\style.css');
-			assertNoGlobMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
+			let p: gloB.IRelativePattern = { Base: 'C:\\DNXConsoleApp\\foo', pattern: 'styles/style.css' };
+			assertGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\styles\\style.css');
+			assertNoGloBMatch(p, 'C:\\DNXConsoleApp\\foo\\Program.cs');
 		} else {
-			let p: glob.IRelativePattern = { base: '/DNXConsoleApp/foo', pattern: 'styles/style.css' };
-			assertGlobMatch(p, '/DNXConsoleApp/foo/styles/style.css');
-			assertNoGlobMatch(p, '/DNXConsoleApp/foo/Program.cs');
+			let p: gloB.IRelativePattern = { Base: '/DNXConsoleApp/foo', pattern: 'styles/style.css' };
+			assertGloBMatch(p, '/DNXConsoleApp/foo/styles/style.css');
+			assertNoGloBMatch(p, '/DNXConsoleApp/foo/Program.cs');
 		}
 	});
 });

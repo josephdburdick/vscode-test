@@ -5,20 +5,20 @@
 
 import * as vscode from 'vscode';
 
-export function dispose(arg: vscode.Disposable | Iterable<vscode.Disposable>): void {
-	if (arg instanceof vscode.Disposable) {
+export function dispose(arg: vscode.DisposaBle | IteraBle<vscode.DisposaBle>): void {
+	if (arg instanceof vscode.DisposaBle) {
 		arg.dispose();
 	} else {
-		for (const disposable of arg) {
-			disposable.dispose();
+		for (const disposaBle of arg) {
+			disposaBle.dispose();
 		}
 	}
 }
 
-export function combinedDisposable(disposables: Iterable<vscode.Disposable>): vscode.Disposable {
+export function comBinedDisposaBle(disposaBles: IteraBle<vscode.DisposaBle>): vscode.DisposaBle {
 	return {
 		dispose() {
-			dispose(disposables);
+			dispose(disposaBles);
 		}
 	};
 }

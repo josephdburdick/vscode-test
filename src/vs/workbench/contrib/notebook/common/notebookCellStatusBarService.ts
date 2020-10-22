@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { INotebookCellStatusBarEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { INoteBookCellStatusBarEntry } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
-export const INotebookCellStatusBarService = createDecorator<INotebookCellStatusBarService>('notebookCellStatusBarService');
+export const INoteBookCellStatusBarService = createDecorator<INoteBookCellStatusBarService>('noteBookCellStatusBarService');
 
-export interface INotebookCellStatusBarService {
+export interface INoteBookCellStatusBarService {
 	readonly _serviceBrand: undefined;
 
 	onDidChangeEntriesForCell: Event<URI>;
 
-	addEntry(entry: INotebookCellStatusBarEntry): IDisposable;
-	getEntries(cell: URI): INotebookCellStatusBarEntry[];
+	addEntry(entry: INoteBookCellStatusBarEntry): IDisposaBle;
+	getEntries(cell: URI): INoteBookCellStatusBarEntry[];
 }

@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en.darwin'; // 15%
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/zh-hans.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-uk.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/jp-roman.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-intl.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-ext.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/fr.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/jp.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pl.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/it.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/ru.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pt.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/ko.darwin';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/dvorak.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en.darwin'; // 15%
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/zh-hans.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-uk.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/es.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/jp-roman.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/de.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-intl.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en-ext.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/fr.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/jp.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/pl.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/it.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/ru.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/pt.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/ko.darwin';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/dvorak.darwin';
 
-export { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+export { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';

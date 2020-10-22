@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./referencesWidget';
-import * as dom from 'vs/base/browser/dom';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Orientation } from 'vs/base/browser/ui/sash/sash';
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { dispose, IDisposable, IReference, DisposableStore } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { basenameOrAuthority, dirname } from 'vs/base/common/resources';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EmbeddedCodeEditorWidget } from 'vs/editor/browser/widget/embeddedCodeEditorWidget';
+import * as dom from 'vs/Base/Browser/dom';
+import { IMouseEvent } from 'vs/Base/Browser/mouseEvent';
+import { Orientation } from 'vs/Base/Browser/ui/sash/sash';
+import { Color } from 'vs/Base/common/color';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { dispose, IDisposaBle, IReference, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Schemas } from 'vs/Base/common/network';
+import { BasenameOrAuthority, dirname } from 'vs/Base/common/resources';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EmBeddedCodeEditorWidget } from 'vs/editor/Browser/widget/emBeddedCodeEditorWidget';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ScrollType } from 'vs/editor/common/editorCommon';
@@ -21,23 +21,23 @@ import { IModelDeltaDecoration, TrackedRangeStickiness } from 'vs/editor/common/
 import { ModelDecorationOptions, TextModel } from 'vs/editor/common/model/textModel';
 import { Location } from 'vs/editor/common/modes';
 import { ITextEditorModel, ITextModelService } from 'vs/editor/common/services/resolverService';
-import { AccessibilityProvider, DataSource, Delegate, FileReferencesRenderer, OneReferenceRenderer, TreeElement, StringRepresentationProvider, IdentityProvider } from 'vs/editor/contrib/gotoSymbol/peek/referencesTree';
+import { AccessiBilityProvider, DataSource, Delegate, FileReferencesRenderer, OneReferenceRenderer, TreeElement, StringRepresentationProvider, IdentityProvider } from 'vs/editor/contriB/gotoSymBol/peek/referencesTree';
 import * as nls from 'vs/nls';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { WorkbenchAsyncDataTree, IWorkbenchAsyncDataTreeOptions } from 'vs/platform/list/browser/listService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { WorkBenchAsyncDataTree, IWorkBenchAsyncDataTreeOptions } from 'vs/platform/list/Browser/listService';
 import { activeContrastBorder } from 'vs/platform/theme/common/colorRegistry';
 import { IColorTheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import * as peekView from 'vs/editor/contrib/peekView/peekView';
+import * as peekView from 'vs/editor/contriB/peekView/peekView';
 import { FileReferences, OneReference, ReferencesModel } from '../referencesModel';
-import { FuzzyScore } from 'vs/base/common/filters';
-import { SplitView, Sizing } from 'vs/base/browser/ui/splitview/splitview';
+import { FuzzyScore } from 'vs/Base/common/filters';
+import { SplitView, Sizing } from 'vs/Base/Browser/ui/splitview/splitview';
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 
 
-class DecorationsManager implements IDisposable {
+class DecorationsManager implements IDisposaBle {
 
 	private static readonly DecorationOptions = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
@@ -46,8 +46,8 @@ class DecorationsManager implements IDisposable {
 
 	private _decorations = new Map<string, OneReference>();
 	private _decorationIgnoreSet = new Set<string>();
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModelChange = new DisposableStore();
+	private readonly _callOnDispose = new DisposaBleStore();
+	private readonly _callOnModelChange = new DisposaBleStore();
 
 	constructor(private _editor: ICodeEditor, private _model: ReferencesModel) {
 		this._callOnDispose.add(this._editor.onDidChangeModel(() => this._onModelChanged()));
@@ -81,7 +81,7 @@ class DecorationsManager implements IDisposable {
 		this._callOnModelChange.add(this._editor.getModel().onDidChangeDecorations(() => this._onDecorationChanged()));
 
 		const newDecorations: IModelDeltaDecoration[] = [];
-		const newDecorationsActualIndex: number[] = [];
+		const newDecorationsActualIndex: numBer[] = [];
 
 		for (let i = 0, len = reference.children.length; i < len; i++) {
 			let oneReference = reference.children[i];
@@ -159,12 +159,12 @@ class DecorationsManager implements IDisposable {
 }
 
 export class LayoutData {
-	ratio: number = 0.7;
-	heightInLines: number = 18;
+	ratio: numBer = 0.7;
+	heightInLines: numBer = 18;
 
 	static fromJSON(raw: string): LayoutData {
-		let ratio: number | undefined;
-		let heightInLines: number | undefined;
+		let ratio: numBer | undefined;
+		let heightInLines: numBer | undefined;
 		try {
 			const data = <LayoutData>JSON.parse(raw);
 			ratio = data.ratio;
@@ -185,7 +185,7 @@ export interface SelectionEvent {
 	readonly element?: Location;
 }
 
-class ReferencesTree extends WorkbenchAsyncDataTree<ReferencesModel | FileReferences, TreeElement, FuzzyScore> { }
+class ReferencesTree extends WorkBenchAsyncDataTree<ReferencesModel | FileReferences, TreeElement, FuzzyScore> { }
 
 /**
  * ZoneWidget that is shown inside the editor
@@ -195,8 +195,8 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 	private _model?: ReferencesModel;
 	private _decorationsManager?: DecorationsManager;
 
-	private readonly _disposeOnNewModel = new DisposableStore();
-	private readonly _callOnDispose = new DisposableStore();
+	private readonly _disposeOnNewModel = new DisposaBleStore();
+	private readonly _callOnDispose = new DisposaBleStore();
 
 	private readonly _onDidSelectReference = new Emitter<SelectionEvent>();
 	readonly onDidSelectReference = this._onDidSelectReference.event;
@@ -206,27 +206,27 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 	private _splitView!: SplitView;
 	private _preview!: ICodeEditor;
 	private _previewModelReference!: IReference<ITextEditorModel>;
-	private _previewNotAvailableMessage!: TextModel;
+	private _previewNotAvailaBleMessage!: TextModel;
 	private _previewContainer!: HTMLElement;
 	private _messageContainer!: HTMLElement;
 	private _dim: dom.Dimension = { height: 0, width: 0 };
 
 	constructor(
 		editor: ICodeEditor,
-		private _defaultTreeKeyboardSupport: boolean,
-		public layoutData: LayoutData,
+		private _defaultTreeKeyBoardSupport: Boolean,
+		puBlic layoutData: LayoutData,
 		@IThemeService themeService: IThemeService,
 		@ITextModelService private readonly _textModelResolverService: ITextModelService,
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 		@peekView.IPeekViewService private readonly _peekViewService: peekView.IPeekViewService,
-		@ILabelService private readonly _uriLabel: ILabelService,
+		@ILaBelService private readonly _uriLaBel: ILaBelService,
 		@IUndoRedoService private readonly _undoRedoService: IUndoRedoService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@IKeyBindingService private readonly _keyBindingService: IKeyBindingService,
 	) {
-		super(editor, { showFrame: false, showArrow: true, isResizeable: true, isAccessible: true }, _instantiationService);
+		super(editor, { showFrame: false, showArrow: true, isResizeaBle: true, isAccessiBle: true }, _instantiationService);
 
 		this._applyTheme(themeService.getColorTheme());
-		this._callOnDispose.add(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
+		this._callOnDispose.add(themeService.onDidColorThemeChange(this._applyTheme.Bind(this)));
 		this._peekViewService.addExclusiveWidget(editor, this);
 		this.create();
 	}
@@ -236,7 +236,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		this._callOnDispose.dispose();
 		this._disposeOnNewModel.dispose();
 		dispose(this._preview);
-		dispose(this._previewNotAvailableMessage);
+		dispose(this._previewNotAvailaBleMessage);
 		dispose(this._tree);
 		dispose(this._previewModelReference);
 		this._splitView.dispose();
@@ -244,10 +244,10 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 	}
 
 	private _applyTheme(theme: IColorTheme) {
-		const borderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
+		const BorderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
 		this.style({
-			arrowColor: borderColor,
-			frameColor: borderColor,
+			arrowColor: BorderColor,
+			frameColor: BorderColor,
 			headerBackgroundColor: theme.getColor(peekView.peekViewTitleBackground) || Color.transparent,
 			primaryHeadingColor: theme.getColor(peekView.peekViewTitleForeground),
 			secondaryHeadingColor: theme.getColor(peekView.peekViewTitleInfoForeground)
@@ -267,7 +267,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		this._preview.focus();
 	}
 
-	isPreviewEditorFocused(): boolean {
+	isPreviewEditorFocused(): Boolean {
 		return this._preview.hasTextFocus();
 	}
 
@@ -294,8 +294,8 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		this._previewContainer = dom.append(containerElement, dom.$('div.preview.inline'));
 		let options: IEditorOptions = {
 			scrollBeyondLastLine: false,
-			scrollbar: {
-				verticalScrollbarSize: 14,
+			scrollBar: {
+				verticalScrollBarSize: 14,
 				horizontal: 'auto',
 				useShadows: true,
 				verticalHasArrows: false,
@@ -305,19 +305,19 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 			overviewRulerLanes: 2,
 			fixedOverflowWidgets: true,
 			minimap: {
-				enabled: false
+				enaBled: false
 			}
 		};
-		this._preview = this._instantiationService.createInstance(EmbeddedCodeEditorWidget, this._previewContainer, options, this.editor);
+		this._preview = this._instantiationService.createInstance(EmBeddedCodeEditorWidget, this._previewContainer, options, this.editor);
 		dom.hide(this._previewContainer);
-		this._previewNotAvailableMessage = new TextModel(nls.localize('missingPreviewMessage', "no preview available"), TextModel.DEFAULT_CREATION_OPTIONS, null, null, this._undoRedoService);
+		this._previewNotAvailaBleMessage = new TextModel(nls.localize('missingPreviewMessage', "no preview availaBle"), TextModel.DEFAULT_CREATION_OPTIONS, null, null, this._undoRedoService);
 
 		// tree
 		this._treeContainer = dom.append(containerElement, dom.$('div.ref-tree.inline'));
-		const treeOptions: IWorkbenchAsyncDataTreeOptions<TreeElement, FuzzyScore> = {
-			keyboardSupport: this._defaultTreeKeyboardSupport,
-			accessibilityProvider: new AccessibilityProvider(),
-			keyboardNavigationLabelProvider: this._instantiationService.createInstance(StringRepresentationProvider),
+		const treeOptions: IWorkBenchAsyncDataTreeOptions<TreeElement, FuzzyScore> = {
+			keyBoardSupport: this._defaultTreeKeyBoardSupport,
+			accessiBilityProvider: new AccessiBilityProvider(),
+			keyBoardNavigationLaBelProvider: this._instantiationService.createInstance(StringRepresentationProvider),
 			identityProvider: new IdentityProvider(),
 			openOnSingleClick: true,
 			openOnFocus: true,
@@ -325,11 +325,11 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 				listBackground: peekView.peekViewResultsBackground
 			}
 		};
-		if (this._defaultTreeKeyboardSupport) {
+		if (this._defaultTreeKeyBoardSupport) {
 			// the tree will consume `Escape` and prevent the widget from closing
-			this._callOnDispose.add(dom.addStandardDisposableListener(this._treeContainer, 'keydown', (e) => {
+			this._callOnDispose.add(dom.addStandardDisposaBleListener(this._treeContainer, 'keydown', (e) => {
 				if (e.equals(KeyCode.Escape)) {
-					this._keybindingService.dispatchEvent(e, e.target);
+					this._keyBindingService.dispatchEvent(e, e.target);
 					e.stopPropagation();
 				}
 			}, true));
@@ -352,25 +352,25 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 			onDidChange: Event.None,
 			element: this._previewContainer,
 			minimumSize: 200,
-			maximumSize: Number.MAX_VALUE,
+			maximumSize: NumBer.MAX_VALUE,
 			layout: (width) => {
 				this._preview.layout({ height: this._dim.height, width });
 			}
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
 		this._splitView.addView({
 			onDidChange: Event.None,
 			element: this._treeContainer,
 			minimumSize: 100,
-			maximumSize: Number.MAX_VALUE,
+			maximumSize: NumBer.MAX_VALUE,
 			layout: (width) => {
 				this._treeContainer.style.height = `${this._dim.height}px`;
 				this._treeContainer.style.width = `${width}px`;
 				this._tree.layout(this._dim.height, width);
 			}
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
-		this._disposables.add(this._splitView.onDidSashChange(() => {
+		this._disposaBles.add(this._splitView.onDidSashChange(() => {
 			if (this._dim.width) {
 				this.layoutData.ratio = this._splitView.getViewSize(0) / this._dim.width;
 			}
@@ -398,13 +398,13 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		dom.hide(this._treeContainer);
 	}
 
-	protected _onWidth(width: number) {
+	protected _onWidth(width: numBer) {
 		if (this._dim) {
 			this._doLayoutBody(this._dim.height, width);
 		}
 	}
 
-	protected _doLayoutBody(heightInPixel: number, widthInPixel: number): void {
+	protected _doLayoutBody(heightInPixel: numBer, widthInPixel: numBer): void {
 		super._doLayoutBody(heightInPixel, widthInPixel);
 		this._dim = { height: heightInPixel, width: widthInPixel };
 		this.layoutData.heightInLines = this._viewZone ? this._viewZone.heightInLines : this.layoutData.heightInLines;
@@ -477,7 +477,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		this._splitView.layout(this._dim.width);
 		this.focusOnReferenceTree();
 
-		// pick input and a reference to begin with
+		// pick input and a reference to Begin with
 		return this._tree.setInput(this._model.groups.length === 1 ? this._model.groups[0] : this._model);
 	}
 
@@ -500,7 +500,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 
 	private _revealedReference?: OneReference;
 
-	private async _revealReference(reference: OneReference, revealParent: boolean): Promise<void> {
+	private async _revealReference(reference: OneReference, revealParent: Boolean): Promise<void> {
 
 		// check if there is anything to do...
 		if (this._revealedReference === reference) {
@@ -510,7 +510,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 
 		// Update widget header
 		if (reference.uri.scheme !== Schemas.inMemory) {
-			this.setTitle(basenameOrAuthority(reference.uri), this._uriLabel.getUriLabel(dirname(reference.uri)));
+			this.setTitle(BasenameOrAuthority(reference.uri), this._uriLaBel.getUriLaBel(dirname(reference.uri)));
 		} else {
 			this.setTitle(nls.localize('peekView.alternateTitle', "References"));
 		}
@@ -538,7 +538,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		dispose(this._previewModelReference);
 
 		// show in editor
-		const model = ref.object;
+		const model = ref.oBject;
 		if (model) {
 			const scrollType = this._preview.getModel() === model.textEditorModel ? ScrollType.Smooth : ScrollType.Immediate;
 			const sel = Range.lift(reference.range).collapseToStart();
@@ -547,7 +547,7 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 			this._preview.setSelection(sel);
 			this._preview.revealRangeInCenter(sel, scrollType);
 		} else {
-			this._preview.setModel(this._previewNotAvailableMessage);
+			this._preview.setModel(this._previewNotAvailaBleMessage);
 			ref.dispose();
 		}
 	}
@@ -559,23 +559,23 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 registerThemingParticipant((theme, collector) => {
 	const findMatchHighlightColor = theme.getColor(peekView.peekViewResultsMatchHighlight);
 	if (findMatchHighlightColor) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { background-color: ${findMatchHighlightColor}; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { Background-color: ${findMatchHighlightColor}; }`);
 	}
 	const referenceHighlightColor = theme.getColor(peekView.peekViewEditorMatchHighlight);
 	if (referenceHighlightColor) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { background-color: ${referenceHighlightColor}; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { Background-color: ${referenceHighlightColor}; }`);
 	}
 	const referenceHighlightBorder = theme.getColor(peekView.peekViewEditorMatchHighlightBorder);
 	if (referenceHighlightBorder) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { border: 2px solid ${referenceHighlightBorder}; box-sizing: border-box; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { Border: 2px solid ${referenceHighlightBorder}; Box-sizing: Border-Box; }`);
 	}
 	const hcOutline = theme.getColor(activeContrastBorder);
 	if (hcOutline) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { border: 1px dotted ${hcOutline}; box-sizing: border-box; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { Border: 1px dotted ${hcOutline}; Box-sizing: Border-Box; }`);
 	}
 	const resultsBackground = theme.getColor(peekView.peekViewResultsBackground);
 	if (resultsBackground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree { background-color: ${resultsBackground}; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree { Background-color: ${resultsBackground}; }`);
 	}
 	const resultsMatchForeground = theme.getColor(peekView.peekViewResultsMatchForeground);
 	if (resultsMatchForeground) {
@@ -587,7 +587,7 @@ registerThemingParticipant((theme, collector) => {
 	}
 	const resultsSelectedBackground = theme.getColor(peekView.peekViewResultsSelectionBackground);
 	if (resultsSelectedBackground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { background-color: ${resultsSelectedBackground}; }`);
+		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { Background-color: ${resultsSelectedBackground}; }`);
 	}
 	const resultsSelectedForeground = theme.getColor(peekView.peekViewResultsSelectionForeground);
 	if (resultsSelectedForeground) {
@@ -596,16 +596,16 @@ registerThemingParticipant((theme, collector) => {
 	const editorBackground = theme.getColor(peekView.peekViewEditorBackground);
 	if (editorBackground) {
 		collector.addRule(
-			`.monaco-editor .reference-zone-widget .preview .monaco-editor .monaco-editor-background,` +
+			`.monaco-editor .reference-zone-widget .preview .monaco-editor .monaco-editor-Background,` +
 			`.monaco-editor .reference-zone-widget .preview .monaco-editor .inputarea.ime-input {` +
-			`	background-color: ${editorBackground};` +
+			`	Background-color: ${editorBackground};` +
 			`}`);
 	}
 	const editorGutterBackground = theme.getColor(peekView.peekViewEditorGutterBackground);
 	if (editorGutterBackground) {
 		collector.addRule(
 			`.monaco-editor .reference-zone-widget .preview .monaco-editor .margin {` +
-			`	background-color: ${editorGutterBackground};` +
+			`	Background-color: ${editorGutterBackground};` +
 			`}`);
 	}
 });

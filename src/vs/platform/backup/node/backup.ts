@@ -17,6 +17,6 @@ export interface IBackupWorkspacesFormat {
 }
 
 export interface IEmptyWindowBackupInfo {
-	backupFolder: string;
+	BackupFolder: string;
 	remoteAuthority?: string;
 }

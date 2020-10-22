@@ -16,9 +16,9 @@ export const semanticSupportedSchemes = [
 ];
 
 /**
- * File scheme for which JS/TS language feature should be disabled
+ * File scheme for which JS/TS language feature should Be disaBled
  */
-export const disabledSchemes = new Set([
+export const disaBledSchemes = new Set([
 	git,
 	vsls
 ]);

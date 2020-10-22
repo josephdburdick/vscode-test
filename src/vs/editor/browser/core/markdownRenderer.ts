@@ -3,32 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMarkdownString } from 'vs/base/common/htmlContent';
-import { renderMarkdown, MarkdownRenderOptions, MarkedOptions } from 'vs/base/browser/markdownRenderer';
+import { IMarkdownString } from 'vs/Base/common/htmlContent';
+import { renderMarkdown, MarkdownRenderOptions, MarkedOptions } from 'vs/Base/Browser/markdownRenderer';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/Base/common/errors';
 import { tokenizeToString } from 'vs/editor/common/modes/textToHtmlTokenizer';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { Emitter } from 'vs/base/common/event';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { Emitter } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { ITokenizationSupport, TokenizationRegistry } from 'vs/editor/common/modes';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-export interface IMarkdownRenderResult extends IDisposable {
+export interface IMarkdownRenderResult extends IDisposaBle {
 	element: HTMLElement;
 }
 
 export interface IMarkdownRendererOptions {
 	editor?: ICodeEditor;
-	baseUrl?: URI;
+	BaseUrl?: URI;
 	codeBlockFontFamily?: string;
 }
 
 /**
- * Markdown renderer that can render codeblocks with the editor mechanics. This
- * renderer should always be preferred.
+ * Markdown renderer that can render codeBlocks with the editor mechanics. This
+ * renderer should always Be preferred.
  */
 export class MarkdownRenderer {
 
@@ -52,28 +52,28 @@ export class MarkdownRenderer {
 	}
 
 	render(markdown: IMarkdownString | undefined, options?: MarkdownRenderOptions, markedOptions?: MarkedOptions): IMarkdownRenderResult {
-		const disposeables = new DisposableStore();
+		const disposeaBles = new DisposaBleStore();
 
 		let element: HTMLElement;
 		if (!markdown) {
 			element = document.createElement('span');
 		} else {
-			element = renderMarkdown(markdown, { ...this._getRenderOptions(disposeables), ...options }, markedOptions);
+			element = renderMarkdown(markdown, { ...this._getRenderOptions(disposeaBles), ...options }, markedOptions);
 		}
 
 		return {
 			element,
-			dispose: () => disposeables.dispose()
+			dispose: () => disposeaBles.dispose()
 		};
 	}
 
-	protected _getRenderOptions(disposeables: DisposableStore): MarkdownRenderOptions {
+	protected _getRenderOptions(disposeaBles: DisposaBleStore): MarkdownRenderOptions {
 		return {
-			baseUrl: this._options.baseUrl,
+			BaseUrl: this._options.BaseUrl,
 			codeBlockRenderer: async (languageAlias, value) => {
 				// In markdown,
-				// it is possible that we stumble upon language aliases (e.g.js instead of javascript)
-				// it is possible no alias is given in which case we fall back to the current editor lang
+				// it is possiBle that we stumBle upon language aliases (e.g.js instead of javascript)
+				// it is possiBle no alias is given in which case we fall Back to the current editor lang
 				let modeId: string | undefined | null;
 				if (languageAlias) {
 					modeId = this._modeService.getModeIdForLanguageName(languageAlias);
@@ -103,10 +103,10 @@ export class MarkdownRenderer {
 
 				return element;
 			},
-			codeBlockRenderCallback: () => this._onDidRenderCodeBlock.fire(),
+			codeBlockRenderCallBack: () => this._onDidRenderCodeBlock.fire(),
 			actionHandler: {
-				callback: (content) => this._openerService.open(content, { fromUserGesture: true }).catch(onUnexpectedError),
-				disposeables
+				callBack: (content) => this._openerService.open(content, { fromUserGesture: true }).catch(onUnexpectedError),
+				disposeaBles
 			}
 		};
 	}

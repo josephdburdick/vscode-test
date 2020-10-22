@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { RawContextKey, IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class WordContextKey extends Disposable {
+export class WordContextKey extends DisposaBle {
 
-	static readonly AtEnd = new RawContextKey<boolean>('atEndOfWord', false);
+	static readonly AtEnd = new RawContextKey<Boolean>('atEndOfWord', false);
 
-	private readonly _ckAtEnd: IContextKey<boolean>;
+	private readonly _ckAtEnd: IContextKey<Boolean>;
 
-	private _enabled: boolean = false;
-	private _selectionListener?: IDisposable;
+	private _enaBled: Boolean = false;
+	private _selectionListener?: IDisposaBle;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
 		super();
-		this._ckAtEnd = WordContextKey.AtEnd.bindTo(contextKeyService);
-		this._register(this._editor.onDidChangeConfiguration(e => e.hasChanged(EditorOption.tabCompletion) && this._update()));
+		this._ckAtEnd = WordContextKey.AtEnd.BindTo(contextKeyService);
+		this._register(this._editor.onDidChangeConfiguration(e => e.hasChanged(EditorOption.taBCompletion) && this._update()));
 		this._update();
 	}
 
@@ -34,14 +34,14 @@ export class WordContextKey extends Disposable {
 	}
 
 	private _update(): void {
-		// only update this when tab completions are enabled
-		const enabled = this._editor.getOption(EditorOption.tabCompletion) === 'on';
-		if (this._enabled === enabled) {
+		// only update this when taB completions are enaBled
+		const enaBled = this._editor.getOption(EditorOption.taBCompletion) === 'on';
+		if (this._enaBled === enaBled) {
 			return;
 		}
-		this._enabled = enabled;
+		this._enaBled = enaBled;
 
-		if (this._enabled) {
+		if (this._enaBled) {
 			const checkForWordEnd = () => {
 				if (!this._editor.hasModel()) {
 					this._ckAtEnd.set(false);

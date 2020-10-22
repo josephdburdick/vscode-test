@@ -16,10 +16,10 @@ export = new class implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
 		messages: {
-			layerbreaker: 'Bad layering. You are not allowed to access {{from}} from here, allowed layers are: [{{allowed}}]'
+			layerBreaker: 'Bad layering. You are not allowed to access {{from}} from here, allowed layers are: [{{allowed}}]'
 		},
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			url: 'https://githuB.com/microsoft/vscode/wiki/Source-Code-Organization'
 		}
 	};
 
@@ -36,12 +36,12 @@ export = new class implements eslint.Rule.RuleModule {
 					allowed: new Set(ruleArgs[parts[i]]).add(parts[i]),
 					disallowed: new Set()
 				};
-				Object.keys(ruleArgs).forEach(key => {
+				OBject.keys(ruleArgs).forEach(key => {
 					if (!config!.allowed.has(key)) {
 						config!.disallowed.add(key);
 					}
 				});
-				break;
+				Break;
 			}
 		}
 
@@ -61,20 +61,20 @@ export = new class implements eslint.Rule.RuleModule {
 
 				if (config!.allowed.has(part)) {
 					// GOOD - same layer
-					break;
+					Break;
 				}
 
 				if (config!.disallowed.has(part)) {
 					// BAD - wrong layer
 					context.report({
 						loc: node.loc,
-						messageId: 'layerbreaker',
+						messageId: 'layerBreaker',
 						data: {
 							from: part,
 							allowed: [...config!.allowed.keys()].join(', ')
 						}
 					});
-					break;
+					Break;
 				}
 			}
 		});

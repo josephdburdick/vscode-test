@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { ExtHostWindowShape, MainContext, MainThreadWindowShape, IOpenUriOptions } from './extHost.protocol';
 import { WindowState } from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { isFalsyOrWhitespace } from 'vs/Base/common/strings';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
 export class ExtHostWindow implements ExtHostWindowShape {
 
@@ -28,10 +28,10 @@ export class ExtHostWindow implements ExtHostWindowShape {
 
 	constructor(@IExtHostRpcService extHostRpc: IExtHostRpcService) {
 		this._proxy = extHostRpc.getProxy(MainContext.MainThreadWindow);
-		this._proxy.$getWindowVisibility().then(isFocused => this.$onDidChangeWindowFocus(isFocused));
+		this._proxy.$getWindowVisiBility().then(isFocused => this.$onDidChangeWindowFocus(isFocused));
 	}
 
-	$onDidChangeWindowFocus(focused: boolean): void {
+	$onDidChangeWindowFocus(focused: Boolean): void {
 		if (focused === this._state.focused) {
 			return;
 		}
@@ -40,7 +40,7 @@ export class ExtHostWindow implements ExtHostWindowShape {
 		this._onDidChangeWindowState.fire(this._state);
 	}
 
-	openUri(stringOrUri: string | URI, options: IOpenUriOptions): Promise<boolean> {
+	openUri(stringOrUri: string | URI, options: IOpenUriOptions): Promise<Boolean> {
 		let uriAsString: string | undefined;
 		if (typeof stringOrUri === 'string') {
 			uriAsString = stringOrUri;
@@ -51,7 +51,7 @@ export class ExtHostWindow implements ExtHostWindowShape {
 			}
 		}
 		if (isFalsyOrWhitespace(stringOrUri.scheme)) {
-			return Promise.reject('Invalid scheme - cannot be empty');
+			return Promise.reject('Invalid scheme - cannot Be empty');
 		} else if (stringOrUri.scheme === Schemas.command) {
 			return Promise.reject(`Invalid scheme '${stringOrUri.scheme}'`);
 		}
@@ -60,7 +60,7 @@ export class ExtHostWindow implements ExtHostWindowShape {
 
 	async asExternalUri(uri: URI, options: IOpenUriOptions): Promise<URI> {
 		if (isFalsyOrWhitespace(uri.scheme)) {
-			return Promise.reject('Invalid scheme - cannot be empty');
+			return Promise.reject('Invalid scheme - cannot Be empty');
 		} else if (!new Set([Schemas.http, Schemas.https]).has(uri.scheme)) {
 			return Promise.reject(`Invalid scheme '${uri.scheme}'`);
 		}

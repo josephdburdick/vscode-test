@@ -7,21 +7,21 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import type * as Proto from '../protocol';
 import * as PConst from '../protocol.const';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
+import { ClientCapaBility, ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
-import { conditionalRegistration, requireSomeCapability, requireMinVersion } from '../utils/dependentRegistration';
+import { conditionalRegistration, requireSomeCapaBility, requireMinVersion } from '../utils/dependentRegistration';
 import { DocumentSelector } from '../utils/documentSelector';
 import { parseKindModifier } from '../utils/modifiers';
 import * as typeConverters from '../utils/typeConverters';
 
 class TypeScriptCallHierarchySupport implements vscode.CallHierarchyProvider {
-	public static readonly minVersion = API.v380;
+	puBlic static readonly minVersion = API.v380;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient
 	) { }
 
-	public async prepareCallHierarchy(
+	puBlic async prepareCallHierarchy(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		token: vscode.CancellationToken
@@ -33,16 +33,16 @@ class TypeScriptCallHierarchySupport implements vscode.CallHierarchyProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
 		const response = await this.client.execute('prepareCallHierarchy', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
-		return Array.isArray(response.body)
-			? response.body.map(fromProtocolCallHierarchyItem)
-			: fromProtocolCallHierarchyItem(response.body);
+		return Array.isArray(response.Body)
+			? response.Body.map(fromProtocolCallHierarchyItem)
+			: fromProtocolCallHierarchyItem(response.Body);
 	}
 
-	public async provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): Promise<vscode.CallHierarchyIncomingCall[] | undefined> {
+	puBlic async provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): Promise<vscode.CallHierarchyIncomingCall[] | undefined> {
 		const filepath = this.client.toPath(item.uri);
 		if (!filepath) {
 			return undefined;
@@ -50,14 +50,14 @@ class TypeScriptCallHierarchySupport implements vscode.CallHierarchyProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, item.selectionRange.start);
 		const response = await this.client.execute('provideCallHierarchyIncomingCalls', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
-		return response.body.map(fromProtocolCallHierchyIncomingCall);
+		return response.Body.map(fromProtocolCallHierchyIncomingCall);
 	}
 
-	public async provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): Promise<vscode.CallHierarchyOutgoingCall[] | undefined> {
+	puBlic async provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): Promise<vscode.CallHierarchyOutgoingCall[] | undefined> {
 		const filepath = this.client.toPath(item.uri);
 		if (!filepath) {
 			return undefined;
@@ -65,11 +65,11 @@ class TypeScriptCallHierarchySupport implements vscode.CallHierarchyProvider {
 
 		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, item.selectionRange.start);
 		const response = await this.client.execute('provideCallHierarchyOutgoingCalls', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
-		return response.body.map(fromProtocolCallHierchyOutgoingCall);
+		return response.Body.map(fromProtocolCallHierchyOutgoingCall);
 	}
 }
 
@@ -79,10 +79,10 @@ function isSourceFileItem(item: Proto.CallHierarchyItem) {
 
 function fromProtocolCallHierarchyItem(item: Proto.CallHierarchyItem): vscode.CallHierarchyItem {
 	const useFileName = isSourceFileItem(item);
-	const name = useFileName ? path.basename(item.file) : item.name;
+	const name = useFileName ? path.Basename(item.file) : item.name;
 	const detail = useFileName ? vscode.workspace.asRelativePath(path.dirname(item.file)) : item.containerName ?? '';
 	const result = new vscode.CallHierarchyItem(
-		typeConverters.SymbolKind.fromProtocolScriptElementKind(item.kind),
+		typeConverters.SymBolKind.fromProtocolScriptElementKind(item.kind),
 		name,
 		detail,
 		vscode.Uri.file(item.file),
@@ -92,7 +92,7 @@ function fromProtocolCallHierarchyItem(item: Proto.CallHierarchyItem): vscode.Ca
 
 	const kindModifiers = item.kindModifiers ? parseKindModifier(item.kindModifiers) : undefined;
 	if (kindModifiers?.has(PConst.KindModifiers.depreacted)) {
-		result.tags = [vscode.SymbolTag.Deprecated];
+		result.tags = [vscode.SymBolTag.Deprecated];
 	}
 	return result;
 }
@@ -117,7 +117,7 @@ export function register(
 ) {
 	return conditionalRegistration([
 		requireMinVersion(client, TypeScriptCallHierarchySupport.minVersion),
-		requireSomeCapability(client, ClientCapability.Semantic),
+		requireSomeCapaBility(client, ClientCapaBility.Semantic),
 	], () => {
 		return vscode.languages.registerCallHierarchyProvider(selector.semantic,
 			new TypeScriptCallHierarchySupport(client));

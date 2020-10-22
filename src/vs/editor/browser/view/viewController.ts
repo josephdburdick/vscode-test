@@ -3,41 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { CoreNavigationCommands } from 'vs/editor/browser/controller/coreCommands';
-import { IEditorMouseEvent, IPartialEditorMouseEvent } from 'vs/editor/browser/editorBrowser';
-import { ViewUserInputEvents } from 'vs/editor/browser/view/viewUserInputEvents';
+import { IKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { CoreNavigationCommands } from 'vs/editor/Browser/controller/coreCommands';
+import { IEditorMouseEvent, IPartialEditorMouseEvent } from 'vs/editor/Browser/editorBrowser';
+import { ViewUserInputEvents } from 'vs/editor/Browser/view/viewUserInputEvents';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IConfiguration } from 'vs/editor/common/editorCommon';
 import { IViewModel } from 'vs/editor/common/viewModel/viewModel';
-import { IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
+import { IMouseWheelEvent } from 'vs/Base/Browser/mouseEvent';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import * as platform from 'vs/base/common/platform';
+import * as platform from 'vs/Base/common/platform';
 
 export interface IMouseDispatchData {
 	position: Position;
 	/**
 	 * Desired mouse column (e.g. when position.column gets clamped to text length -- clicking after text on a line).
 	 */
-	mouseColumn: number;
-	startedOnLineNumbers: boolean;
+	mouseColumn: numBer;
+	startedOnLineNumBers: Boolean;
 
-	inSelectionMode: boolean;
-	mouseDownCount: number;
-	altKey: boolean;
-	ctrlKey: boolean;
-	metaKey: boolean;
-	shiftKey: boolean;
+	inSelectionMode: Boolean;
+	mouseDownCount: numBer;
+	altKey: Boolean;
+	ctrlKey: Boolean;
+	metaKey: Boolean;
+	shiftKey: Boolean;
 
-	leftButton: boolean;
-	middleButton: boolean;
+	leftButton: Boolean;
+	middleButton: Boolean;
 }
 
 export interface ICommandDelegate {
-	paste(text: string, pasteOnNewLine: boolean, multicursorText: string[] | null, mode: string | null): void;
+	paste(text: string, pasteOnNewLine: Boolean, multicursorText: string[] | null, mode: string | null): void;
 	type(text: string): void;
-	replacePreviousChar(text: string, replaceCharCnt: number): void;
+	replacePreviousChar(text: string, replaceCharCnt: numBer): void;
 	startComposition(): void;
 	endComposition(): void;
 	cut(): void;
@@ -62,46 +62,46 @@ export class ViewController {
 		this.commandDelegate = commandDelegate;
 	}
 
-	public paste(text: string, pasteOnNewLine: boolean, multicursorText: string[] | null, mode: string | null): void {
+	puBlic paste(text: string, pasteOnNewLine: Boolean, multicursorText: string[] | null, mode: string | null): void {
 		this.commandDelegate.paste(text, pasteOnNewLine, multicursorText, mode);
 	}
 
-	public type(text: string): void {
+	puBlic type(text: string): void {
 		this.commandDelegate.type(text);
 	}
 
-	public replacePreviousChar(text: string, replaceCharCnt: number): void {
+	puBlic replacePreviousChar(text: string, replaceCharCnt: numBer): void {
 		this.commandDelegate.replacePreviousChar(text, replaceCharCnt);
 	}
 
-	public compositionStart(): void {
+	puBlic compositionStart(): void {
 		this.commandDelegate.startComposition();
 	}
 
-	public compositionEnd(): void {
+	puBlic compositionEnd(): void {
 		this.commandDelegate.endComposition();
 	}
 
-	public cut(): void {
+	puBlic cut(): void {
 		this.commandDelegate.cut();
 	}
 
-	public setSelection(modelSelection: Selection): void {
+	puBlic setSelection(modelSelection: Selection): void {
 		CoreNavigationCommands.SetSelection.runCoreEditorCommand(this.viewModel, {
-			source: 'keyboard',
+			source: 'keyBoard',
 			selection: modelSelection
 		});
 	}
 
 	private _validateViewColumn(viewPosition: Position): Position {
-		const minColumn = this.viewModel.getLineMinColumn(viewPosition.lineNumber);
+		const minColumn = this.viewModel.getLineMinColumn(viewPosition.lineNumBer);
 		if (viewPosition.column < minColumn) {
-			return new Position(viewPosition.lineNumber, minColumn);
+			return new Position(viewPosition.lineNumBer, minColumn);
 		}
 		return viewPosition;
 	}
 
-	private _hasMulticursorModifier(data: IMouseDispatchData): boolean {
+	private _hasMulticursorModifier(data: IMouseDispatchData): Boolean {
 		switch (this.configuration.options.get(EditorOption.multiCursorModifier)) {
 			case 'altKey':
 				return data.altKey;
@@ -114,7 +114,7 @@ export class ViewController {
 		}
 	}
 
-	private _hasNonMulticursorModifier(data: IMouseDispatchData): boolean {
+	private _hasNonMulticursorModifier(data: IMouseDispatchData): Boolean {
 		switch (this.configuration.options.get(EditorOption.multiCursorModifier)) {
 			case 'altKey':
 				return data.ctrlKey || data.metaKey;
@@ -127,13 +127,13 @@ export class ViewController {
 		}
 	}
 
-	public dispatchMouse(data: IMouseDispatchData): void {
+	puBlic dispatchMouse(data: IMouseDispatchData): void {
 		const options = this.configuration.options;
-		const selectionClipboardIsOn = (platform.isLinux && options.get(EditorOption.selectionClipboard));
+		const selectionClipBoardIsOn = (platform.isLinux && options.get(EditorOption.selectionClipBoard));
 		const columnSelection = options.get(EditorOption.columnSelection);
-		if (data.middleButton && !selectionClipboardIsOn) {
+		if (data.middleButton && !selectionClipBoardIsOn) {
 			this._columnSelect(data.position, data.mouseColumn, data.inSelectionMode);
-		} else if (data.startedOnLineNumbers) {
+		} else if (data.startedOnLineNumBers) {
 			// If the dragging started on the gutter, then have operations work on the entire line
 			if (this._hasMulticursorModifier(data)) {
 				if (data.inSelectionMode) {
@@ -215,7 +215,7 @@ export class ViewController {
 		};
 	}
 
-	public moveTo(viewPosition: Position): void {
+	puBlic moveTo(viewPosition: Position): void {
 		CoreNavigationCommands.MoveTo.runCoreEditorCommand(this.viewModel, this._usualArgs(viewPosition));
 	}
 
@@ -223,7 +223,7 @@ export class ViewController {
 		CoreNavigationCommands.MoveToSelect.runCoreEditorCommand(this.viewModel, this._usualArgs(viewPosition));
 	}
 
-	private _columnSelect(viewPosition: Position, mouseColumn: number, doColumnSelect: boolean): void {
+	private _columnSelect(viewPosition: Position, mouseColumn: numBer, doColumnSelect: Boolean): void {
 		viewPosition = this._validateViewColumn(viewPosition);
 		CoreNavigationCommands.ColumnSelect.runCoreEditorCommand(this.viewModel, {
 			source: 'mouse',
@@ -234,7 +234,7 @@ export class ViewController {
 		});
 	}
 
-	private _createCursor(viewPosition: Position, wholeLine: boolean): void {
+	private _createCursor(viewPosition: Position, wholeLine: Boolean): void {
 		viewPosition = this._validateViewColumn(viewPosition);
 		CoreNavigationCommands.CreateCursor.runCoreEditorCommand(this.viewModel, {
 			source: 'mouse',
@@ -286,43 +286,43 @@ export class ViewController {
 		return this.viewModel.coordinatesConverter.convertViewPositionToModelPosition(viewPosition);
 	}
 
-	public emitKeyDown(e: IKeyboardEvent): void {
+	puBlic emitKeyDown(e: IKeyBoardEvent): void {
 		this.userInputEvents.emitKeyDown(e);
 	}
 
-	public emitKeyUp(e: IKeyboardEvent): void {
+	puBlic emitKeyUp(e: IKeyBoardEvent): void {
 		this.userInputEvents.emitKeyUp(e);
 	}
 
-	public emitContextMenu(e: IEditorMouseEvent): void {
+	puBlic emitContextMenu(e: IEditorMouseEvent): void {
 		this.userInputEvents.emitContextMenu(e);
 	}
 
-	public emitMouseMove(e: IEditorMouseEvent): void {
+	puBlic emitMouseMove(e: IEditorMouseEvent): void {
 		this.userInputEvents.emitMouseMove(e);
 	}
 
-	public emitMouseLeave(e: IPartialEditorMouseEvent): void {
+	puBlic emitMouseLeave(e: IPartialEditorMouseEvent): void {
 		this.userInputEvents.emitMouseLeave(e);
 	}
 
-	public emitMouseUp(e: IEditorMouseEvent): void {
+	puBlic emitMouseUp(e: IEditorMouseEvent): void {
 		this.userInputEvents.emitMouseUp(e);
 	}
 
-	public emitMouseDown(e: IEditorMouseEvent): void {
+	puBlic emitMouseDown(e: IEditorMouseEvent): void {
 		this.userInputEvents.emitMouseDown(e);
 	}
 
-	public emitMouseDrag(e: IEditorMouseEvent): void {
+	puBlic emitMouseDrag(e: IEditorMouseEvent): void {
 		this.userInputEvents.emitMouseDrag(e);
 	}
 
-	public emitMouseDrop(e: IPartialEditorMouseEvent): void {
+	puBlic emitMouseDrop(e: IPartialEditorMouseEvent): void {
 		this.userInputEvents.emitMouseDrop(e);
 	}
 
-	public emitMouseWheel(e: IMouseWheelEvent): void {
+	puBlic emitMouseWheel(e: IMouseWheelEvent): void {
 		this.userInputEvents.emitMouseWheel(e);
 	}
 }

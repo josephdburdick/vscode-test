@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as resources from 'vs/base/common/resources';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as errors from 'vs/base/common/errors';
-import { Disposable, IDisposable, dispose, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { URI } from 'vs/Base/common/uri';
+import * as resources from 'vs/Base/common/resources';
+import { Event, Emitter } from 'vs/Base/common/event';
+import * as errors from 'vs/Base/common/errors';
+import { DisposaBle, IDisposaBle, dispose, toDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 import { FileChangeType, FileChangesEvent, IFileService, whenProviderRegistered, FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
 import { ConfigurationModel, ConfigurationModelParser, UserSettings } from 'vs/platform/configuration/common/configurationModels';
-import { WorkspaceConfigurationModelParser, StandaloneConfigurationModelParser } from 'vs/workbench/services/configuration/common/configurationModels';
-import { TASKS_CONFIGURATION_KEY, FOLDER_SETTINGS_NAME, LAUNCH_CONFIGURATION_KEY, IConfigurationCache, ConfigurationKey, REMOTE_MACHINE_SCOPES, FOLDER_SCOPES, WORKSPACE_SCOPES } from 'vs/workbench/services/configuration/common/configuration';
+import { WorkspaceConfigurationModelParser, StandaloneConfigurationModelParser } from 'vs/workBench/services/configuration/common/configurationModels';
+import { TASKS_CONFIGURATION_KEY, FOLDER_SETTINGS_NAME, LAUNCH_CONFIGURATION_KEY, IConfigurationCache, ConfigurationKey, REMOTE_MACHINE_SCOPES, FOLDER_SCOPES, WORKSPACE_SCOPES } from 'vs/workBench/services/configuration/common/configuration';
 import { IStoredWorkspaceFolder, IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { JSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditingService';
-import { WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import { JSONEditingService } from 'vs/workBench/services/configuration/common/jsonEditingService';
+import { WorkBenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { join } from 'vs/base/common/path';
-import { equals } from 'vs/base/common/objects';
+import { join } from 'vs/Base/common/path';
+import { equals } from 'vs/Base/common/oBjects';
 import { IConfigurationModel } from 'vs/platform/configuration/common/configuration';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { hash } from 'vs/base/common/hash';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
+import { hash } from 'vs/Base/common/hash';
 
-export class UserConfiguration extends Disposable {
+export class UserConfiguration extends DisposaBle {
 
 	private readonly _onDidChangeConfiguration: Emitter<ConfigurationModel> = this._register(new Emitter<ConfigurationModel>());
 	readonly onDidChangeConfiguration: Event<ConfigurationModel> = this._onDidChangeConfiguration.event;
 
-	private readonly userConfiguration: MutableDisposable<UserSettings | FileServiceBasedConfiguration> = this._register(new MutableDisposable<UserSettings | FileServiceBasedConfiguration>());
+	private readonly userConfiguration: MutaBleDisposaBle<UserSettings | FileServiceBasedConfiguration> = this._register(new MutaBleDisposaBle<UserSettings | FileServiceBasedConfiguration>());
 	private readonly reloadConfigurationScheduler: RunOnceScheduler;
 
-	get hasTasksLoaded(): boolean { return this.userConfiguration.value instanceof FileServiceBasedConfiguration; }
+	get hasTasksLoaded(): Boolean { return this.userConfiguration.value instanceof FileServiceBasedConfiguration; }
 
 	constructor(
 		private readonly userSettingsResource: URI,
@@ -59,7 +59,7 @@ export class UserConfiguration extends Disposable {
 		const configurationModel = await fileServiceBasedConfiguration.loadConfiguration();
 		this.userConfiguration.value = fileServiceBasedConfiguration;
 
-		// Check for value because userConfiguration might have been disposed.
+		// Check for value Because userConfiguration might have Been disposed.
 		if (this.userConfiguration.value) {
 			this._register(this.userConfiguration.value.onDidChange(() => this.reloadConfigurationScheduler.schedule()));
 		}
@@ -72,7 +72,7 @@ export class UserConfiguration extends Disposable {
 	}
 }
 
-class FileServiceBasedConfiguration extends Disposable {
+class FileServiceBasedConfiguration extends DisposaBle {
 
 	private readonly allResources: URI[];
 	private _folderSettingsModelParser: ConfigurationModelParser;
@@ -158,7 +158,7 @@ class FileServiceBasedConfiguration extends Disposable {
 	}
 
 	protected async handleFileEvents(event: FileChangesEvent): Promise<void> {
-		const isAffectedByChanges = (): boolean => {
+		const isAffectedByChanges = (): Boolean => {
 			// One of the resources has changed
 			if (this.allResources.some(resource => event.contains(resource))) {
 				return true;
@@ -176,7 +176,7 @@ class FileServiceBasedConfiguration extends Disposable {
 
 }
 
-export class RemoteUserConfiguration extends Disposable {
+export class RemoteUserConfiguration extends DisposaBle {
 
 	private readonly _cachedConfiguration: CachedRemoteUserConfiguration;
 	private readonly _fileService: IFileService;
@@ -184,7 +184,7 @@ export class RemoteUserConfiguration extends Disposable {
 	private _userConfigurationInitializationPromise: Promise<ConfigurationModel> | null = null;
 
 	private readonly _onDidChangeConfiguration: Emitter<ConfigurationModel> = this._register(new Emitter<ConfigurationModel>());
-	public readonly onDidChangeConfiguration: Event<ConfigurationModel> = this._onDidChangeConfiguration.event;
+	puBlic readonly onDidChangeConfiguration: Event<ConfigurationModel> = this._onDidChangeConfiguration.event;
 
 	constructor(
 		remoteAuthority: string,
@@ -242,15 +242,15 @@ export class RemoteUserConfiguration extends Disposable {
 	}
 }
 
-class FileServiceBasedRemoteUserConfiguration extends Disposable {
+class FileServiceBasedRemoteUserConfiguration extends DisposaBle {
 
 	private readonly parser: ConfigurationModelParser;
 	private readonly reloadConfigurationScheduler: RunOnceScheduler;
 	protected readonly _onDidChangeConfiguration: Emitter<ConfigurationModel> = this._register(new Emitter<ConfigurationModel>());
 	readonly onDidChangeConfiguration: Event<ConfigurationModel> = this._onDidChangeConfiguration.event;
 
-	private fileWatcherDisposable: IDisposable = Disposable.None;
-	private directoryWatcherDisposable: IDisposable = Disposable.None;
+	private fileWatcherDisposaBle: IDisposaBle = DisposaBle.None;
+	private directoryWatcherDisposaBle: IDisposaBle = DisposaBle.None;
 
 	constructor(
 		private readonly configurationResource: URI,
@@ -262,29 +262,29 @@ class FileServiceBasedRemoteUserConfiguration extends Disposable {
 		this.parser = new ConfigurationModelParser(this.configurationResource.toString(), this.scopes);
 		this._register(fileService.onDidFilesChange(e => this.handleFileEvents(e)));
 		this.reloadConfigurationScheduler = this._register(new RunOnceScheduler(() => this.reload().then(configurationModel => this._onDidChangeConfiguration.fire(configurationModel)), 50));
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			this.stopWatchingResource();
 			this.stopWatchingDirectory();
 		}));
 	}
 
 	private watchResource(): void {
-		this.fileWatcherDisposable = this.fileService.watch(this.configurationResource);
+		this.fileWatcherDisposaBle = this.fileService.watch(this.configurationResource);
 	}
 
 	private stopWatchingResource(): void {
-		this.fileWatcherDisposable.dispose();
-		this.fileWatcherDisposable = Disposable.None;
+		this.fileWatcherDisposaBle.dispose();
+		this.fileWatcherDisposaBle = DisposaBle.None;
 	}
 
 	private watchDirectory(): void {
 		const directory = resources.dirname(this.configurationResource);
-		this.directoryWatcherDisposable = this.fileService.watch(directory);
+		this.directoryWatcherDisposaBle = this.fileService.watch(directory);
 	}
 
 	private stopWatchingDirectory(): void {
-		this.directoryWatcherDisposable.dispose();
-		this.directoryWatcherDisposable = Disposable.None;
+		this.directoryWatcherDisposaBle.dispose();
+		this.directoryWatcherDisposaBle = DisposaBle.None;
 	}
 
 	async initialize(): Promise<ConfigurationModel> {
@@ -325,7 +325,7 @@ class FileServiceBasedRemoteUserConfiguration extends Disposable {
 		}
 	}
 
-	private onResourceExists(exists: boolean): void {
+	private onResourceExists(exists: Boolean): void {
 		if (exists) {
 			this.stopWatchingDirectory();
 			this.watchResource();
@@ -336,7 +336,7 @@ class FileServiceBasedRemoteUserConfiguration extends Disposable {
 	}
 }
 
-class CachedRemoteUserConfiguration extends Disposable {
+class CachedRemoteUserConfiguration extends DisposaBle {
 
 	private readonly _onDidChange: Emitter<ConfigurationModel> = this._register(new Emitter<ConfigurationModel>());
 	readonly onDidChange: Event<ConfigurationModel> = this._onDidChange.event;
@@ -384,19 +384,19 @@ class CachedRemoteUserConfiguration extends Disposable {
 	}
 }
 
-export class WorkspaceConfiguration extends Disposable {
+export class WorkspaceConfiguration extends DisposaBle {
 
 	private readonly _fileService: IFileService;
 	private readonly _cachedConfiguration: CachedWorkspaceConfiguration;
 	private _workspaceConfiguration: IWorkspaceConfiguration;
-	private _workspaceConfigurationChangeDisposable: IDisposable = Disposable.None;
+	private _workspaceConfigurationChangeDisposaBle: IDisposaBle = DisposaBle.None;
 	private _workspaceIdentifier: IWorkspaceIdentifier | null = null;
 
 	private readonly _onDidUpdateConfiguration: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidUpdateConfiguration: Event<void> = this._onDidUpdateConfiguration.event;
+	puBlic readonly onDidUpdateConfiguration: Event<void> = this._onDidUpdateConfiguration.event;
 
-	private _initialized: boolean = false;
-	get initialized(): boolean { return this._initialized; }
+	private _initialized: Boolean = false;
+	get initialized(): Boolean { return this._initialized; }
 	constructor(
 		private readonly configurationCache: IConfigurationCache,
 		fileService: IFileService
@@ -458,13 +458,13 @@ export class WorkspaceConfiguration extends Disposable {
 
 	private doInitialize(fileServiceBasedWorkspaceConfiguration: FileServiceBasedWorkspaceConfiguration): void {
 		this._workspaceConfiguration.dispose();
-		this._workspaceConfigurationChangeDisposable.dispose();
+		this._workspaceConfigurationChangeDisposaBle.dispose();
 		this._workspaceConfiguration = this._register(fileServiceBasedWorkspaceConfiguration);
-		this._workspaceConfigurationChangeDisposable = this._register(this._workspaceConfiguration.onDidChange(e => this.onDidWorkspaceConfigurationChange(true)));
+		this._workspaceConfigurationChangeDisposaBle = this._register(this._workspaceConfiguration.onDidChange(e => this.onDidWorkspaceConfigurationChange(true)));
 		this._initialized = true;
 	}
 
-	private async onDidWorkspaceConfigurationChange(reload: boolean): Promise<void> {
+	private async onDidWorkspaceConfigurationChange(reload: Boolean): Promise<void> {
 		if (reload) {
 			await this.reload();
 		}
@@ -481,7 +481,7 @@ export class WorkspaceConfiguration extends Disposable {
 	}
 }
 
-interface IWorkspaceConfiguration extends IDisposable {
+interface IWorkspaceConfiguration extends IDisposaBle {
 	readonly onDidChange: Event<void>;
 	workspaceConfigurationModelParser: WorkspaceConfigurationModelParser;
 	workspaceSettings: ConfigurationModel;
@@ -493,12 +493,12 @@ interface IWorkspaceConfiguration extends IDisposable {
 	reprocessWorkspaceSettings(): ConfigurationModel;
 }
 
-class FileServiceBasedWorkspaceConfiguration extends Disposable implements IWorkspaceConfiguration {
+class FileServiceBasedWorkspaceConfiguration extends DisposaBle implements IWorkspaceConfiguration {
 
 	workspaceConfigurationModelParser: WorkspaceConfigurationModelParser;
 	workspaceSettings: ConfigurationModel;
 	private _workspaceIdentifier: IWorkspaceIdentifier | null = null;
-	private workspaceConfigWatcher: IDisposable;
+	private workspaceConfigWatcher: IDisposaBle;
 	private readonly reloadConfigurationScheduler: RunOnceScheduler;
 
 	protected readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
@@ -562,8 +562,8 @@ class FileServiceBasedWorkspaceConfiguration extends Disposable implements IWork
 		this.workspaceSettings = this.workspaceConfigurationModelParser.settingsModel.merge(this.workspaceConfigurationModelParser.launchModel, this.workspaceConfigurationModelParser.tasksModel);
 	}
 
-	private watchWorkspaceConfigurationFile(): IDisposable {
-		return this._workspaceIdentifier ? this.fileService.watch(this._workspaceIdentifier.configPath) : Disposable.None;
+	private watchWorkspaceConfigurationFile(): IDisposaBle {
+		return this._workspaceIdentifier ? this.fileService.watch(this._workspaceIdentifier.configPath) : DisposaBle.None;
 	}
 
 	private handleWorkspaceFileEvents(event: FileChangesEvent): void {
@@ -577,7 +577,7 @@ class FileServiceBasedWorkspaceConfiguration extends Disposable implements IWork
 	}
 }
 
-class CachedWorkspaceConfiguration extends Disposable implements IWorkspaceConfiguration {
+class CachedWorkspaceConfiguration extends DisposaBle implements IWorkspaceConfiguration {
 
 	private readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidChange: Event<void> = this._onDidChange.event;
@@ -642,13 +642,13 @@ class CachedWorkspaceConfiguration extends Disposable implements IWorkspaceConfi
 	}
 }
 
-export interface IFolderConfiguration extends IDisposable {
+export interface IFolderConfiguration extends IDisposaBle {
 	readonly onDidChange: Event<void>;
 	loadConfiguration(): Promise<ConfigurationModel>;
 	reprocess(): ConfigurationModel;
 }
 
-class CachedFolderConfiguration extends Disposable implements IFolderConfiguration {
+class CachedFolderConfiguration extends DisposaBle implements IFolderConfiguration {
 
 	private readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidChange: Event<void> = this._onDidChange.event;
@@ -693,20 +693,20 @@ class CachedFolderConfiguration extends Disposable implements IFolderConfigurati
 	}
 }
 
-export class FolderConfiguration extends Disposable implements IFolderConfiguration {
+export class FolderConfiguration extends DisposaBle implements IFolderConfiguration {
 
 	protected readonly _onDidChange: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidChange: Event<void> = this._onDidChange.event;
 
 	private folderConfiguration: IFolderConfiguration;
-	private folderConfigurationDisposable: IDisposable = Disposable.None;
+	private folderConfigurationDisposaBle: IDisposaBle = DisposaBle.None;
 	private readonly configurationFolder: URI;
 	private cachedFolderConfiguration: CachedFolderConfiguration;
 
 	constructor(
 		readonly workspaceFolder: IWorkspaceFolder,
 		configFolderRelativePath: string,
-		private readonly workbenchState: WorkbenchState,
+		private readonly workBenchState: WorkBenchState,
 		fileService: IFileService,
 		private readonly configurationCache: IConfigurationCache
 	) {
@@ -719,14 +719,14 @@ export class FolderConfiguration extends Disposable implements IFolderConfigurat
 			whenProviderRegistered(workspaceFolder.uri, fileService)
 				.then(() => {
 					this.folderConfiguration.dispose();
-					this.folderConfigurationDisposable.dispose();
+					this.folderConfigurationDisposaBle.dispose();
 					this.folderConfiguration = this.createFileServiceBasedConfiguration(fileService);
 					this._register(this.folderConfiguration.onDidChange(e => this.onDidFolderConfigurationChange()));
 					this.onDidFolderConfigurationChange();
 				});
 		} else {
 			this.folderConfiguration = this.createFileServiceBasedConfiguration(fileService);
-			this.folderConfigurationDisposable = this._register(this.folderConfiguration.onDidChange(e => this.onDidFolderConfigurationChange()));
+			this.folderConfigurationDisposaBle = this._register(this.folderConfiguration.onDidChange(e => this.onDidFolderConfigurationChange()));
 		}
 	}
 
@@ -746,7 +746,7 @@ export class FolderConfiguration extends Disposable implements IFolderConfigurat
 	private createFileServiceBasedConfiguration(fileService: IFileService) {
 		const settingsResources = [resources.joinPath(this.configurationFolder, `${FOLDER_SETTINGS_NAME}.json`)];
 		const standAloneConfigurationResources: [string, URI][] = [TASKS_CONFIGURATION_KEY, LAUNCH_CONFIGURATION_KEY].map(name => ([name, resources.joinPath(this.configurationFolder, `${name}.json`)]));
-		return new FileServiceBasedConfiguration(this.configurationFolder.toString(), settingsResources, standAloneConfigurationResources, WorkbenchState.WORKSPACE === this.workbenchState ? FOLDER_SCOPES : WORKSPACE_SCOPES, fileService);
+		return new FileServiceBasedConfiguration(this.configurationFolder.toString(), settingsResources, standAloneConfigurationResources, WorkBenchState.WORKSPACE === this.workBenchState ? FOLDER_SCOPES : WORKSPACE_SCOPES, fileService);
 	}
 
 	private updateCache(): Promise<void> {

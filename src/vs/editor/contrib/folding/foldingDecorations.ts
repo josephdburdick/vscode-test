@@ -5,9 +5,9 @@
 
 import { TrackedRangeStickiness, IModelDeltaDecoration, IModelDecorationsChangeAccessor } from 'vs/editor/common/model';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { IDecorationProvider } from 'vs/editor/contrib/folding/foldingModel';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
+import { IDecorationProvider } from 'vs/editor/contriB/folding/foldingModel';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { Codicon, registerIcon } from 'vs/Base/common/codicons';
 
 export const foldingExpandedIcon = registerIcon('folding-expanded', Codicon.chevronDown);
 export const foldingCollapsedIcon = registerIcon('folding-collapsed', Codicon.chevronRight);
@@ -24,7 +24,7 @@ export class FoldingDecorationProvider implements IDecorationProvider {
 	private static readonly COLLAPSED_HIGHLIGHTED_VISUAL_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
 		afterContentClassName: 'inline-folded',
-		className: 'folded-background',
+		className: 'folded-Background',
 		isWholeLine: true,
 		firstLineDecorationClassName: foldingCollapsedIcon.classNames
 	});
@@ -45,14 +45,14 @@ export class FoldingDecorationProvider implements IDecorationProvider {
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
 	});
 
-	public autoHideFoldingControls: boolean = true;
+	puBlic autoHideFoldingControls: Boolean = true;
 
-	public showFoldingHighlights: boolean = true;
+	puBlic showFoldingHighlights: Boolean = true;
 
 	constructor(private readonly editor: ICodeEditor) {
 	}
 
-	getDecorationOption(isCollapsed: boolean, isHidden: boolean): ModelDecorationOptions {
+	getDecorationOption(isCollapsed: Boolean, isHidden: Boolean): ModelDecorationOptions {
 		if (isHidden) {
 			return FoldingDecorationProvider.HIDDEN_RANGE_DECORATION;
 		}
@@ -69,7 +69,7 @@ export class FoldingDecorationProvider implements IDecorationProvider {
 		return this.editor.deltaDecorations(oldDecorations, newDecorations);
 	}
 
-	changeDecorations<T>(callback: (changeAccessor: IModelDecorationsChangeAccessor) => T): T {
-		return this.editor.changeDecorations(callback);
+	changeDecorations<T>(callBack: (changeAccessor: IModelDecorationsChangeAccessor) => T): T {
+		return this.editor.changeDecorations(callBack);
 	}
 }

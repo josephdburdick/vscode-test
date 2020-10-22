@@ -7,16 +7,16 @@ import * as vscode from 'vscode';
 import type * as Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import * as fileSchemes from '../utils/fileSchemes';
 import { isTypeScriptDocument } from '../utils/languageModeIds';
-import { equals } from '../utils/objects';
+import { equals } from '../utils/oBjects';
 import { ResourceMap } from '../utils/resourceMap';
 
 namespace Experimental {
-	// https://github.com/microsoft/TypeScript/pull/37871/
+	// https://githuB.com/microsoft/TypeScript/pull/37871/
 	export interface UserPreferences extends Proto.UserPreferences {
-		readonly provideRefactorNotApplicableReason?: boolean;
+		readonly provideRefactorNotApplicaBleReason?: Boolean;
 	}
 }
 
@@ -25,16 +25,16 @@ interface FileConfiguration {
 	readonly preferences: Proto.UserPreferences;
 }
 
-function areFileConfigurationsEqual(a: FileConfiguration, b: FileConfiguration): boolean {
-	return equals(a, b);
+function areFileConfigurationsEqual(a: FileConfiguration, B: FileConfiguration): Boolean {
+	return equals(a, B);
 }
 
-export default class FileConfigurationManager extends Disposable {
+export default class FileConfigurationManager extends DisposaBle {
 	private readonly formatOptions: ResourceMap<Promise<FileConfiguration | undefined>>;
 
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient,
-		onCaseInsenitiveFileSystem: boolean
+		onCaseInsenitiveFileSystem: Boolean
 	) {
 		super();
 		this.formatOptions = new ResourceMap(undefined, { onCaseInsenitiveFileSystem });
@@ -44,10 +44,10 @@ export default class FileConfigurationManager extends Disposable {
 			// last file in it closes which drops the stored formatting options
 			// as well.
 			this.formatOptions.delete(textDocument.uri);
-		}, undefined, this._disposables);
+		}, undefined, this._disposaBles);
 	}
 
-	public async ensureConfigurationForDocument(
+	puBlic async ensureConfigurationForDocument(
 		document: vscode.TextDocument,
 		token: vscode.CancellationToken
 	): Promise<void> {
@@ -60,16 +60,16 @@ export default class FileConfigurationManager extends Disposable {
 	private getFormattingOptions(
 		document: vscode.TextDocument
 	): vscode.FormattingOptions | undefined {
-		const editor = vscode.window.visibleTextEditors.find(editor => editor.document.fileName === document.fileName);
+		const editor = vscode.window.visiBleTextEditors.find(editor => editor.document.fileName === document.fileName);
 		return editor
 			? {
-				tabSize: editor.options.tabSize,
+				taBSize: editor.options.taBSize,
 				insertSpaces: editor.options.insertSpaces
 			} as vscode.FormattingOptions
 			: undefined;
 	}
 
-	public async ensureConfigurationOptions(
+	puBlic async ensureConfigurationOptions(
 		document: vscode.TextDocument,
 		options: vscode.FormattingOptions,
 		token: vscode.CancellationToken
@@ -103,7 +103,7 @@ export default class FileConfigurationManager extends Disposable {
 		}
 	}
 
-	public async setGlobalConfigurationFromDocument(
+	puBlic async setGloBalConfigurationFromDocument(
 		document: vscode.TextDocument,
 		token: vscode.CancellationToken,
 	): Promise<void> {
@@ -113,13 +113,13 @@ export default class FileConfigurationManager extends Disposable {
 		}
 
 		const args: Proto.ConfigureRequestArguments = {
-			file: undefined /*global*/,
+			file: undefined /*gloBal*/,
 			...this.getFileOptions(document, formattingOptions),
 		};
 		await this.client.execute('configure', args, token);
 	}
 
-	public reset() {
+	puBlic reset() {
 		this.formatOptions.clear();
 	}
 
@@ -142,26 +142,26 @@ export default class FileConfigurationManager extends Disposable {
 			document.uri);
 
 		return {
-			tabSize: options.tabSize,
-			indentSize: options.tabSize,
-			convertTabsToSpaces: options.insertSpaces,
+			taBSize: options.taBSize,
+			indentSize: options.taBSize,
+			convertTaBsToSpaces: options.insertSpaces,
 			// We can use \n here since the editor normalizes later on to its line endings.
 			newLineCharacter: '\n',
-			insertSpaceAfterCommaDelimiter: config.get<boolean>('insertSpaceAfterCommaDelimiter'),
-			insertSpaceAfterConstructor: config.get<boolean>('insertSpaceAfterConstructor'),
-			insertSpaceAfterSemicolonInForStatements: config.get<boolean>('insertSpaceAfterSemicolonInForStatements'),
-			insertSpaceBeforeAndAfterBinaryOperators: config.get<boolean>('insertSpaceBeforeAndAfterBinaryOperators'),
-			insertSpaceAfterKeywordsInControlFlowStatements: config.get<boolean>('insertSpaceAfterKeywordsInControlFlowStatements'),
-			insertSpaceAfterFunctionKeywordForAnonymousFunctions: config.get<boolean>('insertSpaceAfterFunctionKeywordForAnonymousFunctions'),
-			insertSpaceBeforeFunctionParenthesis: config.get<boolean>('insertSpaceBeforeFunctionParenthesis'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces'),
-			insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces'),
-			insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces'),
-			insertSpaceAfterTypeAssertion: config.get<boolean>('insertSpaceAfterTypeAssertion'),
-			placeOpenBraceOnNewLineForFunctions: config.get<boolean>('placeOpenBraceOnNewLineForFunctions'),
-			placeOpenBraceOnNewLineForControlBlocks: config.get<boolean>('placeOpenBraceOnNewLineForControlBlocks'),
+			insertSpaceAfterCommaDelimiter: config.get<Boolean>('insertSpaceAfterCommaDelimiter'),
+			insertSpaceAfterConstructor: config.get<Boolean>('insertSpaceAfterConstructor'),
+			insertSpaceAfterSemicolonInForStatements: config.get<Boolean>('insertSpaceAfterSemicolonInForStatements'),
+			insertSpaceBeforeAndAfterBinaryOperators: config.get<Boolean>('insertSpaceBeforeAndAfterBinaryOperators'),
+			insertSpaceAfterKeywordsInControlFlowStatements: config.get<Boolean>('insertSpaceAfterKeywordsInControlFlowStatements'),
+			insertSpaceAfterFunctionKeywordForAnonymousFunctions: config.get<Boolean>('insertSpaceAfterFunctionKeywordForAnonymousFunctions'),
+			insertSpaceBeforeFunctionParenthesis: config.get<Boolean>('insertSpaceBeforeFunctionParenthesis'),
+			insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: config.get<Boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis'),
+			insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: config.get<Boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets'),
+			insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: config.get<Boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces'),
+			insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: config.get<Boolean>('insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces'),
+			insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: config.get<Boolean>('insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces'),
+			insertSpaceAfterTypeAssertion: config.get<Boolean>('insertSpaceAfterTypeAssertion'),
+			placeOpenBraceOnNewLineForFunctions: config.get<Boolean>('placeOpenBraceOnNewLineForFunctions'),
+			placeOpenBraceOnNewLineForControlBlocks: config.get<Boolean>('placeOpenBraceOnNewLineForControlBlocks'),
 			semicolons: config.get<Proto.SemicolonPreference>('semicolons'),
 		};
 	}
@@ -184,10 +184,10 @@ export default class FileConfigurationManager extends Disposable {
 			importModuleSpecifierPreference: getImportModuleSpecifierPreference(preferencesConfig),
 			importModuleSpecifierEnding: getImportModuleSpecifierEndingPreference(preferencesConfig),
 			allowTextChangesInNewFiles: document.uri.scheme === fileSchemes.file,
-			providePrefixAndSuffixTextForRename: preferencesConfig.get<boolean>('renameShorthandProperties', true) === false ? false : preferencesConfig.get<boolean>('useAliasesForRenames', true),
+			providePrefixAndSuffixTextForRename: preferencesConfig.get<Boolean>('renameShorthandProperties', true) === false ? false : preferencesConfig.get<Boolean>('useAliasesForRenames', true),
 			allowRenameOfImportPath: true,
-			includeAutomaticOptionalChainCompletions: config.get<boolean>('suggest.includeAutomaticOptionalChainCompletions', true),
-			provideRefactorNotApplicableReason: true,
+			includeAutomaticOptionalChainCompletions: config.get<Boolean>('suggest.includeAutomaticOptionalChainCompletions', true),
+			provideRefactorNotApplicaBleReason: true,
 		};
 
 		return preferences;
@@ -196,7 +196,7 @@ export default class FileConfigurationManager extends Disposable {
 	private getQuoteStylePreference(config: vscode.WorkspaceConfiguration) {
 		switch (config.get<string>('quoteStyle')) {
 			case 'single': return 'single';
-			case 'double': return 'double';
+			case 'douBle': return 'douBle';
 			default: return this.client.apiVersion.gte(API.v333) ? 'auto' : undefined;
 		}
 	}

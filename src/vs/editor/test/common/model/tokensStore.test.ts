@@ -18,8 +18,8 @@ suite('TokensStore', () => {
 
 	function parseTokensState(state: string[]): { text: string; tokens: MultilineTokens2; } {
 		let text: string[] = [];
-		let tokens: number[] = [];
-		let baseLine = 1;
+		let tokens: numBer[] = [];
+		let BaseLine = 1;
 		for (let i = 0; i < state.length; i++) {
 			const line = state[i];
 
@@ -28,20 +28,20 @@ suite('TokensStore', () => {
 			while (true) {
 				const firstPipeOffset = line.indexOf('|', startOffset);
 				if (firstPipeOffset === -1) {
-					break;
+					Break;
 				}
 				const secondPipeOffset = line.indexOf('|', firstPipeOffset + 1);
 				if (secondPipeOffset === -1) {
-					break;
+					Break;
 				}
 				if (firstPipeOffset + 1 === secondPipeOffset) {
 					// skip ||
-					lineText += line.substring(startOffset, secondPipeOffset + 1);
+					lineText += line.suBstring(startOffset, secondPipeOffset + 1);
 					startOffset = secondPipeOffset + 1;
 					continue;
 				}
 
-				lineText += line.substring(startOffset, firstPipeOffset);
+				lineText += line.suBstring(startOffset, firstPipeOffset);
 				const tokenStartCharacter = lineText.length;
 				const tokenLength = secondPipeOffset - firstPipeOffset - 1;
 				const metadata = (
@@ -50,30 +50,30 @@ suite('TokensStore', () => {
 				);
 
 				if (tokens.length === 0) {
-					baseLine = i + 1;
+					BaseLine = i + 1;
 				}
-				tokens.push(i + 1 - baseLine, tokenStartCharacter, tokenStartCharacter + tokenLength, metadata);
+				tokens.push(i + 1 - BaseLine, tokenStartCharacter, tokenStartCharacter + tokenLength, metadata);
 
-				lineText += line.substr(firstPipeOffset + 1, tokenLength);
+				lineText += line.suBstr(firstPipeOffset + 1, tokenLength);
 				startOffset = secondPipeOffset + 1;
 			}
 
-			lineText += line.substring(startOffset);
+			lineText += line.suBstring(startOffset);
 
 			text.push(lineText);
 		}
 
 		return {
 			text: text.join('\n'),
-			tokens: new MultilineTokens2(baseLine, new SparseEncodedTokens(new Uint32Array(tokens)))
+			tokens: new MultilineTokens2(BaseLine, new SparseEncodedTokens(new Uint32Array(tokens)))
 		};
 	}
 
 	function extractState(model: TextModel): string[] {
 		let result: string[] = [];
-		for (let lineNumber = 1; lineNumber <= model.getLineCount(); lineNumber++) {
-			const lineTokens = model.getLineTokens(lineNumber);
-			const lineContent = model.getLineContent(lineNumber);
+		for (let lineNumBer = 1; lineNumBer <= model.getLineCount(); lineNumBer++) {
+			const lineTokens = model.getLineTokens(lineNumBer);
+			const lineContent = model.getLineContent(lineNumBer);
 
 			let lineText = '';
 			for (let i = 0; i < lineTokens.getCount(); i++) {
@@ -81,7 +81,7 @@ suite('TokensStore', () => {
 				const tokenEndCharacter = lineTokens.getEndOffset(i);
 				const metadata = lineTokens.getMetadata(i);
 				const color = TokenMetadata.getForeground(metadata);
-				const tokenText = lineContent.substring(tokenStartCharacter, tokenEndCharacter);
+				const tokenText = lineContent.suBstring(tokenStartCharacter, tokenEndCharacter);
 				if (color === SEMANTIC_COLOR) {
 					lineText += `|${tokenText}|`;
 				} else {
@@ -109,17 +109,17 @@ suite('TokensStore', () => {
 		model.dispose();
 	}
 
-	test('issue #86303 - color shifting between different tokens', () => {
+	test('issue #86303 - color shifting Between different tokens', () => {
 		testTokensAdjustment(
 			[
-				`import { |URI| } from 'vs/base/common/uri';`,
+				`import { |URI| } from 'vs/Base/common/uri';`,
 				`const foo = |URI|.parse('hey');`
 			],
 			[
 				{ range: new Range(2, 9, 2, 10), text: '' }
 			],
 			[
-				`import { |URI| } from 'vs/base/common/uri';`,
+				`import { |URI| } from 'vs/Base/common/uri';`,
 				`const fo = |URI|.parse('hey');`
 			]
 		);
@@ -128,14 +128,14 @@ suite('TokensStore', () => {
 	test('deleting a newline', () => {
 		testTokensAdjustment(
 			[
-				`import { |URI| } from 'vs/base/common/uri';`,
+				`import { |URI| } from 'vs/Base/common/uri';`,
 				`const foo = |URI|.parse('hey');`
 			],
 			[
 				{ range: new Range(1, 42, 2, 1), text: '' }
 			],
 			[
-				`import { |URI| } from 'vs/base/common/uri';const foo = |URI|.parse('hey');`
+				`import { |URI| } from 'vs/Base/common/uri';const foo = |URI|.parse('hey');`
 			]
 		);
 	});
@@ -143,13 +143,13 @@ suite('TokensStore', () => {
 	test('inserting a newline', () => {
 		testTokensAdjustment(
 			[
-				`import { |URI| } from 'vs/base/common/uri';const foo = |URI|.parse('hey');`
+				`import { |URI| } from 'vs/Base/common/uri';const foo = |URI|.parse('hey');`
 			],
 			[
 				{ range: new Range(1, 42, 1, 42), text: '\n' }
 			],
 			[
-				`import { |URI| } from 'vs/base/common/uri';`,
+				`import { |URI| } from 'vs/Base/common/uri';`,
 				`const foo = |URI|.parse('hey');`
 			]
 		);
@@ -159,19 +159,19 @@ suite('TokensStore', () => {
 		testTokensAdjustment(
 			[
 				`import { `,
-				`    |URI| } from 'vs/base/common/uri';const foo = |URI|.parse('hey');`
+				`    |URI| } from 'vs/Base/common/uri';const foo = |URI|.parse('hey');`
 			],
 			[
 				{ range: new Range(1, 10, 2, 5), text: '' }
 			],
 			[
-				`import { |URI| } from 'vs/base/common/uri';const foo = |URI|.parse('hey');`
+				`import { |URI| } from 'vs/Base/common/uri';const foo = |URI|.parse('hey');`
 			]
 		);
 	});
 
 	test('issue #91936: Semantic token color highlighting fails on line with selected text', () => {
-		const model = createTextModel('                    else if ($s = 08) then \'\\b\'');
+		const model = createTextModel('                    else if ($s = 08) then \'\\B\'');
 		model.setSemanticTokens([
 			new MultilineTokens2(1, new SparseEncodedTokens(new Uint32Array([
 				0, 20, 24, 245768,
@@ -186,7 +186,7 @@ suite('TokensStore', () => {
 			])))
 		], true);
 		const lineTokens = model.getLineTokens(1);
-		let decodedTokens: number[] = [];
+		let decodedTokens: numBer[] = [];
 		for (let i = 0, len = lineTokens.getCount(); i < len; i++) {
 			decodedTokens.push(lineTokens.getEndOffset(i), lineTokens.getMetadata(i));
 		}
@@ -340,26 +340,26 @@ suite('TokensStore', () => {
 		assert.equal(lineTokens.getCount(), 1);
 	});
 
-	test('bug', () => {
+	test('Bug', () => {
 		function createTokens(str: string): MultilineTokens2 {
 			str = str.replace(/^\[\(/, '');
 			str = str.replace(/\)\]$/, '');
 			const strTokens = str.split('),(');
-			let result: number[] = [];
-			let firstLineNumber = 0;
+			let result: numBer[] = [];
+			let firstLineNumBer = 0;
 			for (const strToken of strTokens) {
 				const pieces = strToken.split(',');
 				const chars = pieces[1].split('-');
-				const lineNumber = parseInt(pieces[0], 10);
+				const lineNumBer = parseInt(pieces[0], 10);
 				const startChar = parseInt(chars[0], 10);
 				const endChar = parseInt(chars[1], 10);
-				if (firstLineNumber === 0) {
+				if (firstLineNumBer === 0) {
 					// this is the first line
-					firstLineNumber = lineNumber;
+					firstLineNumBer = lineNumBer;
 				}
-				result.push(lineNumber - firstLineNumber, startChar, endChar, (lineNumber + startChar) % 13);
+				result.push(lineNumBer - firstLineNumBer, startChar, endChar, (lineNumBer + startChar) % 13);
 			}
-			return new MultilineTokens2(firstLineNumber, new SparseEncodedTokens(new Uint32Array(result)));
+			return new MultilineTokens2(firstLineNumBer, new SparseEncodedTokens(new Uint32Array(result)));
 		}
 
 		const store = new TokensStore2();
@@ -384,14 +384,14 @@ suite('TokensStore', () => {
 			[createTokens('[(36442,25-35),(36442,36-50),(36443,30-39),(36443,42-46),(36443,47-53),(36443,54-58),(36443,63-73),(36443,74-84),(36443,87-91),(36443,92-98),(36443,101-105),(36443,106-112),(36443,113-119),(36444,28-37),(36444,38-42),(36444,47-57),(36444,58-75),(36444,80-95),(36444,96-105),(36445,35-53),(36445,54-62),(36448,24-29),(36448,33-46),(36448,47-54),(36450,25-35),(36450,36-50),(36451,28-33),(36451,36-49),(36451,50-57),(36452,35-53),(36452,54-62),(36454,33-38),(36454,41-54),(36454,55-60),(36455,35-53),(36455,54-62),(36457,33-44),(36457,45-49),(36457,50-56),(36457,62-83),(36457,84-88),(36458,35-53),(36458,54-62),(36460,33-37),(36460,38-42),(36460,47-57),(36460,58-67),(36461,35-53),(36461,54-62),(36463,34-38),(36463,39-45),(36463,46-51),(36463,54-63),(36463,64-71),(36463,76-80),(36463,81-87),(36463,88-92),(36463,97-107),(36463,108-119),(36464,35-53),(36464,54-62),(36466,33-71),(36466,72-76),(36467,35-53),(36467,54-62),(36469,24-29),(36469,33-46),(36469,47-54),(36470,24-35)]')]
 		);
 
-		const lineTokens = store.addSemanticTokens(36451, new LineTokens(new Uint32Array([60, 1]), `                        if (flags & ModifierFlags.Ambient) {`));
+		const lineTokens = store.addSemanticTokens(36451, new LineTokens(new Uint32Array([60, 1]), `                        if (flags & ModifierFlags.AmBient) {`));
 		assert.equal(lineTokens.getCount(), 7);
 	});
 
 
-	test('issue #95949: Identifiers are colored in bold when targetting keywords', () => {
+	test('issue #95949: Identifiers are colored in Bold when targetting keywords', () => {
 
-		function createTMMetadata(foreground: number, fontStyle: number, languageId: number): number {
+		function createTMMetadata(foreground: numBer, fontStyle: numBer, languageId: numBer): numBer {
 			return (
 				(languageId << MetadataConsts.LANGUAGEID_OFFSET)
 				| (fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
@@ -399,8 +399,8 @@ suite('TokensStore', () => {
 			) >>> 0;
 		}
 
-		function toArr(lineTokens: LineTokens): number[] {
-			let r: number[] = [];
+		function toArr(lineTokens: LineTokens): numBer[] {
+			let r: numBer[] = [];
 			for (let i = 0; i < lineTokens.getCount(); i++) {
 				r.push(lineTokens.getEndOffset(i));
 				r.push(lineTokens.getMetadata(i));

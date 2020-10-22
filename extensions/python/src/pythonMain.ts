@@ -9,7 +9,7 @@ export function activate(_context: ExtensionContext): any {
 	languages.setLanguageConfiguration('python', {
 		onEnterRules: [
 			{
-				beforeText: /^\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\s*$/,
+				BeforeText: /^\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\s*$/,
 				action: { indentAction: IndentAction.Indent }
 			}
 		]

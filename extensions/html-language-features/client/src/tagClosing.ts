@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { window, workspace, Disposable, TextDocumentContentChangeEvent, TextDocument, Position, SnippetString } from 'vscode';
+import { window, workspace, DisposaBle, TextDocumentContentChangeEvent, TextDocument, Position, SnippetString } from 'vscode';
 
-export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<string>, supportedLanguages: { [id: string]: boolean }, configName: string): Disposable {
+export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => ThenaBle<string>, supportedLanguages: { [id: string]: Boolean }, configName: string): DisposaBle {
 
-	let disposables: Disposable[] = [];
-	workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges), null, disposables);
+	let disposaBles: DisposaBle[] = [];
+	workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges), null, disposaBles);
 
-	let isEnabled = false;
-	updateEnabledState();
-	window.onDidChangeActiveTextEditor(updateEnabledState, null, disposables);
+	let isEnaBled = false;
+	updateEnaBledState();
+	window.onDidChangeActiveTextEditor(updateEnaBledState, null, disposaBles);
 
 	let timeout: NodeJS.Timer | undefined = undefined;
 
-	function updateEnabledState() {
-		isEnabled = false;
+	function updateEnaBledState() {
+		isEnaBled = false;
 		let editor = window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -26,14 +26,14 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
 		if (!supportedLanguages[document.languageId]) {
 			return;
 		}
-		if (!workspace.getConfiguration(undefined, document.uri).get<boolean>(configName)) {
+		if (!workspace.getConfiguration(undefined, document.uri).get<Boolean>(configName)) {
 			return;
 		}
-		isEnabled = true;
+		isEnaBled = true;
 	}
 
 	function onDidChangeTextDocument(document: TextDocument, changes: readonly TextDocumentContentChangeEvent[]) {
-		if (!isEnabled) {
+		if (!isEnaBled) {
 			return;
 		}
 		let activeDocument = window.activeTextEditor && window.activeTextEditor.document;
@@ -53,7 +53,7 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
 		timeout = setTimeout(() => {
 			let position = new Position(rangeStart.line, rangeStart.character + lastChange.text.length);
 			tagProvider(document, position).then(text => {
-				if (text && isEnabled) {
+				if (text && isEnaBled) {
 					let activeEditor = window.activeTextEditor;
 					if (activeEditor) {
 						let activeDocument = activeEditor.document;
@@ -71,5 +71,5 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
 			timeout = undefined;
 		}, 100);
 	}
-	return Disposable.from(...disposables);
+	return DisposaBle.from(...disposaBles);
 }

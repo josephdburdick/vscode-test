@@ -6,9 +6,9 @@
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IssueReporterData } from 'vs/platform/issue/common/issue';
 
-export const IWorkbenchIssueService = createDecorator<IWorkbenchIssueService>('workbenchIssueService');
+export const IWorkBenchIssueService = createDecorator<IWorkBenchIssueService>('workBenchIssueService');
 
-export interface IWorkbenchIssueService {
+export interface IWorkBenchIssueService {
 	readonly _serviceBrand: undefined;
 	openReporter(dataOverrides?: Partial<IssueReporterData>): Promise<void>;
 	openProcessExplorer(): Promise<void>;

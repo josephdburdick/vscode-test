@@ -65,7 +65,7 @@ export class Graph<T> {
 		return this._nodes.get(this._hashFn(data));
 	}
 
-	isEmpty(): boolean {
+	isEmpty(): Boolean {
 		return this._nodes.size === 0;
 	}
 

@@ -1,4 +1,4 @@
 function* foo2() {
-	yield 'bar';
-	yield* ['bar'];
+	yield 'Bar';
+	yield* ['Bar'];
 }

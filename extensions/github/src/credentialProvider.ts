@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { CredentialsProvider, Credentials, API as GitAPI } from './typings/git';
-import { workspace, Uri, Disposable } from 'vscode';
+import { workspace, Uri, DisposaBle } from 'vscode';
 import { getSession } from './auth';
 
-const EmptyDisposable: Disposable = { dispose() { } };
+const EmptyDisposaBle: DisposaBle = { dispose() { } };
 
-class GitHubCredentialProvider implements CredentialsProvider {
+class GitHuBCredentialProvider implements CredentialsProvider {
 
 	async getCredentials(host: Uri): Promise<Credentials | undefined> {
-		if (!/github\.com/i.test(host.authority)) {
+		if (!/githuB\.com/i.test(host.authority)) {
 			return;
 		}
 
@@ -21,29 +21,29 @@ class GitHubCredentialProvider implements CredentialsProvider {
 	}
 }
 
-export class GithubCredentialProviderManager {
+export class GithuBCredentialProviderManager {
 
-	private providerDisposable: Disposable = EmptyDisposable;
-	private readonly disposable: Disposable;
+	private providerDisposaBle: DisposaBle = EmptyDisposaBle;
+	private readonly disposaBle: DisposaBle;
 
-	private _enabled = false;
-	private set enabled(enabled: boolean) {
-		if (this._enabled === enabled) {
+	private _enaBled = false;
+	private set enaBled(enaBled: Boolean) {
+		if (this._enaBled === enaBled) {
 			return;
 		}
 
-		this._enabled = enabled;
+		this._enaBled = enaBled;
 
-		if (enabled) {
-			this.providerDisposable = this.gitAPI.registerCredentialsProvider(new GitHubCredentialProvider());
+		if (enaBled) {
+			this.providerDisposaBle = this.gitAPI.registerCredentialsProvider(new GitHuBCredentialProvider());
 		} else {
-			this.providerDisposable.dispose();
+			this.providerDisposaBle.dispose();
 		}
 	}
 
 	constructor(private gitAPI: GitAPI) {
-		this.disposable = workspace.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('github')) {
+		this.disposaBle = workspace.onDidChangeConfiguration(e => {
+			if (e.affectsConfiguration('githuB')) {
 				this.refresh();
 			}
 		});
@@ -52,13 +52,13 @@ export class GithubCredentialProviderManager {
 	}
 
 	private refresh(): void {
-		const config = workspace.getConfiguration('github', null);
-		const enabled = config.get<boolean>('gitAuthentication', true);
-		this.enabled = !!enabled;
+		const config = workspace.getConfiguration('githuB', null);
+		const enaBled = config.get<Boolean>('gitAuthentication', true);
+		this.enaBled = !!enaBled;
 	}
 
 	dispose(): void {
-		this.enabled = false;
-		this.disposable.dispose();
+		this.enaBled = false;
+		this.disposaBle.dispose();
 	}
 }

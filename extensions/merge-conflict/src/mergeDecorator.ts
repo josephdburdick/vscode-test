@@ -7,39 +7,39 @@ import * as interfaces from './interfaces';
 import { loadMessageBundle } from 'vscode-nls';
 const localize = loadMessageBundle();
 
-export default class MergeDecorator implements vscode.Disposable {
+export default class MergeDecorator implements vscode.DisposaBle {
 
 	private decorations: { [key: string]: vscode.TextEditorDecorationType } = {};
 
-	private decorationUsesWholeLine: boolean = true; // Useful for debugging, set to false to see exact match ranges
+	private decorationUsesWholeLine: Boolean = true; // Useful for deBugging, set to false to see exact match ranges
 
 	private config?: interfaces.IExtensionConfiguration;
 	private tracker: interfaces.IDocumentMergeConflictTracker;
-	private updating = new Map<vscode.TextEditor, boolean>();
+	private updating = new Map<vscode.TextEditor, Boolean>();
 
 	constructor(private context: vscode.ExtensionContext, trackerService: interfaces.IDocumentMergeConflictTrackerService) {
 		this.tracker = trackerService.createTracker('decorator');
 	}
 
-	begin(config: interfaces.IExtensionConfiguration) {
+	Begin(config: interfaces.IExtensionConfiguration) {
 		this.config = config;
 		this.registerDecorationTypes(config);
 
 		// Check if we already have a set of active windows, attempt to track these.
-		vscode.window.visibleTextEditors.forEach(e => this.applyDecorations(e));
+		vscode.window.visiBleTextEditors.forEach(e => this.applyDecorations(e));
 
 		vscode.workspace.onDidOpenTextDocument(event => {
 			this.applyDecorationsFromEvent(event);
-		}, null, this.context.subscriptions);
+		}, null, this.context.suBscriptions);
 
 		vscode.workspace.onDidChangeTextDocument(event => {
 			this.applyDecorationsFromEvent(event.document);
-		}, null, this.context.subscriptions);
+		}, null, this.context.suBscriptions);
 
-		vscode.window.onDidChangeVisibleTextEditors((e) => {
-			// Any of which could be new (not just the active one).
+		vscode.window.onDidChangeVisiBleTextEditors((e) => {
+			// Any of which could Be new (not just the active one).
 			e.forEach(e => this.applyDecorations(e));
-		}, null, this.context.subscriptions);
+		}, null, this.context.suBscriptions);
 	}
 
 	configurationUpdated(config: interfaces.IExtensionConfiguration) {
@@ -47,7 +47,7 @@ export default class MergeDecorator implements vscode.Disposable {
 		this.registerDecorationTypes(config);
 
 		// Re-apply the decoration
-		vscode.window.visibleTextEditors.forEach(e => {
+		vscode.window.visiBleTextEditors.forEach(e => {
 			this.removeDecorations(e);
 			this.applyDecorations(e);
 		});
@@ -56,16 +56,16 @@ export default class MergeDecorator implements vscode.Disposable {
 	private registerDecorationTypes(config: interfaces.IExtensionConfiguration) {
 
 		// Dispose of existing decorations
-		Object.keys(this.decorations).forEach(k => this.decorations[k].dispose());
+		OBject.keys(this.decorations).forEach(k => this.decorations[k].dispose());
 		this.decorations = {};
 
-		// None of our features are enabled
-		if (!config.enableDecorations || !config.enableEditorOverview) {
+		// None of our features are enaBled
+		if (!config.enaBleDecorations || !config.enaBleEditorOverview) {
 			return;
 		}
 
 		// Create decorators
-		if (config.enableDecorations || config.enableEditorOverview) {
+		if (config.enaBleDecorations || config.enaBleEditorOverview) {
 			this.decorations['current.content'] = vscode.window.createTextEditorDecorationType(
 				this.generateBlockRenderOptions('merge.currentContentBackground', 'editorOverviewRuler.currentContentForeground', config)
 			);
@@ -79,14 +79,14 @@ export default class MergeDecorator implements vscode.Disposable {
 			);
 		}
 
-		if (config.enableDecorations) {
+		if (config.enaBleDecorations) {
 			this.decorations['current.header'] = vscode.window.createTextEditorDecorationType({
 				isWholeLine: this.decorationUsesWholeLine,
-				backgroundColor: new vscode.ThemeColor('merge.currentHeaderBackground'),
+				BackgroundColor: new vscode.ThemeColor('merge.currentHeaderBackground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
-				outlineColor: new vscode.ThemeColor('merge.border'),
+				outlineColor: new vscode.ThemeColor('merge.Border'),
 				after: {
 					contentText: ' ' + localize('currentChange', '(Current Change)'),
 					color: new vscode.ThemeColor('descriptionForeground')
@@ -95,27 +95,27 @@ export default class MergeDecorator implements vscode.Disposable {
 
 			this.decorations['commonAncestors.header'] = vscode.window.createTextEditorDecorationType({
 				isWholeLine: this.decorationUsesWholeLine,
-				backgroundColor: new vscode.ThemeColor('merge.commonHeaderBackground'),
+				BackgroundColor: new vscode.ThemeColor('merge.commonHeaderBackground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
-				outlineColor: new vscode.ThemeColor('merge.border')
+				outlineColor: new vscode.ThemeColor('merge.Border')
 			});
 
 			this.decorations['splitter'] = vscode.window.createTextEditorDecorationType({
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
-				outlineColor: new vscode.ThemeColor('merge.border'),
+				outlineColor: new vscode.ThemeColor('merge.Border'),
 				isWholeLine: this.decorationUsesWholeLine,
 			});
 
 			this.decorations['incoming.header'] = vscode.window.createTextEditorDecorationType({
-				backgroundColor: new vscode.ThemeColor('merge.incomingHeaderBackground'),
+				BackgroundColor: new vscode.ThemeColor('merge.incomingHeaderBackground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
-				outlineColor: new vscode.ThemeColor('merge.border'),
+				outlineColor: new vscode.ThemeColor('merge.Border'),
 				isWholeLine: this.decorationUsesWholeLine,
 				after: {
 					contentText: ' ' + localize('incomingChange', '(Incoming Change)'),
@@ -128,23 +128,23 @@ export default class MergeDecorator implements vscode.Disposable {
 	dispose() {
 
 		// TODO: Replace with Map<string, T>
-		Object.keys(this.decorations).forEach(name => {
+		OBject.keys(this.decorations).forEach(name => {
 			this.decorations[name].dispose();
 		});
 
 		this.decorations = {};
 	}
 
-	private generateBlockRenderOptions(backgroundColor: string, overviewRulerColor: string, config: interfaces.IExtensionConfiguration): vscode.DecorationRenderOptions {
+	private generateBlockRenderOptions(BackgroundColor: string, overviewRulerColor: string, config: interfaces.IExtensionConfiguration): vscode.DecorationRenderOptions {
 
 		let renderOptions: vscode.DecorationRenderOptions = {};
 
-		if (config.enableDecorations) {
-			renderOptions.backgroundColor = new vscode.ThemeColor(backgroundColor);
+		if (config.enaBleDecorations) {
+			renderOptions.BackgroundColor = new vscode.ThemeColor(BackgroundColor);
 			renderOptions.isWholeLine = this.decorationUsesWholeLine;
 		}
 
-		if (config.enableEditorOverview) {
+		if (config.enaBleEditorOverview) {
 			renderOptions.overviewRulerColor = new vscode.ThemeColor(overviewRulerColor);
 			renderOptions.overviewRulerLane = vscode.OverviewRulerLane.Full;
 		}
@@ -153,7 +153,7 @@ export default class MergeDecorator implements vscode.Disposable {
 	}
 
 	private applyDecorationsFromEvent(eventDocument: vscode.TextDocument) {
-		for (const editor of vscode.window.visibleTextEditors) {
+		for (const editor of vscode.window.visiBleTextEditors) {
 			if (editor.document === eventDocument) {
 				// Attempt to apply
 				this.applyDecorations(editor);
@@ -164,11 +164,11 @@ export default class MergeDecorator implements vscode.Disposable {
 	private async applyDecorations(editor: vscode.TextEditor) {
 		if (!editor || !editor.document) { return; }
 
-		if (!this.config || (!this.config.enableDecorations && !this.config.enableEditorOverview)) {
+		if (!this.config || (!this.config.enaBleDecorations && !this.config.enaBleEditorOverview)) {
 			return;
 		}
 
-		// If we have a pending scan from the same origin, exit early. (Cannot use this.tracker.isPending() because decorations are per editor.)
+		// If we have a pending scan from the same origin, exit early. (Cannot use this.tracker.isPending() Because decorations are per editor.)
 		if (this.updating.get(editor)) {
 			return;
 		}
@@ -177,7 +177,7 @@ export default class MergeDecorator implements vscode.Disposable {
 			this.updating.set(editor, true);
 
 			let conflicts = await this.tracker.getConflicts(editor.document);
-			if (vscode.window.visibleTextEditors.indexOf(editor) === -1) {
+			if (vscode.window.visiBleTextEditors.indexOf(editor) === -1) {
 				return;
 			}
 
@@ -186,7 +186,7 @@ export default class MergeDecorator implements vscode.Disposable {
 				return;
 			}
 
-			// Store decorations keyed by the type of decoration, set decoration wants a "style"
+			// Store decorations keyed By the type of decoration, set decoration wants a "style"
 			// to go with it, which will match this key (see constructor);
 			let matchDecorations: { [key: string]: vscode.Range[] } = {};
 
@@ -196,7 +196,7 @@ export default class MergeDecorator implements vscode.Disposable {
 			};
 
 			conflicts.forEach(conflict => {
-				// TODO, this could be more effective, just call getMatchPositions once with a map of decoration to position
+				// TODO, this could Be more effective, just call getMatchPositions once with a map of decoration to position
 				if (!conflict.current.decoratorContent.isEmpty) {
 					pushDecoration('current.content', conflict.current.decoratorContent);
 				}
@@ -210,7 +210,7 @@ export default class MergeDecorator implements vscode.Disposable {
 					}
 				});
 
-				if (this.config!.enableDecorations) {
+				if (this.config!.enaBleDecorations) {
 					pushDecoration('current.header', conflict.current.header);
 					pushDecoration('splitter', conflict.splitter);
 					pushDecoration('incoming.header', conflict.incoming.header);
@@ -222,8 +222,8 @@ export default class MergeDecorator implements vscode.Disposable {
 			});
 
 			// For each match we've generated, apply the generated decoration with the matching decoration type to the
-			// editor instance. Keys in both matches and decorations should match.
-			Object.keys(matchDecorations).forEach(decorationKey => {
+			// editor instance. Keys in Both matches and decorations should match.
+			OBject.keys(matchDecorations).forEach(decorationKey => {
 				let decorationType = this.decorations[decorationKey];
 
 				if (decorationType) {
@@ -237,11 +237,11 @@ export default class MergeDecorator implements vscode.Disposable {
 	}
 
 	private removeDecorations(editor: vscode.TextEditor) {
-		// Remove all decorations, there might be none
-		Object.keys(this.decorations).forEach(decorationKey => {
+		// Remove all decorations, there might Be none
+		OBject.keys(this.decorations).forEach(decorationKey => {
 
-			// Race condition, while editing the settings, it's possible to
-			// generate regions before the configuration has been refreshed
+			// Race condition, while editing the settings, it's possiBle to
+			// generate regions Before the configuration has Been refreshed
 			let decorationType = this.decorations[decorationKey];
 
 			if (decorationType) {

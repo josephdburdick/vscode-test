@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 
 suite('Strings', () => {
 	test('equalsIgnoreCase', () => {
@@ -12,20 +12,20 @@ suite('Strings', () => {
 		assert(!strings.equalsIgnoreCase('1', ''));
 
 		assert(strings.equalsIgnoreCase('a', 'a'));
-		assert(strings.equalsIgnoreCase('abc', 'Abc'));
-		assert(strings.equalsIgnoreCase('abc', 'ABC'));
+		assert(strings.equalsIgnoreCase('aBc', 'ABc'));
+		assert(strings.equalsIgnoreCase('aBc', 'ABC'));
 		assert(strings.equalsIgnoreCase('Höhenmeter', 'HÖhenmeter'));
 		assert(strings.equalsIgnoreCase('ÖL', 'Öl'));
 	});
 
-	test('beginsWithIgnoreCase', () => {
+	test('BeginsWithIgnoreCase', () => {
 		assert(strings.startsWithIgnoreCase('', ''));
 		assert(!strings.startsWithIgnoreCase('', '1'));
 		assert(strings.startsWithIgnoreCase('1', ''));
 
 		assert(strings.startsWithIgnoreCase('a', 'a'));
-		assert(strings.startsWithIgnoreCase('abc', 'Abc'));
-		assert(strings.startsWithIgnoreCase('abc', 'ABC'));
+		assert(strings.startsWithIgnoreCase('aBc', 'ABc'));
+		assert(strings.startsWithIgnoreCase('aBc', 'ABC'));
 		assert(strings.startsWithIgnoreCase('Höhenmeter', 'HÖhenmeter'));
 		assert(strings.startsWithIgnoreCase('ÖL', 'Öl'));
 
@@ -46,60 +46,60 @@ suite('Strings', () => {
 
 	test('compareIgnoreCase', () => {
 
-		function assertCompareIgnoreCase(a: string, b: string, recurse = true): void {
-			let actual = strings.compareIgnoreCase(a, b);
+		function assertCompareIgnoreCase(a: string, B: string, recurse = true): void {
+			let actual = strings.compareIgnoreCase(a, B);
 			actual = actual > 0 ? 1 : actual < 0 ? -1 : actual;
 
-			let expected = strings.compare(a.toLowerCase(), b.toLowerCase());
+			let expected = strings.compare(a.toLowerCase(), B.toLowerCase());
 			expected = expected > 0 ? 1 : expected < 0 ? -1 : expected;
-			assert.equal(actual, expected, `${a} <> ${b}`);
+			assert.equal(actual, expected, `${a} <> ${B}`);
 
 			if (recurse) {
-				assertCompareIgnoreCase(b, a, false);
+				assertCompareIgnoreCase(B, a, false);
 			}
 		}
 
 		assertCompareIgnoreCase('', '');
-		assertCompareIgnoreCase('abc', 'ABC');
-		assertCompareIgnoreCase('abc', 'ABc');
-		assertCompareIgnoreCase('abc', 'ABcd');
-		assertCompareIgnoreCase('abc', 'abcd');
+		assertCompareIgnoreCase('aBc', 'ABC');
+		assertCompareIgnoreCase('aBc', 'ABc');
+		assertCompareIgnoreCase('aBc', 'ABcd');
+		assertCompareIgnoreCase('aBc', 'aBcd');
 		assertCompareIgnoreCase('foo', 'föo');
 		assertCompareIgnoreCase('Code', 'code');
 		assertCompareIgnoreCase('Code', 'cöde');
 
 		assertCompareIgnoreCase('B', 'a');
 		assertCompareIgnoreCase('a', 'B');
-		assertCompareIgnoreCase('b', 'a');
-		assertCompareIgnoreCase('a', 'b');
+		assertCompareIgnoreCase('B', 'a');
+		assertCompareIgnoreCase('a', 'B');
 
-		assertCompareIgnoreCase('aa', 'ab');
+		assertCompareIgnoreCase('aa', 'aB');
 		assertCompareIgnoreCase('aa', 'aB');
 		assertCompareIgnoreCase('aa', 'aA');
 		assertCompareIgnoreCase('a', 'aa');
-		assertCompareIgnoreCase('ab', 'aA');
+		assertCompareIgnoreCase('aB', 'aA');
 		assertCompareIgnoreCase('O', '/');
 	});
 
-	test('compareIgnoreCase (substring)', () => {
+	test('compareIgnoreCase (suBstring)', () => {
 
-		function assertCompareIgnoreCase(a: string, b: string, aStart: number, aEnd: number, bStart: number, bEnd: number, recurse = true): void {
-			let actual = strings.compareSubstringIgnoreCase(a, b, aStart, aEnd, bStart, bEnd);
+		function assertCompareIgnoreCase(a: string, B: string, aStart: numBer, aEnd: numBer, BStart: numBer, BEnd: numBer, recurse = true): void {
+			let actual = strings.compareSuBstringIgnoreCase(a, B, aStart, aEnd, BStart, BEnd);
 			actual = actual > 0 ? 1 : actual < 0 ? -1 : actual;
 
-			let expected = strings.compare(a.toLowerCase().substring(aStart, aEnd), b.toLowerCase().substring(bStart, bEnd));
+			let expected = strings.compare(a.toLowerCase().suBstring(aStart, aEnd), B.toLowerCase().suBstring(BStart, BEnd));
 			expected = expected > 0 ? 1 : expected < 0 ? -1 : expected;
-			assert.equal(actual, expected, `${a} <> ${b}`);
+			assert.equal(actual, expected, `${a} <> ${B}`);
 
 			if (recurse) {
-				assertCompareIgnoreCase(b, a, bStart, bEnd, aStart, aEnd, false);
+				assertCompareIgnoreCase(B, a, BStart, BEnd, aStart, aEnd, false);
 			}
 		}
 
 		assertCompareIgnoreCase('', '', 0, 0, 0, 0);
-		assertCompareIgnoreCase('abc', 'ABC', 0, 1, 0, 1);
-		assertCompareIgnoreCase('abc', 'Aabc', 0, 3, 1, 4);
-		assertCompareIgnoreCase('abcABc', 'ABcd', 3, 6, 0, 4);
+		assertCompareIgnoreCase('aBc', 'ABC', 0, 1, 0, 1);
+		assertCompareIgnoreCase('aBc', 'AaBc', 0, 3, 1, 4);
+		assertCompareIgnoreCase('aBcABc', 'ABcd', 3, 6, 0, 4);
 	});
 
 	test('format', () => {
@@ -114,11 +114,11 @@ suite('Strings', () => {
 	});
 
 	test('lcut', () => {
-		assert.strictEqual(strings.lcut('foo bar', 0), '');
-		assert.strictEqual(strings.lcut('foo bar', 1), 'bar');
-		assert.strictEqual(strings.lcut('foo bar', 3), 'bar');
-		assert.strictEqual(strings.lcut('foo bar', 4), 'bar'); // Leading whitespace trimmed
-		assert.strictEqual(strings.lcut('foo bar', 5), 'foo bar');
+		assert.strictEqual(strings.lcut('foo Bar', 0), '');
+		assert.strictEqual(strings.lcut('foo Bar', 1), 'Bar');
+		assert.strictEqual(strings.lcut('foo Bar', 3), 'Bar');
+		assert.strictEqual(strings.lcut('foo Bar', 4), 'Bar'); // Leading whitespace trimmed
+		assert.strictEqual(strings.lcut('foo Bar', 5), 'foo Bar');
 		assert.strictEqual(strings.lcut('test string 0.1.2.3', 3), '2.3');
 
 		assert.strictEqual(strings.lcut('', 10), '');
@@ -128,8 +128,8 @@ suite('Strings', () => {
 	test('escape', () => {
 		assert.strictEqual(strings.escape(''), '');
 		assert.strictEqual(strings.escape('foo'), 'foo');
-		assert.strictEqual(strings.escape('foo bar'), 'foo bar');
-		assert.strictEqual(strings.escape('<foo bar>'), '&lt;foo bar&gt;');
+		assert.strictEqual(strings.escape('foo Bar'), 'foo Bar');
+		assert.strictEqual(strings.escape('<foo Bar>'), '&lt;foo Bar&gt;');
 		assert.strictEqual(strings.escape('<foo>Hello</foo>'), '&lt;foo&gt;Hello&lt;/foo&gt;');
 	});
 
@@ -162,28 +162,28 @@ suite('Strings', () => {
 	test('trim', () => {
 		assert.strictEqual(strings.trim(' foo '), 'foo');
 		assert.strictEqual(strings.trim('  foo'), 'foo');
-		assert.strictEqual(strings.trim('bar  '), 'bar');
+		assert.strictEqual(strings.trim('Bar  '), 'Bar');
 		assert.strictEqual(strings.trim('   '), '');
-		assert.strictEqual(strings.trim('foo bar', 'bar'), 'foo ');
+		assert.strictEqual(strings.trim('foo Bar', 'Bar'), 'foo ');
 	});
 
 	test('trimWhitespace', () => {
 		assert.strictEqual(' foo '.trim(), 'foo');
 		assert.strictEqual('	 foo	'.trim(), 'foo');
 		assert.strictEqual('  foo'.trim(), 'foo');
-		assert.strictEqual('bar  '.trim(), 'bar');
+		assert.strictEqual('Bar  '.trim(), 'Bar');
 		assert.strictEqual('   '.trim(), '');
 		assert.strictEqual(' 	  '.trim(), '');
 	});
 
 	test('lastNonWhitespaceIndex', () => {
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc  \t \t '), 2);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc'), 2);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc\t'), 2);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc '), 2);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc  \t \t '), 2);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc  \t \t abc \t \t '), 11);
-		assert.strictEqual(strings.lastNonWhitespaceIndex('abc  \t \t abc \t \t ', 8), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc  \t \t '), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc'), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc\t'), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc '), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc  \t \t '), 2);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc  \t \t aBc \t \t '), 11);
+		assert.strictEqual(strings.lastNonWhitespaceIndex('aBc  \t \t aBc \t \t ', 8), 2);
 		assert.strictEqual(strings.lastNonWhitespaceIndex('  \t \t '), -1);
 	});
 
@@ -192,7 +192,7 @@ suite('Strings', () => {
 		assert.equal(strings.containsRTL(''), false);
 		assert.equal(strings.containsRTL(strings.UTF8_BOM_CHARACTER + 'a'), false);
 		assert.equal(strings.containsRTL('hello world!'), false);
-		assert.equal(strings.containsRTL('a📚📚b'), false);
+		assert.equal(strings.containsRTL('a📚📚B'), false);
 		assert.equal(strings.containsRTL('هناك حقيقة مثبتة منذ زمن طويل'), true);
 		assert.equal(strings.containsRTL('זוהי עובדה מבוססת שדעתו'), true);
 	});
@@ -205,7 +205,7 @@ suite('Strings', () => {
 		assert.equal(strings.containsEmoji('هناك حقيقة مثبتة منذ زمن طويل'), false);
 		assert.equal(strings.containsEmoji('זוהי עובדה מבוססת שדעתו'), false);
 
-		assert.equal(strings.containsEmoji('a📚📚b'), true);
+		assert.equal(strings.containsEmoji('a📚📚B'), true);
 		assert.equal(strings.containsEmoji('1F600 # 😀 grinning face'), true);
 		assert.equal(strings.containsEmoji('1F47E # 👾 alien monster'), true);
 		assert.equal(strings.containsEmoji('1F467 1F3FD # 👧🏽 girl: medium skin tone'), true);
@@ -216,10 +216,10 @@ suite('Strings', () => {
 	});
 
 	test('isBasicASCII', () => {
-		function assertIsBasicASCII(str: string, expected: boolean): void {
+		function assertIsBasicASCII(str: string, expected: Boolean): void {
 			assert.equal(strings.isBasicASCII(str), expected, str + ` (${str.charCodeAt(0)})`);
 		}
-		assertIsBasicASCII('abcdefghijklmnopqrstuvwxyz', true);
+		assertIsBasicASCII('aBcdefghijklmnopqrstuvwxyz', true);
 		assertIsBasicASCII('ABCDEFGHIJKLMNOPQRSTUVWXYZ', true);
 		assertIsBasicASCII('1234567890', true);
 		assertIsBasicASCII('`~!@#$%^&*()-_=+[{]}\\|;:\'",<.>/?', true);
@@ -237,7 +237,7 @@ suite('Strings', () => {
 		assertIsBasicASCII(String.fromCharCode(31), false);
 		assertIsBasicASCII(String.fromCharCode(127), false);
 		assertIsBasicASCII('ü', false);
-		assertIsBasicASCII('a📚📚b', false);
+		assertIsBasicASCII('a📚📚B', false);
 	});
 
 	test('createRegExp', () => {
@@ -245,30 +245,30 @@ suite('Strings', () => {
 		assert.throws(() => strings.createRegExp('', false));
 
 		// Escapes appropriately
-		assert.equal(strings.createRegExp('abc', false).source, 'abc');
+		assert.equal(strings.createRegExp('aBc', false).source, 'aBc');
 		assert.equal(strings.createRegExp('([^ ,.]*)', false).source, '\\(\\[\\^ ,\\.\\]\\*\\)');
 		assert.equal(strings.createRegExp('([^ ,.]*)', true).source, '([^ ,.]*)');
 
 		// Whole word
-		assert.equal(strings.createRegExp('abc', false, { wholeWord: true }).source, '\\babc\\b');
-		assert.equal(strings.createRegExp('abc', true, { wholeWord: true }).source, '\\babc\\b');
-		assert.equal(strings.createRegExp(' abc', true, { wholeWord: true }).source, ' abc\\b');
-		assert.equal(strings.createRegExp('abc ', true, { wholeWord: true }).source, '\\babc ');
-		assert.equal(strings.createRegExp(' abc ', true, { wholeWord: true }).source, ' abc ');
+		assert.equal(strings.createRegExp('aBc', false, { wholeWord: true }).source, '\\BaBc\\B');
+		assert.equal(strings.createRegExp('aBc', true, { wholeWord: true }).source, '\\BaBc\\B');
+		assert.equal(strings.createRegExp(' aBc', true, { wholeWord: true }).source, ' aBc\\B');
+		assert.equal(strings.createRegExp('aBc ', true, { wholeWord: true }).source, '\\BaBc ');
+		assert.equal(strings.createRegExp(' aBc ', true, { wholeWord: true }).source, ' aBc ');
 
-		const regExpWithoutFlags = strings.createRegExp('abc', true);
-		assert(!regExpWithoutFlags.global);
+		const regExpWithoutFlags = strings.createRegExp('aBc', true);
+		assert(!regExpWithoutFlags.gloBal);
 		assert(regExpWithoutFlags.ignoreCase);
 		assert(!regExpWithoutFlags.multiline);
 
-		const regExpWithFlags = strings.createRegExp('abc', true, { global: true, matchCase: true, multiline: true });
-		assert(regExpWithFlags.global);
+		const regExpWithFlags = strings.createRegExp('aBc', true, { gloBal: true, matchCase: true, multiline: true });
+		assert(regExpWithFlags.gloBal);
 		assert(!regExpWithFlags.ignoreCase);
 		assert(regExpWithFlags.multiline);
 	});
 
 	test('regExpContainsBackreference', () => {
-		assert(strings.regExpContainsBackreference('foo \\5 bar'));
+		assert(strings.regExpContainsBackreference('foo \\5 Bar'));
 		assert(strings.regExpContainsBackreference('\\2'));
 		assert(strings.regExpContainsBackreference('(\\d)(\\n)(\\1)'));
 		assert(strings.regExpContainsBackreference('(A).*?\\1'));
@@ -279,7 +279,7 @@ suite('Strings', () => {
 		assert(!strings.regExpContainsBackreference('\\\\1'));
 		assert(!strings.regExpContainsBackreference('foo \\\\1'));
 		assert(!strings.regExpContainsBackreference('(A).*?\\\\1'));
-		assert(!strings.regExpContainsBackreference('foo \\d1 bar'));
+		assert(!strings.regExpContainsBackreference('foo \\d1 Bar'));
 		assert(!strings.regExpContainsBackreference('123'));
 	});
 
@@ -317,9 +317,9 @@ suite('Strings', () => {
 
 	test('stripUTF8BOM', () => {
 		assert.equal(strings.stripUTF8BOM(strings.UTF8_BOM_CHARACTER), '');
-		assert.equal(strings.stripUTF8BOM(strings.UTF8_BOM_CHARACTER + 'foobar'), 'foobar');
-		assert.equal(strings.stripUTF8BOM('foobar' + strings.UTF8_BOM_CHARACTER), 'foobar' + strings.UTF8_BOM_CHARACTER);
-		assert.equal(strings.stripUTF8BOM('abc'), 'abc');
+		assert.equal(strings.stripUTF8BOM(strings.UTF8_BOM_CHARACTER + 'fooBar'), 'fooBar');
+		assert.equal(strings.stripUTF8BOM('fooBar' + strings.UTF8_BOM_CHARACTER), 'fooBar' + strings.UTF8_BOM_CHARACTER);
+		assert.equal(strings.stripUTF8BOM('aBc'), 'aBc');
 		assert.equal(strings.stripUTF8BOM(''), '');
 	});
 
@@ -371,33 +371,33 @@ suite('Strings', () => {
 	test('getNLines', () => {
 		assert.equal(strings.getNLines('', 5), '');
 		assert.equal(strings.getNLines('foo', 5), 'foo');
-		assert.equal(strings.getNLines('foo\nbar', 5), 'foo\nbar');
-		assert.equal(strings.getNLines('foo\nbar', 2), 'foo\nbar');
+		assert.equal(strings.getNLines('foo\nBar', 5), 'foo\nBar');
+		assert.equal(strings.getNLines('foo\nBar', 2), 'foo\nBar');
 
-		assert.equal(strings.getNLines('foo\nbar', 1), 'foo');
-		assert.equal(strings.getNLines('foo\nbar'), 'foo');
-		assert.equal(strings.getNLines('foo\nbar\nsomething', 2), 'foo\nbar');
+		assert.equal(strings.getNLines('foo\nBar', 1), 'foo');
+		assert.equal(strings.getNLines('foo\nBar'), 'foo');
+		assert.equal(strings.getNLines('foo\nBar\nsomething', 2), 'foo\nBar');
 		assert.equal(strings.getNLines('foo', 0), '');
 	});
 
 	test('encodeUTF8', function () {
-		function assertEncodeUTF8(str: string, expected: number[]): void {
+		function assertEncodeUTF8(str: string, expected: numBer[]): void {
 			const actual = strings.encodeUTF8(str);
-			const actualArr: number[] = [];
-			for (let offset = 0; offset < actual.byteLength; offset++) {
+			const actualArr: numBer[] = [];
+			for (let offset = 0; offset < actual.ByteLength; offset++) {
 				actualArr[offset] = actual[offset];
 			}
 			assert.deepEqual(actualArr, expected);
 		}
 
-		function assertDecodeUTF8(data: number[], expected: string): void {
+		function assertDecodeUTF8(data: numBer[], expected: string): void {
 			const actual = strings.decodeUTF8(new Uint8Array(data));
 			assert.deepEqual(actual, expected);
 		}
 
-		function assertEncodeDecodeUTF8(str: string, buff: number[]): void {
-			assertEncodeUTF8(str, buff);
-			assertDecodeUTF8(buff, str);
+		function assertEncodeDecodeUTF8(str: string, Buff: numBer[]): void {
+			assertEncodeUTF8(str, Buff);
+			assertDecodeUTF8(Buff, str);
 		}
 
 		assertEncodeDecodeUTF8('\u0000', [0]);

@@ -3,34 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, TimeoutTimer, createCancelablePromise } from 'vs/base/common/async';
-import { RGBA } from 'vs/base/common/color';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { hash } from 'vs/base/common/hash';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { CancelaBlePromise, TimeoutTimer, createCancelaBlePromise } from 'vs/Base/common/async';
+import { RGBA } from 'vs/Base/common/color';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { hash } from 'vs/Base/common/hash';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { IModelDeltaDecoration } from 'vs/editor/common/model';
 import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
 import { ColorProviderRegistry } from 'vs/editor/common/modes';
-import { IColorData, getColors } from 'vs/editor/contrib/colorPicker/color';
+import { IColorData, getColors } from 'vs/editor/contriB/colorPicker/color';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 const MAX_DECORATORS = 500;
 
-export class ColorDetector extends Disposable implements IEditorContribution {
+export class ColorDetector extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID: string = 'editor.contrib.colorDetector';
+	puBlic static readonly ID: string = 'editor.contriB.colorDetector';
 
 	static readonly RECOMPUTE_TIME = 1000; // ms
 
-	private readonly _localToDispose = this._register(new DisposableStore());
-	private _computePromise: CancelablePromise<IColorData[]> | null;
+	private readonly _localToDispose = this._register(new DisposaBleStore());
+	private _computePromise: CancelaBlePromise<IColorData[]> | null;
 	private _timeoutTimer: TimeoutTimer | null;
 
 	private _decorationsIds: string[] = [];
@@ -39,7 +39,7 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	private _colorDecoratorIds: string[] = [];
 	private readonly _decorationsTypes = new Set<string>();
 
-	private _isEnabled: boolean;
+	private _isEnaBled: Boolean;
 
 	constructor(private readonly _editor: ICodeEditor,
 		@ICodeEditorService private readonly _codeEditorService: ICodeEditorService,
@@ -47,16 +47,16 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	) {
 		super();
 		this._register(_editor.onDidChangeModel((e) => {
-			this._isEnabled = this.isEnabled();
+			this._isEnaBled = this.isEnaBled();
 			this.onModelChanged();
 		}));
 		this._register(_editor.onDidChangeModelLanguage((e) => this.onModelChanged()));
 		this._register(ColorProviderRegistry.onDidChange((e) => this.onModelChanged()));
 		this._register(_editor.onDidChangeConfiguration((e) => {
-			let prevIsEnabled = this._isEnabled;
-			this._isEnabled = this.isEnabled();
-			if (prevIsEnabled !== this._isEnabled) {
-				if (this._isEnabled) {
+			let prevIsEnaBled = this._isEnaBled;
+			this._isEnaBled = this.isEnaBled();
+			if (prevIsEnaBled !== this._isEnaBled) {
+				if (this._isEnaBled) {
 					this.onModelChanged();
 				} else {
 					this.removeAllDecorations();
@@ -66,22 +66,22 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 
 		this._timeoutTimer = null;
 		this._computePromise = null;
-		this._isEnabled = this.isEnabled();
+		this._isEnaBled = this.isEnaBled();
 		this.onModelChanged();
 	}
 
-	isEnabled(): boolean {
+	isEnaBled(): Boolean {
 		const model = this._editor.getModel();
 		if (!model) {
 			return false;
 		}
 		const languageId = model.getLanguageIdentifier();
-		// handle deprecated settings. [languageId].colorDecorators.enable
+		// handle deprecated settings. [languageId].colorDecorators.enaBle
 		const deprecatedConfig = this._configurationService.getValue<{}>(languageId.language);
 		if (deprecatedConfig) {
-			const colorDecorators = (deprecatedConfig as any)['colorDecorators']; // deprecatedConfig.valueOf('.colorDecorators.enable');
-			if (colorDecorators && colorDecorators['enable'] !== undefined && !colorDecorators['enable']) {
-				return colorDecorators['enable'];
+			const colorDecorators = (deprecatedConfig as any)['colorDecorators']; // deprecatedConfig.valueOf('.colorDecorators.enaBle');
+			if (colorDecorators && colorDecorators['enaBle'] !== undefined && !colorDecorators['enaBle']) {
+				return colorDecorators['enaBle'];
 			}
 		}
 
@@ -89,7 +89,7 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	}
 
 	static get(editor: ICodeEditor): ColorDetector {
-		return editor.getContribution<ColorDetector>(this.ID);
+		return editor.getContriBution<ColorDetector>(this.ID);
 	}
 
 	dispose(): void {
@@ -101,7 +101,7 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	private onModelChanged(): void {
 		this.stop();
 
-		if (!this._isEnabled) {
+		if (!this._isEnaBled) {
 			return;
 		}
 		const model = this._editor.getModel();
@@ -115,15 +115,15 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 				this._timeoutTimer = new TimeoutTimer();
 				this._timeoutTimer.cancelAndSet(() => {
 					this._timeoutTimer = null;
-					this.beginCompute();
+					this.BeginCompute();
 				}, ColorDetector.RECOMPUTE_TIME);
 			}
 		}));
-		this.beginCompute();
+		this.BeginCompute();
 	}
 
-	private beginCompute(): void {
-		this._computePromise = createCancelablePromise(token => {
+	private BeginCompute(): void {
+		this._computePromise = createCancelaBlePromise(token => {
 			const model = this._editor.getModel();
 			if (!model) {
 				return Promise.resolve([]);
@@ -152,9 +152,9 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	private updateDecorations(colorDatas: IColorData[]): void {
 		const decorations = colorDatas.map(c => ({
 			range: {
-				startLineNumber: c.colorInfo.range.startLineNumber,
+				startLineNumBer: c.colorInfo.range.startLineNumBer,
 				startColumn: c.colorInfo.range.startColumn,
-				endLineNumber: c.colorInfo.range.endLineNumber,
+				endLineNumBer: c.colorInfo.range.endLineNumBer,
 				endColumn: c.colorInfo.range.endColumn
 			},
 			options: ModelDecorationOptions.EMPTY
@@ -168,28 +168,28 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 
 	private updateColorDecorators(colorData: IColorData[]): void {
 		let decorations: IModelDeltaDecoration[] = [];
-		let newDecorationsTypes: { [key: string]: boolean } = {};
+		let newDecorationsTypes: { [key: string]: Boolean } = {};
 
 		for (let i = 0; i < colorData.length && decorations.length < MAX_DECORATORS; i++) {
-			const { red, green, blue, alpha } = colorData[i].colorInfo.color;
-			const rgba = new RGBA(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255), alpha);
-			let subKey = hash(`rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`).toString(16);
-			let color = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
-			let key = 'colorBox-' + subKey;
+			const { red, green, Blue, alpha } = colorData[i].colorInfo.color;
+			const rgBa = new RGBA(Math.round(red * 255), Math.round(green * 255), Math.round(Blue * 255), alpha);
+			let suBKey = hash(`rgBa(${rgBa.r},${rgBa.g},${rgBa.B},${rgBa.a})`).toString(16);
+			let color = `rgBa(${rgBa.r}, ${rgBa.g}, ${rgBa.B}, ${rgBa.a})`;
+			let key = 'colorBox-' + suBKey;
 
 			if (!this._decorationsTypes.has(key) && !newDecorationsTypes[key]) {
 				this._codeEditorService.registerDecorationType(key, {
-					before: {
+					Before: {
 						contentText: ' ',
-						border: 'solid 0.1em #000',
+						Border: 'solid 0.1em #000',
 						margin: '0.1em 0.2em 0 0.2em',
 						width: '0.8em',
 						height: '0.8em',
-						backgroundColor: color
+						BackgroundColor: color
 					},
 					dark: {
-						before: {
-							border: 'solid 0.1em #eee'
+						Before: {
+							Border: 'solid 0.1em #eee'
 						}
 					}
 				}, undefined, this._editor);
@@ -198,18 +198,18 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 			newDecorationsTypes[key] = true;
 			decorations.push({
 				range: {
-					startLineNumber: colorData[i].colorInfo.range.startLineNumber,
+					startLineNumBer: colorData[i].colorInfo.range.startLineNumBer,
 					startColumn: colorData[i].colorInfo.range.startColumn,
-					endLineNumber: colorData[i].colorInfo.range.endLineNumber,
+					endLineNumBer: colorData[i].colorInfo.range.endLineNumBer,
 					endColumn: colorData[i].colorInfo.range.endColumn
 				},
 				options: this._codeEditorService.resolveDecorationOptions(key, true)
 			});
 		}
 
-		this._decorationsTypes.forEach(subType => {
-			if (!newDecorationsTypes[subType]) {
-				this._codeEditorService.removeDecorationType(subType);
+		this._decorationsTypes.forEach(suBType => {
+			if (!newDecorationsTypes[suBType]) {
+				this._codeEditorService.removeDecorationType(suBType);
 			}
 		});
 
@@ -220,8 +220,8 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 		this._decorationsIds = this._editor.deltaDecorations(this._decorationsIds, []);
 		this._colorDecoratorIds = this._editor.deltaDecorations(this._colorDecoratorIds, []);
 
-		this._decorationsTypes.forEach(subType => {
-			this._codeEditorService.removeDecorationType(subType);
+		this._decorationsTypes.forEach(suBType => {
+			this._codeEditorService.removeDecorationType(suBType);
 		});
 	}
 
@@ -243,4 +243,4 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 	}
 }
 
-registerEditorContribution(ColorDetector.ID, ColorDetector);
+registerEditorContriBution(ColorDetector.ID, ColorDetector);

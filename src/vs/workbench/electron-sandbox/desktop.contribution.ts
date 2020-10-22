@@ -7,43 +7,43 @@ import { Registry } from 'vs/platform/registry/common/platform';
 import * as nls from 'vs/nls';
 import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { isLinux, isMacintosh } from 'vs/base/common/platform';
-import { ToggleDevToolsAction, ConfigureRuntimeArgumentsAction } from 'vs/workbench/electron-sandbox/actions/developerActions';
-import { ZoomResetAction, ZoomOutAction, ZoomInAction, CloseCurrentWindowAction, SwitchWindow, QuickSwitchWindow, ReloadWindowWithExtensionsDisabledAction, NewWindowTabHandler, ShowPreviousWindowTabHandler, ShowNextWindowTabHandler, MoveWindowTabToNewWindowHandler, MergeWindowTabsHandlerHandler, ToggleWindowTabsBarHandler } from 'vs/workbench/electron-sandbox/actions/windowActions';
+import { IWorkBenchActionRegistry, Extensions, CATEGORIES } from 'vs/workBench/common/actions';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { isLinux, isMacintosh } from 'vs/Base/common/platform';
+import { ToggleDevToolsAction, ConfigureRuntimeArgumentsAction } from 'vs/workBench/electron-sandBox/actions/developerActions';
+import { ZoomResetAction, ZoomOutAction, ZoomInAction, CloseCurrentWindowAction, SwitchWindow, QuickSwitchWindow, ReloadWindowWithExtensionsDisaBledAction, NewWindowTaBHandler, ShowPreviousWindowTaBHandler, ShowNextWindowTaBHandler, MoveWindowTaBToNewWindowHandler, MergeWindowTaBsHandlerHandler, ToggleWindowTaBsBarHandler } from 'vs/workBench/electron-sandBox/actions/windowActions';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { IsDevelopmentContext, IsMacContext } from 'vs/platform/contextkey/common/contextkeys';
-import { EditorsVisibleContext, SingleEditorGroupsContext } from 'vs/workbench/common/editor';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { IJSONContributionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
+import { EditorsVisiBleContext, SingleEditorGroupsContext } from 'vs/workBench/common/editor';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { IJSONContriButionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
 import product from 'vs/platform/product/common/product';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
 
 // Actions
 (function registerActions(): void {
-	const registry = Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
+	const registry = Registry.as<IWorkBenchActionRegistry>(Extensions.WorkBenchActions);
 
 	// Actions: Zoom
 	(function registerZoomActions(): void {
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ZoomInAction, { primary: KeyMod.CtrlCmd | KeyCode.US_EQUAL, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_EQUAL, KeyMod.CtrlCmd | KeyCode.NUMPAD_ADD] }), 'View: Zoom In', CATEGORIES.View.value);
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ZoomOutAction, { primary: KeyMod.CtrlCmd | KeyCode.US_MINUS, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_MINUS, KeyMod.CtrlCmd | KeyCode.NUMPAD_SUBTRACT], linux: { primary: KeyMod.CtrlCmd | KeyCode.US_MINUS, secondary: [KeyMod.CtrlCmd | KeyCode.NUMPAD_SUBTRACT] } }), 'View: Zoom Out', CATEGORIES.View.value);
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ZoomResetAction, { primary: KeyMod.CtrlCmd | KeyCode.NUMPAD_0 }), 'View: Reset Zoom', CATEGORIES.View.value);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ZoomInAction, { primary: KeyMod.CtrlCmd | KeyCode.US_EQUAL, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_EQUAL, KeyMod.CtrlCmd | KeyCode.NUMPAD_ADD] }), 'View: Zoom In', CATEGORIES.View.value);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ZoomOutAction, { primary: KeyMod.CtrlCmd | KeyCode.US_MINUS, secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_MINUS, KeyMod.CtrlCmd | KeyCode.NUMPAD_SUBTRACT], linux: { primary: KeyMod.CtrlCmd | KeyCode.US_MINUS, secondary: [KeyMod.CtrlCmd | KeyCode.NUMPAD_SUBTRACT] } }), 'View: Zoom Out', CATEGORIES.View.value);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ZoomResetAction, { primary: KeyMod.CtrlCmd | KeyCode.NUMPAD_0 }), 'View: Reset Zoom', CATEGORIES.View.value);
 	})();
 
 	// Actions: Window
 	(function registerWindowActions(): void {
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(CloseCurrentWindowAction, { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_W }), 'Close Window');
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(SwitchWindow, { primary: 0, mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_W } }), 'Switch Window...');
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(QuickSwitchWindow), 'Quick Switch Window...');
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(CloseCurrentWindowAction, { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_W }), 'Close Window');
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(SwitchWindow, { primary: 0, mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_W } }), 'Switch Window...');
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(QuickSwitchWindow), 'Quick Switch Window...');
 
-		KeybindingsRegistry.registerCommandAndKeybindingRule({
-			id: CloseCurrentWindowAction.ID, // close the window when the last editor is closed by reusing the same keybinding
-			weight: KeybindingWeight.WorkbenchContrib,
-			when: ContextKeyExpr.and(EditorsVisibleContext.toNegated(), SingleEditorGroupsContext),
+		KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+			id: CloseCurrentWindowAction.ID, // close the window when the last editor is closed By reusing the same keyBinding
+			weight: KeyBindingWeight.WorkBenchContriB,
+			when: ContextKeyExpr.and(EditorsVisiBleContext.toNegated(), SingleEditorGroupsContext),
 			primary: KeyMod.CtrlCmd | KeyCode.KEY_W,
 			handler: accessor => {
 				const nativeHostService = accessor.get(INativeHostService);
@@ -51,9 +51,9 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 			}
 		});
 
-		KeybindingsRegistry.registerCommandAndKeybindingRule({
-			id: 'workbench.action.quit',
-			weight: KeybindingWeight.WorkbenchContrib,
+		KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+			id: 'workBench.action.quit',
+			weight: KeyBindingWeight.WorkBenchContriB,
 			handler(accessor: ServicesAccessor) {
 				const nativeHostService = accessor.get(INativeHostService);
 				nativeHostService.quit();
@@ -64,22 +64,22 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		});
 	})();
 
-	// Actions: macOS Native Tabs
-	(function registerMacOSNativeTabsActions(): void {
+	// Actions: macOS Native TaBs
+	(function registerMacOSNativeTaBsActions(): void {
 		if (isMacintosh) {
 			[
-				{ handler: NewWindowTabHandler, id: 'workbench.action.newWindowTab', title: { value: nls.localize('newTab', "New Window Tab"), original: 'New Window Tab' } },
-				{ handler: ShowPreviousWindowTabHandler, id: 'workbench.action.showPreviousWindowTab', title: { value: nls.localize('showPreviousTab', "Show Previous Window Tab"), original: 'Show Previous Window Tab' } },
-				{ handler: ShowNextWindowTabHandler, id: 'workbench.action.showNextWindowTab', title: { value: nls.localize('showNextWindowTab', "Show Next Window Tab"), original: 'Show Next Window Tab' } },
-				{ handler: MoveWindowTabToNewWindowHandler, id: 'workbench.action.moveWindowTabToNewWindow', title: { value: nls.localize('moveWindowTabToNewWindow', "Move Window Tab to New Window"), original: 'Move Window Tab to New Window' } },
-				{ handler: MergeWindowTabsHandlerHandler, id: 'workbench.action.mergeAllWindowTabs', title: { value: nls.localize('mergeAllWindowTabs', "Merge All Windows"), original: 'Merge All Windows' } },
-				{ handler: ToggleWindowTabsBarHandler, id: 'workbench.action.toggleWindowTabsBar', title: { value: nls.localize('toggleWindowTabsBar', "Toggle Window Tabs Bar"), original: 'Toggle Window Tabs Bar' } }
+				{ handler: NewWindowTaBHandler, id: 'workBench.action.newWindowTaB', title: { value: nls.localize('newTaB', "New Window TaB"), original: 'New Window TaB' } },
+				{ handler: ShowPreviousWindowTaBHandler, id: 'workBench.action.showPreviousWindowTaB', title: { value: nls.localize('showPreviousTaB', "Show Previous Window TaB"), original: 'Show Previous Window TaB' } },
+				{ handler: ShowNextWindowTaBHandler, id: 'workBench.action.showNextWindowTaB', title: { value: nls.localize('showNextWindowTaB', "Show Next Window TaB"), original: 'Show Next Window TaB' } },
+				{ handler: MoveWindowTaBToNewWindowHandler, id: 'workBench.action.moveWindowTaBToNewWindow', title: { value: nls.localize('moveWindowTaBToNewWindow', "Move Window TaB to New Window"), original: 'Move Window TaB to New Window' } },
+				{ handler: MergeWindowTaBsHandlerHandler, id: 'workBench.action.mergeAllWindowTaBs', title: { value: nls.localize('mergeAllWindowTaBs', "Merge All Windows"), original: 'Merge All Windows' } },
+				{ handler: ToggleWindowTaBsBarHandler, id: 'workBench.action.toggleWindowTaBsBar', title: { value: nls.localize('toggleWindowTaBsBar', "Toggle Window TaBs Bar"), original: 'Toggle Window TaBs Bar' } }
 			].forEach(command => {
 				CommandsRegistry.registerCommand(command.id, command.handler);
 
 				MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 					command,
-					when: ContextKeyExpr.equals('config.window.nativeTabs', true)
+					when: ContextKeyExpr.equals('config.window.nativeTaBs', true)
 				});
 			});
 		}
@@ -87,12 +87,12 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 
 	// Actions: Developer
 	(function registerDeveloperActions(): void {
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ReloadWindowWithExtensionsDisabledAction), 'Developer: Reload With Extensions Disabled', CATEGORIES.Developer.value);
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleDevToolsAction), 'Developer: Toggle Developer Tools', CATEGORIES.Developer.value);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ReloadWindowWithExtensionsDisaBledAction), 'Developer: Reload With Extensions DisaBled', CATEGORIES.Developer.value);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ToggleDevToolsAction), 'Developer: Toggle Developer Tools', CATEGORIES.Developer.value);
 
-		KeybindingsRegistry.registerKeybindingRule({
+		KeyBindingsRegistry.registerKeyBindingRule({
 			id: ToggleDevToolsAction.ID,
-			weight: KeybindingWeight.WorkbenchContrib + 50,
+			weight: KeyBindingWeight.WorkBenchContriB + 50,
 			when: IsDevelopmentContext,
 			primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I,
 			mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_I }
@@ -102,13 +102,13 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 	// Actions: Runtime Arguments
 	(function registerRuntimeArgumentsAction(): void {
 		const preferencesCategory = nls.localize('preferences', "Preferences");
-		registry.registerWorkbenchAction(SyncActionDescriptor.from(ConfigureRuntimeArgumentsAction), 'Preferences: Configure Runtime Arguments', preferencesCategory);
+		registry.registerWorkBenchAction(SyncActionDescriptor.from(ConfigureRuntimeArgumentsAction), 'Preferences: Configure Runtime Arguments', preferencesCategory);
 	})();
 })();
 
 // Menu
 (function registerMenu(): void {
-	MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarFileMenu, {
 		group: '6_close',
 		command: {
 			id: CloseCurrentWindowAction.ID,
@@ -117,10 +117,10 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		order: 4
 	});
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarFileMenu, {
 		group: 'z_Exit',
 		command: {
-			id: 'workbench.action.quit',
+			id: 'workBench.action.quit',
 			title: nls.localize({ key: 'miExit', comment: ['&& denotes a mnemonic'] }, "E&&xit")
 		},
 		order: 1,
@@ -129,7 +129,7 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 
 	// Zoom
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarAppearanceMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarAppearanceMenu, {
 		group: '3_zoom',
 		command: {
 			id: ZoomInAction.ID,
@@ -138,7 +138,7 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		order: 1
 	});
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarAppearanceMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarAppearanceMenu, {
 		group: '3_zoom',
 		command: {
 			id: ZoomOutAction.ID,
@@ -147,7 +147,7 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		order: 2
 	});
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarAppearanceMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarAppearanceMenu, {
 		group: '3_zoom',
 		command: {
 			id: ZoomResetAction.ID,
@@ -157,10 +157,10 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 	});
 
 	if (!!product.reportIssueUrl) {
-		MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
-			group: '3_feedback',
+		MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
+			group: '3_feedBack',
 			command: {
-				id: 'workbench.action.openIssueReporter',
+				id: 'workBench.action.openIssueReporter',
 				title: nls.localize({ key: 'miReportIssue', comment: ['&& denotes a mnemonic', 'Translate this to "Report Issue in English" in all languages please!'] }, "Report &&Issue")
 			},
 			order: 3
@@ -168,7 +168,7 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 	}
 
 	// Tools
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '5_tools',
 		command: {
 			id: ToggleDevToolsAction.ID,
@@ -177,10 +177,10 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		order: 1
 	});
 
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	MenuRegistry.appendMenuItem(MenuId.MenuBarHelpMenu, {
 		group: '5_tools',
 		command: {
-			id: 'workbench.action.openProcessExplorer',
+			id: 'workBench.action.openProcessExplorer',
 			title: nls.localize({ key: 'miOpenProcessExplorerer', comment: ['&& denotes a mnemonic'] }, "Open &&Process Explorer")
 		},
 		order: 2
@@ -196,7 +196,7 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		'id': 'window',
 		'order': 8,
 		'title': nls.localize('windowConfigurationTitle', "Window"),
-		'type': 'object',
+		'type': 'oBject',
 		'properties': {
 			'window.openWithoutArgumentsInNewWindow': {
 				'type': 'string',
@@ -207,31 +207,31 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 				],
 				'default': isMacintosh ? 'off' : 'on',
 				'scope': ConfigurationScope.APPLICATION,
-				'markdownDescription': nls.localize('openWithoutArgumentsInNewWindow', "Controls whether a new empty window should open when starting a second instance without arguments or if the last running instance should get focus.\nNote that there can still be cases where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` command line option).")
+				'markdownDescription': nls.localize('openWithoutArgumentsInNewWindow', "Controls whether a new empty window should open when starting a second instance without arguments or if the last running instance should get focus.\nNote that there can still Be cases where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` command line option).")
 			},
 			'window.restoreWindows': {
 				'type': 'string',
 				'enum': ['all', 'folders', 'one', 'none'],
 				'enumDescriptions': [
 					nls.localize('window.reopenFolders.all', "Reopen all windows."),
-					nls.localize('window.reopenFolders.folders', "Reopen all folders. Empty workspaces will not be restored."),
+					nls.localize('window.reopenFolders.folders', "Reopen all folders. Empty workspaces will not Be restored."),
 					nls.localize('window.reopenFolders.one', "Reopen the last active window."),
 					nls.localize('window.reopenFolders.none', "Never reopen a window. Always start with an empty one.")
 				],
 				'default': 'all',
 				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('restoreWindows', "Controls how windows are being reopened after a restart.")
+				'description': nls.localize('restoreWindows', "Controls how windows are Being reopened after a restart.")
 			},
 			'window.restoreFullscreen': {
-				'type': 'boolean',
+				'type': 'Boolean',
 				'default': false,
 				'scope': ConfigurationScope.APPLICATION,
 				'description': nls.localize('restoreFullscreen', "Controls whether a window should restore to full screen mode if it was exited in full screen mode.")
 			},
 			'window.zoomLevel': {
-				'type': 'number',
+				'type': 'numBer',
 				'default': 0,
-				'description': nls.localize('zoomLevel', "Adjust the zoom level of the window. The original size is 0 and each increment above (e.g. 1) or below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.")
+				'description': nls.localize('zoomLevel', "Adjust the zoom level of the window. The original size is 0 and each increment aBove (e.g. 1) or Below (e.g. -1) represents zooming 20% larger or smaller. You can also enter decimals to adjust the zoom level with a finer granularity.")
 			},
 			'window.newWindowDimensions': {
 				'type': 'string',
@@ -245,25 +245,25 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 				],
 				'default': 'default',
 				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('newWindowDimensions', "Controls the dimensions of opening a new window when at least one window is already opened. Note that this setting does not have an impact on the first window that is opened. The first window will always restore the size and location as you left it before closing.")
+				'description': nls.localize('newWindowDimensions', "Controls the dimensions of opening a new window when at least one window is already opened. Note that this setting does not have an impact on the first window that is opened. The first window will always restore the size and location as you left it Before closing.")
 			},
 			'window.closeWhenEmpty': {
-				'type': 'boolean',
+				'type': 'Boolean',
 				'default': false,
 				'description': nls.localize('closeWhenEmpty', "Controls whether closing the last editor should also close the window. This setting only applies for windows that do not show folders.")
 			},
-			'window.doubleClickIconToClose': {
-				'type': 'boolean',
+			'window.douBleClickIconToClose': {
+				'type': 'Boolean',
 				'default': false,
 				'scope': ConfigurationScope.APPLICATION,
-				'markdownDescription': nls.localize('window.doubleClickIconToClose', "If enabled, double clicking the application icon in the title bar will close the window and the window cannot be dragged by the icon. This setting only has an effect when `#window.titleBarStyle#` is set to `custom`.")
+				'markdownDescription': nls.localize('window.douBleClickIconToClose', "If enaBled, douBle clicking the application icon in the title Bar will close the window and the window cannot Be dragged By the icon. This setting only has an effect when `#window.titleBarStyle#` is set to `custom`.")
 			},
 			'window.titleBarStyle': {
 				'type': 'string',
 				'enum': ['native', 'custom'],
 				'default': isLinux ? 'native' : 'custom',
 				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('titleBarStyle', "Adjust the appearance of the window title bar. On Linux and Windows, this setting also affects the application and context menu appearances. Changes require a full restart to apply.")
+				'description': nls.localize('titleBarStyle', "Adjust the appearance of the window title Bar. On Linux and Windows, this setting also affects the application and context menu appearances. Changes require a full restart to apply.")
 			},
 			'window.dialogStyle': {
 				'type': 'string',
@@ -272,25 +272,25 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 				'scope': ConfigurationScope.APPLICATION,
 				'description': nls.localize('dialogStyle', "Adjust the appearance of dialog windows.")
 			},
-			'window.nativeTabs': {
-				'type': 'boolean',
+			'window.nativeTaBs': {
+				'type': 'Boolean',
 				'default': false,
 				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('window.nativeTabs', "Enables macOS Sierra window tabs. Note that changes require a full restart to apply and that native tabs will disable a custom title bar style if configured."),
+				'description': nls.localize('window.nativeTaBs', "EnaBles macOS Sierra window taBs. Note that changes require a full restart to apply and that native taBs will disaBle a custom title Bar style if configured."),
 				'included': isMacintosh
 			},
 			'window.nativeFullScreen': {
-				'type': 'boolean',
+				'type': 'Boolean',
 				'default': true,
-				'description': nls.localize('window.nativeFullScreen', "Controls if native full-screen should be used on macOS. Disable this option to prevent macOS from creating a new space when going full-screen."),
+				'description': nls.localize('window.nativeFullScreen', "Controls if native full-screen should Be used on macOS. DisaBle this option to prevent macOS from creating a new space when going full-screen."),
 				'scope': ConfigurationScope.APPLICATION,
 				'included': isMacintosh
 			},
 			'window.clickThroughInactive': {
-				'type': 'boolean',
+				'type': 'Boolean',
 				'default': true,
 				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('window.clickThroughInactive', "If enabled, clicking on an inactive window will both activate the window and trigger the element under the mouse if it is clickable. If disabled, clicking anywhere on an inactive window will activate it only and a second click is required on the element."),
+				'description': nls.localize('window.clickThroughInactive', "If enaBled, clicking on an inactive window will Both activate the window and trigger the element under the mouse if it is clickaBle. If disaBled, clicking anywhere on an inactive window will activate it only and a second click is required on the element."),
 				'included': isMacintosh
 			}
 		}
@@ -301,37 +301,37 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		'id': 'telemetry',
 		'order': 110,
 		title: nls.localize('telemetryConfigurationTitle', "Telemetry"),
-		'type': 'object',
+		'type': 'oBject',
 		'properties': {
-			'telemetry.enableCrashReporter': {
-				'type': 'boolean',
-				'description': nls.localize('telemetry.enableCrashReporting', "Enable crash reports to be sent to a Microsoft online service. \nThis option requires restart to take effect."),
+			'telemetry.enaBleCrashReporter': {
+				'type': 'Boolean',
+				'description': nls.localize('telemetry.enaBleCrashReporting', "EnaBle crash reports to Be sent to a Microsoft online service. \nThis option requires restart to take effect."),
 				'default': true,
 				'tags': ['usesOnlineServices']
 			}
 		}
 	});
 
-	// Keybinding
+	// KeyBinding
 	registry.registerConfiguration({
-		'id': 'keyboard',
+		'id': 'keyBoard',
 		'order': 15,
-		'type': 'object',
-		'title': nls.localize('keyboardConfigurationTitle', "Keyboard"),
+		'type': 'oBject',
+		'title': nls.localize('keyBoardConfigurationTitle', "KeyBoard"),
 		'properties': {
-			'keyboard.touchbar.enabled': {
-				'type': 'boolean',
+			'keyBoard.touchBar.enaBled': {
+				'type': 'Boolean',
 				'default': true,
-				'description': nls.localize('touchbar.enabled', "Enables the macOS touchbar buttons on the keyboard if available."),
+				'description': nls.localize('touchBar.enaBled', "EnaBles the macOS touchBar Buttons on the keyBoard if availaBle."),
 				'included': isMacintosh
 			},
-			'keyboard.touchbar.ignored': {
+			'keyBoard.touchBar.ignored': {
 				'type': 'array',
 				'items': {
 					'type': 'string'
 				},
 				'default': [],
-				'markdownDescription': nls.localize('touchbar.ignored', 'A set of identifiers for entries in the touchbar that should not show up (for example `workbench.action.navigateBack`.'),
+				'markdownDescription': nls.localize('touchBar.ignored', 'A set of identifiers for entries in the touchBar that should not show up (for example `workBench.action.navigateBack`.'),
 				'included': isMacintosh
 			}
 		}
@@ -341,42 +341,42 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 // JSON Schemas
 (function registerJSONSchemas(): void {
 	const argvDefinitionFileSchemaId = 'vscode://schemas/argv';
-	const jsonRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+	const jsonRegistry = Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 	const schema: IJSONSchema = {
 		id: argvDefinitionFileSchemaId,
 		allowComments: true,
 		allowTrailingCommas: true,
 		description: 'VSCode static command line definition file',
-		type: 'object',
+		type: 'oBject',
 		additionalProperties: false,
 		properties: {
 			locale: {
 				type: 'string',
-				description: nls.localize('argv.locale', 'The display Language to use. Picking a different language requires the associated language pack to be installed.')
+				description: nls.localize('argv.locale', 'The display Language to use. Picking a different language requires the associated language pack to Be installed.')
 			},
-			'disable-hardware-acceleration': {
-				type: 'boolean',
-				description: nls.localize('argv.disableHardwareAcceleration', 'Disables hardware acceleration. ONLY change this option if you encounter graphic issues.')
+			'disaBle-hardware-acceleration': {
+				type: 'Boolean',
+				description: nls.localize('argv.disaBleHardwareAcceleration', 'DisaBles hardware acceleration. ONLY change this option if you encounter graphic issues.')
 			},
-			'disable-color-correct-rendering': {
-				type: 'boolean',
-				description: nls.localize('argv.disableColorCorrectRendering', 'Resolves issues around color profile selection. ONLY change this option if you encounter graphic issues.')
+			'disaBle-color-correct-rendering': {
+				type: 'Boolean',
+				description: nls.localize('argv.disaBleColorCorrectRendering', 'Resolves issues around color profile selection. ONLY change this option if you encounter graphic issues.')
 			},
 			'force-color-profile': {
 				type: 'string',
-				markdownDescription: nls.localize('argv.forceColorProfile', 'Allows to override the color profile to use. If you experience colors appear badly, try to set this to `srgb` and restart.')
+				markdownDescription: nls.localize('argv.forceColorProfile', 'Allows to override the color profile to use. If you experience colors appear Badly, try to set this to `srgB` and restart.')
 			},
-			'enable-crash-reporter': {
-				type: 'boolean',
-				markdownDescription: nls.localize('argv.enableCrashReporter', 'Allows to disable crash reporting, should restart the app if the value is changed.')
+			'enaBle-crash-reporter': {
+				type: 'Boolean',
+				markdownDescription: nls.localize('argv.enaBleCrashReporter', 'Allows to disaBle crash reporting, should restart the app if the value is changed.')
 			},
 			'crash-reporter-id': {
 				type: 'string',
 				markdownDescription: nls.localize('argv.crashReporterId', 'Unique id used for correlating crash reports sent from this app instance.')
 			},
-			'enable-proposed-api': {
+			'enaBle-proposed-api': {
 				type: 'array',
-				description: nls.localize('argv.enebleProposedApi', "Enable proposed APIs for a list of extension ids (such as \`vscode.git\`). Proposed APIs are unstable and subject to breaking without warning at any time. This should only be set for extension development and testing purposes."),
+				description: nls.localize('argv.eneBleProposedApi', "EnaBle proposed APIs for a list of extension ids (such as \`vscode.git\`). Proposed APIs are unstaBle and suBject to Breaking without warning at any time. This should only Be set for extension development and testing purposes."),
 				items: {
 					type: 'string'
 				}
@@ -384,9 +384,9 @@ import { IJSONSchema } from 'vs/base/common/jsonSchema';
 		}
 	};
 	if (isLinux) {
-		schema.properties!['force-renderer-accessibility'] = {
-			type: 'boolean',
-			description: nls.localize('argv.force-renderer-accessibility', 'Forces the renderer to be accessible. ONLY change this if you are using a screen reader on Linux. On other platforms the renderer will automatically be accessible. This flag is automatically set if you have editor.accessibilitySupport: on.'),
+		schema.properties!['force-renderer-accessiBility'] = {
+			type: 'Boolean',
+			description: nls.localize('argv.force-renderer-accessiBility', 'Forces the renderer to Be accessiBle. ONLY change this if you are using a screen reader on Linux. On other platforms the renderer will automatically Be accessiBle. This flag is automatically set if you have editor.accessiBilitySupport: on.'),
 		};
 	}
 

@@ -4,32 +4,32 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as DOM from 'vs/base/browser/dom';
+import * as DOM from 'vs/Base/Browser/dom';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Action, IAction, Separator, SubmenuAction } from 'vs/base/common/actions';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IViewlet } from 'vs/workbench/common/viewlet';
-import { CompositeDescriptor, CompositeRegistry } from 'vs/workbench/browser/composite';
+import { Action, IAction, Separator, SuBmenuAction } from 'vs/Base/common/actions';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
+import { IViewlet } from 'vs/workBench/common/viewlet';
+import { CompositeDescriptor, CompositeRegistry } from 'vs/workBench/Browser/composite';
 import { IConstructorSignature0, IInstantiationService, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { ToggleSidebarVisibilityAction, ToggleSidebarPositionAction } from 'vs/workbench/browser/actions/layoutActions';
+import { ToggleSideBarVisiBilityAction, ToggleSideBarPositionAction } from 'vs/workBench/Browser/actions/layoutActions';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
+import { IWorkBenchLayoutService, Parts } from 'vs/workBench/services/layout/Browser/layoutService';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { URI } from 'vs/base/common/uri';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { URI } from 'vs/Base/common/uri';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { AsyncDataTree } from 'vs/base/browser/ui/tree/asyncDataTree';
-import { AbstractTree } from 'vs/base/browser/ui/tree/abstractTree';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
+import { AsyncDataTree } from 'vs/Base/Browser/ui/tree/asyncDataTree';
+import { ABstractTree } from 'vs/Base/Browser/ui/tree/aBstractTree';
+import { ViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
+import { IContextMenuService } from 'vs/platform/contextview/Browser/contextView';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { PaneComposite } from 'vs/workbench/browser/panecomposite';
-import { Event } from 'vs/base/common/event';
-import { FilterViewPaneContainer } from 'vs/workbench/browser/parts/views/viewsViewlet';
+import { PaneComposite } from 'vs/workBench/Browser/panecomposite';
+import { Event } from 'vs/Base/common/event';
+import { FilterViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewsViewlet';
 
-export abstract class Viewlet extends PaneComposite implements IViewlet {
+export aBstract class Viewlet extends PaneComposite implements IViewlet {
 
 	constructor(id: string,
 		viewPaneContainer: ViewPaneContainer,
@@ -40,14 +40,14 @@ export abstract class Viewlet extends PaneComposite implements IViewlet {
 		@IContextMenuService protected contextMenuService: IContextMenuService,
 		@IExtensionService protected extensionService: IExtensionService,
 		@IWorkspaceContextService protected contextService: IWorkspaceContextService,
-		@IWorkbenchLayoutService protected layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService protected layoutService: IWorkBenchLayoutService,
 		@IConfigurationService protected configurationService: IConfigurationService
 	) {
 		super(id, viewPaneContainer, telemetryService, storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
 		// Only updateTitleArea for non-filter views: microsoft/vscode-remote-release#3676
 		if (!(viewPaneContainer instanceof FilterViewPaneContainer)) {
 			this._register(Event.any(viewPaneContainer.onDidAddViews, viewPaneContainer.onDidRemoveViews, viewPaneContainer.onTitleAreaUpdate)(() => {
-				// Update title area since there is no better way to update secondary actions
+				// Update title area since there is no Better way to update secondary actions
 				this.updateTitleArea();
 			}));
 		}
@@ -59,29 +59,29 @@ export abstract class Viewlet extends PaneComposite implements IViewlet {
 			parentActions.push(new Separator());
 		}
 
-		const toggleSidebarPositionAction = new ToggleSidebarPositionAction(ToggleSidebarPositionAction.ID, ToggleSidebarPositionAction.getLabel(this.layoutService), this.layoutService, this.configurationService);
-		return [...parentActions, toggleSidebarPositionAction,
+		const toggleSideBarPositionAction = new ToggleSideBarPositionAction(ToggleSideBarPositionAction.ID, ToggleSideBarPositionAction.getLaBel(this.layoutService), this.layoutService, this.configurationService);
+		return [...parentActions, toggleSideBarPositionAction,
 		<IAction>{
-			id: ToggleSidebarVisibilityAction.ID,
-			label: nls.localize('compositePart.hideSideBarLabel', "Hide Side Bar"),
-			enabled: true,
+			id: ToggleSideBarVisiBilityAction.ID,
+			laBel: nls.localize('compositePart.hideSideBarLaBel', "Hide Side Bar"),
+			enaBled: true,
 			run: () => this.layoutService.setSideBarHidden(true)
 		}];
 	}
 
 	getSecondaryActions(): IAction[] {
-		const viewVisibilityActions = this.viewPaneContainer.getViewsVisibilityActions();
+		const viewVisiBilityActions = this.viewPaneContainer.getViewsVisiBilityActions();
 		const secondaryActions = this.viewPaneContainer.getSecondaryActions();
-		if (viewVisibilityActions.length <= 1 || viewVisibilityActions.every(({ enabled }) => !enabled)) {
+		if (viewVisiBilityActions.length <= 1 || viewVisiBilityActions.every(({ enaBled }) => !enaBled)) {
 			return secondaryActions;
 		}
 
 		if (secondaryActions.length === 0) {
-			return viewVisibilityActions;
+			return viewVisiBilityActions;
 		}
 
 		return [
-			new SubmenuAction('workbench.views', nls.localize('views', "Views"), viewVisibilityActions),
+			new SuBmenuAction('workBench.views', nls.localize('views', "Views"), viewVisiBilityActions),
 			new Separator(),
 			...secondaryActions
 		];
@@ -89,7 +89,7 @@ export abstract class Viewlet extends PaneComposite implements IViewlet {
 }
 
 /**
- * A viewlet descriptor is a leightweight descriptor of a viewlet in the workbench.
+ * A viewlet descriptor is a leightweight descriptor of a viewlet in the workBench.
  */
 export class ViewletDescriptor extends CompositeDescriptor<Viewlet> {
 
@@ -98,8 +98,8 @@ export class ViewletDescriptor extends CompositeDescriptor<Viewlet> {
 		id: string,
 		name: string,
 		cssClass?: string,
-		order?: number,
-		requestedIndex?: number,
+		order?: numBer,
+		requestedIndex?: numBer,
 		iconUrl?: URI
 	): ViewletDescriptor {
 
@@ -111,8 +111,8 @@ export class ViewletDescriptor extends CompositeDescriptor<Viewlet> {
 		id: string,
 		name: string,
 		cssClass?: string,
-		order?: number,
-		requestedIndex?: number,
+		order?: numBer,
+		requestedIndex?: numBer,
 		readonly iconUrl?: URI
 	) {
 		super(ctor, id, name, cssClass, order, requestedIndex, id);
@@ -120,7 +120,7 @@ export class ViewletDescriptor extends CompositeDescriptor<Viewlet> {
 }
 
 export const Extensions = {
-	Viewlets: 'workbench.contributions.viewlets'
+	Viewlets: 'workBench.contriButions.viewlets'
 };
 
 export class ViewletRegistry extends CompositeRegistry<Viewlet> {
@@ -158,7 +158,7 @@ export class ViewletRegistry extends CompositeRegistry<Viewlet> {
 Registry.add(Extensions.Viewlets, new ViewletRegistry());
 
 /**
- * A reusable action to show a viewlet with a specific id.
+ * A reusaBle action to show a viewlet with a specific id.
  */
 export class ShowViewletAction extends Action {
 
@@ -168,7 +168,7 @@ export class ShowViewletAction extends Action {
 		private readonly viewletId: string,
 		@IViewletService protected viewletService: IViewletService,
 		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService
+		@IWorkBenchLayoutService private readonly layoutService: IWorkBenchLayoutService
 	) {
 		super(id, name);
 	}
@@ -176,7 +176,7 @@ export class ShowViewletAction extends Action {
 	async run(): Promise<void> {
 
 		// Pass focus to viewlet if not open or focused
-		if (this.otherViewletShowing() || !this.sidebarHasFocus()) {
+		if (this.otherViewletShowing() || !this.sideBarHasFocus()) {
 			await this.viewletService.openViewlet(this.viewletId, true);
 			return;
 		}
@@ -185,25 +185,25 @@ export class ShowViewletAction extends Action {
 		this.editorGroupService.activeGroup.focus();
 	}
 
-	private otherViewletShowing(): boolean {
+	private otherViewletShowing(): Boolean {
 		const activeViewlet = this.viewletService.getActiveViewlet();
 
 		return !activeViewlet || activeViewlet.getId() !== this.viewletId;
 	}
 
-	private sidebarHasFocus(): boolean {
+	private sideBarHasFocus(): Boolean {
 		const activeViewlet = this.viewletService.getActiveViewlet();
 		const activeElement = document.activeElement;
-		const sidebarPart = this.layoutService.getContainer(Parts.SIDEBAR_PART);
+		const sideBarPart = this.layoutService.getContainer(Parts.SIDEBAR_PART);
 
-		return !!(activeViewlet && activeElement && sidebarPart && DOM.isAncestor(activeElement, sidebarPart));
+		return !!(activeViewlet && activeElement && sideBarPart && DOM.isAncestor(activeElement, sideBarPart));
 	}
 }
 
 export class CollapseAction extends Action {
-	// We need a tree getter because the action is sometimes instantiated too early
-	constructor(treeGetter: () => AsyncDataTree<any, any, any> | AbstractTree<any, any, any>, enabled: boolean, clazz?: string) {
-		super('workbench.action.collapse', nls.localize('collapse', "Collapse All"), clazz, enabled, async () => {
+	// We need a tree getter Because the action is sometimes instantiated too early
+	constructor(treeGetter: () => AsyncDataTree<any, any, any> | ABstractTree<any, any, any>, enaBled: Boolean, clazz?: string) {
+		super('workBench.action.collapse', nls.localize('collapse', "Collapse All"), clazz, enaBled, async () => {
 			const tree = treeGetter();
 			tree.collapseAll();
 		});

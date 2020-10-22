@@ -4,39 +4,39 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IChannel, IServerChannel, getDelayedChannel, IPCLogger } from 'vs/base/parts/ipc/common/ipc';
-import { Client } from 'vs/base/parts/ipc/common/ipc.net';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { IChannel, IServerChannel, getDelayedChannel, IPCLogger } from 'vs/Base/parts/ipc/common/ipc';
+import { Client } from 'vs/Base/parts/ipc/common/ipc.net';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { connectRemoteAgentManagement, IConnectionOptions, ISocketFactory, PersistentConnectionEvent } from 'vs/platform/remote/common/remoteAgentConnection';
-import { IRemoteAgentConnection, IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { IRemoteAgentConnection, IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { IRemoteAuthorityResolverService, RemoteAuthorityResolverError } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { RemoteAgentConnectionContext, IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriBution, IWorkBenchContriButionsRegistry, Extensions } from 'vs/workBench/common/contriButions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { RemoteExtensionEnvironmentChannelClient } from 'vs/workbench/services/remote/common/remoteAgentEnvironmentChannel';
+import { RemoteExtensionEnvironmentChannelClient } from 'vs/workBench/services/remote/common/remoteAgentEnvironmentChannel';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IDiagnosticInfoOptions, IDiagnosticInfo } from 'vs/platform/diagnostics/common/diagnostics';
-import { Emitter } from 'vs/base/common/event';
+import { Emitter } from 'vs/Base/common/event';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { ILogService } from 'vs/platform/log/common/log';
 import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-export abstract class AbstractRemoteAgentService extends Disposable implements IRemoteAgentService {
+export aBstract class ABstractRemoteAgentService extends DisposaBle implements IRemoteAgentService {
 
 	declare readonly _serviceBrand: undefined;
 
-	public readonly socketFactory: ISocketFactory;
+	puBlic readonly socketFactory: ISocketFactory;
 	private readonly _connection: IRemoteAgentConnection | null;
 	private _environment: Promise<IRemoteAgentEnvironment | null> | null;
 
 	constructor(
 		socketFactory: ISocketFactory,
-		@IWorkbenchEnvironmentService protected readonly _environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService protected readonly _environmentService: IWorkBenchEnvironmentService,
 		@IProductService productService: IProductService,
 		@IRemoteAuthorityResolverService private readonly _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ISignService signService: ISignService,
@@ -81,7 +81,7 @@ export abstract class AbstractRemoteAgentService extends Disposable implements I
 		).then(undefined, () => []);
 	}
 
-	scanSingleExtension(extensionLocation: URI, isBuiltin: boolean): Promise<IExtensionDescription | null> {
+	scanSingleExtension(extensionLocation: URI, isBuiltin: Boolean): Promise<IExtensionDescription | null> {
 		return this._withChannel(
 			(channel, connection) => RemoteExtensionEnvironmentChannelClient.scanSingleExtension(channel, connection.remoteAuthority, isBuiltin, extensionLocation),
 			null
@@ -95,9 +95,9 @@ export abstract class AbstractRemoteAgentService extends Disposable implements I
 		);
 	}
 
-	disableTelemetry(): Promise<void> {
+	disaBleTelemetry(): Promise<void> {
 		return this._withChannel(
-			channel => RemoteExtensionEnvironmentChannelClient.disableTelemetry(channel),
+			channel => RemoteExtensionEnvironmentChannelClient.disaBleTelemetry(channel),
 			undefined
 		);
 	}
@@ -116,22 +116,22 @@ export abstract class AbstractRemoteAgentService extends Disposable implements I
 		);
 	}
 
-	private _withChannel<R>(callback: (channel: IChannel, connection: IRemoteAgentConnection) => Promise<R>, fallback: R): Promise<R> {
+	private _withChannel<R>(callBack: (channel: IChannel, connection: IRemoteAgentConnection) => Promise<R>, fallBack: R): Promise<R> {
 		const connection = this.getConnection();
 		if (!connection) {
-			return Promise.resolve(fallback);
+			return Promise.resolve(fallBack);
 		}
-		return connection.withChannel('remoteextensionsenvironment', (channel) => callback(channel, connection));
+		return connection.withChannel('remoteextensionsenvironment', (channel) => callBack(channel, connection));
 	}
 }
 
-export class RemoteAgentConnection extends Disposable implements IRemoteAgentConnection {
+export class RemoteAgentConnection extends DisposaBle implements IRemoteAgentConnection {
 
 	private readonly _onReconnecting = this._register(new Emitter<void>());
-	public readonly onReconnecting = this._onReconnecting.event;
+	puBlic readonly onReconnecting = this._onReconnecting.event;
 
 	private readonly _onDidStateChange = this._register(new Emitter<PersistentConnectionEvent>());
-	public readonly onDidStateChange = this._onDidStateChange.event;
+	puBlic readonly onDidStateChange = this._onDidStateChange.event;
 
 	readonly remoteAuthority: string;
 	private _connection: Promise<Client<RemoteAgentConnectionContext>> | null;
@@ -153,9 +153,9 @@ export class RemoteAgentConnection extends Disposable implements IRemoteAgentCon
 		return <T>getDelayedChannel(this._getOrCreateConnection().then(c => c.getChannel(channelName)));
 	}
 
-	withChannel<T extends IChannel, R>(channelName: string, callback: (channel: T) => Promise<R>): Promise<R> {
+	withChannel<T extends IChannel, R>(channelName: string, callBack: (channel: T) => Promise<R>): Promise<R> {
 		const channel = this.getChannel<T>(channelName);
-		const result = callback(channel);
+		const result = callBack(channel);
 		return result;
 	}
 
@@ -196,7 +196,7 @@ export class RemoteAgentConnection extends Disposable implements IRemoteAgentCon
 	}
 }
 
-class RemoteConnectionFailureNotificationContribution implements IWorkbenchContribution {
+class RemoteConnectionFailureNotificationContriBution implements IWorkBenchContriBution {
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
@@ -213,5 +213,5 @@ class RemoteConnectionFailureNotificationContribution implements IWorkbenchContr
 
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(RemoteConnectionFailureNotificationContribution, LifecyclePhase.Ready);
+const workBenchRegistry = Registry.as<IWorkBenchContriButionsRegistry>(Extensions.WorkBench);
+workBenchRegistry.registerWorkBenchContriBution(RemoteConnectionFailureNotificationContriBution, LifecyclePhase.Ready);

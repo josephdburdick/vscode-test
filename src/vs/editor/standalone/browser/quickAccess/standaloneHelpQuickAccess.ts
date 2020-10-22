@@ -6,10 +6,10 @@
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
 import { QuickHelpNLS } from 'vs/editor/common/standaloneStrings';
-import { HelpQuickAccessProvider } from 'vs/platform/quickinput/browser/helpQuickAccess';
+import { HelpQuickAccessProvider } from 'vs/platform/quickinput/Browser/helpQuickAccess';
 
 Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
 	ctor: HelpQuickAccessProvider,
 	prefix: '',
-	helpEntries: [{ description: QuickHelpNLS.helpQuickAccessActionLabel, needsEditor: true }]
+	helpEntries: [{ description: QuickHelpNLS.helpQuickAccessActionLaBel, needsEditor: true }]
 });

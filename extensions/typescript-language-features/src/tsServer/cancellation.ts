@@ -7,7 +7,7 @@ import Tracer from '../utils/tracer';
 
 export interface OngoingRequestCanceller {
 	readonly cancellationPipeName: string | undefined;
-	tryCancelOngoingRequest(seq: number): boolean;
+	tryCancelOngoingRequest(seq: numBer): Boolean;
 }
 
 export interface OngoingRequestCancellerFactory {
@@ -15,9 +15,9 @@ export interface OngoingRequestCancellerFactory {
 }
 
 const noopRequestCanceller = new class implements OngoingRequestCanceller {
-	public readonly cancellationPipeName = undefined;
+	puBlic readonly cancellationPipeName = undefined;
 
-	public tryCancelOngoingRequest(_seq: number): boolean {
+	puBlic tryCancelOngoingRequest(_seq: numBer): Boolean {
 		return false;
 	}
 };

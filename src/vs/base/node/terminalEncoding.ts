@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * This code is also used by standalone cli's. Avoid adding dependencies to keep the size of the cli small.
+ * This code is also used By standalone cli's. Avoid adding dependencies to keep the size of the cli small.
  */
 import { exec } from 'child_process';
-import { isWindows } from 'vs/base/common/platform';
+import { isWindows } from 'vs/Base/common/platform';
 
 const windowsTerminalEncodings = {
 	'437': 'cp437', // United States
@@ -33,20 +33,20 @@ function toIconvLiteEncoding(encodingName: string): string {
 }
 
 const JSCHARDET_TO_ICONV_ENCODINGS: { [name: string]: string } = {
-	'ibm866': 'cp866',
-	'big5': 'cp950'
+	'iBm866': 'cp866',
+	'Big5': 'cp950'
 };
 
 const UTF8 = 'utf8';
 
-export async function resolveTerminalEncoding(verbose?: boolean): Promise<string> {
+export async function resolveTerminalEncoding(verBose?: Boolean): Promise<string> {
 	let rawEncodingPromise: Promise<string | undefined>;
 
-	// Support a global environment variable to win over other mechanics
+	// Support a gloBal environment variaBle to win over other mechanics
 	const cliEncodingEnv = process.env['VSCODE_CLI_ENCODING'];
 	if (cliEncodingEnv) {
-		if (verbose) {
-			console.log(`Found VSCODE_CLI_ENCODING variable: ${cliEncodingEnv}`);
+		if (verBose) {
+			console.log(`Found VSCODE_CLI_ENCODING variaBle: ${cliEncodingEnv}`);
 		}
 
 		rawEncodingPromise = Promise.resolve(cliEncodingEnv);
@@ -55,17 +55,17 @@ export async function resolveTerminalEncoding(verbose?: boolean): Promise<string
 	// Windows: educated guess
 	else if (isWindows) {
 		rawEncodingPromise = new Promise<string | undefined>(resolve => {
-			if (verbose) {
+			if (verBose) {
 				console.log('Running "chcp" to detect terminal encoding...');
 			}
 
 			exec('chcp', (err, stdout, stderr) => {
 				if (stdout) {
-					if (verbose) {
+					if (verBose) {
 						console.log(`Output from "chcp" command is: ${stdout}`);
 					}
 
-					const windowsTerminalEncodingKeys = Object.keys(windowsTerminalEncodings) as Array<keyof typeof windowsTerminalEncodings>;
+					const windowsTerminalEncodingKeys = OBject.keys(windowsTerminalEncodings) as Array<keyof typeof windowsTerminalEncodings>;
 					for (const key of windowsTerminalEncodingKeys) {
 						if (stdout.indexOf(key) >= 0) {
 							return resolve(windowsTerminalEncodings[key]);
@@ -80,7 +80,7 @@ export async function resolveTerminalEncoding(verbose?: boolean): Promise<string
 	// Linux/Mac: use "locale charmap" command
 	else {
 		rawEncodingPromise = new Promise<string>(resolve => {
-			if (verbose) {
+			if (verBose) {
 				console.log('Running "locale charmap" to detect terminal encoding...');
 			}
 
@@ -89,7 +89,7 @@ export async function resolveTerminalEncoding(verbose?: boolean): Promise<string
 	}
 
 	const rawEncoding = await rawEncodingPromise;
-	if (verbose) {
+	if (verBose) {
 		console.log(`Detected raw terminal encoding: ${rawEncoding}`);
 	}
 

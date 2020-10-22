@@ -4,29 +4,29 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { dirname, basename } from 'vs/base/common/path';
+import { dirname, Basename } from 'vs/Base/common/path';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { AbstractTextResourceEditor } from 'vs/workbench/browser/parts/editor/textResourceEditor';
+import { ABstractTextResourceEditor } from 'vs/workBench/Browser/parts/editor/textResourceEditor';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { URI } from 'vs/base/common/uri';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
+import { URI } from 'vs/Base/common/uri';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { LOG_SCHEME } from 'vs/workbench/contrib/output/common/output';
-import { IFileOutputChannelDescriptor } from 'vs/workbench/services/output/common/output';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
+import { LOG_SCHEME } from 'vs/workBench/contriB/output/common/output';
+import { IFileOutputChannelDescriptor } from 'vs/workBench/services/output/common/output';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
 import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
 
 export class LogViewerInput extends ResourceEditorInput {
 
-	static readonly ID = 'workbench.editorinputs.output';
+	static readonly ID = 'workBench.editorinputs.output';
 
 	constructor(
 		outputChannelDescriptor: IFileOutputChannelDescriptor,
@@ -35,12 +35,12 @@ export class LogViewerInput extends ResourceEditorInput {
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
 		super(
 			URI.from({ scheme: LOG_SCHEME, path: outputChannelDescriptor.id }),
-			basename(outputChannelDescriptor.file.path),
+			Basename(outputChannelDescriptor.file.path),
 			dirname(outputChannelDescriptor.file.path),
 			undefined,
 			textModelResolverService,
@@ -48,7 +48,7 @@ export class LogViewerInput extends ResourceEditorInput {
 			editorService,
 			editorGroupService,
 			fileService,
-			labelService,
+			laBelService,
 			filesConfigurationService
 		);
 	}
@@ -58,9 +58,9 @@ export class LogViewerInput extends ResourceEditorInput {
 	}
 }
 
-export class LogViewer extends AbstractTextResourceEditor {
+export class LogViewer extends ABstractTextResourceEditor {
 
-	static readonly LOG_VIEWER_EDITOR_ID = 'workbench.editors.logViewer';
+	static readonly LOG_VIEWER_EDITOR_ID = 'workBench.editors.logViewer';
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
@@ -79,11 +79,11 @@ export class LogViewer extends AbstractTextResourceEditor {
 		options.wordWrap = 'off'; // all log viewers do not wrap
 		options.folding = false;
 		options.scrollBeyondLastLine = false;
-		options.renderValidationDecorations = 'editable';
+		options.renderValidationDecorations = 'editaBle';
 		return options;
 	}
 
-	protected getAriaLabel(): string {
-		return localize('logViewerAriaLabel', "Log viewer");
+	protected getAriaLaBel(): string {
+		return localize('logViewerAriaLaBel', "Log viewer");
 	}
 }

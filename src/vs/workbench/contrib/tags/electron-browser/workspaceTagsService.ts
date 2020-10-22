@@ -5,21 +5,21 @@
 
 import * as crypto from 'crypto';
 import { IFileService, IResolveFileResult, IFileStat } from 'vs/platform/files/common/files';
-import { IWorkspaceContextService, WorkbenchState, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { IWorkspaceContextService, WorkBenchState, IWorkspace } from 'vs/platform/workspace/common/workspace';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 import { INotificationService, NeverShowAgainScope, INeverShowAgainOptions } from 'vs/platform/notification/common/notification';
 import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { ITextFileService, ITextFileContent } from 'vs/workbench/services/textfile/common/textfiles';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import { ITextFileService, ITextFileContent } from 'vs/workBench/services/textfile/common/textfiles';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
 import { hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
 import { localize } from 'vs/nls';
-import Severity from 'vs/base/common/severity';
-import { joinPath } from 'vs/base/common/resources';
+import Severity from 'vs/Base/common/severity';
+import { joinPath } from 'vs/Base/common/resources';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { getHashedRemotesFromConfig } from 'vs/workbench/contrib/tags/electron-browser/workspaceTags';
+import { IWorkspaceTagsService, Tags } from 'vs/workBench/contriB/tags/common/workspaceTags';
+import { getHashedRemotesFromConfig } from 'vs/workBench/contriB/tags/electron-Browser/workspaceTags';
 import { IProductService } from 'vs/platform/product/common/productService';
 
 const MetaModulesToLookFor = [
@@ -59,7 +59,7 @@ const ModulesToLookFor = [
 	'aws-amplify',
 	'azure',
 	'azure-storage',
-	'firebase',
+	'fireBase',
 	'@google-cloud/common',
 	'heroku-cli',
 	// Office and Sharepoint packages
@@ -68,16 +68,16 @@ const ModulesToLookFor = [
 	'@microsoft/office-js-helpers',
 	'@types/office-js',
 	'@types/office-runtime',
-	'office-ui-fabric-react',
-	'@uifabric/icons',
-	'@uifabric/merge-styles',
-	'@uifabric/styling',
-	'@uifabric/experiments',
-	'@uifabric/utilities',
+	'office-ui-faBric-react',
+	'@uifaBric/icons',
+	'@uifaBric/merge-styles',
+	'@uifaBric/styling',
+	'@uifaBric/experiments',
+	'@uifaBric/utilities',
 	'@microsoft/rush',
 	'lerna',
 	'just-task',
-	'beachball',
+	'BeachBall',
 	// Playwright packages
 	'playwright',
 	'playwright-cli',
@@ -85,7 +85,7 @@ const ModulesToLookFor = [
 	'playwright-core',
 	'playwright-chromium',
 	'playwright-firefox',
-	'playwright-webkit'
+	'playwright-weBkit'
 ];
 
 const PyMetaModulesToLookFor = [
@@ -108,19 +108,19 @@ const PyModulesToLookFor = [
 	'azure-elasticluster',
 	'azure-eventgrid',
 	'azure-functions',
-	'azure-graphrbac',
-	'azure-iothub-device-client',
+	'azure-graphrBac',
+	'azure-iothuB-device-client',
 	'azure-loganalytics',
 	'azure-monitor',
-	'azure-servicebus',
-	'azure-servicefabric',
+	'azure-serviceBus',
+	'azure-servicefaBric',
 	'azure-shell',
 	'azure-translator',
 	'adal',
-	'pydocumentdb',
-	'botbuilder-core',
-	'botbuilder-schema',
-	'botframework-connector',
+	'pydocumentdB',
+	'BotBuilder-core',
+	'BotBuilder-schema',
+	'Botframework-connector',
 	'playwright'
 ];
 
@@ -131,7 +131,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 	constructor(
 		@IFileService private readonly fileService: IFileService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IProductService private readonly productService: IProductService,
 		@IHostService private readonly hostService: IHostService,
 		@INotificationService private readonly notificationService: INotificationService,
@@ -147,20 +147,20 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 		return this._tags;
 	}
 
-	getTelemetryWorkspaceId(workspace: IWorkspace, state: WorkbenchState): string | undefined {
+	getTelemetryWorkspaceId(workspace: IWorkspace, state: WorkBenchState): string | undefined {
 		function createHash(uri: URI): string {
 			return crypto.createHash('sha1').update(uri.scheme === Schemas.file ? uri.fsPath : uri.toString()).digest('hex');
 		}
 
 		let workspaceId: string | undefined;
 		switch (state) {
-			case WorkbenchState.EMPTY:
+			case WorkBenchState.EMPTY:
 				workspaceId = undefined;
-				break;
-			case WorkbenchState.FOLDER:
+				Break;
+			case WorkBenchState.FOLDER:
 				workspaceId = createHash(workspace.folders[0].uri);
-				break;
-			case WorkbenchState.WORKSPACE:
+				Break;
+			case WorkBenchState.WORKSPACE:
 				if (workspace.configuration) {
 					workspaceId = createHash(workspace.configuration);
 				}
@@ -169,7 +169,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 		return workspaceId;
 	}
 
-	getHashedRemotesFromUri(workspaceUri: URI, stripEndingDotGit: boolean = false): Promise<string[]> {
+	getHashedRemotesFromUri(workspaceUri: URI, stripEndingDotGit: Boolean = false): Promise<string[]> {
 		const path = workspaceUri.path;
 		const uri = workspaceUri.with({ path: `${path !== '/' ? path : ''}/.git/config` });
 		return this.fileService.exists(uri).then(exists => {
@@ -178,15 +178,15 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			}
 			return this.textFileService.read(uri, { acceptTextOnly: true }).then(
 				content => getHashedRemotesFromConfig(content.value, stripEndingDotGit),
-				err => [] // ignore missing or binary file
+				err => [] // ignore missing or Binary file
 			);
 		});
 	}
 
 	/* __GDPR__FRAGMENT__
 		"WorkspaceTags" : {
-			"workbench.filesToOpenOrCreate" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workbench.filesToDiff" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workBench.filesToOpenOrCreate" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workBench.filesToDiff" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.id" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 			"workspace.roots" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.empty" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -225,23 +225,23 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.npm.azure" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.azure-storage" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@google-cloud/common" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.firebase" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.fireBase" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.heroku-cli" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@microsoft/teams-js" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@microsoft/office-js" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@microsoft/office-js-helpers" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@types/office-js" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@types/office-runtime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.office-ui-fabric-react" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.@uifabric/icons" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.@uifabric/merge-styles" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.@uifabric/styling" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.@uifabric/experiments" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.@uifabric/utilities" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.office-ui-faBric-react" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@uifaBric/icons" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@uifaBric/merge-styles" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@uifaBric/styling" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@uifaBric/experiments" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@uifaBric/utilities" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@microsoft/rush" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.lerna" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.just-task" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.beachball" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.BeachBall" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.electron" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.playwright" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.playwright-cli" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -249,10 +249,10 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.npm.playwright-core" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.playwright-chromium" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.playwright-firefox" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.npm.playwright-webkit" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.playwright-weBkit" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.react-native-macos" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.react-native-windows" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.bower" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.Bower" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.yeoman.code.ext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.cordova.high" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.cordova.low" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -279,45 +279,45 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.py.azure-event" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-eventgrid" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-functions" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.azure-graphrbac" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.azure-graphrBac" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-identity" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.azure-iothub-device-client" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.azure-iothuB-device-client" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-keyvault" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-loganalytics" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-mgmt" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-ml" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-monitor" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-search" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.azure-servicebus" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.azure-servicefabric" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.azure-serviceBus" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.azure-servicefaBric" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-shell" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-storage" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.azure-translator" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.adal" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.pydocumentdb" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.botbuilder-core" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.botbuilder-schema" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.py.botframework-connector" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.pydocumentdB" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.BotBuilder-core" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.BotBuilder-schema" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.py.Botframework-connector" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.py.playwright" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		}
 	*/
 	private resolveWorkspaceTags(participant?: (rootFiles: string[]) => void): Promise<Tags> {
-		const tags: Tags = Object.create(null);
+		const tags: Tags = OBject.create(null);
 
-		const state = this.contextService.getWorkbenchState();
+		const state = this.contextService.getWorkBenchState();
 		const workspace = this.contextService.getWorkspace();
 
 		tags['workspace.id'] = this.getTelemetryWorkspaceId(workspace, state);
 
 		const { filesToOpenOrCreate, filesToDiff } = this.environmentService.configuration;
-		tags['workbench.filesToOpenOrCreate'] = filesToOpenOrCreate && filesToOpenOrCreate.length || 0;
-		tags['workbench.filesToDiff'] = filesToDiff && filesToDiff.length || 0;
+		tags['workBench.filesToOpenOrCreate'] = filesToOpenOrCreate && filesToOpenOrCreate.length || 0;
+		tags['workBench.filesToDiff'] = filesToDiff && filesToDiff.length || 0;
 
-		const isEmpty = state === WorkbenchState.EMPTY;
+		const isEmpty = state === WorkBenchState.EMPTY;
 		tags['workspace.roots'] = isEmpty ? 0 : workspace.folders.length;
 		tags['workspace.empty'] = isEmpty;
 
-		const folders = !isEmpty ? workspace.folders.map(folder => folder.uri) : this.productService.quality !== 'stable' && this.findFolders();
+		const folders = !isEmpty ? workspace.folders.map(folder => folder.uri) : this.productService.quality !== 'staBle' && this.findFolders();
 		if (!folders || !folders.length || !this.fileService) {
 			return Promise.resolve(tags);
 		}
@@ -341,9 +341,9 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 
 			tags['workspace.ASP5'] = nameSet.has('project.json') && this.searchArray(names, /^.+\.cs$/i);
 			tags['workspace.sln'] = this.searchArray(names, /^.+\.sln$|^.+\.csproj$/i);
-			tags['workspace.unity'] = nameSet.has('assets') && nameSet.has('library') && nameSet.has('projectsettings');
+			tags['workspace.unity'] = nameSet.has('assets') && nameSet.has('liBrary') && nameSet.has('projectsettings');
 			tags['workspace.npm'] = nameSet.has('package.json') || nameSet.has('node_modules');
-			tags['workspace.bower'] = nameSet.has('bower.json') || nameSet.has('bower_components');
+			tags['workspace.Bower'] = nameSet.has('Bower.json') || nameSet.has('Bower_components');
 
 			tags['workspace.java.pom'] = nameSet.has('pom.xml');
 
@@ -366,7 +366,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			const jni = nameSet.has('jni');
 
 			if (tags['workspace.config.xml'] &&
-				!tags['workspace.language.cs'] && !tags['workspace.language.vb'] && !tags['workspace.language.aspx']) {
+				!tags['workspace.language.cs'] && !tags['workspace.language.vB'] && !tags['workspace.language.aspx']) {
 				if (platforms && plugins && www) {
 					tags['workspace.cordova.high'] = true;
 				} else {
@@ -375,7 +375,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			}
 
 			if (tags['workspace.config.xml'] &&
-				!tags['workspace.language.cs'] && !tags['workspace.language.vb'] && !tags['workspace.language.aspx']) {
+				!tags['workspace.language.cs'] && !tags['workspace.language.vB'] && !tags['workspace.language.aspx']) {
 
 				if (nameSet.has('ionic.config.json')) {
 					tags['workspace.ionic'] = true;
@@ -444,7 +444,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 
 				for (let dependency of dependencies) {
 					if (dependency.trim().indexOf('[') > -1) {
-						break;
+						Break;
 					}
 					// All dependencies in Pipfiles follow the format: `<package> = <version, or git repo, or something else>`
 					if (dependency.indexOf('=') === -1) {
@@ -459,7 +459,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			const packageJsonPromises = getFilePromises('package.json', this.fileService, this.textFileService, content => {
 				try {
 					const packageJsonContents = JSON.parse(content.value);
-					let dependencies = Object.keys(packageJsonContents['dependencies'] || {}).concat(Object.keys(packageJsonContents['devDependencies'] || {}));
+					let dependencies = OBject.keys(packageJsonContents['dependencies'] || {}).concat(OBject.keys(packageJsonContents['devDependencies'] || {}));
 
 					for (let dependency of dependencies) {
 						if ('react-native' === dependency) {
@@ -486,11 +486,11 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 	}
 
 	private handleWorkspaceFiles(rootFiles: string[]): void {
-		const state = this.contextService.getWorkbenchState();
+		const state = this.contextService.getWorkBenchState();
 		const workspace = this.contextService.getWorkspace();
 
 		// Handle top-level workspace files for local single folder workspace
-		if (state === WorkbenchState.FOLDER) {
+		if (state === WorkBenchState.FOLDER) {
 			const workspaceFiles = rootFiles.filter(hasWorkspaceFileExtension);
 			if (workspaceFiles.length > 0) {
 				this.doHandleWorkspaceFiles(workspace.folders[0].uri, workspaceFiles);
@@ -505,22 +505,22 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 		if (workspaces.length === 1) {
 			const workspaceFile = workspaces[0];
 
-			this.notificationService.prompt(Severity.Info, localize('workspaceFound', "This folder contains a workspace file '{0}'. Do you want to open it? [Learn more]({1}) about workspace files.", workspaceFile, 'https://go.microsoft.com/fwlink/?linkid=2025315'), [{
-				label: localize('openWorkspace', "Open Workspace"),
+			this.notificationService.prompt(Severity.Info, localize('workspaceFound', "This folder contains a workspace file '{0}'. Do you want to open it? [Learn more]({1}) aBout workspace files.", workspaceFile, 'https://go.microsoft.com/fwlink/?linkid=2025315'), [{
+				laBel: localize('openWorkspace', "Open Workspace"),
 				run: () => this.hostService.openWindow([{ workspaceUri: joinPath(folder, workspaceFile) }])
 			}], { neverShowAgain });
 		}
 
 		// Prompt to select a workspace from many
 		else if (workspaces.length > 1) {
-			this.notificationService.prompt(Severity.Info, localize('workspacesFound', "This folder contains multiple workspace files. Do you want to open one? [Learn more]({0}) about workspace files.", 'https://go.microsoft.com/fwlink/?linkid=2025315'), [{
-				label: localize('selectWorkspace', "Select Workspace"),
+			this.notificationService.prompt(Severity.Info, localize('workspacesFound', "This folder contains multiple workspace files. Do you want to open one? [Learn more]({0}) aBout workspace files.", 'https://go.microsoft.com/fwlink/?linkid=2025315'), [{
+				laBel: localize('selectWorkspace', "Select Workspace"),
 				run: () => {
 					this.quickInputService.pick(
-						workspaces.map(workspace => ({ label: workspace } as IQuickPickItem)),
+						workspaces.map(workspace => ({ laBel: workspace } as IQuickPickItem)),
 						{ placeHolder: localize('selectToOpen', "Select a workspace to open") }).then(pick => {
 							if (pick) {
-								this.hostService.openWindow([{ workspaceUri: joinPath(folder, pick.label) }]);
+								this.hostService.openWindow([{ workspaceUri: joinPath(folder, pick.laBel) }]);
 							}
 						});
 				}
@@ -549,10 +549,10 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 		}
 		const path = uri.path;
 		const i = path.lastIndexOf('/');
-		return i !== -1 ? uri.with({ path: path.substr(0, i) }) : undefined;
+		return i !== -1 ? uri.with({ path: path.suBstr(0, i) }) : undefined;
 	}
 
-	private searchArray(arr: string[], regEx: RegExp): boolean | undefined {
+	private searchArray(arr: string[], regEx: RegExp): Boolean | undefined {
 		return arr.some(v => v.search(regEx) > -1) || undefined;
 	}
 }

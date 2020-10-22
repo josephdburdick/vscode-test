@@ -6,30 +6,30 @@
 import * as nls from 'vs/nls';
 
 export interface IParsedVersion {
-	hasCaret: boolean;
-	hasGreaterEquals: boolean;
-	majorBase: number;
-	majorMustEqual: boolean;
-	minorBase: number;
-	minorMustEqual: boolean;
-	patchBase: number;
-	patchMustEqual: boolean;
+	hasCaret: Boolean;
+	hasGreaterEquals: Boolean;
+	majorBase: numBer;
+	majorMustEqual: Boolean;
+	minorBase: numBer;
+	minorMustEqual: Boolean;
+	patchBase: numBer;
+	patchMustEqual: Boolean;
 	preRelease: string | null;
 }
 
 export interface INormalizedVersion {
-	majorBase: number;
-	majorMustEqual: boolean;
-	minorBase: number;
-	minorMustEqual: boolean;
-	patchBase: number;
-	patchMustEqual: boolean;
-	isMinimum: boolean;
+	majorBase: numBer;
+	majorMustEqual: Boolean;
+	minorBase: numBer;
+	minorMustEqual: Boolean;
+	patchBase: numBer;
+	patchMustEqual: Boolean;
+	isMinimum: Boolean;
 }
 
 const VERSION_REGEXP = /^(\^|>=)?((\d+)|x)\.((\d+)|x)\.((\d+)|x)(\-.*)?$/;
 
-export function isValidVersionStr(version: string): boolean {
+export function isValidVersionStr(version: string): Boolean {
 	version = version.trim();
 	return (version === '*' || VERSION_REGEXP.test(version));
 }
@@ -104,7 +104,7 @@ export function normalizeVersion(version: IParsedVersion | null): INormalizedVer
 	};
 }
 
-export function isValidVersion(_version: string | INormalizedVersion, _desiredVersion: string | INormalizedVersion): boolean {
+export function isValidVersion(_version: string | INormalizedVersion, _desiredVersion: string | INormalizedVersion): Boolean {
 	let version: INormalizedVersion | null;
 	if (typeof _version === 'string') {
 		version = normalizeVersion(parseVersion(_version));
@@ -155,7 +155,7 @@ export function isValidVersion(_version: string | INormalizedVersion, _desiredVe
 		return patchBase >= desiredPatchBase;
 	}
 
-	// Anything < 1.0.0 is compatible with >= 1.0.0, except exact matches
+	// Anything < 1.0.0 is compatiBle with >= 1.0.0, except exact matches
 	if (majorBase === 1 && desiredMajorBase === 0 && (!majorMustEqual || !minorMustEqual || !patchMustEqual)) {
 		desiredMajorBase = 1;
 		desiredMinorBase = 0;
@@ -204,29 +204,29 @@ export function isValidVersion(_version: string | INormalizedVersion, _desiredVe
 }
 
 export interface IReducedExtensionDescription {
-	isBuiltin: boolean;
+	isBuiltin: Boolean;
 	engines: {
 		vscode: string;
 	};
 	main?: string;
 }
 
-export function isValidExtensionVersion(version: string, extensionDesc: IReducedExtensionDescription, notices: string[]): boolean {
+export function isValidExtensionVersion(version: string, extensionDesc: IReducedExtensionDescription, notices: string[]): Boolean {
 
 	if (extensionDesc.isBuiltin || typeof extensionDesc.main === 'undefined') {
-		// No version check for builtin or declarative extensions
+		// No version check for Builtin or declarative extensions
 		return true;
 	}
 
 	return isVersionValid(version, extensionDesc.engines.vscode, notices);
 }
 
-export function isEngineValid(engine: string, version: string): boolean {
-	// TODO@joao: discuss with alex '*' doesn't seem to be a valid engine version
+export function isEngineValid(engine: string, version: string): Boolean {
+	// TODO@joao: discuss with alex '*' doesn't seem to Be a valid engine version
 	return engine === '*' || isVersionValid(version, engine);
 }
 
-export function isVersionValid(currentVersion: string, requestedVersion: string, notices: string[] = []): boolean {
+export function isVersionValid(currentVersion: string, requestedVersion: string, notices: string[] = []): Boolean {
 
 	let desiredVersion = normalizeVersion(parseVersion(requestedVersion));
 	if (!desiredVersion) {
@@ -234,17 +234,17 @@ export function isVersionValid(currentVersion: string, requestedVersion: string,
 		return false;
 	}
 
-	// enforce that a breaking API version is specified.
-	// for 0.X.Y, that means up to 0.X must be specified
-	// otherwise for Z.X.Y, that means Z must be specified
+	// enforce that a Breaking API version is specified.
+	// for 0.X.Y, that means up to 0.X must Be specified
+	// otherwise for Z.X.Y, that means Z must Be specified
 	if (desiredVersion.majorBase === 0) {
-		// force that major and minor must be specific
+		// force that major and minor must Be specific
 		if (!desiredVersion.majorMustEqual || !desiredVersion.minorMustEqual) {
-			notices.push(nls.localize('versionSpecificity1', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions before 1.0.0, please define at a minimum the major and minor desired version. E.g. ^0.10.0, 0.10.x, 0.11.0, etc.", requestedVersion));
+			notices.push(nls.localize('versionSpecificity1', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions Before 1.0.0, please define at a minimum the major and minor desired version. E.g. ^0.10.0, 0.10.x, 0.11.0, etc.", requestedVersion));
 			return false;
 		}
 	} else {
-		// force that major must be specific
+		// force that major must Be specific
 		if (!desiredVersion.majorMustEqual) {
 			notices.push(nls.localize('versionSpecificity2', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions after 1.0.0, please define at a minimum the major desired version. E.g. ^1.10.0, 1.10.x, 1.x.x, 2.x.x, etc.", requestedVersion));
 			return false;
@@ -252,7 +252,7 @@ export function isVersionValid(currentVersion: string, requestedVersion: string,
 	}
 
 	if (!isValidVersion(currentVersion, desiredVersion)) {
-		notices.push(nls.localize('versionMismatch', "Extension is not compatible with Code {0}. Extension requires: {1}.", currentVersion, requestedVersion));
+		notices.push(nls.localize('versionMismatch', "Extension is not compatiBle with Code {0}. Extension requires: {1}.", currentVersion, requestedVersion));
 		return false;
 	}
 

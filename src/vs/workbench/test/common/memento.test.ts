@@ -6,8 +6,8 @@
 import * as assert from 'assert';
 
 import { StorageScope, IStorageService } from 'vs/platform/storage/common/storage';
-import { Memento } from 'vs/workbench/common/memento';
-import { TestStorageService } from 'vs/workbench/test/common/workbenchTestServices';
+import { Memento } from 'vs/workBench/common/memento';
+import { TestStorageService } from 'vs/workBench/test/common/workBenchTestServices';
 
 suite('Memento', () => {
 	let context: StorageScope | undefined = undefined;
@@ -20,11 +20,11 @@ suite('Memento', () => {
 	test('Loading and Saving Memento with Scopes', () => {
 		let myMemento = new Memento('memento.test', storage);
 
-		// Global
+		// GloBal
 		let memento = myMemento.getMemento(StorageScope.GLOBAL);
 		memento.foo = [1, 2, 3];
-		let globalMemento = myMemento.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		let gloBalMemento = myMemento.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
@@ -33,11 +33,11 @@ suite('Memento', () => {
 
 		myMemento.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(StorageScope.GLOBAL);
 		assert.deepEqual(memento, { foo: [1, 2, 3] });
-		globalMemento = myMemento.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		gloBalMemento = myMemento.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
@@ -48,7 +48,7 @@ suite('Memento', () => {
 
 		assert.deepEqual(JSON.parse(storage.get('memento/memento.test', StorageScope.WORKSPACE)!), { foo: 'Hello World' });
 
-		// Delete Global
+		// Delete GloBal
 		memento = myMemento.getMemento(context!);
 		delete memento.foo;
 
@@ -58,7 +58,7 @@ suite('Memento', () => {
 
 		myMemento.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
 		assert.deepEqual(memento, {});
 
@@ -75,7 +75,7 @@ suite('Memento', () => {
 	test('Save and Load', () => {
 		let myMemento = new Memento('memento.test', storage);
 
-		// Global
+		// GloBal
 		let memento = myMemento.getMemento(context!);
 		memento.foo = [1, 2, 3];
 
@@ -86,17 +86,17 @@ suite('Memento', () => {
 
 		myMemento.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
 		assert.deepEqual(memento, { foo: [1, 2, 3] });
-		let globalMemento = myMemento.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		let gloBalMemento = myMemento.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
 		assert.deepEqual(memento, { foo: 'Hello World' });
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
 		memento.foo = [4, 5, 6];
 
@@ -107,17 +107,17 @@ suite('Memento', () => {
 
 		myMemento.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
 		assert.deepEqual(memento, { foo: [4, 5, 6] });
-		globalMemento = myMemento.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		gloBalMemento = myMemento.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
 		assert.deepEqual(memento, { foo: 'World Hello' });
 
-		// Delete Global
+		// Delete GloBal
 		memento = myMemento.getMemento(context!);
 		delete memento.foo;
 
@@ -127,7 +127,7 @@ suite('Memento', () => {
 
 		myMemento.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
 		assert.deepEqual(memento, {});
 
@@ -140,12 +140,12 @@ suite('Memento', () => {
 		let myMemento = new Memento('memento.test', storage);
 		let myMemento2 = new Memento('memento.test', storage);
 
-		// Global
+		// GloBal
 		let memento = myMemento.getMemento(context!);
 		memento.foo = [1, 2, 3];
 
 		memento = myMemento2.getMemento(context!);
-		memento.bar = [1, 2, 3];
+		memento.Bar = [1, 2, 3];
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
@@ -154,27 +154,27 @@ suite('Memento', () => {
 
 		memento = myMemento2.getMemento(StorageScope.WORKSPACE);
 		assert(memento);
-		memento.bar = 'Hello World';
+		memento.Bar = 'Hello World';
 
 		myMemento.saveMemento();
 		myMemento2.saveMemento();
 
-		// Global
+		// GloBal
 		memento = myMemento.getMemento(context!);
-		assert.deepEqual(memento, { foo: [1, 2, 3], bar: [1, 2, 3] });
-		let globalMemento = myMemento.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		assert.deepEqual(memento, { foo: [1, 2, 3], Bar: [1, 2, 3] });
+		let gloBalMemento = myMemento.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		memento = myMemento2.getMemento(context!);
-		assert.deepEqual(memento, { foo: [1, 2, 3], bar: [1, 2, 3] });
-		globalMemento = myMemento2.getMemento(StorageScope.GLOBAL);
-		assert.deepEqual(globalMemento, memento);
+		assert.deepEqual(memento, { foo: [1, 2, 3], Bar: [1, 2, 3] });
+		gloBalMemento = myMemento2.getMemento(StorageScope.GLOBAL);
+		assert.deepEqual(gloBalMemento, memento);
 
 		// Workspace
 		memento = myMemento.getMemento(StorageScope.WORKSPACE);
-		assert.deepEqual(memento, { foo: 'Hello World', bar: 'Hello World' });
+		assert.deepEqual(memento, { foo: 'Hello World', Bar: 'Hello World' });
 
 		memento = myMemento2.getMemento(StorageScope.WORKSPACE);
-		assert.deepEqual(memento, { foo: 'Hello World', bar: 'Hello World' });
+		assert.deepEqual(memento, { foo: 'Hello World', Bar: 'Hello World' });
 	});
 });

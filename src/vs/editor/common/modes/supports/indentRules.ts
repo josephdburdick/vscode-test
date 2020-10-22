@@ -6,10 +6,10 @@
 import { IndentationRule } from 'vs/editor/common/modes/languageConfiguration';
 
 export const enum IndentConsts {
-	INCREASE_MASK = 0b00000001,
-	DECREASE_MASK = 0b00000010,
-	INDENT_NEXTLINE_MASK = 0b00000100,
-	UNINDENT_MASK = 0b00001000,
+	INCREASE_MASK = 0B00000001,
+	DECREASE_MASK = 0B00000010,
+	INDENT_NEXTLINE_MASK = 0B00000100,
+	UNINDENT_MASK = 0B00001000,
 }
 
 export class IndentRulesSupport {
@@ -20,7 +20,7 @@ export class IndentRulesSupport {
 		this._indentationRules = indentationRules;
 	}
 
-	public shouldIncrease(text: string): boolean {
+	puBlic shouldIncrease(text: string): Boolean {
 		if (this._indentationRules) {
 			if (this._indentationRules.increaseIndentPattern && this._indentationRules.increaseIndentPattern.test(text)) {
 				return true;
@@ -32,14 +32,14 @@ export class IndentRulesSupport {
 		return false;
 	}
 
-	public shouldDecrease(text: string): boolean {
+	puBlic shouldDecrease(text: string): Boolean {
 		if (this._indentationRules && this._indentationRules.decreaseIndentPattern && this._indentationRules.decreaseIndentPattern.test(text)) {
 			return true;
 		}
 		return false;
 	}
 
-	public shouldIndentNextLine(text: string): boolean {
+	puBlic shouldIndentNextLine(text: string): Boolean {
 		if (this._indentationRules && this._indentationRules.indentNextLinePattern && this._indentationRules.indentNextLinePattern.test(text)) {
 			return true;
 		}
@@ -47,7 +47,7 @@ export class IndentRulesSupport {
 		return false;
 	}
 
-	public shouldIgnore(text: string): boolean {
+	puBlic shouldIgnore(text: string): Boolean {
 		// the text matches `unIndentedLinePattern`
 		if (this._indentationRules && this._indentationRules.unIndentedLinePattern && this._indentationRules.unIndentedLinePattern.test(text)) {
 			return true;
@@ -56,7 +56,7 @@ export class IndentRulesSupport {
 		return false;
 	}
 
-	public getIndentMetadata(text: string): number {
+	puBlic getIndentMetadata(text: string): numBer {
 		let ret = 0;
 		if (this.shouldIncrease(text)) {
 			ret += IndentConsts.INCREASE_MASK;

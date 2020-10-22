@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./rulers';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { editorRuler } from 'vs/editor/common/view/editorColorRegistry';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
@@ -15,16 +15,16 @@ import { EditorOption, IRulerOption } from 'vs/editor/common/config/editorOption
 
 export class Rulers extends ViewPart {
 
-	public domNode: FastDomNode<HTMLElement>;
+	puBlic domNode: FastDomNode<HTMLElement>;
 	private readonly _renderedRulers: FastDomNode<HTMLElement>[];
 	private _rulers: IRulerOption[];
-	private _typicalHalfwidthCharacterWidth: number;
+	private _typicalHalfwidthCharacterWidth: numBer;
 
 	constructor(context: ViewContext) {
 		super(context);
 		this.domNode = createFastDomNode<HTMLElement>(document.createElement('div'));
-		this.domNode.setAttribute('role', 'presentation');
-		this.domNode.setAttribute('aria-hidden', 'true');
+		this.domNode.setAttriBute('role', 'presentation');
+		this.domNode.setAttriBute('aria-hidden', 'true');
 		this.domNode.setClassName('view-rulers');
 		this._renderedRulers = [];
 		const options = this._context.configuration.options;
@@ -32,25 +32,25 @@ export class Rulers extends ViewPart {
 		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		this._rulers = options.get(EditorOption.rulers);
 		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return e.scrollHeightChanged;
 	}
 
 	// --- end event handlers
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		// Nothing to read
 	}
 
@@ -64,8 +64,8 @@ export class Rulers extends ViewPart {
 		}
 
 		if (currentCount < desiredCount) {
-			const { tabSize } = this._context.model.getTextModelOptions();
-			const rulerWidth = tabSize;
+			const { taBSize } = this._context.model.getTextModelOptions();
+			const rulerWidth = taBSize;
 			let addCount = desiredCount - currentCount;
 			while (addCount > 0) {
 				const node = createFastDomNode(document.createElement('div'));
@@ -86,7 +86,7 @@ export class Rulers extends ViewPart {
 		}
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
+	puBlic render(ctx: RestrictedRenderingContext): void {
 
 		this._ensureRulersCount();
 
@@ -104,6 +104,6 @@ export class Rulers extends ViewPart {
 registerThemingParticipant((theme, collector) => {
 	const rulerColor = theme.getColor(editorRuler);
 	if (rulerColor) {
-		collector.addRule(`.monaco-editor .view-ruler { box-shadow: 1px 0 0 0 ${rulerColor} inset; }`);
+		collector.addRule(`.monaco-editor .view-ruler { Box-shadow: 1px 0 0 0 ${rulerColor} inset; }`);
 	}
 });

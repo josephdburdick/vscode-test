@@ -4,6 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface ICommentThreadWidget {
-	submitComment: () => Promise<void>;
+	suBmitComment: () => Promise<void>;
 	collapse: () => void;
 }

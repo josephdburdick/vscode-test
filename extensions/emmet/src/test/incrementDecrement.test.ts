@@ -9,7 +9,7 @@ import { Selection } from 'vscode';
 import { withRandomFileEditor, closeAllEditors } from './testUtils';
 import { incrementDecrement as incrementDecrementImpl } from '../incrementDecrement';
 
-function incrementDecrement(delta: number): Thenable<boolean> {
+function incrementDecrement(delta: numBer): ThenaBle<Boolean> {
 	const result = incrementDecrementImpl(delta);
 	assert.ok(result);
 	return result!;
@@ -24,7 +24,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 	hello 100 there
 	`;
 
-	test('incrementNumberByOne', function (): any {
+	test('incrementNumBerByOne', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 10), new Selection(2, 7, 2, 10)];
 			await incrementDecrement(1);
@@ -33,7 +33,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 		});
 	});
 
-	test('incrementNumberByTen', function (): any {
+	test('incrementNumBerByTen', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 10), new Selection(2, 7, 2, 10)];
 			await incrementDecrement(10);
@@ -42,7 +42,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 		});
 	});
 
-	test('incrementNumberByOneTenth', function (): any {
+	test('incrementNumBerByOneTenth', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 13), new Selection(2, 7, 2, 12)];
 			await incrementDecrement(0.1);
@@ -51,7 +51,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 		});
 	});
 
-	test('decrementNumberByOne', function (): any {
+	test('decrementNumBerByOne', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 10), new Selection(3, 7, 3, 10)];
 			await incrementDecrement(-1);
@@ -60,7 +60,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 		});
 	});
 
-	test('decrementNumberByTen', function (): any {
+	test('decrementNumBerByTen', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 10), new Selection(3, 7, 3, 10)];
 			await incrementDecrement(-10);
@@ -69,7 +69,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
 		});
 	});
 
-	test('decrementNumberByOneTenth', function (): any {
+	test('decrementNumBerByOneTenth', function (): any {
 		return withRandomFileEditor(contents, 'txt', async (editor, doc) => {
 			editor.selections = [new Selection(1, 7, 1, 13), new Selection(3, 7, 3, 10)];
 			await incrementDecrement(-0.1);

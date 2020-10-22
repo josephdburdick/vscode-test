@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDisposable, DisposableStore, combinedDisposable } from 'vs/base/common/lifecycle';
-import { ISCMService, ISCMRepository, ISCMProvider, ISCMResource, ISCMResourceGroup, ISCMResourceDecorations, IInputValidation } from 'vs/workbench/contrib/scm/common/scm';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBleStore, comBinedDisposaBle } from 'vs/Base/common/lifecycle';
+import { ISCMService, ISCMRepository, ISCMProvider, ISCMResource, ISCMResourceGroup, ISCMResourceDecorations, IInputValidation } from 'vs/workBench/contriB/scm/common/scm';
 import { ExtHostContext, MainThreadSCMShape, ExtHostSCMShape, SCMProviderFeatures, SCMRawResourceSplices, SCMGroupFeatures, MainContext, IExtHostContext } from '../common/extHost.protocol';
 import { Command } from 'vs/editor/common/modes';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ISplice, Sequence } from 'vs/base/common/sequence';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { ISplice, Sequence } from 'vs/Base/common/sequence';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 class MainThreadSCMResourceGroup implements ISCMResourceGroup {
 
@@ -20,18 +20,18 @@ class MainThreadSCMResourceGroup implements ISCMResourceGroup {
 	private readonly _onDidSplice = new Emitter<ISplice<ISCMResource>>();
 	readonly onDidSplice = this._onDidSplice.event;
 
-	get hideWhenEmpty(): boolean { return !!this.features.hideWhenEmpty; }
+	get hideWhenEmpty(): Boolean { return !!this.features.hideWhenEmpty; }
 
 	private readonly _onDidChange = new Emitter<void>();
 	readonly onDidChange: Event<void> = this._onDidChange.event;
 
 	constructor(
-		private readonly sourceControlHandle: number,
-		private readonly handle: number,
-		public provider: ISCMProvider,
-		public features: SCMGroupFeatures,
-		public label: string,
-		public id: string
+		private readonly sourceControlHandle: numBer,
+		private readonly handle: numBer,
+		puBlic provider: ISCMProvider,
+		puBlic features: SCMGroupFeatures,
+		puBlic laBel: string,
+		puBlic id: string
 	) { }
 
 	toJSON(): any {
@@ -42,7 +42,7 @@ class MainThreadSCMResourceGroup implements ISCMResourceGroup {
 		};
 	}
 
-	splice(start: number, deleteCount: number, toInsert: ISCMResource[]) {
+	splice(start: numBer, deleteCount: numBer, toInsert: ISCMResource[]) {
 		this.elements.splice(start, deleteCount, ...toInsert);
 		this._onDidSplice.fire({ start, deleteCount, toInsert });
 	}
@@ -52,8 +52,8 @@ class MainThreadSCMResourceGroup implements ISCMResourceGroup {
 		this._onDidChange.fire();
 	}
 
-	$updateGroupLabel(label: string): void {
-		this.label = label;
+	$updateGroupLaBel(laBel: string): void {
+		this.laBel = laBel;
 		this._onDidChange.fire();
 	}
 }
@@ -62,16 +62,16 @@ class MainThreadSCMResource implements ISCMResource {
 
 	constructor(
 		private readonly proxy: ExtHostSCMShape,
-		private readonly sourceControlHandle: number,
-		private readonly groupHandle: number,
-		private readonly handle: number,
+		private readonly sourceControlHandle: numBer,
+		private readonly groupHandle: numBer,
+		private readonly handle: numBer,
 		readonly sourceUri: URI,
 		readonly resourceGroup: ISCMResourceGroup,
 		readonly decorations: ISCMResourceDecorations,
 		readonly contextValue: string | undefined
 	) { }
 
-	open(preserveFocus: boolean): Promise<void> {
+	open(preserveFocus: Boolean): Promise<void> {
 		return this.proxy.$executeResourceCommand(this.sourceControlHandle, this.groupHandle, this.handle, preserveFocus);
 	}
 
@@ -92,7 +92,7 @@ class MainThreadSCMProvider implements ISCMProvider {
 	get id(): string { return this._id; }
 
 	readonly groups = new Sequence<MainThreadSCMResourceGroup>();
-	private readonly _groupsByHandle: { [handle: number]: MainThreadSCMResourceGroup; } = Object.create(null);
+	private readonly _groupsByHandle: { [handle: numBer]: MainThreadSCMResourceGroup; } = OBject.create(null);
 
 	// get groups(): ISequence<ISCMResourceGroup> {
 	// 	return {
@@ -109,15 +109,15 @@ class MainThreadSCMProvider implements ISCMProvider {
 
 	private features: SCMProviderFeatures = {};
 
-	get handle(): number { return this._handle; }
-	get label(): string { return this._label; }
+	get handle(): numBer { return this._handle; }
+	get laBel(): string { return this._laBel; }
 	get rootUri(): URI | undefined { return this._rootUri; }
 	get contextValue(): string { return this._contextValue; }
 
 	get commitTemplate(): string { return this.features.commitTemplate || ''; }
 	get acceptInputCommand(): Command | undefined { return this.features.acceptInputCommand; }
 	get statusBarCommands(): Command[] | undefined { return this.features.statusBarCommands; }
-	get count(): number | undefined { return this.features.count; }
+	get count(): numBer | undefined { return this.features.count; }
 
 	private readonly _onDidChangeCommitTemplate = new Emitter<string>();
 	readonly onDidChangeCommitTemplate: Event<string> = this._onDidChangeCommitTemplate.event;
@@ -130,9 +130,9 @@ class MainThreadSCMProvider implements ISCMProvider {
 
 	constructor(
 		private readonly proxy: ExtHostSCMShape,
-		private readonly _handle: number,
+		private readonly _handle: numBer,
 		private readonly _contextValue: string,
-		private readonly _label: string,
+		private readonly _laBel: string,
 		private readonly _rootUri: URI | undefined
 	) { }
 
@@ -149,14 +149,14 @@ class MainThreadSCMProvider implements ISCMProvider {
 		}
 	}
 
-	$registerGroups(_groups: [number /*handle*/, string /*id*/, string /*label*/, SCMGroupFeatures][]): void {
-		const groups = _groups.map(([handle, id, label, features]) => {
+	$registerGroups(_groups: [numBer /*handle*/, string /*id*/, string /*laBel*/, SCMGroupFeatures][]): void {
+		const groups = _groups.map(([handle, id, laBel, features]) => {
 			const group = new MainThreadSCMResourceGroup(
 				this.handle,
 				handle,
 				this,
 				features,
-				label,
+				laBel,
 				id
 			);
 
@@ -167,7 +167,7 @@ class MainThreadSCMProvider implements ISCMProvider {
 		this.groups.splice(this.groups.elements.length, 0, groups);
 	}
 
-	$updateGroup(handle: number, features: SCMGroupFeatures): void {
+	$updateGroup(handle: numBer, features: SCMGroupFeatures): void {
 		const group = this._groupsByHandle[handle];
 
 		if (!group) {
@@ -177,14 +177,14 @@ class MainThreadSCMProvider implements ISCMProvider {
 		group.$updateGroup(features);
 	}
 
-	$updateGroupLabel(handle: number, label: string): void {
+	$updateGroupLaBel(handle: numBer, laBel: string): void {
 		const group = this._groupsByHandle[handle];
 
 		if (!group) {
 			return;
 		}
 
-		group.$updateGroupLabel(label);
+		group.$updateGroupLaBel(laBel);
 	}
 
 	$spliceGroupResourceStates(splices: SCMRawResourceSplices[]): void {
@@ -192,7 +192,7 @@ class MainThreadSCMProvider implements ISCMProvider {
 			const group = this._groupsByHandle[groupHandle];
 
 			if (!group) {
-				console.warn(`SCM group ${groupHandle} not found in provider ${this.label}`);
+				console.warn(`SCM group ${groupHandle} not found in provider ${this.laBel}`);
 				continue;
 			}
 
@@ -231,7 +231,7 @@ class MainThreadSCMProvider implements ISCMProvider {
 		this._onDidChangeResources.fire();
 	}
 
-	$unregisterGroup(handle: number): void {
+	$unregisterGroup(handle: numBer): void {
 		const group = this._groupsByHandle[handle];
 
 		if (!group) {
@@ -267,9 +267,9 @@ class MainThreadSCMProvider implements ISCMProvider {
 export class MainThreadSCM implements MainThreadSCMShape {
 
 	private readonly _proxy: ExtHostSCMShape;
-	private _repositories = new Map<number, ISCMRepository>();
-	private _repositoryDisposables = new Map<number, IDisposable>();
-	private readonly _disposables = new DisposableStore();
+	private _repositories = new Map<numBer, ISCMRepository>();
+	private _repositoryDisposaBles = new Map<numBer, IDisposaBle>();
+	private readonly _disposaBles = new DisposaBleStore();
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -282,18 +282,18 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		this._repositories.forEach(r => r.dispose());
 		this._repositories.clear();
 
-		this._repositoryDisposables.forEach(d => d.dispose());
-		this._repositoryDisposables.clear();
+		this._repositoryDisposaBles.forEach(d => d.dispose());
+		this._repositoryDisposaBles.clear();
 
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 	}
 
-	$registerSourceControl(handle: number, id: string, label: string, rootUri: UriComponents | undefined): void {
-		const provider = new MainThreadSCMProvider(this._proxy, handle, id, label, rootUri ? URI.revive(rootUri) : undefined);
+	$registerSourceControl(handle: numBer, id: string, laBel: string, rootUri: UriComponents | undefined): void {
+		const provider = new MainThreadSCMProvider(this._proxy, handle, id, laBel, rootUri ? URI.revive(rootUri) : undefined);
 		const repository = this.scmService.registerSCMProvider(provider);
 		this._repositories.set(handle, repository);
 
-		const disposable = combinedDisposable(
+		const disposaBle = comBinedDisposaBle(
 			Event.filter(repository.onDidChangeSelection, selected => selected)(_ => this._proxy.$setSelectedSourceControl(handle)),
 			repository.input.onDidChange(value => this._proxy.$onInputBoxValueChange(handle, value))
 		);
@@ -306,10 +306,10 @@ export class MainThreadSCM implements MainThreadSCMShape {
 			setTimeout(() => this._proxy.$onInputBoxValueChange(handle, repository.input.value), 0);
 		}
 
-		this._repositoryDisposables.set(handle, disposable);
+		this._repositoryDisposaBles.set(handle, disposaBle);
 	}
 
-	$updateSourceControl(handle: number, features: SCMProviderFeatures): void {
+	$updateSourceControl(handle: numBer, features: SCMProviderFeatures): void {
 		const repository = this._repositories.get(handle);
 
 		if (!repository) {
@@ -320,21 +320,21 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		provider.$updateSourceControl(features);
 	}
 
-	$unregisterSourceControl(handle: number): void {
+	$unregisterSourceControl(handle: numBer): void {
 		const repository = this._repositories.get(handle);
 
 		if (!repository) {
 			return;
 		}
 
-		this._repositoryDisposables.get(handle)!.dispose();
-		this._repositoryDisposables.delete(handle);
+		this._repositoryDisposaBles.get(handle)!.dispose();
+		this._repositoryDisposaBles.delete(handle);
 
 		repository.dispose();
 		this._repositories.delete(handle);
 	}
 
-	$registerGroups(sourceControlHandle: number, groups: [number /*handle*/, string /*id*/, string /*label*/, SCMGroupFeatures][], splices: SCMRawResourceSplices[]): void {
+	$registerGroups(sourceControlHandle: numBer, groups: [numBer /*handle*/, string /*id*/, string /*laBel*/, SCMGroupFeatures][], splices: SCMRawResourceSplices[]): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -346,7 +346,7 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		provider.$spliceGroupResourceStates(splices);
 	}
 
-	$updateGroup(sourceControlHandle: number, groupHandle: number, features: SCMGroupFeatures): void {
+	$updateGroup(sourceControlHandle: numBer, groupHandle: numBer, features: SCMGroupFeatures): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -357,7 +357,7 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		provider.$updateGroup(groupHandle, features);
 	}
 
-	$updateGroupLabel(sourceControlHandle: number, groupHandle: number, label: string): void {
+	$updateGroupLaBel(sourceControlHandle: numBer, groupHandle: numBer, laBel: string): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -365,10 +365,10 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		}
 
 		const provider = repository.provider as MainThreadSCMProvider;
-		provider.$updateGroupLabel(groupHandle, label);
+		provider.$updateGroupLaBel(groupHandle, laBel);
 	}
 
-	$spliceResourceStates(sourceControlHandle: number, splices: SCMRawResourceSplices[]): void {
+	$spliceResourceStates(sourceControlHandle: numBer, splices: SCMRawResourceSplices[]): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -379,7 +379,7 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		provider.$spliceGroupResourceStates(splices);
 	}
 
-	$unregisterGroup(sourceControlHandle: number, handle: number): void {
+	$unregisterGroup(sourceControlHandle: numBer, handle: numBer): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -390,7 +390,7 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		provider.$unregisterGroup(handle);
 	}
 
-	$setInputBoxValue(sourceControlHandle: number, value: string): void {
+	$setInputBoxValue(sourceControlHandle: numBer, value: string): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -400,7 +400,7 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		repository.input.setValue(value, false);
 	}
 
-	$setInputBoxPlaceholder(sourceControlHandle: number, placeholder: string): void {
+	$setInputBoxPlaceholder(sourceControlHandle: numBer, placeholder: string): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
@@ -410,24 +410,24 @@ export class MainThreadSCM implements MainThreadSCMShape {
 		repository.input.placeholder = placeholder;
 	}
 
-	$setInputBoxVisibility(sourceControlHandle: number, visible: boolean): void {
+	$setInputBoxVisiBility(sourceControlHandle: numBer, visiBle: Boolean): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
 			return;
 		}
 
-		repository.input.visible = visible;
+		repository.input.visiBle = visiBle;
 	}
 
-	$setValidationProviderIsEnabled(sourceControlHandle: number, enabled: boolean): void {
+	$setValidationProviderIsEnaBled(sourceControlHandle: numBer, enaBled: Boolean): void {
 		const repository = this._repositories.get(sourceControlHandle);
 
 		if (!repository) {
 			return;
 		}
 
-		if (enabled) {
+		if (enaBled) {
 			repository.input.validateInput = async (value, pos): Promise<IInputValidation | undefined> => {
 				const result = await this._proxy.$validateInput(sourceControlHandle, value, pos);
 				return result && { message: result[0], type: result[1] };

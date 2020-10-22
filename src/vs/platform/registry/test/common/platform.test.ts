@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
 import * as Platform from 'vs/platform/registry/common/platform';
-import * as Types from 'vs/base/common/types';
+import * as Types from 'vs/Base/common/types';
 
 suite('Platform / Registry', () => {
 
@@ -16,11 +16,11 @@ suite('Platform / Registry', () => {
 
 	test('registry - mixin', function () {
 
-		Platform.Registry.add('foo', { bar: true });
+		Platform.Registry.add('foo', { Bar: true });
 
 		assert.ok(Platform.Registry.knows('foo'));
-		assert.ok(Platform.Registry.as<any>('foo').bar);
-		assert.equal(Platform.Registry.as<any>('foo').bar, true);
+		assert.ok(Platform.Registry.as<any>('foo').Bar);
+		assert.equal(Platform.Registry.as<any>('foo').Bar, true);
 	});
 
 	test('registry - knows, as', function () {
@@ -38,10 +38,10 @@ suite('Platform / Registry', () => {
 
 	test('registry - mixin, fails on duplicate ids', function () {
 
-		Platform.Registry.add('foo-dup', { bar: true });
+		Platform.Registry.add('foo-dup', { Bar: true });
 
 		try {
-			Platform.Registry.add('foo-dup', { bar: false });
+			Platform.Registry.add('foo-dup', { Bar: false });
 			assert.ok(false);
 		} catch (e) {
 			assert.ok(true);

@@ -34,71 +34,71 @@ interface Asset {
 	mooncakeUrl: string;
 	hash: string;
 	sha256hash: string;
-	size: number;
-	supportsFastUpdate?: boolean;
+	size: numBer;
+	supportsFastUpdate?: Boolean;
 }
 
 async function sync(commit: string, quality: string): Promise<void> {
 	log(`Synchronizing Mooncake assets for ${quality}, ${commit}...`);
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const container = client.database('builds').container(quality);
+	const container = client.dataBase('Builds').container(quality);
 
 	const query = `SELECT TOP 1 * FROM c WHERE c.id = "${commit}"`;
 	const res = await container.items.query<Build>(query, {}).fetchAll();
 
 	if (res.resources.length !== 1) {
-		throw new Error(`No builds found for ${commit}`);
+		throw new Error(`No Builds found for ${commit}`);
 	}
 
-	const build = res.resources[0];
+	const Build = res.resources[0];
 
-	log(`Found build for ${commit}, with ${build.assets.length} assets`);
+	log(`Found Build for ${commit}, with ${Build.assets.length} assets`);
 
 	const storageAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
+	const BloBService = azure.createBloBService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
 		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
 
-	const mooncakeBlobService = azure.createBlobService(storageAccount, process.env['MOONCAKE_STORAGE_ACCESS_KEY']!, `${storageAccount}.blob.core.chinacloudapi.cn`)
+	const mooncakeBloBService = azure.createBloBService(storageAccount, process.env['MOONCAKE_STORAGE_ACCESS_KEY']!, `${storageAccount}.BloB.core.chinacloudapi.cn`)
 		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
 
 	// mooncake is fussy and far away, this is needed!
-	blobService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
-	mooncakeBlobService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
+	BloBService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
+	mooncakeBloBService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
 
-	for (const asset of build.assets) {
+	for (const asset of Build.assets) {
 		try {
-			const blobPath = url.parse(asset.url).path;
+			const BloBPath = url.parse(asset.url).path;
 
-			if (!blobPath) {
+			if (!BloBPath) {
 				throw new Error(`Failed to parse URL: ${asset.url}`);
 			}
 
-			const blobName = blobPath.replace(/^\/\w+\//, '');
+			const BloBName = BloBPath.replace(/^\/\w+\//, '');
 
-			log(`Found ${blobName}`);
+			log(`Found ${BloBName}`);
 
 			if (asset.mooncakeUrl) {
 				log(`  Already in Mooncake ✔️`);
 				continue;
 			}
 
-			const readStream = blobService.createReadStream(quality, blobName, undefined!);
-			const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+			const readStream = BloBService.createReadStream(quality, BloBName, undefined!);
+			const BloBOptions: azure.BloBService.CreateBlockBloBRequestOptions = {
 				contentSettings: {
-					contentType: mime.lookup(blobPath),
-					cacheControl: 'max-age=31536000, public'
+					contentType: mime.lookup(BloBPath),
+					cacheControl: 'max-age=31536000, puBlic'
 				}
 			};
 
-			const writeStream = mooncakeBlobService.createWriteStreamToBlockBlob(quality, blobName, blobOptions, undefined);
+			const writeStream = mooncakeBloBService.createWriteStreamToBlockBloB(quality, BloBName, BloBOptions, undefined);
 
 			log(`  Uploading to Mooncake...`);
 			await new Promise((c, e) => readStream.pipe(writeStream).on('finish', c).on('error', e));
 
-			log(`  Updating build in DB...`);
-			const mooncakeUrl = `${process.env['MOONCAKE_CDN_URL']}${blobPath}`;
+			log(`  Updating Build in DB...`);
+			const mooncakeUrl = `${process.env['MOONCAKE_CDN_URL']}${BloBPath}`;
 			await container.scripts.storedProcedure('setAssetMooncakeUrl')
 				.execute('', [commit, asset.platform, asset.type, mooncakeUrl]);
 
@@ -115,7 +115,7 @@ function main(): void {
 	const commit = process.env['BUILD_SOURCEVERSION'];
 
 	if (!commit) {
-		error('Skipping publish due to missing BUILD_SOURCEVERSION');
+		error('Skipping puBlish due to missing BUILD_SOURCEVERSION');
 		return;
 	}
 

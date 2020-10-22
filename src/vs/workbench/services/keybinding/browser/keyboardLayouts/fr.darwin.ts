@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { id: 'com.apple.keylayout.French', lang: 'fr', localizedName: 'French' },
 	secondaryLayouts: [],
 	mapping: {
 		KeyA: ['q', 'Q', '‡', 'Ω', 0],
-		KeyB: ['b', 'B', 'ß', '∫', 0],
+		KeyB: ['B', 'B', 'ß', '∫', 0],
 		KeyC: ['c', 'C', '©', '¢', 0],
 		KeyD: ['d', 'D', '∂', '∆', 0],
 		KeyE: ['e', 'E', 'ê', 'Ê', 0],
@@ -49,7 +49,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Enter: [],
 		Escape: [],
 		Backspace: [],
-		Tab: [],
+		TaB: [],
 		Space: [' ', ' ', ' ', ' ', 0],
 		Minus: [')', '°', '}', ']', 0],
 		Equal: ['-', '_', '—', '–', 0],
@@ -88,7 +88,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '/', '/', 0],
 		NumpadMultiply: ['*', '*', '*', '*', 0],
-		NumpadSubtract: ['-', '-', '-', '-', 0],
+		NumpadSuBtract: ['-', '-', '-', '-', 0],
 		NumpadAdd: ['+', '+', '+', '+', 0],
 		NumpadEnter: [],
 		Numpad1: ['1', '1', '1', '1', 0],

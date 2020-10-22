@@ -6,14 +6,14 @@
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
 import { localize } from 'vs/nls';
-import { isWindows, isWeb } from 'vs/base/common/platform';
+import { isWindows, isWeB } from 'vs/Base/common/platform';
 
 const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
 configurationRegistry.registerConfiguration({
 	id: 'update',
 	order: 15,
 	title: localize('updateConfigurationTitle', "Update"),
-	type: 'object',
+	type: 'oBject',
 	properties: {
 		'update.mode': {
 			type: 'string',
@@ -23,10 +23,10 @@ configurationRegistry.registerConfiguration({
 			description: localize('updateMode', "Configure whether you receive automatic updates. Requires a restart after change. The updates are fetched from a Microsoft online service."),
 			tags: ['usesOnlineServices'],
 			enumDescriptions: [
-				localize('none', "Disable updates."),
-				localize('manual', "Disable automatic background update checks. Updates will be available if you manually check for updates."),
-				localize('start', "Check for updates only on startup. Disable automatic background update checks."),
-				localize('default', "Enable automatic update checks. Code will check for updates automatically and periodically.")
+				localize('none', "DisaBle updates."),
+				localize('manual', "DisaBle automatic Background update checks. Updates will Be availaBle if you manually check for updates."),
+				localize('start', "Check for updates only on startup. DisaBle automatic Background update checks."),
+				localize('default', "EnaBle automatic update checks. Code will check for updates automatically and periodically.")
 			]
 		},
 		'update.channel': {
@@ -36,16 +36,16 @@ configurationRegistry.registerConfiguration({
 			description: localize('updateMode', "Configure whether you receive automatic updates. Requires a restart after change. The updates are fetched from a Microsoft online service."),
 			deprecationMessage: localize('deprecated', "This setting is deprecated, please use '{0}' instead.", 'update.mode')
 		},
-		'update.enableWindowsBackgroundUpdates': {
-			type: 'boolean',
+		'update.enaBleWindowsBackgroundUpdates': {
+			type: 'Boolean',
 			default: true,
 			scope: ConfigurationScope.APPLICATION,
-			title: localize('enableWindowsBackgroundUpdatesTitle', "Enable Background Updates on Windows"),
-			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new VS Code Versions in the background on Windows"),
-			included: isWindows && !isWeb
+			title: localize('enaBleWindowsBackgroundUpdatesTitle', "EnaBle Background Updates on Windows"),
+			description: localize('enaBleWindowsBackgroundUpdates', "EnaBle to download and install new VS Code Versions in the Background on Windows"),
+			included: isWindows && !isWeB
 		},
 		'update.showReleaseNotes': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
 			scope: ConfigurationScope.APPLICATION,
 			description: localize('showReleaseNotes', "Show Release Notes after an update. The Release Notes are fetched from a Microsoft online service."),

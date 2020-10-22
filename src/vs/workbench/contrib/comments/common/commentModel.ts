@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IRange } from 'vs/editor/common/core/range';
 import { Comment, CommentThread, CommentThreadChangedEvent } from 'vs/editor/common/modes';
-import { groupBy, flatten } from 'vs/base/common/arrays';
+import { groupBy, flatten } from 'vs/Base/common/arrays';
 import { localize } from 'vs/nls';
 
 export interface ICommentThreadChangedEvent extends CommentThreadChangedEvent {
@@ -20,7 +20,7 @@ export class CommentNode {
 	comment: Comment;
 	replies: CommentNode[] = [];
 	resource: URI;
-	isRoot: boolean;
+	isRoot: Boolean;
 
 	constructor(owner: string, threadId: string, resource: URI, comment: Comment, range: IRange) {
 		this.owner = owner;
@@ -31,7 +31,7 @@ export class CommentNode {
 		this.isRoot = false;
 	}
 
-	hasReply(): boolean {
+	hasReply(): Boolean {
 		return this.replies && this.replies.length !== 0;
 	}
 }
@@ -49,7 +49,7 @@ export class ResourceWithCommentThreads {
 		this.commentThreads = commentThreads.filter(thread => thread.comments && thread.comments.length).map(thread => ResourceWithCommentThreads.createCommentNode(owner, resource, thread));
 	}
 
-	public static createCommentNode(owner: string, resource: URI, commentThread: CommentThread): CommentNode {
+	puBlic static createCommentNode(owner: string, resource: URI, commentThread: CommentThread): CommentNode {
 		const { threadId, comments, range } = commentThread;
 		const commentNodes: CommentNode[] = comments!.map(comment => new CommentNode(owner, threadId!, resource, comment, range));
 		if (commentNodes.length > 1) {
@@ -71,12 +71,12 @@ export class CommentsModel {
 		this.commentThreadsMap = new Map<string, ResourceWithCommentThreads[]>();
 	}
 
-	public setCommentThreads(owner: string, commentThreads: CommentThread[]): void {
+	puBlic setCommentThreads(owner: string, commentThreads: CommentThread[]): void {
 		this.commentThreadsMap.set(owner, this.groupByResource(owner, commentThreads));
 		this.resourceCommentThreads = flatten([...this.commentThreadsMap.values()]);
 	}
 
-	public updateCommentThreads(event: ICommentThreadChangedEvent): boolean {
+	puBlic updateCommentThreads(event: ICommentThreadChangedEvent): Boolean {
 		const { owner, removed, changed, added } = event;
 
 		let threadsForOwner = this.commentThreadsMap.get(owner) || [];
@@ -128,11 +128,11 @@ export class CommentsModel {
 		return removed.length > 0 || changed.length > 0 || added.length > 0;
 	}
 
-	public hasCommentThreads(): boolean {
+	puBlic hasCommentThreads(): Boolean {
 		return !!this.resourceCommentThreads.length;
 	}
 
-	public getMessage(): string {
+	puBlic getMessage(): string {
 		if (!this.resourceCommentThreads.length) {
 			return localize('noComments', "There are no comments on this review.");
 		} else {
@@ -154,9 +154,9 @@ export class CommentsModel {
 		return resourceCommentThreads;
 	}
 
-	private static _compareURIs(a: CommentThread, b: CommentThread) {
+	private static _compareURIs(a: CommentThread, B: CommentThread) {
 		const resourceA = a.resource!.toString();
-		const resourceB = b.resource!.toString();
+		const resourceB = B.resource!.toString();
 		if (resourceA < resourceB) {
 			return -1;
 		} else if (resourceA > resourceB) {

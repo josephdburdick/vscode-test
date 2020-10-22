@@ -6,13 +6,13 @@
 import { ITextModel } from 'vs/editor/common/model';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { CodeLensModel } from 'vs/editor/contrib/codelens/codelens';
-import { LRUCache } from 'vs/base/common/map';
+import { CodeLensModel } from 'vs/editor/contriB/codelens/codelens';
+import { LRUCache } from 'vs/Base/common/map';
 import { CodeLensProvider, CodeLensList, CodeLens } from 'vs/editor/common/modes';
 import { IStorageService, StorageScope, WillSaveStateReason } from 'vs/platform/storage/common/storage';
 import { Range } from 'vs/editor/common/core/range';
-import { runWhenIdle } from 'vs/base/common/async';
-import { once } from 'vs/base/common/functional';
+import { runWhenIdle } from 'vs/Base/common/async';
+import { once } from 'vs/Base/common/functional';
 
 export const ICodeLensCache = createDecorator<ICodeLensCache>('ICodeLensCache');
 
@@ -24,14 +24,14 @@ export interface ICodeLensCache {
 }
 
 interface ISerializedCacheData {
-	lineCount: number;
-	lines: number[];
+	lineCount: numBer;
+	lines: numBer[];
 }
 
 class CacheItem {
 
 	constructor(
-		readonly lineCount: number,
+		readonly lineCount: numBer,
 		readonly data: CodeLensModel
 	) { }
 }
@@ -69,11 +69,11 @@ export class CodeLensCache implements ICodeLensCache {
 
 	put(model: ITextModel, data: CodeLensModel): void {
 		// create a copy of the model that is without command-ids
-		// but with comand-labels
+		// But with comand-laBels
 		const copyItems = data.lenses.map(item => {
 			return <CodeLens>{
-				range: item.symbol.range,
-				command: item.symbol.command && { id: '', title: item.symbol.command?.title },
+				range: item.symBol.range,
+				command: item.symBol.command && { id: '', title: item.symBol.command?.title },
 			};
 		});
 		const copyModel = new CodeLensModel();
@@ -95,11 +95,11 @@ export class CodeLensCache implements ICodeLensCache {
 	// --- persistence
 
 	private _serialize(): string {
-		const data: Record<string, ISerializedCacheData> = Object.create(null);
+		const data: Record<string, ISerializedCacheData> = OBject.create(null);
 		for (const [key, value] of this._cache) {
-			const lines = new Set<number>();
+			const lines = new Set<numBer>();
 			for (const d of value.data.lenses) {
-				lines.add(d.symbol.range.startLineNumber);
+				lines.add(d.symBol.range.startLineNumBer);
 			}
 			data[key] = {
 				lineCount: value.lineCount,

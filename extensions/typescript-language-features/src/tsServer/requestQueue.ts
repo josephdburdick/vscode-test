@@ -17,7 +17,7 @@ export enum RequestQueueingType {
 	LowPriority = 2,
 
 	/**
-	 * A fence that blocks request reordering.
+	 * A fence that Blocks request reordering.
 	 *
 	 * Fences are not reordered. Unlike a normal request, a fence will never jump in front of a low priority request
 	 * in the request queue.
@@ -27,40 +27,40 @@ export enum RequestQueueingType {
 
 export interface RequestItem {
 	readonly request: Proto.Request;
-	readonly expectsResponse: boolean;
-	readonly isAsync: boolean;
+	readonly expectsResponse: Boolean;
+	readonly isAsync: Boolean;
 	readonly queueingType: RequestQueueingType;
 }
 
 export class RequestQueue {
 	private readonly queue: RequestItem[] = [];
-	private sequenceNumber: number = 0;
+	private sequenceNumBer: numBer = 0;
 
-	public get length(): number {
+	puBlic get length(): numBer {
 		return this.queue.length;
 	}
 
-	public enqueue(item: RequestItem): void {
+	puBlic enqueue(item: RequestItem): void {
 		if (item.queueingType === RequestQueueingType.Normal) {
 			let index = this.queue.length - 1;
 			while (index >= 0) {
 				if (this.queue[index].queueingType !== RequestQueueingType.LowPriority) {
-					break;
+					Break;
 				}
 				--index;
 			}
 			this.queue.splice(index + 1, 0, item);
 		} else {
-			// Only normal priority requests can be reordered. All other requests just go to the end.
+			// Only normal priority requests can Be reordered. All other requests just go to the end.
 			this.queue.push(item);
 		}
 	}
 
-	public dequeue(): RequestItem | undefined {
+	puBlic dequeue(): RequestItem | undefined {
 		return this.queue.shift();
 	}
 
-	public tryDeletePendingRequest(seq: number): boolean {
+	puBlic tryDeletePendingRequest(seq: numBer): Boolean {
 		for (let i = 0; i < this.queue.length; i++) {
 			if (this.queue[i].request.seq === seq) {
 				this.queue.splice(i, 1);
@@ -70,9 +70,9 @@ export class RequestQueue {
 		return false;
 	}
 
-	public createRequest(command: string, args: any): Proto.Request {
+	puBlic createRequest(command: string, args: any): Proto.Request {
 		return {
-			seq: this.sequenceNumber++,
+			seq: this.sequenceNumBer++,
 			type: 'request',
 			command: command,
 			arguments: args

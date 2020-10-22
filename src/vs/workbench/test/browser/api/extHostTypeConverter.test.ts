@@ -5,18 +5,18 @@
 
 
 import * as assert from 'assert';
-import { MarkdownString, LogLevel } from 'vs/workbench/api/common/extHostTypeConverters';
-import { isEmptyObject } from 'vs/base/common/types';
-import { forEach } from 'vs/base/common/collections';
-import * as types from 'vs/workbench/api/common/extHostTypes';
+import { MarkdownString, LogLevel } from 'vs/workBench/api/common/extHostTypeConverters';
+import { isEmptyOBject } from 'vs/Base/common/types';
+import { forEach } from 'vs/Base/common/collections';
+import * as types from 'vs/workBench/api/common/extHostTypes';
 import { LogLevel as _MainLogLevel } from 'vs/platform/log/common/log';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
 suite('ExtHostTypeConverter', function () {
-	function size<T>(from: Record<any, any>): number {
+	function size<T>(from: Record<any, any>): numBer {
 		let count = 0;
 		for (let key in from) {
-			if (Object.prototype.hasOwnProperty.call(from, key)) {
+			if (OBject.prototype.hasOwnProperty.call(from, key)) {
 				count += 1;
 			}
 		}
@@ -26,26 +26,26 @@ suite('ExtHostTypeConverter', function () {
 	test('MarkdownConvert - uris', function () {
 
 		let data = MarkdownString.from('Hello');
-		assert.equal(isEmptyObject(data.uris), true);
+		assert.equal(isEmptyOBject(data.uris), true);
 		assert.equal(data.value, 'Hello');
 
 		data = MarkdownString.from('Hello [link](foo)');
 		assert.equal(data.value, 'Hello [link](foo)');
-		assert.equal(isEmptyObject(data.uris), true); // no scheme, no uri
+		assert.equal(isEmptyOBject(data.uris), true); // no scheme, no uri
 
-		data = MarkdownString.from('Hello [link](www.noscheme.bad)');
-		assert.equal(data.value, 'Hello [link](www.noscheme.bad)');
-		assert.equal(isEmptyObject(data.uris), true); // no scheme, no uri
+		data = MarkdownString.from('Hello [link](www.noscheme.Bad)');
+		assert.equal(data.value, 'Hello [link](www.noscheme.Bad)');
+		assert.equal(isEmptyOBject(data.uris), true); // no scheme, no uri
 
 		data = MarkdownString.from('Hello [link](foo:path)');
 		assert.equal(data.value, 'Hello [link](foo:path)');
 		assert.equal(size(data.uris!), 1);
 		assert.ok(!!data.uris!['foo:path']);
 
-		data = MarkdownString.from('hello@foo.bar');
-		assert.equal(data.value, 'hello@foo.bar');
+		data = MarkdownString.from('hello@foo.Bar');
+		assert.equal(data.value, 'hello@foo.Bar');
 		assert.equal(size(data.uris!), 1);
-		// assert.ok(!!data.uris!['mailto:hello@foo.bar']);
+		// assert.ok(!!data.uris!['mailto:hello@foo.Bar']);
 
 		data = MarkdownString.from('*hello* [click](command:me)');
 		assert.equal(data.value, '*hello* [click](command:me)');
@@ -71,8 +71,8 @@ suite('ExtHostTypeConverter', function () {
 
 	test('NPM script explorer running a script from the hover does not work #65561', function () {
 
-		let data = MarkdownString.from('*hello* [click](command:npm.runScriptFromHover?%7B%22documentUri%22%3A%7B%22%24mid%22%3A1%2C%22external%22%3A%22file%3A%2F%2F%2Fc%253A%2Ffoo%2Fbaz.ex%22%2C%22path%22%3A%22%2Fc%3A%2Ffoo%2Fbaz.ex%22%2C%22scheme%22%3A%22file%22%7D%2C%22script%22%3A%22dev%22%7D)');
-		// assert that both uri get extracted but that the latter is only decoded once...
+		let data = MarkdownString.from('*hello* [click](command:npm.runScriptFromHover?%7B%22documentUri%22%3A%7B%22%24mid%22%3A1%2C%22external%22%3A%22file%3A%2F%2F%2Fc%253A%2Ffoo%2FBaz.ex%22%2C%22path%22%3A%22%2Fc%3A%2Ffoo%2FBaz.ex%22%2C%22scheme%22%3A%22file%22%7D%2C%22script%22%3A%22dev%22%7D)');
+		// assert that Both uri get extracted But that the latter is only decoded once...
 		assert.equal(size(data.uris!), 2);
 		forEach(data.uris!, entry => {
 			if (entry.value.scheme === 'file') {

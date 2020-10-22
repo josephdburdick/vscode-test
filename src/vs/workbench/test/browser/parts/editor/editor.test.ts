@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorResourceAccessor, SideBySideEditor, IEditorInputWithPreferredResource } from 'vs/workbench/common/editor';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
-import { URI } from 'vs/base/common/uri';
+import { EditorResourceAccessor, SideBySideEditor, IEditorInputWithPreferredResource } from 'vs/workBench/common/editor';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
+import { URI } from 'vs/Base/common/uri';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { workbenchInstantiationService, TestServiceAccessor, TestEditorInput } from 'vs/workbench/test/browser/workbenchTestServices';
-import { Schemas } from 'vs/base/common/network';
-import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
+import { workBenchInstantiationService, TestServiceAccessor, TestEditorInput } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { Schemas } from 'vs/Base/common/network';
+import { UntitledTextEditorInput } from 'vs/workBench/services/untitled/common/untitledTextEditorInput';
 
 export class TestEditorInputWithPreferredResource extends TestEditorInput implements IEditorInputWithPreferredResource {
 
-	constructor(resource: URI, public preferredResource: URI, typeId: string) {
+	constructor(resource: URI, puBlic preferredResource: URI, typeId: string) {
 		super(resource, typeId);
 	}
 }
 
-suite('Workbench editor', () => {
+suite('WorkBench editor', () => {
 
 	let instantiationService: IInstantiationService;
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 

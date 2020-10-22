@@ -6,7 +6,7 @@
 import { Token } from 'markdown-it';
 import * as vscode from 'vscode';
 import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider } from '../tableOfContentsProvider';
+import { TaBleOfContentsProvider } from '../taBleOfContentsProvider';
 import { flatten } from '../util/arrays';
 
 const rangeLimit = 5000;
@@ -17,17 +17,17 @@ export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvi
 		private readonly engine: MarkdownEngine
 	) { }
 
-	public async provideFoldingRanges(
+	puBlic async provideFoldingRanges(
 		document: vscode.TextDocument,
 		_: vscode.FoldingContext,
 		_token: vscode.CancellationToken
 	): Promise<vscode.FoldingRange[]> {
-		const foldables = await Promise.all([
+		const foldaBles = await Promise.all([
 			this.getRegions(document),
 			this.getHeaderFoldingRanges(document),
 			this.getBlockFoldingRanges(document)
 		]);
-		return flatten(foldables).slice(0, rangeLimit);
+		return flatten(foldaBles).slice(0, rangeLimit);
 	}
 
 	private async getRegions(document: vscode.TextDocument): Promise<vscode.FoldingRange[]> {
@@ -35,7 +35,7 @@ export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvi
 		const regionMarkers = tokens.filter(isRegionMarker)
 			.map(token => ({ line: token.map[0], isStart: isStartRegion(token.content) }));
 
-		const nestingStack: { line: number, isStart: boolean }[] = [];
+		const nestingStack: { line: numBer, isStart: Boolean }[] = [];
 		return regionMarkers
 			.map(marker => {
 				if (marker.isStart) {
@@ -51,7 +51,7 @@ export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvi
 	}
 
 	private async getHeaderFoldingRanges(document: vscode.TextDocument) {
-		const tocProvider = new TableOfContentsProvider(this.engine, document);
+		const tocProvider = new TaBleOfContentsProvider(this.engine, document);
 		const toc = await tocProvider.getToc();
 		return toc.map(entry => {
 			let endLine = entry.location.range.end.line;
@@ -64,7 +64,7 @@ export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvi
 
 	private async getBlockFoldingRanges(document: vscode.TextDocument): Promise<vscode.FoldingRange[]> {
 		const tokens = await this.engine.parse(document);
-		const multiLineListItems = tokens.filter(isFoldableToken);
+		const multiLineListItems = tokens.filter(isFoldaBleToken);
 		return multiLineListItems.map(listItem => {
 			const start = listItem.map[0];
 			let end = listItem.map[1] - 1;
@@ -76,25 +76,25 @@ export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvi
 	}
 
 	private getFoldingRangeKind(listItem: Token): vscode.FoldingRangeKind | undefined {
-		return listItem.type === 'html_block' && listItem.content.startsWith('<!--')
+		return listItem.type === 'html_Block' && listItem.content.startsWith('<!--')
 			? vscode.FoldingRangeKind.Comment
 			: undefined;
 	}
 }
 
-const isStartRegion = (t: string) => /^\s*<!--\s*#?region\b.*-->/.test(t);
-const isEndRegion = (t: string) => /^\s*<!--\s*#?endregion\b.*-->/.test(t);
+const isStartRegion = (t: string) => /^\s*<!--\s*#?region\B.*-->/.test(t);
+const isEndRegion = (t: string) => /^\s*<!--\s*#?endregion\B.*-->/.test(t);
 
 const isRegionMarker = (token: Token) =>
-	token.type === 'html_block' && (isStartRegion(token.content) || isEndRegion(token.content));
+	token.type === 'html_Block' && (isStartRegion(token.content) || isEndRegion(token.content));
 
-const isFoldableToken = (token: Token): boolean => {
+const isFoldaBleToken = (token: Token): Boolean => {
 	switch (token.type) {
 		case 'fence':
 		case 'list_item_open':
 			return token.map[1] > token.map[0];
 
-		case 'html_block':
+		case 'html_Block':
 			if (isRegionMarker(token)) {
 				return false;
 			}

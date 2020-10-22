@@ -7,21 +7,21 @@ import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppen
 import { TelemetryClient, Contracts } from 'applicationinsights';
 
 class AppInsightsMock extends TelemetryClient {
-	public config: any;
-	public channel: any;
-	public events: Contracts.EventTelemetry[] = [];
-	public IsTrackingPageView: boolean = false;
-	public exceptions: any[] = [];
+	puBlic config: any;
+	puBlic channel: any;
+	puBlic events: Contracts.EventTelemetry[] = [];
+	puBlic IsTrackingPageView: Boolean = false;
+	puBlic exceptions: any[] = [];
 
 	constructor() {
 		super('testKey');
 	}
 
-	public trackEvent(event: any) {
+	puBlic trackEvent(event: any) {
 		this.events.push(event);
 	}
 
-	public flush(options: any): void {
+	puBlic flush(options: any): void {
 		// called on dispose
 	}
 }
@@ -61,19 +61,19 @@ suite('AIAdapter', () => {
 	});
 
 	test('property limits', () => {
-		let reallyLongPropertyName = 'abcdefghijklmnopqrstuvwxyz';
+		let reallyLongPropertyName = 'aBcdefghijklmnopqrstuvwxyz';
 		for (let i = 0; i < 6; i++) {
-			reallyLongPropertyName += 'abcdefghijklmnopqrstuvwxyz';
+			reallyLongPropertyName += 'aBcdefghijklmnopqrstuvwxyz';
 		}
 		assert(reallyLongPropertyName.length > 150);
 
-		let reallyLongPropertyValue = 'abcdefghijklmnopqrstuvwxyz012345678901234567890123';
+		let reallyLongPropertyValue = 'aBcdefghijklmnopqrstuvwxyz012345678901234567890123';
 		for (let i = 0; i < 21; i++) {
-			reallyLongPropertyValue += 'abcdefghijklmnopqrstuvwxyz012345678901234567890123';
+			reallyLongPropertyValue += 'aBcdefghijklmnopqrstuvwxyz012345678901234567890123';
 		}
 		assert(reallyLongPropertyValue.length > 1024);
 
-		let data = Object.create(null);
+		let data = OBject.create(null);
 		data[reallyLongPropertyName] = '1234';
 		data['reallyLongPropertyValue'] = reallyLongPropertyValue;
 		adapter.log('testEvent', data);
@@ -88,16 +88,16 @@ suite('AIAdapter', () => {
 
 	test('Different data types', () => {
 		let date = new Date();
-		adapter.log('testEvent', { favoriteDate: date, likeRed: false, likeBlue: true, favoriteNumber: 1, favoriteColor: 'blue', favoriteCars: ['bmw', 'audi', 'ford'] });
+		adapter.log('testEvent', { favoriteDate: date, likeRed: false, likeBlue: true, favoriteNumBer: 1, favoriteColor: 'Blue', favoriteCars: ['Bmw', 'audi', 'ford'] });
 
 		assert.equal(appInsightsMock.events.length, 1);
 		assert.equal(appInsightsMock.events[0].name, `${prefix}/testEvent`);
-		assert.equal(appInsightsMock.events[0].properties!['favoriteColor'], 'blue');
+		assert.equal(appInsightsMock.events[0].properties!['favoriteColor'], 'Blue');
 		assert.equal(appInsightsMock.events[0].measurements!['likeRed'], 0);
 		assert.equal(appInsightsMock.events[0].measurements!['likeBlue'], 1);
 		assert.equal(appInsightsMock.events[0].properties!['favoriteDate'], date.toISOString());
-		assert.equal(appInsightsMock.events[0].properties!['favoriteCars'], JSON.stringify(['bmw', 'audi', 'ford']));
-		assert.equal(appInsightsMock.events[0].measurements!['favoriteNumber'], 1);
+		assert.equal(appInsightsMock.events[0].properties!['favoriteCars'], JSON.stringify(['Bmw', 'audi', 'ford']));
+		assert.equal(appInsightsMock.events[0].measurements!['favoriteNumBer'], 1);
 	});
 
 	test('Nested data', () => {
@@ -109,9 +109,9 @@ suite('AIAdapter', () => {
 					height: 200
 				}
 			},
-			nestedObj: {
-				nestedObj2: {
-					nestedObj3: {
+			nestedOBj: {
+				nestedOBj2: {
+					nestedOBj3: {
 						testProperty: 'test',
 					}
 				},
@@ -126,8 +126,8 @@ suite('AIAdapter', () => {
 		assert.equal(appInsightsMock.events[0].measurements!['window.measurements.width'], 100);
 		assert.equal(appInsightsMock.events[0].measurements!['window.measurements.height'], 200);
 
-		assert.equal(appInsightsMock.events[0].properties!['nestedObj.nestedObj2.nestedObj3'], JSON.stringify({ 'testProperty': 'test' }));
-		assert.equal(appInsightsMock.events[0].measurements!['nestedObj.testMeasurement'], 1);
+		assert.equal(appInsightsMock.events[0].properties!['nestedOBj.nestedOBj2.nestedOBj3'], JSON.stringify({ 'testProperty': 'test' }));
+		assert.equal(appInsightsMock.events[0].measurements!['nestedOBj.testMeasurement'], 1);
 	});
 
 });

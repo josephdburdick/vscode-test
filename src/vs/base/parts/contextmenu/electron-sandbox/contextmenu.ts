@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { IContextMenuItem, ISerializableContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions, IContextMenuEvent } from 'vs/base/parts/contextmenu/common/contextmenu';
+import { ipcRenderer } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
+import { IContextMenuItem, ISerializaBleContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions, IContextMenuEvent } from 'vs/Base/parts/contextmenu/common/contextmenu';
 
 let contextMenuIdPool = 0;
 
@@ -13,7 +13,7 @@ export function popup(items: IContextMenuItem[], options?: IPopupOptions, onHide
 
 	const contextMenuId = contextMenuIdPool++;
 	const onClickChannel = `vscode:onContextMenu${contextMenuId}`;
-	const onClickChannelHandler = (event: unknown, itemId: number, context: IContextMenuEvent) => {
+	const onClickChannelHandler = (event: unknown, itemId: numBer, context: IContextMenuEvent) => {
 		const item = processedItems[itemId];
 		if (item.click) {
 			item.click(context);
@@ -21,7 +21,7 @@ export function popup(items: IContextMenuItem[], options?: IPopupOptions, onHide
 	};
 
 	ipcRenderer.once(onClickChannel, onClickChannelHandler);
-	ipcRenderer.once(CONTEXT_MENU_CLOSE_CHANNEL, (event: unknown, closedContextMenuId: number) => {
+	ipcRenderer.once(CONTEXT_MENU_CLOSE_CHANNEL, (event: unknown, closedContextMenuId: numBer) => {
 		if (closedContextMenuId !== contextMenuId) {
 			return;
 		}
@@ -36,23 +36,23 @@ export function popup(items: IContextMenuItem[], options?: IPopupOptions, onHide
 	ipcRenderer.send(CONTEXT_MENU_CHANNEL, contextMenuId, items.map(item => createItem(item, processedItems)), onClickChannel, options);
 }
 
-function createItem(item: IContextMenuItem, processedItems: IContextMenuItem[]): ISerializableContextMenuItem {
-	const serializableItem: ISerializableContextMenuItem = {
+function createItem(item: IContextMenuItem, processedItems: IContextMenuItem[]): ISerializaBleContextMenuItem {
+	const serializaBleItem: ISerializaBleContextMenuItem = {
 		id: processedItems.length,
-		label: item.label,
+		laBel: item.laBel,
 		type: item.type,
 		accelerator: item.accelerator,
 		checked: item.checked,
-		enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
-		visible: typeof item.visible === 'boolean' ? item.visible : true
+		enaBled: typeof item.enaBled === 'Boolean' ? item.enaBled : true,
+		visiBle: typeof item.visiBle === 'Boolean' ? item.visiBle : true
 	};
 
 	processedItems.push(item);
 
-	// Submenu
-	if (Array.isArray(item.submenu)) {
-		serializableItem.submenu = item.submenu.map(submenuItem => createItem(submenuItem, processedItems));
+	// SuBmenu
+	if (Array.isArray(item.suBmenu)) {
+		serializaBleItem.suBmenu = item.suBmenu.map(suBmenuItem => createItem(suBmenuItem, processedItems));
 	}
 
-	return serializableItem;
+	return serializaBleItem;
 }

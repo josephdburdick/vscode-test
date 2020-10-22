@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableService } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { EnvironmentVariableService } from 'vs/workbench/contrib/terminal/common/environmentVariableService';
+import { IEnvironmentVariaBleService } from 'vs/workBench/contriB/terminal/common/environmentVariaBle';
+import { EnvironmentVariaBleService } from 'vs/workBench/contriB/terminal/common/environmentVariaBleService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
-registerSingleton(IEnvironmentVariableService, EnvironmentVariableService, true);
+registerSingleton(IEnvironmentVariaBleService, EnvironmentVariaBleService, true);

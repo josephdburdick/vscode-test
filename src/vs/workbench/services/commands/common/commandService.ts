@@ -5,25 +5,25 @@
 
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ICommandService, ICommandEvent, CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { timeout } from 'vs/base/common/async';
+import { timeout } from 'vs/Base/common/async';
 
-export class CommandService extends Disposable implements ICommandService {
+export class CommandService extends DisposaBle implements ICommandService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private _extensionHostIsReady: boolean = false;
+	private _extensionHostIsReady: Boolean = false;
 	private _starActivation: Promise<void> | null;
 
 	private readonly _onWillExecuteCommand: Emitter<ICommandEvent> = this._register(new Emitter<ICommandEvent>());
-	public readonly onWillExecuteCommand: Event<ICommandEvent> = this._onWillExecuteCommand.event;
+	puBlic readonly onWillExecuteCommand: Event<ICommandEvent> = this._onWillExecuteCommand.event;
 
 	private readonly _onDidExecuteCommand: Emitter<ICommandEvent> = new Emitter<ICommandEvent>();
-	public readonly onDidExecuteCommand: Event<ICommandEvent> = this._onDidExecuteCommand.event;
+	puBlic readonly onDidExecuteCommand: Event<ICommandEvent> = this._onDidExecuteCommand.event;
 
 	constructor(
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
@@ -49,7 +49,7 @@ export class CommandService extends Disposable implements ICommandService {
 	executeCommand<T>(id: string, ...args: any[]): Promise<T> {
 		this._logService.trace('CommandService#executeCommand', id);
 
-		// we always send an activation event, but
+		// we always send an activation event, But
 		// we don't wait for it when the extension
 		// host didn't yet start and the command is already registered
 

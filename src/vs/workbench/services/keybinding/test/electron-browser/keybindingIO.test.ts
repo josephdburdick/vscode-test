@@ -3,43 +3,43 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { KeyChord, KeyCode, KeyMod, SimpleKeybinding, createKeybinding } from 'vs/base/common/keyCodes';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { ScanCode, ScanCodeBinding } from 'vs/base/common/scanCode';
-import { IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { KeybindingIO } from 'vs/workbench/services/keybinding/common/keybindingIO';
+import { KeyChord, KeyCode, KeyMod, SimpleKeyBinding, createKeyBinding } from 'vs/Base/common/keyCodes';
+import { KeyBindingParser } from 'vs/Base/common/keyBindingParser';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { ScanCode, ScanCodeBinding } from 'vs/Base/common/scanCode';
+import { IUserFriendlyKeyBinding } from 'vs/platform/keyBinding/common/keyBinding';
+import { USLayoutResolvedKeyBinding } from 'vs/platform/keyBinding/common/usLayoutResolvedKeyBinding';
+import { KeyBindingIO } from 'vs/workBench/services/keyBinding/common/keyBindingIO';
 
-suite('keybindingIO', () => {
+suite('keyBindingIO', () => {
 
 	test('serialize/deserialize', () => {
 
-		function testOneSerialization(keybinding: number, expected: string, msg: string, OS: OperatingSystem): void {
-			let usLayoutResolvedKeybinding = new USLayoutResolvedKeybinding(createKeybinding(keybinding, OS)!, OS);
-			let actualSerialized = usLayoutResolvedKeybinding.getUserSettingsLabel();
+		function testOneSerialization(keyBinding: numBer, expected: string, msg: string, OS: OperatingSystem): void {
+			let usLayoutResolvedKeyBinding = new USLayoutResolvedKeyBinding(createKeyBinding(keyBinding, OS)!, OS);
+			let actualSerialized = usLayoutResolvedKeyBinding.getUserSettingsLaBel();
 			assert.equal(actualSerialized, expected, expected + ' - ' + msg);
 		}
-		function testSerialization(keybinding: number, expectedWin: string, expectedMac: string, expectedLinux: string): void {
-			testOneSerialization(keybinding, expectedWin, 'win', OperatingSystem.Windows);
-			testOneSerialization(keybinding, expectedMac, 'mac', OperatingSystem.Macintosh);
-			testOneSerialization(keybinding, expectedLinux, 'linux', OperatingSystem.Linux);
+		function testSerialization(keyBinding: numBer, expectedWin: string, expectedMac: string, expectedLinux: string): void {
+			testOneSerialization(keyBinding, expectedWin, 'win', OperatingSystem.Windows);
+			testOneSerialization(keyBinding, expectedMac, 'mac', OperatingSystem.Macintosh);
+			testOneSerialization(keyBinding, expectedLinux, 'linux', OperatingSystem.Linux);
 		}
 
-		function testOneDeserialization(keybinding: string, _expected: number, msg: string, OS: OperatingSystem): void {
-			let actualDeserialized = KeybindingParser.parseKeybinding(keybinding, OS);
-			let expected = createKeybinding(_expected, OS);
-			assert.deepEqual(actualDeserialized, expected, keybinding + ' - ' + msg);
+		function testOneDeserialization(keyBinding: string, _expected: numBer, msg: string, OS: OperatingSystem): void {
+			let actualDeserialized = KeyBindingParser.parseKeyBinding(keyBinding, OS);
+			let expected = createKeyBinding(_expected, OS);
+			assert.deepEqual(actualDeserialized, expected, keyBinding + ' - ' + msg);
 		}
-		function testDeserialization(inWin: string, inMac: string, inLinux: string, expected: number): void {
+		function testDeserialization(inWin: string, inMac: string, inLinux: string, expected: numBer): void {
 			testOneDeserialization(inWin, expected, 'win', OperatingSystem.Windows);
 			testOneDeserialization(inMac, expected, 'mac', OperatingSystem.Macintosh);
 			testOneDeserialization(inLinux, expected, 'linux', OperatingSystem.Linux);
 		}
 
-		function testRoundtrip(keybinding: number, expectedWin: string, expectedMac: string, expectedLinux: string): void {
-			testSerialization(keybinding, expectedWin, expectedMac, expectedLinux);
-			testDeserialization(expectedWin, expectedMac, expectedLinux, keybinding);
+		function testRoundtrip(keyBinding: numBer, expectedWin: string, expectedMac: string, expectedLinux: string): void {
+			testSerialization(keyBinding, expectedWin, expectedMac, expectedLinux);
+			testDeserialization(expectedWin, expectedMac, expectedLinux, keyBinding);
 		}
 
 		testRoundtrip(KeyCode.KEY_0, '0', '0', '0');
@@ -83,8 +83,8 @@ suite('keybindingIO', () => {
 		testRoundtrip(KeyCode.US_DOT, '.', '.', '.');
 		testRoundtrip(KeyCode.US_SLASH, '/', '/', '/');
 		testRoundtrip(KeyCode.US_BACKTICK, '`', '`', '`');
-		testRoundtrip(KeyCode.ABNT_C1, 'abnt_c1', 'abnt_c1', 'abnt_c1');
-		testRoundtrip(KeyCode.ABNT_C2, 'abnt_c2', 'abnt_c2', 'abnt_c2');
+		testRoundtrip(KeyCode.ABNT_C1, 'aBnt_c1', 'aBnt_c1', 'aBnt_c1');
+		testRoundtrip(KeyCode.ABNT_C2, 'aBnt_c2', 'aBnt_c2', 'aBnt_c2');
 		testRoundtrip(KeyCode.US_OPEN_SQUARE_BRACKET, '[', '[', '[');
 		testRoundtrip(KeyCode.US_BACKSLASH, '\\', '\\', '\\');
 		testRoundtrip(KeyCode.US_CLOSE_SQUARE_BRACKET, ']', ']', ']');
@@ -118,43 +118,43 @@ suite('keybindingIO', () => {
 
 	test('deserialize scan codes', () => {
 		assert.deepEqual(
-			KeybindingParser.parseUserBinding('ctrl+shift+[comma] ctrl+/'),
-			[new ScanCodeBinding(true, true, false, false, ScanCode.Comma), new SimpleKeybinding(true, false, false, false, KeyCode.US_SLASH)]
+			KeyBindingParser.parseUserBinding('ctrl+shift+[comma] ctrl+/'),
+			[new ScanCodeBinding(true, true, false, false, ScanCode.Comma), new SimpleKeyBinding(true, false, false, false, KeyCode.US_SLASH)]
 		);
 	});
 
 	test('issue #10452 - invalid command', () => {
 		let strJSON = `[{ "key": "ctrl+k ctrl+f", "command": ["firstcommand", "seccondcommand"] }]`;
-		let userKeybinding = <IUserFriendlyKeybinding>JSON.parse(strJSON)[0];
-		let keybindingItem = KeybindingIO.readUserKeybindingItem(userKeybinding);
-		assert.equal(keybindingItem.command, null);
+		let userKeyBinding = <IUserFriendlyKeyBinding>JSON.parse(strJSON)[0];
+		let keyBindingItem = KeyBindingIO.readUserKeyBindingItem(userKeyBinding);
+		assert.equal(keyBindingItem.command, null);
 	});
 
 	test('issue #10452 - invalid when', () => {
 		let strJSON = `[{ "key": "ctrl+k ctrl+f", "command": "firstcommand", "when": [] }]`;
-		let userKeybinding = <IUserFriendlyKeybinding>JSON.parse(strJSON)[0];
-		let keybindingItem = KeybindingIO.readUserKeybindingItem(userKeybinding);
-		assert.equal(keybindingItem.when, null);
+		let userKeyBinding = <IUserFriendlyKeyBinding>JSON.parse(strJSON)[0];
+		let keyBindingItem = KeyBindingIO.readUserKeyBindingItem(userKeyBinding);
+		assert.equal(keyBindingItem.when, null);
 	});
 
 	test('issue #10452 - invalid key', () => {
 		let strJSON = `[{ "key": [], "command": "firstcommand" }]`;
-		let userKeybinding = <IUserFriendlyKeybinding>JSON.parse(strJSON)[0];
-		let keybindingItem = KeybindingIO.readUserKeybindingItem(userKeybinding);
-		assert.deepEqual(keybindingItem.parts, []);
+		let userKeyBinding = <IUserFriendlyKeyBinding>JSON.parse(strJSON)[0];
+		let keyBindingItem = KeyBindingIO.readUserKeyBindingItem(userKeyBinding);
+		assert.deepEqual(keyBindingItem.parts, []);
 	});
 
 	test('issue #10452 - invalid key 2', () => {
 		let strJSON = `[{ "key": "", "command": "firstcommand" }]`;
-		let userKeybinding = <IUserFriendlyKeybinding>JSON.parse(strJSON)[0];
-		let keybindingItem = KeybindingIO.readUserKeybindingItem(userKeybinding);
-		assert.deepEqual(keybindingItem.parts, []);
+		let userKeyBinding = <IUserFriendlyKeyBinding>JSON.parse(strJSON)[0];
+		let keyBindingItem = KeyBindingIO.readUserKeyBindingItem(userKeyBinding);
+		assert.deepEqual(keyBindingItem.parts, []);
 	});
 
 	test('test commands args', () => {
 		let strJSON = `[{ "key": "ctrl+k ctrl+f", "command": "firstcommand", "when": [], "args": { "text": "theText" } }]`;
-		let userKeybinding = <IUserFriendlyKeybinding>JSON.parse(strJSON)[0];
-		let keybindingItem = KeybindingIO.readUserKeybindingItem(userKeybinding);
-		assert.equal(keybindingItem.commandArgs.text, 'theText');
+		let userKeyBinding = <IUserFriendlyKeyBinding>JSON.parse(strJSON)[0];
+		let keyBindingItem = KeyBindingIO.readUserKeyBindingItem(userKeyBinding);
+		assert.equal(keyBindingItem.commandArgs.text, 'theText');
 	});
 });

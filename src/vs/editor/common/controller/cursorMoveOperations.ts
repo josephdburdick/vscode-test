@@ -6,236 +6,236 @@
 import { CursorColumns, CursorConfiguration, ICursorSimpleModel, SingleCursorState } from 'vs/editor/common/controller/cursorCommon';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
-import * as strings from 'vs/base/common/strings';
-import { Constants } from 'vs/base/common/uint';
+import * as strings from 'vs/Base/common/strings';
+import { Constants } from 'vs/Base/common/uint';
 
 export class CursorPosition {
 	_cursorPositionBrand: void;
 
-	public readonly lineNumber: number;
-	public readonly column: number;
-	public readonly leftoverVisibleColumns: number;
+	puBlic readonly lineNumBer: numBer;
+	puBlic readonly column: numBer;
+	puBlic readonly leftoverVisiBleColumns: numBer;
 
-	constructor(lineNumber: number, column: number, leftoverVisibleColumns: number) {
-		this.lineNumber = lineNumber;
+	constructor(lineNumBer: numBer, column: numBer, leftoverVisiBleColumns: numBer) {
+		this.lineNumBer = lineNumBer;
 		this.column = column;
-		this.leftoverVisibleColumns = leftoverVisibleColumns;
+		this.leftoverVisiBleColumns = leftoverVisiBleColumns;
 	}
 }
 
 export class MoveOperations {
 
-	public static leftPosition(model: ICursorSimpleModel, lineNumber: number, column: number): Position {
-		if (column > model.getLineMinColumn(lineNumber)) {
-			column = column - strings.prevCharLength(model.getLineContent(lineNumber), column - 1);
-		} else if (lineNumber > 1) {
-			lineNumber = lineNumber - 1;
-			column = model.getLineMaxColumn(lineNumber);
+	puBlic static leftPosition(model: ICursorSimpleModel, lineNumBer: numBer, column: numBer): Position {
+		if (column > model.getLineMinColumn(lineNumBer)) {
+			column = column - strings.prevCharLength(model.getLineContent(lineNumBer), column - 1);
+		} else if (lineNumBer > 1) {
+			lineNumBer = lineNumBer - 1;
+			column = model.getLineMaxColumn(lineNumBer);
 		}
-		return new Position(lineNumber, column);
+		return new Position(lineNumBer, column);
 	}
 
-	public static left(config: CursorConfiguration, model: ICursorSimpleModel, lineNumber: number, column: number): CursorPosition {
-		const pos = MoveOperations.leftPosition(model, lineNumber, column);
-		return new CursorPosition(pos.lineNumber, pos.column, 0);
+	puBlic static left(config: CursorConfiguration, model: ICursorSimpleModel, lineNumBer: numBer, column: numBer): CursorPosition {
+		const pos = MoveOperations.leftPosition(model, lineNumBer, column);
+		return new CursorPosition(pos.lineNumBer, pos.column, 0);
 	}
 
-	public static moveLeft(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean, noOfColumns: number): SingleCursorState {
-		let lineNumber: number,
-			column: number;
+	puBlic static moveLeft(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean, noOfColumns: numBer): SingleCursorState {
+		let lineNumBer: numBer,
+			column: numBer;
 
 		if (cursor.hasSelection() && !inSelectionMode) {
-			// If we are in selection mode, move left without selection cancels selection and puts cursor at the beginning of the selection
-			lineNumber = cursor.selection.startLineNumber;
+			// If we are in selection mode, move left without selection cancels selection and puts cursor at the Beginning of the selection
+			lineNumBer = cursor.selection.startLineNumBer;
 			column = cursor.selection.startColumn;
 		} else {
-			let r = MoveOperations.left(config, model, cursor.position.lineNumber, cursor.position.column - (noOfColumns - 1));
-			lineNumber = r.lineNumber;
+			let r = MoveOperations.left(config, model, cursor.position.lineNumBer, cursor.position.column - (noOfColumns - 1));
+			lineNumBer = r.lineNumBer;
 			column = r.column;
 		}
 
-		return cursor.move(inSelectionMode, lineNumber, column, 0);
+		return cursor.move(inSelectionMode, lineNumBer, column, 0);
 	}
 
-	public static rightPosition(model: ICursorSimpleModel, lineNumber: number, column: number): Position {
-		if (column < model.getLineMaxColumn(lineNumber)) {
-			column = column + strings.nextCharLength(model.getLineContent(lineNumber), column - 1);
-		} else if (lineNumber < model.getLineCount()) {
-			lineNumber = lineNumber + 1;
-			column = model.getLineMinColumn(lineNumber);
+	puBlic static rightPosition(model: ICursorSimpleModel, lineNumBer: numBer, column: numBer): Position {
+		if (column < model.getLineMaxColumn(lineNumBer)) {
+			column = column + strings.nextCharLength(model.getLineContent(lineNumBer), column - 1);
+		} else if (lineNumBer < model.getLineCount()) {
+			lineNumBer = lineNumBer + 1;
+			column = model.getLineMinColumn(lineNumBer);
 		}
-		return new Position(lineNumber, column);
+		return new Position(lineNumBer, column);
 	}
 
-	public static right(config: CursorConfiguration, model: ICursorSimpleModel, lineNumber: number, column: number): CursorPosition {
-		const pos = MoveOperations.rightPosition(model, lineNumber, column);
-		return new CursorPosition(pos.lineNumber, pos.column, 0);
+	puBlic static right(config: CursorConfiguration, model: ICursorSimpleModel, lineNumBer: numBer, column: numBer): CursorPosition {
+		const pos = MoveOperations.rightPosition(model, lineNumBer, column);
+		return new CursorPosition(pos.lineNumBer, pos.column, 0);
 	}
 
-	public static moveRight(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean, noOfColumns: number): SingleCursorState {
-		let lineNumber: number,
-			column: number;
+	puBlic static moveRight(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean, noOfColumns: numBer): SingleCursorState {
+		let lineNumBer: numBer,
+			column: numBer;
 
 		if (cursor.hasSelection() && !inSelectionMode) {
 			// If we are in selection mode, move right without selection cancels selection and puts cursor at the end of the selection
-			lineNumber = cursor.selection.endLineNumber;
+			lineNumBer = cursor.selection.endLineNumBer;
 			column = cursor.selection.endColumn;
 		} else {
-			let r = MoveOperations.right(config, model, cursor.position.lineNumber, cursor.position.column + (noOfColumns - 1));
-			lineNumber = r.lineNumber;
+			let r = MoveOperations.right(config, model, cursor.position.lineNumBer, cursor.position.column + (noOfColumns - 1));
+			lineNumBer = r.lineNumBer;
 			column = r.column;
 		}
 
-		return cursor.move(inSelectionMode, lineNumber, column, 0);
+		return cursor.move(inSelectionMode, lineNumBer, column, 0);
 	}
 
-	public static down(config: CursorConfiguration, model: ICursorSimpleModel, lineNumber: number, column: number, leftoverVisibleColumns: number, count: number, allowMoveOnLastLine: boolean): CursorPosition {
-		const currentVisibleColumn = CursorColumns.visibleColumnFromColumn(model.getLineContent(lineNumber), column, config.tabSize) + leftoverVisibleColumns;
+	puBlic static down(config: CursorConfiguration, model: ICursorSimpleModel, lineNumBer: numBer, column: numBer, leftoverVisiBleColumns: numBer, count: numBer, allowMoveOnLastLine: Boolean): CursorPosition {
+		const currentVisiBleColumn = CursorColumns.visiBleColumnFromColumn(model.getLineContent(lineNumBer), column, config.taBSize) + leftoverVisiBleColumns;
 		const lineCount = model.getLineCount();
-		const wasOnLastPosition = (lineNumber === lineCount && column === model.getLineMaxColumn(lineNumber));
+		const wasOnLastPosition = (lineNumBer === lineCount && column === model.getLineMaxColumn(lineNumBer));
 
-		lineNumber = lineNumber + count;
-		if (lineNumber > lineCount) {
-			lineNumber = lineCount;
+		lineNumBer = lineNumBer + count;
+		if (lineNumBer > lineCount) {
+			lineNumBer = lineCount;
 			if (allowMoveOnLastLine) {
-				column = model.getLineMaxColumn(lineNumber);
+				column = model.getLineMaxColumn(lineNumBer);
 			} else {
-				column = Math.min(model.getLineMaxColumn(lineNumber), column);
+				column = Math.min(model.getLineMaxColumn(lineNumBer), column);
 			}
 		} else {
-			column = CursorColumns.columnFromVisibleColumn2(config, model, lineNumber, currentVisibleColumn);
+			column = CursorColumns.columnFromVisiBleColumn2(config, model, lineNumBer, currentVisiBleColumn);
 		}
 
 		if (wasOnLastPosition) {
-			leftoverVisibleColumns = 0;
+			leftoverVisiBleColumns = 0;
 		} else {
-			leftoverVisibleColumns = currentVisibleColumn - CursorColumns.visibleColumnFromColumn(model.getLineContent(lineNumber), column, config.tabSize);
+			leftoverVisiBleColumns = currentVisiBleColumn - CursorColumns.visiBleColumnFromColumn(model.getLineContent(lineNumBer), column, config.taBSize);
 		}
 
-		return new CursorPosition(lineNumber, column, leftoverVisibleColumns);
+		return new CursorPosition(lineNumBer, column, leftoverVisiBleColumns);
 	}
 
-	public static moveDown(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean, linesCount: number): SingleCursorState {
-		let lineNumber: number,
-			column: number;
+	puBlic static moveDown(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean, linesCount: numBer): SingleCursorState {
+		let lineNumBer: numBer,
+			column: numBer;
 
 		if (cursor.hasSelection() && !inSelectionMode) {
 			// If we are in selection mode, move down acts relative to the end of selection
-			lineNumber = cursor.selection.endLineNumber;
+			lineNumBer = cursor.selection.endLineNumBer;
 			column = cursor.selection.endColumn;
 		} else {
-			lineNumber = cursor.position.lineNumber;
+			lineNumBer = cursor.position.lineNumBer;
 			column = cursor.position.column;
 		}
 
-		let r = MoveOperations.down(config, model, lineNumber, column, cursor.leftoverVisibleColumns, linesCount, true);
+		let r = MoveOperations.down(config, model, lineNumBer, column, cursor.leftoverVisiBleColumns, linesCount, true);
 
-		return cursor.move(inSelectionMode, r.lineNumber, r.column, r.leftoverVisibleColumns);
+		return cursor.move(inSelectionMode, r.lineNumBer, r.column, r.leftoverVisiBleColumns);
 	}
 
-	public static translateDown(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState): SingleCursorState {
+	puBlic static translateDown(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState): SingleCursorState {
 		let selection = cursor.selection;
 
-		let selectionStart = MoveOperations.down(config, model, selection.selectionStartLineNumber, selection.selectionStartColumn, cursor.selectionStartLeftoverVisibleColumns, 1, false);
-		let position = MoveOperations.down(config, model, selection.positionLineNumber, selection.positionColumn, cursor.leftoverVisibleColumns, 1, false);
+		let selectionStart = MoveOperations.down(config, model, selection.selectionStartLineNumBer, selection.selectionStartColumn, cursor.selectionStartLeftoverVisiBleColumns, 1, false);
+		let position = MoveOperations.down(config, model, selection.positionLineNumBer, selection.positionColumn, cursor.leftoverVisiBleColumns, 1, false);
 
 		return new SingleCursorState(
-			new Range(selectionStart.lineNumber, selectionStart.column, selectionStart.lineNumber, selectionStart.column),
-			selectionStart.leftoverVisibleColumns,
-			new Position(position.lineNumber, position.column),
-			position.leftoverVisibleColumns
+			new Range(selectionStart.lineNumBer, selectionStart.column, selectionStart.lineNumBer, selectionStart.column),
+			selectionStart.leftoverVisiBleColumns,
+			new Position(position.lineNumBer, position.column),
+			position.leftoverVisiBleColumns
 		);
 	}
 
-	public static up(config: CursorConfiguration, model: ICursorSimpleModel, lineNumber: number, column: number, leftoverVisibleColumns: number, count: number, allowMoveOnFirstLine: boolean): CursorPosition {
-		const currentVisibleColumn = CursorColumns.visibleColumnFromColumn(model.getLineContent(lineNumber), column, config.tabSize) + leftoverVisibleColumns;
-		const wasOnFirstPosition = (lineNumber === 1 && column === 1);
+	puBlic static up(config: CursorConfiguration, model: ICursorSimpleModel, lineNumBer: numBer, column: numBer, leftoverVisiBleColumns: numBer, count: numBer, allowMoveOnFirstLine: Boolean): CursorPosition {
+		const currentVisiBleColumn = CursorColumns.visiBleColumnFromColumn(model.getLineContent(lineNumBer), column, config.taBSize) + leftoverVisiBleColumns;
+		const wasOnFirstPosition = (lineNumBer === 1 && column === 1);
 
-		lineNumber = lineNumber - count;
-		if (lineNumber < 1) {
-			lineNumber = 1;
+		lineNumBer = lineNumBer - count;
+		if (lineNumBer < 1) {
+			lineNumBer = 1;
 			if (allowMoveOnFirstLine) {
-				column = model.getLineMinColumn(lineNumber);
+				column = model.getLineMinColumn(lineNumBer);
 			} else {
-				column = Math.min(model.getLineMaxColumn(lineNumber), column);
+				column = Math.min(model.getLineMaxColumn(lineNumBer), column);
 			}
 		} else {
-			column = CursorColumns.columnFromVisibleColumn2(config, model, lineNumber, currentVisibleColumn);
+			column = CursorColumns.columnFromVisiBleColumn2(config, model, lineNumBer, currentVisiBleColumn);
 		}
 
 		if (wasOnFirstPosition) {
-			leftoverVisibleColumns = 0;
+			leftoverVisiBleColumns = 0;
 		} else {
-			leftoverVisibleColumns = currentVisibleColumn - CursorColumns.visibleColumnFromColumn(model.getLineContent(lineNumber), column, config.tabSize);
+			leftoverVisiBleColumns = currentVisiBleColumn - CursorColumns.visiBleColumnFromColumn(model.getLineContent(lineNumBer), column, config.taBSize);
 		}
 
-		return new CursorPosition(lineNumber, column, leftoverVisibleColumns);
+		return new CursorPosition(lineNumBer, column, leftoverVisiBleColumns);
 	}
 
-	public static moveUp(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean, linesCount: number): SingleCursorState {
-		let lineNumber: number,
-			column: number;
+	puBlic static moveUp(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean, linesCount: numBer): SingleCursorState {
+		let lineNumBer: numBer,
+			column: numBer;
 
 		if (cursor.hasSelection() && !inSelectionMode) {
-			// If we are in selection mode, move up acts relative to the beginning of selection
-			lineNumber = cursor.selection.startLineNumber;
+			// If we are in selection mode, move up acts relative to the Beginning of selection
+			lineNumBer = cursor.selection.startLineNumBer;
 			column = cursor.selection.startColumn;
 		} else {
-			lineNumber = cursor.position.lineNumber;
+			lineNumBer = cursor.position.lineNumBer;
 			column = cursor.position.column;
 		}
 
-		let r = MoveOperations.up(config, model, lineNumber, column, cursor.leftoverVisibleColumns, linesCount, true);
+		let r = MoveOperations.up(config, model, lineNumBer, column, cursor.leftoverVisiBleColumns, linesCount, true);
 
-		return cursor.move(inSelectionMode, r.lineNumber, r.column, r.leftoverVisibleColumns);
+		return cursor.move(inSelectionMode, r.lineNumBer, r.column, r.leftoverVisiBleColumns);
 	}
 
-	public static translateUp(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState): SingleCursorState {
+	puBlic static translateUp(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState): SingleCursorState {
 
 		let selection = cursor.selection;
 
-		let selectionStart = MoveOperations.up(config, model, selection.selectionStartLineNumber, selection.selectionStartColumn, cursor.selectionStartLeftoverVisibleColumns, 1, false);
-		let position = MoveOperations.up(config, model, selection.positionLineNumber, selection.positionColumn, cursor.leftoverVisibleColumns, 1, false);
+		let selectionStart = MoveOperations.up(config, model, selection.selectionStartLineNumBer, selection.selectionStartColumn, cursor.selectionStartLeftoverVisiBleColumns, 1, false);
+		let position = MoveOperations.up(config, model, selection.positionLineNumBer, selection.positionColumn, cursor.leftoverVisiBleColumns, 1, false);
 
 		return new SingleCursorState(
-			new Range(selectionStart.lineNumber, selectionStart.column, selectionStart.lineNumber, selectionStart.column),
-			selectionStart.leftoverVisibleColumns,
-			new Position(position.lineNumber, position.column),
-			position.leftoverVisibleColumns
+			new Range(selectionStart.lineNumBer, selectionStart.column, selectionStart.lineNumBer, selectionStart.column),
+			selectionStart.leftoverVisiBleColumns,
+			new Position(position.lineNumBer, position.column),
+			position.leftoverVisiBleColumns
 		);
 	}
 
-	public static moveToBeginningOfLine(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean): SingleCursorState {
-		let lineNumber = cursor.position.lineNumber;
-		let minColumn = model.getLineMinColumn(lineNumber);
-		let firstNonBlankColumn = model.getLineFirstNonWhitespaceColumn(lineNumber) || minColumn;
+	puBlic static moveToBeginningOfLine(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean): SingleCursorState {
+		let lineNumBer = cursor.position.lineNumBer;
+		let minColumn = model.getLineMinColumn(lineNumBer);
+		let firstNonBlankColumn = model.getLineFirstNonWhitespaceColumn(lineNumBer) || minColumn;
 
-		let column: number;
+		let column: numBer;
 
-		let relevantColumnNumber = cursor.position.column;
-		if (relevantColumnNumber === firstNonBlankColumn) {
+		let relevantColumnNumBer = cursor.position.column;
+		if (relevantColumnNumBer === firstNonBlankColumn) {
 			column = minColumn;
 		} else {
 			column = firstNonBlankColumn;
 		}
 
-		return cursor.move(inSelectionMode, lineNumber, column, 0);
+		return cursor.move(inSelectionMode, lineNumBer, column, 0);
 	}
 
-	public static moveToEndOfLine(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean, sticky: boolean): SingleCursorState {
-		let lineNumber = cursor.position.lineNumber;
-		let maxColumn = model.getLineMaxColumn(lineNumber);
-		return cursor.move(inSelectionMode, lineNumber, maxColumn, sticky ? Constants.MAX_SAFE_SMALL_INTEGER - maxColumn : 0);
+	puBlic static moveToEndOfLine(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean, sticky: Boolean): SingleCursorState {
+		let lineNumBer = cursor.position.lineNumBer;
+		let maxColumn = model.getLineMaxColumn(lineNumBer);
+		return cursor.move(inSelectionMode, lineNumBer, maxColumn, sticky ? Constants.MAX_SAFE_SMALL_INTEGER - maxColumn : 0);
 	}
 
-	public static moveToBeginningOfBuffer(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean): SingleCursorState {
+	puBlic static moveToBeginningOfBuffer(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean): SingleCursorState {
 		return cursor.move(inSelectionMode, 1, 1, 0);
 	}
 
-	public static moveToEndOfBuffer(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: boolean): SingleCursorState {
-		let lastLineNumber = model.getLineCount();
-		let lastColumn = model.getLineMaxColumn(lastLineNumber);
+	puBlic static moveToEndOfBuffer(config: CursorConfiguration, model: ICursorSimpleModel, cursor: SingleCursorState, inSelectionMode: Boolean): SingleCursorState {
+		let lastLineNumBer = model.getLineCount();
+		let lastColumn = model.getLineMaxColumn(lastLineNumBer);
 
-		return cursor.move(inSelectionMode, lastLineNumber, lastColumn, 0);
+		return cursor.move(inSelectionMode, lastLineNumBer, lastColumn, 0);
 	}
 }

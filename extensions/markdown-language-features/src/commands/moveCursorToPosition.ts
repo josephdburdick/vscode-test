@@ -8,9 +8,9 @@ import * as vscode from 'vscode';
 import { Command } from '../commandManager';
 
 export class MoveCursorToPositionCommand implements Command {
-	public readonly id = '_markdown.moveCursorToPosition';
+	puBlic readonly id = '_markdown.moveCursorToPosition';
 
-	public execute(line: number, character: number) {
+	puBlic execute(line: numBer, character: numBer) {
 		if (!vscode.window.activeTextEditor) {
 			return;
 		}

@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { localize } from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
+import { Action } from 'vs/Base/common/actions';
 import { IFileService } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Schemas } from 'vs/base/common/network';
+import { URI } from 'vs/Base/common/uri';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { Schemas } from 'vs/Base/common/network';
 
 export class OpenExtensionsFolderAction extends Action {
 
-	static readonly ID = 'workbench.extensions.action.openExtensionsFolder';
+	static readonly ID = 'workBench.extensions.action.openExtensionsFolder';
 	static readonly LABEL = localize('openExtensionsFolder', "Open Extensions Folder");
 
 	constructor(
 		id: string,
-		label: string,
+		laBel: string,
 		@INativeHostService private readonly nativeHostService: INativeHostService,
 		@IFileService private readonly fileService: IFileService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		@INativeWorkBenchEnvironmentService private readonly environmentService: INativeWorkBenchEnvironmentService
 	) {
-		super(id, label, undefined, true);
+		super(id, laBel, undefined, true);
 	}
 
 	async run(): Promise<void> {

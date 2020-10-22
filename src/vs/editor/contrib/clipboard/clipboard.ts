@@ -4,30 +4,30 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as browser from 'vs/base/browser/browser';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
-import { CopyOptions, InMemoryClipboardMetadataManager } from 'vs/editor/browser/controller/textAreaInput';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, registerEditorAction, Command, MultiCommand } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import * as Browser from 'vs/Base/Browser/Browser';
+import { KeyCode, KeyMod } from 'vs/Base/common/keyCodes';
+import * as platform from 'vs/Base/common/platform';
+import { CopyOptions, InMemoryClipBoardMetadataManager } from 'vs/editor/Browser/controller/textAreaInput';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorAction, registerEditorAction, Command, MultiCommand } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { MenuId } from 'vs/platform/actions/common/actions';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 import { Handler } from 'vs/editor/common/editorCommon';
 
 const CLIPBOARD_CONTEXT_MENU_GROUP = '9_cutcopypaste';
 
 const supportsCut = (platform.isNative || document.queryCommandSupported('cut'));
 const supportsCopy = (platform.isNative || document.queryCommandSupported('copy'));
-// IE and Edge have trouble with setting html content in clipboard
-const supportsCopyWithSyntaxHighlighting = (supportsCopy && !browser.isEdge);
-// Firefox only supports navigator.clipboard.readText() in browser extensions.
-// See https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#Browser_compatibility
-const supportsPaste = (browser.isFirefox ? document.queryCommandSupported('paste') : true);
+// IE and Edge have trouBle with setting html content in clipBoard
+const supportsCopyWithSyntaxHighlighting = (supportsCopy && !Browser.isEdge);
+// Firefox only supports navigator.clipBoard.readText() in Browser extensions.
+// See https://developer.mozilla.org/en-US/docs/WeB/API/ClipBoard/readText#Browser_compatiBility
+const supportsPaste = (Browser.isFirefox ? document.queryCommandSupported('paste') : true);
 
 function registerCommand<T extends Command>(command: T): T {
 	command.register();
@@ -35,94 +35,94 @@ function registerCommand<T extends Command>(command: T): T {
 }
 
 export const CutAction = supportsCut ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardCutAction',
+	id: 'editor.action.clipBoardCutAction',
 	precondition: undefined,
-	kbOpts: (
-		// Do not bind cut keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
+	kBOpts: (
+		// Do not Bind cut keyBindings in the Browser,
+		// since Browsers do that for us and it avoids security prompts
 		platform.isNative ? {
 			primary: KeyMod.CtrlCmd | KeyCode.KEY_X,
 			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_X, secondary: [KeyMod.Shift | KeyCode.Delete] },
-			weight: KeybindingWeight.EditorContrib
+			weight: KeyBindingWeight.EditorContriB
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenuBarEditMenu,
 		group: '2_ccp',
 		title: nls.localize({ key: 'miCut', comment: ['&& denotes a mnemonic'] }, "Cu&&t"),
 		order: 1
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.cutLabel', "Cut"),
-		when: EditorContextKeys.writable,
+		title: nls.localize('actions.clipBoard.cutLaBel', "Cut"),
+		when: EditorContextKeys.writaBle,
 		order: 1,
 	}, {
 		menuId: MenuId.CommandPalette,
 		group: '',
-		title: nls.localize('actions.clipboard.cutLabel', "Cut"),
+		title: nls.localize('actions.clipBoard.cutLaBel', "Cut"),
 		order: 1
 	}]
 })) : undefined;
 
 export const CopyAction = supportsCopy ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardCopyAction',
+	id: 'editor.action.clipBoardCopyAction',
 	precondition: undefined,
-	kbOpts: (
-		// Do not bind copy keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
+	kBOpts: (
+		// Do not Bind copy keyBindings in the Browser,
+		// since Browsers do that for us and it avoids security prompts
 		platform.isNative ? {
 			primary: KeyMod.CtrlCmd | KeyCode.KEY_C,
 			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_C, secondary: [KeyMod.CtrlCmd | KeyCode.Insert] },
-			weight: KeybindingWeight.EditorContrib
+			weight: KeyBindingWeight.EditorContriB
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenuBarEditMenu,
 		group: '2_ccp',
 		title: nls.localize({ key: 'miCopy', comment: ['&& denotes a mnemonic'] }, "&&Copy"),
 		order: 2
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.copyLabel', "Copy"),
+		title: nls.localize('actions.clipBoard.copyLaBel', "Copy"),
 		order: 2,
 	}, {
 		menuId: MenuId.CommandPalette,
 		group: '',
-		title: nls.localize('actions.clipboard.copyLabel', "Copy"),
+		title: nls.localize('actions.clipBoard.copyLaBel', "Copy"),
 		order: 1
 	}]
 })) : undefined;
 
 export const PasteAction = supportsPaste ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardPasteAction',
+	id: 'editor.action.clipBoardPasteAction',
 	precondition: undefined,
-	kbOpts: (
-		// Do not bind paste keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
+	kBOpts: (
+		// Do not Bind paste keyBindings in the Browser,
+		// since Browsers do that for us and it avoids security prompts
 		platform.isNative ? {
 			primary: KeyMod.CtrlCmd | KeyCode.KEY_V,
 			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_V, secondary: [KeyMod.Shift | KeyCode.Insert] },
 			linux: { primary: KeyMod.CtrlCmd | KeyCode.KEY_V, secondary: [KeyMod.Shift | KeyCode.Insert] },
-			weight: KeybindingWeight.EditorContrib
+			weight: KeyBindingWeight.EditorContriB
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenuBarEditMenu,
 		group: '2_ccp',
 		title: nls.localize({ key: 'miPaste', comment: ['&& denotes a mnemonic'] }, "&&Paste"),
 		order: 3
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.pasteLabel', "Paste"),
-		when: EditorContextKeys.writable,
+		title: nls.localize('actions.clipBoard.pasteLaBel', "Paste"),
+		when: EditorContextKeys.writaBle,
 		order: 3,
 	}, {
 		menuId: MenuId.CommandPalette,
 		group: '',
-		title: nls.localize('actions.clipboard.pasteLabel', "Paste"),
+		title: nls.localize('actions.clipBoard.pasteLaBel', "Paste"),
 		order: 1
 	}]
 })) : undefined;
@@ -131,26 +131,26 @@ class ExecCommandCopyWithSyntaxHighlightingAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.clipboardCopyWithSyntaxHighlightingAction',
-			label: nls.localize('actions.clipboard.copyWithSyntaxHighlightingLabel', "Copy With Syntax Highlighting"),
+			id: 'editor.action.clipBoardCopyWithSyntaxHighlightingAction',
+			laBel: nls.localize('actions.clipBoard.copyWithSyntaxHighlightingLaBel', "Copy With Syntax Highlighting"),
 			alias: 'Copy With Syntax Highlighting',
 			precondition: undefined,
-			kbOpts: {
-				kbExpr: EditorContextKeys.textInputFocus,
+			kBOpts: {
+				kBExpr: EditorContextKeys.textInputFocus,
 				primary: 0,
-				weight: KeybindingWeight.EditorContrib
+				weight: KeyBindingWeight.EditorContriB
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): void {
 		if (!editor.hasModel()) {
 			return;
 		}
 
-		const emptySelectionClipboard = editor.getOption(EditorOption.emptySelectionClipboard);
+		const emptySelectionClipBoard = editor.getOption(EditorOption.emptySelectionClipBoard);
 
-		if (!emptySelectionClipboard && editor.getSelection().isEmpty()) {
+		if (!emptySelectionClipBoard && editor.getSelection().isEmpty()) {
 			return;
 		}
 
@@ -161,7 +161,7 @@ class ExecCommandCopyWithSyntaxHighlightingAction extends EditorAction {
 	}
 }
 
-function registerExecCommandImpl(target: MultiCommand | undefined, browserCommand: 'cut' | 'copy'): void {
+function registerExecCommandImpl(target: MultiCommand | undefined, BrowserCommand: 'cut' | 'copy'): void {
 	if (!target) {
 		return;
 	}
@@ -171,13 +171,13 @@ function registerExecCommandImpl(target: MultiCommand | undefined, browserComman
 		// Only if editor text focus (i.e. not if editor has widget focus).
 		const focusedEditor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
 		if (focusedEditor && focusedEditor.hasTextFocus()) {
-			// Do not execute if there is no selection and empty selection clipboard is off
-			const emptySelectionClipboard = focusedEditor.getOption(EditorOption.emptySelectionClipboard);
+			// Do not execute if there is no selection and empty selection clipBoard is off
+			const emptySelectionClipBoard = focusedEditor.getOption(EditorOption.emptySelectionClipBoard);
 			const selection = focusedEditor.getSelection();
-			if (selection && selection.isEmpty() && !emptySelectionClipboard) {
+			if (selection && selection.isEmpty() && !emptySelectionClipBoard) {
 				return true;
 			}
-			document.execCommand(browserCommand);
+			document.execCommand(BrowserCommand);
 			return true;
 		}
 		return false;
@@ -185,7 +185,7 @@ function registerExecCommandImpl(target: MultiCommand | undefined, browserComman
 
 	// 2. (default) handle case when focus is somewhere else.
 	target.addImplementation(0, (accessor: ServicesAccessor, args: any) => {
-		document.execCommand(browserCommand);
+		document.execCommand(BrowserCommand);
 		return true;
 	});
 }
@@ -197,28 +197,28 @@ if (PasteAction) {
 	// 1. Paste: handle case when focus is in editor.
 	PasteAction.addImplementation(10000, (accessor: ServicesAccessor, args: any) => {
 		const codeEditorService = accessor.get(ICodeEditorService);
-		const clipboardService = accessor.get(IClipboardService);
+		const clipBoardService = accessor.get(IClipBoardService);
 
 		// Only if editor text focus (i.e. not if editor has widget focus).
 		const focusedEditor = codeEditorService.getFocusedCodeEditor();
 		if (focusedEditor && focusedEditor.hasTextFocus()) {
 			const result = document.execCommand('paste');
-			// Use the clipboard service if document.execCommand('paste') was not successful
-			if (!result && platform.isWeb) {
+			// Use the clipBoard service if document.execCommand('paste') was not successful
+			if (!result && platform.isWeB) {
 				(async () => {
-					const clipboardText = await clipboardService.readText();
-					if (clipboardText !== '') {
-						const metadata = InMemoryClipboardMetadataManager.INSTANCE.get(clipboardText);
+					const clipBoardText = await clipBoardService.readText();
+					if (clipBoardText !== '') {
+						const metadata = InMemoryClipBoardMetadataManager.INSTANCE.get(clipBoardText);
 						let pasteOnNewLine = false;
 						let multicursorText: string[] | null = null;
 						let mode: string | null = null;
 						if (metadata) {
-							pasteOnNewLine = (focusedEditor.getOption(EditorOption.emptySelectionClipboard) && !!metadata.isFromEmptySelection);
+							pasteOnNewLine = (focusedEditor.getOption(EditorOption.emptySelectionClipBoard) && !!metadata.isFromEmptySelection);
 							multicursorText = (typeof metadata.multicursorText !== 'undefined' ? metadata.multicursorText : null);
 							mode = metadata.mode;
 						}
-						focusedEditor.trigger('keyboard', Handler.Paste, {
-							text: clipboardText,
+						focusedEditor.trigger('keyBoard', Handler.Paste, {
+							text: clipBoardText,
 							pasteOnNewLine,
 							multicursorText,
 							mode

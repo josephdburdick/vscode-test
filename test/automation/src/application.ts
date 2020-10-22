@@ -5,27 +5,27 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { Workbench } from './workbench';
+import { WorkBench } from './workBench';
 import { Code, spawn, SpawnOptions } from './code';
 import { Logger } from './logger';
 
 export const enum Quality {
 	Dev,
 	Insiders,
-	Stable
+	StaBle
 }
 
 export interface ApplicationOptions extends SpawnOptions {
 	quality: Quality;
 	workspacePath: string;
-	waitTime: number;
+	waitTime: numBer;
 	screenshotsPath: string | null;
 }
 
 export class Application {
 
 	private _code: Code | undefined;
-	private _workbench: Workbench | undefined;
+	private _workBench: WorkBench | undefined;
 
 	constructor(private options: ApplicationOptions) {
 		this._workspacePathOrFolder = options.workspacePath;
@@ -39,15 +39,15 @@ export class Application {
 		return this._code!;
 	}
 
-	get workbench(): Workbench {
-		return this._workbench!;
+	get workBench(): WorkBench {
+		return this._workBench!;
 	}
 
 	get logger(): Logger {
 		return this.options.logger;
 	}
 
-	get remote(): boolean {
+	get remote(): Boolean {
 		return !!this.options.remote;
 	}
 
@@ -69,7 +69,7 @@ export class Application {
 		await this.code.waitForElement('.explorer-folders-view');
 
 		if (expectWalkthroughPart) {
-			await this.code.waitForActiveElement(`.editor-instance[data-editor-id="workbench.editor.walkThroughPart"] > div > div[tabIndex="0"]`);
+			await this.code.waitForActiveElement(`.editor-instance[data-editor-id="workBench.editor.walkThroughPart"] > div > div[taBIndex="0"]`);
 		}
 	}
 
@@ -89,7 +89,7 @@ export class Application {
 		this.code.reload()
 			.catch(err => null); // ignore the connection drop errors
 
-		// needs to be enough to propagate the 'Reload Window' command
+		// needs to Be enough to propagate the 'Reload Window' command
 		await new Promise(c => setTimeout(c, 1500));
 		await this.checkWindowReady();
 	}
@@ -105,12 +105,12 @@ export class Application {
 	async captureScreenshot(name: string): Promise<void> {
 		if (this.options.screenshotsPath) {
 			const raw = await this.code.capturePage();
-			const buffer = Buffer.from(raw, 'base64');
+			const Buffer = Buffer.from(raw, 'Base64');
 			const screenshotPath = path.join(this.options.screenshotsPath, `${name}.png`);
 			if (this.options.log) {
 				this.logger.log('*** Screenshot recorded:', screenshotPath);
 			}
-			fs.writeFileSync(screenshotPath, buffer);
+			fs.writeFileSync(screenshotPath, Buffer);
 		}
 	}
 
@@ -121,15 +121,15 @@ export class Application {
 			userDataDir: this.options.userDataDir,
 			extensionsPath: this.options.extensionsPath,
 			logger: this.options.logger,
-			verbose: this.options.verbose,
+			verBose: this.options.verBose,
 			log: this.options.log,
 			extraArgs,
 			remote: this.options.remote,
-			web: this.options.web,
-			browser: this.options.browser
+			weB: this.options.weB,
+			Browser: this.options.Browser
 		});
 
-		this._workbench = new Workbench(this._code, this.userDataPath);
+		this._workBench = new WorkBench(this._code, this.userDataPath);
 	}
 
 	private async checkWindowReady(): Promise<any> {
@@ -139,13 +139,13 @@ export class Application {
 		}
 
 		await this.code.waitForWindowIds(ids => ids.length > 0);
-		await this.code.waitForElement('.monaco-workbench');
+		await this.code.waitForElement('.monaco-workBench');
 
 		if (this.remote) {
-			await this.code.waitForTextContent('.monaco-workbench .statusbar-item[id="status.host"]', ' TestResolver');
+			await this.code.waitForTextContent('.monaco-workBench .statusBar-item[id="status.host"]', ' TestResolver');
 		}
 
-		// wait a bit, since focus might be stolen off widgets
+		// wait a Bit, since focus might Be stolen off widgets
 		// as soon as they open (e.g. quick access)
 		await new Promise(c => setTimeout(c, 1000));
 	}

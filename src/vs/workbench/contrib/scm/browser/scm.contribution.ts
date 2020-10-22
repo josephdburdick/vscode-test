@@ -5,27 +5,27 @@
 
 import { localize } from 'vs/nls';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { DirtyDiffWorkbenchController } from './dirtydiffDecorator';
-import { VIEWLET_ID, ISCMRepository, ISCMService, VIEW_PANE_ID, ISCMProvider, ISCMViewService, REPOSITORIES_VIEW_PANE_ID } from 'vs/workbench/contrib/scm/common/scm';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
+import { IWorkBenchContriButionsRegistry, Extensions as WorkBenchExtensions } from 'vs/workBench/common/contriButions';
+import { DirtyDiffWorkBenchController } from './dirtydiffDecorator';
+import { VIEWLET_ID, ISCMRepository, ISCMService, VIEW_PANE_ID, ISCMProvider, ISCMViewService, REPOSITORIES_VIEW_PANE_ID } from 'vs/workBench/contriB/scm/common/scm';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
 import { SCMStatusController } from './activity';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
 import { IContextKeyService, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { SCMService } from 'vs/workbench/contrib/scm/common/scmService';
-import { IViewContainersRegistry, ViewContainerLocation, Extensions as ViewContainerExtensions, IViewsRegistry, IViewsService } from 'vs/workbench/common/views';
-import { SCMViewPaneContainer } from 'vs/workbench/contrib/scm/browser/scmViewPaneContainer';
+import { SCMService } from 'vs/workBench/contriB/scm/common/scmService';
+import { IViewContainersRegistry, ViewContainerLocation, Extensions as ViewContainerExtensions, IViewsRegistry, IViewsService } from 'vs/workBench/common/views';
+import { SCMViewPaneContainer } from 'vs/workBench/contriB/scm/Browser/scmViewPaneContainer';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
-import { Codicon } from 'vs/base/common/codicons';
-import { SCMViewPane } from 'vs/workbench/contrib/scm/browser/scmViewPane';
-import { SCMViewService } from 'vs/workbench/contrib/scm/browser/scmViewService';
-import { SCMRepositoriesViewPane } from 'vs/workbench/contrib/scm/browser/scmRepositoriesViewPane';
+import { Codicon } from 'vs/Base/common/codicons';
+import { SCMViewPane } from 'vs/workBench/contriB/scm/Browser/scmViewPane';
+import { SCMViewService } from 'vs/workBench/contriB/scm/Browser/scmViewService';
+import { SCMRepositoriesViewPane } from 'vs/workBench/contriB/scm/Browser/scmRepositoriesViewPane';
 
 ModesRegistry.registerLanguage({
 	id: 'scminput',
@@ -33,19 +33,19 @@ ModesRegistry.registerLanguage({
 	mimetypes: ['text/x-scm-input']
 });
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(DirtyDiffWorkbenchController, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(DirtyDiffWorkBenchController, LifecyclePhase.Restored);
 
 const viewContainer = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry).registerViewContainer({
 	id: VIEWLET_ID,
 	name: localize('source control', "Source Control"),
 	ctorDescriptor: new SyncDescriptor(SCMViewPaneContainer),
-	storageId: 'workbench.scm.views.state',
+	storageId: 'workBench.scm.views.state',
 	icon: Codicon.sourceControl.classNames,
 	alwaysUseContainerInfo: true,
 	order: 2,
 	hideIfEmpty: true
-}, ViewContainerLocation.Sidebar);
+}, ViewContainerLocation.SideBar);
 
 const viewsRegistry = Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry);
 
@@ -58,7 +58,7 @@ viewsRegistry.registerViews([{
 	id: VIEW_PANE_ID,
 	name: localize('source control', "Source Control"),
 	ctorDescriptor: new SyncDescriptor(SCMViewPane),
-	canToggleVisibility: true,
+	canToggleVisiBility: true,
 	workspace: true,
 	canMoveView: true,
 	weight: 80,
@@ -70,7 +70,7 @@ viewsRegistry.registerViews([{
 	id: REPOSITORIES_VIEW_PANE_ID,
 	name: localize('source control repositories', "Source Control Repositories"),
 	ctorDescriptor: new SyncDescriptor(SCMRepositoriesViewPane),
-	canToggleVisibility: true,
+	canToggleVisiBility: true,
 	hideByDefault: true,
 	workspace: true,
 	canMoveView: true,
@@ -81,14 +81,14 @@ viewsRegistry.registerViews([{
 	containerIcon: Codicon.sourceControl.classNames
 }], viewContainer);
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(SCMStatusController, LifecyclePhase.Restored);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(SCMStatusController, LifecyclePhase.Restored);
 
 // Register Action to Open View
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: VIEWLET_ID,
 	description: { description: localize('toggleSCMViewlet', "Show SCM"), args: [] },
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	primary: 0,
 	win: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_G },
 	linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_G },
@@ -104,14 +104,14 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 	id: 'scm',
 	order: 5,
 	title: localize('scmConfigurationTitle', "SCM"),
-	type: 'object',
+	type: 'oBject',
 	scope: ConfigurationScope.RESOURCE,
 	properties: {
 		'scm.diffDecorations': {
 			type: 'string',
 			enum: ['all', 'gutter', 'overview', 'minimap', 'none'],
 			enumDescriptions: [
-				localize('scm.diffDecorations.all', "Show the diff decorations in all available locations."),
+				localize('scm.diffDecorations.all', "Show the diff decorations in all availaBle locations."),
 				localize('scm.diffDecorations.gutter', "Show the diff decorations only in the editor gutter."),
 				localize('scm.diffDecorations.overviewRuler', "Show the diff decorations only in the overview ruler."),
 				localize('scm.diffDecorations.minimap', "Show the diff decorations only in the minimap."),
@@ -121,46 +121,46 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 			description: localize('diffDecorations', "Controls diff decorations in the editor.")
 		},
 		'scm.diffDecorationsGutterWidth': {
-			type: 'number',
+			type: 'numBer',
 			enum: [1, 2, 3, 4, 5],
 			default: 3,
 			description: localize('diffGutterWidth', "Controls the width(px) of diff decorations in gutter (added & modified).")
 		},
-		'scm.diffDecorationsGutterVisibility': {
+		'scm.diffDecorationsGutterVisiBility': {
 			type: 'string',
 			enum: ['always', 'hover'],
 			enumDescriptions: [
-				localize('scm.diffDecorationsGutterVisibility.always', "Show the diff decorator in the gutter at all times."),
-				localize('scm.diffDecorationsGutterVisibility.hover', "Show the diff decorator in the gutter only on hover.")
+				localize('scm.diffDecorationsGutterVisiBility.always', "Show the diff decorator in the gutter at all times."),
+				localize('scm.diffDecorationsGutterVisiBility.hover', "Show the diff decorator in the gutter only on hover.")
 			],
-			description: localize('scm.diffDecorationsGutterVisibility', "Controls the visibility of the Source Control diff decorator in the gutter."),
+			description: localize('scm.diffDecorationsGutterVisiBility', "Controls the visiBility of the Source Control diff decorator in the gutter."),
 			default: 'always'
 		},
 		'scm.alwaysShowActions': {
-			type: 'boolean',
-			description: localize('alwaysShowActions', "Controls whether inline actions are always visible in the Source Control view."),
+			type: 'Boolean',
+			description: localize('alwaysShowActions', "Controls whether inline actions are always visiBle in the Source Control view."),
 			default: false
 		},
 		'scm.countBadge': {
 			type: 'string',
 			enum: ['all', 'focused', 'off'],
 			enumDescriptions: [
-				localize('scm.countBadge.all', "Show the sum of all Source Control Provider count badges."),
-				localize('scm.countBadge.focused', "Show the count badge of the focused Source Control Provider."),
-				localize('scm.countBadge.off', "Disable the Source Control count badge.")
+				localize('scm.countBadge.all', "Show the sum of all Source Control Provider count Badges."),
+				localize('scm.countBadge.focused', "Show the count Badge of the focused Source Control Provider."),
+				localize('scm.countBadge.off', "DisaBle the Source Control count Badge.")
 			],
-			description: localize('scm.countBadge', "Controls the count badge on the Source Control icon on the Activity Bar."),
+			description: localize('scm.countBadge', "Controls the count Badge on the Source Control icon on the Activity Bar."),
 			default: 'all'
 		},
 		'scm.providerCountBadge': {
 			type: 'string',
-			enum: ['hidden', 'auto', 'visible'],
+			enum: ['hidden', 'auto', 'visiBle'],
 			enumDescriptions: [
-				localize('scm.providerCountBadge.hidden', "Hide Source Control Provider count badges."),
-				localize('scm.providerCountBadge.auto', "Only show count badge for Source Control Provider when non-zero."),
-				localize('scm.providerCountBadge.visible', "Show Source Control Provider count badges.")
+				localize('scm.providerCountBadge.hidden', "Hide Source Control Provider count Badges."),
+				localize('scm.providerCountBadge.auto', "Only show count Badge for Source Control Provider when non-zero."),
+				localize('scm.providerCountBadge.visiBle', "Show Source Control Provider count Badges.")
 			],
-			description: localize('scm.providerCountBadge', "Controls the count badges on Source Control Provider headers. These headers only appear when there is more than one provider."),
+			description: localize('scm.providerCountBadge', "Controls the count Badges on Source Control Provider headers. These headers only appear when there is more than one provider."),
 			default: 'hidden'
 		},
 		'scm.defaultViewMode': {
@@ -174,23 +174,23 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 			default: 'list'
 		},
 		'scm.autoReveal': {
-			type: 'boolean',
+			type: 'Boolean',
 			description: localize('autoReveal', "Controls whether the SCM view should automatically reveal and select files when opening them."),
 			default: true
 		},
 		'scm.inputFontFamily': {
 			type: 'string',
-			markdownDescription: localize('inputFontFamily', "Controls the font for the input message. Use `default` for the workbench user interface font family, `editor` for the `#editor.fontFamily#`'s value, or a custom font family."),
+			markdownDescription: localize('inputFontFamily', "Controls the font for the input message. Use `default` for the workBench user interface font family, `editor` for the `#editor.fontFamily#`'s value, or a custom font family."),
 			default: 'default'
 		},
 		'scm.alwaysShowRepositories': {
-			type: 'boolean',
-			markdownDescription: localize('alwaysShowRepository', "Controls whether repositories should always be visible in the SCM view."),
+			type: 'Boolean',
+			markdownDescription: localize('alwaysShowRepository', "Controls whether repositories should always Be visiBle in the SCM view."),
 			default: false
 		},
-		'scm.repositories.visible': {
-			type: 'number',
-			description: localize('providersVisible', "Controls how many repositories are visible in the Source Control Repositories section. Set to `0` to be able to manually resize the view."),
+		'scm.repositories.visiBle': {
+			type: 'numBer',
+			description: localize('providersVisiBle', "Controls how many repositories are visiBle in the Source Control Repositories section. Set to `0` to Be aBle to manually resize the view."),
 			default: 10
 		}
 	}
@@ -198,7 +198,7 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 
 // View menu
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.appendMenuItem(MenuId.MenuBarViewMenu, {
 	group: '3_views',
 	command: {
 		id: VIEWLET_ID,
@@ -207,10 +207,10 @@ MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
 	order: 3
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'scm.acceptInput',
 	description: { description: localize('scm accept', "SCM: Accept Input"), args: [] },
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: ContextKeyExpr.has('scmRepository'),
 	primary: KeyMod.CtrlCmd | KeyCode.Enter,
 	handler: accessor => {
@@ -229,10 +229,10 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'scm.viewNextCommit',
 	description: { description: localize('scm view next commit', "SCM: View Next Commit"), args: [] },
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: ContextKeyExpr.has('scmInputIsInLastLine'),
 	primary: KeyCode.DownArrow,
 	handler: accessor => {
@@ -243,10 +243,10 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: 'scm.viewPriorCommit',
 	description: { description: localize('scm view prior commit', "SCM: View Prior Commit"), args: [] },
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: ContextKeyExpr.has('scmInputIsInFirstLine'),
 	primary: KeyCode.UpArrow,
 	handler: accessor => {

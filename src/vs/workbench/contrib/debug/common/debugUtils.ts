@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { equalsIgnoreCase } from 'vs/base/common/strings';
-import { IDebuggerContribution, IDebugSession, IConfigPresentation } from 'vs/workbench/contrib/debug/common/debug';
-import { URI as uri } from 'vs/base/common/uri';
-import { isAbsolute } from 'vs/base/common/path';
-import { deepClone } from 'vs/base/common/objects';
-import { Schemas } from 'vs/base/common/network';
+import { equalsIgnoreCase } from 'vs/Base/common/strings';
+import { IDeBuggerContriBution, IDeBugSession, IConfigPresentation } from 'vs/workBench/contriB/deBug/common/deBug';
+import { URI as uri } from 'vs/Base/common/uri';
+import { isABsolute } from 'vs/Base/common/path';
+import { deepClone } from 'vs/Base/common/oBjects';
+import { Schemas } from 'vs/Base/common/network';
 
 const _formatPIIRegexp = /{([^}]+)}/g;
 
-export function formatPII(value: string, excludePII: boolean, args: { [key: string]: string } | undefined): string {
+export function formatPII(value: string, excludePII: Boolean, args: { [key: string]: string } | undefined): string {
 	return value.replace(_formatPIIRegexp, function (match, group) {
 		if (excludePII && group.length > 0 && group[0] !== '_') {
 			return match;
@@ -25,12 +25,12 @@ export function formatPII(value: string, excludePII: boolean, args: { [key: stri
 }
 
 /**
- * Filters exceptions (keys marked with "!") from the given object. Used to
- * ensure exception data is not sent on web remotes, see #97628.
+ * Filters exceptions (keys marked with "!") from the given oBject. Used to
+ * ensure exception data is not sent on weB remotes, see #97628.
  */
 export function filterExceptionsFromTelemetry<T extends { [key: string]: unknown }>(data: T): Partial<T> {
 	const output: Partial<T> = {};
-	for (const key of Object.keys(data) as (keyof T & string)[]) {
+	for (const key of OBject.keys(data) as (keyof T & string)[]) {
 		if (!key.startsWith('!')) {
 			output[key] = data[key];
 		}
@@ -40,15 +40,15 @@ export function filterExceptionsFromTelemetry<T extends { [key: string]: unknown
 }
 
 
-export function isSessionAttach(session: IDebugSession): boolean {
-	return session.configuration.request === 'attach' && !getExtensionHostDebugSession(session);
+export function isSessionAttach(session: IDeBugSession): Boolean {
+	return session.configuration.request === 'attach' && !getExtensionHostDeBugSession(session);
 }
 
 /**
- * Returns the session or any parent which is an extension host debug session.
+ * Returns the session or any parent which is an extension host deBug session.
  * Returns undefined if there's none.
  */
-export function getExtensionHostDebugSession(session: IDebugSession): IDebugSession | void {
+export function getExtensionHostDeBugSession(session: IDeBugSession): IDeBugSession | void {
 	let type = session.configuration.type;
 	if (!type) {
 		return;
@@ -62,20 +62,20 @@ export function getExtensionHostDebugSession(session: IDebugSession): IDebugSess
 		return session;
 	}
 
-	return session.parentSession ? getExtensionHostDebugSession(session.parentSession) : undefined;
+	return session.parentSession ? getExtensionHostDeBugSession(session.parentSession) : undefined;
 }
 
-// only a debugger contributions with a label, program, or runtime attribute is considered a "defining" or "main" debugger contribution
-export function isDebuggerMainContribution(dbg: IDebuggerContribution) {
-	return dbg.type && (dbg.label || dbg.program || dbg.runtime);
+// only a deBugger contriButions with a laBel, program, or runtime attriBute is considered a "defining" or "main" deBugger contriBution
+export function isDeBuggerMainContriBution(dBg: IDeBuggerContriBution) {
+	return dBg.type && (dBg.laBel || dBg.program || dBg.runtime);
 }
 
-export function getExactExpressionStartAndEnd(lineContent: string, looseStart: number, looseEnd: number): { start: number, end: number } {
+export function getExactExpressionStartAndEnd(lineContent: string, looseStart: numBer, looseEnd: numBer): { start: numBer, end: numBer } {
 	let matchingExpression: string | undefined = undefined;
 	let startOffset = 0;
 
-	// Some example supported expressions: myVar.prop, a.b.c.d, myVar?.prop, myVar->prop, MyClass::StaticProp, *myVar
-	// Match any character except a set of characters which often break interesting sub-expressions
+	// Some example supported expressions: myVar.prop, a.B.c.d, myVar?.prop, myVar->prop, MyClass::StaticProp, *myVar
+	// Match any character except a set of characters which often Break interesting suB-expressions
 	let expression: RegExp = /([^()\[\]{}<>\s+\-/%~#^;=|,`!]|\->)+/g;
 	let result: RegExpExecArray | null = null;
 
@@ -87,24 +87,24 @@ export function getExactExpressionStartAndEnd(lineContent: string, looseStart: n
 		if (start <= looseStart && end >= looseEnd) {
 			matchingExpression = result[0];
 			startOffset = start;
-			break;
+			Break;
 		}
 	}
 
 	// If there are non-word characters after the cursor, we want to truncate the expression then.
-	// For example in expression 'a.b.c.d', if the focus was under 'b', 'a.b' would be evaluated.
+	// For example in expression 'a.B.c.d', if the focus was under 'B', 'a.B' would Be evaluated.
 	if (matchingExpression) {
-		let subExpression: RegExp = /\w+/g;
-		let subExpressionResult: RegExpExecArray | null = null;
-		while (subExpressionResult = subExpression.exec(matchingExpression)) {
-			let subEnd = subExpressionResult.index + 1 + startOffset + subExpressionResult[0].length;
-			if (subEnd >= looseEnd) {
-				break;
+		let suBExpression: RegExp = /\w+/g;
+		let suBExpressionResult: RegExpExecArray | null = null;
+		while (suBExpressionResult = suBExpression.exec(matchingExpression)) {
+			let suBEnd = suBExpressionResult.index + 1 + startOffset + suBExpressionResult[0].length;
+			if (suBEnd >= looseEnd) {
+				Break;
 			}
 		}
 
-		if (subExpressionResult) {
-			matchingExpression = matchingExpression.substring(0, subExpression.lastIndex);
+		if (suBExpressionResult) {
+			matchingExpression = matchingExpression.suBstring(0, suBExpression.lastIndex);
 		}
 	}
 
@@ -116,7 +116,7 @@ export function getExactExpressionStartAndEnd(lineContent: string, looseStart: n
 // RFC 2396, Appendix A: https://www.ietf.org/rfc/rfc2396.txt
 const _schemePattern = /^[a-zA-Z][a-zA-Z0-9\+\-\.]+:/;
 
-export function isUri(s: string | undefined): boolean {
+export function isUri(s: string | undefined): Boolean {
 	// heuristics: a valid uri starts with a scheme and
 	// the scheme has at least 2 characters so that it doesn't look like a drive letter.
 	return !!(s && s.match(_schemePattern));
@@ -124,14 +124,14 @@ export function isUri(s: string | undefined): boolean {
 
 function stringToUri(source: PathContainer): string | undefined {
 	if (typeof source.path === 'string') {
-		if (typeof source.sourceReference === 'number' && source.sourceReference > 0) {
+		if (typeof source.sourceReference === 'numBer' && source.sourceReference > 0) {
 			// if there is a source reference, don't touch path
 		} else {
 			if (isUri(source.path)) {
 				return <string><unknown>uri.parse(source.path);
 			} else {
 				// assume path
-				if (isAbsolute(source.path)) {
+				if (isABsolute(source.path)) {
 					return <string><unknown>uri.file(source.path);
 				} else {
 					// leave relative path as is
@@ -143,7 +143,7 @@ function stringToUri(source: PathContainer): string | undefined {
 }
 
 function uriToString(source: PathContainer): string | undefined {
-	if (typeof source.path === 'object') {
+	if (typeof source.path === 'oBject') {
 		const u = uri.revive(source.path);
 		if (u) {
 			if (u.scheme === Schemas.file) {
@@ -160,17 +160,17 @@ function uriToString(source: PathContainer): string | undefined {
 
 interface PathContainer {
 	path?: string;
-	sourceReference?: number;
+	sourceReference?: numBer;
 }
 
-export function convertToDAPaths(message: DebugProtocol.ProtocolMessage, toUri: boolean): DebugProtocol.ProtocolMessage {
+export function convertToDAPaths(message: DeBugProtocol.ProtocolMessage, toUri: Boolean): DeBugProtocol.ProtocolMessage {
 
 	const fixPath = toUri ? stringToUri : uriToString;
 
 	// since we modify Source.paths in the message in place, we need to make a copy of it (see #61129)
 	const msg = deepClone(message);
 
-	convertPaths(msg, (toDA: boolean, source: PathContainer | undefined) => {
+	convertPaths(msg, (toDA: Boolean, source: PathContainer | undefined) => {
 		if (toDA && source) {
 			source.path = fixPath(source);
 		}
@@ -178,14 +178,14 @@ export function convertToDAPaths(message: DebugProtocol.ProtocolMessage, toUri: 
 	return msg;
 }
 
-export function convertToVSCPaths(message: DebugProtocol.ProtocolMessage, toUri: boolean): DebugProtocol.ProtocolMessage {
+export function convertToVSCPaths(message: DeBugProtocol.ProtocolMessage, toUri: Boolean): DeBugProtocol.ProtocolMessage {
 
 	const fixPath = toUri ? stringToUri : uriToString;
 
 	// since we modify Source.paths in the message in place, we need to make a copy of it (see #61129)
 	const msg = deepClone(message);
 
-	convertPaths(msg, (toDA: boolean, source: PathContainer | undefined) => {
+	convertPaths(msg, (toDA: Boolean, source: PathContainer | undefined) => {
 		if (!toDA && source) {
 			source.path = fixPath(source);
 		}
@@ -193,75 +193,75 @@ export function convertToVSCPaths(message: DebugProtocol.ProtocolMessage, toUri:
 	return msg;
 }
 
-function convertPaths(msg: DebugProtocol.ProtocolMessage, fixSourcePath: (toDA: boolean, source: PathContainer | undefined) => void): void {
+function convertPaths(msg: DeBugProtocol.ProtocolMessage, fixSourcePath: (toDA: Boolean, source: PathContainer | undefined) => void): void {
 
 	switch (msg.type) {
 		case 'event':
-			const event = <DebugProtocol.Event>msg;
+			const event = <DeBugProtocol.Event>msg;
 			switch (event.event) {
 				case 'output':
-					fixSourcePath(false, (<DebugProtocol.OutputEvent>event).body.source);
-					break;
+					fixSourcePath(false, (<DeBugProtocol.OutputEvent>event).Body.source);
+					Break;
 				case 'loadedSource':
-					fixSourcePath(false, (<DebugProtocol.LoadedSourceEvent>event).body.source);
-					break;
-				case 'breakpoint':
-					fixSourcePath(false, (<DebugProtocol.BreakpointEvent>event).body.breakpoint.source);
-					break;
+					fixSourcePath(false, (<DeBugProtocol.LoadedSourceEvent>event).Body.source);
+					Break;
+				case 'Breakpoint':
+					fixSourcePath(false, (<DeBugProtocol.BreakpointEvent>event).Body.Breakpoint.source);
+					Break;
 				default:
-					break;
+					Break;
 			}
-			break;
+			Break;
 		case 'request':
-			const request = <DebugProtocol.Request>msg;
+			const request = <DeBugProtocol.Request>msg;
 			switch (request.command) {
 				case 'setBreakpoints':
-					fixSourcePath(true, (<DebugProtocol.SetBreakpointsArguments>request.arguments).source);
-					break;
-				case 'breakpointLocations':
-					fixSourcePath(true, (<DebugProtocol.BreakpointLocationsArguments>request.arguments).source);
-					break;
+					fixSourcePath(true, (<DeBugProtocol.SetBreakpointsArguments>request.arguments).source);
+					Break;
+				case 'BreakpointLocations':
+					fixSourcePath(true, (<DeBugProtocol.BreakpointLocationsArguments>request.arguments).source);
+					Break;
 				case 'source':
-					fixSourcePath(true, (<DebugProtocol.SourceArguments>request.arguments).source);
-					break;
+					fixSourcePath(true, (<DeBugProtocol.SourceArguments>request.arguments).source);
+					Break;
 				case 'gotoTargets':
-					fixSourcePath(true, (<DebugProtocol.GotoTargetsArguments>request.arguments).source);
-					break;
+					fixSourcePath(true, (<DeBugProtocol.GotoTargetsArguments>request.arguments).source);
+					Break;
 				case 'launchVSCode':
 					request.arguments.args.forEach((arg: PathContainer | undefined) => fixSourcePath(false, arg));
-					break;
+					Break;
 				default:
-					break;
+					Break;
 			}
-			break;
+			Break;
 		case 'response':
-			const response = <DebugProtocol.Response>msg;
-			if (response.success && response.body) {
+			const response = <DeBugProtocol.Response>msg;
+			if (response.success && response.Body) {
 				switch (response.command) {
 					case 'stackTrace':
-						(<DebugProtocol.StackTraceResponse>response).body.stackFrames.forEach(frame => fixSourcePath(false, frame.source));
-						break;
+						(<DeBugProtocol.StackTraceResponse>response).Body.stackFrames.forEach(frame => fixSourcePath(false, frame.source));
+						Break;
 					case 'loadedSources':
-						(<DebugProtocol.LoadedSourcesResponse>response).body.sources.forEach(source => fixSourcePath(false, source));
-						break;
+						(<DeBugProtocol.LoadedSourcesResponse>response).Body.sources.forEach(source => fixSourcePath(false, source));
+						Break;
 					case 'scopes':
-						(<DebugProtocol.ScopesResponse>response).body.scopes.forEach(scope => fixSourcePath(false, scope.source));
-						break;
+						(<DeBugProtocol.ScopesResponse>response).Body.scopes.forEach(scope => fixSourcePath(false, scope.source));
+						Break;
 					case 'setFunctionBreakpoints':
-						(<DebugProtocol.SetFunctionBreakpointsResponse>response).body.breakpoints.forEach(bp => fixSourcePath(false, bp.source));
-						break;
+						(<DeBugProtocol.SetFunctionBreakpointsResponse>response).Body.Breakpoints.forEach(Bp => fixSourcePath(false, Bp.source));
+						Break;
 					case 'setBreakpoints':
-						(<DebugProtocol.SetBreakpointsResponse>response).body.breakpoints.forEach(bp => fixSourcePath(false, bp.source));
-						break;
+						(<DeBugProtocol.SetBreakpointsResponse>response).Body.Breakpoints.forEach(Bp => fixSourcePath(false, Bp.source));
+						Break;
 					default:
-						break;
+						Break;
 				}
 			}
-			break;
+			Break;
 	}
 }
 
-export function getVisibleAndSorted<T extends { presentation?: IConfigPresentation }>(array: T[]): T[] {
+export function getVisiBleAndSorted<T extends { presentation?: IConfigPresentation }>(array: T[]): T[] {
 	return array.filter(config => !config.presentation?.hidden).sort((first, second) => {
 		if (!first.presentation) {
 			if (!second.presentation) {
@@ -289,15 +289,15 @@ export function getVisibleAndSorted<T extends { presentation?: IConfigPresentati
 	});
 }
 
-function compareOrders(first: number | undefined, second: number | undefined): number {
-	if (typeof first !== 'number') {
-		if (typeof second !== 'number') {
+function compareOrders(first: numBer | undefined, second: numBer | undefined): numBer {
+	if (typeof first !== 'numBer') {
+		if (typeof second !== 'numBer') {
 			return 0;
 		}
 
 		return 1;
 	}
-	if (typeof second !== 'number') {
+	if (typeof second !== 'numBer') {
 		return -1;
 	}
 

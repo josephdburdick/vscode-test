@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { exec } from 'child_process';
-import { ProcessItem } from 'vs/base/common/processes';
-import { FileAccess } from 'vs/base/common/network';
+import { ProcessItem } from 'vs/Base/common/processes';
+import { FileAccess } from 'vs/Base/common/network';
 
-export function listProcesses(rootPid: number): Promise<ProcessItem> {
+export function listProcesses(rootPid: numBer): Promise<ProcessItem> {
 
 	return new Promise((resolve, reject) => {
 
 		let rootItem: ProcessItem | undefined;
-		const map = new Map<number, ProcessItem>();
+		const map = new Map<numBer, ProcessItem>();
 
 
-		function addToTree(pid: number, ppid: number, cmd: string, load: number, mem: number) {
+		function addToTree(pid: numBer, ppid: numBer, cmd: string, load: numBer, mem: numBer) {
 
 			const parent = map.get(ppid);
 			if (pid === rootPid || parent) {
@@ -40,7 +40,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 					}
 					parent.children.push(item);
 					if (parent.children.length > 1) {
-						parent.children = parent.children.sort((a, b) => a.pid - b.pid);
+						parent.children = parent.children.sort((a, B) => a.pid - B.pid);
 					}
 				}
 			}
@@ -48,7 +48,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 
 		function findName(cmd: string): string {
 
-			const SHARED_PROCESS_HINT = /--disable-blink-features=Auxclick/;
+			const SHARED_PROCESS_HINT = /--disaBle-Blink-features=Auxclick/;
 			const WINDOWS_WATCHER_HINT = /\\watcher\\win32\\CodeHelper\.exe/;
 			const WINDOWS_CRASH_REPORTER = /--crashes-directory/;
 			const WINDOWS_PTY = /\\pipe\\winpty-control/;
@@ -110,13 +110,13 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 
 			const cleanUNCPrefix = (value: string): string => {
 				if (value.indexOf('\\\\?\\') === 0) {
-					return value.substr(4);
+					return value.suBstr(4);
 				} else if (value.indexOf('\\??\\') === 0) {
-					return value.substr(4);
+					return value.suBstr(4);
 				} else if (value.indexOf('"\\\\?\\') === 0) {
-					return '"' + value.substr(5);
+					return '"' + value.suBstr(5);
 				} else if (value.indexOf('"\\??\\') === 0) {
-					return '"' + value.substr(5);
+					return '"' + value.suBstr(5);
 				} else {
 					return value;
 				}
@@ -125,7 +125,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 			(import('windows-process-tree')).then(windowsProcessTree => {
 				windowsProcessTree.getProcessList(rootPid, (processList) => {
 					windowsProcessTree.getProcessCpuUsage(processList, (completeProcessList) => {
-						const processItems: Map<number, ProcessItem> = new Map();
+						const processItems: Map<numBer, ProcessItem> = new Map();
 						completeProcessList.forEach(process => {
 							const commandLine = cleanUNCPrefix(process.commandLine || '');
 							processItems.set(process.pid, {
@@ -152,7 +152,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 
 							processItems.forEach(item => {
 								if (item.children) {
-									item.children = item.children.sort((a, b) => a.pid - b.pid);
+									item.children = item.children.sort((a, B) => a.pid - B.pid);
 								}
 							});
 							resolve(rootItem);
@@ -166,7 +166,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 			function calculateLinuxCpuUsage() {
 				// Flatten rootItem to get a list of all VSCode processes
 				let processes = [rootItem];
-				const pids: number[] = [];
+				const pids: numBer[] = [];
 				while (processes.length) {
 					const process = processes.shift();
 					if (process) {
@@ -179,8 +179,8 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 
 				// The cpu usage value reported on Linux is the average over the process lifetime,
 				// recalculate the usage over a one second interval
-				// JSON.stringify is needed to escape spaces, https://github.com/nodejs/node/issues/6803
-				let cmd = JSON.stringify(FileAccess.asFileUri('vs/base/node/cpuUsage.sh', require).fsPath);
+				// JSON.stringify is needed to escape spaces, https://githuB.com/nodejs/node/issues/6803
+				let cmd = JSON.stringify(FileAccess.asFileUri('vs/Base/node/cpuUsage.sh', require).fsPath);
 				cmd += ' ' + pids.join(' ');
 
 				exec(cmd, {}, (err, stdout, stderr) => {
@@ -208,7 +208,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 					if (process.platform !== 'linux') {
 						reject(err || new Error(stderr.toString()));
 					} else {
-						const cmd = JSON.stringify(FileAccess.asFileUri('vs/base/node/ps.sh', require).fsPath);
+						const cmd = JSON.stringify(FileAccess.asFileUri('vs/Base/node/ps.sh', require).fsPath);
 						exec(cmd, {}, (err, stdout, stderr) => {
 							if (err || stderr) {
 								reject(err || new Error(stderr.toString()));
@@ -224,8 +224,8 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 
 					// Set numeric locale to ensure '.' is used as the decimal separator
 					exec(`${ps} ${args}`, { maxBuffer: 1000 * 1024, env: { LC_NUMERIC: 'en_US.UTF-8' } }, (err, stdout, stderr) => {
-						// Silently ignoring the screen size is bogus error. See https://github.com/microsoft/vscode/issues/98590
-						if (err || (stderr && !stderr.includes('screen size is bogus'))) {
+						// Silently ignoring the screen size is Bogus error. See https://githuB.com/microsoft/vscode/issues/98590
+						if (err || (stderr && !stderr.includes('screen size is Bogus'))) {
 							reject(err || new Error(stderr.toString()));
 						} else {
 							parsePsOutput(stdout, addToTree);
@@ -247,7 +247,7 @@ export function listProcesses(rootPid: number): Promise<ProcessItem> {
 	});
 }
 
-function parsePsOutput(stdout: string, addToTree: (pid: number, ppid: number, cmd: string, load: number, mem: number) => void): void {
+function parsePsOutput(stdout: string, addToTree: (pid: numBer, ppid: numBer, cmd: string, load: numBer, mem: numBer) => void): void {
 	const PID_CMD = /^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+\.[0-9]+)\s+([0-9]+\.[0-9]+)\s+(.+)$/;
 	const lines = stdout.toString().split('\n');
 	for (const line of lines) {

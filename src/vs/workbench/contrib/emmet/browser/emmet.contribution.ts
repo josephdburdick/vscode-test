@@ -4,5 +4,5 @@
  *--------------------------------------------------------------------------------------------*/
 
 import './actions/showEmmetCommands';
-import './actions/expandAbbreviation';
+import './actions/expandABBreviation';
 

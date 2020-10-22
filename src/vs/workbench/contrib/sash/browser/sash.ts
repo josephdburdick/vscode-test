@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { clamp } from 'vs/base/common/numbers';
-import { createStyleSheet } from 'vs/base/browser/dom';
-import { setGlobalSashSize } from 'vs/base/browser/ui/sash/sash';
-import { Event } from 'vs/base/common/event';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { clamp } from 'vs/Base/common/numBers';
+import { createStyleSheet } from 'vs/Base/Browser/dom';
+import { setGloBalSashSize } from 'vs/Base/Browser/ui/sash/sash';
+import { Event } from 'vs/Base/common/event';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 
 export const minSize = 4;
-export const maxSize = 20; // see also https://ux.stackexchange.com/questions/39023/what-is-the-optimum-button-size-of-touch-screen-applications
+export const maxSize = 20; // see also https://ux.stackexchange.com/questions/39023/what-is-the-optimum-Button-size-of-touch-screen-applications
 
-export class SashSizeController extends Disposable implements IWorkbenchContribution {
-	private readonly configurationName = 'workbench.sash.size';
+export class SashSizeController extends DisposaBle implements IWorkBenchContriBution {
+	private readonly configurationName = 'workBench.sash.size';
 	private stylesheet: HTMLStyleElement;
 
 	constructor(
@@ -24,7 +24,7 @@ export class SashSizeController extends Disposable implements IWorkbenchContribu
 		super();
 
 		this.stylesheet = createStyleSheet();
-		this._register(toDisposable(() => this.stylesheet.remove()));
+		this._register(toDisposaBle(() => this.stylesheet.remove()));
 
 		const onDidChangeSizeConfiguration = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration(this.configurationName));
 		this._register(onDidChangeSizeConfiguration(this.onDidChangeSizeConfiguration, this));
@@ -32,19 +32,19 @@ export class SashSizeController extends Disposable implements IWorkbenchContribu
 	}
 
 	private onDidChangeSizeConfiguration(): void {
-		const size = clamp(this.configurationService.getValue<number>(this.configurationName) ?? minSize, minSize, maxSize);
+		const size = clamp(this.configurationService.getValue<numBer>(this.configurationName) ?? minSize, minSize, maxSize);
 
 		// Update styles
 		this.stylesheet.textContent = `
 			.monaco-sash.vertical { cursor: ew-resize; top: 0; width: ${size}px; height: 100%; }
 			.monaco-sash.horizontal { cursor: ns-resize; left: 0; width: 100%; height: ${size}px; }
-			.monaco-sash:not(.disabled).orthogonal-start::before, .monaco-sash:not(.disabled).orthogonal-end::after { content: ' '; height: ${size * 2}px; width: ${size * 2}px; z-index: 100; display: block; cursor: all-scroll; position: absolute; }
-			.monaco-sash.orthogonal-start.vertical::before { left: -${size / 2}px; top: -${size}px; }
-			.monaco-sash.orthogonal-end.vertical::after { left: -${size / 2}px; bottom: -${size}px; }
-			.monaco-sash.orthogonal-start.horizontal::before { top: -${size / 2}px; left: -${size}px; }
+			.monaco-sash:not(.disaBled).orthogonal-start::Before, .monaco-sash:not(.disaBled).orthogonal-end::after { content: ' '; height: ${size * 2}px; width: ${size * 2}px; z-index: 100; display: Block; cursor: all-scroll; position: aBsolute; }
+			.monaco-sash.orthogonal-start.vertical::Before { left: -${size / 2}px; top: -${size}px; }
+			.monaco-sash.orthogonal-end.vertical::after { left: -${size / 2}px; Bottom: -${size}px; }
+			.monaco-sash.orthogonal-start.horizontal::Before { top: -${size / 2}px; left: -${size}px; }
 			.monaco-sash.orthogonal-end.horizontal::after { top: -${size / 2}px; right: -${size}px; }`;
 
-		// Update behavor
-		setGlobalSashSize(size);
+		// Update Behavor
+		setGloBalSashSize(size);
 	}
 }

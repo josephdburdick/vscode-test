@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 import { CharacterClassifier } from 'vs/editor/common/core/characterClassifier';
 import { ILink } from 'vs/editor/common/modes';
 
 export interface ILinkComputerTarget {
-	getLineCount(): number;
-	getLineContent(lineNumber: number): string;
+	getLineCount(): numBer;
+	getLineContent(lineNumBer: numBer): string;
 }
 
 export const enum State {
@@ -30,15 +30,15 @@ export const enum State {
 	LastKnownState = 14 // marker, custom states may follow
 }
 
-export type Edge = [State, number, State];
+export type Edge = [State, numBer, State];
 
 export class Uint8Matrix {
 
 	private readonly _data: Uint8Array;
-	public readonly rows: number;
-	public readonly cols: number;
+	puBlic readonly rows: numBer;
+	puBlic readonly cols: numBer;
 
-	constructor(rows: number, cols: number, defaultValue: number) {
+	constructor(rows: numBer, cols: numBer, defaultValue: numBer) {
 		const data = new Uint8Array(rows * cols);
 		for (let i = 0, len = rows * cols; i < len; i++) {
 			data[i] = defaultValue;
@@ -49,11 +49,11 @@ export class Uint8Matrix {
 		this.cols = cols;
 	}
 
-	public get(row: number, col: number): number {
+	puBlic get(row: numBer, col: numBer): numBer {
 		return this._data[row * this.cols + col];
 	}
 
-	public set(row: number, col: number, value: number): void {
+	puBlic set(row: numBer, col: numBer, value: numBer): void {
 		this._data[row * this.cols + col] = value;
 	}
 }
@@ -61,7 +61,7 @@ export class Uint8Matrix {
 export class StateMachine {
 
 	private readonly _states: Uint8Matrix;
-	private readonly _maxCharCode: number;
+	private readonly _maxCharCode: numBer;
 
 	constructor(edges: Edge[]) {
 		let maxCharCode = 0;
@@ -92,7 +92,7 @@ export class StateMachine {
 		this._maxCharCode = maxCharCode;
 	}
 
-	public nextState(currentState: State, chCode: number): State {
+	puBlic nextState(currentState: State, chCode: numBer): State {
 		if (chCode < 0 || chCode >= this._maxCharCode) {
 			return State.Invalid;
 		}
@@ -169,19 +169,19 @@ function getClassifier(): CharacterClassifier<CharacterClass> {
 
 export class LinkComputer {
 
-	private static _createLink(classifier: CharacterClassifier<CharacterClass>, line: string, lineNumber: number, linkBeginIndex: number, linkEndIndex: number): ILink {
+	private static _createLink(classifier: CharacterClassifier<CharacterClass>, line: string, lineNumBer: numBer, linkBeginIndex: numBer, linkEndIndex: numBer): ILink {
 		// Do not allow to end link in certain characters...
 		let lastIncludedCharIndex = linkEndIndex - 1;
 		do {
 			const chCode = line.charCodeAt(lastIncludedCharIndex);
 			const chClass = classifier.get(chCode);
 			if (chClass !== CharacterClass.CannotEndIn) {
-				break;
+				Break;
 			}
 			lastIncludedCharIndex--;
 		} while (lastIncludedCharIndex > linkBeginIndex);
 
-		// Handle links enclosed in parens, square brackets and curlys.
+		// Handle links enclosed in parens, square Brackets and curlys.
 		if (linkBeginIndex > 0) {
 			const charCodeBeforeLink = line.charCodeAt(linkBeginIndex - 1);
 			const lastCharCodeInLink = line.charCodeAt(lastIncludedCharIndex);
@@ -191,25 +191,25 @@ export class LinkComputer {
 				|| (charCodeBeforeLink === CharCode.OpenSquareBracket && lastCharCodeInLink === CharCode.CloseSquareBracket)
 				|| (charCodeBeforeLink === CharCode.OpenCurlyBrace && lastCharCodeInLink === CharCode.CloseCurlyBrace)
 			) {
-				// Do not end in ) if ( is before the link start
-				// Do not end in ] if [ is before the link start
-				// Do not end in } if { is before the link start
+				// Do not end in ) if ( is Before the link start
+				// Do not end in ] if [ is Before the link start
+				// Do not end in } if { is Before the link start
 				lastIncludedCharIndex--;
 			}
 		}
 
 		return {
 			range: {
-				startLineNumber: lineNumber,
+				startLineNumBer: lineNumBer,
 				startColumn: linkBeginIndex + 1,
-				endLineNumber: lineNumber,
+				endLineNumBer: lineNumBer,
 				endColumn: lastIncludedCharIndex + 2
 			},
-			url: line.substring(linkBeginIndex, lastIncludedCharIndex + 1)
+			url: line.suBstring(linkBeginIndex, lastIncludedCharIndex + 1)
 		};
 	}
 
-	public static computeLinks(model: ILinkComputerTarget, stateMachine: StateMachine = getStateMachine()): ILink[] {
+	puBlic static computeLinks(model: ILinkComputerTarget, stateMachine: StateMachine = getStateMachine()): ILink[] {
 		const classifier = getClassifier();
 
 		let result: ILink[] = [];
@@ -237,48 +237,48 @@ export class LinkComputer {
 						case CharCode.OpenParen:
 							hasOpenParens = true;
 							chClass = CharacterClass.None;
-							break;
+							Break;
 						case CharCode.CloseParen:
 							chClass = (hasOpenParens ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
+							Break;
 						case CharCode.OpenSquareBracket:
 							inSquareBrackets = true;
 							hasOpenSquareBracket = true;
 							chClass = CharacterClass.None;
-							break;
+							Break;
 						case CharCode.CloseSquareBracket:
 							inSquareBrackets = false;
 							chClass = (hasOpenSquareBracket ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
+							Break;
 						case CharCode.OpenCurlyBrace:
 							hasOpenCurlyBracket = true;
 							chClass = CharacterClass.None;
-							break;
+							Break;
 						case CharCode.CloseCurlyBrace:
 							chClass = (hasOpenCurlyBracket ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
-						/* The following three rules make it that ' or " or ` are allowed inside links if the link began with a different one */
+							Break;
+						/* The following three rules make it that ' or " or ` are allowed inside links if the link Began with a different one */
 						case CharCode.SingleQuote:
-							chClass = (linkBeginChCode === CharCode.DoubleQuote || linkBeginChCode === CharCode.BackTick) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
-						case CharCode.DoubleQuote:
+							chClass = (linkBeginChCode === CharCode.DouBleQuote || linkBeginChCode === CharCode.BackTick) ? CharacterClass.None : CharacterClass.ForceTermination;
+							Break;
+						case CharCode.DouBleQuote:
 							chClass = (linkBeginChCode === CharCode.SingleQuote || linkBeginChCode === CharCode.BackTick) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
+							Break;
 						case CharCode.BackTick:
-							chClass = (linkBeginChCode === CharCode.SingleQuote || linkBeginChCode === CharCode.DoubleQuote) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
+							chClass = (linkBeginChCode === CharCode.SingleQuote || linkBeginChCode === CharCode.DouBleQuote) ? CharacterClass.None : CharacterClass.ForceTermination;
+							Break;
 						case CharCode.Asterisk:
-							// `*` terminates a link if the link began with `*`
+							// `*` terminates a link if the link Began with `*`
 							chClass = (linkBeginChCode === CharCode.Asterisk) ? CharacterClass.ForceTermination : CharacterClass.None;
-							break;
+							Break;
 						case CharCode.Pipe:
-							// `|` terminates a link if the link began with `|`
+							// `|` terminates a link if the link Began with `|`
 							chClass = (linkBeginChCode === CharCode.Pipe) ? CharacterClass.ForceTermination : CharacterClass.None;
-							break;
+							Break;
 						case CharCode.Space:
-							// ` ` allow space in between [ and ]
+							// ` ` allow space in Between [ and ]
 							chClass = (inSquareBrackets ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
+							Break;
 						default:
 							chClass = classifier.get(chCode);
 					}

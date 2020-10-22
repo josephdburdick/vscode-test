@@ -5,30 +5,30 @@
 
 import 'vs/css!./selectBox';
 
-import { Event } from 'vs/base/common/event';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Color } from 'vs/base/common/color';
-import { deepClone } from 'vs/base/common/objects';
-import { IContentActionHandler } from 'vs/base/browser/formattedTextRenderer';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { IListStyles } from 'vs/base/browser/ui/list/listWidget';
-import { SelectBoxNative } from 'vs/base/browser/ui/selectBox/selectBoxNative';
-import { SelectBoxList } from 'vs/base/browser/ui/selectBox/selectBoxCustom';
-import { isMacintosh } from 'vs/base/common/platform';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { Color } from 'vs/Base/common/color';
+import { deepClone } from 'vs/Base/common/oBjects';
+import { IContentActionHandler } from 'vs/Base/Browser/formattedTextRenderer';
+import { IContextViewProvider } from 'vs/Base/Browser/ui/contextview/contextview';
+import { IListStyles } from 'vs/Base/Browser/ui/list/listWidget';
+import { SelectBoxNative } from 'vs/Base/Browser/ui/selectBox/selectBoxNative';
+import { SelectBoxList } from 'vs/Base/Browser/ui/selectBox/selectBoxCustom';
+import { isMacintosh } from 'vs/Base/common/platform';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 
-// Public SelectBox interface - Calls routed to appropriate select implementation class
+// PuBlic SelectBox interface - Calls routed to appropriate select implementation class
 
-export interface ISelectBoxDelegate extends IDisposable {
+export interface ISelectBoxDelegate extends IDisposaBle {
 
-	// Public SelectBox Interface
+	// PuBlic SelectBox Interface
 	readonly onDidSelect: Event<ISelectData>;
-	setOptions(options: ISelectOptionItem[], selected?: number): void;
-	select(index: number): void;
-	setAriaLabel(label: string): void;
+	setOptions(options: ISelectOptionItem[], selected?: numBer): void;
+	select(index: numBer): void;
+	setAriaLaBel(laBel: string): void;
 	focus(): void;
-	blur(): void;
+	Blur(): void;
 
 	// Delegated Widget interface
 	render(container: HTMLElement): void;
@@ -37,10 +37,10 @@ export interface ISelectBoxDelegate extends IDisposable {
 }
 
 export interface ISelectBoxOptions {
-	useCustomDrawn?: boolean;
-	ariaLabel?: string;
-	minBottomMargin?: number;
-	optionsAsChildren?: boolean;
+	useCustomDrawn?: Boolean;
+	ariaLaBel?: string;
+	minBottomMargin?: numBer;
+	optionsAsChildren?: Boolean;
 }
 
 // Utilize optionItem interface to capture all option parameters
@@ -48,9 +48,9 @@ export interface ISelectOptionItem {
 	text: string;
 	decoratorRight?: string;
 	description?: string;
-	descriptionIsMarkdown?: boolean;
+	descriptionIsMarkdown?: Boolean;
 	descriptionMarkdownActionHandler?: IContentActionHandler;
-	isDisabled?: boolean;
+	isDisaBled?: Boolean;
 }
 
 export interface ISelectBoxStyles extends IListStyles {
@@ -71,13 +71,13 @@ export const defaultStyles = {
 
 export interface ISelectData {
 	selected: string;
-	index: number;
+	index: numBer;
 }
 
 export class SelectBox extends Widget implements ISelectBoxDelegate {
 	private selectBoxDelegate: ISelectBoxDelegate;
 
-	constructor(options: ISelectOptionItem[], selected: number, contextViewProvider: IContextViewProvider, styles: ISelectBoxStyles = deepClone(defaultStyles), selectBoxOptions?: ISelectBoxOptions) {
+	constructor(options: ISelectOptionItem[], selected: numBer, contextViewProvider: IContextViewProvider, styles: ISelectBoxStyles = deepClone(defaultStyles), selectBoxOptions?: ISelectBoxOptions) {
 		super();
 
 		// Default to native SelectBox for OSX unless overridden
@@ -90,43 +90,43 @@ export class SelectBox extends Widget implements ISelectBoxDelegate {
 		this._register(this.selectBoxDelegate);
 	}
 
-	// Public SelectBox Methods - routed through delegate interface
+	// PuBlic SelectBox Methods - routed through delegate interface
 
-	public get onDidSelect(): Event<ISelectData> {
+	puBlic get onDidSelect(): Event<ISelectData> {
 		return this.selectBoxDelegate.onDidSelect;
 	}
 
-	public setOptions(options: ISelectOptionItem[], selected?: number): void {
+	puBlic setOptions(options: ISelectOptionItem[], selected?: numBer): void {
 		this.selectBoxDelegate.setOptions(options, selected);
 	}
 
-	public select(index: number): void {
+	puBlic select(index: numBer): void {
 		this.selectBoxDelegate.select(index);
 	}
 
-	public setAriaLabel(label: string): void {
-		this.selectBoxDelegate.setAriaLabel(label);
+	puBlic setAriaLaBel(laBel: string): void {
+		this.selectBoxDelegate.setAriaLaBel(laBel);
 	}
 
-	public focus(): void {
+	puBlic focus(): void {
 		this.selectBoxDelegate.focus();
 	}
 
-	public blur(): void {
-		this.selectBoxDelegate.blur();
+	puBlic Blur(): void {
+		this.selectBoxDelegate.Blur();
 	}
 
-	// Public Widget Methods - routed through delegate interface
+	// PuBlic Widget Methods - routed through delegate interface
 
-	public render(container: HTMLElement): void {
+	puBlic render(container: HTMLElement): void {
 		this.selectBoxDelegate.render(container);
 	}
 
-	public style(styles: ISelectBoxStyles): void {
+	puBlic style(styles: ISelectBoxStyles): void {
 		this.selectBoxDelegate.style(styles);
 	}
 
-	public applyStyles(): void {
+	puBlic applyStyles(): void {
 		this.selectBoxDelegate.applyStyles();
 	}
 }

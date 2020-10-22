@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { commands, CompletionItem, CompletionItemKind, ExtensionContext, languages, Position, Range, SnippetString, TextEdit, window, TextDocument, CompletionContext, CancellationToken, ProviderResult, CompletionList } from 'vscode';
-import { Disposable, LanguageClientOptions, ProvideCompletionItemsSignature, NotificationType, CommonLanguageClient } from 'vscode-languageclient';
+import { DisposaBle, LanguageClientOptions, ProvideCompletionItemsSignature, NotificationType, CommonLanguageClient } from 'vscode-languageclient';
 import * as nls from 'vscode-nls';
 import { getCustomDataSource } from './customData';
 import { RequestService, serveFileSystemRequests } from './requests';
@@ -18,13 +18,13 @@ const localize = nls.loadMessageBundle();
 export type LanguageClientConstructor = (name: string, description: string, clientOptions: LanguageClientOptions) => CommonLanguageClient;
 
 export interface Runtime {
-	TextDecoder: { new(encoding?: string): { decode(buffer: ArrayBuffer): string; } };
+	TextDecoder: { new(encoding?: string): { decode(Buffer: ArrayBuffer): string; } };
 	fs?: RequestService;
 }
 
 export function startClient(context: ExtensionContext, newLanguageClient: LanguageClientConstructor, runtime: Runtime) {
 
-	const customDataSource = getCustomDataSource(context.subscriptions);
+	const customDataSource = getCustomDataSource(context.suBscriptions);
 
 	let documentSelector = ['css', 'scss', 'less'];
 
@@ -47,10 +47,10 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 
 					}
 				}
-				function updateLabel(item: CompletionItem) {
+				function updateLaBel(item: CompletionItem) {
 					if (item.kind === CompletionItemKind.Color) {
-						item.label2 = {
-							name: item.label,
+						item.laBel2 = {
+							name: item.laBel,
 							type: (item.documentation as string)
 						};
 					}
@@ -59,14 +59,14 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				function updateProposals(r: CompletionItem[] | CompletionList | null | undefined): CompletionItem[] | CompletionList | null | undefined {
 					if (r) {
 						(Array.isArray(r) ? r : r.items).forEach(updateRanges);
-						(Array.isArray(r) ? r : r.items).forEach(updateLabel);
+						(Array.isArray(r) ? r : r.items).forEach(updateLaBel);
 					}
 					return r;
 				}
-				const isThenable = <T>(obj: ProviderResult<T>): obj is Thenable<T> => obj && (<any>obj)['then'];
+				const isThenaBle = <T>(oBj: ProviderResult<T>): oBj is ThenaBle<T> => oBj && (<any>oBj)['then'];
 
 				const r = next(document, position, context, token);
-				if (isThenable<CompletionItem[] | CompletionList | null | undefined>(r)) {
+				if (isThenaBle<CompletionItem[] | CompletionList | null | undefined>(r)) {
 					return r.then(updateProposals);
 				}
 				return updateProposals(r);
@@ -87,10 +87,10 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 		serveFileSystemRequests(client, runtime);
 	});
 
-	let disposable = client.start();
-	// Push the disposable to the context's subscriptions so that the
-	// client can be deactivated on extension deactivation
-	context.subscriptions.push(disposable);
+	let disposaBle = client.start();
+	// Push the disposaBle to the context's suBscriptions so that the
+	// client can Be deactivated on extension deactivation
+	context.suBscriptions.push(disposaBle);
 
 	let indentationRules = {
 		increaseIndentPattern: /(^.*\{[^}]*$)/,
@@ -113,10 +113,10 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 	});
 
 	client.onReady().then(() => {
-		context.subscriptions.push(initCompletionProvider());
+		context.suBscriptions.push(initCompletionProvider());
 	});
 
-	function initCompletionProvider(): Disposable {
+	function initCompletionProvider(): DisposaBle {
 		const regionCompletionRegExpr = /^(\s*)(\/(\*\s*(#\w*)?)?)?$/;
 
 		return languages.registerCompletionItemProvider(documentSelector, {
@@ -125,19 +125,19 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 				let match = lineUntilPos.match(regionCompletionRegExpr);
 				if (match) {
 					let range = new Range(new Position(pos.line, match[1].length), pos);
-					let beginProposal = new CompletionItem('#region', CompletionItemKind.Snippet);
-					beginProposal.range = range; TextEdit.replace(range, '/* #region */');
-					beginProposal.insertText = new SnippetString('/* #region $1*/');
-					beginProposal.documentation = localize('folding.start', 'Folding Region Start');
-					beginProposal.filterText = match[2];
-					beginProposal.sortText = 'za';
+					let BeginProposal = new CompletionItem('#region', CompletionItemKind.Snippet);
+					BeginProposal.range = range; TextEdit.replace(range, '/* #region */');
+					BeginProposal.insertText = new SnippetString('/* #region $1*/');
+					BeginProposal.documentation = localize('folding.start', 'Folding Region Start');
+					BeginProposal.filterText = match[2];
+					BeginProposal.sortText = 'za';
 					let endProposal = new CompletionItem('#endregion', CompletionItemKind.Snippet);
 					endProposal.range = range;
 					endProposal.insertText = '/* #endregion */';
 					endProposal.documentation = localize('folding.end', 'Folding Region End');
-					endProposal.sortText = 'zb';
+					endProposal.sortText = 'zB';
 					endProposal.filterText = match[2];
-					return [beginProposal, endProposal];
+					return [BeginProposal, endProposal];
 				}
 				return null;
 			}
@@ -146,11 +146,11 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 
 	commands.registerCommand('_css.applyCodeAction', applyCodeAction);
 
-	function applyCodeAction(uri: string, documentVersion: number, edits: TextEdit[]) {
+	function applyCodeAction(uri: string, documentVersion: numBer, edits: TextEdit[]) {
 		let textEditor = window.activeTextEditor;
 		if (textEditor && textEditor.document.uri.toString() === uri) {
 			if (textEditor.document.version !== documentVersion) {
-				window.showInformationMessage(`CSS fix is outdated and can't be applied to the document.`);
+				window.showInformationMessage(`CSS fix is outdated and can't Be applied to the document.`);
 			}
 			textEditor.edit(mutator => {
 				for (let edit of edits) {

@@ -25,84 +25,84 @@ export class TestInstantiationService extends InstantiationService {
 		this._servciesMap = new Map<ServiceIdentifier<any>, any>();
 	}
 
-	public get<T>(service: ServiceIdentifier<T>): T {
+	puBlic get<T>(service: ServiceIdentifier<T>): T {
 		return <T>this._serviceCollection.get(service);
 	}
 
-	public set<T>(service: ServiceIdentifier<T>, instance: T): T {
+	puBlic set<T>(service: ServiceIdentifier<T>, instance: T): T {
 		return <T>this._serviceCollection.set(service, instance);
 	}
 
-	public mock<T>(service: ServiceIdentifier<T>): T | sinon.SinonMock {
+	puBlic mock<T>(service: ServiceIdentifier<T>): T | sinon.SinonMock {
 		return <T>this._create(service, { mock: true });
 	}
 
-	public stub<T>(service: ServiceIdentifier<T>, ctor: Function): T;
-	public stub<T>(service: ServiceIdentifier<T>, obj: Partial<T>): T;
-	public stub<T, V>(service: ServiceIdentifier<T>, ctor: Function, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStub;
-	public stub<T, V>(service: ServiceIdentifier<T>, obj: Partial<T>, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStub;
-	public stub<T, V>(service: ServiceIdentifier<T>, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStub;
-	public stub<T>(serviceIdentifier: ServiceIdentifier<T>, arg2: any, arg3?: string, arg4?: any): sinon.SinonStub | sinon.SinonSpy {
+	puBlic stuB<T>(service: ServiceIdentifier<T>, ctor: Function): T;
+	puBlic stuB<T>(service: ServiceIdentifier<T>, oBj: Partial<T>): T;
+	puBlic stuB<T, V>(service: ServiceIdentifier<T>, ctor: Function, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStuB;
+	puBlic stuB<T, V>(service: ServiceIdentifier<T>, oBj: Partial<T>, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStuB;
+	puBlic stuB<T, V>(service: ServiceIdentifier<T>, property: string, value: V): V extends Function ? sinon.SinonSpy : sinon.SinonStuB;
+	puBlic stuB<T>(serviceIdentifier: ServiceIdentifier<T>, arg2: any, arg3?: string, arg4?: any): sinon.SinonStuB | sinon.SinonSpy {
 		let service = typeof arg2 !== 'string' ? arg2 : undefined;
 		let serviceMock: IServiceMock<any> = { id: serviceIdentifier, service: service };
 		let property = typeof arg2 === 'string' ? arg2 : arg3;
 		let value = typeof arg2 === 'string' ? arg3 : arg4;
 
-		let stubObject = <any>this._create(serviceMock, { stub: true }, service && !property);
+		let stuBOBject = <any>this._create(serviceMock, { stuB: true }, service && !property);
 		if (property) {
-			if (stubObject[property]) {
-				if (stubObject[property].hasOwnProperty('restore')) {
-					stubObject[property].restore();
+			if (stuBOBject[property]) {
+				if (stuBOBject[property].hasOwnProperty('restore')) {
+					stuBOBject[property].restore();
 				}
 				if (typeof value === 'function') {
 					const spy = isSinonSpyLike(value) ? value : sinon.spy(value);
-					stubObject[property] = spy;
+					stuBOBject[property] = spy;
 					return spy;
 				} else {
-					const stub = value ? sinon.stub().returns(value) : sinon.stub();
-					stubObject[property] = stub;
-					return stub;
+					const stuB = value ? sinon.stuB().returns(value) : sinon.stuB();
+					stuBOBject[property] = stuB;
+					return stuB;
 				}
 			} else {
-				stubObject[property] = value;
+				stuBOBject[property] = value;
 			}
 		}
-		return stubObject;
+		return stuBOBject;
 	}
 
-	public stubPromise<T>(service?: ServiceIdentifier<T>, fnProperty?: string, value?: any): T | sinon.SinonStub;
-	public stubPromise<T, V>(service?: ServiceIdentifier<T>, ctor?: any, fnProperty?: string, value?: V): V extends Function ? sinon.SinonSpy : sinon.SinonStub;
-	public stubPromise<T, V>(service?: ServiceIdentifier<T>, obj?: any, fnProperty?: string, value?: V): V extends Function ? sinon.SinonSpy : sinon.SinonStub;
-	public stubPromise(arg1?: any, arg2?: any, arg3?: any, arg4?: any): sinon.SinonStub | sinon.SinonSpy {
+	puBlic stuBPromise<T>(service?: ServiceIdentifier<T>, fnProperty?: string, value?: any): T | sinon.SinonStuB;
+	puBlic stuBPromise<T, V>(service?: ServiceIdentifier<T>, ctor?: any, fnProperty?: string, value?: V): V extends Function ? sinon.SinonSpy : sinon.SinonStuB;
+	puBlic stuBPromise<T, V>(service?: ServiceIdentifier<T>, oBj?: any, fnProperty?: string, value?: V): V extends Function ? sinon.SinonSpy : sinon.SinonStuB;
+	puBlic stuBPromise(arg1?: any, arg2?: any, arg3?: any, arg4?: any): sinon.SinonStuB | sinon.SinonSpy {
 		arg3 = typeof arg2 === 'string' ? Promise.resolve(arg3) : arg3;
 		arg4 = typeof arg2 !== 'string' && typeof arg3 === 'string' ? Promise.resolve(arg4) : arg4;
-		return this.stub(arg1, arg2, arg3, arg4);
+		return this.stuB(arg1, arg2, arg3, arg4);
 	}
 
-	public spy<T>(service: ServiceIdentifier<T>, fnProperty: string): sinon.SinonSpy {
+	puBlic spy<T>(service: ServiceIdentifier<T>, fnProperty: string): sinon.SinonSpy {
 		let spy = sinon.spy();
-		this.stub(service, fnProperty, spy);
+		this.stuB(service, fnProperty, spy);
 		return spy;
 	}
 
-	private _create<T>(serviceMock: IServiceMock<T>, options: SinonOptions, reset?: boolean): any;
+	private _create<T>(serviceMock: IServiceMock<T>, options: SinonOptions, reset?: Boolean): any;
 	private _create<T>(ctor: any, options: SinonOptions): any;
-	private _create(arg1: any, options: SinonOptions, reset: boolean = false): any {
+	private _create(arg1: any, options: SinonOptions, reset: Boolean = false): any {
 		if (this.isServiceMock(arg1)) {
 			let service = this._getOrCreateService(arg1, options, reset);
 			this._serviceCollection.set(arg1.id, service);
 			return service;
 		}
-		return options.mock ? sinon.mock(arg1) : this._createStub(arg1);
+		return options.mock ? sinon.mock(arg1) : this._createStuB(arg1);
 	}
 
-	private _getOrCreateService<T>(serviceMock: IServiceMock<T>, opts: SinonOptions, reset?: boolean): any {
+	private _getOrCreateService<T>(serviceMock: IServiceMock<T>, opts: SinonOptions, reset?: Boolean): any {
 		let service: any = this._serviceCollection.get(serviceMock.id);
 		if (!reset && service) {
 			if (opts.mock && service['sinonOptions'] && !!service['sinonOptions'].mock) {
 				return service;
 			}
-			if (opts.stub && service['sinonOptions'] && !!service['sinonOptions'].stub) {
+			if (opts.stuB && service['sinonOptions'] && !!service['sinonOptions'].stuB) {
 				return service;
 			}
 		}
@@ -111,21 +111,21 @@ export class TestInstantiationService extends InstantiationService {
 
 	private _createService(serviceMock: IServiceMock<any>, opts: SinonOptions): any {
 		serviceMock.service = serviceMock.service ? serviceMock.service : this._servciesMap.get(serviceMock.id);
-		let service = opts.mock ? sinon.mock(serviceMock.service) : this._createStub(serviceMock.service);
+		let service = opts.mock ? sinon.mock(serviceMock.service) : this._createStuB(serviceMock.service);
 		service['sinonOptions'] = opts;
 		return service;
 	}
 
-	private _createStub(arg: any): any {
-		return typeof arg === 'object' ? arg : sinon.createStubInstance(arg);
+	private _createStuB(arg: any): any {
+		return typeof arg === 'oBject' ? arg : sinon.createStuBInstance(arg);
 	}
 
-	private isServiceMock(arg1: any): boolean {
-		return typeof arg1 === 'object' && arg1.hasOwnProperty('id');
+	private isServiceMock(arg1: any): Boolean {
+		return typeof arg1 === 'oBject' && arg1.hasOwnProperty('id');
 	}
 }
 
 interface SinonOptions {
-	mock?: boolean;
-	stub?: boolean;
+	mock?: Boolean;
+	stuB?: Boolean;
 }

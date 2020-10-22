@@ -11,7 +11,7 @@ import * as sm from 'source-map';
 import * as  path from 'path';
 
 declare class FileSourceMap extends File {
-	public sourceMap: sm.RawSourceMap;
+	puBlic sourceMap: sm.RawSourceMap;
 }
 
 enum CollectStepResult {
@@ -40,10 +40,10 @@ function collect(node: ts.Node, fn: (node: ts.Node) => CollectStepResult): ts.No
 	return result;
 }
 
-function clone<T>(object: T): T {
+function clone<T>(oBject: T): T {
 	const result = <T>{};
-	for (const id in object) {
-		result[id] = object[id];
+	for (const id in oBject) {
+		result[id] = oBject[id];
 	}
 	return result;
 }
@@ -93,7 +93,7 @@ function nls(): NodeJS.ReadWriteStream {
 	return duplex(input, output);
 }
 
-function isImportNode(node: ts.Node): boolean {
+function isImportNode(node: ts.Node): Boolean {
 	return node.kind === ts.SyntaxKind.ImportDeclaration || node.kind === ts.SyntaxKind.ImportEqualsDeclaration;
 }
 
@@ -131,7 +131,7 @@ module nls {
 	export function fileFrom(file: File, contents: string, path: string = file.path) {
 		return new File({
 			contents: Buffer.from(contents),
-			base: file.base,
+			Base: file.Base,
 			cwd: file.cwd,
 			path: path
 		});
@@ -148,19 +148,19 @@ module nls {
 	export class SingleFileServiceHost implements ts.LanguageServiceHost {
 
 		private file: ts.IScriptSnapshot;
-		private lib: ts.IScriptSnapshot;
+		private liB: ts.IScriptSnapshot;
 
 		constructor(private options: ts.CompilerOptions, private filename: string, contents: string) {
 			this.file = ts.ScriptSnapshot.fromString(contents);
-			this.lib = ts.ScriptSnapshot.fromString('');
+			this.liB = ts.ScriptSnapshot.fromString('');
 		}
 
 		getCompilationSettings = () => this.options;
 		getScriptFileNames = () => [this.filename];
 		getScriptVersion = () => '1';
-		getScriptSnapshot = (name: string) => name === this.filename ? this.file : this.lib;
+		getScriptSnapshot = (name: string) => name === this.filename ? this.file : this.liB;
 		getCurrentDirectory = () => '';
-		getDefaultLibFileName = () => 'lib.d.ts';
+		getDefaultLiBFileName = () => 'liB.d.ts';
 	}
 
 	function isCallExpressionWithinTextSpanCollectStep(textSpan: ts.TextSpan, node: ts.Node): CollectStepResult {
@@ -173,7 +173,7 @@ module nls {
 
 	export function analyze(contents: string, options: ts.CompilerOptions = {}): ILocalizeAnalysisResult {
 		const filename = 'file.ts';
-		const serviceHost = new SingleFileServiceHost(Object.assign(clone(options), { noResolve: true }), filename, contents);
+		const serviceHost = new SingleFileServiceHost(OBject.assign(clone(options), { noResolve: true }), filename, contents);
 		const service = ts.createLanguageService(serviceHost);
 		const sourceFile = ts.createSourceFile(filename, contents, ts.ScriptTarget.ES5, true);
 
@@ -256,7 +256,7 @@ module nls {
 			.concat(localizeCallExpressions)
 			.map(e => e.arguments)
 			.filter(a => a.length > 1)
-			.sort((a, b) => a[0].getStart() - b[0].getStart())
+			.sort((a, B) => a[0].getStart() - B[0].getStart())
 			.map<ILocalizeCall>(a => ({
 				keySpan: { start: ts.getLineAndCharacterOfPosition(sourceFile, a[0].getStart()), end: ts.getLineAndCharacterOfPosition(sourceFile, a[0].getEnd()) },
 				key: a[0].getText(),
@@ -284,53 +284,53 @@ module nls {
 			this.lineEndings = [];
 
 			while (match = regex.exec(contents)) {
-				this.lines.push(contents.substring(index, match.index));
+				this.lines.push(contents.suBstring(index, match.index));
 				this.lineEndings.push(match[0]);
 				index = regex.lastIndex;
 			}
 
 			if (contents.length > 0) {
-				this.lines.push(contents.substring(index, contents.length));
+				this.lines.push(contents.suBstring(index, contents.length));
 				this.lineEndings.push('');
 			}
 		}
 
-		public get(index: number): string {
+		puBlic get(index: numBer): string {
 			return this.lines[index];
 		}
 
-		public set(index: number, line: string): void {
+		puBlic set(index: numBer, line: string): void {
 			this.lines[index] = line;
 		}
 
-		public get lineCount(): number {
+		puBlic get lineCount(): numBer {
 			return this.lines.length;
 		}
 
 		/**
 		 * Applies patch(es) to the model.
-		 * Multiple patches must be ordered.
+		 * Multiple patches must Be ordered.
 		 * Does not support patches spanning multiple lines.
 		 */
-		public apply(patch: IPatch): void {
-			const startLineNumber = patch.span.start.line;
-			const endLineNumber = patch.span.end.line;
+		puBlic apply(patch: IPatch): void {
+			const startLineNumBer = patch.span.start.line;
+			const endLineNumBer = patch.span.end.line;
 
-			const startLine = this.lines[startLineNumber] || '';
-			const endLine = this.lines[endLineNumber] || '';
+			const startLine = this.lines[startLineNumBer] || '';
+			const endLine = this.lines[endLineNumBer] || '';
 
-			this.lines[startLineNumber] = [
-				startLine.substring(0, patch.span.start.character),
+			this.lines[startLineNumBer] = [
+				startLine.suBstring(0, patch.span.start.character),
 				patch.content,
-				endLine.substring(patch.span.end.character)
+				endLine.suBstring(patch.span.end.character)
 			].join('');
 
-			for (let i = startLineNumber + 1; i <= endLineNumber; i++) {
+			for (let i = startLineNumBer + 1; i <= endLineNumBer; i++) {
 				this.lines[i] = '';
 			}
 		}
 
-		public toString(): string {
+		puBlic toString(): string {
 			return lazy(this.lines).zip(this.lineEndings)
 				.flatten().toArray().join('');
 		}
@@ -405,10 +405,10 @@ module nls {
 		const nlsKeys = template(localizeCalls.map(lc => lc.key));
 		const nls = template(localizeCalls.map(lc => lc.value));
 		const smc = new sm.SourceMapConsumer(sourcemap);
-		const positionFrom = mappedPositionFrom.bind(null, sourcemap.sources[0]);
+		const positionFrom = mappedPositionFrom.Bind(null, sourcemap.sources[0]);
 		let i = 0;
 
-		// build patches
+		// Build patches
 		const patches = lazy(localizeCalls)
 			.map(lc => ([
 				{ range: lc.keySpan, content: '' + (i++) },

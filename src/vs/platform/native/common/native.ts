@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { MessageBoxOptions, MessageBoxReturnValue, OpenDevToolsOptions, SaveDialogOptions, OpenDialogOptions, OpenDialogReturnValue, SaveDialogReturnValue, MouseInputEvent } from 'vs/base/parts/sandbox/common/electronTypes';
-import { IOpenedWindow, IWindowOpenable, IOpenEmptyWindowOptions, IOpenWindowOptions, IColorScheme } from 'vs/platform/windows/common/windows';
+import { Event } from 'vs/Base/common/event';
+import { MessageBoxOptions, MessageBoxReturnValue, OpenDevToolsOptions, SaveDialogOptions, OpenDialogOptions, OpenDialogReturnValue, SaveDialogReturnValue, MouseInputEvent } from 'vs/Base/parts/sandBox/common/electronTypes';
+import { IOpenedWindow, IWindowOpenaBle, IOpenEmptyWindowOptions, IOpenWindowOptions, IColorScheme } from 'vs/platform/windows/common/windows';
 import { INativeOpenDialogOptions } from 'vs/platform/dialogs/common/dialogs';
-import { ISerializableCommandAction } from 'vs/platform/actions/common/actions';
-import { URI } from 'vs/base/common/uri';
+import { ISerializaBleCommandAction } from 'vs/platform/actions/common/actions';
+import { URI } from 'vs/Base/common/uri';
 
 export interface ICPUProperties {
 	model: string;
-	speed: number;
+	speed: numBer;
 }
 
 export interface IOSProperties {
@@ -24,9 +24,9 @@ export interface IOSProperties {
 }
 
 export interface IOSStatistics {
-	totalmem: number;
-	freemem: number;
-	loadavg: number[];
+	totalmem: numBer;
+	freemem: numBer;
+	loadavg: numBer[];
 }
 
 export interface ICommonNativeHostService {
@@ -34,16 +34,16 @@ export interface ICommonNativeHostService {
 	readonly _serviceBrand: undefined;
 
 	// Properties
-	readonly windowId: number;
+	readonly windowId: numBer;
 
 	// Events
-	readonly onDidOpenWindow: Event<number>;
+	readonly onDidOpenWindow: Event<numBer>;
 
-	readonly onDidMaximizeWindow: Event<number>;
-	readonly onDidUnmaximizeWindow: Event<number>;
+	readonly onDidMaximizeWindow: Event<numBer>;
+	readonly onDidUnmaximizeWindow: Event<numBer>;
 
-	readonly onDidFocusWindow: Event<number>;
-	readonly onDidBlurWindow: Event<number>;
+	readonly onDidFocusWindow: Event<numBer>;
+	readonly onDidBlurWindow: Event<numBer>;
 
 	readonly onDidResumeOS: Event<unknown>;
 
@@ -53,32 +53,32 @@ export interface ICommonNativeHostService {
 
 	// Window
 	getWindows(): Promise<IOpenedWindow[]>;
-	getWindowCount(): Promise<number>;
-	getActiveWindowId(): Promise<number | undefined>;
+	getWindowCount(): Promise<numBer>;
+	getActiveWindowId(): Promise<numBer | undefined>;
 
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(toOpen: IWindowOpenaBle[], options?: IOpenWindowOptions): Promise<void>;
 
 	toggleFullScreen(): Promise<void>;
 
-	handleTitleDoubleClick(): Promise<void>;
+	handleTitleDouBleClick(): Promise<void>;
 
-	isMaximized(): Promise<boolean>;
+	isMaximized(): Promise<Boolean>;
 	maximizeWindow(): Promise<void>;
 	unmaximizeWindow(): Promise<void>;
 	minimizeWindow(): Promise<void>;
 
-	setMinimumSize(width: number | undefined, height: number | undefined): Promise<void>;
+	setMinimumSize(width: numBer | undefined, height: numBer | undefined): Promise<void>;
 
 	/**
 	 * Make the window focused.
 	 *
 	 * @param options Pass `force: true` if you want to make the window take
 	 * focus even if the application does not have focus currently. This option
-	 * should only be used if it is necessary to steal focus from the current
-	 * focused application which may not be VSCode.
+	 * should only Be used if it is necessary to steal focus from the current
+	 * focused application which may not Be VSCode.
 	 */
-	focusWindow(options?: { windowId?: number, force?: boolean }): Promise<void>;
+	focusWindow(options?: { windowId?: numBer, force?: Boolean }): Promise<void>;
 
 	// Dialogs
 	showMessageBox(options: MessageBoxOptions): Promise<MessageBoxReturnValue>;
@@ -93,46 +93,46 @@ export interface ICommonNativeHostService {
 	// OS
 	showItemInFolder(path: string): Promise<void>;
 	setRepresentedFilename(path: string): Promise<void>;
-	setDocumentEdited(edited: boolean): Promise<void>;
-	openExternal(url: string): Promise<boolean>;
-	moveItemToTrash(fullPath: string, deleteOnFail?: boolean): Promise<boolean>;
+	setDocumentEdited(edited: Boolean): Promise<void>;
+	openExternal(url: string): Promise<Boolean>;
+	moveItemToTrash(fullPath: string, deleteOnFail?: Boolean): Promise<Boolean>;
 
-	isAdmin(): Promise<boolean>;
-	writeElevated(source: URI, target: URI, options?: { overwriteReadonly?: boolean }): Promise<void>;
+	isAdmin(): Promise<Boolean>;
+	writeElevated(source: URI, target: URI, options?: { overwriteReadonly?: Boolean }): Promise<void>;
 
 	getOSProperties(): Promise<IOSProperties>;
 	getOSStatistics(): Promise<IOSStatistics>;
-	getOSVirtualMachineHint(): Promise<number>;
+	getOSVirtualMachineHint(): Promise<numBer>;
 
 	// Process
-	killProcess(pid: number, code: string): Promise<void>;
+	killProcess(pid: numBer, code: string): Promise<void>;
 
-	// Clipboard
-	readClipboardText(type?: 'selection' | 'clipboard'): Promise<string>;
-	writeClipboardText(text: string, type?: 'selection' | 'clipboard'): Promise<void>;
-	readClipboardFindText(): Promise<string>;
-	writeClipboardFindText(text: string): Promise<void>;
-	writeClipboardBuffer(format: string, buffer: Uint8Array, type?: 'selection' | 'clipboard'): Promise<void>;
-	readClipboardBuffer(format: string): Promise<Uint8Array>;
-	hasClipboard(format: string, type?: 'selection' | 'clipboard'): Promise<boolean>;
+	// ClipBoard
+	readClipBoardText(type?: 'selection' | 'clipBoard'): Promise<string>;
+	writeClipBoardText(text: string, type?: 'selection' | 'clipBoard'): Promise<void>;
+	readClipBoardFindText(): Promise<string>;
+	writeClipBoardFindText(text: string): Promise<void>;
+	writeClipBoardBuffer(format: string, Buffer: Uint8Array, type?: 'selection' | 'clipBoard'): Promise<void>;
+	readClipBoardBuffer(format: string): Promise<Uint8Array>;
+	hasClipBoard(format: string, type?: 'selection' | 'clipBoard'): Promise<Boolean>;
 
-	// macOS Touchbar
-	newWindowTab(): Promise<void>;
-	showPreviousWindowTab(): Promise<void>;
-	showNextWindowTab(): Promise<void>;
-	moveWindowTabToNewWindow(): Promise<void>;
-	mergeAllWindowTabs(): Promise<void>;
-	toggleWindowTabsBar(): Promise<void>;
-	updateTouchBar(items: ISerializableCommandAction[][]): Promise<void>;
+	// macOS TouchBar
+	newWindowTaB(): Promise<void>;
+	showPreviousWindowTaB(): Promise<void>;
+	showNextWindowTaB(): Promise<void>;
+	moveWindowTaBToNewWindow(): Promise<void>;
+	mergeAllWindowTaBs(): Promise<void>;
+	toggleWindowTaBsBar(): Promise<void>;
+	updateTouchBar(items: ISerializaBleCommandAction[][]): Promise<void>;
 
 	// Lifecycle
 	notifyReady(): Promise<void>
 	relaunch(options?: { addArgs?: string[], removeArgs?: string[] }): Promise<void>;
-	reload(options?: { disableExtensions?: boolean }): Promise<void>;
+	reload(options?: { disaBleExtensions?: Boolean }): Promise<void>;
 	closeWindow(): Promise<void>;
-	closeWindowById(windowId: number): Promise<void>;
+	closeWindowById(windowId: numBer): Promise<void>;
 	quit(): Promise<void>;
-	exit(code: number): Promise<void>;
+	exit(code: numBer): Promise<void>;
 
 	// Development
 	openDevTools(options?: OpenDevToolsOptions): Promise<void>;
@@ -148,7 +148,7 @@ export interface ICommonNativeHostService {
 	// Credentials
 	getPassword(service: string, account: string): Promise<string | null>;
 	setPassword(service: string, account: string, password: string): Promise<void>;
-	deletePassword(service: string, account: string): Promise<boolean>;
+	deletePassword(service: string, account: string): Promise<Boolean>;
 	findPassword(service: string): Promise<string | null>;
 	findCredentials(service: string): Promise<Array<{ account: string, password: string }>>
 }

@@ -7,19 +7,19 @@ import * as vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
 import { getHtmlNode, parseDocument, validate } from './util';
 
-let balanceOutStack: Array<vscode.Selection[]> = [];
+let BalanceOutStack: Array<vscode.Selection[]> = [];
 let lastOut = false;
 let lastBalancedSelections: vscode.Selection[] = [];
 
-export function balanceOut() {
-	balance(true);
+export function BalanceOut() {
+	Balance(true);
 }
 
-export function balanceIn() {
-	balance(false);
+export function BalanceIn() {
+	Balance(false);
 }
 
-function balance(out: boolean) {
+function Balance(out: Boolean) {
 	if (!validate(false) || !vscode.window.activeTextEditor) {
 		return;
 	}
@@ -42,18 +42,18 @@ function balance(out: boolean) {
 
 	if (areSameSelections(lastBalancedSelections, editor.selections)) {
 		if (out) {
-			if (!balanceOutStack.length) {
-				balanceOutStack.push(editor.selections);
+			if (!BalanceOutStack.length) {
+				BalanceOutStack.push(editor.selections);
 			}
-			balanceOutStack.push(newSelections);
+			BalanceOutStack.push(newSelections);
 		} else {
 			if (lastOut) {
-				balanceOutStack.pop();
+				BalanceOutStack.pop();
 			}
-			newSelections = balanceOutStack.pop() || newSelections;
+			newSelections = BalanceOutStack.pop() || newSelections;
 		}
 	} else {
-		balanceOutStack = out ? [editor.selections, newSelections] : [];
+		BalanceOutStack = out ? [editor.selections, newSelections] : [];
 	}
 
 	lastOut = out;
@@ -111,12 +111,12 @@ function getRangeToBalanceIn(document: vscode.TextDocument, selection: vscode.Se
 
 }
 
-function areSameSelections(a: vscode.Selection[], b: vscode.Selection[]): boolean {
-	if (a.length !== b.length) {
+function areSameSelections(a: vscode.Selection[], B: vscode.Selection[]): Boolean {
+	if (a.length !== B.length) {
 		return false;
 	}
 	for (let i = 0; i < a.length; i++) {
-		if (!a[i].isEqual(b[i])) {
+		if (!a[i].isEqual(B[i])) {
 			return false;
 		}
 	}

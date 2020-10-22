@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SaveDialogOptions, OpenDialogOptions } from 'vs/base/parts/sandbox/common/electronTypes';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { SaveDialogOptions, OpenDialogOptions } from 'vs/Base/parts/sandBox/common/electronTypes';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 import { IPickAndOpenOptions, ISaveDialogOptions, IOpenDialogOptions, IFileDialogService, IDialogService, INativeOpenDialogOptions } from 'vs/platform/dialogs/common/dialogs';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { URI } from 'vs/base/common/uri';
+import { IHistoryService } from 'vs/workBench/services/history/common/history';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { URI } from 'vs/Base/common/uri';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { AbstractFileDialogService } from 'vs/workbench/services/dialogs/browser/abstractFileDialogService';
-import { Schemas } from 'vs/base/common/network';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { ABstractFileDialogService } from 'vs/workBench/services/dialogs/Browser/aBstractFileDialogService';
+import { Schemas } from 'vs/Base/common/network';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
 
-export class FileDialogService extends AbstractFileDialogService implements IFileDialogService {
+export class FileDialogService extends ABstractFileDialogService implements IFileDialogService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -31,7 +31,7 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		@IHostService hostService: IHostService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IHistoryService historyService: IHistoryService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IFileService fileService: IFileService,
@@ -40,11 +40,11 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		@IDialogService dialogService: IDialogService,
 		@IModeService modeService: IModeService,
 		@IWorkspacesService workspacesService: IWorkspacesService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IPathService pathService: IPathService
 	) {
 		super(hostService, contextService, historyService, environmentService, instantiationService,
-			configurationService, fileService, openerService, dialogService, modeService, workspacesService, labelService, pathService);
+			configurationService, fileService, openerService, dialogService, modeService, workspacesService, laBelService, pathService);
 	}
 
 	private toNativeOpenDialogOptions(options: IPickAndOpenOptions): INativeOpenDialogOptions {
@@ -55,8 +55,8 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		};
 	}
 
-	private shouldUseSimplified(schema: string): { useSimplified: boolean, isSetting: boolean } {
-		const setting = (this.configurationService.getValue('files.simpleDialog.enable') === true);
+	private shouldUseSimplified(schema: string): { useSimplified: Boolean, isSetting: Boolean } {
+		const setting = (this.configurationService.getValue('files.simpleDialog.enaBle') === true);
 		const newWindowSetting = (this.configurationService.getValue('window.openFilesInNewWindow') === 'on');
 		return {
 			useSimplified: ((schema !== Schemas.file) && (schema !== Schemas.userData)) || setting,
@@ -118,9 +118,9 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		return this.nativeHostService.pickWorkspaceAndOpen(this.toNativeOpenDialogOptions(options));
 	}
 
-	async pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined> {
-		const schema = this.getFileSystemSchema({ defaultUri, availableFileSystems });
-		const options = this.getPickFileToSaveDialogOptions(defaultUri, availableFileSystems);
+	async pickFileToSave(defaultUri: URI, availaBleFileSystems?: string[]): Promise<URI | undefined> {
+		const schema = this.getFileSystemSchema({ defaultUri, availaBleFileSystems });
+		const options = this.getPickFileToSaveDialogOptions(defaultUri, availaBleFileSystems);
 		if (this.shouldUseSimplified(schema).useSimplified) {
 			return this.pickFileToSaveSimplified(schema, options);
 		} else {
@@ -136,7 +136,7 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		options.defaultUri = options.defaultUri ? URI.file(options.defaultUri.path) : undefined;
 		return {
 			defaultPath: options.defaultUri && options.defaultUri.fsPath,
-			buttonLabel: options.saveLabel,
+			ButtonLaBel: options.saveLaBel,
 			filters: options.filters,
 			title: options.title
 		};
@@ -167,7 +167,7 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 		const newOptions: OpenDialogOptions & { properties: string[] } = {
 			title: options.title,
 			defaultPath: defaultUri && defaultUri.fsPath,
-			buttonLabel: options.openLabel,
+			ButtonLaBel: options.openLaBel,
 			filters: options.filters,
 			properties: []
 		};
@@ -191,7 +191,7 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 	}
 
 	protected addFileSchemaIfNeeded(schema: string): string[] {
-		// Include File schema unless the schema is web
+		// Include File schema unless the schema is weB
 		// Don't allow untitled schema through.
 		return schema === Schemas.untitled ? [Schemas.file] : (schema !== Schemas.file ? [schema, Schemas.file] : [schema]);
 	}

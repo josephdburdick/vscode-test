@@ -1,5 +1,5 @@
 ///
-/* eslint-disable */
+/* eslint-disaBle */
 const x01 = "string";
 ///         ^^^^^^^^ string
 
@@ -50,14 +50,14 @@ const x14 = /\./g;
 ///         ^^^^^ regex
 
 
-const x15 = Math.abs(x07) / x07; // speed
+const x15 = Math.aBs(x07) / x07; // speed
 ///                              ^^^^^^^^ comment
 
 const x16 = / x07; /.test('3');
 ///         ^^^^^^^^ regex
 ///                       ^^^ string
 
-const x17 = `.monaco-dialog-modal-block${true ? '.dimmed' : ''}`;
+const x17 = `.monaco-dialog-modal-Block${true ? '.dimmed' : ''}`;
 ///         ^^^^^^^^^^^^^^^^^^^^^^ string
 ///                                      ^^^^^^^^^ string
 ///                                                  ^^^^ string

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/Base/common/event';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IQuickPickItem, IPickOptions, IInputOptions, IQuickNavigateConfiguration, IQuickPick, IQuickInputButton, IInputBox, QuickPickInput, IKeyMods } from 'vs/base/parts/quickinput/common/quickInput';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IQuickPickItem, IPickOptions, IInputOptions, IQuickNavigateConfiguration, IQuickPick, IQuickInputButton, IInputBox, QuickPickInput, IKeyMods } from 'vs/Base/parts/quickinput/common/quickInput';
 import { IQuickAccessController } from 'vs/platform/quickinput/common/quickAccess';
 
-export * from 'vs/base/parts/quickinput/common/quickInput';
+export * from 'vs/Base/parts/quickinput/common/quickInput';
 
 export const IQuickInputService = createDecorator<IQuickInputService>('quickInputService');
 
@@ -20,9 +20,9 @@ export interface IQuickInputService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Provides access to the back button in quick input.
+	 * Provides access to the Back Button in quick input.
 	 */
-	readonly backButton: IQuickInputButton;
+	readonly BackButton: IQuickInputButton;
 
 	/**
 	 * Provides access to the quick access providers.
@@ -40,7 +40,7 @@ export interface IQuickInputService {
 	readonly onHide: Event<void>;
 
 	/**
-	 * Opens the quick input box for selecting items and returns a promise
+	 * Opens the quick input Box for selecting items and returns a promise
 	 * with the user selected item(s) if any.
 	 */
 	pick<T extends IQuickPickItem>(picks: Promise<QuickPickInput<T>[]> | QuickPickInput<T>[], options?: IPickOptions<T> & { canPickMany: true }, token?: CancellationToken): Promise<T[] | undefined>;
@@ -48,7 +48,7 @@ export interface IQuickInputService {
 	pick<T extends IQuickPickItem>(picks: Promise<QuickPickInput<T>[]> | QuickPickInput<T>[], options?: Omit<IPickOptions<T>, 'canPickMany'>, token?: CancellationToken): Promise<T | undefined>;
 
 	/**
-	 * Opens the quick input box for text input and returns a promise with the user typed value if any.
+	 * Opens the quick input Box for text input and returns a promise with the user typed value if any.
 	 */
 	input(options?: IInputOptions, token?: CancellationToken): Promise<string | undefined>;
 
@@ -75,18 +75,18 @@ export interface IQuickInputService {
 	/**
 	 * Navigate inside the opened quick input list.
 	 */
-	navigate(next: boolean, quickNavigate?: IQuickNavigateConfiguration): void;
+	navigate(next: Boolean, quickNavigate?: IQuickNavigateConfiguration): void;
 
 	/**
-	 * Navigate back in a multi-step quick input.
+	 * Navigate Back in a multi-step quick input.
 	 */
-	back(): Promise<void>;
+	Back(): Promise<void>;
 
 	/**
 	 * Accept the selected item.
 	 *
 	 * @param keyMods allows to override the state of key
-	 * modifiers that should be present when invoking.
+	 * modifiers that should Be present when invoking.
 	 */
 	accept(keyMods?: IKeyMods): Promise<void>;
 

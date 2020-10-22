@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
+import { IChannel, IServerChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
 import { IRequestService } from 'vs/platform/request/common/request';
-import { IRequestOptions, IRequestContext, IHeaders } from 'vs/base/parts/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { VSBuffer, bufferToStream, streamToBuffer } from 'vs/base/common/buffer';
+import { IRequestOptions, IRequestContext, IHeaders } from 'vs/Base/parts/request/common/request';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { VSBuffer, BufferToStream, streamToBuffer } from 'vs/Base/common/Buffer';
 
 type RequestResponse = [
 	{
 		headers: IHeaders;
-		statusCode?: number;
+		statusCode?: numBer;
 	},
 	VSBuffer
 ];
@@ -30,8 +30,8 @@ export class RequestChannel implements IServerChannel {
 		switch (command) {
 			case 'request': return this.service.request(args[0], CancellationToken.None)
 				.then(async ({ res, stream }) => {
-					const buffer = await streamToBuffer(stream);
-					return <RequestResponse>[{ statusCode: res.statusCode, headers: res.headers }, buffer];
+					const Buffer = await streamToBuffer(stream);
+					return <RequestResponse>[{ statusCode: res.statusCode, headers: res.headers }, Buffer];
 				});
 		}
 		throw new Error('Invalid call');
@@ -49,8 +49,8 @@ export class RequestChannelClient {
 	}
 
 	static async request(channel: IChannel, options: IRequestOptions, token: CancellationToken): Promise<IRequestContext> {
-		const [res, buffer] = await channel.call<RequestResponse>('request', [options]);
-		return { res, stream: bufferToStream(buffer) };
+		const [res, Buffer] = await channel.call<RequestResponse>('request', [options]);
+		return { res, stream: BufferToStream(Buffer) };
 	}
 
 }

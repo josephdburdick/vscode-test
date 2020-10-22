@@ -10,11 +10,11 @@ import { CURSOR, withRandomFileEditor, wait, joinLines } from './testUtils';
 
 const onDocumentChange = (doc: vscode.TextDocument): Promise<vscode.TextDocument> => {
 	return new Promise<vscode.TextDocument>(resolve => {
-		const sub = vscode.workspace.onDidChangeTextDocument(e => {
+		const suB = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document !== doc) {
 				return;
 			}
-			sub.dispose();
+			suB.dispose();
 			resolve(e.document);
 		});
 	});
@@ -28,7 +28,7 @@ const type = async (document: vscode.TextDocument, text: string): Promise<vscode
 };
 
 suite('OnEnter', () => {
-	test('should indent after if block with braces', () => {
+	test('should indent after if Block with Braces', () => {
 		return withRandomFileEditor(`if (true) {${CURSOR}`, 'js', async (_editor, document) => {
 			await type(document, '\nx');
 			assert.strictEqual(
@@ -39,7 +39,7 @@ suite('OnEnter', () => {
 		});
 	});
 
-	test('should indent within empty object literal', () => {
+	test('should indent within empty oBject literal', () => {
 		return withRandomFileEditor(`({${CURSOR}})`, 'js', async (_editor, document) => {
 			await type(document, '\nx');
 			await wait(500);

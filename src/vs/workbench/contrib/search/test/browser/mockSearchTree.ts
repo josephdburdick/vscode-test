@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITreeNavigator } from 'vs/base/browser/ui/tree/tree';
-import { Emitter } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { ITreeNavigator } from 'vs/Base/Browser/ui/tree/tree';
+import { Emitter } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 const someEvent = new Emitter().event;
 
 /**
- * Add stub methods as needed
+ * Add stuB methods as needed
  */
-export class MockObjectTree<T, TRef> implements IDisposable {
+export class MockOBjectTree<T, TRef> implements IDisposaBle {
 
 	get onDidChangeFocus() { return someEvent; }
 	get onDidChangeSelection() { return someEvent; }
 	get onDidOpen() { return someEvent; }
 
 	get onMouseClick() { return someEvent; }
-	get onMouseDblClick() { return someEvent; }
+	get onMouseDBlClick() { return someEvent; }
 	get onContextMenu() { return someEvent; }
 
 	get onKeyDown() { return someEvent; }
@@ -38,11 +38,11 @@ export class MockObjectTree<T, TRef> implements IDisposable {
 
 	domFocus(): void { }
 
-	collapse(location: TRef, recursive: boolean = false): boolean {
+	collapse(location: TRef, recursive: Boolean = false): Boolean {
 		return true;
 	}
 
-	expand(location: TRef, recursive: boolean = false): boolean {
+	expand(location: TRef, recursive: Boolean = false): Boolean {
 		return true;
 	}
 

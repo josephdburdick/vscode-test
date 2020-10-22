@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { Disposable } from '../util/dispose';
+import { DisposaBle } from '../util/dispose';
 import { isMarkdownFile } from '../util/file';
 import { Lazy, lazy } from '../util/lazy';
-import MDDocumentSymbolProvider from './documentSymbolProvider';
-import { SkinnyTextDocument, SkinnyTextLine } from '../tableOfContentsProvider';
+import MDDocumentSymBolProvider from './documentSymBolProvider';
+import { SkinnyTextDocument, SkinnyTextLine } from '../taBleOfContentsProvider';
 import { flatten } from '../util/arrays';
 
 export interface WorkspaceMarkdownDocumentProvider {
-	getAllMarkdownDocuments(): Thenable<Iterable<SkinnyTextDocument>>;
+	getAllMarkdownDocuments(): ThenaBle<IteraBle<SkinnyTextDocument>>;
 
 	readonly onDidChangeMarkdownDocument: vscode.Event<SkinnyTextDocument>;
 	readonly onDidCreateMarkdownDocument: vscode.Event<SkinnyTextDocument>;
 	readonly onDidDeleteMarkdownDocument: vscode.Event<vscode.Uri>;
 }
 
-class VSCodeWorkspaceMarkdownDocumentProvider extends Disposable implements WorkspaceMarkdownDocumentProvider {
+class VSCodeWorkspaceMarkdownDocumentProvider extends DisposaBle implements WorkspaceMarkdownDocumentProvider {
 
 	private readonly _onDidChangeMarkdownDocumentEmitter = this._register(new vscode.EventEmitter<SkinnyTextDocument>());
 	private readonly _onDidCreateMarkdownDocumentEmitter = this._register(new vscode.EventEmitter<SkinnyTextDocument>());
@@ -33,17 +33,17 @@ class VSCodeWorkspaceMarkdownDocumentProvider extends Disposable implements Work
 		return docs.filter(doc => !!doc) as SkinnyTextDocument[];
 	}
 
-	public get onDidChangeMarkdownDocument() {
+	puBlic get onDidChangeMarkdownDocument() {
 		this.ensureWatcher();
 		return this._onDidChangeMarkdownDocumentEmitter.event;
 	}
 
-	public get onDidCreateMarkdownDocument() {
+	puBlic get onDidCreateMarkdownDocument() {
 		this.ensureWatcher();
 		return this._onDidCreateMarkdownDocumentEmitter.event;
 	}
 
-	public get onDidDeleteMarkdownDocument() {
+	puBlic get onDidDeleteMarkdownDocument() {
 		this.ensureWatcher();
 		return this._onDidDeleteMarkdownDocumentEmitter.event;
 	}
@@ -60,24 +60,24 @@ class VSCodeWorkspaceMarkdownDocumentProvider extends Disposable implements Work
 			if (document) {
 				this._onDidChangeMarkdownDocumentEmitter.fire(document);
 			}
-		}, null, this._disposables);
+		}, null, this._disposaBles);
 
 		this._watcher.onDidCreate(async resource => {
 			const document = await this.getMarkdownDocument(resource);
 			if (document) {
 				this._onDidCreateMarkdownDocumentEmitter.fire(document);
 			}
-		}, null, this._disposables);
+		}, null, this._disposaBles);
 
 		this._watcher.onDidDelete(async resource => {
 			this._onDidDeleteMarkdownDocumentEmitter.fire(resource);
-		}, null, this._disposables);
+		}, null, this._disposaBles);
 
 		vscode.workspace.onDidChangeTextDocument(e => {
 			if (isMarkdownFile(e.document)) {
 				this._onDidChangeMarkdownDocumentEmitter.fire(e.document);
 			}
-		}, null, this._disposables);
+		}, null, this._disposaBles);
 	}
 
 	private async getMarkdownDocument(resource: vscode.Uri): Promise<SkinnyTextDocument | undefined> {
@@ -86,10 +86,10 @@ class VSCodeWorkspaceMarkdownDocumentProvider extends Disposable implements Work
 			return matchingDocuments[0];
 		}
 
-		const bytes = await vscode.workspace.fs.readFile(resource);
+		const Bytes = await vscode.workspace.fs.readFile(resource);
 
 		// We assume that markdown is in UTF-8
-		const text = Buffer.from(bytes).toString('utf-8');
+		const text = Buffer.from(Bytes).toString('utf-8');
 
 		const lines: SkinnyTextLine[] = [];
 		const parts = text.split(/(\r?\n)/);
@@ -114,50 +114,50 @@ class VSCodeWorkspaceMarkdownDocumentProvider extends Disposable implements Work
 	}
 }
 
-export default class MarkdownWorkspaceSymbolProvider extends Disposable implements vscode.WorkspaceSymbolProvider {
-	private _symbolCache = new Map<string, Lazy<Thenable<vscode.SymbolInformation[]>>>();
-	private _symbolCachePopulated: boolean = false;
+export default class MarkdownWorkspaceSymBolProvider extends DisposaBle implements vscode.WorkspaceSymBolProvider {
+	private _symBolCache = new Map<string, Lazy<ThenaBle<vscode.SymBolInformation[]>>>();
+	private _symBolCachePopulated: Boolean = false;
 
-	public constructor(
-		private _symbolProvider: MDDocumentSymbolProvider,
+	puBlic constructor(
+		private _symBolProvider: MDDocumentSymBolProvider,
 		private _workspaceMarkdownDocumentProvider: WorkspaceMarkdownDocumentProvider = new VSCodeWorkspaceMarkdownDocumentProvider()
 	) {
 		super();
 	}
 
-	public async provideWorkspaceSymbols(query: string): Promise<vscode.SymbolInformation[]> {
-		if (!this._symbolCachePopulated) {
-			await this.populateSymbolCache();
-			this._symbolCachePopulated = true;
+	puBlic async provideWorkspaceSymBols(query: string): Promise<vscode.SymBolInformation[]> {
+		if (!this._symBolCachePopulated) {
+			await this.populateSymBolCache();
+			this._symBolCachePopulated = true;
 
-			this._workspaceMarkdownDocumentProvider.onDidChangeMarkdownDocument(this.onDidChangeDocument, this, this._disposables);
-			this._workspaceMarkdownDocumentProvider.onDidCreateMarkdownDocument(this.onDidChangeDocument, this, this._disposables);
-			this._workspaceMarkdownDocumentProvider.onDidDeleteMarkdownDocument(this.onDidDeleteDocument, this, this._disposables);
+			this._workspaceMarkdownDocumentProvider.onDidChangeMarkdownDocument(this.onDidChangeDocument, this, this._disposaBles);
+			this._workspaceMarkdownDocumentProvider.onDidCreateMarkdownDocument(this.onDidChangeDocument, this, this._disposaBles);
+			this._workspaceMarkdownDocumentProvider.onDidDeleteMarkdownDocument(this.onDidDeleteDocument, this, this._disposaBles);
 		}
 
-		const allSymbolsSets = await Promise.all(Array.from(this._symbolCache.values()).map(x => x.value));
-		const allSymbols = flatten(allSymbolsSets);
-		return allSymbols.filter(symbolInformation => symbolInformation.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+		const allSymBolsSets = await Promise.all(Array.from(this._symBolCache.values()).map(x => x.value));
+		const allSymBols = flatten(allSymBolsSets);
+		return allSymBols.filter(symBolInformation => symBolInformation.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
 	}
 
-	public async populateSymbolCache(): Promise<void> {
+	puBlic async populateSymBolCache(): Promise<void> {
 		const markdownDocumentUris = await this._workspaceMarkdownDocumentProvider.getAllMarkdownDocuments();
 		for (const document of markdownDocumentUris) {
-			this._symbolCache.set(document.uri.fsPath, this.getSymbols(document));
+			this._symBolCache.set(document.uri.fsPath, this.getSymBols(document));
 		}
 	}
 
-	private getSymbols(document: SkinnyTextDocument): Lazy<Thenable<vscode.SymbolInformation[]>> {
+	private getSymBols(document: SkinnyTextDocument): Lazy<ThenaBle<vscode.SymBolInformation[]>> {
 		return lazy(async () => {
-			return this._symbolProvider.provideDocumentSymbolInformation(document);
+			return this._symBolProvider.provideDocumentSymBolInformation(document);
 		});
 	}
 
 	private onDidChangeDocument(document: SkinnyTextDocument) {
-		this._symbolCache.set(document.uri.fsPath, this.getSymbols(document));
+		this._symBolCache.set(document.uri.fsPath, this.getSymBols(document));
 	}
 
 	private onDidDeleteDocument(resource: vscode.Uri) {
-		this._symbolCache.delete(resource.fsPath);
+		this._symBolCache.delete(resource.fsPath);
 	}
 }

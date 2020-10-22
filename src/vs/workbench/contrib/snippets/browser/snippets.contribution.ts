@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
+import { IJSONSchema, IJSONSchemaMap } from 'vs/Base/common/jsonSchema';
 import { Registry } from 'vs/platform/registry/common/platform';
-import * as JSONContributionRegistry from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
+import * as JSONContriButionRegistry from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
 import * as nls from 'vs/nls';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { LanguageId } from 'vs/editor/common/modes';
-import { SnippetFile, Snippet } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
+import { SnippetFile, Snippet } from 'vs/workBench/contriB/snippets/Browser/snippetsFile';
 
 export const ISnippetsService = createDecorator<ISnippetsService>('snippetService');
 
@@ -17,7 +17,7 @@ export interface ISnippetsService {
 
 	readonly _serviceBrand: undefined;
 
-	getSnippetFiles(): Promise<Iterable<SnippetFile>>;
+	getSnippetFiles(): Promise<IteraBle<SnippetFile>>;
 
 	getSnippets(languageId: LanguageId): Promise<Snippet[]>;
 
@@ -31,8 +31,8 @@ const snippetSchemaProperties: IJSONSchemaMap = {
 		description: nls.localize('snippetSchema.json.prefix', 'The prefix to use when selecting the snippet in intellisense'),
 		type: ['string', 'array']
 	},
-	body: {
-		markdownDescription: nls.localize('snippetSchema.json.body', 'The snippet content. Use `$1`, `${1:defaultText}` to define cursor positions, use `$0` for the final cursor position. Insert variable values with `${varName}` and `${varName:defaultText}`, e.g. `This is file: $TM_FILENAME`.'),
+	Body: {
+		markdownDescription: nls.localize('snippetSchema.json.Body', 'The snippet content. Use `$1`, `${1:defaultText}` to define cursor positions, use `$0` for the final cursor position. Insert variaBle values with `${varName}` and `${varName:defaultText}`, e.g. `This is file: $TM_FILENAME`.'),
 		type: ['string', 'array'],
 		items: {
 			type: 'string'
@@ -49,34 +49,34 @@ const languageScopeSchema: IJSONSchema = {
 	allowComments: true,
 	allowTrailingCommas: true,
 	defaultSnippets: [{
-		label: nls.localize('snippetSchema.json.default', "Empty snippet"),
-		body: { '${1:snippetName}': { 'prefix': '${2:prefix}', 'body': '${3:snippet}', 'description': '${4:description}' } }
+		laBel: nls.localize('snippetSchema.json.default', "Empty snippet"),
+		Body: { '${1:snippetName}': { 'prefix': '${2:prefix}', 'Body': '${3:snippet}', 'description': '${4:description}' } }
 	}],
-	type: 'object',
+	type: 'oBject',
 	description: nls.localize('snippetSchema.json', 'User snippet configuration'),
 	additionalProperties: {
-		type: 'object',
-		required: ['prefix', 'body'],
+		type: 'oBject',
+		required: ['prefix', 'Body'],
 		properties: snippetSchemaProperties,
 		additionalProperties: false
 	}
 };
 
 
-const globalSchemaId = 'vscode://schemas/global-snippets';
-const globalSchema: IJSONSchema = {
-	id: globalSchemaId,
+const gloBalSchemaId = 'vscode://schemas/gloBal-snippets';
+const gloBalSchema: IJSONSchema = {
+	id: gloBalSchemaId,
 	allowComments: true,
 	allowTrailingCommas: true,
 	defaultSnippets: [{
-		label: nls.localize('snippetSchema.json.default', "Empty snippet"),
-		body: { '${1:snippetName}': { 'scope': '${2:scope}', 'prefix': '${3:prefix}', 'body': '${4:snippet}', 'description': '${5:description}' } }
+		laBel: nls.localize('snippetSchema.json.default', "Empty snippet"),
+		Body: { '${1:snippetName}': { 'scope': '${2:scope}', 'prefix': '${3:prefix}', 'Body': '${4:snippet}', 'description': '${5:description}' } }
 	}],
-	type: 'object',
+	type: 'oBject',
 	description: nls.localize('snippetSchema.json', 'User snippet configuration'),
 	additionalProperties: {
-		type: 'object',
-		required: ['prefix', 'body'],
+		type: 'oBject',
+		required: ['prefix', 'Body'],
 		properties: {
 			...snippetSchemaProperties,
 			scope: {
@@ -88,6 +88,6 @@ const globalSchema: IJSONSchema = {
 	}
 };
 
-const reg = Registry.as<JSONContributionRegistry.IJSONContributionRegistry>(JSONContributionRegistry.Extensions.JSONContribution);
+const reg = Registry.as<JSONContriButionRegistry.IJSONContriButionRegistry>(JSONContriButionRegistry.Extensions.JSONContriBution);
 reg.registerSchema(languageScopeSchemaId, languageScopeSchema);
-reg.registerSchema(globalSchemaId, globalSchema);
+reg.registerSchema(gloBalSchemaId, gloBalSchema);

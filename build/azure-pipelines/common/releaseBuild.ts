@@ -19,7 +19,7 @@ function getEnv(name: string): string {
 
 interface Config {
 	id: string;
-	frozen: boolean;
+	frozen: Boolean;
 }
 
 function createDefaultConfig(quality: string): Config {
@@ -32,7 +32,7 @@ function createDefaultConfig(quality: string): Config {
 async function getConfig(client: CosmosClient, quality: string): Promise<Config> {
 	const query = `SELECT TOP 1 * FROM c WHERE c.id = "${quality}"`;
 
-	const res = await client.database('builds').container('config').items.query(query).fetchAll();
+	const res = await client.dataBase('Builds').container('config').items.query(query).fetchAll();
 
 	if (res.resources.length === 0) {
 		return createDefaultConfig(quality);
@@ -51,13 +51,13 @@ async function main(): Promise<void> {
 	console.log('Quality config:', config);
 
 	if (config.frozen) {
-		console.log(`Skipping release because quality ${quality} is frozen.`);
+		console.log(`Skipping release Because quality ${quality} is frozen.`);
 		return;
 	}
 
-	console.log(`Releasing build ${commit}...`);
+	console.log(`Releasing Build ${commit}...`);
 
-	const scripts = client.database('builds').container(quality).scripts;
+	const scripts = client.dataBase('Builds').container(quality).scripts;
 	await scripts.storedProcedure('releaseBuild').execute('', [commit]);
 }
 

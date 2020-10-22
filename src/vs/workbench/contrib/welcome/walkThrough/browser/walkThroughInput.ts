@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorInput, EditorModel, ITextEditorModel } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { IReference } from 'vs/base/common/lifecycle';
+import { EditorInput, EditorModel, ITextEditorModel } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { IReference } from 'vs/Base/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import * as marked from 'vs/base/common/marked/marked';
-import { Schemas } from 'vs/base/common/network';
-import { isEqual } from 'vs/base/common/resources';
-import { requireToContent } from 'vs/workbench/contrib/welcome/walkThrough/common/walkThroughContentProvider';
+import * as marked from 'vs/Base/common/marked/marked';
+import { Schemas } from 'vs/Base/common/network';
+import { isEqual } from 'vs/Base/common/resources';
+import { requireToContent } from 'vs/workBench/contriB/welcome/walkThrough/common/walkThroughContentProvider';
 
 export class WalkThroughModel extends EditorModel {
 
@@ -26,7 +26,7 @@ export class WalkThroughModel extends EditorModel {
 	}
 
 	get snippets() {
-		return this.snippetRefs.map(snippet => snippet.object);
+		return this.snippetRefs.map(snippet => snippet.oBject);
 	}
 
 	dispose() {
@@ -118,7 +118,7 @@ export class WalkThroughInput extends EditorInput {
 		return this.promise;
 	}
 
-	matches(otherInput: unknown): boolean {
+	matches(otherInput: unknown): Boolean {
 		if (super.matches(otherInput) === true) {
 			return true;
 		}
@@ -126,7 +126,7 @@ export class WalkThroughInput extends EditorInput {
 		if (otherInput instanceof WalkThroughInput) {
 			let otherResourceEditorInput = <WalkThroughInput>otherInput;
 
-			// Compare by properties
+			// Compare By properties
 			return isEqual(otherResourceEditorInput.options.resource, this.options.resource);
 		}
 
@@ -142,8 +142,8 @@ export class WalkThroughInput extends EditorInput {
 		super.dispose();
 	}
 
-	public relativeScrollPosition(topScroll: number, bottomScroll: number) {
+	puBlic relativeScrollPosition(topScroll: numBer, BottomScroll: numBer) {
 		this.maxTopScroll = Math.max(this.maxTopScroll, topScroll);
-		this.maxBottomScroll = Math.max(this.maxBottomScroll, bottomScroll);
+		this.maxBottomScroll = Math.max(this.maxBottomScroll, BottomScroll);
 	}
 }

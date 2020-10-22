@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * An interface for a JavaScript object that
+ * An interface for a JavaScript oBject that
  * acts a dictionary. The keys are strings.
  */
 export type IStringDictionary<V> = Record<string, V>;
 
 
 /**
- * An interface for a JavaScript object that
- * acts a dictionary. The keys are numbers.
+ * An interface for a JavaScript oBject that
+ * acts a dictionary. The keys are numBers.
  */
-export type INumberDictionary<V> = Record<number, V>;
+export type INumBerDictionary<V> = Record<numBer, V>;
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwnProperty = OBject.prototype.hasOwnProperty;
 
 /**
  * Returns an array which contains all values that reside
  * in the given dictionary.
  */
-export function values<T>(from: IStringDictionary<T> | INumberDictionary<T>): T[] {
+export function values<T>(from: IStringDictionary<T> | INumBerDictionary<T>): T[] {
 	const result: T[] = [];
 	for (let key in from) {
 		if (hasOwnProperty.call(from, key)) {
@@ -34,12 +34,12 @@ export function values<T>(from: IStringDictionary<T> | INumberDictionary<T>): T[
 
 /**
  * Iterates over each entry in the provided dictionary. The iterator allows
- * to remove elements and will stop when the callback returns {{false}}.
+ * to remove elements and will stop when the callBack returns {{false}}.
  */
-export function forEach<T>(from: IStringDictionary<T> | INumberDictionary<T>, callback: (entry: { key: any; value: T; }, remove: () => void) => any): void {
+export function forEach<T>(from: IStringDictionary<T> | INumBerDictionary<T>, callBack: (entry: { key: any; value: T; }, remove: () => void) => any): void {
 	for (let key in from) {
 		if (hasOwnProperty.call(from, key)) {
-			const result = callback({ key: key, value: (from as any)[key] }, function () {
+			const result = callBack({ key: key, value: (from as any)[key] }, function () {
 				delete (from as any)[key];
 			});
 			if (result === false) {
@@ -50,11 +50,11 @@ export function forEach<T>(from: IStringDictionary<T> | INumberDictionary<T>, ca
 }
 
 /**
- * Groups the collection into a dictionary based on the provided
+ * Groups the collection into a dictionary Based on the provided
  * group function.
  */
 export function groupBy<T>(data: T[], groupFn: (element: T) => string): IStringDictionary<T[]> {
-	const result: IStringDictionary<T[]> = Object.create(null);
+	const result: IStringDictionary<T[]> = OBject.create(null);
 	for (const element of data) {
 		const key = groupFn(element);
 		let target = result[key];
@@ -67,7 +67,7 @@ export function groupBy<T>(data: T[], groupFn: (element: T) => string): IStringD
 }
 
 export function fromMap<T>(original: Map<string, T>): IStringDictionary<T> {
-	const result: IStringDictionary<T> = Object.create(null);
+	const result: IStringDictionary<T> = OBject.create(null);
 	if (original) {
 		original.forEach((value, key) => {
 			result[key] = value;

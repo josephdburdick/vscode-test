@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { compare } from 'vs/base/common/strings';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
+import { compare } from 'vs/Base/common/strings';
 import { Position } from 'vs/editor/common/core/position';
 import { IRange, Range } from 'vs/editor/common/core/range';
 import { ITextModel } from 'vs/editor/common/model';
-import { CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, LanguageId, CompletionItemInsertTextRule, CompletionContext, CompletionTriggerKind, CompletionItemLabel } from 'vs/editor/common/modes';
+import { CompletionItem, CompletionItemKind, CompletionItemProvider, CompletionList, LanguageId, CompletionItemInsertTextRule, CompletionContext, CompletionTriggerKind, CompletionItemLaBel } from 'vs/editor/common/modes';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { SnippetParser } from 'vs/editor/contrib/snippet/snippetParser';
+import { SnippetParser } from 'vs/editor/contriB/snippet/snippetParser';
 import { localize } from 'vs/nls';
-import { ISnippetsService } from 'vs/workbench/contrib/snippets/browser/snippets.contribution';
-import { Snippet, SnippetSource } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
-import { isPatternInWord } from 'vs/base/common/filters';
+import { ISnippetsService } from 'vs/workBench/contriB/snippets/Browser/snippets.contriBution';
+import { Snippet, SnippetSource } from 'vs/workBench/contriB/snippets/Browser/snippetsFile';
+import { isPatternInWord } from 'vs/Base/common/filters';
 
 export class SnippetCompletion implements CompletionItem {
 
-	label: CompletionItemLabel;
+	laBel: CompletionItemLaBel;
 	detail: string;
 	insertText: string;
 	documentation?: MarkdownString;
@@ -31,11 +31,11 @@ export class SnippetCompletion implements CompletionItem {
 		readonly snippet: Snippet,
 		range: IRange | { insert: IRange, replace: IRange }
 	) {
-		this.label = {
+		this.laBel = {
 			name: snippet.prefix,
 			type: localize('detail.snippet', "{0} ({1})", snippet.description || snippet.name, snippet.source)
 		};
-		this.detail = this.label.type!;
+		this.detail = this.laBel.type!;
 		this.insertText = snippet.codeSnippet;
 		this.range = range;
 		this.sortText = `${snippet.snippetSource === SnippetSource.Extension ? 'z' : 'a'}-${snippet.prefix}`;
@@ -44,18 +44,18 @@ export class SnippetCompletion implements CompletionItem {
 	}
 
 	resolve(): this {
-		this.documentation = new MarkdownString().appendCodeblock('', new SnippetParser().text(this.snippet.codeSnippet));
+		this.documentation = new MarkdownString().appendCodeBlock('', new SnippetParser().text(this.snippet.codeSnippet));
 		return this;
 	}
 
-	static compareByLabel(a: SnippetCompletion, b: SnippetCompletion): number {
-		return compare(a.label.name, b.label.name);
+	static compareByLaBel(a: SnippetCompletion, B: SnippetCompletion): numBer {
+		return compare(a.laBel.name, B.laBel.name);
 	}
 }
 
 export class SnippetCompletionProvider implements CompletionItemProvider {
 
-	readonly _debugDisplayName = 'snippetCompletions';
+	readonly _deBugDisplayName = 'snippetCompletions';
 
 	constructor(
 		@IModeService private readonly _modeService: IModeService,
@@ -67,16 +67,16 @@ export class SnippetCompletionProvider implements CompletionItemProvider {
 	async provideCompletionItems(model: ITextModel, position: Position, context: CompletionContext): Promise<CompletionList> {
 
 		if (context.triggerKind === CompletionTriggerKind.TriggerCharacter && context.triggerCharacter === ' ') {
-			// no snippets when suggestions have been triggered by space
+			// no snippets when suggestions have Been triggered By space
 			return { suggestions: [] };
 		}
 
 		const languageId = this._getLanguageIdAtPosition(model, position);
 		const snippets = await this._snippets.getSnippets(languageId);
 
-		let pos = { lineNumber: position.lineNumber, column: 1 };
-		let lineOffsets: number[] = [];
-		const lineContent = model.getLineContent(position.lineNumber).toLowerCase();
+		let pos = { lineNumBer: position.lineNumBer, column: 1 };
+		let lineOffsets: numBer[] = [];
+		const lineContent = model.getLineContent(position.lineNumBer).toLowerCase();
 		const endsInWhitespace = /\s/.test(lineContent[position.column - 2]);
 
 		while (pos.column < position.column) {
@@ -100,43 +100,43 @@ export class SnippetCompletionProvider implements CompletionItemProvider {
 			}
 		}
 
-		const availableSnippets = new Set<Snippet>(snippets);
+		const availaBleSnippets = new Set<Snippet>(snippets);
 		const suggestions: SnippetCompletion[] = [];
 
 		for (let start of lineOffsets) {
-			availableSnippets.forEach(snippet => {
+			availaBleSnippets.forEach(snippet => {
 				if (isPatternInWord(lineContent, start, position.column - 1, snippet.prefixLow, 0, snippet.prefixLow.length)) {
-					const snippetPrefixSubstr = snippet.prefixLow.substr(position.column - (1 + start));
-					const endColumn = lineContent.indexOf(snippetPrefixSubstr, position.column - 1) >= 0 ? position.column + snippetPrefixSubstr.length : position.column;
-					const replace = Range.fromPositions(position.delta(0, -(position.column - (1 + start))), { lineNumber: position.lineNumber, column: endColumn });
-					const insert = replace.setEndPosition(position.lineNumber, position.column);
+					const snippetPrefixSuBstr = snippet.prefixLow.suBstr(position.column - (1 + start));
+					const endColumn = lineContent.indexOf(snippetPrefixSuBstr, position.column - 1) >= 0 ? position.column + snippetPrefixSuBstr.length : position.column;
+					const replace = Range.fromPositions(position.delta(0, -(position.column - (1 + start))), { lineNumBer: position.lineNumBer, column: endColumn });
+					const insert = replace.setEndPosition(position.lineNumBer, position.column);
 
 					suggestions.push(new SnippetCompletion(snippet, { replace, insert }));
-					availableSnippets.delete(snippet);
+					availaBleSnippets.delete(snippet);
 				}
 			});
 		}
 		if (endsInWhitespace || lineOffsets.length === 0) {
 			// add remaing snippets when the current prefix ends in whitespace or when no
-			// interesting positions have been found
-			availableSnippets.forEach(snippet => {
+			// interesting positions have Been found
+			availaBleSnippets.forEach(snippet => {
 				const insert = Range.fromPositions(position);
-				const replace = lineContent.indexOf(snippet.prefixLow, position.column - 1) >= 0 ? insert.setEndPosition(position.lineNumber, position.column + snippet.prefixLow.length) : insert;
+				const replace = lineContent.indexOf(snippet.prefixLow, position.column - 1) >= 0 ? insert.setEndPosition(position.lineNumBer, position.column + snippet.prefixLow.length) : insert;
 				suggestions.push(new SnippetCompletion(snippet, { replace, insert }));
 			});
 		}
 
 
-		// dismbiguate suggestions with same labels
-		suggestions.sort(SnippetCompletion.compareByLabel);
+		// dismBiguate suggestions with same laBels
+		suggestions.sort(SnippetCompletion.compareByLaBel);
 		for (let i = 0; i < suggestions.length; i++) {
 			let item = suggestions[i];
 			let to = i + 1;
-			for (; to < suggestions.length && item.label === suggestions[to].label; to++) {
-				suggestions[to].label.name = localize('snippetSuggest.longLabel', "{0}, {1}", suggestions[to].label.name, suggestions[to].snippet.name);
+			for (; to < suggestions.length && item.laBel === suggestions[to].laBel; to++) {
+				suggestions[to].laBel.name = localize('snippetSuggest.longLaBel', "{0}, {1}", suggestions[to].laBel.name, suggestions[to].snippet.name);
 			}
 			if (to > i + 1) {
-				suggestions[i].label.name = localize('snippetSuggest.longLabel', "{0}, {1}", suggestions[i].label.name, suggestions[i].snippet.name);
+				suggestions[i].laBel.name = localize('snippetSuggest.longLaBel', "{0}, {1}", suggestions[i].laBel.name, suggestions[i].snippet.name);
 				i = to;
 			}
 		}
@@ -151,9 +151,9 @@ export class SnippetCompletionProvider implements CompletionItemProvider {
 	private _getLanguageIdAtPosition(model: ITextModel, position: Position): LanguageId {
 		// validate the `languageId` to ensure this is a user
 		// facing language with a name and the chance to have
-		// snippets, else fall back to the outer language
-		model.tokenizeIfCheap(position.lineNumber);
-		let languageId = model.getLanguageIdAtPosition(position.lineNumber, position.column);
+		// snippets, else fall Back to the outer language
+		model.tokenizeIfCheap(position.lineNumBer);
+		let languageId = model.getLanguageIdAtPosition(position.lineNumBer, position.column);
 		const languageIdentifier = this._modeService.getLanguageIdentifier(languageId);
 		if (languageIdentifier && !this._modeService.getLanguageName(languageIdentifier.language)) {
 			languageId = model.getLanguageIdentifier().id;

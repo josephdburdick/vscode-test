@@ -5,25 +5,25 @@
 
 import { MainContext, MainThreadOutputServiceShape, ExtHostOutputServiceShape } from './extHost.protocol';
 import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { URI } from 'vs/Base/common/uri';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
 
-export abstract class AbstractExtHostOutputChannel extends Disposable implements vscode.OutputChannel {
+export aBstract class ABstractExtHostOutputChannel extends DisposaBle implements vscode.OutputChannel {
 
 	readonly _id: Promise<string>;
 	private readonly _name: string;
 	protected readonly _proxy: MainThreadOutputServiceShape;
-	private _disposed: boolean;
-	private _offset: number;
+	private _disposed: Boolean;
+	private _offset: numBer;
 
 	protected readonly _onDidAppend: Emitter<void> = this._register(new Emitter<void>());
 	readonly onDidAppend: Event<void> = this._onDidAppend.event;
 
-	constructor(name: string, log: boolean, file: URI | undefined, proxy: MainThreadOutputServiceShape) {
+	constructor(name: string, log: Boolean, file: URI | undefined, proxy: MainThreadOutputServiceShape) {
 		super();
 
 		this._name = name;
@@ -39,7 +39,7 @@ export abstract class AbstractExtHostOutputChannel extends Disposable implements
 
 	append(value: string): void {
 		this.validate();
-		this._offset += value ? VSBuffer.fromString(value).byteLength : 0;
+		this._offset += value ? VSBuffer.fromString(value).ByteLength : 0;
 	}
 
 	update(): void {
@@ -57,9 +57,9 @@ export abstract class AbstractExtHostOutputChannel extends Disposable implements
 		this._id.then(id => this._proxy.$clear(id, till));
 	}
 
-	show(columnOrPreserveFocus?: vscode.ViewColumn | boolean, preserveFocus?: boolean): void {
+	show(columnOrPreserveFocus?: vscode.ViewColumn | Boolean, preserveFocus?: Boolean): void {
 		this.validate();
-		this._id.then(id => this._proxy.$reveal(id, !!(typeof columnOrPreserveFocus === 'boolean' ? columnOrPreserveFocus : preserveFocus)));
+		this._id.then(id => this._proxy.$reveal(id, !!(typeof columnOrPreserveFocus === 'Boolean' ? columnOrPreserveFocus : preserveFocus)));
 	}
 
 	hide(): void {
@@ -69,7 +69,7 @@ export abstract class AbstractExtHostOutputChannel extends Disposable implements
 
 	protected validate(): void {
 		if (this._disposed) {
-			throw new Error('Channel has been closed');
+			throw new Error('Channel has Been closed');
 		}
 	}
 
@@ -84,7 +84,7 @@ export abstract class AbstractExtHostOutputChannel extends Disposable implements
 	}
 }
 
-export class ExtHostPushOutputChannel extends AbstractExtHostOutputChannel {
+export class ExtHostPushOutputChannel extends ABstractExtHostOutputChannel {
 
 	constructor(name: string, proxy: MainThreadOutputServiceShape) {
 		super(name, false, undefined, proxy);
@@ -97,7 +97,7 @@ export class ExtHostPushOutputChannel extends AbstractExtHostOutputChannel {
 	}
 }
 
-class ExtHostLogFileOutputChannel extends AbstractExtHostOutputChannel {
+class ExtHostLogFileOutputChannel extends ABstractExtHostOutputChannel {
 
 	constructor(name: string, file: URI, proxy: MainThreadOutputServiceShape) {
 		super(name, true, file, proxy);
@@ -112,7 +112,7 @@ export class LazyOutputChannel implements vscode.OutputChannel {
 
 	constructor(
 		readonly name: string,
-		private readonly _channel: Promise<AbstractExtHostOutputChannel>
+		private readonly _channel: Promise<ABstractExtHostOutputChannel>
 	) { }
 
 	append(value: string): void {
@@ -124,7 +124,7 @@ export class LazyOutputChannel implements vscode.OutputChannel {
 	clear(): void {
 		this._channel.then(channel => channel.clear());
 	}
-	show(columnOrPreserveFocus?: vscode.ViewColumn | boolean, preserveFocus?: boolean): void {
+	show(columnOrPreserveFocus?: vscode.ViewColumn | Boolean, preserveFocus?: Boolean): void {
 		this._channel.then(channel => channel.show(columnOrPreserveFocus, preserveFocus));
 	}
 	hide(): void {
@@ -145,13 +145,13 @@ export class ExtHostOutputService implements ExtHostOutputServiceShape {
 		this._proxy = extHostRpc.getProxy(MainContext.MainThreadOutputService);
 	}
 
-	$setVisibleChannel(channelId: string): void {
+	$setVisiBleChannel(channelId: string): void {
 	}
 
 	createOutputChannel(name: string): vscode.OutputChannel {
 		name = name.trim();
 		if (!name) {
-			throw new Error('illegal argument `name`. must not be falsy');
+			throw new Error('illegal argument `name`. must not Be falsy');
 		}
 		return new ExtHostPushOutputChannel(name, this._proxy);
 	}
@@ -159,10 +159,10 @@ export class ExtHostOutputService implements ExtHostOutputServiceShape {
 	createOutputChannelFromLogFile(name: string, file: URI): vscode.OutputChannel {
 		name = name.trim();
 		if (!name) {
-			throw new Error('illegal argument `name`. must not be falsy');
+			throw new Error('illegal argument `name`. must not Be falsy');
 		}
 		if (!file) {
-			throw new Error('illegal argument `file`. must not be falsy');
+			throw new Error('illegal argument `file`. must not Be falsy');
 		}
 		return new ExtHostLogFileOutputChannel(name, file, this._proxy);
 	}

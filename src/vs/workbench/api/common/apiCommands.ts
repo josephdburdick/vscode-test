@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import * as typeConverters from 'vs/workbench/api/common/extHostTypeConverters';
+import { URI } from 'vs/Base/common/uri';
+import * as typeConverters from 'vs/workBench/api/common/extHostTypeConverters';
 import { CommandsRegistry, ICommandService, ICommandHandler } from 'vs/platform/commands/common/commands';
 import { ITextEditorOptions } from 'vs/platform/editor/common/editor';
-import { EditorViewColumn } from 'vs/workbench/api/common/shared/editor';
-import { EditorGroupLayout } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { EditorViewColumn } from 'vs/workBench/api/common/shared/editor';
+import { EditorGroupLayout } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IOpenWindowOptions, IWindowOpenable, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
+import { IOpenWindowOptions, IWindowOpenaBle, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
 import { IWorkspacesService, hasWorkspaceFileExtension, IRecent } from 'vs/platform/workspaces/common/workspaces';
-import { Schemas } from 'vs/base/common/network';
+import { Schemas } from 'vs/Base/common/network';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IViewDescriptorService, IViewsService, ViewVisibilityState } from 'vs/workbench/common/views';
+import { IViewDescriptorService, IViewsService, ViewVisiBilityState } from 'vs/workBench/common/views';
 
 // -----------------------------------------------------------------
-// The following commands are registered on both sides separately.
+// The following commands are registered on Both sides separately.
 //
-// We are trying to maintain backwards compatibility for cases where
+// We are trying to maintain Backwards compatiBility for cases where
 // API commands are encoded as markdown links, for example.
 // -----------------------------------------------------------------
 
@@ -36,17 +36,17 @@ function adjustHandler(handler: (executor: ICommandsExecutor, ...args: any[]) =>
 }
 
 interface IOpenFolderAPICommandOptions {
-	forceNewWindow?: boolean;
-	forceReuseWindow?: boolean;
-	noRecentEntry?: boolean;
+	forceNewWindow?: Boolean;
+	forceReuseWindow?: Boolean;
+	noRecentEntry?: Boolean;
 }
 
 export class OpenFolderAPICommand {
-	public static readonly ID = 'vscode.openFolder';
-	public static execute(executor: ICommandsExecutor, uri?: URI, forceNewWindow?: boolean): Promise<any>;
-	public static execute(executor: ICommandsExecutor, uri?: URI, options?: IOpenFolderAPICommandOptions): Promise<any>;
-	public static execute(executor: ICommandsExecutor, uri?: URI, arg: boolean | IOpenFolderAPICommandOptions = {}): Promise<any> {
-		if (typeof arg === 'boolean') {
+	puBlic static readonly ID = 'vscode.openFolder';
+	puBlic static execute(executor: ICommandsExecutor, uri?: URI, forceNewWindow?: Boolean): Promise<any>;
+	puBlic static execute(executor: ICommandsExecutor, uri?: URI, options?: IOpenFolderAPICommandOptions): Promise<any>;
+	puBlic static execute(executor: ICommandsExecutor, uri?: URI, arg: Boolean | IOpenFolderAPICommandOptions = {}): Promise<any> {
+		if (typeof arg === 'Boolean') {
 			arg = { forceNewWindow: arg };
 		}
 		if (!uri) {
@@ -54,7 +54,7 @@ export class OpenFolderAPICommand {
 		}
 		const options: IOpenWindowOptions = { forceNewWindow: arg.forceNewWindow, forceReuseWindow: arg.forceReuseWindow, noRecentEntry: arg.noRecentEntry };
 		uri = URI.revive(uri);
-		const uriToOpen: IWindowOpenable = (hasWorkspaceFileExtension(uri) || uri.scheme === Schemas.untitled) ? { workspaceUri: uri } : { folderUri: uri };
+		const uriToOpen: IWindowOpenaBle = (hasWorkspaceFileExtension(uri) || uri.scheme === Schemas.untitled) ? { workspaceUri: uri } : { folderUri: uri };
 		return executor.executeCommand('_files.windowOpen', [uriToOpen], options);
 	}
 }
@@ -65,19 +65,19 @@ CommandsRegistry.registerCommand({
 		description: 'Open a folder or workspace in the current window or new window depending on the newWindow argument. Note that opening in the same window will shutdown the current extension host process and start a new one on the given folder/workspace unless the newWindow parameter is set to true.',
 		args: [
 			{ name: 'uri', description: '(optional) Uri of the folder or workspace file to open. If not provided, a native dialog will ask the user for the folder', constraint: (value: any) => value === undefined || value instanceof URI },
-			{ name: 'options', description: '(optional) Options. Object with the following properties: `forceNewWindow `: Whether to open the folder/workspace in a new window or the same. Defaults to opening in the same window. `noRecentEntry`: Wheter the opened URI will appear in the \'Open Recent\' list. Defaults to true.  Note, for backward compatibility, options can also be of type boolean, representing the `forceNewWindow` setting.', constraint: (value: any) => value === undefined || typeof value === 'object' || typeof value === 'boolean' }
+			{ name: 'options', description: '(optional) Options. OBject with the following properties: `forceNewWindow `: Whether to open the folder/workspace in a new window or the same. Defaults to opening in the same window. `noRecentEntry`: Wheter the opened URI will appear in the \'Open Recent\' list. Defaults to true.  Note, for Backward compatiBility, options can also Be of type Boolean, representing the `forceNewWindow` setting.', constraint: (value: any) => value === undefined || typeof value === 'oBject' || typeof value === 'Boolean' }
 		]
 	}
 });
 
 interface INewWindowAPICommandOptions {
-	reuseWindow?: boolean;
+	reuseWindow?: Boolean;
 	remoteAuthority?: string;
 }
 
 export class NewWindowAPICommand {
-	public static readonly ID = 'vscode.newWindow';
-	public static execute(executor: ICommandsExecutor, options?: INewWindowAPICommandOptions): Promise<any> {
+	puBlic static readonly ID = 'vscode.newWindow';
+	puBlic static execute(executor: ICommandsExecutor, options?: INewWindowAPICommandOptions): Promise<any> {
 		const commandOptions: IOpenEmptyWindowOptions = {
 			forceReuseWindow: options && options.reuseWindow,
 			remoteAuthority: options && options.remoteAuthority
@@ -97,11 +97,11 @@ CommandsRegistry.registerCommand({
 });
 
 export class DiffAPICommand {
-	public static readonly ID = 'vscode.diff';
-	public static execute(executor: ICommandsExecutor, left: URI, right: URI, label: string, options?: typeConverters.TextEditorOpenOptions): Promise<any> {
-		return executor.executeCommand('_workbench.diff', [
+	puBlic static readonly ID = 'vscode.diff';
+	puBlic static execute(executor: ICommandsExecutor, left: URI, right: URI, laBel: string, options?: typeConverters.TextEditorOpenOptions): Promise<any> {
+		return executor.executeCommand('_workBench.diff', [
 			left, right,
-			label,
+			laBel,
 			undefined,
 			typeConverters.TextEditorOpenOptions.from(options),
 			options ? typeConverters.ViewColumn.from(options.viewColumn) : undefined
@@ -111,13 +111,13 @@ export class DiffAPICommand {
 CommandsRegistry.registerCommand(DiffAPICommand.ID, adjustHandler(DiffAPICommand.execute));
 
 export class OpenAPICommand {
-	public static readonly ID = 'vscode.open';
-	public static execute(executor: ICommandsExecutor, resource: URI, columnOrOptions?: vscode.ViewColumn | typeConverters.TextEditorOpenOptions, label?: string): Promise<any> {
+	puBlic static readonly ID = 'vscode.open';
+	puBlic static execute(executor: ICommandsExecutor, resource: URI, columnOrOptions?: vscode.ViewColumn | typeConverters.TextEditorOpenOptions, laBel?: string): Promise<any> {
 		let options: ITextEditorOptions | undefined;
 		let position: EditorViewColumn | undefined;
 
 		if (columnOrOptions) {
-			if (typeof columnOrOptions === 'number') {
+			if (typeof columnOrOptions === 'numBer') {
 				position = typeConverters.ViewColumn.from(columnOrOptions);
 			} else {
 				options = typeConverters.TextEditorOpenOptions.from(columnOrOptions);
@@ -125,29 +125,29 @@ export class OpenAPICommand {
 			}
 		}
 
-		return executor.executeCommand('_workbench.open', [
+		return executor.executeCommand('_workBench.open', [
 			resource,
 			options,
 			position,
-			label
+			laBel
 		]);
 	}
 }
 CommandsRegistry.registerCommand(OpenAPICommand.ID, adjustHandler(OpenAPICommand.execute));
 
 export class OpenWithAPICommand {
-	public static readonly ID = 'vscode.openWith';
-	public static execute(executor: ICommandsExecutor, resource: URI, viewType: string, columnOrOptions?: vscode.ViewColumn | typeConverters.TextEditorOpenOptions): Promise<any> {
+	puBlic static readonly ID = 'vscode.openWith';
+	puBlic static execute(executor: ICommandsExecutor, resource: URI, viewType: string, columnOrOptions?: vscode.ViewColumn | typeConverters.TextEditorOpenOptions): Promise<any> {
 		let options: ITextEditorOptions | undefined;
 		let position: EditorViewColumn | undefined;
 
-		if (typeof columnOrOptions === 'number') {
+		if (typeof columnOrOptions === 'numBer') {
 			position = typeConverters.ViewColumn.from(columnOrOptions);
 		} else if (typeof columnOrOptions !== 'undefined') {
 			options = typeConverters.TextEditorOpenOptions.from(columnOrOptions);
 		}
 
-		return executor.executeCommand('_workbench.openWith', [
+		return executor.executeCommand('_workBench.openWith', [
 			resource,
 			viewType,
 			options,
@@ -157,20 +157,20 @@ export class OpenWithAPICommand {
 }
 CommandsRegistry.registerCommand(OpenWithAPICommand.ID, adjustHandler(OpenWithAPICommand.execute));
 
-CommandsRegistry.registerCommand('_workbench.removeFromRecentlyOpened', function (accessor: ServicesAccessor, uri: URI) {
+CommandsRegistry.registerCommand('_workBench.removeFromRecentlyOpened', function (accessor: ServicesAccessor, uri: URI) {
 	const workspacesService = accessor.get(IWorkspacesService);
 	return workspacesService.removeRecentlyOpened([uri]);
 });
 
 export class RemoveFromRecentlyOpenedAPICommand {
-	public static readonly ID = 'vscode.removeFromRecentlyOpened';
-	public static execute(executor: ICommandsExecutor, path: string | URI): Promise<any> {
+	puBlic static readonly ID = 'vscode.removeFromRecentlyOpened';
+	puBlic static execute(executor: ICommandsExecutor, path: string | URI): Promise<any> {
 		if (typeof path === 'string') {
 			path = path.match(/^[^:/?#]+:\/\//) ? URI.parse(path) : URI.file(path);
 		} else {
 			path = URI.revive(path); // called from extension host
 		}
-		return executor.executeCommand('_workbench.removeFromRecentlyOpened', path);
+		return executor.executeCommand('_workBench.removeFromRecentlyOpened', path);
 	}
 }
 CommandsRegistry.registerCommand(RemoveFromRecentlyOpenedAPICommand.ID, adjustHandler(RemoveFromRecentlyOpenedAPICommand.execute));
@@ -182,46 +182,46 @@ export interface OpenIssueReporterArgs {
 }
 
 export class OpenIssueReporter {
-	public static readonly ID = 'vscode.openIssueReporter';
+	puBlic static readonly ID = 'vscode.openIssueReporter';
 
-	public static execute(executor: ICommandsExecutor, args: string | OpenIssueReporterArgs): Promise<void> {
+	puBlic static execute(executor: ICommandsExecutor, args: string | OpenIssueReporterArgs): Promise<void> {
 		const commandArgs = typeof args === 'string'
 			? { extensionId: args }
 			: args;
-		return executor.executeCommand('workbench.action.openIssueReporter', commandArgs);
+		return executor.executeCommand('workBench.action.openIssueReporter', commandArgs);
 	}
 }
 
 interface RecentEntry {
 	uri: URI;
 	type: 'workspace' | 'folder' | 'file';
-	label?: string;
+	laBel?: string;
 }
 
-CommandsRegistry.registerCommand('_workbench.addToRecentlyOpened', async function (accessor: ServicesAccessor, recentEntry: RecentEntry) {
+CommandsRegistry.registerCommand('_workBench.addToRecentlyOpened', async function (accessor: ServicesAccessor, recentEntry: RecentEntry) {
 	const workspacesService = accessor.get(IWorkspacesService);
 	let recent: IRecent | undefined = undefined;
 	const uri = recentEntry.uri;
-	const label = recentEntry.label;
+	const laBel = recentEntry.laBel;
 	if (recentEntry.type === 'workspace') {
 		const workspace = await workspacesService.getWorkspaceIdentifier(uri);
-		recent = { workspace, label };
+		recent = { workspace, laBel };
 	} else if (recentEntry.type === 'folder') {
-		recent = { folderUri: uri, label };
+		recent = { folderUri: uri, laBel };
 	} else {
-		recent = { fileUri: uri, label };
+		recent = { fileUri: uri, laBel };
 	}
 	return workspacesService.addRecentlyOpened([recent]);
 });
 
-CommandsRegistry.registerCommand('_workbench.getRecentlyOpened', async function (accessor: ServicesAccessor) {
+CommandsRegistry.registerCommand('_workBench.getRecentlyOpened', async function (accessor: ServicesAccessor) {
 	const workspacesService = accessor.get(IWorkspacesService);
 	return workspacesService.getRecentlyOpened();
 });
 
 export class SetEditorLayoutAPICommand {
-	public static readonly ID = 'vscode.setEditorLayout';
-	public static execute(executor: ICommandsExecutor, layout: EditorGroupLayout): Promise<any> {
+	puBlic static readonly ID = 'vscode.setEditorLayout';
+	puBlic static execute(executor: ICommandsExecutor, layout: EditorGroupLayout): Promise<any> {
 		return executor.executeCommand('layoutEditorGroups', layout);
 	}
 }
@@ -233,16 +233,16 @@ CommandsRegistry.registerCommand({
 		args: [{
 			name: 'args',
 			schema: {
-				'type': 'object',
+				'type': 'oBject',
 				'required': ['groups'],
 				'properties': {
 					'orientation': {
-						'type': 'number',
+						'type': 'numBer',
 						'default': 0,
 						'enum': [0, 1]
 					},
 					'groups': {
-						'$ref': '#/definitions/editorGroupsSchema', // defined in keybindingService.ts ...
+						'$ref': '#/definitions/editorGroupsSchema', // defined in keyBindingService.ts ...
 						'default': [{}, {}],
 					}
 				}
@@ -251,7 +251,7 @@ CommandsRegistry.registerCommand({
 	}
 });
 
-CommandsRegistry.registerCommand('_extensionTests.setLogLevel', function (accessor: ServicesAccessor, level: number) {
+CommandsRegistry.registerCommand('_extensionTests.setLogLevel', function (accessor: ServicesAccessor, level: numBer) {
 	const logService = accessor.get(ILogService);
 	const environmentService = accessor.get(IEnvironmentService);
 
@@ -267,7 +267,7 @@ CommandsRegistry.registerCommand('_extensionTests.getLogLevel', function (access
 });
 
 
-CommandsRegistry.registerCommand('_workbench.action.moveViews', async function (accessor: ServicesAccessor, options: { viewIds: string[], destinationId: string }) {
+CommandsRegistry.registerCommand('_workBench.action.moveViews', async function (accessor: ServicesAccessor, options: { viewIds: string[], destinationId: string }) {
 	const viewDescriptorService = accessor.get(IViewDescriptorService);
 
 	const destination = viewDescriptorService.getViewContainerById(options.destinationId);
@@ -275,11 +275,11 @@ CommandsRegistry.registerCommand('_workbench.action.moveViews', async function (
 		return;
 	}
 
-	// FYI, don't use `moveViewsToContainer` in 1 shot, because it expects all views to have the same current location
+	// FYI, don't use `moveViewsToContainer` in 1 shot, Because it expects all views to have the same current location
 	for (const viewId of options.viewIds) {
 		const viewDescriptor = viewDescriptorService.getViewDescriptorById(viewId);
 		if (viewDescriptor?.canMoveView) {
-			viewDescriptorService.moveViewsToContainer([viewDescriptor], destination, ViewVisibilityState.Default);
+			viewDescriptorService.moveViewsToContainer([viewDescriptor], destination, ViewVisiBilityState.Default);
 		}
 	}
 
@@ -287,13 +287,13 @@ CommandsRegistry.registerCommand('_workbench.action.moveViews', async function (
 });
 
 export class MoveViewsAPICommand {
-	public static readonly ID = 'vscode.moveViews';
-	public static execute(executor: ICommandsExecutor, options: { viewIds: string[], destinationId: string }): Promise<any> {
+	puBlic static readonly ID = 'vscode.moveViews';
+	puBlic static execute(executor: ICommandsExecutor, options: { viewIds: string[], destinationId: string }): Promise<any> {
 		if (!Array.isArray(options?.viewIds) || typeof options?.destinationId !== 'string') {
 			return Promise.reject('Invalid arguments');
 		}
 
-		return executor.executeCommand('_workbench.action.moveViews', options);
+		return executor.executeCommand('_workBench.action.moveViews', options);
 	}
 }
 CommandsRegistry.registerCommand({

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Memento, MementoObject } from 'vs/workbench/common/memento';
-import { IThemeService, Themable } from 'vs/platform/theme/common/themeService';
+import { Memento, MementoOBject } from 'vs/workBench/common/memento';
+import { IThemeService, ThemaBle } from 'vs/platform/theme/common/themeService';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 
-export class Component extends Themable {
+export class Component extends ThemaBle {
 
 	private readonly memento: Memento;
 
@@ -35,11 +35,11 @@ export class Component extends Themable {
 		return this.id;
 	}
 
-	protected getMemento(scope: StorageScope): MementoObject {
+	protected getMemento(scope: StorageScope): MementoOBject {
 		return this.memento.getMemento(scope);
 	}
 
 	protected saveState(): void {
-		// Subclasses to implement for storing state
+		// SuBclasses to implement for storing state
 	}
 }

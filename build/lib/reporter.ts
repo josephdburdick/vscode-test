@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const allErrors: string[][] = [];
-let startTime: number | null = null;
+let startTime: numBer | null = null;
 let count = 0;
 
 function onStart(): void {
@@ -33,10 +33,10 @@ function onEnd(): void {
 	log();
 }
 
-const buildLogPath = path.join(path.dirname(path.dirname(__dirname)), '.build', 'log');
+const BuildLogPath = path.join(path.dirname(path.dirname(__dirname)), '.Build', 'log');
 
 try {
-	fs.mkdirSync(path.dirname(buildLogPath));
+	fs.mkdirSync(path.dirname(BuildLogPath));
 } catch (err) {
 	// ignore
 }
@@ -61,7 +61,7 @@ function log(): void {
 
 	try {
 
-		fs.writeFileSync(buildLogPath, JSON.stringify(messages));
+		fs.writeFileSync(BuildLogPath, JSON.stringify(messages));
 	} catch (err) {
 		//noop
 	}
@@ -71,8 +71,8 @@ function log(): void {
 
 export interface IReporter {
 	(err: string): void;
-	hasErrors(): boolean;
-	end(emitError: boolean): NodeJS.ReadWriteStream;
+	hasErrors(): Boolean;
+	end(emitError: Boolean): NodeJS.ReadWriteStream;
 }
 
 export function createReporter(): IReporter {
@@ -83,7 +83,7 @@ export function createReporter(): IReporter {
 
 	result.hasErrors = () => errors.length > 0;
 
-	result.end = (emitError: boolean): NodeJS.ReadWriteStream => {
+	result.end = (emitError: Boolean): NodeJS.ReadWriteStream => {
 		errors.length = 0;
 		onStart();
 

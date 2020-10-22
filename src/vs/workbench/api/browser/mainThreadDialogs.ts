@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { MainThreadDiaglogsShape, MainContext, IExtHostContext, MainThreadDialogOpenOptions, MainThreadDialogSaveOptions } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { forEach } from 'vs/base/common/collections';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { forEach } from 'vs/Base/common/collections';
 import { IFileDialogService, IOpenDialogOptions, ISaveDialogOptions } from 'vs/platform/dialogs/common/dialogs';
 
 @extHostNamedCustomer(MainContext.MainThreadDialogs)
@@ -33,7 +33,7 @@ export class MainThreadDialogs implements MainThreadDiaglogsShape {
 
 	private static _convertOpenOptions(options?: MainThreadDialogOpenOptions): IOpenDialogOptions {
 		const result: IOpenDialogOptions = {
-			openLabel: options?.openLabel || undefined,
+			openLaBel: options?.openLaBel || undefined,
 			canSelectFiles: options?.canSelectFiles || (!options?.canSelectFiles && !options?.canSelectFolders),
 			canSelectFolders: options?.canSelectFolders,
 			canSelectMany: options?.canSelectMany,
@@ -50,7 +50,7 @@ export class MainThreadDialogs implements MainThreadDiaglogsShape {
 	private static _convertSaveOptions(options?: MainThreadDialogSaveOptions): ISaveDialogOptions {
 		const result: ISaveDialogOptions = {
 			defaultUri: options?.defaultUri ? URI.revive(options.defaultUri) : undefined,
-			saveLabel: options?.saveLabel || undefined,
+			saveLaBel: options?.saveLaBel || undefined,
 			title: options?.title || undefined
 		};
 		if (options?.filters) {

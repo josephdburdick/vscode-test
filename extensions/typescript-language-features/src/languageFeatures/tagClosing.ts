@@ -8,12 +8,12 @@ import type * as Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
 import API from '../utils/api';
 import { conditionalRegistration, requireMinVersion, requireConfiguration, Condition } from '../utils/dependentRegistration';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import { DocumentSelector } from '../utils/documentSelector';
 import * as typeConverters from '../utils/typeConverters';
 
-class TagClosing extends Disposable {
-	public static readonly minVersion = API.v300;
+class TagClosing extends DisposaBle {
+	puBlic static readonly minVersion = API.v300;
 
 	private _disposed = false;
 	private _timeout: NodeJS.Timer | undefined = undefined;
@@ -26,10 +26,10 @@ class TagClosing extends Disposable {
 		vscode.workspace.onDidChangeTextDocument(
 			event => this.onDidChangeTextDocument(event.document, event.contentChanges),
 			null,
-			this._disposables);
+			this._disposaBles);
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		super.dispose();
 		this._disposed = true;
 
@@ -98,7 +98,7 @@ class TagClosing extends Disposable {
 			const args: Proto.JsxClosingTagRequestArgs = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
 			this._cancel = new vscode.CancellationTokenSource();
 			const response = await this.client.execute('jsxClosingTag', args, this._cancel.token);
-			if (response.type !== 'response' || !response.body) {
+			if (response.type !== 'response' || !response.Body) {
 				return;
 			}
 
@@ -111,7 +111,7 @@ class TagClosing extends Disposable {
 				return;
 			}
 
-			const insertion = response.body;
+			const insertion = response.Body;
 			const activeDocument = activeEditor.document;
 			if (document === activeDocument && activeDocument.version === version) {
 				activeEditor.insertSnippet(
@@ -145,7 +145,7 @@ function requireActiveDocument(
 			return !!(editor && vscode.languages.match(selector, editor.document));
 		},
 		handler => {
-			return vscode.Disposable.from(
+			return vscode.DisposaBle.from(
 				vscode.window.onDidChangeActiveTextEditor(handler),
 				vscode.workspace.onDidOpenTextDocument(handler));
 		});

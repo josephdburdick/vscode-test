@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorModel } from 'vs/workbench/common/editor';
+import { EditorModel } from 'vs/workBench/common/editor';
 import { IEditorModel } from 'vs/platform/editor/common/editor';
 
 /**
- * The base editor model for the diff editor. It is made up of two editor models, the original version
+ * The Base editor model for the diff editor. It is made up of two editor models, the original version
  * and the modified version.
  */
 export class DiffEditorModel extends EditorModel {
@@ -34,7 +34,7 @@ export class DiffEditorModel extends EditorModel {
 		return this;
 	}
 
-	isResolved(): boolean {
+	isResolved(): Boolean {
 		return this.originalModel instanceof EditorModel && this.originalModel.isResolved() && this.modifiedModel instanceof EditorModel && this.modifiedModel.isResolved();
 	}
 

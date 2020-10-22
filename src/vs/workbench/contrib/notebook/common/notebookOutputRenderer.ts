@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { joinPath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import * as gloB from 'vs/Base/common/gloB';
+import { joinPath } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { INotebookRendererInfo } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { INoteBookRendererInfo } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
-export class NotebookOutputRendererInfo implements INotebookRendererInfo {
+export class NoteBookOutputRendererInfo implements INoteBookRendererInfo {
 
 	readonly id: string;
 	readonly entrypoint: URI;
@@ -20,7 +20,7 @@ export class NotebookOutputRendererInfo implements INotebookRendererInfo {
 	readonly preloads: ReadonlyArray<URI> = [];
 
 	private readonly mimeTypes: readonly string[];
-	private readonly mimeTypeGlobs: glob.ParsedPattern[];
+	private readonly mimeTypeGloBs: gloB.ParsedPattern[];
 
 	constructor(descriptor: {
 		readonly id: string;
@@ -35,11 +35,11 @@ export class NotebookOutputRendererInfo implements INotebookRendererInfo {
 		this.entrypoint = joinPath(this.extensionLocation, descriptor.entrypoint);
 		this.displayName = descriptor.displayName;
 		this.mimeTypes = descriptor.mimeTypes;
-		this.mimeTypeGlobs = this.mimeTypes.map(pattern => glob.parse(pattern));
+		this.mimeTypeGloBs = this.mimeTypes.map(pattern => gloB.parse(pattern));
 	}
 
 	matches(mimeType: string) {
-		return this.mimeTypeGlobs.some(pattern => pattern(mimeType))
+		return this.mimeTypeGloBs.some(pattern => pattern(mimeType))
 			|| this.mimeTypes.some(pattern => pattern === mimeType);
 	}
 }

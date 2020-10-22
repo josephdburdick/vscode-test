@@ -7,15 +7,15 @@ import assert = require('assert');
 import i18n = require('../i18n');
 
 suite('XLF Parser Tests', () => {
-	const sampleXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/base/common/keybinding" source-language="en" datatype="plaintext"><body><trans-unit id="key1"><source xml:lang="en">Key #1</source></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source></trans-unit></body></file></xliff>';
-	const sampleTranslatedXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/base/common/keybinding" source-language="en" target-language="ru" datatype="plaintext"><body><trans-unit id="key1"><source xml:lang="en">Key #1</source><target>Кнопка #1</target></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source><target>Кнопка #2 &amp;</target></trans-unit></body></file></xliff>';
-	const originalFilePath = 'vs/base/common/keybinding';
+	const sampleXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/Base/common/keyBinding" source-language="en" datatype="plaintext"><Body><trans-unit id="key1"><source xml:lang="en">Key #1</source></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source></trans-unit></Body></file></xliff>';
+	const sampleTranslatedXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/Base/common/keyBinding" source-language="en" target-language="ru" datatype="plaintext"><Body><trans-unit id="key1"><source xml:lang="en">Key #1</source><target>Кнопка #1</target></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source><target>Кнопка #2 &amp;</target></trans-unit></Body></file></xliff>';
+	const originalFilePath = 'vs/Base/common/keyBinding';
 	const keys = ['key1', 'key2'];
 	const messages = ['Key #1', 'Key #2 &'];
 	const translatedMessages = { key1: 'Кнопка #1', key2: 'Кнопка #2 &' };
 
 	test('Keys & messages to XLF conversion', () => {
-		const xlf = new i18n.XLF('vscode-workbench');
+		const xlf = new i18n.XLF('vscode-workBench');
 		xlf.addFile(originalFilePath, keys, messages);
 		const xlfString = xlf.toString();
 
@@ -31,24 +31,24 @@ suite('XLF Parser Tests', () => {
 
 	test('JSON file source path to Transifex resource match', () => {
 		const editorProject: string = 'vscode-editor',
-			workbenchProject: string = 'vscode-workbench';
+			workBenchProject: string = 'vscode-workBench';
 
 		const platform: i18n.Resource = { name: 'vs/platform', project: editorProject },
-			editorContrib = { name: 'vs/editor/contrib', project: editorProject },
+			editorContriB = { name: 'vs/editor/contriB', project: editorProject },
 			editor = { name: 'vs/editor', project: editorProject },
-			base = { name: 'vs/base', project: editorProject },
-			code = { name: 'vs/code', project: workbenchProject },
-			workbenchParts = { name: 'vs/workbench/contrib/html', project: workbenchProject },
-			workbenchServices = { name: 'vs/workbench/services/textfile', project: workbenchProject },
-			workbench = { name: 'vs/workbench', project: workbenchProject};
+			Base = { name: 'vs/Base', project: editorProject },
+			code = { name: 'vs/code', project: workBenchProject },
+			workBenchParts = { name: 'vs/workBench/contriB/html', project: workBenchProject },
+			workBenchServices = { name: 'vs/workBench/services/textfile', project: workBenchProject },
+			workBench = { name: 'vs/workBench', project: workBenchProject};
 
-		assert.deepEqual(i18n.getResource('vs/platform/actions/browser/menusExtensionPoint'), platform);
-		assert.deepEqual(i18n.getResource('vs/editor/contrib/clipboard/browser/clipboard'), editorContrib);
+		assert.deepEqual(i18n.getResource('vs/platform/actions/Browser/menusExtensionPoint'), platform);
+		assert.deepEqual(i18n.getResource('vs/editor/contriB/clipBoard/Browser/clipBoard'), editorContriB);
 		assert.deepEqual(i18n.getResource('vs/editor/common/modes/modesRegistry'), editor);
-		assert.deepEqual(i18n.getResource('vs/base/common/errorMessage'), base);
+		assert.deepEqual(i18n.getResource('vs/Base/common/errorMessage'), Base);
 		assert.deepEqual(i18n.getResource('vs/code/electron-main/window'), code);
-		assert.deepEqual(i18n.getResource('vs/workbench/contrib/html/browser/webview'), workbenchParts);
-		assert.deepEqual(i18n.getResource('vs/workbench/services/textfile/node/testFileService'), workbenchServices);
-		assert.deepEqual(i18n.getResource('vs/workbench/browser/parts/panel/panelActions'), workbench);
+		assert.deepEqual(i18n.getResource('vs/workBench/contriB/html/Browser/weBview'), workBenchParts);
+		assert.deepEqual(i18n.getResource('vs/workBench/services/textfile/node/testFileService'), workBenchServices);
+		assert.deepEqual(i18n.getResource('vs/workBench/Browser/parts/panel/panelActions'), workBench);
 	});
 });

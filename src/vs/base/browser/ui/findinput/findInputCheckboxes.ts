@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Checkbox } from 'vs/base/browser/ui/checkbox/checkbox';
-import { Color } from 'vs/base/common/color';
+import { CheckBox } from 'vs/Base/Browser/ui/checkBox/checkBox';
+import { Color } from 'vs/Base/common/color';
 import * as nls from 'vs/nls';
-import { Codicon } from 'vs/base/common/codicons';
+import { Codicon } from 'vs/Base/common/codicons';
 
-export interface IFindInputCheckboxOpts {
+export interface IFindInputCheckBoxOpts {
 	readonly appendTitle: string;
-	readonly isChecked: boolean;
+	readonly isChecked: Boolean;
 	readonly inputActiveOptionBorder?: Color;
 	readonly inputActiveOptionForeground?: Color;
 	readonly inputActiveOptionBackground?: Color;
@@ -20,8 +20,8 @@ const NLS_CASE_SENSITIVE_CHECKBOX_LABEL = nls.localize('caseDescription', "Match
 const NLS_WHOLE_WORD_CHECKBOX_LABEL = nls.localize('wordsDescription', "Match Whole Word");
 const NLS_REGEX_CHECKBOX_LABEL = nls.localize('regexDescription', "Use Regular Expression");
 
-export class CaseSensitiveCheckbox extends Checkbox {
-	constructor(opts: IFindInputCheckboxOpts) {
+export class CaseSensitiveCheckBox extends CheckBox {
+	constructor(opts: IFindInputCheckBoxOpts) {
 		super({
 			icon: Codicon.caseSensitive,
 			title: NLS_CASE_SENSITIVE_CHECKBOX_LABEL + opts.appendTitle,
@@ -33,8 +33,8 @@ export class CaseSensitiveCheckbox extends Checkbox {
 	}
 }
 
-export class WholeWordsCheckbox extends Checkbox {
-	constructor(opts: IFindInputCheckboxOpts) {
+export class WholeWordsCheckBox extends CheckBox {
+	constructor(opts: IFindInputCheckBoxOpts) {
 		super({
 			icon: Codicon.wholeWord,
 			title: NLS_WHOLE_WORD_CHECKBOX_LABEL + opts.appendTitle,
@@ -46,8 +46,8 @@ export class WholeWordsCheckbox extends Checkbox {
 	}
 }
 
-export class RegexCheckbox extends Checkbox {
-	constructor(opts: IFindInputCheckboxOpts) {
+export class RegexCheckBox extends CheckBox {
+	constructor(opts: IFindInputCheckBoxOpts) {
 		super({
 			icon: Codicon.regex,
 			title: NLS_REGEX_CHECKBOX_LABEL + opts.appendTitle,

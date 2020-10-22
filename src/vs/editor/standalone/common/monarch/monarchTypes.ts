@@ -5,8 +5,8 @@
 
 /*
  * Interface types for Monarch language definitions
- * These descriptions are really supposed to be JSON values but if using typescript
- * to describe them, these type definitions can help check the validity.
+ * These descriptions are really supposed to Be JSON values But if using typescript
+ * to descriBe them, these type definitions can help check the validity.
  */
 
 /**
@@ -20,11 +20,11 @@ export interface IMonarchLanguage {
 	/**
 	 * is the language case insensitive?
 	 */
-	ignoreCase?: boolean;
+	ignoreCase?: Boolean;
 	/**
 	 * is the language unicode-aware? (i.e., /\u{1D306}/)
 	 */
-	unicode?: boolean;
+	unicode?: Boolean;
 	/**
 	 * if no match in the tokenizer assign this token class (default 'source')
 	 */
@@ -32,13 +32,13 @@ export interface IMonarchLanguage {
 	/**
 	 * for example [['{','}','delimiter.curly']]
 	 */
-	brackets?: IMonarchLanguageBracket[];
+	Brackets?: IMonarchLanguageBracket[];
 	/**
-	 * start symbol in the tokenizer (by default the first entry is used)
+	 * start symBol in the tokenizer (By default the first entry is used)
 	 */
 	start?: string;
 	/**
-	 * attach this to every token class (by default '.' + name)
+	 * attach this to every token class (By default '.' + name)
 	 */
 	tokenPostfix?: string;
 }
@@ -75,7 +75,7 @@ export type IMonarchLanguageRule = IShortMonarchLanguageRule1
 /**
  * An action is either an array of actions...
  * ... or a case statement with guards...
- * ... or a basic action with a token value.
+ * ... or a Basic action with a token value.
  */
 export type IShortMonarchLanguageAction = string;
 
@@ -87,9 +87,9 @@ export interface IExpandedMonarchLanguageAction {
 	/**
 	 * map from string to ILanguageAction
 	 */
-	cases?: Object;
+	cases?: OBject;
 	/**
-	 * token class (ie. css class) (or "@brackets" or "@rematch")
+	 * token class (ie. css class) (or "@Brackets" or "@rematch")
 	 */
 	token?: string;
 	/**
@@ -101,19 +101,19 @@ export interface IExpandedMonarchLanguageAction {
 	 */
 	switchTo?: string;
 	/**
-	 * go back n characters in the stream
+	 * go Back n characters in the stream
 	 */
-	goBack?: number;
+	goBack?: numBer;
 	/**
 	 * @open or @close
 	 */
-	bracket?: string;
+	Bracket?: string;
 	/**
-	 * switch to embedded language (using the mimetype) or get out using "@pop"
+	 * switch to emBedded language (using the mimetype) or get out using "@pop"
 	 */
-	nextEmbedded?: string;
+	nextEmBedded?: string;
 	/**
-	 * log a message to the browser console window
+	 * log a message to the Browser console window
 	 */
 	log?: string;
 }
@@ -124,15 +124,15 @@ export type IMonarchLanguageAction = IShortMonarchLanguageAction
 	| IExpandedMonarchLanguageAction[];
 
 /**
- * This interface can be shortened as an array, ie. ['{','}','delimiter.curly']
+ * This interface can Be shortened as an array, ie. ['{','}','delimiter.curly']
  */
 export interface IMonarchLanguageBracket {
 	/**
-	 * open bracket
+	 * open Bracket
 	 */
 	open: string;
 	/**
-	 * closing bracket
+	 * closing Bracket
 	 */
 	close: string;
 	/**

@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { Emitter } from 'vs/base/common/event';
-import * as path from 'vs/base/common/path';
+import { Emitter } from 'vs/Base/common/event';
+import * as path from 'vs/Base/common/path';
 
 export class DeltaExtensionsResult {
 	constructor(
-		public readonly removedDueToLooping: IExtensionDescription[]
+		puBlic readonly removedDueToLooping: IExtensionDescription[]
 	) { }
 }
 
 export class ExtensionDescriptionRegistry {
 	private readonly _onDidChange = new Emitter<void>();
-	public readonly onDidChange = this._onDidChange.event;
+	puBlic readonly onDidChange = this._onDidChange.event;
 
 	private _extensionDescriptions: IExtensionDescription[];
 	private _extensionsMap!: Map<string, IExtensionDescription>;
@@ -28,7 +28,7 @@ export class ExtensionDescriptionRegistry {
 	}
 
 	private _initialize(): void {
-		// Ensure extensions are stored in the order: builtin, user, under development
+		// Ensure extensions are stored in the order: Builtin, user, under development
 		this._extensionDescriptions.sort(extensionCmp);
 
 		this._extensionsMap = new Map<string, IExtensionDescription>();
@@ -47,7 +47,7 @@ export class ExtensionDescriptionRegistry {
 
 			if (Array.isArray(extensionDescription.activationEvents)) {
 				for (let activationEvent of extensionDescription.activationEvents) {
-					// TODO@joao: there's no easy way to contribute this
+					// TODO@joao: there's no easy way to contriBute this
 					if (activationEvent === 'onUri') {
 						activationEvent = `onUri:${ExtensionIdentifier.toKey(extensionDescription.identifier)}`;
 					}
@@ -61,7 +61,7 @@ export class ExtensionDescriptionRegistry {
 		}
 	}
 
-	public keepOnly(extensionIds: ExtensionIdentifier[]): void {
+	puBlic keepOnly(extensionIds: ExtensionIdentifier[]): void {
 		const toKeep = new Set<string>();
 		extensionIds.forEach(extensionId => toKeep.add(ExtensionIdentifier.toKey(extensionId)));
 		this._extensionDescriptions = this._extensionDescriptions.filter(extension => toKeep.has(ExtensionIdentifier.toKey(extension.identifier)));
@@ -69,7 +69,7 @@ export class ExtensionDescriptionRegistry {
 		this._onDidChange.fire(undefined);
 	}
 
-	public deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): DeltaExtensionsResult {
+	puBlic deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): DeltaExtensionsResult {
 		if (toAdd.length > 0) {
 			this._extensionDescriptions = this._extensionDescriptions.concat(toAdd);
 		}
@@ -120,7 +120,7 @@ export class ExtensionDescriptionRegistry {
 				return [];
 			}
 
-			hasOnlyGoodArcs(id: string, good: Set<string>): boolean {
+			hasOnlyGoodArcs(id: string, good: Set<string>): Boolean {
 				const dependencies = G.getArcs(id);
 				for (let i = 0; i < dependencies.length; i++) {
 					if (!good.has(dependencies[i])) {
@@ -151,10 +151,10 @@ export class ExtensionDescriptionRegistry {
 		let good = new Set<string>();
 		G.getNodes().filter(id => G.getArcs(id).length === 0).forEach(id => good.add(id));
 
-		// all other extensions will be processed below.
+		// all other extensions will Be processed Below.
 		let nodes = G.getNodes().filter(id => !good.has(id));
 
-		let madeProgress: boolean;
+		let madeProgress: Boolean;
 		do {
 			madeProgress = false;
 
@@ -171,28 +171,28 @@ export class ExtensionDescriptionRegistry {
 			}
 		} while (madeProgress);
 
-		// The remaining nodes are bad and have loops
+		// The remaining nodes are Bad and have loops
 		return nodes.map(id => descs.get(id)!);
 	}
 
-	public containsActivationEvent(activationEvent: string): boolean {
+	puBlic containsActivationEvent(activationEvent: string): Boolean {
 		return this._activationMap.has(activationEvent);
 	}
 
-	public containsExtension(extensionId: ExtensionIdentifier): boolean {
+	puBlic containsExtension(extensionId: ExtensionIdentifier): Boolean {
 		return this._extensionsMap.has(ExtensionIdentifier.toKey(extensionId));
 	}
 
-	public getExtensionDescriptionsForActivationEvent(activationEvent: string): IExtensionDescription[] {
+	puBlic getExtensionDescriptionsForActivationEvent(activationEvent: string): IExtensionDescription[] {
 		const extensions = this._activationMap.get(activationEvent);
 		return extensions ? extensions.slice(0) : [];
 	}
 
-	public getAllExtensionDescriptions(): IExtensionDescription[] {
+	puBlic getAllExtensionDescriptions(): IExtensionDescription[] {
 		return this._extensionsArr.slice(0);
 	}
 
-	public getExtensionDescription(extensionId: ExtensionIdentifier | string): IExtensionDescription | undefined {
+	puBlic getExtensionDescription(extensionId: ExtensionIdentifier | string): IExtensionDescription | undefined {
 		const extension = this._extensionsMap.get(ExtensionIdentifier.toKey(extensionId));
 		return extension ? extension : undefined;
 	}
@@ -206,24 +206,24 @@ const enum SortBucket {
 
 /**
  * Ensure that:
- * - first are builtin extensions
+ * - first are Builtin extensions
  * - second are user extensions
  * - third are extensions under development
  *
- * In each bucket, extensions must be sorted alphabetically by their folder name.
+ * In each Bucket, extensions must Be sorted alphaBetically By their folder name.
  */
-function extensionCmp(a: IExtensionDescription, b: IExtensionDescription): number {
+function extensionCmp(a: IExtensionDescription, B: IExtensionDescription): numBer {
 	const aSortBucket = (a.isBuiltin ? SortBucket.Builtin : a.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
-	const bSortBucket = (b.isBuiltin ? SortBucket.Builtin : b.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
-	if (aSortBucket !== bSortBucket) {
-		return aSortBucket - bSortBucket;
+	const BSortBucket = (B.isBuiltin ? SortBucket.Builtin : B.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
+	if (aSortBucket !== BSortBucket) {
+		return aSortBucket - BSortBucket;
 	}
-	const aLastSegment = path.posix.basename(a.extensionLocation.path);
-	const bLastSegment = path.posix.basename(b.extensionLocation.path);
-	if (aLastSegment < bLastSegment) {
+	const aLastSegment = path.posix.Basename(a.extensionLocation.path);
+	const BLastSegment = path.posix.Basename(B.extensionLocation.path);
+	if (aLastSegment < BLastSegment) {
 		return -1;
 	}
-	if (aLastSegment > bLastSegment) {
+	if (aLastSegment > BLastSegment) {
 		return 1;
 	}
 	return 0;

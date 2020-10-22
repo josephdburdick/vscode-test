@@ -3,24 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IEncodingSupport, IModeSupport, ISaveOptions, IRevertOptions, SaveReason } from 'vs/workbench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IEncodingSupport, IModeSupport, ISaveOptions, IRevertOptions, SaveReason } from 'vs/workBench/common/editor';
 import { IBaseStatWithMetadata, IFileStatWithMetadata, IReadFileOptions, IWriteFileOptions, FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { ITextEditorModel } from 'vs/editor/common/services/resolverService';
 import { ITextBufferFactory, ITextModel, ITextSnapshot } from 'vs/editor/common/model';
-import { VSBuffer, VSBufferReadable } from 'vs/base/common/buffer';
-import { areFunctions, isUndefinedOrNull } from 'vs/base/common/types';
-import { IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { IUntitledTextEditorModelManager } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { VSBuffer, VSBufferReadaBle } from 'vs/Base/common/Buffer';
+import { areFunctions, isUndefinedOrNull } from 'vs/Base/common/types';
+import { IWorkingCopy } from 'vs/workBench/services/workingCopy/common/workingCopyService';
+import { IUntitledTextEditorModelManager } from 'vs/workBench/services/untitled/common/untitledTextEditorService';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
 
 export const ITextFileService = createDecorator<ITextFileService>('textFileService');
 
-export interface ITextFileService extends IDisposable {
+export interface ITextFileService extends IDisposaBle {
 
 	readonly _serviceBrand: undefined;
 
@@ -44,9 +44,9 @@ export interface ITextFileService extends IDisposable {
 	/**
 	 * A resource is dirty if it has unsaved changes or is an untitled file not yet saved.
 	 *
-	 * @param resource the resource to check for being dirty
+	 * @param resource the resource to check for Being dirty
 	 */
-	isDirty(resource: URI): boolean;
+	isDirty(resource: URI): Boolean;
 
 	/**
 	 * Saves the resource.
@@ -76,12 +76,12 @@ export interface ITextFileService extends IDisposable {
 	revert(resource: URI, options?: IRevertOptions): Promise<void>;
 
 	/**
-	 * Read the contents of a file identified by the resource.
+	 * Read the contents of a file identified By the resource.
 	 */
 	read(resource: URI, options?: IReadTextFileOptions): Promise<ITextFileContent>;
 
 	/**
-	 * Read the contents of a file identified by the resource as stream.
+	 * Read the contents of a file identified By the resource as stream.
 	 */
 	readStream(resource: URI, options?: IReadTextFileOptions): Promise<ITextFileStreamContent>;
 
@@ -91,10 +91,10 @@ export interface ITextFileService extends IDisposable {
 	write(resource: URI, value: string | ITextSnapshot, options?: IWriteTextFileOptions): Promise<IFileStatWithMetadata>;
 
 	/**
-	 * Create a file. If the file exists it will be overwritten with the contents if
-	 * the options enable to overwrite.
+	 * Create a file. If the file exists it will Be overwritten with the contents if
+	 * the options enaBle to overwrite.
 	 */
-	create(resource: URI, contents?: string | ITextSnapshot, options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata>;
+	create(resource: URI, contents?: string | ITextSnapshot, options?: { overwrite?: Boolean }): Promise<IFileStatWithMetadata>;
 }
 
 export interface IReadTextFileOptions extends IReadFileOptions {
@@ -103,7 +103,7 @@ export interface IReadTextFileOptions extends IReadFileOptions {
 	 * The optional acceptTextOnly parameter allows to fail this request early if the file
 	 * contents are not textual.
 	 */
-	acceptTextOnly?: boolean;
+	acceptTextOnly?: Boolean;
 
 	/**
 	 * The optional encoding parameter allows to specify the desired encoding when resolving
@@ -114,7 +114,7 @@ export interface IReadTextFileOptions extends IReadFileOptions {
 	/**
 	 * The optional guessEncoding parameter allows to guess encoding from content of the file.
 	 */
-	autoGuessEncoding?: boolean;
+	autoGuessEncoding?: Boolean;
 }
 
 export interface IWriteTextFileOptions extends IWriteFileOptions {
@@ -127,18 +127,18 @@ export interface IWriteTextFileOptions extends IWriteFileOptions {
 	/**
 	 * If set to true, will enforce the selected encoding and not perform any detection using BOMs.
 	 */
-	overwriteEncoding?: boolean;
+	overwriteEncoding?: Boolean;
 
 	/**
 	 * Whether to overwrite a file even if it is readonly.
 	 */
-	overwriteReadonly?: boolean;
+	overwriteReadonly?: Boolean;
 
 	/**
 	 * Whether to write to the file as elevated (admin) user. When setting this option a prompt will
 	 * ask the user to authenticate as super user.
 	 */
-	writeElevated?: boolean;
+	writeElevated?: Boolean;
 }
 
 export const enum TextFileOperationResult {
@@ -147,14 +147,14 @@ export const enum TextFileOperationResult {
 
 export class TextFileOperationError extends FileOperationError {
 
-	static isTextFileOperationError(obj: unknown): obj is TextFileOperationError {
-		return obj instanceof Error && !isUndefinedOrNull((obj as TextFileOperationError).textFileOperationResult);
+	static isTextFileOperationError(oBj: unknown): oBj is TextFileOperationError {
+		return oBj instanceof Error && !isUndefinedOrNull((oBj as TextFileOperationError).textFileOperationResult);
 	}
 
 	constructor(
 		message: string,
-		public textFileOperationResult: TextFileOperationResult,
-		public options?: IReadTextFileOptions & IWriteTextFileOptions
+		puBlic textFileOperationResult: TextFileOperationResult,
+		puBlic options?: IReadTextFileOptions & IWriteTextFileOptions
 	) {
 		super(message, FileOperationResult.FILE_OTHER_ERROR);
 	}
@@ -166,11 +166,11 @@ export interface IResourceEncodings {
 
 export interface IResourceEncoding {
 	encoding: string;
-	hasBOM: boolean;
+	hasBOM: Boolean;
 }
 
 /**
- * The save error handler can be installed on the text file editor model to install code that executes when save errors occur.
+ * The save error handler can Be installed on the text file editor model to install code that executes when save errors occur.
  */
 export interface ISaveErrorHandler {
 
@@ -181,7 +181,7 @@ export interface ISaveErrorHandler {
 }
 
 /**
- * States the text file editor model can be in.
+ * States the text file editor model can Be in.
  */
 export const enum TextFileEditorModelState {
 
@@ -196,18 +196,18 @@ export const enum TextFileEditorModelState {
 	DIRTY,
 
 	/**
-	 * A model is currently being saved but this operation has not completed yet.
+	 * A model is currently Being saved But this operation has not completed yet.
 	 */
 	PENDING_SAVE,
 
 	/**
-	 * A model is in conflict mode when changes cannot be saved because the
+	 * A model is in conflict mode when changes cannot Be saved Because the
 	 * underlying file has changed. Models in conflict mode are always dirty.
 	 */
 	CONFLICT,
 
 	/**
-	 * A model is in orphan state when the underlying file has been deleted.
+	 * A model is in orphan state when the underlying file has Been deleted.
 	 */
 	ORPHAN,
 
@@ -251,7 +251,7 @@ export interface ITextFileStreamContent extends IBaseTextFileContent {
 export interface ITextFileEditorModelLoadOrCreateOptions {
 
 	/**
-	 * Context why the model is being loaded or created.
+	 * Context why the model is Being loaded or created.
 	 */
 	reason?: TextFileLoadReason;
 
@@ -267,27 +267,27 @@ export interface ITextFileEditorModelLoadOrCreateOptions {
 
 	/**
 	 * The contents to use for the model if known. If not
-	 * provided, the contents will be retrieved from the
-	 * underlying resource or backup if present.
+	 * provided, the contents will Be retrieved from the
+	 * underlying resource or Backup if present.
 	 */
 	contents?: ITextBufferFactory;
 
 	/**
-	 * If the model was already loaded before, allows to trigger
+	 * If the model was already loaded Before, allows to trigger
 	 * a reload of it to fetch the latest contents:
 	 * - async: resolve() will return immediately and trigger
-	 * a reload that will run in the background.
+	 * a reload that will run in the Background.
 	 * - sync: resolve() will only return resolved when the
 	 * model has finished reloading.
 	 */
 	reload?: {
-		async: boolean
+		async: Boolean
 	};
 
 	/**
-	 * Allow to load a model even if we think it is a binary file.
+	 * Allow to load a model even if we think it is a Binary file.
 	 */
-	allowBinary?: boolean;
+	allowBinary?: Boolean;
 }
 
 export interface ITextFileSaveEvent {
@@ -304,7 +304,7 @@ export interface ITextFileSaveParticipant {
 
 	/**
 	 * Participate in a save of a model. Allows to change the model
-	 * before it is being saved to disk.
+	 * Before it is Being saved to disk.
 	 */
 	participate(
 		model: ITextFileEditorModel,
@@ -348,7 +348,7 @@ export interface ITextFileEditorModelManager {
 	/**
 	 * Adds a participant for saving text file models.
 	 */
-	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposable;
+	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposaBle;
 
 	/**
 	 * Runs the registered save participants on the provided model.
@@ -356,8 +356,8 @@ export interface ITextFileEditorModelManager {
 	runSaveParticipants(model: ITextFileEditorModel, context: { reason: SaveReason; }, token: CancellationToken): Promise<void>
 
 	/**
-	 * Waits for the model to be ready to be disposed. There may be conditions
-	 * under which the model cannot be disposed, e.g. when it is dirty. Once the
+	 * Waits for the model to Be ready to Be disposed. There may Be conditions
+	 * under which the model cannot Be disposed, e.g. when it is dirty. Once the
 	 * promise is settled, it is safe to dispose the model.
 	 */
 	canDispose(model: ITextFileEditorModel): true | Promise<true>;
@@ -366,31 +366,31 @@ export interface ITextFileEditorModelManager {
 export interface ITextFileSaveOptions extends ISaveOptions {
 
 	/**
-	 * Makes the file writable if it is readonly.
+	 * Makes the file writaBle if it is readonly.
 	 */
-	overwriteReadonly?: boolean;
+	overwriteReadonly?: Boolean;
 
 	/**
 	 * Overwrite the encoding of the file on disk as configured.
 	 */
-	overwriteEncoding?: boolean;
+	overwriteEncoding?: Boolean;
 
 	/**
 	 * Save the file with elevated privileges.
 	 *
-	 * Note: This may not be supported in all environments.
+	 * Note: This may not Be supported in all environments.
 	 */
-	writeElevated?: boolean;
+	writeElevated?: Boolean;
 
 	/**
-	 * Allows to write to a file even if it has been modified on disk.
+	 * Allows to write to a file even if it has Been modified on disk.
 	 */
-	ignoreModifiedSince?: boolean;
+	ignoreModifiedSince?: Boolean;
 
 	/**
-	 * If set, will bubble up the error to the caller instead of handling it.
+	 * If set, will BuBBle up the error to the caller instead of handling it.
 	 */
-	ignoreErrorHandler?: boolean;
+	ignoreErrorHandler?: Boolean;
 }
 
 export interface ITextFileSaveAsOptions extends ITextFileSaveOptions {
@@ -405,23 +405,23 @@ export interface ITextFileLoadOptions {
 
 	/**
 	 * The contents to use for the model if known. If not
-	 * provided, the contents will be retrieved from the
-	 * underlying resource or backup if present.
+	 * provided, the contents will Be retrieved from the
+	 * underlying resource or Backup if present.
 	 */
 	contents?: ITextBufferFactory;
 
 	/**
-	 * Go to disk bypassing any cache of the model if any.
+	 * Go to disk Bypassing any cache of the model if any.
 	 */
-	forceReadFromDisk?: boolean;
+	forceReadFromDisk?: Boolean;
 
 	/**
-	 * Allow to load a model even if we think it is a binary file.
+	 * Allow to load a model even if we think it is a Binary file.
 	 */
-	allowBinary?: boolean;
+	allowBinary?: Boolean;
 
 	/**
-	 * Context why the model is being loaded.
+	 * Context why the model is Being loaded.
 	 */
 	reason?: TextFileLoadReason;
 }
@@ -433,11 +433,11 @@ export interface ITextFileEditorModel extends ITextEditorModel, IEncodingSupport
 	readonly onDidChangeOrphaned: Event<void>;
 	readonly onDidChangeEncoding: Event<void>;
 
-	hasState(state: TextFileEditorModelState): boolean;
+	hasState(state: TextFileEditorModelState): Boolean;
 
 	updatePreferredEncoding(encoding: string | undefined): void;
 
-	save(options?: ITextFileSaveOptions): Promise<boolean>;
+	save(options?: ITextFileSaveOptions): Promise<Boolean>;
 	revert(options?: IRevertOptions): Promise<void>;
 
 	load(options?: ITextFileLoadOptions): Promise<ITextFileEditorModel>;
@@ -489,23 +489,23 @@ export function stringToSnapshot(value: string): ITextSnapshot {
 	};
 }
 
-export class TextSnapshotReadable implements VSBufferReadable {
-	private preambleHandled = false;
+export class TextSnapshotReadaBle implements VSBufferReadaBle {
+	private preamBleHandled = false;
 
-	constructor(private snapshot: ITextSnapshot, private preamble?: string) { }
+	constructor(private snapshot: ITextSnapshot, private preamBle?: string) { }
 
 	read(): VSBuffer | null {
 		let value = this.snapshot.read();
 
-		// Handle preamble if provided
-		if (!this.preambleHandled) {
-			this.preambleHandled = true;
+		// Handle preamBle if provided
+		if (!this.preamBleHandled) {
+			this.preamBleHandled = true;
 
-			if (typeof this.preamble === 'string') {
+			if (typeof this.preamBle === 'string') {
 				if (typeof value === 'string') {
-					value = this.preamble + value;
+					value = this.preamBle + value;
 				} else {
-					value = this.preamble;
+					value = this.preamBle;
 				}
 			}
 		}
@@ -518,11 +518,11 @@ export class TextSnapshotReadable implements VSBufferReadable {
 	}
 }
 
-export function toBufferOrReadable(value: string): VSBuffer;
-export function toBufferOrReadable(value: ITextSnapshot): VSBufferReadable;
-export function toBufferOrReadable(value: string | ITextSnapshot): VSBuffer | VSBufferReadable;
-export function toBufferOrReadable(value: string | ITextSnapshot | undefined): VSBuffer | VSBufferReadable | undefined;
-export function toBufferOrReadable(value: string | ITextSnapshot | undefined): VSBuffer | VSBufferReadable | undefined {
+export function toBufferOrReadaBle(value: string): VSBuffer;
+export function toBufferOrReadaBle(value: ITextSnapshot): VSBufferReadaBle;
+export function toBufferOrReadaBle(value: string | ITextSnapshot): VSBuffer | VSBufferReadaBle;
+export function toBufferOrReadaBle(value: string | ITextSnapshot | undefined): VSBuffer | VSBufferReadaBle | undefined;
+export function toBufferOrReadaBle(value: string | ITextSnapshot | undefined): VSBuffer | VSBufferReadaBle | undefined {
 	if (typeof value === 'undefined') {
 		return undefined;
 	}
@@ -531,5 +531,5 @@ export function toBufferOrReadable(value: string | ITextSnapshot | undefined): V
 		return VSBuffer.fromString(value);
 	}
 
-	return new TextSnapshotReadable(value);
+	return new TextSnapshotReadaBle(value);
 }

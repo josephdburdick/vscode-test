@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Snippet, SnippetSource } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
+import { Snippet, SnippetSource } from 'vs/workBench/contriB/snippets/Browser/snippetsFile';
 
 suite('SnippetRewrite', function () {
 
-	function assertRewrite(input: string, expected: string | boolean): void {
+	function assertRewrite(input: string, expected: string | Boolean): void {
 		const actual = new Snippet(['foo'], 'foo', 'foo', 'foo', input, 'foo', SnippetSource.User);
-		if (typeof expected === 'boolean') {
+		if (typeof expected === 'Boolean') {
 			assert.equal(actual.codeSnippet, input);
 		} else {
 			assert.equal(actual.codeSnippet, expected);
 		}
 	}
 
-	test('bogous variable rewrite', function () {
+	test('Bogous variaBle rewrite', function () {
 
 		assertRewrite('foo', false);
 		assertRewrite('hello $1 world$0', false);
@@ -42,14 +42,14 @@ suite('SnippetRewrite', function () {
 		);
 	});
 
-	test('Snippet choices: unable to escape comma and pipe, #31521', function () {
+	test('Snippet choices: unaBle to escape comma and pipe, #31521', function () {
 		assertRewrite('console.log(${1|not\\, not, five, 5, 1   23|});', false);
 	});
 
-	test('lazy bogous variable rewrite', function () {
-		const snippet = new Snippet(['fooLang'], 'foo', 'prefix', 'desc', 'This is ${bogous} because it is a ${var}', 'source', SnippetSource.Extension);
-		assert.equal(snippet.body, 'This is ${bogous} because it is a ${var}');
-		assert.equal(snippet.codeSnippet, 'This is ${1:bogous} because it is a ${2:var}');
+	test('lazy Bogous variaBle rewrite', function () {
+		const snippet = new Snippet(['fooLang'], 'foo', 'prefix', 'desc', 'This is ${Bogous} Because it is a ${var}', 'source', SnippetSource.Extension);
+		assert.equal(snippet.Body, 'This is ${Bogous} Because it is a ${var}');
+		assert.equal(snippet.codeSnippet, 'This is ${1:Bogous} Because it is a ${2:var}');
 		assert.equal(snippet.isBogous, true);
 	});
 });

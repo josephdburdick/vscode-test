@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { Action, IAction } from 'vs/base/common/actions';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import * as dom from 'vs/Base/Browser/dom';
+import { Action, IAction } from 'vs/Base/common/actions';
+import { URI, UriComponents } from 'vs/Base/common/uri';
+import { ActionViewItem } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
 export class ToggleReactionsAction extends Action {
-	static readonly ID = 'toolbar.toggle.pickReactions';
+	static readonly ID = 'toolBar.toggle.pickReactions';
 	private _menuActions: IAction[] = [];
 	private toggleDropdownMenu: () => void;
 	constructor(toggleDropdownMenu: () => void, title?: string) {
@@ -32,35 +32,35 @@ export class ReactionActionViewItem extends ActionViewItem {
 	constructor(action: ReactionAction) {
 		super(null, action, {});
 	}
-	updateLabel(): void {
-		if (!this.label) {
+	updateLaBel(): void {
+		if (!this.laBel) {
 			return;
 		}
 
 		let action = this.getAction() as ReactionAction;
 		if (action.class) {
-			this.label.classList.add(action.class);
+			this.laBel.classList.add(action.class);
 		}
 
 		if (!action.icon) {
-			let reactionLabel = dom.append(this.label, dom.$('span.reaction-label'));
-			reactionLabel.innerText = action.label;
+			let reactionLaBel = dom.append(this.laBel, dom.$('span.reaction-laBel'));
+			reactionLaBel.innerText = action.laBel;
 		} else {
-			let reactionIcon = dom.append(this.label, dom.$('.reaction-icon'));
+			let reactionIcon = dom.append(this.laBel, dom.$('.reaction-icon'));
 			reactionIcon.style.display = '';
 			let uri = URI.revive(action.icon);
-			reactionIcon.style.backgroundImage = `url('${uri}')`;
-			reactionIcon.title = action.label;
+			reactionIcon.style.BackgroundImage = `url('${uri}')`;
+			reactionIcon.title = action.laBel;
 		}
 		if (action.count) {
-			let reactionCount = dom.append(this.label, dom.$('span.reaction-count'));
+			let reactionCount = dom.append(this.laBel, dom.$('span.reaction-count'));
 			reactionCount.innerText = `${action.count}`;
 		}
 	}
 }
 export class ReactionAction extends Action {
-	static readonly ID = 'toolbar.toggle.reaction';
-	constructor(id: string, label: string = '', cssClass: string = '', enabled: boolean = true, actionCallback?: (event?: any) => Promise<any>, public icon?: UriComponents, public count?: number) {
-		super(ReactionAction.ID, label, cssClass, enabled, actionCallback);
+	static readonly ID = 'toolBar.toggle.reaction';
+	constructor(id: string, laBel: string = '', cssClass: string = '', enaBled: Boolean = true, actionCallBack?: (event?: any) => Promise<any>, puBlic icon?: UriComponents, puBlic count?: numBer) {
+		super(ReactionAction.ID, laBel, cssClass, enaBled, actionCallBack);
 	}
 }

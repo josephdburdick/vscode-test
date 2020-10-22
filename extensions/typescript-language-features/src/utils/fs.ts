@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 
-export const exists = async (resource: vscode.Uri): Promise<boolean> => {
+export const exists = async (resource: vscode.Uri): Promise<Boolean> => {
 	try {
 		const stat = await vscode.workspace.fs.stat(resource);
 		// stat.type is an enum flag

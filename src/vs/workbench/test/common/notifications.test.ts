@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { NotificationsModel, NotificationViewItem, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind, IStatusMessageChangeEvent, StatusMessageChangeType } from 'vs/workbench/common/notifications';
-import { Action } from 'vs/base/common/actions';
+import { NotificationsModel, NotificationViewItem, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind, IStatusMessageChangeEvent, StatusMessageChangeType } from 'vs/workBench/common/notifications';
+import { Action } from 'vs/Base/common/actions';
 import { INotification, Severity, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
+import { createErrorWithActions } from 'vs/Base/common/errorsWithActions';
 
 suite('Notifications', () => {
 
@@ -22,8 +22,8 @@ suite('Notifications', () => {
 		let item2 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' })!;
 		let item3 = NotificationViewItem.create({ severity: Severity.Info, message: 'Info Message' })!;
 		let item4 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', source: 'Source' })!;
-		let item5 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] } })!;
-		let item6 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] }, progress: { infinite: true } })!;
+		let item5 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'laBel')] } })!;
+		let item6 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'laBel')] }, progress: { infinite: true } })!;
 
 		assert.equal(item1.equals(item1), true);
 		assert.equal(item2.equals(item2), true);
@@ -94,18 +94,18 @@ suite('Notifications', () => {
 			}
 		});
 
-		item1.updateActions({ primary: [new Action('id2', 'label')] });
+		item1.updateActions({ primary: [new Action('id2', 'laBel')] });
 
 		assert.equal(called, 1);
 
 		called = 0;
-		item1.onDidChangeVisibility(e => {
+		item1.onDidChangeVisiBility(e => {
 			called++;
 		});
 
-		item1.updateVisibility(true);
-		item1.updateVisibility(false);
-		item1.updateVisibility(false);
+		item1.updateVisiBility(true);
+		item1.updateVisiBility(false);
+		item1.updateVisiBility(false);
 
 		assert.equal(called, 2);
 
@@ -118,7 +118,7 @@ suite('Notifications', () => {
 		assert.equal(called, 1);
 
 		// Error with Action
-		let item7 = NotificationViewItem.create({ severity: Severity.Error, message: createErrorWithActions('Hello Error', { actions: [new Action('id', 'label')] }) })!;
+		let item7 = NotificationViewItem.create({ severity: Severity.Error, message: createErrorWithActions('Hello Error', { actions: [new Action('id', 'laBel')] }) })!;
 		assert.equal(item7.actions!.primary!.length, 1);
 
 		// Filter
@@ -148,7 +148,7 @@ suite('Notifications', () => {
 			lastStatusMessageEvent = e;
 		});
 
-		let item1: INotification = { severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] } };
+		let item1: INotification = { severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'laBel')] } };
 		let item2: INotification = { severity: Severity.Warning, message: 'Warning Message', source: 'Some Source' };
 		let item2Duplicate: INotification = { severity: Severity.Warning, message: 'Warning Message', source: 'Some Source' };
 		let item3: INotification = { severity: Severity.Info, message: 'Info Message' };
@@ -222,23 +222,23 @@ suite('Notifications', () => {
 		assert.equal(lastNotificationEvent.index, 0);
 		assert.equal(lastNotificationEvent.kind, NotificationChangeType.EXPAND_COLLAPSE);
 
-		const disposable = model.showStatusMessage('Hello World');
+		const disposaBle = model.showStatusMessage('Hello World');
 		assert.equal(model.statusMessage!.message, 'Hello World');
 		assert.equal(lastStatusMessageEvent.item.message, model.statusMessage!.message);
 		assert.equal(lastStatusMessageEvent.kind, StatusMessageChangeType.ADD);
-		disposable.dispose();
+		disposaBle.dispose();
 		assert.ok(!model.statusMessage);
 		assert.equal(lastStatusMessageEvent.kind, StatusMessageChangeType.REMOVE);
 
-		let disposable2 = model.showStatusMessage('Hello World 2');
-		const disposable3 = model.showStatusMessage('Hello World 3');
+		let disposaBle2 = model.showStatusMessage('Hello World 2');
+		const disposaBle3 = model.showStatusMessage('Hello World 3');
 
 		assert.equal(model.statusMessage!.message, 'Hello World 3');
 
-		disposable2.dispose();
+		disposaBle2.dispose();
 		assert.equal(model.statusMessage!.message, 'Hello World 3');
 
-		disposable3.dispose();
+		disposaBle3.dispose();
 		assert.ok(!model.statusMessage);
 	});
 });

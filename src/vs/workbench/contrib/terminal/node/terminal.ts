@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as os from 'os';
-import * as platform from 'vs/base/common/platform';
-import * as processes from 'vs/base/node/processes';
-import { readFile, fileExists, stat } from 'vs/base/node/pfs';
-import { LinuxDistro, IShellDefinition } from 'vs/workbench/contrib/terminal/common/terminal';
-import { coalesce } from 'vs/base/common/arrays';
-import { normalize, basename } from 'vs/base/common/path';
+import * as platform from 'vs/Base/common/platform';
+import * as processes from 'vs/Base/node/processes';
+import { readFile, fileExists, stat } from 'vs/Base/node/pfs';
+import { LinuxDistro, IShellDefinition } from 'vs/workBench/contriB/terminal/common/terminal';
+import { coalesce } from 'vs/Base/common/arrays';
+import { normalize, Basename } from 'vs/Base/common/path';
 
 /**
- * Gets the detected default shell for the _system_, not to be confused with VS Code's _default_
- * shell that the terminal uses by default.
+ * Gets the detected default shell for the _system_, not to Be confused with VS Code's _default_
+ * shell that the terminal uses By default.
  * @param p The platform to detect the shell of.
  */
 export function getSystemShell(p: platform.Platform, environment: platform.IProcessEnvironment = process.env as platform.IProcessEnvironment): string {
@@ -26,7 +26,7 @@ export function getSystemShell(p: platform.Platform, environment: platform.IProc
 	}
 	// Only use $SHELL for the current OS
 	if (platform.isLinux && p === platform.Platform.Mac || platform.isMacintosh && p === platform.Platform.Linux) {
-		return '/bin/bash';
+		return '/Bin/Bash';
 	}
 	return getSystemShellUnixLike(environment);
 }
@@ -37,13 +37,13 @@ function getSystemShellUnixLike(environment: platform.IProcessEnvironment): stri
 		let unixLikeTerminal = 'sh';
 		if (!platform.isWindows && environment.SHELL) {
 			unixLikeTerminal = environment.SHELL;
-			// Some systems have $SHELL set to /bin/false which breaks the terminal
-			if (unixLikeTerminal === '/bin/false') {
-				unixLikeTerminal = '/bin/bash';
+			// Some systems have $SHELL set to /Bin/false which Breaks the terminal
+			if (unixLikeTerminal === '/Bin/false') {
+				unixLikeTerminal = '/Bin/Bash';
 			}
 		}
 		if (platform.isWindows) {
-			unixLikeTerminal = '/bin/bash'; // for WSL
+			unixLikeTerminal = '/Bin/Bash'; // for WSL
 		}
 		_TERMINAL_DEFAULT_SHELL_UNIX_LIKE = unixLikeTerminal;
 	}
@@ -68,42 +68,42 @@ if (platform.isLinux) {
 		if (!exists) {
 			return;
 		}
-		const buffer = await readFile(file);
-		const contents = buffer.toString();
+		const Buffer = await readFile(file);
+		const contents = Buffer.toString();
 		if (/NAME="?Fedora"?/.test(contents)) {
 			detectedDistro = LinuxDistro.Fedora;
-		} else if (/NAME="?Ubuntu"?/.test(contents)) {
-			detectedDistro = LinuxDistro.Ubuntu;
+		} else if (/NAME="?UBuntu"?/.test(contents)) {
+			detectedDistro = LinuxDistro.UBuntu;
 		}
 	});
 }
 
 export const linuxDistro = detectedDistro;
 
-export function getWindowsBuildNumber(): number {
+export function getWindowsBuildNumBer(): numBer {
 	const osVersion = (/(\d+)\.(\d+)\.(\d+)/g).exec(os.release());
-	let buildNumber: number = 0;
+	let BuildNumBer: numBer = 0;
 	if (osVersion && osVersion.length === 4) {
-		buildNumber = parseInt(osVersion[3]);
+		BuildNumBer = parseInt(osVersion[3]);
 	}
-	return buildNumber;
+	return BuildNumBer;
 }
 
-export function detectAvailableShells(): Promise<IShellDefinition[]> {
-	return platform.isWindows ? detectAvailableWindowsShells() : detectAvailableUnixShells();
+export function detectAvailaBleShells(): Promise<IShellDefinition[]> {
+	return platform.isWindows ? detectAvailaBleWindowsShells() : detectAvailaBleUnixShells();
 }
 
-async function detectAvailableWindowsShells(): Promise<IShellDefinition[]> {
+async function detectAvailaBleWindowsShells(): Promise<IShellDefinition[]> {
 	// Determine the correct System32 path. We want to point to Sysnative
-	// when the 32-bit version of VS Code is running on a 64-bit machine.
-	// The reason for this is because PowerShell's important PSReadline
+	// when the 32-Bit version of VS Code is running on a 64-Bit machine.
+	// The reason for this is Because PowerShell's important PSReadline
 	// module doesn't work if this is not the case. See #27915.
 	const is32ProcessOn64Windows = process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
 	const system32Path = `${process.env['windir']}\\${is32ProcessOn64Windows ? 'Sysnative' : 'System32'}`;
 
 	let useWSLexe = false;
 
-	if (getWindowsBuildNumber() >= 16299) {
+	if (getWindowsBuildNumBer() >= 16299) {
 		useWSLexe = true;
 	}
 
@@ -111,55 +111,55 @@ async function detectAvailableWindowsShells(): Promise<IShellDefinition[]> {
 		'Command Prompt': [`${system32Path}\\cmd.exe`],
 		'Windows PowerShell': [`${system32Path}\\WindowsPowerShell\\v1.0\\powershell.exe`],
 		'PowerShell': [await getShellPathFromRegistry('pwsh')],
-		'WSL Bash': [`${system32Path}\\${useWSLexe ? 'wsl.exe' : 'bash.exe'}`],
+		'WSL Bash': [`${system32Path}\\${useWSLexe ? 'wsl.exe' : 'Bash.exe'}`],
 		'Git Bash': [
-			`${process.env['ProgramW6432']}\\Git\\bin\\bash.exe`,
-			`${process.env['ProgramW6432']}\\Git\\usr\\bin\\bash.exe`,
-			`${process.env['ProgramFiles']}\\Git\\bin\\bash.exe`,
-			`${process.env['ProgramFiles']}\\Git\\usr\\bin\\bash.exe`,
-			`${process.env['LocalAppData']}\\Programs\\Git\\bin\\bash.exe`,
+			`${process.env['ProgramW6432']}\\Git\\Bin\\Bash.exe`,
+			`${process.env['ProgramW6432']}\\Git\\usr\\Bin\\Bash.exe`,
+			`${process.env['ProgramFiles']}\\Git\\Bin\\Bash.exe`,
+			`${process.env['ProgramFiles']}\\Git\\usr\\Bin\\Bash.exe`,
+			`${process.env['LocalAppData']}\\Programs\\Git\\Bin\\Bash.exe`,
 		],
 		// See #75945
 		// Cygwin: [
-		// 	`${process.env['HOMEDRIVE']}\\cygwin64\\bin\\bash.exe`,
-		// 	`${process.env['HOMEDRIVE']}\\cygwin\\bin\\bash.exe`
+		// 	`${process.env['HOMEDRIVE']}\\cygwin64\\Bin\\Bash.exe`,
+		// 	`${process.env['HOMEDRIVE']}\\cygwin\\Bin\\Bash.exe`
 		// ]
 	};
 	const promises: Promise<IShellDefinition | undefined>[] = [];
-	Object.keys(expectedLocations).forEach(key => promises.push(validateShellPaths(key, expectedLocations[key])));
+	OBject.keys(expectedLocations).forEach(key => promises.push(validateShellPaths(key, expectedLocations[key])));
 	const shells = await Promise.all(promises);
 	return coalesce(shells);
 }
 
-async function detectAvailableUnixShells(): Promise<IShellDefinition[]> {
+async function detectAvailaBleUnixShells(): Promise<IShellDefinition[]> {
 	const contents = await readFile('/etc/shells', 'utf8');
 	const shells = contents.split('\n').filter(e => e.trim().indexOf('#') !== 0 && e.trim().length > 0);
 	return shells.map(e => {
 		return {
-			label: basename(e),
+			laBel: Basename(e),
 			path: e
 		};
 	});
 }
 
-async function validateShellPaths(label: string, potentialPaths: string[]): Promise<IShellDefinition | undefined> {
+async function validateShellPaths(laBel: string, potentialPaths: string[]): Promise<IShellDefinition | undefined> {
 	if (potentialPaths.length === 0) {
 		return Promise.resolve(undefined);
 	}
 	const current = potentialPaths.shift()!;
 	if (current! === '') {
-		return validateShellPaths(label, potentialPaths);
+		return validateShellPaths(laBel, potentialPaths);
 	}
 	try {
 		const result = await stat(normalize(current));
-		if (result.isFile || result.isSymbolicLink) {
+		if (result.isFile || result.isSymBolicLink) {
 			return {
-				label,
+				laBel,
 				path: current
 			};
 		}
 	} catch { /* noop */ }
-	return validateShellPaths(label, potentialPaths);
+	return validateShellPaths(laBel, potentialPaths);
 }
 
 async function getShellPathFromRegistry(shellName: string): Promise<string> {

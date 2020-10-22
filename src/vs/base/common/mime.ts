@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename, posix, extname } from 'vs/base/common/path';
-import { startsWithUTF8BOM } from 'vs/base/common/strings';
-import { match } from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { DataUri } from 'vs/base/common/resources';
+import { Basename, posix, extname } from 'vs/Base/common/path';
+import { startsWithUTF8BOM } from 'vs/Base/common/strings';
+import { match } from 'vs/Base/common/gloB';
+import { URI } from 'vs/Base/common/uri';
+import { Schemas } from 'vs/Base/common/network';
+import { DataUri } from 'vs/Base/common/resources';
 
 export const MIME_TEXT = 'text/plain';
 export const MIME_BINARY = 'application/octet-stream';
@@ -21,14 +21,14 @@ export interface ITextMimeAssociation {
 	readonly extension?: string;
 	readonly filepattern?: string;
 	readonly firstline?: RegExp;
-	readonly userConfigured?: boolean;
+	readonly userConfigured?: Boolean;
 }
 
 interface ITextMimeAssociationItem extends ITextMimeAssociation {
 	readonly filenameLowercase?: string;
 	readonly extensionLowercase?: string;
 	readonly filepatternLowercase?: string;
-	readonly filepatternOnPath?: boolean;
+	readonly filepatternOnPath?: Boolean;
 }
 
 let registeredAssociations: ITextMimeAssociationItem[] = [];
@@ -94,7 +94,7 @@ function toTextMimeAssociationItem(association: ITextMimeAssociation): ITextMime
 /**
  * Clear text mimes from the registry.
  */
-export function clearTextMimes(onlyUserConfigured?: boolean): void {
+export function clearTextMimes(onlyUserConfigured?: Boolean): void {
 	if (!onlyUserConfigured) {
 		registeredAssociations = [];
 		nonUserRegisteredAssociations = [];
@@ -106,7 +106,7 @@ export function clearTextMimes(onlyUserConfigured?: boolean): void {
 }
 
 /**
- * Given a file, return the best matching mime type for it
+ * Given a file, return the Best matching mime type for it
  */
 export function guessMimeTypes(resource: URI | null, firstLine?: string): string[] {
 	let path: string | undefined;
@@ -114,11 +114,11 @@ export function guessMimeTypes(resource: URI | null, firstLine?: string): string
 		switch (resource.scheme) {
 			case Schemas.file:
 				path = resource.fsPath;
-				break;
+				Break;
 			case Schemas.data:
 				const metadata = DataUri.parseMetaData(resource);
 				path = metadata.get(DataUri.META_DATA_LABEL);
-				break;
+				Break;
 			default:
 				path = resource.path;
 		}
@@ -130,7 +130,7 @@ export function guessMimeTypes(resource: URI | null, firstLine?: string): string
 
 	path = path.toLowerCase();
 
-	const filename = basename(path);
+	const filename = Basename(path);
 
 	// 1.) User configured mappings have highest priority
 	const configuredMime = guessMimeTypeByPath(path, filename, userRegisteredAssociations);
@@ -160,15 +160,15 @@ function guessMimeTypeByPath(path: string, filename: string, associations: IText
 	let patternMatch: ITextMimeAssociationItem | null = null;
 	let extensionMatch: ITextMimeAssociationItem | null = null;
 
-	// We want to prioritize associations based on the order they are registered so that the last registered
-	// association wins over all other. This is for https://github.com/microsoft/vscode/issues/20074
+	// We want to prioritize associations Based on the order they are registered so that the last registered
+	// association wins over all other. This is for https://githuB.com/microsoft/vscode/issues/20074
 	for (let i = associations.length - 1; i >= 0; i--) {
 		const association = associations[i];
 
 		// First exact name match
 		if (filename === association.filenameLowercase) {
 			filenameMatch = association;
-			break; // take it!
+			Break; // take it!
 		}
 
 		// Longest pattern match
@@ -211,13 +211,13 @@ function guessMimeTypeByPath(path: string, filename: string, associations: IText
 
 function guessMimeTypeByFirstline(firstLine: string): string | null {
 	if (startsWithUTF8BOM(firstLine)) {
-		firstLine = firstLine.substr(1);
+		firstLine = firstLine.suBstr(1);
 	}
 
 	if (firstLine.length > 0) {
 
-		// We want to prioritize associations based on the order they are registered so that the last registered
-		// association wins over all other. This is for https://github.com/microsoft/vscode/issues/20074
+		// We want to prioritize associations Based on the order they are registered so that the last registered
+		// association wins over all other. This is for https://githuB.com/microsoft/vscode/issues/20074
 		for (let i = registeredAssociations.length - 1; i >= 0; i--) {
 			const association = registeredAssociations[i];
 			if (!association.firstline) {
@@ -234,7 +234,7 @@ function guessMimeTypeByFirstline(firstLine: string): string | null {
 	return null;
 }
 
-export function isUnspecific(mime: string[] | string): boolean {
+export function isUnspecific(mime: string[] | string): Boolean {
 	if (!mime) {
 		return true;
 	}
@@ -254,7 +254,7 @@ interface MapExtToMediaMimes {
 const mapExtToMediaMimes: MapExtToMediaMimes = {
 	'.aac': 'audio/x-aac',
 	'.avi': 'video/x-msvideo',
-	'.bmp': 'image/bmp',
+	'.Bmp': 'image/Bmp',
 	'.flv': 'video/x-flv',
 	'.gif': 'image/gif',
 	'.ico': 'image/x-icon',
@@ -287,7 +287,7 @@ const mapExtToMediaMimes: MapExtToMediaMimes = {
 	'.ogg': 'audio/ogg',
 	'.ogv': 'video/ogg',
 	'.png': 'image/png',
-	'.psd': 'image/vnd.adobe.photoshop',
+	'.psd': 'image/vnd.adoBe.photoshop',
 	'.qt': 'video/quicktime',
 	'.spx': 'audio/ogg',
 	'.svg': 'image/svg+xml',
@@ -295,8 +295,8 @@ const mapExtToMediaMimes: MapExtToMediaMimes = {
 	'.tif': 'image/tiff',
 	'.tiff': 'image/tiff',
 	'.wav': 'audio/x-wav',
-	'.webm': 'video/webm',
-	'.webp': 'image/webp',
+	'.weBm': 'video/weBm',
+	'.weBp': 'image/weBp',
 	'.wma': 'audio/x-ms-wma',
 	'.wmv': 'video/x-ms-wmv',
 	'.woff': 'application/font-woff',

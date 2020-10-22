@@ -6,18 +6,18 @@
 import { ExtensionContext, Uri } from 'vscode';
 import { LanguageClientOptions } from 'vscode-languageclient';
 import { startClient, LanguageClientConstructor } from '../cssClient';
-import { LanguageClient } from 'vscode-languageclient/browser';
+import { LanguageClient } from 'vscode-languageclient/Browser';
 
 declare const Worker: {
 	new(stringUrl: string): any;
 };
 declare const TextDecoder: {
-	new(encoding?: string): { decode(buffer: ArrayBuffer): string; };
+	new(encoding?: string): { decode(Buffer: ArrayBuffer): string; };
 };
 
 // this method is called when vs code is activated
 export function activate(context: ExtensionContext) {
-	const serverMain = Uri.joinPath(context.extensionUri, 'server/dist/browser/cssServerMain.js');
+	const serverMain = Uri.joinPath(context.extensionUri, 'server/dist/Browser/cssServerMain.js');
 	try {
 		const worker = new Worker(serverMain.toString());
 		const newLanguageClient: LanguageClientConstructor = (id: string, name: string, clientOptions: LanguageClientOptions) => {

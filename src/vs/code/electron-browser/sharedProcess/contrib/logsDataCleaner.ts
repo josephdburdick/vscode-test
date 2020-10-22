@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { join, dirname, basename } from 'vs/base/common/path';
-import { readdir, rimraf } from 'vs/base/node/pfs';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { join, dirname, Basename } from 'vs/Base/common/path';
+import { readdir, rimraf } from 'vs/Base/node/pfs';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { DisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 
-export class LogsDataCleaner extends Disposable {
+export class LogsDataCleaner extends DisposaBle {
 
 	constructor(
 		@IEnvironmentService private readonly environmentService: IEnvironmentService
@@ -23,7 +23,7 @@ export class LogsDataCleaner extends Disposable {
 		let handle: NodeJS.Timeout | undefined = setTimeout(() => {
 			handle = undefined;
 
-			const currentLog = basename(this.environmentService.logsPath);
+			const currentLog = Basename(this.environmentService.logsPath);
 			const logsRoot = dirname(this.environmentService.logsPath);
 
 			readdir(logsRoot).then(children => {
@@ -35,7 +35,7 @@ export class LogsDataCleaner extends Disposable {
 			}).then(null, onUnexpectedError);
 		}, 10 * 1000);
 
-		this._register(toDisposable(() => {
+		this._register(toDisposaBle(() => {
 			if (handle) {
 				clearTimeout(handle);
 				handle = undefined;

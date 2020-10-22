@@ -5,8 +5,8 @@
 
 import * as assert from 'assert';
 import * as Platform from 'vs/platform/registry/common/platform';
-import { ViewletDescriptor, Extensions, Viewlet, ViewletRegistry } from 'vs/workbench/browser/viewlet';
-import * as Types from 'vs/base/common/types';
+import { ViewletDescriptor, Extensions, Viewlet, ViewletRegistry } from 'vs/workBench/Browser/viewlet';
+import * as Types from 'vs/Base/common/types';
 
 suite('Viewlets', () => {
 

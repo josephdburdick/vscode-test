@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
+import { Color } from 'vs/Base/common/color';
 
 export type styleFn = (colors: { [name: string]: Color | undefined }) => void;
 
-export interface IThemable {
+export interface IThemaBle {
 	style: styleFn;
 }

@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import { v4 as uuid } from 'uuid';
 import { keychain } from './common/keychain';
-import { GitHubServer, NETWORK_ERROR } from './githubServer';
+import { GitHuBServer, NETWORK_ERROR } from './githuBServer';
 import Logger from './common/logger';
 
 export const onDidChangeSessions = new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
@@ -14,7 +14,7 @@ export const onDidChangeSessions = new vscode.EventEmitter<vscode.Authentication
 interface SessionData {
 	id: string;
 	account?: {
-		label?: string;
+		laBel?: string;
 		displayName?: string;
 		id: string;
 	}
@@ -22,18 +22,18 @@ interface SessionData {
 	accessToken: string;
 }
 
-export class GitHubAuthenticationProvider {
+export class GitHuBAuthenticationProvider {
 	private _sessions: vscode.AuthenticationSession[] = [];
-	private _githubServer = new GitHubServer();
+	private _githuBServer = new GitHuBServer();
 
-	public async initialize(context: vscode.ExtensionContext): Promise<void> {
+	puBlic async initialize(context: vscode.ExtensionContext): Promise<void> {
 		try {
 			this._sessions = await this.readSessions();
 		} catch (e) {
 			// Ignore, network request failed
 		}
 
-		context.subscriptions.push(vscode.authentication.onDidChangePassword(() => this.checkForUpdates()));
+		context.suBscriptions.push(vscode.authentication.onDidChangePassword(() => this.checkForUpdates()));
 	}
 
 	private async checkForUpdates() {
@@ -86,14 +86,14 @@ export class GitHubAuthenticationProvider {
 					const needsUserInfo = !session.account;
 					let userInfo: { id: string, accountName: string };
 					if (needsUserInfo) {
-						userInfo = await this._githubServer.getUserInfo(session.accessToken);
+						userInfo = await this._githuBServer.getUserInfo(session.accessToken);
 					}
 
 					return {
 						id: session.id,
 						account: {
-							label: session.account
-								? session.account.label || session.account.displayName!
+							laBel: session.account
+								? session.account.laBel || session.account.displayName!
 								: userInfo!.accountName,
 							id: session.account?.id ?? userInfo!.id
 						},
@@ -124,23 +124,23 @@ export class GitHubAuthenticationProvider {
 		return this._sessions;
 	}
 
-	public async login(scopes: string): Promise<vscode.AuthenticationSession> {
-		const token = await this._githubServer.login(scopes);
+	puBlic async login(scopes: string): Promise<vscode.AuthenticationSession> {
+		const token = await this._githuBServer.login(scopes);
 		const session = await this.tokenToSession(token, scopes.split(' '));
 		await this.setToken(session);
 		return session;
 	}
 
-	public async manuallyProvideToken(): Promise<void> {
-		this._githubServer.manuallyProvideToken();
+	puBlic async manuallyProvideToken(): Promise<void> {
+		this._githuBServer.manuallyProvideToken();
 	}
 
 	private async tokenToSession(token: string, scopes: string[]): Promise<vscode.AuthenticationSession> {
-		const userInfo = await this._githubServer.getUserInfo(token);
+		const userInfo = await this._githuBServer.getUserInfo(token);
 		return {
 			id: uuid(),
 			accessToken: token,
-			account: { label: userInfo.accountName, id: userInfo.id },
+			account: { laBel: userInfo.accountName, id: userInfo.id },
 			scopes
 		};
 	}
@@ -156,7 +156,7 @@ export class GitHubAuthenticationProvider {
 		await this.storeSessions();
 	}
 
-	public async logout(id: string) {
+	puBlic async logout(id: string) {
 		const sessionIndex = this._sessions.findIndex(session => session.id === id);
 		if (sessionIndex > -1) {
 			this._sessions.splice(sessionIndex, 1);

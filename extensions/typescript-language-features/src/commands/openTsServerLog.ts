@@ -8,13 +8,13 @@ import { Lazy } from '../utils/lazy';
 import { Command } from './commandManager';
 
 export class OpenTsServerLogCommand implements Command {
-	public readonly id = 'typescript.openTsServerLog';
+	puBlic readonly id = 'typescript.openTsServerLog';
 
-	public constructor(
+	puBlic constructor(
 		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>
 	) { }
 
-	public execute() {
+	puBlic execute() {
 		this.lazyClientHost.value.serviceClient.openTsServerLogFile();
 	}
 }

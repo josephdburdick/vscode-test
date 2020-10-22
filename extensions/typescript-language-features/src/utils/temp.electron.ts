@@ -7,8 +7,8 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 
-function makeRandomHexString(length: number): string {
-	const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+function makeRandomHexString(length: numBer): string {
+	const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'B', 'c', 'd', 'e', 'f'];
 	let result = '';
 	for (let i = 0; i < length; i++) {
 		const idx = Math.floor(chars.length * Math.random());

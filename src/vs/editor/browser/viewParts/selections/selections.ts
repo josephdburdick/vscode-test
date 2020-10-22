@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./selections';
-import * as browser from 'vs/base/browser/browser';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
+import * as Browser from 'vs/Base/Browser/Browser';
+import { DynamicViewOverlay } from 'vs/editor/Browser/view/dynamicViewOverlay';
 import { Range } from 'vs/editor/common/core/range';
-import { HorizontalRange, LineVisibleRanges, RenderingContext } from 'vs/editor/common/view/renderingContext';
+import { HorizontalRange, LineVisiBleRanges, RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
 import { editorInactiveSelection, editorSelectionBackground, editorSelectionForeground } from 'vs/platform/theme/common/colorRegistry';
@@ -20,16 +20,16 @@ const enum CornerStyle {
 	FLAT
 }
 
-interface IVisibleRangeEndPointStyle {
+interface IVisiBleRangeEndPointStyle {
 	top: CornerStyle;
-	bottom: CornerStyle;
+	Bottom: CornerStyle;
 }
 
 class HorizontalRangeWithStyle {
-	public left: number;
-	public width: number;
-	public startStyle: IVisibleRangeEndPointStyle | null;
-	public endStyle: IVisibleRangeEndPointStyle | null;
+	puBlic left: numBer;
+	puBlic width: numBer;
+	puBlic startStyle: IVisiBleRangeEndPointStyle | null;
+	puBlic endStyle: IVisiBleRangeEndPointStyle | null;
 
 	constructor(other: HorizontalRange) {
 		this.left = other.left;
@@ -39,12 +39,12 @@ class HorizontalRangeWithStyle {
 	}
 }
 
-class LineVisibleRangesWithStyle {
-	public lineNumber: number;
-	public ranges: HorizontalRangeWithStyle[];
+class LineVisiBleRangesWithStyle {
+	puBlic lineNumBer: numBer;
+	puBlic ranges: HorizontalRangeWithStyle[];
 
-	constructor(lineNumber: number, ranges: HorizontalRangeWithStyle[]) {
-		this.lineNumber = lineNumber;
+	constructor(lineNumBer: numBer, ranges: HorizontalRangeWithStyle[]) {
+		this.lineNumBer = lineNumBer;
 		this.ranges = ranges;
 	}
 }
@@ -53,31 +53,31 @@ function toStyledRange(item: HorizontalRange): HorizontalRangeWithStyle {
 	return new HorizontalRangeWithStyle(item);
 }
 
-function toStyled(item: LineVisibleRanges): LineVisibleRangesWithStyle {
-	return new LineVisibleRangesWithStyle(item.lineNumber, item.ranges.map(toStyledRange));
+function toStyled(item: LineVisiBleRanges): LineVisiBleRangesWithStyle {
+	return new LineVisiBleRangesWithStyle(item.lineNumBer, item.ranges.map(toStyledRange));
 }
 
 // TODO@Alex: Remove this once IE11 fixes Bug #524217
-// The problem in IE11 is that it does some sort of auto-zooming to accomodate for displays with different pixel density.
-// Unfortunately, this auto-zooming is buggy around dealing with rounded borders
-const isIEWithZoomingIssuesNearRoundedBorders = browser.isEdge;
+// The proBlem in IE11 is that it does some sort of auto-zooming to accomodate for displays with different pixel density.
+// Unfortunately, this auto-zooming is Buggy around dealing with rounded Borders
+const isIEWithZoomingIssuesNearRoundedBorders = Browser.isEdge;
 
 
 export class SelectionsOverlay extends DynamicViewOverlay {
 
 	private static readonly SELECTION_CLASS_NAME = 'selected-text';
 	private static readonly SELECTION_TOP_LEFT = 'top-left-radius';
-	private static readonly SELECTION_BOTTOM_LEFT = 'bottom-left-radius';
+	private static readonly SELECTION_BOTTOM_LEFT = 'Bottom-left-radius';
 	private static readonly SELECTION_TOP_RIGHT = 'top-right-radius';
-	private static readonly SELECTION_BOTTOM_RIGHT = 'bottom-right-radius';
-	private static readonly EDITOR_BACKGROUND_CLASS_NAME = 'monaco-editor-background';
+	private static readonly SELECTION_BOTTOM_RIGHT = 'Bottom-right-radius';
+	private static readonly EDITOR_BACKGROUND_CLASS_NAME = 'monaco-editor-Background';
 
 	private static readonly ROUNDED_PIECE_WIDTH = 10;
 
 	private readonly _context: ViewContext;
-	private _lineHeight: number;
-	private _roundedSelection: boolean;
-	private _typicalHalfwidthCharacterWidth: number;
+	private _lineHeight: numBer;
+	private _roundedSelection: Boolean;
+	private _typicalHalfwidthCharacterWidth: numBer;
 	private _selections: Range[];
 	private _renderResult: string[] | null;
 
@@ -93,56 +93,56 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 		this._context.addEventHandler(this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._context.removeEventHandler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- Begin event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		this._lineHeight = options.get(EditorOption.lineHeight);
 		this._roundedSelection = options.get(EditorOption.roundedSelection);
 		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
 		return true;
 	}
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
+	puBlic onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): Boolean {
 		this._selections = e.selections.slice(0);
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	puBlic onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): Boolean {
 		// true for inline decorations that can end up relayouting text
 		return true;//e.inlineDecorationsChanged;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	puBlic onFlushed(e: viewEvents.ViewFlushedEvent): Boolean {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	puBlic onLinesChanged(e: viewEvents.ViewLinesChangedEvent): Boolean {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	puBlic onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): Boolean {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	puBlic onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): Boolean {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	puBlic onScrollChanged(e: viewEvents.ViewScrollChangedEvent): Boolean {
 		return e.scrollTopChanged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	puBlic onZonesChanged(e: viewEvents.ViewZonesChangedEvent): Boolean {
 		return true;
 	}
 
 	// --- end event handlers
 
-	private _visibleRangesHaveGaps(linesVisibleRanges: LineVisibleRangesWithStyle[]): boolean {
+	private _visiBleRangesHaveGaps(linesVisiBleRanges: LineVisiBleRangesWithStyle[]): Boolean {
 
-		for (let i = 0, len = linesVisibleRanges.length; i < len; i++) {
-			const lineVisibleRanges = linesVisibleRanges[i];
+		for (let i = 0, len = linesVisiBleRanges.length; i < len; i++) {
+			const lineVisiBleRanges = linesVisiBleRanges[i];
 
-			if (lineVisibleRanges.ranges.length > 1) {
+			if (lineVisiBleRanges.ranges.length > 1) {
 				// There are two ranges on the same line
 				return true;
 			}
@@ -151,26 +151,26 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 		return false;
 	}
 
-	private _enrichVisibleRangesWithStyle(viewport: Range, linesVisibleRanges: LineVisibleRangesWithStyle[], previousFrame: LineVisibleRangesWithStyle[] | null): void {
+	private _enrichVisiBleRangesWithStyle(viewport: Range, linesVisiBleRanges: LineVisiBleRangesWithStyle[], previousFrame: LineVisiBleRangesWithStyle[] | null): void {
 		const epsilon = this._typicalHalfwidthCharacterWidth / 4;
 		let previousFrameTop: HorizontalRangeWithStyle | null = null;
 		let previousFrameBottom: HorizontalRangeWithStyle | null = null;
 
-		if (previousFrame && previousFrame.length > 0 && linesVisibleRanges.length > 0) {
+		if (previousFrame && previousFrame.length > 0 && linesVisiBleRanges.length > 0) {
 
-			const topLineNumber = linesVisibleRanges[0].lineNumber;
-			if (topLineNumber === viewport.startLineNumber) {
+			const topLineNumBer = linesVisiBleRanges[0].lineNumBer;
+			if (topLineNumBer === viewport.startLineNumBer) {
 				for (let i = 0; !previousFrameTop && i < previousFrame.length; i++) {
-					if (previousFrame[i].lineNumber === topLineNumber) {
+					if (previousFrame[i].lineNumBer === topLineNumBer) {
 						previousFrameTop = previousFrame[i].ranges[0];
 					}
 				}
 			}
 
-			const bottomLineNumber = linesVisibleRanges[linesVisibleRanges.length - 1].lineNumber;
-			if (bottomLineNumber === viewport.endLineNumber) {
+			const BottomLineNumBer = linesVisiBleRanges[linesVisiBleRanges.length - 1].lineNumBer;
+			if (BottomLineNumBer === viewport.endLineNumBer) {
 				for (let i = previousFrame.length - 1; !previousFrameBottom && i >= 0; i--) {
-					if (previousFrame[i].lineNumber === bottomLineNumber) {
+					if (previousFrame[i].lineNumBer === BottomLineNumBer) {
 						previousFrameBottom = previousFrame[i].ranges[0];
 					}
 				}
@@ -184,34 +184,34 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 			}
 		}
 
-		for (let i = 0, len = linesVisibleRanges.length; i < len; i++) {
+		for (let i = 0, len = linesVisiBleRanges.length; i < len; i++) {
 			// We know for a fact that there is precisely one range on each line
-			const curLineRange = linesVisibleRanges[i].ranges[0];
+			const curLineRange = linesVisiBleRanges[i].ranges[0];
 			const curLeft = curLineRange.left;
 			const curRight = curLineRange.left + curLineRange.width;
 
 			const startStyle = {
 				top: CornerStyle.EXTERN,
-				bottom: CornerStyle.EXTERN
+				Bottom: CornerStyle.EXTERN
 			};
 
 			const endStyle = {
 				top: CornerStyle.EXTERN,
-				bottom: CornerStyle.EXTERN
+				Bottom: CornerStyle.EXTERN
 			};
 
 			if (i > 0) {
-				// Look above
-				const prevLeft = linesVisibleRanges[i - 1].ranges[0].left;
-				const prevRight = linesVisibleRanges[i - 1].ranges[0].left + linesVisibleRanges[i - 1].ranges[0].width;
+				// Look aBove
+				const prevLeft = linesVisiBleRanges[i - 1].ranges[0].left;
+				const prevRight = linesVisiBleRanges[i - 1].ranges[0].left + linesVisiBleRanges[i - 1].ranges[0].width;
 
-				if (abs(curLeft - prevLeft) < epsilon) {
+				if (aBs(curLeft - prevLeft) < epsilon) {
 					startStyle.top = CornerStyle.FLAT;
 				} else if (curLeft > prevLeft) {
 					startStyle.top = CornerStyle.INTERN;
 				}
 
-				if (abs(curRight - prevRight) < epsilon) {
+				if (aBs(curRight - prevRight) < epsilon) {
 					endStyle.top = CornerStyle.FLAT;
 				} else if (prevLeft < curRight && curRight < prevRight) {
 					endStyle.top = CornerStyle.INTERN;
@@ -223,25 +223,25 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 			}
 
 			if (i + 1 < len) {
-				// Look below
-				const nextLeft = linesVisibleRanges[i + 1].ranges[0].left;
-				const nextRight = linesVisibleRanges[i + 1].ranges[0].left + linesVisibleRanges[i + 1].ranges[0].width;
+				// Look Below
+				const nextLeft = linesVisiBleRanges[i + 1].ranges[0].left;
+				const nextRight = linesVisiBleRanges[i + 1].ranges[0].left + linesVisiBleRanges[i + 1].ranges[0].width;
 
-				if (abs(curLeft - nextLeft) < epsilon) {
-					startStyle.bottom = CornerStyle.FLAT;
+				if (aBs(curLeft - nextLeft) < epsilon) {
+					startStyle.Bottom = CornerStyle.FLAT;
 				} else if (nextLeft < curLeft && curLeft < nextRight) {
-					startStyle.bottom = CornerStyle.INTERN;
+					startStyle.Bottom = CornerStyle.INTERN;
 				}
 
-				if (abs(curRight - nextRight) < epsilon) {
-					endStyle.bottom = CornerStyle.FLAT;
+				if (aBs(curRight - nextRight) < epsilon) {
+					endStyle.Bottom = CornerStyle.FLAT;
 				} else if (curRight < nextRight) {
-					endStyle.bottom = CornerStyle.INTERN;
+					endStyle.Bottom = CornerStyle.INTERN;
 				}
 			} else if (previousFrameBottom) {
 				// Accept some hiccups near the viewport edges to save on repaints
-				startStyle.bottom = previousFrameBottom.startStyle!.bottom;
-				endStyle.bottom = previousFrameBottom.endStyle!.bottom;
+				startStyle.Bottom = previousFrameBottom.startStyle!.Bottom;
+				endStyle.Bottom = previousFrameBottom.endStyle!.Bottom;
 			}
 
 			curLineRange.startStyle = startStyle;
@@ -249,20 +249,20 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 		}
 	}
 
-	private _getVisibleRangesWithStyle(selection: Range, ctx: RenderingContext, previousFrame: LineVisibleRangesWithStyle[] | null): LineVisibleRangesWithStyle[] {
-		const _linesVisibleRanges = ctx.linesVisibleRangesForRange(selection, true) || [];
-		const linesVisibleRanges = _linesVisibleRanges.map(toStyled);
-		const visibleRangesHaveGaps = this._visibleRangesHaveGaps(linesVisibleRanges);
+	private _getVisiBleRangesWithStyle(selection: Range, ctx: RenderingContext, previousFrame: LineVisiBleRangesWithStyle[] | null): LineVisiBleRangesWithStyle[] {
+		const _linesVisiBleRanges = ctx.linesVisiBleRangesForRange(selection, true) || [];
+		const linesVisiBleRanges = _linesVisiBleRanges.map(toStyled);
+		const visiBleRangesHaveGaps = this._visiBleRangesHaveGaps(linesVisiBleRanges);
 
-		if (!isIEWithZoomingIssuesNearRoundedBorders && !visibleRangesHaveGaps && this._roundedSelection) {
-			this._enrichVisibleRangesWithStyle(ctx.visibleRange, linesVisibleRanges, previousFrame);
+		if (!isIEWithZoomingIssuesNearRoundedBorders && !visiBleRangesHaveGaps && this._roundedSelection) {
+			this._enrichVisiBleRangesWithStyle(ctx.visiBleRange, linesVisiBleRanges, previousFrame);
 		}
 
-		// The visible ranges are sorted TOP-BOTTOM and LEFT-RIGHT
-		return linesVisibleRanges;
+		// The visiBle ranges are sorted TOP-BOTTOM and LEFT-RIGHT
+		return linesVisiBleRanges;
 	}
 
-	private _createSelectionPiece(top: number, height: string, className: string, left: number, width: number): string {
+	private _createSelectionPiece(top: numBer, height: string, className: string, left: numBer, width: numBer): string {
 		return (
 			'<div class="cslr '
 			+ className
@@ -278,87 +278,87 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 		);
 	}
 
-	private _actualRenderOneSelection(output2: [string, string][], visibleStartLineNumber: number, hasMultipleSelections: boolean, visibleRanges: LineVisibleRangesWithStyle[]): void {
-		if (visibleRanges.length === 0) {
+	private _actualRenderOneSelection(output2: [string, string][], visiBleStartLineNumBer: numBer, hasMultipleSelections: Boolean, visiBleRanges: LineVisiBleRangesWithStyle[]): void {
+		if (visiBleRanges.length === 0) {
 			return;
 		}
 
-		const visibleRangesHaveStyle = !!visibleRanges[0].ranges[0].startStyle;
+		const visiBleRangesHaveStyle = !!visiBleRanges[0].ranges[0].startStyle;
 		const fullLineHeight = (this._lineHeight).toString();
 		const reducedLineHeight = (this._lineHeight - 1).toString();
 
-		const firstLineNumber = visibleRanges[0].lineNumber;
-		const lastLineNumber = visibleRanges[visibleRanges.length - 1].lineNumber;
+		const firstLineNumBer = visiBleRanges[0].lineNumBer;
+		const lastLineNumBer = visiBleRanges[visiBleRanges.length - 1].lineNumBer;
 
-		for (let i = 0, len = visibleRanges.length; i < len; i++) {
-			const lineVisibleRanges = visibleRanges[i];
-			const lineNumber = lineVisibleRanges.lineNumber;
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let i = 0, len = visiBleRanges.length; i < len; i++) {
+			const lineVisiBleRanges = visiBleRanges[i];
+			const lineNumBer = lineVisiBleRanges.lineNumBer;
+			const lineIndex = lineNumBer - visiBleStartLineNumBer;
 
-			const lineHeight = hasMultipleSelections ? (lineNumber === lastLineNumber || lineNumber === firstLineNumber ? reducedLineHeight : fullLineHeight) : fullLineHeight;
-			const top = hasMultipleSelections ? (lineNumber === firstLineNumber ? 1 : 0) : 0;
+			const lineHeight = hasMultipleSelections ? (lineNumBer === lastLineNumBer || lineNumBer === firstLineNumBer ? reducedLineHeight : fullLineHeight) : fullLineHeight;
+			const top = hasMultipleSelections ? (lineNumBer === firstLineNumBer ? 1 : 0) : 0;
 
 			let innerCornerOutput = '';
 			let restOfSelectionOutput = '';
 
-			for (let j = 0, lenJ = lineVisibleRanges.ranges.length; j < lenJ; j++) {
-				const visibleRange = lineVisibleRanges.ranges[j];
+			for (let j = 0, lenJ = lineVisiBleRanges.ranges.length; j < lenJ; j++) {
+				const visiBleRange = lineVisiBleRanges.ranges[j];
 
-				if (visibleRangesHaveStyle) {
-					const startStyle = visibleRange.startStyle!;
-					const endStyle = visibleRange.endStyle!;
-					if (startStyle.top === CornerStyle.INTERN || startStyle.bottom === CornerStyle.INTERN) {
+				if (visiBleRangesHaveStyle) {
+					const startStyle = visiBleRange.startStyle!;
+					const endStyle = visiBleRange.endStyle!;
+					if (startStyle.top === CornerStyle.INTERN || startStyle.Bottom === CornerStyle.INTERN) {
 						// Reverse rounded corner to the left
 
-						// First comes the selection (blue layer)
-						innerCornerOutput += this._createSelectionPiece(top, lineHeight, SelectionsOverlay.SELECTION_CLASS_NAME, visibleRange.left - SelectionsOverlay.ROUNDED_PIECE_WIDTH, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
+						// First comes the selection (Blue layer)
+						innerCornerOutput += this._createSelectionPiece(top, lineHeight, SelectionsOverlay.SELECTION_CLASS_NAME, visiBleRange.left - SelectionsOverlay.ROUNDED_PIECE_WIDTH, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
 
-						// Second comes the background (white layer) with inverse border radius
+						// Second comes the Background (white layer) with inverse Border radius
 						let className = SelectionsOverlay.EDITOR_BACKGROUND_CLASS_NAME;
 						if (startStyle.top === CornerStyle.INTERN) {
 							className += ' ' + SelectionsOverlay.SELECTION_TOP_RIGHT;
 						}
-						if (startStyle.bottom === CornerStyle.INTERN) {
+						if (startStyle.Bottom === CornerStyle.INTERN) {
 							className += ' ' + SelectionsOverlay.SELECTION_BOTTOM_RIGHT;
 						}
-						innerCornerOutput += this._createSelectionPiece(top, lineHeight, className, visibleRange.left - SelectionsOverlay.ROUNDED_PIECE_WIDTH, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
+						innerCornerOutput += this._createSelectionPiece(top, lineHeight, className, visiBleRange.left - SelectionsOverlay.ROUNDED_PIECE_WIDTH, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
 					}
-					if (endStyle.top === CornerStyle.INTERN || endStyle.bottom === CornerStyle.INTERN) {
+					if (endStyle.top === CornerStyle.INTERN || endStyle.Bottom === CornerStyle.INTERN) {
 						// Reverse rounded corner to the right
 
-						// First comes the selection (blue layer)
-						innerCornerOutput += this._createSelectionPiece(top, lineHeight, SelectionsOverlay.SELECTION_CLASS_NAME, visibleRange.left + visibleRange.width, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
+						// First comes the selection (Blue layer)
+						innerCornerOutput += this._createSelectionPiece(top, lineHeight, SelectionsOverlay.SELECTION_CLASS_NAME, visiBleRange.left + visiBleRange.width, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
 
-						// Second comes the background (white layer) with inverse border radius
+						// Second comes the Background (white layer) with inverse Border radius
 						let className = SelectionsOverlay.EDITOR_BACKGROUND_CLASS_NAME;
 						if (endStyle.top === CornerStyle.INTERN) {
 							className += ' ' + SelectionsOverlay.SELECTION_TOP_LEFT;
 						}
-						if (endStyle.bottom === CornerStyle.INTERN) {
+						if (endStyle.Bottom === CornerStyle.INTERN) {
 							className += ' ' + SelectionsOverlay.SELECTION_BOTTOM_LEFT;
 						}
-						innerCornerOutput += this._createSelectionPiece(top, lineHeight, className, visibleRange.left + visibleRange.width, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
+						innerCornerOutput += this._createSelectionPiece(top, lineHeight, className, visiBleRange.left + visiBleRange.width, SelectionsOverlay.ROUNDED_PIECE_WIDTH);
 					}
 				}
 
 				let className = SelectionsOverlay.SELECTION_CLASS_NAME;
-				if (visibleRangesHaveStyle) {
-					const startStyle = visibleRange.startStyle!;
-					const endStyle = visibleRange.endStyle!;
+				if (visiBleRangesHaveStyle) {
+					const startStyle = visiBleRange.startStyle!;
+					const endStyle = visiBleRange.endStyle!;
 					if (startStyle.top === CornerStyle.EXTERN) {
 						className += ' ' + SelectionsOverlay.SELECTION_TOP_LEFT;
 					}
-					if (startStyle.bottom === CornerStyle.EXTERN) {
+					if (startStyle.Bottom === CornerStyle.EXTERN) {
 						className += ' ' + SelectionsOverlay.SELECTION_BOTTOM_LEFT;
 					}
 					if (endStyle.top === CornerStyle.EXTERN) {
 						className += ' ' + SelectionsOverlay.SELECTION_TOP_RIGHT;
 					}
-					if (endStyle.bottom === CornerStyle.EXTERN) {
+					if (endStyle.Bottom === CornerStyle.EXTERN) {
 						className += ' ' + SelectionsOverlay.SELECTION_BOTTOM_RIGHT;
 					}
 				}
-				restOfSelectionOutput += this._createSelectionPiece(top, lineHeight, className, visibleRange.left, visibleRange.width);
+				restOfSelectionOutput += this._createSelectionPiece(top, lineHeight, className, visiBleRange.left, visiBleRange.width);
 			}
 
 			output2[lineIndex][0] += innerCornerOutput;
@@ -366,42 +366,42 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 		}
 	}
 
-	private _previousFrameVisibleRangesWithStyle: (LineVisibleRangesWithStyle[] | null)[] = [];
-	public prepareRender(ctx: RenderingContext): void {
+	private _previousFrameVisiBleRangesWithStyle: (LineVisiBleRangesWithStyle[] | null)[] = [];
+	puBlic prepareRender(ctx: RenderingContext): void {
 
 		// Build HTML for inner corners separate from HTML for the rest of selections,
 		// as the inner corner HTML can interfere with that of other selections.
-		// In final render, make sure to place the inner corner HTML before the rest of selection HTML. See issue #77777.
+		// In final render, make sure to place the inner corner HTML Before the rest of selection HTML. See issue #77777.
 		const output: [string, string][] = [];
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		const visiBleStartLineNumBer = ctx.visiBleRange.startLineNumBer;
+		const visiBleEndLineNumBer = ctx.visiBleRange.endLineNumBer;
+		for (let lineNumBer = visiBleStartLineNumBer; lineNumBer <= visiBleEndLineNumBer; lineNumBer++) {
+			const lineIndex = lineNumBer - visiBleStartLineNumBer;
 			output[lineIndex] = ['', ''];
 		}
 
-		const thisFrameVisibleRangesWithStyle: (LineVisibleRangesWithStyle[] | null)[] = [];
+		const thisFrameVisiBleRangesWithStyle: (LineVisiBleRangesWithStyle[] | null)[] = [];
 		for (let i = 0, len = this._selections.length; i < len; i++) {
 			const selection = this._selections[i];
 			if (selection.isEmpty()) {
-				thisFrameVisibleRangesWithStyle[i] = null;
+				thisFrameVisiBleRangesWithStyle[i] = null;
 				continue;
 			}
 
-			const visibleRangesWithStyle = this._getVisibleRangesWithStyle(selection, ctx, this._previousFrameVisibleRangesWithStyle[i]);
-			thisFrameVisibleRangesWithStyle[i] = visibleRangesWithStyle;
-			this._actualRenderOneSelection(output, visibleStartLineNumber, this._selections.length > 1, visibleRangesWithStyle);
+			const visiBleRangesWithStyle = this._getVisiBleRangesWithStyle(selection, ctx, this._previousFrameVisiBleRangesWithStyle[i]);
+			thisFrameVisiBleRangesWithStyle[i] = visiBleRangesWithStyle;
+			this._actualRenderOneSelection(output, visiBleStartLineNumBer, this._selections.length > 1, visiBleRangesWithStyle);
 		}
 
-		this._previousFrameVisibleRangesWithStyle = thisFrameVisibleRangesWithStyle;
+		this._previousFrameVisiBleRangesWithStyle = thisFrameVisiBleRangesWithStyle;
 		this._renderResult = output.map(([internalCorners, restOfSelection]) => internalCorners + restOfSelection);
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	puBlic render(startLineNumBer: numBer, lineNumBer: numBer): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		const lineIndex = lineNumber - startLineNumber;
+		const lineIndex = lineNumBer - startLineNumBer;
 		if (lineIndex < 0 || lineIndex >= this._renderResult.length) {
 			return '';
 		}
@@ -412,11 +412,11 @@ export class SelectionsOverlay extends DynamicViewOverlay {
 registerThemingParticipant((theme, collector) => {
 	const editorSelectionColor = theme.getColor(editorSelectionBackground);
 	if (editorSelectionColor) {
-		collector.addRule(`.monaco-editor .focused .selected-text { background-color: ${editorSelectionColor}; }`);
+		collector.addRule(`.monaco-editor .focused .selected-text { Background-color: ${editorSelectionColor}; }`);
 	}
 	const editorInactiveSelectionColor = theme.getColor(editorInactiveSelection);
 	if (editorInactiveSelectionColor) {
-		collector.addRule(`.monaco-editor .selected-text { background-color: ${editorInactiveSelectionColor}; }`);
+		collector.addRule(`.monaco-editor .selected-text { Background-color: ${editorInactiveSelectionColor}; }`);
 	}
 	const editorSelectionForegroundColor = theme.getColor(editorSelectionForeground);
 	if (editorSelectionForegroundColor && !editorSelectionForegroundColor.isTransparent()) {
@@ -424,6 +424,6 @@ registerThemingParticipant((theme, collector) => {
 	}
 });
 
-function abs(n: number): number {
+function aBs(n: numBer): numBer {
 	return n < 0 ? -n : n;
 }

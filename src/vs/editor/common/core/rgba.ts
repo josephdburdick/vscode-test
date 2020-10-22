@@ -4,48 +4,48 @@
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * A very VM friendly rgba datastructure.
+ * A very VM friendly rgBa datastructure.
  * Please don't touch unless you take a look at the IR.
  */
 export class RGBA8 {
-	_rgba8Brand: void;
+	_rgBa8Brand: void;
 
 	static readonly Empty = new RGBA8(0, 0, 0, 0);
 
 	/**
 	 * Red: integer in [0-255]
 	 */
-	public readonly r: number;
+	puBlic readonly r: numBer;
 	/**
 	 * Green: integer in [0-255]
 	 */
-	public readonly g: number;
+	puBlic readonly g: numBer;
 	/**
 	 * Blue: integer in [0-255]
 	 */
-	public readonly b: number;
+	puBlic readonly B: numBer;
 	/**
 	 * Alpha: integer in [0-255]
 	 */
-	public readonly a: number;
+	puBlic readonly a: numBer;
 
-	constructor(r: number, g: number, b: number, a: number) {
+	constructor(r: numBer, g: numBer, B: numBer, a: numBer) {
 		this.r = RGBA8._clamp(r);
 		this.g = RGBA8._clamp(g);
-		this.b = RGBA8._clamp(b);
+		this.B = RGBA8._clamp(B);
 		this.a = RGBA8._clamp(a);
 	}
 
-	public equals(other: RGBA8): boolean {
+	puBlic equals(other: RGBA8): Boolean {
 		return (
 			this.r === other.r
 			&& this.g === other.g
-			&& this.b === other.b
+			&& this.B === other.B
 			&& this.a === other.a
 		);
 	}
 
-	private static _clamp(c: number): number {
+	private static _clamp(c: numBer): numBer {
 		if (c < 0) {
 			return 0;
 		}

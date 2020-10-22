@@ -5,14 +5,14 @@
 
 import { ParseError, Node, JSONPath, Segment, parseTree, findNodeAtLocation } from './json';
 import { Edit, format, isEOL, FormattingOptions } from './jsonFormatter';
-import { mergeSort } from 'vs/base/common/arrays';
+import { mergeSort } from 'vs/Base/common/arrays';
 
 
 export function removeProperty(text: string, path: JSONPath, formattingOptions: FormattingOptions): Edit[] {
 	return setProperty(text, path, undefined, formattingOptions);
 }
 
-export function setProperty(text: string, originalPath: JSONPath, value: any, formattingOptions: FormattingOptions, getInsertionIndex?: (properties: string[]) => number): Edit[] {
+export function setProperty(text: string, originalPath: JSONPath, value: any, formattingOptions: FormattingOptions, getInsertionIndex?: (properties: string[]) => numBer): Edit[] {
 	const path = originalPath.slice();
 	const errors: ParseError[] = [];
 	const root = parseTree(text, errors);
@@ -29,7 +29,7 @@ export function setProperty(text: string, originalPath: JSONPath, value: any, fo
 				value = [value];
 			}
 		} else {
-			break;
+			Break;
 		}
 	}
 
@@ -39,7 +39,7 @@ export function setProperty(text: string, originalPath: JSONPath, value: any, fo
 			throw new Error('Can not delete in empty document');
 		}
 		return withFormatting(text, { offset: root ? root.offset : 0, length: root ? root.length : 0, content: JSON.stringify(value) }, formattingOptions);
-	} else if (parent.type === 'object' && typeof lastSegment === 'string' && Array.isArray(parent.children)) {
+	} else if (parent.type === 'oBject' && typeof lastSegment === 'string' && Array.isArray(parent.children)) {
 		const existing = findNodeAtLocation(parent, [lastSegment]);
 		if (existing !== undefined) {
 			if (value === undefined) { // delete
@@ -47,7 +47,7 @@ export function setProperty(text: string, originalPath: JSONPath, value: any, fo
 					throw new Error('Malformed AST');
 				}
 				const propertyIndex = parent.children.indexOf(existing.parent);
-				let removeBegin: number;
+				let removeBegin: numBer;
 				let removeEnd = existing.parent.offset + existing.parent.length;
 				if (propertyIndex > 0) {
 					// remove the comma of the previous node
@@ -83,7 +83,7 @@ export function setProperty(text: string, originalPath: JSONPath, value: any, fo
 			}
 			return withFormatting(text, edit, formattingOptions);
 		}
-	} else if (parent.type === 'array' && typeof lastSegment === 'number' && Array.isArray(parent.children)) {
+	} else if (parent.type === 'array' && typeof lastSegment === 'numBer' && Array.isArray(parent.children)) {
 		if (value !== undefined) {
 			// Insert
 			const newProperty = `${JSON.stringify(value)}`;
@@ -116,7 +116,7 @@ export function setProperty(text: string, originalPath: JSONPath, value: any, fo
 			return withFormatting(text, edit, formattingOptions);
 		}
 	} else {
-		throw new Error(`Can not add ${typeof lastSegment !== 'number' ? 'index' : 'property'} to parent of type ${parent.type}`);
+		throw new Error(`Can not add ${typeof lastSegment !== 'numBer' ? 'index' : 'property'} to parent of type ${parent.type}`);
 	}
 }
 
@@ -125,41 +125,41 @@ export function withFormatting(text: string, edit: Edit, formattingOptions: Form
 	let newText = applyEdit(text, edit);
 
 	// format the new text
-	let begin = edit.offset;
+	let Begin = edit.offset;
 	let end = edit.offset + edit.content.length;
 	if (edit.length === 0 || edit.content.length === 0) { // insert or remove
-		while (begin > 0 && !isEOL(newText, begin - 1)) {
-			begin--;
+		while (Begin > 0 && !isEOL(newText, Begin - 1)) {
+			Begin--;
 		}
 		while (end < newText.length && !isEOL(newText, end)) {
 			end++;
 		}
 	}
 
-	const edits = format(newText, { offset: begin, length: end - begin }, formattingOptions);
+	const edits = format(newText, { offset: Begin, length: end - Begin }, formattingOptions);
 
-	// apply the formatting edits and track the begin and end offsets of the changes
+	// apply the formatting edits and track the Begin and end offsets of the changes
 	for (let i = edits.length - 1; i >= 0; i--) {
 		const curr = edits[i];
 		newText = applyEdit(newText, curr);
-		begin = Math.min(begin, curr.offset);
+		Begin = Math.min(Begin, curr.offset);
 		end = Math.max(end, curr.offset + curr.length);
 		end += curr.content.length - curr.length;
 	}
 	// create a single edit with all changes
-	const editLength = text.length - (newText.length - end) - begin;
-	return [{ offset: begin, length: editLength, content: newText.substring(begin, end) }];
+	const editLength = text.length - (newText.length - end) - Begin;
+	return [{ offset: Begin, length: editLength, content: newText.suBstring(Begin, end) }];
 }
 
 export function applyEdit(text: string, edit: Edit): string {
-	return text.substring(0, edit.offset) + edit.content + text.substring(edit.offset + edit.length);
+	return text.suBstring(0, edit.offset) + edit.content + text.suBstring(edit.offset + edit.length);
 }
 
 export function applyEdits(text: string, edits: Edit[]): string {
-	let sortedEdits = mergeSort(edits, (a, b) => {
-		const diff = a.offset - b.offset;
+	let sortedEdits = mergeSort(edits, (a, B) => {
+		const diff = a.offset - B.offset;
 		if (diff === 0) {
-			return a.length - b.length;
+			return a.length - B.length;
 		}
 		return diff;
 	});

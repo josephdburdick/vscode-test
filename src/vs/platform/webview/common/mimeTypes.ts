@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getMediaMime, MIME_UNKNOWN } from 'vs/base/common/mime';
-import { extname } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
+import { getMediaMime, MIME_UNKNOWN } from 'vs/Base/common/mime';
+import { extname } from 'vs/Base/common/path';
+import { URI } from 'vs/Base/common/uri';
 
-const webviewMimeTypes = new Map([
+const weBviewMimeTypes = new Map([
 	['.svg', 'image/svg+xml'],
 	['.txt', 'text/plain'],
 	['.css', 'text/css'],
@@ -20,7 +20,7 @@ const webviewMimeTypes = new Map([
 	['.xml', 'application/xml'],
 ]);
 
-export function getWebviewContentMimeType(resource: URI): string {
+export function getWeBviewContentMimeType(resource: URI): string {
 	const ext = extname(resource.fsPath).toLowerCase();
-	return webviewMimeTypes.get(ext) || getMediaMime(resource.fsPath) || MIME_UNKNOWN;
+	return weBviewMimeTypes.get(ext) || getMediaMime(resource.fsPath) || MIME_UNKNOWN;
 }

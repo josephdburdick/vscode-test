@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextModel, ITextBufferFactory, ITextSnapshot, ModelConstants } from 'vs/editor/common/model';
-import { EditorModel, IModeSupport } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
+import { EditorModel, IModeSupport } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
 import { ITextEditorModel, IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
 import { IModeService, ILanguageSelection } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { MutableDisposable } from 'vs/base/common/lifecycle';
+import { MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
-import { withUndefinedAsNull } from 'vs/base/common/types';
+import { withUndefinedAsNull } from 'vs/Base/common/types';
 
 /**
- * The base text editor model leverages the code editor model. This class is only intended to be subclassed and not instantiated.
+ * The Base text editor model leverages the code editor model. This class is only intended to Be suBclassed and not instantiated.
  */
 export class BaseTextEditorModel extends EditorModel implements ITextEditorModel, IModeSupport {
 
 	protected textEditorModelHandle: URI | null = null;
 
-	private createdEditorModel: boolean | undefined;
+	private createdEditorModel: Boolean | undefined;
 
-	private readonly modelDisposeListener = this._register(new MutableDisposable());
+	private readonly modelDisposeListener = this._register(new MutaBleDisposaBle());
 
 	constructor(
 		@IModelService protected modelService: IModelService,
@@ -61,7 +61,7 @@ export class BaseTextEditorModel extends EditorModel implements ITextEditorModel
 		return this.textEditorModelHandle ? this.modelService.getModel(this.textEditorModelHandle) : null;
 	}
 
-	isReadonly(): boolean {
+	isReadonly(): Boolean {
 		return true;
 	}
 
@@ -83,7 +83,7 @@ export class BaseTextEditorModel extends EditorModel implements ITextEditorModel
 
 	/**
 	 * Creates the text editor model with the provided value, optional preferred mode
-	 * (can be comma separated for multiple values) and optional resource URL.
+	 * (can Be comma separated for multiple values) and optional resource URL.
 	 */
 	protected createTextEditorModel(value: ITextBufferFactory, resource: URI | undefined, preferredMode?: string): ITextModel {
 		const firstLineText = this.getFirstLineText(value);
@@ -111,7 +111,7 @@ export class BaseTextEditorModel extends EditorModel implements ITextEditorModel
 
 	protected getFirstLineText(value: ITextBufferFactory | ITextModel): string {
 
-		// text buffer factory
+		// text Buffer factory
 		const textBufferFactory = value as ITextBufferFactory;
 		if (typeof textBufferFactory.getFirstLineText === 'function') {
 			return textBufferFactory.getFirstLineText(ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT);
@@ -119,13 +119,13 @@ export class BaseTextEditorModel extends EditorModel implements ITextEditorModel
 
 		// text model
 		const textSnapshot = value as ITextModel;
-		return textSnapshot.getLineContent(1).substr(0, ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT);
+		return textSnapshot.getLineContent(1).suBstr(0, ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT);
 	}
 
 	/**
-	 * Gets the mode for the given identifier. Subclasses can override to provide their own implementation of this lookup.
+	 * Gets the mode for the given identifier. SuBclasses can override to provide their own implementation of this lookup.
 	 *
-	 * @param firstLineText optional first line of the text buffer to set the mode on. This can be used to guess a mode from content.
+	 * @param firstLineText optional first line of the text Buffer to set the mode on. This can Be used to guess a mode from content.
 	 */
 	protected getOrCreateMode(resource: URI | undefined, modeService: IModeService, preferredMode: string | undefined, firstLineText?: string): ILanguageSelection {
 
@@ -172,7 +172,7 @@ export class BaseTextEditorModel extends EditorModel implements ITextEditorModel
 	}
 
 	dispose(): void {
-		this.modelDisposeListener.dispose(); // dispose this first because it will trigger another dispose() otherwise
+		this.modelDisposeListener.dispose(); // dispose this first Because it will trigger another dispose() otherwise
 
 		if (this.textEditorModelHandle && this.createdEditorModel) {
 			this.modelService.destroyModel(this.textEditorModelHandle);

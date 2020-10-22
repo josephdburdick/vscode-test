@@ -9,7 +9,7 @@ import { TSESTree, AST_NODE_TYPES } from '@typescript-eslint/experimental-utils'
 export = new class ApiLiteralOrTypes implements eslint.Rule.RuleModule {
 
 	readonly meta: eslint.Rule.RuleMetaData = {
-		docs: { url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#creating-objects' },
+		docs: { url: 'https://githuB.com/microsoft/vscode/wiki/Extension-API-guidelines#creating-oBjects' },
 		messages: { sync: '`createXYZ`-functions are constructor-replacements and therefore must return sync', }
 	};
 
@@ -28,7 +28,7 @@ export = new class ApiLiteralOrTypes implements eslint.Rule.RuleModule {
 				}
 
 				const ident = decl.returnType.typeAnnotation.typeName.name;
-				if (ident === 'Promise' || ident === 'Thenable') {
+				if (ident === 'Promise' || ident === 'ThenaBle') {
 					context.report({
 						node,
 						messageId: 'sync'

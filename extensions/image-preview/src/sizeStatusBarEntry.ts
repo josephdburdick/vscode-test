@@ -20,7 +20,7 @@ export class SizeStatusBarEntry extends PreviewStatusBarEntry {
 		});
 	}
 
-	public show(owner: string, text: string) {
+	puBlic show(owner: string, text: string) {
 		this.showItem(owner, text);
 	}
 }

@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { RunOnceScheduler, createCancelablePromise, CancelablePromise } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { RunOnceScheduler, createCancelaBlePromise, CancelaBlePromise } from 'vs/Base/common/async';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { Range } from 'vs/editor/common/core/range';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 import { DocumentRangeSemanticTokensProviderRegistry, DocumentRangeSemanticTokensProvider, SemanticTokens } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { toMultilineTokens2, SemanticTokensProviderStyling } from 'vs/editor/common/services/semanticTokensProviderStyling';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { isSemanticColoringEnabled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from 'vs/editor/common/services/modelServiceImpl';
+import { isSemanticColoringEnaBled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from 'vs/editor/common/services/modelServiceImpl';
 
-class ViewportSemanticTokensContribution extends Disposable implements IEditorContribution {
+class ViewportSemanticTokensContriBution extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.viewportSemanticTokens';
+	puBlic static readonly ID = 'editor.contriB.viewportSemanticTokens';
 
-	public static get(editor: ICodeEditor): ViewportSemanticTokensContribution {
-		return editor.getContribution<ViewportSemanticTokensContribution>(ViewportSemanticTokensContribution.ID);
+	puBlic static get(editor: ICodeEditor): ViewportSemanticTokensContriBution {
+		return editor.getContriBution<ViewportSemanticTokensContriBution>(ViewportSemanticTokensContriBution.ID);
 	}
 
 	private readonly _editor: ICodeEditor;
 	private readonly _tokenizeViewport: RunOnceScheduler;
-	private _outstandingRequests: CancelablePromise<SemanticTokens | null | undefined>[];
+	private _outstandingRequests: CancelaBlePromise<SemanticTokens | null | undefined>[];
 
 	constructor(
 		editor: ICodeEditor,
@@ -78,7 +78,7 @@ class ViewportSemanticTokensContribution extends Disposable implements IEditorCo
 		this._outstandingRequests = [];
 	}
 
-	private _removeOutstandingRequest(req: CancelablePromise<SemanticTokens | null | undefined>): void {
+	private _removeOutstandingRequest(req: CancelaBlePromise<SemanticTokens | null | undefined>): void {
 		for (let i = 0, len = this._outstandingRequests.length; i < len; i++) {
 			if (this._outstandingRequests[i] === req) {
 				this._outstandingRequests.splice(i, 1);
@@ -95,22 +95,22 @@ class ViewportSemanticTokensContribution extends Disposable implements IEditorCo
 		if (model.hasSemanticTokens()) {
 			return;
 		}
-		if (!isSemanticColoringEnabled(model, this._themeService, this._configurationService)) {
+		if (!isSemanticColoringEnaBled(model, this._themeService, this._configurationService)) {
 			return;
 		}
-		const provider = ViewportSemanticTokensContribution._getSemanticColoringProvider(model);
+		const provider = ViewportSemanticTokensContriBution._getSemanticColoringProvider(model);
 		if (!provider) {
 			return;
 		}
 		const styling = this._modelService.getSemanticTokensProviderStyling(provider);
-		const visibleRanges = this._editor.getVisibleRangesPlusViewportAboveBelow();
+		const visiBleRanges = this._editor.getVisiBleRangesPlusViewportABoveBelow();
 
-		this._outstandingRequests = this._outstandingRequests.concat(visibleRanges.map(range => this._requestRange(model, range, provider, styling)));
+		this._outstandingRequests = this._outstandingRequests.concat(visiBleRanges.map(range => this._requestRange(model, range, provider, styling)));
 	}
 
-	private _requestRange(model: ITextModel, range: Range, provider: DocumentRangeSemanticTokensProvider, styling: SemanticTokensProviderStyling): CancelablePromise<SemanticTokens | null | undefined> {
+	private _requestRange(model: ITextModel, range: Range, provider: DocumentRangeSemanticTokensProvider, styling: SemanticTokensProviderStyling): CancelaBlePromise<SemanticTokens | null | undefined> {
 		const requestVersionId = model.getVersionId();
-		const request = createCancelablePromise(token => Promise.resolve(provider.provideDocumentRangeSemanticTokens(model, range, token)));
+		const request = createCancelaBlePromise(token => Promise.resolve(provider.provideDocumentRangeSemanticTokens(model, range, token)));
 		request.then((r) => {
 			if (!r || model.isDisposed() || model.getVersionId() !== requestVersionId) {
 				return;
@@ -121,4 +121,4 @@ class ViewportSemanticTokensContribution extends Disposable implements IEditorCo
 	}
 }
 
-registerEditorContribution(ViewportSemanticTokensContribution.ID, ViewportSemanticTokensContribution);
+registerEditorContriBution(ViewportSemanticTokensContriBution.ID, ViewportSemanticTokensContriBution);

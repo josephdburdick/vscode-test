@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { removeAccents } from 'vs/base/common/normalization';
+import { removeAccents } from 'vs/Base/common/normalization';
 
 suite('Normalization', () => {
 

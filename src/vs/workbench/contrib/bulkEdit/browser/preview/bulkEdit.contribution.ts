@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IBulkEditService, ResourceEdit } from 'vs/editor/browser/services/bulkEditService';
-import { BulkEditPane } from 'vs/workbench/contrib/bulkEdit/browser/preview/bulkEditPane';
-import { IViewContainersRegistry, Extensions as ViewContainerExtensions, ViewContainerLocation, IViewsRegistry, FocusedViewContext, IViewsService } from 'vs/workbench/common/views';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { IPanelService } from 'vs/workBench/services/panel/common/panelService';
+import { IBulkEditService, ResourceEdit } from 'vs/editor/Browser/services/BulkEditService';
+import { BulkEditPane } from 'vs/workBench/contriB/BulkEdit/Browser/preview/BulkEditPane';
+import { IViewContainersRegistry, Extensions as ViewContainerExtensions, ViewContainerLocation, IViewsRegistry, FocusedViewContext, IViewsService } from 'vs/workBench/common/views';
 import { localize } from 'vs/nls';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
+import { ViewPaneContainer } from 'vs/workBench/Browser/parts/views/viewPaneContainer';
 import { RawContextKey, IContextKeyService, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
-import { BulkEditPreviewProvider } from 'vs/workbench/contrib/bulkEdit/browser/preview/bulkEditPreview';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { WorkbenchListFocusContextKey } from 'vs/platform/list/browser/listService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
+import { BulkEditPreviewProvider } from 'vs/workBench/contriB/BulkEdit/Browser/preview/BulkEditPreview';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { WorkBenchListFocusContextKey } from 'vs/platform/list/Browser/listService';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { MenuId, registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { IEditorInput } from 'vs/workbench/common/editor';
+import { IEditorInput } from 'vs/workBench/common/editor';
 import type { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { CancellationTokenSource } from 'vs/Base/common/cancellation';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import Severity from 'vs/base/common/severity';
-import { Codicon } from 'vs/base/common/codicons';
+import Severity from 'vs/Base/common/severity';
+import { Codicon } from 'vs/Base/common/codicons';
 
 async function getBulkEditPane(viewsService: IViewsService): Promise<BulkEditPane | undefined> {
 	const view = await viewsService.openView(BulkEditPane.ID, true);
@@ -88,11 +88,11 @@ class PreviewSession {
 	) { }
 }
 
-class BulkEditPreviewContribution {
+class BulkEditPreviewContriBution {
 
-	static readonly ctxEnabled = new RawContextKey('refactorPreview.enabled', false);
+	static readonly ctxEnaBled = new RawContextKey('refactorPreview.enaBled', false);
 
-	private readonly _ctxEnabled: IContextKey<boolean>;
+	private readonly _ctxEnaBled: IContextKey<Boolean>;
 
 	private _activeSession: PreviewSession | undefined;
 
@@ -101,20 +101,20 @@ class BulkEditPreviewContribution {
 		@IViewsService private readonly _viewsService: IViewsService,
 		@IEditorGroupsService private readonly _editorGroupsService: IEditorGroupsService,
 		@IDialogService private readonly _dialogService: IDialogService,
-		@IBulkEditService bulkEditService: IBulkEditService,
+		@IBulkEditService BulkEditService: IBulkEditService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
-		bulkEditService.setPreviewHandler(edits => this._previewEdit(edits));
-		this._ctxEnabled = BulkEditPreviewContribution.ctxEnabled.bindTo(contextKeyService);
+		BulkEditService.setPreviewHandler(edits => this._previewEdit(edits));
+		this._ctxEnaBled = BulkEditPreviewContriBution.ctxEnaBled.BindTo(contextKeyService);
 	}
 
 	private async _previewEdit(edits: ResourceEdit[]): Promise<ResourceEdit[]> {
-		this._ctxEnabled.set(true);
+		this._ctxEnaBled.set(true);
 
 		const uxState = this._activeSession?.uxState ?? new UXState(this._panelService, this._editorGroupsService);
 		const view = await getBulkEditPane(this._viewsService);
 		if (!view) {
-			this._ctxEnabled.set(false);
+			this._ctxEnaBled.set(false);
 			return edits;
 		}
 
@@ -122,13 +122,13 @@ class BulkEditPreviewContribution {
 		if (view.hasInput()) {
 			const choice = await this._dialogService.show(
 				Severity.Info,
-				localize('overlap', "Another refactoring is being previewed."),
+				localize('overlap', "Another refactoring is Being previewed."),
 				[localize('cancel', "Cancel"), localize('continue', "Continue")],
 				{ detail: localize('detail', "Press 'Continue' to discard the previous refactoring and continue with the current refactoring.") }
 			);
 
 			if (choice.choice === 0) {
-				// this refactoring is being cancelled
+				// this refactoring is Being cancelled
 				return [];
 			}
 		}
@@ -153,7 +153,7 @@ class BulkEditPreviewContribution {
 			if (this._activeSession === session) {
 				await this._activeSession.uxState.restore();
 				this._activeSession.cts.dispose();
-				this._ctxEnabled.set(false);
+				this._ctxEnaBled.set(false);
 				this._activeSession = undefined;
 			}
 		}
@@ -170,7 +170,7 @@ registerAction2(class ApplyAction extends Action2 {
 			title: { value: localize('apply', "Apply Refactoring"), original: 'Apply Refactoring' },
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
 			icon: { id: 'codicon/check' },
-			precondition: ContextKeyExpr.and(BulkEditPreviewContribution.ctxEnabled, BulkEditPane.ctxHasCheckedChanges),
+			precondition: ContextKeyExpr.and(BulkEditPreviewContriBution.ctxEnaBled, BulkEditPane.ctxHasCheckedChanges),
 			menu: [{
 				id: MenuId.BulkEditTitle,
 				group: 'navigation'
@@ -178,9 +178,9 @@ registerAction2(class ApplyAction extends Action2 {
 				id: MenuId.BulkEditContext,
 				order: 1
 			}],
-			keybinding: {
-				weight: KeybindingWeight.EditorContrib - 10,
-				when: ContextKeyExpr.and(BulkEditPreviewContribution.ctxEnabled, FocusedViewContext.isEqualTo(BulkEditPane.ID)),
+			keyBinding: {
+				weight: KeyBindingWeight.EditorContriB - 10,
+				when: ContextKeyExpr.and(BulkEditPreviewContriBution.ctxEnaBled, FocusedViewContext.isEqualTo(BulkEditPane.ID)),
 				primary: KeyMod.Shift + KeyCode.Enter,
 			}
 		});
@@ -204,7 +204,7 @@ registerAction2(class DiscardAction extends Action2 {
 			title: { value: localize('Discard', "Discard Refactoring"), original: 'Discard Refactoring' },
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
 			icon: { id: 'codicon/clear-all' },
-			precondition: BulkEditPreviewContribution.ctxEnabled,
+			precondition: BulkEditPreviewContriBution.ctxEnaBled,
 			menu: [{
 				id: MenuId.BulkEditTitle,
 				group: 'navigation'
@@ -233,10 +233,10 @@ registerAction2(class ToggleAction extends Action2 {
 			id: 'refactorPreview.toggleCheckedState',
 			title: { value: localize('toogleSelection', "Toggle Change"), original: 'Toggle Change' },
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
-			precondition: BulkEditPreviewContribution.ctxEnabled,
-			keybinding: {
-				weight: KeybindingWeight.WorkbenchContrib,
-				when: WorkbenchListFocusContextKey,
+			precondition: BulkEditPreviewContriBution.ctxEnaBled,
+			keyBinding: {
+				weight: KeyBindingWeight.WorkBenchContriB,
+				when: WorkBenchListFocusContextKey,
 				primary: KeyCode.Space,
 			},
 			menu: {
@@ -264,8 +264,8 @@ registerAction2(class GroupByFile extends Action2 {
 			id: 'refactorPreview.groupByFile',
 			title: { value: localize('groupByFile', "Group Changes By File"), original: 'Group Changes By File' },
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
-			icon: { id: 'codicon/ungroup-by-ref-type' },
-			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile.negate(), BulkEditPreviewContribution.ctxEnabled),
+			icon: { id: 'codicon/ungroup-By-ref-type' },
+			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile.negate(), BulkEditPreviewContriBution.ctxEnaBled),
 			menu: [{
 				id: MenuId.BulkEditTitle,
 				when: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile.negate()),
@@ -291,8 +291,8 @@ registerAction2(class GroupByType extends Action2 {
 			id: 'refactorPreview.groupByType',
 			title: { value: localize('groupByType', "Group Changes By Type"), original: 'Group Changes By Type' },
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
-			icon: { id: 'codicon/group-by-ref-type' },
-			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile, BulkEditPreviewContribution.ctxEnabled),
+			icon: { id: 'codicon/group-By-ref-type' },
+			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile, BulkEditPreviewContriBution.ctxEnaBled),
 			menu: [{
 				id: MenuId.BulkEditTitle,
 				when: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPane.ctxGroupByFile),
@@ -320,7 +320,7 @@ registerAction2(class ToggleGrouping extends Action2 {
 			category: { value: localize('cat', "Refactor Preview"), original: 'Refactor Preview' },
 			icon: { id: 'codicon/list-tree' },
 			toggled: BulkEditPane.ctxGroupByFile.negate(),
-			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPreviewContribution.ctxEnabled),
+			precondition: ContextKeyExpr.and(BulkEditPane.ctxHasCategories, BulkEditPreviewContriBution.ctxEnaBled),
 			menu: [{
 				id: MenuId.BulkEditContext,
 				order: 3
@@ -337,8 +337,8 @@ registerAction2(class ToggleGrouping extends Action2 {
 	}
 });
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	BulkEditPreviewContribution, LifecyclePhase.Ready
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench).registerWorkBenchContriBution(
+	BulkEditPreviewContriBution, LifecyclePhase.Ready
 );
 
 const container = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry).registerViewContainer({
@@ -349,14 +349,14 @@ const container = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.V
 		ViewPaneContainer,
 		[BulkEditPane.ID, { mergeViewWithContainerWhenSingleView: true, donotShowContainerTitleWhenMergedWithContainer: true }]
 	),
-	icon: Codicon.lightbulb.classNames,
+	icon: Codicon.lightBulB.classNames,
 	storageId: BulkEditPane.ID
 }, ViewContainerLocation.Panel);
 
 Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry).registerViews([{
 	id: BulkEditPane.ID,
 	name: localize('panel', "Refactor Preview"),
-	when: BulkEditPreviewContribution.ctxEnabled,
+	when: BulkEditPreviewContriBution.ctxEnaBled,
 	ctorDescriptor: new SyncDescriptor(BulkEditPane),
-	containerIcon: Codicon.lightbulb.classNames,
+	containerIcon: Codicon.lightBulB.classNames,
 }], container);

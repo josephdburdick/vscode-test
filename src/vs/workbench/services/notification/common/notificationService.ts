@@ -5,14 +5,14 @@
 
 import * as nls from 'vs/nls';
 import { INotificationService, INotification, INotificationHandle, Severity, NotificationMessage, INotificationActions, IPromptChoice, IPromptOptions, IStatusMessageOptions, NoOpNotification, NeverShowAgainScope, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { INotificationsModel, NotificationsModel, ChoiceAction } from 'vs/workbench/common/notifications';
-import { Disposable, DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { INotificationsModel, NotificationsModel, ChoiceAction } from 'vs/workBench/common/notifications';
+import { DisposaBle, DisposaBleStore, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { Event } from 'vs/Base/common/event';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IAction, Action } from 'vs/base/common/actions';
+import { IAction, Action } from 'vs/Base/common/actions';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 
-export class NotificationService extends Disposable implements INotificationService {
+export class NotificationService extends DisposaBle implements INotificationService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -60,7 +60,7 @@ export class NotificationService extends Disposable implements INotificationServ
 	}
 
 	notify(notification: INotification): INotificationHandle {
-		const toDispose = new DisposableStore();
+		const toDispose = new DisposaBleStore();
 
 		// Handle neverShowAgain option accordingly
 		let handle: INotificationHandle;
@@ -75,14 +75,14 @@ export class NotificationService extends Disposable implements INotificationServ
 			}
 
 			const neverShowAgainAction = toDispose.add(new Action(
-				'workbench.notification.neverShowAgain',
+				'workBench.notification.neverShowAgain',
 				nls.localize('neverShowAgain', "Don't Show Again"),
 				undefined, true, () => {
 
 					// Close notification
 					handle.close();
 
-					// Remember choice
+					// RememBer choice
 					this.storageService.store(id, true, scope);
 
 					return Promise.resolve();
@@ -112,7 +112,7 @@ export class NotificationService extends Disposable implements INotificationServ
 	}
 
 	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
-		const toDispose = new DisposableStore();
+		const toDispose = new DisposaBleStore();
 
 		// Handle neverShowAgain option accordingly
 		if (options?.neverShowAgain) {
@@ -126,7 +126,7 @@ export class NotificationService extends Disposable implements INotificationServ
 			}
 
 			const neverShowAgainChoice = {
-				label: nls.localize('neverShowAgain', "Don't Show Again"),
+				laBel: nls.localize('neverShowAgain', "Don't Show Again"),
 				run: () => this.storageService.store(id, true, scope),
 				isSecondary: options.neverShowAgain.isSecondary
 			};
@@ -146,14 +146,14 @@ export class NotificationService extends Disposable implements INotificationServ
 		const primaryActions: IAction[] = [];
 		const secondaryActions: IAction[] = [];
 		choices.forEach((choice, index) => {
-			const action = new ChoiceAction(`workbench.dialog.choice.${index}`, choice);
+			const action = new ChoiceAction(`workBench.dialog.choice.${index}`, choice);
 			if (!choice.isSecondary) {
 				primaryActions.push(action);
 			} else {
 				secondaryActions.push(action);
 			}
 
-			// React to action being clicked
+			// React to action Being clicked
 			toDispose.add(action.onDidRun(() => {
 				choiceClicked = true;
 
@@ -184,7 +184,7 @@ export class NotificationService extends Disposable implements INotificationServ
 		return handle;
 	}
 
-	status(message: NotificationMessage, options?: IStatusMessageOptions): IDisposable {
+	status(message: NotificationMessage, options?: IStatusMessageOptions): IDisposaBle {
 		return this.model.showStatusMessage(message, options);
 	}
 }

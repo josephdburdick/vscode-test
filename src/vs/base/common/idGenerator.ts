@@ -6,14 +6,14 @@
 export class IdGenerator {
 
 	private _prefix: string;
-	private _lastId: number;
+	private _lastId: numBer;
 
 	constructor(prefix: string) {
 		this._prefix = prefix;
 		this._lastId = 0;
 	}
 
-	public nextId(): string {
+	puBlic nextId(): string {
 		return this._prefix + (++this._lastId);
 	}
 }

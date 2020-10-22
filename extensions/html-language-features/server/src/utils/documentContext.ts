@@ -23,15 +23,15 @@ export function getDocumentContext(documentUri: string, workspaceFolders: Worksp
 	}
 
 	return {
-		resolveReference: (ref: string, base = documentUri) => {
-			if (ref[0] === '/') { // resolve absolute path against the current workspace folder
+		resolveReference: (ref: string, Base = documentUri) => {
+			if (ref[0] === '/') { // resolve aBsolute path against the current workspace folder
 				let folderUri = getRootFolder();
 				if (folderUri) {
-					return folderUri + ref.substr(1);
+					return folderUri + ref.suBstr(1);
 				}
 			}
-			base = base.substr(0, base.lastIndexOf('/') + 1);
-			return resolvePath(base, ref);
+			Base = Base.suBstr(0, Base.lastIndexOf('/') + 1);
+			return resolvePath(Base, ref);
 		},
 	};
 }

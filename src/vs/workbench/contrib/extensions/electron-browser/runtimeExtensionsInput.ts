@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { EditorInput } from 'vs/workbench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { EditorInput } from 'vs/workBench/common/editor';
 
 export class RuntimeExtensionsInput extends EditorInput {
 
-	static readonly ID = 'workbench.runtimeExtensions.input';
+	static readonly ID = 'workBench.runtimeExtensions.input';
 
 	static _instance: RuntimeExtensionsInput;
 	static get instance() {
@@ -33,11 +33,11 @@ export class RuntimeExtensionsInput extends EditorInput {
 		return nls.localize('extensionsInputName', "Running Extensions");
 	}
 
-	supportsSplitEditor(): boolean {
+	supportsSplitEditor(): Boolean {
 		return false;
 	}
 
-	matches(other: unknown): boolean {
+	matches(other: unknown): Boolean {
 		return other instanceof RuntimeExtensionsInput;
 	}
 }

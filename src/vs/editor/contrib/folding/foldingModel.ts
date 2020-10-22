@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextModel, IModelDecorationOptions, IModelDeltaDecoration, IModelDecorationsChangeAccessor } from 'vs/editor/common/model';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { FoldingRegions, ILineRange, FoldingRegion } from './foldingRanges';
 
 export interface IDecorationProvider {
-	getDecorationOption(isCollapsed: boolean, isHidden: boolean): IModelDecorationOptions;
+	getDecorationOption(isCollapsed: Boolean, isHidden: Boolean): IModelDecorationOptions;
 	deltaDecorations(oldDecorations: string[], newDecorations: IModelDeltaDecoration[]): string[];
-	changeDecorations<T>(callback: (changeAccessor: IModelDecorationsChangeAccessor) => T): T | null;
+	changeDecorations<T>(callBack: (changeAccessor: IModelDecorationsChangeAccessor) => T): T | null;
 }
 
 export interface FoldingModelChangeEvent {
@@ -26,15 +26,15 @@ export class FoldingModel {
 
 	private _regions: FoldingRegions;
 	private _editorDecorationIds: string[];
-	private _isInitialized: boolean;
+	private _isInitialized: Boolean;
 
 	private readonly _updateEventEmitter = new Emitter<FoldingModelChangeEvent>();
-	public readonly onDidChange: Event<FoldingModelChangeEvent> = this._updateEventEmitter.event;
+	puBlic readonly onDidChange: Event<FoldingModelChangeEvent> = this._updateEventEmitter.event;
 
-	public get regions(): FoldingRegions { return this._regions; }
-	public get textModel() { return this._textModel; }
-	public get isInitialized() { return this._isInitialized; }
-	public get decorationProvider() { return this._decorationProvider; }
+	puBlic get regions(): FoldingRegions { return this._regions; }
+	puBlic get textModel() { return this._textModel; }
+	puBlic get isInitialized() { return this._isInitialized; }
+	puBlic get decorationProvider() { return this._decorationProvider; }
 
 	constructor(textModel: ITextModel, decorationProvider: IDecorationProvider) {
 		this._textModel = textModel;
@@ -44,26 +44,26 @@ export class FoldingModel {
 		this._isInitialized = false;
 	}
 
-	public toggleCollapseState(toggledRegions: FoldingRegion[]) {
+	puBlic toggleCollapseState(toggledRegions: FoldingRegion[]) {
 		if (!toggledRegions.length) {
 			return;
 		}
 		toggledRegions = toggledRegions.sort((r1, r2) => r1.regionIndex - r2.regionIndex);
 
-		const processed: { [key: string]: boolean | undefined } = {};
+		const processed: { [key: string]: Boolean | undefined } = {};
 		this._decorationProvider.changeDecorations(accessor => {
 			let k = 0; // index from [0 ... this.regions.length]
-			let dirtyRegionEndLine = -1; // end of the range where decorations need to be updated
+			let dirtyRegionEndLine = -1; // end of the range where decorations need to Be updated
 			let lastHiddenLine = -1; // the end of the last hidden lines
-			const updateDecorationsUntil = (index: number) => {
+			const updateDecorationsUntil = (index: numBer) => {
 				while (k < index) {
-					const endLineNumber = this._regions.getEndLineNumber(k);
+					const endLineNumBer = this._regions.getEndLineNumBer(k);
 					const isCollapsed = this._regions.isCollapsed(k);
-					if (endLineNumber <= dirtyRegionEndLine) {
-						accessor.changeDecorationOptions(this._editorDecorationIds[k], this._decorationProvider.getDecorationOption(isCollapsed, endLineNumber <= lastHiddenLine));
+					if (endLineNumBer <= dirtyRegionEndLine) {
+						accessor.changeDecorationOptions(this._editorDecorationIds[k], this._decorationProvider.getDecorationOption(isCollapsed, endLineNumBer <= lastHiddenLine));
 					}
-					if (isCollapsed && endLineNumber > lastHiddenLine) {
-						lastHiddenLine = endLineNumber;
+					if (isCollapsed && endLineNumBer > lastHiddenLine) {
+						lastHiddenLine = endLineNumBer;
 					}
 					k++;
 				}
@@ -79,7 +79,7 @@ export class FoldingModel {
 					let newCollapseState = !this._regions.isCollapsed(index);
 					this._regions.setCollapsed(index, newCollapseState);
 
-					dirtyRegionEndLine = Math.max(dirtyRegionEndLine, this._regions.getEndLineNumber(index));
+					dirtyRegionEndLine = Math.max(dirtyRegionEndLine, this._regions.getEndLineNumBer(index));
 				}
 			}
 			updateDecorationsUntil(this._regions.length);
@@ -87,12 +87,12 @@ export class FoldingModel {
 		this._updateEventEmitter.fire({ model: this, collapseStateChanged: toggledRegions });
 	}
 
-	public update(newRegions: FoldingRegions, blockedLineNumers: number[] = []): void {
+	puBlic update(newRegions: FoldingRegions, BlockedLineNumers: numBer[] = []): void {
 		let newEditorDecorations: IModelDeltaDecoration[] = [];
 
-		let isBlocked = (startLineNumber: number, endLineNumber: number) => {
-			for (let blockedLineNumber of blockedLineNumers) {
-				if (startLineNumber < blockedLineNumber && blockedLineNumber <= endLineNumber) { // first line is visible
+		let isBlocked = (startLineNumBer: numBer, endLineNumBer: numBer) => {
+			for (let BlockedLineNumBer of BlockedLineNumers) {
+				if (startLineNumBer < BlockedLineNumBer && BlockedLineNumBer <= endLineNumBer) { // first line is visiBle
 					return true;
 				}
 			}
@@ -101,24 +101,24 @@ export class FoldingModel {
 
 		let lastHiddenLine = -1;
 
-		let initRange = (index: number, isCollapsed: boolean) => {
-			const startLineNumber = newRegions.getStartLineNumber(index);
-			const endLineNumber = newRegions.getEndLineNumber(index);
-			if (isCollapsed && isBlocked(startLineNumber, endLineNumber)) {
+		let initRange = (index: numBer, isCollapsed: Boolean) => {
+			const startLineNumBer = newRegions.getStartLineNumBer(index);
+			const endLineNumBer = newRegions.getEndLineNumBer(index);
+			if (isCollapsed && isBlocked(startLineNumBer, endLineNumBer)) {
 				isCollapsed = false;
 			}
 			newRegions.setCollapsed(index, isCollapsed);
 
-			const maxColumn = this._textModel.getLineMaxColumn(startLineNumber);
+			const maxColumn = this._textModel.getLineMaxColumn(startLineNumBer);
 			const decorationRange = {
-				startLineNumber: startLineNumber,
+				startLineNumBer: startLineNumBer,
 				startColumn: Math.max(maxColumn - 1, 1), // make it length == 1 to detect deletions
-				endLineNumber: startLineNumber,
+				endLineNumBer: startLineNumBer,
 				endColumn: maxColumn
 			};
-			newEditorDecorations.push({ range: decorationRange, options: this._decorationProvider.getDecorationOption(isCollapsed, endLineNumber <= lastHiddenLine) });
-			if (isCollapsed && endLineNumber > lastHiddenLine) {
-				lastHiddenLine = endLineNumber;
+			newEditorDecorations.push({ range: decorationRange, options: this._decorationProvider.getDecorationOption(isCollapsed, endLineNumBer <= lastHiddenLine) });
+			if (isCollapsed && endLineNumBer > lastHiddenLine) {
+				lastHiddenLine = endLineNumBer;
 			}
 		};
 		let i = 0;
@@ -139,15 +139,15 @@ export class FoldingModel {
 			// get the latest range
 			let decRange = this._textModel.getDecorationRange(this._editorDecorationIds[collapsedIndex]);
 			if (decRange) {
-				let collapsedStartLineNumber = decRange.startLineNumber;
-				if (decRange.startColumn === Math.max(decRange.endColumn - 1, 1) && this._textModel.getLineMaxColumn(collapsedStartLineNumber) === decRange.endColumn) { // test that the decoration is still covering the full line else it got deleted
+				let collapsedStartLineNumBer = decRange.startLineNumBer;
+				if (decRange.startColumn === Math.max(decRange.endColumn - 1, 1) && this._textModel.getLineMaxColumn(collapsedStartLineNumBer) === decRange.endColumn) { // test that the decoration is still covering the full line else it got deleted
 					while (k < newRegions.length) {
-						let startLineNumber = newRegions.getStartLineNumber(k);
-						if (collapsedStartLineNumber >= startLineNumber) {
-							initRange(k, collapsedStartLineNumber === startLineNumber);
+						let startLineNumBer = newRegions.getStartLineNumBer(k);
+						if (collapsedStartLineNumBer >= startLineNumBer) {
+							initRange(k, collapsedStartLineNumBer === startLineNumBer);
 							k++;
 						} else {
-							break;
+							Break;
 						}
 					}
 				}
@@ -168,15 +168,15 @@ export class FoldingModel {
 	/**
 	 * Collapse state memento, for persistence only
 	 */
-	public getMemento(): CollapseMemento | undefined {
+	puBlic getMemento(): CollapseMemento | undefined {
 		let collapsedRanges: ILineRange[] = [];
 		for (let i = 0; i < this._regions.length; i++) {
 			if (this._regions.isCollapsed(i)) {
 				let range = this._textModel.getDecorationRange(this._editorDecorationIds[i]);
 				if (range) {
-					let startLineNumber = range.startLineNumber;
-					let endLineNumber = range.endLineNumber + this._regions.getEndLineNumber(i) - this._regions.getStartLineNumber(i);
-					collapsedRanges.push({ startLineNumber, endLineNumber });
+					let startLineNumBer = range.startLineNumBer;
+					let endLineNumBer = range.endLineNumBer + this._regions.getEndLineNumBer(i) - this._regions.getStartLineNumBer(i);
+					collapsedRanges.push({ startLineNumBer, endLineNumBer });
 				}
 			}
 		}
@@ -189,13 +189,13 @@ export class FoldingModel {
 	/**
 	 * Apply persisted state, for persistence only
 	 */
-	public applyMemento(state: CollapseMemento) {
+	puBlic applyMemento(state: CollapseMemento) {
 		if (!Array.isArray(state)) {
 			return;
 		}
 		let toToogle: FoldingRegion[] = [];
 		for (let range of state) {
-			let region = this.getRegionAtLine(range.startLineNumber);
+			let region = this.getRegionAtLine(range.startLineNumBer);
 			if (region && !region.isCollapsed) {
 				toToogle.push(region);
 			}
@@ -203,14 +203,14 @@ export class FoldingModel {
 		this.toggleCollapseState(toToogle);
 	}
 
-	public dispose() {
+	puBlic dispose() {
 		this._decorationProvider.deltaDecorations(this._editorDecorationIds, []);
 	}
 
-	getAllRegionsAtLine(lineNumber: number, filter?: (r: FoldingRegion, level: number) => boolean): FoldingRegion[] {
+	getAllRegionsAtLine(lineNumBer: numBer, filter?: (r: FoldingRegion, level: numBer) => Boolean): FoldingRegion[] {
 		let result: FoldingRegion[] = [];
 		if (this._regions) {
-			let index = this._regions.findRange(lineNumber);
+			let index = this._regions.findRange(lineNumBer);
 			let level = 1;
 			while (index >= 0) {
 				let current = this._regions.toRegion(index);
@@ -224,9 +224,9 @@ export class FoldingModel {
 		return result;
 	}
 
-	getRegionAtLine(lineNumber: number): FoldingRegion | null {
+	getRegionAtLine(lineNumBer: numBer): FoldingRegion | null {
 		if (this._regions) {
-			let index = this._regions.findRange(lineNumber);
+			let index = this._regions.findRange(lineNumBer);
 			if (index >= 0) {
 				return this._regions.toRegion(index);
 			}
@@ -237,13 +237,13 @@ export class FoldingModel {
 	getRegionsInside(region: FoldingRegion | null, filter?: RegionFilter | RegionFilterWithLevel): FoldingRegion[] {
 		let result: FoldingRegion[] = [];
 		let index = region ? region.regionIndex + 1 : 0;
-		let endLineNumber = region ? region.endLineNumber : Number.MAX_VALUE;
+		let endLineNumBer = region ? region.endLineNumBer : NumBer.MAX_VALUE;
 
 		if (filter && filter.length === 2) {
 			const levelStack: FoldingRegion[] = [];
 			for (let i = index, len = this._regions.length; i < len; i++) {
 				let current = this._regions.toRegion(i);
-				if (this._regions.getStartLineNumber(i) < endLineNumber) {
+				if (this._regions.getStartLineNumBer(i) < endLineNumBer) {
 					while (levelStack.length > 0 && !current.containedBy(levelStack[levelStack.length - 1])) {
 						levelStack.pop();
 					}
@@ -252,18 +252,18 @@ export class FoldingModel {
 						result.push(current);
 					}
 				} else {
-					break;
+					Break;
 				}
 			}
 		} else {
 			for (let i = index, len = this._regions.length; i < len; i++) {
 				let current = this._regions.toRegion(i);
-				if (this._regions.getStartLineNumber(i) < endLineNumber) {
+				if (this._regions.getStartLineNumBer(i) < endLineNumBer) {
 					if (!filter || (filter as RegionFilter)(current)) {
 						result.push(current);
 					}
 				} else {
-					break;
+					Break;
 				}
 			}
 		}
@@ -272,24 +272,24 @@ export class FoldingModel {
 
 }
 
-type RegionFilter = (r: FoldingRegion) => boolean;
-type RegionFilterWithLevel = (r: FoldingRegion, level: number) => boolean;
+type RegionFilter = (r: FoldingRegion) => Boolean;
+type RegionFilterWithLevel = (r: FoldingRegion, level: numBer) => Boolean;
 
 
 /**
  * Collapse or expand the regions at the given locations
- * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
- * @param lineNumbers the location of the regions to collapse or expand, or if not set, all regions in the model.
+ * @param levels The numBer of levels. Use 1 to only impact the regions at the location, use NumBer.MAX_VALUE for all levels.
+ * @param lineNumBers the location of the regions to collapse or expand, or if not set, all regions in the model.
  */
-export function toggleCollapseState(foldingModel: FoldingModel, levels: number, lineNumbers: number[]) {
+export function toggleCollapseState(foldingModel: FoldingModel, levels: numBer, lineNumBers: numBer[]) {
 	let toToggle: FoldingRegion[] = [];
-	for (let lineNumber of lineNumbers) {
-		let region = foldingModel.getRegionAtLine(lineNumber);
+	for (let lineNumBer of lineNumBers) {
+		let region = foldingModel.getRegionAtLine(lineNumBer);
 		if (region) {
 			const doCollapse = !region.isCollapsed;
 			toToggle.push(region);
 			if (levels > 1) {
-				let regionsInside = foldingModel.getRegionsInside(region, (r, level: number) => r.isCollapsed !== doCollapse && level < levels);
+				let regionsInside = foldingModel.getRegionsInside(region, (r, level: numBer) => r.isCollapsed !== doCollapse && level < levels);
 				toToggle.push(...regionsInside);
 			}
 		}
@@ -301,26 +301,26 @@ export function toggleCollapseState(foldingModel: FoldingModel, levels: number, 
 /**
  * Collapse or expand the regions at the given locations including all children.
  * @param doCollapse Wheter to collase or expand
- * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
- * @param lineNumbers the location of the regions to collapse or expand, or if not set, all regions in the model.
+ * @param levels The numBer of levels. Use 1 to only impact the regions at the location, use NumBer.MAX_VALUE for all levels.
+ * @param lineNumBers the location of the regions to collapse or expand, or if not set, all regions in the model.
  */
-export function setCollapseStateLevelsDown(foldingModel: FoldingModel, doCollapse: boolean, levels = Number.MAX_VALUE, lineNumbers?: number[]): void {
+export function setCollapseStateLevelsDown(foldingModel: FoldingModel, doCollapse: Boolean, levels = NumBer.MAX_VALUE, lineNumBers?: numBer[]): void {
 	let toToggle: FoldingRegion[] = [];
-	if (lineNumbers && lineNumbers.length > 0) {
-		for (let lineNumber of lineNumbers) {
-			let region = foldingModel.getRegionAtLine(lineNumber);
+	if (lineNumBers && lineNumBers.length > 0) {
+		for (let lineNumBer of lineNumBers) {
+			let region = foldingModel.getRegionAtLine(lineNumBer);
 			if (region) {
 				if (region.isCollapsed !== doCollapse) {
 					toToggle.push(region);
 				}
 				if (levels > 1) {
-					let regionsInside = foldingModel.getRegionsInside(region, (r, level: number) => r.isCollapsed !== doCollapse && level < levels);
+					let regionsInside = foldingModel.getRegionsInside(region, (r, level: numBer) => r.isCollapsed !== doCollapse && level < levels);
 					toToggle.push(...regionsInside);
 				}
 			}
 		}
 	} else {
-		let regionsInside = foldingModel.getRegionsInside(null, (r, level: number) => r.isCollapsed !== doCollapse && level < levels);
+		let regionsInside = foldingModel.getRegionsInside(null, (r, level: numBer) => r.isCollapsed !== doCollapse && level < levels);
 		toToggle.push(...regionsInside);
 	}
 	foldingModel.toggleCollapseState(toToggle);
@@ -329,13 +329,13 @@ export function setCollapseStateLevelsDown(foldingModel: FoldingModel, doCollaps
 /**
  * Collapse or expand the regions at the given locations including all parents.
  * @param doCollapse Wheter to collase or expand
- * @param levels The number of levels. Use 1 to only impact the regions at the location, use Number.MAX_VALUE for all levels.
- * @param lineNumbers the location of the regions to collapse or expand.
+ * @param levels The numBer of levels. Use 1 to only impact the regions at the location, use NumBer.MAX_VALUE for all levels.
+ * @param lineNumBers the location of the regions to collapse or expand.
  */
-export function setCollapseStateLevelsUp(foldingModel: FoldingModel, doCollapse: boolean, levels: number, lineNumbers: number[]): void {
+export function setCollapseStateLevelsUp(foldingModel: FoldingModel, doCollapse: Boolean, levels: numBer, lineNumBers: numBer[]): void {
 	let toToggle: FoldingRegion[] = [];
-	for (let lineNumber of lineNumbers) {
-		let regions = foldingModel.getAllRegionsAtLine(lineNumber, (region, level) => region.isCollapsed !== doCollapse && level <= levels);
+	for (let lineNumBer of lineNumBers) {
+		let regions = foldingModel.getAllRegionsAtLine(lineNumBer, (region, level) => region.isCollapsed !== doCollapse && level <= levels);
 		toToggle.push(...regions);
 	}
 	foldingModel.toggleCollapseState(toToggle);
@@ -344,12 +344,12 @@ export function setCollapseStateLevelsUp(foldingModel: FoldingModel, doCollapse:
 /**
  * Collapse or expand a region at the given locations. If the inner most region is already collapsed/expanded, uses the first parent instead.
  * @param doCollapse Wheter to collase or expand
- * @param lineNumbers the location of the regions to collapse or expand.
+ * @param lineNumBers the location of the regions to collapse or expand.
  */
-export function setCollapseStateUp(foldingModel: FoldingModel, doCollapse: boolean, lineNumbers: number[]): void {
+export function setCollapseStateUp(foldingModel: FoldingModel, doCollapse: Boolean, lineNumBers: numBer[]): void {
 	let toToggle: FoldingRegion[] = [];
-	for (let lineNumber of lineNumbers) {
-		let regions = foldingModel.getAllRegionsAtLine(lineNumber, (region,) => region.isCollapsed !== doCollapse);
+	for (let lineNumBer of lineNumBers) {
+		let regions = foldingModel.getAllRegionsAtLine(lineNumBer, (region,) => region.isCollapsed !== doCollapse);
 		if (regions.length > 0) {
 			toToggle.push(regions[0]);
 		}
@@ -358,12 +358,12 @@ export function setCollapseStateUp(foldingModel: FoldingModel, doCollapse: boole
 }
 
 /**
- * Folds or unfolds all regions that have a given level, except if they contain one of the blocked lines.
+ * Folds or unfolds all regions that have a given level, except if they contain one of the Blocked lines.
  * @param foldLevel level. Level == 1 is the top level
  * @param doCollapse Wheter to collase or expand
 */
-export function setCollapseStateAtLevel(foldingModel: FoldingModel, foldLevel: number, doCollapse: boolean, blockedLineNumbers: number[]): void {
-	let filter = (region: FoldingRegion, level: number) => level === foldLevel && region.isCollapsed !== doCollapse && !blockedLineNumbers.some(line => region.containsLine(line));
+export function setCollapseStateAtLevel(foldingModel: FoldingModel, foldLevel: numBer, doCollapse: Boolean, BlockedLineNumBers: numBer[]): void {
+	let filter = (region: FoldingRegion, level: numBer) => level === foldLevel && region.isCollapsed !== doCollapse && !BlockedLineNumBers.some(line => region.containsLine(line));
 	let toToggle = foldingModel.getRegionsInside(null, filter);
 	foldingModel.toggleCollapseState(toToggle);
 }
@@ -372,14 +372,14 @@ export function setCollapseStateAtLevel(foldingModel: FoldingModel, foldLevel: n
  * Folds all regions for which the lines start with a given regex
  * @param foldingModel the folding model
  */
-export function setCollapseStateForMatchingLines(foldingModel: FoldingModel, regExp: RegExp, doCollapse: boolean): void {
+export function setCollapseStateForMatchingLines(foldingModel: FoldingModel, regExp: RegExp, doCollapse: Boolean): void {
 	let editorModel = foldingModel.textModel;
 	let regions = foldingModel.regions;
 	let toToggle: FoldingRegion[] = [];
 	for (let i = regions.length - 1; i >= 0; i--) {
 		if (doCollapse !== regions.isCollapsed(i)) {
-			let startLineNumber = regions.getStartLineNumber(i);
-			if (regExp.test(editorModel.getLineContent(startLineNumber))) {
+			let startLineNumBer = regions.getStartLineNumBer(i);
+			if (regExp.test(editorModel.getLineContent(startLineNumBer))) {
 				toToggle.push(regions.toRegion(i));
 			}
 		}
@@ -391,7 +391,7 @@ export function setCollapseStateForMatchingLines(foldingModel: FoldingModel, reg
  * Folds all regions of the given type
  * @param foldingModel the folding model
  */
-export function setCollapseStateForType(foldingModel: FoldingModel, type: string, doCollapse: boolean): void {
+export function setCollapseStateForType(foldingModel: FoldingModel, type: string, doCollapse: Boolean): void {
 	let regions = foldingModel.regions;
 	let toToggle: FoldingRegion[] = [];
 	for (let i = regions.length - 1; i >= 0; i--) {

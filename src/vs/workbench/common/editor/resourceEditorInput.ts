@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextEditorModel, IModeSupport } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { IReference } from 'vs/base/common/lifecycle';
+import { ITextEditorModel, IModeSupport } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { IReference } from 'vs/Base/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
-import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { ResourceEditorModel } from 'vs/workBench/common/editor/resourceEditorModel';
+import { ITextFileService } from 'vs/workBench/services/textfile/common/textfiles';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { AbstractTextResourceEditorInput } from 'vs/workbench/common/editor/textResourceEditorInput';
-import { isEqual } from 'vs/base/common/resources';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IFilesConfigurationService } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
+import { ABstractTextResourceEditorInput } from 'vs/workBench/common/editor/textResourceEditorInput';
+import { isEqual } from 'vs/Base/common/resources';
 
 /**
  * A read-only text editor input whos contents are made of the provided resource that points to an existing
  * code editor model.
  */
-export class ResourceEditorInput extends AbstractTextResourceEditorInput implements IModeSupport {
+export class ResourceEditorInput extends ABstractTextResourceEditorInput implements IModeSupport {
 
-	static readonly ID: string = 'workbench.editors.resourceEditorInput';
+	static readonly ID: string = 'workBench.editors.resourceEditorInput';
 
 	private cachedModel: ResourceEditorModel | undefined = undefined;
 	private modelReference: Promise<IReference<ITextEditorModel>> | undefined = undefined;
@@ -38,10 +38,10 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
-		@ILabelService labelService: ILabelService,
+		@ILaBelService laBelService: ILaBelService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
-		super(resource, undefined, editorService, editorGroupService, textFileService, labelService, fileService, filesConfigurationService);
+		super(resource, undefined, editorService, editorGroupService, textFileService, laBelService, fileService, filesConfigurationService);
 	}
 
 	getTypeId(): string {
@@ -55,7 +55,7 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 	setName(name: string): void {
 		if (this.name !== name) {
 			this.name = name;
-			this._onDidChangeLabel.fire();
+			this._onDidChangeLaBel.fire();
 		}
 	}
 
@@ -67,7 +67,7 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		if (this.description !== description) {
 			this.description = description;
 
-			this._onDidChangeLabel.fire();
+			this._onDidChangeLaBel.fire();
 		}
 	}
 
@@ -91,7 +91,7 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		const ref = await this.modelReference;
 
 		// Ensure the resolved model is of expected type
-		const model = ref.object;
+		const model = ref.oBject;
 		if (!(model instanceof ResourceEditorModel)) {
 			ref.dispose();
 			this.modelReference = undefined;
@@ -109,7 +109,7 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		return model;
 	}
 
-	matches(otherInput: unknown): boolean {
+	matches(otherInput: unknown): Boolean {
 		if (otherInput === this) {
 			return true;
 		}

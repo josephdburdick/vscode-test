@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { UTF8_BOM_CHARACTER } from 'vs/base/common/strings';
+import { UTF8_BOM_CHARACTER } from 'vs/Base/common/strings';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { TextModel, createTextBuffer } from 'vs/editor/common/model/textModel';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-function testGuessIndentation(defaultInsertSpaces: boolean, defaultTabSize: number, expectedInsertSpaces: boolean, expectedTabSize: number, text: string[], msg?: string): void {
+function testGuessIndentation(defaultInsertSpaces: Boolean, defaultTaBSize: numBer, expectedInsertSpaces: Boolean, expectedTaBSize: numBer, text: string[], msg?: string): void {
 	let m = createTextModel(
 		text.join('\n'),
 		{
-			tabSize: defaultTabSize,
+			taBSize: defaultTaBSize,
 			insertSpaces: defaultInsertSpaces,
 			detectIndentation: true
 		}
@@ -23,40 +23,40 @@ function testGuessIndentation(defaultInsertSpaces: boolean, defaultTabSize: numb
 	m.dispose();
 
 	assert.equal(r.insertSpaces, expectedInsertSpaces, msg);
-	assert.equal(r.tabSize, expectedTabSize, msg);
+	assert.equal(r.taBSize, expectedTaBSize, msg);
 }
 
-function assertGuess(expectedInsertSpaces: boolean | undefined, expectedTabSize: number | undefined | [number], text: string[], msg?: string): void {
+function assertGuess(expectedInsertSpaces: Boolean | undefined, expectedTaBSize: numBer | undefined | [numBer], text: string[], msg?: string): void {
 	if (typeof expectedInsertSpaces === 'undefined') {
 		// cannot guess insertSpaces
-		if (typeof expectedTabSize === 'undefined') {
-			// cannot guess tabSize
+		if (typeof expectedTaBSize === 'undefined') {
+			// cannot guess taBSize
 			testGuessIndentation(true, 13370, true, 13370, text, msg);
 			testGuessIndentation(false, 13371, false, 13371, text, msg);
-		} else if (typeof expectedTabSize === 'number') {
-			// can guess tabSize
-			testGuessIndentation(true, 13370, true, expectedTabSize, text, msg);
-			testGuessIndentation(false, 13371, false, expectedTabSize, text, msg);
+		} else if (typeof expectedTaBSize === 'numBer') {
+			// can guess taBSize
+			testGuessIndentation(true, 13370, true, expectedTaBSize, text, msg);
+			testGuessIndentation(false, 13371, false, expectedTaBSize, text, msg);
 		} else {
-			// can only guess tabSize when insertSpaces is true
-			testGuessIndentation(true, 13370, true, expectedTabSize[0], text, msg);
+			// can only guess taBSize when insertSpaces is true
+			testGuessIndentation(true, 13370, true, expectedTaBSize[0], text, msg);
 			testGuessIndentation(false, 13371, false, 13371, text, msg);
 		}
 	} else {
 		// can guess insertSpaces
-		if (typeof expectedTabSize === 'undefined') {
-			// cannot guess tabSize
+		if (typeof expectedTaBSize === 'undefined') {
+			// cannot guess taBSize
 			testGuessIndentation(true, 13370, expectedInsertSpaces, 13370, text, msg);
 			testGuessIndentation(false, 13371, expectedInsertSpaces, 13371, text, msg);
-		} else if (typeof expectedTabSize === 'number') {
-			// can guess tabSize
-			testGuessIndentation(true, 13370, expectedInsertSpaces, expectedTabSize, text, msg);
-			testGuessIndentation(false, 13371, expectedInsertSpaces, expectedTabSize, text, msg);
+		} else if (typeof expectedTaBSize === 'numBer') {
+			// can guess taBSize
+			testGuessIndentation(true, 13370, expectedInsertSpaces, expectedTaBSize, text, msg);
+			testGuessIndentation(false, 13371, expectedInsertSpaces, expectedTaBSize, text, msg);
 		} else {
-			// can only guess tabSize when insertSpaces is true
+			// can only guess taBSize when insertSpaces is true
 			if (expectedInsertSpaces === true) {
-				testGuessIndentation(true, 13370, expectedInsertSpaces, expectedTabSize[0], text, msg);
-				testGuessIndentation(false, 13371, expectedInsertSpaces, expectedTabSize[0], text, msg);
+				testGuessIndentation(true, 13370, expectedInsertSpaces, expectedTaBSize[0], text, msg);
+				testGuessIndentation(false, 13371, expectedInsertSpaces, expectedTaBSize[0], text, msg);
 			} else {
 				testGuessIndentation(true, 13370, expectedInsertSpaces, 13370, text, msg);
 				testGuessIndentation(false, 13371, expectedInsertSpaces, 13371, text, msg);
@@ -70,8 +70,8 @@ suite('TextModelData.fromString', () => {
 	interface ITextBufferData {
 		EOL: string;
 		lines: string[];
-		containsRTL: boolean;
-		isBasicASCII: boolean;
+		containsRTL: Boolean;
+		isBasicASCII: Boolean;
 	}
 
 	function testTextModelDataFromString(text: string, expected: ITextBufferData): void {
@@ -546,19 +546,19 @@ suite('Editor Model - TextModel', () => {
 	test('issue #44991: Wrong indentation size auto-detection', () => {
 		assertGuess(true, 4, [
 			'a = 10             # 0 space indent',
-			'b = 5              # 0 space indent',
+			'B = 5              # 0 space indent',
 			'if a > 10:         # 0 space indent',
 			'    a += 1         # 4 space indent      delta 4 spaces',
-			'    if b > 5:      # 4 space indent',
-			'        b += 1     # 8 space indent      delta 4 spaces',
-			'        b += 1     # 8 space indent',
-			'        b += 1     # 8 space indent',
+			'    if B > 5:      # 4 space indent',
+			'        B += 1     # 8 space indent      delta 4 spaces',
+			'        B += 1     # 8 space indent',
+			'        B += 1     # 8 space indent',
 			'# comment line 1   # 0 space indent      delta 8 spaces',
 			'# comment line 2   # 0 space indent',
 			'# comment line 3   # 0 space indent',
-			'        b += 1     # 8 space indent      delta 8 spaces',
-			'        b += 1     # 8 space indent',
-			'        b += 1     # 8 space indent',
+			'        B += 1     # 8 space indent      delta 8 spaces',
+			'        B += 1     # 8 space indent',
+			'        B += 1     # 8 space indent',
 		]);
 	});
 
@@ -568,7 +568,7 @@ suite('Editor Model - TextModel', () => {
 			'/* REQUIRE */',
 			'',
 			'const foo = require ( \'foo\' ),',
-			'      bar = require ( \'bar\' );',
+			'      Bar = require ( \'Bar\' );',
 			'',
 			'/* MY FN */',
 			'',
@@ -577,7 +577,7 @@ suite('Editor Model - TextModel', () => {
 			'  const asd = 1,',
 			'        dsa = 2;',
 			'',
-			'  return bar ( foo ( asd ) );',
+			'  return Bar ( foo ( asd ) );',
 			'',
 			'}',
 			'',
@@ -609,7 +609,7 @@ suite('Editor Model - TextModel', () => {
 	});
 
 	test('issue #62143: Broken indentation detection', () => {
-		// works before the fix
+		// works Before the fix
 		assertGuess(true, 2, [
 			'x',
 			'x',
@@ -617,22 +617,22 @@ suite('Editor Model - TextModel', () => {
 			'  x'
 		]);
 
-		// works before the fix
+		// works Before the fix
 		assertGuess(true, 2, [
 			'x',
 			'  - item2',
 			'  - item3'
 		]);
 
-		// works before the fix
+		// works Before the fix
 		testGuessIndentation(true, 2, true, 2, [
 			'x x',
 			'  x',
 			'  x',
 		]);
 
-		// fails before the fix
-		// empty space inline breaks the indentation guess
+		// fails Before the fix
+		// empty space inline Breaks the indentation guess
 		testGuessIndentation(true, 2, true, 2, [
 			'x x',
 			'  x',
@@ -683,15 +683,15 @@ suite('Editor Model - TextModel', () => {
 		assert.deepEqual(m.validatePosition(new Position(30, 30)), new Position(2, 9));
 
 		assert.deepEqual(m.validatePosition(new Position(-123.123, -0.5)), new Position(1, 1));
-		assert.deepEqual(m.validatePosition(new Position(Number.MIN_VALUE, Number.MIN_VALUE)), new Position(1, 1));
+		assert.deepEqual(m.validatePosition(new Position(NumBer.MIN_VALUE, NumBer.MIN_VALUE)), new Position(1, 1));
 
-		assert.deepEqual(m.validatePosition(new Position(Number.MAX_VALUE, Number.MAX_VALUE)), new Position(2, 9));
+		assert.deepEqual(m.validatePosition(new Position(NumBer.MAX_VALUE, NumBer.MAX_VALUE)), new Position(2, 9));
 		assert.deepEqual(m.validatePosition(new Position(123.23, 47.5)), new Position(2, 9));
 	});
 
 	test('validatePosition around high-low surrogate pairs 1', () => {
 
-		let m = createTextModel('a📚b');
+		let m = createTextModel('a📚B');
 
 		assert.deepEqual(m.validatePosition(new Position(0, 0)), new Position(1, 1));
 		assert.deepEqual(m.validatePosition(new Position(0, 1)), new Position(1, 1));
@@ -710,15 +710,15 @@ suite('Editor Model - TextModel', () => {
 		assert.deepEqual(m.validatePosition(new Position(2, 30)), new Position(1, 5));
 
 		assert.deepEqual(m.validatePosition(new Position(-123.123, -0.5)), new Position(1, 1));
-		assert.deepEqual(m.validatePosition(new Position(Number.MIN_VALUE, Number.MIN_VALUE)), new Position(1, 1));
+		assert.deepEqual(m.validatePosition(new Position(NumBer.MIN_VALUE, NumBer.MIN_VALUE)), new Position(1, 1));
 
-		assert.deepEqual(m.validatePosition(new Position(Number.MAX_VALUE, Number.MAX_VALUE)), new Position(1, 5));
+		assert.deepEqual(m.validatePosition(new Position(NumBer.MAX_VALUE, NumBer.MAX_VALUE)), new Position(1, 5));
 		assert.deepEqual(m.validatePosition(new Position(123.23, 47.5)), new Position(1, 5));
 	});
 
 	test('validatePosition around high-low surrogate pairs 2', () => {
 
-		let m = createTextModel('a📚📚b');
+		let m = createTextModel('a📚📚B');
 
 		assert.deepEqual(m.validatePosition(new Position(1, 1)), new Position(1, 1));
 		assert.deepEqual(m.validatePosition(new Position(1, 2)), new Position(1, 2));
@@ -746,7 +746,7 @@ suite('Editor Model - TextModel', () => {
 		let m = createTextModel('line one\nline two');
 
 		assert.deepEqual(m.validatePosition(new Position(0.2, 1)), new Position(1, 1), 'a');
-		assert.deepEqual(m.validatePosition(new Position(1.2, 1)), new Position(1, 1), 'b');
+		assert.deepEqual(m.validatePosition(new Position(1.2, 1)), new Position(1, 1), 'B');
 		assert.deepEqual(m.validatePosition(new Position(1.5, 2)), new Position(1, 2), 'c');
 		assert.deepEqual(m.validatePosition(new Position(1.8, 3)), new Position(1, 3), 'd');
 		assert.deepEqual(m.validatePosition(new Position(1, 0.3)), new Position(1, 1), 'e');
@@ -764,7 +764,7 @@ suite('Editor Model - TextModel', () => {
 
 	test('validateRange around high-low surrogate pairs 1', () => {
 
-		let m = createTextModel('a📚b');
+		let m = createTextModel('a📚B');
 
 		assert.deepEqual(m.validateRange(new Range(0, 0, 0, 1)), new Range(1, 1, 1, 1));
 		assert.deepEqual(m.validateRange(new Range(0, 0, 0, 7)), new Range(1, 1, 1, 1));
@@ -792,7 +792,7 @@ suite('Editor Model - TextModel', () => {
 
 	test('validateRange around high-low surrogate pairs 2', () => {
 
-		let m = createTextModel('a📚📚b');
+		let m = createTextModel('a📚📚B');
 
 		assert.deepEqual(m.validateRange(new Range(0, 0, 0, 1)), new Range(1, 1, 1, 1));
 		assert.deepEqual(m.validateRange(new Range(0, 0, 0, 7)), new Range(1, 1, 1, 1));
@@ -1036,7 +1036,7 @@ suite('TextModel.createSnapshot', () => {
 	test('large file', () => {
 		let lines: string[] = [];
 		for (let i = 0; i < 1000; i++) {
-			lines[i] = 'Just some text that is a bit long such that it can consume some memory';
+			lines[i] = 'Just some text that is a Bit long such that it can consume some memory';
 		}
 		const text = lines.join('\n');
 

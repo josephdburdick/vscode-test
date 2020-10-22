@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import * as os from 'os';
 import * as fs from 'fs';
-import { resolveWorkbenchCommonProperties } from 'vs/workbench/services/telemetry/electron-browser/workbenchCommonProperties';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
+import { resolveWorkBenchCommonProperties } from 'vs/workBench/services/telemetry/electron-Browser/workBenchCommonProperties';
+import { getRandomTestPath } from 'vs/Base/test/node/testUtils';
 import { IStorageService, StorageScope, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { mkdirp, rimraf, RimRafMode } from 'vs/base/node/pfs';
-import { timeout } from 'vs/base/common/async';
+import { mkdirp, rimraf, RimRafMode } from 'vs/Base/node/pfs';
+import { timeout } from 'vs/Base/common/async';
 
 suite('Telemetry - common properties', function () {
 	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'telemetryservice');
@@ -31,7 +31,7 @@ suite('Telemetry - common properties', function () {
 	test('default', async function () {
 		await mkdirp(parentDir);
 		fs.writeFileSync(installSource, 'my.install.source');
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
+		const props = await resolveWorkBenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
 		assert.ok('commitHash' in props);
 		assert.ok('sessionID' in props);
 		assert.ok('timestamp' in props);
@@ -46,28 +46,28 @@ suite('Telemetry - common properties', function () {
 		assert.ok('version' in props);
 		assert.equal(props['common.source'], 'my.install.source');
 		assert.ok('common.firstSessionDate' in props, 'firstSessionDate');
-		assert.ok('common.lastSessionDate' in props, 'lastSessionDate'); // conditional, see below, 'lastSessionDate'ow
+		assert.ok('common.lastSessionDate' in props, 'lastSessionDate'); // conditional, see Below, 'lastSessionDate'ow
 		assert.ok('common.isNewSession' in props, 'isNewSession');
 		// machine id et al
 		assert.ok('common.instanceId' in props, 'instanceId');
 		assert.ok('common.machineId' in props, 'machineId');
 		fs.unlinkSync(installSource);
-		const props_1 = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
+		const props_1 = await resolveWorkBenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
 		assert.ok(!('common.source' in props_1));
 	});
 
-	test('lastSessionDate when aviablale', async function () {
+	test('lastSessionDate when aviaBlale', async function () {
 
 		testStorageService.store('telemetry.lastSessionDate', new Date().toUTCString(), StorageScope.GLOBAL);
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
-		assert.ok('common.lastSessionDate' in props); // conditional, see below
+		const props = await resolveWorkBenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
+		assert.ok('common.lastSessionDate' in props); // conditional, see Below
 		assert.ok('common.isNewSession' in props);
 		assert.equal(props['common.isNewSession'], 0);
 	});
 
 	test('values chance on ask', async function () {
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
+		const props = await resolveWorkBenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
 		let value1 = props['common.sequence'];
 		let value2 = props['common.sequence'];
 		assert.ok(value1 !== value2, 'seq');

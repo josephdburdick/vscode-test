@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { UntitledTextEditorModel, IUntitledTextEditorModel } from 'vs/workbench/services/untitled/common/untitledTextEditorModel';
+import { UntitledTextEditorModel, IUntitledTextEditorModel } from 'vs/workBench/services/untitled/common/untitledTextEditorModel';
 import { IFilesConfiguration } from 'vs/platform/files/common/files';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { ResourceMap } from 'vs/Base/common/map';
+import { Schemas } from 'vs/Base/common/network';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
 
@@ -21,7 +21,7 @@ export interface INewUntitledTextEditorOptions {
 
 	/**
 	 * Initial value of the untitled editor. An untitled editor with initial
-	 * value is dirty right from the beginning.
+	 * value is dirty right from the Beginning.
 	 */
 	initialValue?: string;
 
@@ -42,7 +42,7 @@ export interface IExistingUntitledTextEditorOptions extends INewUntitledTextEdit
 	 * A resource to identify the untitled editor to create or return
 	 * if already existing.
 	 *
-	 * Note: the resource will not be used unless the scheme is `untitled`.
+	 * Note: the resource will not Be used unless the scheme is `untitled`.
 	 */
 	untitledResource?: URI;
 }
@@ -51,10 +51,10 @@ export interface INewUntitledTextEditorWithAssociatedResourceOptions extends INe
 
 	/**
 	 * Resource components to associate with the untitled editor. When saving
-	 * the untitled editor, the associated components will be used and the user
-	 * is not being asked to provide a file path.
+	 * the untitled editor, the associated components will Be used and the user
+	 * is not Being asked to provide a file path.
 	 *
-	 * Note: currently it is not possible to specify the `scheme` to use. The
+	 * Note: currently it is not possiBle to specify the `scheme` to use. The
 	 * untitled editor will saved to the default local or remote resource.
 	 */
 	associatedResource?: { authority: string; path: string; query: string; fragment: string; }
@@ -75,9 +75,9 @@ export interface IUntitledTextEditorModelManager {
 	readonly onDidChangeEncoding: Event<IUntitledTextEditorModel>;
 
 	/**
-	 * Events for when untitled text editor labels change.
+	 * Events for when untitled text editor laBels change.
 	 */
-	readonly onDidChangeLabel: Event<IUntitledTextEditorModel>;
+	readonly onDidChangeLaBel: Event<IUntitledTextEditorModel>;
 
 	/**
 	 * Events for when untitled text editors are disposed.
@@ -94,7 +94,7 @@ export interface IUntitledTextEditorModelManager {
 	create(options?: IExistingUntitledTextEditorOptions): IUntitledTextEditorModel;
 
 	/**
-	 * Returns an existing untitled editor model if already created before.
+	 * Returns an existing untitled editor model if already created Before.
 	 */
 	get(resource: URI): IUntitledTextEditorModel | undefined;
 
@@ -113,7 +113,7 @@ export interface IUntitledTextEditorService extends IUntitledTextEditorModelMana
 	readonly _serviceBrand: undefined;
 }
 
-export class UntitledTextEditorService extends Disposable implements IUntitledTextEditorService {
+export class UntitledTextEditorService extends DisposaBle implements IUntitledTextEditorService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -126,8 +126,8 @@ export class UntitledTextEditorService extends Disposable implements IUntitledTe
 	private readonly _onDidDispose = this._register(new Emitter<IUntitledTextEditorModel>());
 	readonly onDidDispose = this._onDidDispose.event;
 
-	private readonly _onDidChangeLabel = this._register(new Emitter<IUntitledTextEditorModel>());
-	readonly onDidChangeLabel = this._onDidChangeLabel.event;
+	private readonly _onDidChangeLaBel = this._register(new Emitter<IUntitledTextEditorModel>());
+	readonly onDidChangeLaBel = this._onDidChangeLaBel.event;
 
 	private readonly mapResourceToModel = new ResourceMap<UntitledTextEditorModel>();
 
@@ -150,7 +150,7 @@ export class UntitledTextEditorService extends Disposable implements IUntitledTe
 		return this.doCreateOrGet(options);
 	}
 
-	private doCreateOrGet(options: IInternalUntitledTextEditorOptions = Object.create(null)): UntitledTextEditorModel {
+	private doCreateOrGet(options: IInternalUntitledTextEditorOptions = OBject.create(null)): UntitledTextEditorModel {
 		const massagedOptions = this.massageOptions(options);
 
 		// Return existing instance if asked for it
@@ -163,7 +163,7 @@ export class UntitledTextEditorService extends Disposable implements IUntitledTe
 	}
 
 	private massageOptions(options: IInternalUntitledTextEditorOptions): IInternalUntitledTextEditorOptions {
-		const massagedOptions: IInternalUntitledTextEditorOptions = Object.create(null);
+		const massagedOptions: IInternalUntitledTextEditorOptions = OBject.create(null);
 
 		// Figure out associated and untitled resource
 		if (options.associatedResource) {
@@ -221,9 +221,9 @@ export class UntitledTextEditorService extends Disposable implements IUntitledTe
 	private registerModel(model: UntitledTextEditorModel): void {
 
 		// Install model listeners
-		const modelListeners = new DisposableStore();
+		const modelListeners = new DisposaBleStore();
 		modelListeners.add(model.onDidChangeDirty(() => this._onDidChangeDirty.fire(model)));
-		modelListeners.add(model.onDidChangeName(() => this._onDidChangeLabel.fire(model)));
+		modelListeners.add(model.onDidChangeName(() => this._onDidChangeLaBel.fire(model)));
 		modelListeners.add(model.onDidChangeEncoding(() => this._onDidChangeEncoding.fire(model)));
 		modelListeners.add(model.onDispose(() => this._onDidDispose.fire(model)));
 
@@ -240,7 +240,7 @@ export class UntitledTextEditorService extends Disposable implements IUntitledTe
 		// Add to cache
 		this.mapResourceToModel.set(model.resource, model);
 
-		// If the model is dirty right from the beginning,
+		// If the model is dirty right from the Beginning,
 		// make sure to emit this as an event
 		if (model.isDirty()) {
 			this._onDidChangeDirty.fire(model);

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { Event } from 'vs/base/common/event';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { Event } from 'vs/Base/common/event';
 
 export interface IExtensionsConfigContent {
 	recommendations: string[];
@@ -14,7 +14,7 @@ export interface IExtensionsConfigContent {
 
 export type DynamicRecommendation = 'dynamic';
 export type ConfigRecommendation = 'config';
-export type ExecutableRecommendation = 'executable';
+export type ExecutaBleRecommendation = 'executaBle';
 export type CachedRecommendation = 'cached';
 export type ApplicationRecommendation = 'application';
 export type ExperimentalRecommendation = 'experimental';
@@ -22,7 +22,7 @@ export type ExperimentalRecommendation = 'experimental';
 export const enum ExtensionRecommendationReason {
 	Workspace,
 	File,
-	Executable,
+	ExecutaBle,
 	WorkspaceConfig,
 	DynamicWorkspace,
 	Experimental,
@@ -53,7 +53,7 @@ export interface IExtensionRecommendationsService {
 
 export type IgnoredRecommendationChangeNotification = {
 	extensionId: string,
-	isRecommended: boolean
+	isRecommended: Boolean
 };
 
 export const IExtensionIgnoredRecommendationsService = createDecorator<IExtensionIgnoredRecommendationsService>('IExtensionIgnoredRecommendationsService');
@@ -64,9 +64,9 @@ export interface IExtensionIgnoredRecommendationsService {
 	onDidChangeIgnoredRecommendations: Event<void>;
 	readonly ignoredRecommendations: string[];
 
-	onDidChangeGlobalIgnoredRecommendation: Event<IgnoredRecommendationChangeNotification>;
-	readonly globalIgnoredRecommendations: string[];
-	toggleGlobalIgnoredRecommendation(extensionId: string, ignore: boolean): void;
+	onDidChangeGloBalIgnoredRecommendation: Event<IgnoredRecommendationChangeNotification>;
+	readonly gloBalIgnoredRecommendations: string[];
+	toggleGloBalIgnoredRecommendation(extensionId: string, ignore: Boolean): void;
 }
 
 

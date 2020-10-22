@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { Orientation, Sizing, SplitView } from 'vs/base/browser/ui/splitview/splitview';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Delayer, ThrottledDelayer } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { getErrorMessage, isPromiseCanceledError, onUnexpectedError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { ArrayNavigator } from 'vs/base/common/navigator';
-import { assertIsDefined, withNullAsUndefined, withUndefinedAsNull } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorExtensionsRegistry, IEditorContributionDescription, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
+import * as DOM from 'vs/Base/Browser/dom';
+import { Orientation, Sizing, SplitView } from 'vs/Base/Browser/ui/splitview/splitview';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { Delayer, ThrottledDelayer } from 'vs/Base/common/async';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { getErrorMessage, isPromiseCanceledError, onUnexpectedError } from 'vs/Base/common/errors';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ArrayNavigator } from 'vs/Base/common/navigator';
+import { assertIsDefined, withNullAsUndefined, withUndefinedAsNull } from 'vs/Base/common/types';
+import { URI } from 'vs/Base/common/uri';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { EditorExtensionsRegistry, IEditorContriButionDescription, registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { CodeEditorWidget } from 'vs/editor/Browser/widget/codeEditorWidget';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import * as editorCommon from 'vs/editor/common/editorCommon';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { FindController } from 'vs/editor/contrib/find/findController';
-import { FoldingController } from 'vs/editor/contrib/folding/folding';
-import { MessageController } from 'vs/editor/contrib/message/messageController';
-import { SelectionHighlighter } from 'vs/editor/contrib/multicursor/multicursor';
+import { FindController } from 'vs/editor/contriB/find/findController';
+import { FoldingController } from 'vs/editor/contriB/folding/folding';
+import { MessageController } from 'vs/editor/contriB/message/messageController';
+import { SelectionHighlighter } from 'vs/editor/contriB/multicursor/multicursor';
 import * as nls from 'vs/nls';
 import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
@@ -34,31 +34,31 @@ import { IEditorProgressService } from 'vs/platform/progress/common/progress';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { scrollbarShadow } from 'vs/platform/theme/common/colorRegistry';
-import { attachStylerCallback } from 'vs/platform/theme/common/styler';
+import { scrollBarShadow } from 'vs/platform/theme/common/colorRegistry';
+import { attachStylerCallBack } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { Extensions as EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { BaseTextEditor } from 'vs/workbench/browser/parts/editor/textEditor';
-import { EditorInput, EditorOptions, IEditorControl, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
-import { DefaultSettingsRenderer, FolderSettingsRenderer, IPreferencesRenderer, UserSettingsRenderer, WorkspaceSettingsRenderer } from 'vs/workbench/contrib/preferences/browser/preferencesRenderers';
-import { SearchWidget, SettingsTarget, SettingsTargetsWidget } from 'vs/workbench/contrib/preferences/browser/preferencesWidgets';
-import { CONTEXT_SETTINGS_EDITOR, CONTEXT_SETTINGS_JSON_EDITOR, CONTEXT_SETTINGS_SEARCH_FOCUS, IPreferencesSearchService, ISearchProvider } from 'vs/workbench/contrib/preferences/common/preferences';
-import { IEditorGroup, IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IFilterResult, IPreferencesService, ISetting, ISettingsEditorModel, ISettingsGroup, SettingsEditorOptions } from 'vs/workbench/services/preferences/common/preferences';
-import { DefaultPreferencesEditorInput, PreferencesEditorInput } from 'vs/workbench/services/preferences/common/preferencesEditorInput';
-import { DefaultSettingsEditorModel, SettingsEditorModel } from 'vs/workbench/services/preferences/common/preferencesModels';
+import { Extensions as EditorExtensions, IEditorRegistry } from 'vs/workBench/Browser/editor';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
+import { BaseTextEditor } from 'vs/workBench/Browser/parts/editor/textEditor';
+import { EditorInput, EditorOptions, IEditorControl, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { ResourceEditorModel } from 'vs/workBench/common/editor/resourceEditorModel';
+import { DefaultSettingsRenderer, FolderSettingsRenderer, IPreferencesRenderer, UserSettingsRenderer, WorkspaceSettingsRenderer } from 'vs/workBench/contriB/preferences/Browser/preferencesRenderers';
+import { SearchWidget, SettingsTarget, SettingsTargetsWidget } from 'vs/workBench/contriB/preferences/Browser/preferencesWidgets';
+import { CONTEXT_SETTINGS_EDITOR, CONTEXT_SETTINGS_JSON_EDITOR, CONTEXT_SETTINGS_SEARCH_FOCUS, IPreferencesSearchService, ISearchProvider } from 'vs/workBench/contriB/preferences/common/preferences';
+import { IEditorGroup, IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IFilterResult, IPreferencesService, ISetting, ISettingsEditorModel, ISettingsGroup, SettingsEditorOptions } from 'vs/workBench/services/preferences/common/preferences';
+import { DefaultPreferencesEditorInput, PreferencesEditorInput } from 'vs/workBench/services/preferences/common/preferencesEditorInput';
+import { DefaultSettingsEditorModel, SettingsEditorModel } from 'vs/workBench/services/preferences/common/preferencesModels';
 
 export class PreferencesEditor extends EditorPane {
 
-	static readonly ID: string = 'workbench.editor.preferencesEditor';
+	static readonly ID: string = 'workBench.editor.preferencesEditor';
 
-	private defaultSettingsEditorContextKey: IContextKey<boolean>;
-	private defaultSettingsJSONEditorContextKey: IContextKey<boolean>;
-	private searchFocusContextKey: IContextKey<boolean>;
+	private defaultSettingsEditorContextKey: IContextKey<Boolean>;
+	private defaultSettingsJSONEditorContextKey: IContextKey<Boolean>;
+	private searchFocusContextKey: IContextKey<Boolean>;
 	private headerContainer!: HTMLElement;
 	private searchWidget!: SearchWidget;
 	private sideBySidePreferencesWidget!: SideBySidePreferencesWidget;
@@ -71,17 +71,17 @@ export class PreferencesEditor extends EditorPane {
 
 	private lastFocusedWidget: SearchWidget | SideBySidePreferencesWidget | undefined = undefined;
 
-	get minimumWidth(): number { return this.sideBySidePreferencesWidget ? this.sideBySidePreferencesWidget.minimumWidth : 0; }
-	get maximumWidth(): number { return this.sideBySidePreferencesWidget ? this.sideBySidePreferencesWidget.maximumWidth : Number.POSITIVE_INFINITY; }
+	get minimumWidth(): numBer { return this.sideBySidePreferencesWidget ? this.sideBySidePreferencesWidget.minimumWidth : 0; }
+	get maximumWidth(): numBer { return this.sideBySidePreferencesWidget ? this.sideBySidePreferencesWidget.maximumWidth : NumBer.POSITIVE_INFINITY; }
 
-	// these setters need to exist because this extends from EditorPane
-	set minimumWidth(value: number) { /*noop*/ }
-	set maximumWidth(value: number) { /*noop*/ }
+	// these setters need to exist Because this extends from EditorPane
+	set minimumWidth(value: numBer) { /*noop*/ }
+	set maximumWidth(value: numBer) { /*noop*/ }
 
 	get minimumHeight() { return 260; }
 
-	private _onDidCreateWidget = this._register(new Emitter<{ width: number; height: number; } | undefined>());
-	readonly onDidSizeConstraintsChange: Event<{ width: number; height: number; } | undefined> = this._onDidCreateWidget.event;
+	private _onDidCreateWidget = this._register(new Emitter<{ width: numBer; height: numBer; } | undefined>());
+	readonly onDidSizeConstraintsChange: Event<{ width: numBer; height: numBer; } | undefined> = this._onDidCreateWidget.event;
 
 	constructor(
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
@@ -94,9 +94,9 @@ export class PreferencesEditor extends EditorPane {
 		@IStorageService storageService: IStorageService
 	) {
 		super(PreferencesEditor.ID, telemetryService, themeService, storageService);
-		this.defaultSettingsEditorContextKey = CONTEXT_SETTINGS_EDITOR.bindTo(this.contextKeyService);
-		this.defaultSettingsJSONEditorContextKey = CONTEXT_SETTINGS_JSON_EDITOR.bindTo(this.contextKeyService);
-		this.searchFocusContextKey = CONTEXT_SETTINGS_SEARCH_FOCUS.bindTo(this.contextKeyService);
+		this.defaultSettingsEditorContextKey = CONTEXT_SETTINGS_EDITOR.BindTo(this.contextKeyService);
+		this.defaultSettingsJSONEditorContextKey = CONTEXT_SETTINGS_JSON_EDITOR.BindTo(this.contextKeyService);
+		this.searchFocusContextKey = CONTEXT_SETTINGS_SEARCH_FOCUS.BindTo(this.contextKeyService);
 		this.delayedFilterLogging = new Delayer<void>(1000);
 		this.localSearchDelayer = new Delayer(100);
 		this.remoteSearchThrottle = new ThrottledDelayer(200);
@@ -107,7 +107,7 @@ export class PreferencesEditor extends EditorPane {
 
 		this.headerContainer = DOM.append(parent, DOM.$('.preferences-header'));
 		this.searchWidget = this._register(this.instantiationService.createInstance(SearchWidget, this.headerContainer, {
-			ariaLabel: nls.localize('SearchSettingsWidget.AriaLabel', "Search settings"),
+			ariaLaBel: nls.localize('SearchSettingsWidget.AriaLaBel', "Search settings"),
 			placeholder: nls.localize('SearchSettingsWidget.Placeholder', "Search Settings"),
 			focusKey: this.searchFocusContextKey,
 			showResultCount: true,
@@ -198,19 +198,19 @@ export class PreferencesEditor extends EditorPane {
 		super.clearInput();
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
-		this.sideBySidePreferencesWidget.setEditorVisible(visible, group);
-		super.setEditorVisible(visible, group);
+	protected setEditorVisiBle(visiBle: Boolean, group: IEditorGroup | undefined): void {
+		this.sideBySidePreferencesWidget.setEditorVisiBle(visiBle, group);
+		super.setEditorVisiBle(visiBle, group);
 	}
 
 	private updateInput(newInput: PreferencesEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		return this.sideBySidePreferencesWidget.setInput(<DefaultPreferencesEditorInput>newInput.secondary, <EditorInput>newInput.primary, options, context, token).then(({ defaultPreferencesRenderer, editablePreferencesRenderer }) => {
+		return this.sideBySidePreferencesWidget.setInput(<DefaultPreferencesEditorInput>newInput.secondary, <EditorInput>newInput.primary, options, context, token).then(({ defaultPreferencesRenderer, editaBlePreferencesRenderer }) => {
 			if (token.isCancellationRequested) {
 				return;
 			}
 
 			this.preferencesRenderers.defaultPreferencesRenderer = defaultPreferencesRenderer!;
-			this.preferencesRenderers.editablePreferencesRenderer = editablePreferencesRenderer!;
+			this.preferencesRenderers.editaBlePreferencesRenderer = editaBlePreferencesRenderer!;
 			this.onInputChanged();
 		});
 	}
@@ -279,8 +279,8 @@ export class PreferencesEditor extends EditorPane {
 		}
 	}
 
-	private _countById(settingsGroups: ISettingsGroup[]): IStringDictionary<number> {
-		const result: IStringDictionary<number> = {};
+	private _countById(settingsGroups: ISettingsGroup[]): IStringDictionary<numBer> {
+		const result: IStringDictionary<numBer> = {};
 
 		for (const group of settingsGroups) {
 			let i = 0;
@@ -301,8 +301,8 @@ export class PreferencesEditor extends EditorPane {
 
 			let durations: any;
 			if (metadata) {
-				durations = Object.create(null);
-				Object.keys(metadata).forEach(key => durations[key] = metadata[key].duration);
+				durations = OBject.create(null);
+				OBject.keys(metadata).forEach(key => durations[key] = metadata[key].duration);
 			}
 
 			const data = {
@@ -322,7 +322,7 @@ export class PreferencesEditor extends EditorPane {
 					"requestCount" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('defaultSettings.filter', data);
+			this.telemetryService.puBlicLog('defaultSettings.filter', data);
 			this._lastReportedFilter = filter;
 		}
 	}
@@ -345,16 +345,16 @@ class SettingsNavigator extends ArrayNavigator<ISetting> {
 
 interface IPreferencesCount {
 	target?: SettingsTarget;
-	count: number;
+	count: numBer;
 }
 
-class PreferencesRenderersController extends Disposable {
+class PreferencesRenderersController extends DisposaBle {
 
 	private _defaultPreferencesRenderer!: IPreferencesRenderer<ISetting>;
-	private _defaultPreferencesRendererDisposables: IDisposable[] = [];
+	private _defaultPreferencesRendererDisposaBles: IDisposaBle[] = [];
 
-	private _editablePreferencesRenderer!: IPreferencesRenderer<ISetting>;
-	private _editablePreferencesRendererDisposables: IDisposable[] = [];
+	private _editaBlePreferencesRenderer!: IPreferencesRenderer<ISetting>;
+	private _editaBlePreferencesRendererDisposaBles: IDisposaBle[] = [];
 
 	private _settingsNavigator: SettingsNavigator | null = null;
 	private _remoteFilterCancelToken: CancellationTokenSource | null = null;
@@ -386,41 +386,41 @@ class PreferencesRenderersController extends Disposable {
 		return this._defaultPreferencesRenderer;
 	}
 
-	get editablePreferencesRenderer(): IPreferencesRenderer<ISetting> {
-		return this._editablePreferencesRenderer;
+	get editaBlePreferencesRenderer(): IPreferencesRenderer<ISetting> {
+		return this._editaBlePreferencesRenderer;
 	}
 
 	set defaultPreferencesRenderer(defaultPreferencesRenderer: IPreferencesRenderer<ISetting>) {
 		if (this._defaultPreferencesRenderer !== defaultPreferencesRenderer) {
 			this._defaultPreferencesRenderer = defaultPreferencesRenderer;
 
-			this._defaultPreferencesRendererDisposables = dispose(this._defaultPreferencesRendererDisposables);
+			this._defaultPreferencesRendererDisposaBles = dispose(this._defaultPreferencesRendererDisposaBles);
 
 			if (this._defaultPreferencesRenderer) {
 				this._defaultPreferencesRenderer.onUpdatePreference(({ key, value, source }) => {
-					this._editablePreferencesRenderer.updatePreference(key, value, source);
+					this._editaBlePreferencesRenderer.updatePreference(key, value, source);
 					this._updatePreference(key, value, source);
-				}, this, this._defaultPreferencesRendererDisposables);
-				this._defaultPreferencesRenderer.onFocusPreference(preference => this._focusPreference(preference, this._editablePreferencesRenderer), this, this._defaultPreferencesRendererDisposables);
-				this._defaultPreferencesRenderer.onClearFocusPreference(preference => this._clearFocus(preference, this._editablePreferencesRenderer), this, this._defaultPreferencesRendererDisposables);
+				}, this, this._defaultPreferencesRendererDisposaBles);
+				this._defaultPreferencesRenderer.onFocusPreference(preference => this._focusPreference(preference, this._editaBlePreferencesRenderer), this, this._defaultPreferencesRendererDisposaBles);
+				this._defaultPreferencesRenderer.onClearFocusPreference(preference => this._clearFocus(preference, this._editaBlePreferencesRenderer), this, this._defaultPreferencesRendererDisposaBles);
 			}
 		}
 	}
 
-	set editablePreferencesRenderer(editableSettingsRenderer: IPreferencesRenderer<ISetting>) {
-		if (this._editablePreferencesRenderer !== editableSettingsRenderer) {
-			this._editablePreferencesRenderer = editableSettingsRenderer;
-			this._editablePreferencesRendererDisposables = dispose(this._editablePreferencesRendererDisposables);
-			if (this._editablePreferencesRenderer) {
-				(<ISettingsEditorModel>this._editablePreferencesRenderer.preferencesModel)
-					.onDidChangeGroups(this._onEditableContentDidChange, this, this._editablePreferencesRendererDisposables);
+	set editaBlePreferencesRenderer(editaBleSettingsRenderer: IPreferencesRenderer<ISetting>) {
+		if (this._editaBlePreferencesRenderer !== editaBleSettingsRenderer) {
+			this._editaBlePreferencesRenderer = editaBleSettingsRenderer;
+			this._editaBlePreferencesRendererDisposaBles = dispose(this._editaBlePreferencesRendererDisposaBles);
+			if (this._editaBlePreferencesRenderer) {
+				(<ISettingsEditorModel>this._editaBlePreferencesRenderer.preferencesModel)
+					.onDidChangeGroups(this._onEditaBleContentDidChange, this, this._editaBlePreferencesRendererDisposaBles);
 
-				this._editablePreferencesRenderer.onUpdatePreference(({ key, value, source }) => this._updatePreference(key, value, source, true), this, this._defaultPreferencesRendererDisposables);
+				this._editaBlePreferencesRenderer.onUpdatePreference(({ key, value, source }) => this._updatePreference(key, value, source, true), this, this._defaultPreferencesRendererDisposaBles);
 			}
 		}
 	}
 
-	private async _onEditableContentDidChange(): Promise<void> {
+	private async _onEditaBleContentDidChange(): Promise<void> {
 		const foundExactMatch = await this.localFilterPreferences(this._lastQuery, true);
 		if (!foundExactMatch) {
 			await this.remoteSearchPreferences(this._lastQuery, true);
@@ -432,7 +432,7 @@ class PreferencesRenderersController extends Disposable {
 		this._prefsModelsForSearch = new Map<string, ISettingsEditorModel>();
 	}
 
-	remoteSearchPreferences(query: string, updateCurrentResults?: boolean): Promise<void> {
+	remoteSearchPreferences(query: string, updateCurrentResults?: Boolean): Promise<void> {
 		if (this.lastFilterResult && this.lastFilterResult.exactMatch) {
 			// Skip and clear remote search
 			query = '';
@@ -461,7 +461,7 @@ class PreferencesRenderersController extends Disposable {
 		});
 	}
 
-	localFilterPreferences(query: string, updateCurrentResults?: boolean): Promise<boolean> {
+	localFilterPreferences(query: string, updateCurrentResults?: Boolean): Promise<Boolean> {
 		if (this._settingsNavigator) {
 			this._settingsNavigator.reset();
 		}
@@ -470,47 +470,47 @@ class PreferencesRenderersController extends Disposable {
 		return this.filterOrSearchPreferences(query, this._currentLocalSearchProvider, 'filterResult', nls.localize('filterResult', "Filtered Results"), 0, undefined, updateCurrentResults);
 	}
 
-	private filterOrSearchPreferences(query: string, searchProvider: ISearchProvider, groupId: string, groupLabel: string, groupOrder: number, token?: CancellationToken, editableContentOnly?: boolean): Promise<boolean> {
+	private filterOrSearchPreferences(query: string, searchProvider: ISearchProvider, groupId: string, groupLaBel: string, groupOrder: numBer, token?: CancellationToken, editaBleContentOnly?: Boolean): Promise<Boolean> {
 		this._lastQuery = query;
 
-		const filterPs: Promise<IFilterResult | undefined>[] = [this._filterOrSearchPreferences(query, this.editablePreferencesRenderer, searchProvider, groupId, groupLabel, groupOrder, token)];
-		if (!editableContentOnly) {
+		const filterPs: Promise<IFilterResult | undefined>[] = [this._filterOrSearchPreferences(query, this.editaBlePreferencesRenderer, searchProvider, groupId, groupLaBel, groupOrder, token)];
+		if (!editaBleContentOnly) {
 			filterPs.push(
-				this._filterOrSearchPreferences(query, this.defaultPreferencesRenderer, searchProvider, groupId, groupLabel, groupOrder, token));
+				this._filterOrSearchPreferences(query, this.defaultPreferencesRenderer, searchProvider, groupId, groupLaBel, groupOrder, token));
 			filterPs.push(
-				this.searchAllSettingsTargets(query, searchProvider, groupId, groupLabel, groupOrder, token).then(() => undefined));
+				this.searchAllSettingsTargets(query, searchProvider, groupId, groupLaBel, groupOrder, token).then(() => undefined));
 		}
 
 		return Promise.all(filterPs).then(results => {
-			let [editableFilterResult, defaultFilterResult] = results;
+			let [editaBleFilterResult, defaultFilterResult] = results;
 
-			if (!defaultFilterResult && editableContentOnly) {
+			if (!defaultFilterResult && editaBleContentOnly) {
 				defaultFilterResult = this.lastFilterResult!;
 			}
 
-			this.consolidateAndUpdate(defaultFilterResult, editableFilterResult);
+			this.consolidateAndUpdate(defaultFilterResult, editaBleFilterResult);
 			this._lastFilterResult = withUndefinedAsNull(defaultFilterResult);
 
 			return !!(defaultFilterResult && defaultFilterResult.exactMatch);
 		});
 	}
 
-	private searchAllSettingsTargets(query: string, searchProvider: ISearchProvider, groupId: string, groupLabel: string, groupOrder: number, token?: CancellationToken): Promise<void> {
+	private searchAllSettingsTargets(query: string, searchProvider: ISearchProvider, groupId: string, groupLaBel: string, groupOrder: numBer, token?: CancellationToken): Promise<void> {
 		const searchPs = [
-			this.searchSettingsTarget(query, searchProvider, ConfigurationTarget.WORKSPACE, groupId, groupLabel, groupOrder, token),
-			this.searchSettingsTarget(query, searchProvider, ConfigurationTarget.USER_LOCAL, groupId, groupLabel, groupOrder, token)
+			this.searchSettingsTarget(query, searchProvider, ConfigurationTarget.WORKSPACE, groupId, groupLaBel, groupOrder, token),
+			this.searchSettingsTarget(query, searchProvider, ConfigurationTarget.USER_LOCAL, groupId, groupLaBel, groupOrder, token)
 		];
 
 		for (const folder of this.workspaceContextService.getWorkspace().folders) {
 			const folderSettingsResource = this.preferencesService.getFolderSettingsResource(folder.uri);
-			searchPs.push(this.searchSettingsTarget(query, searchProvider, withNullAsUndefined(folderSettingsResource), groupId, groupLabel, groupOrder, token));
+			searchPs.push(this.searchSettingsTarget(query, searchProvider, withNullAsUndefined(folderSettingsResource), groupId, groupLaBel, groupOrder, token));
 		}
 
 
 		return Promise.all(searchPs).then(() => { });
 	}
 
-	private searchSettingsTarget(query: string, provider: ISearchProvider, target: SettingsTarget | undefined, groupId: string, groupLabel: string, groupOrder: number, token?: CancellationToken): Promise<void> {
+	private searchSettingsTarget(query: string, provider: ISearchProvider, target: SettingsTarget | undefined, groupId: string, groupLaBel: string, groupOrder: numBer, token?: CancellationToken): Promise<void> {
 		if (!query) {
 			// Don't open the other settings targets when query is empty
 			this._onDidFilterResultsCountChange.fire({ target, count: 0 });
@@ -518,7 +518,7 @@ class PreferencesRenderersController extends Disposable {
 		}
 
 		return this.getPreferencesEditorModel(target).then<IFilterResult | undefined>(model => {
-			return model && this._filterOrSearchPreferencesModel('', <ISettingsEditorModel>model, provider, groupId, groupLabel, groupOrder, token);
+			return model && this._filterOrSearchPreferencesModel('', <ISettingsEditorModel>model, provider, groupId, groupLaBel, groupOrder, token);
 		}).then(result => {
 			const count = result ? this._flatten(result.filteredGroups).length : 0;
 			this._onDidFilterResultsCountChange.fire({ target, count });
@@ -558,14 +558,14 @@ class PreferencesRenderersController extends Disposable {
 		return this._prefsModelsForSearch.get(targetKey);
 	}
 
-	focusNextPreference(forward: boolean = true) {
+	focusNextPreference(forward: Boolean = true) {
 		if (!this._settingsNavigator) {
 			return;
 		}
 
 		const setting = forward ? this._settingsNavigator.next() : this._settingsNavigator.previous();
 		this._focusPreference(setting, this._defaultPreferencesRenderer);
-		this._focusPreference(setting, this._editablePreferencesRenderer);
+		this._focusPreference(setting, this._editaBlePreferencesRenderer);
 	}
 
 	editFocusedPreference(): void {
@@ -574,25 +574,25 @@ class PreferencesRenderersController extends Disposable {
 		}
 
 		const setting = this._settingsNavigator.current();
-		const shownInEditableRenderer = this._editablePreferencesRenderer.editPreference(setting!);
-		if (!shownInEditableRenderer) {
+		const shownInEditaBleRenderer = this._editaBlePreferencesRenderer.editPreference(setting!);
+		if (!shownInEditaBleRenderer) {
 			this.defaultPreferencesRenderer.editPreference(setting!);
 		}
 	}
 
-	private _filterOrSearchPreferences(filter: string, preferencesRenderer: IPreferencesRenderer<ISetting>, provider: ISearchProvider, groupId: string, groupLabel: string, groupOrder: number, token?: CancellationToken): Promise<IFilterResult | undefined> {
+	private _filterOrSearchPreferences(filter: string, preferencesRenderer: IPreferencesRenderer<ISetting>, provider: ISearchProvider, groupId: string, groupLaBel: string, groupOrder: numBer, token?: CancellationToken): Promise<IFilterResult | undefined> {
 		if (!preferencesRenderer) {
 			return Promise.resolve(undefined);
 		}
 
 		const model = <ISettingsEditorModel>preferencesRenderer.preferencesModel;
-		return this._filterOrSearchPreferencesModel(filter, model, provider, groupId, groupLabel, groupOrder, token).then(filterResult => {
+		return this._filterOrSearchPreferencesModel(filter, model, provider, groupId, groupLaBel, groupOrder, token).then(filterResult => {
 			preferencesRenderer.filterPreferences(filterResult);
 			return filterResult;
 		});
 	}
 
-	private _filterOrSearchPreferencesModel(filter: string, model: ISettingsEditorModel, provider: ISearchProvider, groupId: string, groupLabel: string, groupOrder: number, token?: CancellationToken): Promise<IFilterResult | undefined> {
+	private _filterOrSearchPreferencesModel(filter: string, model: ISettingsEditorModel, provider: ISearchProvider, groupId: string, groupLaBel: string, groupOrder: numBer, token?: CancellationToken): Promise<IFilterResult | undefined> {
 		const searchP = provider ? provider.searchModel(model, token) : Promise.resolve(null);
 		return searchP
 			.then(null, err => {
@@ -607,7 +607,7 @@ class PreferencesRenderersController extends Disposable {
 					const message = getErrorMessage(err).trim();
 					if (message && message !== 'Error') {
 						// "Error" = any generic network error
-						this.telemetryService.publicLogError('defaultSettings.searchError', { message });
+						this.telemetryService.puBlicLogError('defaultSettings.searchError', { message });
 						this.logService.info('Setting search error: ' + message);
 					}
 					return undefined;
@@ -621,7 +621,7 @@ class PreferencesRenderersController extends Disposable {
 				const filterResult = searchResult ?
 					model.updateResultGroup(groupId, {
 						id: groupId,
-						label: groupLabel,
+						laBel: groupLaBel,
 						result: searchResult,
 						order: groupOrder
 					}) :
@@ -636,10 +636,10 @@ class PreferencesRenderersController extends Disposable {
 			});
 	}
 
-	private consolidateAndUpdate(defaultFilterResult: IFilterResult | undefined, editableFilterResult: IFilterResult | undefined): void {
+	private consolidateAndUpdate(defaultFilterResult: IFilterResult | undefined, editaBleFilterResult: IFilterResult | undefined): void {
 		const defaultPreferencesFilteredGroups = defaultFilterResult ? defaultFilterResult.filteredGroups : this._getAllPreferences(this._defaultPreferencesRenderer);
-		const editablePreferencesFilteredGroups = editableFilterResult ? editableFilterResult.filteredGroups : this._getAllPreferences(this._editablePreferencesRenderer);
-		const consolidatedSettings = this._consolidateSettings(editablePreferencesFilteredGroups, defaultPreferencesFilteredGroups);
+		const editaBlePreferencesFilteredGroups = editaBleFilterResult ? editaBleFilterResult.filteredGroups : this._getAllPreferences(this._editaBlePreferencesRenderer);
+		const consolidatedSettings = this._consolidateSettings(editaBlePreferencesFilteredGroups, defaultPreferencesFilteredGroups);
 
 		// Maintain the current navigation position when updating SettingsNavigator
 		const current = this._settingsNavigator && this._settingsNavigator.current();
@@ -654,7 +654,7 @@ class PreferencesRenderersController extends Disposable {
 			this._settingsNavigator.next();
 			const newCurrent = this._settingsNavigator.current();
 			this._focusPreference(newCurrent, this._defaultPreferencesRenderer);
-			this._focusPreference(newCurrent, this._editablePreferencesRenderer);
+			this._focusPreference(newCurrent, this._editaBlePreferencesRenderer);
 		}
 
 		const totalCount = consolidatedSettings.length;
@@ -677,18 +677,18 @@ class PreferencesRenderersController extends Disposable {
 		}
 	}
 
-	private _updatePreference(key: string, value: any, source: ISetting, fromEditableSettings?: boolean): void {
+	private _updatePreference(key: string, value: any, source: ISetting, fromEditaBleSettings?: Boolean): void {
 		const data: { [key: string]: any; } = {
 			userConfigurationKeys: [key]
 		};
 
 		if (this.lastFilterResult) {
 			data['query'] = this.lastFilterResult.query;
-			data['editableSide'] = !!fromEditableSettings;
+			data['editaBleSide'] = !!fromEditaBleSettings;
 
 			const nlpMetadata = this.lastFilterResult.metadata && this.lastFilterResult.metadata['nlpResult'];
 			if (nlpMetadata) {
-				const sortedKeys = Object.keys(nlpMetadata.scoredResults).sort((a, b) => nlpMetadata.scoredResults[b].score - nlpMetadata.scoredResults[a].score);
+				const sortedKeys = OBject.keys(nlpMetadata.scoredResults).sort((a, B) => nlpMetadata.scoredResults[B].score - nlpMetadata.scoredResults[a].score);
 				const suffix = '##' + key;
 				data['nlpIndex'] = sortedKeys.findIndex(key => key.endsWith(suffix));
 			}
@@ -707,13 +707,13 @@ class PreferencesRenderersController extends Disposable {
 				"nlpIndex" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"groupId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 				"displayIdx" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-				"editableSide" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+				"editaBleSide" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 			}
 		*/
-		this.telemetryService.publicLog('defaultSettingsActions.copySetting', data);
+		this.telemetryService.puBlicLog('defaultSettingsActions.copySetting', data);
 	}
 
-	private _findSetting(filterResult: IFilterResult, key: string): { groupIdx: number, settingIdx: number, overallSettingIdx: number; } | undefined {
+	private _findSetting(filterResult: IFilterResult, key: string): { groupIdx: numBer, settingIdx: numBer, overallSettingIdx: numBer; } | undefined {
 		let overallSettingIdx = 0;
 
 		for (let groupIdx = 0; groupIdx < filterResult.filteredGroups.length; groupIdx++) {
@@ -731,10 +731,10 @@ class PreferencesRenderersController extends Disposable {
 		return undefined;
 	}
 
-	private _consolidateSettings(editableSettingsGroups: ISettingsGroup[], defaultSettingsGroups: ISettingsGroup[]): ISetting[] {
+	private _consolidateSettings(editaBleSettingsGroups: ISettingsGroup[], defaultSettingsGroups: ISettingsGroup[]): ISetting[] {
 		const defaultSettings = this._flatten(defaultSettingsGroups);
-		const editableSettings = this._flatten(editableSettingsGroups).filter(secondarySetting => defaultSettings.every(primarySetting => primarySetting.key !== secondarySetting.key));
-		return [...defaultSettings, ...editableSettings];
+		const editaBleSettings = this._flatten(editaBleSettingsGroups).filter(secondarySetting => defaultSettings.every(primarySetting => primarySetting.key !== secondarySetting.key));
+		return [...defaultSettings, ...editaBleSettings];
 	}
 
 	private _flatten(settingsGroups: ISettingsGroup[]): ISetting[] {
@@ -749,8 +749,8 @@ class PreferencesRenderersController extends Disposable {
 	}
 
 	dispose(): void {
-		dispose(this._defaultPreferencesRendererDisposables);
-		dispose(this._editablePreferencesRendererDisposables);
+		dispose(this._defaultPreferencesRendererDisposaBles);
+		dispose(this._editaBlePreferencesRendererDisposaBles);
 		super.dispose();
 	}
 }
@@ -761,9 +761,9 @@ class SideBySidePreferencesWidget extends Widget {
 
 	private defaultPreferencesHeader: HTMLElement;
 	private defaultPreferencesEditor: DefaultPreferencesEditor;
-	private editablePreferencesEditor: EditorPane | null = null;
+	private editaBlePreferencesEditor: EditorPane | null = null;
 	private defaultPreferencesEditorContainer: HTMLElement;
-	private editablePreferencesEditorContainer: HTMLElement;
+	private editaBlePreferencesEditorContainer: HTMLElement;
 
 	private settingsTargetsWidget: SettingsTargetsWidget;
 
@@ -775,11 +775,11 @@ class SideBySidePreferencesWidget extends Widget {
 
 	private splitview: SplitView;
 
-	private isVisible = false;
+	private isVisiBle = false;
 	private group: IEditorGroup | undefined;
 
-	get minimumWidth(): number { return this.splitview.minimumSize; }
-	get maximumWidth(): number { return this.splitview.maximumSize; }
+	get minimumWidth(): numBer { return this.splitview.minimumSize; }
+	get maximumWidth(): numBer { return this.splitview.maximumSize; }
 
 	constructor(
 		parentElement: HTMLElement,
@@ -790,11 +790,11 @@ class SideBySidePreferencesWidget extends Widget {
 	) {
 		super();
 
-		parentElement.classList.add('side-by-side-preferences-editor');
+		parentElement.classList.add('side-By-side-preferences-editor');
 
 		this.splitview = new SplitView(parentElement, { orientation: Orientation.HORIZONTAL });
 		this._register(this.splitview);
-		this._register(this.splitview.onDidSashReset(() => this.splitview.distributeViewSizes()));
+		this._register(this.splitview.onDidSashReset(() => this.splitview.distriButeViewSizes()));
 
 		this.defaultPreferencesEditorContainer = DOM.$('.default-preferences-editor-container');
 
@@ -809,47 +809,47 @@ class SideBySidePreferencesWidget extends Widget {
 			element: this.defaultPreferencesEditorContainer,
 			layout: size => this.defaultPreferencesEditor.layout(new DOM.Dimension(size, this.dimension.height - 34 /* height of header container */)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
+			maximumSize: NumBer.POSITIVE_INFINITY,
 			onDidChange: Event.None
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
-		this.editablePreferencesEditorContainer = DOM.$('.editable-preferences-editor-container');
-		const editablePreferencesHeaderContainer = DOM.append(this.editablePreferencesEditorContainer, DOM.$('.preferences-header-container'));
-		this.settingsTargetsWidget = this._register(this.instantiationService.createInstance(SettingsTargetsWidget, editablePreferencesHeaderContainer, undefined));
+		this.editaBlePreferencesEditorContainer = DOM.$('.editaBle-preferences-editor-container');
+		const editaBlePreferencesHeaderContainer = DOM.append(this.editaBlePreferencesEditorContainer, DOM.$('.preferences-header-container'));
+		this.settingsTargetsWidget = this._register(this.instantiationService.createInstance(SettingsTargetsWidget, editaBlePreferencesHeaderContainer, undefined));
 		this._register(this.settingsTargetsWidget.onDidTargetChange(target => this._onDidSettingsTargetChange.fire(target)));
 
-		this._register(attachStylerCallback(this.themeService, { scrollbarShadow }, colors => {
-			const shadow = colors.scrollbarShadow ? colors.scrollbarShadow.toString() : null;
+		this._register(attachStylerCallBack(this.themeService, { scrollBarShadow }, colors => {
+			const shadow = colors.scrollBarShadow ? colors.scrollBarShadow.toString() : null;
 
-			this.editablePreferencesEditorContainer.style.boxShadow = shadow ? `-6px 0 5px -5px ${shadow}` : '';
+			this.editaBlePreferencesEditorContainer.style.BoxShadow = shadow ? `-6px 0 5px -5px ${shadow}` : '';
 		}));
 
 		this.splitview.addView({
-			element: this.editablePreferencesEditorContainer,
-			layout: size => this.editablePreferencesEditor && this.editablePreferencesEditor.layout(new DOM.Dimension(size, this.dimension.height - 34 /* height of header container */)),
+			element: this.editaBlePreferencesEditorContainer,
+			layout: size => this.editaBlePreferencesEditor && this.editaBlePreferencesEditor.layout(new DOM.Dimension(size, this.dimension.height - 34 /* height of header container */)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
+			maximumSize: NumBer.POSITIVE_INFINITY,
 			onDidChange: Event.None
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
 		const focusTracker = this._register(DOM.trackFocus(parentElement));
 		this._register(focusTracker.onDidFocus(() => this._onFocus.fire()));
 	}
 
-	setInput(defaultPreferencesEditorInput: DefaultPreferencesEditorInput, editablePreferencesEditorInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<{ defaultPreferencesRenderer?: IPreferencesRenderer<ISetting>, editablePreferencesRenderer?: IPreferencesRenderer<ISetting>; }> {
-		this.getOrCreateEditablePreferencesEditor(editablePreferencesEditorInput);
-		this.settingsTargetsWidget.settingsTarget = this.getSettingsTarget(editablePreferencesEditorInput.resource!);
+	setInput(defaultPreferencesEditorInput: DefaultPreferencesEditorInput, editaBlePreferencesEditorInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<{ defaultPreferencesRenderer?: IPreferencesRenderer<ISetting>, editaBlePreferencesRenderer?: IPreferencesRenderer<ISetting>; }> {
+		this.getOrCreateEditaBlePreferencesEditor(editaBlePreferencesEditorInput);
+		this.settingsTargetsWidget.settingsTarget = this.getSettingsTarget(editaBlePreferencesEditorInput.resource!);
 		return Promise.all([
-			this.updateInput(this.defaultPreferencesEditor, defaultPreferencesEditorInput, DefaultSettingsEditorContribution.ID, editablePreferencesEditorInput.resource!, options, context, token),
-			this.updateInput(this.editablePreferencesEditor!, editablePreferencesEditorInput, SettingsEditorContribution.ID, defaultPreferencesEditorInput.resource!, options, context, token)
+			this.updateInput(this.defaultPreferencesEditor, defaultPreferencesEditorInput, DefaultSettingsEditorContriBution.ID, editaBlePreferencesEditorInput.resource!, options, context, token),
+			this.updateInput(this.editaBlePreferencesEditor!, editaBlePreferencesEditorInput, SettingsEditorContriBution.ID, defaultPreferencesEditorInput.resource!, options, context, token)
 		])
-			.then(([defaultPreferencesRenderer, editablePreferencesRenderer]) => {
+			.then(([defaultPreferencesRenderer, editaBlePreferencesRenderer]) => {
 				if (token.isCancellationRequested) {
 					return {};
 				}
 
 				this.defaultPreferencesHeader.textContent = withUndefinedAsNull(defaultPreferencesRenderer && this.getDefaultPreferencesHeaderText((<DefaultSettingsEditorModel>defaultPreferencesRenderer.preferencesModel).target));
-				return { defaultPreferencesRenderer, editablePreferencesRenderer };
+				return { defaultPreferencesRenderer, editaBlePreferencesRenderer };
 			});
 	}
 
@@ -865,7 +865,7 @@ class SideBySidePreferencesWidget extends Widget {
 		return '';
 	}
 
-	setResultCount(settingsTarget: SettingsTarget, count: number): void {
+	setResultCount(settingsTarget: SettingsTarget, count: numBer): void {
 		this.settingsTargetsWidget.setResultCount(settingsTarget, count);
 	}
 
@@ -875,58 +875,58 @@ class SideBySidePreferencesWidget extends Widget {
 	}
 
 	focus(): void {
-		if (this.editablePreferencesEditor) {
-			this.editablePreferencesEditor.focus();
+		if (this.editaBlePreferencesEditor) {
+			this.editaBlePreferencesEditor.focus();
 		}
 	}
 
 	getControl(): IEditorControl | undefined {
-		return this.editablePreferencesEditor ? this.editablePreferencesEditor.getControl() : undefined;
+		return this.editaBlePreferencesEditor ? this.editaBlePreferencesEditor.getControl() : undefined;
 	}
 
 	clearInput(): void {
 		if (this.defaultPreferencesEditor) {
 			this.defaultPreferencesEditor.clearInput();
 		}
-		if (this.editablePreferencesEditor) {
-			this.editablePreferencesEditor.clearInput();
+		if (this.editaBlePreferencesEditor) {
+			this.editaBlePreferencesEditor.clearInput();
 		}
 	}
 
-	setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
-		this.isVisible = visible;
+	setEditorVisiBle(visiBle: Boolean, group: IEditorGroup | undefined): void {
+		this.isVisiBle = visiBle;
 		this.group = group;
 
 		if (this.defaultPreferencesEditor) {
-			this.defaultPreferencesEditor.setVisible(this.isVisible, this.group);
+			this.defaultPreferencesEditor.setVisiBle(this.isVisiBle, this.group);
 		}
-		if (this.editablePreferencesEditor) {
-			this.editablePreferencesEditor.setVisible(this.isVisible, this.group);
+		if (this.editaBlePreferencesEditor) {
+			this.editaBlePreferencesEditor.setVisiBle(this.isVisiBle, this.group);
 		}
 	}
 
-	private getOrCreateEditablePreferencesEditor(editorInput: EditorInput): EditorPane {
-		if (this.editablePreferencesEditor) {
-			return this.editablePreferencesEditor;
+	private getOrCreateEditaBlePreferencesEditor(editorInput: EditorInput): EditorPane {
+		if (this.editaBlePreferencesEditor) {
+			return this.editaBlePreferencesEditor;
 		}
 		const descriptor = Registry.as<IEditorRegistry>(EditorExtensions.Editors).getEditor(editorInput);
 		const editor = descriptor!.instantiate(this.instantiationService);
-		this.editablePreferencesEditor = editor;
-		this.editablePreferencesEditor.create(this.editablePreferencesEditorContainer);
-		this.editablePreferencesEditor.setVisible(this.isVisible, this.group);
+		this.editaBlePreferencesEditor = editor;
+		this.editaBlePreferencesEditor.create(this.editaBlePreferencesEditorContainer);
+		this.editaBlePreferencesEditor.setVisiBle(this.isVisiBle, this.group);
 		this.layout();
 
 		return editor;
 	}
 
-	private updateInput(editor: EditorPane, input: EditorInput, editorContributionId: string, associatedPreferencesModelUri: URI, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<IPreferencesRenderer<ISetting> | undefined> {
+	private updateInput(editor: EditorPane, input: EditorInput, editorContriButionId: string, associatedPreferencesModelUri: URI, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<IPreferencesRenderer<ISetting> | undefined> {
 		return editor.setInput(input, options, context, token)
 			.then<any>(() => {
 				if (token.isCancellationRequested) {
 					return undefined;
 				}
 
-				return withNullAsUndefined((<CodeEditorWidget>editor.getControl()).getContribution<ISettingsEditorContribution>(editorContributionId).updatePreferencesRenderer(associatedPreferencesModelUri));
+				return withNullAsUndefined((<CodeEditorWidget>editor.getControl()).getContriBution<ISettingsEditorContriBution>(editorContriButionId).updatePreferencesRenderer(associatedPreferencesModelUri));
 			});
 	}
 
@@ -952,8 +952,8 @@ class SideBySidePreferencesWidget extends Widget {
 		if (this.defaultPreferencesEditor) {
 			this.defaultPreferencesEditor.dispose();
 		}
-		if (this.editablePreferencesEditor) {
-			this.editablePreferencesEditor.dispose();
+		if (this.editaBlePreferencesEditor) {
+			this.editaBlePreferencesEditor.dispose();
 		}
 	}
 
@@ -965,7 +965,7 @@ class SideBySidePreferencesWidget extends Widget {
 
 export class DefaultPreferencesEditor extends BaseTextEditor {
 
-	static readonly ID: string = 'workbench.editor.defaultPreferences';
+	static readonly ID: string = 'workBench.editor.defaultPreferences';
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
@@ -979,17 +979,17 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 		super(DefaultPreferencesEditor.ID, telemetryService, instantiationService, storageService, configurationService, themeService, editorService, editorGroupService);
 	}
 
-	private static _getContributions(): IEditorContributionDescription[] {
-		const skipContributions = [FoldingController.ID, SelectionHighlighter.ID, FindController.ID];
-		const contributions = EditorExtensionsRegistry.getEditorContributions().filter(c => skipContributions.indexOf(c.id) === -1);
-		contributions.push({ id: DefaultSettingsEditorContribution.ID, ctor: DefaultSettingsEditorContribution as IConstructorSignature1<ICodeEditor, editorCommon.IEditorContribution> });
-		return contributions;
+	private static _getContriButions(): IEditorContriButionDescription[] {
+		const skipContriButions = [FoldingController.ID, SelectionHighlighter.ID, FindController.ID];
+		const contriButions = EditorExtensionsRegistry.getEditorContriButions().filter(c => skipContriButions.indexOf(c.id) === -1);
+		contriButions.push({ id: DefaultSettingsEditorContriBution.ID, ctor: DefaultSettingsEditorContriBution as IConstructorSignature1<ICodeEditor, editorCommon.IEditorContriBution> });
+		return contriButions;
 	}
 
 	createEditorControl(parent: HTMLElement, configuration: IEditorOptions): editorCommon.IEditor {
-		const editor = this.instantiationService.createInstance(CodeEditorWidget, parent, configuration, { contributions: DefaultPreferencesEditor._getContributions() });
+		const editor = this.instantiationService.createInstance(CodeEditorWidget, parent, configuration, { contriButions: DefaultPreferencesEditor._getContriButions() });
 
-		// Inform user about editor being readonly if user starts type
+		// Inform user aBout editor Being readonly if user starts type
 		this._register(editor.onDidType(() => this.showReadonlyHint(editor)));
 		this._register(editor.onDidPaste(() => this.showReadonlyHint(editor)));
 
@@ -998,7 +998,7 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 
 	private showReadonlyHint(editor: ICodeEditor): void {
 		const messageController = MessageController.get(editor);
-		if (!messageController.isVisible()) {
+		if (!messageController.isVisiBle()) {
 			messageController.showMessage(nls.localize('defaultEditorReadonly', "Edit in the right hand side editor to override defaults."), editor.getSelection()!.getPosition());
 		}
 	}
@@ -1007,7 +1007,7 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 		const options = super.getConfigurationOverrides();
 		options.readOnly = true;
 		if (this.input) {
-			options.lineNumbers = 'off';
+			options.lineNumBers = 'off';
 			options.renderLineHighlight = 'none';
 			options.scrollBeyondLastLine = false;
 			options.folding = false;
@@ -1017,9 +1017,9 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 			options.rulers = [];
 			options.glyphMargin = true;
 			options.minimap = {
-				enabled: false
+				enaBled: false
 			};
-			options.renderValidationDecorations = 'editable';
+			options.renderValidationDecorations = 'editaBle';
 		}
 		return options;
 	}
@@ -1060,18 +1060,18 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 		editor.layout(dimension);
 	}
 
-	protected getAriaLabel(): string {
-		return nls.localize('preferencesAriaLabel', "Default preferences. Readonly.");
+	protected getAriaLaBel(): string {
+		return nls.localize('preferencesAriaLaBel', "Default preferences. Readonly.");
 	}
 }
 
-interface ISettingsEditorContribution extends editorCommon.IEditorContribution {
+interface ISettingsEditorContriBution extends editorCommon.IEditorContriBution {
 
 	updatePreferencesRenderer(associatedPreferencesModelUri: URI): Promise<IPreferencesRenderer<ISetting> | null>;
 
 }
 
-abstract class AbstractSettingsEditorContribution extends Disposable implements ISettingsEditorContribution {
+aBstract class ABstractSettingsEditorContriBution extends DisposaBle implements ISettingsEditorContriBution {
 
 	private preferencesRendererCreationPromise: Promise<IPreferencesRenderer<ISetting> | null> | null = null;
 
@@ -1105,7 +1105,7 @@ abstract class AbstractSettingsEditorContribution extends Disposable implements 
 		}
 	}
 
-	private _hasAssociatedPreferencesModelChanged(associatedPreferencesModelUri: URI): Promise<boolean> {
+	private _hasAssociatedPreferencesModelChanged(associatedPreferencesModelUri: URI): Promise<Boolean> {
 		return this.preferencesRendererCreationPromise!.then(preferencesRenderer => {
 			return !(preferencesRenderer && preferencesRenderer.getAssociatedPreferencesModel() && preferencesRenderer.getAssociatedPreferencesModel().uri!.toString() === associatedPreferencesModelUri.toString());
 		});
@@ -1151,12 +1151,12 @@ abstract class AbstractSettingsEditorContribution extends Disposable implements 
 		super.dispose();
 	}
 
-	protected abstract _createPreferencesRenderer(): Promise<IPreferencesRenderer<ISetting> | null> | null;
+	protected aBstract _createPreferencesRenderer(): Promise<IPreferencesRenderer<ISetting> | null> | null;
 }
 
-export class DefaultSettingsEditorContribution extends AbstractSettingsEditorContribution implements ISettingsEditorContribution {
+export class DefaultSettingsEditorContriBution extends ABstractSettingsEditorContriBution implements ISettingsEditorContriBution {
 
-	static readonly ID: string = 'editor.contrib.defaultsettings';
+	static readonly ID: string = 'editor.contriB.defaultsettings';
 
 	protected _createPreferencesRenderer(): Promise<IPreferencesRenderer<ISetting> | null> | null {
 		return this.preferencesService.createPreferencesEditorModel(this.editor.getModel()!.uri)
@@ -1171,9 +1171,9 @@ export class DefaultSettingsEditorContribution extends AbstractSettingsEditorCon
 	}
 }
 
-class SettingsEditorContribution extends AbstractSettingsEditorContribution implements ISettingsEditorContribution {
+class SettingsEditorContriBution extends ABstractSettingsEditorContriBution implements ISettingsEditorContriBution {
 
-	static readonly ID: string = 'editor.contrib.settings';
+	static readonly ID: string = 'editor.contriB.settings';
 
 	constructor(editor: ICodeEditor,
 		@IInstantiationService instantiationService: IInstantiationService,
@@ -1181,7 +1181,7 @@ class SettingsEditorContribution extends AbstractSettingsEditorContribution impl
 		@IWorkspaceContextService workspaceContextService: IWorkspaceContextService
 	) {
 		super(editor, instantiationService, preferencesService, workspaceContextService);
-		this._register(this.workspaceContextService.onDidChangeWorkbenchState(() => this._onModelChanged()));
+		this._register(this.workspaceContextService.onDidChangeWorkBenchState(() => this._onModelChanged()));
 	}
 
 	protected _createPreferencesRenderer(): Promise<IPreferencesRenderer<ISetting> | null> | null {
@@ -1213,4 +1213,4 @@ class SettingsEditorContribution extends AbstractSettingsEditorContribution impl
 	}
 }
 
-registerEditorContribution(SettingsEditorContribution.ID, SettingsEditorContribution);
+registerEditorContriBution(SettingsEditorContriBution.ID, SettingsEditorContriBution);

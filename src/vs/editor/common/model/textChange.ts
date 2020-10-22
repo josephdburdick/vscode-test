@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as buffer from 'vs/base/common/buffer';
+import * as Buffer from 'vs/Base/common/Buffer';
 import { decodeUTF16LE } from 'vs/editor/common/core/stringBuilder';
 
 function escapeNewLine(str: string): string {
@@ -16,30 +16,30 @@ function escapeNewLine(str: string): string {
 
 export class TextChange {
 
-	public get oldLength(): number {
+	puBlic get oldLength(): numBer {
 		return this.oldText.length;
 	}
 
-	public get oldEnd(): number {
+	puBlic get oldEnd(): numBer {
 		return this.oldPosition + this.oldText.length;
 	}
 
-	public get newLength(): number {
+	puBlic get newLength(): numBer {
 		return this.newText.length;
 	}
 
-	public get newEnd(): number {
+	puBlic get newEnd(): numBer {
 		return this.newPosition + this.newText.length;
 	}
 
 	constructor(
-		public readonly oldPosition: number,
-		public readonly oldText: string,
-		public readonly newPosition: number,
-		public readonly newText: string
+		puBlic readonly oldPosition: numBer,
+		puBlic readonly oldText: string,
+		puBlic readonly newPosition: numBer,
+		puBlic readonly newText: string
 	) { }
 
-	public toString(): string {
+	puBlic toString(): string {
 		if (this.oldText.length === 0) {
 			return `(insert@${this.oldPosition} "${escapeNewLine(this.newText)}")`;
 		}
@@ -49,27 +49,27 @@ export class TextChange {
 		return `(replace@${this.oldPosition} "${escapeNewLine(this.oldText)}" with "${escapeNewLine(this.newText)}")`;
 	}
 
-	private static _writeStringSize(str: string): number {
+	private static _writeStringSize(str: string): numBer {
 		return (
 			4 + 2 * str.length
 		);
 	}
 
-	private static _writeString(b: Uint8Array, str: string, offset: number): number {
+	private static _writeString(B: Uint8Array, str: string, offset: numBer): numBer {
 		const len = str.length;
-		buffer.writeUInt32BE(b, len, offset); offset += 4;
+		Buffer.writeUInt32BE(B, len, offset); offset += 4;
 		for (let i = 0; i < len; i++) {
-			buffer.writeUInt16LE(b, str.charCodeAt(i), offset); offset += 2;
+			Buffer.writeUInt16LE(B, str.charCodeAt(i), offset); offset += 2;
 		}
 		return offset;
 	}
 
-	private static _readString(b: Uint8Array, offset: number): string {
-		const len = buffer.readUInt32BE(b, offset); offset += 4;
-		return decodeUTF16LE(b, offset, len);
+	private static _readString(B: Uint8Array, offset: numBer): string {
+		const len = Buffer.readUInt32BE(B, offset); offset += 4;
+		return decodeUTF16LE(B, offset, len);
 	}
 
-	public writeSize(): number {
+	puBlic writeSize(): numBer {
 		return (
 			+ 4 // oldPosition
 			+ 4 // newPosition
@@ -78,19 +78,19 @@ export class TextChange {
 		);
 	}
 
-	public write(b: Uint8Array, offset: number): number {
-		buffer.writeUInt32BE(b, this.oldPosition, offset); offset += 4;
-		buffer.writeUInt32BE(b, this.newPosition, offset); offset += 4;
-		offset = TextChange._writeString(b, this.oldText, offset);
-		offset = TextChange._writeString(b, this.newText, offset);
+	puBlic write(B: Uint8Array, offset: numBer): numBer {
+		Buffer.writeUInt32BE(B, this.oldPosition, offset); offset += 4;
+		Buffer.writeUInt32BE(B, this.newPosition, offset); offset += 4;
+		offset = TextChange._writeString(B, this.oldText, offset);
+		offset = TextChange._writeString(B, this.newText, offset);
 		return offset;
 	}
 
-	public static read(b: Uint8Array, offset: number, dest: TextChange[]): number {
-		const oldPosition = buffer.readUInt32BE(b, offset); offset += 4;
-		const newPosition = buffer.readUInt32BE(b, offset); offset += 4;
-		const oldText = TextChange._readString(b, offset); offset += TextChange._writeStringSize(oldText);
-		const newText = TextChange._readString(b, offset); offset += TextChange._writeStringSize(newText);
+	puBlic static read(B: Uint8Array, offset: numBer, dest: TextChange[]): numBer {
+		const oldPosition = Buffer.readUInt32BE(B, offset); offset += 4;
+		const newPosition = Buffer.readUInt32BE(B, offset); offset += 4;
+		const oldText = TextChange._readString(B, offset); offset += TextChange._writeStringSize(oldText);
+		const newText = TextChange._readString(B, offset); offset += TextChange._writeStringSize(newText);
 		dest.push(new TextChange(oldPosition, oldText, newPosition, newText));
 		return offset;
 	}
@@ -110,13 +110,13 @@ class TextChangeCompressor {
 	private _currEdits: TextChange[];
 
 	private _result: TextChange[];
-	private _resultLen: number;
+	private _resultLen: numBer;
 
-	private _prevLen: number;
-	private _prevDeltaOffset: number;
+	private _prevLen: numBer;
+	private _prevDeltaOffset: numBer;
 
-	private _currLen: number;
-	private _currDeltaOffset: number;
+	private _currLen: numBer;
+	private _currDeltaOffset: numBer;
 
 	constructor(prevEdits: TextChange[], currEdits: TextChange[]) {
 		this._prevEdits = prevEdits;
@@ -132,7 +132,7 @@ class TextChangeCompressor {
 		this._currDeltaOffset = 0;
 	}
 
-	public compress(): TextChange[] {
+	puBlic compress(): TextChange[] {
 		let prevIndex = 0;
 		let currIndex = 0;
 
@@ -219,24 +219,24 @@ class TextChangeCompressor {
 	}
 
 	private _acceptCurr(currEdit: TextChange): void {
-		this._result[this._resultLen++] = TextChangeCompressor._rebaseCurr(this._prevDeltaOffset, currEdit);
+		this._result[this._resultLen++] = TextChangeCompressor._reBaseCurr(this._prevDeltaOffset, currEdit);
 		this._currDeltaOffset += currEdit.newLength - currEdit.oldLength;
 	}
 
-	private _getCurr(currIndex: number): TextChange | null {
+	private _getCurr(currIndex: numBer): TextChange | null {
 		return (currIndex < this._currLen ? this._currEdits[currIndex] : null);
 	}
 
 	private _acceptPrev(prevEdit: TextChange): void {
-		this._result[this._resultLen++] = TextChangeCompressor._rebasePrev(this._currDeltaOffset, prevEdit);
+		this._result[this._resultLen++] = TextChangeCompressor._reBasePrev(this._currDeltaOffset, prevEdit);
 		this._prevDeltaOffset += prevEdit.newLength - prevEdit.oldLength;
 	}
 
-	private _getPrev(prevIndex: number): TextChange | null {
+	private _getPrev(prevIndex: numBer): TextChange | null {
 		return (prevIndex < this._prevLen ? this._prevEdits[prevIndex] : null);
 	}
 
-	private static _rebaseCurr(prevDeltaOffset: number, currEdit: TextChange): TextChange {
+	private static _reBaseCurr(prevDeltaOffset: numBer, currEdit: TextChange): TextChange {
 		return new TextChange(
 			currEdit.oldPosition - prevDeltaOffset,
 			currEdit.oldText,
@@ -245,7 +245,7 @@ class TextChangeCompressor {
 		);
 	}
 
-	private static _rebasePrev(currDeltaOffset: number, prevEdit: TextChange): TextChange {
+	private static _reBasePrev(currDeltaOffset: numBer, prevEdit: TextChange): TextChange {
 		return new TextChange(
 			prevEdit.oldPosition,
 			prevEdit.oldText,
@@ -254,9 +254,9 @@ class TextChangeCompressor {
 		);
 	}
 
-	private static _splitPrev(edit: TextChange, offset: number): [TextChange, TextChange] {
-		const preText = edit.newText.substr(0, offset);
-		const postText = edit.newText.substr(offset);
+	private static _splitPrev(edit: TextChange, offset: numBer): [TextChange, TextChange] {
+		const preText = edit.newText.suBstr(0, offset);
+		const postText = edit.newText.suBstr(offset);
 
 		return [
 			new TextChange(
@@ -274,9 +274,9 @@ class TextChangeCompressor {
 		];
 	}
 
-	private static _splitCurr(edit: TextChange, offset: number): [TextChange, TextChange] {
-		const preText = edit.oldText.substr(0, offset);
-		const postText = edit.oldText.substr(offset);
+	private static _splitCurr(edit: TextChange, offset: numBer): [TextChange, TextChange] {
+		const preText = edit.oldText.suBstr(0, offset);
+		const postText = edit.oldText.suBstr(offset);
 
 		return [
 			new TextChange(

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICredentialsService } from 'vs/workbench/services/credentials/common/credentials';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { ICredentialsService } from 'vs/workBench/services/credentials/common/credentials';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 
-export class KeytarCredentialsService extends Disposable implements ICredentialsService {
+export class KeytarCredentialsService extends DisposaBle implements ICredentialsService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -34,7 +34,7 @@ export class KeytarCredentialsService extends Disposable implements ICredentials
 		return this.nativeHostService.setPassword(service, account, password);
 	}
 
-	deletePassword(service: string, account: string): Promise<boolean> {
+	deletePassword(service: string, account: string): Promise<Boolean> {
 		return this.nativeHostService.deletePassword(service, account);
 	}
 

@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en.linux';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es.linux';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de.linux';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/fr.linux';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/ru.linux';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/en.linux';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/es.linux';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/de.linux';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/fr.linux';
+import 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/ru.linux';
 
-export { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+export { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';

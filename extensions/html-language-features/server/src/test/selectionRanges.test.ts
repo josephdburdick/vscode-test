@@ -5,38 +5,38 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { getLanguageModes, ClientCapabilities, TextDocument, SelectionRange} from '../modes/languageModes';
+import { getLanguageModes, ClientCapaBilities, TextDocument, SelectionRange} from '../modes/languageModes';
 import { getSelectionRanges } from '../modes/selectionRanges';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
-async function assertRanges(content: string, expected: (number | string)[][]): Promise<void> {
+async function assertRanges(content: string, expected: (numBer | string)[][]): Promise<void> {
 	let message = `${content} gives selection range:\n`;
 
 	const offset = content.indexOf('|');
-	content = content.substr(0, offset) + content.substr(offset + 1);
+	content = content.suBstr(0, offset) + content.suBstr(offset + 1);
 
 	let workspace = {
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapabilities.LATEST, getNodeFSRequestService());
+	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapaBilities.LATEST, getNodeFSRequestService());
 
 	const document = TextDocument.create('test://foo.html', 'html', 1, content);
 	const actualRanges = await getSelectionRanges(languageModes, document, [document.positionAt(offset)]);
 	assert.equal(actualRanges.length, 1);
-	const offsetPairs: [number, string][] = [];
+	const offsetPairs: [numBer, string][] = [];
 	let curr: SelectionRange | undefined = actualRanges[0];
 	while (curr) {
 		offsetPairs.push([document.offsetAt(curr.range.start), document.getText(curr.range)]);
 		curr = curr.parent;
 	}
 
-	message += `${JSON.stringify(offsetPairs)}\n but should give:\n${JSON.stringify(expected)}\n`;
+	message += `${JSON.stringify(offsetPairs)}\n But should give:\n${JSON.stringify(expected)}\n`;
 	assert.deepEqual(offsetPairs, expected, message);
 }
 
 suite('HTML SelectionRange', () => {
-	test('Embedded JavaScript', async () => {
+	test('EmBedded JavaScript', async () => {
 		await assertRanges('<html><head><script>  function foo() { return ((1|+2)*6) }</script></head></html>', [
 			[48, '1'],
 			[48, '1+2'],
@@ -52,7 +52,7 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Embedded CSS', async () => {
+	test('EmBedded CSS', async () => {
 		await assertRanges('<html><head><style>foo { display: |none; } </style></head></html>', [
 			[34, 'none'],
 			[25, 'display: none'],
@@ -66,7 +66,7 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Embedded style', async () => {
+	test('EmBedded style', async () => {
 		await assertRanges('<div style="color: |red"></div>', [
 			[19, 'red'],
 			[12, 'color: red'],

@@ -4,43 +4,43 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Event, Emitter } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/Base/common/event';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtensionHostProfile, ProfileSession, IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { Disposable, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { StatusbarAlignment, IStatusbarService, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
-import { IExtensionHostProfileService, ProfileSessionState } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IExtensionHostProfile, ProfileSession, IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { DisposaBle, toDisposaBle, MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
+import { onUnexpectedError } from 'vs/Base/common/errors';
+import { StatusBarAlignment, IStatusBarService, IStatusBarEntryAccessor, IStatusBarEntry } from 'vs/workBench/services/statusBar/common/statusBar';
+import { IExtensionHostProfileService, ProfileSessionState } from 'vs/workBench/contriB/extensions/electron-Browser/runtimeExtensionsEditor';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { randomPort } from 'vs/base/node/ports';
+import { randomPort } from 'vs/Base/node/ports';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
+import { RuntimeExtensionsInput } from 'vs/workBench/contriB/extensions/electron-Browser/runtimeExtensionsInput';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { ExtensionHostProfiler } from 'vs/workbench/services/extensions/electron-browser/extensionHostProfiler';
+import { ExtensionHostProfiler } from 'vs/workBench/services/extensions/electron-Browser/extensionHostProfiler';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 
-export class ExtensionHostProfileService extends Disposable implements IExtensionHostProfileService {
+export class ExtensionHostProfileService extends DisposaBle implements IExtensionHostProfileService {
 
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _onDidChangeState: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidChangeState: Event<void> = this._onDidChangeState.event;
+	puBlic readonly onDidChangeState: Event<void> = this._onDidChangeState.event;
 
 	private readonly _onDidChangeLastProfile: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidChangeLastProfile: Event<void> = this._onDidChangeLastProfile.event;
+	puBlic readonly onDidChangeLastProfile: Event<void> = this._onDidChangeLastProfile.event;
 
 	private readonly _unresponsiveProfiles = new Map<string, IExtensionHostProfile>();
 	private _profile: IExtensionHostProfile | null;
 	private _profileSession: ProfileSession | null;
 	private _state: ProfileSessionState = ProfileSessionState.None;
 
-	private profilingStatusBarIndicator: IStatusbarEntryAccessor | undefined;
-	private readonly profilingStatusBarIndicatorLabelUpdater = this._register(new MutableDisposable());
+	private profilingStatusBarIndicator: IStatusBarEntryAccessor | undefined;
+	private readonly profilingStatusBarIndicatorLaBelUpdater = this._register(new MutaBleDisposaBle());
 
-	public get state() { return this._state; }
-	public get lastProfile() { return this._profile; }
+	puBlic get state() { return this._state; }
+	puBlic get lastProfile() { return this._profile; }
 
 	constructor(
 		@IExtensionService private readonly _extensionService: IExtensionService,
@@ -48,7 +48,7 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
 		@INativeHostService private readonly _nativeHostService: INativeHostService,
 		@IDialogService private readonly _dialogService: IDialogService,
-		@IStatusbarService private readonly _statusbarService: IStatusbarService,
+		@IStatusBarService private readonly _statusBarService: IStatusBarService,
 		@IProductService private readonly _productService: IProductService
 	) {
 		super();
@@ -56,7 +56,7 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 		this._profileSession = null;
 		this._setState(ProfileSessionState.None);
 
-		CommandsRegistry.registerCommand('workbench.action.extensionHostProfilder.stop', () => {
+		CommandsRegistry.registerCommand('workBench.action.extensionHostProfilder.stop', () => {
 			this.stopProfiling();
 			this._editorService.openEditor(RuntimeExtensionsInput.instance, { revealIfOpened: true });
 		});
@@ -77,16 +77,16 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 		this._onDidChangeState.fire(undefined);
 	}
 
-	private updateProfilingStatusBarIndicator(visible: boolean): void {
-		this.profilingStatusBarIndicatorLabelUpdater.clear();
+	private updateProfilingStatusBarIndicator(visiBle: Boolean): void {
+		this.profilingStatusBarIndicatorLaBelUpdater.clear();
 
-		if (visible) {
-			const indicator: IStatusbarEntry = {
+		if (visiBle) {
+			const indicator: IStatusBarEntry = {
 				text: nls.localize('profilingExtensionHost', "Profiling Extension Host"),
 				showProgress: true,
-				ariaLabel: nls.localize('profilingExtensionHost', "Profiling Extension Host"),
-				tooltip: nls.localize('selectAndStartDebug', "Click to stop profiling."),
-				command: 'workbench.action.extensionHostProfilder.stop'
+				ariaLaBel: nls.localize('profilingExtensionHost', "Profiling Extension Host"),
+				tooltip: nls.localize('selectAndStartDeBug', "Click to stop profiling."),
+				command: 'workBench.action.extensionHostProfilder.stop'
 			};
 
 			const timeStarted = Date.now();
@@ -95,10 +95,10 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 					this.profilingStatusBarIndicator.update({ ...indicator, text: nls.localize('profilingExtensionHostTime', "Profiling Extension Host ({0} sec)", Math.round((new Date().getTime() - timeStarted) / 1000)), });
 				}
 			}, 1000);
-			this.profilingStatusBarIndicatorLabelUpdater.value = toDisposable(() => clearInterval(handle));
+			this.profilingStatusBarIndicatorLaBelUpdater.value = toDisposaBle(() => clearInterval(handle));
 
 			if (!this.profilingStatusBarIndicator) {
-				this.profilingStatusBarIndicator = this._statusbarService.addEntry(indicator, 'status.profiler', nls.localize('status.profiler', "Extension Profiler"), StatusbarAlignment.RIGHT);
+				this.profilingStatusBarIndicator = this._statusBarService.addEntry(indicator, 'status.profiler', nls.localize('status.profiler', "Extension Profiler"), StatusBarAlignment.RIGHT);
 			} else {
 				this.profilingStatusBarIndicator.update(indicator);
 			}
@@ -110,7 +110,7 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 		}
 	}
 
-	public async startProfiling(): Promise<any> {
+	puBlic async startProfiling(): Promise<any> {
 		if (this._state !== ProfileSessionState.None) {
 			return null;
 		}
@@ -141,7 +141,7 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 		});
 	}
 
-	public stopProfiling(): void {
+	puBlic stopProfiling(): void {
 		if (this._state !== ProfileSessionState.Running || !this._profileSession) {
 			return;
 		}

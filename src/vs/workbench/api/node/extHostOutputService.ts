@@ -5,18 +5,18 @@
 
 import { MainThreadOutputServiceShape } from '../common/extHost.protocol';
 import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { join } from 'vs/base/common/path';
-import { OutputAppender } from 'vs/workbench/services/output/node/outputAppender';
-import { toLocalISOString } from 'vs/base/common/date';
-import { dirExists, mkdirp } from 'vs/base/node/pfs';
-import { AbstractExtHostOutputChannel, ExtHostPushOutputChannel, ExtHostOutputService, LazyOutputChannel } from 'vs/workbench/api/common/extHostOutput';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { MutableDisposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/Base/common/uri';
+import { join } from 'vs/Base/common/path';
+import { OutputAppender } from 'vs/workBench/services/output/node/outputAppender';
+import { toLocalISOString } from 'vs/Base/common/date';
+import { dirExists, mkdirp } from 'vs/Base/node/pfs';
+import { ABstractExtHostOutputChannel, ExtHostPushOutputChannel, ExtHostOutputService, LazyOutputChannel } from 'vs/workBench/api/common/extHostOutput';
+import { IExtHostInitDataService } from 'vs/workBench/api/common/extHostInitDataService';
+import { IExtHostRpcService } from 'vs/workBench/api/common/extHostRpcService';
+import { MutaBleDisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
 
-export class ExtHostOutputChannelBackedByFile extends AbstractExtHostOutputChannel {
+export class ExtHostOutputChannelBackedByFile extends ABstractExtHostOutputChannel {
 
 	private _appender: OutputAppender;
 
@@ -36,7 +36,7 @@ export class ExtHostOutputChannelBackedByFile extends AbstractExtHostOutputChann
 		super.update();
 	}
 
-	show(columnOrPreserveFocus?: vscode.ViewColumn | boolean, preserveFocus?: boolean): void {
+	show(columnOrPreserveFocus?: vscode.ViewColumn | Boolean, preserveFocus?: Boolean): void {
 		this._appender.flush();
 		super.show(columnOrPreserveFocus, preserveFocus);
 	}
@@ -50,9 +50,9 @@ export class ExtHostOutputChannelBackedByFile extends AbstractExtHostOutputChann
 export class ExtHostOutputService2 extends ExtHostOutputService {
 
 	private _logsLocation: URI;
-	private _namePool: number = 1;
-	private readonly _channels: Map<string, AbstractExtHostOutputChannel> = new Map<string, AbstractExtHostOutputChannel>();
-	private readonly _visibleChannelDisposable = new MutableDisposable();
+	private _namePool: numBer = 1;
+	private readonly _channels: Map<string, ABstractExtHostOutputChannel> = new Map<string, ABstractExtHostOutputChannel>();
+	private readonly _visiBleChannelDisposaBle = new MutaBleDisposaBle();
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
@@ -63,11 +63,11 @@ export class ExtHostOutputService2 extends ExtHostOutputService {
 		this._logsLocation = initData.logsLocation;
 	}
 
-	$setVisibleChannel(channelId: string): void {
+	$setVisiBleChannel(channelId: string): void {
 		if (channelId) {
 			const channel = this._channels.get(channelId);
 			if (channel) {
-				this._visibleChannelDisposable.value = channel.onDidAppend(() => channel.update());
+				this._visiBleChannelDisposaBle.value = channel.onDidAppend(() => channel.update());
 			}
 		}
 	}
@@ -75,14 +75,14 @@ export class ExtHostOutputService2 extends ExtHostOutputService {
 	createOutputChannel(name: string): vscode.OutputChannel {
 		name = name.trim();
 		if (!name) {
-			throw new Error('illegal argument `name`. must not be falsy');
+			throw new Error('illegal argument `name`. must not Be falsy');
 		}
 		const extHostOutputChannel = this._doCreateOutChannel(name);
 		extHostOutputChannel.then(channel => channel._id.then(id => this._channels.set(id, channel)));
 		return new LazyOutputChannel(name, extHostOutputChannel);
 	}
 
-	private async _doCreateOutChannel(name: string): Promise<AbstractExtHostOutputChannel> {
+	private async _doCreateOutChannel(name: string): Promise<ABstractExtHostOutputChannel> {
 		try {
 			const outputDirPath = join(this._logsLocation.fsPath, `output_logging_${toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '')}`);
 			const exists = await dirExists(outputDirPath);
@@ -94,7 +94,7 @@ export class ExtHostOutputService2 extends ExtHostOutputService {
 			const appender = new OutputAppender(fileName, file.fsPath);
 			return new ExtHostOutputChannelBackedByFile(name, appender, this._proxy);
 		} catch (error) {
-			// Do not crash if logger cannot be created
+			// Do not crash if logger cannot Be created
 			this.logService.error(error);
 			return new ExtHostPushOutputChannel(name, this._proxy);
 		}

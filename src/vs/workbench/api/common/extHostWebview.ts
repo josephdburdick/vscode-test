@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
 import * as modes from 'vs/editor/common/modes';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IExtHostApiDeprecationService } from 'vs/workbench/api/common/extHostApiDeprecationService';
-import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import { asWebviewUri, WebviewInitData } from 'vs/workbench/api/common/shared/webview';
+import { IExtHostApiDeprecationService } from 'vs/workBench/api/common/extHostApiDeprecationService';
+import { IExtHostWorkspace } from 'vs/workBench/api/common/extHostWorkspace';
+import { asWeBviewUri, WeBviewInitData } from 'vs/workBench/api/common/shared/weBview';
 import type * as vscode from 'vscode';
 import * as extHostProtocol from './extHost.protocol';
 
-export class ExtHostWebview implements vscode.Webview {
+export class ExtHostWeBview implements vscode.WeBview {
 
-	readonly #handle: extHostProtocol.WebviewHandle;
-	readonly #proxy: extHostProtocol.MainThreadWebviewsShape;
+	readonly #handle: extHostProtocol.WeBviewHandle;
+	readonly #proxy: extHostProtocol.MainThreadWeBviewsShape;
 	readonly #deprecationService: IExtHostApiDeprecationService;
 
-	readonly #initData: WebviewInitData;
+	readonly #initData: WeBviewInitData;
 	readonly #workspace: IExtHostWorkspace | undefined;
 	readonly #extension: IExtensionDescription;
 
 	#html: string = '';
-	#options: vscode.WebviewOptions;
-	#isDisposed: boolean = false;
-	#hasCalledAsWebviewUri = false;
+	#options: vscode.WeBviewOptions;
+	#isDisposed: Boolean = false;
+	#hasCalledAsWeBviewUri = false;
 
 	constructor(
-		handle: extHostProtocol.WebviewHandle,
-		proxy: extHostProtocol.MainThreadWebviewsShape,
-		options: vscode.WebviewOptions,
-		initData: WebviewInitData,
+		handle: extHostProtocol.WeBviewHandle,
+		proxy: extHostProtocol.MainThreadWeBviewsShape,
+		options: vscode.WeBviewOptions,
+		initData: WeBviewInitData,
 		workspace: IExtHostWorkspace | undefined,
 		extension: IExtensionDescription,
 		deprecationService: IExtHostApiDeprecationService,
@@ -48,12 +48,12 @@ export class ExtHostWebview implements vscode.Webview {
 	}
 
 	/* internal */ readonly _onMessageEmitter = new Emitter<any>();
-	public readonly onDidReceiveMessage: Event<any> = this._onMessageEmitter.event;
+	puBlic readonly onDidReceiveMessage: Event<any> = this._onMessageEmitter.event;
 
 	readonly #onDidDisposeEmitter = new Emitter<void>();
 	/* internal */ readonly _onDidDispose: Event<void> = this.#onDidDisposeEmitter.event;
 
-	public dispose() {
+	puBlic dispose() {
 		this.#isDisposed = true;
 
 		this.#onDidDisposeEmitter.fire();
@@ -62,46 +62,46 @@ export class ExtHostWebview implements vscode.Webview {
 		this._onMessageEmitter.dispose();
 	}
 
-	public asWebviewUri(resource: vscode.Uri): vscode.Uri {
-		this.#hasCalledAsWebviewUri = true;
-		return asWebviewUri(this.#initData, this.#handle, resource);
+	puBlic asWeBviewUri(resource: vscode.Uri): vscode.Uri {
+		this.#hasCalledAsWeBviewUri = true;
+		return asWeBviewUri(this.#initData, this.#handle, resource);
 	}
 
-	public get cspSource(): string {
-		return this.#initData.webviewCspSource
+	puBlic get cspSource(): string {
+		return this.#initData.weBviewCspSource
 			.replace('{{uuid}}', this.#handle);
 	}
 
-	public get html(): string {
+	puBlic get html(): string {
 		this.assertNotDisposed();
 		return this.#html;
 	}
 
-	public set html(value: string) {
+	puBlic set html(value: string) {
 		this.assertNotDisposed();
 		if (this.#html !== value) {
 			this.#html = value;
-			if (!this.#hasCalledAsWebviewUri && /(["'])vscode-resource:([^\s'"]+?)(["'])/i.test(value)) {
-				this.#hasCalledAsWebviewUri = true;
-				this.#deprecationService.report('Webview vscode-resource: uris', this.#extension,
-					`Please migrate to use the 'webview.asWebviewUri' api instead: https://aka.ms/vscode-webview-use-aswebviewuri`);
+			if (!this.#hasCalledAsWeBviewUri && /(["'])vscode-resource:([^\s'"]+?)(["'])/i.test(value)) {
+				this.#hasCalledAsWeBviewUri = true;
+				this.#deprecationService.report('WeBview vscode-resource: uris', this.#extension,
+					`Please migrate to use the 'weBview.asWeBviewUri' api instead: https://aka.ms/vscode-weBview-use-asweBviewuri`);
 			}
 			this.#proxy.$setHtml(this.#handle, value);
 		}
 	}
 
-	public get options(): vscode.WebviewOptions {
+	puBlic get options(): vscode.WeBviewOptions {
 		this.assertNotDisposed();
 		return this.#options;
 	}
 
-	public set options(newOptions: vscode.WebviewOptions) {
+	puBlic set options(newOptions: vscode.WeBviewOptions) {
 		this.assertNotDisposed();
-		this.#proxy.$setOptions(this.#handle, convertWebviewOptions(this.#extension, this.#workspace, newOptions));
+		this.#proxy.$setOptions(this.#handle, convertWeBviewOptions(this.#extension, this.#workspace, newOptions));
 		this.#options = newOptions;
 	}
 
-	public async postMessage(message: any): Promise<boolean> {
+	puBlic async postMessage(message: any): Promise<Boolean> {
 		if (this.#isDisposed) {
 			return false;
 		}
@@ -110,71 +110,71 @@ export class ExtHostWebview implements vscode.Webview {
 
 	private assertNotDisposed() {
 		if (this.#isDisposed) {
-			throw new Error('Webview is disposed');
+			throw new Error('WeBview is disposed');
 		}
 	}
 }
 
-export class ExtHostWebviews implements extHostProtocol.ExtHostWebviewsShape {
+export class ExtHostWeBviews implements extHostProtocol.ExtHostWeBviewsShape {
 
-	private readonly _webviewProxy: extHostProtocol.MainThreadWebviewsShape;
+	private readonly _weBviewProxy: extHostProtocol.MainThreadWeBviewsShape;
 
-	private readonly _webviews = new Map<extHostProtocol.WebviewHandle, ExtHostWebview>();
+	private readonly _weBviews = new Map<extHostProtocol.WeBviewHandle, ExtHostWeBview>();
 
 	constructor(
 		mainContext: extHostProtocol.IMainContext,
-		private readonly initData: WebviewInitData,
+		private readonly initData: WeBviewInitData,
 		private readonly workspace: IExtHostWorkspace | undefined,
 		private readonly _logService: ILogService,
 		private readonly _deprecationService: IExtHostApiDeprecationService,
 	) {
-		this._webviewProxy = mainContext.getProxy(extHostProtocol.MainContext.MainThreadWebviews);
+		this._weBviewProxy = mainContext.getProxy(extHostProtocol.MainContext.MainThreadWeBviews);
 	}
 
-	public $onMessage(
-		handle: extHostProtocol.WebviewHandle,
+	puBlic $onMessage(
+		handle: extHostProtocol.WeBviewHandle,
 		message: any
 	): void {
-		const webview = this.getWebview(handle);
-		if (webview) {
-			webview._onMessageEmitter.fire(message);
+		const weBview = this.getWeBview(handle);
+		if (weBview) {
+			weBview._onMessageEmitter.fire(message);
 		}
 	}
 
-	public $onMissingCsp(
-		_handle: extHostProtocol.WebviewHandle,
+	puBlic $onMissingCsp(
+		_handle: extHostProtocol.WeBviewHandle,
 		extensionId: string
 	): void {
-		this._logService.warn(`${extensionId} created a webview without a content security policy: https://aka.ms/vscode-webview-missing-csp`);
+		this._logService.warn(`${extensionId} created a weBview without a content security policy: https://aka.ms/vscode-weBview-missing-csp`);
 	}
 
-	public createNewWebview(handle: string, options: modes.IWebviewOptions & modes.IWebviewPanelOptions, extension: IExtensionDescription): ExtHostWebview {
-		const webview = new ExtHostWebview(handle, this._webviewProxy, reviveOptions(options), this.initData, this.workspace, extension, this._deprecationService);
-		this._webviews.set(handle, webview);
+	puBlic createNewWeBview(handle: string, options: modes.IWeBviewOptions & modes.IWeBviewPanelOptions, extension: IExtensionDescription): ExtHostWeBview {
+		const weBview = new ExtHostWeBview(handle, this._weBviewProxy, reviveOptions(options), this.initData, this.workspace, extension, this._deprecationService);
+		this._weBviews.set(handle, weBview);
 
-		webview._onDidDispose(() => { this._webviews.delete(handle); });
+		weBview._onDidDispose(() => { this._weBviews.delete(handle); });
 
-		return webview;
+		return weBview;
 	}
 
-	public deleteWebview(handle: string) {
-		this._webviews.delete(handle);
+	puBlic deleteWeBview(handle: string) {
+		this._weBviews.delete(handle);
 	}
 
-	private getWebview(handle: extHostProtocol.WebviewHandle): ExtHostWebview | undefined {
-		return this._webviews.get(handle);
+	private getWeBview(handle: extHostProtocol.WeBviewHandle): ExtHostWeBview | undefined {
+		return this._weBviews.get(handle);
 	}
 }
 
-export function toExtensionData(extension: IExtensionDescription): extHostProtocol.WebviewExtensionDescription {
+export function toExtensionData(extension: IExtensionDescription): extHostProtocol.WeBviewExtensionDescription {
 	return { id: extension.identifier, location: extension.extensionLocation };
 }
 
-export function convertWebviewOptions(
+export function convertWeBviewOptions(
 	extension: IExtensionDescription,
 	workspace: IExtHostWorkspace | undefined,
-	options: vscode.WebviewPanelOptions & vscode.WebviewOptions,
-): modes.IWebviewOptions {
+	options: vscode.WeBviewPanelOptions & vscode.WeBviewOptions,
+): modes.IWeBviewOptions {
 	return {
 		...options,
 		localResourceRoots: options.localResourceRoots || getDefaultLocalResourceRoots(extension, workspace)
@@ -182,8 +182,8 @@ export function convertWebviewOptions(
 }
 
 function reviveOptions(
-	options: modes.IWebviewOptions & modes.IWebviewPanelOptions
-): vscode.WebviewOptions {
+	options: modes.IWeBviewOptions & modes.IWeBviewPanelOptions
+): vscode.WeBviewOptions {
 	return {
 		...options,
 		localResourceRoots: options.localResourceRoots?.map(components => URI.from(components)),

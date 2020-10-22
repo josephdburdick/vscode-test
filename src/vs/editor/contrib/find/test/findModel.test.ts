@@ -4,23 +4,23 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CoreNavigationCommands } from 'vs/editor/browser/controller/coreCommands';
-import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
+import { CoreNavigationCommands } from 'vs/editor/Browser/controller/coreCommands';
+import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
 import { Range } from 'vs/editor/common/core/range';
 import { Selection } from 'vs/editor/common/core/selection';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { FindModelBoundToEditorModel } from 'vs/editor/contrib/find/findModel';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { FindModelBoundToEditorModel } from 'vs/editor/contriB/find/findModel';
+import { FindReplaceState } from 'vs/editor/contriB/find/findState';
+import { withTestCodeEditor } from 'vs/editor/test/Browser/testCodeEditor';
 import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
 import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
 import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
 
 suite('FindModel', () => {
 
-	function findTest(testName: string, callback: (editor: IActiveCodeEditor) => void): void {
+	function findTest(testName: string, callBack: (editor: IActiveCodeEditor) => void): void {
 		test(testName, () => {
 			const textArr = [
 				'// my cool header',
@@ -33,28 +33,28 @@ suite('FindModel', () => {
 				'    cout << "Hello world again" << endl;',
 				'    cout << "helloworld again" << endl;',
 				'}',
-				'// blablablaciao',
+				'// BlaBlaBlaciao',
 				''
 			];
-			withTestCodeEditor(textArr, {}, (editor) => callback(editor as IActiveCodeEditor));
+			withTestCodeEditor(textArr, {}, (editor) => callBack(editor as IActiveCodeEditor));
 
 			const text = textArr.join('\n');
 			const ptBuilder = new PieceTreeTextBufferBuilder();
-			ptBuilder.acceptChunk(text.substr(0, 94));
-			ptBuilder.acceptChunk(text.substr(94, 101));
-			ptBuilder.acceptChunk(text.substr(195, 59));
+			ptBuilder.acceptChunk(text.suBstr(0, 94));
+			ptBuilder.acceptChunk(text.suBstr(94, 101));
+			ptBuilder.acceptChunk(text.suBstr(195, 59));
 			const factory = ptBuilder.finish();
 			withTestCodeEditor([],
 				{
 					model: new TextModel(factory, TextModel.DEFAULT_CREATION_OPTIONS, null, null, new UndoRedoService(new TestDialogService(), new TestNotificationService()))
 				},
-				(editor) => callback(editor as IActiveCodeEditor)
+				(editor) => callBack(editor as IActiveCodeEditor)
 			);
 		});
 	}
 
-	function fromRange(rng: Range): number[] {
-		return [rng.startLineNumber, rng.startColumn, rng.endLineNumber, rng.endColumn];
+	function fromRange(rng: Range): numBer[] {
+		return [rng.startLineNumBer, rng.startColumn, rng.endLineNumBer, rng.endColumn];
 	}
 
 	function _getFindState(editor: ICodeEditor) {
@@ -80,7 +80,7 @@ suite('FindModel', () => {
 		};
 	}
 
-	function assertFindState(editor: ICodeEditor, cursor: number[], highlighted: number[] | null, findDecorations: number[][]): void {
+	function assertFindState(editor: ICodeEditor, cursor: numBer[], highlighted: numBer[] | null, findDecorations: numBer[][]): void {
 		assert.deepEqual(fromRange(editor.getSelection()!), cursor, 'cursor');
 
 		let expectedState = {
@@ -90,8 +90,8 @@ suite('FindModel', () => {
 		assert.deepEqual(_getFindState(editor), expectedState, 'state');
 	}
 
-	findTest('incremental find from beginning of file', (editor) => {
-		editor.setPosition({ lineNumber: 1, column: 1 });
+	findTest('incremental find from Beginning of file', (editor) => {
+		editor.setPosition({ lineNumBer: 1, column: 1 });
 		let findState = new FindReplaceState();
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
@@ -1371,9 +1371,9 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('replace bla', (editor) => {
+	findTest('replace Bla', (editor) => {
 		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: 'ciao' }, false);
+		findState.change({ searchString: 'Bla', replaceString: 'ciao' }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
 		assertFindState(
@@ -1398,7 +1398,7 @@ suite('FindModel', () => {
 				[11, 10, 11, 13]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// blablablaciao');
+		assert.equal(editor.getModel()!.getLineContent(11), '// BlaBlaBlaciao');
 
 		findModel.replace();
 		assertFindState(
@@ -1410,7 +1410,7 @@ suite('FindModel', () => {
 				[11, 11, 11, 14]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaoblablaciao');
+		assert.equal(editor.getModel()!.getLineContent(11), '// ciaoBlaBlaciao');
 
 		findModel.replace();
 		assertFindState(
@@ -1421,7 +1421,7 @@ suite('FindModel', () => {
 				[11, 12, 11, 15]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaociaoblaciao');
+		assert.equal(editor.getModel()!.getLineContent(11), '// ciaociaoBlaciao');
 
 		findModel.replace();
 		assertFindState(
@@ -1526,9 +1526,9 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('replaceAll bla', (editor) => {
+	findTest('replaceAll Bla', (editor) => {
 		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: 'ciao' }, false);
+		findState.change({ searchString: 'Bla', replaceString: 'ciao' }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
 		assertFindState(
@@ -1555,9 +1555,9 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('replaceAll bla with \\t\\n', (editor) => {
+	findTest('replaceAll Bla with \\t\\n', (editor) => {
 		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: '<\\n\\t>', isRegex: true }, false);
+		findState.change({ searchString: 'Bla', replaceString: '<\\n\\t>', isRegex: true }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
 		assertFindState(
@@ -1589,7 +1589,7 @@ suite('FindModel', () => {
 
 	findTest('issue #3516: "replace all" moves page/cursor/focus/scroll to the place of the last replacement', (editor) => {
 		let findState = new FindReplaceState();
-		findState.change({ searchString: 'include', replaceString: 'bar' }, false);
+		findState.change({ searchString: 'include', replaceString: 'Bar' }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
 		assertFindState(
@@ -1610,8 +1610,8 @@ suite('FindModel', () => {
 			[]
 		);
 
-		assert.equal(editor.getModel()!.getLineContent(2), '#bar "cool.h"');
-		assert.equal(editor.getModel()!.getLineContent(3), '#bar <iostream>');
+		assert.equal(editor.getModel()!.getLineContent(2), '#Bar "cool.h"');
+		assert.equal(editor.getModel()!.getLineContent(3), '#Bar <iostream>');
 
 		findModel.dispose();
 		findState.dispose();
@@ -1688,7 +1688,7 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('issue #14143 selectAllMatches should maintain primary cursor if feasible', (editor) => {
+	findTest('issue #14143 selectAllMatches should maintain primary cursor if feasiBle', (editor) => {
 		let findState = new FindReplaceState();
 		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
@@ -2076,7 +2076,7 @@ suite('FindModel', () => {
 
 	findTest('replaceAll preserving case', (editor) => {
 		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'goodbye', isRegex: false, matchCase: false, preserveCase: true }, false);
+		findState.change({ searchString: 'hello', replaceString: 'goodBye', isRegex: false, matchCase: false, preserveCase: true }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
 
 		assertFindState(
@@ -2094,10 +2094,10 @@ suite('FindModel', () => {
 
 		findModel.replaceAll();
 
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "goodbye world, Goodbye!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "goodbye world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "Goodbye world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(9), '    cout << "goodbyeworld again" << endl;');
+		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "goodBye world, GoodBye!" << endl;');
+		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "goodBye world again" << endl;');
+		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "GoodBye world again" << endl;');
+		assert.equal(editor.getModel()!.getLineContent(9), '    cout << "goodByeworld again" << endl;');
 
 		assertFindState(
 			editor,
@@ -2165,7 +2165,7 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('issue #19740 Find and replace capture group/backreference inserts `undefined` instead of empty string', (editor) => {
+	findTest('issue #19740 Find and replace capture group/Backreference inserts `undefined` instead of empty string', (editor) => {
 		let findState = new FindReplaceState();
 		findState.change({ searchString: 'hello(z)?', replaceString: 'hi$1', isRegex: true, matchCase: true }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
@@ -2214,7 +2214,7 @@ suite('FindModel', () => {
 		findState.dispose();
 	});
 
-	findTest('issue #3516: Control behavior of "Next" operations (not looping back to beginning)', (editor) => {
+	findTest('issue #3516: Control Behavior of "Next" operations (not looping Back to Beginning)', (editor) => {
 		let findState = new FindReplaceState();
 		findState.change({ searchString: 'hello', loop: false }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);
@@ -2294,7 +2294,7 @@ suite('FindModel', () => {
 
 	});
 
-	findTest('issue #3516: Control behavior of "Next" operations (looping back to beginning)', (editor) => {
+	findTest('issue #3516: Control Behavior of "Next" operations (looping Back to Beginning)', (editor) => {
 		let findState = new FindReplaceState();
 		findState.change({ searchString: 'hello' }, false);
 		let findModel = new FindModelBoundToEditorModel(editor, findState);

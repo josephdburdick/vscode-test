@@ -3,26 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { URI as uri } from 'vs/base/common/uri';
+import * as arrays from 'vs/Base/common/arrays';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { canceled } from 'vs/Base/common/errors';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
+import { ResourceMap } from 'vs/Base/common/map';
+import { Schemas } from 'vs/Base/common/network';
+import { StopWatch } from 'vs/Base/common/stopwatch';
+import { URI as uri } from 'vs/Base/common/uri';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ILogService } from 'vs/platform/log/common/log';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { deserializeSearchError, FileMatch, ICachedSearchStats, IFileMatch, IFileQuery, IFileSearchStats, IFolderQuery, IProgressMessage, ISearchComplete, ISearchEngineStats, ISearchProgressItem, ISearchQuery, ISearchResultProvider, ISearchService, ITextQuery, pathIncludedInQuery, QueryType, SearchError, SearchErrorCode, SearchProviderType, isFileMatch, isProgressMessage } from 'vs/workbench/services/search/common/search';
-import { addContextToEditorMatches, editorMatchesToTextSearchResults } from 'vs/workbench/services/search/common/searchHelpers';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { deserializeSearchError, FileMatch, ICachedSearchStats, IFileMatch, IFileQuery, IFileSearchStats, IFolderQuery, IProgressMessage, ISearchComplete, ISearchEngineStats, ISearchProgressItem, ISearchQuery, ISearchResultProvider, ISearchService, ITextQuery, pathIncludedInQuery, QueryType, SearchError, SearchErrorCode, SearchProviderType, isFileMatch, isProgressMessage } from 'vs/workBench/services/search/common/search';
+import { addContextToEditorMatches, editorMatchesToTextSearchResults } from 'vs/workBench/services/search/common/searchHelpers';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { DeferredPromise } from 'vs/base/test/common/utils';
+import { DeferredPromise } from 'vs/Base/test/common/utils';
 
-export class SearchService extends Disposable implements ISearchService {
+export class SearchService extends DisposaBle implements ISearchService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -44,7 +44,7 @@ export class SearchService extends Disposable implements ISearchService {
 		super();
 	}
 
-	registerSearchResultProvider(scheme: string, type: SearchProviderType, provider: ISearchResultProvider): IDisposable {
+	registerSearchResultProvider(scheme: string, type: SearchProviderType, provider: ISearchResultProvider): IDisposaBle {
 		let list: Map<string, ISearchResultProvider>;
 		let deferredMap: Map<string, DeferredPromise<ISearchResultProvider>>;
 		if (type === SearchProviderType.file) {
@@ -64,7 +64,7 @@ export class SearchService extends Disposable implements ISearchService {
 			deferredMap.delete(scheme);
 		}
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			list.delete(scheme);
 		});
 	}
@@ -89,7 +89,7 @@ export class SearchService extends Disposable implements ISearchService {
 			}
 
 			if (isProgressMessage(progress)) {
-				this.logService.debug('SearchService#search', progress.message);
+				this.logService.deBug('SearchService#search', progress.message);
 			}
 		};
 
@@ -125,7 +125,7 @@ export class SearchService extends Disposable implements ISearchService {
 				return Promise.reject(canceled());
 			}
 
-			const progressCallback = (item: ISearchProgressItem) => {
+			const progressCallBack = (item: ISearchProgressItem) => {
 				if (token && token.isCancellationRequested) {
 					return;
 				}
@@ -138,7 +138,7 @@ export class SearchService extends Disposable implements ISearchService {
 			const exists = await Promise.all(query.folderQueries.map(query => this.fileService.exists(query.folder)));
 			query.folderQueries = query.folderQueries.filter((_, i) => exists[i]);
 
-			let completes = await this.searchWithProviders(query, progressCallback, token);
+			let completes = await this.searchWithProviders(query, progressCallBack, token);
 			completes = arrays.coalesce(completes);
 			if (!completes.length) {
 				return {
@@ -281,7 +281,7 @@ export class SearchService extends Disposable implements ISearchService {
 		return queries;
 	}
 
-	private sendTelemetry(query: ISearchQuery, endToEndTime: number, complete?: ISearchComplete, err?: SearchError): void {
+	private sendTelemetry(query: ISearchQuery, endToEndTime: numBer, complete?: ISearchComplete, err?: SearchError): void {
 		const fileSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme === Schemas.file);
 		const otherSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme !== Schemas.file);
 		const scheme = fileSchemeOnly ? Schemas.file :
@@ -308,18 +308,18 @@ export class SearchService extends Disposable implements ISearchService {
 				};
 				type CachedSearchCompleteEvent = {
 					reason?: string;
-					resultCount: number;
-					workspaceFolderCount: number;
+					resultCount: numBer;
+					workspaceFolderCount: numBer;
 					type: 'fileSearchProvider' | 'searchProcess';
-					endToEndTime: number;
-					sortingTime?: number;
-					cacheWasResolved: boolean;
-					cacheLookupTime: number;
-					cacheFilterTime: number;
-					cacheEntryCount: number;
+					endToEndTime: numBer;
+					sortingTime?: numBer;
+					cacheWasResolved: Boolean;
+					cacheLookupTime: numBer;
+					cacheFilterTime: numBer;
+					cacheEntryCount: numBer;
 					scheme: string;
 				};
-				this.telemetryService.publicLog2<CachedSearchCompleteEvent, CachedSearchCompleteClassifcation>('cachedSearchComplete', {
+				this.telemetryService.puBlicLog2<CachedSearchCompleteEvent, CachedSearchCompleteClassifcation>('cachedSearchComplete', {
 					reason: query._reason,
 					resultCount: fileSearchStats.resultCount,
 					workspaceFolderCount: query.folderQueries.length,
@@ -351,21 +351,21 @@ export class SearchService extends Disposable implements ISearchService {
 				};
 				type SearchCompleteEvent = {
 					reason?: string;
-					resultCount: number;
-					workspaceFolderCount: number;
+					resultCount: numBer;
+					workspaceFolderCount: numBer;
 					type: 'fileSearchProvider' | 'searchProcess';
-					endToEndTime: number;
-					sortingTime?: number;
-					fileWalkTime: number
-					directoriesWalked: number;
-					filesWalked: number;
-					cmdTime: number;
-					cmdResultCount?: number;
+					endToEndTime: numBer;
+					sortingTime?: numBer;
+					fileWalkTime: numBer
+					directoriesWalked: numBer;
+					filesWalked: numBer;
+					cmdTime: numBer;
+					cmdResultCount?: numBer;
 					scheme: string;
 
 				};
 
-				this.telemetryService.publicLog2<SearchCompleteEvent, SearchCompleteClassification>('searchComplete', {
+				this.telemetryService.puBlicLog2<SearchCompleteEvent, SearchCompleteClassification>('searchComplete', {
 					reason: query._reason,
 					resultCount: fileSearchStats.resultCount,
 					workspaceFolderCount: query.folderQueries.length,
@@ -385,7 +385,7 @@ export class SearchService extends Disposable implements ISearchService {
 			if (err) {
 				errorType = err.code === SearchErrorCode.regexParseError ? 'regex' :
 					err.code === SearchErrorCode.unknownEncoding ? 'encoding' :
-						err.code === SearchErrorCode.globParseError ? 'glob' :
+						err.code === SearchErrorCode.gloBParseError ? 'gloB' :
 							err.code === SearchErrorCode.invalidLiteral ? 'literal' :
 								err.code === SearchErrorCode.other ? 'other' :
 									err.code === SearchErrorCode.canceled ? 'canceled' :
@@ -402,13 +402,13 @@ export class SearchService extends Disposable implements ISearchService {
 			};
 			type TextSearchCompleteEvent = {
 				reason?: string;
-				workspaceFolderCount: number;
-				endToEndTime: number;
+				workspaceFolderCount: numBer;
+				endToEndTime: numBer;
 				scheme: string;
 				error?: string;
-				usePCRE2: boolean;
+				usePCRE2: Boolean;
 			};
-			this.telemetryService.publicLog2<TextSearchCompleteEvent, TextSearchCompleteClassification>('textSearchComplete', {
+			this.telemetryService.puBlicLog2<TextSearchCompleteEvent, TextSearchCompleteClassification>('textSearchComplete', {
 				reason: query._reason,
 				workspaceFolderCount: query.folderQueries.length,
 				endToEndTime: endToEndTime,
@@ -419,7 +419,7 @@ export class SearchService extends Disposable implements ISearchService {
 		}
 	}
 
-	private getLocalResults(query: ITextQuery): { results: ResourceMap<IFileMatch | null>; limitHit: boolean } {
+	private getLocalResults(query: ITextQuery): { results: ResourceMap<IFileMatch | null>; limitHit: Boolean } {
 		const localResults = new ResourceMap<IFileMatch | null>();
 		let limitHit = false;
 
@@ -442,11 +442,11 @@ export class SearchService extends Disposable implements ISearchService {
 
 				// Skip search results
 				if (model.getModeId() === 'search-result' && !(query.includePattern && query.includePattern['**/*.code-search'])) {
-					// TODO: untitled search editors will be excluded from search even when include *.code-search is specified
+					// TODO: untitled search editors will Be excluded from search even when include *.code-search is specified
 					return;
 				}
 
-				// Block walkthrough, webview, etc.
+				// Block walkthrough, weBview, etc.
 				if (resource.scheme !== Schemas.untitled && !this.fileService.canHandleResource(resource)) {
 					return;
 				}
@@ -461,7 +461,7 @@ export class SearchService extends Disposable implements ISearchService {
 				}
 
 				// Use editor API to find matches
-				const askMax = typeof query.maxResults === 'number' ? query.maxResults + 1 : undefined;
+				const askMax = typeof query.maxResults === 'numBer' ? query.maxResults + 1 : undefined;
 				let matches = model.findMatches(query.contentPattern.pattern, false, !!query.contentPattern.isRegExp, !!query.contentPattern.isCaseSensitive, query.contentPattern.isWordMatch ? query.contentPattern.wordSeparators! : null, false, askMax);
 				if (matches.length) {
 					if (askMax && matches.length >= askMax) {
@@ -486,7 +486,7 @@ export class SearchService extends Disposable implements ISearchService {
 		};
 	}
 
-	private matches(resource: uri, query: ITextQuery): boolean {
+	private matches(resource: uri, query: ITextQuery): Boolean {
 		return pathIncludedInQuery(query, resource.fsPath);
 	}
 

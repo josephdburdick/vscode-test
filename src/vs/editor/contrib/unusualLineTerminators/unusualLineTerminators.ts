@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { registerEditorContriBution } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditorService } from 'vs/editor/Browser/services/codeEditorService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IEditorContribution } from 'vs/editor/common/editorCommon';
+import { IEditorContriBution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 
 const ignoreUnusualLineTerminators = 'ignoreUnusualLineTerminators';
 
-function writeIgnoreState(codeEditorService: ICodeEditorService, model: ITextModel, state: boolean): void {
+function writeIgnoreState(codeEditorService: ICodeEditorService, model: ITextModel, state: Boolean): void {
 	codeEditorService.setModelProperty(model.uri, ignoreUnusualLineTerminators, state);
 }
 
-function readIgnoreState(codeEditorService: ICodeEditorService, model: ITextModel): boolean | undefined {
+function readIgnoreState(codeEditorService: ICodeEditorService, model: ITextModel): Boolean | undefined {
 	return codeEditorService.getModelProperty(model.uri, ignoreUnusualLineTerminators);
 }
 
-class UnusualLineTerminatorsDetector extends Disposable implements IEditorContribution {
+class UnusualLineTerminatorsDetector extends DisposaBle implements IEditorContriBution {
 
-	public static readonly ID = 'editor.contrib.unusualLineTerminatorsDetector';
+	puBlic static readonly ID = 'editor.contriB.unusualLineTerminatorsDetector';
 
 	private _config: 'auto' | 'off' | 'prompt';
 
@@ -70,7 +70,7 @@ class UnusualLineTerminatorsDetector extends Disposable implements IEditorContri
 		}
 		const ignoreState = readIgnoreState(this._codeEditorService, model);
 		if (ignoreState === true) {
-			// this model should be ignored
+			// this model should Be ignored
 			return;
 		}
 		if (this._editor.getOption(EditorOption.readOnly)) {
@@ -87,13 +87,13 @@ class UnusualLineTerminatorsDetector extends Disposable implements IEditorContri
 		const result = await this._dialogService.confirm({
 			title: nls.localize('unusualLineTerminators.title', "Unusual Line Terminators"),
 			message: nls.localize('unusualLineTerminators.message', "Detected unusual line terminators"),
-			detail: nls.localize('unusualLineTerminators.detail', "This file contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can be configured via `editor.unusualLineTerminators`."),
+			detail: nls.localize('unusualLineTerminators.detail', "This file contains one or more unusual line terminator characters, like Line Separator (LS) or Paragraph Separator (PS).\n\nIt is recommended to remove them from the file. This can Be configured via `editor.unusualLineTerminators`."),
 			primaryButton: nls.localize('unusualLineTerminators.fix', "Fix this file"),
-			secondaryButton: nls.localize('unusualLineTerminators.ignore', "Ignore problem for this file")
+			secondaryButton: nls.localize('unusualLineTerminators.ignore', "Ignore proBlem for this file")
 		});
 
 		if (!result.confirmed) {
-			// this model should be ignored
+			// this model should Be ignored
 			writeIgnoreState(this._codeEditorService, model, true);
 			return;
 		}
@@ -102,4 +102,4 @@ class UnusualLineTerminatorsDetector extends Disposable implements IEditorContri
 	}
 }
 
-registerEditorContribution(UnusualLineTerminatorsDetector.ID, UnusualLineTerminatorsDetector);
+registerEditorContriBution(UnusualLineTerminatorsDetector.ID, UnusualLineTerminatorsDetector);

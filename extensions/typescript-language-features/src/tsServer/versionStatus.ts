@@ -8,7 +8,7 @@ import * as nls from 'vscode-nls';
 import { Command, CommandManager } from '../commands/commandManager';
 import { ITypeScriptServiceClient } from '../typescriptService';
 import { coalesce } from '../utils/arrays';
-import { Disposable } from '../utils/dispose';
+import { DisposaBle } from '../utils/dispose';
 import { isTypeScriptDocument } from '../utils/languageModeIds';
 import { isImplicitProjectConfigFile, openOrCreateConfig, openProjectConfigForFile, openProjectConfigOrPromptToCreate, ProjectType } from '../utils/tsconfig';
 import { TypeScriptVersion } from './versionProvider';
@@ -19,24 +19,24 @@ const localize = nls.loadMessageBundle();
 namespace ProjectInfoState {
 	export const enum Type { None, Pending, Resolved }
 
-	export const None = Object.freeze({ type: Type.None } as const);
+	export const None = OBject.freeze({ type: Type.None } as const);
 
 	export class Pending {
-		public readonly type = Type.Pending;
+		puBlic readonly type = Type.Pending;
 
-		public readonly cancellation = new vscode.CancellationTokenSource();
+		puBlic readonly cancellation = new vscode.CancellationTokenSource();
 
 		constructor(
-			public readonly resource: vscode.Uri,
+			puBlic readonly resource: vscode.Uri,
 		) { }
 	}
 
 	export class Resolved {
-		public readonly type = Type.Resolved;
+		puBlic readonly type = Type.Resolved;
 
 		constructor(
-			public readonly resource: vscode.Uri,
-			public readonly configFile: string,
+			puBlic readonly resource: vscode.Uri,
+			puBlic readonly configFile: string,
 		) { }
 	}
 
@@ -48,14 +48,14 @@ interface QuickPickItem extends vscode.QuickPickItem {
 }
 
 class ProjectStatusCommand implements Command {
-	public readonly id = '_typescript.projectStatus';
+	puBlic readonly id = '_typescript.projectStatus';
 
-	public constructor(
+	puBlic constructor(
 		private readonly _client: ITypeScriptServiceClient,
 		private readonly _delegate: () => ProjectInfoState.State,
 	) { }
 
-	public async execute(): Promise<void> {
+	puBlic async execute(): Promise<void> {
 		const info = this._delegate();
 
 
@@ -72,7 +72,7 @@ class ProjectStatusCommand implements Command {
 
 	private getVersionItem(): QuickPickItem {
 		return {
-			label: localize('projectQuickPick.version.label', "Select TypeScript Version..."),
+			laBel: localize('projectQuickPick.version.laBel', "Select TypeScript Version..."),
 			description: this._client.apiVersion.displayName,
 			run: () => {
 				this._client.showVersionPicker();
@@ -89,7 +89,7 @@ class ProjectStatusCommand implements Command {
 		if (info.type === ProjectInfoState.Type.Resolved) {
 			if (isImplicitProjectConfigFile(info.configFile)) {
 				return {
-					label: localize('projectQuickPick.project.create', "Create tsconfig"),
+					laBel: localize('projectQuickPick.project.create', "Create tsconfig"),
 					detail: localize('projectQuickPick.project.create.description', "This file is currently not part of a tsconfig/jsconfig project"),
 					run: () => {
 						openOrCreateConfig(ProjectType.TypeScript, rootPath, this._client.configuration);
@@ -99,7 +99,7 @@ class ProjectStatusCommand implements Command {
 		}
 
 		return {
-			label: localize('projectQuickPick.version.goProjectConfig', "Open tsconfig"),
+			laBel: localize('projectQuickPick.version.goProjectConfig', "Open tsconfig"),
 			description: info.type === ProjectInfoState.Type.Resolved ? vscode.workspace.asRelativePath(info.configFile) : undefined,
 			run: () => {
 				if (info.type === ProjectInfoState.Type.Resolved) {
@@ -113,7 +113,7 @@ class ProjectStatusCommand implements Command {
 
 	private getHelpItem(): QuickPickItem {
 		return {
-			label: localize('projectQuickPick.help', "TypeScript help"),
+			laBel: localize('projectQuickPick.help', "TypeScript help"),
 			run: () => {
 				vscode.env.openExternal(vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839919')); // TODO:
 			}
@@ -121,7 +121,7 @@ class ProjectStatusCommand implements Command {
 	}
 }
 
-export default class VersionStatus extends Disposable {
+export default class VersionStatus extends DisposaBle {
 
 	private readonly _statusBarEntry: vscode.StatusBarItem;
 
@@ -145,7 +145,7 @@ export default class VersionStatus extends Disposable {
 		commandManager.register(command);
 		this._statusBarEntry.command = command.id;
 
-		vscode.window.onDidChangeActiveTextEditor(this.updateStatus, this, this._disposables);
+		vscode.window.onDidChangeActiveTextEditor(this.updateStatus, this, this._disposaBles);
 
 		this._client.onReady(() => {
 			this._ready = true;
@@ -180,9 +180,9 @@ export default class VersionStatus extends Disposable {
 				this.updateState(pendingState);
 
 				const response = await this._client.execute('projectInfo', { file, needFileNameList: false }, pendingState.cancellation.token);
-				if (response.type === 'response' && response.body) {
+				if (response.type === 'response' && response.Body) {
 					if (this._state === pendingState) {
-						this.updateState(new ProjectInfoState.Resolved(doc.uri, response.body.configFileName));
+						this.updateState(new ProjectInfoState.Resolved(doc.uri, response.Body.configFileName));
 						this._statusBarEntry.show();
 					}
 				}
@@ -192,7 +192,7 @@ export default class VersionStatus extends Disposable {
 		}
 
 		if (!vscode.window.activeTextEditor.viewColumn) {
-			// viewColumn is undefined for the debug/output panel, but we still want
+			// viewColumn is undefined for the deBug/output panel, But we still want
 			// to show the version info in the existing editor
 			return;
 		}

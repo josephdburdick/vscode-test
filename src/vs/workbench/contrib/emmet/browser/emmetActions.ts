@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorAction, ServicesAccessor, IActionOptions } from 'vs/editor/browser/editorExtensions';
-import { grammarsExtPoint, ITMSyntaxExtensionPoint } from 'vs/workbench/services/textMate/common/TMGrammars';
+import { EditorAction, ServicesAccessor, IActionOptions } from 'vs/editor/Browser/editorExtensions';
+import { grammarsExtPoint, ITMSyntaxExtensionPoint } from 'vs/workBench/services/textMate/common/TMGrammars';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IExtensionService, ExtensionPointContribution } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtensionService, ExtensionPointContriBution } from 'vs/workBench/services/extensions/common/extensions';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 
 interface ModeScopeMap {
 	[key: string]: string;
 }
 
-export interface IGrammarContributions {
+export interface IGrammarContriButions {
 	getGrammar(mode: string): string;
 }
 
@@ -23,28 +23,28 @@ export interface ILanguageIdentifierResolver {
 	getLanguageIdentifier(modeId: string | LanguageId): LanguageIdentifier | null;
 }
 
-class GrammarContributions implements IGrammarContributions {
+class GrammarContriButions implements IGrammarContriButions {
 
 	private static _grammars: ModeScopeMap = {};
 
-	constructor(contributions: ExtensionPointContribution<ITMSyntaxExtensionPoint[]>[]) {
-		if (!Object.keys(GrammarContributions._grammars).length) {
-			this.fillModeScopeMap(contributions);
+	constructor(contriButions: ExtensionPointContriBution<ITMSyntaxExtensionPoint[]>[]) {
+		if (!OBject.keys(GrammarContriButions._grammars).length) {
+			this.fillModeScopeMap(contriButions);
 		}
 	}
 
-	private fillModeScopeMap(contributions: ExtensionPointContribution<ITMSyntaxExtensionPoint[]>[]) {
-		contributions.forEach((contribution) => {
-			contribution.value.forEach((grammar) => {
+	private fillModeScopeMap(contriButions: ExtensionPointContriBution<ITMSyntaxExtensionPoint[]>[]) {
+		contriButions.forEach((contriBution) => {
+			contriBution.value.forEach((grammar) => {
 				if (grammar.language && grammar.scopeName) {
-					GrammarContributions._grammars[grammar.language] = grammar.scopeName;
+					GrammarContriButions._grammars[grammar.language] = grammar.scopeName;
 				}
 			});
 		});
 	}
 
-	public getGrammar(mode: string): string {
-		return GrammarContributions._grammars[mode];
+	puBlic getGrammar(mode: string): string {
+		return GrammarContriButions._grammars[mode];
 	}
 }
 
@@ -52,7 +52,7 @@ export interface IEmmetActionOptions extends IActionOptions {
 	actionName: string;
 }
 
-export abstract class EmmetEditorAction extends EditorAction {
+export aBstract class EmmetEditorAction extends EditorAction {
 
 	protected emmetActionName: string;
 
@@ -63,27 +63,27 @@ export abstract class EmmetEditorAction extends EditorAction {
 
 	private static readonly emmetSupportedModes = ['html', 'css', 'xml', 'xsl', 'haml', 'jade', 'jsx', 'slim', 'scss', 'sass', 'less', 'stylus', 'styl', 'svg'];
 
-	private _lastGrammarContributions: Promise<GrammarContributions> | null = null;
+	private _lastGrammarContriButions: Promise<GrammarContriButions> | null = null;
 	private _lastExtensionService: IExtensionService | null = null;
-	private _withGrammarContributions(extensionService: IExtensionService): Promise<GrammarContributions | null> {
+	private _withGrammarContriButions(extensionService: IExtensionService): Promise<GrammarContriButions | null> {
 		if (this._lastExtensionService !== extensionService) {
 			this._lastExtensionService = extensionService;
-			this._lastGrammarContributions = extensionService.readExtensionPointContributions(grammarsExtPoint).then((contributions) => {
-				return new GrammarContributions(contributions);
+			this._lastGrammarContriButions = extensionService.readExtensionPointContriButions(grammarsExtPoint).then((contriButions) => {
+				return new GrammarContriButions(contriButions);
 			});
 		}
-		return this._lastGrammarContributions || Promise.resolve(null);
+		return this._lastGrammarContriButions || Promise.resolve(null);
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+	puBlic run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
 		const extensionService = accessor.get(IExtensionService);
 		const modeService = accessor.get(IModeService);
 		const commandService = accessor.get(ICommandService);
 
-		return this._withGrammarContributions(extensionService).then((grammarContributions) => {
+		return this._withGrammarContriButions(extensionService).then((grammarContriButions) => {
 
-			if (this.id === 'editor.emmet.action.expandAbbreviation' && grammarContributions) {
-				return commandService.executeCommand<void>('emmet.expandAbbreviation', EmmetEditorAction.getLanguage(modeService, editor, grammarContributions));
+			if (this.id === 'editor.emmet.action.expandABBreviation' && grammarContriButions) {
+				return commandService.executeCommand<void>('emmet.expandABBreviation', EmmetEditorAction.getLanguage(modeService, editor, grammarContriButions));
 			}
 
 			return undefined;
@@ -91,7 +91,7 @@ export abstract class EmmetEditorAction extends EditorAction {
 
 	}
 
-	public static getLanguage(languageIdentifierResolver: ILanguageIdentifierResolver, editor: ICodeEditor, grammars: IGrammarContributions) {
+	puBlic static getLanguage(languageIdentifierResolver: ILanguageIdentifierResolver, editor: ICodeEditor, grammars: IGrammarContriButions) {
 		const model = editor.getModel();
 		const selection = editor.getSelection();
 
@@ -100,8 +100,8 @@ export abstract class EmmetEditorAction extends EditorAction {
 		}
 
 		const position = selection.getStartPosition();
-		model.tokenizeIfCheap(position.lineNumber);
-		const languageId = model.getLanguageIdAtPosition(position.lineNumber, position.column);
+		model.tokenizeIfCheap(position.lineNumBer);
+		const languageId = model.getLanguageIdAtPosition(position.lineNumBer, position.column);
 		const languageIdentifier = languageIdentifierResolver.getLanguageIdentifier(languageId);
 		const language = languageIdentifier ? languageIdentifier.language : '';
 		const syntax = language.split('.').pop();

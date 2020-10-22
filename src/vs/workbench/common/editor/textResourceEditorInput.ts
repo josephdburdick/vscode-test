@@ -3,32 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorInput, Verbosity, GroupIdentifier, IEditorInput, ISaveOptions, IRevertOptions, IEditorInputWithPreferredResource } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { ITextFileService, ITextFileSaveOptions } from 'vs/workbench/services/textfile/common/textfiles';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IFileService, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { Schemas } from 'vs/base/common/network';
-import { dirname, isEqual } from 'vs/base/common/resources';
+import { EditorInput, VerBosity, GroupIdentifier, IEditorInput, ISaveOptions, IRevertOptions, IEditorInputWithPreferredResource } from 'vs/workBench/common/editor';
+import { URI } from 'vs/Base/common/uri';
+import { ITextFileService, ITextFileSaveOptions } from 'vs/workBench/services/textfile/common/textfiles';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { IEditorGroupsService } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { IFileService, FileSystemProviderCapaBilities } from 'vs/platform/files/common/files';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IFilesConfigurationService, AutoSaveMode } from 'vs/workBench/services/filesConfiguration/common/filesConfigurationService';
+import { Schemas } from 'vs/Base/common/network';
+import { dirname, isEqual } from 'vs/Base/common/resources';
 
 /**
- * The base class for all editor inputs that open in text editors.
+ * The Base class for all editor inputs that open in text editors.
  */
-export abstract class AbstractTextResourceEditorInput extends EditorInput implements IEditorInputWithPreferredResource {
+export aBstract class ABstractTextResourceEditorInput extends EditorInput implements IEditorInputWithPreferredResource {
 
 	private _preferredResource: URI;
 	get preferredResource(): URI { return this._preferredResource; }
 
 	constructor(
-		public readonly resource: URI,
+		puBlic readonly resource: URI,
 		preferredResource: URI | undefined,
 		@IEditorService protected readonly editorService: IEditorService,
 		@IEditorGroupsService protected readonly editorGroupService: IEditorGroupsService,
 		@ITextFileService protected readonly textFileService: ITextFileService,
-		@ILabelService protected readonly labelService: ILabelService,
+		@ILaBelService protected readonly laBelService: ILaBelService,
 		@IFileService protected readonly fileService: IFileService,
 		@IFilesConfigurationService protected readonly filesConfigurationService: IFilesConfigurationService
 	) {
@@ -41,22 +41,22 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 
 	protected registerListeners(): void {
 
-		// Clear label memoizer on certain events that have impact
-		this._register(this.labelService.onDidChangeFormatters(e => this.onLabelEvent(e.scheme)));
-		this._register(this.fileService.onDidChangeFileSystemProviderRegistrations(e => this.onLabelEvent(e.scheme)));
-		this._register(this.fileService.onDidChangeFileSystemProviderCapabilities(e => this.onLabelEvent(e.scheme)));
+		// Clear laBel memoizer on certain events that have impact
+		this._register(this.laBelService.onDidChangeFormatters(e => this.onLaBelEvent(e.scheme)));
+		this._register(this.fileService.onDidChangeFileSystemProviderRegistrations(e => this.onLaBelEvent(e.scheme)));
+		this._register(this.fileService.onDidChangeFileSystemProviderCapaBilities(e => this.onLaBelEvent(e.scheme)));
 	}
 
-	private onLabelEvent(scheme: string): void {
+	private onLaBelEvent(scheme: string): void {
 		if (scheme === this._preferredResource.scheme) {
-			this.updateLabel();
+			this.updateLaBel();
 		}
 	}
 
-	private updateLabel(): void {
+	private updateLaBel(): void {
 
-		// Clear any cached labels from before
-		this._basename = undefined;
+		// Clear any cached laBels from Before
+		this._Basename = undefined;
 		this._shortDescription = undefined;
 		this._mediumDescription = undefined;
 		this._longDescription = undefined;
@@ -64,38 +64,38 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 		this._mediumTitle = undefined;
 		this._longTitle = undefined;
 
-		// Trigger recompute of label
-		this._onDidChangeLabel.fire();
+		// Trigger recompute of laBel
+		this._onDidChangeLaBel.fire();
 	}
 
 	setPreferredResource(preferredResource: URI): void {
 		if (!isEqual(preferredResource, this._preferredResource)) {
 			this._preferredResource = preferredResource;
 
-			this.updateLabel();
+			this.updateLaBel();
 		}
 	}
 
 	getName(): string {
-		return this.basename;
+		return this.Basename;
 	}
 
-	private _basename: string | undefined;
-	private get basename(): string {
-		if (!this._basename) {
-			this._basename = this.labelService.getUriBasenameLabel(this._preferredResource);
+	private _Basename: string | undefined;
+	private get Basename(): string {
+		if (!this._Basename) {
+			this._Basename = this.laBelService.getUriBasenameLaBel(this._preferredResource);
 		}
 
-		return this._basename;
+		return this._Basename;
 	}
 
-	getDescription(verbosity: Verbosity = Verbosity.MEDIUM): string | undefined {
-		switch (verbosity) {
-			case Verbosity.SHORT:
+	getDescription(verBosity: VerBosity = VerBosity.MEDIUM): string | undefined {
+		switch (verBosity) {
+			case VerBosity.SHORT:
 				return this.shortDescription;
-			case Verbosity.LONG:
+			case VerBosity.LONG:
 				return this.longDescription;
-			case Verbosity.MEDIUM:
+			case VerBosity.MEDIUM:
 			default:
 				return this.mediumDescription;
 		}
@@ -104,7 +104,7 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 	private _shortDescription: string | undefined = undefined;
 	private get shortDescription(): string {
 		if (!this._shortDescription) {
-			this._shortDescription = this.labelService.getUriBasenameLabel(dirname(this._preferredResource));
+			this._shortDescription = this.laBelService.getUriBasenameLaBel(dirname(this._preferredResource));
 		}
 		return this._shortDescription;
 	}
@@ -112,7 +112,7 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 	private _mediumDescription: string | undefined = undefined;
 	private get mediumDescription(): string {
 		if (!this._mediumDescription) {
-			this._mediumDescription = this.labelService.getUriLabel(dirname(this._preferredResource), { relative: true });
+			this._mediumDescription = this.laBelService.getUriLaBel(dirname(this._preferredResource), { relative: true });
 		}
 		return this._mediumDescription;
 	}
@@ -120,7 +120,7 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 	private _longDescription: string | undefined = undefined;
 	private get longDescription(): string {
 		if (!this._longDescription) {
-			this._longDescription = this.labelService.getUriLabel(dirname(this._preferredResource));
+			this._longDescription = this.laBelService.getUriLaBel(dirname(this._preferredResource));
 		}
 		return this._longDescription;
 	}
@@ -136,7 +136,7 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 	private _mediumTitle: string | undefined = undefined;
 	private get mediumTitle(): string {
 		if (!this._mediumTitle) {
-			this._mediumTitle = this.labelService.getUriLabel(this._preferredResource, { relative: true });
+			this._mediumTitle = this.laBelService.getUriLaBel(this._preferredResource, { relative: true });
 		}
 		return this._mediumTitle;
 	}
@@ -144,45 +144,45 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 	private _longTitle: string | undefined = undefined;
 	private get longTitle(): string {
 		if (!this._longTitle) {
-			this._longTitle = this.labelService.getUriLabel(this._preferredResource);
+			this._longTitle = this.laBelService.getUriLaBel(this._preferredResource);
 		}
 		return this._longTitle;
 	}
 
-	getTitle(verbosity: Verbosity): string {
-		switch (verbosity) {
-			case Verbosity.SHORT:
+	getTitle(verBosity: VerBosity): string {
+		switch (verBosity) {
+			case VerBosity.SHORT:
 				return this.shortTitle;
-			case Verbosity.LONG:
+			case VerBosity.LONG:
 				return this.longTitle;
 			default:
-			case Verbosity.MEDIUM:
+			case VerBosity.MEDIUM:
 				return this.mediumTitle;
 		}
 	}
 
-	isUntitled(): boolean {
-		//  anyFile: is never untitled as it can be saved
-		// untitled: is untitled by definition
-		// anyOther: is untitled because it cannot be saved, as such we expect a "Save As" dialog
+	isUntitled(): Boolean {
+		//  anyFile: is never untitled as it can Be saved
+		// untitled: is untitled By definition
+		// anyOther: is untitled Because it cannot Be saved, as such we expect a "Save As" dialog
 		return !this.fileService.canHandleResource(this.resource);
 	}
 
-	isReadonly(): boolean {
+	isReadonly(): Boolean {
 		if (this.isUntitled()) {
 			return false; // untitled is never readonly
 		}
 
-		return this.fileService.hasCapability(this.resource, FileSystemProviderCapabilities.Readonly);
+		return this.fileService.hasCapaBility(this.resource, FileSystemProviderCapaBilities.Readonly);
 	}
 
-	isSaving(): boolean {
+	isSaving(): Boolean {
 		if (this.isUntitled()) {
 			return false; // untitled is never saving automatically
 		}
 
 		if (this.filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-			return true; // a short auto save is configured, treat this as being saved
+			return true; // a short auto save is configured, treat this as Being saved
 		}
 
 		return false;
@@ -204,7 +204,7 @@ export abstract class AbstractTextResourceEditorInput extends EditorInput implem
 		return this.doSave(group, options, true);
 	}
 
-	private async doSave(group: GroupIdentifier, options: ISaveOptions | undefined, saveAs: boolean): Promise<IEditorInput | undefined> {
+	private async doSave(group: GroupIdentifier, options: ISaveOptions | undefined, saveAs: Boolean): Promise<IEditorInput | undefined> {
 
 		// Save / Save As
 		let target: URI | undefined;

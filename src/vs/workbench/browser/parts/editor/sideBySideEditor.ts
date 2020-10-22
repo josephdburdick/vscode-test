@@ -3,41 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
+import * as DOM from 'vs/Base/Browser/dom';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorInput, EditorOptions, SideBySideEditorInput, IEditorControl, IEditorPane, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import { EditorInput, EditorOptions, SideBySideEditorInput, IEditorControl, IEditorPane, IEditorOpenContext } from 'vs/workBench/common/editor';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { scrollbarShadow } from 'vs/platform/theme/common/colorRegistry';
-import { IEditorRegistry, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { SplitView, Sizing, Orientation } from 'vs/base/browser/ui/splitview/splitview';
-import { Event, Relay, Emitter } from 'vs/base/common/event';
+import { scrollBarShadow } from 'vs/platform/theme/common/colorRegistry';
+import { IEditorRegistry, Extensions as EditorExtensions } from 'vs/workBench/Browser/editor';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IEditorGroup } from 'vs/workBench/services/editor/common/editorGroupsService';
+import { SplitView, Sizing, Orientation } from 'vs/Base/Browser/ui/splitview/splitview';
+import { Event, Relay, Emitter } from 'vs/Base/common/event';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { assertIsDefined } from 'vs/base/common/types';
+import { assertIsDefined } from 'vs/Base/common/types';
 
 export class SideBySideEditor extends EditorPane {
 
-	static readonly ID: string = 'workbench.editor.sidebysideEditor';
+	static readonly ID: string = 'workBench.editor.sideBysideEditor';
 
 	private get minimumPrimaryWidth() { return this.primaryEditorPane ? this.primaryEditorPane.minimumWidth : 0; }
-	private get maximumPrimaryWidth() { return this.primaryEditorPane ? this.primaryEditorPane.maximumWidth : Number.POSITIVE_INFINITY; }
+	private get maximumPrimaryWidth() { return this.primaryEditorPane ? this.primaryEditorPane.maximumWidth : NumBer.POSITIVE_INFINITY; }
 	private get minimumPrimaryHeight() { return this.primaryEditorPane ? this.primaryEditorPane.minimumHeight : 0; }
-	private get maximumPrimaryHeight() { return this.primaryEditorPane ? this.primaryEditorPane.maximumHeight : Number.POSITIVE_INFINITY; }
+	private get maximumPrimaryHeight() { return this.primaryEditorPane ? this.primaryEditorPane.maximumHeight : NumBer.POSITIVE_INFINITY; }
 
 	private get minimumSecondaryWidth() { return this.secondaryEditorPane ? this.secondaryEditorPane.minimumWidth : 0; }
-	private get maximumSecondaryWidth() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumWidth : Number.POSITIVE_INFINITY; }
+	private get maximumSecondaryWidth() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumWidth : NumBer.POSITIVE_INFINITY; }
 	private get minimumSecondaryHeight() { return this.secondaryEditorPane ? this.secondaryEditorPane.minimumHeight : 0; }
-	private get maximumSecondaryHeight() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumHeight : Number.POSITIVE_INFINITY; }
+	private get maximumSecondaryHeight() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumHeight : NumBer.POSITIVE_INFINITY; }
 
-	// these setters need to exist because this extends from EditorPane
-	set minimumWidth(value: number) { /* noop */ }
-	set maximumWidth(value: number) { /* noop */ }
-	set minimumHeight(value: number) { /* noop */ }
-	set maximumHeight(value: number) { /* noop */ }
+	// these setters need to exist Because this extends from EditorPane
+	set minimumWidth(value: numBer) { /* noop */ }
+	set maximumWidth(value: numBer) { /* noop */ }
+	set minimumHeight(value: numBer) { /* noop */ }
+	set maximumHeight(value: numBer) { /* noop */ }
 
 	get minimumWidth() { return this.minimumPrimaryWidth + this.minimumSecondaryWidth; }
 	get maximumWidth() { return this.maximumPrimaryWidth + this.maximumSecondaryWidth; }
@@ -53,9 +53,9 @@ export class SideBySideEditor extends EditorPane {
 	private splitview: SplitView | undefined;
 	private dimension: DOM.Dimension = new DOM.Dimension(0, 0);
 
-	private onDidCreateEditors = this._register(new Emitter<{ width: number; height: number; } | undefined>());
+	private onDidCreateEditors = this._register(new Emitter<{ width: numBer; height: numBer; } | undefined>());
 
-	private _onDidSizeConstraintsChange = this._register(new Relay<{ width: number; height: number; } | undefined>());
+	private _onDidSizeConstraintsChange = this._register(new Relay<{ width: numBer; height: numBer; } | undefined>());
 	readonly onDidSizeConstraintsChange = Event.any(this.onDidCreateEditors.event, this._onDidSizeConstraintsChange.event);
 
 	constructor(
@@ -68,28 +68,28 @@ export class SideBySideEditor extends EditorPane {
 	}
 
 	protected createEditor(parent: HTMLElement): void {
-		parent.classList.add('side-by-side-editor');
+		parent.classList.add('side-By-side-editor');
 
 		const splitview = this.splitview = this._register(new SplitView(parent, { orientation: Orientation.HORIZONTAL }));
-		this._register(this.splitview.onDidSashReset(() => splitview.distributeViewSizes()));
+		this._register(this.splitview.onDidSashReset(() => splitview.distriButeViewSizes()));
 
 		this.secondaryEditorContainer = DOM.$('.secondary-editor-container');
 		this.splitview.addView({
 			element: this.secondaryEditorContainer,
 			layout: size => this.secondaryEditorPane && this.secondaryEditorPane.layout(new DOM.Dimension(size, this.dimension.height)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
+			maximumSize: NumBer.POSITIVE_INFINITY,
 			onDidChange: Event.None
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
 		this.primaryEditorContainer = DOM.$('.primary-editor-container');
 		this.splitview.addView({
 			element: this.primaryEditorContainer,
 			layout: size => this.primaryEditorPane && this.primaryEditorPane.layout(new DOM.Dimension(size, this.dimension.height)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
+			maximumSize: NumBer.POSITIVE_INFINITY,
 			onDidChange: Event.None
-		}, Sizing.Distribute);
+		}, Sizing.DistriBute);
 
 		this.updateStyles();
 	}
@@ -107,16 +107,16 @@ export class SideBySideEditor extends EditorPane {
 		}
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
+	protected setEditorVisiBle(visiBle: Boolean, group: IEditorGroup | undefined): void {
 		if (this.primaryEditorPane) {
-			this.primaryEditorPane.setVisible(visible, group);
+			this.primaryEditorPane.setVisiBle(visiBle, group);
 		}
 
 		if (this.secondaryEditorPane) {
-			this.secondaryEditorPane.setVisible(visible, group);
+			this.secondaryEditorPane.setVisiBle(visiBle, group);
 		}
 
-		super.setEditorVisible(visible, group);
+		super.setEditorVisiBle(visiBle, group);
 	}
 
 	clearInput(): void {
@@ -196,7 +196,7 @@ export class SideBySideEditor extends EditorPane {
 
 		const editor = descriptor.instantiate(this.instantiationService);
 		editor.create(container);
-		editor.setVisible(this.isVisible(), this.group);
+		editor.setVisiBle(this.isVisiBle(), this.group);
 
 		return editor;
 	}
@@ -222,7 +222,7 @@ export class SideBySideEditor extends EditorPane {
 		super.updateStyles();
 
 		if (this.primaryEditorContainer) {
-			this.primaryEditorContainer.style.boxShadow = `-6px 0 5px -5px ${this.getColor(scrollbarShadow)}`;
+			this.primaryEditorContainer.style.BoxShadow = `-6px 0 5px -5px ${this.getColor(scrollBarShadow)}`;
 		}
 	}
 

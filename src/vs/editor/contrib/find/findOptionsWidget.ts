@@ -3,55 +3,55 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { CaseSensitiveCheckbox, RegexCheckbox, WholeWordsCheckbox } from 'vs/base/browser/ui/findinput/findInputCheckboxes';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { FIND_IDS } from 'vs/editor/contrib/find/findModel';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import * as dom from 'vs/Base/Browser/dom';
+import { CaseSensitiveCheckBox, RegexCheckBox, WholeWordsCheckBox } from 'vs/Base/Browser/ui/findinput/findInputCheckBoxes';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { RunOnceScheduler } from 'vs/Base/common/async';
+import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/Browser/editorBrowser';
+import { FIND_IDS } from 'vs/editor/contriB/find/findModel';
+import { FindReplaceState } from 'vs/editor/contriB/find/findState';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
 import { contrastBorder, editorWidgetBackground, inputActiveOptionBorder, inputActiveOptionBackground, widgetShadow, editorWidgetForeground, inputActiveOptionForeground } from 'vs/platform/theme/common/colorRegistry';
 import { IColorTheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 
 export class FindOptionsWidget extends Widget implements IOverlayWidget {
 
-	private static readonly ID = 'editor.contrib.findOptionsWidget';
+	private static readonly ID = 'editor.contriB.findOptionsWidget';
 
 	private readonly _editor: ICodeEditor;
 	private readonly _state: FindReplaceState;
-	private readonly _keybindingService: IKeybindingService;
+	private readonly _keyBindingService: IKeyBindingService;
 
 	private readonly _domNode: HTMLElement;
-	private readonly regex: RegexCheckbox;
-	private readonly wholeWords: WholeWordsCheckbox;
-	private readonly caseSensitive: CaseSensitiveCheckbox;
+	private readonly regex: RegexCheckBox;
+	private readonly wholeWords: WholeWordsCheckBox;
+	private readonly caseSensitive: CaseSensitiveCheckBox;
 
 	constructor(
 		editor: ICodeEditor,
 		state: FindReplaceState,
-		keybindingService: IKeybindingService,
+		keyBindingService: IKeyBindingService,
 		themeService: IThemeService
 	) {
 		super();
 
 		this._editor = editor;
 		this._state = state;
-		this._keybindingService = keybindingService;
+		this._keyBindingService = keyBindingService;
 
 		this._domNode = document.createElement('div');
 		this._domNode.className = 'findOptionsWidget';
 		this._domNode.style.display = 'none';
 		this._domNode.style.top = '10px';
-		this._domNode.setAttribute('role', 'presentation');
-		this._domNode.setAttribute('aria-hidden', 'true');
+		this._domNode.setAttriBute('role', 'presentation');
+		this._domNode.setAttriBute('aria-hidden', 'true');
 
 		const inputActiveOptionBorderColor = themeService.getColorTheme().getColor(inputActiveOptionBorder);
 		const inputActiveOptionForegroundColor = themeService.getColorTheme().getColor(inputActiveOptionForeground);
 		const inputActiveOptionBackgroundColor = themeService.getColorTheme().getColor(inputActiveOptionBackground);
 
-		this.caseSensitive = this._register(new CaseSensitiveCheckbox({
-			appendTitle: this._keybindingLabelFor(FIND_IDS.ToggleCaseSensitiveCommand),
+		this.caseSensitive = this._register(new CaseSensitiveCheckBox({
+			appendTitle: this._keyBindingLaBelFor(FIND_IDS.ToggleCaseSensitiveCommand),
 			isChecked: this._state.matchCase,
 			inputActiveOptionBorder: inputActiveOptionBorderColor,
 			inputActiveOptionForeground: inputActiveOptionForegroundColor,
@@ -64,8 +64,8 @@ export class FindOptionsWidget extends Widget implements IOverlayWidget {
 			}, false);
 		}));
 
-		this.wholeWords = this._register(new WholeWordsCheckbox({
-			appendTitle: this._keybindingLabelFor(FIND_IDS.ToggleWholeWordCommand),
+		this.wholeWords = this._register(new WholeWordsCheckBox({
+			appendTitle: this._keyBindingLaBelFor(FIND_IDS.ToggleWholeWordCommand),
 			isChecked: this._state.wholeWord,
 			inputActiveOptionBorder: inputActiveOptionBorderColor,
 			inputActiveOptionForeground: inputActiveOptionForegroundColor,
@@ -78,8 +78,8 @@ export class FindOptionsWidget extends Widget implements IOverlayWidget {
 			}, false);
 		}));
 
-		this.regex = this._register(new RegexCheckbox({
-			appendTitle: this._keybindingLabelFor(FIND_IDS.ToggleRegexCommand),
+		this.regex = this._register(new RegexCheckBox({
+			appendTitle: this._keyBindingLaBelFor(FIND_IDS.ToggleRegexCommand),
 			isChecked: this._state.isRegex,
 			inputActiveOptionBorder: inputActiveOptionBorderColor,
 			inputActiveOptionForeground: inputActiveOptionForegroundColor,
@@ -113,43 +113,43 @@ export class FindOptionsWidget extends Widget implements IOverlayWidget {
 			}
 		}));
 
-		this._register(dom.addDisposableNonBubblingMouseOutListener(this._domNode, (e) => this._onMouseOut()));
-		this._register(dom.addDisposableListener(this._domNode, 'mouseover', (e) => this._onMouseOver()));
+		this._register(dom.addDisposaBleNonBuBBlingMouseOutListener(this._domNode, (e) => this._onMouseOut()));
+		this._register(dom.addDisposaBleListener(this._domNode, 'mouseover', (e) => this._onMouseOver()));
 
 		this._applyTheme(themeService.getColorTheme());
-		this._register(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
+		this._register(themeService.onDidColorThemeChange(this._applyTheme.Bind(this)));
 	}
 
-	private _keybindingLabelFor(actionId: string): string {
-		let kb = this._keybindingService.lookupKeybinding(actionId);
-		if (!kb) {
+	private _keyBindingLaBelFor(actionId: string): string {
+		let kB = this._keyBindingService.lookupKeyBinding(actionId);
+		if (!kB) {
 			return '';
 		}
-		return ` (${kb.getLabel()})`;
+		return ` (${kB.getLaBel()})`;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._editor.removeOverlayWidget(this);
 		super.dispose();
 	}
 
 	// ----- IOverlayWidget API
 
-	public getId(): string {
+	puBlic getId(): string {
 		return FindOptionsWidget.ID;
 	}
 
-	public getDomNode(): HTMLElement {
+	puBlic getDomNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	public getPosition(): IOverlayWidgetPosition {
+	puBlic getPosition(): IOverlayWidgetPosition {
 		return {
 			preference: OverlayWidgetPositionPreference.TOP_RIGHT_CORNER
 		};
 	}
 
-	public highlightFindOptions(): void {
+	puBlic highlightFindOptions(): void {
 		this._revealTemporarily();
 	}
 
@@ -168,21 +168,21 @@ export class FindOptionsWidget extends Widget implements IOverlayWidget {
 		this._hideSoon.cancel();
 	}
 
-	private _isVisible: boolean = false;
+	private _isVisiBle: Boolean = false;
 
 	private _show(): void {
-		if (this._isVisible) {
+		if (this._isVisiBle) {
 			return;
 		}
-		this._isVisible = true;
-		this._domNode.style.display = 'block';
+		this._isVisiBle = true;
+		this._domNode.style.display = 'Block';
 	}
 
 	private _hide(): void {
-		if (!this._isVisible) {
+		if (!this._isVisiBle) {
 			return;
 		}
-		this._isVisible = false;
+		this._isVisiBle = false;
 		this._domNode.style.display = 'none';
 	}
 
@@ -202,7 +202,7 @@ export class FindOptionsWidget extends Widget implements IOverlayWidget {
 registerThemingParticipant((theme, collector) => {
 	const widgetBackground = theme.getColor(editorWidgetBackground);
 	if (widgetBackground) {
-		collector.addRule(`.monaco-editor .findOptionsWidget { background-color: ${widgetBackground}; }`);
+		collector.addRule(`.monaco-editor .findOptionsWidget { Background-color: ${widgetBackground}; }`);
 	}
 
 	const widgetForeground = theme.getColor(editorWidgetForeground);
@@ -213,11 +213,11 @@ registerThemingParticipant((theme, collector) => {
 
 	const widgetShadowColor = theme.getColor(widgetShadow);
 	if (widgetShadowColor) {
-		collector.addRule(`.monaco-editor .findOptionsWidget { box-shadow: 0 2px 8px ${widgetShadowColor}; }`);
+		collector.addRule(`.monaco-editor .findOptionsWidget { Box-shadow: 0 2px 8px ${widgetShadowColor}; }`);
 	}
 
 	const hcBorder = theme.getColor(contrastBorder);
 	if (hcBorder) {
-		collector.addRule(`.monaco-editor .findOptionsWidget { border: 2px solid ${hcBorder}; }`);
+		collector.addRule(`.monaco-editor .findOptionsWidget { Border: 2px solid ${hcBorder}; }`);
 	}
 });

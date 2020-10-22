@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { localize } from 'vs/nls';
-import { IExperimentService, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { IExperimentService, ExperimentState } from 'vs/workBench/contriB/experiments/common/experimentService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { language, locale } from 'vs/base/common/platform';
+import { language, locale } from 'vs/Base/common/platform';
 import { IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
+import { IJSONEditingService } from 'vs/workBench/services/configuration/common/jsonEditing';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
-export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution {
+export aBstract class ABstractTelemetryOptOut implements IWorkBenchContriBution {
 
-	private static readonly TELEMETRY_OPT_OUT_SHOWN = 'workbench.telemetryOptOutShown';
+	private static readonly TELEMETRY_OPT_OUT_SHOWN = 'workBench.telemetryOptOutShown';
 	private privacyUrl: string | undefined;
 
 	constructor(
@@ -40,11 +40,11 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
 		@IJSONEditingService private readonly jsonEditingService: IJSONEditingService
 	) {
-		storageKeysSyncRegistryService.registerStorageKey({ key: AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, version: 1 });
+		storageKeysSyncRegistryService.registerStorageKey({ key: ABstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, version: 1 });
 	}
 
 	protected async handleTelemetryOptOut(): Promise<void> {
-		if (this.productService.telemetryOptOutUrl && !this.storageService.get(AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, StorageScope.GLOBAL)) {
+		if (this.productService.telemetryOptOutUrl && !this.storageService.get(ABstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, StorageScope.GLOBAL)) {
 			const experimentId = 'telemetryOptOut';
 
 			const [count, experimentState] = await Promise.all([this.getWindowCount(), this.experimentService.getExperimentById(experimentId)]);
@@ -53,7 +53,7 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 				return; // return early if meanwhile another window opened (we only show the opt-out once)
 			}
 
-			this.storageService.store(AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, true, StorageScope.GLOBAL);
+			this.storageService.store(ABstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, true, StorageScope.GLOBAL);
 
 			this.privacyUrl = this.productService.privacyStatementUrl || this.productService.telemetryOptOutUrl;
 
@@ -70,30 +70,30 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 	}
 
 	private showTelemetryOptOut(telemetryOptOutUrl: string): void {
-		const optOutNotice = localize('telemetryOptOut.optOutNotice', "Help improve VS Code by allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt out]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
-		const optInNotice = localize('telemetryOptOut.optInNotice', "Help improve VS Code by allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt in]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
+		const optOutNotice = localize('telemetryOptOut.optOutNotice', "Help improve VS Code By allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt out]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
+		const optInNotice = localize('telemetryOptOut.optInNotice', "Help improve VS Code By allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt in]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
 
 		this.notificationService.prompt(
 			Severity.Info,
 			this.telemetryService.isOptedIn ? optOutNotice : optInNotice,
 			[{
-				label: localize('telemetryOptOut.readMore', "Read More"),
+				laBel: localize('telemetryOptOut.readMore', "Read More"),
 				run: () => this.openerService.open(URI.parse(telemetryOptOutUrl))
 			}],
 			{ sticky: true }
 		);
 	}
 
-	protected abstract getWindowCount(): Promise<number>;
+	protected aBstract getWindowCount(): Promise<numBer>;
 
 	private runExperiment(experimentId: string) {
 		const promptMessageKey = 'telemetryOptOut.optOutOption';
-		const yesLabelKey = 'telemetryOptOut.OptIn';
-		const noLabelKey = 'telemetryOptOut.OptOut';
+		const yesLaBelKey = 'telemetryOptOut.OptIn';
+		const noLaBelKey = 'telemetryOptOut.OptOut';
 
-		let promptMessage = localize('telemetryOptOut.optOutOption', "Please help Microsoft improve Visual Studio Code by allowing the collection of usage data. Read our [privacy statement]({0}) for more details.", this.privacyUrl);
-		let yesLabel = localize('telemetryOptOut.OptIn', "Yes, glad to help");
-		let noLabel = localize('telemetryOptOut.OptOut', "No, thanks");
+		let promptMessage = localize('telemetryOptOut.optOutOption', "Please help Microsoft improve Visual Studio Code By allowing the collection of usage data. Read our [privacy statement]({0}) for more details.", this.privacyUrl);
+		let yesLaBel = localize('telemetryOptOut.OptIn', "Yes, glad to help");
+		let noLaBel = localize('telemetryOptOut.OptOut', "No, thanks");
 
 		let queryPromise = Promise.resolve(undefined);
 		if (locale && locale !== language && locale !== 'en' && locale.indexOf('en-') === -1) {
@@ -101,18 +101,18 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 				if (!tagResult || !tagResult.total) {
 					return undefined;
 				}
-				const extensionToFetchTranslationsFrom = tagResult.firstPage.filter(e => e.publisher === 'MS-CEINTL' && e.name.indexOf('vscode-language-pack') === 0)[0] || tagResult.firstPage[0];
+				const extensionToFetchTranslationsFrom = tagResult.firstPage.filter(e => e.puBlisher === 'MS-CEINTL' && e.name.indexOf('vscode-language-pack') === 0)[0] || tagResult.firstPage[0];
 				if (!extensionToFetchTranslationsFrom.assets || !extensionToFetchTranslationsFrom.assets.coreTranslations.length) {
 					return undefined;
 				}
 
 				return this.galleryService.getCoreTranslation(extensionToFetchTranslationsFrom, locale!)
 					.then(translation => {
-						const translationsFromPack: any = translation && translation.contents ? translation.contents['vs/workbench/contrib/welcome/telemetryOptOut/electron-browser/telemetryOptOut'] : {};
-						if (!!translationsFromPack[promptMessageKey] && !!translationsFromPack[yesLabelKey] && !!translationsFromPack[noLabelKey]) {
-							promptMessage = translationsFromPack[promptMessageKey].replace('{0}', this.privacyUrl) + ' (Please help Microsoft improve Visual Studio Code by allowing the collection of usage data.)';
-							yesLabel = translationsFromPack[yesLabelKey] + ' (Yes)';
-							noLabel = translationsFromPack[noLabelKey] + ' (No)';
+						const translationsFromPack: any = translation && translation.contents ? translation.contents['vs/workBench/contriB/welcome/telemetryOptOut/electron-Browser/telemetryOptOut'] : {};
+						if (!!translationsFromPack[promptMessageKey] && !!translationsFromPack[yesLaBelKey] && !!translationsFromPack[noLaBelKey]) {
+							promptMessage = translationsFromPack[promptMessageKey].replace('{0}', this.privacyUrl) + ' (Please help Microsoft improve Visual Studio Code By allowing the collection of usage data.)';
+							yesLaBel = translationsFromPack[yesLaBelKey] + ' (Yes)';
+							noLaBel = translationsFromPack[noLaBelKey] + ' (No)';
 						}
 						return undefined;
 					});
@@ -120,15 +120,15 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 			});
 		}
 
-		const logTelemetry = (optout?: boolean) => {
+		const logTelemetry = (optout?: Boolean) => {
 			type ExperimentsOptOutClassification = {
 				optout?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 			};
 
 			type ExperimentsOptOutEvent = {
-				optout?: boolean;
+				optout?: Boolean;
 			};
-			this.telemetryService.publicLog2<ExperimentsOptOutEvent, ExperimentsOptOutClassification>('experiments:optout', typeof optout === 'boolean' ? { optout } : {});
+			this.telemetryService.puBlicLog2<ExperimentsOptOutEvent, ExperimentsOptOutClassification>('experiments:optout', typeof optout === 'Boolean' ? { optout } : {});
 		};
 
 		queryPromise.then(() => {
@@ -137,17 +137,17 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 				promptMessage,
 				[
 					{
-						label: yesLabel,
+						laBel: yesLaBel,
 						run: () => {
 							logTelemetry(false);
 						}
 					},
 					{
-						label: noLabel,
+						laBel: noLaBel,
 						run: async () => {
 							logTelemetry(true);
-							this.configurationService.updateValue('telemetry.enableTelemetry', false);
-							await this.jsonEditingService.write(this.environmentService.argvResource, [{ path: ['enable-crash-reporter'], value: false }], true);
+							this.configurationService.updateValue('telemetry.enaBleTelemetry', false);
+							await this.jsonEditingService.write(this.environmentService.argvResource, [{ path: ['enaBle-crash-reporter'], value: false }], true);
 						}
 					}
 				],
@@ -161,7 +161,7 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 	}
 }
 
-export class BrowserTelemetryOptOut extends AbstractTelemetryOptOut {
+export class BrowserTelemetryOptOut extends ABstractTelemetryOptOut {
 
 	constructor(
 		@IStorageService storageService: IStorageService,
@@ -182,7 +182,7 @@ export class BrowserTelemetryOptOut extends AbstractTelemetryOptOut {
 		this.handleTelemetryOptOut();
 	}
 
-	protected async getWindowCount(): Promise<number> {
+	protected async getWindowCount(): Promise<numBer> {
 		return 1;
 	}
 }

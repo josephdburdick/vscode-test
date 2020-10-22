@@ -6,36 +6,36 @@
 import { Code } from './code';
 import { QuickAccess } from './quickaccess';
 
-const activeRowSelector = `.notebook-editor .monaco-list-row.focused`;
+const activeRowSelector = `.noteBook-editor .monaco-list-row.focused`;
 
-export class Notebook {
+export class NoteBook {
 
 	constructor(
 		private readonly quickAccess: QuickAccess,
 		private readonly code: Code) {
 	}
 
-	async openNotebook() {
-		await this.quickAccess.runCommand('vscode-notebook-tests.createNewNotebook');
+	async openNoteBook() {
+		await this.quickAccess.runCommand('vscode-noteBook-tests.createNewNoteBook');
 		await this.code.waitForElement(activeRowSelector);
 		await this.focusFirstCell();
 		await this.waitForActiveCellEditorContents('code()');
 	}
 
 	async focusNextCell() {
-		await this.code.dispatchKeybinding('down');
+		await this.code.dispatchKeyBinding('down');
 	}
 
 	async focusFirstCell() {
-		await this.quickAccess.runCommand('notebook.focusTop');
+		await this.quickAccess.runCommand('noteBook.focusTop');
 	}
 
 	async editCell() {
-		await this.code.dispatchKeybinding('enter');
+		await this.code.dispatchKeyBinding('enter');
 	}
 
 	async stopEditingCell() {
-		await this.quickAccess.runCommand('notebook.cell.quitEdit');
+		await this.quickAccess.runCommand('noteBook.cell.quitEdit');
 	}
 
 	async waitForTypeInEditor(text: string): Promise<any> {
@@ -55,7 +55,7 @@ export class Notebook {
 		return this._waitForActiveCellEditorContents(str => str === contents);
 	}
 
-	private async _waitForActiveCellEditorContents(accept: (contents: string) => boolean): Promise<any> {
+	private async _waitForActiveCellEditorContents(accept: (contents: string) => Boolean): Promise<any> {
 		const selector = `${activeRowSelector} .monaco-editor .view-lines`;
 		return this.code.waitForTextContent(selector, undefined, c => accept(c.replace(/\u00a0/g, ' ')));
 	}
@@ -65,29 +65,29 @@ export class Notebook {
 		await this.code.waitForTextContent(selector, text);
 	}
 
-	async insertNotebookCell(kind: 'markdown' | 'code'): Promise<void> {
+	async insertNoteBookCell(kind: 'markdown' | 'code'): Promise<void> {
 		if (kind === 'markdown') {
-			await this.quickAccess.runCommand('notebook.cell.insertMarkdownCellBelow');
+			await this.quickAccess.runCommand('noteBook.cell.insertMarkdownCellBelow');
 		} else {
-			await this.quickAccess.runCommand('notebook.cell.insertCodeCellBelow');
+			await this.quickAccess.runCommand('noteBook.cell.insertCodeCellBelow');
 		}
 	}
 
 	async deleteActiveCell(): Promise<void> {
-		await this.quickAccess.runCommand('notebook.cell.delete');
+		await this.quickAccess.runCommand('noteBook.cell.delete');
 	}
 
 	async focusInCellOutput(): Promise<void> {
-		await this.quickAccess.runCommand('notebook.cell.focusInOutput');
-		await this.code.waitForActiveElement('webview, .webview');
+		await this.quickAccess.runCommand('noteBook.cell.focusInOutput');
+		await this.code.waitForActiveElement('weBview, .weBview');
 	}
 
 	async focusOutCellOutput(): Promise<void> {
-		await this.quickAccess.runCommand('notebook.cell.focusOutOutput');
+		await this.quickAccess.runCommand('noteBook.cell.focusOutOutput');
 	}
 
 	async executeActiveCell(): Promise<void> {
-		await this.quickAccess.runCommand('notebook.cell.execute');
+		await this.quickAccess.runCommand('noteBook.cell.execute');
 	}
 
 	async executeCellAction(selector: string): Promise<void> {

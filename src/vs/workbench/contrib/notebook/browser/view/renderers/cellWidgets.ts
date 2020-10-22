@@ -3,72 +3,72 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { CodiconLabel } from 'vs/base/browser/ui/codicons/codiconLabel';
-import { WorkbenchActionExecutedClassification, WorkbenchActionExecutedEvent } from 'vs/base/common/actions';
-import { stripCodicons } from 'vs/base/common/codicons';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { extUri } from 'vs/base/common/resources';
+import * as DOM from 'vs/Base/Browser/dom';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { CodiconLaBel } from 'vs/Base/Browser/ui/codicons/codiconLaBel';
+import { WorkBenchActionExecutedClassification, WorkBenchActionExecutedEvent } from 'vs/Base/common/actions';
+import { stripCodicons } from 'vs/Base/common/codicons';
+import { toErrorMessage } from 'vs/Base/common/errorMessage';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { extUri } from 'vs/Base/common/resources';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { localize } from 'vs/nls';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { ChangeCellLanguageAction, INotebookCellActionContext } from 'vs/workbench/contrib/notebook/browser/contrib/coreActions';
-import { ICellViewModel, INotebookEditor } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { INotebookCellStatusBarService } from 'vs/workbench/contrib/notebook/common/notebookCellStatusBarService';
-import { CellKind, CellStatusbarAlignment, INotebookCellStatusBarEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { ChangeCellLanguageAction, INoteBookCellActionContext } from 'vs/workBench/contriB/noteBook/Browser/contriB/coreActions';
+import { ICellViewModel, INoteBookEditor } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { INoteBookCellStatusBarService } from 'vs/workBench/contriB/noteBook/common/noteBookCellStatusBarService';
+import { CellKind, CellStatusBarAlignment, INoteBookCellStatusBarEntry } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
 const $ = DOM.$;
 
-export class CellEditorStatusBar extends Disposable {
+export class CellEditorStatusBar extends DisposaBle {
 	readonly cellStatusMessageContainer: HTMLElement;
 	readonly cellRunStatusContainer: HTMLElement;
 	readonly statusBarContainer: HTMLElement;
 	readonly languageStatusBarItem: CellLanguageStatusBarItem;
 	readonly durationContainer: HTMLElement;
 
-	private readonly leftContributedItemsContainer: HTMLElement;
-	private readonly rightContributedItemsContainer: HTMLElement;
-	private readonly itemsDisposable: DisposableStore;
+	private readonly leftContriButedItemsContainer: HTMLElement;
+	private readonly rightContriButedItemsContainer: HTMLElement;
+	private readonly itemsDisposaBle: DisposaBleStore;
 
-	private currentContext: INotebookCellActionContext | undefined;
+	private currentContext: INoteBookCellActionContext | undefined;
 
 	constructor(
 		container: HTMLElement,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@INotebookCellStatusBarService private readonly notebookCellStatusBarService: INotebookCellStatusBarService
+		@INoteBookCellStatusBarService private readonly noteBookCellStatusBarService: INoteBookCellStatusBarService
 	) {
 		super();
-		this.statusBarContainer = DOM.append(container, $('.cell-statusbar-container'));
+		this.statusBarContainer = DOM.append(container, $('.cell-statusBar-container'));
 		const leftItemsContainer = DOM.append(this.statusBarContainer, $('.cell-status-left'));
 		const rightItemsContainer = DOM.append(this.statusBarContainer, $('.cell-status-right'));
 		this.cellRunStatusContainer = DOM.append(leftItemsContainer, $('.cell-run-status'));
 		this.durationContainer = DOM.append(leftItemsContainer, $('.cell-run-duration'));
 		this.cellStatusMessageContainer = DOM.append(leftItemsContainer, $('.cell-status-message'));
-		this.leftContributedItemsContainer = DOM.append(leftItemsContainer, $('.cell-contributed-items.cell-contributed-items-left'));
-		this.rightContributedItemsContainer = DOM.append(rightItemsContainer, $('.cell-contributed-items.cell-contributed-items-right'));
+		this.leftContriButedItemsContainer = DOM.append(leftItemsContainer, $('.cell-contriButed-items.cell-contriButed-items-left'));
+		this.rightContriButedItemsContainer = DOM.append(rightItemsContainer, $('.cell-contriButed-items.cell-contriButed-items-right'));
 		this.languageStatusBarItem = instantiationService.createInstance(CellLanguageStatusBarItem, rightItemsContainer);
 
-		this.itemsDisposable = this._register(new DisposableStore());
-		this._register(this.notebookCellStatusBarService.onDidChangeEntriesForCell(e => {
+		this.itemsDisposaBle = this._register(new DisposaBleStore());
+		this._register(this.noteBookCellStatusBarService.onDidChangeEntriesForCell(e => {
 			if (this.currentContext && extUri.isEqual(e, this.currentContext.cell.uri)) {
 				this.updateStatusBarItems();
 			}
 		}));
 	}
 
-	update(context: INotebookCellActionContext) {
+	update(context: INoteBookCellActionContext) {
 		this.currentContext = context;
-		this.languageStatusBarItem.update(context.cell, context.notebookEditor);
+		this.languageStatusBarItem.update(context.cell, context.noteBookEditor);
 		this.updateStatusBarItems();
 	}
 
-	layout(width: number): void {
+	layout(width: numBer): void {
 		this.statusBarContainer.style.width = `${width}px`;
 	}
 
@@ -77,67 +77,67 @@ export class CellEditorStatusBar extends Disposable {
 			return;
 		}
 
-		DOM.clearNode(this.leftContributedItemsContainer);
-		DOM.clearNode(this.rightContributedItemsContainer);
-		this.itemsDisposable.clear();
+		DOM.clearNode(this.leftContriButedItemsContainer);
+		DOM.clearNode(this.rightContriButedItemsContainer);
+		this.itemsDisposaBle.clear();
 
-		const items = this.notebookCellStatusBarService.getEntries(this.currentContext.cell.uri);
+		const items = this.noteBookCellStatusBarService.getEntries(this.currentContext.cell.uri);
 		items.sort((itemA, itemB) => {
 			return (itemB.priority ?? 0) - (itemA.priority ?? 0);
 		});
 		items.forEach(item => {
-			const itemView = this.itemsDisposable.add(this.instantiationService.createInstance(CellStatusBarItem, this.currentContext!, item));
-			if (item.alignment === CellStatusbarAlignment.LEFT) {
-				this.leftContributedItemsContainer.appendChild(itemView.container);
+			const itemView = this.itemsDisposaBle.add(this.instantiationService.createInstance(CellStatusBarItem, this.currentContext!, item));
+			if (item.alignment === CellStatusBarAlignment.LEFT) {
+				this.leftContriButedItemsContainer.appendChild(itemView.container);
 			} else {
-				this.rightContributedItemsContainer.appendChild(itemView.container);
+				this.rightContriButedItemsContainer.appendChild(itemView.container);
 			}
 		});
 	}
 }
 
-class CellStatusBarItem extends Disposable {
+class CellStatusBarItem extends DisposaBle {
 
 	readonly container = $('.cell-status-item');
 
 	constructor(
-		private readonly _context: INotebookCellActionContext,
-		private readonly _itemModel: INotebookCellStatusBarEntry,
+		private readonly _context: INoteBookCellActionContext,
+		private readonly _itemModel: INoteBookCellStatusBarEntry,
 		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@ICommandService private readonly commandService: ICommandService,
 		@INotificationService private readonly notificationService: INotificationService
 	) {
 		super();
-		new CodiconLabel(this.container).text = this._itemModel.text;
+		new CodiconLaBel(this.container).text = this._itemModel.text;
 
-		let ariaLabel: string;
+		let ariaLaBel: string;
 		let role: string | undefined;
-		if (this._itemModel.accessibilityInformation) {
-			ariaLabel = this._itemModel.accessibilityInformation.label;
-			role = this._itemModel.accessibilityInformation.role;
+		if (this._itemModel.accessiBilityInformation) {
+			ariaLaBel = this._itemModel.accessiBilityInformation.laBel;
+			role = this._itemModel.accessiBilityInformation.role;
 		} else {
-			ariaLabel = this._itemModel.text ? stripCodicons(this._itemModel.text).trim() : '';
+			ariaLaBel = this._itemModel.text ? stripCodicons(this._itemModel.text).trim() : '';
 		}
 
-		if (ariaLabel) {
-			this.container.setAttribute('aria-label', ariaLabel);
+		if (ariaLaBel) {
+			this.container.setAttriBute('aria-laBel', ariaLaBel);
 		}
 
 		if (role) {
-			this.container.setAttribute('role', role);
+			this.container.setAttriBute('role', role);
 		}
 
 		this.container.title = this._itemModel.tooltip ?? '';
 
 		if (this._itemModel.command) {
 			this.container.classList.add('cell-status-item-has-command');
-			this.container.tabIndex = 0;
+			this.container.taBIndex = 0;
 
-			this._register(DOM.addDisposableListener(this.container, DOM.EventType.CLICK, _e => {
+			this._register(DOM.addDisposaBleListener(this.container, DOM.EventType.CLICK, _e => {
 				this.executeCommand();
 			}));
-			this._register(DOM.addDisposableListener(this.container, DOM.EventType.KEY_UP, e => {
-				const event = new StandardKeyboardEvent(e);
+			this._register(DOM.addDisposaBleListener(this.container, DOM.EventType.KEY_UP, e => {
+				const event = new StandardKeyBoardEvent(e);
 				if (event.equals(KeyCode.Space) || event.equals(KeyCode.Enter)) {
 					this.executeCommand();
 				}
@@ -156,7 +156,7 @@ class CellStatusBarItem extends Disposable {
 
 		args.unshift(this._context);
 
-		this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id, from: 'cell status bar' });
+		this.telemetryService.puBlicLog2<WorkBenchActionExecutedEvent, WorkBenchActionExecutedClassification>('workBenchActionExecuted', { id, from: 'cell status Bar' });
 		try {
 			await this.commandService.executeCommand(id, ...args);
 		} catch (error) {
@@ -165,13 +165,13 @@ class CellStatusBarItem extends Disposable {
 	}
 }
 
-export class CellLanguageStatusBarItem extends Disposable {
-	private readonly labelElement: HTMLElement;
+export class CellLanguageStatusBarItem extends DisposaBle {
+	private readonly laBelElement: HTMLElement;
 
 	private cell: ICellViewModel | undefined;
-	private editor: INotebookEditor | undefined;
+	private editor: INoteBookEditor | undefined;
 
-	private cellDisposables: DisposableStore;
+	private cellDisposaBles: DisposaBleStore;
 
 	constructor(
 		readonly container: HTMLElement,
@@ -179,39 +179,39 @@ export class CellLanguageStatusBarItem extends Disposable {
 		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
 		super();
-		this.labelElement = DOM.append(container, $('.cell-language-picker.cell-status-item'));
-		this.labelElement.tabIndex = 0;
+		this.laBelElement = DOM.append(container, $('.cell-language-picker.cell-status-item'));
+		this.laBelElement.taBIndex = 0;
 
-		this._register(DOM.addDisposableListener(this.labelElement, DOM.EventType.CLICK, () => {
+		this._register(DOM.addDisposaBleListener(this.laBelElement, DOM.EventType.CLICK, () => {
 			this.run();
 		}));
-		this._register(DOM.addDisposableListener(this.labelElement, DOM.EventType.KEY_UP, e => {
-			const event = new StandardKeyboardEvent(e);
+		this._register(DOM.addDisposaBleListener(this.laBelElement, DOM.EventType.KEY_UP, e => {
+			const event = new StandardKeyBoardEvent(e);
 			if (event.equals(KeyCode.Space) || event.equals(KeyCode.Enter)) {
 				this.run();
 			}
 		}));
-		this._register(this.cellDisposables = new DisposableStore());
+		this._register(this.cellDisposaBles = new DisposaBleStore());
 	}
 
 	private run() {
 		this.instantiationService.invokeFunction(accessor => {
-			new ChangeCellLanguageAction().run(accessor, { notebookEditor: this.editor!, cell: this.cell! });
+			new ChangeCellLanguageAction().run(accessor, { noteBookEditor: this.editor!, cell: this.cell! });
 		});
 	}
 
-	update(cell: ICellViewModel, editor: INotebookEditor): void {
-		this.cellDisposables.clear();
+	update(cell: ICellViewModel, editor: INoteBookEditor): void {
+		this.cellDisposaBles.clear();
 		this.cell = cell;
 		this.editor = editor;
 
 		this.render();
-		this.cellDisposables.add(this.cell.model.onDidChangeLanguage(() => this.render()));
+		this.cellDisposaBles.add(this.cell.model.onDidChangeLanguage(() => this.render()));
 	}
 
 	private render(): void {
 		const modeId = this.cell?.cellKind === CellKind.Markdown ? 'markdown' : this.modeService.getModeIdForLanguageName(this.cell!.language) || this.cell!.language;
-		this.labelElement.textContent = this.modeService.getLanguageName(modeId) || this.modeService.getLanguageName('plaintext');
-		this.labelElement.title = localize('notebook.cell.status.language', "Select Cell Language Mode");
+		this.laBelElement.textContent = this.modeService.getLanguageName(modeId) || this.modeService.getLanguageName('plaintext');
+		this.laBelElement.title = localize('noteBook.cell.status.language', "Select Cell Language Mode");
 	}
 }

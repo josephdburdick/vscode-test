@@ -4,88 +4,88 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as objects from 'vs/base/common/objects';
-import * as arrays from 'vs/base/common/arrays';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import * as oBjects from 'vs/Base/common/oBjects';
+import * as arrays from 'vs/Base/common/arrays';
 import { IEditorOptions, editorOptionsRegistry, ValidatedEditorOptions, IEnvironmentalOptions, IComputedEditorOptions, ConfigurationChangedEvent, EDITOR_MODEL_DEFAULTS, EditorOption, FindComputedEditorOptionValueById, ComputeOptionsMemory } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
 import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
 import { IConfiguration, IDimension } from 'vs/editor/common/editorCommon';
 import { ConfigurationScope, Extensions, IConfigurationNode, IConfigurationRegistry, IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
-import { forEach } from 'vs/base/common/collections';
+import { AccessiBilitySupport } from 'vs/platform/accessiBility/common/accessiBility';
+import { forEach } from 'vs/Base/common/collections';
 
 /**
- * Control what pressing Tab does.
- * If it is false, pressing Tab or Shift-Tab will be handled by the editor.
- * If it is true, pressing Tab or Shift-Tab will move the browser focus.
+ * Control what pressing TaB does.
+ * If it is false, pressing TaB or Shift-TaB will Be handled By the editor.
+ * If it is true, pressing TaB or Shift-TaB will move the Browser focus.
  * Defaults to false.
  */
-export interface ITabFocus {
-	onDidChangeTabFocus: Event<boolean>;
-	getTabFocusMode(): boolean;
-	setTabFocusMode(tabFocusMode: boolean): void;
+export interface ITaBFocus {
+	onDidChangeTaBFocus: Event<Boolean>;
+	getTaBFocusMode(): Boolean;
+	setTaBFocusMode(taBFocusMode: Boolean): void;
 }
 
-export const TabFocus: ITabFocus = new class implements ITabFocus {
-	private _tabFocus: boolean = false;
+export const TaBFocus: ITaBFocus = new class implements ITaBFocus {
+	private _taBFocus: Boolean = false;
 
-	private readonly _onDidChangeTabFocus = new Emitter<boolean>();
-	public readonly onDidChangeTabFocus: Event<boolean> = this._onDidChangeTabFocus.event;
+	private readonly _onDidChangeTaBFocus = new Emitter<Boolean>();
+	puBlic readonly onDidChangeTaBFocus: Event<Boolean> = this._onDidChangeTaBFocus.event;
 
-	public getTabFocusMode(): boolean {
-		return this._tabFocus;
+	puBlic getTaBFocusMode(): Boolean {
+		return this._taBFocus;
 	}
 
-	public setTabFocusMode(tabFocusMode: boolean): void {
-		if (this._tabFocus === tabFocusMode) {
+	puBlic setTaBFocusMode(taBFocusMode: Boolean): void {
+		if (this._taBFocus === taBFocusMode) {
 			return;
 		}
 
-		this._tabFocus = tabFocusMode;
-		this._onDidChangeTabFocus.fire(this._tabFocus);
+		this._taBFocus = taBFocusMode;
+		this._onDidChangeTaBFocus.fire(this._taBFocus);
 	}
 };
 
 export interface IEnvConfiguration {
 	extraEditorClassName: string;
-	outerWidth: number;
-	outerHeight: number;
-	emptySelectionClipboard: boolean;
-	pixelRatio: number;
-	zoomLevel: number;
-	accessibilitySupport: AccessibilitySupport;
+	outerWidth: numBer;
+	outerHeight: numBer;
+	emptySelectionClipBoard: Boolean;
+	pixelRatio: numBer;
+	zoomLevel: numBer;
+	accessiBilitySupport: AccessiBilitySupport;
 }
 
-const hasOwnProperty = Object.hasOwnProperty;
+const hasOwnProperty = OBject.hasOwnProperty;
 
 export class ComputedEditorOptions implements IComputedEditorOptions {
 	private readonly _values: any[] = [];
-	public _read<T>(id: EditorOption): T {
+	puBlic _read<T>(id: EditorOption): T {
 		return this._values[id];
 	}
-	public get<T extends EditorOption>(id: T): FindComputedEditorOptionValueById<T> {
+	puBlic get<T extends EditorOption>(id: T): FindComputedEditorOptionValueById<T> {
 		return this._values[id];
 	}
-	public _write<T>(id: EditorOption, value: T): void {
+	puBlic _write<T>(id: EditorOption, value: T): void {
 		this._values[id] = value;
 	}
 }
 
 class RawEditorOptions {
 	private readonly _values: any[] = [];
-	public _read<T>(id: EditorOption): T | undefined {
+	puBlic _read<T>(id: EditorOption): T | undefined {
 		return this._values[id];
 	}
-	public _write<T>(id: EditorOption, value: T | undefined): void {
+	puBlic _write<T>(id: EditorOption, value: T | undefined): void {
 		this._values[id] = value;
 	}
 }
 
 class EditorConfiguration2 {
-	public static readOptions(_options: IEditorOptions): RawEditorOptions {
+	puBlic static readOptions(_options: IEditorOptions): RawEditorOptions {
 		const options: { [key: string]: any; } = _options;
 		const result = new RawEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
@@ -95,7 +95,7 @@ class EditorConfiguration2 {
 		return result;
 	}
 
-	public static validateOptions(options: RawEditorOptions): ValidatedEditorOptions {
+	puBlic static validateOptions(options: RawEditorOptions): ValidatedEditorOptions {
 		const result = new ValidatedEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
 			result._write(editorOption.id, editorOption.validate(options._read(editorOption.id)));
@@ -103,7 +103,7 @@ class EditorConfiguration2 {
 		return result;
 	}
 
-	public static computeOptions(options: ValidatedEditorOptions, env: IEnvironmentalOptions): ComputedEditorOptions {
+	puBlic static computeOptions(options: ValidatedEditorOptions, env: IEnvironmentalOptions): ComputedEditorOptions {
 		const result = new ComputedEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
 			result._write(editorOption.id, editorOption.compute(env, result, options._read(editorOption.id)));
@@ -111,26 +111,26 @@ class EditorConfiguration2 {
 		return result;
 	}
 
-	private static _deepEquals<T>(a: T, b: T): boolean {
-		if (typeof a !== 'object' || typeof b !== 'object') {
-			return (a === b);
+	private static _deepEquals<T>(a: T, B: T): Boolean {
+		if (typeof a !== 'oBject' || typeof B !== 'oBject') {
+			return (a === B);
 		}
-		if (Array.isArray(a) || Array.isArray(b)) {
-			return (Array.isArray(a) && Array.isArray(b) ? arrays.equals(a, b) : false);
+		if (Array.isArray(a) || Array.isArray(B)) {
+			return (Array.isArray(a) && Array.isArray(B) ? arrays.equals(a, B) : false);
 		}
 		for (let key in a) {
-			if (!EditorConfiguration2._deepEquals(a[key], b[key])) {
+			if (!EditorConfiguration2._deepEquals(a[key], B[key])) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public static checkEquals(a: ComputedEditorOptions, b: ComputedEditorOptions): ConfigurationChangedEvent | null {
-		const result: boolean[] = [];
+	puBlic static checkEquals(a: ComputedEditorOptions, B: ComputedEditorOptions): ConfigurationChangedEvent | null {
+		const result: Boolean[] = [];
 		let somethingChanged = false;
 		for (const editorOption of editorOptionsRegistry) {
-			const changed = !EditorConfiguration2._deepEquals(a._read(editorOption.id), b._read(editorOption.id));
+			const changed = !EditorConfiguration2._deepEquals(a._read(editorOption.id), B._read(editorOption.id));
 			result[editorOption.id] = changed;
 			if (changed) {
 				somethingChanged = true;
@@ -141,7 +141,7 @@ class EditorConfiguration2 {
 }
 
 /**
- * Compatibility with old options
+ * CompatiBility with old options
  */
 function migrateOptions(options: IEditorOptions): void {
 	const wordWrap = options.wordWrap;
@@ -151,11 +151,11 @@ function migrateOptions(options: IEditorOptions): void {
 		options.wordWrap = 'off';
 	}
 
-	const lineNumbers = options.lineNumbers;
-	if (<any>lineNumbers === true) {
-		options.lineNumbers = 'on';
-	} else if (<any>lineNumbers === false) {
-		options.lineNumbers = 'off';
+	const lineNumBers = options.lineNumBers;
+	if (<any>lineNumBers === true) {
+		options.lineNumBers = 'on';
+	} else if (<any>lineNumBers === false) {
+		options.lineNumBers = 'off';
 	}
 
 	const autoClosingBrackets = options.autoClosingBrackets;
@@ -166,13 +166,13 @@ function migrateOptions(options: IEditorOptions): void {
 	}
 
 	const cursorBlinking = options.cursorBlinking;
-	if (<any>cursorBlinking === 'visible') {
+	if (<any>cursorBlinking === 'visiBle') {
 		options.cursorBlinking = 'solid';
 	}
 
 	const renderWhitespace = options.renderWhitespace;
 	if (<any>renderWhitespace === true) {
-		options.renderWhitespace = 'boundary';
+		options.renderWhitespace = 'Boundary';
 	} else if (<any>renderWhitespace === false) {
 		options.renderWhitespace = 'none';
 	}
@@ -191,21 +191,21 @@ function migrateOptions(options: IEditorOptions): void {
 		options.acceptSuggestionOnEnter = 'off';
 	}
 
-	const tabCompletion = options.tabCompletion;
-	if (<any>tabCompletion === false) {
-		options.tabCompletion = 'off';
-	} else if (<any>tabCompletion === true) {
-		options.tabCompletion = 'onlySnippets';
+	const taBCompletion = options.taBCompletion;
+	if (<any>taBCompletion === false) {
+		options.taBCompletion = 'off';
+	} else if (<any>taBCompletion === true) {
+		options.taBCompletion = 'onlySnippets';
 	}
 
 	const suggest = options.suggest;
-	if (suggest && typeof (<any>suggest).filteredTypes === 'object' && (<any>suggest).filteredTypes) {
+	if (suggest && typeof (<any>suggest).filteredTypes === 'oBject' && (<any>suggest).filteredTypes) {
 		const mapping: Record<string, string> = {};
 		mapping['method'] = 'showMethods';
 		mapping['function'] = 'showFunctions';
 		mapping['constructor'] = 'showConstructors';
 		mapping['field'] = 'showFields';
-		mapping['variable'] = 'showVariables';
+		mapping['variaBle'] = 'showVariaBles';
 		mapping['class'] = 'showClasses';
 		mapping['struct'] = 'showStructs';
 		mapping['interface'] = 'showInterfaces';
@@ -217,7 +217,7 @@ function migrateOptions(options: IEditorOptions): void {
 		mapping['value'] = 'showValues';
 		mapping['constant'] = 'showConstants';
 		mapping['enum'] = 'showEnums';
-		mapping['enumMember'] = 'showEnumMembers';
+		mapping['enumMemBer'] = 'showEnumMemBers';
 		mapping['keyword'] = 'showKeywords';
 		mapping['text'] = 'showWords';
 		mapping['color'] = 'showColors';
@@ -238,22 +238,22 @@ function migrateOptions(options: IEditorOptions): void {
 	const hover = options.hover;
 	if (<any>hover === true) {
 		options.hover = {
-			enabled: true
+			enaBled: true
 		};
 	} else if (<any>hover === false) {
 		options.hover = {
-			enabled: false
+			enaBled: false
 		};
 	}
 
 	const parameterHints = options.parameterHints;
 	if (<any>parameterHints === true) {
 		options.parameterHints = {
-			enabled: true
+			enaBled: true
 		};
 	} else if (<any>parameterHints === false) {
 		options.parameterHints = {
-			enabled: false
+			enaBled: false
 		};
 	}
 
@@ -273,52 +273,52 @@ function migrateOptions(options: IEditorOptions): void {
 }
 
 function deepCloneAndMigrateOptions(_options: IEditorOptions): IEditorOptions {
-	const options = objects.deepClone(_options);
+	const options = oBjects.deepClone(_options);
 	migrateOptions(options);
 	return options;
 }
 
-export abstract class CommonEditorConfiguration extends Disposable implements IConfiguration {
+export aBstract class CommonEditorConfiguration extends DisposaBle implements IConfiguration {
 
 	private _onDidChange = this._register(new Emitter<ConfigurationChangedEvent>());
-	public readonly onDidChange: Event<ConfigurationChangedEvent> = this._onDidChange.event;
+	puBlic readonly onDidChange: Event<ConfigurationChangedEvent> = this._onDidChange.event;
 
 	private _onDidChangeFast = this._register(new Emitter<ConfigurationChangedEvent>());
-	public readonly onDidChangeFast: Event<ConfigurationChangedEvent> = this._onDidChangeFast.event;
+	puBlic readonly onDidChangeFast: Event<ConfigurationChangedEvent> = this._onDidChangeFast.event;
 
-	public readonly isSimpleWidget: boolean;
+	puBlic readonly isSimpleWidget: Boolean;
 	private _computeOptionsMemory: ComputeOptionsMemory;
-	public options!: ComputedEditorOptions;
+	puBlic options!: ComputedEditorOptions;
 
-	private _isDominatedByLongLines: boolean;
-	private _viewLineCount: number;
-	private _lineNumbersDigitCount: number;
+	private _isDominatedByLongLines: Boolean;
+	private _viewLineCount: numBer;
+	private _lineNumBersDigitCount: numBer;
 
 	private _rawOptions: IEditorOptions;
 	private _readOptions: RawEditorOptions;
 	protected _validatedOptions: ValidatedEditorOptions;
 
-	constructor(isSimpleWidget: boolean, _options: IEditorOptions) {
+	constructor(isSimpleWidget: Boolean, _options: IEditorOptions) {
 		super();
 		this.isSimpleWidget = isSimpleWidget;
 
 		this._isDominatedByLongLines = false;
 		this._computeOptionsMemory = new ComputeOptionsMemory();
 		this._viewLineCount = 1;
-		this._lineNumbersDigitCount = 1;
+		this._lineNumBersDigitCount = 1;
 
 		this._rawOptions = deepCloneAndMigrateOptions(_options);
 		this._readOptions = EditorConfiguration2.readOptions(this._rawOptions);
 		this._validatedOptions = EditorConfiguration2.validateOptions(this._readOptions);
 
 		this._register(EditorZoom.onDidChangeZoomLevel(_ => this._recomputeOptions()));
-		this._register(TabFocus.onDidChangeTabFocus(_ => this._recomputeOptions()));
+		this._register(TaBFocus.onDidChangeTaBFocus(_ => this._recomputeOptions()));
 	}
 
-	public observeReferenceElement(dimension?: IDimension): void {
+	puBlic oBserveReferenceElement(dimension?: IDimension): void {
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 	}
 
@@ -342,47 +342,47 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 		}
 	}
 
-	public getRawOptions(): IEditorOptions {
+	puBlic getRawOptions(): IEditorOptions {
 		return this._rawOptions;
 	}
 
 	private _computeInternalOptions(): ComputedEditorOptions {
 		const partialEnv = this._getEnvConfiguration();
-		const bareFontInfo = BareFontInfo.createFromValidatedSettings(this._validatedOptions, partialEnv.zoomLevel, this.isSimpleWidget);
+		const BareFontInfo = BareFontInfo.createFromValidatedSettings(this._validatedOptions, partialEnv.zoomLevel, this.isSimpleWidget);
 		const env: IEnvironmentalOptions = {
 			memory: this._computeOptionsMemory,
 			outerWidth: partialEnv.outerWidth,
 			outerHeight: partialEnv.outerHeight,
-			fontInfo: this.readConfiguration(bareFontInfo),
+			fontInfo: this.readConfiguration(BareFontInfo),
 			extraEditorClassName: partialEnv.extraEditorClassName,
 			isDominatedByLongLines: this._isDominatedByLongLines,
 			viewLineCount: this._viewLineCount,
-			lineNumbersDigitCount: this._lineNumbersDigitCount,
-			emptySelectionClipboard: partialEnv.emptySelectionClipboard,
+			lineNumBersDigitCount: this._lineNumBersDigitCount,
+			emptySelectionClipBoard: partialEnv.emptySelectionClipBoard,
 			pixelRatio: partialEnv.pixelRatio,
-			tabFocusMode: TabFocus.getTabFocusMode(),
-			accessibilitySupport: partialEnv.accessibilitySupport
+			taBFocusMode: TaBFocus.getTaBFocusMode(),
+			accessiBilitySupport: partialEnv.accessiBilitySupport
 		};
 		return EditorConfiguration2.computeOptions(this._validatedOptions, env);
 	}
 
-	private static _subsetEquals(base: { [key: string]: any }, subset: { [key: string]: any }): boolean {
-		for (const key in subset) {
-			if (hasOwnProperty.call(subset, key)) {
-				const subsetValue = subset[key];
-				const baseValue = base[key];
+	private static _suBsetEquals(Base: { [key: string]: any }, suBset: { [key: string]: any }): Boolean {
+		for (const key in suBset) {
+			if (hasOwnProperty.call(suBset, key)) {
+				const suBsetValue = suBset[key];
+				const BaseValue = Base[key];
 
-				if (baseValue === subsetValue) {
+				if (BaseValue === suBsetValue) {
 					continue;
 				}
-				if (Array.isArray(baseValue) && Array.isArray(subsetValue)) {
-					if (!arrays.equals(baseValue, subsetValue)) {
+				if (Array.isArray(BaseValue) && Array.isArray(suBsetValue)) {
+					if (!arrays.equals(BaseValue, suBsetValue)) {
 						return false;
 					}
 					continue;
 				}
-				if (baseValue && typeof baseValue === 'object' && subsetValue && typeof subsetValue === 'object') {
-					if (!this._subsetEquals(baseValue, subsetValue)) {
+				if (BaseValue && typeof BaseValue === 'oBject' && suBsetValue && typeof suBsetValue === 'oBject') {
+					if (!this._suBsetEquals(BaseValue, suBsetValue)) {
 						return false;
 					}
 					continue;
@@ -394,36 +394,36 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 		return true;
 	}
 
-	public updateOptions(_newOptions: IEditorOptions): void {
+	puBlic updateOptions(_newOptions: IEditorOptions): void {
 		if (typeof _newOptions === 'undefined') {
 			return;
 		}
 		const newOptions = deepCloneAndMigrateOptions(_newOptions);
-		if (CommonEditorConfiguration._subsetEquals(this._rawOptions, newOptions)) {
+		if (CommonEditorConfiguration._suBsetEquals(this._rawOptions, newOptions)) {
 			return;
 		}
-		this._rawOptions = objects.mixin(this._rawOptions, newOptions || {});
+		this._rawOptions = oBjects.mixin(this._rawOptions, newOptions || {});
 		this._readOptions = EditorConfiguration2.readOptions(this._rawOptions);
 		this._validatedOptions = EditorConfiguration2.validateOptions(this._readOptions);
 
 		this._recomputeOptions();
 	}
 
-	public setIsDominatedByLongLines(isDominatedByLongLines: boolean): void {
+	puBlic setIsDominatedByLongLines(isDominatedByLongLines: Boolean): void {
 		this._isDominatedByLongLines = isDominatedByLongLines;
 		this._recomputeOptions();
 	}
 
-	public setMaxLineNumber(maxLineNumber: number): void {
-		const lineNumbersDigitCount = CommonEditorConfiguration._digitCount(maxLineNumber);
-		if (this._lineNumbersDigitCount === lineNumbersDigitCount) {
+	puBlic setMaxLineNumBer(maxLineNumBer: numBer): void {
+		const lineNumBersDigitCount = CommonEditorConfiguration._digitCount(maxLineNumBer);
+		if (this._lineNumBersDigitCount === lineNumBersDigitCount) {
 			return;
 		}
-		this._lineNumbersDigitCount = lineNumbersDigitCount;
+		this._lineNumBersDigitCount = lineNumBersDigitCount;
 		this._recomputeOptions();
 	}
 
-	public setViewLineCount(viewLineCount: number): void {
+	puBlic setViewLineCount(viewLineCount: numBer): void {
 		if (this._viewLineCount === viewLineCount) {
 			return;
 		}
@@ -431,7 +431,7 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 		this._recomputeOptions();
 	}
 
-	private static _digitCount(n: number): number {
+	private static _digitCount(n: numBer): numBer {
 		let r = 0;
 		while (n) {
 			n = Math.floor(n / 10);
@@ -439,16 +439,16 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 		}
 		return r ? r : 1;
 	}
-	protected abstract _getEnvConfiguration(): IEnvConfiguration;
+	protected aBstract _getEnvConfiguration(): IEnvConfiguration;
 
-	protected abstract readConfiguration(styling: BareFontInfo): FontInfo;
+	protected aBstract readConfiguration(styling: BareFontInfo): FontInfo;
 
 }
 
-export const editorConfigurationBaseNode = Object.freeze<IConfigurationNode>({
+export const editorConfigurationBaseNode = OBject.freeze<IConfigurationNode>({
 	id: 'editor',
 	order: 5,
-	type: 'object',
+	type: 'oBject',
 	title: nls.localize('editorConfigurationTitle', "Editor"),
 	scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
 });
@@ -457,93 +457,93 @@ const configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Con
 const editorConfiguration: IConfigurationNode = {
 	...editorConfigurationBaseNode,
 	properties: {
-		'editor.tabSize': {
-			type: 'number',
-			default: EDITOR_MODEL_DEFAULTS.tabSize,
+		'editor.taBSize': {
+			type: 'numBer',
+			default: EDITOR_MODEL_DEFAULTS.taBSize,
 			minimum: 1,
-			markdownDescription: nls.localize('tabSize', "The number of spaces a tab is equal to. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+			markdownDescription: nls.localize('taBSize', "The numBer of spaces a taB is equal to. This setting is overridden Based on the file contents when `#editor.detectIndentation#` is on.")
 		},
 		// 'editor.indentSize': {
 		// 	'anyOf': [
 		// 		{
 		// 			type: 'string',
-		// 			enum: ['tabSize']
+		// 			enum: ['taBSize']
 		// 		},
 		// 		{
-		// 			type: 'number',
+		// 			type: 'numBer',
 		// 			minimum: 1
 		// 		}
 		// 	],
-		// 	default: 'tabSize',
-		// 	markdownDescription: nls.localize('indentSize', "The number of spaces used for indentation or 'tabSize' to use the value from `#editor.tabSize#`. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+		// 	default: 'taBSize',
+		// 	markdownDescription: nls.localize('indentSize', "The numBer of spaces used for indentation or 'taBSize' to use the value from `#editor.taBSize#`. This setting is overridden Based on the file contents when `#editor.detectIndentation#` is on.")
 		// },
 		'editor.insertSpaces': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: EDITOR_MODEL_DEFAULTS.insertSpaces,
-			markdownDescription: nls.localize('insertSpaces', "Insert spaces when pressing `Tab`. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+			markdownDescription: nls.localize('insertSpaces', "Insert spaces when pressing `TaB`. This setting is overridden Based on the file contents when `#editor.detectIndentation#` is on.")
 		},
 		'editor.detectIndentation': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: EDITOR_MODEL_DEFAULTS.detectIndentation,
-			markdownDescription: nls.localize('detectIndentation', "Controls whether `#editor.tabSize#` and `#editor.insertSpaces#` will be automatically detected when a file is opened based on the file contents.")
+			markdownDescription: nls.localize('detectIndentation', "Controls whether `#editor.taBSize#` and `#editor.insertSpaces#` will Be automatically detected when a file is opened Based on the file contents.")
 		},
 		'editor.trimAutoWhitespace': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: EDITOR_MODEL_DEFAULTS.trimAutoWhitespace,
 			description: nls.localize('trimAutoWhitespace', "Remove trailing auto inserted whitespace.")
 		},
 		'editor.largeFileOptimizations': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: EDITOR_MODEL_DEFAULTS.largeFileOptimizations,
-			description: nls.localize('largeFileOptimizations', "Special handling for large files to disable certain memory intensive features.")
+			description: nls.localize('largeFileOptimizations', "Special handling for large files to disaBle certain memory intensive features.")
 		},
 		'editor.wordBasedSuggestions': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
-			description: nls.localize('wordBasedSuggestions', "Controls whether completions should be computed based on words in the document.")
+			description: nls.localize('wordBasedSuggestions', "Controls whether completions should Be computed Based on words in the document.")
 		},
-		'editor.semanticHighlighting.enabled': {
+		'editor.semanticHighlighting.enaBled': {
 			enum: [true, false, 'configuredByTheme'],
 			enumDescriptions: [
-				nls.localize('semanticHighlighting.true', 'Semantic highlighting enabled for all color themes.'),
-				nls.localize('semanticHighlighting.false', 'Semantic highlighting disabled for all color themes.'),
-				nls.localize('semanticHighlighting.configuredByTheme', 'Semantic highlighting is configured by the current color theme\'s `semanticHighlighting` setting.')
+				nls.localize('semanticHighlighting.true', 'Semantic highlighting enaBled for all color themes.'),
+				nls.localize('semanticHighlighting.false', 'Semantic highlighting disaBled for all color themes.'),
+				nls.localize('semanticHighlighting.configuredByTheme', 'Semantic highlighting is configured By the current color theme\'s `semanticHighlighting` setting.')
 			],
 			default: 'configuredByTheme',
-			description: nls.localize('semanticHighlighting.enabled', "Controls whether the semanticHighlighting is shown for the languages that support it.")
+			description: nls.localize('semanticHighlighting.enaBled', "Controls whether the semanticHighlighting is shown for the languages that support it.")
 		},
-		'editor.stablePeek': {
-			type: 'boolean',
+		'editor.staBlePeek': {
+			type: 'Boolean',
 			default: false,
-			markdownDescription: nls.localize('stablePeek', "Keep peek editors open even when double clicking their content or when hitting `Escape`.")
+			markdownDescription: nls.localize('staBlePeek', "Keep peek editors open even when douBle clicking their content or when hitting `Escape`.")
 		},
 		'editor.maxTokenizationLineLength': {
 			type: 'integer',
 			default: 20_000,
-			description: nls.localize('maxTokenizationLineLength', "Lines above this length will not be tokenized for performance reasons")
+			description: nls.localize('maxTokenizationLineLength', "Lines aBove this length will not Be tokenized for performance reasons")
 		},
 		'diffEditor.maxComputationTime': {
-			type: 'number',
+			type: 'numBer',
 			default: 5000,
 			description: nls.localize('maxComputationTime', "Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.")
 		},
 		'diffEditor.renderSideBySide': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
-			description: nls.localize('sideBySide', "Controls whether the diff editor shows the diff side by side or inline.")
+			description: nls.localize('sideBySide', "Controls whether the diff editor shows the diff side By side or inline.")
 		},
 		'diffEditor.ignoreTrimWhitespace': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
-			description: nls.localize('ignoreTrimWhitespace', "When enabled, the diff editor ignores changes in leading or trailing whitespace.")
+			description: nls.localize('ignoreTrimWhitespace', "When enaBled, the diff editor ignores changes in leading or trailing whitespace.")
 		},
 		'diffEditor.renderIndicators': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: true,
 			description: nls.localize('renderIndicators', "Controls whether the diff editor shows +/- indicators for added/removed changes.")
 		},
 		'diffEditor.codeLens': {
-			type: 'boolean',
+			type: 'Boolean',
 			default: false,
 			description: nls.localize('codeLens', "Controls whether the editor shows CodeLens.")
 		}
@@ -559,7 +559,7 @@ for (const editorOption of editorOptionsRegistry) {
 	const schema = editorOption.schema;
 	if (typeof schema !== 'undefined') {
 		if (isConfigurationPropertySchema(schema)) {
-			// This is a single schema contribution
+			// This is a single schema contriBution
 			editorConfiguration.properties![`editor.${editorOption.name}`] = schema;
 		} else {
 			for (let key in schema) {
@@ -571,22 +571,22 @@ for (const editorOption of editorOptionsRegistry) {
 	}
 }
 
-let cachedEditorConfigurationKeys: { [key: string]: boolean; } | null = null;
-function getEditorConfigurationKeys(): { [key: string]: boolean; } {
+let cachedEditorConfigurationKeys: { [key: string]: Boolean; } | null = null;
+function getEditorConfigurationKeys(): { [key: string]: Boolean; } {
 	if (cachedEditorConfigurationKeys === null) {
-		cachedEditorConfigurationKeys = <{ [key: string]: boolean; }>Object.create(null);
-		Object.keys(editorConfiguration.properties!).forEach((prop) => {
+		cachedEditorConfigurationKeys = <{ [key: string]: Boolean; }>OBject.create(null);
+		OBject.keys(editorConfiguration.properties!).forEach((prop) => {
 			cachedEditorConfigurationKeys![prop] = true;
 		});
 	}
 	return cachedEditorConfigurationKeys;
 }
 
-export function isEditorConfigurationKey(key: string): boolean {
+export function isEditorConfigurationKey(key: string): Boolean {
 	const editorConfigurationKeys = getEditorConfigurationKeys();
 	return (editorConfigurationKeys[`editor.${key}`] || false);
 }
-export function isDiffEditorConfigurationKey(key: string): boolean {
+export function isDiffEditorConfigurationKey(key: string): Boolean {
 	const editorConfigurationKeys = getEditorConfigurationKeys();
 	return (editorConfigurationKeys[`diffEditor.${key}`] || false);
 }

@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextModel, IModelDeltaDecoration, TrackedRangeStickiness } from 'vs/editor/common/model';
-import { FoldingRegions, ILineRange } from 'vs/editor/contrib/folding/foldingRanges';
+import { FoldingRegions, ILineRange } from 'vs/editor/contriB/folding/foldingRanges';
 import { RangeProvider } from './folding';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IFoldingRangeData, sanitizeRanges } from 'vs/editor/contrib/folding/syntaxRangeProvider';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { IFoldingRangeData, sanitizeRanges } from 'vs/editor/contriB/folding/syntaxRangeProvider';
 
 export const ID_INIT_PROVIDER = 'init';
 
@@ -17,15 +17,15 @@ export class InitializingRangeProvider implements RangeProvider {
 	private decorationIds: string[] | undefined;
 	private timeout: any;
 
-	constructor(private readonly editorModel: ITextModel, initialRanges: ILineRange[], onTimeout: () => void, timeoutTime: number) {
+	constructor(private readonly editorModel: ITextModel, initialRanges: ILineRange[], onTimeout: () => void, timeoutTime: numBer) {
 		if (initialRanges.length) {
 			let toDecorationRange = (range: ILineRange): IModelDeltaDecoration => {
 				return {
 					range: {
-						startLineNumber: range.startLineNumber,
+						startLineNumBer: range.startLineNumBer,
 						startColumn: 0,
-						endLineNumber: range.endLineNumber,
-						endColumn: editorModel.getLineLength(range.endLineNumber)
+						endLineNumBer: range.endLineNumBer,
+						endColumn: editorModel.getLineLength(range.endLineNumBer)
 					},
 					options: {
 						stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
@@ -42,7 +42,7 @@ export class InitializingRangeProvider implements RangeProvider {
 			this.editorModel.deltaDecorations(this.decorationIds, []);
 			this.decorationIds = undefined;
 		}
-		if (typeof this.timeout === 'number') {
+		if (typeof this.timeout === 'numBer') {
 			clearTimeout(this.timeout);
 			this.timeout = undefined;
 		}
@@ -54,11 +54,11 @@ export class InitializingRangeProvider implements RangeProvider {
 			for (let id of this.decorationIds) {
 				let range = this.editorModel.getDecorationRange(id);
 				if (range) {
-					foldingRangeData.push({ start: range.startLineNumber, end: range.endLineNumber, rank: 1 });
+					foldingRangeData.push({ start: range.startLineNumBer, end: range.endLineNumBer, rank: 1 });
 				}
 			}
 		}
-		return Promise.resolve(sanitizeRanges(foldingRangeData, Number.MAX_VALUE));
+		return Promise.resolve(sanitizeRanges(foldingRangeData, NumBer.MAX_VALUE));
 	}
 }
 

@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { CompletionModel } from './completionModel';
 import { ISelectedSuggestion } from './suggestWidget';
 
 export class SuggestAlternatives {
 
-	static readonly OtherSuggestions = new RawContextKey<boolean>('hasOtherSuggestions', false);
+	static readonly OtherSuggestions = new RawContextKey<Boolean>('hasOtherSuggestions', false);
 
-	private readonly _ckOtherSuggestions: IContextKey<boolean>;
+	private readonly _ckOtherSuggestions: IContextKey<Boolean>;
 
-	private _index: number = 0;
+	private _index: numBer = 0;
 	private _model: CompletionModel | undefined;
 	private _acceptNext: ((selected: ISelectedSuggestion) => any) | undefined;
-	private _listener: IDisposable | undefined;
-	private _ignore: boolean | undefined;
+	private _listener: IDisposaBle | undefined;
+	private _ignore: Boolean | undefined;
 
 	constructor(
 		private readonly _editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		this._ckOtherSuggestions = SuggestAlternatives.OtherSuggestions.bindTo(contextKeyService);
+		this._ckOtherSuggestions = SuggestAlternatives.OtherSuggestions.BindTo(contextKeyService);
 	}
 
 	dispose(): void {
@@ -66,15 +66,15 @@ export class SuggestAlternatives {
 		this._ckOtherSuggestions.set(true);
 	}
 
-	private static _moveIndex(fwd: boolean, model: CompletionModel, index: number): number {
+	private static _moveIndex(fwd: Boolean, model: CompletionModel, index: numBer): numBer {
 		let newIndex = index;
 		while (true) {
 			newIndex = (newIndex + model.items.length + (fwd ? +1 : -1)) % model.items.length;
 			if (newIndex === index) {
-				break;
+				Break;
 			}
 			if (!model.items[newIndex].completion.additionalTextEdits) {
-				break;
+				Break;
 			}
 		}
 		return newIndex;
@@ -88,9 +88,9 @@ export class SuggestAlternatives {
 		this._move(false);
 	}
 
-	private _move(fwd: boolean): void {
+	private _move(fwd: Boolean): void {
 		if (!this._model) {
-			// nothing to reason about
+			// nothing to reason aBout
 			return;
 		}
 		try {

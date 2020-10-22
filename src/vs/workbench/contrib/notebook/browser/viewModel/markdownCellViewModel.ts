@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import * as UUID from 'vs/base/common/uuid';
+import { Emitter, Event } from 'vs/Base/common/event';
+import * as UUID from 'vs/Base/common/uuid';
 import * as editorCommon from 'vs/editor/common/editorCommon';
 import * as model from 'vs/editor/common/model';
 import * as nls from 'vs/nls';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { BOTTOM_CELL_TOOLBAR_GAP, BOTTOM_CELL_TOOLBAR_HEIGHT, CELL_BOTTOM_MARGIN, CELL_MARGIN, CELL_TOP_MARGIN, CODE_CELL_LEFT_MARGIN, COLLAPSED_INDICATOR_HEIGHT } from 'vs/workbench/contrib/notebook/browser/constants';
-import { EditorFoldingStateDelegate } from 'vs/workbench/contrib/notebook/browser/contrib/fold/foldingModel';
-import { CellFindMatch, ICellViewModel, MarkdownCellLayoutChangeEvent, MarkdownCellLayoutInfo, NotebookLayoutInfo } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
-import { BaseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/baseCellViewModel';
-import { NotebookCellStateChangedEvent, NotebookEventDispatcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispatcher';
-import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { CellKind, INotebookSearchOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { BOTTOM_CELL_TOOLBAR_GAP, BOTTOM_CELL_TOOLBAR_HEIGHT, CELL_BOTTOM_MARGIN, CELL_MARGIN, CELL_TOP_MARGIN, CODE_CELL_LEFT_MARGIN, COLLAPSED_INDICATOR_HEIGHT } from 'vs/workBench/contriB/noteBook/Browser/constants';
+import { EditorFoldingStateDelegate } from 'vs/workBench/contriB/noteBook/Browser/contriB/fold/foldingModel';
+import { CellFindMatch, ICellViewModel, MarkdownCellLayoutChangeEvent, MarkdownCellLayoutInfo, NoteBookLayoutInfo } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
+import { MarkdownRenderer } from 'vs/editor/Browser/core/markdownRenderer';
+import { BaseCellViewModel } from 'vs/workBench/contriB/noteBook/Browser/viewModel/BaseCellViewModel';
+import { NoteBookCellStateChangedEvent, NoteBookEventDispatcher } from 'vs/workBench/contriB/noteBook/Browser/viewModel/eventDispatcher';
+import { NoteBookCellTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookCellTextModel';
+import { CellKind, INoteBookSearchOptions } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
 
 export class MarkdownCellViewModel extends BaseCellViewModel implements ICellViewModel {
 	readonly cellKind = CellKind.Markdown;
@@ -27,12 +27,12 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 		return this._layoutInfo;
 	}
 
-	set renderedMarkdownHeight(newHeight: number) {
+	set renderedMarkdownHeight(newHeight: numBer) {
 		const newTotalHeight = newHeight + BOTTOM_CELL_TOOLBAR_GAP;
 		this.totalHeight = newTotalHeight;
 	}
 
-	private set totalHeight(newHeight: number) {
+	private set totalHeight(newHeight: numBer) {
 		if (newHeight !== this.layoutInfo.totalHeight) {
 			this.layoutChange({ totalHeight: newHeight });
 		}
@@ -43,10 +43,10 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 	}
 
 	private _editorHeight = 0;
-	set editorHeight(newHeight: number) {
+	set editorHeight(newHeight: numBer) {
 		this._editorHeight = newHeight;
 
-		this.totalHeight = this._editorHeight + CELL_TOP_MARGIN + CELL_BOTTOM_MARGIN + BOTTOM_CELL_TOOLBAR_GAP + this.getEditorStatusbarHeight();
+		this.totalHeight = this._editorHeight + CELL_TOP_MARGIN + CELL_BOTTOM_MARGIN + BOTTOM_CELL_TOOLBAR_GAP + this.getEditorStatusBarHeight();
 	}
 
 	get editorHeight() {
@@ -62,10 +62,10 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 
 	constructor(
 		readonly viewType: string,
-		readonly model: NotebookCellTextModel,
-		initialNotebookLayoutInfo: NotebookLayoutInfo | null,
+		readonly model: NoteBookCellTextModel,
+		initialNoteBookLayoutInfo: NoteBookLayoutInfo | null,
 		readonly foldingDelegate: EditorFoldingStateDelegate,
-		readonly eventDispatcher: NotebookEventDispatcher,
+		readonly eventDispatcher: NoteBookEventDispatcher,
 		private readonly _mdRenderer: MarkdownRenderer,
 		@IConfigurationService configurationService: IConfigurationService
 	) {
@@ -73,14 +73,14 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 
 		this._layoutInfo = {
 			editorHeight: 0,
-			fontInfo: initialNotebookLayoutInfo?.fontInfo || null,
-			editorWidth: initialNotebookLayoutInfo?.width ? this.computeEditorWidth(initialNotebookLayoutInfo.width) : 0,
-			bottomToolbarOffset: BOTTOM_CELL_TOOLBAR_GAP,
+			fontInfo: initialNoteBookLayoutInfo?.fontInfo || null,
+			editorWidth: initialNoteBookLayoutInfo?.width ? this.computeEditorWidth(initialNoteBookLayoutInfo.width) : 0,
+			BottomToolBarOffset: BOTTOM_CELL_TOOLBAR_GAP,
 			totalHeight: 0
 		};
 
 		this._register(this.onDidChangeState(e => {
-			eventDispatcher.emit([new NotebookCellStateChangedEvent(e, this)]);
+			eventDispatcher.emit([new NoteBookCellStateChangedEvent(e, this)]);
 		}));
 	}
 
@@ -88,7 +88,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 		this._onDidChangeState.fire({ foldingStateChanged: true });
 	}
 
-	private computeEditorWidth(outerWidth: number) {
+	private computeEditorWidth(outerWidth: numBer) {
 		return outerWidth - (CELL_MARGIN * 2) - CODE_CELL_LEFT_MARGIN;
 	}
 
@@ -103,7 +103,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 				fontInfo: state.font || this._layoutInfo.fontInfo,
 				editorWidth,
 				editorHeight: this._editorHeight,
-				bottomToolbarOffset: totalHeight - BOTTOM_CELL_TOOLBAR_GAP - BOTTOM_CELL_TOOLBAR_HEIGHT / 2,
+				BottomToolBarOffset: totalHeight - BOTTOM_CELL_TOOLBAR_GAP - BOTTOM_CELL_TOOLBAR_HEIGHT / 2,
 				totalHeight
 			};
 		} else {
@@ -115,7 +115,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 				fontInfo: state.font || this._layoutInfo.fontInfo,
 				editorWidth,
 				editorHeight: this._editorHeight,
-				bottomToolbarOffset: totalHeight - BOTTOM_CELL_TOOLBAR_GAP - BOTTOM_CELL_TOOLBAR_HEIGHT / 2,
+				BottomToolBarOffset: totalHeight - BOTTOM_CELL_TOOLBAR_GAP - BOTTOM_CELL_TOOLBAR_HEIGHT / 2,
 				totalHeight
 			};
 		}
@@ -123,13 +123,13 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 		this._onDidChangeLayout.fire(state);
 	}
 
-	restoreEditorViewState(editorViewStates: editorCommon.ICodeEditorViewState | null, totalHeight?: number) {
+	restoreEditorViewState(editorViewStates: editorCommon.ICodeEditorViewState | null, totalHeight?: numBer) {
 		super.restoreEditorViewState(editorViewStates);
 		if (totalHeight !== undefined) {
 			this._layoutInfo = {
 				fontInfo: this._layoutInfo.fontInfo,
 				editorWidth: this._layoutInfo.editorWidth,
-				bottomToolbarOffset: this._layoutInfo.bottomToolbarOffset,
+				BottomToolBarOffset: this._layoutInfo.BottomToolBarOffset,
 				totalHeight: totalHeight,
 				editorHeight: this._editorHeight
 			};
@@ -141,7 +141,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 		return false;
 	}
 
-	getHeight(lineHeight: number) {
+	getHeight(lineHeight: numBer) {
 		if (this._layoutInfo.totalHeight === 0) {
 			return 100;
 		} else {
@@ -164,7 +164,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 			if (text.length === 0) {
 				const el = document.createElement('p');
 				el.className = 'emptyMarkdownPlaceholder';
-				el.innerText = nls.localize('notebook.emptyMarkdownPlaceholder', "Empty markdown cell, double click or press enter to edit.");
+				el.innerText = nls.localize('noteBook.emptyMarkdownPlaceholder', "Empty markdown cell, douBle click or press enter to edit.");
 				this._html = el;
 			} else {
 				this._html = renderer.render({ value: this.getText(), isTrusted: true }, undefined, { gfm: true }).element;
@@ -178,7 +178,7 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 	async resolveTextModel(): Promise<model.ITextModel> {
 		if (!this.textModel) {
 			const ref = await this.model.resolveTextModelRef();
-			this.textModel = ref.object.textEditorModel;
+			this.textModel = ref.oBject.textEditorModel;
 			this._register(ref);
 			this._register(this.textModel.onDidChangeContent(() => {
 				this._html = null;
@@ -195,10 +195,10 @@ export class MarkdownCellViewModel extends BaseCellViewModel implements ICellVie
 		return this._mdRenderer;
 	}
 
-	private readonly _hasFindResult = this._register(new Emitter<boolean>());
-	public readonly hasFindResult: Event<boolean> = this._hasFindResult.event;
+	private readonly _hasFindResult = this._register(new Emitter<Boolean>());
+	puBlic readonly hasFindResult: Event<Boolean> = this._hasFindResult.event;
 
-	startFind(value: string, options: INotebookSearchOptions): CellFindMatch | null {
+	startFind(value: string, options: INoteBookSearchOptions): CellFindMatch | null {
 		const matches = super.cellStartFind(value, options);
 
 		if (matches === null) {

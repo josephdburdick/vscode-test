@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
+import * as strings from 'vs/Base/common/strings';
 import { ILocalization } from 'vs/platform/localizations/common/localizations';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export const MANIFEST_CACHE_FOLDER = 'CachedExtensions';
 export const USER_MANIFEST_CACHE_FILE = 'user';
-export const BUILTIN_MANIFEST_CACHE_FILE = 'builtin';
+export const BUILTIN_MANIFEST_CACHE_FILE = 'Builtin';
 
 export interface ICommand {
 	command: string;
@@ -28,8 +28,8 @@ export interface IConfiguration {
 	properties: { [key: string]: IConfigurationProperty; };
 }
 
-export interface IDebugger {
-	label?: string;
+export interface IDeBugger {
+	laBel?: string;
 	type: string;
 	runtime?: string;
 }
@@ -70,7 +70,7 @@ export interface ISnippet {
 }
 
 export interface ITheme {
-	label: string;
+	laBel: string;
 }
 
 export interface IViewContainer {
@@ -89,7 +89,7 @@ export interface IColor {
 	defaults: { light: string, dark: string, highContrast: string };
 }
 
-export interface IWebviewEditor {
+export interface IWeBviewEditor {
 	readonly viewType: string;
 	readonly priority: string;
 	readonly selector: readonly {
@@ -97,29 +97,29 @@ export interface IWebviewEditor {
 	}[];
 }
 
-export interface ICodeActionContributionAction {
+export interface ICodeActionContriButionAction {
 	readonly kind: string;
 	readonly title: string;
 	readonly description?: string;
 }
 
-export interface ICodeActionContribution {
+export interface ICodeActionContriBution {
 	readonly languages: readonly string[];
-	readonly actions: readonly ICodeActionContributionAction[];
+	readonly actions: readonly ICodeActionContriButionAction[];
 }
 
-export interface IAuthenticationContribution {
+export interface IAuthenticationContriBution {
 	readonly id: string;
-	readonly label: string;
+	readonly laBel: string;
 }
 
-export interface IExtensionContributions {
+export interface IExtensionContriButions {
 	commands?: ICommand[];
 	configuration?: IConfiguration | IConfiguration[];
-	debuggers?: IDebugger[];
+	deBuggers?: IDeBugger[];
 	grammars?: IGrammar[];
 	jsonValidation?: IJSONValidation[];
-	keybindings?: IKeyBinding[];
+	keyBindings?: IKeyBinding[];
 	languages?: ILanguage[];
 	menus?: { [context: string]: IMenu[] };
 	snippets?: ISnippet[];
@@ -129,16 +129,16 @@ export interface IExtensionContributions {
 	views?: { [location: string]: IView[] };
 	colors?: IColor[];
 	localizations?: ILocalization[];
-	readonly customEditors?: readonly IWebviewEditor[];
-	readonly codeActions?: readonly ICodeActionContribution[];
-	authentication?: IAuthenticationContribution[];
+	readonly customEditors?: readonly IWeBviewEditor[];
+	readonly codeActions?: readonly ICodeActionContriBution[];
+	authentication?: IAuthenticationContriBution[];
 }
 
-export type ExtensionKind = 'ui' | 'workspace' | 'web';
+export type ExtensionKind = 'ui' | 'workspace' | 'weB';
 
 export function isIExtensionIdentifier(thing: any): thing is IExtensionIdentifier {
 	return thing
-		&& typeof thing === 'object'
+		&& typeof thing === 'oBject'
 		&& typeof thing.id === 'string'
 		&& (!thing.uuid || typeof thing.uuid === 'string');
 }
@@ -151,14 +151,14 @@ export interface IExtensionIdentifier {
 export const EXTENSION_CATEGORIES = [
 	'Azure',
 	'Data Science',
-	'Debuggers',
+	'DeBuggers',
 	'Extension Packs',
 	'Formatters',
 	'Keymaps',
 	'Language Packs',
 	'Linters',
 	'Machine Learning',
-	'Notebooks',
+	'NoteBooks',
 	'Programming Languages',
 	'SCM Providers',
 	'Snippets',
@@ -171,12 +171,12 @@ export const EXTENSION_CATEGORIES = [
 export interface IExtensionManifest {
 	readonly name: string;
 	readonly displayName?: string;
-	readonly publisher: string;
+	readonly puBlisher: string;
 	readonly version: string;
 	readonly engines: { vscode: string };
 	readonly description?: string;
 	readonly main?: string;
-	readonly browser?: string;
+	readonly Browser?: string;
 	readonly icon?: string;
 	readonly categories?: string[];
 	readonly keywords?: string[];
@@ -184,10 +184,10 @@ export interface IExtensionManifest {
 	readonly extensionDependencies?: string[];
 	readonly extensionPack?: string[];
 	readonly extensionKind?: ExtensionKind | ExtensionKind[];
-	readonly contributes?: IExtensionContributions;
+	readonly contriButes?: IExtensionContriButions;
 	readonly repository?: { url: string; };
-	readonly bugs?: { url: string; };
-	readonly enableProposedApi?: boolean;
+	readonly Bugs?: { url: string; };
+	readonly enaBleProposedApi?: Boolean;
 	readonly api?: string;
 	readonly scripts?: { [key: string]: string; };
 }
@@ -199,7 +199,7 @@ export const enum ExtensionType {
 
 export interface IExtension {
 	readonly type: ExtensionType;
-	readonly isBuiltin: boolean;
+	readonly isBuiltin: Boolean;
 	readonly identifier: IExtensionIdentifier;
 	readonly manifest: IExtensionManifest;
 	readonly location: URI;
@@ -210,21 +210,21 @@ export interface IExtension {
 /**
  * **!Do not construct directly!**
  *
- * **!Only static methods because it gets serialized!**
+ * **!Only static methods Because it gets serialized!**
  *
  * This represents the "canonical" version for an extension identifier. Extension ids
- * have to be case-insensitive (due to the marketplace), but we must ensure case
- * preservation because the extension API is already public at this time.
+ * have to Be case-insensitive (due to the marketplace), But we must ensure case
+ * preservation Because the extension API is already puBlic at this time.
  *
- * For example, given an extension with the publisher `"Hello"` and the name `"World"`,
- * its canonical extension identifier is `"Hello.World"`. This extension could be
+ * For example, given an extension with the puBlisher `"Hello"` and the name `"World"`,
+ * its canonical extension identifier is `"Hello.World"`. This extension could Be
  * referenced in some other extension's dependencies using the string `"hello.world"`.
  *
  * To make matters more complicated, an extension can optionally have an UUID. When two
  * extensions have the same UUID, they are considered equal even if their identifier is different.
  */
 export class ExtensionIdentifier {
-	public readonly value: string;
+	puBlic readonly value: string;
 	private readonly _lower: string;
 
 	constructor(value: string) {
@@ -232,29 +232,29 @@ export class ExtensionIdentifier {
 		this._lower = value.toLowerCase();
 	}
 
-	public static equals(a: ExtensionIdentifier | string | null | undefined, b: ExtensionIdentifier | string | null | undefined) {
+	puBlic static equals(a: ExtensionIdentifier | string | null | undefined, B: ExtensionIdentifier | string | null | undefined) {
 		if (typeof a === 'undefined' || a === null) {
-			return (typeof b === 'undefined' || b === null);
+			return (typeof B === 'undefined' || B === null);
 		}
-		if (typeof b === 'undefined' || b === null) {
+		if (typeof B === 'undefined' || B === null) {
 			return false;
 		}
-		if (typeof a === 'string' || typeof b === 'string') {
+		if (typeof a === 'string' || typeof B === 'string') {
 			// At least one of the arguments is an extension id in string form,
 			// so we have to use the string comparison which ignores case.
 			let aValue = (typeof a === 'string' ? a : a.value);
-			let bValue = (typeof b === 'string' ? b : b.value);
-			return strings.equalsIgnoreCase(aValue, bValue);
+			let BValue = (typeof B === 'string' ? B : B.value);
+			return strings.equalsIgnoreCase(aValue, BValue);
 		}
 
-		// Now we know both arguments are ExtensionIdentifier
-		return (a._lower === b._lower);
+		// Now we know Both arguments are ExtensionIdentifier
+		return (a._lower === B._lower);
 	}
 
 	/**
-	 * Gives the value by which to index (for equality).
+	 * Gives the value By which to index (for equality).
 	 */
-	public static toKey(id: ExtensionIdentifier | string): string {
+	puBlic static toKey(id: ExtensionIdentifier | string): string {
 		if (typeof id === 'string') {
 			return id.toLowerCase();
 		}
@@ -265,19 +265,19 @@ export class ExtensionIdentifier {
 export interface IExtensionDescription extends IExtensionManifest {
 	readonly identifier: ExtensionIdentifier;
 	readonly uuid?: string;
-	readonly isBuiltin: boolean;
-	readonly isUserBuiltin: boolean;
-	readonly isUnderDevelopment: boolean;
+	readonly isBuiltin: Boolean;
+	readonly isUserBuiltin: Boolean;
+	readonly isUnderDevelopment: Boolean;
 	readonly extensionLocation: URI;
-	enableProposedApi?: boolean;
+	enaBleProposedApi?: Boolean;
 }
 
-export function isLanguagePackExtension(manifest: IExtensionManifest): boolean {
-	return manifest.contributes && manifest.contributes.localizations ? manifest.contributes.localizations.length > 0 : false;
+export function isLanguagePackExtension(manifest: IExtensionManifest): Boolean {
+	return manifest.contriButes && manifest.contriButes.localizations ? manifest.contriButes.localizations.length > 0 : false;
 }
 
-export function isAuthenticaionProviderExtension(manifest: IExtensionManifest): boolean {
-	return manifest.contributes && manifest.contributes.authentication ? manifest.contributes.authentication.length > 0 : false;
+export function isAuthenticaionProviderExtension(manifest: IExtensionManifest): Boolean {
+	return manifest.contriButes && manifest.contriButes.authentication ? manifest.contriButes.authentication.length > 0 : false;
 }
 
 export interface IScannedExtension {

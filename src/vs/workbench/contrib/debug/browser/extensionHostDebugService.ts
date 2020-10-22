@@ -3,37 +3,37 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionHostDebugChannelClient, ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
-import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { ExtensionHostDeBugChannelClient, ExtensionHostDeBugBroadcastChannel } from 'vs/platform/deBug/common/extensionHostDeBugIpc';
+import { IRemoteAgentService } from 'vs/workBench/services/remote/common/remoteAgentService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IExtensionHostDebugService, IOpenExtensionWindowResult } from 'vs/platform/debug/common/extensionHostDebug';
-import { IDebugHelperService } from 'vs/workbench/contrib/debug/common/debug';
+import { IExtensionHostDeBugService, IOpenExtensionWindowResult } from 'vs/platform/deBug/common/extensionHostDeBug';
+import { IDeBugHelperService } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TelemetryService } from 'vs/platform/telemetry/common/telemetryService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IWorkspaceProvider, IWorkspace } from 'vs/workbench/services/host/browser/browserHostService';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
+import { Event } from 'vs/Base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { IWorkspaceProvider, IWorkspace } from 'vs/workBench/services/host/Browser/BrowserHostService';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
 import { hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
 import { ILogService } from 'vs/platform/log/common/log';
 
-class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient implements IExtensionHostDebugService {
+class BrowserExtensionHostDeBugService extends ExtensionHostDeBugChannelClient implements IExtensionHostDeBugService {
 
 	private workspaceProvider: IWorkspaceProvider;
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService environmentService: IWorkBenchEnvironmentService,
 		@ILogService logService: ILogService
 	) {
 		const connection = remoteAgentService.getConnection();
 		let channel: IChannel;
 		if (connection) {
-			channel = connection.getChannel(ExtensionHostDebugBroadcastChannel.ChannelName);
+			channel = connection.getChannel(ExtensionHostDeBugBroadcastChannel.ChannelName);
 		} else {
-			// Extension host debugging not supported in serverless.
+			// Extension host deBugging not supported in serverless.
 			channel = { call: async () => undefined, listen: () => Event.None } as any;
 		}
 
@@ -43,19 +43,19 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 			this.workspaceProvider = environmentService.options.workspaceProvider;
 		} else {
 			this.workspaceProvider = { open: async () => undefined, workspace: undefined };
-			logService.warn('Extension Host Debugging not available due to missing workspace provider.');
+			logService.warn('Extension Host DeBugging not availaBle due to missing workspace provider.');
 		}
 
 		// Reload window on reload request
 		this._register(this.onReload(event => {
-			if (environmentService.isExtensionDevelopment && environmentService.debugExtensionHost.debugId === event.sessionId) {
+			if (environmentService.isExtensionDevelopment && environmentService.deBugExtensionHost.deBugId === event.sessionId) {
 				window.location.reload();
 			}
 		}));
 
 		// Close window on close request
 		this._register(this.onClose(event => {
-			if (environmentService.isExtensionDevelopment && environmentService.debugExtensionHost.debugId === event.sessionId) {
+			if (environmentService.isExtensionDevelopment && environmentService.deBugExtensionHost.deBugId === event.sessionId) {
 				window.close();
 			}
 		}));
@@ -63,19 +63,19 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 
 	async openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment): Promise<IOpenExtensionWindowResult> {
 
-		// Find out which workspace to open debug window on
-		let debugWorkspace: IWorkspace = undefined;
+		// Find out which workspace to open deBug window on
+		let deBugWorkspace: IWorkspace = undefined;
 		const folderUriArg = this.findArgument('folder-uri', args);
 		if (folderUriArg) {
-			debugWorkspace = { folderUri: URI.parse(folderUriArg) };
+			deBugWorkspace = { folderUri: URI.parse(folderUriArg) };
 		} else {
 			const fileUriArg = this.findArgument('file-uri', args);
 			if (fileUriArg && hasWorkspaceFileExtension(fileUriArg)) {
-				debugWorkspace = { workspaceUri: URI.parse(fileUriArg) };
+				deBugWorkspace = { workspaceUri: URI.parse(fileUriArg) };
 			}
 		}
 
-		// Add environment parameters required for debug to work
+		// Add environment parameters required for deBug to work
 		const environment = new Map<string, string>();
 
 		const fileUriArg = this.findArgument('file-uri', args);
@@ -93,14 +93,14 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 			environment.set('extensionTestsPath', extensionTestsPath);
 		}
 
-		const debugId = this.findArgument('debugId', args);
-		if (debugId) {
-			environment.set('debugId', debugId);
+		const deBugId = this.findArgument('deBugId', args);
+		if (deBugId) {
+			environment.set('deBugId', deBugId);
 		}
 
-		const inspectBrkExtensions = this.findArgument('inspect-brk-extensions', args);
+		const inspectBrkExtensions = this.findArgument('inspect-Brk-extensions', args);
 		if (inspectBrkExtensions) {
-			environment.set('inspect-brk-extensions', inspectBrkExtensions);
+			environment.set('inspect-Brk-extensions', inspectBrkExtensions);
 		}
 
 		const inspectExtensions = this.findArgument('inspect-extensions', args);
@@ -108,10 +108,10 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 			environment.set('inspect-extensions', inspectExtensions);
 		}
 
-		// Open debug window as new window. Pass arguments over.
-		await this.workspaceProvider.open(debugWorkspace, {
-			reuse: false, 								// debugging always requires a new window
-			payload: Array.from(environment.entries())	// mandatory properties to enable debugging
+		// Open deBug window as new window. Pass arguments over.
+		await this.workspaceProvider.open(deBugWorkspace, {
+			reuse: false, 								// deBugging always requires a new window
+			payload: Array.from(environment.entries())	// mandatory properties to enaBle deBugging
 		});
 
 		return {};
@@ -121,7 +121,7 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 		for (const a of args) {
 			const k = `--${key}=`;
 			if (a.indexOf(k) === 0) {
-				return a.substr(k.length);
+				return a.suBstr(k.length);
 			}
 		}
 
@@ -129,9 +129,9 @@ class BrowserExtensionHostDebugService extends ExtensionHostDebugChannelClient i
 	}
 }
 
-registerSingleton(IExtensionHostDebugService, BrowserExtensionHostDebugService, true);
+registerSingleton(IExtensionHostDeBugService, BrowserExtensionHostDeBugService, true);
 
-class BrowserDebugHelperService implements IDebugHelperService {
+class BrowserDeBugHelperService implements IDeBugHelperService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -140,4 +140,4 @@ class BrowserDebugHelperService implements IDebugHelperService {
 	}
 }
 
-registerSingleton(IDebugHelperService, BrowserDebugHelperService, true);
+registerSingleton(IDeBugHelperService, BrowserDeBugHelperService, true);

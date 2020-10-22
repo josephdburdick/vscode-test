@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IDebugService, State } from 'vs/workbench/contrib/debug/common/debug';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { ITitleService } from 'vs/workbench/services/title/common/titleService';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { IDeBugService, State } from 'vs/workBench/contriB/deBug/common/deBug';
+import { dispose, IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import { ITitleService } from 'vs/workBench/services/title/common/titleService';
 
-export class DebugTitleContribution implements IWorkbenchContribution {
+export class DeBugTitleContriBution implements IWorkBenchContriBution {
 
-	private toDispose: IDisposable[] = [];
+	private toDispose: IDisposaBle[] = [];
 
 	constructor(
-		@IDebugService readonly debugService: IDebugService,
+		@IDeBugService readonly deBugService: IDeBugService,
 		@IHostService readonly hostService: IHostService,
 		@ITitleService readonly titleService: ITitleService
 	) {
 		const updateTitle = () => {
-			if (debugService.state === State.Stopped && !hostService.hasFocus) {
+			if (deBugService.state === State.Stopped && !hostService.hasFocus) {
 				titleService.updateProperties({ prefix: '🔴' });
 			} else {
 				titleService.updateProperties({ prefix: '' });
 			}
 		};
-		this.toDispose.push(debugService.onDidChangeState(updateTitle));
+		this.toDispose.push(deBugService.onDidChangeState(updateTitle));
 		this.toDispose.push(hostService.onDidChangeFocus(updateTitle));
 	}
 

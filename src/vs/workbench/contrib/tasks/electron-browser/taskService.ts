@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Objects from 'vs/base/common/objects';
+import * as OBjects from 'vs/Base/common/oBjects';
 import * as semver from 'semver-umd';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { ITaskSystem } from 'vs/workbench/contrib/tasks/common/taskSystem';
-import { ExecutionEngine, TaskRunSource } from 'vs/workbench/contrib/tasks/common/tasks';
+import { IStringDictionary } from 'vs/Base/common/collections';
+import { WorkBenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import { ITaskSystem } from 'vs/workBench/contriB/tasks/common/taskSystem';
+import { ExecutionEngine, TaskRunSource } from 'vs/workBench/contriB/tasks/common/tasks';
 import * as TaskConfig from '../common/taskConfiguration';
-import { ProcessTaskSystem } from 'vs/workbench/contrib/tasks/node/processTaskSystem';
-import { ProcessRunnerDetector } from 'vs/workbench/contrib/tasks/node/processRunnerDetector';
-import { AbstractTaskService } from 'vs/workbench/contrib/tasks/browser/abstractTaskService';
-import { TaskFilter, ITaskService } from 'vs/workbench/contrib/tasks/common/taskService';
+import { ProcessTaskSystem } from 'vs/workBench/contriB/tasks/node/processTaskSystem';
+import { ProcessRunnerDetector } from 'vs/workBench/contriB/tasks/node/processRunnerDetector';
+import { ABstractTaskService } from 'vs/workBench/contriB/tasks/Browser/aBstractTaskService';
+import { TaskFilter, ITaskService } from 'vs/workBench/contriB/tasks/common/taskService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
 interface WorkspaceFolderConfigurationResult {
 	workspaceFolder: IWorkspaceFolder;
 	config: TaskConfig.ExternalTaskRunnerConfiguration | undefined;
-	hasErrors: boolean;
+	hasErrors: Boolean;
 }
 
-export class TaskService extends AbstractTaskService {
-	private _configHasErrors: boolean = false;
+export class TaskService extends ABstractTaskService {
+	private _configHasErrors: Boolean = false;
 
 	protected getTaskSystem(): ITaskSystem {
 		if (this._taskSystem) {
@@ -61,8 +61,8 @@ export class TaskService extends AbstractTaskService {
 		});
 	}
 
-	private hasDetectorSupport(config: TaskConfig.ExternalTaskRunnerConfiguration): boolean {
-		if (!config.command || this.contextService.getWorkbenchState() === WorkbenchState.EMPTY) {
+	private hasDetectorSupport(config: TaskConfig.ExternalTaskRunnerConfiguration): Boolean {
+		if (!config.command || this.contextService.getWorkBenchState() === WorkBenchState.EMPTY) {
 			return false;
 		}
 		return ProcessRunnerDetector.supports(TaskConfig.CommandString.value(config.command));
@@ -81,8 +81,8 @@ export class TaskService extends AbstractTaskService {
 					if (!detectedConfig) {
 						return { workspaceFolder, config, hasErrors };
 					}
-					let result: TaskConfig.ExternalTaskRunnerConfiguration = Objects.deepClone(config)!;
-					let configuredTasks: IStringDictionary<TaskConfig.CustomTask> = Object.create(null);
+					let result: TaskConfig.ExternalTaskRunnerConfiguration = OBjects.deepClone(config)!;
+					let configuredTasks: IStringDictionary<TaskConfig.CustomTask> = OBject.create(null);
 					const resultTasks = result.tasks;
 					if (!resultTasks) {
 						if (detectedConfig.tasks) {
@@ -115,14 +115,14 @@ export class TaskService extends AbstractTaskService {
 		}
 	}
 
-	protected versionAndEngineCompatible(filter?: TaskFilter): boolean {
+	protected versionAndEngineCompatiBle(filter?: TaskFilter): Boolean {
 		let range = filter && filter.version ? filter.version : undefined;
 		let engine = this.executionEngine;
 
 		return (range === undefined) || ((semver.satisfies('0.1.0', range) && engine === ExecutionEngine.Process) || (semver.satisfies('2.0.0', range) && engine === ExecutionEngine.Terminal));
 	}
 
-	private printStderr(stderr: string[]): boolean {
+	private printStderr(stderr: string[]): Boolean {
 		let result = false;
 		if (stderr && stderr.length > 0) {
 			stderr.forEach((line) => {

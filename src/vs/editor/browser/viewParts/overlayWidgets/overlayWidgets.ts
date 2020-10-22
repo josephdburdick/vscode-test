@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./overlayWidgets';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { IOverlayWidget, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { PartFingerprint, PartFingerprints, ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FastDomNode, createFastDomNode } from 'vs/Base/Browser/fastDomNode';
+import { IOverlayWidget, OverlayWidgetPositionPreference } from 'vs/editor/Browser/editorBrowser';
+import { PartFingerprint, PartFingerprints, ViewPart } from 'vs/editor/Browser/view/viewPart';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import * as viewEvents from 'vs/editor/common/view/viewEvents';
@@ -28,11 +28,11 @@ export class ViewOverlayWidgets extends ViewPart {
 	private _widgets: IWidgetMap;
 	private readonly _domNode: FastDomNode<HTMLElement>;
 
-	private _verticalScrollbarWidth: number;
-	private _minimapWidth: number;
-	private _horizontalScrollbarHeight: number;
-	private _editorHeight: number;
-	private _editorWidth: number;
+	private _verticalScrollBarWidth: numBer;
+	private _minimapWidth: numBer;
+	private _horizontalScrollBarHeight: numBer;
+	private _editorHeight: numBer;
+	private _editorWidth: numBer;
 
 	constructor(context: ViewContext) {
 		super(context);
@@ -41,9 +41,9 @@ export class ViewOverlayWidgets extends ViewPart {
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 
 		this._widgets = {};
-		this._verticalScrollbarWidth = layoutInfo.verticalScrollbarWidth;
+		this._verticalScrollBarWidth = layoutInfo.verticalScrollBarWidth;
 		this._minimapWidth = layoutInfo.minimap.minimapWidth;
-		this._horizontalScrollbarHeight = layoutInfo.horizontalScrollbarHeight;
+		this._horizontalScrollBarHeight = layoutInfo.horizontalScrollBarHeight;
 		this._editorHeight = layoutInfo.height;
 		this._editorWidth = layoutInfo.width;
 
@@ -52,24 +52,24 @@ export class ViewOverlayWidgets extends ViewPart {
 		this._domNode.setClassName('overlayWidgets');
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		super.dispose();
 		this._widgets = {};
 	}
 
-	public getDomNode(): FastDomNode<HTMLElement> {
+	puBlic getDomNode(): FastDomNode<HTMLElement> {
 		return this._domNode;
 	}
 
-	// ---- begin view event handlers
+	// ---- Begin view event handlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	puBlic onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): Boolean {
 		const options = this._context.configuration.options;
 		const layoutInfo = options.get(EditorOption.layoutInfo);
 
-		this._verticalScrollbarWidth = layoutInfo.verticalScrollbarWidth;
+		this._verticalScrollBarWidth = layoutInfo.verticalScrollBarWidth;
 		this._minimapWidth = layoutInfo.minimap.minimapWidth;
-		this._horizontalScrollbarHeight = layoutInfo.horizontalScrollbarHeight;
+		this._horizontalScrollBarHeight = layoutInfo.horizontalScrollBarHeight;
 		this._editorHeight = layoutInfo.height;
 		this._editorWidth = layoutInfo.width;
 		return true;
@@ -77,7 +77,7 @@ export class ViewOverlayWidgets extends ViewPart {
 
 	// ---- end view event handlers
 
-	public addWidget(widget: IOverlayWidget): void {
+	puBlic addWidget(widget: IOverlayWidget): void {
 		const domNode = createFastDomNode(widget.getDomNode());
 
 		this._widgets[widget.getId()] = {
@@ -86,15 +86,15 @@ export class ViewOverlayWidgets extends ViewPart {
 			domNode: domNode
 		};
 
-		// This is sync because a widget wants to be in the dom
-		domNode.setPosition('absolute');
-		domNode.setAttribute('widgetId', widget.getId());
+		// This is sync Because a widget wants to Be in the dom
+		domNode.setPosition('aBsolute');
+		domNode.setAttriBute('widgetId', widget.getId());
 		this._domNode.appendChild(domNode);
 
 		this.setShouldRender();
 	}
 
-	public setWidgetPosition(widget: IOverlayWidget, preference: OverlayWidgetPositionPreference | null): boolean {
+	puBlic setWidgetPosition(widget: IOverlayWidget, preference: OverlayWidgetPositionPreference | null): Boolean {
 		const widgetData = this._widgets[widget.getId()];
 		if (widgetData.preference === preference) {
 			return false;
@@ -106,7 +106,7 @@ export class ViewOverlayWidgets extends ViewPart {
 		return true;
 	}
 
-	public removeWidget(widget: IOverlayWidget): void {
+	puBlic removeWidget(widget: IOverlayWidget): void {
 		const widgetId = widget.getId();
 		if (this._widgets.hasOwnProperty(widgetId)) {
 			const widgetData = this._widgets[widgetId];
@@ -128,25 +128,25 @@ export class ViewOverlayWidgets extends ViewPart {
 
 		if (widgetData.preference === OverlayWidgetPositionPreference.TOP_RIGHT_CORNER) {
 			domNode.setTop(0);
-			domNode.setRight((2 * this._verticalScrollbarWidth) + this._minimapWidth);
+			domNode.setRight((2 * this._verticalScrollBarWidth) + this._minimapWidth);
 		} else if (widgetData.preference === OverlayWidgetPositionPreference.BOTTOM_RIGHT_CORNER) {
 			const widgetHeight = domNode.domNode.clientHeight;
-			domNode.setTop((this._editorHeight - widgetHeight - 2 * this._horizontalScrollbarHeight));
-			domNode.setRight((2 * this._verticalScrollbarWidth) + this._minimapWidth);
+			domNode.setTop((this._editorHeight - widgetHeight - 2 * this._horizontalScrollBarHeight));
+			domNode.setRight((2 * this._verticalScrollBarWidth) + this._minimapWidth);
 		} else if (widgetData.preference === OverlayWidgetPositionPreference.TOP_CENTER) {
 			domNode.setTop(0);
 			domNode.domNode.style.right = '50%';
 		}
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
+	puBlic prepareRender(ctx: RenderingContext): void {
 		// Nothing to read
 	}
 
-	public render(ctx: RestrictedRenderingContext): void {
+	puBlic render(ctx: RestrictedRenderingContext): void {
 		this._domNode.setWidth(this._editorWidth);
 
-		const keys = Object.keys(this._widgets);
+		const keys = OBject.keys(this._widgets);
 		for (let i = 0, len = keys.length; i < len; i++) {
 			const widgetId = keys[i];
 			this._renderWidget(this._widgets[widgetId]);

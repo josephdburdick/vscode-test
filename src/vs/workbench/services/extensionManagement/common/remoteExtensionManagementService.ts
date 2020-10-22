@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
+import { IChannel } from 'vs/Base/parts/ipc/common/ipc';
 import { IExtensionManagementService, IGalleryExtension, IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { canExecuteOnWorkspace } from 'vs/workbench/services/extensions/common/extensionsUtil';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { canExecuteOnWorkspace } from 'vs/workBench/services/extensions/common/extensionsUtil';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ExtensionManagementChannelClient } from 'vs/platform/extensionManagement/common/extensionManagementIpc';
 
-export class WebRemoteExtensionManagementService extends ExtensionManagementChannelClient implements IExtensionManagementService {
+export class WeBRemoteExtensionManagementService extends ExtensionManagementChannelClient implements IExtensionManagementService {
 
 	constructor(
 		channel: IChannel,
@@ -22,7 +22,7 @@ export class WebRemoteExtensionManagementService extends ExtensionManagementChan
 		super(channel);
 	}
 
-	async canInstall(extension: IGalleryExtension): Promise<boolean> {
+	async canInstall(extension: IGalleryExtension): Promise<Boolean> {
 		const manifest = await this.galleryService.getManifest(extension, CancellationToken.None);
 		return !!manifest && canExecuteOnWorkspace(manifest, this.productService, this.configurationService);
 	}

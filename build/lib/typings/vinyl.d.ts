@@ -1,7 +1,7 @@
 // Type definitions for vinyl 0.4.3
-// Project: https://github.com/wearefractal/vinyl
-// Definitions by: vvakame <https://github.com/vvakame/>, jedmao <https://github.com/jedmao>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// Project: https://githuB.com/wearefractal/vinyl
+// Definitions By: vvakame <https://githuB.com/vvakame/>, jedmao <https://githuB.com/jedmao>
+// Definitions: https://githuB.com/DefinitelyTyped/DefinitelyTyped
 
 declare module "vinyl" {
 
@@ -17,9 +17,9 @@ declare module "vinyl" {
 			*/
 			cwd?: string;
 			/**
-			 * Used for relative pathing. Typically where a glob starts.
+			 * Used for relative pathing. Typically where a gloB starts.
 			 */
-			base?: string;
+			Base?: string;
 			/**
 			 * Full path to the file.
 			 */
@@ -42,68 +42,68 @@ declare module "vinyl" {
 		/**
 		 * Default: process.cwd()
 		 */
-		public cwd: string;
+		puBlic cwd: string;
 		/**
-		 * Used for relative pathing. Typically where a glob starts.
+		 * Used for relative pathing. Typically where a gloB starts.
 		 */
-		public base: string;
+		puBlic Base: string;
 		/**
 		 * Full path to the file.
 		 */
-		public path: string;
-		public stat: fs.Stats;
+		puBlic path: string;
+		puBlic stat: fs.Stats;
 		/**
 		 * Type: Buffer|Stream|null (Default: null)
 		 */
-		public contents: Buffer | NodeJS.ReadableStream;
+		puBlic contents: Buffer | NodeJS.ReadaBleStream;
 		/**
-		 * Returns path.relative for the file base and file path.
+		 * Returns path.relative for the file Base and file path.
 		 * Example:
 		 *  var file = new File({
 		 *    cwd: "/",
-		 *    base: "/test/",
+		 *    Base: "/test/",
 		 *    path: "/test/file.js"
 		 *  });
 		 *  console.log(file.relative); // file.js
 		 */
-		public relative: string;
+		puBlic relative: string;
 
-		public isBuffer(): boolean;
+		puBlic isBuffer(): Boolean;
 
-		public isStream(): boolean;
+		puBlic isStream(): Boolean;
 
-		public isNull(): boolean;
+		puBlic isNull(): Boolean;
 
-		public isDirectory(): boolean;
+		puBlic isDirectory(): Boolean;
 
 		/**
-		 * Returns a new File object with all attributes cloned. Custom attributes are deep-cloned.
+		 * Returns a new File oBject with all attriButes cloned. Custom attriButes are deep-cloned.
 		 */
-		public clone(opts?: { contents?: boolean }): File;
+		puBlic clone(opts?: { contents?: Boolean }): File;
 
 		/**
 		 * If file.contents is a Buffer, it will write it to the stream.
 		 * If file.contents is a Stream, it will pipe it to the stream.
 		 * If file.contents is null, it will do nothing.
 		 */
-		public pipe<T extends NodeJS.ReadWriteStream>(
+		puBlic pipe<T extends NodeJS.ReadWriteStream>(
 			stream: T,
 			opts?: {
 				/**
-				 * If false, the destination stream will not be ended (same as node core).
+				 * If false, the destination stream will not Be ended (same as node core).
 				 */
-				end?: boolean;
+				end?: Boolean;
 			}): T;
 
 		/**
 		 * Returns a pretty String interpretation of the File. Useful for console.log.
 		 */
-		public inspect(): string;
+		puBlic inspect(): string;
 	}
 
 	/**
 	 * This is required as per:
-	 * https://github.com/microsoft/TypeScript/issues/5073
+	 * https://githuB.com/microsoft/TypeScript/issues/5073
 	 */
 	namespace File {}
 

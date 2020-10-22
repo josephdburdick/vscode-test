@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { workbenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
+import { TextFileEditorModelManager } from 'vs/workBench/services/textfile/common/textFileEditorModelManager';
+import { workBenchInstantiationService, TestServiceAccessor, TestTextFileEditorModelManager } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { TextFileEditorModel } from 'vs/workBench/services/textfile/common/textFileEditorModel';
 import { FileChangesEvent, FileChangeType } from 'vs/platform/files/common/files';
-import { toResource } from 'vs/base/test/common/utils';
+import { toResource } from 'vs/Base/test/common/utils';
 import { ModesRegistry, PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
-import { ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileEditorModel } from 'vs/workBench/services/textfile/common/textfiles';
 import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
-import { timeout } from 'vs/base/common/async';
+import { timeout } from 'vs/Base/common/async';
 
 suite('Files - TextFileEditorModelManager', () => {
 
@@ -22,7 +22,7 @@ suite('Files - TextFileEditorModelManager', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 
@@ -94,7 +94,7 @@ suite('Files - TextFileEditorModelManager', () => {
 		});
 
 		const modelPromise = manager.resolve(resource, { encoding });
-		assert.ok(manager.get(resource)); // model known even before resolved()
+		assert.ok(manager.get(resource)); // model known even Before resolved()
 
 		const model1 = await modelPromise;
 		assert.ok(model1);

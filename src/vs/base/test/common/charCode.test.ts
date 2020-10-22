@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { CharCode } from 'vs/base/common/charCode';
+import { CharCode } from 'vs/Base/common/charCode';
 
 suite('CharCode', () => {
 	test('has good values', () => {
@@ -13,12 +13,12 @@ suite('CharCode', () => {
 			assert.equal(actual, expected.charCodeAt(0), 'char code ok for <<' + expected + '>>');
 		}
 
-		assertValue(CharCode.Tab, '\t');
+		assertValue(CharCode.TaB, '\t');
 		assertValue(CharCode.LineFeed, '\n');
 		assertValue(CharCode.CarriageReturn, '\r');
 		assertValue(CharCode.Space, ' ');
 		assertValue(CharCode.ExclamationMark, '!');
-		assertValue(CharCode.DoubleQuote, '"');
+		assertValue(CharCode.DouBleQuote, '"');
 		assertValue(CharCode.Hash, '#');
 		assertValue(CharCode.DollarSign, '$');
 		assertValue(CharCode.PercentSign, '%');
@@ -87,7 +87,7 @@ suite('CharCode', () => {
 		assertValue(CharCode.BackTick, '`');
 
 		assertValue(CharCode.a, 'a');
-		assertValue(CharCode.b, 'b');
+		assertValue(CharCode.B, 'B');
 		assertValue(CharCode.c, 'c');
 		assertValue(CharCode.d, 'd');
 		assertValue(CharCode.e, 'e');

@@ -6,34 +6,34 @@
 import 'vs/css!./media/actions';
 
 import * as nls from 'vs/nls';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { domEvent } from 'vs/base/browser/event';
-import { Color } from 'vs/base/common/color';
-import { Event } from 'vs/base/common/event';
-import { IDisposable, toDisposable, dispose, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { getDomNodePagePosition, createStyleSheet, createCSSRule, append, $ } from 'vs/base/browser/dom';
+import { IKeyBindingService } from 'vs/platform/keyBinding/common/keyBinding';
+import { domEvent } from 'vs/Base/Browser/event';
+import { Color } from 'vs/Base/common/color';
+import { Event } from 'vs/Base/common/event';
+import { IDisposaBle, toDisposaBle, dispose, DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { getDomNodePagePosition, createStyleSheet, createCSSRule, append, $ } from 'vs/Base/Browser/dom';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { Context } from 'vs/platform/contextkey/browser/contextKeyService';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { timeout } from 'vs/base/common/async';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { Context } from 'vs/platform/contextkey/Browser/contextKeyService';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import { timeout } from 'vs/Base/common/async';
+import { ILayoutService } from 'vs/platform/layout/Browser/layoutService';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { clamp } from 'vs/base/common/numbers';
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { clamp } from 'vs/Base/common/numBers';
+import { KeyCode } from 'vs/Base/common/keyCodes';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IWorkingCopyService } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { IWorkingCopyService } from 'vs/workBench/services/workingCopy/common/workingCopyService';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { CATEGORIES } from 'vs/workBench/common/actions';
 
 class InspectContextKeysAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.inspectContextKeys',
+			id: 'workBench.action.inspectContextKeys',
 			title: { value: nls.localize('inspect context keys', "Inspect Context Keys"), original: 'Inspect Context Keys' },
 			category: CATEGORIES.Developer,
 			f1: true
@@ -43,40 +43,40 @@ class InspectContextKeysAction extends Action2 {
 	run(accessor: ServicesAccessor): void {
 		const contextKeyService = accessor.get(IContextKeyService);
 
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 
 		const stylesheet = createStyleSheet();
-		disposables.add(toDisposable(() => {
+		disposaBles.add(toDisposaBle(() => {
 			if (stylesheet.parentNode) {
 				stylesheet.parentNode.removeChild(stylesheet);
 			}
 		}));
 		createCSSRule('*', 'cursor: crosshair !important;', stylesheet);
 
-		const hoverFeedback = document.createElement('div');
-		document.body.appendChild(hoverFeedback);
-		disposables.add(toDisposable(() => document.body.removeChild(hoverFeedback)));
+		const hoverFeedBack = document.createElement('div');
+		document.Body.appendChild(hoverFeedBack);
+		disposaBles.add(toDisposaBle(() => document.Body.removeChild(hoverFeedBack)));
 
-		hoverFeedback.style.position = 'absolute';
-		hoverFeedback.style.pointerEvents = 'none';
-		hoverFeedback.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-		hoverFeedback.style.zIndex = '1000';
+		hoverFeedBack.style.position = 'aBsolute';
+		hoverFeedBack.style.pointerEvents = 'none';
+		hoverFeedBack.style.BackgroundColor = 'rgBa(255, 0, 0, 0.5)';
+		hoverFeedBack.style.zIndex = '1000';
 
-		const onMouseMove = domEvent(document.body, 'mousemove', true);
-		disposables.add(onMouseMove(e => {
+		const onMouseMove = domEvent(document.Body, 'mousemove', true);
+		disposaBles.add(onMouseMove(e => {
 			const target = e.target as HTMLElement;
 			const position = getDomNodePagePosition(target);
 
-			hoverFeedback.style.top = `${position.top}px`;
-			hoverFeedback.style.left = `${position.left}px`;
-			hoverFeedback.style.width = `${position.width}px`;
-			hoverFeedback.style.height = `${position.height}px`;
+			hoverFeedBack.style.top = `${position.top}px`;
+			hoverFeedBack.style.left = `${position.left}px`;
+			hoverFeedBack.style.width = `${position.width}px`;
+			hoverFeedBack.style.height = `${position.height}px`;
 		}));
 
-		const onMouseDown = Event.once(domEvent(document.body, 'mousedown', true));
-		onMouseDown(e => { e.preventDefault(); e.stopPropagation(); }, null, disposables);
+		const onMouseDown = Event.once(domEvent(document.Body, 'mousedown', true));
+		onMouseDown(e => { e.preventDefault(); e.stopPropagation(); }, null, disposaBles);
 
-		const onMouseUp = Event.once(domEvent(document.body, 'mouseup', true));
+		const onMouseUp = Event.once(domEvent(document.Body, 'mouseup', true));
 		onMouseUp(e => {
 			e.preventDefault();
 			e.stopPropagation();
@@ -84,18 +84,18 @@ class InspectContextKeysAction extends Action2 {
 			const context = contextKeyService.getContext(e.target as HTMLElement) as Context;
 			console.log(context.collectAllValues());
 
-			dispose(disposables);
-		}, null, disposables);
+			dispose(disposaBles);
+		}, null, disposaBles);
 	}
 }
 
 class ToggleScreencastModeAction extends Action2 {
 
-	static disposable: IDisposable | undefined;
+	static disposaBle: IDisposaBle | undefined;
 
 	constructor() {
 		super({
-			id: 'workbench.action.toggleScreencastMode',
+			id: 'workBench.action.toggleScreencastMode',
 			title: { value: nls.localize('toggle screencast mode', "Toggle Screencast Mode"), original: 'Toggle Screencast Mode' },
 			category: CATEGORIES.Developer,
 			f1: true
@@ -103,33 +103,33 @@ class ToggleScreencastModeAction extends Action2 {
 	}
 
 	run(accessor: ServicesAccessor): void {
-		if (ToggleScreencastModeAction.disposable) {
-			ToggleScreencastModeAction.disposable.dispose();
-			ToggleScreencastModeAction.disposable = undefined;
+		if (ToggleScreencastModeAction.disposaBle) {
+			ToggleScreencastModeAction.disposaBle.dispose();
+			ToggleScreencastModeAction.disposaBle = undefined;
 			return;
 		}
 
 		const layoutService = accessor.get(ILayoutService);
 		const configurationService = accessor.get(IConfigurationService);
-		const keybindingService = accessor.get(IKeybindingService);
+		const keyBindingService = accessor.get(IKeyBindingService);
 
-		const disposables = new DisposableStore();
+		const disposaBles = new DisposaBleStore();
 
 		const container = layoutService.container;
 		const mouseMarker = append(container, $('.screencast-mouse'));
-		disposables.add(toDisposable(() => mouseMarker.remove()));
+		disposaBles.add(toDisposaBle(() => mouseMarker.remove()));
 
 		const onMouseDown = domEvent(container, 'mousedown', true);
 		const onMouseUp = domEvent(container, 'mouseup', true);
 		const onMouseMove = domEvent(container, 'mousemove', true);
 
 		const updateMouseIndicatorColor = () => {
-			mouseMarker.style.borderColor = Color.fromHex(configurationService.getValue<string>('screencastMode.mouseIndicatorColor')).toString();
+			mouseMarker.style.BorderColor = Color.fromHex(configurationService.getValue<string>('screencastMode.mouseIndicatorColor')).toString();
 		};
 
-		let mouseIndicatorSize: number;
+		let mouseIndicatorSize: numBer;
 		const updateMouseIndicatorSize = () => {
-			mouseIndicatorSize = clamp(configurationService.getValue<number>('screencastMode.mouseIndicatorSize') || 20, 20, 100);
+			mouseIndicatorSize = clamp(configurationService.getValue<numBer>('screencastMode.mouseIndicatorSize') || 20, 20, 100);
 
 			mouseMarker.style.height = `${mouseIndicatorSize}px`;
 			mouseMarker.style.width = `${mouseIndicatorSize}px`;
@@ -138,10 +138,10 @@ class ToggleScreencastModeAction extends Action2 {
 		updateMouseIndicatorColor();
 		updateMouseIndicatorSize();
 
-		disposables.add(onMouseDown(e => {
+		disposaBles.add(onMouseDown(e => {
 			mouseMarker.style.top = `${e.clientY - mouseIndicatorSize / 2}px`;
 			mouseMarker.style.left = `${e.clientX - mouseIndicatorSize / 2}px`;
-			mouseMarker.style.display = 'block';
+			mouseMarker.style.display = 'Block';
 
 			const mouseMoveListener = onMouseMove(e => {
 				mouseMarker.style.top = `${e.clientY - mouseIndicatorSize / 2}px`;
@@ -154,37 +154,37 @@ class ToggleScreencastModeAction extends Action2 {
 			});
 		}));
 
-		const keyboardMarker = append(container, $('.screencast-keyboard'));
-		disposables.add(toDisposable(() => keyboardMarker.remove()));
+		const keyBoardMarker = append(container, $('.screencast-keyBoard'));
+		disposaBles.add(toDisposaBle(() => keyBoardMarker.remove()));
 
-		const updateKeyboardFontSize = () => {
-			keyboardMarker.style.fontSize = `${clamp(configurationService.getValue<number>('screencastMode.fontSize') || 56, 20, 100)}px`;
+		const updateKeyBoardFontSize = () => {
+			keyBoardMarker.style.fontSize = `${clamp(configurationService.getValue<numBer>('screencastMode.fontSize') || 56, 20, 100)}px`;
 		};
 
-		const updateKeyboardMarker = () => {
-			keyboardMarker.style.bottom = `${clamp(configurationService.getValue<number>('screencastMode.verticalOffset') || 0, 0, 90)}%`;
+		const updateKeyBoardMarker = () => {
+			keyBoardMarker.style.Bottom = `${clamp(configurationService.getValue<numBer>('screencastMode.verticalOffset') || 0, 0, 90)}%`;
 		};
 
-		let keyboardMarkerTimeout: number;
-		const updateKeyboardMarkerTimeout = () => {
-			keyboardMarkerTimeout = clamp(configurationService.getValue<number>('screencastMode.keyboardOverlayTimeout') || 800, 500, 5000);
+		let keyBoardMarkerTimeout: numBer;
+		const updateKeyBoardMarkerTimeout = () => {
+			keyBoardMarkerTimeout = clamp(configurationService.getValue<numBer>('screencastMode.keyBoardOverlayTimeout') || 800, 500, 5000);
 		};
 
-		updateKeyboardFontSize();
-		updateKeyboardMarker();
-		updateKeyboardMarkerTimeout();
+		updateKeyBoardFontSize();
+		updateKeyBoardMarker();
+		updateKeyBoardMarkerTimeout();
 
-		disposables.add(configurationService.onDidChangeConfiguration(e => {
+		disposaBles.add(configurationService.onDidChangeConfiguration(e => {
 			if (e.affectsConfiguration('screencastMode.verticalOffset')) {
-				updateKeyboardMarker();
+				updateKeyBoardMarker();
 			}
 
 			if (e.affectsConfiguration('screencastMode.fontSize')) {
-				updateKeyboardFontSize();
+				updateKeyBoardFontSize();
 			}
 
-			if (e.affectsConfiguration('screencastMode.keyboardOverlayTimeout')) {
-				updateKeyboardMarkerTimeout();
+			if (e.affectsConfiguration('screencastMode.keyBoardOverlayTimeout')) {
+				updateKeyBoardMarkerTimeout();
 			}
 
 			if (e.affectsConfiguration('screencastMode.mouseIndicatorColor')) {
@@ -197,42 +197,42 @@ class ToggleScreencastModeAction extends Action2 {
 		}));
 
 		const onKeyDown = domEvent(window, 'keydown', true);
-		let keyboardTimeout: IDisposable = Disposable.None;
+		let keyBoardTimeout: IDisposaBle = DisposaBle.None;
 		let length = 0;
 
-		disposables.add(onKeyDown(e => {
-			keyboardTimeout.dispose();
+		disposaBles.add(onKeyDown(e => {
+			keyBoardTimeout.dispose();
 
-			const event = new StandardKeyboardEvent(e);
-			const shortcut = keybindingService.softDispatch(event, event.target);
+			const event = new StandardKeyBoardEvent(e);
+			const shortcut = keyBindingService.softDispatch(event, event.target);
 
-			if (shortcut || !configurationService.getValue<boolean>('screencastMode.onlyKeyboardShortcuts')) {
+			if (shortcut || !configurationService.getValue<Boolean>('screencastMode.onlyKeyBoardShortcuts')) {
 				if (
 					event.ctrlKey || event.altKey || event.metaKey || event.shiftKey
 					|| length > 20
 					|| event.keyCode === KeyCode.Backspace || event.keyCode === KeyCode.Escape
 				) {
-					keyboardMarker.innerText = '';
+					keyBoardMarker.innerText = '';
 					length = 0;
 				}
 
-				const keybinding = keybindingService.resolveKeyboardEvent(event);
-				const label = keybinding.getLabel();
-				const key = $('span.key', {}, label || '');
+				const keyBinding = keyBindingService.resolveKeyBoardEvent(event);
+				const laBel = keyBinding.getLaBel();
+				const key = $('span.key', {}, laBel || '');
 				length++;
-				append(keyboardMarker, key);
+				append(keyBoardMarker, key);
 			}
 
-			const promise = timeout(keyboardMarkerTimeout);
-			keyboardTimeout = toDisposable(() => promise.cancel());
+			const promise = timeout(keyBoardMarkerTimeout);
+			keyBoardTimeout = toDisposaBle(() => promise.cancel());
 
 			promise.then(() => {
-				keyboardMarker.textContent = '';
+				keyBoardMarker.textContent = '';
 				length = 0;
 			});
 		}));
 
-		ToggleScreencastModeAction.disposable = disposables;
+		ToggleScreencastModeAction.disposaBle = disposaBles;
 	}
 }
 
@@ -240,8 +240,8 @@ class LogStorageAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.logStorage',
-			title: { value: nls.localize({ key: 'logStorage', comment: ['A developer only action to log the contents of the storage for the current window.'] }, "Log Storage Database Contents"), original: 'Log Storage Database Contents' },
+			id: 'workBench.action.logStorage',
+			title: { value: nls.localize({ key: 'logStorage', comment: ['A developer only action to log the contents of the storage for the current window.'] }, "Log Storage DataBase Contents"), original: 'Log Storage DataBase Contents' },
 			category: CATEGORIES.Developer,
 			f1: true
 		});
@@ -256,7 +256,7 @@ class LogWorkingCopiesAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.logWorkingCopies',
+			id: 'workBench.action.logWorkingCopies',
 			title: { value: nls.localize({ key: 'logWorkingCopies', comment: ['A developer only action to log the working copies that exist.'] }, "Log Working Copies"), original: 'Log Working Copies' },
 			category: CATEGORIES.Developer,
 			f1: true
@@ -292,33 +292,33 @@ configurationRegistry.registerConfiguration({
 	id: 'screencastMode',
 	order: 9,
 	title: nls.localize('screencastModeConfigurationTitle', "Screencast Mode"),
-	type: 'object',
+	type: 'oBject',
 	properties: {
 		'screencastMode.verticalOffset': {
-			type: 'number',
+			type: 'numBer',
 			default: 20,
 			minimum: 0,
 			maximum: 90,
-			description: nls.localize('screencastMode.location.verticalPosition', "Controls the vertical offset of the screencast mode overlay from the bottom as a percentage of the workbench height.")
+			description: nls.localize('screencastMode.location.verticalPosition', "Controls the vertical offset of the screencast mode overlay from the Bottom as a percentage of the workBench height.")
 		},
 		'screencastMode.fontSize': {
-			type: 'number',
+			type: 'numBer',
 			default: 56,
 			minimum: 20,
 			maximum: 100,
-			description: nls.localize('screencastMode.fontSize', "Controls the font size (in pixels) of the screencast mode keyboard.")
+			description: nls.localize('screencastMode.fontSize', "Controls the font size (in pixels) of the screencast mode keyBoard.")
 		},
-		'screencastMode.onlyKeyboardShortcuts': {
-			type: 'boolean',
-			description: nls.localize('screencastMode.onlyKeyboardShortcuts', "Only show keyboard shortcuts in screencast mode."),
+		'screencastMode.onlyKeyBoardShortcuts': {
+			type: 'Boolean',
+			description: nls.localize('screencastMode.onlyKeyBoardShortcuts', "Only show keyBoard shortcuts in screencast mode."),
 			default: false
 		},
-		'screencastMode.keyboardOverlayTimeout': {
-			type: 'number',
+		'screencastMode.keyBoardOverlayTimeout': {
+			type: 'numBer',
 			default: 800,
 			minimum: 500,
 			maximum: 5000,
-			description: nls.localize('screencastMode.keyboardOverlayTimeout', "Controls how long (in milliseconds) the keyboard overlay is shown in screencast mode.")
+			description: nls.localize('screencastMode.keyBoardOverlayTimeout', "Controls how long (in milliseconds) the keyBoard overlay is shown in screencast mode.")
 		},
 		'screencastMode.mouseIndicatorColor': {
 			type: 'string',
@@ -327,7 +327,7 @@ configurationRegistry.registerConfiguration({
 			description: nls.localize('screencastMode.mouseIndicatorColor', "Controls the color in hex (#RGB, #RGBA, #RRGGBB or #RRGGBBAA) of the mouse indicator in screencast mode.")
 		},
 		'screencastMode.mouseIndicatorSize': {
-			type: 'number',
+			type: 'numBer',
 			default: 20,
 			minimum: 20,
 			maximum: 100,

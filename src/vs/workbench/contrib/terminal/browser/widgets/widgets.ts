@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
-export interface ITerminalWidget extends IDisposable {
+export interface ITerminalWidget extends IDisposaBle {
 	/**
-	 * Only one widget of each ID can be displayed at once.
+	 * Only one widget of each ID can Be displayed at once.
 	 */
 	id: string;
 	attach(container: HTMLElement): void;

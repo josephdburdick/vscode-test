@@ -4,21 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { TextDiffEditorModel } from 'vs/workbench/common/editor/textDiffEditorModel';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { URI } from 'vs/base/common/uri';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { TextDiffEditorModel } from 'vs/workBench/common/editor/textDiffEditorModel';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
+import { URI } from 'vs/Base/common/uri';
+import { workBenchInstantiationService, TestServiceAccessor } from 'vs/workBench/test/Browser/workBenchTestServices';
 import { ITextModel } from 'vs/editor/common/model';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 
-suite('Workbench editor model', () => {
+suite('WorkBench editor model', () => {
 
 	let instantiationService: IInstantiationService;
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 

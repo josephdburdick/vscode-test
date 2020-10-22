@@ -5,14 +5,14 @@
 
 import { Extensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhase } from 'vs/workBench/services/lifecycle/common/lifecycle';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { CodeActionsContribution, editorConfiguration } from 'vs/workbench/contrib/codeActions/common/codeActionsContribution';
-import { CodeActionsExtensionPoint, codeActionsExtensionPointDescriptor } from 'vs/workbench/contrib/codeActions/common/codeActionsExtensionPoint';
-import { CodeActionDocumentationContribution } from 'vs/workbench/contrib/codeActions/common/documentationContribution';
-import { DocumentationExtensionPoint, documentationExtensionPointDescriptor } from 'vs/workbench/contrib/codeActions/common/documentationExtensionPoint';
-import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { Extensions as WorkBenchExtensions, IWorkBenchContriButionsRegistry } from 'vs/workBench/common/contriButions';
+import { CodeActionsContriBution, editorConfiguration } from 'vs/workBench/contriB/codeActions/common/codeActionsContriBution';
+import { CodeActionsExtensionPoint, codeActionsExtensionPointDescriptor } from 'vs/workBench/contriB/codeActions/common/codeActionsExtensionPoint';
+import { CodeActionDocumentationContriBution } from 'vs/workBench/contriB/codeActions/common/documentationContriBution';
+import { DocumentationExtensionPoint, documentationExtensionPointDescriptor } from 'vs/workBench/contriB/codeActions/common/documentationExtensionPoint';
+import { ExtensionsRegistry } from 'vs/workBench/services/extensions/common/extensionsRegistry';
 
 const codeActionsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<CodeActionsExtensionPoint[]>(codeActionsExtensionPointDescriptor);
 const documentationExtensionPoint = ExtensionsRegistry.registerExtensionPoint<DocumentationExtensionPoint>(documentationExtensionPointDescriptor);
@@ -20,14 +20,14 @@ const documentationExtensionPoint = ExtensionsRegistry.registerExtensionPoint<Do
 Registry.as<IConfigurationRegistry>(Extensions.Configuration)
 	.registerConfiguration(editorConfiguration);
 
-class WorkbenchConfigurationContribution {
+class WorkBenchConfigurationContriBution {
 	constructor(
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
-		instantiationService.createInstance(CodeActionsContribution, codeActionsExtensionPoint);
-		instantiationService.createInstance(CodeActionDocumentationContribution, documentationExtensionPoint);
+		instantiationService.createInstance(CodeActionsContriBution, codeActionsExtensionPoint);
+		instantiationService.createInstance(CodeActionDocumentationContriBution, documentationExtensionPoint);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WorkbenchConfigurationContribution, LifecyclePhase.Eventually);
+Registry.as<IWorkBenchContriButionsRegistry>(WorkBenchExtensions.WorkBench)
+	.registerWorkBenchContriBution(WorkBenchConfigurationContriBution, LifecyclePhase.Eventually);

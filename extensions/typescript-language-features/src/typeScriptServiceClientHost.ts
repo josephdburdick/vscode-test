@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 /* --------------------------------------------------------------------------------------------
- * Includes code from typescript-sublime-plugin project, obtained from
- * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
+ * Includes code from typescript-suBlime-plugin project, oBtained from
+ * https://githuB.com/microsoft/TypeScript-SuBlime-Plugin/BloB/master/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
 
 import * as vscode from 'vscode';
@@ -22,7 +22,7 @@ import VersionStatus from './tsServer/versionStatus';
 import TypeScriptServiceClient from './typescriptServiceClient';
 import { coalesce, flatten } from './utils/arrays';
 import { CommandManager } from './commands/commandManager';
-import { Disposable } from './utils/dispose';
+import { DisposaBle } from './utils/dispose';
 import * as errorCodes from './utils/errorCodes';
 import { DiagnosticLanguage, LanguageDescription } from './utils/languageDescription';
 import { PluginManager } from './utils/plugins';
@@ -36,18 +36,18 @@ namespace Experimental {
 	}
 }
 
-// Style check diagnostics that can be reported as warnings
+// Style check diagnostics that can Be reported as warnings
 const styleCheckDiagnostics = new Set([
-	...errorCodes.variableDeclaredButNeverUsed,
+	...errorCodes.variaBleDeclaredButNeverUsed,
 	...errorCodes.propertyDeclaretedButNeverUsed,
 	...errorCodes.allImportsAreUnused,
-	...errorCodes.unreachableCode,
-	...errorCodes.unusedLabel,
+	...errorCodes.unreachaBleCode,
+	...errorCodes.unusedLaBel,
 	...errorCodes.fallThroughCaseInSwitch,
 	...errorCodes.notAllCodePathsReturnAValue,
 ]);
 
-export default class TypeScriptServiceClientHost extends Disposable {
+export default class TypeScriptServiceClientHost extends DisposaBle {
 
 	private readonly client: TypeScriptServiceClient;
 	private readonly languages: LanguageProvider[] = [];
@@ -57,14 +57,14 @@ export default class TypeScriptServiceClientHost extends Disposable {
 
 	private readonly fileConfigurationManager: FileConfigurationManager;
 
-	private reportStyleCheckAsWarnings: boolean = true;
+	private reportStyleCheckAsWarnings: Boolean = true;
 
 	private readonly commandManager: CommandManager;
 
 	constructor(
 		descriptions: LanguageDescription[],
 		workspaceState: vscode.Memento,
-		onCaseInsenitiveFileSystem: boolean,
+		onCaseInsenitiveFileSystem: Boolean,
 		services: {
 			pluginManager: PluginManager,
 			commandManager: CommandManager,
@@ -88,10 +88,10 @@ export default class TypeScriptServiceClientHost extends Disposable {
 
 		this.client.onDiagnosticsReceived(({ kind, resource, diagnostics }) => {
 			this.diagnosticsReceived(kind, resource, diagnostics);
-		}, null, this._disposables);
+		}, null, this._disposaBles);
 
-		this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this._disposables);
-		this.client.onResendModelsRequested(() => this.populateService(), null, this._disposables);
+		this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this._disposaBles);
+		this.client.onResendModelsRequested(() => this.populateService(), null, this._disposaBles);
 
 		this._register(new VersionStatus(this.client, services.commandManager));
 		this._register(new AtaProgressReporter(this.client));
@@ -110,7 +110,7 @@ export default class TypeScriptServiceClientHost extends Disposable {
 		import('./languageFeatures/updatePathsOnRename').then(module =>
 			this._register(module.register(this.client, this.fileConfigurationManager, uri => this.handles(uri))));
 
-		import('./languageFeatures/workspaceSymbols').then(module =>
+		import('./languageFeatures/workspaceSymBols').then(module =>
 			this._register(module.register(this.client, allModeIds)));
 
 		this.client.ensureServiceStarted();
@@ -149,7 +149,7 @@ export default class TypeScriptServiceClientHost extends Disposable {
 			this.triggerAllDiagnostics();
 		});
 
-		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposables);
+		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposaBles);
 		this.configurationChanged();
 	}
 
@@ -168,21 +168,21 @@ export default class TypeScriptServiceClientHost extends Disposable {
 		return allModeIds;
 	}
 
-	public get serviceClient(): TypeScriptServiceClient {
+	puBlic get serviceClient(): TypeScriptServiceClient {
 		return this.client;
 	}
 
-	public reloadProjects(): void {
+	puBlic reloadProjects(): void {
 		this.client.executeWithoutWaitingForResponse('reloadProjects', null);
 		this.triggerAllDiagnostics();
 	}
 
-	public async handles(resource: vscode.Uri): Promise<boolean> {
+	puBlic async handles(resource: vscode.Uri): Promise<Boolean> {
 		const provider = await this.findLanguage(resource);
 		if (provider) {
 			return true;
 		}
-		return this.client.bufferSyncSupport.handles(resource);
+		return this.client.BufferSyncSupport.handles(resource);
 	}
 
 	private configurationChanged(): void {
@@ -229,20 +229,20 @@ export default class TypeScriptServiceClientHost extends Disposable {
 	}
 
 	private configFileDiagnosticsReceived(event: Proto.ConfigFileDiagnosticEvent): void {
-		// See https://github.com/microsoft/TypeScript/issues/10384
-		const body = event.body;
-		if (!body || !body.diagnostics || !body.configFile) {
+		// See https://githuB.com/microsoft/TypeScript/issues/10384
+		const Body = event.Body;
+		if (!Body || !Body.diagnostics || !Body.configFile) {
 			return;
 		}
 
-		this.findLanguage(this.client.toResource(body.configFile)).then(language => {
+		this.findLanguage(this.client.toResource(Body.configFile)).then(language => {
 			if (!language) {
 				return;
 			}
 
-			language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), body.diagnostics.map(tsDiag => {
+			language.configFileDiagnosticsReceived(this.client.toResource(Body.configFile), Body.diagnostics.map(tsDiag => {
 				const range = tsDiag.start && tsDiag.end ? typeConverters.Range.fromTextSpan(tsDiag) : new vscode.Range(0, 0, 0, 1);
-				const diagnostic = new vscode.Diagnostic(range, body.diagnostics[0].text, this.getDiagnosticSeverity(tsDiag));
+				const diagnostic = new vscode.Diagnostic(range, Body.diagnostics[0].text, this.getDiagnosticSeverity(tsDiag));
 				diagnostic.source = language.diagnosticSource;
 				return diagnostic;
 			}));
@@ -312,7 +312,7 @@ export default class TypeScriptServiceClientHost extends Disposable {
 		}
 	}
 
-	private isStyleCheckDiagnostic(code: number | undefined): boolean {
-		return typeof code === 'number' && styleCheckDiagnostics.has(code);
+	private isStyleCheckDiagnostic(code: numBer | undefined): Boolean {
+		return typeof code === 'numBer' && styleCheckDiagnostics.has(code);
 	}
 }

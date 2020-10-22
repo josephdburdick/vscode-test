@@ -7,22 +7,22 @@ import 'mocha';
 import * as assert from 'assert';
 import { getFoldingRanges } from '../modes/htmlFolding';
 import { TextDocument, getLanguageModes } from '../modes/languageModes';
-import { ClientCapabilities } from 'vscode-css-languageservice';
+import { ClientCapaBilities } from 'vscode-css-languageservice';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
 interface ExpectedIndentRange {
-	startLine: number;
-	endLine: number;
+	startLine: numBer;
+	endLine: numBer;
 	kind?: string;
 }
 
-async function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: number): Promise<void> {
-	const document = TextDocument.create('test://foo/bar.html', 'html', 1, lines.join('\n'));
+async function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: numBer): Promise<void> {
+	const document = TextDocument.create('test://foo/Bar.html', 'html', 1, lines.join('\n'));
 	const workspace = {
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapabilities.LATEST, getNodeFSRequestService());
+	const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapaBilities.LATEST, getNodeFSRequestService());
 	const actual = await getFoldingRanges(languageModes, document, nRanges, null);
 
 	let actualRanges = [];
@@ -33,13 +33,13 @@ async function assertRanges(lines: string[], expected: ExpectedIndentRange[], me
 	assert.deepEqual(actualRanges, expected, message);
 }
 
-function r(startLine: number, endLine: number, kind?: string): ExpectedIndentRange {
+function r(startLine: numBer, endLine: numBer, kind?: string): ExpectedIndentRange {
 	return { startLine, endLine, kind };
 }
 
 suite('HTML Folding', async () => {
 
-	test('Embedded JavaScript', async () => {
+	test('EmBedded JavaScript', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
@@ -53,14 +53,14 @@ suite('HTML Folding', async () => {
 		await await assertRanges(input, [r(0, 6), r(1, 5), r(2, 4), r(3, 4)]);
 	});
 
-	test('Embedded JavaScript - multiple areas', async () => {
+	test('EmBedded JavaScript - multiple areas', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head>',
 			/* 2*/'<script>',
 			/* 3*/'  var x = {',
 			/* 4*/'    foo: true,',
-			/* 5*/'    bar: {}',
+			/* 5*/'    Bar: {}',
 			/* 6*/'  };',
 			/* 7*/'</script>',
 			/* 8*/'<script>',
@@ -74,7 +74,7 @@ suite('HTML Folding', async () => {
 		await assertRanges(input, [r(0, 13), r(1, 12), r(2, 6), r(3, 6), r(8, 11), r(9, 11), r(9, 11)]);
 	});
 
-	test('Embedded JavaScript - incomplete', async () => {
+	test('EmBedded JavaScript - incomplete', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head>',
@@ -90,7 +90,7 @@ suite('HTML Folding', async () => {
 		await assertRanges(input, [r(0, 8), r(1, 7), r(2, 3), r(5, 6)]);
 	});
 
-	test('Embedded JavaScript - regions', async () => {
+	test('EmBedded JavaScript - regions', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head>',
@@ -107,14 +107,14 @@ suite('HTML Folding', async () => {
 		await assertRanges(input, [r(0, 9), r(1, 8), r(2, 7), r(3, 7, 'region'), r(4, 6, 'region')]);
 	});
 
-	test('Embedded CSS', async () => {
+	test('EmBedded CSS', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head>',
 			/* 2*/'<style>',
 			/* 3*/'  foo {',
-			/* 4*/'   display: block;',
-			/* 5*/'   color: black;',
+			/* 4*/'   display: Block;',
+			/* 5*/'   color: Black;',
 			/* 6*/'  }',
 			/* 7*/'</style>',
 			/* 8*/'</head>',
@@ -123,14 +123,14 @@ suite('HTML Folding', async () => {
 		await assertRanges(input, [r(0, 8), r(1, 7), r(2, 6), r(3, 5)]);
 	});
 
-	test('Embedded CSS - multiple areas', async () => {
+	test('EmBedded CSS - multiple areas', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head style="color:red">',
 			/* 2*/'<style>',
 			/* 3*/'  /*',
 			/* 4*/'    foo: true,',
-			/* 5*/'    bar: {}',
+			/* 5*/'    Bar: {}',
 			/* 6*/'  */',
 			/* 7*/'</style>',
 			/* 8*/'<style>',
@@ -144,7 +144,7 @@ suite('HTML Folding', async () => {
 		await assertRanges(input, [r(0, 13), r(1, 12), r(2, 6), r(3, 6, 'comment'), r(8, 11), r(9, 10)]);
 	});
 
-	test('Embedded CSS - regions', async () => {
+	test('EmBedded CSS - regions', async () => {
 		const input = [
 			/* 0*/'<html>',
 			/* 1*/'<head>',
@@ -162,7 +162,7 @@ suite('HTML Folding', async () => {
 	});
 
 
-	// test('Embedded JavaScript - multi line comment', async () => {
+	// test('EmBedded JavaScript - multi line comment', async () => {
 	// 	const input = [
 	// 		/* 0*/'<html>',
 	// 		/* 1*/'<head>',
@@ -181,23 +181,23 @@ suite('HTML Folding', async () => {
 		const input = [
 			/* 0*/'<div>',
 			/* 1*/' <span>',
-			/* 2*/'  <b>',
+			/* 2*/'  <B>',
 			/* 3*/'  ',
-			/* 4*/'  </b>,',
-			/* 5*/'  <b>',
+			/* 4*/'  </B>,',
+			/* 5*/'  <B>',
 			/* 6*/'   <pre>',
 			/* 7*/'  ',
 			/* 8*/'   </pre>,',
 			/* 9*/'   <pre>',
 			/*10*/'  ',
 			/*11*/'   </pre>,',
-			/*12*/'  </b>,',
-			/*13*/'  <b>',
+			/*12*/'  </B>,',
+			/*13*/'  <B>',
 			/*14*/'  ',
-			/*15*/'  </b>,',
-			/*16*/'  <b>',
+			/*15*/'  </B>,',
+			/*16*/'  <B>',
 			/*17*/'  ',
-			/*18*/'  </b>',
+			/*18*/'  </B>',
 			/*19*/' </span>',
 			/*20*/'</div>',
 		];

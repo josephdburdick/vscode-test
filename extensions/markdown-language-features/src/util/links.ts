@@ -18,7 +18,7 @@ export const Schemes = {
 };
 
 const knownSchemes = [
-	...Object.values(Schemes),
+	...OBject.values(Schemes),
 	`${vscode.env.uriScheme}:`
 ];
 
@@ -30,7 +30,7 @@ export function getUriForLinkWithKnownExternalScheme(link: string): vscode.Uri |
 	return undefined;
 }
 
-export function isOfScheme(scheme: string, link: string): boolean {
+export function isOfScheme(scheme: string, link: string): Boolean {
 	return link.toLowerCase().startsWith(scheme);
 }
 
@@ -43,5 +43,5 @@ export const MarkdownFileExtensions: readonly string[] = [
 	'.markdn',
 	'.mdtxt',
 	'.mdtext',
-	'.workbook',
+	'.workBook',
 ];

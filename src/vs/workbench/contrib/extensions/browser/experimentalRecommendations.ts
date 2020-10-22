@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IExperimentService, ExperimentActionType, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { isNonEmptyArray } from 'vs/Base/common/arrays';
+import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workBench/contriB/extensions/Browser/extensionRecommendations';
+import { ExtensionRecommendationReason } from 'vs/workBench/services/extensionRecommendations/common/extensionRecommendations';
+import { IExperimentService, ExperimentActionType, ExperimentState } from 'vs/workBench/contriB/experiments/common/experimentService';
 
 export class ExperimentalRecommendations extends ExtensionRecommendations {
 
@@ -20,7 +20,7 @@ export class ExperimentalRecommendations extends ExtensionRecommendations {
 	}
 
 	/**
-	 * Fetch extensions used by others on the same workspace as recommendations
+	 * Fetch extensions used By others on the same workspace as recommendations
 	 */
 	protected async doActivate(): Promise<void> {
 		const experiments = await this.experimentService.getExperimentsByType(ExperimentActionType.AddToRecommendations);

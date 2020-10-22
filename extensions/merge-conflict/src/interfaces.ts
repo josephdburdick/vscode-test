@@ -18,13 +18,13 @@ export const enum CommitType {
 }
 
 export interface IExtensionConfiguration {
-	enableCodeLens: boolean;
-	enableDecorations: boolean;
-	enableEditorOverview: boolean;
+	enaBleCodeLens: Boolean;
+	enaBleDecorations: Boolean;
+	enaBleEditorOverview: Boolean;
 }
 
 export interface IDocumentMergeConflict extends IDocumentMergeConflictDescriptor {
-	commitEdit(type: CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): Thenable<boolean>;
+	commitEdit(type: CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): ThenaBle<Boolean>;
 	applyEdit(type: CommitType, document: vscode.TextDocument, edit: { replace(range: vscode.Range, newText: string): void; }): void;
 }
 
@@ -38,7 +38,7 @@ export interface IDocumentMergeConflictDescriptor {
 
 export interface IDocumentMergeConflictTracker {
 	getConflicts(document: vscode.TextDocument): PromiseLike<IDocumentMergeConflict[]>;
-	isPending(document: vscode.TextDocument): boolean;
+	isPending(document: vscode.TextDocument): Boolean;
 	forget(document: vscode.TextDocument): void;
 }
 

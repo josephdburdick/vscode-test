@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
+import Severity from 'vs/Base/common/severity';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { problemsErrorIconForeground, problemsInfoIconForeground, problemsWarningIconForeground } from 'vs/platform/theme/common/colorRegistry';
-import { Codicon } from 'vs/base/common/codicons';
+import { proBlemsErrorIconForeground, proBlemsInfoIconForeground, proBlemsWarningIconForeground } from 'vs/platform/theme/common/colorRegistry';
+import { Codicon } from 'vs/Base/common/codicons';
 
 export namespace SeverityIcon {
 
@@ -28,7 +28,7 @@ export namespace SeverityIcon {
 
 registerThemingParticipant((theme, collector) => {
 
-	const errorIconForeground = theme.getColor(problemsErrorIconForeground);
+	const errorIconForeground = theme.getColor(proBlemsErrorIconForeground);
 	if (errorIconForeground) {
 		const errorCodiconSelector = Codicon.error.cssSelector;
 		collector.addRule(`
@@ -40,7 +40,7 @@ registerThemingParticipant((theme, collector) => {
 		`);
 	}
 
-	const warningIconForeground = theme.getColor(problemsWarningIconForeground);
+	const warningIconForeground = theme.getColor(proBlemsWarningIconForeground);
 	if (warningIconForeground) {
 		const warningCodiconSelector = Codicon.warning.cssSelector;
 		collector.addRule(`
@@ -53,7 +53,7 @@ registerThemingParticipant((theme, collector) => {
 		`);
 	}
 
-	const infoIconForeground = theme.getColor(problemsInfoIconForeground);
+	const infoIconForeground = theme.getColor(proBlemsInfoIconForeground);
 	if (infoIconForeground) {
 		const infoCodiconSelector = Codicon.info.cssSelector;
 		collector.addRule(`

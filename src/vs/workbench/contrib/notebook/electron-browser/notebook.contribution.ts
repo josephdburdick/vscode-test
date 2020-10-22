@@ -3,35 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CopyAction, CutAction, PasteAction } from 'vs/editor/contrib/clipboard/clipboard';
+import { CopyAction, CutAction, PasteAction } from 'vs/editor/contriB/clipBoard/clipBoard';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { getActiveNotebookEditor } from 'vs/workbench/contrib/notebook/browser/contrib/coreActions';
-import { ElectronWebviewBasedWebview } from 'vs/workbench/contrib/webview/electron-browser/webviewElement';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { UndoCommand, RedoCommand } from 'vs/editor/browser/editorExtensions';
+import { getActiveNoteBookEditor } from 'vs/workBench/contriB/noteBook/Browser/contriB/coreActions';
+import { ElectronWeBviewBasedWeBview } from 'vs/workBench/contriB/weBview/electron-Browser/weBviewElement';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { UndoCommand, RedoCommand } from 'vs/editor/Browser/editorExtensions';
 
-function getFocusedElectronBasedWebviewDelegate(accessor: ServicesAccessor): ElectronWebviewBasedWebview | undefined {
+function getFocusedElectronBasedWeBviewDelegate(accessor: ServicesAccessor): ElectronWeBviewBasedWeBview | undefined {
 	const editorService = accessor.get(IEditorService);
-	const editor = getActiveNotebookEditor(editorService);
+	const editor = getActiveNoteBookEditor(editorService);
 	if (!editor?.hasFocus()) {
 		return;
 	}
 
-	if (!editor?.hasWebviewFocus()) {
+	if (!editor?.hasWeBviewFocus()) {
 		return;
 	}
 
-	const webview = editor?.getInnerWebview();
-	if (webview && webview instanceof ElectronWebviewBasedWebview) {
-		return webview;
+	const weBview = editor?.getInnerWeBview();
+	if (weBview && weBview instanceof ElectronWeBviewBasedWeBview) {
+		return weBview;
 	}
 	return;
 }
 
-function withWebview(accessor: ServicesAccessor, f: (webviewe: ElectronWebviewBasedWebview) => void) {
-	const webview = getFocusedElectronBasedWebviewDelegate(accessor);
-	if (webview) {
-		f(webview);
+function withWeBview(accessor: ServicesAccessor, f: (weBviewe: ElectronWeBviewBasedWeBview) => void) {
+	const weBview = getFocusedElectronBasedWeBviewDelegate(accessor);
+	if (weBview) {
+		f(weBview);
 		return true;
 	}
 	return false;
@@ -40,22 +40,22 @@ function withWebview(accessor: ServicesAccessor, f: (webviewe: ElectronWebviewBa
 const PRIORITY = 100;
 
 UndoCommand.addImplementation(PRIORITY, accessor => {
-	return withWebview(accessor, webview => webview.undo());
+	return withWeBview(accessor, weBview => weBview.undo());
 });
 
 RedoCommand.addImplementation(PRIORITY, accessor => {
-	return withWebview(accessor, webview => webview.redo());
+	return withWeBview(accessor, weBview => weBview.redo());
 });
 
 CopyAction?.addImplementation(PRIORITY, accessor => {
-	return withWebview(accessor, webview => webview.copy());
+	return withWeBview(accessor, weBview => weBview.copy());
 });
 
 PasteAction?.addImplementation(PRIORITY, accessor => {
-	return withWebview(accessor, webview => webview.paste());
+	return withWeBview(accessor, weBview => weBview.paste());
 });
 
 CutAction?.addImplementation(PRIORITY, accessor => {
-	return withWebview(accessor, webview => webview.cut());
+	return withWeBview(accessor, weBview => weBview.cut());
 });
 

@@ -5,29 +5,29 @@
 
 import * as assert from 'assert';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
+import { computeRanges } from 'vs/editor/contriB/folding/indentRangeProvider';
 import { FoldingMarkers } from 'vs/editor/common/modes/languageConfiguration';
 
 interface ExpectedIndentRange {
-	startLineNumber: number;
-	endLineNumber: number;
-	parentIndex: number;
+	startLineNumBer: numBer;
+	endLineNumBer: numBer;
+	parentIndex: numBer;
 }
 
-function assertRanges(lines: string[], expected: ExpectedIndentRange[], offside: boolean, markers?: FoldingMarkers): void {
+function assertRanges(lines: string[], expected: ExpectedIndentRange[], offside: Boolean, markers?: FoldingMarkers): void {
 	let model = createTextModel(lines.join('\n'));
 	let actual = computeRanges(model, offside, markers);
 
 	let actualRanges: ExpectedIndentRange[] = [];
 	for (let i = 0; i < actual.length; i++) {
-		actualRanges[i] = r(actual.getStartLineNumber(i), actual.getEndLineNumber(i), actual.getParentIndex(i));
+		actualRanges[i] = r(actual.getStartLineNumBer(i), actual.getEndLineNumBer(i), actual.getParentIndex(i));
 	}
 	assert.deepEqual(actualRanges, expected);
 	model.dispose();
 }
 
-function r(startLineNumber: number, endLineNumber: number, parentIndex: number, marker = false): ExpectedIndentRange {
-	return { startLineNumber, endLineNumber, parentIndex };
+function r(startLineNumBer: numBer, endLineNumBer: numBer, parentIndex: numBer, marker = false): ExpectedIndentRange {
+	return { startLineNumBer, endLineNumBer, parentIndex };
 }
 
 suite('Indentation Folding', () => {
@@ -84,12 +84,12 @@ suite('Indentation Folding', () => {
 		/* 4*/	'    console.log();',
 		/* 5*/	'  }',
 		/* 6*/	'',
-		/* 7*/	'  void bar() {',
+		/* 7*/	'  void Bar() {',
 		/* 8*/	'    console.log();',
 		/* 9*/	'  }',
 		/*10*/	'}',
 		/*11*/	'interface B {',
-		/*12*/	'  void bar();',
+		/*12*/	'  void Bar();',
 		/*13*/	'}',
 		], [r(1, 9, -1), r(2, 4, 0), r(7, 8, 0), r(11, 12, -1)], false);
 	});
@@ -123,7 +123,7 @@ suite('Indentation Folding', () => {
 		/* 1*/	'def a:',
 		/* 2*/	'  pass',
 		/* 3*/	'   ',
-		/* 4*/	'  def b:',
+		/* 4*/	'  def B:',
 		/* 5*/	'    pass',
 		/* 6*/	'  ',
 		/* 7*/	'      ',
@@ -131,7 +131,7 @@ suite('Indentation Folding', () => {
 		], [r(1, 5, -1), r(4, 5, 0)], true);
 	});
 
-	test('Fold Tabs', () => {
+	test('Fold TaBs', () => {
 		assertRanges([
 		/* 1*/	'class A {',
 		/* 2*/	'\t\t',
@@ -146,8 +146,8 @@ suite('Indentation Folding', () => {
 });
 
 let markers: FoldingMarkers = {
-	start: /^\s*#region\b/,
-	end: /^\s*#endregion\b/
+	start: /^\s*#region\B/,
+	end: /^\s*#endregion\B/
 };
 
 suite('Folding with regions', () => {
@@ -230,7 +230,7 @@ suite('Folding with regions', () => {
 		/* 8*/	' // hello',
 		], [r(3, 7, -1, true), r(4, 6, 0, true)], false, markers);
 	});
-	test('Indented region before', () => {
+	test('Indented region Before', () => {
 		assertRanges([
 		/* 1*/	'if (x)',
 		/* 2*/	'  return;',
@@ -240,7 +240,7 @@ suite('Folding with regions', () => {
 		/* 6*/	'#endregion',
 		], [r(1, 3, -1), r(4, 6, -1, true)], false, markers);
 	});
-	test('Indented region before 2', () => {
+	test('Indented region Before 2', () => {
 		assertRanges([
 		/* 1*/	'if (x)',
 		/* 2*/	'  log();',
@@ -250,7 +250,7 @@ suite('Folding with regions', () => {
 		/* 6*/	'    #endregion',
 		], [r(1, 6, -1), r(2, 6, 0), r(4, 6, 1, true)], false, markers);
 	});
-	test('Indented region in-between', () => {
+	test('Indented region in-Between', () => {
 		assertRanges([
 		/* 1*/	'#region',
 		/* 2*/	'  // comment',
@@ -294,13 +294,13 @@ suite('Folding with regions', () => {
 	test('Issue 35981', () => {
 		assertRanges([
 		/* 1*/	'function thisFoldsToEndOfPage() {',
-		/* 2*/	'  const variable = []',
+		/* 2*/	'  const variaBle = []',
 		/* 3*/	'    // #region',
-		/* 4*/	'    .reduce((a, b) => a,[]);',
+		/* 4*/	'    .reduce((a, B) => a,[]);',
 		/* 5*/	'}',
 		/* 6*/	'',
 		/* 7*/	'function thisFoldsProperly() {',
-		/* 8*/	'  const foo = "bar"',
+		/* 8*/	'  const foo = "Bar"',
 		/* 9*/	'}',
 		], [r(1, 4, -1), r(2, 4, 0), r(7, 8, -1)], false, markers);
 	});

@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorInput } from 'vs/workbench/common/editor';
-import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
+import { EditorInput } from 'vs/workBench/common/editor';
+import { DiffEditorInput } from 'vs/workBench/common/editor/diffEditorInput';
 
 class MyEditorInput extends EditorInput {
 	readonly resource = undefined;
@@ -14,7 +14,7 @@ class MyEditorInput extends EditorInput {
 	resolve(): any { return null; }
 }
 
-suite('Workbench editor input', () => {
+suite('WorkBench editor input', () => {
 
 	test('EditorInput', () => {
 		let counter = 0;

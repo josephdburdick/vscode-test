@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { URI } from 'vs/base/common/uri';
-import { $ } from 'vs/base/browser/dom';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
+import { URI } from 'vs/Base/common/uri';
+import { $ } from 'vs/Base/Browser/dom';
 
-export class BrowserClipboardService implements IClipboardService {
+export class BrowserClipBoardService implements IClipBoardService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly mapTextToType = new Map<string, string>(); // unsupported in web (only in-memory)
+	private readonly mapTextToType = new Map<string, string>(); // unsupported in weB (only in-memory)
 
 	async writeText(text: string, type?: string): Promise<void> {
 
@@ -22,23 +22,23 @@ export class BrowserClipboardService implements IClipboardService {
 			return;
 		}
 
-		// Guard access to navigator.clipboard with try/catch
-		// as we have seen DOMExceptions in certain browsers
+		// Guard access to navigator.clipBoard with try/catch
+		// as we have seen DOMExceptions in certain Browsers
 		// due to security policies.
 		try {
-			return await navigator.clipboard.writeText(text);
+			return await navigator.clipBoard.writeText(text);
 		} catch (error) {
 			console.error(error);
 		}
 
-		// Fallback to textarea and execCommand solution
+		// FallBack to textarea and execCommand solution
 
 		const activeElement = document.activeElement;
 
-		const textArea: HTMLTextAreaElement = document.body.appendChild($('textarea', { 'aria-hidden': true }));
+		const textArea: HTMLTextAreaElement = document.Body.appendChild($('textarea', { 'aria-hidden': true }));
 		textArea.style.height = '1px';
 		textArea.style.width = '1px';
-		textArea.style.position = 'absolute';
+		textArea.style.position = 'aBsolute';
 
 		textArea.value = text;
 		textArea.focus();
@@ -50,7 +50,7 @@ export class BrowserClipboardService implements IClipboardService {
 			activeElement.focus();
 		}
 
-		document.body.removeChild(textArea);
+		document.Body.removeChild(textArea);
 
 		return;
 	}
@@ -62,11 +62,11 @@ export class BrowserClipboardService implements IClipboardService {
 			return this.mapTextToType.get(type) || '';
 		}
 
-		// Guard access to navigator.clipboard with try/catch
-		// as we have seen DOMExceptions in certain browsers
+		// Guard access to navigator.clipBoard with try/catch
+		// as we have seen DOMExceptions in certain Browsers
 		// due to security policies.
 		try {
-			return await navigator.clipboard.readText();
+			return await navigator.clipBoard.readText();
 		} catch (error) {
 			console.error(error);
 
@@ -74,7 +74,7 @@ export class BrowserClipboardService implements IClipboardService {
 		}
 	}
 
-	private findText = ''; // unsupported in web (only in-memory)
+	private findText = ''; // unsupported in weB (only in-memory)
 
 	async readFindText(): Promise<string> {
 		return this.findText;
@@ -84,7 +84,7 @@ export class BrowserClipboardService implements IClipboardService {
 		this.findText = text;
 	}
 
-	private resources: URI[] = []; // unsupported in web (only in-memory)
+	private resources: URI[] = []; // unsupported in weB (only in-memory)
 
 	async writeResources(resources: URI[]): Promise<void> {
 		this.resources = resources;
@@ -94,7 +94,7 @@ export class BrowserClipboardService implements IClipboardService {
 		return this.resources;
 	}
 
-	async hasResources(): Promise<boolean> {
+	async hasResources(): Promise<Boolean> {
 		return this.resources.length > 0;
 	}
 }

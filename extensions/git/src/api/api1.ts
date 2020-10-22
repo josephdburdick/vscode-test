@@ -5,8 +5,8 @@
 
 import { Model } from '../model';
 import { Repository as BaseRepository, Resource } from '../repository';
-import { InputBox, Git, API, Repository, Remote, RepositoryState, Branch, Ref, Submodule, Commit, Change, RepositoryUIState, Status, LogOptions, APIState, CommitOptions, RefType, RemoteSourceProvider, CredentialsProvider, BranchQuery, PushErrorHandler } from './git';
-import { Event, SourceControlInputBox, Uri, SourceControl, Disposable, commands } from 'vscode';
+import { InputBox, Git, API, Repository, Remote, RepositoryState, Branch, Ref, SuBmodule, Commit, Change, RepositoryUIState, Status, LogOptions, APIState, CommitOptions, RefType, RemoteSourceProvider, CredentialsProvider, BranchQuery, PushErrorHandler } from './git';
+import { Event, SourceControlInputBox, Uri, SourceControl, DisposaBle, commands } from 'vscode';
 import { mapEvent } from '../util';
 import { toGitUri } from '../uri';
 import { pickRemoteSource, PickRemoteSourceOptions } from '../remoteSource';
@@ -33,8 +33,8 @@ export class ApiRepositoryState implements RepositoryState {
 	get HEAD(): Branch | undefined { return this._repository.HEAD; }
 	get refs(): Ref[] { return [...this._repository.refs]; }
 	get remotes(): Remote[] { return [...this._repository.remotes]; }
-	get submodules(): Submodule[] { return [...this._repository.submodules]; }
-	get rebaseCommit(): Commit | undefined { return this._repository.rebaseCommit; }
+	get suBmodules(): SuBmodule[] { return [...this._repository.suBmodules]; }
+	get reBaseCommit(): Commit | undefined { return this._repository.reBaseCommit; }
 
 	get mergeChanges(): Change[] { return this._repository.mergeGroup.resourceStates.map(r => new ApiChange(r)); }
 	get indexChanges(): Change[] { return this._repository.indexGroup.resourceStates.map(r => new ApiChange(r)); }
@@ -47,9 +47,9 @@ export class ApiRepositoryState implements RepositoryState {
 
 export class ApiRepositoryUIState implements RepositoryUIState {
 
-	get selected(): boolean { return this._sourceControl.selected; }
+	get selected(): Boolean { return this._sourceControl.selected; }
 
-	readonly onDidChange: Event<void> = mapEvent<boolean, void>(this._sourceControl.onDidChangeSelection, () => null);
+	readonly onDidChange: Event<void> = mapEvent<Boolean, void>(this._sourceControl.onDidChangeSelection, () => null);
 
 	constructor(private _sourceControl: SourceControl) { }
 }
@@ -63,7 +63,7 @@ export class ApiRepository implements Repository {
 
 	constructor(private _repository: BaseRepository) { }
 
-	apply(patch: string, reverse?: boolean): Promise<void> {
+	apply(patch: string, reverse?: Boolean): Promise<void> {
 		return this._repository.apply(patch, reverse);
 	}
 
@@ -79,20 +79,20 @@ export class ApiRepository implements Repository {
 		return this._repository.setConfig(key, value);
 	}
 
-	getGlobalConfig(key: string): Promise<string> {
-		return this._repository.getGlobalConfig(key);
+	getGloBalConfig(key: string): Promise<string> {
+		return this._repository.getGloBalConfig(key);
 	}
 
-	getObjectDetails(treeish: string, path: string): Promise<{ mode: string; object: string; size: number; }> {
-		return this._repository.getObjectDetails(treeish, path);
+	getOBjectDetails(treeish: string, path: string): Promise<{ mode: string; oBject: string; size: numBer; }> {
+		return this._repository.getOBjectDetails(treeish, path);
 	}
 
-	detectObjectType(object: string): Promise<{ mimetype: string, encoding?: string }> {
-		return this._repository.detectObjectType(object);
+	detectOBjectType(oBject: string): Promise<{ mimetype: string, encoding?: string }> {
+		return this._repository.detectOBjectType(oBject);
 	}
 
-	buffer(ref: string, filePath: string): Promise<Buffer> {
-		return this._repository.buffer(ref, filePath);
+	Buffer(ref: string, filePath: string): Promise<Buffer> {
+		return this._repository.Buffer(ref, filePath);
 	}
 
 	show(ref: string, path: string): Promise<string> {
@@ -107,7 +107,7 @@ export class ApiRepository implements Repository {
 		return this._repository.clean(paths.map(p => Uri.file(p)));
 	}
 
-	diff(cached?: boolean) {
+	diff(cached?: Boolean) {
 		return this._repository.diff(cached);
 	}
 
@@ -135,8 +135,8 @@ export class ApiRepository implements Repository {
 		return this._repository.diffIndexWith(ref, path);
 	}
 
-	diffBlobs(object1: string, object2: string): Promise<string> {
-		return this._repository.diffBlobs(object1, object2);
+	diffBloBs(oBject1: string, oBject2: string): Promise<string> {
+		return this._repository.diffBloBs(oBject1, oBject2);
 	}
 
 	diffBetween(ref1: string, ref2: string): Promise<Change[]>;
@@ -145,15 +145,15 @@ export class ApiRepository implements Repository {
 		return this._repository.diffBetween(ref1, ref2, path);
 	}
 
-	hashObject(data: string): Promise<string> {
-		return this._repository.hashObject(data);
+	hashOBject(data: string): Promise<string> {
+		return this._repository.hashOBject(data);
 	}
 
-	createBranch(name: string, checkout: boolean, ref?: string | undefined): Promise<void> {
-		return this._repository.branch(name, checkout, ref);
+	createBranch(name: string, checkout: Boolean, ref?: string | undefined): Promise<void> {
+		return this._repository.Branch(name, checkout, ref);
 	}
 
-	deleteBranch(name: string, force?: boolean): Promise<void> {
+	deleteBranch(name: string, force?: Boolean): Promise<void> {
 		return this._repository.deleteBranch(name, force);
 	}
 
@@ -193,20 +193,20 @@ export class ApiRepository implements Repository {
 		return this._repository.renameRemote(name, newName);
 	}
 
-	fetch(remote?: string | undefined, ref?: string | undefined, depth?: number | undefined): Promise<void> {
+	fetch(remote?: string | undefined, ref?: string | undefined, depth?: numBer | undefined): Promise<void> {
 		return this._repository.fetch(remote, ref, depth);
 	}
 
-	pull(unshallow?: boolean): Promise<void> {
+	pull(unshallow?: Boolean): Promise<void> {
 		return this._repository.pull(undefined, unshallow);
 	}
 
-	push(remoteName?: string, branchName?: string, setUpstream: boolean = false): Promise<void> {
-		return this._repository.pushTo(remoteName, branchName, setUpstream);
+	push(remoteName?: string, BranchName?: string, setUpstream: Boolean = false): Promise<void> {
+		return this._repository.pushTo(remoteName, BranchName, setUpstream);
 	}
 
-	blame(path: string): Promise<string> {
-		return this._repository.blame(path);
+	Blame(path: string): Promise<string> {
+		return this._repository.Blame(path);
 	}
 
 	log(options?: LogOptions): Promise<Commit[]> {
@@ -265,15 +265,15 @@ export class ApiImpl implements API {
 		return this.getRepository(root) || null;
 	}
 
-	registerRemoteSourceProvider(provider: RemoteSourceProvider): Disposable {
+	registerRemoteSourceProvider(provider: RemoteSourceProvider): DisposaBle {
 		return this._model.registerRemoteSourceProvider(provider);
 	}
 
-	registerCredentialsProvider(provider: CredentialsProvider): Disposable {
+	registerCredentialsProvider(provider: CredentialsProvider): DisposaBle {
 		return this._model.registerCredentialsProvider(provider);
 	}
 
-	registerPushErrorHandler(handler: PushErrorHandler): Disposable {
+	registerPushErrorHandler(handler: PushErrorHandler): DisposaBle {
 		return this._model.registerPushErrorHandler(handler);
 	}
 
@@ -314,15 +314,15 @@ function getStatus(status: Status): string {
 	return 'UNKNOWN';
 }
 
-export function registerAPICommands(extension: GitExtensionImpl): Disposable {
-	const disposables: Disposable[] = [];
+export function registerAPICommands(extension: GitExtensionImpl): DisposaBle {
+	const disposaBles: DisposaBle[] = [];
 
-	disposables.push(commands.registerCommand('git.api.getRepositories', () => {
+	disposaBles.push(commands.registerCommand('git.api.getRepositories', () => {
 		const api = extension.getAPI(1);
 		return api.repositories.map(r => r.rootUri.toString());
 	}));
 
-	disposables.push(commands.registerCommand('git.api.getRepositoryState', (uri: string) => {
+	disposaBles.push(commands.registerCommand('git.api.getRepositoryState', (uri: string) => {
 		const api = extension.getAPI(1);
 		const repository = api.getRepository(Uri.parse(uri));
 
@@ -344,15 +344,15 @@ export function registerAPICommands(extension: GitExtensionImpl): Disposable {
 			HEAD: ref(state.HEAD),
 			refs: state.refs.map(ref),
 			remotes: state.remotes,
-			submodules: state.submodules,
-			rebaseCommit: state.rebaseCommit,
+			suBmodules: state.suBmodules,
+			reBaseCommit: state.reBaseCommit,
 			mergeChanges: state.mergeChanges.map(change),
 			indexChanges: state.indexChanges.map(change),
 			workingTreeChanges: state.workingTreeChanges.map(change)
 		};
 	}));
 
-	disposables.push(commands.registerCommand('git.api.getRemoteSources', (opts?: PickRemoteSourceOptions) => {
+	disposaBles.push(commands.registerCommand('git.api.getRemoteSources', (opts?: PickRemoteSourceOptions) => {
 		if (!extension.model) {
 			return;
 		}
@@ -360,5 +360,5 @@ export function registerAPICommands(extension: GitExtensionImpl): Disposable {
 		return pickRemoteSource(extension.model, opts);
 	}));
 
-	return Disposable.from(...disposables);
+	return DisposaBle.from(...disposaBles);
 }

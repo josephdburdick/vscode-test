@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { TypeConstraint, validateConstraints } from 'vs/base/common/types';
+import { IDisposaBle, toDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { TypeConstraint, validateConstraints } from 'vs/Base/common/types';
 import { ServicesAccessor, createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event, Emitter } from 'vs/base/common/event';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { Iterable } from 'vs/base/common/iterator';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { LinkedList } from 'vs/Base/common/linkedList';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { IteraBle } from 'vs/Base/common/iterator';
 
 export const ICommandService = createDecorator<ICommandService>('commandService');
 
@@ -50,9 +50,9 @@ export interface ICommandHandlerDescription {
 
 export interface ICommandRegistry {
 	onDidRegisterCommand: Event<string>;
-	registerCommand(id: string, command: ICommandHandler): IDisposable;
-	registerCommand(command: ICommand): IDisposable;
-	registerCommandAlias(oldId: string, newId: string): IDisposable;
+	registerCommand(id: string, command: ICommandHandler): IDisposaBle;
+	registerCommand(command: ICommand): IDisposaBle;
+	registerCommandAlias(oldId: string, newId: string): IDisposaBle;
 	getCommand(id: string): ICommand | undefined;
 	getCommands(): ICommandsMap;
 }
@@ -64,7 +64,7 @@ export const CommandsRegistry: ICommandRegistry = new class implements ICommandR
 	private readonly _onDidRegisterCommand = new Emitter<string>();
 	readonly onDidRegisterCommand: Event<string> = this._onDidRegisterCommand.event;
 
-	registerCommand(idOrCommand: string | ICommand, handler?: ICommandHandler): IDisposable {
+	registerCommand(idOrCommand: string | ICommand, handler?: ICommandHandler): IDisposaBle {
 
 		if (!idOrCommand) {
 			throw new Error(`invalid command`);
@@ -101,7 +101,7 @@ export const CommandsRegistry: ICommandRegistry = new class implements ICommandR
 
 		let removeFn = commands.unshift(idOrCommand);
 
-		let ret = toDisposable(() => {
+		let ret = toDisposaBle(() => {
 			removeFn();
 			const command = this._commands.get(id);
 			if (command?.isEmpty()) {
@@ -109,13 +109,13 @@ export const CommandsRegistry: ICommandRegistry = new class implements ICommandR
 			}
 		});
 
-		// tell the world about this command
+		// tell the world aBout this command
 		this._onDidRegisterCommand.fire(id);
 
 		return ret;
 	}
 
-	registerCommandAlias(oldId: string, newId: string): IDisposable {
+	registerCommandAlias(oldId: string, newId: string): IDisposaBle {
 		return CommandsRegistry.registerCommand(oldId, (accessor, ...args) => accessor.get(ICommandService).executeCommand(newId, ...args));
 	}
 
@@ -124,7 +124,7 @@ export const CommandsRegistry: ICommandRegistry = new class implements ICommandR
 		if (!list || list.isEmpty()) {
 			return undefined;
 		}
-		return Iterable.first(list);
+		return IteraBle.first(list);
 	}
 
 	getCommands(): ICommandsMap {
@@ -141,8 +141,8 @@ export const CommandsRegistry: ICommandRegistry = new class implements ICommandR
 
 export const NullCommandService: ICommandService = {
 	_serviceBrand: undefined,
-	onWillExecuteCommand: () => Disposable.None,
-	onDidExecuteCommand: () => Disposable.None,
+	onWillExecuteCommand: () => DisposaBle.None,
+	onDidExecuteCommand: () => DisposaBle.None,
 	executeCommand() {
 		return Promise.resolve(undefined);
 	}

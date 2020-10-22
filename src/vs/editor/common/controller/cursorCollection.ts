@@ -16,7 +16,7 @@ export class CursorCollection {
 	private secondaryCursors: OneCursor[];
 
 	// An index which identifies the last cursor that was added / moved (think Ctrl+drag)
-	private lastAddedCursorIndex: number;
+	private lastAddedCursorIndex: numBer;
 
 	constructor(context: CursorContext) {
 		this.context = context;
@@ -25,37 +25,37 @@ export class CursorCollection {
 		this.lastAddedCursorIndex = 0;
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this.primaryCursor.dispose(this.context);
 		this.killSecondaryCursors();
 	}
 
-	public startTrackingSelections(): void {
+	puBlic startTrackingSelections(): void {
 		this.primaryCursor.startTrackingSelection(this.context);
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
 			this.secondaryCursors[i].startTrackingSelection(this.context);
 		}
 	}
 
-	public stopTrackingSelections(): void {
+	puBlic stopTrackingSelections(): void {
 		this.primaryCursor.stopTrackingSelection(this.context);
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
 			this.secondaryCursors[i].stopTrackingSelection(this.context);
 		}
 	}
 
-	public updateContext(context: CursorContext): void {
+	puBlic updateContext(context: CursorContext): void {
 		this.context = context;
 	}
 
-	public ensureValidState(): void {
+	puBlic ensureValidState(): void {
 		this.primaryCursor.ensureValidState(this.context);
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
 			this.secondaryCursors[i].ensureValidState(this.context);
 		}
 	}
 
-	public readSelectionFromMarkers(): Selection[] {
+	puBlic readSelectionFromMarkers(): Selection[] {
 		let result: Selection[] = [];
 		result[0] = this.primaryCursor.readSelectionFromMarkers(this.context);
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
@@ -64,7 +64,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getAll(): CursorState[] {
+	puBlic getAll(): CursorState[] {
 		let result: CursorState[] = [];
 		result[0] = this.primaryCursor.asCursorState();
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
@@ -73,7 +73,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getViewPositions(): Position[] {
+	puBlic getViewPositions(): Position[] {
 		let result: Position[] = [];
 		result[0] = this.primaryCursor.viewState.position;
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
@@ -82,7 +82,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getTopMostViewPosition(): Position {
+	puBlic getTopMostViewPosition(): Position {
 		let result = this.primaryCursor.viewState.position;
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
 			const viewPosition = this.secondaryCursors[i].viewState.position;
@@ -93,7 +93,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getBottomMostViewPosition(): Position {
+	puBlic getBottomMostViewPosition(): Position {
 		let result = this.primaryCursor.viewState.position;
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
 			const viewPosition = this.secondaryCursors[i].viewState.position;
@@ -104,7 +104,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getSelections(): Selection[] {
+	puBlic getSelections(): Selection[] {
 		let result: Selection[] = [];
 		result[0] = this.primaryCursor.modelState.selection;
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
@@ -113,7 +113,7 @@ export class CursorCollection {
 		return result;
 	}
 
-	public getViewSelections(): Selection[] {
+	puBlic getViewSelections(): Selection[] {
 		let result: Selection[] = [];
 		result[0] = this.primaryCursor.viewState.selection;
 		for (let i = 0, len = this.secondaryCursors.length; i < len; i++) {
@@ -122,15 +122,15 @@ export class CursorCollection {
 		return result;
 	}
 
-	public setSelections(selections: ISelection[]): void {
+	puBlic setSelections(selections: ISelection[]): void {
 		this.setStates(CursorState.fromModelSelections(selections));
 	}
 
-	public getPrimaryCursor(): CursorState {
+	puBlic getPrimaryCursor(): CursorState {
 		return this.primaryCursor.asCursorState();
 	}
 
-	public setStates(states: PartialCursorState[] | null): void {
+	puBlic setStates(states: PartialCursorState[] | null): void {
 		if (states === null) {
 			return;
 		}
@@ -139,7 +139,7 @@ export class CursorCollection {
 	}
 
 	/**
-	 * Creates or disposes secondary cursors as necessary to match the number of `secondarySelections`.
+	 * Creates or disposes secondary cursors as necessary to match the numBer of `secondarySelections`.
 	 */
 	private _setSecondaryStates(secondaryStates: PartialCursorState[]): void {
 		const secondaryCursorsLength = this.secondaryCursors.length;
@@ -162,7 +162,7 @@ export class CursorCollection {
 		}
 	}
 
-	public killSecondaryCursors(): void {
+	puBlic killSecondaryCursors(): void {
 		this._setSecondaryStates([]);
 	}
 
@@ -171,14 +171,14 @@ export class CursorCollection {
 		this.lastAddedCursorIndex = this.secondaryCursors.length;
 	}
 
-	public getLastAddedCursorIndex(): number {
+	puBlic getLastAddedCursorIndex(): numBer {
 		if (this.secondaryCursors.length === 0 || this.lastAddedCursorIndex === 0) {
 			return 0;
 		}
 		return this.lastAddedCursorIndex;
 	}
 
-	private _removeSecondaryCursor(removeIndex: number): void {
+	private _removeSecondaryCursor(removeIndex: numBer): void {
 		if (this.lastAddedCursorIndex >= removeIndex + 1) {
 			this.lastAddedCursorIndex--;
 		}
@@ -195,14 +195,14 @@ export class CursorCollection {
 		return result;
 	}
 
-	public normalize(): void {
+	puBlic normalize(): void {
 		if (this.secondaryCursors.length === 0) {
 			return;
 		}
 		let cursors = this._getAll();
 
 		interface SortedCursor {
-			index: number;
+			index: numBer;
 			selection: Selection;
 		}
 		let sortedCursors: SortedCursor[] = [];
@@ -212,11 +212,11 @@ export class CursorCollection {
 				selection: cursors[i].modelState.selection,
 			});
 		}
-		sortedCursors.sort((a, b) => {
-			if (a.selection.startLineNumber === b.selection.startLineNumber) {
-				return a.selection.startColumn - b.selection.startColumn;
+		sortedCursors.sort((a, B) => {
+			if (a.selection.startLineNumBer === B.selection.startLineNumBer) {
+				return a.selection.startColumn - B.selection.startColumn;
 			}
-			return a.selection.startLineNumber - b.selection.startLineNumber;
+			return a.selection.startLineNumBer - B.selection.startLineNumBer;
 		});
 
 		for (let sortedCursorIndex = 0; sortedCursorIndex < sortedCursors.length - 1; sortedCursorIndex++) {
@@ -230,7 +230,7 @@ export class CursorCollection {
 				continue;
 			}
 
-			let shouldMergeCursors: boolean;
+			let shouldMergeCursors: Boolean;
 			if (nextSelection.isEmpty() || currentSelection.isEmpty()) {
 				// Merge touching cursors if one of them is collapsed
 				shouldMergeCursors = nextSelection.getStartPosition().isBeforeOrEqual(currentSelection.getEndPosition());
@@ -251,11 +251,11 @@ export class CursorCollection {
 
 				if (!looserSelection.equalsSelection(winnerSelection)) {
 					const resultingRange = looserSelection.plusRange(winnerSelection);
-					const looserSelectionIsLTR = (looserSelection.selectionStartLineNumber === looserSelection.startLineNumber && looserSelection.selectionStartColumn === looserSelection.startColumn);
-					const winnerSelectionIsLTR = (winnerSelection.selectionStartLineNumber === winnerSelection.startLineNumber && winnerSelection.selectionStartColumn === winnerSelection.startColumn);
+					const looserSelectionIsLTR = (looserSelection.selectionStartLineNumBer === looserSelection.startLineNumBer && looserSelection.selectionStartColumn === looserSelection.startColumn);
+					const winnerSelectionIsLTR = (winnerSelection.selectionStartLineNumBer === winnerSelection.startLineNumBer && winnerSelection.selectionStartColumn === winnerSelection.startColumn);
 
 					// Give more importance to the last added cursor (think Ctrl-dragging + hitting another cursor)
-					let resultingSelectionIsLTR: boolean;
+					let resultingSelectionIsLTR: Boolean;
 					if (looserIndex === this.lastAddedCursorIndex) {
 						resultingSelectionIsLTR = looserSelectionIsLTR;
 						this.lastAddedCursorIndex = winnerIndex;
@@ -266,9 +266,9 @@ export class CursorCollection {
 
 					let resultingSelection: Selection;
 					if (resultingSelectionIsLTR) {
-						resultingSelection = new Selection(resultingRange.startLineNumber, resultingRange.startColumn, resultingRange.endLineNumber, resultingRange.endColumn);
+						resultingSelection = new Selection(resultingRange.startLineNumBer, resultingRange.startColumn, resultingRange.endLineNumBer, resultingRange.endColumn);
 					} else {
-						resultingSelection = new Selection(resultingRange.endLineNumber, resultingRange.endColumn, resultingRange.startLineNumber, resultingRange.startColumn);
+						resultingSelection = new Selection(resultingRange.endLineNumBer, resultingRange.endColumn, resultingRange.startLineNumBer, resultingRange.startColumn);
 					}
 
 					sortedCursors[winnerSortedCursorIndex].selection = resultingSelection;

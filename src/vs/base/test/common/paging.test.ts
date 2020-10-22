@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { IPager, PagedModel } from 'vs/base/common/paging';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { isPromiseCanceledError, canceled } from 'vs/base/common/errors';
+import { IPager, PagedModel } from 'vs/Base/common/paging';
+import { CancellationToken, CancellationTokenSource } from 'vs/Base/common/cancellation';
+import { isPromiseCanceledError, canceled } from 'vs/Base/common/errors';
 
-function getPage(pageIndex: number, cancellationToken: CancellationToken): Promise<number[]> {
+function getPage(pageIndex: numBer, cancellationToken: CancellationToken): Promise<numBer[]> {
 	if (cancellationToken.isCancellationRequested) {
 		return Promise.reject(canceled());
 	}
@@ -16,14 +16,14 @@ function getPage(pageIndex: number, cancellationToken: CancellationToken): Promi
 	return Promise.resolve([0, 1, 2, 3, 4].map(i => i + (pageIndex * 5)));
 }
 
-class TestPager implements IPager<number> {
+class TestPager implements IPager<numBer> {
 
 	readonly firstPage = [0, 1, 2, 3, 4];
 	readonly pageSize = 5;
 	readonly total = 100;
-	readonly getPage: (pageIndex: number, cancellationToken: CancellationToken) => Promise<number[]>;
+	readonly getPage: (pageIndex: numBer, cancellationToken: CancellationToken) => Promise<numBer[]>;
 
-	constructor(getPageFn?: (pageIndex: number, cancellationToken: CancellationToken) => Promise<number[]>) {
+	constructor(getPageFn?: (pageIndex: numBer, cancellationToken: CancellationToken) => Promise<numBer[]>) {
 		this.getPage = getPageFn || getPage;
 	}
 }

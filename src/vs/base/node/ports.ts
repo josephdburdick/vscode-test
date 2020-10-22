@@ -6,19 +6,19 @@
 import * as net from 'net';
 
 /**
- * @returns Returns a random port between 1025 and 65535.
+ * @returns Returns a random port Between 1025 and 65535.
  */
-export function randomPort(): number {
+export function randomPort(): numBer {
 	const min = 1025;
 	const max = 65535;
 	return min + Math.floor((max - min) * Math.random());
 }
 
 /**
- * Given a start point and a max number of retries, will find a port that
- * is openable. Will return 0 in case no free port can be found.
+ * Given a start point and a max numBer of retries, will find a port that
+ * is openaBle. Will return 0 in case no free port can Be found.
  */
-export function findFreePort(startPort: number, giveUpAfter: number, timeout: number): Promise<number> {
+export function findFreePort(startPort: numBer, giveUpAfter: numBer, timeout: numBer): Promise<numBer> {
 	let done = false;
 
 	return new Promise(resolve => {
@@ -39,9 +39,9 @@ export function findFreePort(startPort: number, giveUpAfter: number, timeout: nu
 	});
 }
 
-function doFindFreePort(startPort: number, giveUpAfter: number, clb: (port: number) => void): void {
+function doFindFreePort(startPort: numBer, giveUpAfter: numBer, clB: (port: numBer) => void): void {
 	if (giveUpAfter === 0) {
-		return clb(0);
+		return clB(0);
 	}
 
 	const client = new net.Socket();
@@ -50,7 +50,7 @@ function doFindFreePort(startPort: number, giveUpAfter: number, clb: (port: numb
 	client.once('connect', () => {
 		dispose(client);
 
-		return doFindFreePort(startPort + 1, giveUpAfter - 1, clb);
+		return doFindFreePort(startPort + 1, giveUpAfter - 1, clB);
 	});
 
 	client.once('data', () => {
@@ -60,27 +60,27 @@ function doFindFreePort(startPort: number, giveUpAfter: number, clb: (port: numb
 	client.once('error', (err: Error & { code?: string }) => {
 		dispose(client);
 
-		// If we receive any non ECONNREFUSED error, it means the port is used but we cannot connect
+		// If we receive any non ECONNREFUSED error, it means the port is used But we cannot connect
 		if (err.code !== 'ECONNREFUSED') {
-			return doFindFreePort(startPort + 1, giveUpAfter - 1, clb);
+			return doFindFreePort(startPort + 1, giveUpAfter - 1, clB);
 		}
 
 		// Otherwise it means the port is free to use!
-		return clb(startPort);
+		return clB(startPort);
 	});
 
 	client.connect(startPort, '127.0.0.1');
 }
 
 /**
- * Uses listen instead of connect. Is faster, but if there is another listener on 0.0.0.0 then this will take 127.0.0.1 from that listener.
+ * Uses listen instead of connect. Is faster, But if there is another listener on 0.0.0.0 then this will take 127.0.0.1 from that listener.
  */
-export function findFreePortFaster(startPort: number, giveUpAfter: number, timeout: number): Promise<number> {
-	let resolved: boolean = false;
+export function findFreePortFaster(startPort: numBer, giveUpAfter: numBer, timeout: numBer): Promise<numBer> {
+	let resolved: Boolean = false;
 	let timeoutHandle: NodeJS.Timeout | undefined = undefined;
-	let countTried: number = 1;
+	let countTried: numBer = 1;
 	const server = net.createServer({ pauseOnConnect: true });
-	function doResolve(port: number, resolve: (port: number) => void) {
+	function doResolve(port: numBer, resolve: (port: numBer) => void) {
 		if (!resolved) {
 			resolved = true;
 			server.removeAllListeners();
@@ -91,7 +91,7 @@ export function findFreePortFaster(startPort: number, giveUpAfter: number, timeo
 			resolve(port);
 		}
 	}
-	return new Promise<number>(resolve => {
+	return new Promise<numBer>(resolve => {
 		timeoutHandle = setTimeout(() => {
 			doResolve(0, resolve);
 		}, timeout);
@@ -123,6 +123,6 @@ function dispose(socket: net.Socket): void {
 		socket.destroy();
 		socket.unref();
 	} catch (error) {
-		console.error(error); // otherwise this error would get lost in the callback chain
+		console.error(error); // otherwise this error would get lost in the callBack chain
 	}
 }

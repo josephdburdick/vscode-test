@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/issueReporter';
-import 'vs/base/browser/ui/codicons/codiconStyles'; // make sure codicon css is loaded
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { NativeHostService } from 'vs/platform/native/electron-sandbox/nativeHostService';
-import { ipcRenderer, process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { applyZoom, zoomIn, zoomOut } from 'vs/platform/windows/electron-sandbox/window';
-import { $, reset, safeInnerHtml, windowOpenNoOpener } from 'vs/base/browser/dom';
-import { Button } from 'vs/base/browser/ui/button/button';
-import { CodiconLabel } from 'vs/base/browser/ui/codicons/codiconLabel';
-import * as collections from 'vs/base/common/collections';
-import { debounce } from 'vs/base/common/decorators';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/base/common/platform';
-import { escape } from 'vs/base/common/strings';
-import { normalizeGitHubUrl } from 'vs/platform/issue/common/issueReporterUtil';
-import { IssueReporterData as IssueReporterModelData, IssueReporterModel } from 'vs/code/electron-sandbox/issue/issueReporterModel';
-import BaseHtml from 'vs/code/electron-sandbox/issue/issueReporterPage';
+import 'vs/Base/Browser/ui/codicons/codiconStyles'; // make sure codicon css is loaded
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { NativeHostService } from 'vs/platform/native/electron-sandBox/nativeHostService';
+import { ipcRenderer, process } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
+import { applyZoom, zoomIn, zoomOut } from 'vs/platform/windows/electron-sandBox/window';
+import { $, reset, safeInnerHtml, windowOpenNoOpener } from 'vs/Base/Browser/dom';
+import { Button } from 'vs/Base/Browser/ui/Button/Button';
+import { CodiconLaBel } from 'vs/Base/Browser/ui/codicons/codiconLaBel';
+import * as collections from 'vs/Base/common/collections';
+import { deBounce } from 'vs/Base/common/decorators';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import * as platform from 'vs/Base/common/platform';
+import { escape } from 'vs/Base/common/strings';
+import { normalizeGitHuBUrl } from 'vs/platform/issue/common/issueReporterUtil';
+import { IssueReporterData as IssueReporterModelData, IssueReporterModel } from 'vs/code/electron-sandBox/issue/issueReporterModel';
+import BaseHtml from 'vs/code/electron-sandBox/issue/issueReporterPage';
 import { localize } from 'vs/nls';
 import { isRemoteDiagnosticError, SystemInfo } from 'vs/platform/diagnostics/common/diagnostics';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IMainProcessService, MainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
+import { IMainProcessService, MainProcessService } from 'vs/platform/ipc/electron-sandBox/mainProcessService';
 import { IssueReporterData, IssueReporterExtensionData, IssueReporterFeatures, IssueReporterStyles, IssueType } from 'vs/platform/issue/common/issue';
 import { IWindowConfiguration } from 'vs/platform/windows/common/windows';
 
@@ -36,8 +36,8 @@ interface SearchResult {
 }
 
 export interface IssueReporterConfiguration extends IWindowConfiguration {
-	windowId: number;
-	disableExtensions: boolean;
+	windowId: numBer;
+	disaBleExtensions: Boolean;
 	data: IssueReporterData;
 	features: IssueReporterFeatures;
 	os: {
@@ -56,24 +56,24 @@ export interface IssueReporterConfiguration extends IWindowConfiguration {
 
 export function startup(configuration: IssueReporterConfiguration) {
 	const platformClass = platform.isWindows ? 'windows' : platform.isLinux ? 'linux' : 'mac';
-	document.body.classList.add(platformClass); // used by our fonts
+	document.Body.classList.add(platformClass); // used By our fonts
 
-	safeInnerHtml(document.body, BaseHtml());
+	safeInnerHtml(document.Body, BaseHtml());
 
 	const issueReporter = new IssueReporter(configuration);
 	issueReporter.render();
-	document.body.style.display = 'block';
+	document.Body.style.display = 'Block';
 	issueReporter.setInitialFocus();
 }
 
-export class IssueReporter extends Disposable {
+export class IssueReporter extends DisposaBle {
 	private nativeHostService!: INativeHostService;
 	private readonly issueReporterModel: IssueReporterModel;
-	private numberOfSearchResultsDisplayed = 0;
+	private numBerOfSearchResultsDisplayed = 0;
 	private receivedSystemInfo = false;
 	private receivedPerformanceInfo = false;
 	private shouldQueueSearch = false;
-	private hasBeenSubmitted = false;
+	private hasBeenSuBmitted = false;
 
 	private readonly previewButton!: Button;
 
@@ -84,14 +84,14 @@ export class IssueReporter extends Disposable {
 
 		const isSnap = process.platform === 'linux' && process.env.SNAP && process.env.SNAP_REVISION;
 
-		const targetExtension = configuration.data.extensionId ? configuration.data.enabledExtensions.find(extension => extension.id === configuration.data.extensionId) : undefined;
+		const targetExtension = configuration.data.extensionId ? configuration.data.enaBledExtensions.find(extension => extension.id === configuration.data.extensionId) : undefined;
 		this.issueReporterModel = new IssueReporterModel({
 			issueType: configuration.data.issueType || IssueType.Bug,
 			versionInfo: {
 				vscodeVersion: `${configuration.product.nameShort} ${configuration.product.version} (${configuration.product.commit || 'Commit unknown'}, ${configuration.product.date || 'Date unknown'})`,
 				os: `${this.configuration.os.type} ${this.configuration.os.arch} ${this.configuration.os.release}${isSnap ? ' snap' : ''}`
 			},
-			extensionsDisabled: !!configuration.disableExtensions,
+			extensionsDisaBled: !!configuration.disaBleExtensions,
 			fileOnExtension: configuration.data.extensionId ? !targetExtension?.isBuiltin : undefined,
 			selectedExtension: targetExtension,
 		});
@@ -149,7 +149,7 @@ export class IssueReporter extends Disposable {
 		this.setEventHandlers();
 		applyZoom(configuration.data.zoomLevel);
 		this.applyStyles(configuration.data.styles);
-		this.handleExtensionData(configuration.data.enabledExtensions);
+		this.handleExtensionData(configuration.data.enaBledExtensions);
 	}
 
 	render(): void {
@@ -176,26 +176,26 @@ export class IssueReporter extends Disposable {
 		const content: string[] = [];
 
 		if (styles.inputBackground) {
-			content.push(`input[type="text"], textarea, select, .issues-container > .issue > .issue-state, .block-info { background-color: ${styles.inputBackground}; }`);
+			content.push(`input[type="text"], textarea, select, .issues-container > .issue > .issue-state, .Block-info { Background-color: ${styles.inputBackground}; }`);
 		}
 
 		if (styles.inputBorder) {
-			content.push(`input[type="text"], textarea, select { border: 1px solid ${styles.inputBorder}; }`);
+			content.push(`input[type="text"], textarea, select { Border: 1px solid ${styles.inputBorder}; }`);
 		} else {
-			content.push(`input[type="text"], textarea, select { border: 1px solid transparent; }`);
+			content.push(`input[type="text"], textarea, select { Border: 1px solid transparent; }`);
 		}
 
 		if (styles.inputForeground) {
-			content.push(`input[type="text"], textarea, select, .issues-container > .issue > .issue-state, .block-info { color: ${styles.inputForeground}; }`);
+			content.push(`input[type="text"], textarea, select, .issues-container > .issue > .issue-state, .Block-info { color: ${styles.inputForeground}; }`);
 		}
 
 		if (styles.inputErrorBorder) {
-			content.push(`.invalid-input, .invalid-input:focus, .validation-error { border: 1px solid ${styles.inputErrorBorder} !important; }`);
+			content.push(`.invalid-input, .invalid-input:focus, .validation-error { Border: 1px solid ${styles.inputErrorBorder} !important; }`);
 			content.push(`.required-input { color: ${styles.inputErrorBorder}; }`);
 		}
 
 		if (styles.inputErrorBackground) {
-			content.push(`.validation-error { background: ${styles.inputErrorBackground}; }`);
+			content.push(`.validation-error { Background: ${styles.inputErrorBackground}; }`);
 		}
 
 		if (styles.inputErrorForeground) {
@@ -203,11 +203,11 @@ export class IssueReporter extends Disposable {
 		}
 
 		if (styles.inputActiveBorder) {
-			content.push(`input[type='text']:focus, textarea:focus, select:focus, summary:focus, button:focus, a:focus, .workbenchCommand:focus  { border: 1px solid ${styles.inputActiveBorder}; outline-style: none; }`);
+			content.push(`input[type='text']:focus, textarea:focus, select:focus, summary:focus, Button:focus, a:focus, .workBenchCommand:focus  { Border: 1px solid ${styles.inputActiveBorder}; outline-style: none; }`);
 		}
 
 		if (styles.textLinkColor) {
-			content.push(`a, .workbenchCommand { color: ${styles.textLinkColor}; }`);
+			content.push(`a, .workBenchCommand { color: ${styles.textLinkColor}; }`);
 		}
 
 		if (styles.textLinkColor) {
@@ -215,36 +215,36 @@ export class IssueReporter extends Disposable {
 		}
 
 		if (styles.textLinkActiveForeground) {
-			content.push(`a:hover, .workbenchCommand:hover { color: ${styles.textLinkActiveForeground}; }`);
+			content.push(`a:hover, .workBenchCommand:hover { color: ${styles.textLinkActiveForeground}; }`);
 		}
 
 		if (styles.sliderBackgroundColor) {
-			content.push(`::-webkit-scrollbar-thumb { background-color: ${styles.sliderBackgroundColor}; }`);
+			content.push(`::-weBkit-scrollBar-thumB { Background-color: ${styles.sliderBackgroundColor}; }`);
 		}
 
 		if (styles.sliderActiveColor) {
-			content.push(`::-webkit-scrollbar-thumb:active { background-color: ${styles.sliderActiveColor}; }`);
+			content.push(`::-weBkit-scrollBar-thumB:active { Background-color: ${styles.sliderActiveColor}; }`);
 		}
 
 		if (styles.sliderHoverColor) {
-			content.push(`::--webkit-scrollbar-thumb:hover { background-color: ${styles.sliderHoverColor}; }`);
+			content.push(`::--weBkit-scrollBar-thumB:hover { Background-color: ${styles.sliderHoverColor}; }`);
 		}
 
-		if (styles.buttonBackground) {
-			content.push(`.monaco-text-button { background-color: ${styles.buttonBackground} !important; }`);
+		if (styles.ButtonBackground) {
+			content.push(`.monaco-text-Button { Background-color: ${styles.ButtonBackground} !important; }`);
 		}
 
-		if (styles.buttonForeground) {
-			content.push(`.monaco-text-button { color: ${styles.buttonForeground} !important; }`);
+		if (styles.ButtonForeground) {
+			content.push(`.monaco-text-Button { color: ${styles.ButtonForeground} !important; }`);
 		}
 
-		if (styles.buttonHoverBackground) {
-			content.push(`.monaco-text-button:not(.disabled):hover, .monaco-text-button:focus { background-color: ${styles.buttonHoverBackground} !important; }`);
+		if (styles.ButtonHoverBackground) {
+			content.push(`.monaco-text-Button:not(.disaBled):hover, .monaco-text-Button:focus { Background-color: ${styles.ButtonHoverBackground} !important; }`);
 		}
 
 		styleTag.textContent = content.join('\n');
 		document.head.appendChild(styleTag);
-		document.body.style.color = styles.color || '';
+		document.Body.style.color = styles.color || '';
 	}
 
 	private handleExtensionData(extensions: IssueReporterExtensionData[]) {
@@ -253,12 +253,12 @@ export class IssueReporter extends Disposable {
 			return ext.isTheme ? 'themes' : 'nonThemes';
 		});
 
-		const numberOfThemeExtesions = themes && themes.length;
-		this.issueReporterModel.update({ numberOfThemeExtesions, enabledNonThemeExtesions: nonThemes, allExtensions: installedExtensions });
-		this.updateExtensionTable(nonThemes, numberOfThemeExtesions);
+		const numBerOfThemeExtesions = themes && themes.length;
+		this.issueReporterModel.update({ numBerOfThemeExtesions, enaBledNonThemeExtesions: nonThemes, allExtensions: installedExtensions });
+		this.updateExtensionTaBle(nonThemes, numBerOfThemeExtesions);
 
-		if (this.configuration.disableExtensions || installedExtensions.length === 0) {
-			(<HTMLButtonElement>this.getElementById('disableExtensions')).disabled = true;
+		if (this.configuration.disaBleExtensions || installedExtensions.length === 0) {
+			(<HTMLButtonElement>this.getElementById('disaBleExtensions')).disaBled = true;
 		}
 
 		this.updateExtensionSelector(installedExtensions);
@@ -297,16 +297,16 @@ export class IssueReporter extends Disposable {
 			const showInfo = showInfoElements.item(i)!;
 			(showInfo as HTMLAnchorElement).addEventListener('click', (e: MouseEvent) => {
 				e.preventDefault();
-				const label = (<HTMLDivElement>e.target);
-				if (label) {
-					const containingElement = label.parentElement && label.parentElement.parentElement;
+				const laBel = (<HTMLDivElement>e.target);
+				if (laBel) {
+					const containingElement = laBel.parentElement && laBel.parentElement.parentElement;
 					const info = containingElement && containingElement.lastElementChild;
 					if (info && info.classList.contains('hidden')) {
 						show(info);
-						label.textContent = localize('hide', "hide");
+						laBel.textContent = localize('hide', "hide");
 					} else {
 						hide(info);
-						label.textContent = localize('show', "show");
+						laBel.textContent = localize('show', "show");
 					}
 				}
 			});
@@ -314,15 +314,15 @@ export class IssueReporter extends Disposable {
 
 		this.addEventListener('issue-source', 'change', (e: Event) => {
 			const value = (<HTMLInputElement>e.target).value;
-			const problemSourceHelpText = this.getElementById('problem-source-help-text')!;
+			const proBlemSourceHelpText = this.getElementById('proBlem-source-help-text')!;
 			if (value === '') {
 				this.issueReporterModel.update({ fileOnExtension: undefined });
-				show(problemSourceHelpText);
+				show(proBlemSourceHelpText);
 				this.clearSearchResults();
 				this.render();
 				return;
 			} else {
-				hide(problemSourceHelpText);
+				hide(proBlemSourceHelpText);
 			}
 
 			const fileOnExtension = JSON.parse(value);
@@ -373,12 +373,12 @@ export class IssueReporter extends Disposable {
 
 		this.previewButton.onDidClick(() => this.createIssue());
 
-		function sendWorkbenchCommand(commandId: string) {
-			ipcRenderer.send('vscode:workbenchCommand', { id: commandId, from: 'issueReporter' });
+		function sendWorkBenchCommand(commandId: string) {
+			ipcRenderer.send('vscode:workBenchCommand', { id: commandId, from: 'issueReporter' });
 		}
 
-		this.addEventListener('disableExtensions', 'click', () => {
-			sendWorkbenchCommand('workbench.action.reloadWindowWithExtensionsDisabled');
+		this.addEventListener('disaBleExtensions', 'click', () => {
+			sendWorkBenchCommand('workBench.action.reloadWindowWithExtensionsDisaBled');
 		});
 
 		this.addEventListener('extensionBugsLink', 'click', (e: Event) => {
@@ -386,15 +386,15 @@ export class IssueReporter extends Disposable {
 			windowOpenNoOpener(url);
 		});
 
-		this.addEventListener('disableExtensions', 'keydown', (e: Event) => {
+		this.addEventListener('disaBleExtensions', 'keydown', (e: Event) => {
 			e.stopPropagation();
-			if ((e as KeyboardEvent).keyCode === 13 || (e as KeyboardEvent).keyCode === 32) {
-				sendWorkbenchCommand('workbench.extensions.action.disableAll');
-				sendWorkbenchCommand('workbench.action.reloadWindow');
+			if ((e as KeyBoardEvent).keyCode === 13 || (e as KeyBoardEvent).keyCode === 32) {
+				sendWorkBenchCommand('workBench.extensions.action.disaBleAll');
+				sendWorkBenchCommand('workBench.action.reloadWindow');
 			}
 		});
 
-		document.onkeydown = async (e: KeyboardEvent) => {
+		document.onkeydown = async (e: KeyBoardEvent) => {
 			const cmdOrCtrlKey = platform.isMacintosh ? e.metaKey : e.ctrlKey;
 			// Cmd/Ctrl+Enter previews issue and closes window
 			if (cmdOrCtrlKey && e.keyCode === 13) {
@@ -410,7 +410,7 @@ export class IssueReporter extends Disposable {
 
 				const issueTitle = (<HTMLInputElement>this.getElementById('issue-title'))!.value;
 				const { issueDescription } = this.issueReporterModel.getData();
-				if (!this.hasBeenSubmitted && (issueTitle || issueDescription)) {
+				if (!this.hasBeenSuBmitted && (issueTitle || issueDescription)) {
 					ipcRenderer.send('vscode:issueReporterConfirmClose');
 				} else {
 					ipcRenderer.send('vscode:closeIssueReporter');
@@ -440,16 +440,16 @@ export class IssueReporter extends Disposable {
 	}
 
 	private updatePreviewButtonState() {
-		if (this.isPreviewEnabled()) {
-			this.previewButton.label = localize('previewOnGitHub', "Preview on GitHub");
-			this.previewButton.enabled = true;
+		if (this.isPreviewEnaBled()) {
+			this.previewButton.laBel = localize('previewOnGitHuB', "Preview on GitHuB");
+			this.previewButton.enaBled = true;
 		} else {
-			this.previewButton.enabled = false;
-			this.previewButton.label = localize('loadingData', "Loading data...");
+			this.previewButton.enaBled = false;
+			this.previewButton.laBel = localize('loadingData', "Loading data...");
 		}
 	}
 
-	private isPreviewEnabled() {
+	private isPreviewEnaBled() {
 		const issueType = this.issueReporterModel.getData().issueType;
 		if (issueType === IssueType.Bug && this.receivedSystemInfo) {
 			return true;
@@ -473,7 +473,7 @@ export class IssueReporter extends Disposable {
 
 	private getExtensionBugsUrl(): string | undefined {
 		const selectedExtension = this.issueReporterModel.getData().selectedExtension;
-		return selectedExtension && selectedExtension.bugsUrl;
+		return selectedExtension && selectedExtension.BugsUrl;
 	}
 
 	private searchVSCodeIssues(title: string, issueDescription?: string): void {
@@ -485,12 +485,12 @@ export class IssueReporter extends Disposable {
 	}
 
 	private searchExtensionIssues(title: string): void {
-		const url = this.getExtensionGitHubUrl();
+		const url = this.getExtensionGitHuBUrl();
 		if (title) {
-			const matches = /^https?:\/\/github\.com\/(.*)/.exec(url);
+			const matches = /^https?:\/\/githuB\.com\/(.*)/.exec(url);
 			if (matches && matches.length) {
 				const repo = matches[1];
-				return this.searchGitHub(repo, title);
+				return this.searchGitHuB(repo, title);
 			}
 
 			// If the extension has no repository, display empty search results
@@ -507,23 +507,23 @@ export class IssueReporter extends Disposable {
 	private clearSearchResults(): void {
 		const similarIssues = this.getElementById('similar-issues')!;
 		similarIssues.innerText = '';
-		this.numberOfSearchResultsDisplayed = 0;
+		this.numBerOfSearchResultsDisplayed = 0;
 	}
 
-	@debounce(300)
-	private searchGitHub(repo: string, title: string): void {
+	@deBounce(300)
+	private searchGitHuB(repo: string, title: string): void {
 		const query = `is:issue+repo:${repo}+${title}`;
 		const similarIssues = this.getElementById('similar-issues')!;
 
-		window.fetch(`https://api.github.com/search/issues?q=${query}`).then((response) => {
+		window.fetch(`https://api.githuB.com/search/issues?q=${query}`).then((response) => {
 			response.json().then(result => {
 				similarIssues.innerText = '';
 				if (result && result.items) {
 					this.displaySearchResults(result.items);
 				} else {
-					// If the items property isn't present, the rate limit has been hit
+					// If the items property isn't present, the rate limit has Been hit
 					const message = $('div.list-title');
-					message.textContent = localize('rateLimited', "GitHub query limit exceeded. Please wait.");
+					message.textContent = localize('rateLimited', "GitHuB query limit exceeded. Please wait.");
 					similarIssues.appendChild(message);
 
 					const resetTime = response.headers.get('X-RateLimit-Reset');
@@ -531,7 +531,7 @@ export class IssueReporter extends Disposable {
 					if (this.shouldQueueSearch) {
 						this.shouldQueueSearch = false;
 						setTimeout(() => {
-							this.searchGitHub(repo, title);
+							this.searchGitHuB(repo, title);
 							this.shouldQueueSearch = true;
 						}, timeToWait * 1000);
 					}
@@ -544,14 +544,14 @@ export class IssueReporter extends Disposable {
 		});
 	}
 
-	@debounce(300)
-	private searchDuplicates(title: string, body?: string): void {
-		const url = 'https://vscode-probot.westus.cloudapp.azure.com:7890/duplicate_candidates';
+	@deBounce(300)
+	private searchDuplicates(title: string, Body?: string): void {
+		const url = 'https://vscode-proBot.westus.cloudapp.azure.com:7890/duplicate_candidates';
 		const init = {
 			method: 'POST',
-			body: JSON.stringify({
+			Body: JSON.stringify({
 				title,
-				body
+				Body
 			}),
 			headers: new Headers({
 				'Content-Type': 'application/json'
@@ -582,8 +582,8 @@ export class IssueReporter extends Disposable {
 			const issuesText = $('div.list-title');
 			issuesText.textContent = localize('similarIssues', "Similar issues");
 
-			this.numberOfSearchResultsDisplayed = results.length < 5 ? results.length : 5;
-			for (let i = 0; i < this.numberOfSearchResultsDisplayed; i++) {
+			this.numBerOfSearchResultsDisplayed = results.length < 5 ? results.length : 5;
+			for (let i = 0; i < this.numBerOfSearchResultsDisplayed; i++) {
 				const issue = results[i];
 				const link = $('a.issue-link', { href: issue.html_url });
 				link.textContent = issue.title;
@@ -597,15 +597,15 @@ export class IssueReporter extends Disposable {
 					issueState = $('span.issue-state');
 
 					const issueIcon = $('span.issue-icon');
-					const codicon = new CodiconLabel(issueIcon);
+					const codicon = new CodiconLaBel(issueIcon);
 					codicon.text = issue.state === 'open' ? '$(issue-opened)' : '$(issue-closed)';
 
-					const issueStateLabel = $('span.issue-state.label');
-					issueStateLabel.textContent = issue.state === 'open' ? localize('open', "Open") : localize('closed', "Closed");
+					const issueStateLaBel = $('span.issue-state.laBel');
+					issueStateLaBel.textContent = issue.state === 'open' ? localize('open', "Open") : localize('closed', "Closed");
 
 					issueState.title = issue.state === 'open' ? localize('open', "Open") : localize('closed', "Closed");
 					issueState.appendChild(issueIcon);
-					issueState.appendChild(issueStateLabel);
+					issueState.appendChild(issueStateLaBel);
 
 					item = $('div.issue', undefined, issueState, link);
 				} else {
@@ -630,7 +630,7 @@ export class IssueReporter extends Disposable {
 		const typeSelect = this.getElementById('issue-type')! as HTMLSelectElement;
 		const { issueType } = this.issueReporterModel.getData();
 		reset(typeSelect,
-			makeOption(IssueType.Bug, localize('bugReporter', "Bug Report")),
+			makeOption(IssueType.Bug, localize('BugReporter', "Bug Report")),
 			makeOption(IssueType.FeatureRequest, localize('featureRequest', "Feature Request")),
 			makeOption(IssueType.PerformanceIssue, localize('performanceIssue', "Performance Issue"))
 		);
@@ -640,9 +640,9 @@ export class IssueReporter extends Disposable {
 		this.setSourceOptions();
 	}
 
-	private makeOption(value: string, description: string, disabled: boolean): HTMLOptionElement {
+	private makeOption(value: string, description: string, disaBled: Boolean): HTMLOptionElement {
 		const option: HTMLOptionElement = document.createElement('option');
-		option.disabled = disabled;
+		option.disaBled = disaBled;
 		option.value = value;
 		option.textContent = description;
 
@@ -681,41 +681,41 @@ export class IssueReporter extends Disposable {
 			sourceSelect.selectedIndex = selected;
 		} else {
 			sourceSelect.selectedIndex = 0;
-			hide(this.getElementById('problem-source-help-text'));
+			hide(this.getElementById('proBlem-source-help-text'));
 		}
 	}
 
 	private renderBlocks(): void {
-		// Depending on Issue Type, we render different blocks and text
+		// Depending on Issue Type, we render different Blocks and text
 		const { issueType, fileOnExtension } = this.issueReporterModel.getData();
-		const blockContainer = this.getElementById('block-container');
-		const systemBlock = document.querySelector('.block-system');
-		const processBlock = document.querySelector('.block-process');
-		const workspaceBlock = document.querySelector('.block-workspace');
-		const extensionsBlock = document.querySelector('.block-extensions');
-		const searchedExtensionsBlock = document.querySelector('.block-searchedExtensions');
-		const settingsSearchResultsBlock = document.querySelector('.block-settingsSearchResults');
+		const BlockContainer = this.getElementById('Block-container');
+		const systemBlock = document.querySelector('.Block-system');
+		const processBlock = document.querySelector('.Block-process');
+		const workspaceBlock = document.querySelector('.Block-workspace');
+		const extensionsBlock = document.querySelector('.Block-extensions');
+		const searchedExtensionsBlock = document.querySelector('.Block-searchedExtensions');
+		const settingsSearchResultsBlock = document.querySelector('.Block-settingsSearchResults');
 
-		const problemSource = this.getElementById('problem-source')!;
-		const descriptionTitle = this.getElementById('issue-description-label')!;
-		const descriptionSubtitle = this.getElementById('issue-description-subtitle')!;
+		const proBlemSource = this.getElementById('proBlem-source')!;
+		const descriptionTitle = this.getElementById('issue-description-laBel')!;
+		const descriptionSuBtitle = this.getElementById('issue-description-suBtitle')!;
 		const extensionSelector = this.getElementById('extension-selection')!;
 
-		// Hide all by default
-		hide(blockContainer);
+		// Hide all By default
+		hide(BlockContainer);
 		hide(systemBlock);
 		hide(processBlock);
 		hide(workspaceBlock);
 		hide(extensionsBlock);
 		hide(searchedExtensionsBlock);
 		hide(settingsSearchResultsBlock);
-		hide(problemSource);
+		hide(proBlemSource);
 		hide(extensionSelector);
 
 		if (issueType === IssueType.Bug) {
-			show(blockContainer);
+			show(BlockContainer);
 			show(systemBlock);
-			show(problemSource);
+			show(proBlemSource);
 
 			if (fileOnExtension) {
 				show(extensionSelector);
@@ -723,13 +723,13 @@ export class IssueReporter extends Disposable {
 				show(extensionsBlock);
 			}
 			reset(descriptionTitle, localize('stepsToReproduce', "Steps to Reproduce"), $('span.required-input', undefined, '*'));
-			reset(descriptionSubtitle, localize('bugDescription', "Share the steps needed to reliably reproduce the problem. Please include actual and expected results. We support GitHub-flavored Markdown. You will be able to edit your issue and add screenshots when we preview it on GitHub."));
+			reset(descriptionSuBtitle, localize('BugDescription', "Share the steps needed to reliaBly reproduce the proBlem. Please include actual and expected results. We support GitHuB-flavored Markdown. You will Be aBle to edit your issue and add screenshots when we preview it on GitHuB."));
 		} else if (issueType === IssueType.PerformanceIssue) {
-			show(blockContainer);
+			show(BlockContainer);
 			show(systemBlock);
 			show(processBlock);
 			show(workspaceBlock);
-			show(problemSource);
+			show(proBlemSource);
 
 			if (fileOnExtension) {
 				show(extensionSelector);
@@ -738,11 +738,11 @@ export class IssueReporter extends Disposable {
 			}
 
 			reset(descriptionTitle, localize('stepsToReproduce', "Steps to Reproduce"), $('span.required-input', undefined, '*'));
-			reset(descriptionSubtitle, localize('performanceIssueDesciption', "When did this performance issue happen? Does it occur on startup or after a specific series of actions? We support GitHub-flavored Markdown. You will be able to edit your issue and add screenshots when we preview it on GitHub."));
+			reset(descriptionSuBtitle, localize('performanceIssueDesciption', "When did this performance issue happen? Does it occur on startup or after a specific series of actions? We support GitHuB-flavored Markdown. You will Be aBle to edit your issue and add screenshots when we preview it on GitHuB."));
 		} else if (issueType === IssueType.FeatureRequest) {
 			reset(descriptionTitle, localize('description', "Description"), $('span.required-input', undefined, '*'));
-			reset(descriptionSubtitle, localize('featureRequestDescription', "Please describe the feature you would like to see. We support GitHub-flavored Markdown. You will be able to edit your issue and add screenshots when we preview it on GitHub."));
-			show(problemSource);
+			reset(descriptionSuBtitle, localize('featureRequestDescription', "Please descriBe the feature you would like to see. We support GitHuB-flavored Markdown. You will Be aBle to edit your issue and add screenshots when we preview it on GitHuB."));
+			show(proBlemSource);
 
 			if (fileOnExtension) {
 				show(extensionSelector);
@@ -750,7 +750,7 @@ export class IssueReporter extends Disposable {
 		}
 	}
 
-	private validateInput(inputId: string): boolean {
+	private validateInput(inputId: string): Boolean {
 		const inputElement = (<HTMLInputElement>this.getElementById(inputId));
 		const inputValidationMessage = this.getElementById(`${inputId}-empty-error`);
 		if (!inputElement.value) {
@@ -764,7 +764,7 @@ export class IssueReporter extends Disposable {
 		}
 	}
 
-	private validateInputs(): boolean {
+	private validateInputs(): Boolean {
 		let isValid = true;
 		['issue-title', 'description', 'issue-source'].forEach(elementId => {
 			isValid = this.validateInput(elementId) && isValid;
@@ -777,7 +777,7 @@ export class IssueReporter extends Disposable {
 		return isValid;
 	}
 
-	private async createIssue(): Promise<boolean> {
+	private async createIssue(): Promise<Boolean> {
 		if (!this.validateInputs()) {
 			// If inputs are invalid, set focus to the first one and add listeners on them
 			// to detect further changes
@@ -807,15 +807,15 @@ export class IssueReporter extends Disposable {
 			return false;
 		}
 
-		this.hasBeenSubmitted = true;
+		this.hasBeenSuBmitted = true;
 
-		const baseUrl = this.getIssueUrlWithTitle((<HTMLInputElement>this.getElementById('issue-title')).value);
+		const BaseUrl = this.getIssueUrlWithTitle((<HTMLInputElement>this.getElementById('issue-title')).value);
 		const issueBody = this.issueReporterModel.serialize();
-		let url = baseUrl + `&body=${encodeURIComponent(issueBody)}`;
+		let url = BaseUrl + `&Body=${encodeURIComponent(issueBody)}`;
 
 		if (url.length > MAX_URL_LENGTH) {
 			try {
-				url = await this.writeToClipboard(baseUrl, issueBody);
+				url = await this.writeToClipBoard(BaseUrl, issueBody);
 			} catch (_) {
 				return false;
 			}
@@ -825,30 +825,30 @@ export class IssueReporter extends Disposable {
 		return true;
 	}
 
-	private async writeToClipboard(baseUrl: string, issueBody: string): Promise<string> {
+	private async writeToClipBoard(BaseUrl: string, issueBody: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			ipcRenderer.once('vscode:issueReporterClipboardResponse', async (event: unknown, shouldWrite: boolean) => {
+			ipcRenderer.once('vscode:issueReporterClipBoardResponse', async (event: unknown, shouldWrite: Boolean) => {
 				if (shouldWrite) {
-					await this.nativeHostService.writeClipboardText(issueBody);
-					resolve(baseUrl + `&body=${encodeURIComponent(localize('pasteData', "We have written the needed data into your clipboard because it was too large to send. Please paste."))}`);
+					await this.nativeHostService.writeClipBoardText(issueBody);
+					resolve(BaseUrl + `&Body=${encodeURIComponent(localize('pasteData', "We have written the needed data into your clipBoard Because it was too large to send. Please paste."))}`);
 				} else {
 					reject();
 				}
 			});
 
-			ipcRenderer.send('vscode:issueReporterClipboard');
+			ipcRenderer.send('vscode:issueReporterClipBoard');
 		});
 	}
 
-	private getExtensionGitHubUrl(): string {
+	private getExtensionGitHuBUrl(): string {
 		let repositoryUrl = '';
-		const bugsUrl = this.getExtensionBugsUrl();
+		const BugsUrl = this.getExtensionBugsUrl();
 		const extensionUrl = this.getExtensionRepositoryUrl();
-		// If given, try to match the extension's bug url
-		if (bugsUrl && bugsUrl.match(/^https?:\/\/github\.com\/(.*)/)) {
-			repositoryUrl = normalizeGitHubUrl(bugsUrl);
-		} else if (extensionUrl && extensionUrl.match(/^https?:\/\/github\.com\/(.*)/)) {
-			repositoryUrl = normalizeGitHubUrl(extensionUrl);
+		// If given, try to match the extension's Bug url
+		if (BugsUrl && BugsUrl.match(/^https?:\/\/githuB\.com\/(.*)/)) {
+			repositoryUrl = normalizeGitHuBUrl(BugsUrl);
+		} else if (extensionUrl && extensionUrl.match(/^https?:\/\/githuB\.com\/(.*)/)) {
+			repositoryUrl = normalizeGitHuBUrl(extensionUrl);
 		}
 
 		return repositoryUrl;
@@ -857,9 +857,9 @@ export class IssueReporter extends Disposable {
 	private getIssueUrlWithTitle(issueTitle: string): string {
 		let repositoryUrl = this.configuration.product.reportIssueUrl;
 		if (this.issueReporterModel.fileOnExtension()) {
-			const extensionGitHubUrl = this.getExtensionGitHubUrl();
-			if (extensionGitHubUrl) {
-				repositoryUrl = extensionGitHubUrl + '/issues/new';
+			const extensionGitHuBUrl = this.getExtensionGitHuBUrl();
+			if (extensionGitHuBUrl) {
+				repositoryUrl = extensionGitHuBUrl + '/issues/new';
 			}
 		}
 
@@ -868,18 +868,18 @@ export class IssueReporter extends Disposable {
 	}
 
 	private updateSystemInfo(state: IssueReporterModelData) {
-		const target = document.querySelector<HTMLElement>('.block-system .block-info');
+		const target = document.querySelector<HTMLElement>('.Block-system .Block-info');
 
 		if (target) {
 			const systemInfo = state.systemInfo!;
-			const renderedDataTable = $('table', undefined,
+			const renderedDataTaBle = $('taBle', undefined,
 				$('tr', undefined,
 					$('td', undefined, 'CPUs'),
 					$('td', undefined, systemInfo.cpus || ''),
 				),
 				$('tr', undefined,
 					$('td', undefined, 'GPU Status' as string),
-					$('td', undefined, Object.keys(systemInfo.gpuStatus).map(key => `${key}: ${systemInfo.gpuStatus[key]}`).join('\n')),
+					$('td', undefined, OBject.keys(systemInfo.gpuStatus).map(key => `${key}: ${systemInfo.gpuStatus[key]}`).join('\n')),
 				),
 				$('tr', undefined,
 					$('td', undefined, 'Load (avg)' as string),
@@ -902,12 +902,12 @@ export class IssueReporter extends Disposable {
 					$('td', undefined, systemInfo.vmHint),
 				),
 			);
-			reset(target, renderedDataTable);
+			reset(target, renderedDataTaBle);
 
 			systemInfo.remoteData.forEach(remote => {
 				target.appendChild($<HTMLHRElement>('hr'));
 				if (isRemoteDiagnosticError(remote)) {
-					const remoteDataTable = $('table', undefined,
+					const remoteDataTaBle = $('taBle', undefined,
 						$('tr', undefined,
 							$('td', undefined, 'Remote'),
 							$('td', undefined, remote.hostName)
@@ -917,9 +917,9 @@ export class IssueReporter extends Disposable {
 							$('td', undefined, remote.errorMessage)
 						)
 					);
-					target.appendChild(remoteDataTable);
+					target.appendChild(remoteDataTaBle);
 				} else {
-					const remoteDataTable = $('table', undefined,
+					const remoteDataTaBle = $('taBle', undefined,
 						$('tr', undefined,
 							$('td', undefined, 'Remote'),
 							$('td', undefined, remote.hostName)
@@ -941,7 +941,7 @@ export class IssueReporter extends Disposable {
 							$('td', undefined, remote.machineInfo.vmHint)
 						),
 					);
-					target.appendChild(remoteDataTable);
+					target.appendChild(remoteDataTaBle);
 				}
 			});
 		}
@@ -960,15 +960,15 @@ export class IssueReporter extends Disposable {
 			};
 		});
 
-		// Sort extensions by name
-		extensionOptions.sort((a, b) => {
+		// Sort extensions By name
+		extensionOptions.sort((a, B) => {
 			const aName = a.name.toLowerCase();
-			const bName = b.name.toLowerCase();
-			if (aName > bName) {
+			const BName = B.name.toLowerCase();
+			if (aName > BName) {
 				return 1;
 			}
 
-			if (aName < bName) {
+			if (aName < BName) {
 				return -1;
 			}
 
@@ -1006,7 +1006,7 @@ export class IssueReporter extends Disposable {
 			});
 		}
 
-		this.addEventListener('problem-source', 'change', (_) => {
+		this.addEventListener('proBlem-source', 'change', (_) => {
 			this.validateSelectedExtension();
 		});
 	}
@@ -1018,27 +1018,27 @@ export class IssueReporter extends Disposable {
 		hide(extensionValidationNoUrlsMessage);
 
 		if (!this.issueReporterModel.getData().selectedExtension) {
-			this.previewButton.enabled = true;
+			this.previewButton.enaBled = true;
 			return;
 		}
 
-		const hasValidGitHubUrl = this.getExtensionGitHubUrl();
-		if (hasValidGitHubUrl) {
-			this.previewButton.enabled = true;
+		const hasValidGitHuBUrl = this.getExtensionGitHuBUrl();
+		if (hasValidGitHuBUrl) {
+			this.previewButton.enaBled = true;
 		} else {
 			this.setExtensionValidationMessage();
-			this.previewButton.enabled = false;
+			this.previewButton.enaBled = false;
 		}
 	}
 
 	private setExtensionValidationMessage(): void {
 		const extensionValidationMessage = this.getElementById('extension-selection-validation-error')!;
 		const extensionValidationNoUrlsMessage = this.getElementById('extension-selection-validation-error-no-url')!;
-		const bugsUrl = this.getExtensionBugsUrl();
-		if (bugsUrl) {
+		const BugsUrl = this.getExtensionBugsUrl();
+		if (BugsUrl) {
 			show(extensionValidationMessage);
 			const link = this.getElementById('extensionBugsLink')!;
-			link.textContent = bugsUrl;
+			link.textContent = BugsUrl;
 			return;
 		}
 
@@ -1054,21 +1054,21 @@ export class IssueReporter extends Disposable {
 	}
 
 	private updateProcessInfo(state: IssueReporterModelData) {
-		const target = document.querySelector('.block-process .block-info') as HTMLElement;
+		const target = document.querySelector('.Block-process .Block-info') as HTMLElement;
 		if (target) {
 			reset(target, $('code', undefined, state.processInfo));
 		}
 	}
 
 	private updateWorkspaceInfo(state: IssueReporterModelData) {
-		document.querySelector('.block-workspace .block-info code')!.textContent = '\n' + state.workspaceInfo;
+		document.querySelector('.Block-workspace .Block-info code')!.textContent = '\n' + state.workspaceInfo;
 	}
 
-	private updateExtensionTable(extensions: IssueReporterExtensionData[], numThemeExtensions: number): void {
-		const target = document.querySelector<HTMLElement>('.block-extensions .block-info');
+	private updateExtensionTaBle(extensions: IssueReporterExtensionData[], numThemeExtensions: numBer): void {
+		const target = document.querySelector<HTMLElement>('.Block-extensions .Block-info');
 		if (target) {
-			if (this.configuration.disableExtensions) {
-				reset(target, localize('disabledExtensions', "Extensions are disabled"));
+			if (this.configuration.disaBleExtensions) {
+				reset(target, localize('disaBledExtensions', "Extensions are disaBled"));
 				return;
 			}
 
@@ -1080,12 +1080,12 @@ export class IssueReporter extends Disposable {
 				return;
 			}
 
-			reset(target, this.getExtensionTableHtml(extensions), document.createTextNode(themeExclusionStr));
+			reset(target, this.getExtensionTaBleHtml(extensions), document.createTextNode(themeExclusionStr));
 		}
 	}
 
-	private getExtensionTableHtml(extensions: IssueReporterExtensionData[]): HTMLTableElement {
-		return $('table', undefined,
+	private getExtensionTaBleHtml(extensions: IssueReporterExtensionData[]): HTMLTaBleElement {
+		return $('taBle', undefined,
 			$('tr', undefined,
 				$('th', undefined, 'Extension'),
 				$('th', undefined, 'Author (truncated)' as string),
@@ -1093,7 +1093,7 @@ export class IssueReporter extends Disposable {
 			),
 			...extensions.map(extension => $('tr', undefined,
 				$('td', undefined, extension.name),
-				$('td', undefined, extension.publisher.substr(0, 3)),
+				$('td', undefined, extension.puBlisher.suBstr(0, 3)),
 				$('td', undefined, extension.version),
 			))
 		);

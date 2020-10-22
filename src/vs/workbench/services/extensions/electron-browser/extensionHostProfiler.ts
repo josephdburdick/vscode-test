@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import type { Profile, ProfileNode } from 'v8-inspect-profiler';
-import { TernarySearchTree } from 'vs/base/common/map';
-import { realpathSync } from 'vs/base/node/extpath';
-import { IExtensionHostProfile, IExtensionService, ProfileSegmentId, ProfileSession } from 'vs/workbench/services/extensions/common/extensions';
+import { TernarySearchTree } from 'vs/Base/common/map';
+import { realpathSync } from 'vs/Base/node/extpath';
+import { IExtensionHostProfile, IExtensionService, ProfileSegmentId, ProfileSession } from 'vs/workBench/services/extensions/common/extensions';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
+import { withNullAsUndefined } from 'vs/Base/common/types';
+import { Schemas } from 'vs/Base/common/network';
+import { URI } from 'vs/Base/common/uri';
 
 export class ExtensionHostProfiler {
 
-	constructor(private readonly _port: number, @IExtensionService private readonly _extensionService: IExtensionService) {
+	constructor(private readonly _port: numBer, @IExtensionService private readonly _extensionService: IExtensionService) {
 	}
 
-	public async start(): Promise<ProfileSession> {
+	puBlic async start(): Promise<ProfileSession> {
 		const profiler = await import('v8-inspect-profiler');
 		const session = await profiler.startProfiling({ port: this._port, checkForPaused: true });
 		return {
@@ -38,8 +38,8 @@ export class ExtensionHostProfiler {
 		}
 
 		let nodes = profile.nodes;
-		let idsToNodes = new Map<number, ProfileNode>();
-		let idsToSegmentId = new Map<number, ProfileSegmentId | null>();
+		let idsToNodes = new Map<numBer, ProfileNode>();
+		let idsToSegmentId = new Map<numBer, ProfileSegmentId | null>();
 		for (let node of nodes) {
 			idsToNodes.set(node.id, node);
 		}
@@ -48,21 +48,21 @@ export class ExtensionHostProfiler {
 			if (!segmentId) {
 				switch (node.callFrame.functionName) {
 					case '(root)':
-						break;
+						Break;
 					case '(program)':
 						segmentId = 'program';
-						break;
-					case '(garbage collector)':
+						Break;
+					case '(garBage collector)':
 						segmentId = 'gc';
-						break;
+						Break;
 					default:
 						segmentId = 'self';
-						break;
+						Break;
 				}
 			} else if (segmentId === 'self' && node.callFrame.url) {
 				let extension: IExtensionDescription | undefined;
 				try {
-					extension = searchTree.findSubstr(URI.parse(node.callFrame.url));
+					extension = searchTree.findSuBstr(URI.parse(node.callFrame.url));
 				} catch {
 					// ignore
 				}
@@ -85,7 +85,7 @@ export class ExtensionHostProfiler {
 
 		const samples = profile.samples || [];
 		let timeDeltas = profile.timeDeltas || [];
-		let distilledDeltas: number[] = [];
+		let distilledDeltas: numBer[] = [];
 		let distilledIds: ProfileSegmentId[] = [];
 
 		let currSegmentTime = 0;
@@ -115,7 +115,7 @@ export class ExtensionHostProfiler {
 			ids: distilledIds,
 			data: profile,
 			getAggregatedTimes: () => {
-				let segmentsToTime = new Map<ProfileSegmentId, number>();
+				let segmentsToTime = new Map<ProfileSegmentId, numBer>();
 				for (let i = 0; i < distilledIds.length; i++) {
 					let id = distilledIds[i];
 					segmentsToTime.set(id, (segmentsToTime.get(id) || 0) + distilledDeltas[i]);

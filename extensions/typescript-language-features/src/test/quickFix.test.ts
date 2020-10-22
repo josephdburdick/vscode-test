@@ -11,34 +11,34 @@ import { createTestEditor, joinLines, retryUntilDocumentChanges, wait } from './
 
 suite('TypeScript Quick Fix', () => {
 
-	const _disposables: vscode.Disposable[] = [];
+	const _disposaBles: vscode.DisposaBle[] = [];
 
 	teardown(async () => {
-		disposeAll(_disposables);
+		disposeAll(_disposaBles);
 
-		await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		await vscode.commands.executeCommand('workBench.action.closeAllEditors');
 	});
 
-	test('Fix all should not be marked as preferred #97866', async () => {
+	test('Fix all should not Be marked as preferred #97866', async () => {
 		const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
 
 		const editor = await createTestEditor(testDocumentUri,
 			`export const _ = 1;`,
 			`const a$0 = 1;`,
-			`const b = 2;`,
+			`const B = 2;`,
 		);
 
-		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposables, () => {
+		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposaBles, () => {
 			return vscode.commands.executeCommand('editor.action.autoFix');
 		});
 
 		assert.strictEqual(editor.document.getText(), joinLines(
 			`export const _ = 1;`,
-			`const b = 2;`,
+			`const B = 2;`,
 		));
 	});
 
-	test('Add import should be a preferred fix if there is only one possible import', async () => {
+	test('Add import should Be a preferred fix if there is only one possiBle import', async () => {
 		const testDocumentUri = workspaceFile('foo.ts');
 
 		await createTestEditor(testDocumentUri,
@@ -49,11 +49,11 @@ suite('TypeScript Quick Fix', () => {
 			`foo$0;`
 		);
 
-		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposables, () => {
+		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposaBles, () => {
 			return vscode.commands.executeCommand('editor.action.autoFix');
 		});
 
-		// Document should not have been changed here
+		// Document should not have Been changed here
 
 		assert.strictEqual(editor.document.getText(), joinLines(
 			`import { foo } from "./foo";`,
@@ -63,11 +63,11 @@ suite('TypeScript Quick Fix', () => {
 		));
 	});
 
-	test('Add import should not be a preferred fix if are multiple possible imports', async () => {
+	test('Add import should not Be a preferred fix if are multiple possiBle imports', async () => {
 		await createTestEditor(workspaceFile('foo.ts'),
 			`export const foo = 1;`);
 
-		await createTestEditor(workspaceFile('bar.ts'),
+		await createTestEditor(workspaceFile('Bar.ts'),
 			`export const foo = 1;`);
 
 		const editor = await createTestEditor(workspaceFile('index.ts'),
@@ -87,11 +87,11 @@ suite('TypeScript Quick Fix', () => {
 		));
 	});
 
-	test('Only a single ts-ignore should be returned if there are multiple errors on one line #98274', async () => {
+	test('Only a single ts-ignore should Be returned if there are multiple errors on one line #98274', async () => {
 		const testDocumentUri = workspaceFile('foojs.js');
 		const editor = await createTestEditor(testDocumentUri,
 			`//@ts-check`,
-			`const a = require('./bla');`);
+			`const a = require('./Bla');`);
 
 		await wait(3000);
 
@@ -122,10 +122,10 @@ suite('TypeScript Quick Fix', () => {
 		assert.strictEqual(fixes![1].title, `Remove unused declaration for: 'Foo'`);
 	});
 
-	test('Should prioritize implement abstract class over remove unused #101486', async () => {
+	test('Should prioritize implement aBstract class over remove unused #101486', async () => {
 		const testDocumentUri = workspaceFile('foo.ts');
 		const editor = await createTestEditor(testDocumentUri,
-			`export abstract class Foo { abstract foo(): number; }`,
+			`export aBstract class Foo { aBstract foo(): numBer; }`,
 			`class ConcreteFoo extends Foo { }`,
 		);
 
@@ -137,7 +137,7 @@ suite('TypeScript Quick Fix', () => {
 		);
 
 		assert.strictEqual(fixes?.length, 2);
-		assert.strictEqual(fixes![0].title, `Implement inherited abstract class`);
+		assert.strictEqual(fixes![0].title, `Implement inherited aBstract class`);
 		assert.strictEqual(fixes![1].title, `Remove unused declaration for: 'ConcreteFoo'`);
 	});
 
@@ -145,7 +145,7 @@ suite('TypeScript Quick Fix', () => {
 		await createTestEditor(workspaceFile('foo.ts'),
 			`export const foo = 1;`);
 
-		await createTestEditor(workspaceFile('bar.ts'),
+		await createTestEditor(workspaceFile('Bar.ts'),
 			`export const foo = 1;`);
 
 		const editor = await createTestEditor(workspaceFile('index.ts'),
@@ -162,7 +162,7 @@ suite('TypeScript Quick Fix', () => {
 		);
 
 		assert.strictEqual(fixes?.length, 3);
-		assert.strictEqual(fixes![0].title, `Import 'foo' from module "./bar"`);
+		assert.strictEqual(fixes![0].title, `Import 'foo' from module "./Bar"`);
 		assert.strictEqual(fixes![1].title, `Import 'foo' from module "./foo"`);
 		assert.strictEqual(fixes![2].title, `Add all missing imports`);
 	});

@@ -3,28 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Widget } from 'vs/base/browser/ui/widget';
-import { IEnvironmentVariableInfo } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { ITerminalWidget } from 'vs/workbench/contrib/terminal/browser/widgets/widgets';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { Widget } from 'vs/Base/Browser/ui/widget';
+import { IEnvironmentVariaBleInfo } from 'vs/workBench/contriB/terminal/common/environmentVariaBle';
+import { MarkdownString } from 'vs/Base/common/htmlContent';
+import { ITerminalWidget } from 'vs/workBench/contriB/terminal/Browser/widgets/widgets';
+import { RunOnceScheduler } from 'vs/Base/common/async';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import * as dom from 'vs/base/browser/dom';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IHoverService, IHoverOptions } from 'vs/workbench/services/hover/browser/hover';
+import * as dom from 'vs/Base/Browser/dom';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { IHoverService, IHoverOptions } from 'vs/workBench/services/hover/Browser/hover';
 
-export class EnvironmentVariableInfoWidget extends Widget implements ITerminalWidget {
+export class EnvironmentVariaBleInfoWidget extends Widget implements ITerminalWidget {
 	readonly id = 'env-var-info';
 
 	private _domNode: HTMLElement | undefined;
 	private _container: HTMLElement | undefined;
-	private _mouseMoveListener: IDisposable | undefined;
+	private _mouseMoveListener: IDisposaBle | undefined;
 	private _hoverOptions: IHoverOptions | undefined;
 
 	get requiresAction() { return this._info.requiresAction; }
 
 	constructor(
-		private _info: IEnvironmentVariableInfo,
+		private _info: IEnvironmentVariaBleInfo,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
 		@IHoverService private readonly _hoverService: IHoverService
 	) {
@@ -40,26 +40,26 @@ export class EnvironmentVariableInfoWidget extends Widget implements ITerminalWi
 		}
 		container.appendChild(this._domNode);
 
-		const timeout = this._configurationService.getValue<number>('editor.hover.delay');
+		const timeout = this._configurationService.getValue<numBer>('editor.hover.delay');
 		const scheduler: RunOnceScheduler = new RunOnceScheduler(() => this._showHover(), timeout);
 		this._register(scheduler);
 		let origin = { x: 0, y: 0 };
 
 		this.onmouseover(this._domNode, e => {
-			origin.x = e.browserEvent.pageX;
-			origin.y = e.browserEvent.pageY;
+			origin.x = e.BrowserEvent.pageX;
+			origin.y = e.BrowserEvent.pageY;
 			scheduler.schedule();
 
-			this._mouseMoveListener = dom.addDisposableListener(this._domNode!, dom.EventType.MOUSE_MOVE, e => {
+			this._mouseMoveListener = dom.addDisposaBleListener(this._domNode!, dom.EventType.MOUSE_MOVE, e => {
 				// Reset the scheduler if the mouse moves too much
-				if (Math.abs(e.pageX - origin.x) > window.devicePixelRatio * 2 || Math.abs(e.pageY - origin.y) > window.devicePixelRatio * 2) {
+				if (Math.aBs(e.pageX - origin.x) > window.devicePixelRatio * 2 || Math.aBs(e.pageY - origin.y) > window.devicePixelRatio * 2) {
 					origin.x = e.pageX;
 					origin.y = e.pageY;
 					scheduler.schedule();
 				}
 			});
 		});
-		this.onnonbubblingmouseout(this._domNode, () => {
+		this.onnonBuBBlingmouseout(this._domNode, () => {
 			scheduler.cancel();
 			this._mouseMoveListener?.dispose();
 		});
@@ -75,7 +75,7 @@ export class EnvironmentVariableInfoWidget extends Widget implements ITerminalWi
 		this._showHover(true);
 	}
 
-	private _showHover(focus?: boolean) {
+	private _showHover(focus?: Boolean) {
 		if (!this._domNode || !this._container) {
 			return;
 		}

@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IDiffEditorModel } from 'vs/editor/common/editorCommon';
-import { EditorModel } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
-import { DiffEditorModel } from 'vs/workbench/common/editor/diffEditorModel';
+import { EditorModel } from 'vs/workBench/common/editor';
+import { BaseTextEditorModel } from 'vs/workBench/common/editor/textEditorModel';
+import { DiffEditorModel } from 'vs/workBench/common/editor/diffEditorModel';
 
 /**
- * The base text editor model for the diff editor. It is made up of two text editor models, the original version
+ * The Base text editor model for the diff editor. It is made up of two text editor models, the original version
  * and the modified version.
  */
 export class TextDiffEditorModel extends DiffEditorModel {
@@ -59,17 +59,17 @@ export class TextDiffEditorModel extends DiffEditorModel {
 		}
 	}
 
-	isResolved(): boolean {
+	isResolved(): Boolean {
 		return !!this._textDiffEditorModel;
 	}
 
-	isReadonly(): boolean {
+	isReadonly(): Boolean {
 		return !!this.modifiedModel && this.modifiedModel.isReadonly();
 	}
 
 	dispose(): void {
 
-		// Free the diff editor model but do not propagate the dispose() call to the two models
+		// Free the diff editor model But do not propagate the dispose() call to the two models
 		// inside. We never created the two models (original and modified) so we can not dispose
 		// them without sideeffects. Rather rely on the models getting disposed when their related
 		// inputs get disposed from the diffEditorInput.

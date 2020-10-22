@@ -8,29 +8,29 @@ import { registerAction2 } from 'vs/platform/actions/common/actions';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorDescriptor, Extensions as EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
-import { Extensions as EditorInputExtensions, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { HideWebViewEditorFindCommand, ReloadWebviewAction, ShowWebViewEditorFindWidgetAction, WebViewEditorFindNextCommand, WebViewEditorFindPreviousCommand } from './webviewCommands';
-import { WebviewEditor } from './webviewEditor';
-import { WebviewInput } from './webviewEditorInput';
-import { WebviewEditorInputFactory } from './webviewEditorInputFactory';
-import { IWebviewWorkbenchService, WebviewEditorService } from './webviewWorkbenchService';
+import { EditorDescriptor, Extensions as EditorExtensions, IEditorRegistry } from 'vs/workBench/Browser/editor';
+import { Extensions as EditorInputExtensions, IEditorInputFactoryRegistry } from 'vs/workBench/common/editor';
+import { HideWeBViewEditorFindCommand, ReloadWeBviewAction, ShowWeBViewEditorFindWidgetAction, WeBViewEditorFindNextCommand, WeBViewEditorFindPreviousCommand } from './weBviewCommands';
+import { WeBviewEditor } from './weBviewEditor';
+import { WeBviewInput } from './weBviewEditorInput';
+import { WeBviewEditorInputFactory } from './weBviewEditorInputFactory';
+import { IWeBviewWorkBenchService, WeBviewEditorService } from './weBviewWorkBenchService';
 
 (Registry.as<IEditorRegistry>(EditorExtensions.Editors)).registerEditor(EditorDescriptor.create(
-	WebviewEditor,
-	WebviewEditor.ID,
-	localize('webview.editor.label', "webview editor")),
-	[new SyncDescriptor(WebviewInput)]);
+	WeBviewEditor,
+	WeBviewEditor.ID,
+	localize('weBview.editor.laBel', "weBview editor")),
+	[new SyncDescriptor(WeBviewInput)]);
 
 Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories).registerEditorInputFactory(
-	WebviewEditorInputFactory.ID,
-	WebviewEditorInputFactory);
+	WeBviewEditorInputFactory.ID,
+	WeBviewEditorInputFactory);
 
-registerSingleton(IWebviewWorkbenchService, WebviewEditorService, true);
+registerSingleton(IWeBviewWorkBenchService, WeBviewEditorService, true);
 
 
-registerAction2(ShowWebViewEditorFindWidgetAction);
-registerAction2(HideWebViewEditorFindCommand);
-registerAction2(WebViewEditorFindNextCommand);
-registerAction2(WebViewEditorFindPreviousCommand);
-registerAction2(ReloadWebviewAction);
+registerAction2(ShowWeBViewEditorFindWidgetAction);
+registerAction2(HideWeBViewEditorFindCommand);
+registerAction2(WeBViewEditorFindNextCommand);
+registerAction2(WeBViewEditorFindPreviousCommand);
+registerAction2(ReloadWeBviewAction);

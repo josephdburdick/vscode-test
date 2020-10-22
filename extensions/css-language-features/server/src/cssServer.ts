@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	Connection, TextDocuments, InitializeParams, InitializeResult, ServerCapabilities, ConfigurationRequest, WorkspaceFolder, TextDocumentSyncKind, NotificationType
+	Connection, TextDocuments, InitializeParams, InitializeResult, ServerCapaBilities, ConfigurationRequest, WorkspaceFolder, TextDocumentSyncKind, NotificationType
 } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, LanguageSettings, LanguageService, Stylesheet, TextDocument, Position } from 'vscode-css-languageservice';
@@ -46,7 +46,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 	});
 
 	let scopedSettingsSupport = false;
-	let foldingRangeLimit = Number.MAX_VALUE;
+	let foldingRangeLimit = NumBer.MAX_VALUE;
 	let workspaceFolders: WorkspaceFolder[];
 
 	let dataProvidersReady: Promise<any> = Promise.resolve();
@@ -57,7 +57,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 	let requestService: RequestService = { getContent: notReady, stat: notReady, readDirectory: notReady };
 
 	// After the server has started the client sends an initialize request. The server receives
-	// in the passed params the rootPath of the workspace plus the client capabilities.
+	// in the passed params the rootPath of the workspace plus the client capaBilities.
 	connection.onInitialize((params: InitializeParams): InitializeResult => {
 		workspaceFolders = (<any>params).workspaceFolders;
 		if (!Array.isArray(workspaceFolders)) {
@@ -69,9 +69,9 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 
 		requestService = getRequestService(params.initializationOptions?.handledSchemas || ['file'], connection, runtime);
 
-		function getClientCapability<T>(name: string, def: T) {
+		function getClientCapaBility<T>(name: string, def: T) {
 			const keys = name.split('.');
-			let c: any = params.capabilities;
+			let c: any = params.capaBilities;
 			for (let i = 0; c && i < keys.length; i++) {
 				if (!c.hasOwnProperty(keys[i])) {
 					return def;
@@ -80,19 +80,19 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			}
 			return c;
 		}
-		const snippetSupport = !!getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-		scopedSettingsSupport = !!getClientCapability('workspace.configuration', false);
-		foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
+		const snippetSupport = !!getClientCapaBility('textDocument.completion.completionItem.snippetSupport', false);
+		scopedSettingsSupport = !!getClientCapaBility('workspace.configuration', false);
+		foldingRangeLimit = getClientCapaBility('textDocument.foldingRange.rangeLimit', NumBer.MAX_VALUE);
 
-		languageServices.css = getCSSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
-		languageServices.scss = getSCSSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
-		languageServices.less = getLESSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
+		languageServices.css = getCSSLanguageService({ fileSystemProvider: requestService, clientCapaBilities: params.capaBilities });
+		languageServices.scss = getSCSSLanguageService({ fileSystemProvider: requestService, clientCapaBilities: params.capaBilities });
+		languageServices.less = getLESSLanguageService({ fileSystemProvider: requestService, clientCapaBilities: params.capaBilities });
 
-		const capabilities: ServerCapabilities = {
+		const capaBilities: ServerCapaBilities = {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			completionProvider: snippetSupport ? { resolveProvider: false, triggerCharacters: ['/', '-'] } : undefined,
 			hoverProvider: true,
-			documentSymbolProvider: true,
+			documentSymBolProvider: true,
 			referencesProvider: true,
 			definitionProvider: true,
 			documentHighlightProvider: true,
@@ -105,7 +105,7 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			foldingRangeProvider: true,
 			selectionRangeProvider: true
 		};
-		return { capabilities };
+		return { capaBilities };
 	});
 
 	function getLanguageService(document: TextDocument) {
@@ -117,12 +117,12 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		return service;
 	}
 
-	let documentSettings: { [key: string]: Thenable<LanguageSettings | undefined> } = {};
+	let documentSettings: { [key: string]: ThenaBle<LanguageSettings | undefined> } = {};
 	// remove document settings on close
 	documents.onDidClose(e => {
 		delete documentSettings[e.document.uri];
 	});
-	function getDocumentSettings(textDocument: TextDocument): Thenable<LanguageSettings | undefined> {
+	function getDocumentSettings(textDocument: TextDocument): ThenaBle<LanguageSettings | undefined> {
 		if (scopedSettingsSupport) {
 			let promise = documentSettings[textDocument.uri];
 			if (!promise) {
@@ -227,16 +227,16 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, null, `Error while computing hover for ${textDocumentPosition.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentSymbol((documentSymbolParams, token) => {
+	connection.onDocumentSymBol((documentSymBolParams, token) => {
 		return runSafeAsync(async () => {
-			const document = documents.get(documentSymbolParams.textDocument.uri);
+			const document = documents.get(documentSymBolParams.textDocument.uri);
 			if (document) {
 				await dataProvidersReady;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDocumentSymbols(document, stylesheet);
+				return getLanguageService(document).findDocumentSymBols(document, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing document symbols for ${documentSymbolParams.textDocument.uri}`, token);
+		}, [], `Error while computing document symBols for ${documentSymBolParams.textDocument.uri}`, token);
 	});
 
 	connection.onDefinition((documentDefinitionParams, token) => {

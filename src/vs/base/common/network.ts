@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as platform from 'vs/base/common/platform';
+import { URI } from 'vs/Base/common/uri';
+import * as platform from 'vs/Base/common/platform';
 
 export namespace Schemas {
 
@@ -30,7 +30,7 @@ export namespace Schemas {
 	export const walkThrough = 'walkThrough';
 
 	/**
-	 * An embedded code snippet.
+	 * An emBedded code snippet.
 	 */
 	export const walkThroughSnippet = 'walkThroughSnippet';
 
@@ -56,23 +56,23 @@ export namespace Schemas {
 
 	export const vscodeCustomEditor = 'vscode-custom-editor';
 
-	export const vscodeNotebook = 'vscode-notebook';
+	export const vscodeNoteBook = 'vscode-noteBook';
 
-	export const vscodeNotebookCell = 'vscode-notebook-cell';
+	export const vscodeNoteBookCell = 'vscode-noteBook-cell';
 
 	export const vscodeSettings = 'vscode-settings';
 
-	export const webviewPanel = 'webview-panel';
+	export const weBviewPanel = 'weBview-panel';
 
 	/**
-	 * Scheme used for loading the wrapper html and script in webviews.
+	 * Scheme used for loading the wrapper html and script in weBviews.
 	 */
-	export const vscodeWebview = 'vscode-webview';
+	export const vscodeWeBview = 'vscode-weBview';
 
 	/**
-	 * Scheme used for loading resources inside of webviews.
+	 * Scheme used for loading resources inside of weBviews.
 	 */
-	export const vscodeWebviewResource = 'vscode-webview-resource';
+	export const vscodeWeBviewResource = 'vscode-weBview-resource';
 
 	/**
 	 * Scheme used for extension pages
@@ -81,21 +81,21 @@ export namespace Schemas {
 }
 
 class RemoteAuthoritiesImpl {
-	private readonly _hosts: { [authority: string]: string | undefined; } = Object.create(null);
-	private readonly _ports: { [authority: string]: number | undefined; } = Object.create(null);
-	private readonly _connectionTokens: { [authority: string]: string | undefined; } = Object.create(null);
-	private _preferredWebSchema: 'http' | 'https' = 'http';
+	private readonly _hosts: { [authority: string]: string | undefined; } = OBject.create(null);
+	private readonly _ports: { [authority: string]: numBer | undefined; } = OBject.create(null);
+	private readonly _connectionTokens: { [authority: string]: string | undefined; } = OBject.create(null);
+	private _preferredWeBSchema: 'http' | 'https' = 'http';
 	private _delegate: ((uri: URI) => URI) | null = null;
 
-	setPreferredWebSchema(schema: 'http' | 'https') {
-		this._preferredWebSchema = schema;
+	setPreferredWeBSchema(schema: 'http' | 'https') {
+		this._preferredWeBSchema = schema;
 	}
 
 	setDelegate(delegate: (uri: URI) => URI): void {
 		this._delegate = delegate;
 	}
 
-	set(authority: string, host: string, port: number): void {
+	set(authority: string, host: string, port: numBer): void {
 		this._hosts[authority] = host;
 		this._ports[authority] = port;
 	}
@@ -120,7 +120,7 @@ class RemoteAuthoritiesImpl {
 			query += `&tkn=${encodeURIComponent(connectionToken)}`;
 		}
 		return URI.from({
-			scheme: platform.isWeb ? this._preferredWebSchema : Schemas.vscodeRemoteResource,
+			scheme: platform.isWeB ? this._preferredWeBSchema : Schemas.vscodeRemoteResource,
 			authority: `${host}:${port}`,
 			path: `/vscode-remote-resource`,
 			query
@@ -133,10 +133,10 @@ export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 class FileAccessImpl {
 
 	/**
-	 * Returns a URI to use in contexts where the browser is responsible
+	 * Returns a URI to use in contexts where the Browser is responsiBle
 	 * for loading (e.g. fetch()) or when used within the DOM.
 	 *
-	 * **Note:** use `dom.ts#asCSSUrl` whenever the URL is to be used in CSS context.
+	 * **Note:** use `dom.ts#asCSSUrl` whenever the URL is to Be used in CSS context.
 	 */
 	asBrowserUri(uri: URI): URI;
 	asBrowserUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;
@@ -152,7 +152,7 @@ class FileAccessImpl {
 
 	/**
 	 * Returns the `file` URI to use in contexts where node.js
-	 * is responsible for loading.
+	 * is responsiBle for loading.
 	 */
 	asFileUri(uri: URI): URI;
 	asFileUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;

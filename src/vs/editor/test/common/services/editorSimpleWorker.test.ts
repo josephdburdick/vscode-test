@@ -35,20 +35,20 @@ suite('EditorSimpleWorker', () => {
 		worker = new WorkerWithModels(<EditorWorkerHost>null!, null);
 		model = worker.addModel([
 			'This is line one', //16
-			'and this is line number two', //27
-			'it is followed by #3', //20
+			'and this is line numBer two', //27
+			'it is followed By #3', //20
 			'and finished with the fourth.', //29
 		]);
 	});
 
-	function assertPositionAt(offset: number, line: number, column: number) {
+	function assertPositionAt(offset: numBer, line: numBer, column: numBer) {
 		let position = model.positionAt(offset);
-		assert.equal(position.lineNumber, line);
+		assert.equal(position.lineNumBer, line);
 		assert.equal(position.column, column);
 	}
 
-	function assertOffsetAt(lineNumber: number, column: number, offset: number) {
-		let actual = model.offsetAt({ lineNumber, column });
+	function assertOffsetAt(lineNumBer: numBer, column: numBer, offset: numBer) {
+		let actual = model.offsetAt({ lineNumBer, column });
 		assert.equal(actual, offset);
 	}
 
@@ -61,15 +61,15 @@ suite('EditorSimpleWorker', () => {
 		assertOffsetAt(3, 1, 45);
 		assertOffsetAt(5, 30, 95);
 		assertOffsetAt(5, 31, 95);
-		assertOffsetAt(5, Number.MAX_VALUE, 95);
+		assertOffsetAt(5, NumBer.MAX_VALUE, 95);
 		assertOffsetAt(6, 30, 95);
-		assertOffsetAt(Number.MAX_VALUE, 30, 95);
-		assertOffsetAt(Number.MAX_VALUE, Number.MAX_VALUE, 95);
+		assertOffsetAt(NumBer.MAX_VALUE, 30, 95);
+		assertOffsetAt(NumBer.MAX_VALUE, NumBer.MAX_VALUE, 95);
 	});
 
 	test('ICommonModel#positionAt', () => {
 		assertPositionAt(0, 1, 1);
-		assertPositionAt(Number.MIN_VALUE, 1, 1);
+		assertPositionAt(NumBer.MIN_VALUE, 1, 1);
 		assertPositionAt(1, 1, 2);
 		assertPositionAt(16, 1, 17);
 		assertPositionAt(17, 2, 1);
@@ -78,12 +78,12 @@ suite('EditorSimpleWorker', () => {
 		assertPositionAt(95, 4, 30);
 		assertPositionAt(96, 4, 30);
 		assertPositionAt(99, 4, 30);
-		assertPositionAt(Number.MAX_VALUE, 4, 30);
+		assertPositionAt(NumBer.MAX_VALUE, 4, 30);
 	});
 
 	test('ICommonModel#validatePosition, issue #15882', function () {
-		let model = worker.addModel(['{"id": "0001","type": "donut","name": "Cake","image":{"url": "images/0001.jpg","width": 200,"height": 200},"thumbnail":{"url": "images/thumbnails/0001.jpg","width": 32,"height": 32}}']);
-		assert.equal(model.offsetAt({ lineNumber: 1, column: 2 }), 1);
+		let model = worker.addModel(['{"id": "0001","type": "donut","name": "Cake","image":{"url": "images/0001.jpg","width": 200,"height": 200},"thumBnail":{"url": "images/thumBnails/0001.jpg","width": 32,"height": 32}}']);
+		assert.equal(model.offsetAt({ lineNumBer: 1, column: 2 }), 1);
 	});
 
 	test('MoreMinimal', () => {
@@ -92,7 +92,7 @@ suite('EditorSimpleWorker', () => {
 			assert.equal(edits.length, 1);
 			const [first] = edits;
 			assert.equal(first.text, 'O');
-			assert.deepEqual(first.range, { startLineNumber: 1, startColumn: 14, endLineNumber: 1, endColumn: 15 });
+			assert.deepEqual(first.range, { startLineNumBer: 1, startColumn: 14, endLineNumBer: 1, endColumn: 15 });
 		});
 	});
 
@@ -117,11 +117,11 @@ suite('EditorSimpleWorker', () => {
 			'}'
 		], '\n');
 
-		return worker.computeMoreMinimalEdits(model.uri.toString(), [{ text: '{\r\n\t"b":1\r\n}', range: new Range(1, 1, 3, 2) }]).then(edits => {
+		return worker.computeMoreMinimalEdits(model.uri.toString(), [{ text: '{\r\n\t"B":1\r\n}', range: new Range(1, 1, 3, 2) }]).then(edits => {
 			assert.equal(edits.length, 1);
 			const [first] = edits;
-			assert.equal(first.text, 'b');
-			assert.deepEqual(first.range, { startLineNumber: 2, startColumn: 3, endLineNumber: 2, endColumn: 4 });
+			assert.equal(first.text, 'B');
+			assert.deepEqual(first.range, { startLineNumBer: 2, startColumn: 3, endLineNumBer: 2, endColumn: 4 });
 		});
 	});
 
@@ -137,7 +137,7 @@ suite('EditorSimpleWorker', () => {
 			assert.equal(edits.length, 1);
 			const [first] = edits;
 			assert.equal(first.text, '\n');
-			assert.deepEqual(first.range, { startLineNumber: 3, startColumn: 2, endLineNumber: 3, endColumn: 2 });
+			assert.deepEqual(first.range, { startLineNumBer: 3, startColumn: 2, endLineNumBer: 3, endColumn: 2 });
 		});
 	});
 
@@ -150,7 +150,7 @@ suite('EditorSimpleWorker', () => {
 			'}'				// 3
 		]);
 
-		const value = model.getValueInRange({ startLineNumber: 3, startColumn: 1, endLineNumber: 4, endColumn: 1 });
+		const value = model.getValueInRange({ startLineNumBer: 3, startColumn: 1, endLineNumBer: 4, endColumn: 1 });
 		assert.equal(value, '}');
 	});
 
@@ -158,17 +158,17 @@ suite('EditorSimpleWorker', () => {
 	test('textualSuggest, issue #17785', function () {
 
 		let model = worker.addModel([
-			'foobar',	// 1
+			'fooBar',	// 1
 			'f f'	// 2
 		]);
 
-		return worker.textualSuggest(model.uri.toString(), { lineNumber: 2, column: 2 }, '[a-z]+', 'img').then((result) => {
+		return worker.textualSuggest(model.uri.toString(), { lineNumBer: 2, column: 2 }, '[a-z]+', 'img').then((result) => {
 			if (!result) {
 				assert.ok(false);
 				return;
 			}
 			assert.equal(result.length, 1);
-			assert.equal(result, 'foobar');
+			assert.equal(result, 'fooBar');
 		});
 	});
 

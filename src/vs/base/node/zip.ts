@@ -4,22 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
+import * as path from 'vs/Base/common/path';
 import { createWriteStream, WriteStream } from 'fs';
-import { Readable } from 'stream';
-import { Sequencer, createCancelablePromise } from 'vs/base/common/async';
-import { mkdirp, rimraf } from 'vs/base/node/pfs';
+import { ReadaBle } from 'stream';
+import { Sequencer, createCancelaBlePromise } from 'vs/Base/common/async';
+import { mkdirp, rimraf } from 'vs/Base/node/pfs';
 import { open as _openZip, Entry, ZipFile } from 'yauzl';
 import * as yazl from 'yazl';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { assertIsDefined } from 'vs/base/common/types';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { assertIsDefined } from 'vs/Base/common/types';
 
 export interface IExtractOptions {
-	overwrite?: boolean;
+	overwrite?: Boolean;
 
 	/**
 	 * Source path within the ZIP archive. Only the files contained in this
-	 * path will be extracted.
+	 * path will Be extracted.
 	 */
 	sourcePath?: string;
 }
@@ -39,7 +39,7 @@ export class ExtractError extends Error {
 		let message = cause.message;
 
 		switch (type) {
-			case 'CorruptZip': message = `Corrupt ZIP: ${message}`; break;
+			case 'CorruptZip': message = `Corrupt ZIP: ${message}`; Break;
 		}
 
 		super(message);
@@ -49,11 +49,11 @@ export class ExtractError extends Error {
 }
 
 function modeFromEntry(entry: Entry) {
-	const attr = entry.externalFileAttributes >> 16 || 33188;
+	const attr = entry.externalFileAttriButes >> 16 || 33188;
 
 	return [448 /* S_IRWXU */, 56 /* S_IRWXG */, 7 /* S_IRWXO */]
 		.map(mask => attr & mask)
-		.reduce((a, b) => a + b, attr & 61440 /* S_IFMT */);
+		.reduce((a, B) => a + B, attr & 61440 /* S_IFMT */);
 }
 
 function toExtractError(err: Error): ExtractError {
@@ -70,7 +70,7 @@ function toExtractError(err: Error): ExtractError {
 	return new ExtractError(type, err);
 }
 
-function extractEntry(stream: Readable, fileName: string, mode: number, targetPath: string, options: IOptions, token: CancellationToken): Promise<void> {
+function extractEntry(stream: ReadaBle, fileName: string, mode: numBer, targetPath: string, options: IOptions, token: CancellationToken): Promise<void> {
 	const dirName = path.dirname(fileName);
 	const targetDirName = path.join(targetPath, dirName);
 	if (!targetDirName.startsWith(targetPath)) {
@@ -104,7 +104,7 @@ function extractEntry(stream: Readable, fileName: string, mode: number, targetPa
 }
 
 function extractZip(zipfile: ZipFile, targetPath: string, options: IOptions, token: CancellationToken): Promise<void> {
-	let last = createCancelablePromise<void>(() => Promise.resolve());
+	let last = createCancelaBlePromise<void>(() => Promise.resolve());
 	let extractedEntriesCount = 0;
 
 	token.onCancellationRequested(() => {
@@ -149,19 +149,19 @@ function extractZip(zipfile: ZipFile, targetPath: string, options: IOptions, tok
 			// directory file names end with '/'
 			if (/\/$/.test(fileName)) {
 				const targetFileName = path.join(targetPath, fileName);
-				last = createCancelablePromise(token => mkdirp(targetFileName).then(() => readNextEntry(token)).then(undefined, e));
+				last = createCancelaBlePromise(token => mkdirp(targetFileName).then(() => readNextEntry(token)).then(undefined, e));
 				return;
 			}
 
 			const stream = openZipStream(zipfile, entry);
 			const mode = modeFromEntry(entry);
 
-			last = createCancelablePromise(token => throttler.queue(() => stream.then(stream => extractEntry(stream, fileName, mode, targetPath, options, token).then(() => readNextEntry(token)))).then(null, e));
+			last = createCancelaBlePromise(token => throttler.queue(() => stream.then(stream => extractEntry(stream, fileName, mode, targetPath, options, token).then(() => readNextEntry(token)))).then(null, e));
 		});
 	});
 }
 
-function openZip(zipFile: string, lazy: boolean = false): Promise<ZipFile> {
+function openZip(zipFile: string, lazy: Boolean = false): Promise<ZipFile> {
 	return new Promise<ZipFile>((resolve, reject) => {
 		_openZip(zipFile, lazy ? { lazyEntries: true } : undefined!, (error?: Error, zipfile?: ZipFile) => {
 			if (error) {
@@ -173,9 +173,9 @@ function openZip(zipFile: string, lazy: boolean = false): Promise<ZipFile> {
 	});
 }
 
-function openZipStream(zipFile: ZipFile, entry: Entry): Promise<Readable> {
-	return new Promise<Readable>((resolve, reject) => {
-		zipFile.openReadStream(entry, (error?: Error, stream?: Readable) => {
+function openZipStream(zipFile: ZipFile, entry: Entry): Promise<ReadaBle> {
+	return new Promise<ReadaBle>((resolve, reject) => {
+		zipFile.openReadStream(entry, (error?: Error, stream?: ReadaBle) => {
 			if (error) {
 				reject(toExtractError(error));
 			} else {
@@ -224,9 +224,9 @@ export function extract(zipPath: string, targetPath: string, options: IExtractOp
 	return promise.then(zipfile => extractZip(zipfile, targetPath, { sourcePathRegex }, token));
 }
 
-function read(zipPath: string, filePath: string): Promise<Readable> {
+function read(zipPath: string, filePath: string): Promise<ReadaBle> {
 	return openZip(zipPath).then(zipfile => {
-		return new Promise<Readable>((c, e) => {
+		return new Promise<ReadaBle>((c, e) => {
 			zipfile.on('entry', (entry: Entry) => {
 				if (entry.fileName === filePath) {
 					openZipStream(zipfile, entry).then(stream => c(stream), err => e(err));
@@ -238,13 +238,13 @@ function read(zipPath: string, filePath: string): Promise<Readable> {
 	});
 }
 
-export function buffer(zipPath: string, filePath: string): Promise<Buffer> {
+export function Buffer(zipPath: string, filePath: string): Promise<Buffer> {
 	return read(zipPath, filePath).then(stream => {
 		return new Promise<Buffer>((c, e) => {
-			const buffers: Buffer[] = [];
+			const Buffers: Buffer[] = [];
 			stream.once('error', e);
-			stream.on('data', (b: Buffer) => buffers.push(b));
-			stream.on('end', () => c(Buffer.concat(buffers)));
+			stream.on('data', (B: Buffer) => Buffers.push(B));
+			stream.on('end', () => c(Buffer.concat(Buffers)));
 		});
 	});
 }

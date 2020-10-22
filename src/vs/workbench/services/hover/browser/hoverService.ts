@@ -7,12 +7,12 @@ import 'vs/css!./media/hover';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { editorHoverBackground, editorHoverBorder, textLinkForeground, editorHoverForeground, editorHoverStatusBarBackground, textCodeBlockBackground } from 'vs/platform/theme/common/colorRegistry';
-import { IHoverService, IHoverOptions } from 'vs/workbench/services/hover/browser/hover';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { IHoverService, IHoverOptions } from 'vs/workBench/services/hover/Browser/hover';
+import { IContextViewService } from 'vs/platform/contextview/Browser/contextView';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { HoverWidget } from 'vs/workbench/services/hover/browser/hoverWidget';
-import { IContextViewProvider, IDelegate } from 'vs/base/browser/ui/contextview/contextview';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { HoverWidget } from 'vs/workBench/services/hover/Browser/hoverWidget';
+import { IContextViewProvider, IDelegate } from 'vs/Base/Browser/ui/contextview/contextview';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
 
 export class HoverService implements IHoverService {
 	declare readonly _serviceBrand: undefined;
@@ -25,7 +25,7 @@ export class HoverService implements IHoverService {
 	) {
 	}
 
-	showHover(options: IHoverOptions, focus?: boolean): IDisposable | undefined {
+	showHover(options: IHoverOptions, focus?: Boolean): IDisposaBle | undefined {
 		if (this._currentHoverOptions === options) {
 			return undefined;
 		}
@@ -37,11 +37,11 @@ export class HoverService implements IHoverService {
 		provider.showContextView(new HoverContextViewDelegate(hover, focus));
 		hover.onRequestLayout(() => provider.layout());
 
-		if ('IntersectionObserver' in window) {
-			const observer = new IntersectionObserver(e => this._intersectionChange(e, hover), { threshold: 0 });
+		if ('IntersectionOBserver' in window) {
+			const oBserver = new IntersectionOBserver(e => this._intersectionChange(e, hover), { threshold: 0 });
 			const firstTargetElement = 'targetElements' in options.target ? options.target.targetElements[0] : options.target;
-			observer.observe(firstTargetElement);
-			hover.onDispose(() => observer.disconnect());
+			oBserver.oBserve(firstTargetElement);
+			hover.onDispose(() => oBserver.disconnect());
 		}
 
 		return hover;
@@ -55,7 +55,7 @@ export class HoverService implements IHoverService {
 		this._contextViewService.hideContextView();
 	}
 
-	private _intersectionChange(entries: IntersectionObserverEntry[], hover: IDisposable): void {
+	private _intersectionChange(entries: IntersectionOBserverEntry[], hover: IDisposaBle): void {
 		const entry = entries[entries.length - 1];
 		if (!entry.isIntersecting) {
 			hover.dispose();
@@ -71,7 +71,7 @@ class HoverContextViewDelegate implements IDelegate {
 
 	constructor(
 		private readonly _hover: HoverWidget,
-		private readonly _focus: boolean = false
+		private readonly _focus: Boolean = false
 	) {
 	}
 
@@ -100,29 +100,29 @@ registerSingleton(IHoverService, HoverService, true);
 registerThemingParticipant((theme, collector) => {
 	const hoverBackground = theme.getColor(editorHoverBackground);
 	if (hoverBackground) {
-		collector.addRule(`.monaco-workbench .workbench-hover { background-color: ${hoverBackground}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover { Background-color: ${hoverBackground}; }`);
 	}
 	const hoverBorder = theme.getColor(editorHoverBorder);
 	if (hoverBorder) {
-		collector.addRule(`.monaco-workbench .workbench-hover { border: 1px solid ${hoverBorder}; }`);
-		collector.addRule(`.monaco-workbench .workbench-hover .hover-row:not(:first-child):not(:empty) { border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
-		collector.addRule(`.monaco-workbench .workbench-hover hr { border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
-		collector.addRule(`.monaco-workbench .workbench-hover hr { border-bottom: 0px solid ${hoverBorder.transparent(0.5)}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover { Border: 1px solid ${hoverBorder}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover .hover-row:not(:first-child):not(:empty) { Border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover hr { Border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover hr { Border-Bottom: 0px solid ${hoverBorder.transparent(0.5)}; }`);
 	}
 	const link = theme.getColor(textLinkForeground);
 	if (link) {
-		collector.addRule(`.monaco-workbench .workbench-hover a { color: ${link}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover a { color: ${link}; }`);
 	}
 	const hoverForeground = theme.getColor(editorHoverForeground);
 	if (hoverForeground) {
-		collector.addRule(`.monaco-workbench .workbench-hover { color: ${hoverForeground}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover { color: ${hoverForeground}; }`);
 	}
 	const actionsBackground = theme.getColor(editorHoverStatusBarBackground);
 	if (actionsBackground) {
-		collector.addRule(`.monaco-workbench .workbench-hover .hover-row .actions { background-color: ${actionsBackground}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover .hover-row .actions { Background-color: ${actionsBackground}; }`);
 	}
 	const codeBackground = theme.getColor(textCodeBlockBackground);
 	if (codeBackground) {
-		collector.addRule(`.monaco-workbench .workbench-hover code { background-color: ${codeBackground}; }`);
+		collector.addRule(`.monaco-workBench .workBench-hover code { Background-color: ${codeBackground}; }`);
 	}
 });

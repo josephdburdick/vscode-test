@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Match, FileMatch, FileMatchOrMatch } from 'vs/workbench/contrib/search/common/searchModel';
+import { Match, FileMatch, FileMatchOrMatch } from 'vs/workBench/contriB/search/common/searchModel';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
 
@@ -14,7 +14,7 @@ export interface IReplaceService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Replaces the given match in the file that match belongs to
+	 * Replaces the given match in the file that match Belongs to
 	 */
 	replace(match: Match): Promise<any>;
 
@@ -27,11 +27,11 @@ export interface IReplaceService {
 	/**
 	 * Opens the replace preview for given file match or match
 	 */
-	openReplacePreview(element: FileMatchOrMatch, preserveFocus?: boolean, sideBySide?: boolean, pinned?: boolean): Promise<any>;
+	openReplacePreview(element: FileMatchOrMatch, preserveFocus?: Boolean, sideBySide?: Boolean, pinned?: Boolean): Promise<any>;
 
 	/**
 	 * Update the replace preview for the given file.
 	 * If `override` is `true`, then replace preview is constructed from source model
 	 */
-	updateReplacePreview(file: FileMatch, override?: boolean): Promise<void>;
+	updateReplacePreview(file: FileMatch, override?: Boolean): Promise<void>;
 }

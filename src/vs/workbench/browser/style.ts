@@ -6,11 +6,11 @@
 import 'vs/css!./media/style';
 
 import { registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
-import { iconForeground, foreground, selectionBackground, focusBorder, scrollbarShadow, scrollbarSliderActiveBackground, scrollbarSliderBackground, scrollbarSliderHoverBackground, listHighlightForeground, inputPlaceholderForeground } from 'vs/platform/theme/common/colorRegistry';
-import { WORKBENCH_BACKGROUND, TITLE_BAR_ACTIVE_BACKGROUND } from 'vs/workbench/common/theme';
-import { isWeb, isIOS, isMacintosh, isWindows } from 'vs/base/common/platform';
-import { createMetaElement } from 'vs/base/browser/dom';
-import { isSafari, isStandalone } from 'vs/base/browser/browser';
+import { iconForeground, foreground, selectionBackground, focusBorder, scrollBarShadow, scrollBarSliderActiveBackground, scrollBarSliderBackground, scrollBarSliderHoverBackground, listHighlightForeground, inputPlaceholderForeground } from 'vs/platform/theme/common/colorRegistry';
+import { WORKBENCH_BACKGROUND, TITLE_BAR_ACTIVE_BACKGROUND } from 'vs/workBench/common/theme';
+import { isWeB, isIOS, isMacintosh, isWindows } from 'vs/Base/common/platform';
+import { createMetaElement } from 'vs/Base/Browser/dom';
+import { isSafari, isStandalone } from 'vs/Base/Browser/Browser';
 import { ColorScheme } from 'vs/platform/theme/common/theme';
 
 registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
@@ -18,12 +18,12 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	// Foreground
 	const windowForeground = theme.getColor(foreground);
 	if (windowForeground) {
-		collector.addRule(`.monaco-workbench { color: ${windowForeground}; }`);
+		collector.addRule(`.monaco-workBench { color: ${windowForeground}; }`);
 	}
 
-	// Background (We need to set the workbench background color so that on Windows we get subpixel-antialiasing)
-	const workbenchBackground = WORKBENCH_BACKGROUND(theme);
-	collector.addRule(`.monaco-workbench { background-color: ${workbenchBackground}; }`);
+	// Background (We need to set the workBench Background color so that on Windows we get suBpixel-antialiasing)
+	const workBenchBackground = WORKBENCH_BACKGROUND(theme);
+	collector.addRule(`.monaco-workBench { Background-color: ${workBenchBackground}; }`);
 
 	// Icon defaults
 	const iconForegroundColor = theme.getColor(iconForeground);
@@ -34,21 +34,21 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	// Selection
 	const windowSelectionBackground = theme.getColor(selectionBackground);
 	if (windowSelectionBackground) {
-		collector.addRule(`.monaco-workbench ::selection { background-color: ${windowSelectionBackground}; }`);
+		collector.addRule(`.monaco-workBench ::selection { Background-color: ${windowSelectionBackground}; }`);
 	}
 
 	// Input placeholder
 	const placeholderForeground = theme.getColor(inputPlaceholderForeground);
 	if (placeholderForeground) {
 		collector.addRule(`
-			.monaco-workbench input::placeholder { color: ${placeholderForeground}; }
-			.monaco-workbench input::-webkit-input-placeholder  { color: ${placeholderForeground}; }
-			.monaco-workbench input::-moz-placeholder { color: ${placeholderForeground}; }
+			.monaco-workBench input::placeholder { color: ${placeholderForeground}; }
+			.monaco-workBench input::-weBkit-input-placeholder  { color: ${placeholderForeground}; }
+			.monaco-workBench input::-moz-placeholder { color: ${placeholderForeground}; }
 		`);
 		collector.addRule(`
-			.monaco-workbench textarea::placeholder { color: ${placeholderForeground}; }
-			.monaco-workbench textarea::-webkit-input-placeholder { color: ${placeholderForeground}; }
-			.monaco-workbench textarea::-moz-placeholder { color: ${placeholderForeground}; }
+			.monaco-workBench textarea::placeholder { color: ${placeholderForeground}; }
+			.monaco-workBench textarea::-weBkit-input-placeholder { color: ${placeholderForeground}; }
+			.monaco-workBench textarea::-moz-placeholder { color: ${placeholderForeground}; }
 		`);
 	}
 
@@ -56,53 +56,53 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	const listHighlightForegroundColor = theme.getColor(listHighlightForeground);
 	if (listHighlightForegroundColor) {
 		collector.addRule(`
-			.monaco-workbench .monaco-list .monaco-list-row .monaco-highlighted-label .highlight {
+			.monaco-workBench .monaco-list .monaco-list-row .monaco-highlighted-laBel .highlight {
 				color: ${listHighlightForegroundColor};
 			}
 		`);
 	}
 
-	// Scrollbars
-	const scrollbarShadowColor = theme.getColor(scrollbarShadow);
-	if (scrollbarShadowColor) {
+	// ScrollBars
+	const scrollBarShadowColor = theme.getColor(scrollBarShadow);
+	if (scrollBarShadowColor) {
 		collector.addRule(`
-			.monaco-workbench .monaco-scrollable-element > .shadow.top {
-				box-shadow: ${scrollbarShadowColor} 0 6px 6px -6px inset;
+			.monaco-workBench .monaco-scrollaBle-element > .shadow.top {
+				Box-shadow: ${scrollBarShadowColor} 0 6px 6px -6px inset;
 			}
 
-			.monaco-workbench .monaco-scrollable-element > .shadow.left {
-				box-shadow: ${scrollbarShadowColor} 6px 0 6px -6px inset;
+			.monaco-workBench .monaco-scrollaBle-element > .shadow.left {
+				Box-shadow: ${scrollBarShadowColor} 6px 0 6px -6px inset;
 			}
 
-			.monaco-workbench .monaco-scrollable-element > .shadow.top.left {
-				box-shadow: ${scrollbarShadowColor} 6px 6px 6px -6px inset;
+			.monaco-workBench .monaco-scrollaBle-element > .shadow.top.left {
+				Box-shadow: ${scrollBarShadowColor} 6px 6px 6px -6px inset;
 			}
 		`);
 	}
 
-	const scrollbarSliderBackgroundColor = theme.getColor(scrollbarSliderBackground);
-	if (scrollbarSliderBackgroundColor) {
+	const scrollBarSliderBackgroundColor = theme.getColor(scrollBarSliderBackground);
+	if (scrollBarSliderBackgroundColor) {
 		collector.addRule(`
-			.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider {
-				background: ${scrollbarSliderBackgroundColor};
+			.monaco-workBench .monaco-scrollaBle-element > .scrollBar > .slider {
+				Background: ${scrollBarSliderBackgroundColor};
 			}
 		`);
 	}
 
-	const scrollbarSliderHoverBackgroundColor = theme.getColor(scrollbarSliderHoverBackground);
-	if (scrollbarSliderHoverBackgroundColor) {
+	const scrollBarSliderHoverBackgroundColor = theme.getColor(scrollBarSliderHoverBackground);
+	if (scrollBarSliderHoverBackgroundColor) {
 		collector.addRule(`
-			.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider:hover {
-				background: ${scrollbarSliderHoverBackgroundColor};
+			.monaco-workBench .monaco-scrollaBle-element > .scrollBar > .slider:hover {
+				Background: ${scrollBarSliderHoverBackgroundColor};
 			}
 		`);
 	}
 
-	const scrollbarSliderActiveBackgroundColor = theme.getColor(scrollbarSliderActiveBackground);
-	if (scrollbarSliderActiveBackgroundColor) {
+	const scrollBarSliderActiveBackgroundColor = theme.getColor(scrollBarSliderActiveBackground);
+	if (scrollBarSliderActiveBackgroundColor) {
 		collector.addRule(`
-			.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider.active {
-				background: ${scrollbarSliderActiveBackgroundColor};
+			.monaco-workBench .monaco-scrollaBle-element > .scrollBar > .slider.active {
+				Background: ${scrollBarSliderActiveBackgroundColor};
 			}
 		`);
 	}
@@ -111,17 +111,17 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	const focusOutline = theme.getColor(focusBorder);
 	if (focusOutline) {
 		collector.addRule(`
-		.monaco-workbench [tabindex="0"]:focus,
-		.monaco-workbench [tabindex="-1"]:focus,
-		.monaco-workbench .synthetic-focus,
-		.monaco-workbench select:focus,
-		.monaco-workbench .monaco-list:not(.element-focused):focus:before,
-		.monaco-workbench input[type="button"]:focus,
-		.monaco-workbench input[type="text"]:focus,
-		.monaco-workbench button:focus,
-		.monaco-workbench textarea:focus,
-		.monaco-workbench input[type="search"]:focus,
-		.monaco-workbench input[type="checkbox"]:focus {
+		.monaco-workBench [taBindex="0"]:focus,
+		.monaco-workBench [taBindex="-1"]:focus,
+		.monaco-workBench .synthetic-focus,
+		.monaco-workBench select:focus,
+		.monaco-workBench .monaco-list:not(.element-focused):focus:Before,
+		.monaco-workBench input[type="Button"]:focus,
+		.monaco-workBench input[type="text"]:focus,
+		.monaco-workBench Button:focus,
+		.monaco-workBench textarea:focus,
+		.monaco-workBench input[type="search"]:focus,
+		.monaco-workBench input[type="checkBox"]:focus {
 			outline-color: ${focusOutline};
 		}
 		`);
@@ -130,29 +130,29 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	// High Contrast theme overwrites for outline
 	if (theme.type === ColorScheme.HIGH_CONTRAST) {
 		collector.addRule(`
-		.hc-black [tabindex="0"]:focus,
-		.hc-black [tabindex="-1"]:focus,
-		.hc-black .synthetic-focus,
-		.hc-black select:focus,
-		.hc-black input[type="button"]:focus,
-		.hc-black input[type="text"]:focus,
-		.hc-black textarea:focus,
-		.hc-black input[type="checkbox"]:focus {
+		.hc-Black [taBindex="0"]:focus,
+		.hc-Black [taBindex="-1"]:focus,
+		.hc-Black .synthetic-focus,
+		.hc-Black select:focus,
+		.hc-Black input[type="Button"]:focus,
+		.hc-Black input[type="text"]:focus,
+		.hc-Black textarea:focus,
+		.hc-Black input[type="checkBox"]:focus {
 			outline-style: solid;
 			outline-width: 1px;
 		}
 
-		.hc-black .synthetic-focus input {
-			background: transparent; /* Search input focus fix when in high contrast */
+		.hc-Black .synthetic-focus input {
+			Background: transparent; /* Search input focus fix when in high contrast */
 		}
 		`);
 	}
 
-	// Update <meta name="theme-color" content=""> based on selected theme
-	if (isWeb) {
+	// Update <meta name="theme-color" content=""> Based on selected theme
+	if (isWeB) {
 		const titleBackground = theme.getColor(TITLE_BAR_ACTIVE_BACKGROUND);
 		if (titleBackground) {
-			const metaElementId = 'monaco-workbench-meta-theme-color';
+			const metaElementId = 'monaco-workBench-meta-theme-color';
 			let metaElement = document.getElementById(metaElementId) as HTMLMetaElement | null;
 			if (!metaElement) {
 				metaElement = createMetaElement();
@@ -164,33 +164,33 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 		}
 	}
 
-	// We disable user select on the root element, however on Safari this seems
+	// We disaBle user select on the root element, however on Safari this seems
 	// to prevent any text selection in the monaco editor. As a workaround we
 	// allow to select text in monaco editor instances.
 	if (isSafari) {
 		collector.addRule(`
-			body.web {
+			Body.weB {
 				touch-action: none;
 			}
-			.monaco-workbench .monaco-editor .view-lines {
+			.monaco-workBench .monaco-editor .view-lines {
 				user-select: text;
-				-webkit-user-select: text;
+				-weBkit-user-select: text;
 			}
 		`);
 	}
 
-	// Update body background color to ensure the home indicator area looks similar to the workbench
+	// Update Body Background color to ensure the home indicator area looks similar to the workBench
 	if (isIOS && isStandalone) {
-		collector.addRule(`body { background-color: ${workbenchBackground}; }`);
+		collector.addRule(`Body { Background-color: ${workBenchBackground}; }`);
 	}
 });
 
 /**
- * The best font-family to be used in CSS based on the platform:
- * - Windows: Segoe preferred, fallback to sans-serif
- * - macOS: standard system font, fallback to sans-serif
- * - Linux: standard system font preferred, fallback to Ubuntu fonts
+ * The Best font-family to Be used in CSS Based on the platform:
+ * - Windows: Segoe preferred, fallBack to sans-serif
+ * - macOS: standard system font, fallBack to sans-serif
+ * - Linux: standard system font preferred, fallBack to UBuntu fonts
  *
  * Note: this currently does not adjust for different locales.
  */
-export const DEFAULT_FONT_FAMILY = isWindows ? '"Segoe WPC", "Segoe UI", sans-serif' : isMacintosh ? '-apple-system, BlinkMacSystemFont, sans-serif' : 'system-ui, "Ubuntu", "Droid Sans", sans-serif';
+export const DEFAULT_FONT_FAMILY = isWindows ? '"Segoe WPC", "Segoe UI", sans-serif' : isMacintosh ? '-apple-system, BlinkMacSystemFont, sans-serif' : 'system-ui, "UBuntu", "Droid Sans", sans-serif';

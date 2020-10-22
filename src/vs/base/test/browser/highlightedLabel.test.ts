@@ -3,58 +3,58 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
+import { HighlightedLaBel } from 'vs/Base/Browser/ui/highlightedlaBel/highlightedLaBel';
 
-suite('HighlightedLabel', () => {
-	let label: HighlightedLabel;
+suite('HighlightedLaBel', () => {
+	let laBel: HighlightedLaBel;
 
 	setup(() => {
-		label = new HighlightedLabel(document.createElement('div'), true);
+		laBel = new HighlightedLaBel(document.createElement('div'), true);
 	});
 
-	test('empty label', function () {
-		assert.equal(label.element.innerHTML, '');
+	test('empty laBel', function () {
+		assert.equal(laBel.element.innerHTML, '');
 	});
 
 	test('no decorations', function () {
-		label.set('hello');
-		assert.equal(label.element.innerHTML, '<span>hello</span>');
+		laBel.set('hello');
+		assert.equal(laBel.element.innerHTML, '<span>hello</span>');
 	});
 
 	test('escape html', function () {
-		label.set('hel<lo');
-		assert.equal(label.element.innerHTML, '<span>hel&lt;lo</span>');
+		laBel.set('hel<lo');
+		assert.equal(laBel.element.innerHTML, '<span>hel&lt;lo</span>');
 	});
 
 	test('everything highlighted', function () {
-		label.set('hello', [{ start: 0, end: 5 }]);
-		assert.equal(label.element.innerHTML, '<span class="highlight">hello</span>');
+		laBel.set('hello', [{ start: 0, end: 5 }]);
+		assert.equal(laBel.element.innerHTML, '<span class="highlight">hello</span>');
 	});
 
-	test('beginning highlighted', function () {
-		label.set('hellothere', [{ start: 0, end: 5 }]);
-		assert.equal(label.element.innerHTML, '<span class="highlight">hello</span><span>there</span>');
+	test('Beginning highlighted', function () {
+		laBel.set('hellothere', [{ start: 0, end: 5 }]);
+		assert.equal(laBel.element.innerHTML, '<span class="highlight">hello</span><span>there</span>');
 	});
 
 	test('ending highlighted', function () {
-		label.set('goodbye', [{ start: 4, end: 7 }]);
-		assert.equal(label.element.innerHTML, '<span>good</span><span class="highlight">bye</span>');
+		laBel.set('goodBye', [{ start: 4, end: 7 }]);
+		assert.equal(laBel.element.innerHTML, '<span>good</span><span class="highlight">Bye</span>');
 	});
 
 	test('middle highlighted', function () {
-		label.set('foobarfoo', [{ start: 3, end: 6 }]);
-		assert.equal(label.element.innerHTML, '<span>foo</span><span class="highlight">bar</span><span>foo</span>');
+		laBel.set('fooBarfoo', [{ start: 3, end: 6 }]);
+		assert.equal(laBel.element.innerHTML, '<span>foo</span><span class="highlight">Bar</span><span>foo</span>');
 	});
 
 	test('escapeNewLines', () => {
 
-		let highlights = [{ start: 0, end: 5 }, { start: 7, end: 9 }, { start: 11, end: 12 }];// before,after,after
-		let escaped = HighlightedLabel.escapeNewLines('ACTION\r\n_TYPE2', highlights);
+		let highlights = [{ start: 0, end: 5 }, { start: 7, end: 9 }, { start: 11, end: 12 }];// Before,after,after
+		let escaped = HighlightedLaBel.escapeNewLines('ACTION\r\n_TYPE2', highlights);
 		assert.equal(escaped, 'ACTION\u23CE_TYPE2');
 		assert.deepEqual(highlights, [{ start: 0, end: 5 }, { start: 6, end: 8 }, { start: 10, end: 11 }]);
 
 		highlights = [{ start: 5, end: 9 }, { start: 11, end: 12 }];//overlap,after
-		escaped = HighlightedLabel.escapeNewLines('ACTION\r\n_TYPE2', highlights);
+		escaped = HighlightedLaBel.escapeNewLines('ACTION\r\n_TYPE2', highlights);
 		assert.equal(escaped, 'ACTION\u23CE_TYPE2');
 		assert.deepEqual(highlights, [{ start: 5, end: 8 }, { start: 10, end: 11 }]);
 

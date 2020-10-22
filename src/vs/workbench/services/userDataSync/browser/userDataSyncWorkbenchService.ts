@@ -6,30 +6,30 @@
 import { IUserDataSyncService, IAuthenticationProvider, isAuthenticationProvider, IUserDataAutoSyncService, SyncResource, IResourcePreview, ISyncResourcePreview, Change, IManualSyncTask, IUserDataSyncStoreManagementService, SyncStatus } from 'vs/platform/userDataSync/common/userDataSync';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IUserDataSyncWorkbenchService, IUserDataSyncAccount, AccountStatus, CONTEXT_SYNC_ENABLEMENT, CONTEXT_SYNC_STATE, CONTEXT_ACCOUNT_STATE, SHOW_SYNC_LOG_COMMAND_ID, getSyncAreaLabel, IUserDataSyncPreview, IUserDataSyncResource, CONTEXT_ENABLE_SYNC_MERGES_VIEW, SYNC_MERGES_VIEW_ID, CONTEXT_ENABLE_ACTIVITY_VIEWS, SYNC_VIEW_CONTAINER_ID, SYNC_TITLE } from 'vs/workbench/services/userDataSync/common/userDataSync';
+import { IUserDataSyncWorkBenchService, IUserDataSyncAccount, AccountStatus, CONTEXT_SYNC_ENABLEMENT, CONTEXT_SYNC_STATE, CONTEXT_ACCOUNT_STATE, SHOW_SYNC_LOG_COMMAND_ID, getSyncAreaLaBel, IUserDataSyncPreview, IUserDataSyncResource, CONTEXT_ENABLE_SYNC_MERGES_VIEW, SYNC_MERGES_VIEW_ID, CONTEXT_ENABLE_ACTIVITY_VIEWS, SYNC_VIEW_CONTAINER_ID, SYNC_TITLE } from 'vs/workBench/services/userDataSync/common/userDataSync';
 import { AuthenticationSession, AuthenticationSessionsChangeEvent } from 'vs/editor/common/modes';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { flatten, equals } from 'vs/base/common/arrays';
-import { getCurrentAuthenticationSessionInfo, IAuthenticationService } from 'vs/workbench/services/authentication/browser/authenticationService';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { flatten, equals } from 'vs/Base/common/arrays';
+import { getCurrentAuthenticationSessionInfo, IAuthenticationService } from 'vs/workBench/services/authentication/Browser/authenticationService';
 import { IUserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
 import { IQuickInputService, IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
 import { IStorageService, IWorkspaceStorageChangeEvent, StorageScope } from 'vs/platform/storage/common/storage';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
+import { IExtensionService } from 'vs/workBench/services/extensions/common/extensions';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
 import { localize } from 'vs/nls';
-import { canceled } from 'vs/base/common/errors';
+import { canceled } from 'vs/Base/common/errors';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { Action } from 'vs/base/common/actions';
+import { Action } from 'vs/Base/common/actions';
 import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { isEqual } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { IViewsService, ViewContainerLocation, IViewDescriptorService } from 'vs/workbench/common/views';
-import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { isEqual } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { IViewsService, ViewContainerLocation, IViewDescriptorService } from 'vs/workBench/common/views';
+import { ILifecycleService } from 'vs/workBench/services/lifecycle/common/lifecycle';
 
 type UserAccountClassification = {
 	id: { classification: 'EndUserPseudonymizedInformation', purpose: 'BusinessInsight' };
@@ -45,26 +45,26 @@ type UserAccountEvent = {
 
 type FirstTimeSyncAction = 'pull' | 'push' | 'merge' | 'manual';
 
-type AccountQuickPickItem = { label: string, authenticationProvider: IAuthenticationProvider, account?: UserDataSyncAccount, description?: string };
+type AccountQuickPickItem = { laBel: string, authenticationProvider: IAuthenticationProvider, account?: UserDataSyncAccount, description?: string };
 
 class UserDataSyncAccount implements IUserDataSyncAccount {
 
 	constructor(readonly authenticationProviderId: string, private readonly session: AuthenticationSession) { }
 
 	get sessionId(): string { return this.session.id; }
-	get accountName(): string { return this.session.account.label; }
+	get accountName(): string { return this.session.account.laBel; }
 	get accountId(): string { return this.session.account.id; }
 	get token(): string { return this.session.accessToken; }
 }
 
-export class UserDataSyncWorkbenchService extends Disposable implements IUserDataSyncWorkbenchService {
+export class UserDataSyncWorkBenchService extends DisposaBle implements IUserDataSyncWorkBenchService {
 
 	_serviceBrand: any;
 
-	private static DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY = 'userDataSyncAccount.donotUseWorkbenchSession';
+	private static DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY = 'userDataSyncAccount.donotUseWorkBenchSession';
 	private static CACHED_SESSION_STORAGE_KEY = 'userDataSyncAccountPreference';
 
-	get enabled() { return !!this.userDataSyncStoreManagementService.userDataSyncStore; }
+	get enaBled() { return !!this.userDataSyncStoreManagementService.userDataSyncStore; }
 
 	private _authenticationProviders: IAuthenticationProvider[] = [];
 	get authenticationProviders() { return this._authenticationProviders; }
@@ -79,11 +79,11 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 
 	get current(): UserDataSyncAccount | undefined { return this.all.filter(account => this.isCurrentAccount(account))[0]; }
 
-	private readonly syncEnablementContext: IContextKey<boolean>;
+	private readonly syncEnaBlementContext: IContextKey<Boolean>;
 	private readonly syncStatusContext: IContextKey<string>;
 	private readonly accountStatusContext: IContextKey<string>;
-	private readonly mergesViewEnablementContext: IContextKey<boolean>;
-	private readonly activityViewsEnablementContext: IContextKey<boolean>;
+	private readonly mergesViewEnaBlementContext: IContextKey<Boolean>;
+	private readonly activityViewsEnaBlementContext: IContextKey<Boolean>;
 
 	readonly userDataSyncPreview: UserDataSyncPreview = this._register(new UserDataSyncPreview(this.userDataSyncService));
 
@@ -98,7 +98,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		@ILogService private readonly logService: ILogService,
 		@IProductService private readonly productService: IProductService,
 		@IExtensionService private readonly extensionService: IExtensionService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@INotificationService private readonly notificationService: INotificationService,
 		@IProgressService private readonly progressService: IProgressService,
 		@IDialogService private readonly dialogService: IDialogService,
@@ -109,17 +109,17 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		@ILifecycleService private readonly lifecycleService: ILifecycleService,
 	) {
 		super();
-		this.syncEnablementContext = CONTEXT_SYNC_ENABLEMENT.bindTo(contextKeyService);
-		this.syncStatusContext = CONTEXT_SYNC_STATE.bindTo(contextKeyService);
-		this.accountStatusContext = CONTEXT_ACCOUNT_STATE.bindTo(contextKeyService);
-		this.activityViewsEnablementContext = CONTEXT_ENABLE_ACTIVITY_VIEWS.bindTo(contextKeyService);
-		this.mergesViewEnablementContext = CONTEXT_ENABLE_SYNC_MERGES_VIEW.bindTo(contextKeyService);
+		this.syncEnaBlementContext = CONTEXT_SYNC_ENABLEMENT.BindTo(contextKeyService);
+		this.syncStatusContext = CONTEXT_SYNC_STATE.BindTo(contextKeyService);
+		this.accountStatusContext = CONTEXT_ACCOUNT_STATE.BindTo(contextKeyService);
+		this.activityViewsEnaBlementContext = CONTEXT_ENABLE_ACTIVITY_VIEWS.BindTo(contextKeyService);
+		this.mergesViewEnaBlementContext = CONTEXT_ENABLE_SYNC_MERGES_VIEW.BindTo(contextKeyService);
 
 		if (this.userDataSyncStoreManagementService.userDataSyncStore) {
 			this.syncStatusContext.set(this.userDataSyncService.status);
 			this._register(userDataSyncService.onDidChangeStatus(status => this.syncStatusContext.set(status)));
-			this.syncEnablementContext.set(userDataAutoSyncService.isEnabled());
-			this._register(userDataAutoSyncService.onDidChangeEnablement(enabled => this.syncEnablementContext.set(enabled)));
+			this.syncEnaBlementContext.set(userDataAutoSyncService.isEnaBled());
+			this._register(userDataAutoSyncService.onDidChangeEnaBlement(enaBled => this.syncEnaBlementContext.set(enaBled)));
 
 			this.waitAndInitialize();
 		}
@@ -129,7 +129,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		this._authenticationProviders = (this.userDataSyncStoreManagementService.userDataSyncStore?.authenticationProviders || []).filter(({ id }) => this.authenticationService.declaredProviders.some(provider => provider.id === id));
 	}
 
-	private isSupportedAuthenticationProviderId(authenticationProviderId: string): boolean {
+	private isSupportedAuthenticationProviderId(authenticationProviderId: string): Boolean {
 		return this.authenticationProviders.some(({ id }) => id === authenticationProviderId);
 	}
 
@@ -154,9 +154,9 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 
 	private async initialize(): Promise<void> {
 		const authenticationSession = this.environmentService.options?.credentialsProvider ? await getCurrentAuthenticationSessionInfo(this.environmentService, this.productService) : undefined;
-		if (this.currentSessionId === undefined && this.useWorkbenchSessionId && (authenticationSession?.id || this.environmentService.options?.authenticationSessionId)) {
+		if (this.currentSessionId === undefined && this.useWorkBenchSessionId && (authenticationSession?.id || this.environmentService.options?.authenticationSessionId)) {
 			this.currentSessionId = authenticationSession?.id || this.environmentService.options?.authenticationSessionId;
-			this.useWorkbenchSessionId = false;
+			this.useWorkBenchSessionId = false;
 		}
 
 		await this.update();
@@ -193,7 +193,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		this._all = allAccounts;
 		const current = this.current;
 		await this.updateToken(current);
-		this.updateAccountStatus(current ? AccountStatus.Available : AccountStatus.Unavailable);
+		this.updateAccountStatus(current ? AccountStatus.AvailaBle : AccountStatus.UnavailaBle);
 	}
 
 	private async getAccounts(authenticationProviderId: string): Promise<UserDataSyncAccount[]> {
@@ -210,7 +210,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		}
 
 		if (currentAccount) {
-			// Always use current account if available
+			// Always use current account if availaBle
 			accounts.set(currentAccount.accountName, currentAccount);
 		}
 
@@ -245,9 +245,9 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 
 	async turnOn(): Promise<void> {
 		if (!this.authenticationProviders.length) {
-			throw new Error(localize('no authentication providers', "Settings sync cannot be turned on because there are no authentication providers available."));
+			throw new Error(localize('no authentication providers', "Settings sync cannot Be turned on Because there are no authentication providers availaBle."));
 		}
-		if (this.userDataAutoSyncService.isEnabled()) {
+		if (this.userDataAutoSyncService.isEnaBled()) {
 			return;
 		}
 		if (this.userDataSyncService.status !== SyncStatus.Idle) {
@@ -260,33 +260,33 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		}
 
 		// User did not pick an account or login failed
-		if (this.accountStatus !== AccountStatus.Available) {
-			throw new Error(localize('no account', "No account available"));
+		if (this.accountStatus !== AccountStatus.AvailaBle) {
+			throw new Error(localize('no account', "No account availaBle"));
 		}
 
 		const syncTitle = SYNC_TITLE;
 		const title = `${syncTitle} [(${localize('details', "details")})](command:${SHOW_SYNC_LOG_COMMAND_ID})`;
 		const manualSyncTask = await this.userDataSyncService.createManualSyncTask();
-		const disposable = this.lifecycleService.onBeforeShutdown(e => e.veto(this.onBeforeShutdown(manualSyncTask)));
+		const disposaBle = this.lifecycleService.onBeforeShutdown(e => e.veto(this.onBeforeShutdown(manualSyncTask)));
 
 		try {
 			await this.syncBeforeTurningOn(title, manualSyncTask);
 		} finally {
-			disposable.dispose();
+			disposaBle.dispose();
 		}
 
 		await this.userDataAutoSyncService.turnOn();
 		this.notificationService.info(localize('sync turned on', "{0} is turned on", title));
 	}
 
-	turnoff(everywhere: boolean): Promise<void> {
+	turnoff(everywhere: Boolean): Promise<void> {
 		return this.userDataAutoSyncService.turnOff(everywhere);
 	}
 
-	private async onBeforeShutdown(manualSyncTask: IManualSyncTask): Promise<boolean> {
+	private async onBeforeShutdown(manualSyncTask: IManualSyncTask): Promise<Boolean> {
 		const result = await this.dialogService.confirm({
 			type: 'warning',
-			message: localize('sync in progress', "Settings Sync is being turned on. Would you like to cancel it?"),
+			message: localize('sync in progress', "Settings Sync is Being turned on. Would you like to cancel it?"),
 			title: localize('settings sync', "Settings Sync"),
 			primaryButton: localize({ key: 'yes', comment: ['&& denotes a mnemonic'] }, "&&Yes"),
 			secondaryButton: localize({ key: 'no', comment: ['&& denotes a mnemonic'] }, "&&No"),
@@ -316,12 +316,12 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 				const hasRemoteData = manualSyncTask.manifest !== null;
 				const hasLocalData = await this.userDataSyncService.hasLocalData();
 				const hasMergesFromAnotherMachine = preview.some(([syncResource, { isLastSyncFromCurrentMachine, resourcePreviews }]) =>
-					syncResource !== SyncResource.GlobalState && !isLastSyncFromCurrentMachine
+					syncResource !== SyncResource.GloBalState && !isLastSyncFromCurrentMachine
 					&& resourcePreviews.some(r => r.localChange !== Change.None || r.remoteChange !== Change.None));
 
 				action = await this.getFirstTimeSyncAction(hasRemoteData, hasLocalData, hasMergesFromAnotherMachine);
-				const progressDisposable = manualSyncTask.onSynchronizeResources(synchronizingResources =>
-					synchronizingResources.length ? progress.report({ message: localize('syncing resource', "Syncing {0}...", getSyncAreaLabel(synchronizingResources[0][0])) }) : undefined);
+				const progressDisposaBle = manualSyncTask.onSynchronizeResources(synchronizingResources =>
+					synchronizingResources.length ? progress.report({ message: localize('syncing resource', "Syncing {0}...", getSyncAreaLaBel(synchronizingResources[0][0])) }) : undefined);
 				try {
 					switch (action) {
 						case 'merge':
@@ -335,7 +335,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 						case 'manual': return;
 					}
 				} finally {
-					progressDisposable.dispose();
+					progressDisposaBle.dispose();
 				}
 			});
 			if (manualSyncTask.status === SyncStatus.HasConflicts) {
@@ -344,7 +344,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 					localize('conflicts detected', "Conflicts Detected"),
 					[localize('merge Manually', "Merge Manually...")],
 					{
-						detail: localize('resolve', "Unable to merge due to conflicts. Please merge manually to continue..."),
+						detail: localize('resolve', "UnaBle to merge due to conflicts. Please merge manually to continue..."),
 					}
 				);
 				await manualSyncTask.discardConflicts();
@@ -361,7 +361,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		}
 	}
 
-	private async getFirstTimeSyncAction(hasRemoteData: boolean, hasLocalData: boolean, hasMergesFromAnotherMachine: boolean): Promise<FirstTimeSyncAction> {
+	private async getFirstTimeSyncAction(hasRemoteData: Boolean, hasLocalData: Boolean, hasMergesFromAnotherMachine: Boolean): Promise<FirstTimeSyncAction> {
 
 		if (!hasLocalData /* no data on local */
 			|| !hasRemoteData /* no data on remote */
@@ -386,34 +386,34 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		);
 		switch (result.choice) {
 			case 0:
-				this.telemetryService.publicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'merge' });
+				this.telemetryService.puBlicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'merge' });
 				return 'merge';
 			case 1:
-				this.telemetryService.publicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'pull' });
+				this.telemetryService.puBlicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'pull' });
 				return 'pull';
 			case 2:
-				this.telemetryService.publicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'manual' });
+				this.telemetryService.puBlicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'manual' });
 				return 'manual';
 		}
-		this.telemetryService.publicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'cancelled' });
+		this.telemetryService.puBlicLog2<{ action: string }, FirstTimeSyncClassification>('sync/firstTimeSync', { action: 'cancelled' });
 		throw canceled();
 	}
 
 	private async syncManually(task: IManualSyncTask): Promise<void> {
-		const visibleViewContainer = this.viewsService.getVisibleViewContainer(ViewContainerLocation.Sidebar);
+		const visiBleViewContainer = this.viewsService.getVisiBleViewContainer(ViewContainerLocation.SideBar);
 		const preview = await task.preview();
 		this.userDataSyncPreview.setManualSyncPreview(task, preview);
 
-		this.mergesViewEnablementContext.set(true);
+		this.mergesViewEnaBlementContext.set(true);
 		await this.waitForActiveSyncViews();
 		await this.viewsService.openView(SYNC_MERGES_VIEW_ID);
 
 		const error = await Event.toPromise(this.userDataSyncPreview.onDidCompleteManualSync);
 		this.userDataSyncPreview.unsetManualSyncPreview();
 
-		this.mergesViewEnablementContext.set(false);
-		if (visibleViewContainer) {
-			this.viewsService.openViewContainer(visibleViewContainer.id);
+		this.mergesViewEnaBlementContext.set(false);
+		if (visiBleViewContainer) {
+			this.viewsService.openViewContainer(visiBleViewContainer.id);
 		} else {
 			const viewContainer = this.viewDescriptorService.getViewContainerByViewId(SYNC_MERGES_VIEW_ID);
 			this.viewsService.closeViewContainer(viewContainer!.id);
@@ -437,7 +437,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 	}
 
 	async showSyncActivity(): Promise<void> {
-		this.activityViewsEnablementContext.set(true);
+		this.activityViewsEnaBlementContext.set(true);
 		await this.waitForActiveSyncViews();
 		await this.viewsService.openViewContainer(SYNC_VIEW_CONTAINER_ID);
 	}
@@ -452,7 +452,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		}
 	}
 
-	private isCurrentAccount(account: UserDataSyncAccount): boolean {
+	private isCurrentAccount(account: UserDataSyncAccount): Boolean {
 		return account.sessionId === this.currentSessionId;
 	}
 
@@ -460,7 +460,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		await this.pick();
 	}
 
-	private async pick(): Promise<boolean> {
+	private async pick(): Promise<Boolean> {
 		const result = await this.doPick();
 		if (!result) {
 			return false;
@@ -469,7 +469,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		if (isAuthenticationProvider(result)) {
 			const session = await this.authenticationService.login(result.id, result.scopes);
 			sessionId = session.id;
-			accountName = session.account.label;
+			accountName = session.account.laBel;
 			accountId = session.account.id;
 		} else {
 			sessionId = result.sessionId;
@@ -487,16 +487,16 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 
 		await this.update();
 
-		// Single auth provider and no accounts available
+		// Single auth provider and no accounts availaBle
 		if (this.authenticationProviders.length === 1 && !this.all.length) {
 			return this.authenticationProviders[0];
 		}
 
 		return new Promise<UserDataSyncAccount | IAuthenticationProvider | undefined>(async (c, e) => {
 			let result: UserDataSyncAccount | IAuthenticationProvider | undefined;
-			const disposables: DisposableStore = new DisposableStore();
+			const disposaBles: DisposaBleStore = new DisposaBleStore();
 			const quickPick = this.quickInputService.createQuickPick<AccountQuickPickItem>();
-			disposables.add(quickPick);
+			disposaBles.add(quickPick);
 
 			quickPick.title = SYNC_TITLE;
 			quickPick.ok = false;
@@ -504,12 +504,12 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 			quickPick.ignoreFocusOut = true;
 			quickPick.items = this.createQuickpickItems();
 
-			disposables.add(quickPick.onDidAccept(() => {
+			disposaBles.add(quickPick.onDidAccept(() => {
 				result = quickPick.selectedItems[0]?.account ? quickPick.selectedItems[0]?.account : quickPick.selectedItems[0]?.authenticationProvider;
 				quickPick.hide();
 			}));
-			disposables.add(quickPick.onDidHide(() => {
-				disposables.dispose();
+			disposaBles.add(quickPick.onDidHide(() => {
+				disposaBles.dispose();
 				c(result);
 			}));
 			quickPick.show();
@@ -522,28 +522,28 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		// Signed in Accounts
 		if (this.all.length) {
 			const authenticationProviders = [...this.authenticationProviders].sort(({ id }) => id === this.current?.authenticationProviderId ? -1 : 1);
-			quickPickItems.push({ type: 'separator', label: localize('signed in', "Signed in") });
+			quickPickItems.push({ type: 'separator', laBel: localize('signed in', "Signed in") });
 			for (const authenticationProvider of authenticationProviders) {
 				const accounts = (this._all.get(authenticationProvider.id) || []).sort(({ sessionId }) => sessionId === this.current?.sessionId ? -1 : 1);
-				const providerName = this.authenticationService.getLabel(authenticationProvider.id);
+				const providerName = this.authenticationService.getLaBel(authenticationProvider.id);
 				for (const account of accounts) {
 					quickPickItems.push({
-						label: `${account.accountName} (${providerName})`,
+						laBel: `${account.accountName} (${providerName})`,
 						description: account.sessionId === this.current?.sessionId ? localize('last used', "Last Used with Sync") : undefined,
 						account,
 						authenticationProvider,
 					});
 				}
 			}
-			quickPickItems.push({ type: 'separator', label: localize('others', "Others") });
+			quickPickItems.push({ type: 'separator', laBel: localize('others', "Others") });
 		}
 
 		// Account proviers
 		for (const authenticationProvider of this.authenticationProviders) {
 			const signedInForProvider = this.all.some(account => account.authenticationProviderId === authenticationProvider.id);
 			if (!signedInForProvider || this.authenticationService.supportsMultipleAccounts(authenticationProvider.id)) {
-				const providerName = this.authenticationService.getLabel(authenticationProvider.id);
-				quickPickItems.push({ label: localize('sign in using account', "Sign in with {0}", providerName), authenticationProvider });
+				const providerName = this.authenticationService.getLaBel(authenticationProvider.id);
+				quickPickItems.push({ laBel: localize('sign in using account', "Sign in with {0}", providerName), authenticationProvider });
 			}
 		}
 
@@ -552,23 +552,23 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 
 	private async switch(sessionId: string, accountName: string, accountId: string): Promise<void> {
 		const currentAccount = this.current;
-		if (this.userDataAutoSyncService.isEnabled() && (currentAccount && currentAccount.accountName !== accountName)) {
-			// accounts are switched while sync is enabled.
+		if (this.userDataAutoSyncService.isEnaBled() && (currentAccount && currentAccount.accountName !== accountName)) {
+			// accounts are switched while sync is enaBled.
 		}
 		this.currentSessionId = sessionId;
-		this.telemetryService.publicLog2<UserAccountEvent, UserAccountClassification>('sync.userAccount', { id: accountId });
+		this.telemetryService.puBlicLog2<UserAccountEvent, UserAccountClassification>('sync.userAccount', { id: accountId });
 		await this.update();
 	}
 
 	private async onDidSuccessiveAuthFailures(): Promise<void> {
-		this.telemetryService.publicLog2('sync/successiveAuthFailures');
+		this.telemetryService.puBlicLog2('sync/successiveAuthFailures');
 		this.currentSessionId = undefined;
 		await this.update();
 
-		if (this.userDataAutoSyncService.isEnabled()) {
+		if (this.userDataAutoSyncService.isEnaBled()) {
 			this.notificationService.notify({
 				severity: Severity.Error,
-				message: localize('successive auth failures', "Settings sync is suspended because of successive authorization failures. Please sign in again to continue synchronizing"),
+				message: localize('successive auth failures', "Settings sync is suspended Because of successive authorization failures. Please sign in again to continue synchronizing"),
 				actions: {
 					primary: [new Action('sign in', localize('sign in', "Sign in"), undefined, true, () => this.signIn())]
 				}
@@ -584,7 +584,7 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 	}
 
 	private onDidChangeStorage(e: IWorkspaceStorageChangeEvent): void {
-		if (e.key === UserDataSyncWorkbenchService.CACHED_SESSION_STORAGE_KEY && e.scope === StorageScope.GLOBAL
+		if (e.key === UserDataSyncWorkBenchService.CACHED_SESSION_STORAGE_KEY && e.scope === StorageScope.GLOBAL
 			&& this.currentSessionId !== this.getStoredCachedSessionId() /* This checks if current window changed the value or not */) {
 			this._cachedCurrentSessionId = null;
 			this.update();
@@ -603,42 +603,42 @@ export class UserDataSyncWorkbenchService extends Disposable implements IUserDat
 		if (this._cachedCurrentSessionId !== cachedSessionId) {
 			this._cachedCurrentSessionId = cachedSessionId;
 			if (cachedSessionId === undefined) {
-				this.storageService.remove(UserDataSyncWorkbenchService.CACHED_SESSION_STORAGE_KEY, StorageScope.GLOBAL);
+				this.storageService.remove(UserDataSyncWorkBenchService.CACHED_SESSION_STORAGE_KEY, StorageScope.GLOBAL);
 			} else {
-				this.storageService.store(UserDataSyncWorkbenchService.CACHED_SESSION_STORAGE_KEY, cachedSessionId, StorageScope.GLOBAL);
+				this.storageService.store(UserDataSyncWorkBenchService.CACHED_SESSION_STORAGE_KEY, cachedSessionId, StorageScope.GLOBAL);
 			}
 		}
 	}
 
 	private getStoredCachedSessionId(): string | undefined {
-		return this.storageService.get(UserDataSyncWorkbenchService.CACHED_SESSION_STORAGE_KEY, StorageScope.GLOBAL);
+		return this.storageService.get(UserDataSyncWorkBenchService.CACHED_SESSION_STORAGE_KEY, StorageScope.GLOBAL);
 	}
 
-	private get useWorkbenchSessionId(): boolean {
-		return !this.storageService.getBoolean(UserDataSyncWorkbenchService.DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY, StorageScope.GLOBAL, false);
+	private get useWorkBenchSessionId(): Boolean {
+		return !this.storageService.getBoolean(UserDataSyncWorkBenchService.DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY, StorageScope.GLOBAL, false);
 	}
 
-	private set useWorkbenchSessionId(useWorkbenchSession: boolean) {
-		this.storageService.store(UserDataSyncWorkbenchService.DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY, !useWorkbenchSession, StorageScope.GLOBAL);
+	private set useWorkBenchSessionId(useWorkBenchSession: Boolean) {
+		this.storageService.store(UserDataSyncWorkBenchService.DONOT_USE_WORKBENCH_SESSION_STORAGE_KEY, !useWorkBenchSession, StorageScope.GLOBAL);
 	}
 
 }
 
-class UserDataSyncPreview extends Disposable implements IUserDataSyncPreview {
+class UserDataSyncPreview extends DisposaBle implements IUserDataSyncPreview {
 
 	private _resources: ReadonlyArray<IUserDataSyncResource> = [];
-	get resources() { return Object.freeze(this._resources); }
+	get resources() { return OBject.freeze(this._resources); }
 	private _onDidChangeResources = this._register(new Emitter<ReadonlyArray<IUserDataSyncResource>>());
 	readonly onDidChangeResources = this._onDidChangeResources.event;
 
 	private _conflicts: ReadonlyArray<IUserDataSyncResource> = [];
-	get conflicts() { return Object.freeze(this._conflicts); }
+	get conflicts() { return OBject.freeze(this._conflicts); }
 	private _onDidChangeConflicts = this._register(new Emitter<ReadonlyArray<IUserDataSyncResource>>());
 	readonly onDidChangeConflicts = this._onDidChangeConflicts.event;
 
 	private _onDidCompleteManualSync = this._register(new Emitter<Error | undefined>());
 	readonly onDidCompleteManualSync = this._onDidCompleteManualSync.event;
-	private manualSync: { preview: [SyncResource, ISyncResourcePreview][], task: IManualSyncTask, disposables: DisposableStore } | undefined;
+	private manualSync: { preview: [SyncResource, ISyncResourcePreview][], task: IManualSyncTask, disposaBles: DisposaBleStore } | undefined;
 
 	constructor(
 		private readonly userDataSyncService: IUserDataSyncService
@@ -649,14 +649,14 @@ class UserDataSyncPreview extends Disposable implements IUserDataSyncPreview {
 	}
 
 	setManualSyncPreview(task: IManualSyncTask, preview: [SyncResource, ISyncResourcePreview][]): void {
-		const disposables = new DisposableStore();
-		this.manualSync = { task, preview, disposables };
+		const disposaBles = new DisposaBleStore();
+		this.manualSync = { task, preview, disposaBles };
 		this.updateResources();
 	}
 
 	unsetManualSyncPreview(): void {
 		if (this.manualSync) {
-			this.manualSync.disposables.dispose();
+			this.manualSync.disposaBles.dispose();
 			this.manualSync = undefined;
 		}
 		this.updateResources();
@@ -739,7 +739,7 @@ class UserDataSyncPreview extends Disposable implements IUserDataSyncPreview {
 
 	private updateConflicts(conflicts: [SyncResource, IResourcePreview[]][]): void {
 		const newConflicts = this.toUserDataSyncResourceGroups(conflicts);
-		if (!equals(newConflicts, this._conflicts, (a, b) => isEqual(a.local, b.local))) {
+		if (!equals(newConflicts, this._conflicts, (a, B) => isEqual(a.local, B.local))) {
 			this._conflicts = newConflicts;
 			this._onDidChangeConflicts.fire(this.conflicts);
 		}
@@ -754,7 +754,7 @@ class UserDataSyncPreview extends Disposable implements IUserDataSyncPreview {
 					syncResourcePreview.resourcePreviews
 				]))
 		);
-		if (!equals(newResources, this._resources, (a, b) => isEqual(a.local, b.local) && a.mergeState === b.mergeState)) {
+		if (!equals(newResources, this._resources, (a, B) => isEqual(a.local, B.local) && a.mergeState === B.mergeState)) {
 			this._resources = newResources;
 			this._onDidChangeResources.fire(this.resources);
 		}
@@ -770,4 +770,4 @@ class UserDataSyncPreview extends Disposable implements IUserDataSyncPreview {
 
 }
 
-registerSingleton(IUserDataSyncWorkbenchService, UserDataSyncWorkbenchService);
+registerSingleton(IUserDataSyncWorkBenchService, UserDataSyncWorkBenchService);

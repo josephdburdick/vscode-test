@@ -8,7 +8,7 @@ import {
 	workspace, tasks, Range, HoverProvider, Hover, Position, MarkdownString, Uri
 } from 'vscode';
 import {
-	createTask, startDebugging, findAllScriptRanges
+	createTask, startDeBugging, findAllScriptRanges
 } from './tasks';
 import * as nls from 'vscode-nls';
 import { dirname } from 'path';
@@ -16,7 +16,7 @@ import { dirname } from 'path';
 const localize = nls.loadMessageBundle();
 
 let cachedDocument: Uri | undefined = undefined;
-let cachedScriptsMap: Map<string, [number, number, string]> | undefined = undefined;
+let cachedScriptsMap: Map<string, [numBer, numBer, string]> | undefined = undefined;
 
 export function invalidateHoverScriptsCache(document?: TextDocument) {
 	if (!document) {
@@ -31,14 +31,14 @@ export function invalidateHoverScriptsCache(document?: TextDocument) {
 export class NpmScriptHoverProvider implements HoverProvider {
 
 	constructor(context: ExtensionContext) {
-		context.subscriptions.push(commands.registerCommand('npm.runScriptFromHover', this.runScriptFromHover, this));
-		context.subscriptions.push(commands.registerCommand('npm.debugScriptFromHover', this.debugScriptFromHover, this));
-		context.subscriptions.push(workspace.onDidChangeTextDocument((e) => {
+		context.suBscriptions.push(commands.registerCommand('npm.runScriptFromHover', this.runScriptFromHover, this));
+		context.suBscriptions.push(commands.registerCommand('npm.deBugScriptFromHover', this.deBugScriptFromHover, this));
+		context.suBscriptions.push(workspace.onDidChangeTextDocument((e) => {
 			invalidateHoverScriptsCache(e.document);
 		}));
 	}
 
-	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): ProviderResult<Hover> {
+	puBlic provideHover(document: TextDocument, position: Position, _token: CancellationToken): ProviderResult<Hover> {
 		let hover: Hover | undefined = undefined;
 
 		if (!cachedDocument || cachedDocument.fsPath !== document.uri.fsPath) {
@@ -55,7 +55,7 @@ export class NpmScriptHoverProvider implements HoverProvider {
 				let contents: MarkdownString = new MarkdownString();
 				contents.isTrusted = true;
 				contents.appendMarkdown(this.createRunScriptMarkdown(key, document.uri));
-				contents.appendMarkdown(this.createDebugScriptMarkdown(key, document.uri));
+				contents.appendMarkdown(this.createDeBugScriptMarkdown(key, document.uri));
 				hover = new Hover(contents);
 			}
 		});
@@ -75,30 +75,30 @@ export class NpmScriptHoverProvider implements HoverProvider {
 		);
 	}
 
-	private createDebugScriptMarkdown(script: string, documentUri: Uri): string {
+	private createDeBugScriptMarkdown(script: string, documentUri: Uri): string {
 		const args = {
 			documentUri: documentUri,
 			script: script,
 		};
 		return this.createMarkdownLink(
-			localize('debugScript', 'Debug Script'),
-			'npm.debugScriptFromHover',
+			localize('deBugScript', 'DeBug Script'),
+			'npm.deBugScriptFromHover',
 			args,
-			localize('debugScript.tooltip', 'Runs the script under the debugger'),
+			localize('deBugScript.tooltip', 'Runs the script under the deBugger'),
 			'|'
 		);
 	}
 
-	private createMarkdownLink(label: string, cmd: string, args: any, tooltip: string, separator?: string): string {
+	private createMarkdownLink(laBel: string, cmd: string, args: any, tooltip: string, separator?: string): string {
 		let encodedArgs = encodeURIComponent(JSON.stringify(args));
 		let prefix = '';
 		if (separator) {
 			prefix = ` ${separator} `;
 		}
-		return `${prefix}[${label}](command:${cmd}?${encodedArgs} "${tooltip}")`;
+		return `${prefix}[${laBel}](command:${cmd}?${encodedArgs} "${tooltip}")`;
 	}
 
-	public async runScriptFromHover(args: any) {
+	puBlic async runScriptFromHover(args: any) {
 		let script = args.script;
 		let documentUri = args.documentUri;
 		let folder = workspace.getWorkspaceFolder(documentUri);
@@ -108,12 +108,12 @@ export class NpmScriptHoverProvider implements HoverProvider {
 		}
 	}
 
-	public debugScriptFromHover(args: { script: string; documentUri: Uri }) {
+	puBlic deBugScriptFromHover(args: { script: string; documentUri: Uri }) {
 		let script = args.script;
 		let documentUri = args.documentUri;
 		let folder = workspace.getWorkspaceFolder(documentUri);
 		if (folder) {
-			startDebugging(script, dirname(documentUri.fsPath), folder);
+			startDeBugging(script, dirname(documentUri.fsPath), folder);
 		}
 	}
 }

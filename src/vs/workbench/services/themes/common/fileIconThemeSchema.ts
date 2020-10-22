@@ -5,19 +5,19 @@
 import * as nls from 'vs/nls';
 
 import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as JSONExtensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { fontWeightRegex, fontStyleRegex, fontSizeRegex, fontIdRegex } from 'vs/workbench/services/themes/common/productIconThemeSchema';
+import { Extensions as JSONExtensions, IJSONContriButionRegistry } from 'vs/platform/jsonschemas/common/jsonContriButionRegistry';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { fontWeightRegex, fontStyleRegex, fontSizeRegex, fontIdRegex } from 'vs/workBench/services/themes/common/productIconThemeSchema';
 
 const schemaId = 'vscode://schemas/icon-theme';
 const schema: IJSONSchema = {
-	type: 'object',
+	type: 'oBject',
 	allowComments: true,
 	allowTrailingCommas: true,
 	definitions: {
 		folderExpanded: {
 			type: 'string',
-			description: nls.localize('schema.folderExpanded', 'The folder icon for expanded folders. The expanded folder icon is optional. If not set, the icon defined for folder will be shown.')
+			description: nls.localize('schema.folderExpanded', 'The folder icon for expanded folders. The expanded folder icon is optional. If not set, the icon defined for folder will Be shown.')
 		},
 		folder: {
 			type: 'string',
@@ -30,24 +30,24 @@ const schema: IJSONSchema = {
 
 		},
 		folderNames: {
-			type: 'object',
-			description: nls.localize('schema.folderNames', 'Associates folder names to icons. The object key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
+			type: 'oBject',
+			description: nls.localize('schema.folderNames', 'Associates folder names to icons. The oBject key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
 			additionalProperties: {
 				type: 'string',
 				description: nls.localize('schema.folderName', 'The ID of the icon definition for the association.')
 			}
 		},
 		folderNamesExpanded: {
-			type: 'object',
-			description: nls.localize('schema.folderNamesExpanded', 'Associates folder names to icons for expanded folders. The object key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
+			type: 'oBject',
+			description: nls.localize('schema.folderNamesExpanded', 'Associates folder names to icons for expanded folders. The oBject key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
 			additionalProperties: {
 				type: 'string',
 				description: nls.localize('schema.folderNameExpanded', 'The ID of the icon definition for the association.')
 			}
 		},
 		fileExtensions: {
-			type: 'object',
-			description: nls.localize('schema.fileExtensions', 'Associates file extensions to icons. The object key is the file extension name. The extension name is the last segment of a file name after the last dot (not including the dot). Extensions are compared case insensitive.'),
+			type: 'oBject',
+			description: nls.localize('schema.fileExtensions', 'Associates file extensions to icons. The oBject key is the file extension name. The extension name is the last segment of a file name after the last dot (not including the dot). Extensions are compared case insensitive.'),
 
 			additionalProperties: {
 				type: 'string',
@@ -55,8 +55,8 @@ const schema: IJSONSchema = {
 			}
 		},
 		fileNames: {
-			type: 'object',
-			description: nls.localize('schema.fileNames', 'Associates file names to icons. The object key is the full file name, but not including any path segments. File name can include dots and a possible file extension. No patterns or wildcards are allowed. File name matching is case insensitive.'),
+			type: 'oBject',
+			description: nls.localize('schema.fileNames', 'Associates file names to icons. The oBject key is the full file name, But not including any path segments. File name can include dots and a possiBle file extension. No patterns or wildcards are allowed. File name matching is case insensitive.'),
 
 			additionalProperties: {
 				type: 'string',
@@ -64,8 +64,8 @@ const schema: IJSONSchema = {
 			}
 		},
 		languageIds: {
-			type: 'object',
-			description: nls.localize('schema.languageIds', 'Associates languages to icons. The object key is the language id as defined in the language contribution point.'),
+			type: 'oBject',
+			description: nls.localize('schema.languageIds', 'Associates languages to icons. The oBject key is the language id as defined in the language contriBution point.'),
 
 			additionalProperties: {
 				type: 'string',
@@ -73,7 +73,7 @@ const schema: IJSONSchema = {
 			}
 		},
 		associations: {
-			type: 'object',
+			type: 'oBject',
 			properties: {
 				folderExpanded: {
 					$ref: '#/definitions/folderExpanded'
@@ -107,19 +107,19 @@ const schema: IJSONSchema = {
 			type: 'array',
 			description: nls.localize('schema.fonts', 'Fonts that are used in the icon definitions.'),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				properties: {
 					id: {
 						type: 'string',
 						description: nls.localize('schema.id', 'The ID of the font.'),
 						pattern: fontIdRegex,
-						patternErrorMessage: nls.localize('schema.id.formatError', 'The ID must only contain letter, numbers, underscore and minus.')
+						patternErrorMessage: nls.localize('schema.id.formatError', 'The ID must only contain letter, numBers, underscore and minus.')
 					},
 					src: {
 						type: 'array',
 						description: nls.localize('schema.src', 'The location of the font.'),
 						items: {
-							type: 'object',
+							type: 'oBject',
 							properties: {
 								path: {
 									type: 'string',
@@ -128,7 +128,7 @@ const schema: IJSONSchema = {
 								format: {
 									type: 'string',
 									description: nls.localize('schema.font-format', 'The format of the font.'),
-									enum: ['woff', 'woff2', 'truetype', 'opentype', 'embedded-opentype', 'svg']
+									enum: ['woff', 'woff2', 'truetype', 'opentype', 'emBedded-opentype', 'svg']
 								}
 							},
 							required: [
@@ -139,17 +139,17 @@ const schema: IJSONSchema = {
 					},
 					weight: {
 						type: 'string',
-						description: nls.localize('schema.font-weight', 'The weight of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for valid values.'),
+						description: nls.localize('schema.font-weight', 'The weight of the font. See https://developer.mozilla.org/en-US/docs/WeB/CSS/font-weight for valid values.'),
 						pattern: fontWeightRegex
 					},
 					style: {
 						type: 'string',
-						description: nls.localize('schema.font-style', 'The style of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-style for valid values.'),
+						description: nls.localize('schema.font-style', 'The style of the font. See https://developer.mozilla.org/en-US/docs/WeB/CSS/font-style for valid values.'),
 						pattern: fontStyleRegex
 					},
 					size: {
 						type: 'string',
-						description: nls.localize('schema.font-size', 'The default size of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-size for valid values.'),
+						description: nls.localize('schema.font-size', 'The default size of the font. See https://developer.mozilla.org/en-US/docs/WeB/CSS/font-size for valid values.'),
 						pattern: fontSizeRegex
 					}
 				},
@@ -160,11 +160,11 @@ const schema: IJSONSchema = {
 			}
 		},
 		iconDefinitions: {
-			type: 'object',
-			description: nls.localize('schema.iconDefinitions', 'Description of all icons that can be used when associating files to icons.'),
+			type: 'oBject',
+			description: nls.localize('schema.iconDefinitions', 'Description of all icons that can Be used when associating files to icons.'),
 			additionalProperties: {
-				type: 'object',
-				description: nls.localize('schema.iconDefinition', 'An icon definition. The object key is the ID of the definition.'),
+				type: 'oBject',
+				description: nls.localize('schema.iconDefinition', 'An icon definition. The oBject key is the ID of the definition.'),
 				properties: {
 					iconPath: {
 						type: 'string',
@@ -221,13 +221,13 @@ const schema: IJSONSchema = {
 			description: nls.localize('schema.highContrast', 'Optional associations for file icons in high contrast color themes.')
 		},
 		hidesExplorerArrows: {
-			type: 'boolean',
-			description: nls.localize('schema.hidesExplorerArrows', 'Configures whether the file explorer\'s arrows should be hidden when this theme is active.')
+			type: 'Boolean',
+			description: nls.localize('schema.hidesExplorerArrows', 'Configures whether the file explorer\'s arrows should Be hidden when this theme is active.')
 		}
 	}
 };
 
 export function registerFileIconThemeSchemas() {
-	let schemaRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+	let schemaRegistry = Registry.as<IJSONContriButionRegistry>(JSONExtensions.JSONContriBution);
 	schemaRegistry.registerSchema(schemaId, schema);
 }

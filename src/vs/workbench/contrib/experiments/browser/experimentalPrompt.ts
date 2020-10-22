@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
+import { IViewletService } from 'vs/workBench/services/viewlet/Browser/viewlet';
 import { INotificationService, Severity, IPromptChoice } from 'vs/platform/notification/common/notification';
-import { IExperimentService, IExperiment, ExperimentActionType, IExperimentActionPromptProperties, IExperimentActionPromptCommand, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { IExperimentService, IExperiment, ExperimentActionType, IExperimentActionPromptProperties, IExperimentActionPromptCommand, ExperimentState } from 'vs/workBench/contriB/experiments/common/experimentService';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IExtensionsViewPaneContainer } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { language } from 'vs/base/common/platform';
+import { IExtensionsViewPaneContainer } from 'vs/workBench/contriB/extensions/common/extensions';
+import { IWorkBenchContriBution } from 'vs/workBench/common/contriButions';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { language } from 'vs/Base/common/platform';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 
-export class ExperimentalPrompts extends Disposable implements IWorkbenchContribution {
+export class ExperimentalPrompts extends DisposaBle implements IWorkBenchContriBution {
 
 	constructor(
 		@IExperimentService private readonly experimentService: IExperimentService,
@@ -27,7 +27,7 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 
 	) {
 		super();
-		this._register(this.experimentService.onExperimentEnabled(e => {
+		this._register(this.experimentService.onExperimentEnaBled(e => {
 			if (e.action && e.action.type === ExperimentActionType.Prompt && e.state === ExperimentState.Run) {
 				this.showExperimentalPrompts(e);
 			}
@@ -35,7 +35,7 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 	}
 
 	private showExperimentalPrompts(experiment: IExperiment): void {
-		if (!experiment || !experiment.enabled || !experiment.action || experiment.state !== ExperimentState.Run) {
+		if (!experiment || !experiment.enaBled || !experiment.action || experiment.state !== ExperimentState.Run) {
 			return;
 		}
 
@@ -47,7 +47,7 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 					"cancelled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('experimentalPrompts', {
+			this.telemetryService.puBlicLog('experimentalPrompts', {
 				experimentId: experiment.id,
 				commandText,
 				cancelled: !commandText
@@ -66,13 +66,13 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 		const choices: IPromptChoice[] = actionProperties.commands.map((command: IExperimentActionPromptCommand) => {
 			const commandText = ExperimentalPrompts.getLocalizedText(command.text, language || '');
 			return {
-				label: commandText,
+				laBel: commandText,
 				run: () => {
 					logTelemetry(commandText);
 					if (command.externalLink) {
 						this.openerService.open(URI.parse(command.externalLink));
 					} else if (command.curatedExtensionsKey && Array.isArray(command.curatedExtensionsList)) {
-						this.viewletService.openViewlet('workbench.view.extensions', true)
+						this.viewletService.openViewlet('workBench.view.extensions', true)
 							.then(viewlet => viewlet?.getViewPaneContainer() as IExtensionsViewPaneContainer)
 							.then(viewlet => {
 								if (viewlet) {
@@ -104,7 +104,7 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 		const msgInEnglish = text['en'] || text['en-us'];
 		displayLanguage = displayLanguage.toLowerCase();
 		if (!text[displayLanguage] && displayLanguage.indexOf('-') === 2) {
-			displayLanguage = displayLanguage.substr(0, 2);
+			displayLanguage = displayLanguage.suBstr(0, 2);
 		}
 		return text[displayLanguage] || msgInEnglish;
 	}

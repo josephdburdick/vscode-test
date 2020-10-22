@@ -3,18 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { generateUuid } from 'vs/base/common/uuid';
+import { generateUuid } from 'vs/Base/common/uuid';
 import { ILocalExtension, IExtensionManagementService, IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
-import { ExtensionManagementService as BaseExtensionManagementService } from 'vs/workbench/services/extensionManagement/common/extensionManagementService';
+import { URI } from 'vs/Base/common/uri';
+import { ExtensionManagementService as BaseExtensionManagementService } from 'vs/workBench/services/extensionManagement/common/extensionManagementService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { Schemas } from 'vs/base/common/network';
+import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workBench/services/extensionManagement/common/extensionManagement';
+import { Schemas } from 'vs/Base/common/network';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IDownloadService } from 'vs/platform/download/common/download';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { joinPath } from 'vs/base/common/resources';
+import { INativeWorkBenchEnvironmentService } from 'vs/workBench/services/environment/electron-sandBox/environmentService';
+import { joinPath } from 'vs/Base/common/resources';
 
 export class ExtensionManagementService extends BaseExtensionManagementService {
 
@@ -24,7 +24,7 @@ export class ExtensionManagementService extends BaseExtensionManagementService {
 		@IConfigurationService configurationService: IConfigurationService,
 		@IProductService productService: IProductService,
 		@IDownloadService downloadService: IDownloadService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		@INativeWorkBenchEnvironmentService private readonly environmentService: INativeWorkBenchEnvironmentService
 	) {
 		super(extensionManagementServerService, extensionGalleryService, configurationService, productService, downloadService);
 	}

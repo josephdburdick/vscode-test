@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { MainThreadMessageService } from 'vs/workbench/api/browser/mainThreadMessageService';
+import { MainThreadMessageService } from 'vs/workBench/api/Browser/mainThreadMessageService';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { INotificationService, INotification, NoOpNotification, INotificationHandle, Severity, IPromptChoice, IPromptOptions, IStatusMessageOptions, NotificationsFilter } from 'vs/platform/notification/common/notification';
 import { ICommandService } from 'vs/platform/commands/common/commands';
-import { mock } from 'vs/base/test/common/mock';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/base/common/platform';
+import { mock } from 'vs/Base/test/common/mock';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import * as platform from 'vs/Base/common/platform';
 
 const emptyDialogService = new class implements IDialogService {
 	declare readonly _serviceBrand: undefined;
@@ -22,15 +22,15 @@ const emptyDialogService = new class implements IDialogService {
 		throw new Error('not implemented');
 	}
 
-	about(): never {
+	aBout(): never {
 		throw new Error('not implemented');
 	}
 };
 
 const emptyCommandService: ICommandService = {
 	_serviceBrand: undefined,
-	onWillExecuteCommand: () => Disposable.None,
-	onDidExecuteCommand: () => Disposable.None,
+	onWillExecuteCommand: () => DisposaBle.None,
+	onDidExecuteCommand: () => DisposaBle.None,
 	executeCommand: (commandId: string, ...args: any[]): Promise<any> => {
 		return Promise.resolve(undefined);
 	}
@@ -53,8 +53,8 @@ const emptyNotificationService = new class implements INotificationService {
 	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
 		throw new Error('not implemented');
 	}
-	status(message: string | Error, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	status(message: string | Error, options?: IStatusMessageOptions): IDisposaBle {
+		return DisposaBle.None;
 	}
 	setFilter(filter: NotificationsFilter): void {
 		throw new Error('not implemented.');
@@ -84,8 +84,8 @@ class EmptyNotificationService implements INotificationService {
 	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
 		throw new Error('Method not implemented');
 	}
-	status(message: string, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	status(message: string, options?: IStatusMessageOptions): IDisposaBle {
+		return DisposaBle.None;
 	}
 	setFilter(filter: NotificationsFilter): void {
 		throw new Error('Method not implemented.');
@@ -108,11 +108,11 @@ suite('ExtHostMessageService', function () {
 	suite('modal', () => {
 		test('calls dialog service', async () => {
 			const service = new MainThreadMessageService(null!, emptyNotificationService, emptyCommandService, new class extends mock<IDialogService>() {
-				show(severity: Severity, message: string, buttons: string[]) {
+				show(severity: Severity, message: string, Buttons: string[]) {
 					assert.equal(severity, 1);
 					assert.equal(message, 'h');
-					assert.equal(buttons.length, 2);
-					assert.equal(buttons[1], 'Cancel');
+					assert.equal(Buttons.length, 2);
+					assert.equal(Buttons[1], 'Cancel');
 					return Promise.resolve({ choice: 0 });
 				}
 			} as IDialogService);
@@ -132,10 +132,10 @@ suite('ExtHostMessageService', function () {
 			assert.equal(handle, undefined);
 		});
 
-		test('hides Cancel button when not needed', async () => {
+		test('hides Cancel Button when not needed', async () => {
 			const service = new MainThreadMessageService(null!, emptyNotificationService, emptyCommandService, new class extends mock<IDialogService>() {
-				show(severity: Severity, message: string, buttons: string[]) {
-					assert.equal(buttons.length, 1);
+				show(severity: Severity, message: string, Buttons: string[]) {
+					assert.equal(Buttons.length, 1);
 					return Promise.resolve({ choice: 0 });
 				}
 			} as IDialogService);

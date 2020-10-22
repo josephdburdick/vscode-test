@@ -5,30 +5,30 @@
 
 import { Code } from './code';
 
-const SEARCH_INPUT = '.keybindings-header .settings-search-input input';
+const SEARCH_INPUT = '.keyBindings-header .settings-search-input input';
 
-export class KeybindingsEditor {
+export class KeyBindingsEditor {
 
 	constructor(private code: Code) { }
 
-	async updateKeybinding(command: string, keybinding: string, title: string): Promise<any> {
+	async updateKeyBinding(command: string, keyBinding: string, title: string): Promise<any> {
 		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+k cmd+s');
+			await this.code.dispatchKeyBinding('cmd+k cmd+s');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+k ctrl+s');
+			await this.code.dispatchKeyBinding('ctrl+k ctrl+s');
 		}
 
 		await this.code.waitForActiveElement(SEARCH_INPUT);
 		await this.code.waitForSetValue(SEARCH_INPUT, command);
 
-		await this.code.waitAndClick('.keybindings-list-container .monaco-list-row.keybinding-item');
-		await this.code.waitForElement('.keybindings-list-container .monaco-list-row.keybinding-item.focused.selected');
+		await this.code.waitAndClick('.keyBindings-list-container .monaco-list-row.keyBinding-item');
+		await this.code.waitForElement('.keyBindings-list-container .monaco-list-row.keyBinding-item.focused.selected');
 
-		await this.code.waitAndClick('.keybindings-list-container .monaco-list-row.keybinding-item .action-item .codicon.codicon-add');
-		await this.code.waitForActiveElement('.defineKeybindingWidget .monaco-inputbox input');
+		await this.code.waitAndClick('.keyBindings-list-container .monaco-list-row.keyBinding-item .action-item .codicon.codicon-add');
+		await this.code.waitForActiveElement('.defineKeyBindingWidget .monaco-inputBox input');
 
-		await this.code.dispatchKeybinding(keybinding);
-		await this.code.dispatchKeybinding('enter');
-		await this.code.waitForElement(`.keybindings-list-container .keybinding-label div[title="${title}"]`);
+		await this.code.dispatchKeyBinding(keyBinding);
+		await this.code.dispatchKeyBinding('enter');
+		await this.code.waitForElement(`.keyBindings-list-container .keyBinding-laBel div[title="${title}"]`);
 	}
 }

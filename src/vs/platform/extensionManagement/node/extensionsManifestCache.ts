@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { join } from 'vs/base/common/path';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { join } from 'vs/Base/common/path';
 import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IExtensionManagementService, DidInstallExtensionEvent, DidUninstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE } from 'vs/platform/extensions/common/extensions';
-import * as pfs from 'vs/base/node/pfs';
+import * as pfs from 'vs/Base/node/pfs';
 
-export class ExtensionsManifestCache extends Disposable {
+export class ExtensionsManifestCache extends DisposaBle {
 
 	private extensionsManifestCache = join(this.environmentService.userDataPath, MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE);
 

@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
+import { KeyCode } from 'vs/Base/common/keyCodes';
+import { EditorCommand, registerEditorCommand } from 'vs/editor/Browser/editorExtensions';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { LinkedList } from 'vs/base/common/linkedList';
+import { KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { CancellationTokenSource, CancellationToken } from 'vs/Base/common/cancellation';
+import { LinkedList } from 'vs/Base/common/linkedList';
 import { createDecorator, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 
@@ -22,19 +22,19 @@ interface IEditorCancellationTokens {
 	cancel(editor: ICodeEditor): void;
 }
 
-const ctxCancellableOperation = new RawContextKey('cancellableOperation', false);
+const ctxCancellaBleOperation = new RawContextKey('cancellaBleOperation', false);
 
 registerSingleton(IEditorCancellationTokens, class implements IEditorCancellationTokens {
 
 	declare readonly _serviceBrand: undefined;
 
-	private readonly _tokens = new WeakMap<ICodeEditor, { key: IContextKey<boolean>, tokens: LinkedList<CancellationTokenSource> }>();
+	private readonly _tokens = new WeakMap<ICodeEditor, { key: IContextKey<Boolean>, tokens: LinkedList<CancellationTokenSource> }>();
 
 	add(editor: ICodeEditor, cts: CancellationTokenSource): () => void {
 		let data = this._tokens.get(editor);
 		if (!data) {
 			data = editor.invokeWithinContext(accessor => {
-				const key = ctxCancellableOperation.bindTo(accessor.get(IContextKeyService));
+				const key = ctxCancellaBleOperation.BindTo(accessor.get(IContextKeyService));
 				const tokens = new LinkedList<CancellationTokenSource>();
 				return { key, tokens };
 			});
@@ -71,7 +71,7 @@ registerSingleton(IEditorCancellationTokens, class implements IEditorCancellatio
 
 }, true);
 
-export class EditorKeybindingCancellationTokenSource extends CancellationTokenSource {
+export class EditorKeyBindingCancellationTokenSource extends CancellationTokenSource {
 
 	private readonly _unregister: Function;
 
@@ -91,11 +91,11 @@ registerEditorCommand(new class extends EditorCommand {
 	constructor() {
 		super({
 			id: 'editor.cancelOperation',
-			kbOpts: {
-				weight: KeybindingWeight.EditorContrib,
+			kBOpts: {
+				weight: KeyBindingWeight.EditorContriB,
 				primary: KeyCode.Escape
 			},
-			precondition: ctxCancellableOperation
+			precondition: ctxCancellaBleOperation
 		});
 	}
 

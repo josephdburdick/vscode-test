@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ITextAreaWrapper, PagedScreenReaderStrategy, TextAreaState } from 'vs/editor/browser/controller/textAreaState';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { ITextAreaWrapper, PagedScreenReaderStrategy, TextAreaState } from 'vs/editor/Browser/controller/textAreaState';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-export class MockTextAreaWrapper extends Disposable implements ITextAreaWrapper {
+export class MockTextAreaWrapper extends DisposaBle implements ITextAreaWrapper {
 
-	public _value: string;
-	public _selectionStart: number;
-	public _selectionEnd: number;
+	puBlic _value: string;
+	puBlic _selectionStart: numBer;
+	puBlic _selectionEnd: numBer;
 
 	constructor() {
 		super();
@@ -23,25 +23,25 @@ export class MockTextAreaWrapper extends Disposable implements ITextAreaWrapper 
 		this._selectionEnd = 0;
 	}
 
-	public getValue(): string {
+	puBlic getValue(): string {
 		return this._value;
 	}
 
-	public setValue(reason: string, value: string): void {
+	puBlic setValue(reason: string, value: string): void {
 		this._value = value;
 		this._selectionStart = this._value.length;
 		this._selectionEnd = this._value.length;
 	}
 
-	public getSelectionStart(): number {
+	puBlic getSelectionStart(): numBer {
 		return this._selectionStart;
 	}
 
-	public getSelectionEnd(): number {
+	puBlic getSelectionEnd(): numBer {
 		return this._selectionEnd;
 	}
 
-	public setSelectionRange(reason: string, selectionStart: number, selectionEnd: number): void {
+	puBlic setSelectionRange(reason: string, selectionStart: numBer, selectionEnd: numBer): void {
 		if (selectionStart < 0) {
 			selectionStart = 0;
 		}
@@ -59,19 +59,19 @@ export class MockTextAreaWrapper extends Disposable implements ITextAreaWrapper 
 	}
 }
 
-function equalsTextAreaState(a: TextAreaState, b: TextAreaState): boolean {
+function equalsTextAreaState(a: TextAreaState, B: TextAreaState): Boolean {
 	return (
-		a.value === b.value
-		&& a.selectionStart === b.selectionStart
-		&& a.selectionEnd === b.selectionEnd
-		&& Position.equals(a.selectionStartPosition, b.selectionStartPosition)
-		&& Position.equals(a.selectionEndPosition, b.selectionEndPosition)
+		a.value === B.value
+		&& a.selectionStart === B.selectionStart
+		&& a.selectionEnd === B.selectionEnd
+		&& Position.equals(a.selectionStartPosition, B.selectionStartPosition)
+		&& Position.equals(a.selectionEndPosition, B.selectionEndPosition)
 	);
 }
 
 suite('TextAreaState', () => {
 
-	function assertTextAreaState(actual: TextAreaState, value: string, selectionStart: number, selectionEnd: number): void {
+	function assertTextAreaState(actual: TextAreaState, value: string, selectionStart: numBer, selectionEnd: numBer): void {
 		let desired = new TextAreaState(value, selectionStart, selectionEnd, null, null);
 		assert.ok(equalsTextAreaState(desired, actual), desired.toString() + ' == ' + actual.toString());
 	}
@@ -123,7 +123,7 @@ suite('TextAreaState', () => {
 		textArea.dispose();
 	});
 
-	function testDeduceInput(prevState: TextAreaState | null, value: string, selectionStart: number, selectionEnd: number, couldBeEmojiInput: boolean, expected: string, expectedCharReplaceCnt: number): void {
+	function testDeduceInput(prevState: TextAreaState | null, value: string, selectionStart: numBer, selectionEnd: numBer, couldBeEmojiInput: Boolean, expected: string, expectedCharReplaceCnt: numBer): void {
 		prevState = prevState || TextAreaState.EMPTY;
 
 		let textArea = new MockTextAreaWrapper();
@@ -142,7 +142,7 @@ suite('TextAreaState', () => {
 
 	test('deduceInput - Japanese typing sennsei and accepting', () => {
 		// manual test:
-		// - choose keyboard layout: Japanese -> Hiragama
+		// - choose keyBoard layout: Japanese -> Hiragama
 		// - type sennsei
 		// - accept with Enter
 		// - expected: せんせい
@@ -240,7 +240,7 @@ suite('TextAreaState', () => {
 
 	test('deduceInput - Japanese typing sennsei and choosing different suggestion', () => {
 		// manual test:
-		// - choose keyboard layout: Japanese -> Hiragama
+		// - choose keyBoard layout: Japanese -> Hiragama
 		// - type sennsei
 		// - arrow down (choose next suggestion)
 		// - accept with Enter
@@ -421,7 +421,7 @@ suite('TextAreaState', () => {
 		);
 	});
 
-	test('issue #16520 - Cmd-d of single character followed by typing same character as has no effect', () => {
+	test('issue #16520 - Cmd-d of single character followed By typing same character as has no effect', () => {
 		testDeduceInput(
 			new TextAreaState('x x', 0, 1, null, null),
 			'x x',
@@ -478,17 +478,17 @@ suite('TextAreaState', () => {
 		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
 		testDeduceInput(
 			new TextAreaState(
-				'qwertyu\nasdfghj\nzxcvbnm',
+				'qwertyu\nasdfghj\nzxcvBnm',
 				12, 12,
 				null, null
 			),
-			'qwertyu\nasdfghj\nzxcvbnm🎈',
+			'qwertyu\nasdfghj\nzxcvBnm🎈',
 			25, 25, true,
 			'🎈', 0
 		);
 	});
 
-	// an example of an emoji missed by the regex but which has the FE0F variant 16 hint
+	// an example of an emoji missed By the regex But which has the FE0F variant 16 hint
 	test('issue #4271 (example 4) - When inserting an emoji on OSX, it is placed two spaces left of the cursor', () => {
 		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
 		testDeduceInput(

@@ -20,48 +20,48 @@ export function doBenchmark<T>(id: string, ts: T[], fn: (t: T) => void) {
 export interface IBenchmark {
 	name: string;
 	/**
-	 * Before each cycle, this function will be called to create TextBufferFactory
+	 * Before each cycle, this function will Be called to create TextBufferFactory
 	 */
-	buildBuffer: (textBufferBuilder: ITextBufferBuilder) => ITextBufferFactory;
+	BuildBuffer: (textBufferBuilder: ITextBufferBuilder) => ITextBufferFactory;
 	/**
-	 * Before each cycle, this function will be called to do pre-work for text buffer.
-	 * This will be called onece `buildBuffer` is finished.
+	 * Before each cycle, this function will Be called to do pre-work for text Buffer.
+	 * This will Be called onece `BuildBuffer` is finished.
 	 */
 	preCycle: (textBuffer: ITextBuffer) => void;
 	/**
-	 * The function we are benchmarking
+	 * The function we are Benchmarking
 	 */
 	fn: (textBuffer: ITextBuffer) => void;
 }
 
 export class BenchmarkSuite {
 	name: string;
-	iterations: number;
-	benchmarks: IBenchmark[];
+	iterations: numBer;
+	Benchmarks: IBenchmark[];
 
-	constructor(suiteOptions: { name: string, iterations: number }) {
+	constructor(suiteOptions: { name: string, iterations: numBer }) {
 		this.name = suiteOptions.name;
 		this.iterations = suiteOptions.iterations;
-		this.benchmarks = [];
+		this.Benchmarks = [];
 	}
 
-	add(benchmark: IBenchmark) {
-		this.benchmarks.push(benchmark);
+	add(Benchmark: IBenchmark) {
+		this.Benchmarks.push(Benchmark);
 	}
 
 	run() {
-		console.log(`|${this.name}\t|line buffer\t|piece table\t|edcore\t`);
+		console.log(`|${this.name}\t|line Buffer\t|piece taBle\t|edcore\t`);
 		console.log('|---|---|---|---|');
-		for (const benchmark of this.benchmarks) {
-			let columns: string[] = [benchmark.name];
-			[new PieceTreeTextBufferBuilder()].forEach((builder: ITextBufferBuilder) => {
+		for (const Benchmark of this.Benchmarks) {
+			let columns: string[] = [Benchmark.name];
+			[new PieceTreeTextBufferBuilder()].forEach((Builder: ITextBufferBuilder) => {
 				let timeDiffTotal = 0;
 				for (let j = 0; j < this.iterations; j++) {
-					let factory = benchmark.buildBuffer(builder);
-					let buffer = factory.create(DefaultEndOfLine.LF);
-					benchmark.preCycle(buffer);
+					let factory = Benchmark.BuildBuffer(Builder);
+					let Buffer = factory.create(DefaultEndOfLine.LF);
+					Benchmark.preCycle(Buffer);
 					let start = process.hrtime();
-					benchmark.fn(buffer);
+					Benchmark.fn(Buffer);
 					let diff = process.hrtime(start);
 					timeDiffTotal += (diff[0] * 1000 * 1000 + diff[1] / 1000);
 				}

@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { exists } from 'vs/base/node/pfs';
+import { exists } from 'vs/Base/node/pfs';
 import * as cp from 'child_process';
 import * as stream from 'stream';
 import * as nls from 'vs/nls';
 import * as net from 'net';
-import * as path from 'vs/base/common/path';
-import * as strings from 'vs/base/common/strings';
-import * as objects from 'vs/base/common/objects';
-import * as platform from 'vs/base/common/platform';
+import * as path from 'vs/Base/common/path';
+import * as strings from 'vs/Base/common/strings';
+import * as oBjects from 'vs/Base/common/oBjects';
+import * as platform from 'vs/Base/common/platform';
 import { ExtensionsChannelId } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IOutputService } from 'vs/workbench/contrib/output/common/output';
-import { IDebugAdapterExecutable, IDebuggerContribution, IPlatformSpecificAdapterContribution, IDebugAdapterServer, IDebugAdapterNamedPipeServer } from 'vs/workbench/contrib/debug/common/debug';
+import { IOutputService } from 'vs/workBench/contriB/output/common/output';
+import { IDeBugAdapterExecutaBle, IDeBuggerContriBution, IPlatformSpecificAdapterContriBution, IDeBugAdapterServer, IDeBugAdapterNamedPipeServer } from 'vs/workBench/contriB/deBug/common/deBug';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { AbstractDebugAdapter } from '../common/abstractDebugAdapter';
+import { ABstractDeBugAdapter } from '../common/aBstractDeBugAdapter';
 
 /**
- * An implementation that communicates via two streams with the debug adapter.
+ * An implementation that communicates via two streams with the deBug adapter.
  */
-export abstract class StreamDebugAdapter extends AbstractDebugAdapter {
+export aBstract class StreamDeBugAdapter extends ABstractDeBugAdapter {
 
 	private static readonly TWO_CRLF = '\r\n\r\n';
 	private static readonly HEADER_LINESEPARATOR = /\r?\n/;	// allow for non-RFC 2822 conforming line separators
 	private static readonly HEADER_FIELDSEPARATOR = /: */;
 
-	private outputStream!: stream.Writable;
+	private outputStream!: stream.WritaBle;
 	private rawData = Buffer.allocUnsafe(0);
 	private contentLength = -1;
 
@@ -35,20 +35,20 @@ export abstract class StreamDebugAdapter extends AbstractDebugAdapter {
 		super();
 	}
 
-	protected connect(readable: stream.Readable, writable: stream.Writable): void {
+	protected connect(readaBle: stream.ReadaBle, writaBle: stream.WritaBle): void {
 
-		this.outputStream = writable;
+		this.outputStream = writaBle;
 		this.rawData = Buffer.allocUnsafe(0);
 		this.contentLength = -1;
 
-		readable.on('data', (data: Buffer) => this.handleData(data));
+		readaBle.on('data', (data: Buffer) => this.handleData(data));
 	}
 
-	sendMessage(message: DebugProtocol.ProtocolMessage): void {
+	sendMessage(message: DeBugProtocol.ProtocolMessage): void {
 
 		if (this.outputStream) {
 			const json = JSON.stringify(message);
-			this.outputStream.write(`Content-Length: ${Buffer.byteLength(json, 'utf8')}${StreamDebugAdapter.TWO_CRLF}${json}`, 'utf8');
+			this.outputStream.write(`Content-Length: ${Buffer.ByteLength(json, 'utf8')}${StreamDeBugAdapter.TWO_CRLF}${json}`, 'utf8');
 		}
 	}
 
@@ -64,38 +64,38 @@ export abstract class StreamDebugAdapter extends AbstractDebugAdapter {
 					this.contentLength = -1;
 					if (message.length > 0) {
 						try {
-							this.acceptMessage(<DebugProtocol.ProtocolMessage>JSON.parse(message));
+							this.acceptMessage(<DeBugProtocol.ProtocolMessage>JSON.parse(message));
 						} catch (e) {
 							this._onError.fire(new Error((e.message || e) + '\n' + message));
 						}
 					}
-					continue;	// there may be more complete messages to process
+					continue;	// there may Be more complete messages to process
 				}
 			} else {
-				const idx = this.rawData.indexOf(StreamDebugAdapter.TWO_CRLF);
+				const idx = this.rawData.indexOf(StreamDeBugAdapter.TWO_CRLF);
 				if (idx !== -1) {
 					const header = this.rawData.toString('utf8', 0, idx);
-					const lines = header.split(StreamDebugAdapter.HEADER_LINESEPARATOR);
+					const lines = header.split(StreamDeBugAdapter.HEADER_LINESEPARATOR);
 					for (const h of lines) {
-						const kvPair = h.split(StreamDebugAdapter.HEADER_FIELDSEPARATOR);
+						const kvPair = h.split(StreamDeBugAdapter.HEADER_FIELDSEPARATOR);
 						if (kvPair[0] === 'Content-Length') {
-							this.contentLength = Number(kvPair[1]);
+							this.contentLength = NumBer(kvPair[1]);
 						}
 					}
-					this.rawData = this.rawData.slice(idx + StreamDebugAdapter.TWO_CRLF.length);
+					this.rawData = this.rawData.slice(idx + StreamDeBugAdapter.TWO_CRLF.length);
 					continue;
 				}
 			}
-			break;
+			Break;
 		}
 	}
 }
 
-export abstract class NetworkDebugAdapter extends StreamDebugAdapter {
+export aBstract class NetworkDeBugAdapter extends StreamDeBugAdapter {
 
 	protected socket?: net.Socket;
 
-	protected abstract createConnection(connectionListener: () => void): net.Socket;
+	protected aBstract createConnection(connectionListener: () => void): net.Socket;
 
 	startSession(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
@@ -135,11 +135,11 @@ export abstract class NetworkDebugAdapter extends StreamDebugAdapter {
 }
 
 /**
- * An implementation that connects to a debug adapter via a socket.
+ * An implementation that connects to a deBug adapter via a socket.
 */
-export class SocketDebugAdapter extends NetworkDebugAdapter {
+export class SocketDeBugAdapter extends NetworkDeBugAdapter {
 
-	constructor(private adapterServer: IDebugAdapterServer) {
+	constructor(private adapterServer: IDeBugAdapterServer) {
 		super();
 	}
 
@@ -149,11 +149,11 @@ export class SocketDebugAdapter extends NetworkDebugAdapter {
 }
 
 /**
- * An implementation that connects to a debug adapter via a NamedPipe (on Windows)/UNIX Domain Socket (on non-Windows).
+ * An implementation that connects to a deBug adapter via a NamedPipe (on Windows)/UNIX Domain Socket (on non-Windows).
  */
-export class NamedPipeDebugAdapter extends NetworkDebugAdapter {
+export class NamedPipeDeBugAdapter extends NetworkDeBugAdapter {
 
-	constructor(private adapterServer: IDebugAdapterNamedPipeServer) {
+	constructor(private adapterServer: IDeBugAdapterNamedPipeServer) {
 		super();
 	}
 
@@ -163,45 +163,45 @@ export class NamedPipeDebugAdapter extends NetworkDebugAdapter {
 }
 
 /**
- * An implementation that launches the debug adapter as a separate process and communicates via stdin/stdout.
+ * An implementation that launches the deBug adapter as a separate process and communicates via stdin/stdout.
 */
-export class ExecutableDebugAdapter extends StreamDebugAdapter {
+export class ExecutaBleDeBugAdapter extends StreamDeBugAdapter {
 
 	private serverProcess: cp.ChildProcess | undefined;
 
-	constructor(private adapterExecutable: IDebugAdapterExecutable, private debugType: string, private readonly outputService?: IOutputService) {
+	constructor(private adapterExecutaBle: IDeBugAdapterExecutaBle, private deBugType: string, private readonly outputService?: IOutputService) {
 		super();
 	}
 
 	async startSession(): Promise<void> {
 
-		const command = this.adapterExecutable.command;
-		const args = this.adapterExecutable.args;
-		const options = this.adapterExecutable.options || {};
+		const command = this.adapterExecutaBle.command;
+		const args = this.adapterExecutaBle.args;
+		const options = this.adapterExecutaBle.options || {};
 
 		try {
-			// verify executables asynchronously
+			// verify executaBles asynchronously
 			if (command) {
-				if (path.isAbsolute(command)) {
+				if (path.isABsolute(command)) {
 					const commandExists = await exists(command);
 					if (!commandExists) {
-						throw new Error(nls.localize('debugAdapterBinNotFound', "Debug adapter executable '{0}' does not exist.", command));
+						throw new Error(nls.localize('deBugAdapterBinNotFound', "DeBug adapter executaBle '{0}' does not exist.", command));
 					}
 				} else {
 					// relative path
 					if (command.indexOf('/') < 0 && command.indexOf('\\') < 0) {
 						// no separators: command looks like a runtime name like 'node' or 'mono'
-						// TODO: check that the runtime is available on PATH
+						// TODO: check that the runtime is availaBle on PATH
 					}
 				}
 			} else {
-				throw new Error(nls.localize({ key: 'debugAdapterCannotDetermineExecutable', comment: ['Adapter executable file not found'] },
-					"Cannot determine executable for debug adapter '{0}'.", this.debugType));
+				throw new Error(nls.localize({ key: 'deBugAdapterCannotDetermineExecutaBle', comment: ['Adapter executaBle file not found'] },
+					"Cannot determine executaBle for deBug adapter '{0}'.", this.deBugType));
 			}
 
-			let env = objects.mixin({}, process.env);
+			let env = oBjects.mixin({}, process.env);
 			if (options.env) {
-				env = objects.mixin(env, options.env);
+				env = oBjects.mixin(env, options.env);
 			}
 
 			if (command === 'node') {
@@ -217,11 +217,11 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 					}
 					const child = cp.fork(args[0], args.slice(1), forkOptions);
 					if (!child.pid) {
-						throw new Error(nls.localize('unableToLaunchDebugAdapter', "Unable to launch debug adapter from '{0}'.", args[0]));
+						throw new Error(nls.localize('unaBleToLaunchDeBugAdapter', "UnaBle to launch deBug adapter from '{0}'.", args[0]));
 					}
 					this.serverProcess = child;
 				} else {
-					throw new Error(nls.localize('unableToLaunchDebugAdapterNoArgs', "Unable to launch debug adapter."));
+					throw new Error(nls.localize('unaBleToLaunchDeBugAdapterNoArgs', "UnaBle to launch deBug adapter."));
 				}
 			} else {
 				const spawnOptions: cp.SpawnOptions = {
@@ -255,7 +255,7 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 			if (outputService) {
 				const sanitize = (s: string) => s.toString().replace(/\r?\n$/mg, '');
 				// this.serverProcess.stdout.on('data', (data: string) => {
-				// 	console.log('%c' + sanitize(data), 'background: #ddd; font-style: italic;');
+				// 	console.log('%c' + sanitize(data), 'Background: #ddd; font-style: italic;');
 				// });
 				this.serverProcess.stderr!.on('data', (data: string) => {
 					const channel = outputService.getChannel(ExtensionsChannelId);
@@ -280,7 +280,7 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 		}
 
 		// when killing a process in windows its child
-		// processes are *not* killed but become root
+		// processes are *not* killed But Become root
 		// processes. Therefore we use TASKKILL.EXE
 		await this.cancelPendingRequests();
 		if (platform.isWindows) {
@@ -299,75 +299,75 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 		}
 	}
 
-	private static extract(platformContribution: IPlatformSpecificAdapterContribution, extensionFolderPath: string): IDebuggerContribution | undefined {
-		if (!platformContribution) {
+	private static extract(platformContriBution: IPlatformSpecificAdapterContriBution, extensionFolderPath: string): IDeBuggerContriBution | undefined {
+		if (!platformContriBution) {
 			return undefined;
 		}
 
-		const result: IDebuggerContribution = Object.create(null);
-		if (platformContribution.runtime) {
-			if (platformContribution.runtime.indexOf('./') === 0) {	// TODO
-				result.runtime = path.join(extensionFolderPath, platformContribution.runtime);
+		const result: IDeBuggerContriBution = OBject.create(null);
+		if (platformContriBution.runtime) {
+			if (platformContriBution.runtime.indexOf('./') === 0) {	// TODO
+				result.runtime = path.join(extensionFolderPath, platformContriBution.runtime);
 			} else {
-				result.runtime = platformContribution.runtime;
+				result.runtime = platformContriBution.runtime;
 			}
 		}
-		if (platformContribution.runtimeArgs) {
-			result.runtimeArgs = platformContribution.runtimeArgs;
+		if (platformContriBution.runtimeArgs) {
+			result.runtimeArgs = platformContriBution.runtimeArgs;
 		}
-		if (platformContribution.program) {
-			if (!path.isAbsolute(platformContribution.program)) {
-				result.program = path.join(extensionFolderPath, platformContribution.program);
+		if (platformContriBution.program) {
+			if (!path.isABsolute(platformContriBution.program)) {
+				result.program = path.join(extensionFolderPath, platformContriBution.program);
 			} else {
-				result.program = platformContribution.program;
+				result.program = platformContriBution.program;
 			}
 		}
-		if (platformContribution.args) {
-			result.args = platformContribution.args;
+		if (platformContriBution.args) {
+			result.args = platformContriBution.args;
 		}
 
-		const contribution = platformContribution as IDebuggerContribution;
+		const contriBution = platformContriBution as IDeBuggerContriBution;
 
-		if (contribution.win) {
-			result.win = ExecutableDebugAdapter.extract(contribution.win, extensionFolderPath);
+		if (contriBution.win) {
+			result.win = ExecutaBleDeBugAdapter.extract(contriBution.win, extensionFolderPath);
 		}
-		if (contribution.winx86) {
-			result.winx86 = ExecutableDebugAdapter.extract(contribution.winx86, extensionFolderPath);
+		if (contriBution.winx86) {
+			result.winx86 = ExecutaBleDeBugAdapter.extract(contriBution.winx86, extensionFolderPath);
 		}
-		if (contribution.windows) {
-			result.windows = ExecutableDebugAdapter.extract(contribution.windows, extensionFolderPath);
+		if (contriBution.windows) {
+			result.windows = ExecutaBleDeBugAdapter.extract(contriBution.windows, extensionFolderPath);
 		}
-		if (contribution.osx) {
-			result.osx = ExecutableDebugAdapter.extract(contribution.osx, extensionFolderPath);
+		if (contriBution.osx) {
+			result.osx = ExecutaBleDeBugAdapter.extract(contriBution.osx, extensionFolderPath);
 		}
-		if (contribution.linux) {
-			result.linux = ExecutableDebugAdapter.extract(contribution.linux, extensionFolderPath);
+		if (contriBution.linux) {
+			result.linux = ExecutaBleDeBugAdapter.extract(contriBution.linux, extensionFolderPath);
 		}
 		return result;
 	}
 
-	static platformAdapterExecutable(extensionDescriptions: IExtensionDescription[], debugType: string): IDebugAdapterExecutable | undefined {
-		let result: IDebuggerContribution = Object.create(null);
-		debugType = debugType.toLowerCase();
+	static platformAdapterExecutaBle(extensionDescriptions: IExtensionDescription[], deBugType: string): IDeBugAdapterExecutaBle | undefined {
+		let result: IDeBuggerContriBution = OBject.create(null);
+		deBugType = deBugType.toLowerCase();
 
-		// merge all contributions into one
+		// merge all contriButions into one
 		for (const ed of extensionDescriptions) {
-			if (ed.contributes) {
-				const debuggers = <IDebuggerContribution[]>ed.contributes['debuggers'];
-				if (debuggers && debuggers.length > 0) {
-					debuggers.filter(dbg => typeof dbg.type === 'string' && strings.equalsIgnoreCase(dbg.type, debugType)).forEach(dbg => {
-						// extract relevant attributes and make them absolute where needed
-						const extractedDbg = ExecutableDebugAdapter.extract(dbg, ed.extensionLocation.fsPath);
+			if (ed.contriButes) {
+				const deBuggers = <IDeBuggerContriBution[]>ed.contriButes['deBuggers'];
+				if (deBuggers && deBuggers.length > 0) {
+					deBuggers.filter(dBg => typeof dBg.type === 'string' && strings.equalsIgnoreCase(dBg.type, deBugType)).forEach(dBg => {
+						// extract relevant attriButes and make them aBsolute where needed
+						const extractedDBg = ExecutaBleDeBugAdapter.extract(dBg, ed.extensionLocation.fsPath);
 
 						// merge
-						result = objects.mixin(result, extractedDbg, ed.isBuiltin);
+						result = oBjects.mixin(result, extractedDBg, ed.isBuiltin);
 					});
 				}
 			}
 		}
 
 		// select the right platform
-		let platformInfo: IPlatformSpecificAdapterContribution | undefined;
+		let platformInfo: IPlatformSpecificAdapterContriBution | undefined;
 		if (platform.isWindows && !process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432')) {
 			platformInfo = result.winx86 || result.win || result.windows;
 		} else if (platform.isWindows) {
@@ -379,7 +379,7 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 		}
 		platformInfo = platformInfo || result;
 
-		// these are the relevant attributes
+		// these are the relevant attriButes
 		let program = platformInfo.program || result.program;
 		const args = platformInfo.args || result.args;
 		let runtime = platformInfo.runtime || result.runtime;
@@ -387,13 +387,13 @@ export class ExecutableDebugAdapter extends StreamDebugAdapter {
 
 		if (runtime) {
 			return {
-				type: 'executable',
+				type: 'executaBle',
 				command: runtime,
 				args: (runtimeArgs || []).concat(typeof program === 'string' ? [program] : []).concat(args || [])
 			};
 		} else if (program) {
 			return {
-				type: 'executable',
+				type: 'executaBle',
 				command: program,
 				args: args || []
 			};

@@ -4,47 +4,47 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { isWindows, isMacintosh } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
+import { isWindows, isMacintosh } from 'vs/Base/common/platform';
+import { Schemas } from 'vs/Base/common/network';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { INativeHostService } from 'vs/platform/native/electron-sandBox/native';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyMod, KeyCode, KeyChord } from 'vs/base/common/keyCodes';
+import { KeyMod, KeyCode, KeyChord } from 'vs/Base/common/keyCodes';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
-import { IListService } from 'vs/platform/list/browser/listService';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { revealResourcesInOS } from 'vs/workbench/contrib/files/electron-sandbox/fileCommands';
+import { getMultiSelectedResources } from 'vs/workBench/contriB/files/Browser/files';
+import { IListService } from 'vs/platform/list/Browser/listService';
+import { IEditorService } from 'vs/workBench/services/editor/common/editorService';
+import { revealResourcesInOS } from 'vs/workBench/contriB/files/electron-sandBox/fileCommands';
 import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { ResourceContextKey } from 'vs/workbench/common/resources';
-import { appendToCommandPalette, appendEditorTitleContextMenuItem } from 'vs/workbench/contrib/files/browser/fileActions.contribution';
-import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
-import { SideBySideEditor, EditorResourceAccessor } from 'vs/workbench/common/editor';
+import { ResourceContextKey } from 'vs/workBench/common/resources';
+import { appendToCommandPalette, appendEditorTitleContextMenuItem } from 'vs/workBench/contriB/files/Browser/fileActions.contriBution';
+import { IExplorerService } from 'vs/workBench/contriB/files/common/files';
+import { SideBySideEditor, EditorResourceAccessor } from 'vs/workBench/common/editor';
 
 const REVEAL_IN_OS_COMMAND_ID = 'revealFileInOS';
 const REVEAL_IN_OS_LABEL = isWindows ? nls.localize('revealInWindows', "Reveal in File Explorer") : isMacintosh ? nls.localize('revealInMac', "Reveal in Finder") : nls.localize('openContainer', "Open Containing Folder");
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: REVEAL_IN_OS_COMMAND_ID,
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: EditorContextKeys.focus.toNegated(),
 	primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R,
 	win: {
 		primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_R
 	},
-	handler: (accessor: ServicesAccessor, resource: URI | object) => {
+	handler: (accessor: ServicesAccessor, resource: URI | oBject) => {
 		const resources = getMultiSelectedResources(resource, accessor.get(IListService), accessor.get(IEditorService), accessor.get(IExplorerService));
 		revealResourcesInOS(resources, accessor.get(INativeHostService), accessor.get(INotificationService), accessor.get(IWorkspaceContextService));
 	}
 });
 
-const REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID = 'workbench.action.files.revealActiveFileInWindows';
+const REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID = 'workBench.action.files.revealActiveFileInWindows';
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	weight: KeybindingWeight.WorkbenchContrib,
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
+	weight: KeyBindingWeight.WorkBenchContriB,
 	when: undefined,
 	primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyCode.KEY_R),
 	id: REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID,

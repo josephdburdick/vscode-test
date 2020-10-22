@@ -5,22 +5,22 @@
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { RawContextKey, IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { IFilesConfiguration, AutoSaveConfiguration, HotExitConfiguration } from 'vs/platform/files/common/files';
-import { isUndefinedOrNull } from 'vs/base/common/types';
-import { equals } from 'vs/base/common/objects';
-import { URI } from 'vs/base/common/uri';
-import { isWeb } from 'vs/base/common/platform';
+import { isUndefinedOrNull } from 'vs/Base/common/types';
+import { equals } from 'vs/Base/common/oBjects';
+import { URI } from 'vs/Base/common/uri';
+import { isWeB } from 'vs/Base/common/platform';
 
-export const AutoSaveAfterShortDelayContext = new RawContextKey<boolean>('autoSaveAfterShortDelayContext', false);
+export const AutoSaveAfterShortDelayContext = new RawContextKey<Boolean>('autoSaveAfterShortDelayContext', false);
 
 export interface IAutoSaveConfiguration {
-	autoSaveDelay?: number;
-	autoSaveFocusChange: boolean;
-	autoSaveApplicationChange: boolean;
+	autoSaveDelay?: numBer;
+	autoSaveFocusChange: Boolean;
+	autoSaveApplicationChange: Boolean;
 }
 
 export const enum AutoSaveMode {
@@ -51,18 +51,18 @@ export interface IFilesConfigurationService {
 
 	readonly onFilesAssociationChange: Event<void>;
 
-	readonly isHotExitEnabled: boolean;
+	readonly isHotExitEnaBled: Boolean;
 
 	readonly hotExitConfiguration: string | undefined;
 
-	preventSaveConflicts(resource: URI, language: string): boolean;
+	preventSaveConflicts(resource: URI, language: string): Boolean;
 }
 
-export class FilesConfigurationService extends Disposable implements IFilesConfigurationService {
+export class FilesConfigurationService extends DisposaBle implements IFilesConfigurationService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private static DEFAULT_AUTO_SAVE_MODE = isWeb ? AutoSaveConfiguration.AFTER_DELAY : AutoSaveConfiguration.OFF;
+	private static DEFAULT_AUTO_SAVE_MODE = isWeB ? AutoSaveConfiguration.AFTER_DELAY : AutoSaveConfiguration.OFF;
 
 	private readonly _onAutoSaveConfigurationChange = this._register(new Emitter<IAutoSaveConfiguration>());
 	readonly onAutoSaveConfigurationChange = this._onAutoSaveConfigurationChange.event;
@@ -70,11 +70,11 @@ export class FilesConfigurationService extends Disposable implements IFilesConfi
 	private readonly _onFilesAssociationChange = this._register(new Emitter<void>());
 	readonly onFilesAssociationChange = this._onFilesAssociationChange.event;
 
-	private configuredAutoSaveDelay?: number;
-	private configuredAutoSaveOnFocusChange: boolean | undefined;
-	private configuredAutoSaveOnWindowChange: boolean | undefined;
+	private configuredAutoSaveDelay?: numBer;
+	private configuredAutoSaveOnFocusChange: Boolean | undefined;
+	private configuredAutoSaveOnWindowChange: Boolean | undefined;
 
-	private autoSaveAfterShortDelayContext: IContextKey<boolean>;
+	private autoSaveAfterShortDelayContext: IContextKey<Boolean>;
 
 	private currentFilesAssociationConfig: { [key: string]: string; };
 
@@ -86,7 +86,7 @@ export class FilesConfigurationService extends Disposable implements IFilesConfi
 	) {
 		super();
 
-		this.autoSaveAfterShortDelayContext = AutoSaveAfterShortDelayContext.bindTo(contextKeyService);
+		this.autoSaveAfterShortDelayContext = AutoSaveAfterShortDelayContext.BindTo(contextKeyService);
 
 		const configuration = configurationService.getValue<IFilesConfiguration>();
 
@@ -117,25 +117,25 @@ export class FilesConfigurationService extends Disposable implements IFilesConfi
 				this.configuredAutoSaveDelay = configuration?.files?.autoSaveDelay;
 				this.configuredAutoSaveOnFocusChange = false;
 				this.configuredAutoSaveOnWindowChange = false;
-				break;
+				Break;
 
 			case AutoSaveConfiguration.ON_FOCUS_CHANGE:
 				this.configuredAutoSaveDelay = undefined;
 				this.configuredAutoSaveOnFocusChange = true;
 				this.configuredAutoSaveOnWindowChange = false;
-				break;
+				Break;
 
 			case AutoSaveConfiguration.ON_WINDOW_CHANGE:
 				this.configuredAutoSaveDelay = undefined;
 				this.configuredAutoSaveOnFocusChange = false;
 				this.configuredAutoSaveOnWindowChange = true;
-				break;
+				Break;
 
 			default:
 				this.configuredAutoSaveDelay = undefined;
 				this.configuredAutoSaveOnFocusChange = false;
 				this.configuredAutoSaveOnWindowChange = false;
-				break;
+				Break;
 		}
 
 		this.autoSaveAfterShortDelayContext.set(this.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY);
@@ -200,7 +200,7 @@ export class FilesConfigurationService extends Disposable implements IFilesConfi
 		return this.configurationService.updateValue('files.autoSave', newAutoSaveValue, ConfigurationTarget.USER);
 	}
 
-	get isHotExitEnabled(): boolean {
+	get isHotExitEnaBled(): Boolean {
 		return this.currentHotExitConfig !== HotExitConfiguration.OFF;
 	}
 
@@ -208,7 +208,7 @@ export class FilesConfigurationService extends Disposable implements IFilesConfi
 		return this.currentHotExitConfig;
 	}
 
-	preventSaveConflicts(resource: URI, language: string): boolean {
+	preventSaveConflicts(resource: URI, language: string): Boolean {
 		return this.configurationService.getValue('files.saveConflictResolution', { resource, overrideIdentifier: language }) !== 'overwriteFileOnDisk';
 	}
 }

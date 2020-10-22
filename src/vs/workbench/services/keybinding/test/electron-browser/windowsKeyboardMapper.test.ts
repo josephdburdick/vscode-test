@@ -3,45 +3,45 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyChord, KeyCode, KeyMod, SimpleKeybinding, createKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { ScanCode, ScanCodeBinding } from 'vs/base/common/scanCode';
-import { IWindowsKeyboardMapping, WindowsKeyboardMapper } from 'vs/workbench/services/keybinding/common/windowsKeyboardMapper';
-import { IResolvedKeybinding, assertMapping, assertResolveKeybinding, assertResolveKeyboardEvent, assertResolveUserBinding, readRawMapping } from 'vs/workbench/services/keybinding/test/electron-browser/keyboardMapperTestUtils';
+import { KeyChord, KeyCode, KeyMod, SimpleKeyBinding, createKeyBinding } from 'vs/Base/common/keyCodes';
+import { OperatingSystem } from 'vs/Base/common/platform';
+import { ScanCode, ScanCodeBinding } from 'vs/Base/common/scanCode';
+import { IWindowsKeyBoardMapping, WindowsKeyBoardMapper } from 'vs/workBench/services/keyBinding/common/windowsKeyBoardMapper';
+import { IResolvedKeyBinding, assertMapping, assertResolveKeyBinding, assertResolveKeyBoardEvent, assertResolveUserBinding, readRawMapping } from 'vs/workBench/services/keyBinding/test/electron-Browser/keyBoardMapperTestUtils';
 
 const WRITE_FILE_IF_DIFFERENT = false;
 
-async function createKeyboardMapper(isUSStandard: boolean, file: string): Promise<WindowsKeyboardMapper> {
-	const rawMappings = await readRawMapping<IWindowsKeyboardMapping>(file);
-	return new WindowsKeyboardMapper(isUSStandard, rawMappings);
+async function createKeyBoardMapper(isUSStandard: Boolean, file: string): Promise<WindowsKeyBoardMapper> {
+	const rawMappings = await readRawMapping<IWindowsKeyBoardMapping>(file);
+	return new WindowsKeyBoardMapper(isUSStandard, rawMappings);
 }
 
-function _assertResolveKeybinding(mapper: WindowsKeyboardMapper, k: number, expected: IResolvedKeybinding[]): void {
-	const keyBinding = createKeybinding(k, OperatingSystem.Windows);
-	assertResolveKeybinding(mapper, keyBinding!, expected);
+function _assertResolveKeyBinding(mapper: WindowsKeyBoardMapper, k: numBer, expected: IResolvedKeyBinding[]): void {
+	const keyBinding = createKeyBinding(k, OperatingSystem.Windows);
+	assertResolveKeyBinding(mapper, keyBinding!, expected);
 }
 
-suite('keyboardMapper - WINDOWS de_ch', () => {
+suite('keyBoardMapper - WINDOWS de_ch', () => {
 
-	let mapper: WindowsKeyboardMapper;
+	let mapper: WindowsKeyBoardMapper;
 
 	suiteSetup(async () => {
-		mapper = await createKeyboardMapper(false, 'win_de_ch');
+		mapper = await createKeyBoardMapper(false, 'win_de_ch');
 	});
 
 	test('mapping', () => {
 		return assertMapping(WRITE_FILE_IF_DIFFERENT, mapper, 'win_de_ch.txt');
 	});
 
-	test('resolveKeybinding Ctrl+A', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+A', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.KEY_A,
 			[{
-				label: 'Ctrl+A',
-				ariaLabel: 'Control+A',
+				laBel: 'Ctrl+A',
+				ariaLaBel: 'Control+A',
 				electronAccelerator: 'Ctrl+A',
-				userSettingsLabel: 'ctrl+a',
+				userSettingsLaBel: 'ctrl+a',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+A'],
@@ -49,15 +49,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+Z', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+Z', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.KEY_Z,
 			[{
-				label: 'Ctrl+Z',
-				ariaLabel: 'Control+Z',
+				laBel: 'Ctrl+Z',
+				ariaLaBel: 'Control+Z',
 				electronAccelerator: 'Ctrl+Z',
-				userSettingsLabel: 'ctrl+z',
+				userSettingsLaBel: 'ctrl+z',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+Z'],
@@ -65,11 +65,11 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Ctrl+Z', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Ctrl+Z', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -78,10 +78,10 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl+Z',
-				ariaLabel: 'Control+Z',
+				laBel: 'Ctrl+Z',
+				ariaLaBel: 'Control+Z',
 				electronAccelerator: 'Ctrl+Z',
-				userSettingsLabel: 'ctrl+z',
+				userSettingsLaBel: 'ctrl+z',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+Z'],
@@ -89,15 +89,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+]', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+]', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.US_CLOSE_SQUARE_BRACKET,
 			[{
-				label: 'Ctrl+^',
-				ariaLabel: 'Control+^',
+				laBel: 'Ctrl+^',
+				ariaLaBel: 'Control+^',
 				electronAccelerator: 'Ctrl+]',
-				userSettingsLabel: 'ctrl+oem_6',
+				userSettingsLaBel: 'ctrl+oem_6',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+]'],
@@ -105,11 +105,11 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Ctrl+]', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Ctrl+]', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -118,10 +118,10 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl+^',
-				ariaLabel: 'Control+^',
+				laBel: 'Ctrl+^',
+				ariaLaBel: 'Control+^',
 				electronAccelerator: 'Ctrl+]',
-				userSettingsLabel: 'ctrl+oem_6',
+				userSettingsLaBel: 'ctrl+oem_6',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+]'],
@@ -129,15 +129,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Shift+]', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Shift+]', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.Shift | KeyCode.US_CLOSE_SQUARE_BRACKET,
 			[{
-				label: 'Shift+^',
-				ariaLabel: 'Shift+^',
+				laBel: 'Shift+^',
+				ariaLaBel: 'Shift+^',
 				electronAccelerator: 'Shift+]',
-				userSettingsLabel: 'shift+oem_6',
+				userSettingsLaBel: 'shift+oem_6',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['shift+]'],
@@ -145,15 +145,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+/', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+/', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.US_SLASH,
 			[{
-				label: 'Ctrl+§',
-				ariaLabel: 'Control+§',
+				laBel: 'Ctrl+§',
+				ariaLaBel: 'Control+§',
 				electronAccelerator: 'Ctrl+/',
-				userSettingsLabel: 'ctrl+oem_2',
+				userSettingsLaBel: 'ctrl+oem_2',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+/'],
@@ -161,15 +161,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+Shift+/', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+Shift+/', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_SLASH,
 			[{
-				label: 'Ctrl+Shift+§',
-				ariaLabel: 'Control+Shift+§',
+				laBel: 'Ctrl+Shift+§',
+				ariaLaBel: 'Control+Shift+§',
 				electronAccelerator: 'Ctrl+Shift+/',
-				userSettingsLabel: 'ctrl+shift+oem_2',
+				userSettingsLaBel: 'ctrl+shift+oem_2',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+shift+/'],
@@ -177,15 +177,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+K Ctrl+\\', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+K Ctrl+\\', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.US_BACKSLASH),
 			[{
-				label: 'Ctrl+K Ctrl+ä',
-				ariaLabel: 'Control+K Control+ä',
+				laBel: 'Ctrl+K Ctrl+ä',
+				ariaLaBel: 'Control+K Control+ä',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+k ctrl+oem_5',
+				userSettingsLaBel: 'ctrl+k ctrl+oem_5',
 				isWYSIWYG: false,
 				isChord: true,
 				dispatchParts: ['ctrl+K', 'ctrl+\\'],
@@ -193,23 +193,23 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+K Ctrl+=', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+K Ctrl+=', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.US_EQUAL),
 			[]
 		);
 	});
 
-	test('resolveKeybinding Ctrl+DownArrow', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+DownArrow', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.DownArrow,
 			[{
-				label: 'Ctrl+DownArrow',
-				ariaLabel: 'Control+DownArrow',
+				laBel: 'Ctrl+DownArrow',
+				ariaLaBel: 'Control+DownArrow',
 				electronAccelerator: 'Ctrl+Down',
-				userSettingsLabel: 'ctrl+down',
+				userSettingsLaBel: 'ctrl+down',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+DownArrow'],
@@ -217,15 +217,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+NUMPAD_0', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+NUMPAD_0', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.NUMPAD_0,
 			[{
-				label: 'Ctrl+NumPad0',
-				ariaLabel: 'Control+NumPad0',
+				laBel: 'Ctrl+NumPad0',
+				ariaLaBel: 'Control+NumPad0',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+numpad0',
+				userSettingsLaBel: 'ctrl+numpad0',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+NumPad0'],
@@ -233,15 +233,15 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeybinding Ctrl+Home', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+Home', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.Home,
 			[{
-				label: 'Ctrl+Home',
-				ariaLabel: 'Control+Home',
+				laBel: 'Ctrl+Home',
+				ariaLaBel: 'Control+Home',
 				electronAccelerator: 'Ctrl+Home',
-				userSettingsLabel: 'ctrl+home',
+				userSettingsLaBel: 'ctrl+home',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+Home'],
@@ -249,11 +249,11 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Ctrl+Home', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Ctrl+Home', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -262,10 +262,10 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl+Home',
-				ariaLabel: 'Control+Home',
+				laBel: 'Ctrl+Home',
+				ariaLaBel: 'Control+Home',
 				electronAccelerator: 'Ctrl+Home',
-				userSettingsLabel: 'ctrl+home',
+				userSettingsLaBel: 'ctrl+home',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+Home'],
@@ -281,13 +281,13 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		assertResolveUserBinding(
 			mapper, [
 			new ScanCodeBinding(true, false, false, false, ScanCode.Comma),
-			new SimpleKeybinding(true, false, false, false, KeyCode.US_SLASH),
+			new SimpleKeyBinding(true, false, false, false, KeyCode.US_SLASH),
 		],
 			[{
-				label: 'Ctrl+, Ctrl+§',
-				ariaLabel: 'Control+, Control+§',
+				laBel: 'Ctrl+, Ctrl+§',
+				ariaLaBel: 'Control+, Control+§',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+oem_comma ctrl+oem_2',
+				userSettingsLaBel: 'ctrl+oem_comma ctrl+oem_2',
 				isWYSIWYG: false,
 				isChord: true,
 				dispatchParts: ['ctrl+,', 'ctrl+/'],
@@ -295,11 +295,11 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Modifier only Ctrl+', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Modifier only Ctrl+', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -308,10 +308,10 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl',
-				ariaLabel: 'Control',
+				laBel: 'Ctrl',
+				ariaLaBel: 'Control',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl',
+				userSettingsLaBel: 'ctrl',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: [null],
@@ -320,27 +320,27 @@ suite('keyboardMapper - WINDOWS de_ch', () => {
 	});
 });
 
-suite('keyboardMapper - WINDOWS en_us', () => {
+suite('keyBoardMapper - WINDOWS en_us', () => {
 
-	let mapper: WindowsKeyboardMapper;
+	let mapper: WindowsKeyBoardMapper;
 
 	suiteSetup(async () => {
-		mapper = await createKeyboardMapper(true, 'win_en_us');
+		mapper = await createKeyBoardMapper(true, 'win_en_us');
 	});
 
 	test('mapping', () => {
 		return assertMapping(WRITE_FILE_IF_DIFFERENT, mapper, 'win_en_us.txt');
 	});
 
-	test('resolveKeybinding Ctrl+K Ctrl+\\', () => {
-		_assertResolveKeybinding(
+	test('resolveKeyBinding Ctrl+K Ctrl+\\', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.US_BACKSLASH),
 			[{
-				label: 'Ctrl+K Ctrl+\\',
-				ariaLabel: 'Control+K Control+\\',
+				laBel: 'Ctrl+K Ctrl+\\',
+				ariaLaBel: 'Control+K Control+\\',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+k ctrl+\\',
+				userSettingsLaBel: 'ctrl+k ctrl+\\',
 				isWYSIWYG: true,
 				isChord: true,
 				dispatchParts: ['ctrl+K', 'ctrl+\\'],
@@ -352,13 +352,13 @@ suite('keyboardMapper - WINDOWS en_us', () => {
 		assertResolveUserBinding(
 			mapper, [
 			new ScanCodeBinding(true, false, false, false, ScanCode.Comma),
-			new SimpleKeybinding(true, false, false, false, KeyCode.US_SLASH),
+			new SimpleKeyBinding(true, false, false, false, KeyCode.US_SLASH),
 		],
 			[{
-				label: 'Ctrl+, Ctrl+/',
-				ariaLabel: 'Control+, Control+/',
+				laBel: 'Ctrl+, Ctrl+/',
+				ariaLaBel: 'Control+, Control+/',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+, ctrl+/',
+				userSettingsLaBel: 'ctrl+, ctrl+/',
 				isWYSIWYG: true,
 				isChord: true,
 				dispatchParts: ['ctrl+,', 'ctrl+/'],
@@ -372,10 +372,10 @@ suite('keyboardMapper - WINDOWS en_us', () => {
 			new ScanCodeBinding(true, false, false, false, ScanCode.Comma),
 		],
 			[{
-				label: 'Ctrl+,',
-				ariaLabel: 'Control+,',
+				laBel: 'Ctrl+,',
+				ariaLaBel: 'Control+,',
 				electronAccelerator: 'Ctrl+,',
-				userSettingsLabel: 'ctrl+,',
+				userSettingsLaBel: 'ctrl+,',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+,'],
@@ -383,11 +383,11 @@ suite('keyboardMapper - WINDOWS en_us', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Modifier only Ctrl+', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Modifier only Ctrl+', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -396,10 +396,10 @@ suite('keyboardMapper - WINDOWS en_us', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl',
-				ariaLabel: 'Control',
+				laBel: 'Ctrl',
+				ariaLaBel: 'Control',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl',
+				userSettingsLaBel: 'ctrl',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: [null],
@@ -408,23 +408,23 @@ suite('keyboardMapper - WINDOWS en_us', () => {
 	});
 });
 
-suite('keyboardMapper - WINDOWS por_ptb', () => {
+suite('keyBoardMapper - WINDOWS por_ptB', () => {
 
-	let mapper: WindowsKeyboardMapper;
+	let mapper: WindowsKeyBoardMapper;
 
 	suiteSetup(async () => {
-		mapper = await createKeyboardMapper(false, 'win_por_ptb');
+		mapper = await createKeyBoardMapper(false, 'win_por_ptB');
 	});
 
 	test('mapping', () => {
-		return assertMapping(WRITE_FILE_IF_DIFFERENT, mapper, 'win_por_ptb.txt');
+		return assertMapping(WRITE_FILE_IF_DIFFERENT, mapper, 'win_por_ptB.txt');
 	});
 
-	test('resolveKeyboardEvent Ctrl+[IntlRo]', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Ctrl+[IntlRo]', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -433,10 +433,10 @@ suite('keyboardMapper - WINDOWS por_ptb', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl+/',
-				ariaLabel: 'Control+/',
+				laBel: 'Ctrl+/',
+				ariaLaBel: 'Control+/',
 				electronAccelerator: 'Ctrl+ABNT_C1',
-				userSettingsLabel: 'ctrl+abnt_c1',
+				userSettingsLaBel: 'ctrl+aBnt_c1',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+ABNT_C1'],
@@ -444,11 +444,11 @@ suite('keyboardMapper - WINDOWS por_ptb', () => {
 		);
 	});
 
-	test('resolveKeyboardEvent Ctrl+[NumpadComma]', () => {
-		assertResolveKeyboardEvent(
+	test('resolveKeyBoardEvent Ctrl+[NumpadComma]', () => {
+		assertResolveKeyBoardEvent(
 			mapper,
 			{
-				_standardKeyboardEventBrand: true,
+				_standardKeyBoardEventBrand: true,
 				ctrlKey: true,
 				shiftKey: false,
 				altKey: false,
@@ -457,10 +457,10 @@ suite('keyboardMapper - WINDOWS por_ptb', () => {
 				code: null!
 			},
 			{
-				label: 'Ctrl+.',
-				ariaLabel: 'Control+.',
+				laBel: 'Ctrl+.',
+				ariaLaBel: 'Control+.',
 				electronAccelerator: 'Ctrl+ABNT_C2',
-				userSettingsLabel: 'ctrl+abnt_c2',
+				userSettingsLaBel: 'ctrl+aBnt_c2',
 				isWYSIWYG: false,
 				isChord: false,
 				dispatchParts: ['ctrl+ABNT_C2'],
@@ -469,27 +469,27 @@ suite('keyboardMapper - WINDOWS por_ptb', () => {
 	});
 });
 
-suite('keyboardMapper - WINDOWS ru', () => {
+suite('keyBoardMapper - WINDOWS ru', () => {
 
-	let mapper: WindowsKeyboardMapper;
+	let mapper: WindowsKeyBoardMapper;
 
 	suiteSetup(async () => {
-		mapper = await createKeyboardMapper(false, 'win_ru');
+		mapper = await createKeyBoardMapper(false, 'win_ru');
 	});
 
 	test('mapping', () => {
 		return assertMapping(WRITE_FILE_IF_DIFFERENT, mapper, 'win_ru.txt');
 	});
 
-	test('issue ##24361: resolveKeybinding Ctrl+K Ctrl+K', () => {
-		_assertResolveKeybinding(
+	test('issue ##24361: resolveKeyBinding Ctrl+K Ctrl+K', () => {
+		_assertResolveKeyBinding(
 			mapper,
 			KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_K),
 			[{
-				label: 'Ctrl+K Ctrl+K',
-				ariaLabel: 'Control+K Control+K',
+				laBel: 'Ctrl+K Ctrl+K',
+				ariaLaBel: 'Control+K Control+K',
 				electronAccelerator: null,
-				userSettingsLabel: 'ctrl+k ctrl+k',
+				userSettingsLaBel: 'ctrl+k ctrl+k',
 				isWYSIWYG: true,
 				isChord: true,
 				dispatchParts: ['ctrl+K', 'ctrl+K'],
@@ -498,9 +498,9 @@ suite('keyboardMapper - WINDOWS ru', () => {
 	});
 });
 
-suite('keyboardMapper - misc', () => {
-	test('issue #23513: Toggle Sidebar Visibility and Go to Line display same key mapping in Arabic keyboard', () => {
-		const mapper = new WindowsKeyboardMapper(false, {
+suite('keyBoardMapper - misc', () => {
+	test('issue #23513: Toggle SideBar VisiBility and Go to Line display same key mapping in AraBic keyBoard', () => {
+		const mapper = new WindowsKeyBoardMapper(false, {
 			'KeyB': {
 				'vkey': 'VK_B',
 				'value': 'لا',
@@ -517,14 +517,14 @@ suite('keyboardMapper - misc', () => {
 			}
 		});
 
-		_assertResolveKeybinding(
+		_assertResolveKeyBinding(
 			mapper,
 			KeyMod.CtrlCmd | KeyCode.KEY_B,
 			[{
-				label: 'Ctrl+B',
-				ariaLabel: 'Control+B',
+				laBel: 'Ctrl+B',
+				ariaLaBel: 'Control+B',
 				electronAccelerator: 'Ctrl+B',
-				userSettingsLabel: 'ctrl+b',
+				userSettingsLaBel: 'ctrl+B',
 				isWYSIWYG: true,
 				isChord: false,
 				dispatchParts: ['ctrl+B'],

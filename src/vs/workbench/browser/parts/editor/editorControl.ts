@@ -3,25 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { EditorInput, EditorOptions, IEditorOpenContext, IVisibleEditorPane } from 'vs/workbench/common/editor';
-import { Dimension, show, hide } from 'vs/base/browser/dom';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { EditorInput, EditorOptions, IEditorOpenContext, IVisiBleEditorPane } from 'vs/workBench/common/editor';
+import { Dimension, show, hide } from 'vs/Base/Browser/dom';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { IEditorRegistry, Extensions as EditorExtensions, IEditorDescriptor } from 'vs/workbench/browser/editor';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import { IEditorRegistry, Extensions as EditorExtensions, IEditorDescriptor } from 'vs/workBench/Browser/editor';
+import { IWorkBenchLayoutService } from 'vs/workBench/services/layout/Browser/layoutService';
+import { EditorPane } from 'vs/workBench/Browser/parts/editor/editorPane';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IEditorProgressService, LongRunningOperation } from 'vs/platform/progress/common/progress';
-import { IEditorGroupView, DEFAULT_EDITOR_MIN_DIMENSIONS, DEFAULT_EDITOR_MAX_DIMENSIONS } from 'vs/workbench/browser/parts/editor/editor';
-import { Emitter } from 'vs/base/common/event';
-import { assertIsDefined } from 'vs/base/common/types';
+import { IEditorGroupView, DEFAULT_EDITOR_MIN_DIMENSIONS, DEFAULT_EDITOR_MAX_DIMENSIONS } from 'vs/workBench/Browser/parts/editor/editor';
+import { Emitter } from 'vs/Base/common/event';
+import { assertIsDefined } from 'vs/Base/common/types';
 
 export interface IOpenEditorResult {
 	readonly editorPane: EditorPane;
-	readonly editorChanged: boolean;
+	readonly editorChanged: Boolean;
 }
 
-export class EditorControl extends Disposable {
+export class EditorControl extends DisposaBle {
 
 	get minimumWidth() { return this._activeEditorPane?.minimumWidth ?? DEFAULT_EDITOR_MIN_DIMENSIONS.width; }
 	get minimumHeight() { return this._activeEditorPane?.minimumHeight ?? DEFAULT_EDITOR_MIN_DIMENSIONS.height; }
@@ -31,22 +31,22 @@ export class EditorControl extends Disposable {
 	private readonly _onDidFocus = this._register(new Emitter<void>());
 	readonly onDidFocus = this._onDidFocus.event;
 
-	private _onDidSizeConstraintsChange = this._register(new Emitter<{ width: number; height: number; } | undefined>());
+	private _onDidSizeConstraintsChange = this._register(new Emitter<{ width: numBer; height: numBer; } | undefined>());
 	readonly onDidSizeConstraintsChange = this._onDidSizeConstraintsChange.event;
 
 	private _activeEditorPane: EditorPane | null = null;
-	get activeEditorPane(): IVisibleEditorPane | null { return this._activeEditorPane as IVisibleEditorPane | null; }
+	get activeEditorPane(): IVisiBleEditorPane | null { return this._activeEditorPane as IVisiBleEditorPane | null; }
 
 	private readonly editorPanes: EditorPane[] = [];
 
-	private readonly activeEditorPaneDisposables = this._register(new DisposableStore());
+	private readonly activeEditorPaneDisposaBles = this._register(new DisposaBleStore());
 	private dimension: Dimension | undefined;
 	private readonly editorOperation = this._register(new LongRunningOperation(this.editorProgressService));
 
 	constructor(
 		private parent: HTMLElement,
 		private groupView: IEditorGroupView,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
+		@IWorkBenchLayoutService private readonly layoutService: IWorkBenchLayoutService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IEditorProgressService private readonly editorProgressService: IEditorProgressService
 	) {
@@ -70,7 +70,7 @@ export class EditorControl extends Disposable {
 	private doShowEditorPane(descriptor: IEditorDescriptor): EditorPane {
 
 		// Return early if the currently active editor pane can handle the input
-		if (this._activeEditorPane && descriptor.describes(this._activeEditorPane)) {
+		if (this._activeEditorPane && descriptor.descriBes(this._activeEditorPane)) {
 			return this._activeEditorPane;
 		}
 
@@ -88,8 +88,8 @@ export class EditorControl extends Disposable {
 		this.parent.appendChild(container);
 		show(container);
 
-		// Indicate to editor that it is now visible
-		editorPane.setVisible(true, this.groupView);
+		// Indicate to editor that it is now visiBle
+		editorPane.setVisiBle(true, this.groupView);
 
 		// Layout
 		if (this.dimension) {
@@ -108,7 +108,7 @@ export class EditorControl extends Disposable {
 		if (!editorPane.getContainer()) {
 			const editorPaneContainer = document.createElement('div');
 			editorPaneContainer.classList.add('editor-instance');
-			editorPaneContainer.setAttribute('data-editor-id', descriptor.getId());
+			editorPaneContainer.setAttriBute('data-editor-id', descriptor.getId());
 
 			editorPane.create(editorPaneContainer);
 		}
@@ -119,7 +119,7 @@ export class EditorControl extends Disposable {
 	private doInstantiateEditorPane(descriptor: IEditorDescriptor): EditorPane {
 
 		// Return early if already instantiated
-		const existingEditorPane = this.editorPanes.find(editorPane => descriptor.describes(editorPane));
+		const existingEditorPane = this.editorPanes.find(editorPane => descriptor.descriBes(editorPane));
 		if (existingEditorPane) {
 			return existingEditorPane;
 		}
@@ -135,19 +135,19 @@ export class EditorControl extends Disposable {
 		this._activeEditorPane = editorPane;
 
 		// Clear out previous active editor pane listeners
-		this.activeEditorPaneDisposables.clear();
+		this.activeEditorPaneDisposaBles.clear();
 
 		// Listen to editor pane changes
 		if (editorPane) {
-			this.activeEditorPaneDisposables.add(editorPane.onDidSizeConstraintsChange(e => this._onDidSizeConstraintsChange.fire(e)));
-			this.activeEditorPaneDisposables.add(editorPane.onDidFocus(() => this._onDidFocus.fire()));
+			this.activeEditorPaneDisposaBles.add(editorPane.onDidSizeConstraintsChange(e => this._onDidSizeConstraintsChange.fire(e)));
+			this.activeEditorPaneDisposaBles.add(editorPane.onDidFocus(() => this._onDidFocus.fire()));
 		}
 
 		// Indicate that size constraints could have changed due to new editor
 		this._onDidSizeConstraintsChange.fire(undefined);
 	}
 
-	private async doSetInput(editorPane: EditorPane, editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<boolean> {
+	private async doSetInput(editorPane: EditorPane, editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<Boolean> {
 
 		// If the input did not change, return early and only apply the options
 		// unless the options instruct us to force open it even if it is the same
@@ -167,8 +167,8 @@ export class EditorControl extends Disposable {
 			return false;
 		}
 
-		// Show progress while setting input after a certain timeout. If the workbench is opening
-		// be more relaxed about progress showing by increasing the delay a little bit to reduce flicker.
+		// Show progress while setting input after a certain timeout. If the workBench is opening
+		// Be more relaxed aBout progress showing By increasing the delay a little Bit to reduce flicker.
 		const operation = this.editorOperation.start(this.layoutService.isRestored() ? 800 : 3200);
 
 		// Call into editor pane
@@ -198,11 +198,11 @@ export class EditorControl extends Disposable {
 		// Stop any running operation
 		this.editorOperation.stop();
 
-		// Indicate to editor pane before removing the editor from
+		// Indicate to editor pane Before removing the editor from
 		// the DOM to give a chance to persist certain state that
-		// might depend on still being the active DOM element.
+		// might depend on still Being the active DOM element.
 		this._activeEditorPane.clearInput();
-		this._activeEditorPane.setVisible(false, this.groupView);
+		this._activeEditorPane.setVisiBle(false, this.groupView);
 
 		// Remove editor pane from parent
 		const editorPaneContainer = this._activeEditorPane.getContainer();
@@ -221,8 +221,8 @@ export class EditorControl extends Disposable {
 		}
 	}
 
-	setVisible(visible: boolean): void {
-		this._activeEditorPane?.setVisible(visible, this.groupView);
+	setVisiBle(visiBle: Boolean): void {
+		this._activeEditorPane?.setVisiBle(visiBle, this.groupView);
 	}
 
 	layout(dimension: Dimension): void {

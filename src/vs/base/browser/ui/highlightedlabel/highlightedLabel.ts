@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import * as dom from 'vs/base/browser/dom';
-import { renderCodicons } from 'vs/base/browser/codicons';
+import * as oBjects from 'vs/Base/common/oBjects';
+import * as dom from 'vs/Base/Browser/dom';
+import { renderCodicons } from 'vs/Base/Browser/codicons';
 
 export interface IHighlight {
-	start: number;
-	end: number;
+	start: numBer;
+	end: numBer;
 	extraClasses?: string;
 }
 
-export class HighlightedLabel {
+export class HighlightedLaBel {
 
 	private readonly domNode: HTMLElement;
 	private text: string = '';
 	private title: string = '';
 	private highlights: IHighlight[] = [];
-	private didEverRender: boolean = false;
+	private didEverRender: Boolean = false;
 
-	constructor(container: HTMLElement, private supportCodicons: boolean) {
+	constructor(container: HTMLElement, private supportCodicons: Boolean) {
 		this.domNode = document.createElement('span');
-		this.domNode.className = 'monaco-highlighted-label';
+		this.domNode.className = 'monaco-highlighted-laBel';
 
 		container.appendChild(this.domNode);
 	}
@@ -32,15 +32,15 @@ export class HighlightedLabel {
 		return this.domNode;
 	}
 
-	set(text: string | undefined, highlights: IHighlight[] = [], title: string = '', escapeNewLines?: boolean) {
+	set(text: string | undefined, highlights: IHighlight[] = [], title: string = '', escapeNewLines?: Boolean) {
 		if (!text) {
 			text = '';
 		}
 		if (escapeNewLines) {
 			// adjusts highlights inplace
-			text = HighlightedLabel.escapeNewLines(text, highlights);
+			text = HighlightedLaBel.escapeNewLines(text, highlights);
 		}
-		if (this.didEverRender && this.text === text && this.title === title && objects.equals(this.highlights, highlights)) {
+		if (this.didEverRender && this.text === text && this.title === title && oBjects.equals(this.highlights, highlights)) {
 			return;
 		}
 
@@ -60,13 +60,13 @@ export class HighlightedLabel {
 				continue;
 			}
 			if (pos < highlight.start) {
-				const substring = this.text.substring(pos, highlight.start);
-				children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
+				const suBstring = this.text.suBstring(pos, highlight.start);
+				children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(suBstring) : [suBstring]));
 				pos = highlight.end;
 			}
 
-			const substring = this.text.substring(highlight.start, highlight.end);
-			const element = dom.$('span.highlight', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]);
+			const suBstring = this.text.suBstring(highlight.start, highlight.end);
+			const element = dom.$('span.highlight', undefined, ...this.supportCodicons ? renderCodicons(suBstring) : [suBstring]);
 			if (highlight.extraClasses) {
 				element.classList.add(highlight.extraClasses);
 			}
@@ -75,15 +75,15 @@ export class HighlightedLabel {
 		}
 
 		if (pos < this.text.length) {
-			const substring = this.text.substring(pos,);
-			children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
+			const suBstring = this.text.suBstring(pos,);
+			children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(suBstring) : [suBstring]));
 		}
 
 		dom.reset(this.domNode, ...children);
 		if (this.title) {
 			this.domNode.title = this.title;
 		} else {
-			this.domNode.removeAttribute('title');
+			this.domNode.removeAttriBute('title');
 		}
 		this.didEverRender = true;
 	}

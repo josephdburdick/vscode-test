@@ -3,55 +3,55 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
+import { CancellationToken } from 'vs/Base/common/cancellation';
+import { Emitter, Event } from 'vs/Base/common/event';
+import { DisposaBle, IDisposaBle, toDisposaBle } from 'vs/Base/common/lifecycle';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
+import { WeBviewOverlay } from 'vs/workBench/contriB/weBview/Browser/weBview';
 
-export const IWebviewViewService = createDecorator<IWebviewViewService>('webviewViewService');
+export const IWeBviewViewService = createDecorator<IWeBviewViewService>('weBviewViewService');
 
-export interface WebviewView {
+export interface WeBviewView {
 	title?: string;
 	description?: string;
 
-	readonly webview: WebviewOverlay;
+	readonly weBview: WeBviewOverlay;
 
-	readonly onDidChangeVisibility: Event<boolean>;
+	readonly onDidChangeVisiBility: Event<Boolean>;
 	readonly onDispose: Event<void>;
 
 	dispose(): void;
 
-	show(preserveFocus: boolean): void;
+	show(preserveFocus: Boolean): void;
 }
 
-export interface IWebviewViewResolver {
-	resolve(webviewView: WebviewView, cancellation: CancellationToken): Promise<void>;
+export interface IWeBviewViewResolver {
+	resolve(weBviewView: WeBviewView, cancellation: CancellationToken): Promise<void>;
 }
 
-export interface IWebviewViewService {
+export interface IWeBviewViewService {
 
 	readonly _serviceBrand: undefined;
 
 	readonly onNewResolverRegistered: Event<{ readonly viewType: string }>;
 
-	register(type: string, resolver: IWebviewViewResolver): IDisposable;
+	register(type: string, resolver: IWeBviewViewResolver): IDisposaBle;
 
-	resolve(viewType: string, webview: WebviewView, cancellation: CancellationToken): Promise<void>;
+	resolve(viewType: string, weBview: WeBviewView, cancellation: CancellationToken): Promise<void>;
 }
 
-export class WebviewViewService extends Disposable implements IWebviewViewService {
+export class WeBviewViewService extends DisposaBle implements IWeBviewViewService {
 
 	readonly _serviceBrand: undefined;
 
-	private readonly _resolvers = new Map<string, IWebviewViewResolver>();
+	private readonly _resolvers = new Map<string, IWeBviewViewResolver>();
 
-	private readonly _awaitingRevival = new Map<string, { webview: WebviewView, resolve: () => void }>();
+	private readonly _awaitingRevival = new Map<string, { weBview: WeBviewView, resolve: () => void }>();
 
 	private readonly _onNewResolverRegistered = this._register(new Emitter<{ readonly viewType: string }>());
-	public readonly onNewResolverRegistered = this._onNewResolverRegistered.event;
+	puBlic readonly onNewResolverRegistered = this._onNewResolverRegistered.event;
 
-	register(viewType: string, resolver: IWebviewViewResolver): IDisposable {
+	register(viewType: string, resolver: IWeBviewViewResolver): IDisposaBle {
 		if (this._resolvers.has(viewType)) {
 			throw new Error(`View resolver already registered for ${viewType}`);
 		}
@@ -61,18 +61,18 @@ export class WebviewViewService extends Disposable implements IWebviewViewServic
 
 		const pending = this._awaitingRevival.get(viewType);
 		if (pending) {
-			resolver.resolve(pending.webview, CancellationToken.None).then(() => {
+			resolver.resolve(pending.weBview, CancellationToken.None).then(() => {
 				this._awaitingRevival.delete(viewType);
 				pending.resolve();
 			});
 		}
 
-		return toDisposable(() => {
+		return toDisposaBle(() => {
 			this._resolvers.delete(viewType);
 		});
 	}
 
-	resolve(viewType: string, webview: WebviewView, cancellation: CancellationToken): Promise<void> {
+	resolve(viewType: string, weBview: WeBviewView, cancellation: CancellationToken): Promise<void> {
 		const resolver = this._resolvers.get(viewType);
 		if (!resolver) {
 			if (this._awaitingRevival.has(viewType)) {
@@ -81,11 +81,11 @@ export class WebviewViewService extends Disposable implements IWebviewViewServic
 
 			let resolve: () => void;
 			const p = new Promise<void>(r => resolve = r);
-			this._awaitingRevival.set(viewType, { webview, resolve: resolve! });
+			this._awaitingRevival.set(viewType, { weBview, resolve: resolve! });
 			return p;
 		}
 
-		return resolver.resolve(webview, cancellation);
+		return resolver.resolve(weBview, cancellation);
 	}
 }
 

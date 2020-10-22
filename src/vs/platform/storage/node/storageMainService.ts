@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/Base/common/event';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
 import { ILogService, LogLevel } from 'vs/platform/log/common/log';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { SQLiteStorageDatabase, ISQLiteStorageDatabaseLoggingOptions } from 'vs/base/parts/storage/node/storage';
-import { Storage, IStorage, InMemoryStorageDatabase } from 'vs/base/parts/storage/common/storage';
-import { join } from 'vs/base/common/path';
+import { SQLiteStorageDataBase, ISQLiteStorageDataBaseLoggingOptions } from 'vs/Base/parts/storage/node/storage';
+import { Storage, IStorage, InMemoryStorageDataBase } from 'vs/Base/parts/storage/common/storage';
+import { join } from 'vs/Base/common/path';
 import { IS_NEW_KEY } from 'vs/platform/storage/common/storage';
 
 export const IStorageMainService = createDecorator<IStorageMainService>('storageMainService');
@@ -25,11 +25,11 @@ export interface IStorageMainService {
 	readonly onDidChangeStorage: Event<IStorageChangeEvent>;
 
 	/**
-	 * Emitted when the storage is about to persist. This is the right time
-	 * to persist data to ensure it is stored before the application shuts
+	 * Emitted when the storage is aBout to persist. This is the right time
+	 * to persist data to ensure it is stored Before the application shuts
 	 * down.
 	 *
-	 * Note: this event may be fired many times, not only on shutdown to prevent
+	 * Note: this event may Be fired many times, not only on shutdown to prevent
 	 * loss of state in situations where the shutdown is not sufficient to
 	 * persist the data properly.
 	 */
@@ -41,7 +41,7 @@ export interface IStorageMainService {
 	readonly items: Map<string, string>;
 
 	/**
-	 * Required call to ensure the service can be used.
+	 * Required call to ensure the service can Be used.
 	 */
 	initialize(): Promise<void>;
 
@@ -49,30 +49,30 @@ export interface IStorageMainService {
 	 * Retrieve an element stored with the given key from storage. Use
 	 * the provided defaultValue if the element is null or undefined.
 	 */
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
+	get(key: string, fallBackValue: string): string;
+	get(key: string, fallBackValue?: string): string | undefined;
 
 	/**
 	 * Retrieve an element stored with the given key from storage. Use
 	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a boolean.
+	 * will Be converted to a Boolean.
 	 */
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
+	getBoolean(key: string, fallBackValue: Boolean): Boolean;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined;
 
 	/**
 	 * Retrieve an element stored with the given key from storage. Use
 	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a number using parseInt with a base of 10.
+	 * will Be converted to a numBer using parseInt with a Base of 10.
 	 */
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
+	getNumBer(key: string, fallBackValue: numBer): numBer;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined;
 
 	/**
 	 * Store a string value under the given key to storage. The value will
-	 * be converted to a string.
+	 * Be converted to a string.
 	 */
-	store(key: string, value: string | boolean | number | undefined | null): void;
+	store(key: string, value: string | Boolean | numBer | undefined | null): void;
 
 	/**
 	 * Delete an element stored under the provided key from storage.
@@ -84,11 +84,11 @@ export interface IStorageChangeEvent {
 	key: string;
 }
 
-export class StorageMainService extends Disposable implements IStorageMainService {
+export class StorageMainService extends DisposaBle implements IStorageMainService {
 
 	declare readonly _serviceBrand: undefined;
 
-	private static readonly STORAGE_NAME = 'state.vscdb';
+	private static readonly STORAGE_NAME = 'state.vscdB';
 
 	private readonly _onDidChangeStorage = this._register(new Emitter<IStorageChangeEvent>());
 	readonly onDidChangeStorage = this._onDidChangeStorage.event;
@@ -108,19 +108,19 @@ export class StorageMainService extends Disposable implements IStorageMainServic
 	) {
 		super();
 
-		// Until the storage has been initialized, it can only be in memory
-		this.storage = new Storage(new InMemoryStorageDatabase());
+		// Until the storage has Been initialized, it can only Be in memory
+		this.storage = new Storage(new InMemoryStorageDataBase());
 	}
 
 	private get storagePath(): string {
 		if (!!this.environmentService.extensionTestsLocationURI) {
-			return SQLiteStorageDatabase.IN_MEMORY_PATH; // no storage during extension tests!
+			return SQLiteStorageDataBase.IN_MEMORY_PATH; // no storage during extension tests!
 		}
 
-		return join(this.environmentService.globalStorageHome.fsPath, StorageMainService.STORAGE_NAME);
+		return join(this.environmentService.gloBalStorageHome.fsPath, StorageMainService.STORAGE_NAME);
 	}
 
-	private createLogginOptions(): ISQLiteStorageDatabaseLoggingOptions {
+	private createLogginOptions(): ISQLiteStorageDataBaseLoggingOptions {
 		return {
 			logTrace: (this.logService.getLevel() === LogLevel.Trace) ? msg => this.logService.trace(msg) : undefined,
 			logError: error => this.logService.error(error)
@@ -137,7 +137,7 @@ export class StorageMainService extends Disposable implements IStorageMainServic
 
 	private async doInitialize(): Promise<void> {
 		this.storage.dispose();
-		this.storage = new Storage(new SQLiteStorageDatabase(this.storagePath, {
+		this.storage = new Storage(new SQLiteStorageDataBase(this.storagePath, {
 			logging: this.createLogginOptions()
 		}));
 
@@ -154,25 +154,25 @@ export class StorageMainService extends Disposable implements IStorageMainServic
 		}
 	}
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
-	get(key: string, fallbackValue?: string): string | undefined {
-		return this.storage.get(key, fallbackValue);
+	get(key: string, fallBackValue: string): string;
+	get(key: string, fallBackValue?: string): string | undefined;
+	get(key: string, fallBackValue?: string): string | undefined {
+		return this.storage.get(key, fallBackValue);
 	}
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined {
-		return this.storage.getBoolean(key, fallbackValue);
+	getBoolean(key: string, fallBackValue: Boolean): Boolean;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined;
+	getBoolean(key: string, fallBackValue?: Boolean): Boolean | undefined {
+		return this.storage.getBoolean(key, fallBackValue);
 	}
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
-	getNumber(key: string, fallbackValue?: number): number | undefined {
-		return this.storage.getNumber(key, fallbackValue);
+	getNumBer(key: string, fallBackValue: numBer): numBer;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined;
+	getNumBer(key: string, fallBackValue?: numBer): numBer | undefined {
+		return this.storage.getNumBer(key, fallBackValue);
 	}
 
-	store(key: string, value: string | boolean | number | undefined | null): Promise<void> {
+	store(key: string, value: string | Boolean | numBer | undefined | null): Promise<void> {
 		return this.storage.set(key, value);
 	}
 

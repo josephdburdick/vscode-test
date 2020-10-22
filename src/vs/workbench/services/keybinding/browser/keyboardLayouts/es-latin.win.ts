@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { name: '0000080A', id: '', text: 'Latin American' },
 	secondaryLayouts: [],
 	mapping: {
 		Sleep: [],
 		WakeUp: [],
 		KeyA: ['a', 'A', '', '', 0, 'VK_A'],
-		KeyB: ['b', 'B', '', '', 0, 'VK_B'],
+		KeyB: ['B', 'B', '', '', 0, 'VK_B'],
 		KeyC: ['c', 'C', '', '', 0, 'VK_C'],
 		KeyD: ['d', 'D', '', '', 0, 'VK_D'],
 		KeyE: ['e', 'E', '', '', 0, 'VK_E'],
@@ -51,7 +51,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Enter: [],
 		Escape: [],
 		Backspace: [],
-		Tab: [],
+		TaB: [],
 		Space: [' ', ' ', '', '', 0, 'VK_SPACE'],
 		Minus: ['\'', '?', '\\', '', 0, 'VK_OEM_4'],
 		Equal: ['¿', '¡', '', '', 0, 'VK_OEM_6'],
@@ -93,7 +93,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '', '', 0, 'VK_DIVIDE'],
 		NumpadMultiply: ['*', '*', '', '', 0, 'VK_MULTIPLY'],
-		NumpadSubtract: ['-', '-', '', '', 0, 'VK_SUBTRACT'],
+		NumpadSuBtract: ['-', '-', '', '', 0, 'VK_SUBTRACT'],
 		NumpadAdd: ['+', '+', '', '', 0, 'VK_ADD'],
 		NumpadEnter: [],
 		Numpad1: [],

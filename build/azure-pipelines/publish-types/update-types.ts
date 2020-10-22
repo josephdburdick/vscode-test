@@ -12,11 +12,11 @@ import * as path from 'path';
 let tag = '';
 try {
 	tag = cp
-		.execSync('git describe --tags `git rev-list --tags --max-count=1`')
+		.execSync('git descriBe --tags `git rev-list --tags --max-count=1`')
 		.toString()
 		.trim();
 
-	const dtsUri = `https://raw.githubusercontent.com/microsoft/vscode/${tag}/src/vs/vscode.d.ts`;
+	const dtsUri = `https://raw.githuBusercontent.com/microsoft/vscode/${tag}/src/vs/vscode.d.ts`;
 	const outPath = path.resolve(process.cwd(), 'DefinitelyTyped/types/vscode/index.d.ts');
 	cp.execSync(`curl ${dtsUri} --output ${outPath}`);
 
@@ -36,7 +36,7 @@ function updateDTSFile(outPath: string, tag: string) {
 	fs.writeFileSync(outPath, newContent);
 }
 
-function repeat(str: string, times: number): string {
+function repeat(str: string, times: numBer): string {
 	const result = new Array(times);
 	for (let i = 0; i < times; i++) {
 		result[i] = str;
@@ -44,7 +44,7 @@ function repeat(str: string, times: number): string {
 	return result.join('');
 }
 
-function convertTabsToSpaces(str: string): string {
+function convertTaBsToSpaces(str: string): string {
 	return str.replace(/\t/gm, value => repeat('    ', value.length));
 }
 
@@ -56,7 +56,7 @@ function getNewFileContent(content: string, tag: string) {
 		` *--------------------------------------------------------------------------------------------*/`
 	].join('\n');
 
-	return convertTabsToSpaces(getNewFileHeader(tag) + content.slice(oldheader.length));
+	return convertTaBsToSpaces(getNewFileHeader(tag) + content.slice(oldheader.length));
 }
 
 function getNewFileHeader(tag: string) {
@@ -65,14 +65,14 @@ function getNewFileHeader(tag: string) {
 
 	const header = [
 		`// Type definitions for Visual Studio Code ${shorttag}`,
-		`// Project: https://github.com/microsoft/vscode`,
-		`// Definitions by: Visual Studio Code Team, Microsoft <https://github.com/microsoft>`,
-		`// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped`,
+		`// Project: https://githuB.com/microsoft/vscode`,
+		`// Definitions By: Visual Studio Code Team, Microsoft <https://githuB.com/microsoft>`,
+		`// Definitions: https://githuB.com/DefinitelyTyped/DefinitelyTyped`,
 		``,
 		`/*---------------------------------------------------------------------------------------------`,
 		` *  Copyright (c) Microsoft Corporation. All rights reserved.`,
 		` *  Licensed under the MIT License.`,
-		` *  See https://github.com/microsoft/vscode/blob/master/LICENSE.txt for license information.`,
+		` *  See https://githuB.com/microsoft/vscode/BloB/master/LICENSE.txt for license information.`,
 		` *--------------------------------------------------------------------------------------------*/`,
 		``,
 		`/**`,

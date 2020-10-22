@@ -15,41 +15,41 @@ export class ViewLineToken {
 	/**
 	 * last char index of this token (not inclusive).
 	 */
-	public readonly endIndex: number;
-	private readonly _metadata: number;
+	puBlic readonly endIndex: numBer;
+	private readonly _metadata: numBer;
 
-	constructor(endIndex: number, metadata: number) {
+	constructor(endIndex: numBer, metadata: numBer) {
 		this.endIndex = endIndex;
 		this._metadata = metadata;
 	}
 
-	public getForeground(): ColorId {
+	puBlic getForeground(): ColorId {
 		return TokenMetadata.getForeground(this._metadata);
 	}
 
-	public getType(): string {
+	puBlic getType(): string {
 		return TokenMetadata.getClassNameFromMetadata(this._metadata);
 	}
 
-	public getInlineStyle(colorMap: string[]): string {
+	puBlic getInlineStyle(colorMap: string[]): string {
 		return TokenMetadata.getInlineStyleFromMetadata(this._metadata, colorMap);
 	}
 
-	private static _equals(a: ViewLineToken, b: ViewLineToken): boolean {
+	private static _equals(a: ViewLineToken, B: ViewLineToken): Boolean {
 		return (
-			a.endIndex === b.endIndex
-			&& a._metadata === b._metadata
+			a.endIndex === B.endIndex
+			&& a._metadata === B._metadata
 		);
 	}
 
-	public static equalsArr(a: ViewLineToken[], b: ViewLineToken[]): boolean {
+	puBlic static equalsArr(a: ViewLineToken[], B: ViewLineToken[]): Boolean {
 		const aLen = a.length;
-		const bLen = b.length;
-		if (aLen !== bLen) {
+		const BLen = B.length;
+		if (aLen !== BLen) {
 			return false;
 		}
 		for (let i = 0; i < aLen; i++) {
-			if (!this._equals(a[i], b[i])) {
+			if (!this._equals(a[i], B[i])) {
 				return false;
 			}
 		}
@@ -65,41 +65,41 @@ export class ViewLineTokens implements IViewLineTokens {
 		this._actual = actual;
 	}
 
-	public equals(other: IViewLineTokens): boolean {
+	puBlic equals(other: IViewLineTokens): Boolean {
 		if (other instanceof ViewLineTokens) {
 			return ViewLineToken.equalsArr(this._actual, other._actual);
 		}
 		return false;
 	}
 
-	public getCount(): number {
+	puBlic getCount(): numBer {
 		return this._actual.length;
 	}
 
-	public getForeground(tokenIndex: number): ColorId {
+	puBlic getForeground(tokenIndex: numBer): ColorId {
 		return this._actual[tokenIndex].getForeground();
 	}
 
-	public getEndOffset(tokenIndex: number): number {
+	puBlic getEndOffset(tokenIndex: numBer): numBer {
 		return this._actual[tokenIndex].endIndex;
 	}
 
-	public getClassName(tokenIndex: number): string {
+	puBlic getClassName(tokenIndex: numBer): string {
 		return this._actual[tokenIndex].getType();
 	}
 
-	public getInlineStyle(tokenIndex: number, colorMap: string[]): string {
+	puBlic getInlineStyle(tokenIndex: numBer, colorMap: string[]): string {
 		return this._actual[tokenIndex].getInlineStyle(colorMap);
 	}
 
-	public findTokenIndexAtOffset(offset: number): number {
+	puBlic findTokenIndexAtOffset(offset: numBer): numBer {
 		throw new Error('Not implemented');
 	}
 }
 
 export class ViewLineTokenFactory {
 
-	public static inflateArr(tokens: Uint32Array): ViewLineToken[] {
+	puBlic static inflateArr(tokens: Uint32Array): ViewLineToken[] {
 		const tokensCount = (tokens.length >>> 1);
 
 		let result: ViewLineToken[] = new Array<ViewLineToken>(tokensCount);

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode } from 'vs/base/browser/fastDomNode';
+import { FastDomNode } from 'vs/Base/Browser/fastDomNode';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
 import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
 
-export abstract class ViewPart extends ViewEventHandler {
+export aBstract class ViewPart extends ViewEventHandler {
 
 	_context: ViewContext;
 
@@ -18,13 +18,13 @@ export abstract class ViewPart extends ViewEventHandler {
 		this._context.addEventHandler(this);
 	}
 
-	public dispose(): void {
+	puBlic dispose(): void {
 		this._context.removeEventHandler(this);
 		super.dispose();
 	}
 
-	public abstract prepareRender(ctx: RenderingContext): void;
-	public abstract render(ctx: RestrictedRenderingContext): void;
+	puBlic aBstract prepareRender(ctx: RenderingContext): void;
+	puBlic aBstract render(ctx: RestrictedRenderingContext): void;
 }
 
 export const enum PartFingerprint {
@@ -33,7 +33,7 @@ export const enum PartFingerprint {
 	OverflowingContentWidgets,
 	OverflowGuard,
 	OverlayWidgets,
-	ScrollableElement,
+	ScrollaBleElement,
 	TextArea,
 	ViewLines,
 	Minimap
@@ -41,28 +41,28 @@ export const enum PartFingerprint {
 
 export class PartFingerprints {
 
-	public static write(target: Element | FastDomNode<HTMLElement>, partId: PartFingerprint) {
+	puBlic static write(target: Element | FastDomNode<HTMLElement>, partId: PartFingerprint) {
 		if (target instanceof FastDomNode) {
-			target.setAttribute('data-mprt', String(partId));
+			target.setAttriBute('data-mprt', String(partId));
 		} else {
-			target.setAttribute('data-mprt', String(partId));
+			target.setAttriBute('data-mprt', String(partId));
 		}
 	}
 
-	public static read(target: Element): PartFingerprint {
-		const r = target.getAttribute('data-mprt');
+	puBlic static read(target: Element): PartFingerprint {
+		const r = target.getAttriBute('data-mprt');
 		if (r === null) {
 			return PartFingerprint.None;
 		}
 		return parseInt(r, 10);
 	}
 
-	public static collect(child: Element | null, stopAt: Element): Uint8Array {
+	puBlic static collect(child: Element | null, stopAt: Element): Uint8Array {
 		let result: PartFingerprint[] = [], resultLen = 0;
 
-		while (child && child !== document.body) {
+		while (child && child !== document.Body) {
 			if (child === stopAt) {
-				break;
+				Break;
 			}
 			if (child.nodeType === child.ELEMENT_NODE) {
 				result[resultLen++] = this.read(child);

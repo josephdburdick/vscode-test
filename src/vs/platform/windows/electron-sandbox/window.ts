@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { webFrame } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { weBFrame } from 'vs/Base/parts/sandBox/electron-sandBox/gloBals';
 import { zoomLevelToZoomFactor } from 'vs/platform/windows/common/windows';
-import { setZoomFactor, setZoomLevel, getZoomLevel } from 'vs/base/browser/browser';
+import { setZoomFactor, setZoomLevel, getZoomLevel } from 'vs/Base/Browser/Browser';
 
 /**
  * Apply a zoom level to the window. Also sets it in our in-memory
- * browser helper so that it can be accessed in non-electron layers.
+ * Browser helper so that it can Be accessed in non-electron layers.
  */
-export function applyZoom(zoomLevel: number): void {
-	webFrame.setZoomLevel(zoomLevel);
+export function applyZoom(zoomLevel: numBer): void {
+	weBFrame.setZoomLevel(zoomLevel);
 	setZoomFactor(zoomLevelToZoomFactor(zoomLevel));
-	// Cannot be trusted because the webFrame might take some time
+	// Cannot Be trusted Because the weBFrame might take some time
 	// until it really applies the new zoom level
-	// See https://github.com/microsoft/vscode/issues/26151
+	// See https://githuB.com/microsoft/vscode/issues/26151
 	setZoomLevel(zoomLevel, false /* isTrusted */);
 }
 

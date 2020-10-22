@@ -3,96 +3,96 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as extensionsRegistry from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import * as extensionsRegistry from 'vs/workBench/services/extensions/common/extensionsRegistry';
 import * as nls from 'vs/nls';
-import { IDebuggerContribution, ICompound } from 'vs/workbench/contrib/debug/common/debug';
-import { launchSchemaId } from 'vs/workbench/services/configuration/common/configuration';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { inputsSchema } from 'vs/workbench/services/configurationResolver/common/configurationResolverSchema';
+import { IDeBuggerContriBution, ICompound } from 'vs/workBench/contriB/deBug/common/deBug';
+import { launchSchemaId } from 'vs/workBench/services/configuration/common/configuration';
+import { IJSONSchema } from 'vs/Base/common/jsonSchema';
+import { inputsSchema } from 'vs/workBench/services/configurationResolver/common/configurationResolverSchema';
 
-// debuggers extension point
-export const debuggersExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<IDebuggerContribution[]>({
-	extensionPoint: 'debuggers',
+// deBuggers extension point
+export const deBuggersExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<IDeBuggerContriBution[]>({
+	extensionPoint: 'deBuggers',
 	defaultExtensionKind: 'workspace',
 	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.debuggers', 'Contributes debug adapters.'),
+		description: nls.localize('vscode.extension.contriButes.deBuggers', 'ContriButes deBug adapters.'),
 		type: 'array',
-		defaultSnippets: [{ body: [{ type: '' }] }],
+		defaultSnippets: [{ Body: [{ type: '' }] }],
 		items: {
 			additionalProperties: false,
-			type: 'object',
-			defaultSnippets: [{ body: { type: '', program: '', runtime: '' } }],
+			type: 'oBject',
+			defaultSnippets: [{ Body: { type: '', program: '', runtime: '' } }],
 			properties: {
 				type: {
-					description: nls.localize('vscode.extension.contributes.debuggers.type', "Unique identifier for this debug adapter."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.type', "Unique identifier for this deBug adapter."),
 					type: 'string'
 				},
-				label: {
-					description: nls.localize('vscode.extension.contributes.debuggers.label', "Display name for this debug adapter."),
+				laBel: {
+					description: nls.localize('vscode.extension.contriButes.deBuggers.laBel', "Display name for this deBug adapter."),
 					type: 'string'
 				},
 				program: {
-					description: nls.localize('vscode.extension.contributes.debuggers.program', "Path to the debug adapter program. Path is either absolute or relative to the extension folder."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.program', "Path to the deBug adapter program. Path is either aBsolute or relative to the extension folder."),
 					type: 'string'
 				},
 				args: {
-					description: nls.localize('vscode.extension.contributes.debuggers.args', "Optional arguments to pass to the adapter."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.args', "Optional arguments to pass to the adapter."),
 					type: 'array'
 				},
 				runtime: {
-					description: nls.localize('vscode.extension.contributes.debuggers.runtime', "Optional runtime in case the program attribute is not an executable but requires a runtime."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.runtime', "Optional runtime in case the program attriBute is not an executaBle But requires a runtime."),
 					type: 'string'
 				},
 				runtimeArgs: {
-					description: nls.localize('vscode.extension.contributes.debuggers.runtimeArgs', "Optional runtime arguments."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.runtimeArgs', "Optional runtime arguments."),
 					type: 'array'
 				},
-				variables: {
-					description: nls.localize('vscode.extension.contributes.debuggers.variables', "Mapping from interactive variables (e.g. ${action.pickProcess}) in `launch.json` to a command."),
-					type: 'object'
+				variaBles: {
+					description: nls.localize('vscode.extension.contriButes.deBuggers.variaBles', "Mapping from interactive variaBles (e.g. ${action.pickProcess}) in `launch.json` to a command."),
+					type: 'oBject'
 				},
 				initialConfigurations: {
-					description: nls.localize('vscode.extension.contributes.debuggers.initialConfigurations', "Configurations for generating the initial \'launch.json\'."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.initialConfigurations', "Configurations for generating the initial \'launch.json\'."),
 					type: ['array', 'string'],
 				},
 				languages: {
-					description: nls.localize('vscode.extension.contributes.debuggers.languages', "List of languages for which the debug extension could be considered the \"default debugger\"."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.languages', "List of languages for which the deBug extension could Be considered the \"default deBugger\"."),
 					type: 'array'
 				},
 				configurationSnippets: {
-					description: nls.localize('vscode.extension.contributes.debuggers.configurationSnippets', "Snippets for adding new configurations in \'launch.json\'."),
+					description: nls.localize('vscode.extension.contriButes.deBuggers.configurationSnippets', "Snippets for adding new configurations in \'launch.json\'."),
 					type: 'array'
 				},
-				configurationAttributes: {
-					description: nls.localize('vscode.extension.contributes.debuggers.configurationAttributes', "JSON schema configurations for validating \'launch.json\'."),
-					type: 'object'
+				configurationAttriButes: {
+					description: nls.localize('vscode.extension.contriButes.deBuggers.configurationAttriButes', "JSON schema configurations for validating \'launch.json\'."),
+					type: 'oBject'
 				},
 				windows: {
-					description: nls.localize('vscode.extension.contributes.debuggers.windows', "Windows specific settings."),
-					type: 'object',
+					description: nls.localize('vscode.extension.contriButes.deBuggers.windows', "Windows specific settings."),
+					type: 'oBject',
 					properties: {
 						runtime: {
-							description: nls.localize('vscode.extension.contributes.debuggers.windows.runtime', "Runtime used for Windows."),
+							description: nls.localize('vscode.extension.contriButes.deBuggers.windows.runtime', "Runtime used for Windows."),
 							type: 'string'
 						}
 					}
 				},
 				osx: {
-					description: nls.localize('vscode.extension.contributes.debuggers.osx', "macOS specific settings."),
-					type: 'object',
+					description: nls.localize('vscode.extension.contriButes.deBuggers.osx', "macOS specific settings."),
+					type: 'oBject',
 					properties: {
 						runtime: {
-							description: nls.localize('vscode.extension.contributes.debuggers.osx.runtime', "Runtime used for macOS."),
+							description: nls.localize('vscode.extension.contriButes.deBuggers.osx.runtime', "Runtime used for macOS."),
 							type: 'string'
 						}
 					}
 				},
 				linux: {
-					description: nls.localize('vscode.extension.contributes.debuggers.linux', "Linux specific settings."),
-					type: 'object',
+					description: nls.localize('vscode.extension.contriButes.deBuggers.linux', "Linux specific settings."),
+					type: 'oBject',
 					properties: {
 						runtime: {
-							description: nls.localize('vscode.extension.contributes.debuggers.linux.runtime', "Runtime used for Linux."),
+							description: nls.localize('vscode.extension.contriButes.deBuggers.linux.runtime', "Runtime used for Linux."),
 							type: 'string'
 						}
 					}
@@ -102,24 +102,24 @@ export const debuggersExtPoint = extensionsRegistry.ExtensionsRegistry.registerE
 	}
 });
 
-export interface IRawBreakpointContribution {
+export interface IRawBreakpointContriBution {
 	language: string;
 }
 
-// breakpoints extension point #9037
-export const breakpointsExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<IRawBreakpointContribution[]>({
-	extensionPoint: 'breakpoints',
+// Breakpoints extension point #9037
+export const BreakpointsExtPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<IRawBreakpointContriBution[]>({
+	extensionPoint: 'Breakpoints',
 	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.breakpoints', 'Contributes breakpoints.'),
+		description: nls.localize('vscode.extension.contriButes.Breakpoints', 'ContriButes Breakpoints.'),
 		type: 'array',
-		defaultSnippets: [{ body: [{ language: '' }] }],
+		defaultSnippets: [{ Body: [{ language: '' }] }],
 		items: {
-			type: 'object',
+			type: 'oBject',
 			additionalProperties: false,
-			defaultSnippets: [{ body: { language: '' } }],
+			defaultSnippets: [{ Body: { language: '' } }],
 			properties: {
 				language: {
-					description: nls.localize('vscode.extension.contributes.breakpoints.language', "Allow breakpoints for this language."),
+					description: nls.localize('vscode.extension.contriButes.Breakpoints.language', "Allow Breakpoints for this language."),
 					type: 'string'
 				},
 			}
@@ -127,24 +127,24 @@ export const breakpointsExtPoint = extensionsRegistry.ExtensionsRegistry.registe
 	}
 });
 
-// debug general schema
+// deBug general schema
 
 export const presentationSchema: IJSONSchema = {
-	type: 'object',
-	description: nls.localize('presentation', "Presentation options on how to show this configuration in the debug configuration dropdown and the command palette."),
+	type: 'oBject',
+	description: nls.localize('presentation', "Presentation options on how to show this configuration in the deBug configuration dropdown and the command palette."),
 	properties: {
 		hidden: {
-			type: 'boolean',
+			type: 'Boolean',
 			default: false,
-			description: nls.localize('presentation.hidden', "Controls if this configuration should be shown in the configuration dropdown and the command palette.")
+			description: nls.localize('presentation.hidden', "Controls if this configuration should Be shown in the configuration dropdown and the command palette.")
 		},
 		group: {
 			type: 'string',
 			default: '',
-			description: nls.localize('presentation.group', "Group that this configuration belongs to. Used for grouping and sorting in the configuration dropdown and the command palette.")
+			description: nls.localize('presentation.group', "Group that this configuration Belongs to. Used for grouping and sorting in the configuration dropdown and the command palette.")
 		},
 		order: {
-			type: 'number',
+			type: 'numBer',
 			default: 1,
 			description: nls.localize('presentation.order', "Order of this configuration within a group. Used for grouping and sorting in the configuration dropdown and the command palette.")
 		}
@@ -158,7 +158,7 @@ export const presentationSchema: IJSONSchema = {
 const defaultCompound: ICompound = { name: 'Compound', configurations: [] };
 export const launchSchema: IJSONSchema = {
 	id: launchSchemaId,
-	type: 'object',
+	type: 'oBject',
 	title: nls.localize('app.launch.json.title', "Launch"),
 	allowTrailingCommas: true,
 	allowComments: true,
@@ -172,10 +172,10 @@ export const launchSchema: IJSONSchema = {
 		},
 		configurations: {
 			type: 'array',
-			description: nls.localize('app.launch.json.configurations', "List of configurations. Add new configurations or edit existing ones by using IntelliSense."),
+			description: nls.localize('app.launch.json.configurations', "List of configurations. Add new configurations or edit existing ones By using IntelliSense."),
 			items: {
 				defaultSnippets: [],
-				'type': 'object',
+				'type': 'oBject',
 				oneOf: []
 			}
 		},
@@ -183,7 +183,7 @@ export const launchSchema: IJSONSchema = {
 			type: 'array',
 			description: nls.localize('app.launch.json.compounds', "List of compounds. Each compound references multiple configurations which will get launched together."),
 			items: {
-				type: 'object',
+				type: 'oBject',
 				required: ['name', 'configurations'],
 				properties: {
 					name: {
@@ -199,7 +199,7 @@ export const launchSchema: IJSONSchema = {
 								enum: [],
 								description: nls.localize('useUniqueNames', "Please use unique configuration names.")
 							}, {
-								type: 'object',
+								type: 'oBject',
 								required: ['name'],
 								properties: {
 									name: {
@@ -213,17 +213,17 @@ export const launchSchema: IJSONSchema = {
 								}
 							}]
 						},
-						description: nls.localize('app.launch.json.compounds.configurations', "Names of configurations that will be started as part of this compound.")
+						description: nls.localize('app.launch.json.compounds.configurations', "Names of configurations that will Be started as part of this compound.")
 					},
 					stopAll: {
-						type: 'boolean',
+						type: 'Boolean',
 						default: false,
 						description: nls.localize('app.launch.json.compound.stopAll', "Controls whether manually terminating one session will stop all of the compound sessions.")
 					},
 					preLaunchTask: {
 						type: 'string',
 						default: '',
-						description: nls.localize('compoundPrelaunchTask', "Task to run before any of the compound configurations start.")
+						description: nls.localize('compoundPrelaunchTask', "Task to run Before any of the compound configurations start.")
 					}
 				},
 				default: defaultCompound

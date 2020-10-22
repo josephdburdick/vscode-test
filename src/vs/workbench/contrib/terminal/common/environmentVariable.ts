@@ -4,46 +4,46 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { Event } from 'vs/Base/common/event';
+import { IProcessEnvironment } from 'vs/Base/common/platform';
 
-export const IEnvironmentVariableService = createDecorator<IEnvironmentVariableService>('environmentVariableService');
+export const IEnvironmentVariaBleService = createDecorator<IEnvironmentVariaBleService>('environmentVariaBleService');
 
-export enum EnvironmentVariableMutatorType {
+export enum EnvironmentVariaBleMutatorType {
 	Replace = 1,
 	Append = 2,
 	Prepend = 3
 }
 
-export interface IEnvironmentVariableMutator {
+export interface IEnvironmentVariaBleMutator {
 	readonly value: string;
-	readonly type: EnvironmentVariableMutatorType;
+	readonly type: EnvironmentVariaBleMutatorType;
 }
 
-export interface IExtensionOwnedEnvironmentVariableMutator extends IEnvironmentVariableMutator {
+export interface IExtensionOwnedEnvironmentVariaBleMutator extends IEnvironmentVariaBleMutator {
 	readonly extensionIdentifier: string;
 }
 
-export interface IEnvironmentVariableCollection {
-	readonly map: ReadonlyMap<string, IEnvironmentVariableMutator>;
+export interface IEnvironmentVariaBleCollection {
+	readonly map: ReadonlyMap<string, IEnvironmentVariaBleMutator>;
 }
 
-export interface IEnvironmentVariableCollectionWithPersistence extends IEnvironmentVariableCollection {
-	readonly persistent: boolean;
+export interface IEnvironmentVariaBleCollectionWithPersistence extends IEnvironmentVariaBleCollection {
+	readonly persistent: Boolean;
 }
 
-export interface IMergedEnvironmentVariableCollectionDiff {
-	added: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
-	changed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
-	removed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
+export interface IMergedEnvironmentVariaBleCollectionDiff {
+	added: ReadonlyMap<string, IExtensionOwnedEnvironmentVariaBleMutator[]>;
+	changed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariaBleMutator[]>;
+	removed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariaBleMutator[]>;
 }
 
 /**
- * Represents an environment variable collection that results from merging several collections
+ * Represents an environment variaBle collection that results from merging several collections
  * together.
  */
-export interface IMergedEnvironmentVariableCollection {
-	readonly map: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
+export interface IMergedEnvironmentVariaBleCollection {
+	readonly map: ReadonlyMap<string, IExtensionOwnedEnvironmentVariaBleMutator[]>;
 
 	/**
 	 * Applies this collection to a process environment.
@@ -54,50 +54,50 @@ export interface IMergedEnvironmentVariableCollection {
 	 * Generates a diff of this connection against another. Returns undefined if the collections are
 	 * the same.
 	 */
-	diff(other: IMergedEnvironmentVariableCollection): IMergedEnvironmentVariableCollectionDiff | undefined;
+	diff(other: IMergedEnvironmentVariaBleCollection): IMergedEnvironmentVariaBleCollectionDiff | undefined;
 }
 
 /**
- * Tracks and persists environment variable collections as defined by extensions.
+ * Tracks and persists environment variaBle collections as defined By extensions.
  */
-export interface IEnvironmentVariableService {
+export interface IEnvironmentVariaBleService {
 	readonly _serviceBrand: undefined;
 
 	/**
-	 * Gets a single collection constructed by merging all environment variable collections into
+	 * Gets a single collection constructed By merging all environment variaBle collections into
 	 * one.
 	 */
-	readonly collections: ReadonlyMap<string, IEnvironmentVariableCollection>;
+	readonly collections: ReadonlyMap<string, IEnvironmentVariaBleCollection>;
 
 	/**
-	 * Gets a single collection constructed by merging all environment variable collections into
+	 * Gets a single collection constructed By merging all environment variaBle collections into
 	 * one.
 	 */
-	readonly mergedCollection: IMergedEnvironmentVariableCollection;
+	readonly mergedCollection: IMergedEnvironmentVariaBleCollection;
 
 	/**
-	 * An event that is fired when an extension's environment variable collection changes, the event
+	 * An event that is fired when an extension's environment variaBle collection changes, the event
 	 * provides the new merged collection.
 	 */
-	onDidChangeCollections: Event<IMergedEnvironmentVariableCollection>;
+	onDidChangeCollections: Event<IMergedEnvironmentVariaBleCollection>;
 
 	/**
-	 * Sets an extension's environment variable collection.
+	 * Sets an extension's environment variaBle collection.
 	 */
-	set(extensionIdentifier: string, collection: IEnvironmentVariableCollection): void;
+	set(extensionIdentifier: string, collection: IEnvironmentVariaBleCollection): void;
 
 	/**
-	 * Deletes an extension's environment variable collection.
+	 * Deletes an extension's environment variaBle collection.
 	 */
 	delete(extensionIdentifier: string): void;
 }
 
-/** [variable, mutator] */
-export type ISerializableEnvironmentVariableCollection = [string, IEnvironmentVariableMutator][];
+/** [variaBle, mutator] */
+export type ISerializaBleEnvironmentVariaBleCollection = [string, IEnvironmentVariaBleMutator][];
 
-export interface IEnvironmentVariableInfo {
-	readonly requiresAction: boolean;
+export interface IEnvironmentVariaBleInfo {
+	readonly requiresAction: Boolean;
 	getInfo(): string;
 	getIcon(): string;
-	getActions?(): { label: string, iconClass?: string, run: () => void, commandId: string }[];
+	getActions?(): { laBel: string, iconClass?: string, run: () => void, commandId: string }[];
 }

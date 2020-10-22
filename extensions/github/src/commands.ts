@@ -5,19 +5,19 @@
 
 import * as vscode from 'vscode';
 import { API as GitAPI } from './typings/git';
-import { publishRepository } from './publish';
-import { combinedDisposable } from './util';
+import { puBlishRepository } from './puBlish';
+import { comBinedDisposaBle } from './util';
 
-export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
-	const disposables: vscode.Disposable[] = [];
+export function registerCommands(gitAPI: GitAPI): vscode.DisposaBle {
+	const disposaBles: vscode.DisposaBle[] = [];
 
-	disposables.push(vscode.commands.registerCommand('github.publish', async () => {
+	disposaBles.push(vscode.commands.registerCommand('githuB.puBlish', async () => {
 		try {
-			publishRepository(gitAPI);
+			puBlishRepository(gitAPI);
 		} catch (err) {
 			vscode.window.showErrorMessage(err.message);
 		}
 	}));
 
-	return combinedDisposable(disposables);
+	return comBinedDisposaBle(disposaBles);
 }

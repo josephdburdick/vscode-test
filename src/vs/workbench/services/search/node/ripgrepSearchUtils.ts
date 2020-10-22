@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { mapArrayOrNot } from 'vs/base/common/arrays';
-import { URI } from 'vs/base/common/uri';
+import { mapArrayOrNot } from 'vs/Base/common/arrays';
+import { URI } from 'vs/Base/common/uri';
 import { ILogService } from 'vs/platform/log/common/log';
-import { SearchRange, TextSearchMatch } from 'vs/workbench/services/search/common/search';
-import * as searchExtTypes from 'vs/workbench/services/search/common/searchExtTypes';
+import { SearchRange, TextSearchMatch } from 'vs/workBench/services/search/common/search';
+import * as searchExtTypes from 'vs/workBench/services/search/common/searchExtTypes';
 
-export type Maybe<T> = T | null | undefined;
+export type MayBe<T> = T | null | undefined;
 
-export function anchorGlob(glob: string): string {
-	return glob.startsWith('**') || glob.startsWith('/') ? glob : `/${glob}`;
+export function anchorGloB(gloB: string): string {
+	return gloB.startsWith('**') || gloB.startsWith('/') ? gloB : `/${gloB}`;
 }
 
 /**
- * Create a vscode.TextSearchMatch by using our internal TextSearchMatch type for its previewOptions logic.
+ * Create a vscode.TextSearchMatch By using our internal TextSearchMatch type for its previewOptions logic.
  */
 export function createTextSearchResult(uri: URI, text: string, range: searchExtTypes.Range | searchExtTypes.Range[], previewOptions?: searchExtTypes.TextSearchPreviewOptions): searchExtTypes.TextSearchMatch {
 	const searchRange = mapArrayOrNot(range, rangeToSearchRange);
@@ -38,7 +38,7 @@ function rangeToSearchRange(range: searchExtTypes.Range): SearchRange {
 }
 
 function searchRangeToRange(range: SearchRange): searchExtTypes.Range {
-	return new searchExtTypes.Range(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+	return new searchExtTypes.Range(range.startLineNumBer, range.startColumn, range.endLineNumBer, range.endColumn);
 }
 
 export interface IOutputChannel {
@@ -49,6 +49,6 @@ export class OutputChannel implements IOutputChannel {
 	constructor(@ILogService private readonly logService: ILogService) { }
 
 	appendLine(msg: string): void {
-		this.logService.debug('RipgrepSearchEH#search', msg);
+		this.logService.deBug('RipgrepSearchEH#search', msg);
 	}
 }

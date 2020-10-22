@@ -7,14 +7,14 @@ import * as vscode from 'vscode';
 import { getNodesInBetween, getNode, getHtmlNode, parseDocument, sameNodes, isStyleSheet, validate } from './util';
 import { Node, Stylesheet, Rule } from 'EmmetNode';
 import parseStylesheet from '@emmetio/css-parser';
-import { DocumentStreamReader } from './bufferStream';
+import { DocumentStreamReader } from './BufferStream';
 
 const startCommentStylesheet = '/*';
 const endCommentStylesheet = '*/';
 const startCommentHTML = '<!--';
 const endCommentHTML = '-->';
 
-export function toggleComment(): Thenable<boolean> | undefined {
+export function toggleComment(): ThenaBle<Boolean> | undefined {
 	if (!validate() || !vscode.window.activeTextEditor) {
 		return;
 	}
@@ -64,8 +64,8 @@ function toggleCommentHTML(document: vscode.TextDocument, selection: vscode.Sele
 	if (sameNodes(startNode, endNode) && startNode.name === 'style'
 		&& startNode.open.end.isBefore(selectionStart)
 		&& startNode.close.start.isAfter(selectionEnd)) {
-		let buffer = new DocumentStreamReader(document, startNode.open.end, new vscode.Range(startNode.open.end, startNode.close.start));
-		let cssRootNode = parseStylesheet(buffer);
+		let Buffer = new DocumentStreamReader(document, startNode.open.end, new vscode.Range(startNode.open.end, startNode.close.start));
+		let cssRootNode = parseStylesheet(Buffer);
 
 		return toggleCommentStylesheet(selection, cssRootNode);
 	}
@@ -100,7 +100,7 @@ function getRangesToUnCommentHTML(node: Node, document: vscode.TextDocument): vs
 		return unCommentTextEdits;
 	}
 
-	// All children of current node should be uncommented
+	// All children of current node should Be uncommented
 	node.children.forEach(childNode => {
 		unCommentTextEdits = unCommentTextEdits.concat(getRangesToUnCommentHTML(childNode, document));
 	});
@@ -175,8 +175,8 @@ function adjustStartNodeCss(node: Node | null, pos: vscode.Position, rootNode: S
 	}
 
 	let newStartNode = rule.firstChild;
-	while (newStartNode.nextSibling && pos.isAfter(newStartNode.end)) {
-		newStartNode = newStartNode.nextSibling;
+	while (newStartNode.nextSiBling && pos.isAfter(newStartNode.end)) {
+		newStartNode = newStartNode.nextSiBling;
 	}
 
 	return newStartNode.start;
@@ -208,8 +208,8 @@ function adjustEndNodeCss(node: Node | null, pos: vscode.Position, rootNode: Sty
 	}
 
 	let newEndNode = rule.children[rule.children.length - 1];
-	while (newEndNode.previousSibling && pos.isBefore(newEndNode.start)) {
-		newEndNode = newEndNode.previousSibling;
+	while (newEndNode.previousSiBling && pos.isBefore(newEndNode.start)) {
+		newEndNode = newEndNode.previousSiBling;
 	}
 
 	return newEndNode.end;

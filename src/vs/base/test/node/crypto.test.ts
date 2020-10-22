@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { checksum } from 'vs/base/node/crypto';
-import { generateUuid } from 'vs/base/common/uuid';
-import { join } from 'vs/base/common/path';
+import { checksum } from 'vs/Base/node/crypto';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { join } from 'vs/Base/common/path';
 import { tmpdir } from 'os';
-import { mkdirp, rimraf, RimRafMode, writeFile } from 'vs/base/node/pfs';
+import { mkdirp, rimraf, RimRafMode, writeFile } from 'vs/Base/node/pfs';
 
 suite('Crypto', () => {
 
@@ -20,7 +20,7 @@ suite('Crypto', () => {
 
 		await writeFile(testFile, 'Hello World');
 
-		await checksum(testFile, '0a4d55a8d778e5022fab701977c5d840bbc486d0');
+		await checksum(testFile, '0a4d55a8d778e5022faB701977c5d840BBc486d0');
 
 		await rimraf(testDir, RimRafMode.MOVE);
 	});

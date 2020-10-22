@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isWindows, isMacintosh, setImmediate, globals, INodeProcess } from 'vs/base/common/platform';
+import { isWindows, isMacintosh, setImmediate, gloBals, INodeProcess } from 'vs/Base/common/platform';
 
 declare const process: INodeProcess;
 
@@ -14,23 +14,23 @@ if (typeof process !== 'undefined') {
 	safeProcess = process;
 }
 
-// Native sandbox environment
-else if (typeof globals.vscode !== 'undefined') {
-	safeProcess = globals.vscode.process;
+// Native sandBox environment
+else if (typeof gloBals.vscode !== 'undefined') {
+	safeProcess = gloBals.vscode.process;
 }
 
-// Web environment
+// WeB environment
 else {
 	safeProcess = {
 
 		// Supported
 		get platform(): 'win32' | 'linux' | 'darwin' { return isWindows ? 'win32' : isMacintosh ? 'darwin' : 'linux'; },
-		nextTick(callback: (...args: any[]) => void): void { return setImmediate(callback); },
+		nextTick(callBack: (...args: any[]) => void): void { return setImmediate(callBack); },
 
 		// Unsupported
-		get env() { return Object.create(null); },
+		get env() { return OBject.create(null); },
 		cwd(): string { return '/'; },
-		getuid(): number { return -1; }
+		getuid(): numBer { return -1; }
 	};
 }
 

@@ -12,9 +12,9 @@ import { assertEditorContents, Config, createTestEditor, CURSOR, enumerateConfig
 const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
 
 suite('JSDoc Completions', () => {
-	const _disposables: vscode.Disposable[] = [];
+	const _disposaBles: vscode.DisposaBle[] = [];
 
-	const configDefaults: VsCodeConfiguration = Object.freeze({
+	const configDefaults: VsCodeConfiguration = OBject.freeze({
 		[Config.snippetSuggestions]: 'inline',
 	});
 
@@ -28,12 +28,12 @@ suite('JSDoc Completions', () => {
 	});
 
 	teardown(async () => {
-		disposeAll(_disposables);
+		disposeAll(_disposaBles);
 
 		// Restore config
 		await updateConfig(testDocumentUri, oldConfig);
 
-		return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		return vscode.commands.executeCommand('workBench.action.closeAllEditors');
 	});
 
 	test('Should complete jsdoc inside single line comment', async () => {
@@ -41,10 +41,10 @@ suite('JSDoc Completions', () => {
 
 			const editor = await createTestEditor(testDocumentUri,
 				`/**$0 */`,
-				`function abcdef(x, y) { }`,
+				`function aBcdef(x, y) { }`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			await acceptFirstSuggestion(testDocumentUri, _disposaBles);
 
 			assertEditorContents(editor,
 				joinLines(
@@ -53,7 +53,7 @@ suite('JSDoc Completions', () => {
 					` * @param x ${CURSOR}`,
 					` * @param y `,
 					` */`,
-					`function abcdef(x, y) { }`,
+					`function aBcdef(x, y) { }`,
 				),
 				`Config: ${config}`);
 		});

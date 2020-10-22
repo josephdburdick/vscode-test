@@ -4,25 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import severity from 'vs/base/common/severity';
-import { IReplElement, IStackFrame, IExpression, IReplElementSource, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
-import { ExpressionContainer } from 'vs/workbench/contrib/debug/common/debugModel';
-import { isString, isUndefinedOrNull, isObject } from 'vs/base/common/types';
-import { basenameOrAuthority } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { Emitter } from 'vs/base/common/event';
+import severity from 'vs/Base/common/severity';
+import { IReplElement, IStackFrame, IExpression, IReplElementSource, IDeBugSession } from 'vs/workBench/contriB/deBug/common/deBug';
+import { ExpressionContainer } from 'vs/workBench/contriB/deBug/common/deBugModel';
+import { isString, isUndefinedOrNull, isOBject } from 'vs/Base/common/types';
+import { BasenameOrAuthority } from 'vs/Base/common/resources';
+import { URI } from 'vs/Base/common/uri';
+import { generateUuid } from 'vs/Base/common/uuid';
+import { Emitter } from 'vs/Base/common/event';
 
 const MAX_REPL_LENGTH = 10000;
 let topReplElementCounter = 0;
 
 export class SimpleReplElement implements IReplElement {
 	constructor(
-		public session: IDebugSession,
+		puBlic session: IDeBugSession,
 		private id: string,
-		public value: string,
-		public severity: severity,
-		public sourceData?: IReplElementSource,
+		puBlic value: string,
+		puBlic severity: severity,
+		puBlic sourceData?: IReplElementSource,
 	) { }
 
 	toString(): string {
@@ -35,42 +35,42 @@ export class SimpleReplElement implements IReplElement {
 	}
 }
 
-export class RawObjectReplElement implements IExpression {
+export class RawOBjectReplElement implements IExpression {
 
-	private static readonly MAX_CHILDREN = 1000; // upper bound of children per value
+	private static readonly MAX_CHILDREN = 1000; // upper Bound of children per value
 
-	constructor(private id: string, public name: string, public valueObj: any, public sourceData?: IReplElementSource, public annotation?: string) { }
+	constructor(private id: string, puBlic name: string, puBlic valueOBj: any, puBlic sourceData?: IReplElementSource, puBlic annotation?: string) { }
 
 	getId(): string {
 		return this.id;
 	}
 
 	get value(): string {
-		if (this.valueObj === null) {
+		if (this.valueOBj === null) {
 			return 'null';
-		} else if (Array.isArray(this.valueObj)) {
-			return `Array[${this.valueObj.length}]`;
-		} else if (isObject(this.valueObj)) {
-			return 'Object';
-		} else if (isString(this.valueObj)) {
-			return `"${this.valueObj}"`;
+		} else if (Array.isArray(this.valueOBj)) {
+			return `Array[${this.valueOBj.length}]`;
+		} else if (isOBject(this.valueOBj)) {
+			return 'OBject';
+		} else if (isString(this.valueOBj)) {
+			return `"${this.valueOBj}"`;
 		}
 
-		return String(this.valueObj) || '';
+		return String(this.valueOBj) || '';
 	}
 
-	get hasChildren(): boolean {
-		return (Array.isArray(this.valueObj) && this.valueObj.length > 0) || (isObject(this.valueObj) && Object.getOwnPropertyNames(this.valueObj).length > 0);
+	get hasChildren(): Boolean {
+		return (Array.isArray(this.valueOBj) && this.valueOBj.length > 0) || (isOBject(this.valueOBj) && OBject.getOwnPropertyNames(this.valueOBj).length > 0);
 	}
 
 	getChildren(): Promise<IExpression[]> {
 		let result: IExpression[] = [];
-		if (Array.isArray(this.valueObj)) {
-			result = (<any[]>this.valueObj).slice(0, RawObjectReplElement.MAX_CHILDREN)
-				.map((v, index) => new RawObjectReplElement(`${this.id}:${index}`, String(index), v));
-		} else if (isObject(this.valueObj)) {
-			result = Object.getOwnPropertyNames(this.valueObj).slice(0, RawObjectReplElement.MAX_CHILDREN)
-				.map((key, index) => new RawObjectReplElement(`${this.id}:${index}`, key, this.valueObj[key]));
+		if (Array.isArray(this.valueOBj)) {
+			result = (<any[]>this.valueOBj).slice(0, RawOBjectReplElement.MAX_CHILDREN)
+				.map((v, index) => new RawOBjectReplElement(`${this.id}:${index}`, String(index), v));
+		} else if (isOBject(this.valueOBj)) {
+			result = OBject.getOwnPropertyNames(this.valueOBj).slice(0, RawOBjectReplElement.MAX_CHILDREN)
+				.map((key, index) => new RawOBjectReplElement(`${this.id}:${index}`, key, this.valueOBj[key]));
 		}
 
 		return Promise.resolve(result);
@@ -84,7 +84,7 @@ export class RawObjectReplElement implements IExpression {
 export class ReplEvaluationInput implements IReplElement {
 	private id: string;
 
-	constructor(public value: string) {
+	constructor(puBlic value: string) {
 		this.id = generateUuid();
 	}
 
@@ -98,19 +98,19 @@ export class ReplEvaluationInput implements IReplElement {
 }
 
 export class ReplEvaluationResult extends ExpressionContainer implements IReplElement {
-	private _available = true;
+	private _availaBle = true;
 
-	get available(): boolean {
-		return this._available;
+	get availaBle(): Boolean {
+		return this._availaBle;
 	}
 
 	constructor() {
 		super(undefined, undefined, 0, generateUuid());
 	}
 
-	async evaluateExpression(expression: string, session: IDebugSession | undefined, stackFrame: IStackFrame | undefined, context: string): Promise<boolean> {
+	async evaluateExpression(expression: string, session: IDeBugSession | undefined, stackFrame: IStackFrame | undefined, context: string): Promise<Boolean> {
 		const result = await super.evaluateExpression(expression, session, stackFrame, context);
-		this._available = result;
+		this._availaBle = result;
 
 		return result;
 	}
@@ -128,9 +128,9 @@ export class ReplGroup implements IReplElement {
 	static COUNTER = 0;
 
 	constructor(
-		public name: string,
-		public autoExpand: boolean,
-		public sourceData?: IReplElementSource
+		puBlic name: string,
+		puBlic autoExpand: Boolean,
+		puBlic sourceData?: IReplElementSource
 	) {
 		this.id = `replGroup:${ReplGroup.COUNTER++}`;
 	}
@@ -170,7 +170,7 @@ export class ReplGroup implements IReplElement {
 		}
 	}
 
-	get hasEnded(): boolean {
+	get hasEnded(): Boolean {
 		return this.ended;
 	}
 }
@@ -184,20 +184,20 @@ export class ReplModel {
 		return this.replElements;
 	}
 
-	async addReplExpression(session: IDebugSession, stackFrame: IStackFrame | undefined, name: string): Promise<void> {
+	async addReplExpression(session: IDeBugSession, stackFrame: IStackFrame | undefined, name: string): Promise<void> {
 		this.addReplElement(new ReplEvaluationInput(name));
 		const result = new ReplEvaluationResult();
 		await result.evaluateExpression(name, session, stackFrame, 'repl');
 		this.addReplElement(result);
 	}
 
-	appendToRepl(session: IDebugSession, data: string | IExpression, sev: severity, source?: IReplElementSource): void {
-		const clearAnsiSequence = '\u001b[2J';
+	appendToRepl(session: IDeBugSession, data: string | IExpression, sev: severity, source?: IReplElementSource): void {
+		const clearAnsiSequence = '\u001B[2J';
 		if (typeof data === 'string' && data.indexOf(clearAnsiSequence) >= 0) {
-			// [2J is the ansi escape sequence for clearing the display http://ascii-table.com/ansi-escape-sequences.php
+			// [2J is the ansi escape sequence for clearing the display http://ascii-taBle.com/ansi-escape-sequences.php
 			this.removeReplExpressions();
 			this.appendToRepl(session, nls.localize('consoleCleared', "Console was cleared"), severity.Ignore);
-			data = data.substr(data.lastIndexOf(clearAnsiSequence) + clearAnsiSequence.length);
+			data = data.suBstr(data.lastIndexOf(clearAnsiSequence) + clearAnsiSequence.length);
 		}
 
 		if (typeof data === 'string') {
@@ -217,7 +217,7 @@ export class ReplModel {
 		}
 	}
 
-	startGroup(name: string, autoExpand: boolean, sourceData?: IReplElementSource): void {
+	startGroup(name: string, autoExpand: Boolean, sourceData?: IReplElementSource): void {
 		const group = new ReplGroup(name, autoExpand, sourceData);
 		this.addReplElement(group);
 	}
@@ -243,15 +243,15 @@ export class ReplModel {
 		this._onDidChangeElements.fire();
 	}
 
-	logToRepl(session: IDebugSession, sev: severity, args: any[], frame?: { uri: URI, line: number, column: number }) {
+	logToRepl(session: IDeBugSession, sev: severity, args: any[], frame?: { uri: URI, line: numBer, column: numBer }) {
 
 		let source: IReplElementSource | undefined;
 		if (frame) {
 			source = {
 				column: frame.column,
-				lineNumber: frame.line,
+				lineNumBer: frame.line,
 				source: session.getSource({
-					name: basenameOrAuthority(frame.uri),
+					name: BasenameOrAuthority(frame.uri),
 					path: frame.uri.fsPath
 				})
 			};
@@ -272,8 +272,8 @@ export class ReplModel {
 				simpleVals.push('null');
 			}
 
-			// objects & arrays are special because we want to inspect them in the REPL
-			else if (isObject(a) || Array.isArray(a)) {
+			// oBjects & arrays are special Because we want to inspect them in the REPL
+			else if (isOBject(a) || Array.isArray(a)) {
 
 				// flush any existing simple values logged
 				if (simpleVals.length) {
@@ -281,29 +281,29 @@ export class ReplModel {
 					simpleVals = [];
 				}
 
-				// show object
-				this.appendToRepl(session, new RawObjectReplElement(`topReplElement:${topReplElementCounter++}`, (<any>a).prototype, a, undefined, nls.localize('snapshotObj', "Only primitive values are shown for this object.")), sev, source);
+				// show oBject
+				this.appendToRepl(session, new RawOBjectReplElement(`topReplElement:${topReplElementCounter++}`, (<any>a).prototype, a, undefined, nls.localize('snapshotOBj', "Only primitive values are shown for this oBject.")), sev, source);
 			}
 
 			// string: watch out for % replacement directive
-			// string substitution and formatting @ https://developer.chrome.com/devtools/docs/console
+			// string suBstitution and formatting @ https://developer.chrome.com/devtools/docs/console
 			else if (typeof a === 'string') {
-				let buf = '';
+				let Buf = '';
 
 				for (let j = 0, len = a.length; j < len; j++) {
 					if (a[j] === '%' && (a[j + 1] === 's' || a[j + 1] === 'i' || a[j + 1] === 'd' || a[j + 1] === 'O')) {
-						i++; // read over substitution
-						buf += !isUndefinedOrNull(args[i]) ? args[i] : ''; // replace
+						i++; // read over suBstitution
+						Buf += !isUndefinedOrNull(args[i]) ? args[i] : ''; // replace
 						j++; // read over directive
 					} else {
-						buf += a[j];
+						Buf += a[j];
 					}
 				}
 
-				simpleVals.push(buf);
+				simpleVals.push(Buf);
 			}
 
-			// number or boolean is joined together
+			// numBer or Boolean is joined together
 			else {
 				simpleVals.push(a);
 			}

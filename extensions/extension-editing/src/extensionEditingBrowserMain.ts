@@ -8,11 +8,11 @@ import { PackageDocument } from './packageDocumentHelper';
 
 export function activate(context: vscode.ExtensionContext) {
 	//package.json suggestions
-	context.subscriptions.push(registerPackageDocumentCompletions());
+	context.suBscriptions.push(registerPackageDocumentCompletions());
 
 }
 
-function registerPackageDocumentCompletions(): vscode.Disposable {
+function registerPackageDocumentCompletions(): vscode.DisposaBle {
 	return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/package.json' }, {
 		provideCompletionItems(document, position, token) {
 			return new PackageDocument(document).provideCompletionItems(position, token);

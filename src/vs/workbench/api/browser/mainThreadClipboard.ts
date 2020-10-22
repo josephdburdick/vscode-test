@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { MainContext, MainThreadClipboardShape } from '../common/extHost.protocol';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { MainContext, MainThreadClipBoardShape } from '../common/extHost.protocol';
+import { IClipBoardService } from 'vs/platform/clipBoard/common/clipBoardService';
 
-@extHostNamedCustomer(MainContext.MainThreadClipboard)
-export class MainThreadClipboard implements MainThreadClipboardShape {
+@extHostNamedCustomer(MainContext.MainThreadClipBoard)
+export class MainThreadClipBoard implements MainThreadClipBoardShape {
 
 	constructor(
 		_context: any,
-		@IClipboardService private readonly _clipboardService: IClipboardService,
+		@IClipBoardService private readonly _clipBoardService: IClipBoardService,
 	) { }
 
 	dispose(): void {
@@ -20,10 +20,10 @@ export class MainThreadClipboard implements MainThreadClipboardShape {
 	}
 
 	$readText(): Promise<string> {
-		return this._clipboardService.readText();
+		return this._clipBoardService.readText();
 	}
 
 	$writeText(value: string): Promise<void> {
-		return this._clipboardService.writeText(value);
+		return this._clipBoardService.writeText(value);
 	}
 }

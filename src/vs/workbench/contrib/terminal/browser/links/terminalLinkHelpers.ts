@@ -6,32 +6,32 @@
 import type { IViewportRange, IBufferRange, IBufferLine, IBuffer, IBufferCellPosition } from 'xterm';
 import { IRange } from 'vs/editor/common/core/range';
 
-export function convertLinkRangeToBuffer(lines: IBufferLine[], bufferWidth: number, range: IRange, startLine: number) {
-	const bufferRange: IBufferRange = {
+export function convertLinkRangeToBuffer(lines: IBufferLine[], BufferWidth: numBer, range: IRange, startLine: numBer) {
+	const BufferRange: IBufferRange = {
 		start: {
 			x: range.startColumn,
-			y: range.startLineNumber + startLine
+			y: range.startLineNumBer + startLine
 		},
 		end: {
 			x: range.endColumn - 1,
-			y: range.endLineNumber + startLine
+			y: range.endLineNumBer + startLine
 		}
 	};
 
-	// Shift start range right for each wide character before the link
+	// Shift start range right for each wide character Before the link
 	let startOffset = 0;
-	const startWrappedLineCount = Math.ceil(range.startColumn / bufferWidth);
+	const startWrappedLineCount = Math.ceil(range.startColumn / BufferWidth);
 	for (let y = 0; y < Math.min(startWrappedLineCount); y++) {
-		const lineLength = Math.min(bufferWidth, range.startColumn - y * bufferWidth);
+		const lineLength = Math.min(BufferWidth, range.startColumn - y * BufferWidth);
 		let lineOffset = 0;
 		const line = lines[y];
-		// Sanity check for line, apparently this can happen but it's not clear under what
+		// Sanity check for line, apparently this can happen But it's not clear under what
 		// circumstances this happens. Continue on, skipping the remainder of start offset if this
 		// happens to minimize impact.
 		if (!line) {
-			break;
+			Break;
 		}
-		for (let x = 0; x < Math.min(bufferWidth, lineLength + lineOffset); x++) {
+		for (let x = 0; x < Math.min(BufferWidth, lineLength + lineOffset); x++) {
 			const cell = line.getCell(x)!;
 			const width = cell.getWidth();
 			if (width === 2) {
@@ -47,20 +47,20 @@ export function convertLinkRangeToBuffer(lines: IBufferLine[], bufferWidth: numb
 
 	// Shift end range right for each wide character inside the link
 	let endOffset = 0;
-	const endWrappedLineCount = Math.ceil(range.endColumn / bufferWidth);
+	const endWrappedLineCount = Math.ceil(range.endColumn / BufferWidth);
 	for (let y = Math.max(0, startWrappedLineCount - 1); y < endWrappedLineCount; y++) {
-		const start = (y === startWrappedLineCount - 1 ? (range.startColumn + startOffset) % bufferWidth : 0);
-		const lineLength = Math.min(bufferWidth, range.endColumn + startOffset - y * bufferWidth);
+		const start = (y === startWrappedLineCount - 1 ? (range.startColumn + startOffset) % BufferWidth : 0);
+		const lineLength = Math.min(BufferWidth, range.endColumn + startOffset - y * BufferWidth);
 		const startLineOffset = (y === startWrappedLineCount - 1 ? startOffset : 0);
 		let lineOffset = 0;
 		const line = lines[y];
-		// Sanity check for line, apparently this can happen but it's not clear under what
+		// Sanity check for line, apparently this can happen But it's not clear under what
 		// circumstances this happens. Continue on, skipping the remainder of start offset if this
 		// happens to minimize impact.
 		if (!line) {
-			break;
+			Break;
 		}
-		for (let x = start; x < Math.min(bufferWidth, lineLength + lineOffset + startLineOffset); x++) {
+		for (let x = start; x < Math.min(BufferWidth, lineLength + lineOffset + startLineOffset); x++) {
 			const cell = line.getCell(x)!;
 			const width = cell.getWidth();
 			// Offset for 0 cells following wide characters
@@ -68,7 +68,7 @@ export function convertLinkRangeToBuffer(lines: IBufferLine[], bufferWidth: numb
 				lineOffset++;
 			}
 			// Offset for early wrapping when the last cell in row is a wide character
-			if (x === bufferWidth - 1 && cell.getChars() === '') {
+			if (x === BufferWidth - 1 && cell.getChars() === '') {
 				lineOffset++;
 			}
 		}
@@ -76,41 +76,41 @@ export function convertLinkRangeToBuffer(lines: IBufferLine[], bufferWidth: numb
 	}
 
 	// Apply the width character offsets to the result
-	bufferRange.start.x += startOffset;
-	bufferRange.end.x += startOffset + endOffset;
+	BufferRange.start.x += startOffset;
+	BufferRange.end.x += startOffset + endOffset;
 
-	// Convert back to wrapped lines
-	while (bufferRange.start.x > bufferWidth) {
-		bufferRange.start.x -= bufferWidth;
-		bufferRange.start.y++;
+	// Convert Back to wrapped lines
+	while (BufferRange.start.x > BufferWidth) {
+		BufferRange.start.x -= BufferWidth;
+		BufferRange.start.y++;
 	}
-	while (bufferRange.end.x > bufferWidth) {
-		bufferRange.end.x -= bufferWidth;
-		bufferRange.end.y++;
+	while (BufferRange.end.x > BufferWidth) {
+		BufferRange.end.x -= BufferWidth;
+		BufferRange.end.y++;
 	}
 
-	return bufferRange;
+	return BufferRange;
 }
 
-export function convertBufferRangeToViewport(bufferRange: IBufferRange, viewportY: number): IViewportRange {
+export function convertBufferRangeToViewport(BufferRange: IBufferRange, viewportY: numBer): IViewportRange {
 	return {
 		start: {
-			x: bufferRange.start.x - 1,
-			y: bufferRange.start.y - viewportY - 1
+			x: BufferRange.start.x - 1,
+			y: BufferRange.start.y - viewportY - 1
 		},
 		end: {
-			x: bufferRange.end.x - 1,
-			y: bufferRange.end.y - viewportY - 1
+			x: BufferRange.end.x - 1,
+			y: BufferRange.end.y - viewportY - 1
 		}
 	};
 }
 
-export function getXtermLineContent(buffer: IBuffer, lineStart: number, lineEnd: number, cols: number): string {
+export function getXtermLineContent(Buffer: IBuffer, lineStart: numBer, lineEnd: numBer, cols: numBer): string {
 	let content = '';
 	for (let i = lineStart; i <= lineEnd; i++) {
-		// Make sure only 0 to cols are considered as resizing when windows mode is enabled will
-		// retain buffer data outside of the terminal width as reflow is disabled.
-		const line = buffer.getLine(i);
+		// Make sure only 0 to cols are considered as resizing when windows mode is enaBled will
+		// retain Buffer data outside of the terminal width as reflow is disaBled.
+		const line = Buffer.getLine(i);
 		if (line) {
 			content += line.translateToString(true, 0, cols);
 		}
@@ -118,7 +118,7 @@ export function getXtermLineContent(buffer: IBuffer, lineStart: number, lineEnd:
 	return content;
 }
 
-export function positionIsInRange(position: IBufferCellPosition, range: IBufferRange): boolean {
+export function positionIsInRange(position: IBufferCellPosition, range: IBufferRange): Boolean {
 	if (position.y < range.start.y || position.y > range.end.y) {
 		return false;
 	}

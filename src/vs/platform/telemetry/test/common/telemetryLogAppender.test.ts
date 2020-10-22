@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { LogLevel, ILoggerService, AbstractLogService, DEFAULT_LOG_LEVEL, ILogger } from 'vs/platform/log/common/log';
+import { LogLevel, ILoggerService, ABstractLogService, DEFAULT_LOG_LEVEL, ILogger } from 'vs/platform/log/common/log';
 import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
 import { TelemetryLogAppender } from 'vs/platform/telemetry/common/telemetryLogAppender';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
-class TestTelemetryLogger extends AbstractLogService implements ILogger {
+class TestTelemetryLogger extends ABstractLogService implements ILogger {
 	declare readonly _serviceBrand: undefined;
 
-	public logs: string[] = [];
+	puBlic logs: string[] = [];
 
 	constructor(logLevel: LogLevel = DEFAULT_LOG_LEVEL) {
 		super();
@@ -24,8 +24,8 @@ class TestTelemetryLogger extends AbstractLogService implements ILogger {
 		}
 	}
 
-	debug(message: string, ...args: any[]): void {
-		if (this.getLevel() <= LogLevel.Debug) {
+	deBug(message: string, ...args: any[]): void {
+		if (this.getLevel() <= LogLevel.DeBug) {
 			this.logs.push(message);
 		}
 	}
@@ -76,21 +76,21 @@ suite('TelemetryLogAdapter', () => {
 
 	test('Do not Log Telemetry if log level is not trace', async () => {
 		const testLoggerService = new TestTelemetryLoggerService(DEFAULT_LOG_LEVEL);
-		const testObject = new TelemetryLogAppender(testLoggerService, new TestInstantiationService().stub(IEnvironmentService, {}));
-		testObject.log('testEvent', { hello: 'world', isTrue: true, numberBetween1And3: 2 });
+		const testOBject = new TelemetryLogAppender(testLoggerService, new TestInstantiationService().stuB(IEnvironmentService, {}));
+		testOBject.log('testEvent', { hello: 'world', isTrue: true, numBerBetween1And3: 2 });
 		assert.equal(testLoggerService.logger.logs.length, 2);
 	});
 
 	test('Log Telemetry if log level is trace', async () => {
 		const testLoggerService = new TestTelemetryLoggerService(LogLevel.Trace);
-		const testObject = new TelemetryLogAppender(testLoggerService, new TestInstantiationService().stub(IEnvironmentService, {}));
-		testObject.log('testEvent', { hello: 'world', isTrue: true, numberBetween1And3: 2 });
+		const testOBject = new TelemetryLogAppender(testLoggerService, new TestInstantiationService().stuB(IEnvironmentService, {}));
+		testOBject.log('testEvent', { hello: 'world', isTrue: true, numBerBetween1And3: 2 });
 		assert.equal(testLoggerService.logger.logs[2], 'telemetry/testEvent' + JSON.stringify([{
 			properties: {
 				hello: 'world',
 			},
 			measurements: {
-				isTrue: 1, numberBetween1And3: 2
+				isTrue: 1, numBerBetween1And3: 2
 			}
 		}]));
 	});

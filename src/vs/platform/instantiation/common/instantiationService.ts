@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { illegalState } from 'vs/base/common/errors';
+import { illegalState } from 'vs/Base/common/errors';
 import { Graph } from 'vs/platform/instantiation/common/graph';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { ServiceIdentifier, IInstantiationService, ServicesAccessor, _util, optional } from 'vs/platform/instantiation/common/instantiation';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IdleValue } from 'vs/base/common/async';
+import { IdleValue } from 'vs/Base/common/async';
 
 // TRACING
-const _enableTracing = false;
+const _enaBleTracing = false;
 
 class CyclicDependencyError extends Error {
 	constructor(graph: Graph<any>) {
-		super('cyclic dependency between services');
+		super('cyclic dependency Between services');
 		this.message = graph.toString();
 	}
 }
@@ -25,10 +25,10 @@ export class InstantiationService implements IInstantiationService {
 	declare readonly _serviceBrand: undefined;
 
 	private readonly _services: ServiceCollection;
-	private readonly _strict: boolean;
+	private readonly _strict: Boolean;
 	private readonly _parent?: InstantiationService;
 
-	constructor(services: ServiceCollection = new ServiceCollection(), strict: boolean = false, parent?: InstantiationService) {
+	constructor(services: ServiceCollection = new ServiceCollection(), strict: Boolean = false, parent?: InstantiationService) {
 		this._services = services;
 		this._strict = strict;
 		this._parent = parent;
@@ -81,8 +81,8 @@ export class InstantiationService implements IInstantiationService {
 
 	private _createInstance<T>(ctor: any, args: any[] = [], _trace: Trace): T {
 
-		// arguments defined by service decorators
-		let serviceDependencies = _util.getServiceDependencies(ctor).sort((a, b) => a.index - b.index);
+		// arguments defined By service decorators
+		let serviceDependencies = _util.getServiceDependencies(ctor).sort((a, B) => a.index - B.index);
 		let serviceArgs: any[] = [];
 		for (const dependency of serviceDependencies) {
 			let service = this._getOrCreateServiceInstance(dependency.id, _trace);
@@ -132,9 +132,9 @@ export class InstantiationService implements IInstantiationService {
 	private _getOrCreateServiceInstance<T>(id: ServiceIdentifier<T>, _trace: Trace): T {
 		let thing = this._getServiceInstanceOrDescriptor(id);
 		if (thing instanceof SyncDescriptor) {
-			return this._createAndCacheServiceInstance(id, thing, _trace.branch(id, true));
+			return this._createAndCacheServiceInstance(id, thing, _trace.Branch(id, true));
 		} else {
-			_trace.branch(id, false);
+			_trace.Branch(id, false);
 			return thing;
 		}
 	}
@@ -149,12 +149,12 @@ export class InstantiationService implements IInstantiationService {
 			const item = stack.pop()!;
 			graph.lookupOrInsertNode(item);
 
-			// a weak but working heuristic for cycle checks
+			// a weak But working heuristic for cycle checks
 			if (cycleCount++ > 1000) {
 				throw new CyclicDependencyError(graph);
 			}
 
-			// check all dependencies for existence and if they need to be created first
+			// check all dependencies for existence and if they need to Be created first
 			for (let dependency of _util.getServiceDependencies(item.desc.ctor)) {
 
 				let instanceOrDesc = this._getServiceInstanceOrDescriptor(dependency.id);
@@ -163,7 +163,7 @@ export class InstantiationService implements IInstantiationService {
 				}
 
 				if (instanceOrDesc instanceof SyncDescriptor) {
-					const d = { id: dependency.id, desc: instanceOrDesc, _trace: item._trace.branch(dependency.id, true) };
+					const d = { id: dependency.id, desc: instanceOrDesc, _trace: item._trace.Branch(dependency.id, true) };
 					graph.insertEdge(item, d);
 					stack.push(d);
 				}
@@ -173,17 +173,17 @@ export class InstantiationService implements IInstantiationService {
 		while (true) {
 			const roots = graph.roots();
 
-			// if there is no more roots but still
+			// if there is no more roots But still
 			// nodes in the graph we have a cycle
 			if (roots.length === 0) {
 				if (!graph.isEmpty()) {
 					throw new CyclicDependencyError(graph);
 				}
-				break;
+				Break;
 			}
 
 			for (const { data } of roots) {
-				// Repeat the check for this still being a service sync descriptor. That's because
+				// Repeat the check for this still Being a service sync descriptor. That's Because
 				// instantiating a dependency might have side-effect and recursively trigger instantiation
 				// so that some dependencies are now fullfilled already.
 				const instanceOrDesc = this._getServiceInstanceOrDescriptor(data.id);
@@ -199,7 +199,7 @@ export class InstantiationService implements IInstantiationService {
 		return <T>this._getServiceInstanceOrDescriptor(id);
 	}
 
-	private _createServiceInstanceWithOwner<T>(id: ServiceIdentifier<T>, ctor: any, args: any[] = [], supportsDelayedInstantiation: boolean, _trace: Trace): T {
+	private _createServiceInstanceWithOwner<T>(id: ServiceIdentifier<T>, ctor: any, args: any[] = [], supportsDelayedInstantiation: Boolean, _trace: Trace): T {
 		if (this._services.get(id) instanceof SyncDescriptor) {
 			return this._createServiceInstance(ctor, args, supportsDelayedInstantiation, _trace);
 		} else if (this._parent) {
@@ -209,31 +209,31 @@ export class InstantiationService implements IInstantiationService {
 		}
 	}
 
-	private _createServiceInstance<T>(ctor: any, args: any[] = [], _supportsDelayedInstantiation: boolean, _trace: Trace): T {
+	private _createServiceInstance<T>(ctor: any, args: any[] = [], _supportsDelayedInstantiation: Boolean, _trace: Trace): T {
 		if (!_supportsDelayedInstantiation) {
 			// eager instantiation
 			return this._createInstance(ctor, args, _trace);
 
 		} else {
-			// Return a proxy object that's backed by an idle value. That
+			// Return a proxy oBject that's Backed By an idle value. That
 			// strategy is to instantiate services in our idle time or when actually
-			// needed but not when injected into a consumer
+			// needed But not when injected into a consumer
 			const idle = new IdleValue<any>(() => this._createInstance<T>(ctor, args, _trace));
-			return <T>new Proxy(Object.create(null), {
+			return <T>new Proxy(OBject.create(null), {
 				get(target: any, key: PropertyKey): any {
 					if (key in target) {
 						return target[key];
 					}
-					let obj = idle.value;
-					let prop = obj[key];
+					let oBj = idle.value;
+					let prop = oBj[key];
 					if (typeof prop !== 'function') {
 						return prop;
 					}
-					prop = prop.bind(obj);
+					prop = prop.Bind(oBj);
 					target[key] = prop;
 					return prop;
 				},
-				set(_target: T, p: PropertyKey, value: any): boolean {
+				set(_target: T, p: PropertyKey, value: any): Boolean {
 					idle.value[p] = value;
 					return true;
 				}
@@ -253,27 +253,27 @@ class Trace {
 	private static readonly _None = new class extends Trace {
 		constructor() { super(-1, null); }
 		stop() { }
-		branch() { return this; }
+		Branch() { return this; }
 	};
 
 	static traceInvocation(ctor: any): Trace {
-		return !_enableTracing ? Trace._None : new Trace(TraceType.Invocation, ctor.name || (ctor.toString() as string).substring(0, 42).replace(/\n/g, ''));
+		return !_enaBleTracing ? Trace._None : new Trace(TraceType.Invocation, ctor.name || (ctor.toString() as string).suBstring(0, 42).replace(/\n/g, ''));
 	}
 
 	static traceCreation(ctor: any): Trace {
-		return !_enableTracing ? Trace._None : new Trace(TraceType.Creation, ctor.name);
+		return !_enaBleTracing ? Trace._None : new Trace(TraceType.Creation, ctor.name);
 	}
 
-	private static _totals: number = 0;
-	private readonly _start: number = Date.now();
-	private readonly _dep: [ServiceIdentifier<any>, boolean, Trace?][] = [];
+	private static _totals: numBer = 0;
+	private readonly _start: numBer = Date.now();
+	private readonly _dep: [ServiceIdentifier<any>, Boolean, Trace?][] = [];
 
 	private constructor(
 		readonly type: TraceType,
 		readonly name: string | null
 	) { }
 
-	branch(id: ServiceIdentifier<any>, first: boolean): Trace {
+	Branch(id: ServiceIdentifier<any>, first: Boolean): Trace {
 		let child = new Trace(TraceType.Branch, id.toString());
 		this._dep.push([id, first, child]);
 		return child;
@@ -285,7 +285,7 @@ class Trace {
 
 		let causedCreation = false;
 
-		function printChild(n: number, trace: Trace) {
+		function printChild(n: numBer, trace: Trace) {
 			let res: string[] = [];
 			let prefix = new Array(n + 1).join('\t');
 			for (const [id, first, child] of trace._dep) {

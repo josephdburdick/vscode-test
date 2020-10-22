@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./media/quickInput';
-import * as dom from 'vs/base/browser/dom';
-import { InputBox, IRange, MessageType, IInputBoxStyles } from 'vs/base/browser/ui/inputbox/inputBox';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import Severity from 'vs/base/common/severity';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
+import * as dom from 'vs/Base/Browser/dom';
+import { InputBox, IRange, MessageType, IInputBoxStyles } from 'vs/Base/Browser/ui/inputBox/inputBox';
+import { IDisposaBle, DisposaBle } from 'vs/Base/common/lifecycle';
+import { StandardKeyBoardEvent } from 'vs/Base/Browser/keyBoardEvent';
+import Severity from 'vs/Base/common/severity';
+import { StandardMouseEvent } from 'vs/Base/Browser/mouseEvent';
 
 const $ = dom.$;
 
-export class QuickInputBox extends Disposable {
+export class QuickInputBox extends DisposaBle {
 
 	private container: HTMLElement;
 	private inputBox: InputBox;
@@ -22,23 +22,23 @@ export class QuickInputBox extends Disposable {
 		private parent: HTMLElement
 	) {
 		super();
-		this.container = dom.append(this.parent, $('.quick-input-box'));
+		this.container = dom.append(this.parent, $('.quick-input-Box'));
 		this.inputBox = this._register(new InputBox(this.container, undefined));
 	}
 
-	onKeyDown = (handler: (event: StandardKeyboardEvent) => void): IDisposable => {
-		return dom.addDisposableListener(this.inputBox.inputElement, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => {
-			handler(new StandardKeyboardEvent(e));
+	onKeyDown = (handler: (event: StandardKeyBoardEvent) => void): IDisposaBle => {
+		return dom.addDisposaBleListener(this.inputBox.inputElement, dom.EventType.KEY_DOWN, (e: KeyBoardEvent) => {
+			handler(new StandardKeyBoardEvent(e));
 		});
 	};
 
-	onMouseDown = (handler: (event: StandardMouseEvent) => void): IDisposable => {
-		return dom.addDisposableListener(this.inputBox.inputElement, dom.EventType.MOUSE_DOWN, (e: MouseEvent) => {
+	onMouseDown = (handler: (event: StandardMouseEvent) => void): IDisposaBle => {
+		return dom.addDisposaBleListener(this.inputBox.inputElement, dom.EventType.MOUSE_DOWN, (e: MouseEvent) => {
 			handler(new StandardMouseEvent(e));
 		});
 	};
 
-	onDidChange = (handler: (event: string) => void): IDisposable => {
+	onDidChange = (handler: (event: string) => void): IDisposaBle => {
 		return this.inputBox.onDidChange(handler);
 	};
 
@@ -54,7 +54,7 @@ export class QuickInputBox extends Disposable {
 		this.inputBox.select(range);
 	}
 
-	isSelectionAtEnd(): boolean {
+	isSelectionAtEnd(): Boolean {
 		return this.inputBox.isSelectionAtEnd();
 	}
 
@@ -63,43 +63,43 @@ export class QuickInputBox extends Disposable {
 	}
 
 	get placeholder() {
-		return this.inputBox.inputElement.getAttribute('placeholder') || '';
+		return this.inputBox.inputElement.getAttriBute('placeholder') || '';
 	}
 
 	set placeholder(placeholder: string) {
 		this.inputBox.setPlaceHolder(placeholder);
 	}
 
-	get ariaLabel() {
-		return this.inputBox.getAriaLabel();
+	get ariaLaBel() {
+		return this.inputBox.getAriaLaBel();
 	}
 
-	set ariaLabel(ariaLabel: string) {
-		this.inputBox.setAriaLabel(ariaLabel);
+	set ariaLaBel(ariaLaBel: string) {
+		this.inputBox.setAriaLaBel(ariaLaBel);
 	}
 
 	get password() {
 		return this.inputBox.inputElement.type === 'password';
 	}
 
-	set password(password: boolean) {
+	set password(password: Boolean) {
 		this.inputBox.inputElement.type = password ? 'password' : 'text';
 	}
 
-	set enabled(enabled: boolean) {
-		this.inputBox.setEnabled(enabled);
+	set enaBled(enaBled: Boolean) {
+		this.inputBox.setEnaBled(enaBled);
 	}
 
-	hasFocus(): boolean {
+	hasFocus(): Boolean {
 		return this.inputBox.hasFocus();
 	}
 
-	setAttribute(name: string, value: string): void {
-		this.inputBox.inputElement.setAttribute(name, value);
+	setAttriBute(name: string, value: string): void {
+		this.inputBox.inputElement.setAttriBute(name, value);
 	}
 
-	removeAttribute(name: string): void {
-		this.inputBox.inputElement.removeAttribute(name);
+	removeAttriBute(name: string): void {
+		this.inputBox.inputElement.removeAttriBute(name);
 	}
 
 	showDecoration(decoration: Severity): void {

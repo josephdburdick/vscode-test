@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { guessMimeTypes, registerTextMime } from 'vs/base/common/mime';
-import { URI } from 'vs/base/common/uri';
+import { guessMimeTypes, registerTextMime } from 'vs/Base/common/mime';
+import { URI } from 'vs/Base/common/uri';
 
 suite('Mime', () => {
 
@@ -28,7 +28,7 @@ suite('Mime', () => {
 		assert.deepEqual(guess, ['application/unknown']);
 
 		registerTextMime({ id: 'docker', filepattern: 'Docker*', mime: 'text/docker' });
-		guess = guessMimeTypes(URI.file('Docker-debug'));
+		guess = guessMimeTypes(URI.file('Docker-deBug'));
 		assert.deepEqual(guess, ['text/docker', 'text/plain']);
 
 		guess = guessMimeTypes(URI.file('docker-PROD'));
@@ -47,12 +47,12 @@ suite('Mime', () => {
 
 	test('Mimes Priority', () => {
 		registerTextMime({ id: 'monaco', extension: '.monaco', mime: 'text/monaco' });
-		registerTextMime({ id: 'foobar', mime: 'text/foobar', firstline: /foobar/ });
+		registerTextMime({ id: 'fooBar', mime: 'text/fooBar', firstline: /fooBar/ });
 
 		let guess = guessMimeTypes(URI.file('foo.monaco'));
 		assert.deepEqual(guess, ['text/monaco', 'text/plain']);
 
-		guess = guessMimeTypes(URI.file('foo.monaco'), 'foobar');
+		guess = guessMimeTypes(URI.file('foo.monaco'), 'fooBar');
 		assert.deepEqual(guess, ['text/monaco', 'text/plain']);
 
 		registerTextMime({ id: 'docker', filename: 'dockerfile', mime: 'text/winner' });
@@ -85,7 +85,7 @@ suite('Mime', () => {
 	test('Mimes Priority - Longest Extension wins', () => {
 		registerTextMime({ id: 'monaco', extension: '.monaco', mime: 'text/monaco' });
 		registerTextMime({ id: 'monaco', extension: '.monaco.xml', mime: 'text/monaco-xml' });
-		registerTextMime({ id: 'monaco', extension: '.monaco.xml.build', mime: 'text/monaco-xml-build' });
+		registerTextMime({ id: 'monaco', extension: '.monaco.xml.Build', mime: 'text/monaco-xml-Build' });
 
 		let guess = guessMimeTypes(URI.file('foo.monaco'));
 		assert.deepEqual(guess, ['text/monaco', 'text/plain']);
@@ -93,8 +93,8 @@ suite('Mime', () => {
 		guess = guessMimeTypes(URI.file('foo.monaco.xml'));
 		assert.deepEqual(guess, ['text/monaco-xml', 'text/plain']);
 
-		guess = guessMimeTypes(URI.file('foo.monaco.xml.build'));
-		assert.deepEqual(guess, ['text/monaco-xml-build', 'text/plain']);
+		guess = guessMimeTypes(URI.file('foo.monaco.xml.Build'));
+		assert.deepEqual(guess, ['text/monaco-xml-Build', 'text/plain']);
 	});
 
 	test('Mimes Priority - User configured wins', () => {
@@ -124,6 +124,6 @@ suite('Mime', () => {
 	test('Data URIs', () => {
 		registerTextMime({ id: 'data', extension: '.data', mime: 'text/data' });
 
-		assert.deepEqual(guessMimeTypes(URI.parse(`data:;label:something.data;description:data,`)), ['text/data', 'text/plain']);
+		assert.deepEqual(guessMimeTypes(URI.parse(`data:;laBel:something.data;description:data,`)), ['text/data', 'text/plain']);
 	});
 });

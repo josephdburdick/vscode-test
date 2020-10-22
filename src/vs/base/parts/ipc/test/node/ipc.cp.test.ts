@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Client } from 'vs/base/parts/ipc/node/ipc.cp';
+import { Client } from 'vs/Base/parts/ipc/node/ipc.cp';
 import { TestServiceClient } from './testService';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import { getPathFromAmdModule } from 'vs/Base/common/amd';
 
 function createClient(): Client {
-	return new Client(getPathFromAmdModule(require, 'bootstrap-fork'), {
+	return new Client(getPathFromAmdModule(require, 'Bootstrap-fork'), {
 		serverName: 'TestServer',
-		env: { AMD_ENTRYPOINT: 'vs/base/parts/ipc/test/node/testApp', verbose: true }
+		env: { AMD_ENTRYPOINT: 'vs/Base/parts/ipc/test/node/testApp', verBose: true }
 	});
 }
 
@@ -57,7 +57,7 @@ suite('IPC, Child Process', () => {
 		const service = new TestServiceClient(channel);
 
 		let count = 0;
-		const disposable = service.onMarco(() => count++);
+		const disposaBle = service.onMarco(() => count++);
 
 		const result = service.marco().then(async answer => {
 			assert.equal(answer, 'polo');
@@ -66,7 +66,7 @@ suite('IPC, Child Process', () => {
 			const answer_1 = await service.marco();
 			assert.equal(answer_1, 'polo');
 			assert.equal(count, 2);
-			disposable.dispose();
+			disposaBle.dispose();
 
 			const answer_2 = await service.marco();
 			assert.equal(answer_2, 'polo');

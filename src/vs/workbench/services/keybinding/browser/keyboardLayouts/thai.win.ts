@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+import { KeyBoardLayoutContriBution } from 'vs/workBench/services/keyBinding/Browser/keyBoardLayouts/_.contriBution';
 
-KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
+KeyBoardLayoutContriBution.INSTANCE.registerKeyBoardLayout({
 	layout: { name: '0000041E', id: '', text: 'Thai Kedmanee' },
 	secondaryLayouts: [],
 	mapping: {
@@ -50,7 +50,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		Enter: [],
 		Escape: [],
 		Backspace: [],
-		Tab: [],
+		TaB: [],
 		Space: [' ', ' ', '', '', 0, 'VK_SPACE'],
 		Minus: ['ข', '๘', '', '', 0, 'VK_OEM_MINUS'],
 		Equal: ['ช', '๙', '', '', 0, 'VK_OEM_PLUS'],
@@ -92,7 +92,7 @@ KeyboardLayoutContribution.INSTANCE.registerKeyboardLayout({
 		NumLock: [],
 		NumpadDivide: ['/', '/', '', '', 0, 'VK_DIVIDE'],
 		NumpadMultiply: ['*', '*', '', '', 0, 'VK_MULTIPLY'],
-		NumpadSubtract: ['-', '-', '', '', 0, 'VK_SUBTRACT'],
+		NumpadSuBtract: ['-', '-', '', '', 0, 'VK_SUBTRACT'],
 		NumpadAdd: ['+', '+', '', '', 0, 'VK_ADD'],
 		NumpadEnter: [],
 		Numpad1: [],

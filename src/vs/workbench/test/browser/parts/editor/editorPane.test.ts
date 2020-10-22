@@ -4,23 +4,23 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { EditorPane, EditorMemento } from 'vs/workbench/browser/parts/editor/editorPane';
-import { EditorInput, EditorOptions, IEditorInputFactory, IEditorInputFactoryRegistry, Extensions as EditorExtensions } from 'vs/workbench/common/editor';
+import { EditorPane, EditorMemento } from 'vs/workBench/Browser/parts/editor/editorPane';
+import { EditorInput, EditorOptions, IEditorInputFactory, IEditorInputFactoryRegistry, Extensions as EditorExtensions } from 'vs/workBench/common/editor';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import * as Platform from 'vs/platform/registry/common/platform';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { workbenchInstantiationService, TestEditorGroupView, TestEditorGroupsService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
+import { workBenchInstantiationService, TestEditorGroupView, TestEditorGroupsService } from 'vs/workBench/test/Browser/workBenchTestServices';
+import { ResourceEditorInput } from 'vs/workBench/common/editor/resourceEditorInput';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
-import { URI } from 'vs/base/common/uri';
-import { IEditorRegistry, Extensions, EditorDescriptor } from 'vs/workbench/browser/editor';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/Base/common/uri';
+import { IEditorRegistry, Extensions, EditorDescriptor } from 'vs/workBench/Browser/editor';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 import { IEditorModel } from 'vs/platform/editor/common/editor';
-import { dispose } from 'vs/base/common/lifecycle';
-import { TestStorageService } from 'vs/workbench/test/common/workbenchTestServices';
-import { extUri } from 'vs/base/common/resources';
+import { dispose } from 'vs/Base/common/lifecycle';
+import { TestStorageService } from 'vs/workBench/test/common/workBenchTestServices';
+import { extUri } from 'vs/Base/common/resources';
 
 const NullThemeService = new TestThemeService();
 
@@ -52,7 +52,7 @@ export class MyOtherEditor extends EditorPane {
 
 class MyInputFactory implements IEditorInputFactory {
 
-	canSerialize(editorInput: EditorInput): boolean {
+	canSerialize(editorInput: EditorInput): Boolean {
 		return true;
 	}
 
@@ -96,29 +96,29 @@ class MyOtherInput extends EditorInput {
 }
 class MyResourceEditorInput extends ResourceEditorInput { }
 
-suite('Workbench EditorPane', () => {
+suite('WorkBench EditorPane', () => {
 
 	test('EditorPane API', async () => {
 		let e = new MyEditor(NullTelemetryService);
 		let input = new MyOtherInput();
 		let options = new EditorOptions();
 
-		assert(!e.isVisible());
+		assert(!e.isVisiBle());
 		assert(!e.input);
 
-		await e.setInput(input, options, Object.create(null), CancellationToken.None);
+		await e.setInput(input, options, OBject.create(null), CancellationToken.None);
 		assert.strictEqual(input, e.input);
 		const group = new TestEditorGroupView(1);
-		e.setVisible(true, group);
-		assert(e.isVisible());
+		e.setVisiBle(true, group);
+		assert(e.isVisiBle());
 		assert.equal(e.group, group);
 		input.onDispose(() => {
 			assert(false);
 		});
 		e.dispose();
 		e.clearInput();
-		e.setVisible(false, group);
-		assert(!e.isVisible());
+		e.setVisiBle(false, group);
+		assert(!e.isVisiBle());
 		assert(!e.input);
 		assert(!e.getControl());
 	});
@@ -155,37 +155,37 @@ suite('Workbench EditorPane', () => {
 	test('Editor Lookup favors specific class over superclass (match on specific class)', function () {
 		let d1 = EditorDescriptor.create(MyEditor, 'id1', 'name');
 
-		const disposable = EditorRegistry.registerEditor(d1, [new SyncDescriptor(MyResourceEditorInput)]);
+		const disposaBle = EditorRegistry.registerEditor(d1, [new SyncDescriptor(MyResourceEditorInput)]);
 
-		let inst = workbenchInstantiationService();
+		let inst = workBenchInstantiationService();
 
 		const editor = EditorRegistry.getEditor(inst.createInstance(MyResourceEditorInput, URI.file('/fake'), 'fake', '', undefined))!.instantiate(inst);
 		assert.strictEqual(editor.getId(), 'myEditor');
 
 		const otherEditor = EditorRegistry.getEditor(inst.createInstance(ResourceEditorInput, URI.file('/fake'), 'fake', '', undefined))!.instantiate(inst);
-		assert.strictEqual(otherEditor.getId(), 'workbench.editors.textResourceEditor');
+		assert.strictEqual(otherEditor.getId(), 'workBench.editors.textResourceEditor');
 
-		disposable.dispose();
+		disposaBle.dispose();
 	});
 
 	test('Editor Lookup favors specific class over superclass (match on super class)', function () {
-		let inst = workbenchInstantiationService();
+		let inst = workBenchInstantiationService();
 
 		const editor = EditorRegistry.getEditor(inst.createInstance(MyResourceEditorInput, URI.file('/fake'), 'fake', '', undefined))!.instantiate(inst);
-		assert.strictEqual('workbench.editors.textResourceEditor', editor.getId());
+		assert.strictEqual('workBench.editors.textResourceEditor', editor.getId());
 	});
 
 	test('Editor Input Factory', function () {
-		workbenchInstantiationService().invokeFunction(accessor => EditorInputRegistry.start(accessor));
-		const disposable = EditorInputRegistry.registerEditorInputFactory('myInputId', MyInputFactory);
+		workBenchInstantiationService().invokeFunction(accessor => EditorInputRegistry.start(accessor));
+		const disposaBle = EditorInputRegistry.registerEditorInputFactory('myInputId', MyInputFactory);
 
 		let factory = EditorInputRegistry.getEditorInputFactory('myInputId');
 		assert(factory);
 
-		disposable.dispose();
+		disposaBle.dispose();
 	});
 
-	test('EditorMemento - basics', function () {
+	test('EditorMemento - Basics', function () {
 		const testGroup0 = new TestEditorGroupView(0);
 		const testGroup1 = new TestEditorGroupView(1);
 		const testGroup4 = new TestEditorGroupView(4);
@@ -197,10 +197,10 @@ suite('Workbench EditorPane', () => {
 		]);
 
 		interface TestViewState {
-			line: number;
+			line: numBer;
 		}
 
-		const rawMemento = Object.create(null);
+		const rawMemento = OBject.create(null);
 		let memento = new EditorMemento<TestViewState>('id', 'key', rawMemento, 3, editorGroupService);
 
 		let res = memento.loadEditorState(testGroup0, URI.file('/A'));
@@ -252,7 +252,7 @@ suite('Workbench EditorPane', () => {
 		assert.ok(memento.loadEditorState(testGroup0, URI.file('/D')));
 		assert.ok(!memento.loadEditorState(testGroup0, URI.file('/E')));
 
-		// Use fallbackToOtherGroupState
+		// Use fallBackToOtherGroupState
 		assert.ok(memento.loadEditorState(testGroup4, URI.file('/C'), true));
 	});
 
@@ -261,9 +261,9 @@ suite('Workbench EditorPane', () => {
 
 		const editorGroupService = new TestEditorGroupsService([testGroup0]);
 
-		interface TestViewState { line: number; }
+		interface TestViewState { line: numBer; }
 
-		const rawMemento = Object.create(null);
+		const rawMemento = OBject.create(null);
 		let memento = new EditorMemento<TestViewState>('id', 'key', rawMemento, 3, editorGroupService);
 
 		memento.saveEditorState(testGroup0, URI.file('/some/folder/file-1.txt'), { line: 1 });
@@ -291,22 +291,22 @@ suite('Workbench EditorPane', () => {
 		const testGroup0 = new TestEditorGroupView(0);
 
 		interface TestViewState {
-			line: number;
+			line: numBer;
 		}
 
 		class TestEditorInput extends EditorInput {
-			constructor(public resource: URI, private id = 'testEditorInputForMementoTest') {
+			constructor(puBlic resource: URI, private id = 'testEditorInputForMementoTest') {
 				super();
 			}
 			getTypeId() { return 'testEditorInputForMementoTest'; }
 			resolve(): Promise<IEditorModel> { return Promise.resolve(null!); }
 
-			matches(other: TestEditorInput): boolean {
+			matches(other: TestEditorInput): Boolean {
 				return other && this.id === other.id && other instanceof TestEditorInput;
 			}
 		}
 
-		const rawMemento = Object.create(null);
+		const rawMemento = OBject.create(null);
 		let memento = new EditorMemento<TestViewState>('id', 'key', rawMemento, 3, new TestEditorGroupsService());
 
 		const testInputA = new TestEditorInput(URI.file('/A'));

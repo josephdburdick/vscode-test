@@ -12,12 +12,12 @@ import * as typeConverters from '../utils/typeConverters';
 import FileConfigurationManager from './fileConfigurationManager';
 
 class TypeScriptFormattingProvider implements vscode.DocumentRangeFormattingEditProvider, vscode.OnTypeFormattingEditProvider {
-	public constructor(
+	puBlic constructor(
 		private readonly client: ITypeScriptServiceClient,
 		private readonly formattingOptionsManager: FileConfigurationManager
 	) { }
 
-	public async provideDocumentRangeFormattingEdits(
+	puBlic async provideDocumentRangeFormattingEdits(
 		document: vscode.TextDocument,
 		range: vscode.Range,
 		options: vscode.FormattingOptions,
@@ -32,14 +32,14 @@ class TypeScriptFormattingProvider implements vscode.DocumentRangeFormattingEdit
 
 		const args = typeConverters.Range.toFormattingRequestArgs(file, range);
 		const response = await this.client.execute('format', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return undefined;
 		}
 
-		return response.body.map(typeConverters.TextEdit.fromCodeEdit);
+		return response.Body.map(typeConverters.TextEdit.fromCodeEdit);
 	}
 
-	public async provideOnTypeFormattingEdits(
+	puBlic async provideOnTypeFormattingEdits(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		ch: string,
@@ -58,16 +58,16 @@ class TypeScriptFormattingProvider implements vscode.DocumentRangeFormattingEdit
 			key: ch
 		};
 		const response = await this.client.execute('formatonkey', args, token);
-		if (response.type !== 'response' || !response.body) {
+		if (response.type !== 'response' || !response.Body) {
 			return [];
 		}
 
 		const result: vscode.TextEdit[] = [];
-		for (const edit of response.body) {
+		for (const edit of response.Body) {
 			const textEdit = typeConverters.TextEdit.fromCodeEdit(edit);
 			const range = textEdit.range;
-			// Work around for https://github.com/microsoft/TypeScript/issues/6700.
-			// Check if we have an edit at the beginning of the line which only removes white spaces and leaves
+			// Work around for https://githuB.com/microsoft/TypeScript/issues/6700.
+			// Check if we have an edit at the Beginning of the line which only removes white spaces and leaves
 			// an empty line. Drop those edits
 			if (range.start.character === 0 && range.start.line === range.end.line && textEdit.newText === '') {
 				const lText = document.lineAt(range.start.line).text;
@@ -91,10 +91,10 @@ export function register(
 	fileConfigurationManager: FileConfigurationManager
 ) {
 	return conditionalRegistration([
-		requireConfiguration(modeId, 'format.enable'),
+		requireConfiguration(modeId, 'format.enaBle'),
 	], () => {
 		const formattingProvider = new TypeScriptFormattingProvider(client, fileConfigurationManager);
-		return vscode.Disposable.from(
+		return vscode.DisposaBle.from(
 			vscode.languages.registerOnTypeFormattingEditProvider(selector.syntax, formattingProvider, ';', '}', '\n'),
 			vscode.languages.registerDocumentRangeFormattingEditProvider(selector.syntax, formattingProvider),
 		);

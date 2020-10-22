@@ -3,21 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { SuggestModel } from 'vs/editor/contrib/suggest/suggestModel';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { ICodeEditor } from 'vs/editor/Browser/editorBrowser';
+import { SuggestModel } from 'vs/editor/contriB/suggest/suggestModel';
 
-export class OvertypingCapturer implements IDisposable {
+export class OvertypingCapturer implements IDisposaBle {
 
 	private static readonly _maxSelectionLength = 51200;
-	private readonly _disposables = new DisposableStore();
+	private readonly _disposaBles = new DisposaBleStore();
 
-	private _lastOvertyped: { value: string; multiline: boolean }[] = [];
-	private _empty: boolean = true;
+	private _lastOvertyped: { value: string; multiline: Boolean }[] = [];
+	private _empty: Boolean = true;
 
 	constructor(editor: ICodeEditor, suggestModel: SuggestModel) {
 
-		this._disposables.add(editor.onWillType(() => {
+		this._disposaBles.add(editor.onWillType(() => {
 			if (!this._empty) {
 				return;
 			}
@@ -33,7 +33,7 @@ export class OvertypingCapturer implements IDisposable {
 			for (let i = 0; i < selectionsLength; i++) {
 				if (!selections[i].isEmpty()) {
 					willOvertype = true;
-					break;
+					Break;
 				}
 			}
 			if (!willOvertype) {
@@ -48,19 +48,19 @@ export class OvertypingCapturer implements IDisposable {
 				if (model.getValueLengthInRange(selection) > OvertypingCapturer._maxSelectionLength) {
 					return;
 				}
-				this._lastOvertyped[i] = { value: model.getValueInRange(selection), multiline: selection.startLineNumber !== selection.endLineNumber };
+				this._lastOvertyped[i] = { value: model.getValueInRange(selection), multiline: selection.startLineNumBer !== selection.endLineNumBer };
 			}
 			this._empty = false;
 		}));
 
-		this._disposables.add(suggestModel.onDidCancel(e => {
+		this._disposaBles.add(suggestModel.onDidCancel(e => {
 			if (!this._empty) {
 				this._empty = true;
 			}
 		}));
 	}
 
-	getLastOvertypedInfo(idx: number): { value: string; multiline: boolean } | undefined {
+	getLastOvertypedInfo(idx: numBer): { value: string; multiline: Boolean } | undefined {
 		if (!this._empty && idx >= 0 && idx < this._lastOvertyped.length) {
 			return this._lastOvertyped[idx];
 		}
@@ -68,6 +68,6 @@ export class OvertypingCapturer implements IDisposable {
 	}
 
 	dispose() {
-		this._disposables.dispose();
+		this._disposaBles.dispose();
 	}
 }

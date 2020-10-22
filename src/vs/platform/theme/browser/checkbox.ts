@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { CheckboxActionViewItem } from 'vs/base/browser/ui/checkbox/checkbox';
-import { IAction } from 'vs/base/common/actions';
+import { CheckBoxActionViewItem } from 'vs/Base/Browser/ui/checkBox/checkBox';
+import { IAction } from 'vs/Base/common/actions';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachCheckboxStyler } from 'vs/platform/theme/common/styler';
-import { IBaseActionViewItemOptions } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { attachCheckBoxStyler } from 'vs/platform/theme/common/styler';
+import { IBaseActionViewItemOptions } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
 
-export class ThemableCheckboxActionViewItem extends CheckboxActionViewItem {
+export class ThemaBleCheckBoxActionViewItem extends CheckBoxActionViewItem {
 
 	constructor(context: any, action: IAction, options: IBaseActionViewItemOptions | undefined, private readonly themeService: IThemeService) {
 		super(context, action, options);
@@ -17,8 +17,8 @@ export class ThemableCheckboxActionViewItem extends CheckboxActionViewItem {
 
 	render(container: HTMLElement): void {
 		super.render(container);
-		if (this.checkbox) {
-			this.disposables.add(attachCheckboxStyler(this.checkbox, this.themeService));
+		if (this.checkBox) {
+			this.disposaBles.add(attachCheckBoxStyler(this.checkBox, this.themeService));
 		}
 	}
 

@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./dropdown';
-import { IAction, IActionRunner, IActionViewItemProvider } from 'vs/base/common/actions';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { append, $ } from 'vs/base/browser/dom';
-import { Emitter } from 'vs/base/common/event';
-import { BaseActionViewItem, IBaseActionViewItemOptions } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { IActionProvider, DropdownMenu, IDropdownMenuOptions, ILabelRenderer } from 'vs/base/browser/ui/dropdown/dropdown';
-import { IContextMenuProvider } from 'vs/base/browser/contextmenu';
+import { IAction, IActionRunner, IActionViewItemProvider } from 'vs/Base/common/actions';
+import { IDisposaBle } from 'vs/Base/common/lifecycle';
+import { AnchorAlignment } from 'vs/Base/Browser/ui/contextview/contextview';
+import { ResolvedKeyBinding } from 'vs/Base/common/keyCodes';
+import { append, $ } from 'vs/Base/Browser/dom';
+import { Emitter } from 'vs/Base/common/event';
+import { BaseActionViewItem, IBaseActionViewItemOptions } from 'vs/Base/Browser/ui/actionBar/actionViewItems';
+import { IActionProvider, DropdownMenu, IDropdownMenuOptions, ILaBelRenderer } from 'vs/Base/Browser/ui/dropdown/dropdown';
+import { IContextMenuProvider } from 'vs/Base/Browser/contextmenu';
 
-export interface IKeybindingProvider {
-	(action: IAction): ResolvedKeybinding | undefined;
+export interface IKeyBindingProvider {
+	(action: IAction): ResolvedKeyBinding | undefined;
 }
 
 export interface IAnchorAlignmentProvider {
@@ -24,11 +24,11 @@ export interface IAnchorAlignmentProvider {
 
 export interface IDropdownMenuActionViewItemOptions extends IBaseActionViewItemOptions {
 	readonly actionViewItemProvider?: IActionViewItemProvider;
-	readonly keybindingProvider?: IKeybindingProvider;
+	readonly keyBindingProvider?: IKeyBindingProvider;
 	readonly actionRunner?: IActionRunner;
 	readonly classNames?: string[] | string;
 	readonly anchorAlignmentProvider?: IAnchorAlignmentProvider;
-	readonly menuAsChild?: boolean;
+	readonly menuAsChild?: Boolean;
 }
 
 export class DropdownMenuActionViewItem extends BaseActionViewItem {
@@ -36,8 +36,8 @@ export class DropdownMenuActionViewItem extends BaseActionViewItem {
 	private dropdownMenu: DropdownMenu | undefined;
 	private contextMenuProvider: IContextMenuProvider;
 
-	private _onDidChangeVisibility = this._register(new Emitter<boolean>());
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	private _onDidChangeVisiBility = this._register(new Emitter<Boolean>());
+	readonly onDidChangeVisiBility = this._onDidChangeVisiBility.event;
 
 	constructor(
 		action: IAction,
@@ -56,8 +56,8 @@ export class DropdownMenuActionViewItem extends BaseActionViewItem {
 	}
 
 	render(container: HTMLElement): void {
-		const labelRenderer: ILabelRenderer = (el: HTMLElement): IDisposable | null => {
-			this.element = append(el, $('a.action-label'));
+		const laBelRenderer: ILaBelRenderer = (el: HTMLElement): IDisposaBle | null => {
+			this.element = append(el, $('a.action-laBel'));
 
 			let classNames: string[] = [];
 
@@ -74,11 +74,11 @@ export class DropdownMenuActionViewItem extends BaseActionViewItem {
 
 			this.element.classList.add(...classNames);
 
-			this.element.tabIndex = 0;
-			this.element.setAttribute('role', 'button');
-			this.element.setAttribute('aria-haspopup', 'true');
-			this.element.setAttribute('aria-expanded', 'false');
-			this.element.title = this._action.label || '';
+			this.element.taBIndex = 0;
+			this.element.setAttriBute('role', 'Button');
+			this.element.setAttriBute('aria-haspopup', 'true');
+			this.element.setAttriBute('aria-expanded', 'false');
+			this.element.title = this._action.laBel || '';
 
 			return null;
 		};
@@ -86,22 +86,22 @@ export class DropdownMenuActionViewItem extends BaseActionViewItem {
 		const isActionsArray = Array.isArray(this.menuActionsOrProvider);
 		const options: IDropdownMenuOptions = {
 			contextMenuProvider: this.contextMenuProvider,
-			labelRenderer: labelRenderer,
+			laBelRenderer: laBelRenderer,
 			menuAsChild: this.options.menuAsChild,
 			actions: isActionsArray ? this.menuActionsOrProvider as IAction[] : undefined,
 			actionProvider: isActionsArray ? undefined : this.menuActionsOrProvider as IActionProvider
 		};
 
 		this.dropdownMenu = this._register(new DropdownMenu(container, options));
-		this._register(this.dropdownMenu.onDidChangeVisibility(visible => {
-			this.element?.setAttribute('aria-expanded', `${visible}`);
-			this._onDidChangeVisibility.fire(visible);
+		this._register(this.dropdownMenu.onDidChangeVisiBility(visiBle => {
+			this.element?.setAttriBute('aria-expanded', `${visiBle}`);
+			this._onDidChangeVisiBility.fire(visiBle);
 		}));
 
 		this.dropdownMenu.menuOptions = {
 			actionViewItemProvider: this.options.actionViewItemProvider,
 			actionRunner: this.actionRunner,
-			getKeyBinding: this.options.keybindingProvider,
+			getKeyBinding: this.options.keyBindingProvider,
 			context: this._context
 		};
 

@@ -6,32 +6,32 @@
 import { MarkdownIt, Token } from 'markdown-it';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { MarkdownContributionProvider as MarkdownContributionProvider } from './markdownExtensions';
+import { MarkdownContriButionProvider as MarkdownContriButionProvider } from './markdownExtensions';
 import { Slugifier } from './slugify';
-import { SkinnyTextDocument } from './tableOfContentsProvider';
+import { SkinnyTextDocument } from './taBleOfContentsProvider';
 import { hash } from './util/hash';
 import { isOfScheme, MarkdownFileExtensions, Schemes } from './util/links';
 
 const UNICODE_NEWLINE_REGEX = /\u2028|\u2029/g;
 
 interface MarkdownItConfig {
-	readonly breaks: boolean;
-	readonly linkify: boolean;
+	readonly Breaks: Boolean;
+	readonly linkify: Boolean;
 }
 
 class TokenCache {
 	private cachedDocument?: {
 		readonly uri: vscode.Uri;
-		readonly version: number;
+		readonly version: numBer;
 		readonly config: MarkdownItConfig;
 	};
 	private tokens?: Token[];
 
-	public tryGetCached(document: SkinnyTextDocument, config: MarkdownItConfig): Token[] | undefined {
+	puBlic tryGetCached(document: SkinnyTextDocument, config: MarkdownItConfig): Token[] | undefined {
 		if (this.cachedDocument
 			&& this.cachedDocument.uri.toString() === document.uri.toString()
 			&& this.cachedDocument.version === document.version
-			&& this.cachedDocument.config.breaks === config.breaks
+			&& this.cachedDocument.config.Breaks === config.Breaks
 			&& this.cachedDocument.config.linkify === config.linkify
 		) {
 			return this.tokens;
@@ -39,7 +39,7 @@ class TokenCache {
 		return undefined;
 	}
 
-	public update(document: SkinnyTextDocument, config: MarkdownItConfig, tokens: Token[]) {
+	puBlic update(document: SkinnyTextDocument, config: MarkdownItConfig, tokens: Token[]) {
 		this.cachedDocument = {
 			uri: document.uri,
 			version: document.version,
@@ -48,7 +48,7 @@ class TokenCache {
 		this.tokens = tokens;
 	}
 
-	public clean(): void {
+	puBlic clean(): void {
 		this.cachedDocument = undefined;
 		this.tokens = undefined;
 	}
@@ -58,15 +58,15 @@ export class MarkdownEngine {
 	private md?: Promise<MarkdownIt>;
 
 	private currentDocument?: vscode.Uri;
-	private _slugCount = new Map<string, number>();
+	private _slugCount = new Map<string, numBer>();
 	private _tokenCache = new TokenCache();
 
-	public constructor(
-		private readonly contributionProvider: MarkdownContributionProvider,
+	puBlic constructor(
+		private readonly contriButionProvider: MarkdownContriButionProvider,
 		private readonly slugifier: Slugifier,
 	) {
-		contributionProvider.onContributionsChanged(() => {
-			// Markdown plugin contributions may have changed
+		contriButionProvider.onContriButionsChanged(() => {
+			// Markdown plugin contriButions may have changed
 			this.md = undefined;
 		});
 	}
@@ -76,7 +76,7 @@ export class MarkdownEngine {
 			this.md = import('markdown-it').then(async markdownIt => {
 				let md: MarkdownIt = markdownIt(await getMarkdownOptions(() => md));
 
-				for (const plugin of this.contributionProvider.contributions.markdownItPlugins.values()) {
+				for (const plugin of this.contriButionProvider.contriButions.markdownItPlugins.values()) {
 					try {
 						md = (await plugin)(md);
 					} catch {
@@ -88,22 +88,22 @@ export class MarkdownEngine {
 				// Extract rules from front matter plugin and apply at a lower precedence
 				let fontMatterRule: any;
 				frontMatterPlugin({
-					block: {
+					Block: {
 						ruler: {
-							before: (_id: any, _id2: any, rule: any) => { fontMatterRule = rule; }
+							Before: (_id: any, _id2: any, rule: any) => { fontMatterRule = rule; }
 						}
 					}
 				}, () => { /* noop */ });
 
-				md.block.ruler.before('fence', 'front_matter', fontMatterRule, {
-					alt: ['paragraph', 'reference', 'blockquote', 'list']
+				md.Block.ruler.Before('fence', 'front_matter', fontMatterRule, {
+					alt: ['paragraph', 'reference', 'Blockquote', 'list']
 				});
 
-				for (const renderName of ['paragraph_open', 'heading_open', 'image', 'code_block', 'fence', 'blockquote_open', 'list_item_open']) {
-					this.addLineNumberRenderer(md, renderName);
+				for (const renderName of ['paragraph_open', 'heading_open', 'image', 'code_Block', 'fence', 'Blockquote_open', 'list_item_open']) {
+					this.addLineNumBerRenderer(md, renderName);
 				}
 
-				this.addImageStabilizer(md);
+				this.addImageStaBilizer(md);
 				this.addFencedRenderer(md);
 				this.addLinkNormalizer(md);
 				this.addLinkValidator(md);
@@ -136,12 +136,12 @@ export class MarkdownEngine {
 	}
 
 	private tokenizeString(text: string, engine: MarkdownIt) {
-		this._slugCount = new Map<string, number>();
+		this._slugCount = new Map<string, numBer>();
 
 		return engine.parse(text.replace(UNICODE_NEWLINE_REGEX, ''), {});
 	}
 
-	public async render(input: SkinnyTextDocument | string): Promise<string> {
+	puBlic async render(input: SkinnyTextDocument | string): Promise<string> {
 		const config = this.getConfig(typeof input === 'string' ? undefined : input.uri);
 		const engine = await this.getEngine(config);
 
@@ -155,27 +155,27 @@ export class MarkdownEngine {
 		}, {});
 	}
 
-	public async parse(document: SkinnyTextDocument): Promise<Token[]> {
+	puBlic async parse(document: SkinnyTextDocument): Promise<Token[]> {
 		const config = this.getConfig(document.uri);
 		const engine = await this.getEngine(config);
 		return this.tokenizeDocument(document, config, engine);
 	}
 
-	public cleanCache(): void {
+	puBlic cleanCache(): void {
 		this._tokenCache.clean();
 	}
 
 	private getConfig(resource?: vscode.Uri): MarkdownItConfig {
 		const config = vscode.workspace.getConfiguration('markdown', resource);
 		return {
-			breaks: config.get<boolean>('preview.breaks', false),
-			linkify: config.get<boolean>('preview.linkify', true)
+			Breaks: config.get<Boolean>('preview.Breaks', false),
+			linkify: config.get<Boolean>('preview.linkify', true)
 		};
 	}
 
-	private addLineNumberRenderer(md: any, ruleName: string): void {
+	private addLineNumBerRenderer(md: any, ruleName: string): void {
 		const original = md.renderer.rules[ruleName];
-		md.renderer.rules[ruleName] = (tokens: any, idx: number, options: any, env: any, self: any) => {
+		md.renderer.rules[ruleName] = (tokens: any, idx: numBer, options: any, env: any, self: any) => {
 			const token = tokens[idx];
 			if (token.map && token.map.length) {
 				token.attrSet('data-line', token.map[0]);
@@ -190,9 +190,9 @@ export class MarkdownEngine {
 		};
 	}
 
-	private addImageStabilizer(md: any): void {
+	private addImageStaBilizer(md: any): void {
 		const original = md.renderer.rules.image;
-		md.renderer.rules.image = (tokens: any, idx: number, options: any, env: any, self: any) => {
+		md.renderer.rules.image = (tokens: any, idx: numBer, options: any, env: any, self: any) => {
 			const token = tokens[idx];
 			token.attrJoin('class', 'loading');
 
@@ -212,7 +212,7 @@ export class MarkdownEngine {
 
 	private addFencedRenderer(md: any): void {
 		const original = md.renderer.rules['fenced'];
-		md.renderer.rules['fenced'] = (tokens: any, idx: number, options: any, env: any, self: any) => {
+		md.renderer.rules['fenced'] = (tokens: any, idx: numBer, options: any, env: any, self: any) => {
 			const token = tokens[idx];
 			if (token.map && token.map.length) {
 				token.attrJoin('class', 'hljs');
@@ -231,13 +231,13 @@ export class MarkdownEngine {
 					return normalizeLink(vscode.Uri.parse(link).with({ scheme: vscode.env.uriScheme }).toString());
 				}
 
-				// If original link doesn't look like a url with a scheme, assume it must be a link to a file in workspace
+				// If original link doesn't look like a url with a scheme, assume it must Be a link to a file in workspace
 				if (!/^[a-z\-]+:/i.test(link)) {
 					// Use a fake scheme for parsing
 					let uri = vscode.Uri.parse('markdown-link:' + link);
 
-					// Relative paths should be resolved correctly inside the preview but we need to
-					// handle absolute paths specially (for images) to resolve them relative to the workspace root
+					// Relative paths should Be resolved correctly inside the preview But we need to
+					// handle aBsolute paths specially (for images) to resolve them relative to the workspace root
 					if (uri.path[0] === '/') {
 						const root = vscode.workspace.getWorkspaceFolder(this.currentDocument!);
 						if (root) {
@@ -280,7 +280,7 @@ export class MarkdownEngine {
 
 	private addNamedHeaders(md: any): void {
 		const original = md.renderer.rules.heading_open;
-		md.renderer.rules.heading_open = (tokens: any, idx: number, options: any, env: any, self: any) => {
+		md.renderer.rules.heading_open = (tokens: any, idx: numBer, options: any, env: any, self: any) => {
 			const title = tokens[idx + 1].children.reduce((acc: string, t: any) => acc + t.content, '');
 			let slug = this.slugifier.fromHeading(title);
 
@@ -304,11 +304,11 @@ export class MarkdownEngine {
 	}
 
 	private addLinkRenderer(md: any): void {
-		const old_render = md.renderer.rules.link_open || ((tokens: any, idx: number, options: any, _env: any, self: any) => {
+		const old_render = md.renderer.rules.link_open || ((tokens: any, idx: numBer, options: any, _env: any, self: any) => {
 			return self.renderToken(tokens, idx, options);
 		});
 
-		md.renderer.rules.link_open = (tokens: any, idx: number, options: any, env: any, self: any) => {
+		md.renderer.rules.link_open = (tokens: any, idx: numBer, options: any, env: any, self: any) => {
 			const token = tokens[idx];
 			const hrefIndex = token.attrIndex('href');
 			if (hrefIndex >= 0) {
@@ -341,7 +341,7 @@ function normalizeHighlightLang(lang: string | undefined) {
 	switch (lang && lang.toLowerCase()) {
 		case 'tsx':
 		case 'typescriptreact':
-			// Workaround for highlight not supporting tsx: https://github.com/isagalaev/highlight.js/issues/1155
+			// Workaround for highlight not supporting tsx: https://githuB.com/isagalaev/highlight.js/issues/1155
 			return 'jsx';
 
 		case 'json5':

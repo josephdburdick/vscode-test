@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as assert from 'assert';
-import { Event, Emitter, EventBufferer, EventMultiplexer, IWaitUntil, PauseableEmitter, AsyncEmitter } from 'vs/base/common/event';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import * as Errors from 'vs/base/common/errors';
-import { timeout } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { Event, Emitter, EventBufferer, EventMultiplexer, IWaitUntil, PauseaBleEmitter, AsyncEmitter } from 'vs/Base/common/event';
+import { IDisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import * as Errors from 'vs/Base/common/errors';
+import { timeout } from 'vs/Base/common/async';
+import { CancellationToken } from 'vs/Base/common/cancellation';
 
 namespace Samples {
 
@@ -49,57 +49,57 @@ suite('Event', function () {
 		let doc = new Samples.Document3();
 
 		document.createElement('div').onclick = function () { };
-		let subscription = doc.onDidChange(counter.onEvent, counter);
+		let suBscription = doc.onDidChange(counter.onEvent, counter);
 
 		doc.setText('far');
-		doc.setText('boo');
+		doc.setText('Boo');
 
 		// unhook listener
-		subscription.dispose();
-		doc.setText('boo');
+		suBscription.dispose();
+		doc.setText('Boo');
 		assert.equal(counter.count, 2);
 	});
 
 
-	test('Emitter, bucket', function () {
+	test('Emitter, Bucket', function () {
 
-		let bucket: IDisposable[] = [];
+		let Bucket: IDisposaBle[] = [];
 		let doc = new Samples.Document3();
-		let subscription = doc.onDidChange(counter.onEvent, counter, bucket);
+		let suBscription = doc.onDidChange(counter.onEvent, counter, Bucket);
 
 		doc.setText('far');
-		doc.setText('boo');
+		doc.setText('Boo');
 
 		// unhook listener
-		while (bucket.length) {
-			bucket.pop()!.dispose();
+		while (Bucket.length) {
+			Bucket.pop()!.dispose();
 		}
-		doc.setText('boo');
+		doc.setText('Boo');
 
 		// noop
-		subscription.dispose();
+		suBscription.dispose();
 
-		doc.setText('boo');
+		doc.setText('Boo');
 		assert.equal(counter.count, 2);
 	});
 
 	test('Emitter, store', function () {
 
-		let bucket = new DisposableStore();
+		let Bucket = new DisposaBleStore();
 		let doc = new Samples.Document3();
-		let subscription = doc.onDidChange(counter.onEvent, counter, bucket);
+		let suBscription = doc.onDidChange(counter.onEvent, counter, Bucket);
 
 		doc.setText('far');
-		doc.setText('boo');
+		doc.setText('Boo');
 
 		// unhook listener
-		bucket.clear();
-		doc.setText('boo');
+		Bucket.clear();
+		doc.setText('Boo');
 
 		// noop
-		subscription.dispose();
+		suBscription.dispose();
 
-		doc.setText('boo');
+		doc.setText('Boo');
 		assert.equal(counter.count, 2);
 	});
 
@@ -115,15 +115,15 @@ suite('Event', function () {
 		assert.equal(firstCount, 0);
 		assert.equal(lastCount, 0);
 
-		let subscription = a.event(function () { });
+		let suBscription = a.event(function () { });
 		assert.equal(firstCount, 1);
 		assert.equal(lastCount, 0);
 
-		subscription.dispose();
+		suBscription.dispose();
 		assert.equal(firstCount, 1);
 		assert.equal(lastCount, 1);
 
-		subscription = a.event(function () { });
+		suBscription = a.event(function () { });
 		assert.equal(firstCount, 2);
 		assert.equal(lastCount, 1);
 	});
@@ -136,7 +136,7 @@ suite('Event', function () {
 			let a = new Emitter<undefined>();
 			let hit = false;
 			a.event(function () {
-				// eslint-disable-next-line no-throw-literal
+				// eslint-disaBle-next-line no-throw-literal
 				throw 9;
 			});
 			a.event(function () {
@@ -173,10 +173,10 @@ suite('Event', function () {
 		assert.equal(counter, 3);
 	});
 
-	test('Debounce Event', function (done: () => void) {
+	test('DeBounce Event', function (done: () => void) {
 		let doc = new Samples.Document3();
 
-		let onDocDidChange = Event.debounce(doc.onDidChange, (prev: string[] | undefined, cur) => {
+		let onDocDidChange = Event.deBounce(doc.onDidChange, (prev: string[] | undefined, cur) => {
 			if (!prev) {
 				prev = [cur];
 			} else if (prev.indexOf(cur) < 0) {
@@ -204,32 +204,32 @@ suite('Event', function () {
 		doc.setText('3');
 	});
 
-	test('Debounce Event - leading', async function () {
+	test('DeBounce Event - leading', async function () {
 		const emitter = new Emitter<void>();
-		let debounced = Event.debounce(emitter.event, (l, e) => e, 0, /*leading=*/true);
+		let deBounced = Event.deBounce(emitter.event, (l, e) => e, 0, /*leading=*/true);
 
 		let calls = 0;
-		debounced(() => {
+		deBounced(() => {
 			calls++;
 		});
 
-		// If the source event is fired once, the debounced (on the leading edge) event should be fired only once
+		// If the source event is fired once, the deBounced (on the leading edge) event should Be fired only once
 		emitter.fire();
 
 		await timeout(1);
 		assert.equal(calls, 1);
 	});
 
-	test('Debounce Event - leading', async function () {
+	test('DeBounce Event - leading', async function () {
 		const emitter = new Emitter<void>();
-		let debounced = Event.debounce(emitter.event, (l, e) => e, 0, /*leading=*/true);
+		let deBounced = Event.deBounce(emitter.event, (l, e) => e, 0, /*leading=*/true);
 
 		let calls = 0;
-		debounced(() => {
+		deBounced(() => {
 			calls++;
 		});
 
-		// If the source event is fired multiple times, the debounced (on the leading edge) event should be fired twice
+		// If the source event is fired multiple times, the deBounced (on the leading edge) event should Be fired twice
 		emitter.fire();
 		emitter.fire();
 		emitter.fire();
@@ -237,12 +237,12 @@ suite('Event', function () {
 		assert.equal(calls, 2);
 	});
 
-	test('Debounce Event - leading reset', async function () {
-		const emitter = new Emitter<number>();
-		let debounced = Event.debounce(emitter.event, (l, e) => l ? l + 1 : 1, 0, /*leading=*/true);
+	test('DeBounce Event - leading reset', async function () {
+		const emitter = new Emitter<numBer>();
+		let deBounced = Event.deBounce(emitter.event, (l, e) => l ? l + 1 : 1, 0, /*leading=*/true);
 
-		let calls: number[] = [];
-		debounced((e) => calls.push(e));
+		let calls: numBer[] = [];
+		deBounced((e) => calls.push(e));
 
 		emitter.fire(1);
 		emitter.fire(1);
@@ -276,54 +276,54 @@ suite('AsyncEmitter', function () {
 	test('event has waitUntil-function', async function () {
 
 		interface E extends IWaitUntil {
-			foo: boolean;
-			bar: number;
+			foo: Boolean;
+			Bar: numBer;
 		}
 
 		let emitter = new AsyncEmitter<E>();
 
 		emitter.event(e => {
 			assert.equal(e.foo, true);
-			assert.equal(e.bar, 1);
+			assert.equal(e.Bar, 1);
 			assert.equal(typeof e.waitUntil, 'function');
 		});
 
-		emitter.fireAsync({ foo: true, bar: 1, }, CancellationToken.None);
+		emitter.fireAsync({ foo: true, Bar: 1, }, CancellationToken.None);
 		emitter.dispose();
 	});
 
 	test('sequential delivery', async function () {
 
 		interface E extends IWaitUntil {
-			foo: boolean;
+			foo: Boolean;
 		}
 
-		let globalState = 0;
+		let gloBalState = 0;
 		let emitter = new AsyncEmitter<E>();
 
 		emitter.event(e => {
 			e.waitUntil(timeout(10).then(_ => {
-				assert.equal(globalState, 0);
-				globalState += 1;
+				assert.equal(gloBalState, 0);
+				gloBalState += 1;
 			}));
 		});
 
 		emitter.event(e => {
 			e.waitUntil(timeout(1).then(_ => {
-				assert.equal(globalState, 1);
-				globalState += 1;
+				assert.equal(gloBalState, 1);
+				gloBalState += 1;
 			}));
 		});
 
 		await emitter.fireAsync({ foo: true }, CancellationToken.None);
-		assert.equal(globalState, 2);
+		assert.equal(gloBalState, 2);
 	});
 
 	test('sequential, in-order delivery', async function () {
 		interface E extends IWaitUntil {
-			foo: number;
+			foo: numBer;
 		}
-		let events: number[] = [];
+		let events: numBer[] = [];
 		let done = false;
 		let emitter = new AsyncEmitter<E>();
 
@@ -353,24 +353,24 @@ suite('AsyncEmitter', function () {
 		Errors.setUnexpectedErrorHandler(() => null);
 
 		interface E extends IWaitUntil {
-			foo: boolean;
+			foo: Boolean;
 		}
 
-		let globalState = 0;
+		let gloBalState = 0;
 		let emitter = new AsyncEmitter<E>();
 
 		emitter.event(e => {
-			globalState += 1;
+			gloBalState += 1;
 			e.waitUntil(new Promise((_r, reject) => reject(new Error())));
 		});
 
 		emitter.event(e => {
-			globalState += 1;
+			gloBalState += 1;
 			e.waitUntil(timeout(10));
 		});
 
 		await emitter.fireAsync({ foo: true }, CancellationToken.None).then(() => {
-			assert.equal(globalState, 2);
+			assert.equal(gloBalState, 2);
 		}).catch(e => {
 			console.log(e);
 			assert.ok(false);
@@ -380,11 +380,11 @@ suite('AsyncEmitter', function () {
 	});
 });
 
-suite('PausableEmitter', function () {
+suite('PausaBleEmitter', function () {
 
-	test('basic', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>();
+	test('Basic', function () {
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>();
 
 		emitter.event(e => data.push(e));
 		emitter.fire(1);
@@ -394,8 +394,8 @@ suite('PausableEmitter', function () {
 	});
 
 	test('pause/resume - no merge', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>();
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>();
 
 		emitter.event(e => data.push(e));
 		emitter.fire(1);
@@ -414,8 +414,8 @@ suite('PausableEmitter', function () {
 	});
 
 	test('pause/resume - merge', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>({ merge: (a) => a.reduce((p, c) => p + c, 0) });
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>({ merge: (a) => a.reduce((p, c) => p + c, 0) });
 
 		emitter.event(e => data.push(e));
 		emitter.fire(1);
@@ -434,9 +434,9 @@ suite('PausableEmitter', function () {
 		assert.deepEqual(data, [1, 2, 7, 5]);
 	});
 
-	test('double pause/resume', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>();
+	test('douBle pause/resume', function () {
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>();
 
 		emitter.event(e => data.push(e));
 		emitter.fire(1);
@@ -460,8 +460,8 @@ suite('PausableEmitter', function () {
 	});
 
 	test('resume, no pause', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>();
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>();
 
 		emitter.event(e => data.push(e));
 		emitter.fire(1);
@@ -474,8 +474,8 @@ suite('PausableEmitter', function () {
 	});
 
 	test('nested pause', function () {
-		const data: number[] = [];
-		const emitter = new PauseableEmitter<number>();
+		const data: numBer[] = [];
+		const emitter = new PauseaBleEmitter<numBer>();
 
 		let once = true;
 		emitter.event(e => {
@@ -511,11 +511,11 @@ suite('Event utils', () => {
 
 	suite('EventBufferer', () => {
 
-		test('should not buffer when not wrapped', () => {
-			const bufferer = new EventBufferer();
+		test('should not Buffer when not wrapped', () => {
+			const Bufferer = new EventBufferer();
 			const counter = new Samples.EventCounter();
 			const emitter = new Emitter<void>();
-			const event = bufferer.wrapEvent(emitter.event);
+			const event = Bufferer.wrapEvent(emitter.event);
 			const listener = event(counter.onEvent, counter);
 
 			assert.equal(counter.count, 0);
@@ -529,18 +529,18 @@ suite('Event utils', () => {
 			listener.dispose();
 		});
 
-		test('should buffer when wrapped', () => {
-			const bufferer = new EventBufferer();
+		test('should Buffer when wrapped', () => {
+			const Bufferer = new EventBufferer();
 			const counter = new Samples.EventCounter();
 			const emitter = new Emitter<void>();
-			const event = bufferer.wrapEvent(emitter.event);
+			const event = Bufferer.wrapEvent(emitter.event);
 			const listener = event(counter.onEvent, counter);
 
 			assert.equal(counter.count, 0);
 			emitter.fire();
 			assert.equal(counter.count, 1);
 
-			bufferer.bufferEvents(() => {
+			Bufferer.BufferEvents(() => {
 				emitter.fire();
 				assert.equal(counter.count, 1);
 				emitter.fire();
@@ -632,20 +632,20 @@ suite('Event utils', () => {
 		});
 	});
 
-	suite('buffer', () => {
+	suite('Buffer', () => {
 
-		test('should buffer events', () => {
-			const result: number[] = [];
-			const emitter = new Emitter<number>();
+		test('should Buffer events', () => {
+			const result: numBer[] = [];
+			const emitter = new Emitter<numBer>();
 			const event = emitter.event;
-			const bufferedEvent = Event.buffer(event);
+			const BufferedEvent = Event.Buffer(event);
 
 			emitter.fire(1);
 			emitter.fire(2);
 			emitter.fire(3);
 			assert.deepEqual(result, []);
 
-			const listener = bufferedEvent(num => result.push(num));
+			const listener = BufferedEvent(num => result.push(num));
 			assert.deepEqual(result, [1, 2, 3]);
 
 			emitter.fire(4);
@@ -656,18 +656,18 @@ suite('Event utils', () => {
 			assert.deepEqual(result, [1, 2, 3, 4]);
 		});
 
-		test('should buffer events on next tick', async () => {
-			const result: number[] = [];
-			const emitter = new Emitter<number>();
+		test('should Buffer events on next tick', async () => {
+			const result: numBer[] = [];
+			const emitter = new Emitter<numBer>();
 			const event = emitter.event;
-			const bufferedEvent = Event.buffer(event, true);
+			const BufferedEvent = Event.Buffer(event, true);
 
 			emitter.fire(1);
 			emitter.fire(2);
 			emitter.fire(3);
 			assert.deepEqual(result, []);
 
-			const listener = bufferedEvent(num => result.push(num));
+			const listener = BufferedEvent(num => result.push(num));
 			assert.deepEqual(result, []);
 
 			await timeout(10);
@@ -678,18 +678,18 @@ suite('Event utils', () => {
 			assert.deepEqual(result, [1, 2, 3, 4]);
 		});
 
-		test('should fire initial buffer events', () => {
-			const result: number[] = [];
-			const emitter = new Emitter<number>();
+		test('should fire initial Buffer events', () => {
+			const result: numBer[] = [];
+			const emitter = new Emitter<numBer>();
 			const event = emitter.event;
-			const bufferedEvent = Event.buffer(event, false, [-2, -1, 0]);
+			const BufferedEvent = Event.Buffer(event, false, [-2, -1, 0]);
 
 			emitter.fire(1);
 			emitter.fire(2);
 			emitter.fire(3);
 			assert.deepEqual(result, []);
 
-			bufferedEvent(num => result.push(num));
+			BufferedEvent(num => result.push(num));
 			assert.deepEqual(result, [-2, -1, 0, 1, 2, 3]);
 		});
 	});
@@ -697,11 +697,11 @@ suite('Event utils', () => {
 	suite('EventMultiplexer', () => {
 
 		test('works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 			m.event(r => result.push(r));
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
 
 			assert.deepEqual(result, []);
@@ -711,11 +711,11 @@ suite('Event utils', () => {
 		});
 
 		test('multiplexer dispose works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 			m.event(r => result.push(r));
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
 
 			assert.deepEqual(result, []);
@@ -731,11 +731,11 @@ suite('Event utils', () => {
 		});
 
 		test('event dispose works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 			m.event(r => result.push(r));
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
 
 			assert.deepEqual(result, []);
@@ -751,11 +751,11 @@ suite('Event utils', () => {
 		});
 
 		test('mutliplexer event dispose works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 			m.event(r => result.push(r));
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			const l1 = m.add(e1.event);
 
 			assert.deepEqual(result, []);
@@ -771,15 +771,15 @@ suite('Event utils', () => {
 		});
 
 		test('hot start works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 			m.event(r => result.push(r));
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
-			const e2 = new Emitter<number>();
+			const e2 = new Emitter<numBer>();
 			m.add(e2.event);
-			const e3 = new Emitter<number>();
+			const e3 = new Emitter<numBer>();
 			m.add(e3.event);
 
 			e1.fire(1);
@@ -789,14 +789,14 @@ suite('Event utils', () => {
 		});
 
 		test('cold start works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
-			const e2 = new Emitter<number>();
+			const e2 = new Emitter<numBer>();
 			m.add(e2.event);
-			const e3 = new Emitter<number>();
+			const e3 = new Emitter<numBer>();
 			m.add(e3.event);
 
 			m.event(r => result.push(r));
@@ -808,12 +808,12 @@ suite('Event utils', () => {
 		});
 
 		test('late add works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
-			const e2 = new Emitter<number>();
+			const e2 = new Emitter<numBer>();
 			m.add(e2.event);
 
 			m.event(r => result.push(r));
@@ -821,7 +821,7 @@ suite('Event utils', () => {
 			e1.fire(1);
 			e2.fire(2);
 
-			const e3 = new Emitter<number>();
+			const e3 = new Emitter<numBer>();
 			m.add(e3.event);
 			e3.fire(3);
 
@@ -829,12 +829,12 @@ suite('Event utils', () => {
 		});
 
 		test('add dispose works', () => {
-			const result: number[] = [];
-			const m = new EventMultiplexer<number>();
+			const result: numBer[] = [];
+			const m = new EventMultiplexer<numBer>();
 
-			const e1 = new Emitter<number>();
+			const e1 = new Emitter<numBer>();
 			m.add(e1.event);
-			const e2 = new Emitter<number>();
+			const e2 = new Emitter<numBer>();
 			m.add(e2.event);
 
 			m.event(r => result.push(r));
@@ -842,7 +842,7 @@ suite('Event utils', () => {
 			e1.fire(1);
 			e2.fire(2);
 
-			const e3 = new Emitter<number>();
+			const e3 = new Emitter<numBer>();
 			const l3 = m.add(e3.event);
 			e3.fire(3);
 			assert.deepEqual(result, [1, 2, 3]);
@@ -858,10 +858,10 @@ suite('Event utils', () => {
 	});
 
 	test('latch', () => {
-		const emitter = new Emitter<number>();
+		const emitter = new Emitter<numBer>();
 		const event = Event.latch(emitter.event);
 
-		const result: number[] = [];
+		const result: numBer[] = [];
 		const listener = event(num => result.push(num));
 
 		assert.deepEqual(result, []);

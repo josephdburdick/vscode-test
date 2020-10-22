@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { URI } from 'vs/Base/common/uri';
+import { workBenchInstantiationService, TestServiceAccessor } from 'vs/workBench/test/Browser/workBenchTestServices';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { TextFileContentProvider } from 'vs/workbench/contrib/files/common/files';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { TextFileContentProvider } from 'vs/workBench/contriB/files/common/files';
+import { snapshotToString } from 'vs/workBench/services/textfile/common/textfiles';
 
 suite('Files - FileOnDiskContentProvider', () => {
 
@@ -16,7 +16,7 @@ suite('Files - FileOnDiskContentProvider', () => {
 	let accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
+		instantiationService = workBenchInstantiationService();
 		accessor = instantiationService.createInstance(TestServiceAccessor);
 	});
 

@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SerializedError, onUnexpectedError } from 'vs/base/common/errors';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { MainContext, MainThreadErrorsShape } from 'vs/workbench/api/common/extHost.protocol';
+import { SerializedError, onUnexpectedError } from 'vs/Base/common/errors';
+import { extHostNamedCustomer } from 'vs/workBench/api/common/extHostCustomers';
+import { MainContext, MainThreadErrorsShape } from 'vs/workBench/api/common/extHost.protocol';
 
 @extHostNamedCustomer(MainContext.MainThreadErrors)
 export class MainThreadErrors implements MainThreadErrorsShape {

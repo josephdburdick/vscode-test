@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRenderOutput, CellOutputKind, IErrorOutput, RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookRegistry } from 'vs/workbench/contrib/notebook/browser/notebookRegistry';
-import { RGBA, Color } from 'vs/base/common/color';
-import { ansiColorIdentifiers } from 'vs/workbench/contrib/terminal/common/terminalColorRegistry';
+import { IRenderOutput, CellOutputKind, IErrorOutput, RenderOutputType } from 'vs/workBench/contriB/noteBook/common/noteBookCommon';
+import { NoteBookRegistry } from 'vs/workBench/contriB/noteBook/Browser/noteBookRegistry';
+import { RGBA, Color } from 'vs/Base/common/color';
+import { ansiColorIdentifiers } from 'vs/workBench/contriB/terminal/common/terminalColorRegistry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { INotebookEditor, IOutputTransformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { INoteBookEditor, IOutputTransformContriBution } from 'vs/workBench/contriB/noteBook/Browser/noteBookBrowser';
 
-class ErrorTransform implements IOutputTransformContribution {
+class ErrorTransform implements IOutputTransformContriBution {
 	constructor(
-		public editor: INotebookEditor,
+		puBlic editor: INoteBookEditor,
 		@IThemeService private readonly themeService: IThemeService
 	) {
 	}
@@ -26,14 +26,14 @@ class ErrorTransform implements IOutputTransformContribution {
 			header.innerText = headerMessage;
 			container.appendChild(header);
 		}
-		const traceback = document.createElement('pre');
-		traceback.classList.add('traceback');
-		if (output.traceback) {
-			for (let j = 0; j < output.traceback.length; j++) {
-				traceback.appendChild(handleANSIOutput(output.traceback[j], this.themeService));
+		const traceBack = document.createElement('pre');
+		traceBack.classList.add('traceBack');
+		if (output.traceBack) {
+			for (let j = 0; j < output.traceBack.length; j++) {
+				traceBack.appendChild(handleANSIOutput(output.traceBack[j], this.themeService));
 			}
 		}
-		container.appendChild(traceback);
+		container.appendChild(traceBack);
 		container.classList.add('error');
 		return { type: RenderOutputType.None, hasDynamicHeight: false };
 	}
@@ -42,7 +42,7 @@ class ErrorTransform implements IOutputTransformContribution {
 	}
 }
 
-NotebookRegistry.registerOutputTransform('notebook.output.error', CellOutputKind.Error, ErrorTransform);
+NoteBookRegistry.registerOutputTransform('noteBook.output.error', CellOutputKind.Error, ErrorTransform);
 
 /**
  * @param text The content to stylize.
@@ -51,23 +51,23 @@ NotebookRegistry.registerOutputTransform('notebook.output.error', CellOutputKind
 export function handleANSIOutput(text: string, themeService: IThemeService): HTMLSpanElement {
 
 	const root: HTMLSpanElement = document.createElement('span');
-	const textLength: number = text.length;
+	const textLength: numBer = text.length;
 
 	let styleNames: string[] = [];
 	let customFgColor: RGBA | undefined;
 	let customBgColor: RGBA | undefined;
-	let currentPos: number = 0;
-	let buffer: string = '';
+	let currentPos: numBer = 0;
+	let Buffer: string = '';
 
 	while (currentPos < textLength) {
 
-		let sequenceFound: boolean = false;
+		let sequenceFound: Boolean = false;
 
 		// Potentially an ANSI escape sequence.
-		// See http://ascii-table.com/ansi-escape-sequences.php & https://en.wikipedia.org/wiki/ANSI_escape_code
+		// See http://ascii-taBle.com/ansi-escape-sequences.php & https://en.wikipedia.org/wiki/ANSI_escape_code
 		if (text.charCodeAt(currentPos) === 27 && text.charAt(currentPos + 1) === '[') {
 
-			const startPos: number = currentPos;
+			const startPos: numBer = currentPos;
 			currentPos += 2; // Ignore 'Esc[' as it's in every sequence.
 
 			let ansiSequence: string = '';
@@ -81,33 +81,33 @@ export function handleANSIOutput(text: string, themeService: IThemeService): HTM
 				// Look for a known sequence terminating character.
 				if (char.match(/^[ABCDHIJKfhmpsu]$/)) {
 					sequenceFound = true;
-					break;
+					Break;
 				}
 
 			}
 
 			if (sequenceFound) {
 
-				// Flush buffer with previous styles.
-				appendStylizedStringToContainer(root, buffer, styleNames, customFgColor, customBgColor);
+				// Flush Buffer with previous styles.
+				appendStylizedStringToContainer(root, Buffer, styleNames, customFgColor, customBgColor);
 
-				buffer = '';
+				Buffer = '';
 
 				/*
 				 * Certain ranges that are matched here do not contain real graphics rendition sequences. For
-				 * the sake of having a simpler expression, they have been included anyway.
+				 * the sake of having a simpler expression, they have Been included anyway.
 				 */
 				if (ansiSequence.match(/^(?:[34][0-8]|9[0-7]|10[0-7]|[013]|4|[34]9)(?:;[349][0-7]|10[0-7]|[013]|[245]|[34]9)?(?:;[012]?[0-9]?[0-9])*;?m$/)) {
 
-					const styleCodes: number[] = ansiSequence.slice(0, -1) // Remove final 'm' character.
+					const styleCodes: numBer[] = ansiSequence.slice(0, -1) // Remove final 'm' character.
 						.split(';')										   // Separate style codes.
 						.filter(elem => elem !== '')			           // Filter empty elems as '34;m' -> ['34', ''].
-						.map(elem => parseInt(elem, 10));		           // Convert to numbers.
+						.map(elem => parseInt(elem, 10));		           // Convert to numBers.
 
 					if (styleCodes[0] === 38 || styleCodes[0] === 48) {
-						// Advanced color code - can't be combined with formatting codes like simple colors can
-						// Ignores invalid colors and additional info beyond what is necessary
-						const colorType = (styleCodes[0] === 38) ? 'foreground' : 'background';
+						// Advanced color code - can't Be comBined with formatting codes like simple colors can
+						// Ignores invalid colors and additional info Beyond what is necessary
+						const colorType = (styleCodes[0] === 38) ? 'foreground' : 'Background';
 
 						if (styleCodes[1] === 5) {
 							set8BitColor(styleCodes, colorType);
@@ -128,30 +128,30 @@ export function handleANSIOutput(text: string, themeService: IThemeService): HTM
 		}
 
 		if (sequenceFound === false) {
-			buffer += text.charAt(currentPos);
+			Buffer += text.charAt(currentPos);
 			currentPos++;
 		}
 	}
 
-	// Flush remaining text buffer if not empty.
-	if (buffer) {
-		appendStylizedStringToContainer(root, buffer, styleNames, customFgColor, customBgColor);
+	// Flush remaining text Buffer if not empty.
+	if (Buffer) {
+		appendStylizedStringToContainer(root, Buffer, styleNames, customFgColor, customBgColor);
 	}
 
 	return root;
 
 	/**
-	 * Change the foreground or background color by clearing the current color
+	 * Change the foreground or Background color By clearing the current color
 	 * and adding the new one.
 	 * @param colorType If `'foreground'`, will change the foreground color, if
-	 * 	`'background'`, will change the background color.
+	 * 	`'Background'`, will change the Background color.
 	 * @param color Color to change to. If `undefined` or not provided,
 	 * will clear current color without adding a new one.
 	 */
-	function changeColor(colorType: 'foreground' | 'background', color?: RGBA | undefined): void {
+	function changeColor(colorType: 'foreground' | 'Background', color?: RGBA | undefined): void {
 		if (colorType === 'foreground') {
 			customFgColor = color;
-		} else if (colorType === 'background') {
+		} else if (colorType === 'Background') {
 			customBgColor = color;
 		}
 		styleNames = styleNames.filter(style => style !== `code-${colorType}-colored`);
@@ -161,61 +161,61 @@ export function handleANSIOutput(text: string, themeService: IThemeService): HTM
 	}
 
 	/**
-	 * Calculate and set basic ANSI formatting. Supports bold, italic, underline,
-	 * normal foreground and background colors, and bright foreground and
-	 * background colors. Not to be used for codes containing advanced colors.
+	 * Calculate and set Basic ANSI formatting. Supports Bold, italic, underline,
+	 * normal foreground and Background colors, and Bright foreground and
+	 * Background colors. Not to Be used for codes containing advanced colors.
 	 * Will ignore invalid codes.
-	 * @param styleCodes Array of ANSI basic styling numbers, which will be
-	 * applied in order. New colors and backgrounds clear old ones; new formatting
+	 * @param styleCodes Array of ANSI Basic styling numBers, which will Be
+	 * applied in order. New colors and Backgrounds clear old ones; new formatting
 	 * does not.
 	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code }
 	 */
-	function setBasicFormatters(styleCodes: number[]): void {
+	function setBasicFormatters(styleCodes: numBer[]): void {
 		for (const code of styleCodes) {
 			switch (code) {
 				case 0: {
 					styleNames = [];
 					customFgColor = undefined;
 					customBgColor = undefined;
-					break;
+					Break;
 				}
 				case 1: {
-					styleNames.push('code-bold');
-					break;
+					styleNames.push('code-Bold');
+					Break;
 				}
 				case 3: {
 					styleNames.push('code-italic');
-					break;
+					Break;
 				}
 				case 4: {
 					styleNames.push('code-underline');
-					break;
+					Break;
 				}
 				case 39: {
 					changeColor('foreground', undefined);
-					break;
+					Break;
 				}
 				case 49: {
-					changeColor('background', undefined);
-					break;
+					changeColor('Background', undefined);
+					Break;
 				}
 				default: {
 					setBasicColor(code);
-					break;
+					Break;
 				}
 			}
 		}
 	}
 
 	/**
-	 * Calculate and set styling for complicated 24-bit ANSI color codes.
+	 * Calculate and set styling for complicated 24-Bit ANSI color codes.
 	 * @param styleCodes Full list of integer codes that make up the full ANSI
 	 * sequence, including the two defining codes and the three RGB codes.
 	 * @param colorType If `'foreground'`, will set foreground color, if
-	 * `'background'`, will set background color.
-	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit }
+	 * `'Background'`, will set Background color.
+	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#24-Bit }
 	 */
-	function set24BitColor(styleCodes: number[], colorType: 'foreground' | 'background'): void {
+	function set24BitColor(styleCodes: numBer[], colorType: 'foreground' | 'Background'): void {
 		if (styleCodes.length >= 5 &&
 			styleCodes[2] >= 0 && styleCodes[2] <= 255 &&
 			styleCodes[3] >= 0 && styleCodes[3] <= 255 &&
@@ -226,65 +226,65 @@ export function handleANSIOutput(text: string, themeService: IThemeService): HTM
 	}
 
 	/**
-	 * Calculate and set styling for advanced 8-bit ANSI color codes.
+	 * Calculate and set styling for advanced 8-Bit ANSI color codes.
 	 * @param styleCodes Full list of integer codes that make up the ANSI
 	 * sequence, including the two defining codes and the one color code.
 	 * @param colorType If `'foreground'`, will set foreground color, if
-	 * `'background'`, will set background color.
-	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit }
+	 * `'Background'`, will set Background color.
+	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-Bit }
 	 */
-	function set8BitColor(styleCodes: number[], colorType: 'foreground' | 'background'): void {
-		let colorNumber = styleCodes[2];
-		const color = calcANSI8bitColor(colorNumber);
+	function set8BitColor(styleCodes: numBer[], colorType: 'foreground' | 'Background'): void {
+		let colorNumBer = styleCodes[2];
+		const color = calcANSI8BitColor(colorNumBer);
 
 		if (color) {
 			changeColor(colorType, color);
-		} else if (colorNumber >= 0 && colorNumber <= 15) {
-			// Need to map to one of the four basic color ranges (30-37, 90-97, 40-47, 100-107)
-			colorNumber += 30;
-			if (colorNumber >= 38) {
+		} else if (colorNumBer >= 0 && colorNumBer <= 15) {
+			// Need to map to one of the four Basic color ranges (30-37, 90-97, 40-47, 100-107)
+			colorNumBer += 30;
+			if (colorNumBer >= 38) {
 				// Bright colors
-				colorNumber += 52;
+				colorNumBer += 52;
 			}
-			if (colorType === 'background') {
-				colorNumber += 10;
+			if (colorType === 'Background') {
+				colorNumBer += 10;
 			}
-			setBasicColor(colorNumber);
+			setBasicColor(colorNumBer);
 		}
 	}
 
 	/**
-	 * Calculate and set styling for basic bright and dark ANSI color codes. Uses
-	 * theme colors if available. Automatically distinguishes between foreground
-	 * and background colors; does not support color-clearing codes 39 and 49.
+	 * Calculate and set styling for Basic Bright and dark ANSI color codes. Uses
+	 * theme colors if availaBle. Automatically distinguishes Between foreground
+	 * and Background colors; does not support color-clearing codes 39 and 49.
 	 * @param styleCode Integer color code on one of the following ranges:
 	 * [30-37, 90-97, 40-47, 100-107]. If not on one of these ranges, will do
 	 * nothing.
 	 */
-	function setBasicColor(styleCode: number): void {
+	function setBasicColor(styleCode: numBer): void {
 		const theme = themeService.getColorTheme();
-		let colorType: 'foreground' | 'background' | undefined;
-		let colorIndex: number | undefined;
+		let colorType: 'foreground' | 'Background' | undefined;
+		let colorIndex: numBer | undefined;
 
 		if (styleCode >= 30 && styleCode <= 37) {
 			colorIndex = styleCode - 30;
 			colorType = 'foreground';
 		} else if (styleCode >= 90 && styleCode <= 97) {
-			colorIndex = (styleCode - 90) + 8; // High-intensity (bright)
+			colorIndex = (styleCode - 90) + 8; // High-intensity (Bright)
 			colorType = 'foreground';
 		} else if (styleCode >= 40 && styleCode <= 47) {
 			colorIndex = styleCode - 40;
-			colorType = 'background';
+			colorType = 'Background';
 		} else if (styleCode >= 100 && styleCode <= 107) {
-			colorIndex = (styleCode - 100) + 8; // High-intensity (bright)
-			colorType = 'background';
+			colorIndex = (styleCode - 100) + 8; // High-intensity (Bright)
+			colorType = 'Background';
 		}
 
 		if (colorIndex !== undefined && colorType) {
 			const colorName = ansiColorIdentifiers[colorIndex];
 			const color = theme.getColor(colorName);
 			if (color) {
-				changeColor(colorType, color.rgba);
+				changeColor(colorType, color.rgBa);
 			}
 		}
 	}
@@ -292,9 +292,9 @@ export function handleANSIOutput(text: string, themeService: IThemeService): HTM
 
 /**
  * @param root The {@link HTMLElement} to append the content to.
- * @param stringContent The text content to be appended.
+ * @param stringContent The text content to Be appended.
  * @param cssClasses The list of CSS styles to apply to the text content.
- * @param linkDetector The {@link LinkDetector} responsible for generating links from {@param stringContent}.
+ * @param linkDetector The {@link LinkDetector} responsiBle for generating links from {@param stringContent}.
  * @param customTextColor If provided, will apply custom color with inline style.
  * @param customBackgroundColor If provided, will apply custom color with inline style.
  */
@@ -316,14 +316,14 @@ export function appendStylizedStringToContainer(
 			Color.Format.CSS.formatRGB(new Color(customTextColor));
 	}
 	if (customBackgroundColor) {
-		container.style.backgroundColor =
+		container.style.BackgroundColor =
 			Color.Format.CSS.formatRGB(new Color(customBackgroundColor));
 	}
 
 	root.appendChild(container);
 }
 
-function linkify(text: string, splitLines?: boolean): HTMLElement {
+function linkify(text: string, splitLines?: Boolean): HTMLElement {
 	if (splitLines) {
 		const lines = text.split('\n');
 		for (let i = 0; i < lines.length - 1; i++) {
@@ -351,42 +351,42 @@ function linkify(text: string, splitLines?: boolean): HTMLElement {
 
 
 /**
- * Calculate the color from the color set defined in the ANSI 8-bit standard.
+ * Calculate the color from the color set defined in the ANSI 8-Bit standard.
  * Standard and high intensity colors are not defined in the standard as specific
  * colors, so these and invalid colors return `undefined`.
- * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit } for info.
- * @param colorNumber The number (ranging from 16 to 255) referring to the color
+ * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-Bit } for info.
+ * @param colorNumBer The numBer (ranging from 16 to 255) referring to the color
  * desired.
  */
-export function calcANSI8bitColor(colorNumber: number): RGBA | undefined {
-	if (colorNumber % 1 !== 0) {
-		// Should be integer
-		// {{SQL CARBON EDIT}} @todo anthonydresser 4/12/19 this is necessary because we don't use strict null checks
+export function calcANSI8BitColor(colorNumBer: numBer): RGBA | undefined {
+	if (colorNumBer % 1 !== 0) {
+		// Should Be integer
+		// {{SQL CARBON EDIT}} @todo anthonydresser 4/12/19 this is necessary Because we don't use strict null checks
 		return undefined;
-	} if (colorNumber >= 16 && colorNumber <= 231) {
+	} if (colorNumBer >= 16 && colorNumBer <= 231) {
 		// Converts to one of 216 RGB colors
-		colorNumber -= 16;
+		colorNumBer -= 16;
 
-		let blue: number = colorNumber % 6;
-		colorNumber = (colorNumber - blue) / 6;
-		let green: number = colorNumber % 6;
-		colorNumber = (colorNumber - green) / 6;
-		let red: number = colorNumber;
+		let Blue: numBer = colorNumBer % 6;
+		colorNumBer = (colorNumBer - Blue) / 6;
+		let green: numBer = colorNumBer % 6;
+		colorNumBer = (colorNumBer - green) / 6;
+		let red: numBer = colorNumBer;
 
-		// red, green, blue now range on [0, 5], need to map to [0,255]
-		const convFactor: number = 255 / 5;
-		blue = Math.round(blue * convFactor);
+		// red, green, Blue now range on [0, 5], need to map to [0,255]
+		const convFactor: numBer = 255 / 5;
+		Blue = Math.round(Blue * convFactor);
 		green = Math.round(green * convFactor);
 		red = Math.round(red * convFactor);
 
-		return new RGBA(red, green, blue);
-	} else if (colorNumber >= 232 && colorNumber <= 255) {
+		return new RGBA(red, green, Blue);
+	} else if (colorNumBer >= 232 && colorNumBer <= 255) {
 		// Converts to a grayscale value
-		colorNumber -= 232;
-		const colorLevel: number = Math.round(colorNumber / 23 * 255);
+		colorNumBer -= 232;
+		const colorLevel: numBer = Math.round(colorNumBer / 23 * 255);
 		return new RGBA(colorLevel, colorLevel, colorLevel);
 	} else {
-		// {{SQL CARBON EDIT}} @todo anthonydresser 4/12/19 this is necessary because we don't use strict null checks
+		// {{SQL CARBON EDIT}} @todo anthonydresser 4/12/19 this is necessary Because we don't use strict null checks
 		return undefined;
 	}
 }

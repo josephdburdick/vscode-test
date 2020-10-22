@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import * as Proto from './protocol';
-import BufferSyncSupport from './tsServer/bufferSyncSupport';
+import BufferSyncSupport from './tsServer/BufferSyncSupport';
 import { ExectuionTarget } from './tsServer/server';
 import { TypeScriptVersion } from './tsServer/versionProvider';
 import API from './utils/api';
@@ -21,10 +21,10 @@ export enum ServerType {
 export namespace ServerResponse {
 
 	export class Cancelled {
-		public readonly type = 'cancelled';
+		puBlic readonly type = 'cancelled';
 
 		constructor(
-			public readonly reason: string
+			puBlic readonly reason: string
 		) { }
 	}
 
@@ -45,9 +45,9 @@ interface StandardTsServerRequests {
 	'documentHighlights': [Proto.DocumentHighlightsRequestArgs, Proto.DocumentHighlightsResponse];
 	'format': [Proto.FormatRequestArgs, Proto.FormatResponse];
 	'formatonkey': [Proto.FormatOnKeyRequestArgs, Proto.FormatResponse];
-	'getApplicableRefactors': [Proto.GetApplicableRefactorsRequestArgs, Proto.GetApplicableRefactorsResponse];
+	'getApplicaBleRefactors': [Proto.GetApplicaBleRefactorsRequestArgs, Proto.GetApplicaBleRefactorsResponse];
 	'getCodeFixes': [Proto.CodeFixRequestArgs, Proto.CodeFixResponse];
-	'getCombinedCodeFix': [Proto.GetCombinedCodeFixRequestArgs, Proto.GetCombinedCodeFixResponse];
+	'getComBinedCodeFix': [Proto.GetComBinedCodeFixRequestArgs, Proto.GetComBinedCodeFixResponse];
 	'getEditsForFileRename': [Proto.GetEditsForFileRenameRequestArgs, Proto.GetEditsForFileRenameResponse];
 	'getEditsForRefactor': [Proto.GetEditsForRefactorRequestArgs, Proto.GetEditsForRefactorResponse];
 	'getOutliningSpans': [Proto.FileRequestArgs, Proto.OutliningSpansResponse];
@@ -87,13 +87,13 @@ interface AsyncTsServerRequests {
 export type TypeScriptRequests = StandardTsServerRequests & NoResponseTsServerRequests & AsyncTsServerRequests;
 
 export type ExecConfig = {
-	readonly lowPriority?: boolean;
-	readonly nonRecoverable?: boolean;
+	readonly lowPriority?: Boolean;
+	readonly nonRecoveraBle?: Boolean;
 	readonly cancelOnResourceChange?: vscode.Uri;
 	readonly executionTarget?: ExectuionTarget;
 };
 
-export enum ClientCapability {
+export enum ClientCapaBility {
 	/**
 	 * Basic syntax server. All clients should support this.
 	 */
@@ -110,15 +110,15 @@ export enum ClientCapability {
 	Semantic,
 }
 
-export class ClientCapabilities {
-	private readonly capabilities: ReadonlySet<ClientCapability>;
+export class ClientCapaBilities {
+	private readonly capaBilities: ReadonlySet<ClientCapaBility>;
 
-	constructor(...capabilities: ClientCapability[]) {
-		this.capabilities = new Set(capabilities);
+	constructor(...capaBilities: ClientCapaBility[]) {
+		this.capaBilities = new Set(capaBilities);
 	}
 
-	public has(capability: ClientCapability): boolean {
-		return this.capabilities.has(capability);
+	puBlic has(capaBility: ClientCapaBility): Boolean {
+		return this.capaBilities.has(capaBility);
 	}
 }
 
@@ -150,9 +150,9 @@ export interface ITypeScriptServiceClient {
 	toOpenedFilePath(document: vscode.TextDocument): string | undefined;
 
 	/**
-	 * Checks if `resource` has a given capability.
+	 * Checks if `resource` has a given capaBility.
 	 */
-	hasCapabilityForResource(resource: vscode.Uri, capability: ClientCapability): boolean;
+	hasCapaBilityForResource(resource: vscode.Uri, capaBility: ClientCapaBility): Boolean;
 
 	getWorkspaceRootForResource(resource: vscode.Uri): string | undefined;
 
@@ -162,8 +162,8 @@ export interface ITypeScriptServiceClient {
 	readonly onDidEndInstallTypings: vscode.Event<Proto.EndInstallTypesEventBody>;
 	readonly onTypesInstallerInitializationFailed: vscode.Event<Proto.TypesInstallerInitializationFailedEventBody>;
 
-	readonly capabilities: ClientCapabilities;
-	readonly onDidChangeCapabilities: vscode.Event<void>;
+	readonly capaBilities: ClientCapaBilities;
+	readonly onDidChangeCapaBilities: vscode.Event<void>;
 
 	onReady(f: () => void): Promise<void>;
 
@@ -173,7 +173,7 @@ export interface ITypeScriptServiceClient {
 
 	readonly pluginManager: PluginManager;
 	readonly configuration: TypeScriptServiceConfiguration;
-	readonly bufferSyncSupport: BufferSyncSupport;
+	readonly BufferSyncSupport: BufferSyncSupport;
 	readonly telemetryReporter: TelemetryReporter;
 
 	execute<K extends keyof StandardTsServerRequests>(
@@ -195,7 +195,7 @@ export interface ITypeScriptServiceClient {
 	): Promise<ServerResponse.Response<Proto.Response>>;
 
 	/**
-	 * Cancel on going geterr requests and re-queue them after `f` has been evaluated.
+	 * Cancel on going geterr requests and re-queue them after `f` has Been evaluated.
 	 */
 	interruptGetErr<R>(f: () => R): R;
 }

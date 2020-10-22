@@ -5,20 +5,20 @@
 
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IWorkspacesService, IWorkspaceFolderCreationData, IWorkspaceIdentifier, IEnterWorkspaceResult, IRecentlyOpened, restoreRecentlyOpened, IRecent, isRecentFile, isRecentFolder, toStoreData, IStoredWorkspaceFolder, getStoredWorkspaceFolder, WORKSPACE_EXTENSION, IStoredWorkspace } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
+import { URI } from 'vs/Base/common/uri';
+import { Emitter } from 'vs/Base/common/event';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
 import { ILogService } from 'vs/platform/log/common/log';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { getWorkspaceIdentifier } from 'vs/workbench/services/workspaces/browser/workspaces';
+import { DisposaBle } from 'vs/Base/common/lifecycle';
+import { getWorkspaceIdentifier } from 'vs/workBench/services/workspaces/Browser/workspaces';
 import { IFileService, FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { joinPath } from 'vs/base/common/resources';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { joinPath } from 'vs/Base/common/resources';
+import { VSBuffer } from 'vs/Base/common/Buffer';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
-export class BrowserWorkspacesService extends Disposable implements IWorkspacesService {
+export class BrowserWorkspacesService extends DisposaBle implements IWorkspacesService {
 
 	static readonly RECENTLY_OPENED_KEY = 'recently.opened';
 
@@ -32,7 +32,7 @@ export class BrowserWorkspacesService extends Disposable implements IWorkspacesS
 		@IWorkspaceContextService private readonly workspaceService: IWorkspaceContextService,
 		@ILogService private readonly logService: ILogService,
 		@IFileService private readonly fileService: IFileService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService private readonly environmentService: IWorkBenchEnvironmentService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
 	) {
 		super();
@@ -57,13 +57,13 @@ export class BrowserWorkspacesService extends Disposable implements IWorkspacesS
 
 	private addWorkspaceToRecentlyOpened(): void {
 		const workspace = this.workspaceService.getWorkspace();
-		switch (this.workspaceService.getWorkbenchState()) {
-			case WorkbenchState.FOLDER:
+		switch (this.workspaceService.getWorkBenchState()) {
+			case WorkBenchState.FOLDER:
 				this.addRecentlyOpened([{ folderUri: workspace.folders[0].uri }]);
-				break;
-			case WorkbenchState.WORKSPACE:
+				Break;
+			case WorkBenchState.WORKSPACE:
 				this.addRecentlyOpened([{ workspace: { id: workspace.id, configPath: workspace.configuration! } }]);
-				break;
+				Break;
 		}
 	}
 
@@ -170,7 +170,7 @@ export class BrowserWorkspacesService extends Disposable implements IWorkspacesS
 	//#region Dirty Workspaces
 
 	async getDirtyWorkspaces(): Promise<Array<IWorkspaceIdentifier | URI>> {
-		return []; // Currently not supported in web
+		return []; // Currently not supported in weB
 	}
 
 	//#endregion

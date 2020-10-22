@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import * as paths from 'vs/base/common/path';
-import { IExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/common/externalTerminal';
+import * as paths from 'vs/Base/common/path';
+import { IExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/common/externalTerminal';
 import { MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { Schemas } from 'vs/base/common/network';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { WindowsExternalTerminalService, MacExternalTerminalService, LinuxExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/node/externalTerminalService';
+import { KeyMod, KeyCode } from 'vs/Base/common/keyCodes';
+import { KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED } from 'vs/workBench/contriB/terminal/common/terminal';
+import { IHistoryService } from 'vs/workBench/services/history/common/history';
+import { KeyBindingsRegistry, KeyBindingWeight } from 'vs/platform/keyBinding/common/keyBindingsRegistry';
+import { Schemas } from 'vs/Base/common/network';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
+import { WindowsExternalTerminalService, MacExternalTerminalService, LinuxExternalTerminalService } from 'vs/workBench/contriB/externalTerminal/node/externalTerminalService';
 import { IConfigurationRegistry, Extensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { isWindows, isMacintosh, isLinux } from 'vs/base/common/platform';
-import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externalTerminal/node/externalTerminal';
+import { isWindows, isMacintosh, isLinux } from 'vs/Base/common/platform';
+import { DEFAULT_TERMINAL_OSX } from 'vs/workBench/contriB/externalTerminal/node/externalTerminal';
 
-const OPEN_NATIVE_CONSOLE_COMMAND_ID = 'workbench.action.terminal.openNativeConsole';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const OPEN_NATIVE_CONSOLE_COMMAND_ID = 'workBench.action.terminal.openNativeConsole';
+KeyBindingsRegistry.registerCommandAndKeyBindingRule({
 	id: OPEN_NATIVE_CONSOLE_COMMAND_ID,
 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_C,
 	when: KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED,
-	weight: KeybindingWeight.WorkbenchContrib,
+	weight: KeyBindingWeight.WorkBenchContriB,
 	handler: async (accessor) => {
 		const historyService = accessor.get(IHistoryService);
 		// Open external terminal in local workspaces
@@ -50,7 +50,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 	command: {
 		id: OPEN_NATIVE_CONSOLE_COMMAND_ID,
-		title: { value: nls.localize('globalConsoleAction', "Open New External Terminal"), original: 'Open New External Terminal' }
+		title: { value: nls.localize('gloBalConsoleAction', "Open New External Terminal"), original: 'Open New External Terminal' }
 	}
 });
 
@@ -68,7 +68,7 @@ LinuxExternalTerminalService.getDefaultTerminalLinuxReady().then(defaultTerminal
 		id: 'externalTerminal',
 		order: 100,
 		title: nls.localize('terminalConfigurationTitle', "External Terminal"),
-		type: 'object',
+		type: 'oBject',
 		properties: {
 			'terminal.explorerKind': {
 				type: 'string',

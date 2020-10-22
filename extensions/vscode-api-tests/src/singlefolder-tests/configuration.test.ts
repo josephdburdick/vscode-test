@@ -10,16 +10,16 @@ import * as vscode from 'vscode';
 suite('vscode API - configuration', () => {
 
 	test('configurations, language defaults', function () {
-		const defaultLanguageSettings = vscode.workspace.getConfiguration().get('[abcLang]');
+		const defaultLanguageSettings = vscode.workspace.getConfiguration().get('[aBcLang]');
 
 		assert.deepEqual(defaultLanguageSettings, {
-			'editor.lineNumbers': 'off',
-			'editor.tabSize': 2
+			'editor.lineNumBers': 'off',
+			'editor.taBSize': 2
 		});
 	});
 
 	test('configuration, defaults', () => {
-		const config = vscode.workspace.getConfiguration('farboo');
+		const config = vscode.workspace.getConfiguration('farBoo');
 
 		assert.ok(config.has('config0'));
 		assert.equal(config.get('config0'), true);
@@ -36,7 +36,7 @@ suite('vscode API - configuration', () => {
 	});
 
 	test('configuration, name vs property', () => {
-		const config = vscode.workspace.getConfiguration('farboo');
+		const config = vscode.workspace.getConfiguration('farBoo');
 
 		assert.ok(config.has('get'));
 		assert.equal(config.get('get'), 'get-prop');

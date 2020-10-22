@@ -8,9 +8,9 @@
 import * as es from 'event-stream';
 import * as fs from 'fs';
 import * as gulp from 'gulp';
-import * as bom from 'gulp-bom';
+import * as Bom from 'gulp-Bom';
 import * as sourcemaps from 'gulp-sourcemaps';
-import * as tsb from 'gulp-tsb';
+import * as tsB from 'gulp-tsB';
 import * as path from 'path';
 import * as monacodts from './monaco-api';
 import * as nls from './nls';
@@ -28,23 +28,23 @@ const reporter = createReporter();
 function getTypeScriptCompilerOptions(src: string): ts.CompilerOptions {
 	const rootDir = path.join(__dirname, `../../${src}`);
 	let options: ts.CompilerOptions = {};
-	options.verbose = false;
+	options.verBose = false;
 	options.sourceMap = true;
-	if (process.env['VSCODE_NO_SOURCEMAP']) { // To be used by developers in a hurry
+	if (process.env['VSCODE_NO_SOURCEMAP']) { // To Be used By developers in a hurry
 		options.sourceMap = false;
 	}
 	options.rootDir = rootDir;
-	options.baseUrl = rootDir;
+	options.BaseUrl = rootDir;
 	options.sourceRoot = util.toFileUri(rootDir);
 	options.newLine = /\r\n/.test(fs.readFileSync(__filename, 'utf8')) ? 0 : 1;
 	return options;
 }
 
-function createCompile(src: string, build: boolean, emitError?: boolean) {
+function createCompile(src: string, Build: Boolean, emitError?: Boolean) {
 	const projectPath = path.join(__dirname, '../../', src, 'tsconfig.json');
-	const overrideOptions = { ...getTypeScriptCompilerOptions(src), inlineSources: Boolean(build) };
+	const overrideOptions = { ...getTypeScriptCompilerOptions(src), inlineSources: Boolean(Build) };
 
-	const compilation = tsb.create(projectPath, overrideOptions, false, err => reporter(err));
+	const compilation = tsB.create(projectPath, overrideOptions, false, err => reporter(err));
 
 	function pipeline(token?: util.ICancellationToken) {
 
@@ -55,17 +55,17 @@ function createCompile(src: string, build: boolean, emitError?: boolean) {
 		const input = es.through();
 		const output = input
 			.pipe(utf8Filter)
-			.pipe(bom()) // this is required to preserve BOM in test files that loose it otherwise
+			.pipe(Bom()) // this is required to preserve BOM in test files that loose it otherwise
 			.pipe(utf8Filter.restore)
 			.pipe(tsFilter)
 			.pipe(util.loadSourcemaps())
 			.pipe(compilation(token))
 			.pipe(noDeclarationsFilter)
-			.pipe(build ? nls() : es.through())
+			.pipe(Build ? nls() : es.through())
 			.pipe(noDeclarationsFilter.restore)
 			.pipe(sourcemaps.write('.', {
 				addComment: false,
-				includeContent: !!build,
+				includeContent: !!Build,
 				sourceRoot: overrideOptions.sourceRoot
 			}))
 			.pipe(tsFilter.restore)
@@ -74,12 +74,12 @@ function createCompile(src: string, build: boolean, emitError?: boolean) {
 		return es.duplex(input, output);
 	}
 	pipeline.tsProjectSrc = () => {
-		return compilation.src({ base: src });
+		return compilation.src({ Base: src });
 	};
 	return pipeline;
 }
 
-export function compileTask(src: string, out: string, build: boolean): () => NodeJS.ReadWriteStream {
+export function compileTask(src: string, out: string, Build: Boolean): () => NodeJS.ReadWriteStream {
 
 	return function () {
 
@@ -87,8 +87,8 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
 			throw new Error('compilation requires 4GB of RAM');
 		}
 
-		const compile = createCompile(src, build, true);
-		const srcPipe = gulp.src(`${src}/**`, { base: `${src}` });
+		const compile = createCompile(src, Build, true);
+		const srcPipe = gulp.src(`${src}/**`, { Base: `${src}` });
 		let generator = new MonacoGenerator(false);
 		if (src === 'src') {
 			generator.execute();
@@ -101,13 +101,13 @@ export function compileTask(src: string, out: string, build: boolean): () => Nod
 	};
 }
 
-export function watchTask(out: string, build: boolean): () => NodeJS.ReadWriteStream {
+export function watchTask(out: string, Build: Boolean): () => NodeJS.ReadWriteStream {
 
 	return function () {
-		const compile = createCompile('src', build);
+		const compile = createCompile('src', Build);
 
-		const src = gulp.src('src/**', { base: 'src' });
-		const watchSrc = watch('src/**', { base: 'src', readDelay: 200 });
+		const src = gulp.src('src/**', { Base: 'src' });
+		const watchSrc = watch('src/**', { Base: 'src', readDelay: 200 });
 
 		let generator = new MonacoGenerator(true);
 		generator.execute();
@@ -122,14 +122,14 @@ export function watchTask(out: string, build: boolean): () => NodeJS.ReadWriteSt
 const REPO_SRC_FOLDER = path.join(__dirname, '../../src');
 
 class MonacoGenerator {
-	private readonly _isWatch: boolean;
-	public readonly stream: NodeJS.ReadWriteStream;
+	private readonly _isWatch: Boolean;
+	puBlic readonly stream: NodeJS.ReadWriteStream;
 
-	private readonly _watchedFiles: { [filePath: string]: boolean; };
+	private readonly _watchedFiles: { [filePath: string]: Boolean; };
 	private readonly _fsProvider: monacodts.FSProvider;
 	private readonly _declarationResolver: monacodts.DeclarationResolver;
 
-	constructor(isWatch: boolean) {
+	constructor(isWatch: Boolean) {
 		this._isWatch = isWatch;
 		this.stream = es.through();
 		this._watchedFiles = {};
@@ -148,7 +148,7 @@ class MonacoGenerator {
 			});
 		};
 		this._fsProvider = new class extends monacodts.FSProvider {
-			public readFileSync(moduleId: string, filePath: string): Buffer {
+			puBlic readFileSync(moduleId: string, filePath: string): Buffer {
 				onWillReadFile(moduleId, filePath);
 				return super.readFileSync(moduleId, filePath);
 			}
@@ -177,7 +177,7 @@ class MonacoGenerator {
 	private _run(): monacodts.IMonacoDeclarationResult | null {
 		let r = monacodts.run3(this._declarationResolver);
 		if (!r && !this._isWatch) {
-			// The build must always be able to generate the monaco.d.ts
+			// The Build must always Be aBle to generate the monaco.d.ts
 			throw new Error(`monaco.d.ts generation error - Cannot continue`);
 		}
 		return r;
@@ -187,7 +187,7 @@ class MonacoGenerator {
 		fancyLog(ansiColors.cyan('[monaco.d.ts]'), message, ...rest);
 	}
 
-	public execute(): void {
+	puBlic execute(): void {
 		const startTime = Date.now();
 		const result = this._run();
 		if (!result) {

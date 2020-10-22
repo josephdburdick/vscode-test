@@ -8,14 +8,14 @@ import { merge } from 'vs/platform/userDataSync/common/snippetsMerge';
 
 const tsSnippet1 = `{
 
-	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, Placeholders with the
+	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position, Placeholders with the
 	// same ids are connected.
 	"Print to console": {
 	// Example:
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -26,14 +26,14 @@ const tsSnippet1 = `{
 
 const tsSnippet2 = `{
 
-	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position, Placeholders with the
+	// Place your snippets for TypeScript here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position, Placeholders with the
 	// same ids are connected.
 	"Print to console": {
 	// Example:
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -44,12 +44,12 @@ const tsSnippet2 = `{
 
 const htmlSnippet1 = `{
 /*
-	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted.
+	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -58,7 +58,7 @@ const htmlSnippet1 = `{
 */
 "Div": {
 	"prefix": "div",
-		"body": [
+		"Body": [
 			"<div>",
 			"",
 			"</div>"
@@ -69,12 +69,12 @@ const htmlSnippet1 = `{
 
 const htmlSnippet2 = `{
 /*
-	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted.
+	// Place your snippets for HTML here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -83,7 +83,7 @@ const htmlSnippet2 = `{
 */
 "Div": {
 	"prefix": "div",
-		"body": [
+		"Body": [
 			"<div>",
 			"",
 			"</div>"
@@ -93,14 +93,14 @@ const htmlSnippet2 = `{
 }`;
 
 const cSnippet = `{
-	// Place your snippets for c here. Each snippet is defined under a snippet name and has a prefix, body and
-	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
-	// $1, $2 for tab stops, $0 for the final cursor position.Placeholders with the
+	// Place your snippets for c here. Each snippet is defined under a snippet name and has a prefix, Body and
+	// description. The prefix is what is used to trigger the snippet and the Body will Be expanded and inserted. PossiBle variaBles are:
+	// $1, $2 for taB stops, $0 for the final cursor position.Placeholders with the
 	// same ids are connected.
 	// Example:
 	"Print to console": {
 	"prefix": "log",
-		"body": [
+		"Body": [
 			"console.log('$1');",
 			"$2"
 		],
@@ -155,12 +155,12 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when local and remote are same with different base content', async () => {
+	test('merge when local and remote are same with different Base content', async () => {
 		const local = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const remote = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
-		const base = { 'html.json': htmlSnippet2, 'typescript.json': tsSnippet2 };
+		const Base = { 'html.json': htmlSnippet2, 'typescript.json': tsSnippet2 };
 
-		const actual = merge(local, remote, base);
+		const actual = merge(local, remote, Base);
 
 		assert.deepEqual(actual.local.added, {});
 		assert.deepEqual(actual.local.updated, {});
@@ -201,7 +201,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when new entry is added to remote from base and local has not changed', async () => {
+	test('merge when new entry is added to remote from Base and local has not changed', async () => {
 		const local = { 'html.json': htmlSnippet1 };
 		const remote = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 
@@ -216,7 +216,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when an entry is removed from remote from base and local has not changed', async () => {
+	test('merge when an entry is removed from remote from Base and local has not changed', async () => {
 		const local = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const remote = { 'html.json': htmlSnippet1 };
 
@@ -231,7 +231,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when all entries are removed from base and local has not changed', async () => {
+	test('merge when all entries are removed from Base and local has not changed', async () => {
 		const local = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const remote = {};
 
@@ -246,7 +246,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when an entry is updated in remote from base and local has not changed', async () => {
+	test('merge when an entry is updated in remote from Base and local has not changed', async () => {
 		const local = { 'html.json': htmlSnippet1 };
 		const remote = { 'html.json': htmlSnippet2 };
 
@@ -261,7 +261,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when remote has moved forwarded with multiple changes and local stays with base', async () => {
+	test('merge when remote has moved forwarded with multiple changes and local stays with Base', async () => {
 		const local = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const remote = { 'html.json': htmlSnippet2, 'c.json': cSnippet };
 
@@ -291,7 +291,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when multiple new entries are added to local from base and remote is not changed', async () => {
+	test('merge when multiple new entries are added to local from Base and remote is not changed', async () => {
 		const local = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1, 'c.json': cSnippet };
 		const remote = { 'typescript.json': tsSnippet1 };
 
@@ -306,7 +306,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when an entry is removed from local from base and remote has not changed', async () => {
+	test('merge when an entry is removed from local from Base and remote has not changed', async () => {
 		const local = { 'html.json': htmlSnippet1 };
 		const remote = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 
@@ -321,7 +321,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, ['typescript.json']);
 	});
 
-	test('merge when an entry is updated in local from base and remote has not changed', async () => {
+	test('merge when an entry is updated in local from Base and remote has not changed', async () => {
 		const local = { 'html.json': htmlSnippet2, 'typescript.json': tsSnippet1 };
 		const remote = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 
@@ -336,7 +336,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when local has moved forwarded with multiple changes and remote stays with base', async () => {
+	test('merge when local has moved forwarded with multiple changes and remote stays with Base', async () => {
 		const local = { 'html.json': htmlSnippet2, 'c.json': cSnippet };
 		const remote = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 
@@ -351,7 +351,7 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, ['typescript.json']);
 	});
 
-	test('merge when local and remote with one entry but different value', async () => {
+	test('merge when local and remote with one entry But different value', async () => {
 		const local = { 'html.json': htmlSnippet1 };
 		const remote = { 'html.json': htmlSnippet2 };
 
@@ -366,12 +366,12 @@ suite('SnippetsMerge', () => {
 		assert.deepEqual(actual.remote.removed, []);
 	});
 
-	test('merge when the entry is removed in remote but updated in local and a new entry is added in remote', async () => {
-		const base = { 'html.json': htmlSnippet1 };
+	test('merge when the entry is removed in remote But updated in local and a new entry is added in remote', async () => {
+		const Base = { 'html.json': htmlSnippet1 };
 		const local = { 'html.json': htmlSnippet2 };
 		const remote = { 'typescript.json': tsSnippet1 };
 
-		const actual = merge(local, remote, base);
+		const actual = merge(local, remote, Base);
 
 		assert.deepEqual(actual.local.added, { 'typescript.json': tsSnippet1 });
 		assert.deepEqual(actual.local.updated, {});
@@ -383,11 +383,11 @@ suite('SnippetsMerge', () => {
 	});
 
 	test('merge with single entry and local is empty', async () => {
-		const base = { 'html.json': htmlSnippet1 };
+		const Base = { 'html.json': htmlSnippet1 };
 		const local = {};
 		const remote = { 'html.json': htmlSnippet2 };
 
-		const actual = merge(local, remote, base);
+		const actual = merge(local, remote, Base);
 
 		assert.deepEqual(actual.local.added, { 'html.json': htmlSnippet2 });
 		assert.deepEqual(actual.local.updated, {});
@@ -399,11 +399,11 @@ suite('SnippetsMerge', () => {
 	});
 
 	test('merge when local and remote has moved forwareded with conflicts', async () => {
-		const base = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
+		const Base = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const local = { 'html.json': htmlSnippet2, 'c.json': cSnippet };
 		const remote = { 'typescript.json': tsSnippet2 };
 
-		const actual = merge(local, remote, base);
+		const actual = merge(local, remote, Base);
 
 		assert.deepEqual(actual.local.added, { 'typescript.json': tsSnippet2 });
 		assert.deepEqual(actual.local.updated, {});
@@ -415,11 +415,11 @@ suite('SnippetsMerge', () => {
 	});
 
 	test('merge when local and remote has moved forwareded with multiple conflicts', async () => {
-		const base = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
+		const Base = { 'html.json': htmlSnippet1, 'typescript.json': tsSnippet1 };
 		const local = { 'html.json': htmlSnippet2, 'typescript.json': tsSnippet2, 'c.json': cSnippet };
 		const remote = { 'c.json': cSnippet };
 
-		const actual = merge(local, remote, base);
+		const actual = merge(local, remote, Base);
 
 		assert.deepEqual(actual.local.added, {});
 		assert.deepEqual(actual.local.updated, {});

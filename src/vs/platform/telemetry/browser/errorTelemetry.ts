@@ -3,31 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { globals } from 'vs/base/common/platform';
+import { toDisposaBle } from 'vs/Base/common/lifecycle';
+import { gloBals } from 'vs/Base/common/platform';
 import BaseErrorTelemetry, { ErrorEvent } from '../common/errorTelemetry';
 
 export default class ErrorTelemetry extends BaseErrorTelemetry {
 	protected installErrorListeners(): void {
 		let oldOnError: Function;
 		let that = this;
-		if (typeof globals.onerror === 'function') {
-			oldOnError = globals.onerror;
+		if (typeof gloBals.onerror === 'function') {
+			oldOnError = gloBals.onerror;
 		}
-		globals.onerror = function (message: string, filename: string, line: number, column?: number, e?: any) {
+		gloBals.onerror = function (message: string, filename: string, line: numBer, column?: numBer, e?: any) {
 			that._onUncaughtError(message, filename, line, column, e);
 			if (oldOnError) {
 				oldOnError.apply(this, arguments);
 			}
 		};
-		this._disposables.add(toDisposable(() => {
+		this._disposaBles.add(toDisposaBle(() => {
 			if (oldOnError) {
-				globals.onerror = oldOnError;
+				gloBals.onerror = oldOnError;
 			}
 		}));
 	}
 
-	private _onUncaughtError(msg: string, file: string, line: number, column?: number, err?: any): void {
+	private _onUncaughtError(msg: string, file: string, line: numBer, column?: numBer, err?: any): void {
 		let data: ErrorEvent = {
 			callstack: msg,
 			msg,

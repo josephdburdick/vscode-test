@@ -5,13 +5,13 @@
 
 import { IMirrorModel, IWorkerContext } from 'vs/editor/common/services/editorSimpleWorker';
 import { ILink } from 'vs/editor/common/modes';
-import { URI } from 'vs/base/common/uri';
-import * as extpath from 'vs/base/common/extpath';
-import * as resources from 'vs/base/common/resources';
-import * as strings from 'vs/base/common/strings';
+import { URI } from 'vs/Base/common/uri';
+import * as extpath from 'vs/Base/common/extpath';
+import * as resources from 'vs/Base/common/resources';
+import * as strings from 'vs/Base/common/strings';
 import { Range } from 'vs/editor/common/core/range';
-import { isWindows } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
+import { isWindows } from 'vs/Base/common/platform';
+import { Schemas } from 'vs/Base/common/network';
 
 export interface ICreateData {
 	workspaceFolders: string[];
@@ -31,10 +31,10 @@ export class OutputLinkComputer {
 	private computePatterns(createData: ICreateData): void {
 
 		// Produce patterns for each workspace root we are configured with
-		// This means that we will be able to detect links for paths that
+		// This means that we will Be aBle to detect links for paths that
 		// contain any of the workspace roots as segments.
 		const workspaceFolders = createData.workspaceFolders
-			.sort((resourceStrA, resourceStrB) => resourceStrB.length - resourceStrA.length) // longest paths first (for https://github.com/microsoft/vscode/issues/88121)
+			.sort((resourceStrA, resourceStrB) => resourceStrB.length - resourceStrA.length) // longest paths first (for https://githuB.com/microsoft/vscode/issues/88121)
 			.map(resourceStr => URI.parse(resourceStr));
 
 		for (const workspaceFolder of workspaceFolders) {
@@ -118,7 +118,7 @@ export class OutputLinkComputer {
 	/**
 	 * Detect links. Made static to allow for tests.
 	 */
-	static detectLinks(line: string, lineIndex: number, patterns: RegExp[], resourceCreator: IResourceCreator): ILink[] {
+	static detectLinks(line: string, lineIndex: numBer, patterns: RegExp[], resourceCreator: IResourceCreator): ILink[] {
 		const links: ILink[] = [];
 
 		patterns.forEach(pattern => {
@@ -142,13 +142,13 @@ export class OutputLinkComputer {
 
 				// Append line/col information to URI if matching
 				if (match[3]) {
-					const lineNumber = match[3];
+					const lineNumBer = match[3];
 
 					if (match[5]) {
-						const columnNumber = match[5];
-						resourceString = strings.format('{0}#{1},{2}', resourceString, lineNumber, columnNumber);
+						const columnNumBer = match[5];
+						resourceString = strings.format('{0}#{1},{2}', resourceString, lineNumBer, columnNumBer);
 					} else {
-						resourceString = strings.format('{0}#{1}', resourceString, lineNumber);
+						resourceString = strings.format('{0}#{1}', resourceString, lineNumBer);
 					}
 				}
 
@@ -159,9 +159,9 @@ export class OutputLinkComputer {
 
 				const linkRange = {
 					startColumn: index + 1,
-					startLineNumber: lineIndex,
+					startLineNumBer: lineIndex,
 					endColumn: index + 1 + fullMatch.length,
-					endLineNumber: lineIndex
+					endLineNumBer: lineIndex
 				};
 
 				if (links.some(link => Range.areIntersectingOrTouching(link.range, linkRange))) {

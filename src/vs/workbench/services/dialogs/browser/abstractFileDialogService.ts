@@ -4,28 +4,28 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { IWindowOpenable, isWorkspaceToOpen, isFileToOpen } from 'vs/platform/windows/common/windows';
+import { IWindowOpenaBle, isWorkspaceToOpen, isFileToOpen } from 'vs/platform/windows/common/windows';
 import { IPickAndOpenOptions, ISaveDialogOptions, IOpenDialogOptions, FileFilter, IFileDialogService, IDialogService, ConfirmResult, getFileNamesMessage } from 'vs/platform/dialogs/common/dialogs';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { URI } from 'vs/base/common/uri';
-import * as resources from 'vs/base/common/resources';
+import { IWorkspaceContextService, WorkBenchState } from 'vs/platform/workspace/common/workspace';
+import { IHistoryService } from 'vs/workBench/services/history/common/history';
+import { IWorkBenchEnvironmentService } from 'vs/workBench/services/environment/common/environmentService';
+import { URI } from 'vs/Base/common/uri';
+import * as resources from 'vs/Base/common/resources';
 import { IInstantiationService, } from 'vs/platform/instantiation/common/instantiation';
-import { SimpleFileDialog } from 'vs/workbench/services/dialogs/browser/simpleFileDialog';
+import { SimpleFileDialog } from 'vs/workBench/services/dialogs/Browser/simpleFileDialog';
 import { WORKSPACE_EXTENSION, isUntitledWorkspace, IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IHostService } from 'vs/workbench/services/host/browser/host';
-import Severity from 'vs/base/common/severity';
-import { coalesce, distinct } from 'vs/base/common/arrays';
-import { trim } from 'vs/base/common/strings';
+import { IHostService } from 'vs/workBench/services/host/Browser/host';
+import Severity from 'vs/Base/common/severity';
+import { coalesce, distinct } from 'vs/Base/common/arrays';
+import { trim } from 'vs/Base/common/strings';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { ILaBelService } from 'vs/platform/laBel/common/laBel';
+import { IPathService } from 'vs/workBench/services/path/common/pathService';
 
-export abstract class AbstractFileDialogService implements IFileDialogService {
+export aBstract class ABstractFileDialogService implements IFileDialogService {
 
 	declare readonly _serviceBrand: undefined;
 
@@ -33,7 +33,7 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		@IHostService protected readonly hostService: IHostService,
 		@IWorkspaceContextService protected readonly contextService: IWorkspaceContextService,
 		@IHistoryService protected readonly historyService: IHistoryService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkBenchEnvironmentService protected readonly environmentService: IWorkBenchEnvironmentService,
 		@IInstantiationService protected readonly instantiationService: IInstantiationService,
 		@IConfigurationService protected readonly configurationService: IConfigurationService,
 		@IFileService protected readonly fileService: IFileService,
@@ -41,7 +41,7 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		@IDialogService private readonly dialogService: IDialogService,
 		@IModeService private readonly modeService: IModeService,
 		@IWorkspacesService private readonly workspacesService: IWorkspacesService,
-		@ILabelService private readonly labelService: ILabelService,
+		@ILaBelService private readonly laBelService: ILaBelService,
 		@IPathService private readonly pathService: IPathService
 	) { }
 
@@ -76,14 +76,14 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 	defaultWorkspacePath(schemeFilter = this.getSchemeFilterForWindow(), filename?: string): URI | undefined {
 		let defaultWorkspacePath: URI | undefined;
 		// Check for current workspace config file first...
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
+		if (this.contextService.getWorkBenchState() === WorkBenchState.WORKSPACE) {
 			const configuration = this.contextService.getWorkspace().configuration;
 			if (configuration && configuration.scheme === schemeFilter && !isUntitledWorkspace(configuration, this.environmentService)) {
 				defaultWorkspacePath = resources.dirname(configuration) || undefined;
 			}
 		}
 
-		// ...then fallback to default file path
+		// ...then fallBack to default file path
 		if (!defaultWorkspacePath) {
 			defaultWorkspacePath = this.defaultFilePath(schemeFilter);
 		}
@@ -97,7 +97,7 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 
 	async showSaveConfirm(fileNamesOrResources: (string | URI)[]): Promise<ConfirmResult> {
 		if (this.environmentService.isExtensionDevelopment && this.environmentService.extensionTestsLocationURI) {
-			return ConfirmResult.DONT_SAVE; // no veto when we are in extension dev testing mode because we cannot assume we run interactive
+			return ConfirmResult.DONT_SAVE; // no veto when we are in extension dev testing mode Because we cannot assume we run interactive
 		}
 
 		return this.doShowSaveConfirm(fileNamesOrResources);
@@ -109,21 +109,21 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		}
 
 		let message: string;
-		let detail = nls.localize('saveChangesDetail', "Your changes will be lost if you don't save them.");
+		let detail = nls.localize('saveChangesDetail', "Your changes will Be lost if you don't save them.");
 		if (fileNamesOrResources.length === 1) {
-			message = nls.localize('saveChangesMessage', "Do you want to save the changes you made to {0}?", typeof fileNamesOrResources[0] === 'string' ? fileNamesOrResources[0] : resources.basename(fileNamesOrResources[0]));
+			message = nls.localize('saveChangesMessage', "Do you want to save the changes you made to {0}?", typeof fileNamesOrResources[0] === 'string' ? fileNamesOrResources[0] : resources.Basename(fileNamesOrResources[0]));
 		} else {
 			message = nls.localize('saveChangesMessages', "Do you want to save the changes to the following {0} files?", fileNamesOrResources.length);
 			detail = getFileNamesMessage(fileNamesOrResources) + '\n' + detail;
 		}
 
-		const buttons: string[] = [
+		const Buttons: string[] = [
 			fileNamesOrResources.length > 1 ? nls.localize({ key: 'saveAll', comment: ['&& denotes a mnemonic'] }, "&&Save All") : nls.localize({ key: 'save', comment: ['&& denotes a mnemonic'] }, "&&Save"),
 			nls.localize({ key: 'dontSave', comment: ['&& denotes a mnemonic'] }, "Do&&n't Save"),
 			nls.localize('cancel', "Cancel")
 		];
 
-		const { choice } = await this.dialogService.show(Severity.Warning, message, buttons, {
+		const { choice } = await this.dialogService.show(Severity.Warning, message, Buttons, {
 			cancelId: 2,
 			detail
 		});
@@ -135,21 +135,21 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		}
 	}
 
-	protected abstract addFileSchemaIfNeeded(schema: string): string[];
+	protected aBstract addFileSchemaIfNeeded(schema: string): string[];
 
-	protected async pickFileFolderAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: boolean): Promise<any> {
+	protected async pickFileFolderAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: Boolean): Promise<any> {
 		const title = nls.localize('openFileOrFolder.title', 'Open File Or Folder');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		const availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availaBleFileSystems });
 
 		if (uri) {
 			const stat = await this.fileService.resolve(uri);
 
-			const toOpen: IWindowOpenable = stat.isDirectory ? { folderUri: uri } : { fileUri: uri };
+			const toOpen: IWindowOpenaBle = stat.isDirectory ? { folderUri: uri } : { fileUri: uri };
 			if (!isWorkspaceToOpen(toOpen) && isFileToOpen(toOpen)) {
 				// add the picked file into the list of recently opened
-				this.workspacesService.addRecentlyOpened([{ fileUri: toOpen.fileUri, label: this.labelService.getUriLabel(toOpen.fileUri) }]);
+				this.workspacesService.addRecentlyOpened([{ fileUri: toOpen.fileUri, laBel: this.laBelService.getUriLaBel(toOpen.fileUri) }]);
 			}
 
 			if (stat.isDirectory || options.forceNewWindow || preferNewWindow) {
@@ -160,14 +160,14 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		}
 	}
 
-	protected async pickFileAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: boolean): Promise<any> {
+	protected async pickFileAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: Boolean): Promise<any> {
 		const title = nls.localize('openFile.title', 'Open File');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		const availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, availaBleFileSystems });
 		if (uri) {
 			// add the picked file into the list of recently opened
-			this.workspacesService.addRecentlyOpened([{ fileUri: uri, label: this.labelService.getUriLabel(uri) }]);
+			this.workspacesService.addRecentlyOpened([{ fileUri: uri, laBel: this.laBelService.getUriLaBel(uri) }]);
 
 			if (options.forceNewWindow || preferNewWindow) {
 				return this.hostService.openWindow([{ fileUri: uri }], { forceNewWindow: options.forceNewWindow });
@@ -179,9 +179,9 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 
 	protected async pickFolderAndOpenSimplified(schema: string, options: IPickAndOpenOptions): Promise<any> {
 		const title = nls.localize('openFolder.title', 'Open Folder');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		const availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 
-		const uri = await this.pickResource({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = await this.pickResource({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availaBleFileSystems });
 		if (uri) {
 			return this.hostService.openWindow([{ folderUri: uri }], { forceNewWindow: options.forceNewWindow });
 		}
@@ -190,17 +190,17 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 	protected async pickWorkspaceAndOpenSimplified(schema: string, options: IPickAndOpenOptions): Promise<any> {
 		const title = nls.localize('openWorkspace.title', 'Open Workspace');
 		const filters: FileFilter[] = [{ name: nls.localize('filterName.workspace', 'Workspace'), extensions: [WORKSPACE_EXTENSION] }];
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		const availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, filters, availableFileSystems });
+		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, filters, availaBleFileSystems });
 		if (uri) {
 			return this.hostService.openWindow([{ workspaceUri: uri }], { forceNewWindow: options.forceNewWindow });
 		}
 	}
 
 	protected async pickFileToSaveSimplified(schema: string, options: ISaveDialogOptions): Promise<URI | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		if (!options.availaBleFileSystems) {
+			options.availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 		}
 
 		options.title = nls.localize('saveFileAs.title', 'Save As');
@@ -208,16 +208,16 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 	}
 
 	protected async showSaveDialogSimplified(schema: string, options: ISaveDialogOptions): Promise<URI | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		if (!options.availaBleFileSystems) {
+			options.availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 		}
 
 		return this.saveRemoteResource(options);
 	}
 
 	protected async showOpenDialogSimplified(schema: string, options: IOpenDialogOptions): Promise<URI[] | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+		if (!options.availaBleFileSystems) {
+			options.availaBleFileSystems = this.addFileSchemaIfNeeded(schema);
 		}
 
 		const uri = await this.pickResource(options);
@@ -241,29 +241,29 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		return defaultUriScheme ?? this.pathService.defaultUriScheme;
 	}
 
-	protected getFileSystemSchema(options: { availableFileSystems?: readonly string[], defaultUri?: URI }): string {
-		return options.availableFileSystems && options.availableFileSystems[0] || this.getSchemeFilterForWindow(options.defaultUri?.scheme);
+	protected getFileSystemSchema(options: { availaBleFileSystems?: readonly string[], defaultUri?: URI }): string {
+		return options.availaBleFileSystems && options.availaBleFileSystems[0] || this.getSchemeFilterForWindow(options.defaultUri?.scheme);
 	}
 
-	abstract pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickFileAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickWorkspaceAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined>;
-	abstract showOpenDialog(options: IOpenDialogOptions): Promise<URI[] | undefined>;
+	aBstract pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	aBstract pickFileAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	aBstract pickFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	aBstract pickWorkspaceAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	aBstract showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined>;
+	aBstract showOpenDialog(options: IOpenDialogOptions): Promise<URI[] | undefined>;
 
-	abstract pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined>;
+	aBstract pickFileToSave(defaultUri: URI, availaBleFileSystems?: string[]): Promise<URI | undefined>;
 
-	protected getPickFileToSaveDialogOptions(defaultUri: URI, availableFileSystems?: string[]): ISaveDialogOptions {
+	protected getPickFileToSaveDialogOptions(defaultUri: URI, availaBleFileSystems?: string[]): ISaveDialogOptions {
 		const options: ISaveDialogOptions = {
 			defaultUri,
 			title: nls.localize('saveAsTitle', "Save As"),
-			availableFileSystems
+			availaBleFileSystems
 		};
 
 		interface IFilter { name: string; extensions: string[]; }
 
-		// Build the file filter by using our known languages
+		// Build the file filter By using our known languages
 		const ext: string | undefined = defaultUri ? resources.extname(defaultUri) : undefined;
 		let matchingFilter: IFilter | undefined;
 		const registeredLanguageFilters: IFilter[] = coalesce(this.modeService.getRegisteredLanguageNames().map(languageName => {
@@ -277,22 +277,22 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 			if (ext && extensions.indexOf(ext) >= 0) {
 				matchingFilter = filter;
 
-				return null; // matching filter will be added last to the top
+				return null; // matching filter will Be added last to the top
 			}
 
 			return filter;
 		}));
 
-		// We have no matching filter, e.g. because the language
+		// We have no matching filter, e.g. Because the language
 		// is unknown. We still add the extension to the list of
-		// filters though so that it can be picked
-		// (https://github.com/microsoft/vscode/issues/96283)
+		// filters though so that it can Be picked
+		// (https://githuB.com/microsoft/vscode/issues/96283)
 		if (!matchingFilter && ext) {
 			matchingFilter = { name: trim(ext, '.').toUpperCase(), extensions: [trim(ext, '.')] };
 		}
 
 		// Order of filters is
-		// - All Files (we MUST do this to fix macOS issue https://github.com/microsoft/vscode/issues/102713)
+		// - All Files (we MUST do this to fix macOS issue https://githuB.com/microsoft/vscode/issues/102713)
 		// - File Extension Match (if any)
 		// - All Languages
 		// - No Extension

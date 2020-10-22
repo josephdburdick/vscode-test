@@ -3,62 +3,62 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { INotebookEditorContribution, INotebookEditor } from '../../notebookBrowser';
-import { registerNotebookContribution } from '../../notebookEditorExtensions';
-import { ISCMService } from 'vs/workbench/contrib/scm/common/scm';
-import { createProviderComparer } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorator';
-import { first, ThrottledDelayer } from 'vs/base/common/async';
-import { INotebookService } from '../../../common/notebookService';
-import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
+import { DisposaBle, DisposaBleStore } from 'vs/Base/common/lifecycle';
+import { INoteBookEditorContriBution, INoteBookEditor } from '../../noteBookBrowser';
+import { registerNoteBookContriBution } from '../../noteBookEditorExtensions';
+import { ISCMService } from 'vs/workBench/contriB/scm/common/scm';
+import { createProviderComparer } from 'vs/workBench/contriB/scm/Browser/dirtydiffDecorator';
+import { first, ThrottledDelayer } from 'vs/Base/common/async';
+import { INoteBookService } from '../../../common/noteBookService';
+import { NoteBookTextModel } from 'vs/workBench/contriB/noteBook/common/model/noteBookTextModel';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/Base/common/uri';
 
-export class SCMController extends Disposable implements INotebookEditorContribution {
-	static id: string = 'workbench.notebook.findController';
+export class SCMController extends DisposaBle implements INoteBookEditorContriBution {
+	static id: string = 'workBench.noteBook.findController';
 	private _lastDecorationId: string[] = [];
-	private _localDisposable = new DisposableStore();
-	private _originalDocument: NotebookTextModel | undefined = undefined;
-	private _originalResourceDisposableStore = new DisposableStore();
+	private _localDisposaBle = new DisposaBleStore();
+	private _originalDocument: NoteBookTextModel | undefined = undefined;
+	private _originalResourceDisposaBleStore = new DisposaBleStore();
 	private _diffDelayer = new ThrottledDelayer<void>(200);
 
 	private _lastVersion = -1;
 
 
 	constructor(
-		private readonly _notebookEditor: INotebookEditor,
+		private readonly _noteBookEditor: INoteBookEditor,
 		@IFileService private readonly _fileService: FileService,
 		@ISCMService private readonly _scmService: ISCMService,
-		@INotebookService private readonly _notebookService: INotebookService
+		@INoteBookService private readonly _noteBookService: INoteBookService
 
 	) {
 		super();
 
-		if (!this._notebookEditor.isEmbedded) {
-			this._register(this._notebookEditor.onDidChangeModel(() => {
-				this._localDisposable.clear();
-				this._originalResourceDisposableStore.clear();
+		if (!this._noteBookEditor.isEmBedded) {
+			this._register(this._noteBookEditor.onDidChangeModel(() => {
+				this._localDisposaBle.clear();
+				this._originalResourceDisposaBleStore.clear();
 				this._diffDelayer.cancel();
 				this.update();
 
-				if (this._notebookEditor.textModel) {
-					this._localDisposable.add(this._notebookEditor.textModel.onDidChangeContent((e) => {
+				if (this._noteBookEditor.textModel) {
+					this._localDisposaBle.add(this._noteBookEditor.textModel.onDidChangeContent((e) => {
 						this.update();
 					}));
 				}
 			}));
 
-			this._register(this._notebookEditor.onWillDispose(() => {
-				this._localDisposable.clear();
-				this._originalResourceDisposableStore.clear();
+			this._register(this._noteBookEditor.onWillDispose(() => {
+				this._localDisposaBle.clear();
+				this._originalResourceDisposaBleStore.clear();
 			}));
 
 			this.update();
 		}
 	}
 
-	private async _resolveNotebookDocument(uri: URI, viewType: string) {
+	private async _resolveNoteBookDocument(uri: URI, viewType: string) {
 		const providers = this._scmService.repositories.map(r => r.provider);
 		const rootedProviders = providers.filter(p => !!p.rootUri);
 
@@ -68,7 +68,7 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 
 		if (!result) {
 			this._originalDocument = undefined;
-			this._originalResourceDisposableStore.clear();
+			this._originalResourceDisposaBleStore.clear();
 			return;
 		}
 
@@ -77,17 +77,17 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 			return;
 		}
 
-		this._originalResourceDisposableStore.add(this._fileService.watch(result));
-		this._originalResourceDisposableStore.add(this._fileService.onDidFilesChange(e => {
+		this._originalResourceDisposaBleStore.add(this._fileService.watch(result));
+		this._originalResourceDisposaBleStore.add(this._fileService.onDidFilesChange(e => {
 			if (e.contains(result)) {
 				this._originalDocument = undefined;
-				this._originalResourceDisposableStore.clear();
+				this._originalResourceDisposaBleStore.clear();
 				this.update();
 			}
 		}));
 
-		const originalDocument = await this._notebookService.resolveNotebook(viewType, result, false);
-		this._originalResourceDisposableStore.add({
+		const originalDocument = await this._noteBookService.resolveNoteBook(viewType, result, false);
+		this._originalResourceDisposaBleStore.add({
 			dispose: () => {
 				this._originalDocument?.dispose();
 				this._originalDocument = undefined;
@@ -104,7 +104,7 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 
 		await this._diffDelayer
 			.trigger(async () => {
-				const modifiedDocument = this._notebookEditor.textModel;
+				const modifiedDocument = this._noteBookEditor.textModel;
 				if (!modifiedDocument) {
 					return;
 				}
@@ -114,7 +114,7 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 				}
 
 				this._lastVersion = modifiedDocument.versionId;
-				await this._resolveNotebookDocument(modifiedDocument.uri, modifiedDocument.viewType);
+				await this._resolveNoteBookDocument(modifiedDocument.uri, modifiedDocument.viewType);
 
 				if (!this._originalDocument) {
 					this._clear();
@@ -124,14 +124,14 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 				// const diff = new LcsDiff(new CellSequence(this._originalDocument), new CellSequence(modifiedDocument));
 				// const diffResult = diff.ComputeDiff(false);
 
-				// const decorations: INotebookDeltaDecoration[] = [];
+				// const decorations: INoteBookDeltaDecoration[] = [];
 				// diffResult.changes.forEach(change => {
 				// 	if (change.originalLength === 0) {
 				// 		// doesn't exist in original
 				// 		for (let i = 0; i < change.modifiedLength; i++) {
 				// 			decorations.push({
 				// 				handle: modifiedDocument.cells[change.modifiedStart + i].handle,
-				// 				options: { gutterClassName: 'nb-gutter-cell-inserted' }
+				// 				options: { gutterClassName: 'nB-gutter-cell-inserted' }
 				// 			});
 				// 		}
 				// 	} else {
@@ -143,7 +143,7 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 				// 			for (let i = 0; i < change.modifiedLength; i++) {
 				// 				decorations.push({
 				// 					handle: modifiedDocument.cells[change.modifiedStart + i].handle,
-				// 					options: { gutterClassName: 'nb-gutter-cell-changed' }
+				// 					options: { gutterClassName: 'nB-gutter-cell-changed' }
 				// 				});
 				// 			}
 				// 		}
@@ -151,13 +151,13 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 				// });
 
 
-				// this._lastDecorationId = this._notebookEditor.deltaCellDecorations(this._lastDecorationId, decorations);
+				// this._lastDecorationId = this._noteBookEditor.deltaCellDecorations(this._lastDecorationId, decorations);
 			});
 	}
 
 	private _clear() {
-		this._lastDecorationId = this._notebookEditor.deltaCellDecorations(this._lastDecorationId, []);
+		this._lastDecorationId = this._noteBookEditor.deltaCellDecorations(this._lastDecorationId, []);
 	}
 }
 
-registerNotebookContribution(SCMController.id, SCMController);
+registerNoteBookContriBution(SCMController.id, SCMController);

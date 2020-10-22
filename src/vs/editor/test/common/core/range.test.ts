@@ -9,87 +9,87 @@ import { Range } from 'vs/editor/common/core/range';
 suite('Editor Core - Range', () => {
 	test('empty range', () => {
 		let s = new Range(1, 1, 1, 1);
-		assert.equal(s.startLineNumber, 1);
+		assert.equal(s.startLineNumBer, 1);
 		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
+		assert.equal(s.endLineNumBer, 1);
 		assert.equal(s.endColumn, 1);
 		assert.equal(s.isEmpty(), true);
 	});
 
 	test('swap start and stop same line', () => {
 		let s = new Range(1, 2, 1, 1);
-		assert.equal(s.startLineNumber, 1);
+		assert.equal(s.startLineNumBer, 1);
 		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
+		assert.equal(s.endLineNumBer, 1);
 		assert.equal(s.endColumn, 2);
 		assert.equal(s.isEmpty(), false);
 	});
 
 	test('swap start and stop', () => {
 		let s = new Range(2, 1, 1, 2);
-		assert.equal(s.startLineNumber, 1);
+		assert.equal(s.startLineNumBer, 1);
 		assert.equal(s.startColumn, 2);
-		assert.equal(s.endLineNumber, 2);
+		assert.equal(s.endLineNumBer, 2);
 		assert.equal(s.endColumn, 1);
 		assert.equal(s.isEmpty(), false);
 	});
 
 	test('no swap same line', () => {
 		let s = new Range(1, 1, 1, 2);
-		assert.equal(s.startLineNumber, 1);
+		assert.equal(s.startLineNumBer, 1);
 		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
+		assert.equal(s.endLineNumBer, 1);
 		assert.equal(s.endColumn, 2);
 		assert.equal(s.isEmpty(), false);
 	});
 
 	test('no swap', () => {
 		let s = new Range(1, 1, 2, 1);
-		assert.equal(s.startLineNumber, 1);
+		assert.equal(s.startLineNumBer, 1);
 		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 2);
+		assert.equal(s.endLineNumBer, 2);
 		assert.equal(s.endColumn, 1);
 		assert.equal(s.isEmpty(), false);
 	});
 
 	test('compareRangesUsingEnds', () => {
-		let a: Range, b: Range;
+		let a: Range, B: Range;
 
 		a = new Range(1, 1, 1, 3);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start < b.start, a.end < b.end');
+		B = new Range(1, 2, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) < 0, 'a.start < B.start, a.end < B.end');
 
 		a = new Range(1, 1, 1, 3);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start = b.start, a.end < b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) < 0, 'a.start = B.start, a.end < B.end');
 
 		a = new Range(1, 2, 1, 3);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start > b.start, a.end < b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) < 0, 'a.start > B.start, a.end < B.end');
 
 		a = new Range(1, 1, 1, 4);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start < b.start, a.end = b.end');
+		B = new Range(1, 2, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) < 0, 'a.start < B.start, a.end = B.end');
 
 		a = new Range(1, 1, 1, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) === 0, 'a.start = b.start, a.end = b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) === 0, 'a.start = B.start, a.end = B.end');
 
 		a = new Range(1, 2, 1, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start > b.start, a.end = b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) > 0, 'a.start > B.start, a.end = B.end');
 
 		a = new Range(1, 1, 1, 5);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start < b.start, a.end > b.end');
+		B = new Range(1, 2, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) > 0, 'a.start < B.start, a.end > B.end');
 
 		a = new Range(1, 1, 2, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start = b.start, a.end > b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) > 0, 'a.start = B.start, a.end > B.end');
 
 		a = new Range(1, 2, 5, 1);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start > b.start, a.end > b.end');
+		B = new Range(1, 1, 1, 4);
+		assert.ok(Range.compareRangesUsingEnds(a, B) > 0, 'a.start > B.start, a.end > B.end');
 	});
 
 	test('containsPosition', () => {
