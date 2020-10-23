@@ -28,7 +28,7 @@ async function main(): Promise<void> {
 	const commit = getEnv('BUILD_SOURCEVERSION');
 	const queuedBy = getEnv('BUILD_QUEUEDBY');
 	const sourceBranch = getEnv('BUILD_SOURCEBRANCH');
-	const version = _version + (quality === 'staBle' ? '' : `-${quality}`);
+	const version = _version + (quality === 'STABLE' ? '' : `-${noquality}`);
 
 	console.log('Creating Build...');
 	console.log('Quality:', quality);
